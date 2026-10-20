@@ -13,14 +13,14 @@ func attach(main_ref: Node, _args: Dictionary) -> void:
 	build_base(randi_range(1, Balance.CHAPTER_COUNT), "")
 	var ui := content_root()
 	# logo
-	var logo := ThemeWW.label("WINDWINGS", 84, U["gold_a"], true)
+	var logo := ThemeWW.label("WINDWINGS", 84, Balance.UI["gold_a"], true)
 	logo.add_theme_color_override("font_outline_color", Color("#7a4a00"))
 	logo.add_theme_constant_override("outline_size", 14)
 	logo.position = Vector2(0, 120)
 	logo.size = Vector2(Balance.VIEW.x, 110)
 	logo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	ui.add_child(logo)
-	var sub := ThemeWW.label("G A L A X Y   A C E", 30, U["rim_cyan"], true)
+	var sub := ThemeWW.label("G A L A X Y   A C E", 30, Balance.UI["rim_cyan"], true)
 	sub.position = Vector2(0, 226)
 	sub.size = Vector2(Balance.VIEW.x, 44)
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -36,7 +36,7 @@ func attach(main_ref: Node, _args: Dictionary) -> void:
 	ship_sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	ship_sprite.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui.add_child(ship_sprite)
-	var ship_name := ThemeWW.label(String(Balance.SHIPS[Game.current_ship()]["name"]), 24, U["text_dim"])
+	var ship_name := ThemeWW.label(String(Balance.SHIPS[Game.current_ship()]["name"]), 24, Balance.UI["text_dim"])
 	ship_name.position = Vector2(0, 470)
 	ship_name.size = Vector2(Balance.VIEW.x, 34)
 	ship_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -84,12 +84,12 @@ func attach(main_ref: Node, _args: Dictionary) -> void:
 		daily_btn.text = "ĐÃ NHẬN HÔM NAY"
 		daily_btn.disabled = true
 	# điểm cao + âm thanh
-	var best := ThemeWW.label("ĐIỂM CAO NHẤT: %d" % int(Game.data["best_score"]), 24, U["text_dim"])
+	var best := ThemeWW.label("ĐIỂM CAO NHẤT: %d" % int(Game.data["best_score"]), 24, Balance.UI["text_dim"])
 	best.position = Vector2(0, 1140)
 	best.size = Vector2(Balance.VIEW.x, 34)
 	best.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	ui.add_child(best)
-	var ver := ThemeWW.label("v0.4 · Godot 4 · 60 màn · 6 boss chủ thể riêng", 20, Color(U["text_dim"], 0.7))
+	var ver := ThemeWW.label("v0.4 · Godot 4 · 60 màn · 6 boss chủ thể riêng", 20, Color(Balance.UI["text_dim"], 0.7))
 	ver.position = Vector2(0, 1180)
 	ver.size = Vector2(Balance.VIEW.x, 30)
 	ver.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

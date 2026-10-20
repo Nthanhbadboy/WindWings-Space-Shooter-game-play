@@ -18,8 +18,8 @@ static func enemy(run: Node, type: String, x: float, y: float) -> void:
 	run.enemies_node.add_child(e)
 
 static func boss(run: Node, id: String) -> void:
-	var script: Script = BOSS_SCRIPTS[id]
-	run.boss = script.new()
+	var boss_script: Script = BOSS_SCRIPTS[id]
+	run.boss = boss_script.new()
 	run.boss.setup(id, run.hp_mul, run.bullet_mul, run)
 	run.world.add_child(run.boss)
 	run.boss.boss_died.connect(run._on_boss_died)

@@ -26,12 +26,12 @@ func attach(main_ref: Node, args: Dictionary) -> void:
 	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui.add_child(preview)
-	name_lbl = ThemeWW.label("", 40, U["gold_a"], true)
+	name_lbl = ThemeWW.label("", 40, Balance.UI["gold_a"], true)
 	name_lbl.position = Vector2(0, 320)
 	name_lbl.size = Vector2(Balance.VIEW.x, 52)
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	ui.add_child(name_lbl)
-	perk_lbl = ThemeWW.label("", 22, U["rim_cyan"])
+	perk_lbl = ThemeWW.label("", 22, Balance.UI["rim_cyan"])
 	perk_lbl.position = Vector2(0, 372)
 	perk_lbl.size = Vector2(Balance.VIEW.x, 32)
 	perk_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -42,13 +42,13 @@ func attach(main_ref: Node, args: Dictionary) -> void:
 		var row := HBoxContainer.new()
 		row.position = Vector2(60, 416 + i * 40)
 		row.add_theme_constant_override("separation", 10)
-		var l := ThemeWW.label(String(stat_names[i][1]), 22, U["text"])
+		var l := ThemeWW.label(String(stat_names[i][1]), 22, Balance.UI["text"])
 		l.custom_minimum_size = Vector2(190, 0)
 		row.add_child(l)
 		var bar := Control.new()
 		bar.set_script(preload("res://scripts/ui/SlantedBar.gd"))
-		bar.call("set", "fill_a", U["energy_a"])
-		bar.call("set", "fill_b", U["energy_c"])
+		bar.call("set", "fill_a", Balance.UI["energy_a"])
+		bar.call("set", "fill_b", Balance.UI["energy_c"])
 		bar.custom_minimum_size = Vector2(330, 22)
 		bar.size = Vector2(330, 22)
 		row.add_child(bar)
@@ -125,9 +125,9 @@ func _ship_row(id: String) -> Control:
 	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	v.alignment = BoxContainer.ALIGNMENT_CENTER
 	h.add_child(v)
-	var nm := ThemeWW.label(String(s["name"]) + (" · LV%d" % int(rec["lvl"]) if owned else ""), 26, s["color"] if owned else U["text_dim"], true)
+	var nm := ThemeWW.label(String(s["name"]) + (" · LV%d" % int(rec["lvl"]) if owned else ""), 26, s["color"] if owned else Balance.UI["text_dim"], true)
 	v.add_child(nm)
-	var pk := ThemeWW.label(String(s["perk"]).replace("_", " "), 18, U["text_dim"])
+	var pk := ThemeWW.label(String(s["perk"]).replace("_", " "), 18, Balance.UI["text_dim"])
 	v.add_child(pk)
 	var b: Button
 	if not owned:

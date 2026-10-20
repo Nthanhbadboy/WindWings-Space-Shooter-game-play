@@ -12,7 +12,6 @@ signal enraged(boss: Node2D)
 signal telegraph_started(boss: Node2D, dur: float)
 signal telegraph_fired(boss: Node2D)
 
-const R := Balance.BOSS_RULES
 
 var boss_id := ""
 var data: Dictionary = {}
@@ -51,7 +50,7 @@ func setup(id: String, hp_mul: float, b_mul: float, run_ref: Node) -> void:
 
 func _ready() -> void:
 	z_index = 8
-	position = Vector2(Balance.VIEW.x * 0.5, float(R["enter_y"]))
+	position = Vector2(Balance.VIEW.x * 0.5, float(Balance.BOSS_RULES["enter_y"]))
 	rig = _make_rig()
 	add_child(rig)
 	rig.call("build", self)
@@ -69,9 +68,9 @@ func _physics_process(delta: float) -> void:
 		hurt_t -= delta
 	match state:
 		"enter":
-			position.y += float(R["enter_speed"]) * delta
-			if position.y >= float(R["idle_y"]):
-				position.y = float(R["idle_y"])
+			position.y += float(Balance.BOSS_RULES["enter_speed"]) * delta
+			if position.y >= float(Balance.BOSS_RULES["idle_y"]):
+				position.y = float(Balance.BOSS_RULES["idle_y"])
 				state = "fight"
 				fire_cd_t = 1.1
 		"fight":
@@ -99,18 +98,18 @@ func _physics_process(delta: float) -> void:
 	_check_phase()
 
 func _sway(_delta: float) -> void:
-	position.x = Balance.VIEW.x * 0.5 + sin(t * 0.55 + phase) * float(R["drift_speed"])
-	position.y = float(R["idle_y"]) + sin(t * 0.83) * 16.0
+	position.x = Balance.VIEW.x * 0.5 + sin(t * 0.55 + phase) * float(Balance.BOSS_RULES["drift_speed"])
+	position.y = float(Balance.BOSS_RULES["idle_y"]) + sin(t * 0.83) * 16.0
 
 func _check_phase() -> void:
 	if state == "dying" or state == "dead":
 		return
 	var ratio := hp / max_hp
-	if phase == 1 and ratio <= float(R["phase2_at"]):
+	if phase == 1 and ratio <= float(Balance.BOSS_RULES["phase2_at"]):
 		_enter_phase(2)
-	elif phase == 2 and ratio <= float(R["phase3_at"]):
+	elif phase == 2 and ratio <= float(Balance.BOSS_RULES["phase3_at"]):
 		_enter_phase(3)
-	if phase == 3 and ratio <= float(R["enrage_at"]) and not enraged:
+	if phase == 3 and ratio <= float(Balance.BOSS_RULES["enrage_at"]) and not enraged:
 		enraged = true
 		rig.call("play", "enrage")
 		enraged.emit(self)
@@ -119,14 +118,14 @@ func _check_phase() -> void:
 func _enter_phase(p: int) -> void:
 	phase = p
 	state = "transition"
-	transition_t = float(R["transition_time"])
+	transition_t = float(Balance.BOSS_RULES["transition_time"])
 	# HARD RULE an toàn: huỷ telegraph đang chờ khi đổi pha — không sát thương
 	if tele_active:
 		tele_active = false
 		telegraph_fx.call("finish")
 	rig.call("play", "phase_shift")
 	if p == 3:
-		hp = minf(max_hp * float(R["phase3_at"]) + max_hp * float(R["phase3_heal"]), hp + max_hp * float(R["phase3_heal"]))
+		hp = minf(max_hp * float(Balance.BOSS_RULES["phase3_at"]) + max_hp * float(Balance.BOSS_RULES["phase3_heal"]), hp + max_hp * float(Balance.BOSS_RULES["phase3_heal"]))
 	phase_changed.emit(self, p)
 	if run != null:
 		run.boss_phase_changed(self, p)
@@ -137,8 +136,8 @@ func _begin_attack() -> void:
 	tele_name = _pick_pattern()
 	tele_pattern = Balance.PATTERNS[tele_name]
 	var raw := float(tele_pattern["telegraph"])
-	var mul := float(R["enrage_telegraph_mul"]) if enraged else 1.0
-	tele_dur = maxf(float(R["telegraph_min"]), raw * mul)
+	var mul := float(Balance.BOSS_RULES["enrage_telegraph_mul"]) if enraged else 1.0
+	tele_dur = maxf(float(Balance.BOSS_RULES["telegraph_min"]), raw * mul)
 	tele_active = true
 	tele_t = 0.0
 	rig.call("play", "charge")
@@ -166,8 +165,8 @@ func _fire_pattern() -> void:
 	rig.call("play", "fire")
 	_execute_pattern(tele_pattern)
 	telegraph_fired.emit(self)
-	var cd: float = float((R["attack_cd"] as Array)[clampi(phase - 1, 0, 2)])
-	fire_cd_t = cd * (float(R["enrage_cd_mul"]) if enraged else 1.0)
+	var cd: float = float((Balance.BOSS_RULES["attack_cd"] as Array)[clampi(phase - 1, 0, 2)])
+	fire_cd_t = cd * (float(Balance.BOSS_RULES["enrage_cd_mul"]) if enraged else 1.0)
 	if run != null:
 		run.boss_fired(self, tele_name)
 	Sfx.play("boss_fire")
@@ -197,7 +196,6 @@ func _boss_bullet(local_pos: Vector2, vel: Vector2, pat: Dictionary, homing := 0
 func _execute_pattern(pat: Dictionary) -> void:
 	var kind := String(pat["kind"])
 	var aim := _aim_dir()
-	var rad := float(pat.get("radius", 8))
 	match kind:
 		"aimed":
 			var n: int = int(pat.get("count", 3))
@@ -286,7 +284,7 @@ func _execute_pattern(pat: Dictionary) -> void:
 		"wall":
 			var n: int = int(pat["count"])
 			var gap: int = int(pat.get("gap", 1))
-			var px := (run.player_position().x - global_position.x) if run != null else 0.0
+			var px: float = float(run.player_position().x - global_position.x) if run != null else 0.0
 			var gap_i := clampi(int((px + Balance.VIEW.x * 0.5) / Balance.VIEW.x * float(n)), gap, n - 1 - gap)
 			for i in n:
 				if absi(i - gap_i) < gap:
@@ -295,7 +293,7 @@ func _execute_pattern(pat: Dictionary) -> void:
 				_boss_bullet(Vector2(x, -20.0), Vector2.DOWN * float(pat["speed"]), pat)
 		"slam":
 			var n: int = int(pat["count"])
-			var px := (run.player_position().x - global_position.x) if run != null else 0.0
+			var px: float = float(run.player_position().x - global_position.x) if run != null else 0.0
 			for i in n:
 				var x := px + (float(i) - float(n - 1) * 0.5) * 86.0
 				_boss_bullet(Vector2(x, 0), Vector2.DOWN.rotated(clampf(x * 0.0004, -0.2, 0.2)) * float(pat["speed"]), pat)
@@ -356,7 +354,7 @@ const R_HURT_CD := 0.2
 
 func _die() -> void:
 	state = "dying"
-	death_t = float(R["death_time"])
+	death_t = float(Balance.BOSS_RULES["death_time"])
 	if tele_active:
 		tele_active = false
 		telegraph_fx.call("finish")
@@ -368,7 +366,7 @@ func _die() -> void:
 		run.fx_flash(Color(1, 0.95, 0.85), 0.55, 0.5)
 
 func radius() -> float:
-	return float(data["radius"]) * float(R["contact_radius_mul"])
+	return float(data["radius"]) * float(Balance.BOSS_RULES["contact_radius_mul"])
 
 func is_alive() -> bool:
 	return state != "dead" and state != "dying"

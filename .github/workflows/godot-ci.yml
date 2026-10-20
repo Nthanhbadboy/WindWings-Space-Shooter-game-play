@@ -50,7 +50,7 @@ jobs:
           "$GODOT_BIN" --version
 
       - name: Import project
-        run: cd "$GITHUB_WORKSPACE/godot" && "$GODOT_BIN" --headless --import . > /tmp/import.log 2>&1 || true; tail -25 /tmp/import.log
+        run: cd "$GITHUB_WORKSPACE/godot" && "$GODOT_BIN" --headless --import . > /tmp/import.log 2>&1 || true; grep -n "SCRIPT ERROR\|Parse Error\|Compile Error\|Failed to load" /tmp/import.log | head -40 || echo "(import sạch)"
 
       - name: Run smoke tests (headless)
         run: |
@@ -78,7 +78,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          BODY=$( { echo "## godot-ci thất bại — ${{ github.sha }}"; echo; echo '### smoke.log (đuôi)'; echo '```'; tail -60 /tmp/smoke.log 2>/dev/null || echo '(không có smoke.log)'; echo '```'; echo '### import.log (đuôi)'; echo '```'; tail -30 /tmp/import.log 2>/dev/null; echo '```'; } )
+          BODY=$( { echo "## godot-ci thất bại — ${{ github.sha }}"; echo; echo '### smoke.log (đuôi)'; echo '```'; tail -120 /tmp/smoke.log 2>/dev/null || echo '(không có smoke.log)'; echo '```'; echo '### import.log (đuôi)'; echo '```'; grep -A2 'SCRIPT ERROR\|Parse Error\|Compile Error\|Failed to load' /tmp/import.log 2>/dev/null | head -120; echo '```'; } )
           curl -sf -X POST -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/issues" \
             -d "$(jq -n --arg t "[godot-ci FAIL] ${{ github.ref_name }} @ ${GITHUB_SHA:0:7}" --arg b "$BODY" '{title:$t, body:$b, labels:["ci-diagnostic"]}')" || true

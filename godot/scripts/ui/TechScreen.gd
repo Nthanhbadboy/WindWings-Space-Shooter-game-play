@@ -17,7 +17,7 @@ func attach(main_ref: Node, _args: Dictionary) -> void:
 	main = main_ref
 	build_base(5, "CÔNG NGHỆ")
 	var ui := content_root()
-	var hint := ThemeWW.label("Nâng cấp vĩnh viễn — áp dụng cho MỌI tàu", 22, U["text_dim"])
+	var hint := ThemeWW.label("Nâng cấp vĩnh viễn — áp dụng cho MỌI tàu", 22, Balance.UI["text_dim"])
 	hint.position = Vector2(0, 92)
 	hint.size = Vector2(Balance.VIEW.x, 32)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -46,25 +46,25 @@ func _rebuild() -> void:
 		var h: HBoxContainer = row.get_child(0)
 		h.add_theme_constant_override("separation", 14)
 		var ic := ThemeWW.icon(String(TECH_ICONS.get(key, "")), 72)
-		ic.modulate = U["rim_cyan"] if not maxed else U["gold_a"]
+		ic.modulate = Balance.UI["rim_cyan"] if not maxed else Balance.UI["gold_a"]
 		h.add_child(ic)
 		var v := VBoxContainer.new()
 		v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		v.alignment = BoxContainer.ALIGNMENT_CENTER
 		v.add_theme_constant_override("separation", 4)
 		h.add_child(v)
-		v.add_child(ThemeWW.label(String(t["name"]), 28, U["gold_a"], true))
-		v.add_child(ThemeWW.label(String(t["desc"]), 20, U["text_dim"]))
+		v.add_child(ThemeWW.label(String(t["name"]), 28, Balance.UI["gold_a"], true))
+		v.add_child(ThemeWW.label(String(t["desc"]), 20, Balance.UI["text_dim"]))
 		# thanh cấp
 		var bar := Control.new()
 		bar.set_script(preload("res://scripts/ui/SlantedBar.gd"))
-		bar.call("set", "fill_a", U["energy_a"])
-		bar.call("set", "fill_b", U["energy_c"])
+		bar.call("set", "fill_a", Balance.UI["energy_a"])
+		bar.call("set", "fill_b", Balance.UI["energy_c"])
 		bar.custom_minimum_size = Vector2(300, 16)
 		bar.size = Vector2(300, 16)
 		bar.call("set_ratio", float(lvl) / float(t["max"]))
 		v.add_child(bar)
-		var lv := ThemeWW.label("Cấp %d / %d" % [lvl, int(t["max"])], 20, U["text"])
+		var lv := ThemeWW.label("Cấp %d / %d" % [lvl, int(t["max"])], 20, Balance.UI["text"])
 		v.add_child(lv)
 		var right := VBoxContainer.new()
 		right.alignment = BoxContainer.ALIGNMENT_CENTER

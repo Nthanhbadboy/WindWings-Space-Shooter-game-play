@@ -170,7 +170,7 @@ func _fire() -> void:
 		return
 	var p: Vector2 = run.player_position()
 	var aim := (p - global_position).normalized()
-	var bs := Balance.BULLET["enemy_speed"] * bullet_mul
+	var bs: float = float(Balance.BULLET["enemy_speed"]) * bullet_mul
 	var col: Color = Balance.BULLET["enemy_color"]
 	if int(data.get("spread", 1)) >= 3:
 		for k in [-1, 0, 1]:

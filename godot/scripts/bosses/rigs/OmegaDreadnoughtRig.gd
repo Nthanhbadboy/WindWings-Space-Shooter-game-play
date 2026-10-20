@@ -134,7 +134,6 @@ func _process(delta: float) -> void:
 		var pl := player_local()
 		for side_i in 2:
 			var arm: Node2D = arm_l if side_i == 0 else arm_r
-			var sgn := -1.0 if side_i == 0 else 1.0
 			var want := (pl - arm.position).angle() - PI * 0.5
 			arm.rotation = lerpf(arm.rotation, clampf(want, -1.1, 1.1), 1.0 - exp(-7.0 * delta))
 			var barrel: Polygon2D = barrel_l if side_i == 0 else barrel_r

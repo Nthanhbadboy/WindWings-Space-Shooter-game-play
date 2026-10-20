@@ -230,7 +230,7 @@ func fire_player_weapon(p: Node2D) -> void:
 func use_bomb() -> void:
 	if not player.use_bomb():
 		return
-	var P := Balance.PLAYER
+	var P: Dictionary = Balance.PLAYER
 	for b in bullets_node.get_children():
 		if b.side == 1 and not b.dead:
 			b.dead = true

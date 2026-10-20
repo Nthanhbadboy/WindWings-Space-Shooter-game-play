@@ -12,11 +12,10 @@ signal shields_changed(shields: int)
 signal weapon_changed(level: int)
 signal bombs_changed(bombs: int)
 
-const P := Balance.PLAYER
 
 var stats: Dictionary = {}
-var lives: int = P["lives"]
-var bombs: int = P["bombs"]
+var lives: int = Balance.PLAYER["lives"]
+var bombs: int = Balance.PLAYER["bombs"]
 var shields: int = 0
 var weapon_level: int = 1
 var max_hp: int = 100
@@ -61,7 +60,7 @@ func _ready() -> void:
 	if tex != null:
 		sprite.texture = tex
 		var longest := maxf(tex.get_width(), tex.get_height())
-		var s := 96.0 / longest * P["sprite_scale"]
+		var s: float = 96.0 / longest * float(Balance.PLAYER["sprite_scale"])
 		sprite.scale = Vector2(s, s)
 	add_child(sprite)
 	flame = CPUParticles2D.new()
@@ -118,7 +117,7 @@ func _unhandled_input(event: InputEvent) -> void:
 ## tàu không nằm dưới ngón tay (tỉ lệ 1:1, bù offset).
 func _begin_drag(screen_pos: Vector2) -> void:
 	var p := _to_world(screen_pos)
-	grab_offset = _clamp_vec(position - p, Vector2(P["grab_clamp_x"], P["grab_clamp_y"]))
+	grab_offset = _clamp_vec(position - p, Vector2(Balance.PLAYER["grab_clamp_x"], Balance.PLAYER["grab_clamp_y"]))
 	target = _clamp_target(p + grab_offset)
 
 func _to_world(screen_pos: Vector2) -> Vector2:
@@ -131,7 +130,7 @@ func _clamp_vec(v: Vector2, lim: Vector2) -> Vector2:
 	return Vector2(clampf(v.x, -lim.x, lim.x), clampf(v.y, -lim.y, lim.y))
 
 func _clamp_target(t: Vector2) -> Vector2:
-	var m: int = P["bounds_margin"]
+	var m: int = Balance.PLAYER["bounds_margin"]
 	return Vector2(clampf(t.x, m, Balance.VIEW.x - m), clampf(t.y, m + 120, Balance.VIEW.y - m))
 
 func _physics_process(delta: float) -> void:
@@ -142,7 +141,7 @@ func _physics_process(delta: float) -> void:
 	if key != Vector2.ZERO:
 		target = _clamp_target(target + key * stats["speed"] * delta)
 	# bám mục tiêu — mượt, độc lập FPS
-	var k: float = P["follow_k"]
+	var k: float = Balance.PLAYER["follow_k"]
 	var prev := position
 	position += (target - position) * (1.0 - exp(-k * delta))
 	var vx := (position.x - prev.x) / maxf(delta, 0.0001)
@@ -152,7 +151,7 @@ func _physics_process(delta: float) -> void:
 	# nháy invuln
 	if invuln_t > 0.0:
 		invuln_t -= delta
-		var blink := 0.35 + 0.65 * absf(sin(float(Time.get_ticks_msec()) / 1000.0 * P["blink_hz"] * PI))
+		var blink := 0.35 + 0.65 * absf(sin(float(Time.get_ticks_msec()) / 1000.0 * float(Balance.PLAYER["blink_hz"]) * PI))
 		sprite.modulate.a = blink if invuln_t > 0.0 else 1.0
 	else:
 		sprite.modulate.a = 1.0
@@ -180,7 +179,7 @@ func hit() -> int:
 		alive = false
 		died.emit()
 		return 2
-	invuln_t = P["invuln"]
+	invuln_t = Balance.PLAYER["invuln"]
 	hp = max_hp
 	position = Vector2(Balance.VIEW.x * 0.5, Balance.VIEW.y - 180.0)
 	target = position

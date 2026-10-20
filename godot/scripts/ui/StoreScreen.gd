@@ -53,7 +53,7 @@ func _rebuild() -> void:
 		"dark" if has_supply else "gold",
 		has_supply or Game.data["gems"] < SUPPLY_GEM_COST, _buy_supply))
 	# ghi chú kinh tế
-	var note := ThemeWW.label("Mẹo CEO: giữ chuỗi đăng nhập 7 ngày để tối đa quà; ngọc chỉ đổi khi kẹt nâng cấp cuối game.", 20, U["text_dim"])
+	var note := ThemeWW.label("Mẹo CEO: giữ chuỗi đăng nhập 7 ngày để tối đa quà; ngọc chỉ đổi khi kẹt nâng cấp cuối game.", 20, Balance.UI["text_dim"])
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note.custom_minimum_size = Vector2(Balance.VIEW.x - 80, 0)
 	list_box.add_child(note)
@@ -64,8 +64,8 @@ func _card(title: String, desc: String, btn_text: String, kind: String, disabled
 	row.custom_minimum_size = Vector2(0, 170)
 	var v: VBoxContainer = row.get_child(0)
 	v.add_theme_constant_override("separation", 8)
-	v.add_child(ThemeWW.label(title, 30, U["gold_a"], true))
-	var d := ThemeWW.label(desc, 21, U["text_dim"])
+	v.add_child(ThemeWW.label(title, 30, Balance.UI["gold_a"], true))
+	var d := ThemeWW.label(desc, 21, Balance.UI["text_dim"])
 	d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	d.custom_minimum_size = Vector2(Balance.VIEW.x - 130, 0)
 	v.add_child(d)

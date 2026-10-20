@@ -3,7 +3,6 @@ extends Control
 ## không gian, thanh tài nguyên (xu/ngọc/sao) trên cùng, nút quay lui, tiêu
 ## đề. Các màn con gọi build_base() trong attach().
 
-const U := Balance.UI
 
 var main: Node = null
 var coin_lbl: Label
@@ -24,7 +23,7 @@ func build_base(chapter: int, title: String) -> void:
 	ui_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	canvas.add_child(ui_root)
 	# thanh tài nguyên
-	var bar := ThemeWW.grad_rect(Color(U["hud_top"], 0.95), Color(U["hud_bottom"], 0.75))
+	var bar := ThemeWW.grad_rect(Color(Balance.UI["hud_top"], 0.95), Color(Balance.UI["hud_bottom"], 0.75))
 	bar.position = Vector2.ZERO
 	bar.size = Vector2(Balance.VIEW.x, 76)
 	ui_root.add_child(bar)
@@ -34,12 +33,12 @@ func build_base(chapter: int, title: String) -> void:
 	back.position = Vector2(12, 10)
 	back.pressed.connect(_on_back)
 	ui_root.add_child(back)
-	var t := ThemeWW.label(title, 30, U["gold_a"], true)
+	var t := ThemeWW.label(title, 30, Balance.UI["gold_a"], true)
 	t.position = Vector2(84, 20)
 	ui_root.add_child(t)
-	coin_lbl = _res_label("res://assets/icons/ic_coin.png", Vector2(400, 18), U["gold_a"])
+	coin_lbl = _res_label("res://assets/icons/ic_coin.png", Vector2(400, 18), Balance.UI["gold_a"])
 	gem_lbl = _res_label("res://assets/icons/ic_gem.png", Vector2(536, 18), Color("#8fe8ff"))
-	star_lbl = _res_label("res://assets/icons/ic_star.png", Vector2(650, 18), U["star"])
+	star_lbl = _res_label("res://assets/icons/ic_star.png", Vector2(650, 18), Balance.UI["star"])
 	ui_root.add_child(coin_lbl.get_parent())
 	ui_root.add_child(gem_lbl.get_parent())
 	ui_root.add_child(star_lbl.get_parent())

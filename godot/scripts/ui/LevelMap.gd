@@ -82,11 +82,11 @@ func _level_button(level: int, is_boss: bool, unlocked: bool, boss_id: String) -
 		bl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		bl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		col.add_child(bl)
-		var subj := ThemeWW.label(String(Balance.BOSSES[boss_id]["subject"]), 18, U["text_dim"])
+		var subj := ThemeWW.label(String(Balance.BOSSES[boss_id]["subject"]), 18, Balance.UI["text_dim"])
 		subj.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		col.add_child(subj)
 	else:
-		var nl := ThemeWW.label("MÀN %d" % level, 34, U["gold_a"] if unlocked else U["text_dim"], true)
+		var nl := ThemeWW.label("MÀN %d" % level, 34, Balance.UI["gold_a"] if unlocked else Balance.UI["text_dim"], true)
 		nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		col.add_child(nl)
 		var stars := ThemeWW.star_row(Game.stars_of(level), 3, 34)

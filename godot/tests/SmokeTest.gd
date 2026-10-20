@@ -97,7 +97,7 @@ func _test_balance() -> void:
 			if not Balance.PATTERNS.has(String(pname)):
 				pats_ok = false
 	_check(pats_ok, "mọi pattern boss có định nghĩa trong PATTERNS")
-	var R := Balance.BOSS_RULES
+	var R: Dictionary = Balance.BOSS_RULES
 	_check(float(R["telegraph_min"]) >= 0.6 and float(R["enrage_telegraph_mul"]) == 0.7, "HARD RULE telegraph 0.6s / enrage x0.7")
 	_check(float(R["phase2_at"]) > float(R["phase3_at"]) and float(R["phase3_at"]) > float(R["enrage_at"]), "ngưỡng pha 0.66 > 0.33 > 0.10")
 	_check(Balance.WEAPONS.size() == 5, "5 cấp vũ khí L1-L5")
@@ -149,7 +149,7 @@ func _test_player() -> void:
 	var m: int = Balance.PLAYER["bounds_margin"]
 	_check(pl.position.x >= m - 1.0 and pl.position.y <= Balance.VIEW.y - m + 1.0, "kẹp trong biên màn hình")
 	# 3) tự bắn
-	var v0: int = stub.weapon_volleys
+	var v0: int = int(stub.weapon_volleys)
 	await _wait(1.0)
 	_check(stub.weapon_volleys > v0, "auto-fire đang bắn")
 	# 4) khiên đỡ trước, mất mạng sau
@@ -232,8 +232,8 @@ func _test_one_boss(id: String) -> void:
 	if boss.tele_active:
 		_check(boss.tele_dur >= 0.6 - 0.0001, "%s: telegraph >= 0.6s (thực tế %.2fs)" % [id, boss.tele_dur])
 		# HARD RULE: KHÔNG đạn nào sinh ra trong lúc telegraph (lấy mẫu mỗi frame)
-		var before := stub.boss_bullets
-		var max_during := before
+		var before: int = stub.boss_bullets
+		var max_during: int = before
 		var t0 := sim_t
 		while boss.tele_active and sim_t - t0 < 6.0:
 			await get_tree().physics_frame

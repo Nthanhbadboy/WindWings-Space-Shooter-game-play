@@ -3,7 +3,6 @@ extends CanvasLayer
 ## vỏ HP 62,92 270×30 skewX−12°; 5 ô năng lượng skew −26°; coin 444,84;
 ## pause 640,86 60×60; đếm địch phải-20 y176) + thanh boss + nút bom.
 
-const U := Balance.UI
 
 var run: Node = null
 var root: Control
@@ -38,19 +37,19 @@ func attach_run(r: Node) -> void:
 
 func _build_top() -> void:
 	# dải HUD trên: gradient đêm xanh + viền cyan
-	var top := ThemeWW.grad_rect(U["hud_top"], U["hud_bottom"])
+	var top := ThemeWW.grad_rect(Balance.UI["hud_top"], Balance.UI["hud_bottom"])
 	top.position = Vector2.ZERO
 	top.size = Vector2(Balance.VIEW.x, 149)
 	root.add_child(top)
 	var rim := ColorRect.new()
-	rim.color = U["rim_cyan"]
+	rim.color = Balance.UI["rim_cyan"]
 	rim.position = Vector2(0, 149)
 	rim.size = Vector2(Balance.VIEW.x, 3)
 	rim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(rim)
 	# portrait: khung tròn + ảnh tàu hiện tại
-	var pp: Vector2 = U["portrait_pos"]
-	var ps: Vector2 = U["portrait_size"]
+	var pp: Vector2 = Balance.UI["portrait_pos"]
+	var ps: Vector2 = Balance.UI["portrait_size"]
 	var frame := TextureRect.new()
 	if ResourceLoader.exists("res://assets/ui/ring_porthole.png"):
 		frame.texture = load("res://assets/ui/ring_porthole.png")
@@ -73,40 +72,40 @@ func _build_top() -> void:
 	# HP: vỏ nghiêng 270×30 @62,92
 	hp_bar = Control.new()
 	hp_bar.set_script(preload("res://scripts/ui/SlantedBar.gd"))
-	hp_bar.position = U["hp_pos"]
-	hp_bar.size = U["hp_size"]
+	hp_bar.position = Balance.UI["hp_pos"]
+	hp_bar.size = Balance.UI["hp_size"]
 	root.add_child(hp_bar)
 	# 5 ô năng lượng (khiên) skew −26°
 	for i in 5:
 		var c := Control.new()
 		c.set_script(preload("res://scripts/ui/SlantedBar.gd"))
-		c.skew = float(U["energy_skew"])
-		c.fill_a = U["energy_a"]
-		c.fill_b = U["energy_c"]
+		c.skew = float(Balance.UI["energy_skew"])
+		c.fill_a = Balance.UI["energy_a"]
+		c.fill_b = Balance.UI["energy_c"]
 		c.position = Vector2(64.0 + float(i) * 50.0, 126.0)
 		c.size = Vector2(44, 15)
 		c.call("set_ratio", 0.0)
 		root.add_child(c)
 		energy_cells.append(c)
 	# coin
-	coin_lbl = ThemeWW.label("0", 28, U["gold_a"], true)
-	coin_lbl.position = U["coin_pos"] + Vector2(46, 4)
+	coin_lbl = ThemeWW.label("0", 28, Balance.UI["gold_a"], true)
+	coin_lbl.position = Balance.UI["coin_pos"] + Vector2(46, 4)
 	root.add_child(coin_lbl)
-	root.add_child(_fixed_icon("res://assets/icons/ic_coin.png", U["coin_pos"], 40))
+	root.add_child(_fixed_icon("res://assets/icons/ic_coin.png", Balance.UI["coin_pos"], 40))
 	# điểm + combo (giữa)
 	score_lbl = ThemeWW.label("0", 40, Color.WHITE, true)
 	score_lbl.position = Vector2(Balance.VIEW.x * 0.5 - 120, 6)
 	score_lbl.custom_minimum_size = Vector2(240, 0)
 	score_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root.add_child(score_lbl)
-	combo_lbl = ThemeWW.label("", 24, U["gold_b"], true)
+	combo_lbl = ThemeWW.label("", 24, Balance.UI["gold_b"], true)
 	combo_lbl.position = Vector2(Balance.VIEW.x * 0.5 - 120, 50)
 	combo_lbl.custom_minimum_size = Vector2(240, 0)
 	combo_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root.add_child(combo_lbl)
 	# nút pause 60×60 @640,86
-	var pb := ThemeWW.icon_button("res://assets/icons/ic_pause.png", float(U["pause_size"]), "dark")
-	pb.position = U["pause_pos"]
+	var pb := ThemeWW.icon_button("res://assets/icons/ic_pause.png", float(Balance.UI["pause_size"]), "dark")
+	pb.position = Balance.UI["pause_pos"]
 	pb.mouse_filter = Control.MOUSE_FILTER_STOP
 	pb.pressed.connect(func(): run.toggle_pause())
 	root.add_child(pb)
@@ -138,23 +137,23 @@ func _build_boss_bar() -> void:
 	for i in 3:
 		var pip := ColorRect.new()
 		pip.custom_minimum_size = Vector2(34, 6)
-		pip.color = U["rim_cyan"]
+		pip.color = Balance.UI["rim_cyan"]
 		pip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		boss_pips.add_child(pip)
 
 func _build_bottom() -> void:
 	# đếm địch còn lại (phải, y176) — icon skull + số
-	var skull := _fixed_icon("res://assets/icons/ic_skull.png", Vector2(Balance.VIEW.x - 92, float(U["enemy_count_y"])), 34)
+	var skull := _fixed_icon("res://assets/icons/ic_skull.png", Vector2(Balance.VIEW.x - 92, float(Balance.UI["enemy_count_y"])), 34)
 	root.add_child(skull)
 	enemy_lbl = ThemeWW.label("0", 26, Color("#ffd0d8"), true)
-	enemy_lbl.position = Vector2(Balance.VIEW.x - 54, float(U["enemy_count_y"]) + 2)
+	enemy_lbl.position = Vector2(Balance.VIEW.x - 54, float(Balance.UI["enemy_count_y"]) + 2)
 	root.add_child(enemy_lbl)
 	# mạng: tàu nhỏ góc trái dưới HUD
 	lives_box = HBoxContainer.new()
 	lives_box.position = Vector2(18, 1180)
 	root.add_child(lives_box)
 	# cấp súng
-	weapon_lbl = ThemeWW.label("LV1", 24, U["rim_cyan"], true)
+	weapon_lbl = ThemeWW.label("LV1", 24, Balance.UI["rim_cyan"], true)
 	weapon_lbl.position = Vector2(18, 1226)
 	root.add_child(weapon_lbl)
 	# nút bom góc phải dưới
@@ -164,7 +163,7 @@ func _build_bottom() -> void:
 	bomb_btn.modulate = Color(1.0, 0.55, 0.45)
 	bomb_btn.pressed.connect(func(): run.use_bomb())
 	root.add_child(bomb_btn)
-	bomb_lbl = ThemeWW.label("×0", 24, U["gold_a"], true)
+	bomb_lbl = ThemeWW.label("×0", 24, Balance.UI["gold_a"], true)
 	bomb_lbl.position = Vector2(Balance.VIEW.x - 46, 1216)
 	root.add_child(bomb_lbl)
 
@@ -187,9 +186,9 @@ func _process(_delta: float) -> void:
 		boss_bar.call("set_ratio", clampf(run.boss.hp / run.boss.max_hp, 0.0, 1.0) if run.boss != null else 0.0)
 		var kids := boss_pips.get_children()
 		for i in kids.size():
-			var c: Color = U["rim_cyan"]
+			var c: Color = Balance.UI["rim_cyan"]
 			if run.boss != null:
-				c = U["red"] if i + 1 <= (3 - run.boss.phase) else U["rim_cyan"]
+				c = Balance.UI["red"] if i + 1 <= (3 - run.boss.phase) else Balance.UI["rim_cyan"]
 			kids[i].color = c
 
 func set_lives(n: int) -> void:
@@ -224,7 +223,7 @@ func set_score(s: int, combo: int) -> void:
 
 func set_wave(i: int, total: int) -> void:
 	if wave_lbl == null:
-		wave_lbl = ThemeWW.label("", 22, U["text_dim"], true)
+		wave_lbl = ThemeWW.label("", 22, Balance.UI["text_dim"], true)
 		wave_lbl.position = Vector2(Balance.VIEW.x * 0.5 - 120, 156)
 		wave_lbl.custom_minimum_size = Vector2(240, 0)
 		wave_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

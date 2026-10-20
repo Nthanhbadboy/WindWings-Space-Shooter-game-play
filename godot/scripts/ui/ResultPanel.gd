@@ -2,7 +2,6 @@ extends CanvasLayer
 ## ResultPanel.gd — bảng kết quả trận: sao hiện LẦN LƯỢT (delta-timer, không
 ## await), tiền/thưởng/điểm đếm dồn, nút màn tiếp / chơi lại / bản đồ.
 
-const U := Balance.UI
 
 var run: Node = null
 var dim: ColorRect
@@ -41,19 +40,19 @@ func attach_run(r: Node) -> void:
 	col = box.get_child(0)
 	col.add_theme_constant_override("separation", 16)
 	col.alignment = BoxContainer.ALIGNMENT_CENTER
-	title_lbl = ThemeWW.label("", 56, U["gold_a"], true)
+	title_lbl = ThemeWW.label("", 56, Balance.UI["gold_a"], true)
 	title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(title_lbl)
 	stars_box = HBoxContainer.new()
 	stars_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	col.add_child(stars_box)
-	reward_lbl = ThemeWW.label("", 34, U["gold_a"], true)
+	reward_lbl = ThemeWW.label("", 34, Balance.UI["gold_a"], true)
 	reward_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(reward_lbl)
 	score_lbl = ThemeWW.label("", 28, Color.WHITE, true)
 	score_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(score_lbl)
-	extra_lbl = ThemeWW.label("", 22, U["text_dim"])
+	extra_lbl = ThemeWW.label("", 22, Balance.UI["text_dim"])
 	extra_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(extra_lbl)
 	buttons = HBoxContainer.new()
@@ -74,11 +73,11 @@ func show_result(is_win: bool, r: Dictionary) -> void:
 	_clear_children(stars_box)
 	_clear_children(buttons)
 	title_lbl.text = "CHIẾN THẮNG!" if win else "THẤT BẠI"
-	title_lbl.add_theme_color_override("font_color", U["gold_a"] if win else U["red"])
+	title_lbl.add_theme_color_override("font_color", Balance.UI["gold_a"] if win else Balance.UI["red"])
 	if win:
 		for i in 3:
 			var t := ThemeWW.icon("res://assets/icons/ic_star.png", 92)
-			t.modulate = U["star_off"]
+			t.modulate = Balance.UI["star_off"]
 			stars_box.add_child(t)
 	reward_lbl.text = "+0"
 	score_lbl.text = "ĐIỂM 0"
@@ -115,7 +114,7 @@ func _process(delta: float) -> void:
 		if reveal_t >= 0.45:
 			reveal_t = 0.0
 			var star: TextureRect = stars_box.get_child(revealed)
-			star.modulate = U["star"]
+			star.modulate = Balance.UI["star"]
 			revealed += 1
 			Sfx.play("star")
 			if run != null:
