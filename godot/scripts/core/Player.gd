@@ -29,6 +29,8 @@ var fire_t := 0.0
 var tilt := 0.0
 var run: Node = null                 # RunScene cha (spawn đạn qua run)
 
+const FLAME_BASE := 24
+
 var sprite: Sprite2D
 var flame: CPUParticles2D
 var hitbox_debug: Node2D
@@ -147,7 +149,10 @@ func _physics_process(delta: float) -> void:
 	var vx := (position.x - prev.x) / maxf(delta, 0.0001)
 	tilt = clampf(vx * 0.00035, -0.35, 0.35)
 	rotation = lerpf(rotation, tilt, 1.0 - exp(-12.0 * delta))
-	flame.amount_ratio = clampf(0.4 + absf(vx) / 500.0, 0.4, 1.0)
+	# CPUParticles2D không có amount_ratio → chỉnh amount (chỉ khi đổi số)
+	var want := int(FLAME_BASE * clampf(0.4 + absf(vx) / 500.0, 0.4, 1.0))
+	if flame.amount != want:
+		flame.amount = want
 	# nháy invuln
 	if invuln_t > 0.0:
 		invuln_t -= delta

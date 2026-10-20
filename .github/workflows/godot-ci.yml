@@ -78,7 +78,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          BODY=$( { echo "## godot-ci thất bại — ${{ github.sha }}"; echo; echo '### smoke.log (đuôi)'; echo '```'; tail -120 /tmp/smoke.log 2>/dev/null || echo '(không có smoke.log)'; echo '```'; echo '### import.log (đuôi)'; echo '```'; grep -A2 'SCRIPT ERROR\|Parse Error\|Compile Error\|Failed to load' /tmp/import.log 2>/dev/null | head -120; echo '```'; } )
+          BODY=$( { echo "## godot-ci thất bại — ${{ github.sha }}"; echo; echo '### [SMOKE][FAIL] lines'; echo '```'; grep "\[SMOKE\]\[FAIL\]" /tmp/smoke.log 2>/dev/null | head -40; grep "\[SMOKE\] checks=" /tmp/smoke.log 2>/dev/null; echo '```'; echo '### SCRIPT ERROR (unique)'; echo '```'; grep -A1 "SCRIPT ERROR" /tmp/smoke.log 2>/dev/null | sort | uniq -c | sort -rn | head -30; echo '```'; echo '### smoke.log (đuôi)'; echo '```'; grep -v "amount_ratio" /tmp/smoke.log 2>/dev/null | tail -60 || echo '(không có smoke.log)'; echo '```'; echo '### import.log (đuôi)'; echo '```'; grep -A2 'SCRIPT ERROR\|Parse Error\|Compile Error\|Failed to load' /tmp/import.log 2>/dev/null | head -120; echo '```'; } )
           curl -sf -X POST -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/issues" \
             -d "$(jq -n --arg t "[godot-ci FAIL] ${{ github.ref_name }} @ ${GITHUB_SHA:0:7}" --arg b "$BODY" '{title:$t, body:$b, labels:["ci-diagnostic"]}')" || true

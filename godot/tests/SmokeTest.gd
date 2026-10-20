@@ -237,7 +237,8 @@ func _test_one_boss(id: String) -> void:
 		var t0 := sim_t
 		while boss.tele_active and sim_t - t0 < 6.0:
 			await get_tree().physics_frame
-			max_during = maxi(max_during, stub.boss_bullets)
+			if boss.tele_active:   # chỉ lấy mẫu KHI còn telegraph (frame bắn ra đạn không tính)
+				max_during = maxi(max_during, stub.boss_bullets)
 		_check(max_during == before, "%s: HARD RULE — 0 đạn trong telegraph" % id)
 		_check(boss.bullets_during_telegraph == 0, "%s: bộ đếm nội bộ bullets_during_telegraph = 0" % id)
 		_check(not boss.tele_active, "%s: telegraph kết thúc và bắn/thả đòn" % id)
