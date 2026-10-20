@@ -1,0 +1,150 @@
+name: godot-ci
+
+# CI cho dự án Godot 4 (godot/):
+#  1) smoke  : tải Godot 4.3 headless trên runner → import → chạy SmokeTest
+#              (60 màn, parallax 3 lớp, điều khiển mới, 6 boss + HARD RULE
+#              telegraph, save roundtrip) → export Web → deploy GitHub Pages.
+#  2) android: chỉ khi tag v* → xuất APK debug (keystore sinh bằng keytool).
+# Sandbox không đọc được log run → mọi bước thất bại đều tự đăng issue chẩn đoán.
+
+on:
+  push:
+    branches:
+      - arena/287e43b4-windwings-space-shooter-game-p
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: godot-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: "4.3"
+  GODOT_BIN: /tmp/godot/Godot_v4.3-stable_linux.x86_64
+
+jobs:
+  smoke-and-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Godot 4.3 + export templates
+        run: |
+          mkdir -p /tmp/godot && cd /tmp/godot
+          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip" -O godot.zip
+          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz" -O templates.tpz
+          unzip -q godot.zip
+          mkdir -p /tmp/tpl && unzip -q templates.tpz -d /tmp/tpl
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mv /tmp/tpl/templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+          chmod +x "$GODOT_BIN"
+          "$GODOT_BIN" --version
+
+      - name: Import project
+        run: cd "$GITHUB_WORKSPACE/godot" && "$GODOT_BIN" --headless --import . > /tmp/import.log 2>&1 || true; tail -25 /tmp/import.log
+
+      - name: Run smoke tests (headless)
+        run: |
+          cd "$GITHUB_WORKSPACE/godot"
+          "$GODOT_BIN" --headless --path . res://tests/TestMain.tscn 2>&1 | tee /tmp/smoke.log
+          exit "${PIPESTATUS[0]}"
+
+      - name: Export Web (no threads — chạy trên Pages thường)
+        run: |
+          cd "$GITHUB_WORKSPACE/godot"
+          mkdir -p build/web
+          "$GODOT_BIN" --headless --path . --export-release "Web" build/web/index.html 2>&1 | tail -20
+          test -f build/web/index.html && test -f build/web/index.wasm && test -f build/web/index.pck
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: godot/build/web
+
+      - name: Diagnose failure → repo issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BODY=$( { echo "## godot-ci thất bại — ${{ github.sha }}"; echo; echo '### smoke.log (đuôi)'; echo '```'; tail -60 /tmp/smoke.log 2>/dev/null || echo '(không có smoke.log)'; echo '```'; echo '### import.log (đuôi)'; echo '```'; tail -30 /tmp/import.log 2>/dev/null; echo '```'; } )
+          curl -sf -X POST -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/issues" \
+            -d "$(jq -n --arg t "[godot-ci FAIL] ${{ github.ref_name }} @ ${GITHUB_SHA:0:7}" --arg b "$BODY" '{title:$t, body:$b, labels:["ci-diagnostic"]}')" || true
+
+  deploy-pages:
+    needs: smoke-and-web
+    if: github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  android:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Godot 4.3 + export templates
+        run: |
+          mkdir -p /tmp/godot && cd /tmp/godot
+          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip" -O godot.zip
+          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz" -O templates.tpz
+          unzip -q godot.zip
+          mkdir -p /tmp/tpl && unzip -q templates.tpz -d /tmp/tpl
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mv /tmp/tpl/templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+          chmod +x "$GODOT_BIN"
+
+      - name: Generate debug keystore + wire editor settings
+        run: |
+          keytool -genkeypair -v -keystore /tmp/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          mkdir -p ~/.config/godot
+          printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nexport/android/android_sdk_path = "/usr/local/lib/android/sdk"\n' > ~/.config/godot/editor_settings-4.3.tres
+          cd "$GITHUB_WORKSPACE/godot"
+          sed -i 's|keystore/debug=""|keystore/debug="/tmp/debug.keystore"|; s|keystore/debug_user=""|keystore/debug_user="androiddebugkey"|; s|keystore/debug_password=""|keystore/debug_password="android"|' export_presets.cfg
+          grep -n 'keystore/debug' export_presets.cfg
+
+      - name: Import + export Android APK
+        run: |
+          cd "$GITHUB_WORKSPACE/godot"
+          "$GODOT_BIN" --headless --import . > /tmp/import_android.log 2>&1 || true
+          mkdir -p build
+          "$GODOT_BIN" --headless --path . --export-debug "Android" build/WindWings-Galaxy-Ace.apk 2>&1 | tee /tmp/android.log | tail -25
+          exit "${PIPESTATUS[0]}"
+
+      - name: Verify APK
+        run: |
+          cd "$GITHUB_WORKSPACE/godot"
+          ls -la build/
+          test -s build/WindWings-Galaxy-Ace.apk
+          du -h build/WindWings-Galaxy-Ace.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WindWings-Galaxy-Ace-APK
+          path: godot/build/WindWings-Galaxy-Ace.apk
+          retention-days: 30
+
+      - name: Diagnose failure → repo issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BODY=$( { echo "## godot-ci ANDROID thất bại — ${{ github.sha }}"; echo; echo '```'; tail -60 /tmp/android.log 2>/dev/null; echo '```'; echo '```'; tail -30 /tmp/import_android.log 2>/dev/null; echo '```'; } )
+          curl -sf -X POST -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/issues" \
+            -d "$(jq -n --arg t "[godot-ci APK FAIL] ${{ github.ref_name }}" --arg b "$BODY" '{title:$t, body:$b, labels:["ci-diagnostic"]}')" || true
