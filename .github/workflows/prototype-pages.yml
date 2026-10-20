@@ -1,0 +1,82 @@
+name: Deploy 3D prototype to GitHub Pages
+
+# Chỉ chạy khi Pages đã được bật trong Settings → Pages → Source: GitHub Actions.
+# Nếu chưa bật, job "check" sẽ bỏ qua toàn bộ (không báo lỗi đỏ).
+
+on:
+  push:
+    branches:
+      - arena/287e43b4-windwings-space-shooter-game-p
+    paths:
+      - 'prototype/**'
+      - 'assets_samples/**'
+      - '.github/workflows/prototype-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-prototype
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.pages.outputs.enabled }}
+    steps:
+      - id: pages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "$GITHUB_API_URL/repos/${{ github.repository }}/pages" || echo 000)
+          echo "GET /pages -> $code"
+          if [ "$code" = "200" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::GitHub Pages chưa được bật. Vào Settings → Pages → Source: GitHub Actions, sau đó chạy lại workflow."
+          fi
+
+  build:
+    needs: check
+    if: needs.check.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: prototype/package-lock.json
+
+      - name: Install deps
+        working-directory: prototype
+        run: npm ci
+
+      - name: Build
+        working-directory: prototype
+        run: npx vite build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: prototype/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

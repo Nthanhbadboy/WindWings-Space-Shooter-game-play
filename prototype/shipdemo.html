@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#04060f" />
+  <title>Thử tàu cánh dơi — 2D giả 3D</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%23080f26'/><path d='M32 8l9 20 15 3-15 8-9 17-9-17-15-8 15-3z' fill='%23693fd0' stroke='%23d9c2ff' stroke-width='2'/></svg>" />
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: radial-gradient(90% 60% at 50% 0%, #0b1230, #03060f 70%);
+      color: #dbe9ff; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      padding: 12px 12px calc(18px + env(safe-area-inset-bottom));
+    }
+    header { text-align: center; }
+    h1 { font-size: 15px; letter-spacing: 0.14em; margin: 0; color: #9fd8ff; font-weight: 900; }
+    h1 em { color: #c78bff; font-style: normal; }
+    header p { margin: 3px 0 0; font-size: 10px; letter-spacing: 0.1em; color: #7c95b8; }
+
+    .stage {
+      position: relative; display: block; width: min(100%, 440px); height: auto;
+      aspect-ratio: 4 / 5; border-radius: 14px;
+      overflow: hidden; border: 1px solid rgba(120, 180, 255, 0.25);
+      background: #060b1c;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55), inset 0 0 40px rgba(10, 20, 50, 0.9);
+      touch-action: manipulation; cursor: pointer;
+    }
+    /* trình duyệt quá cũ không hiểu aspect-ratio thì vẫn có chiều cao */
+    @supports not (aspect-ratio: 4 / 5) { .stage { height: 550px; } }
+    canvas { display: block; width: 100%; height: 100%; }
+    .hud { position: absolute; inset: 8px 10px auto; display: flex; justify-content: space-between; gap: 6px; pointer-events: none; }
+    .pill {
+      font-size: 9.5px; font-weight: 900; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 20px;
+      background: rgba(6, 14, 34, 0.82); border: 1px solid rgba(120, 200, 255, 0.3); color: #9fe0ff;
+      white-space: nowrap;
+    }
+    .pill b { color: #ffd166; }
+    .dbg {
+      position: absolute; left: 10px; bottom: 8px; font-size: 9px; letter-spacing: 0.04em;
+      color: rgba(160, 200, 240, 0.55); pointer-events: none; font-variant-numeric: tabular-nums;
+    }
+    .hint {
+      position: absolute; left: 0; right: 0; bottom: 8px; text-align: center;
+      font-size: 10px; color: rgba(170, 205, 240, 0.5); pointer-events: none;
+    }
+    #errBox {
+      position: absolute; left: 10px; right: 10px; top: 40px; z-index: 5;
+      padding: 8px 10px; border-radius: 8px; font-size: 10.5px; line-height: 1.35;
+      background: rgba(70, 8, 20, 0.92); border: 1px solid #ff7a90; color: #ffd9e0;
+      white-space: pre-wrap; word-break: break-word; pointer-events: none;
+    }
+    .hidden { display: none; }
+
+    .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: min(100%, 440px); }
+    .tab {
+      padding: 9px 4px; border-radius: 10px; border: 1px solid rgba(120, 200, 255, 0.28);
+      background: linear-gradient(#0e1a36, #080f22); color: #9fb8d6;
+      font-size: 10px; font-weight: 900; letter-spacing: 0.03em; font-family: inherit;
+    }
+    .tab.on { border-color: #7ef0d0; color: #e6fff8; box-shadow: 0 0 14px rgba(90, 250, 210, 0.22); background: linear-gradient(#123a35, #0a1f1d); }
+    button:disabled { opacity: 0.35; }
+
+    .controls { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; width: min(100%, 440px); }
+    button {
+      padding: 10px 4px; border-radius: 9px; border: 1px solid rgba(120, 200, 255, 0.35);
+      background: linear-gradient(#111f42, #0a1430); color: #d9ecff;
+      font-size: 10.5px; font-weight: 900; letter-spacing: 0.04em; font-family: inherit;
+    }
+    button:active { transform: translateY(1px); }
+    button.on { border-color: #ffd166; color: #ffe9b0; box-shadow: 0 0 12px rgba(255, 209, 102, 0.28); }
+    button.fire { grid-column: span 3; background: linear-gradient(#41206e, #241041); border-color: #a678ff; color: #f0e0ff; font-size: 12px; }
+    button.art { grid-column: span 1; font-size: 9.5px; }
+
+    .row { display: flex; align-items: center; gap: 10px; width: min(100%, 440px); font-size: 10.5px; color: #8fb4d8; }
+    .row input { flex: 1; accent-color: #a678ff; }
+    .notes {
+      width: min(100%, 440px); display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px;
+      font-size: 10.5px; line-height: 1.45; color: #8ba6c6;
+    }
+    .notes b { color: #cfe6ff; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>THỬ TÀU <em>CÁNH DƠI</em></h1>
+    <p>2D · BỘ PHẬN RỜI · GIẢ 3D BẰNG MÀU</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab on" data-ship="omen">1 · CÁNH DƠI</button>
+    <button class="tab" data-ship="biomech">2 · SINH CƠ</button>
+    <button class="tab" data-ship="vertebra">3 · XƯƠNG SỐNG</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <canvas id="cv"></canvas>
+    <div class="hud">
+      <span class="pill" id="modePill">CHẾ ĐỘ <b>TỰ ĐỘNG</b></span>
+      <span class="pill" id="stagePill">THỞ</span>
+    </div>
+    <div class="dbg" id="dbgPill">đang khởi động…</div>
+    <div class="hint">chạm vào khung để bắn</div>
+    <div id="errBox" class="hidden"></div>
+  </div>
+
+  <div class="controls">
+    <button id="btnAuto" class="on">TỰ BẮN</button>
+    <button id="btnBones">XƯƠNG</button>
+    <button id="btnSlow">CHẬM</button>
+    <button id="btnPause">DỪNG</button>
+    <button id="btnFire" class="fire">BẮN LASER</button>
+    <button id="btnArt" class="art on">ẢNH</button>
+  </div>
+
+  <div class="row">
+    <span>TỐC ĐỘ</span>
+    <input id="speed" type="range" min="20" max="150" value="100" />
+    <b id="speedVal">1.0×</b>
+  </div>
+
+  <div class="notes">
+    <span><b>Cánh dơi</b> chụm về mũi khi gồng</span>
+    <span><b>Lửa</b> 3 hình · 15 hình/giây</span>
+    <span><b>Omen</b> bắn từ quả cầu trước mũi</span>
+    <span><b>Sinh cơ</b> nòng thò ra dưới cánh</span>
+    <span><b>Thân</b> rãnh sống mũi / giáp lưng mở</span>
+    <span><b>2D phẳng</b> · khối sáng bằng màu</span>
+  </div>
+
+  <script type="module">
+    import { drawScene, firePhase, idlePhase, FIRE_TOTAL, SHIPS } from './src/shipdemo/core.js';
+    import { SHIP_PARTS } from './src/shipdemo/parts.js';
+
+    const cv = document.getElementById('cv');
+    const ctx = cv.getContext('2d');
+    const errBox = document.getElementById('errBox');
+    const dbgPill = document.getElementById('dbgPill');
+    const stagePill = document.getElementById('stagePill');
+    const modePill = document.getElementById('modePill');
+
+    const showError = (msg) => {
+      errBox.classList.remove('hidden');
+      errBox.textContent = String(msg).slice(0, 600);
+    };
+    window.addEventListener('error', (e) => showError('LỖI: ' + (e.message || e.error)));
+    window.addEventListener('unhandledrejection', (e) => showError('LỖI TẢI: ' + (e.reason?.message || e.reason)));
+
+    // ------------------------------------------------ ảnh tách rời (tuỳ chọn)
+    // Trang KHÔNG chờ ảnh: vòng vẽ chạy ngay bằng tàu vector, ảnh về sau thì đổi sang.
+    const imgs = {};
+    let loaded = 0;
+    let imgFailed = 0;
+
+    const loadOne = (key, src) => new Promise((resolve) => {
+      const im = new Image();
+      let done = false;
+      const finish = (ok) => {
+        if (done) return;
+        done = true;
+        if (ok && im.naturalWidth > 0 && im.naturalHeight > 0) {
+          imgs[key] = im;
+          loaded += 1;
+        } else {
+          imgFailed += 1;
+        }
+        resolve();
+      };
+      // ảnh treo cũng không được chặn hoạt cảnh
+      const timer = setTimeout(() => finish(false), 7000);
+      im.onload = async () => {
+        try { if (im.decode) await im.decode(); } catch {}
+        clearTimeout(timer);
+        finish(true);
+      };
+      im.onerror = () => { clearTimeout(timer); finish(false); };
+      im.src = src;
+    });
+
+    const allParts = Object.entries(SHIP_PARTS);
+    Promise.all(allParts.map(([k, src]) => loadOne(k, src))).then(() => {
+      if (imgFailed) showError(`Thiếu ${imgFailed}/${allParts.length} ảnh → đang vẽ tàu vector.\n(Ảnh lỗi vẫn hiện tàu, không mất hình.)`);
+      refreshDbg();
+    });
+
+    // ------------------------------------------------ trạng thái
+    const state = {
+      auto: true, bones: false, paused: false, slow: false, speed: 1,
+      t: 0, fireStart: null, art: true, failedOnce: false, ship: 'omen',
+    };
+
+    // ------------------------------------------------ khung vẽ
+    let size = { W: 0, H: 0 };
+    function syncCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      let w = Math.round(cv.clientWidth);
+      let h = Math.round(cv.clientHeight);
+      if (!w || !h) {
+        const r = cv.getBoundingClientRect();
+        w = Math.round(r.width) || 320;
+        h = Math.round(r.height) || 400;
+      }
+      // CSS hỏng (khung cao/lùn bất thường) vẫn phải thấy tàu trong màn hình
+      if (h > w * 2.2) h = Math.round(w * 1.25);
+      if (w > h * 2.2) w = Math.round(h * 1.25);
+      const bw = Math.max(1, Math.round(w * dpr));
+      const bh = Math.max(1, Math.round(h * dpr));
+      if (cv.width !== bw || cv.height !== bh) {
+        cv.width = bw;
+        cv.height = bh;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      size = { W: w, H: h, dpr };
+      return size;
+    }
+    syncCanvas();
+    window.addEventListener('resize', syncCanvas);
+    window.addEventListener('orientationchange', syncCanvas);
+
+    const startFire = () => {
+      if (state.paused) return;
+      if (state.fireStart == null) state.fireStart = state.t;
+    };
+
+    const btn = (id) => document.getElementById(id);
+    btn('btnAuto').addEventListener('click', (e) => {
+      state.auto = !state.auto;
+      e.currentTarget.classList.toggle('on', state.auto);
+      modePill.innerHTML = `CHẾ ĐỘ <b>${state.auto ? 'TỰ ĐỘNG' : 'BẤM TAY'}</b>`;
+    });
+    btn('btnBones').addEventListener('click', (e) => {
+      state.bones = !state.bones;
+      e.currentTarget.classList.toggle('on', state.bones);
+    });
+    btn('btnSlow').addEventListener('click', (e) => {
+      state.slow = !state.slow;
+      e.currentTarget.classList.toggle('on', state.slow);
+    });
+    btn('btnPause').addEventListener('click', (e) => {
+      state.paused = !state.paused;
+      e.currentTarget.textContent = state.paused ? 'CHẠY' : 'DỪNG';
+      e.currentTarget.classList.toggle('on', state.paused);
+    });
+    btn('btnFire').addEventListener('click', startFire);
+    const shipById = (id) => SHIPS.find((s) => s.id === id) || SHIPS[0];
+    const syncArtButton = () => {
+      const usesArt = shipById(state.ship).usesArt !== false;
+      btn('btnArt').disabled = !usesArt;
+      btn('btnArt').classList.toggle('on', usesArt && state.art);
+      btn('btnArt').textContent = usesArt ? (state.art ? 'ẢNH' : 'VẼ') : 'VẼ';
+    };
+    for (const tab of document.querySelectorAll('.tab')) {
+      tab.addEventListener('click', () => {
+        state.ship = tab.dataset.ship;
+        for (const t of document.querySelectorAll('.tab')) t.classList.toggle('on', t === tab);
+        syncArtButton();
+        refreshDbg();
+      });
+    }
+
+    btn('btnArt').addEventListener('click', (e) => {
+      state.art = !state.art;
+      e.currentTarget.classList.toggle('on', state.art);
+      e.currentTarget.textContent = state.art ? 'ẢNH' : 'VẼ';
+      refreshDbg();
+    });
+    document.getElementById('stage').addEventListener('pointerdown', startFire);
+    document.getElementById('speed').addEventListener('input', (e) => {
+      state.speed = Number(e.target.value) / 100;
+      document.getElementById('speedVal').textContent = `${state.speed.toFixed(1)}×`;
+    });
+
+    const STAGE_LABEL = { idle: 'THỞ', windup: 'GỒNG CÁNH', fire: 'BẮN LASER', recover: 'HỒI' };
+
+    function refreshDbg() {
+      const ship = shipById(state.ship);
+      const mode = ship.usesArt === false ? 'VẼ' : (!state.art ? 'VẼ' : `ẢNH ${loaded}/${allParts.length}`);
+      dbgPill.textContent = `${ship.label} · ${mode} · ${size.W}×${size.H}${state.failedOnce ? ' · ĐÃ LỖI' : ''}`;
+    }
+
+    let last = performance.now();
+    let autoCooldown = 0;
+    let lastLabel = '';
+    let dbgTick = 0;
+
+    function frame(now) {
+      // hẹn khung kế TRƯỚC khi vẽ: lỗi một khung không làm chết hoạt cảnh
+      requestAnimationFrame(frame);
+
+      const raw = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      const dt = state.paused ? 0 : raw * (state.slow ? 0.28 : 1) * state.speed;
+      state.t += dt;
+
+      // tự bắn: nghỉ ~1,1 s giữa hai phát
+      if (state.auto && !state.paused && state.fireStart == null) {
+        autoCooldown -= dt;
+        if (autoCooldown <= 0) {
+          state.fireStart = state.t;
+          autoCooldown = 1.1;
+        }
+      }
+
+      let phase = idlePhase();
+      if (state.fireStart != null) {
+        const elapsed = state.t - state.fireStart;
+        if (elapsed > FIRE_TOTAL) {
+          state.fireStart = null;
+          autoCooldown = Math.max(autoCooldown, 0.9);
+        } else {
+          phase = firePhase(elapsed);
+        }
+      }
+
+      syncCanvas();
+      const ship = shipById(state.ship);
+      const useArt = ship.usesArt !== false && state.art && loaded === allParts.length;
+
+      try {
+        drawScene(ctx, size.W, size.H, state.t, useArt ? imgs : {}, {
+          phase, skeleton: state.bones, art: useArt, ship,
+        });
+      } catch (err) {
+        // một lần lỗi là đủ: tắt lớp ảnh, chuyển hẳn sang vector
+        state.art = false;
+        state.failedOnce = true;
+        btn('btnArt').classList.remove('on');
+        btn('btnArt').textContent = 'VẼ';
+        showError('LỖI VẼ — đã chuyển sang tàu vector.\n' + (err && err.message ? err.message : err));
+        try {
+          drawScene(ctx, size.W, size.H, state.t, {}, { phase, art: false, ship });
+        } catch (e2) {
+          showError('LỖI VẼ NGHIÊM TRỌNG:\n' + (e2 && e2.message ? e2.message : e2));
+        }
+      }
+
+      if (STAGE_LABEL[phase.stage] !== lastLabel) {
+        lastLabel = STAGE_LABEL[phase.stage];
+        stagePill.textContent = lastLabel;
+      }
+      if (++dbgTick % 20 === 0) refreshDbg();
+    }
+
+    syncArtButton();
+    refreshDbg();
+    requestAnimationFrame(frame);
+
+    // để kiểm tra nhanh từ console
+    window.__shipDemo = {
+      state, imgs, get size() { return size; },
+      get loaded() { return loaded; },
+    };
+  </script>
+</body>
+</html>

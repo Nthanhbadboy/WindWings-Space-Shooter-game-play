@@ -1,0 +1,24 @@
+{
+  "name": "windwings-3d-prototype",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Prototype galaxy shooter 3D (three.js) dùng bộ asset CC0 trong assets_samples/",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node tests/sim.mjs && node tests/ui.mjs && node tests/backdrop.mjs",
+    "dev:ship": "node tools/ship_dev.mjs",
+    "render:ship": "node tools/render_ship.mjs",
+    "dev:ship2d": "node tools/ship2d_dev.mjs",
+    "render:ship2d": "node tools/render_ship2d.mjs"
+  },
+  "dependencies": {
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.3",
+    "vite": "^8.3.4"
+  }
+}

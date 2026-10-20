@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Phòng thử UI — WindWings (HUD &amp; linh kiện)</title>
+  <link rel="stylesheet" href="./src/uikit.css" />
+</head>
+<body class="lab">
+  <header class="lab-bar">
+    <div>
+      <div class="lab-title">Phòng thử UI <span>WindWings</span></div>
+      <div class="lab-sub">Dựng lại từ ảnh chụp thật 720×1496 · kéo thanh trượt để chồng lên ảnh gốc</div>
+    </div>
+
+    <div class="lab-tabs" role="tablist" aria-label="Màn thử">
+      <button class="lab-tab" role="tab" data-view="hud" aria-selected="true">HUD trong trận</button>
+      <button class="lab-tab" role="tab" data-view="kit" aria-selected="false">Linh kiện</button>
+    </div>
+
+    <label class="lab-ctl">
+      Ảnh gốc
+      <input type="range" id="refRange" min="0" max="100" value="0" />
+      <b id="refVal">0%</b>
+    </label>
+    <button class="lab-btn" id="btnBlink" aria-pressed="false">Nháy</button>
+    <button class="lab-btn" id="btnGrid" aria-pressed="false">Lưới 40</button>
+    <span class="lab-hint">Ảnh gốc: <b>gp1.png</b> · toạ độ thiết kế = px trong khung 720</span>
+  </header>
+
+  <main class="stage-wrap">
+    <div class="stage-box" id="stageBox">
+    <div class="stage-outer" id="stageOuter">
+      <div class="stage" id="stage">
+        <img class="stage-ref" id="refShot" alt="Ảnh chụp thật để đối chiếu" />
+
+        <!-- ================= HUD TRONG TRẬN ================= -->
+        <section class="view" data-panel="hud">
+          <div class="ww-hud">
+            <div class="ww-hud-left">
+              <div class="ww-portrait"><span class="ww-portrait-in"><img id="portrait" alt="Chân dung tàu" /></span></div>
+
+              <div class="ww-hp">
+                <span class="ww-hp-in">
+                  <span class="ww-hp-fill" id="hpFill" style="width: 100%"></span>
+                  <span class="ww-hp-num" id="hpNum">2500</span>
+                </span>
+              </div>
+
+              <div class="ww-seg" id="segBar"></div>
+            </div>
+
+            <div class="ww-coin">
+              <img id="coinIco" alt="Xu" /><b>462</b>
+            </div>
+
+            <button class="ww-pause" aria-label="Tạm dừng"><span><i></i><i></i></span></button>
+
+            <div class="ww-enemy">
+              <b>110</b><img id="skullIco" alt="Còn lại" />
+            </div>
+
+            <div class="ww-skill" aria-hidden="true"></div>
+          </div>
+        </section>
+
+        <!-- ================= LINH KIỆN ================= -->
+        <section class="view" data-panel="kit" hidden>
+          <div class="gallery">
+            <div class="card">
+              <h3>Nút chính <small>CHƠI · cao 104 px · vàng cam, viền kép, bóng cứng</small></h3>
+              <button class="ww-cta">CHƠI</button>
+            </div>
+
+            <div class="card">
+              <h3>Hàng công nghệ <small>lục giác cấp · thanh vát · giá + nút cộng</small></h3>
+              <div class="ww-tech">
+                <div class="ww-hex">1</div>
+                <div class="ww-tech-name">Sức khỏe</div>
+                <div class="ww-tech-bar"><span class="in"><b></b><i></i></span></div>
+                <div class="ww-tech-cost"><img class="coin-mini" alt="" /><span>1.214</span></div>
+                <div class="ww-hex">1</div>
+                <div class="ww-tech-name">Súng thường</div>
+                <div class="ww-tech-bar"><span class="in"><i></i></span></div>
+                <div style="display: flex; gap: 12px; align-items: center; justify-content: flex-end">
+                  <div class="ww-tech-cost"><img class="coin-mini" alt="" /><span>0</span></div>
+                  <button class="ww-plus">↑</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Node bản đồ <small>đã xong = vàng lá · đang mở = vàng · đường nối cyan</small></h3>
+              <div class="ww-map">
+                <div class="ww-node done">2</div>
+                <div class="ww-link"></div>
+                <div class="ww-node now">3</div>
+                <div class="ww-link"></div>
+                <div class="ww-node">4</div>
+              </div>
+              <div class="ww-stars"><img class="star-mini" alt="" /><img class="star-mini" alt="" /><img class="star-mini" alt="" /></div>
+            </div>
+
+            <div class="card">
+              <h3>Ô tàu <small>khoang cắt góc 18 px · viền cyan 2 px</small></h3>
+              <div class="ww-shipcard"><div class="ww-shipcard-in"><img id="shipCard" alt="Tàu" /></div></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    </div>
+  </main>
+
+  <script type="module" src="./src/uikit.js"></script>
+</body>
+</html>

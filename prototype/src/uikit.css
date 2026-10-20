@@ -1,0 +1,364 @@
+/* =========================================================================
+   PHÒNG THỬ UI — dựng lại HUD/linh kiện WindWings từ ảnh chụp thật
+   Toạ độ thiết kế: khung 720×1496 (đúng độ phân giải máy chụp Huawei Mate 20 X).
+   Cả khung được scale bằng --k nên mọi số dưới đây là px thiết kế.
+   ========================================================================= */
+
+:root {
+  /* nền */
+  --u-navy-0: #050c1c;
+  --u-navy-1: #081630;
+  --u-navy-2: #0c2148;
+  --u-navy-3: #14305f;
+
+  /* viền / ánh */
+  --u-line: #245e9e;
+  --u-rim: #3fa9e8;
+  --u-rim-hi: #7fe0ff;
+
+  /* máu */
+  --u-hp-1: #cdea42;
+  --u-hp-2: #a5cd0d;
+  --u-hp-3: #7fa303;
+
+  /* năng lượng */
+  --u-sky-1: #8fdcff;
+  --u-sky-2: #3fa9ff;
+  --u-sky-3: #1d64c8;
+
+  /* tiền tệ */
+  --u-gold-1: #ffec7a;
+  --u-gold-2: #ffc21f;
+  --u-gold-3: #d68a00;
+
+  /* nhấn */
+  --u-green-1: #7df05a;
+  --u-green-2: #35c21a;
+  --u-green-3: #1c8a0c;
+  --u-cta-1: #ffe08a;
+  --u-cta-2: #ffb700;
+  --u-cta-3: #d97f00;
+  --u-red: #e23a2e;
+
+  --u-text: #f2f8ff;
+  --u-shadow: #050a18;
+}
+
+* { box-sizing: border-box; }
+
+body.lab {
+  margin: 0;
+  min-height: 100%;
+  background: #060b16 radial-gradient(120% 90% at 50% 0%, #12224a 0%, #070d1b 55%, #04070f 100%);
+  color: var(--u-text);
+  font-family: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------------------------------------------------------------- thanh trên */
+.lab-bar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px;
+  padding: 10px 16px;
+  background: linear-gradient(#0b1730, #071022);
+  border-bottom: 1px solid #1d3f74;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+.lab-title { font-size: 20px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; }
+.lab-title span { color: var(--u-rim-hi); }
+.lab-sub { font-size: 13px; color: #8fa8cc; }
+
+.lab-tabs { display: flex; gap: 6px; }
+.lab-tab {
+  height: 34px; padding: 0 16px;
+  font: 800 15px/32px var(--font, "Barlow Condensed", sans-serif); letter-spacing: 0.08em;
+  color: #b9cdea; text-transform: uppercase;
+  background: #0a1a36; border: 1px solid #22497c; border-radius: 4px;
+  cursor: pointer;
+}
+.lab-tab[aria-selected="true"] {
+  color: #06121f; background: linear-gradient(#8fdcff, #3fa9ff);
+  border-color: #bdeeff; box-shadow: 0 0 12px rgba(63, 169, 255, 0.6);
+}
+
+.lab-ctl { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #9fb6d6; }
+.lab-ctl input[type="range"] { width: 150px; accent-color: #3fa9ff; }
+.lab-btn {
+  height: 32px; padding: 0 12px; cursor: pointer;
+  font: 800 14px/30px var(--font, "Barlow Condensed", sans-serif); letter-spacing: 0.06em;
+  color: #cfe4ff; text-transform: uppercase;
+  background: #0c2148; border: 1px solid #2b6fd0; border-radius: 4px;
+}
+.lab-btn[aria-pressed="true"] { color: #06121f; background: linear-gradient(#7df05a, #35c21a); border-color: #b6ff9c; }
+.lab-hint { font-size: 13px; color: #7f97b8; }
+.lab-hint b { color: #cfe4ff; }
+
+/* ------------------------------------------------------------------ sân khấu */
+.stage-wrap { display: flex; justify-content: center; padding: 18px 10px 40px; }
+.stage-box { position: relative; width: 720px; height: 1496px; overflow: hidden; }
+.stage-outer { position: absolute; left: 0; top: 0; width: 720px; height: 1496px; transform-origin: top left; }
+
+.stage {
+  position: absolute; inset: 0; overflow: hidden;
+  background: #050c1c url("./ui/bg_nebula_3.jpg") center / cover no-repeat;
+  border-radius: 2px;
+  box-shadow: 0 0 0 2px #1d3f74, 0 24px 70px rgba(0, 0, 0, 0.6);
+}
+.stage-bg, .stage-ref {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.stage-ref { opacity: 0; transition: opacity 0.12s linear; }
+.stage.grid::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(120, 220, 255, 0.22) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(0deg, rgba(120, 220, 255, 0.22) 0 1px, transparent 1px 40px);
+}
+
+.view { position: absolute; inset: 0; }
+.view[hidden] { display: none; }
+
+/* =========================================================================
+   HUD TRONG TRẬN — đo từ gp1.png (720×1496)
+   Cụm trái: x14…345, y88…146 · xu: 448…570 · tạm dừng: 640…700
+   ========================================================================= */
+.ww-hud { position: absolute; inset: 0; font-family: inherit; }
+
+/* --- khung chứa chân dung + thanh máu --- */
+.ww-hud-left {
+  position: absolute; left: 14px; top: 86px; width: 332px; height: 62px;
+}
+
+.ww-portrait {
+  position: absolute; left: 2px; top: 2px; width: 74px; height: 58px;
+  padding: 2px;
+  background: linear-gradient(150deg, #9beeff 0%, #46c6f4 38%, #1a6fae 100%);
+  clip-path: polygon(14px 0, 100% 0, 100% 100%, 14px 100%, 0 50%);
+  filter: drop-shadow(0 0 6px rgba(63, 190, 255, 0.45));
+}
+.ww-portrait-in {
+  position: relative; display: block; width: 100%; height: 100%; overflow: hidden;
+  clip-path: polygon(13px 0, 100% 0, 100% 100%, 13px 100%, 0 50%);
+  background:
+    radial-gradient(120% 140% at 50% 30%, rgba(58, 128, 220, 0.35), transparent 62%),
+    linear-gradient(160deg, #16305c 0%, #0b1a38 60%, #081227 100%);
+}
+.ww-portrait img {
+  position: absolute; left: 50%; top: 50%; width: 84px; height: 84px;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.65)) saturate(1.08);
+}
+.ww-portrait-in::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 42%);
+}
+
+/* --- thanh máu: vát mép phải, nền navy, viền cyan --- */
+.ww-hp {
+  position: absolute; left: 62px; top: 6px; width: 270px; height: 30px;
+  padding: 2px;
+  transform: skewX(-12deg);
+  background: linear-gradient(180deg, #6fd4ff 0%, #2f9fe0 40%, #14538c 100%);
+  box-shadow: 0 0 0 1px #06122c, 0 0 12px rgba(47, 159, 224, 0.35);
+}
+.ww-hp-in {
+  position: relative; display: block; height: 100%; overflow: hidden;
+  background: #06122c;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.7);
+}
+.ww-hp-fill {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 100%;
+  background:
+    linear-gradient(180deg, var(--u-hp-1) 0%, var(--u-hp-2) 42%, var(--u-hp-2) 60%, var(--u-hp-3) 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35);
+  transition: width 0.2s linear;
+}
+.ww-hp-fill::after {
+  content: ""; position: absolute; inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0 26px, rgba(6, 18, 44, 0.28) 26px 28px);
+}
+.ww-hp-num {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  transform: skewX(12deg);
+  font-size: 30px; font-weight: 900; font-style: italic; letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: 0 3px 0 #1e2c05, 0 0 8px rgba(0, 0, 0, 0.55);
+}
+
+/* --- dải năng lượng 5 đốt --- */
+.ww-seg { position: absolute; left: 66px; top: 39px; display: flex; gap: 4px; }
+.ww-seg i {
+  width: 44px; height: 15px; transform: skewX(-26deg);
+  background: #0a1a38;
+  box-shadow: inset 0 0 0 2px #1f5a96;
+}
+.ww-seg i.on {
+  background: linear-gradient(180deg, var(--u-sky-1), var(--u-sky-2) 60%, var(--u-sky-3));
+  box-shadow: inset 0 0 0 1px #bdeeff, 0 0 8px rgba(63, 169, 255, 0.55);
+}
+
+/* --- đồng xu + số --- */
+.ww-coin {
+  position: absolute; left: 444px; top: 84px;
+  display: flex; align-items: center; gap: 6px;
+}
+.ww-coin img {
+  width: 44px; height: 44px; display: block;
+  filter: drop-shadow(0 3px 0 #4a2a00) drop-shadow(0 0 8px rgba(255, 194, 31, 0.45));
+}
+.ww-coin b {
+  font-size: 42px; font-weight: 900; font-style: italic; letter-spacing: 0.01em;
+  color: #fff; text-shadow: 0 4px 0 #16233c, 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+/* --- nút tạm dừng --- */
+.ww-pause {
+  position: absolute; left: 640px; top: 86px;
+  width: 60px; height: 60px; padding: 3px;
+  border: 0; border-radius: 13px; cursor: pointer;
+  background: linear-gradient(180deg, #6fa8ff 0%, #2f6fe0 38%, #1b3f8c 100%);
+  box-shadow: 0 0 0 2px #0a1a34, 0 0 14px rgba(63, 120, 255, 0.5), 0 4px 0 #071022;
+}
+.ww-pause span {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; height: 100%; border-radius: 10px;
+  background: linear-gradient(180deg, #0d2148, #081428);
+  box-shadow: inset 0 0 0 1px #3f7fd0, inset 0 6px 14px rgba(0, 0, 0, 0.55);
+}
+.ww-pause i {
+  width: 9px; height: 28px; border-radius: 2px;
+  background: #fff; box-shadow: 0 0 8px rgba(160, 210, 255, 0.8), 0 2px 0 #6c88ad;
+}
+
+/* --- đếm địch --- */
+.ww-enemy {
+  position: absolute; right: 20px; top: 176px;
+  display: flex; align-items: center; gap: 6px;
+}
+.ww-enemy b {
+  font-size: 30px; font-weight: 900; font-style: italic;
+  color: #fff; text-shadow: 0 3px 0 #16233c, 0 0 8px rgba(0, 0, 0, 0.6);
+}
+.ww-enemy img { width: 34px; height: 34px; filter: drop-shadow(0 3px 0 #16233c); }
+
+/* --- nút kỹ năng góc dưới trái (tham chiếu) --- */
+.ww-skill {
+  position: absolute; left: 22px; bottom: 210px;
+  width: 78px; height: 78px; display: grid; place-items: center;
+  background: linear-gradient(160deg, #16305c, #081227);
+  border: 2px solid #46c6f4; border-radius: 12px;
+  box-shadow: 0 0 12px rgba(63, 190, 255, 0.35), 0 4px 0 #050c1c;
+  font-size: 40px; font-weight: 900; font-style: italic; color: #cfe9ff;
+}
+.ww-skill::after {
+  content: "4"; position: absolute; left: -8px; top: -10px;
+  width: 26px; height: 26px; display: grid; place-items: center;
+  font-size: 18px; font-weight: 900; color: #06121f;
+  background: linear-gradient(#8fdcff, #3fa9ff); border-radius: 4px;
+}
+
+/* =========================================================================
+   LINH KIỆN — dùng lại cho các màn khác
+   ========================================================================= */
+.gallery { position: absolute; inset: 0; padding: 120px 40px 40px; display: grid; gap: 26px; align-content: start; }
+.card {
+  background: linear-gradient(180deg, rgba(12, 33, 72, 0.92), rgba(6, 16, 36, 0.94));
+  border: 1px solid #245e9e; border-radius: 10px;
+  box-shadow: inset 0 0 0 1px rgba(63, 169, 232, 0.18), 0 8px 18px rgba(0, 0, 0, 0.45);
+  padding: 18px 22px;
+}
+.card h3 {
+  margin: 0 0 14px; font-size: 22px; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #9fd8ff;
+}
+.card h3 small { display: block; font-size: 14px; letter-spacing: 0; color: #7f97b8; font-weight: 600; text-transform: none; }
+
+/* nút chính */
+.ww-cta {
+  position: relative; display: block; width: 100%; height: 104px;
+  border: 0; border-radius: 20px; cursor: pointer;
+  font: 900 48px/1 var(--font, "Barlow Condensed", sans-serif); font-style: italic;
+  letter-spacing: 0.06em; text-transform: uppercase; color: #fff;
+  background: linear-gradient(180deg, var(--u-cta-1) 0%, var(--u-cta-2) 52%, var(--u-cta-3) 100%);
+  box-shadow: 0 0 0 4px #2b1a00, 0 0 0 6px #ffdf8a, 0 10px 0 #6b3f00, 0 14px 24px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 4px 0 #8a5200, 0 0 12px rgba(0, 0, 0, 0.35);
+}
+.ww-cta::after {
+  content: ""; position: absolute; left: 14px; right: 14px; top: 8px; height: 30px;
+  border-radius: 14px 14px 40% 40%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+}
+
+/* hàng công nghệ */
+.ww-tech { display: grid; grid-template-columns: 62px 1fr; gap: 4px 14px; align-items: center; }
+.ww-hex {
+  grid-row: span 2; width: 58px; height: 58px; display: grid; place-items: center;
+  clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%);
+  background: linear-gradient(180deg, #17458a, #0a1f44);
+  font-size: 28px; font-weight: 900; font-style: italic; color: #dff1ff;
+  text-shadow: 0 2px 0 #061325;
+}
+.ww-tech-name {
+  font-size: 30px; font-weight: 800; font-style: italic; color: #fff;
+  text-shadow: 0 3px 0 #12203a; letter-spacing: 0.01em;
+}
+.ww-tech-bar {
+  position: relative; height: 26px; width: 100%;
+  padding: 2px;
+  transform: skewX(-14deg);
+  background: linear-gradient(180deg, #3fa9e8, #14538c);
+  margin-top: 4px;
+}
+.ww-tech-bar .in {
+  position: relative; display: block; height: 100%; overflow: hidden;
+  background: #071530;
+}
+.ww-tech-bar i {
+  position: absolute; inset: 0 auto 0 0; width: 34%;
+  background: repeating-linear-gradient(120deg, #2a6ea8 0 8px, #1b4d80 8px 16px);
+}
+.ww-tech-bar b {
+  position: absolute; inset: 0 auto 0 0; width: 16%;
+  background: linear-gradient(180deg, #8fdcff, #1d64c8);
+}
+.ww-tech-cost { display: flex; align-items: center; gap: 6px; justify-content: flex-end; font-size: 24px; font-weight: 900; font-style: italic; }
+.ww-tech-cost img { width: 24px; height: 24px; }
+.ww-plus {
+  width: 74px; height: 52px; border: 0; cursor: pointer;
+  clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+  background: linear-gradient(180deg, var(--u-green-1), var(--u-green-2) 55%, var(--u-green-3));
+  color: #fff; font-size: 34px; font-weight: 900; line-height: 1;
+  text-shadow: 0 3px 0 #0d4a03;
+  box-shadow: inset 0 0 0 2px #b6ff9c;
+}
+
+/* node bản đồ */
+.ww-map { display: flex; align-items: center; gap: 0; }
+.ww-node {
+  position: relative; width: 88px; height: 88px; flex: 0 0 auto;
+  display: grid; place-items: center; border-radius: 50%;
+  background: radial-gradient(circle at 50% 34%, #2a4a7c, #101d38 62%, #0a1428 100%);
+  box-shadow: 0 0 0 5px #2b6fd0, 0 0 0 7px #0a1428, 0 8px 0 rgba(0, 0, 0, 0.45);
+  font-size: 40px; font-weight: 900; font-style: italic; color: #fff;
+  text-shadow: 0 3px 0 #0a1428;
+}
+.ww-node.done { box-shadow: 0 0 0 5px var(--u-green-2), 0 0 0 7px #0a1428, 0 0 18px rgba(53, 194, 26, 0.45), 0 8px 0 rgba(0, 0, 0, 0.45); }
+.ww-node.now { box-shadow: 0 0 0 5px var(--u-gold-2), 0 0 0 7px #2b1a00, 0 0 20px rgba(255, 194, 31, 0.55), 0 8px 0 rgba(0, 0, 0, 0.45); }
+.ww-link { flex: 1 1 auto; height: 4px; background: linear-gradient(90deg, #7fe0ff, #2f9fe0); box-shadow: 0 0 10px rgba(63, 190, 255, 0.7); }
+.ww-stars { display: flex; gap: 3px; justify-content: center; margin-top: 10px; }
+.ww-stars img { width: 26px; height: 26px; }
+
+/* thẻ chân dung tàu (hangar) */
+.ww-shipcard {
+  width: 150px; height: 150px; padding: 2px;
+  background: linear-gradient(160deg, #6fd4ff, #1a6fae);
+  clip-path: polygon(18px 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px), 0 18px);
+}
+.ww-shipcard-in {
+  width: 100%; height: 100%; display: grid; place-items: center;
+  clip-path: polygon(17px 0, calc(100% - 17px) 0, 100% 17px, 100% calc(100% - 17px), calc(100% - 17px) 100%, 17px 100%, 0 calc(100% - 17px), 0 17px);
+  background: radial-gradient(120% 120% at 50% 30%, #1d3a68, #0a1730 70%);
+}
+.ww-shipcard img { width: 120px; height: 120px; object-fit: contain; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.6)); }

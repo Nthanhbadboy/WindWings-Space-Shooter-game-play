@@ -1,0 +1,108 @@
+<svg width="720" height="1496" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a2a4a;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="1496" fill="url(#bgGrad)" />
+
+  <!-- Header -->
+  <rect x="0" y="0" width="720" height="120" fill="#0f1a2e" />
+  <text x="360" y="75" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#ffffff" text-anchor="middle">HỘ SƠ</text>
+
+  <!-- VIP / Login info -->
+  <text x="560" y="110" font-family="Arial, sans-serif" font-size="14" fill="#00ffff" text-anchor="middle">VIP 0</text>
+
+  <!-- Tab: TẦU CHÍNH (active) -->
+  <rect x="220" y="420" width="280" height="50" rx="8" fill="#0066ff" />
+  <text x="360" y="448" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#ffffff" text-anchor="middle">TẦU CHÍNH</text>
+
+  <!-- Tab: TẦU PHỤ (inactive) -->
+  <rect x="220" y="1300" width="280" height="50" rx="8" fill="#1a2a4a" />
+  <text x="360" y="1328" font-family="Arial, sans-serif" font-size="18" fill="#88aaff" text-anchor="middle">TẦU PHỤ</text>
+
+  <!-- Ship cards: 5 columns x 4 rows + 4 in last row -->
+  <!-- Card parameters -->
+  <g id="ship-card">
+    <!-- Hexagon-ish rounded rect card -->
+    <rect x="0" y="0" width="110" height="140" rx="12" ry="12" fill="#1e2a38" stroke="#00aaff" stroke-width="2" />
+    <!-- Ship placeholder circle -->
+    <circle cx="55" cy="55" r="30" fill="#2a3a4a" stroke="#00aaff" stroke-width="1" />
+    <!-- Lock icon -->
+    <rect x="45" y="105" width="20" height="25" rx="2" fill="#00aaff" />
+    <rect x="40" y="125" width="30" height="10" fill="#00aaff" />
+  </g>
+
+  <!-- Row 1 -->
+  <!-- T1 - S1 Unlocked (blue) -->
+  <use href="#ship-card" x="40" y="490" />
+  <circle cx="95" cy="560" r="30" fill="#1e90ff" opacity="0.8" />
+  <text x="95" y="615" font-family="Arial, sans-serif" font-size="12" fill="#ffd700" text-anchor="middle">0</text>
+
+  <!-- T2 - S2 Unlocked (red) -->
+  <use href="#ship-card" x="170" y="490" />
+  <circle cx="225" cy="560" r="30" fill="#e74c3c" opacity="0.8" />
+
+  <!-- T3 Locked -->
+  <use href="#ship-card" x="300" y="490" />
+  <!-- T4 Locked -->
+  <use href="#ship-card" x="430" y="490" />
+  <!-- T5 Locked -->
+  <use href="#ship-card" x="560" y="490" />
+
+  <!-- Row 2 -->
+  <use href="#ship-card" x="40" y="650" />
+  <use href="#ship-card" x="170" y="650" />
+  <use href="#ship-card" x="300" y="650" />
+  <use href="#ship-card" x="430" y="650" />
+  <use href="#ship-card" x="560" y="650" />
+
+  <!-- Row 3 -->
+  <use href="#ship-card" x="40" y="810" />
+  <use href="#ship-card" x="170" y="810" />
+  <use href="#ship-card" x="300" y="810" />
+  <use href="#ship-card" x="430" y="810" />
+  <use href="#ship-card" x="560" y="810" />
+
+  <!-- Row 4 -->
+  <use href="#ship-card" x="40" y="970" />
+  <use href="#ship-card" x="170" y="970" />
+  <use href="#ship-card" x="300" y="970" />
+  <use href="#ship-card" x="430" y="970" />
+  <use href="#ship-card" x="560" y="970" />
+
+  <!-- Row 5 (4 ships only) -->
+  <use href="#ship-card" x="40" y="1130" />
+  <use href="#ship-card" x="170" y="1130" />
+  <use href="#ship-card" x="300" y="1130" />
+  <use href="#ship-card" x="430" y="1130" />
+
+  <!-- Footer buttons -->
+  <!-- Back -->
+  <rect x="30" y="1380" width="140" height="80" rx="10" fill="#0066ff" />
+  <path d="M 50 1420 L 90 1420 L 90 1390 L 60 1420 Z" fill="#ffffff" />
+
+  <!-- SAO LƯU -->
+  <rect x="230" y="1380" width="260" height="80" rx="10" fill="#00cc66" />
+  <text x="360" y="1422" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" text-anchor="middle">SAO LƯU</text>
+
+  <!-- Status bar colors (top) -->
+  <rect x="20" y="40" width="140" height="30" fill="#ffd700" opacity="0.2" />
+  <rect x="330" y="40" width="140" height="30" fill="#ffd700" opacity="0.2" />
+  <rect x="530" y="40" width="170" height="30" fill="#00ffff" opacity="0.2" />
+
+  <!-- Labels for ships -->
+  <text x="95" y="650" font-family="Arial, sans-serif" font-size="10" fill="#ffffff" text-anchor="middle">S1</text>
+  <text x="225" y="650" font-family="Arial, sans-serif" font-size="10" fill="#ffffff" text-anchor="middle">S2</text>
+
+</svg>

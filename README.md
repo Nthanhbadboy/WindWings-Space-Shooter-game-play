@@ -51,18 +51,112 @@ Tệp `image_manifest.csv` liệt kê đầy đủ: thư mục, tên file, ngu�
 
 - `organize_images.py` — script đã dùng để phân loại/dedup/dọn dẹp (giữ lại để minh bạch provenance).
 
-> Lưu ý bản quyền: ảnh là tài sản của GCenter, chỉ dùng để minh họa gameplay.
+## Dự án mã nguồn mở tham khảo
+
+WindWings không có mã nguồn công khai (game đóng của GCenter). Danh sách các repo cùng thể loại — shmup dọc hoàn chỉnh, bản mobile/Android, bản web và engine hỗ trợ — kèm đối chiếu tính năng và gợi ý lộ trình làm bản tương tự: xem [`SIMILAR_OPEN_SOURCE_PROJECTS.md`](SIMILAR_OPEN_SOURCE_PROJECTS.md).
+
+Bộ **infographic phân tích 13 repo** (bảng so sánh, thư viện ảnh gameplay, xếp hạng điểm phù hợp, bản đồ module → repo): xem [`repo-analysis/`](repo-analysis/README.md).
+
+![So sánh 13 repo](repo-analysis/01_tong_quan_13_repo.png)
+
+## Bộ asset mẫu (CC0) cho bản 3D
+
+Để dựng prototype **galaxy shooter 3D** đủ đẹp trước khi tự vẽ art, repo có sẵn bộ asset mẫu **CC0 1.0** (Kenney + Quaternius): 11 tàu hero 3D đã tối ưu, enemy bay, hành tinh, skybox, chuỗi frame nổ, UI sci-fi và bộ điều khiển cảm ứng.
+
+- Hướng dẫn, bảng pack, ghi công: [`assets_samples/README.md`](assets_samples/README.md)
+- 8 ảnh contact sheet để xem nhanh: [`assets_samples/previews/`](assets_samples/previews/)
+- So sánh trực tiếp với WindWings: `assets_samples/previews/08_windwings_vs_cc0.png`
+
+![Đối chiếu WindWings với asset CC0](assets_samples/previews/08_windwings_vs_cc0.png)
+
+## Game mẫu 3D cho điện thoại (`prototype/`)
+
+Game **galaxy shooter dọc 3D** dựng bằng three.js + Vite, đóng gói được thành app Android (Capacitor/PWA).
+Dùng đúng bộ asset CC0 trong `assets_samples/`.
+
+**Đã có:**
+- **8 tàu** trong hangar (mua bằng vàng, nâng cấp tới cấp 15, mỗi tàu một nội tại riêng)
+- **5 nhánh nâng cấp** toàn cục: pháo, giáp, khiên, drone, từ trường
+- **Drone hộ vệ** bay theo quỹ đạo, tự bắn; nhặt thêm drone trong trận
+- **3 chương × 6 màn** (18 màn) với 3 kiểu mục tiêu: dọn sạch, sinh tồn, boss
+- **4 chế độ**: Chiến dịch, Vô tận, Săn boss, Thử thách ngày (modifier đổi mỗi ngày)
+- **3 boss** với 2 pha, đổi nền trời/hành tinh theo chương
+- **Cảnh chơi 3 lớp**: bầu trời gradient trong trẻo + tinh vân + **Trái Đất 3D** (mây, đèn thành phố, quầng khí quyển) → **bụi/mảnh vụn trôi thẳng xuống** (cảm giác tiến lên) → vùng giao chiến
+- **Tàu trong trận là ảnh vẽ tay**, đổi theo tàu đang chọn; **11 loại địch “ruồi” nhỏ**, có con bắn có con không, bay vào từ **mép trên hoặc hai mép ngang**
+- **3 kiểu đạn** cho người chơi; địch/boss bắn **đạn hình học** (kim cương, vuông, lục giác, sao, vòng, thập tự…)
+- **Boss là robot vẽ tay** có đòn **chém** (cột cảnh báo rồi chém) và 5 kiểu đạn theo **nhịp**; **sống động**: lao vào sân, đổi vị trí, nghiêng theo đà, lấy đà trước mỗi đòn, **đạn bay ra từ họng súng**, **vung đao có cung lửa + vệt mờ**, vệ tinh quay quanh, tan rã thành 9 mảng nổ; nổ 5 lớp (sóng xung kích, tia lửa, mảnh vỡ, rung màn hình)
+- **Tàu trong trận "sống"**: cánh tách lớp và **vỗ nhẹ**, đèn định vị nháy, buồng lái thở, hai luồng lửa đúng ống xả bẻ theo lái, loé súng đầu cánh, vệt tốc độ, quầng khiên
+- **Xưởng máy bay 3D** (`prototype/ship.html`): mô hình tàu dựng bằng code, **hình chiếu trực giao nhìn thẳng từ trên xuống**, cánh vỗ nhẹ + cánh tà gập theo bản lề + râu cảm biến rung, **lửa phản lực phụt theo ga**, **đạn rời đúng đầu nòng**; có thanh trượt vỗ cánh / ga / nghiêng thân / góc nhìn / tốc độ
+- **Nền trạm không gian**: 3 vành trạm khổng lồ + 4 dầm bo hai mép trôi theo parallax, tinh vân dày hơn
+- **Icon nâng cấp vẽ tay** (5 medallion hoạt hình) có animation; **màn Công nghệ là sơ đồ kỹ thuật**: 5 chấm gắn đúng bộ phận tàu, bấm vào là nâng cấp
+- Sao (1–3), vàng, kỷ lục, lưu tiến trình trong máy
+
+```bash
+cd prototype
+npm install
+npm run dev        # http://localhost:5173  (game)
+npm run dev:ship   # http://localhost:5180  (xưởng máy bay 3D — xem hình chiếu từ trên)
+```
+Windows: bấm đúp `prototype\run-windows.bat`.
+
+- Chi tiết cảnh chơi mới: [`docs/gameplay-redesign.md`](docs/gameplay-redesign.md)
+- Chi tiết hệ thống, cân bằng và **cách build APK**: [`prototype/README.md`](prototype/README.md)
+- Build APK tự động: tab **Actions → Build Android debug APK**
+
+## Chế độ test & chơi trên Android
+
+**Cờ test (tạm thời)** — sửa `prototype/src/devflags.js`:
+
+| Cờ | Tác dụng |
+| --- | --- |
+| `TEST_UNLOCK_ALL = true` | Mở cả 3 chương × 6 màn, không cần đủ sao |
+| `TEST_AUTO_FIRE = true` | Luôn tự động bắn, bỏ qua lựa chọn trong Cài đặt |
+| `TEST_RICH = false` | (tuỳ chọn) tặng 50 000 vàng + 500 gem lúc khởi động |
+
+Đang bật cờ nào thì màn **Tạm dừng** hiện một dòng nhắc màu vàng, và lúc vào game có toast
+“CHẾ ĐỘ TEST”. **Trước khi phát hành: đổi cả ba về `false`** (hoặc xoá file + các chỗ import).
+Bộ test tự tắt cờ qua `globalThis.__WW_TEST_OVERRIDE__` nên vẫn kiểm tra đúng logic khoá màn.
+
+**Android:**
+
+- **Chơi được ngay trên web**: mở link GitHub Pages bằng Chrome trên Android → menu ⋮ → *Thêm vào màn hình chính* (game là PWA: toàn màn hình, khoá dọc, có icon riêng).
+- **Chưa có file APK.** Workflow `.github/workflows/android-apk.yml` (Capacitor → `gradlew assembleDebug`) mới chỉ nằm trên nhánh phát triển, chưa lên `main`, nên GitHub chưa đăng ký workflow và chưa từng chạy → chưa có bản cài `.apk` nào.
+  Muốn có APK: đưa nhánh phát triển vào `main` (merge PR) → tab **Actions → Build Android debug APK → Run workflow**, hoặc push tag `v1.0.0`; bản `.apk` nằm trong mục *Artifacts* của lần chạy đó.
+
+## Lưu ý bản quyền
+
+- Ảnh gameplay trong repo này là tài sản của **GCenter**, chỉ dùng để minh họa gameplay.
+- Ảnh trong `repo-analysis/screenshots/` thuộc bản quyền tác giả từng repo, dùng cho mục đích so sánh/đánh giá.
+- Không dịch ngược APK của WindWings để lấy code/asset.
+- Toàn bộ asset trong `assets_samples/` là **CC0 1.0** (Kenney, Quaternius) — dùng thương mại tự do; chi tiết ở [`assets_samples/00_LICENSES/`](assets_samples/00_LICENSES/).
+- Ảnh WindWings trong `assets_samples/previews/08_windwings_vs_cc0.png` chỉ dùng để **đối chiếu phong cách**, không phải asset được phép tái sử dụng.
 
 ---
 
-## Game (vertical shmup build)
+## Nhánh làm việc này (arena/287e43b4…) — tổng hợp toàn repo
 
-Bản build game bắn máy bay dọc **chiến dịch 60 màn** (6 chương × 10, boss mỗi
-màn 10) nằm ở `game/` (web export, Capacitor-ready — xem `docs/BUILD_ANDROID.md`
-và workflow `.github/workflows/android-apk.yml`: push tag `v*` để CI build APK).
-3 loại boss, mỗi con rig + animation riêng (tentacle uốn sóng / lưỡi cưa quay /
-chân khớp đu đưa), 3 phase + enrage, telegraph đầy đủ. Title + level select +
-sao 1–3 + lưu tiến trình theo UI Ramus (branch `windwings-ui-ux-analysis`).
-Chạy: `npm run serve`, test headless: `npm test` (66 test). Ảnh trong repo này
-được dùng làm tham chiếu phong cách (portrait shmup, boss tím/cam, đạn cyan vs
-đỏ/hồng).
+Nhánh này gộp **tất cả** tư liệu + code của 5 nhánh và nâng cấp game:
+
+- **Chiến dịch 60 màn**: 6 chương × 10 màn (boss ở màn 10 mỗi chương,
+  xoay vòng Imperial → Pancake → Dreadnought), bản đồ node 10 điểm/chương,
+  độ khó + phần thưởng scale theo màn (`prototype/src/content.js`).
+- **Boss 3 giai đoạn**: 66% máu → NỔI GIẬN (đổi màu lõi/hào quang, bắn
+  nhanh), 33% → CUỒNG NỘ (vệ tinh quay gấp 2.4, đạn dày hơn 70%, nạp đòn
+  0.18s). Boss vốn đã có rig "sống": nhập trận lao từ xa, thở, nghiêng theo
+  đà, giật lùi khi bắn, loé họng súng, quầng kiếm, 2 vệ tinh orbit, sạc đòn
+  sáng lõi — xem `docs/nghien-cuu-sprite-dong.md`.
+- **HUD đúng số đo WindWings** (`docs/windwings-refs/v2/DO_DAC_UI.md`):
+  chân dung tàu ô vát 74×58, thanh máu nghiêng −12° 3 dải màu + số italic
+  nghiêng ngược, 5 đốt năng lượng nghiêng −26°, cụm xu icon 44px + số 42px,
+  nút pause 60×60 viền gradient, đếm địch còn lại + đầu lâu — port từ
+  `prototype/uikit.css` (phòng thử UI 1:1) vào `src/style.css`, scale theo
+  khung thiết kế 720×1496 bằng `--u`.
+- **Game 2D shmup** (spec boss-fight cũ) vẫn giữ ở `game/` + 66 test headless
+  trong `tools/` (`npm test` ở root), CI APK riêng:
+  `.github/workflows/android-apk-2d-game.yml`.
+- CI: `android-apk.yml` (tag `v*` → APK WindWings 3D từ `prototype/`),
+  `prototype-pages.yml` (push nhánh này → GitHub Pages).
+
+Test prototype: `cd prototype && npm test` (mô phỏng gameplay + UI jsdom +
+nền nhiều lớp). Ảnh tham chiếu WindWings thật: `docs/windwings-refs/`
+(13 ảnh cắt) và `docs/windwings-refs/v2/` (10 ảnh + 3 tài liệu đo đạc).

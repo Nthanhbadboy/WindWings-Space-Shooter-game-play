@@ -1,0 +1,55 @@
+# Build WindWings Boss Fight (game/) into a debug APK on GitHub runners.
+# Recipe adapted from the windwings-ui-ux-analysis branch prototype workflow.
+# Triggers: manual (Actions tab) or pushing a tag v*.
+name: Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install Capacitor (MIT, no paid deps)
+        run: npm install --no-save @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
+
+      - name: Add Android platform (webDir = game/)
+        run: npx cap add android
+
+      - name: Force portrait orientation
+        run: |
+          python3 - <<'EOF'
+          import re
+          p = 'android/app/src/main/AndroidManifest.xml'
+          s = open(p).read()
+          if 'screenOrientation' not in s:
+              s = re.sub(r'<activity\b', '<activity android:screenOrientation="portrait"', s, count=1)
+              open(p, 'w').write(s)
+              print('portrait patched')
+          EOF
+
+      - name: Sync web assets
+        run: npx cap sync android
+
+      - name: Build debug APK
+        run: cd android && ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: windwings-boss-fight-apk
+          path: android/app/build/outputs/apk/debug/*.apk

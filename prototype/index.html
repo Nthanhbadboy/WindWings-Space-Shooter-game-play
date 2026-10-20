@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#05071A" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>WindWings 3D — Galaxy Shooter</title>
+  <link rel="manifest" href="./pwa/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./pwa/apple-touch-icon.png" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230A1740'/><path d='M32 12l9 18 13 4-13 6-9 12-9-12-13-6 13-4z' fill='%23E49302' stroke='%23FFD66B' stroke-width='2'/></svg>" />
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+<div id="app">
+  <canvas id="scene"></canvas>
+  <div id="vignette"></div>
+  <div id="flash"></div>
+
+  <!-- ================= HUD ================= -->
+  <div id="hud" class="hidden">
+    <div class="ww-hud">
+      <div class="ww-hud-left">
+        <div class="ww-portrait"><span class="ww-portrait-in"><img id="portrait" alt="" /></span></div>
+        <div class="ww-hp">
+          <span class="ww-hp-in">
+            <span class="ww-hp-fill" id="hpFill" style="width: 100%"></span>
+            <span class="ww-hp-num" id="hpText">100</span>
+          </span>
+        </div>
+        <div class="ww-seg" id="shieldDots"></div>
+      </div>
+
+      <div class="ww-score"><span id="score">0</span><span class="combo hidden" id="combo">x2</span></div>
+
+      <div class="ww-coin"><img src="./src/icons/ic_coin.png" alt="" /><b id="hudCoins">0</b></div>
+
+      <button class="ww-pause" id="btnPause" aria-label="Tạm dừng"><span><i></i><i></i></span></button>
+
+      <div class="ww-enemy"><b id="wave">0</b><img id="enemySkull" alt="" /></div>
+      <div class="ww-timer hidden" id="hudTimer">30s</div>
+    </div>
+
+    <div class="hud-objective" id="objective">SINH TỒN</div>
+
+    <div id="bossBarWrap" class="hidden">
+      <div class="boss-name" id="bossName">CHỈ HUY ĐỊCH</div>
+      <div class="bar boss"><span class="bar-fill" id="bossFill"></span></div>
+    </div>
+
+    <div class="hud-bottom">
+      <div class="hud-box weapon-box">
+        <div class="hud-label">VŨ KHÍ</div>
+        <div class="weapon-dots" id="weaponDots"></div>
+        <div class="drone-dots" id="droneDots"></div>
+      </div>
+      <div class="hud-actions">
+        <button class="icon-btn" id="btnSound" aria-label="Bật/tắt âm thanh"><img class="ico-sound" src="./src/icons/ic_sound.png" alt="" /></button>
+        <button class="icon-btn" id="btnPause" aria-label="Tạm dừng"><img class="" src="./src/icons/ic_pause.png" alt="" /></button>
+      </div>
+    </div>
+
+    <div id="joystickHint" class="joystick-hint">
+      <span class="joy-pad"></span>
+      <span class="joy-nub"></span>
+      <span class="joy-txt">chạm &amp; kéo</span>
+    </div>
+
+    <div id="banner" class="banner"></div>
+  </div>
+
+  <!-- ================= LOADING ================= -->
+  <div class="screen" id="screen-loading">
+    <div class="load-wrap">
+      <div class="logo-big">WINDWINGS <span>3D</span></div>
+      <div class="loading-bar"><span id="loadingFill"></span></div>
+      <div class="loading-text" id="loadingText">0%</div>
+    </div>
+  </div>
+
+  <!-- ================= CHROME ================= -->
+  <div id="metaChrome" class="hidden">
+    <header id="topBar">
+      <button class="premium-chip" id="btnDaily" aria-label="Quà hằng ngày">
+        <span class="premium-tag">PREMIUM</span>
+        <b id="premiumTime">00:00:00</b>
+        <i class="dot"></i>
+      </button>
+      <div class="cur-pill star-pill">
+        <img class="cur-ico" src="./src/icons/ic_star.png" alt="" /><b id="curStars">0</b>
+      </div>
+      <div class="cur-pill">
+        <img class="cur-ico" src="./src/icons/ic_coin.png" alt="" /><b id="curCoins">0</b>
+        <button class="plus" data-goto="store" aria-label="Mua xu">+</button>
+      </div>
+      <div class="cur-pill">
+        <img class="cur-ico" src="./src/icons/ic_gem.png" alt="" /><b id="curGems">0</b>
+        <button class="plus" data-goto="store" aria-label="Mua gem">+</button>
+      </div>
+    </header>
+
+    <nav id="bottomNav">
+      <button class="nav-tab" data-goto="hangar">
+        <i class="nav-ico"><img class="nav-ship" src="./src/art/striker.jpg" alt="" /></i>
+        <span class="nav-lbl">HANGAR</span>
+      </button>
+      <button class="nav-tab" data-goto="tech">
+        <i class="nav-ico"><img src="./src/icons/ic_flask.png" alt="" /></i>
+        <span class="nav-lbl">CÔNG NGHỆ</span>
+      </button>
+      <button class="nav-tab main" data-goto="map">
+        <i class="nav-ico"><img src="./src/icons/ic_map.png" alt="" /></i>
+        <span class="nav-lbl">CHIẾN DỊCH</span>
+      </button>
+      <button class="nav-tab" data-goto="store">
+        <i class="nav-ico"><img src="./src/icons/ic_gift.png" alt="" /></i>
+        <span class="nav-lbl">CỬA HÀNG</span>
+        <i class="badge" id="storeBadge"></i>
+      </button>
+      <button class="nav-tab" data-goto="settings">
+        <i class="nav-ico"><img src="./src/icons/ic_gear.png" alt="" /></i>
+        <span class="nav-lbl">CÀI ĐẶT</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ================= HOME ================= -->
+  <div class="screen hidden" id="screen-home">
+    <div class="home-wrap">
+      <div class="home-head-row">
+        <button class="avatar-box" id="btnProfile" aria-label="Hồ sơ">
+          <img class="avatar-face" src="./src/icons/ic_pilot.png" alt="" />
+          <img class="avatar-edit" src="./src/icons/ic_plus.png" alt="" />
+        </button>
+        <button class="login-btn" id="btnLogin">
+          <span>ĐĂNG NHẬP</span>
+          <small>ĐỂ SAO LƯU DỮ LIỆU</small>
+          <i class="badge"></i>
+        </button>
+        <button class="settings-btn" id="btnSettingsHome" aria-label="Cài đặt"><img class="" src="./src/icons/ic_gear.png" alt="" /></button>
+      </div>
+
+      <div class="hangar-stage">
+        <button class="ship-slot" id="slotS1">
+          <span class="slot-ring"><img id="homeShipImg" alt="" /></span>
+          <span class="slot-tag">S1</span>
+          <span class="slot-lvl" id="homeShipLvl">L1</span>
+        </button>
+
+        <button class="upgrade-pod" id="btnUpgradePod">
+          <span class="pod-arrows"></span>
+          <span class="pod-core"></span>
+          <span class="pod-label">NÂNG CẤP</span>
+        </button>
+
+        <button class="ship-slot locked" id="slotS2">
+          <span class="slot-ring"><img id="homeShip2Img" alt="" /></span>
+          <span class="slot-tag">S2</span>
+          <img class="slot-lock" src="./src/icons/ic_lock.png" alt="" />
+        </button>
+      </div>
+
+      <div class="module-row">
+        <button class="module-slot" id="slotL">
+          <img class="module-ico" src="./src/icons/ic_drone.png" alt="" />
+          <span class="module-lbl">L</span>
+        </button>
+        <div class="play-col">
+          <button class="btn-play" id="btnPlay">CHƠI</button>
+          <div class="sub-row">
+            <button class="btn-slate" id="btnArena">ĐẤU TRƯỜNG</button>
+            <button class="btn-slate" id="btnPvp">PVP<small>SẮP CÓ</small></button>
+          </div>
+        </div>
+        <button class="module-slot locked" id="slotR">
+          <img class="module-ico is-lock" src="./src/icons/ic_lock.png" alt="" />
+          <span class="module-lbl">R</span>
+        </button>
+      </div>
+
+      <div class="corner-row">
+        <button class="corner-btn" id="btnDeal">
+          <img class="corner-ico" src="./src/icons/ic_gift.png" alt="" />
+          <span>ƯU ĐÃI</span>
+        </button>
+        <div class="mode-chips">
+          <button class="chip active" data-mode="endless">VÔ TẬN</button>
+          <button class="chip" data-mode="bossrush">SĂN BOSS</button>
+          <button class="chip" data-mode="daily">HẰNG NGÀY</button>
+        </div>
+        <button class="corner-btn" id="btnVip">
+          <img class="corner-ico" src="./src/icons/ic_crown.png" alt="" />
+          <span>VIP</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MAP ================= -->
+  <div class="screen hidden" id="screen-map">
+    <div class="map-wrap">
+      <h2 class="screen-title">CHIẾN DỊCH</h2>
+      <div class="chapter-row" id="chapterRow"></div>
+      <div class="map-canvas" id="mapCanvas">
+        <svg class="map-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <polyline id="mapLine" points="" />
+        </svg>
+        <div class="map-nodes" id="mapNodes"></div>
+      </div>
+      <div class="map-foot">
+        <button class="btn-slate wide" id="btnMapChapters">CHƯƠNG</button>
+        <button class="btn-upgrade-green" id="btnMapUpgrade">NÂNG CẤP</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= HANGAR ================= -->
+  <div class="screen hidden" id="screen-hangar">
+    <div class="sheet">
+      <h2 class="screen-title">HANGAR</h2>
+
+      <div class="ship-tab" id="shipTab">
+        <span class="tab-letter">S</span>
+        <b id="shipTabName">STRIKER</b>
+        <span class="tab-pips" id="shipTabPips"></span>
+      </div>
+
+      <div class="ship-preview">
+        <div class="ship-portrait"><img id="hangarShipImg" alt="" /></div>
+        <div class="ship-spec">
+          <div class="spec-line"><span>LVL</span><b id="specLvl">1/15</b></div>
+          <div class="spec-rows">
+            <div class="spec-line atk"><span>ATK</span><b id="specAtk">12</b></div>
+            <div class="spec-line hp"><span>HP</span><b id="specHp">100</b></div>
+            <div class="spec-line spd"><span>TỐC</span><b id="specSpd">11.5</b></div>
+          </div>
+          <div class="exp-bar"><i id="expFill"></i><em id="expText">CẤP 1 / 15</em></div>
+        </div>
+      </div>
+
+      <p class="perk-line" id="specPerk">+10% vàng nhận được</p>
+
+      <div class="dual-buy">
+        <button class="btn-buy coin" id="btnBuyCoin"><img class="coin-ico" src="./src/icons/ic_coin.png" alt="" /><span>+1 CẤP</span></button>
+        <button class="btn-buy gem" id="btnBuyGem"><img class="gem-ico" src="./src/icons/ic_gem.png" alt="" /><span>+1 CẤP</span></button>
+      </div>
+
+      <div class="section-label"><i></i>MẪU TÀU<i></i></div>
+      <div class="drone-grid" id="shipGrid"></div>
+    </div>
+  </div>
+
+  <!-- ================= TECHNOLOGY ================= -->
+  <div class="screen hidden" id="screen-tech">
+    <div class="sheet">
+      <h2 class="screen-title">CÔNG NGHỆ</h2>
+
+      <!-- sơ đồ tàu: bấm vào bộ phận để nâng cấp -->
+      <div class="tech-bay" id="techBay">
+        <span class="bay-corner tl"></span><span class="bay-corner tr"></span>
+        <span class="bay-corner bl"></span><span class="bay-corner br"></span>
+        <div class="bay-stage">
+          <img class="bay-ship" id="techShipImg" src="./src/art/game/striker.png" alt="Sơ đồ tàu" />
+          <button class="tap-pin" data-key="magnet" style="--x:50%;--y:12%">
+            <span class="pin-ring"></span><span class="pin-dot"></span>
+            <span class="pin-tag top"><b>TỪ TRƯỜNG</b><i data-lv="magnet">0</i></span>
+          </button>
+          <button class="tap-pin" data-key="shield" style="--x:62%;--y:30%">
+            <span class="pin-ring"></span><span class="pin-dot"></span>
+            <span class="pin-tag"><b>KHIÊN</b><i data-lv="shield">0</i></span>
+          </button>
+          <button class="tap-pin" data-key="cannon" style="--x:24%;--y:54%">
+            <span class="pin-ring"></span><span class="pin-dot"></span>
+            <span class="pin-tag left"><b>PHÁO</b><i data-lv="cannon">0</i></span>
+          </button>
+          <button class="tap-pin" data-key="armor" style="--x:50%;--y:46%">
+            <span class="pin-ring"></span><span class="pin-dot"></span>
+            <span class="pin-tag bottom"><b>GIÁP</b><i data-lv="armor">0</i></span>
+          </button>
+          <button class="tap-pin" data-key="drone" style="--x:70%;--y:62%">
+            <span class="pin-ring"></span><span class="pin-dot"></span>
+            <span class="pin-tag"><b>DRONE</b><i data-lv="drone">0</i></span>
+          </button>
+        </div>
+        <div class="bay-scan"></div>
+        <div class="bay-hint">CHẠM VÀO BỘ PHẬN ĐỂ NÂNG CẤP</div>
+      </div>
+
+      <div class="tech-head">
+        <span class="tech-emblem" id="techEmblem"></span>
+        <div class="tech-head-body">
+          <b id="techName">PHÁO CHÍNH</b>
+          <span id="techDesc">+8% sát thương mỗi cấp</span>
+        </div>
+        <b class="tech-lvl" id="techLvl">Lv.0</b>
+      </div>
+      <div class="tech-grid" id="techGrid"></div>
+      <div class="tech-rows" id="techRows"></div>
+      <div class="tech-foot">
+        <span class="tech-total">TỔNG: <b id="techTotal">0/60</b></span>
+        <button class="btn-buy coin" id="btnTechUpgrade"><img class="coin-ico" src="./src/icons/ic_coin.png" alt="" /></button>
+        <button class="btn-buy gem" id="btnTechGem"><img class="gem-ico" src="./src/icons/ic_gem.png" alt="" /></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= STORE ================= -->
+  <div class="screen hidden" id="screen-store">
+    <div class="sheet">
+      <h2 class="screen-title">CỬA HÀNG</h2>
+
+      <div class="store-card" id="dailyDeal">
+        <div class="store-card-head"><b>QUÀ HẰNG NGÀY</b><span id="dealStreak">Chuỗi 0 ngày</span></div>
+        <div class="store-rewards">
+          <div class="reward"><img class="coin-ico big" src="./src/icons/ic_coin.png" alt="" /><b id="dealCoins">0</b></div>
+          <div class="reward"><img class="coin-ico big" src="./src/icons/ic_gem.png" alt="" /><b id="dealGems">0</b></div>
+        </div>
+        <button class="btn-buy coin wide" id="btnClaimDaily">NHẬN</button>
+      </div>
+
+      <div class="store-card">
+        <div class="store-card-head"><b>ĐỔI GEM → XU</b><span>1 NGỌC = 900 XU</span></div>
+        <div class="dual-buy">
+          <button class="btn-buy gem" id="ex1"><img class="gem-ico" src="./src/icons/ic_gem.png" alt="" /><span>1</span><b>+900</b></button>
+          <button class="btn-buy gem" id="ex5"><img class="gem-ico" src="./src/icons/ic_gem.png" alt="" /><span>5</span><b>+4.500</b></button>
+        </div>
+      </div>
+
+      <div class="store-card">
+        <div class="store-card-head"><b>MỞ KHOÁ TÀU</b><span>TRONG HANGAR</span></div>
+        <p class="store-note">Kiếm sao ở Chiến dịch để nhận ngọc; ngọc dùng nâng cấp tàu và công nghệ.</p>
+        <button class="btn-upgrade-green wide" data-goto="hangar">TỚI HANGAR</button>
+      </div>
+
+      <div class="store-card premium">
+        <div class="store-card-head"><b>PREMIUM</b><span>NHẬN 2× THƯỞNG</span></div>
+        <p class="store-note">Bản thử nghiệm chưa mở thanh toán. Mọi phần thưởng đều kiếm được khi chơi.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SETTINGS ================= -->
+  <div class="screen hidden" id="screen-settings">
+    <div class="sheet">
+      <h2 class="screen-title">CÀI ĐẶT</h2>
+      <div class="settings-grid">
+        <button class="sett-tile" id="settSound"><img class="sett-ico" src="./src/icons/ic_sound.png" alt="" /><span>ÂM THANH</span></button>
+        <button class="sett-tile" id="settMusic"><img class="sett-ico" src="./src/icons/ic_music.png" alt="" /><span>NHẠC NỀN</span></button>
+        <button class="sett-tile" id="settProfile"><img class="sett-ico" src="./src/icons/ic_pilot.png" alt="" /><span>HỒ SƠ</span></button>
+        <button class="sett-tile" id="settInstall"><img class="sett-ico" src="./src/icons/ic_install.png" alt="" /><span>CÀI APP</span></button>
+        <button class="sett-tile" id="settLang"><img class="sett-ico" src="./src/icons/ic_globe.png" alt="" /><span>NGÔN NGỮ</span></button>
+        <button class="sett-tile" id="settAbout"><img class="sett-ico" src="./src/icons/ic_info.png" alt="" /><span>GIỚI THIỆU</span></button>
+        <button class="sett-tile" id="settPrivacy"><img class="sett-ico" src="./src/icons/ic_lock.png" alt="" /><span>RIÊNG TƯ</span></button>
+        <button class="sett-tile danger" id="settReset"><img class="sett-ico" src="./src/icons/ic_trash.png" alt="" /><span>XOÁ DỮ LIỆU</span></button>
+      </div>
+
+      <section class="ww-panel slider-panel">
+        <label class="slider-row"><span>NHẠC</span><input type="range" id="sliderMusic" min="0" max="100" value="40" /><img class="slider-ico" src="./src/icons/ic_music.png" alt="" /></label>
+        <label class="slider-row"><span>ÂM THANH</span><input type="range" id="sliderSound" min="0" max="100" value="80" /><img class="slider-ico" src="./src/icons/ic_sound.png" alt="" /></label>
+        <label class="slider-row"><span>TỐC ĐỘ GAME</span><b id="speedVal">1.0</b><input type="range" id="sliderSpeed" min="70" max="140" value="100" /><img class="slider-ico" src="./src/icons/ic_speed.png" alt="" /></label>
+      </section>
+
+      <p class="credits">Kenney + Quaternius · CC0 1.0 · three.js</p>
+    </div>
+  </div>
+
+  <!-- ================= PAUSE ================= -->
+  <div class="screen hidden" id="screen-pause">
+    <div class="pause-wrap">
+      <h2 class="screen-title with-lines"><i></i>TẠM DỪNG<i></i></h2>
+
+      <section class="ww-panel">
+        <div class="panel-head"><b id="pauseStage">MÀN 1</b><span id="pauseDiff">[THƯỜNG]</span></div>
+        <div class="objective-list" id="pauseObjectives"></div>
+      </section>
+
+      <section class="ww-panel">
+        <div class="panel-head"><b>ĐIỀU KHIỂN</b></div>
+        <div class="ctrl-row">
+          <button class="ctrl-btn active" data-ctrl="joystick"><i class="ctrl-ico c-joy"></i><small>JOYSTICK</small></button>
+          <button class="ctrl-btn" data-ctrl="drag"><i class="ctrl-ico c-drag"></i><small>KÉO</small></button>
+          <button class="ctrl-btn active" data-ctrl="fire"><i class="ctrl-ico c-auto"></i><small>TỰ BẮN</small></button>
+          <button class="ctrl-btn" data-ctrl="manual"><i class="ctrl-ico c-tap"></i><small>BẮN TAY</small></button>
+        </div>
+        <p class="test-note hidden" id="testNote"></p>
+      </section>
+
+      <section class="ww-panel slider-panel">
+        <label class="slider-row"><span>NHẠC</span><input type="range" id="mMusic" min="0" max="100" value="40" /><img class="slider-ico" src="./src/icons/ic_music.png" alt="" /></label>
+        <label class="slider-row"><span>ÂM THANH</span><input type="range" id="mSound" min="0" max="100" value="80" /><img class="slider-ico" src="./src/icons/ic_sound.png" alt="" /></label>
+        <label class="slider-row"><span>TỐC ĐỘ GAME</span><b id="speedVal2">1.0</b><input type="range" id="mSpeed" min="70" max="140" value="100" /><img class="slider-ico" src="./src/icons/ic_speed.png" alt="" /></label>
+      </section>
+
+      <div class="pause-foot">
+        <button class="btn-slate" id="btnMenuPause">VỀ MENU</button>
+        <button class="btn-upgrade-green" id="btnRestartPause">CHƠI LẠI</button>
+        <button class="btn-play" id="btnResume">TIẾP TỤC</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= RESULT ================= -->
+  <div class="screen hidden" id="screen-result">
+    <div class="pause-wrap">
+      <h2 class="screen-title with-lines"><i></i><span id="resTitle">KẾT THÚC</span><i></i></h2>
+      <div class="stars" id="resStars"></div>
+
+      <section class="ww-panel">
+        <div class="panel-head"><b id="resKicker">CHIẾN DỊCH</b><span id="resMode">MÀN 1</span></div>
+        <div class="result-grid">
+          <div><span>ĐIỂM</span><b id="resScore">0</b></div>
+          <div><span>KỶ LỤC</span><b id="resBest">0</b></div>
+          <div><span>HẠ ĐỊCH</span><b id="resKills">0</b></div>
+          <div class="reward-cell"><span>THƯỞNG</span><b id="resCoins">+0</b></div>
+        </div>
+      </section>
+
+      <div class="pause-foot">
+        <button class="btn-play hidden" id="btnNextLevel">MÀN TIẾP</button>
+        <button class="btn-slate" id="btnReplay">CHƠI LẠI</button>
+        <button class="btn-slate" id="btnMenuOver">VỀ MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PROFILE ================= -->
+  <div class="screen hidden" id="screen-profile">
+    <div class="sheet">
+      <h2 class="screen-title">HỒ SƠ</h2>
+
+      <div class="profile-card">
+        <div class="profile-avatar"></div>
+        <div class="profile-name">
+          <b>PHI CÔNG</b>
+          <span>Hạng VIP 0 · <i id="profRuns">0</i> lượt chơi</span>
+        </div>
+        <span class="vip-badge">VIP 0</span>
+      </div>
+
+      <section class="ww-panel">
+        <div class="panel-head"><b>CHIẾN DỊCH</b></div>
+        <div class="stat-trio">
+          <div><b id="profStage">1</b><span>CHƯƠNG</span></div>
+          <div><b id="profStars">0</b><span>SAO</span></div>
+          <div><b id="profTech">0</b><span>CÔNG NGHỆ</span></div>
+        </div>
+      </section>
+
+      <section class="ww-panel">
+        <div class="panel-head"><b>KỶ LỤC</b></div>
+        <div class="result-grid">
+          <div><span>CHIẾN DỊCH</span><b id="profCampaign">0</b></div>
+          <div><span>VÔ TẬN</span><b id="profEndless">0</b></div>
+          <div><span>SĂN BOSS</span><b id="profBoss">0</b></div>
+          <div><span>HẰNG NGÀY</span><b id="profDaily">0</b></div>
+        </div>
+      </section>
+
+      <button class="btn-slate wide" data-goto="home">ĐÓNG</button>
+    </div>
+  </div>
+
+  <!-- ================= MODALS ================= -->
+  <div class="modal hidden" id="infoModal">
+    <div class="modal-card">
+      <div class="modal-head"><b id="infoTitle">GIỚI THIỆU</b><button id="btnCloseInfo" aria-label="Đóng">✕</button></div>
+      <div class="modal-body" id="infoBody"></div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalReset">
+    <div class="modal-card">
+      <div class="modal-head"><b>XOÁ DỮ LIỆU</b><button id="btnCloseReset" aria-label="Đóng">✕</button></div>
+      <div class="modal-body">
+        <p>Toàn bộ tiến trình (sao, xu, ngọc, cấp tàu, công nghệ) sẽ bị xoá và không thể khôi phục.</p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-slate" id="btnResetNo">HUỶ</button>
+        <button class="btn-buy gem" id="btnResetYes">XOÁ HẾT</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <div id="errorBox" class="error-box hidden"></div>
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

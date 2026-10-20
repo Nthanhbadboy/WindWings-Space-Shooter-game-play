@@ -1,7 +1,4 @@
-# Build WindWings Boss Fight (game/) into a debug APK on GitHub runners.
-# Recipe adapted from the windwings-ui-ux-analysis branch prototype workflow.
-# Triggers: manual (Actions tab) or pushing a tag v*.
-name: Android APK
+name: Build Android debug APK
 
 on:
   workflow_dispatch:
@@ -9,8 +6,11 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: read
+
 jobs:
-  build-apk:
+  apk:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,38 +18,50 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: prototype/package-lock.json
 
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 21
+          java-version: '21'
 
-      - name: Install Capacitor (MIT, no paid deps)
-        run: npm install --no-save @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
-
-      - name: Add Android platform (webDir = game/)
-        run: npx cap add android
-
-      - name: Force portrait orientation
+      - name: Install & build web
+        working-directory: prototype
         run: |
-          python3 - <<'EOF'
-          import re
-          p = 'android/app/src/main/AndroidManifest.xml'
-          s = open(p).read()
-          if 'screenOrientation' not in s:
-              s = re.sub(r'<activity\b', '<activity android:screenOrientation="portrait"', s, count=1)
-              open(p, 'w').write(s)
-              print('portrait patched')
-          EOF
+          npm ci
+          npx vite build
 
-      - name: Sync web assets
-        run: npx cap sync android
+      - name: Add Capacitor Android shell
+        working-directory: prototype
+        run: |
+          npm install --no-save @capacitor/core @capacitor/cli @capacitor/android
+          npx cap add android
+          npx cap sync android
 
-      - name: Build debug APK
-        run: cd android && ./gradlew assembleDebug --no-daemon
+      - name: Portrait + fullscreen manifest
+        working-directory: prototype
+        run: |
+          python3 - <<'PY'
+          import re, pathlib
+          p = pathlib.Path('android/app/src/main/AndroidManifest.xml')
+          s = p.read_text()
+          s = s.replace('android:name=".MainActivity"',
+                        'android:name=".MainActivity"\n            android:screenOrientation="portrait"\n            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"')
+          p.write_text(s)
+          print(s)
+          PY
+
+      - name: Gradle assemble debug
+        working-directory: prototype/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: windwings-boss-fight-apk
-          path: android/app/build/outputs/apk/debug/*.apk
+          name: windwings3d-debug-apk
+          path: prototype/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14

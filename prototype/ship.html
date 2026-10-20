@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#04060f" />
+  <title>WindWings 3D — Xưởng máy bay</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%23080f26'/><path d='M32 10l10 21 14 4-14 7-10 12-10-12-14-7 14-4z' fill='%23f07c24' stroke='%23ffe8c6' stroke-width='2'/></svg>" />
+  <link rel="stylesheet" href="./src/ship-preview.css" />
+</head>
+<body>
+<div id="stage">
+  <canvas id="view"></canvas>
+  <div class="space-glow" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">W</span>
+      <div>
+        <h1>WINDWINGS <em>3D</em></h1>
+        <p>XƯỞNG CHẾ TẠO · MÁY BAY SỐNG</p>
+      </div>
+    </div>
+    <div class="top-chips">
+      <span class="chip" id="viewChip"><i></i>TRỰC GIAO 0°</span>
+      <span class="chip chip-dim" id="fpsChip">-- FPS</span>
+    </div>
+  </header>
+
+  <div class="labels" id="labels" aria-hidden="true">
+    <div class="plabel" data-key="wing" data-dir="right"><i></i><span><b>CÁNH</b><em>vỗ nhẹ, xoay theo nhịp</em></span></div>
+    <div class="plabel" data-key="engine" data-dir="right"><i></i><span><b>ĐỘNG CƠ</b><em>phụt lửa theo ga</em></span></div>
+    <div class="plabel" data-key="gun" data-dir="left"><i></i><span><b>NÒNG SÚNG</b><em>đạn sinh đúng đầu nòng</em></span></div>
+    <div class="plabel" data-key="canopy" data-dir="left"><i></i><span><b>BUỒNG LÁI</b><em>phi công, kính đổi sáng</em></span></div>
+  </div>
+
+  <div class="live-strip" id="liveStrip">
+    <span class="live-title">ĐANG SỐNG</span>
+    <span class="live-item"><i class="ic-wing"></i>CÁNH VỖ</span>
+    <span class="live-item"><i class="ic-flame"></i>LỬA ĐUÔI</span>
+    <span class="live-item"><i class="ic-gun"></i>NÒNG GIẬT</span>
+    <span class="live-item"><i class="ic-sensor"></i>CẢM BIẾN RUNG</span>
+  </div>
+
+  <section class="deck">
+    <div class="deck-head">
+      <span class="deck-dot"></span>
+      <h2>BÀN THỬ</h2>
+      <span class="deck-note">nhìn thẳng từ trên xuống · đạn rời đúng đầu nòng</span>
+      <button class="ghost" id="resetBtn" type="button">ĐẶT LẠI</button>
+    </div>
+
+    <div class="controls">
+      <label class="ctl" for="flap">
+        <span class="ctl-name">VỖ CÁNH</span>
+        <input id="flap" type="range" min="0" max="1" step="0.01" value="1" />
+        <b class="ctl-val" id="flapVal">100%</b>
+      </label>
+      <label class="ctl" for="throttle">
+        <span class="ctl-name">GA PHẢN LỰC</span>
+        <input id="throttle" type="range" min="0" max="1" step="0.01" value="0.75" />
+        <b class="ctl-val" id="throttleVal">75%</b>
+      </label>
+      <label class="ctl" for="bank">
+        <span class="ctl-name">NGHIÊNG THÂN</span>
+        <input id="bank" type="range" min="-1" max="1" step="0.01" value="0" />
+        <b class="ctl-val" id="bankVal">0°</b>
+      </label>
+      <label class="ctl" for="tilt">
+        <span class="ctl-name">GÓC NHÌN</span>
+        <input id="tilt" type="range" min="0" max="55" step="1" value="0" />
+        <b class="ctl-val" id="tiltVal">0°</b>
+      </label>
+      <label class="ctl" for="speed">
+        <span class="ctl-name">TỐC ĐỘ</span>
+        <input id="speed" type="range" min="0.15" max="1.4" step="0.05" value="1" />
+        <b class="ctl-val" id="speedVal">1.0×</b>
+      </label>
+    </div>
+
+    <div class="buttons">
+      <button class="tgl on" id="fireBtn" type="button"><i class="ic-gun"></i>KHAI HỎA</button>
+      <button class="tgl on" id="markerBtn" type="button"><i class="ic-cross"></i>ĐÁNH DẤU NÒNG</button>
+      <button class="tgl on" id="labelBtn" type="button"><i class="ic-label"></i>CHÚ THÍCH</button>
+      <button class="tgl" id="pauseBtn" type="button"><i class="ic-pause"></i>TẠM DỪNG</button>
+    </div>
+  </section>
+
+  <p class="hint" id="hint">Mẹo: kéo <b>GÓC NHÌN</b> lên 55° để thấy cánh vỗng, lửa và thân máy bay · Space tạm dừng · F bật/tắt khai hỏa</p>
+</div>
+
+<div class="fatal hidden" id="fatal">
+  <b>Không mở được WebGL.</b>
+  <span>Trình duyệt này chưa bật WebGL. Hãy thử Chrome trên máy tính hoặc điện thoại Android.</span>
+</div>
+
+<script type="module" src="./src/ship-preview.js"></script>
+</body>
+</html>
