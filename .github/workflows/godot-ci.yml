@@ -117,7 +117,10 @@ jobs:
         run: |
           keytool -genkeypair -v -keystore /tmp/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
           mkdir -p ~/.config/godot
-          printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nexport/android/android_sdk_path = "/usr/local/lib/android/sdk"\nexport/android/java_sdk_path = ""\nexport/android/debug_keystore = "/tmp/debug.keystore"\nexport/android/debug_keystore_user = "androiddebugkey"\nexport/android/debug_keystore_pass = "android"\n' | tee ~/.config/godot/editor_settings-4.tres > ~/.config/godot/editor_settings-4.3.tres
+          JDK_PATH="${JAVA_HOME:-$(dirname "$(dirname "$(readlink -f "$(which javac)")")")}"
+          echo "JDK_PATH=$JDK_PATH"
+          printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nexport/android/android_sdk_path = "/usr/local/lib/android/sdk"\nexport/android/java_sdk_path = "%s"\nexport/android/debug_keystore = "/tmp/debug.keystore"\nexport/android/debug_keystore_user = "androiddebugkey"\nexport/android/debug_keystore_pass = "android"\n' "$JDK_PATH" | tee ~/.config/godot/editor_settings-4.tres > ~/.config/godot/editor_settings-4.3.tres
+          cat ~/.config/godot/editor_settings-4.tres
           ls /usr/local/lib/android/sdk/build-tools/ || true
           cd "$GITHUB_WORKSPACE/godot"
           sed -i 's|keystore/debug=""|keystore/debug="/tmp/debug.keystore"|; s|keystore/debug_user=""|keystore/debug_user="androiddebugkey"|; s|keystore/debug_password=""|keystore/debug_password="android"|' export_presets.cfg
