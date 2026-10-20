@@ -33,6 +33,7 @@ env:
 jobs:
   smoke-and-web:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -54,7 +55,7 @@ jobs:
       - name: Run smoke tests (headless)
         run: |
           cd "$GITHUB_WORKSPACE/godot"
-          "$GODOT_BIN" --headless --path . res://tests/TestMain.tscn 2>&1 | tee /tmp/smoke.log
+          "$GODOT_BIN" --headless --fixed-fps 240 --path . res://tests/TestMain.tscn 2>&1 | tee /tmp/smoke.log
           exit "${PIPESTATUS[0]}"
 
       - name: Export Web (no threads — chạy trên Pages thường)
@@ -94,6 +95,7 @@ jobs:
   android:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 

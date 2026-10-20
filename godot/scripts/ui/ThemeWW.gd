@@ -1,4 +1,5 @@
 extends RefCounted
+class_name ThemeWW
 ## ThemeWW.gd — bộ kit UI WindWings dựng bằng code theo DO_DAC_UI.md +
 ## ảnh Ramus: nút bevel vàng/cam, panel xanh đêm viền cyan, chữ sáng,
 ## thanh nghiêng (skewX -12°/-26°). Dùng chung cho HUD và mọi màn hình.

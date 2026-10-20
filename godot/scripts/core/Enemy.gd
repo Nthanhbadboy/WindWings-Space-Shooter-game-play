@@ -89,12 +89,12 @@ func _build_wings() -> void:
 	var a := Animation.new()
 	a.length = 0.16
 	a.loop_mode = Animation.LOOP_LINEAR
-	var tr := a.add_track(AnimationTrack.VALUE)
+	var tr := a.add_track(Animation.TYPE_VALUE)
 	a.track_set_path(tr, NodePath("WingL:rotation"))
 	a.track_insert_key(tr, 0.0, -0.55)
 	a.track_insert_key(tr, 0.08, -0.10)
 	a.track_insert_key(tr, 0.16, -0.55)
-	var tr2 := a.add_track(AnimationTrack.VALUE)
+	var tr2 := a.add_track(Animation.TYPE_VALUE)
 	a.track_set_path(tr2, NodePath("WingR:rotation"))
 	a.track_insert_key(tr2, 0.0, 0.55)
 	a.track_insert_key(tr2, 0.08, 0.10)

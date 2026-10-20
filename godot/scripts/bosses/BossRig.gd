@@ -158,7 +158,7 @@ func _part_path(p: Node2D) -> String:
 	return "Body/" + String(p.name) if p.get_parent() == body else String(owner_path) + "/" + String(p.name)
 
 func _track3(a: Animation, path: String, times: Array, values: Array) -> void:
-	var tr := a.add_track(AnimationTrack.VALUE)
+	var tr := a.add_track(Animation.TYPE_VALUE)
 	a.track_set_path(tr, NodePath(path))
 	a.track_set_interpolation_type(tr, Animation.INTERPOLATION_CUBIC)
 	for i in times.size():

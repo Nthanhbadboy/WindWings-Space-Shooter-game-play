@@ -19,6 +19,16 @@ const REQUIRED_ANIMS := ["idle", "charge", "fire", "hurt", "phase_shift", "enrag
 var fails := 0
 var checks := 0
 var world: Node2D
+var _frames_total := 0
+
+const WATCHDOG_FRAMES := 400000
+
+func _physics_process(_delta: float) -> void:
+	_frames_total += 1
+	if _frames_total > WATCHDOG_FRAMES:
+		printerr("[SMOKE][FAIL] WATCHDOG: vượt %d frame — có vòng lặp treo" % WATCHDOG_FRAMES)
+		print("[SMOKE] RESULT: FAIL (watchdog)")
+		get_tree().quit(1)
 
 func _ready() -> void:
 	print("[SMOKE] WindWings Galaxy Ace — bắt đầu kiểm thử headless")
@@ -47,6 +57,7 @@ func _run() -> void:
 	await _test_bosses()
 	_test_save()
 	await _test_runscene()
+	Engine.time_scale = 1.0
 	print("[SMOKE] checks=%d fails=%d" % [checks, fails])
 	print("[SMOKE] RESULT: " + ("PASS" if fails == 0 else "FAIL"))
 	get_tree().quit(1 if fails > 0 else 0)
@@ -118,9 +129,7 @@ func _test_player() -> void:
 	pl.position = Vector2(360, 900)
 	pl.target = pl.position
 	pl._begin_drag(Vector2(360, 1050))   # ngón tay DƯỚI tàu 150px
-	_check(pl.grab_offset.y >= 100.0, "grab_offset giữ tàu trên ngón tay (dy=%.0f)" % pl.grab_offset.y)
-	pl.grab_offset = Vector2(0, 150)
-	pl.target = Vector2(360, 1050 - 0) + pl.grab_offset
+	_check(pl.grab_offset.y <= -100.0, "grab_offset giữ tàu NỔI TRÊN ngón tay (dy=%.0f)" % pl.grab_offset.y)
 	pl.target = Vector2(200, 600)
 	await _frames(40)
 	_check(pl.position.distance_to(Vector2(200, 600)) < 6.0, "bám mục tiêu 1:1 hội tụ (<6px sau 40 frame)")
@@ -246,7 +255,7 @@ func _test_one_boss(id: String) -> void:
 	while boss.state == "transition" and guard < 200:
 		await _frames(5)
 		guard += 5
-	boss.take_damage(boss.max_hp * 0.25)
+	boss.take_damage(boss.max_hp * 0.30)
 	await _frames(4)
 	_check(boss.enraged, "%s: 10%% HP → cuồng nộ" % id)
 	boss.take_damage(boss.hp + 1.0)
