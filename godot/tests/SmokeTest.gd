@@ -190,13 +190,14 @@ func _test_enemies() -> void:
 	stub.player_pos = Vector2(360, 1050)
 	for type in Balance.ENEMIES:
 		var e: Node2D = EnemyScript.new()
-		world.add_child(e)
 		e.setup(String(type), 1.2, 1.1, 1.0, stub, Vector2(360, -60))
+		world.add_child(e)
 		var y0: float = e.position.y
 		await _wait(1.5)
 		_check(e.position.y > y0 + 20.0, "địch '%s' di chuyển vào màn" % type)
 		await _wait(4.0)
-		e.queue_free()
+		if is_instance_valid(e):
+			e.queue_free()
 	await _wait(0.1)
 	_check(stub.enemy_bullets > 0, "địch có bắn (hornet/bomber/tank/interceptor đã nhả đạn)")
 	stub.queue_free()

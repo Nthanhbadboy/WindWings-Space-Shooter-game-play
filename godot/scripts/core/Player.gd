@@ -146,6 +146,7 @@ func _physics_process(delta: float) -> void:
 	var k: float = Balance.PLAYER["follow_k"]
 	var prev := position
 	position += (target - position) * (1.0 - exp(-k * delta))
+	position = _clamp_target(position)   # không bao giờ lọt khỏi biên
 	var vx := (position.x - prev.x) / maxf(delta, 0.0001)
 	tilt = clampf(vx * 0.00035, -0.35, 0.35)
 	rotation = lerpf(rotation, tilt, 1.0 - exp(-12.0 * delta))
