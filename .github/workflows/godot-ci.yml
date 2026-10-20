@@ -55,8 +55,11 @@ jobs:
       - name: Run smoke tests (headless)
         run: |
           cd "$GITHUB_WORKSPACE/godot"
-          "$GODOT_BIN" --headless --fixed-fps 240 --path . res://tests/TestMain.tscn 2>&1 | tee /tmp/smoke.log
-          exit "${PIPESTATUS[0]}"
+          timeout -k 15 540 "$GODOT_BIN" --headless --fixed-fps 240 --path . res://tests/TestMain.tscn 2>&1 | tee /tmp/smoke.log
+          CODE="${PIPESTATUS[0]}"
+          echo "--- smoke exit code: $CODE ---"
+          tail -80 /tmp/smoke.log
+          exit "$CODE"
 
       - name: Export Web (no threads — chạy trên Pages thường)
         run: |
@@ -71,7 +74,7 @@ jobs:
           path: godot/build/web
 
       - name: Diagnose failure → repo issue
-        if: failure()
+        if: failure() || cancelled()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -142,7 +145,7 @@ jobs:
           retention-days: 30
 
       - name: Diagnose failure → repo issue
-        if: failure()
+        if: failure() || cancelled()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
