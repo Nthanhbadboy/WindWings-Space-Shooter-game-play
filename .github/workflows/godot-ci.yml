@@ -131,9 +131,9 @@ jobs:
           cd "$GITHUB_WORKSPACE/godot"
           "$GODOT_BIN" --headless --import . > /tmp/import_android.log 2>&1 || true
           mkdir -p build
-          "$GODOT_BIN" --headless --verbose --path . --export-debug "Android" build/WindWings-Galaxy-Ace.apk > /tmp/android.log 2>&1
+          "$GODOT_BIN" --headless --path . --export-debug "Android" build/WindWings-Galaxy-Ace.apk > /tmp/android.log 2>&1
           CODE=$?
-          grep -iE "error|keystore|sdk|apksigner|zipalign|configuration|preset" /tmp/android.log | tail -60 || true
+          grep -B3 -A12 -iE "cannot export|configuration error" /tmp/android.log | head -60 || true
           tail -25 /tmp/android.log
           exit $CODE
 
