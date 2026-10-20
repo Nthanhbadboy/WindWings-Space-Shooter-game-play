@@ -12,6 +12,7 @@ const A = B.attacks;
 const DEG = Math.PI / 180;
 
 export function bossBullet(game, x, y, angle, speed, radius) {
+  speed *= game.bossBulletMul || 1;
   const c = CONFIG.enemies.bossBullet;
   game.enemyBullets.push(new Bullet({
     x, y,
@@ -195,8 +196,8 @@ export const ATTACKS = {
         game.enemyBullets.push(new Bullet({
           x: boss.x + s * boss.radius * 0.95,
           y: boss.y + boss.radius * 0.35,
-          vx: s * 60,
-          vy: c.speed,
+          vx: s * 60 * (game.bossBulletMul || 1),
+          vy: c.speed * (game.bossBulletMul || 1),
           radius: c.bulletRadius,
           life: bc.life,
           color: bc.glow,

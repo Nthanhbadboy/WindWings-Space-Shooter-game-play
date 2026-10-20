@@ -92,10 +92,15 @@ const { spawnEnemy } = await import('../game/js/enemies.js');
 const { Powerup } = await import('../game/js/powerups.js');
 const { Bullet } = await import('../game/js/projectiles.js');
 const { menuButtons } = await import('../game/js/hud.js');
+const { screenButtons } = await import('../game/js/screens.js');
+const { getLevel, TOTAL_LEVELS } = await import('../game/js/levels.js');
+const { Progress } = await import('../game/js/progress.js');
 
 // ------------------------------------------------------------- helpers
-function makeGame() {
-  return new Game(makeCanvasStub());
+function makeGame(level = 1) {
+  const g = new Game(makeCanvasStub());
+  g.startLevel(level);
+  return g;
 }
 
 function frames(g, n, dt = 1 / 60) {
@@ -147,7 +152,8 @@ function tapAt(g, x, y, id = 9) {
 }
 
 function buttonCenter(b) {
-  return { x: b.x + b.w / 2, y: b.y + b.h / 2 };
+  const r = b.rect || b;
+  return { x: r.x + r.w / 2, y: r.y + r.h / 2 };
 }
 
 
@@ -156,4 +162,5 @@ export {
   test, tests, makeGame, frames, clearWaves, clearWavesKeepBoss, toCanvas,
   tapAt, buttonCenter, toBossIdle, forceAttack,
   Game, CONFIG, spawnEnemy, Powerup, Bullet, menuButtons,
+  screenButtons, getLevel, TOTAL_LEVELS, Progress,
 };

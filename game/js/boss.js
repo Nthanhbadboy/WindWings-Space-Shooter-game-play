@@ -5,6 +5,7 @@ import { CONFIG } from './config.js';
 import { Timer, weightedPick } from './utils.js';
 import { Powerup } from './powerups.js';
 import { ATTACKS, telegraphTime } from './boss_attacks.js';
+import { drawBossRig } from './boss_rigs.js';
 
 const B = CONFIG.boss;
 const S = CONFIG.screen;
@@ -19,7 +20,12 @@ export class Boss {
     this.x = S.width / 2;
     this.y = -180;
     this.radius = B.radius;
+    this.type = 'tyrant';
+    this.bossName = B.name;
+    this.hpMul = 1;
+    this.maxHp = B.maxHp;
     this.hp = B.maxHp;
+    this.anim = { state: 'enter', t: 0, kick: 0, blink: 0, blinkT: 2.5 };
     this.phase = 1;
     this.enraged = false;
     this.state = 'hidden';       // hidden|warning|enter|idle|attack|recover|transition|dead
@@ -52,12 +58,27 @@ export class Boss {
   }
 
   get hpFrac() {
-    return Math.max(0, Math.min(1, this.hp / B.maxHp));
+    return Math.max(0, Math.min(1, this.hp / this.maxHp));
   }
 
   get cooldownTime() {
     if (this.enraged) return B.enrage.cooldown;
     return B.phases[this.phase].cooldown;
+  }
+
+  /** Apply per-level boss config {type,name,hpMul} or null for default. */
+  configure(cfg) {
+    if (!cfg) {
+      this.type = 'tyrant';
+      this.bossName = B.name;
+      this.hpMul = 1;
+    } else {
+      this.type = cfg.type;
+      this.bossName = cfg.name;
+      this.hpMul = cfg.hpMul;
+    }
+    this.maxHp = Math.round(B.maxHp * this.hpMul);
+    this.hp = this.maxHp;
   }
 
   /** Called by the game when waves are cleared. */
@@ -118,6 +139,27 @@ export class Boss {
       default:
         break;
     }
+    this._updateAnim(dt); // runs last: reflects this frame's FSM state
+  }
+
+  /** Procedural animation clock: blink, recoil kick, state label. */
+  _updateAnim(dt) {
+    const a = this.anim;
+    a.t += dt;
+    a.kick = Math.max(0, a.kick - dt * 4);
+    a.blinkT -= dt;
+    if (a.blinkT <= 0) {
+      a.blink = 0.12;
+      a.blinkT = 2 + Math.random() * 3;
+    }
+    if (a.blink > 0) a.blink -= dt;
+    let st = 'idle';
+    if (this.state === 'warning' || this.state === 'enter') st = 'enter';
+    else if (this.state === 'attack') st = this.attack && this.attack.stage === 'telegraph' ? 'charge' : 'fire';
+    else if (this.state === 'transition') st = 'break';
+    else if (this.state === 'dead') st = 'die';
+    if (st === 'fire' && a.state !== 'fire') a.kick = 1; // recoil on shot
+    a.state = st;
   }
 
   /** Threshold checks: phase transitions + enrage. */
@@ -146,7 +188,7 @@ export class Boss {
     this.game.audio.play('boss_growl');
     this.phase = to; // sprite recolors immediately
     if (to === 3) {
-      this.hp = Math.min(B.maxHp, this.hp + B.maxHp * B.phase3HealPct);
+      this.hp = Math.min(this.maxHp, this.hp + this.maxHp * B.phase3HealPct);
       this.game.addFlash('#ff2b2b', 0.5, 0.3);
     }
   }
@@ -254,82 +296,6 @@ export class Boss {
   // ----------------------------------------------------------------- draw
   draw(ctx) {
     if (!this.visible || this.state === 'dead') return;
-    const r = this.radius;
-    const color = this.phase >= 3 ? B.colors.phase3
-      : this.phase === 2 ? B.colors.phase2 : B.colors.phase1;
-    const pulse = this.phase === 3 ? 1 + Math.sin(this.time * Math.PI * 2
-      * B.phases[3].pulseFreq) * 0.04 : 1;
-
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.scale(pulse, pulse);
-    ctx.rotate(this.phase === 2 ? Math.sin(this.spin) * 0.08 : 0);
-
-    // tentacle wings (4 per side)
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 10;
-    ctx.lineCap = 'round';
-    for (const s of [-1, 1]) {
-      for (let i = 0; i < 4; i++) {
-        const wig = Math.sin(this.time * 3 + i) * 8;
-        ctx.beginPath();
-        ctx.moveTo(s * r * 0.5, -r * 0.2 + i * r * 0.22);
-        ctx.quadraticCurveTo(
-          s * r * (1.1 + i * 0.12), -r * 0.5 + i * r * 0.3 + wig,
-          s * r * (1.35 + i * 0.1), r * 0.1 + i * r * 0.28 + wig
-        );
-        ctx.stroke();
-      }
-    }
-
-    // dome hull
-    ctx.fillStyle = color;
-    ctx.strokeStyle = B.colors.outline;
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, r * 0.78, r * 0.92, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    // brow plates
-    ctx.fillStyle = B.colors.outline;
-    ctx.beginPath();
-    ctx.ellipse(0, -r * 0.45, r * 0.6, r * 0.34, 0, Math.PI, 0);
-    ctx.fill();
-
-    // eyes / core
-    const eye = 0.8 + 0.2 * Math.sin(this.time * 5);
-    ctx.fillStyle = B.colors.core;
-    ctx.globalAlpha = eye;
-    for (const s of [-1, 1]) {
-      ctx.beginPath();
-      ctx.arc(s * r * 0.3, -r * 0.12, r * 0.14, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.beginPath();
-    ctx.arc(0, r * 0.3, r * 0.2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalAlpha = 1;
-
-    // red flash tint while an aimed-barrage telegraph charges
-    if (this.attack && this.attack.stage === 'telegraph' && this.attack.data.flash) {
-      ctx.globalAlpha = 0.35 + 0.3 * Math.sin(this.time * 20);
-      ctx.fillStyle = '#ff2b2b';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, r * 0.78, r * 0.92, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalAlpha = 1;
-    }
-
-    // white hurt flash (0.2s)
-    if (this.hurtFlashT > 0) {
-      ctx.globalAlpha = this.hurtFlashT / B.hurtFlash;
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, r * 0.78, r * 0.92, 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.restore();
-    ctx.globalAlpha = 1;
+    drawBossRig(this, ctx);
   }
 }

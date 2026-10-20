@@ -4,8 +4,9 @@ import { CONFIG } from './config.js';
 import { spawnEnemy } from './enemies.js';
 
 export class WaveManager {
-  constructor(game) {
+  constructor(game, definitions) {
     this.game = game;
+    this.definitions = definitions || CONFIG.waves.definitions;
     this.reset();
   }
 
@@ -14,7 +15,7 @@ export class WaveManager {
     this.bossRequested = false;
     this.events = [];
     let cursor = 0;
-    for (const def of CONFIG.waves.definitions) {
+    for (const def of this.definitions) {
       for (const s of def.spawns) {
         this.events.push({ t: cursor + s.t, spawn: s, fired: false });
       }
@@ -37,7 +38,7 @@ export class WaveManager {
       this.game.enemies.length === 0
     ) {
       this.bossRequested = true;
-      this.game.onStageClear();
+      this.game.onWavesDone();
     }
   }
 }

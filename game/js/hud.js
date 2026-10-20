@@ -5,6 +5,7 @@ import { CONFIG } from './config.js';
 const UI = CONFIG.ui;
 const M = CONFIG.menus;
 const B = CONFIG.boss;
+const CAM = CONFIG.campaign;
 const S = CONFIG.screen;
 
 export function drawHud(game, ctx) {
@@ -15,6 +16,44 @@ export function drawHud(game, ctx) {
   drawLives(game, ctx);
   drawBombs(game, ctx);
   drawMenu(game, ctx);
+  if (game.state === 'playing' && !game.paused) {
+    drawLevelTag(game, ctx);
+    drawBanner(game, ctx);
+  }
+}
+
+/** Small "LV n" tag under the bomb counter. */
+function drawLevelTag(game, ctx) {
+  const bc = UI.bombCount;
+  ctx.save();
+  ctx.fillStyle = '#9fb8d8';
+  ctx.font = `bold ${bc.fontPx - 4}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText(`LV ${game.currentLevel}/60`, bc.x, bc.y + 34);
+  ctx.restore();
+}
+
+/** Level start banner (chapter name + level/boss name), fades out. */
+function drawBanner(game, ctx) {
+  if (game.bannerT <= 0 || !game.level) return;
+  const bn = CONFIG.screens.banner;
+  const alpha = Math.min(1, game.bannerT / 0.5);
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.textAlign = 'center';
+  ctx.fillStyle = game.level.tint;
+  ctx.font = `bold ${bn.chapterFontPx}px sans-serif`;
+  ctx.fillText(
+    `CHUONG ${game.level.chapter}: ${CAM.chapterNames[game.level.chapter - 1]}`,
+    S.width / 2, bn.chapterY
+  );
+  ctx.fillStyle = game.level.isBoss ? '#ff3c5a' : '#ffffff';
+  ctx.font = `bold ${bn.levelFontPx}px sans-serif`;
+  ctx.fillText(
+    game.level.isBoss ? `BOSS: ${game.boss.bossName}` : `MAN ${game.currentLevel}`,
+    S.width / 2, bn.levelY
+  );
+  ctx.restore();
 }
 
 /** 3-segment boss bar (one segment per phase), fills with HP. */
@@ -36,7 +75,7 @@ function drawBossBar(game, ctx) {
   ctx.fillStyle = bar.nameColor;
   ctx.font = `bold ${bar.nameFontPx}px sans-serif`;
   ctx.textAlign = 'center';
-  ctx.fillText(B.name, bar.x + bar.w / 2, bar.nameY);
+  ctx.fillText(game.boss.bossName || B.name, bar.x + bar.w / 2, bar.nameY);
   ctx.restore();
 }
 
@@ -101,17 +140,9 @@ function drawBombs(game, ctx) {
 
 // ------------------------------------------------------------------ menus
 function menuInfo(game) {
+  // victory/defeat/title/select overlays live in screens.js
   if (game.paused && game.state === 'playing') {
     return { title: M.pauseTitle, color: M.titleColor, buttons: M.pauseButtons };
-  }
-  if (game.state === 'victory') {
-    return { title: M.victoryTitle, color: M.victoryColor, buttons: M.endButtons, score: true };
-  }
-  if (game.state === 'defeat') {
-    return { title: M.defeatTitle, color: M.defeatColor, buttons: M.endButtons, score: true };
-  }
-  if (game.state === 'quit') {
-    return { title: M.quitTitle, color: M.titleColor, buttons: M.quitButtons };
   }
   return null;
 }
@@ -177,6 +208,6 @@ function applyAction(game, action) {
   else if (action === 'restart') game.restart();
   else if (action === 'quit') {
     game.paused = false;
-    game.state = 'quit';
+    game.state = 'menu';
   }
 }

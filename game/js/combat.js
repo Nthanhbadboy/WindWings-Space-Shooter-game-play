@@ -92,6 +92,6 @@ export function updateBossDeath(game, dt) {
   }
   game.victoryAlpha = Math.max(0, Math.min(1, (seq.t - d.overlayDelay) / d.fadeDuration));
   if (seq.t >= d.overlayDelay + d.fadeDuration && game.state === 'playing') {
-    game.state = 'victory';
+    game.finishLevel();
   }
 }

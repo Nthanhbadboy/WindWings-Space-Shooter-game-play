@@ -9,6 +9,9 @@ import { ScoreManager } from './score.js';
 import { AudioManager } from './audio.js';
 import { updateEnemies } from './enemies.js';
 import { WaveManager } from './waves.js';
+import { getLevel } from './levels.js';
+import { Progress } from './progress.js';
+import { drawScreens, handleScreenTap } from './screens.js';
 import { Boss } from './boss.js';
 import { drawHud, handleUiTap } from './hud.js';
 import { burst, coinBurst } from './particles.js';
@@ -30,13 +33,23 @@ export class Game {
     this.bg = new StarField();
     this.score = new ScoreManager(this);
     this.player = new Player(this);
-    this.waves = new WaveManager(this);
+    this.waves = new WaveManager(this, CONFIG.waves.definitions);
     this.boss = new Boss(this);
     this.stageCleared = false;
     this.bossDeath = null;     // death sequence tracker
     this.victoryAlpha = 0;
 
-    this.state = 'playing';   // playing | victory | defeat | quit
+    // campaign meta (60 levels)
+    this.progress = new Progress();
+    this.currentLevel = 1;
+    this.level = null;
+    this.selectChapter = 1;
+    this.lastStars = 0;
+    this.bannerT = 0;
+    this.levelMods = { hp: 1, speed: 1, bullet: 1 };
+    this.bossBulletMul = 1;
+
+    this.state = 'menu';   // menu | select | playing | victory | defeat
     this.paused = false;
     this.timeScale = 1;
     this._slowMo = null;      // {remaining} in REAL seconds
@@ -62,6 +75,35 @@ export class Game {
     }
     this.resize();
     this.reset();
+    this.state = 'menu';
+  }
+
+  /** Begin one of the 60 campaign levels (boss every 10th). */
+  startLevel(n) {
+    this.currentLevel = n;
+    this.level = getLevel(n);
+    this.levelMods = this.level.mods;
+    this.bossBulletMul = this.level.mods.bullet;
+    this.reset();
+    this.boss.configure(this.level.boss);
+    this.waves = new WaveManager(this, this.level.waves);
+    this.bannerT = CONFIG.screens.banner.time;
+    this.state = 'playing';
+  }
+
+  /** Waves finished: boss stage on boss levels, else level complete. */
+  onWavesDone() {
+    this.stageCleared = true;
+    if (this.level && this.level.isBoss) this.boss.begin();
+    else this.finishLevel();
+  }
+
+  /** Level complete: award stars (by lives left), unlock next level. */
+  finishLevel() {
+    if (this.state !== 'playing') return;
+    this.lastStars = Math.max(1, Math.min(3, this.player.lives));
+    this.progress.recordClear(this.currentLevel, this.lastStars);
+    this.state = 'victory';
   }
 
   // ------------------------------------------------------------------ loop
@@ -93,7 +135,10 @@ export class Game {
     if (this.input.consumeBomb()) this.useBomb();
     if (this.state !== 'playing' || this.paused) {
       const tap = this.input.consumeUiTap();
-      if (tap) handleUiTap(this, tap.x, tap.y);
+      if (tap) {
+        if (this.paused) handleUiTap(this, tap.x, tap.y);
+        else handleScreenTap(this, tap.x, tap.y);
+      }
     }
 
     const frozen = this.paused || this.state !== 'playing';
@@ -104,6 +149,7 @@ export class Game {
 
   update(dt) {
     this.bg.update(dt);
+    this.bannerT = Math.max(0, this.bannerT - dt);
     this.player.update(dt, this.input);
     if (this.waves) this.waves.update(dt);
     updateEnemies(this, dt);
@@ -167,7 +213,7 @@ export class Game {
 
   onStageClear() {
     this.stageCleared = true;
-    this.boss.begin(); // warning -> entry
+    this.boss.begin(); // warning -> entry (manual/test hook)
   }
 
   // ------------------------------------------------------------- fx hooks
@@ -255,7 +301,7 @@ export class Game {
   }
 
   restart() {
-    this.reset();
+    this.startLevel(this.currentLevel);
   }
 
   // ---------------------------------------------------------------- render
@@ -302,7 +348,8 @@ export class Game {
       ctx.globalAlpha = 1;
     }
     drawHud(this, ctx);
-    this._drawControls(ctx);
+    drawScreens(this, ctx);
+    if (this.state === 'playing' && !this.paused) this._drawControls(ctx);
   }
 
   _drawFlashes(ctx) {

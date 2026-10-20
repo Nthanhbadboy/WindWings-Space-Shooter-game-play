@@ -57,7 +57,12 @@ Tệp `image_manifest.csv` liệt kê đầy đủ: thư mục, tên file, ngu�
 
 ## Game (vertical shmup build)
 
-Bản build game bắn máy bay dọc theo spec boss fight nằm ở `game/` (web export,
-Capacitor-ready cho APK — xem `docs/BUILD_ANDROID.md`). Chạy: `npm run serve`,
-test headless: `npm test`. Ảnh trong repo này được dùng làm tham chiếu phong
-cách (portrait shmup, boss tím/cam, đạn cyan vs đỏ/hồng).
+Bản build game bắn máy bay dọc **chiến dịch 60 màn** (6 chương × 10, boss mỗi
+màn 10) nằm ở `game/` (web export, Capacitor-ready — xem `docs/BUILD_ANDROID.md`
+và workflow `.github/workflows/android-apk.yml`: push tag `v*` để CI build APK).
+3 loại boss, mỗi con rig + animation riêng (tentacle uốn sóng / lưỡi cưa quay /
+chân khớp đu đưa), 3 phase + enrage, telegraph đầy đủ. Title + level select +
+sao 1–3 + lưu tiến trình theo UI Ramus (branch `windwings-ui-ux-analysis`).
+Chạy: `npm run serve`, test headless: `npm test` (66 test). Ảnh trong repo này
+được dùng làm tham chiếu phong cách (portrait shmup, boss tím/cam, đạn cyan vs
+đỏ/hồng).

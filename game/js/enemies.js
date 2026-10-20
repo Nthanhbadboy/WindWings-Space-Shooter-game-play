@@ -11,7 +11,14 @@ const E = CONFIG.enemies;
 
 export class Enemy {
   constructor(type, x, y, params = {}) {
-    const c = E[type];
+    const base = E[type];
+    const m = params.mods || { hp: 1, speed: 1, bullet: 1 };
+    // shallow clone + per-level difficulty scaling; behaviors read this.cfg
+    const c = Object.assign({}, base);
+    c.hp = Math.max(1, Math.round(base.hp * m.hp));
+    c.speed = base.speed * m.speed;
+    if (base.bulletSpeed) c.bulletSpeed = base.bulletSpeed * m.bullet;
+    if (base.aimedSpeed) c.aimedSpeed = base.aimedSpeed * m.bullet;
     this.type = type;
     this.cfg = c;
     this.x = x;
@@ -259,6 +266,7 @@ const BEHAVIORS = {
 
 /** Spawn helper. 'formation' creates the full 5-ship V at once. */
 export function spawnEnemy(game, type, params = {}) {
+  params = Object.assign({}, params, { mods: game.levelMods || null });
   if (type === 'formation') {
     const c = E.formation;
     for (let i = -2; i <= 2; i++) {

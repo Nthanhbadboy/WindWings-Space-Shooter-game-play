@@ -2,6 +2,7 @@
 import './tests_gameplay.mjs';
 import './tests_boss.mjs';
 import './tests_meta.mjs';
+import './tests_campaign.mjs';
 import { tests } from './harness.mjs';
 
 

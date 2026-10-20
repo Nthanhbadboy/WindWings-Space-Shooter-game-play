@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test, makeGame, frames, clearWaves, clearWavesKeepBoss, toCanvas,
   tapAt, buttonCenter, toBossIdle, forceAttack, CONFIG, spawnEnemy,
-  Powerup, Bullet, menuButtons } from './harness.mjs';
+  Powerup, Bullet, menuButtons, screenButtons } from './harness.mjs';
 
 // =========================================================== STEP 7 tests
 test('bomb: clears bullets, 500 dmg to enemies+boss, flash + slow-mo', () => {
@@ -75,10 +75,10 @@ test('pause button pauses; menu Resume/Restart/Quit all work', () => {
   assert.equal(g.paused, false);
   tapAt(g, CONFIG.controls.pauseButton.centerX, CONFIG.controls.pauseButton.centerY);
   btns = menuButtons(g);
-  tapAt(g, ...Object.values(buttonCenter(btns[2]))); // QUIT
-  assert.equal(g.state, 'quit');
-  btns = menuButtons(g);
-  tapAt(g, ...Object.values(buttonCenter(btns[0]))); // PLAY AGAIN
+  tapAt(g, ...Object.values(buttonCenter(btns[2]))); // QUIT -> title
+  assert.equal(g.state, 'menu');
+  btns = screenButtons(g);
+  tapAt(g, ...Object.values(buttonCenter(btns[0]))); // CHOI
   assert.equal(g.state, 'playing');
   assert.equal(g.score.score, 0, 'restart reset score');
 });
@@ -107,9 +107,9 @@ test('defeat screen after 3 lives lost, play again recovers', () => {
     g._slowMo = null;
   }
   assert.equal(g.state, 'defeat');
-  const btns = menuButtons(g);
+  const btns = screenButtons(g);
   assert.ok(btns.length >= 1);
-  tapAt(g, ...Object.values(buttonCenter(btns[0])));
+  tapAt(g, ...Object.values(buttonCenter(btns[0]))); // CHOI LAI
   assert.equal(g.state, 'playing');
   assert.equal(g.player.lives, CONFIG.player.lives);
 });
@@ -121,9 +121,12 @@ test('victory screen after boss death, play again restarts run', () => {
   let n = 0;
   while (g.state !== 'victory' && n++ < 600) g.step(1 / 60);
   assert.equal(g.state, 'victory');
-  const btns = menuButtons(g);
-  tapAt(g, ...Object.values(buttonCenter(btns[0])));
+  assert.equal(g.progress.unlocked, 2, 'level 2 unlocked');
+  assert.ok(g.lastStars >= 1 && g.lastStars <= 3);
+  const btns = screenButtons(g);
+  tapAt(g, ...Object.values(buttonCenter(btns[0]))); // MAN KE TIEP
   assert.equal(g.state, 'playing');
+  assert.equal(g.currentLevel, 2);
   assert.equal(g.boss.state, 'hidden');
   assert.equal(g.boss.hp, CONFIG.boss.maxHp);
 });
