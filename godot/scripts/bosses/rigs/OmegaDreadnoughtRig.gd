@@ -144,7 +144,7 @@ func _process(delta: float) -> void:
 	# cánh xoè theo pha — boss "lột xác" mỗi pha
 	var target_spread := 1.0
 	if boss != null:
-		target_spread = 1.0 + float(boss.phase - 1) * 0.3 + (0.35 if boss.enraged else 0.0)
+		target_spread = 1.0 + float(boss.phase - 1) * 0.3 + (0.35 if boss.enrage_active else 0.0)
 		if boss.state == "transition":
 			target_spread += 0.25
 	spread = lerpf(spread, target_spread, 1.0 - exp(-2.5 * delta))
@@ -176,7 +176,7 @@ func _process(delta: float) -> void:
 	engine_a.scale = Vector2(e, e * 1.25)
 	engine_b.scale = Vector2(e, e * 1.25)
 	# cuồng nộ: thân đỏ rực theo nhịp
-	if boss != null and boss.enraged:
+	if boss != null and boss.enrage_active:
 		var rage := 0.75 + 0.25 * sin(pt * 9.5)
 		core_halo.color = Color("#ff3c5a")
 		core_halo.modulate = Color(1, 1, 1, rage)

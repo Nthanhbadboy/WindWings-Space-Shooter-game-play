@@ -105,5 +105,5 @@ func _process(delta: float) -> void:
 		parts["PupilL"].position = Vector2(-30, -6) + look * 1.5
 		parts["PupilR"].position = Vector2(30, -6) + look * 1.5
 	# lõi sáng nhấp nháy khi cuồng nộ
-	if boss != null and boss.enraged:
+	if boss != null and boss.enrage_active:
 		bell_glow.modulate = Color(1.5, 0.7, 0.7, 0.8 + 0.2 * sin(pt * 9.0))

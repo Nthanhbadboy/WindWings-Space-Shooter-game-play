@@ -111,6 +111,6 @@ func _process(delta: float) -> void:
 	# ăng ten quay
 	parts["MastTip"].position = Vector2(cos(pt * 1.6) * 10.0, -140 + sin(pt * 1.6) * 4.0)
 	# cuồng nộ: đèn cầu đỏ
-	if boss != null and boss.enraged:
+	if boss != null and boss.enrage_active:
 		for i in lights.size():
 			lights[i].color = Color("#ff4a4a")

@@ -20,7 +20,7 @@ var max_hp := 1.0
 var hp := 1.0
 var bullet_mul := 1.0
 var phase := 1
-var enraged := false
+var enrage_active := false
 var state := "enter"          # enter | fight | transition | dying | dead
 var t := 0.0
 var fire_cd_t := 2.2
@@ -109,8 +109,8 @@ func _check_phase() -> void:
 		_enter_phase(2)
 	elif phase == 2 and ratio <= float(Balance.BOSS_RULES["phase3_at"]):
 		_enter_phase(3)
-	if phase == 3 and ratio <= float(Balance.BOSS_RULES["enrage_at"]) and not enraged:
-		enraged = true
+	if phase == 3 and ratio <= float(Balance.BOSS_RULES["enrage_at"]) and not enrage_active:
+		enrage_active = true
 		rig.call("play", "enrage")
 		enraged.emit(self)
 		Sfx.play("boss_roar")
@@ -136,7 +136,7 @@ func _begin_attack() -> void:
 	tele_name = _pick_pattern()
 	tele_pattern = Balance.PATTERNS[tele_name]
 	var raw := float(tele_pattern["telegraph"])
-	var mul := float(Balance.BOSS_RULES["enrage_telegraph_mul"]) if enraged else 1.0
+	var mul := float(Balance.BOSS_RULES["enrage_telegraph_mul"]) if enrage_active else 1.0
 	tele_dur = maxf(float(Balance.BOSS_RULES["telegraph_min"]), raw * mul)
 	tele_active = true
 	tele_t = 0.0
@@ -166,7 +166,7 @@ func _fire_pattern() -> void:
 	_execute_pattern(tele_pattern)
 	telegraph_fired.emit(self)
 	var cd: float = float((Balance.BOSS_RULES["attack_cd"] as Array)[clampi(phase - 1, 0, 2)])
-	fire_cd_t = cd * (float(Balance.BOSS_RULES["enrage_cd_mul"]) if enraged else 1.0)
+	fire_cd_t = cd * (float(Balance.BOSS_RULES["enrage_cd_mul"]) if enrage_active else 1.0)
 	if run != null:
 		run.boss_fired(self, tele_name)
 	Sfx.play("boss_fire")

@@ -84,7 +84,7 @@ func _process(delta: float) -> void:
 	parts["PupilL"].position = Vector2(-26, -30) + look
 	parts["PupilR"].position = Vector2(26, -30) + look
 	# cuồng nộ: mắt rực đỏ
-	if boss != null and boss.enraged:
+	if boss != null and boss.enrage_active:
 		var g := 0.75 + 0.25 * sin(pt * 10.0)
 		eye_l.modulate = Color(1.6, 0.6, 0.6, g)
 		eye_r.modulate = Color(1.6, 0.6, 0.6, g)

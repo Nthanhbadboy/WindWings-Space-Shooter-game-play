@@ -256,7 +256,7 @@ func _test_one_boss(id: String) -> void:
 	await _until(func(): return boss.state == "fight", 5.0)
 	boss.take_damage(boss.max_hp * 0.30)
 	await _wait(0.1)
-	_check(boss.enraged, "%s: 10%% HP → cuồng nộ" % id)
+	_check(boss.enrage_active, "%s: 10%% HP → cuồng nộ" % id)
 	boss.take_damage(boss.hp + 1.0)
 	await _wait(0.1)
 	_check(boss.state == "dying", "%s: chết → anim rời từng bộ phận" % id)

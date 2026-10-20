@@ -116,7 +116,7 @@ func _process(delta: float) -> void:
 		abdomen.scale = Vector2.ONE * (1.0 + 0.04 * sin(pt * 2.2))
 	# mắt rực theo telegraph + cuồng nộ
 	var glow := 0.4 + prog * 0.6 + slam_t * 0.4
-	if boss != null and boss.enraged:
+	if boss != null and boss.enrage_active:
 		glow = maxf(glow, 0.8 + 0.2 * sin(pt * 11.0))
 	for i in eyes.size():
 		eyes[i].modulate = Color(1.0 + prog, 0.5, 0.5, clampf(glow, 0.3, 1.0))

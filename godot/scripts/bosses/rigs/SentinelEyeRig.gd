@@ -121,7 +121,7 @@ func _process(delta: float) -> void:
 	else:
 		scan.visible = false
 	# cuồng nộ: tròng đỏ
-	if boss != null and boss.enraged:
+	if boss != null and boss.enrage_active:
 		iris.color = Color("#d01d3f")
 		iris_glow.color = Color("#ff3c5a", 0.4 + 0.2 * sin(pt * 9.0))
 	for i in rivets.size():
