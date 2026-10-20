@@ -1,3 +1,7 @@
+# Build WindWings 3D (prototype/) into a debug APK on GitHub runners.
+# Shape mirrors the proven android-apk-2d-game.yml recipe (Capacitor 6,
+# temurin 21). On failure, gradle diagnostics are posted to a repo issue
+# so they can be read without Actions log access.
 name: Build Android debug APK
 
 on:
@@ -8,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   apk:
@@ -18,45 +23,38 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: prototype/package-lock.json
 
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
 
-      - name: Install & build web
-        working-directory: prototype
-        run: |
-          npm ci
-          npx vite build
+      - name: Build web (vite)
+        run: cd prototype && npm ci && npx vite build
 
-      - name: Add Capacitor Android shell
-        working-directory: prototype
-        run: |
-          npm install --no-save @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
-          npx cap add android
-          npx cap sync android
+      - name: Install Capacitor 6 (MIT)
+        run: cd prototype && npm install --no-save @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
 
-      - name: Portrait + fullscreen manifest
-        working-directory: prototype
+      - name: Add Android platform
+        run: cd prototype && npx cap add android
+
+      - name: Force portrait orientation
         run: |
           python3 - <<'PY'
           import re, pathlib
-          p = pathlib.Path('android/app/src/main/AndroidManifest.xml')
+          p = pathlib.Path('prototype/android/app/src/main/AndroidManifest.xml')
           s = p.read_text()
-          s = s.replace('android:name=".MainActivity"',
-                        'android:name=".MainActivity"\n            android:screenOrientation="portrait"\n            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"')
-          p.write_text(s)
-          print(s)
+          if 'screenOrientation' not in s:
+              s = re.sub(r'<activity\b', '<activity android:screenOrientation="portrait"', s, count=1)
+              p.write_text(s)
+              print('portrait patched')
           PY
 
-      - name: Gradle assemble debug
-        working-directory: prototype/android
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+      - name: Sync web assets
+        run: cd prototype && npx cap sync android
+
+      - name: Build debug APK
+        run: cd prototype/android && ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -65,3 +63,23 @@ jobs:
           path: prototype/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
+
+      - name: Post failure diagnostics to issue
+        if: failure()
+        run: |
+          {
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo '```'
+            ls -la prototype || true
+            ls -la prototype/android || true
+            java -version 2>&1 || true
+            cat prototype/android/gradle/wrapper/gradle-wrapper.properties 2>&1 || true
+            cd prototype/android 2>/dev/null && ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tail -n 150 || echo "gradle rerun failed"
+            echo '```'
+          } > /tmp/diag.md
+          jq -Rs '{title: "CI APK prototype — chẩn đoán lỗi gradle", body: .}' /tmp/diag.md > /tmp/diag.json
+          curl -sf -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/issues" \
+            -d @/tmp/diag.json || echo "issue creation failed"
