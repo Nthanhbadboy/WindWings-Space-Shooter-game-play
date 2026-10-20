@@ -119,7 +119,7 @@ jobs:
           mkdir -p ~/.config/godot
           JDK_PATH="${JAVA_HOME:-$(dirname "$(dirname "$(readlink -f "$(which javac)")")")}"
           echo "JDK_PATH=$JDK_PATH"
-          printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nexport/android/android_sdk_path = "/usr/local/lib/android/sdk"\nexport/android/java_sdk_path = "%s"\nexport/android/debug_keystore = "/tmp/debug.keystore"\nexport/android/debug_keystore_user = "androiddebugkey"\nexport/android/debug_keystore_pass = "android"\n' "$JDK_PATH" | tee ~/.config/godot/editor_settings-4.tres > ~/.config/godot/editor_settings-4.3.tres
+          printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nexport/android/android_sdk_path = "/usr/local/lib/android/sdk"\nexport/android/java_sdk_path = "%s"\nexport/android/debug_keystore = "/tmp/debug.keystore"\nexport/android/debug_keystore_user = "androiddebugkey"\nexport/android/debug_keystore_pass = "android"\nrendering/textures/vram_compression/import_etc2_astc = true\n' "$JDK_PATH" | tee ~/.config/godot/editor_settings-4.tres > ~/.config/godot/editor_settings-4.3.tres
           cat ~/.config/godot/editor_settings-4.tres
           ls /usr/local/lib/android/sdk/build-tools/ || true
           cd "$GITHUB_WORKSPACE/godot"
