@@ -52,3 +52,12 @@ Tệp `image_manifest.csv` liệt kê đầy đủ: thư mục, tên file, ngu�
 - `organize_images.py` — script đã dùng để phân loại/dedup/dọn dẹp (giữ lại để minh bạch provenance).
 
 > Lưu ý bản quyền: ảnh là tài sản của GCenter, chỉ dùng để minh họa gameplay.
+
+---
+
+## Game (vertical shmup build)
+
+Bản build game bắn máy bay dọc theo spec boss fight nằm ở `game/` (web export,
+Capacitor-ready cho APK — xem `docs/BUILD_ANDROID.md`). Chạy: `npm run serve`,
+test headless: `npm test`. Ảnh trong repo này được dùng làm tham chiếu phong
+cách (portrait shmup, boss tím/cam, đạn cyan vs đỏ/hồng).
