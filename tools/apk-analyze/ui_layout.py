@@ -243,6 +243,8 @@ def main() -> int:
     env = load_env()
     os.makedirs(OUT_RAW, exist_ok=True)
     index, seen_roots = [], set()
+    comp_classes: Counter = Counter()
+    empty_nodes = [0]
 
     candidates = []
     for obj in env.objects:
@@ -263,19 +265,10 @@ def main() -> int:
         if go is None:
             skipped["no gameobject"] += 1
             continue
-        # climb to the outermost transform
-        cur, top = go, go
-        for _ in range(24):
-            tr = transform_of(cur)
-            if tr is None:
-                break
-            father = _pptr(getattr(tr, "m_Father", None))
-            if father is None:
-                break
-            fgo = _pptr(getattr(father, "m_GameObject", None))
-            if fgo is None:
-                break
-            cur = top = fgo
+        # The screen MonoBehaviour lives on the panel root, so its GameObject IS
+        # the subtree we want. (Climbing to the scene root instead produced the
+        # whole canvas for every screen - 593k duplicated nodes.)
+        top = go
         root_key = getattr(top, "path_id", id(top))
         if root_key in seen_roots:
             continue
@@ -285,6 +278,11 @@ def main() -> int:
             skipped["no transform"] += 1
             continue
         nodes = walk(top_tr, MAX_NODES)
+        for n in nodes:
+            if not n["components"]:
+                empty_nodes[0] += 1
+            for c in n["components"]:
+                comp_classes[c["class"]] += 1
         if not nodes:
             skipped["empty subtree"] += 1
             continue
@@ -324,6 +322,11 @@ def main() -> int:
              f"- dung lượng thô (gz): **{total / 1e6:.1f} MB**", ""]
     if skipped:
         lines += ["- bỏ qua: " + ", ".join(f"{k} ({v})" for k, v in skipped.items()), ""]
+    if comp_classes:
+        lines += ["## Component gặp nhiều nhất", "", "| class | số node |", "|---|---:|"]
+        for k, v in comp_classes.most_common(25):
+            lines.append(f"| `{k}` | {v} |")
+        lines += ["", f"- node không đọc được component: **{empty_nodes[0]}**", ""]
     lines += ["## Màn hình nhiều node nhất", "",
               "| class | node | text | button | KB |", "|---|---:|---:|---:|---:|"]
     for r in sorted(index, key=lambda r: -r["nodes"])[:40]:
