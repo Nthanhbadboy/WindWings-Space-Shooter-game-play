@@ -81,7 +81,9 @@ def main() -> int:
     os.makedirs(OUT, exist_ok=True)
     env = load_env()
     print("loaded files:", list(getattr(env, "files", {}).keys()))
-    gen = TypeTreeGenerator(UNITY_VERSION)
+    backend = os.environ.get("TTG_BACKEND", "AssetStudio")
+    print("typetree backend:", backend)
+    gen = TypeTreeGenerator(UNITY_VERSION, generator=backend)
     with open(os.path.join(EXTRACT, "libil2cpp.so"), "rb") as f:
         il2cpp = f.read()
     with open(os.path.join(EXTRACT, "global-metadata.dat"), "rb") as f:

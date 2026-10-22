@@ -164,6 +164,10 @@ jobs:
         continue-on-error: true
         run: python3 tools/apk-analyze/unity_data.py 2>&1 | tail -60
 
+      - name: Build localization / IAP / data tables
+        continue-on-error: true
+        run: python3 tools/apk-analyze/config_report.py 2>&1 | tail -40
+
       - name: Build REA (mytechnotalent/rea) and analyze APK
         continue-on-error: true
         run: |
