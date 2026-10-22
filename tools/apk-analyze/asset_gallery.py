@@ -55,15 +55,20 @@ CATS: list[tuple[str, str, str]] = [
 ]
 
 
-def classify(name: str, kind: str) -> str:
+def classify(name: str, kind: str, atlas: str = "") -> str:
     if kind == "AudioClip":
         return "audio"
     if kind == "Font":
         return "font"
-    for cat, pattern, _ in CATS:
-        if re.search(pattern, name):
-            return cat
-    return "atlas" if kind == "Texture2D" else "misc"
+    for field in (name, atlas):          # the atlas name is often the only hint
+        if not field:
+            continue
+        for cat, pattern, _ in CATS:
+            if re.search(pattern, field):
+                return cat
+    if kind == "Texture2D" or "sactx" in (atlas or "").lower():
+        return "atlas"
+    return "unclassified"
 
 
 def human(n: float) -> str:
@@ -74,8 +79,26 @@ def human(n: float) -> str:
     return f"{n:.1f}GB"
 
 
+MANIFEST = os.environ.get("EXPORT_MANIFEST", "/tmp/apk/unity/export-manifest.csv")
+
+
+def manifest_index():
+    """relative_path -> {path_id, atlas, name} (from unity_assets.py export)."""
+    idx = {}
+    if not os.path.isfile(MANIFEST):
+        return idx
+    with open(MANIFEST, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            rel = r.get("path") or ""
+            if rel:
+                idx[rel] = {"path_id": r.get("path_id", ""), "atlas": r.get("atlas", ""),
+                            "name": r.get("name", "")}
+    return idx
+
+
 def collect():
     rows = []
+    meta = manifest_index()
     for kind in ("Sprite", "Texture2D", "AudioClip", "Font"):
         d = os.path.join(EXPORT, kind)
         if not os.path.isdir(d):
@@ -85,9 +108,13 @@ def collect():
             if not os.path.isfile(p):
                 continue
             name = os.path.splitext(fn)[0]
+            rel = f"{kind}/{fn}"
+            m = meta.get(rel, {})
             rows.append({"kind": kind, "name": name, "file": p,
                          "bytes": os.path.getsize(p),
-                         "category": classify(name, kind)})
+                         "path_id": m.get("path_id", ""),
+                         "atlas": m.get("atlas", ""),
+                         "category": classify(name, kind, m.get("atlas", ""))})
     return rows
 
 
@@ -181,18 +208,19 @@ def main() -> int:
 
     with open(os.path.join(OUT, "manifest.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["category", "kind", "name", "bytes", "relative_path"])
+        w.writerow(["category", "kind", "name", "path_id", "atlas", "bytes", "relative_path"])
         for r in sorted(rows, key=lambda r: (r["category"], r["kind"], r["name"])):
-            w.writerow([r["category"], r["kind"], r["name"], r["bytes"],
-                        os.path.relpath(r["file"], EXPORT)])
+            w.writerow([r["category"], r["kind"], r["name"], r["path_id"], r["atlas"],
+                        r["bytes"], os.path.relpath(r["file"], EXPORT)])
 
     with open(os.path.join(OUT, "sprites-index.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["category", "name", "kind", "contact_sheet", "tile", "bytes", "relative_path"])
+        w.writerow(["category", "name", "kind", "path_id", "atlas", "contact_sheet", "tile",
+                    "bytes", "relative_path"])
         for r in sorted(rows, key=lambda r: (r["category"], r["name"])):
             sheet, tile = index.get(r["file"], ("", ""))
-            w.writerow([r["category"], r["name"], r["kind"], sheet, tile, r["bytes"],
-                        os.path.relpath(r["file"], EXPORT)])
+            w.writerow([r["category"], r["name"], r["kind"], r["path_id"], r["atlas"], sheet, tile,
+                        r["bytes"], os.path.relpath(r["file"], EXPORT)])
 
     if audio:
         with open(os.path.join(OUT, "audio-index.csv"), "w", newline="", encoding="utf-8") as f:
@@ -201,7 +229,7 @@ def main() -> int:
             w.writerows(audio)
 
     desc = {c: d for c, _, d in CATS}
-    desc.update({"misc": "Chưa phân loại", "audio": "Âm thanh", "font": "Font"})
+    desc.update({"unclassified": "Sprite không rõ nguồn (xem cột `atlas`)", "audio": "Âm thanh", "font": "Font"})
     lines = ["# Asset tham chiếu — WindWings 1.3.118", "",
              f"- Tổng asset: **{len(rows)}**  ({human(sum(r['bytes'] for r in rows))})",
              f"- Contact sheet: **{len(sheets)}** file trong [`contact-sheets/`](contact-sheets/)",

@@ -328,13 +328,20 @@ jobs:
           if ! gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release create "$TAG" --draft --title "$TITLE" --notes "$BODY" -R "$GITHUB_REPOSITORY" || true
           fi
-          for f in /tmp/apk/assets.zip*; do
+          # zip -s splits into assets.z01 .. assets.zNN + assets.zip (last part)
+          shopt -s nullglob
+          for f in /tmp/apk/assets.z* /tmp/apk/assets.zip; do
             SZ=$(stat -c%s "$f")
             if [ "$SZ" -lt 2097152000 ]; then
+              echo "uploading $(basename "$f") ($SZ bytes)"
               gh release upload "$TAG" "$f" --clobber -R "$GITHUB_REPOSITORY" || echo "upload failed: $f"
             fi
           done
           gh release upload "$TAG" "$D/manifest-full.csv" --clobber -R "$GITHUB_REPOSITORY" || true
+          if [ -d docs/assets ]; then
+            ( cd docs && zip -q -r /tmp/apk/asset-previews.zip assets )
+            gh release upload "$TAG" /tmp/apk/asset-previews.zip --clobber -R "$GITHUB_REPOSITORY" || true
+          fi
 
       - name: Diagnostics
         if: always()
