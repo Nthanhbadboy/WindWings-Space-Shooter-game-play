@@ -31,14 +31,7 @@ def load_env():
     files = [f for f in files if os.path.isfile(f)]
     if not files:
         raise SystemExit(f"no unity files under {EXTRACT}")
-    env = UnityPy.load(files[0])
-    for f in files[1:]:
-        try:
-            with open(f, "rb") as fh:
-                env.load_file(fh, name=os.path.basename(f))
-        except Exception:  # noqa: BLE001
-            pass
-    return env
+    return UnityPy.load(files)
 
 
 def main() -> int:

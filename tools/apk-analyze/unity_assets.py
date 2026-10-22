@@ -260,7 +260,12 @@ def export_assets(env) -> None:
                     counters["AudioClip_failed"] += 1
                     continue
                 for sname, data in samples.items():
-                    fn = safe_name(f"{name}_{sname}", used) + ".wav"
+                    # the converter names the entry "<clip>.ogg|.wav|.m4a"
+                    ext = os.path.splitext(str(sname))[1].lower()
+                    if ext not in (".wav", ".ogg", ".m4a", ".mp3"):
+                        ext = ".wav"
+                    stem = os.path.splitext(str(sname))[0] or name
+                    fn = safe_name(f"{name}__{stem}", used) + ext
                     p = os.path.join(sub, fn)
                     with open(p, "wb") as f:
                         f.write(data)
@@ -304,14 +309,9 @@ def load_env():
     candidates = [p for p in candidates if os.path.isfile(p)]
     if not candidates:
         raise SystemExit(f"no unity files under {DATA}")
-    env = UnityPy.load(candidates[0])
-    for path in candidates[1:]:
-        try:
-            with open(path, "rb") as f:
-                env.load_file(f, name=os.path.basename(path))
-            print("loaded extra file", path)
-        except Exception as e:  # noqa: BLE001
-            print("skip", path, repr(e))
+    # UnityPy keeps file handles open for lazy reads: load by path, not by a
+    # `with open(...)` handle that gets closed before audio/textures are read.
+    env = UnityPy.load(candidates)
     print("source files:", list(getattr(env, "files", {}).keys()))
     return env
 

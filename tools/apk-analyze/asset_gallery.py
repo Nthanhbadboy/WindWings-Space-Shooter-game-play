@@ -156,8 +156,11 @@ def audio_index(rows):
                 dur = frames / rate if rate else 0.0
         except Exception:  # noqa: BLE001
             pass
+        if not dur and r["file"].endswith((".ogg", ".m4a", ".mp3")):
+            dur = 0.0   # compressed: duration lives in the codec header, skipped here
         out.append({"name": r["name"], "channels": ch, "sample_rate": rate,
                     "seconds": round(dur, 2), "bytes": r["bytes"],
+                    "format": os.path.splitext(r["file"])[1].lstrip("."),
                     "file": os.path.relpath(r["file"], EXPORT)})
     return out
 
@@ -210,6 +213,13 @@ def main() -> int:
         files = [s[0] for s in sheets if s[1] == cat]
         link = f"[{len(files)} sheet](contact-sheets/{files[0]})" if files else "—"
         lines.append(f"| `{cat}` | {n} | {desc.get(cat, '')} | {link} |")
+    if audio:
+        total_s = sum(a["seconds"] for a in audio)
+        lines += ["", "## Âm thanh", "",
+                  f"- **{len(audio)}** clip, tổng ~{total_s:.0f} giây "
+                  f"({human(sum(a['bytes'] for a in audio))})",
+                  "- Danh sách: [`audio-index.csv`](audio-index.csv) (tên, kênh, sample rate, giây, định dạng)",
+                  ""]
     lines += ["", "## Cách dùng", "",
               "1. Mở `contact-sheets/<nhóm>-01.jpg` để xem nhanh toàn bộ asset của nhóm đó,",
               "   mỗi ô có số `#n` ở góc dưới.",

@@ -150,14 +150,7 @@ def gameobject_path(go, depth=10):
 def load_env() -> UnityPy.Environment:
     files = [os.path.join(EXTRACT, f) for f in ("data.unity3d", "resources.resource")]
     files = [f for f in files if os.path.isfile(f)]
-    env = UnityPy.load(files[0])
-    for f in files[1:]:
-        try:
-            with open(f, "rb") as fh:
-                env.load_file(fh, name=os.path.basename(f))
-        except Exception:  # noqa: BLE001
-            pass
-    return env
+    return UnityPy.load(files)
 
 
 def flatten(value, prefix="", out=None, depth=0):
