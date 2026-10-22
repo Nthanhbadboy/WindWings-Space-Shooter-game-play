@@ -142,8 +142,9 @@ def atlas_summary(raw: str) -> dict:
 
 def main() -> int:
     env = load_env()
-    text_assets = {}          # path_id -> bytes, name
-    sdas = []                 # (path_id, typetree)
+    text_assets = {}          # path_id -> (name, obj)
+    mb_objects = {}           # path_id -> object (AtlasAsset lives here, not in TextAssets)
+    sdas = []                 # (path_id, obj)
     for obj in env.objects:
         t = obj.type.name
         if t == "TextAsset":
@@ -158,6 +159,7 @@ def main() -> int:
                 cls = head.m_Script.deref_parse_as_object().m_ClassName
             except Exception:  # noqa: BLE001
                 continue
+            mb_objects[obj.path_id] = obj
             if cls == "SkeletonDataAsset":
                 sdas.append((obj.path_id, obj))
     print(f"TextAssets: {len(text_assets)}, SkeletonDataAssets: {len(sdas)}")
@@ -168,11 +170,34 @@ def main() -> int:
         sj = tree.get("skeletonJSON") or {}
         at = (tree.get("atlasAssets") or [{}])[0] or {}
         sj_pid = int(sj.get("m_PathID") or 0) if isinstance(sj, dict) else 0
-        at_pid = int(at.get("m_PathID") or 0) if isinstance(at, dict) else 0
+        atlas_asset_pid = int(at.get("m_PathID") or 0) if isinstance(at, dict) else 0
         sk_entry = text_assets.get(sj_pid)
-        at_entry = text_assets.get(at_pid)
+
+        # spine-unity: atlasAssets[] points at an AtlasAsset MonoBehaviour, which in
+        # turn points at the .atlas TextAsset. Resolve that extra hop.
+        atlas_pid = 0
+        atlas_asset_name = ""
+        material = ""
+        atlas_obj = mb_objects.get(atlas_asset_pid)
+        if atlas_obj is not None:
+            at_tree = read_typetree(atlas_obj)
+            at_file = at_tree.get("atlasFile") or {}
+            if isinstance(at_file, dict):
+                atlas_pid = int(at_file.get("m_PathID") or 0)
+            try:
+                atlas_asset_name = atlas_obj.peek_name() or ""
+            except Exception:  # noqa: BLE001
+                atlas_asset_name = ""
+            mats = at_tree.get("materials") or []
+            if mats:
+                m0 = mats[0] if isinstance(mats[0], dict) else {}
+                material = f"pathID:{m0.get('m_PathID', '')}"
+        at_entry = text_assets.get(atlas_pid)
         rig = {"skeleton_data_path_id": pid, "skeleton_json_path_id": sj_pid,
-               "atlas_path_id": at_pid,
+               "atlas_asset_path_id": atlas_asset_pid,
+               "atlas_asset_name": atlas_asset_name,
+               "atlas_path_id": atlas_pid,
+               "atlas_material": material,
                "skeleton_name": sk_entry[0] if sk_entry else None,
                "atlas_name": at_entry[0] if at_entry else None}
         if sk_entry:
@@ -181,7 +206,10 @@ def main() -> int:
             rig["atlas"] = atlas_summary(text_of(at_entry[1]))
         # identity hint: the atlas region names are the most descriptive signal
         regions = (rig.get("atlas") or {}).get("regions") or []
-        rig["identity_hint"] = ", ".join(regions[:6])
+        anims = rig.get("animations") or []
+        hint = ", ".join(regions[:5]) if regions else ", ".join(anims[:5])
+        rig["identity_hint"] = hint
+        rig["anim_set"] = "/".join(anims[:6])
         rigs.append(rig)
 
     rigs.sort(key=lambda r: (-len(r.get("animations") or []), r["skeleton_data_path_id"]))
