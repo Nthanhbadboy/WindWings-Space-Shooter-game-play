@@ -9,7 +9,7 @@
 
 | nhóm | số lượng | mô tả | contact sheet |
 |---|---:|---|---|
-| `misc` | 1554 | Chưa phân loại | [25 sheet](contact-sheets/misc-01.jpg) |
+| `unclassified` | 1554 | Sprite không rõ nguồn (xem cột `atlas`) | [25 sheet](contact-sheets/unclassified-01.jpg) |
 | `atlas` | 411 | Texture atlas gốc (UI + nhân vật gộp) | [7 sheet](contact-sheets/atlas-01.jpg) |
 | `background` | 142 | Nền, tinh vân, hành tinh | [3 sheet](contact-sheets/background-01.jpg) |
 | `fx` | 87 | Hiệu ứng, nổ, trail | [2 sheet](contact-sheets/fx-01.jpg) |
