@@ -154,6 +154,56 @@ def constants_in(code_off, size, blob, md):
     return consts, lines
 
 
+ARITH = ("fmul", "fadd", "fsub", "fdiv", "fnmul", "fmsub", "fmadd", "scvtf", "ucvtf")
+CMP = ("cmp", "cmn", "fcmp", "fcmpe", "b.lt", "b.le", "b.gt", "b.ge", "b.hi", "b.ls")
+
+
+def annotate(insn_text: str, consts: list) -> None:
+    """Tag each constant with how the code uses it (return / arith / compare)."""
+    lines = insn_text.split("\n")
+    for c in consts:
+        addr = c["addr"]
+        idx = next((i for i, l in enumerate(lines) if l.startswith(addr + ":")), None)
+        if idx is None:
+            continue
+        window = lines[idx:idx + 4]
+        prev = lines[max(0, idx - 2):idx]
+        if c["kind"] == "float":
+            reg = None
+            for l in [lines[idx]]:
+                head = l.split(":", 1)[-1].strip()
+                reg = head.split()[1].split(",")[0] if len(head.split()) > 1 else None
+            if reg:
+                for l in lines[idx + 1:idx + 12]:
+                    body = l.split(":", 1)[-1].strip()
+                    if any(body.startswith(m) for m in ARITH) and reg in body:
+                        c["role"] = "arith:" + body.split()[0]
+                        break
+            c.setdefault("role", "load")
+        else:
+            body = lines[idx].split(":", 1)[-1].strip()
+            if body.startswith(("cmp", "cmn", "tbnz", "tbz", "cbz", "cbnz")):
+                c["role"] = "compare"
+            elif body.startswith(("mul", "madd", "msub", "lsl", "lsr", "sdiv", "udiv")):
+                c["role"] = "arith:" + body.split()[0]
+            elif any(l.split(":", 1)[-1].strip().startswith("ret") for l in window):
+                c["role"] = "return"
+            else:
+                c["role"] = "other"
+
+
+def is_pure_getter(insn_text: str) -> bool:
+    """Body that just returns one immediate (the classic Unity property getter)."""
+    lines = [l.split(":", 1)[-1].strip() for l in insn_text.split("\n") if l.strip()]
+    body = [l for l in lines if not l.startswith(("sub", "stp", "ldp", "add sp", "mov x29"))]
+    if not any(l.startswith("ret") for l in body):
+        return False
+    if len(body) > 8:
+        return False
+    loads = [l for l in body if l.startswith(("adrp", "ldr x", "ldr w", "bl "))]
+    return len(loads) <= 1 and any(l.startswith(("mov w0", "mov x0", "ldr s0")) for l in body)
+
+
 def main() -> int:
     dump_path = sys.argv[1] if len(sys.argv) > 1 else DUMP
     so_path = sys.argv[2] if len(sys.argv) > 2 else SO
@@ -189,8 +239,11 @@ def main() -> int:
                 if offset <= 0 or size <= 0:
                     continue
                 consts, lines = constants_in(offset, size, blob, md or 0xB7)
+                annotate("\n".join(lines), consts)
+                pure = is_pure_getter("\n".join(lines))
                 out.append({"method": name, "signature": sig, "offset": hex(offset),
-                            "rva": hex(rva), "bytes": size, "constants": consts})
+                            "rva": hex(rva), "bytes": size, "pure_getter": pure,
+                            "constants": consts})
                 if consts:
                     asm_out.append(f";;; {name}  {sig}")
                     asm_out += [f"    {l}" for l in lines]
@@ -206,8 +259,15 @@ def main() -> int:
                              if c["kind"] == "float" and c["value"] not in (0.0,)})
             ints = sorted({c["value"] for m in out for c in m["constants"]
                            if c["kind"] == "int" and c["value"] > 1})
+            getters = [{"method": m["method"], "signature": m["signature"],
+                        "value": next((c["value"] for c in m["constants"]
+                                       if c.get("role") == "return"), None)}
+                       for m in out if m["pure_getter"]]
+            arith = sorted({(c.get("role"), c["value"]) for m in out for c in m["constants"]
+                            if str(c.get("role", "")).startswith("arith")})
             summary[cls] = {"methods": len(out), "floats": floats[:40], "ints": ints[:40],
-                            "with_constants": sum(1 for m in out if m["constants"])}
+                            "with_constants": sum(1 for m in out if m["constants"]),
+                            "getters": getters, "arith": arith[:60]}
             print(f"{cls:22s} {len(out):3d} methods, "
                   f"{sum(1 for m in out if m['constants']):3d} with constants")
 
@@ -218,11 +278,28 @@ def main() -> int:
              "> phải để chép nguyên. Dữ liệu thô: `reverse-engineering/raw/il2cpp-consts/`.", "",
              f"- .so: `{os.path.basename(so_path)}` — {'aarch64' if md == 0xB7 else 'arm'}",
              f"- class đích: **{len(summary)}**, method: **{total}**", ""]
+    lines += ["## Hàm trả về hằng số (độ tin cậy cao)", "",
+              "Những method mà toàn bộ thân hàm chỉ là `mov w0, #imm; ret` — đây gần như chắc chắn",
+              "là giá trị thiết kế, không phải hằng số phụ.", "",
+              "| class | method | giá trị |", "|---|---|---:|"]
+    any_getter = False
+    for cls, info in sorted(summary.items()):
+        for g in info.get("getters", [])[:40]:
+            if g.get("value") is None:
+                continue
+            any_getter = True
+            lines.append(f"| `{cls}` | `{g['method']}` | {g['value']} |")
+    if not any_getter:
+        lines.append("| — | chưa tìm thấy | — |")
+    lines.append("")
+
     for cls, info in sorted(summary.items(), key=lambda kv: -kv[1]["methods"]):
         lines += [f"## `{cls}` — {TARGET_CLASSES.get(cls, '')}", "",
                   f"- method đọc được: **{info['methods']}**, có hằng số: **{info['with_constants']}**",
                   f"- float: `{', '.join(str(x) for x in info['floats'][:24]) or '—'}`",
-                  f"- int: `{', '.join(str(x) for x in info['ints'][:24]) or '—'}`", ""]
+                  f"- int: `{', '.join(str(x) for x in info['ints'][:24]) or '—'}`",
+                  f"- hằng số dùng trong phép tính: "
+                  f"`{', '.join(f'{r}:{v}' for r, v in info.get('arith', [])[:24]) or '—'}`", ""]
     lines += ["## Đọc tiếp", "",
               "- Mỗi class có file JSON: `reverse-engineering/raw/il2cpp-consts/<Class>.json`",
               "  (từng method, từng hằng số, kèm địa chỉ).",

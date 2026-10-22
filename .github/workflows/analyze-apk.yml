@@ -212,6 +212,12 @@ jobs:
           UI_RAW: /tmp/apk/unity/raw/ui
         run: python3 tools/apk-analyze/ui_layout.py 2>&1 | tee /tmp/apk/logs/ui_layout.log | tail -40
 
+      - name: Spine rig + audio map
+        continue-on-error: true
+        run: |
+          python3 tools/apk-analyze/spine_report.py 2>&1 | tee /tmp/apk/logs/spine.log | tail -30
+          python3 tools/apk-analyze/audio_map.py 2>&1 | tee /tmp/apk/logs/audio_map.log | tail -20
+
       - name: Build data pack (datas/ + i18n/)
         continue-on-error: true
         run: python3 tools/apk-analyze/data_pack.py --root . 2>&1 | tail -20
