@@ -19,7 +19,10 @@ EXTRACT = "/tmp/apk/extract"
 OUT = "/tmp/apk/unity/data"
 REPORT = "/tmp/apk/unity/data-report.md"
 UNITY_VERSION = os.environ.get("UNITY_VERSION", "2022.3.62f3")
+# ScriptableObjects found in the build + the designer-data MonoBehaviours that
+# hold the actual balance numbers (damage, hp, costs, waves, ranks ...).
 TARGETS = {
+    # ScriptableObjects
     "Data_Players",
     "Data_Boss",
     "Data_Items",
@@ -29,7 +32,44 @@ TARGETS = {
     "LanguageAssets",
     "SoundClip",
     "SkeletonDataAsset",
+    "AnimationReferenceAsset",
+    "EventDataReferenceAsset",
+    "TMP_Settings",
+    "TMP_StyleSheet",
+    "TMP_ColorGradient",
+    "StyleSheet",
+    "TextSettings",
+    "TextStyleSheet",
+    "TextColorGradient",
+    "PanelSettings",
+    "GlobalDisplaySettings",
+    # balance / save data components
+    "Player_Get_Datas",
+    "Player_Datas",
+    "Player_Saved_Datas",
+    "Player_Device_Saved_Datas",
+    "Drone_Get_Datas",
+    "Drone_Saved_Datas",
+    "Device_Get_Data",
+    "Device_Saved_Data",
+    "Enemy_Get_Datas",
+    "Enemy_Datas",
+    "Enemy_Data_Balance",
+    "Droid_Data_Balance",
+    "Stage_Get_Datas",
+    "Stage_Datas",
+    "Map_Get_Datas",
+    "Tech_Datas",
+    "Bonus_Get_Datas",
+    "GameDatas",
+    "DataShopPack",
+    "ConvertDatas",
+    "GP_Datas",
+    "RankManager",
+    "ArenaManager",
+    "IAP_Manager",
 }
+MAX_DUMP_PER_CLASS = int(os.environ.get("MAX_DUMP_PER_CLASS", "25"))
 
 
 def human(n: float) -> str:
@@ -119,14 +159,16 @@ def main() -> int:
                 samples[cls].append(f"ERROR {e!r}")
             continue
         counts[cls] += 1
-        records[cls].append((obj.path_id, flatten(tree)))
+        flat = flatten(tree)
+        records[cls].append((obj.path_id, flat))
         safe = f"{ns}.{cls}" if ns else cls
-        d = os.path.join(OUT, safe)
-        os.makedirs(d, exist_ok=True)
-        with open(os.path.join(d, f"{obj.path_id}.json"), "w") as f:
-            json.dump(tree, f, indent=1, default=str)
-        if len(samples[cls]) < 3:
-            samples[cls].append(flatten(tree))
+        if counts[cls] <= MAX_DUMP_PER_CLASS:
+            d = os.path.join(OUT, safe)
+            os.makedirs(d, exist_ok=True)
+            with open(os.path.join(d, f"{obj.path_id}.json"), "w") as f:
+                json.dump(tree, f, indent=1, default=str)
+            if len(samples[cls]) < 2:
+                samples[cls].append(flat)
 
     lines = ["# ScriptableObject / MonoBehaviour data (IL2CPP typetrees)", "",
              f"- source: `{EXTRACT}`", f"- Unity: `{UNITY_VERSION}`", ""]
@@ -147,15 +189,14 @@ def main() -> int:
             lines.append("```")
         lines.append("")
 
-    # flat CSV for the config-like types
-    for cls in ("Data_Players", "Data_Boss", "Data_Items", "IAPProduct", "Tech_Ability_Data", "SoundClip"):
-        rows = records.get(cls, [])
+    # flat CSV for every dumped class (max 25 rows / 400 columns per file)
+    for cls, rows in records.items():
         if not rows:
             continue
-        keys = sorted({k for _, r in rows for k in r})
+        keys = sorted({k for _, r in rows for k in r})[:400]
         with open(os.path.join(OUT, f"{cls}.csv"), "w") as f:
             f.write(",".join(['"path_id"'] + ['"' + k + '"' for k in keys]) + "\n")
-            for path_id, r in rows:
+            for path_id, r in rows[:25]:
                 f.write(",".join(['"' + str(path_id) + '"'] + ['"' + str(r.get(k, "")).replace('"', '""') + '"' for k in keys]) + "\n")
 
     open(REPORT, "w").write("\n".join(lines))
