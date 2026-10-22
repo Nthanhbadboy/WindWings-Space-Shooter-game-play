@@ -70,35 +70,35 @@ Ghi chú: các class sau bị **cắt bớt** (chỉ đọc mẫu, không dump h
 
 | class | object | bytes (chưa nén) |
 |---|---:|---:|
-| `Path_Spawner` | 1500 | 393,035 |
-| `Call_Data` | 1500 | 1,116,414 |
-| `PinMap_Spawner` | 1500 | 389,822 |
-| `PathCreator` | 1500 | 3,466,385 |
-| `PointToPoint_Spawner` | 1500 | 393,460 |
-| `Rocket_Spawner` | 1500 | 472,084 |
+| `Path_Spawner` | 1500 | 393,015 |
+| `Call_Data` | 1500 | 1,116,516 |
+| `PinMap_Spawner` | 1500 | 389,950 |
+| `PathCreator` | 1500 | 3,465,986 |
+| `PointToPoint_Spawner` | 1500 | 393,060 |
+| `Rocket_Spawner` | 1500 | 472,219 |
 | `Spawner` | 1370 | 348,937 |
-| `Waypoints_Spawner` | 1151 | 297,208 |
-| `Box_Rewards` | 1065 | 633,788 |
-| `Enemy_Sub` | 981 | 318,662 |
-| `Enemy_Controller` | 981 | 676,950 |
-| `Enemy_Movement` | 981 | 509,636 |
-| `Enemy_Health` | 981 | 235,965 |
-| `Enemy_Datas` | 981 | 373,772 |
-| `Enemy_Appear` | 914 | 204,011 |
-| `AirFree_Spawner` | 885 | 231,808 |
-| `MeteoriteGenerator` | 852 | 425,456 |
-| `Item_Movement` | 702 | 186,149 |
-| `Sub_Item` | 702 | 239,656 |
+| `Waypoints_Spawner` | 1151 | 297,185 |
+| `Box_Rewards` | 1065 | 632,966 |
+| `Enemy_Sub` | 981 | 318,547 |
+| `Enemy_Controller` | 981 | 676,408 |
+| `Enemy_Movement` | 981 | 509,341 |
+| `Enemy_Health` | 981 | 235,068 |
+| `Enemy_Datas` | 981 | 374,859 |
+| `Enemy_Appear` | 914 | 203,695 |
+| `AirFree_Spawner` | 885 | 231,778 |
+| `MeteoriteGenerator` | 852 | 425,411 |
+| `Item_Movement` | 702 | 185,701 |
+| `Sub_Item` | 702 | 239,258 |
 | `Wave` | 686 | 216,575 |
-| `Gun_Attack` | 458 | 324,374 |
+| `Gun_Attack` | 458 | 323,540 |
 | `MapController` | 396 | 343,597 |
-| `Shop_Cell` | 315 | 232,279 |
-| `Stage_Behaviour` | 299 | 340,083 |
-| `Boss_BodyPhysics` | 251 | 88,166 |
+| `Shop_Cell` | 315 | 231,680 |
+| `Stage_Behaviour` | 299 | 339,894 |
+| `Boss_BodyPhysics` | 251 | 87,672 |
 | `Bullet_Linearly` | 186 | 145,907 |
-| `Boss4_ExplosionTimer` | 155 | 49,153 |
-| `GridLayoutManager` | 133 | 85,683 |
-| `Player19Laser` | 120 | 58,223 |
+| `Boss4_ExplosionTimer` | 155 | 48,816 |
+| `GridLayoutManager` | 133 | 85,778 |
+| `Player19Laser` | 120 | 57,973 |
 | `SoundClip` | 92 | 22,765 |
 
 ## MonoBehaviour class inventory (top 40)
@@ -271,7 +271,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "indexCell": 0,
  "fc.m_FileID": 0,
  "fc.m_PathID": 0,
- "_gameobject": "Board_BeginPlay/Board_RebornIAP/Parent/Group 1/Special_Packs/Btn_Cell (9)"
+ "_gameobject": "Group 1/Special_Packs/Btn_Cell (9)"
 }
 ```
 ```json
@@ -1708,7 +1708,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "bltPinToMap": false,
  "shootAudioClipName": 0,
  "isStunned": false,
- "_gameobject": "Hand4/Hand6/Sword/Gun3.1"
+ "_gameobject": "Hand3/Hand4/Hand6/Sword/Gun3.1"
 }
 ```
 
@@ -1743,7 +1743,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "dmgFirst": 0.0,
  "isTrigger": true,
  "isFirstTrigger": false,
- "_gameobject": "Enemy_Ingame/Body/Body1/Tayxoay/TayR/Tayxoay3/Tayxoay2/Tayxoay1/Cucxoay"
+ "_gameobject": "Boss-39004/Enemy_Ingame/Body/Body1/Tayxoay/TayR/Tayxoay3/Tayxoay2/Tayxoay1/Cucxoay"
 }
 ```
 
@@ -1801,7 +1801,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Name": "",
  "isCoin": true,
  "idle": true,
- "_gameobject": "GameObject (13)/Item-70012 (1)"
+ "_gameobject": "Coin_Arrow/GameObject (13)/Item-70012 (1)"
 }
 ```
 
@@ -2029,7 +2029,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "refresh": false,
  "bossObj.m_FileID": 0,
  "bossObj.m_PathID": 175830,
- "_gameobject": "Parent_Stages/Stage_Normal (221)"
+ "_gameobject": "Board_Maps/Parent/ScrollView-Chap 2/ObjectMove/Parent_Stages/Stage_Normal (221)"
 }
 ```
 
@@ -2243,7 +2243,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "fixedTime": -1.0,
  "timeMin": 0.5,
  "timeMax": 6.800000190734863,
- "_gameobject": "Parent_Bosses/Boss 6/Boss 6/FxDie/Fx (29)"
+ "_gameobject": "Board_FightBoss/Parent/Tab (5)/Boss/Parent_Bosses/Boss 6/Boss 6/FxDie/Fx (29)"
 }
 ```
 

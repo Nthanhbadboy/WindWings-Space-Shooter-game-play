@@ -10,33 +10,33 @@
 
 | rig (path_id) | bone | slot | skin | anim | atlas page | hint |
 |---|---:|---:|---:|---:|---|---|
-| `580619` | 37 | 24 | 6 | 18 | — |  |
-| `580611` | 39 | 31 | 1 | 10 | — |  |
-| `580623` | 25 | 24 | 6 | 10 | — |  |
-| `580613` | 32 | 23 | 1 | 9 | — |  |
-| `580617` | 12 | 11 | 5 | 7 | — |  |
-| `580621` | 13 | 34 | 5 | 6 | — |  |
-| `580625` | 13 | 12 | 5 | 6 | — |  |
-| `580627` | 15 | 16 | 6 | 6 | — |  |
-| `580629` | 14 | 10 | 6 | 6 | — |  |
-| `580631` | 9 | 8 | 5 | 6 | — |  |
-| `580633` | 10 | 23 | 6 | 6 | — |  |
-| `580635` | 12 | 11 | 5 | 6 | — |  |
-| `580637` | 13 | 12 | 5 | 6 | — |  |
-| `580639` | 10 | 9 | 6 | 6 | — |  |
-| `580641` | 12 | 11 | 5 | 6 | — |  |
-| `580643` | 9 | 8 | 5 | 6 | — |  |
-| `580645` | 19 | 18 | 5 | 6 | — |  |
-| `580647` | 29 | 31 | 5 | 6 | — |  |
-| `580649` | 170 | 19 | 5 | 6 | — |  |
-| `580651` | 13 | 12 | 6 | 6 | — |  |
-| `580653` | 14 | 13 | 5 | 6 | — |  |
-| `580655` | 17 | 19 | 6 | 6 | — |  |
-| `580657` | 15 | 17 | 5 | 6 | — |  |
-| `580659` | 23 | 20 | 5 | 6 | — |  |
-| `580661` | 12 | 14 | 5 | 6 | — |  |
-| `580663` | 11 | 10 | 5 | 6 | — |  |
-| `580615` | 18 | 6 | 1 | 5 | — |  |
+| `580619` | 37 | 24 | 6 | 18 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580611` | 39 | 31 | 1 | 10 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580623` | 25 | 24 | 6 | 10 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580613` | 32 | 23 | 1 | 9 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580617` | 12 | 11 | 5 | 7 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580621` | 13 | 34 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580625` | 13 | 12 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580627` | 15 | 16 | 6 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580629` | 14 | 10 | 6 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580631` | 9 | 8 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580633` | 10 | 23 | 6 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580635` | 12 | 11 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580637` | 13 | 12 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580639` | 10 | 9 | 6 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580641` | 12 | 11 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580643` | 9 | 8 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580645` | 19 | 18 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580647` | 29 | 31 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580649` | 170 | 19 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580651` | 13 | 12 | 6 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580653` | 14 | 13 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580655` | 17 | 19 | 6 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580657` | 15 | 17 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580659` | 23 | 20 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580661` | 12 | 14 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580663` | 11 | 10 | 5 | 6 | skeleton.png | format: RGBA8888, filter: Linear,Linear, |
+| `580615` | 18 | 6 | 1 | 5 | Saw.png | format: RGBA8888, filter: Linear,Linear, |
 
 ## Animation theo rig
 
