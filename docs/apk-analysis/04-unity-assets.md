@@ -1,8 +1,8 @@
 # Unity data probe
 
-- source: `/tmp/apk/extract` (4.0KB)
-- serialized file `/tmp/apk/extract/data.unity3d` — version `8`, -1 objects
-- serialized file `resources.resource` — version ``, -1 objects
+- source: `/tmp/apk/extract` (136.8MB)
+- serialized file `/tmp/apk/extract/data.unity3d` — version `8`, 16 objects
+- serialized file `resources.resource` — version ``, 0 objects
 
 ## Object types
 
