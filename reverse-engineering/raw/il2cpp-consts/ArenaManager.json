@@ -1,0 +1,761 @@
+{
+ "class": "ArenaManager",
+ "note": "arena: rank, mùa, thưởng",
+ "methods": [
+  {
+   "method": "get_pathRoot",
+   "signature": "public static string get_pathRoot() { }",
+   "offset": "0x159e7ec",
+   "rva": "0x15a27ec",
+   "bytes": 204,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159e844"
+    }
+   ]
+  },
+  {
+   "method": "get_MyRank",
+   "signature": "public static int get_MyRank() { }",
+   "offset": "0x159e8b8",
+   "rva": "0x15a28b8",
+   "bytes": 108,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159e8ec"
+    }
+   ]
+  },
+  {
+   "method": "set_MyRank",
+   "signature": "public static void set_MyRank(int value) { }",
+   "offset": "0x159e924",
+   "rva": "0x15a2924",
+   "bytes": 112,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159e95c"
+    }
+   ]
+  },
+  {
+   "method": "SetUserProfile",
+   "signature": "public void SetUserProfile(ArenaUserProfile userProfile, Action callback) { }",
+   "offset": "0x159e994",
+   "rva": "0x15a2994",
+   "bytes": 32,
+   "constants": []
+  },
+  {
+   "method": "IESetUserProfile",
+   "signature": "private IEnumerator IESetUserProfile(ArenaUserProfile userProfile, Action callback) { }",
+   "offset": "0x159e9b4",
+   "rva": "0x15a29b4",
+   "bytes": 148,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159e9e8"
+    }
+   ]
+  },
+  {
+   "method": "CheckLogInRank",
+   "signature": "public void CheckLogInRank(string userID, string userName, Action<int, ArenaUserProfile, int> callback) { }",
+   "offset": "0x159ea48",
+   "rva": "0x15a2a48",
+   "bytes": 136,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159ea88"
+    }
+   ]
+  },
+  {
+   "method": "IECheckUserStatus",
+   "signature": "private IEnumerator IECheckUserStatus(string userId, string userName, Action<int, ArenaUserProfile, int> callback) { }",
+   "offset": "0x159ead0",
+   "rva": "0x15a2ad0",
+   "bytes": 168,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159eb10"
+    }
+   ]
+  },
+  {
+   "method": "GetTimeSpan",
+   "signature": "public void GetTimeSpan(int rank, Action<DateTime> callback) { }",
+   "offset": "0x159eb78",
+   "rva": "0x15a2b78",
+   "bytes": 32,
+   "constants": []
+  },
+  {
+   "method": "IEGetTimeSpan",
+   "signature": "private IEnumerator IEGetTimeSpan(int rank, Action<DateTime> callback) { }",
+   "offset": "0x159eb98",
+   "rva": "0x15a2b98",
+   "bytes": 160,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159ebd0"
+    }
+   ]
+  },
+  {
+   "method": "SummaryRank",
+   "signature": "private IEnumerator SummaryRank(ArenaUserProfile userProfile, Action<ArenaUserProfile, bool, int> callback) { }",
+   "offset": "0x159ec38",
+   "rva": "0x15a2c38",
+   "bytes": 156,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159ec70"
+    }
+   ]
+  },
+  {
+   "method": "IEResetSeason",
+   "signature": "private IEnumerator IEResetSeason(int rank, DateTime timeUTC, Action<bool> callback) { }",
+   "offset": "0x159ecd4",
+   "rva": "0x15a2cd4",
+   "bytes": 160,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159ed0c"
+    }
+   ]
+  },
+  {
+   "method": "SetSummaryDatas",
+   "signature": "private void SetSummaryDatas(int season, int rank, int roomIndex, Dictionary<string, object> listRanks, Action<bool> callback) { }",
+   "offset": "0x159ed74",
+   "rva": "0x15a2d74",
+   "bytes": 644,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "sub",
+     "addr": "0x159ed74"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159ee10"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "mov",
+     "addr": "0x159ee1c"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x159ee68"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x159ee98"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x159eeac"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x159eedc"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x159eef0"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x159ef20"
+    },
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "add",
+     "addr": "0x159efd4"
+    }
+   ]
+  },
+  {
+   "method": "DeleteRoom",
+   "signature": "private void DeleteRoom(int rank, int roomIndex, Action<bool> callback) { }",
+   "offset": "0x159eff8",
+   "rva": "0x15a2ff8",
+   "bytes": 292,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "sub",
+     "addr": "0x159eff8"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159f060"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x159f0a4"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x159f0b8"
+    },
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "add",
+     "addr": "0x159f110"
+    }
+   ]
+  },
+  {
+   "method": "TryToUploadRankDatas",
+   "signature": "private IEnumerator TryToUploadRankDatas(ArenaUserProfile userProfile, ArenaUserStruct userStruct, Action<ArenaUserProfile> resuft) { }",
+   "offset": "0x159f11c",
+   "rva": "0x15a311c",
+   "bytes": 168,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159f15c"
+    }
+   ]
+  },
+  {
+   "method": "BackUpDatas",
+   "signature": "private void BackUpDatas(Action<bool> callback) { }",
+   "offset": "0x159f1c4",
+   "rva": "0x15a31c4",
+   "bytes": 628,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159f258"
+    }
+   ]
+  },
+  {
+   "method": "IECheckLogInRank",
+   "signature": "private IEnumerator IECheckLogInRank(string userId, Action<ArenaUserProfile> callback) { }",
+   "offset": "0x159f438",
+   "rva": "0x15a3438",
+   "bytes": 148,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159f46c"
+    }
+   ]
+  },
+  {
+   "method": "GetRankList",
+   "signature": "public void GetRankList(ArenaUserProfile arenaUserProfile, Action<List<ArenaUserStruct>> callback) { }",
+   "offset": "0x159f4cc",
+   "rva": "0x15a34cc",
+   "bytes": 32,
+   "constants": []
+  },
+  {
+   "method": "IEDownloadRank",
+   "signature": "private IEnumerator IEDownloadRank(ArenaUserProfile arenaUserProfile, Action<List<ArenaUserStruct>> callback) { }",
+   "offset": "0x159f4ec",
+   "rva": "0x15a34ec",
+   "bytes": 156,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159f524"
+    }
+   ]
+  },
+  {
+   "method": "QuickSort",
+   "signature": "private void QuickSort(ref List<ArenaUserStruct> datas, int l, int r) { }",
+   "offset": "0x159f588",
+   "rva": "0x15a3588",
+   "bytes": 448,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 112,
+     "via": "sub",
+     "addr": "0x159f588"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159f5e0"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x159f648"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x159f67c"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x159f6ec"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x159f6f0"
+    },
+    {
+     "kind": "int",
+     "value": 112,
+     "via": "add",
+     "addr": "0x159f73c"
+    }
+   ]
+  },
+  {
+   "method": "SetUserRank",
+   "signature": "public void SetUserRank(ArenaUserProfile profile, ArenaUserStruct userStruct, Action<int> callback) { }",
+   "offset": "0x159f748",
+   "rva": "0x15a3748",
+   "bytes": 140,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159f788"
+    },
+    {
+     "kind": "int",
+     "value": 15,
+     "via": "mov",
+     "addr": "0x159f79c"
+    }
+   ]
+  },
+  {
+   "method": "IEGetRoom",
+   "signature": "private IEnumerator IEGetRoom(ArenaUserProfile profile, ArenaUserStruct userStruct, Action<int> callback, int timeOut) { }",
+   "offset": "0x159f7d4",
+   "rva": "0x15a37d4",
+   "bytes": 180,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159f818"
+    }
+   ]
+  },
+  {
+   "method": "IEFixLastRoom",
+   "signature": "private IEnumerator IEFixLastRoom(ArenaUserProfile profile, ArenaUserStruct userStruct, int roomIndex, int timeOut, Action<int> callback) { }",
+   "offset": "0x159f888",
+   "rva": "0x15a3888",
+   "bytes": 192,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159f8d4"
+    }
+   ]
+  },
+  {
+   "method": "IECheckAndAddUserToRoom",
+   "signature": "private IEnumerator IECheckAndAddUserToRoom(ArenaUserProfile profile, ArenaUserStruct userStruct, int roomIndex, Action<int> callback, int timeOut) { }",
+   "offset": "0x159f948",
+   "rva": "0x15a3948",
+   "bytes": 196,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159f994"
+    }
+   ]
+  },
+  {
+   "method": "ResetUserStatus",
+   "signature": "public void ResetUserStatus(ArenaUserProfile userProfile, int count, Action<ArenaUserProfile, bool> callback) { }",
+   "offset": "0x159fa0c",
+   "rva": "0x15a3a0c",
+   "bytes": 32,
+   "constants": []
+  },
+  {
+   "method": "IEResetUserProfileStatus",
+   "signature": "private IEnumerator IEResetUserProfileStatus(ArenaUserProfile userProfile, int count, Action<ArenaUserProfile, bool> callback) { }",
+   "offset": "0x159fa2c",
+   "rva": "0x15a3a2c",
+   "bytes": 172,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159fa6c"
+    }
+   ]
+  },
+  {
+   "method": "LoadRankSetups",
+   "signature": "public void LoadRankSetups(int rank, Action<ArenaRankSetup> callback) { }",
+   "offset": "0x159fad8",
+   "rva": "0x15a3ad8",
+   "bytes": 32,
+   "constants": []
+  },
+  {
+   "method": "IELoadRankSetups",
+   "signature": "private IEnumerator IELoadRankSetups(int rank, Action<ArenaRankSetup> callback) { }",
+   "offset": "0x159faf8",
+   "rva": "0x15a3af8",
+   "bytes": 152,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159fb2c"
+    }
+   ]
+  },
+  {
+   "method": "SetRankSetups",
+   "signature": "public void SetRankSetups() { }",
+   "offset": "0x159fb90",
+   "rva": "0x15a3b90",
+   "bytes": 32,
+   "constants": []
+  },
+  {
+   "method": "IESetRankSetups",
+   "signature": "private IEnumerator IESetRankSetups() { }",
+   "offset": "0x159fbb0",
+   "rva": "0x15a3bb0",
+   "bytes": 128,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159fbd8"
+    }
+   ]
+  },
+  {
+   "method": "SetUserRandom",
+   "signature": "public void SetUserRandom() { }",
+   "offset": "0x159fc30",
+   "rva": "0x15a3c30",
+   "bytes": 788,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159fcbc"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x159fce0"
+    },
+    {
+     "kind": "int",
+     "value": 60,
+     "via": "mov",
+     "addr": "0x159fd10"
+    },
+    {
+     "kind": "int",
+     "value": 101,
+     "via": "mov",
+     "addr": "0x159fd14"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159fe54"
+    },
+    {
+     "kind": "int",
+     "value": 1000,
+     "via": "mov",
+     "addr": "0x159fe58"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x159febc"
+    },
+    {
+     "kind": "int",
+     "value": 10,
+     "via": "cmp",
+     "addr": "0x159fec0"
+    }
+   ]
+  },
+  {
+   "method": "IESetUserRandom",
+   "signature": "private IEnumerator IESetUserRandom(ArenaUserProfile userProfile, ArenaUserStruct userStruct) { }",
+   "offset": "0x159ff44",
+   "rva": "0x15a3f44",
+   "bytes": 156,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159ff7c"
+    }
+   ]
+  },
+  {
+   "method": "LoadRemoteConfigs",
+   "signature": "public void LoadRemoteConfigs(Action<bool> initResuft) { }",
+   "offset": "0x159ffe0",
+   "rva": "0x15a3fe0",
+   "bytes": 556,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a007c"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x15a020c",
+   "rva": "0x15a420c",
+   "bytes": 8,
+   "constants": []
+  },
+  {
+   "method": "cctor",
+   "signature": "private static void .cctor() { }",
+   "offset": "0x15a0214",
+   "rva": "0x15a4214",
+   "bytes": 1024,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a02c8"
+    },
+    {
+     "kind": "int",
+     "value": 10,
+     "via": "mov",
+     "addr": "0x15a02e4"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x15a0318"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x15a0330"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x15a0348"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x15a0360"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "cmp",
+     "addr": "0x15a0378"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "cmp",
+     "addr": "0x15a0390"
+    },
+    {
+     "kind": "int",
+     "value": 7,
+     "via": "cmp",
+     "addr": "0x15a03a8"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "cmp",
+     "addr": "0x15a03c0"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "cmp",
+     "addr": "0x15a03d8"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x15a0458"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a0480"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x15a048c"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a04b0"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a04c8"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a04ec"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15a0508"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a055c"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x15a056c"
+    },
+    {
+     "kind": "int",
+     "value": 40,
+     "via": "add",
+     "addr": "0x15a0590"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a05c0"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a0608"
+    }
+   ]
+  }
+ ]
+}
