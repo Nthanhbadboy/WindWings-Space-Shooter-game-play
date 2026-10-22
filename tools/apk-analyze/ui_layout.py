@@ -34,12 +34,34 @@ OUT_RAW = os.environ.get("UI_RAW", "reverse-engineering/raw/ui")
 OUT_MD = os.environ.get("UI_MD", "docs/apk-analysis/20-ui-layout.md")
 UNITY_VERSION = os.environ.get("UNITY_VERSION", "2022.3.62f3")
 TTG_BACKEND = os.environ.get("TTG_BACKEND", "AssetStudio")
-MAX_NODES = int(os.environ.get("UI_MAX_NODES", "2000"))
+MAX_NODES = int(os.environ.get("UI_MAX_NODES", "6000"))
 MAX_COMPONENTS = int(os.environ.get("UI_MAX_COMPONENTS", "12"))
-MAX_BYTES = int(os.environ.get("UI_MAX_BYTES", "3000000"))
+MAX_BYTES = int(os.environ.get("UI_MAX_BYTES", "4000000"))
 ROOT_PREFIXES = ("Board_", "Popup_", "Tab_")
 TRANSFORM_TYPES = ("Transform", "RectTransform")
 RECT_KEYS = ("m_AnchorMin", "m_AnchorMax", "m_AnchoredPosition", "m_SizeDelta", "m_Pivot")
+
+
+CLASS_MAP: dict[int, str] = {}
+
+
+def build_class_map(env) -> None:
+    """path_id -> C# class name, parsed from the raw ObjectReaders.
+
+    Parsed objects do not expose `parse_monobehaviour_head`, so the names have to
+    be collected from the readers once and looked up by path_id afterwards.
+    """
+    n = 0
+    for obj in env.objects:
+        if obj.type.name != "MonoBehaviour":
+            continue
+        try:
+            head = obj.parse_monobehaviour_head()
+            CLASS_MAP[obj.path_id] = head.m_Script.deref_parse_as_object().m_ClassName or ""
+            n += 1
+        except Exception:  # noqa: BLE001
+            continue
+    print(f"class map: {n} MonoBehaviours")
 
 
 def load_env():
@@ -107,12 +129,20 @@ def transform_of(go):
 
 
 def script_class(comp):
+    """Class name via the reader (head) or the pre-built map."""
     try:
         head = comp.parse_monobehaviour_head()
-        script = head.m_Script.deref_parse_as_object()
-        return script.m_ClassName or "MonoBehaviour"
+        return head.m_Script.deref_parse_as_object().m_ClassName or "MonoBehaviour"
     except Exception:  # noqa: BLE001
-        return "MonoBehaviour"
+        pass
+    try:
+        pid = comp.object_reader.path_id
+        name = CLASS_MAP.get(pid)
+        if name:
+            return name
+    except Exception:  # noqa: BLE001
+        pass
+    return "MonoBehaviour"
 
 
 def _xy(value):
@@ -158,6 +188,14 @@ def rect_fields(tr):
         if out[key] is not None:
             got_any = True
     out["scale"] = _xyz(getattr(tr, "m_LocalScale", None))
+    out["local_pos"] = _xyz(getattr(tr, "m_LocalPosition", None))
+    rot = getattr(tr, "m_LocalRotation", None)
+    if rot is not None:
+        try:
+            out["rotation"] = [round(float(rot.x), 3), round(float(rot.y), 3),
+                               round(float(rot.z), 3), round(float(rot.w), 3)]
+        except Exception:  # noqa: BLE001
+            out["rotation"] = None
     if not got_any:
         try:
             tree = tr.read_typetree()
@@ -184,10 +222,10 @@ def node_info(tr):
     for comp in components_of(go):
         cname = script_class(comp) if _type_name(comp) == "MonoBehaviour" else _type_name(comp)
         entry = {"class": cname}
-        if any(k in cname for k in ("Text", "Input", "Label")):
+        if any(k in cname for k in ("Text", "Input", "Label", "Language")):
             try:
                 tree = comp.read_typetree()
-                txt = tree.get("m_text")
+                txt = tree.get("m_text") or tree.get("m_Text")
                 if isinstance(txt, str) and txt.strip():
                     entry["text"] = txt[:200]
                 for k in ("key", "m_Key", "localizeKey", "keyLocalize"):
@@ -241,6 +279,7 @@ def walk(root, budget):
 
 def main() -> int:
     env = load_env()
+    build_class_map(env)
     os.makedirs(OUT_RAW, exist_ok=True)
     index, seen_roots = [], set()
     comp_classes: Counter = Counter()
@@ -339,7 +378,9 @@ def main() -> int:
               ' "components": [{"class":"Image","sprite":"Star"},',
               '                 {"class":"LanguageTextMeshPro","key":"txt_play","text":"Play"}]}',
               "```", "",
-              "- Toạ độ là **local space của RectTransform cha**, đơn vị Unity",
+              "- **UI của game này phần lớn là SpriteRenderer trong world space** (chỉ 1 Canvas),",
+              "  nên dùng `local_pos` + `scale` là chính; `anchor_*` chỉ có ở node RectTransform.",
+              "- `local_pos` là **local space của Transform cha**, đơn vị Unity",
               "  (canvas tham chiếu thường 1080×1920 → 1 unit = 100 px).",
               "- `anchor_min`/`anchor_max` quyết định responsive: `[0,0]`–`[1,1]` = full stretch.",
               "- `size_delta` = kích thước khi anchor không stretch; khi stretch thì là phần cộng thêm.",
