@@ -156,6 +156,14 @@ jobs:
         continue-on-error: true
         run: python3 tools/apk-analyze/unity_assets.py export 2>&1 | tail -30
 
+      - name: Audio deep-dive (FFmpeg fallback)
+        continue-on-error: true
+        run: python3 tools/apk-analyze/audio_deep.py 2>&1 | tail -40
+
+      - name: Build asset gallery (contact sheets)
+        continue-on-error: true
+        run: python3 tools/apk-analyze/asset_gallery.py 2>&1 | tail -30
+
       - name: Install TypeTreeGeneratorAPI
         continue-on-error: true
         run: pip install --quiet "TypeTreeGeneratorAPI==0.0.10"
@@ -226,6 +234,7 @@ jobs:
           if [ -f /tmp/apk/unity/data-report.md ]; then
             cp /tmp/apk/unity/data-report.md docs/apk-analysis/10-scriptableobjects.md
             cp /tmp/apk/unity/data/class-inventory.csv docs/apk-analysis/ 2>/dev/null || true
+            cp /tmp/apk/unity/audio-diagnose.json docs/apk-analysis/ 2>/dev/null || true
             n=0
             for f in /tmp/apk/unity/data/*.csv; do
               [ -f "$f" ] || continue
@@ -275,6 +284,35 @@ jobs:
             cat /tmp/apk/rea-native.log >> docs/apk-analysis/05b-rea-native.md 2>/dev/null || true
           fi
           du -sh docs/apk-analysis reverse-engineering 2>/dev/null || true
+
+      - name: Publish asset release (images / audio / spine, split <90MB)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          D=/tmp/apk/assets
+          mkdir -p "$D"
+          cp -r /tmp/apk/unity/export/. "$D"/ 2>/dev/null || true
+          mkdir -p "$D/textassets"
+          cp -r /tmp/apk/unity/textassets/. "$D/textassets"/ 2>/dev/null || true
+          cp /tmp/apk/unity/export-manifest.csv "$D"/manifest-full.csv 2>/dev/null || true
+          du -sh "$D"/*
+          ( cd "$D" && zip -q -r -0 -s 90m /tmp/apk/assets.zip . )
+          ls -lh /tmp/apk/assets.zip*
+          TAG=windwings-assets-1.3.118
+          TITLE="WindWings assets 1.3.118 (sprites, atlases, audio, spine)"
+          BODY=$'Full Unity asset export for design reference.\n\n- export/  : Sprite + Texture2D PNG, AudioClip WAV, Font\n- textassets/ : Spine skeleton/atlas, font charsets\n- manifest-full.csv : path_id -> name/bytes/path\n\nThe zip is split into parts (<90MB each): `cat windwings-assets.zip.z* > windwings-assets.zip` then unzip.\n\nCopyrighted by GCenter — reference only, do not redistribute.'
+          if ! gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$TAG" --draft --title "$TITLE" --notes "$BODY" -R "$GITHUB_REPOSITORY" || true
+          fi
+          for f in /tmp/apk/assets.zip*; do
+            SZ=$(stat -c%s "$f")
+            if [ "$SZ" -lt 2097152000 ]; then
+              gh release upload "$TAG" "$f" --clobber -R "$GITHUB_REPOSITORY" || echo "upload failed: $f"
+            fi
+          done
+          gh release upload "$TAG" "$D/manifest-full.csv" --clobber -R "$GITHUB_REPOSITORY" || true
 
       - name: Upload analysis artifacts
         if: always()

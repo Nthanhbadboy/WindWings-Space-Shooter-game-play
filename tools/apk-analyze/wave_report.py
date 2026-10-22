@@ -77,8 +77,18 @@ def _pptr_ids(tree):
     """path_id list of listPrefabEnemies, resolved to names later."""
     out = []
     for pptr in tree.get("listPrefabEnemies") or []:
+        pid = 0
+        if isinstance(pptr, dict):            # typetree gives plain {"m_FileID","m_PathID"}
+            pid = pptr.get("m_PathID", 0)
+        else:
+            pid = getattr(pptr, "m_PathID", 0)
+            if not pid:
+                try:
+                    pid = getattr(pptr, "path_id", 0)
+                except Exception:  # noqa: BLE001
+                    pid = 0
         try:
-            out.append(int(pptr.m_PathID))
+            out.append(int(pid))
         except Exception:  # noqa: BLE001
             out.append(0)
     return out
