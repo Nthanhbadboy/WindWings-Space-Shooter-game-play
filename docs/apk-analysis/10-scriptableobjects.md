@@ -70,35 +70,35 @@ Ghi chú: các class sau bị **cắt bớt** (chỉ đọc mẫu, không dump h
 
 | class | object | bytes (chưa nén) |
 |---|---:|---:|
-| `Path_Spawner` | 1500 | 393,015 |
-| `Call_Data` | 1500 | 1,116,516 |
-| `PinMap_Spawner` | 1500 | 389,950 |
-| `PathCreator` | 1500 | 3,465,986 |
-| `PointToPoint_Spawner` | 1500 | 393,060 |
-| `Rocket_Spawner` | 1500 | 472,219 |
+| `Path_Spawner` | 1500 | 393,095 |
+| `Call_Data` | 1500 | 1,116,626 |
+| `PinMap_Spawner` | 1500 | 390,072 |
+| `PathCreator` | 1500 | 3,466,526 |
+| `PointToPoint_Spawner` | 1500 | 393,648 |
+| `Rocket_Spawner` | 1500 | 472,184 |
 | `Spawner` | 1370 | 348,937 |
-| `Waypoints_Spawner` | 1151 | 297,185 |
-| `Box_Rewards` | 1065 | 632,966 |
-| `Enemy_Sub` | 981 | 318,547 |
-| `Enemy_Controller` | 981 | 676,408 |
-| `Enemy_Movement` | 981 | 509,341 |
-| `Enemy_Health` | 981 | 235,068 |
-| `Enemy_Datas` | 981 | 374,859 |
-| `Enemy_Appear` | 914 | 203,695 |
-| `AirFree_Spawner` | 885 | 231,778 |
-| `MeteoriteGenerator` | 852 | 425,411 |
-| `Item_Movement` | 702 | 185,701 |
-| `Sub_Item` | 702 | 239,258 |
+| `Waypoints_Spawner` | 1151 | 297,263 |
+| `Box_Rewards` | 1065 | 634,007 |
+| `Enemy_Sub` | 981 | 319,698 |
+| `Enemy_Controller` | 981 | 676,804 |
+| `Enemy_Movement` | 981 | 509,240 |
+| `Enemy_Health` | 981 | 236,548 |
+| `Enemy_Datas` | 981 | 374,316 |
+| `Enemy_Appear` | 914 | 204,169 |
+| `AirFree_Spawner` | 885 | 231,828 |
+| `MeteoriteGenerator` | 852 | 425,735 |
+| `Item_Movement` | 702 | 186,450 |
+| `Sub_Item` | 702 | 239,740 |
 | `Wave` | 686 | 216,575 |
-| `Gun_Attack` | 458 | 323,540 |
+| `Gun_Attack` | 458 | 324,344 |
 | `MapController` | 396 | 343,597 |
-| `Shop_Cell` | 315 | 231,680 |
-| `Stage_Behaviour` | 299 | 339,894 |
-| `Boss_BodyPhysics` | 251 | 87,672 |
+| `Shop_Cell` | 315 | 231,894 |
+| `Stage_Behaviour` | 299 | 340,499 |
+| `Boss_BodyPhysics` | 251 | 87,996 |
 | `Bullet_Linearly` | 186 | 145,907 |
-| `Boss4_ExplosionTimer` | 155 | 48,816 |
-| `GridLayoutManager` | 133 | 85,778 |
-| `Player19Laser` | 120 | 57,973 |
+| `Boss4_ExplosionTimer` | 155 | 49,609 |
+| `GridLayoutManager` | 133 | 86,064 |
+| `Player19Laser` | 120 | 58,337 |
 | `SoundClip` | 92 | 22,765 |
 
 ## MonoBehaviour class inventory (top 40)
@@ -271,7 +271,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "indexCell": 0,
  "fc.m_FileID": 0,
  "fc.m_PathID": 0,
- "_gameobject": "Group 1/Special_Packs/Btn_Cell (9)"
+ "_gameobject": "Board_BeginPlay/Board_RebornIAP/Parent/Group 1/Special_Packs/Btn_Cell (9)"
 }
 ```
 ```json
@@ -331,7 +331,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "textBonus.m_PathID": 0,
  "id": 0,
  "number": 0,
- "_gameobject": "EndgameLoader/Pack_Spec (0)/Parent/Parent_Rewards/Box_Gift (1)"
+ "_gameobject": "Pack_Spec (0)/Parent/Parent_Rewards/Box_Gift (1)"
 }
 ```
 ```json
@@ -1708,7 +1708,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "bltPinToMap": false,
  "shootAudioClipName": 0,
  "isStunned": false,
- "_gameobject": "Hand3/Hand4/Hand6/Sword/Gun3.1"
+ "_gameobject": "Sword/Gun3.1"
 }
 ```
 
@@ -1743,7 +1743,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "dmgFirst": 0.0,
  "isTrigger": true,
  "isFirstTrigger": false,
- "_gameobject": "Boss-39004/Enemy_Ingame/Body/Body1/Tayxoay/TayR/Tayxoay3/Tayxoay2/Tayxoay1/Cucxoay"
+ "_gameobject": "Body1/Tayxoay/TayR/Tayxoay3/Tayxoay2/Tayxoay1/Cucxoay"
 }
 ```
 
@@ -1788,7 +1788,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Name": "",
  "isCoin": true,
  "idle": true,
- "_gameobject": "Wave_0000/Coin_Arrow/GameObject (3)/Item-70012 (2)"
+ "_gameobject": "Coin_Arrow/GameObject (3)/Item-70012 (2)"
 }
 ```
 ```json
