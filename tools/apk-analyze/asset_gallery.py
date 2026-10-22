@@ -128,6 +128,9 @@ def contact_sheets(rows):
         font = None
 
     os.makedirs(SHEETS, exist_ok=True)
+    for old in os.listdir(SHEETS):          # drop sheets from previous runs
+        if old.endswith(".jpg"):
+            os.remove(os.path.join(SHEETS, old))
     index: dict[str, tuple[str, int]] = {}
     by_cat = defaultdict(list)
     for r in rows:
@@ -136,7 +139,7 @@ def contact_sheets(rows):
 
     written = []
     for cat, items in sorted(by_cat.items()):
-        items.sort(key=lambda r: r["name"])
+        items.sort(key=lambda r: (r.get("atlas") or "~", r["name"]))
         chunks = [items[i:i + MAX_TILES] for i in range(0, len(items), MAX_TILES)]
         for ci, chunk in enumerate(chunks, 1):
             rows_used = max(1, math.ceil(len(chunk) / COLS))
@@ -163,6 +166,10 @@ def contact_sheets(rows):
                 except Exception:  # noqa: BLE001
                     draw.text((x0 + 4, y0 + 4), "ERR", fill=(255, 90, 90), font=font)
                 draw.text((x0 + 3, y0 + TILE - 13), f"#{i + 1}", fill=(255, 255, 120), font=font)
+                atlas = (r.get("atlas") or "").strip()
+                if atlas and atlas != r["name"]:
+                    draw.text((x0 + 3, y0 + TILE - 24), atlas[:18], fill=(150, 220, 255),
+                              font=font)
                 index[r["file"]] = (f"{cat}-{ci:02d}.jpg", i + 1)
             fn = f"{cat}-{ci:02d}.jpg"
             sheet.save(os.path.join(SHEETS, fn), quality=JPEG_Q, optimize=True)
