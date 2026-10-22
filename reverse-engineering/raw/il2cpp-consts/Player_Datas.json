@@ -8,13 +8,16 @@
    "offset": "0x14c2b4c",
    "rva": "0x14c6b4c",
    "bytes": 1024,
-   "pure_getter": false,
+   "pure_getter": true,
+   "getter_kind": "const",
    "constants": [
     {
      "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x14c2bac",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -22,6 +25,8 @@
      "value": 36,
      "via": "mov",
      "addr": "0x14c2c48",
+     "reg": "w1",
+     "op": "w1, #0x24",
      "role": "other"
     },
     {
@@ -29,6 +34,8 @@
      "value": 64,
      "via": "mov",
      "addr": "0x14c2c8c",
+     "reg": "w1",
+     "op": "w1, #0x40",
      "role": "other"
     },
     {
@@ -36,6 +43,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x14c2cc8",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -43,6 +52,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x14c2da8",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -50,6 +61,8 @@
      "value": 96,
      "via": "sub",
      "addr": "0x14c2de4",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
      "role": "other"
     },
     {
@@ -57,6 +70,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x14c2e80",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -64,6 +79,8 @@
      "value": 96,
      "via": "add",
      "addr": "0x14c2ec8",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
      "role": "return"
     },
     {
@@ -71,6 +88,8 @@
      "value": 30,
      "via": "mov",
      "addr": "0x14c2f00",
+     "reg": "w0",
+     "op": "w0, #0x1e",
      "role": "other"
     },
     {
@@ -78,14 +97,17 @@
      "value": 1,
      "via": "cmp",
      "addr": "0x14c2f08",
+     "reg": "w0",
+     "op": "w0, #1",
      "role": "compare"
     },
     {
-     "kind": "int",
-     "value": 1120403456,
-     "via": "mov",
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
      "addr": "0x14c2f10",
-     "role": "other"
+     "role": "load"
     }
    ]
   }

@@ -9,12 +9,15 @@
    "rva": "0x13fe2b0",
    "bytes": 160,
    "pure_getter": false,
+   "getter_kind": "call",
    "constants": [
     {
      "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x13fa2f4",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     }
    ]
@@ -26,12 +29,15 @@
    "rva": "0x13fe350",
    "bytes": 288,
    "pure_getter": false,
+   "getter_kind": "computed",
    "constants": [
     {
      "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x13fa3a8",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     }
    ]
@@ -43,12 +49,15 @@
    "rva": "0x13fe470",
    "bytes": 160,
    "pure_getter": false,
+   "getter_kind": "call",
    "constants": [
     {
      "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x13fa4b4",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     }
    ]
@@ -60,12 +69,15 @@
    "rva": "0x13fe510",
    "bytes": 288,
    "pure_getter": false,
+   "getter_kind": "computed",
    "constants": [
     {
      "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x13fa568",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     }
    ]
@@ -77,12 +89,15 @@
    "rva": "0x13fe630",
    "bytes": 304,
    "pure_getter": false,
+   "getter_kind": "computed",
    "constants": [
     {
      "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x13fa688",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -90,6 +105,8 @@
      "value": 1,
      "via": "cmp",
      "addr": "0x13fa6ac",
+     "reg": "w9",
+     "op": "w9, #1",
      "role": "compare"
     },
     {
@@ -97,6 +114,8 @@
      "value": 1,
      "via": "sub",
      "addr": "0x13fa700",
+     "reg": "w8",
+     "op": "w8, w8, #1",
      "role": "other"
     }
    ]
@@ -108,12 +127,15 @@
    "rva": "0x13fe760",
    "bytes": 268,
    "pure_getter": false,
+   "getter_kind": "computed",
    "constants": [
     {
      "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x13fa7a8",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -121,6 +143,8 @@
      "value": 2,
      "via": "add",
      "addr": "0x13fa844",
+     "reg": "x8",
+     "op": "x8, x23, x19, lsl #2",
      "role": "other"
     },
     {
@@ -128,6 +152,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x13fa848",
+     "reg": "x19",
+     "op": "x19, x19, #1",
      "role": "other"
     }
    ]
@@ -139,12 +165,15 @@
    "rva": "0x13fe86c",
    "bytes": 1112,
    "pure_getter": false,
+   "getter_kind": "computed",
    "constants": [
     {
      "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x13fa8e4",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -152,6 +181,8 @@
      "value": 1,
      "via": "cmp",
      "addr": "0x13fa900",
+     "reg": "w9",
+     "op": "w9, #1",
      "role": "compare"
     },
     {
@@ -159,6 +190,8 @@
      "value": 1,
      "via": "sub",
      "addr": "0x13fa948",
+     "reg": "w9",
+     "op": "w9, w9, #1",
      "role": "other"
     },
     {
@@ -166,6 +199,8 @@
      "value": 1,
      "via": "sub",
      "addr": "0x13fa97c",
+     "reg": "w9",
+     "op": "w9, w9, #1",
      "role": "other"
     },
     {
@@ -173,6 +208,8 @@
      "value": 1,
      "via": "cmp",
      "addr": "0x13fa9dc",
+     "reg": "w21",
+     "op": "w21, #1",
      "role": "compare"
     },
     {
@@ -180,6 +217,8 @@
      "value": 2,
      "via": "cmp",
      "addr": "0x13fa9e8",
+     "reg": "w8",
+     "op": "w8, #2",
      "role": "compare"
     },
     {
@@ -187,6 +226,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x13faa58",
+     "reg": "w1",
+     "op": "w1, #1",
      "role": "other"
     },
     {
@@ -194,6 +235,8 @@
      "value": 4,
      "via": "cmp",
      "addr": "0x13faa78",
+     "reg": "w8",
+     "op": "w8, #4",
      "role": "compare"
     },
     {
@@ -201,20 +244,18 @@
      "value": 1,
      "via": "sub",
      "addr": "0x13fab98",
+     "reg": "w8",
+     "op": "w8, w8, #1",
      "role": "other"
     },
     {
      "kind": "int",
-     "value": 43691,
-     "via": "mov",
+     "value": 715827883,
+     "via": "mov+movk",
      "addr": "0x13fabb4",
-     "role": "other"
-    },
-    {
-     "kind": "int",
-     "value": 16,
-     "via": "movk",
-     "addr": "0x13fabb8",
+     "reg": "w8",
+     "op": "w8, #0xaaab",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
      "role": "other"
     },
     {
@@ -222,6 +263,8 @@
      "value": 6,
      "via": "mov",
      "addr": "0x13fabcc",
+     "reg": "w8",
+     "op": "w8, #6",
      "role": "other"
     },
     {
@@ -229,6 +272,8 @@
      "value": 3,
      "via": "cmp",
      "addr": "0x13fabd4",
+     "reg": "w8",
+     "op": "w8, #3",
      "role": "compare"
     },
     {
@@ -236,6 +281,8 @@
      "value": 1,
      "via": "cmp",
      "addr": "0x13fabdc",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "compare"
     },
     {
@@ -243,6 +290,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x13fac14",
+     "reg": "w1",
+     "op": "w1, #1",
      "role": "other"
     },
     {
@@ -250,20 +299,18 @@
      "value": 2,
      "via": "mov",
      "addr": "0x13fac4c",
+     "reg": "w1",
+     "op": "w1, #2",
      "role": "other"
     },
     {
      "kind": "int",
-     "value": 43691,
-     "via": "mov",
+     "value": 715827883,
+     "via": "mov+movk",
      "addr": "0x13fac64",
-     "role": "other"
-    },
-    {
-     "kind": "int",
-     "value": 16,
-     "via": "movk",
-     "addr": "0x13fac68",
+     "reg": "w8",
+     "op": "w8, #0xaaab",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
      "role": "other"
     },
     {
@@ -271,6 +318,8 @@
      "value": 3,
      "via": "mov",
      "addr": "0x13facb4",
+     "reg": "w1",
+     "op": "w1, #3",
      "role": "other"
     }
    ]
@@ -282,26 +331,25 @@
    "rva": "0x13fecc4",
    "bytes": 508,
    "pure_getter": false,
+   "getter_kind": "computed",
    "constants": [
     {
      "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x13fad3c",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
      "kind": "int",
-     "value": 52429,
-     "via": "mov",
+     "value": 3435973837,
+     "via": "mov+movk",
      "addr": "0x13fad70",
-     "role": "other"
-    },
-    {
-     "kind": "int",
-     "value": 16,
-     "via": "movk",
-     "addr": "0x13fad78",
+     "reg": "w25",
+     "op": "w25, #0xcccd",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
      "role": "other"
     },
     {
@@ -309,6 +357,8 @@
      "value": 10,
      "via": "mov",
      "addr": "0x13fad7c",
+     "reg": "w26",
+     "op": "w26, #0xa",
      "role": "other"
     },
     {
@@ -316,6 +366,8 @@
      "value": 9,
      "via": "cmp",
      "addr": "0x13fadbc",
+     "reg": "w9",
+     "op": "w9, #9",
      "role": "compare"
     },
     {
@@ -323,6 +375,8 @@
      "value": 4,
      "via": "cmp",
      "addr": "0x13fadc4",
+     "reg": "w9",
+     "op": "w9, #4",
      "role": "compare"
     },
     {
@@ -330,6 +384,8 @@
      "value": 1,
      "via": "sub",
      "addr": "0x13fae2c",
+     "reg": "w8",
+     "op": "w8, w8, #1",
      "role": "other"
     },
     {
@@ -337,6 +393,8 @@
      "value": 2,
      "via": "add",
      "addr": "0x13fae3c",
+     "reg": "x8",
+     "op": "x8, x21, w8, sxtw #2",
      "role": "other"
     },
     {
@@ -344,6 +402,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x13fae50",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -351,6 +411,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x13fae6c",
+     "reg": "w9",
+     "op": "w9, w10, #1",
      "role": "other"
     },
     {
@@ -358,6 +420,8 @@
      "value": 2,
      "via": "add",
      "addr": "0x13fae70",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #2",
      "role": "other"
     },
     {
@@ -365,6 +429,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x13fae94",
+     "reg": "w20",
+     "op": "w20, w20, #1",
      "role": "other"
     }
    ]
@@ -376,6 +442,7 @@
    "rva": "0x13feec0",
    "bytes": 8,
    "pure_getter": false,
+   "getter_kind": "call",
    "constants": []
   },
   {
@@ -385,6 +452,7 @@
    "rva": "0x13feec8",
    "bytes": 1024,
    "pure_getter": false,
+   "getter_kind": null,
    "constants": []
   }
  ]

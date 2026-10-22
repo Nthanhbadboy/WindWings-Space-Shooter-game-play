@@ -8,13 +8,16 @@
    "offset": "0x131c75c",
    "rva": "0x132075c",
    "bytes": 552,
-   "pure_getter": false,
+   "pure_getter": true,
+   "getter_kind": "const",
    "constants": [
     {
      "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x131c784",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -22,6 +25,8 @@
      "value": 30010,
      "via": "mov",
      "addr": "0x131c78c",
+     "reg": "w8",
+     "op": "w8, #0x753a",
      "role": "other"
     },
     {
@@ -29,20 +34,18 @@
      "value": 200,
      "via": "mov",
      "addr": "0x131c798",
+     "reg": "w0",
+     "op": "w0, #0xc8",
      "role": "other"
     },
     {
      "kind": "int",
-     "value": 24464,
-     "via": "mov",
+     "value": 90000,
+     "via": "mov+movk",
      "addr": "0x131c7a0",
-     "role": "other"
-    },
-    {
-     "kind": "int",
-     "value": 16,
-     "via": "movk",
-     "addr": "0x131c7a4",
+     "reg": "w8",
+     "op": "w8, #0x5f90",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
      "role": "other"
     },
     {
@@ -50,6 +53,8 @@
      "value": 35053,
      "via": "mov",
      "addr": "0x131c7b0",
+     "reg": "w8",
+     "op": "w8, #0x88ed",
      "role": "other"
     },
     {
@@ -57,6 +62,8 @@
      "value": 10,
      "via": "mov",
      "addr": "0x131c7b8",
+     "reg": "w0",
+     "op": "w0, #0xa",
      "role": "other"
     },
     {
@@ -64,6 +71,8 @@
      "value": 38001,
      "via": "mov",
      "addr": "0x131c7c0",
+     "reg": "w8",
+     "op": "w8, #0x9471",
      "role": "other"
     },
     {
@@ -71,6 +80,8 @@
      "value": 39001,
      "via": "mov",
      "addr": "0x131c7cc",
+     "reg": "w8",
+     "op": "w8, #0x9859",
      "role": "other"
     },
     {
@@ -78,6 +89,8 @@
      "value": 36001,
      "via": "mov",
      "addr": "0x131c7dc",
+     "reg": "w8",
+     "op": "w8, #0x8ca1",
      "role": "other"
     },
     {
@@ -85,6 +98,8 @@
      "value": 59,
      "via": "cmp",
      "addr": "0x131c828",
+     "reg": "w0",
+     "op": "w0, #0x3b",
      "role": "compare"
     },
     {
@@ -92,6 +107,8 @@
      "value": 1,
      "via": "cmp",
      "addr": "0x131c84c",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "compare"
     },
     {
@@ -99,6 +116,8 @@
      "value": 2,
      "via": "mov",
      "addr": "0x131c860",
+     "reg": "w0",
+     "op": "w0, #2",
      "role": "other"
     },
     {
@@ -106,6 +125,8 @@
      "value": 6,
      "via": "mov",
      "addr": "0x131c864",
+     "reg": "w1",
+     "op": "w1, #6",
      "role": "other"
     },
     {
@@ -113,6 +134,8 @@
      "value": 39999,
      "via": "mov",
      "addr": "0x131c86c",
+     "reg": "w8",
+     "op": "w8, #0x9c3f",
      "role": "other"
     },
     {
@@ -120,13 +143,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x131c89c",
-     "role": "other"
-    },
-    {
-     "kind": "int",
-     "value": 1120403456,
-     "via": "mov",
-     "addr": "0x131c8d0",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -141,6 +159,8 @@
      "value": 37000,
      "via": "mov",
      "addr": "0x131c8fc",
+     "reg": "w8",
+     "op": "w8, #0x9088",
      "role": "other"
     },
     {
@@ -148,6 +168,8 @@
      "value": 37999,
      "via": "mov",
      "addr": "0x131c90c",
+     "reg": "w8",
+     "op": "w8, #0x946f",
      "role": "other"
     },
     {
@@ -155,6 +177,8 @@
      "value": 250,
      "via": "mov",
      "addr": "0x131c918",
+     "reg": "w0",
+     "op": "w0, #0xfa",
      "role": "other"
     },
     {
@@ -162,6 +186,8 @@
      "value": 450,
      "via": "mov",
      "addr": "0x131c920",
+     "reg": "w0",
+     "op": "w0, #0x1c2",
      "role": "other"
     },
     {
@@ -169,6 +195,8 @@
      "value": 2139095040,
      "via": "mov",
      "addr": "0x131c934",
+     "reg": "w8",
+     "op": "w8, #0x7f800000",
      "role": "other"
     },
     {
@@ -190,6 +218,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x131c960",
+     "reg": "w0",
+     "op": "w0, #1",
      "role": "other"
     },
     {
@@ -197,7 +227,17 @@
      "value": 120,
      "via": "mov",
      "addr": "0x131c978",
+     "reg": "w0",
+     "op": "w0, #0x78",
      "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x131c8d0",
+     "role": "load"
     }
    ]
   },
@@ -207,13 +247,16 @@
    "offset": "0x131c984",
    "rva": "0x1320984",
    "bytes": 44,
-   "pure_getter": false,
+   "pure_getter": true,
+   "getter_kind": "const",
    "constants": [
     {
      "kind": "int",
      "value": 31000,
      "via": "mov",
      "addr": "0x131c984",
+     "reg": "w8",
+     "op": "w8, #0x7918",
      "role": "other"
     },
     {
@@ -221,6 +264,8 @@
      "value": 35999,
      "via": "mov",
      "addr": "0x131c990",
+     "reg": "w8",
+     "op": "w8, #0x8c9f",
      "role": "other"
     },
     {
@@ -228,6 +273,8 @@
      "value": 10,
      "via": "mov",
      "addr": "0x131c994",
+     "reg": "w9",
+     "op": "w9, #0xa",
      "role": "other"
     },
     {
@@ -235,6 +282,8 @@
      "value": 30,
      "via": "mov",
      "addr": "0x131c99c",
+     "reg": "w8",
+     "op": "w8, #0x1e",
      "role": "return"
     },
     {
@@ -242,6 +291,8 @@
      "value": 6,
      "via": "mov",
      "addr": "0x131c9a8",
+     "reg": "w0",
+     "op": "w0, #6",
      "role": "return"
     }
    ]
@@ -252,13 +303,16 @@
    "offset": "0x131c9b0",
    "rva": "0x13209b0",
    "bytes": 612,
-   "pure_getter": false,
+   "pure_getter": true,
+   "getter_kind": "const",
    "constants": [
     {
      "kind": "int",
      "value": 64,
      "via": "sub",
      "addr": "0x131c9b0",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
      "role": "other"
     },
     {
@@ -266,6 +320,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x131c9e4",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -280,6 +336,8 @@
      "value": 6,
      "via": "cmp",
      "addr": "0x131ca04",
+     "reg": "w8",
+     "op": "w8, #6",
      "role": "compare"
     },
     {
@@ -287,6 +345,8 @@
      "value": 15,
      "via": "cmp",
      "addr": "0x131ca0c",
+     "reg": "w8",
+     "op": "w8, #0xf",
      "role": "compare"
     },
     {
@@ -301,6 +361,8 @@
      "value": 23,
      "via": "cmp",
      "addr": "0x131ca18",
+     "reg": "w8",
+     "op": "w8, #0x17",
      "role": "compare"
     },
     {
@@ -308,6 +370,8 @@
      "value": 29,
      "via": "cmp",
      "addr": "0x131ca34",
+     "reg": "w8",
+     "op": "w8, #0x1d",
      "role": "compare"
     },
     {
@@ -322,6 +386,8 @@
      "value": 30999,
      "via": "mov",
      "addr": "0x131ca40",
+     "reg": "w8",
+     "op": "w8, #0x7917",
      "role": "other"
     },
     {
@@ -329,6 +395,8 @@
      "value": 35999,
      "via": "mov",
      "addr": "0x131ca4c",
+     "reg": "w8",
+     "op": "w8, #0x8c9f",
      "role": "other"
     },
     {
@@ -336,6 +404,8 @@
      "value": 36999,
      "via": "mov",
      "addr": "0x131ca58",
+     "reg": "w8",
+     "op": "w8, #0x9087",
      "role": "other"
     },
     {
@@ -343,6 +413,8 @@
      "value": 37999,
      "via": "mov",
      "addr": "0x131ca64",
+     "reg": "w8",
+     "op": "w8, #0x946f",
      "role": "other"
     },
     {
@@ -350,20 +422,17 @@
      "value": 998,
      "via": "cmp",
      "addr": "0x131ca78",
+     "reg": "w8",
+     "op": "w8, #0x3e6",
      "role": "compare"
-    },
-    {
-     "kind": "int",
-     "value": 1140457472,
-     "via": "mov",
-     "addr": "0x131ca88",
-     "role": "other"
     },
     {
      "kind": "int",
      "value": 30014,
      "via": "mov",
      "addr": "0x131ca90",
+     "reg": "w8",
+     "op": "w8, #0x753e",
      "role": "other"
     },
     {
@@ -371,6 +440,8 @@
      "value": 21,
      "via": "cmp",
      "addr": "0x131caa4",
+     "reg": "w8",
+     "op": "w8, #0x15",
      "role": "compare"
     },
     {
@@ -378,20 +449,18 @@
      "value": 1,
      "via": "mov",
      "addr": "0x131caac",
+     "reg": "w9",
+     "op": "w9, #1",
      "role": "other"
     },
     {
      "kind": "int",
-     "value": 1537,
-     "via": "mov",
+     "value": 2098689,
+     "via": "mov+movk",
      "addr": "0x131cab4",
-     "role": "other"
-    },
-    {
-     "kind": "int",
-     "value": 16,
-     "via": "movk",
-     "addr": "0x131cab8",
+     "reg": "w9",
+     "op": "w9, #0x601",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
      "role": "other"
     },
     {
@@ -406,6 +475,8 @@
      "value": 8,
      "via": "cmp",
      "addr": "0x131cadc",
+     "reg": "w8",
+     "op": "w8, #8",
      "role": "compare"
     },
     {
@@ -413,6 +484,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x131cae4",
+     "reg": "w9",
+     "op": "w9, #1",
      "role": "other"
     },
     {
@@ -420,20 +493,8 @@
      "value": 387,
      "via": "mov",
      "addr": "0x131caec",
-     "role": "other"
-    },
-    {
-     "kind": "int",
-     "value": 1109393408,
-     "via": "mov",
-     "addr": "0x131cb00",
-     "role": "other"
-    },
-    {
-     "kind": "int",
-     "value": 1118437376,
-     "via": "mov",
-     "addr": "0x131cb10",
+     "reg": "w9",
+     "op": "w9, #0x183",
      "role": "other"
     },
     {
@@ -445,16 +506,11 @@
     },
     {
      "kind": "int",
-     "value": 1130758144,
-     "via": "mov",
-     "addr": "0x131cb34",
-     "role": "other"
-    },
-    {
-     "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x131cb4c",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -462,6 +518,8 @@
      "value": 8,
      "via": "add",
      "addr": "0x131cb74",
+     "reg": "x0",
+     "op": "x0, sp, #8",
      "role": "other"
     },
     {
@@ -469,6 +527,8 @@
      "value": 64,
      "via": "add",
      "addr": "0x131cc00",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
      "role": "return"
     },
     {
@@ -476,7 +536,41 @@
      "value": 1,
      "via": "mov",
      "addr": "0x131cc08",
+     "reg": "w0",
+     "op": "w0, #1",
      "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 500.0,
+     "via": "mov+fmov",
+     "bits": "0x43fa0000",
+     "addr": "0x131ca88",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 40.0,
+     "via": "mov+fmov",
+     "bits": "0x42200000",
+     "addr": "0x131cb00",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 85.0,
+     "via": "mov+fmov",
+     "bits": "0x42aa0000",
+     "addr": "0x131cb10",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 230.0,
+     "via": "mov+fmov",
+     "bits": "0x43660000",
+     "addr": "0x131cb34",
+     "role": "load"
     }
    ]
   },
@@ -487,12 +581,15 @@
    "rva": "0x1320c14",
    "bytes": 176,
    "pure_getter": false,
+   "getter_kind": "computed",
    "constants": [
     {
      "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x131cc54",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -500,6 +597,8 @@
      "value": 6,
      "via": "cmp",
      "addr": "0x131cc98",
+     "reg": "w20",
+     "op": "w20, #6",
      "role": "compare"
     }
    ]
@@ -511,12 +610,15 @@
    "rva": "0x1320cc4",
    "bytes": 760,
    "pure_getter": false,
+   "getter_kind": "computed",
    "constants": [
     {
      "kind": "int",
      "value": 64,
      "via": "sub",
      "addr": "0x131ccc4",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
      "role": "other"
     },
     {
@@ -524,6 +626,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x131ccfc",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -538,6 +642,8 @@
      "value": 6,
      "via": "cmp",
      "addr": "0x131cd1c",
+     "reg": "w8",
+     "op": "w8, #6",
      "role": "compare"
     },
     {
@@ -545,6 +651,8 @@
      "value": 15,
      "via": "cmp",
      "addr": "0x131cd24",
+     "reg": "w8",
+     "op": "w8, #0xf",
      "role": "compare"
     },
     {
@@ -559,6 +667,8 @@
      "value": 23,
      "via": "cmp",
      "addr": "0x131cd30",
+     "reg": "w8",
+     "op": "w8, #0x17",
      "role": "compare"
     },
     {
@@ -573,6 +683,8 @@
      "value": 29,
      "via": "cmp",
      "addr": "0x131cd44",
+     "reg": "w8",
+     "op": "w8, #0x1d",
      "role": "compare"
     },
     {
@@ -618,13 +730,6 @@
      "role": "load"
     },
     {
-     "kind": "int",
-     "value": 1113587712,
-     "via": "mov",
-     "addr": "0x131ce24",
-     "role": "other"
-    },
-    {
      "kind": "float",
      "value": 1.0,
      "via": "fmov",
@@ -636,6 +741,8 @@
      "value": 30999,
      "via": "mov",
      "addr": "0x131ce40",
+     "reg": "w8",
+     "op": "w8, #0x7917",
      "role": "other"
     },
     {
@@ -643,6 +750,8 @@
      "value": 35999,
      "via": "mov",
      "addr": "0x131ce4c",
+     "reg": "w8",
+     "op": "w8, #0x8c9f",
      "role": "other"
     },
     {
@@ -650,6 +759,8 @@
      "value": 36999,
      "via": "mov",
      "addr": "0x131ce58",
+     "reg": "w8",
+     "op": "w8, #0x9087",
      "role": "other"
     },
     {
@@ -657,6 +768,8 @@
      "value": 37999,
      "via": "mov",
      "addr": "0x131ce64",
+     "reg": "w8",
+     "op": "w8, #0x946f",
      "role": "other"
     },
     {
@@ -664,6 +777,8 @@
      "value": 38999,
      "via": "mov",
      "addr": "0x131ce70",
+     "reg": "w8",
+     "op": "w8, #0x9857",
      "role": "other"
     },
     {
@@ -671,6 +786,8 @@
      "value": 39000,
      "via": "mov",
      "addr": "0x131ce7c",
+     "reg": "w8",
+     "op": "w8, #0x9858",
      "role": "other"
     },
     {
@@ -678,6 +795,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x131ce84",
+     "reg": "w0",
+     "op": "w0, #1",
      "role": "other"
     },
     {
@@ -685,13 +804,8 @@
      "value": 39999,
      "via": "mov",
      "addr": "0x131ce8c",
-     "role": "other"
-    },
-    {
-     "kind": "int",
-     "value": 1135542272,
-     "via": "mov",
-     "addr": "0x131cea0",
+     "reg": "w8",
+     "op": "w8, #0x9c3f",
      "role": "other"
     },
     {
@@ -710,16 +824,11 @@
     },
     {
      "kind": "int",
-     "value": 1115815936,
-     "via": "mov",
-     "addr": "0x131ced0",
-     "role": "other"
-    },
-    {
-     "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x131ceec",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -727,6 +836,8 @@
      "value": 8,
      "via": "add",
      "addr": "0x131cf14",
+     "reg": "x0",
+     "op": "x0, sp, #8",
      "role": "other"
     },
     {
@@ -734,6 +845,8 @@
      "value": 64,
      "via": "add",
      "addr": "0x131cfa0",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
      "role": "return"
     },
     {
@@ -741,6 +854,30 @@
      "value": 6.0,
      "via": "fmov",
      "addr": "0x131cfb0",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 56.0,
+     "via": "mov+fmov",
+     "bits": "0x42600000",
+     "addr": "0x131ce24",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 350.0,
+     "via": "mov+fmov",
+     "bits": "0x43af0000",
+     "addr": "0x131cea0",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 65.0,
+     "via": "mov+fmov",
+     "bits": "0x42820000",
+     "addr": "0x131ced0",
      "role": "load"
     }
    ]
@@ -752,12 +889,15 @@
    "rva": "0x1320fbc",
    "bytes": 540,
    "pure_getter": false,
+   "getter_kind": "computed",
    "constants": [
     {
      "kind": "int",
      "value": 64,
      "via": "sub",
      "addr": "0x131cfbc",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
      "role": "other"
     },
     {
@@ -765,6 +905,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x131cff0",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -779,6 +921,8 @@
      "value": 6,
      "via": "cmp",
      "addr": "0x131d010",
+     "reg": "w8",
+     "op": "w8, #6",
      "role": "compare"
     },
     {
@@ -786,6 +930,8 @@
      "value": 15,
      "via": "cmp",
      "addr": "0x131d018",
+     "reg": "w8",
+     "op": "w8, #0xf",
      "role": "compare"
     },
     {
@@ -800,6 +946,8 @@
      "value": 23,
      "via": "cmp",
      "addr": "0x131d024",
+     "reg": "w8",
+     "op": "w8, #0x17",
      "role": "compare"
     },
     {
@@ -814,6 +962,8 @@
      "value": 29,
      "via": "cmp",
      "addr": "0x131d038",
+     "reg": "w8",
+     "op": "w8, #0x1d",
      "role": "compare"
     },
     {
@@ -828,6 +978,8 @@
      "value": 30999,
      "via": "mov",
      "addr": "0x131d044",
+     "reg": "w8",
+     "op": "w8, #0x7917",
      "role": "other"
     },
     {
@@ -835,6 +987,8 @@
      "value": 35999,
      "via": "mov",
      "addr": "0x131d050",
+     "reg": "w8",
+     "op": "w8, #0x8c9f",
      "role": "other"
     },
     {
@@ -842,6 +996,8 @@
      "value": 36999,
      "via": "mov",
      "addr": "0x131d05c",
+     "reg": "w8",
+     "op": "w8, #0x9087",
      "role": "other"
     },
     {
@@ -849,6 +1005,8 @@
      "value": 37999,
      "via": "mov",
      "addr": "0x131d068",
+     "reg": "w8",
+     "op": "w8, #0x946f",
      "role": "other"
     },
     {
@@ -856,6 +1014,8 @@
      "value": 38999,
      "via": "mov",
      "addr": "0x131d074",
+     "reg": "w8",
+     "op": "w8, #0x9857",
      "role": "other"
     },
     {
@@ -863,6 +1023,8 @@
      "value": 39000,
      "via": "mov",
      "addr": "0x131d080",
+     "reg": "w8",
+     "op": "w8, #0x9858",
      "role": "other"
     },
     {
@@ -870,6 +1032,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x131d088",
+     "reg": "w0",
+     "op": "w0, #1",
      "role": "other"
     },
     {
@@ -877,13 +1041,8 @@
      "value": 39999,
      "via": "mov",
      "addr": "0x131d090",
-     "role": "other"
-    },
-    {
-     "kind": "int",
-     "value": 1133903872,
-     "via": "mov",
-     "addr": "0x131d0a4",
+     "reg": "w8",
+     "op": "w8, #0x9c3f",
      "role": "other"
     },
     {
@@ -898,6 +1057,8 @@
      "value": 1,
      "via": "mov",
      "addr": "0x131d0c8",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -905,6 +1066,8 @@
      "value": 8,
      "via": "add",
      "addr": "0x131d0f0",
+     "reg": "x0",
+     "op": "x0, sp, #8",
      "role": "other"
     },
     {
@@ -919,27 +1082,39 @@
      "value": 64,
      "via": "add",
      "addr": "0x131d190",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
      "role": "return"
-    },
-    {
-     "kind": "int",
-     "value": 1115815936,
-     "via": "mov",
-     "addr": "0x131d1a0",
-     "role": "other"
-    },
-    {
-     "kind": "int",
-     "value": 1127481344,
-     "via": "mov",
-     "addr": "0x131d1b0",
-     "role": "other"
     },
     {
      "kind": "float",
      "value": 6.0,
      "via": "fmov",
      "addr": "0x131d1c8",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 300.0,
+     "via": "mov+fmov",
+     "bits": "0x43960000",
+     "addr": "0x131d0a4",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 65.0,
+     "via": "mov+fmov",
+     "bits": "0x42820000",
+     "addr": "0x131d1a0",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 180.0,
+     "via": "mov+fmov",
+     "bits": "0x43340000",
+     "addr": "0x131d1b0",
      "role": "load"
     }
    ]
@@ -951,6 +1126,7 @@
    "rva": "0x13211d8",
    "bytes": 8,
    "pure_getter": false,
+   "getter_kind": "call",
    "constants": []
   },
   {
@@ -960,12 +1136,15 @@
    "rva": "0x13211e0",
    "bytes": 1024,
    "pure_getter": false,
+   "getter_kind": "computed",
    "constants": [
     {
      "kind": "int",
      "value": 1,
      "via": "mov",
      "addr": "0x131d238",
+     "reg": "w8",
+     "op": "w8, #1",
      "role": "other"
     },
     {
@@ -973,6 +1152,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d26c",
+     "reg": "w9",
+     "op": "w9, w9, #1",
      "role": "other"
     },
     {
@@ -980,6 +1161,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d290",
+     "reg": "w11",
+     "op": "w11, w10, #1",
      "role": "other"
     },
     {
@@ -987,6 +1170,8 @@
      "value": 2,
      "via": "add",
      "addr": "0x131d294",
+     "reg": "x10",
+     "op": "x10, x9, x10, lsl #2",
      "role": "other"
     },
     {
@@ -994,6 +1179,8 @@
      "value": 30015,
      "via": "mov",
      "addr": "0x131d298",
+     "reg": "w12",
+     "op": "w12, #0x753f",
      "role": "other"
     },
     {
@@ -1001,6 +1188,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d2a8",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1008,6 +1197,8 @@
      "value": 30015,
      "via": "mov",
      "addr": "0x131d2b8",
+     "reg": "w1",
+     "op": "w1, #0x753f",
      "role": "other"
     },
     {
@@ -1015,6 +1206,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d2d8",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1022,6 +1215,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d2f4",
+     "reg": "w11",
+     "op": "w11, w10, #1",
      "role": "other"
     },
     {
@@ -1029,6 +1224,8 @@
      "value": 2,
      "via": "add",
      "addr": "0x131d2f8",
+     "reg": "x10",
+     "op": "x10, x9, x10, lsl #2",
      "role": "other"
     },
     {
@@ -1036,6 +1233,8 @@
      "value": 30016,
      "via": "mov",
      "addr": "0x131d2fc",
+     "reg": "w12",
+     "op": "w12, #0x7540",
      "role": "other"
     },
     {
@@ -1043,6 +1242,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d30c",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1050,6 +1251,8 @@
      "value": 30016,
      "via": "mov",
      "addr": "0x131d31c",
+     "reg": "w1",
+     "op": "w1, #0x7540",
      "role": "other"
     },
     {
@@ -1057,6 +1260,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d33c",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1064,6 +1269,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d358",
+     "reg": "w11",
+     "op": "w11, w10, #1",
      "role": "other"
     },
     {
@@ -1071,6 +1278,8 @@
      "value": 2,
      "via": "add",
      "addr": "0x131d35c",
+     "reg": "x10",
+     "op": "x10, x9, x10, lsl #2",
      "role": "other"
     },
     {
@@ -1078,6 +1287,8 @@
      "value": 30029,
      "via": "mov",
      "addr": "0x131d360",
+     "reg": "w12",
+     "op": "w12, #0x754d",
      "role": "other"
     },
     {
@@ -1085,6 +1296,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d370",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1092,6 +1305,8 @@
      "value": 30029,
      "via": "mov",
      "addr": "0x131d380",
+     "reg": "w1",
+     "op": "w1, #0x754d",
      "role": "other"
     },
     {
@@ -1099,6 +1314,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d3a0",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1106,6 +1323,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d3bc",
+     "reg": "w11",
+     "op": "w11, w10, #1",
      "role": "other"
     },
     {
@@ -1113,6 +1332,8 @@
      "value": 2,
      "via": "add",
      "addr": "0x131d3c0",
+     "reg": "x10",
+     "op": "x10, x9, x10, lsl #2",
      "role": "other"
     },
     {
@@ -1120,6 +1341,8 @@
      "value": 38002,
      "via": "mov",
      "addr": "0x131d3c4",
+     "reg": "w12",
+     "op": "w12, #0x9472",
      "role": "other"
     },
     {
@@ -1127,6 +1350,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d3d4",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1134,6 +1359,8 @@
      "value": 38002,
      "via": "mov",
      "addr": "0x131d3e4",
+     "reg": "w1",
+     "op": "w1, #0x9472",
      "role": "other"
     },
     {
@@ -1141,6 +1368,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d404",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1148,6 +1377,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d420",
+     "reg": "w11",
+     "op": "w11, w10, #1",
      "role": "other"
     },
     {
@@ -1155,6 +1386,8 @@
      "value": 2,
      "via": "add",
      "addr": "0x131d424",
+     "reg": "x10",
+     "op": "x10, x9, x10, lsl #2",
      "role": "other"
     },
     {
@@ -1162,6 +1395,8 @@
      "value": 30031,
      "via": "mov",
      "addr": "0x131d428",
+     "reg": "w12",
+     "op": "w12, #0x754f",
      "role": "other"
     },
     {
@@ -1169,6 +1404,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d438",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1176,6 +1413,8 @@
      "value": 30031,
      "via": "mov",
      "addr": "0x131d448",
+     "reg": "w1",
+     "op": "w1, #0x754f",
      "role": "other"
     },
     {
@@ -1183,6 +1422,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d468",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1190,6 +1431,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d484",
+     "reg": "w11",
+     "op": "w11, w10, #1",
      "role": "other"
     },
     {
@@ -1197,6 +1440,8 @@
      "value": 2,
      "via": "add",
      "addr": "0x131d488",
+     "reg": "x10",
+     "op": "x10, x9, x10, lsl #2",
      "role": "other"
     },
     {
@@ -1204,6 +1449,8 @@
      "value": 30032,
      "via": "mov",
      "addr": "0x131d48c",
+     "reg": "w12",
+     "op": "w12, #0x7550",
      "role": "other"
     },
     {
@@ -1211,6 +1458,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d49c",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1218,6 +1467,8 @@
      "value": 30032,
      "via": "mov",
      "addr": "0x131d4ac",
+     "reg": "w1",
+     "op": "w1, #0x7550",
      "role": "other"
     },
     {
@@ -1225,6 +1476,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d4cc",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1232,6 +1485,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d4e8",
+     "reg": "w11",
+     "op": "w11, w10, #1",
      "role": "other"
     },
     {
@@ -1239,6 +1494,8 @@
      "value": 2,
      "via": "add",
      "addr": "0x131d4ec",
+     "reg": "x10",
+     "op": "x10, x9, x10, lsl #2",
      "role": "other"
     },
     {
@@ -1246,6 +1503,8 @@
      "value": 30033,
      "via": "mov",
      "addr": "0x131d4f0",
+     "reg": "w12",
+     "op": "w12, #0x7551",
      "role": "other"
     },
     {
@@ -1253,6 +1512,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d500",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1260,6 +1521,8 @@
      "value": 30033,
      "via": "mov",
      "addr": "0x131d510",
+     "reg": "w1",
+     "op": "w1, #0x7551",
      "role": "other"
     },
     {
@@ -1267,6 +1530,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d530",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1274,6 +1539,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d54c",
+     "reg": "w11",
+     "op": "w11, w10, #1",
      "role": "other"
     },
     {
@@ -1281,6 +1548,8 @@
      "value": 2,
      "via": "add",
      "addr": "0x131d550",
+     "reg": "x10",
+     "op": "x10, x9, x10, lsl #2",
      "role": "other"
     },
     {
@@ -1288,6 +1557,8 @@
      "value": 30034,
      "via": "mov",
      "addr": "0x131d554",
+     "reg": "w12",
+     "op": "w12, #0x7552",
      "role": "other"
     },
     {
@@ -1295,6 +1566,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d564",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1302,6 +1575,8 @@
      "value": 30034,
      "via": "mov",
      "addr": "0x131d574",
+     "reg": "w1",
+     "op": "w1, #0x7552",
      "role": "other"
     },
     {
@@ -1309,6 +1584,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d594",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1316,6 +1593,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d5b0",
+     "reg": "w11",
+     "op": "w11, w10, #1",
      "role": "other"
     },
     {
@@ -1323,6 +1602,8 @@
      "value": 2,
      "via": "add",
      "addr": "0x131d5b4",
+     "reg": "x10",
+     "op": "x10, x9, x10, lsl #2",
      "role": "other"
     },
     {
@@ -1330,6 +1611,8 @@
      "value": 30035,
      "via": "mov",
      "addr": "0x131d5b8",
+     "reg": "w12",
+     "op": "w12, #0x7553",
      "role": "other"
     },
     {
@@ -1337,6 +1620,8 @@
      "value": 1,
      "via": "add",
      "addr": "0x131d5c8",
+     "reg": "w10",
+     "op": "w10, w10, #1",
      "role": "other"
     },
     {
@@ -1344,6 +1629,8 @@
      "value": 30035,
      "via": "mov",
      "addr": "0x131d5d8",
+     "reg": "w1",
+     "op": "w1, #0x7553",
      "role": "other"
     }
    ]
