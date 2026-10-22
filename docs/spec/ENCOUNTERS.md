@@ -24,7 +24,8 @@
 | Prefab enemy | **92** = 52 thường + 39 boss + 1 MB | §2.5 |
 | Map | **250** (`Map-0000` – `Map-0249`) | `MapController.csv` |
 | Stage trên board | **299** (Normal 199 · Boss 26 · Combat 49 · MiniBoss 25) | `Stage_Behaviour.csv` |
-| Tên enemy prefab | ❌ **toàn bộ là `?`** — resolve pathID thất bại | `waves.json` |
+| Tên enemy prefab | ✅ **đã resolve** (pipeline vòng 3): **22.462** entry · **109** prefab khác nhau | `waves.json` nhánh `ef6b75ef` |
+| Enemy prefab / wave | min **2** · median **6** · max **28** | tính từ `waves.json` vòng 3 |
 | `Wave.indexWave` | **0 cho 686/686 dòng** — vô dụng | `Wave.csv` |
 
 > ⚠ **Ba lỗi dữ liệu phải nêu trước khi đọc bảng:**
@@ -246,6 +247,51 @@ Nguồn: `waves.json`, tính bằng cách bỏ `\s*\(\d+\)$` khỏi `spawners[].
 
 > ⚠ **Đính chính:** con số **690 GameObject** ở `BALANCE.md` là **mọi object** trong prefab
 > enemy (súng, hitbox, object con, hiệu ứng) — **không** phải 690 loại enemy. Số loại là **92**.
+
+### 2.6 ✅ Đã resolve — enemy thật trong wave (pipeline vòng 3)
+
+> **Nguồn:** nhánh `arena/ef6b75ef-…` commit `61d5385` (`docs/conclusions.md` #8).
+> Pipeline chạy lại đã resolve được `listPrefabEnemies` → **không còn `"?"`**.
+> Số dưới đây **thay thế** mọi câu "chưa biết enemy trong wave" ở các mục trước.
+
+| Chỉ số | Giá trị |
+|---|---:|
+| Wave | **282** (236 campaign + 45 boss + 1 lỗi) |
+| Spawner (đã dedup) | **11.093** |
+| **Entry enemy** | **22.462** — **0** giá trị `"?"` |
+| **Prefab enemy khác nhau** | **109** |
+| Entry enemy / wave | min **2** · median **63** · max **603** |
+| **Prefab khác nhau / wave** | min **2** · median **6** · max **28** |
+
+Phân bố 109 prefab theo họ:
+
+| Họ | Số prefab | Ghi chú |
+|---|---:|---|
+| `Boss-` | **39** | dùng trong **45** wave boss (`70xx`/`90xx`) |
+| `CB-300xx` | **33** | enemy thường — họ lớn nhất |
+| `CD-310xx` | **15** | enemy thường |
+| `W2-300xx` | **6** | biến thể |
+| `XB-340xx` | **5** | |
+| `GD-33xxx` · `BB-36xxx` | **4** · **4** | |
+| `H-380xx` | **2** | |
+| `W1-300xx` | **1** | |
+
+12 prefab xuất hiện nhiều nhất:
+
+| Prefab | Số entry | Prefab | Số entry |
+|---|---:|---|---:|
+| `CB-30003` | 2.283 | `CB-30002` | 985 |
+| `CB-30024` | 1.800 | `XB-34001` | 757 |
+| `CB-30015` | 1.738 | `CB-30016` | 606 |
+| `CB-30001` | 1.520 | `CB-30023` | 603 |
+| `CB-30012` | 1.411 | `CD-31002` | 591 |
+| `CB-30022` | 1.391 | | |
+
+> **5 prefab phổ biến nhất chiếm 39,0% tổng entry** — độ đa dạng thật rất thấp.
+> Đây là lý do một bản clone chỉ cần **~10–15 prefab enemy là đủ cảm giác**.
+
+> `> Nhận định (mức B):` trần nội dung enemy là **109 prefab**, không phải 45.659.
+> Con số 45.659 trong bản trước là **tổng số tham chiếu**, không phải số thứ phải thiết kế.
 
 ---
 

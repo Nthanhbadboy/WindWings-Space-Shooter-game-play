@@ -4,6 +4,10 @@
 > Không mức nào dùng % tự đánh giá. Số đếm được ghi **(A)**, ước lượng ghi **(C)**.
 > Mục cuối: **Còn thiếu / phải đoán**.
 
+> **Sửa lại (lần 3):** pipeline vòng 3 (nhánh `ef6b75ef`, commit `61d5385`) đã resolve
+> **tên enemy trong wave** — **22.462** entry, **109** prefab, **0** `"?"`. Đây là mục
+> tôi từng ghi là "chưa biết". Số mới ở `ENCOUNTERS.md` §2.6.
+>
 > **Sửa lại (lần 2):** bản đầu của file này phóng đại khối lượng. Sau khi đọc **tên gốc** spawner
 > và **dedup**, con số thật nhỏ hơn nhiều: **48 archetype spawner**, **92 prefab enemy**,
 > **10.776 placement** (median **28/wave**), và **boss là 45 wave riêng**. Xem §1.
@@ -89,8 +93,8 @@ xuất hiện ở y 9,6" — chạy 4.622 lần với đúng cùng tham số. Đ
 **Bạn đúng lần nữa:** **52 loại enemy thường** + **40 boss-family**. Không phải 690 GameObject
 như tôi ghi trước đó — 690 là **mọi** object trong prefab (súng, hitbox, con, hiệu ứng).
 
-> Còn **45.659 slot `enemies` = `"?"`** là thật — nhưng đó là **tham chiếu chưa resolve**,
-> không phải "45.659 thứ phải thiết kế". Trần nội dung enemy là **52 + 40 = 92 prefab**.
+> **Đã resolve (vòng 3):** **22.462** entry · **109** prefab · **0** `"?"` — xem `ENCOUNTERS.md` §2.6.
+> Trần nội dung enemy là **109 prefab**, không phải hàng chục nghìn.
 
 ### 1.4 Boss là **màn riêng** — xác nhận
 
@@ -210,7 +214,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 
 | Việc | Bắt chước có giúp? | Vì sao |
 |---|---|---|
-| Biết **cần làm gì** | ✅ **gần hết** | 45.659 slot, 1.015 spawner, 420 súng — **đã có danh sách** |
+| Biết **cần làm gì** | ✅ **gần hết** | 22.462 entry enemy, 109 prefab, 48 archetype, 420 súng — **đã có danh sách** |
 | Biết **con số đúng** | 🟡 **một phần** | 25 hằng số đọc ngay; 5.818 field còn ở mức D |
 | **Làm ra** 282 wave × 84 spawner | ❌ **không** | khối lượng, không phải hiểu biết |
 | **Vẽ** 2.185 sprite thay thế | ❌ **không** | gu thẩm mỹ |
@@ -237,8 +241,8 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
   kiểm được, và cái gì không kiểm được thì không biết đã đạt chưa.
 - **Đơn giản và nhỏ — cả hai đều đúng ở đây.** 48 archetype + 92 prefab enemy là **bộ từ vựng nhỏ**.
   Khối lượng thật là **10.776 placement** (sau dedup), median **28/wave** — không phải 84.
-- **45.659 slot `"?"`** là thật, nhưng trần nội dung chỉ là **92 prefab enemy** — nên cái thiếu là
-  **cách gán 45.659 tham chiếu**, không phải 45.659 thiết kế mới. Resolve `m_PathID` là xong phần lớn.
+- **Đã resolve xong:** pipeline vòng 3 đọc được **22.462** entry · **109** prefab · **0** `"?"`.
+  Trần nội dung enemy là **109 prefab** — không phải 45.659 thiết kế mới.
 
 > `> Kết luận (mức B):` bắt chước đưa bạn tới **L1** nhanh. **L2** cần 2 tool. **L3** cần
 > vòng playtest. Ba mức này **không loại trừ nhau** — chúng là **ba khoản chi phí khác nhau**,
@@ -256,7 +260,7 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 
 | Loại | Nội dung | Vì sao còn thiếu | Cách xử lý | Bản chất |
 |---|---|---|---|---|
-| **1. Chưa đọc** | 4.861 `[SerializeField]` · 957 `static` · 45.659 tham chiếu enemy | chưa chạy AssetRipper/Ghidra | chạy 2 tool | **ngắn**, không khó |
+| **1. Chưa đọc** | 4.861 `[SerializeField]` · 957 `static` | chưa chạy AssetRipper/Ghidra | chạy 2 tool | **ngắn**, không khó |
 | **2. Chưa chọn** | dung sai L2 · ngưỡng N cho L3 · bộ archetype nào đưa vào game | chưa ai quyết | quyết định thiết kế | **ngắn** |
 | **3. Chưa làm** | ~641 hình art · 69 audio · 10.776 placement · 1.416 chuỗi | **không nằm trong APK để đọc** — phải tự sinh ra | sản xuất | **dài**, không khó |
 | **4. Ngoài sản phẩm** | giá IAP · live-ops · dữ liệu người chơi | không thuộc bản build | quan sát, không trích xuất | **không cần** cho bản clone |
@@ -295,7 +299,7 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 | **L3 — không phân biệt được** | bắt buộc | ❌ **bỏ** | không cần blind A/B, không cần N người |
 | Giá trị **4.861** `[SerializeField]` | phải có | 🟡 **tuỳ chọn** | dùng làm **tham khảo**, không phải để khớp |
 | Giá trị **957** `static` | phải có | 🟡 **tuỳ chọn** | " |
-| **45.659** tham chiếu enemy | phải resolve | 🟡 **tuỳ chọn** | danh sách 92 prefab đã đủ để chọn |
+| **45.659** tham chiếu enemy | phải resolve | 🟡 **tuỳ chọn** | danh sách **109 prefab** (đã resolve) đủ để chọn |
 | 1.416 chuỗi localization | phải có | ❌ **bỏ** | viết text riêng |
 | 170 SKU IAP | phải khớp | ❌ **bỏ** | tự thiết kế shop |
 | 282 wave | phải đủ | 🟡 **tự chọn số** | 20–40 wave là đủ cho bản đầu |
@@ -340,7 +344,7 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 | # | Thứ | Mức | Ghi chú |
 |---:|---|---|---|
 | 1 | Giá trị **5.818** field (`4.861` serialized + `957` static) | **D** | chưa chạy AssetRipper/Ghidra |
-| 2 | **45.659** tham chiếu enemy trong wave | **D** | `waves.json` = `"?"`; cần resolve `m_PathID` — trần chỉ **92 prefab** |
+| 2 | ~~45.659 tham chiếu enemy~~ | ~~D~~ → **A** | ✅ **đã resolve** (`ENCOUNTERS.md` §2.6): 22.462 entry · 109 prefab |
 | 3 | Ngưỡng N người cho test L3 | **C** | phải tự chọn; chưa ai trong dự án đo |
 | 4 | Dung sai cho L2 | **C** | phải tự chọn (đề xuất ±5%, chưa có cơ sở) |
 | 5 | Thời gian làm 282 wave | **C** | không đoán ở đây; phụ thuộc công cụ authoring |
