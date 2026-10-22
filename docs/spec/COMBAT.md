@@ -19,7 +19,7 @@
 | Súng của **player** trong dump | **0** — toàn bộ 458 là enemy/boss | `forceType = Enemy` 458/458 |
 | Enemy có `noDamage` (bất tử với đạn) | **189 / 800 (23,6%)** | `Enemy_Health.csv` |
 | Đạn xuyên khiên | **58 / 186** loại đạn | `Bullet_Linearly.csv` `throughShield` |
-| TTK | **không tính được tuyệt đối** — thiếu DPS player | §6 |
+| TTK | **sẽ tính được** — DPS player nằm trong `Player_Get_Datas.StartMainCannonDamages[]` (chưa đọc giá trị) | §6 |
 
 > ⚠ **Phát hiện quan trọng nhất:** `Gun_Attack.csv` **không chứa súng của người chơi**.
 > Bằng chứng: cột `forceType` có đúng 2 giá trị (`Enemy = 0`, `Ally = 1`) và **458/458 dòng = 0**.
@@ -292,7 +292,14 @@ Nguồn: `Gun_Attack.csv`, `_gameobject` cắt phần trước `/`.
 
 ## 6. TTK
 
-### 6.1 Vì sao không tính được tuyệt đối
+### 6.1 Vì sao **hiện** chưa có số tuyệt đối — nhưng đã biết chỗ lấy
+
+> ⚠ **Sửa lại:** trước đây mục này ghi "không có damage player". **Sai.** Damage player nằm trong
+> `Player_Get_Datas`: `StartMainCannonDamages[]` · `StartMainCannonRate[]` ·
+> `StartWingCannonDamages[]` · `StartSecretWeaponDamage`, cộng bộ `pN_startShotRate` /
+> `pN_startBltSpeed` cho **20 archetype tàu**. Tất cả là `static` → khởi tạo trong `.cctor()`.
+> Chưa có **giá trị** vì chưa chạy Ghidra, không phải vì không tồn tại.
+> Xem `TUNING_KNOBS.md` §2.2–2.3.
 
 TTK = `HP / DPS_player`. Trong đó:
 - **HP**: có (**800** instance, 394 > 0; `15-enemy-hp.csv`).
@@ -420,7 +427,7 @@ vì không có giá trị gốc. Xem `BALANCE.md` §6.
 
 | # | Điều | Trạng thái | Ảnh hưởng |
 |---:|---|---|---|
-| 1 | **Damage của player** | **không có trong dump** (`forceType` toàn `Enemy`; `Player_Get_Datas` không serialize) | không có TTK tuyệt đối |
+| 1 | **Giá trị** damage player | **có tên field** (`Player_Get_Datas.StartMainCannonDamages[]`), chưa có số | đọc `.cctor` bằng Ghidra là có TTK tuyệt đối |
 | 2 | **HP của player** | không có (`Player_Health.StartHealth` trong code) | không biết "sống được mấy phát" |
 | 3 | 18/39 prefab boss không có súng trong dump + 336 súng root generic | **C** — thiếu `m_Parent` | bảng §5 chỉ phủ 26,6% súng |
 | 4 | `countShots = 0` nghĩa là 1 nòng hay "không giới hạn" | **C** — suy từ constructor default | DPS có thể lệch |

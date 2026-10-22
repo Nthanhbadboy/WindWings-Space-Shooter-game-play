@@ -116,7 +116,13 @@ màn kết trận hiển thị tối đa 31 phần thưởng; `Board_BattlePass`
 
 ---
 
-## 3. `Shop_Cell` — 315 ô, không có giá
+## 3. `Shop_Cell` — 315 ô, không có giá *trong CSV*
+
+> ⚠ **Bổ sung:** "không có giá trong CSV" **không** có nghĩa là game không có giá.
+> Giá nằm ở 4 chỗ đã định vị (`TUNING_KNOBS.md` §2.4, §3):
+> `Player_Get_Datas.PlayerCosts[]` / `PlayerStarCosts[]` · `Tech_Datas.basePriceStatUpgrade[]`
+> + `deltaPrice*[]` · `Droid_Data_Balance.UnlockCosts[]` · `Stage_Get_Datas.coinDelta/gemDelta/levelDelta[]`.
+> Tất cả là `static`, khởi tạo trong `.cctor()` — đọc được bằng Ghidra.
 
 | Field | Kiểu | Giá trị trong CSV |
 |---|---|---|
@@ -216,7 +222,7 @@ Nguồn: `DataShopPack.csv` (2 dòng, `_gameobject` = `DataShop` cả 2 → **b�
 
 **Kết luận:** `DataShopPack` chỉ là **bảng tra icon** cho 5 nhóm × 5 sprite. Không có kinh tế.
 
-## 5. IAP — 170 sản phẩm, **không có giá**
+## 5. IAP — 170 sản phẩm, **không có giá trong APK** (giá thật nằm trên store)
 
 | Field | Kiểu | Giá trị |
 |---|---|---|

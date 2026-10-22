@@ -309,6 +309,38 @@ là hạng mục khó nhất và tốn kém nhất của game multiplayer — �
 > **~15–20%** công sức ra sản phẩm. **80% còn lại là nội dung, art và cân bằng** — nơi AI yếu,
 > và cũng là nơi quyết định game có hay hay không.
 
+### 1.10 Đào lại feel / cân bằng / art: **cả ba đều có đường lấy**
+
+Sau khi người dùng phản biện, tôi đọc lại `dump.cs` theo **tên field** thay vì theo **CSV**.
+Kết quả: ba mục tôi từng gọi là "không đào được" **đều có tên biến, kiểu dữ liệu và vị trí**.
+
+| Mảng | Kết luận cũ (sai) | Thực tế | Chi tiết |
+|---|---|---|---|
+| **Cân bằng** | "không có damage/HP player, không có giá" | `Player_Get_Datas` **178 field** chứa `StartHp`, `StartMainCannonDamages[]`, `PlayerCosts[]`; `Tech_Datas` cho **công thức giá** `price = base[i] + delta[i] × lv` | `TUNING_KNOBS.md` §2–3 |
+| **Feel** | "nằm trong `libil2cpp.so`" | **11/16 cơ chế** là `[SerializeField]` → nằm trong **prefab**, tức **đã có trong `data.unity3d`**: `VibrateCamera.levelVibrate`, `Enemy_CameraVibrate.timeVibr/lvVibr`, `Enemy_HitSkeletonRenderer.hitColor`, `EffectGlow`, `TimedTrailRenderer`; slow-mo là **const** `timeSlowed = 0,1` | `TUNING_KNOBS.md` §4 |
+| **Art** | "không thể tái tạo" | canvas **10,8 × 19,2 unit** (const `haftOfW/H` = 5,4/9,6 → **9:16**); cả game **2 mesh**; chỉ cần **sprite billboard** ≤ 2048² | `TUNING_KNOBS.md` §5 |
+
+#### Con số quyết định: **4.841**
+
+`dump.cs` cho thấy game classes có **4.841 field `[SerializeField]`**. Đó là lượng giá trị
+đang nằm trong `data.unity3d` mà **exporter CSV chưa lấy** — vì nó chỉ quét
+`reverse-engineering/scriptableobjects/`, không quét component trên prefab.
+
+> `> Nhận định:` sai sót của tôi là **sai phạm vi công cụ**, không phải sai bản chất dữ liệu.
+> Cùng một APK, chỉ cần **AssetRipper** thay vì exporter hiện tại là có thêm 4.841 giá trị.
+
+#### Ba tầng đào — và tầng nào đã xong
+
+| Tầng | Nội dung | Trạng thái |
+|---|---|---|
+| 1 | `const` trong `dump.cs` (900 const game class) | ✅ **đã có giá trị** — `Ease` 31, `timeSlowed` 0,1, `haftOfW/H` 5,4/9,6 |
+| 2 | `[SerializeField]` trong prefab (4.841) | 🟡 **chưa export** — chạy AssetRipper |
+| 3 | `static` khởi tạo trong `.cctor()` (259) | 🟡 **chưa đọc** — chạy Ghidra |
+
+**Kết luận sửa lại:** cả **feel**, **cân bằng** và **art** đều đào được — không mảng nào
+"không có dữ liệu". Cái còn lại chỉ là **chưa chạy 2 công cụ**, và cả hai đều đã có tên
+chính xác để chạy. Xem `TUNING_KNOBS.md`.
+
 ---
 
 ## 2. Đối chiếu với bộ spec này
@@ -346,6 +378,7 @@ hợp: đó là **cùng một giới hạn** — *đặc tả tĩnh không chuy�
 | Damage/HP của player | `forceType = Enemy` **458/458**; `Player_Get_Datas` không serialize | Ghidra `.cctor` | **178 field** |
 | Giá / tỉ lệ rơi | `Box_Rewards.id = 0` **800/800**; không cột `weight`/`price` | Ghidra `GetBonusCoin/Exp` + Frida | hàm thưởng theo `id` |
 | Hiệu ứng item | `Sub_Item.csv` **0 cột hiệu ứng** | Ghidra (class item) + Frida | hiệu ứng + thời gian |
+| **Toàn bộ feel** | chỉ export ScriptableObject, **bỏ prefab** | **AssetRipper** — 4.841 field `[SerializeField]` | shake, tốc độ, màu hit, trail, delay bắn |
 | Âm thanh | 69 `AudioClip` nhưng **0 file export** (FSB5 trong `.resS`) | **AssetRipper** / vgmstream | 69 file `.wav` |
 | Hành vi (appear/burn/stun) | `Enemy_Appear.csv` chỉ có ref | Ghidra: `Enemy_Appear.Appear(Action)` … | toàn bộ state machine |
 | Pivot/border sprite | 586 sprite không-Atlas ghi `?` | **AssetRipper** | pivot, border, mesh |

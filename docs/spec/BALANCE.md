@@ -546,8 +546,13 @@ Chỉ biết **signature**, không biết thân hàm (nguồn: `class Enemy_Data
 | Số mốc ability tech | ✅ 6 bảng × 5 mốc | `Tech_Ability_Data.csv` |
 
 **Vẫn còn thiếu thật** (đã kiểm, không có trong bất kỳ CSV nào):
-damage **của player** · **giá** coin/gem/IAP · **thưởng** trong hộp · trọng số rơi ·
-HP player · ngưỡng VIP · số stage/chapter · mapping wave→stage.
+**giá trị số** của: damage player · giá coin/gem · thưởng trong hộp · trọng số rơi · HP player ·
+ngưỡng VIP · số stage/chapter · mapping wave→stage.
+
+> ⚠ **Sửa lại:** *tên field* của tất cả các mục trên **đã có** — chúng nằm trong
+> `Player_Get_Datas` (178 field), `Tech_Datas` (13), `Droid_Data_Balance` (6),
+> `Stage_Get_Datas` (5), `Device_Get_Data` (3). Cái thiếu là **giá trị** trong `.cctor()`.
+> Bảng đầy đủ: `TUNING_KNOBS.md` §2–3.
 
 ### 6.0b Vì sao các class dưới đây không thể có trong `data.unity3d`
 

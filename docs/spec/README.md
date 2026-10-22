@@ -16,11 +16,11 @@ không phải để clone y nguyên. Toàn bộ asset gốc (sprite, atlas, Spin
 
 | Nếu bạn là… | Đọc theo thứ tự này |
 |---|---|
-| **Designer / cân bằng số** | `GAMEPLAY.md` §0 → `BALANCE.md` §0 → `COMBAT.md` §0 → `ECONOMY.md` §0 |
+| **Designer / cân bằng số** | `GAMEPLAY.md` §0 → `BALANCE.md` §0 → `COMBAT.md` §0 → `ECONOMY.md` §0 → **`TUNING_KNOBS.md`** (núm vặn + công thức) |
 | **Engineer dựng lại gameplay** | `GAMEPLAY.md` (core loop) → `COMBAT.md` (súng/đạn) → `ENCOUNTERS.md` (wave) → `UI.md` (màn hình) |
 | **Art / tech art** | `ASSETS.md` §0–§5 (art direction "Ink & Ember") → `sprite-list.csv` |
-| **Producer / ước lượng** | `GAMEPLAY.md` §9 (thứ tự build) → `ASSETS.md` §7 (atlas plan) → `ECONOMY.md` §8 → **`AI_FEASIBILITY.md`** (rủi ro) |
-| **AI/agent sắp dựng game** | `AI_FEASIBILITY.md` §2 (lỗ hổng) → `ENEMY_BEHAVIOUR.md` §6 (kiến trúc enemy) → §8 (cái không bóc được) |
+| **Producer / ước lượng** | `GAMEPLAY.md` §9 (thứ tự build) → `ASSETS.md` §7 (atlas plan) → `ECONOMY.md` §8 → **`AI_FEASIBILITY.md`** (rủi ro) → `TUNING_KNOBS.md` §6 (thứ tự khai thác) |
+| **AI/agent sắp dựng game** | `AI_FEASIBILITY.md` §2 (lỗ hổng) → `TUNING_KNOBS.md` (núm vặn + nơi lấy) → `ENEMY_BEHAVIOUR.md` §6 (kiến trúc enemy) |
 
 Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSETS` là **cấu trúc**;
 `ECONOMY` là **cái gì có thật và cái gì không**.
@@ -39,7 +39,8 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 | `ENCOUNTERS.md` | **282 wave** / 23.757 spawner, `spawn_type`, tham số spawn, **250 map** + parallax, 299 stage | 391 dòng · 34 bảng |
 | `ECONOMY.md` | `Box_Rewards`, `Shop_Cell`, `DataShopPack`, IAP **170 SKU**, `Sub_Item`, `PurchaseType` — **cái gì là số thật** | 370 dòng · 19 bảng |
 | `ENEMY_BEHAVIOUR.md` | Tốc độ enemy **0,2–30**, **95 turret**, bán kính va chạm **15 unit**, biên vùng chơi **20×25**, **399** đường bay, thiên thạch, nhịp nổ boss, kiến trúc **9 component/enemy** | 248 dòng · 12 bảng |
-| `AI_FEASIBILITY.md` | AI dựng lại được đến đâu — đối chiếu nghiên cứu 2025–2026 (`Spec2Game`, `A2Z GameSpec-Bench`) với lỗ hổng của bộ spec | 220 dòng · 10 bảng |
+| `AI_FEASIBILITY.md` | AI dựng lại được đến đâu — đối chiếu nghiên cứu 2025–2026 (`Spec2Game`, GameCraft-Bench, Play2Code) với lỗ hổng của bộ spec; chuỗi công cụ; xếp hạng độ khó | 505 dòng · 24 bảng |
+| `TUNING_KNOBS.md` | **Toàn bộ núm vặn**: `Player_Get_Datas` 178 field, công thức giá, feel (shake/slow-mo/hit color), art scale 10,8×19,2; **giá trị nằm ở đâu** (const / prefab / `.cctor`) | 267 dòng · 15 bảng |
 | `screens.csv` | 125 dòng: `class, board_id, mo_tu_dau, popup_con, data_can_load` | 125 dòng |
 | `sprite-list.csv` | 163 dòng: atlas page (size + MB thật), background, Spine, UI 9-slice, ship/drone, bullet | 163 dòng |
 
@@ -115,6 +116,7 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | 2d | **Chuỗi công cụ** (§1.7) + **bảng đường lấy lỗ hổng** (§2.3): mỗi "chưa có" đều kèm tool + kết quả kỳ vọng | ✅ xong |
 | 2e | **Xác nhận 2.5D** (§1.8): 2 `Mesh` · 0 `SkinnedMeshRenderer` · 7 `BoxCollider` 3D vs 5.424 `BoxCollider2D` | ✅ xong |
 | 2f | **Xếp hạng độ khó** (§1.9): không 3D · không netcode realtime · không navmesh → **cơ chế dễ clone**, nhưng chỉ 15–20% công việc | ✅ xong |
+| 2g | `TUNING_KNOBS.md` — đào lại feel/cân bằng/art bằng **tên field** trong `dump.cs`: 178 field player, công thức giá, 4.841 `[SerializeField]` | ✅ xong |
 
 **Đã sửa so với vòng 1** (đều do dữ liệu bóc lại khác bản trước): HP 981 → **800** dòng,
 `Texture2D` 654 → **653**, `SkeletonDataAsset` 25 → **27**, page 66/32,5 MB → **67/31,0 MB**,
