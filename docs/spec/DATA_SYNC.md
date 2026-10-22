@@ -473,7 +473,7 @@ hay `Boss_BodyPhysics`. Hai bảng này nằm trong **không gian object riêng*
 | 13 | `Enemy_Physics` · `Enemy_Destroy` · `Enemy_UI` · `Enemy_Burned` · `Enemy_Stun` | 981 · 981 · 981 · 689 · 137 | **PathID đã có** trong `Enemy_Controller` |
 | 14 | 37 `*_Director` + 3 `AttackPhases` | 68 | chưa vào `TARGETS` |
 | 15 | `AnimationClip` · `AnimatorController` | **791** · **308** | manifest chỉ có Sprite + Texture2D |
-| 16 | Toạ độ đường bay | — | `PathCreator.points` chỉ ghi **`[10]`** (số điểm), **không có x/y** |
+| 16 | ~~Toạ độ đường bay~~ | — | **ĐÃ CÓ trong raw** — xem §7.11 (CSV chỉ ghi `[10]`) |
 | 17 | `Spawner.dataScript` | 1.200 dòng | **cột rỗng** — 0 giá trị, không nối được gì |
 | 18 | `Call_Data` đầy đủ | 1.200 / 23.757 = **5,0%** | chỉ phủ **182 / 282 wave** (64,5%) |
 
@@ -502,6 +502,69 @@ Bằng chứng nó **lấy được**, không phải phải đoán:
 
 **Cách ghép hiện tại nếu không có `Transform`:** dùng chuỗi `_gameobject` → chỉ **~38%**, và **38% là trần
 cứng**, không phải 54% như tôi từng báo (con số 54,1% là *trong tập có path*, không phải *toàn bộ 458*).
+
+### 7.11 Dữ liệu thô vs CSV — CSV **làm phẳng list**, raw thì không
+
+Một phần "thiếu" trước đây là do **bộ ghi CSV**, không phải do dữ liệu. Kiểm bằng cách đọc lại
+`reverse-engineering/raw/typetrees/*.jsonl.gz` (cùng object, chỉ khác cách xuất).
+
+| Trường | CSV | Raw JSONL | Chênh |
+|---|---|---|---|
+| `PathCreator.editorData._bezierPath.points` | **`[10]`** (chỉ số phần tử) | **10 × `{x, y, z}`** đầy đủ | **mất toàn bộ hình học** |
+| `Enemy_Movement.listSpeeds` | `listSpeeds[0]` = 5,0 | `[5.0]` hoặc **`[5.0, 12.0]`** | mất **137** trường hợp đổi tốc độ |
+| `Gun_Attack` | 39 cột phẳng | có `allGunDatas` lồng + `shootAudioClipName` + `isStunned` | — |
+
+### 7.11.1 Đường bay — đọc được **đầy đủ toạ độ**
+
+`PathCreator` **1.500** bản ghi (tổng thật 1.714 — bị cap), **0 bản ghi thiếu `points`**.
+
+| Thuộc tính | Số |
+|---|---|
+| Số điểm/đường | 4 (**186**) · 7 (**441**) · 10 (**401**) · 13 (**120**) · 16 (**196**) · 19–55 (phần còn lại) |
+| Nhiều điểm nhất | **55** (16 đường) |
+| Độ dài đường | min **2,77** · median **38,7** · max **228,7** đơn vị Unity |
+| Tổng chiều dài | **68.422** đơn vị |
+
+Điểm đầu của đường thứ nhất: `(8,12, 7,37)` — nằm **trong** khung chơi 20×25, đúng như một điểm khởi hành.
+
+**Quy ra thời gian bay** (chia cho tốc độ, `Enemy_Movement.listSpeeds`) — đây là số quyết định *cảm giác*:
+
+| Tốc độ | Đường median 38,7 | Đường dài nhất 228,7 |
+|---:|---:|---:|
+| 1,0 | **38,7 s** | 228,7 s |
+| 5,0 (median) | **7,7 s** | 45,7 s |
+| 20,0 | 1,9 s | 11,4 s |
+
+> **Nhận định (mức A):** một con enemy bay hết đường median mất **7,7 giây** ở tốc độ 5,0.
+> Cộng nhịp spawn **1,0 s** ⇒ trên màn hình luôn có **~7–8 con** cùng lúc. Đây là con số dựng lại
+> được **cảm giác** mà không cần chạy game.
+
+### 7.11.2 `listSpeeds` — **137 con đổi tốc độ giữa đường**
+
+| Số phần tử `listSpeeds` | Số enemy |
+|---|---:|
+| 1 | **844** |
+| 2 | **137** |
+
+CSV chỉ xuất `listSpeeds[0]` ⇒ 137 con này bị đọc thành **một tốc độ duy nhất**, mất khúc tăng/giảm tốc.
+Raw giữ cả mảng.
+
+> **Điều kiện lật ngược:** nếu 2 phần tử là `[tốc độ, thời điểm]` chứ không phải 2 chặng, thì đây là
+> **thời gian chờ**, không phải đổi tốc độ. Cần đọc `Enemy_Movement` thân hàm để chốt — hiện chỉ có field.
+
+### 7.11.3 Nối đường bay vào wave — chỉ 8,3%
+
+| Mắt | Số | Khớp |
+|---|---:|---|
+| `Call_Data` có `pathScript` | 124 / 1.500 = **8,3%** | — |
+| `pathScript` → `PathCreator.path_id` | 124 | **100 (80,7%)** |
+
+Khớp với `waves.json`: chỉ **861 / 11.093 spawner** là `spawn_type = path` (**7,8%**) — cùng bậc độ lớn.
+⇒ **92% enemy không đi theo đường Bezier**, chúng đi theo `point_range`/`point` (thẳng tới điểm đích).
+
+Ba lớp spawner (`Spawner` 1.370 · `Path_Spawner` 1.500 · `Waypoints_Spawner` 1.151) đều có
+**`dataScript` = 0 ở 100% dòng** ⇒ liên kết spawner → dữ liệu **được gán lúc chạy**, không serialize.
+Đây là mắt ghép **thật sự thiếu**, không phải do cap.
 
 ## 8. Còn thiếu / phải đoán
 

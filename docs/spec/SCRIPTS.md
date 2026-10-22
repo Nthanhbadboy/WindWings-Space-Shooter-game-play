@@ -207,11 +207,37 @@ Không một dòng kịch bản nào bị mất khi gộp.
 | `isTurret` | False 869 · **True 112** |
 | `facingMove` | True 949 (96,7%) |
 | `fixedAngle` | False 962 · True 19 |
+| `listSpeeds` | 844 enemy **1 tốc độ** · **137 enemy 2 tốc độ** (đổi giữa đường — raw giữ mảng, CSV chỉ xuất `[0]`) |
 | `listSpeeds[0]` | 1,0 – 20,0 · median 5,0 |
 
 > **Nhận định (mức A):** `Stop` chiếm **94,2%** nghĩa là phần lớn enemy **bay hết đường rồi đứng yên trong màn**,
 > không bay vòng, không biến mất. Đây là chi tiết quyết định: nếu để `Loop`, wave sẽ không bao giờ
 > "sạch quân"; để `Stop` thì mỗi con đều phải bị xử lý.
+
+### 4.1 Đường bay — **đọc được toạ độ đầy đủ** từ raw
+
+`PathCreator` **1.500** đường (tổng thật 1.714, bị cap) giữ nguyên từng điểm Bezier `{x, y, z}`:
+
+| Thuộc tính | Số |
+|---|---|
+| Số điểm/đường | 4 (**186**) · 7 (**441**) · 10 (**401**) · 13 (**120**) · 16 (**196**) · còn lại 19–55 |
+| Độ dài | min **2,77** · median **38,7** · max **228,7** đơn vị Unity |
+
+**Quy ra thời gian bay** — con số quyết định cảm giác:
+
+| Tốc độ | Đường median 38,7 | Dài nhất 228,7 |
+|---:|---:|---:|
+| 1,0 | 38,7 s | 228,7 s |
+| **5,0** (median) | **7,7 s** | 45,7 s |
+| 20,0 | 1,9 s | 11,4 s |
+
+> **Nhận định (mức A):** enemy bay hết đường median mất **7,7 giây** ở tốc độ 5,0.
+> Với nhịp spawn **1,0 s** ⇒ trên màn hình luôn có **≈ 7–8 con** cùng lúc.
+>
+> Chỉ **8,3%** `Call_Data` có `pathScript` (124/1.500, khớp 100 `PathCreator`) — tương ứng
+> **861/11.093 spawner** là `spawn_type = path`. **92% enemy bay thẳng tới điểm đích**, không theo Bezier.
+>
+> Nguồn: `reverse-engineering/raw/typetrees/PathCreator.jsonl.gz`; chi tiết `DATA_SYNC.md` §7.11.
 
 ---
 
