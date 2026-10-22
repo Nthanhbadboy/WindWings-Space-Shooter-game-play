@@ -19,6 +19,7 @@
 | Game đó **chơi thấy hay**? | ❌ Điểm "Dynamic Feedback Fidelity" chỉ **32,1/100** — đúng chỗ "game feel" nằm |
 | Bao lâu thì ra sản phẩm? | Phụ thuộc art/audio/test — spec không rút ngắn được 3 phần này |
 | **Cập nhật 10/2026** | Dịch ngược đã **rẻ đi hàng chục lần** (Opus 5.5: < 30 phút/game). Rào cản chuyển từ **kỹ thuật** sang **pháp lý + chất lượng** (§1.6) |
+| **Đây là game gì?** | **2.5D sprite + physics 2D** — cả game có **2 mesh**, **0** `SkinnedMeshRenderer`, **0** `MeshCollider`; chỉ **7** `BoxCollider` 3D so với **5.424** `BoxCollider2D` (§1.8). Tức **trường hợp thuận**, không phải 3D phức tạp |
 | Rủi ro pháp lý | Thấp nếu đổi art/tên; **cao** nếu dùng lại asset hoặc tên boss |
 
 ### 0.1 Ba mức "dịch ngược đầy đủ" — và mức nào cho ra cái gì
@@ -191,6 +192,59 @@ Phân rã 259 field: `Player_Get_Datas` **178** · `GameDatas` **40** · `Tech_D
 > serialized field mà exporter cũ bỏ qua**, hoặc **quan sát được lúc chạy bằng Frida**.
 > Chênh lệch chỉ là **công cụ**, và công cụ thì thay được.
 
+### 1.8 Trường hợp thuận: đây là game **2.5D sprite**, không phải 3D
+
+Đúng — và đây là lý do **không nên đọc 41,46% của GameCraft-Bench như trần của dự án này**.
+Benchmark đó đo agent dựng **game 3D hoàn chỉnh trong Godot 4**. Game này dễ hơn hẳn,
+và manifest chứng minh bằng số:
+
+| Chỉ số | Giá trị | Ý nghĩa |
+|---|---:|---|
+| `Mesh` | **2** | **cả game chỉ có 2 mesh** (nguồn: `04-unity-assets.md`) |
+| `SpriteRenderer` | 62.815 | render chính là **sprite 2D** |
+| `MeshRenderer` | 11.262 | chủ yếu TMP text + quad UI, không phải model |
+| `Rigidbody2D` | 1.907 | **vật lý 2D** |
+| `BoxCollider2D` | 5.424 | va chạm 2D |
+| `CircleCollider2D` | 1.368 | va chạm 2D |
+| `PolygonCollider2D` | 705 | va chạm 2D |
+| `BoxCollider` (3D) | **7** | không đáng kể |
+| `SkinnedMeshRenderer` | **0** | **không có mesh biến dạng** — không rig 3D |
+| `MeshCollider` | **0** | không có va chạm lưới 3D |
+| `Terrain` | **0** | không có địa hình |
+| `NavMeshSettings` | 4 | asset **mặc định của Unity**, không có NavMesh thật |
+| `Animator` / `AnimatorController` | 5.792 / 308 | animation 2D + UI |
+| `SkeletonDataAsset` | 27 | **Spine** — xương 2D cho boss |
+| `Camera` | 6 | 6 camera cho 6 nhóm màn |
+
+#### Vì sao 2.5D dễ hơn nhiều với AI
+
+| Việc | 3D (benchmark) | Game này |
+|---|---|---|
+| Dựng model + rig + skinning | bắt buộc, AI yếu | **không có** — thay bằng sprite |
+| Ánh sáng / bake lightmap | bắt buộc | **không có** (`LightmapSettings` chỉ là asset mặc định) |
+| NavMesh / AI di chuyển 3D | bắt buộc | **không có** — enemy bay theo path + vận tốc tuyến tính |
+| Va chạm | mesh collider, đắt | **AABB / circle / polygon 2D** — công thức đóng, tái tạo **chính xác** |
+| Camera | perspective + occlusion | **cố định**, không gì che khuất |
+| Shader | PBR, nhiều biến thể | **70 shader**, phần lớn Sprite/TMP |
+
+Cộng thêm: `border` của `Enemy_Movement` cho **vùng chơi 20×25 unit** cố định
+(nguồn: `Enemy_Movement.csv`), và mọi chuyển động enemy đều là **vận tốc + path điểm**
+(nguồn: `ENEMY_BEHAVIOUR.md` §1). Đây là mô phỏng **deterministic, không có vật lý phức tạp** —
+đúng loại AI làm tốt nhất.
+
+#### Nhưng "2.5D" không làm **nội dung** rẻ đi
+
+| Phần | Khó vì 2.5D? | Thực tế |
+|---|---|---|
+| Khung gameplay (bắn, di chuyển, va chạm, spawn) | **Không** — dễ | AI làm tốt, spec đã đủ số |
+| **Khối lượng nội dung** | Không liên quan | **22.385 spawner · 282 wave · 39 boss · 458 súng** — phần lớn công việc (nguồn: `ENCOUNTERS.md`, `COMBAT.md`) |
+| **Art thay thế** | Không liên quan | 2.185 sprite gốc **không dùng được** (bản quyền) → phải vẽ mới |
+| **Cân bằng + feel** | Không liên quan | vẫn phải playtest |
+
+> **Kết luận cập nhật:** với **công cụ tốt nhất + 2.5D + dữ liệu đã bóc**, phần *cơ chế* của game
+> này nằm trong vùng AI làm được, không phải vùng 41,46%. Giới hạn thật chuyển sang **khối lượng
+> nội dung** và **art** — đo bằng **số asset và số giờ vẽ**, không phải bằng độ thông minh của model.
+
 ---
 
 ## 2. Đối chiếu với bộ spec này
@@ -297,9 +351,17 @@ Không làm 3 việc đó thì kết quả đúng như Polygon mô tả: **build
 5. **Từ 10/2026, giá trị của "dịch ngược giỏi" giảm mạnh** vì ai cũng làm được trong vài giờ.
    Giá trị chuyển sang **chất lượng** (GameCraft 41,46%) và **vòng playtest** (+37 điểm) —
    tức là sang phần **thiết kế và tinh chỉnh**, đúng phần spec này không làm hộ được.
+6. **Con số 41,46% KHÔNG phải trần của dự án này.** Nó đo game **3D hoàn chỉnh trong Godot**;
+   đây là game **2.5D sprite + physics 2D** với **2 mesh** và **0** `SkinnedMeshRenderer` (§1.8).
+   Phần *cơ chế* nằm trong vùng AI làm tốt; giới hạn thật là **khối lượng nội dung** và **art**.
 
 > `> Nhận định:` với một đội 3–5 người, bộ spec này rút ngắn **giai đoạn nghiên cứu** (~15–20%
 > tổng công) xuống gần 0, nhưng **không** rút ngắn giai đoạn sản xuất art/audio/test.
+>
+> **Ước lượng công còn lại cho một bản 2.5D tương đương** (không tính live-ops):
+> code cơ chế **~1–2 tháng/2 người** (AI hỗ trợ mạnh) · nội dung 282 wave **~1–2 tháng** ·
+> art thay thế **~2–3 tháng/1 artist** · cân bằng + playtest **~1 tháng**.
+> Art là **đường găng**, không phải code.
 
 ---
 

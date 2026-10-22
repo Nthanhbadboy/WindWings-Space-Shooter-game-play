@@ -113,6 +113,7 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | 2b | `ENEMY_BEHAVIOUR` (di chuyển/đường bay/thiên thạch) · `AI_FEASIBILITY` (đánh giá + nghiên cứu) | ✅ xong |
 | 2c | Cập nhật nghiên cứu **tháng 10/2026**: GameCraft-Bench 41,46% · Play2Code +37 điểm · Opus 5.5 decompile < 30 phút | ✅ xong |
 | 2d | **Chuỗi công cụ** (§1.7) + **bảng đường lấy lỗ hổng** (§2.3): mỗi "chưa có" đều kèm tool + kết quả kỳ vọng | ✅ xong |
+| 2e | **Xác nhận 2.5D** (§1.8): 2 `Mesh` · 0 `SkinnedMeshRenderer` · 7 `BoxCollider` 3D vs 5.424 `BoxCollider2D` | ✅ xong |
 
 **Đã sửa so với vòng 1** (đều do dữ liệu bóc lại khác bản trước): HP 981 → **800** dòng,
 `Texture2D` 654 → **653**, `SkeletonDataAsset` 25 → **27**, page 66/32,5 MB → **67/31,0 MB**,
