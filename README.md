@@ -1,1 +1,31 @@
-# WindWings-Space-Shooter-game-play
+# WindWings: Space Shooter — reverse engineering & clone reference
+
+Phân tích ngược bản Android **`com.Wind.wings.Space.Shooter` v1.3.118** (Unity 2022.3.62f3,
+IL2CPP, metadata v31) để làm tài liệu tham chiếu cho bản clone.
+
+## Đọc gì trước
+
+| Muốn gì | Mở |
+|---|---|
+| Xem **ảnh/asset** để design | [`docs/assets/INDEX.md`](docs/assets/INDEX.md) — 42 contact sheet, 2.197 asset |
+| Dữ liệu dùng được ngay (JSON) | [`datas/`](datas/README.md) — tàu, drone, boss, item, HP, IAP, i18n |
+| Spec thiết kế | [`docs/spec/`](docs/spec/) — GAMEPLAY / UI / ASSETS / BALANCE |
+| Số liệu thô bóc từ APK | [`docs/apk-analysis/`](docs/apk-analysis/) — 18 báo cáo + CSV từng class |
+| Code C# đã dump | [`reverse-engineering/`](reverse-engineering/) — `dump.cs.gz`, Spine, ScriptableObject |
+
+## Lấy file gốc
+
+- APK: draft release **`windwings-apk-1.3.118`** (`windwings.xapk`, 142 MB)
+- Asset full-size (PNG atlas + WAV): draft release **`windwings-assets-1.3.118`**
+  → `assets.z01` + `assets.zip` (94 MB + 63 MB), ghép lại:
+  `cat assets.z01 assets.zip > assets.zip && unzip assets.zip`
+- Bản preview nhẹ: `asset-previews.zip` (12 MB) trong cùng release
+
+## Pipeline
+
+`.github/workflows/analyze-apk.yml` — tải XAPK (cache) → tách part → Il2CppDumper →
+UnityPy export → typetree ScriptableObject → wave/combat data → REA → contact sheet →
+release + commit báo cáo. Chạy lại: `gh workflow run analyze-apk.yml`.
+
+> Toàn bộ nội dung là **tài liệu tham chiếu**. APK/asset thuộc bản quyền GCenter;
+> không phát hành lại, không đóng gói vào sản phẩm.
