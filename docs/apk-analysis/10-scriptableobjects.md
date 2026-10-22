@@ -808,7 +808,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "IsInvisible": false,
  "IsBringItems": false,
  "IsCaAttack": true,
- "_gameobject": "Gun6"
+ "_gameobject": "Gun7/Gun6"
 }
 ```
 ```json
@@ -826,7 +826,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "IsInvisible": false,
  "IsBringItems": false,
  "IsCaAttack": true,
- "_gameobject": "Gun4"
+ "_gameobject": "Body/Than/Gun1/Gun4"
 }
 ```
 
@@ -848,7 +848,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "popupUploadFailed.m_PathID": 0,
  "btnExitCover.m_FileID": 0,
  "btnExitCover.m_PathID": 0,
- "_gameobject": "Board_Ranks"
+ "_gameobject": "Board_Maps/Board_Ranks"
 }
 ```
 ```json
