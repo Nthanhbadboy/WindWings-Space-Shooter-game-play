@@ -5,7 +5,7 @@
 set -u
 
 UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
-OUT="${GITHUB_STEP_SUMMARY:-/dev/null}"
+OUT="/tmp/probe-report.md"
 
 say() { echo "$@" | tee -a "$OUT"; }
 
@@ -30,6 +30,7 @@ probe() {
   say ""
 }
 
+mkdir -p docs/apk-analysis
 say "# APK source probe ($(date -u +%FT%TZ))"
 say ""
 
@@ -51,3 +52,4 @@ probe "apkvision page" "https://apkvision.org/games/action/windwings-space-shoot
 probe "m.apkpure API v3" "https://api.pureapk.com/m/v3/cms/app_version?hl=en-US&package_name=com.Wind.wings.Space.Shooter"
 
 say "## done"
+cp "$OUT" docs/apk-analysis/probe-results.md
