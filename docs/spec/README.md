@@ -50,6 +50,7 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 | `AI_FEASIBILITY.md` | AI dựng lại được đến đâu — đối chiếu nghiên cứu 2025–2026 (`Spec2Game`, GameCraft-Bench, Play2Code) với lỗ hổng của bộ spec; chuỗi công cụ; xếp hạng độ khó | 505 dòng · 24 bảng |
 | `TUNING_KNOBS.md` | **Toàn bộ núm vặn**: `Player_Get_Datas` 178 field, công thức giá, feel (shake/slow-mo/hit color), art scale 10,8×19,2; **giá trị nằm ở đâu** (const / prefab / `.cctor`) | ~275 dòng · 15 bảng |
 | `DONE.md` | **Định nghĩa "hoàn hảo" thành 4 mức kiểm được** (L0 chạy được · L1 đúng luật · L2 đúng số · L3 không phân biệt được) + **hoá đơn sản xuất** 282 wave / 23.757 spawner / 45.659 slot `"?"` / 1.015 spawner | 168 dòng · 12 bảng |
+| `DATA_SYNC.md` | **Đối chiếu với pipeline vòng 3** (nhánh `ef6b75ef`): cái gì tôi đã sai (audio 0→69 clip · enemy `?`→109 prefab · HP 800→981 dòng) và cái gì **vẫn** chưa có (IL2CPP constants = **0**) | 224 dòng · 14 bảng |
 | `screens.csv` | 125 dòng: `class, board_id, mo_tu_dau, popup_con, data_can_load` | 125 dòng |
 | `sprite-list.csv` | 163 dòng: atlas page (size + MB thật), background, Spine, UI 9-slice, ship/drone, bullet | 163 dòng |
 
@@ -131,6 +132,7 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | 2j | **Rà lại văn phong khẳng định** (§0.0): thêm quy ước mức **A/B/C/D**, bỏ hết % độ phủ tự đánh giá, sửa 3 con số của chính mình | ✅ xong |
 | 2k | `DONE.md` — 4 mức "hoàn hảo" kiểm được + hoá đơn sản xuất; tách **đơn giản** khỏi **nhỏ** | ✅ xong |
 | 2l | **Chốt phạm vi L1** (§4.2): giống cơ chế, không cần giống số ⇒ bỏ L2/L3, bỏ 2 tool, bỏ 1.416 chuỗi | ✅ xong |
+| 2m | `DATA_SYNC.md` — đọc dữ liệu vòng 3: **không merge**, chỉ đối chiếu; 3 kết luận cũ bị bác | ✅ xong |
 
 **Đã sửa so với vòng 1** (đều do dữ liệu bóc lại khác bản trước): HP 981 → **800** dòng,
 `Texture2D` 654 → **653**, `SkeletonDataAsset` 25 → **27**, page 66/32,5 MB → **67/31,0 MB**,

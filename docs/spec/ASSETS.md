@@ -20,7 +20,7 @@
 | Spine skeleton | **26** (`skeleton*.json`) + 1 `Saw` | 577 region / 27 atlas | `textassets/*.atlas*.txt` |
 | Bone/slot Spine | 616 bones / 446 slots | — | `textassets/skeleton*.json` |
 | `SkeletonDataAsset` | **27** | `scale = 0.01`, `defaultMix = 0.2` | `SkeletonDataAsset.csv`, `class-inventory.csv` |
-| `AudioClip` | 69 | 1 kênh, 16–48 kHz | `15-audio.md` |
+| `AudioClip` | **69** | ✅ **export được 69/69** · 571 s · 47,6 MB · 44,1 kHz mono | `docs/assets/audio-index.csv` (vòng 3) |
 | `SoundClip` (MonoBehaviour map sound) | **92** | — | `SoundClip.csv`, `class-inventory.csv` |
 | `SpriteAtlas` | 66 | — | `04-unity-assets.md` |
 | `AnimatorController` | 308 | — | `04-unity-assets.md` |
@@ -344,6 +344,10 @@ Anim: `<action>_<variant>` — **snake_case**, không dấu.
 
 Nguồn: `SoundClip.csv` (92 dòng `m_Name`) + `15-audio.md` (69 `AudioClip`).
 
+
+> ✅ **Đính chính (vòng 3):** bản trước ghi *"0 file export được (FSB5 trong `.resS`)"* — **sai**.
+> Pipeline mới xuất được **69/69 WAV**, tổng **571 s (9,5 phút)**: **8 track nhạc 7,9 phút**
+> + **61 SFX ~1,6 phút**. Chi tiết: `DATA_SYNC.md` §1.
 **Chênh lệch 92 vs 69:** `SoundClip` là **MonoBehaviour map enum→AudioClip**, 92 entry nhưng chỉ
 69 clip thật (nhiều entry trỏ cùng clip, ví dụ `Sfx_Shot1/2` có thể cùng file). ⇒ Khi dựng lại:
 **1 enum = 1 AudioClip**, 69 là con số budget đúng.

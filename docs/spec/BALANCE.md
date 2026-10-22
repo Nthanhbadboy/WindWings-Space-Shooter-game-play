@@ -69,8 +69,12 @@ Ta gom theo **root prefab** + **đường dẫn component sau root**, lấy `max
 
 | Chỉ số | Giá trị | Nguồn |
 |---|---:|---|
-| Số instance `Enemy_Datas` | **800** dòng = **690** đường dẫn GameObject khác nhau | `Enemy_Datas.csv` |
+| Số instance `Enemy_Datas` | **800** dòng (bản cũ) · **981** dòng (vòng 3) = **690** path GO | `Enemy_Datas.csv` |
 | **Số loại enemy (prefab root)** | **92** = 52 thường + 39 boss + 1 mini-boss | `ENCOUNTERS.md` §2.5 |
+
+> ⚠ **Số dòng HP phụ thuộc lần chạy pipeline:** 800 (bản cũ) → **981** (vòng 3).
+> Root `Boss-` vẫn **39**. Nhưng **tổng HP theo boss lệch 11–71%** giữa 2 lần — xem `DATA_SYNC.md` §3.1.
+> Đừng dùng "tổng HP" để so sánh khi chưa chốt **đơn vị đếm** (root hay bộ phận).
 | Số instance có `StartHealthPoint > 0` | **394** | `15-enemy-hp.csv` |
 | Số instance HP = 0 (slot chưa dùng / part trang trí) | **406 (50,8%)** | `15-enemy-hp.csv` |
 | HP lớn nhất | 10.000.000 (`CB(TEST)` — object test, **loại khỏi balance**) | `15-enemy-hp.csv` |
