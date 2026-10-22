@@ -566,6 +566,103 @@ Ba lớp spawner (`Spawner` 1.370 · `Path_Spawner` 1.500 · `Waypoints_Spawner`
 **`dataScript` = 0 ở 100% dòng** ⇒ liên kết spawner → dữ liệu **được gán lúc chạy**, không serialize.
 Đây là mắt ghép **thật sự thiếu**, không phải do cap.
 
+### 7.12 Đã dịch ngược được bao nhiêu — **5 thước đo**, không có một con số duy nhất
+
+Cùng một kho dữ liệu, tuỳ **đơn vị đếm** mà ra 5 tỷ lệ khác nhau. Tất cả đều tính từ số đếm được,
+không phải tự đánh giá.
+
+| # | Thước đo | Tổng | Đã đọc | % |
+|---:|---|---:|---:|---:|
+| 1 | **Class** (theo `class-inventory`) | **677** | **45** | **6,6%** |
+| 2 | **Instance `MonoBehaviour`** | **125.452** | **61.341** | **48,9%** |
+| 3 | **Object trong `data.unity3d`** (mọi type) | **717.262** | **64.312** | **9,0%** |
+| 4 | **Lớp enemy/boss** (16 class) | **11.081** | **6.528** | **58,9%** |
+| 5 | **Method body IL2CPP** | **68.893** | **305** | **0,44%** |
+
+Nguồn: `class-inventory.csv` (677 class / 125.452 instance) · `04-unity-assets.md` (717.262 object) ·
+`reverse-engineering/raw/typetrees/` (45 class) · `19-il2cpp-constants.md` (12 class / 305 method).
+
+**Vì sao 5 con số lệch nhau xa:**
+
+- **6,6%** thấp vì 677 class gồm **~590 class UI/utility** (nút, text, pool) — đọc hết cũng không giúp hiểu gameplay.
+- **48,9%** cao vì vài class được đọc có **rất nhiều instance** (`Enemy_*` 981 × 5, `Call_Data` 1.500…).
+- **9,0%** thấp vì `Transform` (**228.432**) và `SpriteRenderer` (**62.815**) chiếm 40,6% số object và **chưa đọc**.
+- **58,9%** là thước đo **đúng nhất cho câu hỏi "hiểu enemy/boss chưa"**.
+- **0,44%** là thước đo **hành vi**: biết field ≠ biết công thức. Đây là trần thật của "hiểu game".
+
+### 7.12.1 Lớp enemy/boss — 58,9%, và 41,1% còn lại là gì
+
+| Class | Instance | Trạng thái |
+|---|---:|---|
+| `Enemy_Controller` · `Enemy_Datas` · `Enemy_Health` · `Enemy_Movement` · `Enemy_Sub` | 981 × 5 | ✅ đọc |
+| `Enemy_Appear` | 914 | ✅ đọc |
+| `Gun_Attack` | 458 | ✅ đọc |
+| `Boss_BodyPhysics` | 251 | ✅ đọc |
+| **`Enemy_EfxDestroyed`** | **1.134** | ❌ chưa |
+| **`Enemy_Physics`** | **981** | ❌ chưa — **PathID đã có** |
+| **`Enemy_Destroy`** | **971** | ❌ chưa — PathID đã có |
+| **`Enemy_Burned`** | **695** | ❌ chưa — PathID đã có |
+| `Enemy_LookAtPlayer` | 391 | ❌ chưa |
+| `Enemy_CameraVibrate` | 241 | ❌ chưa |
+| `Enemy_Stun` | 140 | ❌ chưa — PathID đã có |
+
+### 7.12.2 63,2% instance chưa đọc — nhưng phần lớn **không phải gameplay**
+
+| Class chưa đọc | Instance | Loại |
+|---|---:|---|
+| `Call_Point` | **23.757** | **gameplay** — cùng số với `Call_Data`, nghi 1 điểm spawn / 1 `Call_Data` |
+| `TextMeshPro` | 9.789 | UI text |
+| `ButtonEvents` · `Button_Sound` | 6.147 | UI |
+| `LanguageTextMeshPro` | 2.440 | UI đa ngữ |
+| `ObjectPool` | 2.333 | hạ tầng |
+| `Obj_Collider` | 1.623 | va chạm phụ |
+| `Enemy_EfxDestroyed` | 1.134 | hiệu ứng chết |
+
+⇒ Trong 8 class chưa đọc lớn nhất, chỉ **2** là gameplay (`Call_Point`, `Enemy_EfxDestroyed`);
+**6** là UI/hạ tầng.
+
+### 7.12.3 Nếu tính theo **lớp dữ liệu gameplay** (bảng, không phải class)
+
+| Nhóm bảng | Tổng dòng | Đã đọc | % |
+|---|---:|---:|---:|
+| Enemy/boss (5 bảng chính) | 4.905 | **4.905** | **100%** |
+| Súng + va chạm | 709 | **709** | **100%** |
+| Wave | 686 | **686** | **100%** |
+| Đường bay | 1.714 | 1.500 | **87,5%** |
+| Sinh quân (`Call_Data` + 5 bảng spawner) | **45.291** | **8.870** | **19,6%** |
+
+> **Nhận định (mức A):** bức tranh phụ thuộc **câu hỏi**, không phụ thuộc "độ hoàn chỉnh":
+> **enemy/boss = 58,9%** (thiếu lớp hành vi), **dữ liệu tĩnh của enemy = 100%**,
+> **sinh quân = 19,6%** (cap), **hành vi = 0,44%**.
+
+> **Điều kiện lật ngược:** nếu `Call_Point` chứa chính nội dung mà `Call_Data` bị cắt, thì đọc nó
+> đưa **sinh quân từ 19,6% lên ~100%** mà không cần bỏ cap. Chưa kiểm vì `Call_Point` chưa vào `TARGETS`.
+
+### 7.13 ⚠ Con số **45.659 quân** là mức B, không phải mức A
+
+`copies` trong `waves.json` = **số spawner giống hệt nhau bị gộp** (dedupe), và
+"quân" = `len(listPrefabEnemies) × copies`. Nhưng phân bố list cho thấy vấn đề:
+
+| Số prefab trong `listPrefabEnemies` | Số spawner (đã nhân `copies`) |
+|---|---:|
+| 0 (list rỗng) | **688** |
+| **1** | **18.261 (76,9%)** |
+| 2 | 874 |
+| 3–10 | 3.363 |
+| 11–68 | 571 |
+
+⇒ **4.808 spawner khai báo list ≥ 2**, có cái tới **68 prefab**. Hai cách đọc:
+
+- **Nếu list là danh sách spawn tuần tự** → **45.659 quân** (cách tôi đang ghi).
+- **Nếu list là pool để chọn** → chỉ **23.757 quân** (1 con/spawner), hoặc pool chọn N.
+
+`number` (field đếm) = **0 ở toàn bộ 23.757 spawner**, nên **không có số lượng tường minh**
+để phân xử. Cần thân hàm `Spawner`/`Call_Data` — hiện chỉ có field.
+
+> **Điều kiện lật ngược:** nếu 76,9% spawner chỉ có 1 prefab thì sai số chỉ nằm ở 23,1% còn lại;
+> nhưng nếu list là pool thì **mọi con số quân** (45.659 · 22.417 entry · 131,5 quân/wave) **phải chia lại**.
+> Chưa kết luận được — và đây là chỗ dễ tự phong nhất trong toàn bộ hồ sơ.
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |
