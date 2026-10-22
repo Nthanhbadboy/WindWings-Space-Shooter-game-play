@@ -261,7 +261,7 @@ Cộng thêm: `border` của `Enemy_Movement` cho **vùng chơi 20×25 unit** c�
 | Phần | Khó vì 2.5D? | Thực tế |
 |---|---|---|
 | Khung gameplay (bắn, di chuyển, va chạm, spawn) | **Không** — dễ | AI làm tốt, spec đã đủ số |
-| **Khối lượng nội dung** | Không liên quan | **22.385 spawner · 282 wave · 39 boss · 458 súng** — phần lớn công việc (nguồn: `ENCOUNTERS.md`, `COMBAT.md`) |
+| **Khối lượng nội dung** | Không liên quan | **48 archetype spawner · 92 prefab enemy · 282 wave · 10.776 placement sau dedup · 458 súng** (nguồn: `ENCOUNTERS.md` §1–2) |
 | **Art thay thế** | Không liên quan | 2.185 sprite gốc **không dùng được** (bản quyền) → phải vẽ mới |
 | **Cân bằng + feel** | Không liên quan | vẫn phải playtest |
 
@@ -283,7 +283,7 @@ Cộng thêm: `border` của `Enemy_Movement` cho **vùng chơi 20×25 unit** c�
 | Physics phức tạp | ✅ | ✅ | – | **2D đơn giản** (AABB/circle/polygon) |
 | Sinh nội dung thủ tục | – | ✅ | – | **không có** (282 wave đặt tay) |
 | Ánh sáng / shader PBR | ✅ | ✅ | – | **không có** (sprite + 70 shader) |
-| **Khối lượng nội dung** | ✅ | ✅✅ | – | **✅✅** (22.385 spawner) |
+| **Khối lượng nội dung** | ✅ | ✅✅ | – | ✅ (48 archetype · 92 enemy · 10.776 placement) |
 | **Art thay thế** | ✅ | ✅✅ | ✅ | **✅✅** (2.185 sprite) |
 | **Cân bằng + feel** | ✅ | ✅ | ✅ | **✅** |
 
@@ -375,7 +375,7 @@ Không có "đạt 100%" và không có "0%". Có **cái đếm được**, **c�
 | Tầng | Đã đếm được (mức **A**) | Chưa có giá trị (mức **D**) | Lấy bằng |
 |---|---|---|---|
 | **1. Cơ chế** | **11.743** field có tên + kiểu + offset; **25** hằng số có giá trị đọc trực tiếp | **4.861** `[SerializeField]` · **957** `static` | AssetRipper · Ghidra |
-| **2. Nội dung** | 282 wave · 23.757 spawner · 458 `Gun_Attack` · 39 boss prefab | mapping **wave → enemy** (`waves.json` = `"?"`) | resolve `m_PathID` |
+| **2. Nội dung** | 282 wave · **48 archetype spawner** · **92 prefab enemy** · 458 `Gun_Attack` | mapping **wave → enemy** (`waves.json` = `"?"`) | resolve `m_PathID` |
 | **3. Sản phẩm** | 170 `IAPProduct` **id** · 6 `PurchaseType` · 19 `AdPos` | giá · mùa · A/B · dữ liệu người chơi | **không** nằm trong APK |
 
 > **Sửa lại cách nói:** trước đây tôi viết tầng 3 là "**0%**" và "**không bao giờ** có trong APK".
@@ -495,7 +495,7 @@ những vòng đó** — chúng là **kết quả**, không phải **dữ liệu
 | Chỉ số nghiên cứu | Điểm | Ứng với lỗ hổng nào trong repo | Trạng thái |
 |---|---:|---|---|
 | **Rule & Mechanism** 45,6 | thấp | 8 class config **không serialize**: `Player_Get_Datas`, `Enemy_Data_Balance`, `Stage_Get_Datas`, `Map_Get_Datas`, `Tech_Datas`, `Droid_Data_Balance`, `Device_Get_Data`, `GameDatas` | ❌ phải tự định nghĩa |
-| **Goal & Termination** 44,0 | thấp | 45.659 entry `enemies` = `"?"` ⇒ **không biết wave nào có enemy nào** | ❌ phải tự thiết kế |
+| **Goal & Termination** 44,0 | thấp | 45.659 tham chiếu `enemies` = `"?"` ⇒ **chưa biết wave nào có enemy nào** — nhưng trần chỉ **92 prefab** | 🟡 resolve được |
 | **Dynamic Feedback Fidelity** 32,1 | thấp nhất | feel: gia tốc, hitstop, shake, flash — nằm trong `libil2cpp.so` | ❌ không có số |
 
 Ba lỗ hổng của repo **trùng khít** ba điểm thấp nhất trong nghiên cứu. Đây không phải trùng
@@ -541,7 +541,7 @@ Bản trước của mục này ghi mỗi file "phủ ~85% · ~72% · ~40%…". 
 | `GAMEPLAY.md` | **7** `PlayMode` · **3** `PVPMode` · 9 nhánh progression | feel · đường cong tiến trình |
 | `COMBAT.md` | **458** `Gun_Attack` → **420** cấu hình · DPS **452** cấu hình | **giá trị** damage player (tên field đã có) |
 | `ENEMY_BEHAVIOUR.md` | **800** `Enemy_Movement` · **399** path · **95** turret | hình học path · tham số 6 spawner |
-| `ENCOUNTERS.md` | **282** wave · **23.757** spawner · **299** stage | enemy nào trong wave nào |
+| `ENCOUNTERS.md` | **282** wave · **48** archetype · **92** prefab enemy · **299** stage | enemy nào trong wave nào |
 | `BALANCE.md` | **800** dòng HP · **39** prefab boss | hệ số nâng cấp theo cấp |
 | `ASSETS.md` | **2.185** Sprite / 48,3 MB · **67** page atlas | **giá trị** pivot/border |
 | `ECONOMY.md` | **170** SKU · **6** `PurchaseType` · **19** `AdPos` | **mọi con số giá** |

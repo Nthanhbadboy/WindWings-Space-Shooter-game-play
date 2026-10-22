@@ -4,6 +4,10 @@
 > Không mức nào dùng % tự đánh giá. Số đếm được ghi **(A)**, ước lượng ghi **(C)**.
 > Mục cuối: **Còn thiếu / phải đoán**.
 
+> **Sửa lại (lần 2):** bản đầu của file này phóng đại khối lượng. Sau khi đọc **tên gốc** spawner
+> và **dedup**, con số thật nhỏ hơn nhiều: **48 archetype spawner**, **92 prefab enemy**,
+> **10.776 placement** (median **28/wave**), và **boss là 45 wave riêng**. Xem §1.
+
 ---
 
 ## 0. Trả lời ngắn
@@ -22,41 +26,106 @@
 
 ---
 
-## 1. Hoá đơn sản xuất — cái phải *làm ra*, không phải cái phải *hiểu*
+## 1. Hoá đơn sản xuất — **sửa lại: nhỏ hơn tôi nói**
 
-Đếm trực tiếp từ `docs/apk-analysis/*.csv` và `datas/waves.json`:
+> ⚠ **Mục này bản trước sai.** Tôi viết "23.757 spawner / 282 wave = 84,2 mỗi wave" và
+> "1.015 cấu hình đặt tay". **Cả hai đều phóng đại.** Đếm lại theo **tên gốc** và **dedup**:
+
+### 1.1 Quy luật spawn — có, và rất rõ
+
+Tên spawner có dạng `TênGốc (n)` — **`(n)` chỉ là số thứ tự instance**, không phải cấu hình khác.
+Bỏ hậu tố đó: **1.015 tên → 53 tên gốc**, trừ 5 marker (`StartPoint`/`EndPoint`/`CheckPlayerNo`/
+`KhoaPlayer`/`Endpoint`) còn **48 archetype spawner thật**.
+
+| Archetype | Số lần | `spawn_type` | `rate` | `y_spawn` |
+|---|---:|---|---|---|
+| `CB1 Nhanh` (nhanh) | 4.622 | point_range **100%** | **1,0 cho 4.622/4.622** | **9,6 cho 4.618** |
+| `Point 1` | 4.192 | point / point_range | 1,0 (2.536) · 0,0 (1.656) | 12,0 (2.262) |
+| `CB1 Vua` (vua) | 2.951 | point_range **100%** | **1,0 cho 2.951/2.951** | **9,6 cho 2.945** |
+| `CB1 Cham` (chậm) | 1.487 | point_range **100%** | **1,0 cho 1.487/1.487** | **9,6 cho 1.487** |
+| `6-CB09_Left` | 1.238 | point_range | 0,0 (1.172) | 9,6 (1.238) |
+| `CB1` | 1.150 | point_range | 0,0 (953) | 12,0 (880) |
+| `Path_CB3_5` | 1.130 | path **100%** | 0,5 (571) | 9,6 (1.114) |
+| `Group` | 929 | point_range | 0,0 (929) | 0,0 (605) |
+| `ChamNo` | 536 | point_range | 1,0 (536) | 9,6 (528) |
+| `CB15` | 435 | point_range | 0,0 (359) | 0,0 (269) |
+| `Point_H` | 387 | point | 0,0 (387) | 12,0 (387) |
+| `CB1 Ban Vua` | 304 | point_range | 1,0 (304) | 9,6 (304) |
+
+**Đọc ra:** mỗi archetype có **bộ tham số gần như hằng số**. `CB1 Nhanh` = "nhanh, một nhịp,
+xuất hiện ở y 9,6" — chạy 4.622 lần với đúng cùng tham số. Đây là **quy luật**, không phải
+đặt tay từng cái. **Bạn đúng.**
+
+### 1.2 Số thật sau khi bỏ bản trùng export
+
+| Chỉ số | Bản trước (sai) | **Đếm lại** | Ghi chú |
+|---|---:|---:|---|
+| Spawner ghi nhận | 23.757 | 23.757 | giữ nguyên (đúng là dữ liệu thô) |
+| − trừ marker `StartPoint`/`EndPoint` | — | **22.385** | khớp `ENCOUNTERS.md` §0 |
+| **Sau dedup (cùng tên + type + rate + speed + y)** | — | **10.776** | **45,4%** — 12.981 dòng là bản trùng |
+| Placement/wave | **84,2** | **median 28** (min 3 · max 255) | **giảm 3×** |
+
+> `> Nhận định (mức B):` 10.776 placement, dựng từ **48 archetype**. Nghĩa là nội dung wave
+> **không phải** 23.757 lần đặt tay — mà là **~11.000 lần** chọn-trong-48-và-đặt-vị-trí.
+> Đây là công việc **có thể tự động hoá phần lớn**.
+
+### 1.3 Chỉ có **92 prefab enemy** — không phải hàng trăm
+
+Đếm từ `Enemy_Datas.csv` theo **root của prefab path** (bỏ sub-object `Gun5`/`HP`/`Child2`):
+
+| Họ | Số prefab | Dải id | Vai trò |
+|---|---:|---|---|
+| `CB` (30xxx) | **26** | 30001–30060 | enemy thường chương 1 |
+| `CD` (31xxx) | **13** | 31002–31016 | " |
+| `GD` (33xxx) | **4** | 33002–33005 | " |
+| `XB` (34xxx) | **4** | 34003–34006 | " |
+| `BB` (36xxx) | **3** | 36001–36004 | " |
+| `H` (38xxx) | **2** | 38001–38002 | " |
+| **Tổng enemy thường** | **52** | | |
+| `Boss` (37xxx + 39xxx) | **39** | 37001–39021 | boss |
+| `MB` (39xxx) | **1** | 39005 | mini-boss |
+| **Tổng** | **92** | | |
+
+**Bạn đúng lần nữa:** **52 loại enemy thường** + **40 boss-family**. Không phải 690 GameObject
+như tôi ghi trước đó — 690 là **mọi** object trong prefab (súng, hitbox, con, hiệu ứng).
+
+> Còn **45.659 slot `enemies` = `"?"`** là thật — nhưng đó là **tham chiếu chưa resolve**,
+> không phải "45.659 thứ phải thiết kế". Trần nội dung enemy là **52 + 40 = 92 prefab**.
+
+### 1.4 Boss là **màn riêng** — xác nhận
+
+| Nhóm wave | Số wave | Vai trò |
+|---|---:|---|
+| `Wave_00xx` – `Wave_02xx` | **236** | campaign thường |
+| `Wave_70xx` | **22** | **boss chương 1** — màn riêng |
+| `Wave_90xx` | **23** | **boss chương 2** — màn riêng |
+| `unknown` | 1 | lỗi export |
+| **Tổng** | **282** | |
+
+Board cũng tách: `Stage_Behaviour.stageType` = Normal **199** · **Combat 49** · Boss **26** ·
+MiniBoss **25** (nguồn: `Stage_Behaviour.csv`).
+
+> **Sửa lỗi đọc trước:** tôi từng ghi "686 spawner `spawn_type = boss`". Sai — `boss` ở đây là
+> **marker `EndMapPoint`** có mặt ở **mọi** wave (686 lần trên 281 wave), không phải nội dung boss.
+> Nội dung boss nằm ở **45 wave riêng** (`70xx`/`90xx`).
+
+### 1.5 Hoá đơn còn lại
 
 | Hạng mục | Số lượng (A) | Nguồn |
 |---|---:|---|
-| Wave | **282** | `waves.json` (`count_waves`) |
-| Spawner trong wave | **23.757** | `waves.json` (`count_spawners`) |
-| **Slot enemy trong spawner** | **45.659** — **tất cả đều `"?"`** | `waves.json` |
-| Tên spawner khác nhau | **1.015** | `waves.json` |
-| Stage trên board | **299** | `Stage_Behaviour.csv` |
+| Wave | **282** = 236 campaign + 45 boss + 1 lỗi | `waves.json` |
+| Placement spawner **sau dedup** | **10.776** | tính lại §1.2 |
+| Archetype spawner | **48** (+5 marker) | tính lại §1.1 |
+| Prefab enemy | **92** = 52 thường + 39 boss + 1 MB | `Enemy_Datas.csv` §1.3 |
+| Stage trên board | **299** (Normal 199 · Combat 49 · Boss 26 · MiniBoss 25) | `Stage_Behaviour.csv` |
 | `Gun_Attack` → cấu hình súng | **458 → 420** | `Gun_Attack.csv` |
-| Enemy có dữ liệu | **800 dòng → 690 GameObject** | `Enemy_Datas.csv` |
-| Boss prefab | **39** | `15-enemy-hp.csv` |
 | Ô shop | **315** trên **20** board | `Shop_Cell.csv` |
-| Class UI | **125** (53 board · 63 popup · 8 tab · 1 cell) | `class-inventory.csv` |
+| Class UI | **125** | `class-inventory.csv` |
 | Sprite | **2.185** | `04-asset-manifest.csv` |
-| Atlas page | **67** · 31,0 MB · max 3,09 MB | `04-asset-manifest.csv` |
+| Atlas page | **67** · 31,0 MB | `04-asset-manifest.csv` |
 | AudioClip | **69** | `04-unity-assets.md` |
-| `SoundClip` (khai báo) | **92** | `SoundClip.csv` |
 | Chuỗi localization | **1.416** | `12-localization.csv` |
 | SKU IAP | **170** | `IAPProduct.csv` |
-
-**Ba con số đáng chú ý nhất:**
-
-| Con số | Nghĩa |
-|---|---|
-| **45.659** slot enemy đều `"?"` | **Toàn bộ** nội dung enemy của game là **chưa biết** — không phải một phần |
-| **1.015** tên spawner khác nhau | không phải 3–4 template lặp; là **1.015** cấu hình đặt tay |
-| **23.757** spawner / 282 wave = **84,2** | trung bình **84** spawner mỗi wave |
-
-> `> Nhận định (mức B):` đây là lý do khối lượng **không** co lại theo độ đơn giản.
-> Một wave "đơn giản" vẫn phải đặt 84 spawner. 282 wave vẫn là 282 lần đặt.
-
----
 
 ## 2. Bốn mức "hoàn hảo" — và mỗi mức kiểm bằng gì
 
@@ -144,9 +213,10 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 
 - **"Hoàn hảo" phải định nghĩa ở mức nào** — L0/L1/L2/L3 ở trên. Không có định nghĩa thì không
   kiểm được, và cái gì không kiểm được thì không biết đã đạt chưa.
-- **Đơn giản ≠ nhỏ.** 23.757 spawner là khối lượng, không phải độ phức tạp.
-- **45.659 slot enemy đều `"?"`** — đây không phải "chi tiết nhỏ còn thiếu", mà là **nội dung
-  enemy của toàn bộ game**. Imitation không điền vào đó; **thiết kế** mới điền được.
+- **Đơn giản và nhỏ — cả hai đều đúng ở đây.** 48 archetype + 92 prefab enemy là **bộ từ vựng nhỏ**.
+  Khối lượng thật là **10.776 placement** (sau dedup), median **28/wave** — không phải 84.
+- **45.659 slot `"?"`** là thật, nhưng trần nội dung chỉ là **92 prefab enemy** — nên cái thiếu là
+  **cách gán 45.659 tham chiếu**, không phải 45.659 thiết kế mới. Resolve `m_PathID` là xong phần lớn.
 
 > `> Kết luận (mức B):` bắt chước đưa bạn tới **L1** nhanh. **L2** cần 2 tool. **L3** cần
 > vòng playtest. Ba mức này **không loại trừ nhau** — chúng là **ba khoản chi phí khác nhau**,
@@ -159,7 +229,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 | # | Thứ | Mức | Ghi chú |
 |---:|---|---|---|
 | 1 | Giá trị **5.818** field (`4.861` serialized + `957` static) | **D** | chưa chạy AssetRipper/Ghidra |
-| 2 | **45.659** slot enemy trong wave | **D** | `waves.json` = `"?"`; cần resolve `m_PathID` |
+| 2 | **45.659** tham chiếu enemy trong wave | **D** | `waves.json` = `"?"`; cần resolve `m_PathID` — trần chỉ **92 prefab** |
 | 3 | Ngưỡng N người cho test L3 | **C** | phải tự chọn; chưa ai trong dự án đo |
 | 4 | Dung sai cho L2 | **C** | phải tự chọn (đề xuất ±5%, chưa có cơ sở) |
 | 5 | Thời gian làm 282 wave | **C** | không đoán ở đây; phụ thuộc công cụ authoring |

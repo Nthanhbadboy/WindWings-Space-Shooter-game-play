@@ -18,7 +18,10 @@
 | Wave campaign | **236** (`Wave_0000` – `Wave_0235`) | `waves.json` |
 | Wave boss ch1 | **22** (`Wave_7001` – `Wave_7022`) | `waves.json` |
 | Wave boss ch2 | **23** (`Wave_9001` – `Wave_9024`, thiếu `9016`) | `waves.json` |
-| Spawner/wave | min **6** · median **62** · max **621** (`Wave_0163`) | tính từ `waves.json` |
+| Spawner/wave (ghi nhận) | min **6** · median **62** · max **621** (`Wave_0163`) | tính từ `waves.json` |
+| Spawner/wave (**sau dedup**) | min **3** · median **28** · max **255** | §1.3 |
+| Archetype spawner | **48** (+5 marker) từ **53** tên gốc | §2.4 |
+| Prefab enemy | **92** = 52 thường + 39 boss + 1 MB | §2.5 |
 | Map | **250** (`Map-0000` – `Map-0249`) | `MapController.csv` |
 | Stage trên board | **299** (Normal 199 · Boss 26 · Combat 49 · MiniBoss 25) | `Stage_Behaviour.csv` |
 | Tên enemy prefab | ❌ **toàn bộ là `?`** — resolve pathID thất bại | `waves.json` |
@@ -141,7 +144,8 @@ Nguồn: `waves.json`.
 
 ## 2. Danh mục enemy — suy từ tên spawner
 
-Vì `enemies` toàn `?`, ta dùng **tên spawner** (có thật, **1.015 tên khác nhau**) để suy ra họ enemy.
+Vì `enemies` toàn `?`, ta dùng **tên spawner** để suy ra họ enemy. **1.015 tên nhưng chỉ 53 tên gốc**
+(hậu tố `(n)` là số thứ tự instance) — xem §2.4.
 
 ### 2.1 10 họ lớn nhất
 
@@ -195,6 +199,53 @@ Nguồn: `waves.json`, đếm bằng khớp chuỗi con trên `spawners[].spawne
 | `W2-30041` | `Gun_Attack.csv` (root `Wave_0005`) | – |
 
 Nguồn: `Gun_Attack.csv` `_gameobject`, `Boss_BodyPhysics.csv` `_gameobject`.
+
+### 2.4 Quy luật spawn — **48 archetype**, không phải 1.015 cấu hình
+
+Tên spawner có dạng **`TênGốc (n)`**; `(n)` chỉ là **số thứ tự instance**, không mang cấu hình.
+Bỏ hậu tố: **1.015 tên → 53 tên gốc**, trừ **5 marker** còn **48 archetype spawner thật**.
+
+Mỗi archetype có bộ tham số **gần như hằng số** — đây là quy luật, không phải đặt tay:
+
+| Archetype | Số lần | `spawn_type` | `rate` | `y_spawn` |
+|---|---:|---|---|---|
+| `CB1 Nhanh` (nhanh) | 4.622 | point_range **100%** | **1,0 × 4.622/4.622** | **9,6 × 4.618** |
+| `Point 1` | 4.192 | point 2.536 · point_range | 1,0 2.536 · 0,0 1.656 | 12,0 × 2.262 |
+| `CB1 Vua` (vua) | 2.951 | point_range **100%** | **1,0 × 2.951/2.951** | **9,6 × 2.945** |
+| `CB1 Cham` (chậm) | 1.487 | point_range **100%** | **1,0 × 1.487/1.487** | **9,6 × 1.487** |
+| `6-CB09_Left` | 1.238 | point_range | 0,0 × 1.172 | 9,6 × 1.238 |
+| `CB1` | 1.150 | point_range | 0,0 × 953 | 12,0 × 880 |
+| `Path_CB3_5` | 1.130 | path **100%** | 0,5 × 571 | 9,6 × 1.114 |
+| `Group` | 929 | point_range | 0,0 × 929 | 0,0 × 605 |
+| `ChamNo` | 536 | point_range | 1,0 × 536 | 9,6 × 528 |
+| `CB15` | 435 | point_range | 0,0 × 359 | 0,0 × 269 |
+| `Point_H` | 387 | point **100%** | 0,0 × 387 | 12,0 × 387 |
+| `CB1 Ban Vua` | 304 | point_range | 1,0 × 304 | 9,6 × 304 |
+
+Nguồn: `waves.json`, tính bằng cách bỏ `\s*\(\d+\)$` khỏi `spawners[].spawner`.
+
+> **Hệ quả cho dựng lại:** chỉ cần **48 định nghĩa archetype** + bảng vị trí, không cần
+> 23.757 cấu hình. Đây là phần **tự động hoá được gần hết**.
+
+### 2.5 Prefab enemy thật: **92** (52 thường + 39 boss + 1 MB)
+
+Đếm theo **root** của `_gameobject` trong `Enemy_Datas.csv` (bỏ sub-object `Gun5`/`HP`/`Child2`):
+
+| Họ | Prefab | Dải id | Vai trò |
+|---|---:|---|---|
+| `CB` | **26** | 30001–30060 | enemy thường (chương 1) |
+| `CD` | **13** | 31002–31016 | enemy thường |
+| `GD` | **4** | 33002–33005 | enemy thường |
+| `XB` | **4** | 34003–34006 | enemy thường |
+| `BB` | **3** | 36001–36004 | enemy thường |
+| `H` | **2** | 38001–38002 | enemy thường |
+| **Tổng thường** | **52** | | |
+| `Boss` | **39** | 37001–39021 | boss |
+| `MB` | **1** | 39005 | mini-boss |
+| **Tổng** | **92** | | |
+
+> ⚠ **Đính chính:** con số **690 GameObject** ở `BALANCE.md` là **mọi object** trong prefab
+> enemy (súng, hitbox, object con, hiệu ứng) — **không** phải 690 loại enemy. Số loại là **92**.
 
 ---
 
