@@ -380,7 +380,8 @@ liên tục; pitch randomization cho kết quả tương đương với 1/7 dung
 
 > Ghi chú pháp lý: repo này là **tài liệu phân tích kỹ thuật** (reverse engineering cho mục đích
 > học tập/nghiên cứu). Việc **tái sử dụng asset** là hành vi khác và **không** được bảo vệ bởi
-> mục đích nghiên cứu. Xem thêm `docs/HANDOFF_AI_TASKS.md` §legal.
+> mục đích nghiên cứu. Việc **tái sử dụng asset** là hành vi khác và không được bảo vệ bởi
+> mục đích nghiên cứu. Xem `assets_samples/00_LICENSES` cho các bộ CC0 dùng thay thế.
 
 ---
 
@@ -404,6 +405,11 @@ liên tục; pitch randomization cho kết quả tương đương với 1/7 dung
 ## 10. Nguồn
 
 `docs/apk-analysis/04-unity-assets.md` · `04-asset-manifest.csv` · `SkeletonDataAsset.csv` ·
-`SoundClip.csv` · `15-audio.md` · `10-scriptableobjects.md` · `12-localization.csv` ·
+`SoundClip.csv` · `15-audio.md` · `12-localization.csv` ·
 `reverse-engineering/textassets/skeleton*.json` · `reverse-engineering/textassets/*.atlas*.txt` ·
+`reverse-engineering/scriptableobjects/SkeletonDataAsset.csv` (27 instance) ·
+`reverse-engineering/scriptableobjects/SoundClip.csv` (92 entry) ·
 `docs/spec/sprite-list.csv`.
+
+**Liên quan:** `Gun_Attack.csv` có cột `shootAudioClipName` (13 clip bắn khác nhau) — map id →
+`AllClipName` ở `COMBAT.md` §2.3.

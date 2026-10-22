@@ -12,20 +12,21 @@
 
 | Hạng mục | Nội dung | Nguồn |
 |---|---|---|
-| Thể loại | **Vertical scrolling shooter** (shmup dọc) + RPG tiến trình + PvP async | `PHAN_TICH` §1 |
-| Nền tảng | Android (Unity 2022.3.62f3, IL2CPP, arm64), 1 file APK split | `01-apk-inventory.md` |
+| Thể loại | **Vertical scrolling shooter** (shmup dọc) + RPG tiến trình + PvP async | `07-enums.md` (`PlayMode` 7 giá trị) |
+| Nền tảng | Android (Unity 2022.3.62f3, IL2CPP, arm64), split APK + XAPK | `01-apk-inventory.json`, `02-unity-engine.md` |
 | Phiên bản phân tích | 1.3.118, package `com.Wind.wings.Space.Shooter` | `01-apk-inventory.md` |
-| Nhà phát hành | GCENTER VIET NAM TECHNOLOGY JSC | `PHAN_TICH` |
+| Nhà phát hành | GCENTER VIET NAM TECHNOLOGY JSC | `01-apk-inventory.json` (manifest) |
 | Điều khiển | 1 ngón kéo tàu (touch drag) hoặc 2 nút trái/phải; **auto-fire** | `GameDatas.TypeControl`, `07-enums.md` |
-| Thời lượng 1 trận | 2,5–4 phút (suy ra từ số wave × nhịp spawn) | `> Giả định:` §2.5 |
+| Thời lượng 1 trận | 2,5–4 phút (suy từ `rate` × số spawner) | `waves.json` → `ENCOUNTERS.md` §3 |
 | Số mode chơi | **7** `PlayMode` + **3** `PVPMode` | `07-enums.md` |
-| Nội dung PvE | 2 chapter, boss wave `7001–7022` + `9001–9024` (46 wave-boss) | `14-bosses.csv` |
+| Nội dung PvE | **282 wave** (236 campaign + 22 boss ch1 + 23 boss ch2 + 1 unknown); 250 map; 299 stage | `waves.json`, `MapController.csv`, `Stage_Behaviour.csv` |
 | Tiền tệ | 4 chính + 6 phụ | `GameDatas`, `TypeResource` |
-| Kiếm tiền | IAP 170 SKU + 19 vị trí quảng cáo | `13-iap-products.csv`, `AdPos` |
+| Kiếm tiền | IAP 170 SKU (**không có giá**) + 19 vị trí quảng cáo | `13-iap-products.csv`, `AdPos` (`07-enums.md`) |
 | Ngôn ngữ | 19 (có tiếng Việt) | `LanguageAssets.csv`, `12-localization.csv` |
+| Damage địch | 458 súng, 40–1.200 | `Gun_Attack.csv` → `COMBAT.md` |
 
 > Nguồn số ở bảng trên: `01-apk-inventory.md` (phiên bản), `14-ships.csv` (25 tàu),
-> `14-drones.csv` (13 drone), `14-bosses.csv` (46 wave-boss), `15-enemy-hp.csv` (981 instance HP),
+> `14-drones.csv` (13 drone), `14-bosses.csv` (46 wave-boss), `15-enemy-hp.csv` (800 instance HP),
 > `13-iap-products.csv` (170 SKU), `AdPos` (19 vị trí, `07-enums.md`).
 
 ### 0.1 Ba vòng lặp
@@ -38,7 +39,7 @@ thấy enemy → kéo tàu né đạn → auto-fire giết → nhặt coin/item 
    └──────────── power-up tạm thời (item drop) ◄────────────────┘
 ```
 Mục tiêu: **3–8 giây/enemy wave nhỏ**, 1 item drop mỗi 15–20 giây
-(nguồn: `15-enemy-hp.csv` — 981 instance, HP median 500.000; xem `BALANCE.md` §2).
+(nguồn: `15-enemy-hp.csv` — 800 instance, median HP 600.000 khi khác 0; xem `BALANCE.md` §2).
 
 **10 phút — vòng lặp phiên**
 
@@ -122,7 +123,7 @@ Nguồn: `14-items.csv`, `06` §`Data_Items`, `txt_item_*` (`12-localization.csv
 | Quy tắc | Giá trị | Nguồn |
 |---|---|---|
 | Tỉ lệ rơi | **không xác định được từ APK** | không có field weight |
-| Enemy mang item sẵn | **không** (`IsBringItems = False` cho 981/981) | `Enemy_Datas.csv` |
+| Enemy mang item sẵn | **không** (`IsBringItems = False` cho 800/800) | `Enemy_Datas.csv` |
 | Coin rơi | theo `Enemy_Data_Balance.GetBonusCoin(id)` | `06` |
 | Hút item | `Player_Get_Datas.StartMagnetRange` + tech `Magnet` | `06`, `txt_techstat_*` |
 
@@ -436,32 +437,40 @@ thì thanh tiếp theo được kích hoạt, kéo theo bộ đòn mới. Đây 
 Tên lấy từ `txt_boss_name_0..19` (`12-localization.csv`). **Chỉ 16/20 key có bản dịch** —
 4 key (12, 13, 17, 18) còn nguyên placeholder nên **không xác định được tên**.
 
-| # | Tên | HP phase (nếu có) | Tổng HP prefab | Lớp đòn |
-|---:|---|---|---:|---|
-| 0 | Sarajevo | – | 1.225.000 | `Boss_AttackTypes` chung |
-| 1 | Mother Ship | – | 1.180.000 | " |
-| 2 | Guillotine | – | 1.500.000 | " |
-| 3 | Spider Guardian | – | 136.000 | " |
-| 4 | Emerald Weapon | – | 6.300.000 | " |
-| 5 | The Destroyer | – | 6.220.000 | " |
-| 6 | Psycho Toad | – | 1.700.000 | " |
-| 7 | Ghost of Abyss | – | (0 ⚠) | " |
-| 8 | The Saboteur | – | 4.500.000 | " |
-| 9 | Cyber Samurai | – | 4.000.000 | " |
-| 10 | Octovios | – | 2.800.000 | " |
-| 11 | Monkey King | – | 4.300.000 | " |
-| 12 | **không xác định** | HP1 2,4M · HP2 3,1M | 5.500.000 | chưa rõ |
-| 13 | **không xác định** | – | 4.350.000 | " |
-| 14 | Kukuma | – | 7.290.000 | " |
-| 15 | QueenBee | – | 4.300.000 | " |
-| 16 | Frosty Clown | – | (0 ⚠) | " |
-| 17 | **không xác định** | – | 5.000.000 | " |
-| 18 | **không xác định** | HP1 680k · HP2 550k · HP3 450k | 1.680.000 | " |
-| 19 | Soul Master | – | (không có prefab) | " |
+| # | Tên | prefab tương ứng | HP phase | Tổng HP prefab |
+|---:|---|---|---|---:|
+| 0 | Sarajevo | `Boss-37001` | – | 1.225.000 |
+| 1 | Mother Ship | `Boss-37002` | – | 1.320.000 |
+| 2 | Guillotine | `Boss-37003` | – | 3.000.000 |
+| 3 | Spider Guardian | `Boss-37004` | – | 272.000 |
+| 4 | Emerald Weapon | `Boss-37005` | – | 4.700.000 |
+| 5 | The Destroyer | `Boss-37006` | – | 4.100.000 |
+| 6 | Psycho Toad | `Boss-37008` | – | 1.300.000 |
+| 7 | Ghost of Abyss | `Boss-37009` | – | **0** ⚠ |
+| 8 | The Saboteur | `Boss-37010` | – | 4.500.000 |
+| 9 | Cyber Samurai | `Boss-37011` | – | 4.000.000 |
+| 10 | Octovios | `Boss-37012` | – | **0** ⚠ |
+| 11 | Monkey King | `Boss-37013` | – | 4.300.000 |
+| 12 | **không xác định** | `Boss-37014` | HP1 2,4M · HP2 3,1M | 5.500.000 |
+| 13 | **không xác định** | `Boss-37015` | – | 4.350.000 |
+| 14 | Kukuma | `Boss-37016` | – | 5.580.000 |
+| 15 | QueenBee | `Boss-37017` | – | 4.300.000 |
+| 16 | Frosty Clown | `Boss-37018` | – | 5.000.000 |
+| 17 | **không xác định** | `Boss-37019` | – | 5.000.000 |
+| 18 | **không xác định** | — | – | — |
+| 19 | Soul Master | — | – | — |
 
-> **Giả định:** thứ tự `txt_boss_name_0..19` khớp thứ tự wave boss chương 1
-> (`Boss-37001..37022` rút gọn 20 boss chính). Cần xác nhận khi có `Map_Get_Datas.listIdBosses`.
-> HP lấy từ `15-enemy-hp.csv` theo prefab gần nhất; dòng `(0 ⚠)` = prefab chỉ có component HP = 0.
+> **Nguồn tên:** `txt_boss_name_0..19` (`12-localization.csv`); 4 key (12, 13, 17, 18) còn
+> placeholder nên **không xác định được tên**. **Nguồn HP:** `15-enemy-hp.csv`, bảng đầy đủ
+> 39 prefab ở `BALANCE.md` §2.2.
+>
+> **`Giả định:`** ghép theo **thứ tự** — 18 prefab `Boss-37xxx` cho 20 tên boss, nên 2 tên
+> cuối (#18, #19) **không có prefab** và phép ghép có thể lệch từ #6 trở đi (vì `Boss-37007`
+> không tồn tại). Cần `Map_Get_Datas.listIdBosses` để chốt.
+>
+> Lớp đòn (`Boss_AttackTypes`) dùng chung cho toàn bộ chương 1 — 5 kiểu: `DataAttackFixed`,
+> `DataAttackAuto`, `DataAttackAutoCircle`, `DataAttackArrangePosition`,
+> `DataAttackRandomPositionX` (nguồn: `class Boss_AttackTypes`, `dump.cs`).
 
 ### 6.3 2 mini-boss + 16 MB variant
 
@@ -576,18 +585,24 @@ gift code, drone, tech, talent.
 ## 10. Nguồn
 
 **Dữ liệu bóc:**
-`01-apk-inventory.md` · `02-unity-engine.md` · `04-unity-assets.md` · `06-gameplay-systems.md` ·
-`07-enums.md` · `08-ui-map.md` · `09-numbers-and-formulas.md` · `10-scriptableobjects.md` ·
-`12-localization.csv` · `13-iap-products.csv` · `14-{ships,drones,bosses,items}.csv` ·
+`01-apk-inventory.json` · `04-asset-manifest.csv` · `12-localization.csv` · `13-iap-products.csv` ·
+`14-{ships,drones,bosses,items}.csv` ·
 `15-enemy-hp.csv` · `Enemy_Datas.csv` · `DataShopPack.csv` · `Tech_Ability_Data.csv` ·
 `GP_Datas.csv` · `RankManager.csv` · `SkeletonDataAsset.csv` · `SoundClip.csv` ·
-`PHAN_TICH_WINDWINGS_APK.md` · `HANDOFF_AI_TASKS.md`.
+`datas/waves.json` · `datas/enemy_hp.json` · `datas/bosses.json` · `datas/ships.json` ·
+`reverse-engineering/scriptableobjects/`: `Gun_Attack.csv` · `Bullet_Linearly.csv` ·
+`Enemy_Health.csv` · `Boss_BodyPhysics.csv` · `Box_Rewards.csv` · `Shop_Cell.csv` ·
+`Sub_Item.csv` · `Item_Movement.csv` · `Tech_Ability_Data.csv` · `MapController.csv` ·
+`Stage_Behaviour.csv` · `Wave.csv` · `Call_Data.csv` · `Spawner.csv`
 
 **Mã IL2CPP:**
 `reverse-engineering/il2cpp/dump.cs.gz` — class `BoardManager`, `UIManager`, `MapController`,
 `Map_Get_Datas`, `Stage_Get_Datas`, `Stage_Datas`, `Chapter`, `Wave`, `Boss_AttackPhases`,
 `Boss_AttackTypes`, `Boss_Director`, `Player_Attack`, `Player_Health`, `Enemy_Health`,
 `GP_Spawner`, `GP_Endgame`, `Popup`, `Popup_Notices`.
+
+**Số liệu chi tiết vòng 2:** `COMBAT.md` (súng/damage/TTK) · `ENCOUNTERS.md` (wave/spawner/map) ·
+`ECONOMY.md` (thưởng/shop/giá).
 
 **Tài liệu cùng bộ:**
 `docs/spec/BALANCE.md` (số liệu HP/roster) · `docs/spec/UI.md` + `screens.csv` (màn hình) ·

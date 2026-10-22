@@ -20,11 +20,14 @@
 | `LoadBoardMode` | 3 (`Single`, `Additive`, `PopUp`) | `dump.cs` enum `LoadBoardMode` |
 | Board không có class tương ứng | 6 (`BoardUpgrades`, `BoardFusion`, `BoardDropItems`, `BoardLogIn`, `BoardObstacle`, `BoardTradeDevices`) | đối chiếu §3.1 |
 
-**Sai lệch so với handoff:** `HANDOFF_AI_TASKS.md` ghi "49 board + 63 popup + 8 tab".
-Số thật là **53 board** (vì 4 class nested `Board_Arena.ArenaRewards`,
-`Board_BattlePassPro.BattlePassMission`, `Board_EventSeasonPass.EventRewards`,
-`Board_Reborn.SortPlayerLevelStruct` cũng là board/struct trong cây UI) + 63 popup + 8 tab.
-Popup 63 khớp. Tab 8 khớp.
+**Đếm lại từ nguồn (vòng 2):** đếm trực tiếp class trong `08-ui-map.md` → **125 class**
+(53 board + 63 popup + 8 tab + 1 cell). Trong 53 board có 4 class nested/struct
+(`Board_Arena.ArenaRewards`, `Board_BattlePassPro.BattlePassMission`,
+`Board_EventSeasonPass.EventRewards`, `Board_Reborn.SortPlayerLevelStruct`) — nếu chỉ đếm
+board phẳng thì được **49**. Cả hai con số đều đúng, khác cách đếm.
+
+Bổ sung bằng chứng từ SO: `Shop_Cell` có **315 ô** trải trên **17 board**
+(`Shop_Cell.csv`) — xác nhận board nào cũng có cell bán hàng, khớp sơ đồ §2.
 
 ### 0.1 Đọc `screens.csv`
 
@@ -456,6 +459,10 @@ Nguồn: field `popup*` của `Board_Arena`, `Board_PVP`, `Board_BattlePassPro`,
 ## 9. Nguồn
 
 `docs/apk-analysis/08-ui-map.md` · `docs/apk-analysis/07-enums.md` (`BoardID`, `LoadBoardMode`,
-`ShopTab`) · `docs/apk-analysis/06-gameplay-systems.md` · `docs/apk-analysis/12-localization.csv`
+`ShopTab`, `PurchaseType`) · `docs/apk-analysis/12-localization.csv`
 (text nút: `txt_label_*`, `txt_tab_*`) · `reverse-engineering/il2cpp/dump.cs.gz`
-(`BoardManager`, `UIManager`, `UINativeAd`, `Popup`, `Popup_Notices`) · `docs/spec/screens.csv`.
+(`BoardManager`, `UIManager`, `UINativeAd`, `Popup`, `Popup_Notices`, `Shop_Cell`, `Box_Rewards`) ·
+`reverse-engineering/scriptableobjects/Shop_Cell.csv` (315 ô / 17 board) ·
+`Box_Rewards.csv` (800 khung thưởng theo board) · `docs/spec/screens.csv`.
+
+> Số liệu kinh tế của từng board (có bao nhiêu ô shop, bao nhiêu ô thưởng): `ECONOMY.md` §2–§3.

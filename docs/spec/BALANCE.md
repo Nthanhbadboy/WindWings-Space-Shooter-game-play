@@ -3,6 +3,10 @@
 > Sinh từ dữ liệu **đã bóc** trong repo. Mỗi bảng ghi nguồn. Suy đoán ghi `> Giả định:`.
 > Không có giá trị nào được nội suy thành số cụ thể nếu APK không có — những chỗ đó ghi
 > **"không xác định được từ APK"** và được liệt kê lại ở §6 để phần 2 đi tìm.
+>
+> **Cập nhật vòng 2:** nguồn số nay là `reverse-engineering/scriptableobjects/*.csv` +
+> `docs/apk-analysis/*.csv` + `datas/*.json`. Số liệu combat/wave/economy chi tiết nằm ở
+> `COMBAT.md`, `ENCOUNTERS.md`, `ECONOMY.md` (cùng thư mục) — **không lặp lại ở đây**.
 
 ---
 
@@ -10,13 +14,19 @@
 
 | Câu hỏi | Trả lời ngắn | Nguồn |
 |---|---|---|
-| Boss khó nhất (theo HP phải bắn hết) | `Boss-39017`: 9,900,000 tổng (3 phase + 15 part phụ) | `15-enemy-hp.csv` |
-| Boss dễ nhất | `Boss-37004`: 136,000 | `15-enemy-hp.csv` |
-| Boss chương 1 khác chương 2 thế nào | Ch1 **1 phase** (17/18 prefab); Ch2 **3 phase** (11/21 prefab) | `15-enemy-hp.csv` |
-| HP enemy thường | median 500,000; 27% số enemy có HP = 0 (slot trang trí) | `Enemy_Datas.csv` |
+| Boss khó nhất (theo HP phải bắn hết) | `Boss-39006`: **11,235,000** tổng (16 part) | `15-enemy-hp.csv` |
+| Boss dễ nhất | `Boss-39001`: 270.000 · `Boss-37004`: 272.000 | `15-enemy-hp.csv` |
+| Boss chương 1 khác chương 2 thế nào | Median tổng HP **4,2 M → 6,0 M**; boss 3 phase **1 → 7** | `15-enemy-hp.csv` §2.3 |
+| HP enemy thường | median **500.000** (không phải boss); **50,8%** dòng có HP = 0 (part trang trí) | `Enemy_Datas.csv` |
 | Tàu mạnh nhất theo "sao" | `10024 Elves` 5.11 sao; yếu nhất `10001 Bluesky` 2.0 | `14-ships.csv` |
-| Bao nhiêu nội dung balance thật sự có | **Rất ít**: chỉ HP + roster + 6 bảng SO phụ; **0 giá trị** damage/giá/thưởng | `10-scriptableobjects.md`, §6 |
-| Có thể dựng lại balance đầy đủ? | Không. Phải thiết kế lại từ đầu dựa trên khung ở §7 | — |
+| Damage vũ khí | **458 giá trị** (457 > 0), 40–1.200, median 400 — nhưng **toàn bộ là súng địch** | `Gun_Attack.csv` → `COMBAT.md` |
+| DPS lý thuyết của địch | 7,8 – 3.333 (median 454), tính từ burst pattern | `Gun_Attack.csv` → `COMBAT.md` §4 |
+| Sát thương chạm thân boss | 251 hitbox: `dmgFirst` 200–10.000 (median 500) + 14 sentinel, `dmgPerSec` 5–1.000 | `Boss_BodyPhysics.csv` |
+| Số wave / spawner | **282 wave**, 23.757 spawner, 250 map | `waves.json` → `ENCOUNTERS.md` |
+| Giá coin/gem/IAP | **0 giá trị** — không tồn tại trong asset | `ECONOMY.md` §0 |
+| Phần thưởng trong hộp | **0 giá trị** — `Box_Rewards.id = 0` cho 800/800 dòng | `Box_Rewards.csv` |
+| Damage của **player** | **0 giá trị** — `forceType = Enemy` 458/458 | `Gun_Attack.csv` |
+| Có thể dựng lại balance đầy đủ? | Không. Nhưng đã có **HP + damage địch + nhịp wave** — đủ để suy đường cong | §7 |
 
 ---
 
@@ -24,12 +34,23 @@
 
 | Bảng | File | Trạng thái |
 |---|---|---|
-| HP 981 enemy/boss | `docs/apk-analysis/15-enemy-hp.csv` (dẫn xuất từ `Enemy_Datas.csv`) | ✅ có số |
+| HP **800** enemy/boss | `15-enemy-hp.csv` = `Enemy_Datas.csv` (800 dòng, 394 có HP > 0) | ✅ có số |
 | Cờ enemy | `docs/apk-analysis/Enemy_Datas.csv` | ✅ có số |
 | Roster tàu/drone/boss/item | `14-ships.csv`, `14-drones.csv`, `14-bosses.csv`, `14-items.csv` | ✅ có số |
 | Tên tàu/drone/boss/talent/ability | `12-localization.csv` | ✅ có text |
 | Tech ability / shop pack / GP / rank | `Tech_Ability_Data.csv`, `DataShopPack.csv`, `GP_Datas.csv`, `RankManager.csv` | ⚠ chỉ có sprite/id, không có số balance |
-| Damage, giá, thưởng, tỉ lệ rơi | `06-gameplay-systems.md`, `09-numbers-and-formulas.md` | ❌ chỉ có tên field |
+| **Damage vũ khí địch** | `reverse-engineering/scriptableobjects/Gun_Attack.csv` (458 dòng) | ✅ có số → `COMBAT.md` |
+| **Burst pattern** | `Gun_Attack.csv` `allGunDatas[0..2].{countShots,timeShot,timeReload,timeRounds,countMags}` | ✅ có số → `COMBAT.md` §3 |
+| Đạn (hitbox, xuyên khiên) | `Bullet_Linearly.csv` (186 dòng) | ✅ có số → `COMBAT.md` §7 |
+| Damage va chạm boss | `Boss_BodyPhysics.csv` (`dmgFirst`, `dmgPerSec`) | ✅ có số → `COMBAT.md` §6.3 |
+| Armor / `noDamage` | `Enemy_Health.csv` (800 dòng) | ✅ 189 / 800 `True` |
+| **Wave / spawner / map** | `datas/waves.json`, `MapController.csv`, `Stage_Behaviour.csv` | ✅ có số → `ENCOUNTERS.md` |
+| **Giá & phần thưởng cụ thể** | `Box_Rewards.csv`, `Shop_Cell.csv`, `DataShopPack.csv`, `13-iap-products.csv` | ❌ **thật sự không có số** → `ECONOMY.md` §0 |
+| **Tỉ lệ rơi item** | `Sub_Item.csv` + `Item_Movement.csv` (702 lượt) | ✅ 676 coin / 26 item → `ECONOMY.md` §1.1 |
+| Damage của **player** | `Player_Get_Datas.StartMainCannonDamages[]` (không serialize) | ❌ trong `libil2cpp.so` |
+
+> Bảng trên là **kết quả kiểm lại toàn bộ 91 CSV** ở `reverse-engineering/scriptableobjects/`
+> bằng cách lọc cột số và đếm giá trị phân biệt. Chi tiết phép kiểm: `ECONOMY.md` §8.
 
 **Quy ước dedup HP:** một enemy có thể xuất hiện nhiều lần trong cùng file vì cùng prefab được
 đặt trong: (a) prefab gốc, (b) scene `Board_FightBoss` (tab preview), (c) scene map/scrollview.
@@ -40,147 +61,143 @@ Ta gom theo **root prefab** + **đường dẫn component sau root**, lấy `max
 
 ## 2. HP enemy / boss
 
+> **Cập nhật vòng 2:** nguồn `15-enemy-hp.csv` nay có **800 dòng** (bản vòng 1 dùng 981 dòng
+> từ lần bóc trước). Toàn bộ §2 đã tính lại từ file 800 dòng — **các số dưới đây thay thế
+> hoàn toàn số vòng 1**, kể cả bảng 39 prefab.
+
 ### 2.1 Tổng quan
 
 | Chỉ số | Giá trị | Nguồn |
 |---|---:|---|
-| Số instance `Enemy_Datas` | 981 | `10-scriptableobjects.md` |
-| Số instance có `StartHealthPoint > 0` | 467 | `Enemy_Datas.csv` |
-| Số instance HP = 0 (slot chưa dùng / trang trí) | 514 | `Enemy_Datas.csv` |
-| HP lớn nhất | 10,000,000 (`CB(TEST)` — object test, **loại khỏi balance**) | `15-enemy-hp.csv` |
-| HP lớn nhất (hợp lệ) | 5,000,000 (`Boss-37019`, `Enemy_Ingame/GunParent`) | `15-enemy-hp.csv` |
-| Số cặp `(path, HP)` duy nhất | 860 / 981 | tính từ `15-enemy-hp.csv` |
-| Số prefab boss có HP | 39 | `15-enemy-hp.csv` |
-| Số prefab `Wave_*` chứa enemy | 35 (`Wave_0003`…`Wave_0136`) | `15-enemy-hp.csv` |
+| Số instance `Enemy_Datas` | **800** dòng = **690** đường dẫn GameObject khác nhau | `Enemy_Datas.csv` |
+| Số instance có `StartHealthPoint > 0` | **394** | `15-enemy-hp.csv` |
+| Số instance HP = 0 (slot chưa dùng / part trang trí) | **406 (50,8%)** | `15-enemy-hp.csv` |
+| HP lớn nhất | 10.000.000 (`CB(TEST)` — object test, **loại khỏi balance**) | `15-enemy-hp.csv` |
+| HP lớn nhất hợp lệ | **11.235.000** tổng prefab (`Boss-39006`) | `15-enemy-hp.csv` |
+| HP 1 component lớn nhất | 5.000.000 (`Boss-37018`, `Boss-37019`) | `15-enemy-hp.csv` |
+| Median HP (chỉ dòng > 0) | **600.000** (sau khi gộp trùng: 353 đơn vị, vẫn 600.000) | `15-enemy-hp.csv` |
+| Số prefab boss có HP | **39** (ch1 18 + ch2 21) | `15-enemy-hp.csv` |
+| Số dòng liên quan boss | 231 / 800 | `15-enemy-hp.csv` |
 
-Phân bố HP (467 instance > 0):
+> **⚠ Trùng lặp:** 800 dòng nhưng **690 đường dẫn GameObject** khác nhau (110 dòng lặp, cùng
+> nguyên nhân prefab + instance scene — `ENCOUNTERS.md` §1.3). Sau khi gộp `max` theo đường dẫn:
+> **353 đơn vị có HP > 0**, median vẫn **600.000**, max vẫn 10.000.000.
+> Bảng 39 prefab boss ở §2.2 đã gộp trùng nên **không bị ảnh hưởng**.
+
+Phân bố HP (394 instance > 0, raw):
 
 | Khoảng HP | Số instance |
 |---|---:|
-| < 100 K | 63 |
-| 100 K – 500 K | 136 |
-| 500 K – 1 M | 130 |
-| 1 M – 2 M | 56 |
-| 2 M – 3 M | 43 |
-| ≥ 3 M | 39 |
+| < 100 K | 52 |
+| 100 K – 500 K | 107 |
+| 500 K – 1 M | **122** |
+| 1 M – 2 M | 44 |
+| 2 M – 3 M | 35 |
+| ≥ 3 M | **34** |
 
-> Đọc bảng này: **39 instance ≥ 3 M chính là 39 prefab boss** — tức "1 dòng = 1 boss".
-> Dải 100 K–1 M (266 instance) là enemy thường và **part phụ của boss**.
-> Nhịp HP của game là bậc 2: enemy ~0.1–1 M, boss ~3–10 M tổng.
+> Đọc bảng này: trong **34 dòng ≥ 3 M**, **21 dòng có root là `Boss-xxxxx`**, 13 dòng còn lại
+> là **bản copy trong scene preview** (`Board_FightBoss/Parent/Tab (5)/...`, `Tab (7)/...`,
+> `ObjectMove/...`) hoặc `CB(TEST)` 10 M. ⇒ toàn bộ ≥ 3 M đều là **boss hoặc bản sao boss**.
+> Dải 500 K–1 M (122) là enemy thường + part phụ.
+> Nhịp HP là bậc 2: enemy ~0,5–0,6 M, boss ~4–11 M tổng.
 
-### 2.2 Bảng 39 prefab boss (đã dedup, bỏ bản copy UI)
+### 2.2 Bảng 39 prefab boss (dedup, tính lại từ 800 dòng)
 
-Cột **rows** = số dòng gốc trong `15-enemy-hp.csv`; **copy UI** = số dòng là bản sao trong
-`Board_FightBoss`/`Board_SelectBoss`/scrollview; **tail** = số component HP duy nhất của prefab;
-**phase HP** = các component đặt tên `HP1/HP2/HP3` (mỗi cái = 1 thanh máu = 1 phase);
-**tổng HP** = tổng mọi component (thân + part phụ) — đây là "damage phải bỏ ra để giết sạch prefab".
+**tail** = số component HP duy nhất của prefab; **phase HP** = component đặt tên `HP/HP1/HP2/HP3`;
+**tổng HP** = tổng mọi component (thân + part phụ) — "damage phải bỏ ra để giết sạch".
 
-| prefab | wave (giả định) | rows | copy UI | tail | phase HP | tổng HP (dedup) | HP thân lớn nhất | part phụ |
-|---|---:|---:|---:|---:|---|---:|---:|---:|
-| `Boss-37001` | 7001 | 3 | 0 | 3 | – | 1,225,000 | 1,000,000 | 2 |
-| `Boss-37002` | 7002 | 6 | 0 | 6 | – | 1,180,000 | 380,000 | 5 |
-| `Boss-37003` | 7003 | 4 | 0 | 4 | – | 1,500,000 | 500,000 | 3 |
-| `Boss-37004` | 7004 | 3 | 0 | 3 | – | 136,000 | 68,000 | 2 |
-| `Boss-37005` | 7005 | 4 | 0 | 4 | – | 6,300,000 | 3,900,000 | 3 |
-| `Boss-37006` | 7006 | 18 | 0 | 18 | – | 6,220,000 | 2,200,000 | 17 |
-| `Boss-37008` | 7008 | 4 | 0 | 4 | – | 1,700,000 | 1,100,000 | 3 |
-| `Boss-37009` | 7009 | 1 | 0 | 1 | – | 0 ⚠ | 0 | 0 |
-| `Boss-37010` | 7010 | 2 | 0 | 2 | – | 4,500,000 | 4,500,000 | 1 |
-| `Boss-37011` | 7011 | 1 | 0 | 1 | – | 4,000,000 | 4,000,000 | 0 |
-| `Boss-37012` | 7012 | 2 | 0 | 2 | – | 2,800,000 | 2,800,000 | 1 |
-| `Boss-37013` | 7013 | 2 | 0 | 2 | – | 4,300,000 | 4,300,000 | 1 |
-| `Boss-37014` | 7014 | 6 | 3 | 3 | HP1=2,400,000 · HP2=3,100,000 | 5,500,000 | 3,100,000 | 2 |
-| `Boss-37015` | 7015 | 2 | 0 | 2 | – | 4,350,000 | 4,350,000 | 1 |
-| `Boss-37016` | 7016 | 4 | 0 | 4 | – | 7,290,000 | 3,870,000 | 3 |
-| `Boss-37017` | 7017 | 2 | 0 | 2 | – | 4,300,000 | 4,300,000 | 1 |
-| `Boss-37018` | 7018 | 1 | 0 | 1 | – | 0 ⚠ | 0 | 0 |
-| `Boss-37019` | 7019 | 2 | 0 | 2 | – | 5,000,000 | 5,000,000 | 1 |
-| `Boss-39001` | 9001 | 1 | 0 | 1 | – | 0 ⚠ | 0 | 0 |
-| `Boss-39002` | 9002 | 4 | 0 | 4 | HP1=680,000 · HP2=550,000 · HP3=450,000 | 1,680,000 | 680,000 | 3 |
-| `Boss-39003` | 9003 | 2 | 0 | 2 | – | 580,000 | 580,000 | 1 |
-| `Boss-39004` | 9004 | 12 | 3 | 9 | – | 6,410,000 | 1,650,000 | 8 |
-| `Boss-39005` | 9005 | 19 | 7 | 12 | – | 5,960,000 | 1,500,000 | 11 |
-| `Boss-39006` | 9006 | 31 | 15 | 16 | – | 9,355,000 | 1,500,000 | 15 |
-| `Boss-39007` | 9007 | 3 | 1 | 2 | – | 648,000 | 648,000 | 1 |
-| `Boss-39008` | 9008 | 10 | 4 | 6 | HP3=3,300,000 | 8,820,000 | 3,300,000 | 5 |
-| `Boss-39009` | 9009 | 9 | 4 | 5 | HP=600,000 · HP3=2,500,000 | 5,100,000 | 2,500,000 | 4 |
-| `Boss-39010` | 9010 | 13 | 0 | 13 | – | 4,450,000 | 600,000 | 12 |
-| `Boss-39011` | 9011 | 12 | 6 | 6 | HP1=1,800,000 · HP2=2,900,000 · HP3=2,500,000 | 7,200,000 | 2,900,000 | 5 |
-| `Boss-39012` | 9012 | 8 | 4 | 4 | HP1=1,800,000 · HP2=2,600,000 · HP3=2,800,000 | 7,200,000 | 2,800,000 | 3 |
-| `Boss-39013` | 9013 | 8 | 1 | 4 | HP1=2,200,000 · HP2=2,500,000 · HP3=3,000,000 | 7,700,000 | 3,000,000 | 3 |
-| `Boss-39014` | 9014 | 8 | 1 | 4 | HP1=2,350,000 · HP2=2,680,000 · HP3=3,000,000 | 8,030,000 | 3,000,000 | 3 |
-| `Boss-39015` | 9015 | 8 | 2 | 4 | HP1=2,500,000 · HP2=3,000,000 · HP3=3,500,000 | 9,000,000 | 3,500,000 | 3 |
-| `Boss-39016` | 9016 | 2 | 0 | 2 | HP=600,000 | 600,000 | 600,000 | 1 |
-| `Boss-39017` | 9017 | 33 | 14 | 16 | HP1=1,800,000 · HP2=2,800,000 · HP3=3,200,000 | 9,900,000 | 3,200,000 | 15 |
-| `Boss-39018` | 9018 | 8 | 4 | 4 | HP1=2,200,000 · HP2=2,800,000 · HP3=3,200,000 | 8,200,000 | 3,200,000 | 3 |
-| `Boss-39019` | 9019 | 4 | 0 | 4 | HP1=2,200,000 · HP2=2,800,000 · HP3=3,200,000 | 8,200,000 | 3,200,000 | 3 |
-| `Boss-39020` | 9020 | 4 | 0 | 4 | HP1=2,200,000 · HP2=2,800,000 · HP3=3,200,000 | 8,200,000 | 3,200,000 | 3 |
-| `Boss-39021` | 9021 | 4 | 0 | 4 | HP1=2,200,000 · HP2=2,800,000 · HP3=3,200,000 | 8,200,000 | 3,200,000 | 3 |
+| prefab | wave | tail | phase HP | tổng HP (dedup) |
+|---|---:|---:|---|---:|
+| `Boss-37001` | 7001 | 3 | – | 1.225.000 |
+| `Boss-37002` | 7002 | 5 | – | 1.320.000 |
+| `Boss-37003` | 7003 | 5 | – | 3.000.000 |
+| `Boss-37004` | 7004 | 5 | – | 272.000 |
+| `Boss-37005` | 7005 | 2 | – | 4.700.000 |
+| `Boss-37006` | 7006 | 17 | – | 4.100.000 |
+| `Boss-37008` | 7008 | 2 | – | 1.300.000 |
+| `Boss-37009` | 7009 | 1 | – | **0** ⚠ |
+| `Boss-37010` | 7010 | 1 | – | 4.500.000 |
+| `Boss-37011` | 7011 | 1 | – | 4.000.000 |
+| `Boss-37012` | 7012 | 1 | – | **0** ⚠ |
+| `Boss-37013` | 7013 | 2 | – | 4.300.000 |
+| `Boss-37014` | 7014 | 3 | HP1=2.400.000 · HP2=3.100.000 | 5.500.000 |
+| `Boss-37015` | 7015 | 1 | – | 4.350.000 |
+| `Boss-37016` | 7016 | 2 | – | 5.580.000 |
+| `Boss-37017` | 7017 | 1 | – | 4.300.000 |
+| `Boss-37018` | 7018 | 1 | – | 5.000.000 |
+| `Boss-37019` | 7019 | 2 | – | 5.000.000 |
+| `Boss-39001` | 9001 | 4 | – | 270.000 |
+| `Boss-39002` | 9002 | 4 | HP1=680.000 · HP2=550.000 · HP3=450.000 | 1.680.000 |
+| `Boss-39003` | 9003 | 1 | – | **0** ⚠ |
+| `Boss-39004` | 9004 | 6 | – | 3.100.000 |
+| `Boss-39005` | 9005 | 8 | – | 3.320.000 |
+| `Boss-39006` | 9006 | 16 | – | **11.235.000** |
+| `Boss-39007` | 9007 | 1 | – | **0** ⚠ |
+| `Boss-39008` | 9008 | 1 | – | **0** ⚠ |
+| `Boss-39009` | 9009 | 4 | HP3=2.500.000 | 4.500.000 |
+| `Boss-39010` | 9010 | 14 | – | 6.600.000 |
+| `Boss-39011` | 9011 | 6 | HP1=1.800.000 · HP2=2.900.000 · HP3=2.500.000 | 7.200.000 |
+| `Boss-39012` | 9012 | 4 | HP1=1.800.000 · HP2=2.600.000 · HP3=2.800.000 | 8.400.000 |
+| `Boss-39013` | 9013 | 4 | HP1=2.200.000 · HP2=2.500.000 · HP3=3.000.000 | 7.700.000 |
+| `Boss-39014` | 9014 | 4 | HP1=2.350.000 · HP2=2.680.000 · HP3=3.000.000 | 8.030.000 |
+| `Boss-39015` | 9015 | 3 | HP1=2.500.000 · HP2=3.000.000 | 5.500.000 |
+| `Boss-39016` | 9016 | 2 | HP=600.000 | 600.000 |
+| `Boss-39017` | 9017 | 13 | HP2=2.800.000 · HP3=3.200.000 | 7.900.000 |
+| `Boss-39018` | 9018 | 3 | HP2=2.800.000 · HP3=3.200.000 | 6.000.000 |
+| `Boss-39019` | 9019 | 3 | HP1=2.200.000 · HP2=2.800.000 · HP3=3.200.000 | 8.200.000 |
+| `Boss-39020` | 9020 | 3 | HP2=2.800.000 · HP3=3.200.000 | 6.000.000 |
+| `Boss-39021` | 9021 | 4 | HP1=2.200.000 · HP2=2.800.000 · HP3=3.200.000 | 8.200.000 |
 
-Nguồn: tính từ `docs/apk-analysis/15-enemy-hp.csv`.
+Nguồn: `15-enemy-hp.csv`, gom theo `(root prefab, đường dẫn component)`, lấy `max` mỗi cặp.
 
-**Ghi chú quan trọng của bảng:**
-- ⚠ `Boss-37009`, `Boss-37018`, `Boss-39001` có **1 component HP = 0** → prefab chỉ là "vỏ" để
-  instantiate runtime, HP được set trong code/prefab khác. **Không dùng 3 dòng này để cân bằng.**
-- `Boss-37001` chứa **`MB-39005`** như một child boss (`Enemy_Ingame/Body/MB-39005/...`) →
-  bằng chứng MB (mini-boss) được tái sử dụng làm part trong boss chính.
-- Boss nhiều part nhất: `Boss-37006` (17 part), `Boss-39006` (15), `Boss-39017` (15) — đây là
-  loại "boss có nhiều súng phá được", không phải 17 phase.
+**Ghi chú bảng:**
+- ⚠ **5 prefab có tổng HP = 0**: `37009`, `37012`, `39003`, `39007`, `39008` → prefab chỉ là
+  "vỏ", HP set lúc chạy. **Không dùng 5 dòng này để cân bằng.** (Vòng 1 ghi 3 — sai vì nguồn cũ.)
+- `Boss-39006` là **trùm HP** (11,2 M, 16 part) đồng thời có **24 súng** (`COMBAT.md` §5)
+  → boss "dày" nhất game cả về máu lẫn hoả lực.
+- `Boss-39015` chỉ còn **2 phase** ở nguồn mới (vòng 1 ghi 3) — phase 3 nằm ở prefab khác.
 
 ### 2.3 So sánh 2 chương
 
 | Chỉ số | Chapter 1 (`Boss-37xxx`) | Chapter 2 (`Boss-39xxx`) |
 |---|---:|---:|
 | Số prefab | 18 | 21 |
-| Số phase phổ biến | 1 phase (17/18) | 3 phase (11/21), 7 không có component `HP*` |
-| HP thân median | 2,950,000 | 2,800,000 |
-| **Tổng HP median** (thân + part) | **4,150,000** | **7,200,000** |
-| Tổng HP cả chương | 60,301,000 | 125,433,000 |
-| Tổng HP cao nhất | `37016` = 7,290,000 | `39017` = 9,900,000 |
-| Tổng HP thấp nhất | `37004` = 136,000 | `39016` = 600,000 |
+| Prefab có **3 phase** | 1 (`37014` có 2) | **7** (`39011`–`39014`, `39019`, `39021` + `39009`) |
+| Prefab 0 phase (1 thanh máu) | 16 | 12 |
+| Median tổng HP | **4.200.000** | **6.000.000** |
+| Tổng HP cả chương | 58.447.000 | 104.435.000 |
+| Cao nhất | `37016` 5.580.000 | `39006` 11.235.000 |
+| Thấp nhất (khác 0) | `37004` 272.000 | `39001` 270.000 |
 
-> **Đọc ra:** chương 2 **không tăng HP thân** (2.8 M ≈ 2.95 M) mà **tăng số phase + số part** →
-> độ khó đến từ **nhịp attack và số mục tiêu**, không phải từ "HP to hơn". Đây là bài học
-> thiết kế trực tiếp dùng được: muốn boss khó hơn thì thêm phase/part, không nên chỉ tăng HP.
+Phân bố số phase toàn bộ 39 prefab: **0 phase = 25**, 1 phase = 2, 2 phase = 5, **3 phase = 7**.
+
+> **Đọc ra:** chương 2 tăng **median HP 1,43×** (4,2 M → 6,0 M) và **số boss 3 phase gấp 7**.
+> Khác kết luận vòng 1 (cho rằng HP thân không tăng) — số mới cho thấy **cả HP lẫn phase đều tăng**,
+> nhưng phase tăng mạnh hơn (7×). Vẫn giữ nguyên bài học: **phase là đòn bẩy độ khó chính**.
 
 ### 2.4 Enemy thường
 
 | Chỉ số | Giá trị | Nguồn |
 |---|---:|---|
-| Instance enemy thường (không thuộc root `Boss-*`) HP > 0 | 252 | `15-enemy-hp.csv` |
-| Median HP enemy thường | 500,000 | `15-enemy-hp.csv` |
-| Max HP enemy thường | 10,000,000 (`CB(TEST)` — bỏ) | `15-enemy-hp.csv` |
-| Số prefab `Wave_*` có chứa enemy | 35 | `15-enemy-hp.csv` |
-| Wave nhiều enemy nhất | `Wave_0005` (67 slot), `Wave_0004` (54), `Wave_0003` (28) | `15-enemy-hp.csv` |
-| Wave id lớn nhất thấy được | `Wave_0136` | `15-enemy-hp.csv` |
+| Dòng **không** thuộc root `Boss-*` | **569 / 800** | `15-enemy-hp.csv` |
+| Trong đó HP > 0 | **209** | `15-enemy-hp.csv` |
+| Median HP (không phải boss, > 0) | **500.000** | `15-enemy-hp.csv` |
+| Max (không phải boss) | 10.000.000 (`CB(TEST)` — bỏ) | `15-enemy-hp.csv` |
+| Số prefab `Wave_*` có HP > 0 | **0** ⚠ | `15-enemy-hp.csv` |
+| Số dòng thuộc `Wave_*` | 196 (33 prefab) | `15-enemy-hp.csv` |
 
-Phân loại theo root path (981 dòng):
-
-| Nhóm | Số dòng | Số dòng HP>0 |
-|---|---:|---:|
-| Prefab `Boss-*` | 201 | 163 |
-| Prefab `Wave_*` | 233 | 0 ⚠ |
-| Prefab `W1-/W2-*` (chương 2) | 47 | 2 |
-| Bản copy trong board (Tab/ScrollView/Parent_View/Board_*) | 96 | 81 |
-| Khác (`Enemy_Ingame`, `Body`, `Gun*`, `Head`…) | 404 | 221 |
-
-> ⚠ **233 dòng thuộc `Wave_*` đều có HP = 0** → enemy trong wave prefab lấy HP từ
-> `Enemy_Data_Balance` lúc runtime, không serialize trong prefab. Đây chính là lý do
-> **không thể tái tạo đường cong HP theo stage** từ APK (xem §6).
-
-### 2.5 Cờ hành vi của enemy (dùng để phân loại)
+Cờ hành vi (nguồn: `Enemy_Datas.csv`, 800 dòng):
 
 | Cờ | True | False | Ý nghĩa |
 |---|---:|---:|---|
-| `IsCaAttack` | 524 | 457 | Có thể tấn công (53%) |
-| `IsBringItems` | 0 | 981 | **Không enemy nào mang item sẵn** — item do controller drop |
-| `IsInvisible` | 0 | 981 | Không có enemy invisible mặc định |
-| `IsAlive` | 2 | 979 | Giá trị editor-time, không dùng |
-| `m_Enabled` | 981 | 0 | Tất cả bật |
+| `IsCaAttack` | 412 | 388 | có thể tấn công (51,5%) |
+| `IsBringItems` | 0 | **800** | không enemy nào mang item sẵn — item do controller drop |
+| `IsInvisible` | 0 | **800** | không có enemy invisible |
+| `IsAlive` | 2 | 798 | giá trị editor |
+| `CurrentHealthPoint` | 0 | 800 | chỉ là giá trị editor |
 
-Nguồn: `Enemy_Datas.csv`.
-
----
+> ⚠ **196 dòng `Wave_*` đều HP = 0** → enemy trong wave prefab lấy HP từ `Enemy_Data_Balance`
+> lúc runtime, không serialize. Đây là lý do **không thể tái tạo đường cong HP theo stage**.
 
 ## 3. Roster
 
@@ -342,8 +359,10 @@ chia sẻ icon gốc, khác nhau ở 3 sprite nâng cấp. Đây là tiết ki�
 
 6 asset: `TechAbility1..6`, mỗi asset có `listDatas[5]` với `{Level, TypeIndex, Sprite}`.
 
-| asset | Level / TypeIndex / Sprite pathID (5 entry) |
-|---|---|
+Mỗi ô ghi `Level·TypeIndex·Sprite pathID`.
+
+| asset | entry 0 | entry 1 | entry 2 | entry 3 | entry 4 |
+|---|---|---|---|---|---|
 | `TechAbility1` | 1·2·3893 | 2·1·2700 | 3·1·2700 | 2·2·3893 | 4·1·2700 |
 | `TechAbility2` | 1·0·2543 | 2·0·2543 | 1·0·2463 | 3·0·2543 | 2·0·2463 |
 | `TechAbility3` | 1·0·2601 | 2·0·2601 | 1·0·2959 | 3·0·2601 | 2·0·2959 |
@@ -351,7 +370,7 @@ chia sẻ icon gốc, khác nhau ở 3 sprite nâng cấp. Đây là tiết ki�
 | `TechAbility5` | 1·0·3827 | 1·0·3308 | 2·0·3827 | 3·0·3827 | 2·0·3308 |
 | `TechAbility6` | 1·0·3852 | 2·0·2930 | 1·0·3852 | 3·0·2930 | 4·0·3852 |
 
-Nguồn: `Tech_Ability_Data.csv`, `10-scriptableobjects.md`.
+Nguồn: `Tech_Ability_Data.csv` (5 entry × 6 asset = 30 mốc).
 
 **Kết luận:** dùng được để biết **số ability mỗi stat (5)** và **icon theo (level, type)**, nhưng
 **không có % hiệu ứng**. Hiệu ứng nằm ở `Player_Get_Datas.abi*` và text `txt_techstatability_desc_<stat*100+level>`
@@ -362,18 +381,21 @@ Nguồn: `Tech_Ability_Data.csv`, `10-scriptableobjects.md`.
 
 | Field | Số phần tử | Nội dung |
 |---|---:|---|
-| `allRankSprites` | 7 | sprite khung rank |
-| `allSpriteRewards` | 27 | icon phần thưởng |
-| `listSpritePlayers` | 24 | icon 24 tàu (khớp `14-ships.csv`) |
-| `listSpriteDrones` | 12 | icon 12 drone |
-| `listAvatars` | 24 | avatar |
+| `allRankSprites` | **5** | sprite khung rank |
+| `allSpriteRewards` | **5** | icon phần thưởng |
+| `listSpritePlayers` | **5** | icon tàu |
+| `listSpriteDrones` | **5** | icon drone |
+| `listAvatars` | **5** | avatar |
 | `cardPlayerRandomSprite`, `cardDroneRandomSprite`, `itemRandomSprite` | 1 mỗi loại | icon "random" |
 
-Nguồn: `DataShopPack.csv` (69 cột), `10-scriptableobjects.md`.
+> **Sửa vòng 2:** bảng cũ ghi 7 / 27 / 24 / 12 / 24 — **sai**. Mỗi mảng chỉ serialize
+> **5 phần tử** (11 cột = 5 × (FileID + PathID) + len). Chi tiết cột: `ECONOMY.md` §4.
+
+Nguồn: `DataShopPack.csv` (69 cột).
 
 **Kết luận:** ❌ **không dùng được cho balance** — không có giá, không có tỉ lệ, không có
 số lượng. Chỉ dùng để **map pathID → icon** khi dựng shop UI. 2 instance là bản trùng
-(pathID 2496 và 636597, khác `m_FileID`) → **dedup thành 1**.
+(`_gameobject` = `DataShop` cả 2) → **dedup thành 1**.
 
 ### 4.3 `GP_Datas` — 1 instance ⚠ là state runtime, không phải config
 
@@ -385,7 +407,7 @@ số lượng. Chỉ dùng để **map pathID → icon** khi dựng shop UI. 2 i
 | `isUsingSkill`, `isTransforming`, `isLockChange` | True/False/False | cờ runtime |
 | `player` (ref) | pathID 2625 | trỏ tới player prefab |
 
-Nguồn: `GP_Datas.csv`, `10-scriptableobjects.md`.
+Nguồn: `GP_Datas.csv`.
 
 **Kết luận:** ❌ không phải balance. **Dùng được 1 số:** `enemyLayerMask = 512` là thông số
 layer vật lý cần tái tạo (Unity layer 9 = enemy). Các field còn lại là counter.
@@ -403,7 +425,8 @@ Nguồn: `RankManager.csv`.
 **Kết luận:** ❌ không có ngưỡng rank, không có công thức điểm. `RankManager` chỉ là client
 gọi Firebase (`GetTimeOnline`, `IECheckCampaignRankings`, `IESetCampaignRankings`,
 `IETryGetRoomRankCampaign`). Toàn bộ config rank nằm ở **Firebase Realtime DB
-`/arena---datas/rank-configs/...`** (nguồn: `PHAN_TICH` §5.6) → **không có trong APK**.
+`/arena---datas/rank-configs/...`** (nguồn: `RankManager.csv` chỉ có 3 dòng ref UI + class
+`RankManager` trong `dump.cs` gọi Firebase) → **không có trong APK**.
 
 ### 4.5 `ArenaManager` — 1 instance ⚠
 
@@ -431,6 +454,19 @@ Chỉ là component gắn trên `Board_Arena` (pathID 653116), không serialize 
 
 ### 5.1 Suy ra được (mức B/C)
 
+**Damage địch — nay có số tuyệt đối** (nguồn: `Gun_Attack.csv`, chi tiết `COMBAT.md`):
+
+```
+damage 1 viên    = Gun_Attack.bltDamage                     (40 – 1.200, 457 giá trị > 0)
+DPS              = bltDamage × max(countShots,1) × max(countMags,1) / chu_kỳ
+chu_kỳ           = max(countMags,1)×max(countShots,1)×timeShot
+                 + (max(countMags,1) − 1) × timeReload
+                 + timeRounds
+sát thương chạm  = Boss_BodyPhysics.dmgFirst + dmgPerSec × t   (200–10.000 / 5–1.000)
+```
+
+**Damage player — vẫn chỉ có công thức dạng, không có hệ số:**
+
 ```
 Sát thương 1 phát
   = GetMainCannonDamage(playerIndex) hoặc GetWingCannonDamage(playerIndex)
@@ -441,29 +477,33 @@ Sát thương 1 phát
   × (crit ? 2 : 1)                 // GetMainCannonCritPercent
 ```
 Bằng chứng: các field/hàm trên tồn tại trong `Player_Attack` + `Player_Get_Datas`
-(nguồn: `06-gameplay-systems.md`). **Thứ tự nhân và hệ số cụ thể không xác định** (nằm trong thân hàm).
+(nguồn: `class Player_Attack`, `class Player_Get_Datas` trong `dump.cs`).
+**Thứ tự nhân và hệ số cụ thể không xác định** (nằm trong thân hàm).
+Xác nhận bằng số: `Gun_Attack.forceType = Enemy` cho **458/458** dòng ⇒ không có súng player
+trong asset.
 
 ```
 HP boss hiển thị = HP serialized (bảng §2.2)
                   × hệ số Enemy_Data_Balance / Stage_Get_Datas theo chapter-stage (chưa bóc)
 ```
-Bằng chứng: ghi chú cuối `15-enemy-hp.md`: "giá trị runtime còn bị nhân bởi
-`Enemy_Data_Balance` / `Stage_Get_Datas` theo chapter/stage".
+Bằng chứng: `Enemy_Datas.StartHealthPoint` là giá trị **serialize trong prefab**; hệ số nhân
+theo chapter/stage nằm ở `Enemy_Data_Balance` + `Stage_Get_Datas` — hai class **không serialize**
+(`datas/README.md` §Quy ước xác nhận; `dump.cs` xác nhận chỉ có thân hàm).
 
 ```
 Điểm arena/PvP = f(idEnemy, timeLife)   // GetArenaScore, GetPVPPlayScore, GetArenaPlayScore
 Điểm survival  = GetSurvivalScore(idEnemy)
 Thưởng         = GetBonusCoin(id) / GetBonusExp(id)
 ```
-Chỉ biết **signature**, không biết thân hàm (nguồn: `06` §`Enemy_Data_Balance`).
+Chỉ biết **signature**, không biết thân hàm (nguồn: `class Enemy_Data_Balance` trong `dump.cs`).
 
 ### 5.2 Không suy ra được (mức D)
 
 | Nhóm | Lý do |
 |---|---|
-| Damage nền từng tàu | `StartMainCannonDamages[]` là mảng serialize, không có trong textasset/CSV bóc được |
-| Giá nâng cấp (coin/gem) | `PlayerCosts[]`, `GetUpgadeCostCoins()` — thân hàm IL2CPP |
-| Tỉ lệ rơi item | Không có field tỉ lệ trong `Data_Items` hay `GP_Datas` |
+| Damage nền từng tàu | `StartMainCannonDamages[]` **không serialize**; `Gun_Attack.forceType` = Enemy 458/458 xác nhận không có súng player trong asset |
+| Giá nâng cấp (coin/gem) | `PlayerCosts[]`, `GetUpgadeCostCoins()` — thân hàm; **0 cột giá** trong 91 CSV (`ECONOMY.md` §8) |
+| Tỉ lệ rơi item | Không có field trọng số; chỉ suy được **tỉ lệ instance** 676 coin : 26 item (`Item_Movement.csv`) |
 | Hệ số scale HP theo stage | `Enemy_Data_Balance` + `Stage_Get_Datas` (scene bundle khác, chưa tìm ra) |
 | Ngưỡng VIP 1..6 | `GetVipLevel(vipPoints)` — thân hàm |
 | Giá energy/trận | `Stage_Datas.CostOverDrive`, `CostItems[]` — mảng serialize |
@@ -484,6 +524,34 @@ Chỉ biết **signature**, không biết thân hàm (nguồn: `06` §`Enemy_Dat
 ---
 
 ## 6. Field còn thiếu — danh sách cho PHẦN 2 đi tìm
+
+### 6.0 Đã tìm được ở vòng 2 (gạch khỏi danh sách cũ)
+
+| Mục từng ghi "chưa có" | Trạng thái mới | Nguồn |
+|---|---|---|
+| Damage vũ khí | ✅ **458 giá trị** (nhưng chỉ của địch) | `Gun_Attack.csv` → `COMBAT.md` |
+| Burst pattern (shot rate, reload) | ✅ 5 tham số × 458 súng | `Gun_Attack.csv` §3 `COMBAT.md` |
+| Tốc độ / tầm đạn | ✅ `bltSpeed` 2–23, `bltLifetime` 1–18 | `Gun_Attack.csv` |
+| Hitbox đạn | ✅ `border.w = 15` (184/186) | `Bullet_Linearly.csv` |
+| Đạn xuyên khiên | ✅ 58/186 | `Bullet_Linearly.csv` |
+| Sát thương va chạm boss | ✅ 247 cặp | `Boss_BodyPhysics.csv` |
+| Armor / `noDamage` | ✅ 189/800 | `Enemy_Health.csv` |
+| Số wave + spawner | ✅ 282 / 23.757 | `waves.json` → `ENCOUNTERS.md` |
+| Số map + parallax | ✅ 250 map, 5 lớp | `MapController.csv` |
+| Số stage theo loại | ✅ 299 (Normal 199 · Boss 26 · Combat 49 · MiniBoss 25) | `Stage_Behaviour.csv` |
+| Tỉ lệ rơi tương đối | ✅ 676 coin / 26 item | `Item_Movement.csv` → `ECONOMY.md` §1 |
+| Số mốc ability tech | ✅ 6 bảng × 5 mốc | `Tech_Ability_Data.csv` |
+
+**Vẫn còn thiếu thật** (đã kiểm, không có trong bất kỳ CSV nào):
+damage **của player** · **giá** coin/gem/IAP · **thưởng** trong hộp · trọng số rơi ·
+HP player · ngưỡng VIP · số stage/chapter · mapping wave→stage.
+
+### 6.0b Vì sao các class dưới đây không thể có trong `data.unity3d`
+
+8 class sau là `MonoBehaviour` **không được serialize** — giá trị nằm trong **thân hàm IL2CPP**.
+`data.unity3d` chỉ chứa *instance của object có field `[SerializeField]`*; các class này hoặc
+không có instance trong scene, hoặc field là `static`/`property` (không serialize).
+Muốn lấy phải decompile `libil2cpp.so` (Il2CppDumper + IDA/Ghidra) — **ngoài phạm vi vòng 2**.
 
 Đây là 8 class được nêu trong handoff. Mỗi class: field cần, ảnh hưởng gì, và nơi nên tìm.
 
@@ -579,7 +647,7 @@ arenaPoints/campaignPoints/arenaMedal/pvpMedal/…`
 ## 7. Đề xuất balance cho bản clone (KHÔNG phải số của WindWings)
 
 Vì §6 chưa có, đây là **target thiết kế** để đội làm clone có mốc, dựa trên *hình dạng* dữ liệu
-đã đo (HP boss ch1 ~4.15 M, ch2 ~7.2 M; enemy median 500 K).
+đã đo (HP boss ch1 median 4,2 M, ch2 6,0 M; enemy median 500 K — `BALANCE.md` §2.3).
 
 ### 7.1 Khung HP đề xuất
 
@@ -655,8 +723,8 @@ Cách kiểm: DPS người chơi ≈ `damage × số đạn/giây` (tính từ b
 ## 9. Nguồn
 
 `docs/apk-analysis/15-enemy-hp.csv` · `Enemy_Datas.csv` · `14-{ships,drones,bosses,items}.csv` ·
-`14-data-tables.md` · `10-scriptableobjects.md` · `Tech_Ability_Data.csv` · `DataShopPack.csv` ·
+`Tech_Ability_Data.csv` · `DataShopPack.csv` ·
 `GP_Datas.csv` · `RankManager.csv` · `ArenaManager.csv` · `12-localization.csv` ·
-`06-gameplay-systems.md` · `07-enums.md` · `13-iap-products.csv` ·
+`13-iap-products.csv` · `Enemy_Health.csv` · `Boss_BodyPhysics.csv` · `Gun_Attack.csv` ·
 `reverse-engineering/il2cpp/dump.cs.gz` (class `Stage_Datas`, `Map_Get_Datas`, `Player_Health`,
 `Enemy_Health`, `Boss_AttackPhases`, `Boss_AttackTypes`).
