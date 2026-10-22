@@ -26,8 +26,14 @@
 `Board_EventSeasonPass.EventRewards`, `Board_Reborn.SortPlayerLevelStruct`) — nếu chỉ đếm
 board phẳng thì được **49**. Cả hai con số đều đúng, khác cách đếm.
 
-Bổ sung bằng chứng từ SO: `Shop_Cell` có **315 ô** trải trên **17 board**
+Bổ sung bằng chứng từ SO: `Shop_Cell` có **315 ô** trải trên **20 board**
 (`Shop_Cell.csv`) — xác nhận board nào cũng có cell bán hàng, khớp sơ đồ §2.
+
+> **Đối chiếu độc lập (`class-inventory.csv`, 677 class có instance):** lọc theo tiền tố
+> `Board_` **46** · `Popup_` **60** + `Popup` **1** · `Tab_` **8** · `Cell_` **1** = **116**.
+> Chênh 9 so với 125 vì file inventory chỉ đếm **MonoBehaviour có instance trong
+> `data.unity3d`**; 9 class còn lại là **nested/struct** (4 board nested đã nêu) và các class
+> UI không gắn vào GameObject nào. Hai nguồn **không mâu thuẫn**, chỉ khác định nghĩa "class UI".
 
 ### 0.1 Đọc `screens.csv`
 
@@ -462,7 +468,7 @@ Nguồn: field `popup*` của `Board_Arena`, `Board_PVP`, `Board_BattlePassPro`,
 `ShopTab`, `PurchaseType`) · `docs/apk-analysis/12-localization.csv`
 (text nút: `txt_label_*`, `txt_tab_*`) · `reverse-engineering/il2cpp/dump.cs.gz`
 (`BoardManager`, `UIManager`, `UINativeAd`, `Popup`, `Popup_Notices`, `Shop_Cell`, `Box_Rewards`) ·
-`reverse-engineering/scriptableobjects/Shop_Cell.csv` (315 ô / 17 board) ·
+`reverse-engineering/scriptableobjects/Shop_Cell.csv` (315 ô / 20 board) ·
 `Box_Rewards.csv` (800 khung thưởng theo board) · `docs/spec/screens.csv`.
 
 > Số liệu kinh tế của từng board (có bao nhiêu ô shop, bao nhiêu ô thưởng): `ECONOMY.md` §2–§3.

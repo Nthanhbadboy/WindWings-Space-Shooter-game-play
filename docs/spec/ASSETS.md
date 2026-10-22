@@ -1,10 +1,10 @@
 # ASSETS — art direction, sprite, Spine, audio
 
 > Nguồn: `docs/apk-analysis/04-unity-assets.md` (probe UnityPy toàn bộ `data.unity3d`),
-> `04-asset-manifest.csv` (2.838 file), `SkeletonDataAsset.csv` (25 instance),
+> `04-asset-manifest.csv` (2.838 file), `SkeletonDataAsset.csv` (27 instance),
 > `reverse-engineering/textassets/skeleton*.json` + `*.atlas*.txt` (26 skeleton + 1 `Saw`),
 > `SoundClip.csv` (92), `15-audio.md` (69 AudioClip), `12-localization.csv`.
-> Danh sách máy đọc được: **`docs/spec/sprite-list.csv`**.
+> Danh sách máy đọc được: **`docs/spec/sprite-list.csv`** (163 dòng: 67 Atlas · 27 Spine · 24 Ship · 17 UI · 12 Drone · 8 Background · 8 Bullet/FX).
 
 ---
 
@@ -12,22 +12,31 @@
 
 | Hạng mục | Số lượng thật | Dung lượng | Nguồn |
 |---|---:|---:|---|
-| `Sprite` | 2.185 | ~50,6 MB PNG gốc | `04-asset-manifest.csv` |
-
-> Nguồn từng con số: 2.185 Sprite / 654 Texture2D / 66 SpriteAtlas / 308 AnimatorController /
-> 69 AudioClip — `04-unity-assets.md` (§Object types); 66 page `sactx-*` với size thật — parse bảng
-> "Textures (top 200 by pixels)" cùng file; 616 bones / 446 slots — parse 27 file
-> `reverse-engineering/textassets/*.json`; 92 `SoundClip` — `SoundClip.csv`.
-| `Texture2D` | 654 | — | `04-unity-assets.md` |
-| Atlas page `sactx-*` | **66** (đo được size) | **32,5 MB** | `04-unity-assets.md` |
-| Atlas page lớn nhất | 2048×2048 (`UIEvent`, `UI_Stage`) | 2,5 + 3,2 MB | `04-unity-assets.md` |
+| `Sprite` | **2.185** | **48,3 MB** | `04-asset-manifest.csv` |
+| `Texture2D` | **653** | **64,1 MB** | `04-asset-manifest.csv` |
+| Atlas page `sactx-*` | **67** (trong 653 `Texture2D`) | **31,0 MB** | `04-asset-manifest.csv` (cộng `bytes`) |
+| Atlas page lớn nhất | 2048×2048 → `UI_Stage` | **3,09 MB** | `04-asset-manifest.csv` |
+| Atlas page 2048×2048 | **2** (`UI_Stage`, `UIEvent`) | 3,09 + 2,38 MB | `04-asset-manifest.csv` |
 | Spine skeleton | **26** (`skeleton*.json`) + 1 `Saw` | 577 region / 27 atlas | `textassets/*.atlas*.txt` |
-| Bone/slot Spine | 616 bones / 446 slots | — | `skeleton*.json` |
-| `SkeletonDataAsset` | 25 instance | `scale = 0.01`, `defaultMix = 0.2` | `SkeletonDataAsset.csv` |
+| Bone/slot Spine | 616 bones / 446 slots | — | `textassets/skeleton*.json` |
+| `SkeletonDataAsset` | **27** | `scale = 0.01`, `defaultMix = 0.2` | `SkeletonDataAsset.csv`, `class-inventory.csv` |
 | `AudioClip` | 69 | 1 kênh, 16–48 kHz | `15-audio.md` |
-| `SoundClip` (MonoBehaviour map sound) | 92 | — | `SoundClip.csv` |
+| `SoundClip` (MonoBehaviour map sound) | **92** | — | `SoundClip.csv`, `class-inventory.csv` |
 | `SpriteAtlas` | 66 | — | `04-unity-assets.md` |
 | `AnimatorController` | 308 | — | `04-unity-assets.md` |
+
+> **Kiểm lại vòng 2 (từ `04-asset-manifest.csv`, 2.838 dòng = 2.185 `Sprite` + 653 `Texture2D`):**
+> các số vòng 1 ghi **654** `Texture2D`, **25** `SkeletonDataAsset`, **~50,6 MB** sprite,
+> **66 page / 32,5 MB**, page lớn nhất 3,24 MB — **đều lệch**. Số đúng ở bảng trên.
+> `SpriteAtlas` 66 và `AnimatorController` 308 không có trong manifest (manifest chỉ chứa
+> `Sprite` + `Texture2D`), nên vẫn dẫn `04-unity-assets.md` (báo cáo UnityPy).
+>
+> **67 page = 66 nhóm.** Chênh 1 đã giải thích được: `UIEvent` bị chia **2 page**
+> (`sactx-0-2048x2048` 2,38 MB + `sactx-1-1024x1024` 0,42 MB, **cùng hash `ed25d531`**).
+> 67 − 1 = 66 nhóm, khớp `SpriteAtlas` 66. Không có page mồ côi.
+>
+> **Phân bố kích thước 67 page:** 1024² ×21 · 512² ×17 · 512×1024 ×9 · 1024×512 ×6 ·
+> 1024×2048 ×4 · 2048×1024 ×4 · **2048² ×2** · 512×256 ×2 · 256² ×1 · 256×512 ×1.
 
 **Kết luận:** bản gốc dùng **atlas bake sẵn theo nhóm UI/board** (`sactx-…-UI_Stage-…`), không có
 quy hoạch atlas toàn cục. Đây là điểm **phải làm khác**: gom về 12 page theo *tần suất load*, không
@@ -159,8 +168,8 @@ liệt kê từng sprite.
 
 | Vấn đề | Bằng chứng |
 |---|---|
-| 66 page, **32,5 MB**, nhiều page 2048² chỉ chứa 1 board | `sactx-0-2048x2048-ETC2-UI_Stage` = 3,24 MB |
-| Page trùng nội dung, khác hash | `UIEvent` có cả `sactx-0-…` và `sactx-1-…`; `UI_Home` + `UI_HOME 1` |
+| **67** page, **31,0 MB**, nhiều page 2048² chỉ chứa 1 board | `sactx-0-2048x2048-ETC2-UI_Stage` = **3,09 MB** |
+| Page cùng atlas, khác index | `UIEvent` có `sactx-0-2048x2048` + `sactx-1-1024x1024` (cùng hash) |
 | Tên page theo board → **1 board đổi = bake lại toàn page** | `UI_Stage`, `UI_FightBoss`, `UI_Begin` |
 | Không có page dùng chung cho bullet/enemy | `Bullets` 2 MB, `Enemy_Air` 0,9 MB, `EnemyChapter2` 0,6 MB |
 
@@ -181,8 +190,8 @@ liệt kê từng sprite.
 | 11 | `atlas_fx` | nổ, hit, shield, muzzle | 1024² | ETC2 RGBA | vào trận |
 | 12 | `atlas_boss` | boss không dùng Spine | 2048² | ASTC 6×6 | wave boss |
 
-Tổng: 2048²×3 + 1024²×5 + 512²×4 = **≈ 14,7 MB VRAM** (ETC2 4bpp) so với **32,5 MB** bản gốc
-(nguồn: cộng `bytes` của 66 page `sactx-*` trong `04-asset-manifest.csv`) → **giảm ~55%**.
+Tổng: 2048²×3 + 1024²×5 + 512²×4 = **≈ 14,7 MB VRAM** (ETC2 4bpp) so với **31,0 MB** bản gốc
+(nguồn: cộng `bytes` của **67** page `sactx-*` trong `04-asset-manifest.csv`) → **giảm ~53%**.
 
 ### 4.3 Quy tắc đóng gói
 
