@@ -1,0 +1,177 @@
+name: Ingest WindWings APK
+
+on:
+  push:
+    paths:
+      - 'tools/apk-ingest/**'
+      - '.github/workflows/ingest-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch XAPK from APKPure CDN
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/apk
+          URL='https://d.apkpure.net/b/XAPK/com.Wind.wings.Space.Shooter?version=latest'
+          curl -fSL --retry 3 --retry-delay 5 --connect-timeout 30 \
+               -A 'Mozilla/5.0 (X11; Linux x86_64) Chrome/124.0' \
+               -o /tmp/apk/windwings.xapk "$URL"
+          ls -l /tmp/apk/windwings.xapk
+          file /tmp/apk/windwings.xapk
+          sha256sum /tmp/apk/windwings.xapk | tee /tmp/apk/sha256.txt
+
+      - name: Inspect archive
+        run: |
+          set -euo pipefail
+          cd /tmp/apk
+          unzip -l windwings.xapk | head -40 > list-head.txt || true
+          unzip -l windwings.xapk | tail -5 > list-tail.txt || true
+          python3 - <<'PY'
+          import zipfile, json, os
+          z = zipfile.ZipFile('/tmp/apk/windwings.xapk')
+          names = z.namelist()
+          print('entries:', len(names))
+          for n in names:
+              print(f'{z.getinfo(n).file_size:>12} {n}')
+          if 'manifest.json' in names:
+              print('--- manifest.json ---')
+              print(z.read('manifest.json')[:4000].decode('utf-8', 'replace'))
+          excepts = [n for n in names if n.endswith(('.apk', '.obb'))]
+          print('--- apk/obb parts ---', excepts)
+          PY
+
+      - name: Install androguard
+        run: pip install --quiet androguard==4.1.4
+
+      - name: Parse base APK manifest
+        run: |
+          set -euo pipefail
+          cd /tmp/apk
+          python3 - <<'PY'
+          import zipfile, json, os, glob
+          z = zipfile.ZipFile('windwings.xapk')
+          os.makedirs('parts', exist_ok=True)
+          for n in z.namelist():
+              if n.endswith('.apk'):
+                  z.extract(n, 'parts')
+          print('parts:', os.listdir('parts'))
+          from androguard.core.apk import APK
+          apks = sorted(glob.glob('parts/**/*.apk', recursive=True))
+          out = []
+          for p in apks:
+              try:
+                  a = APK(p, raw=True)
+                  def safe(fn, default=None):
+                      try:
+                          v = fn()
+                          return v if v is not None else default
+                      except Exception as e:
+                          return f'ERR:{e!r}'
+                  entry = {
+                      'file': p,
+                      'size': os.path.getsize(p),
+                      'package': safe(a.get_package),
+                      'version_name': safe(a.get_androidversion_name),
+                      'version_code': safe(a.get_androidversion_code),
+                      'min_sdk': safe(a.get_min_sdk_version),
+                      'target_sdk': safe(a.get_target_sdk_version),
+                      'permissions': safe(a.get_permissions, []),
+                      'permissions_count': len(safe(a.get_permissions, []) or []),
+                      'activities': len(safe(a.get_activities, []) or []),
+                      'services': len(safe(a.get_services, []) or []),
+                      'receivers': len(safe(a.get_receivers, []) or []),
+                      'providers': len(safe(a.get_providers, []) or []),
+                      'main_activity': safe(a.get_main_activity),
+                      'libraries': safe(a.get_libraries, []),
+                      'is_signed': safe(a.is_signed),
+                  }
+                  out.append(entry)
+              except Exception as e:
+                  out.append({'file': p, 'error': repr(e)})
+          json.dump(out, open('apk_meta.json', 'w'), indent=2)
+          print(json.dumps(out, indent=2)[:6000])
+          PY
+
+      - name: Unity clues
+        run: |
+          set -euo pipefail
+          cd /tmp/apk
+          python3 - <<'PY'
+          import zipfile, re, json, glob, os
+          z = zipfile.ZipFile('windwings.xapk')
+          names = z.namelist()
+          clues = [n for n in names if re.search(r'(lib/|assets/bin/Data|\.obb$|global-metadata|il2cpp|unity|\.so$)', n, re.I)]
+          open('unity_clues.txt','w').write('\n'.join(clues))
+          print('\n'.join(clues[:400]))
+          print('---')
+          hits = {}
+          for n in names:
+              if n.endswith('libil2cpp.so') or n.endswith('global-metadata.dat'):
+                  hits[n] = z.getinfo(n).file_size
+          print('IL2CPP:', json.dumps(hits, indent=2))
+          # base APK entries too
+          parts = sorted(glob.glob('parts/**/*.apk', recursive=True))
+          for p in parts:
+              zz = zipfile.ZipFile(p)
+              nn = zz.namelist()
+              print('==', p, len(nn), 'entries')
+              for k in nn:
+                  if re.search(r'(global-metadata|libil2cpp|libunity|libmain|unity default|data\.unity3d|\.obb|\.bundle|resources\.assets)', k, re.I):
+                      print(f'  {zz.getinfo(k).file_size:>12} {k}')
+          PY
+
+      - name: Write report
+        run: |
+          set -euo pipefail
+          mkdir -p docs/apk-analysis
+          {
+            echo "# APK ingest report"
+            echo
+            echo "- source: APKPure CDN (\`d.apkpure.net\`)"
+            echo "- downloaded: $(date -u +%FT%TZ)"
+            echo "- xapk sha256: \`$(cut -d' ' -f1 /tmp/apk/sha256.txt)\`"
+            echo "- xapk size: $(stat -c%s /tmp/apk/windwings.xapk) bytes"
+            echo
+            echo '## APK parts'
+            echo '```json'
+            cat /tmp/apk/apk_meta.json
+            echo '```'
+            echo
+            echo '## Unity / native clues'
+            echo '```'
+            head -120 /tmp/apk/unity_clues.txt
+            echo '```'
+          } > docs/apk-analysis/01-apk-ingest.md
+
+      - name: Upload XAPK + parts as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windwings-xapk
+          path: |
+            /tmp/apk/windwings.xapk
+            /tmp/apk/parts/**/*.apk
+            /tmp/apk/apk_meta.json
+            /tmp/apk/unity_clues.txt
+          retention-days: 30
+
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/apk-analysis/01-apk-ingest.md
+          git diff --cached --quiet || git commit -m "chore(re): APK ingest report [skip ci]"
+          git push
