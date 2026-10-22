@@ -19,7 +19,7 @@
 | Game đó **chơi thấy hay**? | ❌ Điểm "Dynamic Feedback Fidelity" chỉ **32,1/100** — đúng chỗ "game feel" nằm |
 | Bao lâu thì ra sản phẩm? | Phụ thuộc art/audio/test — spec không rút ngắn được 3 phần này |
 | **Cập nhật 10/2026** | Dịch ngược đã **rẻ đi hàng chục lần** (Opus 5.5: < 30 phút/game). Rào cản chuyển từ **kỹ thuật** sang **pháp lý + chất lượng** (§1.6) |
-| **Đây là game gì?** | **2.5D sprite + physics 2D** — cả game có **2 mesh**, **0** `SkinnedMeshRenderer`, **0** `MeshCollider`; chỉ **7** `BoxCollider` 3D so với **5.424** `BoxCollider2D` (§1.8). Tức **trường hợp thuận**, không phải 3D phức tạp |
+| **Đây là game gì?** | **2.5D sprite + physics 2D** — cả game có **2 mesh**, không có `SkinnedMeshRenderer`, `MeshCollider`; chỉ **7** `BoxCollider` 3D so với **5.424** `BoxCollider2D` (§1.8). Tức **trường hợp thuận**, không phải 3D phức tạp |
 | Rủi ro pháp lý | Thấp nếu đổi art/tên; **cao** nếu dùng lại asset hoặc tên boss |
 
 ### 0.1 Ba mức "dịch ngược đầy đủ" — và mức nào cho ra cái gì
@@ -208,9 +208,9 @@ và manifest chứng minh bằng số:
 | `CircleCollider2D` | 1.368 | va chạm 2D |
 | `PolygonCollider2D` | 705 | va chạm 2D |
 | `BoxCollider` (3D) | **7** | không đáng kể |
-| `SkinnedMeshRenderer` | **0** | **không có mesh biến dạng** — không rig 3D |
-| `MeshCollider` | **0** | không có va chạm lưới 3D |
-| `Terrain` | **0** | không có địa hình |
+| `SkinnedMeshRenderer` | **không có** | không xuất hiện trong manifest → **không rig 3D** |
+| `MeshCollider` | **không có** | không xuất hiện trong manifest → không va chạm lưới 3D |
+| `Terrain` | **không có** | không xuất hiện trong manifest → không có địa hình |
 | `NavMeshSettings` | 4 | asset **mặc định của Unity**, không có NavMesh thật |
 | `Animator` / `AnimatorController` | 5.792 / 308 | animation 2D + UI |
 | `SkeletonDataAsset` | 27 | **Spine** — xương 2D cho boss |
@@ -352,7 +352,7 @@ Không làm 3 việc đó thì kết quả đúng như Polygon mô tả: **build
    Giá trị chuyển sang **chất lượng** (GameCraft 41,46%) và **vòng playtest** (+37 điểm) —
    tức là sang phần **thiết kế và tinh chỉnh**, đúng phần spec này không làm hộ được.
 6. **Con số 41,46% KHÔNG phải trần của dự án này.** Nó đo game **3D hoàn chỉnh trong Godot**;
-   đây là game **2.5D sprite + physics 2D** với **2 mesh** và **0** `SkinnedMeshRenderer` (§1.8).
+   đây là game **2.5D sprite + physics 2D** với **2 mesh** và không có `SkinnedMeshRenderer` (§1.8).
    Phần *cơ chế* nằm trong vùng AI làm tốt; giới hạn thật là **khối lượng nội dung** và **art**.
 
 > `> Nhận định:` với một đội 3–5 người, bộ spec này rút ngắn **giai đoạn nghiên cứu** (~15–20%
