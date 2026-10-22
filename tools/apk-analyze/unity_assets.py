@@ -53,7 +53,8 @@ def textasset_bytes(obj) -> bytes:
 def probe(env) -> dict:
     info: dict = {
         "data_file": DATA,
-        "data_size": os.path.getsize(DATA),
+        "data_size": (os.path.getsize(DATA) if os.path.isfile(DATA) else
+                      sum(os.path.getsize(os.path.join(DATA, f)) for f in os.listdir(DATA) if os.path.isfile(os.path.join(DATA, f)))),
         "files": [],
         "types": {},
         "textassets": [],
@@ -67,7 +68,7 @@ def probe(env) -> dict:
     }
     for path, sf in getattr(env, "files", {}).items():
         try:
-            objects = len(sf.get_objects())
+            objects = len(getattr(sf, "files", {}))
         except Exception:  # noqa: BLE001
             objects = -1
         info["files"].append(

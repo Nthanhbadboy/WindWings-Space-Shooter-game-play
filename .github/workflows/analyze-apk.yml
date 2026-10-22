@@ -156,6 +156,14 @@ jobs:
         continue-on-error: true
         run: python3 tools/apk-analyze/unity_assets.py export 2>&1 | tail -30
 
+      - name: Install TypeTreeGeneratorAPI
+        continue-on-error: true
+        run: pip install --quiet "TypeTreeGeneratorAPI==0.0.10"
+
+      - name: Extract ScriptableObject values (IL2CPP typetrees)
+        continue-on-error: true
+        run: python3 tools/apk-analyze/unity_data.py 2>&1 | tail -60
+
       - name: Build REA (mytechnotalent/rea) and analyze APK
         continue-on-error: true
         run: |
@@ -166,7 +174,9 @@ jobs:
           ls -l target/release/rea
           cd /tmp/apk
           /tmp/rea/target/release/rea analyze /tmp/apk/parts/com.Wind.wings.Space.Shooter.apk 2>&1 | tail -60 | tee /tmp/apk/rea.log
-          ls -la /tmp/apk | grep -i re- || true
+          timeout 1200 /tmp/rea/target/release/rea analyze /tmp/apk/extract/libil2cpp.so 2>&1 | tail -40 | tee /tmp/apk/rea-native.log || true
+          timeout 900 /tmp/rea/target/release/rea analyze /tmp/apk/extract/libunity.so 2>&1 | tail -30 | tee -a /tmp/apk/rea-native.log || true
+          ls -la /tmp/apk/extract | grep -i '^.*re-' || true
 
       - name: Assemble reports
         if: always()
@@ -201,6 +211,15 @@ jobs:
           if [ -f /tmp/apk/unity/export-manifest.csv ]; then
             cp /tmp/apk/unity/export-manifest.csv docs/apk-analysis/04-asset-manifest.csv
           fi
+          if [ -f /tmp/apk/unity/data-report.md ]; then
+            cp /tmp/apk/unity/data-report.md docs/apk-analysis/10-scriptableobjects.md
+            cp /tmp/apk/unity/data/*.csv docs/apk-analysis/ 2>/dev/null || true
+            SZ=$(du -sb /tmp/apk/unity/data 2>/dev/null | cut -f1 || echo 0)
+            if [ "$SZ" -lt 20000000 ]; then
+              mkdir -p reverse-engineering/scriptableobjects
+              cp -r /tmp/apk/unity/data/. reverse-engineering/scriptableobjects/ 2>/dev/null || true
+            fi
+          fi
           if [ -d /tmp/apk/unity/textassets ] && [ "$(du -sb /tmp/apk/unity/textassets | cut -f1)" -lt 25000000 ]; then
             cp -r /tmp/apk/unity/textassets/. reverse-engineering/textassets/ 2>/dev/null || true
           fi
@@ -221,6 +240,17 @@ jobs:
             echo "REA report not produced." > docs/apk-analysis/05-rea.md
             cat /tmp/apk/rea.log 2>/dev/null >> docs/apk-analysis/05-rea.md || true
           fi
+          NATIVE_MD=$(ls /tmp/apk/extract/re-*.so.md 2>/dev/null | head -1 || true)
+          if [ -n "${NATIVE_MD:-}" ] && [ -f "$NATIVE_MD" ]; then
+            python3 - "$NATIVE_MD" <<'PY'
+          import re, sys
+          s = open(sys.argv[1], encoding='utf-8', errors='replace').read()
+          s = re.sub(r'AIza[0-9A-Za-z_-]{35}', 'AIza_REDACTED', s)
+          s = re.sub(r'(?i)(api[_-]?key["\s:=]+)[0-9A-Za-z_-]{16,}', r'\1REDACTED', s)
+          open('docs/apk-analysis/05b-rea-native.md','w').write(s)
+          PY
+            cat /tmp/apk/rea-native.log >> docs/apk-analysis/05b-rea-native.md 2>/dev/null || true
+          fi
           du -sh docs/apk-analysis reverse-engineering 2>/dev/null || true
 
       - name: Upload analysis artifacts
@@ -240,6 +270,7 @@ jobs:
             /tmp/apk/unity/probe.md
             /tmp/apk/unity/textassets
             /tmp/apk/unity/export
+            /tmp/apk/unity/data
             /tmp/apk/re-suspect.md
             /tmp/apk/re-suspect.json
             /tmp/apk/rea.log
