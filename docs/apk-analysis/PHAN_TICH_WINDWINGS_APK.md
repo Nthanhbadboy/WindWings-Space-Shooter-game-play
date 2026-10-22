@@ -409,18 +409,20 @@ tàu/đạn, (3) drone/device/tech/talent, (4) battle pass + shop + rank, (5) Sp
 | `07-enums.md` | 255 enum game (PlayMode, BoardID, AdPos, PurchaseType…) |
 | `08-ui-map.md` | 49 board + 63 popup + 8 tab (125 class UI) + toàn bộ field/method |
 | `09-numbers-and-formulas.md` | class config + hằng số |
-| `10-scriptableobjects.md` | kết quả đọc ScriptableObject bằng typetree (159 instance) |
+| `10-scriptableobjects.md` | 149 instance ScriptableObject + inventory class MonoBehaviour |
 | `11-typetree-probe.md` | so sánh 3 backend typetree (AssetsTools / AssetStudio / AssetRipper) |
 | `12-localization.md` / `.csv` / `-vi.csv` | 1.416 key × 19 ngôn ngữ |
 | `13-iap-products.md` / `.csv` | 170 product ID IAP |
 | `14-data-tables.md` + `14-ships/drones/bosses/items.csv` | roster tàu, drone, boss, item |
 | `15-audio.md` | 69 AudioClip (tên, kênh, sample rate) |
+| `15-enemy-hp.md` / `.csv` | HP của 981 Enemy_Datas, top theo prefab gốc |
+| `class-inventory.csv` | ~1.000 class MonoBehaviour có trong `data.unity3d` |
 | `reverse-engineering/il2cpp/dump.cs.gz` | toàn bộ 18,9 MB dump C# (nén còn 2,7 MB) |
 | `reverse-engineering/il2cpp/class-index.json` | index 3.662 type |
 | `reverse-engineering/il2cpp/interesting-classes.cs` | 150 class game kèm keyword |
 | `reverse-engineering/il2cpp/stringliteral.json` | 15.053 string literal |
 | `reverse-engineering/textassets/` | 64 TextAsset (Spine skeleton/atlas, charset, billing) |
-| `reverse-engineering/scriptableobjects/` | JSON các ScriptableObject bóc được (nếu có) |
+| `reverse-engineering/scriptableobjects/` | JSON 149 ScriptableObject + CSV từng class (Enemy_Datas 981 dòng) |
 
 ---
 
