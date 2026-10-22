@@ -26,8 +26,9 @@
 | 9 | 458 súng, damage 40–1200 | A | `Gun_Attack.csv` | `raw/typetrees/Gun_Attack.jsonl.gz` |
 | 10 | 69 AudioClip tổng ~571 giây, dữ liệu thật trong `resources.resource` | A | `17-audio-diagnose.md`, `assets/audio-index.csv` | release `windwings-assets-1.3.118` |
 | 11 | 2.185 sprite + 653 texture, 46 board / 63 popup | A | `04-asset-manifest.csv`, `08-ui-map.md` | `docs/assets/manifest.csv` |
-| 12 | Hằng số trong thân hàm (giá nâng cấp, bonus, ngưỡng rank…) | **B→C** | `19-il2cpp-constants.md`, `raw/il2cpp-consts/` | đọc `.asm.txt` + đối chiếu control flow |
-| 13 | Layout UI từ `RectTransform` prefab | **B** | `20-ui-layout.md`, `raw/ui/` | runtime có thể override — cần kiểm bằng screenshot |
+| 12 | Hằng số trong thân hàm: **12 class, 305 method** (GameDatas 73, Player_Get_Datas 62, IAP_Manager 35, ArenaManager 34, Tech_Datas 25…) | **B** | `19-il2cpp-constants.md`, `raw/il2cpp-consts/*.json` + `.asm.txt` | đọc `.asm.txt`, đối chiếu control flow; hằng số có thể là epsilon/clamp chứ không phải giá trị thiết kế |
+| 13 | Layout từng màn: **608 màn, 80.806 node**, có `local_pos`/`scale`/`rotation`, class component, text + nút | **B** | `20-ui-layout.md`, `raw/ui/*.json.gz` (584 file) | so với screenshot; layout group có thể override |
+| 13b | UI của game là **SpriteRenderer world-space**, không phải Canvas/RectTransform (chỉ 1 `Canvas` trong toàn build) | **A** | `20-ui-layout.md` (bảng component) | đếm lại `Canvas`/`RectTransform` trong raw |
 | 14 | Damage/giá/thưởng suy ra từ field serialize | **B** | `docs/spec/COMBAT.md`, `ECONOMY.md` | so với hằng số ở #12 |
 | 15 | Nhận định "game dễ bypass", "nên dùng Spine"… | **C** | `PHAN_TICH_WINDWINGS_APK.md` | chỉ là đánh giá, không phải số |
 
@@ -37,6 +38,7 @@
 |---|---|---|
 | `Player_Get_Datas`, `Droid_Data_Balance`, `Tech_Datas`, `Stage_Get_Datas`, `Map_Get_Datas`, `Enemy_Data_Balance`, `Device_Get_Data`, `GameDatas` | **0 instance** trong `data.unity3d` → giá trị nằm trong thân hàm IL2CPP | `19-il2cpp-constants.md` + `raw/il2cpp-consts/*.asm.txt` (đang làm) |
 | Công thức đầy đủ (thứ tự nhân, clamp, nội suy) | cần đọc control flow, không chỉ hằng số | Ghidra/IDA trên `libil2cpp.so` (đã có trong artifact) |
+| Ý nghĩa từng hằng số ở #12 | capstone chỉ thấy số, không thấy phép tính | đọc `raw/il2cpp-consts/*.asm.txt` hoặc Ghidra — **việc lớn nhất còn lại** |
 | Layout runtime thực tế | prefab ≠ runtime (layout group, safe area) | screenshot + so với `raw/ui/` |
 | Hiệu ứng/particle cụ thể | `ParticleSystem` chưa dump | mở rộng `unity_data.py` sang ParticleSystem |
 | Logic PvP/Arena server | nằm ở Firebase, **không có trong APK** | không lấy được |
