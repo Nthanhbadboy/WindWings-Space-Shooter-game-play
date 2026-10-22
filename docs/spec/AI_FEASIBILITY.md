@@ -19,7 +19,8 @@
 | Game đó **chơi thấy hay**? | ❌ Điểm "Dynamic Feedback Fidelity" chỉ **32,1/100** — đúng chỗ "game feel" nằm |
 | Bao lâu thì ra sản phẩm? | Phụ thuộc art/audio/test — spec không rút ngắn được 3 phần này |
 | **Cập nhật 10/2026** | Dịch ngược đã **rẻ đi hàng chục lần** (Opus 5.5: < 30 phút/game). Rào cản chuyển từ **kỹ thuật** sang **pháp lý + chất lượng** (§1.6) |
-| **Đây là game gì?** | **2.5D sprite + physics 2D** — cả game có **2 mesh**, không có `SkinnedMeshRenderer`, `MeshCollider`; chỉ **7** `BoxCollider` 3D so với **5.424** `BoxCollider2D` (§1.8). Tức **trường hợp thuận**, không phải 3D phức tạp |
+| **Đây là game gì?** | **2.5D sprite + physics 2D** — cả game có **2 mesh**, không có `SkinnedMeshRenderer`, `MeshCollider`; chỉ **7** `BoxCollider` 3D so với **5.424** `BoxCollider2D` (§1.8) |
+| **Clone dễ không?** | **Cơ chế: dễ** — thiếu cả 3 thứ khó nhất: **3D, netcode realtime, AI dò đường** (Photon/Mirror/NGO = **0**) (§1.9). Nhưng clone cơ chế chỉ là **~15–20%** công việc |
 | Rủi ro pháp lý | Thấp nếu đổi art/tên; **cao** nếu dùng lại asset hoặc tên boss |
 
 ### 0.1 Ba mức "dịch ngược đầy đủ" — và mức nào cho ra cái gì
@@ -244,6 +245,69 @@ Cộng thêm: `border` của `Enemy_Movement` cho **vùng chơi 20×25 unit** c�
 > **Kết luận cập nhật:** với **công cụ tốt nhất + 2.5D + dữ liệu đã bóc**, phần *cơ chế* của game
 > này nằm trong vùng AI làm được, không phải vùng 41,46%. Giới hạn thật chuyển sang **khối lượng
 > nội dung** và **art** — đo bằng **số asset và số giờ vẽ**, không phải bằng độ thông minh của model.
+
+### 1.9 Xếp hạng độ khó: game này thuộc **nhóm dễ clone nhất**
+
+Đúng — nhưng cần tách "clone cơ chế" khỏi "làm ra game". Cơ chế thì dễ; phần còn lại thì không.
+
+#### Bảng "cái gì khó" — đối chiếu 4 loại game
+
+| Hạng mục khó | 3D action | Open world | Realtime PvP | **WindWings** |
+|---|:---:|:---:|:---:|:---:|
+| Rig / skinning 3D | ✅ | ✅ | – | **không có** (0 `SkinnedMeshRenderer`, 2 `Mesh`) |
+| NavMesh / AI dò đường 3D | ✅ | ✅ | – | **không có** (chỉ path điểm + vận tốc) |
+| **Realtime netcode** (rollback, đồng bộ) | – | – | ✅ | **không có** |
+| Physics phức tạp | ✅ | ✅ | – | **2D đơn giản** (AABB/circle/polygon) |
+| Sinh nội dung thủ tục | – | ✅ | – | **không có** (282 wave đặt tay) |
+| Ánh sáng / shader PBR | ✅ | ✅ | – | **không có** (sprite + 70 shader) |
+| **Khối lượng nội dung** | ✅ | ✅✅ | – | **✅✅** (22.385 spawner) |
+| **Art thay thế** | ✅ | ✅✅ | ✅ | **✅✅** (2.185 sprite) |
+| **Cân bằng + feel** | ✅ | ✅ | ✅ | **✅** |
+
+#### Bằng chứng "không có netcode" — phần khó nhất của game nhiều người chơi
+
+| Thư viện | Số lần xuất hiện trong `dump.cs` |
+|---|---:|
+| `Photon` | **0** |
+| `Mirror` | **0** |
+| `Netcode` (Unity NGO) | **0** |
+| `WebSocket` | **0** |
+| `SignalR` / `SocketIO` / `LiteNetLib` | **0** |
+| `UnityWebRequest` | 170 |
+| `Firebase.Database` | 28 |
+
+Nghĩa là **PvP/Arena là async** (đọc dữ liệu người chơi khác từ Firebase: `ArenaDatabaseCleaner`,
+`ArenaRank`, `ArenaUserStruct`), **không phải realtime**. Đây là khác biệt lớn: netcode realtime
+là hạng mục khó nhất và tốn kém nhất của game multiplayer — ở đây **không tồn tại**.
+
+#### Quy mô codebase
+
+| Chỉ số | Giá trị |
+|---|---:|
+| Class trong `Assembly-CSharp` | **2.854** |
+| `MonoBehaviour` | 618 |
+| `ScriptableObject` | 35 |
+| `IEnumerator` (coroutine) | 1.098 |
+| `async` / `Task<>` | 811 |
+
+> **Nhận định:** 2.854 class là codebase **trung bình** cho game mobile 10M+ tải, nhưng phần lớn
+> là UI (125 class UI) và luồng màn hình — loại code AI sinh tốt nhất. Phần "khó" của game
+> (vật lý 3D, netcode, AI dò đường) **không có mặt**.
+
+#### Vậy "dễ clone" nghĩa là gì — và không nghĩa là gì
+
+| Việc | Độ khó | Ai làm |
+|---|---|---|
+| **Clone cơ chế** (bắn, va chạm, spawn, path, nâng cấp) | **Thấp** — AI làm được | AI + 1 dev |
+| **Chép nội dung** (282 wave, 458 súng, 39 boss) | **Trung bình**, nhưng **nhiều giờ** | AI sinh hàng loạt + dev duyệt |
+| **Art thay thế** (2.185 sprite, 27 Spine, 69 audio) | **Cao** — không AI nào vẽ được đúng gu | artist |
+| **Cân bằng + feel** | **Cao** — đúng chỗ AI yếu nhất (32,1/100) | designer + playtest |
+| **Live-ops** (giá, IAP, retention, event) | **Cao**, phụ thuộc thị trường | designer + data |
+
+> **Kết luận thẳng:** clone **cơ chế** của game này là việc **dễ** — dễ hơn đa số game cùng doanh
+> thu, vì nó thiếu đúng 3 thứ khó nhất (3D, netcode, AI dò đường). Nhưng clone cơ chế chỉ chiếm
+> **~15–20%** công sức ra sản phẩm. **80% còn lại là nội dung, art và cân bằng** — nơi AI yếu,
+> và cũng là nơi quyết định game có hay hay không.
 
 ---
 
