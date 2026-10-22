@@ -33,6 +33,75 @@ Bốn cột này khớp nhau và cùng nói một điều:
 
 ---
 
+## 0.5 Kịch bản lần đầu mở game — kiểm bằng class
+
+Luồng vào game dựng được **hoàn toàn từ tên class + field**, không cần chạy:
+
+| Bước | Thành phần | Bằng chứng (mức A) |
+|---:|---|---|
+| 1 | **Menu** | `ScenesManager.Scene.Menu = 0` — scene đầu trong 5 scene |
+| 2 | **Home** | `Home_Loader` có `public static BoardID defaultBoard` — biến static quyết định **board mở đầu** |
+| 3 | **Chọn màn** | `Board_Stage` (`BoardID.BoardStage = 6`): `btnPlay`, `btnUpgrade`, `parentModes` |
+| 4 | **Chuẩn bị vào trận** | `Board_Begin` (`BoardID.BoardBeginPlay = 22`): `textStage`, `allAbilityNames`, `popupTalents` |
+| 5 | **Vào trận** | `GP_Starter`: `player`, `allBgSpr` (đổi nền), `allStartFxParticles`, `startFxAnimator` — đoạn intro ngắn |
+| 6 | **Tutorial** | `GP_Tutorials.GameStarted(Action<int> _through)` — **chạy trong gameplay, không phải board riêng** |
+| 7 | Người chơi cũ | `SkipTutorial.OnPressedButtonIPlayedBefore()` + `IESignInOrRestoreYourDatas(...)` |
+
+**5 scene:** `Menu 0` · `Home 1` · `Game 2` · `Endgame 3` · `HomeData 4`.
+**39 board** (`BoardID` 1–39), trong đó **không có board tutorial nào** — đây là điểm quan trọng:
+tutorial không phải một màn hình, nó là **overlay gắn trong scene Game**.
+
+### 0.5.1 Tutorial = 5 bước, chạy đè lên trận đầu
+
+`GP_Tutorials` giữ trạng thái bằng **static** (sống qua các scene):
+
+| Trường | Ý nghĩa |
+|---|---|
+| `public static bool inTutorial` | đang trong tutorial |
+| `public static int MaxIndexTutorial` | tổng số bước |
+| `public static int IndexTutorial { get; set; }` | bước đã qua |
+| `public static GP_Tutorials instance` | singleton |
+
+**5 object hướng dẫn** (`GameObject` field — mỗi cái là một bước):
+
+| # | Field | Dạy gì | Chuỗi tương ứng |
+|---:|---|---|---|
+| 1 | `tutobjControl` | kéo ngón tay để lái | `txt_tutorial_controls` = "Move your finger to control the spaceship" |
+| 2 | `tutobjChangePlane` | nhấc tay để đổi tàu | `txt_tutorial_change` |
+| 3 | `tutobjChangePlane2` | đổi tàu + kích hoạt skill | `txt_tutorial_change2` |
+| 4 | `tutobjUseDroneSkill` | skill drone | `txt_tutorial_usedroneskill` |
+| 5 | `tutobjTouchSkill` | chạm 2 ngón dùng talent | `txt_tutorial_touchskill` |
+
+Thêm hai bước phụ không có `tutobj`: `StartTutChangeGameSpeedBoss()` (dạy đổi tốc độ game khi gặp boss)
+và cụm `OnPaused` / `OnResumeGame` / `OnPressedButtonQuitTutSettings`.
+**18 khoá chuỗi** `txt_tutorial_*` trong `12-localization.csv`.
+
+> **Nhận định (mức A):** đúng là **mở game lần đầu thì vào trận luôn** — không có board hướng dẫn,
+> không có màn "chọn tên", không có màn khoá. Tutorial là **5 overlay** hiện ngay trong trận đầu,
+> và người chơi vẫn đang bắn trong lúc bị dạy.
+>
+> **Chỗ cần chỉnh:** vẫn có **3 trạm trước trận** — `Home` → `BoardStage` → `BoardBeginPlay`.
+> Chúng không dạy gì, nhưng là 3 lần bấm. Với người chơi mới, `Board_Begin` hiện `textStage` +
+> `allAbilityNames` + `popupTalents` (chọn talent) — tức **có một bước chọn trước khi vào màn 1**,
+> trừ khi `popupTalents` bị ẩn lúc chưa có talent (chưa xác định được, cần thân hàm).
+
+### 0.5.2 Người chơi cũ — đường tắt "I played before"
+
+`SkipTutorial` là một `MonoBehaviour` **riêng**, có `public static bool destroyed` và các field
+`popupNoInternet`, `loadingObject`, `btnObject`. Nút của nó gọi
+`OnPressedButtonIPlayedBefore()` → `IESignInOrRestoreYourDatas(...)` → `GetGameConfigs()`.
+
+⇒ Đây **không** phải nút "bỏ qua tutorial cho người mới" — đây là **đăng nhập/khôi phục dữ liệu**
+cho người đã chơi trên máy khác, và khi restore xong thì tutorial bị đánh dấu đã qua.
+Nghĩa là người mới **không có nút bỏ qua** ở bước này.
+
+> **Điều kiện lật ngược:** nếu `Home_Loader.defaultBoard` được gán `BoardHome` cho người mới và
+> `BoardStage` cho người đã có tiến trình, thì luồng lần đầu là **Home → Stage → BeginPlay → Game**;
+> ngược lại nếu nó gán thẳng `BoardBeginPlay` thì gần như "chơi luôn" đúng nghĩa. Cần đọc `.cctor`
+> của `Home_Loader` — hiện chỉ có tên, chưa có thân.
+
+---
+
 ## 1. Kịch bản chia 5 lớp — trạng thái đọc
 
 | # | Lớp kịch bản | Trả lời câu hỏi | Class | Instance | Đọc | Dạng |
@@ -195,6 +264,9 @@ tầng còn thiếu.
 | 5 | Ý nghĩa chính xác `gunType` (0–3) | **C** | chưa thấy enum tương ứng trong `07-enums.md` |
 | 6 | `rate` là giây hay hệ số | **C** | 1,0 chiếm 70%; nếu là giây thì 1 con/giây |
 | 7 | `countShots = 0` nghĩa là 1 viên hay "không giới hạn" | **B** | suy từ 479/516 slot; cần xác nhận bằng mã |
+| 8 | `Home_Loader.defaultBoard` cho người chơi mới | **C** | static, gán trong `.cctor`; chưa có thân hàm |
+| 9 | Tutorial có **chặn** gameplay hay chỉ đè lên | **C** | `inTutorial` static + `GameStarted(Action<int>)`; cần thân hàm |
+| 10 | `popupTalents` có hiện ở màn 1 khi chưa có talent | **C** | `Board_Begin.popupTalents`; phụ thuộc dữ liệu người chơi |
 
 > Không có mục nào ở đây là "không thể". #1 và #2 là **chưa thêm tên class vào danh sách đọc**
 > (cùng một lệnh đã đọc được 8 class khác), #3–#4 cần **method body**, #5–#7 là **chưa chốt cách đọc**.
