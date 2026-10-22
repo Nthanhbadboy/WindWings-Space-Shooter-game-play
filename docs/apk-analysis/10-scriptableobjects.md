@@ -302,7 +302,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "textBonus.m_PathID": 0,
  "id": 0,
  "number": 0,
- "_gameobject": "EndgameLoader/Pack_Spec (0)/Parent/Parent_Rewards/Box_Gift (1)"
+ "_gameobject": "Parent/Parent_Rewards/Box_Gift (1)"
 }
 ```
 ```json
@@ -1219,7 +1219,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "border.z": -15.0,
  "border.w": 15.0,
  "fixedAngle": false,
- "_gameobject": "Body/Than/Gun7/Gun6"
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
 }
 ```
 ```json
@@ -1244,7 +1244,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "border.z": -15.0,
  "border.w": 15.0,
  "fixedAngle": false,
- "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
+ "_gameobject": "Enemy_Ingame/Body/Than/Gun1/Gun4"
 }
 ```
 
@@ -1258,7 +1258,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 17716740096,
  "m_Name": "",
- "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+ "_gameobject": "Body/Than/Gun7/Gun6"
 }
 ```
 ```json
@@ -1335,7 +1335,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "IsInvisible": false,
  "IsBringItems": false,
  "IsCaAttack": true,
- "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
+ "_gameobject": "Enemy_Ingame/Body/Than/Gun1/Gun4"
 }
 ```
 
@@ -1679,7 +1679,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "bltPinToMap": false,
  "shootAudioClipName": 0,
  "isStunned": false,
- "_gameobject": "Hand6/Sword/Gun3.1"
+ "_gameobject": "Hand3/Hand4/Hand6/Sword/Gun3.1"
 }
 ```
 
@@ -1714,7 +1714,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "dmgFirst": 0.0,
  "isTrigger": true,
  "isFirstTrigger": false,
- "_gameobject": "Tayxoay1/Cucxoay"
+ "_gameobject": "Boss-39004/Enemy_Ingame/Body/Body1/Tayxoay/TayR/Tayxoay3/Tayxoay2/Tayxoay1/Cucxoay"
 }
 ```
 
