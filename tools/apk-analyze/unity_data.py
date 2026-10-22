@@ -81,6 +81,44 @@ def human(n: float) -> str:
     return f"{n:.1f}GB"
 
 
+def _component_transform(go):
+    for c in getattr(go, "m_Component", None) or []:
+        pptr = getattr(c, "component", None) or getattr(c, "m_Component", None) or c
+        try:
+            comp = pptr.deref_parse_as_object()
+        except Exception:  # noqa: BLE001
+            continue
+        try:
+            if comp.object_reader.type.name == "Transform":
+                return comp
+        except Exception:  # noqa: BLE001
+            pass
+    return None
+
+
+def gameobject_path(go, depth=12):
+    """root/child/grandchild name path for a GameObject typetree object."""
+    try:
+        tr = _component_transform(go)
+        names = []
+        seen = set()
+        while tr is not None and len(names) < depth:
+            if id(tr) in seen:
+                break
+            seen.add(id(tr))
+            try:
+                names.append(tr.m_GameObject.deref_parse_as_object().m_Name)
+            except Exception:  # noqa: BLE001
+                break
+            try:
+                tr = tr.m_Father.deref_parse_as_object()
+            except Exception:  # noqa: BLE001
+                tr = None
+        return "/".join(reversed([n for n in names if n]))
+    except Exception:  # noqa: BLE001
+        return ""
+
+
 def load_env() -> UnityPy.Environment:
     files = [os.path.join(EXTRACT, f) for f in ("data.unity3d", "resources.resource")]
     files = [f for f in files if os.path.isfile(f)]
@@ -156,7 +194,7 @@ def main() -> int:
             continue
         go_name = ""
         try:
-            go_name = head.m_GameObject.deref_parse_as_object().m_Name
+            go_name = gameobject_path(head.m_GameObject.deref_parse_as_object())
         except Exception:  # noqa: BLE001
             pass
         try:

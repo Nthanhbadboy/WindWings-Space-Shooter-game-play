@@ -111,6 +111,15 @@ def main() -> int:
                  "", "## Top 40 theo HP", "", "| # | GameObject | StartHealthPoint |", "|---:|---|---:|"]
         for i, (name, hp, _) in enumerate(rows[:40], 1):
             lines.append(f"| {i} | `{name or '—'}` | {hp:,.0f} |")
+        roots: dict[str, list[float]] = {}
+        for name, hp, _ in rows:
+            root = (name or "?").split("/")[0]
+            roots.setdefault(root, []).append(hp)
+        agg = sorted(((r, max(v), len(v)) for r, v in roots.items()), key=lambda x: -x[1])
+        lines += ["", "## Top 30 prefab gốc theo HP cao nhất", "",
+                  "| root prefab | HP max | số component HP |", "|---|---:|---:|"]
+        for r, hp, n in agg[:30]:
+            lines.append(f"| `{r}` | {hp:,.0f} | {n} |")
         lines += ["", "- Bảng đầy đủ: [`15-enemy-hp.csv`](15-enemy-hp.csv)",
                   "- Đây là HP serialize trong prefab/scene của `data.unity3d`; giá trị runtime còn bị",
                   "  nhân bởi `Enemy_Data_Balance` / `Stage_Get_Datas` theo chapter/stage.", ""]
