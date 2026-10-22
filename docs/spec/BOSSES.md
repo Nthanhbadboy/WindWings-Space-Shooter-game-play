@@ -26,15 +26,20 @@
 | Prefab boss | **39** | A |
 | Tổng HP 39 boss | **206.167.000** trên **206** bộ phận | A |
 | Prefab enemy thường | **70** | A |
-| Entry enemy thường | **22.417 / 22.462** | A |
-| Entry boss | **45 / 22.462** | A |
+| **Entry** enemy thường (đếm list) | **22.417 / 22.462** | A |
+| **Entry** boss (đếm list) | **45 / 22.462** | A |
+| **Quân** enemy thường (× `copies`) | **45.569 / 45.659** | A |
+| **Quân** boss (× `copies`) | **90 / 45.659** | A |
 | Boss có vùng va chạm | **27 / 39** | A |
 | Prefab enemy thường có HP > 0 | **2 / 70** (20.000 mỗi cái) | A |
 | Class enemy/boss **chưa đọc** | **87 class / 7.036 instance** | D |
 
 > **Điều đáng chú ý nhất:** boss chiếm **0,2%** tổng entry nhưng **45/45** wave của nó là wave riêng.
 > Nghĩa là boss **không phải một enemy to hơn** — nó là **một loại màn khác**, xác nhận đúng cách
-> hiểu "boss là màn riêng". Ngược lại, enemy thường gần như toàn bộ nội dung: **22.417 entry**.
+> hiểu "boss là màn riêng". Ngược lại, enemy thường gần như toàn bộ nội dung: **45.569 quân** trong 45.659.
+>
+> **Hai đơn vị đếm, đừng lẫn:** *entry* = số phần tử trong `listPrefabEnemies` (**22.462**);
+> *quân* = entry × `copies` (**45.659**). `BOSSES.md` và `GAMEPLAY.md` §1.3.1 luôn ghi rõ đang dùng đơn vị nào.
 
 ---
 
@@ -198,15 +203,15 @@ có đủ **251/251** dòng, nên vắng là vắng thật.
 
 ### 5.1 Turret — 21/70 prefab, 16,7% entry
 
-**Toàn bộ `CD` (15) + `GD` (4) + `H` (2) = 21 prefab** đều `isTurret = True`; **toàn bộ `CB`/`XB`/`BB`
-đều `False`**. Ranh giới sạch tuyệt đối — họ prefab quyết định cách di chuyển.
+**Toàn bộ `CD` (15) + `GD` (4) + `H` (2) + 1 `W2` = 22 prefab** đều `isTurret = True`; **toàn bộ `CB`/`XB`/`BB`
+`False`**. Ranh giới gần tuyệt đối — họ prefab quyết định cách di chuyển, chỉ `W2` có 1 ngoại lệ.
 
-21 prefab turret chiếm **3.747 / 22.417 entry (16,7%)**. Nghĩa là **cứ 6 enemy thì 1 đứng yên bắn**.
+22 prefab turret chiếm **7.570 / 45.659 quân (16,6%)**. Nghĩa là **cứ 6 quân thì 1 đứng yên bắn**.
 
 | `isTurret` | Prefab | Entry | % entry |
 |---|---:|---:|---:|
-| True | 21 | 3.747 | **16,7%** |
-| False | 49 | 18.670 | 83,3% |
+| True | 22 | 7.570 | **16,6%** |
+| False | 48 | 38.089 | 83,4% |
 
 ### 5.2 Bảy prefab `W1`/`W2` — HP 20.000, không phải "không có HP"
 
@@ -225,21 +230,21 @@ enemy chiến đấu thật.
 
 ### 5.3 Tốc độ — chỉ 5 nấc, không phải thang liên tục
 
-`listSpeeds[0]` đo được **120 giá trị** trên 70 prefab:
+`listSpeeds[0]` đo được **981 giá trị** (mỗi instance 1 giá trị) trên 70 prefab:
 
 | Giá trị | Số lần |
 |---:|---:|
-| **5,0** | 57 |
-| **20,0** | 46 |
-| 1,0 | 6 |
-| 4,0 | 4 |
-| 1,5 | 4 |
-| 4,5 | 2 |
+| **5,0** | 562 |
+| 1,0 | 123 |
+| **20,0** | 118 |
+| 3,5 | 83 |
+| 0,8 | 47 |
+| 1,2 | 22 |
 
-min **1,0** · median **5,0** · max **20,0**. Hai nấc `5,0` và `20,0` chiếm **103/120 (85,8%)**.
+min **0,2** · median **5,0** · max **30,0**. Hai nấc `5,0` và `20,0` chiếm **680/981 (69,3%)**.
 
 > **Nhận định (mức A):** tốc độ enemy **không** là biến liên tục để cân — nó là **lựa chọn trong vài nấc**.
-> Đây là thứ dựng lại rất nhanh: chỉ cần 2 giá trị 5 và 20 là đã tái tạo 85,8% cảm giác tốc độ.
+> Đây là thứ dựng lại rất nhanh: 2 giá trị 5 và 20 tái tạo **69,3%** cảm giác tốc độ; thêm 1,0 và 3,5 là **90,3%**.
 
 ### 5.4 Phân bố entry — đầu dài
 

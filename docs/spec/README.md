@@ -51,6 +51,7 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 | `TUNING_KNOBS.md` | **Toàn bộ núm vặn**: `Player_Get_Datas` 178 field, công thức giá, feel (shake/slow-mo/hit color), art scale 10,8×19,2; **giá trị nằm ở đâu** (const / prefab / `.cctor`) | ~275 dòng · 15 bảng |
 | `DONE.md` | **Định nghĩa "hoàn hảo" thành 4 mức kiểm được** (L0 chạy được · L1 đúng luật · L2 đúng số · L3 không phân biệt được) + **hoá đơn sản xuất** 282 wave / 23.757 spawner / 45.659 slot `"?"` / 1.015 spawner | 168 dòng · 12 bảng |
 | **`BOSSES.md`** | **39 boss** đầy đủ (HP, bộ phận, wave, va chạm) · **45/45 wave boss có boss, 0/237 wave thường** · enemy thường **70 prefab / 8 họ** · turret **21** · **87 class hành vi chưa đọc** · **§8 kiểm 7 lớp kịch bản**: sinh quân 100%, damage enemy thường **0%** (`Enemy_Physics` 981) | 477 dòng · 30 bảng |
+| **`SCRIPTS.md`** | **3 tầng: số — kịch bản — mã.** Bằng chứng "số liệu chết" (`CurrentHealthPoint` = 0 ở **981/981**); 5 lớp kịch bản; **giải mã timeline bắn** (6 tham số, **102 pattern**/516 slot); timeline spawn (**1 con/1,0 s · y 9,6 · radius 0,1**); pha boss **68 instance = 0%** | 200 dòng · 12 bảng |
 | `DATA_SYNC.md` | **Đối chiếu với pipeline vòng 3** (nhánh `ef6b75ef`): cái gì tôi đã sai (audio 0→69 clip · enemy `?`→109 prefab · HP 800→981 dòng) và cái gì **vẫn** chưa có (IL2CPP constants = **0**) | 224 dòng · 14 bảng |
 | `screens.csv` | 125 dòng: `class, board_id, mo_tu_dau, popup_con, data_can_load` | 125 dòng |
 | `sprite-list.csv` | 163 dòng: atlas page (size + MB thật), background, Spine, UI 9-slice, ship/drone, bullet | 163 dòng |
@@ -89,7 +90,7 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | HP boss (tổng/prefab) | **470 K – 14,5 M**; tổng 39 boss = **206.167.000** | `15-enemy-hp.csv` (981 dòng) | **`BOSSES.md` §2** |
 | HP enemy thường | **68 / 70 prefab = 0**; 2 prefab = 20.000 | `15-enemy-hp.csv` + `Enemy_Datas.csv` | **`BOSSES.md` §6** |
 | Wave / spawner / map | **282 / 23.757 / 250** | `waves.json`, `MapController.csv` | `ENCOUNTERS.md` §0 |
-| Tốc độ enemy / turret | **1,0–20,0**, 85,8% rơi vào 2 nấc 5,0 và 20,0 / **21 tiền tố turret** (16,7% entry) | `Enemy_Movement.csv` (981 dòng) | **`BOSSES.md` §5.3** |
+| Tốc độ enemy / turret | **0,2–30,0**, median 5,0; 69,3% rơi vào 2 nấc 5,0 và 20,0 / **22 prefab turret** (16,6% quân) | `Enemy_Movement.csv` (981 dòng) | **`BOSSES.md` §5.3** |
 | Stage trên board map | **299** (199 Normal · 49 Combat · 26 Boss · 25 MiniBoss) | `Stage_Behaviour.csv` | `ENCOUNTERS.md` §5 |
 | Class UI | **125** (53 board · 63 popup · 8 tab · 1 cell) | `08-ui-map.md` + `dump.cs`; đối chiếu `class-inventory.csv` (116) | `UI.md` §0 |
 | Sprite / atlas page | **2.185 / 67 page (66 nhóm) · 31,0 MB** | `04-asset-manifest.csv` | `ASSETS.md` §0 |
