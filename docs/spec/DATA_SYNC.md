@@ -437,6 +437,72 @@ Hai bảng mới đáng chú ý chưa từng dùng:
 `noDamage` là số **chưa có trong bất kỳ file spec nào**: gần **1/4** bộ phận enemy là khiên/giáp/trang trí
 không ăn damage — giải thích vì sao bắn vào một số chỗ không mất máu.
 
+### 7.9 Audit mắt ghép — bảng quyết định (bản `de8d9f4`)
+
+Kiểm **bằng phép giao tập PathID**, không suy đoán. 13 mắt, chia 3 nhóm.
+
+**Nhóm A — ghép được 100% (khoá số, không cần tên):**
+
+| # | Mắt ghép | Khoá | Kết quả |
+|---:|---|---|---|
+| 1 | `Call_Data` → prefab enemy | `listPrefabEnemies[i].m_PathID` ↔ `Enemy_Controller.m_GameObject` | **90 / 90 = 100%** |
+| 2 | `Enemy_Controller` → `Enemy_Datas` | `dataScript` | **981 / 981 = 100%** |
+| 3 | `Enemy_Controller` → `Enemy_Health` | `healthScript` | **981 / 981 = 100%** |
+| 4 | `Enemy_Controller` → `Enemy_Movement` | `movementScript` | **981 / 981 = 100%** |
+| 5 | `Enemy_Controller` → `Enemy_Appear` | `appearScript` | 914 / 981 = **93,2%** |
+| 6 | `Enemy_Sub` → `Enemy_Controller` | `controller.m_PathID` | **981 / 981 = 100%** |
+| 7 | `Call_Data` → `PathCreator` | `pathScript` | 96 / 120 = **80%** |
+
+**Nhóm B — ghép 0%, cùng **một** nguyên nhân: thiếu `Transform`**
+
+| # | Mắt ghép | Thử khoá | Khớp | Thiếu vì |
+|---:|---|---|---:|---|
+| 8 | `Gun_Attack` (446 GO) → enemy | `m_GameObject` · `parentBarrels` · `iCanAttackParent` | **0** | súng là **object con**, controller nằm ở **object gốc** |
+| 9 | `Boss_BodyPhysics` (251 GO) → enemy | `m_GameObject` | **0** | bộ phận là object con |
+| 10 | `Stage_Behaviour.bossObj` (250) → enemy | `bossObj.m_PathID` | **0** | trỏ tới object con |
+| 11 | `Enemy_Movement.parentRotate` (558) → enemy | `parentRotate.m_PathID` | **0** | trỏ tới object con |
+| 12 | `Wave.startPoint` / `endPoint` (686) → `PathCreator` | `startPoint.m_PathID` | **0** | trỏ tới `Transform`, không phải `PathCreator` |
+
+Đã thử **mọi cặp** trong 36 bảng: **không bảng nào chia sẻ `m_GameObject` với `Gun_Attack`**
+hay `Boss_BodyPhysics`. Hai bảng này nằm trong **không gian object riêng**, chỉ nối được qua **chuỗi cha–con**.
+
+**Nhóm C — chưa có dữ liệu (không phải lỗi ghép):**
+
+| # | Thứ còn thiếu | Số lượng | Ghi chú |
+|---:|---|---:|---|
+| 13 | `Enemy_Physics` · `Enemy_Destroy` · `Enemy_UI` · `Enemy_Burned` · `Enemy_Stun` | 981 · 981 · 981 · 689 · 137 | **PathID đã có** trong `Enemy_Controller` |
+| 14 | 37 `*_Director` + 3 `AttackPhases` | 68 | chưa vào `TARGETS` |
+| 15 | `AnimationClip` · `AnimatorController` | **791** · **308** | manifest chỉ có Sprite + Texture2D |
+| 16 | Toạ độ đường bay | — | `PathCreator.points` chỉ ghi **`[10]`** (số điểm), **không có x/y** |
+| 17 | `Spawner.dataScript` | 1.200 dòng | **cột rỗng** — 0 giá trị, không nối được gì |
+| 18 | `Call_Data` đầy đủ | 1.200 / 23.757 = **5,0%** | chỉ phủ **182 / 282 wave** (64,5%) |
+
+### 7.10 Vì sao vẫn còn 5 mắt 0% — và một bảng mở hết
+
+Cả 5 mắt nhóm B đều hỏi cùng một câu: *"object con này thuộc prefab nào?"*.
+
+Chuỗi ghép đúng là: `component` → `m_GameObject` → `Transform` → `m_Father` → … → root → tên prefab.
+Bước **`m_Father`** là bước duy nhất chưa có, vì bảng `Transform` (**228.432** object) chưa export.
+
+Bằng chứng nó **lấy được**, không phải phải đoán:
+
+| Kiểm chứng | Số | Ý nghĩa |
+|---|---:|---|
+| `m_GameObject.m_FileID` | **0 ở 100%** dòng, mọi bảng | object nằm cùng file, không có bundle ngoài |
+| path có mã prefab | **37,7–38,4%** ở 5 bảng enemy | tool đã đi lên được một phần |
+| path cắt dồn đúng 10 cấp | 44 / 284 = **15,5%** | phần còn lại đứt vì deref, không vì `depth` |
+| `Transform` trong `data.unity3d` | **228.432** | đã đếm được, chỉ chưa export |
+
+> **Nhận định (mức B):** một bảng `Transform` (`path_id` · `m_GameObject` · `m_Father`) mở **5 mắt**:
+> 458 súng + 251 hitbox boss + 250 `bossObj` + 558 `parentRotate` + 686 điểm đầu/cuối đường bay.
+> Đây là **mắt ghép lớn nhất còn thiếu**, và nó không nằm trong lớp kịch bản — nó nằm ở lớp **cấu trúc**.
+>
+> **Điều kiện lật ngược:** nếu export `Transform` mà `m_Father` vẫn null ở nhiều dòng thì các object đó là
+> **root của prefab lồng** (`PrefabInstance`) — khi đó cần thêm `PrefabInstance.m_Modification` mới nối được.
+
+**Cách ghép hiện tại nếu không có `Transform`:** dùng chuỗi `_gameobject` → chỉ **~38%**, và **38% là trần
+cứng**, không phải 54% như tôi từng báo (con số 54,1% là *trong tập có path*, không phải *toàn bộ 458*).
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |
