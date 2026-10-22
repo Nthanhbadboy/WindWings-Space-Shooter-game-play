@@ -137,6 +137,37 @@ Nguồn: đếm từ `04-asset-manifest.csv` theo tiền tố tên (script phân
 sprite-list đầy đủ. Đây là lý do `sprite-list.csv` chỉ liệt kê **nhóm + size chuẩn hoá**, không
 liệt kê từng sprite.
 
+### 2.1 Mức hiểu từng nhóm — nhóm nào dựng lại được **chính xác**
+
+Ba mức: **đúng hình học** (có số đo, dựng lại được) · **đúng nội dung** (nhìn thấy, chưa có số) · **chưa rõ**.
+
+| Nhóm | Số | Hiểu đến đâu | Dựng lại |
+|---|---|---|---|
+| **UI** | **114 màn** · 52.936 node | `local_pos` + `rotation` + `scale` mọi node · **6.964 node có đủ rect** (`anchor_min/max` · `size_delta` · `pivot`) | ✅ **đúng layout** |
+| **Spine** | **27 rig** · 577 region | `xy` · `size` · `orig` · `offset` từng region · 616 bone · 446 slot · 180 animation | ✅ **đúng** |
+| **Audio** | 69 | 69/69 WAV · 44,1 kHz mono · 571 s | ✅ |
+| **Sprite rời** | 2.185 | tên · atlas · bytes · ô trong contact sheet · **871 sprite biết dùng ở màn nào** | ⚠ thiếu `width × height` |
+| **Chưa phân loại** | 1.554 / 2.197 | — | ❌ |
+
+Nguồn: `reverse-engineering/raw/ui/*.json.gz` (**3.539 file**) · `docs/assets/sprites-index.csv` · `textassets/*.atlas*.txt`.
+
+**UI là nhóm hiểu đầy đủ nhất.** `20-ui-layout.md` ghi **598 màn** — đó là **số instance**;
+đếm theo `class` là **114** màn hình khác nhau, mỗi node có đường dẫn đầy đủ, toạ độ cục bộ và tên sprite được gán.
+
+**871 sprite** khớp tên với asset thật (88,0% của 990 tên UI dùng) ⇒ với nhóm này biết **vẽ ở đâu, trong khung nào**.
+
+> **Nhận định (mức A):** với **UI** và **Spine**, dựng lại được **chính xác** — không phải ước lượng.
+> Giới hạn duy nhất của UI là **thứ tự vẽ** (`sortingOrder`) và hiệu ứng động, chưa nằm trong dump.
+
+**Chỗ thiếu của sprite rời:** `sprites-index.csv` chỉ có `bytes`, **không có `width × height`**.
+Số đo gốc nằm trong draft release `windwings-assets-1.3.118` (`manifest-full.csv` + `assets.zip` 150 MB) —
+sandbox hiện **không tải được** (host `release-assets.githubusercontent.com` bị chặn, đã thử 3 lần, lỗi `EOF`).
+
+> **Điều kiện lật ngược:** nếu `manifest-full.csv` có cột `width`/`height` thì **2.185 sprite lên 100%**
+> hình học ngay. Đây là bước rẻ nhất còn lại.
+>
+> Hiểu để **làm khác có chủ đích**, không sao chép — xem §6 legal checklist.
+
 ---
 
 ## 3. Size chuẩn hoá đề xuất
