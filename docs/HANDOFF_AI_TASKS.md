@@ -1,111 +1,73 @@
-# Chia việc phân tích WindWings — 2 phần
+# Phân việc vòng 2 — WindWings RE
 
-Repo: `Nthanhbadboy/WindWings-Space-Shooter-game-play`
+> **Vòng 1 đã xong**: `docs/spec/{GAMEPLAY,UI,ASSETS,BALANCE}.md` + `screens.csv` + `sprite-list.csv`
+> (nhánh `arena/20330d0e`, đã merge vào `arena/ef6b75ef`).
 
-Chia làm **2 phần độc lập**, không ghi trùng file, merge song song được:
+## Luật chơi
 
-| Phần | Ai làm | Sản phẩm | Đụng vào |
-|---|---|---|---|
-| **1 — Spec & thiết kế** | AI khác (chỉ đọc + viết docs) | `docs/spec/**` | chỉ Markdown/CSV |
-| **2 — Data & pipeline** | phiên làm việc này | `datas/`, `i18n/`, `tools/`, `docs/apk-analysis/` | code + workflow + git |
+1. **Nguồn sự thật duy nhất** = file dữ liệu sinh trực tiếp từ APK:
+   `docs/apk-analysis/*.csv`, `datas/*.json`, `reverse-engineering/scriptableobjects/*.csv`.
+   **Không** trích dẫn lại `PHAN_TICH_WINDWINGS_APK.md`, `probe-results.md`, `HANDOFF_AI_TASKS.md`
+   hay bất kỳ tài liệu tóm tắt cũ nào — số trong đó có thể đã lỗi thời.
+2. Đọc thêm trong `docs/spec/` (vòng 1) để giữ giọng văn, nhưng **mọi con số phải kiểm lại**
+   từ CSV. Chỗ nào vòng 1 nói "không có số" mà giờ đã có → sửa lại.
+3. Chỉ ghi trong `docs/spec/`. Không sửa `datas/`, `tools/`, `.github/`, `docs/apk-analysis/`.
+4. Mỗi bảng ghi `(nguồn: <file>)`. Suy đoán ghi `> Giả định:`. Không bịa.
+5. Không commit ảnh/audio/APK. PR riêng, tiêu đề `docs(spec2): ...`.
 
-Phần 2 phụ thuộc ngược vào phần 1 ở chỗ: bảng pathID → tên sprite do phần 2 sinh ra sẽ được
-dùng lại để làm `datas/*.json`. Phần 1 **không** cần chờ phần 2, vì chỉ mô tả bằng id/pathID.
+## Việc cần làm
 
----
+### 1. `docs/spec/COMBAT.md` — súng, damage, TTK
 
-## Nguồn dữ liệu có sẵn (cả 2 phần đều đọc từ đây)
+Nguồn: `reverse-engineering/scriptableobjects/Gun_Attack.csv` (458 súng),
+`docs/apk-analysis/Gun_Attack.csv`, `Bullet_Linearly.csv`, `Enemy_Health.csv`,
+`docs/apk-analysis/15-enemy-hp.csv`.
 
-| File | Nội dung |
-|---|---|
-| `docs/apk-analysis/PHAN_TICH_WINDWINGS_APK.md` | Báo cáo tổng 12 mục, 451 dòng — đọc trước |
-| `docs/apk-analysis/06-gameplay-systems.md` | 6.090 dòng — field/method class gameplay |
-| `docs/apk-analysis/07-enums.md` | 5.230 dòng — 255 enum |
-| `docs/apk-analysis/08-ui-map.md` | 15.296 dòng — 125 class Board/Popup/Tab |
-| `docs/apk-analysis/09-numbers-and-formulas.md` | 78 class config |
-| `docs/apk-analysis/10-scriptableobjects.md` | 149 instance bóc bằng typetree |
-| `docs/apk-analysis/11-typetree-probe.md` | so sánh backend typetree |
-| `docs/apk-analysis/12-localization.csv` | 1.416 key × 19 ngôn ngữ |
-| `docs/apk-analysis/13-iap-products.csv` | 170 product ID |
-| `docs/apk-analysis/14-{ships,drones,bosses,items}.csv` | roster |
-| `docs/apk-analysis/15-enemy-hp.csv` | 981 Enemy_Datas: HP + prefab path |
-| `docs/apk-analysis/class-inventory.csv` | ~1.000 class MonoBehaviour |
-| `docs/apk-analysis/04-asset-manifest.csv` | 2.838 asset export (chưa có pathID) |
-| `reverse-engineering/scriptableobjects/` | CSV thô từng class |
-| `reverse-engineering/il2cpp/` | dump.cs.gz, class-index, stringliteral |
-| `reverse-engineering/textassets/` | 26 Spine skeleton + atlas, charset |
+- Phân bố `bltDamage`: min 40, max 1200 — vẽ histogram theo khoảng 50.
+- `gunType` (0/1/2/3) + `forceType` + `shootAudioClipName` → phân loại vũ khí.
+- Bảng "súng của boss": nhóm theo `_gameobject` root (`Boss-37001`…), lấy damage cao nhất.
+- `allGunDatas[]`: `countShots / timeShot / timeReload / timeRounds / countMags` → burst pattern,
+  tính **DPS lý thuyết** = damage × shots / chu kỳ.
+- `bltSpeed`, `bltLifetime` → tầm bắn.
+- Ghép với HP: bảng **TTK** (thời gian giết) cho 5 mốc HP phổ biến.
+- `Enemy_Health.armor` (`noDamage`) — có bao nhiêu enemy có armor, giá trị nào.
 
-APK gốc: draft release `windwings-apk-1.3.118` (asset `windwings.xapk` 142 MB).
-Artifact `windwings-analysis` (tab Actions) giữ sprite/audio export.
+### 2. `docs/spec/ENCOUNTERS.md` — 282 wave
 
----
+Nguồn: `datas/waves.json` (282 wave, spawner đã dedupe + tên enemy),
+`docs/apk-analysis/Call_Data.csv`, `MapController.csv`, `Stage_Behaviour.csv`.
 
-## PHẦN 1 — AI khác: Spec & thiết kế
+- Bảng tổng: số wave, số spawner/wave (min/median/max), phân bố `spawn_type`
+  (`point_range`, `point`, `path`, `special`, `boss`).
+- Danh mục enemy: prefab nào xuất hiện ở bao nhiêu wave, wave đầu/cuối.
+- Trích 10 wave tiêu biểu (đầu game, giữa, boss wave) — mô tả bằng số.
+- `Wave.csv` (`indexWave`, start/end point) → wave nối tiếp nhau thế nào.
+- Ghi rõ: tên prefab còn `pathID:` nghĩa là prefab nằm ngoài `data.unity3d`.
 
-**Ghi vào duy nhất:** `docs/spec/`
-**Đọc:** các file trong bảng trên
-**Không** sửa `docs/apk-analysis/**`, `tools/**`, `.github/**`, `reverse-engineering/**`, `datas/**`.
-**Không** commit ảnh/audio/APK. **Không** viết code (trừ script đọc CSV nếu thật cần, để ở `/tmp`).
-**Không** push `main`, không đụng branch `arena/*` → mở **PR riêng**.
+### 3. `docs/spec/ECONOMY.md` — phần thưởng & shop
 
-Sản phẩm gồm 4 nhóm:
+Nguồn: `docs/apk-analysis/Box_Rewards.csv`, `Shop_Cell.csv`, `Sub_Item.csv`,
+`Item_Movement.csv`, `DataShopPack.csv`, `RankManager.csv`, `Tech_Ability_Data.csv`.
 
-### 1.1 `docs/spec/GAMEPLAY.md` — GDD
-- One-pager: thể loại, vòng lặp 30 giây / 10 phút / 1 tuần, nền tảng.
-- Core loop: di chuyển, auto-fire, wave, drop item, endgame, reborn.
-- 7 `PlayMode` (`Normal, FightBoss, Challange, Survival, TryPlayer, Arena, PVP`) + 3 `PVPMode`
-  (`Tournament, Solo, Hunter`): mục đích, thưởng, điều kiện mở.
-- Progression: tàu → sao → device → drone → tech → talent → chapter → arena → battle pass.
-- Economy: coin / gem / energy / star — bảng **source vs sink**, tốc độ tiến trình suy ra.
-- Meta: battle pass, shop, quest, arena season, event.
-- 20 boss chính + 2 mini-boss + 16 MB variant: phase, attack class, HP (dùng `15-enemy-hp.csv`).
-- Build order đề xuất + ước lượng người-tuần.
+- `Box_Rewards`: loại hộp, số lượng phần thưởng, tỉ lệ nếu có.
+- `Shop_Cell`: cell nào bán gì, `PurchaseType` nào (`Free/Pro/IAP/IAPBeginner/Gem/Coin`),
+  giá nằm ở field nào (ghi rõ field và đơn vị nếu suy ra được).
+- `Sub_Item`: 6 item rơi × hiệu ứng (`+1Level`, `Fullpower`, `+Hp`, `Droid-1..3`).
+- `DataShopPack`: 69 cột — nhóm thành pack, ghi rõ cột nào là sprite (bỏ qua) cột nào là số.
+- Kết luận: **cái gì là số thật, cái gì chỉ là id/sprite** — đừng gán giá trị kinh tế không có.
 
-### 1.2 `docs/spec/UI.md` + `docs/spec/screens.csv` — UI spec
-- Mermaid screen graph: Home → Play / Shop / Upgrades / Drones / Devices / Cards / Quest /
-  BattlePass / Arena / PvP / Settings (49 board + 63 popup + 8 tab).
-- `screens.csv`: `class, board_id, mo_tu_dau, popup_con, data_can_load`.
-- 63 popup phân loại: confirm / reward / offer / error; điều kiện bật.
-- `LoadBoardMode {Single, Additive, PopUp}`, back stack, board destroy vs hide, `UIManager`.
-- Wireframe note: bố cục vùng (header/tab/list/footer) **suy ra từ field**, không copy pixel.
+### 4. Sửa lại vòng 1 cho khớp dữ liệu mới
 
-### 1.3 `docs/spec/ASSETS.md` — brief cho art mới
-- Art direction **đề xuất khác WindWings**: palette, silhouette tàu, tỉ lệ, mood.
-- `sprite-list.csv`: nhóm UI/Enemy/Boss/Bullet/Drone/FX theo `04-asset-manifest.csv`,
-  kích thước thật, đề xuất size mới, 9-slice hay không.
-- Atlas plan: gom theo màn (thay `sactx-*`), budget VRAM.
-- Spine spec: 26 skeleton — số bone, slot, skin, danh sách animation, `defaultMix` → spec rig lại.
-- Audio: 69 clip phân loại BGM/SFX/UI/boss, ghi chú thay thế.
-- Legal checklist: cái gì tuyệt đối không tái sử dụng.
+- `BALANCE.md` §0 đang ghi *"0 giá trị damage/giá/thưởng"* → **sai**: đã có 458 damage,
+  `Box_Rewards`/`Shop_Cell` có thưởng. Cập nhật §0, §1, §6.
+- `BALANCE.md` §6 "phần 2 đi tìm" → gạch những mục đã tìm được, giữ mục còn thiếu thật
+  (`Player_Get_Datas`, `Droid_Data_Balance`, `Tech_Datas`, `Stage_Get_Datas`, `Map_Get_Datas`,
+  `Enemy_Data_Balance`, `Device_Get_Data`, `GameDatas` — các class này **không được serialize**
+  trong `data.unity3d`, phải decompile `libil2cpp.so`).
+- `GAMEPLAY.md` / `UI.md` / `ASSETS.md`: bỏ mọi tham chiếu tới file tóm tắt cũ; thay bằng nguồn CSV.
 
-### 1.4 `docs/spec/BALANCE.md` — số liệu
-- Bảng HP enemy/boss gom theo prefab gốc (bỏ bản trùng trong `15-enemy-hp.csv`).
-- Roster: 25 tàu, 13 drone, 46 boss (`idWave` 7001–7022 ch1, 9001–9024 ch2), 6 item.
-- `Tech_Ability_Data`, `DataShopPack` (69 cột), `GP_Datas`, `RankManager`: cái nào dùng được, cái nào thiếu.
-- **Danh sách field còn thiếu** mà phần 2 sẽ đi tìm: `Player_Get_Datas`, `Droid_Data_Balance`,
-  `Tech_Datas`, `Stage_Get_Datas`, `Map_Get_Datas`, `Enemy_Data_Balance`, `Device_Get_Data`, `GameDatas`.
+## Tiêu chí xong
 
-### Chất lượng
-- Tiếng Việt, thuật ngữ kỹ thuật giữ tiếng Anh.
-- Mỗi con số ghi nguồn: `nguồn: 14-ships.csv`. Suy đoán ghi rõ `> Giả định:`.
-- Cuối mỗi file có mục **"Còn thiếu / phải đoán"**.
-- Không bịa tên tàu/boss/nội dung text. Không có trong dump thì ghi "không xác định được từ APK".
-
----
-
-## PHẦN 2 — Phiên này: Data & pipeline
-
-Phạm vi (ghi vào `datas/`, `i18n/`, `tools/apk-analyze/`, `.github/workflows/`,
-`docs/apk-analysis/`):
-
-1. **`pathID → tên sprite`**: thêm `path_id` vào `04-asset-manifest.csv` (sửa
-   `tools/apk-analyze/unity_assets.py`), join với `14-*.csv` → bảng tên thật cho tàu/drone/boss/item.
-2. **Quét scene bundle còn thiếu**: `Player_Get_Datas`, `Droid_Data_Balance`, `Tech_Datas`,
-   `Stage_Get_Datas`, `Map_Get_Datas`, `Enemy_Data_Balance`, `Device_Get_Data`, `GameDatas`
-   trả về 0 instance trong `data.unity3d` → tìm ở các `.unity3d` / asset bundle khác trong split APK.
-3. **Export AudioClip → WAV** + contact sheet sprite, đẩy vào artifact.
-4. **Data pack**: `datas/*.json` + `i18n/{vi,en}.json` + `datas/validate.py` (dùng bảng tên ở bước 1).
-5. **Báo cáo**: cập nhật `PHAN_TICH_WINDWINGS_APK.md` theo kết quả mới.
-6. (tuỳ chọn, nếu còn thời gian) Ghidra `libil2cpp.so` để bóc công thức trong thân hàm.
-
-Không giẫm phần 1: phần 2 **không** ghi vào `docs/spec/`.
+- 3 file mới + 4 file cũ đã cập nhật, mọi bảng có `(nguồn: …)`.
+- Không còn câu nào khẳng định "không có số" nếu CSV đã có số đó.
+- Mỗi file kết thúc bằng "Còn thiếu / phải đoán" chỉ liệt kê cái **thật sự** thiếu.
