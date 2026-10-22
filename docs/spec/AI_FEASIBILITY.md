@@ -21,6 +21,7 @@
 | **Cập nhật 10/2026** | Dịch ngược đã **rẻ đi hàng chục lần** (Opus 5.5: < 30 phút/game). Rào cản chuyển từ **kỹ thuật** sang **pháp lý + chất lượng** (§1.6) |
 | **Đây là game gì?** | **2.5D sprite + physics 2D** — cả game có **2 mesh**, không có `SkinnedMeshRenderer`, `MeshCollider`; chỉ **7** `BoxCollider` 3D so với **5.424** `BoxCollider2D` (§1.8) |
 | **Clone dễ không?** | **Cơ chế: dễ** — thiếu cả 3 thứ khó nhất: **3D, netcode realtime, AI dò đường** (Photon/Mirror/NGO = **0**) (§1.9). Nhưng clone cơ chế chỉ là **~15–20%** công việc |
+| **Clone "hoàn hảo" được?** | **Cơ chế ~95–100%** sau 2 tool · **nội dung ~90%** (thiếu mapping wave→enemy) · **sản phẩm 0%** (giá/live-ops ngoài APK) (§1.11) |
 | Rủi ro pháp lý | Thấp nếu đổi art/tên; **cao** nếu dùng lại asset hoặc tên boss |
 
 ### 0.1 Ba mức "dịch ngược đầy đủ" — và mức nào cho ra cái gì
@@ -340,6 +341,46 @@ Kết quả: ba mục tôi từng gọi là "không đào được" **đều có
 **Kết luận sửa lại:** cả **feel**, **cân bằng** và **art** đều đào được — không mảng nào
 "không có dữ liệu". Cái còn lại chỉ là **chưa chạy 2 công cụ**, và cả hai đều đã có tên
 chính xác để chạy. Xem `TUNING_KNOBS.md`.
+
+### 1.11 Trần của việc clone — cái gì đạt 100%, cái gì không bao giờ
+
+Sau khi đào bằng tên field, phần **cơ chế** gần như đóng. Nhưng "clone hoàn hảo" cần tách
+thành 3 tầng, vì mỗi tầng có trần khác nhau.
+
+| Tầng | Đạt được | Trần | Vì sao |
+|---|---|---|---|
+| **1. Cơ chế** (bắn, va chạm, spawn, path, nâng cấp, feel) | **~95–100%** | sau khi chạy AssetRipper + Ghidra | mọi hằng số đã có **tên + kiểu + vị trí** |
+| **2. Nội dung** (282 wave, 458 súng, 39 boss) | **~90%** | thiếu mapping wave→enemy | `waves.json` để `"?"`; cần resolve `m_PathID` |
+| **3. Sản phẩm** (giá, sự kiện, mùa, A/B) | **không** | **0%** | nằm ngoài APK |
+
+#### Tầng 3 — ba thứ **không bao giờ** có trong APK
+
+| Thứ | Ở đâu | Vì sao không lấy được |
+|---|---|---|
+| **Giá IAP thật** | Google Play Console | trả về lúc runtime theo quốc gia/khuyến mãi |
+| **Cấu hình live-ops** (mùa, event, tỉ lệ quay, ưu đãi) | server | đổi hằng tuần, không bake vào build |
+| **Dữ liệu người chơi** (bảng xếp hạng, ghép trận Arena) | Firebase | là **dữ liệu**, không phải logic |
+
+> Đã kiểm: `Firebase.RemoteConfig` chỉ xuất hiện dưới dạng **SDK** (`RemoteConfigSettings`),
+> **không** class game nào đọc config từ đó. Nghĩa là **số cân bằng được bake trong build**,
+> không phải server-driven — đây là tin tốt: chạy 2 tool là **số cân bằng đóng**.
+
+Nhưng có một điều quan trọng hơn: **bản gốc đang chạy tiếp**. v1.3.118 hôm nay khác bản
+6 tháng trước. Clone xong bản này thì nó **đã cũ** — "hoàn hảo" là **một ảnh chụp**, không phải
+một trạng thái.
+
+#### Và một trần không phải kỹ thuật
+
+| Giới hạn | Hệ quả |
+|---|---|
+| Art / audio / tên boss thuộc **GCenter** | **không được** tái sử dụng ⇒ dù clone 100% số, sản phẩm vẫn **phải khác** về mặt hiển thị |
+| "Perfect clone" = bản sao | tranh chấp bản quyền, gỡ khỏi store, mất toàn bộ công |
+| Thành công của bản gốc | đến từ **live-ops + retention**, không phải từ cơ chế — thứ **không clone được** vì nó là **quá trình**, không phải dữ liệu |
+
+> **Kết luận cuối:** clone **cơ chế** có thể đạt gần tuyệt đối, và đó là **đủ** cho mục tiêu
+> "game cùng thể loại, khác art". Nhưng "clone hoàn hảo" theo nghĩa **bản sao sản phẩm** thì
+> **không** — không phải vì thiếu dữ liệu, mà vì **3 tầng cuối nằm ngoài APK** và **1 tầng
+> không được phép**.
 
 ---
 
