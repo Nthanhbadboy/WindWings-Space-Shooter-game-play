@@ -136,6 +136,7 @@ jobs:
         run: |
           if [ -f /tmp/apk/il2cpp/dump.cs ]; then
             python3 tools/apk-analyze/il2cpp_report.py
+            python3 tools/apk-analyze/gameplay_report.py
           else
             echo "no dump.cs" > /tmp/apk/il2cpp_report_error.txt
           fi
@@ -177,6 +178,7 @@ jobs:
             cp /tmp/apk/il2cpp_report/il2cpp-report.md docs/apk-analysis/03-il2cpp.md
             cp /tmp/apk/il2cpp_report/strings.json docs/apk-analysis/03-il2cpp-strings.json || true
             cp /tmp/apk/il2cpp_report/interesting-classes.cs reverse-engineering/il2cpp/interesting-classes.cs || true
+            cp /tmp/apk/il2cpp/stringliteral.json reverse-engineering/il2cpp/stringliteral.json || true
             SZ=$(stat -c%s /tmp/apk/il2cpp_report/class-index.json 2>/dev/null || echo 0)
             if [ "$SZ" -lt 12000000 ]; then cp /tmp/apk/il2cpp_report/class-index.json reverse-engineering/il2cpp/class-index.json; fi
             if [ -f /tmp/apk/il2cpp/dump.cs ]; then
@@ -196,19 +198,24 @@ jobs:
           if [ -f /tmp/apk/unity/export.md ]; then
             cat /tmp/apk/unity/export.md >> docs/apk-analysis/04-unity-assets.md
           fi
+          if [ -f /tmp/apk/unity/export-manifest.csv ]; then
+            cp /tmp/apk/unity/export-manifest.csv docs/apk-analysis/04-asset-manifest.csv
+          fi
           if [ -d /tmp/apk/unity/textassets ] && [ "$(du -sb /tmp/apk/unity/textassets | cut -f1)" -lt 25000000 ]; then
             cp -r /tmp/apk/unity/textassets/. reverse-engineering/textassets/ 2>/dev/null || true
           fi
-          if [ -f /tmp/apk/re-suspect.md ]; then
-            python3 - <<'PY'
-          import re
-          s = open('/tmp/apk/re-suspect.md', encoding='utf-8', errors='replace').read()
+          REA_MD=$(ls /tmp/apk/re-suspect.md /tmp/apk/parts/re-*.md 2>/dev/null | head -1 || true)
+          if [ -n "${REA_MD:-}" ] && [ -f "$REA_MD" ]; then
+            python3 - "$REA_MD" <<'PY'
+          import re, sys
+          s = open(sys.argv[1], encoding='utf-8', errors='replace').read()
           s = re.sub(r'AIza[0-9A-Za-z_-]{35}', 'AIza_REDACTED', s)
           s = re.sub(r'(?i)(api[_-]?key["\s:=]+)[0-9A-Za-z_-]{16,}', r'\1REDACTED', s)
           s = re.sub(r'[0-9a-fA-F]{40,}', 'HEX_REDACTED', s)
           open('docs/apk-analysis/05-rea.md','w').write(s)
           PY
-            ls -l /tmp/apk/re-suspect.json 2>/dev/null && cp /tmp/apk/re-suspect.json docs/apk-analysis/05-rea.json || true
+            REA_JSON=$(ls /tmp/apk/re-suspect.json /tmp/apk/parts/re-*.json 2>/dev/null | head -1 || true)
+            if [ -n "${REA_JSON:-}" ] && [ -f "$REA_JSON" ]; then cp "$REA_JSON" docs/apk-analysis/05-rea.json; fi
             cat /tmp/apk/rea.log >> docs/apk-analysis/05-rea.md 2>/dev/null || true
           else
             echo "REA report not produced." > docs/apk-analysis/05-rea.md

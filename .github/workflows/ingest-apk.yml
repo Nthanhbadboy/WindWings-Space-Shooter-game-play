@@ -147,6 +147,23 @@ jobs:
             /tmp/apk/cert.txt
           retention-days: 30
 
+      - name: Publish draft release with the APK
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG=windwings-apk-1.3.118
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" /tmp/apk/windwings.xapk --clobber
+          else
+            gh release create "$TAG" --draft \
+              --title "WindWings: Space Shooter 1.3.118 (APK for analysis)" \
+              --notes "Draft: original XAPK downloaded from APKPure for static analysis. Not published." \
+              /tmp/apk/windwings.xapk
+          fi
+          gh release view "$TAG" --json name,tagName,isDraft,assets
+
       - name: Commit report
         if: always()
         run: |

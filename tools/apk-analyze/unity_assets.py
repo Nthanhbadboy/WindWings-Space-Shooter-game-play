@@ -15,7 +15,7 @@ from collections import Counter, defaultdict
 
 import UnityPy
 
-DATA = os.environ.get("UNITY_DATA", "/tmp/apk/extract/data.unity3d")
+DATA = os.environ.get("UNITY_DATA", "/tmp/apk/extract")
 OUT = "/tmp/apk/unity"
 TEXT = os.path.join(OUT, "textassets")
 EXPORT = os.path.join(OUT, "export")
@@ -65,12 +65,16 @@ def probe(env) -> dict:
         "shaders": [],
         "containers": [],
     }
-    for path, sf in env.files.items():
+    for path, sf in getattr(env, "files", {}).items():
+        try:
+            objects = len(sf.get_objects())
+        except Exception:  # noqa: BLE001
+            objects = -1
         info["files"].append(
             {
                 "path": str(path),
-                "unity_version": str(getattr(sf, "unity_version", "") or getattr(sf, "version", "")),
-                "objects": len(sf.objects),
+                "version": str(getattr(sf, "version", "")),
+                "objects": objects,
             }
         )
     types: Counter = Counter()
@@ -123,6 +127,7 @@ def probe(env) -> dict:
             except Exception:  # noqa: BLE001
                 pass
     info["types"] = dict(types.most_common())
+    info["source_files"] = sorted(getattr(env, "files", {}).keys())
     info["textassets"] = sorted(textassets, key=lambda x: -x.get("size", 0))
     info["textures"] = sorted(textures, key=lambda x: -(x["width"] * x["height"]))[:200]
     info["audio"] = sorted(audio, key=lambda x: x["name"])[:500]
@@ -146,7 +151,7 @@ def write_probe_report(info: dict) -> None:
     lines = ["# Unity data probe", ""]
     lines.append(f"- source: `{info['data_file']}` ({human(info['data_size'])})")
     for f in info["files"]:
-        lines.append(f"- serialized file `{f['path']}` — Unity `{f['unity_version']}`, {f['objects']} objects")
+        lines.append(f"- serialized file `{f['path']}` — version `{f['version']}`, {f['objects']} objects")
     lines += ["", "## Object types", "", "| type | count |", "|---|---:|"]
     for t, c in info["types"].items():
         lines.append(f"| {t} | {c} |")
@@ -214,6 +219,7 @@ def export_assets(env) -> None:
     os.makedirs(EXPORT, exist_ok=True)
     counters: Counter = Counter()
     bytes_out: Counter = Counter()
+    manifest = []
     for obj in env.objects:
         t = obj.type.name
         if t not in ("Texture2D", "Sprite", "AudioClip", "Font", "TextAsset"):
@@ -236,6 +242,7 @@ def export_assets(env) -> None:
                 img.save(p)
                 counters[t] += 1
                 bytes_out[t] += os.path.getsize(p)
+                manifest.append((t, name, os.path.getsize(p), os.path.relpath(p, EXPORT)))
             elif t == "AudioClip":
                 samples = getattr(d, "samples", None)
                 if not samples:
@@ -247,6 +254,7 @@ def export_assets(env) -> None:
                         f.write(data)
                     counters[t] += 1
                     bytes_out[t] += len(data)
+                    manifest.append((t, name, len(data), os.path.relpath(p, EXPORT)))
             elif t == "Font":
                 data = getattr(d, "m_FontData", None)
                 if data:
@@ -262,12 +270,39 @@ def export_assets(env) -> None:
         lines.append(f"- {t}: {c} files, {human(bytes_out[t])}")
     with open(os.path.join(OUT, "export.md"), "w") as f:
         f.write("\n".join(lines))
+    with open(os.path.join(OUT, "export-manifest.csv"), "w") as f:
+        f.write("type,name,bytes,path\n")
+        for row in sorted(manifest, key=lambda r: (r[0], r[1])):
+            f.write(",".join('"' + str(x).replace('"', '""') + '"' for x in row) + "\n")
     print("\n".join(lines))
+
+
+def load_env():
+    """Load the serialized files we extracted, skipping ones UnityPy rejects."""
+    candidates = [
+        os.path.join(DATA, "data.unity3d") if os.path.isdir(DATA) else DATA,
+        os.path.join(DATA, "resources.resource"),
+        os.path.join(DATA, "globalgamemanagers"),
+        os.path.join(DATA, "globalgamemanagers.assets"),
+    ]
+    candidates = [p for p in candidates if os.path.isfile(p)]
+    if not candidates:
+        raise SystemExit(f"no unity files under {DATA}")
+    env = UnityPy.load(candidates[0])
+    for path in candidates[1:]:
+        try:
+            with open(path, "rb") as f:
+                env.load_file(f, name=os.path.basename(path))
+            print("loaded extra file", path)
+        except Exception as e:  # noqa: BLE001
+            print("skip", path, repr(e))
+    print("source files:", list(getattr(env, "files", {}).keys()))
+    return env
 
 
 def main() -> int:
     mode = sys.argv[1] if len(sys.argv) > 1 else "probe"
-    env = UnityPy.load(DATA)
+    env = load_env()
     if mode == "probe":
         write_probe_report(probe(env))
     elif mode == "text":
