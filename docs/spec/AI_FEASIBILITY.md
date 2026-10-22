@@ -22,6 +22,7 @@
 | **Đây là game gì?** | **2.5D sprite + physics 2D** — cả game có **2 mesh**, không có `SkinnedMeshRenderer`, `MeshCollider`; chỉ **7** `BoxCollider` 3D so với **5.424** `BoxCollider2D` (§1.8) |
 | **Clone dễ không?** | **Cơ chế: dễ** — thiếu cả 3 thứ khó nhất: **3D, netcode realtime, AI dò đường** (Photon/Mirror/NGO = **0**) (§1.9). Nhưng clone cơ chế chỉ là **~15–20%** công việc |
 | **Clone "hoàn hảo" được?** | **Cơ chế ~95–100%** sau 2 tool · **nội dung ~90%** (thiếu mapping wave→enemy) · **sản phẩm 0%** (giá/live-ops ngoài APK) (§1.11) |
+| **Đủ làm game khác cùng đẳng cấp?** | ✅ **Cơ chế + nội dung: đủ.** 🟡 **Cảm giác: cần artist + ~100 vòng tinh chỉnh** — spec cho **v1.0**, không cho **v1.3.118** (§1.12) |
 | Rủi ro pháp lý | Thấp nếu đổi art/tên; **cao** nếu dùng lại asset hoặc tên boss |
 
 ### 0.1 Ba mức "dịch ngược đầy đủ" — và mức nào cho ra cái gì
@@ -381,6 +382,72 @@ một trạng thái.
 > "game cùng thể loại, khác art". Nhưng "clone hoàn hảo" theo nghĩa **bản sao sản phẩm** thì
 > **không** — không phải vì thiếu dữ liệu, mà vì **3 tầng cuối nằm ngoài APK** và **1 tầng
 > không được phép**.
+
+### 1.12 "Chất lượng tương đương" — đo bằng gì, và spec đóng góp bao nhiêu
+
+Cần tách một điều trước: **WindWings không phải game đỉnh cao**. Nó là F2P shooter
+**hạng trung**, thành công nhờ **khối lượng nội dung + vòng lặp live-ops**, không nhờ
+cơ chế đột phá. Đây là **tin tốt** — nghĩa là mức "tương đương" **thấp hơn** bạn tưởng.
+
+#### Định nghĩa "tương đương" — 6 tiêu chí đo được
+
+| # | Tiêu chí | Mức của WindWings | Nguồn |
+|---:|---|---|---|
+| 1 | **Thời lượng** | 236 wave campaign · 299 stage · 2 chapter | `ENCOUNTERS.md` §1 |
+| 2 | **Đa dạng vũ khí** | 458 `Gun_Attack` · 420 cấu hình · 24 tàu | `COMBAT.md` §1 |
+| 3 | **Boss** | 39 prefab (ch1 18 · ch2 21) · 1–3 phase | `BALANCE.md` §5 |
+| 4 | **Bề mặt UI** | 125 class (53 board · 63 popup) | `UI.md` §2 |
+| 5 | **Chiều sâu meta** | 3 cây nâng cấp · 22 ability · 6 talent · 12 tech · drone · card | `TUNING_KNOBS.md` §2–3 |
+| 6 | **Monetize** | 170 SKU · 6 `PurchaseType` · 19 `AdPos` | `ECONOMY.md` §5 |
+
+> **Chỉ tiêu chí 1–3 quyết định "cảm giác quy mô".** 4–6 là chiều sâu — cần cho retention,
+> nhưng **không** cần cho một bản chơi được.
+
+#### Spec đóng góp bao nhiêu cho từng tiêu chí
+
+| Tiêu chí | Spec cho | AI dựng được | Còn phải tự làm |
+|---|---|---|---|
+| 1. Thời lượng | **đủ** — nhịp 62 spawner/wave, rate 1,0, y 9,6 | sinh 236 wave từ template | duyệt tay từng wave |
+| 2. Vũ khí | **đủ** — 420 cấu hình, DPS, burst | sinh bảng số | chọn bộ nào vào game |
+| 3. Boss | **~90%** — HP, phase, 251 `Boss_BodyPhysics` | dựng 39 boss | hitbox + telegraph (phải chơi) |
+| 4. UI | **~85%** — 125 màn, screen graph | dựng khung | polish animation |
+| 5. Meta | **~80%** — công thức giá đã lộ | dựng 3 cây | cân hệ số |
+| 6. Monetize | **~40%** — SKU có, giá không | dựng shop | quyết giá + funnel |
+
+#### Nhưng "chất lượng" không nằm trong spec
+
+Số hiệu **1.3.118** nghĩa là **118 lần build** cho nhánh 1.3. Đó là **118 vòng sửa**:
+giảm độ khó wave 12, tăng damage súng 7, đổi giá gói starter… **Không file nào chứa
+những vòng đó** — chúng là **kết quả**, không phải **dữ liệu**.
+
+| Thứ | Spec có? | AI làm hộ? |
+|---|---|---|
+| Giá trị ban đầu của mọi tham số | ✅ **có** (sau AssetRipper + Ghidra) | — |
+| **Bao nhiêu vòng lặp để đạt cảm giác đó** | ❌ **không** | ❌ **không** |
+| Gu thẩm mỹ (art, âm thanh) | ❌ | ❌ |
+| Quyết định thiết kế (bỏ gì, thêm gì) | ❌ | ❌ |
+
+#### Điểm mấu chốt: AI làm **vòng lặp** rẻ đi, không làm **gu** rẻ đi
+
+`Play2Code` (5/2026): LLM một phát **36,8%** → có **vòng playtest tự động** **72,3–77,8%**
+(**+37,1 điểm**). Đây là con số quan trọng nhất cho câu hỏi này:
+
+> Spec đưa bạn tới **v1.0 tương đương**. Muốn **v1.3.118 tương đương**, phải tự chạy
+> **100+ vòng** — nhưng mỗi vòng giờ **rẻ hơn ~10 lần** so với 2024, vì AI chạy được
+> vòng đo → sửa → đo mà không cần người ngồi canh.
+
+#### Trả lời trực tiếp
+
+| Câu hỏi | Trả lời |
+|---|---|
+| Đủ để AI dựng **một game khác cùng thể loại, chơi được**? | ✅ **Có** — tầng cơ chế + nội dung gần đóng |
+| Đủ để game đó **trông và cảm như cùng đẳng cấp**? | 🟡 **Cần thêm 2 thứ**: art (artist) + 100 vòng tinh chỉnh (AI hỗ trợ) |
+| Đủ để **vượt** bản gốc? | 🟡 **Có khả năng** — vì bản gốc có 1 điểm yếu rõ: **nội dung lặp** (282 wave cùng công thức) |
+| Đủ để **thay thế** bản gốc trên store? | ❌ Không, và không nên |
+
+> `> Nhận định:` mức "tương đương" khả thi trong **3–5 tháng** với 3 người + AI,
+> **với điều kiện** có artist. Không có artist thì trần là **prototype chơi được**, không
+> phải sản phẩm.
 
 ---
 

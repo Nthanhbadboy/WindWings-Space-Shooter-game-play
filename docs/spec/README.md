@@ -118,6 +118,7 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | 2f | **Xếp hạng độ khó** (§1.9): không 3D · không netcode realtime · không navmesh → **cơ chế dễ clone**, nhưng chỉ 15–20% công việc | ✅ xong |
 | 2g | `TUNING_KNOBS.md` — đào lại feel/cân bằng/art bằng **tên field** trong `dump.cs`: 178 field player, công thức giá, 4.841 `[SerializeField]` | ✅ xong |
 | 2h | **Trần của clone** (§1.11): cơ chế ~95–100% · nội dung ~90% · sản phẩm **0%** (giá/live-ops ngoài APK) | ✅ xong |
+| 2i | **Định nghĩa "chất lượng tương đương"** (§1.12): 6 tiêu chí đo được; spec cho **v1.0**, không cho **v1.3.118** | ✅ xong |
 
 **Đã sửa so với vòng 1** (đều do dữ liệu bóc lại khác bản trước): HP 981 → **800** dòng,
 `Texture2D` 654 → **653**, `SkeletonDataAsset` 25 → **27**, page 66/32,5 MB → **67/31,0 MB**,
