@@ -98,6 +98,7 @@ def manifest_index():
 
 def collect():
     rows = []
+    seen_sprites: set[str] = set()
     meta = manifest_index()
     for kind in ("Sprite", "Texture2D", "AudioClip", "Font"):
         d = os.path.join(EXPORT, kind)
@@ -110,6 +111,10 @@ def collect():
             name = os.path.splitext(fn)[0]
             rel = f"{kind}/{fn}"
             m = meta.get(rel, {})
+            if kind == "Texture2D" and name in seen_sprites:
+                continue          # Sprite export already covers it, better alpha
+            if kind == "Sprite":
+                seen_sprites.add(name)
             rows.append({"kind": kind, "name": name, "file": p,
                          "bytes": os.path.getsize(p),
                          "path_id": m.get("path_id", ""),
