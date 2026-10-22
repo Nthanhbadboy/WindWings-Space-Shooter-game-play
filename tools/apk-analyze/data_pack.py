@@ -125,6 +125,13 @@ def main() -> int:
          {"source": "Data_Players(Data_Drones).allPlayers (id 20001-20013)", "count": len(drones),
           "note": SOURCE_NOTE, "items": drones})
 
+    # --------------------------------------------------------------- waves
+    waves_path = os.path.join(datas, "waves.json")
+    if os.path.isfile(waves_path):
+        with open(waves_path, encoding="utf-8") as f:
+            w = json.load(f)
+        print(f"waves.json: {w.get('count_waves')} waves, {w.get('count_spawners')} spawners")
+
     # --------------------------------------------------------------- bosses
     bosses = []
     for r in read_csv(os.path.join(docs, "14-bosses.csv")):

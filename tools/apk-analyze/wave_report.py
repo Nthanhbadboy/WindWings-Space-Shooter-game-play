@@ -73,17 +73,15 @@ def _path_of(go, depth=10):
         return ""
 
 
-def _prefab_names(tree):
+def _pptr_ids(tree):
+    """path_id list of listPrefabEnemies, resolved to names later."""
     out = []
     for pptr in tree.get("listPrefabEnemies") or []:
         try:
-            out.append(pptr.deref_parse_as_object().m_Name)
+            out.append(int(pptr.m_PathID))
         except Exception:  # noqa: BLE001
-            try:
-                out.append(f"pathID:{pptr.m_PathID}")
-            except Exception:  # noqa: BLE001
-                out.append("?")
-    return [n for n in out if n]
+            out.append(0)
+    return out
 
 
 def main() -> int:
@@ -102,6 +100,8 @@ def main() -> int:
     spawn_counter: Counter = Counter()
     path_counter: Counter = Counter()
     errors = 0
+    needed_ids: set[int] = set()
+    pending: list[tuple] = []
 
     for obj in env.objects:
         if obj.type.name != "MonoBehaviour":
@@ -123,24 +123,54 @@ def main() -> int:
         path_counter[path_name] += 1
         spawn_counter[SPAWN_TYPES.get(spawn_type, str(spawn_type))] += 1
         seen_wave_ids[wave_id] += 1
-        if len(waves) >= MAX_WAVES and wave_id not in waves:
-            continue
-        waves[wave_id].append({
-            "spawner": path_name,
-            "spawn_type": SPAWN_TYPES.get(spawn_type, str(spawn_type)),
-            "enemies": _prefab_names(tree),
-            "count": int(tree.get("number") or 0),
-            "rate": round(float(tree.get("rate") or 0), 3),
-            "speed": round(float(tree.get("speed") or 0), 3),
-            "y_spawn": round(float(tree.get("ySpawn") or 0), 2),
-            "radius": round(float(tree.get("radius") or 0), 2),
-        })
+        ids = _pptr_ids(tree)
+        needed_ids.update(i for i in ids if i)
+        pending.append((wave_id, path_name, SPAWN_TYPES.get(spawn_type, str(spawn_type)), ids,
+                        int(tree.get("number") or 0),
+                        round(float(tree.get("rate") or 0), 3),
+                        round(float(tree.get("speed") or 0), 3),
+                        round(float(tree.get("ySpawn") or 0), 2),
+                        round(float(tree.get("radius") or 0), 2)))
+
+    # pass 2: path_id -> prefab name (cheap peek, no typetree)
+    names: dict[int, str] = {}
+    for obj in env.objects:
+        if obj.path_id in needed_ids and obj.path_id not in names:
+            try:
+                nm = obj.peek_name()
+            except Exception:  # noqa: BLE001
+                nm = None
+            if not nm:
+                try:
+                    nm = obj.read().m_Name
+                except Exception:  # noqa: BLE001
+                    nm = None
+            if nm:
+                names[obj.path_id] = nm
+    print(f"resolved prefab names: {len(names)}/{len(needed_ids)}")
+
+    # pass 3: group + dedupe identical spawners inside a wave
+    for wave_id, path_name, spawn_type, ids, number, rate, speed, y_spawn, radius in pending:
+        enemies = [names.get(i) or (f"pathID:{i}" if i else "?") for i in ids]
+        key = (path_name, spawn_type, tuple(enemies), number, rate, speed, y_spawn, radius)
+        bucket = waves[wave_id]
+        for entry in bucket:
+            if entry["_key"] == key:
+                entry["copies"] += 1
+                break
+        else:
+            bucket.append({"_key": key, "spawner": path_name, "spawn_type": spawn_type,
+                           "enemies": enemies, "count": number, "rate": rate, "speed": speed,
+                           "y_spawn": y_spawn, "radius": radius, "copies": 1})
 
     def wave_num(w):
         m2 = re.search(r"(\d+)", w)
         return int(m2.group(1)) if m2 else 10 ** 6
 
     ordered = sorted(waves.items(), key=lambda kv: wave_num(kv[0]))
+    for _, spawners in ordered:
+        for s_ in spawners:
+            s_.pop("_key", None)
     payload = {
         "source": "Call_Data MonoBehaviours in data.unity3d, grouped by Wave_NNNN",
         "count_waves": len(ordered),
@@ -157,7 +187,7 @@ def main() -> int:
     for _, spawners in ordered:
         for s in spawners:
             for e in s["enemies"]:
-                enemy_freq[e] += 1
+                enemy_freq[e] += s.get("copies", 1)
 
     lines = ["# Wave composition (campaign maps)", "",
              f"- waves: **{len(ordered)}**", f"- spawners: **{payload['count_spawners']}**",
