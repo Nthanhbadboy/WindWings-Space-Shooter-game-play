@@ -1,0 +1,20 @@
+name: Probe WindWings APK sources
+
+on:
+  push:
+    paths:
+      - 'tools/apk-probe/**'
+      - '.github/workflows/probe-apk-sources.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe sources
+        run: bash tools/apk-probe/probe.sh
