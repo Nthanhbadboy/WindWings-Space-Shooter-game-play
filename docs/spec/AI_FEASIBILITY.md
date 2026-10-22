@@ -18,6 +18,7 @@
 | Game đó **đúng đặc tả**? | ⚠️ **Không** — điểm "Rule & Mechanism Modeling" chỉ **45,6/100**, "Goal & Termination" **44,0** |
 | Game đó **chơi thấy hay**? | ❌ Điểm "Dynamic Feedback Fidelity" chỉ **32,1/100** — đúng chỗ "game feel" nằm |
 | Bao lâu thì ra sản phẩm? | Phụ thuộc art/audio/test — spec không rút ngắn được 3 phần này |
+| **Cập nhật 10/2026** | Dịch ngược đã **rẻ đi hàng chục lần** (Opus 5.5: < 30 phút/game). Rào cản chuyển từ **kỹ thuật** sang **pháp lý + chất lượng** (§1.6) |
 | Rủi ro pháp lý | Thấp nếu đổi art/tên; **cao** nếu dùng lại asset hoặc tên boss |
 
 ### 0.1 Ba mức "dịch ngược đầy đủ" — và mức nào cho ra cái gì
@@ -35,10 +36,11 @@ Chữ *"đầy đủ"* quyết định toàn bộ câu trả lời. Cần phân 
 > - Ở mức **B/C**: **clone được về kỹ thuật**, nhưng lúc đó nó là **bản sao vi phạm bản quyền**,
 >   không còn là "game khác bắt chước".
 >
-> Mức B cũng là nơi tốn kém nhất: `dump.cs` 18,8 MB chỉ chứa **khai báo**, muốn có thân hàm phải
-> chạy Il2CppDumper + Ghidra/IDA trên `libil2cpp.so` (arm64), rồi đối chiếu hành vi. Nghiên cứu
-> `DecompileBench` cho thấy code LLM dịch ngược **dễ đọc nhưng kém đúng chức năng** hơn tool
-> truyền thống — nên mức B **không** phải "bấm nút là xong".
+> Mức B vẫn cần `libil2cpp.so` (arm64) + Il2CppDumper + Ghidra/IDA để có **thân hàm** — `dump.cs`
+> 18,8 MB chỉ chứa khai báo. **Nhưng từ 9–10/2026 chi phí mức B đã giảm mạnh** (xem §1.6a):
+> AI agent làm được việc này trong **vài giờ đến vài ngày**, không còn là "nhiều tháng".
+> `DecompileBench` vẫn đúng ở chỗ code dịch ngược **dễ đọc nhưng có thể sai chức năng** — nên
+> mức B **không** phải "bấm nút là xong", nhưng đã **rẻ hơn mức A về công sức thu thập số**.
 
 ---
 
@@ -105,6 +107,50 @@ thành mã nguồn **đọc được** [3](https://sherafy.com/ai-game-cloning-c
 - Ngược lại, một nghiên cứu 2026 cho thấy game do AI thiết kế được người chơi đánh giá
   **vui/hay hơn** game của amateur và cả professional ở nhóm game đơn giản [8](https://arxiv.org/html/2610.18921v1) —
   nhưng thí nghiệm đó **không cho AI test hay tinh chỉnh**, tức chưa phải "làm game thương mại".
+
+### 1.6 Cập nhật 2026 — mọi thứ đã đổi trong 9 tháng
+
+Từ đầu 2026 đến nay, **hai đường cong đi ngược chiều nhau**:
+
+#### (a) Dịch ngược đã rẻ đi hàng chục lần
+
+| Mốc | Thời điểm | Ý nghĩa |
+|---|---|---|
+| `decomp.dev` **đóng cửa** | 15/10/2026 | cộng đồng decompile thủ công "bị AI phá vỡ"; không còn phân biệt dự án người hay AI [9](https://www.404media.co/video-game-reverse-engineering-community-shuts-down-because-ai-has-made-it-too-easy/) |
+| Claude Opus 5.5 decompile game Steam → chạy trong Unity | 10/2026 | **< 30 phút**, ra C# đầy đủ [10](https://x.com/AIWarper/status/2109060856466264566) |
+| `Reverse Engineer Anything` | 20/10/2026 | **342.000 sao** GitHub — nối AI agent vào decompiler chuyên nghiệp [11](https://aiweekly.co/alerts/reverse-engineer-anything-hits-342000-stars-as-cloning-spreads) |
+| Decompile *Snowboard Kids* (N64) | 12/10/2026 | **84 ngày** bằng AI agent, so với **596 ngày** làm tay cho bản trước [12](https://www.reddit.com/r/gamedev/comments/1x3uitu/ai_agents_just_decompiled_an_n64_game_in_84_days/) |
+| Hàng trăm bản port AI trong browser | 9/10/2026 | Halo CE, GTA Vice City, Black Ops, Skate 3… "một số chơi tốt" [13](https://www.explainx.ai/blog/ai-decompiled-game-browser-ports-halo-vice-city-black-ops-kotaku-2026) |
+
+⇒ **Mức B (code-complete) không còn là rào cản kỹ thuật.** Điều tôi viết ở §0.1 rằng mức B là
+"nơi tốn kém nhất" **không còn đúng từ 10/2026** — chi phí đã giảm từ *nhiều tháng* xuống
+*vài giờ đến vài ngày*. Rào cản duy nhất còn lại của mức B/C là **pháp lý**, không phải kỹ thuật.
+
+#### (b) Sinh game từ đặc tả vẫn chưa giỏi — và vẫn đúng chỗ yếu cũ
+
+| Benchmark | Thời điểm | Kết quả |
+|---|---|---|
+| **GameCraft-Bench** (140 task, 15 họ game, **Godot 4**) | 6/2026 | agent mạnh nhất (Claude Code, Opus-4.7 high) chỉ **41,46%**; phần lớn agent **< 40%**; hay thiếu **nội dung, phản hồi thị giác, trình bày mạch lạc** [14](https://arxiv.org/html/2606.17861v1) |
+| **Play2Code** (GUI agent playtest vòng lặp) | 5/2026 | LLM một phát **36,8%** → có vòng **playtest tự động 72,3–77,8%** (**+37,1 điểm**) [15](https://arxiv.org/html/2605.28258v1) |
+| **Spec2Game** (chi tiết theo model) | 10/2026 | tốt nhất **Claude Sonnet 5: 77,27 tổng** (D1 96,30 · D2 69,95 · D3 84,42 · **D4 60,01**) [1](https://arxiv.org/html/2610.04253v1) |
+| **GameDevBench** | 8/2026 | `pass@1` cao nhất **63,1** (GPT-5.6 Sol high); Claude Opus 4.8 **55,9** [16](https://benchmarklist.com/benchmarks/gamedevbench/) |
+
+⇒ **Hai kết luận đáng giá nhất cho dự án này:**
+1. **Engine thật khó hơn Pygame rất nhiều**: 77,27 (Pygame) vs **41,46%** (Godot). Đừng kỳ vọng
+   AI dựng xong game trong 1 phát.
+2. **Vòng playtest tự động là đòn bẩy lớn nhất** (+37 điểm) — lớn hơn đổi model. Đây là việc
+   phải làm **từ ngày đầu**, không phải cuối dự án.
+
+#### (c) Hệ quả nghề nghiệp: các studio bắt đầu **giấu build**
+
+Tháng 10/2026, hai studio độc lập huỷ playtest công khai vì sợ bị clone bằng AI:
+**Digital Sun** (`ReVamp`, dời sang Discord 29/10) [17](https://www.polygon.com/revamp-playtest-limited-ai-cloning-fears/)
+và **Alliance Arts / Who You** (`Drunken Goddess Reflux`, 16/10) [18](https://thisweekinvideogames.com/news/indie-game-developers-cancel-public-playtests-over-ai-clone-concerns-revamp-drunken-goddess-reflux/).
+
+> **Nhận định:** đây là bằng chứng thị trường cho thấy **clone AI đã chơi được thật** — nếu
+> không, không studio nào huỷ demo. Nhưng nó cũng cho thấy **tốc độ ra thị trường** mới là lợi
+> thế cạnh tranh, không phải "bí mật kỹ thuật". Với dự án của bạn, điều này **không** tạo lợi
+> thế nào từ việc clone giỏi hơn — lợi thế nằm ở **bản sắc art + thiết kế cân bằng riêng**.
 
 ---
 
@@ -204,6 +250,9 @@ Không làm 3 việc đó thì kết quả đúng như Polygon mô tả: **build
 3. **Khoảng trống lớn nhất không phải code, mà là**: enemy roster, cân bằng, feel, art/audio.
 4. Bộ spec này có giá trị nhất ở chỗ **biến 6 tháng nghiên cứu thành 0**, và **cho một
    baseline số để test**, không phải một bản thiết kế thi hành được.
+5. **Từ 10/2026, giá trị của "dịch ngược giỏi" giảm mạnh** vì ai cũng làm được trong vài giờ.
+   Giá trị chuyển sang **chất lượng** (GameCraft 41,46%) và **vòng playtest** (+37 điểm) —
+   tức là sang phần **thiết kế và tinh chỉnh**, đúng phần spec này không làm hộ được.
 
 > `> Nhận định:` với một đội 3–5 người, bộ spec này rút ngắn **giai đoạn nghiên cứu** (~15–20%
 > tổng công) xuống gần 0, nhưng **không** rút ngắn giai đoạn sản xuất art/audio/test.
@@ -222,6 +271,16 @@ Không làm 3 việc đó thì kết quả đúng như Polygon mô tả: **build
 | 6 | Polygon (10/2026) | clone AI "không phải build ổn định" |
 | 7 | 404 Media (7/2026) | clone game tăng vọt nhờ AI |
 | 8 | arXiv 2610.18921 | phản biện: game do AI thiết kế được đánh giá tốt hơn |
+| 9 | 404 Media (16/10/2026) | `decomp.dev` đóng cửa vì AI |
+| 10 | X/@AIWarper (10/2026) | Opus 5.5 decompile game Steam trong < 30 phút |
+| 11 | aiweekly (20/10/2026) | `Reverse Engineer Anything` 342.000 sao |
+| 12 | r/gamedev (12/10/2026) | N64 decompile 84 ngày (AI) vs 596 ngày (tay) |
+| 13 | explainx.ai / Kotaku (10/2026) | hàng trăm bản port AI chạy trong browser |
+| 14 | GameCraft-Bench, arXiv 2606.17861 | Godot 4: agent mạnh nhất 41,46% |
+| 15 | Play2Code, arXiv 2605.28258 | 36,8% → 72,3–77,8% nhờ vòng playtest |
+| 16 | GameDevBench (8/2026) | `pass@1` cao nhất 63,1 |
+| 17 | Polygon (19/10/2026) | Digital Sun huỷ playtest `ReVamp` |
+| 18 | ThisWeekInVideoGames (19/10/2026) | thêm studio huỷ demo vì sợ clone |
 
 Số liệu nội bộ: `ENEMY_BEHAVIOUR.md`, `COMBAT.md`, `ENCOUNTERS.md`, `BALANCE.md`, `ECONOMY.md`,
 `ASSETS.md` (cùng thư mục).
