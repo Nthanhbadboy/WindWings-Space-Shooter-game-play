@@ -2,20 +2,22 @@
 """Turn extracted ScriptableObject JSON into readable tables.
 
 Input : /tmp/apk/unity/data/<Namespace>.<Class>/<path_id>.json
-Output: docs/apk-analysis/12-localization.md + .csv
-        docs/apk-analysis/13-iap-products.md + .csv
-        docs/apk-analysis/14-data-tables.md + .csv
+Output: docs/apk-analysis/12-localization.*  (19 languages, 1,426 keys)
+        docs/apk-analysis/13-iap-products.* (99 non-consumable + 71 consumable)
+        docs/apk-analysis/14-data-tables.*  (ships, drones, bosses, items)
 """
 from __future__ import annotations
 
 import csv
 import json
 import os
-import re
 import sys
 
-DATA = "/tmp/apk/unity/data"
-OUT = "docs/apk-analysis"
+DATA = os.environ.get("SO_DATA", "/tmp/apk/unity/data")
+OUT = os.environ.get("SO_OUT", "docs/apk-analysis")
+LANG_ORDER = ["English", "Vietnamese", "Russian", "Spanish", "French", "Portuguese", "Arabic",
+              "Indonesian", "Thai", "Romanian", "Italian", "Japanese", "German", "Czech", "Dutch",
+              "SerboCroatian", "Korean", "Turkish", "ChineseSimplified"]
 
 
 def load_class(cls: str):
@@ -36,93 +38,109 @@ def load_class(cls: str):
     return out
 
 
-def pptr_name(value):
+def pptr(value):
     if isinstance(value, dict):
-        return value.get("m_Name") or value.get("name") or json.dumps(value)[:80]
+        return value.get("m_PathID", "")
     return value
 
 
 def main() -> int:
     os.makedirs(OUT, exist_ok=True)
 
-    # ---- localization ----
-    rows = []
-    for fn, tree in load_class("LanguageStringData"):
-        items = tree.get("m_Items") or tree.get("Items") or []
-        if isinstance(items, dict):
-            items = [items]
-        for item in items:
-            if isinstance(item, dict):
-                rows.append(item)
-    if rows:
-        fields = ["Keys", "English", "Vietnamese", "Japanese", "ChineseSimplified",
-                  "Korean", "Thai", "Indonesian", "Spanish", "Portuguese", "French", "German"]
-        fields = [f for f in fields if any(f in r for r in rows)]
-        with open(os.path.join(OUT, "12-localization.csv"), "w", newline="") as f:
+    # ---------- localization ----------
+    langs: dict[str, dict[str, str]] = {}
+    order: list[str] = []
+    for fn, tree in load_class("LanguageAssets"):
+        name = str(tree.get("m_Name", "")).replace("Language Assets ", "").strip()
+        keys = tree.get("listKey") or []
+        vals = tree.get("listValue") or []
+        d = {}
+        for i, k in enumerate(keys):
+            if i >= len(vals):
+                break
+            if k not in order:
+                order.append(k)
+            d[k] = vals[i]
+        langs[name] = d
+    if langs:
+        languages = [l for l in LANG_ORDER if l in langs] + [l for l in langs if l not in LANG_ORDER]
+        with open(os.path.join(OUT, "12-localization.csv"), "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f)
-            w.writerow(fields)
-            for r in rows:
-                w.writerow([r.get(k, "") for k in fields])
-        lines = ["# Localization table", "", f"- entries: **{len(rows)}**",
-                 f"- languages: {len([k for k in rows[0] if k != 'Keys'])}", "",
-                 "## Sample (first 100 keys)", "",
-                 "| key | English | Vietnamese |", "|---|---|---|"]
-        for r in rows[:100]:
-            lines.append(f"| `{r.get('Keys','')}` | {str(r.get('English','')).replace('|','/')[:80]} | {str(r.get('Vietnamese','')).replace('|','/')[:80]} |")
-        lines += ["", "Full table: [`12-localization.csv`](12-localization.csv)", ""]
-        open(os.path.join(OUT, "12-localization.md"), "w").write("\n".join(lines))
-        print("localization rows:", len(rows))
+            w.writerow(["Key"] + languages)
+            for k in order:
+                w.writerow([k] + [langs[l].get(k, "") for l in languages])
+        with open(os.path.join(OUT, "12-localization-vi.csv"), "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["Key", "English", "Vietnamese"])
+            for k in order:
+                w.writerow([k, langs.get("English", {}).get(k, ""), langs.get("Vietnamese", {}).get(k, "")])
+        lines = ["# Localization table", "",
+                 f"- keys: **{len(order)}**",
+                 f"- languages: **{len(languages)}** ({', '.join(languages)})",
+                 f"- Vietnamese entries: **{len(langs.get('Vietnamese', {}))}**", "",
+                 "## Sample", "", "| key | English | Vietnamese |", "|---|---|---|"]
+        for k in order[:120]:
+            en = str(langs.get("English", {}).get(k, "")).replace("|", "/")[:90]
+            vi = str(langs.get("Vietnamese", {}).get(k, "")).replace("|", "/")[:90]
+            lines.append(f"| `{k}` | {en} | {vi} |")
+        lines += ["", "- Full 19-language table: [`12-localization.csv`](12-localization.csv)",
+                  "- Key / English / Vietnamese only: [`12-localization-vi.csv`](12-localization-vi.csv)", ""]
+        open(os.path.join(OUT, "12-localization.md"), "w", encoding="utf-8").write("\n".join(lines))
+        print("localization:", len(order), "keys,", len(languages), "languages")
 
-    # ---- IAP ----
-    iap = []
-    for fn, tree in load_class("IAPProduct"):
-        iap.append(tree)
+    # ---------- IAP ----------
+    iap = [tree for _, tree in load_class("IAPProduct")]
     if iap:
-        lines = ["# IAP products", ""]
         products = set()
+        lines = ["# IAP products", ""]
         for t in iap:
             for key in ("NonConsumableProducts", "ConsumableProducts"):
                 vals = t.get(key) or []
-                lines.append(f"## `{key}` ({len(vals)})")
-                lines.append("")
+                lines += [f"## `{key}` ({len(vals)})", ""]
                 for v in vals:
                     lines.append(f"- `{v}`")
-                    products.add((key, v))
+                    products.add((key, str(v)))
                 lines.append("")
-        lines += ["", f"Total product IDs: **{len(products)}**", ""]
+        lines += [f"**Total product IDs: {len(products)}**", ""]
         open(os.path.join(OUT, "13-iap-products.md"), "w").write("\n".join(lines))
         with open(os.path.join(OUT, "13-iap-products.csv"), "w", newline="") as f:
             w = csv.writer(f)
             w.writerow(["type", "product_id"])
             w.writerows(sorted(products))
+        print("iap:", len(products))
 
-    # ---- data tables ----
+    # ---------- data tables ----------
+    tables = [("Data_Players", "allPlayers", "ships"), ("Data_Players", "allPlayers", "drones"),
+              ("Data_Boss", "allBosses", "bosses"), ("Data_Items", "allDropItems", "items")]
     lines = ["# Data tables", ""]
-    csvs = []
-    for cls, array_key in (("Data_Players", "allPlayers"), ("Data_Boss", "allBosses"), ("Data_Items", "allDropItems")):
+    for cls, array_key, label in tables:
         rows = []
         for fn, tree in load_class(cls):
-            items = tree.get(array_key) or []
-            for item in items:
+            name = str(tree.get("m_Name", ""))
+            if label == "ships" and name != "Data_Players":
+                continue
+            if label == "drones" and name != "Data_Drones":
+                continue
+            for item in tree.get(array_key) or []:
                 if isinstance(item, dict):
                     rows.append(item)
         if not rows:
             continue
         keys = sorted({k for r in rows for k in r})
-        with open(os.path.join(OUT, f"14-{cls}.csv"), "w", newline="") as f:
+        out_csv = os.path.join(OUT, f"14-{label}.csv")
+        with open(out_csv, "w", newline="") as f:
             w = csv.writer(f)
             w.writerow(keys)
             for r in rows:
-                w.writerow([pptr_name(r.get(k, "")) for k in keys])
-        lines += [f"## `{cls}.{array_key}` — {len(rows)} rows", "",
+                w.writerow([pptr(r.get(k, "")) for k in keys])
+        lines += [f"## `{label}` (`{cls}.{array_key}`) — {len(rows)} rows", "",
                   "| " + " | ".join(keys) + " |",
                   "|" + "|".join(["---"] * len(keys)) + "|"]
         for r in rows[:200]:
-            lines.append("| " + " | ".join(str(pptr_name(r.get(k, "")))[:60] for k in keys) + " |")
+            lines.append("| " + " | ".join(str(pptr(r.get(k, "")))[:60] for k in keys) + " |")
         lines.append("")
-        csvs.append(cls)
+        print("table:", label, len(rows))
     open(os.path.join(OUT, "14-data-tables.md"), "w").write("\n".join(lines))
-    print("data tables:", csvs)
     return 0
 
 

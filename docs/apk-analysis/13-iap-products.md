@@ -176,5 +176,4 @@
 - `windwings.shipfull.s4`
 - `windwings.shipfull.s5`
 
-
-Total product IDs: **170**
+**Total product IDs: 170**
