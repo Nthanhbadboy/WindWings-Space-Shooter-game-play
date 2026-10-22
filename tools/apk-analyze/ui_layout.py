@@ -107,6 +107,20 @@ def _type_name(comp):
             return ""
 
 
+def tree_of(comp) -> dict:
+    """Typetree of a component: parsed objects delegate to their ObjectReader."""
+    ro = getattr(comp, "object_reader", None)
+    if ro is not None and hasattr(ro, "read_typetree"):
+        try:
+            return ro.read_typetree() or {}
+        except Exception:  # noqa: BLE001
+            pass
+    try:
+        return comp.read_typetree() or {}
+    except Exception:  # noqa: BLE001
+        return {}
+
+
 def components_of(go):
     comps = []
     try:
@@ -223,18 +237,21 @@ def node_info(tr):
         cname = script_class(comp) if _type_name(comp) == "MonoBehaviour" else _type_name(comp)
         entry = {"class": cname}
         if any(k in cname for k in ("Text", "Input", "Label", "Language")):
-            try:
-                tree = comp.read_typetree()
-                txt = tree.get("m_text") or tree.get("m_Text")
-                if isinstance(txt, str) and txt.strip():
-                    entry["text"] = txt[:200]
-                for k in ("key", "m_Key", "localizeKey", "keyLocalize"):
-                    v = tree.get(k)
-                    if isinstance(v, str) and v.strip():
-                        entry["key"] = v[:120]
-                        break
-            except Exception:  # noqa: BLE001
-                pass
+            tree = tree_of(comp)
+            txt = tree.get("m_text") or tree.get("m_Text") or getattr(comp, "m_text", None)
+            if isinstance(txt, str) and txt.strip():
+                entry["text"] = txt[:200]
+            # localization key lives on LanguageTextMeshPro; names vary, so scan strings
+            for k, v in tree.items():
+                if not isinstance(v, str) or not v.strip() or v == txt:
+                    continue
+                if k in ("m_text", "m_Text", "m_Name"):
+                    continue
+                low = k.lower()
+                if "key" in low or "id" in low or "code" in low:
+                    entry["key"] = v[:120]
+                    entry["key_field"] = k
+                    break
         if "Image" in cname or "Sprite" in cname or "Renderer" in cname:
             try:
                 sp = _pptr(getattr(comp, "m_Sprite", None))
