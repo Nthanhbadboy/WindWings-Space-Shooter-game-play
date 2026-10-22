@@ -43,6 +43,8 @@
 | | Campaign | Boss |
 |---|---:|---:|
 | Số wave | **237** | **45** |
+| Quân mỗi wave | 4 – 951 · median **152** | **4** (44/45) = 2 boss + 2 turret |
+| Thành phần | 1–28 prefab thường | đúng **1 prefab boss** + `CD-31002` |
 | Khoảng id | `Wave_00xx` – `Wave_6xxx` | `Wave_7001`–`Wave_7022` · `Wave_9001`–`Wave_9024` |
 | Enemy trong wave | 1–28 prefab thường | **đúng 1 prefab boss** |
 | Entry trung bình | ~95 | ~1 |
@@ -50,6 +52,9 @@
 
 Mã hoá id rất gọn: `7001`–`7022` = **22 wave boss đợt 1**, `9001`–`9024` = **23 wave boss đợt 2**.
 Không có wave `70xx/90xx` nào thiếu boss, và không wave thường nào chen boss.
+
+**Ngoại lệ duy nhất:** `Wave_7011` — 46 spawner / **308 quân**, gồm `CB-30015` **×304** + `Boss-37011` ×2 + `CD-31002` ×2.
+Đây là wave boss duy nhất có quân thường, và cũng là wave boss "dày" nhất.
 
 > **Nhận định (mức A):** đây là **hai vòng tiến trình độc lập** (mã `37xxx` đi với `70xx`, mã `39xxx`
 > đi với `90xx` — xem §2), không phải một danh sách boss trải đều. Điều kiện lật ngược: nếu

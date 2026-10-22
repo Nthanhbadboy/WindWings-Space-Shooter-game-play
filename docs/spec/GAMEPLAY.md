@@ -99,7 +99,8 @@ Thứ tự ưu tiên damage: xem `BALANCE.md` §7.3.
 | Spawn | `SpawnTypes { None, Path, Points, RandomTopDown, Rocket, EndMapPoint, StartWavePoint }` | `07-enums.md` |
 | Cuộn nền | `MapController.listZLayers/listSpeedLayers/listNameLayers` (parallax 3 lớp) | `dump.cs` `MapController` |
 | Sự kiện wave | `onSpawnLasers`, `onSpawnEMP` (laser/EMP theo wave) | `dump.cs` `MapController` |
-| Kết thúc wave | `Wave.CheckSpawnEnded()`, `GetWaveLength()` | `dump.cs` `Wave` |
+| Kết thúc wave | `Wave.CheckSpawnEnded(bool lastWave)`, `GetWaveLength()` | `dump.cs` `Wave` |
+| Quân mỗi wave | **4 – 951**, median **131,5**; tổng **45.659** | `waves.json` — xem §1.3.1 |
 
 Cấu trúc 1 stage (suy ra):
 
@@ -108,6 +109,79 @@ Stage = 3–5 Wave thường + 1 Wave boss (StageType.Boss)
 StageType { Normal, MiniBoss, Boss, Combat }   (07-enums.md)
 ```
 > Giả định: mỗi stage có đúng 1 wave boss ở cuối; `Combat` là wave chỉ có enemy thường.
+
+### 1.3.1 Số quân mỗi wave — kiểm bằng số
+
+Mỗi spawner không có `count` tường minh (0 trên **11.093/11.093**), số quân = `len(enemies) × copies`.
+
+| Chỉ số | Giá trị | Nguồn |
+|---|---:|---|
+| Tổng quân toàn game | **45.659** | `waves.json` |
+| Quân/wave min · median · max | **4 · 131,5 · 951** | `waves.json` |
+| Campaign (237 wave) | min 4 · median **152** · max 951 | `waves.json` |
+| Boss wave (45 wave) | **4 quân** ở 44/45 | `waves.json` |
+| `copies` phổ biến | **2** (9.790) · 1 (792) · 4 (202) · 3 (201) | `waves.json` |
+
+Cấu trúc một wave boss điển hình (44/45 wave):
+
+| Spawner | `spawn_type` | `copies` | Enemy |
+|---|---|---:|---|
+| `Boss_1` | `point` | 2 | 1 prefab boss |
+| `EndPoint` | `boss` | 2 | `CD-31002` |
+| `StartPoint` | `special` | 2 | 0 |
+
+`copies = 2` nghĩa là **2 bản sao của spawner**, nên wave boss chuẩn = **2 boss + 2 `CD-31002` = 4 quân**.
+Không có loại quân nào khác: **45/45 wave boss chỉ chứa đúng 2 loại** (1 prefab boss + `CD-31002`).
+Ngoại lệ duy nhất: **`Wave_7011`** — 46 spawner / **308 quân** (boss + `CB-30015` ×152).
+
+> **Nhận định (mức A):** "giết hết" khả thi về mặt số vì mỗi wave có **danh sách quân hữu hạn, cố định**,
+> không sinh thêm ngoài `copies`. Tổng 45.659 không phải số ước lượng mà là **đếm được từng con**.
+
+### 1.3.2 Điều kiện thắng — dữ liệu xác nhận đến đâu
+
+| Bằng chứng | Giá trị | Nguồn |
+|---|---|---|
+| Cờ thắng nằm ở **player** | `Player_Health.IsVictory`, `isAlive`, `onExtraLife` | `dump.cs` |
+| Wave kết thúc theo **spawn** | `Wave.CheckSpawnEnded(bool lastWave)` · `SetLastWave(bool)` · `GetWaveLength()` | `dump.cs` |
+| Hành vi cuối path | **`Stop` = 752/800 (94,0%)** · `Loop` = 48 (6,0%) | `Enemy_Movement.csv` + `EndOfPathInstruction { Loop=0, Reverse=1, Stop=2 }` |
+| Chết | `isAlive = false` → `Board_Reborn` (5 cách trả) | §1.6 |
+| Thắng | `Board_Endgame` + `IsVictory` | `dump.cs`, `08-ui-map.md` |
+
+**Điểm quyết định:** **94,0%** enemy dùng `Stop` — bay hết path thì **dừng lại trong màn**, không bay vòng,
+không tự biến mất. Chỉ **6,0%** dùng `Loop`. Nghĩa là phần lớn enemy **ở lại** cho đến khi bị bắn hạ
+(hoặc tự huỷ theo `timeToClear` của `Player_Health`).
+
+> **Nhận định (mức B):** `CheckSpawnEnded` nói wave kết thúc khi **spawn xong**, không phải khi **giết xong**.
+> Hai điều này chỉ tương đương nếu trong thân hàm còn đếm enemy sống. Tôi **chưa đọc được thân hàm**
+> nên chưa phân biệt được "hết spawn là qua" với "hết spawn **và** sạch quân mới qua".
+>
+> **Điều kiện lật ngược:** nếu `CheckSpawnEnded` chỉ chờ spawner chạy hết mà không đếm enemy còn sống,
+> thì "giết hết" **không** bắt buộc — chỉ cần sống sót. Xem `AI_FEASIBILITY.md` §1 (method body chưa có).
+
+### 1.3.3 Nâng cấp — 12 stat, **không** chỉ damage
+
+`§3.4` liệt kê 12 stat. Phân loại theo tác dụng:
+
+| Loại | Stat | Số |
+|---|---|---:|
+| **Damage trực tiếp** | Special cannon, Normal cannon, Laser weapon, Bomb, Rocket Barrage, Super Lazer, Mega Bomb | **7** |
+| **Không phải damage** | **Health, Magnet, Stun, Invisible, Invisible II** | **5** |
+
+Thêm 6 nhóm ability (`txt_techstatability_name_1xx`–`6xx`, **53 tên** unique):
+
+| Nhóm | Tên | Hiệu ứng đọc được |
+|---|---|---|
+| 1xx | Auto heal · Skip a hit | hồi **{0}% HP mỗi 5 s** · **vô hiệu 1 đòn**, hồi mỗi N giây |
+| 2xx | Shooting speed · Critical | giảm delay đại bác **3%** · **x2 crit rate +5%** |
+| 3xx | Angry · Take the chance | **HP < 30% → power +10%** · **KO +5%** khi enemy < 30% HP |
+| 4xx | Lucky · Auto-fix | (không có text) · kỹ năng hồi **10% HP** |
+| 5xx | Laser upgrade · Duration | **khiên + 2 tia laser** · thời lượng **+5%** |
+| 6xx | Quick charge | giảm thời gian hồi năng lượng |
+
+> **Nhận định (mức A):** phần lớn nâng cấp đúng là **nhân vào một con số** (damage, delay, crit, %).
+> Nhưng **5/12 stat** và 6 nhóm ability có hiệu ứng **không phải damage**: hồi máu, chắn 1 đòn,
+> khiên, invisible, magnet, stun. Chúng vẫn là **số passive**, không phải nút bấm kỹ năng —
+> trừ **Laser upgrade** (kích hoạt khiên + bắn 2 tia), nghi là **chủ động**.
 
 ### 1.4 Drop item
 
