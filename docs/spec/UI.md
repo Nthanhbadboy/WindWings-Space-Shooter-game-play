@@ -418,7 +418,7 @@ GetPreviousBoard()        → Stage   ← dùng cho nút Back
 ```
 Nguồn: `BoardManager.listBoardsOpened` + `GetPreviousBoard()` (`dump.cs`).
 
-**Ngoại lệ:** `Board_Home` **không bao giờ bị pop** — `Escape` ở `Board_Home` mở
+**Ngoại lệ:** trong 125 class đã đọc, **không thấy nơi nào pop `Board_Home`** — `Escape` ở `Board_Home` mở
 `popupQuitgame` thay vì thoát.
 
 ### 7.2 Mở board từ nhiều nơi (6 board "đa điểm vào")

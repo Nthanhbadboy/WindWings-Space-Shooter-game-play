@@ -1,7 +1,8 @@
 # TUNING_KNOBS — toàn bộ núm vặn của game, và giá trị nằm ở đâu
 
-> Mục đích: trả lời dứt điểm câu *"feel / cân bằng / art có đào được không?"*.
-> Kết luận ngắn: **đào được** — không phải bằng cách suy luận, mà bằng cách đọc đúng chỗ.
+> Mục đích: trả lời câu *"feel / cân bằng / art đào được tới đâu?"*.
+> Trả lời ngắn: **đào được thêm, nhưng chưa đào xong** — và mục này chỉ rõ **còn bao nhiêu
+> thứ chưa có giá trị**, không hứa hẹn một con số phủ.
 > Mọi số dưới đây đọc từ `reverse-engineering/il2cpp/dump.cs` (18,8 MB, 10.910 block class).
 > Suy luận đánh dấu `> Nhận định:`. Mục cuối: **Còn thiếu / phải đoán**.
 
@@ -17,11 +18,12 @@
 
 **Vì sao tôi sai:** exporter CSV chỉ lấy **ScriptableObject** (`reverse-engineering/scriptableobjects/`)
 và một số `MonoBehaviour` có trong danh sách. Nó **không** quét hết component gắn trên prefab.
-Trong khi đó `dump.cs` cho thấy game classes có **4.841 field `[SerializeField]`** — từng đó giá
+Trong khi đó `dump.cs` cho thấy game classes có **4.861 field `[SerializeField]`** — từng đó giá
 trị đang nằm trong bundle và **chưa được xuất**.
 
-> `> Nhận định:` sai sót không phải "dữ liệu không có", mà là **phạm vi export quá hẹp**.
-> Đây là lỗi của quy trình, không phải của APK.
+> `> Nhận định (mức B):` phần lớn khả năng là **phạm vi export quá hẹp**, không phải APK thiếu dữ liệu.
+> Nhưng **chưa kiểm chứng** — có thể một phần trong đó là giá trị mặc định, không mang thông tin.
+> Tỉ lệ thật chỉ biết sau khi chạy AssetRipper.
 
 ---
 
@@ -30,12 +32,12 @@ trị đang nằm trong bundle và **chưa được xuất**.
 | Nơi | Có gì | Lấy bằng | Chi phí |
 |---|---|---|---|
 | **A. CSV đã có** | 91 ScriptableObject + `waves.json` | (đã xong) | **0** |
-| **B. `[SerializeField]` trong prefab** | **4.841 field** — shake, tốc độ, size, màu, kéo dài | **AssetRipper** (hoặc UnityPy + typetree) | **giờ–ngày** |
-| **C. `static` field khởi tạo trong `.cctor()`** | **259 field** — HP, damage, giá, hệ số | **Ghidra + `script.json`** | **ngày** |
-| **D. `const` khai báo** | 9905 const toàn dump; **900** ở game classes | đọc trực tiếp `dump.cs` | **0** |
+| **B. `[SerializeField]` trong prefab** | **4.861 field** — shake, tốc độ, size, màu, kéo dài (đếm regex, sai số vài chục) | **AssetRipper** (hoặc UnityPy + typetree) | ước lượng, mức **C** |
+| **C. `static` field khởi tạo trong `.cctor()`** | **957** static tổng (riêng 8 class config: **259**) — HP, damage, giá, hệ số | **Ghidra + `script.json`** | ước lượng, mức **C** |
+| **D. `const` khai báo** | 9905 const toàn dump; **900** ở game class — nhưng **875 là enum**, chỉ **25** hằng số thật | đọc trực tiếp `dump.cs` | **0** |
 | **E. Hành vi lúc chạy** | giá theo mùa, A/B, server | Frida | tuần |
 
-Nhóm **D** đã có sẵn giá trị trong chính `dump.cs` — không cần chạy gì. Ví dụ thật:
+Nhóm **D** có sẵn giá trị trong `dump.cs` — nhưng chỉ **25** hằng số ngoài enum dùng được ngay. Ví dụ thật:
 
 | Class | Field | Giá trị |
 |---|---|---:|
@@ -240,13 +242,13 @@ normal map, không cần rig 3D.
 
 | Bước | Việc | Lấy được | Công |
 |---:|---|---|---|
-| 1 | Đọc `const` trong `dump.cs` | 900 const (Ease 31, `timeSlowed` 0,1, `haftOfW/H`) | **0** — đã có |
-| 2 | **AssetRipper** trên `data.unity3d` | 4.841 `[SerializeField]`: shake, tốc độ, damage/súng, màu, size | giờ–ngày |
+| 1 | Đọc `const` trong `dump.cs` | **25** hằng số thật (`Ease` 31 giá trị enum, `timeSlowed` 0,1, `haftOfW/H` 5,4/9,6) | **0** — đã có |
+| 2 | **AssetRipper** trên `data.unity3d` | 4.861 `[SerializeField]`: shake, tốc độ, damage/súng, màu, size (chưa biết đọc được bao nhiêu) | chưa đo |
 | 3 | **Ghidra + `script.json`** đọc 1.359 `.cctor` | 259 static field: HP, damage, giá, hệ số | ngày |
 | 4 | **Frida** hook lúc chạy | giá server, A/B, giá IAP thật | tuần |
 | 5 | Playtest | cảm giác cuối — **luôn** phải tự làm | liên tục |
 
-> Bước 2 là bước **chưa ai làm** và cho nhiều giá trị nhất: 4.841 field, tất cả đã nằm trong
+> Bước 2 là bước **chưa ai làm** và nhiều khả năng cho giá trị nhất: 4.861 field, tất cả đã nằm trong
 > bundle, chỉ cần đổi công cụ export.
 
 ---
@@ -258,10 +260,13 @@ Chỉ liệt kê cái **thật sự** chưa có đường lấy:
 | # | Thứ | Vì sao vẫn thiếu |
 |---:|---|---|
 | 1 | **Giá trị số cụ thể** trong `.cctor` | cần chạy Ghidra; hiện chỉ có **tên + kiểu** của 259 field |
-| 2 | **Giá trị `[SerializeField]`** | cần chạy AssetRipper; hiện chỉ có **tên + kiểu** của 4.841 field |
+| 2 | **Giá trị `[SerializeField]`** | cần chạy AssetRipper; hiện chỉ có **tên + kiểu** của 4.861 field |
 | 3 | Giá IAP / doanh thu thật | nằm trên **server**, không có trong APK |
 | 4 | Nội dung enemy trong wave | `waves.json` để `"?"` — cần resolve `m_PathID` (`ENCOUNTERS.md` §9) |
 | 5 | Cảm giác "đã tay" | không có trong bất kỳ file nào — **phải chơi** |
 
-> Ghi chú: #1 và #2 **không phải "không thể"**, mà là **"chưa chạy công cụ"**. Toàn bộ
-> phần còn lại của game đã có tên biến, kiểu dữ liệu và vị trí — tức **đã biết phải tìm gì**.
+> Ghi chú: #1 và #2 **không phải "không thể"**, mà là **"chưa chạy công cụ"**. Phần lớn còn lại
+> của game đã có tên biến, kiểu dữ liệu và vị trí — tức **đã biết phải tìm gì**.
+>
+> **Nhưng chưa biết tìm được bao nhiêu:** biết tên field **không** bảo đảm đọc được giá trị
+> (có thể bị strip, có thể chỉ là giá trị mặc định). Con số thật chỉ có sau khi chạy.

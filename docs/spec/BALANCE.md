@@ -23,7 +23,7 @@
 | DPS lý thuyết của địch | 7,8 – 3.333 (median 454), tính từ burst pattern | `Gun_Attack.csv` → `COMBAT.md` §4 |
 | Sát thương chạm thân boss | 251 hitbox: `dmgFirst` 200–10.000 (median 500) + 14 sentinel, `dmgPerSec` 5–1.000 | `Boss_BodyPhysics.csv` |
 | Số wave / spawner | **282 wave**, 23.757 spawner, 250 map | `waves.json` → `ENCOUNTERS.md` |
-| Giá coin/gem/IAP | **0 giá trị** — không tồn tại trong asset | `ECONOMY.md` §0 |
+| Giá coin/gem/IAP | **0 cột giá** trong 91 CSV — **không thấy** trong asset (phạm vi: chỉ CSV) | `ECONOMY.md` §0 |
 | Phần thưởng trong hộp | **0 giá trị** — `Box_Rewards.id = 0` cho 800/800 dòng | `Box_Rewards.csv` |
 | Damage của **player** | **0 giá trị** — `forceType = Enemy` 458/458 | `Gun_Attack.csv` |
 | Có thể dựng lại balance đầy đủ? | Không. Nhưng đã có **HP + damage địch + nhịp wave** — đủ để suy đường cong | §7 |
@@ -554,15 +554,17 @@ ngưỡng VIP · số stage/chapter · mapping wave→stage.
 > `Stage_Get_Datas` (5), `Device_Get_Data` (3). Cái thiếu là **giá trị** trong `.cctor()`.
 > Bảng đầy đủ: `TUNING_KNOBS.md` §2–3.
 
-### 6.0b Vì sao các class dưới đây không thể có trong `data.unity3d`
+### 6.0b Vì sao các class dưới đây **không được serialize** vào `data.unity3d`
 
 8 class sau là `MonoBehaviour` **không được serialize** — giá trị nằm trong **thân hàm IL2CPP**.
 `data.unity3d` chỉ chứa *instance của object có field `[SerializeField]`*; các class này hoặc
 không có instance trong scene, hoặc field là `static`/`property` (không serialize).
 
-**Nhưng chúng không nằm ngoài tầm với:** cả 8 class đều có `.cctor()` với **259 field tĩnh**,
+**Nhưng chúng không nằm ngoài tầm với:** cả 8 class đều có `.cctor()` với **259 field tĩnh**
+(trong tổng **957** static của toàn bộ class game),
 và `dump.cs` đã có **RVA của từng `.cctor`** (ví dụ `Droid_Data_Balance..cctor` @ `0x1451…`).
-Nạp `libil2cpp.so` vào Ghidra headless + `script.json` là đọc được literal của cả 259 field.
+Nạp `libil2cpp.so` vào Ghidra headless + `script.json` là **có đường đọc** literal của các field đó —
+chưa chạy nên **chưa biết đọc được bao nhiêu**.
 Chi tiết + danh sách field: `AI_FEASIBILITY.md` §1.7.
 
 Đây là 8 class được nêu trong handoff. Mỗi class: field cần, ảnh hưởng gì, và nơi nên tìm.

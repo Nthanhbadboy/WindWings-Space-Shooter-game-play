@@ -360,7 +360,7 @@ enum `PurchaseType`, `class Tech_Ability_Data`, `class RankManager`.
 
 | # | Điều | Trạng thái | Cách lấy |
 |---:|---|---|---|
-| 1 | **Giá mọi thứ** (coin/gem/IAP) | **D — không tồn tại trong asset** | phải tự thiết kế, hoặc đọc `Shop_Cell.SetInfomations` trong IL2CPP |
+| 1 | **Giá mọi thứ** (coin/gem/IAP) | **D — không thấy trong 91 CSV** (chưa kết luận về IL2CPP) | tự thiết kế, **hoặc** đọc `Shop_Cell.SetInfomations` trong IL2CPP |
 | 2 | `Box_Rewards.id` / `number` | **A — luôn 0** | là UI template, không phải data |
 | 3 | `Shop_Cell.id` | **A — không serialize** (`private`, không `[SerializeField]`) | runtime |
 | 4 | `PurchaseType` của từng ô | **D** | runtime |

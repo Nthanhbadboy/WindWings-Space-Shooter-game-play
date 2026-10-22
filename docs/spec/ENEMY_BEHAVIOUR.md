@@ -159,7 +159,8 @@ Nguồn: 7 file `*_Spawner.csv`, đếm cột có giá trị số biến thiên 
 Nguồn: `MeteoriteGenerator.csv` (800 dòng / **517** object).
 
 > **Đọc ra:** thiên thạch rơi **từ trên xuống (Y 12 hoặc 15)**, trong **2 dải X**:
-> bên phải (2…5) và **bên trái (−7…−1)** — tức **không bao giờ rơi đúng giữa màn**.
+> bên phải (2…5) và **bên trái (−7…−1)**. Trong 517 object đã đọc, **không có giá trị nào**
+> rơi vào khoảng (−1…3) — nên thực tế thiên thạch chỉ rơi 2 bên mép, không rơi giữa màn.
 > Đây là chi tiết thiết kế: chừa "đường sống" ở giữa cho người chơi.
 > Tốc độ rơi 0,7–2,0 + xoay ±15…25°/s.
 

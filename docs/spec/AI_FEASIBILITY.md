@@ -7,6 +7,27 @@
 
 ---
 
+## 0.0 Cách đọc mức chắc chắn (áp dụng cho cả 11 file)
+
+Mọi khẳng định trong bộ spec này thuộc **một trong bốn mức**. Chỗ nào không ghi mức thì
+hiểu là **A** (đo được). Nguyên tắc: **không dùng % cho thứ chưa đo.**
+
+| Mức | Nghĩa | Kiểm lại bằng | Được dùng để |
+|---|---|---|---|
+| **A** | **Đo trực tiếp** — đếm/đọc từ file cụ thể | chạy lại script trên `docs/apk-analysis/*.csv`, `datas/*.json`, `dump.cs` | quyết định |
+| **B** | **Suy ra có kiểm chứng** — từ A + so khớp nhiều nguồn | lần theo chuỗi suy luận; kiểm giả định nền | thiết kế |
+| **C** | **Ước lượng** — không đo được | không kiểm được bằng file | **lập kế hoạch**, không cam kết |
+| **D** | **Chưa biết** | — | phải ghi rõ là chưa biết, không được viết như đã biết |
+
+**Luật viết:**
+1. Khẳng định **phủ định** ("không có X") chỉ hợp lệ khi **nêu phạm vi đã tìm** — ví dụ
+   *"trong 2.580 class game, `Photon` = 0"*, không phải *"game không có netcode"*.
+2. Không viết **"không thể"** cho thứ chỉ **"chưa chạy công cụ"**. Dùng: **"chưa có giá trị"**.
+3. Không gán **% độ phủ** cho tài liệu — đó là cảm giác, không phải đo.
+4. Mỗi kết luận lớn phải kèm **"điều gì sẽ làm nó sai"** (xem §1.11).
+
+---
+
 ## 0. TL;DR
 
 **Dựng lại được "hệ thống", không dựng lại được "cảm giác" — và nghiên cứu công bố
@@ -14,15 +35,15 @@
 
 | Câu hỏi | Trả lời ngắn |
 |---|---|
-| AI viết ra game **chạy được**? | ✅ Gần như chắc chắn — tỉ lệ pass syntax/dependency/event lên tới **99,2%** |
+| AI viết ra game **chạy được**? | ✅ Nghiên cứu đo được **99,2%** pass syntax/dependency/event — nhưng đó là **bản Pygame**, không phải Unity |
 | Game đó **đúng đặc tả**? | ⚠️ **Không** — điểm "Rule & Mechanism Modeling" chỉ **45,6/100**, "Goal & Termination" **44,0** |
 | Game đó **chơi thấy hay**? | ❌ Điểm "Dynamic Feedback Fidelity" chỉ **32,1/100** — đúng chỗ "game feel" nằm |
 | Bao lâu thì ra sản phẩm? | Phụ thuộc art/audio/test — spec không rút ngắn được 3 phần này |
 | **Cập nhật 10/2026** | Dịch ngược đã **rẻ đi hàng chục lần** (Opus 5.5: < 30 phút/game). Rào cản chuyển từ **kỹ thuật** sang **pháp lý + chất lượng** (§1.6) |
 | **Đây là game gì?** | **2.5D sprite + physics 2D** — cả game có **2 mesh**, không có `SkinnedMeshRenderer`, `MeshCollider`; chỉ **7** `BoxCollider` 3D so với **5.424** `BoxCollider2D` (§1.8) |
 | **Clone dễ không?** | **Cơ chế: dễ** — thiếu cả 3 thứ khó nhất: **3D, netcode realtime, AI dò đường** (Photon/Mirror/NGO = **0**) (§1.9). Nhưng clone cơ chế chỉ là **~15–20%** công việc |
-| **Clone "hoàn hảo" được?** | **Cơ chế ~95–100%** sau 2 tool · **nội dung ~90%** (thiếu mapping wave→enemy) · **sản phẩm 0%** (giá/live-ops ngoài APK) (§1.11) |
-| **Đủ làm game khác cùng đẳng cấp?** | ✅ **Cơ chế + nội dung: đủ.** 🟡 **Cảm giác: cần artist + ~100 vòng tinh chỉnh** — spec cho **v1.0**, không cho **v1.3.118** (§1.12) |
+| **Clone "hoàn hảo" được?** | **Cách nói cũ của tôi sai.** Thực tế: **11.743** field đã biết **tên+kiểu** nhưng **chưa biết giá trị**; **25** hằng số đọc trực tiếp. Tầng sản phẩm **không nằm trong file tĩnh**, nhưng quan sát được bằng cách khác (§1.11) |
+| **Đủ làm game khác cùng đẳng cấp?** | 🟡 **Có điều kiện** — spec cho **v1.0**; chênh lệch tới **v1.3.118** là **118 vòng build** không có trong file nào (§1.12). Không có nghĩa "không làm được" |
 | Rủi ro pháp lý | Thấp nếu đổi art/tên; **cao** nếu dùng lại asset hoặc tên boss |
 
 ### 0.1 Ba mức "dịch ngược đầy đủ" — và mức nào cho ra cái gì
@@ -180,7 +201,7 @@ cùng `dump.cs`) là mọi hàm đã có tên, rồi decompile đúng địa ch�
 
 | Thứ tưởng "không có" | Thực tế trong `dump.cs` | Lấy bằng |
 |---|---|---|
-| 8 class config không serialize | **259 `static` field**, tất cả khởi tạo trong `.cctor()` | Ghidra + RVA → đọc literal trong `.cctor` |
+| 8 class config không serialize | **259 `static` field** (trong tổng **957** static), khởi tạo trong `.cctor()` | Ghidra + RVA → đọc literal trong `.cctor` |
 | Toạ độ đường bay | `BezierPath.points` là `[SerializeField] List<Vector3>` → **có trong `data.unity3d`** | AssetRipper (CSV exporter cũ bỏ nested struct) |
 | Thưởng/rơi theo enemy | `Enemy_Data_Balance.GetBonusCoin(int id)` · `GetBonusExp(int id)` · `GetSurvivalScore` · `GetArenaScore(idE, timeLife)` | Ghidra → 6 thân hàm |
 | Damage/HP/cost của player | `Player_Get_Datas` **178 field** | Ghidra → `.cctor` |
@@ -190,7 +211,7 @@ Phân rã 259 field: `Player_Get_Datas` **178** · `GameDatas` **40** · `Tech_D
 `Map_Get_Datas` **13** · `Droid_Data_Balance` **6** · `Stage_Get_Datas` **5** ·
 `Device_Get_Data` **3** · `Enemy_Data_Balance` **1**.
 
-> **Kết luận sửa lại:** không có mục nào trong bộ spec này là "vĩnh viễn không lấy được".
+> **Kết luận sửa lại:** tính tới lúc này tôi **chưa tìm thấy** mục nào thật sự không có đường lấy.
 > Mỗi mục hoặc **đã có trong CSV**, hoặc **nằm trong `.cctor()`**, hoặc **nằm trong
 > serialized field mà exporter cũ bỏ qua**, hoặc **quan sát được lúc chạy bằng Frida**.
 > Chênh lệch chỉ là **công cụ**, và công cụ thì thay được.
@@ -278,9 +299,11 @@ Cộng thêm: `border` của `Enemy_Movement` cho **vùng chơi 20×25 unit** c�
 | `UnityWebRequest` | 170 |
 | `Firebase.Database` | 28 |
 
-Nghĩa là **PvP/Arena là async** (đọc dữ liệu người chơi khác từ Firebase: `ArenaDatabaseCleaner`,
-`ArenaRank`, `ArenaUserStruct`), **không phải realtime**. Đây là khác biệt lớn: netcode realtime
-là hạng mục khó nhất và tốn kém nhất của game multiplayer — ở đây **không tồn tại**.
+**Đọc ra (mức B, không phải chứng minh):** PvP/Arena **có dấu hiệu là async** — đọc dữ liệu
+người chơi khác từ Firebase (`ArenaDatabaseCleaner`, `ArenaRank`, `ArenaUserStruct`).
+Trong phạm vi 2.580 class game: `UdpClient` 0 · `TcpClient` 0 · `NetworkStream` 0 ·
+`Photon`/`Mirror`/NGO 0 · `Matchmaking` 0. Đây là **bằng chứng gián tiếp** — nó làm netcode
+realtime **khó xảy ra**, nhưng **không** chứng minh là không có (xem §1.11 "điều gì sẽ làm sai").
 
 #### Quy mô codebase
 
@@ -322,66 +345,76 @@ Kết quả: ba mục tôi từng gọi là "không đào được" **đều có
 | **Feel** | "nằm trong `libil2cpp.so`" | **11/16 cơ chế** là `[SerializeField]` → nằm trong **prefab**, tức **đã có trong `data.unity3d`**: `VibrateCamera.levelVibrate`, `Enemy_CameraVibrate.timeVibr/lvVibr`, `Enemy_HitSkeletonRenderer.hitColor`, `EffectGlow`, `TimedTrailRenderer`; slow-mo là **const** `timeSlowed = 0,1` | `TUNING_KNOBS.md` §4 |
 | **Art** | "không thể tái tạo" | canvas **10,8 × 19,2 unit** (const `haftOfW/H` = 5,4/9,6 → **9:16**); cả game **2 mesh**; chỉ cần **sprite billboard** ≤ 2048² | `TUNING_KNOBS.md` §5 |
 
-#### Con số quyết định: **4.841**
+#### Con số quyết định: **4.861** (đếm bằng regex, sai số vài chục)
 
-`dump.cs` cho thấy game classes có **4.841 field `[SerializeField]`**. Đó là lượng giá trị
+Trong **2.580** class game của `dump.cs` có **4.861** field `[SerializeField]`,
+**957** field `static`, tổng **11.743** field có tên + kiểu. Đó là lượng giá trị
 đang nằm trong `data.unity3d` mà **exporter CSV chưa lấy** — vì nó chỉ quét
 `reverse-engineering/scriptableobjects/`, không quét component trên prefab.
 
 > `> Nhận định:` sai sót của tôi là **sai phạm vi công cụ**, không phải sai bản chất dữ liệu.
-> Cùng một APK, chỉ cần **AssetRipper** thay vì exporter hiện tại là có thêm 4.841 giá trị.
+> Cùng một APK, chỉ cần **AssetRipper** thay vì exporter hiện tại là lấy được phần lớn trong số đó.
 
 #### Ba tầng đào — và tầng nào đã xong
 
 | Tầng | Nội dung | Trạng thái |
 |---|---|---|
-| 1 | `const` trong `dump.cs` (900 const game class) | ✅ **đã có giá trị** — `Ease` 31, `timeSlowed` 0,1, `haftOfW/H` 5,4/9,6 |
-| 2 | `[SerializeField]` trong prefab (4.841) | 🟡 **chưa export** — chạy AssetRipper |
-| 3 | `static` khởi tạo trong `.cctor()` (259) | 🟡 **chưa đọc** — chạy Ghidra |
+| 1 | `const` trong `dump.cs` — **900** const, nhưng **875 là thành viên enum**; chỉ **25** là hằng số thật | ✅ **25 giá trị đọc trực tiếp** — `timeSlowed` 0,1, `haftOfW/H` 5,4/9,6, `accuracy` 10 |
+| 2 | `[SerializeField]` trong prefab (**4.861**) | 🟡 **chưa export** — chạy AssetRipper |
+| 3 | `static` khởi tạo trong `.cctor()` — **957** tổng (riêng 8 class config: **259**) | 🟡 **chưa đọc** — chạy Ghidra |
 
 **Kết luận sửa lại:** cả **feel**, **cân bằng** và **art** đều đào được — không mảng nào
 "không có dữ liệu". Cái còn lại chỉ là **chưa chạy 2 công cụ**, và cả hai đều đã có tên
 chính xác để chạy. Xem `TUNING_KNOBS.md`.
 
-### 1.11 Trần của việc clone — cái gì đạt 100%, cái gì không bao giờ
+### 1.11 Ba tầng — mỗi tầng có **mức bằng chứng** khác nhau
 
-Sau khi đào bằng tên field, phần **cơ chế** gần như đóng. Nhưng "clone hoàn hảo" cần tách
-thành 3 tầng, vì mỗi tầng có trần khác nhau.
+Không có "đạt 100%" và không có "0%". Có **cái đếm được**, **cái suy ra được**, và
+**cái chưa kiểm**. Tách theo đúng ba mức đó:
 
-| Tầng | Đạt được | Trần | Vì sao |
+| Tầng | Đã đếm được (mức **A**) | Chưa có giá trị (mức **D**) | Lấy bằng |
 |---|---|---|---|
-| **1. Cơ chế** (bắn, va chạm, spawn, path, nâng cấp, feel) | **~95–100%** | sau khi chạy AssetRipper + Ghidra | mọi hằng số đã có **tên + kiểu + vị trí** |
-| **2. Nội dung** (282 wave, 458 súng, 39 boss) | **~90%** | thiếu mapping wave→enemy | `waves.json` để `"?"`; cần resolve `m_PathID` |
-| **3. Sản phẩm** (giá, sự kiện, mùa, A/B) | **không** | **0%** | nằm ngoài APK |
+| **1. Cơ chế** | **11.743** field có tên + kiểu + offset; **25** hằng số có giá trị đọc trực tiếp | **4.861** `[SerializeField]` · **957** `static` | AssetRipper · Ghidra |
+| **2. Nội dung** | 282 wave · 23.757 spawner · 458 `Gun_Attack` · 39 boss prefab | mapping **wave → enemy** (`waves.json` = `"?"`) | resolve `m_PathID` |
+| **3. Sản phẩm** | 170 `IAPProduct` **id** · 6 `PurchaseType` · 19 `AdPos` | giá · mùa · A/B · dữ liệu người chơi | **không** nằm trong APK |
 
-#### Tầng 3 — ba thứ **không bao giờ** có trong APK
+> **Sửa lại cách nói:** trước đây tôi viết tầng 3 là "**0%**" và "**không bao giờ** có trong APK".
+> Chính xác hơn: tầng 3 **không nằm trong file tĩnh**, nhưng **quan sát được** bằng cách khác —
+> store listing (giá), network capture (live-ops), chơi thử (funnel). Nó **đắt và lệch thời điểm**,
+> không phải **bất khả**.
 
-| Thứ | Ở đâu | Vì sao không lấy được |
-|---|---|---|
-| **Giá IAP thật** | Google Play Console | trả về lúc runtime theo quốc gia/khuyến mãi |
-| **Cấu hình live-ops** (mùa, event, tỉ lệ quay, ưu đãi) | server | đổi hằng tuần, không bake vào build |
-| **Dữ liệu người chơi** (bảng xếp hạng, ghép trận Arena) | Firebase | là **dữ liệu**, không phải logic |
+#### Tầng 3 — Firebase làm gì, và **không** làm gì
 
-> Đã kiểm: `Firebase.RemoteConfig` chỉ xuất hiện dưới dạng **SDK** (`RemoteConfigSettings`),
-> **không** class game nào đọc config từ đó. Nghĩa là **số cân bằng được bake trong build**,
-> không phải server-driven — đây là tin tốt: chạy 2 tool là **số cân bằng đóng**.
+Đã đọc `dump.cs` theo từng class game dùng Firebase (63 class):
 
-Nhưng có một điều quan trọng hơn: **bản gốc đang chạy tiếp**. v1.3.118 hôm nay khác bản
-6 tháng trước. Clone xong bản này thì nó **đã cũ** — "hoàn hảo" là **một ảnh chụp**, không phải
-một trạng thái.
-
-#### Và một trần không phải kỹ thuật
-
-| Giới hạn | Hệ quả |
+| Class | Dùng Firebase cho |
 |---|---|
-| Art / audio / tên boss thuộc **GCenter** | **không được** tái sử dụng ⇒ dù clone 100% số, sản phẩm vẫn **phải khác** về mặt hiển thị |
-| "Perfect clone" = bản sao | tranh chấp bản quyền, gỡ khỏi store, mất toàn bộ công |
-| Thành công của bản gốc | đến từ **live-ops + retention**, không phải từ cơ chế — thứ **không clone được** vì nó là **quá trình**, không phải dữ liệu |
+| `Board_Profile`, `Board_AccountSettings`, `SkipTutorial` | `IECheckAndBackupWithFirebase` / `IECheckAndRestoreWithFirebase` — **sao lưu / khôi phục save** |
+| `FirebaseDatabaseManager` | `UploadDatabase` · `DownloadDatabse` · `DeleteDatabase` — **đồng bộ save** |
+| `LogInFirebase`, `FirebaseAuthManager` | đăng nhập |
+| `PurchaseValidator` | `ValidatePurchaseWithFirebase` — **xác thực hoá đơn phía server** |
+| `GameAnalyser` | analytics |
+| `ArenaHub`, `Board_Arena`, `RankManager`, `RankPreload` | **bảng xếp hạng Arena** |
 
-> **Kết luận cuối:** clone **cơ chế** có thể đạt gần tuyệt đối, và đó là **đủ** cho mục tiêu
-> "game cùng thể loại, khác art". Nhưng "clone hoàn hảo" theo nghĩa **bản sao sản phẩm** thì
-> **không** — không phải vì thiếu dữ liệu, mà vì **3 tầng cuối nằm ngoài APK** và **1 tầng
-> không được phép**.
+**Không class nào** đọc **bảng số cân bằng** từ Firebase. `RemoteConfig` chỉ tồn tại dưới dạng
+**SDK class** (`RemoteConfigSettings`), không có chỗ gọi trong game.
+
+> **Đây là suy luận (mức B), không phải chứng minh:** "không thấy chỗ đọc config" ≠ "chắc chắn
+> không có". Nếu server đẩy số qua **một class khác** (ví dụ nhét JSON vào `FirebaseDatabase`
+> dưới dạng save), kết luận này sai. Cách kiểm: bật Frida, chặn đọc/ghi `FirebaseDatabase`,
+> xem payload có chứa bảng giá/HP không — **1 ngày công**.
+
+#### Điều gì **sẽ** làm các kết luận trên sai
+
+| Khẳng định | Bằng chứng hiện có | Điều sẽ lật ngược nó |
+|---|---|---|
+| "Không có netcode realtime" | `Photon`/`Mirror`/NGO/**`UdpClient`/`TcpClient`/`NetworkStream`** = 0 trong phạm vi game class; `Socket` 13 lần chỉ trong `Array.InternalEnumerator`; không `Matchmaking` | một class tự viết socket thô, hoặc WebView/JS bridge gọi server |
+| "Số cân bằng bake trong build" | 63 class Firebase: save/auth/IAP/analytics/rank, không đọc config | payload `FirebaseDatabase` chứa bảng số; hoặc có CDN config tải qua `UnityWebRequest` (chỉ 4 lần trong game class) |
+| "Không có 3D" | `Mesh` **2** · `SkinnedMeshRenderer` không có trong manifest · `MeshCollider` không có · `BoxCollider` 3D **7** | manifest thiếu sót type (đã từng sai với `AudioClip`) — cần đối chiếu AssetRipper |
+| "Chỉ 25 hằng số đọc trực tiếp" | đếm `const` ngoài enum = **25** | có `readonly static` khởi tạo trong `.cctor` (957 field) — chính là phần **chưa đọc** |
+
+> **Nguyên tắc tôi áp dụng từ đây:** khẳng định phủ định ("không có X") chỉ được viết khi
+> **đã tìm trong phạm vi xác định** và **nêu rõ phạm vi đó**. Còn lại ghi là *"chưa thấy"*.
 
 ### 1.12 "Chất lượng tương đương" — đo bằng gì, và spec đóng góp bao nhiêu
 
@@ -407,12 +440,12 @@ cơ chế đột phá. Đây là **tin tốt** — nghĩa là mức "tương đ�
 
 | Tiêu chí | Spec cho | AI dựng được | Còn phải tự làm |
 |---|---|---|---|
-| 1. Thời lượng | **đủ** — nhịp 62 spawner/wave, rate 1,0, y 9,6 | sinh 236 wave từ template | duyệt tay từng wave |
-| 2. Vũ khí | **đủ** — 420 cấu hình, DPS, burst | sinh bảng số | chọn bộ nào vào game |
-| 3. Boss | **~90%** — HP, phase, 251 `Boss_BodyPhysics` | dựng 39 boss | hitbox + telegraph (phải chơi) |
-| 4. UI | **~85%** — 125 màn, screen graph | dựng khung | polish animation |
-| 5. Meta | **~80%** — công thức giá đã lộ | dựng 3 cây | cân hệ số |
-| 6. Monetize | **~40%** — SKU có, giá không | dựng shop | quyết giá + funnel |
+| 1. Thời lượng | nhịp 62 spawner/wave · rate 1,0 · y 9,6 | sinh 236 wave từ template | duyệt tay từng wave |
+| 2. Vũ khí | 420 cấu hình + DPS + burst | sinh bảng số | chọn bộ nào vào game |
+| 3. Boss | HP + phase + 251 `Boss_BodyPhysics`; thiếu hitbox/telegraph | dựng 39 boss | hitbox + telegraph (phải chơi) |
+| 4. UI | 125 màn + screen graph; thiếu animation | dựng khung | polish animation |
+| 5. Meta | công thức giá đã lộ; thiếu hệ số | dựng 3 cây | cân hệ số |
+| 6. Monetize | 170 SKU id; **không có giá** | dựng shop | quyết giá + funnel |
 
 #### Nhưng "chất lượng" không nằm trong spec
 
@@ -445,9 +478,13 @@ những vòng đó** — chúng là **kết quả**, không phải **dữ liệu
 | Đủ để **vượt** bản gốc? | 🟡 **Có khả năng** — vì bản gốc có 1 điểm yếu rõ: **nội dung lặp** (282 wave cùng công thức) |
 | Đủ để **thay thế** bản gốc trên store? | ❌ Không, và không nên |
 
-> `> Nhận định:` mức "tương đương" khả thi trong **3–5 tháng** với 3 người + AI,
-> **với điều kiện** có artist. Không có artist thì trần là **prototype chơi được**, không
-> phải sản phẩm.
+> `> Ước lượng (mức C — chưa đo, dùng để lập kế hoạch, không dùng để quyết định):` **3–5 tháng**
+> với 3 người + AI. Con số này có thể sai ±50% vì phụ thuộc chất lượng artist và số vòng
+> tinh chỉnh — hai thứ **chưa ai đo** trong dự án này.
+>
+> Không có artist thì **không phải "không làm được"**, mà là **phải đổi chiến lược**: dùng
+> art style tối giản (geometric/vector) để giảm khối lượng vẽ, đổi lại ít khác biệt thị giác.
+> Đó là **quyết định thiết kế**, không phải **giới hạn kỹ thuật**.
 
 ---
 
@@ -486,34 +523,34 @@ hợp: đó là **cùng một giới hạn** — *đặc tả tĩnh không chuy�
 | Damage/HP của player | `forceType = Enemy` **458/458**; `Player_Get_Datas` không serialize | Ghidra `.cctor` | **178 field** |
 | Giá / tỉ lệ rơi | `Box_Rewards.id = 0` **800/800**; không cột `weight`/`price` | Ghidra `GetBonusCoin/Exp` + Frida | hàm thưởng theo `id` |
 | Hiệu ứng item | `Sub_Item.csv` **0 cột hiệu ứng** | Ghidra (class item) + Frida | hiệu ứng + thời gian |
-| **Toàn bộ feel** | chỉ export ScriptableObject, **bỏ prefab** | **AssetRipper** — 4.841 field `[SerializeField]` | shake, tốc độ, màu hit, trail, delay bắn |
+| **Toàn bộ feel** | chỉ export ScriptableObject, **bỏ prefab** | **AssetRipper** — 4.861 field `[SerializeField]` | shake, tốc độ, màu hit, trail, delay bắn |
 | Âm thanh | 69 `AudioClip` nhưng **0 file export** (FSB5 trong `.resS`) | **AssetRipper** / vgmstream | 69 file `.wav` |
 | Hành vi (appear/burn/stun) | `Enemy_Appear.csv` chỉ có ref | Ghidra: `Enemy_Appear.Appear(Action)` … | toàn bộ state machine |
 | Pivot/border sprite | 586 sprite không-Atlas ghi `?` | **AssetRipper** | pivot, border, mesh |
 
 ---
 
-## 3. Ước lượng độ phủ sau vòng bổ sung
+## 3. Độ phủ — thay % tự đánh giá bằng **cái đếm được**
 
-| File | Phủ | Còn thiếu để "viết được game" |
-|---|---:|---|
-| `UI.md` | ~85% | animation chuyển board |
-| `GAMEPLAY.md` | ~75% | feel, đường cong tiến trình |
-| `COMBAT.md` | ~72% | toàn bộ phía player |
-| `ENEMY_BEHAVIOUR.md` (mới) | **~70%** | hình học path, tham số spawner |
-| `ENCOUNTERS.md` | ~62% | nội dung enemy trong wave |
-| `BALANCE.md` | ~55% | hệ số nâng cấp theo cấp |
-| `ASSETS.md` | ~50% | asset dùng được (chỉ có inventory) |
-| `ECONOMY.md` | ~40% | **mọi con số kinh tế** |
+Bản trước của mục này ghi mỗi file "phủ ~85% · ~72% · ~40%…". **Đó là số tôi tự bịa**, không đo
+được gì. Bỏ hoàn toàn. Thay bằng hai cột đếm được:
 
-> `> Nhận định:` các % này là **tự đánh giá**, không phải số đo. Cách đo khách quan hơn:
-> đếm số bảng có số thật / tổng số bảng cần cho một bản clone (khoảng **60–65%**).
+| File | Đã có số đo được (mức **A**) | Câu hỏi còn mở (mức **D**) |
+|---|---|---|
+| `UI.md` | **125** class · **53** board · **63** popup · `Shop_Cell` 315 ô / 20 board | animation chuyển board |
+| `GAMEPLAY.md` | **7** `PlayMode` · **3** `PVPMode` · 9 nhánh progression | feel · đường cong tiến trình |
+| `COMBAT.md` | **458** `Gun_Attack` → **420** cấu hình · DPS **452** cấu hình | **giá trị** damage player (tên field đã có) |
+| `ENEMY_BEHAVIOUR.md` | **800** `Enemy_Movement` · **399** path · **95** turret | hình học path · tham số 6 spawner |
+| `ENCOUNTERS.md` | **282** wave · **23.757** spawner · **299** stage | enemy nào trong wave nào |
+| `BALANCE.md` | **800** dòng HP · **39** prefab boss | hệ số nâng cấp theo cấp |
+| `ASSETS.md` | **2.185** Sprite / 48,3 MB · **67** page atlas | **giá trị** pivot/border |
+| `ECONOMY.md` | **170** SKU · **6** `PurchaseType` · **19** `AdPos` | **mọi con số giá** |
+
+> **Cách đọc bảng này:** cột giữa là thứ **kiểm lại được bằng script**. Cột phải là thứ
+> **chưa có** — không phải "không lấy được", mà là **chưa chạy công cụ tương ứng** (xem §1.7).
 >
-> **Đây là độ phủ với chuỗi công cụ cũ.** Nếu chạy thêm §1.7 (Cpp2IL + Ghidra + AssetRipper
-> + Frida), ước lượng **85–95%** — vì cả 8 bảng trên đều có đường lấy, không mục nào
-> nằm ngoài dữ liệu.
-
----
+> **Không có con số tổng nào ở đây** vì chưa ai định nghĩa được "một bảng spec đủ" là bao nhiêu
+> bảng. Mọi con số kiểu "phủ 60–65%" trong bản trước đều là **cảm giác**, không phải đo.
 
 ## 4. Vì sao "AI clone được" vẫn đúng — nhưng có điều kiện
 

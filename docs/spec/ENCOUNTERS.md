@@ -386,7 +386,7 @@ class `MapController`.
 | 6 | 1 wave nối wave khác thế nào | **C** — `y_spawn` + `EndPoint` gợi ý tuần tự | |
 | 7 | Wave nào thuộc stage nào | **D** — `Map_Get_Datas.GetListWaves()` trong code | không map được 236 wave → 299 stage |
 | 8 | `KhoaPlayer` / `CheckPlayerNo` hoạt động ra sao | **C** — suy từ tên; `Enemy_Appear.csv` chỉ có ref | cần test · `ENEMY_BEHAVIOUR.md` §6 |
-| 9 | `Wave_9016` không tồn tại (dù `idWave 9016` có trong `14-bosses.csv`) | **A** | boss 9016 dùng wave khác |
+| 9 | Không thấy `Wave_9016` (dù `idWave 9016` có trong `14-bosses.csv`) | **A** | boss 9016 dùng wave khác |
 | 10 | 1 wave tên `unknown` (65 spawner, không thuộc `Wave_NNNN` nào) | **A** — có trong `waves.json` | ảnh hưởng 1/282 wave, 0,3% spawner |
 
 ---
