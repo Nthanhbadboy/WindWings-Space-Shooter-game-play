@@ -102,6 +102,44 @@ def elf_machine(path):
     return struct.unpack("<H", head[18:20])[0]
 
 
+def elf_segments(path):
+    """[(vaddr, file_off, filesz)] của các PT_LOAD — để đổi VA -> offset file."""
+    segs = []
+    try:
+        with open(path, "rb") as f:
+            hdr = f.read(64)
+            if hdr[:4] != b"\x7fELF":
+                return segs
+            phoff = struct.unpack_from("<Q", hdr, 0x20)[0]
+            phentsize = struct.unpack_from("<H", hdr, 0x36)[0]
+            phnum = struct.unpack_from("<H", hdr, 0x38)[0]
+            for i in range(phnum):
+                f.seek(phoff + i * phentsize)
+                ph = f.read(56)
+                if len(ph) < 56 or struct.unpack_from("<I", ph, 0)[0] != 1:
+                    continue                       # PT_LOAD
+                vaddr = struct.unpack_from("<Q", ph, 0x10)[0]
+                off = struct.unpack_from("<Q", ph, 0x08)[0]
+                filesz = struct.unpack_from("<Q", ph, 0x20)[0]
+                segs.append((vaddr, off, filesz))
+    except OSError:
+        pass
+    return segs
+
+
+def va_read(blob, segs, va, n=4):
+    """Đọc n byte tại địa chỉ ảo `va` (theo PT_LOAD); fallback coi va là offset."""
+    for vaddr, off, filesz in segs:
+        if vaddr <= va < vaddr + filesz:
+            pos = off + (va - vaddr)
+            if pos + n <= len(blob):
+                return blob[pos:pos + n]
+            return None
+    if 0 <= va <= len(blob) - n:
+        return blob[va:va + n]
+    return None
+
+
 def read_at(f, off, n):
     f.seek(off)
     return f.read(n)
@@ -121,7 +159,7 @@ def _as_float(u32: int):
     return round(val, 6)
 
 
-def constants_in(code_off, size, blob, md):
+def constants_in(code_off, size, blob, md, segs=None, base=None):
     """Return (consts, asm_lines) for one method body."""
     import capstone
 
@@ -134,12 +172,43 @@ def constants_in(code_off, size, blob, md):
     cs.detail = True
     consts, lines = [], []
     chunk = blob[code_off:code_off + size]
-    insns = list(cs.disasm(chunk, code_off))
+    # Disassemble at the *virtual* address so `adrp` resolves into .rodata.
+    # Slicing still uses the file offset.  base defaults to the offset (same on
+    # most builds, but the ARM64 adrp immediate is PC-page relative).
+    insns = list(cs.disasm(chunk, base if base is not None else code_off))
+    adrp_pages: dict = {}
     pending_floats: list = []
     emitted: set = set()
     for insn in insns:
         text = f"{insn.address:#x}: {insn.mnemonic:8s} {insn.op_str}"
         lines.append(text)
+        # ---- adrp/ldr: hằng số float nằm trong literal pool (.rodata)
+        if insn.mnemonic == "adrp" and md == 0xB7:
+            parts = [x.strip() for x in insn.op_str.split(",")]
+            if len(parts) == 2 and parts[1].startswith("#"):
+                try:
+                    adrp_pages[parts[0]] = int(parts[1][1:], 0)
+                except ValueError:
+                    pass
+        if insn.mnemonic.startswith("add") and md == 0xB7:
+            parts = [x.strip() for x in insn.op_str.split(",")]
+            if len(parts) == 3 and parts[1] in adrp_pages and parts[2].startswith("#"):
+                try:
+                    adrp_pages[parts[0]] = adrp_pages[parts[1]] + int(parts[2][1:], 0)
+                except ValueError:
+                    pass
+        if insn.mnemonic == "ldr" and segs and md == 0xB7:
+            m = re.search(r"\[(x\d+)(?:, #(0x[0-9a-f]+|\d+))?\]", insn.op_str)
+            dst = insn.op_str.split(",")[0].strip()
+            if m and m.group(1) in adrp_pages and dst.startswith(("s", "d")):
+                va = adrp_pages[m.group(1)] + (int(m.group(2), 0) if m.group(2) else 0)
+                raw = va_read(blob, segs, va, 4)
+                if raw and len(raw) == 4:
+                    val = struct.unpack("<f", raw)[0]
+                    if val == val and 1e-6 < abs(val) < 1e6:
+                        consts.append({"kind": "float", "value": round(val, 5),
+                                       "via": "ldr_pool", "va": hex(va),
+                                       "addr": hex(insn.address)})
         # ---- float loaded from the literal pool: ldr sN, [pc, #imm]
         if insn.mnemonic == "ldr" and "[pc," in insn.op_str and md == 0xB7:
             m = re.search(r"\[pc, #(-?0x[0-9a-f]+|-?\d+)\]", insn.op_str)
@@ -288,9 +357,14 @@ def getter_kind(insn_text: str):
     tail = body[cut + 1:]
     if not tail:
         return None
-    tail = [l for l in tail if not l.startswith(("adrp", "mov x0, xzr", "mov x1, xzr"))]
+    tail = [l for l in tail if not l.startswith("mov x0, xzr")]
     if any(re.match(r"(mov|fmov|movz)\s+(w0|s0),\s*#", l) for l in tail):
         return "const"
+    # mov w8, #0x42c80000 ; fmov s0, w8  -> cũng là hằng số (100.0f)
+    for l in tail:
+        m = re.match(r"fmov\s+s0,\s*w(\d+)", l)
+        if m and any(re.match(rf"mov\s+w{m.group(1)},\s*#0x[0-9a-f]{{6,8}}", x) for x in tail):
+            return "const"
     if any(re.match(r"(add|sub|mul|madd|msub|fadd|fsub|fmul|fdiv|scvtf|fcvtzs|cmp|csel)\b", l)
            for l in tail):
         return "computed"
@@ -298,6 +372,36 @@ def getter_kind(insn_text: str):
         return "call"
     if any(re.match(r"ldr\s+(w0|s0),", l) for l in tail):
         return "field"
+    return None
+
+
+def getter_value(insn_text: str):
+    """Giá trị mà getter trả về *thật sự*: chỉ đọc lệnh ghi vào `w0`/`s0`.
+
+    Bản cũ lấy "hằng số gần `ret` nhất" nên dính cả `mov w8,#0x40` dùng cho
+    phép dịch bit — sai. Ở đây chỉ nhận đúng thanh ghi trả về.
+    """
+    body = [l.split(":", 1)[-1].strip() for l in insn_text.split("\n") if l.strip()]
+    body = [l for l in body if not l.startswith(PROLOGUE)]
+    cut = max((i for i, l in enumerate(body) if l.startswith("strb")), default=-1)
+    tail = body[cut + 1:]
+    regs = {}
+    for l in tail:
+        m = re.match(r"mov\s+w(\d+),\s*#(0x[0-9a-f]+|\d+)", l)
+        if m:
+            if m.group(1) == "0":
+                return int(m.group(2), 0)
+            regs["w" + m.group(1)] = int(m.group(2), 0)
+            continue
+        m = re.match(r"fmov\s+s0,\s*#(-?[\d.]+)", l)
+        if m:
+            return float(m.group(1))
+        m = re.match(r"fmov\s+s0,\s*w(\d+)", l)
+        if m and ("w" + m.group(1)) in regs:
+            return _as_float(regs["w" + m.group(1)])
+        m = re.match(r"(?:mov|movz)\s+w0,\s*#(0x[0-9a-f]+|\d+)", l)
+        if m:
+            return int(m.group(1), 0)
     return None
 
 
@@ -314,6 +418,8 @@ def main() -> int:
             return 0
 
     md = elf_machine(so_path)
+    segs = elf_segments(so_path)
+    print(f"PT_LOAD segments: {len(segs)}")
     print(f"ELF machine: {hex(md) if md else 'unknown'} ({'aarch64' if md == 0xB7 else 'arm'})")
     methods = parse_dump(dump_path)
     print(f"methods parsed: {len(methods)}")
@@ -339,12 +445,15 @@ def main() -> int:
                 size = min(max(nxt - offset, 8), 0x1200)     # cap 4.5 KB / method
                 if offset <= 0 or size <= 0:
                     continue
-                consts, lines = constants_in(offset, size, blob, md or 0xB7)
+                consts, lines = constants_in(offset, size, blob, md or 0xB7, segs,
+                                             base=rva or offset)
                 annotate("\n".join(lines), consts)
                 body_text = "\n".join(lines)
                 pure = is_pure_getter(body_text)
                 gkind = getter_kind(body_text)
+                gvalue = getter_value(body_text) if gkind else None
                 out.append({"method": name, "signature": sig, "offset": hex(offset),
+                            "getter_value": gvalue,
                             "rva": hex(rva), "bytes": size, "pure_getter": pure,
                             "getter_kind": gkind,
                             "constants": consts})
@@ -365,13 +474,15 @@ def main() -> int:
                            if c["kind"] == "int" and c["value"] > 1 and not c.get("note")})
             getters = [{"method": m["method"], "signature": m["signature"],
                         "kind": m.get("getter_kind"),
-                        "value": next((c["value"] for c in m["constants"]
-                                       if c.get("role") == "return"), None)}
+                        "value": m.get("getter_value")}
                        for m in out if m.get("getter_kind")]
             gkind = Counter(g["kind"] for g in getters)
             arith = sorted({(c.get("role"), c["value"]) for m in out for c in m["constants"]
                             if str(c.get("role", "")).startswith("arith")})
+            pool = [(m["method"], c["value"], c.get("va"))
+                    for m in out for c in m["constants"] if c.get("via") == "ldr_pool"]
             summary[cls] = {"methods": len(out), "floats": floats[:40], "ints": ints[:40],
+                            "pool_floats": pool[:40],
                             "with_constants": sum(1 for m in out if m["constants"]),
                             "getters": getters, "getter_kinds": dict(gkind),
                             "arith": arith[:60]}
@@ -404,6 +515,22 @@ def main() -> int:
     lines += ["| **tổng** | "
               f"{total_kinds.get('field', 0)} | {total_kinds.get('computed', 0)} | "
               f"{total_kinds.get('call', 0)} | **{total_kinds.get('const', 0)}** |", ""]
+
+    pool_rows = [(cls, meth, val, va) for cls, info in sorted(summary.items())
+                 for meth, val, va in info.get("pool_floats", [])]
+    if pool_rows:
+        lines += ["### Float đọc từ literal pool (`.rodata`) — số thật, không phải suy luận", "",
+                  "`adrp xN, #page` + `ldr sM, [xN, #off]` trỏ vào bảng float trong `.rodata`;",
+                  "script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte. Đây là hằng số **có thật trong file**,",
+                  "nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.", "",
+                  "| class | method | giá trị | VA |", "|---|---|---:|---|"]
+        seen = set()
+        for cls, meth, val, va in pool_rows:
+            if (cls, meth, val) in seen:
+                continue
+            seen.add((cls, meth, val))
+            lines.append(f"| `{cls}` | `{meth}` | {val} | `{va}` |")
+        lines.append("")
 
     consts_rows = [(cls, g) for cls, info in sorted(summary.items())
                    for g in info.get("getters", []) if g.get("kind") == "const"]
