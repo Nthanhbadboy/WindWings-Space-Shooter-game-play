@@ -83,6 +83,27 @@ jobs:
                       print('extracted', n, os.path.getsize(out))
                   except KeyError:
                       print('missing', n)
+          # every serialized file under assets/bin/Data (audio FSB, .resS, bundles)
+          listing = []
+          with zipfile.ZipFile(base) as z:
+              for n in z.namelist():
+                  if not n.startswith('assets/bin/Data/'):
+                      continue
+                  if not n.endswith(('.unity3d', '.resource', '.resS', '.assets', '.bundle', '.split0')):
+                      continue
+                  try:
+                      out = '/tmp/apk/extract/' + os.path.basename(n)
+                      if os.path.exists(out):
+                          listing.append((n, os.path.getsize(out), 'cached'))
+                          continue
+                      with z.open(n) as s2, open(out, 'wb') as d2:
+                          d2.write(s2.read())
+                      listing.append((n, os.path.getsize(out), 'extracted'))
+                  except Exception as e:
+                      listing.append((n, 0, f'error {e!r}'))
+          with open('/tmp/apk/extract/_listing.txt', 'w') as fh:
+              for n, sz, st in sorted(listing):
+                  fh.write(f'{sz:>12}  {st:12}  {n}\n')
           with zipfile.ZipFile(config) as z:
               for n in ['lib/arm64-v8a/libil2cpp.so', 'lib/arm64-v8a/libunity.so']:
                   out = '/tmp/apk/extract/' + os.path.basename(n)
@@ -313,6 +334,36 @@ jobs:
             fi
           done
           gh release upload "$TAG" "$D/manifest-full.csv" --clobber -R "$GITHUB_REPOSITORY" || true
+
+      - name: Diagnostics
+        if: always()
+        run: |
+          {
+            echo "# Pipeline diagnostics"
+            echo
+            echo "## Unity payload"; echo '```'
+            ls -lh /tmp/apk/extract | head -40
+            echo '```'
+            echo; echo "## assets/bin/Data listing (from APK)"; echo '```'
+            head -60 /tmp/apk/extract/_listing.txt 2>/dev/null || echo "listing missing"
+            echo '```'
+            echo; echo "## UnityPy import smoke test"; echo '```'
+            python3 -c "import UnityPy; print('UnityPy', UnityPy.__version__)" 2>&1
+            python3 -c "from UnityPy.export.AudioClipConverter import extract_audioclip_samples; print('audio converter OK')" 2>&1
+            python3 -c "from UnityPy.helpers.TypeTreeGenerator import TypeTreeGenerator; print('typetree OK')" 2>&1
+            echo '```'
+            echo; echo "## Export output"; echo '```'
+            for d in /tmp/apk/unity/export/Sprite /tmp/apk/unity/export/Texture2D /tmp/apk/unity/export/AudioClip /tmp/apk/unity/audio; do
+              printf '%-40s %s files %s\n' "$d" "$(ls -1 "$d" 2>/dev/null | wc -l)" "$(du -sh "$d" 2>/dev/null | cut -f1)"
+            done
+            echo '```'
+            echo; echo "## Asset gallery"; echo '```'
+            ls -la docs/assets docs/assets/contact-sheets 2>/dev/null | head -30 || echo "docs/assets missing"
+            echo '```'
+            echo; echo "## Audio diagnose"; echo '```'
+            cat /tmp/apk/unity/audio/audio-diagnose.json 2>/dev/null | head -c 2000 || echo "no audio diagnose"
+            echo '```'
+          } > docs/apk-analysis/18-pipeline-diagnostics.md
 
       - name: Upload analysis artifacts
         if: always()

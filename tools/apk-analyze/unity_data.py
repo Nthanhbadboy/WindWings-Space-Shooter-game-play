@@ -97,7 +97,7 @@ RUNTIME = {
 
 TARGETS = CONFIG | RUNTIME
 
-MAX_READ_PER_CLASS = int(os.environ.get("MAX_READ_PER_CLASS", "800"))
+MAX_READ_PER_CLASS = int(os.environ.get("MAX_READ_PER_CLASS", "1500"))
 MAX_DUMP_PER_CLASS = int(os.environ.get("MAX_DUMP_PER_CLASS", "20"))
 MAX_CSV_ROWS = int(os.environ.get("MAX_CSV_ROWS", "1200"))
 

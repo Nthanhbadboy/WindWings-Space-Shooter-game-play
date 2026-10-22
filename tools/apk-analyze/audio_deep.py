@@ -68,6 +68,13 @@ def main() -> int:
             if res is not None:
                 stats["has_resource"] += 1
                 entry["has_resource"] = True
+                if isinstance(res, dict):
+                    entry["resource"] = {k: v for k, v in res.items()
+                                         if k in ("m_Source", "m_Offset", "m_Size")}
+                    stats["res_bytes"] += int(res.get("m_Size") or 0)
+                    src = str(res.get("m_Source") or "")
+                    if src:
+                        stats[f"src:{src[:40]}"] += 1
             sd = tree.get("m_StreamData") if isinstance(tree, dict) else None
             if isinstance(sd, dict):
                 entry["streamed"] = bool(sd.get("path") or sd.get("offset"))
@@ -89,7 +96,7 @@ def main() -> int:
                 if route == "samples":
                     data = getattr(head, "samples", None) or {}
                 else:
-                    from UnityPy.helpers.AudioClipConverter import extract_audioclip_samples
+                    from UnityPy.export.AudioClipConverter import extract_audioclip_samples
                     data = extract_audioclip_samples(head) or {}
             except Exception as e:  # noqa: BLE001
                 stats[f"{route}_error"] += 1
@@ -105,6 +112,8 @@ def main() -> int:
                         f.write(blob)
                     entry["saved"] = fn
                 break
+            if not data:
+                stats[f"{route}_empty"] += 1
         if not entry["samples"]:
             stats["silent"] += 1
         rows.append(entry)

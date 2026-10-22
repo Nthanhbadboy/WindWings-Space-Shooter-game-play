@@ -14,7 +14,10 @@ import sys
 from collections import Counter, defaultdict
 
 import UnityPy
-from UnityPy.helpers.AudioClipConverter import extract_audioclip_samples
+try:
+    from UnityPy.export.AudioClipConverter import extract_audioclip_samples
+except Exception:  # noqa: BLE001  older UnityPy layouts
+    extract_audioclip_samples = None
 
 DATA = os.environ.get("UNITY_DATA", "/tmp/apk/extract")
 OUT = "/tmp/apk/unity"
@@ -248,7 +251,7 @@ def export_assets(env) -> None:
             elif t == "AudioClip":
                 samples = None
                 try:
-                    samples = extract_audioclip_samples(d)
+                    samples = extract_audioclip_samples(d) if extract_audioclip_samples else None
                 except Exception:  # noqa: BLE001
                     samples = None
                 if not samples:
@@ -288,12 +291,16 @@ def export_assets(env) -> None:
 
 def load_env():
     """Load the serialized files we extracted, skipping ones UnityPy rejects."""
-    candidates = [
-        os.path.join(DATA, "data.unity3d") if os.path.isdir(DATA) else DATA,
-        os.path.join(DATA, "resources.resource"),
-        os.path.join(DATA, "globalgamemanagers"),
-        os.path.join(DATA, "globalgamemanagers.assets"),
-    ]
+    if os.path.isdir(DATA):
+        preferred = ["data.unity3d", "globalgamemanagers", "globalgamemanagers.assets"]
+        found = sorted(
+            f for f in os.listdir(DATA)
+            if f.endswith((".unity3d", ".resource", ".resS", ".assets", ".bundle"))
+        )
+        ordered = [f for f in preferred if f in found] + [f for f in found if f not in preferred]
+        candidates = [os.path.join(DATA, f) for f in ordered]
+    else:
+        candidates = [DATA]
     candidates = [p for p in candidates if os.path.isfile(p)]
     if not candidates:
         raise SystemExit(f"no unity files under {DATA}")
