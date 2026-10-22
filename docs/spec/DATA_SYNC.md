@@ -370,6 +370,73 @@ chứ không sửa được bằng `depth`.
 
 ---
 
+### 7.7 Dữ liệu mới `9033cf7`: `Enemy_Controller` là **hub** — ghép **100%** không cần tên
+
+Bản `9033cf7` thêm **`reverse-engineering/raw/typetrees/*.jsonl.gz`**: 45 class · **24.706 dòng** typetree raw.
+
+Trong đó `Enemy_Controller` **981 dòng** (**981 `path_id` duy nhất** — 1 controller cho 1 enemy).
+Mỗi controller khai báo PathID của **9 script con**:
+
+| Field | Trỏ tới | PathID khác nhau | Khớp bảng đã có |
+|---|---|---:|---|
+| `dataScript` | `Enemy_Datas` | 981 | **981 / 981 = 100%** |
+| `healthScript` | `Enemy_Health` | 981 | **981 / 981 = 100%** |
+| `movementScript` | `Enemy_Movement` | 981 | **981 / 981 = 100%** |
+| `appearScript` | `Enemy_Appear` | 981 | 914 / 981 = **93,2%** |
+| `physicsScript` | `Enemy_Physics` | 981 | 0 — chưa export |
+| `destroyScript` | `Enemy_Destroy` | 981 | 0 — chưa export |
+| `uiScript` | `Enemy_UI` | 981 | 0 — chưa export |
+| `burnedScript` | `Enemy_Burned` | 689 | 0 — chưa export |
+| `stunScript` | `Enemy_Stun` | 137 | 0 — chưa export |
+
+`appearScript` **93,2% là thật, không phải lỗi**: **67 / 981** enemy không gắn `Enemy_Appear` —
+hiện ra ngay, không có hiệu ứng xuất hiện.
+
+`Enemy_Sub` (981 dòng) cũng trỏ `controller` → khớp **981 / 981 = 100%**.
+
+> **Nhận định (mức A) — lật ngược §7.1–§7.6:** không cần `gameobject_path`, không cần `depth=10`,
+> không cần bảng `Transform`. Mỗi enemy **tự khai báo PathID của từng bộ phận**.
+> Ghép là **tra bảng theo khoá số**, không phải đoán theo tên.
+>
+> **Hệ quả trực tiếp:** lớp kịch bản #4 (`Enemy_Physics`, trước đây 0%) đã có **981 PathID biết trước**.
+> Chỉ cần export `Enemy_Physics` (981 dòng) là lớp đó **0% → 100%**, không phải ghép lại gì.
+
+Bằng chứng phụ: `Enemy_Controller._gameobject` chỉ **378 / 981 (38,5%)** có tiền tố mã prefab —
+tức nếu vẫn ghép theo chuỗi tên thì **61,5% sẽ mất**, trong khi ghép theo PathID được **100%**.
+
+### 7.8 Bản `9033cf7`: cap **1.500**, và chỉ còn cắt lớp sinh quân
+
+| Bảng | Tổng thật | `821efc5` | `/tmp/v3` | `9033cf7` |
+|---|---:|---:|---:|---:|
+| `Enemy_Datas` · `Enemy_Movement` · `Enemy_Sub` | 981 | 800 | 981 | **981** ✅ |
+| `Enemy_Health` | 981 | 800 | — | **981** ✅ |
+| `Enemy_Controller` | 981 | 800 | — | **981** ✅ |
+| `Enemy_Appear` | 914 | 800 | — | **914** ✅ |
+| `Wave` | 686 | 800 | — | **686** ✅ |
+| `Spawner` | 1.370 | 800 | — | **1.370 (100%)** ✅ |
+| `Call_Data` | 23.757 | 800 | 1.200 | **1.500 (6,3%)** ⚠ |
+| `PointToPoint_Spawner` | 13.292 | 800 | — | **1.500 (11,3%)** ⚠ |
+| `PinMap_Spawner` | 3.165 | 800 | — | **1.500 (47,4%)** ⚠ |
+| `Rocket_Spawner` | 2.019 | 800 | — | **1.500 (74,3%)** ⚠ |
+| `PathCreator` | 1.714 | 800 | — | **1.500 (87,5%)** ⚠ |
+| `Path_Spawner` | 1.688 | 800 | — | **1.500 (88,9%)** ⚠ |
+
+Cap **không còn là 800 mà là 1.500** (6 bảng đúng 1.500 dòng — dấu vết cắt).
+
+> **Nhận định (mức A):** cả 6 bảng bị cắt đều thuộc **lớp sinh quân + đường bay**;
+> **không bảng nào thuộc enemy/boss**. Vì `waves.json` đã đếm đủ **23.757 = `Call_Data`**,
+> phần cắt này **không làm sai số quân** — chỉ thiếu chi tiết từng spawner.
+
+Hai bảng mới đáng chú ý chưa từng dùng:
+
+| Bảng | Dòng | Field đáng chú ý |
+|---|---:|---|
+| `Enemy_Health` | 981 | **`noDamage` = True 241 / False 740** ⇒ **24,6%** bộ phận enemy **không nhận damage** |
+| `Wave` | 686 | `indexWave` (toàn 0) · `startPoint` + `endPoint` (686/686 có PathID) — đường bay **điểm đầu → điểm cuối** |
+
+`noDamage` là số **chưa có trong bất kỳ file spec nào**: gần **1/4** bộ phận enemy là khiên/giáp/trang trí
+không ăn damage — giải thích vì sao bắn vào một số chỗ không mất máu.
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |
