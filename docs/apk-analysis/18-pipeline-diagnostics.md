@@ -3,25 +3,25 @@
 ## Unity payload
 ```
 total 336M
--rw-r--r-- 1 runner runner   11K Oct 22 21:25 RuntimeInitializeOnLoads.json
--rw-r--r-- 1 runner runner  3.9K Oct 22 21:25 ScriptingAssemblies.json
--rw-r--r-- 1 runner runner   120 Oct 22 21:25 _listing.txt
--rw-r--r-- 1 runner runner   61M Oct 22 21:25 data.unity3d
--rw-r--r-- 1 runner runner  8.3M Oct 22 21:25 global-metadata.dat
--rw-r--r-- 1 runner runner   45M Oct 22 21:25 libil2cpp.so
--rw-r--r-- 1 runner runner   17M Oct 22 21:25 libunity.so
--rw-r--r-- 1 runner runner  106M Oct 22 21:33 re-libil2cpp.asm
--rw-r--r-- 1 runner runner   17K Oct 22 21:33 re-libil2cpp.evidence.json
--rw-r--r-- 1 runner runner  6.0K Oct 22 21:33 re-libil2cpp.json
--rw-r--r-- 1 runner runner   75K Oct 22 21:33 re-libil2cpp.md
--rw-r--r-- 1 runner runner  872K Oct 22 21:33 re-libil2cpp.pdf
--rw-r--r-- 1 runner runner   92M Oct 22 21:34 re-libunity.asm
--rw-r--r-- 1 runner runner   17K Oct 22 21:33 re-libunity.evidence.json
--rw-r--r-- 1 runner runner  7.8K Oct 22 21:33 re-libunity.json
--rw-r--r-- 1 runner runner   49K Oct 22 21:34 re-libunity.md
--rw-r--r-- 1 runner runner  699K Oct 22 21:34 re-libunity.pdf
--rw-r--r-- 1 runner runner 1023K Oct 22 21:25 resources.arsc
--rw-r--r-- 1 runner runner  4.9M Oct 22 21:25 resources.resource
+-rw-r--r-- 1 runner runner   11K Oct 22 21:35 RuntimeInitializeOnLoads.json
+-rw-r--r-- 1 runner runner  3.9K Oct 22 21:35 ScriptingAssemblies.json
+-rw-r--r-- 1 runner runner   120 Oct 22 21:35 _listing.txt
+-rw-r--r-- 1 runner runner   61M Oct 22 21:35 data.unity3d
+-rw-r--r-- 1 runner runner  8.3M Oct 22 21:35 global-metadata.dat
+-rw-r--r-- 1 runner runner   45M Oct 22 21:35 libil2cpp.so
+-rw-r--r-- 1 runner runner   17M Oct 22 21:35 libunity.so
+-rw-r--r-- 1 runner runner  106M Oct 22 21:46 re-libil2cpp.asm
+-rw-r--r-- 1 runner runner   17K Oct 22 21:45 re-libil2cpp.evidence.json
+-rw-r--r-- 1 runner runner  6.0K Oct 22 21:45 re-libil2cpp.json
+-rw-r--r-- 1 runner runner   75K Oct 22 21:46 re-libil2cpp.md
+-rw-r--r-- 1 runner runner  872K Oct 22 21:46 re-libil2cpp.pdf
+-rw-r--r-- 1 runner runner   92M Oct 22 21:46 re-libunity.asm
+-rw-r--r-- 1 runner runner   17K Oct 22 21:46 re-libunity.evidence.json
+-rw-r--r-- 1 runner runner  7.8K Oct 22 21:46 re-libunity.json
+-rw-r--r-- 1 runner runner   49K Oct 22 21:46 re-libunity.md
+-rw-r--r-- 1 runner runner  699K Oct 22 21:46 re-libunity.pdf
+-rw-r--r-- 1 runner runner 1023K Oct 22 21:35 resources.arsc
+-rw-r--r-- 1 runner runner  4.9M Oct 22 21:35 resources.resource
 ```
 
 ## assets/bin/Data listing (from APK)
@@ -48,35 +48,35 @@ typetree OK
 ## Asset gallery
 ```
 docs/assets:
-total 416
-drwxr-xr-x 3 runner runner   4096 Oct 22 21:24 .
-drwxr-xr-x 5 runner runner   4096 Oct 22 21:24 ..
--rw-r--r-- 1 runner runner   2190 Oct 22 21:26 INDEX.md
--rw-r--r-- 1 runner runner   7275 Oct 22 21:26 audio-index.csv
-drwxr-xr-x 2 runner runner   4096 Oct 22 21:26 contact-sheets
--rw-r--r-- 1 runner runner 169413 Oct 22 21:26 manifest.csv
--rw-r--r-- 1 runner runner 220632 Oct 22 21:26 sprites-index.csv
--rw-r--r-- 1 runner runner   5123 Oct 22 21:26 stats.json
+total 364
+drwxr-xr-x 3 runner runner   4096 Oct 22 21:35 .
+drwxr-xr-x 5 runner runner   4096 Oct 22 21:35 ..
+-rw-r--r-- 1 runner runner   2190 Oct 22 21:37 INDEX.md
+-rw-r--r-- 1 runner runner   7275 Oct 22 21:37 audio-index.csv
+drwxr-xr-x 2 runner runner   4096 Oct 22 21:37 contact-sheets
+-rw-r--r-- 1 runner runner 146648 Oct 22 21:37 manifest.csv
+-rw-r--r-- 1 runner runner 191560 Oct 22 21:37 sprites-index.csv
+-rw-r--r-- 1 runner runner   4634 Oct 22 21:37 stats.json
 
 docs/assets/contact-sheets:
-total 8832
-drwxr-xr-x 2 runner runner   4096 Oct 22 21:26 .
-drwxr-xr-x 3 runner runner   4096 Oct 22 21:24 ..
--rw-r--r-- 1 runner runner 275298 Oct 22 21:26 atlas-01.jpg
--rw-r--r-- 1 runner runner 252528 Oct 22 21:26 atlas-02.jpg
--rw-r--r-- 1 runner runner 222282 Oct 22 21:26 atlas-03.jpg
--rw-r--r-- 1 runner runner 225186 Oct 22 21:26 atlas-04.jpg
--rw-r--r-- 1 runner runner 205562 Oct 22 21:26 atlas-05.jpg
--rw-r--r-- 1 runner runner 314050 Oct 22 21:26 atlas-06.jpg
--rw-r--r-- 1 runner runner 119265 Oct 22 21:26 atlas-07.jpg
--rw-r--r-- 1 runner runner 177077 Oct 22 21:26 background-01.jpg
--rw-r--r-- 1 runner runner 189239 Oct 22 21:26 background-02.jpg
--rw-r--r-- 1 runner runner  41527 Oct 22 21:26 background-03.jpg
--rw-r--r-- 1 runner runner 177122 Oct 22 21:26 bosses-01.jpg
--rw-r--r-- 1 runner runner 176346 Oct 22 21:26 bullet-01.jpg
--rw-r--r-- 1 runner runner  38495 Oct 22 21:26 bullet-02.jpg
--rw-r--r-- 1 runner runner 110775 Oct 22 21:26 drones-01.jpg
--rw-r--r-- 1 runner runner 119975 Oct 22 21:26 enemy-01.jpg
+total 7400
+drwxr-xr-x 2 runner runner   4096 Oct 22 21:37 .
+drwxr-xr-x 3 runner runner   4096 Oct 22 21:35 ..
+-rw-r--r-- 1 runner runner 233344 Oct 22 21:37 atlas-01.jpg
+-rw-r--r-- 1 runner runner 326577 Oct 22 21:37 atlas-02.jpg
+-rw-r--r-- 1 runner runner  14242 Oct 22 21:37 atlas-03.jpg
+-rw-r--r-- 1 runner runner 177064 Oct 22 21:37 background-01.jpg
+-rw-r--r-- 1 runner runner 142920 Oct 22 21:37 background-02.jpg
+-rw-r--r-- 1 runner runner 166141 Oct 22 21:37 bosses-01.jpg
+-rw-r--r-- 1 runner runner 175411 Oct 22 21:37 bullet-01.jpg
+-rw-r--r-- 1 runner runner  13861 Oct 22 21:37 bullet-02.jpg
+-rw-r--r-- 1 runner runner  56140 Oct 22 21:37 drones-01.jpg
+-rw-r--r-- 1 runner runner 104215 Oct 22 21:37 enemy-01.jpg
+-rw-r--r-- 1 runner runner  31031 Oct 22 21:37 font-01.jpg
+-rw-r--r-- 1 runner runner 204312 Oct 22 21:37 fx-01.jpg
+-rw-r--r-- 1 runner runner  56927 Oct 22 21:37 fx-02.jpg
+-rw-r--r-- 1 runner runner  16007 Oct 22 21:37 items-01.jpg
+-rw-r--r-- 1 runner runner 125812 Oct 22 21:37 ships-01.jpg
 ```
 
 ## Step logs (tail)
@@ -118,11 +118,11 @@ source files: ['/tmp/apk/extract/data.unity3d', '/tmp/apk/extract/resources.reso
 - Font: 1 files, 0.0B
 
 ===== /tmp/apk/logs/gallery.log
-assets found: 2587
+assets found: 2197
 # Asset tham chiếu — WindWings 1.3.118
 
-- Tổng asset: **2587**  (148.5MB)
-- Contact sheet: **47** file trong [`contact-sheets/`](contact-sheets/)
+- Tổng asset: **2197**  (133.6MB)
+- Contact sheet: **42** file trong [`contact-sheets/`](contact-sheets/)
 - Ảnh gốc full-size: artifact `windwings-analysis` (mục `/tmp/apk/unity/export`)
   và draft release `windwings-assets-1.3.118`.
 
@@ -131,15 +131,15 @@ assets found: 2587
 | nhóm | số lượng | mô tả | contact sheet |
 |---|---:|---|---|
 | `unclassified` | 1554 | Sprite không rõ nguồn (xem cột `atlas`) | [25 sheet](contact-sheets/unclassified-01.jpg) |
-| `atlas` | 411 | Texture atlas gốc (UI + nhân vật gộp) | [7 sheet](contact-sheets/atlas-01.jpg) |
-| `background` | 142 | Nền, tinh vân, hành tinh | [3 sheet](contact-sheets/background-01.jpg) |
-| `fx` | 87 | Hiệu ứng, nổ, trail | [2 sheet](contact-sheets/fx-01.jpg) |
-| `ui` | 87 | UI: icon, nút, panel, khung | [2 sheet](contact-sheets/ui-01.jpg) |
-| `bullet` | 77 | Đạn, laser, tên lửa | [2 sheet](contact-sheets/bullet-01.jpg) |
+| `atlas` | 132 | Texture atlas gốc (UI + nhân vật gộp) | [3 sheet](contact-sheets/atlas-01.jpg) |
+| `background` | 109 | Nền, tinh vân, hành tinh | [2 sheet](contact-sheets/background-01.jpg) |
+| `fx` | 80 | Hiệu ứng, nổ, trail | [2 sheet](contact-sheets/fx-01.jpg) |
+| `ui` | 73 | UI: icon, nút, panel, khung | [2 sheet](contact-sheets/ui-01.jpg) |
 | `audio` | 69 | Âm thanh | — |
-| `ships` | 50 | Tàu người chơi (sprite id = ship id) | [1 sheet](contact-sheets/ships-01.jpg) |
-| `enemy` | 36 | Enemy thường | [1 sheet](contact-sheets/enemy-01.jpg) |
-sheets: 47, audio: 69
+| `bullet` | 67 | Đạn, laser, tên lửa | [2 sheet](contact-sheets/bullet-01.jpg) |
+| `bosses` | 32 | Boss theo wave (idWave) | [1 sheet](contact-sheets/bosses-01.jpg) |
+| `enemy` | 31 | Enemy thường | [1 sheet](contact-sheets/enemy-01.jpg) |
+sheets: 42, audio: 69
 
 ===== /tmp/apk/logs/probe.log
 | SpriteAtlas | 66 |
@@ -203,7 +203,7 @@ errors: {'script': 1}
 # Wave composition (campaign maps)
 
 - waves: **282**
-- spawners: **11090**
+- spawners: **11093**
 - typetree backend: **AssetStudio**
 
 - lỗi đọc: 1 object
