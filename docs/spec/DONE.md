@@ -279,6 +279,62 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 > Với một game 2.5D, "phải làm" nghĩa là **~641 hình + ~11k placement + vài chục vòng test** —
 > đó là **lịch**, không phải **rào cản**.
 
+## 4.2 Phạm vi đã chốt — **L1: giống cơ chế, không cần giống số**
+
+> **Quyết định của chủ dự án (ghi lại nguyên văn ý):** bắt chước + sáng tạo đôi chút;
+> **không cần** test cho giống bản gốc; **giống cơ chế là đủ**.
+>
+> Đây là **mục tiêu L1**, và nó **hợp lệ** — không phải nhượng bộ. Nhiều game thành công
+> đi đúng con đường này. Mục này ghi lại **cái gì rơi khỏi kế hoạch** khi chọn L1.
+
+### Cái gì rơi khỏi kế hoạch
+
+| Mục | Trước (mục tiêu L3) | **Sau khi chốt L1** | Hệ quả |
+|---|---|---|---|
+| **L2 — đúng số** | bắt buộc | ❌ **bỏ** | không cần chạy AssetRipper/Ghidra để **khớp số** |
+| **L3 — không phân biệt được** | bắt buộc | ❌ **bỏ** | không cần blind A/B, không cần N người |
+| Giá trị **4.861** `[SerializeField]` | phải có | 🟡 **tuỳ chọn** | dùng làm **tham khảo**, không phải để khớp |
+| Giá trị **957** `static` | phải có | 🟡 **tuỳ chọn** | " |
+| **45.659** tham chiếu enemy | phải resolve | 🟡 **tuỳ chọn** | danh sách 92 prefab đã đủ để chọn |
+| 1.416 chuỗi localization | phải có | ❌ **bỏ** | viết text riêng |
+| 170 SKU IAP | phải khớp | ❌ **bỏ** | tự thiết kế shop |
+| 282 wave | phải đủ | 🟡 **tự chọn số** | 20–40 wave là đủ cho bản đầu |
+
+### Cái gì **vẫn** phải có — vì L1 cần
+
+Đây là phần **không đọc được ở đâu khác**, và cũng là phần **đã có sẵn trong spec**:
+
+| Cần | Đã có | Nguồn |
+|---|---|---|
+| Vùng chơi | **20 × 25** unit, `border` 15/−10/10/−15 | `ENEMY_BEHAVIOUR.md` §1 |
+| Bán kính va chạm đạn | **15** unit (799/800) | `COMBAT.md` |
+| Tốc độ enemy | **0,2–30**, median **5,0**; wave 3,5 · boss 5,0 | `ENEMY_BEHAVIOUR.md` §1 |
+| 48 archetype spawn + tham số | bảng đầy đủ (`rate` 1,0 · `y` 9,6 · `spawn_type`) | `ENCOUNTERS.md` §2.4 |
+| 92 prefab enemy + HP | 800 dòng HP, 39 boss | `BALANCE.md` §2–5 |
+| 420 cấu hình súng + damage | damage 40–1.200, median 400 | `COMBAT.md` §2 |
+| 6 dạng đạn + `bltSpeed`/`lifetime` | đầy đủ | `COMBAT.md` §7 |
+| Nhịp wave | median **28** placement/wave, max 255 | `ENCOUNTERS.md` §1.3 |
+| 9 component/enemy | kiến trúc chuẩn | `ENEMY_BEHAVIOUR.md` §6 |
+| Atlas + tỉ lệ màn | 9:16, page ≤ 2048², **~641 hình** | `ASSETS.md`, `DONE.md` §1.6 |
+
+> **Không có dòng nào trong bảng trên cần chạy thêm tool.** Toàn bộ đã nằm trong 14 file spec.
+
+### Vậy thứ duy nhất còn lại là gì
+
+| Việc | Có bắt buộc? | Ghi chú |
+|---|---|---|
+| Dựng khung gameplay theo 9 component + 48 archetype | ✅ **bắt buộc** | AI làm được, spec đủ số |
+| Tự chọn **damage/HP player** | ✅ bắt buộc | không cần khớp bản gốc — **tự cân** |
+| Tự chọn **số wave** (khuyến nghị 20–40) | ✅ bắt buộc | không cần 282 |
+| Vẽ **~641 hình** (hoặc ít hơn nếu giảm phạm vi) | ✅ bắt buộc | **đường găng thật** |
+| Viết text riêng + audio riêng | ✅ bắt buộc | |
+| Playtest **để tự thấy ổn**, không để khớp bản gốc | ✅ bắt buộc | rẻ hơn nhiều so với L3 |
+| Chạy AssetRipper/Ghidra | ❌ **không** | chỉ khi tò mò một thông số cụ thể |
+
+> `> Kết luận (mức B):` chọn L1 làm **rơi khỏi kế hoạch toàn bộ loại 1 và 2** ở §4.1
+> (chưa đọc · chưa chọn) — tức **hai tool và mọi tranh luận về dung sai**.
+> Phần còn lại là **loại 3: sản xuất**, và quy mô do bạn tự đặt, không do bản gốc áp.
+
 ## 5. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |
@@ -291,3 +347,6 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 
 > Không có dòng nào trong bảng này là "không thể". Cả 5 dòng đều là **"chưa chọn"** hoặc
 > **"chưa chạy"** — hai trạng thái khác nhau, và cả hai đều **đổi được**.
+>
+> **Sau khi chốt phạm vi L1 (§4.2):** dòng 1, 2 và 4 **không còn là yêu cầu** — chúng chỉ còn
+> là thông tin tham khảo. Dòng 3 và 5 vẫn phải chọn, nhưng chọn **theo ý mình**, không theo bản gốc.

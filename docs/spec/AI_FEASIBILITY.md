@@ -43,7 +43,7 @@ hiểu là **A** (đo được). Nguyên tắc: **không dùng % cho thứ chưa
 | **Đây là game gì?** | **2.5D sprite + physics 2D** — cả game có **2 mesh**, không có `SkinnedMeshRenderer`, `MeshCollider`; chỉ **7** `BoxCollider` 3D so với **5.424** `BoxCollider2D` (§1.8) |
 | **Clone dễ không?** | **Cơ chế: dễ** — thiếu cả 3 thứ khó nhất: **3D, netcode realtime, AI dò đường** (Photon/Mirror/NGO = **0**) (§1.9). Nhưng clone cơ chế chỉ là **~15–20%** công việc |
 | **Clone "hoàn hảo" được?** | **Cách nói cũ của tôi sai.** Thực tế: **11.743** field đã biết **tên+kiểu** nhưng **chưa biết giá trị**; **25** hằng số đọc trực tiếp. Tầng sản phẩm **không nằm trong file tĩnh**, nhưng quan sát được bằng cách khác (§1.11) |
-| **Đủ làm game khác cùng đẳng cấp?** | 🟡 **Có điều kiện** — spec cho **v1.0**; chênh lệch tới **v1.3.118** là **118 vòng build** không có trong file nào (§1.12). Không có nghĩa "không làm được" |
+| **Đủ làm game khác cùng đẳng cấp?** | ✅ **Đủ cho mục tiêu đã chốt: L1** — giống cơ chế, tự cân số, không cần khớp bản gốc (`DONE.md` §4.2). Chênh lệch tới **v1.3.118** là **118 vòng build**, giờ **không còn là yêu cầu** |
 | Rủi ro pháp lý | Thấp nếu đổi art/tên; **cao** nếu dùng lại asset hoặc tên boss |
 
 ### 0.1 Ba mức "dịch ngược đầy đủ" — và mức nào cho ra cái gì

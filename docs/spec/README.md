@@ -13,6 +13,10 @@ không phải để clone y nguyên. Toàn bộ asset gốc (sprite, atlas, Spin
 > **Đọc trước khi tin bất kỳ con số nào:** xem `AI_FEASIBILITY.md` §0.0 — quy ước **mức chắc chắn
 > A/B/C/D**. Tài liệu này **không** dùng % cho thứ chưa đo, và **không** viết "không thể" cho thứ
 > chỉ là "chưa chạy công cụ".
+>
+> **Phạm vi đã chốt:** mục tiêu là **L1 — giống cơ chế, sáng tạo phần còn lại** (`DONE.md` §4.2).
+> Không cần khớp số với bản gốc, không cần test đối chiếu. Vì vậy **AssetRipper / Ghidra là tuỳ chọn**,
+> và mọi con số còn thiếu chỉ là **tham khảo**, không phải điều kiện.
 
 ---
 
@@ -126,6 +130,7 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | 2i | **Định nghĩa "chất lượng tương đương"** (§1.12): 6 tiêu chí đo được; spec cho **v1.0**, chênh lệch tới **v1.3.118** là 118 vòng build | ✅ xong |
 | 2j | **Rà lại văn phong khẳng định** (§0.0): thêm quy ước mức **A/B/C/D**, bỏ hết % độ phủ tự đánh giá, sửa 3 con số của chính mình | ✅ xong |
 | 2k | `DONE.md` — 4 mức "hoàn hảo" kiểm được + hoá đơn sản xuất; tách **đơn giản** khỏi **nhỏ** | ✅ xong |
+| 2l | **Chốt phạm vi L1** (§4.2): giống cơ chế, không cần giống số ⇒ bỏ L2/L3, bỏ 2 tool, bỏ 1.416 chuỗi | ✅ xong |
 
 **Đã sửa so với vòng 1** (đều do dữ liệu bóc lại khác bản trước): HP 981 → **800** dòng,
 `Texture2D` 654 → **653**, `SkeletonDataAsset` 25 → **27**, page 66/32,5 MB → **67/31,0 MB**,
