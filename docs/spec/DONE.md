@@ -109,6 +109,27 @@ MiniBoss **25** (nguồn: `Stage_Behaviour.csv`).
 > **marker `EndMapPoint`** có mặt ở **mọi** wave (686 lần trên 281 wave), không phải nội dung boss.
 > Nội dung boss nằm ở **45 wave riêng** (`70xx`/`90xx`).
 
+### 1.6 Art cũng co lại — **2.185 sprite → ~641 thứ phải vẽ**
+
+Đếm từ `04-asset-manifest.csv` (2.185 Sprite), bỏ hậu tố `(n)`/`_n`/số cuối:
+
+| Nhóm | Số | Ghi chú |
+|---|---:|---|
+| Sprite ghi nhận | **2.185** | |
+| Glyph / ký tự (1–2 ký tự hoặc toàn số) | **292** | `%` `+` `1`…`9` — **một bộ bitmap font**, không phải 292 hình |
+| Sprite còn lại | **1.893** | |
+| **Tên gốc sau dedup** | **~641** | biến thể màu/frame gộp về một |
+| **Tỉ lệ nén** | **~3,4×** | |
+
+**Hệ quả:** hoá đơn art là **~641 hình + 1 bộ font**, không phải 2.185.
+Với năng suất 10 hình/ngày, đó là **~64 ngày làm việc** — khớp với ước lượng
+**2–3 tháng/1 artist** đã ghi ở `AI_FEASIBILITY.md` §6. **Ước lượng đó giữ nguyên**, nhưng
+lý do đúng hơn: không phải vì "2.185 hình" mà vì **641 hình + sửa đi sửa lại**.
+
+> `> Nhận định (mức B):` đây là lần thứ **ba** trong phiên này mà một con số lớn co lại khi
+> đọc đúng tên gốc (spawner 1.015→53 · enemy 690→92 · sprite 2.185→641). Quy luật: **dữ liệu
+> export đếm theo instance, không theo loại.** Con số "loại" luôn nhỏ hơn nhiều.
+
 ### 1.5 Hoá đơn còn lại
 
 | Hạng mục | Số lượng (A) | Nguồn |
@@ -121,7 +142,8 @@ MiniBoss **25** (nguồn: `Stage_Behaviour.csv`).
 | `Gun_Attack` → cấu hình súng | **458 → 420** | `Gun_Attack.csv` |
 | Ô shop | **315** trên **20** board | `Shop_Cell.csv` |
 | Class UI | **125** | `class-inventory.csv` |
-| Sprite | **2.185** | `04-asset-manifest.csv` |
+| Sprite ghi nhận | **2.185** | `04-asset-manifest.csv` |
+| **Art phải vẽ (sau dedup)** | **~641** tên gốc + **1 bộ font** | §1.6 |
 | Atlas page | **67** · 31,0 MB | `04-asset-manifest.csv` |
 | AudioClip | **69** | `04-unity-assets.md` |
 | Chuỗi localization | **1.416** | `12-localization.csv` |
@@ -223,6 +245,39 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 > và không khoản nào là "không cần làm".
 
 ---
+
+## 4.1 "Không có gì là không thể" — đúng ở đâu, và chữ "dễ" che mất gì
+
+Sau ba lần số co lại (spawner · enemy · sprite), có thể kết luận: **chưa tìm thấy bức tường nào**.
+Nhưng "không có gì không thể" là câu về **khả năng**; "quá dễ dàng" là câu về **thời gian**.
+Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
+
+### Phân loại phần còn lại — theo **lý do** thiếu, không theo độ khó
+
+| Loại | Nội dung | Vì sao còn thiếu | Cách xử lý | Bản chất |
+|---|---|---|---|---|
+| **1. Chưa đọc** | 4.861 `[SerializeField]` · 957 `static` · 45.659 tham chiếu enemy | chưa chạy AssetRipper/Ghidra | chạy 2 tool | **ngắn**, không khó |
+| **2. Chưa chọn** | dung sai L2 · ngưỡng N cho L3 · bộ archetype nào đưa vào game | chưa ai quyết | quyết định thiết kế | **ngắn** |
+| **3. Chưa làm** | ~641 hình art · 69 audio · 10.776 placement · 1.416 chuỗi | **không nằm trong APK để đọc** — phải tự sinh ra | sản xuất | **dài**, không khó |
+| **4. Ngoài sản phẩm** | giá IAP · live-ops · dữ liệu người chơi | không thuộc bản build | quan sát, không trích xuất | **không cần** cho bản clone |
+
+> **Không loại nào là "không thể".** Nhưng loại **3** là loại duy nhất **không rút ngắn bằng
+> cách đọc thêm file** — vì nó là **sản xuất**, không phải **khảo sát**.
+
+### Vì sao "dễ" là từ nguy hiểm ở đây
+
+| Việc | Loại | Có rút ngắn được bằng hiểu biết? |
+|---|---|---|
+| Biết 48 archetype thay vì 1.015 tên | 1 | ✅ rút từ **nhiều tuần** xuống **một buổi** |
+| Biết 641 hình thay vì 2.185 sprite | 1 | ✅ rút 3,4× |
+| **Vẽ** 641 hình | 3 | ❌ **không** — hiểu biết không vẽ hộ |
+| **Chạy** 100 vòng playtest | 3 | ❌ không — nhưng AI làm mỗi vòng **rẻ hơn** |
+| Biết damage player | 1 | ✅ sau khi chạy Ghidra |
+
+> `> Kết luận (mức B):` hiểu biết đã **gần như miễn phí** — đó là phần bạn đúng, và đúng
+> nhiều hơn tôi dự đoán ban đầu. Nhưng thứ còn lại không phải "khó", mà là **"phải làm"**.
+> Với một game 2.5D, "phải làm" nghĩa là **~641 hình + ~11k placement + vài chục vòng test** —
+> đó là **lịch**, không phải **rào cản**.
 
 ## 5. Còn thiếu / phải đoán
 
