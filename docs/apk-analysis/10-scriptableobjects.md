@@ -5,16 +5,200 @@
 
 | class | instances |
 |---|---:|
+| `Enemy_Datas` | 981 |
 | `SoundClip` | 92 |
 | `SkeletonDataAsset` | 27 |
 | `LanguageAssets` | 19 |
 | `Tech_Ability_Data` | 6 |
+| `RankManager` | 3 |
+| `DataShopPack` | 2 |
 | `Data_Players` | 2 |
+| `GP_Datas` | 1 |
+| `TMP_ColorGradient` | 1 |
 | `Data_Items` | 1 |
 | `Data_Boss` | 1 |
+| `TMP_StyleSheet` | 1 |
+| `TMP_Settings` | 1 |
 | `IAPProduct` | 1 |
+| `ArenaManager` | 1 |
 
 - error `script`: 1
+
+## `GP_Datas` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 404,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 22028484608,
+ "m_Name": "",
+ "player.m_FileID": 0,
+ "player.m_PathID": 2625,
+ "ship.m_FileID": 0,
+ "ship.m_PathID": 0,
+ "supplyCount": 0,
+ "supplyGetCount": 0,
+ "starCount": 0,
+ "starGetCount": 0,
+ "countEnemies": 0,
+ "countAllEnemies": 0,
+ "spawnCount": 0,
+ "isTransforming": false,
+ "isLockChange": false,
+ "lockItemSuper": false,
+ "startDropCard": false,
+ "isUsingSkill": true,
+ "listActiveEnemies": "[0]",
+ "enemyLayer.m_Mask": 512
+}
+```
+
+## `DataShopPack` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 261,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 671088640,
+ "m_Name": "",
+ "allSpriteRewards": "[27]",
+ "allSpriteRewards[0].m_FileID": 3,
+ "allSpriteRewards[0].m_PathID": 2328,
+ "allSpriteRewards[1].m_FileID": 3,
+ "allSpriteRewards[1].m_PathID": 2765,
+ "allSpriteRewards[2].m_FileID": 3,
+ "allSpriteRewards[2].m_PathID": 3476,
+ "allSpriteRewards[3].m_FileID": 3,
+ "allSpriteRewards[3].m_PathID": 2511,
+ "allSpriteRewards[4].m_FileID": 3,
+ "allSpriteRewards[4].m_PathID": 2358,
+ "allRankSprites": "[7]",
+ "allRankSprites[0].m_FileID": 3,
+ "allRankSprites[0].m_PathID": 3061,
+ "allRankSprites[1].m_FileID": 3,
+ "allRankSprites[1].m_PathID": 2616,
+ "allRankSprites[2].m_FileID": 3,
+ "allRankSprites[2].m_PathID": 3508,
+ "allRankSprites[3].m_FileID": 3,
+ "allRankSprites[3].m_PathID": 2446,
+ "allRankSprites[4].m_FileID": 3,
+ "allRankSprites[4].m_PathID": 2999,
+ "listSpriteDrones": "[12]",
+ "listSpriteDrones[0].m_FileID": 3,
+ "listSpriteDrones[0].m_PathID": 3657,
+ "listSpriteDrones[1].m_FileID": 3,
+ "listSpriteDrones[1].m_PathID": 3866,
+ "listSpriteDrones[2].m_FileID": 3,
+ "listSpriteDrones[2].m_PathID": 2445,
+ "listSpriteDrones[3].m_FileID": 3,
+ "listSpriteDrones[3].m_PathID": 3091,
+ "listSpriteDrones[4].m_FileID": 3,
+ "listSpriteDrones[4].m_PathID": 2614,
+ "listSpritePlayers": "[24]",
+ "listSpritePlayers[0].m_FileID": 3,
+ "listSpritePlayers[0].m_PathID": 3581,
+ "listSpritePlayers[1].m_FileID": 3,
+ "listSpritePlayers[1].m_PathID": 3224,
+ "listSpritePlayers[2].m_FileID": 3,
+ "listSpritePlayers[2].m_PathID": 3527,
+ "listSpritePlayers[3].m_FileID": 3,
+ "listSpritePlayers[3].m_PathID": 3025,
+ "listSpritePlayers[4].m_FileID": 3,
+ "listSpritePlayers[4].m_PathID": 3285,
+ "listAvatars": "[24]",
+ "listAvatars[0].m_FileID": 3,
+ "listAvatars[0].m_PathID": 2985,
+ "listAvatars[1].m_FileID": 3,
+ "listAvatars[1].m_PathID": 2477,
+ "listAvatars[2].m_FileID": 3,
+ "listAvatars[2].m_PathID": 2840,
+ "listAvatars[3].m_FileID": 3,
+ "listAvatars[3].m_PathID": 3145,
+ "listAvatars[4].m_FileID": 3,
+ "listAvatars[4].m_PathID": 2566,
+ "cardPlayerRandomSprite.m_FileID": 3,
+ "cardPlayerRandomSprite.m_PathID": 3554,
+ "cardDroneRandomSprite.m_FileID": 3,
+ "cardDroneRandomSprite.m_PathID": 3667,
+ "itemRandomSprite.m_FileID": 3,
+ "itemRandomSprite.m_PathID": 3927
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 93891,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 671088640,
+ "m_Name": "",
+ "allSpriteRewards": "[27]",
+ "allSpriteRewards[0].m_FileID": 0,
+ "allSpriteRewards[0].m_PathID": 2328,
+ "allSpriteRewards[1].m_FileID": 0,
+ "allSpriteRewards[1].m_PathID": 2765,
+ "allSpriteRewards[2].m_FileID": 0,
+ "allSpriteRewards[2].m_PathID": 3476,
+ "allSpriteRewards[3].m_FileID": 0,
+ "allSpriteRewards[3].m_PathID": 2511,
+ "allSpriteRewards[4].m_FileID": 0,
+ "allSpriteRewards[4].m_PathID": 2358,
+ "allRankSprites": "[7]",
+ "allRankSprites[0].m_FileID": 0,
+ "allRankSprites[0].m_PathID": 3061,
+ "allRankSprites[1].m_FileID": 0,
+ "allRankSprites[1].m_PathID": 2616,
+ "allRankSprites[2].m_FileID": 0,
+ "allRankSprites[2].m_PathID": 3508,
+ "allRankSprites[3].m_FileID": 0,
+ "allRankSprites[3].m_PathID": 2446,
+ "allRankSprites[4].m_FileID": 0,
+ "allRankSprites[4].m_PathID": 2999,
+ "listSpriteDrones": "[12]",
+ "listSpriteDrones[0].m_FileID": 0,
+ "listSpriteDrones[0].m_PathID": 3657,
+ "listSpriteDrones[1].m_FileID": 0,
+ "listSpriteDrones[1].m_PathID": 3866,
+ "listSpriteDrones[2].m_FileID": 0,
+ "listSpriteDrones[2].m_PathID": 2445,
+ "listSpriteDrones[3].m_FileID": 0,
+ "listSpriteDrones[3].m_PathID": 3091,
+ "listSpriteDrones[4].m_FileID": 0,
+ "listSpriteDrones[4].m_PathID": 2614,
+ "listSpritePlayers": "[24]",
+ "listSpritePlayers[0].m_FileID": 0,
+ "listSpritePlayers[0].m_PathID": 3581,
+ "listSpritePlayers[1].m_FileID": 0,
+ "listSpritePlayers[1].m_PathID": 3224,
+ "listSpritePlayers[2].m_FileID": 0,
+ "listSpritePlayers[2].m_PathID": 3527,
+ "listSpritePlayers[3].m_FileID": 0,
+ "listSpritePlayers[3].m_PathID": 3025,
+ "listSpritePlayers[4].m_FileID": 0,
+ "listSpritePlayers[4].m_PathID": 3285,
+ "listAvatars": "[24]",
+ "listAvatars[0].m_FileID": 0,
+ "listAvatars[0].m_PathID": 2985,
+ "listAvatars[1].m_FileID": 0,
+ "listAvatars[1].m_PathID": 2477,
+ "listAvatars[2].m_FileID": 0,
+ "listAvatars[2].m_PathID": 2840,
+ "listAvatars[3].m_FileID": 0,
+ "listAvatars[3].m_PathID": 3145,
+ "listAvatars[4].m_FileID": 0,
+ "listAvatars[4].m_PathID": 2566,
+ "cardPlayerRandomSprite.m_FileID": 0,
+ "cardPlayerRandomSprite.m_PathID": 3554,
+ "cardDroneRandomSprite.m_FileID": 0,
+ "cardDroneRandomSprite.m_PathID": 3667,
+ "itemRandomSprite.m_FileID": 0,
+ "itemRandomSprite.m_PathID": 3927
+}
+```
 
 ## `SkeletonDataAsset` samples
 
@@ -79,33 +263,34 @@
  "controller.m_PathID": 0
 }
 ```
+
+## `TMP_ColorGradient` samples
+
 ```json
 {
  "m_GameObject.m_FileID": 0,
  "m_GameObject.m_PathID": 0,
  "m_Enabled": 1,
  "m_Script.m_FileID": 16777216,
- "m_Script.m_PathID": 33772535808,
- "m_Name": "Saw_SkeletonData",
- "atlasAssets": "[1]",
- "atlasAssets[0].m_FileID": 0,
- "atlasAssets[0].m_PathID": 580614,
- "scale": 0.009999999776482582,
- "skeletonJSON.m_FileID": 0,
- "skeletonJSON.m_PathID": 928,
- "isUpgradingBlendModeMaterials": false,
- "blendModeMaterials.requiresBlendModeMaterials": false,
- "blendModeMaterials.applyAdditiveMaterial": false,
- "blendModeMaterials.additiveMaterials": "[0]",
- "blendModeMaterials.multiplyMaterials": "[0]",
- "blendModeMaterials.screenMaterials": "[0]",
- "skeletonDataModifiers": "[0]",
- "fromAnimation": "[0]",
- "toAnimation": "[0]",
- "duration": "[0]",
- "defaultMix": 0.5,
- "controller.m_FileID": 0,
- "controller.m_PathID": 0
+ "m_Script.m_PathID": 12264144896,
+ "m_Name": "New TMP Color Gradient",
+ "colorMode": 2,
+ "topLeft.r": 1.0,
+ "topLeft.g": 0.9980634450912476,
+ "topLeft.b": 0.7688679099082947,
+ "topLeft.a": 1.0,
+ "topRight.r": 1.0,
+ "topRight.g": 0.9980634450912476,
+ "topRight.b": 0.7688679099082947,
+ "topRight.a": 1.0,
+ "bottomLeft.r": 1.0,
+ "bottomLeft.g": 0.5886716246604919,
+ "bottomLeft.b": 0.0,
+ "bottomLeft.a": 1.0,
+ "bottomRight.r": 1.0,
+ "bottomRight.g": 0.5886716246604919,
+ "bottomRight.b": 0.0,
+ "bottomRight.a": 1.0
 }
 ```
 
@@ -133,18 +318,6 @@
  "m_Name": "Bgm_Boss2",
  "soundClip.m_FileID": 0,
  "soundClip.m_PathID": 1735
-}
-```
-```json
-{
- "m_GameObject.m_FileID": 0,
- "m_GameObject.m_PathID": 0,
- "m_Enabled": 1,
- "m_Script.m_FileID": 16777216,
- "m_Script.m_PathID": 31373393920,
- "m_Name": "Bgm_Game1",
- "soundClip.m_FileID": 0,
- "soundClip.m_PathID": 1753
 }
 ```
 
@@ -350,37 +523,6 @@
  "listDatas[4].TypeIndex": 0
 }
 ```
-```json
-{
- "m_GameObject.m_FileID": 0,
- "m_GameObject.m_PathID": 0,
- "m_Enabled": 1,
- "m_Script.m_FileID": 16777216,
- "m_Script.m_PathID": 25165824000,
- "m_Name": "TechAbility3",
- "listDatas": "[10]",
- "listDatas[0].Sprite.m_FileID": 0,
- "listDatas[0].Sprite.m_PathID": 2601,
- "listDatas[0].Level": 1,
- "listDatas[0].TypeIndex": 0,
- "listDatas[1].Sprite.m_FileID": 0,
- "listDatas[1].Sprite.m_PathID": 2601,
- "listDatas[1].Level": 2,
- "listDatas[1].TypeIndex": 0,
- "listDatas[2].Sprite.m_FileID": 0,
- "listDatas[2].Sprite.m_PathID": 2959,
- "listDatas[2].Level": 1,
- "listDatas[2].TypeIndex": 0,
- "listDatas[3].Sprite.m_FileID": 0,
- "listDatas[3].Sprite.m_PathID": 2601,
- "listDatas[3].Level": 3,
- "listDatas[3].TypeIndex": 0,
- "listDatas[4].Sprite.m_FileID": 0,
- "listDatas[4].Sprite.m_PathID": 2959,
- "listDatas[4].Level": 2,
- "listDatas[4].TypeIndex": 0
-}
-```
 
 ## `LanguageAssets` samples
 
@@ -428,26 +570,148 @@
  "listValue[4]": "Home"
 }
 ```
+
+## `TMP_StyleSheet` samples
+
 ```json
 {
  "m_GameObject.m_FileID": 0,
  "m_GameObject.m_PathID": 0,
  "m_Enabled": 1,
  "m_Script.m_FileID": 16777216,
- "m_Script.m_PathID": 24746393600,
- "m_Name": "Language Assets Czech",
- "listKey": "[1426]",
- "listKey[0]": "Local",
- "listKey[1]": "Menu",
- "listKey[2]": "txt_menu_version",
- "listKey[3]": "txt_menu_taptostart",
- "listKey[4]": "Home",
- "listValue": "[1426]",
- "listValue[0]": "\u010ce\u0161tina",
- "listValue[1]": "Menu",
- "listValue[2]": "Verze",
- "listValue[3]": "Za\u010dn\u011bte klepnut\u00edm na",
- "listValue[4]": "Home"
+ "m_Script.m_PathID": 24410849280,
+ "m_Name": "Default Style Sheet",
+ "m_StyleList": "[10]",
+ "m_StyleList[0].m_Name": "H1",
+ "m_StyleList[0].m_HashCode": 2425,
+ "m_StyleList[0].m_OpeningDefinition": "<size=2em><b><#40ff80>*",
+ "m_StyleList[0].m_ClosingDefinition": "*</size></b></color>",
+ "m_StyleList[0].m_OpeningTagArray": "[23]",
+ "m_StyleList[0].m_OpeningTagArray[0]": 60,
+ "m_StyleList[0].m_OpeningTagArray[1]": 115,
+ "m_StyleList[0].m_OpeningTagArray[2]": 105,
+ "m_StyleList[0].m_OpeningTagArray[3]": 122,
+ "m_StyleList[0].m_OpeningTagArray[4]": 101,
+ "m_StyleList[0].m_ClosingTagArray": "[20]",
+ "m_StyleList[0].m_ClosingTagArray[0]": 42,
+ "m_StyleList[0].m_ClosingTagArray[1]": 60,
+ "m_StyleList[0].m_ClosingTagArray[2]": 47,
+ "m_StyleList[0].m_ClosingTagArray[3]": 115,
+ "m_StyleList[0].m_ClosingTagArray[4]": 105,
+ "m_StyleList[0].m_OpeningTagUnicodeArray": "[23]",
+ "m_StyleList[0].m_OpeningTagUnicodeArray[0]": 60,
+ "m_StyleList[0].m_OpeningTagUnicodeArray[1]": 115,
+ "m_StyleList[0].m_OpeningTagUnicodeArray[2]": 105,
+ "m_StyleList[0].m_OpeningTagUnicodeArray[3]": 122,
+ "m_StyleList[0].m_OpeningTagUnicodeArray[4]": 101,
+ "m_StyleList[0].m_ClosingTagUnicodeArray": "[20]",
+ "m_StyleList[0].m_ClosingTagUnicodeArray[0]": 42,
+ "m_StyleList[0].m_ClosingTagUnicodeArray[1]": 60,
+ "m_StyleList[0].m_ClosingTagUnicodeArray[2]": 47,
+ "m_StyleList[0].m_ClosingTagUnicodeArray[3]": 115,
+ "m_StyleList[0].m_ClosingTagUnicodeArray[4]": 105,
+ "m_StyleList[1].m_Name": "Quote",
+ "m_StyleList[1].m_HashCode": 93368250,
+ "m_StyleList[1].m_OpeningDefinition": "<i><size=75%><margin=10%>",
+ "m_StyleList[1].m_ClosingDefinition": "</i></size></width></margin>",
+ "m_StyleList[1].m_OpeningTagArray": "[25]",
+ "m_StyleList[1].m_OpeningTagArray[0]": 60,
+ "m_StyleList[1].m_OpeningTagArray[1]": 105,
+ "m_StyleList[1].m_OpeningTagArray[2]": 62,
+ "m_StyleList[1].m_OpeningTagArray[3]": 60,
+ "m_StyleList[1].m_OpeningTagArray[4]": 115,
+ "m_StyleList[1].m_ClosingTagArray": "[28]",
+ "m_StyleList[1].m_ClosingTagArray[0]": 60,
+ "m_StyleList[1].m_ClosingTagArray[1]": 47,
+ "m_StyleList[1].m_ClosingTagArray[2]": 105,
+ "m_StyleList[1].m_ClosingTagArray[3]": 62,
+ "m_StyleList[1].m_ClosingTagArray[4]": 60,
+ "m_StyleList[1].m_OpeningTagUnicodeArray": "[25]",
+ "m_StyleList[1].m_OpeningTagUnicodeArray[0]": 60,
+ "m_StyleList[1].m_OpeningTagUnicodeArray[1]": 105,
+ "m_StyleList[1].m_OpeningTagUnicodeArray[2]": 62,
+ "m_StyleList[1].m_OpeningTagUnicodeArray[3]": 60,
+ "m_StyleList[1].m_OpeningTagUnicodeArray[4]": 115,
+ "m_StyleList[1].m_ClosingTagUnicodeArray": "[28]",
+ "m_StyleList[1].m_ClosingTagUnicodeArray[0]": 60,
+ "m_StyleList[1].m_ClosingTagUnicodeArray[1]": 47,
+ "m_StyleList[1].m_ClosingTagUnicodeArray[2]": 105,
+ "m_StyleList[1].m_ClosingTagUnicodeArray[3]": 62,
+ "m_StyleList[1].m_ClosingTagUnicodeArray[4]": 60,
+ "m_StyleList[2].m_Name": "Link",
+ "m_StyleList[2].m_HashCode": 2656128,
+ "m_StyleList[2].m_OpeningDefinition": "<u><#40a0ff><link=\"ID_01\">",
+ "m_StyleList[2].m_ClosingDefinition": "</u></color></link>",
+ "m_StyleList[2].m_OpeningTagArray": "[26]",
+ "m_StyleList[2].m_OpeningTagArray[0]": 60,
+ "m_StyleList[2].m_OpeningTagArray[1]": 117,
+ "m_StyleList[2].m_OpeningTagArray[2]": 62,
+ "m_StyleList[2].m_OpeningTagArray[3]": 60,
+ "m_StyleList[2].m_OpeningTagArray[4]": 35,
+ "m_StyleList[2].m_ClosingTagArray": "[19]",
+ "m_StyleList[2].m_ClosingTagArray[0]": 60,
+ "m_StyleList[2].m_ClosingTagArray[1]": 47,
+ "m_StyleList[2].m_ClosingTagArray[2]": 117,
+ "m_StyleList[2].m_ClosingTagArray[3]": 62,
+ "m_StyleList[2].m_ClosingTagArray[4]": 60,
+ "m_StyleList[2].m_OpeningTagUnicodeArray": "[26]",
+ "m_StyleList[2].m_OpeningTagUnicodeArray[0]": 60,
+ "m_StyleList[2].m_OpeningTagUnicodeArray[1]": 117,
+ "m_StyleList[2].m_OpeningTagUnicodeArray[2]": 62,
+ "m_StyleList[2].m_OpeningTagUnicodeArray[3]": 60,
+ "m_StyleList[2].m_OpeningTagUnicodeArray[4]": 35,
+ "m_StyleList[2].m_ClosingTagUnicod
+```
+
+## `TMP_Settings` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 0,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5284823040,
+ "m_Name": "TMP Settings",
+ "m_enableWordWrapping": true,
+ "m_enableKerning": true,
+ "m_enableExtraPadding": false,
+ "m_enableTintAllSprites": false,
+ "m_enableParseEscapeCharacters": true,
+ "m_EnableRaycastTarget": true,
+ "m_GetFontFeaturesAtRuntime": true,
+ "m_missingGlyphCharacter": 0,
+ "m_warningsDisabled": true,
+ "m_defaultFontAsset.m_FileID": 4,
+ "m_defaultFontAsset.m_PathID": 105,
+ "m_defaultFontAssetPath": "Fonts & Materials/",
+ "m_defaultFontSize": 6.0,
+ "m_defaultAutoSizeMinRatio": 0.5,
+ "m_defaultAutoSizeMaxRatio": 2.0,
+ "m_defaultTextMeshProTextContainerSize.x": 2.0,
+ "m_defaultTextMeshProTextContainerSize.y": 0.5,
+ "m_defaultTextMeshProUITextContainerSize.x": 200.0,
+ "m_defaultTextMeshProUITextContainerSize.y": 50.0,
+ "m_autoSizeTextContainer": false,
+ "m_IsTextObjectScaleStatic": false,
+ "m_fallbackFontAssets": "[1]",
+ "m_fallbackFontAssets[0].m_FileID": 0,
+ "m_fallbackFontAssets[0].m_PathID": 0,
+ "m_matchMaterialPreset": true,
+ "m_defaultSpriteAsset.m_FileID": 0,
+ "m_defaultSpriteAsset.m_PathID": 580787,
+ "m_defaultSpriteAssetPath": "Sprite Assets/",
+ "m_enableEmojiSupport": true,
+ "m_MissingCharacterSpriteUnicode": 0,
+ "m_defaultColorGradientPresetsPath": "Color Gradient Presets/",
+ "m_defaultStyleSheet.m_FileID": 0,
+ "m_defaultStyleSheet.m_PathID": 580788,
+ "m_StyleSheetsResourcePath": "",
+ "m_leadingCharacters.m_FileID": 0,
+ "m_leadingCharacters.m_PathID": 924,
+ "m_followingCharacters.m_FileID": 0,
+ "m_followingCharacters.m_PathID": 933,
+ "m_UseModernHangulLineBreakingRules": false
 }
 ```
 
@@ -474,5 +738,94 @@
  "ConsumableProducts[2]": "windwings.gems3",
  "ConsumableProducts[3]": "windwings.gems4",
  "ConsumableProducts[4]": "windwings.gems5"
+}
+```
+
+## `Enemy_Datas` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4291,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 31054626816,
+ "m_Name": "",
+ "StartHealthPoint": 1100000.0,
+ "StartHpPoint": 0.0,
+ "CurrentHealthPoint": 0.0,
+ "IsAlive": false,
+ "IsInvisible": false,
+ "IsBringItems": false,
+ "IsCaAttack": true
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4341,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 31054626816,
+ "m_Name": "",
+ "StartHealthPoint": 650000.0,
+ "StartHpPoint": 0.0,
+ "CurrentHealthPoint": 0.0,
+ "IsAlive": false,
+ "IsInvisible": false,
+ "IsBringItems": false,
+ "IsCaAttack": true
+}
+```
+
+## `RankManager` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 158489,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 31239176192,
+ "m_Name": "",
+ "loadingObject.m_FileID": 0,
+ "loadingObject.m_PathID": 229192,
+ "popupNoInternet.m_FileID": 0,
+ "popupNoInternet.m_PathID": 674905,
+ "popupUploadFailed.m_FileID": 0,
+ "popupUploadFailed.m_PathID": 0,
+ "btnExitCover.m_FileID": 0,
+ "btnExitCover.m_PathID": 0
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 113205,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 31239176192,
+ "m_Name": "",
+ "loadingObject.m_FileID": 0,
+ "loadingObject.m_PathID": 236733,
+ "popupNoInternet.m_FileID": 0,
+ "popupNoInternet.m_PathID": 619965,
+ "popupUploadFailed.m_FileID": 0,
+ "popupUploadFailed.m_PathID": 656840,
+ "btnExitCover.m_FileID": 0,
+ "btnExitCover.m_PathID": 110977
+}
+```
+
+## `ArenaManager` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 143959,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 8019509248,
+ "m_Name": ""
 }
 ```
