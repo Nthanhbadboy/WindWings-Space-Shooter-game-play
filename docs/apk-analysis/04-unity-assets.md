@@ -2,7 +2,7 @@
 
 - source: `/tmp/apk/extract` (136.8MB)
 - serialized file `/tmp/apk/extract/data.unity3d` — version `8`, 16 objects
-- serialized file `resources.resource` — version ``, 0 objects
+- serialized file `/tmp/apk/extract/resources.resource` — version ``, 0 objects
 
 ## Object types
 
@@ -516,4 +516,5 @@ Typetree keys:
 
 - Texture2D: 653 files, 64.1MB
 - Sprite: 2185 files, 48.3MB
+- AudioClip: 69 files, 47.6MB
 - Font: 1 files, 0.0B
