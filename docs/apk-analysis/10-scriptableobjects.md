@@ -22,6 +22,53 @@
 | `IAPProduct` | 1 |
 | `ArenaManager` | 1 |
 
+## MonoBehaviour class inventory (top 40)
+
+Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
+
+| class | instances |
+|---|---:|
+| `Call_Point` | 23757 |
+| `Call_Data` | 23757 |
+| `PointToPoint_Spawner` | 13292 |
+| `TextMeshPro` | 9789 |
+| `PinMap_Spawner` | 3165 |
+| `ButtonEvents` | 3139 |
+| `Button_Sound` | 3008 |
+| `LanguageTextMeshPro` | 2440 |
+| `ObjectPool` | 2333 |
+| `Rocket_Spawner` | 2019 |
+| `PathCreator` | 1714 |
+| `Path_Spawner` | 1688 |
+| `Obj_Collider` | 1623 |
+| `Spawner` | 1370 |
+| `Waypoints_Spawner` | 1151 |
+| `Enemy_EfxDestroyed` | 1134 |
+| `ChangeSorting` | 1126 |
+| `Box_Rewards` | 1065 |
+| `Rotate` | 1044 |
+| `Enemy_Sub` | 981 |
+| `Enemy_Controller` | 981 |
+| `Enemy_Display` | 981 |
+| `Enemy_Movement` | 981 |
+| `Enemy_Physics` | 981 |
+| `Enemy_Health` | 981 |
+| `Enemy_Datas` | 981 |
+| `Enemy_Destroy` | 971 |
+| `Enemy_Appear` | 914 |
+| `Enemy_Hp_Bar` | 909 |
+| `AirFree_Spawner` | 885 |
+| `MeteoriteGenerator` | 852 |
+| `BgObjectScaler` | 813 |
+| `TMP_SubMesh` | 789 |
+| `Item_Movement` | 702 |
+| `Sub_Item` | 702 |
+| `Item_Controller` | 702 |
+| `Enemy_Burned` | 695 |
+| `Wave` | 686 |
+| `UIObjectAnchors` | 584 |
+| `Popup_Notices` | 499 |
+
 - error `script`: 1
 
 ## `GP_Datas` samples
@@ -51,7 +98,8 @@
  "startDropCard": false,
  "isUsingSkill": true,
  "listActiveEnemies": "[0]",
- "enemyLayer.m_Mask": 512
+ "enemyLayer.m_Mask": 512,
+ "_gameobject": "GP_Manager"
 }
 ```
 
@@ -125,7 +173,8 @@
  "cardDroneRandomSprite.m_FileID": 3,
  "cardDroneRandomSprite.m_PathID": 3667,
  "itemRandomSprite.m_FileID": 3,
- "itemRandomSprite.m_PathID": 3927
+ "itemRandomSprite.m_PathID": 3927,
+ "_gameobject": "DataShop"
 }
 ```
 ```json
@@ -196,7 +245,8 @@
  "cardDroneRandomSprite.m_FileID": 0,
  "cardDroneRandomSprite.m_PathID": 3667,
  "itemRandomSprite.m_FileID": 0,
- "itemRandomSprite.m_PathID": 3927
+ "itemRandomSprite.m_PathID": 3927,
+ "_gameobject": "DataShop"
 }
 ```
 
@@ -757,7 +807,8 @@
  "IsAlive": false,
  "IsInvisible": false,
  "IsBringItems": false,
- "IsCaAttack": true
+ "IsCaAttack": true,
+ "_gameobject": "Gun6"
 }
 ```
 ```json
@@ -774,7 +825,8 @@
  "IsAlive": false,
  "IsInvisible": false,
  "IsBringItems": false,
- "IsCaAttack": true
+ "IsCaAttack": true,
+ "_gameobject": "Gun4"
 }
 ```
 
@@ -795,7 +847,8 @@
  "popupUploadFailed.m_FileID": 0,
  "popupUploadFailed.m_PathID": 0,
  "btnExitCover.m_FileID": 0,
- "btnExitCover.m_PathID": 0
+ "btnExitCover.m_PathID": 0,
+ "_gameobject": "Board_Ranks"
 }
 ```
 ```json
@@ -813,7 +866,8 @@
  "popupUploadFailed.m_FileID": 0,
  "popupUploadFailed.m_PathID": 656840,
  "btnExitCover.m_FileID": 0,
- "btnExitCover.m_PathID": 110977
+ "btnExitCover.m_PathID": 110977,
+ "_gameobject": "BOARD_ENDGAME"
 }
 ```
 
@@ -826,6 +880,7 @@
  "m_Enabled": 1,
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 8019509248,
- "m_Name": ""
+ "m_Name": "",
+ "_gameobject": "Board_Arena"
 }
 ```
