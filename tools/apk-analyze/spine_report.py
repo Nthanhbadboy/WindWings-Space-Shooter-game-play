@@ -130,9 +130,14 @@ def atlas_summary(raw: str) -> dict:
                 pages.append(cur)
             cur = {"page": line.strip(), "size": ""}
             continue
-        if cur is not None and line.startswith("size:"):
-            cur["size"] = line.split(":", 1)[1].strip()
-            continue
+        if cur is not None and ":" in line and not line.startswith(" "):
+            key = line.split(":", 1)[0].strip().lower()
+            if key in ("size", "format", "filter", "repeat", "pma"):
+                if key == "size":
+                    cur["size"] = line.split(":", 1)[1].strip()
+                else:
+                    cur[key] = line.split(":", 1)[1].strip()
+                continue
         if not line.startswith(" ") and cur is not None:
             regions.append(line.strip())
     if cur:
