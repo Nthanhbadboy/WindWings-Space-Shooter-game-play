@@ -20,6 +20,9 @@
 | Spine skeleton | **26** (`skeleton*.json`) + 1 `Saw` | 577 region / 27 atlas | `textassets/*.atlas*.txt` |
 | Bone/slot Spine | 616 bones / 446 slots | — | `textassets/skeleton*.json` |
 | `SkeletonDataAsset` | **27** | `scale = 0.01`, `defaultMix = 0.2` | `SkeletonDataAsset.csv`, `class-inventory.csv` |
+| `AnimationClip` | **791** | ⚠ **chưa export** — manifest chỉ có Sprite + Texture2D | `04-unity-assets.md` → **`ANIMATION.md`** §3 |
+| `AnimatorController` | **308** | ⚠ chưa export · 1 controller → 18,8 `Animator` | `04-unity-assets.md` → **`ANIMATION.md`** §1 |
+| `Animator` (component) | **5.792** | nhiều gấp **49 lần** `SkeletonAnimation` 117 | `04-unity-assets.md` |
 | `AudioClip` | **69** | ✅ **export được 69/69** · 571 s · 47,6 MB · 44,1 kHz mono | `docs/assets/audio-index.csv` (vòng 3) |
 | `SoundClip` (MonoBehaviour map sound) | **92** | — | `SoundClip.csv`, `class-inventory.csv` |
 | `SpriteAtlas` | 66 | — | `04-unity-assets.md` |
