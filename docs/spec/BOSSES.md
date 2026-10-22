@@ -302,6 +302,8 @@ công thức nằm trong method `Init`/`SetUp` của nó — **dữ liệu metho
 
 ## 7. 87 class enemy/boss chưa đọc — phần "hành vi" còn nguyên
 
+> Danh sách dưới đây là **cái gì chưa đọc**. Đánh giá **đủ/chưa đủ** và **thứ tự đọc tiếp** ở §8.
+
 `class-inventory.csv` liệt kê **95 class** thuộc enemy/boss. Đã có CSV cho **8**.
 Còn **87 class / 7.036 instance** chưa đọc lần nào:
 
@@ -336,12 +338,134 @@ và **chưa có một dòng CSV nào**.
 
 ---
 
-## 8. Còn thiếu / phải đoán
+## 8. Kịch bản — đủ chưa
+
+"Kịch bản" ở đây chia **7 lớp**. Mỗi lớp phải trả lời được một câu hỏi riêng, nên phải kiểm riêng.
+
+### 8.1 Bảng kiểm 7 lớp
+
+| # | Lớp kịch bản | Class | Instance | Đã đọc | Trạng thái |
+|---:|---|---|---:|---:|---|
+| 1 | **Sinh quân** (wave, spawner, list enemy) | `Call_Data` | **23.757** | **23.757** | ✅ **100%** |
+| 2 | **Di chuyển** (path, speed, turret, hướng) | `Enemy_Movement` | 981 | 981 | ✅ **100%** |
+| 3 | **HP** | `Enemy_Datas` | 981 | 981 | ✅ **100%** |
+| 4 | **Bắn** (cadence, burst) | `Gun_Attack` | 458 | 458 | ✅ **100%** |
+| 5 | **Đạn** (đường bay, delay) | `Bullet_Linearly` · `Bullet_SineWave` | 186 + 2 | 188 | ✅ **100%** |
+| 6 | **Va chạm boss** (`dmgFirst`, `dmgPerSec`) | `Boss_BodyPhysics` | 251 | 251 | ✅ **100%** |
+| 7 | **Va chạm enemy thường** | `Enemy_Physics` | **981** | **0** | ❌ **0%** |
+| 8 | Ngắm hướng | `Enemy_LookAtPlayer` | 391 | 0 | ❌ 0% |
+| 9 | Điều kiện chết | `Enemy_Destroy` | 971 | 0 | ❌ 0% |
+| 10 | Bị đốt · choáng · rung camera | `Enemy_Burned` 695 · `Enemy_Stun` 140 · `Enemy_CameraVibrate` 241 | 1.076 | 0 | ❌ 0% |
+| 11 | Đòn đánh theo nhịp | `Enemy_Attack` 51 · `Enemy_Sync_Attack` 72 | 123 | 0 | ❌ 0% |
+| 12 | **Pha boss** | 37 `*_Director` (65) + `Boss19/20/21_AttackPhases` (3) | **68** | 0 | ❌ **0%** |
+| 13 | Đòn đặc biệt boss | `Boss3_Plasma` 75 · `Boss_PlasmaBeam` 68 · `BossLaser` 16 · `Boss_Rocket` 12 · `Boss8_Spawner` 12 · `Boss6_Sword` 8 · `Boss3_Flamer` 6 | 197 | 0 | ❌ 0% |
+
+**Đọc 6/13 lớp, nhưng 6 lớp đó là 6 lớp "số".** 7 lớp còn lại — toàn bộ phần **hành vi** — chưa đọc một dòng.
+
+### 8.2 Kiểm tính toàn vẹn của lớp 1 — khớp tuyệt đối
+
+`waves.json` được dựng bằng cách gộp `Call_Data` theo wave rồi **dedupe** các spawner trùng cấu hình
+(`copies` = số lần lặp). Nếu dedupe sai, tổng `copies` sẽ hụt.
+
+| Phép kiểm | Kết quả |
+|---|---:|
+| Tổng `copies` trong `waves.json` | **23.757** |
+| `Call_Data` trong `class-inventory.csv` | **23.757** |
+| **Lệch** | **0** |
+| Spawner duy nhất (sau dedupe) | 11.093 |
+| Tổng quân (`len(enemies) × copies`) | **45.659** |
+
+> **Nhận định (mức A):** lớp sinh quân **không mất một object nào**. Con số 45.659 quân không phải ước lượng —
+> nó khớp với tổng `copies` đúng bằng số `Call_Data` thực có trong file. Đây là lớp duy nhất trong 7 lớp
+> có được phép kiểm chéo như vậy, và nó **qua**.
+>
+> Lưu ý: `Call_Data.csv` (CSV rời) chỉ có **1.200** dòng vì bị `MAX_CSV_ROWS` cắt — nhưng
+> `waves.json` do `wave_report.py` sinh (không cap) nên **đủ 23.757**.
+
+### 8.3 Chỗ đứt lớn nhất: một class quyết định 85,8% khối lượng
+
+Với mỗi prefab, muốn "chạy được kịch bản" thì cần biết **nó gây damage bằng cách nào**. Có 3 nguồn:
+súng (`Gun_Attack`), va chạm (`Boss_BodyPhysics` / `Enemy_Physics`), hoặc đòn script (`Boss*_*`).
+
+| Nhóm | Prefab | Entry | % entry |
+|---|---:|---:|---:|
+| Có **súng** đọc được | 40 | 6.425 | **14,1%** |
+| Có **va chạm boss** đọc được | 30 | 104 | 0,2% |
+| **Không có nguồn damage nào đọc được** | **54** | **39.174** | **85,8%** |
+
+**88,5%** trong số đó là họ **`CB`** (34.663 / 39.174 entry = **75,9%** toàn game). `CB` là họ **lao thẳng**
+(`isTurret = False` 100%), **27/33 prefab `CB` không có `Gun_Attack`** — nghĩa là chúng gây damage
+bằng **va chạm**, và component va chạm của enemy thường chính là `Enemy_Physics` — **chưa đọc**.
+
+> **Nhận định (mức A):** nếu dựng game ngay từ dữ liệu hiện có, **76% quân địch sẽ bay vào mà không
+> gây sát thương**, vì `Enemy_Physics` (981 instance) chưa được đọc. Đây **không** phải "không có dữ liệu":
+> class nằm trong `class-inventory`, có 981 instance, và `Boss_BodyPhysics` cho thấy dạng field sẽ gặp
+> (`dmgFirst`, `dmgPerSec`, `isTrigger`, `layerMask`).
+>
+> **Điều kiện lật ngược:** nếu `Enemy_Physics` không có trường damage (chỉ là collider), thì damage của
+> `CB` nằm ở `Enemy_Attack` (51) hoặc `Enemy_DestroyAttack` (2) — khi đó phải đọc nhóm đó trước.
+
+### 8.4 Boss: 5 con chưa có đòn đánh nào
+
+| Nguồn đòn | Số boss |
+|---|---:|
+| Súng **và** va chạm | **14** |
+| Chỉ súng | 7 |
+| Chỉ va chạm | 13 |
+| **Không có cả hai** | **5** |
+
+5 boss đó: `37011` · `37015` · `37017` · `39001` · `39007` — tổng **13.770.000 HP = 6,7%** HP boss toàn game.
+Với 5 con này, **100% đòn đánh** nằm trong `*_Director` / `AttackPhases` / `Boss*_Plasma` — tất cả **chưa đọc**.
+
+Boss có đòn đặc biệt **được đặt tên riêng** (đọc được từ tên class, chưa đọc nội dung):
+
+| Class | Instance | Gợi ý cơ chế |
+|---|---:|---|
+| `Boss3_Plasma` | 75 | đạn plasma boss 3 |
+| `Boss_PlasmaBeam` | 68 | chùm plasma |
+| `BossLaser` | 16 | laser |
+| `Boss_Rocket` | 12 | rocket |
+| `Boss8_Spawner` | 12 | gọi quân |
+| `Boss6_Sword` | 8 | chém |
+| `Boss3_Flamer` | 6 | phun lửa |
+
+### 8.5 Kết luận: đủ hay chưa
+
+| Câu hỏi | Trả lời | Căn cứ |
+|---|---|---|
+| Kịch bản **sinh quân** đủ chưa? | ✅ **Đủ** | 23.757/23.757 = 100%, lệch 0 |
+| Kịch bản **di chuyển** đủ chưa? | ✅ **Đủ** | 981/981, 109/109 prefab |
+| Kịch bản **bắn** đủ chưa? | ✅ Đủ **cho 40 prefab** | 458/458 `Gun_Attack` |
+| Kịch bản **gây damage của enemy thường** đủ chưa? | ❌ **Chưa** | `Enemy_Physics` 981 chưa đọc → 85,8% entry |
+| Kịch bản **pha boss** đủ chưa? | ❌ **Chưa** | 68 instance Director/Phases chưa đọc |
+| Kịch bản **chết / trạng thái** đủ chưa? | ❌ **Chưa** | `Enemy_Destroy` 971 · `Enemy_Burned` 695 · `Enemy_Stun` 140 |
+
+**Tóm một câu:** phần **"bao nhiêu, ở đâu, đi đường nào, bắn nhanh cỡ nào"** đã đủ và kiểm chéo được.
+Phần **"gây damage bằng gì, lúc nào, theo pha nào"** mới đọc được 14,1% khối lượng.
+
+### 8.6 Thứ tự đọc tiếp — xếp theo số, không theo cảm giác
+
+| Ưu tiên | Class | Instance | Mở khoá |
+|---:|---|---:|---|
+| **1** | `Enemy_Physics` | **981** | **85,8% entry** (damage va chạm của `CB`) |
+| 2 | `Enemy_LookAtPlayer` | 391 | hướng ngắm của enemy bắn |
+| 3 | `Enemy_Destroy` | 971 | điều kiện chết, drop |
+| 4 | `Enemy_Burned` · `Enemy_Stun` | 695 · 140 | trạng thái hiệu ứng |
+| 5 | 37 `*_Director` + 3 `AttackPhases` | 68 | pha boss (5 boss chưa có đòn nào) |
+| 6 | `Enemy_Attack` · `Enemy_Sync_Attack` | 51 · 72 | nhịp bắn nhiều nòng |
+| 7 | `Boss3_Plasma` … `Boss3_Flamer` | 197 | đòn đặc biệt từng boss |
+
+> #1 chỉ là **một class**. Thêm tên nó vào `TARGETS` của `unity_data.py` rồi chạy lại là có,
+> không cần tool mới — cùng đường với 8 class đã đọc được.
+
+---
+
+## 9. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |
 |---:|---|---|---|
 | 1 | **HP enemy thường** (68/70 prefab = 0) | **A** (không có trong prefab) | nằm trong thân hàm `Enemy_Health.Init`; method body chưa có |
-| 2 | **Hành vi 87 class** enemy/boss | **D** | 7.036 instance chưa đọc; thêm vào `TARGETS` là được |
+| 2 | **Hành vi 87 class** enemy/boss | **D** | 7.036 instance chưa đọc; xếp thứ tự ở §8.6 — #1 `Enemy_Physics` mở khoá 85,8% entry |
 | 3 | **Bảng pha** `Boss19/20/21_AttackPhases` | **D** | 3 instance nhưng mỗi cái có thể là cả một bảng đòn |
 | 4 | **37 class Director** (65 instance) | **D** | 19 `Boss*` + 17 `MB*` + `MiniBoss1`; "nhạc trưởng" của từng boss |
 | 5 | Ý nghĩa `dmgFirst = 9.000.000` / `500.000` | **C** | 2 giá trị bất thường; cần đọc animation event |

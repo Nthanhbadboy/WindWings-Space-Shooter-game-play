@@ -50,7 +50,7 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 | `AI_FEASIBILITY.md` | AI dựng lại được đến đâu — đối chiếu nghiên cứu 2025–2026 (`Spec2Game`, GameCraft-Bench, Play2Code) với lỗ hổng của bộ spec; chuỗi công cụ; xếp hạng độ khó | 505 dòng · 24 bảng |
 | `TUNING_KNOBS.md` | **Toàn bộ núm vặn**: `Player_Get_Datas` 178 field, công thức giá, feel (shake/slow-mo/hit color), art scale 10,8×19,2; **giá trị nằm ở đâu** (const / prefab / `.cctor`) | ~275 dòng · 15 bảng |
 | `DONE.md` | **Định nghĩa "hoàn hảo" thành 4 mức kiểm được** (L0 chạy được · L1 đúng luật · L2 đúng số · L3 không phân biệt được) + **hoá đơn sản xuất** 282 wave / 23.757 spawner / 45.659 slot `"?"` / 1.015 spawner | 168 dòng · 12 bảng |
-| **`BOSSES.md`** | **39 boss** đầy đủ (HP, bộ phận, wave, va chạm) · **45/45 wave boss có boss, 0/237 wave thường** · enemy thường **70 prefab / 8 họ** · turret **21** · **87 class hành vi chưa đọc** | 350 dòng · 22 bảng |
+| **`BOSSES.md`** | **39 boss** đầy đủ (HP, bộ phận, wave, va chạm) · **45/45 wave boss có boss, 0/237 wave thường** · enemy thường **70 prefab / 8 họ** · turret **21** · **87 class hành vi chưa đọc** · **§8 kiểm 7 lớp kịch bản**: sinh quân 100%, damage enemy thường **0%** (`Enemy_Physics` 981) | 477 dòng · 30 bảng |
 | `DATA_SYNC.md` | **Đối chiếu với pipeline vòng 3** (nhánh `ef6b75ef`): cái gì tôi đã sai (audio 0→69 clip · enemy `?`→109 prefab · HP 800→981 dòng) và cái gì **vẫn** chưa có (IL2CPP constants = **0**) | 224 dòng · 14 bảng |
 | `screens.csv` | 125 dòng: `class, board_id, mo_tu_dau, popup_con, data_can_load` | 125 dòng |
 | `sprite-list.csv` | 163 dòng: atlas page (size + MB thật), background, Spine, UI 9-slice, ship/drone, bullet | 163 dòng |

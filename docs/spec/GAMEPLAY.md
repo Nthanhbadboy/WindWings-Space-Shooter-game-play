@@ -121,6 +121,7 @@ Mỗi spawner không có `count` tường minh (0 trên **11.093/11.093**), số
 | Campaign (237 wave) | min 4 · median **152** · max 951 | `waves.json` |
 | Boss wave (45 wave) | **4 quân** ở 44/45 | `waves.json` |
 | `copies` phổ biến | **2** (9.790) · 1 (792) · 4 (202) · 3 (201) | `waves.json` |
+| Tổng `copies` vs `Call_Data` thực có | **23.757 / 23.757 — lệch 0** | `waves.json` + `class-inventory.csv` |
 
 Cấu trúc một wave boss điển hình (44/45 wave):
 
