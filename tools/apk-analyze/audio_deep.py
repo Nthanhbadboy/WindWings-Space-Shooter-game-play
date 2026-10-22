@@ -31,7 +31,7 @@ def load_env():
     files = [f for f in files if os.path.isfile(f)]
     if not files:
         raise SystemExit(f"no unity files under {EXTRACT}")
-    return UnityPy.load(files)
+    return UnityPy.load(*files)
 
 
 def main() -> int:

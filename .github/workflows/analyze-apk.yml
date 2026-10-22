@@ -170,20 +170,21 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p /tmp/apk/unity
-          python3 tools/apk-analyze/unity_assets.py probe 2>&1 | tail -40
-          python3 tools/apk-analyze/unity_assets.py text 2>&1 | tail -20
+          mkdir -p /tmp/apk/logs
+          python3 tools/apk-analyze/unity_assets.py probe 2>&1 | tee /tmp/apk/logs/probe.log | tail -40
+          python3 tools/apk-analyze/unity_assets.py text 2>&1 | tee /tmp/apk/logs/text.log | tail -20
 
       - name: Export Unity assets (textures/sprites/audio/fonts)
         continue-on-error: true
-        run: python3 tools/apk-analyze/unity_assets.py export 2>&1 | tail -30
+        run: python3 tools/apk-analyze/unity_assets.py export 2>&1 | tee /tmp/apk/logs/export.log | tail -30
 
       - name: Audio deep-dive (FFmpeg fallback)
         continue-on-error: true
-        run: python3 tools/apk-analyze/audio_deep.py 2>&1 | tail -40
+        run: python3 tools/apk-analyze/audio_deep.py 2>&1 | tee /tmp/apk/logs/audio.log | tail -40
 
       - name: Build asset gallery (contact sheets)
         continue-on-error: true
-        run: python3 tools/apk-analyze/asset_gallery.py 2>&1 | tail -30
+        run: python3 tools/apk-analyze/asset_gallery.py 2>&1 | tee /tmp/apk/logs/gallery.log | tail -30
 
       - name: Install TypeTreeGeneratorAPI
         continue-on-error: true
@@ -191,7 +192,7 @@ jobs:
 
       - name: Extract ScriptableObject values (IL2CPP typetrees)
         continue-on-error: true
-        run: python3 tools/apk-analyze/unity_data.py 2>&1 | tail -60
+        run: python3 tools/apk-analyze/unity_data.py 2>&1 | tee /tmp/apk/logs/unity_data.log | tail -60
 
       - name: Build localization / IAP / data tables
         continue-on-error: true
@@ -199,7 +200,7 @@ jobs:
 
       - name: Extract wave composition
         continue-on-error: true
-        run: python3 tools/apk-analyze/wave_report.py 2>&1 | tail -40
+        run: python3 tools/apk-analyze/wave_report.py 2>&1 | tee /tmp/apk/logs/wave.log | tail -40
 
       - name: Build data pack (datas/ + i18n/)
         continue-on-error: true
@@ -359,6 +360,13 @@ jobs:
             echo '```'
             echo; echo "## Asset gallery"; echo '```'
             ls -la docs/assets docs/assets/contact-sheets 2>/dev/null | head -30 || echo "docs/assets missing"
+            echo '```'
+            echo; echo "## Step logs (tail)"; echo '```'
+            for f in /tmp/apk/logs/*.log; do
+              echo "===== $f"
+              tail -25 "$f"
+              echo
+            done 2>/dev/null || echo "no logs"
             echo '```'
             echo; echo "## Audio diagnose"; echo '```'
             cat /tmp/apk/unity/audio/audio-diagnose.json 2>/dev/null | head -c 2000 || echo "no audio diagnose"

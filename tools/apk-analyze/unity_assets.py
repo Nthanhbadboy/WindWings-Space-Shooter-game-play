@@ -311,7 +311,7 @@ def load_env():
         raise SystemExit(f"no unity files under {DATA}")
     # UnityPy keeps file handles open for lazy reads: load by path, not by a
     # `with open(...)` handle that gets closed before audio/textures are read.
-    env = UnityPy.load(candidates)
+    env = UnityPy.load(*candidates)
     print("source files:", list(getattr(env, "files", {}).keys()))
     return env
 

@@ -39,7 +39,7 @@ SPAWN_TYPES = {0: "point", 1: "path", 2: "point_range", 3: "follow", 4: "formati
 def load_env():
     files = [os.path.join(EXTRACT, f) for f in ("data.unity3d", "resources.resource")]
     files = [f for f in files if os.path.isfile(f)]
-    return UnityPy.load(files)
+    return UnityPy.load(*files)
 
 
 def _path_of(go, depth=10):

@@ -150,7 +150,7 @@ def gameobject_path(go, depth=10):
 def load_env() -> UnityPy.Environment:
     files = [os.path.join(EXTRACT, f) for f in ("data.unity3d", "resources.resource")]
     files = [f for f in files if os.path.isfile(f)]
-    return UnityPy.load(files)
+    return UnityPy.load(*files)
 
 
 def flatten(value, prefix="", out=None, depth=0):
