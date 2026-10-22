@@ -20,6 +20,26 @@
 | Bao lâu thì ra sản phẩm? | Phụ thuộc art/audio/test — spec không rút ngắn được 3 phần này |
 | Rủi ro pháp lý | Thấp nếu đổi art/tên; **cao** nếu dùng lại asset hoặc tên boss |
 
+### 0.1 Ba mức "dịch ngược đầy đủ" — và mức nào cho ra cái gì
+
+Chữ *"đầy đủ"* quyết định toàn bộ câu trả lời. Cần phân biệt **3 mức**:
+
+| Mức | Có gì | AI làm được gì | Hiện trạng repo này |
+|---|---|---|---|
+| **A. Đủ dữ liệu** (data-complete) | `*.csv` ScriptableObject + `waves.json` + text/assets đã bóc | Dựng **khung chạy được**, đúng 60–70% hệ thống; **sai luật** (45,6) và **sai feel** (32,1) | ✅ **đang ở đây** |
+| **B. Đủ logic** (code-complete) | + `libil2cpp.so` decompile ra **thân hàm** (không chỉ chữ ký) ⇒ có hằng số feel, công thức, state machine | Tái tạo **hành vi** gần 1:1; hết mơ hồ về luật | ❌ `dump.cs` chỉ có **class/field/signature, không có method body** |
+| **C. Đủ để ship** (product-complete) | B + asset gốc + cấu hình server (giá IAP, Firebase) | Port được **bản sao 1:1** | ❌ và **không được phép** dùng (bản quyền) |
+
+> **Nhận định:** câu *"AI clone được không"* có **hai đáp án khác nhau** tuỳ mức:
+> - Ở mức **A** (hiện tại): **không clone được**, chỉ **bắt chước được** — và đó lại là mục tiêu hợp pháp.
+> - Ở mức **B/C**: **clone được về kỹ thuật**, nhưng lúc đó nó là **bản sao vi phạm bản quyền**,
+>   không còn là "game khác bắt chước".
+>
+> Mức B cũng là nơi tốn kém nhất: `dump.cs` 18,8 MB chỉ chứa **khai báo**, muốn có thân hàm phải
+> chạy Il2CppDumper + Ghidra/IDA trên `libil2cpp.so` (arm64), rồi đối chiếu hành vi. Nghiên cứu
+> `DecompileBench` cho thấy code LLM dịch ngược **dễ đọc nhưng kém đúng chức năng** hơn tool
+> truyền thống — nên mức B **không** phải "bấm nút là xong".
+
 ---
 
 ## 1. Nghiên cứu công bố nói gì (2025–2026)
