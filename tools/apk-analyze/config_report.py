@@ -88,6 +88,35 @@ def main() -> int:
         open(os.path.join(OUT, "12-localization.md"), "w", encoding="utf-8").write("\n".join(lines))
         print("localization:", len(order), "keys,", len(languages), "languages")
 
+    # ---------- enemy / boss HP table (from the flat dump) ----------
+    hp_csv = os.path.join(DATA, "Enemy_Datas.csv")
+    if os.path.isfile(hp_csv):
+        rows = []
+        with open(hp_csv, newline="", encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                try:
+                    hp = float(row.get("StartHealthPoint") or 0)
+                except ValueError:
+                    hp = 0.0
+                rows.append((row.get("_gameobject") or row.get("m_Name") or "",
+                             hp, row.get("path_id", "")))
+        rows.sort(key=lambda r: -r[1])
+        with open(os.path.join(OUT, "15-enemy-hp.csv"), "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["gameobject", "start_hp", "path_id"])
+            w.writerows(rows)
+        lines = ["# Enemy / boss HP (từ `Enemy_Datas` MonoBehaviour)", "",
+                 f"- số instance: **{len(rows)}**",
+                 f"- HP lớn nhất: **{rows[0][1]:,.0f}** (`{rows[0][0] or 'không tên'}`)",
+                 "", "## Top 40 theo HP", "", "| # | GameObject | StartHealthPoint |", "|---:|---|---:|"]
+        for i, (name, hp, _) in enumerate(rows[:40], 1):
+            lines.append(f"| {i} | `{name or '—'}` | {hp:,.0f} |")
+        lines += ["", "- Bảng đầy đủ: [`15-enemy-hp.csv`](15-enemy-hp.csv)",
+                  "- Đây là HP serialize trong prefab/scene của `data.unity3d`; giá trị runtime còn bị",
+                  "  nhân bởi `Enemy_Data_Balance` / `Stage_Get_Datas` theo chapter/stage.", ""]
+        open(os.path.join(OUT, "15-enemy-hp.md"), "w", encoding="utf-8").write("\n".join(lines))
+        print("enemy hp rows:", len(rows))
+
     # ---------- IAP ----------
     iap = [tree for _, tree in load_class("IAPProduct")]
     if iap:

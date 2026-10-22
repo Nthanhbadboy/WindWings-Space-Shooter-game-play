@@ -217,7 +217,10 @@ jobs:
           fi
           if [ -f /tmp/apk/unity/data-report.md ]; then
             cp /tmp/apk/unity/data-report.md docs/apk-analysis/10-scriptableobjects.md
-            cp /tmp/apk/unity/data/*.csv docs/apk-analysis/ 2>/dev/null || true
+            for c in Data_Players Data_Boss Data_Items IAPProduct SoundClip Tech_Ability_Data Enemy_Datas RankManager DataShopPack GP_Datas ArenaManager; do
+              cp "/tmp/apk/unity/data/$c.csv" docs/apk-analysis/ 2>/dev/null || true
+            done
+            cp /tmp/apk/unity/data/class-inventory.csv docs/apk-analysis/ 2>/dev/null || true
             SZ=$(du -sb /tmp/apk/unity/data 2>/dev/null | cut -f1 || echo 0)
             if [ "$SZ" -lt 20000000 ]; then
               mkdir -p reverse-engineering/scriptableobjects

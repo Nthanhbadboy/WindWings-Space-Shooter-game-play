@@ -70,6 +70,7 @@ TARGETS = {
     "IAP_Manager",
 }
 MAX_DUMP_PER_CLASS = int(os.environ.get("MAX_DUMP_PER_CLASS", "25"))
+MAX_CSV_ROWS = int(os.environ.get("MAX_CSV_ROWS", "1000"))
 
 
 def human(n: float) -> str:
@@ -133,6 +134,7 @@ def main() -> int:
     print("typetree generator ready")
 
     counts = Counter()
+    inventory: Counter = Counter()
     errors = Counter()
     samples = defaultdict(list)
     records = defaultdict(list)
@@ -149,8 +151,14 @@ def main() -> int:
         except Exception as e:  # noqa: BLE001
             errors["script"] += 1
             continue
+        inventory[cls] += 1
         if cls not in TARGETS:
             continue
+        go_name = ""
+        try:
+            go_name = head.m_GameObject.deref_parse_as_object().m_Name
+        except Exception:  # noqa: BLE001
+            pass
         try:
             tree = obj.read_typetree()
         except Exception as e:  # noqa: BLE001
@@ -160,6 +168,8 @@ def main() -> int:
             continue
         counts[cls] += 1
         flat = flatten(tree)
+        if go_name:
+            flat["_gameobject"] = go_name
         records[cls].append((obj.path_id, flat))
         safe = f"{ns}.{cls}" if ns else cls
         if counts[cls] <= MAX_DUMP_PER_CLASS:
@@ -170,11 +180,22 @@ def main() -> int:
             if len(samples[cls]) < 2:
                 samples[cls].append(flat)
 
+    with open(os.path.join(OUT, "class-inventory.csv"), "w") as f:
+        f.write("class,instances\n")
+        for cls, c in inventory.most_common():
+            f.write(f'"{cls}",{c}\n')
+
     lines = ["# ScriptableObject / MonoBehaviour data (IL2CPP typetrees)", "",
              f"- source: `{EXTRACT}`", f"- Unity: `{UNITY_VERSION}`", ""]
     lines.append("| class | instances |")
     lines.append("|---|---:|")
     for cls, c in counts.most_common():
+        lines.append(f"| `{cls}` | {c} |")
+    lines.append("")
+    lines += ["## MonoBehaviour class inventory (top 40)", "",
+              "Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)", "",
+              "| class | instances |", "|---|---:|"]
+    for cls, c in inventory.most_common(40):
         lines.append(f"| `{cls}` | {c} |")
     lines.append("")
     for cls, errs in errors.items():
@@ -196,7 +217,7 @@ def main() -> int:
         keys = sorted({k for _, r in rows for k in r})[:400]
         with open(os.path.join(OUT, f"{cls}.csv"), "w") as f:
             f.write(",".join(['"path_id"'] + ['"' + k + '"' for k in keys]) + "\n")
-            for path_id, r in rows[:25]:
+            for path_id, r in rows[:MAX_CSV_ROWS]:
                 f.write(",".join(['"' + str(path_id) + '"'] + ['"' + str(r.get(k, "")).replace('"', '""') + '"' for k in keys]) + "\n")
 
     open(REPORT, "w").write("\n".join(lines))

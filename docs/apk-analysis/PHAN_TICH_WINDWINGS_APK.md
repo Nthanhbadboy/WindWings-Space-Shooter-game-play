@@ -248,11 +248,11 @@ Các hệ nâng cấp:
 
 Ở lần chạy này, typetree sinh từ metadata v31 bằng backend **AssetStudio** (backend mặc định
 `AssetsTools` của `TypeTreeGeneratorAPI` fail toàn bộ với metadata v31 — xem
-`11-typetree-probe.md`) nên đọc được **159 instance** trong 8 class:
+`11-typetree-probe.md`) nên đọc được **149 instance** trong 8 class:
 
 | Class | Instance | Ý nghĩa |
 |---|---:|---|
-| `Data_Players` | 25 (+13 `Data_Drones`) | roster tàu / drone (`id`, `Star`, `Actived`, `Sprite`) |
+| `Data_Players` | 2 (25 tàu + 13 drone) | roster tàu / drone (`id`, `Star`, `Actived`, `Sprite`) |
 | `Data_Boss` | 46 | `Boss_Info { idWave, Sprite }` |
 | `Data_Items` | 6 | item rơi (`index`, `iconSprite`, `allStatSprites[5]`) |
 | `IAPProduct` | 1 | 170 product ID |
