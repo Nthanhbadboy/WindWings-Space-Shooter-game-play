@@ -383,6 +383,8 @@ Nguồn: `Bullet_Linearly.csv`.
 **Đọc ra:**
 - **31% đạn xuyên khiên** (58/186). Nếu clone làm khiên là "chặn 100%", sẽ sai cảm giác gốc.
 - Hitbox đạn **cố định 15 unit** ở 184/186 loại → chỉ có **1 kích thước đạn** về mặt va chạm;
+  **cùng hằng số 15 unit với `border.w` của 799/800 enemy** (`ENEMY_BEHAVIOUR.md` §1.3) — đây là
+  **bán kính va chạm chuẩn của cả game**, không phải tham số riêng của đạn;
   khác biệt thị giác là do sprite, không do hitbox.
 - `actived = False` toàn bộ → đạn được bật bằng code, không bật sẵn trong prefab.
 

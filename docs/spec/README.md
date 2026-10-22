@@ -19,7 +19,8 @@ không phải để clone y nguyên. Toàn bộ asset gốc (sprite, atlas, Spin
 | **Designer / cân bằng số** | `GAMEPLAY.md` §0 → `BALANCE.md` §0 → `COMBAT.md` §0 → `ECONOMY.md` §0 |
 | **Engineer dựng lại gameplay** | `GAMEPLAY.md` (core loop) → `COMBAT.md` (súng/đạn) → `ENCOUNTERS.md` (wave) → `UI.md` (màn hình) |
 | **Art / tech art** | `ASSETS.md` §0–§5 (art direction "Ink & Ember") → `sprite-list.csv` |
-| **Producer / ước lượng** | `GAMEPLAY.md` §9 (thứ tự build) → `ASSETS.md` §7 (atelier plan) → `ECONOMY.md` §8 |
+| **Producer / ước lượng** | `GAMEPLAY.md` §9 (thứ tự build) → `ASSETS.md` §7 (atlas plan) → `ECONOMY.md` §8 → **`AI_FEASIBILITY.md`** (rủi ro) |
+| **AI/agent sắp dựng game** | `AI_FEASIBILITY.md` §2 (lỗ hổng) → `ENEMY_BEHAVIOUR.md` §6 (kiến trúc enemy) → §8 (cái không bóc được) |
 
 Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSETS` là **cấu trúc**;
 `ECONOMY` là **cái gì có thật và cái gì không**.
@@ -37,6 +38,8 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 | `COMBAT.md` | **458** `Gun_Attack`, histogram damage, burst pattern, **DPS lý thuyết**, súng boss, **TTK**, hitbox va chạm, đạn | 432 dòng · 21 bảng |
 | `ENCOUNTERS.md` | **282 wave** / 23.757 spawner, `spawn_type`, tham số spawn, **250 map** + parallax, 299 stage | 391 dòng · 34 bảng |
 | `ECONOMY.md` | `Box_Rewards`, `Shop_Cell`, `DataShopPack`, IAP **170 SKU**, `Sub_Item`, `PurchaseType` — **cái gì là số thật** | 370 dòng · 19 bảng |
+| `ENEMY_BEHAVIOUR.md` | Tốc độ enemy **0,2–30**, **95 turret**, bán kính va chạm **15 unit**, biên vùng chơi **20×25**, **399** đường bay, thiên thạch, nhịp nổ boss, kiến trúc **9 component/enemy** | 248 dòng · 12 bảng |
+| `AI_FEASIBILITY.md` | AI dựng lại được đến đâu — đối chiếu nghiên cứu 2025–2026 (`Spec2Game`, `A2Z GameSpec-Bench`) với lỗ hổng của bộ spec | 220 dòng · 10 bảng |
 | `screens.csv` | 125 dòng: `class, board_id, mo_tu_dau, popup_con, data_can_load` | 125 dòng |
 | `sprite-list.csv` | 163 dòng: atlas page (size + MB thật), background, Spine, UI 9-slice, ship/drone, bullet | 163 dòng |
 
@@ -74,6 +77,7 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | HP boss | **270 K – 11,2 M**; median ch1 4,2 M → ch2 6,0 M | `15-enemy-hp.csv` | `BALANCE.md` §2 |
 | HP enemy thường | median **500 K** | `15-enemy-hp.csv` | `BALANCE.md` §2.4 |
 | Wave / spawner / map | **282 / 23.757 / 250** | `waves.json`, `MapController.csv` | `ENCOUNTERS.md` §0 |
+| Tốc độ enemy / turret | **0,2–30** (median 5,0) / **95 turret** | `Enemy_Movement.csv` | `ENEMY_BEHAVIOUR.md` §1 |
 | Stage trên board map | **299** (199 Normal · 49 Combat · 26 Boss · 25 MiniBoss) | `Stage_Behaviour.csv` | `ENCOUNTERS.md` §5 |
 | Class UI | **125** (53 board · 63 popup · 8 tab · 1 cell) | `08-ui-map.md` + `dump.cs`; đối chiếu `class-inventory.csv` (116) | `UI.md` §0 |
 | Sprite / atlas page | **2.185 / 67 page (66 nhóm) · 31,0 MB** | `04-asset-manifest.csv` | `ASSETS.md` §0 |
@@ -106,6 +110,7 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 |---|---|---|
 | 1 | `GAMEPLAY` · `UI` + `screens.csv` · `ASSETS` + `sprite-list.csv` · `BALANCE` | ✅ xong |
 | 2 | `COMBAT` · `ENCOUNTERS` · `ECONOMY` + đồng bộ lại 4 file vòng 1 theo dữ liệu mới | ✅ xong |
+| 2b | `ENEMY_BEHAVIOUR` (di chuyển/đường bay/thiên thạch) · `AI_FEASIBILITY` (đánh giá + nghiên cứu) | ✅ xong |
 
 **Đã sửa so với vòng 1** (đều do dữ liệu bóc lại khác bản trước): HP 981 → **800** dòng,
 `Texture2D` 654 → **653**, `SkeletonDataAsset` 25 → **27**, page 66/32,5 MB → **67/31,0 MB**,
