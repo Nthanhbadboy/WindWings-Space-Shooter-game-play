@@ -23,7 +23,7 @@ không phải để clone y nguyên. Toàn bộ asset gốc (sprite, atlas, Spin
 | **Designer / cân bằng số** | `GAMEPLAY.md` §0 → `BALANCE.md` §0 → `COMBAT.md` §0 → `ECONOMY.md` §0 → **`TUNING_KNOBS.md`** (núm vặn + công thức) |
 | **Engineer dựng lại gameplay** | `GAMEPLAY.md` (core loop) → `COMBAT.md` (súng/đạn) → `ENCOUNTERS.md` (wave) → `UI.md` (màn hình) |
 | **Art / tech art** | `ASSETS.md` §0–§5 (art direction "Ink & Ember") → `sprite-list.csv` |
-| **Producer / ước lượng** | `GAMEPLAY.md` §9 (thứ tự build) → `ASSETS.md` §7 (atlas plan) → `ECONOMY.md` §8 → **`AI_FEASIBILITY.md`** (rủi ro) → `TUNING_KNOBS.md` §6 (thứ tự khai thác) |
+| **Producer / ước lượng** | `GAMEPLAY.md` §9 (thứ tự build) → **`DONE.md`** (hoá đơn sản xuất + 4 mức kiểm) → `ASSETS.md` §7 (atlas plan) → `AI_FEASIBILITY.md` (rủi ro) |
 | **AI/agent sắp dựng game** | `AI_FEASIBILITY.md` §2 (lỗ hổng) → `TUNING_KNOBS.md` (núm vặn + nơi lấy) → `ENEMY_BEHAVIOUR.md` §6 (kiến trúc enemy) |
 
 Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSETS` là **cấu trúc**;
@@ -45,6 +45,7 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 | `ENEMY_BEHAVIOUR.md` | Tốc độ enemy **0,2–30**, **95 turret**, bán kính va chạm **15 unit**, biên vùng chơi **20×25**, **399** đường bay, thiên thạch, nhịp nổ boss, kiến trúc **9 component/enemy** | 248 dòng · 12 bảng |
 | `AI_FEASIBILITY.md` | AI dựng lại được đến đâu — đối chiếu nghiên cứu 2025–2026 (`Spec2Game`, GameCraft-Bench, Play2Code) với lỗ hổng của bộ spec; chuỗi công cụ; xếp hạng độ khó | 505 dòng · 24 bảng |
 | `TUNING_KNOBS.md` | **Toàn bộ núm vặn**: `Player_Get_Datas` 178 field, công thức giá, feel (shake/slow-mo/hit color), art scale 10,8×19,2; **giá trị nằm ở đâu** (const / prefab / `.cctor`) | ~275 dòng · 15 bảng |
+| `DONE.md` | **Định nghĩa "hoàn hảo" thành 4 mức kiểm được** (L0 chạy được · L1 đúng luật · L2 đúng số · L3 không phân biệt được) + **hoá đơn sản xuất** 282 wave / 23.757 spawner / 45.659 slot `"?"` / 1.015 spawner | 168 dòng · 12 bảng |
 | `screens.csv` | 125 dòng: `class, board_id, mo_tu_dau, popup_con, data_can_load` | 125 dòng |
 | `sprite-list.csv` | 163 dòng: atlas page (size + MB thật), background, Spine, UI 9-slice, ship/drone, bullet | 163 dòng |
 
@@ -124,6 +125,7 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | 2h | **Ba tầng bằng chứng** (§1.11): bỏ mọi % tự chế, thay bằng số đếm được + bảng **"điều gì sẽ làm kết luận này sai"** | ✅ xong |
 | 2i | **Định nghĩa "chất lượng tương đương"** (§1.12): 6 tiêu chí đo được; spec cho **v1.0**, chênh lệch tới **v1.3.118** là 118 vòng build | ✅ xong |
 | 2j | **Rà lại văn phong khẳng định** (§0.0): thêm quy ước mức **A/B/C/D**, bỏ hết % độ phủ tự đánh giá, sửa 3 con số của chính mình | ✅ xong |
+| 2k | `DONE.md` — 4 mức "hoàn hảo" kiểm được + hoá đơn sản xuất; tách **đơn giản** khỏi **nhỏ** | ✅ xong |
 
 **Đã sửa so với vòng 1** (đều do dữ liệu bóc lại khác bản trước): HP 981 → **800** dòng,
 `Texture2D` 654 → **653**, `SkeletonDataAsset` 25 → **27**, page 66/32,5 MB → **67/31,0 MB**,
