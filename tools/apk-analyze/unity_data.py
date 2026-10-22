@@ -27,6 +27,7 @@ from UnityPy.helpers.TypeTreeGenerator import TypeTreeGenerator
 
 EXTRACT = os.environ.get("UNITY_DATA", "/tmp/apk/extract")
 OUT = "/tmp/apk/unity/data"
+RAW = "/tmp/apk/unity/raw/typetrees"          # untouched typetree JSON, gzipped
 REPORT = "/tmp/apk/unity/data-report.md"
 UNITY_VERSION = os.environ.get("UNITY_VERSION", "2022.3.62f3")
 TTG_BACKEND = os.environ.get("TTG_BACKEND", "AssetStudio")
@@ -100,6 +101,8 @@ TARGETS = CONFIG | RUNTIME
 MAX_READ_PER_CLASS = int(os.environ.get("MAX_READ_PER_CLASS", "1500"))
 MAX_DUMP_PER_CLASS = int(os.environ.get("MAX_DUMP_PER_CLASS", "20"))
 MAX_CSV_ROWS = int(os.environ.get("MAX_CSV_ROWS", "1200"))
+MAX_RAW_BYTES_CLASS = int(os.environ.get("MAX_RAW_BYTES_CLASS", "4000000"))
+MAX_RAW_BYTES_TOTAL = int(os.environ.get("MAX_RAW_BYTES_TOTAL", "45000000"))
 
 
 def human(n: float) -> str:
@@ -179,6 +182,7 @@ def flatten(value, prefix="", out=None, depth=0):
 
 def main() -> int:
     os.makedirs(OUT, exist_ok=True)
+    os.makedirs(RAW, exist_ok=True)
     env = load_env()
     print("loaded files:", list(getattr(env, "files", {}).keys()))
     gen = TypeTreeGenerator(UNITY_VERSION, generator=TTG_BACKEND)
@@ -190,6 +194,27 @@ def main() -> int:
     gen.load_il2cpp(il2cpp, metadata)
     env.typetree_generator = gen
     print("typetree generator ready")
+
+    import gzip
+    raw_files: dict[str, object] = {}
+    raw_bytes: Counter = Counter()
+    raw_written: Counter = Counter()
+
+    def raw_write(cls: str, payload: dict) -> None:
+        """Append one object to <Class>.jsonl.gz, respecting the size caps."""
+        if sum(raw_bytes.values()) > MAX_RAW_BYTES_TOTAL:
+            return
+        fh = raw_files.get(cls)
+        if fh is None:
+            path = os.path.join(RAW, f"{cls}.jsonl.gz")
+            fh = gzip.open(path, "wt", encoding="utf-8")
+            raw_files[cls] = fh
+        line = json.dumps(payload, ensure_ascii=False, default=str)
+        if raw_bytes[cls] + len(line) > MAX_RAW_BYTES_CLASS:
+            return
+        fh.write(line + "\n")
+        raw_bytes[cls] += len(line)
+        raw_written[cls] += 1
 
     inventory: Counter = Counter()
     counts: Counter = Counter()
@@ -231,6 +256,7 @@ def main() -> int:
         if go_name:
             flat["_gameobject"] = go_name
         records[cls].append((obj.path_id, flat))
+        raw_write(cls, {"path_id": obj.path_id, "gameobject": go_name, "tree": tree})
         if counts[cls] <= MAX_DUMP_PER_CLASS:
             safe = f"{ns}.{cls}" if ns else cls
             d = os.path.join(OUT, safe)
@@ -239,6 +265,12 @@ def main() -> int:
                 json.dump(tree, f, indent=1, default=str)
             if len(samples[cls]) < 2:
                 samples[cls].append(flat)
+
+    for fh in raw_files.values():
+        try:
+            fh.close()
+        except Exception:  # noqa: BLE001
+            pass
 
     # ------------------------------------------------------------ inventory
     with open(os.path.join(OUT, "class-inventory.csv"), "w") as f:
@@ -263,6 +295,15 @@ def main() -> int:
     for cls, errs in errors.items():
         lines.append(f"- error `{cls}`: {errs}")
     lines.append("")
+
+    if raw_written:
+        lines += ["## Raw typetree dump (giữ nguyên)", "",
+                  f"- thư mục: `{RAW}` (`<Class>.jsonl.gz`, mỗi dòng 1 object, **không cắt field**)",
+                  "- đây là dữ liệu thô để đối chiếu lại mọi kết luận sau này", "",
+                  "| class | object | bytes (chưa nén) |", "|---|---:|---:|"]
+        for cls, n in raw_written.most_common(30):
+            lines.append(f"| `{cls}` | {n} | {raw_bytes[cls]:,} |")
+        lines.append("")
 
     lines += ["## MonoBehaviour class inventory (top 40)", "",
               "Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)", "",

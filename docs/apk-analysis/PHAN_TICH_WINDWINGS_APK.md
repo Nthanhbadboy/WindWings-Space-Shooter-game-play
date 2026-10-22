@@ -1,5 +1,9 @@
 # Phân tích ngược WindWings: Space Shooter (APK 1.3.118)
 
+> ⚠️ **Kết luận tạm thời** — số liệu sinh tự động từ APK, có thể đổi khi chạy lại pipeline.
+> Xem [`docs/conclusions.md`](../../conclusions.md) để biết mức độ tin cậy và cách kiểm lại.
+
+
 > Trả lời ngắn: **Được.** Đã tải bản APK chính thức mới nhất (1.3.118, build 312) từ CDN APKPure,
 > lưu thành **draft release** trong repo này, rồi chạy **REA** + **Il2CppDumper** + **UnityPy**
 > để bóc tách engine, code C#, UI, asset, âm thanh, cấu hình và cả localization.

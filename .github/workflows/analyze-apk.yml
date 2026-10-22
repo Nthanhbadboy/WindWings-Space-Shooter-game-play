@@ -164,7 +164,7 @@ jobs:
 
       - name: Install UnityPy
         continue-on-error: true
-        run: pip install --quiet "UnityPy==1.25.4"
+        run: pip install --quiet "UnityPy==1.25.4" capstone
 
       - name: Unity asset probe
         continue-on-error: true
@@ -201,6 +201,16 @@ jobs:
       - name: Extract wave composition
         continue-on-error: true
         run: python3 tools/apk-analyze/wave_report.py 2>&1 | tee /tmp/apk/logs/wave.log | tail -40
+
+      - name: Extract IL2CPP constants (method bodies)
+        continue-on-error: true
+        run: python3 tools/apk-analyze/il2cpp_consts.py 2>&1 | tee /tmp/apk/logs/consts.log | tail -40
+
+      - name: Dump UI layout (Board/Popup RectTransforms)
+        continue-on-error: true
+        env:
+          UI_RAW: /tmp/apk/unity/raw/ui
+        run: python3 tools/apk-analyze/ui_layout.py 2>&1 | tee /tmp/apk/logs/ui_layout.log | tail -40
 
       - name: Build data pack (datas/ + i18n/)
         continue-on-error: true
@@ -274,6 +284,23 @@ jobs:
               cp -r /tmp/apk/unity/data/. reverse-engineering/scriptableobjects/ 2>/dev/null || true
             fi
           fi
+          mkdir -p reverse-engineering/raw
+          for d in typetrees ui il2cpp-consts; do
+            SRC=""
+            [ "$d" = "typetrees" ] && SRC=/tmp/apk/unity/raw/typetrees
+            [ "$d" = "ui" ] && SRC=/tmp/apk/unity/raw/ui
+            [ "$d" = "il2cpp-consts" ] && SRC=reverse-engineering/raw/il2cpp-consts
+            [ -d "$SRC" ] || continue
+            SZ=$(du -sb "$SRC" | cut -f1)
+            echo "raw $d: $SZ bytes"
+            if [ "$SZ" -lt 60000000 ]; then
+              mkdir -p "reverse-engineering/raw/$d"
+              cp -r "$SRC/." "reverse-engineering/raw/$d/" 2>/dev/null || true
+            else
+              echo "skip $d (too big)"
+            fi
+          done
+          du -sh reverse-engineering/raw 2>/dev/null || true
           if [ -d /tmp/apk/unity/textassets ] && [ "$(du -sb /tmp/apk/unity/textassets | cut -f1)" -lt 25000000 ]; then
             cp -r /tmp/apk/unity/textassets/. reverse-engineering/textassets/ 2>/dev/null || true
           fi
