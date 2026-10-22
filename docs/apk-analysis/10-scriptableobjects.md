@@ -2,25 +2,75 @@
 
 - source: `/tmp/apk/extract`
 - Unity: `2022.3.62f3`
+- typetree backend: **AssetStudio**
 
-| class | instances |
-|---|---:|
-| `Enemy_Datas` | 981 |
-| `SoundClip` | 92 |
-| `SkeletonDataAsset` | 27 |
-| `LanguageAssets` | 19 |
-| `Tech_Ability_Data` | 6 |
-| `RankManager` | 3 |
-| `DataShopPack` | 2 |
-| `Data_Players` | 2 |
-| `GP_Datas` | 1 |
-| `TMP_ColorGradient` | 1 |
-| `Data_Items` | 1 |
-| `Data_Boss` | 1 |
-| `TMP_StyleSheet` | 1 |
-| `TMP_Settings` | 1 |
-| `IAPProduct` | 1 |
-| `ArenaManager` | 1 |
+| class | instances | dumped |
+|---|---:|---:|
+| `Box_Rewards` | 1065 | 800 |
+| `Enemy_Sub` | 981 | 800 |
+| `Enemy_Controller` | 981 | 800 |
+| `Enemy_Movement` | 981 | 800 |
+| `Enemy_Appear` | 914 | 800 |
+| `Enemy_Health` | 981 | 800 |
+| `Enemy_Datas` | 981 | 800 |
+| `Path_Spawner` | 1688 | 800 |
+| `Call_Data` | 23757 | 800 |
+| `PinMap_Spawner` | 3165 | 800 |
+| `PathCreator` | 1714 | 800 |
+| `Spawner` | 1370 | 800 |
+| `MeteoriteGenerator` | 852 | 800 |
+| `Waypoints_Spawner` | 1151 | 800 |
+| `PointToPoint_Spawner` | 13292 | 800 |
+| `Rocket_Spawner` | 2019 | 800 |
+| `AirFree_Spawner` | 885 | 800 |
+| `Item_Movement` | 702 | 702 |
+| `Sub_Item` | 702 | 702 |
+| `Wave` | 686 | 686 |
+| `Gun_Attack` | 458 | 458 |
+| `MapController` | 396 | 396 |
+| `Shop_Cell` | 315 | 315 |
+| `Stage_Behaviour` | 299 | 299 |
+| `Boss_BodyPhysics` | 251 | 251 |
+| `Bullet_Linearly` | 186 | 186 |
+| `Boss4_ExplosionTimer` | 155 | 155 |
+| `GridLayoutManager` | 133 | 133 |
+| `Player19Laser` | 120 | 120 |
+| `SoundClip` | 92 | 92 |
+| `SkeletonDataAsset` | 27 | 27 |
+| `LanguageAssets` | 19 | 19 |
+| `Tech_Ability_Data` | 6 | 6 |
+| `RankManager` | 3 | 3 |
+| `DataShopPack` | 2 | 2 |
+| `Data_Players` | 2 | 2 |
+| `Bullet_SineWave` | 2 | 2 |
+| `GP_Datas` | 1 | 1 |
+| `TMP_ColorGradient` | 1 | 1 |
+| `Data_Items` | 1 | 1 |
+| `Data_Boss` | 1 | 1 |
+| `TMP_StyleSheet` | 1 | 1 |
+| `TMP_Settings` | 1 | 1 |
+| `IAPProduct` | 1 | 1 |
+| `ArenaManager` | 1 | 1 |
+
+Ghi chú: các class sau bị **cắt bớt** (chỉ đọc mẫu, không dump hết):
+
+- `Call_Data`: còn 22957 object chưa đọc
+- `PointToPoint_Spawner`: còn 12492 object chưa đọc
+- `PinMap_Spawner`: còn 2365 object chưa đọc
+- `Rocket_Spawner`: còn 1219 object chưa đọc
+- `PathCreator`: còn 914 object chưa đọc
+- `Path_Spawner`: còn 888 object chưa đọc
+- `Spawner`: còn 570 object chưa đọc
+- `Waypoints_Spawner`: còn 351 object chưa đọc
+- `Box_Rewards`: còn 265 object chưa đọc
+- `Enemy_Health`: còn 181 object chưa đọc
+- `Enemy_Movement`: còn 181 object chưa đọc
+- `Enemy_Controller`: còn 181 object chưa đọc
+- `Enemy_Datas`: còn 181 object chưa đọc
+- `Enemy_Sub`: còn 181 object chưa đọc
+- `Enemy_Appear`: còn 114 object chưa đọc
+
+- error `script`: 1
 
 ## MonoBehaviour class inventory (top 40)
 
@@ -69,7 +119,66 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
 | `UIObjectAnchors` | 584 |
 | `Popup_Notices` | 499 |
 
-- error `script`: 1
+## `GridLayoutManager` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 152,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 8841592832,
+ "m_Name": "",
+ "fixedColumnCount": 4,
+ "cellSize.x": 2.200000047683716,
+ "cellSize.y": 2.200000047683716,
+ "spacing.x": 0.0,
+ "spacing.y": 0.0,
+ "padding.x": 0.0,
+ "padding.y": 0.0,
+ "padding.z": 0.0,
+ "padding.w": 0.0,
+ "flexible": false,
+ "boxContent.m_FileID": 0,
+ "boxContent.m_PathID": 0,
+ "fixedBound.m_FileID": 0,
+ "fixedBound.m_PathID": 0,
+ "maskObject.m_FileID": 0,
+ "maskObject.m_PathID": 0,
+ "onDone.m_PersistentCalls.m_Calls": "[0]",
+ "refresh": false,
+ "_gameobject": "All_Abilities/Grid"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 1369,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 8841592832,
+ "m_Name": "",
+ "fixedColumnCount": 3,
+ "cellSize.x": 3.3499999046325684,
+ "cellSize.y": 3.75,
+ "spacing.x": 0.0,
+ "spacing.y": 0.0,
+ "padding.x": 0.0,
+ "padding.y": 0.0,
+ "padding.z": 0.0,
+ "padding.w": 0.0,
+ "flexible": false,
+ "boxContent.m_FileID": 0,
+ "boxContent.m_PathID": 0,
+ "fixedBound.m_FileID": 0,
+ "fixedBound.m_PathID": 0,
+ "maskObject.m_FileID": 0,
+ "maskObject.m_PathID": 0,
+ "onDone.m_PersistentCalls.m_Calls": "[0]",
+ "refresh": false,
+ "_gameobject": "Board_BeginPlay/Board_Talents/ParentBot/All_Talents"
+}
+```
 
 ## `GP_Datas` samples
 
@@ -100,6 +209,126 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "listActiveEnemies": "[0]",
  "enemyLayer.m_Mask": 512,
  "_gameobject": "GP_Manager"
+}
+```
+
+## `Shop_Cell` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 871,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 28487712768,
+ "m_Name": "",
+ "iconRenderer.m_FileID": 0,
+ "iconRenderer.m_PathID": 6061,
+ "textValues.m_FileID": 0,
+ "textValues.m_PathID": 6563,
+ "textCost.m_FileID": 0,
+ "textCost.m_PathID": 6599,
+ "textBonus.m_FileID": 0,
+ "textBonus.m_PathID": 6584,
+ "textStock.m_FileID": 0,
+ "textStock.m_PathID": 6483,
+ "textPrice.m_FileID": 0,
+ "textPrice.m_PathID": 0,
+ "textVipPoint.m_FileID": 0,
+ "textVipPoint.m_PathID": 6593,
+ "textFirstPurchaseValue.m_FileID": 0,
+ "textFirstPurchaseValue.m_PathID": 6460,
+ "isVideoBox": false,
+ "indexCell": 0,
+ "fc.m_FileID": 0,
+ "fc.m_PathID": 0,
+ "_gameobject": "Board_BeginPlay/Board_RebornIAP/Parent/Group 1/Special_Packs/Btn_Cell (9)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 2126,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 28487712768,
+ "m_Name": "",
+ "iconRenderer.m_FileID": 0,
+ "iconRenderer.m_PathID": 5507,
+ "textValues.m_FileID": 0,
+ "textValues.m_PathID": 6565,
+ "textCost.m_FileID": 0,
+ "textCost.m_PathID": 6602,
+ "textBonus.m_FileID": 0,
+ "textBonus.m_PathID": 6596,
+ "textStock.m_FileID": 0,
+ "textStock.m_PathID": 6612,
+ "textPrice.m_FileID": 0,
+ "textPrice.m_PathID": 0,
+ "textVipPoint.m_FileID": 0,
+ "textVipPoint.m_PathID": 6562,
+ "textFirstPurchaseValue.m_FileID": 0,
+ "textFirstPurchaseValue.m_PathID": 6557,
+ "isVideoBox": false,
+ "indexCell": 0,
+ "fc.m_FileID": 0,
+ "fc.m_PathID": 0,
+ "_gameobject": "Board_BeginPlay/Board_RebornIAP/Parent/Group 1/Special_Packs/Btn_Cell (7)"
+}
+```
+
+## `Box_Rewards` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 307,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 15149826048,
+ "m_Name": "",
+ "textNumber.m_FileID": 0,
+ "textNumber.m_PathID": 2295,
+ "borderNumber.m_FileID": 0,
+ "borderNumber.m_PathID": 2094,
+ "grayRenderers": "[0]",
+ "boxRenderer.m_FileID": 0,
+ "boxRenderer.m_PathID": 2004,
+ "iconRenderer.m_FileID": 0,
+ "iconRenderer.m_PathID": 2138,
+ "objCards.m_FileID": 0,
+ "objCards.m_PathID": 397,
+ "textBonus.m_FileID": 0,
+ "textBonus.m_PathID": 0,
+ "id": 0,
+ "number": 0,
+ "_gameobject": "Parent/Parent_Rewards/Box_Gift (1)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 184,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 15149826048,
+ "m_Name": "",
+ "textNumber.m_FileID": 0,
+ "textNumber.m_PathID": 2350,
+ "borderNumber.m_FileID": 0,
+ "borderNumber.m_PathID": 1875,
+ "grayRenderers": "[0]",
+ "boxRenderer.m_FileID": 0,
+ "boxRenderer.m_PathID": 2100,
+ "iconRenderer.m_FileID": 0,
+ "iconRenderer.m_PathID": 1915,
+ "objCards.m_FileID": 0,
+ "objCards.m_PathID": 484,
+ "textBonus.m_FileID": 0,
+ "textBonus.m_PathID": 0,
+ "id": 0,
+ "number": 0,
+ "_gameobject": "Parent/Parent_Rewards/Box_Gift (7)"
 }
 ```
 
@@ -791,6 +1020,286 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
 }
 ```
 
+## `Bullet_Linearly` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 6707,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 30299652096,
+ "m_Name": "",
+ "m_OPScript.m_FileID": 0,
+ "m_OPScript.m_PathID": 584365,
+ "igroneRevoke": false,
+ "target.m_FileID": 0,
+ "target.m_PathID": 0,
+ "actived": false,
+ "stop": true,
+ "throughShield": false,
+ "throughAll": false,
+ "parentPoints.m_FileID": 0,
+ "parentPoints.m_PathID": 242104,
+ "checkPoints": "[0]",
+ "pointRadius": "[1]",
+ "pointRadius[0]": 0.20000000298023224,
+ "border.x": -10.0,
+ "border.y": 10.0,
+ "border.z": -15.0,
+ "border.w": 15.0,
+ "delayStartTime": 0.0,
+ "delay": 0.0,
+ "offLinecastMode": false,
+ "fixedOnLinecast": false,
+ "delayPool": 0.0,
+ "bodyOffNow.m_FileID": 0,
+ "bodyOffNow.m_PathID": 6462,
+ "pointEfx.m_FileID": 0,
+ "pointEfx.m_PathID": 243075,
+ "idDestroyEfx": 91101,
+ "_gameobject": "BLT_80096"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 6539,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 30299652096,
+ "m_Name": "",
+ "m_OPScript.m_FileID": 0,
+ "m_OPScript.m_PathID": 584197,
+ "igroneRevoke": false,
+ "target.m_FileID": 0,
+ "target.m_PathID": 0,
+ "actived": false,
+ "stop": true,
+ "throughShield": true,
+ "throughAll": false,
+ "parentPoints.m_FileID": 0,
+ "parentPoints.m_PathID": 241938,
+ "checkPoints": "[0]",
+ "pointRadius": "[1]",
+ "pointRadius[0]": 0.15000000596046448,
+ "border.x": -10.0,
+ "border.y": 10.0,
+ "border.z": -15.0,
+ "border.w": 15.0,
+ "delayStartTime": 0.0,
+ "delay": 0.0,
+ "offLinecastMode": false,
+ "fixedOnLinecast": true,
+ "delayPool": 0.0,
+ "bodyOffNow.m_FileID": 0,
+ "bodyOffNow.m_PathID": 0,
+ "pointEfx.m_FileID": 0,
+ "pointEfx.m_PathID": 0,
+ "idDestroyEfx": 90003,
+ "_gameobject": "BLT_80210"
+}
+```
+
+## `Enemy_Sub` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4291,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 32447135744,
+ "m_Name": "",
+ "m_OPScript.m_FileID": 0,
+ "m_OPScript.m_PathID": 580872,
+ "controller.m_FileID": 0,
+ "controller.m_PathID": 580873,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4341,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 32447135744,
+ "m_Name": "",
+ "m_OPScript.m_FileID": 0,
+ "m_OPScript.m_PathID": 580925,
+ "controller.m_FileID": 0,
+ "controller.m_PathID": 580926,
+ "_gameobject": "Gun1/Gun4"
+}
+```
+
+## `Enemy_Controller` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4291,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 20082327552,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 580881,
+ "healthScript.m_FileID": 0,
+ "healthScript.m_PathID": 580880,
+ "appearScript.m_FileID": 0,
+ "appearScript.m_PathID": 580879,
+ "physicsScript.m_FileID": 0,
+ "physicsScript.m_PathID": 580878,
+ "movementScript.m_FileID": 0,
+ "movementScript.m_PathID": 580877,
+ "uiScript.m_FileID": 0,
+ "uiScript.m_PathID": 580876,
+ "destroyScript.m_FileID": 0,
+ "destroyScript.m_PathID": 580875,
+ "burnedScript.m_FileID": 0,
+ "burnedScript.m_PathID": 580874,
+ "stunScript.m_FileID": 0,
+ "stunScript.m_PathID": 0,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4341,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 20082327552,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 580934,
+ "healthScript.m_FileID": 0,
+ "healthScript.m_PathID": 580933,
+ "appearScript.m_FileID": 0,
+ "appearScript.m_PathID": 580932,
+ "physicsScript.m_FileID": 0,
+ "physicsScript.m_PathID": 580931,
+ "movementScript.m_FileID": 0,
+ "movementScript.m_PathID": 580930,
+ "uiScript.m_FileID": 0,
+ "uiScript.m_PathID": 580929,
+ "destroyScript.m_FileID": 0,
+ "destroyScript.m_PathID": 580928,
+ "burnedScript.m_FileID": 0,
+ "burnedScript.m_PathID": 580927,
+ "stunScript.m_FileID": 0,
+ "stunScript.m_PathID": 0,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
+}
+```
+
+## `Enemy_Movement` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4291,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 7012876288,
+ "m_Name": "",
+ "endOfPathInstruction": 2,
+ "typeMoveEnded": 0,
+ "moveEndedEvent.m_PersistentCalls.m_Calls": "[0]",
+ "facingMove": true,
+ "isTurret": false,
+ "parentRotate.m_FileID": 0,
+ "parentRotate.m_PathID": 0,
+ "listSpeeds": "[1]",
+ "listSpeeds[0]": 5.0,
+ "border.x": -10.0,
+ "border.y": 10.0,
+ "border.z": -15.0,
+ "border.w": 15.0,
+ "fixedAngle": false,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4341,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 7012876288,
+ "m_Name": "",
+ "endOfPathInstruction": 2,
+ "typeMoveEnded": 0,
+ "moveEndedEvent.m_PersistentCalls.m_Calls": "[0]",
+ "facingMove": true,
+ "isTurret": false,
+ "parentRotate.m_FileID": 0,
+ "parentRotate.m_PathID": 0,
+ "listSpeeds": "[1]",
+ "listSpeeds[0]": 5.0,
+ "border.x": -10.0,
+ "border.y": 10.0,
+ "border.z": -15.0,
+ "border.w": 15.0,
+ "fixedAngle": false,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
+}
+```
+
+## `Enemy_Appear` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4291,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 17716740096,
+ "m_Name": "",
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4341,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 17716740096,
+ "m_Name": "",
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
+}
+```
+
+## `Enemy_Health` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4291,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 7834959872,
+ "m_Name": "",
+ "noDamage": false,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4341,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 7834959872,
+ "m_Name": "",
+ "noDamage": false,
+ "_gameobject": "Gun1/Gun4"
+}
+```
+
 ## `Enemy_Datas` samples
 
 ```json
@@ -808,7 +1317,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "IsInvisible": false,
  "IsBringItems": false,
  "IsCaAttack": true,
- "_gameobject": "Gun7/Gun6"
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
 }
 ```
 ```json
@@ -826,7 +1335,950 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "IsInvisible": false,
  "IsBringItems": false,
  "IsCaAttack": true,
- "_gameobject": "Body/Than/Gun1/Gun4"
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
+}
+```
+
+## `Path_Spawner` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4298,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 34879832064,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "_gameobject": "Wave_0002/Path_CB3 (9)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4299,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 34879832064,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "_gameobject": "Wave_0005/Path_CB3 (9)"
+}
+```
+
+## `Call_Data` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4298,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 6190792704,
+ "m_Name": "",
+ "editType": 0,
+ "spawnType": 1,
+ "listIdEnemies": "[0]",
+ "listPrefabEnemies": "[8]",
+ "listPrefabEnemies[0].m_FileID": 0,
+ "listPrefabEnemies[0].m_PathID": 185636,
+ "listPrefabEnemies[1].m_FileID": 0,
+ "listPrefabEnemies[1].m_PathID": 185636,
+ "listPrefabEnemies[2].m_FileID": 0,
+ "listPrefabEnemies[2].m_PathID": 185636,
+ "listPrefabEnemies[3].m_FileID": 0,
+ "listPrefabEnemies[3].m_PathID": 185636,
+ "listPrefabEnemies[4].m_FileID": 0,
+ "listPrefabEnemies[4].m_PathID": 185636,
+ "listBringItems": "[0]",
+ "ySpawn": 9.600000381469727,
+ "number": 0,
+ "rate": 0.5,
+ "pathScript.m_FileID": 0,
+ "pathScript.m_PathID": 581513,
+ "showGizmos": false,
+ "color.r": 1.0,
+ "color.g": 1.0,
+ "color.b": 1.0,
+ "color.a": 1.0,
+ "radius": 0.10000000149011612,
+ "parentPoints.m_FileID": 0,
+ "parentPoints.m_PathID": 0,
+ "speed": 0.0,
+ "angle": 0.0,
+ "minValX": 0.0,
+ "maxValX": 0.0,
+ "yStart": 0.0,
+ "_gameobject": "Wave_0002/Path_CB3 (9)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4299,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 6190792704,
+ "m_Name": "",
+ "editType": 0,
+ "spawnType": 1,
+ "listIdEnemies": "[0]",
+ "listPrefabEnemies": "[12]",
+ "listPrefabEnemies[0].m_FileID": 0,
+ "listPrefabEnemies[0].m_PathID": 185636,
+ "listPrefabEnemies[1].m_FileID": 0,
+ "listPrefabEnemies[1].m_PathID": 185636,
+ "listPrefabEnemies[2].m_FileID": 0,
+ "listPrefabEnemies[2].m_PathID": 185636,
+ "listPrefabEnemies[3].m_FileID": 0,
+ "listPrefabEnemies[3].m_PathID": 185636,
+ "listPrefabEnemies[4].m_FileID": 0,
+ "listPrefabEnemies[4].m_PathID": 185636,
+ "listBringItems": "[0]",
+ "ySpawn": 9.600000381469727,
+ "number": 0,
+ "rate": 0.5,
+ "pathScript.m_FileID": 0,
+ "pathScript.m_PathID": 581514,
+ "showGizmos": false,
+ "color.r": 1.0,
+ "color.g": 1.0,
+ "color.b": 1.0,
+ "color.a": 1.0,
+ "radius": 0.10000000149011612,
+ "parentPoints.m_FileID": 0,
+ "parentPoints.m_PathID": 0,
+ "speed": 0.0,
+ "angle": 0.0,
+ "minValX": 0.0,
+ "maxValX": 0.0,
+ "yStart": 0.0,
+ "_gameobject": "Wave_0005/Path_CB3 (9)"
+}
+```
+
+## `PinMap_Spawner` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4322,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 8506048512,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "_gameobject": "Wave_0098/Point 1 (4)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4323,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 8506048512,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "_gameobject": "Wave_0098/Point 1 (4)"
+}
+```
+
+## `PathCreator` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4423,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 16391340032,
+ "m_Name": "",
+ "editorData._bezierPath.points": "[10]",
+ "editorData._bezierPath.isClosed": false,
+ "editorData._bezierPath.localPosition.x": 0.0,
+ "editorData._bezierPath.localPosition.y": 0.0,
+ "editorData._bezierPath.localPosition.z": 0.0,
+ "editorData._bezierPath.space": 1,
+ "editorData._bezierPath.controlMode": 0,
+ "editorData._bezierPath.autoControlLength": 0.30000001192092896,
+ "editorData._bezierPath.boundsUpToDate": true,
+ "editorData._bezierPath.pivot.x": 4.939835548400879,
+ "editorData._bezierPath.pivot.y": -6.521292209625244,
+ "editorData._bezierPath.pivot.z": 0.0,
+ "editorData._bezierPath.rotation.x": 0.0,
+ "editorData._bezierPath.rotation.y": 0.0,
+ "editorData._bezierPath.rotation.z": 0.0,
+ "editorData._bezierPath.rotation.w": 1.0,
+ "editorData._bezierPath.scale.x": 1.0,
+ "editorData._bezierPath.scale.y": 1.0,
+ "editorData._bezierPath.scale.z": 1.0,
+ "editorData._bezierPath.perAnchorNormalsAngle": "[3]",
+ "editorData._bezierPath.perAnchorNormalsAngle[0]": 0.0,
+ "editorData._bezierPath.perAnchorNormalsAngle[1]": 0.0,
+ "editorData._bezierPath.perAnchorNormalsAngle[2]": 0.0,
+ "editorData._bezierPath.globalNormalsAngle": 0.0,
+ "editorData._bezierPath.flipNormals": false,
+ "editorData.vertexPathUpToDate": true,
+ "editorData.vertexPathMaxAngleError": 0.30000001192092896,
+ "editorData.vertexPathMinVertexSpacing": 0.009999999776482582,
+ "editorData.pathTransformationEnabled": false,
+ "editorData.showPathBounds": false,
+ "editorData.showPerSegmentBounds": false,
+ "editorData.displayAnchorPoints": true,
+ "editorData.displayControlPoints": true,
+ "editorData.bezierHandleScale": 1.0,
+ "editorData.globalDisplaySettingsFoldout": false,
+ "editorData.keepConstantHandleSize": true,
+ "editorData.vertexHandleSize": 0.20000000298023224,
+ "editorData.showNormalsInVertexMode": false,
+ "editorData.showDisplayOptions": true,
+ "editorData.showPathOptions": true,
+ "editorData.showVertexPathDisplayOptions": false,
+ "editorData.showVertexPathOptions": true,
+ "editorData.showNormals": false,
+ "editorData.showNormalsHelpInfo": false,
+ "editorData.tabIndex": 0,
+ "initialized": true,
+ "hideGizmos": false,
+ "drawGizmos": true,
+ "colorGizmos.r": 0.922553300857544,
+ "colorGizmos.g": 1.0,
+ "colorGizmos.b": 0.2705882787704468,
+ "colorGizmos.a": 1.0,
+ "_gameobject": "Wave_0002/Path_CB3 (10)/Path"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4424,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 16391340032,
+ "m_Name": "",
+ "editorData._bezierPath.points": "[7]",
+ "editorData._bezierPath.isClosed": false,
+ "editorData._bezierPath.localPosition.x": 0.0,
+ "editorData._bezierPath.localPosition.y": 0.0,
+ "editorData._bezierPath.localPosition.z": 0.0,
+ "editorData._bezierPath.space": 1,
+ "editorData._bezierPath.controlMode": 0,
+ "editorData._bezierPath.autoControlLength": 0.30000001192092896,
+ "editorData._bezierPath.boundsUpToDate": true,
+ "editorData._bezierPath.pivot.x": 3.0372378826141357,
+ "editorData._bezierPath.pivot.y": -5.957509517669678,
+ "editorData._bezierPath.pivot.z": 0.0,
+ "editorData._bezierPath.rotation.x": 0.0,
+ "editorData._bezierPath.rotation.y": 0.0,
+ "editorData._bezierPath.rotation.z": 0.0,
+ "editorData._bezierPath.rotation.w": 1.0,
+ "editorData._bezierPath.scale.x": 1.0,
+ "editorData._bezierPath.scale.y": 1.0,
+ "editorData._bezierPath.scale.z": 1.0,
+ "editorData._bezierPath.perAnchorNormalsAngle": "[2]",
+ "editorData._bezierPath.perAnchorNormalsAngle[0]": 0.0,
+ "editorData._bezierPath.perAnchorNormalsAngle[1]": 0.0,
+ "editorData._bezierPath.globalNormalsAngle": 0.0,
+ "editorData._bezierPath.flipNormals": false,
+ "editorData.vertexPathUpToDate": true,
+ "editorData.vertexPathMaxAngleError": 0.30000001192092896,
+ "editorData.vertexPathMinVertexSpacing": 0.009999999776482582,
+ "editorData.pathTransformationEnabled": false,
+ "editorData.showPathBounds": false,
+ "editorData.showPerSegmentBounds": false,
+ "editorData.displayAnchorPoints": true,
+ "editorData.displayControlPoints": true,
+ "editorData.bezierHandleScale": 1.0,
+ "editorData.globalDisplaySettingsFoldout": false,
+ "editorData.keepConstantHandleSize": true,
+ "editorData.vertexHandleSize": 0.20000000298023224,
+ "editorData.showNormalsInVertexMode": false,
+ "editorData.showDisplayOptions": true,
+ "editorData.showPathOptions": true,
+ "editorData.showVertexPathDisplayOptions": false,
+ "editorData.showVertexPathOptions": true,
+ "editorData.showNormals": false,
+ "editorData.showNormalsHelpInfo": false,
+ "editorData.tabIndex": 0,
+ "initialized": true,
+ "hideGizmos": false,
+ "drawGizmos": true,
+ "colorGizmos.r": 0.922553300857544,
+ "colorGizmos.g": 1.0,
+ "colorGizmos.b": 0.2705882787704468,
+ "colorGizmos.a": 1.0,
+ "_gameobject": "Wave_0005/Path_CB3 (10)/Path"
+}
+```
+
+## `Gun_Attack` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4454,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 20736638976,
+ "m_Name": "",
+ "iCanAttackParent.m_FileID": 0,
+ "iCanAttackParent.m_PathID": 413073,
+ "timeStart": 1.0,
+ "gunType": 2,
+ "parentBarrels.m_FileID": 0,
+ "parentBarrels.m_PathID": 239850,
+ "allGunDatas": "[1]",
+ "allGunDatas[0].countShots": 0,
+ "allGunDatas[0].timeShot": 0.07999999821186066,
+ "allGunDatas[0].timeReload": 0.800000011920929,
+ "allGunDatas[0].timeRounds": 3.0,
+ "allGunDatas[0].countMags": 1,
+ "forceType": 0,
+ "targetLayer.m_Mask": 256,
+ "bltId": 80288,
+ "bltSpeed": 6.0,
+ "bltLifetime": 8.0,
+ "bltDamage": 600.0,
+ "bltPinToMap": true,
+ "shootAudioClipName": 69,
+ "isStunned": false,
+ "_gameobject": "CD-31007/GameObject"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 70402,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 20736638976,
+ "m_Name": "",
+ "iCanAttackParent.m_FileID": 0,
+ "iCanAttackParent.m_PathID": 0,
+ "timeStart": 0.0,
+ "gunType": 0,
+ "parentBarrels.m_FileID": 0,
+ "parentBarrels.m_PathID": 247540,
+ "allGunDatas": "[1]",
+ "allGunDatas[0].countShots": 0,
+ "allGunDatas[0].timeShot": 0.0,
+ "allGunDatas[0].timeReload": 0.0,
+ "allGunDatas[0].timeRounds": 10.0,
+ "allGunDatas[0].countMags": 1,
+ "forceType": 0,
+ "targetLayer.m_Mask": 256,
+ "bltId": 80078,
+ "bltSpeed": 8.0,
+ "bltLifetime": 5.0,
+ "bltDamage": 500.0,
+ "bltPinToMap": false,
+ "shootAudioClipName": 0,
+ "isStunned": false,
+ "_gameobject": "Hand3/Hand4/Hand6/Sword/Gun3.1"
+}
+```
+
+## `Boss_BodyPhysics` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 159270,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 19763560448,
+ "m_Name": "",
+ "layerMask.m_Mask": 256,
+ "dmgPerSec": 100.0,
+ "dmgFirst": 1500.0,
+ "isTrigger": false,
+ "isFirstTrigger": false,
+ "_gameobject": "Boss-37018/Enemy_Ingame/Parent/Collider"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 35569,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 19763560448,
+ "m_Name": "",
+ "layerMask.m_Mask": 256,
+ "dmgPerSec": 240.0,
+ "dmgFirst": 0.0,
+ "isTrigger": true,
+ "isFirstTrigger": false,
+ "_gameobject": "Boss-39004/Enemy_Ingame/Body/Body1/Tayxoay/TayR/Tayxoay3/Tayxoay2/Tayxoay1/Cucxoay"
+}
+```
+
+## `Spawner` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 148695,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 2600468480,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "_gameobject": "Wave_0150/EndPoint"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 148696,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 2600468480,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "_gameobject": "Wave_0010/EndPoint"
+}
+```
+
+## `Item_Movement` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 14418,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 1996488704,
+ "m_Name": "",
+ "isCoin": true,
+ "idle": true,
+ "_gameobject": "Wave_0000/Coin_Arrow/GameObject (3)/Item-70012 (2)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 15275,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 1996488704,
+ "m_Name": "",
+ "isCoin": true,
+ "idle": true,
+ "_gameobject": "Coin_Arrow/GameObject (13)/Item-70012 (1)"
+}
+```
+
+## `Sub_Item` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 90016,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 1157627904,
+ "m_Name": "",
+ "m_OPScript.m_FileID": 0,
+ "m_OPScript.m_PathID": 645071,
+ "movementScript.m_FileID": 0,
+ "movementScript.m_PathID": 627891,
+ "_gameobject": "Coin_Arrow/GameObject (7)/Item-70012 (2)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 89446,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 1157627904,
+ "m_Name": "",
+ "m_OPScript.m_FileID": 0,
+ "m_OPScript.m_PathID": 644899,
+ "movementScript.m_FileID": 0,
+ "movementScript.m_PathID": 628026,
+ "_gameobject": "Wave_0003/Coin_Arrow/GameObject (13)/Item-70011 (2)"
+}
+```
+
+## `MeteoriteGenerator` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 113663,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 26474446848,
+ "m_Name": "",
+ "minmaxSpdMove.x": 0.699999988079071,
+ "minmaxSpdMove.y": 1.0,
+ "minmaxSpdRotate.x": -15.0,
+ "minmaxSpdRotate.y": 15.0,
+ "minmaxZ.x": 0.0,
+ "minmaxZ.y": 0.0,
+ "minmaxColor.x": 0.0,
+ "minmaxColor.y": 0.30000001192092896,
+ "minmaxTime.x": 2.0,
+ "minmaxTime.y": 1.0,
+ "minX": 7.0,
+ "maxX": 1.0,
+ "minY": 15.0,
+ "maxY": 15.0,
+ "_gameobject": "Map-0000/Parent_Static/Met (3.2)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 189815,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 26474446848,
+ "m_Name": "",
+ "minmaxSpdMove.x": 1.7000000476837158,
+ "minmaxSpdMove.y": 2.0,
+ "minmaxSpdRotate.x": -15.0,
+ "minmaxSpdRotate.y": 15.0,
+ "minmaxZ.x": 0.0,
+ "minmaxZ.y": 0.0,
+ "minmaxColor.x": 1.0,
+ "minmaxColor.y": 0.800000011920929,
+ "minmaxTime.x": 4.0,
+ "minmaxTime.y": 5.0,
+ "minX": -4.0,
+ "maxX": -3.0,
+ "minY": 12.0,
+ "maxY": 12.0,
+ "_gameobject": "Map-0046/Parent_Static/Met (1)"
+}
+```
+
+## `Waypoints_Spawner` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 233148,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 15888023552,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "_gameobject": "Wave_0069/Group (25)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 233149,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 15888023552,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "_gameobject": "Wave_0219/Group (25)"
+}
+```
+
+## `Stage_Behaviour` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 7895,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 29175578624,
+ "m_Name": "",
+ "stageType": 0,
+ "lineTransform.m_FileID": 0,
+ "lineTransform.m_PathID": 243264,
+ "parentStars.m_FileID": 0,
+ "parentStars.m_PathID": 243260,
+ "stageRenderer.m_FileID": 0,
+ "stageRenderer.m_PathID": 510106,
+ "stageNormalSprites": "[2]",
+ "stageNormalSprites[0].m_FileID": 0,
+ "stageNormalSprites[0].m_PathID": 3620,
+ "stageNormalSprites[1].m_FileID": 0,
+ "stageNormalSprites[1].m_PathID": 2847,
+ "stageMiniBossSprites": "[2]",
+ "stageMiniBossSprites[0].m_FileID": 0,
+ "stageMiniBossSprites[0].m_PathID": 2542,
+ "stageMiniBossSprites[1].m_FileID": 0,
+ "stageMiniBossSprites[1].m_PathID": 2623,
+ "stageBossSprites": "[2]",
+ "stageBossSprites[0].m_FileID": 0,
+ "stageBossSprites[0].m_PathID": 2542,
+ "stageBossSprites[1].m_FileID": 0,
+ "stageBossSprites[1].m_PathID": 2623,
+ "stageCombatSprites": "[2]",
+ "stageCombatSprites[0].m_FileID": 0,
+ "stageCombatSprites[0].m_PathID": 3181,
+ "stageCombatSprites[1].m_FileID": 0,
+ "stageCombatSprites[1].m_PathID": 3340,
+ "stageSSprites": "[2]",
+ "stageSSprites[0].m_FileID": 0,
+ "stageSSprites[0].m_PathID": 3409,
+ "stageSSprites[1].m_FileID": 0,
+ "stageSSprites[1].m_PathID": 2839,
+ "stageXSprites": "[2]",
+ "stageXSprites[0].m_FileID": 0,
+ "stageXSprites[0].m_PathID": 2978,
+ "stageXSprites[1].m_FileID": 0,
+ "stageXSprites[1].m_PathID": 3420,
+ "textStageIndex.m_FileID": 0,
+ "textStageIndex.m_PathID": 635779,
+ "rootLine.m_FileID": 0,
+ "rootLine.m_PathID": 0,
+ "refresh": false,
+ "bossObj.m_FileID": 0,
+ "bossObj.m_PathID": 176880,
+ "_gameobject": "Board_Maps/Parent/ScrollView-Chap 1/ObjectMove/Parent_Stages/Stage_Normal (72)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 8869,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 29175578624,
+ "m_Name": "",
+ "stageType": 0,
+ "lineTransform.m_FileID": 0,
+ "lineTransform.m_PathID": 244194,
+ "parentStars.m_FileID": 0,
+ "parentStars.m_PathID": 244200,
+ "stageRenderer.m_FileID": 0,
+ "stageRenderer.m_PathID": 510341,
+ "stageNormalSprites": "[2]",
+ "stageNormalSprites[0].m_FileID": 0,
+ "stageNormalSprites[0].m_PathID": 3620,
+ "stageNormalSprites[1].m_FileID": 0,
+ "stageNormalSprites[1].m_PathID": 2847,
+ "stageMiniBossSprites": "[2]",
+ "stageMiniBossSprites[0].m_FileID": 0,
+ "stageMiniBossSprites[0].m_PathID": 2542,
+ "stageMiniBossSprites[1].m_FileID": 0,
+ "stageMiniBossSprites[1].m_PathID": 2623,
+ "stageBossSprites": "[2]",
+ "stageBossSprites[0].m_FileID": 0,
+ "stageBossSprites[0].m_PathID": 2542,
+ "stageBossSprites[1].m_FileID": 0,
+ "stageBossSprites[1].m_PathID": 2623,
+ "stageCombatSprites": "[2]",
+ "stageCombatSprites[0].m_FileID": 0,
+ "stageCombatSprites[0].m_PathID": 3181,
+ "stageCombatSprites[1].m_FileID": 0,
+ "stageCombatSprites[1].m_PathID": 3340,
+ "stageSSprites": "[2]",
+ "stageSSprites[0].m_FileID": 0,
+ "stageSSprites[0].m_PathID": 3409,
+ "stageSSprites[1].m_FileID": 0,
+ "stageSSprites[1].m_PathID": 2839,
+ "stageXSprites": "[2]",
+ "stageXSprites[0].m_FileID": 0,
+ "stageXSprites[0].m_PathID": 2978,
+ "stageXSprites[1].m_FileID": 0,
+ "stageXSprites[1].m_PathID": 3420,
+ "textStageIndex.m_FileID": 0,
+ "textStageIndex.m_PathID": 636176,
+ "rootLine.m_FileID": 0,
+ "rootLine.m_PathID": 0,
+ "refresh": false,
+ "bossObj.m_FileID": 0,
+ "bossObj.m_PathID": 175830,
+ "_gameobject": "Board_Maps/Parent/ScrollView-Chap 2/ObjectMove/Parent_Stages/Stage_Normal (221)"
+}
+```
+
+## `PointToPoint_Spawner` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 203839,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 10200547328,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "_gameobject": "Wave_0010/CB1 Vua"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 203840,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 10200547328,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "_gameobject": "Wave_0072/CB1 Vua"
+}
+```
+
+## `Rocket_Spawner` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 74724,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 14847836160,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "typeRocket": 3,
+ "showBoundaryRocketPoints": true,
+ "_gameobject": "Wave_0190/6-CB09_Left (21)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 74725,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 14847836160,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "typeRocket": 3,
+ "showBoundaryRocketPoints": true,
+ "_gameobject": "Wave_0190/6-CB09_Left (21)"
+}
+```
+
+## `MapController` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 71443,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 26189234176,
+ "m_Name": "",
+ "allMoveLayers": "[4]",
+ "allMoveLayers[0].parentLayer.m_FileID": 0,
+ "allMoveLayers[0].parentLayer.m_PathID": 299772,
+ "allMoveLayers[0].speed": 0.25,
+ "allMoveLayers[1].parentLayer.m_FileID": 0,
+ "allMoveLayers[1].parentLayer.m_PathID": 349667,
+ "allMoveLayers[1].speed": 1.0,
+ "allMoveLayers[2].parentLayer.m_FileID": 0,
+ "allMoveLayers[2].parentLayer.m_PathID": 385154,
+ "allMoveLayers[2].speed": 0.05000000074505806,
+ "allMoveLayers[3].parentLayer.m_FileID": 0,
+ "allMoveLayers[3].parentLayer.m_PathID": 276000,
+ "allMoveLayers[3].speed": 0.25,
+ "enemyParentMove.parentLayer.m_FileID": 0,
+ "enemyParentMove.parentLayer.m_PathID": 0,
+ "enemyParentMove.speed": 0.0,
+ "parentWaves.m_FileID": 0,
+ "parentWaves.m_PathID": 349667,
+ "parentMaps.m_FileID": 0,
+ "parentMaps.m_PathID": 299772,
+ "isMoveEnemyLayer": false,
+ "IndexWaveArena": 0,
+ "IndexWavePvP": 0,
+ "worked": true,
+ "_gameobject": "Map-0003"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 86259,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 26189234176,
+ "m_Name": "",
+ "allMoveLayers": "[5]",
+ "allMoveLayers[0].parentLayer.m_FileID": 0,
+ "allMoveLayers[0].parentLayer.m_PathID": 427220,
+ "allMoveLayers[0].speed": 0.20000000298023224,
+ "allMoveLayers[1].parentLayer.m_FileID": 0,
+ "allMoveLayers[1].parentLayer.m_PathID": 363852,
+ "allMoveLayers[1].speed": 1.0,
+ "allMoveLayers[2].parentLayer.m_FileID": 0,
+ "allMoveLayers[2].parentLayer.m_PathID": 349457,
+ "allMoveLayers[2].speed": 0.10000000149011612,
+ "allMoveLayers[3].parentLayer.m_FileID": 0,
+ "allMoveLayers[3].parentLayer.m_PathID": 437329,
+ "allMoveLayers[3].speed": 0.5,
+ "allMoveLayers[4].parentLayer.m_FileID": 0,
+ "allMoveLayers[4].parentLayer.m_PathID": 392274,
+ "allMoveLayers[4].speed": 0.2199999988079071,
+ "enemyParentMove.parentLayer.m_FileID": 0,
+ "enemyParentMove.parentLayer.m_PathID": 0,
+ "enemyParentMove.speed": 0.0,
+ "parentWaves.m_FileID": 0,
+ "parentWaves.m_PathID": 363852,
+ "parentMaps.m_FileID": 0,
+ "parentMaps.m_PathID": 427220,
+ "isMoveEnemyLayer": false,
+ "IndexWaveArena": 0,
+ "IndexWavePvP": 0,
+ "worked": true,
+ "_gameobject": "Map-0043"
+}
+```
+
+## `Player19Laser` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 53511,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 30047993856,
+ "m_Name": "",
+ "parentRotate.m_FileID": 0,
+ "parentRotate.m_PathID": 292689,
+ "line.m_FileID": 0,
+ "line.m_PathID": 499581,
+ "lightObject.m_FileID": 0,
+ "lightObject.m_PathID": 49545,
+ "playerAttack.m_FileID": 0,
+ "playerAttack.m_PathID": 641750,
+ "targetLayer.m_Mask": 512,
+ "_gameobject": "Player_10019/AllDrones/Drone (9)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 158211,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 30047993856,
+ "m_Name": "",
+ "parentRotate.m_FileID": 0,
+ "parentRotate.m_PathID": 376709,
+ "line.m_FileID": 0,
+ "line.m_PathID": 499820,
+ "lightObject.m_FileID": 0,
+ "lightObject.m_PathID": 165863,
+ "playerAttack.m_FileID": 0,
+ "playerAttack.m_PathID": 616561,
+ "targetLayer.m_Mask": 512,
+ "_gameobject": "Board_Players/Parent/Panel_Info/Player_Demo/Player_Types/Player_10019/AllDrones/Drone (10)"
+}
+```
+
+## `Boss4_ExplosionTimer` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 181391,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 15049162752,
+ "m_Name": "",
+ "idFx": 91003,
+ "fixedTime": -1.0,
+ "timeMin": 0.25,
+ "timeMax": 1.75,
+ "_gameobject": "Boss-39010/Enemy_Ingame/Body/FxDie/Fx (19)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 9735,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 15049162752,
+ "m_Name": "",
+ "idFx": 91003,
+ "fixedTime": -1.0,
+ "timeMin": 0.5,
+ "timeMax": 6.800000190734863,
+ "_gameobject": "Board_FightBoss/Parent/Tab (5)/Boss/Parent_Bosses/Boss 6/Boss 6/FxDie/Fx (29)"
+}
+```
+
+## `AirFree_Spawner` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 203787,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 33520877568,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "_gameobject": "Wave_0231/CheckPlayerNo (21)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 203788,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 33520877568,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 0,
+ "_gameobject": "Wave_0231/CheckPlayerNo (21)"
+}
+```
+
+## `Wave` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 214656,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 32799457280,
+ "m_Name": "",
+ "indexWave": 0,
+ "startPoint.m_FileID": 0,
+ "startPoint.m_PathID": 288457,
+ "endPoint.m_FileID": 0,
+ "endPoint.m_PathID": 340237,
+ "_gameobject": "Wave_0011"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 214657,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 32799457280,
+ "m_Name": "",
+ "indexWave": 0,
+ "startPoint.m_FileID": 0,
+ "startPoint.m_PathID": 288458,
+ "endPoint.m_FileID": 0,
+ "endPoint.m_PathID": 340238,
+ "_gameobject": "Wave_0011"
 }
 ```
 
@@ -868,6 +2320,57 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "btnExitCover.m_FileID": 0,
  "btnExitCover.m_PathID": 110977,
  "_gameobject": "BOARD_ENDGAME"
+}
+```
+
+## `Bullet_SineWave` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 168196,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 3825205248,
+ "m_Name": "",
+ "m_OPScript.m_FileID": 0,
+ "m_OPScript.m_PathID": 666268,
+ "igroneRevoke": false,
+ "target.m_FileID": 0,
+ "target.m_PathID": 0,
+ "height": 1.0,
+ "speed": 12.0,
+ "igroneShieldCollider": false,
+ "fxDestroyIndex": 90003,
+ "border.x": -6.0,
+ "border.y": 6.0,
+ "border.z": -20.0,
+ "border.w": 10.0,
+ "_gameobject": "BLT_80104"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 168200,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 3825205248,
+ "m_Name": "",
+ "m_OPScript.m_FileID": 0,
+ "m_OPScript.m_PathID": 666272,
+ "igroneRevoke": false,
+ "target.m_FileID": 0,
+ "target.m_PathID": 0,
+ "height": 1.0,
+ "speed": 12.0,
+ "igroneShieldCollider": false,
+ "fxDestroyIndex": 90003,
+ "border.x": -6.0,
+ "border.y": 6.0,
+ "border.z": -20.0,
+ "border.w": 10.0,
+ "_gameobject": "BLT_80105"
 }
 ```
 
