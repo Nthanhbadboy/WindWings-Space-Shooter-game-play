@@ -29,7 +29,7 @@ import os
 import re
 import struct
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 DUMP = os.environ.get("IL2CPP_DUMP", "/tmp/apk/il2cpp/dump.cs")
 SO = os.environ.get("IL2CPP_SO", "/tmp/apk/extract/libil2cpp.so")
@@ -108,6 +108,19 @@ def read_at(f, off, n):
 
 
 # ------------------------------------------------------------------ disassembly
+def _as_float(u32: int):
+    """Interpret a 32-bit immediate as IEEE-754 float; return it if it looks real."""
+    try:
+        val = struct.unpack("<f", struct.pack("<I", u32 & 0xFFFFFFFF))[0]
+    except Exception:  # noqa: BLE001
+        return None
+    if val != val or abs(val) == float("inf") or val == 0.0:
+        return None
+    if abs(val) > 1e9 or abs(val) < 1e-6:
+        return None
+    return round(val, 6)
+
+
 def constants_in(code_off, size, blob, md):
     """Return (consts, asm_lines) for one method body."""
     import capstone
@@ -121,7 +134,10 @@ def constants_in(code_off, size, blob, md):
     cs.detail = True
     consts, lines = [], []
     chunk = blob[code_off:code_off + size]
-    for insn in cs.disasm(chunk, code_off):
+    insns = list(cs.disasm(chunk, code_off))
+    pending_floats: list = []
+    emitted: set = set()
+    for insn in insns:
         text = f"{insn.address:#x}: {insn.mnemonic:8s} {insn.op_str}"
         lines.append(text)
         # ---- float loaded from the literal pool: ldr sN, [pc, #imm]
@@ -143,14 +159,70 @@ def constants_in(code_off, size, blob, md):
             if m and dst.startswith("s"):
                 consts.append({"kind": "float", "value": float(m.group(1)),
                                "via": "fmov", "addr": hex(insn.address)})
+        # ---- float materialised through an int register:
+        #        mov w8, #0x42c80000 ; fmov s1, w8   -> 100.0f
+        if insn.mnemonic in ("mov", "movz") and md == 0xB7:
+            m = re.search(r"#(0x[0-9a-fA-F]{6,8})$", insn.op_str)
+            dst = insn.op_str.split(",")[0].strip()
+            if m and dst.startswith("w"):
+                bits = int(m.group(1), 16)
+                probe = _as_float(bits)
+                if probe is not None:
+                    pending_floats.append({"reg": dst, "value": probe,
+                                           "addr": hex(insn.address), "bits": hex(bits)})
+                    continue
         # ---- integer immediates
         if insn.mnemonic in ("mov", "movz", "movn", "orr", "and", "cmp", "add", "sub", "movk"):
-            m = re.search(r"#(0x[0-9a-fA-F]+|\d+)$", insn.op_str)
+            m = re.search(r"#(0x[0-9a-fA-F]+|\d+)(?:, lsl #\d+)?$", insn.op_str)
             if m:
                 val = int(m.group(1), 0)
                 if 0 < val < (1 << 32):
                     consts.append({"kind": "int", "value": val,
-                                   "via": insn.mnemonic, "addr": hex(insn.address)})
+                                   "via": insn.mnemonic, "addr": hex(insn.address),
+                                   "reg": insn.op_str.split(",")[0].strip(),
+                                   "op": insn.op_str})
+    # `mov w1, #0xd87 ; movk w1, #1, lsl #16` -> 69007, not 3463.
+    # Without this the high half is dropped and the number silently lies.
+    merged = []
+    by_reg = {}
+    for c in consts:
+        reg = c.get("reg")
+        if c["kind"] == "int" and c["via"] in ("mov", "movz") and reg:
+            by_reg[reg] = c
+            merged.append(c)
+        elif c["kind"] == "int" and c["via"] == "movk" and reg in by_reg:
+            base = by_reg[reg]
+            shift = 16
+            m = re.search(r"lsl #(\d+)", c.get("op", ""))
+            if m:
+                shift = int(m.group(1))
+            base["value"] = (base["value"] & ~(0xFFFF << shift)) | \
+                            ((c["value"] & 0xFFFF) << shift)
+            base["via"] = "mov+movk"
+            base["note"] = "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế"
+        else:
+            merged.append(c)
+    consts[:] = merged
+
+    # a float bit-pattern only counts once we see `fmov sN, wReg`
+    for pf in pending_floats:
+        hit = False
+        for insn in insns:
+            if insn.mnemonic == "fmov" and insn.op_str.replace(" ", "").endswith(
+                    "," + pf["reg"]):
+                key = (pf["value"], pf["addr"])
+                if key in emitted:
+                    hit = True
+                    break
+                emitted.add(key)
+                consts.append({"kind": "float", "value": pf["value"], "via": "mov+fmov",
+                               "bits": pf["bits"], "addr": pf["addr"]})
+                hit = True
+                break
+        if not hit:
+            consts.append({"kind": "int", "value": int(pf["bits"], 16), "via": "mov",
+                           "bits": pf["bits"], "addr": pf["addr"],
+                           "note": "bit-pattern giống float nhưng không thấy fmov — để riêng"})
     return consts, lines
 
 
@@ -192,16 +264,45 @@ def annotate(insn_text: str, consts: list) -> None:
                 c["role"] = "other"
 
 
+PROLOGUE = ("sub ", "stp ", "ldp ", "add sp", "mov x29", "str x30", "ret", "nop")
+
+
+def getter_kind(insn_text: str):
+    """Classify a property getter.
+
+    Every getter in this build is wrapped in the IL2CPP static-init guard
+    (`ldrb w8,[guard]; tbnz w8,#0,tail; bl <init>; strb; <tail>`), so the old
+    "<=8 instructions, one load" test never matched anything. We cut the guard
+    and look at the tail instead:
+
+    * ``const`` — tail is ``mov w0, #imm`` / ``fmov s0, #imm`` -> design constant
+    * ``field`` — tail is a chain of loads into w0          -> live data (save/db)
+    * ``None``  — anything else (arithmetic, calls)
+    """
+    body = [l.split(":", 1)[-1].strip() for l in insn_text.split("\n") if l.strip()]
+    body = [l for l in body if not l.startswith(PROLOGUE)]
+    if not body:
+        return None
+    # cut the static-init guard at the last guard marker (`strb` writing the flag)
+    cut = max((i for i, l in enumerate(body) if l.startswith("strb")), default=-1)
+    tail = body[cut + 1:]
+    if not tail:
+        return None
+    tail = [l for l in tail if not l.startswith(("adrp", "mov x0, xzr", "mov x1, xzr"))]
+    if any(re.match(r"(mov|fmov|movz)\s+(w0|s0),\s*#", l) for l in tail):
+        return "const"
+    if any(re.match(r"(add|sub|mul|madd|msub|fadd|fsub|fmul|fdiv|scvtf|fcvtzs|cmp|csel)\b", l)
+           for l in tail):
+        return "computed"
+    if any(l.startswith("b ") for l in tail):
+        return "call"
+    if any(re.match(r"ldr\s+(w0|s0),", l) for l in tail):
+        return "field"
+    return None
+
+
 def is_pure_getter(insn_text: str) -> bool:
-    """Body that just returns one immediate (the classic Unity property getter)."""
-    lines = [l.split(":", 1)[-1].strip() for l in insn_text.split("\n") if l.strip()]
-    body = [l for l in lines if not l.startswith(("sub", "stp", "ldp", "add sp", "mov x29"))]
-    if not any(l.startswith("ret") for l in body):
-        return False
-    if len(body) > 8:
-        return False
-    loads = [l for l in body if l.startswith(("adrp", "ldr x", "ldr w", "bl "))]
-    return len(loads) <= 1 and any(l.startswith(("mov w0", "mov x0", "ldr s0")) for l in body)
+    return getter_kind(insn_text) == "const"
 
 
 def main() -> int:
@@ -240,9 +341,12 @@ def main() -> int:
                     continue
                 consts, lines = constants_in(offset, size, blob, md or 0xB7)
                 annotate("\n".join(lines), consts)
-                pure = is_pure_getter("\n".join(lines))
+                body_text = "\n".join(lines)
+                pure = is_pure_getter(body_text)
+                gkind = getter_kind(body_text)
                 out.append({"method": name, "signature": sig, "offset": hex(offset),
                             "rva": hex(rva), "bytes": size, "pure_getter": pure,
+                            "getter_kind": gkind,
                             "constants": consts})
                 if consts:
                     asm_out.append(f";;; {name}  {sig}")
@@ -258,16 +362,19 @@ def main() -> int:
             floats = sorted({c["value"] for m in out for c in m["constants"]
                              if c["kind"] == "float" and c["value"] not in (0.0,)})
             ints = sorted({c["value"] for m in out for c in m["constants"]
-                           if c["kind"] == "int" and c["value"] > 1})
+                           if c["kind"] == "int" and c["value"] > 1 and not c.get("note")})
             getters = [{"method": m["method"], "signature": m["signature"],
+                        "kind": m.get("getter_kind"),
                         "value": next((c["value"] for c in m["constants"]
                                        if c.get("role") == "return"), None)}
-                       for m in out if m["pure_getter"]]
+                       for m in out if m.get("getter_kind")]
+            gkind = Counter(g["kind"] for g in getters)
             arith = sorted({(c.get("role"), c["value"]) for m in out for c in m["constants"]
                             if str(c.get("role", "")).startswith("arith")})
             summary[cls] = {"methods": len(out), "floats": floats[:40], "ints": ints[:40],
                             "with_constants": sum(1 for m in out if m["constants"]),
-                            "getters": getters, "arith": arith[:60]}
+                            "getters": getters, "getter_kinds": dict(gkind),
+                            "arith": arith[:60]}
             print(f"{cls:22s} {len(out):3d} methods, "
                   f"{sum(1 for m in out if m['constants']):3d} with constants")
 
@@ -278,19 +385,34 @@ def main() -> int:
              "> phải để chép nguyên. Dữ liệu thô: `reverse-engineering/raw/il2cpp-consts/`.", "",
              f"- .so: `{os.path.basename(so_path)}` — {'aarch64' if md == 0xB7 else 'arm'}",
              f"- class đích: **{len(summary)}**, method: **{total}**", ""]
-    lines += ["## Hàm trả về hằng số (độ tin cậy cao)", "",
-              "Những method mà toàn bộ thân hàm chỉ là `mov w0, #imm; ret` — đây gần như chắc chắn",
-              "là giá trị thiết kế, không phải hằng số phụ.", "",
-              "| class | method | giá trị |", "|---|---|---:|"]
-    any_getter = False
+    lines += ["## Getter: trả hằng số hay đọc dữ liệu?", "",
+              "Mỗi getter trong build này đều bị bọc bởi guard khởi tạo static của IL2CPP",
+              "(`ldrb`/`tbnz` → `bl <cctor>` → `strb`), nên ta cắt guard rồi phân loại **phần đuôi**:",
+              "`const` = trả ngay một số, `field` = đọc field static, `computed` = có phép tính,",
+              "`call` = nhảy sang hàm khác (`b`, tail-call).", "",
+              "> **Kết luận tạm thời:** nếu `const` = 0 thì bảng cân bằng **không nằm trong hằng số**",
+              "> của getter, mà nằm trong dữ liệu/asset — đúng với hướng đi của repo này.", "",
+              "| class | field | computed | call | const |", "|---|---:|---:|---:|---:|"]
+    total_kinds: Counter = Counter()
     for cls, info in sorted(summary.items()):
-        for g in info.get("getters", [])[:40]:
-            if g.get("value") is None:
-                continue
-            any_getter = True
-            lines.append(f"| `{cls}` | `{g['method']}` | {g['value']} |")
-    if not any_getter:
-        lines.append("| — | chưa tìm thấy | — |")
+        k = info.get("getter_kinds") or {}
+        total_kinds.update(k)
+        if not k:
+            continue
+        lines.append(f"| `{cls}` | {k.get('field', 0)} | {k.get('computed', 0)} | "
+                     f"{k.get('call', 0)} | **{k.get('const', 0)}** |")
+    lines += ["| **tổng** | "
+              f"{total_kinds.get('field', 0)} | {total_kinds.get('computed', 0)} | "
+              f"{total_kinds.get('call', 0)} | **{total_kinds.get('const', 0)}** |", ""]
+
+    consts_rows = [(cls, g) for cls, info in sorted(summary.items())
+                   for g in info.get("getters", []) if g.get("kind") == "const"]
+    if consts_rows:
+        lines += ["### Getter trả hằng số (nếu có)", "",
+                  "| class | method | giá trị |", "|---|---|---:|"]
+        for cls, g in consts_rows[:60]:
+            lines.append(f"| `{cls}` | `{g['method']}` | {g.get('value')} |")
+        lines.append("")
     lines.append("")
 
     for cls, info in sorted(summary.items(), key=lambda kv: -kv[1]["methods"]):
