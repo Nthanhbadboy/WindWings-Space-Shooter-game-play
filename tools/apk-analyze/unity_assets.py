@@ -243,7 +243,7 @@ def export_assets(env) -> None:
                 img.save(p)
                 counters[t] += 1
                 bytes_out[t] += os.path.getsize(p)
-                manifest.append((t, name, os.path.getsize(p), os.path.relpath(p, EXPORT)))
+                manifest.append((t, name, os.path.getsize(p), os.path.relpath(p, EXPORT), obj.path_id))
             elif t == "AudioClip":
                 samples = getattr(d, "samples", None)
                 if not samples:
@@ -255,7 +255,7 @@ def export_assets(env) -> None:
                         f.write(data)
                     counters[t] += 1
                     bytes_out[t] += len(data)
-                    manifest.append((t, name, len(data), os.path.relpath(p, EXPORT)))
+                    manifest.append((t, name, len(data), os.path.relpath(p, EXPORT), obj.path_id))
             elif t == "Font":
                 data = getattr(d, "m_FontData", None)
                 if data:
@@ -272,7 +272,7 @@ def export_assets(env) -> None:
     with open(os.path.join(OUT, "export.md"), "w") as f:
         f.write("\n".join(lines))
     with open(os.path.join(OUT, "export-manifest.csv"), "w") as f:
-        f.write("type,name,bytes,path\n")
+        f.write("type,name,bytes,path,path_id\n")
         for row in sorted(manifest, key=lambda r: (r[0], r[1])):
             f.write(",".join('"' + str(x).replace('"', '""') + '"' for x in row) + "\n")
     print("\n".join(lines))

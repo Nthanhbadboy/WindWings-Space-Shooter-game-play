@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
-"""Extract ScriptableObject data from WindWings using IL2CPP-generated typetrees.
+"""Extract ScriptableObject / MonoBehaviour values from WindWings.
 
 UnityPy can rebuild MonoBehaviour typetrees from `libil2cpp.so` +
 `global-metadata.dat` (TypeTreeGeneratorAPI), which is the only way to read the
 actual designer values out of a stripped IL2CPP player build.
+
+Two groups of classes are dumped:
+
+* **config**   — the ScriptableObjects (Data_Players, IAPProduct, LanguageAssets ...)
+* **runtime**  — gameplay components that actually hold balance numbers
+                 (Gun_Attack → damage, Call_Data → wave composition,
+                  Enemy_Datas → HP, ...)
+
+Per-class caps keep the output small: only `MAX_READ_PER_CLASS` objects are
+typetree-read, `MAX_DUMP_PER_CLASS` are written as JSON, `MAX_CSV_ROWS` go to CSV.
 """
 from __future__ import annotations
 
@@ -15,14 +25,14 @@ from collections import Counter, defaultdict
 import UnityPy
 from UnityPy.helpers.TypeTreeGenerator import TypeTreeGenerator
 
-EXTRACT = "/tmp/apk/extract"
+EXTRACT = os.environ.get("UNITY_DATA", "/tmp/apk/extract")
 OUT = "/tmp/apk/unity/data"
 REPORT = "/tmp/apk/unity/data-report.md"
 UNITY_VERSION = os.environ.get("UNITY_VERSION", "2022.3.62f3")
-# ScriptableObjects found in the build + the designer-data MonoBehaviours that
-# hold the actual balance numbers (damage, hp, costs, waves, ranks ...).
-TARGETS = {
-    # ScriptableObjects
+TTG_BACKEND = os.environ.get("TTG_BACKEND", "AssetStudio")
+
+# ---------------------------------------------------------------- config group
+CONFIG = {
     "Data_Players",
     "Data_Boss",
     "Data_Items",
@@ -37,40 +47,59 @@ TARGETS = {
     "TMP_Settings",
     "TMP_StyleSheet",
     "TMP_ColorGradient",
-    "StyleSheet",
-    "TextSettings",
-    "TextStyleSheet",
-    "TextColorGradient",
     "PanelSettings",
     "GlobalDisplaySettings",
-    # balance / save data components
-    "Player_Get_Datas",
-    "Player_Datas",
-    "Player_Saved_Datas",
-    "Player_Device_Saved_Datas",
-    "Drone_Get_Datas",
-    "Drone_Saved_Datas",
-    "Device_Get_Data",
-    "Device_Saved_Data",
-    "Enemy_Get_Datas",
-    "Enemy_Datas",
-    "Enemy_Data_Balance",
-    "Droid_Data_Balance",
-    "Stage_Get_Datas",
-    "Stage_Datas",
-    "Map_Get_Datas",
-    "Tech_Datas",
-    "Bonus_Get_Datas",
-    "GameDatas",
-    "DataShopPack",
-    "ConvertDatas",
-    "GP_Datas",
-    "RankManager",
-    "ArenaManager",
-    "IAP_Manager",
 }
-MAX_DUMP_PER_CLASS = int(os.environ.get("MAX_DUMP_PER_CLASS", "25"))
-MAX_CSV_ROWS = int(os.environ.get("MAX_CSV_ROWS", "1000"))
+
+# --------------------------------------------------------------- runtime group
+# These are the components that carry the numbers the balance report needs.
+RUNTIME = {
+    # weapons / bullets
+    "Gun_Attack",
+    "Bullet_Linearly",
+    "Bullet_SineWave",
+    "Player19Laser",
+    "Rocket_Spawner",
+    # enemies / waves / maps
+    "Enemy_Datas",
+    "Enemy_Health",
+    "Enemy_Controller",
+    "Enemy_Movement",
+    "Enemy_Sub",
+    "Enemy_Appear",
+    "Wave",
+    "Call_Data",
+    "Spawner",
+    "PointToPoint_Spawner",
+    "PinMap_Spawner",
+    "Path_Spawner",
+    "AirFree_Spawner",
+    "Waypoints_Spawner",
+    "MeteoriteGenerator",
+    "MapController",
+    "PathCreator",
+    "Stage_Behaviour",
+    # items / economy
+    "Sub_Item",
+    "Item_Movement",
+    "Box_Rewards",
+    "Shop_Cell",
+    # bosses
+    "Boss_BodyPhysics",
+    "Boss4_ExplosionTimer",
+    # managers that do get serialized
+    "RankManager",
+    "DataShopPack",
+    "ArenaManager",
+    "GP_Datas",
+    "GridLayoutManager",
+}
+
+TARGETS = CONFIG | RUNTIME
+
+MAX_READ_PER_CLASS = int(os.environ.get("MAX_READ_PER_CLASS", "800"))
+MAX_DUMP_PER_CLASS = int(os.environ.get("MAX_DUMP_PER_CLASS", "20"))
+MAX_CSV_ROWS = int(os.environ.get("MAX_CSV_ROWS", "1200"))
 
 
 def human(n: float) -> str:
@@ -83,7 +112,7 @@ def human(n: float) -> str:
 
 def _component_transform(go):
     for c in getattr(go, "m_Component", None) or []:
-        pptr = getattr(c, "component", None) or getattr(c, "m_Component", None) or c
+        pptr = getattr(c, "component", None) or c
         try:
             comp = pptr.deref_parse_as_object()
         except Exception:  # noqa: BLE001
@@ -96,12 +125,11 @@ def _component_transform(go):
     return None
 
 
-def gameobject_path(go, depth=12):
-    """root/child/grandchild name path for a GameObject typetree object."""
+def gameobject_path(go, depth=10):
+    """`root/child/grandchild` name path for a GameObject (best effort)."""
     try:
         tr = _component_transform(go)
-        names = []
-        seen = set()
+        names, seen = [], set()
         while tr is not None and len(names) < depth:
             if id(tr) in seen:
                 break
@@ -160,9 +188,8 @@ def main() -> int:
     os.makedirs(OUT, exist_ok=True)
     env = load_env()
     print("loaded files:", list(getattr(env, "files", {}).keys()))
-    backend = os.environ.get("TTG_BACKEND", "AssetStudio")
-    print("typetree backend:", backend)
-    gen = TypeTreeGenerator(UNITY_VERSION, generator=backend)
+    gen = TypeTreeGenerator(UNITY_VERSION, generator=TTG_BACKEND)
+    print("typetree backend:", TTG_BACKEND)
     with open(os.path.join(EXTRACT, "libil2cpp.so"), "rb") as f:
         il2cpp = f.read()
     with open(os.path.join(EXTRACT, "global-metadata.dat"), "rb") as f:
@@ -171,13 +198,14 @@ def main() -> int:
     env.typetree_generator = gen
     print("typetree generator ready")
 
-    counts = Counter()
     inventory: Counter = Counter()
-    errors = Counter()
+    counts: Counter = Counter()
+    errors: Counter = Counter()
     samples = defaultdict(list)
     records = defaultdict(list)
+    skipped_cap = Counter()
 
-    for n, obj in enumerate(env.objects):
+    for obj in env.objects:
         if obj.type.name != "MonoBehaviour":
             continue
         try:
@@ -185,32 +213,33 @@ def main() -> int:
             script = head.m_Script.deref_parse_as_object()
             cls = script.m_ClassName
             ns = script.m_Namespace
-            asm = script.m_AssemblyName
-        except Exception as e:  # noqa: BLE001
+        except Exception:  # noqa: BLE001
             errors["script"] += 1
             continue
         inventory[cls] += 1
         if cls not in TARGETS:
             continue
-        go_name = ""
-        try:
-            go_name = gameobject_path(head.m_GameObject.deref_parse_as_object())
-        except Exception:  # noqa: BLE001
-            pass
+        if counts[cls] >= MAX_READ_PER_CLASS:
+            skipped_cap[cls] += 1
+            continue
         try:
             tree = obj.read_typetree()
         except Exception as e:  # noqa: BLE001
             errors[f"typetree:{cls}"] += 1
-            if len(samples[cls]) < 3:
+            if len(samples[cls]) < 2:
                 samples[cls].append(f"ERROR {e!r}")
             continue
         counts[cls] += 1
         flat = flatten(tree)
+        try:
+            go_name = gameobject_path(head.m_GameObject.deref_parse_as_object())
+        except Exception:  # noqa: BLE001
+            go_name = ""
         if go_name:
             flat["_gameobject"] = go_name
         records[cls].append((obj.path_id, flat))
-        safe = f"{ns}.{cls}" if ns else cls
         if counts[cls] <= MAX_DUMP_PER_CLASS:
+            safe = f"{ns}.{cls}" if ns else cls
             d = os.path.join(OUT, safe)
             os.makedirs(d, exist_ok=True)
             with open(os.path.join(d, f"{obj.path_id}.json"), "w") as f:
@@ -218,48 +247,58 @@ def main() -> int:
             if len(samples[cls]) < 2:
                 samples[cls].append(flat)
 
+    # ------------------------------------------------------------ inventory
     with open(os.path.join(OUT, "class-inventory.csv"), "w") as f:
         f.write("class,instances\n")
         for cls, c in inventory.most_common():
             f.write(f'"{cls}",{c}\n')
 
+    # ------------------------------------------------------------- report
     lines = ["# ScriptableObject / MonoBehaviour data (IL2CPP typetrees)", "",
-             f"- source: `{EXTRACT}`", f"- Unity: `{UNITY_VERSION}`", ""]
-    lines.append("| class | instances |")
-    lines.append("|---|---:|")
+             f"- source: `{EXTRACT}`", f"- Unity: `{UNITY_VERSION}`",
+             f"- typetree backend: **{TTG_BACKEND}**", "",
+             "| class | instances | dumped |", "|---|---:|---:|"]
     for cls, c in counts.most_common():
-        lines.append(f"| `{cls}` | {c} |")
+        lines.append(f"| `{cls}` | {inventory[cls]} | {c} |")
     lines.append("")
+    half = [(c, n) for c, n in skipped_cap.items()]
+    if half:
+        lines += ["Ghi chú: các class sau bị **cắt bớt** (chỉ đọc mẫu, không dump hết):", ""]
+        for c, n in sorted(half, key=lambda x: -x[1])[:15]:
+            lines.append(f"- `{c}`: còn {n} object chưa đọc")
+        lines.append("")
+    for cls, errs in errors.items():
+        lines.append(f"- error `{cls}`: {errs}")
+    lines.append("")
+
     lines += ["## MonoBehaviour class inventory (top 40)", "",
               "Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)", "",
               "| class | instances |", "|---|---:|"]
     for cls, c in inventory.most_common(40):
         lines.append(f"| `{cls}` | {c} |")
     lines.append("")
-    for cls, errs in errors.items():
-        lines.append(f"- error `{cls}`: {errs}")
-    lines.append("")
+
     for cls, items in samples.items():
-        lines.append(f"## `{cls}` samples")
-        lines.append("")
+        lines += [f"## `{cls}` samples", ""]
         for s in items:
-            lines.append("```json")
-            lines.append(json.dumps(s, indent=1, default=str)[:4000])
-            lines.append("```")
+            lines += ["```json", json.dumps(s, indent=1, default=str)[:4000], "```"]
         lines.append("")
 
-    # flat CSV for every dumped class (max 25 rows / 400 columns per file)
+    # ---------------------------------------------------------------- CSV
     for cls, rows in records.items():
         if not rows:
             continue
-        keys = sorted({k for _, r in rows for k in r})[:400]
+        keys = sorted({k for _, r in rows for k in r})
+        priority = [k for k in ("_gameobject",) if k in keys]
+        keys = priority + [k for k in keys if k not in priority][:400]
         with open(os.path.join(OUT, f"{cls}.csv"), "w") as f:
             f.write(",".join(['"path_id"'] + ['"' + k + '"' for k in keys]) + "\n")
             for path_id, r in rows[:MAX_CSV_ROWS]:
-                f.write(",".join(['"' + str(path_id) + '"'] + ['"' + str(r.get(k, "")).replace('"', '""') + '"' for k in keys]) + "\n")
+                f.write(",".join(['"' + str(path_id) + '"'] +
+                                 ['"' + str(r.get(k, "")).replace('"', '""') + '"' for k in keys]) + "\n")
 
     open(REPORT, "w").write("\n".join(lines))
-    print("\n".join(lines[:60]))
+    print("\n".join(lines[:50]))
     print("errors:", dict(errors))
     return 0
 
