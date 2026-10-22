@@ -210,7 +210,149 @@ Nguồn: `docs/apk-analysis/19-il2cpp-constants.md`, `reverse-engineering/raw/il
 
 ---
 
-## 7. Còn thiếu / phải đoán
+## 7. Ghép chuỗi `wave → prefab → bộ phận` — đứt ở đâu và **vì sao**
+
+Mệnh đề cần kiểm: *"phân tích ngược xong ghép lại là ra hết"*. Kiểm bằng cách **ghép thật**
+trên 282 wave, không suy đoán. Kết quả: chuỗi **không đứt ở chỗ tôi tưởng**, và có **hai nguyên nhân khác nhau**
+— một cái là **cap của tool**, một cái là **giới hạn dữ liệu thật**.
+
+### 7.1 Bảng ghép thật (282 wave, 109 prefab enemy)
+
+| Mắt ghép | Nguồn | Ghép được | Tỷ lệ | Mức |
+|---|---|---:|---:|---|
+| wave → prefab enemy | `datas/waves.json` | **109 / 109** | **100%** | **A** |
+| prefab → HP | `15-enemy-hp.csv` (981 dòng) | **109 / 109** | **100%** | **A** |
+| prefab → movement | `Enemy_Movement.csv` | **109 / 109** | **100%** | **A** |
+| prefab → súng | `Gun_Attack.csv` (458 dòng) | **40 / 109** prefab | **36,7%** | **A** |
+| prefab → body physics | `Boss_BodyPhysics.csv` (251 dòng) | **30 / 109** | **27,5%** | **A** |
+| **đủ cả 4 mảnh** | | **15 / 109** | **13,8%** | **A** |
+
+> Mắt "súng" phải ghi rõ **đơn vị đếm**, vì hai cách đếm cho hai số khác nhau:
+> theo **prefab** = 40/109 (36,7%); theo **dòng component** = 159/458 có path đầy đủ (34,7%),
+> cộng 89 dòng đoán được bằng tên con duy nhất ⇒ **248/458 = 54,1%**.
+
+### 7.2 Nguyên nhân thứ nhất: **cap 800 của `unity_data.py`** — không phải thiếu dữ liệu
+
+Đọc code `tools/apk-analyze/unity_data.py`:
+
+```
+MAX_READ_PER_CLASS = int(os.environ.get("MAX_READ_PER_CLASS", "800"))   # dòng 100
+MAX_CSV_ROWS       = int(os.environ.get("MAX_CSV_ROWS", "1200"))        # dòng 102
+...
+if counts[cls] >= MAX_READ_PER_CLASS:      # dòng 222
+    skipped_cap[cls] += 1
+    continue                                # ← object thứ 801 trở đi BỊ BỎ, không đọc typetree
+```
+
+`class-inventory.csv` ghi **tổng instance thật** của từng class. Đối chiếu với số dòng CSV:
+
+| Class | Tổng thật | Dòng CSV | Đọc được | Thiếu |
+|---|---:|---:|---:|---:|
+| `Call_Data` | **23.757** | 800 | **3,4%** | **22.957** |
+| `PointToPoint_Spawner` | **13.292** | 800 | **6,0%** | **12.492** |
+| `PathCreator` | 1.714 | 800 | **46,7%** | 914 |
+| `Path_Spawner` | 1.688 | 800 | **47,4%** | 888 |
+| `Spawner` | 1.370 | 800 | **58,4%** | 570 |
+| `Enemy_Datas` | 981 | 800 | **81,5%** | **181** |
+| `Enemy_Movement` | 981 | 800 | 81,5% | 181 |
+| `Enemy_Sub` | 981 | 800 | 81,5% | 181 |
+| `Enemy_Health` | 981 | 800 | 81,5% | 181 |
+| `Enemy_Controller` | 981 | 800 | 81,5% | 181 |
+| `Enemy_Appear` | 914 | 800 | 87,5% | 114 |
+| `Gun_Attack` | 458 | 458 | **100%** | **0** |
+| `Boss_BodyPhysics` | 251 | 251 | 100% | 0 |
+| `Item_Movement` · `Sub_Item` | 702 | 702 | 100% | 0 |
+| `Bullet_Linearly` | 186 | 186 | 100% | 0 |
+| `MapController` | 396 | 396 | 100% | 0 |
+| `Shop_Cell` | 315 | 315 | 100% | 0 |
+| `Stage_Behaviour` | 299 | 299 | 100% | 0 |
+
+**Mười một** file CSV đúng **800 dòng** — đó là dấu vết của cap, không phải kích thước dữ liệu.
+
+> **Nhận định (mức A):** `Call_Data` mất **96,6%** và `PointToPoint_Spawner` mất **94,0%**. Đây là
+> hai bảng mô tả **cách wave sinh quân**, nên mọi kết luận "wave chỉ có N kiểu spawn" đều **chỉ đúng trên 800 mẫu đầu**,
+> không đúng trên toàn bộ. `datas/waves.json` (22.462 entry) không bị ảnh hưởng vì sinh bởi
+> `wave_report.py` — script này **không có cap**.
+
+**Điều kiện lật ngược:** nếu chạy lại `unity_data.py` với `MAX_READ_PER_CLASS=40000 MAX_CSV_ROWS=40000`
+mà `Call_Data.csv` vẫn ra 800 dòng ⇒ khi đó cap không phải nguyên nhân, phải tìm chỗ khác.
+
+### 7.3 Nguyên nhân thứ hai: `gameobject_path(go, depth=10)` — chỉ ảnh hưởng mắt "súng"
+
+`Gun_Attack` **không bị cap** (458/458), vậy 54,1% là **giới hạn thật của dữ liệu path**:
+
+```
+def gameobject_path(go, depth=10):           # unity_data.py:128
+    tr = _component_transform(go)
+    while tr is not None and len(names) < depth:   # ← chặn cứng 10 cấp
+        ...
+        tr = tr.m_Father.deref_parse_as_object()   # ← dừng khi deref ném lỗi/null
+```
+
+Đo trên 458 dòng `Gun_Attack`:
+
+| Chỉ số | Số | Nghĩa |
+|---|---:|---|
+| path có **tiền tố mã prefab** (`^[A-Za-z]{1,4}-\d{5}`) | **159 / 458 (34,7%)** | ghép trực tiếp được |
+| path cắt · tên con **duy nhất 1 prefab** | 89 / 284 (31,3%) | đoán được ⇒ tổng **54,1%** |
+| path cắt · tên con **nhập nhằng >1 prefab** | 103 (36,3%) | không quyết được |
+| path cắt · tên con **không có trong HP** | 107 (37,7%) | không quyết được |
+| path cắt dồn **đúng 10 cấp** | **44 / 284 (15,5%)** | dấu vết `depth=10` |
+| độ sâu trung bình path cắt | **5,17 cấp** | phần lớn **không** phải do `depth` |
+| `m_GameObject.m_FileID` | **0 ở 100% dòng** | **bác** giả thuyết "parent nằm file khác" |
+| `m_GameObject.m_PathID` | **có ở 100% dòng** | khoá join vẫn còn nguyên |
+
+> **Nhận định (mức B):** chỉ **15,5%** path cắt là do chặn 10 cấp; phần còn lại là `m_Father` deref thất bại
+> giữa chuỗi (path dừng ở 1–5 cấp). Nâng `depth` lên 50 sẽ chỉ cứu được ~44 dòng, **không** đưa về 100%.
+> Điều kiện lật ngược: chạy lại với `depth=50` mà số path đầy đủ tăng **đúng 44** ⇒ xác nhận; tăng nhiều hơn ⇒ sai.
+
+### 7.4 Cái thiếu để mắt "súng" ghép 100% — và nó **lấy được**
+
+Thiếu **một bảng duy nhất**: `Transform` — mỗi instance gồm `path_id`, `m_GameObject.m_PathID`, `m_Father.m_PathID`.
+Có bảng đó thì chuỗi là: component → `m_GameObject.m_PathID` → Transform → chuỗi `m_Father` → root → tên prefab.
+
+Căn cứ **lấy được** (mức B, **chưa chạy**):
+
+- **100%** dòng trong cả 5 CSV đều có `m_GameObject.m_PathID` — khoá nối còn nguyên, không phải đoán.
+- `m_GameObject.m_FileID` = **0 ở 100%** dòng ⇒ toàn bộ object nằm trong `data.unity3d`, **không có bundle ngoài** phải tải thêm.
+- `Transform` + `m_Father` là component chuẩn Unity và **chính tool đã đọc `m_Father`** (dòng 142).
+- `reverse-engineering/raw/` hiện **chỉ có 1 file** (`il2cpp-consts/GameDatas.json`) ⇒ bảng Transform **chưa từng được export**, không phải export rồi mất.
+
+**Điều kiện lật ngược:** nếu export bảng Transform xong mà vẫn còn dòng không có `m_Father`, thì các dòng đó là
+**prefab lồng** (prefab B nằm trong prefab A) — khi đó phải ghép theo **instance**, cần thêm `PrefabInstance.m_Modification`,
+chứ không sửa được bằng `depth`.
+
+### 7.5 Ví dụ dễ ảo tưởng nhất: `CB-30003` dùng súng gì
+
+- `CB-30003` là prefab nhiều nhất game: **2.283 entry** (mức A, `waves.json`).
+- Trong `Gun_Attack.csv`: **0 dòng** có path bắt đầu bằng `CB-30003`.
+- `Gun_Attack` chỉ có **46 root** (không phải 42 — số cũ đếm thiếu 4 tên có hậu tố/không theo mẫu):
+  **26 `Boss-*`**, **11 `CB-*`**, **11 `CD-*`**, **1 `MB-`**, **2 tên số** (`90048`, `90049`), cộng `CD-31005 (1)` và `CD-31002 (1)`.
+
+> **Không được viết "`CB-30003` không có súng".** Mức **B**: `Gun_Attack` đủ 458/458 nên *nếu* `CB-30003`
+> có `Gun_Attack` thì nó **phải** nằm trong 458 dòng; nhưng path của nó có thể đã bị cắt nên **không nhìn thấy**.
+> Hai khả năng chưa tách được: (a) `CB-30003` không có component `Gun_Attack` (bắn bằng cơ chế khác);
+> (b) có, nhưng path cắt nên 0 dòng khớp.
+> **Lật ngược:** export bảng Transform rồi join theo `m_PathID`; cái nào ra thì chốt.
+
+### 7.6 Tổng kết: chuỗi đứt ở đâu
+
+| Mắt | Trạng thái | Nguyên nhân | Cách xử |
+|---|---|---|---|
+| wave → prefab | ✅ 100% | — | — |
+| prefab → HP / movement | ✅ 100% | — | — |
+| prefab → **súng** | ⚠ 36,7% prefab · 54,1% dòng | `depth=10` (15,5%) + `m_Father` đứt (phần lớn) | export bảng `Transform` |
+| prefab → **body physics** | ⚠ 27,5% | cùng lý do trên | export bảng `Transform` |
+| wave → **quy luật spawn chi tiết** | ⚠ 3,4% mẫu | **cap 800** của `unity_data.py` | chạy lại với `MAX_READ_PER_CLASS=40000` |
+| prefab → **180 enemy còn lại** | ⚠ 81,5% | **cap 800** | như trên |
+
+> Hai nguyên nhân **độc lập**. Cap 800 sửa bằng **biến môi trường**, không cần tool mới.
+> Bảng `Transform` phải **thêm một bước export**, không có sẵn. Cả hai đều **chưa chạy** — nên đây là
+> *"chưa ghép"*, **không phải** *"không ghép được"*.
+
+---
+
+## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |
 |---:|---|---|---|
@@ -220,5 +362,12 @@ Nguồn: `docs/apk-analysis/19-il2cpp-constants.md`, `reverse-engineering/raw/il
 | 4 | 23 `SoundClip` không có clip | **D** | 92 khai báo vs 69 thật |
 | 5 | Loop point của 8 track nhạc | **D** | không có trong index |
 | 6 | Pivot / border sprite | **D** | `sprites-index.csv` chỉ có `bytes`, không có `rect`/`pivot` |
+| 7 | 22.957 mẫu `Call_Data` (96,6%) | **A** (là cap) | `unity_data.py` dừng ở `MAX_READ_PER_CLASS=800`; chưa chạy lại với cap cao |
+| 8 | 12.492 mẫu `PointToPoint_Spawner` (94,0%) | **A** (là cap) | như trên |
+| 9 | Bảng `Transform` (`m_Father`) cho toàn bộ `data.unity3d` | **B** | chưa export lần nào; là mảnh duy nhất còn thiếu để ghép súng/xác |
 
-> Không có mục nào ở đây là "không thể". #1 và #2 là **bug/chưa chạy**, #3 là **chưa chốt định nghĩa**.
+
+
+> Không có mục nào ở đây là "không thể". #1 và #2 là **bug/chưa chạy**, #3 là **chưa chốt định nghĩa**,
+> #7 và #8 là **cap của tool sửa bằng biến môi trường**, #9 là **thiếu một bước export**.
+> Bốn nhóm này khác nhau, và chỉ #1/#2 mới thật sự cần chạy lại IL2CPP/AssetRipper.
