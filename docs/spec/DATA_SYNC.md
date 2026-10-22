@@ -221,15 +221,41 @@ trên 282 wave, không suy đoán. Kết quả: chuỗi **không đứt ở ch�
 | Mắt ghép | Nguồn | Ghép được | Tỷ lệ | Mức |
 |---|---|---:|---:|---|
 | wave → prefab enemy | `datas/waves.json` | **109 / 109** | **100%** | **A** |
-| prefab → HP | `15-enemy-hp.csv` (981 dòng) | **109 / 109** | **100%** | **A** |
-| prefab → movement | `Enemy_Movement.csv` | **109 / 109** | **100%** | **A** |
-| prefab → súng | `Gun_Attack.csv` (458 dòng) | **40 / 109** prefab | **36,7%** | **A** |
+| prefab → HP | `15-enemy-hp.csv` (981 dòng, bản vòng 3) | **109 / 109** | **100%** | **A** |
+| prefab → `Enemy_Datas` | `Enemy_Datas.csv` (981 dòng) | **109 / 109** | **100%** | **A** |
+| prefab → movement | `Enemy_Movement.csv` (981 dòng) | **109 / 109** | **100%** | **A** |
 | prefab → body physics | `Boss_BodyPhysics.csv` (251 dòng) | **30 / 109** | **27,5%** | **A** |
+| prefab → súng | `Gun_Attack.csv` (458 dòng) | **40 / 109** | **36,7%** | **A** |
+| **HP + Datas + movement** | | **109 / 109** | **100%** | **A** |
+| **HP + movement + physics** | | **30 / 109** | **27,5%** | **A** |
 | **đủ cả 4 mảnh** | | **15 / 109** | **13,8%** | **A** |
+
+### 7.1.1 Một lỗi regex đã làm tôi báo sai 93,6% — và cách phát hiện
+
+Bản trước của mục này ghi **102/109 (93,6%)** và kết luận "7 prefab `W1`/`W2` vắng bản chất".
+**Sai.** Nguyên nhân: regex nhận mã prefab tôi dùng là
+
+```
+^[A-Za-z]{1,4}-\d{5}        # SAI với W1-30031
+```
+
+`W1-30031` có **chữ số trước dấu gạch**, nên `[A-Za-z]{1,4}` khớp `W`, rồi đòi `-` nhưng gặp `1` ⇒ **trượt**.
+Sửa thành `^[A-Za-z]{1,4}\d{0,2}-\d{5}` thì cả 7 prefab hiện ra, và **HP = 109/109**.
+
+> **Đây là bài học đắt nhất trong phiên:** con số "thiếu 7" trông rất hợp lý, lại khớp đúng một nhóm tên
+> cùng họ (`W1`/`W2`) nên tôi đã tin nó là "vắng bản chất". Thực tế là **lỗi của chính phép đếm**.
+> Từ đây, mọi phép ghép đều phải thử **đếm số prefab khớp trước khi tính tỷ lệ** — nếu tỷ lệ không phải
+> số tròn và nhóm thiếu lại trùng một họ tên, phải nghi regex trước, nghi dữ liệu sau.
 
 > Mắt "súng" phải ghi rõ **đơn vị đếm**, vì hai cách đếm cho hai số khác nhau:
 > theo **prefab** = 40/109 (36,7%); theo **dòng component** = 159/458 có path đầy đủ (34,7%),
 > cộng 89 dòng đoán được bằng tên con duy nhất ⇒ **248/458 = 54,1%**.
+>
+> ⚠ **Và mắt này không phải chỗ thiếu cần vá.** `Gun_Attack` là component **dùng chung** cho cả hai phe:
+> 172/458 dòng nằm trong prefab enemy (**122 `Boss-*`**, 31 `CD-*`, 16 `CB-*`, 1 `MB-*`, 2 tên số `90048`/`90049`),
+> 284 dòng còn lại là path cắt. Về mặt cân bằng, súng của tàu (kể cả drone) chỉ dùng để **ra một con số damage**;
+> không cần biết boss nào cầm súng nào để dựng lại cơ chế. Vì vậy **36,7% ở đây là chỉ số phụ**, không phải
+> mục tiêu cần đạt 100%.
 
 ### 7.2 Nguyên nhân thứ nhất: **cap 800 của `unity_data.py`** — không phải thiếu dữ liệu
 
@@ -244,38 +270,29 @@ if counts[cls] >= MAX_READ_PER_CLASS:      # dòng 222
     continue                                # ← object thứ 801 trở đi BỊ BỎ, không đọc typetree
 ```
 
-`class-inventory.csv` ghi **tổng instance thật** của từng class. Đối chiếu với số dòng CSV:
+⚠ **Phải tách hai bản dữ liệu** — bản trước tôi gộp làm một và vì thế kết luận sai:
 
-| Class | Tổng thật | Dòng CSV | Đọc được | Thiếu |
-|---|---:|---:|---:|---:|
-| `Call_Data` | **23.757** | 800 | **3,4%** | **22.957** |
-| `PointToPoint_Spawner` | **13.292** | 800 | **6,0%** | **12.492** |
-| `PathCreator` | 1.714 | 800 | **46,7%** | 914 |
-| `Path_Spawner` | 1.688 | 800 | **47,4%** | 888 |
-| `Spawner` | 1.370 | 800 | **58,4%** | 570 |
-| `Enemy_Datas` | 981 | 800 | **81,5%** | **181** |
-| `Enemy_Movement` | 981 | 800 | 81,5% | 181 |
-| `Enemy_Sub` | 981 | 800 | 81,5% | 181 |
-| `Enemy_Health` | 981 | 800 | 81,5% | 181 |
-| `Enemy_Controller` | 981 | 800 | 81,5% | 181 |
-| `Enemy_Appear` | 914 | 800 | 87,5% | 114 |
-| `Gun_Attack` | 458 | 458 | **100%** | **0** |
-| `Boss_BodyPhysics` | 251 | 251 | 100% | 0 |
-| `Item_Movement` · `Sub_Item` | 702 | 702 | 100% | 0 |
-| `Bullet_Linearly` | 186 | 186 | 100% | 0 |
-| `MapController` | 396 | 396 | 100% | 0 |
-| `Shop_Cell` | 315 | 315 | 100% | 0 |
-| `Stage_Behaviour` | 299 | 299 | 100% | 0 |
+| Class | Tổng thật (`class-inventory`) | **Bản cũ** `821efc5` (`docs/apk-analysis/`) | **Bản vòng 3** (`/tmp/v3`) |
+|---|---:|---:|---:|
+| `Enemy_Datas` | 981 | 800 (81,5%) | **981 (100%)** ✅ |
+| `Enemy_Movement` | 981 | 800 (81,5%) | **981 (100%)** ✅ |
+| `Call_Data` | **23.757** | 800 (3,4%) | **1.200 (5,0%)** ⚠ |
+| `Gun_Attack` | 458 | 458 (100%) | **458 (100%)** ✅ |
+| `Boss_BodyPhysics` | 251 | 251 (100%) | **251 (100%)** ✅ |
+| `PointToPoint_Spawner` | **13.292** | 800 (6,0%) | không có file |
+| `Path_Spawner` · `PathCreator` · `Spawner` | 1.688 · 1.714 · 1.370 | 800 mỗi bảng | không có file |
+| `Enemy_Health` · `Enemy_Controller` · `Enemy_Appear` | 981 · 981 · 914 | 800 | không có file |
 
-**Mười một** file CSV đúng **800 dòng** — đó là dấu vết của cap, không phải kích thước dữ liệu.
+**Kết luận đúng:** `MAX_READ_PER_CLASS` **đã được nâng ở vòng 3** — bằng chứng là `Enemy_*` ra **981 > 800**.
+Nhưng `MAX_CSV_ROWS = 1200` **vẫn còn cắt `Call_Data`**: 1.200/23.757 = **5,0%**.
 
-> **Nhận định (mức A):** `Call_Data` mất **96,6%** và `PointToPoint_Spawner` mất **94,0%**. Đây là
-> hai bảng mô tả **cách wave sinh quân**, nên mọi kết luận "wave chỉ có N kiểu spawn" đều **chỉ đúng trên 800 mẫu đầu**,
-> không đúng trên toàn bộ. `datas/waves.json` (22.462 entry) không bị ảnh hưởng vì sinh bởi
-> `wave_report.py` — script này **không có cap**.
+> **Nhận định (mức A):** mô tả "cap 800 làm mất enemy" chỉ đúng với **bản cũ**. Trên bản vòng 3,
+> ba bảng `Enemy_Datas`/`Enemy_Movement`/`15-enemy-hp` đã **đủ 981 dòng**, và ghép prefab đạt **102/109**.
+> Chỗ còn cắt thật là **`Call_Data`** — bảng mô tả **cách wave sinh quân** — và ba bảng spawner không có file vòng 3.
+> `datas/waves.json` (22.462 entry) **không** bị ảnh hưởng: sinh bởi `wave_report.py`, script này không cap.
 
-**Điều kiện lật ngược:** nếu chạy lại `unity_data.py` với `MAX_READ_PER_CLASS=40000 MAX_CSV_ROWS=40000`
-mà `Call_Data.csv` vẫn ra 800 dòng ⇒ khi đó cap không phải nguyên nhân, phải tìm chỗ khác.
+**Điều kiện lật ngược:** nếu `Call_Data` ở vòng 3 thật sự chỉ có 1.200 instance trong file (không phải do cap)
+thì `class-inventory` 23.757 đang đếm cả object rỗng — phải đối chiếu `path_id` duy nhất.
 
 ### 7.3 Nguyên nhân thứ hai: `gameobject_path(go, depth=10)` — chỉ ảnh hưởng mắt "súng"
 
@@ -341,10 +358,11 @@ chứ không sửa được bằng `depth`.
 |---|---|---|---|
 | wave → prefab | ✅ 100% | — | — |
 | prefab → HP / movement | ✅ 100% | — | — |
-| prefab → **súng** | ⚠ 36,7% prefab · 54,1% dòng | `depth=10` (15,5%) + `m_Father` đứt (phần lớn) | export bảng `Transform` |
-| prefab → **body physics** | ⚠ 27,5% | cùng lý do trên | export bảng `Transform` |
-| wave → **quy luật spawn chi tiết** | ⚠ 3,4% mẫu | **cap 800** của `unity_data.py` | chạy lại với `MAX_READ_PER_CLASS=40000` |
-| prefab → **180 enemy còn lại** | ⚠ 81,5% | **cap 800** | như trên |
+| prefab → **HP / movement / Datas** | ✅ **100% (109/109)** | — | — |
+| prefab → **body physics** | ⚠ 27,5% (30/109) | boss chỉ 27/39 có component này | không phải lỗi ghép |
+| prefab → **súng** | ⚠ 36,7% — **chỉ số phụ** | component dùng chung; súng chỉ để ra damage | không cần vá cho enemy |
+| wave → **`Call_Data` chi tiết** | ⚠ 5,0% mẫu | **`MAX_CSV_ROWS=1200`** | chạy lại với `MAX_CSV_ROWS=40000` |
+| enemy/boss → **hành vi, đòn đánh** | ❌ **chưa đọc** | 87 class / **7.036 instance** chưa có CSV | xem `BOSSES.md` §6 |
 
 > Hai nguyên nhân **độc lập**. Cap 800 sửa bằng **biến môi trường**, không cần tool mới.
 > Bảng `Transform` phải **thêm một bước export**, không có sẵn. Cả hai đều **chưa chạy** — nên đây là
@@ -365,6 +383,8 @@ chứ không sửa được bằng `depth`.
 | 7 | 22.957 mẫu `Call_Data` (96,6%) | **A** (là cap) | `unity_data.py` dừng ở `MAX_READ_PER_CLASS=800`; chưa chạy lại với cap cao |
 | 8 | 12.492 mẫu `PointToPoint_Spawner` (94,0%) | **A** (là cap) | như trên |
 | 9 | Bảng `Transform` (`m_Father`) cho toàn bộ `data.unity3d` | **B** | chưa export lần nào; là mảnh duy nhất còn thiếu để ghép súng/xác |
+| 9b | **HP enemy thường** (68/70 prefab = 0) | **A** (không có trong prefab) | nằm trong thân hàm `Enemy_Health.Init`; xem `BOSSES.md` §6 |
+| 10 | **87 class enemy/boss** (7.036 instance): `Enemy_Physics` 981 · `Enemy_Display` 981 · `Enemy_Destroy` 971 · `Enemy_Hp_Bar` 909 · `Enemy_Burned` 695 · `Enemy_LookAtPlayer` 391 · `Enemy_CameraVibrate` 241 · `Enemy_Stun` 140 · `Enemy_Sync_Attack` 72 · `Enemy_Attack` 51 · `Boss3_Plasma` 75 · `Boss_PlasmaBeam` 68 · 17 `Boss*_Director` | **D** | chưa có CSV nào; đây là phần **hành vi** chứ không phải số |
 
 
 

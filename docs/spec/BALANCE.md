@@ -17,7 +17,7 @@
 | Boss khó nhất (theo HP phải bắn hết) | `Boss-39006`: **11,235,000** tổng (16 part) | `15-enemy-hp.csv` |
 | Boss dễ nhất | `Boss-39001`: 270.000 · `Boss-37004`: 272.000 | `15-enemy-hp.csv` |
 | Boss chương 1 khác chương 2 thế nào | Median tổng HP **4,2 M → 6,0 M**; boss 3 phase **1 → 7** | `15-enemy-hp.csv` §2.3 |
-| HP enemy thường | median **500.000** (không phải boss); **50,8%** dòng có HP = 0 (part trang trí) | `Enemy_Datas.csv` |
+| HP enemy thường | **68 / 70 prefab = 0**; 2 prefab = 20.000 — prefab **không lưu** HP enemy thường | `Enemy_Datas.csv` (981 dòng) |
 | Tàu mạnh nhất theo "sao" | `10024 Elves` 5.11 sao; yếu nhất `10001 Bluesky` 2.0 | `14-ships.csv` |
 | Damage vũ khí | **458 giá trị** (457 > 0), 40–1.200, median 400 — nhưng **toàn bộ là súng địch** | `Gun_Attack.csv` → `COMBAT.md` |
 | DPS lý thuyết của địch | 7,8 – 3.333 (median 454), tính từ burst pattern | `Gun_Attack.csv` → `COMBAT.md` §4 |
@@ -182,29 +182,40 @@ Phân bố số phase toàn bộ 39 prefab: **0 phase = 25**, 1 phase = 2, 2 pha
 
 ### 2.4 Enemy thường
 
+> **Sửa lại ở bản vòng 3.** Mục này trước đây dựa trên **800 dòng** (bản cũ) và kết luận
+> "median HP enemy thường = 500.000". **Sai** — con số đó là median của một mẫu **lẫn boss + bộ phận
+> boss + object UI**. Số dưới đây lấy từ bản **981 dòng**.
+
 | Chỉ số | Giá trị | Nguồn |
 |---|---:|---|
-| Dòng **không** thuộc root `Boss-*` | **569 / 800** | `15-enemy-hp.csv` |
-| Trong đó HP > 0 | **209** | `15-enemy-hp.csv` |
-| Median HP (không phải boss, > 0) | **500.000** | `15-enemy-hp.csv` |
-| Max (không phải boss) | 10.000.000 (`CB(TEST)` — bỏ) | `15-enemy-hp.csv` |
-| Số prefab `Wave_*` có HP > 0 | **0** ⚠ | `15-enemy-hp.csv` |
-| Số dòng thuộc `Wave_*` | 196 (33 prefab) | `15-enemy-hp.csv` |
+| Tổng dòng HP | **981** | `15-enemy-hp.csv` |
+| Thuộc 39 root `Boss-*` | **206** (167 dòng HP > 0) | `15-enemy-hp.csv` |
+| Thuộc `Wave_*` | **260** dòng / 34 prefab — **HP > 0: 0** | `15-enemy-hp.csv` |
+| Tổng dòng HP > 0 | **467** | `15-enemy-hp.csv` |
+| Median 467 dòng > 0 | **600.000** — ⚠ **không phải** HP enemy thường | `15-enemy-hp.csv` |
+| Prefab enemy thường (70) **có** HP > 0 | **2 / 70** = 20.000 mỗi cái (`W1-30031`, `W2-30037`) | `15-enemy-hp.csv` |
+| 68 prefab enemy thường còn lại | **HP = 0** | `15-enemy-hp.csv` |
+| Max không phải boss | 10.000.000 (`CB(TEST)` — object test, bỏ) | `15-enemy-hp.csv` |
 
-Cờ hành vi (nguồn: `Enemy_Datas.csv`, 800 dòng):
+**Kết luận đúng:** **không có HP của enemy thường trong prefab.** 260 dòng thuộc `Wave_*` đều bằng 0,
+và `Enemy_Datas.StartHealthPoint` (trùng khít `start_hp`) cũng 0 ở đúng 260 dòng đó.
+HP trong prefab **chỉ dành cho boss**.
+
+Cờ hành vi (nguồn: `Enemy_Datas.csv`, **981 dòng** — bản vòng 3):
 
 | Cờ | True | False | Ý nghĩa |
 |---|---:|---:|---|
-| `IsCaAttack` | 412 | 388 | có thể tấn công (51,5%) |
-| `IsBringItems` | 0 | **800** | không enemy nào mang item sẵn — item do controller drop |
-| `IsInvisible` | 0 | **800** | không có enemy invisible |
-| `IsAlive` | 2 | 798 | giá trị editor |
-| `CurrentHealthPoint` | 0 | 800 | chỉ là giá trị editor |
+| `IsCaAttack` | **524** | 457 | có thể tấn công (53,4%) |
+| `IsBringItems` | 0 | **981** | không enemy nào mang item sẵn — item do controller drop |
+| `IsInvisible` | 0 | **981** | không có enemy invisible |
+| `IsAlive` | 2 | 979 | giá trị editor |
+| `CurrentHealthPoint` | 0 | 981 | chỉ là giá trị editor |
+| `StartHpPoint` | 0 | 981 | cột thứ hai, không dùng |
 
-> ⚠ **196 dòng `Wave_*` đều HP = 0** → enemy trong wave prefab lấy HP từ `Enemy_Data_Balance`
-> lúc runtime, không serialize. **Đường lấy:** `Enemy_Data_Balance` có
-> `GetBonusCoin/GetBonusExp/GetSurvivalScore/GetArenaScore` — decompile 6 thân hàm này
-> (RVA đã có trong `dump.cs`) là ra công thức; giá trị HP theo stage thì hook Frida lúc chạy.
+> **Đường lấy HP enemy thường (mức B, chưa chạy):** `Enemy_Health` không có field HP, nên công thức
+> nằm trong **thân hàm** `Init`/`SetUp` của nó — cần **method body IL2CPP**, hiện chưa có
+> (`AI_FEASIBILITY.md` §1). Ứng viên khác: `MapController` (396) có `IndexWaveArena`, `Stage_Behaviour`
+> (299) có `stageType` — nếu một trong hai có trường scale thì HP = base × scale.
 > Xem `AI_FEASIBILITY.md` §1.7.
 
 ## 3. Roster
