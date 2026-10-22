@@ -54,7 +54,19 @@ def as_int(v, default=0):
 
 def load_sprites(root):
     """path_id -> {name, png, type} from the export manifest (if it has path_id)."""
-    rows = read_csv(os.path.join(root, "docs/apk-analysis/04-asset-manifest.csv"))
+    # prefer the fresh CI export (already has path_id), fall back to the committed copy
+    candidates = [
+        os.environ.get("EXPORT_MANIFEST", "/tmp/apk/unity/export-manifest.csv"),
+        os.path.join(root, "docs/apk-analysis/04-asset-manifest.csv"),
+    ]
+    rows = []
+    for c in candidates:
+        if c and os.path.isfile(c):
+            rows = read_csv(c)
+            if rows and "path_id" in rows[0]:
+                print("manifest:", c)
+                break
+            rows = []
     sprites = {}
     if rows and "path_id" not in rows[0]:
         return sprites, False

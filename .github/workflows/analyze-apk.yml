@@ -168,6 +168,10 @@ jobs:
         continue-on-error: true
         run: python3 tools/apk-analyze/config_report.py 2>&1 | tail -40
 
+      - name: Extract wave composition
+        continue-on-error: true
+        run: python3 tools/apk-analyze/wave_report.py 2>&1 | tail -40
+
       - name: Build data pack (datas/ + i18n/)
         continue-on-error: true
         run: python3 tools/apk-analyze/data_pack.py --root . 2>&1 | tail -20

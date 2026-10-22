@@ -14,6 +14,7 @@ import sys
 from collections import Counter, defaultdict
 
 import UnityPy
+from UnityPy.helpers.AudioClipConverter import extract_audioclip_samples
 
 DATA = os.environ.get("UNITY_DATA", "/tmp/apk/extract")
 OUT = "/tmp/apk/unity"
@@ -245,8 +246,15 @@ def export_assets(env) -> None:
                 bytes_out[t] += os.path.getsize(p)
                 manifest.append((t, name, os.path.getsize(p), os.path.relpath(p, EXPORT), obj.path_id))
             elif t == "AudioClip":
-                samples = getattr(d, "samples", None)
+                samples = None
+                try:
+                    samples = extract_audioclip_samples(d)
+                except Exception:  # noqa: BLE001
+                    samples = None
                 if not samples:
+                    samples = getattr(d, "samples", None)
+                if not samples:
+                    counters["AudioClip_failed"] += 1
                     continue
                 for sname, data in samples.items():
                     fn = safe_name(f"{name}_{sname}", used) + ".wav"
