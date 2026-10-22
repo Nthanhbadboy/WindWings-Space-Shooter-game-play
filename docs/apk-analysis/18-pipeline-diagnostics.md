@@ -3,25 +3,25 @@
 ## Unity payload
 ```
 total 336M
--rw-r--r-- 1 runner runner   11K Oct 22 22:04 RuntimeInitializeOnLoads.json
--rw-r--r-- 1 runner runner  3.9K Oct 22 22:04 ScriptingAssemblies.json
--rw-r--r-- 1 runner runner   120 Oct 22 22:04 _listing.txt
--rw-r--r-- 1 runner runner   61M Oct 22 22:04 data.unity3d
--rw-r--r-- 1 runner runner  8.3M Oct 22 22:04 global-metadata.dat
--rw-r--r-- 1 runner runner   45M Oct 22 22:04 libil2cpp.so
--rw-r--r-- 1 runner runner   17M Oct 22 22:04 libunity.so
--rw-r--r-- 1 runner runner  106M Oct 22 22:16 re-libil2cpp.asm
--rw-r--r-- 1 runner runner   17K Oct 22 22:16 re-libil2cpp.evidence.json
--rw-r--r-- 1 runner runner  6.0K Oct 22 22:16 re-libil2cpp.json
--rw-r--r-- 1 runner runner   75K Oct 22 22:16 re-libil2cpp.md
--rw-r--r-- 1 runner runner  872K Oct 22 22:16 re-libil2cpp.pdf
--rw-r--r-- 1 runner runner   92M Oct 22 22:17 re-libunity.asm
--rw-r--r-- 1 runner runner   17K Oct 22 22:16 re-libunity.evidence.json
--rw-r--r-- 1 runner runner  7.8K Oct 22 22:16 re-libunity.json
--rw-r--r-- 1 runner runner   49K Oct 22 22:17 re-libunity.md
--rw-r--r-- 1 runner runner  699K Oct 22 22:17 re-libunity.pdf
--rw-r--r-- 1 runner runner 1023K Oct 22 22:04 resources.arsc
--rw-r--r-- 1 runner runner  4.9M Oct 22 22:04 resources.resource
+-rw-r--r-- 1 runner runner   11K Oct 22 22:18 RuntimeInitializeOnLoads.json
+-rw-r--r-- 1 runner runner  3.9K Oct 22 22:18 ScriptingAssemblies.json
+-rw-r--r-- 1 runner runner   120 Oct 22 22:18 _listing.txt
+-rw-r--r-- 1 runner runner   61M Oct 22 22:18 data.unity3d
+-rw-r--r-- 1 runner runner  8.3M Oct 22 22:18 global-metadata.dat
+-rw-r--r-- 1 runner runner   45M Oct 22 22:18 libil2cpp.so
+-rw-r--r-- 1 runner runner   17M Oct 22 22:18 libunity.so
+-rw-r--r-- 1 runner runner  106M Oct 22 22:27 re-libil2cpp.asm
+-rw-r--r-- 1 runner runner   17K Oct 22 22:27 re-libil2cpp.evidence.json
+-rw-r--r-- 1 runner runner  6.0K Oct 22 22:27 re-libil2cpp.json
+-rw-r--r-- 1 runner runner   75K Oct 22 22:27 re-libil2cpp.md
+-rw-r--r-- 1 runner runner  872K Oct 22 22:27 re-libil2cpp.pdf
+-rw-r--r-- 1 runner runner   92M Oct 22 22:27 re-libunity.asm
+-rw-r--r-- 1 runner runner   17K Oct 22 22:27 re-libunity.evidence.json
+-rw-r--r-- 1 runner runner  7.8K Oct 22 22:27 re-libunity.json
+-rw-r--r-- 1 runner runner   49K Oct 22 22:27 re-libunity.md
+-rw-r--r-- 1 runner runner  699K Oct 22 22:27 re-libunity.pdf
+-rw-r--r-- 1 runner runner 1023K Oct 22 22:18 resources.arsc
+-rw-r--r-- 1 runner runner  4.9M Oct 22 22:18 resources.resource
 ```
 
 ## assets/bin/Data listing (from APK)
@@ -49,34 +49,34 @@ typetree OK
 ```
 docs/assets:
 total 364
-drwxr-xr-x 3 runner runner   4096 Oct 22 22:04 .
-drwxr-xr-x 5 runner runner   4096 Oct 22 22:04 ..
--rw-r--r-- 1 runner runner   2190 Oct 22 22:05 INDEX.md
--rw-r--r-- 1 runner runner   7275 Oct 22 22:05 audio-index.csv
-drwxr-xr-x 2 runner runner   4096 Oct 22 22:05 contact-sheets
--rw-r--r-- 1 runner runner 146648 Oct 22 22:05 manifest.csv
--rw-r--r-- 1 runner runner 191560 Oct 22 22:05 sprites-index.csv
--rw-r--r-- 1 runner runner   4634 Oct 22 22:05 stats.json
+drwxr-xr-x 3 runner runner   4096 Oct 22 22:18 .
+drwxr-xr-x 5 runner runner   4096 Oct 22 22:18 ..
+-rw-r--r-- 1 runner runner   2190 Oct 22 22:19 INDEX.md
+-rw-r--r-- 1 runner runner   7275 Oct 22 22:19 audio-index.csv
+drwxr-xr-x 2 runner runner   4096 Oct 22 22:19 contact-sheets
+-rw-r--r-- 1 runner runner 146648 Oct 22 22:19 manifest.csv
+-rw-r--r-- 1 runner runner 191560 Oct 22 22:19 sprites-index.csv
+-rw-r--r-- 1 runner runner   4634 Oct 22 22:19 stats.json
 
 docs/assets/contact-sheets:
 total 7400
-drwxr-xr-x 2 runner runner   4096 Oct 22 22:05 .
-drwxr-xr-x 3 runner runner   4096 Oct 22 22:04 ..
--rw-r--r-- 1 runner runner 233344 Oct 22 22:05 atlas-01.jpg
--rw-r--r-- 1 runner runner 326577 Oct 22 22:05 atlas-02.jpg
--rw-r--r-- 1 runner runner  14242 Oct 22 22:05 atlas-03.jpg
--rw-r--r-- 1 runner runner 177064 Oct 22 22:05 background-01.jpg
--rw-r--r-- 1 runner runner 142920 Oct 22 22:05 background-02.jpg
--rw-r--r-- 1 runner runner 166141 Oct 22 22:05 bosses-01.jpg
--rw-r--r-- 1 runner runner 175411 Oct 22 22:05 bullet-01.jpg
--rw-r--r-- 1 runner runner  13861 Oct 22 22:05 bullet-02.jpg
--rw-r--r-- 1 runner runner  56140 Oct 22 22:05 drones-01.jpg
--rw-r--r-- 1 runner runner 104215 Oct 22 22:05 enemy-01.jpg
--rw-r--r-- 1 runner runner  31031 Oct 22 22:05 font-01.jpg
--rw-r--r-- 1 runner runner 204312 Oct 22 22:05 fx-01.jpg
--rw-r--r-- 1 runner runner  56927 Oct 22 22:05 fx-02.jpg
--rw-r--r-- 1 runner runner  16007 Oct 22 22:05 items-01.jpg
--rw-r--r-- 1 runner runner 125812 Oct 22 22:05 ships-01.jpg
+drwxr-xr-x 2 runner runner   4096 Oct 22 22:19 .
+drwxr-xr-x 3 runner runner   4096 Oct 22 22:18 ..
+-rw-r--r-- 1 runner runner 233344 Oct 22 22:19 atlas-01.jpg
+-rw-r--r-- 1 runner runner 326577 Oct 22 22:19 atlas-02.jpg
+-rw-r--r-- 1 runner runner  14242 Oct 22 22:19 atlas-03.jpg
+-rw-r--r-- 1 runner runner 177064 Oct 22 22:19 background-01.jpg
+-rw-r--r-- 1 runner runner 142920 Oct 22 22:19 background-02.jpg
+-rw-r--r-- 1 runner runner 166141 Oct 22 22:19 bosses-01.jpg
+-rw-r--r-- 1 runner runner 175411 Oct 22 22:19 bullet-01.jpg
+-rw-r--r-- 1 runner runner  13861 Oct 22 22:19 bullet-02.jpg
+-rw-r--r-- 1 runner runner  56140 Oct 22 22:19 drones-01.jpg
+-rw-r--r-- 1 runner runner 104215 Oct 22 22:19 enemy-01.jpg
+-rw-r--r-- 1 runner runner  31031 Oct 22 22:19 font-01.jpg
+-rw-r--r-- 1 runner runner 204312 Oct 22 22:19 fx-01.jpg
+-rw-r--r-- 1 runner runner  56927 Oct 22 22:19 fx-02.jpg
+-rw-r--r-- 1 runner runner  16007 Oct 22 22:19 items-01.jpg
+-rw-r--r-- 1 runner runner 125812 Oct 22 22:19 ships-01.jpg
 ```
 
 ## Step logs (tail)
@@ -200,16 +200,16 @@ skipped: {}
 > ghi đè (layout group, safe area, code set anchor), nên chỉ dùng làm khung tham
 > chiếu. Dữ liệu thô: `reverse-engineering/raw/ui/*.json.gz`.
 
-- màn hình dump được: **548**
-- tổng node: **593028**
-- dung lượng thô (gz): **6.6 MB**
+- màn hình dump được: **588**
+- tổng node: **71795**
+- dung lượng thô (gz): **1.1 MB**
 
-## Màn hình nhiều node nhất
+## Component gặp nhiều nhất
 
-| class | node | text | button | KB |
-|---|---:|---:|---:|---:|
-| `Popup_Notices` | 2000 | 0 | 0 | 22 |
-| `Popup_Notices` | 2000 | 0 | 0 | 22 |
+| class | số node |
+|---|---:|
+| `Transform` | 61878 |
+| `MonoBehaviour` | 32286 |
 
 ===== /tmp/apk/logs/unity_data.log
 | `Sub_Item` | 702 | 702 |
@@ -242,7 +242,7 @@ errors: {'script': 1}
 # Wave composition (campaign maps)
 
 - waves: **282**
-- spawners: **11095**
+- spawners: **11090**
 - typetree backend: **AssetStudio**
 
 - lỗi đọc: 1 object
