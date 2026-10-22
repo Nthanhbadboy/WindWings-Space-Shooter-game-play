@@ -28,7 +28,7 @@ Chữ *"đầy đủ"* quyết định toàn bộ câu trả lời. Cần phân 
 | Mức | Có gì | AI làm được gì | Hiện trạng repo này |
 |---|---|---|---|
 | **A. Đủ dữ liệu** (data-complete) | `*.csv` ScriptableObject + `waves.json` + text/assets đã bóc | Dựng **khung chạy được**, đúng 60–70% hệ thống; **sai luật** (45,6) và **sai feel** (32,1) | ✅ **đang ở đây** |
-| **B. Đủ logic** (code-complete) | + `libil2cpp.so` decompile ra **thân hàm** (không chỉ chữ ký) ⇒ có hằng số feel, công thức, state machine | Tái tạo **hành vi** gần 1:1; hết mơ hồ về luật | ❌ `dump.cs` chỉ có **class/field/signature, không có method body** |
+| **B. Đủ logic** (code-complete) | + `libil2cpp.so` decompile ra **thân hàm** (không chỉ chữ ký) ⇒ có hằng số feel, công thức, state machine | Tái tạo **hành vi** gần 1:1; hết mơ hồ về luật | 🟡 `dump.cs` có **64.727 RVA** nhưng chưa có method body — **lấy được**, xem §1.7 |
 | **C. Đủ để ship** (product-complete) | B + asset gốc + cấu hình server (giá IAP, Firebase) | Port được **bản sao 1:1** | ❌ và **không được phép** dùng (bản quyền) |
 
 > **Nhận định:** câu *"AI clone được không"* có **hai đáp án khác nhau** tuỳ mức:
@@ -154,6 +154,45 @@ và **Alliance Arts / Who You** (`Drunken Goddess Reflux`, 16/10) [18](https://t
 
 ---
 
+### 1.7 Chuỗi công cụ: repo đã dùng gì — và cái tốt nhất 10/2026 là gì
+
+**Trả lời ngắn: chưa dùng cái tốt nhất.** Repo đang dùng chuỗi 2022–2024, và chuỗi đó
+**không xuất được thân hàm** — nên mọi câu "phải đoán" trong 10 file kia đều là
+*giới hạn của công cụ*, **không phải** giới hạn của dữ liệu.
+
+| Bước | Repo đã dùng | Tốt nhất 10/2026 | Chênh lệch |
+|---|---|---|---|
+| Metadata + RVA | **Il2CppDumper** (Perfare) | **Cpp2IL** / Rodroid `il2cpp-dumper-rs` v8 / CPP2IL platform | Il2CppDumper **không có commit từ 7/2024**; Cpp2IL là bản được duy trì [19](https://github.com/morluto/awesome-reverse-engineering) |
+| **Thân hàm → C#** | ❌ **không làm** | **CPP2IL** (Method Body ✅) · Rodroid v8 "C# decompiler" · Cpp2IL (⚠️ partial) | đây là **mảnh ghép còn thiếu** [20](https://github.com/chenzifeng/cpp2il.com) [21](https://github.com/rodroidmods/il2cpp-dumper-rs) |
+| Decompile sâu | ❌ không làm | **Ghidra headless + `pyghidra-mcp` / GhidraMCP** — agent tự gọi được | biến decompile thành *lời gọi hàm của agent* [22](https://www.skillsdirectory.com/skills/rehan-remade-reverse-engineering) |
+| Asset | **UnityPy 1.25.4** + **AssetStudio** (typetree) | **AssetRipper** | AssetRipper xuất được **pivot / border / mesh / nested serialized** [19](https://github.com/morluto/awesome-reverse-engineering) |
+| Runtime | ❌ không làm | **Frida** + `il2cpp-frida-mcp` | đọc giá/drop/feel **lúc chạy**, không cần decompile |
+
+#### Điều quan trọng nhất: **RVA đã nằm trong tay rồi**
+
+`dump.cs` hiện có **64.727 dòng `// RVA: 0x…`**, **2.854 class**, **1.359 `.cctor()`**.
+Nghĩa là Ghidra **không phải đi tìm hàm** — chỉ cần nạp `script.json` (Il2CppDumper sinh ra
+cùng `dump.cs`) là mọi hàm đã có tên, rồi decompile đúng địa chỉ.
+
+| Thứ tưởng "không có" | Thực tế trong `dump.cs` | Lấy bằng |
+|---|---|---|
+| 8 class config không serialize | **259 `static` field**, tất cả khởi tạo trong `.cctor()` | Ghidra + RVA → đọc literal trong `.cctor` |
+| Toạ độ đường bay | `BezierPath.points` là `[SerializeField] List<Vector3>` → **có trong `data.unity3d`** | AssetRipper (CSV exporter cũ bỏ nested struct) |
+| Thưởng/rơi theo enemy | `Enemy_Data_Balance.GetBonusCoin(int id)` · `GetBonusExp(int id)` · `GetSurvivalScore` · `GetArenaScore(idE, timeLife)` | Ghidra → 6 thân hàm |
+| Damage/HP/cost của player | `Player_Get_Datas` **178 field** | Ghidra → `.cctor` |
+| Giá tech/drone | `Tech_Datas` 13 field + `Droid_Data_Balance` 6 field | " |
+
+Phân rã 259 field: `Player_Get_Datas` **178** · `GameDatas` **40** · `Tech_Datas` **13** ·
+`Map_Get_Datas` **13** · `Droid_Data_Balance` **6** · `Stage_Get_Datas` **5** ·
+`Device_Get_Data` **3** · `Enemy_Data_Balance` **1**.
+
+> **Kết luận sửa lại:** không có mục nào trong bộ spec này là "vĩnh viễn không lấy được".
+> Mỗi mục hoặc **đã có trong CSV**, hoặc **nằm trong `.cctor()`**, hoặc **nằm trong
+> serialized field mà exporter cũ bỏ qua**, hoặc **quan sát được lúc chạy bằng Frida**.
+> Chênh lệch chỉ là **công cụ**, và công cụ thì thay được.
+
+---
+
 ## 2. Đối chiếu với bộ spec này
 
 ### 2.1 Ba chỉ số nghiên cứu ↔ ba lỗ hổng của repo
@@ -180,17 +219,18 @@ hợp: đó là **cùng một giới hạn** — *đặc tả tĩnh không chuy�
 | Nhịp nổ boss | 0 | **0,5–6,8 s, 3 `idFx`** | §5 |
 | Kiến trúc 1 enemy | 0 | **9 component** | §6 |
 
-### 2.3 Cái vẫn **không** bóc được (đã kiểm, không phải bỏ sót)
+### 2.3 Chưa bóc — nhưng **mỗi dòng đều có đường lấy**
 
-| Hạng mục | Bằng chứng "không có" |
-|---|---|
-| Toạ độ đường bay | `PathCreator.csv`: 30 cột `editorData` nhưng **0 cột `points[i].x/y`** |
-| Tham số spawner | 6/7 file `*_Spawner.csv` có **0 cột dữ liệu** |
-| Damage/HP của player | `forceType = Enemy` **458/458**; `Player_Get_Datas` không serialize |
-| Giá / tỉ lệ rơi | `Box_Rewards.id = 0` **800/800**; không cột `weight`/`price` |
-| Hiệu ứng item | `Sub_Item.csv` **0 cột hiệu ứng** |
-| Âm thanh | 69 `AudioClip` nhưng **0 file export được** (FSB5 trong `.resS`) |
-| Hành vi (appear/burn/stun/destroy) | `Enemy_Appear.csv` chỉ có ref |
+| Hạng mục | Thiếu vì | Đường lấy | Kết quả kỳ vọng |
+|---|---|---|---|
+| Toạ độ đường bay | `PathCreator.csv`: 30 cột `editorData` nhưng **0 cột `points[i].x/y`** | **AssetRipper** — `BezierPath.points` là `[SerializeField]` | 399 path × ~9 điểm = **~3.600 Vector3** |
+| Tham số spawner | 6/7 file `*_Spawner.csv` có **0 cột dữ liệu** | Ghidra (RVA từng `*_Spawner`) | trường `[SerializeField]` + hằng số |
+| Damage/HP của player | `forceType = Enemy` **458/458**; `Player_Get_Datas` không serialize | Ghidra `.cctor` | **178 field** |
+| Giá / tỉ lệ rơi | `Box_Rewards.id = 0` **800/800**; không cột `weight`/`price` | Ghidra `GetBonusCoin/Exp` + Frida | hàm thưởng theo `id` |
+| Hiệu ứng item | `Sub_Item.csv` **0 cột hiệu ứng** | Ghidra (class item) + Frida | hiệu ứng + thời gian |
+| Âm thanh | 69 `AudioClip` nhưng **0 file export** (FSB5 trong `.resS`) | **AssetRipper** / vgmstream | 69 file `.wav` |
+| Hành vi (appear/burn/stun) | `Enemy_Appear.csv` chỉ có ref | Ghidra: `Enemy_Appear.Appear(Action)` … | toàn bộ state machine |
+| Pivot/border sprite | 586 sprite không-Atlas ghi `?` | **AssetRipper** | pivot, border, mesh |
 
 ---
 
@@ -209,6 +249,10 @@ hợp: đó là **cùng một giới hạn** — *đặc tả tĩnh không chuy�
 
 > `> Nhận định:` các % này là **tự đánh giá**, không phải số đo. Cách đo khách quan hơn:
 > đếm số bảng có số thật / tổng số bảng cần cho một bản clone (khoảng **60–65%**).
+>
+> **Đây là độ phủ với chuỗi công cụ cũ.** Nếu chạy thêm §1.7 (Cpp2IL + Ghidra + AssetRipper
+> + Frida), ước lượng **85–95%** — vì cả 8 bảng trên đều có đường lấy, không mục nào
+> nằm ngoài dữ liệu.
 
 ---
 
@@ -281,6 +325,10 @@ Không làm 3 việc đó thì kết quả đúng như Polygon mô tả: **build
 | 16 | GameDevBench (8/2026) | `pass@1` cao nhất 63,1 |
 | 17 | Polygon (19/10/2026) | Digital Sun huỷ playtest `ReVamp` |
 | 18 | ThisWeekInVideoGames (19/10/2026) | thêm studio huỷ demo vì sợ clone |
+| 19 | awesome-reverse-engineering (21/10/2026) | Il2CppDumper **ngừng commit 7/2024**, Cpp2IL thay thế; AssetRipper |
+| 20 | cpp2il.com (6/2026) | so sánh: Method Body — CPP2IL ✅ · Il2CppDumper ❌ · Cpp2IL ⚠️ partial |
+| 21 | Rodroid il2cpp-dumper-rs v8.0 (7/2026) | decompiler C#, đọc cả Unity 6 |
+| 22 | skillsdirectory (6/10/2026) | Ghidra/IDA MCP + `il2cpp-frida-mcp` cho agent |
 
 Số liệu nội bộ: `ENEMY_BEHAVIOUR.md`, `COMBAT.md`, `ENCOUNTERS.md`, `BALANCE.md`, `ECONOMY.md`,
 `ASSETS.md` (cùng thư mục).

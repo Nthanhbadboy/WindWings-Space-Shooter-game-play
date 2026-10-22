@@ -570,9 +570,9 @@ gift code, drone, tech, talent.
 | 4 | Điều kiện mở Arena/PvP (`stage {0}`) | **giá trị {0} chưa bóc** | không biết mốc chính xác |
 | 5 | Số stage/chapter | **D** — `MAX_STAGE_OF_CHAPTERS[]` | không biết độ dài game |
 | 6 | Số wave/map | **D** — `GetNumberWaves()` | không biết độ dài trận |
-| 7 | Tỉ lệ rơi item | **D** | không thể tái tạo cảm giác |
+| 7 | Tỉ lệ rơi item | **D** | chưa có — lấy bằng Ghidra `Enemy_Data_Balance` + Frida |
 | 8 | Damage/giá/thưởng | **D** — xem `BALANCE.md` §6 | phải thiết kế lại |
-| 9 | Điều kiện 3 sao mỗi stage | **D** — `Stage_Mission` chưa bóc | không làm được achievement |
+| 9 | Điều kiện 3 sao mỗi stage | **D** — `Stage_Mission` chưa bóc | lấy được: `Stage_Get_Datas.IsMissionCompleted()` |
 | 10 | HP/phase của 2 mini-boss + 16 MB | **D** | chỉ có tên atlas |
 | 11 | Cơ chế "Overdrive" | **C** — có `PercentFreeOverDrive`, item index 2 | chưa rõ công thức |
 | 12 | Số lần reborn tối đa | **D** — `GetMaxRebornCount()` | ảnh hưởng monetize |

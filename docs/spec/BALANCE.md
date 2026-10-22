@@ -197,7 +197,10 @@ Cờ hành vi (nguồn: `Enemy_Datas.csv`, 800 dòng):
 | `CurrentHealthPoint` | 0 | 800 | chỉ là giá trị editor |
 
 > ⚠ **196 dòng `Wave_*` đều HP = 0** → enemy trong wave prefab lấy HP từ `Enemy_Data_Balance`
-> lúc runtime, không serialize. Đây là lý do **không thể tái tạo đường cong HP theo stage**.
+> lúc runtime, không serialize. **Đường lấy:** `Enemy_Data_Balance` có
+> `GetBonusCoin/GetBonusExp/GetSurvivalScore/GetArenaScore` — decompile 6 thân hàm này
+> (RVA đã có trong `dump.cs`) là ra công thức; giá trị HP theo stage thì hook Frida lúc chạy.
+> Xem `AI_FEASIBILITY.md` §1.7.
 
 ## 3. Roster
 
@@ -551,7 +554,11 @@ HP player · ngưỡng VIP · số stage/chapter · mapping wave→stage.
 8 class sau là `MonoBehaviour` **không được serialize** — giá trị nằm trong **thân hàm IL2CPP**.
 `data.unity3d` chỉ chứa *instance của object có field `[SerializeField]`*; các class này hoặc
 không có instance trong scene, hoặc field là `static`/`property` (không serialize).
-Muốn lấy phải decompile `libil2cpp.so` (Il2CppDumper + IDA/Ghidra) — **ngoài phạm vi vòng 2**.
+
+**Nhưng chúng không nằm ngoài tầm với:** cả 8 class đều có `.cctor()` với **259 field tĩnh**,
+và `dump.cs` đã có **RVA của từng `.cctor`** (ví dụ `Droid_Data_Balance..cctor` @ `0x1451…`).
+Nạp `libil2cpp.so` vào Ghidra headless + `script.json` là đọc được literal của cả 259 field.
+Chi tiết + danh sách field: `AI_FEASIBILITY.md` §1.7.
 
 Đây là 8 class được nêu trong handoff. Mỗi class: field cần, ảnh hưởng gì, và nơi nên tìm.
 

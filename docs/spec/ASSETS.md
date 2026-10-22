@@ -130,7 +130,7 @@ Nếu không → sửa hình, không thêm chi tiết.
 
 Nguồn: đếm từ `04-asset-manifest.csv` theo tiền tố tên (script phân nhóm ở `/tmp`).
 
-**Nhận xét:** 1.487/2.185 sprite (68%) **không có convention đặt tên** → không thể tự động sinh
+**Nhận xét:** 1.487/2.185 sprite (68%) **không có convention đặt tên** → chưa thể tự động sinh
 sprite-list đầy đủ. Đây là lý do `sprite-list.csv` chỉ liệt kê **nhóm + size chuẩn hoá**, không
 liệt kê từng sprite.
 
