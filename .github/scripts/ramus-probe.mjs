@@ -458,11 +458,24 @@ function advanceDialogs(maxSteps = 4) {
 
     const point = `${((target.x1 + target.x2) / 2 / screen[0]).toFixed(3)},${((target.y1 + target.y2) / 2 / screen[1]).toFixed(3)}`;
     const r = ramus(['tap', point], { timeout: 60000 });
-    done.push(`${target.text} @ ${point}${r.ok ? '' : ' (tap failed)'}`);
-    if (!r.ok) break;
+    if (!r.ok) {
+      done.push({ text: target.text, point, after: 'tap failed' });
+      break;
+    }
     // Let the next screen render before observing it.
     const until = Date.now() + 2500;
     while (Date.now() < until) { /* synchronous wait on purpose */ }
+
+    // Who is in front now? This is what shows the moment the app disappears.
+    snapshotUi(`${tag}-after`);
+    const after = (result.ui && result.ui[`${tag}-after`] && result.ui[`${tag}-after`].packages) || [];
+    screenshot(10 + step);
+    done.push({
+      text: target.text,
+      point,
+      after: after.length ? after.join(', ') : 'unknown',
+      appStillFront: after.some((x) => /wind|wings/i.test(x)),
+    });
   }
   return done;
 }
@@ -804,10 +817,25 @@ function renderReport(r) {
     }
 
     if (Array.isArray(r.dialogs) && r.dialogs.length) {
-      lines.push('| tapped through | step |');
-      lines.push('| --- | --- |');
-      for (const d of r.dialogs) lines.push(`| ${d} | |`);
+      lines.push('| # | tapped | at | foreground after | app still in front |');
+      lines.push('| --- | --- | --- | --- | --- |');
+      r.dialogs.forEach((d, i) => {
+        if (typeof d === 'string') {
+          lines.push(`| ${i} | ${d} | | | |`);
+          return;
+        }
+        lines.push(`| ${i} | ${d.text} | ${d.point} | \`${d.after}\` | ${
+          d.appStillFront == null ? '—' : yn(d.appStillFront)} |`);
+      });
       lines.push('');
+      const lost = r.dialogs.findIndex((d) => typeof d === 'object' && d.appStillFront === false);
+      if (lost >= 0) {
+        lines.push(`> **The app left the foreground after tap ${lost}.** The UI tree then`);
+        lines.push('> belonged to another package, so the game finished or died at that point.');
+        lines.push('> The trial transport exposes no `main`/`crash` buffer, so the reason is not');
+        lines.push('> in this report — that needs adb (key mode).');
+        lines.push('');
+      }
     }
 
     if (r.dialog) {
