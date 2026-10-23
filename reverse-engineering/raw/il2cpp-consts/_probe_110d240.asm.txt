@@ -1,0 +1,144 @@
+0x110d240: mov      w9, #0x40
+0x110d244: str      w9, [x24, #0xc]
+0x110d248: mov      w9, #4
+0x110d24c: add      x1, x27, x8
+0x110d250: add      x0, x0, w19, sxtw
+0x110d254: cmp      x1, x26
+0x110d258: add      x24, x24, x9, lsl #2
+0x110d25c: b.hs     #0x110d500
+0x110d260: ldur     x8, [x1, #-3]
+0x110d264: sub      w11, w1, w25
+0x110d268: sub      w9, w11, #2
+0x110d26c: sub      w10, w11, #1
+0x110d270: lsl      x12, x8, #0x18
+0x110d274: and      x12, x12, #0xffffffff00000000
+0x110d278: mul      x12, x12, x17
+0x110d27c: lsr      x12, x12, #0x33
+0x110d280: and      x12, x12, #0x1ffc
+0x110d284: str      w9, [x21, x12]
+0x110d288: lsl      x9, x8, #8
+0x110d28c: mul      x8, x8, x28
+0x110d290: and      x9, x9, #0xffffffff00000000
+0x110d294: lsr      x8, x8, #0x33
+0x110d298: mul      x9, x9, x17
+0x110d29c: and      x8, x8, #0x1ffc
+0x110d2a0: lsr      x9, x9, #0x33
+0x110d2a4: str      w10, [x21, x8]
+0x110d2a8: and      x12, x9, #0x1ffc
+0x110d2ac: ldrsw    x8, [x21, x12]
+0x110d2b0: str      w11, [x21, x12]
+0x110d2b4: add      x10, x25, x8
+0x110d2b8: sub      x9, x1, x10
+0x110d2bc: cmp      x9, x4
+0x110d2c0: b.ge     #0x110cf6c
+0x110d2c4: ldr      w11, [x1]
+0x110d2c8: ldr      w10, [x10]
+0x110d2cc: cmp      w11, w10
+0x110d2d0: b.ne     #0x110cf6c
+0x110d2d4: ldr      x2, [sp, #0xd8]
+0x110d2d8: mov      x22, x9
+0x110d2dc: add      x9, x2, x8
+0x110d2e0: sub      x8, x3, x1
+0x110d2e4: sub      x11, x8, #4
+0x110d2e8: lsr      x13, x11, #3
+0x110d2ec: add      x10, x1, #4
+0x110d2f0: cbz      x13, #0x110d490
+0x110d2f4: and      x8, x11, #0xfffffffffffffff8
+0x110d2f8: mov      x12, xzr
+0x110d2fc: add      x14, x10, x8
+0x110d300: ldr      x15, [x10, x12]
+0x110d304: ldr      x16, [x9, x12]
+0x110d308: cmp      x15, x16
+0x110d30c: b.ne     #0x110d324
+0x110d310: subs     x13, x13, #1
+0x110d314: add      x12, x12, #8
+0x110d318: b.ne     #0x110d300
+0x110d31c: mov      x10, x14
+0x110d320: b        #0x110d494
+0x110d324: eor      x8, x16, x15
+0x110d328: rbit     x8, x8
+0x110d32c: clz      x8, x8
+0x110d330: add      x8, x12, x8, lsr #3
+0x110d334: add      x9, x8, #4
+0x110d338: cmp      x9, #9
+0x110d33c: b.hi     #0x110d348
+0x110d340: add      w8, w9, #0x26
+0x110d344: b        #0x110d3b8
+0x110d348: cmp      x9, #0x85
+0x110d34c: b.hi     #0x110d37c
+0x110d350: sub      x8, x8, #2
+0x110d354: clz      w10, w8
+0x110d358: eor      w10, w10, #0x1f
+0x110d35c: sub      w10, w10, #1
+0x110d360: lsr      x11, x8, x10
+0x110d364: add      w12, w11, w10, lsl #1
+0x110d368: lsl      x10, x11, x10
+0x110d36c: add      w11, w12, #0x2c
+0x110d370: sub      w8, w8, w10
+0x110d374: orr      w8, w11, w8, lsl #8
+0x110d378: b        #0x110d3b8
+0x110d37c: cmp      x9, #0x845
+0x110d380: b.hi     #0x110d3a8
+0x110d384: sub      w8, w8, #0x42
+0x110d388: clz      w10, w8
+0x110d38c: eor      w10, w10, #0x1f
+0x110d390: mov      x11, #-1
+0x110d394: lsl      x11, x11, x10
+0x110d398: add      w8, w11, w8
+0x110d39c: bfi      w10, w8, #8, #0x18
+0x110d3a0: add      w8, w10, #0x34
+0x110d3a4: b        #0x110d3b8
+0x110d3a8: mov      w8, #0xbe15
+0x110d3ac: movk     w8, #0xfff7, lsl #16
+0x110d3b0: add      w8, w8, w9, lsl #8
+0x110d3b4: sub      w8, w8, #0x3d6
+0x110d3b8: add      x1, x1, x9
+0x110d3bc: add      w9, w22, #3
+0x110d3c0: clz      w11, w9
+0x110d3c4: eor      w11, w11, #0x1f
+0x110d3c8: sub      w12, w11, #1
+0x110d3cc: mov      w10, #2
+0x110d3d0: lsr      w13, w9, w12
+0x110d3d4: bfxil    w10, w13, #0, #1
+0x110d3d8: and      w13, w13, #1
+0x110d3dc: lsl      w10, w10, w12
+0x110d3e0: bfi      w13, w11, #1, #6
+0x110d3e4: sub      w9, w9, w10
+0x110d3e8: bfi      w13, w9, #8, #0x18
+0x110d3ec: add      w9, w13, #0x4c
+0x110d3f0: cmp      x1, x26
+0x110d3f4: stp      w8, w9, [x24], #8
+0x110d3f8: b.hs     #0x110d500
+0x110d3fc: ldur     x8, [x1, #-3]
+0x110d400: sub      w11, w1, w25
+0x110d404: sub      w9, w11, #3
+0x110d408: sub      w10, w11, #2
+0x110d40c: mul      x12, x8, x28
+0x110d410: lsr      x12, x12, #0x33
+0x110d414: and      x12, x12, #0x1ffc
+0x110d418: str      w9, [x21, x12]
+0x110d41c: lsl      x12, x8, #0x18
+0x110d420: and      x12, x12, #0xffffffff00000000
+0x110d424: mul      x12, x12, x17
+0x110d428: lsr      x12, x12, #0x33
+0x110d42c: and      x12, x12, #0x1ffc
+0x110d430: str      w10, [x21, x12]
+0x110d434: lsl      x10, x8, #8
+0x110d438: lsl      x8, x8, #0x10
+0x110d43c: and      x8, x8, #0xffffffff00000000
+0x110d440: and      x10, x10, #0xffffffff00000000
+0x110d444: mul      x8, x8, x17
+0x110d448: mul      x10, x10, x17
+0x110d44c: lsr      x8, x8, #0x33
+0x110d450: sub      w9, w11, #1
+0x110d454: lsr      x10, x10, #0x33
+0x110d458: and      x8, x8, #0x1ffc
+0x110d45c: str      w9, [x21, x8]
+0x110d460: and      x12, x10, #0x1ffc
+0x110d464: ldrsw    x8, [x21, x12]
+0x110d468: str      w11, [x21, x12]
+0x110d46c: add      x10, x25, x8
+0x110d470: sub      x9, x1, x10
+0x110d474: cmp      x9, x4
+0x110d478: b.ge     #0x110cf6c
+0x110d47c: ldr      w11, [x1]
