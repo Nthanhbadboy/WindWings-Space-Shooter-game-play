@@ -421,6 +421,38 @@ function dismissSystemDialog(tag) {
 }
 
 /**
+ * Grab everything the transport will give us about the app, right now.
+ *
+ * The plain dump is dominated by system chatter and its scrollback evicts app
+ * lines within seconds. Calling `--filter` for a handful of needles immediately
+ * after an event is the only way the trial transport ever shows app lines —
+ * one such query already surfaced `D/VRI[MessagingUnityPlayerActivity]`.
+ */
+function captureBurst(reason) {
+  const pkg = process.env.RAMUS_PACKAGE || 'com.wind.wings.Space.Shooter';
+  const needles = [
+    ['package', pkg],
+    ['unity', 'Unity'],
+    ['il2cpp', 'il2cpp'],
+    ['androidRuntime', 'AndroidRuntime'],
+    ['fatal', 'FATAL'],
+    ['anr', 'ANR'],
+    ['wind', 'Wind'],
+    ['died', 'died'],
+  ];
+  const hits = {};
+  for (const [label, needle] of needles) {
+    const rows = logcatFiltered(needle, 500);
+    if (Array.isArray(rows) && rows.length) hits[label] = rows.slice(-20);
+  }
+  const entry = { reason, at: new Date().toISOString(), hits };
+  result.bursts = result.bursts || [];
+  result.bursts.push(entry);
+  note(`logcat burst "${reason}": ${Object.keys(hits).length}/${needles.length} needles hit`);
+  return entry;
+}
+
+/**
  * Tap through first-run dialogs (Android immersive confirmation, the game's own
  * consent screen, ...). Every tap is verified by a fresh snapshot; the loop stops
  * as soon as nothing matching is on screen.
@@ -470,12 +502,20 @@ function advanceDialogs(maxSteps = 4) {
     snapshotUi(`${tag}-after`);
     const after = (result.ui && result.ui[`${tag}-after`] && result.ui[`${tag}-after`].packages) || [];
     screenshot(10 + step);
+    const stillFront = after.some((x) => /wind|wings/i.test(x));
     done.push({
       text: target.text,
       point,
       after: after.length ? after.join(', ') : 'unknown',
-      appStillFront: after.some((x) => /wind|wings/i.test(x)),
+      appStillFront: stillFront,
     });
+
+    if (!stillFront) {
+      // This is the moment the app left the screen. Whatever the transport still
+      // holds about it has to be taken now — a second later it is evicted.
+      captureBurst(`after tap "${target.text}"`);
+      break;
+    }
   }
   return done;
 }
@@ -598,6 +638,37 @@ async function main() {
     }
     snapshotUi('after-dialog');
     screenshot(2);
+
+    // If the app already left, ask one question: is it reproducible? Relaunch and
+    // watch for ~8 s. A second death at the same point is a crash loop; staying up
+    // would mean the first exit was a one-off.
+    const afterPkgs = (result.ui['after-dialog'] && result.ui['after-dialog'].packages) || [];
+    if (!afterPkgs.some((x) => /wind|wings/i.test(x))) {
+      note('app is not in the foreground — relaunching once to test reproducibility');
+      const rel = ramus(['app', 'launch'], { timeout: 60000 });
+      const t0 = Date.now();
+      let cameBack = false;
+      let wentAway = null;
+      for (let i = 0; i < 8; i++) {
+        const until = Date.now() + 1000;
+        while (Date.now() < until) { /* wait one second between observations */ }
+        const tag = `relaunch-${i}`;
+        if (!snapshotUi(tag)) continue;
+        const pk = (result.ui[tag] && result.ui[tag].packages) || [];
+        const front = pk.some((x) => /wind|wings/i.test(x));
+        if (front && !cameBack) cameBack = true;
+        if (cameBack && !front) { wentAway = Math.round((Date.now() - t0) / 1000); break; }
+      }
+      screenshot(20);
+      result.relaunch = {
+        ok: rel.ok,
+        cameBack,
+        diedAfterSeconds: wentAway,
+        aliveAfterSeconds: cameBack && wentAway == null ? 8 : null,
+      };
+      note(`relaunch: cameBack=${cameBack} diedAfter=${wentAway ?? 'n/a'}s`);
+      captureBurst('after relaunch');
+    }
   }
 
   // The plain dump is the last 500 lines of everything, which on a fresh boot is
@@ -814,6 +885,42 @@ function renderReport(r) {
         lines.push('```');
       }
       lines.push('');
+    }
+
+    if (r.relaunch) {
+      const rel = r.relaunch;
+      lines.push('### Relaunch test');
+      lines.push('');
+      lines.push(`| relaunch sent | came back | died after | alive at end |`);
+      lines.push('| --- | --- | --- | --- |');
+      lines.push(`| ${rel.ok ? 'ok' : 'failed'} | ${yn(rel.cameBack)} | ${
+        rel.diedAfterSeconds != null ? rel.diedAfterSeconds + ' s' : '—'} | ${
+        rel.aliveAfterSeconds != null ? '≥ 8 s' : 'no'} |`);
+      lines.push('');
+      if (rel.cameBack && rel.diedAfterSeconds != null) {
+        lines.push(`> **Reproducible.** The app started again and left the screen after ~${
+          rel.diedAfterSeconds}s — same behaviour as the first run.`);
+        lines.push('');
+      }
+    }
+
+    if (Array.isArray(r.bursts) && r.bursts.length) {
+      for (const b of r.bursts) {
+        const keys = Object.keys(b.hits || {});
+        lines.push(`<details><summary>logcat burst — ${b.reason} (${keys.length} needle(s) hit)</summary>`);
+        lines.push('');
+        if (!keys.length) {
+          lines.push('_No app-related line in any buffer the transport exposes._');
+        }
+        for (const k of keys) {
+          lines.push(`**${k}**`);
+          lines.push('```');
+          for (const l of b.hits[k]) lines.push(String(l).slice(0, 220));
+          lines.push('```');
+        }
+        lines.push('</details>');
+        lines.push('');
+      }
     }
 
     if (Array.isArray(r.dialogs) && r.dialogs.length) {
