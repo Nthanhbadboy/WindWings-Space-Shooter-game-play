@@ -93,7 +93,9 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | HP enemy thường | **68 / 70 prefab = 0**; 2 prefab = 20.000 | `15-enemy-hp.csv` + `Enemy_Datas.csv` | **`BOSSES.md` §6** |
 | Wave / spawner / map | **282 / 23.757 / 250** | `waves.json`, `MapController.csv` | `ENCOUNTERS.md` §0 |
 | Prefab có súng | **68** (Boss 26 · Wave/BLT 22 · CD 13 · CB 6 · BB 1) · **319 súng thật** + 139 preview UI | `prefab_joins.csv.gz` | **`DATA_SYNC.md` §7.19** |
-| Tốc độ enemy / turret | **0,2–30,0**, median 5,0; 69,3% rơi vào 2 nấc 5,0 và 20,0 / **22 prefab turret** (16,6% quân) | `Enemy_Movement.csv` (981 dòng) | **`BOSSES.md` §5.3** |
+| Tốc độ enemy / turret | **0,2–30,0**, median 5,0; 69,3% rơi vào 2 nấc 5,0 và 20,0 | `Enemy_Movement.csv` (981 bản ghi) | **`BOSSES.md` §5.3** |
+| **Turret** | **112 component / 44 prefab · hai tầng**: **21 prefab spawn** (7.568 quân = 16,6%) + **23 prefab đặt sẵn trong `Wave_*`** (71 component) · tỷ lệ theo prefab thật **14,4%** (112/777) | `prefab_joins` + `transform-tree` | **`BOSSES.md` §5.1** · `DATA_SYNC.md` §7.20 |
+| Prefab enemy **chưa từng xuất hiện** | **22** (`W2-30041…30057` · `W2-30053 Mau` · `CB-30005/17/19` · `CD-31017`) | `prefab_joins` | `DATA_SYNC.md` §7.20.5 |
 | Stage trên board map | **299** (199 Normal · 49 Combat · 26 Boss · 25 MiniBoss) | `Stage_Behaviour.csv` | `ENCOUNTERS.md` §5 |
 | Class UI | **125** (53 board · 63 popup · 8 tab · 1 cell) | `08-ui-map.md` + `dump.cs`; đối chiếu `class-inventory.csv` (116) | `UI.md` §0 |
 | Sprite / atlas page | **2.185 / 67 page (66 nhóm) · 31,0 MB** | `04-asset-manifest.csv` | `ASSETS.md` §0 |

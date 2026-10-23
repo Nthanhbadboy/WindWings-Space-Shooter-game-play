@@ -194,7 +194,11 @@ có đủ **251/251** dòng, nên vắng là vắng thật.
 
 ---
 
-## 5. Enemy thường — 70 prefab, 8 họ
+## 5. Enemy thường — 109 prefab dùng được, 8 họ
+
+> **Đơn vị đếm:** 178 prefab gốc mang `Enemy_Controller` (không tính `Board_*`), trong đó
+> **109** xuất hiện trong wave, **69** không (35 `Wave_*` container · 22 prefab họ enemy chưa dùng ·
+> 7 mã `900xx` · 3 `BLT_*` · `CB(TEST)` · `Ship`). Chi tiết `DATA_SYNC.md` §7.20.
 
 | Họ | Prefab | Vai trò đọc được từ dữ liệu |
 |---|---:|---|
@@ -207,17 +211,42 @@ có đủ **251/251** dòng, nên vắng là vắng thật.
 | `H` | 2 | **turret** (`H-38001`, `H-38002`) |
 | `W1` | 1 | HP 20.000 |
 
-### 5.1 Turret — 21/70 prefab, 16,7% entry
+### 5.1 Turret — cấu trúc **hai tầng**, và một nửa số turret không do wave sinh ra
 
-**Toàn bộ `CD` (15) + `GD` (4) + `H` (2) + 1 `W2` = 22 prefab** đều `isTurret = True`; **toàn bộ `CB`/`XB`/`BB`
-`False`**. Ranh giới gần tuyệt đối — họ prefab quyết định cách di chuyển, chỉ `W2` có 1 ngoại lệ.
+Đo lại bằng `prefab_joins` + `transform-tree` (bản `cd0372d`), ghép **theo prefab gốc** thay vì theo tên.
 
-22 prefab turret chiếm **7.570 / 45.659 quân (16,6%)**. Nghĩa là **cứ 6 quân thì 1 đứng yên bắn**.
+**112 component `isTurret = True`** nằm trong **44 prefab gốc khác nhau**, chia làm hai tầng:
 
-| `isTurret` | Prefab | Entry | % entry |
+| Tầng | Prefab | Component | Cách xuất hiện |
+|---|---:|---:|---|
+| **Spawn qua wave** | **21** | **41** | `Call_Data` sinh ra như enemy thường |
+| **Đặt sẵn trong màn** | **23** | **71** | gắn thẳng vào prefab `Wave_*`, **không** spawn |
+
+Tầng spawn gồm **`CD` 15** (`31002`–`31016`) · **`GD` 4** (`33002`–`33005`) · **`H` 2** (`38001`, `38002`).
+Tầng đặt sẵn gồm **21 prefab `Wave_*`** + **`Ship`** + **`CD-31017`** (có turret nhưng **chưa dùng ở wave nào**).
+
+| `isTurret` | Prefab (spawn) | Quân | % quân |
 |---|---:|---:|---:|
-| True | 22 | 7.570 | **16,6%** |
-| False | 48 | 38.089 | 83,4% |
+| **True** | **21** | **7.568** | **16,6%** |
+| False — enemy thường | 49 | **37.991** | 83,2% |
+| False — boss | **39** | **90** | 0,2% |
+| **False (tổng)** | **88** | **38.091** | **83,4%** |
+
+Nghĩa là **cứ 6 quân thì 1 đứng yên bắn**.
+
+> ⚠ **Ba số tôi đã ghi sai trong bản trước, nay sửa:**
+>
+> | Ghi cũ | Đúng |
+> |---|---|
+> | "`W2` có 1 turret" | **`W2` không có turret nào** — cả 24 prefab `W2` đều `False` |
+> | "22 prefab turret" | **21 spawn + 1 dự phòng (`CD-31017`)** |
+> | "7.570 quân" | **7.568** |
+>
+> Và quan trọng hơn: **71/112 turret (63,4%) không do wave sinh ra** mà **đặt sẵn trong prefab màn**.
+> Đọc `Call_Data` không thấy chúng — chỉ đọc `Enemy_Movement` của prefab `Wave_*` mới thấy.
+
+**Hệ quả thiết kế:** màn chơi có **hai loại phòng thủ**: turret đặt sẵn (dày nhất ở `Wave_0005` **22**,
+`Wave_0004` **14**) và turret spawn như quân. Muốn tái tạo độ khó phải dựng **cả hai**, không chỉ một.
 
 ### 5.2 Bảy prefab `W1`/`W2` — HP 20.000, không phải "không có HP"
 

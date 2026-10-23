@@ -909,6 +909,86 @@ Phân họ 68 prefab thật: **Boss 26** · `Wave_*` + `BLT_*` **22** · `CD` 13
 (boss được đặt sẵn trên màn thay vì spawn) thì 66 dòng đó **không phải nhiễu** — khi đó 319 là **thiếu**,
 phải cộng lại. Cần đối chiếu runtime.
 
+### 7.20 Hệ quả của `transform-tree`: **turret có hai tầng**, và 69 prefab chưa từng xuất hiện
+
+Ghép `Enemy_Movement` về prefab gốc qua `Enemy_Controller.movementScript` → `prefab_root`
+(**981/981 map được, 0 dòng mồ côi**).
+
+#### 7.20.1 178 prefab gốc mang `Enemy_Controller` — chia đúng 6 nhóm
+
+| Nhóm | Số | Ghi chú |
+|---|---:|---|
+| **Xuất hiện trong wave** | **109** | khớp **chính xác** 109 tên prefab trong `Call_Data` |
+| `Wave_*` container | **35** | màn chơi mang sẵn enemy/turret, không phải prefab spawn |
+| **Họ enemy nhưng chưa dùng** | **22** | xem §7.20.3 |
+| Mã số `900xx` (effect) | 7 | `90027` · `90045` · `90047` · `90048` · `90049` · `90050` · `90051` |
+| `BLT_*` (đạn) | 3 | `80109` · `80177` · `80178` |
+| `CB(TEST)` + `Ship` | 2 | |
+| **Tổng** | **178** | |
+
+`109` khớp đúng danh sách wave ⇒ `Call_Data` và `transform-tree` **kiểm chéo lẫn nhau**, không có prefab nào bị bỏ sót.
+
+#### 7.20.2 Turret — **112 component, 44 prefab, hai tầng**
+
+| Tầng | Prefab | Component | Sinh ra thế nào |
+|---|---:|---:|---|
+| **Spawn qua `Call_Data`** | **21** | **41** | như enemy thường |
+| **Đặt sẵn trong prefab `Wave_*`** | **23** | **71** | gắn thẳng vào màn, **không** spawn |
+
+Tầng spawn: `CD` **15** (`31002`–`31016`) · `GD` **4** (`33002`–`33005`) · `H` **2** (`38001`, `38002`).
+Tầng đặt sẵn: **21 prefab `Wave_*`** + `Ship` + `CD-31017` (có turret, **chưa dùng ở wave nào**).
+
+Dày nhất: `Wave_0005` **22 turret** · `Wave_0004` **14** · `Wave_0020` **4**.
+
+> **Nhận định (mức A):** **71 / 112 turret (63,4%) không do wave sinh ra.**
+> Đọc `Call_Data` **không thấy** chúng — chỉ đọc `Enemy_Movement` của prefab `Wave_*` mới thấy.
+> Đây là lý do bản trước của tôi (đếm theo tên prefab trong wave) chỉ ra **22 prefab**: nó **không thấy tầng đặt sẵn**.
+
+#### 7.20.3 Ba số turret phải sửa
+
+| Tôi đã ghi | Đúng | Vì sao sai |
+|---|---|---|
+| **22 prefab** turret | **21** spawn (+ `CD-31017` dự phòng) | đếm `CD-31017` dù nó không xuất hiện ở wave nào |
+| "`W2` có **1** turret" | **`W2` không có turret nào** — cả **24** prefab `W2` đều `False` | suy từ 1 dòng 800-cũ, chưa kiểm lại |
+| **7.570** quân turret | **7.568** | lệch 2 do gộp `copies` khác đường |
+
+**Xác nhận đúng:** `7.568 / 45.659 = 16,6%` — tỷ lệ cũ **vẫn đúng**, chỉ thành phần sai.
+
+| `isTurret` | Prefab | Quân | % |
+|---|---:|---:|---:|
+| True | 21 | **7.568** | **16,6%** |
+| False — enemy thường | 49 | 37.991 | 83,2% |
+| False — boss | 39 | 90 | 0,2% |
+
+#### 7.20.4 Tỷ lệ turret đổi khi bỏ mô hình UI
+
+Denominator cũ là **981** (gồm 204 dòng `Board_*`), thực tế là **777**:
+
+| Cách tính | Tử | Mẫu | % |
+|---|---:|---:|---:|
+| Theo **bản ghi** (cũ) | 112 | 981 | 11,4% |
+| Theo **prefab thật** | **112** | **777** | **14,4%** |
+
+**Toàn bộ 112 turret đều là prefab thật** — không có turret nào trong 204 dòng `Board_*`.
+⇒ Tỷ lệ turret **thực** cao hơn bản tôi công bố: **14,4%**, không phải 11,4%.
+
+#### 7.20.5 Hai mươi hai prefab chưa từng xuất hiện
+
+| Prefab | Controller | Ghi chú |
+|---|---:|---|
+| `W2-30041` … `W2-30057` (**17 cái**) | 1 mỗi cái | dải mã **không có trong wave**; `W2-30032`–`30037` mới được dùng |
+| **`W2-30053 Mau`** | **6** | tên có hậu tố tiếng Việt "Màu" — bản thử màu |
+| `CB-30005` · `CB-30017` · `CB-30019` | 2 · 1 · 1 | |
+| `CD-31017` | 2 | turret dự phòng |
+
+> **Nhận định (mức B):** `W2-30041…30057` + `W2-30053 Mau` (17+1) là **nội dung bị cắt hoặc bản thử**:
+> cùng họ `W2` nhưng nằm ngoài dải mã đang dùng (`30032`–`30037`), và có một bản ghi rõ là "Màu".
+> Chiếm **22/178 = 12,4%** prefab mang `Enemy_Controller`.
+>
+> **Điều kiện lật ngược:** nếu các wave bị **cắt bởi cap cũ** (182/282 wave từng có) dùng tới chúng thì đây
+> là nội dung **có thật nhưng chưa thấy**. Kiểm bằng `Call_Data` **đầy đủ 23.757** — đã đủ, và **không**
+> có tên nào trong 22 cái trên ⇒ loại trừ được khả năng này.
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |
