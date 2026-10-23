@@ -206,6 +206,13 @@ function readLogcatStates(limit = 500) {
   return states;
 }
 
+/** Ask logcat for only the lines that matter (`--filter` scans the scrollback). */
+function logcatFiltered(needle, limit = 500) {
+  const r = ramus(['logcat', '--limit', String(Math.min(limit, 500)), '--filter', needle]);
+  if (!r.ok) return null;
+  return logcatLines(r.stdout).slice(-60);
+}
+
 /** Poll logcat until the bridge mirrors at least one state line. */
 async function waitForLogcat(seconds) {
   const deadline = Date.now() + seconds * 1000;
@@ -262,6 +269,18 @@ function snapshotUi(tag) {
       looksLikeLauncher: /launcher|home screen|all apps|workspace/i.test(r.stdout),
       head: r.stdout.slice(0, 600),
     };
+  }
+
+  // The raw XML names the foreground package in its node attributes, which is
+  // the only direct statement about what is actually in front of the user.
+  const raw = ramus(['snapshot', '--raw'], { timeout: 60000 });
+  if (raw.ok && raw.stdout) {
+    writeFileSync(path.join(OUT, `ui-${tag}.xml`), raw.stdout);
+    const pkgs = [...new Set([...raw.stdout.matchAll(/package="([^"]+)"/g)].map((m) => m[1]))];
+    const texts = [...new Set([...raw.stdout.matchAll(/text="([^"]+)"/g)].map((m) => m[1]))]
+      .filter((t) => t.trim()).slice(0, 12);
+    result.ui = result.ui || {};
+    result.ui[tag] = Object.assign(result.ui[tag] || { bytes: 0 }, { packages: pkgs, texts });
   }
   return r.ok;
 }
@@ -363,6 +382,15 @@ async function main() {
 
   snapshotUi('before');
   if (opt.screenshots > 1) screenshot(1);
+
+  // The plain dump is the last 500 lines of everything, which on a fresh boot is
+  // almost entirely system spam. These two queries look at the whole scrollback.
+  const pkgName = process.env.RAMUS_PACKAGE || 'com.wind.wings.Space.Shooter';
+  result.logcat.filtered = {
+    package: logcatFiltered(pkgName),
+    unity: logcatFiltered('Unity'),
+    androidRuntime: logcatFiltered('AndroidRuntime'),
+  };
 
   readLogcatStates();
 
@@ -570,9 +598,28 @@ function renderReport(r) {
       lines.push('| ui snapshot | value |');
       lines.push('| --- | --- |');
       for (const [tag, v] of Object.entries(r.ui)) {
-        lines.push(`| ${tag} | ${v.bytes} B · mentions package: ${yn(v.mentionsPackage)} · looks like launcher: ${yn(v.looksLikeLauncher)} |`);
+        const pkgs = Array.isArray(v.packages) && v.packages.length ? v.packages.join(', ') : '—';
+        lines.push(`| ${tag} | ${v.bytes} B · packages: \`${pkgs}\` · mentions app: ${yn(v.mentionsPackage)} · looks like launcher: ${yn(v.looksLikeLauncher)} |`);
+        if (Array.isArray(v.texts) && v.texts.length) {
+          lines.push(`| | text on screen: ${v.texts.map((t) => `\`${String(t).slice(0, 40)}\``).join(' · ')} |`);
+        }
       }
       lines.push('');
+    }
+
+    // --filter looks past the last-500-line window instead of inside it.
+    const fl = r.logcat && r.logcat.filtered;
+    if (fl) {
+      for (const [key, rows] of Object.entries(fl)) {
+        if (!Array.isArray(rows)) continue;
+        lines.push(`<details><summary>logcat --filter ${key} — ${rows.length} line(s)</summary>`);
+        lines.push('');
+        lines.push('```');
+        for (const l of rows.slice(-40)) lines.push(l.slice(0, 200));
+        lines.push('```');
+        lines.push('</details>');
+        lines.push('');
+      }
     }
 
     // Raw device output. Without this the report only says which regexes did not
