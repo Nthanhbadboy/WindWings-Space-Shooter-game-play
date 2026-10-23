@@ -106,25 +106,44 @@ jobs:
           chmod +x .github/scripts/build-bridge.sh
           .github/scripts/build-bridge.sh --out dist --refs .ci/refs 2>&1 | tee -a ci.log
 
-      - name: Report failure on the PR
-        if: failure() && github.event_name == 'pull_request'
+      - name: Report the build matrix on the PR
+        if: always() && github.event_name == 'pull_request'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          passed=$(grep -c '\[build\] PASS' ci.log 2>/dev/null || echo 0)
+          failed=$(grep -c '\[build\] FAIL' ci.log 2>/dev/null || echo 0)
           {
             echo "<!-- bridge-build -->"
-            echo "## ❌ bridge build failed — the device probe was skipped"
+            if [ "$failed" = "0" ] && [ "$passed" != "0" ]; then
+              echo "## ✅ bridge build — $passed/4 targets compiled"
+            else
+              echo "## ❌ bridge build failed — the device probe was skipped"
+              echo
+              echo "### errors"
+              echo '```'
+              grep -E "error [A-Z]+[0-9]+|MISSING" ci.log 2>/dev/null | sort -u | head -40 \
+                || echo "no compiler errors found"
+              echo '```'
+            fi
             echo
-            echo "### errors"
+            echo "### matrix"
             echo '```'
-            grep -E "error [A-Z]+[0-9]+|MISSING|FAIL " ci.log 2>/dev/null | sort -u | head -40 \
-              || echo "no compiler errors found"
+            grep -E '^\[build\] (PASS|FAIL)' ci.log 2>/dev/null | sort -u || echo "no build lines"
             echo '```'
-            echo "### tail"
+            echo
+            echo "### produced DLLs"
             echo '```'
-            tail -120 ci.log 2>/dev/null || echo "no ci.log"
+            find dist -name '*.dll' -printf '%f  %s bytes\n' 2>/dev/null | sort || echo "none"
             echo '```'
+            if [ "$failed" != "0" ]; then
+              echo
+              echo "### tail"
+              echo '```'
+              tail -80 ci.log 2>/dev/null || echo "no ci.log"
+              echo '```'
+            fi
           } > comment.md
           gh pr comment "${{ github.event.pull_request.number }}" \
             --body-file comment.md --edit-last --create-if-none
