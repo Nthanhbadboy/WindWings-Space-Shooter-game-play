@@ -174,6 +174,17 @@ static class Program
             Check("20 concurrent /health → all 200", okCount == 20, okCount + "/20");
         }
 
+        // ── the anonymous transport's payload: RAMUSB|{json} → logcat ────────
+        Console.WriteLine();
+        Console.WriteLine("== mirror");
+        string mirror = Bridge.CompactStateJson();
+        Check("compact state is JSON", IsJson(mirror), First(mirror, 160));
+        Check("compact state fits the 3500-char logcat cap", mirror.Length <= 3500, mirror.Length + " chars");
+        Check("compact state names the scene", mirror.Contains("\"scene\":"), First(mirror, 160));
+        // Printed verbatim so CI can feed it back through the same parser a trial
+        // session would use. This is the whole no-adb path, minus the device.
+        Console.WriteLine("RAMUSB|" + mirror);
+
         // ── shutdown must release the port ───────────────────────────────────
         Bridge.Shutdown();
         Check("server stopped", !Bridge.Running);

@@ -37,6 +37,9 @@ const opt = {
   logcatWait: 60,
   budget: 0,
   statics: 'Stage_Datas,Player_Get_Datas,Enemy_Get_Datas,Stage_Get_Datas',
+  // Contract test: reuse the whole pipeline without a device.
+  offline: false,
+  logcatFixture: '',
 };
 
 for (let i = 0; i < argv.length; i++) {
@@ -48,6 +51,8 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === '--wait-server') opt.waitServer = Number(next());
   else if (a === '--wait-scene') opt.waitScene = next();
   else if (a === '--strict') opt.strict = true;
+  else if (a === '--offline') opt.offline = true;
+  else if (a === '--logcat-fixture') opt.logcatFixture = next();
   else if (a === '--screenshots') opt.screenshots = Number(next());
   else if (a === '--mode') opt.mode = next();
   else if (a === '--logcat-wait') opt.logcatWait = Number(next());
@@ -98,6 +103,7 @@ const fail = (msg, extra) => {
 // ── ramus cli ──────────────────────────────────────────────────────────────
 
 function ramus(args, { allowFail = true, timeout = 180000 } = {}) {
+  if (opt.offline) return { ok: false, stdout: '', stderr: 'offline mode', status: 127 };
   const full = [...args, ...(SESSION ? ['--session', SESSION] : [])];
   const r = spawnSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['--yes', CLI, ...full], {
     encoding: 'utf8',
@@ -179,7 +185,9 @@ function logcatLines(raw) {
 
 function readLogcatStates(limit = 500) {
   // The CLI rejects --limit > 500 ("limit must be at most 500").
-  const r = ramus(['logcat', '--limit', String(Math.min(limit, 500))]);
+  const r = opt.logcatFixture
+    ? { ok: true, stdout: readFileSync(opt.logcatFixture, 'utf8'), stderr: '' }
+    : ramus(['logcat', '--limit', String(Math.min(limit, 500))]);
   const text = `${r.stdout}\n${r.stderr}`;
   const lines = logcatLines(text);
   result.logcat.rawJson = text.slice(0, 4000);
@@ -243,7 +251,9 @@ async function waitForLogcat(seconds) {
     if (!launched && attempt >= 2) {
       launched = true;
       // A crash, HOME press or a slow first boot leaves the app in the background.
-      const r = ramus(['app', 'launch']);
+      const r = opt.offline
+        ? { ok: true, stdout: '', stderr: '', status: 0 }
+        : ramus(['app', 'launch']);
       // Keep the answer: on a trial this is the only statement about whether the
       // activity could be started at all.
       result.launch = {
@@ -320,7 +330,7 @@ async function main() {
     opt.waitServer = Math.max(3, Math.min(opt.waitServer, opt.budget - 60));
   }
 
-  screenshot(0);
+  if (!opt.offline) screenshot(0);
 
   // HTTP first — but on a trial there is no tunnel, so only one cheap attempt.
   let health = null;
@@ -397,13 +407,15 @@ async function main() {
     }
   }
 
-  snapshotUi('before');
-  if (opt.screenshots > 1) screenshot(1);
+  if (!opt.offline) {
+    snapshotUi('before');
+    if (opt.screenshots > 1) screenshot(1);
+  }
 
   // The plain dump is the last 500 lines of everything, which on a fresh boot is
   // almost entirely system spam. These two queries look at the whole scrollback.
   const pkgName = process.env.RAMUS_PACKAGE || 'com.wind.wings.Space.Shooter';
-  result.logcat.filtered = {
+  result.logcat.filtered = opt.offline ? null : {
     package: logcatFiltered(pkgName),
     unity: logcatFiltered('Unity'),
     androidRuntime: logcatFiltered('AndroidRuntime'),

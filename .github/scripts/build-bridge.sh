@@ -121,8 +121,11 @@ fi
 if [ -f "$STUB_DIR/UnityEngine.dll" ]; then
   log "self-test: boot bridge on 127.0.0.1:18080 and call every endpoint"
   rm -rf runtime-probe/SelfTest/obj runtime-probe/SelfTest/bin
+  # tee keeps the raw output (including the RAMUSB| mirror line) for the
+  # contract test that follows; sed keeps the log readable.
   if dotnet run --project runtime-probe/SelfTest/RamusBridge.SelfTest.csproj \
-       -c Release -v quiet "-p:UnityStubDir=$STUB_DIR" 2>&1 | sed 's/^/    /'; then
+       -c Release -v quiet "-p:UnityStubDir=$STUB_DIR" 2>&1 \
+       | tee "$OUT/selftest.log" | sed 's/^/    /'; then
     ok "self-test (HTTP + JSON + main-thread queue)"
   else
     bad "self-test (HTTP + JSON + main-thread queue)"
