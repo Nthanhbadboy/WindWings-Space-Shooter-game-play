@@ -6,7 +6,7 @@
 > phải để chép nguyên. Dữ liệu thô: `reverse-engineering/raw/il2cpp-consts/`.
 
 - .so: `libil2cpp.so` — aarch64
-- class đích: **20**, method: **466**
+- class đích: **60**, method: **738**
 
 ## Getter: trả hằng số hay đọc dữ liệu?
 
@@ -21,12 +21,52 @@ Mỗi getter trong build này đều bị bọc bởi guard khởi tạo static 
 | class | field | computed | call | const |
 |---|---:|---:|---:|---:|
 | `ArenaManager` | 0 | 1 | 18 | **0** |
+| `Boss1_AnimationEvents` | 0 | 0 | 1 | **0** |
+| `Boss1_Director` | 0 | 0 | 21 | **0** |
+| `Boss1_Director.<>c__DisplayClass25_0` | 0 | 2 | 1 | **0** |
+| `Boss1_Director.<IEAttack1>d__25` | 0 | 0 | 2 | **0** |
+| `Boss1_Director.<OffGun1Head>d__27` | 0 | 0 | 2 | **0** |
+| `Boss1_Director.<OffGun1Static>d__26` | 0 | 0 | 2 | **0** |
+| `Boss1_Director.<OnGun1Static>d__28` | 0 | 0 | 2 | **0** |
+| `Boss1_Director.<RotateObject>d__29` | 0 | 0 | 2 | **0** |
+| `Boss1_Director.<WarningBossAppear>d__15` | 0 | 0 | 2 | **0** |
+| `BossAnimationEvents` | 0 | 0 | 3 | **1** |
+| `BossSpineEventHandler` | 0 | 0 | 3 | **0** |
+| `Boss_1_Animation` | 0 | 0 | 9 | **0** |
+| `Boss_AttackPhases` | 0 | 0 | 5 | **0** |
+| `Boss_AttackPhases.<>c__DisplayClass12_0` | 0 | 0 | 2 | **0** |
+| `Boss_AttackPhases.<>c__DisplayClass13_0` | 0 | 0 | 1 | **0** |
+| `Boss_AttackPhases.<>c__DisplayClass14_0` | 0 | 0 | 1 | **0** |
+| `Boss_AttackPhases.<>c__DisplayClass15_0` | 0 | 0 | 1 | **0** |
+| `Boss_AttackPhases.<IEAttackRound1>d__13` | 0 | 0 | 2 | **0** |
+| `Boss_AttackPhases.<IEAttackRound2>d__14` | 0 | 0 | 2 | **0** |
+| `Boss_AttackPhases.<IEAttackRound3>d__15` | 0 | 0 | 2 | **0** |
+| `Boss_AttackTypes` | 0 | 0 | 16 | **0** |
+| `Boss_AttackTypes.<>c__DisplayClass10_0` | 0 | 0 | 3 | **0** |
+| `Boss_AttackTypes.<>c__DisplayClass12_0` | 0 | 0 | 3 | **0** |
+| `Boss_AttackTypes.<>c__DisplayClass13_0` | 0 | 0 | 3 | **0** |
+| `Boss_AttackTypes.<>c__DisplayClass14_0` | 0 | 0 | 3 | **0** |
+| `Boss_AttackTypes.<>c__DisplayClass2_0` | 0 | 0 | 5 | **0** |
+| `Boss_AttackTypes.<>c__DisplayClass2_1` | 0 | 0 | 5 | **0** |
+| `Boss_AttackTypes.<>c__DisplayClass2_2` | 0 | 0 | 5 | **0** |
+| `Boss_AttackTypes.<>c__DisplayClass2_3` | 0 | 0 | 5 | **0** |
+| `Boss_AttackTypes.<>c__DisplayClass2_4` | 0 | 0 | 5 | **0** |
+| `Boss_AttackTypes.<>c__DisplayClass9_0` | 0 | 0 | 3 | **0** |
+| `Boss_AttackTypes.<IEGunAttackArrangePositionX>d__13` | 0 | 0 | 2 | **0** |
+| `Boss_AttackTypes.<IEGunAttackAutoCircle>d__11` | 0 | 0 | 2 | **0** |
+| `Boss_AttackTypes.<IEGunAttackAutoCircleBase>d__12` | 0 | 0 | 2 | **0** |
+| `Boss_AttackTypes.<IEGunAttackFixed>d__10` | 0 | 0 | 2 | **0** |
+| `Boss_AttackTypes.<IEGunAttackRandomPositionX>d__14` | 0 | 0 | 2 | **0** |
+| `Boss_AttackTypes.<IEGunCheckAttack>d__9` | 0 | 0 | 2 | **0** |
 | `Device_Get_Data` | 0 | 2 | 8 | **0** |
 | `Droid_Data_Balance` | 0 | 0 | 9 | **0** |
 | `Enemy_Controller` | 0 | 0 | 32 | **0** |
 | `Enemy_Data_Balance` | 0 | 0 | 7 | **1** |
+| `Enemy_Display` | 0 | 0 | 6 | **0** |
 | `Enemy_Get_Datas` | 0 | 0 | 4 | **0** |
 | `Enemy_Health` | 0 | 3 | 1 | **0** |
+| `Enemy_Movement` | 1 | 0 | 15 | **0** |
+| `Enemy_Movement.<IELinearMove>d__37` | 0 | 0 | 2 | **0** |
 | `GameDatas` | 23 | 3 | 39 | **1** |
 | `IAP_Manager` | 0 | 0 | 33 | **0** |
 | `Map_Get_Datas` | 0 | 0 | 10 | **0** |
@@ -40,7 +80,7 @@ Mỗi getter trong build này đều bị bọc bởi guard khởi tạo static 
 | `RankManager` | 0 | 0 | 8 | **0** |
 | `Stage_Get_Datas` | 0 | 0 | 11 | **0** |
 | `Tech_Datas` | 0 | 7 | 16 | **0** |
-| **tổng** | 27 | 42 | 296 | **11** |
+| **tổng** | 28 | 44 | 453 | **12** |
 
 ### Float đọc từ literal pool (`.rodata`) — số thật, không phải suy luận
 
@@ -51,6 +91,16 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 
 | class | method | giá trị | VA |
 |---|---|---:|---|
+| `Boss1_Director` | `Defeat` | 0.2 | `0x75700c` |
+| `Boss1_Director` | `OnGunDie` | 0.12 | `0x756b38` |
+| `Boss1_Director` | `ClearGuns` | 0.1 | `0x756c78` |
+| `Boss1_Director.<WarningBossAppear>d__15` | `MoveNext` | 0.05 | `0x756e18` |
+| `BossAnimationEvents` | `Vibrate` | 0.15 | `0x756a68` |
+| `Boss_1_Animation` | `ClearGuns` | 0.1 | `0x756c78` |
+| `Boss_AttackPhases` | `OnGunDie` | 0.15 | `0x756a68` |
+| `Boss_AttackTypes.<IEGunAttackAutoCircleBase>d__12` | `MoveNext` | 0.01745 | `0x756ca8` |
+| `Boss_AttackTypes.<IEGunAttackRandomPositionX>d__14` | `MoveNext` | -0.03141 | `0x77a20f` |
+| `Boss_AttackTypes.<IEGunCheckAttack>d__9` | `MoveNext` | 57.29578 | `0x7570dc` |
 | `Enemy_Controller` | `OnTakeDamage` | 0.4 | `0x756fbc` |
 | `Enemy_Data_Balance` | `GetBonusCoin` | 0.1 | `0x756c78` |
 | `Enemy_Data_Balance` | `GetSurvivalScore` | 1.1 | `0x756b50` |
@@ -70,6 +120,9 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 | `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.2 | `0x756cb8` |
 | `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.1 | `0x756b50` |
 | `Enemy_Data_Balance` | `GetArenaPlayScore` | 0.2 | `0x75700c` |
+| `Enemy_Display` | `OnHit` | 0.05 | `0x756e18` |
+| `Enemy_Display` | `ctor` | 1.0 | `0x757fa8` |
+| `Enemy_Display` | `ctor` | 0.12 | `0x757fac` |
 | `Enemy_Get_Datas` | `GetDamagePowered` | 0.35 | `0x756b0c` |
 | `Enemy_Get_Datas` | `GetDamagePowered` | 0.3 | `0x7570e0` |
 | `Enemy_Get_Datas` | `GetDamagePowered` | 0.02 | `0x756e14` |
@@ -102,6 +155,10 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 | `Enemy_Get_Datas` | `GetDamagePowered` | 1.1 | `0x756b50` |
 | `Enemy_Get_Datas` | `GetDamagePowered` | 0.68 | `0x756ed0` |
 | `Enemy_Get_Datas` | `GetDamagePowered` | 0.369 | `0x756fd8` |
+| `Enemy_Movement` | `SetMoveLinearly` | 3.14159 | `0x756a9c` |
+| `Enemy_Movement` | `PathFollow` | 57.29578 | `0x7570dc` |
+| `Enemy_Movement` | `RocketResumeMove` | 3.14159 | `0x756a9c` |
+| `Enemy_Movement.<IELinearMove>d__37` | `MoveNext` | 0.01 | `0x756fe0` |
 | `Player_Ability` | `OnBulletDroneSkill6Destroyed` | 0.68 | `0x756ed0` |
 | `Player_Attack` | `get_dmgTechItem0` | 0.3 | `0x7570e0` |
 | `Player_Attack` | `ctor` | -1.0 | `0x757910` |
@@ -159,6 +216,7 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 
 | class | method | giá trị |
 |---|---|---:|
+| `BossAnimationEvents` | `Vibrate` | 30 |
 | `Enemy_Data_Balance` | `GetBonusExp` | 6 |
 | `GameDatas` | `IsPremiumExpired` | 1 |
 | `Player_Attack` | `get_xDmgByRank` | 1.0 |
@@ -228,6 +286,27 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - int: `2, 3, 4, 5, 6, 8, 12, 14, 16, 18, 24, 28, 48, 64, 83, 100, 147, 312`
 - hằng số dùng trong phép tính: `arith:fadd:0.2`
 
+## `Boss1_Director` — animation control: event, state, phase or movement (pending asm verification)
+
+- method đọc được: **22**, có hằng số: **18**
+- float: `-0.5, 0.1, 0.12, 0.2, 1.0`
+- int: `2, 3, 4, 8, 12, 15, 16, 20, 50, 80, 200, 312, 3108`
+- hằng số dùng trong phép tính: `arith:fadd:-0.5`
+
+## `Boss_AttackTypes` — animation control: event, state, phase or movement (pending asm verification)
+
+- method đọc được: **22**, có hằng số: **18**
+- float: `—`
+- int: `3, 4, 8, 16, 48, 312`
+- hằng số dùng trong phép tính: `—`
+
+## `Enemy_Movement` — animation control: event, state, phase or movement (pending asm verification)
+
+- method đọc được: **21**, có hằng số: **16**
+- float: `-1.0, 1.0, 3.14159, 57.29578, 90.0, 180.0`
+- int: `2, 3, 8, 12, 30, 32, 64, 96`
+- hằng số dùng trong phép tính: `arith:fmul:3.14159, arith:fmul:57.29578`
+
 ## `Player_Ingame` — trạng thái trong trận: level, power-up theo tàu
 
 - method đọc được: **20**, có hằng số: **17**
@@ -256,6 +335,13 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - int: `2, 3, 4, 5, 12, 32, 48, 10001`
 - hằng số dùng trong phép tính: `—`
 
+## `Boss1_AnimationEvents` — animation control: event, state, phase or movement (pending asm verification)
+
+- method đọc được: **13**, có hằng số: **0**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
 ## `Droid_Data_Balance` — drone: damage, timeout, giá unlock/upgrade
 
 - method đọc được: **13**, có hằng số: **11**
@@ -277,11 +363,32 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - int: `2, 3, 4, 5, 6, 8, 12, 16, 29, 32, 36, 40, 59, 60, 112, 312, 30009, 30015, 30016, 30029, 30030, 30031, 30032, 30033`
 - hằng số dùng trong phép tính: `arith:fmul:1.0, arith:fmul:1.25, arith:fmul:5.0`
 
+## `Boss_1_Animation` — animation control: event, state, phase or movement (pending asm verification)
+
+- method đọc được: **10**, có hằng số: **6**
+- float: `-0.5, 0.1, 1.0`
+- int: `2, 3, 15, 80, 200, 3108`
+- hằng số dùng trong phép tính: `arith:fadd:-0.5`
+
 ## `Map_Get_Datas` — map: wave, danh sách map theo mode
 
 - method đọc được: **10**, có hằng số: **9**
 - float: `—`
 - int: `2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackPhases` — animation control: event, state, phase or movement (pending asm verification)
+
+- method đọc được: **9**, có hằng số: **9**
+- float: `0.15, 1.0`
+- int: `2, 3, 4, 39, 50`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackPhases.<>c__DisplayClass15_0` — 
+
+- method đọc được: **9**, có hằng số: **4**
+- float: `—`
+- int: `—`
 - hằng số dùng trong phép tính: `—`
 
 ## `Enemy_Data_Balance` — enemy: bonus coin/exp, điểm survival/arena/pvp
@@ -290,6 +397,188 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - float: `0.01, 0.1, 0.2, 0.5, 0.56, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 2.0, 2.3, 2.8, 3.0, 4.2, 5.0, 6.0, 9.0, 11.0, 15.0`
 - int: `2, 6, 8, 10, 15, 21, 23, 29, 30, 59, 64, 120, 200, 250, 387, 450, 998, 30010, 30014, 30015, 30016, 30029, 30031, 30032`
 - hằng số dùng trong phép tính: `arith:fadd:1.0, arith:fmul:0.1, arith:fmul:9.0, arith:fmul:11.0, arith:fmul:25.0`
+
+## `Boss1_Director.<IEAttack1>d__25` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `1.0, 4.0`
+- int: `2, 3, 4`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss1_Director.<OffGun1Head>d__27` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss1_Director.<OffGun1Static>d__26` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `—`
+- int: `3`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss1_Director.<OnGun1Static>d__28` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `2.0`
+- int: `3`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss1_Director.<RotateObject>d__29` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `16.0, 180.0, 360.0`
+- int: `2`
+- hằng số dùng trong phép tính: `arith:fnmul:16.0`
+
+## `Boss1_Director.<WarningBossAppear>d__15` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.05, 0.5, 1.0, 2.0, 3.0`
+- int: `2, 3, 24, 31, 150, 355`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackPhases.<IEAttackRound1>d__13` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `—`
+- int: `2, 3`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackPhases.<IEAttackRound2>d__14` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `—`
+- int: `2, 3`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackPhases.<IEAttackRound3>d__15` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `—`
+- int: `2, 3, 4, 498`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<IEGunAttackArrangePositionX>d__13` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.5, 5.0, 6.0, 180.0`
+- int: `2, 3, 4, 8, 16, 312, 503`
+- hằng số dùng trong phép tính: `arith:fmul:0.5`
+
+## `Boss_AttackTypes.<IEGunAttackAutoCircle>d__11` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<IEGunAttackAutoCircleBase>d__12` — 
+
+- method đọc được: **6**, có hằng số: **2**
+- float: `-0.5, 0.01745, 90.0`
+- int: `2, 3, 4, 8, 16, 144, 312, 503`
+- hằng số dùng trong phép tính: `arith:fadd:-0.5, arith:fmul:0.01745`
+
+## `Boss_AttackTypes.<IEGunAttackFixed>d__10` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `6.0`
+- int: `2, 3, 4, 8, 16, 312, 507`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<IEGunAttackRandomPositionX>d__14` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `-0.03141, 180.0`
+- int: `2, 3, 4, 8, 16, 312, 507`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<IEGunCheckAttack>d__9` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `-6.0, -1.0, 1.0, 6.0, 57.29578`
+- int: `2, 3, 4, 8, 16, 312, 503`
+- hằng số dùng trong phép tính: `arith:fmul:57.29578`
+
+## `Enemy_Display` — animation control: event, state, phase or movement (pending asm verification)
+
+- method đọc được: **6**, có hằng số: **6**
+- float: `0.05, 0.12, 0.5, 1.0`
+- int: `3, 4, 257, 4294967295`
+- hằng số dùng trong phép tính: `arith:fmul:1.0`
+
+## `Enemy_Movement.<IELinearMove>d__37` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.01, 5.0`
+- int: `—`
+- hằng số dùng trong phép tính: `arith:fmul:0.01`
+
+## `BossAnimationEvents` — animation control: event, state, phase or movement (pending asm verification)
+
+- method đọc được: **5**, có hằng số: **3**
+- float: `0.15`
+- int: `8, 30, 3624`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackPhases.<>c__DisplayClass13_0` — 
+
+- method đọc được: **5**, có hằng số: **2**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackPhases.<>c__DisplayClass14_0` — 
+
+- method đọc được: **5**, có hằng số: **2**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<>c__DisplayClass2_0` — 
+
+- method đọc được: **5**, có hằng số: **0**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<>c__DisplayClass2_1` — 
+
+- method đọc được: **5**, có hằng số: **0**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<>c__DisplayClass2_2` — 
+
+- method đọc được: **5**, có hằng số: **0**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<>c__DisplayClass2_3` — 
+
+- method đọc được: **5**, có hằng số: **0**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<>c__DisplayClass2_4` — 
+
+- method đọc được: **5**, có hằng số: **0**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss1_Director.<>c__DisplayClass25_0` — 
+
+- method đọc được: **4**, có hằng số: **3**
+- float: `—`
+- int: `2`
+- hằng số dùng trong phép tính: `—`
 
 ## `Enemy_Get_Datas` — enemy: HP khởi đầu theo prefab (Dictionary dựng ở .cctor)
 
@@ -304,6 +593,55 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - float: `2.0, 100.0`
 - int: `—`
 - hằng số dùng trong phép tính: `arith:fsub:2.0`
+
+## `BossSpineEventHandler` — animation control: event, state, phase or movement (pending asm verification)
+
+- method đọc được: **3**, có hằng số: **3**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<>c__DisplayClass10_0` — 
+
+- method đọc được: **3**, có hằng số: **2**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<>c__DisplayClass12_0` — 
+
+- method đọc được: **3**, có hằng số: **2**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<>c__DisplayClass13_0` — 
+
+- method đọc được: **3**, có hằng số: **2**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<>c__DisplayClass14_0` — 
+
+- method đọc được: **3**, có hằng số: **2**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackTypes.<>c__DisplayClass9_0` — 
+
+- method đọc được: **3**, có hằng số: **2**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Boss_AttackPhases.<>c__DisplayClass12_0` — 
+
+- method đọc được: **2**, có hằng số: **1**
+- float: `—`
+- int: `3, 4, 8, 16, 312`
+- hằng số dùng trong phép tính: `—`
 
 ## `Player_Datas` — dữ liệu runtime của player
 

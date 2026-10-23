@@ -5,7 +5,7 @@
 > trong thân hàm; còn rẽ nhánh (`b.ne`, `csel`…) nên đây là **nguyên liệu** để đọc công thức,
 > chưa phải công thức. Đích `bl` có `~` nghĩa là nằm giữa thân method khác (generic dùng chung).
 
-- method có trace: **466**, method đáng đọc trước: **48**
+- method có trace: **738**, method đáng đọc trước: **63**
 
 ## Đọc thử một method
 
@@ -37,12 +37,14 @@ và 0.1932 = 0.168 × 1.15, cuối cùng có `+ 1.0` kiểu `(1 + x)`. Chưa ch�
 | `Player_Ability.OnBulletDroneSkill6Destroyed` | 0.68, 17.0, 1.0, 0.25, 5.0, 10.0, 4.0 |  |  |
 | `Player_Get_Datas.GetSecretWeaponStatPercent` | 3.0, 0.666, 0.9, 1.3, 2.25, 2.86 | fmul | Tech_Datas.GetTechStatPoints |
 | `Player_Get_Datas.GetTimeFreeOverdrive` | 9.0, 60.0, 100.0, 60.0, 70.0, 80.0, 90.0 |  | Tech_Datas.GetTechStatLevel |
+| `Boss1_Director.<WarningBossAppear>d__15.MoveNext` | 3.0, 2.0, 1.0, 0.05, 3.0, 0.5 |  |  |
 | `Player_Get_Datas.GetMaxChargeDuration` | 1.0, 0.5, 0.4, 0.3 | fsub, fmul | Tech_Datas.GetTechStatLevel |
 | `Player_Get_Datas.GetSecretWeaponDuration` | 0.8, 0.2, 0.15, 0.12 | fadd, fadd | Tech_Datas.GetTechStatLevel |
 | `Player_Get_Datas.GetTalentBombDamage` | 2.5, 1.6, 2.3 | fmul, fmul, fadd | Tech_Datas.GetTechStatPoints |
 | `Player_Get_Datas.GetTalentLaserDamage` | 1.5 | scvtf, fmul, fmul, fmul, fadd | Tech_Datas.GetTechStatPoints |
 | `Player_Get_Datas.GetTalentStunDamage` | 1.2, 1.4, 1000.0, 1.8 | fmul, fadd | Tech_Datas.GetTechStatPoints |
 | `Player_Get_Datas.TimeToImmuneOneHit` | 25.0, 30.0, 40.0, 35.0, 50.0, 45.0 |  | Tech_Datas.GetTechStatLevel |
+| `Boss_AttackTypes.<IEGunCheckAttack>d__9.MoveNext` | -6.0, 6.0, 1.0, -1.0 | fmul |  |
 | `Enemy_Controller.OnTakeDamage` | 3.0, 100.0, 100.0, 0.4, 6.0 |  | Enemy_Controller.OnDieWhenZeroHp, Enemy_Controller.UpdateHpBar, Enemy_Health.CalculateDamage |
 | `Enemy_Data_Balance.GetBonusCoin` | 100.0, 20.0 | fmul, fadd, fmul |  |
 | `Player_Get_Datas.AddPowerPercentWhenHpBelow30` | 0.5, 0.1, 0.4, 0.3, 0.2 |  | Tech_Datas.GetTechStatLevel |
@@ -53,18 +55,16 @@ và 0.1932 = 0.168 × 1.15, cuối cùng có `+ 1.0` kiểu `(1 + x)`. Chưa ch�
 | `Player_Get_Datas.GetMainCannonRatePercent` | 0.03, 0.12, 0.1, 0.08, 0.05 |  | Tech_Datas.GetTechStatLevel |
 | `Player_Get_Datas.GetTalentRocketDamage` |  | scvtf, fmul, fmul, fmul, fadd | Tech_Datas.GetTechStatPoints |
 | `Player_Get_Datas.KillPercentWhenEnemyHpBelow30` | 0.04, 0.1, 0.075, 0.06, 0.025 |  | Tech_Datas.GetTechStatLevel |
+| `Boss1_Director.<IEAttack1>d__25.MoveNext` | 4.0, 4.0, 4.0, 1.0 |  |  |
+| `Boss_AttackTypes.<IEGunAttackArrangePositionX>d__13.MoveNext` | 5.0, 6.0, 180.0 | fmul |  |
 | `Player_Ability.OffShieldDroid101` | 100.0, 16000.0 | fadd, fadd |  |
 | `Player_Get_Datas.GetGainHpItem` | 0.15, 1.0, 1.0, 100.0 |  | Player_Get_Datas.GetStartHp |
 | `Player_Get_Datas.GetMainCannonDamage` | 0.168, 0.1764 | fmul, fadd | Player_Get_Datas.GetMainCannonStatPercent |
 | `Player_Get_Datas.GetWingCannonDamage` | 0.168, 0.1764 | fmul, fadd | Player_Get_Datas.GetWingCannonStatPercent |
 | `Player_Get_Datas.stepLevel` | 0.168, 1.0, 1.05 | fmul |  |
 | `Tech_Datas.GetTechStatUpgradePrice` |  | fmul, fmul, fadd, fmul |  |
-| `Droid_Data_Balance.GetBaseDamage` | 100.0 | fadd, fadd |  |
-| `Player_Ability.HitEnemy` | 100.0 | fadd, fmul |  |
-| `Player_Ability.OnBulletDroneSkill10ChildCollided` | 100.0 | fadd, fmul |  |
-| `Player_Ability.OnBulletDroneSkill6Collided` | 100.0 | fadd, fmul |  |
-| `Player_Get_Datas.GetTalentInvisible2Ranger` |  | fmul, fadd, fmul | Tech_Datas.GetTechStatPoints |
-| `Player_Get_Datas.GetTalentInvisibleRanger` |  | fmul, fadd, fmul | Tech_Datas.GetTechStatPoints |
+| `Boss1_Director.<RotateObject>d__29.MoveNext` | 360.0, 180.0 | fnmul |  |
+| `Boss_AttackTypes.<IEGunAttackAutoCircleBase>d__12.MoveNext` | 90.0 | fadd, fmul |  |
 
 ## Giới hạn
 
