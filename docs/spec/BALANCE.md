@@ -54,7 +54,7 @@
    *"giá trị serialize, thực tế do công thức"*.
 
 > **Nhận định (mức A):** không thể suy độ khó campaign từ HP prefab. Phải chọn công thức riêng
-> và calibrate bằng số quân + nhịp spawn (đã có: `1,0 s/con`, `rate` 1,0 ở 7.741/11.093 spawner).
+> và calibrate bằng số quân + nhịp spawn (đã có: `1,0 s/con`, `rate` 1,0 ở **7.743/11.099** spawner (69,8%)).
 
 ## 1. Phương pháp & nguồn
 

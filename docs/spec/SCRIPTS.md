@@ -190,11 +190,11 @@ Nhiều súng nhất: `Boss-37006` **41** · `Boss-39006` 29 · `Boss-39010` 29 
 
 Mỗi `Call_Data` là một dòng kịch bản: *spawn loại nào, ở đâu, nhịp bao nhiêu*.
 
-| Tham số | Giá trị (11.093 spawner sau dedupe) |
+| Tham số | Giá trị (**11.099** spawner sau dedupe, bản `8c6da25`) |
 |---|---|
-| `rate` | **1,0** (7.741) · 0,5 (532) · 2,0 (163) · 0,65 (111) |
+| `rate` | **1,0** (**7.743**) · 0,0 (2.373) · 0,5 (532) · 2,0 (163) · 0,65 (111) |
 | `y_spawn` | **9,6** (7.427) · 12,0 (1.701) · 8,0 (284) · 5,0 (218) |
-| `radius` | **0,1** — đúng 11.093/11.093, không có ngoại lệ |
+| `radius` | **0,1** — đúng **11.099/11.099**, không có ngoại lệ |
 | `speed` | 1,5 (4.984) · 5,2 (1.462) · 2,0 (750) · 3,5 (243) |
 | `spawn_type` | `point_range` 7.540 · `point` 2.084 · `path` 861 · `boss` 327 · `special` 281 |
 
@@ -262,7 +262,9 @@ trong bất kỳ spawner nào. Câu hỏi "45.659 quân hay 23.757 quân" **khô
 > Với nhịp spawn **1,0 s** ⇒ trên màn hình luôn có **≈ 7–8 con** cùng lúc.
 >
 > Chỉ **8,3%** `Call_Data` có `pathScript` (124/1.500, khớp 100 `PathCreator`) — tương ứng
-> **861/11.093 spawner** là `spawn_type = path`. **92% enemy bay thẳng tới điểm đích**, không theo Bezier.
+> **861/11.099 spawner** là `spawn_type = path` (**7,8%**). **92% enemy bay tới điểm đích theo `point_range`/`point`**, không theo Bezier.
+>
+> Phân bố `spawn_type`: `point_range` **7.545** · `point` **2.085** · `path` 861 · `boss` **327** · `special` 281.
 >
 > Nguồn: `reverse-engineering/raw/typetrees/PathCreator.jsonl.gz`; chi tiết `DATA_SYNC.md` §7.11.
 

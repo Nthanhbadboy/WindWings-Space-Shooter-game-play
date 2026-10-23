@@ -54,7 +54,7 @@
 | | Campaign | Boss |
 |---|---:|---:|
 | Số wave | **237** | **45** |
-| Quân mỗi wave | 4 – 951 · median **152** | **4** (44/45) = 2 boss + 2 turret |
+| Quân mỗi wave | 4 – 951 · median **130,5** | **4** (44/45) = 2 boss + 2 turret |
 | Thành phần | 1–28 prefab thường | đúng **1 prefab boss** + `CD-31002` |
 | Khoảng id | `Wave_00xx` – `Wave_6xxx` | `Wave_7001`–`Wave_7022` · `Wave_9001`–`Wave_9024` |
 | Enemy trong wave | 1–28 prefab thường | **đúng 1 prefab boss** |
@@ -412,7 +412,7 @@ và **chưa có một dòng CSV nào**.
 | Tổng `copies` trong `waves.json` | **23.757** |
 | `Call_Data` trong `class-inventory.csv` | **23.757** |
 | **Lệch** | **0** |
-| Spawner duy nhất (sau dedupe) | 11.093 |
+| Spawner duy nhất (sau dedupe) | **11.099** (bản `8c6da25`; bản `cd0372d`: 11.093) |
 | Tổng quân (`len(enemies) × copies`) | **45.659** |
 
 > **Nhận định (mức A):** lớp sinh quân **không mất một object nào**. Con số 45.659 quân không phải ước lượng —

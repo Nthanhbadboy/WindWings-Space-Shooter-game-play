@@ -72,7 +72,7 @@ Nguồn: `datas/waves.json` nhánh `ef6b75ef` (ghi ở `docs/conclusions.md` #8)
 | Chỉ số | Giá trị (**A**) |
 |---|---:|
 | Wave | **282** |
-| Spawner (đã dedup) | **11.093** |
+| Spawner (đã dedup) | **11.099** (bản `8c6da25`; 11.093 ở `cd0372d`) |
 | Entry enemy | **22.462** |
 | `"?"` | **0** |
 | **Prefab enemy khác nhau** | **109** |
@@ -88,7 +88,7 @@ Phân bố 109 prefab: **Boss 39** · CB 33 · CD 15 · W2 6 · XB 5 · GD 4 · 
 
 | Chỉ số | Tôi tính (từ bản cũ) | Vòng 3 | Khớp? |
 |---|---:|---:|---|
-| Spawner sau dedup | 10.776 | **11.093** | 🟡 lệch **3%** (khác khoá dedup) |
+| Spawner sau dedup | 10.776 | **11.099** | 🟡 lệch **3%** (khác khoá dedup) |
 | `Boss-` root | 39 | **39** | ✅ |
 | Prefab enemy | 92 (đếm từ `Enemy_Datas`) | **109** (đếm từ usage) | 🟡 vòng 3 nhiều hơn **17** |
 
@@ -204,7 +204,7 @@ Nguồn: `docs/apk-analysis/19-il2cpp-constants.md`, `reverse-engineering/raw/il
 | **458 `Gun_Attack` → 420 cấu hình** | ✅ không đổi |
 | **2.185 Sprite / 653 Texture2D** | ✅ không đổi |
 | **9 mesh?** → **2 `Mesh`**, 2.5D | ✅ không đổi |
-| **48 archetype spawner** (tôi tự tính) | ✅ khớp với `count_spawners` 11.093 của họ (sai số 3%) |
+| **48 archetype spawner** (tôi tự tính) | ✅ khớp với `count_spawners` 11.099 của họ (sai số 3%) |
 | **957 `static` field chưa có giá trị** | ✅ **vẫn đúng** — bước IL2CPP thất bại |
 | **4.861 `[SerializeField]` chưa có giá trị** | ✅ **vẫn đúng** — chưa ai chạy AssetRipper |
 
@@ -559,7 +559,7 @@ Raw giữ cả mảng.
 | `Call_Data` có `pathScript` | 124 / 1.500 = **8,3%** | — |
 | `pathScript` → `PathCreator.path_id` | 124 | **100 (80,7%)** |
 
-Khớp với `waves.json`: chỉ **861 / 11.093 spawner** là `spawn_type = path` (**7,8%**) — cùng bậc độ lớn.
+Khớp với `waves.json`: chỉ **861 / 11.099 spawner** là `spawn_type = path` (**7,8%**) — cùng bậc độ lớn.
 ⇒ **92% enemy không đi theo đường Bezier**, chúng đi theo `point_range`/`point` (thẳng tới điểm đích).
 
 Ba lớp spawner (`Spawner` 1.370 · `Path_Spawner` 1.500 · `Waypoints_Spawner` 1.151) đều có
@@ -1043,6 +1043,61 @@ Bản `cd0372d`. Ba phép đo độc lập, cùng một kết luận.
 | Không `Enemy_Controller`, có `Boss_BodyPhysics` | **25** (9 `BLT_*` + 13 `900xx` + 3 `Expl-*`) |
 
 ⇒ Từ nay mọi câu "toàn bộ enemy" phải ghi **178 = prefab có AI**; tổng prefab gốc **453**.
+
+---
+
+### 7.23 Bản `8c6da25`: `copies` giải 45.659 · `animator_map` · wave thứ 282 là `unknown`
+
+**a) `copies` — đã biết ở `GAMEPLAY.md`, nhưng chưa từng kiểm chứng số học**
+
+| | |
+|---|---:|
+| `sum(len(listPrefabEnemies))` | **22.483** |
+| `sum(len × copies)` | **45.659** |
+| Khớp `45.659` đã ghi ở §7.13? | ✅ **chính xác 100%** |
+| Spawner `copies = 2` | 9.790 / 11.099 |
+
+⚠ **Trung thực về mức mới:** công thức `len(enemies) × copies` **đã có** trong `GAMEPLAY.md`.
+Cái mới ở vòng này là **phép kiểm số học**: 22.483 × copies ra **đúng 45.659**, khớp con số đếm
+độc lập từ `Call_Data` — nên `45.659` nay là **mức A**, không còn là *"mức B"* như nhánh dữ liệu
+ghi trong `CROSS_BRANCH_20330d0e.md` §2.
+
+⇒ **45.659 = quân thực tế**, **22.483 = quân khai báo**. Cả hai đúng, khác phạm vi — từ nay ghi rõ.
+
+**b) 282 wave chia 3 nhóm — hết mục mở "wave thứ 282"**
+
+| Nhóm | Wave | Quân | Spawner |
+|---|---:|---:|---:|
+| Campaign `Wave_0000`–`0235` | 236 | **45.050** | 10.896 |
+| Boss `Wave_7xxx`/`9xxx` | 45 | **484** | 178 |
+| **`unknown`** | **1** | **125** | 25 |
+| **Tổng** | **282** | **45.659** | **11.099** |
+
+⚠ **Sửa hai số cũ:** campaign **45.076 → 45.050**; boss **90 → 484** (90 là số **`Boss-*`
+instance**, không phải tổng quân wave boss). Wave `unknown` có 25 spawner, thành phần chính
+`CB-30002` (34) · `CB-30015` (12) · `W2-30032` (7).
+
+`count_spawners` trong `waves.json` cũng đổi: **11.094 → 11.099** (do `CAP_OVERRIDES` đọc đủ
+`Path_Spawner`/`PinMap_Spawner`).
+
+**c) `datas/animator_map.csv.gz` — mắt ghép Animator → prefab**
+
+| | |
+|---|---:|
+| Dòng | **5.792** |
+| `prefab_root` khác nhau | **494** |
+| Có `controller_path_id ≠ 0` | **5.778 = 99,8%** |
+| `controller_name` khớp `AnimatorController.m_Name` (308 class) | **5.603 / 5.792 = 96,7%** |
+| 175 lệch | đều do CSV ghi **rỗng** còn native có tên — **không mâu thuẫn** |
+| `path_id` không có trong 308 controller | 14 |
+
+⚠ **Giới hạn:** `AnimatorController` trong typetree **chỉ có `__count`**, không có mảng PathID
+của clip ⇒ **không nối được controller → từng clip cụ thể**. Mắt ghép dừng ở
+**prefab → animator → controller → số clip**.
+
+**d) `Enemy_Physics` — xác nhận độc lập lần 2:** nhánh dữ liệu (`docs/CROSS_BRANCH_20330d0e.md`
+§3b) ghi *"class chỉ có 2 field và **0/981** dòng có giá trị"*. Tôi đo độc lập: **981/981**
+`allColliders = []`, **1 biến thể tree** (§7.22 b). **Hai nhánh, cùng kết quả.**
 
 ---
 

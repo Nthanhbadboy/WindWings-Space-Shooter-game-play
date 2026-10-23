@@ -257,7 +257,7 @@ Nguồn: `waves.json`, tính bằng cách bỏ `\s*\(\d+\)$` khỏi `spawners[].
 | Chỉ số | Giá trị |
 |---|---:|
 | Wave | **282** (236 campaign + 45 boss + 1 lỗi) |
-| Spawner (đã dedup) | **11.093** |
+| Spawner (đã dedup) | **11.099** (bản `8c6da25`) |
 | **Entry enemy** | **22.462** — **0** giá trị `"?"` |
 | **Prefab enemy khác nhau** | **109** |
 | Entry enemy / wave | min **2** · median **63** · max **603** |
@@ -357,8 +357,10 @@ Bản `cd0372d`.
 
 | Nhóm | Wave | Tổng quân | **Tổng HP serialize** |
 |---|---:|---:|---:|
-| **Campaign** (`Wave_0000`–`0235`) | **236** | **45.076** | **2.440.000** |
-| **Boss** (`Wave_7xxx`/`9xxx`) | **45** | **90** | **574.155.800** |
+| **Campaign** (`Wave_0000`–`0235`) | **236** | **45.050** | **2.440.000** |
+| **Boss** (`Wave_7xxx`/`9xxx`) | **45** | **484** | **574.155.800** |
+| **`unknown`** (wave không đánh số) | **1** | **125** | 0 |
+| **Tổng** | **282** | **45.659** | **576.595.800** |
 
 | Chỉ số | Giá trị |
 |---|---:|
@@ -423,6 +425,50 @@ Bản `cd0372d`.
 
 ⚠ **Con số 178 prefab "toàn bộ enemy" phải ghi kèm:** 178 là **prefab có `Enemy_Controller`**.
 Tổng prefab gốc **453**; 25 trong số đó **gây damage mà không có AI**.
+
+### 3.5 `copies` — **22.483 quân khai báo, 45.659 quân thực tế**
+
+Mỗi spawner có field **`copies`** (số bản sao của chính spawner đó). Đây là field **quyết định
+quy mô** mà các bảng trước bỏ qua:
+
+| | Số |
+|---|---:|
+| Phần tử `listPrefabEnemies` (khai báo) | **22.483** |
+| **× `copies` = quân thực tế** | **45.659** |
+| Hệ số phóng | **2,03×** |
+| Spawner `copies = 2` | **9.790 / 11.099 = 88,2%** |
+| Quân đến từ spawner `copies > 1` | **43.190 = 94,6%** |
+| Quân đến từ spawner `copies = 1` | 2.469 = 5,4% |
+
+Dải `copies`: 1 (801) · 2 (**9.790**) · 3 (198) · 4 (201) → **max 76**.
+
+> **Nhận định (mức A):** **94,6% quân địch đến từ `copies`, không phải từ danh sách prefab.**
+> Ai clone mà đọc `listPrefabEnemies` rồi spawn 1 lần sẽ ra **đúng một nửa** số quân của game.
+>
+> **Điều kiện lật ngược:** nếu `copies` là **số làn song song** (nhiều đường bay) chứ không phải
+> số bản sao, thì tổng quân vẫn 45.659 nhưng phân bố không gian khác. `spawn_type` của spawner
+> `copies > 1` sẽ phân biệt (chưa đo).
+
+### 3.6 Wave boss **không chỉ có boss** — 90 boss + 90 turret + 304 enemy thường
+
+45 wave boss cộng lại **484 quân**, chia làm 3 tầng:
+
+| Thành phần | Số | Mỗi wave |
+|---|---:|---:|
+| `Boss-*` | **90** | **2,0** |
+| `CD-31002` (turret) | **90** | **2,0** |
+| **`CB-30015`** (enemy thường) | **304** | **6,8** |
+
+⇒ **Mỗi wave boss = 2 boss + 2 turret + ~7 enemy thường.** Đây **không** phải màn đấu boss thuần
+— nó là wave hỗn hợp có boss ở giữa.
+
+`CB-30015` là enemy thường phổ biến thứ 2 toàn game (**3.740** lần spawn) và **304/484 = 62,8%**
+quân trong wave boss. Nó là **enemy hộ vệ mặc định của boss**.
+
+> **Nhận định (mức B):** turret `CD-31002` xuất hiện **đúng 90 lần = 2 per wave**, không lệch
+> wave nào ⇒ được **đặt cứng theo boss**, không phải ngẫu nhiên. Điều kiện lật ngược: nếu
+> wave boss nào cũng có 2 turret nhưng **vị trí khác nhau** thì chúng là phần thiết kế màn,
+> không phải thuộc tính boss.
 
 ## 4. Map & parallax
 ### 4.1 Map
