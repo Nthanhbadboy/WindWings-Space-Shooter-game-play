@@ -202,6 +202,11 @@ def main() -> int:
     if fr_off + 2390 * 8 <= fr_off + fr_size:
         print(f"  fieldRefs[2389] (i,i): "
               f"{struct.unpack_from('<ii', blob, fr_off + 2389 * 8)}")
+    fdv_fields = [struct.unpack_from("<iii", blob, fdv_off + 12 * i)[0]
+                  for i in range(fdv_size // 12)]
+    for probe in (2389, 2388, 2390):
+        if probe < len(fdv_fields):
+            print(f"  fdv entry #{probe}: field={index2name.get(fdv_fields[probe])!r}")
     types_by_name = dump_field_types(dump_path) if os.path.isfile(dump_path) else {}
     print(f"dump.cs field types: {len(types_by_name)}; mapped indices: {len(index2name)}")
 
