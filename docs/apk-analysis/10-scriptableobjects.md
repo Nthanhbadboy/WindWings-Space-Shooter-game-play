@@ -71,34 +71,34 @@ Ghi chú: các class sau bị **cắt bớt** (chỉ đọc mẫu, không dump h
 | class | object | bytes (chưa nén) |
 |---|---:|---:|
 | `Path_Spawner` | 1500 | 393,075 |
-| `Call_Data` | 1500 | 1,116,477 |
-| `PinMap_Spawner` | 1500 | 389,883 |
-| `PathCreator` | 1500 | 3,466,075 |
-| `PointToPoint_Spawner` | 1500 | 393,241 |
-| `Rocket_Spawner` | 1500 | 472,039 |
+| `Call_Data` | 1500 | 1,116,686 |
+| `PinMap_Spawner` | 1500 | 390,023 |
+| `PathCreator` | 1500 | 3,466,102 |
+| `PointToPoint_Spawner` | 1500 | 393,653 |
+| `Rocket_Spawner` | 1500 | 472,254 |
 | `Spawner` | 1370 | 348,937 |
-| `Waypoints_Spawner` | 1151 | 297,065 |
-| `Box_Rewards` | 1065 | 631,968 |
-| `Enemy_Sub` | 981 | 318,415 |
-| `Enemy_Controller` | 981 | 676,935 |
-| `Enemy_Movement` | 981 | 509,355 |
-| `Enemy_Health` | 981 | 235,793 |
-| `Enemy_Datas` | 981 | 374,290 |
-| `Enemy_Appear` | 914 | 204,591 |
+| `Waypoints_Spawner` | 1151 | 297,345 |
+| `Box_Rewards` | 1065 | 631,756 |
+| `Enemy_Sub` | 981 | 319,847 |
+| `Enemy_Controller` | 981 | 677,209 |
+| `Enemy_Movement` | 981 | 510,625 |
+| `Enemy_Health` | 981 | 236,982 |
+| `Enemy_Datas` | 981 | 375,263 |
+| `Enemy_Appear` | 914 | 205,140 |
 | `AirFree_Spawner` | 885 | 231,818 |
-| `MeteoriteGenerator` | 852 | 425,384 |
-| `Item_Movement` | 702 | 185,860 |
-| `Sub_Item` | 702 | 239,547 |
+| `MeteoriteGenerator` | 852 | 425,645 |
+| `Item_Movement` | 702 | 186,194 |
+| `Sub_Item` | 702 | 239,544 |
 | `Wave` | 686 | 216,575 |
-| `Gun_Attack` | 458 | 324,330 |
+| `Gun_Attack` | 458 | 324,687 |
 | `MapController` | 396 | 343,597 |
-| `Shop_Cell` | 315 | 231,345 |
-| `Stage_Behaviour` | 299 | 340,238 |
-| `Boss_BodyPhysics` | 251 | 87,965 |
+| `Shop_Cell` | 315 | 231,802 |
+| `Stage_Behaviour` | 299 | 340,573 |
+| `Boss_BodyPhysics` | 251 | 88,785 |
 | `Bullet_Linearly` | 186 | 145,907 |
-| `Boss4_ExplosionTimer` | 155 | 49,219 |
-| `GridLayoutManager` | 133 | 85,447 |
-| `Player19Laser` | 120 | 57,931 |
+| `Boss4_ExplosionTimer` | 155 | 49,335 |
+| `GridLayoutManager` | 133 | 85,542 |
+| `Player19Laser` | 120 | 57,956 |
 | `SoundClip` | 92 | 22,765 |
 
 ## MonoBehaviour class inventory (top 40)
@@ -176,7 +176,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "maskObject.m_PathID": 0,
  "onDone.m_PersistentCalls.m_Calls": "[0]",
  "refresh": false,
- "_gameobject": "All_Abilities/Grid"
+ "_gameobject": "Board_BeginPlay/Parent/parent_Top/Border_Info/All_Abilities/Grid"
 }
 ```
 ```json
@@ -271,7 +271,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "indexCell": 0,
  "fc.m_FileID": 0,
  "fc.m_PathID": 0,
- "_gameobject": "Board_RebornIAP/Parent/Group 1/Special_Packs/Btn_Cell (9)"
+ "_gameobject": "Group 1/Special_Packs/Btn_Cell (9)"
 }
 ```
 ```json
@@ -357,7 +357,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "textBonus.m_PathID": 0,
  "id": 0,
  "number": 0,
- "_gameobject": "Parent_Rewards/Box_Gift (7)"
+ "_gameobject": "EndgameLoader/Pack_Spec (0)/Parent/Parent_Rewards/Box_Gift (7)"
 }
 ```
 
@@ -1144,7 +1144,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_OPScript.m_PathID": 580872,
  "controller.m_FileID": 0,
  "controller.m_PathID": 580873,
- "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+ "_gameobject": "Gun7/Gun6"
 }
 ```
 ```json
@@ -1273,7 +1273,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "border.z": -15.0,
  "border.w": 15.0,
  "fixedAngle": false,
- "_gameobject": "Gun1/Gun4"
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
 }
 ```
 
@@ -1364,7 +1364,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "IsInvisible": false,
  "IsBringItems": false,
  "IsCaAttack": true,
- "_gameobject": "Gun1/Gun4"
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
 }
 ```
 
@@ -1708,7 +1708,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "bltPinToMap": false,
  "shootAudioClipName": 0,
  "isStunned": false,
- "_gameobject": "Hand6/Sword/Gun3.1"
+ "_gameobject": "Hand3/Hand4/Hand6/Sword/Gun3.1"
 }
 ```
 
@@ -1743,7 +1743,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "dmgFirst": 0.0,
  "isTrigger": true,
  "isFirstTrigger": false,
- "_gameobject": "Boss-39004/Enemy_Ingame/Body/Body1/Tayxoay/TayR/Tayxoay3/Tayxoay2/Tayxoay1/Cucxoay"
+ "_gameobject": "Tayxoay2/Tayxoay1/Cucxoay"
 }
 ```
 
@@ -1788,7 +1788,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Name": "",
  "isCoin": true,
  "idle": true,
- "_gameobject": "Wave_0000/Coin_Arrow/GameObject (3)/Item-70012 (2)"
+ "_gameobject": "Coin_Arrow/GameObject (3)/Item-70012 (2)"
 }
 ```
 ```json
@@ -1819,7 +1819,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_OPScript.m_PathID": 645071,
  "movementScript.m_FileID": 0,
  "movementScript.m_PathID": 627891,
- "_gameobject": "GameObject (7)/Item-70012 (2)"
+ "_gameobject": "Coin_Arrow/GameObject (7)/Item-70012 (2)"
 }
 ```
 ```json
@@ -1834,7 +1834,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_OPScript.m_PathID": 644899,
  "movementScript.m_FileID": 0,
  "movementScript.m_PathID": 628026,
- "_gameobject": "GameObject (13)/Item-70011 (2)"
+ "_gameobject": "Wave_0003/Coin_Arrow/GameObject (13)/Item-70011 (2)"
 }
 ```
 
@@ -2029,7 +2029,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "refresh": false,
  "bossObj.m_FileID": 0,
  "bossObj.m_PathID": 175830,
- "_gameobject": "Parent/ScrollView-Chap 2/ObjectMove/Parent_Stages/Stage_Normal (221)"
+ "_gameobject": "Board_Maps/Parent/ScrollView-Chap 2/ObjectMove/Parent_Stages/Stage_Normal (221)"
 }
 ```
 
@@ -2190,7 +2190,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "playerAttack.m_FileID": 0,
  "playerAttack.m_PathID": 641750,
  "targetLayer.m_Mask": 512,
- "_gameobject": "AllDrones/Drone (9)"
+ "_gameobject": "Player_10019/AllDrones/Drone (9)"
 }
 ```
 ```json
@@ -2210,7 +2210,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "playerAttack.m_FileID": 0,
  "playerAttack.m_PathID": 616561,
  "targetLayer.m_Mask": 512,
- "_gameobject": "Parent/Panel_Info/Player_Demo/Player_Types/Player_10019/AllDrones/Drone (10)"
+ "_gameobject": "Board_Players/Parent/Panel_Info/Player_Demo/Player_Types/Player_10019/AllDrones/Drone (10)"
 }
 ```
 

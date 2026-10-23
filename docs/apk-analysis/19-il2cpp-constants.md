@@ -35,22 +35,15 @@ Mỗi getter trong build này đều bị bọc bởi guard khởi tạo static 
 
 ### Float đọc từ literal pool (`.rodata`) — số thật, không phải suy luận
 
-`adrp xN, #page` + `ldr sM, [xN, #off]` trỏ vào bảng float trong `.rodata`;
-script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte. Đây là hằng số **có thật trong file**,
-nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.
+`adrp xN, #page` + `ldr sM/wM, [xN, #off]` trỏ vào bảng float/int trong `.rodata`;
+script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong segment read-only**
+(bảng con trỏ metadata nằm ở segment ghi được — đọc vào đó ra rác như `288733`).
+Đây là số **có thật trong file**, nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.
 
 | class | method | giá trị | kiểu | VA |
 |---|---|---:|---|---|
-| `ArenaManager` | `BackUpDatas` | 288733 | int | `0x2adb0e0` |
-| `ArenaManager` | `SetUserRandom` | 288733 | int | `0x2adb0e0` |
-| `Device_Get_Data` | `GetStringRank` | 288733 | int | `0x2adb0e0` |
 | `Device_Get_Data` | `GetStatValue2` | 14.4 | float | `0x756dd8` |
-| `Device_Get_Data` | `GetPlayerUse` | 288733 | int | `0x2adb0e0` |
-| `Device_Get_Data` | `set_IsNewDevice` | 288733 | int | `0x2adb0e0` |
-| `Droid_Data_Balance` | `GetBaseDamage` | 288733 | int | `0x2adb0e0` |
 | `Droid_Data_Balance` | `GetBaseDamage` | 0.6 | float | `0x756c44` |
-| `Droid_Data_Balance` | `IsBought` | 288733 | int | `0x2adb0e0` |
-| `Enemy_Data_Balance` | `GetBonusCoin` | 288733 | int | `0x2adb0e0` |
 | `Enemy_Data_Balance` | `GetBonusCoin` | 0.1 | float | `0x756c78` |
 | `Enemy_Data_Balance` | `GetSurvivalScore` | 1.1 | float | `0x756b50` |
 | `Enemy_Data_Balance` | `GetSurvivalScore` | 0.2 | float | `0x75700c` |
@@ -69,78 +62,63 @@ nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.
 | `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.2 | float | `0x756cb8` |
 | `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.1 | float | `0x756b50` |
 | `Enemy_Data_Balance` | `GetArenaPlayScore` | 0.2 | float | `0x75700c` |
-| `GameDatas` | `IsHasCheatResources` | 288733 | int | `0x2adb0e0` |
-| `GameDatas` | `IsHasGiftLanguages` | 288733 | int | `0x2adb0e0` |
-| `GameDatas` | `RefreshDatas` | 288733 | int | `0x2adb0e0` |
-| `GameDatas` | `GetStarCount` | 288733 | int | `0x2adb0e0` |
-| `GameDatas` | `get_PlayerVipLevel` | 288733 | int | `0x2adb0e0` |
-| `GameDatas` | `IsProVersion` | 288733 | int | `0x2adb0e0` |
-| `GameDatas` | `IsPremiumExpired` | 288733 | int | `0x2adb0e0` |
-| `GameDatas` | `GetProExpiryDateTime` | 288733 | int | `0x2adb0e0` |
-| `GameDatas` | `SetProExpiryDateTime` | 288733 | int | `0x2adb0e0` |
 | `GameDatas` | `cctor` | 7.0 | float | `0x757368` |
-| `IAP_Manager` | `Awake` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `IsInitialized` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `InitiateProductIDPurchase` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `BuyProductConsumable` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `GetConsumablePriceString` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `GetIsoCurrencyCode` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `GetVipPoint` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `GetPlayerVipPoint` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `GetDroneVipPoint` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `GetConsumablePriceDecimal` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `GetPlayerUnlockPriceDecimal` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `GetDroneUnlockPrice` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `BuyProductDroneUnlock` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `GetPlayerUnlockPrice` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `GetPlayerUnlockRankPrice` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `BuyProductPlayerUnlock` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `RestorePurchase` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `NetworkNotReachable` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `set_IsPaidUser` | 288733 | int | `0x2adb0e0` |
-| `IAP_Manager` | `cctor` | 288733 | int | `0x2adb0e0` |
-| `Map_Get_Datas` | `GetListWaves` | 288733 | int | `0x2adb0e0` |
-| `Player_Datas` | `ctor` | 288733 | int | `0x2adb0e0` |
 | `Player_Get_Datas` | `get_abi32Amount` | 20000.0 | float | `0x756d48` |
-| `Player_Get_Datas` | `get_abi32Amount` | 288733 | int | `0x2adb0e0` |
 | `Player_Get_Datas` | `get_abi32Amount` | 57.29578 | float | `0x7570dc` |
-| `Player_Get_Datas` | `IsRichCountry` | 288733 | int | `0x2adb0e0` |
-| `Player_Get_Datas` | `GetListAllIdPlayers` | 288733 | int | `0x2adb0e0` |
-| `Player_Get_Datas` | `GetListAllIdPlayerActived` | 288733 | int | `0x2adb0e0` |
-| `Player_Get_Datas` | `GetAllShipNoUnlock` | 288733 | int | `0x2adb0e0` |
-| `Player_Get_Datas` | `IsUnlockedAll` | 288733 | int | `0x2adb0e0` |
-| `Player_Get_Datas` | `GetListCards` | 288733 | int | `0x2adb0e0` |
-| `Player_Get_Datas` | `GetRandomPlayerCard` | 288733 | int | `0x2adb0e0` |
-| `Player_Get_Datas` | `GetCostUnlockPlayer` | 288733 | int | `0x2adb0e0` |
-| `Player_Get_Datas` | `GetTimeStarUnlocks` | 288733 | int | `0x2adb0e0` |
 | `Player_Get_Datas` | `stepLevel` | 0.168 | float | `0x756f34` |
 | `Player_Get_Datas` | `stepLevel` | 1.05 | float | `0x756d8c` |
 | `Player_Get_Datas` | `stepLevel` | 1.15 | float | `0x7570c8` |
-| `Player_Get_Datas` | `GetStartHp` | 288733 | int | `0x2adb0e0` |
-| `Player_Get_Datas` | `GetGainHpItem` | 288733 | int | `0x2adb0e0` |
 | `Player_Get_Datas` | `GetGainHpItem` | 0.15 | float | `0x756a68` |
-| `RankManager` | `GetGameConfig` | 288733 | int | `0x2adb0e0` |
-| `RankManager` | `CheckBanStatus` | 288733 | int | `0x2adb0e0` |
-| `Stage_Get_Datas` | `IsMissionCompleted` | 288733 | int | `0x2adb0e0` |
-| `Stage_Get_Datas` | `GetStringInfo` | 288733 | int | `0x2adb0e0` |
-| `Tech_Datas` | `IsStatUnlocked` | 288733 | int | `0x2adb0e0` |
+| `Player_Get_Datas` | `GetGainHpItemAddOverTime` | 0.2 | float | `0x75700c` |
+| `Player_Get_Datas` | `GetHpRecoverSpeed` | 0.1 | float | `0x756c78` |
+| `Player_Get_Datas` | `GetHpRecoverSpeed` | 0.08 | float | `0x75706c` |
+| `Player_Get_Datas` | `GetHpRecoverSpeed` | 0.06 | float | `0x756cc8` |
+| `Player_Get_Datas` | `GetHpRecoverSpeed` | 0.03 | float | `0x756ecc` |
+| `Player_Get_Datas` | `GetMainCannonDamage` | 0.168 | float | `0x756f34` |
+| `Player_Get_Datas` | `GetMainCannonDamage` | 0.1764 | float | `0x756e84` |
+| `Player_Get_Datas` | `GetMainCannonDamage` | 0.1932 | float | `0x756ea0` |
+| `Player_Get_Datas` | `GetMainCannonDamage` | 59768835 | int | `0x7560e0` |
+| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.03 | float | `0x756ecc` |
+| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.12 | float | `0x756b38` |
+| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.1 | float | `0x756c78` |
+| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.08 | float | `0x75706c` |
+| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.05 | float | `0x756e18` |
+| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.1 | float | `0x756c78` |
+| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.2 | float | `0x75700c` |
+| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.18 | float | `0x756b98` |
+| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.15 | float | `0x756a68` |
+| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.05 | float | `0x756e18` |
+| `Player_Get_Datas` | `GetWingCannonDamage` | 0.168 | float | `0x756f34` |
+| `Player_Get_Datas` | `GetWingCannonDamage` | 0.1764 | float | `0x756e84` |
+| `Player_Get_Datas` | `GetWingCannonDamage` | 0.1932 | float | `0x756ea0` |
+| `Player_Get_Datas` | `AddPowerPercentWhenHpBelow30` | 0.1 | float | `0x756c78` |
+| `Player_Get_Datas` | `AddPowerPercentWhenHpBelow30` | 0.4 | float | `0x756fbc` |
+| `Player_Get_Datas` | `AddPowerPercentWhenHpBelow30` | 0.3 | float | `0x7570e0` |
+| `Player_Get_Datas` | `AddPowerPercentWhenHpBelow30` | 0.2 | float | `0x75700c` |
+| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.04 | float | `0x756ec8` |
+| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.1 | float | `0x756c78` |
+| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.075 | float | `0x757074` |
+| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.06 | float | `0x756cc8` |
+| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.025 | float | `0x756ac4` |
 | `Tech_Datas` | `IsStatUnlocked` | 0.6 | float | `0x756c44` |
 | `Tech_Datas` | `GetTechStatUpgradePrice` | 0.86 | float | `0x756de8` |
 | `Tech_Datas` | `GetTechStatUpgradePrice` | 0.689 | float | `0x756dfc` |
 | `Tech_Datas` | `GetTechStatUpgradePrice` | 150000.0 | float | `0x756cc4` |
-| `Tech_Datas` | `NumberTechStats` | 288733 | int | `0x2adb0e0` |
 | `Tech_Datas` | `NumberTechStats` | 0.2 | float | `0x75700c` |
 | `Tech_Datas` | `NumberTechStats` | -0.2 | float | `0x756f50` |
-| `Tech_Datas` | `SetTechStatPoints` | 288733 | int | `0x2adb0e0` |
 | `Tech_Datas` | `SetTechStatPoints` | 2.55 | float | `0x756e98` |
 | `Tech_Datas` | `SetTechStatPoints` | 59768835 | int | `0x7560e0` |
-| `Tech_Datas` | `SetTechStatLevel` | 288733 | int | `0x2adb0e0` |
 | `Tech_Datas` | `SetTechStatLevel` | 0.4 | float | `0x756fbc` |
 | `Tech_Datas` | `SetTechStatLevel` | 1.48 | float | `0x756a80` |
 | `Tech_Datas` | `SetTechStatLevel` | 0.57 | float | `0x756ee0` |
 | `Tech_Datas` | `SetTechStatLevel` | -0.1 | float | `0x757018` |
 | `Tech_Datas` | `GetCostUpgrade` | 2.55 | float | `0x756e98` |
-| `Tech_Datas` | `GetCostUpgrade` | 288733 | int | `0x2adb0e0` |
+| `Tech_Datas` | `SetTechLabLevel` | 0.05 | float | `0x756e18` |
+| `Tech_Datas` | `SetTechLabLevel` | 0.3 | float | `0x7570e0` |
+| `Tech_Datas` | `GetPlayerUpgradePrice` | 0.12 | float | `0x756b38` |
+| `Tech_Datas` | `GetPlayerUpgradePrice` | 150000.0 | float | `0x756cc4` |
+| `Tech_Datas` | `GetDroneUpgradePrice` | 0.12 | float | `0x756b38` |
+| `Tech_Datas` | `GetDroneUpgradePrice` | 150000.0 | float | `0x756cc4` |
 
 ### Getter trả hằng số (nếu có)
 
@@ -163,7 +141,7 @@ nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.
 
 - method đọc được: **73**, có hằng số: **72**
 - float: `7.0`
-- int: `2, 3, 5, 6, 7, 8, 10, 14, 15, 16, 22, 23, 24, 26, 40, 64, 96, 100, 250, 500, 288733, 2139095040`
+- int: `2, 3, 5, 6, 7, 8, 10, 14, 15, 16, 22, 23, 24, 26, 40, 64, 96, 100, 250, 500, 2139095040`
 - hằng số dùng trong phép tính: `—`
 
 ## `Player_Get_Datas` — chỉ số tàu: HP, damage, tốc độ bắn, giá nâng cấp
@@ -177,14 +155,14 @@ nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.
 
 - method đọc được: **35**, có hằng số: **34**
 - float: `—`
-- int: `2, 3, 4, 5, 7, 8, 12, 24, 48, 50, 64, 71, 288733`
+- int: `2, 3, 4, 5, 7, 8, 12, 24, 48, 50, 64, 71`
 - hằng số dùng trong phép tính: `—`
 
 ## `ArenaManager` — arena: rank, mùa, thưởng
 
 - method đọc được: **34**, có hằng số: **27**
 - float: `—`
-- int: `2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 32, 40, 60, 64, 101, 112, 1000, 288733`
+- int: `2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 32, 40, 60, 64, 101, 112, 1000`
 - hằng số dùng trong phép tính: `—`
 
 ## `Tech_Datas` — tech lab: giá, delta giá, sao
@@ -198,21 +176,21 @@ nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.
 
 - method đọc được: **19**, có hằng số: **17**
 - float: `10.0`
-- int: `2, 8, 16, 288733`
+- int: `2, 8, 16`
 - hằng số dùng trong phép tính: `arith:fadd:10.0`
 
 ## `Device_Get_Data` — device: stat, giá
 
 - method đọc được: **14**, có hằng số: **13**
 - float: `-5.0, 0.5, 1.0, 5.0, 14.4, 25.0, 30.0, 40.0, 45.0, 55.0, 60.0, 70.0, 75.0, 100.0`
-- int: `2, 3, 4, 5, 8, 9, 11, 12, 17, 24, 28, 32, 38, 48, 56, 57, 96, 999, 1000, 10001, 288733, 4294967295`
+- int: `2, 3, 4, 5, 8, 9, 11, 12, 17, 24, 28, 32, 38, 48, 56, 57, 96, 999, 1000, 10001, 4294967295`
 - hằng số dùng trong phép tính: `arith:fmul:-5.0, arith:fmul:0.5, arith:fmul:5.0, arith:fsub:1.0`
 
 ## `Droid_Data_Balance` — drone: damage, timeout, giá unlock/upgrade
 
 - method đọc được: **13**, có hằng số: **11**
 - float: `0.6, 1.0, 3.0, 4.0, 15.0, 100.0, 360.0, 500.0`
-- int: `2, 3, 4, 5, 6, 8, 12, 16, 30, 32, 50, 56, 68, 101, 102, 103, 312, 500, 800, 288733`
+- int: `2, 3, 4, 5, 6, 8, 12, 16, 30, 32, 50, 56, 68, 101, 102, 103, 312, 500, 800`
 - hằng số dùng trong phép tính: `arith:fadd:1.0`
 
 ## `Stage_Get_Datas` — stage: bonus, delta level/coin/gem, số enemy
@@ -226,7 +204,7 @@ nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.
 
 - method đọc được: **10**, có hằng số: **8**
 - float: `—`
-- int: `2, 3, 4, 6, 9, 10, 288733`
+- int: `2, 3, 4, 6, 9, 10`
 - hằng số dùng trong phép tính: `—`
 
 ## `Enemy_Data_Balance` — enemy: bonus coin/exp, điểm survival/arena/pvp
@@ -240,7 +218,7 @@ nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.
 
 - method đọc được: **1**, có hằng số: **1**
 - float: `100.0`
-- int: `30, 36, 64, 96, 288733`
+- int: `30, 36, 64, 96`
 - hằng số dùng trong phép tính: `—`
 
 ## Đọc tiếp
