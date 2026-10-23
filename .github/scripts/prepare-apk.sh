@@ -174,6 +174,33 @@ else
       cp "$WORK/universal.apk" "$OUT/base.apk"
       log "merged OK → $OUT/base.apk ($(stat -c%s "$OUT/base.apk") B, $MERGE_NOTE)"
       SPLITS=""
+
+      # APKEditor writes a signature *block* but does not sign: a merged APK
+      # fails to install with INSTALL_PARSE_FAILED_NO_CERTIFICATES.
+      if [ -n "${APK_SIGNER_JAR:-}" ] && [ -f "${APK_SIGNER_JAR:-}" ]; then
+        mkdir -p "$WORK/signed"
+        set +e
+        # --allowResign: APKEditor leaves a signature block behind, which makes the
+        # signer refuse to re-sign without this flag.
+        java -Xmx2g -jar "$APK_SIGNER_JAR" --apks "$OUT/base.apk" --out "$WORK/signed" \
+             --allowResign >> "$WORK/sign.log" 2>&1
+        sign_rc=$?
+        set -e
+        signed=$(find "$WORK/signed" -name '*signed*.apk' 2>/dev/null | head -1 || true)
+        [ -n "$signed" ] || signed=$(find "$WORK/signed" -name '*.apk' 2>/dev/null | head -1 || true)
+        if [ -n "$signed" ] && is_apk "$signed"; then
+          cp "$signed" "$OUT/base.apk"
+          MERGE_NOTE="$MERGE_NOTE; signed (java exit $sign_rc)"
+          log "signed OK → $(stat -c%s "$OUT/base.apk") B"
+        else
+          MERGE_NOTE="$MERGE_NOTE; SIGNING FAILED (java exit $sign_rc)"
+          log "SIGNING FAILED — the APK will not install"
+          tail -10 "$WORK/sign.log" 2>/dev/null || true
+        fi
+      else
+        MERGE_NOTE="$MERGE_NOTE; no signer → install will fail with NO_CERTIFICATES"
+        log "no APK_SIGNER_JAR — merged APK is unsigned"
+      fi
     else
       log "merge FAILED — keeping base + splits (install needs adb install-multiple)"
       tail -20 "$WORK/merge.log" 2>/dev/null || true
