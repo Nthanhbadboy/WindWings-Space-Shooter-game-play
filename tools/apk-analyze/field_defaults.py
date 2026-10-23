@@ -223,6 +223,42 @@ def main() -> int:
                 entry["ints"] = ints
         result[key] = entry
     print(f"decoded: {len(result)}, skipped: {skipped} {reasons}")
+    # Probe: token IA -> index field static (theo thứ tự dump.cs)
+    try:
+        static_fields = []
+        _cls = None
+        for _line in open(dump_path, encoding="utf-8", errors="replace"):
+            _m = CLS_RE.match(_line)
+            if _m:
+                _cls = _m.group(1)
+                continue
+            _code = _line.split("//")[0].strip()
+            if _cls and _code.endswith(";") and "(" not in _code:
+                _toks = _code[:-1].split()
+                if len(_toks) >= 3 and _toks[0] in MODIFIERS and "static" in _toks:
+                    _name = _toks[-1]
+                    if "=" in _toks:
+                        _name = _toks[_toks.index("=") - 1]
+                    static_fields.append(f"{_cls}.{_name}")
+        mj = json.load(open("reverse-engineering/raw/il2cpp-consts/"
+                            "Map_Get_Datas.json", encoding="utf-8"))
+        cc_m = next(m for m in mj["methods"] if m["method"] == "cctor")
+        toks = [c for c in cc_m["constants"] if c.get("kind") == "init_array"]
+        _hit = _len = 0
+        for c in toks:
+            src = int(c["slot_val"], 16) & 0x1FFFFFFF
+            if src < len(static_fields):
+                nm2 = static_fields[src]
+                if nm2.startswith("<PrivateImplementationDetails>"):
+                    _hit += 1
+                    ent = result.get(nm2)
+                    if ent and abs(len(bytes.fromhex(ent["raw"])) // 4
+                                   - c["len"]) <= 3:
+                        _len += 1
+        print(f"  static-index probe: {len(static_fields)} field static; "
+              f"PID hit {_hit}/{len(toks)}, khớp độ dài {_len}")
+    except Exception as e:  # noqa: BLE001
+        print(f"  static probe lỗi: {e!r}")
     # Probe: field index tương đối theo image (Assembly-CSharp) cho token IA
     try:
         im_off, im_size = header["images"]
