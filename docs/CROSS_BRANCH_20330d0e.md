@@ -97,6 +97,15 @@ không biết **màn nào** biến mất giữa hai lần chạy (16 màn chỉ 
 - Mục mở "width × height sprite" và "ParticleSystem" trong sổ của họ: phía mình đã đóng cả hai
   (`sprites.csv` 2.816/2.885 có kích thước; `29-particle-systems.md`).
 
+## 3g. Đọc thêm 3 commit (`13befdd3`, `deeead9b`, `52f329ad`, 01:27)
+
+- Họ bắt đầu **đọc sâu arm64** và ra công thức đầy đủ cho HP người chơi:
+  `GetStartHp = StartHp × (1 + stepCommon×TechStatPoints(0) + abi7×GetNumberAbility(7))`.
+  Kiểm bằng trace của mình: `GetStartHp` đúng là có **fadd 1.0** và gọi `GetHpStatPercent`
+  → cấu trúc `(1 + …)` **khớp**; hệ số chi tiết là phần họ đọc sâu hơn, mức **B**.
+- Họ tách lại mức tin: "không có bảng HP theo tàu trong serialize" (**A**) vs
+  "runtime gán lúc chọn tàu" (**C**, chưa kiểm) — cách ghi này đúng quy ước của mình.
+
 ## 4. Điều kiện lật ngược
 
 - Nếu `Enemy_Physics` export ra mà **phần lớn field rỗng** (như `Spawner.dataScript` = 0), thì
