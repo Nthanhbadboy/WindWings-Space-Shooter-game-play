@@ -3,15 +3,15 @@
 ## Unity payload
 ```
 total 137M
--rw-r--r-- 1 runner runner   11K Oct 23 04:34 RuntimeInitializeOnLoads.json
--rw-r--r-- 1 runner runner  3.9K Oct 23 04:34 ScriptingAssemblies.json
--rw-r--r-- 1 runner runner   120 Oct 23 04:34 _listing.txt
--rw-r--r-- 1 runner runner   61M Oct 23 04:34 data.unity3d
--rw-r--r-- 1 runner runner  8.3M Oct 23 04:34 global-metadata.dat
--rw-r--r-- 1 runner runner   45M Oct 23 04:34 libil2cpp.so
--rw-r--r-- 1 runner runner   17M Oct 23 04:34 libunity.so
--rw-r--r-- 1 runner runner 1023K Oct 23 04:34 resources.arsc
--rw-r--r-- 1 runner runner  4.9M Oct 23 04:34 resources.resource
+-rw-r--r-- 1 runner runner   11K Oct 23 04:39 RuntimeInitializeOnLoads.json
+-rw-r--r-- 1 runner runner  3.9K Oct 23 04:39 ScriptingAssemblies.json
+-rw-r--r-- 1 runner runner   120 Oct 23 04:39 _listing.txt
+-rw-r--r-- 1 runner runner   61M Oct 23 04:39 data.unity3d
+-rw-r--r-- 1 runner runner  8.3M Oct 23 04:39 global-metadata.dat
+-rw-r--r-- 1 runner runner   45M Oct 23 04:39 libil2cpp.so
+-rw-r--r-- 1 runner runner   17M Oct 23 04:39 libunity.so
+-rw-r--r-- 1 runner runner 1023K Oct 23 04:39 resources.arsc
+-rw-r--r-- 1 runner runner  4.9M Oct 23 04:39 resources.resource
 ```
 
 ## assets/bin/Data listing (from APK)
@@ -39,34 +39,34 @@ typetree OK
 ```
 docs/assets:
 total 364
-drwxr-xr-x 3 runner runner   4096 Oct 23 04:33 .
-drwxr-xr-x 5 runner runner   4096 Oct 23 04:33 ..
--rw-r--r-- 1 runner runner   2190 Oct 23 04:35 INDEX.md
--rw-r--r-- 1 runner runner   7275 Oct 23 04:35 audio-index.csv
-drwxr-xr-x 2 runner runner   4096 Oct 23 04:35 contact-sheets
--rw-r--r-- 1 runner runner 146648 Oct 23 04:35 manifest.csv
--rw-r--r-- 1 runner runner 191560 Oct 23 04:35 sprites-index.csv
--rw-r--r-- 1 runner runner   4634 Oct 23 04:35 stats.json
+drwxr-xr-x 3 runner runner   4096 Oct 23 04:39 .
+drwxr-xr-x 5 runner runner   4096 Oct 23 04:39 ..
+-rw-r--r-- 1 runner runner   2190 Oct 23 04:40 INDEX.md
+-rw-r--r-- 1 runner runner   7275 Oct 23 04:40 audio-index.csv
+drwxr-xr-x 2 runner runner   4096 Oct 23 04:40 contact-sheets
+-rw-r--r-- 1 runner runner 146648 Oct 23 04:40 manifest.csv
+-rw-r--r-- 1 runner runner 191560 Oct 23 04:40 sprites-index.csv
+-rw-r--r-- 1 runner runner   4634 Oct 23 04:40 stats.json
 
 docs/assets/contact-sheets:
 total 7400
-drwxr-xr-x 2 runner runner   4096 Oct 23 04:35 .
-drwxr-xr-x 3 runner runner   4096 Oct 23 04:33 ..
--rw-r--r-- 1 runner runner 233344 Oct 23 04:35 atlas-01.jpg
--rw-r--r-- 1 runner runner 326577 Oct 23 04:35 atlas-02.jpg
--rw-r--r-- 1 runner runner  14242 Oct 23 04:35 atlas-03.jpg
--rw-r--r-- 1 runner runner 177064 Oct 23 04:35 background-01.jpg
--rw-r--r-- 1 runner runner 142920 Oct 23 04:35 background-02.jpg
--rw-r--r-- 1 runner runner 166141 Oct 23 04:35 bosses-01.jpg
--rw-r--r-- 1 runner runner 175411 Oct 23 04:35 bullet-01.jpg
--rw-r--r-- 1 runner runner  13861 Oct 23 04:35 bullet-02.jpg
--rw-r--r-- 1 runner runner  56140 Oct 23 04:35 drones-01.jpg
--rw-r--r-- 1 runner runner 104215 Oct 23 04:35 enemy-01.jpg
--rw-r--r-- 1 runner runner  31031 Oct 23 04:35 font-01.jpg
--rw-r--r-- 1 runner runner 204312 Oct 23 04:35 fx-01.jpg
--rw-r--r-- 1 runner runner  56927 Oct 23 04:35 fx-02.jpg
--rw-r--r-- 1 runner runner  16007 Oct 23 04:35 items-01.jpg
--rw-r--r-- 1 runner runner 125812 Oct 23 04:35 ships-01.jpg
+drwxr-xr-x 2 runner runner   4096 Oct 23 04:40 .
+drwxr-xr-x 3 runner runner   4096 Oct 23 04:39 ..
+-rw-r--r-- 1 runner runner 233344 Oct 23 04:40 atlas-01.jpg
+-rw-r--r-- 1 runner runner 326577 Oct 23 04:40 atlas-02.jpg
+-rw-r--r-- 1 runner runner  14242 Oct 23 04:40 atlas-03.jpg
+-rw-r--r-- 1 runner runner 177064 Oct 23 04:40 background-01.jpg
+-rw-r--r-- 1 runner runner 142920 Oct 23 04:40 background-02.jpg
+-rw-r--r-- 1 runner runner 166141 Oct 23 04:40 bosses-01.jpg
+-rw-r--r-- 1 runner runner 175411 Oct 23 04:40 bullet-01.jpg
+-rw-r--r-- 1 runner runner  13861 Oct 23 04:40 bullet-02.jpg
+-rw-r--r-- 1 runner runner  56140 Oct 23 04:40 drones-01.jpg
+-rw-r--r-- 1 runner runner 104215 Oct 23 04:40 enemy-01.jpg
+-rw-r--r-- 1 runner runner  31031 Oct 23 04:40 font-01.jpg
+-rw-r--r-- 1 runner runner 204312 Oct 23 04:40 fx-01.jpg
+-rw-r--r-- 1 runner runner  56927 Oct 23 04:40 fx-02.jpg
+-rw-r--r-- 1 runner runner  16007 Oct 23 04:40 items-01.jpg
+-rw-r--r-- 1 runner runner 125812 Oct 23 04:40 ships-01.jpg
 ```
 
 ## Step logs (tail)
@@ -148,31 +148,18 @@ source files: ['/tmp/apk/extract/data.unity3d', '/tmp/apk/extract/resources.reso
 - Font: 1 files, 0.0B
 
 ===== /tmp/apk/logs/field_defaults.log
+metadata version=31 size=8621240
+fieldDefaultValues entries=10903; data=143616 B
+header pairs: stringLiteral=256/120456, stringLiteralData=120712/381728, string=502440/1310272, events=1812712/5328, properties=1818040/236680, methods=2054720/2565936, parameterDefaultValues=4620656/15204, fieldDefaultValues=4635860/130836, fieldDefaultValueData=4766696/143616, fieldMarshaledSizes=4910312/51072, parameters=4961384/822348, fields=5783732/607272, genericParameters=6391004/36432, genericParameterConstraints=6427436/1232, genericContainers=6428668/20992, nestedTypes=6449660/15916, interfaces=6465576/20800, vtableMethods=6486376/448672, interfaceOffsets=6935048/88176, typeDefinitions=7023224/959992, images=7983216/3040, assemblies=7986256/4864, metadataUsageLists=7991120/9768, metadataUsagePairs=8000888/1704, fieldRefs=8002592/386772, referencedAssemblies=8389364/181288, attributesInfo=8570652/26432, attributeTypes=8597084/16688, unresolvedVirtualCallParameterTypes=8613772/0, unresolvedVirtualCallParameterIndices=8613772/0, windowsRuntimeTypeNames=8613772/7468, windowsRuntimeStrings=0/0, exportedTypeDefinitions=1/0
+  struct size 88: 10909 types, ten hop le 599/600
+typeDefinitions: 10909 types, struct size 88; metadata fields: 50606
+  tong fieldCount=50606 (metadata: 50606)
+  sample type names: ['<Module>', 'AdjustEventTracking', 'AdjustEventToken', 'FilterAlphabets', 'FontFix', 'genericDelegate', 'ShockWave_WorldSpace', '<LightControl>d__7', 'EffectGlow', 'ConvertDatas', 'SortUser', '<>c__DisplayClass5_0']
+  metadata fields of Map_Get_Datas: ['Map_Get_Datas.listMapTryPlayerDatas', 'Map_Get_Datas.AllArenaStartMaps', 'Map_Get_Datas.AllArenaRandomMaps', 'Map_Get_Datas.AllPvPStartMaps', 'Map_Get_Datas.mapCurrentPlayTest', 'Map_Get_Datas.listMapDatas', 'Map_Get_Datas.listMapBranchDatas', 'Map_Get_Datas.listIdBosses', 'Map_Get_Datas.listMapFightBossDatas', 'Map_Get_Datas.listMapChallangeDatas', 'Map_Get_Datas.listMapEndlessDatas', 'Map_Get_Datas.listMapObstacleDatas', 'Map_Get_Datas.mapChallangeIndexs']
   metadata fields of Player_Get_Datas: ['Player_Get_Datas.listRankStrings', 'Player_Get_Datas.TimeResetInvincible', 'Player_Get_Datas.TimeCanActiveInvincible', 'Player_Get_Datas.TouchRanger', 'Player_Get_Datas.listAllPlayers', 'Player_Get_Datas.listIdPlayerActived', 'Player_Get_Datas.listIdPlayers', 'Player_Get_Datas.listPlayers', 'Player_Get_Datas.PlayerCosts', 'Player_Get_Datas.listLegendaryPlayers', 'Player_Get_Datas.listStarToTryLegendaryPlayers', 'Player_Get_Datas.listStarToBuyLegendaryPlayers', 'Player_Get_Datas.PlayerTimeStars', 'Player_Get_Datas.PlayerStarCosts']
-dump.cs field types: 35586; mapped indices: 50606
-  fdv miss: idx=257 key='PoolingManager.resourcesPaths' data_idx=0
-  fdv miss: idx=361 key='LoadBoardMode.Single' data_idx=24
-  fdv miss: idx=362 key='LoadBoardMode.Additive' data_idx=25
-  fdv miss: idx=363 key='LoadBoardMode.PopUp' data_idx=26
-  fdv miss: idx=399 key='BoardID.None' data_idx=31
-  fdv miss: idx=400 key='BoardID.BoardHome' data_idx=32
-  fdv miss: idx=401 key='BoardID.BoardUpgrades' data_idx=33
-  fdv miss: idx=402 key='BoardID.BoardPlayers' data_idx=34
-  fdv miss: idx=403 key='BoardID.BoardDrones' data_idx=35
-  fdv miss: idx=404 key='BoardID.BoardMaps' data_idx=36
-  fdv miss: idx=405 key='BoardID.BoardStage' data_idx=37
-  fdv miss: idx=406 key='BoardID.BoardPause' data_idx=38
-Traceback (most recent call last):
-  File "/home/runner/work/WindWings-Space-Shooter-game-play/WindWings-Space-Shooter-game-play/tools/apk-analyze/field_defaults.py", line 221, in <module>
-    sys.exit(main())
-             ^^^^^^
-  File "/home/runner/work/WindWings-Space-Shooter-game-play/WindWings-Space-Shooter-game-play/tools/apk-analyze/field_defaults.py", line 202, in main
-    value = decode(typ, data, data_idx)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/WindWings-Space-Shooter-game-play/WindWings-Space-Shooter-game-play/tools/apk-analyze/field_defaults.py", line 126, in decode
-    is_array = typ.endswith("[]")
-               ^^^^^^^^^^^^
-AttributeError: 'NoneType' object has no attribute 'endswith'
+dump.cs field types: 46275; mapped indices: 50606
+decoded: 10493, skipped: 0 {}
+wrote reverse-engineering/il2cpp/field-defaults.json (2608070 B)
 
 ===== /tmp/apk/logs/formula_trace.log
 425 method, 223 bl giải đúng tên -> datas/formula_traces.json.gz
@@ -268,24 +255,24 @@ source files: ['/tmp/apk/extract/data.unity3d', '/tmp/apk/extract/resources.reso
 exported 64 text assets, 1.2MB
 
 ===== /tmp/apk/logs/ui_index.log
-31759 file, 114 màn, 4,995,471 node, 665,072 dòng text/key -> datas/ui_screens.json.gz
+32512 file, 114 màn, 5,102,817 node, 681,897 dòng text/key -> datas/ui_screens.json.gz
 
 ===== /tmp/apk/logs/ui_layout.log
 typetree generator ready: AssetStudio
 class map: 125452 MonoBehaviours
 screen candidates: 793
-skipped: {'duplicate (class, root)': 40}
+skipped: {'duplicate (class, root)': 46}
 # UI layout (số đo bóc từ prefab)
 
 > **Kết luận tạm thời.** Đây là giá trị *serialize trong prefab*. Runtime có thể
 > ghi đè (layout group, safe area, code set anchor), nên chỉ dùng làm khung tham
 > chiếu. Dữ liệu thô: `reverse-engineering/raw/ui/*.json.gz`.
 
-- màn hình dump được: **753**
-- tổng node: **107346**
-- dung lượng thô (gz): **2.1 MB**
+- màn hình dump được: **747**
+- tổng node: **106868**
+- dung lượng thô (gz): **2.0 MB**
 
-- bỏ qua: duplicate (class, root) (40)
+- bỏ qua: duplicate (class, root) (46)
 
 ## Component gặp nhiều nhất
 
