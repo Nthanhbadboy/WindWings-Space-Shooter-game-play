@@ -194,7 +194,8 @@ def main() -> int:
             reasons["no-name"] = reasons.get("no-name", 0) + 1
             continue
         typ = types_by_name.get(key)
-        if typ is None:
+        if typ is None and skipped < 12:
+            print(f"  fdv miss: idx={field_idx} key={key!r} data_idx={data_idx}")
             skipped += 1
             reasons["no-dump-type"] = reasons.get("no-dump-type", 0) + 1
             continue
