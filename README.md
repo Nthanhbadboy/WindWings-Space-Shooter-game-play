@@ -14,6 +14,7 @@ IL2CPP, metadata v31) để làm tài liệu tham chiếu cho bản clone.
 | Hằng số trong code máy | [`docs/apk-analysis/19-il2cpp-constants.md`](docs/apk-analysis/19-il2cpp-constants.md) |
 | Layout UI dạng số | [`docs/apk-analysis/20-ui-layout.md`](docs/apk-analysis/20-ui-layout.md) + [`24-ui-screens.md`](docs/apk-analysis/24-ui-screens.md) (114 màn, text/key) |
 | **Spine**: rig, animation, keyframe, event | [`docs/apk-analysis/22-spine-rigs.md`](docs/apk-analysis/22-spine-rigs.md) + [`23-spine-anim.md`](docs/apk-analysis/23-spine-anim.md) |
+| Animation gốc Unity (clip/controller) | [`docs/apk-analysis/26-native-animation.md`](docs/apk-analysis/26-native-animation.md) |
 | Lớp hành vi enemy/boss + cây Transform | [`docs/apk-analysis/25-enemy-behaviour.md`](docs/apk-analysis/25-enemy-behaviour.md) |
 | Âm thanh: id → file, thời lượng | [`docs/apk-analysis/21-audio-map.md`](docs/apk-analysis/21-audio-map.md) |
 | Code C# đã dump | [`reverse-engineering/`](reverse-engineering/) — `dump.cs.gz`, Spine, ScriptableObject |

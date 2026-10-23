@@ -151,7 +151,7 @@ xuất hiện trong trận. Số enemy "dùng được" nằm trong khoảng **7
 | # | Thứ | Trạng thái | Cách làm tiếp |
 |---:|---|---|---|
 | 1 | ~~`Stage_Behaviour.bossObj`~~ | ✅ xong | hoá ra trỏ thẳng GameObject (250/250 khớp cột `gameobject` của transform-tree) và đều thuộc `Board_Maps` — là icon bản đồ, không cần nối tiếp. Bảng nối tái lập được: `datas/prefab_joins.csv.gz` (`tools/apk-analyze/prefab_joins.py`, 3.870 dòng, 7 mắt đều 100%) |
-| 2 | `AnimationClip` (791) · `AnimatorController` (308) | chưa export | cần reader riêng (không phải MonoBehaviour) |
+| 2 | `AnimationClip` (791) · `AnimatorController` (308) | ✅ danh mục xong | xem `26-native-animation.md` — còn thiếu keyframe curve (streamed clip) |
 | 3 | `ParticleSystem` | chưa dump | thêm vào `unity_data.py` như `Transform` |
 | 4 | Số quân 45.659 | chưa kiểm | tính lại từ `Call_Data` 23.757 dòng đầy đủ + `number` |
 | 5 | Ý nghĩa `editType` / `spawnType` / `warningPoints` | chưa map | đối chiếu `dump.cs` + 10 method trong `19-il2cpp-constants.md` |
