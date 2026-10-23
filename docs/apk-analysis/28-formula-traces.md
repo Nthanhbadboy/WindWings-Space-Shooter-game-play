@@ -5,7 +5,7 @@
 > trong thân hàm; còn rẽ nhánh (`b.ne`, `csel`…) nên đây là **nguyên liệu** để đọc công thức,
 > chưa phải công thức. Đích `bl` có `~` nghĩa là nằm giữa thân method khác (generic dùng chung).
 
-- method có trace: **738**, method đáng đọc trước: **63**
+- method có trace: **778**, method đáng đọc trước: **65**
 
 ## Đọc thử một method
 

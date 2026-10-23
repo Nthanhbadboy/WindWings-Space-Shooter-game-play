@@ -6,7 +6,7 @@
 > phải để chép nguyên. Dữ liệu thô: `reverse-engineering/raw/il2cpp-consts/`.
 
 - .so: `libil2cpp.so` — aarch64
-- class đích: **60**, method: **738**
+- class đích: **64**, method: **778**
 
 ## Getter: trả hằng số hay đọc dữ liệu?
 
@@ -60,13 +60,17 @@ Mỗi getter trong build này đều bị bọc bởi guard khởi tạo static 
 | `Boss_AttackTypes.<IEGunCheckAttack>d__9` | 0 | 0 | 2 | **0** |
 | `Device_Get_Data` | 0 | 2 | 8 | **0** |
 | `Droid_Data_Balance` | 0 | 0 | 9 | **0** |
+| `Enemy_Appear` | 0 | 0 | 2 | **0** |
 | `Enemy_Controller` | 0 | 0 | 32 | **0** |
 | `Enemy_Data_Balance` | 0 | 0 | 7 | **1** |
+| `Enemy_Destroy` | 0 | 0 | 10 | **0** |
 | `Enemy_Display` | 0 | 0 | 6 | **0** |
 | `Enemy_Get_Datas` | 0 | 0 | 4 | **0** |
 | `Enemy_Health` | 0 | 3 | 1 | **0** |
 | `Enemy_Movement` | 1 | 0 | 15 | **0** |
 | `Enemy_Movement.<IELinearMove>d__37` | 0 | 0 | 2 | **0** |
+| `Enemy_Rotate` | 0 | 0 | 2 | **0** |
+| `Enemy_Sub` | 0 | 0 | 21 | **0** |
 | `GameDatas` | 23 | 3 | 39 | **1** |
 | `IAP_Manager` | 0 | 0 | 33 | **0** |
 | `Map_Get_Datas` | 0 | 0 | 10 | **0** |
@@ -80,7 +84,7 @@ Mỗi getter trong build này đều bị bọc bởi guard khởi tạo static 
 | `RankManager` | 0 | 0 | 8 | **0** |
 | `Stage_Get_Datas` | 0 | 0 | 11 | **0** |
 | `Tech_Datas` | 0 | 7 | 16 | **0** |
-| **tổng** | 28 | 44 | 453 | **12** |
+| **tổng** | 28 | 44 | 488 | **12** |
 
 ### Float đọc từ literal pool (`.rodata`) — số thật, không phải suy luận
 
@@ -159,6 +163,8 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 | `Enemy_Movement` | `PathFollow` | 57.29578 | `0x7570dc` |
 | `Enemy_Movement` | `RocketResumeMove` | 3.14159 | `0x756a9c` |
 | `Enemy_Movement.<IELinearMove>d__37` | `MoveNext` | 0.01 | `0x756fe0` |
+| `Enemy_Rotate` | `ctor` | 2.0 | `0x7571d0` |
+| `Enemy_Rotate` | `ctor` | 80.0 | `0x7571d4` |
 | `Player_Ability` | `OnBulletDroneSkill6Destroyed` | 0.68 | `0x756ed0` |
 | `Player_Attack` | `get_dmgTechItem0` | 0.3 | `0x7570e0` |
 | `Player_Attack` | `ctor` | -1.0 | `0x757910` |
@@ -279,6 +285,13 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - int: `2, 3, 4, 5, 7, 8, 10, 12, 13, 24, 28, 30, 31, 32, 34, 48, 64, 319, 369, 2000, 10001, 20001, 25000, 2139095040`
 - hằng số dùng trong phép tính: `arith:fadd:150000.0, arith:fmul:0.12, arith:fmul:0.5, arith:fmul:0.689, arith:fmul:0.86`
 
+## `Enemy_Sub` — enemy appear/death/callback control — pending native verification
+
+- method đọc được: **23**, có hằng số: **6**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
 ## `Player_Talent` — talent: cây điểm, invisible, stun
 
 - method đọc được: **23**, có hằng số: **19**
@@ -348,6 +361,13 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - float: `1.0, 15.0, 100.0`
 - int: `2, 3, 4, 5, 6, 12, 30, 32, 50, 101, 500, 800`
 - hằng số dùng trong phép tính: `arith:fadd:1.0`
+
+## `Enemy_Destroy` — enemy appear/death/callback control — pending native verification
+
+- method đọc được: **12**, có hằng số: **9**
+- float: `3.0, 100.0`
+- int: `2, 3, 4, 5, 6, 8, 16, 19, 32, 48, 79, 128, 312`
+- hằng số dùng trong phép tính: `—`
 
 ## `Player_Health` — HP runtime: StartHp gán ở đâu, hồi máu, nhận damage
 
@@ -636,11 +656,25 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - int: `—`
 - hằng số dùng trong phép tính: `—`
 
+## `Enemy_Rotate` — enemy appear/death/callback control — pending native verification
+
+- method đọc được: **3**, có hằng số: **2**
+- float: `2.0, 80.0`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
 ## `Boss_AttackPhases.<>c__DisplayClass12_0` — 
 
 - method đọc được: **2**, có hằng số: **1**
 - float: `—`
 - int: `3, 4, 8, 16, 312`
+- hằng số dùng trong phép tính: `—`
+
+## `Enemy_Appear` — enemy appear/death/callback control — pending native verification
+
+- method đọc được: **2**, có hằng số: **0**
+- float: `—`
+- int: `—`
 - hằng số dùng trong phép tính: `—`
 
 ## `Player_Datas` — dữ liệu runtime của player
