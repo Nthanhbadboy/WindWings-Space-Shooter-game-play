@@ -6,43 +6,82 @@
 
 | class | instances | dumped |
 |---|---:|---:|
-| `Path_Spawner` | 1688 | 1500 |
-| `Call_Data` | 23757 | 1500 |
-| `PinMap_Spawner` | 3165 | 1500 |
-| `PathCreator` | 1714 | 1500 |
-| `PointToPoint_Spawner` | 13292 | 1500 |
-| `Rocket_Spawner` | 2019 | 1500 |
+| `Call_Point` | 23757 | 23757 |
+| `Call_Data` | 23757 | 23757 |
+| `PointToPoint_Spawner` | 13292 | 13292 |
+| `PinMap_Spawner` | 3165 | 3165 |
+| `Rocket_Spawner` | 2019 | 2019 |
+| `PathCreator` | 1714 | 1714 |
+| `Path_Spawner` | 1688 | 1688 |
 | `Spawner` | 1370 | 1370 |
 | `Waypoints_Spawner` | 1151 | 1151 |
+| `Enemy_EfxDestroyed` | 1134 | 1134 |
 | `Box_Rewards` | 1065 | 1065 |
 | `Enemy_Sub` | 981 | 981 |
 | `Enemy_Controller` | 981 | 981 |
+| `Enemy_Display` | 981 | 981 |
 | `Enemy_Movement` | 981 | 981 |
+| `Enemy_Physics` | 981 | 981 |
 | `Enemy_Health` | 981 | 981 |
 | `Enemy_Datas` | 981 | 981 |
+| `Enemy_Destroy` | 971 | 971 |
 | `Enemy_Appear` | 914 | 914 |
+| `Enemy_Hp_Bar` | 909 | 909 |
 | `AirFree_Spawner` | 885 | 885 |
 | `MeteoriteGenerator` | 852 | 852 |
 | `Item_Movement` | 702 | 702 |
 | `Sub_Item` | 702 | 702 |
+| `Enemy_Burned` | 695 | 695 |
 | `Wave` | 686 | 686 |
 | `Gun_Attack` | 458 | 458 |
 | `MapController` | 396 | 396 |
+| `Enemy_LookAtPlayer` | 391 | 391 |
 | `Shop_Cell` | 315 | 315 |
 | `Stage_Behaviour` | 299 | 299 |
 | `Boss_BodyPhysics` | 251 | 251 |
+| `Enemy_CameraVibrate` | 241 | 241 |
 | `Bullet_Linearly` | 186 | 186 |
 | `Boss4_ExplosionTimer` | 155 | 155 |
+| `Enemy_Stun` | 140 | 140 |
 | `GridLayoutManager` | 133 | 133 |
 | `Player19Laser` | 120 | 120 |
 | `SoundClip` | 92 | 92 |
+| `Enemy_Sync_Attack` | 72 | 72 |
+| `Enemy_OffObjectWhenDestroy` | 56 | 56 |
+| `Enemy_Attack` | 51 | 51 |
+| `Enemy_Rotate` | 35 | 35 |
 | `SkeletonDataAsset` | 27 | 27 |
 | `LanguageAssets` | 19 | 19 |
+| `Enemy_HitSkeletonRenderer` | 17 | 17 |
+| `MB6_ChildDirector` | 10 | 10 |
+| `Enemy_Attack_Event` | 9 | 9 |
 | `Tech_Ability_Data` | 6 | 6 |
+| `Enemy_Sync_Attack2` | 6 | 6 |
+| `Enemy_Rocket_Attack` | 5 | 5 |
+| `Enemy_DestroyDelayed` | 3 | 3 |
+| `Boss_Director` | 3 | 3 |
 | `RankManager` | 3 | 3 |
 | `DataShopPack` | 2 | 2 |
 | `Data_Players` | 2 | 2 |
+| `Boss4_Director` | 2 | 2 |
+| `Enemy_Helicopter` | 2 | 2 |
+| `Boss5_Director` | 2 | 2 |
+| `Boss15_Director` | 2 | 2 |
+| `Boss12_Director` | 2 | 2 |
+| `Boss11_Director` | 2 | 2 |
+| `Boss10_Director` | 2 | 2 |
+| `Enemy_DestroyAttack` | 2 | 2 |
+| `MB12_Director` | 2 | 2 |
+| `Boss18_Director` | 2 | 2 |
+| `MB5_Director` | 2 | 2 |
+| `Boss7_Director` | 2 | 2 |
+| `Boss8_Director` | 2 | 2 |
+| `Boss3_Director` | 2 | 2 |
 | `Bullet_SineWave` | 2 | 2 |
+| `Boss6_Director` | 2 | 2 |
+| `Boss17_Director` | 2 | 2 |
+| `Boss9_Director` | 2 | 2 |
+| `Enemy_DropGold` | 2 | 2 |
 | `GP_Datas` | 1 | 1 |
 | `TMP_ColorGradient` | 1 | 1 |
 | `Data_Items` | 1 | 1 |
@@ -50,16 +89,30 @@
 | `TMP_StyleSheet` | 1 | 1 |
 | `TMP_Settings` | 1 | 1 |
 | `IAPProduct` | 1 | 1 |
+| `Boss1_Director` | 1 | 1 |
+| `MB10_Director` | 1 | 1 |
+| `Enemy_BurstBulletWhenDie` | 1 | 1 |
+| `MiniBoss1_Director` | 1 | 1 |
+| `MB9_Director` | 1 | 1 |
+| `Boss21_AttackPhases` | 1 | 1 |
+| `MB7_Director` | 1 | 1 |
+| `MB3_Director` | 1 | 1 |
+| `MB8_Director` | 1 | 1 |
+| `MB14_Director` | 1 | 1 |
+| `Boss20_AttackPhases` | 1 | 1 |
+| `MB2_Director` | 1 | 1 |
+| `MB4_Director` | 1 | 1 |
+| `MB6_Director` | 1 | 1 |
 | `ArenaManager` | 1 | 1 |
-
-Ghi chú: các class sau bị **cắt bớt** (chỉ đọc mẫu, không dump hết):
-
-- `Call_Data`: còn 22257 object chưa đọc
-- `PointToPoint_Spawner`: còn 11792 object chưa đọc
-- `PinMap_Spawner`: còn 1665 object chưa đọc
-- `Rocket_Spawner`: còn 519 object chưa đọc
-- `PathCreator`: còn 214 object chưa đọc
-- `Path_Spawner`: còn 188 object chưa đọc
+| `Boss6_Mini_Director` | 1 | 1 |
+| `MB13_Director` | 1 | 1 |
+| `MB15_Director` | 1 | 1 |
+| `MB16_Director` | 1 | 1 |
+| `MB19_Director` | 1 | 1 |
+| `MB11_Director` | 1 | 1 |
+| `Boss19_AttackPhases` | 1 | 1 |
+| `Enemy_Passive_Attack` | 1 | 1 |
+| `Enemy_SpawnChilds` | 1 | 1 |
 
 - error `script`: 1
 
@@ -70,36 +123,36 @@ Ghi chú: các class sau bị **cắt bớt** (chỉ đọc mẫu, không dump h
 
 | class | object | bytes (chưa nén) |
 |---|---:|---:|
-| `Path_Spawner` | 1500 | 393,015 |
-| `Call_Data` | 1500 | 1,116,601 |
-| `PinMap_Spawner` | 1500 | 389,732 |
-| `PathCreator` | 1500 | 3,465,971 |
-| `PointToPoint_Spawner` | 1500 | 393,113 |
-| `Rocket_Spawner` | 1500 | 472,229 |
+| `Call_Point` | 23757 | 6,831,462 |
+| `Call_Data` | 23757 | 17,413,429 |
+| `PointToPoint_Spawner` | 13292 | 3,490,279 |
+| `PinMap_Spawner` | 3165 | 821,183 |
+| `Rocket_Spawner` | 2019 | 635,115 |
+| `PathCreator` | 1714 | 3,945,414 |
+| `Path_Spawner` | 1688 | 442,708 |
 | `Spawner` | 1370 | 348,937 |
-| `Waypoints_Spawner` | 1151 | 297,251 |
-| `Box_Rewards` | 1065 | 631,949 |
-| `Enemy_Sub` | 981 | 319,034 |
-| `Enemy_Controller` | 981 | 676,874 |
-| `Enemy_Movement` | 981 | 509,932 |
-| `Enemy_Health` | 981 | 236,644 |
-| `Enemy_Datas` | 981 | 374,865 |
-| `Enemy_Appear` | 914 | 204,332 |
-| `AirFree_Spawner` | 885 | 231,818 |
-| `MeteoriteGenerator` | 852 | 425,609 |
-| `Item_Movement` | 702 | 186,172 |
-| `Sub_Item` | 702 | 239,569 |
+| `Waypoints_Spawner` | 1151 | 297,194 |
+| `Enemy_EfxDestroyed` | 1134 | 512,975 |
+| `Box_Rewards` | 1065 | 633,424 |
+| `Enemy_Sub` | 981 | 318,862 |
+| `Enemy_Controller` | 981 | 677,472 |
+| `Enemy_Display` | 981 | 415,444 |
+| `Enemy_Movement` | 981 | 508,967 |
+| `Enemy_Physics` | 981 | 267,611 |
+| `Enemy_Health` | 981 | 236,475 |
+| `Enemy_Datas` | 981 | 375,010 |
+| `Enemy_Destroy` | 971 | 299,808 |
+| `Enemy_Appear` | 914 | 203,368 |
+| `Enemy_Hp_Bar` | 909 | 312,954 |
+| `AirFree_Spawner` | 885 | 231,798 |
+| `MeteoriteGenerator` | 852 | 425,627 |
+| `Item_Movement` | 702 | 186,129 |
+| `Sub_Item` | 702 | 239,685 |
+| `Enemy_Burned` | 695 | 210,066 |
 | `Wave` | 686 | 216,575 |
-| `Gun_Attack` | 458 | 323,928 |
+| `Gun_Attack` | 458 | 324,536 |
 | `MapController` | 396 | 343,597 |
-| `Shop_Cell` | 315 | 231,456 |
-| `Stage_Behaviour` | 299 | 339,834 |
-| `Boss_BodyPhysics` | 251 | 88,209 |
-| `Bullet_Linearly` | 186 | 145,907 |
-| `Boss4_ExplosionTimer` | 155 | 49,605 |
-| `GridLayoutManager` | 133 | 85,917 |
-| `Player19Laser` | 120 | 58,076 |
-| `SoundClip` | 92 | 22,765 |
+| `Enemy_LookAtPlayer` | 391 | 231,643 |
 
 ## MonoBehaviour class inventory (top 40)
 
@@ -176,7 +229,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "maskObject.m_PathID": 0,
  "onDone.m_PersistentCalls.m_Calls": "[0]",
  "refresh": false,
- "_gameobject": "Board_BeginPlay/Parent/parent_Top/Border_Info/All_Abilities/Grid"
+ "_gameobject": "All_Abilities/Grid"
 }
 ```
 ```json
@@ -1049,6 +1102,35 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
 }
 ```
 
+## `Enemy_CameraVibrate` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185661,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 21441282048,
+ "m_Name": "",
+ "timeVibr": 20,
+ "lvVibr": 0.10000000149011612,
+ "_gameobject": "CB-30028"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185667,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 21441282048,
+ "m_Name": "",
+ "timeVibr": 20,
+ "lvVibr": 0.10000000149011612,
+ "_gameobject": "CB-30006"
+}
+```
+
 ## `Bullet_Linearly` samples
 
 ```json
@@ -1127,6 +1209,51 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "pointEfx.m_PathID": 0,
  "idDestroyEfx": 90003,
  "_gameobject": "BLT_80210"
+}
+```
+
+## `Enemy_EfxDestroyed` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4291,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5251268608,
+ "m_Name": "",
+ "soundDestroy": "[0]",
+ "allDestroyEffects": "[1]",
+ "allDestroyEffects[0]": 91002,
+ "pinEfxToParent": true,
+ "volumeSfx": 1.0,
+ "useRandomeVolume": false,
+ "rdnVolumeSfx.x": 0.4000000059604645,
+ "rdnVolumeSfx.y": 0.800000011920929,
+ "poisonRate": 0.0,
+ "idPoison": 91025,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4291,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5251268608,
+ "m_Name": "",
+ "soundDestroy": "[0]",
+ "allDestroyEffects": "[1]",
+ "allDestroyEffects[0]": 90004,
+ "pinEfxToParent": true,
+ "volumeSfx": 1.0,
+ "useRandomeVolume": false,
+ "rdnVolumeSfx.x": 0.4000000059604645,
+ "rdnVolumeSfx.y": 0.800000011920929,
+ "poisonRate": 0.0,
+ "idPoison": 91025,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
 }
 ```
 
@@ -1224,6 +1351,115 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
 }
 ```
 
+## `Enemy_Burned` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4291,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5586812928,
+ "m_Name": "",
+ "pointEffect.m_FileID": 0,
+ "pointEffect.m_PathID": 0,
+ "allDestroyEffects": "[1]",
+ "allDestroyEffects[0]": 90002,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4341,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5586812928,
+ "m_Name": "",
+ "pointEffect.m_FileID": 0,
+ "pointEffect.m_PathID": 0,
+ "allDestroyEffects": "[1]",
+ "allDestroyEffects[0]": 90002,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
+}
+```
+
+## `Enemy_Destroy` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4291,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 9093251072,
+ "m_Name": "",
+ "pointBurst.m_FileID": 0,
+ "pointBurst.m_PathID": 0,
+ "isNoPool": false,
+ "delayDestroy": 0.0,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4341,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 9093251072,
+ "m_Name": "",
+ "pointBurst.m_FileID": 0,
+ "pointBurst.m_PathID": 0,
+ "isNoPool": false,
+ "delayDestroy": 0.0,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
+}
+```
+
+## `Enemy_Display` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4291,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 17632854016,
+ "m_Name": "",
+ "hpProgressBarRenderer.m_FileID": 0,
+ "hpProgressBarRenderer.m_PathID": 509470,
+ "size.x": 1.0,
+ "size.y": 0.11999999731779099,
+ "hitableRenderers": "[1]",
+ "hitableRenderers[0].m_FileID": 0,
+ "hitableRenderers[0].m_PathID": 509994,
+ "appearOff": true,
+ "dieOff": true,
+ "_gameobject": "Enemy_Ingame/Body/Than/Gun7/Gun6"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4341,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 17632854016,
+ "m_Name": "",
+ "hpProgressBarRenderer.m_FileID": 0,
+ "hpProgressBarRenderer.m_PathID": 509449,
+ "size.x": 1.0,
+ "size.y": 0.11999999731779099,
+ "hitableRenderers": "[1]",
+ "hitableRenderers[0].m_FileID": 0,
+ "hitableRenderers[0].m_PathID": 509460,
+ "appearOff": true,
+ "dieOff": true,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
+}
+```
+
 ## `Enemy_Movement` samples
 
 ```json
@@ -1273,6 +1509,35 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "border.z": -15.0,
  "border.w": 15.0,
  "fixedAngle": false,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
+}
+```
+
+## `Enemy_Physics` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4291,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 21424504832,
+ "m_Name": "",
+ "autoCacheColliders": false,
+ "allColliders": "[0]",
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4341,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 21424504832,
+ "m_Name": "",
+ "autoCacheColliders": false,
+ "allColliders": "[0]",
  "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
 }
 ```
@@ -1368,6 +1633,39 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
 }
 ```
 
+## `Enemy_Hp_Bar` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4297,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 21827158016,
+ "m_Name": "",
+ "hpProgressBarRenderer.m_FileID": 0,
+ "hpProgressBarRenderer.m_PathID": 509470,
+ "width": 1.0,
+ "height": 0.11999999731779099,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6/Enemy_UI/HP_Bar"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4315,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 21827158016,
+ "m_Name": "",
+ "hpProgressBarRenderer.m_FileID": 0,
+ "hpProgressBarRenderer.m_PathID": 509945,
+ "width": 1.0,
+ "height": 0.11999999731779099,
+ "_gameobject": "Body/Than/Gun6/Gun5/Enemy_UI/HP_Bar"
+}
+```
+
 ## `Path_Spawner` samples
 
 ```json
@@ -1393,6 +1691,37 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Name": "",
  "dataScript.m_FileID": 0,
  "dataScript.m_PathID": 0,
+ "_gameobject": "Wave_0005/Path_CB3 (9)"
+}
+```
+
+## `Call_Point` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4298,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 2365587456,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 580903,
+ "warningPoints": "[0]",
+ "_gameobject": "Wave_0002/Path_CB3 (9)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4299,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 2365587456,
+ "m_Name": "",
+ "dataScript.m_FileID": 0,
+ "dataScript.m_PathID": 580904,
+ "warningPoints": "[0]",
  "_gameobject": "Wave_0005/Path_CB3 (9)"
 }
 ```
@@ -1514,6 +1843,37 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "dataScript.m_FileID": 0,
  "dataScript.m_PathID": 0,
  "_gameobject": "Wave_0098/Point 1 (4)"
+}
+```
+
+## `Enemy_OffObjectWhenDestroy` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4374,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 21206401024,
+ "m_Name": "",
+ "offObject.m_FileID": 0,
+ "offObject.m_PathID": 5094,
+ "offObjects": "[0]",
+ "_gameobject": "Boss-39007/Enemy_Ingame/Body/Body/HandR/Hand2/Hand3/Hand4/Gun2.2"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4734,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 21206401024,
+ "m_Name": "",
+ "offObject.m_FileID": 0,
+ "offObject.m_PathID": 5872,
+ "offObjects": "[0]",
+ "_gameobject": "Machinegun/Gun1.1"
 }
 ```
 
@@ -1712,6 +2072,196 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
 }
 ```
 
+## `Boss4_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 73237,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5570035712,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 498280,
+ "animEvent.m_FileID": 0,
+ "animEvent.m_PathID": 581103,
+ "allGunCanHitTurn1": "[6]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 4820,
+ "allGunCanHitTurn1[1].m_FileID": 0,
+ "allGunCanHitTurn1[1].m_PathID": 4521,
+ "allGunCanHitTurn1[2].m_FileID": 0,
+ "allGunCanHitTurn1[2].m_PathID": 5553,
+ "allGunCanHitTurn1[3].m_FileID": 0,
+ "allGunCanHitTurn1[3].m_PathID": 4884,
+ "allGunCanHitTurn1[4].m_FileID": 0,
+ "allGunCanHitTurn1[4].m_PathID": 4510,
+ "allGunCanHitTurn2": "[6]",
+ "allGunCanHitTurn2[0].m_FileID": 0,
+ "allGunCanHitTurn2[0].m_PathID": 174934,
+ "allGunCanHitTurn2[1].m_FileID": 0,
+ "allGunCanHitTurn2[1].m_PathID": 21742,
+ "allGunCanHitTurn2[2].m_FileID": 0,
+ "allGunCanHitTurn2[2].m_PathID": 44254,
+ "allGunCanHitTurn2[3].m_FileID": 0,
+ "allGunCanHitTurn2[3].m_PathID": 210618,
+ "allGunCanHitTurn2[4].m_FileID": 0,
+ "allGunCanHitTurn2[4].m_PathID": 54623,
+ "allGunCanHitTurn3": "[5]",
+ "allGunCanHitTurn3[0].m_FileID": 0,
+ "allGunCanHitTurn3[0].m_PathID": 4341,
+ "allGunCanHitTurn3[1].m_FileID": 0,
+ "allGunCanHitTurn3[1].m_PathID": 5245,
+ "allGunCanHitTurn3[2].m_FileID": 0,
+ "allGunCanHitTurn3[2].m_PathID": 4291,
+ "allGunCanHitTurn3[3].m_FileID": 0,
+ "allGunCanHitTurn3[3].m_PathID": 5039,
+ "allGunCanHitTurn3[4].m_FileID": 0,
+ "allGunCanHitTurn3[4].m_PathID": 5942,
+ "allGunCanHitTurn4": "[4]",
+ "allGunCanHitTurn4[0].m_FileID": 0,
+ "allGunCanHitTurn4[0].m_PathID": 5239,
+ "allGunCanHitTurn4[1].m_FileID": 0,
+ "allGunCanHitTurn4[1].m_PathID": 4422,
+ "allGunCanHitTurn4[2].m_FileID": 0,
+ "allGunCanHitTurn4[2].m_PathID": 4780,
+ "allGunCanHitTurn4[3].m_FileID": 0,
+ "allGunCanHitTurn4[3].m_PathID": 4721,
+ "objShield.m_FileID": 0,
+ "objShield.m_PathID": 204558,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 615900,
+ "turretAttackScript.m_FileID": 0,
+ "turretAttackScript.m_PathID": 641094,
+ "_gameobject": "Boss-39006"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 35850,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5570035712,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 496259,
+ "animEvent.m_FileID": 0,
+ "animEvent.m_PathID": 638979,
+ "allGunCanHitTurn1": "[6]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 114068,
+ "allGunCanHitTurn1[1].m_FileID": 0,
+ "allGunCanHitTurn1[1].m_PathID": 114102,
+ "allGunCanHitTurn1[2].m_FileID": 0,
+ "allGunCanHitTurn1[2].m_PathID": 114014,
+ "allGunCanHitTurn1[3].m_FileID": 0,
+ "allGunCanHitTurn1[3].m_PathID": 114043,
+ "allGunCanHitTurn1[4].m_FileID": 0,
+ "allGunCanHitTurn1[4].m_PathID": 114101,
+ "allGunCanHitTurn2": "[6]",
+ "allGunCanHitTurn2[0].m_FileID": 0,
+ "allGunCanHitTurn2[0].m_PathID": 114233,
+ "allGunCanHitTurn2[1].m_FileID": 0,
+ "allGunCanHitTurn2[1].m_PathID": 113947,
+ "allGunCanHitTurn2[2].m_FileID": 0,
+ "allGunCanHitTurn2[2].m_PathID": 113926,
+ "allGunCanHitTurn2[3].m_FileID": 0,
+ "allGunCanHitTurn2[3].m_PathID": 114164,
+ "allGunCanHitTurn2[4].m_FileID": 0,
+ "allGunCanHitTurn2[4].m_PathID": 113912,
+ "allGunCanHitTurn3": "[5]",
+ "allGunCanHitTurn3[0].m_FileID": 0,
+ "allGunCanHitTurn3[0].m_PathID": 114116,
+ "allGunCanHitTurn3[1].m_FileID": 0,
+ "allGunCanHitTurn3[1].m_PathID": 114033,
+ "allGunCanHitTurn3[2].m_FileID": 0,
+ "allGunCanHitTurn3[2].m_PathID": 114108,
+ "allGunCanHitTurn3[3].m_FileID": 0,
+ "allGunCanHitTurn3[3].m_PathID": 114055,
+ "allGunCanHitTurn3[4].m_FileID": 0,
+ "allGunCanHitTurn3[4].m_PathID": 114002,
+ "allGunCanHitTurn4": "[4]",
+ "allGunCanHitTurn4[0].m_FileID": 0,
+ "allGunCanHitTurn4[0].m_PathID": 114028,
+ "allGunCanHitTurn4[1].m_FileID": 0,
+ "allGunCanHitTurn4[1].m_PathID": 114092,
+ "allGunCanHitTurn4[2].m_FileID": 0,
+ "allGunCanHitTurn4[2].m_PathID": 114060,
+ "allGunCanHitTurn4[3].m_FileID": 0,
+ "allGunCanHitTurn4[3].m_PathID": 114083,
+ "objShield.m_FileID": 0,
+ "objShield.m_PathID": 114156,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 628340,
+ "turretAttackScript.m_FileID": 0,
+ "turretAttackScript.m_PathID": 638489,
+ "_gameobject": "ScrollView/ObjectMove/Parent_View/Parent/Tab (5)/Boss/Boss-39006"
+}
+```
+
+## `Enemy_LookAtPlayer` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4651,
+ "m_Enabled": 0,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 29578231808,
+ "m_Name": "",
+ "parentRotate.m_FileID": 0,
+ "parentRotate.m_PathID": 240049,
+ "offsetAngle": 90.0,
+ "lerpAngleSpeed": 8.0,
+ "rotation.x": 0.0,
+ "rotation.y": 0.0,
+ "rotation.z": 0.0,
+ "target.m_FileID": 0,
+ "target.m_PathID": 0,
+ "lerpSpeedFisrt": false,
+ "lerpSpeed": 0.0,
+ "lerpDeltaSpeed": 5.0,
+ "minAngle": -1.0,
+ "maxAngle": -1.0,
+ "onCheck": true,
+ "dfAngle": 0.0,
+ "spdLerpDefault": 80.0,
+ "local": false,
+ "_gameobject": "Gun4/Enemy_Ingame"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4786,
+ "m_Enabled": 0,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 29578231808,
+ "m_Name": "",
+ "parentRotate.m_FileID": 0,
+ "parentRotate.m_PathID": 240178,
+ "offsetAngle": 90.0,
+ "lerpAngleSpeed": 8.0,
+ "rotation.x": 0.0,
+ "rotation.y": 0.0,
+ "rotation.z": 0.0,
+ "target.m_FileID": 0,
+ "target.m_PathID": 0,
+ "lerpSpeedFisrt": false,
+ "lerpSpeed": 0.0,
+ "lerpDeltaSpeed": 5.0,
+ "minAngle": -1.0,
+ "maxAngle": -1.0,
+ "onCheck": true,
+ "dfAngle": 0.0,
+ "spdLerpDefault": 80.0,
+ "local": false,
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun2/Gun4/Enemy_Ingame"
+}
+```
+
 ## `Boss_BodyPhysics` samples
 
 ```json
@@ -1743,7 +2293,79 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "dmgFirst": 0.0,
  "isTrigger": true,
  "isFirstTrigger": false,
- "_gameobject": "Body1/Tayxoay/TayR/Tayxoay3/Tayxoay2/Tayxoay1/Cucxoay"
+ "_gameobject": "Tayxoay2/Tayxoay1/Cucxoay"
+}
+```
+
+## `Enemy_Helicopter` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185635,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 26860322816,
+ "m_Name": "",
+ "rotateScript.m_FileID": 0,
+ "rotateScript.m_PathID": 591994,
+ "attackScript.m_FileID": 0,
+ "attackScript.m_PathID": 609293,
+ "destroyScript.m_FileID": 0,
+ "destroyScript.m_PathID": 664402,
+ "timeLeave": 10.0,
+ "_gameobject": "CB-30014"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185639,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 26860322816,
+ "m_Name": "",
+ "rotateScript.m_FileID": 0,
+ "rotateScript.m_PathID": 591995,
+ "attackScript.m_FileID": 0,
+ "attackScript.m_PathID": 609294,
+ "destroyScript.m_FileID": 0,
+ "destroyScript.m_PathID": 664403,
+ "timeLeave": 10.0,
+ "_gameobject": "CB-30014"
+}
+```
+
+## `Enemy_Attack_Event` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 4902,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 2097152000,
+ "m_Name": "",
+ "attackScript.m_FileID": 0,
+ "attackScript.m_PathID": 581370,
+ "startShootEvent.m_PersistentCalls.m_Calls": "[1]",
+ "stopShootEvent.m_PersistentCalls.m_Calls": "[1]",
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/CanhTrai/3/Gun3/Gun5/Enemy_Ingame"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 5834,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 2097152000,
+ "m_Name": "",
+ "attackScript.m_FileID": 0,
+ "attackScript.m_PathID": 581801,
+ "startShootEvent.m_PersistentCalls.m_Calls": "[1]",
+ "stopShootEvent.m_PersistentCalls.m_Calls": "[1]",
+ "_gameobject": "Gun4/Gun5/Enemy_Ingame"
 }
 ```
 
@@ -1773,6 +2395,123 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "dataScript.m_FileID": 0,
  "dataScript.m_PathID": 0,
  "_gameobject": "Wave_0010/EndPoint"
+}
+```
+
+## `Boss5_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 73243,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 26105348096,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 494919,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 581150,
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 615866,
+ "path.m_FileID": 0,
+ "path.m_PathID": 701650,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 647881,
+ "allGunCanHitTurn1": "[2]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 203814,
+ "allGunCanHitTurn1[1].m_FileID": 0,
+ "allGunCanHitTurn1[1].m_PathID": 26952,
+ "allGunCanHitTurn2": "[1]",
+ "allGunCanHitTurn2[0].m_FileID": 0,
+ "allGunCanHitTurn2[0].m_PathID": 134085,
+ "allGunCanHitTurn3": "[1]",
+ "allGunCanHitTurn3[0].m_FileID": 0,
+ "allGunCanHitTurn3[0].m_PathID": 33323,
+ "hideGunTurn2": "[1]",
+ "hideGunTurn2[0].m_FileID": 0,
+ "hideGunTurn2[0].m_PathID": 116690,
+ "hideGunTurn3": "[7]",
+ "hideGunTurn3[0].m_FileID": 0,
+ "hideGunTurn3[0].m_PathID": 122362,
+ "hideGunTurn3[1].m_FileID": 0,
+ "hideGunTurn3[1].m_PathID": 158425,
+ "hideGunTurn3[2].m_FileID": 0,
+ "hideGunTurn3[2].m_PathID": 147533,
+ "hideGunTurn3[3].m_FileID": 0,
+ "hideGunTurn3[3].m_PathID": 225055,
+ "hideGunTurn3[4].m_FileID": 0,
+ "hideGunTurn3[4].m_PathID": 129482,
+ "allHandTurn2": "[3]",
+ "allHandTurn2[0].m_FileID": 0,
+ "allHandTurn2[0].m_PathID": 132560,
+ "allHandTurn2[1].m_FileID": 0,
+ "allHandTurn2[1].m_PathID": 225174,
+ "allHandTurn2[2].m_FileID": 0,
+ "allHandTurn2[2].m_PathID": 14035,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 615906,
+ "parentEffect.m_FileID": 0,
+ "parentEffect.m_PathID": 266117,
+ "_gameobject": "Boss-39004"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 87841,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 26105348096,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 495593,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 624282,
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 624231,
+ "path.m_FileID": 0,
+ "path.m_PathID": 624147,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 624183,
+ "allGunCanHitTurn1": "[2]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 87760,
+ "allGunCanHitTurn1[1].m_FileID": 0,
+ "allGunCanHitTurn1[1].m_PathID": 87914,
+ "allGunCanHitTurn2": "[1]",
+ "allGunCanHitTurn2[0].m_FileID": 0,
+ "allGunCanHitTurn2[0].m_PathID": 87783,
+ "allGunCanHitTurn3": "[1]",
+ "allGunCanHitTurn3[0].m_FileID": 0,
+ "allGunCanHitTurn3[0].m_PathID": 87919,
+ "hideGunTurn2": "[1]",
+ "hideGunTurn2[0].m_FileID": 0,
+ "hideGunTurn2[0].m_PathID": 87796,
+ "hideGunTurn3": "[7]",
+ "hideGunTurn3[0].m_FileID": 0,
+ "hideGunTurn3[0].m_PathID": 87803,
+ "hideGunTurn3[1].m_FileID": 0,
+ "hideGunTurn3[1].m_PathID": 87836,
+ "hideGunTurn3[2].m_FileID": 0,
+ "hideGunTurn3[2].m_PathID": 87830,
+ "hideGunTurn3[3].m_FileID": 0,
+ "hideGunTurn3[3].m_PathID": 87747,
+ "hideGunTurn3[4].m_FileID": 0,
+ "hideGunTurn3[4].m_PathID": 87806,
+ "allHandTurn2": "[3]",
+ "allHandTurn2[0].m_FileID": 0,
+ "allHandTurn2[0].m_PathID": 87779,
+ "allHandTurn2[1].m_FileID": 0,
+ "allHandTurn2[1].m_PathID": 87748,
+ "allHandTurn2[2].m_FileID": 0,
+ "allHandTurn2[2].m_PathID": 87931,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 624267,
+ "parentEffect.m_FileID": 0,
+ "parentEffect.m_PathID": 319759,
+ "_gameobject": "Parent/Tab (2)/Boss/Boss-39004"
 }
 ```
 
@@ -1888,6 +2627,76 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "minY": 12.0,
  "maxY": 12.0,
  "_gameobject": "Map-0046/Parent_Static/Met (1)"
+}
+```
+
+## `Boss1_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185746,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 11492392960,
+ "m_Name": "",
+ "skeleton.m_FileID": 0,
+ "skeleton.m_PathID": 664302,
+ "stateAppear": "Xuathien",
+ "stateRunAway": "Baydi",
+ "stateDie": "Dead",
+ "stateAttack1": "Attack1",
+ "stateAttack2": "Attack2",
+ "stateAttack3": "Attack3",
+ "statePreAttack2": "Chuyensangattack2",
+ "statePreAttack3": "Chuyensangattack3",
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 601111,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 184537,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 184535,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 184536,
+ "allObjColliders": "[1]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 664305,
+ "gun1Static": "[2]",
+ "gun1Static[0].m_FileID": 0,
+ "gun1Static[0].m_PathID": 163915,
+ "gun1Static[1].m_FileID": 0,
+ "gun1Static[1].m_PathID": 163918,
+ "gun1Rotate": "[2]",
+ "gun1Rotate[0].m_FileID": 0,
+ "gun1Rotate[0].m_PathID": 163897,
+ "gun1Rotate[1].m_FileID": 0,
+ "gun1Rotate[1].m_PathID": 163904,
+ "gun1Head.m_FileID": 0,
+ "gun1Head.m_PathID": 163878,
+ "brl1Rotate": "[2]",
+ "brl1Rotate[0].m_FileID": 0,
+ "brl1Rotate[0].m_PathID": 392213,
+ "brl1Rotate[1].m_FileID": 0,
+ "brl1Rotate[1].m_PathID": 392220,
+ "gun2Slots": "[2]",
+ "gun2Slots[0].m_FileID": 0,
+ "gun2Slots[0].m_PathID": 163884,
+ "gun2Slots[1].m_FileID": 0,
+ "gun2Slots[1].m_PathID": 163920,
+ "gun3Slots": "[2]",
+ "gun3Slots[0].m_FileID": 0,
+ "gun3Slots[0].m_PathID": 163872,
+ "gun3Slots[1].m_FileID": 0,
+ "gun3Slots[1].m_PathID": 163906,
+ "gun3Static": "[3]",
+ "gun3Static[0].m_FileID": 0,
+ "gun3Static[0].m_PathID": 163907,
+ "gun3Static[1].m_FileID": 0,
+ "gun3Static[1].m_PathID": 163892,
+ "gun3Static[2].m_FileID": 0,
+ "gun3Static[2].m_PathID": 163913,
+ "_gameobject": "Boss-39002"
 }
 ```
 
@@ -2029,7 +2838,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "refresh": false,
  "bossObj.m_FileID": 0,
  "bossObj.m_PathID": 175830,
- "_gameobject": "Parent_Stages/Stage_Normal (221)"
+ "_gameobject": "Board_Maps/Parent/ScrollView-Chap 2/ObjectMove/Parent_Stages/Stage_Normal (221)"
 }
 ```
 
@@ -2210,7 +3019,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "playerAttack.m_FileID": 0,
  "playerAttack.m_PathID": 616561,
  "targetLayer.m_Mask": 512,
- "_gameobject": "Board_Players/Parent/Panel_Info/Player_Demo/Player_Types/Player_10019/AllDrones/Drone (10)"
+ "_gameobject": "Parent/Panel_Info/Player_Demo/Player_Types/Player_10019/AllDrones/Drone (10)"
 }
 ```
 
@@ -2243,7 +3052,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "fixedTime": -1.0,
  "timeMin": 0.5,
  "timeMax": 6.800000190734863,
- "_gameobject": "Parent_Bosses/Boss 6/Boss 6/FxDie/Fx (29)"
+ "_gameobject": "Board_FightBoss/Parent/Tab (5)/Boss/Parent_Bosses/Boss 6/Boss 6/FxDie/Fx (29)"
 }
 ```
 
@@ -2273,6 +3082,1000 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "dataScript.m_FileID": 0,
  "dataScript.m_PathID": 0,
  "_gameobject": "Wave_0231/CheckPlayerNo (21)"
+}
+```
+
+## `Enemy_Rotate` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 83332,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 16039018496,
+ "m_Name": "",
+ "delay": 2.0,
+ "speed": 60.0,
+ "startAngle": 180.0,
+ "rotateScript.m_FileID": 0,
+ "rotateScript.m_PathID": 650320,
+ "_gameobject": "W2-30043/Trap_Circle (2)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 64929,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 16039018496,
+ "m_Name": "",
+ "delay": 2.0,
+ "speed": 60.0,
+ "startAngle": 180.0,
+ "rotateScript.m_FileID": 0,
+ "rotateScript.m_PathID": 611385,
+ "_gameobject": "Wave_0006/W2-30036 (1)/Trap_Circle"
+}
+```
+
+## `Enemy_Stun` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185634,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 6828326912,
+ "m_Name": "",
+ "allCanStunGunAttacks": "[0]",
+ "allCanStunMachineGunAttacks": "[1]",
+ "allCanStunMachineGunAttacks[0].m_FileID": 0,
+ "allCanStunMachineGunAttacks[0].m_PathID": 668326,
+ "allCanStunRocketAttacks": "[0]",
+ "_gameobject": "CB-30008"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185679,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 6828326912,
+ "m_Name": "",
+ "allCanStunGunAttacks": "[0]",
+ "allCanStunMachineGunAttacks": "[1]",
+ "allCanStunMachineGunAttacks[0].m_FileID": 0,
+ "allCanStunMachineGunAttacks[0].m_PathID": 668333,
+ "allCanStunRocketAttacks": "[0]",
+ "_gameobject": "CB-30008"
+}
+```
+
+## `Enemy_Sync_Attack` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185323,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 33453768704,
+ "m_Name": "",
+ "attackScript.m_FileID": 0,
+ "attackScript.m_PathID": 0,
+ "startShootEvent.m_PersistentCalls.m_Calls": "[0]",
+ "stopShootEvent.m_PersistentCalls.m_Calls": "[0]",
+ "_gameobject": "CD-31006/Enemy_Ingame"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185337,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 33453768704,
+ "m_Name": "",
+ "attackScript.m_FileID": 0,
+ "attackScript.m_PathID": 0,
+ "startShootEvent.m_PersistentCalls.m_Calls": "[0]",
+ "stopShootEvent.m_PersistentCalls.m_Calls": "[0]",
+ "_gameobject": "CD-31006/Enemy_Ingame"
+}
+```
+
+## `MB10_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 81920,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 33973862400,
+ "m_Name": "",
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 620680,
+ "path.m_FileID": 0,
+ "path.m_PathID": 700720,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 670833,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 626235,
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 498447,
+ "allGunAttacks": "[6]",
+ "allGunAttacks[0].m_FileID": 0,
+ "allGunAttacks[0].m_PathID": 91745,
+ "allGunAttacks[1].m_FileID": 0,
+ "allGunAttacks[1].m_PathID": 91758,
+ "allGunAttacks[2].m_FileID": 0,
+ "allGunAttacks[2].m_PathID": 91753,
+ "allGunAttacks[3].m_FileID": 0,
+ "allGunAttacks[3].m_PathID": 91763,
+ "allGunAttacks[4].m_FileID": 0,
+ "allGunAttacks[4].m_PathID": 91750,
+ "parentHealth.m_FileID": 0,
+ "parentHealth.m_PathID": 208390,
+ "_gameobject": "Boss-37012"
+}
+```
+
+## `Enemy_BurstBulletWhenDie` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 82183,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 11710496768,
+ "m_Name": "",
+ "idFragment": 80093,
+ "numberFragment": 6,
+ "bltDamage": 300.0,
+ "bltChildSpeed": 8.0,
+ "bltChildLifetime": 2.0,
+ "targetLayer.m_Mask": 256,
+ "_gameobject": "90027"
+}
+```
+
+## `MiniBoss1_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 235268,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 22078816256,
+ "m_Name": "",
+ "eventScript.m_FileID": 0,
+ "eventScript.m_PathID": 643333,
+ "bossAnimator.m_FileID": 0,
+ "bossAnimator.m_PathID": 499066,
+ "allGunCanHitTurn1": "[2]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 218955,
+ "allGunCanHitTurn1[1].m_FileID": 0,
+ "allGunCanHitTurn1[1].m_PathID": 218969,
+ "allGunCanHitTurn2": "[1]",
+ "allGunCanHitTurn2[0].m_FileID": 0,
+ "allGunCanHitTurn2[0].m_PathID": 14919,
+ "laserGuns": "[2]",
+ "laserGuns[0].m_FileID": 0,
+ "laserGuns[0].m_PathID": 218982,
+ "laserGuns[1].m_FileID": 0,
+ "laserGuns[1].m_PathID": 218958,
+ "laserDamage": 55.0,
+ "_gameobject": "Boss-37002"
+}
+```
+
+## `Enemy_DestroyDelayed` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 82185,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 19394461696,
+ "m_Name": "",
+ "pointBurst.m_FileID": 0,
+ "pointBurst.m_PathID": 0,
+ "isNoPool": false,
+ "delayDestroy": 0.0,
+ "delayTime": 2.0,
+ "_gameobject": "90045"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185650,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 19394461696,
+ "m_Name": "",
+ "pointBurst.m_FileID": 0,
+ "pointBurst.m_PathID": 0,
+ "isNoPool": false,
+ "delayDestroy": 0.0,
+ "delayTime": 3.0999999046325684,
+ "_gameobject": "CD-31014"
+}
+```
+
+## `Enemy_Attack` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 19906,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 11911823360,
+ "m_Name": "",
+ "_gameobject": "Wave_0005/GameObject/W2-30041 (23)/CD-31015"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 104200,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 11911823360,
+ "m_Name": "",
+ "_gameobject": "Wave_0030/Circlex2/W2-30057/CD-31013"
+}
+```
+
+## `Boss15_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 73236,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 12901679104,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 496407,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 632821,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 615899,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 186289,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 167500,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 75702,
+ "allObjColliders": "[1]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 671697,
+ "targetLayer.m_Mask": 256,
+ "rocketPoint.m_FileID": 0,
+ "rocketPoint.m_PathID": 373467,
+ "idBulletRocket": 80214,
+ "damageRocket": 600.0,
+ "bltHandAttack1": 80196,
+ "damageBltHand": 450.0,
+ "handParentPoints": "[2]",
+ "handParentPoints[0].m_FileID": 0,
+ "handParentPoints[0].m_PathID": 372421,
+ "handParentPoints[1].m_FileID": 0,
+ "handParentPoints[1].m_PathID": 420237,
+ "bltAttack2": 80100,
+ "damageStomachBullet": 350.0,
+ "stomachPoint.m_FileID": 0,
+ "stomachPoint.m_PathID": 281457,
+ "idBltSword": 80197,
+ "damageSword": 500.0,
+ "bltAttack6": 80199,
+ "damageLanternBullet": 400.0,
+ "lanternPoint.m_FileID": 0,
+ "lanternPoint.m_PathID": 349290,
+ "bltAttack9": 80201,
+ "damageRootLaser": 600.0,
+ "lanternHp.m_FileID": 0,
+ "lanternHp.m_PathID": 141863,
+ "idFragment": 80200,
+ "damageFragment": 500.0,
+ "numberFragment": 7,
+ "radius": 0.5,
+ "pointHandGuns": "[2]",
+ "pointHandGuns[0].m_FileID": 0,
+ "pointHandGuns[0].m_PathID": 404267,
+ "pointHandGuns[1].m_FileID": 0,
+ "pointHandGuns[1].m_PathID": 331866,
+ "bltHandBullet": 80203,
+ "damageBulletArea": 1200.0,
+ "_gameobject": "Boss-39015"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 158946,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 12901679104,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 497167,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 645635,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 661189,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 45018,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 76360,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 166580,
+ "allObjColliders": "[1]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 627677,
+ "targetLayer.m_Mask": 256,
+ "rocketPoint.m_FileID": 0,
+ "rocketPoint.m_PathID": 346458,
+ "idBulletRocket": 80214,
+ "damageRocket": 600.0,
+ "bltHandAttack1": 80196,
+ "damageBltHand": 450.0,
+ "handParentPoints": "[2]",
+ "handParentPoints[0].m_FileID": 0,
+ "handParentPoints[0].m_PathID": 345701,
+ "handParentPoints[1].m_FileID": 0,
+ "handParentPoints[1].m_PathID": 284688,
+ "bltAttack2": 80100,
+ "damageStomachBullet": 350.0,
+ "stomachPoint.m_FileID": 0,
+ "stomachPoint.m_PathID": 423468,
+ "idBltSword": 80197,
+ "damageSword": 500.0,
+ "bltAttack6": 80199,
+ "damageLanternBullet": 400.0,
+ "lanternPoint.m_FileID": 0,
+ "lanternPoint.m_PathID": 383025,
+ "bltAttack9": 80201,
+ "damageRootLaser": 600.0,
+ "lanternHp.m_FileID": 0,
+ "lanternHp.m_PathID": 105410,
+ "idFragment": 80200,
+ "damageFragment": 500.0,
+ "numberFragment": 7,
+ "radius": 0.5,
+ "pointHandGuns": "[2]",
+ "pointHandGuns[0].m_FileID": 0,
+ "pointHandGuns[0].m_PathID": 316649,
+ "pointHandGuns[1].m_FileID": 0,
+ "pointHandGuns[1].m_PathID": 358745,
+ "bltHandBullet": 80203,
+ "damageBulletArea": 1200.0,
+ "_gameobject": "ScrollView/ObjectMove/Parent_View/Parent/Tab (19)/Boss/Boss-39015"
+}
+```
+
+## `Boss12_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 160483,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 33285996544,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 497153,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 581752,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 662184,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 100617,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 100625,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 100630,
+ "allObjColliders": "[1]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 619711,
+ "pointChildStartLeft.m_FileID": 0,
+ "pointChildStartLeft.m_PathID": 351908,
+ "pointChildStartRight.m_FileID": 0,
+ "pointChildStartRight.m_PathID": 387932,
+ "pointChilds": "[4]",
+ "pointChilds[0].m_FileID": 0,
+ "pointChilds[0].m_PathID": 449821,
+ "pointChilds[1].m_FileID": 0,
+ "pointChilds[1].m_PathID": 342105,
+ "pointChilds[2].m_FileID": 0,
+ "pointChilds[2].m_PathID": 342501,
+ "pointChilds[3].m_FileID": 0,
+ "pointChilds[3].m_PathID": 357984,
+ "body.m_FileID": 0,
+ "body.m_PathID": 4746,
+ "idFxFadeIn": 91014,
+ "idFxFadeOut": 91014,
+ "hpHealPer1SecDivided10": 3000.0,
+ "bltIdAttack12": 80144,
+ "dmgBltIdAttack12": 500.0,
+ "allBananaPoints": "[2]",
+ "allBananaPoints[0].m_FileID": 0,
+ "allBananaPoints[0].m_PathID": 312205,
+ "allBananaPoints[1].m_FileID": 0,
+ "allBananaPoints[1].m_PathID": 312214,
+ "idShootObject": 80146,
+ "handPoints": "[2]",
+ "handPoints[0].m_FileID": 0,
+ "handPoints[0].m_PathID": 312215,
+ "handPoints[1].m_FileID": 0,
+ "handPoints[1].m_PathID": 312210,
+ "dmgShoot": 1200.0,
+ "bltIdAttack4": 80147,
+ "pointCircleAttack.m_FileID": 0,
+ "pointCircleAttack.m_PathID": 312218,
+ "pointRockets": "[4]",
+ "pointRockets[0].m_FileID": 0,
+ "pointRockets[0].m_PathID": 312203,
+ "pointRockets[1].m_FileID": 0,
+ "pointRockets[1].m_PathID": 312208,
+ "pointRockets[2].m_FileID": 0,
+ "pointRockets[2].m_PathID": 312212,
+ "pointRockets[3].m_FileID": 0,
+ "pointRockets[3].m_PathID": 312200,
+ "pointTargets": "[4]",
+ "pointTargets[0].m_FileID": 0,
+ "pointTargets[0].m_PathID": 312211,
+ "pointTargets[1].m_FileID": 0,
+ "pointTargets[1].m_PathID": 312209,
+ "pointTargets[2].m_FileID": 0,
+ "pointTargets[2].m_PathID": 312216,
+ "pointTargets[3].m_FileID": 0,
+ "pointTargets[3].m_PathID": 312201,
+ "bltIdAttack6": 80151,
+ "pointAttack6.m_FileID": 0,
+ "pointAttack6.m_PathID": 240964,
+ "dmgBltIdAttack6": 900.0,
+ "bltIdAttack9": "[3]",
+ "bltIdAttack9[0]": 80155,
+ "bltIdAttack9[1]": 80157,
+ "bltIdAttack9[2]": 80156,
+ "dmgBltIdAttack9": 1500.0,
+ "targetLayer.m_Mask": 256,
+ "_gameobject": "Boss-39014"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 131246,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 33285996544,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 497670,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 601579,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 646065,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 71110,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 71112,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 71111,
+ "allObjColliders": "[1]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 633311,
+ "pointChildStartLeft.m_FileID": 0,
+ "pointChildStartLeft.m_PathID": 322724,
+ "pointChildStartRight.m_FileID": 0,
+ "pointChildStartRight.m_PathID": 361850,
+ "pointChilds": "[4]",
+ "pointChilds[0].m_FileID": 0,
+ "pointChilds[0].m_PathID": 419147,
+ "pointChilds[1].m_FileID": 0,
+ "pointChilds[1].m_PathID": 316988,
+ "pointChilds[2].m_FileID": 0,
+ "pointChilds[2].m_PathID": 317959,
+ "pointChilds[3].m_FileID": 0,
+ "pointChilds[3].m_PathID": 390115,
+ "body.m_FileID": 0,
+ "body.m_PathID": 45931,
+ "idFxFadeIn": 91014,
+ "idFxFadeOut": 91014,
+ "hpHealPer1SecDivided10": 3000.0,
+ "bltIdAttack12": 80144,
+ "dmgBltIdAttack12": 500.0,
+ "allBananaPoints": "[2]",
+ "allBananaPoints[0].m_FileID": 0,
+ "allBananaPoints[0].m_PathID": 334440,
+ "allBananaPoints[1].m_FileID": 0,
+ "allBananaPoints[1].m_PathID": 334434,
+ "idShootObject": 80146,
+ "handPoints": "[2]",
+ "handPoints[0].m_FileID": 0,
+ "handPoints[0].m_PathID": 334433,
+ "handPoints[1].m_FileID": 0,
+ "handPoints[1].m_PathID": 334425,
+ "dmgShoot": 1200.0,
+ "bltIdAttack4": 80147,
+ "pointCircleAttack.m_FileID": 0,
+ "pointCircleAttack.m_PathID": 334430,
+ "pointRockets": "[4]",
+ "pointRockets[0].m_FileID": 0,
+ "pointRockets[0].m_PathID": 334442,
+ "pointRockets[1].m_FileID": 0,
+ "pointRockets[1].m_PathID": 334427,
+ "pointRockets[2].m_FileID": 0,
+ "pointRockets[2].m_PathID": 334437,
+ "pointRockets[3].m_FileID": 0,
+ "pointRockets[3].m_PathID": 334444,
+ "pointTargets": "[4]",
+ "pointTargets[0].m_FileID": 0,
+ "pointTargets[0].m_PathID": 334435,
+ "pointTargets[1].m_FileID": 0,
+ "pointTargets[1].m_PathID": 334426,
+ "pointTargets[2].m_FileID": 0,
+ "pointTargets[2].m_PathID": 334432,
+ "pointTargets[3].m_FileID": 0,
+ "pointTargets[3].m_PathID": 334443,
+ "bltIdAttack6": 80151,
+ "pointAttack6.m_FileID": 0,
+ "pointAttack6.m_PathID": 279153,
+ "dmgBltIdAttack6": 900.0,
+ "bltIdAttack9": "[3]",
+ "bltIdAttack9[0]": 80155,
+ "bltIdAttack9[1]": 80157,
+ "bltIdAttack9[2]": 80156,
+ "dmgBltIdAttack9": 1500.0,
+ "targetLayer.m_Mask": 256,
+ "_gameobject": "Parent/Tab (11)/Boss/Boss-39014"
+}
+```
+
+## `Boss11_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 208479,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 15116271616,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 496353,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 593424,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 687989,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 35929,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 35928,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 35927,
+ "allObjColliders": "[1]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 642795,
+ "barrel1Left.m_FileID": 0,
+ "barrel1Left.m_PathID": 243368,
+ "barrel1Right.m_FileID": 0,
+ "barrel1Right.m_PathID": 345586,
+ "allPointsTentacle": "[5]",
+ "allPointsTentacle[0].m_FileID": 0,
+ "allPointsTentacle[0].m_PathID": 349030,
+ "allPointsTentacle[1].m_FileID": 0,
+ "allPointsTentacle[1].m_PathID": 349033,
+ "allPointsTentacle[2].m_FileID": 0,
+ "allPointsTentacle[2].m_PathID": 349038,
+ "allPointsTentacle[3].m_FileID": 0,
+ "allPointsTentacle[3].m_PathID": 349035,
+ "allPointsTentacle[4].m_FileID": 0,
+ "allPointsTentacle[4].m_PathID": 349040,
+ "lookAtPlayer.m_FileID": 0,
+ "lookAtPlayer.m_PathID": 650560,
+ "head.m_FileID": 0,
+ "head.m_PathID": 388143,
+ "bltIdAttack12": 80153,
+ "dmgBltIdAttack12": 500.0,
+ "bltIdAttack3": 80153,
+ "dmgBltIdAttack3": 500.0,
+ "allHandPoints": "[12]",
+ "allHandPoints[0].m_FileID": 0,
+ "allHandPoints[0].m_PathID": 265258,
+ "allHandPoints[1].m_FileID": 0,
+ "allHandPoints[1].m_PathID": 349039,
+ "allHandPoints[2].m_FileID": 0,
+ "allHandPoints[2].m_PathID": 349041,
+ "allHandPoints[3].m_FileID": 0,
+ "allHandPoints[3].m_PathID": 349031,
+ "allHandPoints[4].m_FileID": 0,
+ "allHandPoints[4].m_PathID": 349043,
+ "bltIdAttack4": "[2]",
+ "bltIdAttack4[0]": 80137,
+ "bltIdAttack4[1]": 80138,
+ "dmgBltIdAttack4": 450.0,
+ "bltIdAttack41": "[2]",
+ "bltIdAttack41[0]": 80139,
+ "bltIdAttack41[1]": 80140,
+ "dmgBltIdAttack41": 450.0,
+ "bltIdAttack78": "[2]",
+ "bltIdAttack78[0]": 80139,
+ "bltIdAttack78[1]": 80140,
+ "dmgBltIdAttack78": 900.0,
+ "pointRootLaser.m_FileID": 0,
+ "pointRootLaser.m_PathID": 349225,
+ "pointEndLaser.m_FileID": 0,
+ "pointEndLaser.m_PathID": 324086,
+ "bltIdAttack5": 80136,
+ "dmgBltIdAttack5": 900.0,
+ "attack5Point.m_FileID": 0,
+ "attack5Point.m_PathID": 265257,
+ "targetLayer.m_Mask": 256,
+ "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (10)/Boss/Boss-39013"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 160482,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 15116271616,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 493593,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 635897,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 662183,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 100616,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 100624,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 100629,
+ "allObjColliders": "[1]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 585373,
+ "barrel1Left.m_FileID": 0,
+ "barrel1Left.m_PathID": 348709,
+ "barrel1Right.m_FileID": 0,
+ "barrel1Right.m_PathID": 255053,
+ "allPointsTentacle": "[5]",
+ "allPointsTentacle[0].m_FileID": 0,
+ "allPointsTentacle[0].m_PathID": 241555,
+ "allPointsTentacle[1].m_FileID": 0,
+ "allPointsTentacle[1].m_PathID": 240938,
+ "allPointsTentacle[2].m_FileID": 0,
+ "allPointsTentacle[2].m_PathID": 240763,
+ "allPointsTentacle[3].m_FileID": 0,
+ "allPointsTentacle[3].m_PathID": 240909,
+ "allPointsTentacle[4].m_FileID": 0,
+ "allPointsTentacle[4].m_PathID": 240166,
+ "lookAtPlayer.m_FileID": 0,
+ "lookAtPlayer.m_PathID": 700119,
+ "head.m_FileID": 0,
+ "head.m_PathID": 435918,
+ "bltIdAttack12": 80153,
+ "dmgBltIdAttack12": 500.0,
+ "bltIdAttack3": 80153,
+ "dmgBltIdAttack3": 500.0,
+ "allHandPoints": "[12]",
+ "allHandPoints[0].m_FileID": 0,
+ "allHandPoints[0].m_PathID": 338953,
+ "allHandPoints[1].m_FileID": 0,
+ "allHandPoints[1].m_PathID": 240277,
+ "allHandPoints[2].m_FileID": 0,
+ "allHandPoints[2].m_PathID": 240058,
+ "allHandPoints[3].m_FileID": 0,
+ "allHandPoints[3].m_PathID": 241480,
+ "allHandPoints[4].m_FileID": 0,
+ "allHandPoints[4].m_PathID": 240001,
+ "bltIdAttack4": "[2]",
+ "bltIdAttack4[0]": 80137,
+ "bltIdAttack4[1]": 80138,
+ "dmgBltIdAttack4": 450.0,
+ "bltIdAttack41": "[2]",
+ "bltIdAttack41[0]": 80139,
+ "bltIdAttack41[1]": 80140,
+ "dmgBltIdAttack41": 450.0,
+ "bltIdAttack78": "[2]",
+ "bltIdAttack78[0]": 80139,
+ "bltIdAttack78[1]": 80140,
+ "dmgBltIdAttack78": 900.0,
+ "pointRootLaser.m_FileID": 0,
+ "pointRootLaser.m_PathID": 243728,
+ "pointEndLaser.m_FileID": 0,
+ "pointEndLaser.m_PathID": 278181,
+ "bltIdAttack5": 80136,
+ "dmgBltIdAttack5": 900.0,
+ "attack5Point.m_FileID": 0,
+ "attack5Point.m_PathID": 338954,
+ "targetLayer.m_Mask": 256,
+ "_gameobject": "Boss-39013"
+}
+```
+
+## `Enemy_HitSkeletonRenderer` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 82100,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 21021851648,
+ "m_Name": "",
+ "slotNames": "[2]",
+ "slotNames[0]": "Wing1.2",
+ "slotNames[1]": "Gun2",
+ "skeleton.m_FileID": 0,
+ "skeleton.m_PathID": 602882,
+ "hitColor.r": 0.729411780834198,
+ "hitColor.g": 0.729411780834198,
+ "hitColor.b": 0.729411780834198,
+ "hitColor.a": 1.0,
+ "_gameobject": "Enemy_Ingame/Body/Boss 1/Slot_Guns1/Gun_Wing1.2/Gun_Wing1.2"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 197149,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 21021851648,
+ "m_Name": "",
+ "slotNames": "[2]",
+ "slotNames[0]": "Wing1.1",
+ "slotNames[1]": "Gun",
+ "skeleton.m_FileID": 0,
+ "skeleton.m_PathID": 602882,
+ "hitColor.r": 0.729411780834198,
+ "hitColor.g": 0.729411780834198,
+ "hitColor.b": 0.729411780834198,
+ "hitColor.a": 1.0,
+ "_gameobject": "Gun_Wing1.1/Gun_Wing1.1"
+}
+```
+
+## `MB9_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 33287,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 15233712128,
+ "m_Name": "",
+ "pathCreator.m_FileID": 0,
+ "pathCreator.m_PathID": 674465,
+ "pathCreatorAppear.m_FileID": 0,
+ "pathCreatorAppear.m_PathID": 680991,
+ "parent.m_FileID": 0,
+ "parent.m_PathID": 422614,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 680980,
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 498167,
+ "flameParticle.m_FileID": 0,
+ "flameParticle.m_PathID": 503919,
+ "flameParticles.m_FileID": 0,
+ "flameParticles.m_PathID": 581092,
+ "damage": 1000.0,
+ "listChilds": "[11]",
+ "listChilds[0].m_FileID": 0,
+ "listChilds[0].m_PathID": 422621,
+ "listChilds[1].m_FileID": 0,
+ "listChilds[1].m_PathID": 422615,
+ "listChilds[2].m_FileID": 0,
+ "listChilds[2].m_PathID": 422646,
+ "listChilds[3].m_FileID": 0,
+ "listChilds[3].m_PathID": 422643,
+ "listChilds[4].m_FileID": 0,
+ "listChilds[4].m_PathID": 422619,
+ "listDst": "[0]",
+ "goGun": "[4]",
+ "goGun[0].m_FileID": 0,
+ "goGun[0].m_PathID": 195873,
+ "goGun[1].m_FileID": 0,
+ "goGun[1].m_PathID": 195858,
+ "goGun[2].m_FileID": 0,
+ "goGun[2].m_PathID": 195866,
+ "goGun[3].m_FileID": 0,
+ "goGun[3].m_PathID": 195862,
+ "dstPointStartEvents": "[5]",
+ "dstPointStartEvents[0]": 0.0,
+ "dstPointStartEvents[1]": 32.29999923706055,
+ "dstPointStartEvents[2]": 87.0,
+ "dstPointStartEvents[3]": 122.80999755859375,
+ "dstPointStartEvents[4]": 161.10000610351562,
+ "dstPointEndedEvents": "[4]",
+ "dstPointEndedEvents[0]": 10.800000190734863,
+ "dstPointEndedEvents[1]": 45.7599983215332,
+ "dstPointEndedEvents[2]": 89.69999694824219,
+ "dstPointEndedEvents[3]": 125.30000305175781,
+ "_gameobject": "Boss-37011"
+}
+```
+
+## `Boss10_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 122762,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 13136560128,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 498860,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 617105,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 643108,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 182439,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 182437,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 182438,
+ "laserGuns": "[2]",
+ "laserGuns[0].m_FileID": 0,
+ "laserGuns[0].m_PathID": 205678,
+ "laserGuns[1].m_FileID": 0,
+ "laserGuns[1].m_PathID": 232977,
+ "laserDamage": 50.0,
+ "allObjColliders": "[2]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 616538,
+ "allObjColliders[1].m_FileID": 0,
+ "allObjColliders[1].m_PathID": 652864,
+ "barrel1Left.m_FileID": 0,
+ "barrel1Left.m_PathID": 347387,
+ "barrel1Right.m_FileID": 0,
+ "barrel1Right.m_PathID": 347386,
+ "circlePoint.m_FileID": 0,
+ "circlePoint.m_PathID": 460277,
+ "bltIdAttack1TwoHandBig": 80130,
+ "dmgBltIdAttack1TwoHandBig": 400.0,
+ "bltIdAttack1TwoHandSmall": 80125,
+ "dmgBltIdAttack1TwoHandSmall": 350.0,
+ "bltIdAttack23": 80126,
+ "dmgBltIdAttack23": 450.0,
+ "bltIdAttack4TwoHand": 80127,
+ "dmgBltIdAttack4TwoHand": 800.0,
+ "allHandPoints": "[2]",
+ "allHandPoints[0].m_FileID": 0,
+ "allHandPoints[0].m_PathID": 347387,
+ "allHandPoints[1].m_FileID": 0,
+ "allHandPoints[1].m_PathID": 347386,
+ "allHand8Points": "[2]",
+ "allHand8Points[0].m_FileID": 0,
+ "allHand8Points[0].m_PathID": 454729,
+ "allHand8Points[1].m_FileID": 0,
+ "allHand8Points[1].m_PathID": 256995,
+ "bltIdAttack8": 80128,
+ "dmgBltIdAttack8": 450.0,
+ "allHand9Points": "[2]",
+ "allHand9Points[0].m_FileID": 0,
+ "allHand9Points[0].m_PathID": 454729,
+ "allHand9Points[1].m_FileID": 0,
+ "allHand9Points[1].m_PathID": 256995,
+ "bltIdAttack9": 80128,
+ "dmgBltIdAttack9": 450.0,
+ "knifeLeft.m_FileID": 0,
+ "knifeLeft.m_PathID": 256997,
+ "knifeRight.m_FileID": 0,
+ "knifeRight.m_PathID": 256998,
+ "bltIdAttackKnife": 80129,
+ "dmgBltIdAttackKnife": 350.0,
+ "moveObject.m_FileID": 0,
+ "moveObject.m_PathID": 352553,
+ "targetLayer.m_Mask": 256,
+ "_gameobject": "Boss/Boss-39012"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 160481,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 13136560128,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 494536,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 652116,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 662182,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 100615,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 100623,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 100628,
+ "laserGuns": "[2]",
+ "laserGuns[0].m_FileID": 0,
+ "laserGuns[0].m_PathID": 4437,
+ "laserGuns[1].m_FileID": 0,
+ "laserGuns[1].m_PathID": 40421,
+ "laserDamage": 180.0,
+ "allObjColliders": "[2]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 659593,
+ "allObjColliders[1].m_FileID": 0,
+ "allObjColliders[1].m_PathID": 618169,
+ "barrel1Left.m_FileID": 0,
+ "barrel1Left.m_PathID": 397915,
+ "barrel1Right.m_FileID": 0,
+ "barrel1Right.m_PathID": 397914,
+ "circlePoint.m_FileID": 0,
+ "circlePoint.m_PathID": 274635,
+ "bltIdAttack1TwoHandBig": 80130,
+ "dmgBltIdAttack1TwoHandBig": 500.0,
+ "bltIdAttack1TwoHandSmall": 80125,
+ "dmgBltIdAttack1TwoHandSmall": 450.0,
+ "bltIdAttack23": 80126,
+ "dmgBltIdAttack23": 600.0,
+ "bltIdAttack4TwoHand": 80127,
+ "dmgBltIdAttack4TwoHand": 1350.0,
+ "allHandPoints": "[2]",
+ "allHandPoints[0].m_FileID": 0,
+ "allHandPoints[0].m_PathID": 397915,
+ "allHandPoints[1].m_FileID": 0,
+ "allHandPoints[1].m_PathID": 397914,
+ "allHand8Points": "[2]",
+ "allHand8Points[0].m_FileID": 0,
+ "allHand8Points[0].m_PathID": 284675,
+ "allHand8Points[1].m_FileID": 0,
+ "allHand8Points[1].m_PathID": 431254,
+ "bltIdAttack8": 80128,
+ "dmgBltIdAttack8": 600.0,
+ "allHand9Points": "[2]",
+ "allHand9Points[0].m_FileID": 0,
+ "allHand9Points[0].m_PathID": 284675,
+ "allHand9Points[1].m_FileID": 0,
+ "allHand9Points[1].m_PathID": 431254,
+ "bltIdAttack9": 80128,
+ "dmgBltIdAttack9": 600.0,
+ "knifeLeft.m_FileID": 0,
+ "knifeLeft.m_PathID": 431252,
+ "knifeRight.m_FileID": 0,
+ "knifeRight.m_PathID": 431251,
+ "bltIdAttackKnife": 80129,
+ "dmgBltIdAttackKnife": 450.0,
+ "moveObject.m_FileID": 0,
+ "moveObject.m_PathID": 388791,
+ "targetLayer.m_Mask": 256,
+ "_gameobject": "Boss-39012"
 }
 ```
 
@@ -2308,6 +4111,584 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "endPoint.m_FileID": 0,
  "endPoint.m_PathID": 340238,
  "_gameobject": "Wave_0011"
+}
+```
+
+## `MB6_ChildDirector` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 132780,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5100273664,
+ "m_Name": "",
+ "moveParent.m_FileID": 0,
+ "moveParent.m_PathID": 325085,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 657145,
+ "move": false,
+ "defaultPos.x": -3.0,
+ "defaultPos.y": 5.0,
+ "defaultPos.z": 0.0,
+ "line.m_FileID": 0,
+ "line.m_PathID": 499951,
+ "allPosLine": "[2]",
+ "allPosLine[0].m_FileID": 0,
+ "allPosLine[0].m_PathID": 325085,
+ "allPosLine[1].m_FileID": 0,
+ "allPosLine[1].m_PathID": 284651,
+ "_gameobject": "Boss_Childs/All_Childs/Child (1)-BuffL"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 165874,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5100273664,
+ "m_Name": "",
+ "moveParent.m_FileID": 0,
+ "moveParent.m_PathID": 349441,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 598037,
+ "move": false,
+ "defaultPos.x": -3.0,
+ "defaultPos.y": 5.0,
+ "defaultPos.z": 0.0,
+ "line.m_FileID": 0,
+ "line.m_PathID": 0,
+ "allPosLine": "[0]",
+ "_gameobject": "Boss_Childs/All_Childs/Child (4)-GunR"
+}
+```
+
+## `Enemy_DestroyAttack` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185302,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 2919235584,
+ "m_Name": "",
+ "anim.m_FileID": 0,
+ "anim.m_PathID": 494099,
+ "idFragment": 80116,
+ "numberFragment": 14,
+ "bltDamage": 500.0,
+ "bltChildSpeed": 8.0,
+ "bltChildLifetime": 6.0,
+ "targetLayer.m_Mask": 256,
+ "destroyScript.m_FileID": 0,
+ "destroyScript.m_PathID": 697856,
+ "border.x": -10.0,
+ "border.y": 10.0,
+ "border.z": -20.0,
+ "border.w": 20.0,
+ "_gameobject": "CB-30040/Enemy_Ingame"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185358,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 2919235584,
+ "m_Name": "",
+ "anim.m_FileID": 0,
+ "anim.m_PathID": 494100,
+ "idFragment": 80116,
+ "numberFragment": 14,
+ "bltDamage": 500.0,
+ "bltChildSpeed": 8.0,
+ "bltChildLifetime": 6.0,
+ "targetLayer.m_Mask": 256,
+ "destroyScript.m_FileID": 0,
+ "destroyScript.m_PathID": 697863,
+ "border.x": -10.0,
+ "border.y": 10.0,
+ "border.z": -20.0,
+ "border.w": 20.0,
+ "_gameobject": "CB-30040/Enemy_Ingame"
+}
+```
+
+## `MB12_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 63302,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 24712839168,
+ "m_Name": "",
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 610334,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 688542,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 659896,
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 496024,
+ "targetLayer.m_Mask": 256,
+ "punchPoints": "[2]",
+ "punchPoints[0].m_FileID": 0,
+ "punchPoints[0].m_PathID": 265368,
+ "punchPoints[1].m_FileID": 0,
+ "punchPoints[1].m_PathID": 265371,
+ "idPunchBlt": 80175,
+ "punchBltDmg": 400.0,
+ "throwPoints": "[2]",
+ "throwPoints[0].m_FileID": 0,
+ "throwPoints[0].m_PathID": 265376,
+ "throwPoints[1].m_FileID": 0,
+ "throwPoints[1].m_PathID": 265383,
+ "idThrowBlt": 80176,
+ "throwBltDmg": 800.0,
+ "wallPoints": "[2]",
+ "wallPoints[0].m_FileID": 0,
+ "wallPoints[0].m_PathID": 265382,
+ "wallPoints[1].m_FileID": 0,
+ "wallPoints[1].m_PathID": 265385,
+ "idWallBltL": 80177,
+ "idWallBltR": 80178,
+ "wallBltDmg": 1000000.0,
+ "allHpParents": "[2]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 31046,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 31044,
+ "_gameobject": "Boss-37014"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 142525,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 24712839168,
+ "m_Name": "",
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 652347,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 640440,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 588179,
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 497898,
+ "targetLayer.m_Mask": 256,
+ "punchPoints": "[2]",
+ "punchPoints[0].m_FileID": 0,
+ "punchPoints[0].m_PathID": 408671,
+ "punchPoints[1].m_FileID": 0,
+ "punchPoints[1].m_PathID": 408667,
+ "idPunchBlt": 80175,
+ "punchBltDmg": 400.0,
+ "throwPoints": "[2]",
+ "throwPoints[0].m_FileID": 0,
+ "throwPoints[0].m_PathID": 408686,
+ "throwPoints[1].m_FileID": 0,
+ "throwPoints[1].m_PathID": 408678,
+ "idThrowBlt": 80176,
+ "throwBltDmg": 800.0,
+ "wallPoints": "[2]",
+ "wallPoints[0].m_FileID": 0,
+ "wallPoints[0].m_PathID": 408679,
+ "wallPoints[1].m_FileID": 0,
+ "wallPoints[1].m_PathID": 408676,
+ "idWallBltL": 80177,
+ "idWallBltR": 80178,
+ "wallBltDmg": 1000000.0,
+ "allHpParents": "[2]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 180966,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 180969,
+ "_gameobject": "Boss/Boss-37014"
+}
+```
+
+## `Boss18_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 73244,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 7247757312,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 493933,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 687445,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 615907,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 11518,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 109680,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 136742,
+ "allObjColliders": "[1]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 694730,
+ "targetLayer.m_Mask": 256,
+ "rocketPoint.m_FileID": 0,
+ "rocketPoint.m_PathID": 355618,
+ "idBulletRocket": 80188,
+ "damageRocket": 600.0,
+ "bltHandAttack1": 80195,
+ "damageBltHand1": 600.0,
+ "bltHandAttack2": 80186,
+ "damageBltHand2": 1200.0,
+ "handParentPoints": "[2]",
+ "handParentPoints[0].m_FileID": 0,
+ "handParentPoints[0].m_PathID": 262535,
+ "handParentPoints[1].m_FileID": 0,
+ "handParentPoints[1].m_PathID": 453412,
+ "shoulderGunPoints": "[2]",
+ "shoulderGunPoints[0].m_FileID": 0,
+ "shoulderGunPoints[0].m_PathID": 389850,
+ "shoulderGunPoints[1].m_FileID": 0,
+ "shoulderGunPoints[1].m_PathID": 299756,
+ "bltShoulderGun": 80189,
+ "damageShoulderGun": 350.0,
+ "bodyRotate.m_FileID": 0,
+ "bodyRotate.m_PathID": 366895,
+ "bltHandGun": 80190,
+ "handGunPoints": "[2]",
+ "handGunPoints[0].m_FileID": 0,
+ "handGunPoints[0].m_PathID": 410030,
+ "handGunPoints[1].m_FileID": 0,
+ "handGunPoints[1].m_PathID": 277020,
+ "damageHandGun": 450.0,
+ "bltReflexId": 80191,
+ "damageBulletReflex": 800.0,
+ "allBombPoints": "[2]",
+ "allBombPoints[0].m_FileID": 0,
+ "allBombPoints[0].m_PathID": 302081,
+ "allBombPoints[1].m_FileID": 0,
+ "allBombPoints[1].m_PathID": 359936,
+ "bltBombId": 80192,
+ "damageBomb": 800.0,
+ "bltTurretId": 80193,
+ "turretPoint.m_FileID": 0,
+ "turretPoint.m_PathID": 427792,
+ "damageTurret": 400.0,
+ "blackHoldPoint.m_FileID": 0,
+ "blackHoldPoint.m_PathID": 390885,
+ "damageBulletTransform": 450.0,
+ "_gameobject": "Boss-39018"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 39697,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 7247757312,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 495483,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 645596,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 598188,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 91439,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 59540,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 201728,
+ "allObjColliders": "[1]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 668804,
+ "targetLayer.m_Mask": 256,
+ "rocketPoint.m_FileID": 0,
+ "rocketPoint.m_PathID": 280025,
+ "idBulletRocket": 80188,
+ "damageRocket": 600.0,
+ "bltHandAttack1": 80195,
+ "damageBltHand1": 600.0,
+ "bltHandAttack2": 80186,
+ "damageBltHand2": 1200.0,
+ "handParentPoints": "[2]",
+ "handParentPoints[0].m_FileID": 0,
+ "handParentPoints[0].m_PathID": 309943,
+ "handParentPoints[1].m_FileID": 0,
+ "handParentPoints[1].m_PathID": 393837,
+ "shoulderGunPoints": "[2]",
+ "shoulderGunPoints[0].m_FileID": 0,
+ "shoulderGunPoints[0].m_PathID": 465124,
+ "shoulderGunPoints[1].m_FileID": 0,
+ "shoulderGunPoints[1].m_PathID": 333010,
+ "bltShoulderGun": 80189,
+ "damageShoulderGun": 350.0,
+ "bodyRotate.m_FileID": 0,
+ "bodyRotate.m_PathID": 427953,
+ "bltHandGun": 80190,
+ "handGunPoints": "[2]",
+ "handGunPoints[0].m_FileID": 0,
+ "handGunPoints[0].m_PathID": 441131,
+ "handGunPoints[1].m_FileID": 0,
+ "handGunPoints[1].m_PathID": 352526,
+ "damageHandGun": 450.0,
+ "bltReflexId": 80191,
+ "damageBulletReflex": 800.0,
+ "allBombPoints": "[2]",
+ "allBombPoints[0].m_FileID": 0,
+ "allBombPoints[0].m_PathID": 266650,
+ "allBombPoints[1].m_FileID": 0,
+ "allBombPoints[1].m_PathID": 433916,
+ "bltBombId": 80192,
+ "damageBomb": 800.0,
+ "bltTurretId": 80193,
+ "turretPoint.m_FileID": 0,
+ "turretPoint.m_PathID": 367148,
+ "damageTurret": 400.0,
+ "blackHoldPoint.m_FileID": 0,
+ "blackHoldPoint.m_PathID": 464199,
+ "damageBulletTransform": 450.0,
+ "_gameobject": "Parent/Tab (16)/Boss/Boss-39018"
+}
+```
+
+## `Boss_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 150162,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 33269219328,
+ "m_Name": "",
+ "attackPhases.m_FileID": 0,
+ "attackPhases.m_PathID": 634645,
+ "attackTypes.m_FileID": 0,
+ "attackTypes.m_PathID": 634644,
+ "_gameobject": "Boss-39020"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 230426,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 33269219328,
+ "m_Name": "",
+ "attackPhases.m_FileID": 0,
+ "attackPhases.m_PathID": 615301,
+ "attackTypes.m_FileID": 0,
+ "attackTypes.m_PathID": 615302,
+ "_gameobject": "Boss-39021"
+}
+```
+
+## `MB5_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 71922,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 2214592512,
+ "m_Name": "",
+ "bodyRotate.m_FileID": 0,
+ "bodyRotate.m_PathID": 649362,
+ "moveParent.m_FileID": 0,
+ "moveParent.m_PathID": 304419,
+ "circle1.m_FileID": 0,
+ "circle1.m_PathID": 366482,
+ "circle2.m_FileID": 0,
+ "circle2.m_PathID": 366514,
+ "mainCol.m_FileID": 0,
+ "mainCol.m_PathID": 486637,
+ "class0Gun1.m_FileID": 0,
+ "class0Gun1.m_PathID": 137195,
+ "centerPoint.m_FileID": 0,
+ "centerPoint.m_PathID": 366350,
+ "class1Points": "[2]",
+ "class1Points[0].m_FileID": 0,
+ "class1Points[0].m_PathID": 366434,
+ "class1Points[1].m_FileID": 0,
+ "class1Points[1].m_PathID": 366456,
+ "class1Childs": "[2]",
+ "class1Childs[0].m_FileID": 0,
+ "class1Childs[0].m_PathID": 366318,
+ "class1Childs[1].m_FileID": 0,
+ "class1Childs[1].m_PathID": 366404,
+ "class1ChildsHp": "[2]",
+ "class1ChildsHp[0].m_FileID": 0,
+ "class1ChildsHp[0].m_PathID": 137187,
+ "class1ChildsHp[1].m_FileID": 0,
+ "class1ChildsHp[1].m_PathID": 137321,
+ "class2Points": "[3]",
+ "class2Points[0].m_FileID": 0,
+ "class2Points[0].m_PathID": 366340,
+ "class2Points[1].m_FileID": 0,
+ "class2Points[1].m_PathID": 366334,
+ "class2Points[2].m_FileID": 0,
+ "class2Points[2].m_PathID": 366442,
+ "class2Childs": "[3]",
+ "class2Childs[0].m_FileID": 0,
+ "class2Childs[0].m_PathID": 366446,
+ "class2Childs[1].m_FileID": 0,
+ "class2Childs[1].m_PathID": 366512,
+ "class2Childs[2].m_FileID": 0,
+ "class2Childs[2].m_PathID": 366480,
+ "class2Shields": "[3]",
+ "class2Shields[0].m_FileID": 0,
+ "class2Shields[0].m_PathID": 366490,
+ "class2Shields[1].m_FileID": 0,
+ "class2Shields[1].m_PathID": 366408,
+ "class2Shields[2].m_FileID": 0,
+ "class2Shields[2].m_PathID": 366460,
+ "class2ChildsHp": "[3]",
+ "class2ChildsHp[0].m_FileID": 0,
+ "class2ChildsHp[0].m_PathID": 137191,
+ "class2ChildsHp[1].m_FileID": 0,
+ "class2ChildsHp[1].m_PathID": 137179,
+ "class2ChildsHp[2].m_FileID": 0,
+ "class2ChildsHp[2].m_PathID": 137251,
+ "allPlasmaBeams": "[4]",
+ "allPlasmaBeams[0].m_FileID": 0,
+ "allPlasmaBeams[0].m_PathID": 649552,
+ "allPlasmaBeams[1].m_FileID": 0,
+ "allPlasmaBeams[1].m_PathID": 649458,
+ "allPlasmaBeams[2].m_FileID": 0,
+ "allPlasmaBeams[2].m_PathID": 649540,
+ "allPlasmaBeams[3].m_FileID": 0,
+ "allPlasmaBeams[3].m_PathID": 649554,
+ "parentChilds.m_FileID": 0,
+ "parentChilds.m_PathID": 137201,
+ "_gameobject": "Boss-37008"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 71923,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 2214592512,
+ "m_Name": "",
+ "bodyRotate.m_FileID": 0,
+ "bodyRotate.m_PathID": 649363,
+ "moveParent.m_FileID": 0,
+ "moveParent.m_PathID": 304420,
+ "circle1.m_FileID": 0,
+ "circle1.m_PathID": 366483,
+ "circle2.m_FileID": 0,
+ "circle2.m_PathID": 366515,
+ "mainCol.m_FileID": 0,
+ "mainCol.m_PathID": 486638,
+ "class0Gun1.m_FileID": 0,
+ "class0Gun1.m_PathID": 137196,
+ "centerPoint.m_FileID": 0,
+ "centerPoint.m_PathID": 366351,
+ "class1Points": "[2]",
+ "class1Points[0].m_FileID": 0,
+ "class1Points[0].m_PathID": 366435,
+ "class1Points[1].m_FileID": 0,
+ "class1Points[1].m_PathID": 366457,
+ "class1Childs": "[2]",
+ "class1Childs[0].m_FileID": 0,
+ "class1Childs[0].m_PathID": 366319,
+ "class1Childs[1].m_FileID": 0,
+ "class1Childs[1].m_PathID": 366405,
+ "class1ChildsHp": "[2]",
+ "class1ChildsHp[0].m_FileID": 0,
+ "class1ChildsHp[0].m_PathID": 137188,
+ "class1ChildsHp[1].m_FileID": 0,
+ "class1ChildsHp[1].m_PathID": 137322,
+ "class2Points": "[3]",
+ "class2Points[0].m_FileID": 0,
+ "class2Points[0].m_PathID": 366341,
+ "class2Points[1].m_FileID": 0,
+ "class2Points[1].m_PathID": 366335,
+ "class2Points[2].m_FileID": 0,
+ "class2Points[2].m_PathID": 366443,
+ "class2Childs": "[3]",
+ "class2Childs[0].m_FileID": 0,
+ "class2Childs[0].m_PathID": 366447,
+ "class2Childs[1].m_FileID": 0,
+ "class2Childs[1].m_PathID": 366513,
+ "class2Childs[2].m_FileID": 0,
+ "class2Childs[2].m_PathID": 366481,
+ "class2Shields": "[3]",
+ "class2Shields[0].m_FileID": 0,
+ "class2Shields[0].m_PathID": 366491,
+ "class2Shields[1].m_FileID": 0,
+ "class2Shields[1].m_PathID": 366409,
+ "class2Shields[2].m_FileID": 0,
+ "class2Shields[2].m_PathID": 366461,
+ "class2ChildsHp": "[3]",
+ "class2ChildsHp[0].m_FileID": 0,
+ "class2ChildsHp[0].m_PathID": 137192,
+ "class2ChildsHp[1].m_FileID": 0,
+ "class2ChildsHp[1].m_PathID": 137180,
+ "class2ChildsHp[2].m_FileID": 0,
+ "class2ChildsHp[2].m_PathID": 137252,
+ "allPlasmaBeams": "[4]",
+ "allPlasmaBeams[0].m_FileID": 0,
+ "allPlasmaBeams[0].m_PathID": 649553,
+ "allPlasmaBeams[1].m_FileID": 0,
+ "allPlasmaBeams[1].m_PathID": 649459,
+ "allPlasmaBeams[2].m_FileID": 0,
+ "allPlasmaBeams[2].m_PathID": 649541,
+ "allPlasmaBeams[3].m_FileID": 0,
+ "allPlasmaBeams[3].m_PathID": 649555,
+ "parentChilds.m_FileID": 0,
+ "parentChilds.m_PathID": 137202,
+ "_gameobject": "Boss-37005"
+}
+```
+
+## `Boss21_AttackPhases` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 230426,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 27531411456,
+ "m_Name": "",
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 75829,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 75832,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 75837,
+ "allColliders": "[1]",
+ "allColliders[0].m_FileID": 0,
+ "allColliders[0].m_PathID": 487783,
+ "allObjColliders": "[1]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 617302,
+ "attackTypes.m_FileID": 0,
+ "attackTypes.m_PathID": 615302,
+ "animationEvents.m_FileID": 0,
+ "animationEvents.m_PathID": 617279,
+ "animators.m_FileID": 0,
+ "animators.m_PathID": 498650,
+ "roundStart": 1,
+ "_gameobject": "Boss-39021"
 }
 ```
 
@@ -2349,6 +4730,468 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "btnExitCover.m_FileID": 0,
  "btnExitCover.m_PathID": 110977,
  "_gameobject": "BOARD_ENDGAME"
+}
+```
+
+## `MB7_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 81919,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 34141634560,
+ "m_Name": "",
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 620679,
+ "path.m_FileID": 0,
+ "path.m_PathID": 700719,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 670832,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 687951,
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 498446,
+ "allGunAttacks1": "[4]",
+ "allGunAttacks1[0].m_FileID": 0,
+ "allGunAttacks1[0].m_PathID": 208376,
+ "allGunAttacks1[1].m_FileID": 0,
+ "allGunAttacks1[1].m_PathID": 208385,
+ "allGunAttacks1[2].m_FileID": 0,
+ "allGunAttacks1[2].m_PathID": 208377,
+ "allGunAttacks1[3].m_FileID": 0,
+ "allGunAttacks1[3].m_PathID": 208384,
+ "gunBigCenter.m_FileID": 0,
+ "gunBigCenter.m_PathID": 687910,
+ "parentHealth.m_FileID": 0,
+ "parentHealth.m_PathID": 208389,
+ "_gameobject": "Boss-37009"
+}
+```
+
+## `MB3_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 73245,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 2583691264,
+ "m_Name": "",
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 615868,
+ "path.m_FileID": 0,
+ "path.m_PathID": 690400,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 660402,
+ "allGunCanHitTurn1": "[1]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 40762,
+ "allGunHideTurn1": "[5]",
+ "allGunHideTurn1[0].m_FileID": 0,
+ "allGunHideTurn1[0].m_PathID": 162861,
+ "allGunHideTurn1[1].m_FileID": 0,
+ "allGunHideTurn1[1].m_PathID": 142382,
+ "allGunHideTurn1[2].m_FileID": 0,
+ "allGunHideTurn1[2].m_PathID": 102399,
+ "allGunHideTurn1[3].m_FileID": 0,
+ "allGunHideTurn1[3].m_PathID": 131259,
+ "allGunHideTurn1[4].m_FileID": 0,
+ "allGunHideTurn1[4].m_PathID": 69435,
+ "_gameobject": "Boss-37003"
+}
+```
+
+## `Boss7_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 86825,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 33554432000,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 495537,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 623619,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 623615,
+ "allGunCanHitTurn1": "[3]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 86751,
+ "allGunCanHitTurn1[1].m_FileID": 0,
+ "allGunCanHitTurn1[1].m_PathID": 86784,
+ "allGunCanHitTurn1[2].m_FileID": 0,
+ "allGunCanHitTurn1[2].m_PathID": 86787,
+ "allGunCanHitTurn2": "[2]",
+ "allGunCanHitTurn2[0].m_FileID": 0,
+ "allGunCanHitTurn2[0].m_PathID": 86790,
+ "allGunCanHitTurn2[1].m_FileID": 0,
+ "allGunCanHitTurn2[1].m_PathID": 86764,
+ "allGunCanHitTurn3": "[1]",
+ "allGunCanHitTurn3[0].m_FileID": 0,
+ "allGunCanHitTurn3[0].m_PathID": 86785,
+ "dieFx.m_FileID": 0,
+ "dieFx.m_PathID": 86848,
+ "pointStompingLeft.m_FileID": 0,
+ "pointStompingLeft.m_PathID": 318734,
+ "pointStompingRight.m_FileID": 0,
+ "pointStompingRight.m_PathID": 318691,
+ "pointCircle.m_FileID": 0,
+ "pointCircle.m_PathID": 318713,
+ "gunAttackRandom": "[2]",
+ "gunAttackRandom[0].m_FileID": 0,
+ "gunAttackRandom[0].m_PathID": 86774,
+ "gunAttackRandom[1].m_FileID": 0,
+ "gunAttackRandom[1].m_PathID": 86798,
+ "targetLayer.m_Mask": 256,
+ "bltSpeed": 2.0,
+ "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (6)/Boss/Boss-39008"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 131048,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 33554432000,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 498020,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 610937,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 645994,
+ "allGunCanHitTurn1": "[3]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 189794,
+ "allGunCanHitTurn1[1].m_FileID": 0,
+ "allGunCanHitTurn1[1].m_PathID": 189731,
+ "allGunCanHitTurn1[2].m_FileID": 0,
+ "allGunCanHitTurn1[2].m_PathID": 189790,
+ "allGunCanHitTurn2": "[2]",
+ "allGunCanHitTurn2[0].m_FileID": 0,
+ "allGunCanHitTurn2[0].m_PathID": 189793,
+ "allGunCanHitTurn2[1].m_FileID": 0,
+ "allGunCanHitTurn2[1].m_PathID": 189751,
+ "allGunCanHitTurn3": "[1]",
+ "allGunCanHitTurn3[0].m_FileID": 0,
+ "allGunCanHitTurn3[0].m_PathID": 189732,
+ "dieFx.m_FileID": 0,
+ "dieFx.m_PathID": 12300,
+ "pointStompingLeft.m_FileID": 0,
+ "pointStompingLeft.m_PathID": 416964,
+ "pointStompingRight.m_FileID": 0,
+ "pointStompingRight.m_PathID": 416937,
+ "pointCircle.m_FileID": 0,
+ "pointCircle.m_PathID": 416983,
+ "gunAttackRandom": "[2]",
+ "gunAttackRandom[0].m_FileID": 0,
+ "gunAttackRandom[0].m_PathID": 189745,
+ "gunAttackRandom[1].m_FileID": 0,
+ "gunAttackRandom[1].m_PathID": 189785,
+ "targetLayer.m_Mask": 256,
+ "bltSpeed": 2.0,
+ "_gameobject": "Boss-39008"
+}
+```
+
+## `Boss8_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 86927,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 27715960832,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 495541,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 623666,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 623752,
+ "allGunCanHitTurn1": "[2]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 87037,
+ "allGunCanHitTurn1[1].m_FileID": 0,
+ "allGunCanHitTurn1[1].m_PathID": 86988,
+ "allGunCanHitTurn2": "[2]",
+ "allGunCanHitTurn2[0].m_FileID": 0,
+ "allGunCanHitTurn2[0].m_PathID": 86939,
+ "allGunCanHitTurn2[1].m_FileID": 0,
+ "allGunCanHitTurn2[1].m_PathID": 87028,
+ "allGunCanHitTurn3": "[1]",
+ "allGunCanHitTurn3[0].m_FileID": 0,
+ "allGunCanHitTurn3[0].m_PathID": 86995,
+ "mainBox.m_FileID": 0,
+ "mainBox.m_PathID": 0,
+ "gunHandL.m_FileID": 0,
+ "gunHandL.m_PathID": 495540,
+ "gunHandR.m_FileID": 0,
+ "gunHandR.m_PathID": 495539,
+ "gunHandLAttack.m_FileID": 0,
+ "gunHandLAttack.m_PathID": 623631,
+ "gunHandRAttack.m_FileID": 0,
+ "gunHandRAttack.m_PathID": 623708,
+ "gunHandLStatic.m_FileID": 0,
+ "gunHandLStatic.m_PathID": 86978,
+ "gunHandRStatic.m_FileID": 0,
+ "gunHandRStatic.m_PathID": 86892,
+ "gunLLookAt.m_FileID": 0,
+ "gunLLookAt.m_PathID": 623738,
+ "gunRLookAt.m_FileID": 0,
+ "gunRLookAt.m_PathID": 623745,
+ "allMeteorSpawners": "[3]",
+ "allMeteorSpawners[0].m_FileID": 0,
+ "allMeteorSpawners[0].m_PathID": 87019,
+ "allMeteorSpawners[1].m_FileID": 0,
+ "allMeteorSpawners[1].m_PathID": 87008,
+ "allMeteorSpawners[2].m_FileID": 0,
+ "allMeteorSpawners[2].m_PathID": 87015,
+ "meteorAttack.m_FileID": 0,
+ "meteorAttack.m_PathID": 623673,
+ "droidAttacks": "[2]",
+ "droidAttacks[0].m_FileID": 0,
+ "droidAttacks[0].m_PathID": 623677,
+ "droidAttacks[1].m_FileID": 0,
+ "droidAttacks[1].m_PathID": 623734,
+ "droidLookAt": "[2]",
+ "droidLookAt[0].m_FileID": 0,
+ "droidLookAt[0].m_PathID": 623675,
+ "droidLookAt[1].m_FileID": 0,
+ "droidLookAt[1].m_PathID": 623733,
+ "parentPoints.m_FileID": 0,
+ "parentPoints.m_PathID": 318914,
+ "targetLayer.m_Mask": 256,
+ "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (7)/Boss/Boss-39009"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 170813,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 27715960832,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 494343,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 598085,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 667931,
+ "allGunCanHitTurn1": "[2]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 169177,
+ "allGunCanHitTurn1[1].m_FileID": 0,
+ "allGunCanHitTurn1[1].m_PathID": 169126,
+ "allGunCanHitTurn2": "[2]",
+ "allGunCanHitTurn2[0].m_FileID": 0,
+ "allGunCanHitTurn2[0].m_PathID": 169148,
+ "allGunCanHitTurn2[1].m_FileID": 0,
+ "allGunCanHitTurn2[1].m_PathID": 169182,
+ "allGunCanHitTurn3": "[1]",
+ "allGunCanHitTurn3[0].m_FileID": 0,
+ "allGunCanHitTurn3[0].m_PathID": 169215,
+ "mainBox.m_FileID": 0,
+ "mainBox.m_PathID": 102807,
+ "gunHandL.m_FileID": 0,
+ "gunHandL.m_PathID": 497480,
+ "gunHandR.m_FileID": 0,
+ "gunHandR.m_PathID": 497481,
+ "gunHandLAttack.m_FileID": 0,
+ "gunHandLAttack.m_PathID": 667050,
+ "gunHandRAttack.m_FileID": 0,
+ "gunHandRAttack.m_PathID": 667123,
+ "gunHandLStatic.m_FileID": 0,
+ "gunHandLStatic.m_PathID": 19561,
+ "gunHandRStatic.m_FileID": 0,
+ "gunHandRStatic.m_PathID": 231701,
+ "gunLLookAt.m_FileID": 0,
+ "gunLLookAt.m_PathID": 667097,
+ "gunRLookAt.m_FileID": 0,
+ "gunRLookAt.m_PathID": 667090,
+ "allMeteorSpawners": "[3]",
+ "allMeteorSpawners[0].m_FileID": 0,
+ "allMeteorSpawners[0].m_PathID": 169223,
+ "allMeteorSpawners[1].m_FileID": 0,
+ "allMeteorSpawners[1].m_PathID": 169202,
+ "allMeteorSpawners[2].m_FileID": 0,
+ "allMeteorSpawners[2].m_PathID": 169227,
+ "meteorAttack.m_FileID": 0,
+ "meteorAttack.m_PathID": 667034,
+ "droidAttacks": "[2]",
+ "droidAttacks[0].m_FileID": 0,
+ "droidAttacks[0].m_PathID": 667030,
+ "droidAttacks[1].m_FileID": 0,
+ "droidAttacks[1].m_PathID": 667101,
+ "droidLookAt": "[2]",
+ "droidLookAt[0].m_FileID": 0,
+ "droidLookAt[0].m_PathID": 667028,
+ "droidLookAt[1].m_FileID": 0,
+ "droidLookAt[1].m_PathID": 667102,
+ "parentPoints.m_FileID": 0,
+ "parentPoints.m_PathID": 397255,
+ "targetLayer.m_Mask": 256,
+ "_gameobject": "Boss-39009"
+}
+```
+
+## `Boss3_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 87579,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 24880611328,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 495575,
+ "animatorUpper.m_FileID": 0,
+ "animatorUpper.m_PathID": 495577,
+ "animatorGunPlasma.m_FileID": 0,
+ "animatorGunPlasma.m_PathID": 495576,
+ "animEvent.m_FileID": 0,
+ "animEvent.m_PathID": 623869,
+ "plasmaEvent.m_FileID": 0,
+ "plasmaEvent.m_PathID": 623891,
+ "gun1L.m_FileID": 0,
+ "gun1L.m_PathID": 624030,
+ "gun1R.m_FileID": 0,
+ "gun1R.m_PathID": 624052,
+ "gun1C.m_FileID": 0,
+ "gun1C.m_PathID": 623968,
+ "gun2L.m_FileID": 0,
+ "gun2L.m_PathID": 623992,
+ "gun2R.m_FileID": 0,
+ "gun2R.m_PathID": 624007,
+ "allGunCanHitTurn1": "[5]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 87438,
+ "allGunCanHitTurn1[1].m_FileID": 0,
+ "allGunCanHitTurn1[1].m_PathID": 87528,
+ "allGunCanHitTurn1[2].m_FileID": 0,
+ "allGunCanHitTurn1[2].m_PathID": 87460,
+ "allGunCanHitTurn1[3].m_FileID": 0,
+ "allGunCanHitTurn1[3].m_PathID": 87545,
+ "allGunCanHitTurn1[4].m_FileID": 0,
+ "allGunCanHitTurn1[4].m_PathID": 87488,
+ "allGunCanHitTurn2": "[2]",
+ "allGunCanHitTurn2[0].m_FileID": 0,
+ "allGunCanHitTurn2[0].m_PathID": 87351,
+ "allGunCanHitTurn2[1].m_FileID": 0,
+ "allGunCanHitTurn2[1].m_PathID": 87382,
+ "allGunCanHitTurn3": "[1]",
+ "allGunCanHitTurn3[0].m_FileID": 0,
+ "allGunCanHitTurn3[0].m_PathID": 87602,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 623888,
+ "gun3C1.m_FileID": 0,
+ "gun3C1.m_PathID": 624004,
+ "gun3C2.m_FileID": 0,
+ "gun3C2.m_PathID": 623878,
+ "gun3L.m_FileID": 0,
+ "gun3L.m_PathID": 623910,
+ "gun3R.m_FileID": 0,
+ "gun3R.m_PathID": 623872,
+ "gunFlamerRotateL.m_FileID": 0,
+ "gunFlamerRotateL.m_PathID": 319421,
+ "gunFlamerRotateR.m_FileID": 0,
+ "gunFlamerRotateR.m_PathID": 319325,
+ "plasmaGunBox.m_FileID": 0,
+ "plasmaGunBox.m_PathID": 490179,
+ "gun4C1.m_FileID": 0,
+ "gun4C1.m_PathID": 624006,
+ "gun4C2.m_FileID": 0,
+ "gun4C2.m_PathID": 623903,
+ "gun4C3.m_FileID": 0,
+ "gun4C3.m_PathID": 623956,
+ "plasmaGunLookat.m_FileID": 0,
+ "plasmaGunLookat.m_PathID": 623995,
+ "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (3)/Boss/Boss-39005"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 174600,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 24880611328,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 496209,
+ "animatorUpper.m_FileID": 0,
+ "animatorUpper.m_PathID": 498136,
+ "animatorGunPlasma.m_FileID": 0,
+ "animatorGunPlasma.m_PathID": 498137,
+ "animEvent.m_FileID": 0,
+ "animEvent.m_PathID": 631331,
+ "plasmaEvent.m_FileID": 0,
+ "plasmaEvent.m_PathID": 618258,
+ "gun1L.m_FileID": 0,
+ "gun1L.m_PathID": 702247,
+ "gun1R.m_FileID": 0,
+ "gun1R.m_PathID": 693162,
+ "gun1C.m_FileID": 0,
+ "gun1C.m_PathID": 616795,
+ "gun2L.m_FileID": 0,
+ "gun2L.m_PathID": 673922,
+ "gun2R.m_FileID": 0,
+ "gun2R.m_PathID": 661850,
+ "allGunCanHitTurn1": "[5]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 14371,
+ "allGunCanHitTurn1[1].m_FileID": 0,
+ "allGunCanHitTurn1[1].m_PathID": 196558,
+ "allGunCanHitTurn1[2].m_FileID": 0,
+ "allGunCanHitTurn1[2].m_PathID": 33273,
+ "allGunCanHitTurn1[3].m_FileID": 0,
+ "allGunCanHitTurn1[3].m_PathID": 153708,
+ "allGunCanHitTurn1[4].m_FileID": 0,
+ "allGunCanHitTurn1[4].m_PathID": 189689,
+ "allGunCanHitTurn2": "[2]",
+ "allGunCanHitTurn2[0].m_FileID": 0,
+ "allGunCanHitTurn2[0].m_PathID": 73577,
+ "allGunCanHitTurn2[1].m_FileID": 0,
+ "allGunCanHitTurn2[1].m_PathID": 106036,
+ "allGunCanHitTurn3": "[1]",
+ "allGunCanHitTurn3[0].m_FileID": 0,
+ "allGunCanHitTurn3[0].m_PathID": 235141,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 620464,
+ "gun3C1.m_FileID": 0,
+ "gun3C1.m_PathID": 679261,
+ "gun3C2.m_FileID": 0,
+ "gun3C2.m_PathID": 639325,
+ "gun3L.m_FileID": 0,
+ "gun3L.m_PathID": 659066,
+ "gun3R.m_FileID": 0,
+ "gun3R.m_PathID": 633053,
+ "gunFlamerRotateL.m_FileID": 0,
+ "gunFlamerRotateL.m_PathID": 421111,
+ "gunFlamerRotateR.m_FileID": 0,
+ "gunFlamerRotateR.m_PathID": 316169,
+ "plasmaGunBox.m_FileID": 0,
+ "plasmaGunBox.m_PathID": 489230,
+ "gun4C1.m_FileID": 0,
+ "gun4C1.m_PathID": 663041,
+ "gun4C2.m_FileID": 0,
+ "gun4C2.m_PathID": 655057,
+ "gun4C3.m_FileID": 0,
+ "gun4C3.m_PathID": 586017,
+ "plasmaGunLookat.m_FileID": 0,
+ "plasmaGunLookat.m_PathID": 669710,
+ "_gameobject": "Boss-39005"
 }
 ```
 
@@ -2403,6 +5246,365 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
 }
 ```
 
+## `MB8_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 215705,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 12851347456,
+ "m_Name": "",
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 692007,
+ "path.m_FileID": 0,
+ "path.m_PathID": 692017,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 691997,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 684002,
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 495399,
+ "allGunAttacks1": "[2]",
+ "allGunAttacks1[0].m_FileID": 0,
+ "allGunAttacks1[0].m_PathID": 151309,
+ "allGunAttacks1[1].m_FileID": 0,
+ "allGunAttacks1[1].m_PathID": 151305,
+ "gunBigCenter.m_FileID": 0,
+ "gunBigCenter.m_PathID": 667520,
+ "gunRandomBigCenter.m_FileID": 0,
+ "gunRandomBigCenter.m_PathID": 667518,
+ "lookAtPlayer.m_FileID": 0,
+ "lookAtPlayer.m_PathID": 691997,
+ "parentHealth.m_FileID": 0,
+ "parentHealth.m_PathID": 151307,
+ "bltPoints": "[2]",
+ "bltPoints[0].m_FileID": 0,
+ "bltPoints[0].m_PathID": 292487,
+ "bltPoints[1].m_FileID": 0,
+ "bltPoints[1].m_PathID": 292486,
+ "targetLayer.m_Mask": 256,
+ "_gameobject": "Boss-37010"
+}
+```
+
+## `MB14_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 191552,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 19595788288,
+ "m_Name": "",
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 678646,
+ "path.m_FileID": 0,
+ "path.m_PathID": 678631,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 678664,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 629203,
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 496198,
+ "allColliders": "[1]",
+ "allColliders[0].m_FileID": 0,
+ "allColliders[0].m_PathID": 487344,
+ "parentHealth.m_FileID": 0,
+ "parentHealth.m_PathID": 180029,
+ "targetLayer.m_Mask": 256,
+ "pointAttack1": "[2]",
+ "pointAttack1[0].m_FileID": 0,
+ "pointAttack1[0].m_PathID": 420012,
+ "pointAttack1[1].m_FileID": 0,
+ "pointAttack1[1].m_PathID": 315915,
+ "bltAttack1": 80206,
+ "damageBltExpl": 600.0,
+ "bltAttack1_2": 80209,
+ "damageBltChild": 350.0,
+ "pointAttack2.m_FileID": 0,
+ "pointAttack2.m_PathID": 279701,
+ "bltAttack2": 80207,
+ "damageBltAttack2": 500.0,
+ "pointAttack3.m_FileID": 0,
+ "pointAttack3.m_PathID": 376081,
+ "bltAttack3": 80208,
+ "damageBltAttack3": 400.0,
+ "allChilds": "[2]",
+ "allChilds[0].m_FileID": 0,
+ "allChilds[0].m_PathID": 281839,
+ "allChilds[1].m_FileID": 0,
+ "allChilds[1].m_PathID": 249047,
+ "allChildPaths": "[2]",
+ "allChildPaths[0].m_FileID": 0,
+ "allChildPaths[0].m_PathID": 628868,
+ "allChildPaths[1].m_FileID": 0,
+ "allChildPaths[1].m_PathID": 602639,
+ "allChildGunAttacks": "[2]",
+ "allChildGunAttacks[0].m_FileID": 0,
+ "allChildGunAttacks[0].m_PathID": 591678,
+ "allChildGunAttacks[1].m_FileID": 0,
+ "allChildGunAttacks[1].m_PathID": 594923,
+ "_gameobject": "Boss-37016"
+}
+```
+
+## `Boss20_AttackPhases` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 150162,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 21189623808,
+ "m_Name": "",
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 12831,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 103621,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 139779,
+ "allColliders": "[1]",
+ "allColliders[0].m_FileID": 0,
+ "allColliders[0].m_PathID": 487723,
+ "allObjColliders": "[1]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 606893,
+ "attackTypes.m_FileID": 0,
+ "attackTypes.m_PathID": 634644,
+ "animationEvents.m_FileID": 0,
+ "animationEvents.m_PathID": 676306,
+ "animators.m_FileID": 0,
+ "animators.m_PathID": 495696,
+ "roundStart": 1,
+ "_gameobject": "Boss-39020"
+}
+```
+
+## `MB2_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 170742,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 7885291520,
+ "m_Name": "",
+ "_gameobject": "Boss-37001"
+}
+```
+
+## `MB4_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 73241,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 23941087232,
+ "m_Name": "",
+ "allGunCanHitTurn1": "[1]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 116907,
+ "allGunHideTurn1": "[0]",
+ "animScript.m_FileID": 0,
+ "animScript.m_PathID": 595301,
+ "allTails": "[4]",
+ "allTails[0].m_FileID": 0,
+ "allTails[0].m_PathID": 81199,
+ "allTails[1].m_FileID": 0,
+ "allTails[1].m_PathID": 178494,
+ "allTails[2].m_FileID": 0,
+ "allTails[2].m_PathID": 215368,
+ "allTails[3].m_FileID": 0,
+ "allTails[3].m_PathID": 216947,
+ "anim.m_FileID": 0,
+ "anim.m_PathID": 493584,
+ "parentPoints.m_FileID": 0,
+ "parentPoints.m_PathID": 335593,
+ "dieFxPoint.m_FileID": 0,
+ "dieFxPoint.m_PathID": 272330,
+ "_gameobject": "Boss-37004"
+}
+```
+
+## `MB6_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 30134,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 771751936,
+ "m_Name": "",
+ "moveParent.m_FileID": 0,
+ "moveParent.m_PathID": 282496,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 662653,
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 623230,
+ "path.m_FileID": 0,
+ "path.m_PathID": 604464,
+ "defaultPos.x": 0.0,
+ "defaultPos.y": 7.5,
+ "defaultPos.z": 0.0,
+ "allChildBuff": "[2]",
+ "allChildBuff[0].m_FileID": 0,
+ "allChildBuff[0].m_PathID": 340178,
+ "allChildBuff[1].m_FileID": 0,
+ "allChildBuff[1].m_PathID": 445962,
+ "childBuffPoints": "[2]",
+ "childBuffPoints[0].m_FileID": 0,
+ "childBuffPoints[0].m_PathID": 351948,
+ "childBuffPoints[1].m_FileID": 0,
+ "childBuffPoints[1].m_PathID": 315866,
+ "childAttackPoints": "[2]",
+ "childAttackPoints[0].m_FileID": 0,
+ "childAttackPoints[0].m_PathID": 393822,
+ "childAttackPoints[1].m_FileID": 0,
+ "childAttackPoints[1].m_PathID": 336761,
+ "allChildAttack": "[2]",
+ "allChildAttack[0].m_FileID": 0,
+ "allChildAttack[0].m_PathID": 340741,
+ "allChildAttack[1].m_FileID": 0,
+ "allChildAttack[1].m_PathID": 290756,
+ "laserBuff": "[2]",
+ "laserBuff[0].m_FileID": 0,
+ "laserBuff[0].m_PathID": 601933,
+ "laserBuff[1].m_FileID": 0,
+ "laserBuff[1].m_PathID": 699575,
+ "blackHole.m_FileID": 0,
+ "blackHole.m_PathID": 284651,
+ "allClass1Guns": "[4]",
+ "allClass1Guns[0].m_FileID": 0,
+ "allClass1Guns[0].m_PathID": 625445,
+ "allClass1Guns[1].m_FileID": 0,
+ "allClass1Guns[1].m_PathID": 635266,
+ "allClass1Guns[2].m_FileID": 0,
+ "allClass1Guns[2].m_PathID": 597538,
+ "allClass1Guns[3].m_FileID": 0,
+ "allClass1Guns[3].m_PathID": 616414,
+ "blackHoldObject.m_FileID": 0,
+ "blackHoldObject.m_PathID": 141689,
+ "blackHoldCol.m_FileID": 0,
+ "blackHoldCol.m_PathID": 487503,
+ "allChildAttackPlayer": "[4]",
+ "allChildAttackPlayer[0].m_FileID": 0,
+ "allChildAttackPlayer[0].m_PathID": 601933,
+ "allChildAttackPlayer[1].m_FileID": 0,
+ "allChildAttackPlayer[1].m_PathID": 699575,
+ "allChildAttackPlayer[2].m_FileID": 0,
+ "allChildAttackPlayer[2].m_PathID": 614396,
+ "allChildAttackPlayer[3].m_FileID": 0,
+ "allChildAttackPlayer[3].m_PathID": 611520,
+ "mainCol.m_FileID": 0,
+ "mainCol.m_PathID": 487574,
+ "parentAlls.m_FileID": 0,
+ "parentAlls.m_PathID": 262263,
+ "gunSine.m_FileID": 0,
+ "gunSine.m_PathID": 103118,
+ "parentChildDfPoints.m_FileID": 0,
+ "parentChildDfPoints.m_PathID": 375485,
+ "_gameobject": "Boss-37006"
+}
+```
+
+## `Boss6_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 64503,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 29980884992,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 497005,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 655361,
+ "allGunCanHitTurn1": "[2]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 147891,
+ "allGunCanHitTurn1[1].m_FileID": 0,
+ "allGunCanHitTurn1[1].m_PathID": 147865,
+ "allGunCanHitTurn2": "[2]",
+ "allGunCanHitTurn2[0].m_FileID": 0,
+ "allGunCanHitTurn2[0].m_PathID": 147879,
+ "allGunCanHitTurn2[1].m_FileID": 0,
+ "allGunCanHitTurn2[1].m_PathID": 147903,
+ "allGunCanHitTurn3": "[1]",
+ "allGunCanHitTurn3[0].m_FileID": 0,
+ "allGunCanHitTurn3[0].m_PathID": 147934,
+ "allHandLasers": "[2]",
+ "allHandLasers[0].m_FileID": 0,
+ "allHandLasers[0].m_PathID": 147941,
+ "allHandLasers[1].m_FileID": 0,
+ "allHandLasers[1].m_PathID": 147927,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 701293,
+ "allGunColliders1": "[0]",
+ "playerLayer.m_Mask": 256,
+ "swordStartSpd": 8.0,
+ "delaySword": 0.20000000298023224,
+ "shotRate": 0.5,
+ "swordDamage": 2800.0,
+ "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (4)/Boss/Boss-39007"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 73239,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 29980884992,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 494060,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 683874,
+ "allGunCanHitTurn1": "[2]",
+ "allGunCanHitTurn1[0].m_FileID": 0,
+ "allGunCanHitTurn1[0].m_PathID": 4734,
+ "allGunCanHitTurn1[1].m_FileID": 0,
+ "allGunCanHitTurn1[1].m_PathID": 6075,
+ "allGunCanHitTurn2": "[2]",
+ "allGunCanHitTurn2[0].m_FileID": 0,
+ "allGunCanHitTurn2[0].m_PathID": 5545,
+ "allGunCanHitTurn2[1].m_FileID": 0,
+ "allGunCanHitTurn2[1].m_PathID": 4374,
+ "allGunCanHitTurn3": "[1]",
+ "allGunCanHitTurn3[0].m_FileID": 0,
+ "allGunCanHitTurn3[0].m_PathID": 121201,
+ "allHandLasers": "[2]",
+ "allHandLasers[0].m_FileID": 0,
+ "allHandLasers[0].m_PathID": 106086,
+ "allHandLasers[1].m_FileID": 0,
+ "allHandLasers[1].m_PathID": 148078,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 615902,
+ "allGunColliders1": "[2]",
+ "allGunColliders1[0].m_FileID": 0,
+ "allGunColliders1[0].m_PathID": 487585,
+ "allGunColliders1[1].m_FileID": 0,
+ "allGunColliders1[1].m_PathID": 487580,
+ "playerLayer.m_Mask": 256,
+ "swordStartSpd": 8.0,
+ "delaySword": 0.20000000298023224,
+ "shotRate": 0.5,
+ "swordDamage": 600.0,
+ "_gameobject": "Boss-39007"
+}
+```
+
 ## `ArenaManager` samples
 
 ```json
@@ -2414,5 +5616,868 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_PathID": 8019509248,
  "m_Name": "",
  "_gameobject": "Board_Arena"
+}
+```
+
+## `Enemy_Rocket_Attack` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185315,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 16206790656,
+ "m_Name": "",
+ "shootAudioClipName": 62,
+ "parentBarrels.m_FileID": 0,
+ "parentBarrels.m_PathID": 447793,
+ "bltPinMap": false,
+ "isAttack": true,
+ "isStunned": false,
+ "shotRate": 1.5,
+ "turnRate": 0.0,
+ "turnNumber": 0.0,
+ "bltSpeed": 6.800000190734863,
+ "idBlt": 80048,
+ "bulletLifetime": 4.5,
+ "targetLayer.m_Mask": 256,
+ "fixedAngle": false,
+ "angleFixed": -90.0,
+ "timeDelay": 3.0,
+ "damage": 450.0,
+ "_gameobject": "CB-30006/Enemy_Ingame"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185385,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 16206790656,
+ "m_Name": "",
+ "shootAudioClipName": 62,
+ "parentBarrels.m_FileID": 0,
+ "parentBarrels.m_PathID": 447807,
+ "bltPinMap": false,
+ "isAttack": true,
+ "isStunned": false,
+ "shotRate": 1.5,
+ "turnRate": 0.0,
+ "turnNumber": 0.0,
+ "bltSpeed": 6.800000190734863,
+ "idBlt": 80048,
+ "bulletLifetime": 4.5,
+ "targetLayer.m_Mask": 256,
+ "fixedAngle": false,
+ "angleFixed": -90.0,
+ "timeDelay": 3.0,
+ "damage": 450.0,
+ "_gameobject": "CB-30006/Enemy_Ingame"
+}
+```
+
+## `Boss17_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 38766,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 16357785600,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 496416,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 689597,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 597666,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 92360,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 60370,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 200881,
+ "beehave.m_FileID": 0,
+ "beehave.m_PathID": 364208,
+ "beeParent.m_FileID": 0,
+ "beeParent.m_PathID": 499173,
+ "invader.m_FileID": 0,
+ "invader.m_PathID": 663227,
+ "allBeeAttack1": "[4]",
+ "allBeeAttack1[0].m_FileID": 0,
+ "allBeeAttack1[0].m_PathID": 614883,
+ "allBeeAttack1[1].m_FileID": 0,
+ "allBeeAttack1[1].m_PathID": 610700,
+ "allBeeAttack1[2].m_FileID": 0,
+ "allBeeAttack1[2].m_PathID": 691984,
+ "allBeeAttack1[3].m_FileID": 0,
+ "allBeeAttack1[3].m_PathID": 608005,
+ "allBeeAttack2": "[4]",
+ "allBeeAttack2[0].m_FileID": 0,
+ "allBeeAttack2[0].m_PathID": 614883,
+ "allBeeAttack2[1].m_FileID": 0,
+ "allBeeAttack2[1].m_PathID": 610700,
+ "allBeeAttack2[2].m_FileID": 0,
+ "allBeeAttack2[2].m_PathID": 691984,
+ "allBeeAttack2[3].m_FileID": 0,
+ "allBeeAttack2[3].m_PathID": 608005,
+ "allBeeAttack3": "[5]",
+ "allBeeAttack3[0].m_FileID": 0,
+ "allBeeAttack3[0].m_PathID": 614883,
+ "allBeeAttack3[1].m_FileID": 0,
+ "allBeeAttack3[1].m_PathID": 637218,
+ "allBeeAttack3[2].m_FileID": 0,
+ "allBeeAttack3[2].m_PathID": 660555,
+ "allBeeAttack3[3].m_FileID": 0,
+ "allBeeAttack3[3].m_PathID": 586971,
+ "allBeeAttack3[4].m_FileID": 0,
+ "allBeeAttack3[4].m_PathID": 695320,
+ "allBeeAttack4": "[10]",
+ "allBeeAttack4[0].m_FileID": 0,
+ "allBeeAttack4[0].m_PathID": 637218,
+ "allBeeAttack4[1].m_FileID": 0,
+ "allBeeAttack4[1].m_PathID": 660555,
+ "allBeeAttack4[2].m_FileID": 0,
+ "allBeeAttack4[2].m_PathID": 586971,
+ "allBeeAttack4[3].m_FileID": 0,
+ "allBeeAttack4[3].m_PathID": 695320,
+ "allBeeAttack4[4].m_FileID": 0,
+ "allBeeAttack4[4].m_PathID": 704740,
+ "allBeeAttack5": "[10]",
+ "allBeeAttack5[0].m_FileID": 0,
+ "allBeeAttack5[0].m_PathID": 637218,
+ "allBeeAttack5[1].m_FileID": 0,
+ "allBeeAttack5[1].m_PathID": 660555,
+ "allBeeAttack5[2].m_FileID": 0,
+ "allBeeAttack5[2].m_PathID": 586971,
+ "allBeeAttack5[3].m_FileID": 0,
+ "allBeeAttack5[3].m_PathID": 695320,
+ "allBeeAttack5[4].m_FileID": 0,
+ "allBeeAttack5[4].m_PathID": 704740,
+ "allBeeAttack6": "[4]",
+ "allBeeAttack6[0].m_FileID": 0,
+ "allBeeAttack6[0].m_PathID": 637218,
+ "allBeeAttack6[1].m_FileID": 0,
+ "allBeeAttack6[1].m_PathID": 660555,
+ "allBeeAttack6[2].m_FileID": 0,
+ "allBeeAttack6[2].m_PathID": 586971,
+ "allBeeAttack6[3].m_FileID": 0,
+ "allBeeAttack6[3].m_PathID": 695320,
+ "allBeeAttack7": "[8]",
+ "allBeeAttack7[0].m_FileID": 0,
+ "allBeeAttack7[0].m_PathID": 637218,
+ "allBeeAttack7[1].m_FileID": 0,
+ "allBeeAttack7[1].m_PathID": 660555,
+ "allBeeAttack7[2].m_FileID": 0,
+ "allBeeAttack7[2].m_PathID": 586971,
+ "allBeeAttack7[3].m_FileID": 0,
+ "allBeeAttack7[3].m_PathID": 695320,
+ "allBeeAttack7[4].m_FileID": 0,
+ "allBeeAttack7[4].m_PathID": 704740,
+ "allBeeAttack8": "[6]",
+ "allBeeAttack8[0].m_FileID": 0,
+ "allBeeAttack8[0].m_PathID": 614883,
+ "allBeeAttack8[1].m_FileID": 0,
+ "allBeeAttack8[1].m_PathID": 610700,
+ "allBeeAttack8[2].m_FileID": 0,
+ "allBeeAttack8[2].m_PathID": 691984,
+ "allBeeAttack8[3].m_FileID": 0,
+ "allBeeAttack8[3].m_PathID": 608005,
+ "allBeeAttack8[4].m_FileID": 0,
+ "allBeeAttack8[4].m_PathID": 659371,
+ "allBeeAttack9": "[6]",
+ "allBeeAttack9[0].m_FileID": 0,
+ "allBeeAttack9[0].m_PathID": 614883,
+ "allBeeAttack9[1].m_FileID": 0,
+ "allBeeAttack9[1].m_PathID": 610700,
+ "allBeeAttack9[2].m_FileID": 0,
+ "allBeeAttack9[2].m_PathID": 691984,
+ "allBeeAttack9[3].m_FileID": 0,
+ "allBeeAttack9[3].m_PathID": 608005,
+ "allBeeAttack9[4].m_FileID": 0,
+ "allBeeAttack9[4].m_PathID": 659371,
+ "soldierBeeAnim.m_FileID": 0,
+ "soldierBeeAn
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 73238,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 16357785600,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 494413,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 671486,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 615901,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 11517,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 109679,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 136741,
+ "beehave.m_FileID": 0,
+ "beehave.m_PathID": 426091,
+ "beeParent.m_FileID": 0,
+ "beeParent.m_PathID": 497322,
+ "invader.m_FileID": 0,
+ "invader.m_PathID": 704027,
+ "allBeeAttack1": "[4]",
+ "allBeeAttack1[0].m_FileID": 0,
+ "allBeeAttack1[0].m_PathID": 596690,
+ "allBeeAttack1[1].m_FileID": 0,
+ "allBeeAttack1[1].m_PathID": 630663,
+ "allBeeAttack1[2].m_FileID": 0,
+ "allBeeAttack1[2].m_PathID": 673740,
+ "allBeeAttack1[3].m_FileID": 0,
+ "allBeeAttack1[3].m_PathID": 635233,
+ "allBeeAttack2": "[4]",
+ "allBeeAttack2[0].m_FileID": 0,
+ "allBeeAttack2[0].m_PathID": 596690,
+ "allBeeAttack2[1].m_FileID": 0,
+ "allBeeAttack2[1].m_PathID": 630663,
+ "allBeeAttack2[2].m_FileID": 0,
+ "allBeeAttack2[2].m_PathID": 673740,
+ "allBeeAttack2[3].m_FileID": 0,
+ "allBeeAttack2[3].m_PathID": 635233,
+ "allBeeAttack3": "[5]",
+ "allBeeAttack3[0].m_FileID": 0,
+ "allBeeAttack3[0].m_PathID": 596690,
+ "allBeeAttack3[1].m_FileID": 0,
+ "allBeeAttack3[1].m_PathID": 602711,
+ "allBeeAttack3[2].m_FileID": 0,
+ "allBeeAttack3[2].m_PathID": 701529,
+ "allBeeAttack3[3].m_FileID": 0,
+ "allBeeAttack3[3].m_PathID": 628291,
+ "allBeeAttack3[4].m_FileID": 0,
+ "allBeeAttack3[4].m_PathID": 669582,
+ "allBeeAttack4": "[10]",
+ "allBeeAttack4[0].m_FileID": 0,
+ "allBeeAttack4[0].m_PathID": 602711,
+ "allBeeAttack4[1].m_FileID": 0,
+ "allBeeAttack4[1].m_PathID": 701529,
+ "allBeeAttack4[2].m_FileID": 0,
+ "allBeeAttack4[2].m_PathID": 628291,
+ "allBeeAttack4[3].m_FileID": 0,
+ "allBeeAttack4[3].m_PathID": 669582,
+ "allBeeAttack4[4].m_FileID": 0,
+ "allBeeAttack4[4].m_PathID": 663290,
+ "allBeeAttack5": "[10]",
+ "allBeeAttack5[0].m_FileID": 0,
+ "allBeeAttack5[0].m_PathID": 602711,
+ "allBeeAttack5[1].m_FileID": 0,
+ "allBeeAttack5[1].m_PathID": 701529,
+ "allBeeAttack5[2].m_FileID": 0,
+ "allBeeAttack5[2].m_PathID": 628291,
+ "allBeeAttack5[3].m_FileID": 0,
+ "allBeeAttack5[3].m_PathID": 669582,
+ "allBeeAttack5[4].m_FileID": 0,
+ "allBeeAttack5[4].m_PathID": 663290,
+ "allBeeAttack6": "[4]",
+ "allBeeAttack6[0].m_FileID": 0,
+ "allBeeAttack6[0].m_PathID": 602711,
+ "allBeeAttack6[1].m_FileID": 0,
+ "allBeeAttack6[1].m_PathID": 701529,
+ "allBeeAttack6[2].m_FileID": 0,
+ "allBeeAttack6[2].m_PathID": 628291,
+ "allBeeAttack6[3].m_FileID": 0,
+ "allBeeAttack6[3].m_PathID": 669582,
+ "allBeeAttack7": "[8]",
+ "allBeeAttack7[0].m_FileID": 0,
+ "allBeeAttack7[0].m_PathID": 602711,
+ "allBeeAttack7[1].m_FileID": 0,
+ "allBeeAttack7[1].m_PathID": 701529,
+ "allBeeAttack7[2].m_FileID": 0,
+ "allBeeAttack7[2].m_PathID": 628291,
+ "allBeeAttack7[3].m_FileID": 0,
+ "allBeeAttack7[3].m_PathID": 669582,
+ "allBeeAttack7[4].m_FileID": 0,
+ "allBeeAttack7[4].m_PathID": 663290,
+ "allBeeAttack8": "[6]",
+ "allBeeAttack8[0].m_FileID": 0,
+ "allBeeAttack8[0].m_PathID": 596690,
+ "allBeeAttack8[1].m_FileID": 0,
+ "allBeeAttack8[1].m_PathID": 630663,
+ "allBeeAttack8[2].m_FileID": 0,
+ "allBeeAttack8[2].m_PathID": 673740,
+ "allBeeAttack8[3].m_FileID": 0,
+ "allBeeAttack8[3].m_PathID": 635233,
+ "allBeeAttack8[4].m_FileID": 0,
+ "allBeeAttack8[4].m_PathID": 678726,
+ "allBeeAttack9": "[6]",
+ "allBeeAttack9[0].m_FileID": 0,
+ "allBeeAttack9[0].m_PathID": 596690,
+ "allBeeAttack9[1].m_FileID": 0,
+ "allBeeAttack9[1].m_PathID": 630663,
+ "allBeeAttack9[2].m_FileID": 0,
+ "allBeeAttack9[2].m_PathID": 673740,
+ "allBeeAttack9[3].m_FileID": 0,
+ "allBeeAttack9[3].m_PathID": 635233,
+ "allBeeAttack9[4].m_FileID": 0,
+ "allBeeAttack9[4].m_PathID": 678726,
+ "soldierBeeAnim.m_FileID": 0,
+ "soldierBeeA
+```
+
+## `Boss9_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 160484,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 19428016128,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 495787,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 628883,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 662185,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 100618,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 100626,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 100631,
+ "fireParticle.m_FileID": 0,
+ "fireParticle.m_PathID": 502136,
+ "flameParticles.m_FileID": 0,
+ "flameParticles.m_PathID": 631553,
+ "allObjColliders": "[2]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 593313,
+ "allObjColliders[1].m_FileID": 0,
+ "allObjColliders[1].m_PathID": 593314,
+ "miniBoss1.m_FileID": 0,
+ "miniBoss1.m_PathID": 100636,
+ "miniBoss2.m_FileID": 0,
+ "miniBoss2.m_PathID": 155697,
+ "barrel1Left.m_FileID": 0,
+ "barrel1Left.m_PathID": 331738,
+ "barrel1Right.m_FileID": 0,
+ "barrel1Right.m_PathID": 331736,
+ "circlePoint.m_FileID": 0,
+ "circlePoint.m_PathID": 414752,
+ "miniBoss1Controller.m_FileID": 0,
+ "miniBoss1Controller.m_PathID": 631558,
+ "miniBoss2Controller.m_FileID": 0,
+ "miniBoss2Controller.m_PathID": 659341,
+ "corePoint.m_FileID": 0,
+ "corePoint.m_PathID": 331697,
+ "targetLayer.m_Mask": 256,
+ "fireDamage": 800.0,
+ "_gameobject": "Boss-39011"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 164005,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 19428016128,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 496045,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 634653,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 664388,
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 104062,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 104071,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 104069,
+ "fireParticle.m_FileID": 0,
+ "fireParticle.m_PathID": 502199,
+ "flameParticles.m_FileID": 0,
+ "flameParticles.m_PathID": 633611,
+ "allObjColliders": "[2]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 595195,
+ "allObjColliders[1].m_FileID": 0,
+ "allObjColliders[1].m_PathID": 595194,
+ "miniBoss1.m_FileID": 0,
+ "miniBoss1.m_PathID": 104075,
+ "miniBoss2.m_FileID": 0,
+ "miniBoss2.m_PathID": 144245,
+ "barrel1Left.m_FileID": 0,
+ "barrel1Left.m_PathID": 334975,
+ "barrel1Right.m_FileID": 0,
+ "barrel1Right.m_PathID": 334974,
+ "circlePoint.m_FileID": 0,
+ "circlePoint.m_PathID": 424151,
+ "miniBoss1Controller.m_FileID": 0,
+ "miniBoss1Controller.m_PathID": 633621,
+ "miniBoss2Controller.m_FileID": 0,
+ "miniBoss2Controller.m_PathID": 653260,
+ "corePoint.m_FileID": 0,
+ "corePoint.m_PathID": 334941,
+ "targetLayer.m_Mask": 256,
+ "fireDamage": 500.0,
+ "_gameobject": "Boss/Boss-39011"
+}
+```
+
+## `Boss6_Mini_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 73242,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 6744440832,
+ "m_Name": "",
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 497295,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 686433,
+ "parentDestroy.m_FileID": 0,
+ "parentDestroy.m_PathID": 615905,
+ "allHpParents": "[1]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 161423,
+ "allObjColliders": "[1]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 598388,
+ "gun1Right.m_FileID": 0,
+ "gun1Right.m_PathID": 161424,
+ "gun1LeftPoint.m_FileID": 0,
+ "gun1LeftPoint.m_PathID": 411943,
+ "slashDamage": 1500.0,
+ "gun2C.m_FileID": 0,
+ "gun2C.m_PathID": 161418,
+ "playerLayer.m_Mask": 256,
+ "swordStartSpd": 6.0,
+ "delaySword": 0.10000000149011612,
+ "shotRate": 0.30000001192092896,
+ "swordDamage": 400.0,
+ "_gameobject": "Boss-39016"
+}
+```
+
+## `MB13_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 215706,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 31490834432,
+ "m_Name": "",
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 692008,
+ "path.m_FileID": 0,
+ "path.m_PathID": 692018,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 691998,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 599135,
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 495400,
+ "allColliders": "[1]",
+ "allColliders[0].m_FileID": 0,
+ "allColliders[0].m_PathID": 486477,
+ "allGunAttacks": "[0]",
+ "parentHealth.m_FileID": 0,
+ "parentHealth.m_PathID": 151308,
+ "targetLayer.m_Mask": 256,
+ "pointAttack1": "[2]",
+ "pointAttack1[0].m_FileID": 0,
+ "pointAttack1[0].m_PathID": 430853,
+ "pointAttack1[1].m_FileID": 0,
+ "pointAttack1[1].m_PathID": 307775,
+ "pointAttack1Fast": "[2]",
+ "pointAttack1Fast[0].m_FileID": 0,
+ "pointAttack1Fast[0].m_PathID": 267449,
+ "pointAttack1Fast[1].m_FileID": 0,
+ "pointAttack1Fast[1].m_PathID": 366854,
+ "bltAttack1": 80204,
+ "damageBltAttack": 400.0,
+ "allPathBoomerang": "[4]",
+ "allPathBoomerang[0].m_FileID": 0,
+ "allPathBoomerang[0].m_PathID": 614056,
+ "allPathBoomerang[1].m_FileID": 0,
+ "allPathBoomerang[1].m_PathID": 588002,
+ "allPathBoomerang[2].m_FileID": 0,
+ "allPathBoomerang[2].m_PathID": 618950,
+ "allPathBoomerang[3].m_FileID": 0,
+ "allPathBoomerang[3].m_PathID": 635755,
+ "pointAttack2": "[2]",
+ "pointAttack2[0].m_FileID": 0,
+ "pointAttack2[0].m_PathID": 441016,
+ "pointAttack2[1].m_FileID": 0,
+ "pointAttack2[1].m_PathID": 347953,
+ "bltAttack2": 80205,
+ "damageBltAttack2": 350.0,
+ "_gameobject": "Boss-37015"
+}
+```
+
+## `MB15_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 191554,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 27598520320,
+ "m_Name": "",
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 678648,
+ "path.m_FileID": 0,
+ "path.m_PathID": 678633,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 678666,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 644354,
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 495458,
+ "allColliders": "[1]",
+ "allColliders[0].m_FileID": 0,
+ "allColliders[0].m_PathID": 487322,
+ "parentHealth.m_FileID": 0,
+ "parentHealth.m_PathID": 180030,
+ "laserGuns": "[4]",
+ "laserGuns[0].m_FileID": 0,
+ "laserGuns[0].m_PathID": 19634,
+ "laserGuns[1].m_FileID": 0,
+ "laserGuns[1].m_PathID": 12199,
+ "laserGuns[2].m_FileID": 0,
+ "laserGuns[2].m_PathID": 166445,
+ "laserGuns[3].m_FileID": 0,
+ "laserGuns[3].m_PathID": 181383,
+ "laserDamage": 80.0,
+ "targetLayer.m_Mask": 256,
+ "pointAttack1.m_FileID": 0,
+ "pointAttack1.m_PathID": 400903,
+ "bltAttack1": 80211,
+ "damageBltAttack1": 350.0,
+ "allGunRotate": "[4]",
+ "allGunRotate[0].m_FileID": 0,
+ "allGunRotate[0].m_PathID": 604524,
+ "allGunRotate[1].m_FileID": 0,
+ "allGunRotate[1].m_PathID": 639199,
+ "allGunRotate[2].m_FileID": 0,
+ "allGunRotate[2].m_PathID": 597569,
+ "allGunRotate[3].m_FileID": 0,
+ "allGunRotate[3].m_PathID": 648058,
+ "handGunAuto": "[2]",
+ "handGunAuto[0].m_FileID": 0,
+ "handGunAuto[0].m_PathID": 263642,
+ "handGunAuto[1].m_FileID": 0,
+ "handGunAuto[1].m_PathID": 338232,
+ "bltGunAuto": 80212,
+ "damageBltGunAuto": 600.0,
+ "handBigGun": "[2]",
+ "handBigGun[0].m_FileID": 0,
+ "handBigGun[0].m_PathID": 325133,
+ "handBigGun[1].m_FileID": 0,
+ "handBigGun[1].m_PathID": 349123,
+ "bltBigGun": 80213,
+ "damageBltBigGun": 800.0,
+ "mixGunPoint1.m_FileID": 0,
+ "mixGunPoint1.m_PathID": 400903,
+ "allMixGunPoint2": "[2]",
+ "allMixGunPoint2[0].m_FileID": 0,
+ "allMixGunPoint2[0].m_PathID": 432424,
+ "allMixGunPoint2[1].m_FileID": 0,
+ "allMixGunPoint2[1].m_PathID": 447080,
+ "bltMixGun2": "[2]",
+ "bltMixGun2[0]": 80217,
+ "bltMixGun2[1]": 80218,
+ "damageBltMix2": 450.0,
+ "_gameobject": "Boss-37017"
+}
+```
+
+## `MB16_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 191553,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 24058527744,
+ "m_Name": "",
+ "parentHealth.m_FileID": 0,
+ "parentHealth.m_PathID": 14404,
+ "animators.m_FileID": 0,
+ "animators.m_PathID": 495831,
+ "animationEvents.m_FileID": 0,
+ "animationEvents.m_PathID": 635056,
+ "allColliders": "[1]",
+ "allColliders[0].m_FileID": 0,
+ "allColliders[0].m_PathID": 487621,
+ "targetLayer.m_Mask": 256,
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 678647,
+ "path.m_FileID": 0,
+ "path.m_PathID": 678632,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 678665,
+ "laser.m_FileID": 0,
+ "laser.m_PathID": 671032,
+ "laserDamage": 50.0,
+ "allAutoGunPoints": "[2]",
+ "allAutoGunPoints[0].m_FileID": 0,
+ "allAutoGunPoints[0].m_PathID": 245861,
+ "allAutoGunPoints[1].m_FileID": 0,
+ "allAutoGunPoints[1].m_PathID": 255880,
+ "idBulletAutoGun": 80250,
+ "dmgBulletAuto": 400.0,
+ "allRocketBarrels": "[2]",
+ "allRocketBarrels[0].m_FileID": 0,
+ "allRocketBarrels[0].m_PathID": 436399,
+ "allRocketBarrels[1].m_FileID": 0,
+ "allRocketBarrels[1].m_PathID": 284678,
+ "idBulletRocket": 80249,
+ "dmgBulletRocket": 600.0,
+ "pointBigShoot.m_FileID": 0,
+ "pointBigShoot.m_PathID": 404184,
+ "idBulletbigShoot": 80248,
+ "dmgBulletBig": 1000.0,
+ "_gameobject": "Boss-37018"
+}
+```
+
+## `Enemy_DropGold` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185688,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 6459228160,
+ "m_Name": "",
+ "_gameobject": "CB-30010"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 185705,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 6459228160,
+ "m_Name": "",
+ "_gameobject": "CB-30010"
+}
+```
+
+## `MB19_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 172642,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 28319940608,
+ "m_Name": "",
+ "parentHealth.m_FileID": 0,
+ "parentHealth.m_PathID": 111523,
+ "animators.m_FileID": 0,
+ "animators.m_PathID": 496564,
+ "animationEvents.m_FileID": 0,
+ "animationEvents.m_PathID": 645804,
+ "allColliders": "[1]",
+ "allColliders[0].m_FileID": 0,
+ "allColliders[0].m_PathID": 487889,
+ "targetLayer.m_Mask": 256,
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 668942,
+ "path.m_FileID": 0,
+ "path.m_PathID": 668948,
+ "startSpeed": 20.0,
+ "ball.m_FileID": 0,
+ "ball.m_PathID": 400835,
+ "idBulletBurst": 80233,
+ "dmgBulletBurst": 300.0,
+ "maxReflexCount": 10,
+ "_gameobject": "Boss-37019"
+}
+```
+
+## `MB11_Director` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 155905,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 25451036672,
+ "m_Name": "",
+ "moveScript.m_FileID": 0,
+ "moveScript.m_PathID": 659529,
+ "path.m_FileID": 0,
+ "path.m_PathID": 609614,
+ "lookatPlayer.m_FileID": 0,
+ "lookatPlayer.m_PathID": 640824,
+ "animEvents.m_FileID": 0,
+ "animEvents.m_PathID": 621506,
+ "animatorParent.m_FileID": 0,
+ "animatorParent.m_PathID": 495434,
+ "parentHealth.m_FileID": 0,
+ "parentHealth.m_PathID": 28697,
+ "targetLayer.m_Mask": 256,
+ "allAutoGunPoints": "[2]",
+ "allAutoGunPoints[0].m_FileID": 0,
+ "allAutoGunPoints[0].m_PathID": 404961,
+ "allAutoGunPoints[1].m_FileID": 0,
+ "allAutoGunPoints[1].m_PathID": 404962,
+ "bltIdAutoGun": 80173,
+ "bltAutoGunDmg": 350.0,
+ "gunAnims": "[2]",
+ "gunAnims[0].m_FileID": 0,
+ "gunAnims[0].m_PathID": 497168,
+ "gunAnims[1].m_FileID": 0,
+ "gunAnims[1].m_PathID": 494622,
+ "bltAttackFragments": 80168,
+ "idBltFragment": 80169,
+ "bltFragmentDmg": 350.0,
+ "allHandPoints": "[1]",
+ "allHandPoints[0].m_FileID": 0,
+ "allHandPoints[0].m_PathID": 404958,
+ "allWingPoints": "[2]",
+ "allWingPoints[0].m_FileID": 0,
+ "allWingPoints[0].m_PathID": 404959,
+ "allWingPoints[1].m_FileID": 0,
+ "allWingPoints[1].m_PathID": 404956,
+ "idBltAttackBomb": 80170,
+ "attackBombDmg": 400,
+ "allRocketPoints": "[2]",
+ "allRocketPoints[0].m_FileID": 0,
+ "allRocketPoints[0].m_PathID": 404959,
+ "allRocketPoints[1].m_FileID": 0,
+ "allRocketPoints[1].m_PathID": 404956,
+ "idBltAttackRocket": 80172,
+ "bltAttackRocketDmg": 400,
+ "_gameobject": "Boss-37013"
+}
+```
+
+## `Boss19_AttackPhases` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 230427,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 12650020864,
+ "m_Name": "",
+ "allHpParents": "[3]",
+ "allHpParents[0].m_FileID": 0,
+ "allHpParents[0].m_PathID": 151595,
+ "allHpParents[1].m_FileID": 0,
+ "allHpParents[1].m_PathID": 231252,
+ "allHpParents[2].m_FileID": 0,
+ "allHpParents[2].m_PathID": 28636,
+ "allColliders": "[1]",
+ "allColliders[0].m_FileID": 0,
+ "allColliders[0].m_PathID": 487193,
+ "allObjColliders": "[1]",
+ "allObjColliders[0].m_FileID": 0,
+ "allObjColliders[0].m_PathID": 665858,
+ "attackTypes.m_FileID": 0,
+ "attackTypes.m_PathID": 689449,
+ "animationEvents.m_FileID": 0,
+ "animationEvents.m_PathID": 665857,
+ "animators.m_FileID": 0,
+ "animators.m_PathID": 498950,
+ "roundStart": 1,
+ "_gameobject": "Boss-39019"
+}
+```
+
+## `Enemy_Passive_Attack` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 170746,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 10049552384,
+ "m_Name": "",
+ "attackScript.m_FileID": 0,
+ "attackScript.m_PathID": 699809,
+ "startShootEvent.m_PersistentCalls.m_Calls": "[0]",
+ "stopShootEvent.m_PersistentCalls.m_Calls": "[0]",
+ "allBarrels": "[2]",
+ "allBarrels[0].m_FileID": 0,
+ "allBarrels[0].m_PathID": 437374,
+ "allBarrels[1].m_FileID": 0,
+ "allBarrels[1].m_PathID": 444316,
+ "_gameobject": "Boss-37001/Enemy_Ingame/Body/MB-39005"
+}
+```
+
+## `Enemy_Sync_Attack2` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 228548,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5318377472,
+ "m_Name": "",
+ "attackScript.m_FileID": 0,
+ "attackScript.m_PathID": 699459,
+ "attackFollowerScripts": "[0]",
+ "startShootEvent.m_PersistentCalls.m_Calls": "[1]",
+ "stopShootEvent.m_PersistentCalls.m_Calls": "[1]",
+ "_gameobject": "Body/Boss 1/Skeleton/SkeletonUtility-SkeletonRoot/GUN 2/SungPhai2 [Follower] 2"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 228551,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5318377472,
+ "m_Name": "",
+ "attackScript.m_FileID": 0,
+ "attackScript.m_PathID": 699425,
+ "attackFollowerScripts": "[0]",
+ "startShootEvent.m_PersistentCalls.m_Calls": "[1]",
+ "stopShootEvent.m_PersistentCalls.m_Calls": "[1]",
+ "_gameobject": "Body/Boss 1/Skeleton/SkeletonUtility-SkeletonRoot/GUN 1/SungTrai2 [Follower] 3"
+}
+```
+
+## `Enemy_SpawnChilds` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 228648,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 10989076480,
+ "m_Name": "",
+ "_gameobject": "Parent_Rotate/Type4"
 }
 ```
