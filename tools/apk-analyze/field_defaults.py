@@ -73,35 +73,38 @@ def read_str(blob, str_off, idx):
     return blob[str_off + idx:end].decode("utf-8", "replace")
 
 
+IDENT_RE = re.compile(r"^[A-Za-z_<][\w<>.`]*$")
+
+
 def parse_types(blob, header):
-    """Trả [(class_name, field_start, field_count)] + tổng số field metadata."""
+    """Trả [(class_name, field_start, field_count)] + tổng số field metadata.
+
+    Tự hiệu chuẩn: thử mọi kích thước struct khả thi, chấm theo tỉ lệ tên
+    type giải mã được thành định danh hợp lệ trong vùng string.
+    """
     td_off, td_size = header["typeDefinitions"]
     f_off, f_size = header["fields"]
-    str_off, _ = header["string"]
+    str_off, str_size = header["string"]
     n_fields = f_size // 12
+    print("header pairs: " + ", ".join(
+        f"{k}={v[0]}/{v[1]}" for k, v in header.items()))
     best = None
-    for size in (84, 88, 92, 104, 112, 116):
+    for size in range(76, 132, 4):
         if td_size % size:
             continue
         n = td_size // size
-        try:
-            ok, prev_max = 0, -1
-            for i in range(min(n, 4000)):
-                base = td_off + i * size
-                field_start, field_count = struct.unpack_from("<iH", blob, base + 28)
-                nm = struct.unpack_from("<i", blob, base)[0]
-                if field_start < prev_max - 0 or field_count > 400:
-                    break
-                if 0 <= nm < header["string"][1]:
-                    ok += 1
-                prev_max = max(prev_max, field_start)
-            score = ok
-        except struct.error:
-            score = -1
-        if best is None or score > best[0]:
-            best = (score, size, n)
-    _score, size, n = best
-    print(f"typeDefinitions: {n} types, struct size {size} (score {_score}); "
+        total = min(n, 600)
+        good = 0
+        for i in range(total):
+            nm = struct.unpack_from("<i", blob, td_off + i * size)[0]
+            name = read_str(blob, str_off, nm) if 0 <= nm < str_size else "?"
+            if IDENT_RE.match(name or ""):
+                good += 1
+        print(f"  struct size {size}: {n} types, ten hop le {good}/{total}")
+        if best is None or good > best[0]:
+            best = (good, size, n)
+    _good, size, n = best
+    print(f"typeDefinitions: {n} types, struct size {size}; "
           f"metadata fields: {n_fields}")
     types = []
     for i in range(n):
@@ -110,6 +113,7 @@ def parse_types(blob, header):
         field_start = struct.unpack_from("<i", blob, base + 28)[0]
         field_count = struct.unpack_from("<H", blob, base + size - 24 + 4)[0]
         types.append((read_str(blob, str_off, name_idx), field_start, field_count))
+    print(f"  sample type names: {[t[0] for t in types[:12]]}")
     return types, n_fields, (f_off, str_off)
 
 
