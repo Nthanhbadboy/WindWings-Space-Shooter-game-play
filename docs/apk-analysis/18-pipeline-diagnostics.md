@@ -3,15 +3,15 @@
 ## Unity payload
 ```
 total 137M
--rw-r--r-- 1 runner runner   11K Oct 23 05:28 RuntimeInitializeOnLoads.json
--rw-r--r-- 1 runner runner  3.9K Oct 23 05:28 ScriptingAssemblies.json
--rw-r--r-- 1 runner runner   120 Oct 23 05:28 _listing.txt
--rw-r--r-- 1 runner runner   61M Oct 23 05:28 data.unity3d
--rw-r--r-- 1 runner runner  8.3M Oct 23 05:28 global-metadata.dat
--rw-r--r-- 1 runner runner   45M Oct 23 05:28 libil2cpp.so
--rw-r--r-- 1 runner runner   17M Oct 23 05:28 libunity.so
--rw-r--r-- 1 runner runner 1023K Oct 23 05:28 resources.arsc
--rw-r--r-- 1 runner runner  4.9M Oct 23 05:28 resources.resource
+-rw-r--r-- 1 runner runner   11K Oct 23 05:36 RuntimeInitializeOnLoads.json
+-rw-r--r-- 1 runner runner  3.9K Oct 23 05:36 ScriptingAssemblies.json
+-rw-r--r-- 1 runner runner   120 Oct 23 05:36 _listing.txt
+-rw-r--r-- 1 runner runner   61M Oct 23 05:36 data.unity3d
+-rw-r--r-- 1 runner runner  8.3M Oct 23 05:36 global-metadata.dat
+-rw-r--r-- 1 runner runner   45M Oct 23 05:36 libil2cpp.so
+-rw-r--r-- 1 runner runner   17M Oct 23 05:36 libunity.so
+-rw-r--r-- 1 runner runner 1023K Oct 23 05:36 resources.arsc
+-rw-r--r-- 1 runner runner  4.9M Oct 23 05:36 resources.resource
 ```
 
 ## assets/bin/Data listing (from APK)
@@ -39,34 +39,34 @@ typetree OK
 ```
 docs/assets:
 total 364
-drwxr-xr-x 3 runner runner   4096 Oct 23 05:28 .
-drwxr-xr-x 5 runner runner   4096 Oct 23 05:28 ..
--rw-r--r-- 1 runner runner   2190 Oct 23 05:29 INDEX.md
--rw-r--r-- 1 runner runner   7275 Oct 23 05:29 audio-index.csv
-drwxr-xr-x 2 runner runner   4096 Oct 23 05:29 contact-sheets
--rw-r--r-- 1 runner runner 146648 Oct 23 05:29 manifest.csv
--rw-r--r-- 1 runner runner 191560 Oct 23 05:29 sprites-index.csv
--rw-r--r-- 1 runner runner   4634 Oct 23 05:29 stats.json
+drwxr-xr-x 3 runner runner   4096 Oct 23 05:36 .
+drwxr-xr-x 5 runner runner   4096 Oct 23 05:36 ..
+-rw-r--r-- 1 runner runner   2190 Oct 23 05:38 INDEX.md
+-rw-r--r-- 1 runner runner   7275 Oct 23 05:38 audio-index.csv
+drwxr-xr-x 2 runner runner   4096 Oct 23 05:38 contact-sheets
+-rw-r--r-- 1 runner runner 146648 Oct 23 05:38 manifest.csv
+-rw-r--r-- 1 runner runner 191560 Oct 23 05:38 sprites-index.csv
+-rw-r--r-- 1 runner runner   4634 Oct 23 05:38 stats.json
 
 docs/assets/contact-sheets:
 total 7400
-drwxr-xr-x 2 runner runner   4096 Oct 23 05:29 .
-drwxr-xr-x 3 runner runner   4096 Oct 23 05:28 ..
--rw-r--r-- 1 runner runner 233344 Oct 23 05:29 atlas-01.jpg
--rw-r--r-- 1 runner runner 326577 Oct 23 05:29 atlas-02.jpg
--rw-r--r-- 1 runner runner  14242 Oct 23 05:29 atlas-03.jpg
--rw-r--r-- 1 runner runner 177064 Oct 23 05:29 background-01.jpg
--rw-r--r-- 1 runner runner 142920 Oct 23 05:29 background-02.jpg
--rw-r--r-- 1 runner runner 166141 Oct 23 05:29 bosses-01.jpg
--rw-r--r-- 1 runner runner 175411 Oct 23 05:29 bullet-01.jpg
--rw-r--r-- 1 runner runner  13861 Oct 23 05:29 bullet-02.jpg
--rw-r--r-- 1 runner runner  56140 Oct 23 05:29 drones-01.jpg
--rw-r--r-- 1 runner runner 104215 Oct 23 05:29 enemy-01.jpg
--rw-r--r-- 1 runner runner  31031 Oct 23 05:29 font-01.jpg
--rw-r--r-- 1 runner runner 204312 Oct 23 05:29 fx-01.jpg
--rw-r--r-- 1 runner runner  56927 Oct 23 05:29 fx-02.jpg
--rw-r--r-- 1 runner runner  16007 Oct 23 05:29 items-01.jpg
--rw-r--r-- 1 runner runner 125812 Oct 23 05:29 ships-01.jpg
+drwxr-xr-x 2 runner runner   4096 Oct 23 05:38 .
+drwxr-xr-x 3 runner runner   4096 Oct 23 05:36 ..
+-rw-r--r-- 1 runner runner 233344 Oct 23 05:38 atlas-01.jpg
+-rw-r--r-- 1 runner runner 326577 Oct 23 05:38 atlas-02.jpg
+-rw-r--r-- 1 runner runner  14242 Oct 23 05:38 atlas-03.jpg
+-rw-r--r-- 1 runner runner 177064 Oct 23 05:38 background-01.jpg
+-rw-r--r-- 1 runner runner 142920 Oct 23 05:38 background-02.jpg
+-rw-r--r-- 1 runner runner 166141 Oct 23 05:38 bosses-01.jpg
+-rw-r--r-- 1 runner runner 175411 Oct 23 05:38 bullet-01.jpg
+-rw-r--r-- 1 runner runner  13861 Oct 23 05:38 bullet-02.jpg
+-rw-r--r-- 1 runner runner  56140 Oct 23 05:38 drones-01.jpg
+-rw-r--r-- 1 runner runner 104215 Oct 23 05:38 enemy-01.jpg
+-rw-r--r-- 1 runner runner  31031 Oct 23 05:38 font-01.jpg
+-rw-r--r-- 1 runner runner 204312 Oct 23 05:38 fx-01.jpg
+-rw-r--r-- 1 runner runner  56927 Oct 23 05:38 fx-02.jpg
+-rw-r--r-- 1 runner runner  16007 Oct 23 05:38 items-01.jpg
+-rw-r--r-- 1 runner runner 125812 Oct 23 05:38 ships-01.jpg
 ```
 
 ## Step logs (tail)
@@ -128,12 +128,12 @@ R_AARCH64_RELATIVE relocs: 288733
 PT_LOAD segments: 4
 ELF machine: 0xb7 (aarch64)
 methods parsed: 64727
-methods in target classes: 425 across 17 classes
+methods in target classes: 466 across 20 classes
 Traceback (most recent call last):
-  File "/home/runner/work/WindWings-Space-Shooter-game-play/WindWings-Space-Shooter-game-play/tools/apk-analyze/il2cpp_consts.py", line 733, in <module>
+  File "/home/runner/work/WindWings-Space-Shooter-game-play/WindWings-Space-Shooter-game-play/tools/apk-analyze/il2cpp_consts.py", line 735, in <module>
     sys.exit(main())
              ^^^^^^
-  File "/home/runner/work/WindWings-Space-Shooter-game-play/WindWings-Space-Shooter-game-play/tools/apk-analyze/il2cpp_consts.py", line 587, in main
+  File "/home/runner/work/WindWings-Space-Shooter-game-play/WindWings-Space-Shooter-game-play/tools/apk-analyze/il2cpp_consts.py", line 590, in main
     consts, lines = constants_in(offset, size, blob, md or 0xB7, segs,
                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 TypeError: constants_in() got an unexpected keyword argument 'name'
@@ -254,24 +254,24 @@ source files: ['/tmp/apk/extract/data.unity3d', '/tmp/apk/extract/resources.reso
 exported 64 text assets, 1.2MB
 
 ===== /tmp/apk/logs/ui_index.log
-37646 file, 114 màn, 5,837,061 node, 797,091 dòng text/key -> datas/ui_screens.json.gz
+38382 file, 114 màn, 5,939,071 node, 813,381 dòng text/key -> datas/ui_screens.json.gz
 
 ===== /tmp/apk/logs/ui_layout.log
 typetree generator ready: AssetStudio
 class map: 125452 MonoBehaviours
 screen candidates: 793
-skipped: {'duplicate (class, root)': 57}
+skipped: {'duplicate (class, root)': 61}
 # UI layout (số đo bóc từ prefab)
 
 > **Kết luận tạm thời.** Đây là giá trị *serialize trong prefab*. Runtime có thể
 > ghi đè (layout group, safe area, code set anchor), nên chỉ dùng làm khung tham
 > chiếu. Dữ liệu thô: `reverse-engineering/raw/ui/*.json.gz`.
 
-- màn hình dump được: **736**
-- tổng node: **102010**
+- màn hình dump được: **732**
+- tổng node: **106162**
 - dung lượng thô (gz): **2.0 MB**
 
-- bỏ qua: duplicate (class, root) (57)
+- bỏ qua: duplicate (class, root) (61)
 
 ## Component gặp nhiều nhất
 
@@ -309,7 +309,7 @@ errors: {'script': 1}
 # Wave composition (campaign maps)
 
 - waves: **282**
-- spawners: **11095**
+- spawners: **11096**
 - typetree backend: **AssetStudio**
 
 - lỗi đọc: 1 object
