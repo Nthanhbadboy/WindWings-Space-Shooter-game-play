@@ -335,7 +335,53 @@ Không có `adb` (trial) thì bỏ 3 dòng `adb`, giữ `--mode trial`; script s
 
 ---
 
-## 7. Giới hạn đã biết
+## 7. Kết quả chạy thật (23/10/2026)
+
+Workflow đã chạy 6 lần trên PR này, mỗi lần một lỗi thật được sửa:
+
+| Lần | Lỗi | Sửa |
+|---|---|---|
+| 1 | `INSTALL_FAILED_MISSING_SPLIT` | nhận ra XAPK của repo là app split |
+| 2 | `Prepare APK` exit 1 | `pipefail` + base không có `lib/` |
+| 3 | vẫn `MISSING_SPLIT` | merge chạy nhưng bị bỏ vì exit code |
+| 4 | `INSTALL_PARSE_FAILED_NO_CERTIFICATES` | APKEditor không ký thật → uber-apk-signer |
+| 5 | `bridge-unreachable` | APK không nhúng `RamusBridge.dll` (đúng như thiết kế) |
+| 6 | `fatal exception: yes` | **game chết vì ABI** |
+
+### Chốt: Ramus không chạy được bản APK này
+
+Dữ liệu từ lần chạy `39914973584`:
+
+```
+base.apk (sau merge)   117.055.794 B   abis=arm64-v8a   ← chỉ có arm64
+config.arm64_v8a.apk    23.889.752 B   abis=arm64-v8a
+package                 com.Wind.wings.Space.Shooter
+kết quả cài đặt        OK (đã merge + ký lại)
+kết quả chạy           FATAL EXCEPTION, không có Unity banner, không có il2cpp
+```
+
+`ramus.dev/docs/quickstart`: *"The APK must run on an **x86_64** Android emulator"*.
+Game là IL2CPP **arm64** (`docs/spec/GAMEPLAY.md` §Nền tảng) ⇒ `libmain.so` arm64 không nạp
+được trên emulator x86_64. **Đây là giới hạn của nền tảng, không phải lỗi workflow.**
+
+Ba đường đi tiếp, xếp theo chi phí:
+
+| Cách | Việc phải làm | Còn vướng |
+|---|---|---|
+| **Thiết bị thật (khuyến nghị)** | `adb connect <ip:port>` tới máy Android arm64 của bạn, rồi chạy `ramus-probe.mjs --mode key --base http://127.0.0.1:8080` sau `adb forward` | cần máy + bật USB/Wi-Fi debugging |
+| **Emulator arm64** | dùng dịch vụ/AVD arm64 (chậm hơn x86_64 nhiều lần) | Ramus hiện chỉ x86_64 |
+| **Bản build có x86_64** | build lại Unity với IL2CPP x86_64 (Unity 2022.3 có hỗ trợ) | chỉ để test, không phải bản phát hành |
+
+Điều **không** nên làm: cố nhồi `libmain.so` arm64 vào emulator x86_64 — không có lớp
+dịch ARM nào trong ảnh Google stock.
+
+> Nhận định: harness vẫn đúng và dùng được ngay khi có thiết bị arm64 hoặc build x86_64 —
+> phần merge/ký/cài/probe/báo cáo đã chạy thật, chỉ còn thiếu mảnh "APK có RamusBridge.dll"
+> và "CPU khớp ABI".
+
+---
+
+## 8. Giới hạn đã biết
 
 - **Chưa build/chạy thử trong sandbox này** (không có .NET SDK, không có thiết bị). Code đã qua kiểm tra cú pháp/khung; **lần build đầu phải chạy trên máy bạn**.
 - Trial: 15 phút, 1 session, APK ≤ 150 MB, **không adb**, không camera/mic (lệnh đó cần key). Hết hạn giữa chừng thì các lệnh sau trả `unauthorized` — script ghi chú rõ.

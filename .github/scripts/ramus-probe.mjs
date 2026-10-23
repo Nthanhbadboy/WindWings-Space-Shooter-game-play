@@ -327,12 +327,18 @@ async function main() {
   // Did the process even start? Decides "bridge missing" vs "game crashed".
   const rawLog = result.logcat.rawAll || '';
   const pkgRe = new RegExp((process.env.RAMUS_PACKAGE || 'com.wind').replace(/\./g, '\\.'), 'i');
+  const CRASH_RE = /FATAL EXCEPTION|AndroidRuntime|UnsatisfiedLinkError|NO_MATCHING_ABIS|dlopen failed|SIGSEGV|is 32-bit instead of 64-bit/i;
   const signals = {
     unity: /Unity/i.test(rawLog),
     il2cpp: /il2cpp/i.test(rawLog),
     package: pkgRe.test(rawLog),
     nativeFailure: /UnsatisfiedLinkError|NO_MATCHING_ABIS|dlopen failed|SIGSEGV|is 32-bit instead of 64-bit/i.test(rawLog),
     fatal: /FATAL EXCEPTION|AndroidRuntime/i.test(rawLog),
+    excerpts: rawLog
+      .split('\n')
+      .filter((l) => CRASH_RE.test(l))
+      .slice(-4)
+      .map((l) => l.trim().slice(0, 220)),
   };
   result.app = {
     signals,
@@ -457,9 +463,16 @@ function renderReport(r) {
     lines.push(`| native load failure | ${yn(sig.nativeFailure)} |`);
     lines.push(`| fatal exception | ${yn(sig.fatal)} |`);
     lines.push('');
+    if (Array.isArray(sig.excerpts) && sig.excerpts.length) {
+      lines.push('```');
+      for (const e of sig.excerpts) lines.push(e);
+      lines.push('```');
+      lines.push('');
+    }
     if (!sig.package && !sig.unity) {
       lines.push('> No Unity or package line in the last 500 logcat lines: the game probably never');
-      lines.push('> started. This build is arm64-only and Ramus runs x86_64 emulators.');
+      lines.push('> started. This build is arm64-only (lib/arm64-v8a only) and Ramus runs x86_64');
+      lines.push('> emulators — see ramus.dev/docs/quickstart.');
       lines.push('');
     }
   }
