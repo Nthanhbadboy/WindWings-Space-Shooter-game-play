@@ -204,7 +204,7 @@ def main() -> int:
         typ = types_by_name.get(key)
         value = decode(typ, data, data_idx) if typ else None
         entry = {"type": typ or "?", "data_index": data_idx,
-                 "raw": blob_bytes.hex()}
+                 "field_index": field_idx, "raw": blob_bytes.hex()}
         if value is not None:
             entry["value"] = value
         elif 0 <= data_idx <= len(data) - 4:
