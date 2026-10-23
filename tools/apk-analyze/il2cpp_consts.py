@@ -196,6 +196,7 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
     insns = list(cs.disasm(chunk, base if base is not None else code_off))
     adrp_pages: dict = {}
     slot_regs: dict = {}  # reg -> VA slot nạp từ page adrp (chuỗi InitializeArray)
+    debug_rva: list = []  # chỉ đầy khi RVA_DEBUG=1 (chẩn đoán layout blob)
     pending_floats: list = []
     emitted: set = set()
     for insn in insns:
@@ -256,6 +257,12 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
                     raw_a = va_read(blob, segs, slot_regs[base], 8, ro_only=False)
                     if raw_a and len(raw_a) == 8:
                         a = struct.unpack("<Q", raw_a)[0]
+                        if os.environ.get("RVA_DEBUG") and len(debug_rva) < 40:
+                            raw_v = va_read(blob, segs, a, 16, ro_only=False)
+                            debug_rva.append({"addr": hex(insn.address),
+                                              "slot": hex(slot_regs[base]),
+                                              "a": hex(a),
+                                              "a_bytes": raw_v.hex() if raw_v else None})
                         for start in (a,):
                             raw_v = va_read(blob, segs, start, 8, ro_only=False)
                             cands = [start]
@@ -361,6 +368,8 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
             consts.append({"kind": "int", "value": int(pf["bits"], 16), "via": "mov",
                            "bits": pf["bits"], "addr": pf["addr"],
                            "note": "bit-pattern giống float nhưng không thấy fmov — để riêng"})
+    for dbg in debug_rva:
+        consts.append({"kind": "debug_rva", **dbg})
     return consts, lines
 
 
