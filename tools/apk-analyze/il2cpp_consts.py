@@ -195,6 +195,7 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
     # most builds, but the ARM64 adrp immediate is PC-page relative).
     insns = list(cs.disasm(chunk, base if base is not None else code_off))
     adrp_pages: dict = {}
+    slot_regs: dict = {}  # reg -> VA slot nạp từ page adrp (chuỗi InitializeArray)
     pending_floats: list = []
     emitted: set = set()
     for insn in insns:
@@ -240,28 +241,43 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
                         consts.append({"kind": "float", "value": round(val, 5),
                                        "via": "ldr_pool", "va": hex(va),
                                        "addr": hex(insn.address)})
-        # ---- RVA field data: ldr xN, [slot] -> con trỏ tới blob trong .rodata.
-        # Các mảng literal (bảng map->wave, bảng stat device...) được nạp kiểu này:
-        # slot nằm ở segment ghi được, blob là [int32 count][int32 x count].
+        # ---- RVA field data (InitializeArray): adrp page -> ldr xM,[slot]
+        # -> ldr xN,[xM]. [slot] là con trỏ tới object metadata, [object] là
+        # con trỏ tới blob [int32 count][int32 x count] trong .rodata. Đây là
+        # nguồn của các mảng literal (bảng map->wave, bảng stat device...).
         if insn.mnemonic == "ldr" and segs and md == 0xB7:
             m = re.search(r"\[(x\d+)(?:, #(0x[0-9a-f]+|\d+))?\]", insn.op_str)
             dst = insn.op_str.split(",")[0].strip()
-            if m and m.group(1) in adrp_pages and dst.startswith("x"):
-                slot = adrp_pages[m.group(1)] + (int(m.group(2), 0) if m.group(2) else 0)
-                raw_ptr = va_read(blob, segs, slot, 8, ro_only=False)
-                if raw_ptr and len(raw_ptr) == 8:
-                    ptr = struct.unpack("<Q", raw_ptr)[0]
-                    raw_hdr = va_read(blob, segs, ptr, 4, ro_only=True)
-                    if raw_hdr and len(raw_hdr) == 4:
-                        cnt = struct.unpack("<i", raw_hdr)[0]
-                        if 1 <= cnt <= 512:
-                            raw_body = va_read(blob, segs, ptr + 4, 4 * cnt, ro_only=True)
-                            if raw_body and len(raw_body) == 4 * cnt:
+            if m and dst.startswith("x"):
+                base, off = m.group(1), int(m.group(2), 0) if m.group(2) else 0
+                if base in adrp_pages:
+                    slot_regs[dst] = adrp_pages[base] + off
+                elif base in slot_regs and off == 0:
+                    raw_a = va_read(blob, segs, slot_regs[base], 8, ro_only=False)
+                    if raw_a and len(raw_a) == 8:
+                        a = struct.unpack("<Q", raw_a)[0]
+                        for start in (a,):
+                            raw_v = va_read(blob, segs, start, 8, ro_only=False)
+                            cands = [start]
+                            if raw_v and len(raw_v) == 8:
+                                cands.append(struct.unpack("<Q", raw_v)[0])
+                            for ptr in cands:
+                                raw_hdr = va_read(blob, segs, ptr, 4, ro_only=True)
+                                if not raw_hdr or len(raw_hdr) != 4:
+                                    continue
+                                cnt = struct.unpack("<i", raw_hdr)[0]
+                                if not (1 <= cnt <= 512):
+                                    continue
+                                raw_body = va_read(blob, segs, ptr + 4, 4 * cnt,
+                                                   ro_only=True)
+                                if not raw_body or len(raw_body) != 4 * cnt:
+                                    continue
                                 vals = list(struct.unpack(f"<{cnt}i", raw_body))
                                 if all(-1000 <= v <= 100000000 for v in vals):
                                     consts.append({"kind": "int_array", "value": vals,
                                                    "via": "rva_data", "va": hex(ptr),
                                                    "addr": hex(insn.address)})
+                                    break
         # ---- float loaded from the literal pool: ldr sN, [pc, #imm]
         if insn.mnemonic == "ldr" and "[pc," in insn.op_str and md == 0xB7:
             m = re.search(r"\[pc, #(-?0x[0-9a-f]+|-?\d+)\]", insn.op_str)
