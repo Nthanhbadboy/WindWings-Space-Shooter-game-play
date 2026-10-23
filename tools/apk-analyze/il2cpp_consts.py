@@ -243,6 +243,8 @@ def constants_in(code_off, size, blob, md, segs=None, base=None, name=""):
     slot_regs: dict = {}  # reg -> VA slot nạp từ page adrp (chuỗi InitializeArray)
     reg_token: dict = {}  # reg -> qword tại [slot-target] (token metadata 0x80000xxx?)
     pending_len = [None, -99]  # (độ dài mảng từ mov w1,#N, chỉ số lệnh)
+    pending_bl = [None, -99]   # (đích bl gần nhất, chỉ số lệnh) — array-new ngay trước
+    ia_events: list = []       # ứng viên InitializeArray, lọc 2 lượt ở cuối
     debug_rva: list = []  # chỉ đầy khi RVA_DEBUG=1 (chẩn đoán layout blob)
     pending_floats: list = []
     emitted: set = set()
@@ -256,12 +258,15 @@ def constants_in(code_off, size, blob, md, segs=None, base=None, name=""):
                 pending_len[1] = _idx
             except ValueError:
                 pass
-        if insn.mnemonic == "bl" and "x1" in reg_token \
-                and pending_len[0] is not None and _idx - pending_len[1] <= 14:
-            consts.append({"kind": "init_array", "len": pending_len[0],
-                           "slot_val": hex(reg_token["x1"]),
-                           "addr": hex(insn.address)})
-            pending_len[0] = None
+        if insn.mnemonic == "bl":
+            _tgt = insn.op_str.strip().lstrip("#")
+            if pending_bl[0] is not None and _idx - pending_bl[1] <= 8 \
+                    and "x1" in reg_token and pending_len[0] is not None:
+                ia_events.append({"bl": _tgt, "len": pending_len[0],
+                                  "slot_val": hex(reg_token["x1"]),
+                                  "addr": hex(insn.address)})
+            pending_bl[0] = _tgt
+            pending_bl[1] = _idx
         # ---- adrp/ldr: hằng số float nằm trong literal pool (.rodata)
         if insn.mnemonic == "adrp" and md == 0xB7:
             parts = [x.strip() for x in insn.op_str.split(",")]
@@ -433,6 +438,14 @@ def constants_in(code_off, size, blob, md, segs=None, base=None, name=""):
             consts.append({"kind": "int", "value": int(pf["bits"], 16), "via": "mov",
                            "bits": pf["bits"], "addr": pf["addr"],
                            "note": "bit-pattern giống float nhưng không thấy fmov — để riêng"})
+    # Lượt 2: wrapper InitializeArray = đích bl hay gặp nhất ngay sau array-new;
+    # token thật có kind 4 (FieldInfo/FieldRva trong encoding (kind<<29)|index).
+    if ia_events:
+        from collections import Counter as _C
+        _wrap = _C(e["bl"] for e in ia_events).most_common(1)[0][0]
+        for e in ia_events:
+            if e["bl"] == _wrap and (int(e["slot_val"], 16) >> 29) == 4:
+                consts.append({"kind": "init_array", **e})
     for dbg in debug_rva:
         consts.append({"kind": "debug_rva", **dbg})
     return consts, lines
