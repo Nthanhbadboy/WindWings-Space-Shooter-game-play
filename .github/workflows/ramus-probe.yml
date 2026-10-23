@@ -492,10 +492,21 @@ jobs:
         if: env.RAMUS_MODE == 'key' && steps.gate.outputs.skip != 'true'
         run: |
           set -euo pipefail
-          if ! npx --yes "$RAMUS_CLI" status | tee "$PROBE_OUT/status.json"; then
+          # `status` probes the key AND the repository install. A repository that has
+          # not installed the Ramus GitHub App makes it exit non-zero even though the
+          # key is fine — so only an auth-shaped failure is fatal here.
+          rc=0
+          out=$(npx --yes "$RAMUS_CLI" status 2>&1) || rc=$?
+          printf '%s\n' "$out" | tee "$PROBE_OUT/status.json"
+
+          if printf '%s' "$out" | grep -qiE 'unauthor|invalid.?key|missing.?key|not signed in|401'; then
             echo "::error::RAMUS_API_KEY was rejected. Rotate it at ramus.dev/settings and re-set the secret:"
             echo "::error::  gh secret set RAMUS_API_KEY"
             exit 1
+          fi
+          if [ "$rc" -ne 0 ]; then
+            echo "::warning::\`ramus status\` exited $rc but the message does not look like an auth failure"
+            echo "::warning::(likely the Ramus GitHub App is not installed on this repository). Continuing."
           fi
 
       - name: Start session
