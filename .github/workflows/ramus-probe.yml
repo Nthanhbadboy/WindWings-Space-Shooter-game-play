@@ -75,11 +75,63 @@ env:
   TRIAL_APK_MAX_MB: '150'
 
 jobs:
-  # A failed compile must block the device job — never probe with a bridge that
-  # does not build. Reuses the reusable build workflow's script, not its state.
+  # A failed compile must block the device job: never probe with a bridge that
+  # does not build. Inlined rather than `uses:` a reusable workflow — a same-repo
+  # workflow_call produced startup_failure on this repository, and a gate that
+  # never runs is worse than a duplicated step list. Both jobs call the same two
+  # scripts, so they cannot drift.
   build:
     name: bridge build
-    uses: ./.github/workflows/bridge-build.yml
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Fetch loader assemblies
+        run: |
+          set -euo pipefail
+          chmod +x .github/scripts/fetch-loader-refs.sh
+          .github/scripts/fetch-loader-refs.sh --refs .ci/refs 2>&1 | tee ci.log
+
+      - name: Compile all targets
+        run: |
+          set -o pipefail
+          chmod +x .github/scripts/build-bridge.sh
+          .github/scripts/build-bridge.sh --out dist --refs .ci/refs 2>&1 | tee -a ci.log
+
+      - name: Report failure on the PR
+        if: failure() && github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "<!-- bridge-build -->"
+            echo "## ❌ bridge build failed — the device probe was skipped"
+            echo
+            echo '```'
+            tail -60 ci.log 2>/dev/null || echo "no ci.log"
+            echo '```'
+          } > comment.md
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --body-file comment.md --edit-last --create-if-none
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ramus-bridge-dlls-${{ github.run_id }}
+          path: |
+            dist/
+            ci.log
+          if-no-files-found: warn
+          retention-days: 14
 
   preflight:
     name: preflight (APK + mode)

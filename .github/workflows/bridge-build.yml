@@ -6,7 +6,6 @@ name: bridge-build
 
 on:
   workflow_dispatch:
-  workflow_call:
   push:
     branches: [main]
     paths:
@@ -36,9 +35,6 @@ jobs:
     name: compile (core + 3 loaders)
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-compile
-      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
 
@@ -55,27 +51,8 @@ jobs:
       - name: Fetch loader assemblies
         run: |
           exec > >(tee -a ci.log) 2>&1
-          set -euo pipefail
-          mkdir -p .ci/refs
-          dl() { curl -fL --retry 3 --retry-delay 2 -o "$2" "$1"; }
-
-          # BepInEx 6 IL2CPP — real BasePlugin/BepInEx.Core/Il2CppInterop surface.
-          dl "https://github.com/BepInEx/BepInEx/releases/download/$BEP6_TAG/BepInEx-Unity.IL2CPP-win-x64-${BEP6_TAG#v}.zip" .ci/bep6.zip
-          # BepInEx 5 — BaseUnityPlugin.
-          dl "https://github.com/BepInEx/BepInEx/releases/download/$BEP5_TAG/BepInEx_win_x64_${BEP5_TAG#v}.zip" .ci/bep5.zip
-          # MelonLoader — MelonMod / MelonInfo / MelonGame.
-          dl "https://github.com/LavaGang/MelonLoader/releases/download/$MELON_TAG/MelonLoader.x64.zip" .ci/melon.zip
-
-          mkdir -p .ci/refs/bep6 .ci/refs/bep5 .ci/refs/melon
-          unzip -q -o .ci/bep6.zip  -d .ci/refs/bep6
-          unzip -q -o .ci/bep5.zip  -d .ci/refs/bep5
-          unzip -q -o .ci/melon.zip -d .ci/refs/melon
-
-          for d in bep6 bep5 melon; do
-            echo "── $d ──"
-            find ".ci/refs/$d" -name '*.dll' | head -12
-            echo "  total: $(find ".ci/refs/$d" -name '*.dll' | wc -l) dll"
-          done
+          chmod +x .github/scripts/fetch-loader-refs.sh
+          .github/scripts/fetch-loader-refs.sh --refs .ci/refs
 
       - name: Compile all targets
         id: compile
