@@ -44,7 +44,7 @@
 | # | Câu hỏi | Trạng thái | Số / nguồn |
 |---:|---|---|---|
 | B1 | HP của enemy thường? | ❌ | **231/236 wave campaign có HP = 0**; toàn bộ 2.440.000 nằm ở `Wave_0136` ⇒ HP do công thức runtime (`ENCOUNTERS` §3.3) |
-| B2 | HP của người chơi? | ⚠ | **công thức đầy đủ (mức A)**: `GetStartHp = StartHp × (1 + stepCommon×TechStatPoints(0) + abi7×GetNumberAbility(7))`, `stepCommon` = **0,168**; giáp `Player_Health.Armor` **tách riêng** (giảm damage, không cộng HP) — `BALANCE` §0.6. **Thiếu đúng 1 giá trị `StartHp`** (gán runtime, không có trong `.cctor`). serialize **không** có bảng HP theo tàu (`StartHp` là `float` đơn, damage/nhịp bắn là `float[]`), **nhưng** `StartHp` có thể bị gán lại lúc chọn tàu — runtime **chưa kiểm**; **trang bị không cộng HP**, chỉ giảm damage |
+| B2 | HP của người chơi? | ⚠ | **công thức đầy đủ (mức A)**: `GetStartHp = StartHp × (1 + stepCommon×TechStatPoints(0) + abi7×GetNumberAbility(7))`, `stepCommon` = **0,168**; giáp `Player_Health.Armor` **tách riêng** (giảm damage, không cộng HP) — `BALANCE` §0.6. **Thiếu đúng 1 giá trị `StartHp`** (gán runtime, không có trong `.cctor`). **vòng đời đã chốt (A/B)**: `StartHealth` **`static`** · `ResetStaticVariables()` = `CurrentHealth = StartHealth` (chỉ **chép**, hồi sinh **không** tính lại) · `Start()` **không** đụng HP ⇒ **chốt 1 lần trước khi spawn**, dùng cả màn (`BALANCE` §0.6.8). **Thiếu đúng 1 giá trị `StartHp`**. ⚠ **SỬA: device CÓ ảnh hưởng HP** qua `Player_Health.OnChangeDataDevice(int)`, và device lưu **theo từng tàu** (`Player_Device_Saved_Datas.GetPlayerDevices(playerIndex)`) ⇒ **HP khác nhau giữa các tàu, qua đường device** (`BALANCE` §0.6.7) |
 | B3 | Damage người chơi tăng theo cấp thế nào? | ⚠ | `Player_Get_Datas.stepLevel`: **4 ngưỡng cấp 30 / 58 / 118 / 248**, hằng số **0,168 · 1,0 · 1,05 · 1,15** (0,1764 = 0,168×1,05; 0,1932 = 0,168×1,15); `GetMainCannonDamage` = `base × (1 + k)` với k = 0,168 · 0,1764 · 0,1932 |
 | B4 | Giết một enemy mất bao lâu (TTK)? | ⚠ | có **DPS median 454,5** (`COMBAT` §4) + **HP boss 6,38 M/instance**; còn thiếu **giá trị `StartHp`** (`BALANCE` §0.6) và **HP enemy runtime** |
 | B5 | Độ khó tăng bằng gì? | ✅ | **bằng damage đòn boss, không bằng HP**: `Boss10` 800→1.350 · `Boss6` 600→2.800 · `Boss9` 500→800 (`BOSSES` §8.4.1) |
@@ -122,7 +122,7 @@ Xếp theo **chi phí trả lời thấp → cao**, không theo mức quan trọ
 
 | Hạng | Câu | Vì sao chặn | Cách trả lời | Chi phí |
 |---:|---|---|---|---|
-| 1 | **B2 — giá trị `StartHp`** | không có HP thì **không có TTK** — nhưng **công thức đã xong** | ✅ **đã giải xong cấu trúc** (`BALANCE` §0.6, đọc lệnh arm64). Chỉ còn **1 hằng số**: tìm class gán `Player_Get_Datas.StartHp` (không có trong `.cctor`, chỉ 3 lệnh **đọc** `#0x6c` toàn file) | **thấp** — 1 field, hoặc suy từ thang damage (500–5.000) |
+| 1 | **B2 — giá trị `StartHp`** | không có HP thì **không có TTK** — nhưng **công thức đã xong** | ✅ **đã giải xong cấu trúc** (`BALANCE` §0.6, đọc lệnh arm64). Chỉ còn **1 hằng số**. ⚠ **ĐÍNH CHÍNH:** kết luận cũ *"`.cctor` không gán `StartHp`"* **vô hiệu** — asm export **bị cắt cụt ở 11/12 file**, `Player_Get_Datas..cctor` dừng giữa chừng tại `0x14e5cc4` (`DATA_SYNC` §7.29). Yêu cầu **hẹp nhất**: dump **200 lệnh sau `0x14e5cc4`** | **rất thấp** — 1 khối 200 lệnh |
 | 2 | **A6 — stage ↔ wave** | quyết định **số màn** và **độ dài phiên** | `Stage_Behaviour.textStageIndex` → `Text` component; hoặc đọc thứ tự con của `Parent_Stages` trong `Board_Maps` | **thấp** — đã có `transform-tree` |
 | 3 | **E2/E3 — hit flash / hit stop** | quyết định **feel**, thứ người chơi cảm nhận mạnh nhất | đọc `Enemy_Display` field + tìm `timeScale`/`Material.color` trong 305 trace đã có | **thấp** |
 | 4 | **D3 — thứ tự pha boss** | mỗi trận boss là **điểm nhấn**; không có thứ tự thì chỉ clone được "boss bắn loạn" | giải mã `m_StreamedClip` để lấy `time` của **793 event** | **trung bình** — cần decoder |
@@ -143,7 +143,7 @@ Xếp theo **chi phí trả lời thấp → cao**, không theo mức quan trọ
 
 ## Còn thiếu / phải đoán
 
-1. **Giá trị `StartHp`** — công thức HP player đã xong (`BALANCE` §0.6), chỉ thiếu **một hằng số**;
+1. **Giá trị `StartHp`** — công thức HP player đã xong (`BALANCE` §0.6), chỉ thiếu **một hằng số**; nguyên nhân *"không thấy"* đã xác định: **asm bị cắt cụt** (`DATA_SYNC` §7.29), không phải dữ liệu không tồn tại;
    `Player_Get_Datas..cctor` không gán, toàn file asm không có lệnh ghi `#0x6c`.
 2. **Công thức HP enemy runtime** — có hằng số `GetSurvivalScore` (6,0 · 3,0 · 1,1 · 0,2 · 0,5 ·
    500,0 · 23,0 · 40,0) nhưng **chưa có thứ tự nhân**; `enemy_hp.json` ghi *"runtime HP scaled by

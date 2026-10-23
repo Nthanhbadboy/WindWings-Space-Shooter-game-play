@@ -1310,6 +1310,91 @@ RVA data** — không có trong `dump.cs` lẫn asm. Biết **công thức + 5 l
 
 ---
 
+### 7.28 `Player_Health` **không** thiếu asm — và vòng đời HP
+
+Bản `8871068a`.
+
+**a) ⚠ SỬA LẠI điều tôi ghi trong `DATA_SYNC` cũ:** tôi đã ghi *"thiếu `Player_Health.asm.txt` ⇒ cần
+xin phép dump thêm"*. **Sai** — dumper dump **liền mạch theo địa chỉ**, nên `Player_Datas.asm.txt`
+(257 dòng, chỉ 1 header `;;; ctor`) chứa **6 hàm liên tiếp**:
+
+| Địa chỉ | Hàm thật | Thuộc class |
+|---|---|---|
+| `0x14c6b4c` | `.ctor` | `Player_Datas` |
+| `0x14c6b5c` | **`Start()`** | `Player_Health` |
+| `0x14c6ca0` | **`ResetStaticVariables()`** | `Player_Health` |
+| `0x14c6cfc` | `GainHealth(float, float, float)` | `Player_Health` |
+| `0x14c6d70` | `GainHealthOverTime` | `Player_Health` |
+| `0x14c6de4` | **`TakeDamage`** | `Player_Health` |
+
+⇒ **Bài học phương pháp:** không tin tên file asm; **tra RVA trong `dump.cs`** rồi tìm địa chỉ đó
+**trong mọi file**. Cơ chế này có thể còn cứu được nhiều class khác tưởng là "thiếu".
+
+**b) Ba kết quả đọc được:**
+
+```
+ResetStaticVariables():   StartHealth(@0x0) → CurrentHealth(@0x4)      // chỉ chép
+Start():                  mainModule = fxHealHpBar.main + tạo lambda   // không đụng HP
+TakeDamage():             5 cổng chặn trước khi trừ giáp
+```
+
+**c) `StartHealth` là `static`** ⇒ HP tối đa là **một biến toàn cục**, không phải field per-tàu.
+Hồi sinh (`ResetStaticVariables`) **chép lại**, **không** tính lại stat.
+
+**d) `Player_Device_Saved_Datas.GetPlayerDevices(int playerIndex)`** — device lưu **theo từng tàu**.
+Đây là mắt ghép cuối của giả thuyết *"HP là của tàu"*: `StartHp` **không** theo tàu, nhưng
+**device thì có** ⇒ HP hiệu dụng **vẫn khác nhau giữa các tàu**, qua đường device.
+
+**e) `TakeDamage` — cổng chặn theo thứ tự (A):**
+`CurrentHealth <= 0` → `invisible (@0x49)` → `damager == null` → `IsVictory (@0x4A)` →
+`Invincible (@0x30) && !ignoreInvincible` (nếu qua được: `GetNumberAbility(30) >= 1` + `Random(0,100)`).
+
+---
+
+### 7.29 ⚠ **Asm export bị cắt cụt** — mọi kết luận âm tính phải rút lại
+
+Bản `8871068a`. Đây là **lỗi phương pháp nghiêm trọng nhất** tìm được tới giờ, và nó **không** đến từ
+dữ liệu game mà từ **công cụ export**.
+
+**a) Bằng chứng:** 12 file `il2cpp-consts/*.asm.txt`. Chỉ `ArenaManager` kết thúc bằng `ret`.
+
+| File | Method | Lệnh | Lệnh cuối |
+|---|---|---|---|
+| `ArenaManager` | 27 | 1.880 | `ret` ✅ |
+| `Device_Get_Data` | 13 | 4.393 | `bl #0x1bd7e58` ❌ |
+| `Droid_Data_Balance` | 11 | 1.618 | `mov x0, x20` ❌ |
+| `Enemy_Data_Balance` | 7 | 927 | `mov x0, x19` ❌ |
+| `GameDatas` | 72 | 4.582 | `ldr x8, [x8, #0xd98]` ❌ |
+| `IAP_Manager` | 34 | 2.170 | `ldp x30, x21, [sp], #0x20` ❌ |
+| `Map_Get_Datas` | 8 | 772 | `bl #0x110d258` ❌ |
+| `Player_Datas` | 1 | 256 | `ldr x9, [x0, #0xb8]` ❌ |
+| `Player_Get_Datas` | 61 | 5.341 | `ldr x22, [x22, #0x858]` ❌ |
+| `RankManager` | 17 | 1.010 | `bl #0x122787c` ❌ |
+| `Stage_Get_Datas` | 10 | 2.328 | `ldr x8, [x8, #0xc0]` ❌ |
+| `Tech_Datas` | 24 | 7.348 | `mov x2, x20` ❌ |
+
+**b) Cái bị cắt:** đuôi của **method cuối theo thứ tự địa chỉ**. Ở **8/12 file** method cuối là
+**`.cctor`** — tức là đúng chỗ **gán các giá trị khởi tạo**.
+
+**c) Ba kết luận phải rút lại (trước đây tôi đã trình bày như bằng chứng phủ định):**
+
+| Kết luận cũ | Trạng thái |
+|---|---|
+| "`Player_Get_Datas..cctor` không gán `StartHp`" | ❌ **vô hiệu** — `.cctor` dừng giữa chừng ở `0x14e5cc4` |
+| "Không có lệnh ghi `#0x314` (abi7) trong bất kỳ asm nào" | ❌ **vô hiệu** |
+| "`GetStartHp` chỉ được 2 method gọi" | ⚠ **không đầy đủ** — caller có thể ở phần cụt |
+
+**d) Vẫn đứng vững** (vì đọc từ `dump.cs` / JSONL đầy đủ, **không** phụ thuộc asm):
+`StartHp` là `float` đơn · `ships.json` **25 tàu không có field HP** · `Player_Saved_Datas` chỉ `int[]` ·
+`script-links` 127.659 dòng không có `StartHp`.
+
+**e) Bài học ghi vào quy trình:** trước khi dùng asm để **phủ định**, phải kiểm **file có kết thúc
+bằng `ret` không**; nếu không, chỉ được nói *"không thấy trong phần đã export"*.
+
+**f) Yêu cầu dump hẹp nhất còn lại:** **200 lệnh sau `0x14e5cc4`** của `Player_Get_Datas..cctor`.
+
+---
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |

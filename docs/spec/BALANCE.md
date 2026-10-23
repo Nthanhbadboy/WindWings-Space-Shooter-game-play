@@ -117,39 +117,73 @@ bên trong `TakeDamage`**, không nằm ở `Damager`.
 > **Điều kiện lật ngược:** `Armor` là `float` công khai nhưng **không có `[SerializeField]`** ⇒
 > gán lúc chạy; nếu giá trị quan sát được luôn < 1 thì nó là **phần trăm**, nếu > 100 thì là **số trừ**.
 
-### 0.6.3 Còn thiếu **đúng một** giá trị: `StartHp`
+### 0.6.3 Còn thiếu **đúng một** giá trị: `StartHp` — và **lý do đã tìm ra**
 
-`Player_Get_Datas..cctor` **không gán** `StartHp` — trong toàn bộ `.cctor` chỉ có **1 lệnh ghi**
-`str d0, [x8, #8]`. Cả file asm **không có lệnh nào ghi `[.., #0x6c]`**, chỉ có **3 lệnh đọc**.
+⚠ **ĐÍNH CHÍNH quan trọng (bản `8871068a`).** Toàn bộ mục này trước đây kết luận *"`StartHp` không
+được gán trong bất kỳ lớp nào đã export"* dựa trên **4 phép tìm âm tính**. **4 phép đó đều vô hiệu**,
+vì lý do ở §0.6.3a.
 
-⇒ `StartHp` **mặc định 0** và được **gán lúc chạy** ở một class **không nằm trong 11 class có asm**.
-Đây là lý do tìm dữ liệu tĩnh **không thấy** — đúng như nhận định: *"HP khởi tạo lúc đầu, sau nâng
-cấp thêm giáp, cuối cùng tính trong màn"*.
+#### 0.6.3a **File asm bị cắt cụt — 11/12 file**
 
-**Đã thử 4 hướng — cả 4 đều âm tính (ghi lại để không thử lại):**
+Đo trực tiếp: lệnh cuối cùng của mỗi file.
 
-| Hướng | Kết quả |
-|---|---|
-| `.cctor` của `Player_Get_Datas` | ❌ **không gán** — cả `.cctor` chỉ 1 lệnh ghi `str d0, [x8, #8]` |
-| Quét **11 file asm** tìm lệnh ghi float vào `#0x6c` | ❌ **0 lệnh** (`GameDatas` có ghi `#0x6c` nhưng là **`w`** = int, không phải `s`) |
-| `Player_Saved_Datas` (nơi giữ dữ liệu lưu) | ❌ chỉ có `MaxLevelPerRanks` · `CardUpgrades` · `StartRanks` — **toàn int[]** |
-| `script-links.jsonl.gz` (127.659 dòng) | ❌ không có bản ghi nào chứa chuỗi `StartHp` |
+| File | Method (header) | Số lệnh | Lệnh cuối | Kết thúc bằng `ret`? |
+|---|---|---|---|---|
+| `ArenaManager` | 27 | 1.880 | `ret` | ✅ **trọn** |
+| `Device_Get_Data` | 13 | 4.393 | `bl #0x1bd7e58` | ❌ cụt |
+| `Droid_Data_Balance` | 11 | 1.618 | `mov x0, x20` | ❌ cụt |
+| `Enemy_Data_Balance` | 7 | 927 | `mov x0, x19` | ❌ cụt |
+| `GameDatas` | 72 | 4.582 | `ldr x8, [x8, #0xd98]` | ❌ cụt |
+| `IAP_Manager` | 34 | 2.170 | `ldp x30, x21, [sp], #0x20` | ❌ cụt |
+| `Map_Get_Datas` | 8 | 772 | `bl #0x110d258` | ❌ cụt |
+| `Player_Datas` | 1 | 256 | `ldr x9, [x0, #0xb8]` | ❌ cụt |
+| `Player_Get_Datas` | 61 | 5.341 | `ldr x22, [x22, #0x858]` | ❌ cụt |
+| `RankManager` | 17 | 1.010 | `bl #0x122787c` | ❌ cụt |
+| `Stage_Get_Datas` | 10 | 2.328 | `ldr x8, [x8, #0xc0]` | ❌ cụt |
+| `Tech_Datas` | 24 | 7.348 | `mov x2, x20` | ❌ cụt |
 
-⇒ `StartHp` **không** được gán trong bất kỳ lớp nào đã export.
+**Cái bị cắt là đuôi của method CUỐI** — và ở **8/12 file**, method cuối chính là **`.cctor`**.
+`Player_Get_Datas..cctor` bắt đầu dòng 5.206 và **dừng giữa chừng tại `0x14e5cc4`**, vẫn đang dựng
+`List`, **chưa tới đoạn gán các float stat**.
 
-**Để lấy `StartHp`** (theo thứ tự chi phí):
+⇒ Hệ quả **phải ghi nhớ**: *"không thấy lệnh ghi"* trong các file này **không** đồng nghĩa
+*"không tồn tại lệnh ghi"*. Mọi kết luận âm tính dựa trên asm phải kèm điều kiện **"trong phần đã
+export"**.
 
-1. **`transform-tree` + `MonoBehaviour` scan**: tìm class nào có method gọi `Player_Get_Datas::StartHp`
-   setter — cần `script-links.jsonl.gz` (đã có) lọc theo field name.
-2. **Dump asm thêm 1 class**: `Player_Health.asm.txt` (RVA `0x14C6B5C` `Start()` ·
-   `0x14C6DE4` `TakeDamage`) — nếu `Start()` gán `StartHealth = GetStartHp()` thì chỉ cần
-   đọc `StartHp` từ chỗ khác.
-3. **Suy từ cân bằng**: HP player phải chịu được **vài trăm đến vài nghìn** damage (đạn enemy
-   100–1.500, `dmgPerSec` 5–100) ⇒ `StartHp` nhiều khả năng **500 – 5.000**.
+#### 0.6.3b Rút lại 4 kết luận âm tính cũ
 
-> **Nhận định (mức C):** khoảng 500–5.000 chỉ là **suy ra từ thang damage**, không phải số đọc được.
-> **Điều kiện lật ngược:** nếu có cơ chế `OverDrive`/khiên 1 đòn phổ biến thì HP gốc có thể thấp hơn
-> nhiều (200–500) vì người chơi sống bằng né chứ không bằng HP.
+| Hướng đã thử | Kết luận cũ | Trạng thái **đúng** |
+|---|---|---|
+| `.cctor` của `Player_Get_Datas` | ❌ "không gán `StartHp`, chỉ 1 lệnh ghi" | ⚠ **vô hiệu** — `.cctor` **bị cắt** trước khi tới đoạn stat |
+| Quét 11 file asm tìm ghi float vào `#0x6c` | ❌ "0 lệnh" | ⚠ **vô hiệu** — 11/12 file cụt |
+| `Player_Saved_Datas` | ❌ "chỉ toàn `int[]`" | ✅ **vẫn đúng** (đọc từ `dump.cs`, không phụ thuộc asm) |
+| `script-links.jsonl.gz` 127.659 dòng | ❌ "không có `StartHp`" | ✅ **vẫn đúng** (dữ liệu thô đầy đủ, không bị cắt) |
+| *"Không có lệnh ghi `#0x314` (abi7)"* | ❌ | ⚠ **vô hiệu** — cùng lý do |
+| *"`GetStartHp` chỉ được 2 method gọi"* | — | ⚠ **không đầy đủ** — caller có thể nằm trong phần bị cắt |
+
+⇒ Chỉ còn **2** kết luận âm tính đứng vững, và cả hai **không** dựa vào asm.
+
+#### 0.6.3c Vậy `StartHp` nằm ở đâu — giả thuyết hẹp nhất
+
+**Ba khả năng, xếp theo xác suất:**
+
+1. **Đuôi `.cctor` bị cắt** của `Player_Get_Datas` (cao nhất) — `.cctor` đang dựng List khi bị cắt;
+   các float stat (`StartHp`, `stepCommon`, `TouchRanger`…) thường được gán **sau** phần List.
+   Bằng chứng gián tiếp: `.cctor` **đã** chứa đúng **1** hằng float `0x41700000` = **15,0** — chứng
+   tỏ .cctor **có** gán float, chỉ là chưa tới lượt `StartHp`.
+2. **`RuntimeHelpers.InitializeArray` từ field RVA data** — như 3 bảng của device (`BALANCE` §0.6.7e).
+   Khi đó `StartHp` là **scalar trong metadata**, không cần lệnh ghi nào.
+3. Một class **chưa export** gán lúc chọn tàu.
+
+> **Nhận định (mức B):** khả năng 1 + 2 chiếm phần lớn; cả hai đều **lấy được** bằng **một yêu cầu
+> dump rất nhỏ**: *đuôi `.cctor` của `Player_Get_Datas`* (không phải cả class 5.341 lệnh).
+>
+> **Điều kiện lật ngược:** nếu đuôi `.cctor` không chứa `StartHp`, chuyển sang khả năng 3 và phải
+> dump `Player_Health.asm.txt` + class gán.
+
+**Đề nghị cụ thể (nhỏ, có biên):** dump **200 lệnh tiếp theo** sau `0x14e5cc4` của
+`Player_Get_Datas..cctor`. Đây là yêu cầu **hẹp nhất** trong toàn bộ dự án còn lại.
+
 
 ### 0.6.4 HP có theo **tàu** không? — **hai lớp, hai câu trả lời**
 
@@ -311,9 +345,131 @@ HP tối đa = StartHp × (1 + tech% + ability7%)     ← GetStartHp()
 > **Cách chốt (1 class):** dump `Player_Health.asm.txt`, xem `OnChangeDataDevice` có ghi vào
 > `StartHealth` (`@0x0`) hay chỉ `CurrentHealth` (`@0x4`).
 
+**f) Device **thuộc về một tàu** — và mỗi tàu có **4 slot**
+
+```csharp
+Player_Device_Saved_Datas.GetPlayerDevices(int playerIndex) → int[]
+Player_Device_Saved_Datas.SetPlayerDevices(int playerIndex, int[] devices)
+Device_Get_Data.GetPlayerUse(int instanceId) → int     // tàu nào đang gắn device này
+```
+
+Thân `GetPlayerUse` đọc nguyên văn (arm64):
+
+```
+for (int p = 0; p < listPlayers.Count; p++) {
+    int[] dev = Player_Device_Saved_Datas.GetPlayerDevices(p);   // bl 0x14e628c
+    for (int i = 0; i < 4; i++) {                                // add x8,#1 ; cmp x8,#4
+        if (dev[i] == instanceId) return p;                      // cmp w11, w19 ; b.eq
+    }
+}
+return -1;                                                       // mov w21, #-1
+```
+
+⇒ **4 slot device mỗi tàu** (`i = 0,1,2,3`), và **một device instance chỉ thuộc đúng một tàu**
+(không trả về danh sách, trả về **một** `int`, `−1` nếu không tàu nào).
+
+⚠ **Phân biệt hai con số dễ lẫn:**
+
+| Số | Nghĩa | Nguồn |
+|---|---|---|
+| **5** | **loại** device (`type = id/100 − 1`, chạy 0…4) | `GetStatValue1` `cmp w20, #4` |
+| **4** | **slot** device mỗi tàu | `GetPlayerUse` `cmp x8, #4` |
+
+⇒ **Đây là mắt ghép trả lời giả thuyết "HP là của tàu":** `StartHp` **không** theo tàu, nhưng
+**device thì có** (lưu theo `playerIndex`, 4 slot/tàu), và `Player_Health.OnChangeDataDevice(idPlayer)`
+nhận **đúng `playerIndex`**. Vậy **HP hiệu dụng khác nhau giữa các tàu — qua device, không qua `StartHp`**.
+
 **e) Giá trị số **chưa** lấy được:** `listStatValues` / `percentByLevels1` / `percentByLevels2` được
 nạp bằng `RuntimeHelpers.InitializeArray` từ **field RVA data** trong metadata — `dump.cs` và asm
 **không** chứa các float đó. ⇒ biết **công thức + số loại**, chưa biết **giá trị từng loại** (mức D).
+
+### 0.6.8 **Vòng đời**: số của player được chốt **lúc nào**
+
+Đây là câu hỏi *"các thứ của player tính khi vào màn chơi"* — trả lời bằng **thân hàm**, không bằng tên.
+Nguồn: `Player_Datas.asm.txt` (file này **chứa cả method của `Player_Health`** — xem ghi chú (e)),
+`dump.cs.gz` dòng 73874–73960.
+
+**a) `StartHealth` là `static` — không phải field của instance**
+
+```csharp
+public static float StartHealth;   // 0x0   ← static, MỘT giá trị cho cả phiên
+public static float CurrentHealth; // 0x4   ← static
+```
+
+⇒ HP tối đa **dùng chung một biến toàn cục**, không phải mỗi tàu một bản trong `Player_Health`.
+
+**b) `ResetStaticVariables()` — 2 lệnh, đọc nguyên văn**
+
+```
+0x14c6cec: ldr  s0, [x8]      ; s0 = StartHealth   (@0x0)
+0x14c6cf0: str  s0, [x8, #4]  ; CurrentHealth = s0 (@0x4)
+```
+
+⇒ nghĩa đen: **`CurrentHealth = StartHealth`**. Hàm này **nạp lại HP đầy** — dùng cho
+**vào màn** và **hồi sinh** (reborn). Không tính lại stat, chỉ **chép**.
+
+**c) `Player_Health.Start()` — KHÔNG đụng tới HP**
+
+Đọc toàn bộ thân (`0x14c6b5c–0x14c6c9c`): chỉ có
+`fxHealHpBar.main` → `mainModule` (`@0x80`), rồi tạo một lambda `Action<object>`
+(`<>9__14_0`) và đăng ký callback. **Không** gọi `GetStartHp`, **không** ghi `StartHealth`.
+
+⇒ HP **không** được tính trong `Start()`. Nó đã có sẵn **trước** khi `Start()` chạy.
+
+**d) Vậy thứ gì chốt số — 5 bước, theo đúng thứ tự phụ thuộc**
+
+| # | Bước | Bằng chứng | Mức |
+|---|---|---|---|
+| 1 | Nạp save: `Player_Saved_Datas { MaxLevelPerRanks[], CardUpgrades[], StartRanks[] }`, `IsPlayerUnlocked(i)` | `dump.cs` 10859 | A |
+| 2 | Nạp **device theo tàu**: `Player_Device_Saved_Datas.GetPlayerDevices(int playerIndex)` / `SetPlayerDevices(int, int[])` | `dump.cs` 10844 | A |
+| 3 | Tech + ability: `GetTechStatPoints(i)` · `GP_Datas.GetNumberAbility(n)` | asm `Player_Get_Datas` | A |
+| 4 | `StartHp` × `(1 + tech% + abi7%)` → `StartHealth` | `GetStartHp` `0x14e3180 fmul` | A (công thức) / **D** (giá trị) |
+| 5 | `ResetStaticVariables()` → `CurrentHealth` | `0x14c6cf0` | A |
+
+**e) ⚠ Ghi chú kỹ thuật quan trọng — file asm bị đặt tên sai**
+
+`Player_Datas.asm.txt` chỉ có 1 header `;;; ctor`, nhưng thân file chứa **liên tiếp theo địa chỉ**:
+`Player_Datas..ctor` (`0x14c6b4c`) → **`Player_Health.Start`** (`0x14c6b5c`) →
+**`ResetStaticVariables`** (`0x14c6ca0`) → `GainHealth` 3 tham số (`0x14c6cfc`) →
+`GainHealthOverTime` (`0x14c6d70`) → **`TakeDamage`** (`0x14c6de4`).
+
+⇒ **`Player_Health` không hề thiếu asm** như tôi ghi trước đây — nó nằm **lẫn** trong file của
+`Player_Datas`. Muốn đọc `OnChangeDataDevice` (`0x14C58EC`) thì **vẫn** phải dump thêm, vì địa chỉ
+đó **thấp hơn** điểm bắt đầu file.
+
+**f) `TakeDamage` — thứ tự kiểm tra đọc được từ asm**
+
+```
+if (CurrentHealth <= 0)            return   // fcmp s0, #0.0 ; b.ls
+if (invisible)                     return   // ldrb [x19,#0x49]
+if (damager == null)               return   // cbz x21
+if (IsVictory)                     return   // ldrb [x19,#0x4a]
+if (Invincible && !ignoreInvincible) {
+    if (GP_Datas.GetNumberAbility(30) >= 1)   // mov w0, #0x1e → 30
+        Random.Range(0, 100)                  // fmov s1, #100.0 (0x42C80000)
+}
+```
+
+⇒ **ability 30** là một **proc xác suất** khi `Invincible`. Giáp (`Armor @0x20`) và
+`reduceDamageByDevice (@0x58)` bị trừ **sau** các cổng trên.
+
+**g) Kết luận về câu "tính khi vào màn" — mức B, kèm điều kiện**
+
+| Phát biểu | Đúng? | Ghi chú |
+|---|---|---|
+| "Số của player được **chốt** khi vào màn" | ✅ **đúng** | `StartHealth` là `static`, gán **trước** `Start()`; `Start()` không tính lại |
+| "Được **tính** khi vào màn" | ⚠ **đúng một nửa** | 61/61 hàm stat của `Player_Get_Datas` là **getter, không cache** ⇒ giá trị **tính lại mỗi lần gọi**. Cái "chốt" là **`StartHealth`**, không phải cả bộ stat |
+| "Hồi sinh tính lại" | ❌ **không** | `ResetStaticVariables()` chỉ **chép** `StartHealth → CurrentHealth`; reborn **không** tính lại stat |
+| "Device tính lúc vào màn" | ✅ **đúng** | `GetPlayerDevices(playerIndex)` + `OnChangeDataDevice(idPlayer)` |
+
+> **Nhận định (mức B):** mô hình đúng là **"chốt một lần, dùng cho cả màn, hồi sinh thì chép lại"**.
+> **Điều kiện lật ngược:** nếu tồn tại một hàm gọi lại `GetStartHp()` + ghi `StartHealth` **sau**
+> `ResetStaticVariables` (ví dụ mỗi lần reborn), thì stat **có** tính lại. Cần
+> `Player_Health.asm.txt` để xác nhận — hoặc chỉ cần tìm **1 lệnh `str` vào `StartHealth`**.
+
+**h) Hệ quả cho bản clone:** thứ tự resolve **bắt buộc** là
+`save → device(tàu) → tech → ability → StartHealth → CurrentHealth`, và **chốt tại thời điểm spawn**,
+không đọc lại giữa màn.
 
 ## 1. Phương pháp & nguồn
 

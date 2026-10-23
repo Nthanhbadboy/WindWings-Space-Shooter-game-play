@@ -177,6 +177,19 @@ Hai thứ khác hệ nhưng **cùng dùng chung cho mọi tàu**.
 
 ---
 
+### 2.7 Device — 5 loại × 2 stat, 4 slot/tàu
+
+| Knob | Giá trị gốc | Nguồn |
+|---|---|---|
+| Số **loại** device | **5** (`type = id/100 − 1`, 0…4) | `GetStatValue1` `cmp w20, #4` |
+| Số **stat** mỗi device | **2** (`GetStatValue1` / `GetStatValue2`) | `Device_Get_Data` |
+| Số **slot** mỗi tàu | **4** | `GetPlayerUse` `cmp x8, #4` |
+| Công thức stat | `base[type][rank] + pct[type] × (lv+1)`; `type==4` **÷ 100** | `GetStatValue1` |
+| Hệ số `base` / `pct` | ❌ **chưa có** (nạp bằng `RuntimeHelpers.InitializeArray` từ RVA data) | — |
+
+**Knob thiết kế:** số slot (4) · số loại (5) · có/không nhánh % · `lv+1` hay `lv`
+(bản gốc dùng **`lv+1`** — device **lv=0 vẫn có** 1 bậc pct).
+
 ## 3. Cân bằng kinh tế — công thức giá **đã lộ hình dạng**
 
 `Tech_Datas` (13 field) cho thấy giá nâng cấp là **cấp số cộng**, không phải bảng tra:
