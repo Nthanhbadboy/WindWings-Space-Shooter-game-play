@@ -47,6 +47,7 @@
 | 18b | **Truy vết công thức**: 305 method có flow hằng số theo địa chỉ + đích `bl` đã giải tên (200 bl); đọc thử `GetWingCannonDamage`: hệ số theo ngưỡng 4/58/118/248 (0.168 → ×1.05 → ×1.15) rồi `+1.0` | **A** (thứ tự lệnh) / **B** (diễn giải ngưỡng) | `28-formula-traces.md`, `datas/formula_traces.json.gz` | chạy `tools/apk-analyze/formula_trace.py` |
 | 19 | **`ParticleSystem` 4.845 đã có tóm tắt module**: thời lượng median 5,0 s, looping 70,7%, playOnAwake 99,3% | **A** | `29-particle-systems.md`, `raw/typetrees/native-types.jsonl.gz` | đọc lại mục ParticleSystem trong native-types |
 | 19b | **Sprite/Texture đã có kích thước**: 2.816/2.885 dòng `sprites.csv` có `width×height` (từ ảnh export thật) | **A** | `datas/sprites.csv`, `04-asset-manifest.csv` | so `width/height` với PNG trong bản export |
+| 20 | **Camera**: 6 cái, tất cả orthographic, `orthographicSize = 9,6` → chiều cao thấy được **19,2 world-unit**; khớp mốc spawn `y = 9,6` của wave (quân hiện đúng mép trên) | **A** | `24-ui-screens.md` mục Camera, `raw/typetrees/native-types.jsonl.gz` | đọc mục `Camera` trong native-types |
 | 14 | Damage/giá/thưởng suy ra từ field serialize | **B** | `docs/spec/COMBAT.md`, `ECONOMY.md` | so với hằng số ở #12 |
 | 15 | Nhận định "game dễ bypass", "nên dùng Spine"… | **C** | `PHAN_TICH_WINDWINGS_APK.md` | chỉ là đánh giá, không phải số |
 
@@ -60,8 +61,8 @@
 | Công thức đầy đủ (thứ tự nhân, clamp, nội suy) | cần đọc control flow, không chỉ hằng số | Ghidra/IDA trên `libil2cpp.so` (đã có trong artifact) |
 | Ý nghĩa từng hằng số ở #12 | capstone chỉ thấy số, không thấy phép tính | **Đã bóc được giá trị float thật từ literal pool** (#12b); còn thiếu *thứ tự nhân/chia* → đọc `raw/il2cpp-consts/*.asm.txt` hoặc Ghidra |
 | Layout runtime thực tế | prefab ≠ runtime (layout group, safe area) | screenshot + so với `raw/ui/` |
-| `ui_layout.py` bỏ sót màn | lần chạy mới chỉ ghi 630/6.580 file, mất 16 màn | đã có `ui_index.py` đọc **hết** file trên đĩa; cần sửa `ui_layout.py` để lần sau ghi đủ |
-| `orthographicSize` của camera | chưa dump camera runtime | prefab Scene/RenderSettings — chưa bóc |
+| ~~`ui_layout.py` bỏ sót màn~~ | ✅ đã sửa: dedupe `(class, root)` thay vì root — một lần chạy đủ **742 file / 114 class** (trước 607/90, 186 candidate bị bỏ lặng lẽ) | chạy lại pipeline, xem `_index.csv` + `_skipped.csv` |
+| ~~`orthographicSize` của camera~~ | ✅ **9,6** (6 Camera, tất cả orthographic) → vùng thấy cao 19,2 world-unit, khớp mốc spawn y=9,6 | `24-ui-screens.md` mục Camera |
 | Hiệu ứng/particle cụ thể | đã có tóm tắt 4.845 hệ (`29-particle-systems.md`), chưa có curve | đọc curve trong module khi cần dựng FX |
 | Logic PvP/Arena server | nằm ở Firebase, **không có trong APK** | không lấy được |
 | Spine animation curve | **đã xong** — `23-spine-anim.md` + `datas/spine_anim.json.gz` (12.274 keyframe) | còn thiếu `timeScale` runtime |

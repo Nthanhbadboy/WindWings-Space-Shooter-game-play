@@ -174,6 +174,28 @@ def write_md(by_class, rows, text_rows):
         L.append(f"| `{r[0]}` | {r[1]} | {r[2]:,} | {r[3]} | {r[4]} | {r[5]} | {r[6]} | "
                  f"{r[7]}…{r[8]} | {r[9]}…{r[10]} |")
 
+    # Camera: nếu đã export native-types thì lấy orthographicSize thật,
+    # đây là mốc đổi world-unit -> màn hình (chiều cao thấy được = 2 x size).
+    cam_note = []
+    cam_path = os.path.join(os.path.dirname(SRC.rstrip("/")), "typetrees", "native-types.jsonl.gz")
+    if os.path.isfile(cam_path):
+        sizes = []
+        try:
+            with gzip.open(cam_path, "rt", encoding="utf-8") as fh:
+                for line in fh:
+                    rec = json.loads(line)
+                    if rec.get("type") == "Camera":
+                        sizes.append(rec.get("orthographic size"))
+        except (OSError, ValueError):
+            sizes = []
+        sizes = [v for v in sizes if isinstance(v, (int, float))]
+        if sizes:
+            cam_note = ["", "## Camera (đo từ prefab, mức A)", "",
+                        f"- số Camera trong build: **{len(sizes)}**, tất cả orthographic",
+                        f"- `orthographicSize` = **{round(sizes[0], 3)}** → chiều cao vùng thấy được = **{round(2 * sizes[0], 3)} world-unit**",
+                        "- khớp mốc spawn `y = 9,6` trong dữ liệu wave: quân hiện ở đúng mép trên màn hình.",
+                        "- đổi sang pixel: `px = world / (2 × 9,6) × screenHeight`."]
+
     big = [r for r in rows_sorted if r[7] is not None]
     if big:
         widths = sorted({round(r[8] - r[7], 1) for r in big})
@@ -185,6 +207,7 @@ def write_md(by_class, rows, text_rows):
               "  muốn ra pixel phải nhân với `orthographicSize` của camera runtime (chưa bóc được).",
               "- vì vậy mọi con số ở đây dùng để **so sánh tỉ lệ giữa các màn**, không phải để đặt pixel."]
 
+    L += cam_note
     L += ["", "## Text & localization key", ""]
     per_class = Counter(r[0] for r in text_rows)
     with_key = Counter(r[0] for r in text_rows if r[5])
