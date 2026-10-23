@@ -33,7 +33,7 @@
 | B2 | ~~13 tàu `20001–20013`~~ ✅ **ĐÓNG — là 13 DRONE**, không phải tàu | — | **A** | số tàu vẫn **25**; drone đã có ở `BALANCE` §3.2 |
 | B3 | ~~HP enemy scale theo stage~~ ✅ **cơ chế ĐÃ RÕ**: HP = `Dictionary<int,float>` trong `Enemy_Get_Datas.cctor` (chưa dump) · **enemy có giáp** | **chưa dump 1 class** | **B** | thiếu **nội dung bảng HP** (981 giá trị) — `ENEMY_HP_RUNTIME.md` |
 | B4 | `GetCountEnemies` mỗi stage | **chưa lấy** | D | ảnh hưởng nhiệm vụ/độ dài |
-| B8 | **Hệ số chế độ cho SỐ QUÂN + HP** — người chơi kiểm chứng khó hơn ⇒ đông hơn & nhiều máu hơn (**A**). Bảng dữ liệu **phẳng** (981 HP/prefab, 23.757 `Call_Data` không field chế độ) ⇒ hệ số **hard-code trong `MoveNext` 840 B chưa đọc** | **chưa dump class spawn** | **B+** (vị trí) · **C** (giá trị) | clone phải **tự chọn** `kCount`/`kHp`; giao thức đo 10 phút — `DIFFICULTY_MODES.md` §5.4 |
+| B8 | ~~Hệ số chế độ cho số quân~~ ✅ **ĐÓNG: `kCount ≡ 1`** (304 lệnh · 0 `mul`; người chơi xác nhận). **HP theo chế độ** thì **còn mở**: bảng HP phẳng (981) ⇒ hệ số nằm trong mã, **giá trị chưa biết** | **chưa dump class spawn** | **A** (quân) · **C** (HP) | clone: `kCount = 1`, chỉ nhân `kHp` — `DIFFICULTY_MODES.md` §5.5 |
 | B5 | 43/305 trace chưa đối chiếu | **chưa lấy** | — | rủi ro sai số nhỏ |
 | B6 | Damage boss không khai báo (19 class) | **chưa lấy** | C | thiếu 19/37 nhóm đòn |
 | B7 | ~~12 stat Basic vs `NumberTechStats()` = 60~~ | ✅ **đã chốt** | A | = `List.Count`, không phải hằng số |
@@ -259,25 +259,22 @@ Bin **240–259 khớp tuyệt đối** giữa hai bản (8,60 M · max 13,52 M)
 ### B4. `GetCountEnemies` / `GetCountAllEnemies` mỗi stage — **D**
 Có thân hàm (A): duyệt `GetListWaves(stageIndex)` → đếm theo `listIgroneEnemies`. **Thiếu `listMapDatas`** (A2) nên chưa ra số.
 
-### B8. Hệ số chế độ cho **số quân** và **HP** — **cơ chế A, giá trị C**
+### B8. Hệ số chế độ — **số quân: ĐÓNG (=1)** · **HP: còn mở (C)**
 
-**Người chơi đã kiểm chứng trực tiếp (23/10):** chế độ khó hơn **đông enemy hơn** và **nhiều máu hơn**.
-Không còn phải suy đoán *có hay không* — chỉ còn *ở đâu* và *bao nhiêu*.
+**Số quân — ✅ ĐÓNG (A).** Ba nguồn độc lập nói **không nhân**:
+(1) người chơi kiểm lại trong game: *"3 mode nó không nhân số quân, UI có chính xác số enemy bị eliminate"*;
+(2) `GetCountEnemies` **304 lệnh · 0 `mul` · 0 `fmul` · 0 `get_stageMode`**;
+(3) `GetListWaves` **278 lệnh · 0 phép nhân** (phép số học duy nhất là `/6` tách chương).
+Kèm: 23.757 `Call_Data` **không** field chế độ, `Wave.csv`/`Stage_Behaviour.csv` **không** cột chế độ.
+⇒ `kCount[mode] = 1`. **Ba thân hàm spawn không còn là blocker cho số quân.**
 
-**Ở đâu:** bằng **loại trừ**, không phải bằng phỏng đoán (`DIFFICULTY_MODES.md` §5):
+**HP — ⚠ CÒN MỞ.** Người chơi khẳng định khó hơn thì **nhiều máu hơn**. Nhưng:
+`Enemy_Datas` **1 HP/prefab** (981) ⇒ bảng HP **không** có chiều chế độ; `GetStartHealthPoint(int)` **1 tham
+số**; `GetStartHealth` **28 B**. ⇒ hệ số (nếu có) là **hằng số trong mã**, áp lúc **ghi** `StartHpPoint`
+(`= 0` ở **981/981**). **Giá trị chưa biết.**
 
-| Ứng viên | Số đo | Kết quả |
-|---|---|---|
-| Bảng HP theo chế độ | `Enemy_Datas` **981** instance, **1 HP/prefab** | ❌ không tồn tại |
-| Bảng quân theo chế độ | `Call_Data` **23.757**, `number = 0` ở **23.757/23.757**, không field chế độ | ❌ không tồn tại |
-| Hàm đếm tự nhân | `GetCountEnemies` **304 lệnh · 0 `mul` · 0 `get_stageMode`** | ❌ |
-| Cột chế độ trong CSV | `Wave.csv` · `Stage_Behaviour.csv` (52 cột) | ❌ |
-| **Thân hàm spawn** | `Path_Spawner.<SpawnEnemies>d__1.MoveNext` **840 B** | ✅ **chỗ còn lại duy nhất** |
-
-**Bao nhiêu:** **CHƯA BIẾT**, và **không** suy được từ bảng (không có bảng). Hai đường lấy:
-(a) dump `Path_Spawner`/`PointToPoint_Spawner` (2 class, **chưa** trong `TARGET_CLASSES`);
-(b) **đọc trực tiếp trong game** — `txt_mission_kill_enemies` in `"Eliminate {0} enemies"` (ra `kCount`),
-và đếm số phát bắn để giết cùng một enemy (ra `kHp`). Giao thức: `DIFFICULTY_MODES.md` §5.4.
+**Cách chốt rẻ nhất:** đếm **số phát bắn** để giết cùng một enemy (`CB-30003`) ở 3 chế độ ⇒
+`kHp = hits(khó)/hits(Normal)`. Giao thức: `DIFFICULTY_MODES.md` §5.5.
 
 ### B5. 43/305 trace chưa đối chiếu
 `formula_traces.json.gz` có **305 trace / 43 method**; đã dùng ~các trace chính (`stepLevel`, `GetCostUpgrade`, `NumberTechStats`). 43 method còn lại **chưa từng đọc** ⇒ rủi ro sai số ở các ngưỡng phụ.

@@ -9,6 +9,10 @@
 > màn hình `"Eliminate {0} enemies"` và để biết đã xong chưa.
 >
 > Và tôi tìm được **lệnh chứng minh** — dưới đây là asm, không phải suy đoán.
+>
+> **Bạn đã kiểm trong game (23/10), lần hai:** *"3 mode nó **không nhân số quân** mà UI có **chính xác** số
+> enemy bị eliminate để đạt số sao, số quân **không theo quy luật**."* — **Khớp 100 %** với asm ở §1 và với
+> số đo ở §5.1. Đây là lần chốt **đúng**; xem `DIFFICULTY_MODES.md` §5 để biết điều tôi rút lại.
 
 ---
 
@@ -157,56 +161,80 @@ Chạy một lần rồi cache vào `GP_Datas.countEnemies`; **không** phải p
 {0}(mode, slot) = (int)( pct[mode][slot] × countEnemies(stageIndex) )
 ```
 
-`countEnemies` **không** phụ thuộc chế độ (**A** — `DIFFICULTY_MODES` §4). ⇒ **mọi khác biệt ngưỡng
-giữa 3 chế độ đến từ `pct[mode]`, KHÔNG từ số quân.**
+**Bạn đã xác nhận trong game (23/10):** *"3 mode nó **không nhân số quân** mà UI có **chính xác** số enemy
+bị eliminate để đạt số sao"*. Khớp đúng công thức trên: `countEnemies` **một giá trị cho cả 3 chế độ**
+(`DIFFICULTY_MODES` §4 — 304 lệnh, 0 `mul`), nên con số in ra là **số nguyên chính xác** bằng
+`pct × count`. ⇒ **Mọi khác biệt ngưỡng giữa 3 chế độ đến từ `pct[mode]`, KHÔNG từ số quân.**
 
-### Phép thử 30 giây (bạn đọc, tôi tính)
+### 5.1 "Số quân không theo quy luật" — **đúng**, và đây là số đo
 
-Vào **cùng một stage**, cùng **nhiệm vụ đầu tiên**, đọc con số trong câu `"Eliminate {0} enemies"`
-ở 3 chế độ:
+Đo trên **282 wave** (`datas/waves.json`):
 
-| Chế độ | `{0}` đọc được |
+| Thống kê | Số |
 |---|---:|
-| Normal | |
-| Hard | |
-| Nightmare | |
+| Tổng quân toàn game | **45.659** |
+| min · p25 · **median** · p75 · max | **4** · 60 · **131** · 201 · **951** |
+| mean ± SD | **161,9 ± 163,9** |
+| Hệ số biến thiên **CV** | **1,01** |
+| Số giá trị **khác nhau** | **150 / 282** (53 %) |
+| Tương quan vị trí wave ↔ số quân | **r = −0,456** (không tăng dần) |
+| Tự tương quan lag-1 | **+0,625** (wave gần nhau na ná) |
 
-Hai kết cục, và chúng **loại trừ nhau**:
+⇒ **Không có công thức** `f(wave)`; **không** có "mỗi wave sau đông hơn wave trước". Số quân **phải đọc
+từ bảng**. Bản clone: **nhúng bảng**, đừng viết hàm.
 
-| Nếu… | Kết luận | Hệ quả |
-|---|---|---|
-| `{0}` **khác nhau** ở 3 chế độ | `pct[mode]` khác nhau, mẫu số giống nhau — **đúng mô hình ở trên** | `pct[1]/pct[0] = {0}₁/{0}₀`, `pct[2]/pct[0] = {0}₂/{0}₀`. Nếu `pct[2] = 1,0` (Nightmare phải giết hết — giả định **B**) thì **ra được pct[0], pct[1] chính xác** |
-| `{0}` **giống hệt** ở 3 chế độ | `pct` giống nhau và mẫu số **cũng** giống ⇒ sao chỉ khó hơn vì phải giết nhiều quân hơn | **Lật ngược** kết luận "count không phụ thuộc mode": khi đó `countEnemies` **đã** bị nhân trước khi in |
+> **Cẩn thận với `r = −0,456`:** 5 wave "to nhất" đều là wave **đầu** (`Wave_0000` 883 · `Wave_0001` 936 ·
+> `Wave_0010` 951). Có thể chúng là wave **dùng chung** chứ không đứng đầu campaign. Mức **C**.
 
-Đây là **phép kiểm có thể thất bại** — không phải kiểm cho có. Nó phân định đúng chỗ tôi còn để mức B
-(`kCount` nằm ở đâu) bằng **một con số in trên màn hình**.
+### 5.2 Vậy `pct[mode]` — đo bằng con số UI in ra
+
+Vì `{0}` là **số nguyên chính xác** và mẫu số **giống nhau** ở 3 chế độ:
+
+```
+pct[mode][slot] = {0}(mode, slot) / countEnemies(stage)
+⇒ pct[1]/pct[0] = {0}₁/{0}₀ ,  pct[2]/pct[0] = {0}₂/{0}₀
+```
+
+Vào **cùng một stage**, cùng **nhiệm vụ đầu tiên**, đọc `{0}` ở 3 chế độ:
+
+| Chế độ | `{0}` đọc được | suy ra |
+|---|---:|---|
+| Normal (0) | | `pct[0] = {0}₀ / count` |
+| Hard (1) | | `pct[1] = {0}₁ / count` |
+| Nightmare (2) | | `pct[2] = {0}₂ / count` |
+
+Nếu `pct[2] = 1,0` (Nightmare phải giết **hết** — giả định **B**) thì chỉ cần **2 phép chia** là ra
+`pct[0]`, `pct[1]` chính xác. Và `count` tôi **đã có** trong `waves.json` — chỉ cần biết stage nào.
 
 ---
 
 ## 6. Công thức cho bản clone
 
 ```
-count      = Σ (len(listIdEnemies) × copies)      // 45.659 cho cả game, mỗi wave một phần
-pct[3][3]  = { {0.60, 0.80, 1.00},                // Normal
-               {0.70, 0.88, 1.00},                // Hard
-               {0.85, 0.95, 1.00} }               // Nightmare   ← số clone tự chọn
-target[m][s] = round(pct[m][s] × count × kCount[m])
-saos        = số s sao cho killCount ≥ target[m][s]   (cộng dồn, tối đa 3)
+count       = Σ (len(listIdEnemies) × copies)     // 45.659 toàn game; GIỐNG NHAU ở 3 chế độ
+pct[3][3]   = { {0.60, 0.80, 1.00},               // Normal
+                {0.70, 0.88, 1.00},               // Hard
+                {0.85, 0.95, 1.00} }              // Nightmare   ← số clone tự chọn
+target[m][s] = round(pct[m][s] × count)            // KHÔNG có kCount
+saos         = số s sao cho killCount ≥ target[m][s]  (cộng dồn, tối đa 3)
 ```
 
-**Cảnh báo thiết kế (dễ sai nhất khi clone):** nếu bạn nhân **số quân** (`kCount`) mà **không** nhân
-mẫu số, thì trên chế độ khó người chơi chỉ cần giết `pct` **của số quân Normal** ⇒ **3 sao dễ hơn**.
-Đây đúng là cái bẫy mà mô hình "count từ bảng, nhân ở spawn" tạo ra. Hai cách tránh:
-1. Nhân mẫu số cùng hệ số: `target = pct × count × kCount` (khuyến nghị).
-2. Hoặc để `count` **là** số quân thật của mode (đếm sau khi nhân) — nhưng khi đó phải đếm **trước**
-   khi spawn, đúng như `GP_Datas.countEnemies` được thiết kế để làm.
+**Ba điều bắt buộc để không sai:**
+1. **Không nhân số quân theo chế độ** (gốc = 1). Muốn khó hơn thì tăng **`pct`** và **HP**, không tăng số con.
+2. `target` phải tính từ **cùng** `count` mà HUD dùng — một nguồn sự thật duy nhất. Lệch một chỗ là thanh
+   tiến trình vượt 100 % hoặc 3 sao thành dễ.
+3. Nhiệm vụ **cộng dồn** (`completed > slot`): xong nhiệm vụ 3 ⇒ 1, 2 cũng xong. Đừng cho phép "xong 3
+   mà chưa xong 1".
 
 ---
 
 ## 7. Còn thiếu / phải đoán
 
 - **Giá trị `pct[mode][slot]` chưa đọc** — nạp từ pool float trong `.cctor` (cùng blocker `T5`).
-  Hai đường lấy: đọc `{0}` trong game (§5), hoặc dump `Player_Get_Datas.cctor` + pool `0x757000`.
+  Hai đường lấy: đọc `{0}` trong game (§5.2 — **rẻ nhất**, chỉ 3 con số), hoặc dump
+  `Player_Get_Datas.cctor` + pool `0x757000`.
+- **`countEnemies` cho từng stage chưa có** (`A2` — bảng map→wave chưa bóc). Nhưng nếu bạn đọc `{0}` ở
+  **cả 3 chế độ** thì **không cần** `count`: tỉ lệ `{0}` cho ra thẳng `pct` tương đối.
 - **`PercentToCompleteMissions222` = `float[3]`** (`Player_Get_Datas.cctor` `0x14E61F0`:
   `newarr(float, 3)` + copy) — một mảng % **3 phần tử** dựng sẵn. **Chưa** biết 3 phần tử đó là
   "3 nhiệm vụ" hay "3 chế độ". **Chưa** đọc giá trị.
