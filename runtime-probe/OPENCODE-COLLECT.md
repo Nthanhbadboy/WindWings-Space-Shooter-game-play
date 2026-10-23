@@ -235,85 +235,29 @@ Mỗi ảnh chụp kèm `snapshot --raw` cùng lúc — **text trong XML là s�
 
 ---
 
-## 7. `collect.sh` — một lần chạy, lấy hết
+## 7. Chạy collector — **không viết lại**
 
-Đặt ở `/tmp/collect.sh`, chạy sau khi đã có `SID` và tunnel (§4). Script **không** tự bật phiên —
-bật phiên là việc của §3 — để nếu nó chết giữa đường thì phiên vẫn còn.
+Phần §6 đã được đóng gói thành script chạy được, **không cần agent suy luận**:
 
 ```bash
-#!/usr/bin/env bash
-set -uo pipefail
-B=http://127.0.0.1:8080
-PKG=com.Wind.wings.Space.Shooter
-OUT=${OUT:?}; SERIAL=$(cat "$OUT/serial.txt")
-say(){ printf '\n== %s ==\n' "$*"; }
-get(){ mkdir -p "$(dirname "$2")"; curl -fsS --max-time 25 "$B$1" -o "$2" || echo "FAIL $1" >> "$OUT/failed.txt"; }
-
-TYPES="Player_Get_Datas Stage_Get_Datas Enemy_Get_Datas Map_Get_Datas Device_Get_Data
-Enemy_Data_Balance Data_Players Data_Items Data_Boss DataShopPack IAPProduct GP_Datas
-Tech_Ability_Data RankManager ArenaManager Box_Rewards Call_Data Wave Spawner"
-
-# $1 = label của lúc (menu | stage | ingame)
-snapshot_all(){
-  local L=$1
-  say "static dump [$L]"
-  for t in $TYPES; do
-    get "/statics?type=$t&max=300" "$OUT/statics-$L/$t.json"
-  done
-  say "scene + hierarchy [$L]"
-  get "/scene?max=300"            "$OUT/core-$L/scene.json"
-  get "/hierarchy?depth=4&max=2000" "$OUT/core-$L/hierarchy.json"
-  get "/logs?n=300"               "$OUT/core-$L/logs.json"
-  get "/metrics"                  "$OUT/core-$L/metrics.json"
-  say "ui + ảnh [$L]"
-  npx --yes "$RAMUS_CLI" snapshot --raw > "$OUT/ui-$L.xml" 2>/dev/null || true
-  npx --yes "$RAMUS_CLI" screenshot --out "$OUT/screen-$L.jpg" --max-width 720 || true
-  adb -s "$SERIAL" logcat -b main -b crash -d > "$OUT/logcat-$L.txt" 2>/dev/null || true
-}
-
-find_dump(){ # $1 = tên object
-  get "/find?name=$1&max=20" "$OUT/find/$1.json"
-}
-
-say "0. đóng băng game để dump ổn định"
-curl -fsS -X POST "$B/timescale?v=0" >/dev/null || echo "FAIL timescale" >> "$OUT/failed.txt"
-
-snapshot_all menu
-for o in Player_Get_Datas Map_Get_Datas RankManager ArenaManager; do find_dump "$o"; done
-
-say "1. chọn mode + stage (đọc text trên màn hình rồi tap)"
-curl -fsS -X POST "$B/timescale?v=1" >/dev/null || true
-npx --yes "$RAMUS_CLI" snapshot --raw > "$OUT/ui-select.xml" 2>/dev/null || true
-grep -oE 'text="[^"]+"' "$OUT/ui-select.xml" | head -40
-# opencode: đọc text vừa in, rồi tap đúng nút. Ví dụ:
-#   npx --yes "$RAMUS_CLI" tap 0.5,0.8
-sleep 3
-
-snapshot_all stage
-for o in Stage_Behaviour MapController Enemy_Sub; do find_dump "$o"; done
-
-say "2. vào màn chơi"
-npx --yes "$RAMUS_CLI" tap 0.5,0.85 || true     # nút Play/Start — xác nhận bằng ui-select.xml
-sleep 20
-snapshot_all ingame
-for o in Player_Ingame Player_Health Enemy_Hp_Bar Gun_Attack; do find_dump "$o"; done
-
-say "3. fps 5 mẫu"
-for i in 1 2 3 4 5; do get "/metrics" "$OUT/metrics-$i.json"; sleep 2; done
-
-say "4. log + thiết bị"
-adb -s "$SERIAL" shell getprop ro.product.cpu.abilist > "$OUT/device-abilist.txt" 2>&1 || true
-adb -s "$SERIAL" logcat -b main -b crash -d > "$OUT/logcat-final.txt" 2>/dev/null || true
-grep -a "RAMUSB|" "$OUT/logcat-final.txt" > "$OUT/ramus-mirror.txt" 2>/dev/null || true
-
-curl -fsS -X POST "$B/timescale?v=1" >/dev/null || true
-say "xong — chạy §8 để kiểm"
+bash runtime-probe/collect.sh /duong/dan/to/windwings-mod.apk
 ```
 
-**Nếu API không lên (trial):** bỏ `collect.sh`, chuyển sang chế độ tối thiểu — `app launch`,
-3 ảnh cách 8 s, `logcat --filter "$PKG"`, và ghi rõ trong báo cáo là **không có số liệu**.
+Nó tự làm: kiểm APK → bật phiên → in `watchUrl` → mở adb tunnel → chờ `/health` (tối đa
+180 s) → dump 3 lúc (menu / stage / ingame) → đọc `ui-*.xml` để bấm đúng nút → đóng băng
+`timescale` khi dump → kiểm đầy đủ → in **ĐỦ** hoặc **THIẾU**.
 
----
+Đặc tính quan trọng khi giao cho agent yếu:
+
+| Tình huống | Hành vi |
+|---|---|
+| APK không có bridge | in `STOP:` và thoát, không bật phiên |
+| `session start` fail | in `STOP:`, giữ nguyên `session.json` |
+| `/health` không lên sau 180 s | in `STOP:`, không dump rỗng |
+| Không tìm thấy nút để bấm | **không đoán toạ độ**, in danh sách `text=` rồi đi tiếp |
+| Trial (không adb) | tự chuyển sang logcat + ảnh, và nói rõ *không có số liệu* |
+
+Script **không** tự `session end` — phiên được giữ để người dùng xem, kết thúc bằng tay.
 
 ## 8. Kiểm tra đã đủ chưa — trước khi `session end`
 
