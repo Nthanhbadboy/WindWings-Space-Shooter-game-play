@@ -1141,6 +1141,55 @@ lệch **18** — phải đọc `Parent_Stages` trong `Board_Maps` hoặc `textS
 
 ---
 
+### 7.25 HP player — chuỗi **đầy đủ** đọc từ arm64 (không phải từ ScriptableObject)
+
+Đây là lớp dữ liệu **không có trong bất kỳ CSV nào**: HP player **tính lúc chạy**.
+Đọc `raw/il2cpp-consts/Player_Get_Datas.asm.txt` + `dump.cs.gz`.
+
+**a) Công thức (mức A — đọc từng lệnh):**
+
+```
+GetStartHp()       = StartHp × (1 + GetHpStatPercent())
+GetHpStatPercent() = stepCommon × Tech_Datas.GetTechStatPoints(0)
+                   + abi7AddPlayerStartHp × GP_Datas.GetNumberAbility(7)
+```
+
+| Bằng chứng | Địa chỉ | Lệnh |
+|---|---|---|
+| `StartHp` đọc từ `@0x6C` | `0x14e3168` | `ldr s8, [x8, #0x6c]` |
+| `1 + pct` | `0x14e3178`–`0x14e317c` | `fmov s1, #1.0` · `fadd s0, s0, s1` |
+| **nhân** | `0x14e3180` | **`fmul s0, s8, s0`** |
+| `GetTechStatPoints(0)` | `0x14e3200` | `bl #0x1399aa4` (RVA → method qua `dump.cs`) |
+| `stepCommon` `@0x68` | `0x14e3228` | `ldr s8, [x8, #0x68]` |
+| `abi7AddPlayerStartHp` `@0x314` | `0x14e3230` | `ldr s9, [x8, #0x314]` |
+| `GP_Datas.GetNumberAbility(7)` | `0x14e3244` | `bl #0x14c7758`, `w0 = 7` |
+| cộng 2 nguồn | `0x14e3260` | `fadd s0, s0, s1` |
+
+**b) Vai trò từng field:**
+
+| Field | Class | Offset | Vai trò |
+|---|---|---|---|
+| `StartHp` | `Player_Get_Datas` | `0x6C` | HP gốc (**giá trị chưa có**) |
+| `stepCommon` | `Player_Get_Datas` | `0x68` | **0,168** — % mỗi điểm stat (dùng chung với `stepLevel`) |
+| `abi7AddPlayerStartHp` | `Player_Get_Datas` | `0x314` | % mỗi bậc ability 7 |
+| `StartHealth` | `Player_Health` | `0x0` (**static**) | = `GetStartHp()` lúc vào màn |
+| `CurrentHealth` | `Player_Health` | `0x4` (**static**) | HP hiện tại |
+| `Armor` | `Player_Health` | `0x20` | **giảm damage nhận**, không cộng HP |
+| `reduceDamageByDevice` | `Player_Health` | `0x58` | giảm damage theo thiết bị |
+| `HasShieldOneHit` · `Invincible` · `timeToImmuneOneHit` | `Player_Health` | `0x31` · `0x30` · `0x2C` | khiên 1 đòn · bất tử · miễn thương |
+
+**c) `Damager` chỉ có 2 field:** `float damage` + `Action<GameObject> killEvent` ⇒ **giáp bị trừ bên
+trong `Player_Health.TakeDamage`**, không nằm ở `Damager`.
+
+**d) Vì sao dữ liệu tĩnh không có:** `Player_Get_Datas..cctor` **không gán** `StartHp` — toàn file asm
+**chỉ 3 lệnh đọc** `[.., #0x6c]`, **0 lệnh ghi**. ⇒ `StartHp` mặc định **0** và gán lúc chạy ở class
+**không nằm trong 11 class có asm**.
+
+**e) Cái đã đóng so với `DESIGN_QUESTIONS` B2:** câu hỏi chuyển từ ❌ sang **⚠** — còn **1 hằng số**,
+không còn là "không có dữ liệu".
+
+---
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |

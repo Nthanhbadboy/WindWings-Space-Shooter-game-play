@@ -134,7 +134,19 @@ của particle), `p19_startShotRate`, `p21_zoneDuration`, `shipCloneLifeTime`, `
 | Ability | Field | Tác dụng |
 |---:|---|---|
 | 5 | `abi5GainHp` | hồi HP |
-| 7 | `abi7AddPlayerStartHp` | +HP khởi đầu |
+| 7 | `abi7AddPlayerStartHp` | +HP khởi đầu — **đã nối**: nhân với `GP_Datas.GetNumberAbility(7)` |
+
+> **Đã giải mã chuỗi HP player** (`BALANCE.md` §0.6, mức A — đọc từng lệnh arm64):
+>
+> ```
+> GetStartHp() = StartHp × (1 + stepCommon × TechStatPoints(0)
+>                               + abi7AddPlayerStartHp × GetNumberAbility(7))
+> ```
+>
+> `stepCommon` (`@0x68`) = **0,168** — cùng hằng số dùng trong `stepLevel` cho damage.
+> **Núm vặn HP gồm 3 cái:** `StartHp` (gốc, **giá trị chưa có**) · điểm tech stat **index 0** ·
+> ability **7**. Giáp `Player_Health.Armor` là **núm thứ tư nhưng tách riêng** — nó giảm damage
+> nhận vào, không cộng vào HP.
 | 8 | `abi8AddDodgeRate` | +tỉ lệ né |
 | 9, 10 | `abi9ReduceREDDmg`, `abi10ReduceREDDmg` | giảm damage nhận |
 | 11 | `abi11AddWingCannonDmg` | +damage pháo cánh |

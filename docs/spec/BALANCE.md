@@ -56,6 +56,101 @@
 > **Nhận định (mức A):** không thể suy độ khó campaign từ HP prefab. Phải chọn công thức riêng
 > và calibrate bằng số quân + nhịp spawn (đã có: `1,0 s/con`, `rate` 1,0 ở **7.743/11.099** spawner (69,8%)).
 
+## 0.6 HP player — **công thức đầy đủ**, chỉ thiếu đúng **một** giá trị
+
+Đọc trực tiếp từ `raw/il2cpp-consts/Player_Get_Datas.asm.txt` (arm64) + `dump.cs.gz`.
+Đây là chỗ **không** có trong ScriptableObject nào — HP được **tính lúc chạy**.
+
+### 0.6.1 Công thức (mức **A** — đọc từng lệnh)
+
+```
+GetStartHp()        = StartHp × (1 + GetHpStatPercent())
+
+GetHpStatPercent()  = stepCommon × Tech_Datas.GetTechStatPoints(0)
+                    + abi7AddPlayerStartHp × GP_Datas.GetNumberAbility(7)
+```
+
+Bằng chứng lệnh (địa chỉ thật):
+
+| Địa chỉ | Lệnh | Nghĩa |
+|---|---|---|
+| `0x14e3168` | `ldr s8, [x8, #0x6c]` | `s8 = StartHp` |
+| `0x14e316c` | `bl #0x14e318c` | gọi `GetHpStatPercent()` → `s0` |
+| `0x14e3178` | `fmov s1, #1.0` | hằng **1,0** |
+| `0x14e317c` | `fadd s0, s0, s1` | `1 + pct` |
+| `0x14e3180` | **`fmul s0, s8, s0`** | **`StartHp × (1 + pct)`** ← chính là công thức |
+
+`GetHpStatPercent` (từ `0x14e31f8`):
+
+| Địa chỉ | Lệnh | Nghĩa |
+|---|---|---|
+| `0x14e3200` | `bl #0x1399aa4` | **`Tech_Datas.GetTechStatPoints(0)`** → `w19` |
+| `0x14e3228` | `ldr s8, [x8, #0x68]` | **`stepCommon`** |
+| `0x14e3230` | `ldr s9, [x8, #0x314]` | **`abi7AddPlayerStartHp`** |
+| `0x14e3244` | `bl #0x14c7758` | **`GP_Datas.GetNumberAbility(7)`**, tham số `w0 = 7` |
+| `0x14e3258` | `fmul s0, s8, s0` | `stepCommon × điểm stat` |
+| `0x14e325c` | `fmul s1, s9, s1` | `abi7 × ability 7` |
+| `0x14e3260` | **`fadd s0, s0, s1`** | **cộng hai nguồn** |
+
+Địa chỉ → method được xác định bằng `RVA` trong `dump.cs.gz`:
+`0x1399aa4` = `GetTechStatPoints` · `0x14c7758` = **`GP_Datas.GetNumberAbility`**.
+
+### 0.6.2 Ba nguồn HP — đúng như trực giác "khởi tạo + giáp + tính trong màn"
+
+| Lớp | Nơi khai báo | Vai trò |
+|---|---|---|
+| **1. HP gốc** | `Player_Get_Datas.StartHp` (static float, `@0x6C`) | giá trị nền của tàu |
+| **2. Nâng cấp** | `Tech_Datas.GetTechStatPoints(0)` × **`stepCommon`** | stat index **0** của tech lab |
+| **3. Ability** | `GP_Datas.GetNumberAbility(7)` × **`abi7AddPlayerStartHp`** | ability **7** = "+HP khởi đầu" |
+| **4. Lúc vào màn** | `Player_Health.StartHealth` (static, `@0x0`) | = `GetStartHp()` |
+| **5. Trong màn** | `Player_Health.CurrentHealth` (static, `@0x4`) | HP hiện tại |
+| **6. Giáp** | `Player_Health.Armor` (instance, `@0x20`) | **giảm damage nhận**, không cộng vào HP |
+| **7. Giảm damage khác** | `reduceDamageByDevice` (`@0x58`) · `HasShieldOneHit` (`@0x31`) · `Invincible` (`@0x30`) · `timeToImmuneOneHit` (`@0x2C`) | theo thiết bị và khiên 1 đòn |
+
+⚠ **Giáp tách khỏi HP:** `Armor` **không** nằm trong công thức `GetStartHp` — nó được dùng trong
+`Player_Health.TakeDamage(Damager damager, bool ignoreInvincible = False, Action dieCallback)`.
+`Damager` chỉ có **2 field**: `float damage` + `Action<GameObject> killEvent` ⇒ **giáp phải được trừ
+bên trong `TakeDamage`**, không nằm ở `Damager`.
+
+> **Nhận định (mức B):** `damageThựcNhận = f(damager.damage, Armor, reduceDamageByDevice)` với
+> `f` nhiều khả năng là `damage × (1 − armor%)` hoặc `damage − Armor`.
+> **Điều kiện lật ngược:** `Armor` là `float` công khai nhưng **không có `[SerializeField]`** ⇒
+> gán lúc chạy; nếu giá trị quan sát được luôn < 1 thì nó là **phần trăm**, nếu > 100 thì là **số trừ**.
+
+### 0.6.3 Còn thiếu **đúng một** giá trị: `StartHp`
+
+`Player_Get_Datas..cctor` **không gán** `StartHp` — trong toàn bộ `.cctor` chỉ có **1 lệnh ghi**
+`str d0, [x8, #8]`. Cả file asm **không có lệnh nào ghi `[.., #0x6c]`**, chỉ có **3 lệnh đọc**.
+
+⇒ `StartHp` **mặc định 0** và được **gán lúc chạy** ở một class **không nằm trong 11 class có asm**.
+Đây là lý do tìm dữ liệu tĩnh **không thấy** — đúng như nhận định: *"HP khởi tạo lúc đầu, sau nâng
+cấp thêm giáp, cuối cùng tính trong màn"*.
+
+**Đã thử 4 hướng — cả 4 đều âm tính (ghi lại để không thử lại):**
+
+| Hướng | Kết quả |
+|---|---|
+| `.cctor` của `Player_Get_Datas` | ❌ **không gán** — cả `.cctor` chỉ 1 lệnh ghi `str d0, [x8, #8]` |
+| Quét **11 file asm** tìm lệnh ghi float vào `#0x6c` | ❌ **0 lệnh** (`GameDatas` có ghi `#0x6c` nhưng là **`w`** = int, không phải `s`) |
+| `Player_Saved_Datas` (nơi giữ dữ liệu lưu) | ❌ chỉ có `MaxLevelPerRanks` · `CardUpgrades` · `StartRanks` — **toàn int[]** |
+| `script-links.jsonl.gz` (127.659 dòng) | ❌ không có bản ghi nào chứa chuỗi `StartHp` |
+
+⇒ `StartHp` **không** được gán trong bất kỳ lớp nào đã export.
+
+**Để lấy `StartHp`** (theo thứ tự chi phí):
+
+1. **`transform-tree` + `MonoBehaviour` scan**: tìm class nào có method gọi `Player_Get_Datas::StartHp`
+   setter — cần `script-links.jsonl.gz` (đã có) lọc theo field name.
+2. **Dump asm thêm 1 class**: `Player_Health.asm.txt` (RVA `0x14C6B5C` `Start()` ·
+   `0x14C6DE4` `TakeDamage`) — nếu `Start()` gán `StartHealth = GetStartHp()` thì chỉ cần
+   đọc `StartHp` từ chỗ khác.
+3. **Suy từ cân bằng**: HP player phải chịu được **vài trăm đến vài nghìn** damage (đạn enemy
+   100–1.500, `dmgPerSec` 5–100) ⇒ `StartHp` nhiều khả năng **500 – 5.000**.
+
+> **Nhận định (mức C):** khoảng 500–5.000 chỉ là **suy ra từ thang damage**, không phải số đọc được.
+> **Điều kiện lật ngược:** nếu có cơ chế `OverDrive`/khiên 1 đòn phổ biến thì HP gốc có thể thấp hơn
+> nhiều (200–500) vì người chơi sống bằng né chứ không bằng HP.
+
 ## 1. Phương pháp & nguồn
 
 | Bảng | File | Trạng thái |

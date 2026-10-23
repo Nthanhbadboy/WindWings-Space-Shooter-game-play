@@ -14,8 +14,8 @@
 | ⚠ | có **một phần** — có số nhưng thiếu điều kiện hoặc thiếu vế còn lại |
 | ❌ | **chưa trả lời được** bằng dữ liệu hiện có |
 
-**Tổng: 48 câu — ✅ 28 · ⚠ 11 · ❌ 9.** Cả **9 câu ❌** đều nằm trong danh sách blocker
-(mục cuối), cộng thêm **B3** (⚠ nhưng vẫn chặn thiết kế) ⇒ **9 hàng blocker = 10 câu**.
+**Tổng: 48 câu — ✅ 28 · ⚠ 12 · ❌ 8.** **8 câu ❌** nằm trong danh sách blocker, cộng thêm
+**B2** (⚠ — thiếu 1 hằng số) và **B3** (⚠) ⇒ **9 hàng blocker**.
 
 ---
 
@@ -44,9 +44,9 @@
 | # | Câu hỏi | Trạng thái | Số / nguồn |
 |---:|---|---|---|
 | B1 | HP của enemy thường? | ❌ | **231/236 wave campaign có HP = 0**; toàn bộ 2.440.000 nằm ở `Wave_0136` ⇒ HP do công thức runtime (`ENCOUNTERS` §3.3) |
-| B2 | HP của người chơi? | ❌ | `Player_Get_Datas.GetStartHp` **chỉ có `fadd 1.0`**, không hằng số; `Data_Players` chỉ có `id/Star/Actived/Sprite` |
+| B2 | HP của người chơi? | ⚠ | **công thức đầy đủ (mức A)**: `GetStartHp = StartHp × (1 + stepCommon×TechStatPoints(0) + abi7×GetNumberAbility(7))`, `stepCommon` = **0,168**; giáp `Player_Health.Armor` **tách riêng** (giảm damage, không cộng HP) — `BALANCE` §0.6. **Thiếu đúng 1 giá trị `StartHp`** (gán runtime, không có trong `.cctor`) |
 | B3 | Damage người chơi tăng theo cấp thế nào? | ⚠ | `Player_Get_Datas.stepLevel`: **4 ngưỡng cấp 30 / 58 / 118 / 248**, hằng số **0,168 · 1,0 · 1,05 · 1,15** (0,1764 = 0,168×1,05; 0,1932 = 0,168×1,15); `GetMainCannonDamage` = `base × (1 + k)` với k = 0,168 · 0,1764 · 0,1932 |
-| B4 | Giết một enemy mất bao lâu (TTK)? | ⚠ | có **DPS median 454,5** (`COMBAT` §4) + **HP boss 6,38 M/instance**; thiếu HP player và HP enemy runtime |
+| B4 | Giết một enemy mất bao lâu (TTK)? | ⚠ | có **DPS median 454,5** (`COMBAT` §4) + **HP boss 6,38 M/instance**; còn thiếu **giá trị `StartHp`** (`BALANCE` §0.6) và **HP enemy runtime** |
 | B5 | Độ khó tăng bằng gì? | ✅ | **bằng damage đòn boss, không bằng HP**: `Boss10` 800→1.350 · `Boss6` 600→2.800 · `Boss9` 500→800 (`BOSSES` §8.4.1) |
 | B6 | Enemy mới ra mắt theo nhịp nào? | ✅ | **53/70 loại (76%) ra mắt trong 30 wave đầu**; chỉ **3 loại** sau wave 150 |
 | B7 | Bao nhiêu loại mới mỗi 20 wave? | ✅ | **51 · 3 · 1 · 0 · 2 · 1 · 9 · 2 · 1 · 0** (bin 0–199) |
@@ -122,7 +122,7 @@ Xếp theo **chi phí trả lời thấp → cao**, không theo mức quan trọ
 
 | Hạng | Câu | Vì sao chặn | Cách trả lời | Chi phí |
 |---:|---|---|---|---|
-| 1 | **B2 — HP player** | không có HP thì **không có TTK**, không có cân bằng nào cả | đọc `.asm.txt` của `Player_Get_Datas.GetStartHp` (đã có trace: chỉ `fadd 1.0`) → tìm field gốc trong `Data_Player_Info` (**chưa dump**, phải xin phép) | **thấp** nếu được dump thêm 1 class |
+| 1 | **B2 — giá trị `StartHp`** | không có HP thì **không có TTK** — nhưng **công thức đã xong** | ✅ **đã giải xong cấu trúc** (`BALANCE` §0.6, đọc lệnh arm64). Chỉ còn **1 hằng số**: tìm class gán `Player_Get_Datas.StartHp` (không có trong `.cctor`, chỉ 3 lệnh **đọc** `#0x6c` toàn file) | **thấp** — 1 field, hoặc suy từ thang damage (500–5.000) |
 | 2 | **A6 — stage ↔ wave** | quyết định **số màn** và **độ dài phiên** | `Stage_Behaviour.textStageIndex` → `Text` component; hoặc đọc thứ tự con của `Parent_Stages` trong `Board_Maps` | **thấp** — đã có `transform-tree` |
 | 3 | **E2/E3 — hit flash / hit stop** | quyết định **feel**, thứ người chơi cảm nhận mạnh nhất | đọc `Enemy_Display` field + tìm `timeScale`/`Material.color` trong 305 trace đã có | **thấp** |
 | 4 | **D3 — thứ tự pha boss** | mỗi trận boss là **điểm nhấn**; không có thứ tự thì chỉ clone được "boss bắn loạn" | giải mã `m_StreamedClip` để lấy `time` của **793 event** | **trung bình** — cần decoder |
@@ -143,13 +143,19 @@ Xếp theo **chi phí trả lời thấp → cao**, không theo mức quan trọ
 
 ## Còn thiếu / phải đoán
 
-1. **HP player** — không có trong 110 class đã dump. Không đọc được từ dữ liệu hiện có.
-2. **Công thức HP enemy runtime** — có hằng số `GetSurvivalScore` nhưng **chưa có thứ tự nhân**; `enemy_hp.json` tự ghi *"runtime HP scaled by `Enemy_Data_Balance` and stage"* nhưng **không nói stage nào**.
+1. **Giá trị `StartHp`** — công thức HP player đã xong (`BALANCE` §0.6), chỉ thiếu **một hằng số**;
+   `Player_Get_Datas..cctor` không gán, toàn file asm không có lệnh ghi `#0x6c`.
+2. **Công thức HP enemy runtime** — có hằng số `GetSurvivalScore` (6,0 · 3,0 · 1,1 · 0,2 · 0,5 ·
+   500,0 · 23,0 · 40,0) nhưng **chưa có thứ tự nhân**; `enemy_hp.json` ghi *"runtime HP scaled by
+   `Enemy_Data_Balance` and stage"* mà **không nói stage nào**.
 3. **stage ↔ wave** — 299 stage và 281 wave chưa khớp; `Stage_Behaviour` không có field `wave`.
-4. **Độ dài phiên chơi** — phụ thuộc (2) và (3) và luật continue.
+4. **Độ dài phiên chơi** — phụ thuộc (2), (3) và luật continue.
 5. **Timing của 793 event** — export chỉ có `__count`; cần decoder `m_StreamedClip`.
 6. **Mật độ địch đồng thời** — cần mô phỏng timeline, chưa làm.
 7. **Vàng/giờ** — cần drop rate × số quân/giờ.
-8. **`stepLevel` map vào cấp nào** — 4 ngưỡng 30/58/118/248 nhưng chưa biết là `playerLv` của hệ thống nào.
-9. **`rate = 0` ở 2.373 spawner** — nghĩa là "spawn tức thời" hay "mỗi khung hình"? Ảnh hưởng trực tiếp A1/A2.
-10. **`stageType` 0/1/2/3** — chỉ 100/299 dòng có giá trị, chưa biết map với 4 loại stage hay với chapter.
+8. **`stepLevel` map vào cấp nào** — 4 ngưỡng 30/58/118/248 nhưng chưa biết `playerLv` thuộc hệ thống nào.
+9. **`rate = 0` ở 2.373 spawner** — "spawn tức thời" hay "mỗi khung hình"? Ảnh hưởng trực tiếp A1/A2.
+10. **`stageType` 0/1/2/3** — chỉ 100/299 dòng có giá trị, chưa biết map với 4 loại stage nào.
+
+> ~~HP player~~ đã **đóng một phần lớn** ở vòng này: từ *"không có dữ liệu"* thành
+> *"có công thức đầy đủ, thiếu 1 hằng số"*.
