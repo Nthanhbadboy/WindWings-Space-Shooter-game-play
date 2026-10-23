@@ -12,8 +12,13 @@ bind=127.0.0.1
 token=
 
 # Emit one `RAMUSB|{json}` line to logcat every N seconds (0 disables).
-# This is the fallback path when the CI session has no adb tunnel (Ramus trial).
+# This is the only path on an anonymous Ramus trial (no adb tunnel).
+# Lines are also emitted on the first frame and on every scene change.
 mirror=10
+
+# How many root GameObjects ride along in the logcat mirror (0 = none).
+# This is what a trial run can see of the scene structure.
+mirror_roots=12
 
 # /statics uses reflection over game types; turn off if the game's interop hates it.
 statics=true

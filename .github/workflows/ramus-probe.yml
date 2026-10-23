@@ -3,8 +3,13 @@ name: runtime-probe
 # Boots a cloud Android device with Ramus, installs the build, and inspects the
 # game from inside the process (embedded C# bridge) plus screenshots/UI tree.
 #
-# The APK must already contain runtime-probe/RamusBridge.dll (see
-# runtime-probe/README.md section 3). CI does not patch the APK.
+# Works with NO credentials: `ramus trial` mints a 15-minute anonymous key, so
+# every run is self-contained. The trial has no adb tunnel, so the bridge is
+# read through `RAMUSB|{json}` logcat mirrors (see runtime-probe/README.md §5).
+# Adding the RAMUS_API_KEY secret upgrades the same job to the HTTP path.
+#
+# The APK must already contain runtime-probe/RamusBridge.dll (README §3).
+# CI does not patch the APK.
 
 on:
   workflow_dispatch:
@@ -21,7 +26,7 @@ on:
       scenario:
         description: 'Label written into the report'
         required: false
-        default: manual
+        default: anonymous
         type: string
       taps:
         description: 'Space-separated normalized taps, e.g. "0.5,0.8 0.5,0.8"'
@@ -29,19 +34,19 @@ on:
         default: ''
         type: string
       wait_scene:
-        description: 'Block until this scene name is active (empty = skip)'
+        description: 'Block until this scene name is active (HTTP path only)'
         required: false
         default: ''
         type: string
-      use_trial:
-        description: 'Use the 15-minute anonymous trial instead of RAMUS_API_KEY (no adb)'
-        required: false
-        default: false
-        type: boolean
       strict:
-        description: 'Fail the job when the bridge cannot be reached'
+        description: 'Fail the job when the bridge produced no data at all'
         required: false
         default: true
+        type: boolean
+      force_trial:
+        description: 'Anonymous trial even when RAMUS_API_KEY exists (tests the no-adb path)'
+        required: false
+        default: false
         type: boolean
   push:
     branches: [main]
@@ -60,13 +65,16 @@ env:
   RAMUS_CLI: ramus-cli@0.1.17
   RAMUS_PACKAGE: com.wind.wings.Space.Shooter
   PROBE_OUT: reports/runtime-probe
+  # Trial hard limit, checked before uploading.
+  TRIAL_APK_MAX_MB: '150'
 
 jobs:
   preflight:
-    name: preflight (credentials + APK)
+    name: preflight (APK + mode)
     runs-on: ubuntu-latest
     outputs:
       enabled: ${{ steps.gate.outputs.enabled }}
+      mode: ${{ steps.gate.outputs.mode }}
       apk_mode: ${{ steps.gate.outputs.apk_mode }}
       apk_source: ${{ steps.gate.outputs.apk_source }}
     steps:
@@ -78,9 +86,11 @@ jobs:
           INPUT_APK_URL: ${{ inputs.apk_url }}
           INPUT_APK_PATH: ${{ inputs.apk_path }}
           VAR_APK_URL: ${{ vars.RAMUS_APK_URL }}
-          USE_TRIAL: ${{ inputs.use_trial }}
+          FORCE_TRIAL: ${{ inputs.force_trial }}
         run: |
           set -euo pipefail
+
+          # ── which APK ──
           apk=""
           if [ -n "${INPUT_APK_PATH:-}" ] && [ -f "${INPUT_APK_PATH}" ]; then
             apk="$INPUT_APK_PATH"
@@ -92,32 +102,33 @@ jobs:
             echo "apk_mode=file" >> "$GITHUB_OUTPUT"
             echo "apk_source=$apk" >> "$GITHUB_OUTPUT"
           elif [ -n "${VAR_APK_URL:-}" ] || [ -n "${INPUT_APK_URL:-}" ]; then
-            url="${INPUT_APK_URL:-$VAR_APK_URL}"
             echo "apk_mode=url" >> "$GITHUB_OUTPUT"
-            echo "apk_source=$url" >> "$GITHUB_OUTPUT"
+            echo "apk_source=${INPUT_APK_URL:-$VAR_APK_URL}" >> "$GITHUB_OUTPUT"
           else
-            echo "::notice::No APK configured (inputs.apk_url / vars.RAMUS_APK_URL / runtime-probe/app.apk)."
+            echo "::notice::No APK configured (input apk_url / variable RAMUS_APK_URL / runtime-probe/app.apk)."
             echo "enabled=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          if [ -n "${KEY:-}" ]; then
-            echo "enabled=true" >> "$GITHUB_OUTPUT"
-          elif [ "${USE_TRIAL:-false}" = "true" ]; then
-            echo "::warning::Trial mode: 15-minute session, 150 MB APK, no adb tunnel (logcat path only)."
-            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          # ── which credential ──
+          if [ -n "${KEY:-}" ] && [ "${FORCE_TRIAL:-false}" != "true" ]; then
+            echo "mode=key" >> "$GITHUB_OUTPUT"
+            echo "::notice::Using RAMUS_API_KEY → adb tunnel + HTTP bridge available."
           else
-            echo "::notice::RAMUS_API_KEY is not set — skipping. Add the secret, or run with use_trial=true."
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-            echo "reason=no-credentials" >> "$GITHUB_OUTPUT"
+            echo "mode=trial" >> "$GITHUB_OUTPUT"
+            echo "::notice::Anonymous trial: 15-minute credential, 150 MB APK, one session, NO adb → logcat path only."
           fi
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
 
   probe:
     name: ramus device probe
     needs: preflight
     if: needs.preflight.outputs.enabled == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    # A trial credential lives 15 minutes; the whole run must stay inside that.
+    timeout-minutes: 25
+    env:
+      RAMUS_MODE: ${{ needs.preflight.outputs.mode }}
     steps:
       - uses: actions/checkout@v4
 
@@ -131,7 +142,7 @@ jobs:
           APK_SOURCE: ${{ needs.preflight.outputs.apk_source }}
         run: |
           set -euo pipefail
-          mkdir -p .ci
+          mkdir -p .ci "$PROBE_OUT"
           if [ "$APK_MODE" = "file" ]; then
             cp "$APK_SOURCE" .ci/app.apk
           else
@@ -139,42 +150,71 @@ jobs:
             curl -fL --retry 3 --retry-delay 2 -o .ci/app.apk "$APK_SOURCE"
           fi
           test -s .ci/app.apk
-          echo "RAMUS_APK=.ci/app.apk" >> "$GITHUB_ENV"
           ls -lh .ci/app.apk
           sha256sum .ci/app.apk | tee apk.sha256
+          echo "RAMUS_APK=.ci/app.apk" >> "$GITHUB_ENV"
+
+          size_mb=$(( $(stat -c%s .ci/app.apk) / 1048576 ))
+          echo "apk_mb=$size_mb" >> "$GITHUB_ENV"
+          if [ "$RAMUS_MODE" = "trial" ] && [ "$size_mb" -gt "$TRIAL_APK_MAX_MB" ]; then
+            echo "::error::APK is ${size_mb} MB but the anonymous trial accepts ${TRIAL_APK_MAX_MB} MB."
+            echo "::error::Add the RAMUS_API_KEY secret, or point apk_url at a smaller build."
+            exit 1
+          fi
 
       - name: Credentials
         env:
           KEY: ${{ secrets.RAMUS_API_KEY }}
-          USE_TRIAL: ${{ inputs.use_trial }}
         run: |
           set -euo pipefail
-          if [ -n "${KEY:-}" ]; then
+          if [ "$RAMUS_MODE" = "key" ]; then
             echo "RAMUS_API_KEY=$KEY" >> "$GITHUB_ENV"
-          elif [ "${USE_TRIAL:-false}" = "true" ]; then
-            npx --yes "$RAMUS_CLI" trial
+            echo "signed-in key mode" > "$PROBE_OUT/auth.txt"
           else
-            echo "::error::No credentials; this should have been caught in preflight."
-            exit 1
+            # Anonymous. Mint as late as possible: the credential only lives 15 minutes.
+            npx --yes "$RAMUS_CLI" trial --force | tee "$PROBE_OUT/trial.json"
+            exp=$(jq -r '.expiresAt // empty' "$PROBE_OUT/trial.json" 2>/dev/null || true)
+            limits=$(jq -c '.limits // {}' "$PROBE_OUT/trial.json" 2>/dev/null || echo '{}')
+            echo "trial_expires=$exp" >> "$GITHUB_ENV"
+            echo "RAMUS_TRIAL_EXPIRES=$exp" >> "$GITHUB_ENV"
+            echo "trial limits: $limits" >> "$PROBE_OUT/auth.txt"
+            if [ -n "$exp" ]; then
+              echo "RAMUS_DEADLINE=$(date -u -d "$exp" +%s)" >> "$GITHUB_ENV"
+              echo "::notice::trial credential valid until $exp"
+            fi
           fi
-          npx --yes "$RAMUS_CLI" status || true
 
       - name: Start session
         id: session
         run: |
           set -euo pipefail
-          mkdir -p "$PROBE_OUT"
-          npx --yes "$RAMUS_CLI" session start \
-            --apk "$RAMUS_APK" \
-            --wait \
-            --timeout 900 \
-            | tee "$PROBE_OUT/session.json"
+          started=0
+          for i in 1 2 3; do
+            echo "── session start, attempt $i/3 ──"
+            if npx --yes "$RAMUS_CLI" session start \
+                 --apk "$RAMUS_APK" \
+                 --wait \
+                 --timeout 600 \
+                 | tee "$PROBE_OUT/session.json"; then
+              started=1
+              break
+            fi
+            cat "$PROBE_OUT/session.json" 2>/dev/null || true
+            if [ "$i" -lt 3 ]; then sleep 20; fi
+          done
+
+          if [ "$started" -ne 1 ]; then
+            echo "::error::Ramus refused to start a session three times — see session.json in the artefact."
+            jq -r '.error // .message // empty' "$PROBE_OUT/session.json" 2>/dev/null || true
+            exit 1
+          fi
 
           sid=$(jq -r '.sessionId // .session_id // .id // .session.id // .session.sessionId // empty' \
                 "$PROBE_OUT/session.json" 2>/dev/null || true)
           if [ -n "$sid" ]; then
             echo "RAMUS_SESSION=$sid" >> "$GITHUB_ENV"
             echo "session=$sid" >> "$GITHUB_OUTPUT"
+            echo "session id: $sid"
           else
             echo "::notice::Could not parse a session id; the CLI will use the last session."
           fi
@@ -183,11 +223,11 @@ jobs:
       - name: Wait for the app
         run: |
           set -euo pipefail
-          npx --yes "$RAMUS_CLI" wait --stable --timeout 90000 || true
+          npx --yes "$RAMUS_CLI" wait --stable --timeout 60000 || true
           npx --yes "$RAMUS_CLI" screenshot --out "$PROBE_OUT/screen-boot.jpg" || true
 
-      - name: Open adb tunnel (best effort)
-        id: adb
+      - name: Open adb tunnel (key mode only)
+        if: env.RAMUS_MODE == 'key'
         continue-on-error: true
         run: |
           set -euo pipefail
@@ -209,6 +249,12 @@ jobs:
           adb -s "$serial" shell pidof "$RAMUS_PACKAGE" || true
           curl -fsS --max-time 10 http://127.0.0.1:8080/health | tee "$PROBE_OUT/health-direct.json"
 
+      - name: Skip adb (trial)
+        if: env.RAMUS_MODE == 'trial'
+        run: |
+          echo "::notice::Trial sessions have no adb tunnel — the probe reads RAMUSB logcat mirrors instead."
+          echo "no-adb (trial)" > "$PROBE_OUT/adb.txt"
+
       - name: Scenario taps
         if: github.event_name == 'workflow_dispatch' && inputs.taps != ''
         continue-on-error: true
@@ -223,12 +269,22 @@ jobs:
           done
 
       - name: Probe game state
-        env:
-          RAMUS_SESSION: ${{ env.RAMUS_SESSION }}
         run: |
           set -euo pipefail
-          args=(--out "$PROBE_OUT" --label "${{ inputs.scenario || 'ci' }}" --wait-server 120)
-          if [ -n "${{ inputs.wait_scene }}" ]; then args+=(--wait-scene "${{ inputs.wait_scene }}"); fi
+          budget=0
+          if [ -n "${RAMUS_DEADLINE:-}" ]; then
+            budget=$(( RAMUS_DEADLINE - $(date -u +%s) ))
+            echo "trial budget left: ${budget}s"
+          fi
+
+          args=(--out "$PROBE_OUT" --label "${{ inputs.scenario || github.event_name }}" --mode "$RAMUS_MODE")
+          if [ "$RAMUS_MODE" = "trial" ]; then
+            args+=(--wait-server 5 --logcat-wait 90)
+          else
+            args+=(--wait-server 120 --logcat-wait 30)
+            if [ -n "${{ inputs.wait_scene }}" ]; then args+=(--wait-scene "${{ inputs.wait_scene }}"); fi
+          fi
+          if [ "$budget" -gt 0 ] && [ "$budget" -lt 600 ]; then args+=(--budget "$budget"); fi
           if [ "${{ inputs.strict }}" != "false" ]; then args+=(--strict); fi
           node .github/scripts/ramus-probe.mjs "${args[@]}"
 
@@ -249,13 +305,19 @@ jobs:
           retention-days: 14
 
       - name: Comment on PR
-        if: always() && github.event_name == 'pull_request' && hashFiles(format('{0}/report.md', env.PROBE_OUT)) != ''
+        if: always() && github.event_name == 'pull_request'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
+          [ -f "$PROBE_OUT/report.md" ] || exit 0
+          {
+            echo "<!-- runtime-probe -->"
+            cat "$PROBE_OUT/report.md"
+          } > "$PROBE_OUT/comment.md"
           gh pr comment "${{ github.event.pull_request.number }}" \
-            --body-file "$PROBE_OUT/report.md" \
+            --body-file "$PROBE_OUT/comment.md" \
             --edit-last --create-if-none
 
       - name: End session

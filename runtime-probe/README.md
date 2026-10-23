@@ -26,12 +26,13 @@ Mục tiêu: kiểm thử **hộp trắng** — không chỉ nhìn pixel mà đ�
 │     ├─ BridgeHost.Update()  ← bơm queue + đo fps/frame + mirror logcat          │
 │     └─ Debug.Log("RAMUSB|{json}")  ← đường dự phòng khi không có adb            │
 └──────────────────────────────────────┬─────────────────────────────────────────┘
-                                       │ adb forward tcp:8080 tcp:8080
+                    adb forward tcp:8080 │ logcat "RAMUSB|{json}"
 ┌──────────────────────────────────────┴─────────────────────────────────────────┐
 │ GitHub Actions                                                                  │
-│   npx ramus-cli session start --apk app.apk --wait                               │
+│   npx ramus-cli trial                                (anonymous, không cần key) │
+│   npx ramus-cli session start --apk app.apk --wait                              │
 │   npx ramus-cli screenshot / snapshot / tap / logcat                            │
-│   node .github/scripts/ramus-probe.mjs  → report.md + summary.json + PNG/JPEG   │
+│   node .github/scripts/ramus-probe.mjs  → report.md + summary.json + JPEG/PNG   │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -65,17 +66,16 @@ Yêu cầu: .NET SDK 8/9 (`dotnet --version`), quyền truy cập thư mục cà
 
 ```bash
 # FusionCore / BepInEx 6 (Android IL2CPP)
-dotnet build runtime-probe/RamusBridge.csproj -c Release \
-  -p:Loader=BepInEx6 -p:BepInExRoot="/đường/dẫn/BepInEx"
+./runtime-probe/build.sh BepInEx6 "/đường/dẫn/BepInEx"
 
 # MelonLoader / LemonLoader
-dotnet build runtime-probe/RamusBridge.csproj -c Release \
-  -p:Loader=MelonLoader -p:MelonDir="/đường/dẫn/MelonLoader"
+./runtime-probe/build.sh MelonLoader "/đường/dẫn/MelonLoader"
 
 # BepInEx 5 (bản Mono, dùng để thử trên PC trước)
-dotnet build runtime-probe/RamusBridge.csproj -c Release \
-  -p:Loader=BepInEx5 -p:UnityManagedDir="/đường/dẫn/Managed"
+./runtime-probe/build.sh BepInEx5 "/đường/dẫn/Managed"
 ```
+
+(tương đương `dotnet build runtime-probe/RamusBridge.csproj -c Release -p:Loader=… -p:<Root>=…`)
 
 Kết quả: `runtime-probe/bin/Release/netstandard2.1/RamusBridge.dll`.
 
@@ -131,53 +131,92 @@ curl -s -X POST 'http://127.0.0.1:8080/timescale?v=0' && curl -s http://127.0.0.
 
 ---
 
-## 5. Đường dự phòng: logcat
+## 5. Đường logcat (bắt buộc cho trial)
 
-Ramus trial (15 phút) **không có adb tunnel**. Khi đó bridge vẫn ghi mỗi 10 s một dòng:
+Ramus trial **không có adb tunnel**, nên HTTP trong tiến trình không gọi được từ CI. Bridge vẫn ghi logcat:
 
 ```
-I/Unity: RAMUSB|{"ok":true,"scene":"Ingame","frame":1234,"fps":59.8,"ts":1,"uptime":92.4}
+I/Unity: RAMUSB|{"ok":true,"scene":"Ingame","frame":1234,"fps":59.8,"ts":1,"uptime":92.4,
+                 "unity":"2022.3.62f3","rootCount":31,
+                 "roots":[{"n":"Main Camera","a":true},{"n":"Sub_Player","a":true}, …]}
 ```
 
-CI đọc bằng `npx ramus-cli logcat --limit 800`, tách các dòng `RAMUSB|`, parse JSON, và ghi vào `summary.json` (`transport: "logcat"`). Muốn tắt: `mirror=0`.
+- Ghi **ngay frame đầu** và **mỗi lần đổi scene**, sau đó mỗi `mirror` giây (mặc định 10).
+- `mirror_roots=12` quyết định bao nhiêu root object được kèm theo (0 = tắt).
+- Một dòng bị cắt ở 3.500 ký tự để không làm nghẹt logcat.
 
-Đây là lý do bridge **không phụ thuộc HTTP** để CI có tín hiệu: HTTP là đường nhanh, logcat là đường chắc chắn.
+CI đọc bằng `npx ramus-cli logcat --limit 800`, tách các dòng `RAMUSB|`, parse JSON, ghi vào `summary.json` (`transport: "logcat"`).
 
 ---
 
 ## 6. CI trên Ramus
 
+### Hai chế độ
+
+| | **Anonymous (mặc định)** | **Signed-in key** |
+|---|---|---|
+| Chuẩn bị | không cần gì | secret `RAMUS_API_KEY` |
+| Credential | `ramus trial` mint tại chỗ, **15 phút** | key dài hạn |
+| Session | 1 session đồng thời | theo hạn mức tài khoản |
+| APK | **≤ 150 MB** | theo hạn mức tài khoản |
+| `adb` | **không** | có → `adb forward` |
+| Đường dữ liệu | logcat `RAMUSB\|` | HTTP + logcat |
+| Lấy được | scene, fps, frame, timeScale, uptime, `rootCount` + tên root, screenshot, UI tree | tất cả trên + `/hierarchy`, `/find`, component, `/statics` |
+| Comment PR | có (do `gh`, không phải Ramus) | có |
+
+Workflow tự chọn: có secret ⇒ key; không có ⇒ trial. Muốn **ép** trial dù có key (để kiểm chính đường anonymous): `force_trial: true`.
+
+### Ngân sách 15 phút của trial
+
+| Bước | Thời gian thực tế |
+|---|---|
+| mint trial | ~2 s |
+| upload APK + boot VM (`session start --wait`) | 2–4 phút (APK 100 MB) |
+| `wait --stable` + screenshot đầu | 30–60 s |
+| probe (logcat wait + screenshot + UI tree) | 1,5–2 phút |
+| share link + `session end` | ~15 s |
+| **tổng** | **≈ 5–7 phút** |
+
+Vẫn dư, nhưng ba thứ ăn thời gian nhất nên tránh: APK sát 150 MB, `taps` dài, và `--wait-server` lớn (script đã tự đặt 5 s ở chế độ trial).
+
 ### Bí mật / biến
 
 | Tên | Loại | Bắt buộc | Ý nghĩa |
 |---|---|---|---|
-| `RAMUS_API_KEY` | secret | Có (trừ khi `use_trial`) | Key tại `ramus.dev/settings`. **Không dán vào chat/URL.** |
+| `RAMUS_API_KEY` | secret | Không | Bỏ trống ⇒ tự chạy anonymous. Có ⇒ bật adb + HTTP. **Không dán vào chat/URL.** |
 | `RAMUS_APK_URL` | repo variable | Khuyến nghị | URL APK để CI tải (release asset, artifact public…) |
 
-Không có key → job `preflight` tắt job `probe` kèm notice, không đỏ CI. Fork PR không có secret cũng vậy.
+Không có APK ⇒ job `preflight` tắt job `probe` kèm notice, CI không đỏ.
 
 ### Chạy
 
 ```bash
-gh workflow run runtime-probe.yml -f apk_url="https://…/app.apk" -f scenario=smoke -f wait_scene=Ingame -f taps="0.5,0.82 0.5,0.82"
+# anonymous (không cần secret)
+gh workflow run runtime-probe.yml -f apk_url="https://…/app.apk" -f scenario=anonymous
+
+# kèm kịch bản bấm + đợi scene (đợi scene chỉ có tác dụng ở chế độ key)
+gh workflow run runtime-probe.yml -f apk_url="https://…/app.apk" -f taps="0.5,0.82 0.5,0.82" -f wait_scene=Ingame
 ```
 
 Hoặc đặt APK sẵn ở `runtime-probe/app.apk` (đã `.gitignore`) và bấm Run.
 
 Workflow làm tuần tự:
 
-1. `session start --apk … --wait` (timeout 900 s), lưu `session.json`.
-2. `wait --stable` + screenshot màn hình đầu.
-3. Mở `adb` tunnel (best effort) → `adb forward tcp:8080 tcp:8080` → `curl /health`.
-4. Bấm kịch bản (`taps`), đợi scene nếu có `wait_scene`.
-5. Chạy `ramus-probe.mjs`: gom health/state/scene/hierarchy/find/statics/logs + screenshot, fallback logcat.
-6. Upload artifact `runtime-probe-<run_id>` (report.md, summary.json, ảnh, session.json, sha256 APK).
-7. Comment `report.md` vào PR (nếu là PR).
-8. `session end` — luôn chạy, kể cả khi fail.
+1. `preflight` — chọn APK + chế độ, không cần secret.
+2. `Resolve APK` — tải/copy, **chặn nếu > 150 MB ở chế độ trial** (báo lỗi kèm cách xử lý), in sha256.
+3. `Credentials` — key: export; trial: `ramus trial --force`, lưu `expiresAt` + `limits`.
+4. `session start --apk … --wait --timeout 600`, thử 3 lần, lưu `session.json`.
+5. `wait --stable` + screenshot màn hình đầu.
+6. `adb forward` **chỉ ở chế độ key**; trial ghi chú rõ "no-adb".
+7. Bấm kịch bản (`taps`).
+8. `ramus-probe.mjs` — HTTP nếu có, không thì logcat; tính `verdict`; ghi `report.md`, `summary.json`.
+9. Ảnh + watch link + artifact `runtime-probe-<run_id>` (14 ngày).
+10. Comment `report.md` vào PR (nếu là PR).
+11. `session end` — luôn chạy.
 
 ### Đọc kết quả
 
-`report.md` có bảng metric + danh sách root object + static field + lỗi. `summary.json` giữ nguyên payload để phân tích sâu.
+`report.md` có bảng metric + root object + static field (nếu có HTTP) + ghi chú + lỗi. `summary.json` giữ nguyên payload.
 
 `verdict`:
 
@@ -189,24 +228,27 @@ Workflow làm tuần tự:
 | `app-unstable` | log có dấu hiệu crash/died |
 | `error` | script lỗi |
 
-`--strict` (mặc định bật) chỉ fail job khi **không có dữ liệu nào**. Fps thấp là cảnh báo, không phải fail.
+`--strict` (mặc định bật) chỉ fail job khi **không có dữ liệu nào**; fps thấp chỉ là cảnh báo.
 
 ---
 
 ## 7. Giới hạn đã biết
 
-- **Chưa build/chạy thử trong sandbox này** (không có .NET SDK và không có thiết bị). Code đã qua kiểm tra cú pháp/khung nhưng **lần build đầu phải chạy trên máy bạn**; xem mục Troubleshooting.
-- `Ramus` là SaaS: cần key hoặc trial. Trial: 15 phút, APK ≤ 150 MB, **không adb** → chỉ còn đường logcat.
-- `/screenshot` trả PNG base64 nhị phân qua HTTP; ảnh 1080p có thể vượt 6 MB → trả 413, dùng `ramus screenshot`.
-- `/statics` phụ thuộc reflection của interop; một số field generic/struct lồng nhau sẽ bị bỏ qua (có `written` trong response để biết đã đọc được bao nhiêu).
-- Không có endpoint **ghi**: mọi thứ là read-only + 3 lệnh điều khiển (`timescale`, `quit`, `mark`).
+- **Chưa build/chạy thử trong sandbox này** (không có .NET SDK, không có thiết bị). Code đã qua kiểm tra cú pháp/khung; **lần build đầu phải chạy trên máy bạn**.
+- Trial: 15 phút, 1 session, APK ≤ 150 MB, **không adb**, không camera/mic (lệnh đó cần key). Hết hạn giữa chừng thì các lệnh sau trả `unauthorized` — script ghi chú rõ.
+- Trial là **anonymous**, nhưng APK vẫn được upload lên hạ tầng Ramus: chỉ đẩy build bạn có quyền kiểm thử.
+- `/screenshot` trả PNG; ảnh 1080p có thể vượt 6 MB → 413, dùng `ramus screenshot`.
+- `/statics` phụ thuộc reflection của interop; field generic/struct lồng nhau có thể bị bỏ qua (`written` cho biết đã đọc được bao nhiêu).
+- Không có endpoint **ghi**: read-only + 3 lệnh điều khiển (`timescale`, `quit`, `mark`).
 
 ### Troubleshooting
 
 | Triệu chứng | Kiểm tra |
 |---|---|
 | `curl` connection refused | `adb forward --list`; bridge bind `0.0.0.0`? xem `mirror` log |
-| Plugin không nạp | logcat có `[RamusBridge]`? Loader có hỗ trợ Unity 2022.3.62f3? |
+| Trial: không thấy dòng `RAMUSB\|` | APK có `RamusBridge.dll`? plugin có nạp (log `[RamusBridge]`)? tăng `--logcat-wait` |
+| Plugin không nạp | logcat có `[RamusBridge]`? Loader hỗ trợ Unity 2022.3.62f3? |
 | `main thread did not answer` | game pause/`timescale=0` và `Update()` không chạy → dùng logcat |
 | Build thiếu `UnityEngine.CoreModule` | chạy game một lần để sinh `BepInEx/interop`, hoặc trỏ `-p:InteropDir=` |
+| `session start` fail 3 lần | hết slot trial (1 session đồng thời) hoặc APK > 150 MB |
 | Ảnh 413 | giảm độ phân giải hoặc dùng `ramus screenshot` |

@@ -6,15 +6,20 @@
  *   node .github/scripts/ramus-probe.mjs --out reports/probe --label "PR #12"
  *
  * Two data paths, tried in order:
- *   1. HTTP  —  adb forward tcp:8080 tcp:8080  (needs an adb tunnel: RAMUS_API_KEY plan)
- *   2. logcat — lines emitted by the bridge every N seconds: `${'RAMUSB'}|{json}`
- *               (works on trial sessions, which have no adb)
+ *   1. HTTP   — adb forward tcp:8080 tcp:8080        (signed-in key / adb tunnel)
+ *   2. logcat — `${'RAMUSB'}|{json}` lines emitted by the bridge (works on the
+ *               anonymous trial, which has no adb)
+ *
+ * Modes:
+ *   --mode auto    (default) trial when RAMUS_API_KEY is unset, else key
+ *   --mode trial   never wait long for HTTP; poll logcat instead
+ *   --mode key     HTTP is expected; an unreachable bridge is an error
  *
  * Exit code is 0 unless --strict is passed and neither path produced data.
  */
 
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 // ── cli ────────────────────────────────────────────────────────────────────
@@ -28,6 +33,9 @@ const opt = {
   waitScene: '',
   strict: false,
   screenshots: 2,
+  mode: 'auto',
+  logcatWait: 60,
+  budget: 0,
 };
 
 for (let i = 0; i < argv.length; i++) {
@@ -40,12 +48,17 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === '--wait-scene') opt.waitScene = next();
   else if (a === '--strict') opt.strict = true;
   else if (a === '--screenshots') opt.screenshots = Number(next());
+  else if (a === '--mode') opt.mode = next();
+  else if (a === '--logcat-wait') opt.logcatWait = Number(next());
+  else if (a === '--budget') opt.budget = Number(next());
   else if (a === '--help' || a === '-h') {
-    console.log('usage: ramus-probe.mjs [--out DIR] [--label TEXT] [--base URL] [--wait-server SEC] [--wait-scene NAME] [--strict]');
+    console.log('usage: ramus-probe.mjs [--out DIR] [--label TEXT] [--base URL] [--mode auto|key|trial]');
+    console.log('                         [--wait-server SEC] [--logcat-wait SEC] [--wait-scene NAME] [--budget SEC] [--strict]');
     process.exit(0);
   }
 }
 
+const MODE = opt.mode === 'auto' ? (process.env.RAMUS_API_KEY ? 'key' : 'trial') : opt.mode;
 const CLI = process.env.RAMUS_CLI || 'ramus-cli@0.1.17';
 const SESSION = process.env.RAMUS_SESSION || '';
 const OUT = path.resolve(opt.out);
@@ -53,19 +66,26 @@ mkdirSync(OUT, { recursive: true });
 
 const result = {
   label: opt.label,
+  mode: MODE,
   startedAt: new Date().toISOString(),
   base: opt.base,
   transport: 'none',
   session: SESSION || null,
+  trialExpiresAt: process.env.RAMUS_TRIAL_EXPIRES || null,
   app: {},
   bridge: {},
   logcat: { raw: [], states: [] },
   screenshots: [],
+  notes: [],
   errors: [],
   verdict: 'unknown',
 };
 
 const log = (msg) => console.log(`[probe] ${msg}`);
+const note = (msg) => {
+  result.notes.push(msg);
+  log(`note  ${msg}`);
+};
 const fail = (msg, extra) => {
   result.errors.push(extra === undefined ? msg : `${msg}: ${extra}`);
   log(`ERROR ${msg}${extra === undefined ? '' : ` — ${extra}`}`);
@@ -83,19 +103,13 @@ function ramus(args, { allowFail = true, timeout = 180000 } = {}) {
   const out = (r.stdout || '').trim();
   const err = (r.stderr || '').trim();
   if (r.status !== 0 && !allowFail) throw new Error(`ramus ${args[0]} failed (${r.status}): ${err || out}`);
-  if (r.status !== 0) result.errors.push(`ramus ${args.join(' ')} → exit ${r.status}: ${(err || out).slice(0, 400)}`);
-  return { ok: r.status === 0, stdout: out, stderr: err, status: r.status };
-}
-
-function ramusJson(args) {
-  const r = ramus(args);
-  if (!r.ok || !r.stdout) return null;
-  try {
-    const start = r.stdout.indexOf('{');
-    return start >= 0 ? JSON.parse(r.stdout.slice(start)) : null;
-  } catch {
-    return null;
+  if (r.status !== 0) {
+    const detail = (err || out).slice(0, 400);
+    if (/trial_restricted/.test(detail)) note('the anonymous trial cannot use this command (adb/dev are key-only)');
+    else if (/unauthorized|401|trial (expired|has ended)/i.test(detail)) note(`trial credential problem: ${detail}`);
+    result.errors.push(`ramus ${args.join(' ')} → exit ${r.status}: ${detail}`);
   }
+  return { ok: r.status === 0, stdout: out, stderr: err, status: r.status };
 }
 
 // ── http ───────────────────────────────────────────────────────────────────
@@ -153,6 +167,30 @@ function readLogcatStates(limit = 800) {
   return states;
 }
 
+/** Poll logcat until the bridge mirrors at least one state line. */
+async function waitForLogcat(seconds) {
+  const deadline = Date.now() + seconds * 1000;
+  let launched = false;
+  let attempt = 0;
+  while (Date.now() < deadline) {
+    attempt++;
+    const states = readLogcatStates();
+    if (states.length > 0) return states;
+
+    if (!launched && attempt >= 2) {
+      launched = true;
+      // A crash, HOME press or a slow first boot leaves the app in the background.
+      const r = ramus(['app', 'launch']);
+      if (r.ok) note('sent `app launch` because no bridge line appeared yet');
+    }
+
+    const left = Math.round((deadline - Date.now()) / 1000);
+    log(`waiting for RAMUSB logcat line… (${left}s left)`);
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+  return readLogcatStates();
+}
+
 // ── screenshots / ui ───────────────────────────────────────────────────────
 
 function screenshot(n) {
@@ -171,13 +209,32 @@ function snapshotUi(tag) {
 // ── main ───────────────────────────────────────────────────────────────────
 
 async function main() {
-  log(`label="${opt.label}" out=${OUT}`);
+  log(`label="${opt.label}" mode=${MODE} out=${OUT}`);
   if (SESSION) log(`session=${SESSION}`);
+  if (MODE === 'trial') {
+    note('anonymous trial: no adb tunnel, so the bridge is read through logcat mirrors');
+    if (result.trialExpiresAt) note(`trial credential expires at ${result.trialExpiresAt}`);
+  }
+
+  // Never let the logcat wait outlive the credential.
+  if (opt.budget > 0) {
+    result.budgetSeconds = opt.budget;
+    if (opt.budget < 300) note(`only ${opt.budget}s of credential budget left`);
+    opt.logcatWait = Math.max(20, Math.min(opt.logcatWait, opt.budget - 45));
+    opt.waitServer = Math.max(3, Math.min(opt.waitServer, opt.budget - 60));
+  }
 
   screenshot(0);
 
-  // Try the HTTP path first.
-  let health = await waitForBridge(opt.waitServer);
+  // HTTP first — but on a trial there is no tunnel, so only one cheap attempt.
+  let health = null;
+  if (MODE === 'trial') {
+    const quick = await get('/health', 4000);
+    if (quick.status === 200) health = quick.json;
+  } else {
+    health = await waitForBridge(opt.waitServer);
+  }
+
   if (health && opt.waitScene) {
     const waited = await get(`/wait?scene=${encodeURIComponent(opt.waitScene)}&timeout=120000`, 130000);
     log(`wait scene "${opt.waitScene}" → ${waited.json ? JSON.stringify(waited.json) : waited.error}`);
@@ -186,6 +243,7 @@ async function main() {
   if (health) {
     result.transport = 'http';
     result.bridge.health = health;
+
     const calls = {
       state: '/state',
       metrics: '/metrics',
@@ -202,7 +260,6 @@ async function main() {
       else fail(`GET ${url}`, r.error || `status ${r.status}`);
     }
 
-    // PNG straight from the game (handy when Ramus screenshots are JPEG-only).
     const shot = await get('/screenshot', 20000);
     if (shot.image && shot.image.length > 100) {
       const file = path.join(OUT, 'screen-ingame.png');
@@ -212,20 +269,25 @@ async function main() {
       fail('GET /screenshot', shot.error);
     }
   } else {
-    // Fall back to logcat mirroring.
-    fail(`bridge unreachable at ${opt.base}`, 'falling back to logcat');
-    const states = readLogcatStates();
+    if (MODE === 'trial') {
+      note(`bridge HTTP not reachable at ${opt.base} (expected on a trial: no adb) — reading logcat`);
+    } else {
+      fail(`bridge unreachable at ${opt.base}`, 'falling back to logcat');
+    }
+
+    const states = await waitForLogcat(opt.logcatWait);
     if (states.length > 0) {
       result.transport = 'logcat';
       result.bridge.health = states[states.length - 1].state;
-      log(`recovered ${states.length} RAMUSB state line(s) from logcat`);
+      note(`recovered ${states.length} RAMUSB state line(s) from logcat`);
+    } else {
+      fail('no RAMUSB logcat line found', 'is RamusBridge.dll inside this APK? see runtime-probe/README.md');
     }
   }
 
   snapshotUi('before');
   if (opt.screenshots > 1) screenshot(1);
 
-  // Collect a second logcat slice regardless — it explains crashes and scene loads.
   readLogcatStates();
 
   // ── verdict ──
@@ -235,6 +297,7 @@ async function main() {
   const reachable = result.transport !== 'none';
   const crashed = result.errors.some((e) => /crash|died|not running/i.test(e));
 
+  result.budgetSeconds = opt.budget || null;
   result.app = {
     scene,
     fps,
@@ -255,7 +318,6 @@ async function main() {
   log(`verdict=${result.verdict} transport=${result.transport} scene="${scene}" fps=${fps}`);
   if (process.env.GITHUB_STEP_SUMMARY) {
     try {
-      const { appendFileSync } = await import('node:fs');
       appendFileSync(process.env.GITHUB_STEP_SUMMARY, renderReport(result));
     } catch { /* summary is best-effort */ }
   }
@@ -266,19 +328,22 @@ async function main() {
 function renderReport(r) {
   const h = r.bridge.health || {};
   const sc = r.bridge.scene || {};
-  const m = r.bridge.metrics || {};
   const st = r.bridge.statics || {};
-  const roots = Array.isArray(sc.roots) ? sc.roots.length : 0;
+  const mirrorRoots = Array.isArray(h.roots) ? h.roots : [];
+  const roots = Array.isArray(sc.roots) && sc.roots.length ? sc.roots.length : (h.rootCount ?? mirrorRoots.length);
   const subs = r.bridge.findSub && typeof r.bridge.findSub.count === 'number' ? r.bridge.findSub.count : '—';
   const logs = Array.isArray(r.bridge.logs && r.bridge.logs.logs) ? r.bridge.logs.logs.length : 0;
+  const trial = r.mode === 'trial';
 
   const lines = [];
   lines.push(`# Runtime probe — ${r.label}`);
   lines.push('');
   lines.push(`- **verdict:** \`${r.verdict}\``);
+  lines.push(`- **mode:** \`${r.mode}\`${trial ? ' (anonymous trial — no adb)' : ' (signed-in key)'}`);
   lines.push(`- **transport:** \`${r.transport}\` (${r.transport === 'http' ? 'adb forward → 127.0.0.1:8080' : r.transport === 'logcat' ? 'logcat mirror (RAMUSB)' : 'none'})`);
   lines.push(`- **started:** ${r.startedAt}`);
   lines.push(`- **session:** \`${r.session || 'n/a'}\``);
+  if (r.trialExpiresAt) lines.push(`- **trial expires:** ${r.trialExpiresAt}`);
   lines.push('');
   lines.push('| metric | value |');
   lines.push('| --- | --- |');
@@ -289,12 +354,25 @@ function renderReport(r) {
   lines.push(`| uptime | ${fmt(h.uptime)} s |`);
   lines.push(`| unity | \`${h.unity ?? '—'}\` |`);
   lines.push(`| platform | \`${h.platform ?? '—'}\` |`);
-  lines.push(`| timeScale | ${h.timeScale ?? '—'} |`);
-  lines.push(`| root objects (cap 200) | ${roots} |`);
+  lines.push(`| timeScale | ${h.timeScale ?? h.ts ?? '—'} |`);
+  lines.push(`| root objects | ${roots} |`);
   lines.push(`| objects named *Sub* | ${subs} |`);
   lines.push(`| in-game log lines | ${logs} |`);
   lines.push(`| logcat RAMUSB lines | ${r.logcat.states.length} |`);
   lines.push('');
+
+  if (mirrorRoots.length && !(Array.isArray(sc.roots) && sc.roots.length)) {
+    lines.push('## Scene roots (from the logcat mirror)');
+    lines.push('');
+    lines.push('| # | name | active |');
+    lines.push('| --- | --- | --- |');
+    mirrorRoots.slice(0, 20).forEach((n, i) => {
+      lines.push(`| ${i} | \`${n.n}\` | ${n.a} |`);
+    });
+    if ((h.rootCount ?? 0) > mirrorRoots.length) lines.push('');
+    if ((h.rootCount ?? 0) > mirrorRoots.length) lines.push(`_… ${h.rootCount - mirrorRoots.length} more root object(s) not mirrored (\`mirror_roots\`)._`);
+    lines.push('');
+  }
 
   if (Array.isArray(sc.roots) && sc.roots.length) {
     lines.push('## Scene roots');
@@ -322,11 +400,24 @@ function renderReport(r) {
     lines.push('');
   }
 
+  if (r.notes.length) {
+    lines.push('## Notes');
+    lines.push('');
+    for (const n of r.notes) lines.push(`- ${n}`);
+    lines.push('');
+  }
+
   if (r.errors.length) {
     lines.push('## Errors');
     lines.push('');
     for (const e of r.errors.slice(0, 30)) lines.push(`- ${e}`);
     if (r.errors.length > 30) lines.push(`- … ${r.errors.length - 30} more (see summary.json)`);
+    lines.push('');
+  }
+
+  if (trial && r.transport === 'logcat') {
+    lines.push('> Trial runs only get scene / fps / frame / timeScale / root object names. Hierarchy, components and');
+    lines.push('> `/statics` need the HTTP path, which needs an adb tunnel (`RAMUS_API_KEY`).');
     lines.push('');
   }
 

@@ -5,4 +5,4 @@ Repo **chỉ chứa tài liệu và công cụ** — không phát hành lại ga
 
 - `docs/spec/` — đặc tả gameplay, UI, balance, animation… (mục lục: `docs/spec/README.md`)
 - `runtime-probe/` — bridge C# nhúng trong APK: đọc scene / GameObject / static field / log khi game đang chạy
-- `.github/workflows/ramus-probe.yml` — CI bật emulator cloud bằng Ramus, cài APK, chụp màn hình và gọi bridge
+- `.github/workflows/ramus-probe.yml` — CI bật emulator cloud bằng Ramus (**anonymous trial, không cần secret**), cài APK, chụp màn hình và gọi bridge

@@ -59,6 +59,7 @@ namespace Ramus.Bridge
         public int Port = 8080;
         public string Token = "";
         public int MirrorSeconds = 10;
+        public int MirrorRoots = 12;
         public bool EnableStatics = true;
         public bool EnableScreenshot = true;
 
@@ -85,6 +86,7 @@ namespace Ramus.Bridge
                             case "bind": c.Bind = v; break;
                             case "token": c.Token = v; break;
                             case "mirror": if (int.TryParse(v, out var m)) c.MirrorSeconds = m; break;
+                            case "mirror_roots": if (int.TryParse(v, out var mr)) c.MirrorRoots = mr; break;
                             case "statics": c.EnableStatics = v != "0" && v.ToLowerInvariant() != "false"; break;
                             case "screenshot": c.EnableScreenshot = v != "0" && v.ToLowerInvariant() != "false"; break;
                         }
@@ -432,6 +434,7 @@ namespace Ramus.Bridge
         float _fpsTimer;
         int _fpsFrames;
         float _fps = -1f;
+        string _lastScene;
 
         public static BridgeHost Create()
         {
@@ -456,13 +459,25 @@ namespace Ramus.Bridge
                 Bridge.SetFps(_fps);
             }
 
-            if (Bridge.Config.MirrorSeconds > 0 && Time.realtimeSinceStartup >= _nextMirror)
+            // Mirror immediately on a scene change, then on the configured interval.
+            string sceneNow = SceneManager.GetActiveScene().name;
+            if (sceneNow != _lastScene)
             {
-                _nextMirror = Time.realtimeSinceStartup + Bridge.Config.MirrorSeconds;
-                var line = Bridge.CompactStateJson();
-                if (line.Length > 3500) line = line.Substring(0, 3500);
-                Debug.Log("RAMUSB|" + line);
+                _lastScene = sceneNow;
+                Mirror();
             }
+            else if (Bridge.Config.MirrorSeconds > 0 && Time.realtimeSinceStartup >= _nextMirror)
+            {
+                Mirror();
+            }
+        }
+
+        void Mirror()
+        {
+            _nextMirror = Time.realtimeSinceStartup + Mathf.Max(1, Bridge.Config.MirrorSeconds);
+            var line = Bridge.CompactStateJson();
+            if (line.Length > 3500) line = line.Substring(0, 3500);
+            Debug.Log("RAMUSB|" + line);
         }
 
         void OnApplicationQuit() { Bridge.Shutdown(); }
@@ -618,6 +633,7 @@ namespace Ramus.Bridge
             return OnMain(() =>
             {
                 var sc = SceneManager.GetActiveScene();
+                var roots = sc.GetRootGameObjects();
                 var jw = new Jw().StartObj()
                     .Prop("ok", true)
                     .Prop("scene", sc.name)
@@ -625,7 +641,25 @@ namespace Ramus.Bridge
                     .Prop("fps", _fps < 0 ? 0 : _fps)
                     .Prop("ts", Time.timeScale)
                     .Prop("uptime", (DateTime.UtcNow - _startedUtc).TotalSeconds)
-                    .EndObj();
+                    .Prop("unity", Application.unityVersion)
+                    .Prop("rootCount", roots.Length);
+
+                // Root names travel through logcat so a trial session (no adb) still
+                // sees the scene structure, not just the scene name.
+                int limit = Math.Min(roots.Length, Math.Max(0, Config.MirrorRoots));
+                if (limit > 0)
+                {
+                    jw.Name("roots").StartArr();
+                    for (int i = 0; i < limit; i++)
+                    {
+                        var go = roots[i];
+                        if (go == null) continue;
+                        jw.StartObj().Prop("n", go.name).Prop("a", go.activeSelf).EndObj();
+                    }
+                    jw.EndArr();
+                }
+
+                jw.EndObj();
                 return jw.ToString();
             }, 2000);
         }
