@@ -106,26 +106,10 @@ def parse_types(blob, header):
     _good, size, n = best
     print(f"typeDefinitions: {n} types, struct size {size}; "
           f"metadata fields: {n_fields}")
-    # Hiệu chuẩn offset của fieldStart/fieldCount: tổng fieldCount phải khớp
-    # tổng số field metadata và fieldStart không giảm theo thứ tự type.
-    best_pair = None
-    for fs_off in (24, 28, 32, 36, 40):
-        for fc_off in range(size - 28, size - 12, 2):
-            total, prev, bad = 0, -1, 0
-            for i in range(n):
-                base = td_off + i * size
-                fs = struct.unpack_from("<i", blob, base + fs_off)[0]
-                fc = struct.unpack_from("<H", blob, base + fc_off)[0]
-                if fs < prev and fs != -1:
-                    bad += 1
-                if fs > prev:
-                    prev = fs
-                total += fc
-            score = -abs(total - n_fields) - bad * 1000
-            if best_pair is None or score > best_pair[0]:
-                best_pair = (score, fs_off, fc_off)
-    _s, fs_off, fc_off = best_pair
-    print(f"  fieldStart off={fs_off}, fieldCount off={fc_off}")
+    # v31 (đã đọc từ dump thô): fieldStart = int32 @+32, fieldCount = u16 @+68
+    # (16 int32 đầu, sau đó 8 u16: method/property/field/event/nested/vtable/
+    #  interfaces/interfaceOffsets, rồi bitfield+token).
+    fs_off, fc_off = 32, 68
     types = []
     for i in range(n):
         base = td_off + i * size
@@ -133,10 +117,7 @@ def parse_types(blob, header):
         field_start = struct.unpack_from("<i", blob, base + fs_off)[0]
         field_count = struct.unpack_from("<H", blob, base + fc_off)[0]
         types.append((read_str(blob, str_off, name_idx), field_start, field_count))
-    for i in range(4):
-        base = td_off + i * size
-        ints = struct.unpack_from("<22i", blob, base)
-        print(f"  typedef[{i}] {types[i][0]}: {ints}")
+    print(f"  tong fieldCount={sum(t[2] for t in types)} (metadata: {n_fields})")
     print(f"  sample type names: {[t[0] for t in types[:12]]}")
     return types, n_fields, (f_off, str_off, f_size)
 
