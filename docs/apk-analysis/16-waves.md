@@ -99,7 +99,7 @@
 | `CB1 Nhanh (30)` | point_range | 1.0 | 1.5 | CB-30024 |
 | … | | | | còn 186 spawner |
 
-### `Wave_0002` — 124 spawner
+### `Wave_0002` — 125 spawner
 
 | spawner | type | rate | speed | enemies |
 |---|---|---:|---:|---|
@@ -115,7 +115,7 @@
 | `CB1 Nhanh (55)` | point_range | 1.0 | 1.5 | CB-30024 |
 | `CB1 Cham (32)` | point_range | 1.0 | 1.5 | CB-30025 |
 | `4-CB09_Top (10)` | point_range | 0.5 | 0.0 | CB-30009, CB-30009, CB-30009 |
-| … | | | | còn 112 spawner |
+| … | | | | còn 113 spawner |
 
 ### `Wave_0003` — 240 spawner
 
