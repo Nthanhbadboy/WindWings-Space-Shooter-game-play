@@ -1,5 +1,7 @@
 # COMBAT — súng, damage, TTK
 
+> **asm-check** (bản `6109008c`): **16/17 PASS** · `size_capped` **0/425** · ❌ `RankManager` thiếu **8 B** (`ctor` rỗng) — xem **`ASM_INTEGRITY.md`**. Mọi kết luận phủ định trong file này chỉ đúng trong **17 class đã export**.
+
 > Vòng 2. Nguồn sự thật: `reverse-engineering/scriptableobjects/*.csv` + `docs/apk-analysis/*.csv`.
 > Không trích dẫn lại tài liệu tóm tắt vòng 1.
 > Mỗi bảng ghi `(nguồn: <file>)`; suy đoán đánh dấu `> Giả định:`.

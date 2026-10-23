@@ -1,5 +1,7 @@
 # Sổ vấn đề **chưa chốt** — tổng hợp
 
+> **asm-check** (bản `6109008c`): **16/17 PASS** · `size_capped` **0/425** · ❌ `RankManager` thiếu **8 B** (`ctor` rỗng) — xem **`ASM_INTEGRITY.md`**. Mọi kết luận phủ định trong file này chỉ đúng trong **17 class đã export**.
+
 > Mục đích: một chỗ duy nhất liệt kê **mọi thứ còn hở** sau 6 vòng phân tích, kèm **bằng chứng số**,
 > **cách chốt rẻ nhất**, và **nếu không chốt được thì thiết kế phải tự quyết cái gì**.
 > Không lặp lại nội dung đã xong — chỉ trỏ về file gốc.
@@ -19,12 +21,12 @@
 
 ---
 
-## 1. Bảng tổng — **25 vấn đề**, chia theo **nguyên nhân** (quan trọng hơn mức độ)
+## 1. Bảng tổng — **26 vấn đề**, chia theo **nguyên nhân** (quan trọng hơn mức độ)
 
 | # | Vấn đề | Nhóm | Mức | Ảnh hưởng thiết kế |
 |---|---|---|---|---|
 | A1 | ~~Giá trị `StartHp`~~ ✅ **ĐÓNG = 2500** | **lỗi export** | **A** | **mở khoá TTK** — `BALANCE` §0.6.13 |
-| A2 | `Map_Get_Datas..cctor` **nay đã có** (26.013 dòng) — bảng map→wave **chưa trích** | **chưa lấy** | **C** | chặn "màn nào gồm wave nào" |
+| A2 | Bảng map→wave **nằm inline** trong `.cctor` 25.996 lệnh — **giao nhánh dữ liệu**, spec không tự trích | **uỷ thác** | **C** | chặn "màn nào gồm wave nào" |
 | A3 | ~~`OnChangeDataDevice`~~ ✅ **ĐÓNG** — device **không** cộng HP tối đa, chỉ giáp + hồi | **lỗi export** | **A** | `BALANCE` §0.6.7d |
 | A4 | ~~Caller của `GetStartHp()`~~ ✅ **ĐÓNG** = `<Start>b__14_1` | **lỗi export** | **A** | HP chốt **trong `Start()`** — `BALANCE` §0.6.15 |
 | B1 | 3 bảng stat của device | **RVA data** | D | chặn "device mạnh bao nhiêu" |
@@ -48,6 +50,7 @@
 | D4 | % giảm damage thực tế của giáp/device | **cần chạy game** | D | phải tự thiết kế |
 | E1 | **Asm export bị cắt cụt 11/12 file** | **lỗi công cụ** | A | **vô hiệu mọi kết luận âm tính cũ** |
 | E2 | `ships.json` thiếu 13 dòng so với `Data_Players` | **lỗi công cụ** | A | số tàu trong SPEC phải ghi 38 |
+| E3 | `RankManager.asm` **thiếu 8 B** (`ctor`) — cờ gác cổng bắt được | **lỗi công cụ** | A | không ảnh hưởng kết luận; đã có `ASM_INTEGRITY.md` |
 
 ---
 
@@ -64,7 +67,10 @@
 - **Cách chốt (rẻ nhất toàn dự án):** dump **200 lệnh tiếp theo sau `0x14e5cc4`**.
 - **Nếu không chốt:** chọn `StartHp` theo thang damage đã biết — damage đạn 28 giá trị, median **300**, max **1.500**; boss 350–2.800 ⇒ HP player hợp lý **≈ 5.000–20.000**. Ghi là **quyết định thiết kế**, không phải số gốc.
 
-### A2. Bảng **map → wave** — **D**
+### A2. Bảng **map → wave** — **uỷ thác cho nhánh dữ liệu**
+
+> **Quyết định (23/10):** bảng nằm **inline** trong `.cctor` (25.996 lệnh). Nhánh spec **không tự trích** —
+> để nhánh dữ liệu xuất thành CSV/JSON. Khi có file, việc còn lại chỉ là **đối chiếu**, không phải dịch asm.
 
 - **Cấu trúc đã rõ (A):** `Map_Get_Datas.GetListWaves(int mapIndex) → int[]`; `GetNumberWaves()`.
 - **Thân `GetListWaves` (A):** đọc singleton → nếu field `@0x0 == 1` lấy `mapIndex` từ `@0x4` (chế độ test), rồi `listMapDatas[clamp(mapIndex, count−1)]`.

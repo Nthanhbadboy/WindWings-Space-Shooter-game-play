@@ -1,5 +1,7 @@
 # BALANCE — số liệu WindWings: Space Shooter (bản spec hoá)
 
+> **asm-check** (bản `6109008c`): **16/17 PASS** · `size_capped` **0/425** · ❌ `RankManager` thiếu **8 B** (`ctor` rỗng) — xem **`ASM_INTEGRITY.md`**. Mọi kết luận phủ định trong file này chỉ đúng trong **17 class đã export**.
+
 > Sinh từ dữ liệu **đã bóc** trong repo. Mỗi bảng ghi nguồn. Suy đoán ghi `> Giả định:`.
 > Không có giá trị nào được nội suy thành số cụ thể nếu APK không có — những chỗ đó ghi
 > **"không xác định được từ APK"** và được liệt kê lại ở §6 để phần 2 đi tìm.

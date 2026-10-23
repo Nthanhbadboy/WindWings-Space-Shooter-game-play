@@ -1,5 +1,7 @@
 # DATA_SYNC — đồng bộ với pipeline vòng 3 (nhánh `arena/ef6b75ef`)
 
+> **asm-check** (bản `6109008c`): **16/17 PASS** · `size_capped` **0/425** · ❌ `RankManager` thiếu **8 B** (`ctor` rỗng) — xem **`ASM_INTEGRITY.md`**. Mọi kết luận phủ định trong file này chỉ đúng trong **17 class đã export**.
+
 > **Không merge.** File này là **kết quả đọc dữ liệu** của nhánh
 > `arena/ef6b75ef-windwings-space-shooter-game-p`, commit **`61d5385`**
 > (`feat(re): IL2CPP constant extraction (capstone), UI layout dump, raw typetree archive…`).

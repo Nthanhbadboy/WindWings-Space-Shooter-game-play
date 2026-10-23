@@ -1,5 +1,7 @@
 # SCRIPTS — kịch bản quyết định gì, và đọc được đến đâu
 
+> **asm-check** (bản `6109008c`): **16/17 PASS** · `size_capped` **0/425** · ❌ `RankManager` thiếu **8 B** (`ctor` rỗng) — xem **`ASM_INTEGRITY.md`**. Mọi kết luận phủ định trong file này chỉ đúng trong **17 class đã export**.
+
 > WindWings: Space Shooter — Unity 2022.3.62f3 · IL2CPP · `com.Wind.wings.Space.Shooter` 1.3.118.
 >
 > **Điểm xuất phát:** mọi con số trong `docs/spec/` là **số liệu chết** — giá trị serialize trong prefab,
