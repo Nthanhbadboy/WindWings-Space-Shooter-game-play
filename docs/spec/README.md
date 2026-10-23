@@ -84,6 +84,15 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | Mã IL2CPP (enum + class) | `reverse-engineering/il2cpp/dump.cs.gz` | tất cả (enum, field name) |
 | Text/graphics | `reverse-engineering/textassets/` | `ASSETS` |
 
+> ⚠ **Trạng thái 23/10 — các đường dẫn trên KHÔNG có trong nhánh này.** `datas/`,
+> `docs/apk-analysis/*.csv` và `reverse-engineering/` nằm ở một nhánh phân tích riêng đã
+> **bị xoá khỏi remote** (không còn trong `main`, không còn object local). Hệ quả: mọi con số
+> trong bộ spec vẫn là số đã đo, nhưng **không thể tính lại từ repo** cho tới khi dữ liệu được
+> đưa trở lại. Đừng coi "không tìm thấy file" là "số sai".
+>
+> Dữ liệu **duy nhất còn truy được** là run điện thoại 23/10:
+> `docs/apk-analysis/ramus/2026-10-23-phone/*.json` (JSON thô, đọc thẳng bằng `jq`).
+
 **Quy ước trong mọi file:**
 - Mỗi bảng ghi `(nguồn: <file>)` hoặc có cột **Nguồn**.
 - Suy đoán luôn đánh dấu `> Giả định:` — không trộn với số đo được.
