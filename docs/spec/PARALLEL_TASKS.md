@@ -242,7 +242,36 @@ Khi có đủ 13 artifact, tôi cập nhật **một commit** chạm đúng 6 fi
 
 ---
 
-## 8. Còn thiếu / phải đoán
+## 8. Kết quả vòng 1 — **6/13 task đã chạy** (`68ce86a7`, 23/10)
+
+> Chi tiết kiểm chéo: `VERIFY_ROUND1.md`. Ở đây chỉ ghi **phán quyết** và **việc còn lại**.
+
+| Task | Trạng thái | Họ báo | Tôi kiểm lại |
+|---|---|---|---|
+| **T2** | ✅ đã chạy | PASS — "không thiếu byte nào" | ⚠ **Kết luận đúng, cơ chế sai.** `RankManager.asm` **vẫn** thiếu 8 B; `ends_clean` = **True rỗng** (method vắng mặt ⇒ điều kiện vacuous). Nhưng ctor rỗng ⇒ **không mất gì** |
+| **T3** | ✅ đã chạy | PASS — 5/5 hằng | ✅ đúng, nhưng **tiền đề H3 của tôi sai**: `GetSurvivalScore` là **điểm**, không phải HP ⇒ **không đóng `B3`** |
+| **T4** | ✅ đã chạy | PASS — `cmp [30,58,118,248]`, float `[0,168·1,0·1,05·1,15]` | ✅ phần `stepLevel` **đúng từng số**. ❌ **H4b sai chiều**: asm là `adds w19,w19,#-0x2711` = **trừ 10001**, không phải `add` |
+| **T6** | ✅ đã chạy | **REVERSED** — `200xx` là drone | ✅ **đúng**. `drones.json` 13 item · `star` 1,0–5,02 · `actived` 12/13 ⇒ **`E2` đóng: tôi đọc sai** |
+| **T10** | ✅ đã chạy | PASS — **48** root `900xx` | ✅ "0 lần trong waves" đúng. ⚠ **48 là do regex không neo**; `^900\d\d$` = **45** (đúng số tôi ghi) |
+| **T12** | ✅ đã chạy | PASS — `VA 0x757bc0: [0,18 · 2500,0]` | ✅ **đúng** ⇒ `A1` nay là **A hai nguồn độc lập** |
+| **T13** | ⚠ **tôi tự làm** | *(họ để MISSING vì thiếu định nghĩa bin)* | ❌ **REVERSED**: 8,60 M giữ nguyên · 260–279 **15,40 M** · 280–282 **18,30 M** · tổng **480,89 M** · tỉ lệ **1,79×** (không 1,89×) |
+| **T1 · T5** | ❌ **vẫn MISSING** | *(chờ `field-defaults.json`)* | **1.192/1.194** hằng `debug_rva` giải ra `a=0x0` + `a_bytes = 7f454c46` (`\x7fELF`) ⇒ chuỗi RVA **vẫn đứt** |
+| **T7 · T8 · T9 · T11** | ⬜ chưa chạy | — | tầng B/C, cần AssetRipper/asm đọc sâu |
+
+**Tỉ lệ:** **6/13** task chạy xong · **1** tôi tự làm (`T13`) · **2** vẫn MISSING (`T1`·`T5`) · **4** chưa chạm.
+
+**Ba điều đáng giữ từ vòng này:**
+
+1. **Cờ tự kiểm phải kiểm chính nó.** `ends_clean` của họ trả `True` cho method **vắng mặt** — nếu tôi
+   không đếm "method có mặt" thì đã tin `T2` = PASS. **Cờ 4** nay nằm trong `ASM_INTEGRITY` §1.
+2. **Dự đoán của tôi sai 3 chỗ** (`H3` tiền đề · `H4b` chiều phép toán · `H13` số). Tỉ lệ đúng
+   10/13 nếu tính cả "đúng một phần" — nhưng **chỉ số đo mới đáng tin**, không phải tỉ lệ này.
+3. **`T1`/`T5` là 2 mục chặn thiết kế thật**, và lý do chúng chưa xong **đo được**: pipeline đang
+   đọc **header ELF** thay vì **VA sau relocation**. Đây là bug 1 dòng, không phải "chưa tới lượt".
+
+---
+
+## 9. Còn thiếu / phải đoán
 
 - **`tools/verify/` chưa tồn tại.** Tôi chỉ đưa *hợp đồng* (argv, exit code, schema); viết 13 script
   là việc của nhánh dữ liệu. Ước lượng: **13 × ~60 dòng**.

@@ -1472,21 +1472,26 @@ Cả hai đều có `ChangePlayerTypes(Action)`; bộ điều phối là **`GP_C
 
 **c) ⚠ ĐÍNH CHÍNH số đã công bố** (do `enemy_hp.json` + `waves.json` được tái export):
 
-| Số | Cũ | **Mới** |
-|---|---|---|
-| `Boss-*` có HP | 45/45 | **46/47** |
-| Prefab gốc có HP | 246 | **251** |
-| `count_spawners` | 11.099 | **11.095** |
-| Wave có HP > 0 | 46 | **45** |
-| Tổng HP toàn game | 241.598.000 | **496.410.000** (do tính **× `copies`**) |
-| Median HP wave 240–259 | 4.300.000 | **8.600.000** |
-| Median HP wave 260–279 | 7.760.000 | **16.230.000** |
-| Wave 280+ | 10.500.000 | **20.600.000** |
+| Số | Cũ | `6109008c` | **`68ce86a7`** |
+|---|---|---|---|
+| `Boss-*` **root** có HP > 0 | 45/45 | — | **38/39** (`39003` = 0) |
+| Prefab **root** trong `15-enemy-hp.csv` | 246 | 251 | **249** (249 root, **115** có tổng HP > 0) |
+| `count_spawners` | 11.099 | 11.095 | **11.092** |
+| Wave có HP > 0 | 46 | 45 | **45** |
+| Tổng HP toàn game | 241.598.000 | 496.410.000 | **480.892.000** |
+| Median HP wave 240–259 | 4.300.000 | 8.600.000 | **8.600.000** |
+| Median HP wave 260–279 | 7.760.000 | 16.230.000 | **15.400.000** |
+| Wave 280+ | 10.500.000 | 20.600.000 | **18.300.000** |
+| Tỉ lệ / 20 wave cuối | 1,8× | 1,89× | **1,79×** |
 
-⇒ đường cong độ khó: **≈ 1,89× mỗi 20 wave** ở đoạn cuối (trước ghi 1,8×).
+⇒ **đường cong độ khó ≈ 1,79× mỗi 20 wave** ở đoạn cuối. ⚠ Con số **đổi theo từng lần export**
+(`15-enemy-hp.csv`: 251 → **249** root, **70** root đổi giá trị) nên **hạ nhãn A → B**;
+định nghĩa phép tính ở `BALANCE` §2 và `VERIFY_ROUND1` §4.2. **Điều kiện lật ngược:** export sau
+trả lại các instance đã mất ⇒ tổng về ≈496 M và tỉ lệ về 1,89×.
 
-**d) `waves.json` nay có `copies` là field hiện:** `Σ len(enemies) = 22.471` ·
-`Σ len × copies = 45.659` ⇒ **45.659 vẫn đúng**, chỉ là trước phải tự nhân.
+**d) `waves.json` nay có `copies` là field hiện:** `Σ len(enemies)` = 22.471 → **22.457** ·
+`Σ len × copies` = **45.659** (không đổi qua cả 3 bản export) ⇒ **45.659 vẫn đúng**, chỉ là trước phải
+tự nhân. Median quân/wave 130,5 → **131,5**; max **951**; **109** prefab. **Bản `68ce86a7`.**
 
 **e) `Count` vẫn = 0 ở 100% spawner** — không đổi.
 

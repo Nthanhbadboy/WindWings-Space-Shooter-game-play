@@ -604,19 +604,28 @@ Kiểm bằng 4 nguồn độc lập.
 | **HP boss** | ✅ **tăng theo wave** | xem bảng dưới |
 | **Damage boss** | ⚠ chỉ **3/9** boss có biến thể | `Boss6` 2.800/600 · `Boss9` 800/500 · `Boss10` 800→1.350 (§3 B6 của `OPEN_ISSUES`) |
 
-**Tổng HP mỗi wave theo bó 20** (`enemy_hp.json` × `waves.json`, cộng dồn mọi bộ phận):
+**Tổng HP mỗi wave theo bó 20** — **đo lại trên `68ce86a7`** (bản `6109008c` có bộ số khác, xem
+`DATA_SYNC` §7c và `VERIFY_ROUND1` §4.2):
+
+**Định nghĩa (bắt buộc ghi kèm):** thứ tự wave trong `waves.json` (1…282) · HP mỗi prefab = **tổng mọi
+dòng `15-enemy-hp.csv`** có `gameobject` = prefab hoặc bắt đầu `prefab/` ("cộng dồn mọi bộ phận") ·
+nhân `copies` · median chỉ trên wave có HP > 0.
 
 | Wave | Wave có HP > 0 | Median tổng HP | Max |
 |---|---|---|---|
-| 0–119 | **0/120** | 0 | 0 |
-| 120–139 | 1/20 | 1.220.000 | 1.220.000 |
-| 140–219 | 0/80 | 0 | 0 |
-| 220–239 | 4/20 | 2.510.000 | 4.272.000 |
-| 240–259 | **20/20** | **4.300.000** | 7.290.000 |
-| 260–279 | **20/20** | **7.760.000** | 13.390.000 |
-| 280–281 | 1/2 | 10.500.000 | 10.500.000 |
+| 0–239 | 4/240 | 0 | 5.000.000 |
+| 220–239 | 3/20 | 4.160.000 | 5.000.000 |
+| 240–259 | **20/20** | **8.600.000** | **13.520.000** |
+| 260–279 | 19/20 | **15.400.000** | 29.370.000 |
+| 280–282 | 2/2 | **18.300.000** | 20.200.000 |
+| **Tổng cả game** | — | — | **480.892.000** |
 
-⇒ **Đường cong độ khó nằm ở HP boss**, tăng **≈ 1,8× mỗi 20 wave** ở đoạn cuối.
+⇒ **Đường cong độ khó nằm ở HP boss**, tăng **≈ 1,79× mỗi 20 wave** ở đoạn cuối.
+
+> ⚠ **Hạ nhãn A → B.** Con số này **phụ thuộc lần export**: cùng nguồn nhưng `6109008c` cho
+> **496.410.000** và **1,89×**; `68ce86a7` cho **480.892.000** và **1,79×** (70/249 root đổi giá trị,
+> `Board_FightBoss` 19 → 10 instance). Chỉ bin **240–259 khớp tuyệt đối** giữa hai bản.
+> **Điều kiện lật ngược:** nếu export sau trả lại các instance đã mất thì tổng tăng về ≈496 M.
 
 **Và một phát hiện quan trọng: enemy thường có HP = 0.**
 
@@ -951,8 +960,10 @@ Phân bố HP (394 instance > 0, raw):
 Nguồn: `15-enemy-hp.csv`, gom theo `(root prefab, đường dẫn component)`, lấy `max` mỗi cặp.
 
 **Ghi chú bảng:**
-- ⚠ **5 prefab có tổng HP = 0**: `37009`, `37012`, `39003`, `39007`, `39008` → prefab chỉ là
-  "vỏ", HP set lúc chạy. **Không dùng 5 dòng này để cân bằng.** (Vòng 1 ghi 3 — sai vì nguồn cũ.)
+- ⚠ **1/39 prefab có tổng HP = 0**: `39003` → "vỏ", HP set lúc chạy. **Không dùng để cân bằng.**
+  ✅ **ĐÍNH CHÍNH 23/10:** bản `6109008c` ghi **5** (`37009`, `37012`, `39003`, `39007`, `39008`);
+  bản `68ce86a7` bốn cái kia **đã có HP** (4,2 M · 2,8 M · 3,564 M · 8,82 M) — chỉ còn `39003` = 0,
+  khớp `BOSSES.md` ("1/39"). File sai là **file này**, không phải `BOSSES`.
 - `Boss-39006` là **trùm HP** (11,2 M, 16 part) đồng thời có **24 súng** (`COMBAT.md` §5)
   → boss "dày" nhất game cả về máu lẫn hoả lực.
 - `Boss-39015` chỉ còn **2 phase** ở nguồn mới (vòng 1 ghi 3) — phase 3 nằm ở prefab khác.

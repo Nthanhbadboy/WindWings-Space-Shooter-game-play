@@ -21,7 +21,7 @@
 
 ---
 
-## 1. Bảng tổng — **26 vấn đề**, chia theo **nguyên nhân** (quan trọng hơn mức độ)
+## 1. Bảng tổng — **27 vấn đề**, chia theo **nguyên nhân** (quan trọng hơn mức độ)
 
 | # | Vấn đề | Nhóm | Mức | Ảnh hưởng thiết kế |
 |---|---|---|---|---|
@@ -30,7 +30,7 @@
 | A3 | ~~`OnChangeDataDevice`~~ ✅ **ĐÓNG** — device **không** cộng HP tối đa, chỉ giáp + hồi | **lỗi export** | **A** | `BALANCE` §0.6.7d |
 | A4 | ~~Caller của `GetStartHp()`~~ ✅ **ĐÓNG** = `<Start>b__14_1` | **lỗi export** | **A** | HP chốt **trong `Start()`** — `BALANCE` §0.6.15 |
 | B1 | 3 bảng stat của device | **RVA data** | D | chặn "device mạnh bao nhiêu" |
-| B2 | 13 tàu `20001–20013` | **chưa lấy** | C | ảnh hưởng số tàu (25 vs 38) |
+| B2 | ~~13 tàu `20001–20013`~~ ✅ **ĐÓNG — là 13 DRONE**, không phải tàu | — | **A** | số tàu vẫn **25**; drone đã có ở `BALANCE` §3.2 |
 | B3 | HP enemy scale theo stage | **sai giả thuyết** | D | chặn cân bằng 231/236 wave |
 | B4 | `GetCountEnemies` mỗi stage | **chưa lấy** | D | ảnh hưởng nhiệm vụ/độ dài |
 | B5 | 43/305 trace chưa đối chiếu | **chưa lấy** | — | rủi ro sai số nhỏ |
@@ -48,9 +48,10 @@
 | D2 | Thứ tự resolve stat lúc runtime | **cần chạy game** | B | đã có mô hình, chưa xác nhận |
 | D3 | Tỉ lệ rơi item trong màn | **cần chạy game** | D | phải tự thiết kế |
 | D4 | % giảm damage thực tế của giáp/device | **cần chạy game** | D | phải tự thiết kế |
-| E1 | Asm **từng** bị cắt cụt 11/12 file (`8871068a`) → **`6109008c` đã hết cụt** (`size_capped` 0/425), còn **`RankManager` thiếu 8 B** | **lỗi công cụ** | A | **đã có `ASM_INTEGRITY.md`**; kết luận âm tính cũ đã rút lại |
-| E2 | `ships.json` thiếu 13 dòng so với `Data_Players` | **lỗi công cụ** | A | số tàu trong SPEC phải ghi 38 |
-| E3 | `RankManager.asm` **thiếu 8 B** (`ctor`) — cờ gác cổng bắt được | **lỗi công cụ** | A | không ảnh hưởng kết luận; đã có `ASM_INTEGRITY.md` |
+| E1 | Asm **từng** bị cắt cụt 11/12 file (`8871068a`) → `6109008c` hết cụt (`size_capped` 0/425). **`68ce86a7`: 25 method vắng hẳn khỏi asm** (24 stub 8 B + 1 method 32 B) | **lỗi công cụ** | A | **cờ 4** ở `ASM_INTEGRITY` §3; `RankManager` FAIL là **thật nhưng vô hại** |
+| E2 | ~~`ships.json` thiếu 13 dòng~~ ✅ **ĐÓNG — KHÔNG phải lỗi công cụ: tôi đọc sai** `Data_Players` (class dùng chung tàu + drone) | **tôi đọc sai** | **A** | **25 tàu**, không phải 38 |
+| E3 | `RankManager.asm` **thiếu 8 B** (`ctor` = `ret` rỗng) — cờ gác cổng bắt được, **vẫn còn ở `68ce86a7`** | **lỗi công cụ** | A | **không mất dữ liệu**; FAIL đúng, không phải dương tính giả |
+| E4 | **`Player_Ingame.get_IsAttacking` 32 B mất hẳn** khỏi `asm.txt` — method **duy nhất không phải stub** trong 25 method vắng mặt | **lỗi công cụ** | B | `IsAttacking` phải **suy từ trạng thái** trong bản clone |
 
 ---
 
@@ -83,50 +84,68 @@
 - **Thân `GetListWaves` (A):** đọc singleton → nếu field `@0x0 == 1` lấy `mapIndex` từ `@0x4` (chế độ test), rồi `listMapDatas[clamp(mapIndex, count−1)]`.
 - **Vì sao thiếu:** `dump.cs` liệt kê **8 method** cho `Map_Get_Datas` và **không có `.cctor`** — trong khi class có **12 static field** (`listMapDatas`, `listMapBranchDatas`, `listIdBosses`…). Dữ liệu nạp ở đâu đó **không export**.
 - **Cách chốt:** dump `Map_Get_Datas..cctor`, hoặc dump runtime `listMapDatas` (12 map × N wave).
+- **Trạng thái `68ce86a7` (đo lại 23/10):** `.cctor` **đã có** — **100.896 B · 3.484 hằng** — nhưng
+  **chưa bóc thành mảng**. Chuỗi RVA **vẫn đứt**: **1.192/1.194** hằng `debug_rva` giải ra `a = 0x0`
+  và `a_bytes` bắt đầu bằng `7f454c46` (`\x7fELF`) ⇒ đang đọc **header file**, không đọc vùng dữ liệu.
+  Xem `VERIFY_ROUND1` §3.
 - **Nếu không chốt:** tự chia 282 wave thành màn (hiện `ENCOUNTERS` đã có phân bố wave theo 20-wave bin).
 
 > **ĐÍNH CHÍNH:** chênh **299 stage vs 282 wave** từng bị tôi ghi như "lệch 18". **Không phải lỗi.**
 > `GetListWaves` trả **`int[]`** ⇒ quan hệ **nhiều-một**: nhiều stage dùng chung một wave.
 > Hai con số đo **hai thứ khác nhau** (`ENCOUNTERS` §2).
 
-### A3. `Player_Health.OnChangeDataDevice` — **C**
+### A3. `Player_Health.OnChangeDataDevice` — ✅ **ĐÓNG** (A)
 
-- **Vị trí:** RVA `0x14C58EC` — **thấp hơn** điểm bắt đầu file `Player_Datas.asm.txt` (`0x14c6b4c`) ⇒ **nằm ngoài** phần đã dump.
-- **Đã biết:** tên hàm + tham số `(int _idPlayer)` ⇒ **device → HP có thật** (`BALANCE` §0.6.7d).
-- **Cách chốt:** dump **~150 lệnh** tại `0x14C58EC`; cần biết nó ghi `StartHealth (@0x0)` hay `CurrentHealth (@0x4)`.
-- **Nếu không chốt:** thiết kế **cho device cộng HP tối đa** — an toàn hơn (nếu gốc chỉ hồi thì bản clone "rộng tay" hơn một chút).
+- **Đã đọc đủ 452 B** trong `Player_Health.asm.txt` (không còn nằm ngoài vùng dump).
+- **Kết quả:** **KHÔNG** ghi `StartHealth@0x0` hay `CurrentHealth@0x4`. Chỉ đặt
+  `reduceDamageByDevice@0x58` (id **1000–1999**) và `amountAutoGainHpByDevice` (id **5000–5999**),
+  rồi gọi `GainHealth`. Chi tiết `BALANCE` §0.6.7d.
+- **Hệ quả:** device **không** cộng HP tối đa; nó tăng **HP hiệu dụng** qua giáp + hồi máu.
 
-### A4. Ai gọi `GetStartHp()` — **C**
+### A4. Ai gọi `GetStartHp()` — ✅ **ĐÓNG** (A)
 
-- **Đã thấy:** `GetGainHpItem` (dòng 2.837) · `GetGainHpItemAddOverTime` (2.993) — cả hai là **item hồi máu**.
-- **Cảnh báo:** caller thật (ước là `Player_Health.Start` hoặc một `Setup`) **có thể nằm trong phần bị cắt** ⇒ con số "chỉ 2" là **cận dưới**, không phải "chỉ có 2".
+- **Caller:** `Player_Health.<Start>b__14_1` (lambda 604 B) — gọi `bl 0x14e311c` rồi `stp s0,s1,[x8]`
+  ghi `StartHealth@0x0` + `CurrentHealth@0x4` tại `0x14c7e48`.
+- **Caller khác:** `GetGainHpItem` · `GetGainHpItemAddOverTime` (item hồi máu).
+- **Kiểm lại `68ce86a7`:** `0x14e311c` xuất hiện **2 lần** trong `Player_Health.asm.txt` ⇒ **không hồi quy**.
 
 ### E1. **Asm export bị cắt cụt** — **A** (lỗi công cụ, không phải dữ liệu game)
 
-| File | Method | Lệnh | Kết thúc bằng `ret` |
+**Bản `8871068a`:** 11/12 file không kết thúc bằng `ret` ⇒ đã **rút lại 3 kết luận âm tính**
+(`.cctor` không gán `StartHp` · không có lệnh ghi `#0x314` · `GetStartHp` chỉ 2 caller). Chi tiết `DATA_SYNC` §7.29.
+
+**Bản `68ce86a7` — kiểm bằng phép đếm, không bằng cờ của pipeline:**
+
+| Trạng thái | Số method | Ghi chú |
+|---|---:|---|
+| Có header + có lệnh | **400** | — |
+| **Vắng hẳn khỏi `asm.txt`** | **25** | 15/17 class |
+| Header nhưng 0 lệnh | **0** | — |
+
+- **24/25 là stub 8 B** (`ret`) ⇒ **không mất logic**.
+- **1/25 là `Player_Ingame.get_IsAttacking` (32 B)** ⇒ **mất thật**; xem **E4**.
+- ⚠ **Bẫy:** cờ `ends_clean` của pipeline trả **`True`** cho method **vắng mặt** (khối rỗng ⇒ điều kiện
+  thoả vacuous). **Cờ báo "sạch" cho file thiếu method là cờ tệ hơn không có cờ.** Cách sửa: cờ 4
+  (`ASM_INTEGRITY` §3) — `present = len(insns) > 0` **và** opcode cuối hợp lệ.
+
+### E2. `Data_Players` **38** dòng — ✅ **ĐÓNG: tôi đọc sai, KHÔNG phải lỗi công cụ**
+
+| Nguồn | Số dòng | id | Loại |
 |---|---|---|---|
-| `ArenaManager` | 27 | 1.880 | ✅ |
-| 11 file còn lại | 1–72 | 256–7.348 | ❌ **cụt** |
+| `14-Data_Players.csv` | **38** | `10001–10024` + `10999` + `20001–20013` | class **dùng chung** |
+| `datas/ships.json` · `14-ships.csv` | **25** | `10001–10024` + `10999` | **tàu** |
+| `datas/drones.json` | **13** | `20001–20013` | **drone** |
 
-⇒ Đã **rút lại 3 kết luận âm tính** (`.cctor` không gán `StartHp` · không có lệnh ghi `#0x314` · `GetStartHp` chỉ 2 caller). Chi tiết `DATA_SYNC` §7.29.
+**Bằng chứng (A, kiểm độc lập trên `68ce86a7`):**
 
-### E2. `Data_Players` có **38** dòng, `ships.json` chỉ **25** — **A**
+- `drones.json` = **13 item**, id **20001–20013**, `star` **1,0–5,02**, `actived` **12/13** (`20013` = `False`).
+- `14-Data_Players.csv` chỉ có **4 cột**: `['Actived','Sprite','Star','id']` — **0** cột HP.
+- `BALANCE` §3.2 **cùng repo** đã ghi "**13 drone**" từ `14-drones.csv` — tức **file này mâu thuẫn với
+  `BALANCE`, không phải pipeline thiếu dòng**.
 
-| Nguồn | Số dòng | id |
-|---|---|---|
-| `14-Data_Players.csv` | **38** | `10001–10024` + `10999` + **`20001–20013`** |
-| `datas/ships.json` | **25** | `10001–10024` + `10999` |
-| `14-ships.csv` | **25** | như trên |
-
-⇒ **13 dòng `20001–20013` bị bỏ sót** khi sinh `ships.json` (`Actived = True` ở 12/13, `20013` = `False`;
-`Star` 1,0–5,02; sprite `m_PathID` riêng, không trùng bộ 25 tàu).
-**Chưa biết vai trò** — nghi là tàu legendary hoặc bộ tàu của chế độ khác.
-
-> **Nhận định (mức C):** `20001–20013` là **bộ tàu thứ hai**, không phải biến thể sprite của bộ 25.
-> **Điều kiện lật ngược:** nếu `GetListPlayers()` hoặc `GetAllShipNoUnlock()` chỉ trả về bộ 25 thì
-> `200xx` là dữ liệu chết. Cần đọc thân `GetListAllIdPlayers()` (asm) — **làm được ngay**.
-
----
+⇒ **Số tàu = 25.** `200xx` **không** phải "bộ tàu thứ hai bị bỏ sót".
+**Bài học:** `Data_Players` là bảng **cha** cho cả tàu lẫn drone; đọc nó như bảng riêng của tàu là
+**sai từ đầu**. Đây là lỗi **mâu thuẫn nội bộ spec**, và lẽ ra tôi phải tự bắt được.
 
 ## 3. Nhóm B — dữ liệu **có** nhưng chưa lấy được
 
@@ -135,9 +154,20 @@
 `RuntimeHelpers.InitializeArray` từ **field RVA data**. Không có trong `dump.cs` lẫn asm.
 **Cách chốt:** đọc vùng `.data` tại RVA của 3 field, hoặc chạy game in `GetStatValue1/2` cho 5 loại × rank 0…n.
 
+**Trạng thái `68ce86a7`:** vẫn **MISSING**. Đo trên 17 class: **1.192/1.194** hằng `debug_rva` giải ra
+`a = 0x0` với `a_bytes = 7f454c46…` (`\x7fELF`) ⇒ pipeline đang đọc **header file** thay vì **VA sau
+relocation**. 5 commit về `.rela.dyn`/two-level decode **chưa đổi kết quả đo**.
+**Điều kiện lật ngược:** nếu 3 bảng được nạp bằng `List.Add` trong `.cctor` (như `NumberTechStats`)
+thì đọc RVA **vô ích** — phải parse `.cctor` của `Device_Get_Data`.
+
 ### B2. 13 tàu `20001–20013` — **C** (xem E2)
 
 ### B3. HP enemy scale theo stage — **D**, và **giả thuyết cũ của tôi SAI**
+
+> **Kiểm chéo 23/10 (`VERIFY_ROUND1` §1):** lô song song báo `T3` = PASS vì `GetSurvivalScore` có
+> **5/5** hằng `6,0 · 3,0 · 1,1 · 0,2 · 0,5`. **PASS đó không đóng được B3** — hàm này là **điểm**
+> (`Mathf.RoundToInt(bracket × base)`, xem §3 B3 bảng dưới), **không** phải HP. Tiền đề giả định
+> `H3` của tôi **sai**; `B3` giữ nguyên **D**.
 
 Tôi từng nghi `Enemy_Data_Balance` chứa công thức HP. **Đọc đủ 7 method: không có method nào trả HP.**
 
@@ -167,7 +197,7 @@ return  Mathf.RoundToInt(bracket × base)
 | `StartHealthPoint > 0` | **467 / 981** · **72 giá trị khác nhau** (1.000 – 10.000.000) |
 | `StartHpPoint` | **0 ở 981/981** ⇒ field chết |
 | `CurrentHealthPoint` | **0 ở 981/981** ⇒ field chết |
-| **`Boss-*`** | **46 / 47 có HP** (90.000 – 31.480.000) |
+| **`Boss-*`** (root prefab) | **38 / 39 có HP > 0** (`Boss-39003` = **0**) · 213 dòng, 173 dòng > 0 · khoảng 90.000 – 31.480.000 |
 | **`CB-*`** (enemy thường) | **1 / 37** — chỉ `CB(TEST)` = 10.000.000 |
 | `CB-30003` · `CB-30015` · `CD-31002` | **0,0** · **0,0** · **0,0** |
 
@@ -179,16 +209,20 @@ return  Mathf.RoundToInt(bracket × base)
    `Enemy_Data_Balance` and stage"* — nhưng class đó **không có** method HP, nên ghi chú **chỉ sai
    địa chỉ**, không sai ý.
 
-**Đường cong độ khó (× `copies`, bản `6109008c`):**
+**Đường cong độ khó (× `copies`, bản **`68ce86a7`**; cột "cũ" là `6109008c`):**
 
-| Wave | có HP | median | max |
-|---|---|---|---|
-| 0–239 | 5 / 240 | 0 | 7.000.000 |
-| 240–259 | 19/20 | **8.600.000** | 13.520.000 |
-| 260–279 | 20/20 | **16.230.000** | 33.420.000 |
-| 280–281 | 1/2 | 20.600.000 | 20.600.000 |
+| Wave | có HP | median | max | cũ |
+|---|---|---|---|---|
+| 0–239 | **4 / 240** | 0 | 5.000.000 | 5/240 · max 7.000.000 |
+| 220–239 | 3/20 | 4.160.000 | 5.000.000 | 3,31 M |
+| 240–259 | **20/20** | **8.600.000** | **13.520.000** | *(khớp tuyệt đối)* |
+| 260–279 | 19/20 | **15.400.000** | **29.370.000** | 16,23 M · max 33,42 M |
+| 280–282 | 2/2 | **18.300.000** | 20.200.000 | 20,6 M |
 
-⇒ **≈ 1,89× mỗi 20 wave**; tổng HP toàn game **496.410.000**.
+⇒ **≈ 1,79× mỗi 20 wave**; tổng HP toàn game **480.892.000** (bản `68ce86a7`).
+⚠ Bản `6109008c` cho **1,89×** / **496.410.000** — con số **đổi theo lần export** nên hạ **A → B**.
+Bin **240–259 khớp tuyệt đối** giữa hai bản (8,60 M · max 13,52 M). Định nghĩa phép tính ở
+`VERIFY_ROUND1` §4.2; **điều kiện lật ngược:** export sau trả lại instance đã mất ⇒ về ≈496 M.
 
 **Cách chốt:** dump `Enemy_Health.asm.txt`, tìm **1 lệnh ghi** vào `StartHealth`. Rất rẻ.
 Đây là **câu hỏi số 1 còn lại** vì nó quyết định toàn bộ cảm giác chơi.
@@ -256,8 +290,9 @@ kiểm từng id** — nhưng **không còn là ẩn số về cơ chế**.
 
 ### C7. **45 root prefab mã `900xx`** — nằm ngoài roster (A)
 
-`prefab-roots.csv`: **2.081 root**, trong đó **45 root** có tên đúng dạng `900xx`
-(`90017`–`90071`). **Không mã nào** trong 45 xuất hiện trong **45.659 quân đã spawn** (kiểm 100% qua
+`prefab-roots.csv`: **2.081 root**, trong đó **45 root** khớp `^900\d\d$` — **đúng 5 chữ số**
+(`90017`–`90071`). ⚠ **Phải ghi regex:** `^900\d\d` (không neo) cho **48**, vì bắt thêm
+`90030 [Quest_Notice]` · `90036-Lasers` · `90053-Laser`. Hai số đúng với hai định nghĩa. **Không mã nào** trong 45 xuất hiện trong **45.659 quân đã spawn** (kiểm 100% qua
 `prefab-roots.csv`). ⇒ hazard/obstacle/zone **đặt sẵn hoặc dự phòng**, không nằm trong luồng wave.
 **Chưa biết** cái nào được dùng trong màn nào.
 
@@ -300,7 +335,9 @@ kiểm từng id** — nhưng **không còn là ẩn số về cơ chế**.
 | Hồi sinh có tính lại stat | **KHÔNG** | A |
 | Damage 18/37 class Director | bảng đầy đủ ở §3 B6 | A |
 | `GetSurvivalScore` | công thức đầy đủ; **không phải HP** | A |
-| Asm export bị cắt | `8871068a`: **11/12 file** ⇒ rút lại 3 kết luận âm tính. `6109008c`: **hết cụt** (`size_capped` 0/425), chỉ `RankManager` thiếu 8 B | A |
+| Asm export bị cắt | `8871068a`: **11/12 file** ⇒ rút lại 3 kết luận âm tính. `68ce86a7`: **25 method vắng hẳn** (24 stub + 1 method 32 B) | A |
+| **13 dòng `200xx` là gì** | **drone** (13 item, `star` 1,0–5,02) — **không** phải tàu bị bỏ sót; số tàu = **25** | A |
+| `GetSurvivalScore` có phải HP | **KHÔNG** — là **điểm** (`bracket × base`), 5 hằng số khớp 100% | A |
 
 ---
 

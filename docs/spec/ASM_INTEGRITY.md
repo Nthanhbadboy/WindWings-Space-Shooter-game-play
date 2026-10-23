@@ -26,7 +26,7 @@ phần đuôi**. Không có cờ, không có cảnh báo.
 
 ---
 
-## 1. Ba cờ tự kiểm
+## 1. Bốn cờ tự kiểm
 
 ### Cờ 1 — `size_capped` (công cụ tự báo)
 
@@ -49,6 +49,24 @@ Nếu file dừng **trước** địa chỉ đó ⇒ **cụt thật**. Phép nà
 Lệnh cuối phải là `ret` · `b` · `br` · `retab` · hoặc `bl` tới helper `0x110d250/0x110d258`
 (throw helper — không bao giờ trả về).
 
+### Cờ 4 — **method phải CÓ MẶT** (thêm 23/10, sau khi kiểm chéo)
+
+```
+mọi method trong <Class>.json   →   phải có khối ";;; <tên>" trong .asm.txt
+                                →   và khối đó phải có ≥1 dòng lệnh
+```
+
+**Vì sao phải thêm:** cờ 2 chỉ kiểm **đuôi file**. Một method bị bỏ sót **ở giữa** vẫn cho file kết
+thúc đúng ⇒ cờ 2 PASS. Đo trên bản `68ce86a7`: **25 method vắng hẳn** khỏi `asm.txt` trên 15/17 class
+— **24 là stub 8 B** (vô hại) và **1 là `Player_Ingame.get_IsAttacking` 32 B** (mất thật, cách method
+gần nhất **>0x60** ⇒ đúng là lỗ hổng giữa file, không phải cụt đuôi).
+
+> ⚠ **Bẫy đã gặp ở nhánh dữ liệu:** họ thêm cờ `ends_clean` = *"có `ret` trong ≤48 lệnh cuối"*.
+> Với method **vắng mặt**, danh sách lệnh **rỗng** ⇒ điều kiện thoả **vacuous** ⇒ cờ trả **`True`**.
+> Kết quả: `RankManager.ctor` **không có trong asm** mà vẫn được báo "sạch", và `T2` kết luận
+> *"không thiếu byte nào"* — **sai**. **Cờ báo "sạch" cho file thiếu method là cờ tệ hơn không có cờ.**
+> Sửa tối thiểu: `ends_clean = present and last_op in {...}`.
+
 **Ngoại lệ có thật:** `Player_Datas.asm.txt` **lan sang class kế** (dumper ghi liền mạch theo địa chỉ),
 nên lệnh cuối của nó thuộc `Player_Health` và **không** cần kiểm opcode. Cờ ghi
 `lan sang class kế (+N B)` — đây là **thông tin**, không phải lỗi.
@@ -64,10 +82,12 @@ Lưu thành `asm_guard.py`, chạy `python3 asm_guard.py <thư-mục-il2cpp-cons
 
 ```python
 #!/usr/bin/env python3
-"""Gác cổng: kiểm file asm IL2CPP có bị cắt cụt không.
+"""Gác cổng: kiểm file asm IL2CPP có bị cắt cụt / thiếu method không.
 
 Dùng:  python3 asm_guard.py <thư-mục-il2cpp-consts>
 Trả về exit code 0 nếu TẤT CẢ pass, 1 nếu có file fail.
+
+4 cờ: ① size_capped ② phủ địa chỉ ③ opcode cuối ④ method phải CÓ MẶT
 """
 import sys, os, glob, json
 
@@ -86,19 +106,24 @@ def check(d):
         ms = json.load(open(jf, encoding="utf-8"))["methods"]
         capped = sum(1 for m in ms if m.get("size_capped"))
         end = max(int(m["rva"], 16) + m.get("bytes", 0) for m in ms) - 4
-        ins = [l.strip() for l in open(af, encoding="utf-8")
+        lines = [l.rstrip("\n") for l in open(af, encoding="utf-8")]
+        ins = [l.strip() for l in lines
                if l.strip().startswith("0x") and ":" in l]
         if not ins:
             rows.append((cls, len(ms), 0, "", "", "FAIL: rỗng"))
             fail += 1
             continue
+        # --- cờ 4: method khai trong JSON phải có khối ";;; <tên>" trong asm
+        hdr = {l[4:].split("  ")[0].strip() for l in lines if l.startswith(";;; ")}
+        gone = [m["method"] for m in ms if m["method"] not in hdr]
+        hard = [n for n in gone
+                if int(next(m["bytes"] for m in ms if m["method"] == n)) > 8]
         mx = max(int(i.split(":")[0], 16) for i in ins)
         op = ins[-1].split(":", 1)[1].strip().split()[0]
         ok_cov = mx >= end
-        spill = mx > end            # file chứa cả thân method của class KẾ (dump liền mạch)
-        # chỉ kiểm opcode cuối khi file kết thúc ĐÚNG biên method của nó
+        spill = mx > end            # file chứa cả thân method của class KẾ
         ok_op = spill or op in TERM or "110d25" in ins[-1]
-        ok = ok_cov and ok_op and capped == 0
+        ok = ok_cov and ok_op and capped == 0 and not hard
         if not ok:
             fail += 1
         why = []
@@ -110,6 +135,11 @@ def check(d):
             why.append("lan sang class kế (+%d B)" % (mx - end))
         if capped:
             why.append("%d method bị cap" % capped)
+        if gone:
+            why.append("vắng %d method%s" % (
+                len(gone), " (%s… %d B)" % (hard[0], int(
+                    next(m["bytes"] for m in ms if m["method"] == hard[0])))
+                if hard else " — toàn stub ≤8 B"))
         rows.append((cls, len(ms), len(ins), hex(mx), hex(end),
                      "PASS" if ok else "FAIL: " + ", ".join(why)))
     w = max([len(r[0]) for r in rows] + [5])
@@ -126,7 +156,9 @@ if __name__ == "__main__":
 
 ---
 
-## 3. Baseline `6109008c` — chạy thật, không phải chép tay
+## 3. Baseline — chạy thật, không phải chép tay
+
+### 3.1 Bản `6109008c`
 
 ```
 class                mth   lệnh     max asm     cần tới  cờ
@@ -160,6 +192,33 @@ Tech_Datas            25   1919   0x13a1dd0   0x13a1dd0  PASS
 
 ⇒ **16/17 PASS.** File duy nhất fail là một `ctor` rỗng ⇒ **không có kết luận nào trong SPEC bị ảnh hưởng
 ở bản này**. Nhưng quy tắc dưới đây vẫn áp dụng, vì lần sau có thể là `.cctor`.
+
+> ⚠ **ĐÍNH CHÍNH 23/10:** tôi từng gọi FAIL này là *"dương tính giả"*. **Không phải.**
+> Kiểm lại bản `68ce86a7`: `RankManager.asm.txt` **vẫn dừng ở `0x127cb80`**, `;;; ctor` (`0x127cb84`, 8 B)
+> **vẫn không có trong file**. Vậy phép đo **đúng**; chỉ có **hệ quả là vô hại** (ctor rỗng). Ghi
+> "dương tính giả" sẽ khiến lần sau một FAIL thật bị bỏ qua.
+
+### 3.2 Bản `68ce86a7` — thêm cờ 4
+
+```
+17 class · 425 method
+  có header + có lệnh      400
+  vắng hẳn khỏi asm.txt     25   ← cờ 4 bắt
+  header nhưng 0 lệnh        0
+  size_capped = false      425/425
+  phủ địa chỉ FAIL           1   RankManager  (thiếu 8 B)
+  cờ 4 FAIL                  1   Player_Ingame (vắng 3 method, 1 cái 32 B)
+  ─────────────────────────────────────────
+  KẾT QUẢ                   15/17 PASS   (bản 6109008c: 16/17)
+```
+
+⚠ **Chú ý về `asm.txt`:** 17 file asm ở `68ce86a7` **giống hệt** `6109008c` — 21 commit mới chỉ làm
+giàu `*.json` (hằng số/RVA), **không** export lại thân hàm. Nghĩa là **25 method vắng mặt đã có từ
+trước**, chỉ là bản trước tôi **chưa kiểm** (tôi tự ghi ở §6 là "chưa kiểm"). Nay đã kiểm.
+
+25 method vắng mặt nằm ở **15/17 class**; **24/25 là stub 8 B**, **1/25 là 32 B**
+(`Player_Ingame.get_IsAttacking`). ⇒ **Cờ 4 bắt được một lỗ hổng mà cờ 2 không thấy** — đúng mục đích
+tôi đã ghi ở §6 (mục 2) là "chưa kiểm". Nay **đã kiểm**.
 
 ---
 
@@ -199,8 +258,10 @@ Nếu **FAIL** ⇒ chỉ được viết: **"không thấy trong phần đã exp
 
 ## 6. Còn thiếu / phải đoán
 
-1. **`RankManager` vẫn thiếu 8 B** — cần bản export sau, hoặc chấp nhận (ctor rỗng). **Chưa** đóng.
-2. Cờ 2 kiểm được **đuôi file**, **không** kiểm được **lỗ hổng giữa file** (một method bị bỏ sót ở giữa
-   nhưng file vẫn kết thúc đúng). Phép bù: so **số method** ở §3 với `dump.cs` — hiện `ArenaManager`
-   33 header / 34 method, lệch 1 do nested class, **chưa** phân định được chắc chắn.
+1. **`RankManager` vẫn thiếu 8 B** — vẫn còn ở `68ce86a7`. Nay đã rõ: **ctor rỗng** ⇒ **vô hại**,
+   nhưng **chưa** đóng (cờ vẫn FAIL).
+2. ~~Cờ 2 không kiểm được lỗ hổng giữa file~~ → **đã có cờ 4** (§1). Kết quả lần đầu: **25 method vắng mặt**,
+   trong đó **1 method 32 B mất thật** (`Player_Ingame.get_IsAttacking`).
+   **Việc còn lại:** `IsAttacking` phải suy từ trạng thái trong bản clone — **không** đọc được từ asm.
+   `ArenaManager` 33 header / 34 method vẫn lệch 1 — **chưa** phân định (nested class).
 3. Baseline gắn với **một bản APK** (`v1.3.118`). Bản game khác ⇒ **mọi số trong SPEC phải đo lại**.
