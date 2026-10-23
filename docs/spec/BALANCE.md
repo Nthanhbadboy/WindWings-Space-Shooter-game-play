@@ -187,7 +187,7 @@ kết luận được**. Đây đúng là giả thuyết *"HP là của tàu, bo
 | **Tàu** (25 chiếc) | ⚠ **chưa kết luận** | serialize **không** có bảng HP theo tàu (mức A); `StartHp` **có thể** gán lại lúc chọn (mức C) |
 | **Tech lab** (stat index 0) | ✅ `stepCommon × TechStatPoints(0)` | asm `0x14e3258` `fmul` |
 | **Ability 7** | ✅ `abi7AddPlayerStartHp × GetNumberAbility(7)` | asm `0x14e325c` `fmul` |
-| **Trang bị (device)** | ❌ **không cộng HP** | `Device { id, lv, rank, instanceId }`; `Player_Health` dùng nó qua `reduceDamageByDevice` + `amountAutoGainHpByDevice` — **giảm damage** và **hồi HP** |
+| **Trang bị (device)** | ⚠ **CÓ ảnh hưởng HP** — không qua `GetStartHp()` mà qua `Player_Health.OnChangeDataDevice(int)`; chi tiết §0.6.7 | `Player_Health` có `OnChangeDataDevice` · `amountAutoGainHpByDevice` · `reduceDamageByDevice` |
 | **Drone** | ❌ không | `Droid_Data_Balance.GetBaseDamage` — drone đóng góp **damage** |
 
 > **Nhận định (mức A):** trong **công thức đã đọc**, HP tối đa chỉ có **3 số**: `StartHp` (gốc) ·
@@ -249,7 +249,7 @@ Không có method HP nào nhận `playerIndex`.
 | **Drone cộng HP** | ❌ **Không** (A) | `Droid_Data_Balance` có **11 method**, **0 method trả HP**: `GetBaseDamage` · `GetDroidTimeOut` · `GetUnlockCost` · `GetUnlockStarCost` · `GetUpgadeCostCoins` · `GetUpgradeCostGems` · `GetDroidRank` · `SetDroidLevel` · `IsBought` · `SetBought` · `.cctor` |
 | **Danh hiệu / rank cộng HP** | ❌ **Không** (A) | `RankManager` **14 method — toàn bộ là leaderboard online**: `IECheckCampaignRankings` · `IESetCampaignRankings` · `IETryGetRoomRankCampaign` · `IECheckRankReadyToUploadPoint` · `CheckUserSignInOrRestoreYourDatas`… **không có stat nào** |
 | **Buff riêng chọn trước màn** | ❌ **không có hệ thống này** (B) | Không có class `Buff`/`PowerUp`. `PowerUp` là field **theo chỉ số tàu**: `p1_idBltPowerUp` · `p1_superPowerUpShotRate` · `p3_…` · `p5_…` · `p6_…` ⇒ power-up **thuộc tàu**, không phải buff chọn |
-| **Trang bị (device) cộng HP** | ❌ **không cộng HP tối đa** (A) | `Device { id, lv, rank, instanceId }`; tác dụng lên HP chỉ qua `reduceDamageByDevice` (giảm damage) và `amountAutoGainHpByDevice` (hồi) |
+| **Trang bị (device) cộng HP** | ⚠ **CÓ, nhưng khác đường** (B) | `Player_Health.OnChangeDataDevice(int _idPlayer)` — hàm chạy **khi đổi device**; cùng class có `amountAutoGainHpByDevice` + `reduceDamageByDevice`. **Không** đi qua `GetStartHp()` |
 | **Tàu cộng HP** | ⚠ **chưa kết luận** (C) | `Data_Players` **0 field HP**; `GetStartHp()` **không nhận `playerIndex`**; **nhưng** `StartHp` là `float` static và **không có lệnh ghi nào** trong 11 class asm ⇒ **không loại trừ** việc nó bị gán lại theo tàu lúc chọn |
 
 > **Nhận định (mức B):** xét **toàn bộ API của drone và rank**, cả hai **không có đường nào** trả về HP.
@@ -257,6 +257,63 @@ Không có method HP nào nhận `playerIndex`.
 >
 > **Điều kiện lật ngược:** export `Player_Health.asm.txt` + `GameDatas.asm.txt` đầy đủ. Nếu `StartHp`
 > bị gán theo `playerIndex` hoặc theo rank thì bảng trên phải sửa **2 dòng** (tàu, danh hiệu).
+
+### 0.6.7 **Trang bị (device)** — 5 loại, mỗi loại **2 stat**, và một nhánh `%`
+
+Cấu trúc đọc từ `Device_Get_Data.asm.txt` + `dump.cs.gz`.
+
+**a) Dữ liệu lưu:** `Device { int id; int lv; int rank; int instanceId; }` — **chỉ 4 số nguyên**.
+Stat **không** lưu trong device; nó được **tính** từ `id`, `lv`, `rank` qua bảng static.
+
+**b) Công thức `GetStatValue1`** (đọc từng lệnh):
+
+```
+type = id / 100 − 1                 // magic 0x10624DD3 = chia 100
+base = listStatValues[type][rank]   // float theo rank
+pct  = percentByLevels1[type] × (lv + 1)
+kết quả = base + pct
+if (type == 4) kết quả /= 100       // 0x42C80000 = 100.0
+```
+
+`GetStatValue2(Device)` dùng **`percentByLevels2`** — cùng công thức, và **cũng** có nhánh
+`cmp w20, #4` + `fdiv` ⇒ **cùng quy ước type 4 = phần trăm**.
+
+**c) Bằng chứng "5 loại" và "2 stat/loại":**
+
+| Bằng chứng | Giá trị |
+|---|---|
+| `.cctor` tạo mảng với `mov w1, #5` | **5 phần tử** cho mỗi bảng |
+| `cmp w20, #4` (nhánh %) | index chạy **0…4** ⇒ **5 loại** |
+| Hai hàm `GetStatValue1` / `GetStatValue2` | **2 stat mỗi device** |
+| Bảng static | `listStatValues` (`List<float[]>`) · `percentByLevels1` · `percentByLevels2` |
+
+**d) Device ảnh hưởng gì lên HP — 3 đường, không phải 1:**
+
+| Field / method trong `Player_Health` | Tác dụng |
+|---|---|
+| `OnChangeDataDevice(int _idPlayer)` | **chạy khi đổi device** — đường nối device → HP |
+| `amountAutoGainHpByDevice` | lượng **hồi HP** theo device |
+| `reduceDamageByDevice` | **giảm damage** nhận vào theo device |
+
+⚠ **Sửa lại điều tôi đã viết hai lần:** lần đầu tôi ghi *"device không cộng HP tối đa"*, lần hai
+vẫn giữ ý đó. **Sai** — `OnChangeDataDevice` là bằng chứng **device có** ảnh hưởng HP tối đa, chỉ là
+**không đi qua `GetStartHp()`**. Hai hệ tính HP **song song**:
+
+```
+HP tối đa = StartHp × (1 + tech% + ability7%)     ← GetStartHp()
+            ↑ rồi Player_Health.OnChangeDataDevice() điều chỉnh tiếp theo device
+```
+
+> **Nhận định (mức B):** device cộng HP **sau** khi `GetStartHp()` chạy, nên thứ tự là
+> **base → tech/ability → device**. Điều kiện lật ngược: nếu `OnChangeDataDevice` chỉ **hồi đầy**
+> `CurrentHealth` mà không đổi `StartHealth` thì device **không** tăng HP tối đa — chỉ hồi.
+>
+> **Cách chốt (1 class):** dump `Player_Health.asm.txt`, xem `OnChangeDataDevice` có ghi vào
+> `StartHealth` (`@0x0`) hay chỉ `CurrentHealth` (`@0x4`).
+
+**e) Giá trị số **chưa** lấy được:** `listStatValues` / `percentByLevels1` / `percentByLevels2` được
+nạp bằng `RuntimeHelpers.InitializeArray` từ **field RVA data** trong metadata — `dump.cs` và asm
+**không** chứa các float đó. ⇒ biết **công thức + số loại**, chưa biết **giá trị từng loại** (mức D).
 
 ## 1. Phương pháp & nguồn
 

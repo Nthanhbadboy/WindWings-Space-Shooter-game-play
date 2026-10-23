@@ -1269,6 +1269,47 @@ Cả hai đều **không** nhận `playerIndex` ⇒ **dùng chung mọi tàu**.
 
 ---
 
+### 7.27 Device — giải mã công thức, và **sửa lại lỗi của tôi** về HP
+
+Bản `8871068a`. `Device_Get_Data.asm.txt` + `dump.cs.gz`.
+
+**a) `GetStatValue1` — công thức đầy đủ (mức A):**
+
+```
+type  = device.id / 100 − 1        // magic 0x10624DD3 ⇒ chia 100
+base  = listStatValues[type][device.rank]
+pct   = percentByLevels1[type] × (device.lv + 1)
+value = base + pct
+if (type == 4) value /= 100        // 0x42C80000 = 100.0
+```
+
+`GetStatValue2` giống hệt nhưng dùng **`percentByLevels2`**, và **cũng** có nhánh `type == 4`.
+
+**b) 5 loại × 2 stat** — `.cctor` tạo mảng `mov w1, #5` (5 phần tử) · `cmp w20, #4` (index 0…4) ·
+2 hàm `GetStatValue*` ⇒ **5 loại device, mỗi loại 2 stat, type 4 là stat phần trăm**.
+
+**c) ⚠ SỬA LỖI — device **có** ảnh hưởng HP:**
+
+| Lần viết | Nội dung | Đúng? |
+|---|---|---|
+| lần 1 | "device ❌ không cộng HP tối đa" | ❌ **sai** |
+| lần 2 | vẫn giữ "không cộng HP tối đa" | ❌ **vẫn sai** |
+| **lần này** | **`Player_Health.OnChangeDataDevice(int _idPlayer)`** — hàm chạy khi đổi device | ✅ bằng chứng **device → HP** |
+
+`Player_Health` có **3 đường** device: `OnChangeDataDevice` · `amountAutoGainHpByDevice` ·
+`reduceDamageByDevice`.
+
+⇒ HP tối đa = `StartHp × (1 + tech% + ability7%)` **rồi** `OnChangeDataDevice()` điều chỉnh tiếp.
+**Hai hệ song song**, không phải một.
+
+> **Điều kiện lật ngược:** nếu `OnChangeDataDevice` chỉ hồi đầy `CurrentHealth` mà **không** đổi
+> `StartHealth` thì device **không** tăng HP tối đa. Cần `Player_Health.asm.txt` (`@0x0` vs `@0x4`).
+
+**d) Giá trị số chưa có:** 3 bảng static được nạp bằng `RuntimeHelpers.InitializeArray` từ **field
+RVA data** — không có trong `dump.cs` lẫn asm. Biết **công thức + 5 loại**, chưa biết **hệ số**.
+
+---
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |
