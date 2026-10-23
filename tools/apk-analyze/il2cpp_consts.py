@@ -594,7 +594,13 @@ def main() -> int:
 
     wanted = defaultdict(list)
     for cls, ns, name, offset, rva, sig in methods:
-        if cls in TARGET_CLASSES or (ns and ns.split(".")[-1] in TARGET_CLASSES):
+        # Coroutine bodies and captured callbacks live in nested generated
+        # types; exporting only the parent misses actual per-frame logic.
+        animation_families = ("Boss1_Director", "Boss_AttackPhases", "Boss_AttackTypes",
+                              "Boss_1_Animation", "Enemy_Movement")
+        nested_animation = any(cls and cls.startswith(parent + ".")
+                               for parent in animation_families)
+        if cls in TARGET_CLASSES or nested_animation or (ns and ns.split(".")[-1] in TARGET_CLASSES):
             wanted[cls].append((name, offset, rva, sig))
     total = sum(len(v) for v in wanted.values())
     print(f"methods in target classes: {total} across {len(wanted)} classes")
