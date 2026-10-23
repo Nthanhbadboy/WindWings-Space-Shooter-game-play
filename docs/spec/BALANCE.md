@@ -637,14 +637,25 @@ nhân `copies` · median chỉ trên wave có HP > 0.
 
 `CB-30003` = **0,0** · `CB-30015` = **0,0** · `CD-31002` = **0,0** — ba loại bị spawn nhiều nhất.
 
-**Hai cách đọc, chưa chốt:**
+**✅ ĐÃ CHỐT (23/10) — enemy thường KHÔNG chết 1 phát.** Chi tiết `ENEMY_HP_RUNTIME.md`.
 
-1. **Enemy thường chết 1 phát** — HP = 0 là thật, đây là shmup "one-hit" cổ điển. Ủng hộ:
-   `StartHpPoint`/`CurrentHealthPoint` chết · `Enemy_Data_Balance` **7 method 0 HP** ·
-   HP bar chỉ gắn trên boss.
-2. **Runtime gán HP** — exporter ghi *"runtime HP is scaled by `Enemy_Data_Balance` and stage"*.
-   Nhưng class đó **không có method HP** ⇒ ghi chú của exporter **không đúng chỗ**, phải nằm ở
-   `Enemy_Health` (chưa dump).
+| Bằng chứng (A) | Số |
+|---|---|
+| `Enemy_Hp_Bar`, `m_Enabled = 1` | **909 / 909** |
+| Prefab **được spawn** có HP bar | **108 / 109** (99,8 % quân) |
+| `CB-30003` (4.793 quân) | **có** HP bar, đang bật |
+
+❌ **Rút lại câu "HP bar chỉ gắn trên boss"** — đó là **bằng chứng tôi chưa kiểm** cho giả thuyết
+"one-hit".
+
+**HP enemy lấy từ đâu (A, `dump.cs`):** `Enemy_Get_Datas.GetStartHealthPoint(int)` tra
+**`static Dictionary<int,float> AllStartHealthPointEnemies`** dựng trong **`.cctor` `0x157F7CC`**.
+`Enemy_Health.CalculateDamage(float, ref float _hp, bool)` nhận HP qua **`ref`** và có
+**`armor` @`0x34`** ⇒ **enemy cũng có giáp**. ⇒ HP **không** nằm trong dữ liệu serialize; đó là lý do
+`StartHealthPoint` = 0 ở enemy thường.
+
+**Hệ quả cho cân bằng:** cột "HP = 0" trong bảng trên **không** có nghĩa "chết 1 phát"; nó có nghĩa
+**"HP do runtime cấp"** ⇒ mọi phép tính TTK dựa trên `enemy_hp.json` **chỉ đúng cho boss**.
 
 **Cách chốt (rất rẻ):** dump `Enemy_Health.asm.txt` — tìm 1 lệnh **ghi** vào `StartHealth`.
 

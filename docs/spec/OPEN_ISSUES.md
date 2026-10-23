@@ -31,7 +31,7 @@
 | A4 | ~~Caller của `GetStartHp()`~~ ✅ **ĐÓNG** = `<Start>b__14_1` | **lỗi export** | **A** | HP chốt **trong `Start()`** — `BALANCE` §0.6.15 |
 | B1 | 3 bảng stat của device | **RVA data** | D | chặn "device mạnh bao nhiêu" |
 | B2 | ~~13 tàu `20001–20013`~~ ✅ **ĐÓNG — là 13 DRONE**, không phải tàu | — | **A** | số tàu vẫn **25**; drone đã có ở `BALANCE` §3.2 |
-| B3 | HP enemy scale theo stage | **sai giả thuyết** | D | chặn cân bằng 231/236 wave |
+| B3 | ~~HP enemy scale theo stage~~ ✅ **cơ chế ĐÃ RÕ**: HP = `Dictionary<int,float>` trong `Enemy_Get_Datas.cctor` (chưa dump) · **enemy có giáp** | **chưa dump 1 class** | **B** | thiếu **nội dung bảng HP** (981 giá trị) — `ENEMY_HP_RUNTIME.md` |
 | B4 | `GetCountEnemies` mỗi stage | **chưa lấy** | D | ảnh hưởng nhiệm vụ/độ dài |
 | B5 | 43/305 trace chưa đối chiếu | **chưa lấy** | — | rủi ro sai số nhỏ |
 | B6 | Damage boss không khai báo (19 class) | **chưa lấy** | C | thiếu 19/37 nhóm đòn |
@@ -206,13 +206,36 @@ return  Mathf.RoundToInt(bracket × base)
 | **`CB-*`** (enemy thường) | **1 / 37** — chỉ `CB(TEST)` = 10.000.000 |
 | `CB-30003` · `CB-30015` · `CD-31002` | **0,0** · **0,0** · **0,0** |
 
-**Hai cách đọc — chưa chốt:**
+### ✅ ĐÃ CHỐT (23/10): HP enemy **CÓ THẬT**, nằm trong **một `Dictionary` chưa dump**
 
-1. **Enemy thường chết 1 phát.** Ủng hộ: 2 field HP chết · `Enemy_Data_Balance` **0 method HP** ·
-   HP bar chỉ có trên boss · 5 cổng chặn trong `TakeDamage`.
-2. **Runtime gán HP.** Ủng hộ: ghi chú trong `enemy_hp.json` — *"runtime HP is scaled by
-   `Enemy_Data_Balance` and stage"* — nhưng class đó **không có** method HP, nên ghi chú **chỉ sai
-   địa chỉ**, không sai ý.
+Chi tiết: `ENEMY_HP_RUNTIME.md`. Ba mắt ghép:
+
+| Bằng chứng (mức A) | Số |
+|---|---|
+| `Enemy_Hp_Bar` instance, `m_Enabled = 1` | **909 / 909** |
+| Prefab **thực sự được spawn** có HP bar | **108 / 109** |
+| Quân thuộc prefab có HP bar | **45.555 / 45.659 = 99,8 %** |
+| `CB-30003` (4.793 quân — nhiều nhất game) | **có** `CB-30003/Enemy_UI/HP_Bar`, đang bật |
+
+⇒ ❌ **"HP bar chỉ có trên boss" là SAI** — câu đó tôi dùng làm bằng chứng cho "chết 1 phát"
+mà **chưa bao giờ kiểm**. Rút lại.
+
+**Nguồn HP thật (mức A, đọc từ `dump.cs`):**
+
+```csharp
+public class Enemy_Get_Datas : MonoBehaviour {
+    private static Dictionary<int, float> AllStartHealthPointEnemies;   // 0x0
+    public static float GetStartHealthPoint(int _enemyId);   // RVA 0x157F6A8
+    public static float GetDamagePowered(float _crtDamage);   // RVA 0x157EEA0
+    private static void .cctor();                             // RVA 0x157F7CC
+}
+```
+
+`Enemy_Controller.GetStartHealth()` · `TakeDamage()` · `UpdateHpBar()` · `CacheComponents()`;
+`Enemy_Health.CalculateDamage(float, ref float _hp, bool)` + **`armor` @`0x34`** ⇒ **enemy cũng có giáp**.
+
+⇒ **`B3` chuyển D → B**: cơ chế đã rõ, chỉ thiếu **nội dung bảng HP** — và nó nằm trong
+**một `.cctor`**. `Enemy_Get_Datas` **không có** trong 17 class của `TARGET_CLASSES`.
 
 **Đường cong độ khó (× `copies`, bản **`68ce86a7`**; cột "cũ" là `6109008c`):**
 

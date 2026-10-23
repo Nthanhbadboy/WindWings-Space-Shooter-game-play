@@ -138,15 +138,19 @@ Ba lớp bằng chứng, không lớp nào là "không thấy trong file X":
 Và **`Enemy_Ingame`, `Enemy_Health`, `Enemy_Controller` KHÔNG có asm** — 17 class đã export chỉ có
 **một** class `Enemy_*` là `Enemy_Data_Balance`.
 
-⇒ Đây là blocker **duy nhất** thật sự cần "chỗ khác": **export thêm 1 class** (`Enemy_Ingame` hoặc
-`Enemy_Health`) mới đọc được lệnh ghi HP. Ba khả năng:
+⇒ Đây là blocker **duy nhất** thật sự cần "chỗ khác": **export thêm class** mới đọc được đường gán HP.
 
-1. **Enemy thường chết 1 phát** — HP = 0 là thật, "HP" chỉ có nghĩa với boss.
-2. **HP gán runtime** trong `Enemy_Ingame`/`Enemy_Controller`.
-3. **HP là hằng `.rdata`** — chỉ lộ khi chạy game.
-
-> **Điều kiện lật ngược cho cả ba:** nếu `Enemy_Ingame.asm.txt` có **một** lệnh `str` vào field HP
-> thì đáp án là (2). Chưa export được thì **không** được chọn (1) chỉ vì "dữ liệu đang trống".
+> ### ✅ ĐÃ GIẢI NGAY SAU ĐÓ (23/10) — xem `ENEMY_HP_RUNTIME.md`
+> Không cần đoán nữa: `dump.cs` có **`Enemy_Get_Datas`** với
+> **`private static Dictionary<int, float> AllStartHealthPointEnemies`** và
+> `GetStartHealthPoint(int)` (`RVA 0x157F6A8`), `.cctor` ở **`0x157F7CC`**. Cộng thêm
+> `Enemy_Controller.GetStartHealth/TakeDamage/UpdateHpBar` và `Enemy_Health.armor @0x34`.
+>
+> Và **khả năng (1) đã bị bác bằng dữ liệu**: **108/109** prefab được spawn có `Enemy_Hp_Bar`
+> đang bật (**99,8 %** quân) ⇒ enemy **không** chết 1 phát. Câu *"HP bar chỉ trên boss"* ở bản trước
+> của mục này là **sai** — tôi chưa kiểm nó.
+>
+> **Việc còn lại:** dump **`Enemy_Get_Datas`** (4 method) để lấy **981 giá trị HP**. Một class.
 
 ---
 
@@ -202,5 +206,5 @@ không nêu được ca đó, phép kiểm là **trang trí**.
   (`GameDatas` 73 method?) thì 39 chỉ là một phần — **chưa kiểm**.
 - **Phép thử ở §0 chỉ đúng với 2 mẫu.** Chưa đủ gọi là quy luật cho 17 class; chỉ đủ để **phân biệt
   hai cái đang chặn**.
-- **B3 cần 1 class export** — tôi **không** kết luận "enemy thường chết 1 phát", dù đó là khả năng
-  được dữ liệu ủng hộ nhiều nhất. Chưa đọc được lệnh ghi HP thì **không** được chọn.
+- **B3 đã đổi trạng thái trong cùng ngày** — từ "chưa biết" sang "biết cơ chế, thiếu bảng số"
+  (`ENEMY_HP_RUNTIME.md`). Việc **duy nhất** còn lại: dump `Enemy_Get_Datas`.

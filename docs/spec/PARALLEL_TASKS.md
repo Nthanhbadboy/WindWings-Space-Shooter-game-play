@@ -77,6 +77,8 @@ hợp nhất** chạy sau. Đây là thay đổi duy nhất bắt buộc.
 | **H11** | damage của **19/37** class Director không khai báo field nằm ở **bullet prefab** (`Gun_Attack.bltDamage`); map được **≥15/19** | nếu không map được ⇒ 19 nhóm đòn boss phải **tự thiết kế** (không phải "chưa đọc") | `OPEN_ISSUES` B6 |
 | **H12** | bộ đọc **thứ hai**, viết độc lập, cũng ra **`StartHp` = 2500,0** và **`stepCommon` = 0,18** liền nhau | nếu lệch ⇒ A1 **hạ từ A xuống C** và phải mở lại | `OPEN_ISSUES` A1 |
 | **H13** | HP boss (đã ×`copies`): median **3,31M** (220–239) · **8,60M** (240–259) · **16,23M** (260–279) · **20,6M** (280–281); tỉ lệ **1,85–1,95** /20 wave | nếu ngoài khoảng ⇒ con số **1,89×** trong `BALANCE` phải bỏ nhãn A | `BALANCE` §2 |
+| **H14** | `Enemy_Get_Datas.cctor` dựng **`Dictionary<int,float>` với ≥900 cặp `id→HP`** ⇒ HP enemy **có** ở runtime, không phải "chết 1 phát" | nếu `.cctor` **rỗng** thì HP nạp từ `Enemy_Datas` asset ⇒ chỉ **40/109** prefab được spawn có HP, và **69** prefab còn lại đúng là 1 phát | `B3` |
+| **H15** | enemy dùng **cùng công thức giáp** `100/(100+armor)` như player (`Enemy_Health.armor @0x34`) | nếu là công thức khác ⇒ bảng TTK cho enemy phải làm lại; hiện **0** số đo | `BALANCE` §2 |
 
 ---
 
@@ -100,6 +102,8 @@ hợp nhất** chạy sau. Đây là thay đổi duy nhất bắt buộc.
 | **T11** | H11 | 19 class Director · `prefab_joins.csv.gz` · `Enemy_Datas.csv` | `director_damage_map.csv` | ≥15/19 map sang `Gun_Attack.bltDamage` |
 | **T12** | H12 | `.cctor` `Player_Get_Datas` (97 hằng, 14 float) — **đọc bằng script mới** | `starthp_recheck.json` | khớp tuyệt đối **2500,0** + **0,18** |
 | **T13** | H13 | `docs/apk-analysis/15-enemy-hp.csv` · `datas/waves.json` | `boss_hp_curve.csv` | 4 median khớp ±2%; tỉ lệ trong **1,85–1,95** |
+| **T14** | H14 | `Enemy_Get_Datas` (**chưa có trong `TARGET_CLASSES`**) | `enemy_hp_table.csv` (`enemy_id,hp`) | ≥900 lệnh `Add` trong `.cctor 0x157F7CC` ⇒ **đủ 981 HP** |
+| **T15** | H15 | `Enemy_Controller` (`0x1582938`) + `Enemy_Health.CalculateDamage` (`0x158479C`) | `enemy_damage.txt` | biết thứ tự cổng chặn + enemy dùng `100/(100+armor)` hay công thức khác |
 
 ### Ba task cần nói rõ cách làm (không hiển nhiên)
 
