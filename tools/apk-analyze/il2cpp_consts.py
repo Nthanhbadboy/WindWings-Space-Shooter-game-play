@@ -241,12 +241,27 @@ def constants_in(code_off, size, blob, md, segs=None, base=None, name=""):
     insns = list(cs.disasm(chunk, base if base is not None else code_off))
     adrp_pages: dict = {}
     slot_regs: dict = {}  # reg -> VA slot nạp từ page adrp (chuỗi InitializeArray)
+    reg_token: dict = {}  # reg -> qword tại [slot-target] (token metadata 0x80000xxx?)
+    pending_len = [None, -99]  # (độ dài mảng từ mov w1,#N, chỉ số lệnh)
     debug_rva: list = []  # chỉ đầy khi RVA_DEBUG=1 (chẩn đoán layout blob)
     pending_floats: list = []
     emitted: set = set()
-    for insn in insns:
+    for _idx, insn in enumerate(insns):
         text = f"{insn.address:#x}: {insn.mnemonic:8s} {insn.op_str}"
         lines.append(text)
+        # ---- token InitializeArray: mov w1,#len ... ldr x1,[slot] ... bl
+        if insn.mnemonic in ("mov", "movz") and insn.op_str.startswith("w1, #"):
+            try:
+                pending_len[0] = int(insn.op_str.split("#", 1)[1], 0)
+                pending_len[1] = _idx
+            except ValueError:
+                pass
+        if insn.mnemonic == "bl" and "x1" in reg_token \
+                and pending_len[0] is not None and _idx - pending_len[1] <= 14:
+            consts.append({"kind": "init_array", "len": pending_len[0],
+                           "slot_val": hex(reg_token["x1"]),
+                           "addr": hex(insn.address)})
+            pending_len[0] = None
         # ---- adrp/ldr: hằng số float nằm trong literal pool (.rodata)
         if insn.mnemonic == "adrp" and md == 0xB7:
             parts = [x.strip() for x in insn.op_str.split(",")]
@@ -306,6 +321,9 @@ def constants_in(code_off, size, blob, md, segs=None, base=None, name=""):
                 if base in slot_regs and off == 0 and dst != base:
                     a = slot_value(blob, segs, slot_regs[base])
                     if a:
+                        _raw_tok = va_read(blob, segs, a, 8, ro_only=False)
+                        if _raw_tok and len(_raw_tok) == 8:
+                            reg_token[dst] = struct.unpack("<Q", _raw_tok)[0]
                         if os.environ.get("RVA_DEBUG") and name == "cctor" and len(debug_rva) < 3000:
                             raw_v = va_read(blob, segs, a, 16, ro_only=False)
                             debug_rva.append({"addr": hex(insn.address),
