@@ -183,9 +183,6 @@ def main() -> int:
             name_idx = struct.unpack_from("<i", blob, f_off + fidx * 12)[0]
             index2name[fidx] = f"{cls_name}.{read_str(blob, str_off, name_idx)}"
 
-    for want in ("Map_Get_Datas", "Player_Get_Datas"):
-        hits = [(i, k) for i, k in index2name.items() if k.startswith(want + ".")]
-        print(f"  metadata fields of {want}: {[k for _i, k in hits[:14]]}")
     # metadataUsagePairs: {destinationIndex, encodedSourceIndex}; token trong
     # mã máy là (kind<<29)|index — thử truy ngược token 0x80000955 (2389).
     up_off, up_size = header["metadataUsagePairs"]
@@ -196,20 +193,7 @@ def main() -> int:
         if dest == 2389 or enc == 0x80000955 or (enc & 0x1FFFFFFF) == 2389:
             print(f"  usage hit: dest={dest} enc={enc:#x} kind={enc >> 29} "
                   f"src={enc & 0x1FFFFFFF}")
-    print(f"  global field 2389: {index2name.get(2389)!r}; "
-          f"neighbors: {[index2name.get(i) for i in range(2386, 2393)]}")
     fr_off, fr_size = header["fieldRefs"]
-    if fr_off + 2390 * 8 <= fr_off + fr_size:
-        print(f"  fieldRefs[2389] (i,i): "
-              f"{struct.unpack_from('<ii', blob, fr_off + 2389 * 8)}")
-    fdv_fields = [struct.unpack_from("<iii", blob, fdv_off + 12 * i)[0]
-                  for i in range(fdv_size // 12)]
-    for probe in (2389, 2388, 2390):
-        if probe < len(fdv_fields):
-            print(f"  fdv entry #{probe}: field={index2name.get(fdv_fields[probe])!r}")
-    if 2389 < len(types):
-        print(f"  type #2389: {types[2389][0]!r} (fields start={types[2389][1]} "
-              f"count={types[2389][2]})")
     types_by_name = dump_field_types(dump_path) if os.path.isfile(dump_path) else {}
     print(f"dump.cs field types: {len(types_by_name)}; mapped indices: {len(index2name)}")
 

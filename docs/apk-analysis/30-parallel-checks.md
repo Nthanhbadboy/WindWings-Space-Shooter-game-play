@@ -18,3 +18,21 @@
 - **T1 (map→wave)**: chờ `field-defaults.json` từ CI (script.json của Il2CppDumper).
 - **T13 (đường cong HP boss)**: giả định chưa định nghĩa cách chia bin (282 wave gồm cả campaign HP=0) — cần nhánh spec chốt định nghĩa trước khi kiểm.
 - T5/T7/T8/T9/T11: tầng B/C, cần đọc sâu asm hoặc AssetRipper.
+
+## T1 (map→wave) — tiến triển sau vòng tầng A
+
+- Nguồn dữ liệu đã tìm thấy: `reverse-engineering/il2cpp/field-defaults.json`
+  (10.493 field có giá trị mặc định, parse thẳng từ `global-metadata.dat` v31:
+  header → typeDefinitions 88B/type → fields → fieldDefaultValueData; tổng
+  fieldCount khớp 50.606/50.606). Trong đó 982 blob
+  `<PrivateImplementationDetails>` là các mảng literal của InitializeArray.
+- `.cctor` của Map_Get_Datas dựng 69 List (576 mảng InitializeArray + các
+  mảng immediate): cấu trúc segment đã trích vào `datas/map_table_segments.json`
+  (`tools/verify/map_table.py`). **Segment 35 có 250 mảng** (7 immediate +
+  243 mảng int[3]) — ứng viên `listMapDatas`: mỗi map ~3 wave, giá trị dạng
+  wave id (0–999, boss 7xxx/9xxx). Đã ghép thử vào
+  `datas/map_waves_candidate.json` (`tools/verify/map_waves.py`).
+- **Chưa chốt**: phép nối token (0x80000xxx trong mã máy) → blob cụ thể nằm ở
+  bảng metadata-usage trong binary (MetadataRegistration), chưa parse được.
+  Ghép hiện tại dựa trên thứ tự blob theo field_index (đã kiểm đơn điệu
+  982/982) + mỏ neo immediate — xếp hạng TẠM THỜI, cần xác thực chéo.
