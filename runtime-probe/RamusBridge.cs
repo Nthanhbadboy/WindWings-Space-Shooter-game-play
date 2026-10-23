@@ -971,23 +971,55 @@ namespace Ramus.Bridge
             else if (t == typeof(sbyte)) jw.Name(name).Num((sbyte)v);
             else if (t == typeof(float) || t == typeof(double) || t == typeof(decimal))
                 jw.Name(name).Num(Convert.ToDouble(v, CultureInfo.InvariantCulture));
-            else if (v is Array arr && arr.Rank == 1 && arr.Length <= 64)
+            else if (v is Array arr && arr.Rank == 1 && arr.Length <= 128)
             {
-                jw.Name(name).StartArr();
-                foreach (var item in arr)
+                jw.Name(name);
+                EmitArrayItems(ref jw, arr.Length, i => arr.GetValue(i));
+                written++;
+            }
+            else if (t.Name == "Il2CppStructArray`1" || t.Name == "Il2CppReferenceArray`1"
+                     || t.Name == "Il2CppStringArray" || t.Name == "List`1")
+            {
+                // Il2Cpp*Array / interop List are not System.Array; read via
+                // Length/Count + indexer reflection.
+                try
                 {
-                    if (item == null) jw.Null();
-                    else if (item is string s2) jw.Str(trunc(s2));
-                    else if (item is bool b2) jw.Bool(b2);
-                    else if (item is IConvertible c2 && (item is int || item is long || item is float || item is double || item is short || item is byte))
-                        jw.Num(c2.ToDouble(CultureInfo.InvariantCulture));
-                    else jw.Str(trunc(item.ToString()));
+                    var lp = t.GetProperty("Length") ?? t.GetProperty("Count");
+                    var len = lp == null ? 0 : Convert.ToInt32(lp.GetValue(v), CultureInfo.InvariantCulture);
+                    var indexer = t.GetProperty("Item");
+                    if (lp != null && indexer != null && len > 0 && len <= 600)
+                    {
+                        int cap = Math.Min(len, 128);
+                        var lpv = v;
+                        jw.Name(name);
+                        EmitArrayItems(ref jw, cap, i => indexer.GetValue(lpv, new object[] { i }));
+                        jw.Name(name + "_count").Num(len);
+                    }
+                    else jw.Name(name).Str("(" + t.Name + ",len=" + len + ")");
                 }
-                jw.EndArr();
+                catch { jw.Name(name).Str("(" + t.Name + ")"); }
                 written++;
             }
             else jw.Name(name).Str("(" + t.Name + ")");
             written++;
+        }
+
+        static void EmitArrayItems(ref Jw jw, int count, Func<int, object> get)
+        {
+            jw.StartArr();
+            for (int i = 0; i < count; i++)
+            {
+                object item;
+                try { item = get(i); }
+                catch { item = null; }
+                if (item == null) jw.Null();
+                else if (item is string s2) jw.Str(trunc(s2));
+                else if (item is bool b2) jw.Bool(b2);
+                else if (item is IConvertible c2 && (item is int || item is long || item is float || item is double || item is short || item is byte || item is sbyte || item is uint || item is ulong || item is ushort))
+                    jw.Num(c2.ToDouble(CultureInfo.InvariantCulture));
+                else jw.Str(trunc(item.ToString()));
+            }
+            jw.EndArr();
         }
 
         static string trunc(string s) { return s != null && s.Length > 400 ? s.Substring(0, 400) : s; }
