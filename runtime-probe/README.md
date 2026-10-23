@@ -62,15 +62,24 @@ Kết luận: **không có tool nào "ngon hơn" để thay thế cả hai nửa
 
 ## 3. Build
 
-### 3.1 Kiểm nhanh không cần Unity (đã chạy trong CI)
+### 3.1 Kiểm nhanh không cần Unity (đã chạy trong CI — compile **và** self-test runtime)
 
 ```bash
+# 1. stub UnityEngine (assembly identity 0.0.0.0)
+dotnet build runtime-probe/BuildCheck/UnityStubs.csproj -c Release -p:OutDir=.ci/refs/unity-stub/
+
+# 2. type-check bridge
 dotnet build runtime-probe/RamusBridge.csproj -c Release \
-  -p:Loader=Core -p:StubUnity=true -p:TargetFramework=netstandard2.1
+  -p:Loader=Core -p:StubUnity=true -p:UnityStubDir=.ci/refs/unity-stub -p:Tfm=netstandard2.1
+
+# 3. self-test: boot server thật rồi gọi từng endpoint
+dotnet run --project runtime-probe/SelfTest/RamusBridge.SelfTest.csproj \
+  -p:UnityStubDir=.ci/refs/unity-stub
 ```
 
-`BuildCheck/UnityStubs.cs` thay cho `UnityEngine` ⇒ chứng minh bridge type-check đúng.
-Chạy đủ 4 target (kèm DLL loader thật) bằng:
+`BuildCheck/UnityStubs.cs` thay cho `UnityEngine` ⇒ chứng minh bridge type-check đúng;
+self-test chứng minh HTTP/JSON/hàng đợi main-thread chạy được.
+Chạy đủ 5 target (kèm DLL loader thật + self-test) bằng:
 
 ```bash
 ./.github/scripts/build-bridge.sh --out dist --refs .ci/refs
@@ -412,14 +421,41 @@ BepInEx 6: `BasePlugin` (`Runtimes/Unity/BepInEx.Unity.IL2CPP/BasePlugin.cs`) c�
 `.github/scripts/build-bridge.sh` compile **4 target** với DLL loader tải thật từ GitHub
 Release, và **job đỏ nếu bất kỳ target nào lỗi** (exit code = số target fail).
 
-**Lần chạy `39919818061` — kết quả thật, comment treo trên PR #12:**
+**Lần chạy `39921281530` — kết quả thật, comment treo trên PR #12:**
 
 ```
 [build] PASS  core (netstandard2.1, Unity stubs)      33.280 B
 [build] PASS  BepInEx 5 (netstandard2.1)              33.792 B
 [build] PASS  BepInEx 6 IL2CPP (net6.0)               34.304 B
 [build] PASS  MelonLoader (net6.0)                    34.816 B
+[build] PASS  self-test (HTTP + JSON + main-thread queue)
 ```
+
+#### Self-test: chạy thật, không chỉ compile
+
+`runtime-probe/SelfTest` compile **đúng file `RamusBridge.cs` sẽ ship** với stub
+`UnityEngine`, boot server ở `127.0.0.1:18080` rồi gọi bằng `HttpClient` thật:
+
+| Nhóm | Kiểm |
+|---|---|
+| Boot | server listen, `RAMUS_BRIDGE_PORT` có hiệu lực |
+| 8 endpoint GET | `/health` `/state` `/scene` `/hierarchy` `/find` `/statics` `/logs` `/metrics` — 200, JSON hợp lệ, < 8 s |
+| `/health` shape | `ok:true`, có `scene`, `unity`, `Content-Type: application/json` |
+| `/screenshot` | route đúng (503 khi stub không chụp được) |
+| route lạ | 404 sạch, không rớt kết nối |
+| `POST /timescale` | round-trip `?v=`, trả `ok:true` |
+| đồng thời | 20 request `/health` song song → 20/20 200 (hàng đợi main-thread) |
+| shutdown | `Bridge.Shutdown()` dừng server, cổng được giải phóng |
+
+> Nhận định: self-test tìm ra 4 lỗi **500 thật** ở `/state /scene /hierarchy /find` mà
+> 4 target compile hoàn toàn không thấy. Nguyên nhân nằm ở **stub**, không ở bridge:
+> `QualitySettings.names` và `Scene.GetRootGameObjects()` trả `null`, trong khi Unity
+> trả mảng rỗng. Đã sửa stub theo đúng hành vi Unity. Đây là ví dụ cụ thể cho việc
+> "compile xanh" ≠ "chạy được".
+
+Self-test **không** chứng minh: reflection trên IL2CPP đọc đúng field của game,
+`/screenshot` chụp được frame thật, hay `/statics` trả 3 mảng `pct`. Những thứ đó
+vẫn cần game chạy với plugin đã nạp.
 
 sha256 (đọc từ comment CI, không phải tự tính lại):
 

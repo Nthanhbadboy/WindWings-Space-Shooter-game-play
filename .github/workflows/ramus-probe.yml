@@ -141,6 +141,13 @@ jobs:
             echo
             (cd dist 2>/dev/null && sha256sum */RamusBridge.dll 2>/dev/null) || true
             echo '```'
+            if grep -q "=== selftest:" ci.log 2>/dev/null; then
+              echo
+              echo "### self-test (bridge booted on 127.0.0.1 in the runner)"
+              echo '```'
+              sed -n '/== boot/,/=== selftest:/p' ci.log | grep -E "PASS|FAIL|selftest:" | head -60 || true
+              echo '```'
+            fi
             if [ "$failed" != "0" ]; then
               echo
               echo "### tail"
