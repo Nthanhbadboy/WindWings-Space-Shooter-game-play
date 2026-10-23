@@ -10,9 +10,11 @@ IL2CPP, metadata v31) để làm tài liệu tham chiếu cho bản clone.
 | Xem **ảnh/asset** để design | [`docs/assets/INDEX.md`](docs/assets/INDEX.md) — 42 contact sheet, 2.197 asset |
 | Dữ liệu dùng được ngay (JSON) | [`datas/`](datas/README.md) — tàu, drone, boss, item, HP, IAP, i18n |
 | Spec thiết kế | [`docs/spec/`](docs/spec/) — GAMEPLAY / UI / ASSETS / BALANCE |
-| Số liệu thô bóc từ APK | [`docs/apk-analysis/`](docs/apk-analysis/) — 20 báo cáo + CSV từng class |
+| Số liệu thô bóc từ APK | [`docs/apk-analysis/`](docs/apk-analysis/) — 23 báo cáo + CSV từng class |
 | Hằng số trong code máy | [`docs/apk-analysis/19-il2cpp-constants.md`](docs/apk-analysis/19-il2cpp-constants.md) |
 | Layout UI dạng số | [`docs/apk-analysis/20-ui-layout.md`](docs/apk-analysis/20-ui-layout.md) |
+| **Spine**: rig, animation, keyframe, event | [`docs/apk-analysis/22-spine-rigs.md`](docs/apk-analysis/22-spine-rigs.md) + [`23-spine-anim.md`](docs/apk-analysis/23-spine-anim.md) |
+| Âm thanh: id → file, thời lượng | [`docs/apk-analysis/21-audio-map.md`](docs/apk-analysis/21-audio-map.md) |
 | Code C# đã dump | [`reverse-engineering/`](reverse-engineering/) — `dump.cs.gz`, Spine, ScriptableObject |
 | **Dữ liệu thô (không cắt)** | [`reverse-engineering/raw/`](reverse-engineering/raw/) — typetree JSONL gz, UI layout gz, hằng số IL2CPP + asm |
 | Độ tin cậy từng kết luận | [`docs/conclusions.md`](docs/conclusions.md) — mức A/B/C và cách kiểm lại |

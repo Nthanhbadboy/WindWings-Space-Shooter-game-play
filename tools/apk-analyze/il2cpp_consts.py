@@ -121,21 +121,33 @@ def elf_segments(path):
                 vaddr = struct.unpack_from("<Q", ph, 0x10)[0]
                 off = struct.unpack_from("<Q", ph, 0x08)[0]
                 filesz = struct.unpack_from("<Q", ph, 0x20)[0]
-                segs.append((vaddr, off, filesz))
+                flags = struct.unpack_from("<I", ph, 0x04)[0]      # PF_X=1 PF_W=2 PF_R=4
+                segs.append((vaddr, off, filesz, flags))
     except OSError:
         pass
     return segs
 
 
-def va_read(blob, segs, va, n=4):
-    """Đọc n byte tại địa chỉ ảo `va` (theo PT_LOAD); fallback coi va là offset."""
-    for vaddr, off, filesz in segs:
+PF_W = 0x2
+
+
+def va_read(blob, segs, va, n=4, ro_only=False):
+    """Đọc n byte tại địa chỉ ảo `va` (theo PT_LOAD); fallback coi va là offset.
+
+    ``ro_only``: chỉ đọc trong segment **không ghi được**. Cần thiết vì
+    `adrp x8,#0x2adb000; ldr w9,[x8,#0xe0]` là bảng con trỏ metadata
+    (`.data.rel.ro`) — đọc 4 byte ở đó ra rác (288733) chứ không phải hằng số.
+    Bảng float/int thật nằm trong `.rodata` (segment read-only).
+    """
+    for vaddr, off, filesz, flags in segs:
+        if ro_only and flags & PF_W:
+            continue
         if vaddr <= va < vaddr + filesz:
             pos = off + (va - vaddr)
             if pos + n <= len(blob):
                 return blob[pos:pos + n]
             return None
-    if 0 <= va <= len(blob) - n:
+    if not ro_only and 0 <= va <= len(blob) - n:
         return blob[va:va + n]
     return None
 
@@ -202,7 +214,7 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
             dst = insn.op_str.split(",")[0].strip()
             if m and m.group(1) in adrp_pages and dst.startswith("w"):
                 va_i = adrp_pages[m.group(1)] + (int(m.group(2), 0) if m.group(2) else 0)
-                raw_i = va_read(blob, segs, va_i, 4)
+                raw_i = va_read(blob, segs, va_i, 4, ro_only=True)
                 if raw_i and len(raw_i) == 4:
                     iv = struct.unpack("<i", raw_i)[0]
                     if 1 <= iv < 100_000_000:
@@ -210,7 +222,7 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
                                        "va": hex(va_i), "addr": hex(insn.address)})
             if m and m.group(1) in adrp_pages and dst.startswith(("s", "d")):
                 va = adrp_pages[m.group(1)] + (int(m.group(2), 0) if m.group(2) else 0)
-                raw = va_read(blob, segs, va, 4)
+                raw = va_read(blob, segs, va, 4, ro_only=True)
                 if raw and len(raw) == 4:
                     val = struct.unpack("<f", raw)[0]
                     if val == val and 1e-6 < abs(val) < 1e6:
@@ -535,9 +547,10 @@ def main() -> int:
                  for meth, val, va, via in info.get("pool_floats", [])]
     if pool_rows:
         lines += ["### Float đọc từ literal pool (`.rodata`) — số thật, không phải suy luận", "",
-                  "`adrp xN, #page` + `ldr sM, [xN, #off]` trỏ vào bảng float trong `.rodata`;",
-                  "script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte. Đây là hằng số **có thật trong file**,",
-                  "nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.", "",
+                  "`adrp xN, #page` + `ldr sM/wM, [xN, #off]` trỏ vào bảng float/int trong `.rodata`;",
+                  "script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong segment read-only**",
+                  "(bảng con trỏ metadata nằm ở segment ghi được — đọc vào đó ra rác như `288733`).",
+                  "Đây là số **có thật trong file**, nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.", "",
                   "| class | method | giá trị | kiểu | VA |", "|---|---|---:|---|---|"]
         seen = set()
         for cls, meth, val, va, via in pool_rows:
