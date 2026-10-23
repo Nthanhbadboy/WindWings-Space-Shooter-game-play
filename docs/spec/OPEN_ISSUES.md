@@ -84,10 +84,15 @@
 - **Thân `GetListWaves` (A):** đọc singleton → nếu field `@0x0 == 1` lấy `mapIndex` từ `@0x4` (chế độ test), rồi `listMapDatas[clamp(mapIndex, count−1)]`.
 - **Vì sao thiếu:** `dump.cs` liệt kê **8 method** cho `Map_Get_Datas` và **không có `.cctor`** — trong khi class có **12 static field** (`listMapDatas`, `listMapBranchDatas`, `listIdBosses`…). Dữ liệu nạp ở đâu đó **không export**.
 - **Cách chốt:** dump `Map_Get_Datas..cctor`, hoặc dump runtime `listMapDatas` (12 map × N wave).
-- **Trạng thái `68ce86a7` (đo lại 23/10):** `.cctor` **đã có** — **100.896 B · 3.484 hằng** — nhưng
-  **chưa bóc thành mảng**. Chuỗi RVA **vẫn đứt**: **1.192/1.194** hằng `debug_rva` giải ra `a = 0x0`
-  và `a_bytes` bắt đầu bằng `7f454c46` (`\x7fELF`) ⇒ đang đọc **header file**, không đọc vùng dữ liệu.
-  Xem `VERIFY_ROUND1` §3.
+- **Trạng thái `68ce86a7` (đo lại 23/10):** `.cctor` **đã có** — **100.896 B · 3.444 hằng `int`**
+  và chỉ **40 `debug_rva`** (1,1 %) ⇒ **không** phải vấn đề relocation. Con số `1.192/1.194` slot
+  đọc ra `\x7fELF` **chỉ thuộc `Device_Get_Data`** (39 `debug_rva` / 82 hằng = 47,6 %) — xem
+  `WHERE_TO_LOOK.md` §1.
+- **Đã bóc thử:** **117 cặp** `(A,B)` từ khuôn 8 lệnh (`.cctor` tạo **716 record**, 118 cái cùng khuôn).
+  **Giả thuyết "117 cặp = map→wave" BỊ BÁC** bằng phép kiểm thứ tự: wave boss trong `.cctor` là
+  `9010, 7001, 7003, 7002, 7004…` — lệch thứ tự, có lặp (`7005`×2), chỉ phủ **17/45**.
+  Xem `WHERE_TO_LOOK.md` §2.1.
+- **Còn lại:** dạng `w1=3` (**320 record**, lớn nhất) **chưa đọc** — nơi khả năng cao chứa `listMapDatas`.
 - **Nếu không chốt:** tự chia 282 wave thành màn (hiện `ENCOUNTERS` đã có phân bố wave theo 20-wave bin).
 
 > **ĐÍNH CHÍNH:** chênh **299 stage vs 282 wave** từng bị tôi ghi như "lệch 18". **Không phải lỗi.**

@@ -222,6 +222,32 @@ tôi đã ghi ở §6 (mục 2) là "chưa kiểm". Nay **đã kiểm**.
 
 ---
 
+## 3.5 Quy tắc **phép kiểm phải có ca có thể thất bại**
+
+Một phép kiểm chỉ có giá trị nếu **nêu được một kết quả đầu vào làm nó FAIL**.
+
+Ca thật, 23/10: tôi trích 117 cặp `(A,B)` từ `.cctor` của `Map_Get_Datas` và kiểm
+*"B có phải tên wave không"* → **117/117 hợp lệ**. Nghe rất mạnh. Nhưng:
+
+```
+Wave_0000 … Wave_0212 đều tồn tại  ⇒  213/213 giá trị 0..212 "là wave"
+```
+
+⇒ với mọi `B ≤ 212` phép kiểm **luôn đúng bất kể B nghĩa là gì**. **Phép kiểm rỗng.**
+
+Phép kiểm **có lực** thay vào đó là **kiểm thứ tự**: các wave boss phải xuất hiện theo đúng thứ tự
+`7001, 7002, 7003…`. Kết quả: `9010, 7001, 7003, 7002, 7004, 7005, 7006, 7005…` — **lệch, có lặp,
+chỉ phủ 17/45**. ⇒ giả thuyết **bị bác**, và nhờ vậy tôi **không** ghi bảng đó vào SPEC.
+
+| Loại phép kiểm | Có giá trị? | Ví dụ |
+|---|---|---|
+| "giá trị nằm trong miền hợp lệ" khi miền hợp lệ phủ gần hết miền thực tế | ❌ **rỗng** | 117/117 "là wave" |
+| "thứ tự khớp nguồn độc lập" | ✅ | thứ tự wave boss |
+| "tổng khớp một con số đã biết" | ✅ | `Σ len × copies = 45.659` |
+| "cùng kết quả bằng bộ đọc thứ hai" | ✅ | `StartHp` 2500 hai nguồn |
+
+---
+
 ## 4. Quy tắc bắt buộc — định nghĩa **"được phép phủ định"**
 
 Một câu dạng *"không có / không tồn tại / không bao giờ"* **chỉ được viết** khi **cả 3** điều đúng:
