@@ -350,9 +350,47 @@ Thành phần 4 wave nhỏ nhất (raw):
 ⇒ Đây **không phải wave nghỉ** mà là **wave 1-spawner**: `0114` là **mini-boss** (`Boss_2`),
 3 wave còn lại là 1 đường bay / 1 điểm spawn. Sau khi bỏ bản trùng, chúng chỉ còn **1 spawner
 duy nhất** — dùng làm **nhịp nghỉ** giữa 2 wave lớn.
+### 3.3 Đường cong HP theo wave — và **231/236 wave campaign có HP = 0**
+
+Dựng bằng `prefab_joins` (map `Enemy_Datas.StartHealthPoint` về prefab gốc) × `waves.json` (quân).
+Bản `cd0372d`.
+
+| Nhóm | Wave | Tổng quân | **Tổng HP serialize** |
+|---|---:|---:|---:|
+| **Campaign** (`Wave_0000`–`0235`) | **236** | **45.076** | **2.440.000** |
+| **Boss** (`Wave_7xxx`/`9xxx`) | **45** | **90** | **574.155.800** |
+
+| Chỉ số | Giá trị |
+|---|---:|
+| Wave campaign có HP > 0 | **1 / 236** |
+| Wave boss có HP > 0 | **45 / 45** |
+| HP/wave campaign (median) | **0** |
+| **HP mỗi boss instance** (trung bình) | **≈ 6,38 triệu** |
+| **HP mỗi quân campaign** (trung bình) | **≈ 54** |
+
+**Wave campaign duy nhất có HP:** `Wave_0136` — 164 quân, **2.440.000** HP.
+
+**Vì sao 231 wave còn lại bằng 0:** HP **không** lưu trong prefab enemy thường.
+`datas/enemy_hp.json` ghi rõ: *"runtime HP is scaled by `Enemy_Data_Balance` and stage"*.
+⇒ **Toàn bộ độ khó của campaign do công thức runtime quyết định, không do dữ liệu thiết kế.**
+
+> **Nhận định (mức A):** đây là con số mạnh nhất trong cả hồ sơ để chứng minh **"số liệu chết"**:
+> **231 / 236 wave** có HP = **chính xác 0** trong prefab. Không phải thiếu dữ liệu — dữ liệu
+> **đúng là 0** vì HP được nhân lúc chạy.
+>
+> Hệ quả cho clone: **không thể** dựng lại độ khó bằng cách chép HP prefab. Phải chọn **công thức**
+> (HP × hệ số stage) và **calibrate bằng cảm giác**, không bằng số âm bản.
+>
+> **Điều kiện lật ngược:** nếu `Enemy_Data_Balance` (`GetSurvivalScore` có hằng số 1,1 · 0,2 · 0,01 —
+> xem `19-il2cpp-constants.md`) chứa hệ số theo stage thì dựng lại được. Hiện mới có **hằng số**,
+> chưa có **thứ tự nhân**.
+
+**Tỷ lệ đáng chú ý:** 45 wave boss chứa **574 triệu HP**, gấp **235 lần** toàn bộ 236 wave campaign
+(2,44 triệu). Nghĩa là **trận boss là nơi tiêu HP**, campaign là nơi tiêu **thời gian di chuyển**.
+
+---
 
 ## 4. Map & parallax
-
 ### 4.1 Map
 
 | Chỉ số | Giá trị | Nguồn |

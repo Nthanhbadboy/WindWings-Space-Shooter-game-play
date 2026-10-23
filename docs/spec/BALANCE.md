@@ -30,6 +30,32 @@
 
 ---
 
+## 0.5 ⚠ HP enemy thường **không tồn tại trong dữ liệu** — 231/236 wave = 0
+
+Đo trên bản `cd0372d` bằng `prefab_joins` × `waves.json`.
+
+| | Số |
+|---|---:|
+| Wave campaign | 236 |
+| **Wave campaign có HP > 0** | **1** (`Wave_0136`, 2,44 triệu) |
+| Tổng HP 236 wave campaign | **2.440.000** |
+| Tổng HP 45 wave boss | **574.155.800** |
+| HP trung bình **mỗi boss instance** | **≈ 6,38 triệu** |
+| HP trung bình **mỗi quân campaign** | **≈ 54** |
+
+**Vì sao:** `Enemy_Datas.StartHealthPoint` = **0 ở 514/981** dòng, và `datas/enemy_hp.json` ghi
+*"runtime HP is scaled by `Enemy_Data_Balance` and stage"*.
+
+⚠ **Hai điều phải nói kèm mọi bảng HP trong file này:**
+
+1. **HP boss** (206.167.000 cho 39 prefab) là **HP một bản mỗi prefab**, không phải HP một trận.
+   Một trận boss có **2 boss × copies** ⇒ tổng 90 instance = **574 triệu**.
+2. **HP enemy thường** trong bảng là **hằng số 0**. Mọi con số "HP enemy median" phải đọc là
+   *"giá trị serialize, thực tế do công thức"*.
+
+> **Nhận định (mức A):** không thể suy độ khó campaign từ HP prefab. Phải chọn công thức riêng
+> và calibrate bằng số quân + nhịp spawn (đã có: `1,0 s/con`, `rate` 1,0 ở 7.741/11.093 spawner).
+
 ## 1. Phương pháp & nguồn
 
 | Bảng | File | Trạng thái |
