@@ -138,7 +138,7 @@ else
     i=0
     for f in $SPLITS; do i=$((i+1)); cp "$f" "$WORK/merge/split$i.apk"; done
 
-    if java -jar "$APKEDITOR_JAR" m -i "$WORK/merge" -o "$WORK/universal.apk" -f >> "$WORK/merge.log" 2>&1 \
+    if java -Xmx4g -jar "$APKEDITOR_JAR" m -i "$WORK/merge" -o "$WORK/universal.apk" -f >> "$WORK/merge.log" 2>&1 \
          && is_apk "$WORK/universal.apk"; then
       cp "$WORK/universal.apk" "$OUT/base.apk"
       log "merged OK → $OUT/base.apk ($(stat -c%s "$OUT/base.apk") B)"
@@ -193,6 +193,9 @@ ABIS=$(for f in "$OUT/base.apk" $SPLITS; do
 HAS_X86=false
 case ",$ABIS," in *,x86_64,*|*,x86,*) HAS_X86=true ;; esac
 
+# Does the merged APK still advertise itself as a split app?
+SPLIT_MARKERS=$(unzip -p "$OUT/base.apk" AndroidManifest.xml 2>/dev/null \
+                | strings 2>/dev/null | grep -iE 'split|config\.' | head -5 | paste -sd'|' - || true)
 BASE_MB=$(( $(stat -c%s "$OUT/base.apk") / 1000000 ))
 {
   echo
@@ -200,6 +203,11 @@ BASE_MB=$(( $(stat -c%s "$OUT/base.apk") / 1000000 ))
   echo "base:        $OUT/base.apk (${BASE_MB} MB)"
   echo "abis:        ${ABIS:-none}   (x86_64 present: $HAS_X86)"
   echo "install:     $([ -z "$SPLITS" ] && echo 'single APK' || echo 'base + splits (adb install-multiple)')"
+  echo "split marks: ${SPLIT_MARKERS:-none}"
+  if [ -f "$WORK/merge.log" ]; then
+    echo "merge log (tail):"
+    tail -6 "$WORK/merge.log" | sed 's/^/  /'
+  fi
   echo "splits:      ${SPLITS:-none}"
   echo "package:     ${PKG:-unknown (manifest.json absent)}"
 } >> "$INVENTORY"

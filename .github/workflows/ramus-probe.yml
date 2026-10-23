@@ -199,6 +199,7 @@ jobs:
             echo "RAMUS_APK=$apk"
             echo "APK_SPLITS=$splits"
           } >> "$GITHUB_ENV"
+          cp .ci/apk/apk-inventory.txt "$PROBE_OUT/apk-inventory.txt" 2>/dev/null || true
           echo "RAMUS_APK=$apk   splits: ${splits:-none}"
 
       - name: Check APK against the trial limit
