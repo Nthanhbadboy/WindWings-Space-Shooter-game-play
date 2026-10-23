@@ -301,6 +301,15 @@ def export_native_types(env) -> None:
                                    if isinstance(v, (int, float, str, bool))}
                         if scalars:
                             summary[key] = scalars
+                        # MinMaxCurve: lấy scalar/min/max một cấp sâu hơn nữa,
+                        # đây mới là số thiết kế FX (tốc độ đầu, kích thước đầu...)
+                        for field, sub in val.items():
+                            if not isinstance(sub, dict):
+                                continue
+                            for sk in ("scalar", "minScalar", "maxScalar"):
+                                sv = sub.get(sk)
+                                if isinstance(sv, (int, float)):
+                                    summary[f"{key}.{field}.{sk}"] = sv
                     elif isinstance(val, list):
                         summary[f"{key}__count"] = len(val)
                 line = json.dumps(summary, ensure_ascii=False, default=str)
