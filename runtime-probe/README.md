@@ -394,7 +394,9 @@ Không có `adb` (trial) thì bỏ 3 dòng `adb`, giữ `--mode trial`; script s
 > Đó là **giả thuyết**, không phải kết luận. Bằng chứng thật chỉ có:
 > `abis=arm64-v8a` (từ inventory) + `ramus.dev/docs/quickstart` ghi emulator **x86_64**.
 > Log trích ra lại toàn là cảnh báo `app_process` của chính emulator, **không** có
-> `UnsatisfiedLinkError` hay `dlopen failed` nào của game — nên chưa đủ để kết luận.
+> `UnsatisfiedLinkError` hay `dlopen failed` nào của game — nhưng xem §7.6: transport
+> trial **chỉ trả stream `system`**, nên việc thiếu dòng đó không chứng minh là nó
+> không xảy ra.
 > Báo cáo CI giờ ghi đúng mức độ này và liệt kê các khả năng, thay vì khẳng định.
 
 Ba khả năng còn phân biệt được, và cách phân biệt:
@@ -514,6 +516,39 @@ sha256 từng DLL được in trong comment CI cùng kích thước, để đố
 Gate dừng **trước khi tạo phiên Ramus** nếu APK không có `RamusBridge.dll`, để không đốt
 15 phút credential cho một kết luận đã biết trước. Trạng thái hiện tại của repo đúng là
 trạng thái này: `bridge: no` ⇒ `probe` báo *skipped* kèm lý do, build vẫn xanh.
+
+### 7.6 Probe thật trên Ramus trial — kết quả và cái nó **không** trả lời được
+
+Nguyên văn: [`results/2026-10-23-trial-abi-smoke.md`](results/2026-10-23-trial-abi-smoke.md)
+(run `39925095796`, session `c646657b-…`, trial 15 phút, không adb).
+
+| Bước | Kết quả |
+|---|---|
+| Tải + mở XAPK + merge + ký lại | OK (117 MB, `arm64-v8a` only) |
+| Tạo phiên trial | OK |
+| Cài APK | OK |
+| `ramus app launch` | **ok** — `{"launched":"com.Wind.wings.Space.Shooter","gen":4}` |
+| logcat 500 dòng | **tất cả** thuộc stream `system` |
+| `logcat --filter <package>` | **0 dòng** (quét ngoài cửa sổ 500 dòng) |
+| `logcat --filter Unity` | **0 dòng** |
+| `logcat --filter AndroidRuntime` | 10 dòng — **toàn bộ là uiautomator**, không có app nào |
+| `snapshot --raw` | 1.466 B, **không** có `package="…"`, không có `text="…"` |
+| bridge HTTP / `RAMUSB` | không có (APK không chứa bridge — đúng thiết kế) |
+
+**Kết luận có bằng chứng:** app **không** xuất hiện trong bất kỳ log hay cây UI nào của
+phiên này; lệnh `app launch` trả `ok` nhưng hệ thống không ghi nhận activity nào của
+package. Cài đặt thành công, chạy thì không.
+
+**Điều KHÔNG thể kết luận:** nguyên nhân. Toàn bộ log trả về là stream `system`;
+Unity, ActivityManager và crash của app ghi vào `main`/`crash`. Vì vậy "không có
+`UnsatisfiedLinkError`" **không** chứng minh ABI khớp — nó chỉ chứng minh transport này
+chưa từng đọc buffer nơi lỗi đó được ghi. ABI vẫn là **giả thuyết mức B**.
+
+Ba cách để biến giả thuyết thành dữ kiện, xếp theo chi phí:
+
+1. `RAMUS_API_KEY` + `adb logcat` (có `main`) — cùng một APK, cùng một thiết bị, khác transport.
+2. Thiết bị/emulator **arm64** thật.
+3. Build Unity **x86_64** chỉ để test.
 
 ## 8. Giới hạn đã biết
 

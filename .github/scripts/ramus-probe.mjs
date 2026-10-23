@@ -188,6 +188,23 @@ function readLogcatStates(limit = 500) {
     try { writeFileSync(path.join(OUT, 'logcat.txt'), lines.join('\n')); } catch { /* best effort */ }
   }
   result.logcat.raw = lines.filter((l) => l.includes('RAMUSB')).slice(-120);
+
+  // Which buffers did the transport actually return? Unity, ActivityManager and
+  // app crashes log to `main`/`crash`; the trial only ever returned `system` in
+  // run 39925095796. Saying "no Unity line" when `main` was never read would be
+  // a claim the data cannot support.
+  try {
+    const d = JSON.parse(text);
+    const arr = Array.isArray(d) ? d : Array.isArray(d.lines) ? d.lines : [];
+    const streams = {};
+    for (const l of arr) {
+      const k = (l && (l.stream || l.buffer)) || 'unknown';
+      streams[k] = (streams[k] || 0) + 1;
+    }
+    result.logcat.streams = streams;
+  } catch {
+    result.logcat.streams = { text: lines.length };
+  }
   // Keep a bounded copy of everything, so the report can show what the device
   // actually logged instead of only what we managed to parse.
   result.logcat.lines = lines.slice(-500);
@@ -439,6 +456,8 @@ async function main() {
   signals.logcat = {
     lines: all.length,
     bytes: rawLog.length,
+    // Which buffers the transport returned (`system` only on a trial run so far).
+    streams: result.logcat.streams || null,
     topTags: [...tags.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12),
     packageLines: all.filter((l) => pkgRe.test(l)).slice(-6).map((l) => l.slice(0, 200)),
     head: all.slice(0, 6).map((l) => l.slice(0, 200)),
@@ -653,6 +672,20 @@ function renderReport(r) {
       lines.push('</details>');
       lines.push('');
     }
+    const streams = (sig.logcat && sig.logcat.streams) || null;
+    if (streams) {
+      const parts = Object.entries(streams).map(([k, v]) => `${k}=${v}`).join(', ');
+      lines.push(`streams returned: ${parts}`);
+      lines.push('');
+      if (!streams.main && !streams.crash) {
+        lines.push('> **Transport limitation, not a result.** Every line came from the `system`');
+        lines.push('> buffer; Unity, ActivityManager and crash reports go to `main`/`crash`.');
+        lines.push('> With no `main` lines, "no Unity" / "no package" says nothing about the game —');
+        lines.push('> it only says this transport never looked at the buffer where the game logs.');
+        lines.push('');
+      }
+    }
+
     if (!sig.package && !sig.unity) {
       lines.push('> **Not proven:** no Unity or package line appeared in the last 500 logcat lines.');
       lines.push('> That is consistent with the game never starting, but it does not identify the');
