@@ -327,7 +327,11 @@ async function main() {
   // Did the process even start? Decides "bridge missing" vs "game crashed".
   const rawLog = result.logcat.rawAll || '';
   const pkgRe = new RegExp((process.env.RAMUS_PACKAGE || 'com.wind').replace(/\./g, '\\.'), 'i');
-  const CRASH_RE = /FATAL EXCEPTION|AndroidRuntime|UnsatisfiedLinkError|NO_MATCHING_ABIS|dlopen failed|SIGSEGV|is 32-bit instead of 64-bit/i;
+  // Only real app-level failures: Ramus's own screenshot tooling logs through
+  // AndroidRuntime too ("Using default boot image", uiautomator), which used to
+  // show up as if the game had crashed.
+  const NOISE_RE = /uiautomator|Using default boot image|lock profiling|com\.android\.commands|Shutting down VM/i;
+  const CRASH_RE = /FATAL EXCEPTION|UnsatisfiedLinkError|NO_MATCHING_ABIS|dlopen failed|SIGSEGV|is 32-bit instead of 64-bit|Process: [a-z]/i;
   const signals = {
     unity: /Unity/i.test(rawLog),
     il2cpp: /il2cpp/i.test(rawLog),
@@ -336,7 +340,7 @@ async function main() {
     fatal: /FATAL EXCEPTION|AndroidRuntime/i.test(rawLog),
     excerpts: rawLog
       .split('\n')
-      .filter((l) => CRASH_RE.test(l))
+      .filter((l) => CRASH_RE.test(l) && !NOISE_RE.test(l))
       .slice(-4)
       .map((l) => l.trim().slice(0, 220)),
   };
