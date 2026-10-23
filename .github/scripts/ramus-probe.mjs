@@ -368,6 +368,52 @@ function snapshotUi(tag) {
   return r.ok;
 }
 
+// ── system dialogs ─────────────────────────────────────────────────────────
+
+/**
+ * Android shows a one-time "Viewing full screen / Got it" confirmation when an
+ * app enters immersive mode. It sits in front of the game, keeps the UI dump
+ * pointing at com.android.systemui, and holds the frame perfectly still — which
+ * is exactly what three identical screenshots looked like.
+ *
+ * Returns a short description when a dialog was dismissed.
+ */
+function dismissSystemDialog(tag) {
+  let snap = null;
+  try {
+    snap = JSON.parse(readFileSync(path.join(OUT, `ui-${tag}.json`), 'utf8'));
+  } catch {
+    return null;
+  }
+
+  // Walk the tree for the button; the CLI's schema is not part of its docs, so
+  // look for any object that carries both a matching text and a ref/bounds.
+  const wanted = /got it|ok|allow|continue/i;
+  let hit = null;
+  const walk = (node) => {
+    if (!node || typeof node !== 'object' || hit) return;
+    const text = String(node.text || node.label || node.contentDesc || '');
+    const ref = node.ref || node.id || node.elementRef || node['resource-id'];
+    if (wanted.test(text) && ref) hit = { text, ref, gen: node.gen };
+    for (const v of Object.values(node)) {
+      if (Array.isArray(v)) v.forEach(walk);
+      else if (v && typeof v === 'object') walk(v);
+    }
+  };
+  walk(snap);
+  if (!hit) return null;
+
+  const args = ['tap', String(hit.ref)];
+  if (hit.gen != null) args.push('--gen', String(hit.gen));
+  const r = ramus(args, { timeout: 60000 });
+  if (!r.ok) return `found "${hit.text}" but tap failed`;
+
+  // Give the window manager a moment to swap the foreground window.
+  const started = Date.now();
+  while (Date.now() - started < 3000) { /* busy wait keeps this synchronous */ }
+  return `dismissed "${hit.text}" via ref ${hit.ref}`;
+}
+
 // ── main ───────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -469,6 +515,15 @@ async function main() {
   if (!opt.offline) {
     snapshotUi('before');
     if (opt.screenshots > 1) screenshot(1);
+
+    // The immersive-mode confirmation blocks the view of the game itself.
+    const dismissed = dismissSystemDialog('before');
+    if (dismissed) {
+      note(`system dialog: ${dismissed}`);
+      result.dialog = dismissed;
+      snapshotUi('after-dialog');
+      screenshot(2);
+    }
   }
 
   // The plain dump is the last 500 lines of everything, which on a fresh boot is
@@ -508,6 +563,9 @@ async function main() {
     // Proof that the system actually started the activity, independent of logcat noise.
     foreground: new RegExp(`Displayed (${pkgRe.source})|Start proc [0-9]+:(${pkgRe.source})`, 'i').test(rawLog),
     activityManager: /ActivityTaskManager|ActivityManager/i.test(rawLog),
+    // A full-screen confirmation is only raised for an app that is on screen.
+    immersiveDialog: /Viewing full screen|To exit, swipe down/i.test(
+      JSON.stringify(result.ui || {}) + rawLog),
     excerpts: rawLog
       .split('\n')
       .filter((l) => CRASH_RE.test(l) && !NOISE_RE.test(l))
@@ -664,6 +722,7 @@ function renderReport(r) {
     lines.push(`| native load failure | ${yn(sig.nativeFailure)} |`);
     lines.push(`| fatal exception | ${yn(sig.fatal)} |`);
     lines.push(`| activity started (Displayed/Start proc) | ${yn(sig.foreground)} |`);
+    lines.push(`| immersive full-screen dialog (app was in front) | ${yn(sig.immersiveDialog)} |`);
     lines.push('');
     if (Array.isArray(sig.excerpts) && sig.excerpts.length) {
       lines.push('```');
@@ -680,6 +739,15 @@ function renderReport(r) {
         lines.push(out.slice(0, 400));
         lines.push('```');
       }
+      lines.push('');
+    }
+
+    if (r.dialog) {
+      lines.push(`> **System dialog:** ${r.dialog}`);
+      lines.push('>');
+      lines.push('> An immersive-mode confirmation ("Viewing full screen") is shown by Android');
+      lines.push('> when an app goes full-screen. Its presence means the app reached the point');
+      lines.push('> of requesting immersive mode — it was in the foreground.');
       lines.push('');
     }
 
@@ -715,9 +783,14 @@ function renderReport(r) {
       lines.push('| --- | --- |');
       for (const [tag, v] of Object.entries(r.ui)) {
         const pkgs = Array.isArray(v.packages) && v.packages.length ? v.packages.join(', ') : '—';
+        const onlySystem = Array.isArray(v.packages) && v.packages.length > 0
+          && v.packages.every((x) => /systemui/i.test(x));
         lines.push(`| ${tag} | ${v.bytes} B · packages: \`${pkgs}\` · mentions app: ${yn(v.mentionsPackage)} · looks like launcher: ${yn(v.looksLikeLauncher)} |`);
         if (Array.isArray(v.texts) && v.texts.length) {
           lines.push(`| | text on screen: ${v.texts.map((t) => `\`${String(t).slice(0, 40)}\``).join(' · ')} |`);
+        }
+        if (onlySystem) {
+          lines.push('| | *only SystemUI — a dialog or overlay is covering the app* |');
         }
       }
       lines.push('');
