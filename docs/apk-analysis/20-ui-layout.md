@@ -4,41 +4,41 @@
 > ghi đè (layout group, safe area, code set anchor), nên chỉ dùng làm khung tham
 > chiếu. Dữ liệu thô: `reverse-engineering/raw/ui/*.json.gz`.
 
-- màn hình dump được: **743**
-- tổng node: **107022**
+- màn hình dump được: **731**
+- tổng node: **106407**
 - dung lượng thô (gz): **2.0 MB**
 
-- bỏ qua: duplicate (class, root) (50)
+- bỏ qua: duplicate (class, root) (62)
 
 ## Component gặp nhiều nhất
 
 | class | số node |
 |---|---:|
-| `Transform` | 93006 |
-| `SpriteRenderer` | 50419 |
-| `MeshRenderer` | 15505 |
-| `RectTransform` | 14016 |
-| `TextMeshPro` | 13950 |
-| `MeshFilter` | 12607 |
-| `BoxCollider2D` | 7529 |
-| `Animator` | 5500 |
-| `ButtonEvents` | 5194 |
-| `Button_Sound` | 5046 |
-| `ParticleSystem` | 3925 |
-| `ParticleSystemRenderer` | 3925 |
-| `LanguageTextMeshPro` | 3620 |
-| `ChangeSorting` | 2239 |
-| `BgObjectScaler` | 1643 |
-| `Popup_Notices` | 1271 |
-| `Box_Rewards` | 1245 |
-| `TMP_SubMesh` | 1040 |
-| `UIObjectAnchors` | 754 |
-| `Shop_Cell` | 692 |
-| `FixUIShop` | 624 |
-| `Rigidbody2D` | 385 |
-| `ObjectPool` | 383 |
-| `Enemy_Datas` | 328 |
-| `Enemy_Health` | 328 |
+| `Transform` | 92179 |
+| `SpriteRenderer` | 49755 |
+| `MeshRenderer` | 15794 |
+| `RectTransform` | 14228 |
+| `TextMeshPro` | 14150 |
+| `MeshFilter` | 12868 |
+| `BoxCollider2D` | 7523 |
+| `Animator` | 5482 |
+| `ButtonEvents` | 5181 |
+| `Button_Sound` | 5050 |
+| `ParticleSystem` | 3839 |
+| `ParticleSystemRenderer` | 3839 |
+| `LanguageTextMeshPro` | 3641 |
+| `ChangeSorting` | 2245 |
+| `BgObjectScaler` | 1641 |
+| `Popup_Notices` | 1267 |
+| `Box_Rewards` | 1237 |
+| `TMP_SubMesh` | 1113 |
+| `UIObjectAnchors` | 743 |
+| `Shop_Cell` | 684 |
+| `FixUIShop` | 632 |
+| `Rigidbody2D` | 395 |
+| `ObjectPool` | 359 |
+| `Enemy_Datas` | 311 |
+| `Enemy_Health` | 311 |
 
 - node không đọc được component: **0**
 
@@ -46,46 +46,46 @@
 
 | class | node | text | button | KB |
 |---|---:|---:|---:|---:|
-| `Board_Maps` | 6000 | 427 | 342 | 60 |
-| `Board_Shop` | 3272 | 534 | 156 | 45 |
-| `Board_FightBoss` | 2599 | 120 | 46 | 41 |
-| `Board_SelectBoss` | 2565 | 106 | 15 | 35 |
-| `Board_PVP` | 2438 | 373 | 164 | 37 |
-| `Board_Arena` | 2059 | 270 | 125 | 33 |
-| `Board_Players` | 1808 | 177 | 73 | 29 |
-| `Tab_Boss` | 1681 | 4 | 0 | 26 |
-| `Board_BattlePass` | 1666 | 226 | 63 | 18 |
-| `Board_Ranks` | 1513 | 226 | 88 | 23 |
-| `Board_Survival` | 1377 | 201 | 84 | 22 |
-| `Board_Ranks` | 1319 | 203 | 90 | 22 |
-| `Board_Survival` | 1317 | 193 | 87 | 21 |
-| `Board_TechLab` | 1107 | 142 | 66 | 17 |
-| `Board_Begin` | 1046 | 140 | 51 | 17 |
-| `Board_Drones` | 1011 | 133 | 59 | 17 |
-| `Board_BattlePassPro` | 917 | 117 | 42 | 14 |
-| `Board_WinnerBenefits` | 914 | 140 | 55 | 14 |
-| `Popup_WatchVideos` | 910 | 168 | 48 | 13 |
-| `Board_Combo` | 908 | 88 | 58 | 13 |
-| `Popup_WatchVideos` | 881 | 152 | 47 | 13 |
-| `Board_Reborn` | 878 | 145 | 59 | 15 |
-| `Board_Challange` | 836 | 143 | 51 | 13 |
-| `Board_MiniCombo` | 811 | 88 | 44 | 12 |
-| `Board_GiftLogin` | 801 | 130 | 27 | 12 |
-| `Board_Stage` | 784 | 133 | 48 | 12 |
-| `Board_Vip` | 766 | 89 | 26 | 11 |
-| `Board_UserProfile` | 761 | 60 | 50 | 11 |
-| `Board_Endgame` | 724 | 116 | 50 | 13 |
-| `Board_Setting` | 707 | 99 | 65 | 11 |
-| `Board_QuestRewards` | 670 | 89 | 26 | 10 |
-| `Popup_ShipSalePack` | 608 | 19 | 7 | 9 |
-| `Board_ShopEnergy` | 545 | 103 | 34 | 9 |
-| `Board_EventSeasonPass` | 541 | 94 | 28 | 9 |
-| `Popup_HolidayGift` | 538 | 77 | 11 | 8 |
-| `Tab_Boss` | 534 | 9 | 1 | 7 |
-| `Popup_HolidayGift` | 517 | 66 | 11 | 7 |
-| `Board_EventSeasonPass` | 456 | 74 | 22 | 7 |
-| `Popup_WeekSales` | 432 | 57 | 14 | 6 |
-| `Board_Begin` | 375 | 33 | 15 | 5 |
+| `Board_Maps` | 6000 | 455 | 330 | 61 |
+| `Board_Shop` | 3793 | 672 | 173 | 51 |
+| `Board_PVP` | 2656 | 355 | 151 | 42 |
+| `Board_FightBoss` | 2463 | 118 | 40 | 39 |
+| `Board_SelectBoss` | 2330 | 105 | 16 | 31 |
+| `Board_Arena` | 2059 | 272 | 124 | 32 |
+| `Tab_Boss` | 1869 | 5 | 0 | 29 |
+| `Board_BattlePass` | 1845 | 274 | 64 | 19 |
+| `Board_Players` | 1696 | 200 | 73 | 28 |
+| `Board_Ranks` | 1513 | 218 | 84 | 23 |
+| `Board_TechLab` | 1341 | 155 | 66 | 19 |
+| `Board_Ranks` | 1333 | 219 | 89 | 22 |
+| `Board_Survival` | 1196 | 191 | 84 | 20 |
+| `Board_Begin` | 1105 | 155 | 53 | 17 |
+| `Board_Survival` | 1084 | 171 | 78 | 18 |
+| `Board_BattlePassPro` | 989 | 125 | 42 | 15 |
+| `Popup_WatchVideos` | 917 | 153 | 49 | 13 |
+| `Board_MiniCombo` | 892 | 89 | 50 | 13 |
+| `Board_Endgame` | 890 | 130 | 53 | 16 |
+| `Board_Drones` | 880 | 87 | 51 | 15 |
+| `Board_WinnerBenefits` | 871 | 132 | 55 | 13 |
+| `Board_GiftLogin` | 870 | 134 | 29 | 13 |
+| `Board_Combo` | 848 | 100 | 55 | 12 |
+| `Board_Reborn` | 824 | 136 | 55 | 14 |
+| `Popup_WatchVideos` | 806 | 148 | 45 | 12 |
+| `Board_Stage` | 796 | 128 | 54 | 13 |
+| `Board_Setting` | 769 | 100 | 62 | 12 |
+| `Board_UserProfile` | 696 | 57 | 50 | 10 |
+| `Board_Vip` | 691 | 76 | 26 | 10 |
+| `Popup_ShipSalePack` | 675 | 17 | 7 | 9 |
+| `Board_Challange` | 656 | 127 | 48 | 11 |
+| `Board_ShopEnergy` | 601 | 101 | 33 | 9 |
+| `Board_QuestRewards` | 579 | 81 | 26 | 9 |
+| `Tab_Boss` | 552 | 8 | 1 | 7 |
+| `Board_EventSeasonPass` | 545 | 83 | 25 | 9 |
+| `Popup_HolidayGift` | 543 | 63 | 11 | 7 |
+| `Popup_HolidayGift` | 540 | 78 | 10 | 8 |
+| `Board_EventSeasonPass` | 512 | 70 | 22 | 7 |
+| `Popup_WeekSales` | 450 | 57 | 13 | 6 |
+| `Popup_WatchVideosOld` | 362 | 54 | 13 | 5 |
 
 ## Cấu trúc mỗi node
 

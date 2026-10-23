@@ -123,36 +123,36 @@
 
 | class | object | bytes (chưa nén) |
 |---|---:|---:|
-| `Call_Point` | 23757 | 6,830,709 |
-| `Call_Data` | 23757 | 17,413,220 |
-| `PointToPoint_Spawner` | 13292 | 3,489,595 |
-| `PinMap_Spawner` | 3165 | 821,056 |
-| `Rocket_Spawner` | 2019 | 634,985 |
-| `PathCreator` | 1714 | 3,945,194 |
-| `Path_Spawner` | 1688 | 442,678 |
+| `Call_Point` | 23757 | 6,830,915 |
+| `Call_Data` | 23757 | 17,413,716 |
+| `PointToPoint_Spawner` | 13292 | 3,490,199 |
+| `PinMap_Spawner` | 3165 | 821,206 |
+| `Rocket_Spawner` | 2019 | 635,080 |
+| `PathCreator` | 1714 | 3,945,355 |
+| `Path_Spawner` | 1688 | 442,508 |
 | `Spawner` | 1370 | 348,937 |
-| `Waypoints_Spawner` | 1151 | 297,245 |
-| `Enemy_EfxDestroyed` | 1134 | 513,363 |
-| `Box_Rewards` | 1065 | 632,212 |
-| `Enemy_Sub` | 981 | 319,495 |
-| `Enemy_Controller` | 981 | 677,148 |
-| `Enemy_Display` | 981 | 416,079 |
-| `Enemy_Movement` | 981 | 509,116 |
-| `Enemy_Physics` | 981 | 267,571 |
-| `Enemy_Health` | 981 | 236,708 |
-| `Enemy_Datas` | 981 | 374,992 |
-| `Enemy_Destroy` | 971 | 299,666 |
-| `Enemy_Appear` | 914 | 206,091 |
-| `Enemy_Hp_Bar` | 909 | 313,088 |
-| `AirFree_Spawner` | 885 | 231,778 |
-| `MeteoriteGenerator` | 852 | 425,672 |
-| `Item_Movement` | 702 | 186,138 |
-| `Sub_Item` | 702 | 239,237 |
-| `Enemy_Burned` | 695 | 210,479 |
+| `Waypoints_Spawner` | 1151 | 297,265 |
+| `Enemy_EfxDestroyed` | 1134 | 512,887 |
+| `Box_Rewards` | 1065 | 632,235 |
+| `Enemy_Sub` | 981 | 319,201 |
+| `Enemy_Controller` | 981 | 676,887 |
+| `Enemy_Display` | 981 | 415,773 |
+| `Enemy_Movement` | 981 | 509,155 |
+| `Enemy_Physics` | 981 | 267,498 |
+| `Enemy_Health` | 981 | 237,002 |
+| `Enemy_Datas` | 981 | 374,790 |
+| `Enemy_Destroy` | 971 | 299,417 |
+| `Enemy_Appear` | 914 | 205,087 |
+| `Enemy_Hp_Bar` | 909 | 312,340 |
+| `AirFree_Spawner` | 885 | 231,788 |
+| `MeteoriteGenerator` | 852 | 425,645 |
+| `Item_Movement` | 702 | 186,150 |
+| `Sub_Item` | 702 | 239,335 |
+| `Enemy_Burned` | 695 | 210,176 |
 | `Wave` | 686 | 216,575 |
-| `Gun_Attack` | 458 | 324,521 |
+| `Gun_Attack` | 458 | 324,337 |
 | `MapController` | 396 | 343,597 |
-| `Enemy_LookAtPlayer` | 391 | 231,894 |
+| `Enemy_LookAtPlayer` | 391 | 231,177 |
 
 ## MonoBehaviour class inventory (top 40)
 
@@ -229,7 +229,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "maskObject.m_PathID": 0,
  "onDone.m_PersistentCalls.m_Calls": "[0]",
  "refresh": false,
- "_gameobject": "Border_Info/All_Abilities/Grid"
+ "_gameobject": "All_Abilities/Grid"
 }
 ```
 ```json
@@ -324,7 +324,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "indexCell": 0,
  "fc.m_FileID": 0,
  "fc.m_PathID": 0,
- "_gameobject": "Special_Packs/Btn_Cell (9)"
+ "_gameobject": "Board_BeginPlay/Board_RebornIAP/Parent/Group 1/Special_Packs/Btn_Cell (9)"
 }
 ```
 ```json
@@ -355,7 +355,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "indexCell": 0,
  "fc.m_FileID": 0,
  "fc.m_PathID": 0,
- "_gameobject": "Board_BeginPlay/Board_RebornIAP/Parent/Group 1/Special_Packs/Btn_Cell (7)"
+ "_gameobject": "Board_RebornIAP/Parent/Group 1/Special_Packs/Btn_Cell (7)"
 }
 ```
 
@@ -384,7 +384,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "textBonus.m_PathID": 0,
  "id": 0,
  "number": 0,
- "_gameobject": "Parent_Rewards/Box_Gift (1)"
+ "_gameobject": "EndgameLoader/Pack_Spec (0)/Parent/Parent_Rewards/Box_Gift (1)"
 }
 ```
 ```json
@@ -410,7 +410,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "textBonus.m_PathID": 0,
  "id": 0,
  "number": 0,
- "_gameobject": "Pack_Spec (0)/Parent/Parent_Rewards/Box_Gift (7)"
+ "_gameobject": "EndgameLoader/Pack_Spec (0)/Parent/Parent_Rewards/Box_Gift (7)"
 }
 ```
 
@@ -1232,7 +1232,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "rdnVolumeSfx.y": 0.800000011920929,
  "poisonRate": 0.0,
  "idPoison": 91025,
- "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+ "_gameobject": "Gun7/Gun6"
 }
 ```
 ```json
@@ -1253,7 +1253,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "rdnVolumeSfx.y": 0.800000011920929,
  "poisonRate": 0.0,
  "idPoison": 91025,
- "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+ "_gameobject": "Gun7/Gun6"
 }
 ```
 
@@ -1456,7 +1456,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "hitableRenderers[0].m_PathID": 509460,
  "appearOff": true,
  "dieOff": true,
- "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
+ "_gameobject": "Body/Than/Gun1/Gun4"
 }
 ```
 
@@ -1552,7 +1552,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 17716740096,
  "m_Name": "",
- "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+ "_gameobject": "Enemy_Ingame/Body/Than/Gun7/Gun6"
 }
 ```
 ```json
@@ -1578,7 +1578,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_PathID": 7834959872,
  "m_Name": "",
  "noDamage": false,
- "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
+ "_gameobject": "Enemy_Ingame/Body/Than/Gun7/Gun6"
 }
 ```
 ```json
@@ -1647,7 +1647,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "hpProgressBarRenderer.m_PathID": 509470,
  "width": 1.0,
  "height": 0.11999999731779099,
- "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6/Enemy_UI/HP_Bar"
+ "_gameobject": "Body/Than/Gun7/Gun6/Enemy_UI/HP_Bar"
 }
 ```
 ```json
@@ -1662,7 +1662,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "hpProgressBarRenderer.m_PathID": 509945,
  "width": 1.0,
  "height": 0.11999999731779099,
- "_gameobject": "Body/Than/Gun6/Gun5/Enemy_UI/HP_Bar"
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun6/Gun5/Enemy_UI/HP_Bar"
 }
 ```
 
@@ -1859,7 +1859,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "offObject.m_FileID": 0,
  "offObject.m_PathID": 5094,
  "offObjects": "[0]",
- "_gameobject": "Hand4/Gun2.2"
+ "_gameobject": "Boss-39007/Enemy_Ingame/Body/Body/HandR/Hand2/Hand3/Hand4/Gun2.2"
 }
 ```
 ```json
@@ -2197,7 +2197,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "parentDestroy.m_PathID": 628340,
  "turretAttackScript.m_FileID": 0,
  "turretAttackScript.m_PathID": 638489,
- "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (5)/Boss/Boss-39006"
+ "_gameobject": "ObjectMove/Parent_View/Parent/Tab (5)/Boss/Boss-39006"
 }
 ```
 
@@ -2293,7 +2293,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "dmgFirst": 0.0,
  "isTrigger": true,
  "isFirstTrigger": false,
- "_gameobject": "Tayxoay2/Tayxoay1/Cucxoay"
+ "_gameobject": "Tayxoay3/Tayxoay2/Tayxoay1/Cucxoay"
 }
 ```
 
@@ -2626,7 +2626,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "maxX": -3.0,
  "minY": 12.0,
  "maxY": 12.0,
- "_gameobject": "Map-0046/Parent_Static/Met (1)"
+ "_gameobject": "Parent_Static/Met (1)"
 }
 ```
 
@@ -3019,7 +3019,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "playerAttack.m_FileID": 0,
  "playerAttack.m_PathID": 616561,
  "targetLayer.m_Mask": 512,
- "_gameobject": "Board_Players/Parent/Panel_Info/Player_Demo/Player_Types/Player_10019/AllDrones/Drone (10)"
+ "_gameobject": "Player_Types/Player_10019/AllDrones/Drone (10)"
 }
 ```
 
@@ -3052,7 +3052,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "fixedTime": -1.0,
  "timeMin": 0.5,
  "timeMax": 6.800000190734863,
- "_gameobject": "Board_FightBoss/Parent/Tab (5)/Boss/Parent_Bosses/Boss 6/Boss 6/FxDie/Fx (29)"
+ "_gameobject": "Parent/Tab (5)/Boss/Parent_Bosses/Boss 6/Boss 6/FxDie/Fx (29)"
 }
 ```
 
@@ -3322,7 +3322,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 11911823360,
  "m_Name": "",
- "_gameobject": "W2-30041 (23)/CD-31015"
+ "_gameobject": "Wave_0005/GameObject/W2-30041 (23)/CD-31015"
 }
 ```
 ```json
@@ -3333,7 +3333,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 11911823360,
  "m_Name": "",
- "_gameobject": "W2-30057/CD-31013"
+ "_gameobject": "Wave_0030/Circlex2/W2-30057/CD-31013"
 }
 ```
 
@@ -3647,7 +3647,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "bltIdAttack9[2]": 80156,
  "dmgBltIdAttack9": 1500.0,
  "targetLayer.m_Mask": 256,
- "_gameobject": "Parent/Tab (11)/Boss/Boss-39014"
+ "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (11)/Boss/Boss-39014"
 }
 ```
 
@@ -3732,7 +3732,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "attack5Point.m_FileID": 0,
  "attack5Point.m_PathID": 265257,
  "targetLayer.m_Mask": 256,
- "_gameobject": "Parent/Tab (10)/Boss/Boss-39013"
+ "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (10)/Boss/Boss-39013"
 }
 ```
 ```json
@@ -3837,7 +3837,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "hitColor.g": 0.729411780834198,
  "hitColor.b": 0.729411780834198,
  "hitColor.a": 1.0,
- "_gameobject": "Body/Boss 1/Slot_Guns1/Gun_Wing1.2/Gun_Wing1.2"
+ "_gameobject": "Boss-39001/Enemy_Ingame/Body/Boss 1/Slot_Guns1/Gun_Wing1.2/Gun_Wing1.2"
 }
 ```
 ```json
@@ -3857,7 +3857,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "hitColor.g": 0.729411780834198,
  "hitColor.b": 0.729411780834198,
  "hitColor.a": 1.0,
- "_gameobject": "Gun_Wing1.1/Gun_Wing1.1"
+ "_gameobject": "Boss-39001/Enemy_Ingame/Body/Boss 1/Slot_Guns1/Gun_Wing1.1/Gun_Wing1.1"
 }
 ```
 
@@ -4460,7 +4460,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "blackHoldPoint.m_FileID": 0,
  "blackHoldPoint.m_PathID": 464199,
  "damageBulletTransform": 450.0,
- "_gameobject": "Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (16)/Boss/Boss-39018"
+ "_gameobject": "Parent/Tab (16)/Boss/Boss-39018"
 }
 ```
 
@@ -4970,7 +4970,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "parentPoints.m_FileID": 0,
  "parentPoints.m_PathID": 318914,
  "targetLayer.m_Mask": 256,
- "_gameobject": "Parent/Tab (7)/Boss/Boss-39009"
+ "_gameobject": "ScrollView/ObjectMove/Parent_View/Parent/Tab (7)/Boss/Boss-39009"
 }
 ```
 ```json
@@ -5556,7 +5556,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "delaySword": 0.20000000298023224,
  "shotRate": 0.5,
  "swordDamage": 2800.0,
- "_gameobject": "Parent/Tab (4)/Boss/Boss-39007"
+ "_gameobject": "Tab (4)/Boss/Boss-39007"
 }
 ```
 ```json
@@ -6464,7 +6464,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "attackFollowerScripts": "[0]",
  "startShootEvent.m_PersistentCalls.m_Calls": "[1]",
  "stopShootEvent.m_PersistentCalls.m_Calls": "[1]",
- "_gameobject": "Body/Boss 1/Skeleton/SkeletonUtility-SkeletonRoot/GUN 1/SungTrai2 [Follower] 3"
+ "_gameobject": "Boss-39003/Enemy_Ingame/Body/Boss 1/Skeleton/SkeletonUtility-SkeletonRoot/GUN 1/SungTrai2 [Follower] 3"
 }
 ```
 
@@ -6478,6 +6478,6 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 10989076480,
  "m_Name": "",
- "_gameobject": "Enemy_Ingame/Parent_Rotate/Type4"
+ "_gameobject": "Parent_Rotate/Type4"
 }
 ```
