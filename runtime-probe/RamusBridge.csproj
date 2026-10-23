@@ -1,14 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    Ramus Runtime Bridge — one project, three loaders.
+    Ramus Runtime Bridge — one project, four build targets.
 
+      dotnet build -p:Loader=Core       -p:StubUnity=true           # syntax/type check only
       dotnet build -p:Loader=BepInEx6   -p:BepInExRoot="<game>/BepInEx"
       dotnet build -p:Loader=BepInEx5   -p:UnityManagedDir="<game>_Data/Managed"
       dotnet build -p:Loader=MelonLoader -p:MelonDir="<MelonLoader>"
 
-    The core (RamusBridge.cs) has zero third-party dependencies; it only needs
-    the Unity assemblies the loader already ships with.
+    CI compiles all four against real loader assemblies:
+
+      -p:Loader=BepInEx6 -p:RefsDir=.ci/refs/bep6 -p:StubUnity=true -p:TargetFramework=net6.0
+
+    `StubUnity=true` swaps the Unity assemblies for BuildCheck/UnityStubs.cs so the
+    bridge can be type-checked on a machine without Unity. It is never shipped.
   -->
 
   <PropertyGroup>
@@ -21,18 +26,32 @@
     <Deterministic>true</Deterministic>
     <DebugType>portable</DebugType>
     <Loader Condition="'$(Loader)' == ''">BepInEx6</Loader>
+    <StubUnity Condition="'$(StubUnity)' == ''">false</StubUnity>
     <InteropDir Condition="'$(InteropDir)' == ''">$(BepInExRoot)/interop</InteropDir>
     <MelonInteropDir Condition="'$(MelonInteropDir)' == ''">$(MelonDir)/Il2CppInterop</MelonInteropDir>
-    <NoWarn>$(NoWarn);CS0649;CS0169</NoWarn>
+    <NoWarn>$(NoWarn);CS0649;CS0169;MSB3277</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="RamusBridge.cs" />
+    <!-- Loader=Core compiles the bridge alone (no adapter). -->
     <Compile Include="Adapters/$(Loader)/*.cs" />
   </ItemGroup>
 
-  <!-- BepInEx 6 (IL2CPP): CoreCLR host on Android (FusionCore / BepInEx.Android). -->
-  <ItemGroup Condition="'$(Loader)' == 'BepInEx6'">
+  <!-- Compile-time stand-in for the Unity assemblies. -->
+  <ItemGroup Condition="'$(StubUnity)' == 'true'">
+    <Compile Include="BuildCheck/UnityStubs.cs" />
+  </ItemGroup>
+
+  <!-- ── CI mode: one flat folder of reference DLLs (avoids duplicate identities) ── -->
+  <ItemGroup Condition="'$(RefsDir)' != ''">
+    <Reference Include="$(RefsDir)/*.dll">
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- ── BepInEx 6 (IL2CPP) ── -->
+  <ItemGroup Condition="'$(Loader)' == 'BepInEx6' and '$(RefsDir)' == ''">
     <Reference Include="BepInEx.Core">
       <HintPath>$(BepInExRoot)/core/BepInEx.Core.dll</HintPath>
       <Private>false</Private>
@@ -55,8 +74,8 @@
     </Reference>
   </ItemGroup>
 
-  <!-- BepInEx 5 (Mono) / desktop players. -->
-  <ItemGroup Condition="'$(Loader)' == 'BepInEx5'">
+  <!-- ── BepInEx 5 (Mono) / desktop players ── -->
+  <ItemGroup Condition="'$(Loader)' == 'BepInEx5' and '$(RefsDir)' == ''">
     <Reference Include="BepInEx">
       <HintPath>$(BepInExRoot)/core/BepInEx.dll</HintPath>
       <Private>false</Private>
@@ -65,35 +84,19 @@
       <HintPath>$(BepInExRoot)/core/0Harmony.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>$(UnityManagedDir)/UnityEngine.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(UnityManagedDir)/UnityEngine.CoreModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>$(UnityManagedDir)/UnityEngine.ImageConversionModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.ScreenCaptureModule">
-      <HintPath>$(UnityManagedDir)/UnityEngine.ScreenCaptureModule.dll</HintPath>
+    <Reference Include="$(UnityManagedDir)/UnityEngine*.dll">
       <Private>false</Private>
     </Reference>
   </ItemGroup>
 
-  <!-- MelonLoader / LemonLoader (Android IL2CPP). -->
-  <ItemGroup Condition="'$(Loader)' == 'MelonLoader'">
+  <!-- ── MelonLoader / LemonLoader ── -->
+  <ItemGroup Condition="'$(Loader)' == 'MelonLoader' and '$(RefsDir)' == ''">
     <Reference Include="MelonLoader">
       <HintPath>$(MelonDir)/MelonLoader.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Il2CppInterop.Runtime">
-      <HintPath>$(MelonDir)/Il2CppInterop.Runtime.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="$(MelonInteropDir)/*.dll">
+      <HintPath>$(MelonInteropDir)/Il2CppInterop.Runtime.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

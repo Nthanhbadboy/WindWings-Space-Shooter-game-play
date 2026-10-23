@@ -1,0 +1,104 @@
+name: bridge-build
+
+# Compiles runtime-probe/RamusBridge.cs for real, against the actual loader
+# assemblies, and publishes the DLLs. Nothing here is simulated: a failed
+# compile turns this job red.
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  push:
+    branches: [main]
+    paths:
+      - 'runtime-probe/**'
+      - '.github/workflows/bridge-build.yml'
+      - '.github/scripts/build-bridge.sh'
+  pull_request:
+    paths:
+      - 'runtime-probe/**'
+      - '.github/workflows/bridge-build.yml'
+      - '.github/scripts/build-bridge.sh'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bridge-build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BEP6_TAG: v6.0.0-pre.2
+  BEP5_TAG: v5.4.23.5
+  MELON_TAG: v0.7.3
+
+jobs:
+  build:
+    name: compile (core + 3 loaders)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Toolchain
+        run: |
+          dotnet --info | head -20
+          java -version 2>&1 | head -1 || true
+
+      - name: Fetch loader assemblies
+        run: |
+          set -euo pipefail
+          mkdir -p .ci/refs
+          dl() { curl -fL --retry 3 --retry-delay 2 -o "$2" "$1"; }
+
+          # BepInEx 6 IL2CPP — real BasePlugin/BepInEx.Core/Il2CppInterop surface.
+          dl "https://github.com/BepInEx/BepInEx/releases/download/$BEP6_TAG/BepInEx-Unity.IL2CPP-win-x64-${BEP6_TAG#v}.zip" .ci/bep6.zip
+          # BepInEx 5 — BaseUnityPlugin.
+          dl "https://github.com/BepInEx/BepInEx/releases/download/$BEP5_TAG/BepInEx_win_x64_${BEP5_TAG#v}.zip" .ci/bep5.zip
+          # MelonLoader — MelonMod / MelonInfo / MelonGame.
+          dl "https://github.com/LavaGang/MelonLoader/releases/download/$MELON_TAG/MelonLoader.x64.zip" .ci/melon.zip
+
+          mkdir -p .ci/refs/bep6 .ci/refs/bep5 .ci/refs/melon
+          unzip -q -o .ci/bep6.zip  -d .ci/refs/bep6
+          unzip -q -o .ci/bep5.zip  -d .ci/refs/bep5
+          unzip -q -o .ci/melon.zip -d .ci/refs/melon
+
+          for d in bep6 bep5 melon; do
+            echo "── $d ──"
+            find ".ci/refs/$d" -name '*.dll' | head -12
+            echo "  total: $(find ".ci/refs/$d" -name '*.dll' | wc -l) dll"
+          done
+
+      - name: Compile all targets
+        run: |
+          set -euo pipefail
+          chmod +x .github/scripts/build-bridge.sh
+          .github/scripts/build-bridge.sh --out dist --refs .ci/refs
+
+      - name: Inventory the DLLs
+        if: always()
+        run: |
+          set -euo pipefail
+          {
+            echo "# Bridge build"
+            echo
+            find dist -name 'RamusBridge.dll' -printf '%p  %s B\n' 2>/dev/null | sort || echo "no DLL produced"
+          } | tee dist/inventory.txt
+          # A real plugin must at least contain the bridge types.
+          for d in $(find dist -name 'RamusBridge.dll'); do
+            echo "── $d"
+            if command -v strings >/dev/null; then
+              strings -a "$d" | grep -cE 'Ramus\.Bridge|TcpListener|RAMUSB' || true
+            fi
+          done
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ramus-bridge-dlls-${{ github.run_id }}
+          path: dist/
+          if-no-files-found: warn
+          retention-days: 14

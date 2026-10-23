@@ -1,5 +1,13 @@
 // MelonLoader / LemonLoader adapter.
-// Build with: dotnet build -p:Loader=MelonLoader -p:MelonDir=<MelonLoader folder>
+//
+// Version note (verified against LavaGang/MelonLoader v0.7.3 source):
+//   MelonBase no longer declares OnApplicationStart — it was removed after 0.6.x.
+//   OnInitializeMelon / OnUpdate / OnApplicationQuit exist in BOTH 0.6 and 0.7,
+//   so those are the only hooks this adapter touches. The host GameObject is
+//   created lazily from OnUpdate, which is the first guaranteed "Unity is alive"
+//   callback in either version.
+//
+// Build: dotnet build -p:Loader=MelonLoader -p:MelonDir=<MelonLoader folder>
 using MelonLoader;
 using Ramus.Bridge;
 
@@ -10,14 +18,20 @@ namespace Ramus.Bridge.Adapters
 {
     public sealed class MelonBridge : MelonMod
     {
+        private bool _hostCreated;
+
         public override void OnInitializeMelon()
         {
+            // Pure .NET work only: the TCP listener does not touch the Unity API.
             Bridge.Init(msg => LoggerInstance.Msg(msg));
         }
 
-        public override void OnApplicationStart()
+        public override void OnUpdate()
         {
-            // Unity is alive from here on, so the host GameObject can be created.
+            if (_hostCreated) return;
+            _hostCreated = true;
+
+            // First OnUpdate means Unity is running, so a GameObject can be made.
             BridgeHost.Create();
             LoggerInstance.Msg("Ramus bridge ready on port " + Bridge.Config.Port);
         }

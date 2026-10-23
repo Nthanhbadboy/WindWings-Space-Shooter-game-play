@@ -19,7 +19,7 @@
  */
 
 import { spawnSync } from 'node:child_process';
-import { appendFileSync, mkdirSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 // ── cli ────────────────────────────────────────────────────────────────────
@@ -333,11 +333,15 @@ async function main() {
   const NOISE_RE = /uiautomator|Using default boot image|lock profiling|com\.android\.commands|Shutting down VM|app_process|ClassLoaderContext/i;
   const CRASH_RE = /FATAL EXCEPTION|UnsatisfiedLinkError|NO_MATCHING_ABIS|dlopen failed|SIGSEGV|is 32-bit instead of 64-bit/i;
   const signals = {
-    unity: /Unity/i.test(rawLog),
+    // "UnityPlayerActivity" is not a Unity log — require an actual Unity tag/version.
+    unity: /[VDIWE]\/Unity\s*:|UnityMain|Unity\s*\d{4}\.\d|il2cpp_init|libunity\.so/i.test(rawLog),
     il2cpp: /il2cpp/i.test(rawLog),
     package: pkgRe.test(rawLog),
     nativeFailure: /UnsatisfiedLinkError|NO_MATCHING_ABIS|dlopen failed|SIGSEGV|is 32-bit instead of 64-bit/i.test(rawLog),
-    fatal: /FATAL EXCEPTION|AndroidRuntime/i.test(rawLog),
+    fatal: /FATAL EXCEPTION/i.test(rawLog),
+    // Proof that the system actually started the activity, independent of logcat noise.
+    foreground: new RegExp(`Displayed (${pkgRe.source})|Start proc [0-9]+:(${pkgRe.source})`, 'i').test(rawLog),
+    activityManager: /ActivityTaskManager|ActivityManager/i.test(rawLog),
     excerpts: rawLog
       .split('\n')
       .filter((l) => CRASH_RE.test(l) && !NOISE_RE.test(l))
@@ -456,6 +460,12 @@ function renderReport(r) {
   }
 
   const sig = r.app.signals;
+  let sigAbis = 'unknown';
+  try {
+    const inv = readFileSync(path.join(OUT, 'apk-inventory.txt'), 'utf8');
+    const m = inv.match(/^abis:\s*(.+?)\s+\+/m) || inv.match(/^abis:\s*(\S+)/m);
+    if (m) sigAbis = m[1].trim();
+  } catch { /* inventory optional */ }
   if (sig) {
     lines.push('## Did the app start?');
     lines.push('');
@@ -466,6 +476,7 @@ function renderReport(r) {
     lines.push(`| package mentioned | ${yn(sig.package)} |`);
     lines.push(`| native load failure | ${yn(sig.nativeFailure)} |`);
     lines.push(`| fatal exception | ${yn(sig.fatal)} |`);
+    lines.push(`| activity started (Displayed/Start proc) | ${yn(sig.foreground)} |`);
     lines.push('');
     if (Array.isArray(sig.excerpts) && sig.excerpts.length) {
       lines.push('```');
@@ -474,9 +485,18 @@ function renderReport(r) {
       lines.push('');
     }
     if (!sig.package && !sig.unity) {
-      lines.push('> No Unity or package line in the last 500 logcat lines: the game probably never');
-      lines.push('> started. This build is arm64-only (lib/arm64-v8a only) and Ramus runs x86_64');
-      lines.push('> emulators — see ramus.dev/docs/quickstart.');
+      lines.push('> **Not proven:** no Unity or package line appeared in the last 500 logcat lines.');
+      lines.push('> That is consistent with the game never starting, but it does not identify the');
+      lines.push('> cause. Candidates, none confirmed by this run:');
+      lines.push('>');
+      lines.push('> - ABI mismatch — this build ships `lib/arm64-v8a` only and Ramus documents');
+      lines.push(`>   x86_64 emulators (ABI in this APK: \`${sigAbis}\`);`);
+      lines.push('> - the launcher never started the activity (`ramus app launch` is best effort);');
+      lines.push('> - the process died before Unity initialised, with the crash outside the captured');
+      lines.push('>   window — `logcat` only returns the last 500 lines.');
+      lines.push('>');
+      lines.push('> To decide it, capture `adb logcat` on a device that has adb, or read');
+      lines.push('> `logcat.txt` in the artifact in full.');
       lines.push('');
     }
   }

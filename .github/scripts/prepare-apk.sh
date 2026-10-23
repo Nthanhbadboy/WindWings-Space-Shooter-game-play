@@ -254,6 +254,19 @@ case ",$ABIS," in *,x86_64,*|*,x86,*) HAS_X86=true ;; esac
 # Does the merged APK still advertise itself as a split app?
 SPLIT_MARKERS=$(unzip -p "$OUT/base.apk" AndroidManifest.xml 2>/dev/null \
                 | strings 2>/dev/null | grep -iE 'split|config\.' | head -5 | paste -sd'|' - || true)
+# Is the bridge actually inside this build? Nothing downstream can work without it.
+BRIDGE_FOUND="no"
+BRIDGE_WHERE=""
+for f in "$OUT/base.apk" $SPLITS; do
+  [ -f "$f" ] || continue
+  hit=$(unzip -l "$f" 2>/dev/null | grep -iE 'RamusBridge\.dll|BepInEx/|MelonLoader/|Mods/' | head -3 | awk '{print $NF}' | paste -sd' ' - || true)
+  if printf '%s' "$hit" | grep -qi 'RamusBridge\.dll'; then
+    BRIDGE_FOUND="yes"
+    BRIDGE_WHERE="$hit"
+    break
+  fi
+done
+
 BASE_MB=$(( $(stat -c%s "$OUT/base.apk") / 1000000 ))
 {
   echo
@@ -262,6 +275,7 @@ BASE_MB=$(( $(stat -c%s "$OUT/base.apk") / 1000000 ))
   echo "abis:        ${ABIS:-none}   (x86_64 present: $HAS_X86)"
   echo "install:     $([ -z "$SPLITS" ] && echo 'single APK' || echo 'base + splits (adb install-multiple)')"
   echo "split marks: ${SPLIT_MARKERS:-none}"
+  echo "bridge:      $BRIDGE_FOUND ${BRIDGE_WHERE:+(found: $BRIDGE_WHERE)}"
   if [ -f "$WORK/merge.log" ]; then
     echo "merge rc:    ${MERGE_NOTE:-n/a}   output: $([ -f "$WORK/universal.apk" ] && stat -c%s "$WORK/universal.apk" || echo none) B"
     tail -4 "$WORK/merge.log" | sed 's/^/  /'
@@ -285,3 +299,4 @@ emit "package=$PKG"
 emit "base_mb=$BASE_MB"
 emit "abis=$ABIS"
 emit "has_x86=$HAS_X86"
+emit "bridge=$BRIDGE_FOUND"

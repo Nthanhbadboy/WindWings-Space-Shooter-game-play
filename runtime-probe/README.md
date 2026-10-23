@@ -62,6 +62,23 @@ Kết luận: **không có tool nào "ngon hơn" để thay thế cả hai nửa
 
 ## 3. Build
 
+### 3.1 Kiểm nhanh không cần Unity (đã chạy trong CI)
+
+```bash
+dotnet build runtime-probe/RamusBridge.csproj -c Release \
+  -p:Loader=Core -p:StubUnity=true -p:TargetFramework=netstandard2.1
+```
+
+`BuildCheck/UnityStubs.cs` thay cho `UnityEngine` ⇒ chứng minh bridge type-check đúng.
+Chạy đủ 4 target (kèm DLL loader thật) bằng:
+
+```bash
+./.github/scripts/build-bridge.sh --out dist --refs .ci/refs
+# dist/core/ dist/bepinex6/ dist/melon/ dist/bepinex5/  (+ inventory.txt)
+```
+
+### 3.2 Build cho máy có Unity
+
 Yêu cầu: .NET SDK 8/9 (`dotnet --version`), quyền truy cập thư mục cài của loader.
 
 ```bash
@@ -77,7 +94,8 @@ Yêu cầu: .NET SDK 8/9 (`dotnet --version`), quyền truy cập thư mục cà
 
 (tương đương `dotnet build runtime-probe/RamusBridge.csproj -c Release -p:Loader=… -p:<Root>=…`)
 
-Kết quả: `runtime-probe/bin/Release/netstandard2.1/RamusBridge.dll`.
+Kết quả: `runtime-probe/bin/Release/netstandard2.1/RamusBridge.dll`
+(hoặc `net6.0` nếu bạn ép `-p:TargetFramework=net6.0`).
 
 - Với **BepInEx 6 IL2CPP**, `BepInEx/interop/` phải đã được sinh (chạy game một lần với bất kỳ plugin nào). Build lần đầu trước khi có interop sẽ lỗi thiếu `UnityEngine.CoreModule`.
 - Với **MelonLoader**, `Il2CppInterop` nằm trong thư mục cài MelonLoader; nếu bản của bạn đặt tên khác, truyền `-p:MelonInteropDir=...`.
@@ -335,51 +353,88 @@ Không có `adb` (trial) thì bỏ 3 dòng `adb`, giữ `--mode trial`; script s
 
 ---
 
-## 7. Kết quả chạy thật (23/10/2026)
+## 7. Kết quả chạy thật + điều chưa chứng minh
 
-Workflow đã chạy 6 lần trên PR này, mỗi lần một lỗi thật được sửa:
+### 7.1 Chuỗi lỗi đã sửa (mỗi lỗi là một lần chạy CI thật)
 
-| Lần | Lỗi | Sửa |
+| # | Triệu chứng | Nguyên nhân | Sửa |
+|---|---|---|---|
+| 1 | `INSTALL_FAILED_MISSING_SPLIT` | XAPK = base + `config.arm64_v8a` | `prepare-apk.sh` mở gói |
+| 2 | `Prepare APK` exit 1 | `pipefail` + base không có `lib/` | `\|\| true` + `trap ERR` |
+| 3 | vẫn `MISSING_SPLIT` | merge xong nhưng bị bỏ vì exit code | quyết định theo **nội dung file** |
+| 4 | `INSTALL_PARSE_FAILED_NO_CERTIFICATES` | APKEditor ghi "signature block" nhưng không ký | `uber-apk-signer --allowResign` |
+| 5 | `bridge-unreachable` | APK không chứa `RamusBridge.dll` | **đúng như thiết kế** — xem §7.2 |
+
+### 7.2 Cái gì **chưa** được chứng minh
+
+> **ABI chưa được chứng minh.** Tôi từng viết "game chết vì arm64 trên emulator x86_64".
+> Đó là **giả thuyết**, không phải kết luận. Bằng chứng thật chỉ có:
+> `abis=arm64-v8a` (từ inventory) + `ramus.dev/docs/quickstart` ghi emulator **x86_64**.
+> Log trích ra lại toàn là cảnh báo `app_process` của chính emulator, **không** có
+> `UnsatisfiedLinkError` hay `dlopen failed` nào của game — nên chưa đủ để kết luận.
+> Báo cáo CI giờ ghi đúng mức độ này và liệt kê các khả năng, thay vì khẳng định.
+
+Ba khả năng còn phân biệt được, và cách phân biệt:
+
+| Khả năng | Dấu hiệu | Cách xác nhận |
 |---|---|---|
-| 1 | `INSTALL_FAILED_MISSING_SPLIT` | nhận ra XAPK của repo là app split |
-| 2 | `Prepare APK` exit 1 | `pipefail` + base không có `lib/` |
-| 3 | vẫn `MISSING_SPLIT` | merge chạy nhưng bị bỏ vì exit code |
-| 4 | `INSTALL_PARSE_FAILED_NO_CERTIFICATES` | APKEditor không ký thật → uber-apk-signer |
-| 5 | `bridge-unreachable` | APK không nhúng `RamusBridge.dll` (đúng như thiết kế) |
-| 6 | `fatal exception: yes` | **game chết vì ABI** |
+| ABI không khớp | không có `Unity` tag, không có `Displayed <package>` | `adb logcat` trên thiết bị có adb, tìm `UnsatisfiedLinkError` / `dlopen` |
+| Activity không được start | `Displayed <package>` vắng mặt dù cài OK | `ramus app launch` rồi chụp lại |
+| Chết trước khi Unity init | có `Start proc …<package>` rồi im | logcat đầy đủ (không chỉ 500 dòng cuối) |
 
-### Chốt: Ramus không chạy được bản APK này
+Report từ nay có thêm dòng **"activity started (Displayed/Start proc)"** — tín hiệu này
+tách được "chưa từng chạy" khỏi "chạy rồi chết".
 
-Dữ liệu từ lần chạy `39914973584`:
+### 7.3 Đã sửa một lỗi thật trong adapter nhờ đọc source loader
 
+Đối chiếu `LavaGang/MelonLoader` **v0.7.3** (`MelonBase.cs`): từ 0.7 **không còn
+`OnApplicationStart`**. Adapter cũ override hàm đó ⇒ **không compile được** với 0.7.
+Đã đổi sang cặp hook tồn tại ở **cả 0.6 và 0.7**:
+
+```csharp
+public override void OnInitializeMelon()   // Init bridge (thuần .NET)
+public override void OnUpdate()            // tạo host GameObject ở frame đầu
+public override void OnApplicationQuit()   // Shutdown
 ```
-base.apk (sau merge)   117.055.794 B   abis=arm64-v8a   ← chỉ có arm64
-config.arm64_v8a.apk    23.889.752 B   abis=arm64-v8a
-package                 com.Wind.wings.Space.Shooter
-kết quả cài đặt        OK (đã merge + ký lại)
-kết quả chạy           FATAL EXCEPTION, không có Unity banner, không có il2cpp
-```
 
-`ramus.dev/docs/quickstart`: *"The APK must run on an **x86_64** Android emulator"*.
-Game là IL2CPP **arm64** (`docs/spec/GAMEPLAY.md` §Nền tảng) ⇒ `libmain.so` arm64 không nạp
-được trên emulator x86_64. **Đây là giới hạn của nền tảng, không phải lỗi workflow.**
+Đã xác nhận bằng source thật: `MelonMod : MelonTypeBase<MelonMod>` → `MelonBase.174–273`
+có `OnInitializeMelon`, `OnUpdate`, `OnApplicationQuit`; `LoggerInstance.Msg(string)` có;
+`MelonInfoAttribute(Type,string,string,string,string=null)` và
+`MelonGameAttribute(string=null,string=null)` khớp cách dùng.
+BepInEx 6: `BasePlugin` (`Runtimes/Unity/BepInEx.Unity.IL2CPP/BasePlugin.cs`) có
+`public ManualLogSource Log` và `public abstract void Load()` ⇒ adapter `BepInEx6` khớp.
 
-Ba đường đi tiếp, xếp theo chi phí:
+> Nhận định: đây chính là loại lỗi mà "đọc code bằng mắt" không bắt được — nó chỉ lộ ra khi
+> đối chiếu với source/DLL thật của đúng phiên bản loader.
 
-| Cách | Việc phải làm | Còn vướng |
+### 7.4 Build thật, không phải "đã kiểm cú pháp"
+
+`.github/workflows/bridge-build.yml` (+ `.github/scripts/build-bridge.sh`) compile **4 target**
+và **fail job nếu bất kỳ target nào lỗi**:
+
+| Target | Tham chiếu | TFM |
 |---|---|---|
-| **Thiết bị thật (khuyến nghị)** | `adb connect <ip:port>` tới máy Android arm64 của bạn, rồi chạy `ramus-probe.mjs --mode key --base http://127.0.0.1:8080` sau `adb forward` | cần máy + bật USB/Wi-Fi debugging |
-| **Emulator arm64** | dùng dịch vụ/AVD arm64 (chậm hơn x86_64 nhiều lần) | Ramus hiện chỉ x86_64 |
-| **Bản build có x86_64** | build lại Unity với IL2CPP x86_64 (Unity 2022.3 có hỗ trợ) | chỉ để test, không phải bản phát hành |
+| core | `BuildCheck/UnityStubs.cs` | netstandard2.1 |
+| BepInEx 6 IL2CPP | `BepInEx-Unity.IL2CPP-win-x64-6.0.0-pre.2.zip` (thật) | net6.0 |
+| MelonLoader | `MelonLoader.x64.zip` v0.7.3 (thật) | net6.0 |
+| BepInEx 5 | `BepInEx_win_x64_5.4.23.5.zip` (thật) | netstandard2.1 |
 
-Điều **không** nên làm: cố nhồi `libmain.so` arm64 vào emulator x86_64 — không có lớp
-dịch ARM nào trong ảnh Google stock.
+DLL được đẩy lên artifact `ramus-bridge-dlls-<run_id>`. Job `probe` đặt `needs: [preflight, build]`
+⇒ build hỏng thì **không** có phiên Ramus nào được tạo.
 
-> Nhận định: harness vẫn đúng và dùng được ngay khi có thiết bị arm64 hoặc build x86_64 —
-> phần merge/ký/cài/probe/báo cáo đã chạy thật, chỉ còn thiếu mảnh "APK có RamusBridge.dll"
-> và "CPU khớp ABI".
+> `BuildCheck/UnityStubs.cs` chỉ là stub lúc compile — nó chứng minh bridge type-check đúng,
+> **không** chứng minh khớp `UnityEngine` thật của game. Muốn chắc thì build với
+> `-p:UnityManagedDir=<game>_Data/Managed` trên máy có bản Unity đó.
 
----
+### 7.5 Chốt: còn thiếu gì để probe chạy được
+
+1. **Bridge phải nằm trong bản được cài.** CI không patch APK. Hoặc build plugin vào bản test,
+   hoặc dùng FusionCore/NextBep nạp plugin từ storage của launcher (khi đó `allow_no_bridge: true`).
+2. **Thiết bị phải chạy được app.** Cần bằng chứng `Displayed <package>` + `Unity` tag;
+   nếu là arm64-only thì cần thiết bị/emulator arm64 (Ramus hiện x86_64).
+
+Bước gate mới **dừng trước khi tạo phiên Ramus** nếu APK không có `RamusBridge.dll`,
+để không đốt 15 phút credential cho một kết luận đã biết trước.
 
 ## 8. Giới hạn đã biết
 
