@@ -216,7 +216,20 @@ không phải lỗi pipeline.
 
 ---
 
-## 6. Còn thiếu / phải đoán
+## 6. Ba việc **rẻ nhất** cho vòng sau — xếp theo chi phí
+
+| # | Việc | Chi phí | Vì sao rẻ |
+|---:|---|---|---|
+| 1 | Sửa `ends_clean` thành `present and last_op in {...}` | **1 dòng** | để method vắng mặt **FAIL** thay vì PASS — hiện tại cờ báo "sạch" cho file thiếu method |
+| 2 | Export riêng `Player_Ingame.get_IsAttacking` (32 B, `0x14b279c`) | ~1 khối asm | hoặc xác nhận **không lấy được** ⇒ bản clone suy `IsAttacking` từ trạng thái |
+| 3 | Thử **parse `.cctor`** của `Map_Get_Datas` (100.896 B) **trước** khi sửa RVA reader | 1 script ~60 dòng | nếu bảng nạp bằng `List.Add` (như `NumberTechStats`) thì sửa RVA **vô ích** — và `.cctor` đã có sẵn |
+
+> **Vì sao không đưa `T9` (animation) lên đây:** `T9` cần AssetRipper + decode `m_StreamedClip`, tốn hơn
+> ba việc trên **cộng lại**. Nó quan trọng cho *feel*, không chặn *cơ chế*.
+
+---
+
+## 7. Còn thiếu / phải đoán
 
 - **`T1` · `T5` vẫn MISSING.** Tôi **không** kết luận "không lấy được" — chỉ kết luận "lần export này
   chưa lấy được", kèm số 1.192/1.194. **Điều kiện lật ngược:** nếu bảng nằm trong `.cctor` dạng
