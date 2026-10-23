@@ -90,7 +90,8 @@ const note = (msg) => {
   log(`note  ${msg}`);
 };
 const fail = (msg, extra) => {
-  result.errors.push(extra === undefined ? msg : `${msg}: ${extra}`);
+  const line = extra === undefined ? msg : `${msg}: ${extra}`;
+  if (!result.errors.includes(line)) result.errors.push(line);
   log(`ERROR ${msg}${extra === undefined ? '' : ` — ${extra}`}`);
 };
 
@@ -108,6 +109,7 @@ function ramus(args, { allowFail = true, timeout = 180000 } = {}) {
   if (r.status !== 0 && !allowFail) throw new Error(`ramus ${args[0]} failed (${r.status}): ${err || out}`);
   if (r.status !== 0) {
     const detail = (err || out).slice(0, 400);
+    if (result.errors.filter((e) => e.startsWith(`ramus ${args[0]}`)).length > 2) return { ok: false, stdout: out, stderr: err, status: r.status };
     if (/trial_restricted/.test(detail)) note('the anonymous trial cannot use this command (adb/dev are key-only)');
     else if (/unauthorized|401|trial (expired|has ended)/i.test(detail)) note(`trial credential problem: ${detail}`);
     result.errors.push(`ramus ${args.join(' ')} → exit ${r.status}: ${detail}`);
@@ -151,8 +153,9 @@ async function waitForBridge(seconds) {
 
 // ── logcat fallback ────────────────────────────────────────────────────────
 
-function readLogcatStates(limit = 800) {
-  const r = ramus(['logcat', '--limit', String(limit)]);
+function readLogcatStates(limit = 500) {
+  // The CLI rejects --limit > 500 ("limit must be at most 500").
+  const r = ramus(['logcat', '--limit', String(Math.min(limit, 500))]);
   const text = `${r.stdout}\n${r.stderr}`;
   result.logcat.raw = text.split('\n').filter((l) => l.includes('RAMUSB')).slice(-120);
   const states = [];

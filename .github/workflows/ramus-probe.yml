@@ -164,6 +164,22 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Fetch APKEditor
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          mkdir -p .ci/tools
+          # Repacks base + config splits into one universal APK (split apps cannot
+          # install otherwise: INSTALL_FAILED_MISSING_SPLIT).
+          url="https://github.com/REAndroid/APKEditor/releases/download/V1.4.9/APKEditor-1.4.9.jar"
+          if curl -fL --retry 3 --retry-delay 2 -o .ci/tools/APKEditor.jar "$url"; then
+            echo "APKEDITOR_JAR=$PWD/.ci/tools/APKEditor.jar" >> "$GITHUB_ENV"
+            java -version 2>&1 | head -2
+            ls -lh .ci/tools/APKEditor.jar
+          else
+            echo "::warning::APKEditor unavailable — split sources will fall back to adb install-multiple."
+          fi
+
       - name: Prepare APK (APK / XAPK / APKS)
         id: apk
         env:
@@ -202,6 +218,12 @@ jobs:
           if [ -n "$SPLITS" ] && [ "$RAMUS_MODE" = "trial" ]; then
             echo "::warning::This source has config splits, and a trial session has no adb to install them."
             echo "::warning::Base-only install may crash on a missing native library — see apk-inventory.txt."
+          fi
+
+          # Ramus devices are x86_64 (ramus.dev/docs/quickstart); this game is arm64.
+          if [ "${{ steps.apk.outputs.has_x86 }}" != "true" ]; then
+            echo "::warning::No x86/x86_64 native libraries — this build is ${{ steps.apk.outputs.abis }} only."
+            echo "::warning::Ramus runs x86_64 emulators, so the game may fail at native load even when install succeeds."
           fi
 
       - name: Credentials
@@ -259,7 +281,9 @@ jobs:
             exit 1
           fi
 
-          sid=$(jq -r '.sessionId // .session_id // .id // .session.id // .session.sessionId // empty' \
+          # `ramus session start` prints {"session": "<id>", "status": "..."} (CLI 0.1.17).
+          sid=$(jq -r 'if (.session | type) == "string" then .session
+                       else (.sessionId // .session_id // .id // .session.id // .session.sessionId // empty) end' \
                 "$PROBE_OUT/session.json" 2>/dev/null || true)
           if [ -n "$sid" ]; then
             echo "RAMUS_SESSION=$sid" >> "$GITHUB_ENV"
@@ -274,7 +298,14 @@ jobs:
         run: |
           set -euo pipefail
           npx --yes "$RAMUS_CLI" wait --stable --timeout 60000 || true
-          npx --yes "$RAMUS_CLI" screenshot --out "$PROBE_OUT/screen-boot.jpg" || true
+          # A session that died during install still exits 0 from `session start`,
+          # so probe it here instead of burning the logcat wait.
+          if ! npx --yes "$RAMUS_CLI" screenshot --out "$PROBE_OUT/screen-boot.jpg" \
+                 > "$PROBE_OUT/boot.json" 2>&1; then
+            echo "::error::The session did not survive install — see boot.json."
+            cat "$PROBE_OUT/boot.json"
+            exit 1
+          fi
 
       - name: Open adb tunnel (key mode only)
         id: adb
@@ -385,10 +416,31 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          [ -f "$PROBE_OUT/report.md" ] || exit 0
+          if [ ! -f "$PROBE_OUT/report.md" ]; then
+            {
+              echo "<!-- runtime-probe -->"
+              echo "# Runtime probe — ${{ inputs.scenario || github.event_name }} (aborted before probing)"
+              echo
+              echo "The job stopped before the probe ran. Most likely the APK did not install:"
+              echo
+              echo '```'
+              head -c 1500 "$PROBE_OUT/boot.json" 2>/dev/null || echo "no boot.json"
+              echo '```'
+            } > "$PROBE_OUT/report.md"
+          fi
           {
             echo "<!-- runtime-probe -->"
             cat "$PROBE_OUT/report.md"
+            if [ -f "$PROBE_OUT/apk-inventory.txt" ]; then
+              echo
+              echo "<details><summary>APK inventory</summary>"
+              echo
+              echo '```'
+              cat "$PROBE_OUT/apk-inventory.txt"
+              echo '```'
+              echo
+              echo "</details>"
+            fi
           } > "$PROBE_OUT/comment.md"
           gh pr comment "${{ github.event.pull_request.number }}" \
             --body-file "$PROBE_OUT/comment.md" \

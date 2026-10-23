@@ -118,7 +118,6 @@ else
   done
   [ -n "$BASE" ] || BASE="${FOUND[0]}"
 
-  cp "$BASE" "$OUT/base.apk"
   SPLITS=""
   for f in "${FOUND[@]}"; do
     [ "$f" = "$BASE" ] && continue
@@ -126,6 +125,26 @@ else
     SPLITS="$SPLITS $OUT/splits/$(basename "$f")"
   done
   SPLITS="${SPLITS# }"
+
+  # A base-only install of a split app dies with INSTALL_FAILED_MISSING_SPLIT.
+  # APKEditor repacks base + config splits into one universal APK.
+  if [ -n "$SPLITS" ] && [ -n "${APKEDITOR_JAR:-}" ] && [ -f "${APKEDITOR_JAR:-}" ]; then
+    log "merging base + $(echo "$SPLITS" | wc -w) split(s) with APKEditor"
+    mkdir -p "$WORK/merge"
+    cp "$BASE" "$WORK/merge/base.apk"
+    i=0
+    for f in $SPLITS; do i=$((i+1)); cp "$f" "$WORK/merge/split$i.apk"; done
+    if java -jar "$APKEDITOR_JAR" m -i "$WORK/merge" -o "$OUT/base.apk" -f >> "$WORK/merge.log" 2>&1 \
+         && is_apk "$OUT/base.apk"; then
+      log "merged OK → $OUT/base.apk ($(stat -c%s "$OUT/base.apk") B)"
+      SPLITS=""
+    else
+      log "merge FAILED — falling back to base + splits (needs adb)"
+      tail -20 "$WORK/merge.log" || true
+      cp "$BASE" "$OUT/base.apk"
+    fi
+  fi
+  cp "$BASE" "$OUT/base.apk" 2>/dev/null || true
 
   # OBB payloads travel outside the APK; only adb can push them.
   OBB_DIRS=$(find "$WORK/unz" -type d -ipath '*Android/obb*' 2>/dev/null | head -1 || true)
@@ -155,17 +174,27 @@ for f in "$OUT/base.apk" $SPLITS; do
   [ -f "$f" ] || continue
   bytes=$(stat -c%s "$f")
   manifest=$(unzip -l "$f" 2>/dev/null | grep -c 'AndroidManifest.xml' || true)
-  arm64=$(unzip -l "$f" 2>/dev/null | grep -c 'lib/arm64-v8a/' || true)
+  libs=$(unzip -l "$f" 2>/dev/null | grep -oE 'lib/[^/]+/' | cut -d/ -f2 | sort -u | paste -sd, -)
   obb=$(unzip -l "$f" 2>/dev/null | grep -c 'assets/bin/Data' || true)
-  printf '%-52s %12s B  manifest=%s arm64libs=%-4s unitydata=%s\n' \
-    "$(basename "$f")" "$bytes" "$manifest" "$arm64" "$obb" >> "$INVENTORY"
+  printf '%-52s %12s B  manifest=%-2s abis=%-24s unitydata=%s\n' \
+    "$(basename "$f")" "$bytes" "$manifest" "${libs:-none}" "$obb" >> "$INVENTORY"
 done
+
+# Native ABI across every part — Ramus devices are x86_64 (ramus.dev/docs/quickstart).
+ABIS=$(for f in "$OUT/base.apk" $SPLITS; do
+         [ -f "$f" ] || continue
+         unzip -l "$f" 2>/dev/null | grep -oE 'lib/[^/]+/' | cut -d/ -f2
+       done | sort -u | paste -sd, -)
+HAS_X86=false
+case ",$ABIS," in *,x86_64,*|*,x86,*) HAS_X86=true ;; esac
 
 BASE_MB=$(( $(stat -c%s "$OUT/base.apk") / 1000000 ))
 {
   echo
   echo "kind:        $KIND"
   echo "base:        $OUT/base.apk (${BASE_MB} MB)"
+  echo "abis:        ${ABIS:-none}   (x86_64 present: $HAS_X86)"
+  echo "install:     $([ -z "$SPLITS" ] && echo 'single APK' || echo 'base + splits (adb install-multiple)')"
   echo "splits:      ${SPLITS:-none}"
   echo "package:     ${PKG:-unknown (manifest.json absent)}"
 } >> "$INVENTORY"
@@ -177,3 +206,5 @@ emit "splits=$SPLITS"
 emit "kind=$KIND"
 emit "package=$PKG"
 emit "base_mb=$BASE_MB"
+emit "abis=$ABIS"
+emit "has_x86=$HAS_X86"
