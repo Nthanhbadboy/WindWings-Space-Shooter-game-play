@@ -103,10 +103,11 @@ Và `Enemy_Health` — **HP không nằm trong `Enemy_Health`**, nó được tr
 ```csharp
 public void CalculateDamage(float _dmg, ref float _hp, bool _igroneInvincible = False);  // 0x158479C
 [SerializeField] private bool  noDamage;   // 0x30
-private                  float armor;      // 0x34   ← ENEMY CŨNG CÓ GIÁP
+private                  float armor;      // 0x34   ← field CÓ, nhưng KHÔNG serialize (0/981)
 ```
 
-⇒ **Enemy có HP + giáp + callback damage.** Chuỗi đầy đủ:
+⇒ **Enemy có HP + callback damage.** `armor` là field **không serialize** (xem `UNITY_RULES` §1.1):
+981/981 prefab **không** mang giá trị giáp ⇒ coi như **0** trừ khi mã gán lúc `Init`. Chuỗi đầy đủ:
 `Enemy_Controller.GetStartHealth()` → `Enemy_Get_Datas.GetStartHealthPoint(id)` → `CalculateDamage(ref hp)` → `UpdateHpBar()` → `OnDieWhenZeroHp()`.
 
 ### Cả hai class này **chưa** nằm trong danh sách dump
@@ -183,7 +184,7 @@ dùng **spawn có nhịp** thay vì dồn — đó là chỗ duy nhất cần đ
 |---|---|---|
 | `B3` (HP enemy) | **D** — hai giả thuyết, nghiêng "chết 1 phát" | **B** — HP **có** (dictionary runtime); thiếu **nội dung bảng**, không thiếu cơ chế |
 | "HP bar chỉ trên boss" | bằng chứng cho "1 phát" | ❌ **SAI** — **109/109** prefab có bar (100 % quân) |
-| Enemy có giáp? | chưa biết | ✅ **CÓ** — `Enemy_Health.armor` @`0x34`, truyền vào `CalculateDamage` |
+| Enemy có giáp? | chưa biết | ⚠ **CÓ field, KHÔNG có dữ liệu per-prefab** — `armor` @`0x34` là `private` **không** `[SerializeField]` ⇒ **0/981** prefab serialize; `noDamage` (có attribute) xuất hiện **981/981** (`UNITY_RULES` §1.1) |
 | Damage enemy scale? | chưa biết | ✅ có `Enemy_Get_Datas.GetDamagePowered(float)` |
 | `T14` (mới) | — | dump `Enemy_Get_Datas` → **bảng HP 981 enemy** |
 

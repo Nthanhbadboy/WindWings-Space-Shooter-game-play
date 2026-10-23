@@ -23,6 +23,10 @@
 
 ## 1. Bảng tổng — **28 vấn đề**, chia theo **nguyên nhân** (quan trọng hơn mức độ)
 
+> **Cập nhật 23/10 (`UNITY_RULES.md`):** **+3 đóng** (**C3** · **C4** · **C6**) và **2 hạ mức**
+> (**C1** · **C2** từ **D** → **B**) sau khi áp luật serialization/asset của Unity.
+> Số đếm: **8 mục đóng / 28** (trước vòng này: **5 / 28**).
+
 | # | Vấn đề | Nhóm | Mức | Ảnh hưởng thiết kế |
 |---|---|---|---|---|
 | A1 | ~~Giá trị `StartHp`~~ ✅ **ĐÓNG = 2500** | **lỗi export** | **A** | **mở khoá TTK** — `BALANCE` §0.6.13 |
@@ -31,18 +35,18 @@
 | A4 | ~~Caller của `GetStartHp()`~~ ✅ **ĐÓNG** = `<Start>b__14_1` | **lỗi export** | **A** | HP chốt **trong `Start()`** — `BALANCE` §0.6.15 |
 | B1 | 3 bảng stat của device | **RVA data** | D | chặn "device mạnh bao nhiêu" |
 | B2 | ~~13 tàu `20001–20013`~~ ✅ **ĐÓNG — là 13 DRONE**, không phải tàu | — | **A** | số tàu vẫn **25**; drone đã có ở `BALANCE` §3.2 |
-| B3 | ~~HP enemy scale theo stage~~ ✅ **cơ chế ĐÃ RÕ**: HP = `Dictionary<int,float>` trong `Enemy_Get_Datas.cctor` (chưa dump) · **enemy có giáp** | **chưa dump 1 class** | **B** | thiếu **nội dung bảng HP** (981 giá trị) — `ENEMY_HP_RUNTIME.md` |
+| B3 | ~~HP enemy scale theo stage~~ ✅ **cơ chế ĐÃ RÕ**: HP = `Dictionary<int,float>` trong `Enemy_Get_Datas.cctor` (chưa dump) · **enemy KHÔNG có giáp per-prefab** (`armor` private ⇒ **0/981** serialize; `UNITY_RULES` §1.1) | **chưa dump 1 class** | **B** | thiếu **nội dung bảng HP** (981 giá trị) — `ENEMY_HP_RUNTIME.md` |
 | B4 | `GetCountEnemies` mỗi stage | **chưa lấy** | D | ảnh hưởng nhiệm vụ/độ dài |
 | B8 | ~~Hệ số chế độ cho số quân~~ ✅ **ĐÓNG: `kCount ≡ 1`** (304 lệnh · 0 `mul`; người chơi xác nhận). **HP theo chế độ** thì **còn mở**: bảng HP phẳng (981) ⇒ hệ số nằm trong mã, **giá trị chưa biết** | **chưa dump class spawn** | **A** (quân) · **C** (HP) | clone: `kCount = 1`, chỉ nhân `kHp` — `DIFFICULTY_MODES.md` §5.5 |
 | B5 | 43/305 trace chưa đối chiếu | **chưa lấy** | — | rủi ro sai số nhỏ |
 | B6 | Damage boss không khai báo (19 class) | **chưa lấy** | C | thiếu 19/37 nhóm đòn |
 | B7 | ~~12 stat Basic vs `NumberTechStats()` = 60~~ | ✅ **đã chốt** | A | = `List.Count`, không phải hằng số |
-| C1 | Thời điểm (time) của animation event | **vắng mặt thật** | D | nhịp bắn 86,7% không đọc được |
-| C2 | Bảng controller→clip | **vắng mặt thật** | D | không biết anim nào phát khi nào |
-| C3 | `Spawner.dataScript` rỗng | **vắng mặt thật** | D | quy luật spawn phải suy từ wave |
-| C4 | `Wave.indexWave` = 0 | **vắng mặt thật** | D | thứ tự wave trong màn |
+| C1 | Thời điểm (time) của animation event | **thiếu export độ sâu** | **B** | 793 event có `time` — `UNITY_RULES` §4.3 |
+| C2 | Bảng controller→clip | **thiếu export độ sâu** | **B** | 793 PPtr + 3.871 tên state — `UNITY_RULES` §5 |
+| C3 | ~~`Spawner.dataScript` rỗng~~ ✅ **ĐÓNG** — field chết **23.570/23.570** | **PPtr null** | **A** | quy luật spawn ở `Wave` — `UNITY_RULES` §2 |
+| C4 | ~~`Wave.indexWave` = 0~~ ✅ **ĐÓNG** — **686/686** | **field chết** | **A** | thứ tự = thứ tự mảng — `UNITY_RULES` §7 |
 | C5 | `Call_Data.number/editType` = 0 | **vắng mặt thật** | D | số quân mỗi lần gọi |
-| C6 | `Enemy_Physics.allColliders = []` | **vắng mặt thật** | A | enemy thường **không** damage va chạm |
+| C6 | ~~`Enemy_Physics.allColliders = []`~~ ✅ **ĐÓNG** — `autoCacheColliders = false` **981/981** + list rỗng **981/981** | **field chết** | **A** | enemy thường **không** damage va chạm — `UNITY_RULES` §3 |
 | C7 | **45 root prefab mã `900xx`** ngoài roster | **chưa lấy** | C | nội dung dự phòng |
 | C8 | `Boss_BodyPhysics` 251 instance | **đã có** | B | chỉ boss có damage va chạm |
 | D1 | Feel / aim assist / input latency | **cần chạy game** | D | phải tự thiết kế |
@@ -235,6 +239,11 @@ public class Enemy_Get_Datas : MonoBehaviour {
 `Enemy_Controller.GetStartHealth()` · `TakeDamage()` · `UpdateHpBar()` · `CacheComponents()`;
 `Enemy_Health.CalculateDamage(float, ref float _hp, bool)` + **`armor` @`0x34`** ⇒ **enemy cũng có giáp**.
 
+> **ĐÍNH CHÍNH 23/10 (`UNITY_RULES` §1.1):** `armor` là `private float` **không có `[SerializeField]`**
+> ⇒ Unity **không** lưu nó vào prefab. Đo trên 981 `Enemy_Health`: `noDamage` (có attribute) xuất hiện
+> **981/981**, `armor` xuất hiện **0/981**. ⇒ **giáp của enemy không phải dữ liệu per-prefab**;
+> nếu có thì là **một hằng gán trong mã**. Cơ chế "có field giáp" vẫn đúng ở mức class.
+
 ⇒ **`B3` chuyển D → B**: cơ chế đã rõ, chỉ thiếu **nội dung bảng HP** — và nó nằm trong
 **một `.cctor`**. `Enemy_Get_Datas` **không có** trong 17 class của `TARGET_CLASSES`.
 
@@ -344,16 +353,20 @@ kiểm từng id** — nhưng **không còn là ẩn số về cơ chế**.
 
 ---
 
-## 4. Nhóm C — dữ liệu **vắng mặt thật**: phải **quyết** khi thiết kế
+## 4. Nhóm C — **6/8 mục đã có kết luận**, chỉ còn 2 phải **tự quyết**
 
-| # | Thiếu gì | Bằng chứng | Bản clone phải quyết |
+> **Vòng 23/10 (`UNITY_RULES`):** **C3 · C4 · C6 đóng** bằng luật engine (PPtr null ·
+> `autoCacheColliders` · `ScriptableObject`); **C1 · C2 hạ** từ "vắng mặt thật" xuống
+> **"thiếu export độ sâu 3"**. Bảng giữ hình thức "phải quyết gì" để designer dùng ngay.
+
+| # | Thiếu gì | Bằng chứng (số) | Bản clone phải quyết |
 |---|---|---|---|
-| C1 | **Time** của animation event | 318 clip / **793 event** nhưng chỉ có `m_Events__count`; **0 keyframe** | nhịp bắn: dùng `Gun_Attack.timeShot` cho 13,3% súng; **86,7% còn lại tự đặt nhịp** (gợi ý 0,08–0,25 s) |
-| C2 | controller → clip | **0** bản ghi | tự đặt tên state: `idle`/`move`/`attack`/`die` |
-| C3 | `Spawner.dataScript` | rỗng **100%** (11.099 spawner) | dùng `waves.json` (45.659 quân) làm nguồn duy nhất |
-| C4 | `Wave.indexWave` | **0** toàn bộ | thứ tự wave = thứ tự trong `waves.json` |
+| C1 | **Time** của animation event | **318** clip / **793** event; `m_Events` là mảng struct **không nén**, dump chỉ lấy `__count` (`UNITY_RULES` §4.3) | tạm dùng `Gun_Attack.timeShot` cho **13,3 %** súng; **86,7 %** còn lại tự đặt nhịp (0,08–0,25 s) — nhưng **nên export 793 event** |
+| C2 | controller → clip | `m_AnimationClips` = **793** PPtr; `m_TOS` = **3.871** tên state (`UNITY_RULES` §5) | tạm đặt tên state `idle`/`move`/`attack`/`die`; export **308** controller là ra tên thật |
+| C3 | ~~`Spawner.dataScript`~~ ✅ **ĐÓNG** | **23.570/23.570** null (7 class); đối chứng `Enemy_Controller.dataScript` **981/981** có giá trị | dùng `waves.json` (45.659 quân) làm nguồn duy nhất |
+| C4 | ~~`Wave.indexWave`~~ ✅ **ĐÓNG** | **686/686 = 0** | thứ tự wave = thứ tự trong `waves.json` |
 | C5 | `Call_Data.number` / `editType` | **0** ở 23.757/23.757 | số quân mỗi lần gọi = `len(listPrefabEnemies) × copies` |
-| C6 | damage va chạm enemy thường | `Enemy_Physics.allColliders = []` **981/981** | **enemy thường không gây damage khi chạm** — chỉ đạn; nếu muốn clone "khó hơn" thì đây là knob |
+| C6 | ~~damage va chạm enemy thường~~ ✅ **ĐÓNG** | `autoCacheColliders = false` **981/981** + `allColliders = []` **981/981** | enemy thường **không** gây damage khi chạm — chỉ đạn |
 | C8 | damage va chạm boss | `Boss_BodyPhysics` **251** instance, median 500 | boss **có** damage chạm; giữ |
 
 ---
@@ -396,7 +409,8 @@ kiểm từng id** — nhưng **không còn là ẩn số về cơ chế**.
 3. **Ưu tiên 3 — đọc thân `GetListAllIdPlayers()`** (đã có asm, **không cần dump thêm**): chốt **E2/B2**
    (13 tàu `20001–20013` là thật hay dữ liệu chết).
 4. **Ưu tiên 4 — map súng → boss** từ `prefab_joins`: nâng **B6** từ 18/37 lên 37/37 nhóm đòn.
-5. Những mục **C1–C8** thì **không có đường lấy thêm** bằng dump tĩnh — đã kiểm bằng số đếm, và bản
-   clone **phải tự quyết**. Ghi rõ để không ai đi tìm lại.
+5. ~~Những mục **C1–C8** thì **không có đường lấy thêm**~~ — **SAI, đính chính 23/10.** `UNITY_RULES`
+   đã chỉ ra **C1** (793 event) và **C2** (793 PPtr + 3.871 tên state) là **thiếu export độ sâu 3**,
+   không phải vắng mặt. Chỉ **C5 · C8** là dữ liệu chết thật; **C3 · C4 · C6 đã đóng**.
 6. **Rủi ro còn lại lớn nhất:** mọi con số về **nhịp bắn** (86,7% súng) và **thời điểm ra đòn của boss**
    đều là **suy luận**, không phải số gốc. Cân bằng damage sẽ lệch nếu nhịp thật khác.

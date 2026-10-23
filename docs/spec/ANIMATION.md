@@ -11,7 +11,7 @@
 | Hệ | Có trong APK | Đã đọc | Kết luận |
 |---|---:|---:|---|
 | **Spine** (xương) | 27 rig · **180** animation · 616 bone | **100%** | đủ để dựng lại nhịp |
-| **Unity Animator** | **791** clip · **308** controller · **5.792** `Animator` | **0 %** curve · **100 % tên** | **3.620/5.792 = 62,5 % là UI** (`Board_*` 2.938 · `Popup` 675 · `Menu` 7); **enemy/boss chỉ 203** (§4.5) |
+| **Unity Animator** | **791** clip · **308** controller · **5.792** `Animator` | **0 %** curve giải được (**9,19 MB** chưa giải) · **100 % tên** | **3.620/5.792 = 62,5 % là UI** (`Board_*` 2.938 · `Popup` 675 · `Menu` 7); **enemy/boss chỉ 203** (§4.5) |
 | **Procedural** (`Rotate`) | **1.120** instance | class 100% · tham số 0% | biết công thức, chưa biết tốc độ |
 | **Flipbook sprite** | **28** chuỗi · 160 ảnh / 2.185 `Sprite` | 100% | game **hầu như không dùng** |
 
@@ -206,10 +206,21 @@ Cộng `AnimationEventHandler` **30** (`UnityEvent endedEvent` + `OnEnded()` = m
 > là `Dictionary<string, Action>`: khoá là **tên event**, không phải tên state.
 
 > ⚠ **Curve không đọc được bằng typetree:** **791 / 791** clip có
-> `m_FloatCurves__count = m_PositionCurves__count = … = 0`. Curve nằm ở **`m_StreamedClip`**.
-> ⇒ Đọc được **tên + nhịp + event**, **chưa** dựng lại được chuyển động.
+> `m_FloatCurves__count = m_PositionCurves__count = … = 0`. Curve nằm ở **`m_StreamedClip`** —
+> nhưng **dữ liệu vẫn còn trong asset**, đếm được bằng `m_MuscleClipSize`:
 
-### 3.5 Đã thử `parse_as_object()` — **cũng 0 keyframe**, và đây là giới hạn thật
+| `m_MuscleClipSize` (bản `68ce86a7`) | Giá trị |
+|---|---:|
+| Clip `> 0` | **782 / 791** |
+| Tổng dung lượng curve | **9.186.264 B** (9,19 MB · 8,76 MiB) |
+| Median · lớn nhất | **5.076 B** · **175.712 B** |
+| Clip `= 0` | **9** — `Idle` · `idle` · `Setup` · `Test` · `UILock` · `Xuathien` · `Laze` · `Player4` · `Chuyensangattack3` (giữ pose **1,0 s**) |
+
+> ⇒ Đọc được **tên + nhịp + event**; **dáng chuyển động** thiếu **decoder**, **không** thiếu dữ liệu
+> (`UNITY_RULES` §4.2). Thêm nữa: **0 / 791** clip có `m_PPtrCurves` ⇒ **không clip nào là flipbook**
+> (`UNITY_RULES` §4.1).
+
+### 3.5 Đã thử `parse_as_object()` — **cũng 0 keyframe**: giới hạn của **bộ đọc**, không phải của dữ liệu
 
 Bản `ae1f2be` chạy `tools/apk-analyze/anim_curves.py` dùng UnityPy `parse_as_object()`
 trên **791 clip**:
@@ -224,6 +235,10 @@ trên **791 clip**:
 ⇒ **Hai đường đọc độc lập đều trả 0.** Không phải lỗi tool: dữ liệu nằm trong
 **`m_StreamedClip`** ở định dạng nén riêng, phải có **bộ giải mã viết riêng** (đọc `m_StreamedClip`
 dạng mảng byte rồi dựng lại bảng curve binding + keyframe).
+
+**Kích thước đã đo (bản `68ce86a7`):** `m_MuscleClipSize` = **9.186.264 B** trên **782 / 791** clip
+(median **5.076 B**, max **175.712 B**; 9 clip = 0). ⇒ **Dữ liệu có thật**; "0 keyframe" là
+**giới hạn của reader**, không phải của asset (`UNITY_RULES` §4.2).
 
 > **Nhận định (mức A) — sửa lại điều tôi đã viết:** tôi từng ghi *"muốn có keyframe chỉ cần
 > `parse_as_object()`"*. **Sai** — đã thử, ra 0. Điều kiện để có curve là **viết decoder cho
@@ -331,8 +346,8 @@ path (PathCreator) → Enemy_Movement.listSpeeds → hướng/mặt → xoay (Ro
 | Câu | Trả lời |
 |---|---|
 | **Enemy có animation không?** | **Có** — 87/109 prefab có Animator; 100 % có di chuyển procedural |
-| **Đã dựng lại được chưa?** | **Chưa.** Tên clip + nhịp: **có**; pose/khung hình: **không** (0/791 keyframe) |
-| **Bao nhiêu %?** | Theo **hệ**: procedural **100 %** · clip **0 % curve / 100 % tên** · Spine **100 %** (nhưng chỉ 2 boss) |
+| **Đã dựng lại được chưa?** | **Chưa.** Tên clip + nhịp: **có**; pose/khung hình: **không** — nhưng **9,19 MB curve có trong asset** (`UNITY_RULES` §4.2), thiếu **decoder** chứ không thiếu dữ liệu |
+| **Bao nhiêu %?** | Theo **hệ**: procedural **100 %** · clip **0 % curve giải được / 100 % tên / 100 % dung lượng curve** · Spine **100 %** (nhưng chỉ 2 boss) |
 | **Cần gì để dựng lại?** | **1 decoder `m_StreamedClip`** — không phải export thêm asset |
 | **Có chặn design không?** | **Không.** Bản clone cần *cảm giác*, không cần pose gốc: dùng `Enemy_Movement` + `Rotate` + 1 sprite (§5) |
 
@@ -381,14 +396,16 @@ Cái quyết định cảm giác đã đo được hết:
 |---:|---|---|---|
 | 1 | Rig nào thuộc prefab nào | **C** | export `Transform` (`m_Father`) — đã có **228.432** object |
 | 2 | ~~791 clip tên gì, dài bao nhiêu~~ | **A** | ✅ xong — 226 tên · median 1,9 s · 793 event (§3.3) |
-| 2b | **keyframe curve** của 791 clip | **D** | `m_StreamedClip` — đã thử `parse_as_object()`: **0 keyframe** (§3.5) |
+| 2b | **keyframe curve** của 791 clip | **B** | **Dữ liệu CÓ**: `m_MuscleClipSize` **9.186.264 B** trên **782/791** clip — thiếu **decoder `m_StreamedClip`**, không thiếu export (`UNITY_RULES` §4.2) |
 | 3 | `speedRotate` / `delay` từng object | **C** | export field prefab |
 | 4 | 25 boss còn lại animate bằng gì | **B** | 9 họ event + 4 rig Spine; phần còn lại chưa có dấu vết |
 | 5 | `allStartAttackActions` có bao nhiêu khoá | **C** | export field prefab (dictionary) |
 | 6 | Clip nào dùng chung giữa nhiều boss | **C** | export `AnimatorController` |
 | 7 | Thứ tự pha (clip nào trước clip nào) | **C** | export 34 `*_Director` (**60** instance) + 3 `AttackPhases` = **63** |
 | 8 | `Idle` có 0 key nghĩa là "đứng yên" hay "giữ pose đầu" | **B** | đọc `SkeletonRenderer` init |
-| 9 | Nhóm 21 rig bộ 6 animation là **tàu** hay **enemy** | **B** | vẫn mở: `spine.json` **27 rig đều không có `name`** (chỉ `skeleton_data_path_id`); `prefab_joins` chỉ có 6 class, **không** có Skeleton ⇒ cần export `SkeletonAnimation.m_SkeletonDataAsset` để nối |
+| 9 | Nhóm 21 rig bộ 6 animation là **tàu** hay **enemy** | **B** | vẫn mở, nhưng **hết mơ hồ**: `m_Name` của 27 `SkeletonDataAsset` = **26 × `skeleton_SkeletonData`** + 1 × `Saw_SkeletonData` ⇒ tên **thật sự trùng**, không phải exporter làm mất (`UNITY_RULES` §8). Chỉ còn 1 đường: export `SkeletonAnimation.m_SkeletonDataAsset` (**117** component) để nối |
+| 11 | **Time + `functionName`** của **793** animation event | **B** | `m_Events` là mảng struct **không nén** — dump hiện tại chỉ lấy `__count` ⇒ **export độ sâu 3** là ra (`UNITY_RULES` §4.3) |
+| 12 | Controller → clip → **tên state** | **B** | `m_AnimationClips` **793** PPtr + `m_TOS` **3.871** tên state nằm trong 308 controller (`UNITY_RULES` §5) |
 | 10 | ~~`Animator` 5.792 phân bố enemy / UI / FX~~ | **A** | ✅ xong (§4.5c): **UI 3.620 (62,5 %)** · wave 912 · khác 1.057 · **enemy/boss 203** |
 
 > Không mục nào ở trên là "không lấy được": **791 clip · 308 controller · 5.792 `Animator` ·

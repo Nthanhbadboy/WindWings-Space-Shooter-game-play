@@ -413,12 +413,12 @@ nhận kết luận của nhánh spec.
 
 ## 12. Còn thiếu / phải đoán
 
-| # | Thứ | Mức |
-|---:|---|---|
-| 1 | 5 class `Enemy_*` có field thật hay rỗng như `Spawner.dataScript` | **C** |
-| 2 | `Call_Point` có phải bản đầy đủ của `Call_Data` | **C** |
-| 3 | 60 dòng `288733` — ô literal pool nào bị đọc nhầm | **B** |
-| 4 | Nhánh dữ liệu có tiếp tục sau `c52d04e` không | **C** |
+| # | Thứ | Mức | Ghi chú |
+|---:|---|---|---|
+| 1 | 5 class `Enemy_*` có field thật hay rỗng như `Spawner.dataScript` | **C** | ✅ **đã trả lời** (`UNITY_RULES` §1.2): `Enemy_Appear` **0 field** ở **914** instance · `Enemy_Attack` **0** ở **51** · `Spawner.dataScript` **23.570/23.570** rỗng |
+| 2 | `Call_Point` có phải bản đầy đủ của `Call_Data` | **C** | — |
+| 3 | 60 dòng `288733` — ô literal pool nào bị đọc nhầm | **B** | — |
+| 4 | Nhánh dữ liệu có tiếp tục sau `c52d04e` không | **C** | — |
 | 5 | `rea-native.log` (kết quả trên `.so`) có giá trị gì | **C** | nằm trong artifact, **không** nằm trong `docs/` |
 | 6 | Repo có bật hạn mức Actions hay không | **C** | chưa thấy ghi chú; chưa tới giới hạn dù 329 phút |
 | 7 | 6 job matrix có cùng cache XAPK được không | **B** | `actions/cache` dùng chung key → có; cần artifact cho payload đã giải nén |

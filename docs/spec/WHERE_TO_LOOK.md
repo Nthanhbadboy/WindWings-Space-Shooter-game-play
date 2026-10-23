@@ -145,6 +145,8 @@ Và **`Enemy_Ingame`, `Enemy_Health`, `Enemy_Controller` KHÔNG có asm** — 17
 > **`private static Dictionary<int, float> AllStartHealthPointEnemies`** và
 > `GetStartHealthPoint(int)` (`RVA 0x157F6A8`), `.cctor` ở **`0x157F7CC`**. Cộng thêm
 > `Enemy_Controller.GetStartHealth/TakeDamage/UpdateHpBar` và `Enemy_Health.armor @0x34`.
+> **Bổ sung 23/10:** `armor` là `private` **không** `[SerializeField]` ⇒ **0/981** prefab có giá trị
+> (đối chứng `noDamage` **981/981**). Xem `UNITY_RULES` §1.1.
 >
 > Và **khả năng (1) đã bị bác bằng dữ liệu**: **108/109** prefab được spawn có `Enemy_Hp_Bar`
 > đang bật (**99,8 %** quân) ⇒ enemy **không** chết 1 phát. Câu *"HP bar chỉ trên boss"* ở bản trước

@@ -34,7 +34,7 @@
 | Kênh | Bằng chứng | Mức |
 |---|---|---|
 | **Ngưỡng sao / nhiệm vụ** (`pct[mode]`) | `(int)(pct × countEnemies)` in ra UI — `MISSIONS_STARS` §1 | **A** |
-| **Thưởng** (`modeMultiplier[mode]`) | `float[]` index bằng `ModeCurrent` — §3 | **A** |
+| **Thưởng** (`levelDelta[mode]`) | `float[]` index bằng `ModeCurrent` — §3 | **A** |
 | **Giá năng lượng** | `GetCostEnergyForPlay(stageIndex, stageLevel)` | **A** |
 | **HP enemy** (`kHp[mode]`) | bạn chơi game, chưa có phép nhân tĩnh để đối chiếu | **A (chơi game)** |
 | ~~Số quân~~ | **không** — xem hàng trên | **A (phủ định)** |
@@ -153,16 +153,18 @@ Hai tên không xuất hiện cùng một chữ ký hàm nào ⇒ chúng là hai
 ⇒ **Công thức thưởng (mức A cho cấu trúc, B cho từng hệ số):**
 
 ```
-bonus = round( base(stage, mission) × modeMultiplier[mode] × (stage ≥ 60 ? 1,25 : 1) × (stage%5==4 ? 1,5 : 1) )
+bonus = round( base(stage, mission) × levelDelta[mode] × (stage ≥ 60 ? 1,25 : 1) × (stage%5==4 ? 1,5 : 1) )
 ```
 
-- **`modeMultiplier` là `float[]` index theo chế độ** — bằng chứng: `cmp w9, w20` + `b.ls throw`
+- **`levelDelta` là `float[]` index theo chế độ** — bằng chứng:
+  **Tên thật** lấy từ `dump.cs`: `Stage_Get_Datas.levelDelta` (`private static float[]` @`0x10`);
+  `modeMultiplier` là **tên tôi tự đặt** trước đây — nay bỏ (`UNITY_RULES` §6). `cmp w9, w20` + `b.ls throw`
   (kiểm biên mảng) + `ldr s0,[x8, w20*4 + 0x20]` + `fmul`. **Đây là chỗ duy nhất tôi tìm thấy
   chế độ nhân vào một con số.**
 - **`f(mode)` xuất hiện dưới dạng hằng số nhánh** ở 6 cụm: `60/80/100`, `30/25/20`, `20/15/10`,
   `50/20`, `5`, `1,25` — tức **mỗi chế độ ăn một hằng số khác nhau**, không phải cùng một số.
 - Mốc **mỗi 5 stage ×1,5** (chỉ số 4 · 9 · 14 · 19 · 24 · 29 — tức **stage 5, 10, 15, …, 30** đếm từ 1).
-- Giá trị **số** của `modeMultiplier` **chưa đọc được**: nó được nạp bằng `InitializeArray`
+- Giá trị **số** của `levelDelta` **chưa đọc được**: nó được nạp bằng `InitializeArray`
   (FieldRVA) trong `.cctor` — cùng loại blocker với HP (`WHERE_TO_LOOK` T5).
 
 ### Ba chỗ khác cũng ăn theo chế độ
@@ -370,7 +372,7 @@ Vì sao đếm phát bắn là đủ: `số_phát = ceil(HP × f(giáp) / damage
 Khác nhau ở **4 bảng**; ba cái đầu **có trong dữ liệu gốc**, cái cuối **hard-code nên clone tự chọn**:
 
 ```
-modeMultiplier[3]        → thưởng          (gốc: float[] ẩn;   clone: 1.0 / 1.35 / 1.7)
+levelDelta[3]        → thưởng          (gốc: float[] ẩn;   clone: 1.0 / 1.35 / 1.7)
 missionKillPercent[3][3] → 3 mốc % mỗi chế độ (gốc: 3×float[3] ẩn; clone: 60/80/100 · 70/88/100 · 80/95/100)
 energyCost[stage][3]     → giá năng lượng   (clone: +0 % / +25 % / +50 %)
 kHp[3]                   → HP enemy         (gốc: hard-code, CHƯA biết; clone: 1.0 / 1.5 / 2.0)
@@ -421,7 +423,7 @@ vì sao 117 cặp tôi bóc ra trông như "quan hệ" chứ không phải "nhó
 
 - **`MaxModeIndex` chưa có giá trị** — `static int` của `Stage_Datas`, lớp **chưa dump**. Suy từ chuỗi:
   **2** nếu là chỉ số lớn nhất, **3** nếu là số lượng. **Chưa phân định** — và đây là chỗ dễ sai 1 đơn vị.
-- **`modeMultiplier[3]` chưa có số.** Nạp bằng `InitializeArray` (FieldRVA) — cùng blocker T5.
+- **`levelDelta[3]` chưa có số.** Nạp bằng `InitializeArray` (FieldRVA) — cùng blocker T5.
   Cần đọc `FieldRVA` + `il2cpp-pool-floats`/pool double, hoặc một lần dump `.cctor` của `Stage_Datas`
   (lớp **chưa** nằm trong `TARGET_CLASSES`).
 - **`missionKillPercent[3][3]` chưa có số** — 9 float trong 3 mảng; cùng blocker.
