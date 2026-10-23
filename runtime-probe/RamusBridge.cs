@@ -968,15 +968,14 @@ namespace Ramus.Bridge
         /// null when it has no animation component at all.</summary>
         static string DescribeAnimation(GameObject go)
         {
-            // Generic overload first: that is the one Components() already uses,
-            // and it is the one proven against il2cpp interop proxies on device.
+            // Only the generic overload: Components() already uses it and it is the
+            // one proven against il2cpp interop proxies on device. The Type-based
+            // overload is not emitted by Il2CppInterop, so calling it breaks the
+            // phone-interop target — the only target that compiles against the
+            // real device assemblies.
             Component[] comps;
             try { comps = go.GetComponents<Component>(); }
-            catch
-            {
-                try { comps = go.GetComponents(typeof(Component)); }
-                catch { return null; }
-            }
+            catch { return null; }
             if (comps == null) return null;
 
             foreach (var c in comps)

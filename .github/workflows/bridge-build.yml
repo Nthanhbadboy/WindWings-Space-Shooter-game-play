@@ -99,8 +99,25 @@ jobs:
             echo "<!-- bridge-build -->"
             echo "## ❌ bridge build failed"
             echo
+            # The tail alone hid the compiler error: the summary is 80 lines long
+            # and the CSxxxx lines sat above it. Print them first.
+            echo "### compiler errors"
+            echo
             echo '```'
-            tail -80 ci.log 2>/dev/null || echo "no ci.log — job stopped before the first step"
+            grep -E "error [A-Z]+[0-9]+" ci.log 2>/dev/null | sort -u | head -40 \
+              || echo "(no error CS line found)"
+            echo '```'
+            echo
+            echo "### the failing target"
+            echo
+            echo '```'
+            grep -B 2 -A 8 "\[build\] FAIL" ci.log 2>/dev/null | head -60 || true
+            echo '```'
+            echo
+            echo "### tail"
+            echo
+            echo '```'
+            tail -40 ci.log 2>/dev/null || echo "no ci.log — job stopped before the first step"
             echo '```'
           } > comment.md
           chmod +x .github/scripts/pr-comment.sh
