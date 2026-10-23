@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Headless self-test for the bridge's HTTP layer.
+
+    Compiles the very same RamusBridge.cs that ships to the device against the
+    compile-time UnityEngine stub, boots it on 127.0.0.1, and drives every
+    endpoint with a real HttpClient. It proves the parts that do not need Unity:
+    socket accept loop, request parsing, routing, JSON writing, the main-thread
+    queue handoff and shutdown.
+
+    It does NOT prove that IL2CPP reflection on /statics returns the game's real
+    values — that needs the game running with the plugin loaded.
+
+      dotnet run --project runtime-probe/SelfTest
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>9.0</LangVersion>
+    <AssemblyName>RamusBridge.SelfTest</AssemblyName>
+    <RootNamespace>Ramus.Bridge.SelfTest</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <NoWarn>$(NoWarn);CS0649;CS0169;MSB3246;CS1701;CS1702</NoWarn>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="../RamusBridge.cs" Link="RamusBridge.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(UnityStubDir)/UnityEngine.dll">
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -115,6 +115,22 @@ else
   bad "BepInEx 5 (reference zip missing)"
 fi
 
+# ─────────────────────────────────────────────────── 5. headless self-test (run)
+# Compiles the same RamusBridge.cs against the stub and drives the HTTP server
+# over a real socket. Needs the stub, so it is skipped if the stub failed.
+if [ -f "$STUB_DIR/UnityEngine.dll" ]; then
+  log "self-test: boot bridge on 127.0.0.1:18080 and call every endpoint"
+  rm -rf runtime-probe/SelfTest/obj runtime-probe/SelfTest/bin
+  if dotnet run --project runtime-probe/SelfTest/RamusBridge.SelfTest.csproj \
+       -c Release -v quiet "-p:UnityStubDir=$STUB_DIR" 2>&1 | sed 's/^/    /'; then
+    ok "self-test (HTTP + JSON + main-thread queue)"
+  else
+    bad "self-test (HTTP + JSON + main-thread queue)"
+  fi
+else
+  bad "self-test (UnityEngine stub missing)"
+fi
+
 # ─────────────────────────────────────────────────────────────── report
 echo
 echo "──────────────────────────────────────"

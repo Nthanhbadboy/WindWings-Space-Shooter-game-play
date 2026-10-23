@@ -120,7 +120,7 @@ jobs:
           {
             echo "<!-- bridge-build -->"
             if [ "$failed" = "0" ] && [ "$passed" != "0" ]; then
-              echo "## ✅ bridge build — $passed/4 targets compiled"
+              echo "## ✅ bridge build — $passed/$((passed + failed)) targets compiled"
             else
               echo "## ❌ bridge build failed — the device probe was skipped"
               echo
