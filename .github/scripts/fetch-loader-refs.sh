@@ -15,6 +15,7 @@ while [ $# -gt 0 ]; do
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
 done
+set -x
 
 BEP6_TAG="${BEP6_TAG:-v6.0.0-pre.2}"
 BEP5_TAG="${BEP5_TAG:-v5.4.23.5}"
@@ -58,9 +59,8 @@ if curl -fL --retry 2 --silent -o .ci/bep6-phone-refs.zip \
     if [ -n "$src" ]; then
       mv "$src" "$REFS/bep6-refs-phone"
     else
-      # fall back: any dirs named bep6-* under the zip
       src=$(find .ci/phone-refs -maxdepth 3 -type d -name 'bep6-*' | head -1)
-      [ -n "$src" ] && mv "$src" "$REFS/bep6-refs-phone"
+      if [ -n "$src" ]; then mv "$src" "$REFS/bep6-refs-phone"; fi
     fi
     rm -rf .ci/phone-refs
     log "phone refs: $(find "$REFS/bep6-refs-phone" -name '*.dll' 2>/dev/null | wc -l) dll"
