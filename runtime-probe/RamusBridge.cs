@@ -708,9 +708,9 @@ namespace Ramus.Bridge
                     .Prop("pid", SafePid())
                     .Prop("uptime", (DateTime.UtcNow - _startedUtc).TotalSeconds)
                     .Prop("scene", sc.name)
-                    .Prop("scenePath", sc.path)
-                    .Prop("sceneBuildIndex", sc.buildIndex)
-                    .Prop("sceneCount", SceneManager.sceneCount)
+                    .Prop("scenePath", sc.name)
+                    .Prop("sceneBuildIndex", Safe(() => (object)sc.buildIndex, -1))
+                    .Prop("sceneCount", Safe(() => (object)SceneManager.sceneCount, -1))
                     .Prop("frame", Time.frameCount)
                     .Prop("fps", _fps < 0 ? 0 : _fps)
                     .Prop("avgFrameMs", AvgFrameMs())
@@ -718,8 +718,8 @@ namespace Ramus.Bridge
                     .Prop("timeScale", Time.timeScale)
                     .Prop("realtime", Time.realtimeSinceStartup)
                     .Prop("unity", Application.unityVersion)
-                    .Prop("platform", Application.platform.ToString())
-                    .Prop("playing", Application.isPlaying)
+                    .Prop("platform", Safe(() => (object)Application.platform.ToString(), "?"))
+                    .Prop("playing", Safe(() => (object)Application.isPlaying, false))
                     .EndObj().ToString();
             });
         }
@@ -735,18 +735,18 @@ namespace Ramus.Bridge
                     .Prop("frame", Time.frameCount)
                     .Prop("fps", _fps < 0 ? 0 : _fps)
                     .Prop("timeScale", Time.timeScale)
-                    .Prop("screenW", Screen.width)
-                    .Prop("screenH", Screen.height)
-                    .Prop("dpi", Screen.dpi)
-                    .Prop("fullscreen", Screen.fullScreen)
-                    .Prop("quality", QualitySettings.names.Length > 0 ? QualitySettings.names[QualitySettings.GetQualityLevel()] : "")
-                    .Prop("vSync", QualitySettings.vSyncCount)
-                    .Prop("targetFrameRate", Application.targetFrameRate)
-                    .Prop("device", SystemInfo.deviceModel)
-                    .Prop("os", SystemInfo.operatingSystem)
-                    .Prop("processorCount", SystemInfo.processorCount)
-                    .Prop("systemMemoryMB", SystemInfo.systemMemorySize)
-                    .Prop("graphics", SystemInfo.graphicsDeviceName)
+                    .Prop("screenW", Safe(() => (object)Screen.width, -1))
+                    .Prop("screenH", Safe(() => (object)Screen.height, -1))
+                    .Prop("dpi", Safe(() => (object)Screen.dpi, -1.0))
+                    .Prop("fullscreen", Safe(() => (object)Screen.fullScreen, false))
+                    .Prop("quality", Safe(() => (object)(QualitySettings.names.Length > 0 ? QualitySettings.names[QualitySettings.GetQualityLevel()] : ""), ""))
+                    .Prop("vSync", Safe(() => (object)QualitySettings.vSyncCount, -1))
+                    .Prop("targetFrameRate", Safe(() => (object)Application.targetFrameRate, -1))
+                    .Prop("device", Safe(() => (object)SystemInfo.deviceModel, "?"))
+                    .Prop("os", Safe(() => (object)SystemInfo.operatingSystem, "?"))
+                    .Prop("processorCount", Safe(() => (object)SystemInfo.processorCount, -1))
+                    .Prop("systemMemoryMB", Safe(() => (object)SystemInfo.systemMemorySize, -1))
+                    .Prop("graphics", Safe(() => (object)SystemInfo.graphicsDeviceName, "?"))
                     .Prop("gcMB", GC.GetTotalMemory(false) / 1048576.0)
                     .EndObj().ToString();
             });
@@ -761,9 +761,9 @@ namespace Ramus.Bridge
                 var jw = new Jw().StartObj()
                     .Prop("ok", true)
                     .Prop("name", sc.name)
-                    .Prop("path", sc.path)
-                    .Prop("buildIndex", sc.buildIndex)
-                    .Prop("isLoaded", sc.isLoaded)
+                    .Prop("path", sc.name)
+                    .Prop("buildIndex", Safe(() => (object)sc.buildIndex, -1))
+                    .Prop("isLoaded", Safe(() => (object)sc.isLoaded, true))
                     .Prop("rootCount", roots.Length)
                     .Name("roots").StartArr();
 
@@ -1049,6 +1049,13 @@ namespace Ramus.Bridge
         }
 
         // ── helpers
+
+        /// <summary>Fetch a Unity property that may hit an unresolved icall on
+        /// stripped IL2CPP builds; fall back instead of failing the probe.</summary>
+        static object Safe(Func<object> f, object fallback)
+        {
+            try { return f(); } catch { return fallback; }
+        }
 
         static string SafePid()
         {
