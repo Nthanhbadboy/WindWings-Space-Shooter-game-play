@@ -385,7 +385,7 @@ Mỗi controller khai báo PathID của **9 script con**:
 | `appearScript` | `Enemy_Appear` | 981 | 914 / 981 = **93,2%** |
 | `physicsScript` | `Enemy_Physics` | 981 | 0 — chưa export |
 | `destroyScript` | `Enemy_Destroy` | 981 | 0 — chưa export |
-| `uiScript` | `Enemy_UI` | 981 | 0 — chưa export |
+| `uiScript` | **`Enemy_Display`** | 981 | **981 / 981 = 100%** ⚠ (tôi từng ghi `Enemy_UI` — **class đó không tồn tại**) |
 | `burnedScript` | `Enemy_Burned` | 689 | 0 — chưa export |
 | `stunScript` | `Enemy_Stun` | 137 | 0 — chưa export |
 
@@ -470,7 +470,7 @@ hay `Boss_BodyPhysics`. Hai bảng này nằm trong **không gian object riêng*
 
 | # | Thứ còn thiếu | Số lượng | Ghi chú |
 |---:|---|---:|---|
-| 13 | `Enemy_Physics` · `Enemy_Destroy` · `Enemy_UI` · `Enemy_Burned` · `Enemy_Stun` | 981 · 981 · 981 · 689 · 137 | **PathID đã có** trong `Enemy_Controller` |
+| 13 | `Enemy_Physics` · `Enemy_Destroy` · `Enemy_Burned` · `Enemy_Stun` | 981 · 971 · 689 · 137 | ✅ **đã export** — xem §7.14 |
 | 14 | 37 `*_Director` + 3 `AttackPhases` | 68 | chưa vào `TARGETS` |
 | 15 | `AnimationClip` · `AnimatorController` | **791** · **308** | manifest chỉ có Sprite + Texture2D |
 | 16 | ~~Toạ độ đường bay~~ | — | **ĐÃ CÓ trong raw** — xem §7.11 (CSV chỉ ghi `[10]`) |
@@ -754,6 +754,105 @@ Danh sách dài nhất: `Boss11_Director.allHandPoints` **12** · `MB9_Director.
 **Vẫn thiếu:** Director **không** chứa thời lượng pha — nó giữ **tham chiếu** (`animatorParent`,
 `animEvents`) trỏ tới `AnimatorController` (308) và `AnimationClip` (791), hai loại **chưa export**.
 Lớp pha boss giờ **biết cấu trúc nhưng chưa biết nhịp**.
+
+### 7.15 ⚠ **981 không phải "981 enemy"** — và tôi đã trích sai suốt 3 vòng
+
+Với `transform-tree` + `prefab-roots.csv` (2.081 root), lần đầu **leo được 100%** `Enemy_Controller`
+về prefab gốc. Kết quả đổi cách hiểu cả bộ số:
+
+| Nơi chứa `Enemy_Controller` | Số | Loại |
+|---|---:|---|
+| **`Boss-*`** | **318** | prefab boss |
+| **`Wave_*`** | **288** | prefab wave (enemy giữ sẵn trong wave) |
+| **`Board_SelectBoss`** | **126** | ⚠ **mô hình trưng bày ở màn CHỌN boss** — không xuất hiện trong trận |
+| `Board_FightBoss` | **70** | màn đánh boss |
+| `Board_Players` · `Board_Maps` | 8 | UI |
+| prefab lẻ khác | 171 | lẻ |
+| **Tổng** | **981** | leo được **981 / 981 = 100%** |
+
+> **Nhận định (mức A) — tôi phải rút lại cách gọi "981 enemy":** 981 là **số instance
+> `Enemy_Controller` trong prefab**, không phải số enemy trong trận. **≥126 (12,8%) là mô hình UI**.
+> Con số "enemy dùng được" nằm trong khoảng **777–855** cho tới khi đối chiếu `Board_FightBoss` runtime.
+>
+> Chỗ này **không đổi** kết luận thiết kế (phân bố tốc độ, turret, `Stop` 94,2%) — đổi **nhãn**:
+> mọi bảng `Enemy_*` về sau phải ghi *"981 dòng dữ liệu, trong đó ≥126 là mô hình UI"*.
+
+**Hệ quả cho các số đã công bố:**
+
+| Số đã ghi | Đúng/Không |
+|---|---|
+| `listSpeeds[0]`: 562 × 5,0 · 123 × 1,0 · 118 × 20,0 · median 5,0 · max 30,0 | ✅ **đúng, xác nhận lại trên 981** |
+| `isTurret` 112 · `facingMove` 949 | ✅ đúng |
+| `listSpeeds` 2 phần tử = **137** | ✅ đúng |
+| "**981 enemy**" | ❌ **sai nhãn** — 981 bản ghi, ≥126 là mô hình UI |
+
+### 7.16 `uiScript` → `Enemy_Display`, **không có class `Enemy_UI`**
+
+| Kiểm | Kết quả |
+|---|---|
+| `Enemy_Controller.uiScript` (981 PathID) ∩ `Enemy_Display` | **981 / 981 = 100%** |
+| `Enemy_UI` trong 677 class | **KHÔNG TỒN TẠI** |
+
+⇒ Chữ "UI" trong tên field `uiScript` nghĩa là **hiển thị trong game** (renderer, thanh máu), không phải UI menu.
+Tôi suy class từ tên field — **sai**. Bài học: **không suy tên class từ tên field**.
+
+`Enemy_Display` (981) có dữ liệu thật, chưa từng đọc:
+
+| Field | Phân bố |
+|---|---|
+| `appearOff` | **921 True** · 60 False ⇒ **93,9%** enemy tắt hiệu ứng xuất hiện |
+| `hitableRenderers` | **0 → 367** · **1 → 531** · 2 → 33 · 3 → 23 · 4 → 14 · 5 → 3 · 13 → 6 · 31 → 4 |
+
+> **Nhận định (mức A):** **367 / 981 (37,4%) enemy có 0 renderer "có thể bắn trúng"**.
+> Cộng `Enemy_Health.noDamage = True` **241/981 (24,6%)** ⇒ đây là hai cơ chế **khác nhau**:
+> một cái quyết định **có bắn trúng được không**, một cái quyết định **trúng rồi có mất máu không**.
+> Muốn tái tạo cảm giác "bắn vào đâu cũng trúng" phải dùng **cả hai**, không phải `Enemy_Physics`.
+
+### 7.17 `appearScript` → **51 class `*_Director`** — mắt nối boss → đạo diễn
+
+`Enemy_Controller.appearScript` không chỉ trỏ `Enemy_Appear`:
+
+| Class đích | Số |
+|---|---:|
+| `Enemy_Appear` | **914** |
+| **51 class `*_Director`** (`BossN_Director` · `MBN_Director` · `MB6_ChildDirector`) | **67** |
+| Tổng | **981** |
+
+⇒ **Boss không dùng `Enemy_Appear`** — nó trỏ thẳng tới đạo diễn pha. Đây là mắt nối
+**boss → Director** mà trước đó phải ghép bằng tên prefab.
+
+**Vì sao quan trọng:** giờ biết **chính xác boss nào dùng Director nào**, không đoán.
+37 class Director / 63 instance đã export (§7.14.4) — ghép được vào từng `Boss-*`.
+
+### 7.18 `Call_Data` **đầy đủ 23.757** — và map được enum `spawnType`
+
+Cap đã nâng, dữ liệu đã về đủ:
+
+| Kiểm | Số |
+|---|---:|
+| `Call_Data` | **23.757** (trước 1.500) |
+| Tổng `len(listPrefabEnemies)` | **45.659** — khớp đúng số tôi tính từ `waves.json` |
+| `number` = 0 | **23.757 / 23.757** (100%) |
+| `editType` = 0 | **23.757 / 23.757** (100%) |
+| Số wave khác nhau | **281** |
+
+**`spawnType` — map được sang nhãn trong `waves.json`:**
+
+| `spawnType` | Số | % | Nhãn tương ứng (`waves.json`) |
+|---:|---:|---:|---|
+| **2** | **16.498** | 69,4% | `point_range` (68,0%) |
+| **0** | **4.199** | 17,7% | `point` (18,8%) |
+| **1** | **1.688** | 7,1% | `path` (7,8%) |
+| **6** | **686** | 2,9% | `boss` (2,9%) |
+| **5** | **686** | 2,9% | `special` (2,5%) |
+
+Tỷ lệ khớp trong sai số 1,4 điểm ⇒ **enum `spawnType` đã giải mã**: `0 = point` · `1 = path` ·
+`2 = point_range` · `5 = special` · `6 = boss`. Đây là mục §7 câu hỏi #5 của `SCRIPTS.md` — **đóng**.
+
+> **Nhận định (mức A):** `number = 0` ở **toàn bộ 23.757** và `editType = 0` ở toàn bộ.
+> Nghĩa là **không có số lượng tường minh** trong bất kỳ spawner nào ⇒ câu hỏi
+> "45.659 quân hay 23.757 quân" (§7.13) **không giải được bằng dữ liệu serialize**;
+> phải đọc thân hàm. Mức vẫn là **B**.
 
 ## 8. Còn thiếu / phải đoán
 

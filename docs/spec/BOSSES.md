@@ -11,6 +11,12 @@
 >
 > Quy ước mức: **A** đo được · **B** suy ra · **C** ước lượng · **D** chưa đọc.
 > Mục cuối: **Còn thiếu / phải đoán**.
+>
+> ⚠ **"981" luôn là SỐ BẢN GHI, không phải số enemy trong trận.** Leo `Transform` về prefab gốc
+> (bản `b8e1a0b`) cho: **`Boss-*` 318** · **`Wave_*` 288** · **`Board_SelectBoss` 126** (mô hình
+> trưng bày ở màn **chọn** boss) · `Board_FightBoss` 70 · UI khác 8 · prefab lẻ 171.
+> ⇒ **≥126 (12,8%) không xuất hiện trong trận**; enemy dùng được nằm trong **777–855**.
+> Chi tiết: `DATA_SYNC.md` §7.15.
 
 ---
 

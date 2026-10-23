@@ -106,7 +106,7 @@ Nghĩa là người mới **không có nút bỏ qua** ở bước này.
 
 | # | Lớp kịch bản | Trả lời câu hỏi | Class | Instance | Đọc | Dạng |
 |---:|---|---|---|---:|---:|---|
-| 1 | **Sinh quân** | con nào, ở đâu, bao lâu một con | `Call_Data` | **23.757** | **100%** | timeline |
+| 1 | **Sinh quân** | con nào, ở đâu, bao lâu một con | `Call_Data` | **23.757** | **100%** ✅ (cap đã bỏ) | timeline |
 | 2 | **Bay** | đi đường nào, nhanh bao nhiêu, dừng hay lặp | `Enemy_Movement` | 981 | **100%** | path + speed |
 | 3 | **Bắn** | bắn viên gì, bao lâu một viên, mấy băng | `Gun_Attack` | 458 | **100%** | timeline |
 | 4a | **Va chạm boss** | đâm vào mất bao nhiêu máu | `Boss_BodyPhysics` | 251 | **100%** | 2 tham số |
@@ -202,7 +202,25 @@ Không một dòng kịch bản nào bị mất khi gộp.
 
 ---
 
+### 3.1 `spawnType` — enum đã giải mã
+
+Từ `Call_Data` đầy đủ **23.757** dòng, đối chiếu nhãn trong `waves.json`:
+
+| `spawnType` | Số | % | Nhãn |
+|---:|---:|---:|---|
+| **2** | **16.498** | **69,4%** | `point_range` |
+| 0 | 4.199 | 17,7% | `point` |
+| 1 | 1.688 | 7,1% | `path` |
+| 6 | 686 | 2,9% | `boss` |
+| 5 | 686 | 2,9% | `special` |
+
+`number` = **0 ở 23.757/23.757** · `editType` = **0 ở 23.757/23.757** ⇒ **không có số lượng tường minh**
+trong bất kỳ spawner nào. Câu hỏi "45.659 quân hay 23.757 quân" **không giải được bằng dữ liệu serialize**.
+
 ## 4. Kịch bản bay — 94% dừng lại trong màn
+
+> ⚠ **Nhãn đếm:** "981" = **số bản ghi** `Enemy_Movement`, trong đó **≥126 (12,8%) là mô hình
+> trưng bày ở màn CHỌN boss** (`Board_SelectBoss`), không xuất hiện trong trận. Xem `DATA_SYNC.md` §7.15.
 
 `Enemy_Movement` (981) cho mỗi enemy:
 
