@@ -56,11 +56,12 @@ def main() -> int:
         nonlocal cur
         if cur is not None:
             if cur["init"]:
-                seg["arrays"].append({"len": cur["len"], "source": "InitializeArray"})
+                seg["arrays"].append({"len": cur["len"], "source": "InitializeArray",
+                                      "addr": cur["addr"]})
             else:
                 vals = [cur["values"].get(k) for k in range(cur["len"])]
                 seg["arrays"].append({"len": cur["len"], "source": "immediates",
-                                      "values": vals})
+                                      "values": vals, "addr": cur["addr"]})
             cur = None
 
     for line in cc:
@@ -78,7 +79,9 @@ def main() -> int:
             continue
         if ARRAY_NEW in body:
             flush()
-            cur = {"len": pending_len or 0, "values": {}, "init": False}
+            addr = line.split(":", 1)[0].strip()
+            cur = {"len": pending_len or 0, "values": {}, "init": False,
+                   "addr": addr}
             continue
         if INIT_ARRAY in body and cur is not None:
             cur["init"] = True
