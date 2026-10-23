@@ -153,20 +153,46 @@ async function waitForBridge(seconds) {
 
 // ── logcat fallback ────────────────────────────────────────────────────────
 
+/**
+ * `ramus logcat` answers with JSON — {"lines":[{"stamp","stream","text"}]} —
+ * not with plain text. Treating it as text made every regex run against JSON
+ * punctuation, the tag histogram report one bucket called "other", and the
+ * "did it start" table compare against escaped strings. Accept both shapes.
+ */
+function logcatLines(raw) {
+  const text = String(raw || '');
+  try {
+    const d = JSON.parse(text);
+    const arr = Array.isArray(d) ? d : Array.isArray(d.lines) ? d.lines : null;
+    if (arr) {
+      return arr.map((l) => {
+        if (typeof l === 'string') return l;
+        const stamp = l.stamp || l.time || '';
+        const stream = l.stream || '';
+        const body = l.text || l.message || l.msg || '';
+        return `${stamp} ${stream} ${body}`.replace(/\s+/g, ' ').trim();
+      }).filter(Boolean);
+    }
+  } catch { /* not JSON: plain text (older CLI, or an error message) */ }
+  return text.split('\n').map((l) => l.trim()).filter(Boolean);
+}
+
 function readLogcatStates(limit = 500) {
   // The CLI rejects --limit > 500 ("limit must be at most 500").
   const r = ramus(['logcat', '--limit', String(Math.min(limit, 500))]);
   const text = `${r.stdout}\n${r.stderr}`;
-  result.logcat.rawAll = text;
+  const lines = logcatLines(text);
+  result.logcat.rawJson = text.slice(0, 4000);
+  result.logcat.rawAll = lines.join('\n');
   if (r.ok) {
-    try { writeFileSync(path.join(OUT, 'logcat.txt'), text); } catch { /* best effort */ }
+    try { writeFileSync(path.join(OUT, 'logcat.txt'), lines.join('\n')); } catch { /* best effort */ }
   }
-  result.logcat.raw = text.split('\n').filter((l) => l.includes('RAMUSB')).slice(-120);
+  result.logcat.raw = lines.filter((l) => l.includes('RAMUSB')).slice(-120);
   // Keep a bounded copy of everything, so the report can show what the device
   // actually logged instead of only what we managed to parse.
-  result.logcat.lines = text.split('\n').filter((l) => l.trim()).slice(-500);
+  result.logcat.lines = lines.slice(-500);
   const states = [];
-  for (const line of text.split('\n')) {
+  for (const line of lines) {
     const at = line.indexOf('RAMUSB|');
     if (at < 0) continue;
     const payload = line.slice(at + 'RAMUSB|'.length).trim();
@@ -194,7 +220,16 @@ async function waitForLogcat(seconds) {
       launched = true;
       // A crash, HOME press or a slow first boot leaves the app in the background.
       const r = ramus(['app', 'launch']);
+      // Keep the answer: on a trial this is the only statement about whether the
+      // activity could be started at all.
+      result.launch = {
+        ok: r.ok,
+        code: r.status ?? null,
+        stdout: String(r.stdout || '').slice(0, 600),
+        stderr: String(r.stderr || '').slice(0, 600),
+      };
       if (r.ok) note('sent `app launch` because no bridge line appeared yet');
+      else fail('app launch failed', `${String(r.stderr || r.stdout || '').slice(0, 200)}`);
     }
 
     const left = Math.round((deadline - Date.now()) / 1000);
@@ -516,6 +551,17 @@ function renderReport(r) {
       lines.push('```');
       for (const e of sig.excerpts) lines.push(e);
       lines.push('```');
+      lines.push('');
+    }
+
+    if (r.launch) {
+      lines.push(`app launch: ${r.launch.ok ? 'ok' : 'failed (exit ' + r.launch.code + ')'}`);
+      const out = (r.launch.stderr || r.launch.stdout || '').trim();
+      if (out) {
+        lines.push('```');
+        lines.push(out.slice(0, 400));
+        lines.push('```');
+      }
       lines.push('');
     }
 

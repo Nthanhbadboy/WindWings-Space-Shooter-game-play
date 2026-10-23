@@ -172,7 +172,21 @@ I/Unity: RAMUSB|{"ok":true,"scene":"Ingame","frame":1234,"fps":59.8,"ts":1,"upti
 - `mirror_roots=12` quyết định bao nhiêu root object được kèm theo (0 = tắt).
 - Một dòng bị cắt ở 3.500 ký tự để không làm nghẹt logcat.
 
-CI đọc bằng `npx ramus-cli logcat --limit 800`, tách các dòng `RAMUSB|`, parse JSON, ghi vào `summary.json` (`transport: "logcat"`).
+CI đọc bằng `npx ramus-cli logcat --limit 500` (CLI từ chối > 500), tách các dòng
+`RAMUSB|`, parse JSON, ghi vào `summary.json` (`transport: "logcat"`).
+
+> **`ramus logcat` trả JSON, không trả text.** Định dạng thật, đọc từ log của lượt
+> chạy `39923633849`:
+>
+> ```json
+> { "lines": [ { "stamp": "08:20:44", "stream": "system",
+>                "text": "I/ActivityTaskManager: Displayed com.Wind.wings.Space.Shooter/…" } ] }
+> ```
+>
+> Bản đầu của `ramus-probe.mjs` regex trên **chuỗi JSON thô** ⇒ histogram tag ra
+> một rổ `other` 2.502 dòng, và bảng "did the app start" chỉ so khớp được tình cờ.
+> Đã sửa: parse `.lines[].text` rồi mới chạy regex; chấp nhận cả text thuần cho CLI cũ.
+> Lượt đó trả 2.504 dòng và **không** có dòng nào chứa `com.Wind.wings.Space.Shooter`.
 
 ---
 
