@@ -223,6 +223,32 @@ def main() -> int:
                 entry["ints"] = ints
         result[key] = entry
     print(f"decoded: {len(result)}, skipped: {skipped} {reasons}")
+    # Thử 4 giả thuyết ánh xạ token InitializeArray -> field, in 8 token đầu
+    # của Map_Get_Datas..cctor dưới mỗi giả thuyết.
+    try:
+        mj = json.load(open("reverse-engineering/raw/il2cpp-consts/"
+                            "Map_Get_Datas.json", encoding="utf-8"))
+        cc_m = next(m for m in mj["methods"] if m["method"] == "cctor")
+        toks = [c for c in cc_m["constants"] if c.get("kind") == "init_array"]
+        srcs = [int(c["slot_val"], 16) & 0x1FFFFFFF for c in toks]
+        fdv_by_field = sorted(result.items(), key=lambda kv: kv[1]["field_index"])
+        pid_only = [(k, v) for k, v in fdv_by_field
+                    if k.startswith("<PrivateImplementationDetails>")]
+        print(f"  token probe: {len(toks)} token; src đầu {srcs[:8]}")
+        for label, table in (
+                ("global-field", None), ("fdv-by-field", fdv_by_field),
+                ("pid-only", pid_only)):
+            names = []
+            for src in srcs[:8]:
+                if table is None:
+                    names.append(index2name.get(src, "?"))
+                elif src < len(table):
+                    names.append(table[src][0])
+                else:
+                    names.append("OOR")
+            print(f"  [{label}] {names}")
+    except Exception as e:  # noqa: BLE001
+        print(f"  token probe lỗi: {e!r}")
 
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as fh:
