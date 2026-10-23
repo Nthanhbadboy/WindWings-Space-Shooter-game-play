@@ -1,0 +1,264 @@
+name: runtime-probe
+
+# Boots a cloud Android device with Ramus, installs the build, and inspects the
+# game from inside the process (embedded C# bridge) plus screenshots/UI tree.
+#
+# The APK must already contain runtime-probe/RamusBridge.dll (see
+# runtime-probe/README.md section 3). CI does not patch the APK.
+
+on:
+  workflow_dispatch:
+    inputs:
+      apk_url:
+        description: 'APK to install (https URL). Empty → repo variable RAMUS_APK_URL'
+        required: false
+        type: string
+      apk_path:
+        description: 'APK already present in the checkout (e.g. runtime-probe/app.apk)'
+        required: false
+        default: ''
+        type: string
+      scenario:
+        description: 'Label written into the report'
+        required: false
+        default: manual
+        type: string
+      taps:
+        description: 'Space-separated normalized taps, e.g. "0.5,0.8 0.5,0.8"'
+        required: false
+        default: ''
+        type: string
+      wait_scene:
+        description: 'Block until this scene name is active (empty = skip)'
+        required: false
+        default: ''
+        type: string
+      use_trial:
+        description: 'Use the 15-minute anonymous trial instead of RAMUS_API_KEY (no adb)'
+        required: false
+        default: false
+        type: boolean
+      strict:
+        description: 'Fail the job when the bridge cannot be reached'
+        required: false
+        default: true
+        type: boolean
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: runtime-probe-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RAMUS_CLI: ramus-cli@0.1.17
+  RAMUS_PACKAGE: com.wind.wings.Space.Shooter
+  PROBE_OUT: reports/runtime-probe
+
+jobs:
+  preflight:
+    name: preflight (credentials + APK)
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.gate.outputs.enabled }}
+      apk_mode: ${{ steps.gate.outputs.apk_mode }}
+      apk_source: ${{ steps.gate.outputs.apk_source }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: gate
+        env:
+          KEY: ${{ secrets.RAMUS_API_KEY }}
+          INPUT_APK_URL: ${{ inputs.apk_url }}
+          INPUT_APK_PATH: ${{ inputs.apk_path }}
+          VAR_APK_URL: ${{ vars.RAMUS_APK_URL }}
+          USE_TRIAL: ${{ inputs.use_trial }}
+        run: |
+          set -euo pipefail
+          apk=""
+          if [ -n "${INPUT_APK_PATH:-}" ] && [ -f "${INPUT_APK_PATH}" ]; then
+            apk="$INPUT_APK_PATH"
+          elif [ -f "runtime-probe/app.apk" ]; then
+            apk="runtime-probe/app.apk"
+          fi
+
+          if [ -n "$apk" ]; then
+            echo "apk_mode=file" >> "$GITHUB_OUTPUT"
+            echo "apk_source=$apk" >> "$GITHUB_OUTPUT"
+          elif [ -n "${VAR_APK_URL:-}" ] || [ -n "${INPUT_APK_URL:-}" ]; then
+            url="${INPUT_APK_URL:-$VAR_APK_URL}"
+            echo "apk_mode=url" >> "$GITHUB_OUTPUT"
+            echo "apk_source=$url" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::No APK configured (inputs.apk_url / vars.RAMUS_APK_URL / runtime-probe/app.apk)."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ -n "${KEY:-}" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          elif [ "${USE_TRIAL:-false}" = "true" ]; then
+            echo "::warning::Trial mode: 15-minute session, 150 MB APK, no adb tunnel (logcat path only)."
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::RAMUS_API_KEY is not set — skipping. Add the secret, or run with use_trial=true."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "reason=no-credentials" >> "$GITHUB_OUTPUT"
+          fi
+
+  probe:
+    name: ramus device probe
+    needs: preflight
+    if: needs.preflight.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Resolve APK
+        env:
+          APK_MODE: ${{ needs.preflight.outputs.apk_mode }}
+          APK_SOURCE: ${{ needs.preflight.outputs.apk_source }}
+        run: |
+          set -euo pipefail
+          mkdir -p .ci
+          if [ "$APK_MODE" = "file" ]; then
+            cp "$APK_SOURCE" .ci/app.apk
+          else
+            echo "downloading $APK_SOURCE"
+            curl -fL --retry 3 --retry-delay 2 -o .ci/app.apk "$APK_SOURCE"
+          fi
+          test -s .ci/app.apk
+          echo "RAMUS_APK=.ci/app.apk" >> "$GITHUB_ENV"
+          ls -lh .ci/app.apk
+          sha256sum .ci/app.apk | tee apk.sha256
+
+      - name: Credentials
+        env:
+          KEY: ${{ secrets.RAMUS_API_KEY }}
+          USE_TRIAL: ${{ inputs.use_trial }}
+        run: |
+          set -euo pipefail
+          if [ -n "${KEY:-}" ]; then
+            echo "RAMUS_API_KEY=$KEY" >> "$GITHUB_ENV"
+          elif [ "${USE_TRIAL:-false}" = "true" ]; then
+            npx --yes "$RAMUS_CLI" trial
+          else
+            echo "::error::No credentials; this should have been caught in preflight."
+            exit 1
+          fi
+          npx --yes "$RAMUS_CLI" status || true
+
+      - name: Start session
+        id: session
+        run: |
+          set -euo pipefail
+          mkdir -p "$PROBE_OUT"
+          npx --yes "$RAMUS_CLI" session start \
+            --apk "$RAMUS_APK" \
+            --wait \
+            --timeout 900 \
+            | tee "$PROBE_OUT/session.json"
+
+          sid=$(jq -r '.sessionId // .session_id // .id // .session.id // .session.sessionId // empty' \
+                "$PROBE_OUT/session.json" 2>/dev/null || true)
+          if [ -n "$sid" ]; then
+            echo "RAMUS_SESSION=$sid" >> "$GITHUB_ENV"
+            echo "session=$sid" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::Could not parse a session id; the CLI will use the last session."
+          fi
+          npx --yes "$RAMUS_CLI" session list || true
+
+      - name: Wait for the app
+        run: |
+          set -euo pipefail
+          npx --yes "$RAMUS_CLI" wait --stable --timeout 90000 || true
+          npx --yes "$RAMUS_CLI" screenshot --out "$PROBE_OUT/screen-boot.jpg" || true
+
+      - name: Open adb tunnel (best effort)
+        id: adb
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          if ! command -v adb >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq android-tools-adb
+          fi
+          adb version
+          out=$(npx --yes "$RAMUS_CLI" adb --port 5555 2>&1 || true)
+          echo "$out"
+          serial=$(printf '%s\n' "$out" | grep -oE '(emulator-[0-9]+|[0-9]{1,3}(\.[0-9]{1,3}){3}:[0-9]+)' | head -1 || true)
+          if [ -z "$serial" ]; then
+            adb devices
+            serial=$(adb devices | awk 'NR>1 && $2=="device" {print $1; exit}')
+          fi
+          echo "serial=$serial"
+          test -n "$serial"
+          adb -s "$serial" forward tcp:8080 tcp:8080
+          adb -s "$serial" shell pidof "$RAMUS_PACKAGE" || true
+          curl -fsS --max-time 10 http://127.0.0.1:8080/health | tee "$PROBE_OUT/health-direct.json"
+
+      - name: Scenario taps
+        if: github.event_name == 'workflow_dispatch' && inputs.taps != ''
+        continue-on-error: true
+        env:
+          TAPS: ${{ inputs.taps }}
+        run: |
+          set -euo pipefail
+          for tap in $TAPS; do
+            echo "tap $tap"
+            npx --yes "$RAMUS_CLI" tap "$tap" --force || true
+            sleep 2
+          done
+
+      - name: Probe game state
+        env:
+          RAMUS_SESSION: ${{ env.RAMUS_SESSION }}
+        run: |
+          set -euo pipefail
+          args=(--out "$PROBE_OUT" --label "${{ inputs.scenario || 'ci' }}" --wait-server 120)
+          if [ -n "${{ inputs.wait_scene }}" ]; then args+=(--wait-scene "${{ inputs.wait_scene }}"); fi
+          if [ "${{ inputs.strict }}" != "false" ]; then args+=(--strict); fi
+          node .github/scripts/ramus-probe.mjs "${args[@]}"
+
+      - name: Session watch link
+        if: always() && env.RAMUS_SESSION != ''
+        continue-on-error: true
+        run: npx --yes "$RAMUS_CLI" session share | tee "$PROBE_OUT/watch-link.json"
+
+      - name: Upload artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-probe-${{ github.run_id }}
+          path: |
+            ${{ env.PROBE_OUT }}
+            apk.sha256
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Comment on PR
+        if: always() && github.event_name == 'pull_request' && hashFiles(format('{0}/report.md', env.PROBE_OUT)) != ''
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --body-file "$PROBE_OUT/report.md" \
+            --edit-last --create-if-none
+
+      - name: End session
+        if: always() && env.RAMUS_SESSION != ''
+        continue-on-error: true
+        run: npx --yes "$RAMUS_CLI" session end

@@ -1,0 +1,22 @@
+# Ramus Runtime Bridge — optional config, drop next to RamusBridge.dll
+# Every key can be overridden by an environment variable (see README).
+
+# TCP port inside the APK. Map it with: ramus adb --port 5555 && adb forward tcp:8080 tcp:8080
+port=8080
+
+# 127.0.0.1 is the safe default: only reachable through adb forward.
+# Use 0.0.0.0 only on an isolated lab network.
+bind=127.0.0.1
+
+# When set, every request must carry X-Ramus-Token: <token> (or ?token=<token>).
+token=
+
+# Emit one `RAMUSB|{json}` line to logcat every N seconds (0 disables).
+# This is the fallback path when the CI session has no adb tunnel (Ramus trial).
+mirror=10
+
+# /statics uses reflection over game types; turn off if the game's interop hates it.
+statics=true
+
+# /screenshot uses ScreenCapture; Ramus `screenshot` is faster and safer.
+screenshot=true
