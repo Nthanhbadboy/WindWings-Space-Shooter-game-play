@@ -170,6 +170,7 @@ sleep 25 && curl -fsS http://127.0.0.1:8080/health | jq
 | GET | `/find?name=X&max=N` | object theo tên |
 | GET | `/statics?type=T&max=N&arr=128&depth=2` | **static field của class `T`**; `arr` = phần tử mỗi mảng, `depth` = số tầng mảng lồng (2 để mở `List<int[]>`) |
 | GET | `/logs?n=N` | vòng log trong tiến trình |
+| GET | `/anim?name=X&max=N` | animation **đang chạy** trên object khớp `X` (Spine + Animator): tên, time, length, loop |
 | GET | `/metrics` | frame/fps |
 | GET | `/screenshot` | PNG màn hình |
 | POST | `/timescale?v=<x>` | đổi `Time.timeScale` — **`0` để đóng băng game khi dump** |

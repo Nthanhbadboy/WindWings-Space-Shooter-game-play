@@ -41,7 +41,10 @@ namespace UnityEngine
 
     public class Component : Object
     {
-        public GameObject gameObject { get; }
+        // Setter exists so the stub GameObject can wire itself up; real Unity is
+        // get-only, and RamusBridge.cs never assigns these, which the other
+        // targets prove.
+        public GameObject gameObject { get; set; }
         public Transform transform { get; }
     }
 
@@ -63,16 +66,43 @@ namespace UnityEngine
 
     public class GameObject : Object
     {
-        public GameObject() { }
-        public GameObject(string name) { }
-        public Transform transform { get; }
+        readonly System.Collections.Generic.List<Component> _components = new System.Collections.Generic.List<Component>();
+        readonly Transform _transform;
+
+        public GameObject() : this(null) { }
+        public GameObject(string name)
+        {
+            if (name != null) this.name = name;
+            _transform = new Transform { gameObject = this };
+            _components.Add(_transform);
+        }
+
+        public Transform transform => _transform;
         public bool activeSelf { get; }
         public bool activeInHierarchy { get; }
         public string tag { get; set; }
         public int layer { get; set; }
-        public T AddComponent<T>() where T : Component => null;
-        public T[] GetComponents<T>() => null;
-        public Component[] GetComponents(Type type) => null;
+        public T AddComponent<T>() where T : Component
+        {
+            var c = (T)Activator.CreateInstance(typeof(T));
+            c.gameObject = this;
+            _components.Add(c);
+            return c;
+        }
+
+        public T[] GetComponents<T>()
+        {
+            var out_ = new System.Collections.Generic.List<T>();
+            foreach (var c in _components) if (c is T t) out_.Add(t);
+            return out_.ToArray();
+        }
+
+        public Component[] GetComponents(Type type)
+        {
+            var out_ = new System.Collections.Generic.List<Component>();
+            foreach (var c in _components) if (type.IsInstanceOfType(c)) out_.Add(c);
+            return out_.ToArray();
+        }
 
         // Message routing. The phone build references the real UnityEngine and
         // these exist there; the stubs exist so `core` and the self-test can

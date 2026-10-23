@@ -73,6 +73,7 @@ static class Program
                 "/hierarchy?depth=1&max=20",
                 "/find?name=Player&max=5",
                 "/statics?type=Player_Get_Datas&max=5",
+                "/anim?max=5",
                 "/logs?n=10",
                 "/metrics",
             };
@@ -137,6 +138,75 @@ static class Program
             catch (Exception ex)
             {
                 Check("/statics nested", false, ex.GetType().Name + ": " + ex.Message);
+            }
+
+            // ── /anim: read playback from components that only exist as names ──
+            // Spine is not referenced at compile time and the stub has no Animator,
+            // so the reader is pure reflection. These fakes mirror the Unity/Spine
+            // member names; if a name in DescribeAnimation is wrong, this fails
+            // here instead of silently returning an empty object on the phone.
+            try
+            {
+                var goAnim = new UnityEngine.GameObject("Boss-39003");
+                goAnim.AddComponent<Animator>();
+                var goSpine = new UnityEngine.GameObject("Boss 1");
+                goSpine.AddComponent<SkeletonAnimation>();
+
+                string json = Bridge.AnimJsonFrom("", 10, new[] { goAnim, goSpine });
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+                Check("/anim → count=2", root.GetProperty("count").GetInt32() == 2, First(json, 200));
+
+                string byKind = "?";
+                foreach (var it in root.GetProperty("items").EnumerateArray())
+                {
+                    if (it.GetProperty("kind").GetString() == "animator")
+                    {
+                        byKind = "animator";
+                        Check("/anim animator → clip name",
+                              it.TryGetProperty("clip", out var clip) && clip.GetString() == "Attack1",
+                              First(it.ToString(), 200));
+                        Check("/anim animator → normalized",
+                              Math.Abs(it.GetProperty("normalized").GetDouble() - 0.25) < 1e-6,
+                              it.ToString());
+                        Check("/anim animator → length",
+                              Math.Abs(it.GetProperty("length").GetDouble() - 33.367) < 1e-3,
+                              it.ToString());
+                        Check("/anim animator → time = normalized × length",
+                              Math.Abs(it.GetProperty("time").GetDouble() - 0.25 * 33.367) < 1e-3,
+                              it.ToString());
+                        Check("/anim animator → speed",
+                              Math.Abs(it.GetProperty("speed").GetDouble() - 1.5) < 1e-6,
+                              it.ToString());
+                    }
+                    else if (it.GetProperty("kind").GetString() == "spine")
+                    {
+                        byKind += "/spine";
+                        Check("/anim spine → animation name",
+                              it.TryGetProperty("anim", out var a) && a.GetString() == "Xuathien",
+                              First(it.ToString(), 200));
+                        Check("/anim spine → track time",
+                              Math.Abs(it.GetProperty("time").GetDouble() - 1.25) < 1e-6,
+                              it.ToString());
+                        Check("/anim spine → loop flag",
+                              it.GetProperty("loop").GetBoolean(), it.ToString());
+                        Check("/anim spine → length from AnimationEnd",
+                              Math.Abs(it.GetProperty("length").GetDouble() - 1.833) < 1e-3,
+                              it.ToString());
+                    }
+                }
+                Check("/anim → both kinds present", byKind == "animator/spine", byKind);
+
+                // A filter that matches nothing must still be a clean empty answer.
+                string filtered = Bridge.AnimJsonFrom("KHONG_CO_GI", 10, new[] { goAnim });
+                using var d2 = JsonDocument.Parse(filtered);
+                Check("/anim filter → empty, ok=true",
+                      d2.RootElement.GetProperty("count").GetInt32() == 0 &&
+                      d2.RootElement.GetProperty("ok").GetBoolean(), First(filtered, 200));
+            }
+            catch (Exception ex)
+            {
+                Check("/anim behaviour", false, ex.GetType().Name + ": " + ex.Message);
             }
 
             // /health is the endpoint CI depends on, so assert its shape.
@@ -278,4 +348,62 @@ public static class RamusSelfTestData
         for (int i = 0; i < n; i++) a[i] = i;
         return a;
     }
+}
+
+// ── fakes for the /anim reader ─────────────────────────────────────────────
+// Names matter: DescribeAnimation dispatches on GetType().Name, so these are
+// called exactly what UnityEngine / Spine call them. The stub defines neither,
+// so there is no clash — and if the reader ever stops matching by name, these
+// tests go red instead of the phone silently returning {"count":0}.
+
+public struct SelfTestStateInfo
+{
+    public float normalizedTime;
+    public float length;
+    public bool loop;
+}
+
+public struct SelfTestClipInfo
+{
+    public SelfTestClip clip;
+}
+
+public class SelfTestClip
+{
+    public string name;
+}
+
+public class Animator : UnityEngine.Component
+{
+    public float speed = 1.5f;
+    public SelfTestStateInfo GetCurrentAnimatorStateInfo(int layer)
+        => new SelfTestStateInfo { normalizedTime = 0.25f, length = 33.367f, loop = true };
+
+    public SelfTestClipInfo[] GetCurrentAnimatorClipInfo(int layer)
+        => new[] { new SelfTestClipInfo { clip = new SelfTestClip { name = "Attack1" } } };
+}
+
+public class SelfTestEntry
+{
+    public double Time = 1.25;
+    public bool Loop = true;
+    public double AnimationEnd = 1.833;
+    public SelfTestAnim Animation = new SelfTestAnim();
+}
+
+public class SelfTestAnim
+{
+    public string Name = "Xuathien";
+}
+
+public class SelfTestState
+{
+    public SelfTestEntry GetCurrent(int track) => new SelfTestEntry();
+}
+
+public class SkeletonAnimation : UnityEngine.Component
+{
+    public string AnimationName = "Xuathien";
+    public double timeScale = 1.0;
+    public SelfTestState state = new SelfTestState();
 }

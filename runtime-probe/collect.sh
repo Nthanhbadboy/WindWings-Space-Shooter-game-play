@@ -179,6 +179,9 @@ dump_moment(){ # $1 = menu | stage | ingame
     for o in Player_Ingame Player_Health Enemy_Sub Enemy_Hp_Bar Stage_Behaviour MapController Gun_Attack; do
       mkdir -p "$OUT/find"; get "/find?name=$o&max=20" "$OUT/find/$L-$o.json"
     done
+    # What is actually playing right now. Without this, every animation claim is
+    # an inference from asset names (docs/spec/ANIMATION_GAPS.md §2e).
+    get "/anim?max=60" "$OUT/anim-$L.json"
   fi
   ui_snapshot "$OUT/ui-$L.xml" || echo "FAIL snapshot $L" >> "$OUT/failed.txt"
   shot "$OUT/screen-$L.jpg"
@@ -260,6 +263,7 @@ need={"P0 statics":["statics-ingame/Player_Get_Datas.json","statics-ingame/Stage
                     "statics-ingame/Enemy_Get_Datas.json","statics-ingame/Map_Get_Datas.json",
                     "statics-ingame/Device_Get_Data.json","statics-ingame/Enemy_Data_Balance.json"],
       "ten class":["types/Percent.json","types/Enemy_Get_Datas.json"],
+  "playback":["anim-ingame.json"],
       "P0 runtime":["find/ingame-Player_Health.json","find/ingame-Enemy_Sub.json"],
       "màn hình":["screen-menu.jpg","screen-stage.jpg","screen-ingame.jpg"],
       "log":["logcat-final.txt"] if (pathlib.Path(sys.argv[1])/"logcat-final.txt").exists() else ["logcat-ingame.txt"],

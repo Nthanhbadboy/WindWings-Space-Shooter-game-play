@@ -138,6 +138,7 @@ Mặc định bind `127.0.0.1` — chỉ vào được qua `adb forward`. Đặt
 | GET | `/hierarchy?depth=3&max=1500` | cây object có giới hạn node |
 | GET | `/find?name=Sub&max=50` | tìm theo tên, **có cả object inactive**, kèm path đầy đủ |
 | GET | `/statics?type=Stage_Datas&max=200&arr=128&depth=2` | field static public/private của type game (qua reflection). `arr` = số phần tử giữ lại mỗi mảng, `depth` = số tầng mảng lồng nhau mở ra |
+| GET | `/anim?name=<lọc>&max=50` | **animation đang chạy thật**: với mỗi object có `SkeletonAnimation`/`SkeletonGraphic`/`Animator`/`Animation` → tên animation, thời điểm, độ dài, loop, timeScale. Đọc bằng reflection nên không cần reference Spine |
 | GET | `/logs?n=150` | ring buffer 500 dòng `Debug.Log` (bắt cả log từ thread khác) |
 | GET | `/metrics` | fps, avg/max frame time |
 | GET | `/screenshot` | PNG từ `ScreenCapture` (≤ 6 MB; ảnh lớn dùng `ramus screenshot`) |

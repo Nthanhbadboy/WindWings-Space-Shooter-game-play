@@ -877,6 +877,264 @@ namespace Ramus.Bridge
             });
         }
 
+        /// <summary>GET /anim — what is actually playing right now.
+        ///
+        /// Every animation conclusion in docs/ so far is offline: it comes from
+        /// asset names and asm, never from a running game. This reads the live
+        /// state so "Boss uses Attack3" becomes a measurement instead of an
+        /// inference. Spine types are not referenced at compile time (the stub
+        /// build has no Spine at all), so both Spine and Animator are read
+        /// through reflection — the same file then compiles for every target.
+        /// </summary>
+        public static string AnimJson(string nameFilter, int max)
+        {
+            return OnMain(() => AnimJsonFrom(nameFilter, max, null), 8000);
+        }
+
+        /// <summary>Same as AnimJson but walks the supplied roots. The scene is
+        /// empty in the stub build, so the self-test needs a way in without
+        /// reaching into SceneManager.</summary>
+        public static string AnimJsonFrom(string nameFilter, int max, GameObject[] explicitRoots)
+        {
+            {
+                var jw = new Jw().StartObj().Prop("ok", true);
+                if (!string.IsNullOrEmpty(nameFilter)) jw.Prop("filter", nameFilter);
+
+                var items = new List<string>();
+                int scanned = 0, budget = 20000;
+
+                try
+                {
+                    var roots = explicitRoots ?? SceneManager.GetActiveScene().GetRootGameObjects();
+                    foreach (var root in roots)
+                    {
+                        if (root == null) continue;
+                        if (items.Count >= max || budget <= 0) break;
+                        WalkAnim(root.transform, nameFilter, max, items, ref scanned, ref budget);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return new Jw().StartObj().Prop("ok", false).Prop("error", "scene_walk_failed")
+                        .Prop("detail", ex.Message).EndObj().ToString();
+                }
+
+                jw.Prop("count", items.Count).Prop("scanned", scanned)
+                  .Name("items").StartArr();
+                foreach (var one in items) jw.Raw(one);
+                jw.EndArr().EndObj();
+                return jw.ToString();
+            }
+        }
+
+        static void WalkAnim(Transform t, string filter, int max, List<string> items,
+                             ref int scanned, ref int budget)
+        {
+            if (t == null) return;
+            budget--;
+            if (budget <= 0 || items.Count >= max) return;
+            scanned++;
+
+            var go = SafeGameObject(t);
+            if (go != null)
+            {
+                bool match = string.IsNullOrEmpty(filter) ||
+                             (go.name != null && go.name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0);
+
+                if (match)
+                {
+                    string desc = DescribeAnimation(go);
+                    if (desc != null) items.Add(desc);
+                }
+            }
+
+            int n = 0;
+            try { n = t.childCount; } catch { n = 0; }
+            for (int i = 0; i < n; i++)
+            {
+                if (budget <= 0 || items.Count >= max) return;
+                Transform child = null;
+                try { child = t.GetChild(i); } catch { }
+                WalkAnim(child, filter, max, items, ref scanned, ref budget);
+            }
+        }
+
+        static GameObject SafeGameObject(Transform t)
+        {
+            try { return t.gameObject; } catch { return null; }
+        }
+
+        /// <summary>One JSON object describing what this GameObject is playing, or
+        /// null when it has no animation component at all.</summary>
+        static string DescribeAnimation(GameObject go)
+        {
+            // Generic overload first: that is the one Components() already uses,
+            // and it is the one proven against il2cpp interop proxies on device.
+            Component[] comps;
+            try { comps = go.GetComponents<Component>(); }
+            catch
+            {
+                try { comps = go.GetComponents(typeof(Component)); }
+                catch { return null; }
+            }
+            if (comps == null) return null;
+
+            foreach (var c in comps)
+            {
+                if (c == null) continue;
+                string tn;
+                try { tn = c.GetType().Name; } catch { continue; }
+
+                if (tn == "SkeletonAnimation" || tn == "SkeletonGraphic" || tn == "SkeletonRenderer")
+                    return SpineDesc(go, c, tn);
+                if (tn == "Animator" || tn == "Animation")
+                    return AnimatorDesc(go, c, tn);
+            }
+            return null;
+        }
+
+        static string SpineDesc(GameObject go, Component c, string typeName)
+        {
+            var jw = new Jw().StartObj()
+                .Prop("go", SafeName(go))
+                .Prop("path", PathOf(go.transform))
+                .Prop("kind", "spine").Prop("component", typeName);
+
+            // SkeletonAnimation exposes AnimationName directly; the track entry
+            // carries the clock. Either alone is weak: the name says what was
+            // asked for, the time says whether it is advancing.
+            var animName = ReadMember(c, "AnimationName") as string;
+            if (animName != null) jw.Prop("anim", trunc(animName));
+
+            var state = ReadMember(c, "state") ?? ReadMember(c, "State");
+            var entry = TrackEntry(state, 0);
+            if (entry != null)
+            {
+                var t = NumOf(ReadMember(entry, "Time"));
+                if (!double.IsNaN(t)) jw.Prop("time", t);
+                var loop = ReadMember(entry, "Loop");
+                if (loop is bool lb) jw.Prop("loop", lb);
+                var anim = ReadMember(entry, "Animation");
+                var nm = anim == null ? null : ReadMember(anim, "Name") as string;
+                if (nm != null) jw.Prop("entryAnim", trunc(nm));
+                var end = NumOf(ReadMember(entry, "AnimationEnd"));
+                if (!double.IsNaN(end)) jw.Prop("length", end);
+            }
+
+            var ts = NumOf(ReadMember(c, "timeScale"));
+            if (!double.IsNaN(ts)) jw.Prop("timeScale", ts);
+
+            return jw.EndObj().ToString();
+        }
+
+        static object TrackEntry(object state, int track)
+        {
+            if (state == null) return null;
+            try
+            {
+                var m = state.GetType().GetMethod("GetCurrent", new[] { typeof(int) });
+                if (m == null) return null;
+                return m.Invoke(state, new object[] { track });
+            }
+            catch { return null; }
+        }
+
+        static string AnimatorDesc(GameObject go, Component c, string typeName)
+        {
+            var jw = new Jw().StartObj()
+                .Prop("go", SafeName(go))
+                .Prop("path", PathOf(go.transform))
+                .Prop("kind", typeName == "Animation" ? "legacy" : "animator").Prop("component", typeName);
+
+            var speed = NumOf(ReadMember(c, "speed"));
+            if (!double.IsNaN(speed)) jw.Prop("speed", speed);
+
+            // AnimatorStateInfo is a struct returned by value; reflection gives a
+            // boxed copy and its fields are still readable.
+            object info = null;
+            try
+            {
+                var m = c.GetType().GetMethod("GetCurrentAnimatorStateInfo", new[] { typeof(int) });
+                if (m != null) info = m.Invoke(c, new object[] { 0 });
+            }
+            catch { }
+
+            if (info != null)
+            {
+                var norm = NumOf(ReadMember(info, "normalizedTime"));
+                if (!double.IsNaN(norm)) jw.Prop("normalized", norm);
+                var len = NumOf(ReadMember(info, "length"));
+                if (!double.IsNaN(len)) jw.Prop("length", len);
+                var loop = ReadMember(info, "loop");
+                if (loop is bool lb) jw.Prop("loop", lb);
+                if (!double.IsNaN(norm) && !double.IsNaN(len)) jw.Prop("time", norm * len);
+            }
+
+            // The state machine reports hashes; the clip list is the readable name.
+            string clip = null;
+            try
+            {
+                var m = c.GetType().GetMethod("GetCurrentAnimatorClipInfo", new[] { typeof(int) });
+                if (m != null)
+                {
+                    var arr = m.Invoke(c, new object[] { 0 }) as Array;
+                    if (arr != null && arr.Length > 0)
+                    {
+                        var ci = arr.GetValue(0);
+                        var clipObj = ReadMember(ci, "clip");
+                        if (clipObj != null) clip = ReadMember(clipObj, "name") as string;
+                    }
+                }
+            }
+            catch { }
+
+            if (clip != null) jw.Prop("clip", trunc(clip));
+            return jw.EndObj().ToString();
+        }
+
+        static string SafeName(GameObject go)
+        {
+            try { return go.name; } catch { return null; }
+        }
+
+        /// <summary>Property first, then field, on the runtime type and its bases.
+        /// Interop proxies expose some members only one of the two ways.</summary>
+        static object ReadMember(object obj, string member)
+        {
+            if (obj == null || member == null) return null;
+            try
+            {
+                var t = obj.GetType();
+                var p = t.GetProperty(member, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (p != null && p.GetIndexParameters().Length == 0)
+                {
+                    try { return p.GetValue(obj, null); } catch { }
+                }
+                var f = t.GetField(member, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (f != null)
+                {
+                    try { return f.GetValue(obj); } catch { }
+                }
+            }
+            catch { }
+            return null;
+        }
+
+        static double NumOf(object v)
+        {
+            if (v == null) return double.NaN;
+            try
+            {
+                if (v is float f) return f;
+                if (v is double d) return d;
+                if (v is int i) return i;
+                if (v is long l) return l;
+                if (v is IConvertible c) return c.ToDouble(CultureInfo.InvariantCulture);
+            }
+            catch { }
+            return double.NaN;
+        }
+
         /// <summary>POST /send — locate GameObjects by name (contains match, including
         /// inactive) and BroadcastMessage a method into them. Lets us close popups /
         /// press UI buttons that need in-engine routing.</summary>
@@ -1387,6 +1645,12 @@ namespace Ramus.Bridge
                             Q(req, "max", 200),
                             Q(req, "arr", 128),     // elements kept per array
                             Q(req, "depth", 2))));  // 2 = List<Array<int>> fully unrolled
+                        return;
+
+                    case "GET /anim":
+                        Copy(res, HttpResponse.Json(Bridge.AnimJson(
+                            req.Query.TryGetValue("name", out var an) ? an : "",
+                            Q(req, "max", 50))));
                         return;
 
                     case "GET /types":

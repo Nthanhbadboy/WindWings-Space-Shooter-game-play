@@ -123,7 +123,17 @@ bị đọc thành "27 đơn vị có animation riêng" — không phải.
 Con số này quan trọng cho clone: nếu chép "boss tấn công 33 s" thì sai nhịp so với cảm giác
 người chơi.
 
-### 2e. Chưa có **một** phép đo runtime nào về playback
+### 2e. ~~Chưa có **một** phép đo runtime nào về playback~~ → **đã có công cụ**
+
+> **Cập nhật cùng ngày:** đã thêm endpoint `GET /anim` vào bridge (`RamusBridge.cs`),
+> đọc bằng reflection nên không cần reference Spine và vẫn biên dịch cho cả 6 target.
+> Cách dùng: `curl 'http://127.0.0.1:8080/anim?name=Boss&max=20'`. `collect.sh` đã gọi nó
+> ở cả 3 mốc dump và gate đòi file `anim-ingame.json`.
+>
+> **Đã có:** tên animation + thời điểm + độ dài + loop + timeScale cho từng object.
+> **Chưa có:** phép đo nào **đã chạy trên thiết bị** — công cụ xong, số chưa có. Tự kiểm
+> trong CI chứng minh bộ đọc đúng trên component giả; chưa chứng minh trên game thật.
+
 
 Toàn bộ kết luận về animation hiện là **offline**: đọc asset + đọc asm. Chưa ai xác nhận trên
 máy rằng `SkeletonAnimation` thật sự chạy `Xuathien` lúc vào màn, hay `Attack3` được gọi ở pha
@@ -218,7 +228,7 @@ của con số 109. Cho tới lúc đó, **203 và 87 là số không kiểm l�
 | Ưu tiên | Việc | Vì sao rẻ | Đóng được gì |
 |---:|---|---|---|
 | **1** | Thêm `Enemy_Appear`, `Enemy_Rotate`, `Enemy_Sub` vào `TARGETS` của exporter, chạy lại CI | Cùng khuôn commit `cf0a71d18`, không cần thiết bị | Toàn bộ §2a |
-| **2** | Nối `SkeletonAnimation.AnimationName` + `Skeleton.time` vào bridge | ~30 dòng C#, đã có `OnMain` + `Jw` | §2e — kiểm playback thật |
+| ~~**2**~~ | ~~Nối `SkeletonAnimation.AnimationName` + `Skeleton.time` vào bridge~~ | ✅ **xong** — `GET /anim` | §2e — còn thiếu **số đo trên máy** |
 | **3** | Ghi rõ định nghĩa "109 prefab roster" trong `ANIMATION.md` | Chỉ là viết lại | §4 |
 | **4** | Ghép rig → prefab cho 3 rig còn lại | Cần `SkeletonRenderer`/`SkeletonAnimation` typetree — **chưa export** | §3.1 mở rộng |
 | **5** | Đối chiếu `Attack1` 33 s với nhịp thật | Cần #2 trước | §2d |
@@ -241,6 +251,10 @@ của con số 109. Cho tới lúc đó, **203 và 87 là số không kiểm l�
 - **Số 87/109 và 203** ở §4 **không tái lập được** bằng dữ liệu trong repo.
 - **Chưa có `timeScale` runtime** (cả hai nhánh đều thiếu) ⇒ mọi thời lượng ở §2d là thời lượng
   **asset**, có thể bị scale khi chơi.
+- **`/anim` chưa chạy trên thiết bị lần nào.** Tự kiểm chứng minh bộ đọc trả đúng với
+  component giả có cùng tên member; trên il2cpp thật, tên property của Spine/Unity có thể
+  khác (ví dụ `AnimationName` là field thay vì property, hay proxy đổi tên class). Nếu
+  response trả `count:0` trên máy **thì chưa kết luận được gì** — phải xem `scanned` trước.
 - Mọi so sánh xuyên nhánh ở đây vắt qua hai bản game: nhánh kia bóc **1.3.118**, dữ liệu chạy
   thật của nhánh này là **1.0.69**. Riêng phần animation thì **cả hai đều đọc từ 1.3.118** nên
   không bị vấn đề này.
