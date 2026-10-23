@@ -44,7 +44,7 @@
 | # | Câu hỏi | Trạng thái | Số / nguồn |
 |---:|---|---|---|
 | B1 | HP của enemy thường? | ❌ | **231/236 wave campaign có HP = 0**; toàn bộ 2.440.000 nằm ở `Wave_0136` ⇒ HP do công thức runtime (`ENCOUNTERS` §3.3) |
-| B2 | HP của người chơi? | ⚠ | **công thức đầy đủ (mức A)**: `GetStartHp = StartHp × (1 + stepCommon×TechStatPoints(0) + abi7×GetNumberAbility(7))`, `stepCommon` = **0,168**; giáp `Player_Health.Armor` **tách riêng** (giảm damage, không cộng HP) — `BALANCE` §0.6. **Thiếu đúng 1 giá trị `StartHp`** (gán runtime, không có trong `.cctor`) |
+| B2 | HP của người chơi? | ⚠ | **công thức đầy đủ (mức A)**: `GetStartHp = StartHp × (1 + stepCommon×TechStatPoints(0) + abi7×GetNumberAbility(7))`, `stepCommon` = **0,168**; giáp `Player_Health.Armor` **tách riêng** (giảm damage, không cộng HP) — `BALANCE` §0.6. **Thiếu đúng 1 giá trị `StartHp`** (gán runtime, không có trong `.cctor`). serialize **không** có bảng HP theo tàu (`StartHp` là `float` đơn, damage/nhịp bắn là `float[]`), **nhưng** `StartHp` có thể bị gán lại lúc chọn tàu — runtime **chưa kiểm**; **trang bị không cộng HP**, chỉ giảm damage |
 | B3 | Damage người chơi tăng theo cấp thế nào? | ⚠ | `Player_Get_Datas.stepLevel`: **4 ngưỡng cấp 30 / 58 / 118 / 248**, hằng số **0,168 · 1,0 · 1,05 · 1,15** (0,1764 = 0,168×1,05; 0,1932 = 0,168×1,15); `GetMainCannonDamage` = `base × (1 + k)` với k = 0,168 · 0,1764 · 0,1932 |
 | B4 | Giết một enemy mất bao lâu (TTK)? | ⚠ | có **DPS median 454,5** (`COMBAT` §4) + **HP boss 6,38 M/instance**; còn thiếu **giá trị `StartHp`** (`BALANCE` §0.6) và **HP enemy runtime** |
 | B5 | Độ khó tăng bằng gì? | ✅ | **bằng damage đòn boss, không bằng HP**: `Boss10` 800→1.350 · `Boss6` 600→2.800 · `Boss9` 500→800 (`BOSSES` §8.4.1) |

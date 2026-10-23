@@ -151,6 +151,108 @@ cấp thêm giáp, cuối cùng tính trong màn"*.
 > **Điều kiện lật ngược:** nếu có cơ chế `OverDrive`/khiên 1 đòn phổ biến thì HP gốc có thể thấp hơn
 > nhiều (200–500) vì người chơi sống bằng né chứ không bằng HP.
 
+### 0.6.4 HP có theo **tàu** không? — **hai lớp, hai câu trả lời**
+
+⚠ **Đây là chỗ tôi suýt kết luận sai.** Kiểu khai báo **không** chứng minh HP không theo tàu:
+`StartHp` là `float` đơn, nhưng nó **có thể được gán lại mỗi lần chọn tàu** trước khi
+`Player_Health.Start()` chạy. Phải tách hai lớp:
+
+**Lớp 1 — dữ liệu serialize (mức A): KHÔNG có bảng HP theo tàu.**
+
+| Field | Kiểu | Nghĩa |
+|---|---|---|
+| `StartHp` | **`float`** | **một** giá trị tại một thời điểm — không phải mảng |
+| `StartMainCannonDamages` | **`float[]`** | damage **riêng từng tàu** |
+| `StartWingCannonDamages` | **`float[]`** | damage pháo cánh **riêng từng tàu** |
+| `StartMainCannonRate` | **`float[]`** | nhịp bắn **riêng từng tàu** |
+| `StartSecretWeaponDamage` | `float` | dùng chung |
+
+`Data_Players` / `Player_Info` (25 tàu) chỉ có `id · Sprite · Star · Actived` — **0 field HP**.
+⇒ Nếu mỗi tàu có HP riêng, bảng đó **không** nằm ở ScriptableObject; phải là **mảng cứng trong
+code** hoặc gán ở chỗ khác.
+
+**Lớp 2 — runtime (mức C, CHƯA kiểm được):** `StartHp` **có thể** được gán theo tàu trong
+`Player_Health.Start()` hoặc trong luồng chọn tàu. Không có asm của `Player_Health` nên **chưa
+kết luận được**. Đây đúng là giả thuyết *"HP là của tàu, boot đầu màn khi chọn"*.
+
+> **Điều kiện lật ngược (quan trọng):** nếu `Player_Health.Start()` gán `StartHp` theo
+> `playerIndex` / `Player_Ingame.currentPlayer` thì **HP CÓ theo tàu** và câu "dùng chung" là **sai**.
+> Cách kiểm: dump `Player_Health.asm.txt` (RVA `0x14C6B5C`), tìm lệnh **ghi** `#0x6c` trên
+> `Player_Get_Datas`.
+
+**Lớp 3 — trang bị (mức A): device không cộng HP tối đa.**
+
+| Nguồn | Cộng HP? | Bằng chứng |
+|---|---|---|
+| **Tàu** (25 chiếc) | ⚠ **chưa kết luận** | serialize **không** có bảng HP theo tàu (mức A); `StartHp` **có thể** gán lại lúc chọn (mức C) |
+| **Tech lab** (stat index 0) | ✅ `stepCommon × TechStatPoints(0)` | asm `0x14e3258` `fmul` |
+| **Ability 7** | ✅ `abi7AddPlayerStartHp × GetNumberAbility(7)` | asm `0x14e325c` `fmul` |
+| **Trang bị (device)** | ❌ **không cộng HP** | `Device { id, lv, rank, instanceId }`; `Player_Health` dùng nó qua `reduceDamageByDevice` + `amountAutoGainHpByDevice` — **giảm damage** và **hồi HP** |
+| **Drone** | ❌ không | `Droid_Data_Balance.GetBaseDamage` — drone đóng góp **damage** |
+
+> **Nhận định (mức A):** trong **công thức đã đọc**, HP tối đa chỉ có **3 số**: `StartHp` (gốc) ·
+> điểm tech stat **0** · ability **7**. Không có nguồn thứ tư nào cộng vào HP tối đa **bên trong
+> `GetStartHp()`**. Điều này **không** loại trừ việc `StartHp` bị gán theo tàu **trước** khi gọi.
+
+**Boot lúc nào:** `Player_Health.Start()` (`RVA 0x14C6B5C`) → `StartHealth = GetStartHp()`,
+`CurrentHealth = StartHealth` — đúng **lúc vào màn, sau khi chọn tàu**.
+
+**Hai ứng viên cho `playerLv` trong `stepLevel` (4 ngưỡng 30/58/118/248):**
+
+| Ứng viên | Nơi khai báo |
+|---|---|
+| `Player_Ingame.lv` (**`private static int`**, `@0x4`) + property `Level` | cấp trong màn |
+| `Player_Saved_Datas.MaxLevelPerRanks` (**`int[]`**) + `MAX_RANK_INDEX` | cấp theo **rank tài khoản** |
+
+> **Nhận định (mức C):** 30/58/118/248 quá cao cho một màn ⇒ nghiêng về **cấp tài khoản/rank**.
+> **Điều kiện lật ngược:** nếu `Player_Ingame.Level` lên được 248 trong một màn (power-up dồn)
+> thì đó mới là biến đúng.
+
+## 1. Phương pháp & nguồn
+
+| Field | Kiểu | Nghĩa |
+|---|---|---|
+| `StartHp` | **`float`** (một giá trị) | HP **dùng chung cho mọi tàu** |
+| `StartMainCannonDamages` | **`float[]`** | damage **riêng từng tàu** |
+| `StartWingCannonDamages` | **`float[]`** | damage pháo cánh **riêng từng tàu** |
+| `StartMainCannonRate` | **`float[]`** | nhịp bắn **riêng từng tàu** |
+| `StartSecretWeaponDamage` | `float` | dùng chung |
+
+⇒ **Tàu khác nhau ở damage và nhịp bắn, không ở HP.** `Data_Players` (25 tàu) chỉ có
+`id · Sprite · Star · Actived` — **không có field HP nào**.
+
+**Bảng đóng góp vào HP và vào damage — 5 nguồn, chỉ 2 nguồn cộng HP:**
+
+| Nguồn | Cộng HP? | Bằng chứng |
+|---|---|---|
+| **Tàu** (25 chiếc) | ❌ **không** | `StartHp` là `float`, `StartMainCannonDamages` là `float[]` |
+| **Tech lab** (stat index 0) | ✅ `stepCommon × TechStatPoints(0)` | asm `0x14e3258` `fmul` |
+| **Ability 7** | ✅ `abi7AddPlayerStartHp × GetNumberAbility(7)` | asm `0x14e325c` `fmul` |
+| **Trang bị (device)** | ❌ **không cộng HP** | `Device { id, lv, rank, instanceId }`; `Player_Health` dùng nó qua `reduceDamageByDevice` và `amountAutoGainHpByDevice` — **giảm damage** và **hồi HP**, không tăng HP tối đa |
+| **Drone** | ❌ không | `Droid_Data_Balance.GetBaseDamage` — drone đóng góp **damage** |
+
+> **Nhận định (mức A):** chuỗi HP chỉ có **3 số**: `StartHp` (gốc) · điểm tech stat **0** ·
+> ability **7**. Không có chỗ nào khác cộng vào HP tối đa.
+>
+> **Điều kiện lật ngược:** nếu `GetStartHp()` được gọi **nhiều lần trong màn** (không chỉ lúc boot),
+> và `TechStatPoints(0)` bị thay đổi giữa trận thì HP sẽ đổi giữa trận. Đã kiểm: `Player_Health.Start()`
+> chỉ gán **một lần**, `StartHealth` là `static` dùng chung mọi instance.
+
+**Boot lúc nào:** `Player_Health.Start()` (`RVA 0x14C6B5C`) → `StartHealth = GetStartHp()`,
+`CurrentHealth = StartHealth`. Đây là **lúc vào màn**, sau khi người chơi đã chọn tàu — nhưng vì
+`StartHp` **không phụ thuộc tàu**, kết quả **giống nhau với mọi tàu**.
+
+**Hai ứng viên cho `playerLv` trong `stepLevel` (4 ngưỡng 30/58/118/248):**
+
+| Ứng viên | Nơi khai báo |
+|---|---|
+| `Player_Ingame.lv` (**`private static int`**, `@0x4`) + property `Level` | cấp trong màn |
+| `Player_Saved_Datas.MaxLevelPerRanks` (**`int[]`**) + `MAX_RANK_INDEX` | cấp theo **rank tài khoản** |
+
+> **Nhận định (mức C):** 30/58/118/248 quá cao cho một màn ⇒ nhiều khả năng là **cấp tài khoản/rank**.
+> **Điều kiện lật ngược:** nếu `Player_Ingame.Level` tăng được tới 248 trong một màn (power-up dồn)
+> thì đó mới là biến đúng.
+
 ## 1. Phương pháp & nguồn
 
 | Bảng | File | Trạng thái |
