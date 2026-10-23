@@ -3,15 +3,15 @@
 ## Unity payload
 ```
 total 137M
--rw-r--r-- 1 runner runner   11K Oct 23 04:59 RuntimeInitializeOnLoads.json
--rw-r--r-- 1 runner runner  3.9K Oct 23 04:59 ScriptingAssemblies.json
--rw-r--r-- 1 runner runner   120 Oct 23 04:59 _listing.txt
--rw-r--r-- 1 runner runner   61M Oct 23 04:59 data.unity3d
--rw-r--r-- 1 runner runner  8.3M Oct 23 04:59 global-metadata.dat
--rw-r--r-- 1 runner runner   45M Oct 23 04:59 libil2cpp.so
--rw-r--r-- 1 runner runner   17M Oct 23 04:59 libunity.so
--rw-r--r-- 1 runner runner 1023K Oct 23 04:59 resources.arsc
--rw-r--r-- 1 runner runner  4.9M Oct 23 04:59 resources.resource
+-rw-r--r-- 1 runner runner   11K Oct 23 05:05 RuntimeInitializeOnLoads.json
+-rw-r--r-- 1 runner runner  3.9K Oct 23 05:05 ScriptingAssemblies.json
+-rw-r--r-- 1 runner runner   120 Oct 23 05:05 _listing.txt
+-rw-r--r-- 1 runner runner   61M Oct 23 05:05 data.unity3d
+-rw-r--r-- 1 runner runner  8.3M Oct 23 05:05 global-metadata.dat
+-rw-r--r-- 1 runner runner   45M Oct 23 05:05 libil2cpp.so
+-rw-r--r-- 1 runner runner   17M Oct 23 05:05 libunity.so
+-rw-r--r-- 1 runner runner 1023K Oct 23 05:05 resources.arsc
+-rw-r--r-- 1 runner runner  4.9M Oct 23 05:05 resources.resource
 ```
 
 ## assets/bin/Data listing (from APK)
@@ -39,34 +39,34 @@ typetree OK
 ```
 docs/assets:
 total 364
-drwxr-xr-x 3 runner runner   4096 Oct 23 04:58 .
-drwxr-xr-x 5 runner runner   4096 Oct 23 04:58 ..
--rw-r--r-- 1 runner runner   2190 Oct 23 05:00 INDEX.md
--rw-r--r-- 1 runner runner   7275 Oct 23 05:00 audio-index.csv
-drwxr-xr-x 2 runner runner   4096 Oct 23 05:00 contact-sheets
--rw-r--r-- 1 runner runner 146648 Oct 23 05:00 manifest.csv
--rw-r--r-- 1 runner runner 191560 Oct 23 05:00 sprites-index.csv
--rw-r--r-- 1 runner runner   4634 Oct 23 05:00 stats.json
+drwxr-xr-x 3 runner runner   4096 Oct 23 05:05 .
+drwxr-xr-x 5 runner runner   4096 Oct 23 05:05 ..
+-rw-r--r-- 1 runner runner   2190 Oct 23 05:06 INDEX.md
+-rw-r--r-- 1 runner runner   7275 Oct 23 05:06 audio-index.csv
+drwxr-xr-x 2 runner runner   4096 Oct 23 05:06 contact-sheets
+-rw-r--r-- 1 runner runner 146648 Oct 23 05:06 manifest.csv
+-rw-r--r-- 1 runner runner 191560 Oct 23 05:06 sprites-index.csv
+-rw-r--r-- 1 runner runner   4634 Oct 23 05:06 stats.json
 
 docs/assets/contact-sheets:
 total 7400
-drwxr-xr-x 2 runner runner   4096 Oct 23 05:00 .
-drwxr-xr-x 3 runner runner   4096 Oct 23 04:58 ..
--rw-r--r-- 1 runner runner 233344 Oct 23 05:00 atlas-01.jpg
--rw-r--r-- 1 runner runner 326577 Oct 23 05:00 atlas-02.jpg
--rw-r--r-- 1 runner runner  14242 Oct 23 05:00 atlas-03.jpg
--rw-r--r-- 1 runner runner 177064 Oct 23 05:00 background-01.jpg
--rw-r--r-- 1 runner runner 142920 Oct 23 05:00 background-02.jpg
--rw-r--r-- 1 runner runner 166141 Oct 23 05:00 bosses-01.jpg
--rw-r--r-- 1 runner runner 175411 Oct 23 05:00 bullet-01.jpg
--rw-r--r-- 1 runner runner  13861 Oct 23 05:00 bullet-02.jpg
--rw-r--r-- 1 runner runner  56140 Oct 23 05:00 drones-01.jpg
--rw-r--r-- 1 runner runner 104215 Oct 23 05:00 enemy-01.jpg
--rw-r--r-- 1 runner runner  31031 Oct 23 05:00 font-01.jpg
--rw-r--r-- 1 runner runner 204312 Oct 23 05:00 fx-01.jpg
--rw-r--r-- 1 runner runner  56927 Oct 23 05:00 fx-02.jpg
--rw-r--r-- 1 runner runner  16007 Oct 23 05:00 items-01.jpg
--rw-r--r-- 1 runner runner 125812 Oct 23 05:00 ships-01.jpg
+drwxr-xr-x 2 runner runner   4096 Oct 23 05:06 .
+drwxr-xr-x 3 runner runner   4096 Oct 23 05:05 ..
+-rw-r--r-- 1 runner runner 233344 Oct 23 05:06 atlas-01.jpg
+-rw-r--r-- 1 runner runner 326577 Oct 23 05:06 atlas-02.jpg
+-rw-r--r-- 1 runner runner  14242 Oct 23 05:06 atlas-03.jpg
+-rw-r--r-- 1 runner runner 177064 Oct 23 05:06 background-01.jpg
+-rw-r--r-- 1 runner runner 142920 Oct 23 05:06 background-02.jpg
+-rw-r--r-- 1 runner runner 166141 Oct 23 05:06 bosses-01.jpg
+-rw-r--r-- 1 runner runner 175411 Oct 23 05:06 bullet-01.jpg
+-rw-r--r-- 1 runner runner  13861 Oct 23 05:06 bullet-02.jpg
+-rw-r--r-- 1 runner runner  56140 Oct 23 05:06 drones-01.jpg
+-rw-r--r-- 1 runner runner 104215 Oct 23 05:06 enemy-01.jpg
+-rw-r--r-- 1 runner runner  31031 Oct 23 05:06 font-01.jpg
+-rw-r--r-- 1 runner runner 204312 Oct 23 05:06 fx-01.jpg
+-rw-r--r-- 1 runner runner  56927 Oct 23 05:06 fx-02.jpg
+-rw-r--r-- 1 runner runner  16007 Oct 23 05:06 items-01.jpg
+-rw-r--r-- 1 runner runner 125812 Oct 23 05:06 ships-01.jpg
 ```
 
 ## Step logs (tail)
@@ -158,6 +158,8 @@ typeDefinitions: 10909 types, struct size 88; metadata fields: 50606
   metadata fields of Map_Get_Datas: ['Map_Get_Datas.listMapTryPlayerDatas', 'Map_Get_Datas.AllArenaStartMaps', 'Map_Get_Datas.AllArenaRandomMaps', 'Map_Get_Datas.AllPvPStartMaps', 'Map_Get_Datas.mapCurrentPlayTest', 'Map_Get_Datas.listMapDatas', 'Map_Get_Datas.listMapBranchDatas', 'Map_Get_Datas.listIdBosses', 'Map_Get_Datas.listMapFightBossDatas', 'Map_Get_Datas.listMapChallangeDatas', 'Map_Get_Datas.listMapEndlessDatas', 'Map_Get_Datas.listMapObstacleDatas', 'Map_Get_Datas.mapChallangeIndexs']
   metadata fields of Player_Get_Datas: ['Player_Get_Datas.listRankStrings', 'Player_Get_Datas.TimeResetInvincible', 'Player_Get_Datas.TimeCanActiveInvincible', 'Player_Get_Datas.TouchRanger', 'Player_Get_Datas.listAllPlayers', 'Player_Get_Datas.listIdPlayerActived', 'Player_Get_Datas.listIdPlayers', 'Player_Get_Datas.listPlayers', 'Player_Get_Datas.PlayerCosts', 'Player_Get_Datas.listLegendaryPlayers', 'Player_Get_Datas.listStarToTryLegendaryPlayers', 'Player_Get_Datas.listStarToBuyLegendaryPlayers', 'Player_Get_Datas.PlayerTimeStars', 'Player_Get_Datas.PlayerStarCosts']
   usagePairs: 213; sample: [(1, 9), (46, 24), (8, 43), (33, 39), (11, 47)]
+  global field 2389: '<IESignInOrRestoreYourDatas>d__91.<>8__1'; neighbors: ['<IESignInOrRestoreYourDatas>d__91.<>2__current', '<IESignInOrRestoreYourDatas>d__91.<>4__this', '<IESignInOrRestoreYourDatas>d__91.resuftCallback', '<IESignInOrRestoreYourDatas>d__91.<>8__1', '<IESignInOrRestoreYourDatas>d__91.<timeOut>5__2', '<UpdateTimer>d__120.<>1__state', '<UpdateTimer>d__120.<>2__current']
+  fieldRefs[2389] (i,i): (-622329600, 0)
 dump.cs field types: 46275; mapped indices: 50606
 decoded: 10493, skipped: 0 {}
 wrote reverse-engineering/il2cpp/field-defaults.json (1945298 B)
@@ -256,24 +258,24 @@ source files: ['/tmp/apk/extract/data.unity3d', '/tmp/apk/extract/resources.reso
 exported 64 text assets, 1.2MB
 
 ===== /tmp/apk/logs/ui_index.log
-34721 file, 114 màn, 5,419,594 node, 731,233 dòng text/key -> datas/ui_screens.json.gz
+35452 file, 114 màn, 5,522,688 node, 747,431 dòng text/key -> datas/ui_screens.json.gz
 
 ===== /tmp/apk/logs/ui_layout.log
 typetree generator ready: AssetStudio
 class map: 125452 MonoBehaviours
 screen candidates: 793
-skipped: {'duplicate (class, root)': 62}
+skipped: {'duplicate (class, root)': 61}
 # UI layout (số đo bóc từ prefab)
 
 > **Kết luận tạm thời.** Đây là giá trị *serialize trong prefab*. Runtime có thể
 > ghi đè (layout group, safe area, code set anchor), nên chỉ dùng làm khung tham
 > chiếu. Dữ liệu thô: `reverse-engineering/raw/ui/*.json.gz`.
 
-- màn hình dump được: **731**
-- tổng node: **103094**
+- màn hình dump được: **732**
+- tổng node: **104528**
 - dung lượng thô (gz): **2.0 MB**
 
-- bỏ qua: duplicate (class, root) (62)
+- bỏ qua: duplicate (class, root) (61)
 
 ## Component gặp nhiều nhất
 
@@ -311,7 +313,7 @@ errors: {'script': 1}
 # Wave composition (campaign maps)
 
 - waves: **282**
-- spawners: **11092**
+- spawners: **11098**
 - typetree backend: **AssetStudio**
 
 - lỗi đọc: 1 object
