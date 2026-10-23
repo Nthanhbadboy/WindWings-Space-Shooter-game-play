@@ -186,6 +186,16 @@ def main() -> int:
     for want in ("Map_Get_Datas", "Player_Get_Datas"):
         hits = [(i, k) for i, k in index2name.items() if k.startswith(want + ".")]
         print(f"  metadata fields of {want}: {[k for _i, k in hits[:14]]}")
+    # metadataUsagePairs: {destinationIndex, encodedSourceIndex}; token trong
+    # mã máy là (kind<<29)|index — thử truy ngược token 0x80000955 (2389).
+    up_off, up_size = header["metadataUsagePairs"]
+    pairs = [struct.unpack_from("<II", blob, up_off + 8 * i)
+             for i in range(up_size // 8)]
+    print(f"  usagePairs: {len(pairs)}; sample: {pairs[:5]}")
+    for dest, enc in pairs:
+        if dest == 2389 or enc == 0x80000955 or (enc & 0x1FFFFFFF) == 2389:
+            print(f"  usage hit: dest={dest} enc={enc:#x} kind={enc >> 29} "
+                  f"src={enc & 0x1FFFFFFF}")
     types_by_name = dump_field_types(dump_path) if os.path.isfile(dump_path) else {}
     print(f"dump.cs field types: {len(types_by_name)}; mapped indices: {len(index2name)}")
 
