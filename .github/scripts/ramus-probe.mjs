@@ -420,6 +420,53 @@ function dismissSystemDialog(tag) {
   return `dismissed "${target.text}" at ${point} (verified gone)`;
 }
 
+/**
+ * Tap through first-run dialogs (Android immersive confirmation, the game's own
+ * consent screen, ...). Every tap is verified by a fresh snapshot; the loop stops
+ * as soon as nothing matching is on screen.
+ *
+ * This is what stopped the probe at run 39930806984: the immersive confirmation
+ * held the frame still, so three screenshots were byte-identical and the report
+ * concluded "the app never started". It had started.
+ */
+function advanceDialogs(maxSteps = 4) {
+  const actionable = /^(got it|ok|continue|allow|accept|i agree|agree|start|next|play)$/i;
+  const done = [];
+  for (let step = 0; step < maxSteps; step++) {
+    const tag = `dialog-${step}`;
+    if (!snapshotUi(tag)) break;
+    let xml = '';
+    try {
+      xml = unwrapXml(readFileSync(path.join(OUT, `ui-${tag}.xml`), 'utf8'));
+    } catch {
+      break;
+    }
+
+    const nodes = [...xml.matchAll(/<node\b[^>]*>/g)].map((m) => m[0]);
+    let screen = null;
+    let target = null;
+    for (const node of nodes) {
+      const b = node.match(/bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"/);
+      if (!b) continue;
+      const [x1, y1, x2, y2] = b.slice(1).map(Number);
+      if (!screen || x2 > screen[0] || y2 > screen[1]) screen = [x2, y2];
+      const text = ((node.match(/text="([^"]*)"/) || [])[1] || '').trim();
+      // Prefer the widest match (a real button), ignore empty labels.
+      if (text && actionable.test(text) && !target) target = { text, x1, y1, x2, y2 };
+    }
+    if (!target || !screen) break;
+
+    const point = `${((target.x1 + target.x2) / 2 / screen[0]).toFixed(3)},${((target.y1 + target.y2) / 2 / screen[1]).toFixed(3)}`;
+    const r = ramus(['tap', point], { timeout: 60000 });
+    done.push(`${target.text} @ ${point}${r.ok ? '' : ' (tap failed)'}`);
+    if (!r.ok) break;
+    // Let the next screen render before observing it.
+    const until = Date.now() + 2500;
+    while (Date.now() < until) { /* synchronous wait on purpose */ }
+  }
+  return done;
+}
+
 // ── main ───────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -527,9 +574,17 @@ async function main() {
     if (dismissed) {
       note(`system dialog: ${dismissed}`);
       result.dialog = dismissed;
-      snapshotUi('after-dialog');
-      screenshot(2);
+    } else {
+      note('no immersive/system dialog found on screen');
     }
+    // Then tap through whatever the game itself puts up (consent, "play", ...).
+    const advanced = advanceDialogs();
+    if (advanced.length) {
+      result.dialogs = advanced;
+      note(`tapped through: ${advanced.join(' → ')}`);
+    }
+    snapshotUi('after-dialog');
+    screenshot(2);
   }
 
   // The plain dump is the last 500 lines of everything, which on a fresh boot is
@@ -745,6 +800,13 @@ function renderReport(r) {
         lines.push(out.slice(0, 400));
         lines.push('```');
       }
+      lines.push('');
+    }
+
+    if (Array.isArray(r.dialogs) && r.dialogs.length) {
+      lines.push('| tapped through | step |');
+      lines.push('| --- | --- |');
+      for (const d of r.dialogs) lines.push(`| ${d} | |`);
       lines.push('');
     }
 
