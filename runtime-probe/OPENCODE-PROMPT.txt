@@ -1,8 +1,10 @@
-Bạn KHÔNG cần phân tích, KHÔNG cần lập kế hoạch. Chạy đúng một lệnh:
+Bạn KHÔNG cần phân tích, KHÔNG cần lập kế hoạch. Chạy đúng một lệnh, chọn đúng dòng:
 
-    bash runtime-probe/collect.sh /duong/dan/to/windwings-mod.apk
+    bash runtime-probe/collect.sh --local <package>      # điện thoại đã nối adb (KHÔNG tốn quota)
+    bash runtime-probe/collect.sh /duong/dan/to/apk      # Ramus cloud (tốn 1 phiên)
 
-(thay đường dẫn bằng APK mod đã chạy được ở local)
+Điện thoại: package thường là com.Gcenter.WindWings.SpaceShooter.Premium
+(kiểm bằng: adb shell pm list packages | grep -i wind)
 
 Sau khi lệnh chạy xong, dán 40 dòng cuối của output.
 

@@ -1,18 +1,32 @@
 #!/usr/bin/env bash
-# collect.sh — một phiên Ramus, thu hết dữ liệu cần cho docs/spec.
+# collect.sh — thu hết dữ liệu cần cho docs/spec, qua Ramus HAISCE qua adb local.
 #
-# Chạy:  bash runtime-probe/collect.sh /duong/dan/to/windwings-mod.apk
+#   bash runtime-probe/collect.sh <apk>            # Ramus: tự bật phiên cloud
+#   bash runtime-probe/collect.sh --local <package> # điện thoại đã nối adb sẵn
 #
-# Không có tham số nào khác. Không hỏi lại. Sai ở đâu thì in "STOP:" rồi thoát.
+# Chế độ --local không gọi Ramus, không tốn quota: dùng đúng cách bạn đang chạy
+# trên điện thoại (BepInEx + bridge mở cổng 8080, `adb forward`).
+#
+# Không hỏi lại. Sai ở đâu thì in "STOP:" rồi thoát.
 # Mọi thứ ghi vào docs/apk-analysis/ramus/<ngày>/
 set -uo pipefail
 
+RUNNER=ramus
+if [ "${1:-}" = "--local" ]; then
+  RUNNER=local
+  PKG=${2:-com.Wind.wings.Space.Shooter}
+  shift 2 2>/dev/null || shift 1
+else
+  PKG=com.Wind.wings.Space.Shooter
+fi
+
 MOD_APK=${1:-}
-[ -n "$MOD_APK" ] || { echo "STOP: thiếu tham số APK. Dùng: bash runtime-probe/collect.sh <apk>"; exit 2; }
-[ -f "$MOD_APK" ] || { echo "STOP: không thấy file $MOD_APK"; exit 2; }
+if [ "$RUNNER" = ramus ]; then
+  [ -n "$MOD_APK" ] || { echo "STOP: thiếu tham số APK. Dùng: bash runtime-probe/collect.sh <apk>"; exit 2; }
+  [ -f "$MOD_APK" ] || { echo "STOP: không thấy file $MOD_APK"; exit 2; }
+fi
 
 RAMUS_CLI=${RAMUS_CLI:-ramus-cli@0.1.17}
-PKG=com.Wind.wings.Space.Shooter
 OUT=${OUT:-docs/apk-analysis/ramus/$(date +%F)}
 mkdir -p "$OUT"
 
@@ -20,6 +34,61 @@ say(){ printf '\n== %s ==\n' "$*"; }
 die(){ echo "STOP: $*"; echo "Đã ghi những gì có vào $OUT — dán 40 dòng cuối cho người phụ trách."; exit 1; }
 ram(){ npx --yes "$RAMUS_CLI" "$@"; }
 
+# ── thiết bị: cùng một việc, hai đường ──────────────────────────────────────
+dev_ready(){
+  command -v adb >/dev/null 2>&1 || { echo "STOP: không có adb trong PATH"; exit 2; }
+  SERIAL=$(adb devices | awk 'NR>1 && $2=="device"{print $1; exit}')
+  [ -n "$SERIAL" ] || { echo "STOP: adb không thấy thiết bị nào (adb devices rỗng)"; exit 2; }
+  echo "$SERIAL" > "$OUT/serial.txt"
+  adb -s "$SERIAL" shell pidof "$PKG" >/dev/null 2>&1 \
+    || echo "CẢNH BÁO: $PKG không chạy — bật launcher + game trước, rồi chạy lại"
+}
+ui_snapshot(){ # $1 = file
+  if [ "$RUNNER" = local ]; then
+    adb -s "$SERIAL" exec-out uiautomator dump /dev/tty 2>/dev/null > "$1" || true
+  else
+    ram snapshot --raw > "$1" 2>/dev/null || true
+  fi
+  [ -s "$1" ]
+}
+shot(){ # $1 = file
+  if [ "$RUNNER" = local ]; then
+    adb -s "$SERIAL" exec-out screencap -p > "$1" 2>/dev/null || true
+  else
+    ram screenshot --out "$1" --max-width 720 >/dev/null 2>&1 || true
+  fi
+}
+tap_xy(){ # $1 = "0.5,0.8" chuẩn hoá; $2 = rộng; $3 = cao
+  local cx=${1%,*} cy=${1#*,}
+  if [ "$RUNNER" = local ]; then
+    adb -s "$SERIAL" shell input tap \
+      "$(python3 -c "print(int(float('$cx')*$2))")" \
+      "$(python3 -c "print(int(float('$cy')*$3))")" >/dev/null 2>&1 || true
+  else
+    ram tap "$1" >/dev/null 2>&1 || true
+  fi
+  sleep 2
+}
+dev_logcat(){ # $1 = file
+  if [ "$RUNNER" = local ]; then
+    adb -s "$SERIAL" logcat -b main -b crash -d > "$1" 2>/dev/null || true
+  elif [ -n "${SERIAL:-}" ]; then
+    adb -s "$SERIAL" logcat -b main -b crash -d > "$1" 2>/dev/null || true
+  else
+    ram logcat --limit 500 --filter "$PKG" > "$1" 2>/dev/null || true
+  fi
+}
+
+if [ "$RUNNER" = local ]; then
+  say "1. thiết bị (adb local)"
+  dev_ready
+  echo "serial=$SERIAL  package=$PKG"
+  adb -s "$SERIAL" shell getprop ro.product.cpu.abilist | tee "$OUT/device-abilist.txt" 2>&1 || true
+  adb -s "$SERIAL" forward tcp:8080 tcp:8080 && echo "forward 8080 → thiết bị"
+  echo "{\"runner\":\"local\",\"package\":\"$PKG\",\"serial\":\"$SERIAL\"}" > "$OUT/session.json"
+  SID="(local:$SERIAL)"
+  MODE=key
+else
 # ── 1. kiểm APK ────────────────────────────────────────────────────────────
 say "1. kiểm APK"
 ls -l "$MOD_APK"
@@ -61,6 +130,7 @@ if out=$(ram adb --port 5555 2>&1); then
 else
   MODE=trial; echo "không có adb (trial) — chỉ lấy được logcat + ảnh"
 fi
+fi   # hết nhánh RUNNER=ramus
 
 B=http://127.0.0.1:8080
 wait_health(){ # $1 = giây
@@ -110,20 +180,17 @@ dump_moment(){ # $1 = menu | stage | ingame
       mkdir -p "$OUT/find"; get "/find?name=$o&max=20" "$OUT/find/$L-$o.json"
     done
   fi
-  ram snapshot --raw > "$OUT/ui-$L.xml" 2>/dev/null || echo "FAIL snapshot $L" >> "$OUT/failed.txt"
-  ram screenshot --out "$OUT/screen-$L.jpg" --max-width 720 >/dev/null 2>&1 || true
-  if [ -n "${SERIAL:-}" ]; then
-    adb -s "$SERIAL" logcat -b main -b crash -d > "$OUT/logcat-$L.txt" 2>/dev/null || true
-  else
-    ram logcat --limit 500 --filter "$PKG" > "$OUT/logcat-$L.txt" 2>/dev/null || true
-  fi
+  ui_snapshot "$OUT/ui-$L.xml" || echo "FAIL snapshot $L" >> "$OUT/failed.txt"
+  shot "$OUT/screen-$L.jpg"
+  dev_logcat "$OUT/logcat-$L.txt"
 }
 
 # Bấm vào phần tử có text khớp. Không khớp thì in danh sách text và dừng — không đoán.
 tap_text(){ # $1 = xml, $2.. = regex
   local xml=$1; shift
-  local coords
-  coords=$(python3 - "$xml" "$@" <<'PY'
+  # python trả về "W H cx cy" (cx/cy chuẩn hoá 0..1) để dùng được cho cả hai runner.
+  local info
+  info=$(python3 - "$xml" "$@" <<'PY'
 import re,sys
 xml=open(sys.argv[1],encoding='utf-8',errors='ignore').read()
 pats=[re.compile(p,re.I) for p in sys.argv[2:]]
@@ -137,19 +204,23 @@ for text,x1,y1,x2,y2 in nodes:
     if not text.strip(): continue
     if any(p.search(text) for p in pats):
         cx=(int(x1)+int(x2))/2/W; cy=(int(y1)+int(y2))/2/H
-        print(f"{cx:.4f},{cy:.4f}"); print(text[:60],file=sys.stderr); sys.exit(0)
+        print(f"{W} {H} {cx:.4f} {cy:.4f}"); print(text[:60],file=sys.stderr); sys.exit(0)
 sys.exit(1)
 PY
 )
-  [ -n "$coords" ] || return 1
-  echo "tap $coords"
-  ram tap "$coords" >/dev/null 2>&1 || true
-  sleep 3
+  [ -n "$info" ] || return 1
+  set -- $info
+  echo "tap $3,$4"
+  tap_xy "$3,$4" "$1" "$2"
 }
 
 # ── 5. đi qua menu ─────────────────────────────────────────────────────────
 say "5. dọn hộp thoại hệ thống"
-ram app launch >/dev/null 2>&1 || true
+if [ "$RUNNER" = local ]; then
+  adb -s "$SERIAL" shell monkey -p "$PKG" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1 || true
+else
+  ram app launch >/dev/null 2>&1 || true
+fi
 sleep 8
 dump_moment menu
 tap_text "$OUT/ui-menu.xml" 'got it|^ok$|allow|accept' && dump_moment menu
@@ -157,7 +228,7 @@ tap_text "$OUT/ui-menu.xml" 'got it|^ok$|allow|accept' && dump_moment menu
 say "6. vào màn chơi"
 entered=0
 for i in 1 2 3 4 5 6; do
-  ram snapshot --raw > "$OUT/ui-step.xml" 2>/dev/null || true
+  ui_snapshot "$OUT/ui-step.xml" || true
   if tap_text "$OUT/ui-step.xml" '^continue$|^play$|^start$|^start game$|^let.s go$'; then
     sleep 4; continue
   fi
@@ -207,4 +278,4 @@ PY
 
 say "xong"
 echo "session giữ nguyên: $SID"
-echo "kết thúc khi không cần nữa: npx --yes $RAMUS_CLI session end"
+if [ "$RUNNER" = local ]; then echo "kết thúc: adb -s $SERIAL forward --remove tcp:8080"; else echo "kết thúc khi không cần nữa: npx --yes $RAMUS_CLI session end"; fi

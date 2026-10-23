@@ -267,8 +267,16 @@ Mỗi ảnh chụp kèm `snapshot --raw` cùng lúc — **text trong XML là s�
 Phần §6 đã được đóng gói thành script chạy được, **không cần agent suy luận**:
 
 ```bash
+# Điện thoại đã nối adb (cách nhanh nhất, KHÔNG tốn quota Ramus):
+bash runtime-probe/collect.sh --local com.Gcenter.WindWings.SpaceShooter.Premium
+
+# Ramus cloud (tốn 1 phiên trial hoặc key):
 bash runtime-probe/collect.sh /duong/dan/to/windwings-mod.apk
 ```
+
+Chế độ `--local` bỏ toàn bộ phần Ramus: nó tự `adb forward tcp:8080`, chụp bằng
+`adb exec-out screencap`, dump UI bằng `uiautomator dump`, bấm bằng `adb shell input tap`
+(toạ độ đổi từ chuẩn hoá sang pixel theo đúng độ phân giải đọc từ XML).
 
 Nó tự làm: kiểm APK → bật phiên → in `watchUrl` → mở adb tunnel → chờ `/health` (tối đa
 180 s) → dump 3 lúc (menu / stage / ingame) → đọc `ui-*.xml` để bấm đúng nút → đóng băng
