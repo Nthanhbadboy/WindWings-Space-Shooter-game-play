@@ -140,8 +140,8 @@ jobs:
     needs: preflight
     if: needs.preflight.outputs.enabled == 'true'
     runs-on: ubuntu-latest
-    # A trial credential lives 15 minutes; the whole run must stay inside that.
-    timeout-minutes: 25
+    # A trial credential lives 15 minutes; a keyed run may upload a much bigger APK.
+    timeout-minutes: ${{ needs.preflight.outputs.mode == 'key' && 45 || 25 }}
     env:
       RAMUS_MODE: ${{ needs.preflight.outputs.mode }}
     steps:
