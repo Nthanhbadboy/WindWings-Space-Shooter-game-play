@@ -55,11 +55,15 @@ def dump_field_types(dump_path):
                 cls = m.group(1)
                 continue
             code = line.split("//")[0].strip()
-            if cls and code.endswith(";") and "(" not in code and "=" not in code:
+            if cls and code.endswith(";") and "(" not in code:
                 toks = code[:-1].split()
                 if len(toks) >= 3 and toks[0] in MODIFIERS:
                     body = [t for t in toks if t not in MODIFIERS]
-                    if len(body) >= 2:
+                    if "=" in body:
+                        eq = body.index("=")
+                        if eq >= 2:
+                            out[f"{cls}.{body[eq - 1]}"] = " ".join(body[:eq - 1])
+                    elif len(body) >= 2:
                         out[f"{cls}.{body[-1]}"] = " ".join(body[:-1])
     return out
 
@@ -194,17 +198,14 @@ def main() -> int:
             reasons["no-name"] = reasons.get("no-name", 0) + 1
             continue
         typ = types_by_name.get(key)
-        if typ is None and skipped < 12:
-            print(f"  fdv miss: idx={field_idx} key={key!r} data_idx={data_idx}")
-            skipped += 1
-            reasons["no-dump-type"] = reasons.get("no-dump-type", 0) + 1
-            continue
-        value = decode(typ, data, data_idx)
-        if value is None:
-            skipped += 1
-            reasons["decode"] = reasons.get("decode", 0) + 1
-            continue
-        result[key] = {"type": typ, "value": value, "data_index": data_idx}
+        value = decode(typ, data, data_idx) if typ else None
+        entry = {"type": typ or "?", "data_index": data_idx,
+                 "raw": data[data_idx:data_idx + 64].hex()}
+        if value is not None:
+            entry["value"] = value
+        elif 0 <= data_idx <= len(data) - 4:
+            entry["int32"] = struct.unpack_from("<i", data, data_idx)[0]
+        result[key] = entry
     print(f"decoded: {len(result)}, skipped: {skipped} {reasons}")
 
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
