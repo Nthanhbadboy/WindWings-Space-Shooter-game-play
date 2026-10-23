@@ -137,7 +137,7 @@ Mặc định bind `127.0.0.1` — chỉ vào được qua `adb forward`. Đặt
 | GET | `/scene?max=200` | scene hiện tại + root GameObject (tên, active, tag, layer, component) |
 | GET | `/hierarchy?depth=3&max=1500` | cây object có giới hạn node |
 | GET | `/find?name=Sub&max=50` | tìm theo tên, **có cả object inactive**, kèm path đầy đủ |
-| GET | `/statics?type=Stage_Datas&max=200` | field static public/private của type game (qua reflection) |
+| GET | `/statics?type=Stage_Datas&max=200&arr=128&depth=2` | field static public/private của type game (qua reflection). `arr` = số phần tử giữ lại mỗi mảng, `depth` = số tầng mảng lồng nhau mở ra |
 | GET | `/logs?n=150` | ring buffer 500 dòng `Debug.Log` (bắt cả log từ thread khác) |
 | GET | `/metrics` | fps, avg/max frame time |
 | GET | `/screenshot` | PNG từ `ScreenCapture` (≤ 6 MB; ảnh lớn dùng `ramus screenshot`) |
@@ -154,7 +154,11 @@ curl -s 'http://127.0.0.1:8080/statics?type=Stage_Datas' | jq '.fields'
 curl -s -X POST 'http://127.0.0.1:8080/timescale?v=0' && curl -s http://127.0.0.1:8080/screenshot -o paused.png
 ```
 
-`/statics` chỉ đọc field **primitive / string / array ≤ 64 phần tử**. Không có endpoint eval, không ghi vào game — bề mặt tấn công giữ ở mức đọc.
+`/statics` đọc field **primitive / string / array / List**, kể cả **mảng lồng trong List**
+(`List<int[]>`, `List<List<int>>`) — hai tầng, chỉnh bằng `depth`. Mặc định giữ **128 phần tử**
+mỗi mảng (đổi bằng `arr`, tối đa 2000) và có `_count` cho độ dài thật; khi cắt bớt thì response
+kèm `"truncated":true`. Tổng ngân sách 80.000 scalar cho một lần gọi.
+Không có endpoint eval, không ghi vào game — bề mặt tấn công giữ ở mức đọc.
 
 ---
 

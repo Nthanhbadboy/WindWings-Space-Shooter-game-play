@@ -168,7 +168,7 @@ sleep 25 && curl -fsS http://127.0.0.1:8080/health | jq
 | GET | `/scene?max=N` | scene đang mở + object gốc |
 | GET | `/hierarchy?depth=D&max=N` | cây object |
 | GET | `/find?name=X&max=N` | object theo tên |
-| GET | `/statics?type=T&max=N` | **static field của class `T`** |
+| GET | `/statics?type=T&max=N&arr=128&depth=2` | **static field của class `T`**; `arr` = phần tử mỗi mảng, `depth` = số tầng mảng lồng (2 để mở `List<int[]>`) |
 | GET | `/logs?n=N` | vòng log trong tiến trình |
 | GET | `/metrics` | frame/fps |
 | GET | `/screenshot` | PNG màn hình |

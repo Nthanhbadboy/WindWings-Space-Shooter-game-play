@@ -941,7 +941,7 @@ namespace Ramus.Bridge
             }
         }
 
-        public static string StaticsJson(string typeName, int max)
+        public static string StaticsJson(string typeName, int max, int arrCap, int depth)
         {
             return OnMain(() =>
             {
@@ -954,6 +954,15 @@ namespace Ramus.Bridge
 
                 var jw = new Jw().StartObj().Prop("ok", true).Prop("type", type.FullName).Name("fields").StartObj();
                 int written = 0;
+                // How deep to unroll sequences and how many elements to keep per
+                // sequence. The old code was fixed at one level / 128 items, which
+                // is why List<Il2CppStructArray<int>> came back as type names and
+                // listMapDatas reported _count=250 but emitted 128.
+                var ctx = new EmitCtx
+                {
+                    Depth = Math.Max(0, Math.Min(depth, 4)),
+                    Cap = Math.Max(1, Math.Min(arrCap, 2000)),
+                };
 
                 // IL2CPP interop proxies surface native fields as static
                 // properties with getters invoking the runtime; read those
@@ -969,7 +978,7 @@ namespace Ramus.Bridge
                     try
                     {
                         object v = getter.Invoke(null, null);
-                        EmitAny(ref jw, p.Name, v, ref written, max);
+                        EmitAny(ref jw, p.Name, v, ref written, max, ctx);
                     }
                     catch { /* skip fields that interop refuses to read */ }
                 }
@@ -992,80 +1001,137 @@ namespace Ramus.Bridge
                     try
                     {
                         object v = f.GetValue(null);
-                        EmitAny(ref jw, f.Name, v, ref written, max);
+                        EmitAny(ref jw, f.Name, v, ref written, max, ctx);
                     }
                     catch { /* skip fields that interop refuses to read */ }
                 }
 
-                jw.EndObj().Prop("written", written).EndObj();
+                jw.EndObj().Prop("written", written);
+                if (ctx.Truncated) jw.Prop("truncated", true);
+                jw.EndObj();
                 return jw.ToString();
             }, 6000);
         }
 
-        static void EmitAny(ref Jw jw, string name, object v, ref int written, int max)
+        sealed class EmitCtx
         {
-            if (written >= max) return;
-            if (v == null) { jw.Name(name).Null(); written++; return; }
-
-            var t = v.GetType();
-            if (t == typeof(string)) jw.Name(name).Str(trunc((string)v));
-            else if (t == typeof(bool)) jw.Name(name).Bool((bool)v);
-            else if (t == typeof(int) || t == typeof(long) || t == typeof(short) || t == typeof(byte))
-                jw.Name(name).Num(Convert.ToDouble(v, CultureInfo.InvariantCulture));
-            else if (t == typeof(uint) || t == typeof(ulong) || t == typeof(ushort))
-                jw.Name(name).Num(Convert.ToDouble(v, CultureInfo.InvariantCulture));
-            else if (t == typeof(sbyte)) jw.Name(name).Num((sbyte)v);
-            else if (t == typeof(float) || t == typeof(double) || t == typeof(decimal))
-                jw.Name(name).Num(Convert.ToDouble(v, CultureInfo.InvariantCulture));
-            else if (v is Array arr && arr.Rank == 1 && arr.Length <= 128)
-            {
-                jw.Name(name);
-                EmitArrayItems(ref jw, arr.Length, i => arr.GetValue(i));
-                written++;
-            }
-            else if (t.Name == "Il2CppStructArray`1" || t.Name == "Il2CppReferenceArray`1"
-                     || t.Name == "Il2CppStringArray" || t.Name == "List`1")
-            {
-                // Il2Cpp*Array / interop List are not System.Array; read via
-                // Length/Count + indexer reflection.
-                try
-                {
-                    var lp = t.GetProperty("Length") ?? t.GetProperty("Count");
-                    var len = lp == null ? 0 : Convert.ToInt32(lp.GetValue(v), CultureInfo.InvariantCulture);
-                    var indexer = t.GetProperty("Item");
-                    if (lp != null && indexer != null && len > 0 && len <= 600)
-                    {
-                        int cap = Math.Min(len, 128);
-                        var lpv = v;
-                        jw.Name(name);
-                        EmitArrayItems(ref jw, cap, i => indexer.GetValue(lpv, new object[] { i }));
-                        jw.Name(name + "_count").Num(len);
-                    }
-                    else jw.Name(name).Str("(" + t.Name + ",len=" + len + ")");
-                }
-                catch { jw.Name(name).Str("(" + t.Name + ")"); }
-                written++;
-            }
-            else jw.Name(name).Str("(" + t.Name + ")");
-            written++;
+            public int Depth;                 // how many sequence levels to unroll
+            public int Cap = 128;             // elements kept per sequence
+            public int Budget = 80000;        // scalars total, so one huge field cannot
+            public bool Truncated;            // blow the response or the logcat mirror
         }
 
-        static void EmitArrayItems(ref Jw jw, int count, Func<int, object> get)
+        static void EmitAny(ref Jw jw, string name, object v, ref int written, int max, EmitCtx ctx)
         {
-            jw.StartArr();
-            for (int i = 0; i < count; i++)
+            if (written >= max) return;
+            written++;
+
+            if (v == null) { jw.Name(name).Null(); return; }
+
+            int len;
+            Func<int, object> get;
+            if (ctx.Depth > 0 && TrySeq(v, out len, out get))
             {
-                object item;
+                jw.Name(name);
+                EmitSeq(ref jw, len, get, ctx.Depth, ctx);
+                // Kept for compatibility: the full length, even when the array is
+                // cut at Cap. `_count` is the number the old reports quoted.
+                jw.Name(name + "_count").Num(len);
+                return;
+            }
+
+            EmitScalar(ref jw, name, v);
+        }
+
+        static void EmitSeq(ref Jw jw, int len, Func<int, object> get, int depth, EmitCtx ctx)
+        {
+            int n = Math.Min(len, ctx.Cap);
+            if (len > n) ctx.Truncated = true;
+            jw.StartArr();
+            for (int i = 0; i < n; i++)
+            {
+                if (ctx.Budget <= 0) { ctx.Truncated = true; break; }
+                ctx.Budget--;
+                object item = null;
                 try { item = get(i); }
-                catch { item = null; }
-                if (item == null) jw.Null();
-                else if (item is string s2) jw.Str(trunc(s2));
-                else if (item is bool b2) jw.Bool(b2);
-                else if (item is IConvertible c2 && (item is int || item is long || item is float || item is double || item is short || item is byte || item is sbyte || item is uint || item is ulong || item is ushort))
-                    jw.Num(c2.ToDouble(CultureInfo.InvariantCulture));
-                else jw.Str(trunc(item.ToString()));
+                catch { /* one unreadable element must not lose the whole array */ }
+
+                int innerLen;
+                Func<int, object> innerGet;
+                if (depth > 1 && item != null && TrySeq(item, out innerLen, out innerGet))
+                    EmitSeq(ref jw, innerLen, innerGet, depth - 1, ctx);
+                else if (item == null) jw.Null();
+                else EmitScalar(ref jw, null, item);
             }
             jw.EndArr();
+        }
+
+        static void EmitScalar(ref Jw jw, string name, object v)
+        {
+            var t = v.GetType();
+            bool named = name != null;
+
+            if (t == typeof(string)) { if (named) jw.Name(name); jw.Str(trunc((string)v)); return; }
+            if (t == typeof(bool)) { if (named) jw.Name(name); jw.Bool((bool)v); return; }
+            if (t == typeof(int) || t == typeof(long) || t == typeof(short) || t == typeof(byte) ||
+                t == typeof(uint) || t == typeof(ulong) || t == typeof(ushort) ||
+                t == typeof(sbyte) || t == typeof(float) || t == typeof(double) || t == typeof(decimal))
+            {
+                if (named) jw.Name(name);
+                jw.Num(Convert.ToDouble(v, CultureInfo.InvariantCulture));
+                return;
+            }
+
+            // A sequence we refused to unroll (depth exhausted) is reported with
+            // its length, so the caller can ask for it with &depth= instead of
+            // getting a bare type name that looks like missing data.
+            int len;
+            Func<int, object> get;
+            if (TrySeq(v, out len, out get))
+            {
+                if (named) jw.Name(name);
+                jw.Str("(" + t.Name + ",len=" + len + ")");
+                return;
+            }
+
+            if (named) jw.Name(name);
+            jw.Str("(" + t.Name + ")");
+        }
+
+        /// <summary>System arrays and il2cpp interop sequences are different animals:
+        /// the interop ones are not System.Array and only expose Length/Count plus
+        /// an Item indexer. Both are read the same way from here on.</summary>
+        static bool TrySeq(object v, out int len, out Func<int, object> get)
+        {
+            len = 0;
+            get = null;
+            if (v == null) return false;
+
+            if (v is Array a && a.Rank == 1)
+            {
+                len = a.Length;
+                get = i => a.GetValue(i);
+                return len > 0;
+            }
+
+            var t = v.GetType();
+            bool sequence =
+                t.Name == "Il2CppStructArray`1" || t.Name == "Il2CppReferenceArray`1" ||
+                t.Name == "Il2CppStringArray" || t.Name == "List`1" ||
+                (t.Namespace != null && t.Namespace.StartsWith("Il2Cpp", StringComparison.Ordinal));
+            if (!sequence) return false;
+
+            try
+            {
+                var lp = t.GetProperty("Length") ?? t.GetProperty("Count");
+                var ix = t.GetProperty("Item");
+                if (lp == null || ix == null) return false;
+                len = Convert.ToInt32(lp.GetValue(v), CultureInfo.InvariantCulture);
+                var target = v;
+                get = i => ix.GetValue(target, new object[] { i });
+                return len > 0;
+            }
+            catch { return false; }
         }
 
         static string trunc(string s) { return s != null && s.Length > 400 ? s.Substring(0, 400) : s; }
@@ -1316,7 +1382,11 @@ namespace Ramus.Bridge
                         return;
 
                     case "GET /statics":
-                        Copy(res, HttpResponse.Json(Bridge.StaticsJson(req.Query.TryGetValue("type", out var t) ? t : "", Q(req, "max", 200))));
+                        Copy(res, HttpResponse.Json(Bridge.StaticsJson(
+                            req.Query.TryGetValue("type", out var t) ? t : "",
+                            Q(req, "max", 200),
+                            Q(req, "arr", 128),     // elements kept per array
+                            Q(req, "depth", 2))));  // 2 = List<Array<int>> fully unrolled
                         return;
 
                     case "GET /types":

@@ -91,7 +91,7 @@ dump_moment(){ # $1 = menu | stage | ingame
   if [ "$MODE" = key ]; then
     for t in $TYPES; do
       mkdir -p "$OUT/statics-$L"
-      get "/statics?type=$t&max=300" "$OUT/statics-$L/$t.json"
+      get "/statics?type=$t&max=300&arr=256&depth=2" "$OUT/statics-$L/$t.json"
     done
     mkdir -p "$OUT/core-$L"
     get "/scene?max=300"               "$OUT/core-$L/scene.json"

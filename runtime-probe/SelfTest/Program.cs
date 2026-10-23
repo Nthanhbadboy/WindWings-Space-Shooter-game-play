@@ -100,6 +100,45 @@ static class Program
                 }
             }
 
+            // ── /statics: nested sequences and arrays past the old 128 cap ────
+            // The phone run returned `listMapDatas: ["Il2CppStructArray`1[System.Int32]", …]`
+            // and `_count=250` with only 128 items. Both were read-side bugs here.
+            try
+            {
+                using var res = await http.GetAsync("/statics?type=RamusSelfTestData&max=20&arr=500&depth=2")
+                    .ConfigureAwait(false);
+                string body = await res.Content.ReadAsStringAsync().ConfigureAwait(false);
+                Check("/statics nested → 200", (int)res.StatusCode == 200, First(body, 200));
+
+                using var doc = JsonDocument.Parse(body);
+                var fields = doc.RootElement.GetProperty("fields");
+
+                var loa = fields.GetProperty("ListOfArrays");
+                Check("/statics nested → outer is an array",
+                      loa.ValueKind == JsonValueKind.Array, loa.ValueKind.ToString());
+                var first = loa.GetArrayLength() > 0 ? loa[0] : default(JsonElement);
+                Check("/statics nested → an element is an array of numbers",
+                      first.ValueKind == JsonValueKind.Array &&
+                      first.GetArrayLength() == 3 &&
+                      first[0].ValueKind == JsonValueKind.Number &&
+                      first[0].GetInt32() == 1,
+                      First(loa.ToString(), 160));
+
+                var lng = fields.GetProperty("Long");
+                Check("/statics long → all 300 elements, not capped at 128",
+                      lng.ValueKind == JsonValueKind.Array && lng.GetArrayLength() == 300,
+                      "len=" + lng.GetArrayLength());
+
+                Check("/statics nested → no type-name placeholders",
+                      !body.Contains("System.Int32[]") && !body.Contains("(List`1") &&
+                      !body.Contains("(Int32[]"),
+                      First(body, 200));
+            }
+            catch (Exception ex)
+            {
+                Check("/statics nested", false, ex.GetType().Name + ": " + ex.Message);
+            }
+
             // /health is the endpoint CI depends on, so assert its shape.
             try
             {
@@ -217,4 +256,26 @@ static class Program
     }
 
     static string First(string s, int n) => s == null ? "<null>" : (s.Length <= n ? s : s.Substring(0, n) + "…");
+}
+
+/// <summary>Static shape that mirrors the phone's problem case: a list of int
+/// arrays (Map_Get_Datas.listMapDatas) plus one array longer than the old
+/// hard-coded cap of 128. Without nesting support /statics returned the type
+/// name instead of the numbers.</summary>
+public static class RamusSelfTestData
+{
+    public static readonly List<int[]> ListOfArrays = new List<int[]>
+    {
+        new[] { 1, 2, 3 },
+        new[] { 10, 20 },
+    };
+
+    public static readonly int[] Long = Build(300);
+
+    static int[] Build(int n)
+    {
+        var a = new int[n];
+        for (int i = 0; i < n; i++) a[i] = i;
+        return a;
+    }
 }

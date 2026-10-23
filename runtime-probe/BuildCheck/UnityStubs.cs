@@ -73,6 +73,24 @@ namespace UnityEngine
         public T AddComponent<T>() where T : Component => null;
         public T[] GetComponents<T>() => null;
         public Component[] GetComponents(Type type) => null;
+
+        // Message routing. The phone build references the real UnityEngine and
+        // these exist there; the stubs exist so `core` and the self-test can
+        // compile the same file, so they have to declare the same surface.
+        public void SendMessage(string methodName) { }
+        public void SendMessage(string methodName, object value) { }
+        public void SendMessage(string methodName, SendMessageOptions options) { }
+        public void SendMessage(string methodName, object value, SendMessageOptions options) { }
+        public void BroadcastMessage(string methodName) { }
+        public void BroadcastMessage(string methodName, object value) { }
+        public void BroadcastMessage(string methodName, SendMessageOptions options) { }
+        public void BroadcastMessage(string methodName, object value, SendMessageOptions options) { }
+    }
+
+    public enum SendMessageOptions
+    {
+        RequireReceiver = 0,
+        DontRequireReceiver = 1,
     }
 
     public class Texture : Object { }
