@@ -106,6 +106,17 @@ không biết **màn nào** biến mất giữa hai lần chạy (16 màn chỉ 
 - Họ tách lại mức tin: "không có bảng HP theo tàu trong serialize" (**A**) vs
   "runtime gán lúc chọn tàu" (**C**, chưa kiểm) — cách ghi này đúng quy ước của mình.
 
+## 3h. Commit `d76108b4` (01:35) + điều kiện lật ngược của họ đã được đáp
+
+- Họ kiểm bằng chữ ký: chỉ 7–8 method nhận `playerIndex`, **không có method HP nào**.
+  Mình đếm lại trên JSON của mình: **8 method có `playerIndex`** (5 damage/rate + 3 giá/thời gian mở tàu),
+  47 method float/int còn lại không tham số ⇒ kết luận **khớp**.
+- Họ ghi điều kiện lật ngược: *"export `Player_Health.asm.txt` đầy đủ"*. Phía mình đã thêm
+  **5 class** vào scan (`Player_Health`, `Player_Talent`, `Player_Ability`, `Player_Ingame`,
+  `Player_Attack`) — asm + JSON + trace đã có, tổng 425 method / 324 `bl` giải được tên.
+  Kết quả đầu tiên: `Player_Health` gọi `GetStartHp` trong lambda của `Start`, không thấy
+  đường gán HP theo tàu trong các class đã quét (mức B — chưa đọc hết rẽ nhánh).
+
 ## 4. Điều kiện lật ngược
 
 - Nếu `Enemy_Physics` export ra mà **phần lớn field rỗng** (như `Spawner.dataScript` = 0), thì

@@ -48,6 +48,8 @@
 | 19 | **`ParticleSystem` 4.845 đã có tóm tắt module**: thời lượng median 5,0 s, looping 70,7%, playOnAwake 99,3% | **A** | `29-particle-systems.md`, `raw/typetrees/native-types.jsonl.gz` | đọc lại mục ParticleSystem trong native-types |
 | 19b | **Sprite/Texture đã có kích thước**: 2.816/2.885 dòng `sprites.csv` có `width×height` (từ ảnh export thật) | **A** | `datas/sprites.csv`, `04-asset-manifest.csv` | so `width/height` với PNG trong bản export |
 | 20 | **Camera**: 6 cái, tất cả orthographic, `orthographicSize = 9,6` → chiều cao thấy được **19,2 world-unit**; khớp mốc spawn `y = 9,6` của wave (quân hiện đúng mép trên) | **A** | `24-ui-screens.md` mục Camera, `raw/typetrees/native-types.jsonl.gz` | đọc mục `Camera` trong native-types |
+| 21 | **Đã quét asm thêm 5 class runtime** (`Player_Health`, `Player_Talent`, `Player_Ability`, `Player_Ingame`, `Player_Attack`): tổng **425 method / 324 `bl`** giải được tên. `Player_Health` gọi `GetStartHp` 3 lần trong lambda của `Start`, `TakeDamage` gọi `IsInvisible/SetInvisible` + `TimeToImmuneOneHit` | **A** | `19-il2cpp-constants.md`, `28-formula-traces.md`, `raw/il2cpp-consts/Player_Health.asm.txt` | chạy lại `il2cpp_consts.py` + `formula_trace.py` |
+| 21b | **Không method HP nào nhận `playerIndex`**: 8/55 method float/int có tham số này và tất cả là damage/nhịp bắn/giá mở tàu → talent + nâng cấp là **chung mọi tàu**, tàu chỉ khác damage | **A** | `raw/il2cpp-consts/Player_Get_Datas.json` (cột signature) | đếm lại chữ ký hàm |
 | 14 | Damage/giá/thưởng suy ra từ field serialize | **B** | `docs/spec/COMBAT.md`, `ECONOMY.md` | so với hằng số ở #12 |
 | 15 | Nhận định "game dễ bypass", "nên dùng Spine"… | **C** | `PHAN_TICH_WINDWINGS_APK.md` | chỉ là đánh giá, không phải số |
 
@@ -55,7 +57,7 @@
 
 | Thiếu | Vì sao | Cách làm tiếp |
 |---|---|---|
-| `Player_Get_Datas`, `Droid_Data_Balance`, `Tech_Datas`, `Stage_Get_Datas`, `Map_Get_Datas`, `Enemy_Data_Balance`, `Device_Get_Data`, `GameDatas` | **0 instance** trong `data.unity3d` → giá trị nằm trong thân hàm IL2CPP | `19-il2cpp-constants.md` + `raw/il2cpp-consts/*.asm.txt` (đang làm) |
+| Thân hàm của các class cân bằng | **0 instance** trong `data.unity3d` → giá trị nằm trong IL2CPP; đã quét **17 class** (gồm `Player_Health/Talent/Ability/Ingame/Attack`) | `19-il2cpp-constants.md` + `raw/il2cpp-consts/*.asm.txt` |
 | Curve keyframe của 791 `AnimationClip` | **cả typetree lẫn UnityPy reader đều cho 0 keyframe** (đã thử, `27-anim-curves.md`) — curve nằm trong streamed clip nén | giải mã `m_StreamedClip` thủ công, hoặc dựng lại bằng nhịp ở `26-native-animation.md` |
 | Curve chi tiết trong module ParticleSystem + nối PS → prefab | mới ở mức scalar/module | mở rộng `animator_joins` cho ParticleSystem |
 | Công thức đầy đủ (thứ tự nhân, clamp, nội suy) | cần đọc control flow, không chỉ hằng số | Ghidra/IDA trên `libil2cpp.so` (đã có trong artifact) |
