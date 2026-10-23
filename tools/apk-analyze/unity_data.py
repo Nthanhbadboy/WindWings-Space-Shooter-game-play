@@ -273,7 +273,7 @@ def export_native_types(env) -> None:
     """
     import gzip
 
-    wanted = {"AnimationClip", "AnimatorController", "ParticleSystem", "Animator"}
+    wanted = {"AnimationClip", "AnimatorController", "ParticleSystem", "Animator", "Camera"}
     counts: Counter = Counter()
     out_path = os.path.join(RAW, "native-types.jsonl.gz")
     written = 0

@@ -331,9 +331,15 @@ def main() -> int:
         # whole canvas for every screen - 593k duplicated nodes.)
         top = go
         root_key = getattr(top, "path_id", id(top))
-        if root_key in seen_roots:
+        # Trước đây dedupe theo GameObject và bỏ qua lặng lẽ: 793 candidate chỉ
+        # ra 607 file, `skipped` rỗng, và cả class biến mất (Board_Shop...) vì
+        # nhiều Board_* MB nằm chung một GameObject gốc. Nay dedupe theo
+        # (class, root) và ghi lại mọi lần bỏ.
+        dedupe_key = (cls, root_key)
+        if dedupe_key in seen_roots:
+            _skip("duplicate (class, root)")
             continue
-        seen_roots.add(root_key)
+        seen_roots.add(dedupe_key)
         top_tr = transform_of(top)
         if top_tr is None:
             _skip("no transform")
@@ -366,9 +372,13 @@ def main() -> int:
                                      if any("Button" in c["class"] for c in n["components"])),
                       "bytes": size, "file": os.path.basename(fn)})
     print("skipped:", dict(skipped))
+    # Class nào có candidate mà không ra file nào cũng phải lộ diện.
+    written_classes = {r["class"] for r in index}
+    for cls in sorted({c for c, _h in candidates} - written_classes):
+        skipped_by_class.setdefault(cls, Counter())["no file written"] += 1
     # Vì sao một màn có thể biến mất giữa hai lần chạy: trước đây chỉ có tổng,
     # không biết màn nào bị bỏ. Ghi rõ theo từng class để lần sau đọc log là biết.
-    if skipped_by_class:
+    if True:
         with open(os.path.join(OUT_RAW, "_skipped.csv"), "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f)
             w.writerow(["class", "reason", "count"])
