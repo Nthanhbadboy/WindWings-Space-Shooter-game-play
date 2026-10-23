@@ -336,7 +336,67 @@ sai về **kỳ vọng nội dung** (tưởng có damage).
 | 4 | `width × height` sprite | ❌ `datas/sprites.csv` chỉ có `bytes` |
 | 5 | `ParticleSystem` | ❌ |
 
-## 11. Còn thiếu / phải đoán
+## 11. `0a5083c`+`e162065` (00:47) — export `AnimationClip`/`AnimatorController` + tool ghép
+
+| Việc | Kết quả |
+|---|---|
+| `AnimationClip` **791** + `AnimatorController` **308** | ✅ đã export (`native-types.jsonl.gz`, 19 KB) |
+| `datas/prefab_joins.csv.gz` | ✅ **3.870 dòng** · 7 mắt ghép · **100%** |
+| `ParticleSystem` | chỉ **đếm**, chưa xuất chi tiết (họ ghi rõ lý do: ~30 module) |
+
+### 11.1 Bảng ghép **hoàn chỉnh** — 7/7 mắt 100%
+
+| Class.field | Dòng |
+|---|---:|
+| `Enemy_Controller.m_GameObject` | 981 |
+| `Wave.startPoint` · `endPoint` | 686 · 686 |
+| `Enemy_Movement.parentRotate` | 558 |
+| `Gun_Attack.m_GameObject` | 458 |
+| `Boss_BodyPhysics.m_GameObject` | 251 |
+| `Stage_Behaviour.bossObj` | 250 |
+
+Mắt cuối `Stage_Behaviour.bossObj` (mà §7.9 xếp vào nhóm "0%, thiếu Transform") **đã 250/250 = 100%**.
+⇒ **Không còn mắt ghép cấu trúc nào dưới 100%.** Nhóm B của §7.9 **đã đóng hoàn toàn**.
+
+### 11.2 Nhưng 18% bảng ghép là **UI**, và nó làm sai một số của tôi
+
+| | Trước | Sau khi biết nguồn |
+|---|---:|---:|
+| Prefab có súng | 42 | **68** (Boss **26**, không phải 21) |
+| Súng "thật" | 458 | **319** — 139 là preview trên `Board_SelectBoss`/`Board_FightBoss` |
+| `Boss_BodyPhysics` "thật" | 251 | **185** — 66 là trên màn UI |
+| `Enemy_Controller` "thật" | 981 | **777** |
+
+### 11.3 `AnimationClip` — có **danh mục + nhịp**, không có **curve**
+
+| | Số |
+|---|---:|
+| Clip / tên khác nhau | 791 / **226** |
+| `m_StopTime > 0` | **707** |
+| Median / max | **1,9 s** / **75,0 s** |
+| Lặp | 251 |
+| Clip có event | **318** — **793 event** |
+| `m_SampleRate` | **60 fps** ×764 |
+| **`m_StateMachineBehaviours > 0`** | **0 / 308** |
+| Curve trong typetree | **0 / 791** (nằm ở `m_StreamedClip`) |
+
+> **Nhận định (mức A):** đây là lần đầu **793 event của Mecanim** đếm được — và nó **khớp đúng
+> 793 tham chiếu clip** của 308 controller. Cộng `m_StateMachineBehaviours = 0` ⇒ cơ chế đòn của boss
+> là **animation event gắn trên clip**, không phải state machine. Điều này **xác nhận** mục 3.1 của
+> `ANIMATION.md` và **bác bỏ** cách hiểu "state machine điều khiển đòn".
+
+### 11.4 Còn lại đúng 3 thứ
+
+| # | Thứ | Vì sao còn |
+|---:|---|---|
+| 1 | **Curve của 791 clip** | streamed — cần `parse_as_object()` riêng |
+| 2 | **`ParticleSystem`** 4.845 | ~30 module, nặng; mới đếm |
+| 3 | **Map `Animator` → prefab** | `Animator` (5.792) chưa export; controller là asset lẻ |
+
+Ngoài ra: **method body** (0,44%) vẫn ngoài tầm — nhưng giờ **không còn là mắt chặn** cho bất kỳ
+câu hỏi thiết kế nào nêu trong `SCRIPTS.md` §7, trừ `number = 0` (số quân).
+
+## 12. Còn thiếu / phải đoán
 
 | # | Thứ | Mức |
 |---:|---|---|

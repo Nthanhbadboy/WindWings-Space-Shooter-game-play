@@ -179,7 +179,38 @@ Cộng `AnimationEventHandler` **30** (`UnityEvent endedEvent` + `OnEnded()` = m
 > **Nhận định (mức B):** **9 boss** có lớp event riêng (`Boss4` · `5` · `6` · `7` · `8` · `9` · `12` · `15` · `18`),
 > cộng **4** rig Spine có đòn. Hai nhóm này có thể trùng nhau — chưa chồng lên được vì thiếu bảng map.
 
-### 3.3 Vì sao chưa đọc — và vì sao biết là đọc được
+### 3.3 Đã export (bản `e162065`) — **791 clip, nhưng curve bị stream**
+
+`raw/typetrees/native-types.jsonl.gz`: `AnimationClip` **791** · `AnimatorController` **308**.
+
+| Chỉ số `AnimationClip` | Giá trị |
+|---|---:|
+| Tên khác nhau | **226** (791 − nhiều bản sao theo prefab) |
+| Tên phổ biến | `Idle` **82** · `idle` **80** · `Xuathien` 41 · `Setup` 37 · `Appear` 26 |
+| `m_StopTime > 0` | **707 / 791** |
+| Thời lượng median | **1,9 s** · min 0,02 · max **75,0** |
+| Phân bố | 1,0 s ×76 · 2,0 s ×45 · 0,5 s ×33 |
+| Clip lặp (`m_LoopTime`) | **251** |
+| Clip có event | **318** — tổng **793 event** |
+| `m_SampleRate` | **60 fps** ×764 · 80 ×4 · 50 ×4 |
+
+| Chỉ số `AnimatorController` | Giá trị |
+|---|---:|
+| Số clip tham chiếu (tổng) | **793** — khớp đúng **793 event** |
+| Max clip/controller | **28** · controller rỗng: **1** |
+| **`m_StateMachineBehaviours > 0`** | **0 / 308** |
+
+> **Nhận định (mức A) — quan trọng:** **0 / 308 controller có StateMachineBehaviour**.
+> Nghĩa là `BossAnimationEvents` (§3.1) **không** gắn qua state machine — nó nghe
+> **event của clip** (`m_Events`, 793 cái trên 318 clip). Đó là lý do `allStartAttackActions`
+> là `Dictionary<string, Action>`: khoá là **tên event**, không phải tên state.
+
+> ⚠ **Curve không đọc được bằng typetree:** **791 / 791** clip có
+> `m_FloatCurves__count = m_PositionCurves__count = … = 0`. Curve nằm ở **`m_StreamedClip`**.
+> ⇒ Đọc được **tên + nhịp + event**, **chưa** dựng lại được chuyển động.
+> Muốn có keyframe phải dùng reader riêng của `AnimationClip` (UnityPy `parse_as_object()`).
+
+### 3.4 Vì sao chưa đọc — và vì sao biết là đọc được
 
 `04-asset-manifest.csv` chỉ chứa **`Sprite` 2.185 + `Texture2D` 653**. Không có `AnimationClip`,
 không có `AnimatorController`.
@@ -236,7 +267,7 @@ Lớp hiệu ứng đi kèm: `Sub_Effect` **113** · `Effect_Timer` **95** · `F
 | Hình dạng + nhịp enemy thường | **đủ** | tốc độ xoay từng con | prefab field (C) |
 | Nhịp xuất hiện / biến mất | **đủ** (`Show` 0,67 · `Hide` 0,33) | — | — |
 | Đòn của boss dùng Spine | **đủ tên + thời lượng + mốc event** | pose từng khung | JSON đã có, chỉ cần dựng |
-| Đòn của boss dùng Animator | **thiếu** | 791 clip | export `AnimationClip` |
+| Đòn của boss dùng Animator | **danh mục + nhịp** (791 clip · 226 tên · median 1,9 s · 793 event) | **curve** (streamed) | reader `AnimationClip` riêng |
 | Chuyển cảnh giữa các đòn | **thiếu** | state machine | export `AnimatorController` |
 | FX / particle | biết số lớp | tham số | prefab |
 

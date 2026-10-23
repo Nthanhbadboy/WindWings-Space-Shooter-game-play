@@ -92,6 +92,7 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | HP boss (tổng/prefab) | **470 K – 14,5 M**; tổng 39 boss = **206.167.000** | `15-enemy-hp.csv` (981 dòng) | **`BOSSES.md` §2** |
 | HP enemy thường | **68 / 70 prefab = 0**; 2 prefab = 20.000 | `15-enemy-hp.csv` + `Enemy_Datas.csv` | **`BOSSES.md` §6** |
 | Wave / spawner / map | **282 / 23.757 / 250** | `waves.json`, `MapController.csv` | `ENCOUNTERS.md` §0 |
+| Prefab có súng | **68** (Boss 26 · Wave/BLT 22 · CD 13 · CB 6 · BB 1) · **319 súng thật** + 139 preview UI | `prefab_joins.csv.gz` | **`DATA_SYNC.md` §7.19** |
 | Tốc độ enemy / turret | **0,2–30,0**, median 5,0; 69,3% rơi vào 2 nấc 5,0 và 20,0 / **22 prefab turret** (16,6% quân) | `Enemy_Movement.csv` (981 dòng) | **`BOSSES.md` §5.3** |
 | Stage trên board map | **299** (199 Normal · 49 Combat · 26 Boss · 25 MiniBoss) | `Stage_Behaviour.csv` | `ENCOUNTERS.md` §5 |
 | Class UI | **125** (53 board · 63 popup · 8 tab · 1 cell) | `08-ui-map.md` + `dump.cs`; đối chiếu `class-inventory.csv` (116) | `UI.md` §0 |

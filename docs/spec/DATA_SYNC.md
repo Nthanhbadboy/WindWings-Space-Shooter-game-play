@@ -854,6 +854,57 @@ Tỷ lệ khớp trong sai số 1,4 điểm ⇒ **enum `spawnType` đã giải m
 > "45.659 quân hay 23.757 quân" (§7.13) **không giải được bằng dữ liệu serialize**;
 > phải đọc thân hàm. Mức vẫn là **B**.
 
+### 7.19 `prefab_joins` (bản `e162065`) — 7 mắt ghép **100%**, và 18% trong đó là **UI**
+
+`datas/prefab_joins.csv.gz`: **3.870 dòng** · cột `class · field · component_path_id · target_path_id · prefab_root`.
+
+| Class.field | Dòng | Tỉ lệ |
+|---|---:|---:|
+| `Enemy_Controller.m_GameObject` | **981** | **100%** |
+| `Wave.startPoint` | **686** | 100% |
+| `Wave.endPoint` | **686** | 100% |
+| `Enemy_Movement.parentRotate` | **558** | 100% |
+| `Gun_Attack.m_GameObject` | **458** | 100% |
+| `Boss_BodyPhysics.m_GameObject` | **251** | 100% |
+| `Stage_Behaviour.bossObj` | **250** | 100% |
+| **Tổng** | **3.870** | |
+
+**453 prefab root khác nhau.** Trong đó **699 / 3.870 = 18,1%** thuộc `Board_*`.
+
+#### 7.19.1 ⚠ 30% số súng là **súng preview trên màn UI**
+
+| Nguồn `Gun_Attack` | Số | % |
+|---|---:|---:|
+| `Board_SelectBoss` (màn **chọn** boss) | **73** | 15,9% |
+| `Board_FightBoss` (màn đánh boss) | **66** | 14,4% |
+| **Tổng UI preview** | **139** | **30,3%** |
+| **Prefab thật (trong trận)** | **319** | **69,7%** |
+
+Tương tự `Boss_BodyPhysics`: **251 → 185 thật** (66 dòng là hitbox trên màn UI).
+`Enemy_Controller`: **981 → 777** không thuộc `Board_*`.
+
+#### 7.19.2 Sửa số súng theo prefab: **42 → 68**
+
+| | Số cũ (spec) | Số đúng (bản `e162065`) |
+|---|---:|---:|
+| Prefab **boss** có súng | 21 | **26** |
+| Prefab **không phải boss** có súng | 19 + 2 object = 21 | **42** |
+| **Tổng prefab có súng** | **42** | **68** |
+| Tổng súng | 458 (gồm UI) | **319 thật** (+139 UI) |
+
+Phân họ 68 prefab thật: **Boss 26** · `Wave_*` + `BLT_*` **22** · `CD` 13 · `CB` 6 · `BB` 1.
+
+> **Nhận định (mức A):** số cũ 42 sai vì tôi đếm theo **tiền tố tên trong `_gameobject`** — chỉ phủ **38%** số dòng.
+> Ghép theo `Transform` cho ra **68**, và phát hiện thêm: **súng nằm cả trong prefab `Wave_*`**
+> (`Wave_0005` có **12** súng) — điều mà cách ghép theo tên **không thể thấy**.
+>
+> Top prefab nhiều súng: `Boss-37006` **41** · `Boss-39006` 29 · `Boss-39010` 29 · `Boss-39004` 18 ·
+> `Wave_0005` 12 · `Boss-39002` 12.
+
+**Điều kiện lật ngược:** nếu súng trong `Board_FightBoss` thật sự là súng boss dùng trong trận
+(boss được đặt sẵn trên màn thay vì spawn) thì 66 dòng đó **không phải nhiễu** — khi đó 319 là **thiếu**,
+phải cộng lại. Cần đối chiếu runtime.
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |

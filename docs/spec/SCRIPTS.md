@@ -170,9 +170,13 @@ allGunDatas[i].timeRounds   # giây mỗi băng        → 0,3 – 100 · median
 | 0 | 3 | 0,15 | 1,50 | 0 | 12 |
 | 0 | 0 | 0 | 0,20 | 0 | 12 |
 
-**42 prefab có súng** (21 boss + 19 enemy thường + 2 object `90048`/`90049`).
-Nhiều súng nhất: `Boss-39010` **17** · `Boss-39006` **12** · `Boss-37006` **10** · `Boss-39004` **9** ·
-`CD-31016` **7**.
+**68 prefab có súng** (bản `e162065`, ghép qua `Transform`): **Boss 26** · `Wave_*`/`BLT_*` **22** ·
+`CD` 13 · `CB` 6 · `BB` 1. Tổng **319 súng thật** + **139 súng preview** trên `Board_SelectBoss`/`Board_FightBoss`.
+Nhiều súng nhất: `Boss-37006` **41** · `Boss-39006` 29 · `Boss-39010` 29 · `Boss-39004` 18 ·
+`Wave_0005` 12 · `Boss-39002` 12.
+
+> ⚠ **Số cũ trong file này là 42 prefab / 21 boss — SAI.** Đếm theo tiền tố `_gameobject` chỉ phủ 38% dòng
+> và **không thấy súng nằm trong prefab `Wave_*`**. Chi tiết `DATA_SYNC.md` §7.19.
 
 > **Nhận định (mức B):** chỉ **102 pattern** cho toàn bộ 458 khẩu súng — đây là **bộ kịch bản bắn nhỏ**,
 > dựng lại được bằng một struct 6 trường + một coroutine. Không cần AI, không cần animation-driven.
