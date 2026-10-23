@@ -48,11 +48,13 @@ jobs:
 
       - name: Toolchain
         run: |
+          exec > >(tee -a ci.log) 2>&1
           dotnet --info | head -20
           java -version 2>&1 | head -1 || true
 
       - name: Fetch loader assemblies
         run: |
+          exec > >(tee -a ci.log) 2>&1
           set -euo pipefail
           mkdir -p .ci/refs
           dl() { curl -fL --retry 3 --retry-delay 2 -o "$2" "$1"; }
@@ -78,13 +80,17 @@ jobs:
       - name: Compile all targets
         id: compile
         run: |
+          exec > >(tee -a ci.log) 2>&1
           set -o pipefail
           chmod +x .github/scripts/build-bridge.sh
-          .github/scripts/build-bridge.sh --out dist --refs .ci/refs 2>&1 | tee dist/../build.log
+          .github/scripts/build-bridge.sh --out dist --refs .ci/refs 2>&1 | tee -a ci.log
 
       - name: Keep the log
         if: always()
-        run: cp build.log dist/build.log 2>/dev/null || true
+        run: |
+          mkdir -p dist
+          cp ci.log dist/ci.log 2>/dev/null || true
+          wc -l ci.log 2>/dev/null || echo "no ci.log produced"
 
       - name: Inventory the DLLs
         if: always()
@@ -115,7 +121,7 @@ jobs:
             echo "## ❌ bridge build failed"
             echo
             echo '```'
-            tail -60 build.log 2>/dev/null || echo "no build.log"
+            tail -80 ci.log 2>/dev/null || echo "no ci.log — job stopped before the first step"
             echo '```'
           } > comment.md
           gh pr comment "${{ github.event.pull_request.number }}" \
