@@ -216,7 +216,12 @@ Cả ba cùng một lần export ⇒ **rẻ hơn** việc tôi suy luận thêm 
   **Điều kiện lật ngược:** đọc `Enemy_Controller.GetStartHealth` (`0x15828E4`, 28 B) — 7 lệnh là đủ.
 - **Chưa biết HP bao nhiêu** cho từng enemy ⇒ **chưa tính được TTK thật**. Đây là con số duy nhất
   còn thiếu để cân bằng, và nó nằm trong **một** `.cctor`.
-- **`Enemy_Hp_Bar` 909 instance / 981 enemy** ⇒ 72 enemy **không** có thanh máu. Chưa biết đó là
-  nhóm nào (có thể là loại không nhận damage, hoặc bar nằm ở prefab cha). **Chưa kiểm.**
+- **HP thực tế = HP bảng × `kHp[mode]`** — người chơi kiểm chứng khó hơn thì **nhiều máu hơn** (A, chơi
+  game). Phép nhân **không** nằm trong `.cctor`/bảng (HP là **1 số/prefab**, `StartHpPoint = 0` ở
+  **981/981** ⇒ HP ghi lúc spawn) mà ở **tầng spawn** — xem `DIFFICULTY_MODES.md` §5. ⇒ Mọi TTK tính từ
+  bảng HP là **TTK của Normal**.
+- ~~`Enemy_Hp_Bar` 909 / 981 ⇒ 72 enemy không có thanh máu~~ — **đã giải**: `Enemy_Display`
+  `hpProgressBarRenderer` phủ **976/981**; hợp hai cơ chế ⇒ **109/109 prefab spawn có bar**. Xem
+  `DIFFICULTY_MODES.md` §1.
 - **Không** kết luận "damage enemy không scale": `GetDamagePowered(float)` tồn tại, nhưng
   **chưa biết** nó áp cho damage của enemy hay cho damage **nhận vào**.

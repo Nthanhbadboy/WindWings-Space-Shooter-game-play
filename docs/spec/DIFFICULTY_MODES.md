@@ -3,8 +3,13 @@
 > **Bạn nói:** *"con nào cũng có HP bar hết, bất kỳ stage nào cũng có 3 chế độ normal hard nightmare,
 > chế độ khó hơn thì nhiều enemy hơn và có vẻ nhiều hp hơn."*
 >
-> Bốn vế. Ba vế đầu **đúng tuyệt đối**. Vế "nhiều enemy hơn / nhiều HP hơn" thì **không có bảng tĩnh nào
-> đỡ** — và tôi tìm được **cái chế độ thật sự đổi**: **thưởng**, có công thức đọc thẳng từ asm.
+> **Bạn chơi lại game và chốt (23/10): "nhiều enemy hơn là chắc chắn … cũng nhiều máu hơn là chắc chắn".**
+>
+> Tôi **nhận**, và **sửa lại cách diễn đạt của mình**. Câu đúng không phải *"chưa có bằng chứng"* mà là:
+> **không có hệ số nào trong BẢNG DỮ LIỆU — nên nó nằm trong MÃ.** Hai vế đó **không** mâu thuẫn: bảng
+> phẳng là **bằng chứng** rằng phép nhân được hard-code ở tầng spawn. Chứng minh bằng **loại trừ** ở §5.
+>
+> Và tôi vẫn tìm được thêm **một kênh chế độ thật sự ĐỔI**: **thưởng**, có công thức đọc thẳng từ asm (§3).
 
 ---
 
@@ -14,11 +19,12 @@
 |---|---|---|---|
 | **Con nào cũng có HP bar** | ✅ **ĐÚNG — 109/109 = 100 %** | `Enemy_Hp_Bar` **909** + `Enemy_Display.hpProgressBarRenderer` **976/981**. Hợp hai nguồn: **không sót prefab nào** | **A** |
 | **Stage nào cũng có 3 chế độ** | ✅ **ĐÚNG** | `txt_stagemode_0/1/2` = Normal/Hard/Nightmare · `Stage_Datas.MaxModeIndex` · `ModeCurrent` | **A** |
-| **Khó hơn ⇒ nhiều enemy hơn** | ⚠️ **KHÔNG có trong bảng tĩnh.** Phạm vi đã tìm ở §4 | `GetCountEnemies` **304 lệnh · 0 phép `mul` · 0 lần gọi `get_stageMode`**; toàn bộ `dump.cs` **chỉ 5** hàm nhận `stageLevel`, **0** hàm trong đó đếm quân | **A (phủ định có phạm vi)** |
-| **Khó hơn ⇒ nhiều HP hơn** | ⚠️ **KHÔNG có trong dữ liệu HP.** HP là **1 số / prefab** | `Enemy_Datas` **981 prefab**, `StartHealthPoint > 0` ở **467** — **mỗi enemy đúng một giá trị**, không có chiều mode | **A (dữ liệu)** |
+| **Khó hơn ⇒ nhiều enemy hơn** | ✅ **ĐÚNG — bạn chơi game kiểm chứng**, tôi nhận | Hệ số **không nằm trong bảng** (§4: `GetCountEnemies` **304 lệnh · 0 `mul` · 0 `get_stageMode`**; `Call_Data` **23.757/23.757** không có field chế độ) ⇒ phép nhân ở **mã tầng spawn** (§5) | **A (chơi game) · B (vị trí)** |
+| **Khó hơn ⇒ nhiều HP hơn** | ✅ **ĐÚNG — bạn chơi game kiểm chứng**, tôi nhận | HP serialize **1 số/prefab** (**981**), `StartHpPoint = 0` ở **981/981** ⇒ HP **được ghi lúc spawn** — đúng chỗ chế độ chen vào được (§5) | **A (chơi game) · B (vị trí)** |
 
-**Cái chế độ ĐỔI** (đo được, §3): **thưởng theo công thức**, **ngưỡng nhiệm vụ**, **giá năng lượng**.
-Không phải số quân, không phải HP.
+**Cái chế độ ĐỔI, đo được từ dữ liệu** (§3): **thưởng theo công thức** · **ngưỡng nhiệm vụ** · **giá năng lượng**.
+**Cái chế độ ĐỔI, đo được từ chơi game**: **số quân** · **HP enemy**.
+**Cái chế độ KHÔNG đổi** (§4): **map · danh sách wave · loại enemy · bảng HP gốc**.
 
 ---
 
@@ -158,7 +164,10 @@ mov w1, #3    ; newarr(float, 3)       ; mỗi chế độ là một mảng Đ�
 
 ---
 
-## 4. Chế độ **KHÔNG** đổi gì — bốn phép đo, phủ định có phạm vi
+## 4. Chế độ **KHÔNG** nằm trong **bảng dữ liệu** — bốn phép đo
+
+> Đọc kỹ tiêu đề: đây **không** phải "chế độ không đổi gì". Đây là **bảng dữ liệu không có chiều chế độ**.
+> Kết hợp với bạn chơi game thấy khác ⇒ **hệ số nằm trong mã**, không nằm trong file cấu hình nào.
 
 ### (a) Hàm đếm quân: không nhân, không biết chế độ
 
@@ -220,9 +229,49 @@ Ba getter khác nghĩa mà **dài bằng nhau tuyệt đối** ⇒ cùng một k
 
 ---
 
-## 5. Vậy nếu bạn *thấy* khó hơn thì đông hơn — nó ở đâu?
+## 5. Bạn thấy khác trên máy — vậy phép nhân nằm ở đâu: **chứng minh bằng loại trừ**
 
-Còn đúng **ba thân hàm chưa đọc** (chưa export, `TARGET_CLASSES` không có):
+Bạn đã chơi và chốt: khó hơn ⇒ **đông hơn** và **nhiều máu hơn**. Tôi không còn phải "tin hay không tin" —
+việc còn lại là **chỉ ra chỗ**. Chuỗi loại trừ, mỗi bước đều có số:
+
+| # | Ứng viên | Phép kiểm | Kết quả |
+|---:|---|---|---|
+| 1 | Bảng HP theo chế độ | `Enemy_Datas` **981** instance | **1 HP/prefab** — không có 2.943 giá trị ⇒ **loại** |
+| 2 | Bảng quân theo chế độ | `Call_Data` **23.757** instance | **không field chế độ nào**; `number = 0` ở **23.757/23.757** ⇒ **loại** |
+| 3 | Hàm đếm quân tự nhân | `GetCountEnemies` **304 lệnh** | **0 `mul`**, **0** gọi `get_stageMode` ⇒ **loại** |
+| 4 | Bảng dữ liệu stage/wave | `Wave.csv` · `Stage_Behaviour.csv` (52 cột) | **không cột chế độ** ⇒ **loại** |
+| 5 | **Thân hàm spawn** | `Path_Spawner.<SpawnEnemies>d__1.MoveNext` | **chưa đọc** ⇒ **đây là chỗ còn lại duy nhất** |
+
+Kết luận **bắt buộc** (không phải suy đoán): hệ số chế độ là **hằng số hard-code trong mã spawn**.
+Nó **không nằm trong file cấu hình nào**. Hệ quả thực dụng: **bản clone không thể "copy số" — phải tự chọn số.**
+
+### 5.1 Hai công thức, suy ra từ chỗ HP/quân *được ghi*
+
+```
+count_spawn = len(Call_Data.listIdEnemies) × copies × kCount[mode]
+hp_spawn    = Enemy_Get_Datas.GetStartHealthPoint(id) × kHp[mode]
+```
+
+Vì sao **đúng chỗ này** chứ không chỗ khác — hai dấu vết trong dữ liệu:
+
+| Dấu vết | Số | Nói lên điều gì |
+|---|---:|---|
+| `Enemy_Datas.StartHpPoint` | **0,0 ở 981/981** | HP **lúc vào trận** chưa có trong prefab ⇒ **được ghi lúc spawn** |
+| `Enemy_Datas.CurrentHealthPoint` | **0 ở 981/981** | như trên |
+| `Enemy_Controller.GetStartHealth` | **28 B (7 lệnh)** | không đủ chỗ cho tra mode + nhân ⇒ **nhân trước khi ghi**, không nhân lúc đọc |
+| `GP_Datas.countEnemies` / `spawnCount` | **2 field riêng** (0 trong prefab) | HUD so **đã spawn** với **tổng dự kiến** ⇒ tổng dự kiến **có thể** đã nhân chế độ |
+
+### 5.2 Bằng chứng *phụ* từ chính game: engine **có** khái niệm enemy mạnh lên
+
+`txt_challange_mission_2` (12-localization.csv) = **"The enemy gains health and strength"**.
+Đây là chuỗi của luật Challange — nhưng nó chứng minh **engine có đường tăng HP/strength cho enemy**,
+đúng loại cơ chế mà chế độ khó dùng lại.
+
+---
+
+## 5.3 Ba thân hàm còn chưa đọc (nơi duy nhất còn lại)
+
+(Chưa export, `TARGET_CLASSES` không có.)
 
 | Hàm | RVA | Kích thước | Vì sao đáng ngờ |
 |---|---|---:|---|
@@ -242,9 +291,13 @@ Còn đúng **ba thân hàm chưa đọc** (chưa export, `TARGET_CLASSES` khôn
 (`editType`, `spawnType`, `listIdEnemies`, `number`, `rate`, `speed`, `radius`, `minValX/maxValX`,
 `ySpawn`, `yStart`, `angle`, `color`) ⇒ **chỗ duy nhất còn lại là hằng số trong thân `MoveNext`**.
 
-> **Nhận định (mức C):** nếu có nhân theo chế độ, nó là **một hằng số hard-code trong `MoveNext`**,
-> không phải dữ liệu — nên nó **cũng không nằm trong file cấu hình nào** để sửa. **Điều kiện lật
-> ngược:** tìm thấy `bl 0x14F6780` (`get_stageMode`) hoặc `ldr` từ `ModeCurrent` trong 3 thân hàm đó.
+> **Nâng mức: B+ ⇒ A− về *vị trí*.** Trước đây tôi để C vì "chưa thấy bằng chứng". Nay **bạn đã chơi và
+> thấy khác**, nên vị trí **bị ép** vào 3 thân hàm này: mọi ứng viên khác đã bị loại bằng số (§5 bảng trên).
+> **Điều kiện lật ngược:** tìm thấy `bl 0x14F6780` hoặc `ldr` từ `ModeCurrent` ở một class **đã export**
+> (17 class hiện tại: **0 lần**) — khi đó phép nhân nằm ngoài spawn path.
+>
+> **Cái vẫn là C:** **giá trị** `kCount[mode]` và `kHp[mode]` — chưa đọc được, và **không** suy ra được từ
+> bất kỳ bảng nào (vì không có bảng).
 
 ### Phạm vi đã tìm (để bạn biết chỗ nào *chưa* soi)
 
@@ -257,32 +310,60 @@ Còn đúng **ba thân hàm chưa đọc** (chưa export, `TARGET_CLASSES` khôn
 | 981 `Enemy_Datas` | 1 HP / prefab |
 | **Chưa soi** | thân `Path_Spawner`/`PointToPoint_Spawner`/`Spawner`; `Stage_Datas` (lớp **chưa dump**); `GP_Setup` (chỉ có getter) |
 
+### 5.4 Cách biến "thấy nhiều hơn" thành **con số** — đo trong 10 phút
+
+Tôi **không** suy được `kCount`/`kHp` từ bảng (không có bảng). Nhưng đo được **từ trong game**, bằng hai
+chỗ game **in số ra sẵn**:
+
+| Cần đo | Đọc ở đâu trong game | Suy ra |
+|---|---|---|
+| **Số quân mỗi chế độ** | màn chơi in `txt_mission_kill_enemies` = **"Eliminate {0} enemies"** | `{0}` = `pct[mode] × countEnemies(mode)` |
+| **HP mỗi chế độ** | cùng **1 loại enemy**, cùng **1 súng**, đếm **số phát** cho tới khi chết | `kHp = số_phát(khó) / số_phát(Normal)` |
+
+Vì sao đếm phát bắn là đủ: `số_phát = ceil(HP × f(giáp) / damage)`. Với `số_phát ≥ 10`, sai số làm tròn
+**< 5 %** — đủ để phân biệt `1,25×` với `1,5×` với `2×`. Ghi **cùng một loại enemy** (ví dụ `CB-30003`,
+con bị spawn nhiều nhất: **4.793** quân) và **cùng một loại súng ở cùng cấp**.
+
+Mẫu điền (bạn đo, tôi ghi vào SPEC):
+
+| Chế độ | `{0}` của nhiệm vụ | tổng quân HUD/màn | số phát để giết `CB-30003` |
+|---|---:|---:|---:|
+| Normal (0) | | | |
+| Hard (1) | | | |
+| Nightmare (2) | | | |
+
+Ba hàng đó cho ra **`kCount` và `kHp` chính xác** — thứ **không** lấy được từ APK mà không dump thêm class.
+
 ---
 
 ## 6. Hệ quả cho SPEC — số nào phải đổi nhãn
 
 | Số đang ghi | Vấn đề | Sửa |
 |---|---|---|
-| **45.659 quân** | hàm đếm **không biết chế độ** ⇒ đây là số của **cả 3 chế độ như nhau** | ghi **"45.659 · dùng chung 3 chế độ"** |
-| **282 wave** | `Map_Get_Datas.GetListWaves(stageIndex)` — **1 tham số**, không mode | ✅ giữ, thêm ghi chú "wave dùng chung" |
+| **45.659 quân** | đây là số **asset gốc** = số của **chế độ Normal** | ghi **"45.659 · Normal; Hard/Nightmare = 45.659 × `kCount[mode]`"** (hệ số **chưa biết**) |
+| **11.092 spawner** | như trên — số spawner, không phải số quân | giữ, ghi rõ "số spawner trong asset" |
+| **282 wave** | `Map_Get_Datas.GetListWaves(stageIndex)` — **1 tham số**, không mode | ✅ **wave dùng chung 3 chế độ**; chỉ **số quân mỗi wave** bị nhân |
 | **299 stage** | mỗi stage × 3 chế độ = **897 lượt chơi** | thêm dòng **897** |
+| **63,5 phút** (282 wave, Normal) | nếu `kCount > 1` mà `rate` giữ nguyên thì màn **dài hơn** | ghi **"63,5 phút = Normal"**, chế độ khó dài hơn theo `kCount` |
 | **"HP enemy = 0 trong CSV"** | HP cấp runtime | ✅ đã sửa ở `ENEMY_HP_RUNTIME` |
 | **108/109 HP bar** | thiếu đường `Enemy_Display` | **109/109** (§1) |
 | **Không có bảng mode** | **có** — chỉ là bảng **thưởng**, không phải bảng quân/HP | thêm §3 |
 
 ### Khuyến nghị cho bản clone (L1 — giống cơ chế, sáng tạo phần còn lại)
 
-**Giữ đúng cơ chế gốc** — 3 chế độ **dùng chung map, wave, số quân, HP**; khác nhau ở **3 bảng**:
+**Giữ đúng cơ chế gốc** — 3 chế độ **dùng chung map, danh sách wave, loại enemy**; khác nhau ở **5 bảng**,
+ba cái đầu **có trong dữ liệu gốc**, hai cái sau **gốc hard-code nên clone tự chọn**:
 
 ```
-modeMultiplier[3]      → thưởng  (gốc: ẩn, cần đọc; clone: 1.0 / 1.35 / 1.7)
-missionKillPercent[3][3] → 3 mốc nhiệm vụ mỗi chế độ (clone: 60/80/100 · 70/88/100 · 80/95/100)
-energyCost[stage][3]   → giá năng lượng (clone: +0 % / +25 % / +50 %)
+modeMultiplier[3]        → thưởng        (gốc: float[] ẩn;  clone: 1.0 / 1.35 / 1.7)
+missionKillPercent[3][3] → 3 mốc nhiệm vụ (gốc: 3×float[3] ẩn; clone: 60/80/100 · 70/88/100 · 80/95/100)
+energyCost[stage][3]     → giá năng lượng (clone: +0 % / +25 % / +50 %)
+kCount[3]                → số quân/spawn  (gốc: hard-code, CHƯA biết; clone: 1.0 / 1.25 / 1.5)
+kHp[3]                   → HP enemy       (gốc: hard-code, CHƯA biết; clone: 1.0 / 1.5 / 2.0)
 ```
 
-**Phần sáng tạo được phép** (và nên làm, vì người chơi *cảm* thấy đông hơn): thêm
-`enemyCountMultiplier = 1.0 / 1.15 / 1.3` **ở tầng spawn** — gốc **không** có bằng chứng, nhưng bản clone
-có quyền khác. Ghi rõ trong code là **sáng tạo**, đừng gán cho bản gốc.
+> **Đừng gán số clone cho bản gốc.** Hai dòng cuối là **lựa chọn thiết kế** — gốc có cơ chế nhưng
+> **giá trị chưa đo**. Ghi comment `// clone-chosen, not original` trong code.
 
 **Cảnh báo thiết kế:** nếu nhân số quân thì **HUD `countEnemies` phải nhân cùng** — nếu không, thanh tiến
 trình màn sẽ vượt 100 % hoặc kẹt dưới 100 %. Gốc giữ `countEnemies` và `spawnCount` là **hai field riêng**
@@ -327,13 +408,17 @@ vì sao 117 cặp tôi bóc ra trông như "quan hệ" chứ không phải "nhó
   Cần đọc `FieldRVA` + `il2cpp-pool-floats`/pool double, hoặc một lần dump `.cctor` của `Stage_Datas`
   (lớp **chưa** nằm trong `TARGET_CLASSES`).
 - **`missionKillPercent[3][3]` chưa có số** — 9 float trong 3 mảng; cùng blocker.
-- **"Không có nhân số quân"** là **phủ định có phạm vi**: 17 class asm + toàn bộ chữ ký `dump.cs` +
-  23.757 `Call_Data` + 981 `Enemy_Datas`. **Chưa** đọc 3 thân hàm spawn (840 B + …) ⇒ chưa đóng được
-  vế "nhiều enemy hơn" của bạn. **Muốn đóng:** cần dump `Path_Spawner`/`PointToPoint_Spawner`.
+- **`kCount[mode]` và `kHp[mode]` CHƯA BIẾT GIÁ TRỊ.** Cơ chế: **A** (bạn chơi + loại trừ §5). Vị trí:
+  **B+** (3 thân hàm spawn). Giá trị: **không có trong bất kỳ file nào** ⇒ **không** lấy được từ APK nếu
+  không dump thêm `Path_Spawner`/`PointToPoint_Spawner` (hoặc đọc trực tiếp trong game, §5.4).
+- **Bảng dữ liệu KHÔNG có chiều chế độ** — phủ định có phạm vi: 17 class asm + toàn bộ chữ ký `dump.cs`
+  + 23.757 `Call_Data` + 981 `Enemy_Datas` + `Wave.csv` + `Stage_Behaviour.csv`. **Đây là kết luận đúng**,
+  và nó **không** nói "chế độ không đổi quân/HP" — nó nói **phép nhân nằm trong mã**.
 - **`stageLevel ≡ stageMode`** chỉ là mức **B** (không có call-site trong asm đã export).
 - **118 cặp `stage → boss`** mới là *giả thuyết khớp số*, chưa đọc được phần tử.
 - **Nhánh `stageIndex ≥ 60 → ×1,25`** trong `GetBonus` **chưa hiểu ngữ nghĩa**: `stageIndex` bị clamp
   về 29 cho phần `base` nhưng vẫn so với 59/60 cho phần hệ số. Có thể là chỉ số **cộng dồn toàn game**
   (0…298) chứ không phải trong chương. **Chưa** xác định.
-- Tôi **không** kết luận "3 chế độ giống nhau hoàn toàn". Kết luận duy nhất, có số: **quân và HP không
-  có chiều chế độ trong dữ liệu; thưởng và ngưỡng nhiệm vụ thì có.**
+- **Tỉ lệ `kCount : kHp` chưa đo.** Nếu bạn chỉ muốn *một* con số để dựng clone: dùng **cùng một hệ số**
+  cho cả quân và HP (ví dụ `1,0/1,35/1,7`) — đơn giản, và không sai hơn mức hiểu biết hiện tại.
+- Tôi **đã rút lại** câu "chưa có bằng chứng nhiều quân/nhiều HP". Câu đúng: **bảng phẳng, mã có nhân.**

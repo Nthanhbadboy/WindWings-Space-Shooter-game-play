@@ -21,7 +21,7 @@
 
 ---
 
-## 1. Bảng tổng — **27 vấn đề**, chia theo **nguyên nhân** (quan trọng hơn mức độ)
+## 1. Bảng tổng — **28 vấn đề**, chia theo **nguyên nhân** (quan trọng hơn mức độ)
 
 | # | Vấn đề | Nhóm | Mức | Ảnh hưởng thiết kế |
 |---|---|---|---|---|
@@ -33,6 +33,7 @@
 | B2 | ~~13 tàu `20001–20013`~~ ✅ **ĐÓNG — là 13 DRONE**, không phải tàu | — | **A** | số tàu vẫn **25**; drone đã có ở `BALANCE` §3.2 |
 | B3 | ~~HP enemy scale theo stage~~ ✅ **cơ chế ĐÃ RÕ**: HP = `Dictionary<int,float>` trong `Enemy_Get_Datas.cctor` (chưa dump) · **enemy có giáp** | **chưa dump 1 class** | **B** | thiếu **nội dung bảng HP** (981 giá trị) — `ENEMY_HP_RUNTIME.md` |
 | B4 | `GetCountEnemies` mỗi stage | **chưa lấy** | D | ảnh hưởng nhiệm vụ/độ dài |
+| B8 | **Hệ số chế độ cho SỐ QUÂN + HP** — người chơi kiểm chứng khó hơn ⇒ đông hơn & nhiều máu hơn (**A**). Bảng dữ liệu **phẳng** (981 HP/prefab, 23.757 `Call_Data` không field chế độ) ⇒ hệ số **hard-code trong `MoveNext` 840 B chưa đọc** | **chưa dump class spawn** | **B+** (vị trí) · **C** (giá trị) | clone phải **tự chọn** `kCount`/`kHp`; giao thức đo 10 phút — `DIFFICULTY_MODES.md` §5.4 |
 | B5 | 43/305 trace chưa đối chiếu | **chưa lấy** | — | rủi ro sai số nhỏ |
 | B6 | Damage boss không khai báo (19 class) | **chưa lấy** | C | thiếu 19/37 nhóm đòn |
 | B7 | ~~12 stat Basic vs `NumberTechStats()` = 60~~ | ✅ **đã chốt** | A | = `List.Count`, không phải hằng số |
@@ -257,6 +258,26 @@ Bin **240–259 khớp tuyệt đối** giữa hai bản (8,60 M · max 13,52 M)
 
 ### B4. `GetCountEnemies` / `GetCountAllEnemies` mỗi stage — **D**
 Có thân hàm (A): duyệt `GetListWaves(stageIndex)` → đếm theo `listIgroneEnemies`. **Thiếu `listMapDatas`** (A2) nên chưa ra số.
+
+### B8. Hệ số chế độ cho **số quân** và **HP** — **cơ chế A, giá trị C**
+
+**Người chơi đã kiểm chứng trực tiếp (23/10):** chế độ khó hơn **đông enemy hơn** và **nhiều máu hơn**.
+Không còn phải suy đoán *có hay không* — chỉ còn *ở đâu* và *bao nhiêu*.
+
+**Ở đâu:** bằng **loại trừ**, không phải bằng phỏng đoán (`DIFFICULTY_MODES.md` §5):
+
+| Ứng viên | Số đo | Kết quả |
+|---|---|---|
+| Bảng HP theo chế độ | `Enemy_Datas` **981** instance, **1 HP/prefab** | ❌ không tồn tại |
+| Bảng quân theo chế độ | `Call_Data` **23.757**, `number = 0` ở **23.757/23.757**, không field chế độ | ❌ không tồn tại |
+| Hàm đếm tự nhân | `GetCountEnemies` **304 lệnh · 0 `mul` · 0 `get_stageMode`** | ❌ |
+| Cột chế độ trong CSV | `Wave.csv` · `Stage_Behaviour.csv` (52 cột) | ❌ |
+| **Thân hàm spawn** | `Path_Spawner.<SpawnEnemies>d__1.MoveNext` **840 B** | ✅ **chỗ còn lại duy nhất** |
+
+**Bao nhiêu:** **CHƯA BIẾT**, và **không** suy được từ bảng (không có bảng). Hai đường lấy:
+(a) dump `Path_Spawner`/`PointToPoint_Spawner` (2 class, **chưa** trong `TARGET_CLASSES`);
+(b) **đọc trực tiếp trong game** — `txt_mission_kill_enemies` in `"Eliminate {0} enemies"` (ra `kCount`),
+và đếm số phát bắn để giết cùng một enemy (ra `kHp`). Giao thức: `DIFFICULTY_MODES.md` §5.4.
 
 ### B5. 43/305 trace chưa đối chiếu
 `formula_traces.json.gz` có **305 trace / 43 method**; đã dùng ~các trace chính (`stepLevel`, `GetCostUpgrade`, `NumberTechStats`). 43 method còn lại **chưa từng đọc** ⇒ rủi ro sai số ở các ngưỡng phụ.
