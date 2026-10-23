@@ -251,9 +251,14 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
             dst = insn.op_str.split(",")[0].strip()
             if m and dst.startswith("x"):
                 base, off = m.group(1), int(m.group(2), 0) if m.group(2) else 0
-                if base in adrp_pages:
+                # Deref [xM] (off=0) phải xét TRƯỚC: sau `ldr xM,[page,#off]`
+                # thì xM không còn giữ page nữa dù adrp_pages vẫn còn ghi.
+                if base in slot_regs and off == 0 and dst != base:
+                    pass  # rơi xuống nhánh deref bên dưới
+                elif base in adrp_pages:
                     slot_regs[dst] = adrp_pages[base] + off
-                elif base in slot_regs and off == 0:
+                    adrp_pages.pop(dst, None)
+                if base in slot_regs and off == 0 and dst != base:
                     raw_a = va_read(blob, segs, slot_regs[base], 8, ro_only=False)
                     if raw_a and len(raw_a) == 8:
                         a = struct.unpack("<Q", raw_a)[0]
