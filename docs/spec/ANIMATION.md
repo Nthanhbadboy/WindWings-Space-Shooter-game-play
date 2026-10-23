@@ -317,7 +317,7 @@ Cái quyết định cảm giác đã đo được hết:
 | 4 | 25 boss còn lại animate bằng gì | **B** | 9 họ event + 4 rig Spine; phần còn lại chưa có dấu vết |
 | 5 | `allStartAttackActions` có bao nhiêu khoá | **C** | export field prefab (dictionary) |
 | 6 | Clip nào dùng chung giữa nhiều boss | **C** | export `AnimatorController` |
-| 7 | Thứ tự pha (clip nào trước clip nào) | **C** | export 37 `*_Director` (68 instance) |
+| 7 | Thứ tự pha (clip nào trước clip nào) | **C** | export 34 `*_Director` (**60** instance) + 3 `AttackPhases` = **63** |
 | 8 | `Idle` có 0 key nghĩa là "đứng yên" hay "giữ pose đầu" | **B** | đọc `SkeletonRenderer` init |
 | 9 | Nhóm 21 rig bộ 6 animation là **tàu** hay **enemy** | **B** | bảng map rig → prefab |
 | 10 | `Animator` 5.792 phân bố enemy / UI / FX thế nào | **C** | export Transform để đếm theo cha |

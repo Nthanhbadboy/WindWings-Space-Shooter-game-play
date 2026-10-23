@@ -471,7 +471,7 @@ hay `Boss_BodyPhysics`. Hai bảng này nằm trong **không gian object riêng*
 | # | Thứ còn thiếu | Số lượng | Ghi chú |
 |---:|---|---:|---|
 | 13 | `Enemy_Physics` · `Enemy_Destroy` · `Enemy_Burned` · `Enemy_Stun` | 981 · 971 · 689 · 137 | ✅ **đã export** — xem §7.14 |
-| 14 | 37 `*_Director` + 3 `AttackPhases` | 68 | chưa vào `TARGETS` |
+| 14 | 34 `*_Director` + 3 `AttackPhases` | **63** | **đã đọc bằng typetree** (§7.22) — không cần chạy pipeline: 112 field damage lấy được ngay |
 | 15 | `AnimationClip` · `AnimatorController` | **791** · **308** | manifest chỉ có Sprite + Texture2D |
 | 16 | ~~Toạ độ đường bay~~ | — | **ĐÃ CÓ trong raw** — xem §7.11 (CSV chỉ ghi `[10]`) |
 | 17 | `Spawner.dataScript` | 1.200 dòng | **cột rỗng** — 0 giá trị, không nối được gì |
@@ -989,6 +989,63 @@ Denominator cũ là **981** (gồm 204 dòng `Board_*`), thực tế là **777**
 > là nội dung **có thật nhưng chưa thấy**. Kiểm bằng `Call_Data` **đầy đủ 23.757** — đã đủ, và **không**
 > có tên nào trong 22 cái trên ⇒ loại trừ được khả năng này.
 
+### 7.22 Damage **khai báo trong `*_Director`** — 112 field, và `Enemy_Physics` rỗng
+
+Bản `cd0372d`. Ba phép đo độc lập, cùng một kết luận.
+
+**a) Quét toàn bộ 109 class tìm field damage** (`dmg` / `damage` / `dame`, không phân biệt hoa thường):
+
+| Class | Instance | Field damage |
+|---|---:|---:|
+| `Gun_Attack` | 458 | `bltDamage` |
+| `Boss_BodyPhysics` | 251 | `dmgFirst` · `dmgPerSec` |
+| **19 class `*_Director`** | **27** | **112 field** — mỗi đòn một field |
+| `Enemy_Rocket_Attack` | 5 | `damage` |
+| `Enemy_DestroyAttack` | 2 | `bltDamage` |
+| `Enemy_BurstBulletWhenDie` | 1 | `bltDamage` |
+| `Enemy_Health` | 981 | `noDamage` (**bool**, không phải damage) |
+
+⇒ **24 class có field damage**, trên **109 class đã dump**.
+
+**b) `Enemy_Physics` — đã đọc, và nó rỗng:**
+
+| | |
+|---|---|
+| Instance | **981** |
+| Field | **2** (`allColliders` · `autoCacheColliders`) |
+| `allColliders = []` | **981 / 981** |
+| `autoCacheColliders = false` | **981 / 981** |
+| Biến thể tree | **1** — cả 981 giống hệt |
+
+⇒ **Không có damage va chạm nào trong `Enemy_Physics`.** Damage của enemy thường **chỉ** đến từ
+`Gun_Attack.bltDamage` (458 dòng). Đây là kết quả **phủ định có bằng chứng**, không phải "chưa đọc".
+
+**c) Nối `appearScript` → `*_Director` → prefab** (trước đây chưa làm, nên tưởng 5 boss trống):
+
+| Kênh | Boss |
+|---|---:|
+| `Gun_Attack` | 26 / 39 |
+| `Boss_BodyPhysics` | 33 / 39 |
+| `*_Director` (instance) | 36 / 39 |
+| `*_Director` có damage số | 18 / 39 |
+| **Không kênh nào** | **0 / 39** |
+
+**d) Kiểm chứng độc lập thứ ba cho 45.659:** `listPrefabEnemies` (23.757 `Call_Data`) có
+**45.659** phần tử; map qua `prefab-roots.csv` (2.081 dòng, `gameobject_path_id` → `name`) được
+**45.659 / 45.659 = 100,0%**, **0 phần tử không map**. Và **0** phần tử thuộc 16 prefab hazard.
+
+**e) `prefab_joins` có 453 prefab gốc, không phải 178:**
+
+| Nhóm | Số |
+|---|---:|
+| Có `Enemy_Controller` | 182 (178 thật + 4 `Board_*` cùng tên) |
+| `Wave_*` container | 246 |
+| Không `Enemy_Controller`, có `Boss_BodyPhysics` | **25** (9 `BLT_*` + 13 `900xx` + 3 `Expl-*`) |
+
+⇒ Từ nay mọi câu "toàn bộ enemy" phải ghi **178 = prefab có AI**; tổng prefab gốc **453**.
+
+---
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |
@@ -1014,6 +1071,16 @@ Denominator cũ là **981** (gồm 204 dòng `Board_*`), thực tế là **777**
 ---
 
 ## 9. Sổ theo dõi mắt ghép — trạng thái sau bản `cd0372d`
+
+**Mắt ghép mới đóng ở vòng này (§7.22):**
+
+| Mắt | Trạng thái | Bằng chứng |
+|---|---|---|
+| `appearScript` → `*_Director` → prefab boss | ✅ **36/36** map được | 63 instance / 37 class |
+| Duyệt toàn bộ class tìm field damage | ✅ **109/109** class | 24 class có field |
+| `Enemy_Physics` | ✅ **981/981** đọc — **rỗng** | 1 biến thể tree |
+| `listPrefabEnemies` → tên prefab | ✅ **45.659/45.659 = 100%** | `prefab-roots.csv` 2.081 |
+| `_gameobject` trong CSV scriptableobject | ✅ có **đường dẫn đầy đủ** (`Wave_0005/GameObject/…/CD-31015`) | dùng cho §8.4.1 |
 
 Cập nhật cuối: 2026-10-23 01:00. Mọi mục dưới đây **đã đo**, không suy đoán.
 

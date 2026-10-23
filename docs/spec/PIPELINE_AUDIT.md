@@ -85,7 +85,7 @@ nhưng **chưa biết nhân vào đâu** — `conclusions.md` của họ cũng g
 | `Enemy_Burned` | 695 | ❌ |
 | `Enemy_Stun` | 140 | ❌ |
 | `Enemy_LookAtPlayer` | 391 | ❌ |
-| 37 `*_Director` + 3 `AttackPhases` | 68 | ❌ |
+| 34 `*_Director` + 3 `AttackPhases` | **63** | ✅ số damage đã đọc bằng typetree (§7.22 `DATA_SYNC`) |
 | `Call_Point` | **23.757** | ❌ |
 | `Transform` | 228.432 object | ❌ |
 | `AnimationClip` · `AnimatorController` | 791 · 308 | ❌ |
@@ -102,7 +102,7 @@ nhưng **chưa biết nhân vào đâu** — `conclusions.md` của họ cũng g
 | # | Việc | Chi phí | Mở ra | Nên làm |
 |---:|---|---|---|---|
 | 1 | Thêm **5 tên** `Enemy_*` vào `TARGETS` | **1 dòng** | 2.787 instance · enemy/boss **58,9% → 100%** · lớp kịch bản #4 **0% → 100%** | **ngay** |
-| 2 | Thêm **37 `*_Director` + 3 `AttackPhases`** | 1 dòng | 68 instance · **5 boss 0% đòn → 100%** | **ngay** |
+| 2 | Thêm **34 `*_Director` + 3 `AttackPhases`** | 1 dòng | 63 instance · **112 field damage** — **đã lấy được bằng typetree, không cần chạy lại pipeline** | ✅ xong |
 | 3 | Thêm **`Call_Point`** | 1 dòng | **23.757** — có thể chứa phần `Call_Data` bị cap | **ngay** |
 | 4 | Export **`Transform`** (`m_Father`) | type mới, 228.432 object | **31,9% object** · mở **5 mắt ghép** (§7.9) | sau #1–3 |
 | 5 | Export **`AnimationClip` + `AnimatorController`** | cần reader riêng | 1.099 object · đòn boss còn lại | cuối |

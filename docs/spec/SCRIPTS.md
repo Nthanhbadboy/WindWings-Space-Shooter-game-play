@@ -270,7 +270,9 @@ trong bất kỳ spawner nào. Câu hỏi "45.659 quân hay 23.757 quân" **khô
 
 ## 5. Pha boss — lớp kịch bản duy nhất **chưa có gì**
 
-37 class `*_Director` (65 instance) + `Boss19/20/21_AttackPhases` (3) = **68 instance**, **0% đọc**.
+34 class `*_Director` (**60** instance) + `Boss19/20/21_AttackPhases` (3) = **63 instance** và **37 class**. ⚠ Bản trước ghi *"37 class · 65 instance · 68 tổng"* — **sai**: 37 class **đã gồm** 3 `AttackPhases`, và tổng instance là **63**.
+
+**Nhưng không cần chạy pipeline để lấy số damage:** `reverse-engineering/raw/typetrees/` đã có đủ ⇒ **112 field damage** đọc được ngay (`DATA_SYNC` §7.22, `BOSSES` §8.4.1).
 
 Đây là nơi chứa **thứ tự đòn theo pha** — thứ mà số liệu không thể suy ra. Biết một boss có 21 bộ phận
 HP (`39017`) và 11 vùng va chạm **không** cho biết nó đổi đòn lúc nào.
@@ -310,7 +312,7 @@ tầng còn thiếu.
 
 | # | Thứ | Mức | Cách lấy |
 |---:|---|---|---|
-| 1 | **Bảng pha** 37 `*_Director` + 3 `AttackPhases` | **D** | thêm vào `TARGETS` — 68 instance, cùng đường 8 class đã đọc |
+| 1 | **Trình tự pha** (state machine) của 34 `*_Director` + 3 `AttackPhases` | **B** | **số damage đã có** (112 field); chỉ còn **thứ tự chuyển pha** — và 0/308 controller có `m_StateMachineBehaviours` ⇒ phải đọc 793 clip event |
 | 2 | **Damage va chạm enemy thường** | **C** | ⚠ **đã export `Enemy_Physics` — 2 field, `allColliders = []` 981/981 ⇒ không chứa damage.** Phải tìm ở `Collider2D` / `Damager` / `Enemy_Datas` |
 | 3 | **Công thức HP theo stage** (`Enemy_Health.Init`) | **D** | method body IL2CPP — `dump.cs` chỉ có RVA, chưa có thân |
 | 4 | **Điều kiện qua màn** (`Wave.CheckSpawnEnded`) | **B** | method body; hiện chỉ biết tên hàm |

@@ -366,7 +366,7 @@ Còn **87 class / 7.036 instance** chưa đọc lần nào:
 | 35 | `Enemy_Rotate` | xoay |
 | 16 | `BossLaser` | laser |
 | 12 | `Boss_Rocket` · `Boss8_Spawner` | rocket, gọi quân |
-| **37 class / 65 instance** | `Boss*_Director` (19) · `MB*_Director` (17) · `MiniBoss1_Director` | **điều phối pha** — mỗi boss/mini-boss một class riêng |
+| **34 class / 60 instance** | `Boss*_Director` (19) · `MB*_Director` (17) · `MiniBoss1_Director` | **điều phối pha** — mỗi boss/mini-boss một class riêng |
 | 3 class | `Boss19_AttackPhases` · `Boss20_AttackPhases` · `Boss21_AttackPhases` | **bảng pha tấn công** |
 
 **Nhóm đòn đánh/pattern: 50 class / 415 instance.** Đây chính là phần trả lời "boss đánh thế nào" —
@@ -397,7 +397,7 @@ và **chưa có một dòng CSV nào**.
 | 9 | Điều kiện chết | `Enemy_Destroy` | 971 | 0 | ❌ 0% |
 | 10 | Bị đốt · choáng · rung camera | `Enemy_Burned` 695 · `Enemy_Stun` 140 · `Enemy_CameraVibrate` 241 | 1.076 | 0 | ❌ 0% |
 | 11 | Đòn đánh theo nhịp | `Enemy_Attack` 51 · `Enemy_Sync_Attack` 72 | 123 | 0 | ❌ 0% |
-| 12 | **Pha boss** | 37 `*_Director` (65) + `Boss19/20/21_AttackPhases` (3) | **68** | 0 | ❌ **0%** |
+| 12 | **Pha boss** | 34 `*_Director` (60) + `Boss19/20/21_AttackPhases` (3) | **63** | **112 field damage** | ⚠ **một nửa** — số damage đã đọc (§8.4.1), **trình tự pha** chưa |
 | 13 | Đòn đặc biệt boss | `Boss3_Plasma` 75 · `Boss_PlasmaBeam` 68 · `BossLaser` 16 · `Boss_Rocket` 12 · `Boss8_Spawner` 12 · `Boss6_Sword` 8 · `Boss3_Flamer` 6 | 197 | 0 | ❌ 0% |
 
 **Đọc 6/13 lớp, nhưng 6 lớp đó là 6 lớp "số".** 7 lớp còn lại — toàn bộ phần **hành vi** — chưa đọc một dòng.
@@ -445,29 +445,92 @@ bằng **va chạm**, và component va chạm của enemy thường chính là `
 > **Điều kiện lật ngược:** nếu `Enemy_Physics` không có trường damage (chỉ là collider), thì damage của
 > `CB` nằm ở `Enemy_Attack` (51) hoặc `Enemy_DestroyAttack` (2) — khi đó phải đọc nhóm đó trước.
 
-### 8.4 Boss: 5 con chưa có đòn đánh nào
+### 8.4 Ba kênh damage của boss — **39/39 có ít nhất một**, không con nào rỗng
 
-| Nguồn đòn | Số boss |
+Đo lại bằng cách nối `appearScript` → PathID `*_Director`, cộng `Gun_Attack` và
+`Boss_BodyPhysics` theo `prefab_root` (`prefab_joins`). Bản `cd0372d`.
+
+| Kênh | Boss có kênh đó |
 |---|---:|
-| Súng **và** va chạm | **14** |
-| Chỉ súng | 7 |
-| Chỉ va chạm | 13 |
-| **Không có cả hai** | **5** |
+| `Gun_Attack` (súng) | **26 / 39** |
+| `Boss_BodyPhysics` (va chạm thân) | **33 / 39** |
+| `*_Director` (instance) | **36 / 39** |
+| `*_Director` **có field damage bằng số** | **18 / 39** |
+| **Không có kênh nào** | **0 / 39** |
 
-5 boss đó: `37011` · `37015` · `37017` · `39001` · `39007` — tổng **13.770.000 HP = 6,7%** HP boss toàn game.
-Với 5 con này, **100% đòn đánh** nằm trong `*_Director` / `AttackPhases` / `Boss*_Plasma` — tất cả **chưa đọc**.
+Tổ hợp thực tế:
 
-Boss có đòn đặc biệt **được đặt tên riêng** (đọc được từ tên class, chưa đọc nội dung):
+| Tổ hợp kênh | Số boss |
+|---|---:|
+| súng + va chạm + Director | **18** |
+| va chạm + Director | **13** |
+| súng + Director | **5** |
+| súng + va chạm | **2** |
+| chỉ súng | **1** (`Boss-39001`) |
 
-| Class | Instance | Gợi ý cơ chế |
-|---|---:|---|
-| `Boss3_Plasma` | 75 | đạn plasma boss 3 |
-| `Boss_PlasmaBeam` | 68 | chùm plasma |
-| `BossLaser` | 16 | laser |
-| `Boss_Rocket` | 12 | rocket |
-| `Boss8_Spawner` | 12 | gọi quân |
-| `Boss6_Sword` | 8 | chém |
-| `Boss3_Flamer` | 6 | phun lửa |
+⚠ **Sửa lại điều tôi đã viết ở bản trước:** tôi từng ghi *"14 súng và va chạm · 7 chỉ súng ·
+13 chỉ va chạm · **5 không có cả hai**"* và gọi 5 con đó là *"chưa có đòn đánh nào"*.
+**Sai** — vì lúc đó chưa nối `appearScript` → `*_Director`, nên tưởng chúng trống.
+Thật ra **`Boss-37011` · `37015` · `37017` · `37013`** đều có field damage khai báo trong
+Director (1.000 · 800 · 800 · 400). Chỉ **`Boss-39001`** là không có Director, nhưng vẫn có
+**1 súng + 1 va chạm** ⇒ vẫn gây damage.
+
+**3 boss không có `*_Director`:** `Boss-39001` (1 súng · 1 va chạm) · `Boss-39003` (10 súng) ·
+`Boss-39010` (29 súng · 0 va chạm). Cả ba đều **bắn bằng súng thường** — không có pha.
+
+### 8.4.1 Damage khai báo trong `*_Director` — **112 field · 27 instance · 19 class**
+
+Đây là **số serialize**, không phải method body: mỗi đòn của boss có **một field float riêng**
+đặt tên theo đòn. Đọc được **100%** bằng typetree.
+
+| Class | Instance | Field | Damage max | Các mức |
+|---|---:|---:|---:|---|
+| `Boss12_Director` | 2 | 4 | **1.500** | 1.500 · 1.200 · 900 · 500 |
+| `Boss10_Director` | 2 | 8 | **1.350** | 1.350 · 800/600 · 500 · 450 · 400 · 350 · `laserDamage` 180 |
+| `Boss6_Mini_Director` | 1 | 2 | **1.500** | 1.500 · 400 |
+| `Boss18_Director` | 2 | 9 | **1.200** | 1.200 · 800 · 800 · 600 · 600 · 450 · 450 · 400 · 350 |
+| `Boss15_Director` | 2 | 8 | **1.200** | 1.200 · 600 · 600 · 500 · 500 · 450 · 400 · 350 |
+| `MB16_Director` | 1 | 4 | **1.000** | 1.000 · 600 · 400 · `laserDamage` 50 |
+| `MB9_Director` | 1 | 1 | **1.000** | 1.000 |
+| `Boss11_Director` | 2 | 6 | **900** | 900 · 900 · 500 · 500 · 450 · 450 |
+| `Boss9_Director` | 2 | 1 | **800** | 800 / 500 |
+| `MB15_Director` | 1 | 5 | **800** | 800 · 600 · 450 · 350 · `laserDamage` 80 |
+| `Boss17_Director` | 2 | 4 | **600** | 600 · 450 · 400 · 400 |
+| `MB14_Director` | 1 | 4 | **600** | 600 · 500 · 400 · 350 |
+| `Boss6_Director` | 2 | 1 | **2.800** | **2.800** / 600 |
+| `MB11_Director` | 1 | 4 | 400 | 400 · 400 · 350 · 350 |
+| `MB13_Director` | 1 | 2 | 400 | 400 · 350 |
+| `MB19_Director` | 1 | 1 | 300 | 300 |
+| `MiniBoss1_Director` | 1 | 1 | 55 | 55 |
+| **`MB12_Director`** | 2 | 3 | **1.000.000** | **`wallBltDmg` 1.000.000** · 800 · 400 |
+
+**Đọc ra:**
+
+1. **Thang damage đòn boss = 55 → 2.800**, dày nhất ở **350–600** (đúng bằng thang `bltDamage`
+   của súng thường, xem `COMBAT.md` §1) ⇒ **đòn đặc biệt không mạnh hơn đạn về damage mỗi viên**;
+   chúng mạnh ở **hình dạng, số viên và nhịp**.
+2. **`laserDamage` là ngoại lệ có thang riêng: 50 · 55 · 80 · 180.** Laser gây damage **nhỏ mỗi tick**
+   nhưng chạm liên tục — cơ chế khác hẳn đạn.
+3. **`MB12_Director` / `Boss-37014` có `wallBltDmg = 1.000.000`** — gấp **357×** mức cao nhất còn lại.
+   Đây là **đòn "tường"** (`idWallBltL = 80177` · `idWallBltR = 80178`, xem cột `_gameobject` trong
+   `MB12_Director.csv` ⇒ `_gameobject = Boss-37014`). Cùng boss này có **3 `Boss_BodyPhysics`
+   với `dmgFirst = 9.000.000`** ⇒ **vật cản chặn đường = chết ngay**, không phải đòn đánh thường.
+   > **Nhận định (mức B):** 1.000.000 và 9.000.000 là **sentinel "chết ngay"**, không phải damage
+   > cân bằng. Điều kiện lật ngược: nếu HP player (chưa có trong 110 class đã dump) lớn hơn 10⁶ —
+   > khi đó chúng là damage thật. Với mọi thang đã đo (đạn 100–1.500, va chạm 200–1.500), 10⁶ là
+   > **6.000×** mức phổ biến 1.500 ⇒ gần như chắc chắn là chặn.
+4. **Biến thể khó hơn nằm ở Director, không ở HP:** cùng một class Director có **2 instance với
+   damage khác nhau** — `Boss10` **800 → 1.350 (×1,69)**, `Boss6` **600 → 2.800 (×4,67)**,
+   `Boss9` **500 → 800 (×1,6)**. 6 class còn lại hai instance **giống hệt**.
+   ⇒ **Độ khó được nâng bằng damage đòn, không bằng HP boss.** Đây là câu trả lời trực tiếp cho
+   câu "HP boss có tăng theo độ khó không": **không**, damage mới tăng.
+
+> **Nhận định (mức A):** 18/39 boss có **bảng damage đòn đọc được từng con số**. Đây là toàn bộ
+> "cảm giác đòn boss" ở lớp số — thứ trước đó tôi xếp vào "phải đoán". Không phải đoán nữa.
+>
+> **Điều kiện lật ngược:** 18 boss còn lại Director **không có field damage** ⇒ damage của chúng
+> nằm ở `Gun_Attack.bltDamage` (đã có, 458 dòng) hoặc ở `Boss*_Plasma`/`Boss_Rocket` (chưa đọc).
+> Nếu các class đó chứa field damage riêng thì thang 55–2.800 sẽ được mở rộng.
 
 ### 8.5 Kết luận: đủ hay chưa
 
@@ -476,8 +539,8 @@ Boss có đòn đặc biệt **được đặt tên riêng** (đọc được t�
 | Kịch bản **sinh quân** đủ chưa? | ✅ **Đủ** | 23.757/23.757 = 100%, lệch 0 |
 | Kịch bản **di chuyển** đủ chưa? | ✅ **Đủ** | 981/981, 109/109 prefab |
 | Kịch bản **bắn** đủ chưa? | ✅ Đủ **cho 40 prefab** | 458/458 `Gun_Attack` |
-| Kịch bản **gây damage của enemy thường** đủ chưa? | ❌ **Chưa** | `Enemy_Physics` 981 chưa đọc → 85,8% entry |
-| Kịch bản **pha boss** đủ chưa? | ❌ **Chưa** | 68 instance Director/Phases chưa đọc |
+| Kịch bản **gây damage của enemy thường** đủ chưa? | ✅ **Đủ** — và kết quả là **không có va chạm** | `Enemy_Physics` đã đọc: `allColliders = []` **981/981** · `autoCacheColliders = false` **981/981** ⇒ damage **chỉ** từ `Gun_Attack` (458 dòng, `bltDamage`) |
+| Kịch bản **pha boss** đủ chưa? | ⚠ **Một nửa** | **112 field damage / 27 instance Director đã đọc** (§8.4.1); còn **trình tự pha** (state machine) chưa đọc — 0/308 controller có `m_StateMachineBehaviours` (`ANIMATION.md` §3.3) |
 | Kịch bản **chết / trạng thái** đủ chưa? | ❌ **Chưa** | `Enemy_Destroy` 971 · `Enemy_Burned` 695 · `Enemy_Stun` 140 |
 
 **Tóm một câu:** phần **"bao nhiêu, ở đâu, đi đường nào, bắn nhanh cỡ nào"** đã đủ và kiểm chéo được.
@@ -487,11 +550,12 @@ Phần **"gây damage bằng gì, lúc nào, theo pha nào"** mới đọc đư�
 
 | Ưu tiên | Class | Instance | Mở khoá |
 |---:|---|---:|---|
-| **1** | `Enemy_Physics` | **981** | **85,8% entry** (damage va chạm của `CB`) |
+| **0** | `Boss*_Plasma` · `Boss_PlasmaBeam` · `Boss8_Spawner` · `Boss6_Sword` · `Boss3_Flamer` | **197** | nối tiếp §8.4.1 — 18 boss chưa có field damage có thể giấu số ở đây |
+| ~~1~~ | ~~`Enemy_Physics`~~ | ~~981~~ | ✅ **ĐÃ ĐỌC** — 2 field, `allColliders = []` 981/981 ⇒ **không có damage**; bỏ khỏi hàng đợi |
 | 2 | `Enemy_LookAtPlayer` | 391 | hướng ngắm của enemy bắn |
 | 3 | `Enemy_Destroy` | 971 | điều kiện chết, drop |
 | 4 | `Enemy_Burned` · `Enemy_Stun` | 695 · 140 | trạng thái hiệu ứng |
-| 5 | 37 `*_Director` + 3 `AttackPhases` | 68 | pha boss (5 boss chưa có đòn nào) |
+| 5 | 34 `*_Director` + 3 `AttackPhases` | **63** | pha boss — **số damage đã đọc** (§8.4.1); còn thiếu **trình tự pha** |
 | 6 | `Enemy_Attack` · `Enemy_Sync_Attack` | 51 · 72 | nhịp bắn nhiều nòng |
 | 7 | `Boss3_Plasma` … `Boss3_Flamer` | 197 | đòn đặc biệt từng boss |
 
@@ -507,7 +571,7 @@ Phần **"gây damage bằng gì, lúc nào, theo pha nào"** mới đọc đư�
 | 1 | **HP enemy thường** (68/70 prefab = 0) | **A** (không có trong prefab) | nằm trong thân hàm `Enemy_Health.Init`; method body chưa có |
 | 2 | **Hành vi 87 class** enemy/boss | **D** | 7.036 instance chưa đọc; xếp thứ tự ở §8.6 — #1 `Enemy_Physics` mở khoá 85,8% entry |
 | 3 | **Bảng pha** `Boss19/20/21_AttackPhases` | **D** | 3 instance nhưng mỗi cái có thể là cả một bảng đòn |
-| 4 | **37 class Director** (65 instance) | **D** | 19 `Boss*` + 17 `MB*` + `MiniBoss1`; "nhạc trưởng" của từng boss |
+| 4 | **34 class Director / 60 instance** + 3 `AttackPhases` = **63** | **B** | 19 `Boss*` + 17 `MB*` + `MiniBoss1`; **112 field damage đã đọc** — chỉ còn thiếu trình tự pha |
 | 5 | Ý nghĩa `dmgFirst = 9.000.000` / `500.000` | **C** | 2 giá trị bất thường; cần đọc animation event |
 | 6 | `Boss-39003` chết bằng gì | **C** | HP = 0 nhưng có vùng va chạm |
 | 7 | 7 prefab `W1`/`W2` là gì | **B** | HP 20.000 (2 cái) hoặc 0; nghi là cánh/bệ phụ |

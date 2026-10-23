@@ -168,6 +168,47 @@ Ví dụ 1 súng 3 vòng (`Wave_0005/W2-30041/CD-31005`):
 
 ---
 
+### 3.3 Damage khai báo **trong `*_Director`** — 112 field, thang 55 → 2.800
+
+Ngoài `Gun_Attack.bltDamage`, boss còn khai báo damage **theo từng đòn** bằng field float
+riêng trong class `*_Director`. Đây là **số serialize**, đọc 100% bằng typetree.
+
+| Chỉ số | Số |
+|---|---:|
+| Instance Director/Phases | **63** (37 class) |
+| Instance **có field damage** | **27** |
+| **Tổng field damage** | **112** |
+| Class có field damage | **19** |
+| Boss prefab có field damage | **18 / 39** |
+
+Thang giá trị (bỏ outlier):
+
+| Nhóm | Dải | Ghi chú |
+|---|---|---|
+| **Đòn thường** | **300 – 1.500** | dày nhất 350–600 — **trùng thang `bltDamage`** |
+| **Laser** | **50 · 55 · 80 · 180** | damage/tick nhỏ, chạm liên tục |
+| **Kiếm/chém** | 400 · 600 · **2.800** | `Boss6_Director` 2.800 là mức cao nhất của đòn thường |
+| **Tường chặn** | **1.000.000** | `MB12_Director.wallBltDmg` (`Boss-37014`) |
+| **Sentinel chết-ngay** | **9.000.000** | `Boss-37014` `Boss_BodyPhysics.dmgFirst` ×3 |
+
+> **Nhận định (mức A):** **đòn đặc biệt của boss không mạnh hơn đạn thường về damage/viên.**
+> 300–1.500 là **cùng một thang** với `bltDamage` (§1). Cái làm đòn boss khác là
+> **số viên, hình dạng, và nhịp** — không phải con số damage.
+>
+> ⇒ Thiết kế đòn boss cho bản clone: **giữ damage trong dải 350–600**, khác biệt hoá bằng
+> **pattern** (toả tròn, xoáy, laser quét) và **số viên**.
+
+**Bảng đầy đủ 18 boss** ở `BOSSES.md` §8.4.1 (kèm tên từng field, ví dụ `dmgBltIdAttack4TwoHand`
+1.350 của `Boss10`, `damageBulletArea` 1.200 của `Boss15`).
+
+**Độ khó tăng bằng damage, không bằng HP:** cùng class Director có 2 instance —
+`Boss10` 800 → **1.350** (×1,69) · `Boss6` 600 → **2.800** (×4,67) · `Boss9` 500 → **800** (×1,6).
+6 class còn lại hai instance giống hệt.
+
+> **Giả định (mức B):** instance thứ hai là **chế độ khó / vòng sau**, không phải boss khác.
+> Điều kiện lật ngược: nếu `path_id` của instance thứ hai thuộc prefab **khác** trong cùng họ
+> (đã kiểm: `Boss10_Director` 601074 nằm ở `Boss-39012`, 703790 cũng `Boss-39012` ⇒ **cùng prefab**).
+
 ## 4. DPS lý thuyết
 
 Công thức (suy ra từ Tooltip §3):

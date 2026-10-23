@@ -390,6 +390,40 @@ Bản `cd0372d`.
 
 ---
 
+### 3.4 25 prefab **ngoài 178** — 9 đạn có va chạm + 16 vật thể gây damage
+
+`prefab_joins` có **453 prefab gốc**, không phải 178. Phần lớn là `Wave_*` (246 container).
+**25 prefab còn lại** không có `Enemy_Controller` nhưng **có `Boss_BodyPhysics`** — tức là
+**vật thể có damage va chạm**, không phải enemy có AI:
+
+| Nhóm | Prefab | `dmgFirst` | `dmgPerSec` |
+|---|---:|---|---|
+| Đạn có va chạm (`BLT_*`) | **9** | 0 – 3.000 | 10 – 100 |
+| Mã `900xx` | **13** | 500 – **500.000** | 5 – 500 |
+| `Expl-*` | **3** | 500 | 50 |
+
+**3 vùng độc:** `Expl-91025 (Poision Zone)` · `Expl-91026` · `Expl-91027 (Poision Zone)`
+— **500 first + 50/s**, `isTrigger = true` ⇒ **vùng damage theo thời gian**, đứng trong đó mất máu.
+
+**13 mã `900xx`:** `90026 · 90043 · 90046 · 90056 · 90057 · 90058 · 90059 · 90063 · 90064 ·
+90065 · 90067 · 90070 · 90071`. Các mức:
+`90046` **100.000** · `90056` **500.000** (một biến thể) và 10.000 (3 biến thể) ·
+`90057/58/59` **10.000 + 15/s** · `90043` 2.000 + 20/s · còn lại 500 + 5–100/s.
+
+**Không con nào được spawn:** `listPrefabEnemies` = **45.659 phần tử, map tên 100% qua
+`prefab-roots.csv`, và **0** phần tử thuộc 25 prefab này`. Trong cây transform, mỗi prefab là
+**root đơn độc** (1 node, không cha) — không nằm trong prefab `Wave_*` nào.
+
+> **Nhận định (mức B):** đây là **vật thể do boss hoặc script sinh ra lúc chạy**, không phải
+> nội dung wave. Bằng chứng trực tiếp: `MB12_Director` có `idWallBltL = 80177` ·
+> `idWallBltR = 80178` — trùng họ `BLT_*` trong nhóm này.
+>
+> **Điều kiện lật ngược:** nếu `900xx` xuất hiện trong `Enemy_Destroy`/`Enemy_BurstBulletWhenDie`
+> (chưa đọc) thì chúng là **mảnh vỡ khi enemy chết**, không phải hazard đặt sẵn.
+
+⚠ **Con số 178 prefab "toàn bộ enemy" phải ghi kèm:** 178 là **prefab có `Enemy_Controller`**.
+Tổng prefab gốc **453**; 25 trong số đó **gây damage mà không có AI**.
+
 ## 4. Map & parallax
 ### 4.1 Map
 
