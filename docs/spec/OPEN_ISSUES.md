@@ -282,6 +282,11 @@ Kèm: 23.757 `Call_Data` **không** field chế độ, `Wave.csv`/`Stage_Behavio
 số**; `GetStartHealth` **28 B**. ⇒ hệ số (nếu có) là **hằng số trong mã**, áp lúc **ghi** `StartHpPoint`
 (`= 0` ở **981/981**). **Giá trị chưa biết.**
 
+**Cập nhật 23/10 (kéo dữ liệu):** `pct` **không** nằm ở class chưa dump — `GetKillPercentMissionComplete`
+∈ **`Player_Get_Datas`** (`0x14E5618`, **188 B**), trả `float[3]` = `memcpy` một trong **3 mảng static**
+(0xB78/0xB80/0xB88) ⇒ **9 số**. Nhưng pack 17 class @`68ce86a7` chỉ resolve **2/1.929** slot RVA
+(**0,1 %**) ⇒ giá trị vẫn không đọc được bằng đường tĩnh hiện có. Xem `MISSIONS_STARS.md` §1.
+
 **Cách chốt rẻ nhất:** đếm **số phát bắn** để giết cùng một enemy (`CB-30003`) ở 3 chế độ ⇒
 `kHp = hits(khó)/hits(Normal)`. Giao thức: `DIFFICULTY_MODES.md` §5.5.
 

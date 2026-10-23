@@ -353,7 +353,7 @@ dòng, cùng một `PathID` có thể trỏ hai object khác nhau ở hai file k
 | # | Ẩn số | Vì sao engine không giúp | Đường còn lại |
 |---:|---|---|---|
 | 1 | **`kHp[mode]`** | Nếu là `static`/`const` ⇒ không serialize (§6) | asm `Enemy_Controller.GetStartHealth` / đo số phát bắn |
-| 2 | **`pct[mode][slot]`** | Cùng lý do; `GetKillPercentMissionComplete` đọc **field instance** của object khác, class đó chưa dump | asm `GetKillPercentMissionComplete` + đọc 3 float `@0x20/0x24/0x28`; hoặc 3 con số UI |
+| 2 | **`pct[mode][slot]`** | Cùng lý do (`static`); **đính chính 23/10:** hàm nằm ngay trong **`Player_Get_Datas`** — class **đã** có trong pack 17 (`0x14E5618`, 188 B), trả `float[3]` bằng `memcpy` **một trong 3 mảng static** (`0xB78`/`0xB80`/`0xB88`). Giá trị là blob `InitializeArray` | đọc 3 mảng static bằng RVA; hoặc 3 con số UI |
 | 3 | **Rig → prefab** | `m_Name` 26/27 trùng (§8) | export `SkeletonAnimation.skeletonDataAsset` (117 component) |
 | 4 | **Cảm giác / aim assist / input** | Không nằm trong asset | phải tự thiết kế (`D1`) |
 | 5 | **Nhịp bắn 87,7 % súng** | `timeShot = 0` là **giá trị thật** (§4.4) | event clip (793, §4.3) hoặc tự đặt |

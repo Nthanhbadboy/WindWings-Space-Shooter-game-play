@@ -35,6 +35,11 @@ Tôi đã nói với chủ dự án: *"`T1`/`T5` vẫn MISSING vì 1.192/1.194 s
 Con số đó **đúng**, nhưng nó **chỉ thuộc về T5**. `Map_Get_Datas` có đúng **40** `debug_rva`, không
 phải 1.192. `T1` **không** đi qua relocation.
 
+> **Đo lại trên pack 17 class @`68ce86a7` (kéo dữ liệu 23/10):** **1.929** slot `debug_rva`,
+> **2** slot resolve (**0,1 %**) — cả 2 thuộc `Player_Health.TakeDamage`. Tức bản vá `.rela.dyn`
+> **chưa** mở được `InitializeArray` cho 1.927 slot còn lại, gồm **`Player_Get_Datas.cctor` 0/40**
+> (nơi giữ 3 mảng `pct`) và **`Device_Get_Data` 0/71** (bảng stat device).
+
 ### Phép thử tôi suýt tự lừa
 
 Tôi trích 117 cặp `(A, B)` từ `.cctor` bằng một khuôn 8 lệnh lặp lại, rồi kiểm *"B có phải tên wave

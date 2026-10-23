@@ -62,6 +62,31 @@ Ba dòng cuối là **toàn bộ** câu trả lời cho câu hỏi của bạn: 
 
 ⇒ **5 hàm đếm** + **4 hàm `%` theo chế độ** = đúng cấu trúc "ngưỡng = % × tổng".
 
+**Đọc thân hàm `GetKillPercentMissionComplete` (188 B — bản `68ce86a7`, `Player_Get_Datas.asm.txt`):**
+
+```asm
+0x14e563c: ldrb  w8,  [x24, #0x2ae]   ; cờ khởi tạo static
+0x14e5640: ldr   x20, [x20, #0xb78]   ; mảng static #0  (float[3])
+0x14e5644: ldr   x21, [x21, #0xb80]   ; mảng static #1
+0x14e5648: ldr   x22, [x22, #0xb88]   ; mảng static #2
+0x14e5694: cmp   w19, #1
+0x14e5698: csel  x8,  x21, x20, eq    ; mode==1 ? #1 : #0
+0x14e569c: cmp   w19, #0
+0x14e56a0: mov   w1,  #3
+0x14e56a4: csel  x19, x22, x8,  eq    ; mode==0 ? #2 : ở trên
+0x14e56a8: bl    #0x110d09c           ; new float[3]
+0x14e56ac: ldr   x1,  [x19]
+0x14e56b8: bl    #0x205b07c           ; memcpy 3 float
+```
+
+⇒ **`pct` = đúng 9 số**: 3 chế độ × 3 nhiệm vụ, mỗi chế độ là **một `static float[3]`**;
+mode ngoài `0..2` rơi về **chế độ 0** (không kiểm biên).
+
+> **Vẫn chưa có giá trị:** 3 mảng là `static` ⇒ **không serialize** (`UNITY_RULES` §6), và `.cctor`
+> của `Player_Get_Datas` **không** chứa float literal nào cho chúng ⇒ nạp bằng `InitializeArray`.
+> Đo trên pack 17 class @`68ce86a7`: **1.929** slot `debug_rva`, **2** slot resolve = **0,1 %**
+> (cả 2 nằm trong `Player_Health.TakeDamage`). Đây là **blocker T5**, không phải thiếu class.
+
 > **Chốt thêm một mắt ghép (nâng B → A):** `ldr w21, [x9, #0x34]` đọc **`Stage_Datas.ModeCurrent`**
 > (field `@0x34`) rồi truyền thẳng vào `GetKillPercentMissionComplete`.
 > Vậy **`stageLevel` trong các hàm dữ liệu CHÍNH LÀ `ModeCurrent`** — trước đây tôi chỉ để mức **B**.
