@@ -192,3 +192,20 @@ Không merge nhánh kia. Đã tự tái xuất bằng capture đúng call-site:
 Map 576/576 blob đúng độ dài, campaign 250/250 entry có giá trị; report 31.
 Số liệu 540 token, 19 lệch, thiếu entry 4 trước đó được thay thế. File raw
 `ia-resolved.json` / `ia-audit.json` giữ đầy đủ provenance và kiểm tra.
+
+## Update @ dcf6ca90a — source/build separation
+
+Phone bridge now has real `health_game.json`: scene Game, Android, playing=true,
+Unity 2022.3.62f3. **Different source build**: summary reports package
+com.Gcenter.WindWings.SpaceShooter.Premium, mod 1.0.69 repackaged, NOT our
+APKPure com.Wind.wings.Space.Shooter 1.3.118. Saved comparison evidence under
+`raw/cross-build-phone/`; do not overwrite APK-derived balance from it.
+
+ANIMATION_GAPS criticism accepted: Enemy_Appear/Rotate/Sub native exports were
+missing. Added them and Enemy_Destroy (to trace HP/death callback registration).
+But empty serialized base fields do not prove that base Appear implements the
+visual effect; its body is only 32 bytes in our dump and may be a default
+callback. Await native evidence before accepting that interpretation.
+
+VERIFY_ROUND2 fixes 185 vs 180 animations and 154/63 Animator counts are
+consistent with our inventory; runtime and static sources stay separate.

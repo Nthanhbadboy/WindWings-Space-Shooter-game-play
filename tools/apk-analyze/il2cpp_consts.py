@@ -38,6 +38,10 @@ OUT_MD = os.environ.get("CONSTS_MD", "docs/apk-analysis/19-il2cpp-constants.md")
 OUT_CSV = os.environ.get("CONSTS_CSV", "docs/apk-analysis/il2cpp-pool-floats.csv")
 
 TARGET_CLASSES = {
+    "Enemy_Appear": "enemy appear/death/callback control — pending native verification",
+    "Enemy_Rotate": "enemy appear/death/callback control — pending native verification",
+    "Enemy_Sub": "enemy appear/death/callback control — pending native verification",
+    "Enemy_Destroy": "enemy appear/death/callback control — pending native verification",
     "BossSpineEventHandler": "animation control: event, state, phase or movement (pending asm verification)",
     "Boss_1_Animation": "animation control: event, state, phase or movement (pending asm verification)",
     "Boss1_AnimationEvents": "animation control: event, state, phase or movement (pending asm verification)",
