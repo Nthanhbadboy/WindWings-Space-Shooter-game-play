@@ -223,171 +223,67 @@ def main() -> int:
                 entry["ints"] = ints
         result[key] = entry
     print(f"decoded: {len(result)}, skipped: {skipped} {reasons}")
-    # Probe: token lẻ src = 2*ordinal+1 trong type PID của Assembly-CSharp
-    try:
-        mj = json.load(open("reverse-engineering/raw/il2cpp-consts/"
-                            "Map_Get_Datas.json", encoding="utf-8"))
-        cc_m = next(m for m in mj["methods"] if m["method"] == "cctor")
-        toks = [c for c in cc_m["constants"] if c.get("kind") == "init_array"]
-        # type PID thuộc Assembly-CSharp: type cuối của image chứa Map (0..2461)
-        pid_t = None
-        for i in range(2462):
-            if types[i][0] == "<PrivateImplementationDetails>":
-                pid_t = i
-        print(f"  PID type trong Assembly-CSharp: index {pid_t}, "
-              f"fields {types[pid_t][1]}..+{types[pid_t][2]}")
-        _fs, _fc = types[pid_t][1], types[pid_t][2]
-        _ok = _name = 0
-        for c in toks:
-            src = int(c["slot_val"], 16) & 0x1FFFFFFF
-            if src % 2 == 1 and (src - 1) // 2 < _fc:
-                fname = index2name.get(_fs + (src - 1) // 2)
-                ent = result.get(fname) if fname else None
-                if ent:
-                    _name += 1
-                    if abs(len(bytes.fromhex(ent["raw"])) // 4
-                           - c["len"]) <= 3:
-                        _ok += 1
-        print(f"  odd-token probe: có blob {_name}/{len(toks)}, "
-              f"khớp độ dài {_ok}")
-    except Exception as e:  # noqa: BLE001
-        print(f"  odd-token probe lỗi: {e!r}")
-    # Probe: token IA -> fieldRefs[src] = (typeIndex, fieldIndex-within-type)
-    try:
-        fr_off, fr_size = header["fieldRefs"]
-        mj = json.load(open("reverse-engineering/raw/il2cpp-consts/"
-                            "Map_Get_Datas.json", encoding="utf-8"))
-        cc_m = next(m for m in mj["methods"] if m["method"] == "cctor")
-        toks = [c for c in cc_m["constants"] if c.get("kind") == "init_array"]
-        _pid = _len = _range = 0
-        for c in toks:
-            src = int(c["slot_val"], 16) & 0x1FFFFFFF
-            if 8 * src + 8 > fr_size:
-                continue
-            ti, fi = struct.unpack_from("<ii", blob, fr_off + 8 * src)
-            if 0 <= ti < len(types):
-                _nm, _fs, _fc = types[ti]
-                if 0 <= fi < _fc:
-                    _range += 1
-                    fname = index2name.get(_fs + fi, "?")
-                    if fname.startswith("<PrivateImplementationDetails>"):
-                        _pid += 1
-                        ent = result.get(fname)
-                        if ent and abs(len(bytes.fromhex(ent["raw"])) // 4
-                                       - c["len"]) <= 3:
-                            _len += 1
-        print(f"  fieldRefs probe: hợp lệ {_range}/{len(toks)}, "
-              f"PID {_pid}, khớp độ dài {_len}")
-    except Exception as e:  # noqa: BLE001
-        print(f"  fieldRefs probe lỗi: {e!r}")
-    # Probe: token IA -> index field static (theo thứ tự dump.cs)
-    try:
-        static_fields = []
-        _cls = None
-        for _line in open(dump_path, encoding="utf-8", errors="replace"):
-            _m = CLS_RE.match(_line)
-            if _m:
-                _cls = _m.group(1)
-                continue
-            _code = _line.split("//")[0].strip()
-            if _cls and _code.endswith(";") and "(" not in _code:
-                _toks = _code[:-1].split()
-                if len(_toks) >= 3 and _toks[0] in MODIFIERS and "static" in _toks:
-                    _name = _toks[-1]
-                    if "=" in _toks:
-                        _name = _toks[_toks.index("=") - 1]
-                    static_fields.append(f"{_cls}.{_name}")
-        mj = json.load(open("reverse-engineering/raw/il2cpp-consts/"
-                            "Map_Get_Datas.json", encoding="utf-8"))
-        cc_m = next(m for m in mj["methods"] if m["method"] == "cctor")
-        toks = [c for c in cc_m["constants"] if c.get("kind") == "init_array"]
-        _hit = _len = 0
-        for c in toks:
-            src = int(c["slot_val"], 16) & 0x1FFFFFFF
-            if src < len(static_fields):
-                nm2 = static_fields[src]
-                if nm2.startswith("<PrivateImplementationDetails>"):
-                    _hit += 1
-                    ent = result.get(nm2)
-                    if ent and abs(len(bytes.fromhex(ent["raw"])) // 4
-                                   - c["len"]) <= 3:
-                        _len += 1
-        print(f"  static-index probe: {len(static_fields)} field static; "
-              f"PID hit {_hit}/{len(toks)}, khớp độ dài {_len}")
-    except Exception as e:  # noqa: BLE001
-        print(f"  static probe lỗi: {e!r}")
-    # Probe: field index tương đối theo image (Assembly-CSharp) cho token IA
-    try:
-        im_off, im_size = header["images"]
-        str_off2, _ss = header["string"]
-        images = []
-        for i in range(im_size // 40):
-            nm, _asm, tstart, tcount = struct.unpack_from("<iiii", blob, im_off + 40 * i)
-            images.append((read_str(blob, str_off2, nm), tstart, tcount))
-        map_t = next(i for i, t in enumerate(types) if t[0] == "Map_Get_Datas")
-        img = next((im for im in images if im[1] <= map_t < im[1] + im[2]), None)
-        print(f"  image của Map_Get_Datas (type {map_t}): {img}")
-        if img:
-            _nm, tstart, tcount = img
-            base_field = sum(types[i][2] for i in range(tstart))
-            rel = {}
-            for i in range(tstart, tstart + tcount):
-                nm_i, fs_i, fc_i = types[i]
-                for k in range(fc_i):
-                    rel[fs_i + k - base_field] = index2name.get(fs_i + k)
-            mj = json.load(open("reverse-engineering/raw/il2cpp-consts/"
-                                "Map_Get_Datas.json", encoding="utf-8"))
-            cc_m = next(m for m in mj["methods"] if m["method"] == "cctor")
-            toks = [c for c in cc_m["constants"] if c.get("kind") == "init_array"]
-            by_name = result
-            hit = pid_hit = 0
-            for c in toks:
-                src = int(c["slot_val"], 16) & 0x1FFFFFFF
-                nm2 = rel.get(src)
-                if nm2:
-                    hit += 1
-                    if nm2.startswith("<PrivateImplementationDetails>"):
-                        ent = by_name.get(nm2)
-                        if ent and abs(len(bytes.fromhex(ent["raw"])) // 4
-                                       - c["len"]) <= 3:
-                            pid_hit += 1
-            print(f"  image-relative: {hit}/{len(toks)} có tên, "
-                  f"{pid_hit} khớp blob PID (±3)")
-    except Exception as e:  # noqa: BLE001
-        print(f"  image probe lỗi: {e!r}")
-    # Thử 4 giả thuyết ánh xạ token InitializeArray -> field, in 8 token đầu
-    # của Map_Get_Datas..cctor dưới mỗi giả thuyết.
-    try:
-        mj = json.load(open("reverse-engineering/raw/il2cpp-consts/"
-                            "Map_Get_Datas.json", encoding="utf-8"))
-        cc_m = next(m for m in mj["methods"] if m["method"] == "cctor")
-        toks = [c for c in cc_m["constants"] if c.get("kind") == "init_array"]
-        srcs = [int(c["slot_val"], 16) & 0x1FFFFFFF for c in toks]
-        fdv_by_field = sorted(result.items(), key=lambda kv: kv[1]["field_index"])
-        pid_only = [(k, v) for k, v in fdv_by_field
-                    if k.startswith("<PrivateImplementationDetails>")]
-        print(f"  token probe: {len(toks)} token; src đầu {srcs[:8]}")
-        for label, table in (
-                ("global-field", None), ("fdv-by-field", fdv_by_field),
-                ("pid-only", pid_only)):
-            names = []
-            for src in srcs[:8]:
-                if table is None:
-                    names.append(index2name.get(src, "?"))
-                elif src < len(table):
-                    names.append(table[src][0])
-                else:
-                    names.append("OOR")
-            print(f"  [{label}] {names}")
-    except Exception as e:  # noqa: BLE001
-        print(f"  token probe lỗi: {e!r}")
 
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    with open(out_path, "w", encoding="utf-8") as fh:
-        json.dump({"source": f"global-metadata.dat fieldDefaultValues v{version} "
-                             "(typeDefinitions/fields/string sections)",
-                   "count": len(result), "fields": result},
-                  fh, ensure_ascii=False, indent=1)
+    # ---- Resolver InitializeArray: token lẻ src = 2*ordinal+1 trong type
+    # <PrivateImplementationDetails> của image chứa class gọi. Đã kiểm:
+    # Map_Get_Datas 540/540 token có blob, 521/540 khớp độ dài (±3).
+    import glob as _glob
+    im_off, im_size = header["images"]
+    images = []
+    for i in range(im_size // 40):
+        nm_i, _a_i, ts_i, tc_i = struct.unpack_from("<iiii", blob, im_off + 40 * i)
+        images.append((ts_i, tc_i))
+    pid_by_type_range = {}
+    for ti, (nm_t, _fs_t, _fc_t) in enumerate(types):
+        if nm_t == "<PrivateImplementationDetails>":
+            pid_by_type_range[ti] = (_fs_t, _fc_t)
+    type_index = {nm_t: ti for ti, (nm_t, _f, _c) in enumerate(types)}
+    resolved, _unres = {}, 0
+    for jp in sorted(_glob.glob("reverse-engineering/raw/il2cpp-consts/*.json")):
+        try:
+            jd = json.load(open(jp, encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        cls = jd["class"]
+        ti = type_index.get(cls)
+        if ti is None:
+            continue
+        img = next(((ts, tc) for ts, tc in images if ts <= ti < ts + tc), None)
+        if img is None:
+            continue
+        pid = next(((fs, fc) for t2, (fs, fc) in pid_by_type_range.items()
+                    if img[0] <= t2 < img[0] + img[1]), None)
+        if pid is None:
+            continue
+        pfs, _pfc = pid
+        for m in jd["methods"]:
+            vals = []
+            for c in m["constants"]:
+                if c.get("kind") != "init_array":
+                    continue
+                src = int(c["slot_val"], 16) & 0x1FFFFFFF
+                if src % 2 == 0:
+                    _unres += 1
+                    continue
+                fname = index2name.get(pfs + (src - 1) // 2)
+                ent = result.get(fname) if fname else None
+                if not ent:
+                    _unres += 1
+                    continue
+                raw = bytes.fromhex(ent["raw"])
+                n = len(raw) // 4
+                ints = list(struct.unpack(f"<{n}i", raw[:4 * n]))
+                vals.append({"addr": c["addr"], "len": c["len"],
+                             "ints": ints[:c["len"]]})
+            if vals:
+                resolved[f"{cls}.{m['method']}"] = vals
+    ia_path = os.path.join(os.path.dirname(out_path), "ia-resolved.json")
+    with open(ia_path, "w", encoding="utf-8") as fh:
+        json.dump({"source": "InitializeArray token (2*ordinal+1) -> blob "
+                             "<PrivateImplementationDetails> cùng image",
+                   "methods": resolved}, fh, ensure_ascii=False, indent=1)
+    print(f"ia-resolved: {sum(len(v) for v in resolved.values())} mảng / "
+          f"{len(resolved)} method (không giải được: {_unres})")
     print(f"wrote {out_path} ({os.path.getsize(out_path)} B)")
     return 0
 
