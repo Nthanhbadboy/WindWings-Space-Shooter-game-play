@@ -1,0 +1,219 @@
+# MISSIONS_STARS — vì sao game **phải** biết tổng số quân
+
+> **Bạn hỏi:** *"mỗi mode đều tính số enemy bị eliminate để đạt được 1, 2, 3 sao. Điều tôi thấy là tại sao
+> app phải tính tổng số quân spawn làm gì?"*
+>
+> **Trả lời ngắn:** app **không đếm** quân đã spawn. `GetCountEnemies(stageIndex)` **cộng bảng wave**
+> (304 lệnh, **0 phép nhân**, đọc `GetListWaves`) — nó là **mẫu số** của ngưỡng sao, không phải bộ đếm.
+> Ngưỡng sao lưu dạng **phần trăm**, nên **bắt buộc** phải có mẫu số để đổi thành số tuyệt đối in lên
+> màn hình `"Eliminate {0} enemies"` và để biết đã xong chưa.
+>
+> Và tôi tìm được **lệnh chứng minh** — dưới đây là asm, không phải suy đoán.
+
+---
+
+## 0. Ba câu trả lời, ba mức
+
+| Câu hỏi | Trả lời | Mức |
+|---|---|---|
+| Ngưỡng sao tính từ đâu? | **`{0} = (int)( pct[mode][slot] × countEnemies )`** — trích asm §1 | **A** |
+| Vì sao phải có tổng số quân? | Nó là **mẫu số**; ngưỡng lưu bằng **%** nên phải nhân ra số tuyệt đối. Cộng thêm: đếm số nhiệm vụ xong để ra sao, và biết màn kết thúc | **A** |
+| Mỗi mode có ngưỡng khác nhau *vì* khác số quân? | **KHÔNG.** `countEnemies` **không** phụ thuộc mode ⇒ khác biệt **100 %** đến từ `pct[mode]` | **A** (asm) |
+
+Điều này **khớp đúng** với điều bạn thấy: mỗi mode có bộ ngưỡng sao riêng — nhưng cơ chế là
+**bảng % theo mode**, không phải "đếm lại số quân của mode đó".
+
+---
+
+## 1. Lệnh chứng minh — `Stage_Get_Datas.GetStringInfo`
+
+Hàm dựng **chuỗi nhiệm vụ** (`0x12C5760`, **512 lệnh**). Đoạn quyết định, trích nguyên văn:
+
+```asm
+0x12c58c4: bl   #0x12c5f60     ; GetCountEnemies(stageIndex)      ← MẪU SỐ
+0x12c58c8: mov  w20, w0        ; w20 = count
+
+0x12c5a14: ldr  w21, [x9, #0x34]   ; Stage_Datas.ModeCurrent      ← CHẾ ĐỘ
+0x12c5a28: mov  w0, w21
+0x12c5a30: bl   #0x14e5618     ; GetKillPercentMissionComplete(ModeCurrent)
+0x12c5a40: add  x8, x0, #0x20      ; float[0] … [1] là #0x24, [2] là #0x28
+0x12c5aa0: ldr  s0, [x8]           ; pct = mảng[slot]
+0x12c5aa4: scvtf s1, w20           ; (float)count
+0x12c5ab0: fmul  s0, s0, s1        ; pct × count
+0x12c5ab8: fcvtzs w8, s0           ; → int  ← chính là {0} trong "Eliminate {0} enemies"
+```
+
+Ba dòng cuối là **toàn bộ** câu trả lời cho câu hỏi của bạn: **`pct × tổng quân`**.
+
+### Hàm này gọi những gì (đếm trong 512 lệnh)
+
+| Hàm | Số lần | Vai trò |
+|---|---:|---|
+| **`GetCountEnemies`** `0x12C5F60` | **2** | mẫu số cho nhiệm vụ "giết quân" |
+| `GetCountSpecialEnemies` `0x12C6420` | 1 | mẫu số cho "giết quân đặc biệt" |
+| `GetCountSupplyNormal` `0x12C687C` | 1 | mẫu số cho "cứu người" |
+| **`GetKillPercentMissionComplete`** `0x14E5618` | **3** | `float[3]` **theo chế độ**, tra theo `slot` |
+| `GetBranchPercent1` `0x14E5790` | 2 | `float[3]` theo chế độ |
+| `GetBranchPercent2` · `GetBranchPercent3` | 1 · 1 | như trên |
+
+⇒ **5 hàm đếm** + **4 hàm `%` theo chế độ** = đúng cấu trúc "ngưỡng = % × tổng".
+
+> **Chốt thêm một mắt ghép (nâng B → A):** `ldr w21, [x9, #0x34]` đọc **`Stage_Datas.ModeCurrent`**
+> (field `@0x34`) rồi truyền thẳng vào `GetKillPercentMissionComplete`.
+> Vậy **`stageLevel` trong các hàm dữ liệu CHÍNH LÀ `ModeCurrent`** — trước đây tôi chỉ để mức **B**.
+
+---
+
+## 2. Vì sao "1, 2, 3 sao" — nhiệm vụ là **cộng dồn**
+
+`Stage_Get_Datas.IsMissionCompleted(stageIndex, **stageLevel**, missionIndex)` — **47 lệnh**:
+
+```asm
+0x12c55e4: mov  w0, w21        ; stageIndex
+0x12c55e8: mov  w1, w20        ; stageLevel = ModeCurrent
+0x12c55ec: mov  x2, xzr        ; 0
+0x12c55f0: bl   #0x12b79a8     ; → int: SỐ NHIỆM VỤ ĐÃ XONG
+0x12c5624: cmp  w0, w19        ; so với missionIndex
+0x12c5630: cset w0, gt         ; return  completed > missionIndex
+```
+
+⇒ Nhiệm vụ `i` được tính là xong **khi số nhiệm vụ đã hoàn thành > i**. Đây là quan hệ **cộng dồn**:
+xong nhiệm vụ 3 thì 1 và 2 cũng xong. Với 3 nhiệm vụ ⇒ **0/1/2/3 sao**. Khớp đúng câu của bạn.
+
+Và sao được lưu **theo từng chế độ**:
+
+```csharp
+public static int GetStarStageMaster(int stageIndex, int modeIndex);          // 0x12C…
+public static void SetStarStageMaster(int stageIndex, int modeIndex, int stars);
+public static int GetStarStageBranch(int stageIndex, int modeIndex);          // nhánh
+```
+
+⇒ "**mỗi mode đều có 1,2,3 sao riêng**" = **A**, có chữ ký hàm làm bằng chứng.
+(`GetAllStageStarCount(stageIndex)` tổng hợp lại cho màn chọn stage.)
+
+> **Còn một ẩn số:** số sao **tối đa** không ghi ở đâu. `SetStarCheat(..., star = 5)` có mặc định **5**,
+> nên hàm set **không** chặn ở 3. Ba là suy ra từ số nhiệm vụ = 3 (`txt_mission_0/1/2`) — **mức B**.
+
+---
+
+## 3. Loại nhiệm vụ xoay vòng theo `stageIndex % 6`
+
+Cùng hàm `GetStringInfo`, **trước** khi chọn mẫu số:
+
+```asm
+0x12c582c: tbnz w20, #0, #0x12c5934      ; stageIndex lẻ → nhánh xoay vòng
+0x12c5934: mov  w8, #0xaaab
+0x12c5938: movk w8, #0x2aaa, lsl #16     ; 0x2AAAAAAB = magic CHIA 6
+0x12c594c: mov  w9, #6
+0x12c5950: msub w8, w8, w9, w20          ; w8 = stageIndex % 6
+0x12c5954: cmp  w8, #3                   ; → nhánh A
+0x12c595c: cmp  w8, #1                   ; → nhánh B ("quân đặc biệt")
+```
+
+⇒ **loại nhiệm vụ không ngẫu nhiên, cũng không theo chế độ** — nó xoay theo **`stageIndex % 6`**.
+Bảng nối với chuỗi trong `12-localization.csv` (**mức B** — nối theo *hàm nào được gọi*, chưa đọc hết
+nhánh):
+
+| # | Loại | Nguồn **mẫu số** | Chuỗi |
+|---:|---|---|---|
+| 0 | Giết quân thường | `GetCountEnemies` | `txt_mission_0/1/2` · `txt_mission_kill_enemies` = "Eliminate {0} enemies" |
+| 1 | Giết quân đặc biệt | `GetCountSpecialEnemies` | `txt_mission_branch_1_1/2/3` = "Eliminate {0} special enemies" |
+| 2 | Cứu người | `GetCountSupplyNormal` · `GetCountSupply` | `txt_mission_branch_3_1/2/3` = "Rescue {0} peoples" |
+| 3 | Thu thập sao | `GP_Datas.starCount` | `txt_mission_branch_4_1/2/3` = "Collect {0} star" |
+| 4 | An toàn / đầy máu | `Player_Health` | `txt_mission_hp_safe` = "Safe" · `txt_mission_hp_full` = "Full health" |
+| 5 | Hoàn thành màn | — | `txt_mission_complete_stage` = "Complete stage" |
+
+> **Nhận định:** loại 4 và 5 **không** dùng `{0}` ⇒ không cần mẫu số. Đó là lý do `GetCountEnemies`
+> **không** được gọi cho mọi stage — chỉ 2/6 loại cần.
+
+---
+
+## 4. Vậy **vì sao** phải tính tổng? Bốn lý do, cái nào cũng có số
+
+| # | Lý do | Bằng chứng |
+|---:|---|---|
+| 1 | **Mẫu số của ngưỡng sao** (ngưỡng lưu bằng **%**) | `fmul pct × count` → `fcvtzs` |
+| 2 | **Đếm số nhiệm vụ đã xong** để ra 1/2/3 sao | `IsMissionCompleted` = `completed > slot` |
+| 3 | **Biết màn kết thúc** | `GP_Datas`: `countEnemies` + `countAllEnemies` + `spawnCount` — **3 field `int` riêng**, đều `0` trong prefab ⇒ cấp runtime |
+| 4 | **Thanh tiến trình HUD** (đã diệt / tổng) | như trên: `spawnCount` là *đếm thật*, `countEnemies` là *thiết kế* |
+
+### Và nó **rẻ** — vì nó không đếm gì cả
+
+| Phép đo trên `GetCountEnemies` | Số |
+|---|---:|
+| Kích thước | **1.216 B · 304 lệnh** |
+| Phép `mul` / `madd` | **0** |
+| Phép `fmul` / `fdiv` | **0** |
+| Có vòng qua object đã spawn? | **Không** — chỉ đọc mảng wave qua `GetListWaves` (**278 lệnh · 0 phép nhân**, chỉ `/6` để tách chương) |
+
+⇒ Nó **cộng độ dài các mảng** trong bảng thiết kế. Không phải "quét toàn bộ quân trên màn hình".
+Chạy một lần rồi cache vào `GP_Datas.countEnemies`; **không** phải per-frame.
+
+---
+
+## 5. Hệ quả — chỗ này **quan trọng cho độ khó**
+
+```
+{0}(mode, slot) = (int)( pct[mode][slot] × countEnemies(stageIndex) )
+```
+
+`countEnemies` **không** phụ thuộc chế độ (**A** — `DIFFICULTY_MODES` §4). ⇒ **mọi khác biệt ngưỡng
+giữa 3 chế độ đến từ `pct[mode]`, KHÔNG từ số quân.**
+
+### Phép thử 30 giây (bạn đọc, tôi tính)
+
+Vào **cùng một stage**, cùng **nhiệm vụ đầu tiên**, đọc con số trong câu `"Eliminate {0} enemies"`
+ở 3 chế độ:
+
+| Chế độ | `{0}` đọc được |
+|---|---:|
+| Normal | |
+| Hard | |
+| Nightmare | |
+
+Hai kết cục, và chúng **loại trừ nhau**:
+
+| Nếu… | Kết luận | Hệ quả |
+|---|---|---|
+| `{0}` **khác nhau** ở 3 chế độ | `pct[mode]` khác nhau, mẫu số giống nhau — **đúng mô hình ở trên** | `pct[1]/pct[0] = {0}₁/{0}₀`, `pct[2]/pct[0] = {0}₂/{0}₀`. Nếu `pct[2] = 1,0` (Nightmare phải giết hết — giả định **B**) thì **ra được pct[0], pct[1] chính xác** |
+| `{0}` **giống hệt** ở 3 chế độ | `pct` giống nhau và mẫu số **cũng** giống ⇒ sao chỉ khó hơn vì phải giết nhiều quân hơn | **Lật ngược** kết luận "count không phụ thuộc mode": khi đó `countEnemies` **đã** bị nhân trước khi in |
+
+Đây là **phép kiểm có thể thất bại** — không phải kiểm cho có. Nó phân định đúng chỗ tôi còn để mức B
+(`kCount` nằm ở đâu) bằng **một con số in trên màn hình**.
+
+---
+
+## 6. Công thức cho bản clone
+
+```
+count      = Σ (len(listIdEnemies) × copies)      // 45.659 cho cả game, mỗi wave một phần
+pct[3][3]  = { {0.60, 0.80, 1.00},                // Normal
+               {0.70, 0.88, 1.00},                // Hard
+               {0.85, 0.95, 1.00} }               // Nightmare   ← số clone tự chọn
+target[m][s] = round(pct[m][s] × count × kCount[m])
+saos        = số s sao cho killCount ≥ target[m][s]   (cộng dồn, tối đa 3)
+```
+
+**Cảnh báo thiết kế (dễ sai nhất khi clone):** nếu bạn nhân **số quân** (`kCount`) mà **không** nhân
+mẫu số, thì trên chế độ khó người chơi chỉ cần giết `pct` **của số quân Normal** ⇒ **3 sao dễ hơn**.
+Đây đúng là cái bẫy mà mô hình "count từ bảng, nhân ở spawn" tạo ra. Hai cách tránh:
+1. Nhân mẫu số cùng hệ số: `target = pct × count × kCount` (khuyến nghị).
+2. Hoặc để `count` **là** số quân thật của mode (đếm sau khi nhân) — nhưng khi đó phải đếm **trước**
+   khi spawn, đúng như `GP_Datas.countEnemies` được thiết kế để làm.
+
+---
+
+## 7. Còn thiếu / phải đoán
+
+- **Giá trị `pct[mode][slot]` chưa đọc** — nạp từ pool float trong `.cctor` (cùng blocker `T5`).
+  Hai đường lấy: đọc `{0}` trong game (§5), hoặc dump `Player_Get_Datas.cctor` + pool `0x757000`.
+- **`PercentToCompleteMissions222` = `float[3]`** (`Player_Get_Datas.cctor` `0x14E61F0`:
+  `newarr(float, 3)` + copy) — một mảng % **3 phần tử** dựng sẵn. **Chưa** biết 3 phần tử đó là
+  "3 nhiệm vụ" hay "3 chế độ". **Chưa** đọc giá trị.
+- **`0x12b79a8` / `0x12b7860`** (hai hàm mà `IsMissionCompleted` gọi) **chưa export** ⇒ chưa biết
+  "số nhiệm vụ đã xong" được tính từ đâu (nghi: so `killCount` với `target` của từng slot).
+- **Số sao tối đa** = 3 chỉ là **B** (§2). `SetStarCheat` mặc định `star = 5` không chặn.
+- **Bảng 6 loại nhiệm vụ ↔ 6 nguồn đếm** là **B** — nối theo *hàm nào được gọi trong `GetStringInfo`*,
+  chưa đọc hết 6 nhánh. **Điều kiện lật ngược:** một stage thật có loại nhiệm vụ khác bảng §3.
+- **Chưa rõ `listIgroneEnemies`** (được `GetCountEnemies` dùng để bỏ qua một số enemy) gồm những gì —
+  nếu bỏ qua nhiều thì mẫu số **nhỏ hơn** 45.659.

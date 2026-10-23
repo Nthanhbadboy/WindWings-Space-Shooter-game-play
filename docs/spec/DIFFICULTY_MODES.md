@@ -98,10 +98,16 @@ public class Board_Endgame { public static int stageMode; // 0x20 }
 `stageMode` = nhãn phiên chơi (lưu + analytics). `stageLevel` = **chỉ số 0..2 đem đi tra bảng**.
 Hai tên không xuất hiện cùng một chữ ký hàm nào ⇒ chúng là hai mặt của cùng một giá trị.
 
-> **Nhận định (mức B):** `stageLevel` **chính là** `ModeCurrent`. Bằng chứng gián tiếp: cả hai đều bị
-> so với `2`, dùng làm **chỉ số mảng độ dài 3**, và `ModeCurrent` là field duy nhất trong `Stage_Datas`
-> có miền giá trị 0..2. **Điều kiện lật ngược:** nếu `GetCostEnergyForPlay` được gọi với hằng số khác
-> `ModeCurrent` trong asm của call-site — mà call-site chưa export.
+> **ĐÃ CHỐT — mức A (23/10, từ `MISSIONS_STARS.md` §1):** `stageLevel` **chính là** `ModeCurrent`.
+> `Stage_Get_Datas.GetStringInfo` đọc thẳng field đó rồi truyền vào hàm `%` theo chế độ:
+>
+> ```asm
+> 0x12c5a14: ldr  w21, [x9, #0x34]   ; Stage_Datas.ModeCurrent  (@0x34)
+> 0x12c5a28: mov  w0, w21
+> 0x12c5a30: bl   #0x14e5618         ; GetKillPercentMissionComplete(ModeCurrent)
+> ```
+>
+> Trước đây tôi để **B** vì chưa có call-site. **Nay có.**
 
 ---
 
@@ -414,7 +420,7 @@ vì sao 117 cặp tôi bóc ra trông như "quan hệ" chứ không phải "nhó
 - **Bảng dữ liệu KHÔNG có chiều chế độ** — phủ định có phạm vi: 17 class asm + toàn bộ chữ ký `dump.cs`
   + 23.757 `Call_Data` + 981 `Enemy_Datas` + `Wave.csv` + `Stage_Behaviour.csv`. **Đây là kết luận đúng**,
   và nó **không** nói "chế độ không đổi quân/HP" — nó nói **phép nhân nằm trong mã**.
-- **`stageLevel ≡ stageMode`** chỉ là mức **B** (không có call-site trong asm đã export).
+- ~~`stageLevel ≡ stageMode` chỉ là mức B~~ → **A**: `GetStringInfo` `ldr w21,[x9,#0x34]` (`ModeCurrent`) rồi truyền vào `GetKillPercentMissionComplete` — `MISSIONS_STARS.md` §1.
 - **118 cặp `stage → boss`** mới là *giả thuyết khớp số*, chưa đọc được phần tử.
 - **Nhánh `stageIndex ≥ 60 → ×1,25`** trong `GetBonus` **chưa hiểu ngữ nghĩa**: `stageIndex` bị clamp
   về 29 cho phần `base` nhưng vẫn so với 59/60 cho phần hệ số. Có thể là chỉ số **cộng dồn toàn game**
