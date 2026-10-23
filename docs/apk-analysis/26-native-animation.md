@@ -42,6 +42,6 @@ chưa ở mức **dựng lại chuyển động** như Spine. Với clone, Spine
 
 | # | Thứ | Cách làm tiếp |
 |---:|---|---|
-| 1 | Keyframe curve của 791 clip | reader AnimationClip riêng (streamed clip) |
+| 1 | Keyframe curve của 791 clip | ❌ đã thử 2 cách (typetree + UnityPy reader, `27-anim-curves.md`): đều 0. Phải giải mã streamed clip thủ công |
 | 2 | `ParticleSystem` chi tiết | xuất riêng các module chính (emission/shape) dạng tóm tắt |
 | 3 | Map controller → prefab | controller là asset lẻ; nối qua `Animator.m_Controller` trên GameObject — cần export `Animator` |

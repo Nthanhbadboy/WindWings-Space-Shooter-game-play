@@ -41,7 +41,7 @@
 | 16b | **`Enemy_Physics` rỗng**: chỉ 2 field serialize, **0/981** dòng có giá trị → va chạm nằm ở `BoxCollider2D` runtime, không phải dữ liệu thiết kế | **A** | `25-enemy-behaviour.md` §2 | đếm lại field trong `Enemy_Physics.jsonl.gz` |
 | 16c | **`Transform` 228.432 dòng** (2.089 root, 0,9%): mở **5 mắt ghép 0% → 100%** (458 súng · 251 hitbox boss · 558 `parentRotate` · 1.372 điểm đầu/cuối đường bay · 250 `bossObj` — mắt cuối nối vào `Board_Maps`, tức icon bản đồ chứ không phải prefab boss) | **A** | `25-enemy-behaviour.md` §5, `raw/typetrees/transform-tree.tsv.gz`, `datas/prefab_joins.csv.gz` | chạy `tools/apk-analyze/prefab_joins.py` |
 | 16d | **`Call_Data` đủ 23.757** (trước cắt 1.500); `Call_Point` cùng 23.757 là **lớp bọc** trỏ `dataScript → Call_Data`, không phải bảng dữ liệu mới | **A** | `25-enemy-behaviour.md` §4 | `script-links.jsonl.gz` |
-| 17 | **Animation gốc Unity đã có danh mục**: 791 `AnimationClip` (226 tên, median 1,9 s, 251 clip lặp, 793 event) + 308 `AnimatorController`; nhưng **curve = 0 trong typetree** (nằm ở streamed clip) → mới ở mức nhịp, chưa dựng lại được | **A** (danh mục) / **C** (curve) | `26-native-animation.md`, `raw/typetrees/native-types.jsonl.gz` | reader AnimationClip chuyên dụng |
+| 17 | **Animation gốc Unity đã có danh mục**: 791 `AnimationClip` (226 tên, median 1,9 s, 251 clip lặp, 793 event) + 308 `AnimatorController`; keyframe curve **không lấy được bằng UnityPy** (2 cách đọc đều 0 — dữ liệu streamed) → lớp này ở mức nhịp, chưa dựng lại được | **A** (danh mục + việc curve không đọc được) / **C** (curve) | `26-native-animation.md`, `27-anim-curves.md`, `datas/anim_clips.json.gz` | giải mã streamed clip |
 | 18 | **Enum `spawnType` đã giải mã**: `0=point · 1=path · 2=point_range · 5=special · 6=boss` (16.498/4.199/1.688/686/686 trên 23.757 spawner); tổng lượt xuất hiện **45.659**; `number`/`editType` = 0 ở 100% → số con mỗi lượt **không** nằm trong prefab | **A** (phân bố) / **B** (gán nhãn) | `25-enemy-behaviour.md` §8 | đếm lại `Call_Data.jsonl.gz` |
 | 14 | Damage/giá/thưởng suy ra từ field serialize | **B** | `docs/spec/COMBAT.md`, `ECONOMY.md` | so với hằng số ở #12 |
 | 15 | Nhận định "game dễ bypass", "nên dùng Spine"… | **C** | `PHAN_TICH_WINDWINGS_APK.md` | chỉ là đánh giá, không phải số |
@@ -51,7 +51,7 @@
 | Thiếu | Vì sao | Cách làm tiếp |
 |---|---|---|
 | `Player_Get_Datas`, `Droid_Data_Balance`, `Tech_Datas`, `Stage_Get_Datas`, `Map_Get_Datas`, `Enemy_Data_Balance`, `Device_Get_Data`, `GameDatas` | **0 instance** trong `data.unity3d` → giá trị nằm trong thân hàm IL2CPP | `19-il2cpp-constants.md` + `raw/il2cpp-consts/*.asm.txt` (đang làm) |
-| Curve keyframe của 791 `AnimationClip` | typetree cho curve = 0, dữ liệu nằm ở streamed clip | reader AnimationClip chuyên dụng (UnityPy samples) |
+| Curve keyframe của 791 `AnimationClip` | **cả typetree lẫn UnityPy reader đều cho 0 keyframe** (đã thử, `27-anim-curves.md`) — curve nằm trong streamed clip nén | giải mã `m_StreamedClip` thủ công, hoặc dựng lại bằng nhịp ở `26-native-animation.md` |
 | `ParticleSystem` | chưa dump | cùng cách với `Transform` |
 | Công thức đầy đủ (thứ tự nhân, clamp, nội suy) | cần đọc control flow, không chỉ hằng số | Ghidra/IDA trên `libil2cpp.so` (đã có trong artifact) |
 | Ý nghĩa từng hằng số ở #12 | capstone chỉ thấy số, không thấy phép tính | **Đã bóc được giá trị float thật từ literal pool** (#12b); còn thiếu *thứ tự nhân/chia* → đọc `raw/il2cpp-consts/*.asm.txt` hoặc Ghidra |
