@@ -1,11 +1,11 @@
 // BepInEx 6 (IL2CPP) adapter — BepInEx.Unity.IL2CPP.BasePlugin.
 // Build with: dotnet build -p:Loader=BepInEx6 -p:BepInExRoot=<game>/BepInEx
+using System;
+using System.Linq;
+using System.Reflection;
 using BepInEx;
 using BepInEx.Unity.IL2CPP;
 using Ramus.Bridge;
-using System.Linq;
-using System.Reflection;
-using UnityEngine;
 
 namespace Ramus.Bridge.Adapters
 {
@@ -24,19 +24,16 @@ namespace Ramus.Bridge.Adapters
         }
 
         // Il2CppInterop ClassInjector signatures vary across forks/versions
-        // (RegisterTypeInIl2Cpp / RegisterDerivedType with and without options).
-        // Resolve whichever exists by reflection; never fail the chainload.
-        private static void TryInjectBridgeHost()
+        // (RegisterTypeInIl2Cpp / RegisterDerivedType, generic or Type-based,
+        // with and without options params). Resolve whichever exists via
+        // reflection; registration failure must never kill the chainload.
+        private void TryInjectBridgeHost()
         {
             try
             {
-                InjectorLogger.Log("class has type identity: " + typeof(BridgeHost).FullName);
-                var injector = typeof(UnityEngine.MonoBehaviour).Assembly.GetType(
-                    "Il2CppInterop.Runtime.Injection.ClassInjector");
-                if (injector == null)
-                    injector = AppDomain.CurrentDomain.GetAssemblies()
-                        .Select(a => a.GetType("Il2CppInterop.Runtime.Injection.ClassInjector"))
-                        .FirstOrDefault(t => t != null);
+                var injector = AppDomain.CurrentDomain.GetAssemblies()
+                    .Select(a => a.GetType("Il2CppInterop.Runtime.Injection.ClassInjector"))
+                    .FirstOrDefault(t => t != null);
                 if (injector == null)
                 {
                     Log.LogInfo("Il2CppInterop ClassInjector type not found; skipping registration");
@@ -55,27 +52,35 @@ namespace Ramus.Bridge.Adapters
                     }
                     var pars = m.GetParameters();
                     var args = new object[pars.Length];
+                    var ok = true;
                     for (int i = 0; i < pars.Length; i++)
-                        args[i] = pars[i].HasDefaultValue ? pars[i].DefaultValue : Activator.CreateInstance(pars[i].ParameterType);
+                    {
+                        if (pars[i].HasDefaultValue) args[i] = pars[i].DefaultValue;
+                        else
+                        {
+                            try { args[i] = Activator.CreateInstance(pars[i].ParameterType); }
+                            catch { ok = false; break; }
+                        }
+                    }
+                    if (!ok) continue;
                     try
                     {
                         m.Invoke(null, args);
                         Log.LogInfo("BridgeHost registered via " + injector.FullName + "." + raw.Name);
                         return;
                     }
-                    catch (System.Exception ex)
+                    catch (Exception ex)
                     {
-                        Log.LogWarning("injector overload " + raw.Name + "/" + pars.Length + " failed: " + ex.InnerException?.Message);
+                        Log.LogWarning("injector overload " + raw.Name + "/" + pars.Length +
+                                       " failed: " + (ex.InnerException ?? ex).Message);
                     }
                 }
                 Log.LogWarning("no ClassInjector overload worked for BridgeHost");
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Log.LogWarning("BridgeHost registration skipped: " + ex.Message);
             }
         }
-
-        private static System.Action<string> InjectorLogger = _ => { };
     }
 }
