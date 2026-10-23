@@ -143,7 +143,7 @@ Ba mức: **đúng hình học** (có số đo, dựng lại được) · **đú
 
 | Nhóm | Số | Hiểu đến đâu | Dựng lại |
 |---|---|---|---|
-| **UI** | **114 màn** · 52.936 node | `local_pos` + `rotation` + `scale` mọi node · **6.964 node có đủ rect** (`anchor_min/max` · `size_delta` · `pivot`) | ✅ **đúng layout** |
+| **UI** | **114 màn** · **6.580 file** · **103.655** dòng text/key | `local_pos` + `rotation` + `scale` mọi node · **6.964 node có đủ rect** · **325 key đa ngữ** phủ 22.524 node | ✅ **đúng layout** |
 | **Spine** | **27 rig** · 577 region | `xy` · `size` · `orig` · `offset` từng region · 616 bone · 446 slot · 180 animation | ✅ **đúng** |
 | **Audio** | 69 | 69/69 WAV · 44,1 kHz mono · 571 s | ✅ |
 | **Sprite rời** | 2.185 | tên · atlas · bytes · ô trong contact sheet · **871 sprite biết dùng ở màn nào** | ⚠ thiếu `width × height` |
@@ -151,7 +151,7 @@ Ba mức: **đúng hình học** (có số đo, dựng lại được) · **đú
 
 Nguồn: `reverse-engineering/raw/ui/*.json.gz` (**3.539 file**) · `docs/assets/sprites-index.csv` · `textassets/*.atlas*.txt`.
 
-**UI là nhóm hiểu đầy đủ nhất.** `20-ui-layout.md` ghi **598 màn** — đó là **số instance**;
+**UI là nhóm hiểu đầy đủ nhất.** Ba đơn vị đếm, đừng lẫn: **598 màn** = số instance trong `20-ui-layout.md` cũ · **114** = số màn hình khác nhau (`class`) · **6.580 file** = mọi lần chạy (`24-ui-screens.md`).
 đếm theo `class` là **114** màn hình khác nhau, mỗi node có đường dẫn đầy đủ, toạ độ cục bộ và tên sprite được gán.
 
 **871 sprite** khớp tên với asset thật (88,0% của 990 tên UI dùng) ⇒ với nhóm này biết **vẽ ở đâu, trong khung nào**.

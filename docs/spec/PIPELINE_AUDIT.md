@@ -134,7 +134,75 @@ Nói công bằng, hai điểm:
 > `Spawner.dataScript` = 0), thì lớp này **không cứu được** và thứ tự ưu tiên của họ mới đúng.
 > Chưa biết trước — nhưng chi phí thử là **1 dòng**, nên không có lý do để không thử.
 
-## 8. Còn thiếu / phải đoán
+## 8. Cập nhật `06c9c49` (00:26) — họ đã tự sửa 1/3 đề xuất
+
+Sau bản audit trên (`c52d04e`), nhánh dữ liệu đi thêm **3 commit**:
+
+| Commit | Nội dung | Đánh giá |
+|---|---|---|
+| `3dd62e0` | **bỏ đọc int literal pool** — *"same VA gave a packed word"* | ✅ **đúng như §3 đã chỉ ra** |
+| `03d3b64` | báo cáo tự sinh | — |
+| `06c9c49` | **index toàn bộ raw UI** + `ui_text_keys` | ✅ dữ liệu mới đáng giá |
+
+### 8.1 Rác `288733` đã sạch
+
+| | `c52d04e` | `06c9c49` |
+|---|---:|---:|
+| Dòng mang `288733` | **60** | **0** (chỉ còn 1 dòng ghi chú giải thích) |
+
+40 phút dậm chân ở IL2CPP constants **đã kết thúc đúng cách**: họ nhận ra ô literal pool nằm ở
+segment ghi được và bỏ hẳn. Không còn con số rác nào trong báo cáo.
+
+### 8.2 `Enemy_Physics` — **vẫn chưa**
+
+`unity_data.py` **không đổi một dòng** giữa `c52d04e` và `06c9c49`. `TARGETS` vẫn 55 class,
+**không có** `Enemy_Physics` · `Enemy_Destroy` · `Enemy_Burned` · `Enemy_Stun` ·
+`Enemy_LookAtPlayer` · `*_Director` · `Call_Point` · `AnimationClip` · `AnimatorController`.
+
+⇒ Đề xuất **chính** của audit (§5, 3 dòng code) vẫn **chưa được thực hiện**.
+
+### 8.3 Dữ liệu mới: UI giờ là nhóm **đầy đủ nhất**
+
+`06c9c49` index **mọi** file raw UI, gồm cả các lần chạy trước:
+
+| Chỉ số | `20-ui-layout.md` (cũ) | `24-ui-screens.md` (mới) |
+|---|---:|---:|
+| File | 3.539 | **6.580** |
+| Màn (`class`) | 114 | **114** |
+| Tổng node (mọi instance) | 52.936 | **1.404.553** |
+| Node của instance lớn nhất/màn | — | **119.368** |
+| Dòng text/key | — | **103.655** |
+
+**Đơn vị đếm phải nói rõ:** 1.404.553 là **tổng mọi instance** (mỗi màn có 6–178 file);
+lấy **instance lớn nhất của mỗi màn** thì là **119.368 node**. Con số 52.936 tôi ghi trước đây
+là **1 instance/màn** ⇒ **không sai, chỉ khác đơn vị**.
+
+**`ui_text_keys` (103.655 dòng)** — dữ liệu chưa từng có:
+
+| Chỉ số | Số |
+|---|---:|
+| Node `TextMeshPro` (text cứng) | **81.098** — trong đó **81.131** có chuỗi hiển thị |
+| Node `LanguageTextMeshPro` (đa ngữ) | **22.517** — trong đó **22.524** có key |
+| **Key đa ngữ khác nhau** | **325** |
+| Màn phủ | **114 / 114** |
+
+> **Nhận định (mức A):** **325 key** cho **22.524** node ⇒ mỗi key dùng trung bình **69 lần**.
+> Nghĩa là toàn bộ chữ đa ngữ của game gói trong **325 chuỗi** — dịch hết là dịch xong UI.
+> Đây là con số **nhỏ hơn nhiều** so với `12-localization.csv` (1.898 dòng), và là **tập thật sự dùng**.
+
+### 8.4 Còn thiếu sau `06c9c49`
+
+| # | Thứ | Trạng thái |
+|---:|---|---|
+| 1 | `Enemy_Physics` 981 | ❌ vẫn ngoài `TARGETS` |
+| 2 | 37 `*_Director` | ❌ |
+| 3 | `Call_Point` 23.757 | ❌ |
+| 4 | `Transform` (m_Father) | ❌ |
+| 5 | `AnimationClip` · `AnimatorController` | ❌ |
+| 6 | `width × height` sprite | ❌ `datas/sprites.csv` chỉ có `bytes` |
+| 7 | `ParticleSystem` | ❌ (họ đã tự ghi trong `conclusions.md`) |
+
+## 9. Còn thiếu / phải đoán
 
 | # | Thứ | Mức |
 |---:|---|---|
