@@ -223,6 +223,35 @@ def main() -> int:
                 entry["ints"] = ints
         result[key] = entry
     print(f"decoded: {len(result)}, skipped: {skipped} {reasons}")
+    # Probe: token lẻ src = 2*ordinal+1 trong type PID của Assembly-CSharp
+    try:
+        mj = json.load(open("reverse-engineering/raw/il2cpp-consts/"
+                            "Map_Get_Datas.json", encoding="utf-8"))
+        cc_m = next(m for m in mj["methods"] if m["method"] == "cctor")
+        toks = [c for c in cc_m["constants"] if c.get("kind") == "init_array"]
+        # type PID thuộc Assembly-CSharp: type cuối của image chứa Map (0..2461)
+        pid_t = None
+        for i in range(2462):
+            if types[i][0] == "<PrivateImplementationDetails>":
+                pid_t = i
+        print(f"  PID type trong Assembly-CSharp: index {pid_t}, "
+              f"fields {types[pid_t][1]}..+{types[pid_t][2]}")
+        _fs, _fc = types[pid_t][1], types[pid_t][2]
+        _ok = _name = 0
+        for c in toks:
+            src = int(c["slot_val"], 16) & 0x1FFFFFFF
+            if src % 2 == 1 and (src - 1) // 2 < _fc:
+                fname = index2name.get(_fs + (src - 1) // 2)
+                ent = result.get(fname) if fname else None
+                if ent:
+                    _name += 1
+                    if abs(len(bytes.fromhex(ent["raw"])) // 4
+                           - c["len"]) <= 3:
+                        _ok += 1
+        print(f"  odd-token probe: có blob {_name}/{len(toks)}, "
+              f"khớp độ dài {_ok}")
+    except Exception as e:  # noqa: BLE001
+        print(f"  odd-token probe lỗi: {e!r}")
     # Probe: token IA -> fieldRefs[src] = (typeIndex, fieldIndex-within-type)
     try:
         fr_off, fr_size = header["fieldRefs"]
