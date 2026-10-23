@@ -240,6 +240,28 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
                         consts.append({"kind": "float", "value": round(val, 5),
                                        "via": "ldr_pool", "va": hex(va),
                                        "addr": hex(insn.address)})
+        # ---- RVA field data: ldr xN, [slot] -> con trỏ tới blob trong .rodata.
+        # Các mảng literal (bảng map->wave, bảng stat device...) được nạp kiểu này:
+        # slot nằm ở segment ghi được, blob là [int32 count][int32 x count].
+        if insn.mnemonic == "ldr" and segs and md == 0xB7:
+            m = re.search(r"\[(x\d+)(?:, #(0x[0-9a-f]+|\d+))?\]", insn.op_str)
+            dst = insn.op_str.split(",")[0].strip()
+            if m and m.group(1) in adrp_pages and dst.startswith("x"):
+                slot = adrp_pages[m.group(1)] + (int(m.group(2), 0) if m.group(2) else 0)
+                raw_ptr = va_read(blob, segs, slot, 8, ro_only=False)
+                if raw_ptr and len(raw_ptr) == 8:
+                    ptr = struct.unpack("<Q", raw_ptr)[0]
+                    raw_hdr = va_read(blob, segs, ptr, 4, ro_only=True)
+                    if raw_hdr and len(raw_hdr) == 4:
+                        cnt = struct.unpack("<i", raw_hdr)[0]
+                        if 1 <= cnt <= 512:
+                            raw_body = va_read(blob, segs, ptr + 4, 4 * cnt, ro_only=True)
+                            if raw_body and len(raw_body) == 4 * cnt:
+                                vals = list(struct.unpack(f"<{cnt}i", raw_body))
+                                if all(-1000 <= v <= 100000000 for v in vals):
+                                    consts.append({"kind": "int_array", "value": vals,
+                                                   "via": "rva_data", "va": hex(ptr),
+                                                   "addr": hex(insn.address)})
         # ---- float loaded from the literal pool: ldr sN, [pc, #imm]
         if insn.mnemonic == "ldr" and "[pc," in insn.op_str and md == 0xB7:
             m = re.search(r"\[pc, #(-?0x[0-9a-f]+|-?\d+)\]", insn.op_str)
