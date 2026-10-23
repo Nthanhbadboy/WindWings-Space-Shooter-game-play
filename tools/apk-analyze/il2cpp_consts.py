@@ -495,6 +495,16 @@ def main() -> int:
                                              base=rva or offset)
                 annotate("\n".join(lines), consts)
                 body_text = "\n".join(lines)
+                # Tự kiểm cắt cụt: thân method gần như luôn kết thúc bằng
+                # ret/b/br. Không có -> nhiều khả năng bị cắt, và MỌI kết luận
+                # âm tính ("không thấy lệnh X") trên method đó đều vô hiệu.
+                last_mn = ""
+                for _l in reversed(lines):
+                    _p = _l.split(":", 1)[-1].strip().split()
+                    if _p:
+                        last_mn = _p[0]
+                        break
+                ends_clean = last_mn in ("ret", "b", "br", "blr")
                 pure = is_pure_getter(body_text)
                 gkind = getter_kind(body_text)
                 gvalue = getter_value(body_text) if gkind else None
@@ -503,6 +513,7 @@ def main() -> int:
                             "rva": hex(rva), "bytes": size, "pure_getter": pure,
                             "getter_kind": gkind,
                             "size_capped": size >= 0x20000,
+                            "ends_clean": ends_clean,
                             "constants": consts})
                 # Ghi asm cả cho method không có hằng số nhưng có lời gọi:
                 # đồ thị gọi (formula_trace) cần chúng, bỏ lặng lẽ là mất mắt nối.
