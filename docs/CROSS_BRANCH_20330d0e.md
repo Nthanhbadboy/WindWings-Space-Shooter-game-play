@@ -135,6 +135,24 @@ không biết **màn nào** biến mất giữa hai lần chạy (16 màn chỉ 
   (cặp float), nửa trên `0x6c` nạp từ VA `0x757bc0` = (0.18, **2500.0**) → **`StartHp = 2500`** (mức A).
   Muốn đọc được phải thêm nhánh `ldr d` vào pool reader — bản cũ chỉ đọc `ldr s` nên bỏ sót.
 
+## 3k. `OPEN_ISSUES.md` của họ (c6ae40de) + commit `6edaa732` — đối chiếu từng mục "lỗi export"
+
+Sổ của họ lập trên bản `8871068a` — **trước** khi phía mình sửa cắt cụt và quét thêm class.
+Trạng thái thật hiện tại:
+
+| Mục của họ | Trạng thái phía mình |
+|---|---|
+| A1 `StartHp` thiếu | ✅ **đã chốt: 2500** (xem §3j) |
+| E1 asm cắt cụt 11/12 | ✅ **đã sửa** (128 KB, `size_capped`) |
+| A3 `OnChangeDataDevice` ngoài vùng dump | ✅ đã export đủ: 452 byte, không cap, 9 hằng số |
+| A4 caller của `GetStartHp` | ✅ liệt kê được: `GetGainHpItem`, `GetGainHpItemAddOverTime`, `Player_Health.<Start>b__14_1` |
+| A2 `Map_Get_Datas` không có `.cctor` | ✅ `.cctor` đã có: **100.896 byte, 3.444 hằng số** — bảng map→wave dựng inline trong đó, chưa bóc thành bảng sạch |
+| E2 "`ships.json` thiếu 13 dòng, phải ghi 38 tàu" | ❌ **họ nhầm**: 13 dòng `20001–20013` là **drone** — có đủ trong `14-drones.csv` → `datas/drones.json` (13 item). `Data_Players` là class dùng chung cho cả tàu lẫn drone |
+| B7 `NumberTechStats = List.Count` | ghi nhận, không mâu thuẫn dữ liệu mình |
+
+Bài học rút ra phía mình: sổ vấn đề phải ghi **bản dữ liệu** nó dựa trên — họ có ghi (`8871068a`)
+nên đối chiếu được ngay mục nào đã tự đóng.
+
 ## 4. Điều kiện lật ngược
 
 - Nếu `Enemy_Physics` export ra mà **phần lớn field rỗng** (như `Spawner.dataScript` = 0), thì
