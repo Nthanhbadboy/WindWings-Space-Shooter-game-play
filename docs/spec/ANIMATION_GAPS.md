@@ -130,13 +130,13 @@ bị đọc thành "27 đơn vị có animation riêng" — không phải.
 
 #### 2c′. Ghép trực tiếp: **chỉ 2 trong 4 rig có đòn là boss**
 
-Typetree `SkeletonAnimation` — **20 instance, export 23/10** — cho `skeletonDataAsset.m_PathID` và
-`m_GameObject.m_PathID`; đi lên `transform-tree` tới `prefab-roots` là ra prefab. Không còn phải
-đoán theo tên bone:
+Typetree `SkeletonAnimation` — **20 instance, export 23/10**, và đây **chỉ là một phần** (game có
+ít nhất 21; xem §3.1′) — cho `skeletonDataAsset.m_PathID` và `m_GameObject.m_PathID`; đi lên
+`transform-tree` tới `prefab-roots` là ra prefab. Không còn phải đoán theo tên bone:
 
 | rig | animation | gắn vào | loại |
 |---|---|---:|---|
-| `580611` = `skeleton__21` | 10, có `Attack1–4` | **`Boss-39001`** (`Enemy_Ingame/Body/Boss 1/Skeleton`) | **boss** |
+| `580611` = `skeleton__21` | 10, có `Attack1–4` | **`Boss-39001`** + **`Boss-39002`** (dùng chung) | **boss** |
 | `580613` = `skeleton__8` | 9, có `Attack1–3` | **`Boss-39003`** (`Body/Boss 1/Skeleton`) | **boss** |
 | `580619` = `skeleton__17` | 18 × `Attack01–12` | `Popup_UnlockShip` | **UI** |
 | `580623` = `skeleton__5` | `AttackSpec`/`TopL`/`TopR` | `Popup_UnlockShip` | **UI** |
@@ -204,7 +204,7 @@ GET /statics?type=…             → field static
 
 ## 3. Đóng được gì ngay trong phiên này
 
-### 3.1 `skeleton__21` = rig của `Boss-39002` (mức **A**)
+### 3.1 `skeleton__21` = rig của **cả** `Boss-39001` và `Boss-39002` (mức **A**)
 
 `33-animation-control-native.md` §1 chép nguyên văn 8 giá trị state serialize của
 `Boss1_Director` trên prefab `Boss-39002`:
@@ -225,25 +225,40 @@ statePreAttack2=Chuyensangattack2  statePreAttack3=Chuyensangattack3
 ⇒ Suy ra `skeleton__21` là rig của họ Boss 1. Đây chính là mắt nối mà `23-spine-anim.md` ghi là
 "chưa map rig → đơn vị".
 
-#### 3.1′. Sửa: rig đó gắn vào **`Boss-39001`**, không phải `Boss-39002`
+#### 3.1′. Sửa lần hai: `580611` gắn trên **`Boss-39001` *và* `Boss-39002`** — dùng chung rig
 
-Có typetree `SkeletonAnimation` rồi thì không cần suy nữa:
+Report `38-spine-prefab-links.md` của nhánh dữ liệu ghép bằng **PPtr thật**
+(`SkeletonAnimation → SkeletonDataAsset → TextAsset`), không qua tên file, không qua bone:
 
-| bằng chứng | kết quả |
-|---|---|
-| `SkeletonAnimation` instance `602882` → `skeletonDataAsset` = **580611** | rig `skeleton__21` |
-| cùng instance → `m_GameObject` = `163303`, đi lên `transform-tree` | root **`Boss-39001`** |
-| đường dẫn đầy đủ | `Enemy_Ingame/Body/Boss 1/Skeleton` |
-| `Boss1_Director` instance `582209` → `m_GameObject` `185746` | root **`Boss-39002`** |
+| prefab | component | SDA | TextAsset | animation |
+|---|---:|---:|---:|---:|
+| **`Boss-39001`** | 602882 | **`580611`** | 918 | 10 |
+| **`Boss-39002`** | 664302 | **`580611`** | 918 | 10 |
+| **`Boss-39003`** | 602881 | **`580613`** | 895 | 9 |
 
-⇒ **Hai prefab khác nhau.** `580611` gắn trên **`Boss-39001`** (mức **A**, đọc trực tiếp con trỏ);
-`Boss-39002` mang `Boss1_Director` (mức **A**) nhưng **SkeletonAnimation của nó không nằm trong 20
-instance đã export** — nên quan hệ `Boss-39002 → 580611` chỉ là **B (suy luận)**: director của nó
-đặt 8 tên state, và cả 8 đều có trong `skeleton__21`.
+Đối chiếu `datas/spine.json`: TextAsset 918 → SDA 580611 → `skeleton__21` (39 bone);
+895 → SDA 580613 → `skeleton__8` (32 bone). Khớp.
 
-> Hai cách đọc vẫn còn mở: (a) hai prefab dùng chung rig 580611; (b) `Boss-39002` có rig riêng
-> chưa export. Không đủ dữ liệu để chọn — nhưng **không còn mù mờ như trước**, vì giờ biết chắc
-> 580611 thuộc `Boss-39001`.
+⇒ **Hai boss đầu dùng chung một rig.** Đây là cách đọc (a) trong câu hỏi treo trước đó — nay
+**đã phân xử, mức A**: cùng một con trỏ `SkeletonDataAsset`, không phải suy luận.
+
+Đây là **3 component trên 3 prefab boss**, và cả ba đều `resolved` — không cái nào rơi ra ngoài.
+Riêng `Boss-39002` mang `Boss1_Director` instance `582209` (đọc trực tiếp từ typetree, đi lên
+`transform-tree` ra root `Boss-39002`) — nên chuỗi **director → prefab → rig** đã khép kín.
+
+##### Tôi đã sai ở đâu trong bản trước
+
+Bản trước viết "SkeletonAnimation của `Boss-39002` **không nằm trong 20 instance đã export**", và từ
+đó hạ quan hệ xuống mức B. Nửa đầu **đúng**, kết luận **sai** — vì:
+
+> Thư mục `reverse-engineering/scriptableobjects/Spine.Unity.SkeletonAnimation/` **không phải toàn
+> bộ**. Nó có **20 file**, nhưng trong game **có ít nhất 21** component: `664302` (của
+> `Boss-39002`) **không có** trong đó. Tôi đã lấy "không có trong tập đã export" rồi đọc thành
+> "không tồn tại".
+
+Đó là lỗi **dùng đại lượng thay thế hẹp hơn câu chữ**. Bộ kiểm cũng không bắt được: claim `G8`
+đo đúng cái thư mục, nên nó PASS trong khi kết luận sai. Nay `G8` đo thẳng `spine-prefabs.json`,
+và `G10` giữ con số 3 component để lần sau ai đọc nhầm "20 = tất cả" thì đỏ ngay.
 
 ### 3.2 Ghép rig ↔ TextAsset: 18/27 khớp 1-1, 9 cái **không phân biệt được**
 
@@ -309,11 +324,10 @@ của con số 109. Cho tới lúc đó, **203 và 87 là số không kiểm l�
 
 ## Còn thiếu / phải đoán
 
-- ~~**`Boss-39001` và `Boss-39002` có thể dùng chung một rig.**~~ → **đã phân xử một nửa.**
-  `580611` gắn trên **`Boss-39001`** (`Enemy_Ingame/Body/Boss 1/Skeleton`), đọc trực tiếp từ
-  `SkeletonAnimation` → `m_GameObject` → `transform-tree` (§3.1′). Còn lại: `Boss-39002` mang
-  `Boss1_Director` nhưng SkeletonAnimation của nó **không có trong 20 instance đã export**, nên
-  quan hệ với 580611 vẫn là **mức B**.
+- ~~**`Boss-39001` và `Boss-39002` có thể dùng chung một rig.**~~ → **đã phân xử: ĐÚNG, dùng
+  chung.** Cả hai trỏ cùng `SkeletonDataAsset` `580611` bằng PPtr thật (§3.1′). Cách đọc (b) —
+  "skeleton trong hit-renderer là súng con" — **loại bỏ**: đường dẫn đầy đủ là
+  `Enemy_Ingame/Body/Boss 1/Skeleton`, ngay trên thân boss.
 - ~~**`skeleton__17`** trông giống rig súng~~ → **sai, đã xác định: `Popup_UnlockShip`.** 18
   animation tên `Attack01–12` dài 0,4 s là **hiệu ứng mở popup mua tàu**, không phải đòn.
   `skeleton__5` cùng popup đó.

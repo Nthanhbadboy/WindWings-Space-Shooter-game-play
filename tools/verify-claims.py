@@ -740,10 +740,12 @@ def appear_asm_is_delegate() -> bool | None:
 
 
 claim("G1", GAPS, "**20 instance, export 23/10**", 20,
-      lambda: None if spine_instance_paths() is None else len(spine_instance_paths()))
+      lambda: None if spine_instance_paths() is None else len(spine_instance_paths()),
+      "chỉ là số FILE trong thư mục export — KHÔNG phải toàn bộ component trong game (xem G10)")
 
-claim("G2", GAPS, "**`Boss-39001`** (`Enemy_Ingame/Body/Boss 1/Skeleton`)", ["Boss-39001"],
-      lambda: rig_prefab(580611), "rig thân boss, mức A")
+claim("G2", GAPS, "| `580611` = `skeleton__21` | 10, có `Attack1–4` | **`Boss-39001`** + **`Boss-39002`** (dùng chung) | **boss** |",
+      ["Boss-39001"], lambda: rig_prefab(580611),
+      "export 20 file chỉ thấy Boss-39001; spine-prefabs.json (G8) thấy thêm Boss-39002")
 
 claim("G3", GAPS, "**`Boss-39003`** (`Body/Boss 1/Skeleton`)", ["Boss-39003"],
       lambda: rig_prefab(580613), "rig thân boss, mức A")
@@ -764,33 +766,51 @@ claim("G7", GAPS, "**32 byte, và không có logic nào của riêng nó.**", Tr
       appear_asm_is_delegate,
       "Appear = vỏ gọi delegate: cbz null + br thanh ghi")
 
-def boss39002_has_no_exported_skeleton() -> bool | None:
-    """Boss-39002 có SkeletonAnimation trong 20 instance đã export không?
+def spine_prefabs():
+    """Ba component Spine trên boss, ghép bằng PPtr thật (report 38)."""
+    d = ref_json("reverse-engineering/raw/animation-audit/spine-prefabs.json")
+    return None if d is None else {c["prefab"]: c for c in d.get("components", [])}
 
-    Doc khẳng định **không**, nên quan hệ của nó với rig 580611 mới chỉ là mức B.
-    Nếu export sau này có thêm, claim này đỏ và buộc phải nâng mức.
-    """
-    maps = _tt_maps()
-    inst = _spine_instances()
-    if maps is None or inst is None:
+
+def boss_rig(prefab: str):
+    """SDA (rig) mà một prefab boss thật sự trỏ tới, hoặc None."""
+    sp = spine_prefabs()
+    if sp is None:
         return None
-    go2tr, father, roots = maps
-    for go, _rig in inst:
-        tr = go2tr.get(go)
-        seen = set()
-        while tr and tr not in seen:
-            seen.add(tr)
-            if tr in roots:
-                if roots[tr] == "Boss-39002":
-                    return False
-                break
-            tr = father.get(tr)
-    return True
+    c = sp.get(prefab)
+    return None if c is None else c["skeleton_data_ref"]["m_PathID"]
 
 
-claim("G8", GAPS, "**SkeletonAnimation của nó không nằm trong 20", True,
-      boss39002_has_no_exported_skeleton,
-      "nếu sai thì quan hệ Boss-39002 → 580611 phải nâng từ B lên A")
+claim("G8", GAPS, "| **`Boss-39002`** | 664302 | **`580611`** |", 580611,
+      lambda: boss_rig("Boss-39002"),
+      "PPtr thật: Boss-39001 và Boss-39002 DÙNG CHUNG rig 580611 — hết mức B")
+
+claim("G10", GAPS, "**3 component trên 3 prefab boss**", 3,
+      lambda: None if spine_prefabs() is None else len(spine_prefabs()),
+      "thư mục 20 file là export MỘT PHẦN: component 664302 không có trong đó")
+
+claim("G11", GAPS, "| **`Boss-39001`** | 602882 | **`580611`** |", 580611,
+      lambda: boss_rig("Boss-39001"))
+
+claim("G12", GAPS, "| **`Boss-39003`** | 602881 | **`580613`** |", 580613,
+      lambda: boss_rig("Boss-39003"))
+
+
+def event_receiver_stats():
+    d = ref_json("reverse-engineering/raw/animation-audit/event-receivers.json.gz")
+    if d is None:
+        return None
+    s_ = d.get("summary", {})
+    return (s_.get("event_uses"), s_.get("candidate_event_uses"), s_.get("unresolved_event_uses"))
+
+
+claim("G13", "docs/apk-analysis/37-animation-event-receivers.md", "711", 711,
+      lambda: (event_receiver_stats() or (None, None, None))[1],
+      "event use có receiver ứng viên — KHÁC 731 event theo clip duy nhất")
+
+claim("G14", "docs/apk-analysis/37-animation-event-receivers.md", "84", 84,
+      lambda: (event_receiver_stats() or (None, None, None))[2])
+
 
 claim("G9", "docs/spec/ANIMATION_GAPS.md", "`Boss1_Director` instance `582209`", ["Boss-39002"],
       lambda: _boss1_director_root(), "director → prefab, đọc trực tiếp")

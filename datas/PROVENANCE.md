@@ -6,10 +6,10 @@ Bản sao **nguyên văn** của bộ phân tích, kéo từ nhánh dữ liệu 
 | | |
 |---|---|
 | nguồn | `arena/ef6b75ef-windwings-space-shooter-game-p` |
-| commit | `6dc5c4bf5eefd35b76bb6fd391b2d7bc53da4958` |
+| commit | `019e704d1` (kéo lần 2); lần đầu `6dc5c4bf5` |
 | ngày kéo | 23/10/2026 |
 | cách kéo | `git archive <ref> <path>… \| tar -x` — không merge, không checkout |
-| số file | 380 · 18,72 MB |
+| số file | 383 · 18,77 MB |
 
 ## Vì sao kéo
 
@@ -26,8 +26,18 @@ rơi về `git show` khi thiếu — và chạy được cả khi không có nh�
 | `reverse-engineering/raw/typetrees/` | 129 typetree: `Enemy_Appear`, `Enemy_Movement`, `transform-tree`, `prefab-roots`, `native-types` … |
 | `reverse-engineering/scriptableobjects/Spine.Unity.SkeletonAnimation/` | 20 instance — **nguồn của phép ghép rig ↔ prefab** |
 | `reverse-engineering/raw/il2cpp-consts/` | 133 file: asm + method table của 69 class |
-| `reverse-engineering/raw/animation-audit/` | 6 file: 154 animator → clip/event |
+| `reverse-engineering/raw/animation-audit/` | 8 file: 154 animator → clip/event · `spine-prefabs.json` (3 component Spine trên boss, PPtr thật) · `event-receivers.json.gz` (795 event use) |
 | `reverse-engineering/il2cpp/dump.cs.gz` | 2,64 MB — cây lớp, nguồn của đếm 39 lớp con |
+| `docs/apk-analysis/37-`, `38-` | báo cáo của nhánh dữ liệu cho hai file audit trên |
+
+## Một chỗ dễ đọc nhầm
+
+`reverse-engineering/scriptableobjects/Spine.Unity.SkeletonAnimation/` có **20 file**, nhưng đó
+**không phải** toàn bộ component trong game. `spine-prefabs.json` cho thấy có **ít nhất 21**:
+component `664302` (của `Boss-39002`) không nằm trong thư mục đó.
+
+⇒ Đừng đọc "không có trong 20 file" thành "không tồn tại". Đây đúng là lỗi đã xảy ra một lần
+(`ANIMATION_GAPS.md` §3.1′).
 
 ## KHÔNG kéo — và vì sao
 
@@ -48,6 +58,9 @@ git show FETCH_HEAD:datas/ui_text_keys.csv.gz > datas/ui_text_keys.csv.gz
 `sha256` (16 ký tự đầu) của từng file, để phát hiện sửa tay:
 
 ```
+
+```
+e79a022b84c8ab16  34408  datas/PROVENANCE.md
 ec7d6432b62f6409  2316  datas/README.md
 c1f73dd0b957ed98  9921  datas/anim_clips.json.gz
 2e0b212d0ca1792a  53173  datas/animator_map.csv.gz
@@ -80,8 +93,10 @@ e08f23fb6c90e072  2769105  reverse-engineering/il2cpp/dump.cs.gz
 d6796cd966db40a8  30354  reverse-engineering/raw/animation-audit/enemy-boss.json
 fe001faf73dc7279  35496  reverse-engineering/raw/animation-audit/enemy-clip-links.json.gz
 1995d580385ff985  758  reverse-engineering/raw/animation-audit/enemy-lifecycle.json
+6513788e7f0d4e8f  15298  reverse-engineering/raw/animation-audit/event-receivers.json.gz
 e1ad28f7f609afed  374478  reverse-engineering/raw/animation-audit/native-calls.json
 eeed1a1953c4cb65  189893  reverse-engineering/raw/animation-audit/script-declarations.json
+bd16f12f4cc4dc4e  3589  reverse-engineering/raw/animation-audit/spine-prefabs.json
 4f2ca5b76a56b89a  64777  reverse-engineering/raw/il2cpp-consts/ArenaManager.asm.txt
 a8130a2bfb6f2f89  22186  reverse-engineering/raw/il2cpp-consts/ArenaManager.json
 39799bf3a49f613c  3855  reverse-engineering/raw/il2cpp-consts/Boss1_AnimationEvents.asm.txt
@@ -427,4 +442,5 @@ bbc25b9e7f8467b5  41837  reverse-engineering/textassets/skeleton__5.json
 491c2bcaa6aa51cd  25579  reverse-engineering/textassets/skeleton__6.json
 a401be18291ecd3c  21725  reverse-engineering/textassets/skeleton__7.json
 6f21fd7dd6050165  63389  reverse-engineering/textassets/skeleton__8.json
-6247d9233fd2233a  58413  reverse-engineering/textassets/skeleton__9.json```
+6247d9233fd2233a  58413  reverse-engineering/textassets/skeleton__9.json
+```

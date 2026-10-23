@@ -133,6 +133,31 @@ Nhánh dữ liệu tiến lên `6dc5c4bf5` và **đã đóng hai mục tôi đá
 Bộ kiểm nay **62 claim**: thêm nhóm **G** (9 claim) cho bằng chứng mới, và đọc **bản local trước**
 — chạy được cả khi không có nhánh dữ liệu. Toàn bộ nguồn ghi ở `datas/PROVENANCE.md`.
 
+## 5c. Kéo lần 2 (`019e704d1`) — cổng bắt được chính tôi
+
+Nhánh dữ liệu tiến thêm một commit và bổ sung `spine-prefabs.json`: ghép
+`SkeletonAnimation → SkeletonDataAsset → TextAsset` bằng **PPtr thật**.
+
+| prefab | component | SDA | TextAsset |
+|---|---:|---:|---:|
+| `Boss-39001` | 602882 | **580611** | 918 |
+| `Boss-39002` | 664302 | **580611** | 918 |
+| `Boss-39003` | 602881 | **580613** | 895 |
+
+**Kết luận cũ của tôi sai.** Tôi từng hạ quan hệ `Boss-39002 → 580611` xuống mức B, lý do
+"SkeletonAnimation của nó không nằm trong 20 instance đã export". Nay biết `Boss-39002` **có**
+component `664302` — thư mục 20 file là **export một phần**.
+
+**Và cái sai thứ hai, đáng chú ý hơn: cổng của tôi đã PASS trong khi kết luận sai.** Claim `G8`
+đo `"Boss-39002 có SkeletonAnimation trong 20 file không?"` → `True`, nên nó xanh. Nhưng câu hỏi
+đúng phải là *"trong game"*, không phải *"trong tập đã export"*. Đại lượng thay thế hẹp hơn câu
+chữ — đúng loại lỗi mà cả tài liệu này đang chống.
+
+Đã sửa: `G8` nay đọc thẳng `spine-prefabs.json`. `G10` giữ con số **3 component** để lần sau ai
+đọc nhầm "20 = tất cả" thì đỏ ngay. Tổng **69 claim** (67 PASS · 2 SKIP).
+
+> **Bài học:** một cổng kiểm cũng có thể đo sai thứ. Nó chỉ bảo vệ được đúng cái nó thật sự đo.
+
 ## 6. Cách chạy lại
 
 ```bash
