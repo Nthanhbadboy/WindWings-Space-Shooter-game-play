@@ -620,6 +620,10 @@
     0x12569c8: ldr      x30, [sp], #0x30
     0x12569cc: ret      
 
+;;; ctor  public void .ctor() { }
+    0x12569d0: mov      x1, xzr
+    0x12569d4: b        #0x2782ba0
+
 ;;; cctor  private static void .cctor() { }
     0x12569d8: str      x30, [sp, #-0x40]!
     0x12569dc: stp      x24, x23, [sp, #0x10]

@@ -1557,6 +1557,10 @@
     0x15a41fc: ret      
     0x15a4200: bl       #0x110d250
 
+;;; ctor  public void .ctor() { }
+    0x15a420c: mov      x1, xzr
+    0x15a4210: b        #0x2782ba0
+
 ;;; cctor  private static void .cctor() { }
     0x15a4214: stp      x30, x21, [sp, #-0x20]!
     0x15a4218: stp      x20, x19, [sp, #0x10]

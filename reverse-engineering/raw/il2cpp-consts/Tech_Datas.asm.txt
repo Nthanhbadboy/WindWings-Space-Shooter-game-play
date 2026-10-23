@@ -1800,6 +1800,10 @@
     0x13a1b38: bl       #0x110d250
     0x13a1b3c: bl       #0x110d258
 
+;;; ctor  public void .ctor() { }
+    0x13a1b40: mov      x1, xzr
+    0x13a1b44: b        #0x2782ba0
+
 ;;; cctor  private static void .cctor() { }
     0x13a1b48: str      x30, [sp, #-0x60]!
     0x13a1b4c: stp      x28, x27, [sp, #0x10]

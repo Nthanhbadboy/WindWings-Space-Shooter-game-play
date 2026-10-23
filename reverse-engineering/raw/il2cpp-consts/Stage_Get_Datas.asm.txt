@@ -2088,6 +2088,10 @@
     0x12c75e4: bl       #0x110d250
     0x12c75e8: bl       #0x110d258
 
+;;; ctor  public void .ctor() { }
+    0x12c75ec: mov      x1, xzr
+    0x12c75f0: b        #0x2782ba0
+
 ;;; cctor  private static void .cctor() { }
     0x12c75f4: str      x30, [sp, #-0x50]!
     0x12c75f8: stp      x26, x25, [sp, #0x10]

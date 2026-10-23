@@ -3857,6 +3857,10 @@
     0x14e58b8: ldp      x30, x23, [sp], #0x30
     0x14e58bc: ret      
 
+;;; ctor  public void .ctor() { }
+    0x14e58c0: mov      x1, xzr
+    0x14e58c4: b        #0x2782ba0
+
 ;;; cctor  private static void .cctor() { }
     0x14e58c8: sub      sp, sp, #0xe0
     0x14e58cc: str      x30, [sp, #0x80]

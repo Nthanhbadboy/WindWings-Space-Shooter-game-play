@@ -681,6 +681,10 @@
     0x13211d0: b        #0x13210bc
     0x13211d4: bl       #0x110d250
 
+;;; ctor  public void .ctor() { }
+    0x13211d8: mov      x1, xzr
+    0x13211dc: b        #0x2782ba0
+
 ;;; cctor  private static void .cctor() { }
     0x13211e0: str      x30, [sp, #-0x30]!
     0x13211e4: stp      x22, x21, [sp, #0x10]

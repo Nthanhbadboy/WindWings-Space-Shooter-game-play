@@ -1978,6 +1978,10 @@
     0x13fa5ec: ret      
     0x13fa5f0: bl       #0x110d250
 
+;;; ctor  public void .ctor() { }
+    0x13fa5f4: mov      x1, xzr
+    0x13fa5f8: b        #0x2782ba0
+
 ;;; cctor  private static void .cctor() { }
     0x13fa5fc: str      x30, [sp, #-0x40]!
     0x13fa600: stp      x24, x23, [sp, #0x10]

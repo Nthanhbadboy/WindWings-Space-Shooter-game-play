@@ -4464,6 +4464,10 @@
     0x1327acc: ldp      x30, x21, [sp], #0x20
     0x1327ad0: b        #0x277cc10
 
+;;; ctor  public void .ctor() { }
+    0x1327ad4: mov      x1, xzr
+    0x1327ad8: b        #0x2782ba0
+
 ;;; cctor  private static void .cctor() { }
     0x1327adc: str      x30, [sp, #-0x30]!
     0x1327ae0: stp      x22, x21, [sp, #0x10]

@@ -312,6 +312,10 @@
     0x1451bdc: bl       #0x110d250
     0x1451be0: bl       #0x110d258
 
+;;; GetDroidLevel  public static int GetDroidLevel(int _droidIndex) { }
+    0x1451be4: mov      w0, wzr
+    0x1451be8: ret      
+
 ;;; SetDroidLevel  public static void SetDroidLevel(int _droidIndex, int _lv) { }
     0x1451bec: str      x30, [sp, #-0x30]!
     0x1451bf0: stp      x22, x21, [sp, #0x10]
@@ -480,6 +484,10 @@
     0x1451e6c: ldp      x22, x21, [sp, #0x10]
     0x1451e70: ldr      x30, [sp], #0x30
     0x1451e74: ret      
+
+;;; ctor  public void .ctor() { }
+    0x1451e78: mov      x1, xzr
+    0x1451e7c: b        #0x2782ba0
 
 ;;; cctor  private static void .cctor() { }
     0x1451e80: str      x30, [sp, #-0x40]!

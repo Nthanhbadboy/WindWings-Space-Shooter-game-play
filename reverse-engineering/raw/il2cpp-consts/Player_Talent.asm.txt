@@ -1644,6 +1644,10 @@
     0x14bf070: b        #0x2781804
     0x14bf074: bl       #0x110d250
 
+;;; OnRocketDestroyed  private void OnRocketDestroyed(GameObject obj, Vector3 pos) { }
+    0x14bf0a0: ret      
+    0x14bf0a4: str      x30, [sp, #-0x30]!
+
 ;;; OnRocketCollided  private void OnRocketCollided(GameObject obj, Vector3 pos) { }
     0x14bf0a4: str      x30, [sp, #-0x30]!
     0x14bf0a8: stp      x22, x21, [sp, #0x10]
@@ -1966,6 +1970,10 @@
     0x14bf574: ldp      x30, x21, [sp], #0x20
     0x14bf578: ret      
     0x14bf57c: bl       #0x110d250
+
+;;; <Start>b__8_4  private void <Start>b__8_4(object <p0>) { }
+    0x14bf580: b        #0x14bd8f0
+    0x14bf584: stp      x30, x21, [sp, #-0x20]!
 
 ;;; <SetZoneInvisible>b__24_0  private void <SetZoneInvisible>b__24_0(Talent_Invisible talentObj) { }
     0x14bf584: stp      x30, x21, [sp, #-0x20]!

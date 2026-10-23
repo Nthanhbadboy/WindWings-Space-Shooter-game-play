@@ -71,6 +71,10 @@
     0x14794d0: ldr      s0, [x9, w8, uxtw #2]
     0x14794d4: ret      
 
+;;; OnDisable  protected virtual void OnDisable() { }
+    0x14794d8: b        #0x14794dc
+    0x14794dc: stp      x30, x21, [sp, #-0x20]!
+
 ;;; ResetInvisible  private void ResetInvisible() { }
     0x14794dc: stp      x30, x21, [sp, #-0x20]!
     0x14794e0: stp      x20, x19, [sp, #0x10]
@@ -238,6 +242,10 @@
     0x1479750: ldp      x20, x19, [sp, #0x10]
     0x1479754: ldp      x30, x21, [sp], #0x20
     0x1479758: ret      
+
+;;; SetPlayerRank  public virtual void SetPlayerRank(int _rank) { }
+    0x1479784: str      w1, [x0, #0x44]
+    0x1479788: ret      
 
 ;;; KillEnemy  public virtual void KillEnemy() { }
     0x147978c: str      d8, [sp, #-0x20]!
@@ -510,6 +518,10 @@
     0x1479b98: ldr      d8, [sp], #0x20
     0x1479b9c: ret      
     0x1479ba0: bl       #0x110d250
+
+;;; OnResetSuperPowerUp  public virtual void OnResetSuperPowerUp() { }
+    0x1479ba4: ret      
+    0x1479ba8: str      d8, [sp, #-0x30]!
 
 ;;; get_dmgTechItem0  protected float get_dmgTechItem0() { }
     0x1479ba8: str      d8, [sp, #-0x30]!

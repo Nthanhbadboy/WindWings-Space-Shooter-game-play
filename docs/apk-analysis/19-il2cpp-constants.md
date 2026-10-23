@@ -6,7 +6,7 @@
 > phải để chép nguyên. Dữ liệu thô: `reverse-engineering/raw/il2cpp-consts/`.
 
 - .so: `libil2cpp.so` — aarch64
-- class đích: **17**, method: **425**
+- class đích: **20**, method: **466**
 
 ## Getter: trả hằng số hay đọc dữ liệu?
 
@@ -23,7 +23,10 @@ Mỗi getter trong build này đều bị bọc bởi guard khởi tạo static 
 | `ArenaManager` | 0 | 1 | 18 | **0** |
 | `Device_Get_Data` | 0 | 2 | 8 | **0** |
 | `Droid_Data_Balance` | 0 | 0 | 9 | **0** |
+| `Enemy_Controller` | 0 | 0 | 32 | **0** |
 | `Enemy_Data_Balance` | 0 | 0 | 7 | **1** |
+| `Enemy_Get_Datas` | 0 | 0 | 4 | **0** |
+| `Enemy_Health` | 0 | 3 | 1 | **0** |
 | `GameDatas` | 23 | 3 | 39 | **1** |
 | `IAP_Manager` | 0 | 0 | 33 | **0** |
 | `Map_Get_Datas` | 0 | 0 | 10 | **0** |
@@ -37,7 +40,7 @@ Mỗi getter trong build này đều bị bọc bởi guard khởi tạo static 
 | `RankManager` | 0 | 0 | 8 | **0** |
 | `Stage_Get_Datas` | 0 | 0 | 11 | **0** |
 | `Tech_Datas` | 0 | 7 | 16 | **0** |
-| **tổng** | 27 | 39 | 259 | **11** |
+| **tổng** | 27 | 42 | 296 | **11** |
 
 ### Float đọc từ literal pool (`.rodata`) — số thật, không phải suy luận
 
@@ -48,6 +51,7 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 
 | class | method | giá trị | VA |
 |---|---|---:|---|
+| `Enemy_Controller` | `OnTakeDamage` | 0.4 | `0x756fbc` |
 | `Enemy_Data_Balance` | `GetBonusCoin` | 0.1 | `0x756c78` |
 | `Enemy_Data_Balance` | `GetSurvivalScore` | 1.1 | `0x756b50` |
 | `Enemy_Data_Balance` | `GetSurvivalScore` | 0.2 | `0x75700c` |
@@ -66,6 +70,38 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 | `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.2 | `0x756cb8` |
 | `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.1 | `0x756b50` |
 | `Enemy_Data_Balance` | `GetArenaPlayScore` | 0.2 | `0x75700c` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.35 | `0x756b0c` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.3 | `0x7570e0` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.02 | `0x756e14` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.129 | `0x756ee8` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.69 | `0x756ac8` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.36 | `0x756d0c` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.168 | `0x756f34` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 1.335 | `0x756ce0` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.012 | `0x756c5c` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.1689 | `0x756f48` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.2 | `0x75700c` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.0125 | `0x756fa8` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 5.69 | `0x756a88` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 1.2 | `0x756cb8` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 1.89 | `0x7570d0` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.89 | `0x7574c0` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.56 | `0x7574c4` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 1.39 | `0x756bfc` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 1.35 | `0x756ab4` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 3.6 | `0x7570cc` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 2.68 | `0x756f6c` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 2.2 | `0x75701c` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.689 | `0x756dfc` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 3.0 | `0x7581e8` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 1.5 | `0x7581ec` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 2.3 | `0x756edc` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 1.56 | `0x756eac` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.23 | `0x757000` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.05 | `0x756e18` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 1.1 | `0x756b50` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.68 | `0x756ed0` |
+| `Enemy_Get_Datas` | `GetDamagePowered` | 0.369 | `0x756fd8` |
 | `Player_Ability` | `OnBulletDroneSkill6Destroyed` | 0.68 | `0x756ed0` |
 | `Player_Attack` | `get_dmgTechItem0` | 0.3 | `0x7570e0` |
 | `Player_Attack` | `ctor` | -1.0 | `0x757910` |
@@ -171,6 +207,13 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - int: `2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 60, 64, 101, 112, 1000`
 - hằng số dùng trong phép tính: `—`
 
+## `Enemy_Controller` — enemy runtime: GetStartHealth/TakeDamage/UpdateHpBar
+
+- method đọc được: **33**, có hằng số: **16**
+- float: `0.4, 3.0, 6.0, 100.0`
+- int: `2, 31, 34, 40, 100`
+- hằng số dùng trong phép tính: `—`
+
 ## `Tech_Datas` — tech lab: giá, delta giá, sao
 
 - method đọc được: **25**, có hằng số: **24**
@@ -247,6 +290,20 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - float: `0.01, 0.1, 0.2, 0.5, 0.56, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 2.0, 2.3, 2.8, 3.0, 4.2, 5.0, 6.0, 9.0, 11.0, 15.0`
 - int: `2, 6, 8, 10, 15, 21, 23, 29, 30, 59, 64, 120, 200, 250, 387, 450, 998, 30010, 30014, 30015, 30016, 30029, 30031, 30032`
 - hằng số dùng trong phép tính: `arith:fadd:1.0, arith:fmul:0.1, arith:fmul:9.0, arith:fmul:11.0, arith:fmul:25.0`
+
+## `Enemy_Get_Datas` — enemy: HP khởi đầu theo prefab (Dictionary dựng ở .cctor)
+
+- method đọc được: **4**, có hằng số: **3**
+- float: `-15.0, 0.012, 0.0125, 0.02, 0.05, 0.1, 0.129, 0.168, 0.1689, 0.2, 0.23, 0.3, 0.35, 0.36, 0.369, 0.5, 0.56, 0.68, 0.689, 0.69, 0.89, 1.0, 1.1, 1.2`
+- int: `2, 3, 4, 5, 6, 8, 12, 15, 16, 21, 24, 26, 48, 51, 60, 61, 71, 91, 101, 121, 161, 191, 240, 30001`
+- hằng số dùng trong phép tính: `arith:fadd:-15.0, arith:fadd:0.2, arith:fadd:0.3, arith:fadd:0.36, arith:fadd:0.5, arith:fadd:1.0, arith:fadd:1.2, arith:fadd:1.335, arith:fadd:2.5, arith:fadd:5.69, arith:fdiv:1.89, arith:fdiv:2.3, arith:fdiv:12.0, arith:fdiv:15.0, arith:fmul:0.012, arith:fmul:0.0125, arith:fmul:0.02, arith:fmul:0.05, arith:fmul:0.129, arith:fmul:0.168, arith:fmul:0.1689, arith:fmul:0.23, arith:fmul:0.35, arith:fmul:0.5`
+
+## `Enemy_Health` — enemy runtime: armor/noDamage, nhận damage
+
+- method đọc được: **4**, có hằng số: **1**
+- float: `2.0, 100.0`
+- int: `—`
+- hằng số dùng trong phép tính: `arith:fsub:2.0`
 
 ## `Player_Datas` — dữ liệu runtime của player
 

@@ -5,7 +5,7 @@
 > trong thân hàm; còn rẽ nhánh (`b.ne`, `csel`…) nên đây là **nguyên liệu** để đọc công thức,
 > chưa phải công thức. Đích `bl` có `~` nghĩa là nằm giữa thân method khác (generic dùng chung).
 
-- method có trace: **425**, method đáng đọc trước: **45**
+- method có trace: **466**, method đáng đọc trước: **48**
 
 ## Đọc thử một method
 
@@ -25,6 +25,8 @@ và 0.1932 = 0.168 × 1.15, cuối cùng có `+ 1.0` kiểu `(1 + x)`. Chưa ch�
 
 | class.method | float từ pool | phép tính | gọi tới (đã giải tên) |
 |---|---|---|---|
+| `Enemy_Get_Datas.GetDamagePowered` | 1.5, 0.3, 0.89, 0.56, 3.6, 3.0, 2.68, 2.2 | fmul, fdiv, fadd, fadd, fmul, fadd, fmul, fmul |  |
+| `Enemy_Get_Datas.cctor` | 1000.0, 6800.0, 650.0, 4200.0, 75000.0, 14200.0, 12000.0, 9000.0 |  |  |
 | `Enemy_Data_Balance.GetPVPPlayScore` | 5.0, 2.0, 1.0, 0.2, 0.5, 0.01, 2.3, 0.1 | fmul, fmul |  |
 | `Stage_Get_Datas.GetBonus` | 60.0, 50.0, 40.0, 50.0, 20.0, 40.0, 30.0, 15.0 | fmul, fmul, fmul |  |
 | `Player_Get_Datas.cctor` | 3.0, 10.0, 0.18, 2500.0, 18.0, 5.6, 0.4, 1.5 |  |  |
@@ -41,6 +43,7 @@ và 0.1932 = 0.168 × 1.15, cuối cùng có `+ 1.0` kiểu `(1 + x)`. Chưa ch�
 | `Player_Get_Datas.GetTalentLaserDamage` | 1.5 | scvtf, fmul, fmul, fmul, fadd | Tech_Datas.GetTechStatPoints |
 | `Player_Get_Datas.GetTalentStunDamage` | 1.2, 1.4, 1000.0, 1.8 | fmul, fadd | Tech_Datas.GetTechStatPoints |
 | `Player_Get_Datas.TimeToImmuneOneHit` | 25.0, 30.0, 40.0, 35.0, 50.0, 45.0 |  | Tech_Datas.GetTechStatLevel |
+| `Enemy_Controller.OnTakeDamage` | 3.0, 100.0, 100.0, 0.4, 6.0 |  | Enemy_Controller.OnDieWhenZeroHp, Enemy_Controller.UpdateHpBar, Enemy_Health.CalculateDamage |
 | `Enemy_Data_Balance.GetBonusCoin` | 100.0, 20.0 | fmul, fadd, fmul |  |
 | `Player_Get_Datas.AddPowerPercentWhenHpBelow30` | 0.5, 0.1, 0.4, 0.3, 0.2 |  | Tech_Datas.GetTechStatLevel |
 | `Player_Get_Datas.GainHpPercentWhenUseOverDrive` | 0.25, 0.2, 0.3, 0.1, 0.15 |  | Tech_Datas.GetTechStatLevel |
@@ -62,9 +65,6 @@ và 0.1932 = 0.168 × 1.15, cuối cùng có `+ 1.0` kiểu `(1 + x)`. Chưa ch�
 | `Player_Ability.OnBulletDroneSkill6Collided` | 100.0 | fadd, fmul |  |
 | `Player_Get_Datas.GetTalentInvisible2Ranger` |  | fmul, fadd, fmul | Tech_Datas.GetTechStatPoints |
 | `Player_Get_Datas.GetTalentInvisibleRanger` |  | fmul, fadd, fmul | Tech_Datas.GetTechStatPoints |
-| `Player_Get_Datas.GetTalentStunRanger` |  | fmul, fmul, fadd | Tech_Datas.GetTechStatPoints |
-| `Player_Ingame.get_timeSuperPowerUp` | 100.0 | fadd, fmul |  |
-| `Player_Attack.ctor` | -1.0, 1.0 |  |  |
 
 ## Giới hạn
 
