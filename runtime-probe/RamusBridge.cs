@@ -955,6 +955,15 @@ namespace Ramus.Bridge
             }, 6000);
         }
 
+        static IEnumerable<Type> SafeTypes(Assembly asm)
+        {
+            Type[] tt = null;
+            try { tt = asm.GetTypes(); }
+            catch (ReflectionTypeLoadException ex) { tt = ex.Types; }
+            catch { tt = null; }
+            return tt ?? Array.Empty<Type>();
+        }
+
         static Type ResolveType(string name)
         {
             if (string.IsNullOrEmpty(name)) return null;
@@ -969,33 +978,54 @@ namespace Ramus.Bridge
                     {
                         var t = asm.GetType(name, false);
                         if (t != null) return t;
-
-                        foreach (var candidate in asm.GetTypes())
-                        {
-                            if (candidate == null) continue;
-                            if (candidate.Name == name)
-                            {
-                                // Prefer the game assembly when several types share a simple name.
-                                if (asm.GetName().Name.IndexOf("Assembly-CSharp", StringComparison.OrdinalIgnoreCase) >= 0) return candidate;
-                                if (candidate.FullName == name) return candidate;
-                            }
-                        }
                     }
                     catch { }
+
+                    foreach (var candidate in SafeTypes(asm))
+                    {
+                        if (candidate == null) continue;
+                        if (candidate.Name == name)
+                        {
+                            if (candidate.FullName == name) return candidate;
+                            // Prefer the game assembly when several types share a simple name.
+                            if (asm.GetName().Name.IndexOf("Assembly-CSharp", StringComparison.OrdinalIgnoreCase) >= 0) return candidate;
+                        }
+                    }
                 }
 
                 foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
                 {
-                    try
-                    {
-                        foreach (var candidate in asm.GetTypes())
-                            if (candidate != null && candidate.Name == name) return candidate;
-                    }
-                    catch { }
+                    foreach (var candidate in SafeTypes(asm))
+                        if (candidate != null && candidate.Name == name) return candidate;
                 }
             }
             catch { }
             return null;
+        }
+
+        /// <summary>Type-name discovery: dump the game's class names (by default
+        /// matching a filter) so callers can find the exact names /statics wants.</summary>
+        public static string TypesJson(string filter, int max)
+        {
+            var jw = new Jw().StartObj().Prop("ok", true).Prop("filter", filter).Prop("asmCount", AppDomain.CurrentDomain.GetAssemblies().Length).Name("matched").StartArr();
+            int written = 0, total = 0;
+            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (asm.GetName().Name == "mscorlib" || asm.GetName().Name == "System") continue;
+                foreach (var t in SafeTypes(asm))
+                {
+                    if (t == null) continue;
+                    total++;
+                    var fn = t.FullName ?? t.Name;
+                    if (written < max && (filter.Length == 0 || fn.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0))
+                    {
+                        jw.StartObj().Prop("t", fn).Prop("asm", asm.GetName().Name).EndObj();
+                        written++;
+                    }
+                }
+            }
+            jw.EndArr().Prop("typedTotal", total).Prop("written", written).EndObj();
+            return jw.ToString();
         }
 
         public static string LogsJson(int n)
@@ -1172,6 +1202,10 @@ namespace Ramus.Bridge
 
                     case "GET /statics":
                         Copy(res, HttpResponse.Json(Bridge.StaticsJson(req.Query.TryGetValue("type", out var t) ? t : "", Q(req, "max", 200))));
+                        return;
+
+                    case "GET /types":
+                        Copy(res, HttpResponse.Json(Bridge.TypesJson(req.Query.TryGetValue("filter", out var f) ? f : "", Q(req, "max", 500))));
                         return;
 
                     case "GET /logs":
