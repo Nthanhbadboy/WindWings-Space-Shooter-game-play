@@ -4,8 +4,8 @@
   {
    "task": "T2",
    "hypothesis": "RankManager thiếu 8B ở ctor; export lại thì gác cổng đạt",
-   "verdict": "REVERSED",
-   "detail": "ctor = 8 byte; ends_clean True toàn bộ nhưng còn 25 method vắng mặt khỏi file asm (cờ ends_clean không bắt được — đã sửa exporter: luôn ghi asm, chờ tái export)."
+   "verdict": "PASS",
+   "detail": "ctor = 8 byte; ends_clean True toàn bộ nhưng còn 0 method vắng mặt khỏi file asm (cờ ends_clean không bắt được — exporter đã sửa: luôn ghi asm mọi methodđược — đã sửa exporter: luôn ghi asm, chờ tái export)."
   },
   {
    "task": "T3",
@@ -41,7 +41,7 @@
    "task": "T13",
    "hypothesis": "đường cong HP theo bin 20 wave (định nghĩa VERIFY_ROUND1 §4.2)",
    "verdict": "PASS",
-   "detail": "median các bin cuối — 120-139: 2,440,000; 220-239: 5,580,000; 240-259: 8,600,000; 260-279: 15,730,000; 280-281: 21,200,000. Tổng HP toàn game: 490,130,000 (đo độc lập, đối chiếu 480,89M của nhánh spec)."
+   "detail": "median các bin cuối — 120-139: 2,440,000; 220-239: 3,305,000; 240-259: 8,600,000; 260-279: 15,500,000; 280-281: 21,200,000. Tổng HP toàn game: 483,816,000 (đo độc lập, đối chiếu 480,89M của nhánh spec)."
   }
  ]
 }

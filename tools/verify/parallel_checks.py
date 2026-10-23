@@ -69,7 +69,7 @@ def t2():
     verdict("T2", "RankManager thiếu 8B ở ctor; export lại thì gác cổng đạt",
             "PASS" if ok else "REVERSED",
             f"ctor = {ctor['bytes']} byte; ends_clean True toàn bộ nhưng còn "
-            f"{absent_all} method vắng mặt khỏi file asm (cờ ends_clean không bắt "
+            f"{absent_all} method vắng mặt khỏi file asm (cờ ends_clean không bắt được — exporter đã sửa: luôn ghi asm mọi method"
             f"được — đã sửa exporter: luôn ghi asm, chờ tái export).")
 
 
