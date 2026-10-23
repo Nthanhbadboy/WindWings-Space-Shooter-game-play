@@ -470,6 +470,59 @@ quân trong wave boss. Nó là **enemy hộ vệ mặc định của boss**.
 > wave boss nào cũng có 2 turret nhưng **vị trí khác nhau** thì chúng là phần thiết kế màn,
 > không phải thuộc tính boss.
 
+### 3.7 Nhịp độ: **mỗi wave 11,4 s** và **76% roster ra mắt trong 30 wave đầu**
+
+Hai con số quyết định nhịp game, đo trên `waves.json` bản `4539709`.
+
+**a) Thời lượng spawn mỗi wave** — `t = len(enemies) × copies × rate`, lấy **spawner dài nhất**
+trong wave (vì các spawner chạy song song):
+
+| Nhóm | Wave | Median | Mean | Max | Min |
+|---|---:|---:|---:|---:|---:|
+| Campaign | 236 | **11,4 s** | 16,1 s | **108,0 s** | 2,0 s |
+| Cộng dồn | 236 | — | — | **63,5 phút** | — |
+
+Phân bố (11 bin, tổng **236**): **≤ 10 s: 85** · **10–19 s: 107** · 20–29 s: 17 ·
+30–59 s: **12** · 60–69 s: **8** · ≥ 70 s: **7** (đuôi dài = wave có spawner `rate` lớn).
+
+Cộng **6,4 s bay vào** (`y_spawn` 9,6 ÷ `speed` 1,5) ⇒ một wave điển hình
+**≈ 18 s** trước khi tính thời gian bắn hạ.
+
+⚠ **Đánh giá thấp:** **2.373 spawner có `rate = 0`** ⇒ `t = 0`. Nếu `rate = 0` nghĩa là "spawn
+tức thời toàn bộ", thời lượng thật **ngắn hơn**; nếu là "spawn mỗi khung hình", nó **dài hơn**.
+Chưa phân giải được từ dữ liệu.
+
+**b) Đường cong giới thiệu enemy** — wave đầu tiên mỗi prefab xuất hiện:
+
+| Cửa sổ wave | Loại enemy **mới** |
+|---|---:|
+| **0 – 19** | **51** |
+| 20 – 39 | 3 |
+| 40 – 59 | 1 |
+| 60 – 79 | 0 |
+| 80 – 99 | 2 |
+| 100 – 119 | 1 |
+| 120 – 139 | 9 |
+| 140 – 159 | 0 |
+| 160 – 179 | 2 |
+| 180 – 199 | 1 |
+
+⇒ **53 / 70 loại (76%) ra mắt trong 30 wave đầu** = **12,7% đầu campaign**. Chỉ **3 loại** ra mắt
+sau wave 150.
+
+> **Nhận định (mức A):** game **dạy gần hết roster trong 1/8 đầu** rồi khai thác bằng **tổ hợp lại**,
+> không bằng enemy mới. Clone rải enemy mới suốt 236 wave sẽ **lệch nhịp** rõ rệt.
+>
+> **Đã kiểm điều kiện lật ngược:** bỏ `Wave_0000` (42 spawner / 883 quân — không phải wave khởi
+> đầu điển hình) rồi đếm lại: **vẫn 70 · 53 · 76% · 3** — **không đổi số nào**.
+>
+> **Cái giá phải trả khi clone:** 51 loại enemy phải xong **trước** khi làm 200 wave còn lại;
+> 200 wave sau chỉ cần **bố cục lại**, không cần art/AI mới.
+
+**c) Cấu trúc màn trong UI:** **299 stage / 2 chapter** — `Stage_Normal` **199** ·
+`Stage_Combat` **49** · `Stage_MiniBoss` **25** · `Stage_Boss` **26** (`Stage_Behaviour.csv`).
+⚠ **Chưa khớp** với **281 wave** (236 campaign + 45 boss) — xem `DATA_SYNC` §7.24.
+
 ## 4. Map & parallax
 ### 4.1 Map
 

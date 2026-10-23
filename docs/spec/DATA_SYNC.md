@@ -1101,6 +1101,46 @@ của clip ⇒ **không nối được controller → từng clip cụ thể**. 
 
 ---
 
+### 7.24 Bản `4539709`: `formula_traces` — hằng số **bên trong method**, và 299 stage
+
+**a) `datas/formula_traces.json.gz` — 305 method, 43 method đáng đọc trước**
+
+Đây là lần đầu có **hằng số nằm trong thân hàm** (không chỉ float pool): `flow` ghi từng
+`load`/`compare`/`arith` **theo thứ tự địa chỉ**. Bốn method quan trọng nhất:
+
+| Method | Flow đọc được | Đọc ra (mức B) |
+|---|---|---|
+| `Player_Get_Datas.stepLevel(int playerLv)` | `load 0.168` → `cmp 30` → `load 1.0` → `cmp 58` → `load 1.05` → `cmp 118` → `fmul 1.15` → `cmp 248` | **4 bậc cấp 30/58/118/248**, hệ số **0,168 · 1,0 · 1,05 · 1,15** |
+| `Player_Get_Datas.GetMainCannonDamage` | cùng 4 ngưỡng, `0.168` · `0.1764` · `0.1932` · `fadd 1.0` | `base × (1 + k)` với 0,1764 = 0,168×1,05 và 0,1932 = 0,168×1,15 |
+| `Tech_Datas.GetCostUpgrade` | `cmp 8` → `1.0` → `1.0` → `cmp 5` → **`2.55`** → return | hệ số nhân giá **2,55**, có 2 nhánh |
+| `Tech_Datas.NumberTechStats` | `60.0` · `0.2` · `0.2` · `-4.0` · `-0.2` | **60 tech stat**, có phụ phí `0,2` và `−0,2` |
+
+⚠ **Chưa phải công thức:** `flow` là **nguyên liệu theo địa chỉ**; rẽ nhánh chưa đọc nên **thứ tự
+nhân chưa chắc**. Muốn chắc phải đọc `.asm.txt` từng method.
+
+**b) `Player_Get_Datas.GetStartHp` — chỉ có `fadd 1.0`**
+
+Không có hằng số HP nào trong thân hàm ⇒ HP gốc **không nằm trong method này**. `Data_Players`
+(2 instance) chỉ có `id` · `Star` · `Actived` · `Sprite` ⇒ **HP player không có trong 110 class
+đã dump**. Đây là **câu chặn số 1** của `DESIGN_QUESTIONS.md`.
+
+**c) `Stage_Behaviour.csv` — cấu trúc màn**
+
+| Chỉ số | Số |
+|---|---:|
+| Dòng | **299** |
+| Chapter | **2** (`Chap 1`: 229 · `Chap 2`: 55) |
+| `Stage_Normal` | **199** |
+| `Stage_Combat` | **49** |
+| `Stage_MiniBoss` | **25** |
+| `Stage_Boss` | **26** |
+| Cột `stageType` có giá trị | **100 / 299** (giá trị 1 · 2 · 3) |
+
+⚠ **Không có cột `wave`** ⇒ **chưa nối được stage → wave**. 299 stage vs **281 wave** (236 + 45)
+lệch **18** — phải đọc `Parent_Stages` trong `Board_Maps` hoặc `textStageIndex` → `Text`.
+
+---
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |
