@@ -409,20 +409,49 @@ BepInEx 6: `BasePlugin` (`Runtimes/Unity/BepInEx.Unity.IL2CPP/BasePlugin.cs`) c�
 
 ### 7.4 Build thật, không phải "đã kiểm cú pháp"
 
-`.github/workflows/bridge-build.yml` (+ `.github/scripts/build-bridge.sh`) compile **4 target**
-và **fail job nếu bất kỳ target nào lỗi**:
+`.github/scripts/build-bridge.sh` compile **4 target** với DLL loader tải thật từ GitHub
+Release, và **job đỏ nếu bất kỳ target nào lỗi** (exit code = số target fail).
+
+**Lần chạy `39919818061` — kết quả thật, comment treo trên PR #12:**
+
+```
+[build] PASS  core (netstandard2.1, Unity stubs)      33.280 B
+[build] PASS  BepInEx 5 (netstandard2.1)              33.792 B
+[build] PASS  BepInEx 6 IL2CPP (net6.0)               34.304 B
+[build] PASS  MelonLoader (net6.0)                    34.816 B
+```
+
+sha256 (đọc từ comment CI, không phải tự tính lại):
+
+```
+ae9c723b59761e1aca86131c96325772704e963bc8b50c0c6028b90150b59935  core
+7011736e5dab7e25f1418f62054d6477889d8a2f0ba571de1e0304cab66acb45  bepinex6
+2d0d9731b6ac1dddc8c16d88682fb8a5007d9b6d8f3dd5153b14e37dea9fb3e8  melon
+76ac77ebda6612f66cafba69d1c3f48acd24aaf94dc19e3c6b17b31df34ea365  bepinex5
+```
 
 | Target | Tham chiếu | TFM |
 |---|---|---|
-| core | `BuildCheck/UnityStubs.cs` | netstandard2.1 |
-| BepInEx 6 IL2CPP | `BepInEx-Unity.IL2CPP-win-x64-6.0.0-pre.2.zip` (thật) | net6.0 |
-| MelonLoader | `MelonLoader.x64.zip` v0.7.3 (thật) | net6.0 |
-| BepInEx 5 | `BepInEx_win_x64_5.4.23.5.zip` (thật) | netstandard2.1 |
+| core | stub `UnityEngine.dll` (identity 0.0.0.0) | netstandard2.1 |
+| BepInEx 6 IL2CPP | `BepInEx-Unity.IL2CPP-win-x64-6.0.0-pre.2.zip` | net6.0 |
+| MelonLoader | `MelonLoader.x64.zip` v0.7.3 | net6.0 |
+| BepInEx 5 | `BepInEx_win_x64_5.4.23.5.zip` | netstandard2.1 |
 
-DLL được đẩy lên artifact `ramus-bridge-dlls-<run_id>`. Job `probe` đặt `needs: [preflight, build]`
-⇒ build hỏng thì **không** có phiên Ramus nào được tạo.
+#### Bốn lỗi compile thật đã sửa (mỗi lỗi là một log CI, không phải suy đoán)
 
-> `BuildCheck/UnityStubs.cs` chỉ là stub lúc compile — nó chứng minh bridge type-check đúng,
+| # | Lỗi từ log | Nguyên nhân thật | Sửa |
+|---|---|---|---|
+| 1 | `find: '.ci/refs/bep6/dotnet': Permission denied` | zip BepInEx có thư mục mode hạn chế, `set -e` giết step | `chmod -R u+rwX` sau khi giải nén (`fetch-loader-refs.sh`) |
+| 2 | `NETSDK1005: … doesn't have a target for 'net6.0'` | `-p:TargetFramework` chỉ áp **sau** restore | đổi sang `-p:Tfm=`, TFM tham gia restore |
+| 3 | `CS0012: MonoBehaviour … add a reference to 'UnityEngine, Version=0.0.0.0'` | stub chỉ là **file .cs compile kèm** ⇒ không có assembly identity | `BuildCheck/UnityStubs.csproj` build ra **UnityEngine.dll** 0.0.0.0, `Reference` thật |
+| 3b | `CS0050: return type 'HttpResponse' is less accessible` | method `public`, kiểu trả về `internal` | `Screenshot()` → `internal` |
+| 4 | `CS0518: System.Object is not defined` (**291 lỗi**) | zip BepInEx 6 chứa **cả runtime .NET** (`dotnet/`); flatten hút `mscorlib`/`System.*` vào | lọc bỏ `dotnet/*`, `mscorlib`, `netstandard`, `System.*`, `Microsoft.*` |
+
+> Nhận định: đây là toàn bộ những gì "đọc source bằng mắt" ở vòng trước đã bỏ sót.
+> Không có log CI nào thì cả 4 lỗi này vẫn nằm nguyên trong repo và người dùng sẽ
+> gặp chúng khi tự build.
+
+> `UnityEngine.dll` stub chỉ dùng lúc compile — nó chứng minh bridge type-check đúng,
 > **không** chứng minh khớp `UnityEngine` thật của game. Muốn chắc thì build với
 > `-p:UnityManagedDir=<game>_Data/Managed` trên máy có bản Unity đó.
 
@@ -430,11 +459,14 @@ DLL được đẩy lên artifact `ramus-bridge-dlls-<run_id>`. Job `probe` đ�
 
 1. **Bridge phải nằm trong bản được cài.** CI không patch APK. Hoặc build plugin vào bản test,
    hoặc dùng FusionCore/NextBep nạp plugin từ storage của launcher (khi đó `allow_no_bridge: true`).
+   Lưu ý game là **IL2CPP**: loader cần `libil2cpp` đã patch, nên "bỏ DLL vào `Mods/`" **không đủ**
+   nếu bản cài chưa qua patcher của loader.
 2. **Thiết bị phải chạy được app.** Cần bằng chứng `Displayed <package>` + `Unity` tag;
    nếu là arm64-only thì cần thiết bị/emulator arm64 (Ramus hiện x86_64).
 
-Bước gate mới **dừng trước khi tạo phiên Ramus** nếu APK không có `RamusBridge.dll`,
-để không đốt 15 phút credential cho một kết luận đã biết trước.
+Gate dừng **trước khi tạo phiên Ramus** nếu APK không có `RamusBridge.dll`, để không đốt
+15 phút credential cho một kết luận đã biết trước. Trạng thái hiện tại của repo đúng là
+trạng thái này: `bridge: no` ⇒ `probe` báo *skipped* kèm lý do, build vẫn xanh.
 
 ## 8. Giới hạn đã biết
 
