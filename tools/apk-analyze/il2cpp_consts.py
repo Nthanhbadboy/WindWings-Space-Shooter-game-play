@@ -456,6 +456,12 @@ def main() -> int:
     total = sum(len(v) for v in wanted.values())
     print(f"methods in target classes: {total} across {len(wanted)} classes")
 
+    # Độ dài method = khoảng tới method KẾ TIẾP trong toàn bộ dump (không chỉ
+    # cùng class). Bản cũ cap cứng 0x1200 (4.608 byte) làm .cctor và mọi method
+    # dài bị cắt cụt giữa chừng mà không có dấu hiệu nào — các kết luận âm tính
+    # ("không thấy lệnh ghi X") dựa trên asm đó đều vô hiệu. Xem 19/28.
+    all_offsets = sorted({m[3] for m in methods if m[3] > 0})
+
     os.makedirs(OUT_RAW, exist_ok=True)
     summary = {}
     with open(so_path, "rb") as f:
@@ -466,8 +472,10 @@ def main() -> int:
             out = []
             asm_out = []
             for i, (name, offset, rva, sig) in enumerate(entries):
-                nxt = offsets[i + 1] if i + 1 < len(offsets) else offset + 0x400
-                size = min(max(nxt - offset, 8), 0x1200)     # cap 4.5 KB / method
+                import bisect as _bisect
+                j = _bisect.bisect_right(all_offsets, offset)
+                nxt = all_offsets[j] if j < len(all_offsets) else offset + 0x20000
+                size = min(max(nxt - offset, 8), 0x20000)   # cap 128 KB / method
                 if offset <= 0 or size <= 0:
                     continue
                 consts, lines = constants_in(offset, size, blob, md or 0xB7, segs,
@@ -481,8 +489,11 @@ def main() -> int:
                             "getter_value": gvalue,
                             "rva": hex(rva), "bytes": size, "pure_getter": pure,
                             "getter_kind": gkind,
+                            "size_capped": size >= 0x20000,
                             "constants": consts})
-                if consts:
+                # Ghi asm cả cho method không có hằng số nhưng có lời gọi:
+                # đồ thị gọi (formula_trace) cần chúng, bỏ lặng lẽ là mất mắt nối.
+                if consts or any(" bl " in f" {l} " or l.strip().startswith("bl ") for l in lines):
                     asm_out.append(f";;; {name}  {sig}")
                     asm_out += [f"    {l}" for l in lines]
                     asm_out.append("")
