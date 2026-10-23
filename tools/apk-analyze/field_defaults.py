@@ -207,6 +207,9 @@ def main() -> int:
     for probe in (2389, 2388, 2390):
         if probe < len(fdv_fields):
             print(f"  fdv entry #{probe}: field={index2name.get(fdv_fields[probe])!r}")
+    if 2389 < len(types):
+        print(f"  type #2389: {types[2389][0]!r} (fields start={types[2389][1]} "
+              f"count={types[2389][2]})")
     types_by_name = dump_field_types(dump_path) if os.path.isfile(dump_path) else {}
     print(f"dump.cs field types: {len(types_by_name)}; mapped indices: {len(index2name)}")
 
