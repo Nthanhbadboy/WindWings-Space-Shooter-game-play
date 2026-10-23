@@ -146,7 +146,30 @@ và khớp 981/981 với nhau**, nhưng **≥126 dòng là mô hình ở màn ch
 xuất hiện trong trận. Số enemy "dùng được" nằm trong khoảng **777–855** cho tới khi đối chiếu
 `Board_FightBoss` bằng runtime. Đừng trích "981 enemy" như số tuyệt đối.
 
-## 7. Còn thiếu
+## 8. `spawnType` đã giải mã + số 45.659 kiểm lại độc lập
+
+Đếm trực tiếp trên `Call_Data.jsonl.gz` đầy đủ (23.757 dòng):
+
+| `spawnType` | Số | % | Nhãn trong `waves.json` | % trong wave |
+|---:|---:|---:|---|---:|
+| 2 | 16.498 | 69,4% | `point_range` | 68,0% |
+| 0 | 4.199 | 17,7% | `point` | 18,8% |
+| 1 | 1.688 | 7,1% | `path` | 7,8% |
+| 6 | 686 | 2,9% | `boss` | 2,9% |
+| 5 | 686 | 2,9% | `special` | 2,5% |
+
+⇒ **`0 = point · 1 = path · 2 = point_range · 5 = special · 6 = boss`** (mức A về phân bố;
+gán nhãn theo khớp tỉ lệ với `waves.json`, sai số ≤1,4 điểm %).
+
+Hai hệ quả quan trọng:
+
+- **Tổng `len(listPrefabEnemies)` = 45.659** — đây là số **lượt xuất hiện** (entry), khớp con số
+  nhánh spec tính từ `waves.json`. Không phải số enemy khác nhau.
+- `number = 0` và `editType = 0` ở **100% (23.757/23.757)** ⇒ số lượng mỗi lượt spawn **không lưu
+  trong prefab**; nó suy ra từ độ dài list + runtime. Câu hỏi "một entry sinh mấy con" **không trả lời
+  được bằng dữ liệu serialize** — phải đọc code hoặc quan sát runtime.
+
+## 9. Còn thiếu
 
 | # | Thứ | Trạng thái | Cách làm tiếp |
 |---:|---|---|---|

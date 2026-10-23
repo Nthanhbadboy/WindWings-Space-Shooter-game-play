@@ -64,6 +64,14 @@ không biết **màn nào** biến mất giữa hai lần chạy (16 màn chỉ 
 | ENEMY_BEHAVIOUR.md tính trên 800 dòng | Bản đủ 981: **tỉ lệ gần như không đổi**, số tuyệt đối thiếu ~18% (xem `25-enemy-behaviour.md` §6) |
 | "Step REA chiếm 70% thời gian" | Đã tắt mặc định → run **11 phút → 4 phút 01** (đo run `39879117958`) |
 
+## 3c. Đọc thêm 3 commit mới của họ (`d8e61c2`, `d303cc0`, `a6a4081`, 00:47)
+
+- Họ **tự sửa** đúng ba điểm mục 3b (`Enemy_Physics` rỗng, `uiScript → Enemy_Display`,
+  981 là số bản ghi) và ghi rõ "tôi đã sai" — hai nhánh độc lập cho **cùng kết quả**, tăng độ tin.
+- Họ giải mã `spawnType` bằng khớp tỉ lệ với `waves.json`. Mình **đếm lại độc lập** trên
+  `Call_Data` đầy đủ: khớp từng con số (16.498/4.199/1.688/686/686, tổng 45.659) → đã ghi vào
+  `25-enemy-behaviour.md` §8 kèm hệ quả `number = 0` ở 100%.
+
 ## 4. Điều kiện lật ngược
 
 - Nếu `Enemy_Physics` export ra mà **phần lớn field rỗng** (như `Spawner.dataScript` = 0), thì
