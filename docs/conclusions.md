@@ -45,6 +45,8 @@
 | 18 | **Số quân đã chốt**: `len(enemies) × copies` cộng dồn = **45.659 quân thật** (22.475 lượt khai báo trong `waves.json` của mình — nhánh spec đếm 22.483, lệch 8 do khoá dedupe; tích cuối khớp tuyệt đối). **Enum `spawnType` đã giải mã**: `0=point · 1=path · 2=point_range · 5=special · 6=boss` (16.498/4.199/1.688/686/686 trên 23.757 spawner); tổng lượt xuất hiện **45.659**; `number`/`editType` = 0 ở 100% → số con mỗi lượt **không** nằm trong prefab | **A** (phân bố) / **B** (gán nhãn) | `25-enemy-behaviour.md` §8 | đếm lại `Call_Data.jsonl.gz` |
 | 17b | **`Animator` 5.792 instance đã nối**: prefab gốc 5.686/5.792 (98,2%), tên controller 5.603/5.792; `ParticleSystem` **4.845** đã ghi `path_id` (chưa có chi tiết module). Số instance khớp độc lập với nhánh spec đếm | **A** | `26-native-animation.md`, `datas/animator_map.csv.gz`, `raw/typetrees/native-types.jsonl.gz` | chạy `tools/apk-analyze/animator_joins.py` |
 | 18b | **Truy vết công thức**: 305 method có flow hằng số theo địa chỉ + đích `bl` đã giải tên (200 bl); đọc thử `GetWingCannonDamage`: hệ số theo ngưỡng 4/58/118/248 (0.168 → ×1.05 → ×1.15) rồi `+1.0` | **A** (thứ tự lệnh) / **B** (diễn giải ngưỡng) | `28-formula-traces.md`, `datas/formula_traces.json.gz` | chạy `tools/apk-analyze/formula_trace.py` |
+| 19 | **`ParticleSystem` 4.845 đã có tóm tắt module**: thời lượng median 5,0 s, looping 70,7%, playOnAwake 99,3% | **A** | `29-particle-systems.md`, `raw/typetrees/native-types.jsonl.gz` | đọc lại mục ParticleSystem trong native-types |
+| 19b | **Sprite/Texture đã có kích thước**: 2.816/2.885 dòng `sprites.csv` có `width×height` (từ ảnh export thật) | **A** | `datas/sprites.csv`, `04-asset-manifest.csv` | so `width/height` với PNG trong bản export |
 | 14 | Damage/giá/thưởng suy ra từ field serialize | **B** | `docs/spec/COMBAT.md`, `ECONOMY.md` | so với hằng số ở #12 |
 | 15 | Nhận định "game dễ bypass", "nên dùng Spine"… | **C** | `PHAN_TICH_WINDWINGS_APK.md` | chỉ là đánh giá, không phải số |
 
@@ -54,13 +56,13 @@
 |---|---|---|
 | `Player_Get_Datas`, `Droid_Data_Balance`, `Tech_Datas`, `Stage_Get_Datas`, `Map_Get_Datas`, `Enemy_Data_Balance`, `Device_Get_Data`, `GameDatas` | **0 instance** trong `data.unity3d` → giá trị nằm trong thân hàm IL2CPP | `19-il2cpp-constants.md` + `raw/il2cpp-consts/*.asm.txt` (đang làm) |
 | Curve keyframe của 791 `AnimationClip` | **cả typetree lẫn UnityPy reader đều cho 0 keyframe** (đã thử, `27-anim-curves.md`) — curve nằm trong streamed clip nén | giải mã `m_StreamedClip` thủ công, hoặc dựng lại bằng nhịp ở `26-native-animation.md` |
-| Chi tiết module `ParticleSystem` (4.845) | mới ghi `path_id`, typetree ~30 module rất nặng | xuất tóm tắt vài module chính (main/emission/shape) |
+| Curve chi tiết trong module ParticleSystem + nối PS → prefab | mới ở mức scalar/module | mở rộng `animator_joins` cho ParticleSystem |
 | Công thức đầy đủ (thứ tự nhân, clamp, nội suy) | cần đọc control flow, không chỉ hằng số | Ghidra/IDA trên `libil2cpp.so` (đã có trong artifact) |
 | Ý nghĩa từng hằng số ở #12 | capstone chỉ thấy số, không thấy phép tính | **Đã bóc được giá trị float thật từ literal pool** (#12b); còn thiếu *thứ tự nhân/chia* → đọc `raw/il2cpp-consts/*.asm.txt` hoặc Ghidra |
 | Layout runtime thực tế | prefab ≠ runtime (layout group, safe area) | screenshot + so với `raw/ui/` |
 | `ui_layout.py` bỏ sót màn | lần chạy mới chỉ ghi 630/6.580 file, mất 16 màn | đã có `ui_index.py` đọc **hết** file trên đĩa; cần sửa `ui_layout.py` để lần sau ghi đủ |
 | `orthographicSize` của camera | chưa dump camera runtime | prefab Scene/RenderSettings — chưa bóc |
-| Hiệu ứng/particle cụ thể | `ParticleSystem` chưa dump | mở rộng `unity_data.py` sang ParticleSystem |
+| Hiệu ứng/particle cụ thể | đã có tóm tắt 4.845 hệ (`29-particle-systems.md`), chưa có curve | đọc curve trong module khi cần dựng FX |
 | Logic PvP/Arena server | nằm ở Firebase, **không có trong APK** | không lấy được |
 | Spine animation curve | **đã xong** — `23-spine-anim.md` + `datas/spine_anim.json.gz` (12.274 keyframe) | còn thiếu `timeScale` runtime |
 

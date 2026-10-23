@@ -90,6 +90,13 @@ không biết **màn nào** biến mất giữa hai lần chạy (16 màn chỉ 
   `damageRocket` 600, `damageBulletArea` 1200…) — **khớp về chất**, số đếm khác do cách tính.
 - `animator_map` của mình họ cũng đối chiếu: 5.792 dòng / 494 prefab gốc / 96,7% có tên controller.
 
+## 3f. Đọc thêm 2 commit (`662e2b27`, `88579a3f`)
+
+- **HP campaign = 0**: họ nói `StartHealthPoint = 0` ở 514/981 — mình đếm lại: **đúng 514/981 (52,4%)**,
+  còn lại tối đa 10.000.000. Độ khó campaign do công thức runtime, không nằm ở prefab.
+- Mục mở "width × height sprite" và "ParticleSystem" trong sổ của họ: phía mình đã đóng cả hai
+  (`sprites.csv` 2.816/2.885 có kích thước; `29-particle-systems.md`).
+
 ## 4. Điều kiện lật ngược
 
 - Nếu `Enemy_Physics` export ra mà **phần lớn field rỗng** (như `Spawner.dataScript` = 0), thì

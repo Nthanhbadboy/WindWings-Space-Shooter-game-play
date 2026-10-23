@@ -14,6 +14,7 @@ IL2CPP, metadata v31) để làm tài liệu tham chiếu cho bản clone.
 | Hằng số trong code máy | [`docs/apk-analysis/19-il2cpp-constants.md`](docs/apk-analysis/19-il2cpp-constants.md) |
 | Layout UI dạng số | [`docs/apk-analysis/20-ui-layout.md`](docs/apk-analysis/20-ui-layout.md) + [`24-ui-screens.md`](docs/apk-analysis/24-ui-screens.md) (114 màn, text/key) |
 | **Spine**: rig, animation, keyframe, event | [`docs/apk-analysis/22-spine-rigs.md`](docs/apk-analysis/22-spine-rigs.md) + [`23-spine-anim.md`](docs/apk-analysis/23-spine-anim.md) |
+| ParticleSystem (4.845 hệ) | [`docs/apk-analysis/29-particle-systems.md`](docs/apk-analysis/29-particle-systems.md) |
 | Truy vết công thức trong thân hàm | [`docs/apk-analysis/28-formula-traces.md`](docs/apk-analysis/28-formula-traces.md) |
 | Animation gốc Unity (clip/controller) | [`docs/apk-analysis/26-native-animation.md`](docs/apk-analysis/26-native-animation.md) + [`27-anim-curves.md`](docs/apk-analysis/27-anim-curves.md) |
 | Lớp hành vi enemy/boss + cây Transform | [`docs/apk-analysis/25-enemy-behaviour.md`](docs/apk-analysis/25-enemy-behaviour.md) |
