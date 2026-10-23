@@ -53,7 +53,12 @@ Tôi quét **cả 17 class**, so **mọi method** trong `*.json` với khối `;
 
 ```
 Player_Ingame.get_IsAttacking   rva 0x14b279c   32 B   → KHÔNG có trong asm
+Player_Ingame.set_IsAttacking   rva 0x14bb8f4   12 B   → CÓ:  and w8,w1,#1 ; strb w8,[x0,#0x2c]
 ```
+
+⇒ **Cứu được một nửa:** `setter` còn nên biết **field `IsAttacking` @ `0x2c`**. Getter 32 B (dài hơn
+một `ldrb` thuần ~12 B) ⇒ nhiều khả năng có **thêm điều kiện** (vd. `&& !isDead`); phần điều kiện đó
+**mất**. Bản clone: `IsAttacking = field@0x2c` là đủ để chạy, nhưng **đừng** giả định nó là bool thuần.
 
 Và nó **đứng một mình**: không method nào của `Player_Ingame` nằm trong **±0x60** quanh
 `0x14b279c`. Nghĩa là đây **không phải cụt đuôi** mà là **lỗ hổng giữa file** — đúng loại mà cờ 2

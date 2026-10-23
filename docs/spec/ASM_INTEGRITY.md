@@ -217,7 +217,7 @@ giàu `*.json` (hằng số/RVA), **không** export lại thân hàm. Nghĩa là
 trước**, chỉ là bản trước tôi **chưa kiểm** (tôi tự ghi ở §6 là "chưa kiểm"). Nay đã kiểm.
 
 25 method vắng mặt nằm ở **15/17 class**; **24/25 là stub 8 B**, **1/25 là 32 B**
-(`Player_Ingame.get_IsAttacking`). ⇒ **Cờ 4 bắt được một lỗ hổng mà cờ 2 không thấy** — đúng mục đích
+(`Player_Ingame.get_IsAttacking` — `set_IsAttacking` **còn**, nên cứu được field `@0x2c`). ⇒ **Cờ 4 bắt được một lỗ hổng mà cờ 2 không thấy** — đúng mục đích
 tôi đã ghi ở §6 (mục 2) là "chưa kiểm". Nay **đã kiểm**.
 
 ---

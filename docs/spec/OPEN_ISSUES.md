@@ -51,7 +51,7 @@
 | E1 | Asm **từng** bị cắt cụt 11/12 file (`8871068a`) → `6109008c` hết cụt (`size_capped` 0/425). **`68ce86a7`: 25 method vắng hẳn khỏi asm** (24 stub 8 B + 1 method 32 B) | **lỗi công cụ** | A | **cờ 4** ở `ASM_INTEGRITY` §3; `RankManager` FAIL là **thật nhưng vô hại** |
 | E2 | ~~`ships.json` thiếu 13 dòng~~ ✅ **ĐÓNG — KHÔNG phải lỗi công cụ: tôi đọc sai** `Data_Players` (class dùng chung tàu + drone) | **tôi đọc sai** | **A** | **25 tàu**, không phải 38 |
 | E3 | `RankManager.asm` **thiếu 8 B** (`ctor` = `ret` rỗng) — cờ gác cổng bắt được, **vẫn còn ở `68ce86a7`** | **lỗi công cụ** | A | **không mất dữ liệu**; FAIL đúng, không phải dương tính giả |
-| E4 | **`Player_Ingame.get_IsAttacking` 32 B mất hẳn** khỏi `asm.txt` — method **duy nhất không phải stub** trong 25 method vắng mặt | **lỗi công cụ** | B | `IsAttacking` phải **suy từ trạng thái** trong bản clone |
+| E4 | **`Player_Ingame.get_IsAttacking` 32 B mất hẳn** khỏi `asm.txt` — method **duy nhất không phải stub** trong 25 method vắng mặt. `set_IsAttacking` **còn** ⇒ field @ **`0x2c`** | **lỗi công cụ** | C | dùng field `@0x2c` cho `IsAttacking`; **điều kiện phụ** (nếu có) trong getter thì mất |
 
 ---
 
