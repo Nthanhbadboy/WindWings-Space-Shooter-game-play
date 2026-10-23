@@ -52,6 +52,18 @@ Sửa `.github/workflows/analyze-apk.yml`:
 Sửa `tools/apk-analyze/ui_layout.py`: ghi `_skipped.csv` (class × lý do bỏ) — trước đây chỉ có tổng,
 không biết **màn nào** biến mất giữa hai lần chạy (16 màn chỉ còn ở file cũ, xem `24-ui-screens.md`).
 
+## 3b. Kết quả kiểm lại sau khi export (lần chạy `d84ea72`)
+
+| Ý của nhánh spec | Kết quả thật |
+|---|---|
+| "`Enemy_Physics` 981, thêm 1 dòng là mở 100% lớp hành vi" | Export **được 981 dòng**, nhưng class chỉ có **2 field** và **0/981** dòng có giá trị ⇒ **giả thuyết sai**: va chạm nằm ở `BoxCollider2D` runtime |
+| "`uiScript` → `Enemy_UI`" | Thực tế → **`Enemy_Display`**; class `Enemy_UI` **không tồn tại** |
+| "`Call_Point` có thể là bản đầy đủ của `Call_Data`" | `Call_Point.dataScript → Call_Data` (23.757/23.757) ⇒ là **lớp bọc**, không phải bảng mới |
+| "`Transform` 228.432 object mở 5 mắt ghép" | **Đúng**: xuất đủ **228.432** dòng, 2.089 root; mở **4/5 mắt** lên 100% (458 súng · 251 hitbox · 558 `parentRotate` · 1.372 đường bay). Mắt còn lại `Stage_Behaviour.bossObj` **không** phải vấn đề Transform |
+| "981 enemy" | 981 dòng khớp 3 bảng, nhưng **204 nằm dưới prefab `Board_*`** (126 ở màn chọn boss) ⇒ enemy trong trận ≈ 777–855 |
+| ENEMY_BEHAVIOUR.md tính trên 800 dòng | Bản đủ 981: **tỉ lệ gần như không đổi**, số tuyệt đối thiếu ~18% (xem `25-enemy-behaviour.md` §6) |
+| "Step REA chiếm 70% thời gian" | Đã tắt mặc định → run **11 phút → 4 phút 01** (đo run `39879117958`) |
+
 ## 4. Điều kiện lật ngược
 
 - Nếu `Enemy_Physics` export ra mà **phần lớn field rỗng** (như `Spawner.dataScript` = 0), thì

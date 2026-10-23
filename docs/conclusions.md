@@ -20,7 +20,7 @@
 | 3 | 25 tàu (10001–10024 + 10999), 13 drone, 46 wave-boss, 6 item | A | `14-*.csv`, `datas/*.json` | `datas/validate.py` |
 | 4 | 1.416 key × 19 ngôn ngữ, có tiếng Việt | A | `12-localization.csv` | đếm dòng CSV |
 | 5 | 170 product IAP (99 non-consumable + 71 consumable) | A | `13-iap-products.csv` | `datas/iap_products.json` |
-| 6 | 981 `Enemy_Datas`, HP serialize 0–10.000.000 | A | `15-enemy-hp.csv` | `reverse-engineering/raw/typetrees/Enemy_Datas.jsonl.gz` |
+| 6 | 981 `Enemy_Datas`, HP serialize 0–10.000.000 — **nhưng ≥126 dòng thuộc màn chọn boss**, enemy "trong trận" ≈ 777–855 (mức B cho phần này) | A (số dòng) / B (số enemy dùng được) | `15-enemy-hp.csv` | `reverse-engineering/raw/typetrees/Enemy_Datas.jsonl.gz` |
 | 7 | Boss chương 1 = idWave 7001–7022, chương 2 = 9001–9024 | A | `14-bosses.csv` | cùng file |
 | 8 | 282 wave, ~11k spawner, enemy prefab theo tên thật | A | `datas/waves.json` | đọc `raw/typetrees/Call_Data.jsonl.gz` |
 | 9 | 458 súng, damage 40–1200 | A | `Gun_Attack.csv` | `raw/typetrees/Gun_Attack.jsonl.gz` |

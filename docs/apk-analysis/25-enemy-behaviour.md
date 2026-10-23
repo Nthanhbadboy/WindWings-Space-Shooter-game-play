@@ -98,7 +98,55 @@ Ví dụ root nhận được: `Boss-37006`, `Wave_0005`, `Board_SelectBoss`, `B
 Súng trong `Board_SelectBoss`/`Board_FightBoss` là **súng preview trên UI**, không phải súng
 trong trận — khi thống kê theo prefab phải loại hai board này ra.
 
-## 6. Còn thiếu
+## 6. Số của nhánh spec tính trên **800/981** — bảng đầy đủ ở đây
+
+`docs/spec/ENEMY_BEHAVIOUR.md` (nhánh `20330d0e`) tính phân bố tốc độ trên **800 dòng**
+(vì CSV bị cap 800 lúc đó). Bản đầy đủ **981 dòng**:
+
+| Chỉ số | Nhánh spec (800) | Bản đủ (981) |
+|---|---:|---:|
+| tốc độ `listSpeeds[0]` = **5,0** | 473 (59,1%) | **562 (57,3%)** |
+| = 1,0 | 97 | **123** |
+| = 20,0 | 87 (10,9%) | **118 (12,0%)** |
+| = 3,5 | 61 | **83** |
+| = 30,0 | 8 | **8** (không đổi) |
+| median / min / max | 5,0 / 0,2 / 30,0 | **5,0 / 0,2 / 30,0** (không đổi) |
+| `isTurret` | 95 (11,9%) | **112 (11,4%)** |
+| `facingMove` | 775 | **949 (96,7%)** |
+| `fixedAngle` | 13 | **19** |
+| đổi tốc giữa đường | 104 | **137 (14,0%)** |
+| `border` = 15/−10/10/−15 | 799 | **841** (còn 139 dùng `z = −25`, 1 dòng `25/−20/20/−25`) |
+
+⇒ **Tỉ lệ gần như không đổi, số tuyệt đối thiếu ~18%**. Kết luận thiết kế của họ
+(nền 3,5 / boss 5,0 / vài con 20–30) **vẫn đúng**.
+
+Nhóm theo **prefab gốc** (dùng `transform-tree`, không dùng chuỗi `_gameobject` ~38%):
+
+| nhóm | n | min | median | max |
+|---|---:|---:|---:|---:|
+| `Boss-*` | **318** (họ báo 170) | 0,2 | 5,0 | 20,0 |
+| `Wave_*` | **288** (họ báo 204) | 1,0 | 3,5 | 30,0 |
+| `Board_SelectBoss` | 126 | 0,8 | 5,0 | 20,0 |
+| `Board_FightBoss` | 70 | 5,0 | 5,0 | 5,0 |
+| prefab lẻ khác | 171 | 0,8 | 5,0 | 20,0 |
+
+### ⚠ 981 không phải "981 enemy trong trận"
+
+| Nơi chứa `Enemy_Controller` | Số |
+|---|---:|
+| `Boss-*` | 318 |
+| `Wave_*` | 288 |
+| `Board_SelectBoss` (màn **chọn** boss — mô hình trưng bày) | **126** |
+| `Board_FightBoss` (màn đánh boss — nhiều khả năng là enemy thật) | 70 |
+| `Board_Players` + `Board_Maps` | 8 |
+| prefab lẻ khác | 171 |
+
+**Kết luận tạm thời (mức B):** `Enemy_Datas` / `Enemy_Health` / `Enemy_Controller` đều **981 dòng
+và khớp 981/981 với nhau**, nhưng **≥126 dòng là mô hình ở màn chọn boss**, không phải enemy
+xuất hiện trong trận. Số enemy "dùng được" nằm trong khoảng **777–855** cho tới khi đối chiếu
+`Board_FightBoss` bằng runtime. Đừng trích "981 enemy" như số tuyệt đối.
+
+## 7. Còn thiếu
 
 | # | Thứ | Trạng thái | Cách làm tiếp |
 |---:|---|---|---|
