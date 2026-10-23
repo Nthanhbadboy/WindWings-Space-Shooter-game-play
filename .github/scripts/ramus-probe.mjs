@@ -313,6 +313,24 @@ function sessionStatus() {
   }
 }
 
+/**
+ * `ramus snapshot --raw` may return the XML bare or wrapped in JSON with escaped
+ * quotes. The first version only matched bare XML, so every report said
+ * "packages: —" even when the tree named the foreground package.
+ */
+function unwrapXml(raw) {
+  const text = String(raw || '');
+  try {
+    const d = JSON.parse(text);
+    for (const key of ['xml', 'raw', 'ui', 'tree', 'snapshot', 'data']) {
+      if (typeof d[key] === 'string') return d[key];
+    }
+    if (typeof d === 'string') return d;
+  } catch { /* not JSON */ }
+  // Escaped XML inside a JSON-ish blob: undo the escaping and keep going.
+  return text.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\t/g, '\t');
+}
+
 function snapshotUi(tag) {
   const r = ramus(['snapshot'], { timeout: 60000 });
   if (r.ok && r.stdout) {
@@ -334,11 +352,18 @@ function snapshotUi(tag) {
   const raw = ramus(['snapshot', '--raw'], { timeout: 60000 });
   if (raw.ok && raw.stdout) {
     writeFileSync(path.join(OUT, `ui-${tag}.xml`), raw.stdout);
-    const pkgs = [...new Set([...raw.stdout.matchAll(/package="([^"]+)"/g)].map((m) => m[1]))];
-    const texts = [...new Set([...raw.stdout.matchAll(/text="([^"]+)"/g)].map((m) => m[1]))]
+    const xml = unwrapXml(raw.stdout);
+    const pkgs = [...new Set([...xml.matchAll(/package="([^"]+)"/g)].map((m) => m[1]))];
+    const texts = [...new Set([...xml.matchAll(/text="([^"]+)"/g)].map((m) => m[1]))]
       .filter((t) => t.trim()).slice(0, 12);
     result.ui = result.ui || {};
-    result.ui[tag] = Object.assign(result.ui[tag] || { bytes: 0 }, { packages: pkgs, texts });
+    result.ui[tag] = Object.assign(result.ui[tag] || { bytes: 0 }, {
+      packages: pkgs,
+      texts,
+      // The CLI may answer with JSON, exactly like `logcat` did. Keeping the head
+      // means a future format change is visible instead of silently empty.
+      head: raw.stdout.slice(0, 300).replace(/\s+/g, ' '),
+    });
   }
   return r.ok;
 }
@@ -675,12 +700,10 @@ function renderReport(r) {
     }
 
     if (r.sessionStatus) {
-      const ss = r.sessionStatus;
-      const brief = ss.session || ss.device || ss.app || ss;
-      lines.push('<details><summary>session status</summary>');
+      lines.push('<details><summary>session status (full)</summary>');
       lines.push('');
       lines.push('```json');
-      lines.push(JSON.stringify(brief, null, 2).slice(0, 1500));
+      lines.push(JSON.stringify(r.sessionStatus, null, 2).slice(0, 1800));
       lines.push('```');
       lines.push('</details>');
       lines.push('');

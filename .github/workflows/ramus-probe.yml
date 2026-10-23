@@ -700,6 +700,16 @@ jobs:
           if [ "${STRICT:-true}" != "false" ]; then args+=(--strict); fi
           node .github/scripts/ramus-probe.mjs "${args[@]}"
 
+      - name: Analyse screenshots
+        if: always()
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          [ -d "$PROBE_OUT" ] || exit 0
+          python3 -m pip install --quiet --disable-pip-version-check pillow || true
+          chmod +x .github/scripts/analyze-screens.py
+          python3 .github/scripts/analyze-screens.py "$PROBE_OUT" | tee "$PROBE_OUT/screen-analysis.txt"
+
       - name: Dump main/crash buffers again (key mode)
         if: env.RAMUS_MODE == 'key' && steps.gate.outputs.skip != 'true'
         continue-on-error: true
@@ -778,6 +788,53 @@ jobs:
               echo
               echo '```'
               cat "$PROBE_OUT/apk-inventory.txt"
+              echo '```'
+              echo
+              echo "</details>"
+            fi
+
+            if [ -f "$PROBE_OUT/apk-inventory.txt" ]; then
+              echo
+              echo "### size vs trial limit"
+              echo
+              echo '```'
+              printf 'base.apk      %s bytes\n' "$(stat -c%s .ci/apk/base.apk 2>/dev/null || echo '?')"
+              printf 'trial limit   %s MB\n' "$TRIAL_APK_MAX_MB"
+              printf 'verdict       %s\n' "$( \
+                if [ "$(stat -c%s .ci/apk/base.apk 2>/dev/null || echo 0)" -le $((TRIAL_APK_MAX_MB * 1000000)) ]; then \
+                  echo 'within the limit — size cannot be the cause of a launch failure'; \
+                else echo 'OVER the limit'; fi)"
+              echo '```'
+            fi
+
+            if [ -f "$PROBE_OUT/session.json" ]; then
+              echo
+              echo "<details><summary>session.json — what the CLI said about install/start</summary>"
+              echo
+              echo '```json'
+              head -c 1200 "$PROBE_OUT/session.json" | tr -d '\000'
+              echo
+              echo '```'
+              echo
+              echo "</details>"
+            fi
+
+            if [ -f "$PROBE_OUT/screen-analysis.txt" ]; then
+              echo
+              echo "### screenshots (numbers, no image)"
+              echo
+              echo '```'
+              cat "$PROBE_OUT/screen-analysis.txt"
+              echo '```'
+            fi
+
+            if [ -f "$PROBE_OUT/ui-before.xml" ]; then
+              echo
+              echo "<details><summary>ui-before.xml head (format check)</summary>"
+              echo
+              echo '```'
+              head -c 400 "$PROBE_OUT/ui-before.xml" | tr -d '\000'
+              echo
               echo '```'
               echo
               echo "</details>"
