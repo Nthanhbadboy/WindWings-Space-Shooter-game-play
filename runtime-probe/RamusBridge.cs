@@ -908,44 +908,45 @@ namespace Ramus.Bridge
 
                 var jw = new Jw().StartObj().Prop("ok", true).Prop("type", type.FullName).Name("fields").StartObj();
                 int written = 0;
+
+                // IL2CPP interop proxies surface native fields as static
+                // properties with getters invoking the runtime; read those
+                // first so values come from il2cpp, not the IntPtr plumbing.
+                PropertyInfo[] props;
+                try { props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static); }
+                catch { props = Array.Empty<PropertyInfo>(); }
+                foreach (var p in props)
+                {
+                    if (written >= max) break;
+                    var getter = p.GetGetMethod(true) ?? p.GetGetMethod(false);
+                    if (getter == null || getter.IsAbstract) continue;
+                    try
+                    {
+                        object v = getter.Invoke(null, null);
+                        EmitAny(ref jw, p.Name, v, ref written, max);
+                    }
+                    catch { /* skip fields that interop refuses to read */ }
+                }
+
                 FieldInfo[] fields;
                 try { fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static); }
                 catch (Exception ex)
                 {
-                    return new Jw().StartObj().Prop("ok", false).Prop("error", "reflection_failed").Prop("detail", ex.Message).EndObj().ToString();
+                    if (written == 0)
+                        return new Jw().StartObj().Prop("ok", false).Prop("error", "reflection_failed").Prop("detail", ex.Message).EndObj().ToString();
+                    fields = Array.Empty<FieldInfo>();
                 }
 
                 foreach (var f in fields)
                 {
                     if (written >= max) break;
+                    if (f.Name.StartsWith("NativeFieldInfoPtr_", StringComparison.Ordinal) ||
+                        f.Name.StartsWith("NativeMethodInfoPtr", StringComparison.Ordinal))
+                        continue; // il2cpp plumbing pointers, not data
                     try
                     {
                         object v = f.GetValue(null);
-                        if (v == null) { jw.Name(f.Name).Null(); written++; continue; }
-
-                        var t = v.GetType();
-                        if (t == typeof(string)) jw.Name(f.Name).Str((string)v);
-                        else if (t == typeof(bool)) jw.Name(f.Name).Bool((bool)v);
-                        else if (t == typeof(int) || t == typeof(long) || t == typeof(short) || t == typeof(byte))
-                            jw.Name(f.Name).Num(Convert.ToDouble(v, CultureInfo.InvariantCulture));
-                        else if (t == typeof(float) || t == typeof(double) || t == typeof(decimal))
-                            jw.Name(f.Name).Num(Convert.ToDouble(v, CultureInfo.InvariantCulture));
-                        else if (v is Array arr && arr.Rank == 1 && arr.Length <= 64)
-                        {
-                            jw.Name(f.Name).StartArr();
-                            foreach (var item in arr)
-                            {
-                                if (item == null) jw.Null();
-                                else if (item is string s2) jw.Str(s2);
-                                else if (item is bool b2) jw.Bool(b2);
-                                else if (item is IConvertible c2 && (item is int || item is long || item is float || item is double || item is short || item is byte))
-                                    jw.Num(c2.ToDouble(CultureInfo.InvariantCulture));
-                                else jw.Str(item.ToString());
-                            }
-                            jw.EndArr();
-                        }
-                        else jw.Name(f.Name).Str("(" + t.Name + ")");
-                        written++;
+                        EmitAny(ref jw, f.Name, v, ref written, max);
                     }
                     catch { /* skip fields that interop refuses to read */ }
                 }
@@ -954,6 +955,42 @@ namespace Ramus.Bridge
                 return jw.ToString();
             }, 6000);
         }
+
+        static void EmitAny(ref Jw jw, string name, object v, ref int written, int max)
+        {
+            if (written >= max) return;
+            if (v == null) { jw.Name(name).Null(); written++; return; }
+
+            var t = v.GetType();
+            if (t == typeof(string)) jw.Name(name).Str(trunc((string)v));
+            else if (t == typeof(bool)) jw.Name(name).Bool((bool)v);
+            else if (t == typeof(int) || t == typeof(long) || t == typeof(short) || t == typeof(byte))
+                jw.Name(name).Num(Convert.ToDouble(v, CultureInfo.InvariantCulture));
+            else if (t == typeof(uint) || t == typeof(ulong) || t == typeof(ushort))
+                jw.Name(name).Num(Convert.ToDouble(v, CultureInfo.InvariantCulture));
+            else if (t == typeof(sbyte)) jw.Name(name).Num((sbyte)v);
+            else if (t == typeof(float) || t == typeof(double) || t == typeof(decimal))
+                jw.Name(name).Num(Convert.ToDouble(v, CultureInfo.InvariantCulture));
+            else if (v is Array arr && arr.Rank == 1 && arr.Length <= 64)
+            {
+                jw.Name(name).StartArr();
+                foreach (var item in arr)
+                {
+                    if (item == null) jw.Null();
+                    else if (item is string s2) jw.Str(trunc(s2));
+                    else if (item is bool b2) jw.Bool(b2);
+                    else if (item is IConvertible c2 && (item is int || item is long || item is float || item is double || item is short || item is byte))
+                        jw.Num(c2.ToDouble(CultureInfo.InvariantCulture));
+                    else jw.Str(trunc(item.ToString()));
+                }
+                jw.EndArr();
+                written++;
+            }
+            else jw.Name(name).Str("(" + t.Name + ")");
+            written++;
+        }
+
+        static string trunc(string s) { return s != null && s.Length > 400 ? s.Substring(0, 400) : s; }
 
         static IEnumerable<Type> SafeTypes(Assembly asm)
         {
