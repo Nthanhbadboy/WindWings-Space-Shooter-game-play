@@ -104,8 +104,8 @@ if [ -d "$BEP6P" ] && [ -d "$BEPI" ] && [ "$(ls "$BEPI"/*.dll 2>/dev/null | wc -
   # core first, interop after (cp -n keeps the core identity on clashes).
   find "$BEP6P" "$BEPI" -maxdepth 2 -type f -name '*.dll' -exec cp -n {} "$REFS/flat-bep6-phone/" \; 2>/dev/null || true
   log "BepInEx 6 phone refs: $(ls "$REFS/flat-bep6-phone" | wc -l) assemblies"
-  build "BepInEx 6 phone-interop (net6.0)" bepinex6-phone \
-    -p:Loader=BepInEx6 -p:StubUnity=false -p:Tfm=net6.0 \
+  build "BepInEx 6 phone-interop (net10.0)" bepinex6-phone \
+    -p:Loader=BepInEx6 -p:StubUnity=false -p:Tfm=net10.0 \
     -p:RefsDir="$PWD/$REFS/flat-bep6-phone"
 else
   bad "BepInEx 6 phone refs missing"
