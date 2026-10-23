@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # probe-inputs.sh — resolve the probe options once, for both jobs.
 #
-#   probe-inputs.sh "<allow_no_bridge>" "<strict>" "<force_trial>" "<scenario>"
+#   probe-inputs.sh "<allow_no_bridge>" "<strict>" "<force_trial>" "<scenario>" [session_mode]
 #
-# Exports ALLOW_NO_BRIDGE / STRICT / FORCE_TRIAL / SCENARIO to $GITHUB_ENV.
+# Exports ALLOW_NO_BRIDGE / STRICT / FORCE_TRIAL / SCENARIO / SESSION_MODE.
 #
 # Why a file: `workflow_dispatch` is not always available. A GitHub App token
 # can push to a branch but is refused by the dispatch API (403 "Resource not
@@ -21,6 +21,7 @@ allow="${1:-false}"; allow="${allow:-false}"
 strict="${2:-true}"; strict="${strict:-true}"
 force="${3:-false}"; force="${force:-false}"
 scenario="${4:-}"
+mode="${5:-install}"; mode="${mode:-install}"
 
 FILE="runtime-probe/probe-inputs.json"
 
@@ -40,6 +41,8 @@ if [ -f "$FILE" ]; then
   [ -n "$v" ] && force="$v"
   v=$(jq -r 'if has("scenario") then (.scenario|tostring) else "" end' "$FILE")
   [ -n "$v" ] && scenario="$v"
+  v=$(jq -r 'if has("session_mode") then (.session_mode|tostring) else "" end' "$FILE")
+  [ -n "$v" ] && mode="$v"
 fi
 
 {
@@ -47,6 +50,7 @@ fi
   echo "STRICT=$strict"
   echo "FORCE_TRIAL=$force"
   echo "SCENARIO=$scenario"
+  echo "SESSION_MODE=$mode"
 } >> "${GITHUB_ENV:?GITHUB_ENV is not set}"
 
-echo "resolved: allow_no_bridge=$allow strict=$strict force_trial=$force scenario=${scenario:-<event name>}"
+echo "resolved: allow_no_bridge=$allow strict=$strict force_trial=$force scenario=${scenario:-<event name>} session_mode=$mode"

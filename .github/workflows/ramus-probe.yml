@@ -51,6 +51,11 @@ on:
         required: false
         default: false
         type: boolean
+      session_mode:
+        description: 'apk = upload+install inside `session start`; install = bring the device up first, then upload/install/launch'
+        required: false
+        default: 'install'
+        type: string
       allow_no_bridge:
         description: 'Start a Ramus session even if the APK has no RamusBridge.dll (device/ABI smoke test)'
         required: false
@@ -216,7 +221,7 @@ jobs:
           chmod +x .github/scripts/probe-inputs.sh
           .github/scripts/probe-inputs.sh \
             "${{ inputs.allow_no_bridge }}" "${{ inputs.strict }}" \
-            "${{ inputs.force_trial }}" "${{ inputs.scenario }}"
+            "${{ inputs.force_trial }}" "${{ inputs.scenario }}" "${{ inputs.session_mode }}"
 
       - name: Secret leak guard
         run: |
@@ -298,7 +303,7 @@ jobs:
           chmod +x .github/scripts/probe-inputs.sh
           .github/scripts/probe-inputs.sh \
             "${{ inputs.allow_no_bridge }}" "${{ inputs.strict }}" \
-            "${{ inputs.force_trial }}" "${{ inputs.scenario }}"
+            "${{ inputs.force_trial }}" "${{ inputs.scenario }}" "${{ inputs.session_mode }}"
 
       - uses: actions/setup-node@v4
         with:
@@ -542,11 +547,23 @@ jobs:
         id: session
         run: |
           set -euo pipefail
+          # SESSION_MODE=install brings the device up empty, then uploads the APK.
+          # A 117 MB upload inside `session start` couples a slow transfer to the
+          # launch: if either half times out the session is gone and there is no
+          # way to tell which half failed. Separating them makes each observable.
+          if [ "${SESSION_MODE:-install}" = "install" ]; then
+            start_args=(--demo)
+            echo "mode=install → empty device first (--demo), APK follows"
+          else
+            start_args=(--apk "$RAMUS_APK")
+            echo "mode=apk → upload+install inside session start"
+          fi
+
           started=0
           for i in 1 2 3; do
             echo "── session start, attempt $i/3 ──"
             if npx --yes "$RAMUS_CLI" session start \
-                 --apk "$RAMUS_APK" \
+                 "${start_args[@]}" \
                  --wait \
                  --timeout 600 \
                  | tee "$PROBE_OUT/session.json"; then
@@ -575,6 +592,45 @@ jobs:
             echo "::notice::Could not parse a session id; the CLI will use the last session."
           fi
           npx --yes "$RAMUS_CLI" session list || true
+
+      - name: Upload and install the APK (session_mode=install)
+        if: steps.gate.outputs.skip != 'true' && env.SESSION_MODE == 'install'
+        id: install
+        run: |
+          set -euo pipefail
+          start=$(date +%s)
+          ok=0
+          for i in 1 2; do
+            echo "── session install, attempt $i/2 (117 MB upload) ──"
+            if npx --yes "$RAMUS_CLI" session install \
+                 --apk "$RAMUS_APK" \
+                 --timeout 900 \
+                 | tee "$PROBE_OUT/install.json"; then
+              ok=1
+              break
+            fi
+            cat "$PROBE_OUT/install.json" 2>/dev/null || true
+            npx --yes "$RAMUS_CLI" session status | tee "$PROBE_OUT/status-during-install.json" || true
+            if [ "$i" -lt 2 ]; then sleep 15; fi
+          done
+          took=$(( $(date +%s) - start ))
+          if [ "$ok" -eq 1 ]; then res=ok; else res=failed; fi
+          echo "install_result=$res seconds=$took" | tee "$PROBE_OUT/install-summary.txt"
+
+          if [ "$ok" -ne 1 ]; then
+            echo "::error::The APK could not be installed into the running session (see install.json)."
+            exit 1
+          fi
+
+      - name: Launch the app (session_mode=install)
+        if: steps.gate.outputs.skip != 'true' && env.SESSION_MODE == 'install'
+        run: |
+          set -euo pipefail
+          # `session install` only installs; nothing has launched it yet.
+          npx --yes "$RAMUS_CLI" app launch | tee "$PROBE_OUT/launch.json" || true
+          sleep 5
+          npx --yes "$RAMUS_CLI" screenshot --out "$PROBE_OUT/screen-boot.jpg" \
+            > "$PROBE_OUT/boot.json" 2>&1 || true
 
       - name: Wait for the app
         if: steps.gate.outputs.skip != 'true'
