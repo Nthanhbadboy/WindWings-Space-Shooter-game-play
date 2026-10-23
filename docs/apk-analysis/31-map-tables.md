@@ -96,3 +96,19 @@ InitializeArray đã được script.json xác nhận, không suy từ tần su�
 Mọi kết luận vẫn PROVISIONAL về ngữ nghĩa gameplay/đánh số UI; chưa có
 runtime corroboration. Các bảng candidate cũ chỉ giữ làm lịch sử, không dùng
 làm đầu vào nếu đã có `maps.json` mới.
+
+## Xử lý immediate/zero initialization và độ dài động
+
+- `0x1416b20`: new int[2], chỉ ghi index 1 = 1 tại 0x1416b3c;
+  index 0 giữ mặc định 0. Mảng đầy đủ `[0,1]`, không phải `[unknown,1]`.
+- `0x14178b0`: `ldr w1,[x8,#4]` ghi đè độ dài trước khi array-new tại
+  0x14178b4. Giá trị 43 trong parser cũ là stale immediate, **bị bác bỏ**.
+  Store tại 0x14178d4 gán mảng mới vào statics +0x60 = `mapChallangeIndexs`.
+  Đây là field độc lập, không phải phần tử cuối của `listMapObstacleDatas`.
+  Raw asm được giữ nguyên; JSON `standalone_arrays` ghi rõ len=null,
+  nguồn độ dài và giá trị khởi tạo zero. Chưa xác minh giá trị field runtime.
+
+`tests/test_map_extraction.py`: 4 regression checks (576 joins, campaign 250,
+zero default, dynamic array tách riêng). Workflow `Verify extracted tables`
+tái dựng bằng Python chuẩn và kiểm `git diff --exit-code`; không tải APK,
+không tự commit, không sử dụng mạng cho dữ liệu game.

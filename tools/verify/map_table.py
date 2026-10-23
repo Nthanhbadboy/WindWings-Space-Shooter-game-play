@@ -49,6 +49,7 @@ def main() -> int:
     seg = {"index": 0, "arrays": []}
     segments.append(seg)
     pending_len = None
+    standalone = []
     cur = None          # mảng đang dựng: {"len": L, "values": {k: v}, "init": bool}
     last_imm = {}       # reg -> immediate gần nhất
 
@@ -59,7 +60,7 @@ def main() -> int:
                 seg["arrays"].append({"len": cur["len"], "source": "InitializeArray",
                                       "addr": cur["addr"]})
             else:
-                vals = [cur["values"].get(k) for k in range(cur["len"])]
+                vals = [cur["values"].get(k, 0) for k in range(cur["len"] or 0)]
                 seg["arrays"].append({"len": cur["len"], "source": "immediates",
                                       "values": vals, "addr": cur["addr"]})
             cur = None
@@ -71,6 +72,18 @@ def main() -> int:
             seg = {"index": len(segments), "arrays": []}
             segments.append(seg)
             continue
+        # Non-immediate writes to w1 invalidate a previously seen length.
+        if re.match(r"(?:ldr|ldur|mov)\s+w1,", body) and not re.match(r"mov\s+w1, #", body):
+            pending_len = None
+        # This verified static store targets mapChallangeIndexs, NOT the list.
+        if line.strip().startswith("0x14178d4:"):
+            assert cur is not None and cur["len"] is None
+            standalone.append({"field": "mapChallangeIndexs", "static_offset": "0x60",
+                               "array_new_addr": cur["addr"], "len": None,
+                               "length_source": "ldr w1,[x8,#4] at 0x14178b0 (runtime static field)",
+                               "initial_element": 0, "source": "zero-initialized-new-array"})
+            cur = None
+            continue
         m = re.match(r"mov\s+(w\d+), #(0x[0-9a-f]+|\d+)$", body)
         if m:
             last_imm[m.group(1)] = int(m.group(2), 0)
@@ -80,7 +93,7 @@ def main() -> int:
         if ARRAY_NEW in body:
             flush()
             addr = line.split(":", 1)[0].strip()
-            cur = {"len": pending_len or 0, "values": {}, "init": False,
+            cur = {"len": pending_len, "values": {}, "init": False,
                    "addr": addr}
             continue
         if INIT_ARRAY in body and cur is not None:
@@ -90,7 +103,7 @@ def main() -> int:
         m = re.match(r"str\s+(w\d+), \[x\d+, #(0x[0-9a-f]+|\d+)\]$", body)
         if m and cur is not None:
             off = int(m.group(2), 0)
-            if 0x20 <= off < 0x20 + 4 * max(cur["len"], 0):
+            if 0x20 <= off < 0x20 + 4 * (cur["len"] or 0):
                 k = (off - 0x20) // 4
                 if m.group(1) in last_imm:
                     cur["values"][k] = last_imm[m.group(1)]
@@ -99,7 +112,7 @@ def main() -> int:
     segments = [s for s in segments if s["arrays"]]
 
     out = {"source": ".cctor của Map_Get_Datas (asm trong repo) — kết luận tạm thời",
-           "segments": segments}
+           "segments": segments, "standalone_arrays": standalone}
     os.makedirs("datas", exist_ok=True)
     with open("datas/map_table_segments.json", "w", encoding="utf-8") as fh:
         json.dump(out, fh, ensure_ascii=False, indent=1)

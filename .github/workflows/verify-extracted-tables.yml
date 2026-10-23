@@ -1,0 +1,28 @@
+name: Verify extracted tables
+on:
+  push:
+    paths:
+      - 'tools/verify/**'
+      - 'tests/**'
+      - 'datas/maps.json'
+      - 'datas/map*segments*.json'
+      - 'reverse-engineering/il2cpp/ia-resolved.json'
+      - '.github/workflows/verify-extracted-tables.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Regenerate map tables from preserved evidence
+        run: |
+          python3 tools/verify/map_table.py
+          python3 tools/verify/map_resolved.py
+          git diff --exit-code -- datas/map_table_segments.json datas/map_segments_full.json datas/maps.json
+      - name: Run regression tests
+        run: python3 -m unittest discover -s tests -v
