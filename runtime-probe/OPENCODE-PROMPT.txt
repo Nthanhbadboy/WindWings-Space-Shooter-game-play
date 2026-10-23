@@ -1,0 +1,15 @@
+Bạn KHÔNG cần phân tích, KHÔNG cần lập kế hoạch. Chạy đúng một lệnh, chọn đúng dòng:
+
+    bash runtime-probe/collect.sh --local <package>      # điện thoại đã nối adb (KHÔNG tốn quota)
+    bash runtime-probe/collect.sh /duong/dan/to/apk      # Ramus cloud (tốn 1 phiên)
+
+Điện thoại: package thường là com.Gcenter.WindWings.SpaceShooter.Premium
+(kiểm bằng: adb shell pm list packages | grep -i wind)
+
+Sau khi lệnh chạy xong, dán 40 dòng cuối của output.
+
+Luật bắt buộc:
+- Không đọc thêm file nào. Không sửa script. Không chạy lệnh ramus/adb nào khác.
+- Nếu output có dòng "STOP:" → dừng ngay, dán nguyên dòng đó.
+- Nếu báo "THIẾU" → dán danh sách thiếu, không tự đi tìm cách khác.
+- Không được bịa số. Không có số liệu thì nói thẳng "không có số liệu".
