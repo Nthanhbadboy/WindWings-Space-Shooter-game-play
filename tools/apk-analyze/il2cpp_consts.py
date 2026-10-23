@@ -212,14 +212,6 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
         if insn.mnemonic == "ldr" and segs and md == 0xB7:
             m = re.search(r"\[(x\d+)(?:, #(0x[0-9a-f]+|\d+))?\]", insn.op_str)
             dst = insn.op_str.split(",")[0].strip()
-            if m and m.group(1) in adrp_pages and dst.startswith("w"):
-                va_i = adrp_pages[m.group(1)] + (int(m.group(2), 0) if m.group(2) else 0)
-                raw_i = va_read(blob, segs, va_i, 4, ro_only=True)
-                if raw_i and len(raw_i) == 4:
-                    iv = struct.unpack("<i", raw_i)[0]
-                    if 1 <= iv < 100_000_000:
-                        consts.append({"kind": "int", "value": iv, "via": "ldr_pool_int",
-                                       "va": hex(va_i), "addr": hex(insn.address)})
             if m and m.group(1) in adrp_pages and dst.startswith(("s", "d")):
                 va = adrp_pages[m.group(1)] + (int(m.group(2), 0) if m.group(2) else 0)
                 raw = va_read(blob, segs, va, 4, ro_only=True)
@@ -547,18 +539,17 @@ def main() -> int:
                  for meth, val, va, via in info.get("pool_floats", [])]
     if pool_rows:
         lines += ["### Float đọc từ literal pool (`.rodata`) — số thật, không phải suy luận", "",
-                  "`adrp xN, #page` + `ldr sM/wM, [xN, #off]` trỏ vào bảng float/int trong `.rodata`;",
+                  "`adrp xN, #page` + `ldr sM, [xN, #off]` trỏ vào bảng float trong `.rodata`;",
                   "script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong segment read-only**",
                   "(bảng con trỏ metadata nằm ở segment ghi được — đọc vào đó ra rác như `288733`).",
                   "Đây là số **có thật trong file**, nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.", "",
-                  "| class | method | giá trị | kiểu | VA |", "|---|---|---:|---|---|"]
+                  "| class | method | giá trị | VA |", "|---|---|---:|---|"]
         seen = set()
         for cls, meth, val, va, via in pool_rows:
             if (cls, meth, val) in seen:
                 continue
             seen.add((cls, meth, val))
-            kind = "float" if via == "ldr_pool" else "int"
-            lines.append(f"| `{cls}` | `{meth}` | {val} | {kind} | `{va}` |")
+            lines.append(f"| `{cls}` | `{meth}` | {val} | `{va}` |")
         lines.append("")
 
     consts_rows = [(cls, g) for cls, info in sorted(summary.items())
