@@ -45,17 +45,38 @@ jobs:
             || echo "data branch not reachable — claims B/C/F will report SKIP"
 
       - name: Re-measure
+        id: claims
         run: |
           set -o pipefail
           python3 tools/verify-claims.py | tee verify.log
+          echo "exit=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
+      # The job log lives behind blob storage that the API will not serve, so the
+      # result goes into a PR comment where it can actually be read later.
       - name: Publish the table
         if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           {
-            echo "### Numeric claims"
+            echo "<!-- docs-verify -->"
+            if [ "${{ steps.claims.outputs.exit }}" = "0" ]; then
+              echo "## ✅ numeric claims hold"
+            else
+              echo "## ❌ numeric claim drift"
+            fi
+            echo
+            echo "Every number written in the docs, re-measured from source."
+            echo "SKIP means the source is absent (data branch not fetched) — not a pass."
             echo
             echo '```'
-            sed -n '/^mã\|^PASS/,$p' verify.log 2>/dev/null || tail -40 verify.log 2>/dev/null || echo "no output"
+            cat verify.log 2>/dev/null || echo "no output"
             echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+          } > comment.md
+          cat verify.log >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            chmod +x .github/scripts/pr-comment.sh
+            .github/scripts/pr-comment.sh "${{ github.event.pull_request.number }}" \
+              comment.md '<!-- docs-verify -->'
+          fi
