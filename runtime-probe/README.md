@@ -457,14 +457,11 @@ Self-test **không** chứng minh: reflection trên IL2CPP đọc đúng field c
 `/screenshot` chụp được frame thật, hay `/statics` trả 3 mảng `pct`. Những thứ đó
 vẫn cần game chạy với plugin đã nạp.
 
-sha256 (đọc từ comment CI, không phải tự tính lại):
+sha256 từng DLL được in trong comment CI cùng kích thước, để đối chiếu bản tải về.
 
-```
-ae9c723b59761e1aca86131c96325772704e963bc8b50c0c6028b90150b59935  core
-7011736e5dab7e25f1418f62054d6477889d8a2f0ba571de1e0304cab66acb45  bepinex6
-2d0d9731b6ac1dddc8c16d88682fb8a5007d9b6d8f3dd5153b14e37dea9fb3e8  melon
-76ac77ebda6612f66cafba69d1c3f48acd24aaf94dc19e3c6b17b31df34ea365  bepinex5
-```
+> Lưu ý: hash **khác nhau giữa các lần chạy** dù `Deterministic=true`, vì stub
+> `UnityEngine.dll` được build lại mỗi lần (MVID mới) rồi được tham chiếu vào DLL.
+> Đừng dùng hash này để kiểm tra build tái lập; chỉ dùng để khớp artifact với log.
 
 | Target | Tham chiếu | TFM |
 |---|---|---|
