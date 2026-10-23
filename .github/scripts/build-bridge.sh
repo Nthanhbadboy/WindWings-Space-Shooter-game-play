@@ -26,12 +26,25 @@ log()  { printf '[build] %s\n' "$*"; }
 ok()   { PASSED+=("$1"); log "PASS  $1"; }
 bad()  { FAILED+=("$1"); log "FAIL  $1"; }
 
-# Flatten every DLL from an extracted archive into one folder, so the csproj can
-# reference a single directory and never see the same assembly twice.
+# Flatten the loader assemblies into one folder, so the csproj can reference a
+# single directory and never see the same assembly twice.
+#
+# The BepInEx IL2CPP zip also ships a private .NET runtime under dotnet/. Copying
+# mscorlib/System.* out of it makes the compiler resolve predefined types from
+# the 6.0 runtime instead of the targeting pack — CS0518 "System.Object is not
+# defined", 291 errors. Those are dropped here.
 flatten() {  # flatten <src-dir> <dst-dir>
   local src="$1" dst="$2"
   mkdir -p "$dst"
-  find "$src" -type f -name '*.dll' -exec cp -n {} "$dst/" \; 2>/dev/null || true
+  find "$src" -type f -name '*.dll' \
+       ! -path '*/dotnet/*' \
+       ! -name 'mscorlib.dll' \
+       ! -name 'netstandard.dll' \
+       ! -name 'System.*.dll' \
+       ! -name 'Microsoft.*.dll' \
+       ! -name 'WindowsBase.dll' \
+       ! -name 'Presentation*.dll' \
+       -exec cp -n {} "$dst/" \; 2>/dev/null || true
   find "$dst" -maxdepth 1 -name '*.dll' | wc -l
 }
 
