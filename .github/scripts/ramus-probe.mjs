@@ -379,39 +379,45 @@ function snapshotUi(tag) {
  * Returns a short description when a dialog was dismissed.
  */
 function dismissSystemDialog(tag) {
-  let snap = null;
+  // The XML carries pixel bounds, and `tap` also accepts normalised coordinates.
+  // Tapping a ref needs a matching `--gen`, which the snapshot generation had
+  // already invalidated by the time we act — coordinates do not have that
+  // problem ("found \"Got it\" but tap failed" in run 39931344041).
+  let xml = '';
   try {
-    snap = JSON.parse(readFileSync(path.join(OUT, `ui-${tag}.json`), 'utf8'));
+    xml = unwrapXml(readFileSync(path.join(OUT, `ui-${tag}.xml`), 'utf8'));
   } catch {
     return null;
   }
 
-  // Walk the tree for the button; the CLI's schema is not part of its docs, so
-  // look for any object that carries both a matching text and a ref/bounds.
-  const wanted = /got it|ok|allow|continue/i;
-  let hit = null;
-  const walk = (node) => {
-    if (!node || typeof node !== 'object' || hit) return;
-    const text = String(node.text || node.label || node.contentDesc || '');
-    const ref = node.ref || node.id || node.elementRef || node['resource-id'];
-    if (wanted.test(text) && ref) hit = { text, ref, gen: node.gen };
-    for (const v of Object.values(node)) {
-      if (Array.isArray(v)) v.forEach(walk);
-      else if (v && typeof v === 'object') walk(v);
-    }
-  };
-  walk(snap);
-  if (!hit) return null;
+  const wanted = /got it|ok/i;
+  const nodes = [...xml.matchAll(/<node\b[^>]*>/g)].map((m) => m[0]);
+  let target = null;
+  let screen = null;
 
-  const args = ['tap', String(hit.ref)];
-  if (hit.gen != null) args.push('--gen', String(hit.gen));
-  const r = ramus(args, { timeout: 60000 });
-  if (!r.ok) return `found "${hit.text}" but tap failed`;
+  for (const node of nodes) {
+    const bounds = node.match(/bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"/);
+    if (!bounds) continue;
+    const [x1, y1, x2, y2] = bounds.slice(1).map(Number);
+    if (!screen || x2 > screen[0] || y2 > screen[1]) screen = [x2, y2];
+    const text = (node.match(/text="([^"]*)"/) || [])[1] || '';
+    if (wanted.test(text) && !target) target = { text, x1, y1, x2, y2 };
+  }
+  if (!target || !screen) return null;
 
-  // Give the window manager a moment to swap the foreground window.
-  const started = Date.now();
-  while (Date.now() - started < 3000) { /* busy wait keeps this synchronous */ }
-  return `dismissed "${hit.text}" via ref ${hit.ref}`;
+  const cx = (target.x1 + target.x2) / 2 / screen[0];
+  const cy = (target.y1 + target.y2) / 2 / screen[1];
+  const point = `${cx.toFixed(3)},${cy.toFixed(3)}`;
+
+  // --expect-gone makes the CLI verify the dismissal instead of trusting it.
+  let r = ramus(['tap', point, '--expect-gone', target.text], { timeout: 60000 });
+  if (!r.ok) {
+    const first = String(r.stderr || r.stdout || '').slice(0, 200);
+    r = ramus(['tap', point], { timeout: 60000 });
+    if (!r.ok) return `found "${target.text}" at ${point} but tap failed: ${first}`;
+    return `tapped "${target.text}" at ${point} (no verification)`;
+  }
+  return `dismissed "${target.text}" at ${point} (verified gone)`;
 }
 
 // ── main ───────────────────────────────────────────────────────────────────
