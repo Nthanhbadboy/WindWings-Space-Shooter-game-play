@@ -17,22 +17,29 @@
 → `datas/map_segments_full.json`: mọi segment của `.cctor` kèm giá trị từng mảng
 (nguồn `immediates` = hằng số trong asm, chắc chắn; `blob` = token→PID ở trên).
 
-## Gán field theo hình dạng (mức B, chưa chốt offset static)
+## Gán field — ĐÃ CHỐT ở mức asm (A)
 
-| Segment | Hình dạng | Field khả dĩ |
+Nối 3 nguồn: offset field trong dump.cs, lệnh `str` vào statics cuối mỗi
+nhóm trong `.cctor`, và thứ tự segment:
+
+| Offset | Field | Segment |
 |---|---|---|
-| 3–12 | 10 list, tổng 63 mảng len 36 (hoán vị wave) | `AllArenaRandomMaps` (63) |
-| 25–34 | 10×10 mảng len 7 | `AllPvPStartMaps`? |
-| **35** | **250 mảng, 243×len 3 + 7 immediate** | **`listMapDatas`** |
-| 37 | 25 mảng len 20–25 | branch/boss list |
-| 38–40, 64–67 | mảng len 3 | fight-boss / endless |
-| 43–59 | 17×8 mảng len 1–2 | challenge |
-| 68–69 | dài không đều (tới 69) | obstacle / index list |
+| 0x0 | `listMapTryPlayerDatas` | 1 |
+| 0x8 | `AllArenaStartMaps` | 2–12 (63 mảng len 36) |
+| 0x10 | `AllArenaRandomMaps` | 13–23 |
+| 0x18 | `AllPvPStartMaps` | 24–34 (10×10 len 7) |
+| 0x20 | `mapCurrentPlayTest` = 0 | — |
+| **0x28** | **`listMapDatas`** | **35 (250 mảng)** |
+| 0x30 | `listMapBranchDatas` | 36–40 |
+| 0x38 | `listIdBosses` (Dictionary) | — |
+| 0x40 | `listMapFightBossDatas` | 41–62 |
+| 0x48 | `listMapChallangeDatas` | 63–67 |
+| 0x50 | `listMapEndlessDatas` | 68 |
+| 0x58 | `listMapObstacleDatas` | 69 |
+| 0x60 | `mapChallangeIndexs` (int[]) | cuối .cctor |
 
-`listMapDatas` = segment 35 vì: 250 phần tử (khớp vòng lặp campaign của spec),
-được dùng bởi logic `GetListWaves`; các segment khác đều có hình dạng chế độ
-riêng (Arena 63×36, PvP 7-wave...). `datas/maps.json` = 250 map theo thứ tự
-`.cctor`; map *N* (1-based) = phần tử *N−1* (PROVISIONAL về đánh số, nội dung A−).
+→ `datas/maps.json` = `listMapDatas` theo thứ tự `.cctor` (nội dung A;
+đánh số map 1-based vẫn theo quy ước phần tử *N−1*).
 
 Thiếu đúng 1 mảng (index 4, IA call mà exporter chưa bắt được token); 41 IA
 khác thuộc segment chưa gán field.

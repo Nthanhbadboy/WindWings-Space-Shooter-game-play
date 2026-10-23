@@ -176,3 +176,12 @@ Cả hai đều **kiểm được bằng dữ liệu lần chạy tới**, khôn
 | HP enemy runtime ở `Enemy_Get_Datas` (Dictionary tại .cctor 0x157F7CC) | Export 3 class mới + parse chuỗi `Add(id, hp)`: **150 cặp** (id 30001+, CB-30003 = 650 trong khi serialize = 0) | **Đúng — B3 đóng theo hướng của họ.** Bảng ở `datas/enemy_hp_by_id.json` (`tools/verify/enemy_hp.py`). |
 | `get_IsAttacking` có điều kiện phụ ngoài field 0x2c | Sau tái export: `ldrb [x0,#0x2c]; cbz → 0; ldrb [x0,#0x50]; cset eq` | **Đúng**: `IsAttacking = f@0x2c && f@0x50 == 0`. |
 | T2 sau sửa exporter | T2 chạy lại: vắng mặt = 0/466 method (20 class) | PASS đầy đủ. |
+
+## 5. Ghi chú phía branch 20330d0e (chỉ tham khảo, không merge)
+
+- Runtime probe của AI kia kết luận: game chỉ có arm64-v8a, emulator x86_64
+  không chạy được (app chết khi nạp native) — đường runtime trên CI coi như
+  đóng; dữ liệu runtime (HP theo mode, sao...) nếu cần phải qua thiết bị thật.
+- Phía này đã tự giải xong bằng tĩnh: token InitializeArray
+  (`src = 2*ordinal+1` trong `<PrivateImplementationDetails>` cùng image) —
+  không cần runtime để lấy bảng map/device (report 31).
