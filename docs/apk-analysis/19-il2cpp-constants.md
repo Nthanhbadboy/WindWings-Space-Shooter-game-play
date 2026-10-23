@@ -35,90 +35,89 @@ Mỗi getter trong build này đều bị bọc bởi guard khởi tạo static 
 
 ### Float đọc từ literal pool (`.rodata`) — số thật, không phải suy luận
 
-`adrp xN, #page` + `ldr sM/wM, [xN, #off]` trỏ vào bảng float/int trong `.rodata`;
+`adrp xN, #page` + `ldr sM, [xN, #off]` trỏ vào bảng float trong `.rodata`;
 script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong segment read-only**
 (bảng con trỏ metadata nằm ở segment ghi được — đọc vào đó ra rác như `288733`).
 Đây là số **có thật trong file**, nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.
 
-| class | method | giá trị | kiểu | VA |
-|---|---|---:|---|---|
-| `Device_Get_Data` | `GetStatValue2` | 14.4 | float | `0x756dd8` |
-| `Droid_Data_Balance` | `GetBaseDamage` | 0.6 | float | `0x756c44` |
-| `Enemy_Data_Balance` | `GetBonusCoin` | 0.1 | float | `0x756c78` |
-| `Enemy_Data_Balance` | `GetSurvivalScore` | 1.1 | float | `0x756b50` |
-| `Enemy_Data_Balance` | `GetSurvivalScore` | 0.2 | float | `0x75700c` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 0.2 | float | `0x75700c` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 0.01 | float | `0x756fe0` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 2.3 | float | `0x756edc` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 0.1 | float | `0x756c78` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 0.56 | float | `0x757060` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.8 | float | `0x756b54` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.6 | float | `0x756db8` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.7 | float | `0x756c90` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 2.8 | float | `0x756fc0` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 4.2 | float | `0x756bd4` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.4 | float | `0x756bd8` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.3 | float | `0x756be0` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.2 | float | `0x756cb8` |
-| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.1 | float | `0x756b50` |
-| `Enemy_Data_Balance` | `GetArenaPlayScore` | 0.2 | float | `0x75700c` |
-| `GameDatas` | `cctor` | 7.0 | float | `0x757368` |
-| `Player_Get_Datas` | `get_abi32Amount` | 20000.0 | float | `0x756d48` |
-| `Player_Get_Datas` | `get_abi32Amount` | 57.29578 | float | `0x7570dc` |
-| `Player_Get_Datas` | `stepLevel` | 0.168 | float | `0x756f34` |
-| `Player_Get_Datas` | `stepLevel` | 1.05 | float | `0x756d8c` |
-| `Player_Get_Datas` | `stepLevel` | 1.15 | float | `0x7570c8` |
-| `Player_Get_Datas` | `GetGainHpItem` | 0.15 | float | `0x756a68` |
-| `Player_Get_Datas` | `GetGainHpItemAddOverTime` | 0.2 | float | `0x75700c` |
-| `Player_Get_Datas` | `GetHpRecoverSpeed` | 0.1 | float | `0x756c78` |
-| `Player_Get_Datas` | `GetHpRecoverSpeed` | 0.08 | float | `0x75706c` |
-| `Player_Get_Datas` | `GetHpRecoverSpeed` | 0.06 | float | `0x756cc8` |
-| `Player_Get_Datas` | `GetHpRecoverSpeed` | 0.03 | float | `0x756ecc` |
-| `Player_Get_Datas` | `GetMainCannonDamage` | 0.168 | float | `0x756f34` |
-| `Player_Get_Datas` | `GetMainCannonDamage` | 0.1764 | float | `0x756e84` |
-| `Player_Get_Datas` | `GetMainCannonDamage` | 0.1932 | float | `0x756ea0` |
-| `Player_Get_Datas` | `GetMainCannonDamage` | 59768835 | int | `0x7560e0` |
-| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.03 | float | `0x756ecc` |
-| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.12 | float | `0x756b38` |
-| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.1 | float | `0x756c78` |
-| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.08 | float | `0x75706c` |
-| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.05 | float | `0x756e18` |
-| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.1 | float | `0x756c78` |
-| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.2 | float | `0x75700c` |
-| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.18 | float | `0x756b98` |
-| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.15 | float | `0x756a68` |
-| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.05 | float | `0x756e18` |
-| `Player_Get_Datas` | `GetWingCannonDamage` | 0.168 | float | `0x756f34` |
-| `Player_Get_Datas` | `GetWingCannonDamage` | 0.1764 | float | `0x756e84` |
-| `Player_Get_Datas` | `GetWingCannonDamage` | 0.1932 | float | `0x756ea0` |
-| `Player_Get_Datas` | `AddPowerPercentWhenHpBelow30` | 0.1 | float | `0x756c78` |
-| `Player_Get_Datas` | `AddPowerPercentWhenHpBelow30` | 0.4 | float | `0x756fbc` |
-| `Player_Get_Datas` | `AddPowerPercentWhenHpBelow30` | 0.3 | float | `0x7570e0` |
-| `Player_Get_Datas` | `AddPowerPercentWhenHpBelow30` | 0.2 | float | `0x75700c` |
-| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.04 | float | `0x756ec8` |
-| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.1 | float | `0x756c78` |
-| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.075 | float | `0x757074` |
-| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.06 | float | `0x756cc8` |
-| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.025 | float | `0x756ac4` |
-| `Tech_Datas` | `IsStatUnlocked` | 0.6 | float | `0x756c44` |
-| `Tech_Datas` | `GetTechStatUpgradePrice` | 0.86 | float | `0x756de8` |
-| `Tech_Datas` | `GetTechStatUpgradePrice` | 0.689 | float | `0x756dfc` |
-| `Tech_Datas` | `GetTechStatUpgradePrice` | 150000.0 | float | `0x756cc4` |
-| `Tech_Datas` | `NumberTechStats` | 0.2 | float | `0x75700c` |
-| `Tech_Datas` | `NumberTechStats` | -0.2 | float | `0x756f50` |
-| `Tech_Datas` | `SetTechStatPoints` | 2.55 | float | `0x756e98` |
-| `Tech_Datas` | `SetTechStatPoints` | 59768835 | int | `0x7560e0` |
-| `Tech_Datas` | `SetTechStatLevel` | 0.4 | float | `0x756fbc` |
-| `Tech_Datas` | `SetTechStatLevel` | 1.48 | float | `0x756a80` |
-| `Tech_Datas` | `SetTechStatLevel` | 0.57 | float | `0x756ee0` |
-| `Tech_Datas` | `SetTechStatLevel` | -0.1 | float | `0x757018` |
-| `Tech_Datas` | `GetCostUpgrade` | 2.55 | float | `0x756e98` |
-| `Tech_Datas` | `SetTechLabLevel` | 0.05 | float | `0x756e18` |
-| `Tech_Datas` | `SetTechLabLevel` | 0.3 | float | `0x7570e0` |
-| `Tech_Datas` | `GetPlayerUpgradePrice` | 0.12 | float | `0x756b38` |
-| `Tech_Datas` | `GetPlayerUpgradePrice` | 150000.0 | float | `0x756cc4` |
-| `Tech_Datas` | `GetDroneUpgradePrice` | 0.12 | float | `0x756b38` |
-| `Tech_Datas` | `GetDroneUpgradePrice` | 150000.0 | float | `0x756cc4` |
+| class | method | giá trị | VA |
+|---|---|---:|---|
+| `Device_Get_Data` | `GetStatValue2` | 14.4 | `0x756dd8` |
+| `Droid_Data_Balance` | `GetBaseDamage` | 0.6 | `0x756c44` |
+| `Enemy_Data_Balance` | `GetBonusCoin` | 0.1 | `0x756c78` |
+| `Enemy_Data_Balance` | `GetSurvivalScore` | 1.1 | `0x756b50` |
+| `Enemy_Data_Balance` | `GetSurvivalScore` | 0.2 | `0x75700c` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 0.2 | `0x75700c` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 0.01 | `0x756fe0` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 2.3 | `0x756edc` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 0.1 | `0x756c78` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 0.56 | `0x757060` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.8 | `0x756b54` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.6 | `0x756db8` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.7 | `0x756c90` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 2.8 | `0x756fc0` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 4.2 | `0x756bd4` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.4 | `0x756bd8` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.3 | `0x756be0` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.2 | `0x756cb8` |
+| `Enemy_Data_Balance` | `GetPVPPlayScore` | 1.1 | `0x756b50` |
+| `Enemy_Data_Balance` | `GetArenaPlayScore` | 0.2 | `0x75700c` |
+| `GameDatas` | `cctor` | 7.0 | `0x757368` |
+| `Player_Get_Datas` | `get_abi32Amount` | 20000.0 | `0x756d48` |
+| `Player_Get_Datas` | `get_abi32Amount` | 57.29578 | `0x7570dc` |
+| `Player_Get_Datas` | `stepLevel` | 0.168 | `0x756f34` |
+| `Player_Get_Datas` | `stepLevel` | 1.05 | `0x756d8c` |
+| `Player_Get_Datas` | `stepLevel` | 1.15 | `0x7570c8` |
+| `Player_Get_Datas` | `GetGainHpItem` | 0.15 | `0x756a68` |
+| `Player_Get_Datas` | `GetGainHpItemAddOverTime` | 0.2 | `0x75700c` |
+| `Player_Get_Datas` | `GetHpRecoverSpeed` | 0.1 | `0x756c78` |
+| `Player_Get_Datas` | `GetHpRecoverSpeed` | 0.08 | `0x75706c` |
+| `Player_Get_Datas` | `GetHpRecoverSpeed` | 0.06 | `0x756cc8` |
+| `Player_Get_Datas` | `GetHpRecoverSpeed` | 0.03 | `0x756ecc` |
+| `Player_Get_Datas` | `GetMainCannonDamage` | 0.168 | `0x756f34` |
+| `Player_Get_Datas` | `GetMainCannonDamage` | 0.1764 | `0x756e84` |
+| `Player_Get_Datas` | `GetMainCannonDamage` | 0.1932 | `0x756ea0` |
+| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.03 | `0x756ecc` |
+| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.12 | `0x756b38` |
+| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.1 | `0x756c78` |
+| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.08 | `0x75706c` |
+| `Player_Get_Datas` | `GetMainCannonRatePercent` | 0.05 | `0x756e18` |
+| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.1 | `0x756c78` |
+| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.2 | `0x75700c` |
+| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.18 | `0x756b98` |
+| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.15 | `0x756a68` |
+| `Player_Get_Datas` | `GetMainCannonCritPercent` | 0.05 | `0x756e18` |
+| `Player_Get_Datas` | `GetWingCannonDamage` | 0.168 | `0x756f34` |
+| `Player_Get_Datas` | `GetWingCannonDamage` | 0.1764 | `0x756e84` |
+| `Player_Get_Datas` | `GetWingCannonDamage` | 0.1932 | `0x756ea0` |
+| `Player_Get_Datas` | `AddPowerPercentWhenHpBelow30` | 0.1 | `0x756c78` |
+| `Player_Get_Datas` | `AddPowerPercentWhenHpBelow30` | 0.4 | `0x756fbc` |
+| `Player_Get_Datas` | `AddPowerPercentWhenHpBelow30` | 0.3 | `0x7570e0` |
+| `Player_Get_Datas` | `AddPowerPercentWhenHpBelow30` | 0.2 | `0x75700c` |
+| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.04 | `0x756ec8` |
+| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.1 | `0x756c78` |
+| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.075 | `0x757074` |
+| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.06 | `0x756cc8` |
+| `Player_Get_Datas` | `KillPercentWhenEnemyHpBelow30` | 0.025 | `0x756ac4` |
+| `Player_Get_Datas` | `GetMagnetRange` | 1.8 | `0x756b54` |
+| `Tech_Datas` | `IsStatUnlocked` | 0.6 | `0x756c44` |
+| `Tech_Datas` | `GetTechStatUpgradePrice` | 0.86 | `0x756de8` |
+| `Tech_Datas` | `GetTechStatUpgradePrice` | 0.689 | `0x756dfc` |
+| `Tech_Datas` | `GetTechStatUpgradePrice` | 150000.0 | `0x756cc4` |
+| `Tech_Datas` | `NumberTechStats` | 0.2 | `0x75700c` |
+| `Tech_Datas` | `NumberTechStats` | -0.2 | `0x756f50` |
+| `Tech_Datas` | `SetTechStatPoints` | 2.55 | `0x756e98` |
+| `Tech_Datas` | `SetTechStatLevel` | 0.4 | `0x756fbc` |
+| `Tech_Datas` | `SetTechStatLevel` | 1.48 | `0x756a80` |
+| `Tech_Datas` | `SetTechStatLevel` | 0.57 | `0x756ee0` |
+| `Tech_Datas` | `SetTechStatLevel` | -0.1 | `0x757018` |
+| `Tech_Datas` | `GetCostUpgrade` | 2.55 | `0x756e98` |
+| `Tech_Datas` | `SetTechLabLevel` | 0.05 | `0x756e18` |
+| `Tech_Datas` | `SetTechLabLevel` | 0.3 | `0x7570e0` |
+| `Tech_Datas` | `GetPlayerUpgradePrice` | 0.12 | `0x756b38` |
+| `Tech_Datas` | `GetPlayerUpgradePrice` | 150000.0 | `0x756cc4` |
+| `Tech_Datas` | `GetDroneUpgradePrice` | 0.12 | `0x756b38` |
+| `Tech_Datas` | `GetDroneUpgradePrice` | 150000.0 | `0x756cc4` |
 
 ### Getter trả hằng số (nếu có)
 
