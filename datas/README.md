@@ -1,0 +1,42 @@
+# `datas/` — data pack WindWings
+
+Dữ liệu bóc từ APK **WindWings: Space Shooter 1.3.118**, đã chuẩn hoá thành JSON để dùng cho
+bản clone (engine nào cũng đọc được). Sinh tự động bằng:
+
+```bash
+python3 tools/apk-analyze/data_pack.py --root .   # đọc từ docs/apk-analysis/*.csv
+python3 datas/validate.py                          # kiểm tra tính nhất quán
+```
+
+## Nội dung
+
+| File | Bản ghi | Ý nghĩa |
+|---|---:|---|
+| `ships.json` | 25 | roster tàu (`id`, `star`, `actived`, sprite) |
+| `drones.json` | 13 | roster drone |
+| `bosses.json` | 46 | wave → boss icon (ch1 `7001–7022`, ch2 `9001–9024`) |
+| `items.json` | 6 | item rơi (`index`, icon, 5 sprite stat) |
+| `enemy_hp.json` | 981 | HP serialize của từng enemy/boss component |
+| `boss_hp.json` | 277 | gom theo prefab gốc, bỏ bản trùng scene |
+| `iap_products.json` | 170 | product ID, tách consumable / non-consumable |
+| `sprites.csv` | ~2.800 | `path_id → tên sprite + file PNG` (chỉ có sau lần export mới) |
+| `../i18n/en.json`, `vi.json` | 1.415 key | chuỗi UI tiếng Anh / tiếng Việt |
+
+## Quy ước
+
+- `sprite_path_id` / `sprite_name`: **pathID Unity**, không phải asset path. Tên chỉ có khi
+  `docs/apk-analysis/04-asset-manifest.csv` đã có cột `path_id` (lần chạy pipeline mới).
+  Tra bằng `sprites.csv`.
+- `star`: hệ số sức mạnh (2.0 → 5.11) — **không phải** sao hiển thị.
+- `actived: false` = có trong data nhưng chưa mở cho người chơi.
+- HP trong `enemy_hp.json` là giá trị **serialize sẵn trong prefab**; HP runtime còn bị nhân bởi
+  `Enemy_Data_Balance` và cấu hình stage.
+- Các class config nằm trong code (`Player_Get_Datas`, `Droid_Data_Balance`, `Tech_Datas`,
+  `Stage_Get_Datas`, `Map_Get_Datas`, `Enemy_Data_Balance`, `Device_Get_Data`, `GameDatas`)
+  **không được serialize** trong build → giá trị nằm trong thân hàm IL2CPP, cần decompile
+  `libil2cpp.so` mới lấy được. Chúng không có trong pack này.
+
+## Bản quyền
+
+ID, số liệu và khoá chuỗi là dữ liệu kỹ thuật của game gốc (GCenter). Dùng để tham chiếu thiết kế
+cho bản clone của bạn; **không** phát hành lại kèm asset/âm thanh/nội dung chữ gốc.

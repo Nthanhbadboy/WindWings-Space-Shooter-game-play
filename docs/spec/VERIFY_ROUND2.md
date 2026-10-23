@@ -117,6 +117,22 @@ con số không kèm định nghĩa sẽ không bảo vệ được — nó ch�
 
 ---
 
+## 5b. Cập nhật cùng ngày — dữ liệu đã kéo về repo
+
+Nhánh dữ liệu tiến lên `6dc5c4bf5` và **đã đóng hai mục tôi đánh dấu**:
+
+| Mục | Trước | Nay |
+|---|---|---|
+| `Enemy_Appear` chưa có asm | §2a | **Có.** `Appear` = vỏ gọi delegate 32 B, không logic. Có **39 lớp con**, cả 39 là `*_Director` |
+| Ghép rig → prefab | chỉ suy theo tên bone, 18/27 | **Có typetree `SkeletonAnimation`** → ghép trực tiếp bằng con trỏ |
+
+**Và sửa một kết luận của chính tôi:** 4 rig có animation tên đòn, nhưng chỉ **2 là boss**.
+`580619` (`skeleton__17`) và `580623` (`skeleton__5`) nằm trên **`Popup_UnlockShip`** — 18 animation
+`Attack01–12` dài 0,4 s là hiệu ứng mở popup mua tàu.
+
+Bộ kiểm nay **62 claim**: thêm nhóm **G** (9 claim) cho bằng chứng mới, và đọc **bản local trước**
+— chạy được cả khi không có nhánh dữ liệu. Toàn bộ nguồn ghi ở `datas/PROVENANCE.md`.
+
 ## 6. Cách chạy lại
 
 ```bash

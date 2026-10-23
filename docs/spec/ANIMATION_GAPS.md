@@ -60,13 +60,42 @@ Enemy_Controller · Enemy_Display · Enemy_Health · Enemy_Movement · Enemy_Get
 **`Enemy_Appear` không có trong danh sách.** Tức lớp animation duy nhất mà *mọi* enemy đều có
 (§0: 107/109 prefab) thì **chưa được xuất một dòng asm nào**.
 
-> Nhận định: đây là việc rẻ nhất trong toàn bộ danh sách — thêm `Enemy_Appear` (và
-> `Enemy_Rotate`, `Enemy_Sub`) vào `TARGETS` của exporter rồi chạy lại, giống hệt cách commit
-> `cf0a71d18` đã làm cho `Enemy_Get_Datas` / `Enemy_Controller` / `Enemy_Health`.
-> Không cần thiết bị, không cần chạy game.
-
 **Vì sao quan trọng:** trong game bắn máy bay, "enemy xuất hiện" là hiệu ứng người chơi thấy
 **mỗi wave, mỗi enemy** — nhưng hiện chỉ biết nó tồn tại, chưa biết nó làm gì.
+
+#### 2a′. **Đã đóng một phần** (dữ liệu kéo về 23/10, commit nhánh dữ liệu `6dc5c4bf5`)
+
+Exporter đã chạy lại và **`Enemy_Appear.asm.txt` giờ có** (cùng `BossSpineEventHandler`). Đọc ra:
+
+```asm
+;;; Appear  public virtual void Appear(Action appeared)
+    0x1582108: str  x30, [sp, #-0x10]!
+    0x158210c: cbz  x1, #0x1582124      ; callback == null -> thoát
+    0x1582110: ldr  x2, [x1, #0x18]     ; Action._methodPtr
+    0x1582114: ldr  x0, [x1, #0x40]     ; Action._target
+    0x1582118: ldr  x1, [x1, #0x28]     ; Action._methodPtrAux / arg
+    0x158211c: ldr  x30, [sp], #0x10
+    0x1582120: br   x2                  ; tail-call, không làm gì khác
+```
+
+**32 byte, và không có logic nào của riêng nó.** `Enemy_Appear.Appear` chỉ là **vỏ gọi delegate**:
+nếu callback null thì thoát, ngược lại nhảy thẳng vào callback. Vì thế lớp này **không có field
+serialize** — nó không giữ trạng thái, chỉ giữ một `Action`.
+
+Điều đó giải thích luôn vì sao có đúng **39 lớp con**, và **cả 39 đều là `*_Director`**:
+
+```
+Boss1 · Boss3 · Boss4 · Boss4Lite · Boss5 · Boss6 · Boss6_Mini · Boss7 · Boss8 · Boss9
+Boss9_Mini1 · Boss9_Mini2 · Boss10 · Boss11 · Boss12 · Boss13 · Boss15 · Boss17 · Boss18
+Boss_Director · Boss_Appear · MB2..MB16 · MB19 · MB6_ChildDirector · MiniBoss1_Director
+```
+
+⇒ Cơ chế xuất hiện nằm ở **lớp con**, không ở lớp cha. Muốn biết boss hiện ra thế nào phải đọc
+từng `*_Director` — và một phần đã có asm (`Boss1_Director.asm.txt` cùng 4 coroutine
+`_WarningBossAppear`, `_OffGun1Head`, `_OnGun1Static`, `_RotateObject`).
+
+> **Còn thiếu:** asm của 38 director còn lại. Nhưng câu hỏi đã đổi dạng: không còn là "không biết
+> `Enemy_Appear` làm gì" (nó không làm gì), mà là "director nào ghi đè `Appear`".
 
 ### 2b. `Enemy_HitSkeletonRenderer` nằm trên **3** prefab, không phải 2
 
@@ -99,10 +128,31 @@ từ `m_GameObject` của từng hit-renderer lên root:
 ⇒ **23/27 rig là rig phụ** (súng / cánh / bộ phận), không phải thân boss. Câu "27 rig Spine" dễ
 bị đọc thành "27 đơn vị có animation riêng" — không phải.
 
-> Nhận định: với **46 boss** trong `Data_Boss` và **39 prefab `Boss-*`**, mà chỉ **4 rig** có
-> animation đòn, thì phần lớn boss **không** dùng Spine để đánh — chúng dùng `Animator` (92
-> instance trên 36 prefab `Boss-*`) hoặc thuần code. Đây là kết luận cấu trúc chưa tài liệu nào
-> viết ra, và nó ảnh hưởng trực tiếp tới kế hoạch clone.
+#### 2c′. Ghép trực tiếp: **chỉ 2 trong 4 rig có đòn là boss**
+
+Typetree `SkeletonAnimation` — **20 instance, export 23/10** — cho `skeletonDataAsset.m_PathID` và
+`m_GameObject.m_PathID`; đi lên `transform-tree` tới `prefab-roots` là ra prefab. Không còn phải
+đoán theo tên bone:
+
+| rig | animation | gắn vào | loại |
+|---|---|---:|---|
+| `580611` = `skeleton__21` | 10, có `Attack1–4` | **`Boss-39001`** (`Enemy_Ingame/Body/Boss 1/Skeleton`) | **boss** |
+| `580613` = `skeleton__8` | 9, có `Attack1–3` | **`Boss-39003`** (`Body/Boss 1/Skeleton`) | **boss** |
+| `580619` = `skeleton__17` | 18 × `Attack01–12` | `Popup_UnlockShip` | **UI** |
+| `580623` = `skeleton__5` | `AttackSpec`/`TopL`/`TopR` | `Popup_UnlockShip` | **UI** |
+
+Các rig còn lại cũng lộ nguyên hình: `580615` (`Saw`) → `EndgameLoader`; `580633` →
+`Board_Combo`/`Board_MiniCombo`; `580621`/`580627`/`580643` → `Board_Players`;
+`580629`/`580635`/`580641`/`580659`/`580663` → `Player_10004/10007/10009/10015/10018/10020`.
+
+> **Sửa một kết luận của chính tôi:** §2c bản trước viết "có 4 rig có đòn", ngụ ý 4 boss. Sai —
+> **2 rig trong số đó là popup UI**. `skeleton__17` với 18 animation "Attack" 0,4 s không phải
+> boss bắn nhanh, mà là **hiệu ứng mở popup mua tàu**. Con số đúng là: **2 rig boss**, và cả hai
+> đều là thân boss (`Body/Boss 1/Skeleton`), không phải súng.
+
+> Nhận định: với **46 boss** trong `Data_Boss` và **39 prefab `Boss-*`**, mà chỉ **2 rig** có
+> animation đòn gắn trên boss, thì phần lớn boss **không** dùng Spine để đánh — chúng dùng
+> `Animator` (154 instance, 63 prefab) hoặc thuần code trong các `*_Director`.
 
 ### 2d. Thời lượng đòn của 2 rig "họ Boss 1" dài bất thường — chưa ai đối chiếu
 
@@ -172,8 +222,28 @@ statePreAttack2=Chuyensangattack2  statePreAttack3=Chuyensangattack3
 | **`skeleton__21`** | **8 / 8** |
 | `skeleton__8` | 5 / 8 (thiếu `Xuathien`, `Dead`, `UIShow`) |
 
-⇒ **`skeleton__21` là rig của `Boss-39002`.** Đây chính là mắt nối mà `23-spine-anim.md` ghi là
-"chưa map rig → đơn vị". Đóng được cho **1 trong 4** rig có đòn.
+⇒ Suy ra `skeleton__21` là rig của họ Boss 1. Đây chính là mắt nối mà `23-spine-anim.md` ghi là
+"chưa map rig → đơn vị".
+
+#### 3.1′. Sửa: rig đó gắn vào **`Boss-39001`**, không phải `Boss-39002`
+
+Có typetree `SkeletonAnimation` rồi thì không cần suy nữa:
+
+| bằng chứng | kết quả |
+|---|---|
+| `SkeletonAnimation` instance `602882` → `skeletonDataAsset` = **580611** | rig `skeleton__21` |
+| cùng instance → `m_GameObject` = `163303`, đi lên `transform-tree` | root **`Boss-39001`** |
+| đường dẫn đầy đủ | `Enemy_Ingame/Body/Boss 1/Skeleton` |
+| `Boss1_Director` instance `582209` → `m_GameObject` `185746` | root **`Boss-39002`** |
+
+⇒ **Hai prefab khác nhau.** `580611` gắn trên **`Boss-39001`** (mức **A**, đọc trực tiếp con trỏ);
+`Boss-39002` mang `Boss1_Director` (mức **A**) nhưng **SkeletonAnimation của nó không nằm trong 20
+instance đã export** — nên quan hệ `Boss-39002 → 580611` chỉ là **B (suy luận)**: director của nó
+đặt 8 tên state, và cả 8 đều có trong `skeleton__21`.
+
+> Hai cách đọc vẫn còn mở: (a) hai prefab dùng chung rig 580611; (b) `Boss-39002` có rig riêng
+> chưa export. Không đủ dữ liệu để chọn — nhưng **không còn mù mờ như trước**, vì giờ biết chắc
+> 580611 thuộc `Boss-39001`.
 
 ### 3.2 Ghép rig ↔ TextAsset: 18/27 khớp 1-1, 9 cái **không phân biệt được**
 
@@ -227,10 +297,10 @@ của con số 109. Cho tới lúc đó, **203 và 87 là số không kiểm l�
 
 | Ưu tiên | Việc | Vì sao rẻ | Đóng được gì |
 |---:|---|---|---|
-| **1** | Thêm `Enemy_Appear`, `Enemy_Rotate`, `Enemy_Sub` vào `TARGETS` của exporter, chạy lại CI | Cùng khuôn commit `cf0a71d18`, không cần thiết bị | Toàn bộ §2a |
+| ~~**1**~~ | ~~Thêm `Enemy_Appear`, `Enemy_Rotate`, `Enemy_Sub` vào `TARGETS`~~ | ✅ **xong** ở nhánh dữ liệu `6dc5c4bf5` | §2a′ — `Appear` là vỏ delegate, 39 lớp con |
 | ~~**2**~~ | ~~Nối `SkeletonAnimation.AnimationName` + `Skeleton.time` vào bridge~~ | ✅ **xong** — `GET /anim` | §2e — còn thiếu **số đo trên máy** |
 | **3** | Ghi rõ định nghĩa "109 prefab roster" trong `ANIMATION.md` | Chỉ là viết lại | §4 |
-| **4** | Ghép rig → prefab cho 3 rig còn lại | Cần `SkeletonRenderer`/`SkeletonAnimation` typetree — **chưa export** | §3.1 mở rộng |
+| ~~**4**~~ | ~~Ghép rig → prefab cho 3 rig còn lại~~ | ✅ **xong** — typetree `SkeletonAnimation` đã export | §2c′, §3.1′ — **2 rig boss**, 2 rig UI |
 | **5** | Đối chiếu `Attack1` 33 s với nhịp thật | Cần #2 trước | §2d |
 | 6 | Giải mã `m_StreamedClip` | Đắt, và đã có nhịp + Spine | §1 #2 |
 | 7 | 43 director còn lại | Rất đắt, giá trị biên | §1 #5 |
@@ -239,13 +309,14 @@ của con số 109. Cho tới lúc đó, **203 và 87 là số không kiểm l�
 
 ## Còn thiếu / phải đoán
 
-- **`Boss-39001` và `Boss-39002` có thể dùng chung một rig.** Phép thử "slot của hit-renderer
-  phải là tập con của slot rig" chỉ cho **một** ứng viên cho Boss-39001 — chính `580611`
-  (`skeleton__21`), mà đó lại là rig của Boss-39002 (§3.1). Hai cách đọc: (a) hai boss dùng
-  chung rig; (b) `skeleton` trong hit-renderer là **skeleton con** (súng), không phải skeleton
-  thân. **Chưa phân xử** — thiếu typetree của `SkeletonRenderer`.
-- **`skeleton__17`** (12 đòn × 0,4 s, `Shot` ở 0,333 s) trông giống **rig súng** hơn là thân
-  boss, nhưng chưa có bằng chứng trực tiếp. Đừng gán nó cho boss nào.
+- ~~**`Boss-39001` và `Boss-39002` có thể dùng chung một rig.**~~ → **đã phân xử một nửa.**
+  `580611` gắn trên **`Boss-39001`** (`Enemy_Ingame/Body/Boss 1/Skeleton`), đọc trực tiếp từ
+  `SkeletonAnimation` → `m_GameObject` → `transform-tree` (§3.1′). Còn lại: `Boss-39002` mang
+  `Boss1_Director` nhưng SkeletonAnimation của nó **không có trong 20 instance đã export**, nên
+  quan hệ với 580611 vẫn là **mức B**.
+- ~~**`skeleton__17`** trông giống rig súng~~ → **sai, đã xác định: `Popup_UnlockShip`.** 18
+  animation tên `Attack01–12` dài 0,4 s là **hiệu ứng mở popup mua tàu**, không phải đòn.
+  `skeleton__5` cùng popup đó.
 - **Chưa rõ `UIShow` / `UiShow`** nằm trong rig boss (`skeleton__21`, `skeleton__8`) nghĩa là gì
   — có thể là animation cho màn preview boss trước khi vào trận. Chưa kiểm.
 - **Số 87/109 và 203** ở §4 **không tái lập được** bằng dữ liệu trong repo.

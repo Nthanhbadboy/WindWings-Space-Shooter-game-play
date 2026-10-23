@@ -62,16 +62,30 @@ def git(*args: str) -> bytes | None:
 
 
 def ref_blob(path: str) -> bytes | None:
-    """Thân file tại ref dữ liệu, đã giải nén nếu là .gz."""
+    """Thân file, đã giải nén nếu là .gz.
+
+    Đọc bản **local trước** (`datas/`, `reverse-engineering/` đã được kéo về repo),
+    chỉ khi vắng mới rơi về `git show` trên nhánh dữ liệu. Nhờ vậy bộ kiểm không
+    phụ thuộc vào một nhánh có thể biến mất, và vẫn chạy được trên clone sạch nếu
+    dữ liệu đã nằm trong repo.
+    """
     key = "blob:" + path
     if key in _cache:
         return _cache[key]  # type: ignore[return-value]
     raw = None
-    for ref in REFS:
-        raw = git("show", f"{ref}:{path}")
-        if raw:
-            break
-    if raw is not None and path.endswith(".gz"):
+    local = os.path.join(ROOT, path)
+    if os.path.isfile(local):
+        try:
+            with open(local, "rb") as f:
+                raw = f.read()
+        except OSError:
+            raw = None
+    if raw is None:
+        for ref in REFS:
+            raw = git("show", f"{ref}:{path}")
+            if raw:
+                break
+    if raw is not None and path.endswith(".gz") and raw[:2] == b"\x1f\x8b":
         try:
             raw = gzip.decompress(raw)
         except OSError:
@@ -353,6 +367,11 @@ TA_DIR = "reverse-engineering/textassets"
 
 
 def ta_names() -> list[str] | None:
+    local_dir = os.path.join(ROOT, TA_DIR)
+    if os.path.isdir(local_dir):
+        names = [n for n in os.listdir(local_dir) if n.endswith(".json")]
+        if names:
+            return names
     raw = git("ls-tree", "-r", "--name-only", f"{REFS[0]}", TA_DIR + "/")
     if not raw:
         return None
@@ -609,6 +628,198 @@ claim("E11", MISSIONS, "**31 ID**", 31,
 
 claim("E12", "docs/spec/MISSIONS_STARS.md", "**31 phần tử**", 31,
       lambda: len(pfield(STAGE_GET, "listIgroneEnemies")() or []))
+
+
+# ── G. ghép rig ↔ prefab bằng typetree SkeletonAnimation ───────────────
+# Bằng chứng mạnh nhất hiện có: con trỏ trực tiếp, không suy theo tên bone.
+
+SA_DIR = "reverse-engineering/scriptableobjects/Spine.Unity.SkeletonAnimation"
+
+
+def _tt_maps():
+    """(go→transform, transform→father, transform→prefab name)."""
+    key = "ttmaps"
+    if key in _cache:
+        return _cache[key]
+    tt = ref_lines("reverse-engineering/raw/typetrees/transform-tree.tsv.gz")
+    pr = ref_blob("reverse-engineering/raw/typetrees/prefab-roots.csv")
+    if tt is None or pr is None:
+        _cache[key] = None
+        return None
+    import csv as _csv
+    import io as _io
+    go2tr, father = {}, {}
+    for ln in tt[1:]:
+        parts = ln.split("\t")
+        if len(parts) < 3:
+            continue
+        tr, go, fa = parts[0], parts[1], parts[2]
+        go2tr[go] = tr
+        father[tr] = fa if fa not in ("-1", "0", "") else None
+    roots = {r["transform_path_id"]: r["name"]
+             for r in _csv.DictReader(_io.StringIO(pr.decode("utf-8", "replace")))}
+    _cache[key] = (go2tr, father, roots)
+    return _cache[key]
+
+
+def _spine_instances():
+    """[(gameobject path_id, rig path_id)] từ typetree SkeletonAnimation."""
+    key = "spine_inst"
+    if key in _cache:
+        return _cache[key]
+    paths = spine_instance_paths()
+    if paths is None:
+        return None
+    out = []
+    for pth in paths:
+        d = ref_json(pth)
+        if not d:
+            continue
+        try:
+            out.append((str(d["m_GameObject"]["m_PathID"]),
+                        d["skeletonDataAsset"]["m_PathID"]))
+        except (KeyError, TypeError):
+            continue
+    _cache[key] = out
+    return out
+
+
+def spine_instance_paths() -> list[str] | None:
+    local = os.path.join(ROOT, SA_DIR)
+    names = None
+    if os.path.isdir(local):
+        names = [n for n in os.listdir(local) if n.endswith(".json")]
+    if not names:
+        raw = git("ls-tree", "-r", "--name-only", REFS[0], SA_DIR + "/")
+        if not raw:
+            return None
+        names = [os.path.basename(p) for p in raw.decode().splitlines() if p.endswith(".json")]
+    return [f"{SA_DIR}/{n}" for n in sorted(names)]
+
+
+def rig_prefab(rig: int):
+    """Prefab root mà một rig được gắn vào, hoặc danh sách rỗng."""
+    inst = _spine_instances()
+    maps = _tt_maps()
+    if inst is None or maps is None:
+        return None
+    go2tr, father, roots = maps
+    out = []
+    for go, r in inst:
+        if r != rig:
+            continue
+        tr = go2tr.get(go)
+        seen = set()
+        while tr and tr not in seen:
+            seen.add(tr)
+            if tr in roots:
+                out.append(roots[tr])
+                break
+            tr = father.get(tr)
+    return out
+
+
+def appear_subclasses() -> int | None:
+    raw = ref_blob("reverse-engineering/il2cpp/dump.cs.gz")
+    if raw is None:
+        return None
+    n = 0
+    for ln in raw.decode("utf-8", "replace").splitlines():
+        if " class " in ln and ": Enemy_Appear" in ln:
+            n += 1
+    return n
+
+
+def appear_asm_is_delegate() -> bool | None:
+    lines = ref_lines("reverse-engineering/raw/il2cpp-consts/Enemy_Appear.asm.txt")
+    if lines is None:
+        return None
+    body = "\n".join(lines)
+    # Vỏ gọi delegate: tail-call qua thanh ghi, có nhánh null, không có lệnh nào khác
+    return "br       x2" in body and "cbz      x1" in body
+
+
+claim("G1", GAPS, "**20 instance, export 23/10**", 20,
+      lambda: None if spine_instance_paths() is None else len(spine_instance_paths()))
+
+claim("G2", GAPS, "**`Boss-39001`** (`Enemy_Ingame/Body/Boss 1/Skeleton`)", ["Boss-39001"],
+      lambda: rig_prefab(580611), "rig thân boss, mức A")
+
+claim("G3", GAPS, "**`Boss-39003`** (`Body/Boss 1/Skeleton`)", ["Boss-39003"],
+      lambda: rig_prefab(580613), "rig thân boss, mức A")
+
+claim("G4", GAPS, "| `580619` = `skeleton__17` | 18 × `Attack01–12` | `Popup_UnlockShip` | **UI** |",
+      ["Popup_UnlockShip"],
+      lambda: rig_prefab(580619),
+      "18 'attack' 0,4 s là hiệu ứng popup, không phải đòn boss")
+
+claim("G5", GAPS, "| `580623` = `skeleton__5` | `AttackSpec`/`TopL`/`TopR` | `Popup_UnlockShip` | **UI** |",
+      ["Popup_UnlockShip"],
+      lambda: rig_prefab(580623))
+
+claim("G6", GAPS, "**39 lớp con**", 39, appear_subclasses,
+      "mọi lớp con của Enemy_Appear đều là *_Director")
+
+claim("G7", GAPS, "**32 byte, và không có logic nào của riêng nó.**", True,
+      appear_asm_is_delegate,
+      "Appear = vỏ gọi delegate: cbz null + br thanh ghi")
+
+def boss39002_has_no_exported_skeleton() -> bool | None:
+    """Boss-39002 có SkeletonAnimation trong 20 instance đã export không?
+
+    Doc khẳng định **không**, nên quan hệ của nó với rig 580611 mới chỉ là mức B.
+    Nếu export sau này có thêm, claim này đỏ và buộc phải nâng mức.
+    """
+    maps = _tt_maps()
+    inst = _spine_instances()
+    if maps is None or inst is None:
+        return None
+    go2tr, father, roots = maps
+    for go, _rig in inst:
+        tr = go2tr.get(go)
+        seen = set()
+        while tr and tr not in seen:
+            seen.add(tr)
+            if tr in roots:
+                if roots[tr] == "Boss-39002":
+                    return False
+                break
+            tr = father.get(tr)
+    return True
+
+
+claim("G8", GAPS, "**SkeletonAnimation của nó không nằm trong 20", True,
+      boss39002_has_no_exported_skeleton,
+      "nếu sai thì quan hệ Boss-39002 → 580611 phải nâng từ B lên A")
+
+claim("G9", "docs/spec/ANIMATION_GAPS.md", "`Boss1_Director` instance `582209`", ["Boss-39002"],
+      lambda: _boss1_director_root(), "director → prefab, đọc trực tiếp")
+
+
+def _boss1_director_root():
+    lines = ref_lines("reverse-engineering/raw/typetrees/Boss1_Director.jsonl.gz")
+    maps = _tt_maps()
+    if lines is None or maps is None:
+        return None
+    go2tr, father, roots = maps
+    for ln in lines:
+        if not ln.strip():
+            continue
+        try:
+            o = json.loads(ln)
+        except json.JSONDecodeError:
+            continue
+        if str(o.get("path_id")) != "582209":
+            continue
+        go = str(o["tree"]["m_GameObject"]["m_PathID"])
+        tr = go2tr.get(go)
+        seen = set()
+        while tr and tr not in seen:
+            seen.add(tr)
+            if tr in roots:
+                return [roots[tr]]
+            tr = father.get(tr)
+    return []
 
 
 # ── chạy ───────────────────────────────────────────────────────────────
