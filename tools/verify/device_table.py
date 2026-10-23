@@ -12,11 +12,13 @@ jd = json.load(open("reverse-engineering/il2cpp/ia-resolved.json",
 rows = jd["methods"]["Device_Get_Data.cctor"]
 out = []
 for e in rows:
+    assert e["length_valid"] and len(e["ints"]) == e["len"]
     floats = [struct.unpack("<f", struct.pack("<i", v))[0] for v in e["ints"]]
-    out.append({"index": len(out), "len": e["len"], "stats": floats})
+    out.append({"index": len(out), "len": e["len"], "stats": floats, "field": e["field"],
+                "initialize_array_addr": e["addr"], "array_new_addr": e["array_new_addr"]})
 json.dump({"source": "Device_Get_Data..cctor List<float[5]> qua ia-resolved "
-                     "(A-); cột chưa đặt tên — GetStatValue1/2 quyết định",
-           "devices": out},
+                     "(PROVISIONAL); 12 array captures, NOT 12 proven devices; field grouping pending",
+           "arrays": out},
           open("datas/device_table.json", "w", encoding="utf-8"),
           ensure_ascii=False, indent=1)
 for r in out:

@@ -72,3 +72,27 @@ Output mới giữ cả call site, array-new site, raw blob, field và length_va
 **Chưa có kết quả tái xuất được lưu:** Actions 39918069220 thất bại tại
 Commit reports; dữ liệu 540 token hiện tại vẫn là bản cũ. Lệnh rerun bị GitHub
 từ chối (workflow không rerun được). Không nâng mức tin cậy từ bản sửa code này.
+
+## Vòng tái xuất thành công — supersedes số liệu 540 token ở trên
+
+Actions **39919731561** thành công, gồm bước Commit reports.
+Capture `actual-initializearray-call-v2` cho **616 mảng / 12 method**, tất cả
+khớp dung lượng blob với chiều dài asm (padding <16 byte).
+Riêng Map: **576/576 IA** giải được, **0 sai độ dài**.
+
+Nguyên nhân lệch trước đó: heuristic chọn đích `bl` theo tần suất và giữ x1
+qua call đã lấy token cũ tại array-new. Bản mới ghi token tại chính wrapper
+InitializeArray đã được script.json xác nhận, không suy từ tần suất.
+
+`tools/verify/map_resolved.py` nối bằng array-new address, assert số lượng,
+độ dài và toàn bộ 250 entry campaign không có None. Kết quả:
+- `datas/maps.json`: **250/250 entry đầy đủ**, index 4 = `[95,11,7008]`.
+- `datas/map_segments_full.json`: lưu field và call-site của mỗi IA.
+- Ngoài campaign còn 2 immediate-array chưa đọc đủ ở segment 69; mảng cuối
+  có thể là field mapChallangeIndexs, không được diễn giải thành obstacle map.
+- `datas/device_table.json`: **12 capture**, giữ provenance, đổi key `devices`
+  thành `arrays` để không ngầm coi mỗi capture là một device.
+
+Mọi kết luận vẫn PROVISIONAL về ngữ nghĩa gameplay/đánh số UI; chưa có
+runtime corroboration. Các bảng candidate cũ chỉ giữ làm lịch sử, không dùng
+làm đầu vào nếu đã có `maps.json` mới.

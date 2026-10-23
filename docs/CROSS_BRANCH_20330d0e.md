@@ -185,3 +185,10 @@ Cả hai đều **kiểm được bằng dữ liệu lần chạy tới**, khôn
 - Phía này đã tự giải xong bằng tĩnh: token InitializeArray
   (`src = 2*ordinal+1` trong `<PrivateImplementationDetails>` cùng image) —
   không cần runtime để lấy bảng map/device (report 31).
+
+### Update static extraction (sau vòng runtime-probe)
+
+Không merge nhánh kia. Đã tự tái xuất bằng capture đúng call-site:
+Map 576/576 blob đúng độ dài, campaign 250/250 entry có giá trị; report 31.
+Số liệu 540 token, 19 lệch, thiếu entry 4 trước đó được thay thế. File raw
+`ia-resolved.json` / `ia-audit.json` giữ đầy đủ provenance và kiểm tra.
