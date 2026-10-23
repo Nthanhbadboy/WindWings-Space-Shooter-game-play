@@ -117,6 +117,14 @@ không biết **màn nào** biến mất giữa hai lần chạy (16 màn chỉ 
   Kết quả đầu tiên: `Player_Health` gọi `GetStartHp` trong lambda của `Start`, không thấy
   đường gán HP theo tàu trong các class đã quét (mức B — chưa đọc hết rẽ nhánh).
 
+## 3i. Commit `66367993` (device, 01:56)
+
+- Họ sửa lại kết luận của chính họ: device **có** ảnh hưởng HP qua `Player_Health.OnChangeDataDevice`
+  (không qua `GetStartHp`). Đối chiếu dữ liệu mình vừa export: method này có pool
+  `100 / 1.0 / 0.05 / 0.5`, 2 phép `fadd`, và gọi `GainHealth` — **khớp** cơ chế "đổi device → hồi HP".
+- Công thức device `GetStatValue = base[rank] + pct[type]×(lv+1)`: trace của mình cho
+  `GetStatValue2` có ngưỡng compare 4/2/2/1/3/999 + `×0.5` — khớp về cấu trúc rẽ nhánh theo rank/type.
+
 ## 4. Điều kiện lật ngược
 
 - Nếu `Enemy_Physics` export ra mà **phần lớn field rỗng** (như `Spawner.dataScript` = 0), thì
