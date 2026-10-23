@@ -51,19 +51,19 @@ if curl -fL --retry 2 --silent -o .ci/bep6-phone-refs.zip \
   mkdir -p .ci/phone-refs "$REFS"
   unzip -q -o .ci/bep6-phone-refs.zip -d ".ci/phone-refs" || true
   # zip layout: <ziproot>/bep6-refs-phone/{bep6-core-phone,bep6-interop}
-  n=$(find "$REFS/bep6-refs-phone" -name '*.dll' 2>/dev/null | wc -l)
-  if [ "$n" -gt 0 ]; then
-    log "phone refs already in place: $n dll"
+  src=$(find .ci/phone-refs -maxdepth 4 -type d -name 'bep6-refs-phone' 2>/dev/null | head -1 || true)
+  if [ -n "$src" ]; then
+    mv "$src" "$REFS/bep6-refs-phone"
   else
-    src=$(find .ci/phone-refs -maxdepth 3 -type d -name 'bep6-refs-phone' | head -1)
-    if [ -n "$src" ]; then
-      mv "$src" "$REFS/bep6-refs-phone"
-    else
-      src=$(find .ci/phone-refs -maxdepth 3 -type d -name 'bep6-*' | head -1)
-      if [ -n "$src" ]; then mv "$src" "$REFS/bep6-refs-phone"; fi
-    fi
-    rm -rf .ci/phone-refs
-    log "phone refs: $(find "$REFS/bep6-refs-phone" -name '*.dll' 2>/dev/null | wc -l) dll"
+    src=$(find .ci/phone-refs -maxdepth 4 -type d -name 'bep6-*' 2>/dev/null | head -1 || true)
+    if [ -n "$src" ] && [ -d "$src" ]; then mv "$src" "$REFS/bep6-refs-phone"; fi
+  fi
+  rm -rf .ci/phone-refs
+  if [ -d "$REFS/bep6-refs-phone" ]; then
+    log "phone refs: $( (find "$REFS/bep6-refs-phone" -name '*.dll' 2>/dev/null) | wc -l ) dll"
+  else
+    log "phone refs: nested dirs not found, listing dump:"
+    find .ci -maxdepth 3 -type d | sed 's/^/  /' | head -20 || true
   fi
 else
   log "phone refs not available (skipping)"
