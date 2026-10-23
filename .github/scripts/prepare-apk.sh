@@ -30,6 +30,7 @@ done
 
 log() { printf '[prepare-apk] %s\n' "$*"; }
 die() { printf '[prepare-apk] ERROR %s\n' "$*" >&2; exit 1; }
+trap 'printf "[prepare-apk] FAILED at line %s: %s\n" "$LINENO" "$BASH_COMMAND" >&2' ERR
 
 emit() {
   printf '%s\n' "$1"
@@ -117,6 +118,7 @@ else
     esac
   done
   [ -n "$BASE" ] || BASE="${FOUND[0]}"
+  cp "$BASE" "$OUT/base.apk"
 
   SPLITS=""
   for f in "${FOUND[@]}"; do
@@ -129,22 +131,25 @@ else
   # A base-only install of a split app dies with INSTALL_FAILED_MISSING_SPLIT.
   # APKEditor repacks base + config splits into one universal APK.
   if [ -n "$SPLITS" ] && [ -n "${APKEDITOR_JAR:-}" ] && [ -f "${APKEDITOR_JAR:-}" ]; then
-    log "merging base + $(echo "$SPLITS" | wc -w) split(s) with APKEditor"
+    n_split=$(printf '%s' "$SPLITS" | wc -w)
+    log "merging base + $n_split split(s) with APKEditor"
     mkdir -p "$WORK/merge"
-    cp "$BASE" "$WORK/merge/base.apk"
+    cp "$OUT/base.apk" "$WORK/merge/base.apk"
     i=0
     for f in $SPLITS; do i=$((i+1)); cp "$f" "$WORK/merge/split$i.apk"; done
-    if java -jar "$APKEDITOR_JAR" m -i "$WORK/merge" -o "$OUT/base.apk" -f >> "$WORK/merge.log" 2>&1 \
-         && is_apk "$OUT/base.apk"; then
+
+    if java -jar "$APKEDITOR_JAR" m -i "$WORK/merge" -o "$WORK/universal.apk" -f >> "$WORK/merge.log" 2>&1 \
+         && is_apk "$WORK/universal.apk"; then
+      cp "$WORK/universal.apk" "$OUT/base.apk"
       log "merged OK → $OUT/base.apk ($(stat -c%s "$OUT/base.apk") B)"
       SPLITS=""
     else
-      log "merge FAILED — falling back to base + splits (needs adb)"
-      tail -20 "$WORK/merge.log" || true
-      cp "$BASE" "$OUT/base.apk"
+      log "merge FAILED — keeping base + splits (install needs adb install-multiple)"
+      tail -20 "$WORK/merge.log" 2>/dev/null || true
     fi
+  elif [ -n "$SPLITS" ]; then
+    log "splits present but APKEDITOR_JAR is unavailable — base-only install will likely fail"
   fi
-  cp "$BASE" "$OUT/base.apk" 2>/dev/null || true
 
   # OBB payloads travel outside the APK; only adb can push them.
   OBB_DIRS=$(find "$WORK/unz" -type d -ipath '*Android/obb*' 2>/dev/null | head -1 || true)
@@ -174,7 +179,7 @@ for f in "$OUT/base.apk" $SPLITS; do
   [ -f "$f" ] || continue
   bytes=$(stat -c%s "$f")
   manifest=$(unzip -l "$f" 2>/dev/null | grep -c 'AndroidManifest.xml' || true)
-  libs=$(unzip -l "$f" 2>/dev/null | grep -oE 'lib/[^/]+/' | cut -d/ -f2 | sort -u | paste -sd, -)
+  libs=$(unzip -l "$f" 2>/dev/null | grep -oE 'lib/[^/]+/' | cut -d/ -f2 | sort -u | paste -sd, - || true)
   obb=$(unzip -l "$f" 2>/dev/null | grep -c 'assets/bin/Data' || true)
   printf '%-52s %12s B  manifest=%-2s abis=%-24s unitydata=%s\n' \
     "$(basename "$f")" "$bytes" "$manifest" "${libs:-none}" "$obb" >> "$INVENTORY"
@@ -183,8 +188,8 @@ done
 # Native ABI across every part — Ramus devices are x86_64 (ramus.dev/docs/quickstart).
 ABIS=$(for f in "$OUT/base.apk" $SPLITS; do
          [ -f "$f" ] || continue
-         unzip -l "$f" 2>/dev/null | grep -oE 'lib/[^/]+/' | cut -d/ -f2
-       done | sort -u | paste -sd, -)
+         unzip -l "$f" 2>/dev/null | grep -oE 'lib/[^/]+/' | cut -d/ -f2 || true
+       done | sort -u | paste -sd, - || true)
 HAS_X86=false
 case ",$ABIS," in *,x86_64,*|*,x86,*) HAS_X86=true ;; esac
 
