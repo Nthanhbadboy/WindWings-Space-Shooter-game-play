@@ -462,12 +462,18 @@ Release, và **job đỏ nếu bất kỳ target nào lỗi** (exit code = số 
 | `POST /timescale` | round-trip `?v=`, trả `ok:true` |
 | đồng thời | 20 request `/health` song song → 20/20 200 (hàng đợi main-thread) |
 | shutdown | `Bridge.Shutdown()` dừng server, cổng được giải phóng |
+| **mirror contract** | self-test in đúng dòng `RAMUSB|{json}` mà `BridgeHost.Mirror()` sẽ ghi; CI đưa dòng đó qua `ramus-probe.mjs --offline --logcat-fixture` và đòi `verdict=ok`, `transport=logcat` |
 
 > Nhận định: self-test tìm ra 4 lỗi **500 thật** ở `/state /scene /hierarchy /find` mà
 > 4 target compile hoàn toàn không thấy. Nguyên nhân nằm ở **stub**, không ở bridge:
 > `QualitySettings.names` và `Scene.GetRootGameObjects()` trả `null`, trong khi Unity
 > trả mảng rỗng. Đã sửa stub theo đúng hành vi Unity. Đây là ví dụ cụ thể cho việc
 > "compile xanh" ≠ "chạy được".
+
+> **Đường "bridge anonymous" đã được chứng minh khép kín, trừ thiết bị.** Trial không có
+> adb ⇒ bridge chỉ đọc được qua mirror logcat. Phép thử `mirror contract` chạy đúng chuỗi
+> đó: `CompactStateJson()` → `RAMUSB|{json}` → parser của probe → report có `scene`,
+> `fps`, `transport: logcat`. Cái duy nhất còn thiếu là Unity thật gọi `Update()`.
 
 Self-test **không** chứng minh: reflection trên IL2CPP đọc đúng field của game,
 `/screenshot` chụp được frame thật, hay `/statics` trả 3 mảng `pct`. Những thứ đó

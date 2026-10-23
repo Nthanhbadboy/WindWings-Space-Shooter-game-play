@@ -63,6 +63,34 @@ Xoá file đó sau khi chạy xong — mỗi lần push kèm file sẽ tiêu m�
   `ui-*.json`, `ui-*.xml`.
 - Bản lưu bằng chứng: `runtime-probe/results/2026-10-23-trial-abi-smoke.md`.
 
+### 4b. Chạy "bridge anonymous" (trial + mirror logcat)
+
+Điều kiện duy nhất: **APK phải chứa `RamusBridge.dll`**. Gate sẽ từ chối chạy nếu thiếu
+(`bridge: no` trong inventory) — đó là hành vi đúng, không phải lỗi.
+
+```json
+{ "allow_no_bridge": false, "force_trial": true, "strict": true,
+  "scenario": "bridge-anonymous" }
+```
+
+Kỳ vọng khi APK có bridge và máy chạy được app:
+
+| Dấu hiệu | Ở đâu |
+|---|---|
+| `RAMUSB|{...}` trong logcat | `logcat.txt`, và mục *logcat evidence* của report |
+| `verdict: ok`, `transport: logcat` | đầu report |
+| `scene`, `rootCount`, `roots[].n` | bảng metric + `summary.json` |
+
+Nếu report ghi `bridge-unreachable` + `RAMUSB lines: 0`, đọc tiếp mục *Did the app start*:
+`activity started: no` ⇒ app chưa từng chạy (ABI/loader), **không phải** bridge hỏng.
+
+Phân biệt "chạy thật" với "skip": artifact ~60 KB và có `session:` là chạy thật;
+artifact ~3 KB, `session: n/a` là gate đã skip.
+
+Đã chứng minh sẵn trong CI (không cần thiết bị): job `bridge build` có step
+**Mirror contract test** — self-test sinh dòng `RAMUSB|` thật từ `CompactStateJson()`,
+parser của probe đọc lại và phải ra `verdict=ok`, `transport=logcat`.
+
 ### 5. Đã biết trước — đừng tiêu phiên để hỏi lại
 
 | Dữ kiện | Mức |
