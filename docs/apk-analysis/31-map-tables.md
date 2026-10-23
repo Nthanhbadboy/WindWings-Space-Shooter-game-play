@@ -62,3 +62,13 @@ thuộc field khác. Chưa gán tên/ý nghĩa cho các hàng.
 
 Kiểm toán exporter: đã khôi phục đoạn ghi field-defaults.json bị xóa nhầm
 khi dọn probe; các raw probe đã có được giữ để truy vết, ngừng sinh mới.
+
+### Vòng sửa capture tiếp theo
+
+`c5859b662`: bỏ chọn wrapper theo tần suất; chỉ ghi sự kiện tại đúng
+`bl 0x205b07c` (được script.json nhận diện InitializeArray). Token x1 bị
+xóa sau call theo ABI để tránh lấy token của mảng trước tại array-new.
+Output mới giữ cả call site, array-new site, raw blob, field và length_valid.
+**Chưa có kết quả tái xuất được lưu:** Actions 39918069220 thất bại tại
+Commit reports; dữ liệu 540 token hiện tại vẫn là bản cũ. Lệnh rerun bị GitHub
+từ chối (workflow không rerun được). Không nâng mức tin cậy từ bản sửa code này.
