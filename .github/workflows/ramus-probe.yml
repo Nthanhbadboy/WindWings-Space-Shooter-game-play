@@ -308,6 +308,10 @@ jobs:
                  > "$PROBE_OUT/boot.json" 2>&1; then
             echo "::error::The session did not survive install — see boot.json."
             cat "$PROBE_OUT/boot.json"
+            # Capture why: missing ABI, dead session, crash on native load.
+            npx --yes "$RAMUS_CLI" logcat --limit 500 > "$PROBE_OUT/logcat.txt" 2>&1 || true
+            grep -iE 'install_failed|no_matching_abi|unsatisfiedlink|il2cpp|fatal|crash' \
+              "$PROBE_OUT/logcat.txt" | tail -15 || true
             exit 1
           fi
 
@@ -430,6 +434,15 @@ jobs:
               echo '```'
               head -c 1500 "$PROBE_OUT/boot.json" 2>/dev/null || echo "no boot.json"
               echo '```'
+              if [ -f "$PROBE_OUT/logcat.txt" ]; then
+                echo
+                echo "### logcat (filtered)"
+                echo
+                echo '```'
+                grep -iE 'install_failed|no_matching_abi|unsatisfiedlink|il2cpp|fatal|unity|crash' \
+                  "$PROBE_OUT/logcat.txt" | tail -25 || tail -25 "$PROBE_OUT/logcat.txt"
+                echo '```'
+              fi
             } > "$PROBE_OUT/report.md"
           fi
           {

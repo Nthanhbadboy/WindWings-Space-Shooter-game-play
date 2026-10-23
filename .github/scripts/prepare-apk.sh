@@ -81,8 +81,23 @@ MAGIC=$(head -c 4 "$LOCAL" | od -An -tx1 | tr -d ' \n')
 [ "$MAGIC" = "504b0304" ] || die "$(basename "$LOCAL") is not a zip (magic $MAGIC) — truncated download?"
 
 # ── 2. is it already a plain APK? ──────────────────────────────────────────
+has_manifest() {
+  python3 - "$1" <<'PYMAN' 2>/dev/null || echo no
+import sys, zipfile
+try:
+    print("yes" if "AndroidManifest.xml" in zipfile.ZipFile(sys.argv[1]).namelist() else "no")
+except Exception:
+    print("no")
+PYMAN
+}
+
 is_apk() {
+  if [ "$(has_manifest "$1")" = "yes" ]; then return 0; fi
   unzip -l "$1" 2>/dev/null | awk '{ $1=$2=$3=""; sub(/^ +/,""); print }' | grep -qx 'AndroidManifest.xml'
+}
+
+count_entries() {  # count_entries <apk> <pattern>
+  unzip -l "$1" 2>/dev/null | grep -c -- "$2" || true
 }
 
 INVENTORY="$OUT/apk-inventory.txt"
@@ -146,7 +161,16 @@ else
     merge_rc=$?
     set -e
     MERGE_NOTE="java exit $merge_rc"
-    if [ -f "$WORK/universal.apk" ] && is_apk "$WORK/universal.apk"; then
+    need_libs=0
+    for f in $SPLITS; do
+      [ "$(count_entries "$f" 'lib/')" -gt 0 ] && need_libs=1
+    done
+    have_libs=0
+    [ -f "$WORK/universal.apk" ] && have_libs=$(count_entries "$WORK/universal.apk" 'lib/')
+
+    MERGE_NOTE="$MERGE_NOTE; lib entries: $have_libs (need: $need_libs)"
+    if [ -f "$WORK/universal.apk" ] && is_apk "$WORK/universal.apk" \
+         && { [ "$need_libs" -eq 0 ] || [ "$have_libs" -gt 0 ]; }; then
       cp "$WORK/universal.apk" "$OUT/base.apk"
       log "merged OK → $OUT/base.apk ($(stat -c%s "$OUT/base.apk") B, $MERGE_NOTE)"
       SPLITS=""
