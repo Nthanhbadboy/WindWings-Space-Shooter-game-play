@@ -478,9 +478,11 @@ jobs:
             echo "signed-in key mode" > "$PROBE_OUT/auth.txt"
           else
             # Mint as late as possible: the credential only lives 15 minutes.
-            npx --yes "$RAMUS_CLI" trial --force | tee "$PROBE_OUT/trial.json"
-            exp=$(jq -r '.expiresAt // empty' "$PROBE_OUT/trial.json" 2>/dev/null || true)
-            jq -c '.limits // {}' "$PROBE_OUT/trial.json" 2>/dev/null >> "$PROBE_OUT/auth.txt" || true
+            # Written to RUNNER_TEMP, never to $PROBE_OUT — that directory is
+            # uploaded as an artifact, and this JSON can carry the key itself.
+            npx --yes "$RAMUS_CLI" trial --force > "$RUNNER_TEMP/ramus-trial.json"
+            exp=$(jq -r '.expiresAt // empty' "$RUNNER_TEMP/ramus-trial.json" 2>/dev/null || true)
+            jq -c '.limits // {}' "$RUNNER_TEMP/ramus-trial.json" 2>/dev/null >> "$PROBE_OUT/auth.txt" || true
             echo "RAMUS_TRIAL_EXPIRES=$exp" >> "$GITHUB_ENV"
             if [ -n "$exp" ]; then
               echo "RAMUS_DEADLINE=$(date -u -d "$exp" +%s)" >> "$GITHUB_ENV"
@@ -588,6 +590,20 @@ jobs:
           test -n "$serial"
           echo "ADB_SERIAL=$serial" >> "$GITHUB_ENV"
           adb -s "$serial" forward tcp:8080 tcp:8080
+          # Which ABIs does this device actually accept? This is the fact the
+          # trial path could not establish.
+          adb -s "$serial" shell getprop ro.product.cpu.abilist | tee "$PROBE_OUT/device-abi.txt"
+          adb -s "$serial" shell getprop ro.product.cpu.abi | tee -a "$PROBE_OUT/device-abi.txt"
+
+          # Force a start attempt, then read main/crash — the buffers Unity,
+          # ActivityManager and AndroidRuntime write to, and the ones the trial
+          # transport never returns.
+          adb -s "$serial" shell monkey -p "$RAMUS_PACKAGE" -c android.intent.category.LAUNCHER 1 \
+            > "$PROBE_OUT/launch-adb.txt" 2>&1 || true
+          sleep 3
+          adb -s "$serial" logcat -b main -b crash -d > "$PROBE_OUT/main-crash-logcat.txt" 2>&1 || true
+          adb -s "$serial" shell dumpsys activity activities > "$PROBE_OUT/activities.txt" 2>&1 || true
+
           adb -s "$serial" shell pidof "$RAMUS_PACKAGE" || true
           curl -fsS --max-time 10 http://127.0.0.1:8080/health | tee "$PROBE_OUT/health-direct.json"
 
@@ -658,6 +674,31 @@ jobs:
           if [ "${STRICT:-true}" != "false" ]; then args+=(--strict); fi
           node .github/scripts/ramus-probe.mjs "${args[@]}"
 
+      - name: Dump main/crash buffers again (key mode)
+        if: env.RAMUS_MODE == 'key' && steps.gate.outputs.skip != 'true'
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          adb -s "$ADB_SERIAL" logcat -b main -b crash -d > "$PROBE_OUT/main-crash-logcat-after.txt" 2>&1 || true
+          echo "=== main/crash lines that matter ==="
+          grep -iE 'wind|unity|il2cpp|dlopen|Unsatisfied|NO_MATCHING_ABIS|FATAL|Displayed|Start proc' \
+            "$PROBE_OUT/main-crash-logcat-after.txt" | tail -40 || echo "(no matching lines)"
+
+      - name: Scrub credentials from artefacts
+        if: always()
+        run: |
+          set -euo pipefail
+          [ -d "$PROBE_OUT" ] || exit 0
+          # Defence in depth: no key-shaped string may leave the runner in an
+          # artifact, whatever wrote it.
+          rm -f "$PROBE_OUT/trial.json"
+          hits=$(grep -rIlE 'rms_[A-Za-z0-9_-]{20,}' "$PROBE_OUT" 2>/dev/null || true)
+          if [ -n "$hits" ]; then
+            printf '%s\n' "$hits" | xargs -r sed -i -E 's/rms_[A-Za-z0-9_-]{20,}/REDACTED/g'
+            echo "::warning::redacted key-shaped strings in artefacts"
+          fi
+          echo "artefacts: $(find "$PROBE_OUT" -type f | wc -l) file(s), none matching rms_"
+
       - name: Session watch link
         if: always() && env.RAMUS_SESSION != ''
         continue-on-error: true
@@ -715,6 +756,32 @@ jobs:
               echo
               echo "</details>"
             fi
+
+            if [ -f "$PROBE_OUT/device-abi.txt" ]; then
+              echo
+              echo "### device"
+              echo
+              echo '```'
+              echo "abilist: $(tr '\n' ' ' < "$PROBE_OUT/device-abi.txt")"
+              if [ -f "$PROBE_OUT/activities.txt" ]; then
+                grep -m3 -E 'mResumedActivity|topResumedActivity|ResumedActivity' \
+                  "$PROBE_OUT/activities.txt" || echo "(no resumed activity line)"
+              fi
+              echo '```'
+            fi
+
+            for f in main-crash-logcat.txt main-crash-logcat-after.txt; do
+              [ -f "$PROBE_OUT/$f" ] || continue
+              echo
+              echo "<details><summary>$f</summary>"
+              echo
+              echo '```'
+              grep -iE 'wind|unity|il2cpp|dlopen|Unsatisfied|NO_MATCHING_ABIS|FATAL|Displayed|Start proc' \
+                "$PROBE_OUT/$f" | tail -30 || echo "(no matching lines)"
+              echo '```'
+              echo
+              echo "</details>"
+            done
           } > "$PROBE_OUT/comment.md"
           chmod +x .github/scripts/pr-comment.sh
           .github/scripts/pr-comment.sh "${{ github.event.pull_request.number }}" \

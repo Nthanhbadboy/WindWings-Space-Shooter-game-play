@@ -201,3 +201,44 @@ package:     com.Wind.wings.Space.Shooter
 ```
 
 </details>
+
+---
+
+## Xác minh độc lập từ nhánh `arena/ef6b75ef-…` (23/10, 09:00Z)
+
+Bên kia port nguyên harness này sang nhánh nghiên cứu và chạy lại. Kiểm tra:
+
+| Run | Commit | Kết quả |
+|---|---|---|
+| `39927388023` | `a85f75a` | ❌ `Prepare APK` — file `.sh` port sang mất bit thực thi (sửa ở `893dd4a`) |
+| `39927581993` | `893dd4a` | ✅ phiên trial thật `b2163f36-…`, 08:52:51Z → 09:07:33Z |
+| `39928111522` | `77c53f2` | ⚪ **không phải probe** — gate skip (đã xoá `probe-inputs.json`), artifact 2,8 KB |
+| `39928111644` | `77c53f2` | tải artifact và commit `docs/runtime-evidence/39927581993/report.md` |
+
+So sánh hai phiên độc lập (hai emulator khác nhau):
+
+| | của tôi (`c646657b`, 08:31Z) | của họ (`b2163f36`, 08:52Z) |
+|---|---|---|
+| logcat | 500 dòng / 57.408 B | 500 dòng / 56.264 B |
+| stream | `system=500` | `system=500` |
+| `--filter <package>` | 0 dòng | 0 dòng |
+| `--filter Unity` | 0 dòng | 0 dòng |
+| `app launch` | ok (`gen:4`) | ok (`gen:3`) |
+| ui snapshot | 1.466 B, không `package=` | 1.466 B, không `package=` |
+| tag trội | FastPrintWriter 140, AconfigPackage 118 | FastPrintWriter 140, AconfigPackage 103, libbinder 39 |
+
+⇒ **Tái lập được**: app không xuất hiện trong log/UI ở cả hai phiên, hai máy khác nhau.
+`ramus-probe.mjs` của họ **giống hệt** bản ở commit `89c3cc9` (diff rỗng), nên đây là cùng
+một phép đo, không phải hai cách đo khác nhau.
+
+**Vẫn không có gì mới về nguyên nhân**: cả hai đều chỉ nhận stream `system`.
+
+### Hai điểm rút ra từ lần chạy của họ
+
+1. **Đúng**: họ chuyển `ramus trial` khỏi `$PROBE_OUT` và thêm vào bước adb
+   `getprop ro.product.cpu.abilist`, `monkey -p`, `logcat -b main -b crash -d`,
+   `dumpsys activity activities`. Đã port lại vào nhánh này — đó chính là dữ kiện
+   còn thiếu cho câu hỏi ABI.
+2. **Chưa đủ**: họ chỉ commit `report.md`, không commit `logcat.txt` (56 KB) hay
+   `summary.json`. Report là **kết luận của script**, không phải bằng chứng thô —
+   muốn người khác kiểm lại thì phải giữ log text (không chứa credential).
