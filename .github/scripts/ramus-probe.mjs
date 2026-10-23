@@ -19,7 +19,8 @@
  */
 
 import { spawnSync } from 'node:child_process';
-import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 
 // ── cli ────────────────────────────────────────────────────────────────────
@@ -278,8 +279,38 @@ async function waitForLogcat(seconds) {
 function screenshot(n) {
   const file = path.join(OUT, `screen-${String(n).padStart(2, '0')}.jpg`);
   const r = ramus(['screenshot', '--out', file]);
-  if (r.ok) result.screenshots.push(path.basename(file));
-  return r.ok;
+  if (!r.ok) return false;
+  result.screenshots.push(path.basename(file));
+
+  // A JPEG that never changes while the app is "launched" is the difference
+  // between "the game is showing" and "the launcher never moved".
+  try {
+    const buf = readFileSync(file);
+    const sha = createHash('sha256').update(buf).digest('hex');
+    result.screens = result.screens || [];
+    const prev = result.screens[result.screens.length - 1];
+    result.screens.push({
+      file: path.basename(file),
+      bytes: statSync(file).size,
+      sha256: sha.slice(0, 16),
+      sameAsPrevious: prev ? prev.sha256 === sha.slice(0, 16) : null,
+    });
+  } catch { /* screenshot bookkeeping is best effort */ }
+  return true;
+}
+
+/** Ask the CLI what the device/session looks like — cheap, and it may name the ABI. */
+function sessionStatus() {
+  const r = ramus(['session', 'status']);
+  if (!r.ok) return null;
+  try {
+    const parsed = JSON.parse(r.stdout);
+    result.sessionStatus = parsed;
+    return parsed;
+  } catch {
+    result.sessionStatus = { raw: String(r.stdout).slice(0, 2000) };
+    return result.sessionStatus;
+  }
 }
 
 function snapshotUi(tag) {
@@ -330,7 +361,10 @@ async function main() {
     opt.waitServer = Math.max(3, Math.min(opt.waitServer, opt.budget - 60));
   }
 
-  if (!opt.offline) screenshot(0);
+  if (!opt.offline) {
+    sessionStatus();
+    screenshot(0);
+  }
 
   // HTTP first — but on a trial there is no tunnel, so only one cheap attempt.
   let health = null;
@@ -621,6 +655,34 @@ function renderReport(r) {
         lines.push(out.slice(0, 400));
         lines.push('```');
       }
+      lines.push('');
+    }
+
+    if (Array.isArray(r.screens) && r.screens.length) {
+      lines.push('| screenshot | bytes | sha256 | unchanged |');
+      lines.push('| --- | --- | --- | --- |');
+      for (const sc of r.screens) {
+        lines.push(`| ${sc.file} | ${sc.bytes} | \`${sc.sha256}\` | ${sc.sameAsPrevious == null ? '—' : yn(sc.sameAsPrevious)} |`);
+      }
+      lines.push('');
+      const still = r.screens.filter((x) => x.sameAsPrevious === true).length;
+      if (r.screens.length > 1 && still === r.screens.length - 1) {
+        lines.push('> **The screen never changed** between the two shots. Combined with');
+        lines.push('> `app launch: ok`, that means the CLI accepted the request but the');
+        lines.push('> foreground window did not become the game.');
+        lines.push('');
+      }
+    }
+
+    if (r.sessionStatus) {
+      const ss = r.sessionStatus;
+      const brief = ss.session || ss.device || ss.app || ss;
+      lines.push('<details><summary>session status</summary>');
+      lines.push('');
+      lines.push('```json');
+      lines.push(JSON.stringify(brief, null, 2).slice(0, 1500));
+      lines.push('```');
+      lines.push('</details>');
       lines.push('');
     }
 
