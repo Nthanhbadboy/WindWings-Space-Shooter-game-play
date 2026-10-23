@@ -498,13 +498,15 @@ def main() -> int:
                 # Tự kiểm cắt cụt: thân method gần như luôn kết thúc bằng
                 # ret/b/br. Không có -> nhiều khả năng bị cắt, và MỌI kết luận
                 # âm tính ("không thấy lệnh X") trên method đó đều vô hiệu.
-                last_mn = ""
-                for _l in reversed(lines):
+                # Vùng disasm kéo đúng tới method kế tiếp nên sau `ret` thật
+                # còn lẫn thunk/đệm — chỉ cần thấy ret ở 48 lệnh cuối là đủ.
+                _mns = []
+                for _l in lines:
                     _p = _l.split(":", 1)[-1].strip().split()
                     if _p:
-                        last_mn = _p[0]
-                        break
-                ends_clean = last_mn in ("ret", "b", "br", "blr")
+                        _mns.append(_p[0])
+                ends_clean = (bool(_mns) and _mns[-1] in ("ret", "b", "br", "blr")) \
+                    or ("ret" in _mns[-48:] if _mns else False)
                 pure = is_pure_getter(body_text)
                 gkind = getter_kind(body_text)
                 gvalue = getter_value(body_text) if gkind else None
