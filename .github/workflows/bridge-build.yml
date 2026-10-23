@@ -21,9 +21,12 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 concurrency:
-  group: bridge-build-${{ github.ref }}
+  # github.workflow is the *caller* when this workflow is reused, so the standalone
+  # run and the one triggered by ramus-probe.yml no longer cancel each other.
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -73,10 +76,15 @@ jobs:
           done
 
       - name: Compile all targets
+        id: compile
         run: |
-          set -euo pipefail
+          set -o pipefail
           chmod +x .github/scripts/build-bridge.sh
-          .github/scripts/build-bridge.sh --out dist --refs .ci/refs
+          .github/scripts/build-bridge.sh --out dist --refs .ci/refs 2>&1 | tee dist/../build.log
+
+      - name: Keep the log
+        if: always()
+        run: cp build.log dist/build.log 2>/dev/null || true
 
       - name: Inventory the DLLs
         if: always()
@@ -94,6 +102,24 @@ jobs:
               strings -a "$d" | grep -cE 'Ramus\.Bridge|TcpListener|RAMUSB' || true
             fi
           done
+
+      - name: Report failure on the PR
+        if: failure() && github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          {
+            echo "<!-- bridge-build -->"
+            echo "## ❌ bridge build failed"
+            echo
+            echo '```'
+            tail -60 build.log 2>/dev/null || echo "no build.log"
+            echo '```'
+          } > comment.md
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --body-file comment.md --edit-last --create-if-none
 
       - uses: actions/upload-artifact@v4
         if: always()
