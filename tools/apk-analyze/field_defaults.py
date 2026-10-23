@@ -179,6 +179,9 @@ def main() -> int:
             name_idx = struct.unpack_from("<i", blob, f_off + fidx * 12)[0]
             index2name[fidx] = f"{cls_name}.{read_str(blob, str_off, name_idx)}"
 
+    for want in ("Map_Get_Datas", "Player_Get_Datas"):
+        hits = [(i, k) for i, k in index2name.items() if k.startswith(want + ".")]
+        print(f"  metadata fields of {want}: {[k for _i, k in hits[:14]]}")
     types_by_name = dump_field_types(dump_path) if os.path.isfile(dump_path) else {}
     print(f"dump.cs field types: {len(types_by_name)}; mapped indices: {len(index2name)}")
 
