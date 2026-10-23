@@ -268,11 +268,12 @@ def export_native_types(env) -> None:
     Vì sao: 791 clip + 308 controller chưa từng được export — đây là lớp animation
     thứ hai ngoài Spine. Chỉ ghi **tóm tắt** (tên, độ dài, số curve/tham số/layer):
     curve đầy đủ rất nặng và muốn dựng lại chuyển động thì Spine đã đủ chi tiết hơn.
-    `ParticleSystem` chỉ đếm số lượng (typetree của nó gồm ~30 module, xuất hết sẽ phình).
+    `ParticleSystem` chỉ ghi `path_id` (typetree của nó gồm ~30 module, xuất hết sẽ phình).
+    `Animator` ghi tóm tắt gồm `m_GameObject` + `m_Controller` để nối controller → prefab.
     """
     import gzip
 
-    wanted = {"AnimationClip", "AnimatorController", "ParticleSystem"}
+    wanted = {"AnimationClip", "AnimatorController", "ParticleSystem", "Animator"}
     counts: Counter = Counter()
     out_path = os.path.join(RAW, "native-types.jsonl.gz")
     written = 0
@@ -283,7 +284,11 @@ def export_native_types(env) -> None:
                 continue
             counts[tname] += 1
             if tname == "ParticleSystem":
-                continue  # chỉ đếm, xem docstring
+                # chỉ ghi path_id (không đọc typetree ~30 module) để lần sau
+                # biết chính xác có bao nhiêu và nối được qua GameObject nếu cần
+                fh.write(json.dumps({"type": tname, "path_id": obj.path_id}) + "\n")
+                written += 1
+                continue
             try:
                 tree = obj.read_typetree()
             except Exception:  # noqa: BLE001
