@@ -966,7 +966,7 @@ namespace Ramus.Bridge
             return jw.ToString();
         }
 
-        public static HttpResponse Screenshot()
+        internal static HttpResponse Screenshot()
         {
             if (!Config.EnableScreenshot)
                 return HttpResponse.Error(403, "screenshot_disabled");

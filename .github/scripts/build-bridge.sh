@@ -35,6 +35,19 @@ flatten() {  # flatten <src-dir> <dst-dir>
   find "$dst" -maxdepth 1 -name '*.dll' | wc -l
 }
 
+# The Mono adapter inherits from MonoBehaviour, so the compiler needs a type
+# identity for `UnityEngine, Version=0.0.0.0`. Build one stub assembly once and
+# reference it; never ship it.
+STUB_DIR="$PWD/$REFS/unity-stub"
+build_unity_stub() {
+  if [ -f "$STUB_DIR/UnityEngine.dll" ]; then return 0; fi
+  log "building UnityEngine stub (identity 0.0.0.0)"
+  rm -rf runtime-probe/BuildCheck/obj runtime-probe/BuildCheck/bin
+  dotnet build runtime-probe/BuildCheck/UnityStubs.csproj -c Release -v minimal -nologo \
+    "-p:OutDir=$STUB_DIR/" 2>&1 | sed 's/^/    /' || return 1
+  [ -f "$STUB_DIR/UnityEngine.dll" ]
+}
+
 build() {  # build <label> <out-subdir> <extra msbuild args...>
   local label="$1" sub="$2"; shift 2
   rm -rf "runtime-probe/obj" "runtime-probe/bin"
@@ -46,17 +59,22 @@ build() {  # build <label> <out-subdir> <extra msbuild args...>
   fi
 }
 
+# ─────────────────────────────────────────────────────────────── 0. Unity stub
+if ! build_unity_stub; then
+  bad "UnityEngine stub assembly (BuildCheck)"
+fi
+
 # ─────────────────────────────────────────────────────────────── 1. core (stubs)
 log "core: syntax/type check against BuildCheck/UnityStubs.cs"
 build "core (netstandard2.1, Unity stubs)" core \
-  -p:Loader=Core -p:StubUnity=true -p:TargetFramework=netstandard2.1
+  -p:Loader=Core -p:StubUnity=true -p:UnityStubDir="$STUB_DIR" -p:Tfm=netstandard2.1
 
 # ─────────────────────────────────────────────────────────────── 2. BepInEx 6
 BEP6="$REFS/bep6"
 if [ -d "$BEP6" ] && [ "$(flatten "$BEP6" "$REFS/flat-bep6")" -gt 0 ]; then
   log "BepInEx 6 IL2CPP: $(ls "$REFS/flat-bep6" | wc -l) reference assemblies"
   build "BepInEx 6 IL2CPP (net6.0)" bepinex6 \
-    -p:Loader=BepInEx6 -p:StubUnity=true -p:TargetFramework=net6.0 \
+    -p:Loader=BepInEx6 -p:StubUnity=true -p:UnityStubDir="$STUB_DIR" -p:Tfm=net6.0 \
     -p:RefsDir="$PWD/$REFS/flat-bep6"
 else
   bad "BepInEx 6 IL2CPP (reference zip missing)"
@@ -67,7 +85,7 @@ MELON="$REFS/melon"
 if [ -d "$MELON" ] && [ "$(flatten "$MELON" "$REFS/flat-melon")" -gt 0 ]; then
   log "MelonLoader: $(ls "$REFS/flat-melon" | wc -l) reference assemblies"
   build "MelonLoader (net6.0)" melon \
-    -p:Loader=MelonLoader -p:StubUnity=true -p:TargetFramework=net6.0 \
+    -p:Loader=MelonLoader -p:StubUnity=true -p:UnityStubDir="$STUB_DIR" -p:Tfm=net6.0 \
     -p:RefsDir="$PWD/$REFS/flat-melon"
 else
   bad "MelonLoader (reference zip missing)"
@@ -78,7 +96,7 @@ BEP5="$REFS/bep5"
 if [ -d "$BEP5" ] && [ "$(flatten "$BEP5" "$REFS/flat-bep5")" -gt 0 ]; then
   log "BepInEx 5: $(ls "$REFS/flat-bep5" | wc -l) reference assemblies"
   build "BepInEx 5 (netstandard2.1)" bepinex5 \
-    -p:Loader=BepInEx5 -p:StubUnity=true -p:TargetFramework=netstandard2.1 \
+    -p:Loader=BepInEx5 -p:StubUnity=true -p:UnityStubDir="$STUB_DIR" -p:Tfm=netstandard2.1 \
     -p:RefsDir="$PWD/$REFS/flat-bep5"
 else
   bad "BepInEx 5 (reference zip missing)"

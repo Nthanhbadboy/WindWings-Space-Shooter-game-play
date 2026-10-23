@@ -116,8 +116,14 @@ jobs:
             echo "<!-- bridge-build -->"
             echo "## ❌ bridge build failed — the device probe was skipped"
             echo
+            echo "### errors"
             echo '```'
-            tail -60 ci.log 2>/dev/null || echo "no ci.log"
+            grep -E "error [A-Z]+[0-9]+|MISSING|FAIL " ci.log 2>/dev/null | sort -u | head -40 \
+              || echo "no compiler errors found"
+            echo '```'
+            echo "### tail"
+            echo '```'
+            tail -120 ci.log 2>/dev/null || echo "no ci.log"
             echo '```'
           } > comment.md
           gh pr comment "${{ github.event.pull_request.number }}" \

@@ -17,7 +17,10 @@
   -->
 
   <PropertyGroup>
-    <TargetFramework Condition="'$(TargetFramework)' == ''">netstandard2.1</TargetFramework>
+    <!-- Use -p:Tfm=net6.0: TargetFramework alone is applied after restore, which
+         makes the build fail with NETSDK1005 ("no target for net6.0"). -->
+    <Tfm Condition="'$(Tfm)' == ''">netstandard2.1</Tfm>
+    <TargetFramework>$(Tfm)</TargetFramework>
     <LangVersion>9.0</LangVersion>
     <AssemblyName>RamusBridge</AssemblyName>
     <RootNamespace>Ramus.Bridge</RootNamespace>
@@ -29,7 +32,8 @@
     <StubUnity Condition="'$(StubUnity)' == ''">false</StubUnity>
     <InteropDir Condition="'$(InteropDir)' == ''">$(BepInExRoot)/interop</InteropDir>
     <MelonInteropDir Condition="'$(MelonInteropDir)' == ''">$(MelonDir)/Il2CppInterop</MelonInteropDir>
-    <NoWarn>$(NoWarn);CS0649;CS0169;MSB3277</NoWarn>
+    <NoWarn>$(NoWarn);CS0649;CS0169;MSB3277;MSB3246;CS1701;CS1702</NoWarn>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,9 +42,14 @@
     <Compile Include="Adapters/$(Loader)/*.cs" />
   </ItemGroup>
 
-  <!-- Compile-time stand-in for the Unity assemblies. -->
+  <!-- Compile-time stand-in for the Unity assemblies: BuildCheck/UnityStubs.csproj
+       emits UnityEngine.dll with AssemblyVersion 0.0.0.0, the identity BepInEx
+       references. Referencing an assembly (rather than compiling the stubs into
+       this one) is what makes CS0012 go away for the Mono adapter. -->
   <ItemGroup Condition="'$(StubUnity)' == 'true'">
-    <Compile Include="BuildCheck/UnityStubs.cs" />
+    <Reference Include="$(UnityStubDir)/UnityEngine.dll">
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
   <!-- ── CI mode: one flat folder of reference DLLs (avoids duplicate identities) ── -->
