@@ -513,7 +513,7 @@ namespace Ramus.Bridge
             _mainThreadId = Thread.CurrentThread.ManagedThreadId;
             Config = BridgeConfig.Load();
 
-            try { Application.logMessageReceivedThreaded += OnLog; } catch { }
+            AttachLogCapture();
 
             try
             {
@@ -533,10 +533,44 @@ namespace Ramus.Bridge
 
         public static void Shutdown()
         {
-            try { Application.logMessageReceivedThreaded -= OnLog; } catch { }
+            DetachLogCapture();
             if (_server != null) _server.Stop();
             _server = null;
             Running = false;
+        }
+
+        // ── log capture
+        // Bind Application.logMessageReceived(Threaded) through reflection so
+        // the file also compiles against Il2CppInterop proxies that may expose
+        // only a subset of Unity events. Mismatch just disables the capture.
+        static Delegate _logDelegate;
+
+        public static void AttachLogCapture()
+        {
+            try
+            {
+                var appType = typeof(Application);
+                var ev = appType.GetEvent("logMessageReceivedThreaded") ?? appType.GetEvent("logMessageReceived");
+                if (ev == null) { Log("log capture: no Application event exposed"); return; }
+                var m = typeof(Bridge).GetMethod("OnLog", BindingFlags.NonPublic | BindingFlags.Static);
+                _logDelegate = Delegate.CreateDelegate(ev.EventHandlerType, m);
+                ev.AddEventHandler(null, _logDelegate);
+                Log("log capture attached via " + ev.Name);
+            }
+            catch (Exception ex) { Log("log capture attach failed: " + ex.Message); }
+        }
+
+        public static void DetachLogCapture()
+        {
+            try
+            {
+                if (_logDelegate == null) return;
+                var ev = typeof(Application).GetEvent("logMessageReceivedThreaded")
+                         ?? typeof(Application).GetEvent("logMessageReceived");
+                ev?.RemoveEventHandler(null, _logDelegate);
+                _logDelegate = null;
+            }
+            catch { }
         }
 
         static void Log(string msg)
