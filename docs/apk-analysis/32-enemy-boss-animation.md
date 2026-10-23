@@ -80,3 +80,30 @@ Nguồn: Animator prefab joins + raw MonoBehaviour fields. Không coi khớp tê
 | CB-30058 | 2 | Afterburner |
 | CB-30059 | 2 | Afterburner |
 | CB-30060 | 2 | Afterburner |
+
+## Script điều khiển tìm thấy trực tiếp trong dump.cs
+
+- `BossSpineEventHandler`: SkeletonAnimation, attackEventName,
+  preAttackEffectEventName, UnityEvent onAttack, chargeEffect; methods
+  Start/HandleEvent. Có adapter event animation → gameplay trong metadata;
+  chưa đọc body nên chưa khẳng định nhánh xử lý/timing cụ thể.
+- `Boss_1_Animation` và `Boss1_Director`: giữ các state Spine, callback
+  AnimationState_Complete / AnimationState_Event, BossWork(entryName).
+  Boss1_Director còn Attack1/2/3, OnGunDie, Defeat và coroutine IEAttack1.
+- `Boss1_AnimationEvents`: callback Attack1HandLeft, Attack2HandRight,
+  Attack3TwoHands, Attack12Shoot, OnDie; Action fields tương ứng.
+  Chưa nối callback với event clip cụ thể.
+- `Boss_AttackPhases`: Animator + BossAnimationEvents, StartAttack,
+  CallMixAnimation(anim,callback), IEAttackRound1/2/3, OnGunDie.
+- `Boss_AttackTypes`: RegisterEvents, coroutine bắn fixed/circle/check/
+  arrange/random-X; chứng cứ có tầng điều phối bắn riêng với animation.
+- `Enemy_Movement`: FixedUpdate, PathFollow, MovePointToPoint, MoveLinearly,
+  waypoint/VertexPath, facingMove/parentRotate. Chuyển động có thể do script;
+  không suy ra toàn bộ nằm trong AnimationClip.
+- Có hai class `Enemy_Attack` khác namespace; không gộp chúng thành một.
+
+Raw: `raw/animation-audit/script-declarations.json`, giữ declaration và RVA.
+Các method `{ }` trong dump là placeholder, **không phải thân hàm rỗng**.
+Đã thêm 9 class tiêu biểu vào native exporter; chờ CI để kiểm thân asm.
+Coroutine factory chưa đủ: logic theo frame có thể nằm ở MoveNext của các
+class compiler-generated, cần export bổ sung trước khi chốt chuỗi pha.

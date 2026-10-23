@@ -38,6 +38,15 @@ OUT_MD = os.environ.get("CONSTS_MD", "docs/apk-analysis/19-il2cpp-constants.md")
 OUT_CSV = os.environ.get("CONSTS_CSV", "docs/apk-analysis/il2cpp-pool-floats.csv")
 
 TARGET_CLASSES = {
+    "BossSpineEventHandler": "animation control: event, state, phase or movement (pending asm verification)",
+    "Boss_1_Animation": "animation control: event, state, phase or movement (pending asm verification)",
+    "Boss1_AnimationEvents": "animation control: event, state, phase or movement (pending asm verification)",
+    "Boss1_Director": "animation control: event, state, phase or movement (pending asm verification)",
+    "Boss_AttackPhases": "animation control: event, state, phase or movement (pending asm verification)",
+    "Boss_AttackTypes": "animation control: event, state, phase or movement (pending asm verification)",
+    "BossAnimationEvents": "animation control: event, state, phase or movement (pending asm verification)",
+    "Enemy_Movement": "animation control: event, state, phase or movement (pending asm verification)",
+    "Enemy_Display": "animation control: event, state, phase or movement (pending asm verification)",
     "Player_Get_Datas": "chỉ số tàu: HP, damage, tốc độ bắn, giá nâng cấp",
     "Droid_Data_Balance": "drone: damage, timeout, giá unlock/upgrade",
     "Tech_Datas": "tech lab: giá, delta giá, sao",
