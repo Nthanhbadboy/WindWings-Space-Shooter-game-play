@@ -107,7 +107,8 @@ def parse_types(blob, header):
     for i in range(n):
         base = td_off + i * size
         name_idx = struct.unpack_from("<i", blob, base)[0]
-        field_start, field_count = struct.unpack_from("<iH", blob, base + 28)
+        field_start = struct.unpack_from("<i", blob, base + 28)[0]
+        field_count = struct.unpack_from("<H", blob, base + size - 24 + 4)[0]
         types.append((read_str(blob, str_off, name_idx), field_start, field_count))
     return types, n_fields, (f_off, str_off)
 
