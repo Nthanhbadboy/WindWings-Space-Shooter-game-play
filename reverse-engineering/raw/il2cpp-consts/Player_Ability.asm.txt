@@ -1259,6 +1259,31 @@
     0x14725c4: ldp      x30, x23, [sp], #0x30
     0x14725c8: ret      
 
+;;; DemoDroneSkill  public void DemoDroneSkill(int _droneIndex, int _rank) { }
+    0x14725cc: stp      x30, x21, [sp, #-0x20]!
+    0x14725d0: stp      x20, x19, [sp, #0x10]
+    0x14725d4: ldr      x8, [x0, #0x88]
+    0x14725d8: mov      w20, w2
+    0x14725dc: mov      x19, x0
+    0x14725e0: mov      w21, w1
+    0x14725e4: cbz      x8, #0x14725f8
+    0x14725e8: mov      x0, x19
+    0x14725ec: mov      x1, x8
+    0x14725f0: mov      x2, xzr
+    0x14725f4: bl       #0x27829d8
+    0x14725f8: mov      x0, x19
+    0x14725fc: mov      w1, w21
+    0x1472600: mov      w2, w20
+    0x1472604: bl       #0x1472628
+    0x1472608: mov      x1, x0
+    0x147260c: mov      x0, x19
+    0x1472610: mov      x2, xzr
+    0x1472614: bl       #0x278276c
+    0x1472618: str      x0, [x19, #0x88]
+    0x147261c: ldp      x20, x19, [sp, #0x10]
+    0x1472620: ldp      x30, x21, [sp], #0x20
+    0x1472624: ret      
+
 ;;; RunDemo  private IEnumerator RunDemo(int _droneIndex, int _rank) { }
     0x1472628: stp      x30, x23, [sp, #-0x30]!
     0x147262c: stp      x22, x21, [sp, #0x10]
@@ -1673,16 +1698,6 @@
     0x1472c68: ldr      d8, [sp], #0x20
     0x1472c6c: br       x4
     0x1472c70: bl       #0x110d250
-    0x1472c74: str      x30, [sp, #-0x20]!
-    0x1472c78: stp      x20, x19, [sp, #0x10]
-    0x1472c7c: mov      w19, w1
-    0x1472c80: mov      x1, xzr
-    0x1472c84: mov      x20, x0
-    0x1472c88: bl       #0x2143330
-    0x1472c8c: str      w19, [x20, #0x10]
-    0x1472c90: ldp      x20, x19, [sp, #0x10]
-    0x1472c94: ldr      x30, [sp], #0x20
-    0x1472c98: ret      
 
 ;;; OnBulletDroneSkill1Collided  private void OnBulletDroneSkill1Collided(GameObject obj, Vector3 pos) { }
     0x1472ca0: str      d8, [sp, #-0x20]!
@@ -1791,16 +1806,6 @@
     0x1472e3c: ldr      d8, [sp], #0x20
     0x1472e40: br       x4
     0x1472e44: bl       #0x110d250
-    0x1472e48: str      x30, [sp, #-0x20]!
-    0x1472e4c: stp      x20, x19, [sp, #0x10]
-    0x1472e50: mov      w19, w1
-    0x1472e54: mov      x1, xzr
-    0x1472e58: mov      x20, x0
-    0x1472e5c: bl       #0x2143330
-    0x1472e60: str      w19, [x20, #0x10]
-    0x1472e64: ldp      x20, x19, [sp, #0x10]
-    0x1472e68: ldr      x30, [sp], #0x20
-    0x1472e6c: ret      
 
 ;;; OnBulletDroneSkill2Lv2Collided  private void OnBulletDroneSkill2Lv2Collided(GameObject obj, Vector3 pos) { }
     0x1472e70: str      d8, [sp, #-0x20]!
@@ -2148,16 +2153,6 @@
     0x14733bc: b        #0x2781804
     0x14733c0: bl       #0x110d250
     0x14733c4: bl       #0x110d258
-    0x14733c8: str      x30, [sp, #-0x20]!
-    0x14733cc: stp      x20, x19, [sp, #0x10]
-    0x14733d0: mov      w19, w1
-    0x14733d4: mov      x1, xzr
-    0x14733d8: mov      x20, x0
-    0x14733dc: bl       #0x2143330
-    0x14733e0: str      w19, [x20, #0x10]
-    0x14733e4: ldp      x20, x19, [sp, #0x10]
-    0x14733e8: ldr      x30, [sp], #0x20
-    0x14733ec: ret      
 
 ;;; OnBulletDroneSkill3Collided  private void OnBulletDroneSkill3Collided(GameObject obj, Vector3 pos) { }
     0x14733f4: str      d8, [sp, #-0x20]!
@@ -2266,16 +2261,6 @@
     0x1473590: ldr      d8, [sp], #0x20
     0x1473594: br       x4
     0x1473598: bl       #0x110d250
-    0x147359c: str      x30, [sp, #-0x20]!
-    0x14735a0: stp      x20, x19, [sp, #0x10]
-    0x14735a4: mov      w19, w1
-    0x14735a8: mov      x1, xzr
-    0x14735ac: mov      x20, x0
-    0x14735b0: bl       #0x2143330
-    0x14735b4: str      w19, [x20, #0x10]
-    0x14735b8: ldp      x20, x19, [sp, #0x10]
-    0x14735bc: ldr      x30, [sp], #0x20
-    0x14735c0: ret      
 
 ;;; OnImpact  private void OnImpact(Transform target) { }
     0x14735c4: str      d8, [sp, #-0x20]!
@@ -2380,16 +2365,6 @@
     0x1473750: ldr      d8, [sp], #0x20
     0x1473754: br       x4
     0x1473758: bl       #0x110d250
-    0x147375c: str      x30, [sp, #-0x20]!
-    0x1473760: stp      x20, x19, [sp, #0x10]
-    0x1473764: mov      w19, w1
-    0x1473768: mov      x1, xzr
-    0x147376c: mov      x20, x0
-    0x1473770: bl       #0x2143330
-    0x1473774: str      w19, [x20, #0x10]
-    0x1473778: ldp      x20, x19, [sp, #0x10]
-    0x147377c: ldr      x30, [sp], #0x20
-    0x1473780: ret      
 
 ;;; OnBulletDroneSkill5Collided  private void OnBulletDroneSkill5Collided(GameObject obj, Vector3 pos) { }
     0x1473788: str      d8, [sp, #-0x20]!
@@ -2498,16 +2473,6 @@
     0x1473924: ldr      d8, [sp], #0x20
     0x1473928: br       x4
     0x147392c: bl       #0x110d250
-    0x1473930: str      x30, [sp, #-0x20]!
-    0x1473934: stp      x20, x19, [sp, #0x10]
-    0x1473938: mov      w19, w1
-    0x147393c: mov      x1, xzr
-    0x1473940: mov      x20, x0
-    0x1473944: bl       #0x2143330
-    0x1473948: str      w19, [x20, #0x10]
-    0x147394c: ldp      x20, x19, [sp, #0x10]
-    0x1473950: ldr      x30, [sp], #0x20
-    0x1473954: ret      
 
 ;;; OnBulletDroneSkill6Destroyed  private void OnBulletDroneSkill6Destroyed(GameObject obj, Vector3 pos, int idFragment) { }
     0x1473958: str      d14, [sp, #-0xa0]!
@@ -2974,26 +2939,6 @@
     0x1474084: ldp      d9, d8, [sp], #0x30
     0x1474088: br       x4
     0x147408c: bl       #0x110d250
-    0x1474090: str      x30, [sp, #-0x20]!
-    0x1474094: stp      x20, x19, [sp, #0x10]
-    0x1474098: mov      w19, w1
-    0x147409c: mov      x1, xzr
-    0x14740a0: mov      x20, x0
-    0x14740a4: bl       #0x2143330
-    0x14740a8: str      w19, [x20, #0x10]
-    0x14740ac: ldp      x20, x19, [sp, #0x10]
-    0x14740b0: ldr      x30, [sp], #0x20
-    0x14740b4: ret      
-    0x14740b8: str      x30, [sp, #-0x20]!
-    0x14740bc: stp      x20, x19, [sp, #0x10]
-    0x14740c0: mov      w19, w1
-    0x14740c4: mov      x1, xzr
-    0x14740c8: mov      x20, x0
-    0x14740cc: bl       #0x2143330
-    0x14740d0: str      w19, [x20, #0x10]
-    0x14740d4: ldp      x20, x19, [sp, #0x10]
-    0x14740d8: ldr      x30, [sp], #0x20
-    0x14740dc: ret      
 
 ;;; HitEnemy  private void HitEnemy(GameObject obj) { }
     0x14740e0: stp      d9, d8, [sp, #-0x30]!
@@ -3177,26 +3122,6 @@
     0x14743a8: ldp      d9, d8, [sp], #0x30
     0x14743ac: br       x4
     0x14743b0: bl       #0x110d250
-    0x14743b4: str      x30, [sp, #-0x20]!
-    0x14743b8: stp      x20, x19, [sp, #0x10]
-    0x14743bc: mov      w19, w1
-    0x14743c0: mov      x1, xzr
-    0x14743c4: mov      x20, x0
-    0x14743c8: bl       #0x2143330
-    0x14743cc: str      w19, [x20, #0x10]
-    0x14743d0: ldp      x20, x19, [sp, #0x10]
-    0x14743d4: ldr      x30, [sp], #0x20
-    0x14743d8: ret      
-    0x14743dc: str      x30, [sp, #-0x20]!
-    0x14743e0: stp      x20, x19, [sp, #0x10]
-    0x14743e4: mov      w19, w1
-    0x14743e8: mov      x1, xzr
-    0x14743ec: mov      x20, x0
-    0x14743f0: bl       #0x2143330
-    0x14743f4: str      w19, [x20, #0x10]
-    0x14743f8: ldp      x20, x19, [sp, #0x10]
-    0x14743fc: ldr      x30, [sp], #0x20
-    0x1474400: ret      
 
 ;;; OnBulletDroneSkill10ChildCollided  private void OnBulletDroneSkill10ChildCollided(GameObject obj, Vector3 pos) { }
     0x1474404: stp      d9, d8, [sp, #-0x30]!
@@ -3614,153 +3539,3 @@
     0x1474ab4: ldr      d8, [sp], #0x20
     0x1474ab8: br       x4
     0x1474abc: bl       #0x110d250
-    0x1474ac0: mov      x1, xzr
-    0x1474ac4: b        #0x2143330
-    0x1474ac8: str      d10, [sp, #-0x30]!
-    0x1474acc: stp      d9, d8, [sp, #0x10]
-    0x1474ad0: stp      x30, x19, [sp, #0x20]
-    0x1474ad4: ldr      x8, [x0, #0x10]
-    0x1474ad8: cbz      x8, #0x1474b30
-    0x1474adc: mov      v8.16b, v2.16b
-    0x1474ae0: mov      v9.16b, v1.16b
-    0x1474ae4: mov      v10.16b, v0.16b
-    0x1474ae8: mov      x19, x0
-    0x1474aec: bl       #0x1473dbc
-    0x1474af0: ldr      x0, [x19, #0x10]
-    0x1474af4: cbz      x0, #0x1474b30
-    0x1474af8: ldr      w8, [x19, #0x18]
-    0x1474afc: mov      w9, #0x4ff9
-    0x1474b00: movk     w9, #1, lsl #16
-    0x1474b04: mov      v1.16b, v9.16b
-    0x1474b08: mov      v2.16b, v8.16b
-    0x1474b0c: ldp      x30, x19, [sp, #0x20]
-    0x1474b10: ldp      d9, d8, [sp, #0x10]
-    0x1474b14: orr      w10, w9, #2
-    0x1474b18: cmp      w8, #3
-    0x1474b1c: csinc    w8, w10, w9, ne
-    0x1474b20: csel     w2, w9, w8, lt
-    0x1474b24: mov      v0.16b, v10.16b
-    0x1474b28: ldr      d10, [sp], #0x30
-    0x1474b2c: b        #0x1473958
-    0x1474b30: bl       #0x110d250
-    0x1474b34: str      x30, [sp, #-0x10]!
-    0x1474b38: mov      x8, x0
-    0x1474b3c: ldr      x0, [x0, #0x10]
-    0x1474b40: cbz      x0, #0x1474b68
-    0x1474b44: ldr      w8, [x8, #0x18]
-    0x1474b48: mov      w9, #0x4ff9
-    0x1474b4c: movk     w9, #1, lsl #16
-    0x1474b50: orr      w10, w9, #2
-    0x1474b54: cmp      w8, #3
-    0x1474b58: csinc    w8, w10, w9, ne
-    0x1474b5c: csel     w2, w9, w8, lt
-    0x1474b60: ldr      x30, [sp], #0x10
-    0x1474b64: b        #0x1473958
-    0x1474b68: bl       #0x110d250
-    0x1474b6c: mov      x1, xzr
-    0x1474b70: b        #0x2143330
-    0x1474b74: stp      x30, x19, [sp, #-0x10]!
-    0x1474b78: mov      x19, x0
-    0x1474b7c: mov      x0, xzr
-    0x1474b80: bl       #0x2786dc0
-    0x1474b84: ldr      s1, [x19, #0x10]
-    0x1474b88: fcmp     s0, s1
-    0x1474b8c: cset     w0, gt
-    0x1474b90: ldp      x30, x19, [sp], #0x10
-    0x1474b94: ret      
-    0x1474b98: ret      
-    0x1474b9c: sub      sp, sp, #0x70
-    0x1474ba0: stp      d9, d8, [sp, #0x10]
-    0x1474ba4: str      x30, [sp, #0x20]
-    0x1474ba8: stp      x26, x25, [sp, #0x30]
-    0x1474bac: stp      x24, x23, [sp, #0x40]
-    0x1474bb0: stp      x22, x21, [sp, #0x50]
-    0x1474bb4: stp      x20, x19, [sp, #0x60]
-    0x1474bb8: adrp     x20, #0x2ce1000
-    0x1474bbc: ldrb     w8, [x20, #0xf84]
-    0x1474bc0: mov      x19, x0
-    0x1474bc4: tbnz     w8, #0, #0x1474c30
-    0x1474bc8: adrp     x0, #0x2adc000
-    0x1474bcc: ldr      x0, [x0, #0xbc0]
-    0x1474bd0: bl       #0x110d028
-    0x1474bd4: adrp     x0, #0x2adb000
-    0x1474bd8: ldr      x0, [x0, #0xd90]
-    0x1474bdc: bl       #0x110d028
-    0x1474be0: adrp     x0, #0x2adc000
-    0x1474be4: ldr      x0, [x0, #0xdb0]
-    0x1474be8: bl       #0x110d028
-    0x1474bec: adrp     x0, #0x2adc000
-    0x1474bf0: ldr      x0, [x0, #0xbe8]
-    0x1474bf4: bl       #0x110d028
-    0x1474bf8: adrp     x0, #0x2adc000
-    0x1474bfc: ldr      x0, [x0, #0xbf0]
-    0x1474c00: bl       #0x110d028
-    0x1474c04: adrp     x0, #0x2ae7000
-    0x1474c08: ldr      x0, [x0, #0xae8]
-    0x1474c0c: bl       #0x110d028
-    0x1474c10: adrp     x0, #0x2ae7000
-    0x1474c14: ldr      x0, [x0, #0xaf0]
-    0x1474c18: bl       #0x110d028
-    0x1474c1c: adrp     x0, #0x2adb000
-    0x1474c20: ldr      x0, [x0, #0x938]
-    0x1474c24: bl       #0x110d028
-    0x1474c28: mov      w8, #1
-    0x1474c2c: strb     w8, [x20, #0xf84]
-    0x1474c30: str      wzr, [sp, #8]
-    0x1474c34: str      xzr, [sp]
-    0x1474c38: ldr      w8, [x19, #0x10]
-    0x1474c3c: ldr      x20, [x19, #0x28]
-    0x1474c40: cmp      w8, #1
-    0x1474c44: b.eq     #0x1474ce4
-    0x1474c48: mov      w0, wzr
-    0x1474c4c: cbnz     w8, #0x14750b8
-    0x1474c50: ldp      w10, w21, [x19, #0x20]
-    0x1474c54: mov      w9, #0x4ffe
-    0x1474c58: mov      w8, #-1
-    0x1474c5c: movk     w9, #1, lsl #16
-    0x1474c60: str      w8, [x19, #0x10]
-    0x1474c64: orr      w8, w9, #1
-    0x1474c68: cmp      w10, #3
-    0x1474c6c: add      w10, w9, #2
-    0x1474c70: csel     w8, w8, w10, eq
-    0x1474c74: mov      w10, #0x41f00000
-    0x1474c78: csel     w8, w9, w8, lt
-    0x1474c7c: stp      w10, w8, [x19, #0x30]
-    0x1474c80: adrp     x8, #0x2adb000
-    0x1474c84: ldr      x8, [x8, #0xd90]
-    0x1474c88: ldr      x0, [x8]
-    0x1474c8c: ldr      w8, [x0, #0xe0]
-    0x1474c90: cbnz     w8, #0x1474c98
-    0x1474c94: bl       #0x110d12c
-    0x1474c98: mov      w0, w21
-    0x1474c9c: mov      x1, xzr
-    0x1474ca0: bl       #0x14dad0c
-    0x1474ca4: ldr      w8, [x19, #0x20]
-    0x1474ca8: adrp     x9, #0x757000
-    0x1474cac: add      x9, x9, #0x3f8
-    0x1474cb0: adrp     x10, #0x756000
-    0x1474cb4: cmp      w8, #3
-    0x1474cb8: cset     w8, eq
-    0x1474cbc: mov      v8.16b, v0.16b
-    0x1474cc0: ldr      s0, [x9, w8, uxtw #2]
-    0x1474cc4: ldr      s1, [x10, #0xd38]
-    0x1474cc8: mov      x0, xzr
-    0x1474ccc: fcsel    s0, s1, s0, lt
-    0x1474cd0: str      s0, [x19, #0x38]
-    0x1474cd4: bl       #0x2786dc0
-    0x1474cd8: fadd     s0, s8, s0
-    0x1474cdc: str      s0, [x19, #0x3c]
-    0x1474ce0: b        #0x1474cec
-    0x1474ce4: mov      w8, #-1
-    0x1474ce8: str      w8, [x19, #0x10]
-    0x1474cec: mov      x0, xzr
-    0x1474cf0: bl       #0x2786dc0
-    0x1474cf4: ldr      s1, [x19, #0x3c]
-    0x1474cf8: fcmp     s0, s1
-    0x1474cfc: b.pl     #0x1474df4
-    0x1474d00: ldr      w0, [x19, #0x34]
-    0x1474d04: mov      x1, xzr
-    0x1474d08: bl       #0x123a9fc
-    0x1474d0c: cbz      x0, #0x14750d8
-    0x1474d10: adrp     x8, #0x2adc000
-    0x1474d14: ldr      x8, [x8, #0xbe8]

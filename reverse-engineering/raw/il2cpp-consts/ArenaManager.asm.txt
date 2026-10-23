@@ -110,6 +110,16 @@
     0x15a298c: ldp      x30, x21, [sp], #0x20
     0x15a2990: b        #0x13f1a04
 
+;;; SetUserProfile  public void SetUserProfile(ArenaUserProfile userProfile, Action callback) { }
+    0x15a2994: stp      x30, x19, [sp, #-0x10]!
+    0x15a2998: mov      x19, x0
+    0x15a299c: bl       #0x15a29b4
+    0x15a29a0: mov      x1, x0
+    0x15a29a4: mov      x0, x19
+    0x15a29a8: mov      x2, xzr
+    0x15a29ac: ldp      x30, x19, [sp], #0x10
+    0x15a29b0: b        #0x278276c
+
 ;;; IESetUserProfile  private IEnumerator IESetUserProfile(ArenaUserProfile userProfile, Action callback) { }
     0x15a29b4: str      x30, [sp, #-0x30]!
     0x15a29b8: stp      x22, x21, [sp, #0x10]
@@ -138,16 +148,6 @@
     0x15a2a14: ldp      x22, x21, [sp, #0x10]
     0x15a2a18: ldr      x30, [sp], #0x30
     0x15a2a1c: ret      
-    0x15a2a20: str      x30, [sp, #-0x20]!
-    0x15a2a24: stp      x20, x19, [sp, #0x10]
-    0x15a2a28: mov      w19, w1
-    0x15a2a2c: mov      x1, xzr
-    0x15a2a30: mov      x20, x0
-    0x15a2a34: bl       #0x2143330
-    0x15a2a38: str      w19, [x20, #0x10]
-    0x15a2a3c: ldp      x20, x19, [sp, #0x10]
-    0x15a2a40: ldr      x30, [sp], #0x20
-    0x15a2a44: ret      
 
 ;;; CheckLogInRank  public void CheckLogInRank(string userID, string userName, Action<int, ArenaUserProfile, int> callback) { }
     0x15a2a48: str      x30, [sp, #-0x40]!
@@ -218,16 +218,16 @@
     0x15a2b44: ldp      x24, x23, [sp, #0x10]
     0x15a2b48: ldr      x30, [sp], #0x40
     0x15a2b4c: ret      
-    0x15a2b50: str      x30, [sp, #-0x20]!
-    0x15a2b54: stp      x20, x19, [sp, #0x10]
-    0x15a2b58: mov      w19, w1
-    0x15a2b5c: mov      x1, xzr
-    0x15a2b60: mov      x20, x0
-    0x15a2b64: bl       #0x2143330
-    0x15a2b68: str      w19, [x20, #0x10]
-    0x15a2b6c: ldp      x20, x19, [sp, #0x10]
-    0x15a2b70: ldr      x30, [sp], #0x20
-    0x15a2b74: ret      
+
+;;; GetTimeSpan  public void GetTimeSpan(int rank, Action<DateTime> callback) { }
+    0x15a2b78: stp      x30, x19, [sp, #-0x10]!
+    0x15a2b7c: mov      x19, x0
+    0x15a2b80: bl       #0x15a2b98
+    0x15a2b84: mov      x1, x0
+    0x15a2b88: mov      x0, x19
+    0x15a2b8c: mov      x2, xzr
+    0x15a2b90: ldp      x30, x19, [sp], #0x10
+    0x15a2b94: b        #0x278276c
 
 ;;; IEGetTimeSpan  private IEnumerator IEGetTimeSpan(int rank, Action<DateTime> callback) { }
     0x15a2b98: stp      x30, x23, [sp, #-0x30]!
@@ -260,16 +260,6 @@
     0x15a2c04: ldp      x22, x21, [sp, #0x10]
     0x15a2c08: ldp      x30, x23, [sp], #0x30
     0x15a2c0c: ret      
-    0x15a2c10: str      x30, [sp, #-0x20]!
-    0x15a2c14: stp      x20, x19, [sp, #0x10]
-    0x15a2c18: mov      w19, w1
-    0x15a2c1c: mov      x1, xzr
-    0x15a2c20: mov      x20, x0
-    0x15a2c24: bl       #0x2143330
-    0x15a2c28: str      w19, [x20, #0x10]
-    0x15a2c2c: ldp      x20, x19, [sp, #0x10]
-    0x15a2c30: ldr      x30, [sp], #0x20
-    0x15a2c34: ret      
 
 ;;; SummaryRank  private IEnumerator SummaryRank(ArenaUserProfile userProfile, Action<ArenaUserProfile, bool, int> callback) { }
     0x15a2c38: stp      x30, x23, [sp, #-0x30]!
@@ -301,16 +291,6 @@
     0x15a2ca0: ldp      x22, x21, [sp, #0x10]
     0x15a2ca4: ldp      x30, x23, [sp], #0x30
     0x15a2ca8: ret      
-    0x15a2cac: str      x30, [sp, #-0x20]!
-    0x15a2cb0: stp      x20, x19, [sp, #0x10]
-    0x15a2cb4: mov      w19, w1
-    0x15a2cb8: mov      x1, xzr
-    0x15a2cbc: mov      x20, x0
-    0x15a2cc0: bl       #0x2143330
-    0x15a2cc4: str      w19, [x20, #0x10]
-    0x15a2cc8: ldp      x20, x19, [sp, #0x10]
-    0x15a2ccc: ldr      x30, [sp], #0x20
-    0x15a2cd0: ret      
 
 ;;; IEResetSeason  private IEnumerator IEResetSeason(int rank, DateTime timeUTC, Action<bool> callback) { }
     0x15a2cd4: stp      x30, x23, [sp, #-0x30]!
@@ -343,16 +323,6 @@
     0x15a2d40: ldp      x22, x21, [sp, #0x10]
     0x15a2d44: ldp      x30, x23, [sp], #0x30
     0x15a2d48: ret      
-    0x15a2d4c: str      x30, [sp, #-0x20]!
-    0x15a2d50: stp      x20, x19, [sp, #0x10]
-    0x15a2d54: mov      w19, w1
-    0x15a2d58: mov      x1, xzr
-    0x15a2d5c: mov      x20, x0
-    0x15a2d60: bl       #0x2143330
-    0x15a2d64: str      w19, [x20, #0x10]
-    0x15a2d68: ldp      x20, x19, [sp, #0x10]
-    0x15a2d6c: ldr      x30, [sp], #0x20
-    0x15a2d70: ret      
 
 ;;; SetSummaryDatas  private void SetSummaryDatas(int season, int rank, int roomIndex, Dictionary<string, object> listRanks, Action<bool> callback) { }
     0x15a2d74: sub      sp, sp, #0x40
@@ -514,8 +484,6 @@
     0x15a2fe4: bl       #0x110d274
     0x15a2fe8: mov      x1, xzr
     0x15a2fec: bl       #0x110d11c
-    0x15a2ff0: mov      x1, xzr
-    0x15a2ff4: b        #0x2143330
 
 ;;; DeleteRoom  private void DeleteRoom(int rank, int roomIndex, Action<bool> callback) { }
     0x15a2ff8: sub      sp, sp, #0x40
@@ -625,16 +593,6 @@
     0x15a3190: ldp      x24, x23, [sp, #0x10]
     0x15a3194: ldr      x30, [sp], #0x40
     0x15a3198: ret      
-    0x15a319c: str      x30, [sp, #-0x20]!
-    0x15a31a0: stp      x20, x19, [sp, #0x10]
-    0x15a31a4: mov      w19, w1
-    0x15a31a8: mov      x1, xzr
-    0x15a31ac: mov      x20, x0
-    0x15a31b0: bl       #0x2143330
-    0x15a31b4: str      w19, [x20, #0x10]
-    0x15a31b8: ldp      x20, x19, [sp, #0x10]
-    0x15a31bc: ldr      x30, [sp], #0x20
-    0x15a31c0: ret      
 
 ;;; BackUpDatas  private void BackUpDatas(Action<bool> callback) { }
     0x15a31c4: stp      x30, x25, [sp, #-0x40]!
@@ -792,8 +750,6 @@
     0x15a3424: ldp      x30, x25, [sp], #0x40
     0x15a3428: b        #0x142b86c
     0x15a342c: bl       #0x110d250
-    0x15a3430: mov      x1, xzr
-    0x15a3434: b        #0x2143330
 
 ;;; IECheckLogInRank  private IEnumerator IECheckLogInRank(string userId, Action<ArenaUserProfile> callback) { }
     0x15a3438: str      x30, [sp, #-0x30]!
@@ -823,16 +779,16 @@
     0x15a3498: ldp      x22, x21, [sp, #0x10]
     0x15a349c: ldr      x30, [sp], #0x30
     0x15a34a0: ret      
-    0x15a34a4: str      x30, [sp, #-0x20]!
-    0x15a34a8: stp      x20, x19, [sp, #0x10]
-    0x15a34ac: mov      w19, w1
-    0x15a34b0: mov      x1, xzr
-    0x15a34b4: mov      x20, x0
-    0x15a34b8: bl       #0x2143330
-    0x15a34bc: str      w19, [x20, #0x10]
-    0x15a34c0: ldp      x20, x19, [sp, #0x10]
-    0x15a34c4: ldr      x30, [sp], #0x20
-    0x15a34c8: ret      
+
+;;; GetRankList  public void GetRankList(ArenaUserProfile arenaUserProfile, Action<List<ArenaUserStruct>> callback) { }
+    0x15a34cc: stp      x30, x19, [sp, #-0x10]!
+    0x15a34d0: mov      x19, x0
+    0x15a34d4: bl       #0x15a34ec
+    0x15a34d8: mov      x1, x0
+    0x15a34dc: mov      x0, x19
+    0x15a34e0: mov      x2, xzr
+    0x15a34e4: ldp      x30, x19, [sp], #0x10
+    0x15a34e8: b        #0x278276c
 
 ;;; IEDownloadRank  private IEnumerator IEDownloadRank(ArenaUserProfile arenaUserProfile, Action<List<ArenaUserStruct>> callback) { }
     0x15a34ec: stp      x30, x23, [sp, #-0x30]!
@@ -864,16 +820,6 @@
     0x15a3554: ldp      x22, x21, [sp, #0x10]
     0x15a3558: ldp      x30, x23, [sp], #0x30
     0x15a355c: ret      
-    0x15a3560: str      x30, [sp, #-0x20]!
-    0x15a3564: stp      x20, x19, [sp, #0x10]
-    0x15a3568: mov      w19, w1
-    0x15a356c: mov      x1, xzr
-    0x15a3570: mov      x20, x0
-    0x15a3574: bl       #0x2143330
-    0x15a3578: str      w19, [x20, #0x10]
-    0x15a357c: ldp      x20, x19, [sp, #0x10]
-    0x15a3580: ldr      x30, [sp], #0x20
-    0x15a3584: ret      
 
 ;;; QuickSort  private void QuickSort(ref List<ArenaUserStruct> datas, int l, int r) { }
     0x15a3588: sub      sp, sp, #0x70
@@ -1062,16 +1008,6 @@
     0x15a3854: ldp      x24, x23, [sp, #0x10]
     0x15a3858: ldp      x30, x25, [sp], #0x40
     0x15a385c: ret      
-    0x15a3860: str      x30, [sp, #-0x20]!
-    0x15a3864: stp      x20, x19, [sp, #0x10]
-    0x15a3868: mov      w19, w1
-    0x15a386c: mov      x1, xzr
-    0x15a3870: mov      x20, x0
-    0x15a3874: bl       #0x2143330
-    0x15a3878: str      w19, [x20, #0x10]
-    0x15a387c: ldp      x20, x19, [sp, #0x10]
-    0x15a3880: ldr      x30, [sp], #0x20
-    0x15a3884: ret      
 
 ;;; IEFixLastRoom  private IEnumerator IEFixLastRoom(ArenaUserProfile profile, ArenaUserStruct userStruct, int roomIndex, int timeOut, Action<int> callback) { }
     0x15a3888: str      x30, [sp, #-0x50]!
@@ -1112,16 +1048,6 @@
     0x15a3914: ldp      x26, x25, [sp, #0x10]
     0x15a3918: ldr      x30, [sp], #0x50
     0x15a391c: ret      
-    0x15a3920: str      x30, [sp, #-0x20]!
-    0x15a3924: stp      x20, x19, [sp, #0x10]
-    0x15a3928: mov      w19, w1
-    0x15a392c: mov      x1, xzr
-    0x15a3930: mov      x20, x0
-    0x15a3934: bl       #0x2143330
-    0x15a3938: str      w19, [x20, #0x10]
-    0x15a393c: ldp      x20, x19, [sp, #0x10]
-    0x15a3940: ldr      x30, [sp], #0x20
-    0x15a3944: ret      
 
 ;;; IECheckAndAddUserToRoom  private IEnumerator IECheckAndAddUserToRoom(ArenaUserProfile profile, ArenaUserStruct userStruct, int roomIndex, Action<int> callback, int timeOut) { }
     0x15a3948: str      x30, [sp, #-0x50]!
@@ -1163,16 +1089,16 @@
     0x15a39d8: ldp      x26, x25, [sp, #0x10]
     0x15a39dc: ldr      x30, [sp], #0x50
     0x15a39e0: ret      
-    0x15a39e4: str      x30, [sp, #-0x20]!
-    0x15a39e8: stp      x20, x19, [sp, #0x10]
-    0x15a39ec: mov      w19, w1
-    0x15a39f0: mov      x1, xzr
-    0x15a39f4: mov      x20, x0
-    0x15a39f8: bl       #0x2143330
-    0x15a39fc: str      w19, [x20, #0x10]
-    0x15a3a00: ldp      x20, x19, [sp, #0x10]
-    0x15a3a04: ldr      x30, [sp], #0x20
-    0x15a3a08: ret      
+
+;;; ResetUserStatus  public void ResetUserStatus(ArenaUserProfile userProfile, int count, Action<ArenaUserProfile, bool> callback) { }
+    0x15a3a0c: stp      x30, x19, [sp, #-0x10]!
+    0x15a3a10: mov      x19, x0
+    0x15a3a14: bl       #0x15a3a2c
+    0x15a3a18: mov      x1, x0
+    0x15a3a1c: mov      x0, x19
+    0x15a3a20: mov      x2, xzr
+    0x15a3a24: ldp      x30, x19, [sp], #0x10
+    0x15a3a28: b        #0x278276c
 
 ;;; IEResetUserProfileStatus  private IEnumerator IEResetUserProfileStatus(ArenaUserProfile userProfile, int count, Action<ArenaUserProfile, bool> callback) { }
     0x15a3a2c: str      x30, [sp, #-0x40]!
@@ -1208,16 +1134,16 @@
     0x15a3aa4: ldp      x24, x23, [sp, #0x10]
     0x15a3aa8: ldr      x30, [sp], #0x40
     0x15a3aac: ret      
-    0x15a3ab0: str      x30, [sp, #-0x20]!
-    0x15a3ab4: stp      x20, x19, [sp, #0x10]
-    0x15a3ab8: mov      w19, w1
-    0x15a3abc: mov      x1, xzr
-    0x15a3ac0: mov      x20, x0
-    0x15a3ac4: bl       #0x2143330
-    0x15a3ac8: str      w19, [x20, #0x10]
-    0x15a3acc: ldp      x20, x19, [sp, #0x10]
-    0x15a3ad0: ldr      x30, [sp], #0x20
-    0x15a3ad4: ret      
+
+;;; LoadRankSetups  public void LoadRankSetups(int rank, Action<ArenaRankSetup> callback) { }
+    0x15a3ad8: stp      x30, x19, [sp, #-0x10]!
+    0x15a3adc: mov      x19, x0
+    0x15a3ae0: bl       #0x15a3af8
+    0x15a3ae4: mov      x1, x0
+    0x15a3ae8: mov      x0, x19
+    0x15a3aec: mov      x2, xzr
+    0x15a3af0: ldp      x30, x19, [sp], #0x10
+    0x15a3af4: b        #0x278276c
 
 ;;; IELoadRankSetups  private IEnumerator IELoadRankSetups(int rank, Action<ArenaRankSetup> callback) { }
     0x15a3af8: str      x30, [sp, #-0x30]!
@@ -1248,16 +1174,16 @@
     0x15a3b5c: ldp      x22, x21, [sp, #0x10]
     0x15a3b60: ldr      x30, [sp], #0x30
     0x15a3b64: ret      
-    0x15a3b68: str      x30, [sp, #-0x20]!
-    0x15a3b6c: stp      x20, x19, [sp, #0x10]
-    0x15a3b70: mov      w19, w1
-    0x15a3b74: mov      x1, xzr
-    0x15a3b78: mov      x20, x0
-    0x15a3b7c: bl       #0x2143330
-    0x15a3b80: str      w19, [x20, #0x10]
-    0x15a3b84: ldp      x20, x19, [sp, #0x10]
-    0x15a3b88: ldr      x30, [sp], #0x20
-    0x15a3b8c: ret      
+
+;;; SetRankSetups  public void SetRankSetups() { }
+    0x15a3b90: stp      x30, x19, [sp, #-0x10]!
+    0x15a3b94: mov      x19, x0
+    0x15a3b98: bl       #0x15a3bb0
+    0x15a3b9c: mov      x1, x0
+    0x15a3ba0: mov      x0, x19
+    0x15a3ba4: mov      x2, xzr
+    0x15a3ba8: ldp      x30, x19, [sp], #0x10
+    0x15a3bac: b        #0x278276c
 
 ;;; IESetRankSetups  private IEnumerator IESetRankSetups() { }
     0x15a3bb0: str      x30, [sp, #-0x20]!
@@ -1282,16 +1208,6 @@
     0x15a3bfc: ldp      x20, x19, [sp, #0x10]
     0x15a3c00: ldr      x30, [sp], #0x20
     0x15a3c04: ret      
-    0x15a3c08: str      x30, [sp, #-0x20]!
-    0x15a3c0c: stp      x20, x19, [sp, #0x10]
-    0x15a3c10: mov      w19, w1
-    0x15a3c14: mov      x1, xzr
-    0x15a3c18: mov      x20, x0
-    0x15a3c1c: bl       #0x2143330
-    0x15a3c20: str      w19, [x20, #0x10]
-    0x15a3c24: ldp      x20, x19, [sp, #0x10]
-    0x15a3c28: ldr      x30, [sp], #0x20
-    0x15a3c2c: ret      
 
 ;;; SetUserRandom  public void SetUserRandom() { }
     0x15a3c30: str      d8, [sp, #-0x70]!
@@ -1470,27 +1386,6 @@
     0x15a3ee4: ldr      d8, [sp], #0x70
     0x15a3ee8: ret      
     0x15a3eec: bl       #0x110d250
-    0x15a3ef0: stp      x30, x25, [sp, #-0x40]!
-    0x15a3ef4: stp      x24, x23, [sp, #0x10]
-    0x15a3ef8: stp      x22, x21, [sp, #0x20]
-    0x15a3efc: stp      x20, x19, [sp, #0x30]
-    0x15a3f00: mov      x24, x1
-    0x15a3f04: mov      x1, xzr
-    0x15a3f08: mov      w19, w6
-    0x15a3f0c: mov      w20, w5
-    0x15a3f10: mov      w21, w4
-    0x15a3f14: mov      w22, w3
-    0x15a3f18: mov      x23, x2
-    0x15a3f1c: mov      x25, x0
-    0x15a3f20: bl       #0x2143330
-    0x15a3f24: stp      x24, x23, [x25, #0x10]
-    0x15a3f28: stp      w22, w21, [x25, #0x20]
-    0x15a3f2c: stp      w20, w19, [x25, #0x28]
-    0x15a3f30: ldp      x20, x19, [sp, #0x30]
-    0x15a3f34: ldp      x22, x21, [sp, #0x20]
-    0x15a3f38: ldp      x24, x23, [sp, #0x10]
-    0x15a3f3c: ldp      x30, x25, [sp], #0x40
-    0x15a3f40: ret      
 
 ;;; IESetUserRandom  private IEnumerator IESetUserRandom(ArenaUserProfile userProfile, ArenaUserStruct userStruct) { }
     0x15a3f44: stp      x30, x23, [sp, #-0x30]!
@@ -1522,16 +1417,6 @@
     0x15a3fac: ldp      x22, x21, [sp, #0x10]
     0x15a3fb0: ldp      x30, x23, [sp], #0x30
     0x15a3fb4: ret      
-    0x15a3fb8: str      x30, [sp, #-0x20]!
-    0x15a3fbc: stp      x20, x19, [sp, #0x10]
-    0x15a3fc0: mov      w19, w1
-    0x15a3fc4: mov      x1, xzr
-    0x15a3fc8: mov      x20, x0
-    0x15a3fcc: bl       #0x2143330
-    0x15a3fd0: str      w19, [x20, #0x10]
-    0x15a3fd4: ldp      x20, x19, [sp, #0x10]
-    0x15a3fd8: ldr      x30, [sp], #0x20
-    0x15a3fdc: ret      
 
 ;;; LoadRemoteConfigs  public void LoadRemoteConfigs(Action<bool> initResuft) { }
     0x15a3fe0: str      x30, [sp, #-0x30]!
@@ -1671,8 +1556,6 @@
     0x15a41f8: ldr      x30, [sp], #0x30
     0x15a41fc: ret      
     0x15a4200: bl       #0x110d250
-    0x15a4204: mov      x1, xzr
-    0x15a4208: b        #0x2143330
 
 ;;; cctor  private static void .cctor() { }
     0x15a4214: stp      x30, x21, [sp, #-0x20]!
@@ -1804,130 +1687,3 @@
     0x15a440c: ret      
     0x15a4410: bl       #0x110d258
     0x15a4414: bl       #0x110d250
-    0x15a4418: str      x30, [sp, #-0x20]!
-    0x15a441c: stp      x20, x19, [sp, #0x10]
-    0x15a4420: mov      x19, x1
-    0x15a4424: mov      x1, xzr
-    0x15a4428: mov      x20, x0
-    0x15a442c: bl       #0x277fa1c
-    0x15a4430: str      x19, [x20, #0x10]
-    0x15a4434: ldp      x20, x19, [sp, #0x10]
-    0x15a4438: ldr      x30, [sp], #0x20
-    0x15a443c: ret      
-    0x15a4440: str      x30, [sp, #-0x10]!
-    0x15a4444: ldr      x0, [x0, #0x10]
-    0x15a4448: cbz      x0, #0x15a4464
-    0x15a444c: mov      x1, xzr
-    0x15a4450: bl       #0x2170c64
-    0x15a4454: mvn      w8, w0
-    0x15a4458: and      w0, w8, #1
-    0x15a445c: ldr      x30, [sp], #0x10
-    0x15a4460: ret      
-    0x15a4464: bl       #0x110d250
-    0x15a4468: mov      x1, xzr
-    0x15a446c: b        #0x2143330
-    0x15a4470: mov      x1, xzr
-    0x15a4474: b        #0x2143330
-    0x15a4478: str      x30, [sp, #-0x10]!
-    0x15a447c: ldr      x8, [x0, #0x18]
-    0x15a4480: mov      w9, #1
-    0x15a4484: strb     w9, [x0, #0x10]
-    0x15a4488: cbz      x8, #0x15a449c
-    0x15a448c: and      w9, w1, #1
-    0x15a4490: strb     w9, [x8, #0x10]
-    0x15a4494: ldr      x30, [sp], #0x10
-    0x15a4498: ret      
-    0x15a449c: bl       #0x110d250
-    0x15a44a0: ldrb     w0, [x0, #0x10]
-    0x15a44a4: ret      
-    0x15a44a8: mov      x1, xzr
-    0x15a44ac: b        #0x2143330
-    0x15a44b0: mov      w8, #1
-    0x15a44b4: str      x1, [x0, #0x10]
-    0x15a44b8: strb     w8, [x0, #0x18]
-    0x15a44bc: ret      
-    0x15a44c0: ldrb     w0, [x0, #0x18]
-    0x15a44c4: ret      
-    0x15a44c8: mov      w8, #1
-    0x15a44cc: str      x1, [x0, #0x20]
-    0x15a44d0: strb     w8, [x0, #0x18]
-    0x15a44d4: ret      
-    0x15a44d8: ldrb     w0, [x0, #0x18]
-    0x15a44dc: ret      
-    0x15a44e0: ldrb     w0, [x0, #0x18]
-    0x15a44e4: ret      
-    0x15a44e8: str      x30, [sp, #-0x10]!
-    0x15a44ec: mov      w9, #1
-    0x15a44f0: strb     w9, [x0, #0x18]
-    0x15a44f4: tbz      w1, #0, #0x15a4510
-    0x15a44f8: ldr      x8, [x0, #0x20]
-    0x15a44fc: strb     w9, [x0, #0x28]
-    0x15a4500: cbz      x8, #0x15a4518
-    0x15a4504: ldr      w9, [x8, #0x20]
-    0x15a4508: add      w9, w9, #1
-    0x15a450c: str      w9, [x8, #0x20]
-    0x15a4510: ldr      x30, [sp], #0x10
-    0x15a4514: ret      
-    0x15a4518: bl       #0x110d250
-    0x15a451c: ldrb     w0, [x0, #0x18]
-    0x15a4520: ret      
-    0x15a4524: stp      x30, x23, [sp, #-0x30]!
-    0x15a4528: stp      x22, x21, [sp, #0x10]
-    0x15a452c: stp      x20, x19, [sp, #0x20]
-    0x15a4530: adrp     x21, #0x2ce2000
-    0x15a4534: ldrb     w8, [x21, #0x83e]
-    0x15a4538: mov      x19, x1
-    0x15a453c: mov      x20, x0
-    0x15a4540: tbnz     w8, #0, #0x15a4564
-    0x15a4544: adrp     x0, #0x2aec000
-    0x15a4548: ldr      x0, [x0, #0xaf8]
-    0x15a454c: bl       #0x110d028
-    0x15a4550: adrp     x0, #0x2adb000
-    0x15a4554: ldr      x0, [x0, #0x8d0]
-    0x15a4558: bl       #0x110d028
-    0x15a455c: mov      w8, #1
-    0x15a4560: strb     w8, [x21, #0x83e]
-    0x15a4564: ldr      x8, [x20, #0x10]
-    0x15a4568: cbz      x8, #0x15a45dc
-    0x15a456c: add      x0, x8, #0x20
-    0x15a4570: mov      x1, xzr
-    0x15a4574: bl       #0x2103338
-    0x15a4578: cbz      x19, #0x15a45dc
-    0x15a457c: adrp     x22, #0x2aec000
-    0x15a4580: adrp     x23, #0x2adb000
-    0x15a4584: ldr      x22, [x22, #0xaf8]
-    0x15a4588: ldr      x23, [x23, #0x8d0]
-    0x15a458c: mov      x21, x0
-    0x15a4590: add      x0, x19, #0x28
-    0x15a4594: mov      x1, xzr
-    0x15a4598: bl       #0x2103338
-    0x15a459c: ldr      x8, [x22]
-    0x15a45a0: ldr      x2, [x23]
-    0x15a45a4: mov      x3, x0
-    0x15a45a8: mov      x1, x21
-    0x15a45ac: mov      x0, x8
-    0x15a45b0: mov      x4, xzr
-    0x15a45b4: bl       #0x1fed024
-    0x15a45b8: mov      x1, xzr
-    0x15a45bc: bl       #0x15b77b0
-    0x15a45c0: mov      w8, #1
-    0x15a45c4: str      x19, [x20, #0x10]
-    0x15a45c8: strb     w8, [x20, #0x18]
-    0x15a45cc: ldp      x20, x19, [sp, #0x20]
-    0x15a45d0: ldp      x22, x21, [sp, #0x10]
-    0x15a45d4: ldp      x30, x23, [sp], #0x30
-    0x15a45d8: ret      
-    0x15a45dc: bl       #0x110d250
-    0x15a45e0: ldrb     w0, [x0, #0x18]
-    0x15a45e4: ret      
-    0x15a45e8: ldrb     w0, [x0, #0x18]
-    0x15a45ec: ret      
-    0x15a45f0: ldrb     w0, [x0, #0x18]
-    0x15a45f4: ret      
-    0x15a45f8: ldrb     w0, [x0, #0x18]
-    0x15a45fc: ret      
-    0x15a4600: ldrb     w0, [x0, #0x18]
-    0x15a4604: ret      
-    0x15a4608: mov      w8, #1
-    0x15a460c: strb     w8, [x0, #0x18]
-    0x15a4610: ret      
