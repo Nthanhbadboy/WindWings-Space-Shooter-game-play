@@ -223,6 +223,34 @@ def main() -> int:
                 entry["ints"] = ints
         result[key] = entry
     print(f"decoded: {len(result)}, skipped: {skipped} {reasons}")
+    # Probe: token IA -> fieldRefs[src] = (typeIndex, fieldIndex-within-type)
+    try:
+        fr_off, fr_size = header["fieldRefs"]
+        mj = json.load(open("reverse-engineering/raw/il2cpp-consts/"
+                            "Map_Get_Datas.json", encoding="utf-8"))
+        cc_m = next(m for m in mj["methods"] if m["method"] == "cctor")
+        toks = [c for c in cc_m["constants"] if c.get("kind") == "init_array"]
+        _pid = _len = _range = 0
+        for c in toks:
+            src = int(c["slot_val"], 16) & 0x1FFFFFFF
+            if 8 * src + 8 > fr_size:
+                continue
+            ti, fi = struct.unpack_from("<ii", blob, fr_off + 8 * src)
+            if 0 <= ti < len(types):
+                _nm, _fs, _fc = types[ti]
+                if 0 <= fi < _fc:
+                    _range += 1
+                    fname = index2name.get(_fs + fi, "?")
+                    if fname.startswith("<PrivateImplementationDetails>"):
+                        _pid += 1
+                        ent = result.get(fname)
+                        if ent and abs(len(bytes.fromhex(ent["raw"])) // 4
+                                       - c["len"]) <= 3:
+                            _len += 1
+        print(f"  fieldRefs probe: hợp lệ {_range}/{len(toks)}, "
+              f"PID {_pid}, khớp độ dài {_len}")
+    except Exception as e:  # noqa: BLE001
+        print(f"  fieldRefs probe lỗi: {e!r}")
     # Probe: token IA -> index field static (theo thứ tự dump.cs)
     try:
         static_fields = []
