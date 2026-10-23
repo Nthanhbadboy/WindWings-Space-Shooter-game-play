@@ -117,3 +117,42 @@ curl http://127.0.0.1:9099/health
 - Runtime trên phone là **.NET 10** → CI phải cài SDK 10 (`setup-dotnet` 8.0.x + 10.0.x).
 - Đọc **instance** fields (ví dụ `GP_Datas.instance.player`, số dư coin) cần cơ chế follow
   object-graph — chưa có trong bridge bản này (để run kế tiếp).
+
+---
+
+## Đính chính (đọc trước khi tin bảng trên)
+
+Bảng "Kết quả cuối" ở trên ghi ✅ cho phần **số liệu balance**. Đúng với ship / drone / tech,
+**chưa đúng** với map và device. Đếm lại trên chính các JSON trong thư mục này:
+
+| Trường | Thực tế trong JSON | Vì sao |
+|---|---|---|
+| `Map_Get_Datas.listMapDatas` | `_count = 250` nhưng chỉ **128** phần tử, mỗi phần tử là **chuỗi tên type** `Il2CppInterop...Il2CppStructArray`1[System.Int32]` | bridge only unrolled **1 tầng**, chặn cứng **128** |
+| `Map_Get_Datas.AllArenaStartMaps` / `AllArenaRandomMaps` / `AllPvPStartMaps` / `listMapFightBossDatas` / `listMapChallangeDatas` | cùng dạng tên type | y như trên |
+| `Device_Get_Data.listStatValues` | **39** phần tử, **tất cả** là tên type | y như trên |
+| `Device_Get_Data.percentByLevels1/2` | `[0.5,0.6,0.4,0.8,1]` / `[0.1,0.1,0.3,0.4,0.5]` | **đọc được thật** |
+| `Enemy_Data_Balance.listStaticEmemies` | `"(List`1)"` | List chưa mở |
+| `GP_Datas` (65 field) | toàn `NativeFieldInfoPtr_*` | `/statics` không follow sang **instance** |
+| `Enemy_Get_Datas` | **không có file** | chưa gọi lần nào trong run này |
+| `Bonus_Get_Datas.listAllFortificationBonus` | 4 phần tử, toàn tên type | như trên |
+
+Tổng trên cả thư mục: **377 field đọc được**, **80 field chỉ trả về tên type**.
+
+### Nguyên nhân đã sửa (commit `9fb827c`)
+
+`/statics` giờ có `&arr=<số phần tử>` (mặc định 128, tối đa 2000) và `&depth=<số tầng>`
+(mặc định 2), nhận diện cả `Il2CppStructArray` / `Il2CppReferenceArray` / `List` qua
+`Length`/`Count` + indexer. Self-test thêm fixture `List<int[]>` + mảng 300 phần tử:
+**45 passed / 0 failed**.
+
+> **Chưa chứng minh:** bản sửa mới chỉ chạy trên **stub** trong CI. Đường indexer interop thật
+> (`Il2CppStructArray`) chưa được gọi lại trên điện thoại. Lần chạy tới phải dùng
+> `&arr=256&depth=2` và đối chiếu lại đúng các field trong bảng trên.
+
+### Hai việc khác phát hiện khi đọc lại
+
+1. `PercentToCompleteMissions222 = [0.2, 0.6, 0.98]` — **một** mảng 3 phần tử, không phải 9 số
+   như asm dự đoán. Chi tiết + ba giả thuyết: `docs/spec/MISSIONS_STARS.md` §7.1.
+2. Tên class trên bản này có **namespace**: `SpaceShooter.EnemySystem.Enemy_Get_Datas`,
+   `SpaceShooter.Gameplay.GP_Datas`, `SpaceShooter.Player.Player_Datas`. Lần sau gọi
+   `/types?filter=` trước để lấy tên đầy đủ, đừng đoán.

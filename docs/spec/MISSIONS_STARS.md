@@ -253,20 +253,81 @@ saos         = số s sao cho killCount ≥ target[m][s]  (cộng dồn, tối �
 
 ---
 
-## 7. Còn thiếu / phải đoán
+## 7. Dữ liệu runtime 23/10 — **3 trong 9 số** đã đọc được
 
-- **Giá trị `pct[mode][slot]` chưa đọc** — nạp từ pool float trong `.cctor` (cùng blocker `T5`).
-  Hai đường lấy: đọc `{0}` trong game (§5.2 — **rẻ nhất**, chỉ 3 con số), hoặc dump
-  `Player_Get_Datas.cctor` + pool `0x757000`.
+Lần đầu tiên `pct` có **giá trị thật**, đọc từ game đang chạy trên điện thoại (BepInEx +
+bridge, endpoint `/statics`). Nguồn file:
+`docs/apk-analysis/ramus/2026-10-23-phone/statics_Player_Get_Datas.json` · đường dẫn
+`.fields.PercentToCompleteMissions222`.
+
+```json
+"PercentToCompleteMissions222": [0.2, 0.6, 0.98]
+"PercentToCompleteMissions222_count": 3
+```
+
+| Điều | Nội dung | Mức |
+|---|---|---|
+| **3 giá trị** của một mảng `float[3]` nhiệm vụ | **0,2 · 0,6 · 0,98** | **B** — xem cảnh báo bản dưới |
+| Đây là **một** mảng, không phải 9 | JSON chỉ có **một** field `float[3]` thuộc nhóm mission | **A** (trong bản mod đó) |
+| `pct × count` cho ra số nguyên | 0,2 / 0,6 / 0,98 là các tỉ lệ "tròn" hợp lý cho 3 mốc nhiệm vụ | **C** — chưa đối chiếu số UI |
+
+> **Cảnh báo bản — bắt buộc đọc kèm:** dữ liệu này lấy từ
+> `com.Gcenter.WindWings.SpaceShooter.Premium` **1.0.69** (bản mod đóng gói lại), **không phải**
+> `com.Wind.wings.Space.Shooter` **1.3.118** mà toàn bộ file này phân tích. Hai bản khớp nhau ở
+> `StartHp = 2500` và `stepCommon = 0.18`, nhưng **không** có bằng chứng chúng là cùng một build.
+> Vì vậy mức là **B**, không phải A.
+
+### 7.1 Chỗ mâu thuẫn với asm — **chưa giải quyết**
+
+§1 đọc asm và kết luận `pct` = **9 số** (3 chế độ × 3 nhiệm vụ), chọn bằng 3 nhánh `csel`
+trong `GetKillPercentMissionComplete`. Runtime chỉ thấy **một** mảng `float[3]`.
+
+Ba khả năng, **chưa cái nào được chứng minh**:
+
+1. **Bản mod đã đổi cấu trúc** — Premium 1.0.69 gộp 3 mảng thành 1, chế độ ăn ở chỗ khác.
+2. **Hai mảng còn lại nằm ở class khác** — `GetKillPercentMissionComplete` trả bản **copy**
+   (`new float[3]` + `memcpy`), nên 3 mảng nguồn **không nhất thiết** thuộc `Player_Get_Datas`;
+   chúng có thể ở class chưa được gọi.
+3. **Interop không expose** hết static field — đã thấy 5 field khác trong class này trả về
+   `(Dictionary`2)` thay vì dữ liệu.
+
+> Nhận định: khả năng 2 là **rẻ nhất để loại trừ** — chỉ cần một lệnh
+> `GET /types?filter=Percent` trên thiết bị, rồi `/statics?type=<kết quả>`. Nếu tìm ra
+> `PercentToCompleteMissions111` / `...333` thì đó chính là 3 mảng theo chế độ.
+> Tên `...222` có hậu tố số là **gợi ý mạnh** rằng còn hai biến thể cùng họ.
+
+### 7.2 `listIgroneEnemies` — **31 ID**, trả lời câu hỏi mở cũ ở phần cuối file
+
+`Stage_Get_Datas.listIgroneEnemies` đọc được **31 phần tử**
+(`statics_Stage_Get_Datas.json` · `.fields.listIgroneEnemies`):
+
+```
+30009 30015 30016 38001 30029 30030 31011 31012 31014 38002 30031 30032 30033
+30034 30035 30036 30037 30038 30039 30040 30041 35008 35014 35015 35053 35026
+35027 35042 35043 35045 35029
+```
+
+Đây là **danh sách loại enemy bị `GetCountEnemies` bỏ qua**. Hệ quả trực tiếp: mẫu số
+`countEnemies(stage)` **nhỏ hơn** tổng 45.659 toàn game, và mức nhỏ hơn bao nhiêu thì
+**chưa tính được** — cần biết 31 ID này chiếm bao nhiêu bản ghi trong `waves.json`.
+Đó là phép tính **làm được offline**, không cần thiết bị (xem "Còn thiếu" §8).
+
+---
+
+## 8. Còn thiếu / phải đoán
+
+- ~~Giá trị `pct[mode][slot]` chưa đọc~~ → **đọc được 3 trong 9**: `[0.2, 0.6, 0.98]` (§7).
+  **Còn thiếu 6 số** (hai chế độ còn lại) và **chưa biết** mảng vừa đọc ứng với chế độ nào.
 - **`countEnemies` cho từng stage chưa có** (`A2` — bảng map→wave chưa bóc). Nhưng nếu bạn đọc `{0}` ở
   **cả 3 chế độ** thì **không cần** `count`: tỉ lệ `{0}` cho ra thẳng `pct` tương đối.
-- **`PercentToCompleteMissions222` = `float[3]`** (`Player_Get_Datas.cctor` `0x14E61F0`:
-  `newarr(float, 3)` + copy) — một mảng % **3 phần tử** dựng sẵn. **Chưa** biết 3 phần tử đó là
-  "3 nhiệm vụ" hay "3 chế độ". **Chưa** đọc giá trị.
+- **`PercentToCompleteMissions222`** = `[0.2, 0.6, 0.98]` (§7). Vẫn **chưa biết** 3 phần tử đó là
+  "3 nhiệm vụ" (slot) hay "3 chế độ" — hai cách đọc cho ra hai bảng ngưỡng khác nhau.
+  Cách phân biệt rẻ nhất: so với con số `{0}` **hiện trên UI** ở một stage đã biết `countEnemies`.
 - **`0x12b79a8` / `0x12b7860`** (hai hàm mà `IsMissionCompleted` gọi) **chưa export** ⇒ chưa biết
   "số nhiệm vụ đã xong" được tính từ đâu (nghi: so `killCount` với `target` của từng slot).
 - **Số sao tối đa** = 3 chỉ là **B** (§2). `SetStarCheat` mặc định `star = 5` không chặn.
 - **Bảng 6 loại nhiệm vụ ↔ 6 nguồn đếm** là **B** — nối theo *hàm nào được gọi trong `GetStringInfo`*,
   chưa đọc hết 6 nhánh. **Điều kiện lật ngược:** một stage thật có loại nhiệm vụ khác bảng §3.
-- **Chưa rõ `listIgroneEnemies`** (được `GetCountEnemies` dùng để bỏ qua một số enemy) gồm những gì —
-  nếu bỏ qua nhiều thì mẫu số **nhỏ hơn** 45.659.
+- **`listIgroneEnemies` đã có 31 ID** (§7.2), nhưng **chưa tính** chúng chiếm bao nhiêu bản ghi
+  trong `waves.json` ⇒ mẫu số vẫn đang dùng 45.659, tức **có thể cao hơn thực tế**. Phép tính này
+  làm được offline, không cần thiết bị.

@@ -164,14 +164,31 @@ bonus = round( base(stage, mission) × levelDelta[mode] × (stage ≥ 60 ? 1,25 
 - **`f(mode)` xuất hiện dưới dạng hằng số nhánh** ở 6 cụm: `60/80/100`, `30/25/20`, `20/15/10`,
   `50/20`, `5`, `1,25` — tức **mỗi chế độ ăn một hằng số khác nhau**, không phải cùng một số.
 - Mốc **mỗi 5 stage ×1,5** (chỉ số 4 · 9 · 14 · 19 · 24 · 29 — tức **stage 5, 10, 15, …, 30** đếm từ 1).
-- Giá trị **số** của `levelDelta` **chưa đọc được**: nó được nạp bằng `InitializeArray`
-  (FieldRVA) trong `.cctor` — cùng loại blocker với HP (`WHERE_TO_LOOK` T5).
+- **Giá trị số của `levelDelta` — ĐÃ ĐỌC ĐƯỢC (23/10):** `[1, 2, 3.6, 3.6]`
+  (`docs/apk-analysis/ramus/2026-10-23-phone/statics_Stage_Get_Datas.json` ·
+  `.fields.levelDelta`, `_count = 4`). Nghĩa là:
+
+  | index | 0 | 1 | 2 | 3 |
+  |---|---:|---:|---:|---:|
+  | hệ số thưởng | **1** | **2** | **3,6** | **3,6** |
+
+  **Hai điều phải nói kèm:**
+  1. Mảng có **4 phần tử**, trong khi tài liệu cũ giả định `float[3]` (§8 trước đây ghi `levelDelta[3]`).
+     Mức **B** — dữ liệu từ bản `com.Gcenter.WindWings.SpaceShooter.Premium` 1.0.69, không phải
+     `com.Wind.wings.Space.Shooter` 1.3.118.
+  2. Bạn đã thấy trong game **3 chế độ**. Nếu `levelDelta` thật sự index bằng `ModeCurrent` thì
+     **index 3 là chế độ thứ tư không hiện trong menu stage** (nghi: nhánh Arena/PvP/branch).
+     > Nhận định: đây chỉ là suy luận từ **độ dài mảng**, chưa có phép đo nào chỉ ra index 3 dùng
+     > cho việc gì. Đừng dựng tính năng dựa trên nó.
+
+  Với số này, công thức ở trên thành:
+  `bonus = round( base × [1 | 2 | 3,6 | 3,6][mode] × (stage ≥ 60 ? 1,25 : 1) × (stage%5==4 ? 1,5 : 1) )`.
 
 ### Ba chỗ khác cũng ăn theo chế độ
 
 | Hàm | Trả về | Ý nghĩa |
 |---|---|---|
-| `GetKillPercentMissionComplete(int _modeIndex)` `0x14E5618` (**188 B**) | **một trong 3 mảng `float[3]`** | **3 mốc % nhiệm vụ cho mỗi chế độ = 9 số.** Chọn bằng 3 nhánh `csel`, **mặc định rơi về chế độ 0** ⇒ chế độ lạ = Normal |
+| `GetKillPercentMissionComplete(int _modeIndex)` `0x14E5618` (**188 B**) | **một trong 3 mảng `float[3]`** | **3 mốc % nhiệm vụ cho mỗi chế độ = 9 số.** Chọn bằng 3 nhánh `csel`, **mặc định rơi về chế độ 0** ⇒ chế độ lạ = Normal. **Runtime 23/10 chỉ thấy MỘT mảng** — xem `MISSIONS_STARS` §7.1 |
 | `GetBranchPercent1/2/3(int _modeIndex)` `0x14E5790/56D4/5828` | `float[]` | % nhánh mission theo chế độ |
 | `GetCostEnergyForPlay(stageIndex, **stageLevel = 0**)` `0x12C5044` (**96 B**) | `int` | **giá năng lượng khác theo chế độ** |
 
@@ -421,12 +438,13 @@ vì sao 117 cặp tôi bóc ra trông như "quan hệ" chứ không phải "nhó
 
 ## 8. Còn thiếu / phải đoán
 
-- **`MaxModeIndex` chưa có giá trị** — `static int` của `Stage_Datas`, lớp **chưa dump**. Suy từ chuỗi:
-  **2** nếu là chỉ số lớn nhất, **3** nếu là số lượng. **Chưa phân định** — và đây là chỗ dễ sai 1 đơn vị.
-- **`levelDelta[3]` chưa có số.** Nạp bằng `InitializeArray` (FieldRVA) — cùng blocker T5.
-  Cần đọc `FieldRVA` + `il2cpp-pool-floats`/pool double, hoặc một lần dump `.cctor` của `Stage_Datas`
-  (lớp **chưa** nằm trong `TARGET_CLASSES`).
-- **`missionKillPercent[3][3]` chưa có số** — 9 float trong 3 mảng; cùng blocker.
+- ~~`MaxModeIndex` chưa có giá trị~~ → **đọc được: 4** (`statics_Stage_Datas.json` · `.fields.MaxModeIndex`).
+  Vẫn **chưa phân định** "chỉ số lớn nhất" hay "số lượng": nếu là số lượng thì có 4 chế độ, khớp
+  đúng **4 phần tử** của `levelDelta`. Hai dữ kiện cùng chỉ về 4, nhưng cả hai đều từ **cùng một
+  nguồn** (cùng file JSON) nên **không phải hai bằng chứng độc lập**.
+- ~~`levelDelta[3]` chưa có số~~ → **`[1, 2, 3.6, 3.6]`** (§3). Blocker T5 **không còn** cho field này.
+- **`missionKillPercent[3][3]`**: đọc được **3 trong 9** số — `[0.2, 0.6, 0.98]`
+  (`MISSIONS_STARS` §7). Còn 6 số và chưa biết mảng vừa đọc ứng với chế độ nào.
 - **`kCount ≡ 1`** — **ĐÓNG** (A): ba nguồn độc lập (bạn chơi lại · 304 lệnh `GetCountEnemies` · 278 lệnh
   `GetListWaves`) cùng nói **không nhân**. Ba thân hàm spawn **không** còn là blocker cho số quân.
 - **`kHp[mode]` CHƯA BIẾT GIÁ TRỊ** — cơ chế **A** (bạn chơi), vị trí **C** (nghi tầng spawn, §5.2).

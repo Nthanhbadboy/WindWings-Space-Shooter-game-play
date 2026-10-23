@@ -183,6 +183,30 @@ Nếu `RamusBridge.ini` có `token=...` thì mọi request phải kèm `X-Ramus-
 
 Ký hiệu **P0** = đang chặn tài liệu, **P1** = đối chiếu, **P2** = làm dày thêm.
 
+### A0. Luôn bắt đầu bằng `/types` — tên class có namespace
+
+Run 23/10 gọi trượt vì đoán tên. Trên bản đang chạy, class nằm trong namespace:
+
+```
+SpaceShooter.EnemySystem.Enemy_Get_Datas
+SpaceShooter.SpawnSystem.Call_Data
+SpaceShooter.Gameplay.GP_Datas
+SpaceShooter.Player.Player_Datas
+```
+
+Trước khi dump, lấy danh sách thật:
+
+```bash
+curl -fsS "http://127.0.0.1:8080/types?filter=Enemy" | jq -r '.matched[].t'
+curl -fsS "http://127.0.0.1:8080/types?filter=Percent" | jq -r '.matched[].t'   # tìm pct còn lại
+```
+
+`/types` trả `{ok, filter, asmCount, matched:[{t, asm}]}`. Dùng đúng `t` đó cho `/statics`.
+
+> **Vì sao cần `/types?filter=Percent`:** chỉ đọc được **một** mảng `PercentToCompleteMissions222
+> = [0.2, 0.6, 0.98]`, trong khi asm dự đoán **9 số** (3 chế độ × 3 nhiệm vụ). Hậu tố `222`
+> gợi ý còn `111` / `333`. Tìm bằng `/types` trước khi kết luận "chỉ có 3 số".
+
 ### A. Static data — `/statics?type=<T>`
 
 | # | Type | Lấy gì | Đích (file docs) | Ưu tiên |
@@ -201,6 +225,9 @@ Ký hiệu **P0** = đang chặn tài liệu, **P1** = đối chiếu, **P2** = 
 
 **Dump mỗi type 3 lần** (hậu tố file `-menu`, `-stage`, `-ingame`) — static chỉ sống sau khi
 class được nạp. Thiếu một lúc là mất dữ liệu, phải chạy lại phiên.
+
+**Luôn thêm `&arr=256&depth=2`** vào `/statics`. Không có nó, mảng bị cắt ở 128 phần tử và mảng
+lồng nhau trả về tên type — đúng lỗi đã làm run 23/10 mất `listMapDatas` và `listStatValues`.
 
 ### B. Runtime instance — `/find`, `/hierarchy`
 

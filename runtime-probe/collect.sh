@@ -76,6 +76,14 @@ if [ "$MODE" = key ]; then
   say "4. chờ bridge sống"
   wait_health 180 || die "không gọi được $B/health sau 180s"
   cat "$OUT/health.json"
+
+  # Tên class thật. Run 23/10 gọi trượt vì đoán tên không có namespace
+  # (SpaceShooter.EnemySystem.Enemy_Get_Datas); /types trả đúng tên để dùng lại.
+  say "4b. liệt kê tên class"
+  mkdir -p "$OUT/types"
+  for q in Enemy_Get_Datas Percent Map_Get_Datas Stage_Get_Datas GP_Datas Tech Drone; do
+    get "/types?filter=$q" "$OUT/types/$q.json"
+  done
 fi
 
 # ── 4. dump ────────────────────────────────────────────────────────────────
@@ -180,6 +188,7 @@ out=pathlib.Path(sys.argv[1]); mode=sys.argv[2]
 need={"P0 statics":["statics-ingame/Player_Get_Datas.json","statics-ingame/Stage_Get_Datas.json",
                     "statics-ingame/Enemy_Get_Datas.json","statics-ingame/Map_Get_Datas.json",
                     "statics-ingame/Device_Get_Data.json","statics-ingame/Enemy_Data_Balance.json"],
+      "ten class":["types/Percent.json","types/Enemy_Get_Datas.json"],
       "P0 runtime":["find/ingame-Player_Health.json","find/ingame-Enemy_Sub.json"],
       "màn hình":["screen-menu.jpg","screen-stage.jpg","screen-ingame.jpg"],
       "log":["logcat-final.txt"] if (pathlib.Path(sys.argv[1])/"logcat-final.txt").exists() else ["logcat-ingame.txt"],
