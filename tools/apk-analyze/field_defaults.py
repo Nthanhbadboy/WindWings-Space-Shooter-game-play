@@ -196,6 +196,12 @@ def main() -> int:
         if dest == 2389 or enc == 0x80000955 or (enc & 0x1FFFFFFF) == 2389:
             print(f"  usage hit: dest={dest} enc={enc:#x} kind={enc >> 29} "
                   f"src={enc & 0x1FFFFFFF}")
+    print(f"  global field 2389: {index2name.get(2389)!r}; "
+          f"neighbors: {[index2name.get(i) for i in range(2386, 2393)]}")
+    fr_off, fr_size = header["fieldRefs"]
+    if fr_off + 2390 * 8 <= fr_off + fr_size:
+        print(f"  fieldRefs[2389] (i,i): "
+              f"{struct.unpack_from('<ii', blob, fr_off + 2389 * 8)}")
     types_by_name = dump_field_types(dump_path) if os.path.isfile(dump_path) else {}
     print(f"dump.cs field types: {len(types_by_name)}; mapped indices: {len(index2name)}")
 
