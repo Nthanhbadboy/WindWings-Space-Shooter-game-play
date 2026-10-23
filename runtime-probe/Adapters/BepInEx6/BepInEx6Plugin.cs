@@ -14,6 +14,10 @@ namespace Ramus.Bridge.Adapters
 
         public override void Load()
         {
+            // IL2CPP interop: a user-defined subtype of a proxied UnityEngine
+            // type (BridgeHost : MonoBehaviour) must be registered with the
+            // runtime before AddComponent can instantiate it.
+            Il2CppInterop.Runtime.Injection.ClassInjector.RegisterDerivedType<BridgeHost>();
             Bridge.Init(msg => Log.LogInfo(msg));
             BridgeHost.Create();
             Log.LogInfo("Ramus bridge ready on port " + Bridge.Config.Port);
