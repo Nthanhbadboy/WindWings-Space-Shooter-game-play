@@ -49,12 +49,46 @@ Trial chỉ trả **stream `system`**; crash của app ghi vào `main`/`crash`. 
 - `dumpsys activity activities`
 - `monkey -p com.Wind.wings.Space.Shooter -c android.intent.category.LAUNCHER 1`
 
+## Đính chính 23/10 (sau run `39935865412`)
+
+Run `39935865412` là lần đầu **`session install` trên trial chạy được** (step 13 `success`,
+`Validate key` skipped ⇒ vẫn trial, không có adb). Cùng ngày, user vào phiên bằng tay và
+**vào được game**.
+
+| Dữ kiện | Nguồn | Mức |
+|---|---|---|
+| `session install --apk … --timeout 600` trên trial: **thành công** | run `39935865412`, step 13 | A |
+| Consent của game hiện trên màn hình: *"To use Wind Wings you must affirm that y…"* + `Continue` | `ui-after-dialog` (1466 B → 0 B sau khi tap) | A |
+| Google Play Games đăng nhập bị huỷ, app vẫn tiếp tục | logcat `--filter package`: `I/Unity: SignInStatus:Canceled` @ 10:03:05 | A |
+| App **bắt đầu nạp scene** | logcat: `I/Unity: Start Load Scene` @ 10:03:06, `<WaitLoading>d__22:MoveNext()` | A |
+| **Vào được game** | user xác nhận trực tiếp trong phiên | A (lời user) |
+| Vài lần crash trong phiên | **do user chỉnh tay**, không phải app tự chết | A (lời user) |
+
+> Nhận định: chuỗi *"cài → launch → consent → `Start Load Scene` → vào game"* giờ đã có
+> bằng chứng cho từng mốc, trừ mốc cuối là lời user chứ chưa phải ảnh do harness chụp.
+>
+> Nhận định: các lần crash trong phiên **không dùng được** làm bằng chứng app lỗi — chúng
+> xảy ra sau thao tác tay. Mọi kết luận kiểu "app chết lúc load" rút ra từ phiên đó phải bỏ.
+
+### Hai lỗi đo còn lại của harness (đã thấy trong chính run này)
+
+1. `ramus snapshot` trả `{"message": "Cannot read properties of null (reading 'length')"}`
+   đúng lúc cây UI đổi (consent → loading) ⇒ `ui-after-dialog` ghi **0 B** dù màn hình có nội dung.
+2. `logcat` mặc định chỉ trả 500 dòng cuối của buffer **`system`**; dòng của game chỉ hiện khi
+   lọc `--filter com.wind.wings.Space.Shooter`. Báo cáo vì thế từng in "no Unity line" trong khi
+   Unity **đang** ghi log.
+
+Cả hai đã sửa trong `.github/scripts/ramus-probe.mjs` (retry snapshot; logcat theo package;
+pha `Load watch` chụp 3 khung trong lúc scene nạp) nhưng **chưa chạy lại** — xem mục dưới.
+
 ## Còn thiếu / phải đoán
 
-- Nguyên nhân chết trong lúc load: **chưa có log**. Ứng viên, chưa cái nào được chứng minh:
-  - plugin native chỉ build cho arm64 nạp muộn (Unity core đã load được);
-  - hết bộ nhớ khi nạp asset;
-  - bước xác nhận consent gọi mạng rồi thoát.
+- ~~Nguyên nhân chết trong lúc load~~ — **câu hỏi này sai tiền đề**: app không tự chết, user vào
+  được game; các lần crash là do chỉnh tay (mục Đính chính ở trên).
+- **Chưa có khung hình in-game do harness chụp.** `screen-02` là khung lúc *đang* load
+  (`mean 41,6`), ba khung sau đó chưa được chụp vì pha `Load watch` mới thêm, chưa chạy lại.
+- Chưa trả lời được: màn hình đầu tiên **sau** khi scene load xong trông thế nào, và mất bao
+  nhiêu giây từ `Start Load Scene` tới frame đầu. Cần một run nữa (tốn 1 phiên trial).
 - Emulator Ramus có thể dùng lớp chuyển đổi arm64→x86_64. **Chưa kiểm chứng**: cần
   `abilist` của thiết bị (chỉ key mode mới đọc được).
 - Chưa xác định app "chết" hay "tự thoát": UI rời foreground giống nhau ở cả hai.

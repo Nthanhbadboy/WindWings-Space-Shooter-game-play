@@ -332,7 +332,23 @@ function unwrapXml(raw) {
 }
 
 function snapshotUi(tag) {
-  const r = ramus(['snapshot'], { timeout: 60000 });
+  // `ramus snapshot` answers {"error":"... Cannot read properties of null
+  // (reading 'length')"} while the app is mid-load (the tree changes under the
+  // dumper). Seen on run 39935865412 at the consent→loading transition, so it is
+  // retried rather than treated as "the screen is empty".
+  let r = ramus(['snapshot'], { timeout: 60000 });
+  for (let i = 0; i < 2 && !r.ok; i++) {
+    const wait = Date.now() + 1500;
+    while (Date.now() < wait) { /* give the tree a moment to settle */ }
+    r = ramus(['snapshot'], { timeout: 60000 });
+  }
+  if (!r.ok) {
+    result.ui = result.ui || {};
+    result.ui[tag] = Object.assign(result.ui[tag] || { bytes: 0 }, {
+      error: String(r.stderr || r.stdout || '').slice(0, 300).replace(/\s+/g, ' '),
+      retried: true,
+    });
+  }
   if (r.ok && r.stdout) {
     writeFileSync(path.join(OUT, `ui-${tag}.json`), r.stdout);
     // What is on screen is independent evidence: a game UI and the launcher
@@ -522,6 +538,46 @@ function advanceDialogs(maxSteps = 4) {
 
 // ── main ───────────────────────────────────────────────────────────────────
 
+/**
+ * Follow the app's own scene loading and keep shooting: a game that is loading
+ * shows a still, dark frame, which is indistinguishable from a hang unless the
+ * logcat marker and the later frames are both kept.
+ */
+async function watchLoad(maxSeconds = 60) {
+  const pkg = process.env.RAMUS_PACKAGE || 'com.wind.wings.Space.Shooter';
+  const MARK = /Load Scene|LoadScene|Loading|SceneManager|UnityEngine|SplashScreen|downloading|DownloadPack/i;
+  const t0 = Date.now();
+  const markers = [];
+  const shots = [];
+  let sawGame = false;
+  let shot = 3;
+  while ((Date.now() - t0) / 1000 < maxSeconds) {
+    const lines = logcatFiltered(pkg) || [];
+    for (const line of lines) {
+      if (!MARK.test(line)) continue;
+      const key = line.slice(0, 160);
+      if (!markers.includes(key)) markers.push(key);
+    }
+    if (markers.length && !sawGame) sawGame = true;
+    // Three frames spread over the window: loading, mid, settled.
+    const elapsed = Math.round((Date.now() - t0) / 1000);
+    if (elapsed >= shots.length * (maxSeconds / 3) && shot < 9) {
+      if (screenshot(shot)) shots.push(shot);
+      shot++;
+    }
+    if (elapsed >= maxSeconds) break;
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+  snapshotUi('after-load');
+  screenshot(9);
+  return {
+    seconds: Math.round((Date.now() - t0) / 1000),
+    markers: markers.slice(-12),
+    shots: shots.map((n) => `screen-${String(n).padStart(2, '0')}.jpg`),
+    sawGame,
+  };
+}
+
 async function main() {
   log(`label="${opt.label}" mode=${MODE} out=${OUT}`);
   if (SESSION) log(`session=${SESSION}`);
@@ -638,6 +694,14 @@ async function main() {
     }
     snapshotUi('after-dialog');
     screenshot(2);
+
+    // The game does not render its first frame when the consent closes: it runs
+    // `Start Load Scene` and streams assets for tens of seconds (seen 10:03:06 on
+    // run 39935865412). Capturing right after the tap records a loading screen,
+    // so watch the app's own logcat and shoot along the way.
+    if (!opt.offline && ((result.ui['after-dialog'] || {}).packages || []).some((x) => /wind|wings/i.test(x))) {
+      result.load = await watchLoad(Math.min(90, Math.max(30, opt.logcatWait /* seconds */)));
+    }
 
     // If the app already left, ask one question: is it reproducible? Relaunch and
     // watch for ~8 s. A second death at the same point is a crash loop; staying up
@@ -969,6 +1033,26 @@ function renderReport(r) {
       lines.push('> An immersive-mode confirmation ("Viewing full screen") is shown by Android');
       lines.push('> when an app goes full-screen. Its presence means the app reached the point');
       lines.push('> of requesting immersive mode — it was in the foreground.');
+      lines.push('');
+    }
+
+    if (r.load) {
+      const L = r.load;
+      lines.push('### Load watch');
+      lines.push('');
+      lines.push(`Watched the app's own logcat for ${L.seconds}s after the dialogs closed and shot three frames along the way.`);
+      lines.push('');
+      lines.push(`- scene-load markers seen: ${L.sawGame ? '**yes**' : 'no'}`);
+      lines.push(`- frames taken: ${L.shots.length ? L.shots.map((x) => '`' + x + '`').join(', ') : '—'}`);
+      lines.push('');
+      if (L.markers.length) {
+        lines.push('```');
+        for (const m of L.markers) lines.push(m);
+        lines.push('```');
+        lines.push('');
+      }
+      lines.push('> A marker proves the game asked Unity to load a scene. It does not prove');
+      lines.push('> the scene finished: only the frames after it, and their `vs-prev%`, do that.');
       lines.push('');
     }
 
