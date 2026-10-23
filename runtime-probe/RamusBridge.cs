@@ -877,6 +877,52 @@ namespace Ramus.Bridge
             });
         }
 
+        /// <summary>POST /send — locate GameObjects by name (contains match, including
+        /// inactive) and BroadcastMessage a method into them. Lets us close popups /
+        /// press UI buttons that need in-engine routing.</summary>
+        public static string SendMessageJson(string goName, string method, string param, int maxTargets)
+        {
+            return OnMain(() =>
+            {
+                if (string.IsNullOrEmpty(goName) || string.IsNullOrEmpty(method))
+                    return new Jw().StartObj().Prop("ok", false).Prop("error", "missing_go_or_method").EndObj().ToString();
+
+                var sc = SceneManager.GetActiveScene();
+                var roots = sc.GetRootGameObjects();
+                var hits = new List<GameObject>();
+                int budget = 20000;
+                foreach (var r in roots)
+                {
+                    if (hits.Count >= Math.Max(1, maxTargets) || budget <= 0) break;
+                    Search(r.transform, goName, Math.Max(1, maxTargets), ref budget, hits);
+                }
+                if (hits.Count == 0)
+                    return new Jw().StartObj().Prop("ok", false).Prop("error", "go_not_found").Prop("q", goName).EndObj().ToString();
+
+                var sent = new List<string>();
+                var opts = SendMessageOptions.DontRequireReceiver;
+                foreach (var go in hits)
+                {
+                    try
+                    {
+                        if (param == null) go.BroadcastMessage(method, opts);
+                        else go.BroadcastMessage(method, param, opts);
+                        sent.Add(PathOf(go.transform));
+                    }
+                    catch (Exception ex)
+                    {
+                        sent.Add("(err) " + PathOf(go.transform) + ": " + ex.Message);
+                    }
+                }
+
+                var jw = new Jw().StartObj().Prop("ok", true).Prop("method", method).Prop("target", goName)
+                    .Prop("sent", sent.Count).Name("targets").StartArr();
+                foreach (var s in sent) jw.Str(trunc(s));
+                jw.EndArr().EndObj();
+                return jw.ToString();
+            });
+        }
+
         static void Search(Transform t, string needle, int max, ref int budget, List<GameObject> hits)
         {
             if (t == null) return;
@@ -1308,6 +1354,14 @@ namespace Ramus.Bridge
                         string mark = req.Query.TryGetValue("name", out var m) ? m : "mark";
                         try { Debug.Log("RAMUSB-MARK|" + mark); } catch { }
                         Copy(res, HttpResponse.Json(new Jw().StartObj().Prop("ok", true).Prop("mark", mark).EndObj().ToString()));
+                        return;
+
+                    case "POST /send":
+                        Copy(res, HttpResponse.Json(Bridge.SendMessageJson(
+                            req.Query.TryGetValue("go", out var gon) ? gon : "",
+                            req.Query.TryGetValue("m", out var mm) ? mm : "",
+                            req.Query.TryGetValue("p", out var pp) ? pp : null,
+                            Q(req, "targets", 5))));
                         return;
 
                     case "GET /wait":
