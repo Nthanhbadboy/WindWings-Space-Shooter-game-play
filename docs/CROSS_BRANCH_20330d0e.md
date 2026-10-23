@@ -209,3 +209,12 @@ callback. Await native evidence before accepting that interpretation.
 
 VERIFY_ROUND2 fixes 185 vs 180 animations and 154/63 Animator counts are
 consistent with our inventory; runtime and static sources stay separate.
+
+### Animation joins cập nhật từ raw mới
+
+Report 37 nối event receiver trên cùng GameObject: 711/795 event-reference
+uses có candidate, 84 unresolved. Không nhầm số này với 731 event theo clip
+path_id duy nhất. Report 38 dùng PPtr thật xác nhận:
+Boss-39001 + Boss-39002 cùng SDA 580611 → TextAsset 918;
+Boss-39003 dùng SDA 580613 → TextAsset 895. Không gán theo skeleton__N filename.
+Giữ mức PROVISIONAL runtime/dispatch; không suy timeline đánh chỉ từ tên Idle.
