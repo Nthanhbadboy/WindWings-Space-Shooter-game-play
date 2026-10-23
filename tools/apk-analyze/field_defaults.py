@@ -34,9 +34,8 @@ HEADER_FIELDS = [
 ]
 
 CLS_RE = re.compile(r"^(?:public|private|internal|protected)[\w ]*?\b(?:class|struct)\s+([\w.]+)")
-FIELD_RE = re.compile(
-    r"^\s*(?:private|public|protected|internal)(?:\s+static)?(?:\s+readonly)?"
-    r"(?:\s+volatile)?\s+([\w.<>\[\],]+)\s+(\w+);\s*(?://.*)?$")
+MODIFIERS = {"private", "public", "protected", "internal", "static",
+             "readonly", "volatile", "const", "new"}
 TYPE_SIZES = {"int": ("i", 4), "uint": ("I", 4), "float": ("f", 4),
               "double": ("d", 8), "short": ("h", 2), "ushort": ("H", 2),
               "long": ("q", 8), "ulong": ("Q", 8), "byte": ("B", 1),
