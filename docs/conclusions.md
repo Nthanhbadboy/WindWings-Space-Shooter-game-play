@@ -37,6 +37,10 @@
 "`datas/ui_screens.json.gz`, `datas/ui_text_keys.csv.gz` | `python3 tools/apk-analyze/ui_index.py` |
 "
  "| 13c | **Spine: 27 rig / 185 animation / 12.274 keyframe**, thời lượng thật từng anim, 21 event (`Shot` đúng 0.3333 s trong 12 anim đánh, boss `Attack3` có `Stop` tại 0.63/3.3/5.87/8.2 s) | **A** | `23-spine-anim.md`, `datas/spine_anim.json.gz`, `spine-events.csv` | `python3 tools/apk-analyze/spine_anim.py` |
+| 16 | **Lớp hành vi enemy/boss đã export**: 981 `Enemy_Physics` · 971 `Enemy_Destroy` · 695 `Enemy_Burned` · 391 `Enemy_LookAtPlayer` · 140 `Enemy_Stun` · 981 `Enemy_Display`; `Enemy_Controller.uiScript` → **`Enemy_Display`** (không có class `Enemy_UI`) | **A** | `25-enemy-behaviour.md`, `raw/typetrees/*.jsonl.gz` | đọc lại `Enemy_Controller` + `script-links.jsonl.gz` |
+| 16b | **`Enemy_Physics` rỗng**: chỉ 2 field serialize, **0/981** dòng có giá trị → va chạm nằm ở `BoxCollider2D` runtime, không phải dữ liệu thiết kế | **A** | `25-enemy-behaviour.md` §2 | đếm lại field trong `Enemy_Physics.jsonl.gz` |
+| 16c | **`Transform` 228.432 dòng** (2.089 root, 0,9%): mở **4 mắt ghép 0% → 100%** (458 súng · 251 hitbox boss · 558 `parentRotate` · 1.372 điểm đầu/cuối đường bay); còn `Stage_Behaviour.bossObj` 0/250 | **A** | `25-enemy-behaviour.md` §5, `raw/typetrees/transform-tree.tsv.gz` | nối lại chuỗi `m_GameObject → m_Father → root` |
+| 16d | **`Call_Data` đủ 23.757** (trước cắt 1.500); `Call_Point` cùng 23.757 là **lớp bọc** trỏ `dataScript → Call_Data`, không phải bảng dữ liệu mới | **A** | `25-enemy-behaviour.md` §4 | `script-links.jsonl.gz` |
 | 14 | Damage/giá/thưởng suy ra từ field serialize | **B** | `docs/spec/COMBAT.md`, `ECONOMY.md` | so với hằng số ở #12 |
 | 15 | Nhận định "game dễ bypass", "nên dùng Spine"… | **C** | `PHAN_TICH_WINDWINGS_APK.md` | chỉ là đánh giá, không phải số |
 
@@ -45,6 +49,9 @@
 | Thiếu | Vì sao | Cách làm tiếp |
 |---|---|---|
 | `Player_Get_Datas`, `Droid_Data_Balance`, `Tech_Datas`, `Stage_Get_Datas`, `Map_Get_Datas`, `Enemy_Data_Balance`, `Device_Get_Data`, `GameDatas` | **0 instance** trong `data.unity3d` → giá trị nằm trong thân hàm IL2CPP | `19-il2cpp-constants.md` + `raw/il2cpp-consts/*.asm.txt` (đang làm) |
+| `Stage_Behaviour.bossObj` (250) nối vào prefab boss | trỏ tới MonoBehaviour, không phải `Transform` | đọc class đích của `bossObj` rồi lấy `m_GameObject` của nó |
+| `AnimationClip` 791 + `AnimatorController` 308 | reader riêng, chưa export | thêm nhánh non-MonoBehaviour vào `unity_data.py` |
+| `ParticleSystem` | chưa dump | cùng cách với `Transform` |
 | Công thức đầy đủ (thứ tự nhân, clamp, nội suy) | cần đọc control flow, không chỉ hằng số | Ghidra/IDA trên `libil2cpp.so` (đã có trong artifact) |
 | Ý nghĩa từng hằng số ở #12 | capstone chỉ thấy số, không thấy phép tính | **Đã bóc được giá trị float thật từ literal pool** (#12b); còn thiếu *thứ tự nhân/chia* → đọc `raw/il2cpp-consts/*.asm.txt` hoặc Ghidra |
 | Layout runtime thực tế | prefab ≠ runtime (layout group, safe area) | screenshot + so với `raw/ui/` |
