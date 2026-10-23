@@ -151,6 +151,43 @@ CI đọc bằng `npx ramus-cli logcat --limit 800`, tách các dòng `RAMUSB|`,
 
 ## 6. CI trên Ramus
 
+### 📦 APK đã có sẵn trong repo
+
+Repo có **draft release** `windwings-apk-1.3.118` với một asset duy nhất:
+
+| | |
+|---|---|
+| File | `windwings.xapk` |
+| Kích thước | **142.125.649 B** (≈ 135,5 MiB) |
+| Định dạng | **XAPK** = zip chứa `base.apk` (+ config splits / OBB nếu có) |
+| Truy cập | draft ⇒ cần token có `contents: write` để đọc |
+
+Vì là XAPK chứ không phải APK, `.github/scripts/prepare-apk.sh` mở gói trước khi Ramus thấy nó:
+
+```bash
+.github/scripts/prepare-apk.sh --source release:windwings-apk-1.3.118 --out .ci/apk
+# .ci/apk/base.apk          → tham số --apk của `ramus session start`
+# .ci/apk/splits/*.apk      → cài bằng `adb install-multiple` (chỉ chế độ key)
+# .ci/apk/obb/              → đẩy bằng `adb push` (chỉ chế độ key)
+# .ci/apk/apk-inventory.txt → mỗi APK: size, manifest, lib arm64, Unity data
+```
+
+Script nhận cả 4 kiểu nguồn và **không đoán bừa**: nó liệt kê mọi `.apk` trong gói, chọn `base.apk`
+(hoặc file lớn nhất), phần còn lại xếp vào `splits`. Inventory được đẩy lên artifact nên nếu bản
+XAPK này có split thì bạn thấy ngay tên và kích thước.
+
+Chọn nguồn theo thứ tự: input `apk_source` → biến `RAMUS_APK_SOURCE` → `runtime-probe/app.apk`
+→ **auto-dò release có chữ `apk` trong tag**. Không cần cấu hình gì thêm.
+
+> ⚠️ **Đừng publish release này.** Repo đang public; publish = phát hành lại game cho toàn thế giới.
+> Giữ ở dạng draft, cấp `contents: write` cho job là đọc được. Nếu không muốn cấp quyền đó, đặt
+> biến `RAMUS_APK_SOURCE` trỏ tới URL/đường dẫn khác.
+
+> Nhận định: 135,5 MiB nằm dưới trần 150 MB của trial nên **chạy anonymous được ngay**. Rủi ro duy
+> nhất là nếu `base.apk` bên trong cần `config.arm64_v8a.apk` đi kèm (Unity xuất AAB hay tách `.so`
+> theo ABI) — lúc đó trial chỉ cài được base và app có thể crash vì thiếu native lib; artifact
+> `apk-inventory.txt` cho biết ngay, và chế độ key (`adb install-multiple`) xử lý được.
+
 ### 🔑 Nạp key an toàn (đọc trước)
 
 Key Ramus có dạng `rms_…` và **mở toàn bộ tài khoản Ramus của bạn**. Ba luật:
@@ -205,7 +242,7 @@ Vẫn dư, nhưng ba thứ ăn thời gian nhất nên tránh: APK sát 150 MB, 
 | Tên | Loại | Bắt buộc | Ý nghĩa |
 |---|---|---|---|
 | `RAMUS_API_KEY` | secret | Không | Bỏ trống ⇒ tự chạy anonymous. Có ⇒ bật adb + HTTP + `/statics`. **Không dán vào chat/URL**; rotate tại ramus.dev/settings nếu đã lộ. |
-| `RAMUS_APK_URL` | repo variable | Khuyến nghị | URL APK để CI tải (release asset, artifact public…) |
+| `RAMUS_APK_SOURCE` | repo variable | Không | Ghi đè nguồn APK: đường dẫn, `https://…`, hoặc `release:<tag>`. Bỏ trống ⇒ auto-dò release trong repo |
 
 Không có APK ⇒ job `preflight` tắt job `probe` kèm notice, CI không đỏ.
 
@@ -213,12 +250,15 @@ Không có APK ⇒ job `preflight` tắt job `probe` kèm notice, CI không đ�
 
 ```bash
 # anonymous (không cần secret)
-gh workflow run runtime-probe.yml -f apk_url="https://…/app.apk" -f scenario=anonymous
+# mặc định: dùng draft release có sẵn trong repo
+gh workflow run runtime-probe.yml -f scenario=anonymous
 
 # có key: bật HTTP + dump field static của các class game
-gh workflow run runtime-probe.yml -f apk_url="https://…/app.apk" \
-  -f statics="Stage_Datas,Player_Get_Datas,Enemy_Get_Datas,Stage_Get_Datas" \
-  -f wait_scene=Ingame
+gh workflow run runtime-probe.yml -f statics="Stage_Datas,Player_Get_Datas,Enemy_Get_Datas,Stage_Get_Datas" -f wait_scene=Ingame
+
+# nguồn khác
+gh workflow run runtime-probe.yml -f apk_source="https://…/app.apk"
+gh workflow run runtime-probe.yml -f apk_source="release:my-other-tag"
 
 # kèm kịch bản bấm + đợi scene (đợi scene chỉ có tác dụng ở chế độ key)
 gh workflow run runtime-probe.yml -f apk_url="https://…/app.apk" -f taps="0.5,0.82 0.5,0.82" -f wait_scene=Ingame
@@ -229,11 +269,13 @@ Hoặc đặt APK sẵn ở `runtime-probe/app.apk` (đã `.gitignore`) và bấ
 Workflow làm tuần tự:
 
 1. `preflight` — chọn APK + chế độ, không cần secret.
-2. `Resolve APK` — tải/copy, **chặn nếu > 150 MB ở chế độ trial** (báo lỗi kèm cách xử lý), in sha256.
+2. `Prepare APK` — mở XAPK/APKS, tách `base.apk` + splits + OBB, in inventory và sha256;
+   **chặn nếu base > 150 MB ở chế độ trial**.
 3. `Credentials` — key: export; trial: `ramus trial --force`, lưu `expiresAt` + `limits`.
 4. `session start --apk … --wait --timeout 600`, thử 3 lần, lưu `session.json`.
 5. `wait --stable` + screenshot màn hình đầu.
-6. `adb forward` **chỉ ở chế độ key**; trial ghi chú rõ "no-adb".
+6. `adb forward`, `adb install-multiple` (nếu có splits) và `adb push` OBB **chỉ ở chế độ key**;
+   trial ghi chú rõ "no-adb".
 7. Bấm kịch bản (`taps`).
 8. `ramus-probe.mjs` — HTTP nếu có, không thì logcat; tính `verdict`; ghi `report.md`, `summary.json`.
 9. Ảnh + watch link + artifact `runtime-probe-<run_id>` (14 ngày).
@@ -312,5 +354,8 @@ Không có `adb` (trial) thì bỏ 3 dòng `adb`, giữ `--mode trial`; script s
 | `main thread did not answer` | game pause/`timescale=0` và `Update()` không chạy → dùng logcat |
 | Build thiếu `UnityEngine.CoreModule` | chạy game một lần để sinh `BepInEx/interop`, hoặc trỏ `-p:InteropDir=` |
 | `session start` fail 3 lần | hết slot trial (1 session đồng thời) hoặc APK > 150 MB |
+| `release:…` trả 404 | release là draft và token chỉ read-only (fork PR) → chạy trên nhánh của repo, hoặc đặt `RAMUS_APK_SOURCE` |
+| App crash ngay sau khi cài | xem `apk-inventory.txt`: có `config.*.apk` không? trial không cài được split → cần key |
+| `not a zip (magic …)` | tải hỏng/HTML thay vì file — kiểm URL |
 | `ramus status` trả `unauthorized` | key sai/hết hạn → rotate at ramus.dev/settings, `gh secret set` lại |
 | Ảnh 413 | giảm độ phân giải hoặc dùng `ramus screenshot` |

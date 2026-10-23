@@ -3,25 +3,23 @@ name: runtime-probe
 # Boots a cloud Android device with Ramus, installs the build, and inspects the
 # game from inside the process (embedded C# bridge) plus screenshots/UI tree.
 #
-# Works with NO credentials: `ramus trial` mints a 15-minute anonymous key, so
-# every run is self-contained. The trial has no adb tunnel, so the bridge is
-# read through `RAMUSB|{json}` logcat mirrors (see runtime-probe/README.md §5).
-# Adding the RAMUS_API_KEY secret upgrades the same job to the HTTP path.
+# APK SOURCE — the repo already ships one as a DRAFT release asset:
+#   tag:   windwings-apk-1.3.118   asset: windwings.xapk (142.125.649 B)
+# It is an XAPK (zip), not a plain APK, so `prepare-apk.sh` unpacks base.apk
+# and any config splits before Ramus sees it.
 #
-# The APK must already contain runtime-probe/RamusBridge.dll (README §3).
-# CI does not patch the APK.
+# CREDENTIALS — none required: `ramus trial` mints a 15-minute anonymous key.
+# The trial has no adb tunnel, so the bridge is read through `RAMUSB|` logcat
+# mirrors. Adding RAMUS_API_KEY upgrades the same job to the HTTP path.
+#
+# CI does not patch or modify the APK; it only installs what the repo already has.
 
 on:
   workflow_dispatch:
     inputs:
-      apk_url:
-        description: 'APK to install (https URL). Empty → repo variable RAMUS_APK_URL'
+      apk_source:
+        description: 'APK/XAPK path, https URL, or release:<tag>. Empty → auto-detect from this repo'
         required: false
-        type: string
-      apk_path:
-        description: 'APK already present in the checkout (e.g. runtime-probe/app.apk)'
-        required: false
-        default: ''
         type: string
       scenario:
         description: 'Label written into the report'
@@ -60,7 +58,6 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
 
 concurrency:
   group: runtime-probe-${{ github.ref }}
@@ -70,18 +67,21 @@ env:
   RAMUS_CLI: ramus-cli@0.1.17
   RAMUS_PACKAGE: com.wind.wings.Space.Shooter
   PROBE_OUT: reports/runtime-probe
-  # Trial hard limit, checked before uploading.
   TRIAL_APK_MAX_MB: '150'
 
 jobs:
   preflight:
     name: preflight (APK + mode)
     runs-on: ubuntu-latest
+    # contents:write is only used to READ the draft release asset (GitHub hides
+    # drafts from read-only tokens). Fork PRs always run read-only, so they fall
+    # back to the "no APK" skip instead of going red.
+    permissions:
+      contents: write
     outputs:
       enabled: ${{ steps.gate.outputs.enabled }}
       mode: ${{ steps.gate.outputs.mode }}
-      apk_mode: ${{ steps.gate.outputs.apk_mode }}
-      apk_source: ${{ steps.gate.outputs.apk_source }}
+      source: ${{ steps.gate.outputs.source }}
     steps:
       - uses: actions/checkout@v4
 
@@ -98,40 +98,51 @@ jobs:
       - id: gate
         env:
           KEY: ${{ secrets.RAMUS_API_KEY }}
-          INPUT_APK_URL: ${{ inputs.apk_url }}
-          INPUT_APK_PATH: ${{ inputs.apk_path }}
-          VAR_APK_URL: ${{ vars.RAMUS_APK_URL }}
+          INPUT_SOURCE: ${{ inputs.apk_source }}
+          VAR_SOURCE: ${{ vars.RAMUS_APK_SOURCE }}
           FORCE_TRIAL: ${{ inputs.force_trial }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
 
           # ── which APK ──
-          apk=""
-          if [ -n "${INPUT_APK_PATH:-}" ] && [ -f "${INPUT_APK_PATH}" ]; then
-            apk="$INPUT_APK_PATH"
-          elif [ -f "runtime-probe/app.apk" ]; then
-            apk="runtime-probe/app.apk"
+          src="${INPUT_SOURCE:-${VAR_SOURCE:-}}"
+
+          if [ -z "$src" ]; then
+            if [ -f "runtime-probe/app.apk" ]; then
+              src="runtime-probe/app.apk"
+            elif [ -f "runtime-probe/app.xapk" ]; then
+              src="runtime-probe/app.xapk"
+            else
+              # Auto-detect a release in this repo that actually carries an APK/XAPK asset.
+              # (gh release list prints: TITLE <tab> TYPE <tab> TAG <tab> DATE, drafts included)
+              while IFS=$'\t' read -r _title _type tag _date; do
+                [ -n "${tag:-}" ] || continue
+                if gh release view "$tag" --json assets -q '.assets[].name' 2>/dev/null \
+                     | grep -qiE '\.(apk|xapk|apks)$'; then
+                  src="release:$tag"
+                  break
+                fi
+              done < <(gh release list --limit 15 2>/dev/null || true)
+              [ -n "$src" ] && echo "auto-detected $src"
+            fi
           fi
 
-          if [ -n "$apk" ]; then
-            echo "apk_mode=file" >> "$GITHUB_OUTPUT"
-            echo "apk_source=$apk" >> "$GITHUB_OUTPUT"
-          elif [ -n "${VAR_APK_URL:-}" ] || [ -n "${INPUT_APK_URL:-}" ]; then
-            echo "apk_mode=url" >> "$GITHUB_OUTPUT"
-            echo "apk_source=${INPUT_APK_URL:-$VAR_APK_URL}" >> "$GITHUB_OUTPUT"
-          else
-            echo "::notice::No APK configured (input apk_url / variable RAMUS_APK_URL / runtime-probe/app.apk)."
+          if [ -z "$src" ]; then
+            echo "::notice::No APK source (input apk_source / variable RAMUS_APK_SOURCE / runtime-probe/app.apk / an *apk* release)."
             echo "enabled=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          echo "source=$src" >> "$GITHUB_OUTPUT"
+          echo "APK source: $src"
 
           # ── which credential ──
           if [ -n "${KEY:-}" ] && [ "${FORCE_TRIAL:-false}" != "true" ]; then
             echo "mode=key" >> "$GITHUB_OUTPUT"
-            echo "::notice::Using RAMUS_API_KEY → adb tunnel + HTTP bridge available."
+            echo "::notice::RAMUS_API_KEY present → adb tunnel + HTTP bridge + /statics."
           else
             echo "mode=trial" >> "$GITHUB_OUTPUT"
-            echo "::notice::Anonymous trial: 15-minute credential, 150 MB APK, one session, NO adb → logcat path only."
+            echo "::notice::Anonymous trial: 15-minute credential, 150 MB, one session, NO adb → logcat path only."
           fi
           echo "enabled=true" >> "$GITHUB_OUTPUT"
 
@@ -140,8 +151,10 @@ jobs:
     needs: preflight
     if: needs.preflight.outputs.enabled == 'true'
     runs-on: ubuntu-latest
-    # A trial credential lives 15 minutes; a keyed run may upload a much bigger APK.
     timeout-minutes: ${{ needs.preflight.outputs.mode == 'key' && 45 || 25 }}
+    permissions:
+      contents: write      # read the draft release asset
+      pull-requests: write # comment the report on a PR
     env:
       RAMUS_MODE: ${{ needs.preflight.outputs.mode }}
     steps:
@@ -151,30 +164,44 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Resolve APK
+      - name: Prepare APK (APK / XAPK / APKS)
+        id: apk
         env:
-          APK_MODE: ${{ needs.preflight.outputs.apk_mode }}
-          APK_SOURCE: ${{ needs.preflight.outputs.apk_source }}
+          GH_TOKEN: ${{ github.token }}
+          SOURCE: ${{ needs.preflight.outputs.source }}
         run: |
           set -euo pipefail
-          mkdir -p .ci "$PROBE_OUT"
-          if [ "$APK_MODE" = "file" ]; then
-            cp "$APK_SOURCE" .ci/app.apk
-          else
-            echo "downloading $APK_SOURCE"
-            curl -fL --retry 3 --retry-delay 2 -o .ci/app.apk "$APK_SOURCE"
-          fi
-          test -s .ci/app.apk
-          ls -lh .ci/app.apk
-          sha256sum .ci/app.apk | tee apk.sha256
-          echo "RAMUS_APK=.ci/app.apk" >> "$GITHUB_ENV"
+          mkdir -p "$PROBE_OUT"
+          # Outputs of this same step are not readable inside it, so parse the log.
+          .github/scripts/prepare-apk.sh --source "$SOURCE" --out .ci/apk | tee "$PROBE_OUT/apk-prepare.log"
 
-          size_mb=$(( $(stat -c%s .ci/app.apk) / 1048576 ))
-          echo "apk_mb=$size_mb" >> "$GITHUB_ENV"
-          if [ "$RAMUS_MODE" = "trial" ] && [ "$size_mb" -gt "$TRIAL_APK_MAX_MB" ]; then
-            echo "::error::APK is ${size_mb} MB but the anonymous trial accepts ${TRIAL_APK_MAX_MB} MB."
-            echo "::error::Add the RAMUS_API_KEY secret, or point apk_url at a smaller build."
+          apk=$(sed -n 's/^apk=//p' "$PROBE_OUT/apk-prepare.log" | tail -1)
+          splits=$(sed -n 's/^splits=//p' "$PROBE_OUT/apk-prepare.log" | tail -1)
+          [ -f "$apk" ] || { echo "::error::prepare-apk.sh did not produce $apk"; exit 1; }
+
+          {
+            echo "RAMUS_APK=$apk"
+            echo "APK_SPLITS=$splits"
+          } >> "$GITHUB_ENV"
+          echo "RAMUS_APK=$apk   splits: ${splits:-none}"
+
+      - name: Check APK against the trial limit
+        env:
+          BASE_MB: ${{ steps.apk.outputs.base_mb }}
+          SPLITS: ${{ steps.apk.outputs.splits }}
+        run: |
+          set -euo pipefail
+          ls -lh .ci/apk/base.apk
+          sha256sum .ci/apk/base.apk | tee apk.sha256
+
+          if [ "$RAMUS_MODE" = "trial" ] && [ "$BASE_MB" -gt "$TRIAL_APK_MAX_MB" ]; then
+            echo "::error::base.apk is ${BASE_MB} MB — the anonymous trial accepts ${TRIAL_APK_MAX_MB} MB."
+            echo "::error::Add RAMUS_API_KEY, or point apk_source at a smaller split."
             exit 1
+          fi
+          if [ -n "$SPLITS" ] && [ "$RAMUS_MODE" = "trial" ]; then
+            echo "::warning::This source has config splits, and a trial session has no adb to install them."
+            echo "::warning::Base-only install may crash on a missing native library — see apk-inventory.txt."
           fi
 
       - name: Credentials
@@ -186,13 +213,11 @@ jobs:
             echo "RAMUS_API_KEY=$KEY" >> "$GITHUB_ENV"
             echo "signed-in key mode" > "$PROBE_OUT/auth.txt"
           else
-            # Anonymous. Mint as late as possible: the credential only lives 15 minutes.
+            # Mint as late as possible: the credential only lives 15 minutes.
             npx --yes "$RAMUS_CLI" trial --force | tee "$PROBE_OUT/trial.json"
             exp=$(jq -r '.expiresAt // empty' "$PROBE_OUT/trial.json" 2>/dev/null || true)
-            limits=$(jq -c '.limits // {}' "$PROBE_OUT/trial.json" 2>/dev/null || echo '{}')
-            echo "trial_expires=$exp" >> "$GITHUB_ENV"
+            jq -c '.limits // {}' "$PROBE_OUT/trial.json" 2>/dev/null >> "$PROBE_OUT/auth.txt" || true
             echo "RAMUS_TRIAL_EXPIRES=$exp" >> "$GITHUB_ENV"
-            echo "trial limits: $limits" >> "$PROBE_OUT/auth.txt"
             if [ -n "$exp" ]; then
               echo "RAMUS_DEADLINE=$(date -u -d "$exp" +%s)" >> "$GITHUB_ENV"
               echo "::notice::trial credential valid until $exp"
@@ -252,6 +277,7 @@ jobs:
           npx --yes "$RAMUS_CLI" screenshot --out "$PROBE_OUT/screen-boot.jpg" || true
 
       - name: Open adb tunnel (key mode only)
+        id: adb
         if: env.RAMUS_MODE == 'key'
         continue-on-error: true
         run: |
@@ -270,9 +296,31 @@ jobs:
           fi
           echo "serial=$serial"
           test -n "$serial"
+          echo "ADB_SERIAL=$serial" >> "$GITHUB_ENV"
           adb -s "$serial" forward tcp:8080 tcp:8080
           adb -s "$serial" shell pidof "$RAMUS_PACKAGE" || true
           curl -fsS --max-time 10 http://127.0.0.1:8080/health | tee "$PROBE_OUT/health-direct.json"
+
+      - name: Install config splits (key mode, when the source is a bundle)
+        if: env.RAMUS_MODE == 'key' && steps.apk.outputs.splits != ''
+        continue-on-error: true
+        env:
+          SPLITS: ${{ steps.apk.outputs.splits }}
+        run: |
+          set -euo pipefail
+          # shellcheck disable=SC2086
+          adb -s "$ADB_SERIAL" install-multiple -r -t .ci/apk/base.apk $SPLITS
+          adb -s "$ADB_SERIAL" shell monkey -p "$RAMUS_PACKAGE" -c android.intent.category.LAUNCHER 1 || true
+          sleep 5
+          curl -fsS --max-time 10 http://127.0.0.1:8080/health | tee "$PROBE_OUT/health-after-splits.json" || true
+
+      - name: Push OBB payload (key mode, when present)
+        if: env.RAMUS_MODE == 'key' && hashFiles('.ci/apk/obb/**') != ''
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          adb -s "$ADB_SERIAL" shell mkdir -p "/sdcard/Android/obb/$RAMUS_PACKAGE"
+          adb -s "$ADB_SERIAL" push .ci/apk/obb/. "/sdcard/Android/obb/$RAMUS_PACKAGE/"
 
       - name: Skip adb (trial)
         if: env.RAMUS_MODE == 'trial'
