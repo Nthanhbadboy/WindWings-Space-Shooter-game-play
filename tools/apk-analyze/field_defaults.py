@@ -284,6 +284,16 @@ def main() -> int:
                    "methods": resolved}, fh, ensure_ascii=False, indent=1)
     print(f"ia-resolved: {sum(len(v) for v in resolved.values())} mảng / "
           f"{len(resolved)} method (không giải được: {_unres})")
+    # Thứ tự khai báo field tĩnh của Map_Get_Datas (để gán offset tĩnh)
+    try:
+        txt = open(dump_path, encoding="utf-8", errors="replace").read()
+        i = txt.find("class Map_Get_Datas")
+        blk = txt[i:txt.find("\n}", i)]
+        for ln in blk.split("\n"):
+            if "static" in ln and ";" in ln and "(" not in ln:
+                print("  MAPFIELD:", ln.strip())
+    except Exception as e:  # noqa: BLE001
+        print(f"  mapfield lỗi: {e!r}")
     print(f"wrote {out_path} ({os.path.getsize(out_path)} B)")
     return 0
 
