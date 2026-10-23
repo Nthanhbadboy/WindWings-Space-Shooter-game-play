@@ -1,4 +1,4 @@
-// RamusBridge — embedded HTTP probe for Unity (IL2CPP & Mono), loader-agnostic core.
+﻿// RamusBridge â€” embedded HTTP probe for Unity (IL2CPP & Mono), loader-agnostic core.
 //
 // Design goals
 //   * Zero external dependencies (no Newtonsoft, no System.Text.Json, no HttpListener).
@@ -51,7 +51,7 @@ using UnityEngine.SceneManagement;
 
 namespace Ramus.Bridge
 {
-    // ───────────────────────────────────────────────────────────────────── config
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ config
 
     public sealed class BridgeConfig
     {
@@ -120,7 +120,7 @@ namespace Ramus.Bridge
         static bool EnvBool(string k, bool d) { var v = Environment.GetEnvironmentVariable(k); if (string.IsNullOrEmpty(v)) return d; return v != "0" && v.ToLowerInvariant() != "false"; }
     }
 
-    // ───────────────────────────────────────────────────────────────────── logging ring
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ logging ring
 
     public sealed class LogEntry
     {
@@ -161,7 +161,7 @@ namespace Ramus.Bridge
         }
     }
 
-    // ───────────────────────────────────────────────────────────────────── tiny JSON writer
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ tiny JSON writer
 
     internal sealed class Jw
     {
@@ -193,6 +193,21 @@ namespace Ramus.Bridge
         public Jw Prop(string k, bool v) { Name(k); return Bool(v); }
         public Jw Prop(string k, double v) { Name(k); return Num(v); }
         public Jw Prop(string k, int v) { Name(k); return Num(v); }
+        public Jw Prop(string k, long v) { Name(k); return Num(v); }
+
+        /// <summary>Dynamic-dispatch overload used with the Safe() fallback
+        /// helper: value type decides the JSON form at runtime.</summary>
+        public Jw PropObj(string k, object v)
+        {
+            Name(k);
+            if (v == null) return Null();
+            if (v is bool b) return Bool(b);
+            if (v is int i) return Num(i);
+            if (v is long l) return Num(l);
+            if (v is double d) return Num(d);
+            if (v is float f) return Num(f);
+            return Str(v.ToString());
+        }
 
         /// <summary>Writes an already-serialised JSON fragment (array/object) as the value.</summary>
         public Jw PropRaw(string k, string json) { Name(k); return Raw(json); }
@@ -222,7 +237,7 @@ namespace Ramus.Bridge
         }
     }
 
-    // ───────────────────────────────────────────────────────────────────── http primitives
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ http primitives
 
     internal sealed class HttpRequest
     {
@@ -306,7 +321,7 @@ namespace Ramus.Bridge
                     WriteResponse(stream, res);
                 }
             }
-            catch { /* client vanished — never crash the game for a probe */ }
+            catch { /* client vanished â€” never crash the game for a probe */ }
         }
 
         static HttpRequest ReadRequest(NetworkStream stream)
@@ -425,7 +440,7 @@ namespace Ramus.Bridge
         }
     }
 
-    // ───────────────────────────────────────────────────────────────────── main-thread host
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ main-thread host
 
     /// <summary>MonoBehaviour that drains the main-thread queue and mirrors state to logcat.</summary>
     public sealed class BridgeHost : MonoBehaviour
@@ -483,7 +498,7 @@ namespace Ramus.Bridge
         void OnApplicationQuit() { Bridge.Shutdown(); }
     }
 
-    // ───────────────────────────────────────────────────────────────────── bridge
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ bridge
 
     public static class Bridge
     {
@@ -502,7 +517,7 @@ namespace Ramus.Bridge
         static int _mainThreadId = -1;
         static bool _initialised;
 
-        // ── lifecycle
+        // â”€â”€ lifecycle
 
         public static void Init(Action<string> logger)
         {
@@ -539,7 +554,7 @@ namespace Ramus.Bridge
             Running = false;
         }
 
-        // ── log capture
+        // â”€â”€ log capture
         // Bind Application.logMessageReceived(Threaded) through reflection so
         // the file also compiles against Il2CppInterop proxies that may expose
         // only a subset of Unity events. Mismatch just disables the capture.
@@ -579,7 +594,7 @@ namespace Ramus.Bridge
             try { Debug.Log("[RamusBridge] " + msg); } catch { }
         }
 
-        // ── thread marshalling
+        // â”€â”€ thread marshalling
 
         public static T OnMain<T>(Func<T> fn, int timeoutMs = 5000)
         {
@@ -608,7 +623,7 @@ namespace Ramus.Bridge
             }
         }
 
-        // ── metrics
+        // â”€â”€ metrics
 
         public static void TrackFrame(float dt)
         {
@@ -636,7 +651,7 @@ namespace Ramus.Bridge
             return max * 1000.0;
         }
 
-        // ── logging
+        // â”€â”€ logging
 
         static void OnLog(string condition, string stackTrace, LogType type)
         {
@@ -660,7 +675,7 @@ namespace Ramus.Bridge
 
         public static List<LogEntry> TailLogs(int n) { return Logs.Tail(n); }
 
-        // ── state snapshots (must run on main thread)
+        // â”€â”€ state snapshots (must run on main thread)
 
         public static string CompactStateJson()
         {
@@ -709,8 +724,8 @@ namespace Ramus.Bridge
                     .Prop("uptime", (DateTime.UtcNow - _startedUtc).TotalSeconds)
                     .Prop("scene", sc.name)
                     .Prop("scenePath", sc.name)
-                    .Prop("sceneBuildIndex", Safe(() => (object)sc.buildIndex, -1))
-                    .Prop("sceneCount", Safe(() => (object)SceneManager.sceneCount, -1))
+                    .PropObj("sceneBuildIndex", Safe(() => sc.buildIndex, -1))
+                    .PropObj("sceneCount", Safe(() => SceneManager.sceneCount, -1))
                     .Prop("frame", Time.frameCount)
                     .Prop("fps", _fps < 0 ? 0 : _fps)
                     .Prop("avgFrameMs", AvgFrameMs())
@@ -718,8 +733,8 @@ namespace Ramus.Bridge
                     .Prop("timeScale", Time.timeScale)
                     .Prop("realtime", Time.realtimeSinceStartup)
                     .Prop("unity", Application.unityVersion)
-                    .Prop("platform", Safe(() => (object)Application.platform.ToString(), "?"))
-                    .Prop("playing", Safe(() => (object)Application.isPlaying, false))
+                    .PropObj("platform", Safe(() => Application.platform.ToString(), "?"))
+                    .PropObj("playing", Safe(() => Application.isPlaying, false))
                     .EndObj().ToString();
             });
         }
@@ -735,18 +750,18 @@ namespace Ramus.Bridge
                     .Prop("frame", Time.frameCount)
                     .Prop("fps", _fps < 0 ? 0 : _fps)
                     .Prop("timeScale", Time.timeScale)
-                    .Prop("screenW", Safe(() => (object)Screen.width, -1))
-                    .Prop("screenH", Safe(() => (object)Screen.height, -1))
-                    .Prop("dpi", Safe(() => (object)Screen.dpi, -1.0))
-                    .Prop("fullscreen", Safe(() => (object)Screen.fullScreen, false))
-                    .Prop("quality", Safe(() => (object)(QualitySettings.names.Length > 0 ? QualitySettings.names[QualitySettings.GetQualityLevel()] : ""), ""))
-                    .Prop("vSync", Safe(() => (object)QualitySettings.vSyncCount, -1))
-                    .Prop("targetFrameRate", Safe(() => (object)Application.targetFrameRate, -1))
-                    .Prop("device", Safe(() => (object)SystemInfo.deviceModel, "?"))
-                    .Prop("os", Safe(() => (object)SystemInfo.operatingSystem, "?"))
-                    .Prop("processorCount", Safe(() => (object)SystemInfo.processorCount, -1))
-                    .Prop("systemMemoryMB", Safe(() => (object)SystemInfo.systemMemorySize, -1))
-                    .Prop("graphics", Safe(() => (object)SystemInfo.graphicsDeviceName, "?"))
+                    .PropObj("screenW", Safe(() => Screen.width, -1))
+                    .PropObj("screenH", Safe(() => Screen.height, -1))
+                    .PropObj("dpi", Safe(() => Screen.dpi, -1.0))
+                    .PropObj("fullscreen", Safe(() => Screen.fullScreen, false))
+                    .PropObj("quality", Safe(() => (QualitySettings.names.Length > 0 ? QualitySettings.names[QualitySettings.GetQualityLevel()] : ""), ""))
+                    .PropObj("vSync", Safe(() => QualitySettings.vSyncCount, -1))
+                    .PropObj("targetFrameRate", Safe(() => Application.targetFrameRate, -1))
+                    .PropObj("device", Safe(() => SystemInfo.deviceModel, "?"))
+                    .PropObj("os", Safe(() => SystemInfo.operatingSystem, "?"))
+                    .PropObj("processorCount", Safe(() => SystemInfo.processorCount, -1))
+                    .PropObj("systemMemoryMB", Safe(() => SystemInfo.systemMemorySize, -1))
+                    .PropObj("graphics", Safe(() => SystemInfo.graphicsDeviceName, "?"))
                     .Prop("gcMB", GC.GetTotalMemory(false) / 1048576.0)
                     .EndObj().ToString();
             });
@@ -762,8 +777,8 @@ namespace Ramus.Bridge
                     .Prop("ok", true)
                     .Prop("name", sc.name)
                     .Prop("path", sc.name)
-                    .Prop("buildIndex", Safe(() => (object)sc.buildIndex, -1))
-                    .Prop("isLoaded", Safe(() => (object)sc.isLoaded, true))
+                    .PropObj("buildIndex", Safe(() => sc.buildIndex, -1))
+                    .PropObj("isLoaded", Safe(() => sc.isLoaded, true))
                     .Prop("rootCount", roots.Length)
                     .Name("roots").StartArr();
 
@@ -1048,7 +1063,7 @@ namespace Ramus.Bridge
                 .Prop("waitedMs", (DateTime.UtcNow - started).TotalMilliseconds).EndObj().ToString();
         }
 
-        // ── helpers
+        // â”€â”€ helpers
 
         /// <summary>Fetch a Unity property that may hit an unresolved icall on
         /// stripped IL2CPP builds; fall back instead of failing the probe.</summary>
@@ -1123,7 +1138,7 @@ namespace Ramus.Bridge
         }
     }
 
-    // ───────────────────────────────────────────────────────────────────── router
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ router
 
     internal static class Probe
     {
