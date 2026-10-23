@@ -208,7 +208,33 @@ Cộng `AnimationEventHandler` **30** (`UnityEvent endedEvent` + `OnEnded()` = m
 > ⚠ **Curve không đọc được bằng typetree:** **791 / 791** clip có
 > `m_FloatCurves__count = m_PositionCurves__count = … = 0`. Curve nằm ở **`m_StreamedClip`**.
 > ⇒ Đọc được **tên + nhịp + event**, **chưa** dựng lại được chuyển động.
-> Muốn có keyframe phải dùng reader riêng của `AnimationClip` (UnityPy `parse_as_object()`).
+
+### 3.5 Đã thử `parse_as_object()` — **cũng 0 keyframe**, và đây là giới hạn thật
+
+Bản `ae1f2be` chạy `tools/apk-analyze/anim_curves.py` dùng UnityPy `parse_as_object()`
+trên **791 clip**:
+
+| Kết quả | Số |
+|---|---:|
+| Clip parse được | **791 / 791** |
+| Lỗi parse | **0** |
+| **Clip có keyframe** | **0** |
+| **Tổng keyframe** | **0** |
+
+⇒ **Hai đường đọc độc lập đều trả 0.** Không phải lỗi tool: dữ liệu nằm trong
+**`m_StreamedClip`** ở định dạng nén riêng, phải có **bộ giải mã viết riêng** (đọc `m_StreamedClip`
+dạng mảng byte rồi dựng lại bảng curve binding + keyframe).
+
+> **Nhận định (mức A) — sửa lại điều tôi đã viết:** tôi từng ghi *"muốn có keyframe chỉ cần
+> `parse_as_object()`"*. **Sai** — đã thử, ra 0. Điều kiện để có curve là **viết decoder cho
+> streamed clip**, không phải đổi reader.
+>
+> **Nhưng không phải bế tắc:** cái quyết định cảm giác đòn boss **đã có** — `m_StopTime` (1,9 s median),
+> 793 event chia đúng trên các clip, và `allStartAttackActions` với khoá là tên event.
+> Timing dựng lại được; chỉ **dáng chuyển động** của Mecanim là thiếu.
+
+**Điều kiện lật ngược:** nếu giải mã được `m_StreamedClip` thì 791 clip cho ra keyframe thật —
+đây là việc **làm được** (AssetStudio/AssetsTools.NET có bộ đọc clip đầy đủ), chỉ là chưa làm.
 
 ### 3.4 Vì sao chưa đọc — và vì sao biết là đọc được
 
@@ -267,7 +293,7 @@ Lớp hiệu ứng đi kèm: `Sub_Effect` **113** · `Effect_Timer` **95** · `F
 | Hình dạng + nhịp enemy thường | **đủ** | tốc độ xoay từng con | prefab field (C) |
 | Nhịp xuất hiện / biến mất | **đủ** (`Show` 0,67 · `Hide` 0,33) | — | — |
 | Đòn của boss dùng Spine | **đủ tên + thời lượng + mốc event** | pose từng khung | JSON đã có, chỉ cần dựng |
-| Đòn của boss dùng Animator | **danh mục + nhịp** (791 clip · 226 tên · median 1,9 s · 793 event) | **curve** (streamed) | reader `AnimationClip` riêng |
+| Đòn của boss dùng Animator | **danh mục + nhịp** (791 clip · 226 tên · median 1,9 s · 793 event) | **curve** (streamed, đã thử 2 đường = 0) | decoder `m_StreamedClip` |
 | Chuyển cảnh giữa các đòn | **thiếu** | state machine | export `AnimatorController` |
 | FX / particle | biết số lớp | tham số | prefab |
 
@@ -285,7 +311,8 @@ Cái quyết định cảm giác đã đo được hết:
 | # | Việc | Mức | Cách gỡ |
 |---:|---|---|---|
 | 1 | Rig nào thuộc prefab nào | **C** | export `Transform` (`m_Father`) — đã có **228.432** object |
-| 2 | 791 clip tên gì, dài bao nhiêu | **C** | export `AnimationClip` (`m_Curves`) |
+| 2 | ~~791 clip tên gì, dài bao nhiêu~~ | **A** | ✅ xong — 226 tên · median 1,9 s · 793 event (§3.3) |
+| 2b | **keyframe curve** của 791 clip | **D** | `m_StreamedClip` — đã thử `parse_as_object()`: **0 keyframe** (§3.5) |
 | 3 | `speedRotate` / `delay` từng object | **C** | export field prefab |
 | 4 | 25 boss còn lại animate bằng gì | **B** | 9 họ event + 4 rig Spine; phần còn lại chưa có dấu vết |
 | 5 | `allStartAttackActions` có bao nhiêu khoá | **C** | export field prefab (dictionary) |

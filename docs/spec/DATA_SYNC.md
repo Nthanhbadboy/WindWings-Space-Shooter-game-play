@@ -866,10 +866,14 @@ Tỷ lệ khớp trong sai số 1,4 điểm ⇒ **enum `spawnType` đã giải m
 | `Enemy_Movement.parentRotate` | **558** | 100% |
 | `Gun_Attack.m_GameObject` | **458** | 100% |
 | `Boss_BodyPhysics.m_GameObject` | **251** | 100% |
-| `Stage_Behaviour.bossObj` | **250** | 100% |
+| `Stage_Behaviour.bossObj` | **250** | 100% ⚠ **cả 250 đều thuộc `Board_Maps`** — là **icon boss trên bản đồ stage**, không phải prefab boss |
 | **Tổng** | **3.870** | |
 
 **453 prefab root khác nhau.** Trong đó **699 / 3.870 = 18,1%** thuộc `Board_*`.
+
+> ⚠ **Mắt `Stage_Behaviour.bossObj` nối được nhưng nối vào UI:** **250 / 250** đều có root
+> `Board_Maps`, và target khớp **100%** cột `gameobject` của `transform-tree` ⇒ đây là **icon boss
+> trên bản đồ chọn màn**, không phải boss trong trận. Đừng dùng nó để đếm boss.
 
 #### 7.19.1 ⚠ 30% số súng là **súng preview trên màn UI**
 

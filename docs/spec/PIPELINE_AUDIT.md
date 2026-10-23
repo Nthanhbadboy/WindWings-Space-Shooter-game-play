@@ -396,6 +396,21 @@ Mắt cuối `Stage_Behaviour.bossObj` (mà §7.9 xếp vào nhóm "0%, thiếu 
 Ngoài ra: **method body** (0,44%) vẫn ngoài tầm — nhưng giờ **không còn là mắt chặn** cho bất kỳ
 câu hỏi thiết kế nào nêu trong `SCRIPTS.md` §7, trừ `number = 0` (số quân).
 
+### 11.5 `ae1f2be` — thử keyframe, **thất bại có kiểm soát**
+
+`anim_curves.py` dùng `parse_as_object()` trên **791 clip**: **0 lỗi parse, 0 keyframe**.
+Họ ghi đúng nguyên nhân (`m_StreamedClip`) và **không giả vờ thành công** — đây là cách xử lý đúng.
+
+`4c84d90` còn **tự kiểm lại số 45.659** độc lập từ `Call_Data` đầy đủ: khớp. Không phải chỉ
+nhận kết luận của nhánh spec.
+
+### 11.6 Một số của tôi bị sửa ngược lần nữa
+
+| Tôi ghi | Thực tế |
+|---|---|
+| `Stage_Behaviour.bossObj` 250 = mắt ghép **về boss** | **250/250 root `Board_Maps`** — là **icon boss trên bản đồ**, không phải boss |
+| "Muốn keyframe chỉ cần `parse_as_object()`" | **0 keyframe** — cần decoder `m_StreamedClip` riêng |
+
 ## 12. Còn thiếu / phải đoán
 
 | # | Thứ | Mức |
