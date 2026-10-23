@@ -663,6 +663,98 @@ Nguồn: `class-inventory.csv` (677 class / 125.452 instance) · `04-unity-asset
 > nhưng nếu list là pool thì **mọi con số quân** (45.659 · 22.417 entry · 131,5 quân/wave) **phải chia lại**.
 > Chưa kết luận được — và đây là chỗ dễ tự phong nhất trong toàn bộ hồ sơ.
 
+### 7.14 Bản `bb97453`+`d84ea72`: Transform tree + lớp hành vi — **kết quả chạy thật**
+
+Nhánh dữ liệu áp dụng **toàn bộ** audit: thêm lớp hành vi vào `TARGETS`, ghép Director theo
+hậu tố, nâng cap, xuất `Transform`, sửa CI. Run `39879117958` xong trong **4 phút 01 giây**
+(trước **11 phút 00**) — **−63%**, vì `REA` chuyển thành opt-in.
+
+`typetree` từ **45 → 110 class**. Dưới đây là số đọc từ dữ liệu đó.
+
+#### 7.14.1 `Transform` — mở được mắt ghép nhưng **không phải 100%**
+
+`transform-tree.tsv.gz`: **228.432** Transform · **2.089** root (`m_Father = 0`).
+
+| Mắt | Trước | Sau | Cách ghép |
+|---|---:|---:|---|
+| `Gun_Attack` → có Transform | 0 | **458 / 458 = 100%** | tra `m_GameObject` |
+| `Boss_BodyPhysics` → có Transform | 0 | **251 / 251 = 100%** | nt |
+| `Enemy_Sub` → `Enemy_Controller` | 100% | **981 / 981 = 100%** | tổ tiên |
+| **`Gun_Attack` → `Enemy_Controller`** | **0** | **438 / 458 = 95,6%** | leo tổ tiên |
+| **`Boss_BodyPhysics` → `Enemy_Controller`** | **0** | **189 / 251 = 75,3%** | leo tổ tiên |
+| (cách khác) ghép theo **root tuyệt đối** | — | Gun **455 (99,3%)** · Body **219 (87,3%)** | |
+
+Hai cách cho kết quả **khác nhau** vì một số Transform nằm trong prefab lồng: leo tổ tiên thấy
+controller ở giữa chuỗi, còn root tuyệt đối thì vượt quá. **Không cách nào 100%.**
+
+20 súng không ghép được nằm ở `Board_FightBoss/…/Parent_Bosses/Boss 3/…` — súng **trên màn UI
+chọn boss**, không thuộc enemy nào. Tức phần lớn "không ghép được" là **dương tính giả của bộ đếm**,
+không phải dữ liệu thiếu.
+
+> **Nhận định (mức A):** kết luận `> 1 bảng Transform mở cả 5 mắt` của tôi (§7.10) **đúng một nửa**:
+> nó mở được chuỗi, nhưng **không đạt 100%** vì prefab lồng và vì có object UI dùng chung kiểu component.
+> Mức đúng là **75–99%**, không phải 100%.
+
+#### 7.14.2 ⚠ `Enemy_Physics` — đọc rồi mới biết **nó không chứa damage**
+
+| Class | Dòng | Field | Giá trị thật |
+|---|---:|---|---|
+| `Enemy_Physics` | **981** | **2** | `autoCacheColliders = False` **981/981** · **`allColliders = []` 981/981** |
+| `Enemy_Destroy` | 971 | 3 | `pointBurst` · `isNoPool` · `delayDestroy` |
+| `Enemy_Burned` | 695 | 2 | `pointEffect` · `allDestroyEffects` |
+| `Enemy_Stun` | 140 | 3 | danh sách `Gun_Attack` gây choáng |
+| `Enemy_LookAtPlayer` | 391 | **14** | `lerpAngleSpeed` · `lerpSpeed` · `minAngle`/`maxAngle` · `offsetAngle` |
+
+**`Enemy_Physics` rỗng.** Mảng collider **không được serialize** — nó được cache lúc chạy
+(`autoCacheColliders`). Damage va chạm **không nằm ở đây**; nó nằm trên `Collider2D`/`Damager`
+hoặc trong `Enemy_Datas`.
+
+> **Nhận định (mức A) — tôi đã sai:** tôi khẳng định "export `Enemy_Physics` mở khoá **85,8% entry**
+> damage". Đọc xong thì class này **0 field damage**. Điều kiện lật ngược tôi tự đặt ra ở §7.12
+> (*"nếu field rỗng thì lớp này không cứu được"*) **đã xảy ra**.
+>
+> Bài học ghi lại: **PathID có sẵn ≠ nội dung có sẵn.** Một class tồn tại 981 lần không có nghĩa
+> nó chứa số; phải đọc mới biết.
+
+#### 7.14.3 `Call_Point` — **mắt nối lớn nhất đã tìm ra**
+
+| Số | Giá trị |
+|---|---:|
+| `Call_Point` | **23.757** |
+| Có `dataScript` trỏ tới | **23.757 / 23.757 = 100%** |
+| Khớp `Call_Data.path_id` | **23.757 / 23.757 = 100%** |
+| Khớp `Spawner` / `Path_Spawner` / `PointToPoint_Spawner` | **0** |
+| `warningPoints` | 2 field còn lại |
+
+⇒ Mỗi `Call_Data` có **đúng 1** `Call_Point`, và `Call_Point` **không** trỏ tới spawner nào.
+Nghĩa là `Call_Data` (bị cap 1.500/23.757) **là** bảng gốc, và `Call_Point` chỉ là **điểm đánh dấu
+trên bản đồ** — không chứa phần dữ liệu bị cắt.
+
+> **Điều kiện lật ngược trong §7.12.3 đã được trả lời:** đọc `Call_Point` **không** đưa sinh quân
+> từ 19,6% lên 100%. Muốn đủ 23.757 vẫn phải **bỏ cap** `Call_Data` (đã nâng lên 30.000 trong `CAP_OVERRIDES`).
+
+#### 7.14.4 37 Director — **63 instance, và đúng là bảng pha**
+
+| Field xuất hiện nhiều nhất | Số Director có |
+|---|---:|
+| `animatorParent` | **37 / 37** |
+| `animEvents` | 33 |
+| `parentDestroy` | 28 |
+| `targetLayer` | 27 |
+| `lookatPlayer` | 24 |
+| `allHpParents` | 21 |
+| `allObjColliders` | 19 |
+
+Danh sách dài nhất: `Boss11_Director.allHandPoints` **12** · `MB9_Director.listChilds` 11 ·
+`Boss17_Director.allBeeAttack4/5` 10.
+
+⇒ `animatorParent` ở **cả 37** ⇒ mọi Director đều có **state machine riêng** điều khiển pha.
+`animEvents` 33/37 ⇒ **33 boss pha được điều bằng animation event**, khớp §3 của `ANIMATION.md`.
+
+**Vẫn thiếu:** Director **không** chứa thời lượng pha — nó giữ **tham chiếu** (`animatorParent`,
+`animEvents`) trỏ tới `AnimatorController` (308) và `AnimationClip` (791), hai loại **chưa export**.
+Lớp pha boss giờ **biết cấu trúc nhưng chưa biết nhịp**.
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |

@@ -292,7 +292,51 @@ Mỗi run kết thúc bằng commit `chore(re): IL2CPP + Unity + REA analysis re
 **36 / 78 commit** là loại này ⇒ mỗi lần phân tích đẻ ra **2 commit** (1 của người, 1 của bot),
 làm lịch sử khó đọc và kích hoạt thêm workflow khác nếu `paths` không chặn.
 
-## 10. Còn thiếu / phải đoán
+## 10. `bb97453` (00:36) — họ đã làm **toàn bộ** 4 đề xuất, và CI nhanh hơn 63%
+
+| Đề xuất của tôi | Commit này | Bằng chứng |
+|---|---|---|
+| §5 #1 — thêm 5 class `Enemy_*` | ✅ **thêm 27 class** | `TARGETS` nay có `Enemy_Physics` · `Destroy` · `Burned` · `Stun` · `UI` · `LookAtPlayer` · `Attack` · `Sync_Attack` · `SpawnChilds` · `DropGold` · `Rotate` · `Helicopter` · `Display` · `Hp_Bar` · `Laser_Gun` · `Rocket_Attack` · `CameraVibrate` · `EfxDestroyed` · `BombDie` · `BurstBulletWhenDie`… |
+| §5 #2 — 37 `*_Director` | ✅ **ghép theo hậu tố** | `TARGET_SUFFIXES = ("_Director", "_MiniDirector", "ChildDirector", "_AttackPhases")` — tự bắt class mới khi game cập nhật |
+| §5 #3 — `Call_Point` | ✅ | thêm vào `TARGETS` |
+| §5 #4 — `Transform` | ✅ **export thật** | `transform-tree.tsv.gz` **228.432** Transform |
+| §9.1 — bỏ REA | ✅ **opt-in** | `if: github.event_name == 'workflow_dispatch' && inputs.run_rea`, mặc định `false` |
+| §9.2 — `concurrency` | ✅ | `group: analyze-apk-${{ github.ref }}` · `cancel-in-progress: true` |
+| §7.8 — cap | ✅ | `CAP_OVERRIDES`: `Call_Data` **30.000** · `PointToPoint_Spawner` 14.000 · `PathCreator` **1.800** · `Call_Point` 30.000 |
+
+**Kết quả đo được:** run `39879117958` = **4 phút 01 giây** (00:36:27 → 00:40:28), trước đó **11 phút 00**.
+**−63% thời gian.** `typetree` từ **45 → 110 class**.
+
+### 10.1 Ba điều dữ liệu mới dạy — trong đó **một điều tôi sai**
+
+1. **`Transform` mở mắt ghép nhưng không tới 100%.** `Gun_Attack` → `Enemy_Controller`: **95,6%**
+   (leo tổ tiên) hoặc **99,3%** (root tuyệt đối). `Boss_BodyPhysics`: **75,3% / 87,3%**.
+   Nguyên nhân: prefab lồng + súng UI dùng chung component. **Kết luận cũ của tôi ("1 bảng mở 5 mắt") đúng một nửa.**
+2. **`Call_Point` không chứa phần `Call_Data` bị cắt.** 23.757/23.757 khớp 1-1, nhưng trỏ về
+   `Call_Data` chứ không mang dữ liệu spawner. ⇒ vẫn phải bỏ cap thật.
+3. **`Enemy_Physics` rỗng — tôi đã sai rõ ràng.** 981 instance, **2 field**,
+   `allColliders = []` **981/981**. Damage va chạm **không nằm ở đây**.
+   Tôi đã khẳng định export nó "mở khoá 85,8% entry". Sai. Điều kiện lật ngược tôi tự ghi đã xảy ra.
+
+### 10.2 Bài học chung, ghi để lần sau không lặp
+
+> **PathID có sẵn ≠ nội dung có sẵn.** Một class có 981 instance và PathID trỏ đúng
+> vẫn có thể **0 field hữu ích**. Chi phí kiểm là 1 dòng — nhưng kết luận phải chờ **sau** khi đọc.
+
+Điều này áp dụng cho cả 2 phía: audit của tôi đúng về **thứ tự** (đọc rẻ trước),
+sai về **kỳ vọng nội dung** (tưởng có damage).
+
+### 10.3 Còn lại sau `bb97453`
+
+| # | Thứ | Trạng thái |
+|---:|---|---|
+| 1 | `AnimationClip` 791 · `AnimatorController` 308 | ❌ **giờ là mắt chặn lớn nhất** — Director đã có nhưng giữ *tham chiếu* tới 2 loại này |
+| 2 | Damage va chạm enemy | ❌ không ở `Enemy_Physics`; phải tìm ở `Collider2D` / `Damager` / `Enemy_Datas` |
+| 3 | `Call_Data` đầy đủ 23.757 | ⚠ cap đã nâng 30.000 — **chưa thấy file mới**, cần run kế tiếp |
+| 4 | `width × height` sprite | ❌ `datas/sprites.csv` chỉ có `bytes` |
+| 5 | `ParticleSystem` | ❌ |
+
+## 11. Còn thiếu / phải đoán
 
 | # | Thứ | Mức |
 |---:|---|---|

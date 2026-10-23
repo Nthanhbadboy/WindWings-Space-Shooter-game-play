@@ -110,7 +110,7 @@ Nghĩa là người mới **không có nút bỏ qua** ở bước này.
 | 2 | **Bay** | đi đường nào, nhanh bao nhiêu, dừng hay lặp | `Enemy_Movement` | 981 | **100%** | path + speed |
 | 3 | **Bắn** | bắn viên gì, bao lâu một viên, mấy băng | `Gun_Attack` | 458 | **100%** | timeline |
 | 4a | **Va chạm boss** | đâm vào mất bao nhiêu máu | `Boss_BodyPhysics` | 251 | **100%** | 2 tham số |
-| 4b | **Va chạm enemy thường** | đâm vào mất bao nhiêu máu | `Enemy_Physics` | **981** | **0%** | PathID vào đã có: `Enemy_Controller.physicsScript` = **981** khoá |
+| 4b | **Va chạm enemy thường** | đâm vào mất bao nhiêu máu | `Enemy_Physics` | **981** | **0%** — và **đã đọc: class rỗng**, `allColliders = []` 981/981 ⇒ damage **không nằm ở đây** |
 | 5 | **Pha boss** | đổi đòn ở mốc nào, đòn gì | 37 `*_Director` + 3 `AttackPhases` | **68** | **0%** | bảng pha |
 
 **Ba lớp đầu là timeline có tham số thời gian** — đọc được trọn. Đó là lý do khẳng định
@@ -284,7 +284,7 @@ tầng còn thiếu.
 | # | Thứ | Mức | Cách lấy |
 |---:|---|---|---|
 | 1 | **Bảng pha** 37 `*_Director` + 3 `AttackPhases` | **D** | thêm vào `TARGETS` — 68 instance, cùng đường 8 class đã đọc |
-| 2 | **Damage va chạm enemy thường** (`Enemy_Physics` 981) | **D** | **PathID đã có sẵn**: `Enemy_Controller.physicsScript` trỏ **981 PathID khác nhau** ⇒ export là khớp **100%**, không phải ghép lại (`DATA_SYNC.md` §7.7) |
+| 2 | **Damage va chạm enemy thường** | **C** | ⚠ **đã export `Enemy_Physics` — 2 field, `allColliders = []` 981/981 ⇒ không chứa damage.** Phải tìm ở `Collider2D` / `Damager` / `Enemy_Datas` |
 | 3 | **Công thức HP theo stage** (`Enemy_Health.Init`) | **D** | method body IL2CPP — `dump.cs` chỉ có RVA, chưa có thân |
 | 4 | **Điều kiện qua màn** (`Wave.CheckSpawnEnded`) | **B** | method body; hiện chỉ biết tên hàm |
 | 5 | Ý nghĩa chính xác `gunType` (0–3) | **C** | chưa thấy enum tương ứng trong `07-enums.md` |
@@ -296,6 +296,9 @@ tầng còn thiếu.
 
 > Không có mục nào ở đây là "không thể". #1 và #2 là **chưa thêm tên class vào danh sách đọc**
 > (cùng một lệnh đã đọc được 8 class khác), #3–#4 cần **method body**, #5–#7 là **chưa chốt cách đọc**.
+>
+> **Cập nhật `bb97453`:** #1 **đã xong** — 37 Director + 27 class hành vi đã export
+> (`DATA_SYNC.md` §7.14). #2 **đã thử và thất bại**: `Enemy_Physics` rỗng.
 >
 > **Cập nhật sau khi kéo dữ liệu `9033cf7`:** #1 và #2 **không còn là bài toán ghép**.
 > `Enemy_Controller` (981 dòng) đã khai báo PathID của `physicsScript`, `destroyScript`, `uiScript`,
