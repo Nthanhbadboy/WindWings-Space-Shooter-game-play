@@ -471,6 +471,149 @@ if (Invincible && !ignoreInvincible) {
 `save → device(tàu) → tech → ability → StartHealth → CurrentHealth`, và **chốt tại thời điểm spawn**,
 không đọc lại giữa màn.
 
+### 0.6.9 **HP đến từ UPGRADE → BASIC → "Health"**, không phải từ tàu
+
+Đây là mắt ghép còn thiếu của §0.6.1. Nguồn: `12-localization.csv` (bảng chữ), `Tech_Datas.asm.txt`,
+`Player_Get_Datas.asm.txt`.
+
+**a) Bảng tên tech stat (A)** — 24 khoá `txt_techstat_label_*` / `txt_techstat_desc_*`, id **0–11**:
+
+| id | Tên trong game | Mô tả |
+|---|---|---|
+| **0** | **Health** | **"Increase health points"** |
+| 1 | Special cannon | tăng power pháo đặc biệt |
+| 2 | Normal cannon | tăng power pháo thường |
+| 3 | Magnet | tăng bán kính hút |
+| 4 | Laser weapon | tăng power skill chính |
+| 5 | Bomb | đặt mìn |
+| 6 | Rocket Barrage | bắn loạt rocket |
+| 7 | Stun | từ trường vô hiệu đạn |
+| 8 | Invisible | tàng hình vùng |
+| 9 | Super Lazer | laser xoá đạn |
+| 10 | Mega Bomb | nổ diện rộng |
+| 11 | Invisible II | tàng hình cấp 2 |
+
+Tab này có nhãn UI **`txt_basic` = "Basic / Cơ bản"** và nhiệm vụ **`txt_upgrade_full_tech_lv` =
+"Upgrade basic technology to maximum of level"** ⇒ **đúng "upgrade → basics"**.
+
+**b) Nối vào công thức HP đã đọc:**
+
+```
+GetHpStatPercent = stepCommon(0,168) × TechStatPoints(0) + abi7AddPlayerStartHp × GetNumberAbility(7)
+GetStartHp       = StartHp × (1 + GetHpStatPercent)
+```
+
+`TechStatPoints(0)` = **số điểm của stat id 0** — và id 0 **chính là Health**.
+⇒ **HP người chơi là một đường nâng cấp**, không phải thuộc tính của tàu.
+
+**c) Ba hệ quả — và một giả thuyết bị loại:**
+
+| Trước đây | Bây giờ |
+|---|---|
+| "HP phải là của tàu" | ❌ **Không** — `ships.json` **25 tàu không có field HP** là **đúng**, vì HP không thuộc tàu |
+| "`StartHp` là hằng số bí ẩn" | ⚠ `StartHp` = **HP gốc ở cấp 0**; phần lớn HP đến từ `TechStatPoints(0)` |
+| "device cộng HP" | ✅ vẫn đúng, nhưng là **đường thứ ba** (4 slot/tàu, §0.6.7f) |
+
+**d) Hai trục tăng HP của người chơi — tách bạch:**
+
+```
+HP = StartHp × (1 + 0,168 × [cấp tech stat 0] + abi7 × [số ability 7])   ← tài khoản, dùng chung mọi tàu
+     + điều chỉnh bởi device của TÀU đang chọn (4 slot)                   ← riêng từng tàu
+```
+
+⇒ "HP theo tàu" **chỉ đúng ở phần device**. Phần tech là **toàn tài khoản**.
+Điều này khớp chính xác với việc **33/40 getter của `Player_Get_Datas` không nhận `playerIndex`**.
+
+### 0.6.10 **Hai loại tàu**: main ship + support ship
+
+Nguồn: `dump.cs.gz` (`Player_Ingame` 72916 · `Sub_Player` 73942 · `GP_ChangePlayerTypes` 74230).
+
+| | **Main ship** | **Support ship** |
+|---|---|---|
+| Class | `Player_Ingame : MonoBehaviour` | **`Sub_Player : Sub_Character, IPlayer, IPlayerAnimation, IPlayerTypes, IPlayerStartup, IPlayerSkill, IInvisible`** |
+| HP | dùng `Player_Health` (static `StartHealth`) | **`private Player_Health heathScript; // 0x28`** — **HP riêng** |
+| Điều khiển | `Player_Controller controller` | `Player_Controller controller; // 0x30` |
+| Biến hình | `IsTransforming` (@0x29) · `currentPlayer` (`Player_Attack` @0x40) | `ChangePlayerTypes(Action _transformed)` (slot 25) |
+| Skill drone | `timeDroneAbilityReady[]` (@0x48) | `UseDroneSkill(int _indexSlot)` · `UsePlayerSkill()` |
+
+Bộ điều phối: **`GP_ChangePlayerTypes.Init(Transform _player)`** → `OnChangePlayerTypes(Action _transformed)`
+⇒ đổi **loại** tàu tại chỗ, không spawn mới.
+
+**Khớp với số đo được:** `Device_Get_Data.GetPlayerUse` quét **4 slot/tàu** (`i = 0…3`, `cmp x8, #4`).
+⇒ **4 = 2 (main) + 2 (support)**, đúng như mô tả. `Player_Saved_Datas.GetPlayerUsed(int slotIndex)`
+(asm `dump.cs` 10902) là hàm tra "slot nào đang dùng tàu nào".
+
+> **Nhận định (mức B):** mô hình là **1 main + 1 support, mỗi tàu 2 device** ⇒ tổng 4.
+> **Điều kiện lật ngược:** nếu `GetPlayerUsed` chỉ nhận `slotIndex ∈ {0,1}` thì 4 device đều thuộc main.
+> Cần đọc thân `GetPlayerUsed` (RVA `0x14…`, **chưa có asm**).
+
+### 0.6.11 **Giáp = giảm damage**, không cộng HP
+
+`Player_Health`:
+
+```csharp
+public float Armor;                        // 0x20
+private float reduceDamageByDevice;        // 0x58
+```
+
+Hai field **tách khỏi** `StartHealth` / `CurrentHealth` ⇒ giáp **không** nằm trong thanh máu.
+
+⚠ **Giới hạn bằng chứng:** phần **số học** của `TakeDamage` (trừ giáp) nằm ở `0x14c7024` trở đi —
+**ngoài vùng export**, vì `Player_Datas.asm.txt` dừng tại `0x14c6f48` (`DATA_SYNC` §7.29).
+Đọc được **5 cổng chặn** + `GetNumberAbility(30)` + `Random(0,100)`, **chưa** đọc được
+`damage × (1 − armor)`.
+
+⇒ **Mức B** (tên field + mô tả người thiết kế), không phải A.
+
+### 0.6.12 **Độ khó tăng theo màn — tăng cái gì, KHÔNG tăng cái gì**
+
+Kiểm bằng 4 nguồn độc lập.
+
+| Ứng viên | Có scale theo màn? | Bằng chứng |
+|---|---|---|
+| `Wave` (prefab wave) | ❌ **không** | class chỉ có **3 field**: `indexWave` · `startPoint` · `endPoint` |
+| `Enemy_Datas.StartHealthPoint` | ❌ **không** (cố định theo prefab) | 981 dòng, **72 giá trị khác nhau**, không có cột level |
+| `Enemy_Datas.StartHpPoint` | ❌ **field chết** | = **0 ở 981/981** |
+| `Enemy_Datas.CurrentHealthPoint` | ❌ **field chết** | = **0 ở 981/981** |
+| `Stage_Get_Datas.levelDelta` (float[]) | ✅ nhưng **scale PHẦN THƯỞNG** | dùng trong `GetBonus` (`fmul s0,s8,s0`) |
+| **HP boss** | ✅ **tăng theo wave** | xem bảng dưới |
+| **Damage boss** | ⚠ chỉ **3/9** boss có biến thể | `Boss6` 2.800/600 · `Boss9` 800/500 · `Boss10` 800→1.350 (§3 B6 của `OPEN_ISSUES`) |
+
+**Tổng HP mỗi wave theo bó 20** (`enemy_hp.json` × `waves.json`, cộng dồn mọi bộ phận):
+
+| Wave | Wave có HP > 0 | Median tổng HP | Max |
+|---|---|---|---|
+| 0–119 | **0/120** | 0 | 0 |
+| 120–139 | 1/20 | 1.220.000 | 1.220.000 |
+| 140–219 | 0/80 | 0 | 0 |
+| 220–239 | 4/20 | 2.510.000 | 4.272.000 |
+| 240–259 | **20/20** | **4.300.000** | 7.290.000 |
+| 260–279 | **20/20** | **7.760.000** | 13.390.000 |
+| 280–281 | 1/2 | 10.500.000 | 10.500.000 |
+
+⇒ **Đường cong độ khó nằm ở HP boss**, tăng **≈ 1,8× mỗi 20 wave** ở đoạn cuối.
+
+**Và một phát hiện quan trọng: enemy thường có HP = 0.**
+
+| Nhóm | Số prefab | Có HP > 0 |
+|---|---|---|
+| **`Boss-*`** | **45** | **45 (100%)** |
+| `CB-*` (enemy thường) | 37 | **1** (chỉ `CB(TEST)` = 10.000.000) |
+| `Wave-*` · `W*` · `BB` · `XB` · `GD` · `CD-*` | 83 | **0** |
+
+`CB-30003` = **0,0** · `CB-30015` = **0,0** · `CD-31002` = **0,0** — ba loại bị spawn nhiều nhất.
+
+**Hai cách đọc, chưa chốt:**
+
+1. **Enemy thường chết 1 phát** — HP = 0 là thật, đây là shmup "one-hit" cổ điển. Ủng hộ:
+   `StartHpPoint`/`CurrentHealthPoint` chết · `Enemy_Data_Balance` **7 method 0 HP** ·
+   HP bar chỉ gắn trên boss.
+2. **Runtime gán HP** — exporter ghi *"runtime HP is scaled by `Enemy_Data_Balance` and stage"*.
+   Nhưng class đó **không có method HP** ⇒ ghi chú của exporter **không đúng chỗ**, phải nằm ở
+   `Enemy_Health` (chưa dump).
+
+**Cách chốt (rất rẻ):** dump `Enemy_Health.asm.txt` — tìm 1 lệnh **ghi** vào `StartHealth`.
+
 ## 1. Phương pháp & nguồn
 
 | Field | Kiểu | Nghĩa |

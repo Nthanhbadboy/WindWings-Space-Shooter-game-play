@@ -19,7 +19,7 @@
 
 ---
 
-## 1. Bảng tổng — **24 vấn đề**, chia theo **nguyên nhân** (quan trọng hơn mức độ)
+## 1. Bảng tổng — **25 vấn đề**, chia theo **nguyên nhân** (quan trọng hơn mức độ)
 
 | # | Vấn đề | Nhóm | Mức | Ảnh hưởng thiết kế |
 |---|---|---|---|---|
@@ -33,6 +33,7 @@
 | B4 | `GetCountEnemies` mỗi stage | **chưa lấy** | D | ảnh hưởng nhiệm vụ/độ dài |
 | B5 | 43/305 trace chưa đối chiếu | **chưa lấy** | — | rủi ro sai số nhỏ |
 | B6 | Damage boss không khai báo (19 class) | **chưa lấy** | C | thiếu 19/37 nhóm đòn |
+| B7 | ~~12 stat Basic vs `NumberTechStats()` = 60~~ | ✅ **đã chốt** | A | = `List.Count`, không phải hằng số |
 | C1 | Thời điểm (time) của animation event | **vắng mặt thật** | D | nhịp bắn 86,7% không đọc được |
 | C2 | Bảng controller→clip | **vắng mặt thật** | D | không biết anim nào phát khi nào |
 | C3 | `Spawner.dataScript` rỗng | **vắng mặt thật** | D | quy luật spawn phải suy từ wave |
@@ -55,6 +56,9 @@
 ### A1. Giá trị `StartHp` — **D**
 
 - **Công thức đã xong (A):** `GetStartHp = StartHp × (1 + stepCommon × TechStatPoints(0) + abi7 × GetNumberAbility(7))`; `stepCommon = 0,168` (`BALANCE` §0.6.1).
+- **`TechStatPoints(0)` = stat "Health" của tab Basic** (A) — `txt_techstat_label_0` = `Health`,
+  `txt_techstat_desc_0` = "Increase health points"; tab `txt_basic`. ⇒ `StartHp` chỉ là **HP gốc ở cấp 0**;
+  phần lớn HP đến từ **nâng cấp**, không phải từ tàu (`BALANCE` §0.6.9).
 - **Vì sao thiếu:** `.cctor` của `Player_Get_Datas` **bị cắt giữa chừng** tại `0x14e5cc4`, vẫn đang dựng `List`, **chưa tới** đoạn gán float (`DATA_SYNC` §7.29).
 - **Bằng chứng `.cctor` có gán float:** đã thấy đúng **1** hằng `0x41700000` = **15,0** trong phần đọc được.
 - **Cách chốt (rẻ nhất toàn dự án):** dump **200 lệnh tiếp theo sau `0x14e5cc4`**.
@@ -142,7 +146,28 @@ return  Mathf.RoundToInt(bracket × base)
 ```
 
 ⇒ đây là **công thức điểm chế độ sinh tồn**, **không phải HP**.
-**Hệ quả:** HP enemy runtime nằm ở class **chưa dump** (`Enemy_Datas` / `Enemy_Health`), không phải ở đây.
+
+**Dữ liệu HP enemy thật (`Enemy_Datas.csv`, 981 dòng):**
+
+| Chỉ số | Giá trị |
+|---|---|
+| `StartHealthPoint > 0` | **467 / 981** · **72 giá trị khác nhau** (1.000 – 10.000.000) |
+| `StartHpPoint` | **0 ở 981/981** ⇒ field chết |
+| `CurrentHealthPoint` | **0 ở 981/981** ⇒ field chết |
+| **`Boss-*`** | **45 / 45 có HP** (90.000 – 31.480.000) |
+| **`CB-*`** (enemy thường) | **1 / 37** — chỉ `CB(TEST)` = 10.000.000 |
+| `CB-30003` · `CB-30015` · `CD-31002` | **0,0** · **0,0** · **0,0** |
+
+**Hai cách đọc — chưa chốt:**
+
+1. **Enemy thường chết 1 phát.** Ủng hộ: 2 field HP chết · `Enemy_Data_Balance` **0 method HP** ·
+   HP bar chỉ có trên boss · 5 cổng chặn trong `TakeDamage`.
+2. **Runtime gán HP.** Ủng hộ: ghi chú trong `enemy_hp.json` — *"runtime HP is scaled by
+   `Enemy_Data_Balance` and stage"* — nhưng class đó **không có** method HP, nên ghi chú **chỉ sai
+   địa chỉ**, không sai ý.
+
+**Cách chốt:** dump `Enemy_Health.asm.txt`, tìm **1 lệnh ghi** vào `StartHealth`. Rất rẻ.
+Đây là **câu hỏi số 1 còn lại** vì nó quyết định toàn bộ cảm giác chơi.
 
 ### B4. `GetCountEnemies` / `GetCountAllEnemies` mỗi stage — **D**
 Có thân hàm (A): duyệt `GetListWaves(stageIndex)` → đếm theo `listIgroneEnemies`. **Thiếu `listMapDatas`** (A2) nên chưa ra số.
@@ -183,6 +208,27 @@ qua damage** ở các boss này.
 
 **`wallBltDmg = 1.000.000`** (`MB12`) — gấp **1.250×** đòn cao nhất còn lại (800) ⇒ **sentinel**
 (kill-plane), không phải đòn đánh. **Đừng** đưa vào bảng DPS.
+
+### B7. **`NumberTechStats()` = 60** — ✅ **ĐÃ CHỐT ngay trong vòng này** (A)
+
+Thân hàm chỉ **6 lệnh** có nghĩa:
+
+```
+ldr x8, [x0, #0xb8]     ; static holder
+ldr x8, [x8, #0x40]     ; → List
+cbz x8, null-ref
+ldr w0, [x8, #0x18]     ; return List.Count
+```
+
+⇒ `NumberTechStats()` **không phải hằng số** — nó trả **`Count` của một `List` static** (field `@0x40`).
+Vậy **60 = số bản ghi trong bảng tech**, **không** phải "60 cấp".
+
+Kết hợp với `12-localization.csv` (chỉ **12** stat có nhãn, id `0–11`) và
+`GetMainCannonDamage` tra **`10001 + playerIndex`** (`mov w8, #0x2711`):
+
+⇒ **Bảng tech có 2 dải id:** `0–11` = tab **Basic** (có nhãn UI), `10001+playerIndex` = stat
+**riêng từng tàu** (không có nhãn trong file chữ). `60 = 12 + 48` là giả thuyết khớp số, **chưa
+kiểm từng id** — nhưng **không còn là ẩn số về cơ chế**.
 
 ### C7. **45 root prefab mã `900xx`** — nằm ngoài roster (A)
 

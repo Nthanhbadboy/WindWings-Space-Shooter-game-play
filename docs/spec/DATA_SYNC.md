@@ -1395,6 +1395,54 @@ bằng `ret` không**; nếu không, chỉ được nói *"không thấy trong p
 
 ---
 
+### 7.30 Tech stat id 0 = **Health** — và enemy thường có **HP = 0**
+
+**a) HP người chơi là một **đường nâng cấp** (A).** `12-localization.csv` có **24 khoá**
+`txt_techstat_label_*` / `txt_techstat_desc_*`, id **0–11**:
+
+| id | label | desc |
+|---|---|---|
+| **0** | **Health** | **"Increase health points"** |
+| 1–11 | Special cannon · Normal cannon · Magnet · Laser weapon · Bomb · Rocket Barrage · Stun · Invisible · Super Lazer · Mega Bomb · Invisible II | tăng power / hiệu ứng |
+
+Nhãn tab: **`txt_basic` = "Basic / Cơ bản"**; nhiệm vụ `txt_upgrade_full_tech_lv`.
+⇒ khớp **chính xác** với `GetHpStatPercent = 0,168 × TechStatPoints(0) + …` (`BALANCE` §0.6.1).
+⇒ **HP không thuộc tàu** — đây là lý do `ships.json` 25 tàu **không có field HP**, và đó **không**
+phải chỗ thiếu dữ liệu.
+
+**b) Hai loại tàu (A).** `Player_Ingame` (main) + **`Sub_Player : Sub_Character, IPlayerTypes, …`**
+(support). `Sub_Player` có `private Player_Health heathScript; // 0x28` ⇒ **support ship có HP riêng**.
+Cả hai đều có `ChangePlayerTypes(Action)`; bộ điều phối là **`GP_ChangePlayerTypes.Init(Transform)`**.
+**4 slot device/tàu** khớp **2 main + 2 support**.
+
+**c) `Enemy_Datas.csv` — 981 dòng, 72 giá trị HP khác nhau:**
+
+| Chỉ số | Giá trị |
+|---|---|
+| `StartHealthPoint > 0` | **467 / 981** |
+| `StartHpPoint` | **0 ở 981/981** ⇒ **field chết** |
+| `CurrentHealthPoint` | **0 ở 981/981** ⇒ **field chết** |
+| `Boss-*` có HP | **45 / 45 (100%)** |
+| `CB-*` (enemy thường) có HP | **1 / 37** — chỉ `CB(TEST)` |
+| `CB-30003` · `CB-30015` · `CD-31002` | **0,0** · **0,0** · **0,0** |
+
+**d) Phủ định `Wave` có scale độ khó:** class `Wave` chỉ có **3 field**
+(`indexWave`, `startPoint`, `endPoint`) ⇒ **không** có chỗ chứa hệ số độ khó.
+
+**e) `Stage_Get_Datas.levelDelta` (float[]) scale **phần thưởng**, không scale HP** — dùng trong
+`GetBonus(stageIndex, stageLevel, missionIndex)` (`fmul s0,s8,s0`).
+
+**f) Đường cong độ khó thật = HP boss.** Tổng HP mỗi wave (cộng mọi bộ phận):
+
+| Wave | có HP | median | max |
+|---|---|---|---|
+| 0–239 | **5 / 240** | 0 | 4.272.000 |
+| 240–259 | 20/20 | **4.300.000** | 7.290.000 |
+| 260–279 | 20/20 | **7.760.000** | 13.390.000 |
+| 280–281 | 1/2 | 10.500.000 | 10.500.000 |
+
+---
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |
