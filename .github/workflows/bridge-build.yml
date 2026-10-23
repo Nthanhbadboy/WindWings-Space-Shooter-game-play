@@ -19,15 +19,12 @@ on:
       - '.github/workflows/bridge-build.yml'
       - '.github/scripts/build-bridge.sh'
 
+# NOTE: no workflow-level `concurrency` here — a reusable workflow (workflow_call)
+# that also declares concurrency makes the *caller* fail with startup_failure.
+# The standalone run is deduped by the job-level group instead.
 permissions:
   contents: read
   pull-requests: write
-
-concurrency:
-  # github.workflow is the *caller* when this workflow is reused, so the standalone
-  # run and the one triggered by ramus-probe.yml no longer cancel each other.
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 env:
   BEP6_TAG: v6.0.0-pre.2
@@ -39,6 +36,9 @@ jobs:
     name: compile (core + 3 loaders)
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-compile
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
 
