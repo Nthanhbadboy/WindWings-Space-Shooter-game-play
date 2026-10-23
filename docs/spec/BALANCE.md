@@ -208,6 +208,56 @@ kết luận được**. Đây đúng là giả thuyết *"HP là của tàu, bo
 > **Điều kiện lật ngược:** nếu `Player_Ingame.Level` lên được 248 trong một màn (power-up dồn)
 > thì đó mới là biến đúng.
 
+### 0.6.5 Cái gì **chung cho mọi tàu**, cái gì **riêng từng tàu** — kiểm bằng chữ ký hàm
+
+Đây là phép đo mạnh nhất cho câu *"tài năng và nâng cấp chung cho mọi tàu, cộng vào tàu được chọn"*:
+đếm xem method nào **nhận `playerIndex`**, method nào **không**.
+
+`Player_Get_Datas` có **40 method trả `float`/`int`**. Kết quả:
+
+| Loại | Số | Danh sách |
+|---|---:|---|
+| **Nhận `playerIndex`** (riêng từng tàu) | **7** | `GetMainCannonDamage` · `GetMainCannonRate` · `GetWingCannonDamage` · `GetWingCannonDamageByBase` · `GetWingCannonDamageByTech` · `GetCostUnlockPlayer` · `GetCostStarUnlockPlayer` |
+| **Không tham số** (dùng chung) | **33** | xem bảng dưới |
+
+⇒ **Chỉ 5 method stat là riêng từng tàu — và cả 5 đều là DAMAGE / NHỊP BẮN.**
+Không có method HP nào nhận `playerIndex`.
+
+**33 method dùng chung (đầy đủ):**
+
+| Nhóm | Method |
+|---|---|
+| **HP** | `GetStartHp` · `GetHpStatPercent` · `GetHpRecoverSpeed` · `GetGainHpItem` · `GetGainHpItemAddOverTime` · `GetGainHpItemAddTime` · `AddPowerPercentWhenHpBelow30` · `GainHpPercentWhenUseOverDrive` · `KillPercentWhenEnemyHpBelow30` |
+| **Talent (8)** | `GetTalentBombDamage` · `GetTalentRocketDamage` · `GetTalentLaserDamage` · `GetTalentStunDamage` · `GetTalentMegaBombDamage` · `GetTalentInvisibleRanger` · `GetTalentInvisible2Ranger` · `GetTalentStunRanger` |
+| **Crit / % cộng thêm** | `GetMainCannonCritPercent` · `GetMainCannonRatePercent` · `GetMainCannonStatPercent` · `GetWingCannonStatPercent` |
+| **Overdrive / thời gian** | `GetTimeFreeOverdrive` · `GetMaxChargeDuration` · `GetSecretWeaponDuration` · `TimeToImmuneOneHit` · `GetPercentDropFreeOverDriveEvery30Seconds` |
+| **Từ / nam châm** | `GetMagnetRange` · `GetMagnetStatPercent` · `GetSecretWeaponDamage` · `GetSecretWeaponStatPercent` |
+
+> **Nhận định (mức A):** mô hình đúng là **"tàu = khung xác + damage riêng; mọi thứ khác là cộng dồn
+> chung"**. Người chơi nâng tech/talent **một lần**, áp cho **mọi tàu**; đổi tàu chỉ đổi **damage và
+> nhịp bắn**.
+>
+> **Điều kiện lật ngược:** nếu `GetTalent*` bên trong đọc `Player_Get_Datas.listIdPlayerActived` hay
+> chỉ số tàu đang chọn thì talent **có** thể khác theo tàu — nhưng **chữ ký không nhận tham số**, nên
+> nếu có thì nó phải đọc qua static state. Chưa thấy dấu hiệu đó trong trace.
+
+### 0.6.6 Ba giả thuyết về nguồn HP — cái nào đứng, cái nào không
+
+| Giả thuyết | Kết quả | Bằng chứng |
+|---|---|---|
+| **Boot đầu mỗi màn** | ✅ **ĐÚNG** (A) | `Player_Health.Start()` (`RVA 0x14C6B5C`) gán `StartHealth = GetStartHp()`, `CurrentHealth = StartHealth` — cả hai **`static`** |
+| **Drone cộng HP** | ❌ **Không** (A) | `Droid_Data_Balance` có **11 method**, **0 method trả HP**: `GetBaseDamage` · `GetDroidTimeOut` · `GetUnlockCost` · `GetUnlockStarCost` · `GetUpgadeCostCoins` · `GetUpgradeCostGems` · `GetDroidRank` · `SetDroidLevel` · `IsBought` · `SetBought` · `.cctor` |
+| **Danh hiệu / rank cộng HP** | ❌ **Không** (A) | `RankManager` **14 method — toàn bộ là leaderboard online**: `IECheckCampaignRankings` · `IESetCampaignRankings` · `IETryGetRoomRankCampaign` · `IECheckRankReadyToUploadPoint` · `CheckUserSignInOrRestoreYourDatas`… **không có stat nào** |
+| **Buff riêng chọn trước màn** | ❌ **không có hệ thống này** (B) | Không có class `Buff`/`PowerUp`. `PowerUp` là field **theo chỉ số tàu**: `p1_idBltPowerUp` · `p1_superPowerUpShotRate` · `p3_…` · `p5_…` · `p6_…` ⇒ power-up **thuộc tàu**, không phải buff chọn |
+| **Trang bị (device) cộng HP** | ❌ **không cộng HP tối đa** (A) | `Device { id, lv, rank, instanceId }`; tác dụng lên HP chỉ qua `reduceDamageByDevice` (giảm damage) và `amountAutoGainHpByDevice` (hồi) |
+| **Tàu cộng HP** | ⚠ **chưa kết luận** (C) | `Data_Players` **0 field HP**; `GetStartHp()` **không nhận `playerIndex`**; **nhưng** `StartHp` là `float` static và **không có lệnh ghi nào** trong 11 class asm ⇒ **không loại trừ** việc nó bị gán lại theo tàu lúc chọn |
+
+> **Nhận định (mức B):** xét **toàn bộ API của drone và rank**, cả hai **không có đường nào** trả về HP.
+> Nên nếu HP có phụ thuộc chúng thì phải qua một class **không export asm**.
+>
+> **Điều kiện lật ngược:** export `Player_Health.asm.txt` + `GameDatas.asm.txt` đầy đủ. Nếu `StartHp`
+> bị gán theo `playerIndex` hoặc theo rank thì bảng trên phải sửa **2 dòng** (tàu, danh hiệu).
+
 ## 1. Phương pháp & nguồn
 
 | Field | Kiểu | Nghĩa |

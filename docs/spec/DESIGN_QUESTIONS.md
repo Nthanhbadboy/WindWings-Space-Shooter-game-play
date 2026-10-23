@@ -28,7 +28,7 @@
 | A3 | Game có bao nhiêu màn? | ✅ | **299 stage / 2 chapter** — `Stage_Normal` **199** · `Stage_Combat` **49** · `Stage_MiniBoss` **25** · `Stage_Boss` **26** (`Stage_Behaviour.csv`) |
 | A4 | Bao lâu gặp boss một lần? | ✅ | **45 wave boss / 282 = 1 mỗi 6,3 wave**; mỗi wave boss = **2 boss + 2 turret + 6,8 `CB-30015`** (`ENCOUNTERS` §3.6) |
 | A5 | Một phiên chơi dài bao lâu? | ❌ | cần biết **stage ↔ wave** (A6) và luật continue |
-| A6 | Một stage = mấy wave? | ❌ | **299 stage** nhưng chỉ **281 wave** (236 campaign + 45 boss) ⇒ **chưa khớp**; `Stage_Behaviour` **không có field `wave`** |
+| A6 | Một stage = mấy wave? | ❌ | **299 stage** vs **281 wave**. `Stage_Behaviour` không có field `wave`, **nhưng** đã tìm ra đường nối: **`Map_Get_Datas.GetListWaves(int mapIndex)` → `int[]`** (`DATA_SYNC` §7.26 e). Giá trị còn thiếu vì `.cctor` chưa export |
 | A7 | Trên màn hình có bao nhiêu địch cùng lúc? | ❌ | spawner chạy **song song**; `copies` max 76 ⇒ cần mô phỏng timeline, chưa làm |
 | A8 | Địch bay nhanh cỡ nào? | ✅ | `speed` median **1,5** · bay vào max **30,0** · `BLT` speed median **8,0** max 23 (`BALANCE` §5) |
 

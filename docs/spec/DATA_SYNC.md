@@ -1210,6 +1210,65 @@ Ngưỡng **30/58/118/248** quá cao cho một màn ⇒ nghiêng về **cấp t�
 
 ---
 
+### 7.26 Kiểm chứng 3 giả thuyết về HP — và phát hiện `Map_Get_Datas.GetListWaves`
+
+Bản `03aacac`. Kiểm bằng **chữ ký hàm** + **API của từng hệ**, không bằng suy luận.
+
+**a) "Talent và nâng cấp chung cho mọi tàu" — ĐÚNG, mức A**
+
+`Player_Get_Datas` có **40 method** trả `float`/`int`:
+
+| Loại | Số | Gồm |
+|---|---:|---|
+| Nhận **`playerIndex`** | **7** | 5 stat **damage/nhịp bắn** (`GetMainCannonDamage` · `GetMainCannonRate` · `GetWingCannonDamage` · `…ByBase` · `…ByTech`) + 2 **giá mở tàu** |
+| **Không tham số** | **33** | HP (9) · talent (8) · crit/% (4) · overdrive/thời gian (5) · từ/nam châm (4) + 3 lẻ |
+
+⇒ **Không có method HP nào nhận `playerIndex`.** Đổi tàu chỉ đổi **damage + nhịp bắn**.
+
+**b) "Né hay invisible theo tài năng" — ĐÚNG MỘT NỬA**
+
+| Cơ chế | Hệ thật | Bằng chứng |
+|---|---|---|
+| **Invisible** | ✅ **talent** | `Player_Talent`: `List<Talent_Invisible> allZoneInvisible` · `listShipInvisible` · `SetInvisible(GameObject zone, Transform p, bool invisible, bool heal)` |
+| **Né (dodge)** | ❌ **ability 8**, không phải talent | `abi8AddDodgeRate` (`Player_Get_Datas` §2.6 `TUNING_KNOBS`) |
+
+Cả hai đều **không** nhận `playerIndex` ⇒ **dùng chung mọi tàu**.
+
+**c) `Ability` và `Talent` là hai hệ khác nhau — trước đây gộp sai**
+
+| `Player_Ability` | `Player_Talent` |
+|---|---|
+| **skill runtime**: `shieldObject` · `shieldOneHit` · `shieldDroidObject101/103` · `drone7SkillObject` · `drone11SkillObject` | **cây điểm mua bằng coin**: `talentIndex` · `pointCount` · `points` · `coinPerPoint` · `Talent_Invisible` |
+
+**d) "Drone / danh hiệu / buff cộng vào HP" — KHÔNG có đường nào, mức A**
+
+| Hệ | Số method | Có method trả HP? |
+|---|---:|---|
+| `Droid_Data_Balance` | **11** | ❌ 0 — chỉ damage, timeout, giá, rank, bought |
+| `RankManager` | **14** | ❌ 0 — **toàn bộ là leaderboard online** (`IECheckCampaignRankings`, `IESetCampaignRankings`, `IETryGetRoomRankCampaign`…) |
+| `Stage_Get_Datas` | **10** | ❌ 0 — `GetBonus` trả **`int`** = **phần thưởng**, không phải buff HP |
+| class `Buff` / `PowerUp` | — | ❌ **không tồn tại**; `p1_idBltPowerUp` · `p1_superPowerUpShotRate`… là **power-up riêng từng tàu** |
+
+**e) `Map_Get_Datas` — mắt ghép **map → wave** chưa từng dùng**
+
+| Method | Chữ ký | Ý nghĩa |
+|---|---|---|
+| `GetListWaves` | `static int[] GetListWaves(int mapIndex)` | **danh sách wave của một map** ← nối được `mapIndex` → wave |
+| `GetNumberWaves` | `static int GetNumberWaves()` | tổng số wave |
+| `GetListBossWaveNormal` | `static List<int> GetListBossWaveNormal()` | danh sách wave boss |
+| `GetListMapPvP` · `GetListMapPvPRandom` · `…Arena…` | `int[]` / `int` | map theo rank PvP/Arena |
+
+⚠ **Giá trị chưa lấy được:** `GetListWaves` đọc một **mảng static** nạp trong `.cctor` của
+`Map_Get_Datas`, mà **`.cctor` không nằm trong asm đã export** (8 method, không có `.cctor`).
+⇒ **Cấu trúc biết (A), giá trị chưa (D).** Cách lấy: export `.cctor` của `Map_Get_Datas` hoặc đọc
+`w.Data.waves` XML gốc.
+
+**f) `GetStartHp` chỉ được **2 method** gọi:** `GetGainHpItem` và `GetGainHpItemAddOverTime`
+(cả hai là **item hồi máu**). `Player_Health.Start()` gọi nó nhưng **không có asm** ⇒
+**không thấy được lời gọi thứ ba**.
+
+---
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |

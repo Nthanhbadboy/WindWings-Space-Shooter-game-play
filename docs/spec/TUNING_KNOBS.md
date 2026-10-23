@@ -129,6 +129,18 @@ của particle), `p19_startShotRate`, `p21_zoneDuration`, `shipCloneLifeTime`, `
 
 ### 2.6 Hệ **ability/talent** — 22 ability
 
+⚠ **Ability và Talent là HAI hệ khác nhau** (trước đây gộp làm một — sửa lại):
+
+| | `Player_Ability` | `Player_Talent` |
+|---|---|---|
+| Bản chất | **skill runtime** | **cây điểm mua bằng coin** |
+| Field chính | `shieldObject` · `shieldOneHit` · `shieldDroidObject101/103` · `drone7SkillObject` · `drone11SkillObject` · `revokeEfxIds` | `talentIndex` · `pointCount` · `points` · `coinPerPoint` · `List<Talent_Invisible> allZoneInvisible` · `listShipInvisible` |
+| Nội dung | **khiên** và **skill của drone** (drone 7, 11, 101, 103) | **invisible + heal** (`SetInvisible(zone, p, invisible, heal)`) |
+| Dùng chung mọi tàu? | ✅ (không có `playerIndex`) | ✅ (không có `playerIndex`) |
+
+⇒ **"Né" là ability 8** (`abi8AddDodgeRate`), **"invisible" là talent** (`Talent_Invisible`).
+Hai thứ khác hệ nhưng **cùng dùng chung cho mọi tàu**.
+
 `Player_Get_Datas` chứa thẳng tham số của từng ability:
 
 | Ability | Field | Tác dụng |
