@@ -505,8 +505,9 @@ def main() -> int:
                     _p = _l.split(":", 1)[-1].strip().split()
                     if _p:
                         _mns.append(_p[0])
-                ends_clean = (bool(_mns) and _mns[-1] in ("ret", "b", "br", "blr")) \
-                    or ("ret" in _mns[-48:] if _mns else False)
+                # Method kết thúc bằng ret, hoặc nhảy đuôi (b/br) ra ngoài;
+                # cả hai đều phải xuất hiện gần cuối vùng đã đọc.
+                ends_clean = any(m in ("ret", "b", "br") for m in _mns[-12:])
                 pure = is_pure_getter(body_text)
                 gkind = getter_kind(body_text)
                 gvalue = getter_value(body_text) if gkind else None
