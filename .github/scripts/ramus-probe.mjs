@@ -162,6 +162,9 @@ function readLogcatStates(limit = 500) {
     try { writeFileSync(path.join(OUT, 'logcat.txt'), text); } catch { /* best effort */ }
   }
   result.logcat.raw = text.split('\n').filter((l) => l.includes('RAMUSB')).slice(-120);
+  // Keep a bounded copy of everything, so the report can show what the device
+  // actually logged instead of only what we managed to parse.
+  result.logcat.lines = text.split('\n').filter((l) => l.trim()).slice(-500);
   const states = [];
   for (const line of text.split('\n')) {
     const at = line.indexOf('RAMUSB|');
@@ -212,7 +215,19 @@ function screenshot(n) {
 
 function snapshotUi(tag) {
   const r = ramus(['snapshot'], { timeout: 60000 });
-  if (r.ok && r.stdout) writeFileSync(path.join(OUT, `ui-${tag}.json`), r.stdout);
+  if (r.ok && r.stdout) {
+    writeFileSync(path.join(OUT, `ui-${tag}.json`), r.stdout);
+    // What is on screen is independent evidence: a game UI and the launcher
+    // look nothing alike, and it costs one call that already happened.
+    result.ui = result.ui || {};
+    const pkgRe = new RegExp((process.env.RAMUS_PACKAGE || 'com\\.wind').replace(/\./g, '\\.'), 'i');
+    result.ui[tag] = {
+      bytes: r.stdout.length,
+      mentionsPackage: pkgRe.test(r.stdout),
+      looksLikeLauncher: /launcher|home screen|all apps|workspace/i.test(r.stdout),
+      head: r.stdout.slice(0, 600),
+    };
+  }
   return r.ok;
 }
 
@@ -348,6 +363,24 @@ async function main() {
       .slice(-4)
       .map((l) => l.trim().slice(0, 220)),
   };
+
+  // ── logcat evidence: what the device said, not just which regexes matched ──
+  const all = rawLog.split('\n').filter((l) => l.trim());
+  const tags = new Map();
+  for (const line of all) {
+    // "10-23 08:12:42.123  1234  1234 I Unity   : msg" and "I/Unity(1234): msg"
+    const m = line.match(/\s[VDIWEF]\/([A-Za-z0-9_.\-]+)/) || line.match(/\s[VDIWEF]\s+([A-Za-z0-9_.\-]+)\s*:/);
+    const tag = m ? m[1] : 'other';
+    tags.set(tag, (tags.get(tag) || 0) + 1);
+  }
+  signals.logcat = {
+    lines: all.length,
+    bytes: rawLog.length,
+    topTags: [...tags.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12),
+    packageLines: all.filter((l) => pkgRe.test(l)).slice(-6).map((l) => l.slice(0, 200)),
+    head: all.slice(0, 6).map((l) => l.slice(0, 200)),
+    tail: all.slice(-25).map((l) => l.slice(0, 200)),
+  };
   result.app = {
     signals,
     scene,
@@ -377,6 +410,7 @@ async function main() {
 }
 
 function renderReport(r) {
+  const sigPkg = (r.app && r.app.package) || process.env.RAMUS_PACKAGE || 'com.wind.wings.Space.Shooter';
   const h = r.bridge.health || {};
   const sc = r.bridge.scene || {};
   const st = r.bridge.statics || {};
@@ -482,6 +516,48 @@ function renderReport(r) {
       lines.push('```');
       for (const e of sig.excerpts) lines.push(e);
       lines.push('```');
+      lines.push('');
+    }
+
+    // What is on screen — a game UI and a launcher look nothing alike.
+    if (r.ui && Object.keys(r.ui).length) {
+      lines.push('| ui snapshot | value |');
+      lines.push('| --- | --- |');
+      for (const [tag, v] of Object.entries(r.ui)) {
+        lines.push(`| ${tag} | ${v.bytes} B · mentions package: ${yn(v.mentionsPackage)} · looks like launcher: ${yn(v.looksLikeLauncher)} |`);
+      }
+      lines.push('');
+    }
+
+    // Raw device output. Without this the report only says which regexes did not
+    // match, which cannot distinguish "never launched" from "crashed silently".
+    const lc = sig.logcat;
+    if (lc && lc.lines) {
+      lines.push(`<details><summary>logcat evidence — ${lc.lines} line(s), ${lc.bytes} B</summary>`);
+      lines.push('');
+      if (lc.topTags && lc.topTags.length) {
+        lines.push('tag histogram:');
+        lines.push('```');
+        for (const [tag, n] of lc.topTags) lines.push(`${String(n).padStart(5)}  ${tag}`);
+        lines.push('```');
+        lines.push('');
+      }
+      if (lc.packageLines && lc.packageLines.length) {
+        lines.push(`lines mentioning \`${sigPkg}\` (last ${lc.packageLines.length}):`);
+        lines.push('```');
+        for (const l of lc.packageLines) lines.push(l);
+        lines.push('```');
+        lines.push('');
+      }
+      lines.push('first 6 lines:');
+      lines.push('```');
+      for (const l of lc.head || []) lines.push(l);
+      lines.push('```');
+      lines.push('last 25 lines:');
+      lines.push('```');
+      for (const l of lc.tail || []) lines.push(l);
+      lines.push('```');
+      lines.push('</details>');
       lines.push('');
     }
     if (!sig.package && !sig.unity) {
