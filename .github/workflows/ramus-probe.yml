@@ -195,9 +195,12 @@ jobs:
           splits=$(sed -n 's/^splits=//p' "$PROBE_OUT/apk-prepare.log" | tail -1)
           [ -f "$apk" ] || { echo "::error::prepare-apk.sh did not produce $apk"; exit 1; }
 
+          pkg=$(sed -n 's/^package=//p' "$PROBE_OUT/apk-prepare.log" | tail -1)
           {
             echo "RAMUS_APK=$apk"
             echo "APK_SPLITS=$splits"
+            # The XAPK manifest.json reports com.Wind.wings.Space.Shooter (capital W).
+            [ -n "$pkg" ] && echo "RAMUS_PACKAGE=$pkg"
           } >> "$GITHUB_ENV"
           cp .ci/apk/apk-inventory.txt "$PROBE_OUT/apk-inventory.txt" 2>/dev/null || true
           echo "RAMUS_APK=$apk   splits: ${splits:-none}"

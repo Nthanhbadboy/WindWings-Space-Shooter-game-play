@@ -138,10 +138,17 @@ else
     i=0
     for f in $SPLITS; do i=$((i+1)); cp "$f" "$WORK/merge/split$i.apk"; done
 
-    if java -Xmx4g -jar "$APKEDITOR_JAR" m -i "$WORK/merge" -o "$WORK/universal.apk" -f >> "$WORK/merge.log" 2>&1 \
-         && is_apk "$WORK/universal.apk"; then
+    # Trust the output file, not the exit code: APKEditor can finish writing and
+    # still return non-zero, and a partial file is caught by is_apk below.
+    set +e
+    java -Xmx4g -jar "$APKEDITOR_JAR" m -i "$WORK/merge" -o "$WORK/universal.apk" -f \
+         >> "$WORK/merge.log" 2>&1
+    merge_rc=$?
+    set -e
+    MERGE_NOTE="java exit $merge_rc"
+    if [ -f "$WORK/universal.apk" ] && is_apk "$WORK/universal.apk"; then
       cp "$WORK/universal.apk" "$OUT/base.apk"
-      log "merged OK → $OUT/base.apk ($(stat -c%s "$OUT/base.apk") B)"
+      log "merged OK → $OUT/base.apk ($(stat -c%s "$OUT/base.apk") B, $MERGE_NOTE)"
       SPLITS=""
     else
       log "merge FAILED — keeping base + splits (install needs adb install-multiple)"
@@ -205,8 +212,14 @@ BASE_MB=$(( $(stat -c%s "$OUT/base.apk") / 1000000 ))
   echo "install:     $([ -z "$SPLITS" ] && echo 'single APK' || echo 'base + splits (adb install-multiple)')"
   echo "split marks: ${SPLIT_MARKERS:-none}"
   if [ -f "$WORK/merge.log" ]; then
-    echo "merge log (tail):"
-    tail -6 "$WORK/merge.log" | sed 's/^/  /'
+    echo "merge rc:    ${MERGE_NOTE:-n/a}   output: $([ -f "$WORK/universal.apk" ] && stat -c%s "$WORK/universal.apk" || echo none) B"
+    tail -4 "$WORK/merge.log" | sed 's/^/  /'
+  fi
+
+  # A base with no native libraries cannot start on its own.
+  BASE_ABIS=$(unzip -l "$OUT/base.apk" 2>/dev/null | grep -oE 'lib/[^/]+/' | cut -d/ -f2 | sort -u | paste -sd, - || true)
+  if [ -n "$SPLITS" ] && [ -z "$BASE_ABIS" ]; then
+    echo "blocks:      base has no lib/ and splits are still separate → adb install-multiple required"
   fi
   echo "splits:      ${SPLITS:-none}"
   echo "package:     ${PKG:-unknown (manifest.json absent)}"
