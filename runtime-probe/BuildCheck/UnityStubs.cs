@@ -118,7 +118,9 @@ namespace UnityEngine
 
     public static class QualitySettings
     {
-        public static string[] names { get; }
+        // Unity returns an empty array, never null. A null here made the
+        // self-test report a phantom 500 on /state.
+        public static string[] names { get; } = new string[0];
         public static int GetQualityLevel() => 0;
         public static int vSyncCount { get; set; }
     }
@@ -152,7 +154,7 @@ namespace UnityEngine.SceneManagement
         public string path { get; }
         public int buildIndex { get; }
         public bool isLoaded { get; }
-        public GameObject[] GetRootGameObjects() => null;
+        public GameObject[] GetRootGameObjects() => new GameObject[0];
     }
 
     public static class SceneManager
