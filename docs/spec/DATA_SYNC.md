@@ -930,3 +930,48 @@ phải cộng lại. Cần đối chiếu runtime.
 > Không có mục nào ở đây là "không thể". #1 và #2 là **bug/chưa chạy**, #3 là **chưa chốt định nghĩa**,
 > #7 và #8 là **cap của tool sửa bằng biến môi trường**, #9 là **thiếu một bước export**.
 > Bốn nhóm này khác nhau, và chỉ #1/#2 mới thật sự cần chạy lại IL2CPP/AssetRipper.
+
+---
+
+## 9. Sổ theo dõi mắt ghép — trạng thái sau bản `cd0372d`
+
+Cập nhật cuối: 2026-10-23 01:00. Mọi mục dưới đây **đã đo**, không suy đoán.
+
+### 9.1 Đã đóng (100%)
+
+| # | Mắt ghép | Số | Ghi chú |
+|---:|---|---:|---|
+| 1 | `Call_Data` → prefab enemy | 90 / 90 | qua `Enemy_Controller.m_GameObject` |
+| 2 | `Enemy_Controller` → 5 script con (Datas · Health · Movement · Display · Physics) | **981 / 981** mỗi cái | khoá = PathID |
+| 3 | `Enemy_Controller` → `Destroy` / `Appear` | 981 / 981 | `Destroy` 971 + 3 + 7 |
+| 4 | `Enemy_Sub` → `Enemy_Controller` | **981 / 981** | |
+| 5 | `Gun_Attack` → prefab gốc | **458 / 458** | qua `Transform` |
+| 6 | `Boss_BodyPhysics` → prefab gốc | **251 / 251** | |
+| 7 | `Enemy_Movement.parentRotate` → prefab gốc | **558 / 558** | |
+| 8 | `Wave.startPoint` + `endPoint` → prefab | **686 + 686** | |
+| 9 | `Stage_Behaviour.bossObj` | **250 / 250** | ⚠ nối vào `Board_Maps` = icon bản đồ |
+| 10 | `Enemy_Controller` → `*_Director` (qua `appearScript`) | **67** | boss không dùng `Enemy_Appear` |
+| 11 | `Call_Point` → `Call_Data` | **23.757 / 23.757** | lớp bọc mỏng |
+
+**Không còn mắt ghép cấu trúc nào dưới 100%.**
+
+### 9.2 Còn mở — 6 mục, xếp theo chi phí
+
+| # | Thiếu | Chi phí | Ảnh hưởng |
+|---:|---|---|---|
+| 1 | **Curve 791 `AnimationClip`** | viết decoder `m_StreamedClip` | dáng chuyển động Mecanim (nhịp **đã có**) |
+| 2 | **`ParticleSystem`** 4.845 | thêm type như `Transform` | FX |
+| 3 | **`Animator` 5.792 → prefab** | thêm type | map controller → boss |
+| 4 | **`width × height` sprite** | tải `manifest-full.csv` (bị chặn) | hình học sprite rời |
+| 5 | **Số con mỗi lượt spawn** | đọc thân hàm | 45.659 vs 23.757 |
+| 6 | **Method body** (0,44%) | Ghidra/IDA | công thức HP, điều kiện thắng |
+
+### 9.3 Ba con số phải nói kèm nhãn
+
+| Số | Nghĩa đúng | Đừng viết |
+|---|---|---|
+| **981** | số **bản ghi** `Enemy_*` | "981 enemy" — **204 là trên `Board_*`** |
+| **45.659** | tổng **phần tử** `listPrefabEnemies` | "45.659 quân" — cách sinh chưa chắc |
+| **458** | số khẩu `Gun_Attack` **kể cả preview UI** | "458 khẩu trong trận" — **319** là thật |
+
+> Ba nhãn này là kết quả của 3 lần tôi bị dữ liệu mới sửa lại. Ghi ở đây để không lặp.
