@@ -75,7 +75,8 @@ def load_sprites(root):
         if not pid:
             continue
         sprites[pid] = {"name": r.get("name", ""), "png": r.get("path", ""),
-                        "type": r.get("type", ""), "bytes": as_int(r.get("bytes"))}
+                        "type": r.get("type", ""), "bytes": as_int(r.get("bytes")),
+                        "width": as_int(r.get("width")), "height": as_int(r.get("height"))}
     return sprites, True
 
 
@@ -199,9 +200,10 @@ def main() -> int:
         os.makedirs(datas, exist_ok=True)
         with open(os.path.join(datas, "sprites.csv"), "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f)
-            w.writerow(["path_id", "type", "name", "png", "bytes"])
+            w.writerow(["path_id", "type", "name", "png", "bytes", "width", "height"])
             for pid, s in sorted(sprites.items(), key=lambda kv: int(kv[0]) if kv[0].isdigit() else 0):
-                w.writerow([pid, s["type"], s["name"], s["png"], s["bytes"]])
+                w.writerow([pid, s["type"], s["name"], s["png"], s["bytes"],
+                            s.get("width", 0), s.get("height", 0)])
 
     # ---------------------------------------------------------------- i18n
     rows = read_csv(os.path.join(docs, "12-localization.csv"))

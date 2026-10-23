@@ -284,9 +284,29 @@ def export_native_types(env) -> None:
                 continue
             counts[tname] += 1
             if tname == "ParticleSystem":
-                # chỉ ghi path_id (không đọc typetree ~30 module) để lần sau
-                # biết chính xác có bao nhiêu và nối được qua GameObject nếu cần
-                fh.write(json.dumps({"type": tname, "path_id": obj.path_id}) + "\n")
+                # Đọc typetree nhưng chỉ giữ scalar + scalar một cấp trong module:
+                # đủ cho thời lượng/tốc độ/vòng lặp, không phình vì curve.
+                try:
+                    tree = obj.read_typetree()
+                except Exception:  # noqa: BLE001
+                    continue
+                if not isinstance(tree, dict):
+                    continue
+                summary = {"type": tname, "path_id": obj.path_id}
+                for key, val in tree.items():
+                    if isinstance(val, (int, float, str, bool)) or val is None:
+                        summary[key] = val
+                    elif isinstance(val, dict):
+                        scalars = {k: v for k, v in val.items()
+                                   if isinstance(v, (int, float, str, bool))}
+                        if scalars:
+                            summary[key] = scalars
+                    elif isinstance(val, list):
+                        summary[f"{key}__count"] = len(val)
+                line = json.dumps(summary, ensure_ascii=False, default=str)
+                if len(line) > 20000:
+                    continue
+                fh.write(line + "\n")
                 written += 1
                 continue
             try:
