@@ -34,8 +34,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Private=true: the running test must resolve the stub at load time,
+         unlike the device DLL which binds against the game's real UnityEngine. -->
     <Reference Include="$(UnityStubDir)/UnityEngine.dll">
-      <Private>false</Private>
+      <Private>true</Private>
     </Reference>
   </ItemGroup>
 
