@@ -185,6 +185,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Resolve probe inputs
+        run: |
+          chmod +x .github/scripts/probe-inputs.sh
+          .github/scripts/probe-inputs.sh \
+            "${{ inputs.allow_no_bridge }}" "${{ inputs.strict }}" \
+            "${{ inputs.force_trial }}" "${{ inputs.scenario }}"
+
       - name: Secret leak guard
         run: |
           set -euo pipefail
@@ -200,7 +207,7 @@ jobs:
           KEY: ${{ secrets.RAMUS_API_KEY }}
           INPUT_SOURCE: ${{ inputs.apk_source }}
           VAR_SOURCE: ${{ vars.RAMUS_APK_SOURCE }}
-          FORCE_TRIAL: ${{ inputs.force_trial }}
+          FORCE_TRIAL: ${{ env.FORCE_TRIAL }}
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
@@ -259,6 +266,13 @@ jobs:
       RAMUS_MODE: ${{ needs.preflight.outputs.mode }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Resolve probe inputs
+        run: |
+          chmod +x .github/scripts/probe-inputs.sh
+          .github/scripts/probe-inputs.sh \
+            "${{ inputs.allow_no_bridge }}" "${{ inputs.strict }}" \
+            "${{ inputs.force_trial }}" "${{ inputs.scenario }}"
 
       - uses: actions/setup-node@v4
         with:
@@ -338,7 +352,7 @@ jobs:
           echo "bridge not found in the APK (searched base.apk and all splits)"
           sed -n '/^bridge:/p' "$PROBE_OUT/apk-inventory.txt" || true
 
-          if [ "${{ inputs.allow_no_bridge }}" = "true" ]; then
+          if [ "$ALLOW_NO_BRIDGE" = "true" ]; then
             echo "::warning::allow_no_bridge=true — continuing as a device/ABI smoke test only."
             echo "::warning::The probe cannot read /scene or /statics without the bridge. It will report"
             echo "::warning::whether the game process starts, nothing more."
@@ -616,7 +630,7 @@ jobs:
             echo "trial budget left: ${budget}s"
           fi
 
-          args=(--out "$PROBE_OUT" --label "${{ inputs.scenario || github.event_name }}" --mode "$RAMUS_MODE")
+          args=(--out "$PROBE_OUT" --label "${SCENARIO:-${{ github.event_name }}}" --mode "$RAMUS_MODE")
           # Trust what is inside the APK over the env default: a case mismatch in
           # a package name makes every logcat signal a false negative.
           if [ -n "${{ steps.apk.outputs.package }}" ]; then
@@ -630,7 +644,7 @@ jobs:
             if [ -n "${{ inputs.statics }}" ]; then args+=(--statics "${{ inputs.statics }}"); fi
           fi
           if [ "$budget" -gt 0 ] && [ "$budget" -lt 600 ]; then args+=(--budget "$budget"); fi
-          if [ "${{ inputs.strict }}" != "false" ]; then args+=(--strict); fi
+          if [ "${STRICT:-true}" != "false" ]; then args+=(--strict); fi
           node .github/scripts/ramus-probe.mjs "${args[@]}"
 
       - name: Session watch link
