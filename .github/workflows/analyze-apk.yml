@@ -219,6 +219,10 @@ jobs:
         continue-on-error: true
         run: RVA_DEBUG=1 python3 tools/apk-analyze/il2cpp_consts.py 2>&1 | tee /tmp/apk/logs/consts.log | tail -40
 
+      - name: Extract field default values (literal tables)
+        continue-on-error: true
+        run: python3 tools/apk-analyze/field_defaults.py /tmp/apk/extract/global-metadata.dat /tmp/apk/il2cpp/dump.cs 2>&1 | tee /tmp/apk/logs/field_defaults.log | tail -20
+
       - name: Dump UI layout (Board/Popup RectTransforms)
         continue-on-error: true
         env:
