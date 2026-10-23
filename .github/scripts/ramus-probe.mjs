@@ -330,8 +330,8 @@ async function main() {
   // Only real app-level failures: Ramus's own screenshot tooling logs through
   // AndroidRuntime too ("Using default boot image", uiautomator), which used to
   // show up as if the game had crashed.
-  const NOISE_RE = /uiautomator|Using default boot image|lock profiling|com\.android\.commands|Shutting down VM/i;
-  const CRASH_RE = /FATAL EXCEPTION|UnsatisfiedLinkError|NO_MATCHING_ABIS|dlopen failed|SIGSEGV|is 32-bit instead of 64-bit|Process: [a-z]/i;
+  const NOISE_RE = /uiautomator|Using default boot image|lock profiling|com\.android\.commands|Shutting down VM|app_process|ClassLoaderContext/i;
+  const CRASH_RE = /FATAL EXCEPTION|UnsatisfiedLinkError|NO_MATCHING_ABIS|dlopen failed|SIGSEGV|is 32-bit instead of 64-bit/i;
   const signals = {
     unity: /Unity/i.test(rawLog),
     il2cpp: /il2cpp/i.test(rawLog),
