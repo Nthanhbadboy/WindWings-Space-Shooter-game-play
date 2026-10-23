@@ -1,3 +1,8 @@
+> ⚠️ **Đã bị sửa bởi lượt sau.** File này kết luận "app không khởi động" — **sai**, do hai
+> lỗi đo trong harness (parse `snapshot --raw`, và hộp thoại immersive che màn hình).
+> Đọc [`2026-10-23-trial-launch-forensics.md`](2026-10-23-trial-launch-forensics.md) trước.
+> File này giữ nguyên để đối chiếu.
+
 # Kết quả probe thật — trial, 23/10/2026
 
 Nguyên văn comment CI của lượt chạy `39925095796` (job `ramus device probe`, session

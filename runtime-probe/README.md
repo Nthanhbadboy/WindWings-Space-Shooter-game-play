@@ -390,6 +390,14 @@ Không có `adb` (trial) thì bỏ 3 dòng `adb`, giữ `--mode trial`; script s
 
 ### 7.2 Cái gì **chưa** được chứng minh
 
+> **Đã bị bác bỏ ở mức khởi động (23/10).** App **chạy được** trên emulator Ramus:
+> activity Unity lên foreground, Android hiện hộp thoại immersive "Viewing full screen",
+> rồi chính game hiện hộp thoại đồng ý của nó. Xem
+> [`results/2026-10-23-trial-launch-forensics.md`](results/2026-10-23-trial-launch-forensics.md).
+> App chết **sau đó**, trong lúc load — nguyên nhân chưa có log.
+>
+> Đoạn dưới đây giữ lại để thấy giả thuyết cũ dựa trên gì, **không** còn là kết luận:
+>
 > **ABI chưa được chứng minh.** Tôi từng viết "game chết vì arm64 trên emulator x86_64".
 > Đó là **giả thuyết**, không phải kết luận. Bằng chứng thật chỉ có:
 > `abis=arm64-v8a` (từ inventory) + `ramus.dev/docs/quickstart` ghi emulator **x86_64**.
@@ -541,9 +549,11 @@ Nguyên văn: [`results/2026-10-23-trial-abi-smoke.md`](results/2026-10-23-trial
 | `snapshot --raw` | 1.466 B, **không** có `package="…"`, không có `text="…"` |
 | bridge HTTP / `RAMUSB` | không có (APK không chứa bridge — đúng thiết kế) |
 
-**Kết luận có bằng chứng:** app **không** xuất hiện trong bất kỳ log hay cây UI nào của
-phiên này; lệnh `app launch` trả `ok` nhưng hệ thống không ghi nhận activity nào của
-package. Cài đặt thành công, chạy thì không.
+**Kết luận có bằng chứng (đã sửa 23/10):** app **có** chạy. Kết luận cũ "không xuất hiện
+trong log hay cây UI" là do hai lỗi đo — `snapshot --raw` trả JSON bọc XML nên regex
+`package="…"` không khớp, và hộp thoại immersive của Android phủ lên app. Xem
+[`results/2026-10-23-trial-launch-forensics.md`](results/2026-10-23-trial-launch-forensics.md):
+app vào foreground, hiện hộp thoại đồng ý của chính game, rồi **chết trong lúc load**.
 
 **Điều KHÔNG thể kết luận:** nguyên nhân. Toàn bộ log trả về là stream `system`;
 Unity, ActivityManager và crash của app ghi vào `main`/`crash`. Vì vậy "không có
