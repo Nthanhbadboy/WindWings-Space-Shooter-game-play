@@ -11,7 +11,7 @@
 
 | Vế | Kết quả | Bằng chứng |
 |---|---|---|
-| **Enemy thường KHÔNG chết 1 phát** | ✅ **BẠN ĐÚNG — tôi sai** | **108/109** prefab được spawn có component **`Enemy_Hp_Bar`**; **909** instance, **909/909 `m_Enabled = 1`**; con enemy bị spawn nhiều nhất `CB-30003` (**4.793** quân) có `CB-30003/Enemy_UI/HP_Bar` |
+| **Enemy thường KHÔNG chết 1 phát** | ✅ **BẠN ĐÚNG — tôi sai** | **109/109** prefab được spawn có HP bar (hai cơ chế, xem §1 của `DIFFICULTY_MODES.md`); **909** instance, **909/909 `m_Enabled = 1`**; con enemy bị spawn nhiều nhất `CB-30003` (**4.793** quân) có `CB-30003/Enemy_UI/HP_Bar` |
 | **Tính damage qua HP sẽ treo máy** | ❌ **Không** | **12 quân/giây**, **~50–950 con cùng lúc**, **~40–100 phép tính damage/giây**. Điện thoại làm **10⁹** phép/giây. Cách nhau **7 bậc** |
 | **Vậy phải tìm ở đâu?** | **2 class chưa dump** | `Enemy_Get_Datas` (`Dictionary<int,float> AllStartHealthPointEnemies`) + `Enemy_Controller` (`GetStartHealth`/`TakeDamage`/`UpdateHpBar`) |
 
@@ -41,9 +41,14 @@ Và quan trọng nhất — **trong 109 prefab thực sự được spawn**:
 
 | Phép đo | Số |
 |---|---:|
-| Prefab được spawn **có** HP bar | **108 / 109** |
-| Quân thuộc prefab **có** HP bar | **45.555 / 45.659 = 99,8 %** |
-| Quân thuộc prefab **không** có bar | 104 (0,2 %) |
+| Prefab được spawn **có** HP bar | **109 / 109 = 100 %** |
+| Quân thuộc prefab **có** HP bar | **45.659 / 45.659 = 100 %** |
+| Quân thuộc prefab **không** có bar | **0** |
+
+> **Đính chính (23/10, sau khi kiểm lại):** bản đầu ghi **108/109** và để `W1-30031` (104 quân) làm
+> ngoại lệ. **Sai.** Con đó có bar qua **đường thứ hai** — `Enemy_Display.hpProgressBarRenderer`
+> (PathID `509616`), loại component mà `Enemy_Hp_Bar` không phủ. Hai cơ chế cộng lại:
+> `Enemy_Hp_Bar` **909** instance · `Enemy_Display` có renderer **976/981**. Chi tiết: `DIFFICULTY_MODES.md` §1.
 
 **Ví dụ cụ thể, con bị spawn nhiều nhất game:**
 
@@ -177,7 +182,7 @@ dùng **spawn có nhịp** thay vì dồn — đó là chỗ duy nhất cần đ
 | Mục | Trước | **Sau** |
 |---|---|---|
 | `B3` (HP enemy) | **D** — hai giả thuyết, nghiêng "chết 1 phát" | **B** — HP **có** (dictionary runtime); thiếu **nội dung bảng**, không thiếu cơ chế |
-| "HP bar chỉ trên boss" | bằng chứng cho "1 phát" | ❌ **SAI** — **108/109** prefab có bar, 99,8 % quân |
+| "HP bar chỉ trên boss" | bằng chứng cho "1 phát" | ❌ **SAI** — **109/109** prefab có bar (100 % quân) |
 | Enemy có giáp? | chưa biết | ✅ **CÓ** — `Enemy_Health.armor` @`0x34`, truyền vào `CalculateDamage` |
 | Damage enemy scale? | chưa biết | ✅ có `Enemy_Get_Datas.GetDamagePowered(float)` |
 | `T14` (mới) | — | dump `Enemy_Get_Datas` → **bảng HP 981 enemy** |

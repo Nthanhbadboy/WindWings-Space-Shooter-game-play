@@ -256,6 +256,8 @@ VIP level**, khớp text `txt_vip_unlock_1_2` = "Maximum chance of revival up to
 
 **Normal** — trục tiến trình. `Board_Stage` → `Board_Begin` → in-game → `Board_Endgame`.
 Có 3 độ khó: `txt_stagemode_0/1/2` = **Normal / Hard / Nightmare** (`12-localization.csv`).
+> Ba chế độ **dùng chung** map, wave, số quân và HP; chỉ khác **thưởng**, **ngưỡng nhiệm vụ** và
+> **giá năng lượng** — công thức + bằng chứng ở **`DIFFICULTY_MODES.md`**.
 Mỗi stage 3 sao (điều kiện sao **không xác định** — có `Stage_Mission` nhưng chưa bóc thân hàm).
 
 **FightBoss** — `Board_SelectBoss` liệt kê 46 wave-boss (`Data_Boss.allBosses`), chọn 1 → vào
