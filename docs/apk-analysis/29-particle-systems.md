@@ -23,7 +23,7 @@
 
 ## 3. Giới hạn
 
-- Chưa nối ParticleSystem → prefab gốc (có `m_GameObject` trong tóm tắt, nối được bằng
-  `transform-tree` giống Animator — chưa chạy).
+- Đã nối ParticleSystem → prefab gốc: **4.839 / 4.845 (99,9%)** → `datas/particle_systems.csv.gz`
+  (tool `animator_joins.py`).
 - Curve trong module (theo thời gian/tốc độ) chưa xuất; muốn dựng FX giống hệt phải đọc thêm.
 - 4.845 là số **instance trong prefab**, không phải số hiệu ứng khác nhau.

@@ -18,6 +18,7 @@ from collections import Counter
 
 RAW = os.environ.get("TYPETREE_RAW", "reverse-engineering/raw/typetrees")
 OUT_CSV = os.environ.get("ANIMATOR_MAP_CSV", "datas/animator_map.csv.gz")
+OUT_PS_CSV = os.environ.get("PARTICLE_MAP_CSV", "datas/particle_systems.csv.gz")
 
 
 def main() -> int:
@@ -51,7 +52,7 @@ def main() -> int:
             cur = fa
         return None
 
-    controllers, animators = {}, []
+    controllers, animators, particles = {}, [], []
     with gzip.open(os.path.join(RAW, "native-types.jsonl.gz"), "rt", encoding="utf-8") as fh:
         for line in fh:
             r = json.loads(line)
@@ -59,6 +60,8 @@ def main() -> int:
                 controllers[r["path_id"]] = r.get("m_Name", "")
             elif r["type"] == "Animator":
                 animators.append(r)
+            elif r["type"] == "ParticleSystem":
+                particles.append(r)
 
     rows, stats = [], Counter()
     for r in animators:
@@ -78,6 +81,24 @@ def main() -> int:
         w.writerow(["animator_path_id", "gameobject_path_id", "prefab_root",
                     "controller_path_id", "controller_name"])
         w.writerows(rows)
+
+    # ParticleSystem -> prefab gốc (cùng chuỗi Transform)
+    ps_rows, ps_hit = [], 0
+    for r in particles:
+        go = (r.get("m_GameObject") or {}).get("m_PathID") or 0
+        tpid = go2tr.get(go)
+        root = root_name(tpid) if tpid else None
+        if root:
+            ps_hit += 1
+        ps_rows.append([r["path_id"], go, root or "",
+                        r.get("lengthInSec", ""), r.get("looping", "")])
+    if ps_rows:
+        with gzip.open(OUT_PS_CSV, "wt", newline="", encoding="utf-8", compresslevel=9) as fh:
+            w = csv.writer(fh)
+            w.writerow(["particle_path_id", "gameobject_path_id", "prefab_root",
+                        "length_in_sec", "looping"])
+            w.writerows(ps_rows)
+        print(f"ParticleSystem: {len(ps_rows)}, nối được prefab gốc {ps_hit} -> {OUT_PS_CSV}")
 
     print(f"Animator: {len(rows)}, nối được prefab gốc {stats[('root', True)]}, "
           f"tên controller {stats[('controller', True)]} -> {OUT_CSV}")
