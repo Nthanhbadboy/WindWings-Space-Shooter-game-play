@@ -233,6 +233,7 @@ jobs:
           python3 tools/apk-analyze/ui_index.py 2>&1 | tee /tmp/apk/logs/ui_index.log | tail -10
           python3 tools/apk-analyze/prefab_joins.py 2>&1 | tee /tmp/apk/logs/prefab_joins.log | tail -10
           python3 tools/apk-analyze/animator_joins.py 2>&1 | tee /tmp/apk/logs/animator_joins.log | tail -10
+          python3 tools/apk-analyze/formula_trace.py 2>&1 | tee /tmp/apk/logs/formula_trace.log | tail -10
           python3 tools/apk-analyze/audio_map.py 2>&1 | tee /tmp/apk/logs/audio_map.log | tail -20
 
       - name: Build data pack (datas/ + i18n/)
