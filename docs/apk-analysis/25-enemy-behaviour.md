@@ -95,8 +95,12 @@ Cấu trúc cây: **228.432** transform, **2.089** root (0,9%) — tức 99,1% o
 nên lo ngại "prefab lồng làm đứt chuỗi" **không xảy ra** ở build này.
 
 Ví dụ root nhận được: `Boss-37006`, `Wave_0005`, `Board_SelectBoss`, `Board_FightBoss`.
-Súng trong `Board_SelectBoss`/`Board_FightBoss` là **súng preview trên UI**, không phải súng
-trong trận — khi thống kê theo prefab phải loại hai board này ra.
+
+**Nhãn phải nói kèm khi trích số súng (mức A về phân bố):** 458 `Gun_Attack` gồm
+`Boss-*` 223 · `Wave_*` 40 · prefab khác 56 · **`Board_*` 139** (`Board_SelectBoss` 73 là
+preview ở màn chọn boss, `Board_FightBoss` 66 nhiều khả năng là súng trong màn đánh boss thật).
+⇒ "458 khẩu" là tổng bản ghi; phần chắc chắn ngoài UI chọn boss là **319–385** tùy cách tính
+`Board_FightBoss`. Tương tự `Boss_BodyPhysics` 251 gồm 66 cái dưới `Board_*`.
 
 ## 6. Số của nhánh spec tính trên **800/981** — bảng đầy đủ ở đây
 

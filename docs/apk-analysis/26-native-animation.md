@@ -10,7 +10,8 @@
 |---|---:|---|
 | `AnimationClip` | **791** | tên, `path_id`, thời lượng (`m_MuscleClip.m_StopTime`), `m_LoopTime`, số event, sample rate |
 | `AnimatorController` | **308** | tên, số clip tham chiếu (`m_AnimationClips`), số state-machine behaviour |
-| `ParticleSystem` | chỉ đếm trong log CI | typetree ~30 module — chưa xuất chi tiết |
+| `ParticleSystem` | **4.845** (chỉ `path_id`) | typetree ~30 module — chưa xuất chi tiết |
+| `Animator` | **5.792** instance | nối được prefab gốc **5.686 (98,2%)**, tên controller **5.603 (96,7%)** → `datas/animator_map.csv.gz` |
 
 ## 2. Số liệu rút ra
 
@@ -44,4 +45,4 @@ chưa ở mức **dựng lại chuyển động** như Spine. Với clone, Spine
 |---:|---|---|
 | 1 | Keyframe curve của 791 clip | ❌ đã thử 2 cách (typetree + UnityPy reader, `27-anim-curves.md`): đều 0. Phải giải mã streamed clip thủ công |
 | 2 | `ParticleSystem` chi tiết | xuất riêng các module chính (emission/shape) dạng tóm tắt |
-| 3 | Map controller → prefab | controller là asset lẻ; nối qua `Animator.m_Controller` trên GameObject — cần export `Animator` |
+| 3 | ~~Map controller → prefab~~ | ✅ xong: `Animator` → prefab gốc 5.686/5.792, controller 5.603/5.792 (175 cái trỏ file ngoài `m_FileID 2/3/4`, 14 cái không gán). Controller phổ biến: `Box_Gift (0)` 936 · `Body` 790 · `Parent` 766 · `Popup_Network` 663 · `A` 516 · `BossObject` 251 |

@@ -43,6 +43,7 @@
 | 16d | **`Call_Data` đủ 23.757** (trước cắt 1.500); `Call_Point` cùng 23.757 là **lớp bọc** trỏ `dataScript → Call_Data`, không phải bảng dữ liệu mới | **A** | `25-enemy-behaviour.md` §4 | `script-links.jsonl.gz` |
 | 17 | **Animation gốc Unity đã có danh mục**: 791 `AnimationClip` (226 tên, median 1,9 s, 251 clip lặp, 793 event) + 308 `AnimatorController`; keyframe curve **không lấy được bằng UnityPy** (2 cách đọc đều 0 — dữ liệu streamed) → lớp này ở mức nhịp, chưa dựng lại được | **A** (danh mục + việc curve không đọc được) / **C** (curve) | `26-native-animation.md`, `27-anim-curves.md`, `datas/anim_clips.json.gz` | giải mã streamed clip |
 | 18 | **Enum `spawnType` đã giải mã**: `0=point · 1=path · 2=point_range · 5=special · 6=boss` (16.498/4.199/1.688/686/686 trên 23.757 spawner); tổng lượt xuất hiện **45.659**; `number`/`editType` = 0 ở 100% → số con mỗi lượt **không** nằm trong prefab | **A** (phân bố) / **B** (gán nhãn) | `25-enemy-behaviour.md` §8 | đếm lại `Call_Data.jsonl.gz` |
+| 17b | **`Animator` 5.792 instance đã nối**: prefab gốc 5.686/5.792 (98,2%), tên controller 5.603/5.792; `ParticleSystem` **4.845** đã ghi `path_id` (chưa có chi tiết module). Số instance khớp độc lập với nhánh spec đếm | **A** | `26-native-animation.md`, `datas/animator_map.csv.gz`, `raw/typetrees/native-types.jsonl.gz` | chạy `tools/apk-analyze/animator_joins.py` |
 | 14 | Damage/giá/thưởng suy ra từ field serialize | **B** | `docs/spec/COMBAT.md`, `ECONOMY.md` | so với hằng số ở #12 |
 | 15 | Nhận định "game dễ bypass", "nên dùng Spine"… | **C** | `PHAN_TICH_WINDWINGS_APK.md` | chỉ là đánh giá, không phải số |
 
@@ -52,7 +53,7 @@
 |---|---|---|
 | `Player_Get_Datas`, `Droid_Data_Balance`, `Tech_Datas`, `Stage_Get_Datas`, `Map_Get_Datas`, `Enemy_Data_Balance`, `Device_Get_Data`, `GameDatas` | **0 instance** trong `data.unity3d` → giá trị nằm trong thân hàm IL2CPP | `19-il2cpp-constants.md` + `raw/il2cpp-consts/*.asm.txt` (đang làm) |
 | Curve keyframe của 791 `AnimationClip` | **cả typetree lẫn UnityPy reader đều cho 0 keyframe** (đã thử, `27-anim-curves.md`) — curve nằm trong streamed clip nén | giải mã `m_StreamedClip` thủ công, hoặc dựng lại bằng nhịp ở `26-native-animation.md` |
-| `ParticleSystem` | chưa dump | cùng cách với `Transform` |
+| Chi tiết module `ParticleSystem` (4.845) | mới ghi `path_id`, typetree ~30 module rất nặng | xuất tóm tắt vài module chính (main/emission/shape) |
 | Công thức đầy đủ (thứ tự nhân, clamp, nội suy) | cần đọc control flow, không chỉ hằng số | Ghidra/IDA trên `libil2cpp.so` (đã có trong artifact) |
 | Ý nghĩa từng hằng số ở #12 | capstone chỉ thấy số, không thấy phép tính | **Đã bóc được giá trị float thật từ literal pool** (#12b); còn thiếu *thứ tự nhân/chia* → đọc `raw/il2cpp-consts/*.asm.txt` hoặc Ghidra |
 | Layout runtime thực tế | prefab ≠ runtime (layout group, safe area) | screenshot + so với `raw/ui/` |

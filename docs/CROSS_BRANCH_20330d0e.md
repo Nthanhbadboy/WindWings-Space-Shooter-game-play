@@ -72,6 +72,14 @@ không biết **màn nào** biến mất giữa hai lần chạy (16 màn chỉ 
   `Call_Data` đầy đủ: khớp từng con số (16.498/4.199/1.688/686/686, tổng 45.659) → đã ghi vào
   `25-enemy-behaviour.md` §8 kèm hệ quả `number = 0` ở 100%.
 
+## 3d. Đọc thêm 3 commit (`7818043`, `857259c`, `6278f9e`, 01:00)
+
+- Sổ mắt ghép của họ: **11 mắt 100%** — khớp với `prefab_joins` của mình (7 mắt) cộng các mắt PathID cũ.
+- Số họ đếm `ParticleSystem` **4.845** · `Animator` **5.792**: mình export xong thì **khớp đúng từng số**.
+- Nhãn "458 súng kể cả preview, 319 thật": mình tính lại từ `prefab_joins` — 139/458 dưới `Board_*`
+  (73 `SelectBoss` + 66 `FightBoss`) nên ghi khoảng **319–385** thay vì một số cứng, đã sửa `25` §5.
+- Họ cũng kết luận `parse_as_object` cho 0 keyframe → cần decoder streamed clip. Trùng `27-anim-curves.md`.
+
 ## 4. Điều kiện lật ngược
 
 - Nếu `Enemy_Physics` export ra mà **phần lớn field rỗng** (như `Spawner.dataScript` = 0), thì
