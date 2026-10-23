@@ -15,7 +15,6 @@ while [ $# -gt 0 ]; do
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
 done
-set -x
 
 BEP6_TAG="${BEP6_TAG:-v6.0.0-pre.2}"
 BEP5_TAG="${BEP5_TAG:-v5.4.23.5}"
