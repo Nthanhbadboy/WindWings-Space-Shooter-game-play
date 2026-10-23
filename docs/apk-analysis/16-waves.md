@@ -1,7 +1,7 @@
 # Wave composition (campaign maps)
 
 - waves: **282**
-- spawners: **11092**
+- spawners: **11091**
 - typetree backend: **AssetStudio**
 
 - lỗi đọc: 1 object
