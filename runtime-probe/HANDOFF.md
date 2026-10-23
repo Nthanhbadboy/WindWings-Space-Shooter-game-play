@@ -121,3 +121,25 @@ APK **không** có bridge ⇒ mọi kết quả từ đường này chỉ nói v
 **không** nói gì về `/scene`, `/statics` hay 9 số `pct`. Đừng đọc report thành "harness
 hỏng": harness đã compile + self-test đúng; thiếu là thiếu **DLL trong APK**, và game là
 IL2CPP nên phải qua **patcher của loader**, không chỉ copy `Mods/`.
+
+---
+
+## 8. Cập nhật 23/10 (sau run phone + `9fb827c`)
+
+Run trên điện thoại (`docs/apk-analysis/ramus/2026-10-23-phone/`) lấy được **377 field**
+nhưng **80 field chỉ là tên type**. Nguyên nhân đã tìm ra và sửa, **không phải do game**:
+
+| Triệu chứng | Nguyên nhân thật | Trạng thái |
+|---|---|---|
+| `listMapDatas`: `_count=250` nhưng chỉ **128** phần tử, mỗi phần tử là chuỗi `Il2CppStructArray`1[System.Int32]` | `EmitAny` chỉ mở **1 tầng** và chặn cứng **128** phần tử | **đã sửa** — `depth` (mặc định 2) + `arr` (mặc định 128, tối đa 2000) |
+| `Device_Get_Data.listStatValues` = 39 chuỗi tên type | cùng lỗi trên | **đã sửa** |
+| `Enemy_Data_Balance.listStaticEmemies` = `"(List`1)"` | `List<int>` nằm trong `Il2CppSystem.Collections.Generic.List` — nhận diện qua `Length/Count` + indexer `Item` | **đã sửa** |
+| `GP_Datas` 65 field toàn `NativeFieldInfoPtr_*` | static chưa follow sang **instance**; ngoài phạm vi `/statics` hiện tại | **chưa** — cần endpoint đọc instance field |
+| Build đỏ từ `5b3c8ae` | `GameObject.BroadcastMessage` + `SendMessageOptions` có trong UnityEngine thật nhưng thiếu trong `BuildCheck/UnityStubs.cs` | **đã sửa** — 6/6 target PASS |
+
+Bằng chứng sửa đúng (không cần điện thoại): self-test dựng `List<int[]>` + một mảng
+**300** phần tử và kiểm 5 điều kiện — **45 passed / 0 failed** (run `39986163881`).
+
+> **Chưa chứng minh:** các endpoint đã sửa có trả đúng số **trên điện thoại** hay không.
+> Self-test chạy trên stub; khác biệt interop thật (`Il2CppStructArray` indexer) chỉ lộ ra
+> khi gọi trên device. Cần một lượt chạy phone với `&arr=256&depth=2`.
