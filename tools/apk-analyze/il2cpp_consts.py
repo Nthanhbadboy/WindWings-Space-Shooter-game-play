@@ -35,6 +35,7 @@ DUMP = os.environ.get("IL2CPP_DUMP", "/tmp/apk/il2cpp/dump.cs")
 SO = os.environ.get("IL2CPP_SO", "/tmp/apk/extract/libil2cpp.so")
 OUT_RAW = os.environ.get("CONSTS_RAW", "reverse-engineering/raw/il2cpp-consts")
 OUT_MD = os.environ.get("CONSTS_MD", "docs/apk-analysis/19-il2cpp-constants.md")
+OUT_CSV = os.environ.get("CONSTS_CSV", "docs/apk-analysis/il2cpp-pool-floats.csv")
 
 TARGET_CLASSES = {
     "Player_Get_Datas": "chỉ số tàu: HP, damage, tốc độ bắn, giá nâng cấp",
@@ -575,6 +576,16 @@ def main() -> int:
               "- Disassembly có chú thích: `<Class>.asm.txt`.",
               "- Hằng số chỉ có nghĩa khi đọc cùng control flow — file `.asm.txt` để đối chiếu.",
               ""]
+    # CSV phẳng: mọi hằng số đọc từ literal pool, để đối chiếu bằng spreadsheet
+    import csv as _csv
+    os.makedirs(os.path.dirname(OUT_CSV) or ".", exist_ok=True)
+    with open(OUT_CSV, "w", newline="", encoding="utf-8") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["class", "method", "value", "via", "va", "addr"])
+        for cls, info in sorted(summary.items()):
+            for meth, val, va, via in info.get("pool_floats", []):
+                w.writerow([cls, meth, val, via, va, ""])
+
     os.makedirs(os.path.dirname(OUT_MD) or ".", exist_ok=True)
     with open(OUT_MD, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines))
