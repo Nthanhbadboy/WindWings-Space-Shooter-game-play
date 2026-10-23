@@ -219,6 +219,21 @@ jobs:
         continue-on-error: true
         run: CONSTS_PROBE_ADDRS=0x110d09c,0x110d240,0x110d028,0x1bd768c,0x1bd7e58 python3 tools/apk-analyze/il2cpp_consts.py 2>&1 | tee /tmp/apk/logs/consts.log | tail -40
 
+      - name: Identify IL2CPP helper addresses (script.json)
+        continue-on-error: true
+        run: |
+          python3 - <<'PYEOF' | tee /tmp/apk/logs/helpers.log
+          import json
+          want = {0x110d09c, 0x110d240, 0x110d028, 0x205b07c, 0x1bd768c,
+                  0x1bd7e58, 0x193a074, 0x1939704, 0x110d12c, 0x11840d4}
+          d = json.load(open('/tmp/apk/il2cpp/script.json'))
+          print('script.json keys:', list(d.keys()))
+          for key in ('ScriptMethod', 'ScriptMetadataMethod'):
+              for e in d.get(key, []):
+                  if e.get('Address') in want:
+                      print(hex(e['Address']), key, e.get('Name'), '|', str(e.get('Signature'))[:80])
+          PYEOF
+
       - name: Extract field default values (literal tables)
         continue-on-error: true
         run: python3 tools/apk-analyze/field_defaults.py /tmp/apk/extract/global-metadata.dat /tmp/apk/il2cpp/dump.cs 2>&1 | tee /tmp/apk/logs/field_defaults.log | tail -20
