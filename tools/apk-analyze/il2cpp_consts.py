@@ -245,7 +245,7 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
         # -> ldr xN,[xM]. [slot] là con trỏ tới object metadata, [object] là
         # con trỏ tới blob [int32 count][int32 x count] trong .rodata. Đây là
         # nguồn của các mảng literal (bảng map->wave, bảng stat device...).
-        if insn.mnemonic == "ldr" and segs and md == 0xB7:
+        if insn.mnemonic == "ldr" and segs:
             m = re.search(r"\[(x\d+)(?:, #(0x[0-9a-f]+|\d+))?\]", insn.op_str)
             dst = insn.op_str.split(",")[0].strip()
             if m and dst.startswith("x"):
