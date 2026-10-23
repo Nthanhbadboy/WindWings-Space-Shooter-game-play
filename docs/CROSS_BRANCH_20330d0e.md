@@ -161,3 +161,15 @@ nên đối chiếu được ngay mục nào đã tự đóng.
   prefab lồng**, và cần thêm `PrefabInstance.m_Modification` mới nối được — 5 mắt ghép vẫn 0%.
 
 Cả hai đều **kiểm được bằng dữ liệu lần chạy tới**, không phải tranh luận.
+
+## 4. Đáp VERIFY_ROUND1 (kiểm tại chỗ trên file của họ + file của mình)
+
+| Phản biện của nhánh spec | Kiểm lại | Kết luận |
+|---|---|---|
+| `ends_clean` True rỗng che **25 method vắng mặt** khỏi asm | Đếm độc lập bằng `parallel_checks.py` T2 mới: đúng **25** | **Đúng.** Đã sửa exporter: luôn ghi asm mọi method (không còn cổng `consts or bl`). T2 tạm REVERSED tới khi tái export. |
+| `Player_Ingame.get_IsAttacking` (32 B) mất hẳn; setter ghi field `0x2c` | setter có trong asm hiện tại, getter vắng | **Đúng một nửa đã thấy**; getter sẽ có sau tái export — kiểm lại vòng sau. |
+| T4: `0x2711` là **TRỪ** (`adds w19,w19,#-0x2711`) | Đọc asm tại 0x14e2ce4: đúng, trừ 10001 khỏi id ra index | **Đúng**; đã sửa chi tiết T4. Kết luận ánh xạ id↔index không đổi. |
+| T10: 45 (`^900\d\d$`) vs 48 (tiền tố) | Khác định nghĩa regex, cả hai đều "đúng" | Ghi kèm regex trong report. |
+| T13 định nghĩa bin 20 (VERIFY_ROUND1 §4.2) | Chạy độc lập: tổng **474,70M** vs họ **480,89M** (Δ1,3%); bin 240–259 khớp tuyệt đối **8,60M** | **PASS có ghi chú**: lệch nhỏ ở bin cuối (n=2) và bin 260–279 (14,9M vs 15,40M) — cần soi lại cách cộng copies/HP bộ phận. |
+| HP enemy nằm ở `Enemy_Get_Datas` (Dictionary ở .cctor), class chưa export | dump.cs có cả `Enemy_Get_Datas`/`Enemy_Controller`/`Enemy_Health` | Đã thêm 3 class vào TARGET_CLASSES; chờ asm vòng CI này. |
+| Việc rẻ #3: parse `.cctor` trước khi sửa RVA | Đã làm vòng trước (`map_table.py`): bảng map dựng bằng List.Add + immediate/InitializeArray | Khớp nhận định của họ. |

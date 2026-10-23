@@ -55,6 +55,9 @@ TARGET_CLASSES = {
     "Player_Ability": "ability: khiên, drone skill, dodge",
     "Player_Ingame": "trạng thái trong trận: level, power-up theo tàu",
     "Player_Attack": "bắn trong trận: nhịp, đạn, overdrive",
+    "Enemy_Get_Datas": "enemy: HP khởi đầu theo prefab (Dictionary dựng ở .cctor)",
+    "Enemy_Controller": "enemy runtime: GetStartHealth/TakeDamage/UpdateHpBar",
+    "Enemy_Health": "enemy runtime: armor/noDamage, nhận damage",
 }
 
 RVA_RE = re.compile(r"//\s*RVA:\s*0x([0-9A-Fa-f]+)\s+Offset:\s*0x([0-9A-Fa-f]+)")
@@ -611,12 +614,11 @@ def main() -> int:
                             "size_capped": size >= 0x20000,
                             "ends_clean": ends_clean,
                             "constants": consts})
-                # Ghi asm cả cho method không có hằng số nhưng có lời gọi:
-                # đồ thị gọi (formula_trace) cần chúng, bỏ lặng lẽ là mất mắt nối.
-                if consts or any(" bl " in f" {l} " or l.strip().startswith("bl ") for l in lines):
-                    asm_out.append(f";;; {name}  {sig}")
-                    asm_out += [f"    {l}" for l in lines]
-                    asm_out.append("")
+                # Luôn ghi asm cho MỌI method: method vắng mặt khỏi file asm
+                # từng làm cờ ends_clean "đúng rỗng" (VERIFY_ROUND1 §2.1).
+                asm_out.append(f";;; {name}  {sig}")
+                asm_out += [f"    {l}" for l in lines]
+                asm_out.append("")
             name_safe = re.sub(r"[^\w.]", "_", cls)
             with open(os.path.join(OUT_RAW, f"{name_safe}.json"), "w", encoding="utf-8") as fh:
                 json.dump({"class": cls, "note": TARGET_CLASSES.get(cls, ""),

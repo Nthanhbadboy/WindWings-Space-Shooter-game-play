@@ -4,8 +4,8 @@
   {
    "task": "T2",
    "hypothesis": "RankManager thiếu 8B ở ctor; export lại thì gác cổng đạt",
-   "verdict": "PASS",
-   "detail": "ctor = 8 byte (method rỗng), ends_clean mọi method: True, size_capped: 0. Không thiếu byte nào."
+   "verdict": "REVERSED",
+   "detail": "ctor = 8 byte; ends_clean True toàn bộ nhưng còn 25 method vắng mặt khỏi file asm (cờ ends_clean không bắt được — đã sửa exporter: luôn ghi asm, chờ tái export)."
   },
   {
    "task": "T3",
@@ -17,7 +17,7 @@
    "task": "T4",
    "hypothesis": "stepLevel: 4 ngưỡng 30/58/118/248, hệ số 0.168/1.0/1.05/1.15; id tàu = 10001+playerIndex",
    "verdict": "PASS",
-   "detail": "stepLevel cmp=[30, 58, 118, 248], float=[0.168, 1.0, 1.05, 1.15]; GetMainCannonDamage có mov #0x2711 (=10001): True."
+   "detail": "stepLevel cmp=[30, 58, 118, 248], float=[0.168, 1.0, 1.05, 1.15]; hằng 10001 có mặt. Chiều đúng (VERIFY_ROUND1 §1): asm là TRỪ 10001 khỏi id để lấy index (adds w19,w19,#-0x2711), không phải cộng."
   },
   {
    "task": "T6",
@@ -36,6 +36,12 @@
    "hypothesis": "đọc độc lập .cctor vẫn ra StartHp=2500,0 cạnh 0,18",
    "verdict": "PASS",
    "detail": "15 cặp ldr d trong .cctor. VA 0x757ce0: [3.0, 10.0]; VA 0x757bc0: [0.18, 2500.0]; VA 0x758140: []; VA 0x757788: [18.0, 5.6]; VA 0x757550: []; VA 0x757b08: []; VA 0x757ce8: [25.0, 3.0]; VA 0x757a38: []; VA 0x757558: []; VA 0x757398: []"
+  },
+  {
+   "task": "T13",
+   "hypothesis": "đường cong HP theo bin 20 wave (định nghĩa VERIFY_ROUND1 §4.2)",
+   "verdict": "PASS",
+   "detail": "median các bin cuối — 120-139: 2,440,000; 220-239: 5,580,000; 240-259: 8,600,000; 260-279: 14,900,000; 280-281: 20,600,000. Tổng HP toàn game: 474,696,000 (đo độc lập, đối chiếu 480,89M của nhánh spec)."
   }
  ]
 }

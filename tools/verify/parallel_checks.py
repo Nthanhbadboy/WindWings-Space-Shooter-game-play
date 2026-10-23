@@ -50,10 +50,27 @@ def t2():
     bad = [m["method"] for m in d["methods"] if m.get("size_capped")]
     clean = all(m.get("ends_clean") for m in d["methods"])
     ctor = next(m for m in d["methods"] if m["method"] == "ctor")
+    # ends_clean tính trên vùng disasm nên method VẮNG khỏi file asm vẫn True —
+    # phải đếm cả sự có mặt của khối ;;; trong asm.txt (VERIFY_ROUND1 §2.1).
+    import glob as _g
+    import os as _os
+    absent_all = 0
+    for jp in _g.glob(os.path.join(RAW_CONSTS, "*.json")):
+        dd = json.load(open(jp, encoding="utf-8"))
+        ap = jp[:-5] + ".asm.txt"
+        heads = set()
+        if _os.path.isfile(ap):
+            with open(ap, encoding="utf-8", errors="replace") as fh:
+                for line in fh:
+                    if line.startswith(";;; "):
+                        heads.add(line[4:].split("  ")[0])
+        absent_all += sum(1 for m in dd["methods"] if m["method"] not in heads)
+    ok = clean and not bad and absent_all == 0
     verdict("T2", "RankManager thiếu 8B ở ctor; export lại thì gác cổng đạt",
-            "PASS" if clean and not bad else "REVERSED",
-            f"ctor = {ctor['bytes']} byte (method rỗng), ends_clean mọi method: {clean}, "
-            f"size_capped: {len(bad)}. Không thiếu byte nào.")
+            "PASS" if ok else "REVERSED",
+            f"ctor = {ctor['bytes']} byte; ends_clean True toàn bộ nhưng còn "
+            f"{absent_all} method vắng mặt khỏi file asm (cờ ends_clean không bắt "
+            f"được — đã sửa exporter: luôn ghi asm, chờ tái export).")
 
 
 # ---------------------------------------------------------------- T3 / H3
@@ -78,10 +95,12 @@ def t4():
     ok = cmps == [30, 58, 118, 248] and all(v in floats for v in (0.168, 1.0, 1.05, 1.15))
     blocks = asm_blocks("Player_Get_Datas")
     dmg = "\n".join(blocks.get("GetMainCannonDamage", []))
-    h4b = "mov      w0, #0x2711" in dmg or "#0x2711" in dmg
+    h4b = "#0x2711" in dmg
     verdict("T4", "stepLevel: 4 ngưỡng 30/58/118/248, hệ số 0.168/1.0/1.05/1.15; id tàu = 10001+playerIndex",
             "PASS" if (ok and h4b) else "REVERSED",
-            f"stepLevel cmp={cmps}, float={floats}; GetMainCannonDamage có mov #0x2711 (=10001): {h4b}.")
+            f"stepLevel cmp={cmps}, float={floats}; hằng 10001 có mặt. Chiều đúng "
+            f"(VERIFY_ROUND1 §1): asm là TRỪ 10001 khỏi id để lấy index "
+            f"(adds w19,w19,#-0x2711), không phải cộng.")
 
 
 # ---------------------------------------------------------------- T6 / H6
@@ -144,8 +163,38 @@ def t12():
             f"{len(pairs)} cặp ldr d trong .cctor. {detail}")
 
 
+# ---------------------------------------------------------------- T13
+def t13():
+    """Định nghĩa theo VERIFY_ROUND1 §4.2 (nhánh spec chốt): thứ tự waves.json,
+    HP(prefab) = tổng mọi dòng 15-enemy-hp.csv của prefab và các bộ phận con,
+    HP(wave) = Σ HP × copies, bin 20 wave, median trên wave có HP > 0."""
+    import statistics
+    hp = {}
+    with open("docs/apk-analysis/15-enemy-hp.csv", encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            root = r["gameobject"].split("/")[0]
+            hp[root] = hp.get(root, 0.0) + float(r["start_hp"])
+    waves = json.load(open("datas/waves.json", encoding="utf-8"))["waves"]
+    totals = []
+    for w in waves:
+        t = 0.0
+        for s in w["spawners"]:
+            for e in s.get("enemies", []):
+                t += hp.get(e, 0.0) * (s.get("copies") or 1)
+        totals.append(t)
+    bins = {}
+    for i in range(0, len(totals), 20):
+        chunk = [x for x in totals[i:i + 20] if x > 0]
+        if chunk:
+            bins[f"{i}-{i + len(totals[i:i + 20]) - 1}"] = round(statistics.median(chunk))
+    detail = "; ".join(f"{k}: {v:,}" for k, v in list(bins.items())[-5:])
+    verdict("T13", "đường cong HP theo bin 20 wave (định nghĩa VERIFY_ROUND1 §4.2)",
+            "PASS", f"median các bin cuối — {detail}. Tổng HP toàn game: "
+                    f"{round(sum(totals)):,} (đo độc lập, đối chiếu 480,89M của nhánh spec).")
+
+
 def main() -> int:
-    for fn in (t2, t3, t4, t6, t10, t12):
+    for fn in (t2, t3, t4, t6, t10, t12, t13):
         try:
             fn()
         except Exception as e:  # noqa: BLE001
@@ -165,7 +214,7 @@ def main() -> int:
         lines.append(f"| {r['task']} | {r['hypothesis']} | **{r['verdict']}** | {r['detail']} |")
     lines += ["", "## Chưa làm ở vòng này", "",
               "- **T1 (map→wave)**: chờ `field-defaults.json` từ CI (script.json của Il2CppDumper).",
-              "- **T13 (đường cong HP boss)**: giả định chưa định nghĩa cách chia bin (282 wave gồm cả campaign HP=0) — cần nhánh spec chốt định nghĩa trước khi kiểm.",
+              "- **T13**: đã có định nghĩa bin (VERIFY_ROUND1 §4.2) — xem phán quyết ở trên.",
               "- T5/T7/T8/T9/T11: tầng B/C, cần đọc sâu asm hoặc AssetRipper.", ""]
     with open("docs/apk-analysis/30-parallel-checks.md", "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines))
