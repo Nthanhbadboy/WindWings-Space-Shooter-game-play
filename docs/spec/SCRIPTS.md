@@ -110,11 +110,16 @@ Nghĩa là người mới **không có nút bỏ qua** ở bước này.
 | 2 | **Bay** | đi đường nào, nhanh bao nhiêu, dừng hay lặp | `Enemy_Movement` | 981 | **100%** | path + speed |
 | 3 | **Bắn** | bắn viên gì, bao lâu một viên, mấy băng | `Gun_Attack` | 458 | **100%** | timeline |
 | 4a | **Va chạm boss** | đâm vào mất bao nhiêu máu | `Boss_BodyPhysics` | 251 | **100%** | 2 tham số |
-| 4b | **Va chạm enemy thường** | đâm vào mất bao nhiêu máu | `Enemy_Physics` | **981** | **0%** — và **đã đọc: class rỗng**, `allColliders = []` 981/981 ⇒ damage **không nằm ở đây** |
-| 5 | **Pha boss** | đổi đòn ở mốc nào, đòn gì | 37 `*_Director` + 3 `AttackPhases` | **68** | **0%** | bảng pha |
+| 4b | **Va chạm enemy thường** | đâm vào mất bao nhiêu máu | `Enemy_Physics` | 981 | **0%** | ⚠ **class rỗng** — `allColliders = []` 981/981 |
+| 5 | **Pha boss** | đổi đòn ở mốc nào, đòn gì | 37 `*_Director` + 3 `AttackPhases` | **63** | **cấu trúc 100%** · **nhịp 0%** | bảng pha |
 
 **Ba lớp đầu là timeline có tham số thời gian** — đọc được trọn. Đó là lý do khẳng định
 "kịch bản đọc được", không chỉ có số.
+
+> **Cập nhật `bb97453`:** lớp 5 đã export (**63 instance / 37 class**), nhưng Director chỉ giữ
+> **tham chiếu** (`animatorParent` 37/37 · `animEvents` 33/37) trỏ tới `AnimatorController` (308)
+> và `AnimationClip` (791) — **hai loại chưa export**. Nên biết **cấu trúc pha**, chưa biết **nhịp**.
+> Lớp 4b thì **đọc rồi mới biết rỗng** — chi tiết `DATA_SYNC.md` §7.14.
 
 ---
 
