@@ -17,6 +17,7 @@ IL2CPP, metadata v31) để làm tài liệu tham chiếu cho bản clone.
 | Âm thanh: id → file, thời lượng | [`docs/apk-analysis/21-audio-map.md`](docs/apk-analysis/21-audio-map.md) |
 | Code C# đã dump | [`reverse-engineering/`](reverse-engineering/) — `dump.cs.gz`, Spine, ScriptableObject |
 | **Dữ liệu thô (không cắt)** | [`reverse-engineering/raw/`](reverse-engineering/raw/) — typetree JSONL gz, UI layout gz, hằng số IL2CPP + asm |
+| Đọc nhánh spec của AI kia (tham khảo, **không merge**) | [`docs/CROSS_BRANCH_20330d0e.md`](docs/CROSS_BRANCH_20330d0e.md) |
 | Độ tin cậy từng kết luận | [`docs/conclusions.md`](docs/conclusions.md) — mức A/B/C và cách kiểm lại |
 
 ## Lấy file gốc

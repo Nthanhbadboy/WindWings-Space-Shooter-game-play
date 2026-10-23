@@ -80,6 +80,7 @@ RUNTIME = {
     "MapController",
     "PathCreator",
     "Stage_Behaviour",
+    "Call_Point",
     # items / economy
     "Sub_Item",
     "Item_Movement",
@@ -88,6 +89,35 @@ RUNTIME = {
     # bosses
     "Boss_BodyPhysics",
     "Boss4_ExplosionTimer",
+    # --- lớp hành vi enemy (audit của nhánh spec chỉ ra: PathID đã nằm trong
+    #     Enemy_Controller.dataScript/healthScript/... nên chỉ cần export là nối được 100%)
+    "Enemy_Physics",
+    "Enemy_Destroy",
+    "Enemy_Burned",
+    "Enemy_Stun",
+    "Enemy_UI",
+    "Enemy_LookAtPlayer",
+    "Enemy_Attack",
+    "Enemy_Attack_Event",
+    "Enemy_Passive_Attack",
+    "Enemy_Sync_Attack",
+    "Enemy_Sync_Attack2",
+    "Enemy_SpawnChilds",
+    "Enemy_DestroyDelayed",
+    "Enemy_DestroyAttack",
+    "Enemy_BombDie",
+    "Enemy_BurstBulletWhenDie",
+    "Enemy_DropGold",
+    "Enemy_Rotate",
+    "Enemy_Helicopter",
+    "Enemy_Display",
+    "Enemy_Hp_Bar",
+    "Enemy_Laser_Gun",
+    "Enemy_Rocket_Attack",
+    "Enemy_CameraVibrate",
+    "Enemy_EfxDestroyed",
+    "Enemy_OffObjectWhenDestroy",
+    "Enemy_HitSkeletonRenderer",
     # managers that do get serialized
     "RankManager",
     "DataShopPack",
@@ -96,13 +126,36 @@ RUNTIME = {
     "GridLayoutManager",
 }
 
+# 44 class đạo diễn boss/mini-boss sống ở tiền tố khác nhau (Boss1_Director,
+# MB6_ChildDirector, Boss19_AttackPhases...). Ghép theo hậu tố để không phải
+# liệt kê tay từng cái và không bỏ sót class mới khi game cập nhật.
+TARGET_SUFFIXES = ("_Director", "_MiniDirector", "ChildDirector", "_AttackPhases")
+
 TARGETS = CONFIG | RUNTIME
 
+
+def is_target(cls: str) -> bool:
+    return cls in TARGETS or cls.endswith(TARGET_SUFFIXES)
+
 MAX_READ_PER_CLASS = int(os.environ.get("MAX_READ_PER_CLASS", "1500"))
+
+# Bảng lớn bị cap 1.500 ở các lần chạy trước (audit nhánh spec §7.8): 6 bảng sinh quân
+# + đường bay bị cắt. Chúng nén rất tốt (~1 MB gz cho toàn bộ typetree hiện có) nên
+# đọc đủ rẻ hơn nhiều so với việc phải suy luận lại từ CSV đã làm phẳng list.
+CAP_OVERRIDES = {
+    "Call_Data": (30000, 24_000_000),
+    "Call_Point": (30000, 12_000_000),
+    "PointToPoint_Spawner": (14000, 12_000_000),
+    "PinMap_Spawner": (3400, 10_000_000),
+    "Rocket_Spawner": (2200, 6_000_000),
+    "PathCreator": (1800, 12_000_000),
+    "Path_Spawner": (1800, 6_000_000),
+    "Transform": (300000, 60_000_000),
+}
 MAX_DUMP_PER_CLASS = int(os.environ.get("MAX_DUMP_PER_CLASS", "20"))
 MAX_CSV_ROWS = int(os.environ.get("MAX_CSV_ROWS", "1200"))
 MAX_RAW_BYTES_CLASS = int(os.environ.get("MAX_RAW_BYTES_CLASS", "4000000"))
-MAX_RAW_BYTES_TOTAL = int(os.environ.get("MAX_RAW_BYTES_TOTAL", "45000000"))
+MAX_RAW_BYTES_TOTAL = int(os.environ.get("MAX_RAW_BYTES_TOTAL", "220000000"))
 
 
 def human(n: float) -> str:
@@ -148,6 +201,65 @@ def gameobject_path(go, depth=10):
         return "/".join(reversed([n for n in names if n]))
     except Exception:  # noqa: BLE001
         return ""
+
+
+def export_transform_tree(env) -> None:
+    """Xuất cây cha–con của Transform + tên prefab gốc.
+
+    Vì sao: audit của nhánh spec chỉ ra 5 mắt ghép = 0% **cùng một nguyên nhân** —
+    component nằm trên object con, còn `Enemy_Controller` nằm trên object gốc; chuỗi
+    nối duy nhất là `m_GameObject → Transform.m_Father → … → root`. Bảng `Transform`
+    (228.432 object) chưa từng được export nên cả 5 mắt không nối được.
+
+    Xuất dạng TSV gz (path_id, gameobject, father) để file nhỏ — JSON sẽ phình 5×.
+    """
+    import gzip
+
+    tsv = os.path.join(RAW, "transform-tree.tsv.gz")
+    rows = 0
+    fathers: dict[int, int] = {}
+    gos: dict[int, int] = {}
+    try:
+        with gzip.open(tsv, "wt", encoding="utf-8", compresslevel=9) as fh:
+            fh.write("path_id\tgameobject\tfather\n")
+            for obj in env.objects:
+                if obj.type.name != "Transform":
+                    continue
+                try:
+                    tree = obj.read_typetree()
+                except Exception:  # noqa: BLE001
+                    continue
+                go = (tree.get("m_GameObject") or {}).get("m_PathID") or 0
+                fa = (tree.get("m_Father") or {}).get("m_PathID") or 0
+                fh.write(f"{obj.path_id}\t{go}\t{fa}\n")
+                fathers[obj.path_id] = fa
+                gos[obj.path_id] = go
+                rows += 1
+    except OSError:
+        return
+    print(f"transform tree: {rows} dòng -> {tsv}")
+
+    # root = transform không có cha; chỉ đọc tên GameObject của đúng những root này
+    children_of_root: Counter = Counter()
+    for fa in fathers.values():
+        if fa:
+            children_of_root[fa] += 1
+    roots = [pid for pid, fa in fathers.items() if not fa]
+    go_of_root = {gos[pid] for pid in roots if gos.get(pid)}
+    names: dict[int, str] = {}
+    for obj in env.objects:
+        if obj.type.name != "GameObject" or obj.path_id not in go_of_root:
+            continue
+        try:
+            names[obj.path_id] = obj.read_typetree().get("m_Name") or ""
+        except Exception:  # noqa: BLE001
+            continue
+    with open(os.path.join(RAW, "prefab-roots.csv"), "w", newline="", encoding="utf-8") as fh:
+        fh.write("transform_path_id,gameobject_path_id,name,children\n")
+        for tpid in sorted(roots):
+            gpid = gos.get(tpid, 0)
+            fh.write(f'{tpid},{gpid},"{names.get(gpid, "")}",{children_of_root.get(tpid, 0)}\n')
+    print(f"prefab roots: {len(roots)}")
 
 
 def load_env() -> UnityPy.Environment:
@@ -197,6 +309,8 @@ def main() -> int:
 
     import gzip
     raw_files: dict[str, object] = {}
+    PID_CLASS: dict = {}
+    SCRIPT_LINKS: list = []
     raw_bytes: Counter = Counter()
     raw_written: Counter = Counter()
 
@@ -210,7 +324,8 @@ def main() -> int:
             fh = gzip.open(path, "wt", encoding="utf-8")
             raw_files[cls] = fh
         line = json.dumps(payload, ensure_ascii=False, default=str)
-        if raw_bytes[cls] + len(line) > MAX_RAW_BYTES_CLASS:
+        class_cap = CAP_OVERRIDES.get(cls, (0, MAX_RAW_BYTES_CLASS))[1]
+        if raw_bytes[cls] + len(line) > class_cap:
             return
         fh.write(line + "\n")
         raw_bytes[cls] += len(line)
@@ -235,9 +350,10 @@ def main() -> int:
             errors["script"] += 1
             continue
         inventory[cls] += 1
-        if cls not in TARGETS:
+        PID_CLASS[obj.path_id] = cls
+        if not is_target(cls):
             continue
-        if counts[cls] >= MAX_READ_PER_CLASS:
+        if counts[cls] >= CAP_OVERRIDES.get(cls, (MAX_READ_PER_CLASS, 0))[0]:
             skipped_cap[cls] += 1
             continue
         try:
@@ -256,6 +372,14 @@ def main() -> int:
         if go_name:
             flat["_gameobject"] = go_name
         records[cls].append((obj.path_id, flat))
+        # ghi lại mọi PPtr tên "*Script" để biết field nào trỏ tới class nào
+        for k, v in tree.items():
+            if not k.endswith("Script") or not isinstance(v, dict):
+                continue
+            tpid = v.get("m_PathID") or 0
+            if tpid:
+                SCRIPT_LINKS.append({"owner_class": cls, "owner_path_id": obj.path_id,
+                                     "field": k, "target_path_id": tpid})
         raw_write(cls, {"path_id": obj.path_id, "gameobject": go_name, "tree": tree})
         if counts[cls] <= MAX_DUMP_PER_CLASS:
             safe = f"{ns}.{cls}" if ns else cls
@@ -265,6 +389,21 @@ def main() -> int:
                 json.dump(tree, f, indent=1, default=str)
             if len(samples[cls]) < 2:
                 samples[cls].append(flat)
+
+    # ------------------------------------------------------- script link map
+    if SCRIPT_LINKS:
+        os.makedirs(RAW, exist_ok=True)
+        path = os.path.join(RAW, "script-links.jsonl.gz")
+        with gzip.open(path, "wt", encoding="utf-8") as fh:
+            for row in SCRIPT_LINKS:
+                row["target_class"] = PID_CLASS.get(row["target_path_id"], "")
+                fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+        print(f"script links: {len(SCRIPT_LINKS)} -> {path}")
+
+    try:
+        export_transform_tree(env)
+    except Exception as e:  # noqa: BLE001
+        print(f"transform tree failed (bỏ qua, các bảng khác vẫn dùng được): {e!r}")
 
     for fh in raw_files.values():
         try:

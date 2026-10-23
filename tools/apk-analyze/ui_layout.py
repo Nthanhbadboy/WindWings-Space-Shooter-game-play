@@ -316,10 +316,15 @@ def main() -> int:
     print(f"screen candidates: {len(candidates)}")
 
     skipped = Counter()
+    skipped_by_class: dict = {}
     for cls, head in candidates:
+        def _skip(reason: str) -> None:
+            skipped[reason] += 1
+            skipped_by_class.setdefault(cls, Counter())[reason] += 1
+
         go = _pptr(getattr(head, "m_GameObject", None))
         if go is None:
-            skipped["no gameobject"] += 1
+            _skip("no gameobject")
             continue
         # The screen MonoBehaviour lives on the panel root, so its GameObject IS
         # the subtree we want. (Climbing to the scene root instead produced the
@@ -331,7 +336,7 @@ def main() -> int:
         seen_roots.add(root_key)
         top_tr = transform_of(top)
         if top_tr is None:
-            skipped["no transform"] += 1
+            _skip("no transform")
             continue
         nodes = walk(top_tr, MAX_NODES)
         for n in nodes:
@@ -340,7 +345,7 @@ def main() -> int:
             for c in n["components"]:
                 comp_classes[c["class"]] += 1
         if not nodes:
-            skipped["empty subtree"] += 1
+            _skip("empty subtree")
             continue
         safe = "".join(c if c.isalnum() or c in "._-" else "_" for c in cls)[:80]
         fn = os.path.join(OUT_RAW, f"{safe}__{root_key}.json.gz")
@@ -352,7 +357,7 @@ def main() -> int:
         size = os.path.getsize(fn)
         if size > MAX_BYTES:
             os.remove(fn)
-            skipped["too big"] += 1
+            _skip("too big")
             continue
         index.append({"class": cls, "root_path_id": root_key, "nodes": len(nodes),
                       "text_nodes": sum(1 for n in nodes
@@ -361,6 +366,15 @@ def main() -> int:
                                      if any("Button" in c["class"] for c in n["components"])),
                       "bytes": size, "file": os.path.basename(fn)})
     print("skipped:", dict(skipped))
+    # Vì sao một màn có thể biến mất giữa hai lần chạy: trước đây chỉ có tổng,
+    # không biết màn nào bị bỏ. Ghi rõ theo từng class để lần sau đọc log là biết.
+    if skipped_by_class:
+        with open(os.path.join(OUT_RAW, "_skipped.csv"), "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["class", "reason", "count"])
+            for cls, reasons in sorted(skipped_by_class.items()):
+                for reason, n in reasons.items():
+                    w.writerow([cls, reason, n])
 
     with open(os.path.join(OUT_RAW, "_index.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=["class", "root_path_id", "nodes", "text_nodes",

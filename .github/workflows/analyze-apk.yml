@@ -6,6 +6,17 @@ on:
       - 'tools/apk-analyze/**'
       - '.github/workflows/analyze-apk.yml'
   workflow_dispatch:
+    inputs:
+      run_rea:
+        description: 'Chạy REA (tốn ~8 phút, 05-rea.md không chứa dữ liệu game)'
+        type: boolean
+        default: false
+
+# Audit của nhánh spec (§9.4): mỗi lần push tạo một run đầy đủ, nhiều run chạy
+# song song cùng nội dung = đốt compute gấp N lần. Giữ 1 run cho mỗi ref.
+concurrency:
+  group: analyze-apk-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -225,6 +236,9 @@ jobs:
         run: python3 tools/apk-analyze/data_pack.py --root . 2>&1 | tail -20
 
       - name: Build REA (mytechnotalent/rea) and analyze APK
+        # Chỉ chạy khi dispatch với run_rea=true: step này chiếm ~70% thời gian run
+        # mà 05-rea.md không chứa dữ liệu gameplay (đo ở docs/spec/PIPELINE_AUDIT.md §9.2).
+        if: github.event_name == 'workflow_dispatch' && inputs.run_rea
         continue-on-error: true
         run: |
           set -euo pipefail
@@ -325,6 +339,8 @@ jobs:
             REA_JSON=$(ls /tmp/apk/re-suspect.json /tmp/apk/parts/re-*.json 2>/dev/null | head -1 || true)
             if [ -n "${REA_JSON:-}" ] && [ -f "$REA_JSON" ]; then cp "$REA_JSON" docs/apk-analysis/05-rea.json; fi
             cat /tmp/apk/rea.log >> docs/apk-analysis/05-rea.md 2>/dev/null || true
+          elif [ -f docs/apk-analysis/05-rea.md ]; then
+            echo "REA bỏ qua lần này — giữ báo cáo cũ."
           else
             echo "REA report not produced." > docs/apk-analysis/05-rea.md
             cat /tmp/apk/rea.log 2>/dev/null >> docs/apk-analysis/05-rea.md || true
