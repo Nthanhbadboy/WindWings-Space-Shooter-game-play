@@ -5,7 +5,7 @@
 > trong thân hàm; còn rẽ nhánh (`b.ne`, `csel`…) nên đây là **nguyên liệu** để đọc công thức,
 > chưa phải công thức. Đích `bl` có `~` nghĩa là nằm giữa thân method khác (generic dùng chung).
 
-- method có trace: **425**, method đáng đọc trước: **44**
+- method có trace: **425**, method đáng đọc trước: **45**
 
 ## Đọc thử một method
 
@@ -27,10 +27,10 @@ và 0.1932 = 0.168 × 1.15, cuối cùng có `+ 1.0` kiểu `(1 + x)`. Chưa ch�
 |---|---|---|---|
 | `Enemy_Data_Balance.GetPVPPlayScore` | 5.0, 2.0, 1.0, 0.2, 0.5, 0.01, 2.3, 0.1 | fmul, fmul |  |
 | `Stage_Get_Datas.GetBonus` | 60.0, 50.0, 40.0, 50.0, 20.0, 40.0, 30.0, 15.0 | fmul, fmul, fmul |  |
+| `Player_Get_Datas.cctor` | 3.0, 10.0, 0.18, 2500.0, 18.0, 5.6, 0.4, 1.5 |  |  |
 | `Enemy_Data_Balance.GetArenaPlayScore` | 5.0, 2.0, 1.0, 0.2, 0.5, 300.0, 25.0, 65.0 | fmul |  |
 | `Enemy_Data_Balance.GetSurvivalScore` | 6.0, 3.0, 1.1, 0.2, 0.5, 500.0, 23.0, 40.0 |  |  |
 | `Player_Health.TakeDamage` | 100.0, 0.3, 90.0, 100.0, 100.0, 100.0, 1.0 | fadd, fsub, fsub | Player_Attack.IsInvisible, Player_Attack.SetInvisible, Player_Get_Datas.TimeToImmuneOneHit |
-| `Player_Get_Datas.cctor` | 3.0, 0.18, 18.0, 0.4, 1.5, 1.5, 0.9, 25.0 |  |  |
 | `Player_Get_Datas.GetTalentMegaBombDamage` | 3.9, 2.2, 3.0, 3.45 | fmul, fmul, fmul, fadd | Tech_Datas.GetTechStatPoints |
 | `Player_Ability.OnBulletDroneSkill6Destroyed` | 0.68, 17.0, 1.0, 0.25, 5.0, 10.0, 4.0 |  |  |
 | `Player_Get_Datas.GetSecretWeaponStatPercent` | 3.0, 0.666, 0.9, 1.3, 2.25, 2.86 | fmul | Tech_Datas.GetTechStatPoints |
@@ -64,7 +64,7 @@ và 0.1932 = 0.168 × 1.15, cuối cùng có `+ 1.0` kiểu `(1 + x)`. Chưa ch�
 | `Player_Get_Datas.GetTalentInvisibleRanger` |  | fmul, fadd, fmul | Tech_Datas.GetTechStatPoints |
 | `Player_Get_Datas.GetTalentStunRanger` |  | fmul, fmul, fadd | Tech_Datas.GetTechStatPoints |
 | `Player_Ingame.get_timeSuperPowerUp` | 100.0 | fadd, fmul |  |
-| `Player_Attack.get_dmgTechItem0` | 0.3, 100.0 |  | Player_Attack.get_maxLv, Player_Attack.get_playerIngameScript, Player_Ingame.get_Level |
+| `Player_Attack.ctor` | -1.0, 1.0 |  |  |
 
 ## Giới hạn
 

@@ -69,6 +69,7 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 | `Player_Ability` | `OnBulletDroneSkill6Destroyed` | 0.68 | `0x756ed0` |
 | `Player_Attack` | `get_dmgTechItem0` | 0.3 | `0x7570e0` |
 | `Player_Attack` | `ctor` | -1.0 | `0x757910` |
+| `Player_Attack` | `ctor` | 1.0 | `0x757914` |
 | `Player_Get_Datas` | `get_abi32Amount` | 20000.0 | `0x756d48` |
 | `Player_Get_Datas` | `stepLevel` | 0.168 | `0x756f34` |
 | `Player_Get_Datas` | `stepLevel` | 1.05 | `0x756d8c` |
