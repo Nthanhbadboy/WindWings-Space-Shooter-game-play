@@ -200,6 +200,14 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
         if insn.mnemonic == "ldr" and segs and md == 0xB7:
             m = re.search(r"\[(x\d+)(?:, #(0x[0-9a-f]+|\d+))?\]", insn.op_str)
             dst = insn.op_str.split(",")[0].strip()
+            if m and m.group(1) in adrp_pages and dst.startswith("w"):
+                va_i = adrp_pages[m.group(1)] + (int(m.group(2), 0) if m.group(2) else 0)
+                raw_i = va_read(blob, segs, va_i, 4)
+                if raw_i and len(raw_i) == 4:
+                    iv = struct.unpack("<i", raw_i)[0]
+                    if 1 <= iv < 100_000_000:
+                        consts.append({"kind": "int", "value": iv, "via": "ldr_pool_int",
+                                       "va": hex(va_i), "addr": hex(insn.address)})
             if m and m.group(1) in adrp_pages and dst.startswith(("s", "d")):
                 va = adrp_pages[m.group(1)] + (int(m.group(2), 0) if m.group(2) else 0)
                 raw = va_read(blob, segs, va, 4)
@@ -336,57 +344,67 @@ def annotate(insn_text: str, consts: list) -> None:
 PROLOGUE = ("sub ", "stp ", "ldp ", "add sp", "mov x29", "str x30", "ret", "nop")
 
 
-def getter_kind(insn_text: str):
-    """Classify a property getter.
-
-    Every getter in this build is wrapped in the IL2CPP static-init guard
-    (`ldrb w8,[guard]; tbnz w8,#0,tail; bl <init>; strb; <tail>`), so the old
-    "<=8 instructions, one load" test never matched anything. We cut the guard
-    and look at the tail instead:
-
-    * ``const`` — tail is ``mov w0, #imm`` / ``fmov s0, #imm`` -> design constant
-    * ``field`` — tail is a chain of loads into w0          -> live data (save/db)
-    * ``None``  — anything else (arithmetic, calls)
-    """
+def _tail_body(insn_text: str):
+    """Bỏ prologue + guard khởi tạo static (cắt tại `strb` ghi cờ cuối cùng)."""
     body = [l.split(":", 1)[-1].strip() for l in insn_text.split("\n") if l.strip()]
     body = [l for l in body if not l.startswith(PROLOGUE)]
     if not body:
-        return None
-    # cut the static-init guard at the last guard marker (`strb` writing the flag)
+        return []
     cut = max((i for i, l in enumerate(body) if l.startswith("strb")), default=-1)
-    tail = body[cut + 1:]
+    return body[cut + 1:]
+
+
+def _return_tail(tail):
+    """Chỉ phần *sau* lệnh `bl` cuối cùng.
+
+    `mov w0, #7 ; bl GetStatValue` là **tham số** của lời gọi, không phải giá trị
+    trả về — bản trước nhầm chỗ này nên báo sai `GetHpStatPercent = 7`.
+    """
+    last = max((i for i, l in enumerate(tail) if l.startswith("bl ")), default=-1)
+    return tail[last + 1:]
+
+
+def getter_kind(insn_text: str):
+    """Phân loại getter theo **phần đuôi thật sự trả về**.
+
+    * ``const``    — trả thẳng một hằng số (``mov w0, #imm`` / ``fmov s0, #k``)
+    * ``field``    — đọc field/array static rồi trả
+    * ``computed`` — có phép tính trước khi trả
+    * ``call``     — tail-call sang hàm khác (``b``), hoặc trả kết quả hàm khác
+    """
+    tail = _tail_body(insn_text)
     if not tail:
         return None
     tail = [l for l in tail if not l.startswith("mov x0, xzr")]
-    if any(re.match(r"(mov|fmov|movz)\s+(w0|s0),\s*#", l) for l in tail):
+    rt = _return_tail(tail)
+    if not rt:
+        return "call"
+    if any(re.match(r"(mov|movz)\s+w0,\s*#", l) for l in rt):
         return "const"
-    # mov w8, #0x42c80000 ; fmov s0, w8  -> cũng là hằng số (100.0f)
-    for l in tail:
+    if any(re.match(r"fmov\s+s0,\s*#-?[\d.]+", l) for l in rt):
+        return "const"
+    for l in rt:
         m = re.match(r"fmov\s+s0,\s*w(\d+)", l)
         if m and any(re.match(rf"mov\s+w{m.group(1)},\s*#0x[0-9a-f]{{6,8}}", x) for x in tail):
             return "const"
-    if any(re.match(r"(add|sub|mul|madd|msub|fadd|fsub|fmul|fdiv|scvtf|fcvtzs|cmp|csel)\b", l)
-           for l in tail):
+    if any(re.match(r"(add|sub|mul|madd|msub|fadd|fsub|fmul|fdiv|fnmul|scvtf|fcvtzs|csel)\b", l)
+           for l in rt):
         return "computed"
-    if any(l.startswith("b ") for l in tail):
+    if any(l.startswith("b ") for l in rt):
         return "call"
-    if any(re.match(r"ldr\s+(w0|s0),", l) for l in tail):
+    if any(re.match(r"ldr\s+(w0|s0),", l) for l in rt):
         return "field"
     return None
 
 
 def getter_value(insn_text: str):
-    """Giá trị mà getter trả về *thật sự*: chỉ đọc lệnh ghi vào `w0`/`s0`.
-
-    Bản cũ lấy "hằng số gần `ret` nhất" nên dính cả `mov w8,#0x40` dùng cho
-    phép dịch bit — sai. Ở đây chỉ nhận đúng thanh ghi trả về.
-    """
-    body = [l.split(":", 1)[-1].strip() for l in insn_text.split("\n") if l.strip()]
-    body = [l for l in body if not l.startswith(PROLOGUE)]
-    cut = max((i for i, l in enumerate(body) if l.startswith("strb")), default=-1)
-    tail = body[cut + 1:]
+    """Giá trị trả về thật sự — chỉ đọc lệnh ghi `w0`/`s0` nằm sau `bl` cuối."""
+    tail = _tail_body(insn_text)
+    if not tail:
+        return None
+    rt = _return_tail(tail)
     regs = {}
-    for l in tail:
+    for l in rt:
         m = re.match(r"mov\s+w(\d+),\s*#(0x[0-9a-f]+|\d+)", l)
         if m:
             if m.group(1) == "0":
@@ -399,9 +417,6 @@ def getter_value(insn_text: str):
         m = re.match(r"fmov\s+s0,\s*w(\d+)", l)
         if m and ("w" + m.group(1)) in regs:
             return _as_float(regs["w" + m.group(1)])
-        m = re.match(r"(?:mov|movz)\s+w0,\s*#(0x[0-9a-f]+|\d+)", l)
-        if m:
-            return int(m.group(1), 0)
     return None
 
 
@@ -479,8 +494,8 @@ def main() -> int:
             gkind = Counter(g["kind"] for g in getters)
             arith = sorted({(c.get("role"), c["value"]) for m in out for c in m["constants"]
                             if str(c.get("role", "")).startswith("arith")})
-            pool = [(m["method"], c["value"], c.get("va"))
-                    for m in out for c in m["constants"] if c.get("via") == "ldr_pool"]
+            pool = [(m["method"], c["value"], c.get("va"), c.get("via"))
+                    for m in out for c in m["constants"] if c.get("via", "").startswith("ldr_pool")]
             summary[cls] = {"methods": len(out), "floats": floats[:40], "ints": ints[:40],
                             "pool_floats": pool[:40],
                             "with_constants": sum(1 for m in out if m["constants"]),
@@ -516,20 +531,21 @@ def main() -> int:
               f"{total_kinds.get('field', 0)} | {total_kinds.get('computed', 0)} | "
               f"{total_kinds.get('call', 0)} | **{total_kinds.get('const', 0)}** |", ""]
 
-    pool_rows = [(cls, meth, val, va) for cls, info in sorted(summary.items())
-                 for meth, val, va in info.get("pool_floats", [])]
+    pool_rows = [(cls, meth, val, va, via) for cls, info in sorted(summary.items())
+                 for meth, val, va, via in info.get("pool_floats", [])]
     if pool_rows:
         lines += ["### Float đọc từ literal pool (`.rodata`) — số thật, không phải suy luận", "",
                   "`adrp xN, #page` + `ldr sM, [xN, #off]` trỏ vào bảng float trong `.rodata`;",
                   "script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte. Đây là hằng số **có thật trong file**,",
                   "nhưng ý nghĩa (hệ số nào) vẫn phải đọc thêm control flow.", "",
-                  "| class | method | giá trị | VA |", "|---|---|---:|---|"]
+                  "| class | method | giá trị | kiểu | VA |", "|---|---|---:|---|---|"]
         seen = set()
-        for cls, meth, val, va in pool_rows:
+        for cls, meth, val, va, via in pool_rows:
             if (cls, meth, val) in seen:
                 continue
             seen.add((cls, meth, val))
-            lines.append(f"| `{cls}` | `{meth}` | {val} | `{va}` |")
+            kind = "float" if via == "ldr_pool" else "int"
+            lines.append(f"| `{cls}` | `{meth}` | {val} | {kind} | `{va}` |")
         lines.append("")
 
     consts_rows = [(cls, g) for cls, info in sorted(summary.items())
