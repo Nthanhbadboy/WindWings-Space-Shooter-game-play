@@ -274,7 +274,7 @@ Với clone: **13,3 % súng copy được nhịp**, phần còn lại **phải t
 
 ## 7. `ScriptableObject` int mặc định 0 ⇒ `C4` ĐÓNG (áp luật 10)
 
-`Wave` là component (686 instance, 282 tên khác nhau). Field serialize của nó chỉ có **3**:
+`Wave` là component — **686** instance trên **281** GameObject wave khác nhau (nhánh dữ liệu có **282**, thêm 1 wave `unknown`). Field serialize của nó chỉ có **3**:
 `indexWave` (int), `startPoint` (PPtr), `endPoint` (PPtr).
 
 | Giá trị `indexWave` | Số instance |
