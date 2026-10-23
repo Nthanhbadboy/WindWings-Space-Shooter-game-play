@@ -259,15 +259,20 @@ def constants_in(code_off, size, blob, md, segs=None, base=None, name=""):
                 pass
         if insn.mnemonic == "bl":
             _tgt = insn.op_str.strip().lstrip("#")
-            if pending_bl[0] is not None and _idx - pending_bl[1] <= 8 \
-                    and "x1" in reg_token and pending_len[0] is not None:
+            if int(_tgt, 0) == 0x205b07c and "x1" in reg_token and pending_len[0] is not None:
                 _lo, _hi, _a = reg_token["x1"]
                 ia_events.append({"bl": _tgt, "len": pending_len[0],
                                   "slot_val": hex(_lo), "slot_hi": hex(_hi),
-                                  "a": hex(_a),
-                                  "addr": hex(insn.address)})
-            pending_bl[0] = _tgt
-            pending_bl[1] = _idx
+                                  "a": hex(_a), "addr": hex(insn.address),
+                                  "array_new_addr": pending_bl[0]})
+                pending_len[0] = None
+            if int(_tgt, 0) == 0x110d09c:
+                pending_bl[0] = hex(insn.address)
+            # AAPCS64: argument registers cannot survive calls. Callee-saved
+            # slot registers remain available for the following ldr x1,[xN].
+            for _reg in list(reg_token):
+                if int(_reg[1:]) <= 18:
+                    reg_token.pop(_reg, None)
         # ---- adrp/ldr: hằng số float nằm trong literal pool (.rodata)
         if insn.mnemonic == "adrp" and md == 0xB7:
             parts = [x.strip() for x in insn.op_str.split(",")]
@@ -434,14 +439,9 @@ def constants_in(code_off, size, blob, md, segs=None, base=None, name=""):
             consts.append({"kind": "int", "value": int(pf["bits"], 16), "via": "mov",
                            "bits": pf["bits"], "addr": pf["addr"],
                            "note": "bit-pattern giống float nhưng không thấy fmov — để riêng"})
-    # Lượt 2: wrapper InitializeArray = đích bl hay gặp nhất ngay sau array-new;
-    # token thật có kind 4 (FieldInfo/FieldRva trong encoding (kind<<29)|index).
-    if ia_events:
-        from collections import Counter as _C
-        _wrap = _C(e["bl"] for e in ia_events).most_common(1)[0][0]
-        for e in ia_events:
-            if e["bl"] == _wrap and (int(e["slot_val"], 16) >> 29) == 4:
-                consts.append({"kind": "init_array", **e})
+    for e in ia_events:
+        if (int(e["slot_val"], 16) >> 29) == 4:
+            consts.append({"kind": "init_array", **e})
     return consts, lines
 
 

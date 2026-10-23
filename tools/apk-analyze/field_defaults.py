@@ -269,7 +269,7 @@ def main() -> int:
                 if c.get("kind") != "init_array":
                     continue
                 src = int(c["slot_val"], 16) & 0x1FFFFFFF
-                if src % 2 == 0:
+                if src % 2 == 0 or (src - 1) // 2 >= _pfc:
                     _unres += 1
                     continue
                 fname = index2name.get(pfs + (src - 1) // 2)
@@ -280,7 +280,10 @@ def main() -> int:
                 raw = bytes.fromhex(ent["raw"])
                 n = len(raw) // 4
                 ints = list(struct.unpack(f"<{n}i", raw[:4 * n]))
-                vals.append({"addr": c["addr"], "len": c["len"],
+                vals.append({"addr": c["addr"], "array_new_addr": c.get("array_new_addr"),
+                             "field": fname, "raw": ent["raw"],
+                             "length_valid": 4*c["len"] <= len(raw) < 4*c["len"]+16,
+                             "len": c["len"],
                              "ints": ints[:c["len"]]})
             if vals:
                 resolved[f"{cls}.{m['method']}"] = vals
