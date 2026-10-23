@@ -7,127 +7,127 @@
 Đây là layout **trong prefab**. Runtime (layout group, safe area, code đặt vị trí) có thể
 khác — chưa đối chiếu screenshot.
 
-- file: **43506**, màn (class): **114**, node: **6,672,130**
-- dòng text/key: **929,159** (CSV.gz: `datas/ui_text_keys.csv.gz`)
+- file: **44232**, màn (class): **114**, node: **6,775,005**
+- dòng text/key: **945,320** (CSV.gz: `datas/ui_text_keys.csv.gz`)
 
 ## Theo màn
 
 | màn | file | node (max) | text | key | button | sprite | bbox x | bbox y |
 |---|---:|---:|---:|---:|---:|---:|---|---|
-| `Board_Maps` | 63 | 6,000 | 345 | 95 | 690 | 206 | -12.39…12.24 | -22.6…676.38 |
-| `Board_Shop` | 55 | 3,898 | 204 | 51 | 346 | 149 | -6.46…5.0 | -17.22…36.98 |
-| `Board_PVP` | 61 | 3,051 | 207 | 72 | 329 | 162 | -7.15…16.09 | -60.21…8.9 |
-| `Board_SelectBoss` | 56 | 2,692 | 6 | 2 | 34 | 235 | -17.24…11.76 | -9.6…204.29 |
-| `Board_FightBoss` | 56 | 2,649 | 67 | 16 | 94 | 303 | -14.22…14.8 | -44.18…47.26 |
-| `Board_Arena` | 58 | 2,104 | 170 | 65 | 241 | 234 | -5.37…5.81 | -51.84…8.8 |
-| `Tab_Boss` | 965 | 2,035 | 7 | 2 | 2 | 255 | -14.22…29.63 | -44.18…47.26 |
-| `Board_BigShop` | 59 | 2,000 | 29 | 0 | 26 | 85 | None…None | None…None |
-| `Board_Ranks` | 116 | 2,000 | 142 | 63 | 185 | 124 | None…None | None…None |
-| `Board_ShopCoins` | 58 | 2,000 | 26 | 2 | 18 | 91 | None…None | None…None |
-| `Popup_AbilityEvent1` | 245 | 2,000 | 7 | 5 | 10 | 114 | None…None | None…None |
-| `Popup_Ban` | 581 | 2,000 | 4 | 4 | 6 | 231 | None…None | None…None |
-| `Popup_BuyItem` | 624 | 2,000 | 11 | 5 | 16 | 208 | None…None | None…None |
-| `Popup_BuyMoreCoins` | 979 | 2,000 | 23 | 7 | 20 | 258 | None…None | None…None |
-| `Popup_BuyMoreGems` | 1185 | 2,000 | 36 | 6 | 30 | 257 | None…None | None…None |
-| `Popup_ChooseVersionDatas` | 631 | 2,000 | 7 | 4 | 6 | 212 | None…None | None…None |
-| `Popup_CrossLinks` | 291 | 2,000 | 1 | 1 | 1 | 106 | None…None | None…None |
-| `Popup_Fotification` | 118 | 2,000 | 19 | 10 | 22 | 85 | None…None | None…None |
-| `Popup_JoinRank` | 118 | 2,000 | 5 | 3 | 6 | 114 | None…None | None…None |
-| `Popup_Notices` | 26501 | 2,000 | 189 | 80 | 30 | 257 | None…None | None…None |
-| `Popup_PVPRewards` | 114 | 2,000 | 6 | 3 | 4 | 122 | None…None | None…None |
-| `Popup_PVPShopExchange` | 58 | 2,000 | 6 | 0 | 8 | 125 | None…None | None…None |
-| `Popup_Profile` | 587 | 2,000 | 36 | 19 | 28 | 214 | None…None | None…None |
-| `Popup_PvPRankings` | 165 | 2,000 | 44 | 24 | 36 | 119 | None…None | None…None |
-| `Popup_SeasonRewards` | 58 | 2,000 | 4 | 1 | 2 | 125 | None…None | None…None |
-| `Popup_WatchVideosOld` | 116 | 2,000 | 15 | 9 | 23 | 85 | None…None | None…None |
-| `Popup_WatchVideos` | 122 | 2,000 | 78 | 26 | 93 | 88 | None…None | None…None |
-| `Tab_Button` | 355 | 2,000 | 7 | 6 | 3 | 92 | None…None | None…None |
-| `Tab_Manager` | 119 | 2,000 | 7 | 6 | 14 | 87 | None…None | None…None |
-| `Board_BattlePass` | 52 | 1,940 | 44 | 17 | 141 | 88 | -7.23…5.13 | -94.51…8.19 |
-| `Board_Players` | 60 | 1,915 | 119 | 31 | 160 | 140 | -7.65…13.35 | -9.6…14.69 |
-| `Tab_BattlePass` | 1686 | 1,865 | 7 | 1 | 4 | 87 | None…None | None…None |
-| `Popup_ArenaInfo` | 114 | 1,786 | 7 | 2 | 12 | 223 | None…None | None…None |
-| `Popup_PremiumDailyRewards` | 574 | 1,689 | 20 | 6 | 8 | 84 | None…None | None…None |
-| `Popup_InfoDevices` | 61 | 1,603 | 4 | 2 | 4 | 119 | None…None | None…None |
-| `Board_TechLab` | 58 | 1,569 | 74 | 13 | 160 | 118 | -10.04…9.42 | -9.6…14.0 |
-| `Popup_ArenaShopExchange` | 62 | 1,554 | 6 | 0 | 8 | 202 | None…None | None…None |
-| `Board_Survival` | 118 | 1,455 | 143 | 59 | 177 | 121 | -5.37…5.81 | -21.98…8.8 |
-| `Popup_DroneCraft` | 122 | 1,129 | 16 | 2 | 8 | 121 | None…None | None…None |
-| `Board_Drones` | 57 | 1,115 | 94 | 21 | 124 | 140 | -6.27…4.75 | -9.6…7.5 |
-| `Board_Combo` | 57 | 1,111 | 45 | 25 | 125 | 94 | -12.41…8.48 | -50.29…8.25 |
-| `Board_Begin` | 123 | 1,101 | 61 | 17 | 110 | 117 | -5.22…4.51 | -17.6…11.46 |
-| `Board_BattlePassPro` | 57 | 1,067 | 68 | 23 | 87 | 107 | -5.42…12.58 | -22.6…10.16 |
-| `Board_WinnerBenefits` | 57 | 1,065 | 80 | 21 | 106 | 100 | -4.86…5.0 | -7.37…7.94 |
-| `Board_Reborn_IAP` | 172 | 1,025 | 30 | 7 | 30 | 115 | None…None | None…None |
-| `Board_Talents` | 172 | 984 | 4 | 0 | 20 | 104 | None…None | None…None |
-| `Board_MiniCombo` | 51 | 983 | 45 | 25 | 117 | 93 | -12.41…7.92 | -50.29…8.25 |
-| `Board_Setting` | 53 | 980 | 58 | 42 | 135 | 87 | -4.5…4.76 | -25.75…20.0 |
-| `Tab_BattlePassMission` | 182 | 979 | 12 | 2 | 8 | 99 | None…None | None…None |
-| `Popup_ChangeMissions` | 61 | 962 | 3 | 2 | 4 | 106 | None…None | None…None |
-| `Board_GiftLogin` | 61 | 955 | 63 | 23 | 57 | 87 | -4.96…5.12 | -9.48…8.15 |
-| `Popup_BattlePassLevelUp` | 61 | 952 | 3 | 1 | 2 | 97 | None…None | None…None |
-| `Board_Endgame` | 56 | 931 | 90 | 38 | 102 | 126 | -5.83…5.21 | -9.6…9.6 |
-| `Board_Reborn` | 55 | 917 | 89 | 28 | 120 | 117 | -5.24…4.55 | -9.6…9.35 |
-| `Board_Challange` | 63 | 866 | 77 | 22 | 106 | 106 | -5.23…10.2 | -9.6…7.25 |
-| `Popup_LuckyStar` | 57 | 848 | 10 | 0 | 8 | 112 | None…None | None…None |
-| `Popup_TryShip` | 231 | 835 | 8 | 3 | 2 | 83 | None…None | None…None |
-| `Board_Stage` | 57 | 832 | 74 | 21 | 108 | 106 | -5.1…5.1 | -9.6…7.7 |
-| `Popup_BuySpeed` | 57 | 816 | 12 | 4 | 5 | 79 | None…None | None…None |
-| `Board_Vip` | 63 | 810 | 53 | 11 | 54 | 84 | -5.96…5.21 | -8.32…8.78 |
-| `Popup_About` | 57 | 766 | 1 | 1 | 2 | 80 | None…None | None…None |
-| `Board_UserProfile` | 54 | 757 | 53 | 31 | 100 | 82 | -5.37…5.81 | -21.98…8.8 |
-| `Popup_Community` | 53 | 745 | 4 | 4 | 6 | 81 | None…None | None…None |
-| `Popup_ShipSalePack` | 61 | 744 | 16 | 7 | 14 | 85 | -13.25…7.75 | -5.92…8.5 |
-| `Popup_SelectBenefits` | 60 | 740 | 7 | 2 | 11 | 86 | None…None | None…None |
-| `Board_QuestRewards` | 58 | 729 | 50 | 11 | 54 | 78 | -4.5…4.76 | -7.69…7.5 |
-| `Popup_SelectShipCombo` | 179 | 724 | 8 | 6 | 10 | 82 | None…None | None…None |
-| `Board_Profile` | 167 | 716 | 25 | 17 | 32 | 82 | None…None | None…None |
-| `Popup_ChangeLanguages` | 112 | 714 | 3 | 2 | 42 | 76 | None…None | None…None |
-| `Popup_SelectItemCombo` | 162 | 704 | 14 | 8 | 20 | 77 | None…None | None…None |
-| `Popup_GeneralSettings` | 60 | 696 | 9 | 9 | 10 | 71 | None…None | None…None |
-| `Popup_BuyMoreChanceAbility` | 62 | 683 | 15 | 6 | 16 | 84 | None…None | None…None |
-| `Board_ShopEnergy` | 57 | 645 | 64 | 18 | 66 | 80 | -4.86…4.33 | -7.37…7.94 |
-| `Board_EventSeasonPass` | 121 | 601 | 42 | 17 | 58 | 77 | -6.22…5.34 | -22.6…8.71 |
-| `Popup_HolidayGift` | 115 | 581 | 31 | 10 | 19 | 69 | -4.82…4.76 | -7.0…8.0 |
-| `Popup_WeekSales` | 55 | 507 | 24 | 13 | 25 | 55 | -5.95…4.76 | -7.0…8.0 |
-| `Popup_Rename` | 57 | 495 | 5 | 2 | 4 | 71 | None…None | None…None |
-| `Popup_ChangeAvatar` | 60 | 459 | 2 | 2 | 52 | 62 | None…None | None…None |
-| `Popup_Exchange` | 118 | 434 | 11 | 5 | 16 | 55 | None…None | None…None |
-| `Board_Quest` | 60 | 384 | 26 | 12 | 78 | 23 | -4.58…3.98 | -9.48…8.02 |
-| `Board_AccountSettings` | 54 | 374 | 26 | 12 | 34 | 58 | -3.99…4.14 | -4.65…5.4 |
-| `Board_LinkAccount` | 55 | 329 | 6 | 0 | 8 | 58 | None…None | None…None |
-| `Popup_VideoCards` | 58 | 328 | 38 | 12 | 34 | 76 | -4.86…4.55 | -8.05…9.1 |
-| `Popup_EventLevelUp` | 126 | 323 | 3 | 2 | 0 | 55 | None…None | None…None |
-| `Board_ShopGems` | 55 | 320 | 42 | 4 | 30 | 33 | -4.39…4.5 | -17.22…7.11 |
-| `Popup_UpgradeTechIAP` | 60 | 319 | 17 | 5 | 14 | 53 | -4.5…7.2 | -7.26…7.42 |
-| `Board_Items` | 58 | 314 | 8 | 1 | 68 | 22 | -4.67…5.22 | -15.1…7.45 |
-| `Popup_FirstPurchase` | 59 | 304 | 12 | 6 | 8 | 60 | -4.5…4.76 | -7.0…8.0 |
-| `Tab_Item` | 352 | 299 | 1 | 0 | 10 | 21 | None…None | None…None |
-| `Board_Home` | 60 | 258 | 17 | 11 | 36 | 48 | -4.45…8.46 | -7.77…8.15 |
-| `Board_Devices` | 54 | 216 | 35 | 17 | 62 | 32 | -5.0…5.0 | -9.6…10.0 |
-| `Board_Pause` | 54 | 212 | 33 | 25 | 26 | 49 | -5.24…4.49 | -9.6…9.6 |
-| `Board_BlackBox` | 55 | 185 | 20 | 12 | 48 | 31 | -4.76…4.26 | -9.6…10.0 |
-| `Popup_FirstGiftFree` | 55 | 175 | 8 | 5 | 4 | 15 | -4.78…4.76 | -7.0…8.0 |
-| `Popup_NewPlayer` | 112 | 163 | 6 | 1 | 2 | 36 | -0.91…0.91 | -5.0…5.18 |
-| `Board_RoomPVP` | 62 | 135 | 3 | 0 | 2 | 10 | -10.34…10.34 | -8.75…5.52 |
-| `Board_SellDevices` | 57 | 134 | 22 | 11 | 44 | 20 | -4.76…4.43 | -9.6…15.38 |
-| `Popup_QuitEvent` | 182 | 106 | 7 | 5 | 6 | 24 | None…None | None…None |
-| `Popup_CheatTime` | 56 | 95 | 15 | 10 | 24 | 13 | -2.2…4.11 | -3.86…5.2 |
-| `Popup_Penalty` | 61 | 93 | 11 | 8 | 18 | 13 | None…None | None…None |
-| `Popup_PVPContinue` | 120 | 87 | 11 | 6 | 18 | 19 | -3.85…4.42 | -5.5…6.1 |
-| `Popup_BuyEnergy` | 56 | 69 | 10 | 4 | 8 | 15 | -3.87…4.33 | -3.25…4.5 |
-| `Tab_BattlePassPro` | 52 | 61 | 7 | 1 | 4 | 20 | -3.96…4.17 | -0.91…1.0 |
-| `Tab_LogIn` | 58 | 61 | 7 | 2 | 2 | 11 | -4.96…4.21 | -3.16…0.0 |
-| `Popup_Rate` | 59 | 44 | 3 | 2 | 9 | 8 | -3.0…4.08 | -2.45…4.5 |
-| `Popup_TrialExpried` | 59 | 32 | 6 | 2 | 4 | 10 | -0.04…4.41 | -5.0…5.97 |
-| `Board_Chapters` | 59 | 30 | 4 | 1 | 6 | 8 | -4.15…4.59 | -9.6…5.94 |
-| `Popup_PremiumExpired` | 57 | 30 | 8 | 4 | 6 | 6 | -1.8…4.26 | -2.85…5.45 |
-| `Popup_ConfirmRate` | 56 | 26 | 5 | 5 | 8 | 7 | 0.0…4.08 | -3.0…5.5 |
-| `Popup_QuitGame` | 58 | 19 | 4 | 4 | 6 | 5 | -2.5…3.7 | -1.8…3.1 |
-| `Popup_Update` | 55 | 19 | 4 | 3 | 4 | 6 | -3.63…2.25 | -2.0…3.4 |
-| `Popup_InrerestExpired` | 57 | 18 | 3 | 2 | 4 | 8 | -0.21…4.12 | -3.8…4.07 |
-| `Popup_Support` | 61 | 18 | 3 | 3 | 4 | 6 | 0.0…4.08 | -2.27…4.5 |
-| `Board_Cards` | 62 | 3 | 1 | 1 | 0 | 1 | 0.0…0.0 | 0.0…0.0 |
+| `Board_Maps` | 64 | 6,000 | 345 | 95 | 690 | 206 | -12.39…12.24 | -22.6…676.38 |
+| `Board_Shop` | 56 | 3,898 | 204 | 51 | 346 | 149 | -6.46…5.0 | -17.22…36.98 |
+| `Board_PVP` | 62 | 3,051 | 207 | 72 | 329 | 162 | -7.15…16.09 | -60.21…8.9 |
+| `Board_SelectBoss` | 57 | 2,692 | 6 | 2 | 34 | 235 | -17.24…11.76 | -9.6…204.29 |
+| `Board_FightBoss` | 57 | 2,649 | 67 | 16 | 94 | 303 | -14.22…14.8 | -44.18…47.26 |
+| `Board_Arena` | 59 | 2,104 | 170 | 65 | 241 | 234 | -5.37…5.81 | -51.84…8.8 |
+| `Tab_Boss` | 982 | 2,035 | 7 | 2 | 2 | 255 | -14.22…29.63 | -44.18…47.26 |
+| `Board_BigShop` | 60 | 2,000 | 29 | 0 | 26 | 85 | None…None | None…None |
+| `Board_Ranks` | 118 | 2,000 | 142 | 63 | 185 | 124 | None…None | None…None |
+| `Board_ShopCoins` | 59 | 2,000 | 26 | 2 | 18 | 91 | None…None | None…None |
+| `Popup_AbilityEvent1` | 249 | 2,000 | 7 | 5 | 10 | 114 | None…None | None…None |
+| `Popup_Ban` | 591 | 2,000 | 4 | 4 | 6 | 231 | None…None | None…None |
+| `Popup_BuyItem` | 635 | 2,000 | 11 | 5 | 16 | 208 | None…None | None…None |
+| `Popup_BuyMoreCoins` | 996 | 2,000 | 23 | 7 | 20 | 258 | None…None | None…None |
+| `Popup_BuyMoreGems` | 1204 | 2,000 | 36 | 6 | 30 | 257 | None…None | None…None |
+| `Popup_ChooseVersionDatas` | 642 | 2,000 | 7 | 4 | 6 | 212 | None…None | None…None |
+| `Popup_CrossLinks` | 296 | 2,000 | 1 | 1 | 1 | 106 | None…None | None…None |
+| `Popup_Fotification` | 120 | 2,000 | 19 | 10 | 22 | 85 | None…None | None…None |
+| `Popup_JoinRank` | 120 | 2,000 | 5 | 3 | 6 | 114 | None…None | None…None |
+| `Popup_Notices` | 26934 | 2,000 | 189 | 80 | 30 | 257 | None…None | None…None |
+| `Popup_PVPRewards` | 116 | 2,000 | 6 | 3 | 4 | 122 | None…None | None…None |
+| `Popup_PVPShopExchange` | 59 | 2,000 | 6 | 0 | 8 | 125 | None…None | None…None |
+| `Popup_Profile` | 597 | 2,000 | 36 | 19 | 28 | 214 | None…None | None…None |
+| `Popup_PvPRankings` | 168 | 2,000 | 44 | 24 | 36 | 119 | None…None | None…None |
+| `Popup_SeasonRewards` | 59 | 2,000 | 4 | 1 | 2 | 125 | None…None | None…None |
+| `Popup_WatchVideosOld` | 118 | 2,000 | 15 | 9 | 23 | 85 | None…None | None…None |
+| `Popup_WatchVideos` | 124 | 2,000 | 78 | 26 | 93 | 88 | None…None | None…None |
+| `Tab_Button` | 361 | 2,000 | 7 | 6 | 3 | 92 | None…None | None…None |
+| `Tab_Manager` | 121 | 2,000 | 7 | 6 | 14 | 87 | None…None | None…None |
+| `Board_BattlePass` | 53 | 1,940 | 44 | 17 | 141 | 88 | -7.23…5.13 | -94.51…8.19 |
+| `Board_Players` | 61 | 1,915 | 119 | 31 | 160 | 140 | -7.65…13.35 | -9.6…14.69 |
+| `Tab_BattlePass` | 1716 | 1,865 | 7 | 1 | 4 | 87 | None…None | None…None |
+| `Popup_ArenaInfo` | 116 | 1,786 | 7 | 2 | 12 | 223 | None…None | None…None |
+| `Popup_PremiumDailyRewards` | 584 | 1,689 | 20 | 6 | 8 | 84 | None…None | None…None |
+| `Popup_InfoDevices` | 62 | 1,603 | 4 | 2 | 4 | 119 | None…None | None…None |
+| `Board_TechLab` | 59 | 1,569 | 74 | 13 | 160 | 118 | -10.04…9.42 | -9.6…14.0 |
+| `Popup_ArenaShopExchange` | 63 | 1,554 | 6 | 0 | 8 | 202 | None…None | None…None |
+| `Board_Survival` | 120 | 1,455 | 143 | 59 | 177 | 121 | -5.37…5.81 | -21.98…8.8 |
+| `Popup_DroneCraft` | 124 | 1,129 | 16 | 2 | 8 | 121 | None…None | None…None |
+| `Board_Drones` | 58 | 1,115 | 94 | 21 | 124 | 140 | -6.27…4.75 | -9.6…7.5 |
+| `Board_Combo` | 58 | 1,111 | 45 | 25 | 125 | 94 | -12.41…8.48 | -50.29…8.25 |
+| `Board_Begin` | 125 | 1,101 | 61 | 17 | 110 | 117 | -5.22…4.51 | -17.6…11.46 |
+| `Board_BattlePassPro` | 58 | 1,067 | 68 | 23 | 87 | 107 | -5.42…12.58 | -22.6…10.16 |
+| `Board_WinnerBenefits` | 58 | 1,065 | 80 | 21 | 106 | 100 | -4.86…5.0 | -7.37…7.94 |
+| `Board_Reborn_IAP` | 175 | 1,025 | 30 | 7 | 30 | 115 | None…None | None…None |
+| `Board_Talents` | 175 | 984 | 4 | 0 | 20 | 104 | None…None | None…None |
+| `Board_MiniCombo` | 52 | 983 | 45 | 25 | 117 | 93 | -12.41…7.92 | -50.29…8.25 |
+| `Board_Setting` | 54 | 980 | 58 | 42 | 135 | 87 | -4.5…4.76 | -25.75…20.0 |
+| `Tab_BattlePassMission` | 185 | 979 | 12 | 2 | 8 | 99 | None…None | None…None |
+| `Popup_ChangeMissions` | 62 | 962 | 3 | 2 | 4 | 106 | None…None | None…None |
+| `Board_GiftLogin` | 62 | 955 | 63 | 23 | 57 | 87 | -4.96…5.12 | -9.48…8.15 |
+| `Popup_BattlePassLevelUp` | 62 | 952 | 3 | 1 | 2 | 97 | None…None | None…None |
+| `Board_Endgame` | 57 | 931 | 90 | 38 | 102 | 126 | -5.83…5.21 | -9.6…9.6 |
+| `Board_Reborn` | 56 | 917 | 89 | 28 | 120 | 117 | -5.24…4.55 | -9.6…9.35 |
+| `Board_Challange` | 64 | 866 | 77 | 22 | 106 | 106 | -5.23…10.2 | -9.6…7.25 |
+| `Popup_LuckyStar` | 58 | 848 | 10 | 0 | 8 | 112 | None…None | None…None |
+| `Popup_TryShip` | 235 | 835 | 8 | 3 | 2 | 83 | None…None | None…None |
+| `Board_Stage` | 58 | 832 | 74 | 21 | 108 | 106 | -5.1…5.1 | -9.6…7.7 |
+| `Popup_BuySpeed` | 58 | 816 | 12 | 4 | 5 | 79 | None…None | None…None |
+| `Board_Vip` | 64 | 810 | 53 | 11 | 54 | 84 | -5.96…5.21 | -8.32…8.78 |
+| `Popup_About` | 58 | 766 | 1 | 1 | 2 | 80 | None…None | None…None |
+| `Board_UserProfile` | 55 | 757 | 53 | 31 | 100 | 82 | -5.37…5.81 | -21.98…8.8 |
+| `Popup_Community` | 54 | 745 | 4 | 4 | 6 | 81 | None…None | None…None |
+| `Popup_ShipSalePack` | 62 | 744 | 16 | 7 | 14 | 85 | -13.25…7.75 | -5.92…8.5 |
+| `Popup_SelectBenefits` | 61 | 740 | 7 | 2 | 11 | 86 | None…None | None…None |
+| `Board_QuestRewards` | 59 | 729 | 50 | 11 | 54 | 78 | -4.5…4.76 | -7.69…7.5 |
+| `Popup_SelectShipCombo` | 182 | 724 | 8 | 6 | 10 | 82 | None…None | None…None |
+| `Board_Profile` | 170 | 716 | 25 | 17 | 32 | 82 | None…None | None…None |
+| `Popup_ChangeLanguages` | 114 | 714 | 3 | 2 | 42 | 76 | None…None | None…None |
+| `Popup_SelectItemCombo` | 165 | 704 | 14 | 8 | 20 | 77 | None…None | None…None |
+| `Popup_GeneralSettings` | 61 | 696 | 9 | 9 | 10 | 71 | None…None | None…None |
+| `Popup_BuyMoreChanceAbility` | 63 | 683 | 15 | 6 | 16 | 84 | None…None | None…None |
+| `Board_ShopEnergy` | 58 | 645 | 64 | 18 | 66 | 80 | -4.86…4.33 | -7.37…7.94 |
+| `Board_EventSeasonPass` | 123 | 601 | 42 | 17 | 58 | 77 | -6.22…5.34 | -22.6…8.71 |
+| `Popup_HolidayGift` | 117 | 581 | 31 | 10 | 19 | 69 | -4.82…4.76 | -7.0…8.0 |
+| `Popup_WeekSales` | 56 | 507 | 24 | 13 | 25 | 55 | -5.95…4.76 | -7.0…8.0 |
+| `Popup_Rename` | 58 | 495 | 5 | 2 | 4 | 71 | None…None | None…None |
+| `Popup_ChangeAvatar` | 61 | 459 | 2 | 2 | 52 | 62 | None…None | None…None |
+| `Popup_Exchange` | 120 | 434 | 11 | 5 | 16 | 55 | None…None | None…None |
+| `Board_Quest` | 61 | 384 | 26 | 12 | 78 | 23 | -4.58…3.98 | -9.48…8.02 |
+| `Board_AccountSettings` | 55 | 374 | 26 | 12 | 34 | 58 | -3.99…4.14 | -4.65…5.4 |
+| `Board_LinkAccount` | 56 | 329 | 6 | 0 | 8 | 58 | None…None | None…None |
+| `Popup_VideoCards` | 59 | 328 | 38 | 12 | 34 | 76 | -4.86…4.55 | -8.05…9.1 |
+| `Popup_EventLevelUp` | 128 | 323 | 3 | 2 | 0 | 55 | None…None | None…None |
+| `Board_ShopGems` | 56 | 320 | 42 | 4 | 30 | 33 | -4.39…4.5 | -17.22…7.11 |
+| `Popup_UpgradeTechIAP` | 61 | 319 | 17 | 5 | 14 | 53 | -4.5…7.2 | -7.26…7.42 |
+| `Board_Items` | 59 | 314 | 8 | 1 | 68 | 22 | -4.67…5.22 | -15.1…7.45 |
+| `Popup_FirstPurchase` | 60 | 304 | 12 | 6 | 8 | 60 | -4.5…4.76 | -7.0…8.0 |
+| `Tab_Item` | 358 | 299 | 1 | 0 | 10 | 21 | None…None | None…None |
+| `Board_Home` | 61 | 258 | 17 | 11 | 36 | 48 | -4.45…8.46 | -7.77…8.15 |
+| `Board_Devices` | 55 | 216 | 35 | 17 | 62 | 32 | -5.0…5.0 | -9.6…10.0 |
+| `Board_Pause` | 55 | 212 | 33 | 25 | 26 | 49 | -5.24…4.49 | -9.6…9.6 |
+| `Board_BlackBox` | 56 | 185 | 20 | 12 | 48 | 31 | -4.76…4.26 | -9.6…10.0 |
+| `Popup_FirstGiftFree` | 56 | 175 | 8 | 5 | 4 | 15 | -4.78…4.76 | -7.0…8.0 |
+| `Popup_NewPlayer` | 114 | 163 | 6 | 1 | 2 | 36 | -0.91…0.91 | -5.0…5.18 |
+| `Board_RoomPVP` | 63 | 135 | 3 | 0 | 2 | 10 | -10.34…10.34 | -8.75…5.52 |
+| `Board_SellDevices` | 58 | 134 | 22 | 11 | 44 | 20 | -4.76…4.43 | -9.6…15.38 |
+| `Popup_QuitEvent` | 185 | 106 | 7 | 5 | 6 | 24 | None…None | None…None |
+| `Popup_CheatTime` | 57 | 95 | 15 | 10 | 24 | 13 | -2.2…4.11 | -3.86…5.2 |
+| `Popup_Penalty` | 62 | 93 | 11 | 8 | 18 | 13 | None…None | None…None |
+| `Popup_PVPContinue` | 122 | 87 | 11 | 6 | 18 | 19 | -3.85…4.42 | -5.5…6.1 |
+| `Popup_BuyEnergy` | 57 | 69 | 10 | 4 | 8 | 15 | -3.87…4.33 | -3.25…4.5 |
+| `Tab_BattlePassPro` | 53 | 61 | 7 | 1 | 4 | 20 | -3.96…4.17 | -0.91…1.0 |
+| `Tab_LogIn` | 59 | 61 | 7 | 2 | 2 | 11 | -4.96…4.21 | -3.16…0.0 |
+| `Popup_Rate` | 60 | 44 | 3 | 2 | 9 | 8 | -3.0…4.08 | -2.45…4.5 |
+| `Popup_TrialExpried` | 60 | 32 | 6 | 2 | 4 | 10 | -0.04…4.41 | -5.0…5.97 |
+| `Board_Chapters` | 60 | 30 | 4 | 1 | 6 | 8 | -4.15…4.59 | -9.6…5.94 |
+| `Popup_PremiumExpired` | 58 | 30 | 8 | 4 | 6 | 6 | -1.8…4.26 | -2.85…5.45 |
+| `Popup_ConfirmRate` | 57 | 26 | 5 | 5 | 8 | 7 | 0.0…4.08 | -3.0…5.5 |
+| `Popup_QuitGame` | 59 | 19 | 4 | 4 | 6 | 5 | -2.5…3.7 | -1.8…3.1 |
+| `Popup_Update` | 56 | 19 | 4 | 3 | 4 | 6 | -3.63…2.25 | -2.0…3.4 |
+| `Popup_InrerestExpired` | 58 | 18 | 3 | 2 | 4 | 8 | -0.21…4.12 | -3.8…4.07 |
+| `Popup_Support` | 62 | 18 | 3 | 3 | 4 | 6 | 0.0…4.08 | -2.27…4.5 |
+| `Board_Cards` | 63 | 3 | 1 | 1 | 0 | 1 | 0.0…0.0 | 0.0…0.0 |
 
 ## Hệ toạ độ (suy ra từ bbox, mức C)
 
@@ -148,31 +148,31 @@ khác — chưa đối chiếu screenshot.
 
 | màn | dòng text | có key | % có key |
 |---|---:|---:|---:|
-| `Popup_Notices` | 213684 | 60607 | 28% |
-| `Popup_BuyMoreGems` | 71499 | 7056 | 10% |
-| `Popup_BuyMoreCoins` | 36267 | 8083 | 22% |
-| `Board_Shop` | 34593 | 5373 | 16% |
-| `Board_Maps` | 31657 | 6353 | 20% |
-| `Board_Ranks` | 30459 | 7659 | 25% |
-| `Board_Survival` | 28032 | 6906 | 25% |
-| `Board_PVP` | 27315 | 5528 | 20% |
-| `Popup_Profile` | 27069 | 8383 | 31% |
-| `Popup_WatchVideos` | 21909 | 3908 | 18% |
-| `Popup_PremiumDailyRewards` | 20244 | 1912 | 9% |
-| `Board_Arena` | 17540 | 3770 | 21% |
-| `Tab_BattlePass` | 14914 | 2526 | 17% |
-| `Board_BattlePass` | 14405 | 2297 | 16% |
-| `Board_Players` | 13638 | 2572 | 19% |
-| `Board_EventSeasonPass` | 11654 | 2363 | 20% |
-| `Board_Begin` | 11091 | 1577 | 14% |
-| `Board_Reborn_IAP` | 10891 | 1004 | 9% |
-| `Popup_BuyItem` | 10742 | 2885 | 27% |
-| `Board_Challange` | 9755 | 1722 | 18% |
-| `Board_TechLab` | 9710 | 1242 | 13% |
-| `Popup_ChooseVersionDatas` | 9602 | 2052 | 21% |
-| `Board_WinnerBenefits` | 9565 | 1966 | 21% |
-| `Board_Reborn` | 9443 | 1962 | 21% |
-| `Popup_PvPRankings` | 9276 | 2769 | 30% |
+| `Popup_Notices` | 217341 | 61649 | 28% |
+| `Popup_BuyMoreGems` | 72691 | 7176 | 10% |
+| `Popup_BuyMoreCoins` | 36930 | 8228 | 22% |
+| `Board_Shop` | 35198 | 5470 | 16% |
+| `Board_Maps` | 32212 | 6458 | 20% |
+| `Board_Ranks` | 30961 | 7789 | 25% |
+| `Board_Survival` | 28534 | 7030 | 25% |
+| `Board_PVP` | 27740 | 5615 | 20% |
+| `Popup_Profile` | 27498 | 8517 | 31% |
+| `Popup_WatchVideos` | 22292 | 3975 | 18% |
+| `Popup_PremiumDailyRewards` | 20617 | 1949 | 9% |
+| `Board_Arena` | 17850 | 3835 | 21% |
+| `Tab_BattlePass` | 15151 | 2561 | 17% |
+| `Board_BattlePass` | 14691 | 2342 | 16% |
+| `Board_Players` | 13853 | 2620 | 19% |
+| `Board_EventSeasonPass` | 11867 | 2409 | 20% |
+| `Board_Begin` | 11296 | 1605 | 14% |
+| `Board_Reborn_IAP` | 11088 | 1022 | 9% |
+| `Popup_BuyItem` | 10940 | 2938 | 27% |
+| `Board_Challange` | 9917 | 1750 | 18% |
+| `Board_TechLab` | 9873 | 1264 | 13% |
+| `Popup_ChooseVersionDatas` | 9777 | 2090 | 21% |
+| `Board_WinnerBenefits` | 9723 | 2000 | 21% |
+| `Board_Reborn` | 9624 | 2001 | 21% |
+| `Popup_PvPRankings` | 9453 | 2821 | 30% |
 
 ## Còn thiếu
 
