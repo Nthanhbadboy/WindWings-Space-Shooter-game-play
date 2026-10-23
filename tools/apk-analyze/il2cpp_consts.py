@@ -262,8 +262,10 @@ def constants_in(code_off, size, blob, md, segs=None, base=None, name=""):
             _tgt = insn.op_str.strip().lstrip("#")
             if pending_bl[0] is not None and _idx - pending_bl[1] <= 8 \
                     and "x1" in reg_token and pending_len[0] is not None:
+                _lo, _hi, _a = reg_token["x1"]
                 ia_events.append({"bl": _tgt, "len": pending_len[0],
-                                  "slot_val": hex(reg_token["x1"]),
+                                  "slot_val": hex(_lo), "slot_hi": hex(_hi),
+                                  "a": hex(_a),
                                   "addr": hex(insn.address)})
             pending_bl[0] = _tgt
             pending_bl[1] = _idx
@@ -326,9 +328,10 @@ def constants_in(code_off, size, blob, md, segs=None, base=None, name=""):
                 if base in slot_regs and off == 0 and dst != base:
                     a = slot_value(blob, segs, slot_regs[base])
                     if a:
-                        _raw_tok = va_read(blob, segs, a, 8, ro_only=False)
-                        if _raw_tok and len(_raw_tok) == 8:
-                            reg_token[dst] = struct.unpack("<Q", _raw_tok)[0]
+                        _raw_tok = va_read(blob, segs, a, 16, ro_only=False)
+                        if _raw_tok and len(_raw_tok) == 16:
+                            _lo, _hi = struct.unpack("<QQ", _raw_tok)
+                            reg_token[dst] = (_lo, _hi, a)
                         if os.environ.get("RVA_DEBUG") and name == "cctor" and len(debug_rva) < 3000:
                             raw_v = va_read(blob, segs, a, 16, ro_only=False)
                             debug_rva.append({"addr": hex(insn.address),
