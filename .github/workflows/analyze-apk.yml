@@ -217,7 +217,7 @@ jobs:
 
       - name: Extract IL2CPP constants (method bodies)
         continue-on-error: true
-        run: python3 tools/apk-analyze/il2cpp_consts.py 2>&1 | tee /tmp/apk/logs/consts.log | tail -40
+        run: CONSTS_PROBE_ADDRS=0x205b07c python3 tools/apk-analyze/il2cpp_consts.py 2>&1 | tee /tmp/apk/logs/consts.log | tail -40
 
       - name: Extract field default values (literal tables)
         continue-on-error: true

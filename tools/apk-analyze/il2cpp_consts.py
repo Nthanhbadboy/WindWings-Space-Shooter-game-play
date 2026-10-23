@@ -580,6 +580,21 @@ def main() -> int:
             print(f"missing {p}")
             return 0
 
+    # Probe tuỳ chọn: disasm một vùng địa chỉ bất kỳ (vd wrapper InitializeArray)
+    _probe = os.environ.get("CONSTS_PROBE_ADDRS")
+    if _probe:
+        with open(so_path, "rb") as _f:
+            _blob = _f.read()
+        _segs = elf_segments(so_path)
+        os.makedirs(OUT_RAW, exist_ok=True)
+        for _a in _probe.split(","):
+            _va = int(_a, 0)
+            _consts, _lines = constants_in(_va, 0x240, _blob, 0xB7, _segs, base=_va)
+            with open(os.path.join(OUT_RAW, f"_probe_{_va:x}.asm.txt"), "w",
+                      encoding="utf-8") as _fh:
+                _fh.write("\n".join(_lines))
+            print(f"probe {_va:#x}: {len(_lines)} insns")
+
     md = elf_machine(so_path)
     segs = elf_segments(so_path)
     RELOCS.update(elf_relocs(so_path))
