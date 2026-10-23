@@ -50,6 +50,11 @@ TARGET_CLASSES = {
     "RankManager": "rank: ngưỡng điểm, thời gian",
     "Player_Datas": "dữ liệu runtime của player",
     "IAP_Manager": "giá và product id runtime",
+    "Player_Health": "HP runtime: StartHp gán ở đâu, hồi máu, nhận damage",
+    "Player_Talent": "talent: cây điểm, invisible, stun",
+    "Player_Ability": "ability: khiên, drone skill, dodge",
+    "Player_Ingame": "trạng thái trong trận: level, power-up theo tàu",
+    "Player_Attack": "bắn trong trận: nhịp, đạn, overdrive",
 }
 
 RVA_RE = re.compile(r"//\s*RVA:\s*0x([0-9A-Fa-f]+)\s+Offset:\s*0x([0-9A-Fa-f]+)")
