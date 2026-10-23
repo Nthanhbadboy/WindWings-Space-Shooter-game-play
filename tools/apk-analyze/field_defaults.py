@@ -133,6 +133,10 @@ def parse_types(blob, header):
         field_start = struct.unpack_from("<i", blob, base + fs_off)[0]
         field_count = struct.unpack_from("<H", blob, base + fc_off)[0]
         types.append((read_str(blob, str_off, name_idx), field_start, field_count))
+    for i in range(4):
+        base = td_off + i * size
+        ints = struct.unpack_from("<22i", blob, base)
+        print(f"  typedef[{i}] {types[i][0]}: {ints}")
     print(f"  sample type names: {[t[0] for t in types[:12]]}")
     return types, n_fields, (f_off, str_off, f_size)
 
