@@ -202,7 +202,97 @@ là **1 instance/màn** ⇒ **không sai, chỉ khác đơn vị**.
 | 6 | `width × height` sprite | ❌ `datas/sprites.csv` chỉ có `bytes` |
 | 7 | `ParticleSystem` | ❌ (họ đã tự ghi trong `conclusions.md`) |
 
-## 9. Còn thiếu / phải đoán
+## 9. CI: có song song, nhưng **song song sai kiểu** — và 70% thời gian là một step vô dụng
+
+Đo từ API: run `39876830055` (00:13:36 → 00:24:36, **11 phút 00 giây**), step-by-step.
+
+### 9.1 Thời gian thật chia thế nào
+
+| Nhóm | Step | Thời gian | % |
+|---|---|---:|---:|
+| Setup + Il2CppDumper + toàn bộ phân tích | 1–25 | **154 s (2p34)** | **23%** |
+| **`Build REA … and analyze APK`** | **26** | **460 s (7p40)** | **70%** |
+| Publish release + artifact + commit | 27–31 | 37 s | 6% |
+| Post | 58–63 | 1 s | ~0% |
+
+**Bên trong 154 s đó, phần tính toán thật chỉ ~85 s:**
+
+| Step | Nội dung | Thời gian |
+|---|---|---:|
+| 15 | Export asset (texture/sprite/audio) | **31 s** |
+| 23 | Dump UI layout | **21 s** |
+| 11 | Chạy Il2CppDumper | 13 s |
+| **19** | **`unity_data.py` — extract typetree** | **12 s** |
+| 21 | Wave composition | 11 s |
+| 24 | Spine rig + audio map | 9 s |
+| 14 | Unity asset probe | 9 s |
+| 10 | Tải Il2CppDumper | 9 s |
+| 13 | `pip install UnityPy` | 7 s |
+| **22** | **IL2CPP constants** | **1 s** |
+| 1–9, 12, 18, 20, 25 | còn lại | ~23 s |
+
+### 9.2 Step 26 (REA) chiếm 7p40 và **không cho dữ liệu game**
+
+Step này: `git clone mytechnotalent/rea` → `cargo build --release` → chạy `rea analyze` trên
+APK, rồi `libil2cpp.so` (timeout **1200 s**) và `libunity.so` (timeout **900 s**).
+
+Kết quả trong `05-rea.md`:
+
+> *"native code analysis does not apply"* · *"packing score 2"* · *"27 indicators extracted, including 1 URL"*
+
+**Không một dòng dữ liệu game.** Đây là báo cáo **container APK chung** — thứ Il2CppDumper đã làm tốt hơn
+ở step 11 (13 giây).
+
+⇒ **≈70% compute của mọi lần chạy đổ vào một step mà đầu ra không được dùng ở đâu trong spec.**
+
+### 9.3 Vì sao **thêm 1 class** cũng tốn 11 phút
+
+`analyze-apk.yml` có **1 job, 25 step tuần tự**, không `strategy.matrix`, không `needs`, không `concurrency`.
+
+| Việc muốn làm | Compute thật cần | Nhưng phải chạy lại |
+|---|---:|---|
+| Thêm `Enemy_Physics` vào `TARGETS` | **~3 s** (step 19: 12 s → 15 s) | **cả 25 step = 11 phút** |
+| Thêm 37 `*_Director` | ~2 s | cả 25 step |
+| Sửa 1 dòng `wave_report.py` | 11 s | cả 25 step |
+
+Đây là lý do **40 phút cuối dồn vào IL2CPP constants**: vòng phản hồi **11 phút/lần** khiến thử-sai
+đắt, nên dễ chọn "đào sâu một chỗ" thay vì "thử 5 chỗ rẻ".
+
+### 9.4 Song song **đang có** — nhưng là bản sao, không phải chia việc
+
+Lúc đo, **3 run `in_progress` cùng lúc** (00:24:53 · 00:26:57 · 00:27:12). Không có `concurrency:`,
+nên mỗi lần push tạo **một bản sao đầy đủ 25 step**.
+
+| Kiểu song song | Đang có? | Tác dụng |
+|---|---|---|
+| Nhiều run cùng lúc, **cùng nội dung** | ✅ | **0** — 3 run = 3 × 11 phút cho cùng kết quả |
+| Nhiều job, **mỗi job một mục** | ❌ | — |
+
+**Tổng đã tiêu:** 30 run thành công × 11,0 phút = **329 phút**. Trong đó **~230 phút là REA**.
+
+### 9.5 Sửa: matrix 6 job + bỏ REA + gộp run
+
+| # | Sửa | Dòng code | Tiết kiệm |
+|---:|---|---|---|
+| 1 | **Bỏ step 26 (REA)** hoặc đặt `if: false` | 1 | **7p40/lần (−70%)** |
+| 2 | `concurrency: {group: analyze, cancel-in-progress: true}` | 2 | hết run trùng |
+| 3 | Tách `payload` job (XAPK + extract + Il2CppDumper) → `upload-artifact`; 6 job `needs: payload` chạy song song: `typetrees` · `waves` · `ui` · `spine` · `assets` · `consts` | ~40 | wall-clock **11 → ~3–4 phút** |
+| 4 | `paths` filter theo từng script | 5 | sửa `wave_report.py` chỉ chạy job `waves` |
+
+Sau khi sửa, thêm `Enemy_Physics` = **~30 s** (setup + job `typetrees`), không phải 11 phút.
+**5 lớp hành vi còn thiếu có thể export trong một buổi** thay vì một đêm.
+
+> **Điều kiện lật ngược:** nếu `rea analyze libil2cpp.so` có cho ra symbol/offset mà
+> `Il2CppDumper` không có, thì step 26 đáng giữ — nhưng `05-rea.md` hiện **không chứa** kết quả đó
+> (`rea-native.log` không được đưa vào `docs/`). Muốn biết phải xem artifact, không xem report.
+
+### 9.6 Một điểm nữa: 46% commit là rác
+
+Mỗi run kết thúc bằng commit `chore(re): IL2CPP + Unity + REA analysis reports [skip ci]`.
+**36 / 78 commit** là loại này ⇒ mỗi lần phân tích đẻ ra **2 commit** (1 của người, 1 của bot),
+làm lịch sử khó đọc và kích hoạt thêm workflow khác nếu `paths` không chặn.
+
+## 10. Còn thiếu / phải đoán
 
 | # | Thứ | Mức |
 |---:|---|---|
@@ -210,3 +300,6 @@ là **1 instance/màn** ⇒ **không sai, chỉ khác đơn vị**.
 | 2 | `Call_Point` có phải bản đầy đủ của `Call_Data` | **C** |
 | 3 | 60 dòng `288733` — ô literal pool nào bị đọc nhầm | **B** |
 | 4 | Nhánh dữ liệu có tiếp tục sau `c52d04e` không | **C** |
+| 5 | `rea-native.log` (kết quả trên `.so`) có giá trị gì | **C** | nằm trong artifact, **không** nằm trong `docs/` |
+| 6 | Repo có bật hạn mức Actions hay không | **C** | chưa thấy ghi chú; chưa tới giới hạn dù 329 phút |
+| 7 | 6 job matrix có cùng cache XAPK được không | **B** | `actions/cache` dùng chung key → có; cần artifact cho payload đã giải nén |
