@@ -125,6 +125,16 @@ không biết **màn nào** biến mất giữa hai lần chạy (16 màn chỉ 
 - Công thức device `GetStatValue = base[rank] + pct[type]×(lv+1)`: trace của mình cho
   `GetStatValue2` có ngưỡng compare 4/2/2/1/3/999 + `×0.5` — khớp về cấu trúc rẽ nhánh theo rank/type.
 
+## 3j. Commit `68146424` — họ phát hiện asm bị cắt cụt, và `StartHp` đã được giải
+
+- Họ đo: 11/12 file asm **không kết thúc bằng `ret`**. Mình xác nhận nguyên nhân phía mình:
+  cap cứng **0x1200 (4.608 byte)/method** trong `il2cpp_consts.py`. Đã sửa: độ dài method lấy
+  theo method kế tiếp trong toàn bộ dump, cap 128 KB, ghi thêm cờ `size_capped`. `.cctor` của
+  `Player_Get_Datas` giờ trọn vẹn tới `ret` ở `0x14e6278`.
+- Từ đó giải luôn câu hỏi treo lâu nhất của họ: `StartHp` ghi bằng **`str d0` ở static 0x68**
+  (cặp float), nửa trên `0x6c` nạp từ VA `0x757bc0` = (0.18, **2500.0**) → **`StartHp = 2500`** (mức A).
+  Muốn đọc được phải thêm nhánh `ldr d` vào pool reader — bản cũ chỉ đọc `ldr s` nên bỏ sót.
+
 ## 4. Điều kiện lật ngược
 
 - Nếu `Enemy_Physics` export ra mà **phần lớn field rỗng** (như `Spawner.dataScript` = 0), thì
