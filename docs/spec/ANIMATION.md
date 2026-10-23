@@ -11,7 +11,7 @@
 | Hệ | Có trong APK | Đã đọc | Kết luận |
 |---|---:|---:|---|
 | **Spine** (xương) | 27 rig · **180** animation · 616 bone | **100%** | đủ để dựng lại nhịp |
-| **Unity Animator** | **791** clip · **308** controller · **5.792** `Animator` | **0%** | biết số lượng, chưa biết clip nào |
+| **Unity Animator** | **791** clip · **308** controller · **5.792** `Animator` | **0 %** curve · **100 % tên** | **3.620/5.792 = 62,5 % là UI** (`Board_*` 2.938 · `Popup` 675 · `Menu` 7); **enemy/boss chỉ 203** (§4.5) |
 | **Procedural** (`Rotate`) | **1.120** instance | class 100% · tham số 0% | biết công thức, chưa biết tốc độ |
 | **Flipbook sprite** | **28** chuỗi · 160 ảnh / 2.185 `Sprite` | 100% | game **hầu như không dùng** |
 
@@ -269,6 +269,75 @@ biết cơ chế xoay, chưa biết con nào xoay bao nhiêu độ/giây.
 > **"animation" phổ biến nhất của game**: xoay sprite (quạt, tua bin, hành tinh, khiên, vòng năng lượng).
 > Hệ quả cho design: phần lớn chuyển động không cần rig — chỉ cần **sprite + trục xoay + tốc độ**.
 
+## 4.5 Enemy — animation của enemy **gồm những gì** (đếm mới 23/10)
+
+> Câu hỏi: *"đã có animation của enemy chưa?"* — **Có, nhưng chia làm hai nửa: một nửa đọc được 100 %,
+> một nửa chỉ có TÊN.** Bảng dưới đếm trên **109 prefab enemy/boss thực sự được spawn**.
+
+| Hệ | Instance trên enemy | Phủ prefab | Đọc được | Ghi chú |
+|---|---:|---:|---|---|
+| **`Enemy_Movement`** (di chuyển theo path) | **981** | **109 / 109 = 100 %** | công thức + tham số | `listSpeeds` · `facingMove` · `isTurret` · `endOfPathInstruction` · `parentRotate` |
+| **`Enemy_Appear`** (xuất hiện / biến mất) | **914** | **107 / 109** | **cơ chế**, không tham số | tree serialize **rỗng** — không field nào |
+| **Animator** (clip Unity) | **203** | **87 / 109 = 79,8 %** | **tên clip** · 0 % curve | 36 root `Boss-*` = **92** instance; 22 prefab **không có** Animator |
+| **`Enemy_Rotate`** (xoay) | **35** | 1 root roster | ✅ đủ | trap `W2-30043` (7) · `W2-30042` · `W2-30056` · `W2-30036` · `W2-30055` |
+| **Spine** (xương) | **17** `Enemy_HitSkeletonRenderer` | **2 root** | ✅ đủ | chỉ **`Boss-39001` / `Boss-39002`** (+ vài prefab súng lẻ) |
+| **Flipbook** | **0** | 0 | — | 28 chuỗi/160 ảnh toàn game ⇒ enemy **không** dùng khung hình |
+
+### (a) Nửa **đọc được**: chuyển động thật của enemy là **procedural**
+
+`Enemy_Movement` phủ **100 %** prefab. Đây **không** phải animation clip — nó là **di chuyển theo đường
+path** + hướng mặt + tốc độ theo danh sách. Cộng `Enemy_Appear` (107/109) và `Rotate`/`Enemy_Rotate`
+(1.127 instance toàn game) ⇒ **cái người chơi cảm nhận là "enemy động"** đến từ:
+
+```
+path (PathCreator) → Enemy_Movement.listSpeeds → hướng/mặt → xoay (Rotate) → particle
+```
+
+**Không có khung hình nào** trong đường này. Đây là lý do một enemy chỉ cần **1 sprite** (§5).
+
+### (b) Nửa **chỉ có tên**: 791 clip Animator — biết *tên*, không biết *pose*
+
+`datas/anim_clips.json.gz` (791 clip · **226 tên khác nhau**) — phân bố tên:
+
+| Clip | Số | Nghĩa |
+|---|---:|---|
+| `Idle` + `idle` | **82 + 80 = 162** | phần lớn thời gian enemy **đứng yên** |
+| **`Xuathien`** | **41** | **"xuất hiện"** — tên tiếng Việt của hoạ sĩ (§2.4) |
+| `Setup` | 37 | dựng/khởi tạo |
+| `Appear` | 26 | xuất hiện (bản tiếng Anh) |
+| `Active` + `active` | 19 + 8 | bật |
+| `attack1` … `attack8` + `Attack1..3` + `Attack` | **≈ 135** | **bộ đòn của boss** |
+| `UIShow` | 14 | **UI**, không phải enemy |
+| `Die` | 10 | chết |
+| `move_in` | 3 | bay vào |
+
+> **Đếm quyết định:** `keyframe_total = 0` ở **791/791** clip. Tên + thời lượng (median **1,9 s**) thì có,
+> **curve thì không** — vì chúng bị **stream** (`m_StreamedClip`, §3.5). ⇒ **chưa dựng lại được pose**.
+
+### (c) `Animator` 5.792 — hoá ra **62,5 % là UI**, không phải enemy
+
+| Bucket | Instance | % |
+|---|---:|---:|
+| **UI** (`Board_*` 2.938 · `Popup` 675 · `Menu` 7) | **3.620** | **62,5 %** |
+| prefab **wave** (`Wave_*`) | 912 | 15,7 % |
+| khác (effect, shop, item…) | 1.057 | 18,3 % |
+| **enemy / boss trong roster** | **203** | **3,5 %** |
+
+⇒ Con số "5.792 `Animator`" trong §0 **không** phải 5.792 animation của enemy. Enemy thật: **203**.
+(Đóng một phần câu hỏi §7 #10.)
+
+### (d) Trả lời thẳng
+
+| Câu | Trả lời |
+|---|---|
+| **Enemy có animation không?** | **Có** — 87/109 prefab có Animator; 100 % có di chuyển procedural |
+| **Đã dựng lại được chưa?** | **Chưa.** Tên clip + nhịp: **có**; pose/khung hình: **không** (0/791 keyframe) |
+| **Bao nhiêu %?** | Theo **hệ**: procedural **100 %** · clip **0 % curve / 100 % tên** · Spine **100 %** (nhưng chỉ 2 boss) |
+| **Cần gì để dựng lại?** | **1 decoder `m_StreamedClip`** — không phải export thêm asset |
+| **Có chặn design không?** | **Không.** Bản clone cần *cảm giác*, không cần pose gốc: dùng `Enemy_Movement` + `Rotate` + 1 sprite (§5) |
+
+---
+
 ## 5. Sprite thật sự dùng làm gì
 
 **2.185 `Sprite`** · **62.815 `SpriteRenderer`** · 577 region Spine.
@@ -319,8 +388,8 @@ Cái quyết định cảm giác đã đo được hết:
 | 6 | Clip nào dùng chung giữa nhiều boss | **C** | export `AnimatorController` |
 | 7 | Thứ tự pha (clip nào trước clip nào) | **C** | export 34 `*_Director` (**60** instance) + 3 `AttackPhases` = **63** |
 | 8 | `Idle` có 0 key nghĩa là "đứng yên" hay "giữ pose đầu" | **B** | đọc `SkeletonRenderer` init |
-| 9 | Nhóm 21 rig bộ 6 animation là **tàu** hay **enemy** | **B** | bảng map rig → prefab |
-| 10 | `Animator` 5.792 phân bố enemy / UI / FX thế nào | **C** | export Transform để đếm theo cha |
+| 9 | Nhóm 21 rig bộ 6 animation là **tàu** hay **enemy** | **B** | vẫn mở: `spine.json` **27 rig đều không có `name`** (chỉ `skeleton_data_path_id`); `prefab_joins` chỉ có 6 class, **không** có Skeleton ⇒ cần export `SkeletonAnimation.m_SkeletonDataAsset` để nối |
+| 10 | ~~`Animator` 5.792 phân bố enemy / UI / FX~~ | **A** | ✅ xong (§4.5c): **UI 3.620 (62,5 %)** · wave 912 · khác 1.057 · **enemy/boss 203** |
 
 > Không mục nào ở trên là "không lấy được": **791 clip · 308 controller · 5.792 `Animator` ·
 > 228.432 `Transform`** đều **đã đếm được trong file** — nghĩa là chúng nằm đó, chỉ chưa export.
