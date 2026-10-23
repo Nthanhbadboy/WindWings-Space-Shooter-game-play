@@ -1,0 +1,38 @@
+name: Collect runtime evidence
+on:
+  push:
+    paths: ['.github/workflows/collect-runtime-evidence.yml']
+permissions:
+  actions: read
+  contents: write
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: runtime-probe-39927581993
+          run-id: 39927581993
+          github-token: ${{ github.token }}
+          path: /tmp/probe-evidence
+      - name: Save diagnostic report only (no credentials or images)
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          root = Path('/tmp/probe-evidence')
+          dest = Path('docs/runtime-evidence/39927581993')
+          dest.mkdir(parents=True, exist_ok=True)
+          for path in root.rglob('report.md'):
+              text = path.read_text()
+              text = re.sub(r'(?i)(bearer\s+)[\w.\-]+', r'\1REDACTED', text)
+              text = re.sub(r'(?i)((?:api[_-]?key|token|secret|credential)\s*[=:]\s*)[^\s,]+', r'\1REDACTED', text)
+              (dest / 'report.md').write_text(text)
+          assert (dest / 'report.md').exists(), 'No report in artifact'
+          PY
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add docs/runtime-evidence
+          git diff --cached --quiet || git commit -m 'docs(runtime): preserve diagnostic report from trial run 39927581993 [skip ci]'
+          git push origin HEAD:arena/ef6b75ef-windwings-space-shooter-game-p
