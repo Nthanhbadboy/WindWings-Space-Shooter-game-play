@@ -275,6 +275,22 @@ jobs:
               SZ2=$(stat -c%s reverse-engineering/il2cpp/dump.cs.gz)
               if [ "$SZ2" -gt 30000000 ]; then rm -f reverse-engineering/il2cpp/dump.cs.gz; fi
             fi
+            if [ -f /tmp/apk/il2cpp/script.json ]; then
+              # Giữ lại phần field-default của script.json (bảng map->wave và các
+              # bảng tĩnh khác nạp từ RVA data) — file gốc 49 MB không vào repo.
+              python3 - <<'PY'
+          import json
+          try:
+              d = json.load(open('/tmp/apk/il2cpp/script.json'))
+              out = {k: v for k, v in d.items() if 'Field' in k or 'field' in k}
+              print('script.json keys:', list(d.keys()))
+              print('field-ish keys:', {k: (len(v) if hasattr(v, '__len__') else v) for k, v in out.items()})
+              if out:
+                  json.dump(out, open('reverse-engineering/il2cpp/field-defaults.json', 'w'))
+          except Exception as e:
+              print('field-defaults extract failed:', e)
+          PY
+            fi
             ls -la /tmp/apk/il2cpp > docs/apk-analysis/03-il2cpp-files.txt || true
             { echo; echo '```'; cat /tmp/apk/il2cpp/run.log 2>/dev/null | tail -40; echo '```'; } >> docs/apk-analysis/03-il2cpp.md
           else
