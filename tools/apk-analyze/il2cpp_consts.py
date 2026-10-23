@@ -222,7 +222,7 @@ def _as_float(u32: int):
     return round(val, 6)
 
 
-def constants_in(code_off, size, blob, md, segs=None, base=None):
+def constants_in(code_off, size, blob, md, segs=None, base=None, name=""):
     """Return (consts, asm_lines) for one method body."""
     import capstone
 

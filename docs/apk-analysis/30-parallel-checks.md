@@ -12,7 +12,7 @@
 | T6 | 20001-20013 là tàu thật và không có field HP | **REVERSED** | 38 dòng Data_Players chỉ có cột ['Actived', 'Sprite', 'Star', 'id'] — không field HP nào (phần này khớp H6); nhưng 20001-20013 nằm ở datas/drones.json (13 drone: 20001-20013), không phải tàu bị mất. H6 sai ở nửa đầu, đúng ở nửa sau. |
 | T10 | root 900xx là prefab test, 0 lần trong tổng quân | **PASS** | 48 root 900xx trong prefab-roots; xuất hiện trong waves: 0. |
 | T12 | đọc độc lập .cctor vẫn ra StartHp=2500,0 cạnh 0,18 | **PASS** | 15 cặp ldr d trong .cctor. VA 0x757ce0: [3.0, 10.0]; VA 0x757bc0: [0.18, 2500.0]; VA 0x758140: []; VA 0x757788: [18.0, 5.6]; VA 0x757550: []; VA 0x757b08: []; VA 0x757ce8: [25.0, 3.0]; VA 0x757a38: []; VA 0x757558: []; VA 0x757398: [] |
-| T13 | đường cong HP theo bin 20 wave (định nghĩa VERIFY_ROUND1 §4.2) | **PASS** | median các bin cuối — 120-139: 2,440,000; 220-239: 5,580,000; 240-259: 8,600,000; 260-279: 14,900,000; 280-281: 20,600,000. Tổng HP toàn game: 474,696,000 (đo độc lập, đối chiếu 480,89M của nhánh spec). |
+| T13 | đường cong HP theo bin 20 wave (định nghĩa VERIFY_ROUND1 §4.2) | **PASS** | median các bin cuối — 120-139: 2,440,000; 220-239: 5,580,000; 240-259: 8,600,000; 260-279: 15,730,000; 280-281: 21,200,000. Tổng HP toàn game: 490,130,000 (đo độc lập, đối chiếu 480,89M của nhánh spec). |
 
 ## Chưa làm ở vòng này
 
