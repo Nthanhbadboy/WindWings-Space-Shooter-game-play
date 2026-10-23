@@ -220,6 +220,19 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
             dst = insn.op_str.split(",")[0].strip()
             if m and m.group(1) in adrp_pages and dst.startswith(("s", "d")):
                 va = adrp_pages[m.group(1)] + (int(m.group(2), 0) if m.group(2) else 0)
+                if dst.startswith("d"):
+                    # ldr d nạp CẶP float liên tiếp (vd cặp nằm ở static offset
+                    # 0x68/0x6c trong Player_Get_Datas..cctor — thiếu nửa trên
+                    # là mất StartHp). Ghi cả hai nửa kèm VA riêng.
+                    raw8 = va_read(blob, segs, va, 8, ro_only=True)
+                    if raw8 and len(raw8) == 8:
+                        lo, hi = struct.unpack("<ff", raw8)
+                        for k, val in enumerate((lo, hi)):
+                            if val == val and 1e-6 < abs(val) < 1e6:
+                                consts.append({"kind": "float", "value": round(val, 5),
+                                               "via": "ldr_pool_d", "va": hex(va + 4 * k),
+                                               "addr": hex(insn.address)})
+                    continue
                 raw = va_read(blob, segs, va, 4, ro_only=True)
                 if raw and len(raw) == 4:
                     val = struct.unpack("<f", raw)[0]
