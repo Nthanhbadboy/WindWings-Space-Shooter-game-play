@@ -86,7 +86,11 @@ static class Program
                     string body = await res.Content.ReadAsStringAsync().ConfigureAwait(false);
                     sw.Stop();
 
-                    Check("GET " + path + " → 200", (int)res.StatusCode == 200, "status=" + (int)res.StatusCode);
+                    // Include the body on failure: a 500 from this server carries
+                    // the exception type, which is the difference between "our bug"
+                    // and "the stub returned null where Unity returns an empty array".
+                    Check("GET " + path + " → 200", (int)res.StatusCode == 200,
+                          "status=" + (int)res.StatusCode + " body=" + First(body, 200));
                     Check("GET " + path + " → JSON", IsJson(body), First(body, 120));
                     Check("GET " + path + " → fast", sw.ElapsedMilliseconds < 8000, sw.ElapsedMilliseconds + " ms");
                 }
