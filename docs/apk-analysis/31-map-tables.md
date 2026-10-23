@@ -48,3 +48,17 @@ khác thuộc segment chưa gán field.
 
 - Offset static store trong `.cctor` để gán segment→field 100% (nâng lên A).
 - Bắt nốt 36 IA call bị hụt trong exporter (token qua thanh ghi khác x20).
+
+### Cảnh báo kiểm toán bổ sung
+
+Nhãn A ở trên chỉ áp dụng việc gán **segment 35 → field @0x28**.
+Resolver token còn là giả thuyết được hỗ trợ mạnh, chưa xác minh runtime:
+19/540 mẫu chưa khớp độ dài, exporter bỏ sót call và chưa loại trừ token cũ
+trong thanh ghi. Vì vậy nội dung `maps.json` / `ia-resolved.json` vẫn
+**PROVISIONAL**, không dùng nhãn PASS hoàn tất cho toàn bộ T1.
+Bảng device hiện là 11 blob bắt được, không phải đã chứng minh danh sách
+11 device: asm có call khởi tạo đầu tiên chưa bắt được, và blob cuối có thể
+thuộc field khác. Chưa gán tên/ý nghĩa cho các hàng.
+
+Kiểm toán exporter: đã khôi phục đoạn ghi field-defaults.json bị xóa nhầm
+khi dọn probe; các raw probe đã có được giữ để truy vết, ngừng sinh mới.

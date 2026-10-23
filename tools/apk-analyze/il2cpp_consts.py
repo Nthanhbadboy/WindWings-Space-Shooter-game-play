@@ -245,7 +245,6 @@ def constants_in(code_off, size, blob, md, segs=None, base=None, name=""):
     pending_len = [None, -99]  # (độ dài mảng từ mov w1,#N, chỉ số lệnh)
     pending_bl = [None, -99]   # (đích bl gần nhất, chỉ số lệnh) — array-new ngay trước
     ia_events: list = []       # ứng viên InitializeArray, lọc 2 lượt ở cuối
-    debug_rva: list = []  # chỉ đầy khi RVA_DEBUG=1 (chẩn đoán layout blob)
     pending_floats: list = []
     emitted: set = set()
     for _idx, insn in enumerate(insns):
@@ -332,12 +331,6 @@ def constants_in(code_off, size, blob, md, segs=None, base=None, name=""):
                         if _raw_tok and len(_raw_tok) == 16:
                             _lo, _hi = struct.unpack("<QQ", _raw_tok)
                             reg_token[dst] = (_lo, _hi, a)
-                        if os.environ.get("RVA_DEBUG") and name == "cctor" and len(debug_rva) < 3000:
-                            raw_v = va_read(blob, segs, a, 16, ro_only=False)
-                            debug_rva.append({"addr": hex(insn.address),
-                                              "slot": hex(slot_regs[base]),
-                                              "a": hex(a),
-                                              "a_bytes": raw_v.hex() if raw_v else None})
                         for start in (a,):
                             v = slot_value(blob, segs, start)
                             cands = [start] + ([v] if v else [])
@@ -449,8 +442,6 @@ def constants_in(code_off, size, blob, md, segs=None, base=None, name=""):
         for e in ia_events:
             if e["bl"] == _wrap and (int(e["slot_val"], 16) >> 29) == 4:
                 consts.append({"kind": "init_array", **e})
-    for dbg in debug_rva:
-        consts.append({"kind": "debug_rva", **dbg})
     return consts, lines
 
 
@@ -582,21 +573,6 @@ def main() -> int:
         if not os.path.isfile(p):
             print(f"missing {p}")
             return 0
-
-    # Probe tuỳ chọn: disasm một vùng địa chỉ bất kỳ (vd wrapper InitializeArray)
-    _probe = os.environ.get("CONSTS_PROBE_ADDRS")
-    if _probe:
-        with open(so_path, "rb") as _f:
-            _blob = _f.read()
-        _segs = elf_segments(so_path)
-        os.makedirs(OUT_RAW, exist_ok=True)
-        for _a in _probe.split(","):
-            _va = int(_a, 0)
-            _consts, _lines = constants_in(_va, 0x240, _blob, 0xB7, _segs, base=_va)
-            with open(os.path.join(OUT_RAW, f"_probe_{_va:x}.asm.txt"), "w",
-                      encoding="utf-8") as _fh:
-                _fh.write("\n".join(_lines))
-            print(f"probe {_va:#x}: {len(_lines)} insns")
 
     md = elf_machine(so_path)
     segs = elf_segments(so_path)

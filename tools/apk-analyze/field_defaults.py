@@ -224,6 +224,13 @@ def main() -> int:
         result[key] = entry
     print(f"decoded: {len(result)}, skipped: {skipped} {reasons}")
 
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as fh:
+        json.dump({"source": f"global-metadata.dat fieldDefaultValues v{version} "
+                             "(typeDefinitions/fields/string sections)",
+                   "count": len(result), "fields": result},
+                  fh, ensure_ascii=False, indent=1)
+
     # ---- Resolver InitializeArray: token lẻ src = 2*ordinal+1 trong type
     # <PrivateImplementationDetails> của image chứa class gọi. Đã kiểm:
     # Map_Get_Datas 540/540 token có blob, 521/540 khớp độ dài (±3).
