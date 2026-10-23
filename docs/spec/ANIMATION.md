@@ -295,7 +295,7 @@ biết cơ chế xoay, chưa biết con nào xoay bao nhiêu độ/giây.
 | **`Enemy_Appear`** (xuất hiện / biến mất) | **914** | **107 / 109** | **cơ chế**, không tham số | tree serialize **rỗng** — không field nào |
 | **Animator** (clip Unity) | **203** | **87 / 109 = 79,8 %** | **tên clip** · 0 % curve | 36 root `Boss-*` = **92** instance; 22 prefab **không có** Animator |
 | **`Enemy_Rotate`** (xoay) | **35** | 1 root roster | ✅ đủ | trap `W2-30043` (7) · `W2-30042` · `W2-30056` · `W2-30036` · `W2-30055` |
-| **Spine** (xương) | **17** `Enemy_HitSkeletonRenderer` | **2 root** | ✅ đủ | chỉ **`Boss-39001` / `Boss-39002`** (+ vài prefab súng lẻ) |
+| **Spine** (xương) | **17** `Enemy_HitSkeletonRenderer` | **3 root** | ✅ đủ | **`Boss-39001` / `Boss-39002` / `Boss-39003`** — sửa 23/10, trước ghi 2; xem `ANIMATION_GAPS.md` §2b |
 | **Flipbook** | **0** | 0 | — | 28 chuỗi/160 ảnh toàn game ⇒ enemy **không** dùng khung hình |
 
 ### (a) Nửa **đọc được**: chuyển động thật của enemy là **procedural**
@@ -394,11 +394,11 @@ Cái quyết định cảm giác đã đo được hết:
 
 | # | Việc | Mức | Cách gỡ |
 |---:|---|---|---|
-| 1 | Rig nào thuộc prefab nào | **C** | export `Transform` (`m_Father`) — đã có **228.432** object |
+| 1 | Rig nào thuộc prefab nào | **B** (một phần) | `Transform.m_Father` **đã có sẵn** — đi ngược lên root được. Kết quả 23/10: Spine hit-skeleton nằm trên **3** prefab (39001/39002/39003, §4.5); `skeleton__21` = rig của **Boss-39002** (khớp **8/8** tên state của `Boss1_Director`). **3 rig có đòn còn lại chưa map** — cần typetree `SkeletonRenderer`, xem `ANIMATION_GAPS.md` §3 |
 | 2 | ~~791 clip tên gì, dài bao nhiêu~~ | **A** | ✅ xong — 226 tên · median 1,9 s · 793 event (§3.3) |
 | 2b | **keyframe curve** của 791 clip | **B** | **Dữ liệu CÓ**: `m_MuscleClipSize` **9.186.264 B** trên **782/791** clip — thiếu **decoder `m_StreamedClip`**, không thiếu export (`UNITY_RULES` §4.2) |
 | 3 | `speedRotate` / `delay` từng object | **C** | export field prefab |
-| 4 | 25 boss còn lại animate bằng gì | **B** | 9 họ event + 4 rig Spine; phần còn lại chưa có dấu vết |
+| 4 | 25 boss còn lại animate bằng gì | **B** | Đếm lại 23/10: chỉ **4/27** rig Spine có animation đòn; **92 `Animator` trên 36 prefab `Boss-*`** + 44 class `*_Director` lo phần còn lại. **Chưa** nối từng boss với rig/clip cụ thể (`ANIMATION_GAPS.md` §2c–2d) |
 | 5 | `allStartAttackActions` có bao nhiêu khoá | **C** | export field prefab (dictionary) |
 | 6 | Clip nào dùng chung giữa nhiều boss | **C** | export `AnimatorController` |
 | 7 | Thứ tự pha (clip nào trước clip nào) | **C** | export 34 `*_Director` (**60** instance) + 3 `AttackPhases` = **63** |
