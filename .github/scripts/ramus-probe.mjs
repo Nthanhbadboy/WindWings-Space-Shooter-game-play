@@ -711,6 +711,19 @@ async function main() {
     // A full-screen confirmation is only raised for an app that is on screen.
     immersiveDialog: /Viewing full screen|To exit, swipe down/i.test(
       JSON.stringify(result.ui || {}) + rawLog),
+
+    // ── what the device says about itself and about this app ──────────────
+    // Seen in the live device console on 23/10: the emulator is x86_64 while the
+    // APK ships only lib/arm64 — yet the app ran, so a translation layer exists.
+    deviceX86: /Unexpected CPU variant for x86: x86_64|\/lib\/x86_64|\/lib\/x86\//.test(rawLog),
+    deviceArm64: /\/lib\/arm64|arm64-v8a|ro\.product\.cpu\.abi/.test(rawLog),
+    // nativeloader prints the library path it configured for the app's APK.
+    appLibPath: (rawLog.match(/library_path=([^,\s]*(?:arm64|x86)[^,\s]*)/i) || [])[1] || null,
+    // DNS refused for an app uid: the game cannot reach its backend or consent host.
+    networkBlocked: /network access blocked/i.test(rawLog),
+    // WindowManager closes the app's task with a timestamp — the moment it went.
+    taskClose: (rawLog.match(/type = CLOSE[\s\S]{0,4000}?cmp=([^/\s]+)\/([^\s},]+)/i) || [])
+      .slice(1).join('/') || null,
     excerpts: rawLog
       .split('\n')
       .filter((l) => CRASH_RE.test(l) && !NOISE_RE.test(l))
@@ -868,6 +881,11 @@ function renderReport(r) {
     lines.push(`| fatal exception | ${yn(sig.fatal)} |`);
     lines.push(`| activity started (Displayed/Start proc) | ${yn(sig.foreground)} |`);
     lines.push(`| immersive full-screen dialog (app was in front) | ${yn(sig.immersiveDialog)} |`);
+    lines.push(`| device is x86_64 | ${yn(sig.deviceX86)} |`);
+    lines.push(`| device also advertises arm64 | ${yn(sig.deviceArm64)} |`);
+    if (sig.appLibPath) lines.push(`| app library path | \`${String(sig.appLibPath).slice(0, 120)}\` |`);
+    lines.push(`| network blocked (DNS refused) | ${sig.networkBlocked ? '**yes**' : 'no'} |`);
+    if (sig.taskClose) lines.push(`| window manager closed this task | \`${sig.taskClose}\` |`);
     lines.push('');
     if (Array.isArray(sig.excerpts) && sig.excerpts.length) {
       lines.push('```');

@@ -600,30 +600,56 @@ jobs:
           set -euo pipefail
           start=$(date +%s)
           ok=0
-          for i in 1 2; do
-            echo "── session install, attempt $i/2 (117 MB upload) ──"
-            if npx --yes "$RAMUS_CLI" session install \
-                 --apk "$RAMUS_APK" \
-                 --timeout 900 \
-                 | tee "$PROBE_OUT/install.json"; then
-              ok=1
-              break
-            fi
+          # One attempt only: the trial job budget is 25 min and a 117 MB upload
+          # already runs ~10 min. A deterministic refusal (tier/auth) does not
+          # heal on retry, and a transient one is covered by the fallback below.
+          echo "── session install (117 MB upload, single attempt) ──"
+          if npx --yes "$RAMUS_CLI" session install \
+               --apk "$RAMUS_APK" \
+               --timeout 600 \
+               | tee "$PROBE_OUT/install.json"; then
+            ok=1
+          fi
+          if [ "$ok" -ne 1 ]; then
             cat "$PROBE_OUT/install.json" 2>/dev/null || true
             npx --yes "$RAMUS_CLI" session status | tee "$PROBE_OUT/status-during-install.json" || true
-            if [ "$i" -lt 2 ]; then sleep 15; fi
-          done
+          fi
           took=$(( $(date +%s) - start ))
           if [ "$ok" -eq 1 ]; then res=ok; else res=failed; fi
           echo "install_result=$res seconds=$took" | tee "$PROBE_OUT/install-summary.txt"
 
           if [ "$ok" -ne 1 ]; then
-            echo "::error::The APK could not be installed into the running session (see install.json)."
-            exit 1
+            # Do not fail the job here: `session start --apk` is the path that has
+            # always worked on a trial. Fall back instead of burning the credential.
+            echo "::warning::session install failed — falling back to session start --apk"
+            tail -c 1200 "$PROBE_OUT/install.json" 2>/dev/null || true
+            npx --yes "$RAMUS_CLI" session end >/dev/null 2>&1 || true
+            sleep 5
+
+            started=0
+            for i in 1 2 3; do
+              echo "── fallback session start --apk, attempt $i/3 ──"
+              if npx --yes "$RAMUS_CLI" session start \
+                   --apk "$RAMUS_APK" --wait --timeout 600 \
+                   | tee "$PROBE_OUT/session.json"; then
+                started=1
+                break
+              fi
+              if [ "$i" -lt 3 ]; then sleep 20; fi
+            done
+            [ "$started" -eq 1 ] || { echo "::error::fallback session start failed too"; exit 1; }
+
+            sid=$(jq -r 'if (.session | type) == "string" then .session
+                         else (.sessionId // .session_id // .id // .session.id // empty) end' \
+                  "$PROBE_OUT/session.json" 2>/dev/null || true)
+            if [ -n "$sid" ]; then echo "RAMUS_SESSION=$sid" >> "$GITHUB_ENV"; fi
+            echo "installed=fallback" >> "$GITHUB_OUTPUT"
+          else
+            echo "installed=ok" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Launch the app (session_mode=install)
-        if: steps.gate.outputs.skip != 'true' && env.SESSION_MODE == 'install'
+        if: steps.gate.outputs.skip != 'true' && env.SESSION_MODE == 'install' && steps.install.outputs.installed == 'ok'
         run: |
           set -euo pipefail
           # `session install` only installs; nothing has launched it yet.
@@ -824,6 +850,17 @@ jobs:
               echo '```'
               head -c 1500 "$PROBE_OUT/boot.json" 2>/dev/null || echo "no boot.json"
               echo '```'
+
+              for f in install.json install-summary.txt status-during-install.json launch.json; do
+                [ -f "$PROBE_OUT/$f" ] || continue
+                echo
+                echo "### $f"
+                echo
+                echo '```json'
+                head -c 1500 "$PROBE_OUT/$f"
+                echo
+                echo '```'
+              done
               if [ -f "$PROBE_OUT/logcat.txt" ]; then
                 echo
                 echo "### logcat (filtered)"
