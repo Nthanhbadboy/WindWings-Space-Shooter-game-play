@@ -221,7 +221,7 @@ kết luận được**. Đây đúng là giả thuyết *"HP là của tàu, bo
 | **Tàu** (25 chiếc) | ⚠ **chưa kết luận** | serialize **không** có bảng HP theo tàu (mức A); `StartHp` **có thể** gán lại lúc chọn (mức C) |
 | **Tech lab** (stat index 0) | ✅ `stepCommon × TechStatPoints(0)` | asm `0x14e3258` `fmul` |
 | **Ability 7** | ✅ `abi7AddPlayerStartHp × GetNumberAbility(7)` | asm `0x14e325c` `fmul` |
-| **Trang bị (device)** | ⚠ **CÓ ảnh hưởng HP** — không qua `GetStartHp()` mà qua `Player_Health.OnChangeDataDevice(int)`; chi tiết §0.6.7 | `Player_Health` có `OnChangeDataDevice` · `amountAutoGainHpByDevice` · `reduceDamageByDevice` |
+| **Trang bị (device)** | ❌ **KHÔNG cộng HP tối đa** — chỉ **giảm damage** (`reduceDamageByDevice`) và **hồi máu** (`amountAutoGainHpByDevice`); chi tiết §0.6.7d | `OnChangeDataDevice` 452 B đọc đủ: không ghi `StartHealth` |
 | **Drone** | ❌ không | `Droid_Data_Balance.GetBaseDamage` — drone đóng góp **damage** |
 
 > **Nhận định (mức A):** trong **công thức đã đọc**, HP tối đa chỉ có **3 số**: `StartHp` (gốc) ·
@@ -283,7 +283,7 @@ Không có method HP nào nhận `playerIndex`.
 | **Drone cộng HP** | ❌ **Không** (A) | `Droid_Data_Balance` có **11 method**, **0 method trả HP**: `GetBaseDamage` · `GetDroidTimeOut` · `GetUnlockCost` · `GetUnlockStarCost` · `GetUpgadeCostCoins` · `GetUpgradeCostGems` · `GetDroidRank` · `SetDroidLevel` · `IsBought` · `SetBought` · `.cctor` |
 | **Danh hiệu / rank cộng HP** | ❌ **Không** (A) | `RankManager` **14 method — toàn bộ là leaderboard online**: `IECheckCampaignRankings` · `IESetCampaignRankings` · `IETryGetRoomRankCampaign` · `IECheckRankReadyToUploadPoint` · `CheckUserSignInOrRestoreYourDatas`… **không có stat nào** |
 | **Buff riêng chọn trước màn** | ❌ **không có hệ thống này** (B) | Không có class `Buff`/`PowerUp`. `PowerUp` là field **theo chỉ số tàu**: `p1_idBltPowerUp` · `p1_superPowerUpShotRate` · `p3_…` · `p5_…` · `p6_…` ⇒ power-up **thuộc tàu**, không phải buff chọn |
-| **Trang bị (device) cộng HP** | ⚠ **CÓ, nhưng khác đường** (B) | `Player_Health.OnChangeDataDevice(int _idPlayer)` — hàm chạy **khi đổi device**; cùng class có `amountAutoGainHpByDevice` + `reduceDamageByDevice`. **Không** đi qua `GetStartHp()` |
+| **Trang bị (device) cộng HP** | ❌ **KHÔNG** (A) | `OnChangeDataDevice` chỉ ghi 2 field: `reduceDamageByDevice` (giáp) + `amountAutoGainHpByDevice` (hồi theo `% StartHealth`); **0 lệnh** ghi `StartHealth` |
 | **Tàu cộng HP** | ⚠ **chưa kết luận** (C) | `Data_Players` **0 field HP**; `GetStartHp()` **không nhận `playerIndex`**; **nhưng** `StartHp` là `float` static và **không có lệnh ghi nào** trong 11 class asm ⇒ **không loại trừ** việc nó bị gán lại theo tàu lúc chọn |
 
 > **Nhận định (mức B):** xét **toàn bộ API của drone và rank**, cả hai **không có đường nào** trả về HP.
@@ -329,55 +329,45 @@ if (type == 4) kết quả /= 100       // 0x42C80000 = 100.0
 | `amountAutoGainHpByDevice` | lượng **hồi HP** theo device |
 | `reduceDamageByDevice` | **giảm damage** nhận vào theo device |
 
-⚠ **Sửa lại điều tôi đã viết hai lần:** lần đầu tôi ghi *"device không cộng HP tối đa"*, lần hai
-vẫn giữ ý đó. **Sai** — `OnChangeDataDevice` là bằng chứng **device có** ảnh hưởng HP tối đa, chỉ là
-**không đi qua `GetStartHp()`**. Hai hệ tính HP **song song**:
+✅ **ĐÃ CHỐT bằng thân hàm (A) — bản `6109008c`.** `Player_Health.asm.txt` có đủ
+`OnChangeDataDevice` (452 B). Đọc từng lệnh:
 
 ```
-HP tối đa = StartHp × (1 + tech% + ability7%)     ← GetStartHp()
-            ↑ rồi Player_Health.OnChangeDataDevice() điều chỉnh tiếp theo device
-```
-
-> **Nhận định (mức B):** device cộng HP **sau** khi `GetStartHp()` chạy, nên thứ tự là
-> **base → tech/ability → device**. Điều kiện lật ngược: nếu `OnChangeDataDevice` chỉ **hồi đầy**
-> `CurrentHealth` mà không đổi `StartHealth` thì device **không** tăng HP tối đa — chỉ hồi.
->
-> **Cách chốt (1 class):** dump `Player_Health.asm.txt`, xem `OnChangeDataDevice` có ghi vào
-> `StartHealth` (`@0x0`) hay chỉ `CurrentHealth` (`@0x4`).
-
-**f) Device **thuộc về một tàu** — và mỗi tàu có **4 slot**
-
-```csharp
-Player_Device_Saved_Datas.GetPlayerDevices(int playerIndex) → int[]
-Player_Device_Saved_Datas.SetPlayerDevices(int playerIndex, int[] devices)
-Device_Get_Data.GetPlayerUse(int instanceId) → int     // tàu nào đang gắn device này
-```
-
-Thân `GetPlayerUse` đọc nguyên văn (arm64):
-
-```
-for (int p = 0; p < listPlayers.Count; p++) {
-    int[] dev = Player_Device_Saved_Datas.GetPlayerDevices(p);   // bl 0x14e628c
-    for (int i = 0; i < 4; i++) {                                // add x8,#1 ; cmp x8,#4
-        if (dev[i] == instanceId) return p;                      // cmp w11, w19 ; b.eq
-    }
+reduceDamageByDevice (@0x58)      = 0
+amountAutoGainHpByDevice (@0x28)  = 0
+devices[] = Player_Device_Saved_Datas.GetPlayerDevices(_idPlayer)      // 0x14e628c
+for (i = 0; i < devices.Length; i++) {
+    if (devices[i] == -1) continue;                                    // cmn w21,#1
+    Device d = Device_Get_Data.GetDevice(devices[i]);                   // 0x12546d0
+    if ((uint)(d.id − 1000) <= 999)          // dải 1000–1999  → GIÁP
+        reduceDamageByDevice += GetStatValue1(d) / 100.0;               // fdiv 0x42C80000
+    else if ((uint)(d.id − 5000) <= 999)     // dải 5000–5999  → HỒI MÁU
+        amountAutoGainHpByDevice += StartHealth × GetStatValue1(d) / 100.0;
 }
-return -1;                                                       // mov w21, #-1
 ```
 
-⇒ **4 slot device mỗi tàu** (`i = 0,1,2,3`), và **một device instance chỉ thuộc đúng một tàu**
-(không trả về danh sách, trả về **một** `int`, `−1` nếu không tàu nào).
+⇒ **`OnChangeDataDevice` KHÔNG ghi vào `StartHealth`.** Nó chỉ đặt **2 field**:
+**giảm damage** và **lượng hồi HP theo % HP tối đa**.
 
-⚠ **Phân biệt hai con số dễ lẫn:**
+⚠ **Đính chính lần ba — lần này là đính chính của chính đính chính:** tôi đã viết *"device không
+cộng HP"* (đúng), rồi sửa thành *"device **có** cộng HP tối đa"* (❌ **sai** — lúc đó chưa có asm,
+chỉ suy từ tên hàm). **Kết luận đúng:**
 
-| Số | Nghĩa | Nguồn |
-|---|---|---|
-| **5** | **loại** device (`type = id/100 − 1`, chạy 0…4) | `GetStatValue1` `cmp w20, #4` |
-| **4** | **slot** device mỗi tàu | `GetPlayerUse` `cmp x8, #4` |
+| Phát biểu | Đúng? |
+|---|---|
+| device **cộng HP tối đa** | ❌ **sai** — `StartHealth` không bị chạm |
+| device **giảm damage** nhận vào | ✅ (`reduceDamageByDevice`, cộng dồn theo %/100) |
+| device **tăng hồi máu** theo % HP tối đa | ✅ (`amountAutoGainHpByDevice = StartHealth × stat%/100`) |
 
-⇒ **Đây là mắt ghép trả lời giả thuyết "HP là của tàu":** `StartHp` **không** theo tàu, nhưng
-**device thì có** (lưu theo `playerIndex`, 4 slot/tàu), và `Player_Health.OnChangeDataDevice(idPlayer)`
-nhận **đúng `playerIndex`**. Vậy **HP hiệu dụng khác nhau giữa các tàu — qua device, không qua `StartHp`**.
+⇒ HP tối đa **chỉ** = `StartHp × (1 + 0,18 × TechStatPoints(0) + abi7 × GetNumberAbility(7))`.
+Device làm **HP hiệu dụng** tăng lên, đúng nghĩa "giáp": `HP_eff = HP / (1 − reduceDamageByDevice)`.
+
+**Hai dải id của device (A):**
+
+| Dải `device.id` | Tác dụng |
+|---|---|
+| **1000–1999** | giáp: `reduceDamageByDevice += stat%/100` |
+| **5000–5999** | hồi máu: `amountAutoGainHpByDevice += StartHealth × stat%/100` |
 
 **e) Giá trị số **chưa** lấy được:** `listStatValues` / `percentByLevels1` / `percentByLevels2` được
 nạp bằng `RuntimeHelpers.InitializeArray` từ **field RVA data** trong metadata — `dump.cs` và asm
@@ -510,9 +500,38 @@ GetStartHp       = StartHp × (1 + GetHpStatPercent)
 
 | Trước đây | Bây giờ |
 |---|---|
-| "HP phải là của tàu" | ❌ **Không** — `ships.json` **25 tàu không có field HP** là **đúng**, vì HP không thuộc tàu |
-| "`StartHp` là hằng số bí ẩn" | ⚠ `StartHp` = **HP gốc ở cấp 0**; phần lớn HP đến từ `TechStatPoints(0)` |
-| "device cộng HP" | ✅ vẫn đúng, nhưng là **đường thứ ba** (4 slot/tàu, §0.6.7f) |
+| "HP phải là của tàu" | ❌ **Bị bác (mức A)** — xem (c1) dưới |
+| "`StartHp` là hằng số bí ẩn" | ✅ **đã có: 2500**; phần lớn HP đến từ `TechStatPoints(0)` |
+| "device cộng HP" | ❌ **sai** — device chỉ **giáp + hồi máu** (§0.6.7d) |
+
+**c1) Bằng chứng "HP **không** theo tàu" — nay đủ mạnh để gọi là A:**
+
+Sau khi công cụ export được sửa (bản `6109008c`), `Player_Get_Datas.asm.txt` **hết bị cắt**:
+
+| Kiểm | Kết quả |
+|---|---|
+| Toàn bộ file, mọi lệnh ghi vào **static `#0x6c`** | **đúng 1 chỗ**: `.cctor` `0x14e5e70` — `str d0, [x8, #0x68]` (ghi **cặp** `{0,18, 2500}`) |
+| 17 class asm còn lại | **0 lệnh** ghi vào static `#0x6c` của `Player_Get_Datas` |
+| `Player_Attack` ghi `#0x68/#0x6c/#0x70` | là **field instance của chính nó**, không phải static của `Player_Get_Datas` |
+
+⇒ `StartHp` **gán đúng một lần**, giá trị **2500**, **không bao giờ gán lại** — kể cả khi chọn tàu.
+
+**c2) Vậy "HP theo tàu" của bạn đúng ở đâu?** Đúng ở **giáp và hồi máu**, không ở HP tối đa:
+
+```
+HP tối đa  = 2500 × (1 + 0,18 × tech stat 0 + abi7 × ability 7)     ← dùng chung MỌI tàu
+HP hiệu dụng = HP tối đa × 1/(1 − reduceDamageByDevice) × (1/giáp)   ← khác nhau THEO TÀU (4 slot device)
+```
+
+⇒ Hai tàu khác nhau **vẫn chịu damage khác nhau** (giáp), **hồi máu khác nhau**, nhưng **thanh máu
+tối đa giống nhau**. Đây là điểm tinh tế dễ clone sai nhất trong toàn bộ hệ thống.
+
+**c3) Điều kiện lật ngược (ghi để không tự lừa):** nếu tồn tại một class **không nằm trong 17 file
+asm** ghi vào static `#0x6c` của `Player_Get_Datas` thì kết luận trên sai. Phạm vi đã kiểm:
+**17 class** = toàn bộ chuỗi player + balance (`Player_Health` · `Player_Ingame` · `Player_Attack` ·
+`Player_Ability` · `Player_Talent` · `Player_Get_Datas` · `Tech_Datas` · `Device_Get_Data` ·
+`GameDatas` · `Map_Get_Datas` · `Stage_Get_Datas` · `Droid_Data_Balance` · `Enemy_Data_Balance` ·
+`RankManager` · `ArenaManager` · `IAP_Manager` · `Player_Datas`).
 
 **d) Hai trục tăng HP của người chơi — tách bạch:**
 
@@ -613,6 +632,147 @@ Kiểm bằng 4 nguồn độc lập.
    `Enemy_Health` (chưa dump).
 
 **Cách chốt (rất rẻ):** dump `Enemy_Health.asm.txt` — tìm 1 lệnh **ghi** vào `StartHealth`.
+
+### 0.6.13 Hằng số gốc **đã có** — `StartHp = 2500`
+
+Bản `6109008c`. Toàn bộ mục §0.6.3 ("thiếu đúng một giá trị") **nay đã đóng**.
+
+**Cách đọc ra (A):** `.cctor` của `Player_Get_Datas` nạp **một cặp float 8 byte** bằng `ldr d0`:
+
+```
+0x14e5e58: ldr  d0, [x9, #0xbc0]    ; pool 0x757bc0–0x757bc7 = {0.18, 2500.0}
+0x14e5e6c: str  x0, [x8, #0x60]     ; PlayerStarCosts (int[]) nạp cùng lúc
+0x14e5e70: str  d0, [x8, #0x68]     ; ghi 8 byte → 0x68 VÀ 0x6C cùng lúc
+0x14e5e74: str  w9, [x8, #0x70]     ; w9 = 0x3C23D70A = 0.01
+```
+
+Theo `dump.cs`, ba field static liền nhau:
+
+| Offset | Field | Giá trị |
+|---|---|---|
+| `0x68` | `stepCommon` | **0,18** |
+| `0x6C` | **`StartHp`** | **2500,0** |
+| `0x70` | `BaseHpRecoverSpeed` | **0,01** |
+
+⚠ **Đây là chỗ tôi từng ghi sai:** nhiều vòng trước tôi ghi `stepCommon = 0,168`. **0,168 không phải
+`stepCommon`** — nó là hằng của **`stepLevel`/`GetMainCannonDamage`** (đường cong **damage theo cấp tàu**).
+Hai đường cong khác nhau:
+
+| Hằng | Dùng cho | Ngưỡng | Hệ số |
+|---|---|---|---|
+| **0,168** | **damage / cấp tàu** (`GetMainCannonDamage`, `stepLevel`) | 30 · 58 · 118 · 248 | 1,0 · 1,05 · 1,15 · (0,1764 · 0,1932) |
+| **0,18** | **HP / điểm tech stat 0** (`GetHpStatPercent`) | — | tuyến tính |
+
+**Công thức HP hoàn chỉnh (A):**
+
+```
+HP tối đa = 2500 × (1 + 0,18 × TechStatPoints(0) + abi7 × GetNumberAbility(7))
+```
+
+| `TechStatPoints(0)` | HP | |
+|---|---|---|
+| 0 | **2.500** | trạng thái gốc |
+| 5 | 4.750 | |
+| 10 | 7.000 | |
+| 20 | 11.500 | |
+| 30 | 16.000 | |
+| 60 | 29.500 | |
+
+**Đối chiếu với damage trong game:** đòn boss 350–2.800 (`OPEN_ISSUES` B6) ⇒ ở HP gốc **2.500**,
+người chơi chết sau **1 đòn mạnh nhất** và **≈7 đòn trung bình (350)**. Đây là game "giấy" —
+khớp với việc phải có **né (dodge tới 90%)** và **khiên 1 hit**.
+
+### 0.6.14 Công thức **damage nhận vào** — giáp, device, né
+
+Bản `6109008c`, `Player_Health.TakeDamage` (2.420 B). Đọc từng lệnh — đây là **công thức đầy đủ**:
+
+```
+dmg = damager.damage                       // [x21, #0x10]
+
+// 1) device giảm damage (tuyến tính, cộng dồn theo %/100)
+dmg = dmg × (1 − reduceDamageByDevice)     // fmul + fsub @0x14c73d0
+
+// 2) giáp (hyperbolic)
+if (Armor >= 0)  f = 100 / (100 + Armor)
+else             f = 2 − 100 / (100 − Armor)      // giáp âm ⇒ nhận thêm damage
+dmg = dmg × f                              // fmul @0x14c7404
+
+// 3) né (dodge) — kiểm TRƯỚC khi trừ máu
+chance = abi8 × GetNumberAbility(8)
+if (CurrentHealth / StartHealth < 0,3)                    // ngưỡng 0,3 @0x7570e0
+    chance += abi34 × GetNumberAbility(22)                // thưởng né khi HP thấp
+chance = min(chance, 90,0)                                // fmov 0x42B40000
+if (chance > Random.Range(0, 100)) → né hoàn toàn
+```
+
+| Thành phần | Công thức | Ví dụ |
+|---|---|---|
+| `reduceDamageByDevice` | `Σ(stat%/100)` của device dải **1000–1999** | 3 device 5% ⇒ 0,15 ⇒ `×0,85` |
+| `Armor` | `100/(100+Armor)` | 100 ⇒ ×0,5 · 300 ⇒ ×0,25 · 0 ⇒ ×1,0 |
+| giáp **âm** | `2 − 100/(100−Armor)` | −100 ⇒ **×1,5** (nhận thêm 50%) |
+| né | `min(90, abi8 × năng lực 8 [+ abi34 × năng lực 22 nếu HP<30%])` | trần **90%** |
+
+**Ba điều đáng chép sang bản clone:**
+
+1. **Giáp hyperbolic, không tuyến tính** — armor 100 giảm 50%, armor 300 giảm 75%, nhưng **không bao
+   giờ = 0**. Đây là cách chống "stack giáp vô hạn".
+2. **Giáp âm làm tăng damage** — cùng một công thức dùng cho cả buff và debuff.
+3. **Né là phép nhân xác suất, không phải trừ damage** — né 90% nghĩa là **HP hiệu dụng ×10**.
+
+**Hồi máu tự động (A):**
+
+```
+amountAutoGainHpByDevice = StartHealth × (Σ stat%/100)     // device dải 5000–5999
+BaseHpRecoverSpeed       = 0,01                            // @0x70
+```
+
+⇒ hồi **1% HP mỗi "nhịp"** + phần cộng thêm của device.
+
+**Họ kỹ năng "dưới 30% HP" (A, khớp bảng chữ):** `12-localization.csv` có
+`txt_techstatability_desc_300…309` — *"If health points are below 30%, power increases by 10%…50%"* /
+*"Rate of enemy K.O increases by 5%…20%"* ⇒ **cùng ngưỡng 0,3** với công thức né ở trên.
+Đây là **một hệ thống duy nhất**: HP thấp ⇒ kích hoạt buff.
+
+### 0.6.15 **HP chốt đúng lúc vào màn** — xác nhận bằng lệnh ghi
+
+Đây là câu *"các thứ của player được tính khi vào màn chơi"* — nay trả lời dứt điểm.
+
+**a) Chuỗi gọi thật (A):**
+
+```
+Player_Health.Start()                    // 0x14c6b5c
+  └─ tạo lambda  <Start>b__14_1          // 604 B, gán vào Action
+       └─ GetStartHp()                   // bl 0x14e311c
+            s0 = 2500 × (1 + 0,18×TechStatPoints(0) + abi7×GetNumberAbility(7))
+       └─ stp s0, s1, [x8]               // 0x14c7e48 — ghi 8 byte
+            [x8+0] = s0 → StartHealth
+            [x8+4] = s1 → CurrentHealth
+```
+
+**b) Hai nhánh trong lambda:**
+
+| Nhánh | Lệnh | Kết quả |
+|---|---|---|
+| đầy máu | `str s8, [x8]` (`0x14c7eac`) rồi `bl 0x14c6ca0` = `ResetStaticVariables()` | `StartHealth = GetStartHp()`; `CurrentHealth = StartHealth` |
+| hồi một phần | `fdiv s1, s8, s9` + `fmul s1, s1, s0` | `CurrentHealth = StartHealth × (s8/s9)` — **một cặp float static** (nghi là tỉ lệ "chơi tiếp"), mức **B** |
+
+⇒ **Mức A:** `StartHealth` được **ghi trong `Start()`** — tức **lúc object người chơi được tạo trong màn**,
+không phải lúc mở app, không phải lúc chọn tàu.
+
+**c) ⚠ Đính chính:** tôi từng kết luận *"`Start()` không đụng tới HP"* dựa trên `Player_Datas.asm.txt`.
+**Sai** — file đó chỉ chứa phần **đầu** của `Start()` (dựng `mainModule`, tạo lambda); phần **thân
+lambda** nằm ở `Player_Health.asm.txt`, chỉ có sau khi công cụ export được sửa (bản `6109008c`).
+Bài học: **"không thấy trong file X" ≠ "không xảy ra"** — phải kiểm cả **file khác** và **cả phần
+bị cắt** (`DATA_SYNC` §7.29).
+
+**d) Trả lời gọn — 4 mệnh đề, đúng/sai rõ ràng:**
+
+| Mệnh đề | Kết luận | Mức |
+|---|---|---|
+| "Số của player **chốt khi vào màn**" | ✅ **đúng** — `StartHealth` ghi trong `Start()` | A |
+| "**Hồi sinh** tính lại stat" | ❌ **không** — `ResetStaticVariables()` chỉ **chép** | A |
+| "Mỗi lần gọi stat đều **tính lại**" | ✅ đúng — 61/61 getter không cache | A |
+| "HP **theo tàu**" | ⚠ chỉ đúng **gián tiếp** — qua device (giáp/hồi), không qua `StartHp` | A |
 
 ## 1. Phương pháp & nguồn
 

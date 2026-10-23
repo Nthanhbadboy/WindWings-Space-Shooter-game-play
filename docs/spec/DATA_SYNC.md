@@ -1443,6 +1443,48 @@ Cả hai đều có `ChangePlayerTypes(Action)`; bộ điều phối là **`GP_C
 
 ---
 
+### 7.31 Bản `6109008c` — **asm hết cụt**, 5 class mới, và số liệu **đổi**
+
+**a) Công cụ đã sửa:** kích thước method lấy từ **method kế tiếp trong dump**, trần **128 KB**
+(trước: cắt ở 4.608 B/method). Kết quả: **11/12 file trước đây bị cụt → nay đủ**.
+
+| File | Trước | Sau |
+|---|---|---|
+| `Map_Get_Datas.asm.txt` | 772 lệnh, **không có `.cctor`** | **26.013 dòng**, có **`.cctor`** |
+| `Player_Get_Datas.asm.txt` | 5.341 lệnh, `.cctor` cụt | **đủ** (`.cctor` 2.492 B, 97 hằng) |
+
+**5 class asm/json MỚI:** `Player_Ability` · `Player_Attack` · `Player_Health` · `Player_Ingame` · `Player_Talent`.
+
+**b) Ba mục tôi từng để mở — nay đóng (A):**
+
+| Mục | Kết quả |
+|---|---|
+| **A1 `StartHp`** | **2500** · `stepCommon` **0,18** · `BaseHpRecoverSpeed` **0,01** — đọc từ **cặp `ldr d`** rồi `str d0, [x8,#0x68]` ghi **2 float liền** |
+| **A3 `OnChangeDataDevice`** | đọc đủ 452 B: **KHÔNG** ghi `StartHealth`; chỉ đặt `reduceDamageByDevice` + `amountAutoGainHpByDevice` (`BALANCE` §0.6.7d) |
+| **A4 caller của `GetStartHp`** | **`Player_Health.<Start>b__14_1`** → ghi `StartHealth` (`BALANCE` §0.6.15) |
+
+**c) ⚠ ĐÍNH CHÍNH số đã công bố** (do `enemy_hp.json` + `waves.json` được tái export):
+
+| Số | Cũ | **Mới** |
+|---|---|---|
+| `Boss-*` có HP | 45/45 | **46/47** |
+| Prefab gốc có HP | 246 | **251** |
+| `count_spawners` | 11.099 | **11.095** |
+| Wave có HP > 0 | 46 | **45** |
+| Tổng HP toàn game | 241.598.000 | **496.410.000** (do tính **× `copies`**) |
+| Median HP wave 240–259 | 4.300.000 | **8.600.000** |
+| Median HP wave 260–279 | 7.760.000 | **16.230.000** |
+| Wave 280+ | 10.500.000 | **20.600.000** |
+
+⇒ đường cong độ khó: **≈ 1,89× mỗi 20 wave** ở đoạn cuối (trước ghi 1,8×).
+
+**d) `waves.json` nay có `copies` là field hiện:** `Σ len(enemies) = 22.471` ·
+`Σ len × copies = 45.659` ⇒ **45.659 vẫn đúng**, chỉ là trước phải tự nhân.
+
+**e) `Count` vẫn = 0 ở 100% spawner** — không đổi.
+
+---
+
 ## 8. Còn thiếu / phải đoán
 
 | # | Thứ | Mức | Ghi chú |

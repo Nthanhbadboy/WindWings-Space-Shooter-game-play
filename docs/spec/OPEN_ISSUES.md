@@ -23,10 +23,10 @@
 
 | # | Vấn đề | Nhóm | Mức | Ảnh hưởng thiết kế |
 |---|---|---|---|---|
-| A1 | Giá trị `StartHp` | **lỗi export** | D | **chặn TTK** — không có HP thì không cân được damage |
-| A2 | `Map_Get_Datas` không có `.cctor` ⇒ bảng map→wave | **lỗi export** | D | chặn "màn nào gồm wave nào" |
-| A3 | `Player_Health.OnChangeDataDevice` ngoài vùng dump | **lỗi export** | C | chặn "device cộng bao nhiêu HP" |
-| A4 | Caller thật của `GetStartHp()` | **lỗi export** | C | xác nhận thời điểm chốt HP |
+| A1 | ~~Giá trị `StartHp`~~ ✅ **ĐÓNG = 2500** | **lỗi export** | **A** | **mở khoá TTK** — `BALANCE` §0.6.13 |
+| A2 | `Map_Get_Datas..cctor` **nay đã có** (26.013 dòng) — bảng map→wave **chưa trích** | **chưa lấy** | **C** | chặn "màn nào gồm wave nào" |
+| A3 | ~~`OnChangeDataDevice`~~ ✅ **ĐÓNG** — device **không** cộng HP tối đa, chỉ giáp + hồi | **lỗi export** | **A** | `BALANCE` §0.6.7d |
+| A4 | ~~Caller của `GetStartHp()`~~ ✅ **ĐÓNG** = `<Start>b__14_1` | **lỗi export** | **A** | HP chốt **trong `Start()`** — `BALANCE` §0.6.15 |
 | B1 | 3 bảng stat của device | **RVA data** | D | chặn "device mạnh bao nhiêu" |
 | B2 | 13 tàu `20001–20013` | **chưa lấy** | C | ảnh hưởng số tàu (25 vs 38) |
 | B3 | HP enemy scale theo stage | **sai giả thuyết** | D | chặn cân bằng 231/236 wave |
@@ -149,12 +149,12 @@ return  Mathf.RoundToInt(bracket × base)
 
 **Dữ liệu HP enemy thật (`Enemy_Datas.csv`, 981 dòng):**
 
-| Chỉ số | Giá trị |
+| Chỉ số | Giá trị (bản `6109008c`) |
 |---|---|
 | `StartHealthPoint > 0` | **467 / 981** · **72 giá trị khác nhau** (1.000 – 10.000.000) |
 | `StartHpPoint` | **0 ở 981/981** ⇒ field chết |
 | `CurrentHealthPoint` | **0 ở 981/981** ⇒ field chết |
-| **`Boss-*`** | **45 / 45 có HP** (90.000 – 31.480.000) |
+| **`Boss-*`** | **46 / 47 có HP** (90.000 – 31.480.000) |
 | **`CB-*`** (enemy thường) | **1 / 37** — chỉ `CB(TEST)` = 10.000.000 |
 | `CB-30003` · `CB-30015` · `CD-31002` | **0,0** · **0,0** · **0,0** |
 
@@ -165,6 +165,17 @@ return  Mathf.RoundToInt(bracket × base)
 2. **Runtime gán HP.** Ủng hộ: ghi chú trong `enemy_hp.json` — *"runtime HP is scaled by
    `Enemy_Data_Balance` and stage"* — nhưng class đó **không có** method HP, nên ghi chú **chỉ sai
    địa chỉ**, không sai ý.
+
+**Đường cong độ khó (× `copies`, bản `6109008c`):**
+
+| Wave | có HP | median | max |
+|---|---|---|---|
+| 0–239 | 5 / 240 | 0 | 7.000.000 |
+| 240–259 | 19/20 | **8.600.000** | 13.520.000 |
+| 260–279 | 20/20 | **16.230.000** | 33.420.000 |
+| 280–281 | 1/2 | 20.600.000 | 20.600.000 |
+
+⇒ **≈ 1,89× mỗi 20 wave**; tổng HP toàn game **496.410.000**.
 
 **Cách chốt:** dump `Enemy_Health.asm.txt`, tìm **1 lệnh ghi** vào `StartHealth`. Rất rẻ.
 Đây là **câu hỏi số 1 còn lại** vì nó quyết định toàn bộ cảm giác chơi.
