@@ -292,6 +292,16 @@ def main() -> int:
         json.dump({"source": "InitializeArray token (2*ordinal+1) -> blob "
                              "<PrivateImplementationDetails> cùng image",
                    "methods": resolved}, fh, ensure_ascii=False, indent=1)
+    audit = {"capture_version": "actual-initializearray-call-v2", "methods": {}}
+    for key, rows in resolved.items():
+        bad = [r for r in rows if not r["length_valid"]]
+        audit["methods"][key] = {"count": len(rows), "invalid_length": len(bad),
+                                  "bad_rows": bad}
+    audit_path = os.path.join(os.path.dirname(out_path), "ia-audit.json")
+    with open(audit_path, "w", encoding="utf-8") as fh:
+        json.dump(audit, fh, ensure_ascii=False, indent=1)
+    print("IA audit:", {k: (v["count"], v["invalid_length"])
+                        for k, v in audit["methods"].items()})
     print(f"ia-resolved: {sum(len(v) for v in resolved.values())} mảng / "
           f"{len(resolved)} method (không giải được: {_unres})")
     print(f"wrote {out_path} ({os.path.getsize(out_path)} B)")
