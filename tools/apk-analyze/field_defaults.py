@@ -114,7 +114,7 @@ def parse_types(blob, header):
         field_count = struct.unpack_from("<H", blob, base + size - 24 + 4)[0]
         types.append((read_str(blob, str_off, name_idx), field_start, field_count))
     print(f"  sample type names: {[t[0] for t in types[:12]]}")
-    return types, n_fields, (f_off, str_off)
+    return types, n_fields, (f_off, str_off, f_size)
 
 
 def decode(typ, blob, pos):
@@ -161,7 +161,7 @@ def main() -> int:
     data = blob[data_off:data_off + data_size]
     print(f"fieldDefaultValues entries={fdv_size // 12}; data={data_size} B")
 
-    types, _n_fields, (f_off, str_off) = parse_types(blob, header)
+    types, _n_fields, (f_off, str_off, f_size) = parse_types(blob, header)
     # fieldIndex toàn cục -> "Class.field" + tên field (từ section fields)
     index2name = {}
     for cls_name, start, count in types:
@@ -169,6 +169,8 @@ def main() -> int:
             continue
         for k in range(count):
             fidx = start + k
+            if not (0 <= fidx * 12 + 4 <= f_size):
+                continue
             name_idx = struct.unpack_from("<i", blob, f_off + fidx * 12)[0]
             index2name[fidx] = f"{cls_name}.{read_str(blob, str_off, name_idx)}"
 
