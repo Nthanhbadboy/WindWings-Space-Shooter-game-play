@@ -4,7 +4,7 @@
 >
 > Vòng trước (`VERIFY_ROUND1.md`) kiểm **phán quyết** của nhánh dữ liệu. Vòng này kiểm **con số
 > của chính mình**: mỗi số trong docs được đo lại từ dữ liệu nguồn, và dòng doc phải còn ghi đúng
-> số đó. Không đọc bằng mắt — 53 tuyên bố, mỗi cái một phép đo chạy được.
+> số đó. Không đọc bằng mắt — 55 tuyên bố, mỗi cái một phép đo chạy được.
 
 ---
 
@@ -12,13 +12,13 @@
 
 | | Số |
 |---|---:|
-| Tuyên bố được kiểm | **53** |
-| Đo ra đúng như doc | **51** |
+| Tuyên bố được kiểm | **55** |
+| Đo ra đúng như doc | **53** |
 | **Sai — đã sửa doc** | **4** |
 | Không kiểm được offline (SKIP, có lý do) | **2** |
 | FAIL còn lại | **0** |
 
-Chạy trên máy: `PASS 51 · FAIL 0 · SKIP 2`, mã thoát 0. Bản sao cố tình lệch một số cho ra
+Chạy trên máy: `PASS 53 · FAIL 0 · SKIP 2`, mã thoát 0. Bản sao cố tình lệch một số cho ra
 `FAIL 1` và mã thoát 1 — cổng CI thật sự đỏ, không phải chỉ in chữ.
 
 ---
@@ -92,7 +92,7 @@ Khác với §1: ở đây tôi **không kết luận doc sai**, vì chưa có �
 
 ## 4. Những gì đã kiểm và **đúng**
 
-Không phải chỉ đi tìm cái sai. 51 tuyên bố đã đo lại và khớp:
+Không phải chỉ đi tìm cái sai. 53 tuyên bố đã đo lại và khớp:
 
 | Nhóm | Đã kiểm |
 |---|---|
@@ -108,7 +108,7 @@ Không phải chỉ đi tìm cái sai. 51 tuyên bố đã đo lại và khớp:
 
 ## 5. Cái đã học được từ chính vòng này
 
-**Bốn lỗi trong 53 tuyên bố, và cả bốn đều thuộc một dạng: đếm hai thứ khác nhau rồi ghi vào một
+**Bốn lỗi trong 55 tuyên bố, và cả bốn đều thuộc một dạng: đếm hai thứ khác nhau rồi ghi vào một
 dòng.** 18 vs 21 file, 180 vs 185 animation, 25 vs 26 rig, 203 vs 154 — không cái nào là tính sai;
 tất cả là **đếm trên tập khác nhau mà không ghi tập nào**.
 
@@ -120,7 +120,7 @@ con số không kèm định nghĩa sẽ không bảo vệ được — nó ch�
 ## 6. Cách chạy lại
 
 ```bash
-python3 tools/verify-claims.py                 # đủ 53 claim
+python3 tools/verify-claims.py                 # đủ 55 claim
 python3 tools/verify-claims.py --only B        # chỉ nhóm Spine/clip
 python3 tools/verify-claims.py --ref <sha>     # chỉ định ref nhánh dữ liệu
 ```

@@ -603,6 +603,14 @@ claim("E9", MISSIONS, "[0.2, 0.6, 0.98]", [0.2, 0.6, 0.98],
 
 
 
+claim("E11", MISSIONS, "**31 ID**", 31,
+      lambda: len(pfield(STAGE_GET, "listIgroneEnemies")() or []),
+      "danh sách enemy bị bỏ qua trong chế độ nhiệm vụ")
+
+claim("E12", "docs/spec/MISSIONS_STARS.md", "**31 phần tử**", 31,
+      lambda: len(pfield(STAGE_GET, "listIgroneEnemies")() or []))
+
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:
