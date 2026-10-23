@@ -189,22 +189,30 @@ def main() -> int:
     types_by_name = dump_field_types(dump_path) if os.path.isfile(dump_path) else {}
     print(f"dump.cs field types: {len(types_by_name)}; mapped indices: {len(index2name)}")
 
-    result, skipped, reasons = {}, 0, {}
+    entries = []
     for i in range(0, fdv_size - 11, 12):
         field_idx, _type_idx, data_idx = struct.unpack_from("<iii", blob, fdv_off + i)
         key = index2name.get(field_idx)
         if key is None or data_idx < 0:
-            skipped += 1
-            reasons["no-name"] = reasons.get("no-name", 0) + 1
             continue
+        entries.append((data_idx, field_idx, key))
+    entries.sort()
+    result, skipped, reasons = {}, 0, {}
+    for pos, (data_idx, field_idx, key) in enumerate(entries):
+        nxt = entries[pos + 1][0] if pos + 1 < len(entries) else len(data)
+        blob_bytes = data[data_idx:min(nxt, data_idx + 65536)]
         typ = types_by_name.get(key)
         value = decode(typ, data, data_idx) if typ else None
         entry = {"type": typ or "?", "data_index": data_idx,
-                 "raw": data[data_idx:data_idx + 64].hex()}
+                 "raw": blob_bytes.hex()}
         if value is not None:
             entry["value"] = value
         elif 0 <= data_idx <= len(data) - 4:
             entry["int32"] = struct.unpack_from("<i", data, data_idx)[0]
+        if len(blob_bytes) % 4 == 0 and len(blob_bytes) >= 8:
+            ints = list(struct.unpack(f"<{len(blob_bytes) // 4}i", blob_bytes))
+            if all(-100000 <= v <= 100000000 for v in ints):
+                entry["ints"] = ints
         result[key] = entry
     print(f"decoded: {len(result)}, skipped: {skipped} {reasons}")
 
