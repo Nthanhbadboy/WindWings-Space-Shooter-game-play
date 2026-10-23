@@ -136,6 +136,48 @@ def elf_segments(path):
 
 PF_W = 0x2
 
+# slot VA -> addend của R_AARCH64_RELATIVE. Các slot con trỏ metadata trong file
+# chứa 0; giá trị sau khi linker nạp nằm ở bảng .rela.dyn chứ không ở bytes file.
+RELOCS: dict[int, int] = {}
+
+
+def elf_relocs(path):
+    """Đọc .rela.dyn: {r_offset: r_addend} cho R_AARCH64_RELATIVE (1027)."""
+    out = {}
+    try:
+        with open(path, "rb") as f:
+            blob = f.read()
+        if blob[:4] != b"\x7fELF":
+            return out
+        shoff = struct.unpack_from("<Q", blob, 0x28)[0]
+        shentsize = struct.unpack_from("<H", blob, 0x3A)[0]
+        shnum = struct.unpack_from("<H", blob, 0x3C)[0]
+        for i in range(shnum):
+            base = shoff + i * shentsize
+            if base + 64 > len(blob):
+                break
+            sh_type = struct.unpack_from("<I", blob, base + 4)[0]
+            if sh_type != 4:            # SHT_RELA
+                continue
+            sh_off = struct.unpack_from("<Q", blob, base + 0x18)[0]
+            sh_size = struct.unpack_from("<Q", blob, base + 0x20)[0]
+            sh_entsize = struct.unpack_from("<Q", blob, base + 0x38)[0] or 24
+            for pos in range(sh_off, sh_off + sh_size - 23, sh_entsize):
+                r_off, r_info, r_add = struct.unpack_from("<QQq", blob, pos)
+                if (r_info & 0xFFFFFFFF) == 1027:
+                    out[r_off] = r_add
+    except OSError:
+        pass
+    return out
+
+
+def slot_value(blob, segs, va):
+    """Giá trị 8-byte hiệu dụng tại slot: ưu tiên relocation, fallback bytes file."""
+    if va in RELOCS:
+        return RELOCS[va]
+    raw = va_read(blob, segs, va, 8, ro_only=False)
+    return struct.unpack("<Q", raw)[0] if raw and len(raw) == 8 else None
+
 
 def va_read(blob, segs, va, n=4, ro_only=False):
     """Đọc n byte tại địa chỉ ảo `va` (theo PT_LOAD); fallback coi va là offset.
@@ -259,9 +301,8 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
                     slot_regs[dst] = adrp_pages[base] + off
                     adrp_pages.pop(dst, None)
                 if base in slot_regs and off == 0 and dst != base:
-                    raw_a = va_read(blob, segs, slot_regs[base], 8, ro_only=False)
-                    if raw_a and len(raw_a) == 8:
-                        a = struct.unpack("<Q", raw_a)[0]
+                    a = slot_value(blob, segs, slot_regs[base])
+                    if a:
                         if os.environ.get("RVA_DEBUG") and len(debug_rva) < 40:
                             raw_v = va_read(blob, segs, a, 16, ro_only=False)
                             debug_rva.append({"addr": hex(insn.address),
@@ -269,10 +310,8 @@ def constants_in(code_off, size, blob, md, segs=None, base=None):
                                               "a": hex(a),
                                               "a_bytes": raw_v.hex() if raw_v else None})
                         for start in (a,):
-                            raw_v = va_read(blob, segs, start, 8, ro_only=False)
-                            cands = [start]
-                            if raw_v and len(raw_v) == 8:
-                                cands.append(struct.unpack("<Q", raw_v)[0])
+                            v = slot_value(blob, segs, start)
+                            cands = [start] + ([v] if v else [])
                             for ptr in cands:
                                 raw_hdr = va_read(blob, segs, ptr, 4, ro_only=True)
                                 if not raw_hdr or len(raw_hdr) != 4:
@@ -509,6 +548,8 @@ def main() -> int:
 
     md = elf_machine(so_path)
     segs = elf_segments(so_path)
+    RELOCS.update(elf_relocs(so_path))
+    print(f"R_AARCH64_RELATIVE relocs: {len(RELOCS)}")
     print(f"PT_LOAD segments: {len(segs)}")
     print(f"ELF machine: {hex(md) if md else 'unknown'} ({'aarch64' if md == 0xB7 else 'arm'})")
     methods = parse_dump(dump_path)
