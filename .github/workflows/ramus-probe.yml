@@ -112,8 +112,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          passed=$(grep -c '\[build\] PASS' ci.log 2>/dev/null || echo 0)
-          failed=$(grep -c '\[build\] FAIL' ci.log 2>/dev/null || echo 0)
+          # grep -c prints 0 *and* exits 1 when nothing matches, so `|| echo 0`
+          # would append a second line and break the comparison below.
+          passed=$(grep -c '\[build\] PASS' ci.log 2>/dev/null || true); passed=${passed:-0}
+          failed=$(grep -c '\[build\] FAIL' ci.log 2>/dev/null || true); failed=${failed:-0}
+          errors=$(grep -E "error [A-Z]+[0-9]+|MISSING" ci.log 2>/dev/null | sort -u | head -40 || true)
           {
             echo "<!-- bridge-build -->"
             if [ "$failed" = "0" ] && [ "$passed" != "0" ]; then
@@ -123,8 +126,7 @@ jobs:
               echo
               echo "### errors"
               echo '```'
-              grep -E "error [A-Z]+[0-9]+|MISSING" ci.log 2>/dev/null | sort -u | head -40 \
-                || echo "no compiler errors found"
+              [ -n "$errors" ] && echo "$errors" || echo "(no compiler errors)"
               echo '```'
             fi
             echo
@@ -135,7 +137,9 @@ jobs:
             echo
             echo "### produced DLLs"
             echo '```'
-            find dist -name '*.dll' -printf '%f  %s bytes\n' 2>/dev/null | sort || echo "none"
+            find dist -name '*.dll' -printf '%f  %s bytes  %p\n' 2>/dev/null | sort || echo "none"
+            echo
+            (cd dist 2>/dev/null && sha256sum */RamusBridge.dll 2>/dev/null) || true
             echo '```'
             if [ "$failed" != "0" ]; then
               echo
