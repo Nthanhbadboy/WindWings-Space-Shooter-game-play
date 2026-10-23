@@ -80,6 +80,16 @@ không biết **màn nào** biến mất giữa hai lần chạy (16 màn chỉ 
   (73 `SelectBoss` + 66 `FightBoss`) nên ghi khoảng **319–385** thay vì một số cứng, đã sửa `25` §5.
 - Họ cũng kết luận `parse_as_object` cho 0 keyframe → cần decoder streamed clip. Trùng `27-anim-curves.md`.
 
+## 3e. Đọc thêm 2 commit (`a2cb074d`, `6ba892f0`, 01:12)
+
+- **`copies` giải quyết số quân**: họ kiểm `sum(len × copies) = 45.659`. Mình tính lại trên
+  `datas/waves.json` của mình: **45.659 khớp tuyệt đối** (dedupe lệch nhỏ: 11.101 vs 11.099 spawner,
+  22.475 vs 22.483 entry — không đổi tích). Từ nay: 45.659 = quân thật, ~22,5k = lượt khai báo.
+- **Damage khai báo trong Director**: họ báo 112 field/18 boss (55–2.800). Mình quét nhanh
+  34 file `*Director*.jsonl.gz` đã export: thấy 64 giá trị damage dạng số (`laserDamage`,
+  `damageRocket` 600, `damageBulletArea` 1200…) — **khớp về chất**, số đếm khác do cách tính.
+- `animator_map` của mình họ cũng đối chiếu: 5.792 dòng / 494 prefab gốc / 96,7% có tên controller.
+
 ## 4. Điều kiện lật ngược
 
 - Nếu `Enemy_Physics` export ra mà **phần lớn field rỗng** (như `Spawner.dataScript` = 0), thì
