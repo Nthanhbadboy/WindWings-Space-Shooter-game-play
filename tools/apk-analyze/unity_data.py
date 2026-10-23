@@ -330,6 +330,10 @@ def export_native_types(env) -> None:
                     summary[key] = val
                 elif isinstance(val, list):
                     summary[f"{key}__count"] = len(val)
+                    # Keep actual references/events: counts alone cannot join a
+                    # prefab controller to a clip or reproduce shot timing.
+                    if key in ("m_AnimationClips", "m_Events", "m_TOS"):
+                        summary[key] = val
                 elif isinstance(val, dict):
                     # giữ lại các scalar một cấp (vd m_MuscleClipInfo)
                     scalars = {k: v for k, v in val.items()
