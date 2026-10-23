@@ -223,6 +223,45 @@ def main() -> int:
                 entry["ints"] = ints
         result[key] = entry
     print(f"decoded: {len(result)}, skipped: {skipped} {reasons}")
+    # Probe: field index tương đối theo image (Assembly-CSharp) cho token IA
+    try:
+        im_off, im_size = header["images"]
+        str_off2, _ss = header["string"]
+        images = []
+        for i in range(im_size // 40):
+            nm, _asm, tstart, tcount = struct.unpack_from("<iiii", blob, im_off + 40 * i)
+            images.append((read_str(blob, str_off2, nm), tstart, tcount))
+        map_t = next(i for i, t in enumerate(types) if t[0] == "Map_Get_Datas")
+        img = next((im for im in images if im[1] <= map_t < im[1] + im[2]), None)
+        print(f"  image của Map_Get_Datas (type {map_t}): {img}")
+        if img:
+            _nm, tstart, tcount = img
+            base_field = sum(types[i][2] for i in range(tstart))
+            rel = {}
+            for i in range(tstart, tstart + tcount):
+                nm_i, fs_i, fc_i = types[i]
+                for k in range(fc_i):
+                    rel[fs_i + k - base_field] = index2name.get(fs_i + k)
+            mj = json.load(open("reverse-engineering/raw/il2cpp-consts/"
+                                "Map_Get_Datas.json", encoding="utf-8"))
+            cc_m = next(m for m in mj["methods"] if m["method"] == "cctor")
+            toks = [c for c in cc_m["constants"] if c.get("kind") == "init_array"]
+            by_name = result
+            hit = pid_hit = 0
+            for c in toks:
+                src = int(c["slot_val"], 16) & 0x1FFFFFFF
+                nm2 = rel.get(src)
+                if nm2:
+                    hit += 1
+                    if nm2.startswith("<PrivateImplementationDetails>"):
+                        ent = by_name.get(nm2)
+                        if ent and abs(len(bytes.fromhex(ent["raw"])) // 4
+                                       - c["len"]) <= 3:
+                            pid_hit += 1
+            print(f"  image-relative: {hit}/{len(toks)} có tên, "
+                  f"{pid_hit} khớp blob PID (±3)")
+    except Exception as e:  # noqa: BLE001
+        print(f"  image probe lỗi: {e!r}")
     # Thử 4 giả thuyết ánh xạ token InitializeArray -> field, in 8 token đầu
     # của Map_Get_Datas..cctor dưới mỗi giả thuyết.
     try:
