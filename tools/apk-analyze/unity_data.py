@@ -55,6 +55,14 @@ CONFIG = {
 # --------------------------------------------------------------- runtime group
 # These are the components that carry the numbers the balance report needs.
 RUNTIME = {
+    # Animation event receivers and Spine components must survive export to
+    # join event function -> component and skeleton -> SkeletonDataAsset.
+    "BossSpineEventHandler",
+    "BossAnimationEvents",
+    "MiniBoss1_Events",
+    "SkeletonAnimation",
+    "SkeletonMecanim",
+    "SkeletonRenderer",
     # weapons / bullets
     "Gun_Attack",
     "Bullet_Linearly",
@@ -129,7 +137,7 @@ RUNTIME = {
 # 44 class đạo diễn boss/mini-boss sống ở tiền tố khác nhau (Boss1_Director,
 # MB6_ChildDirector, Boss19_AttackPhases...). Ghép theo hậu tố để không phải
 # liệt kê tay từng cái và không bỏ sót class mới khi game cập nhật.
-TARGET_SUFFIXES = ("_Director", "_MiniDirector", "ChildDirector", "_AttackPhases")
+TARGET_SUFFIXES = ("_Director", "_MiniDirector", "ChildDirector", "_AttackPhases", "_AnimationEvents", "_AttackTypes")
 
 TARGETS = CONFIG | RUNTIME
 
