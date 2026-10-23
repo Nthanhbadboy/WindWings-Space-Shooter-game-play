@@ -203,7 +203,9 @@ jobs:
 
       - name: Extract ScriptableObject values (IL2CPP typetrees)
         continue-on-error: true
-        run: python3 tools/apk-analyze/unity_data.py 2>&1 | tee /tmp/apk/logs/unity_data.log | tail -60
+        run: |
+          python3 tools/apk-analyze/unity_data.py 2>&1 | tee /tmp/apk/logs/unity_data.log | tail -60
+          python3 tools/apk-analyze/anim_curves.py 2>&1 | tee /tmp/apk/logs/anim_curves.log | tail -10
 
       - name: Build localization / IAP / data tables
         continue-on-error: true
