@@ -101,8 +101,9 @@ jobs:
             tail -80 ci.log 2>/dev/null || echo "no ci.log — job stopped before the first step"
             echo '```'
           } > comment.md
-          gh pr comment "${{ github.event.pull_request.number }}" \
-            --body-file comment.md --edit-last --create-if-none
+          chmod +x .github/scripts/pr-comment.sh
+          .github/scripts/pr-comment.sh "${{ github.event.pull_request.number }}" \
+            comment.md '<!-- bridge-build -->'
 
       - uses: actions/upload-artifact@v4
         if: always()

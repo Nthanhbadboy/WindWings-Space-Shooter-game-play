@@ -145,8 +145,9 @@ jobs:
               echo '```'
             fi
           } > comment.md
-          gh pr comment "${{ github.event.pull_request.number }}" \
-            --body-file comment.md --edit-last --create-if-none
+          chmod +x .github/scripts/pr-comment.sh
+          .github/scripts/pr-comment.sh "${{ github.event.pull_request.number }}" \
+            comment.md '<!-- bridge-build -->'
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -360,8 +361,9 @@ jobs:
 
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             cp "$PROBE_OUT/report.md" "$PROBE_OUT/comment.md"
-            gh pr comment "${{ github.event.pull_request.number }}" \
-              --body-file "$PROBE_OUT/comment.md" --edit-last --create-if-none || true
+            chmod +x .github/scripts/pr-comment.sh
+            .github/scripts/pr-comment.sh "${{ github.event.pull_request.number }}" \
+              "$PROBE_OUT/comment.md" '<!-- runtime-probe -->' || true
           fi
           echo "::notice::Skipped before starting a Ramus session (no bridge in APK)."
           echo "skip=true" >> "$GITHUB_OUTPUT"
@@ -626,9 +628,9 @@ jobs:
               echo "</details>"
             fi
           } > "$PROBE_OUT/comment.md"
-          gh pr comment "${{ github.event.pull_request.number }}" \
-            --body-file "$PROBE_OUT/comment.md" \
-            --edit-last --create-if-none
+          chmod +x .github/scripts/pr-comment.sh
+          .github/scripts/pr-comment.sh "${{ github.event.pull_request.number }}" \
+            "$PROBE_OUT/comment.md" '<!-- runtime-probe -->'
 
       - name: End session
         if: always() && env.RAMUS_SESSION != ''
