@@ -151,6 +151,27 @@ CI đọc bằng `npx ramus-cli logcat --limit 800`, tách các dòng `RAMUSB|`,
 
 ## 6. CI trên Ramus
 
+### 🔑 Nạp key an toàn (đọc trước)
+
+Key Ramus có dạng `rms_…` và **mở toàn bộ tài khoản Ramus của bạn**. Ba luật:
+
+1. **Không dán key vào chat, issue, PR hay commit.** Nếu đã dán ở đâu → vào
+   <https://ramus.dev/settings> **revoke và tạo key mới** trước khi làm bất cứ việc gì khác.
+2. Chỉ đưa key vào **GitHub Actions secret**:
+   ```bash
+   gh secret set RAMUS_API_KEY          # dán khi được hỏi, không lưu vào shell history
+   # hoặc: Settings → Secrets and variables → Actions → New repository secret
+   ```
+3. Repo có **chốt chặn**: job `preflight` chạy `git grep -nE 'rms_[A-Za-z0-9_-]{20,}'` và
+   **fail** nếu phát hiện key trong cây làm việc.
+
+Workflow **không bao giờ** echo key ra log: nó chỉ `export` vào `$GITHUB_ENV`, còn `ramus status`
+là bước kiểm key sớm (key sai ⇒ fail ngay với hướng dẫn rotate).
+
+> Nhận định: key từng xuất hiện trong transcript chat nên được coi là **đã lộ**. Rotate rồi
+> `gh secret set` lại là việc 2 phút; bỏ qua thì bất kỳ ai đọc log cũng điều khiển được
+> emulator và APK upload của bạn.
+
 ### Hai chế độ
 
 | | **Anonymous (mặc định)** | **Signed-in key** |
@@ -183,7 +204,7 @@ Vẫn dư, nhưng ba thứ ăn thời gian nhất nên tránh: APK sát 150 MB, 
 
 | Tên | Loại | Bắt buộc | Ý nghĩa |
 |---|---|---|---|
-| `RAMUS_API_KEY` | secret | Không | Bỏ trống ⇒ tự chạy anonymous. Có ⇒ bật adb + HTTP. **Không dán vào chat/URL.** |
+| `RAMUS_API_KEY` | secret | Không | Bỏ trống ⇒ tự chạy anonymous. Có ⇒ bật adb + HTTP + `/statics`. **Không dán vào chat/URL**; rotate tại ramus.dev/settings nếu đã lộ. |
 | `RAMUS_APK_URL` | repo variable | Khuyến nghị | URL APK để CI tải (release asset, artifact public…) |
 
 Không có APK ⇒ job `preflight` tắt job `probe` kèm notice, CI không đỏ.
@@ -193,6 +214,11 @@ Không có APK ⇒ job `preflight` tắt job `probe` kèm notice, CI không đ�
 ```bash
 # anonymous (không cần secret)
 gh workflow run runtime-probe.yml -f apk_url="https://…/app.apk" -f scenario=anonymous
+
+# có key: bật HTTP + dump field static của các class game
+gh workflow run runtime-probe.yml -f apk_url="https://…/app.apk" \
+  -f statics="Stage_Datas,Player_Get_Datas,Enemy_Get_Datas,Stage_Get_Datas" \
+  -f wait_scene=Ingame
 
 # kèm kịch bản bấm + đợi scene (đợi scene chỉ có tác dụng ở chế độ key)
 gh workflow run runtime-probe.yml -f apk_url="https://…/app.apk" -f taps="0.5,0.82 0.5,0.82" -f wait_scene=Ingame
@@ -214,6 +240,20 @@ Workflow làm tuần tự:
 10. Comment `report.md` vào PR (nếu là PR).
 11. `session end` — luôn chạy.
 
+### `/statics` đóng được gì cho chính project này
+
+`/statics?type=Player_Get_Datas` trả **field static thật trong bộ nhớ**, trong đó có 3 mảng
+`pct` (3 mode × 2 slot) — đúng 9 con số mà phân tích tĩnh từ `docs/spec/` **chưa lấy được**
+(RVA chưa resolve, `debug_rva` chỉ 2/1.929). Chạy harness một lần ở chế độ key là có dữ liệu runtime
+để đối chiếu với `MISSIONS_STARS.md` §"Còn thiếu / phải đoán", không cần suy luận thêm.
+
+Tương tự `Stage_Get_Datas.levelDelta` (hệ số nhân theo mode) và `Enemy_Get_Datas` (HP gốc)
+đều là field static ⇒ đọc trực tiếp được khi game đã load xong.
+
+> Nhận định: reflection qua `Il2CppInterop` có thể trượt với `Il2CppArrayBase<float>` tuỳ phiên
+> bản interop. Nếu `/statics` trả `written` thấp bất thường, kiểm `logs` của bridge trước khi
+> kết luận field không tồn tại.
+
 ### Đọc kết quả
 
 `report.md` có bảng metric + root object + static field (nếu có HTTP) + ghi chú + lỗi. `summary.json` giữ nguyên payload.
@@ -229,6 +269,27 @@ Workflow làm tuần tự:
 | `error` | script lỗi |
 
 `--strict` (mặc định bật) chỉ fail job khi **không có dữ liệu nào**; fps thấp chỉ là cảnh báo.
+
+### Chạy tay toàn bộ quy trình (không cần CI)
+
+Dùng khi muốn thử ngay trên máy, hoặc khi chưa nạp được secret:
+
+```bash
+export RAMUS_API_KEY=...            # hoặc: npx ramus-cli trial   (15 phút, không adb)
+npx ramus-cli status                # xác nhận key sống
+
+npx ramus-cli session start --apk ./app.apk --wait
+npx ramus-cli adb --port 5555       # in ra serial
+adb -s <serial> forward tcp:8080 tcp:8080
+curl -s localhost:8080/health | jq
+
+node .github/scripts/ramus-probe.mjs --out reports/local --mode key \
+  --statics "Stage_Datas,Player_Get_Datas" --strict
+
+npx ramus-cli session end
+```
+
+Không có `adb` (trial) thì bỏ 3 dòng `adb`, giữ `--mode trial`; script sẽ đọc logcat.
 
 ---
 
@@ -251,4 +312,5 @@ Workflow làm tuần tự:
 | `main thread did not answer` | game pause/`timescale=0` và `Update()` không chạy → dùng logcat |
 | Build thiếu `UnityEngine.CoreModule` | chạy game một lần để sinh `BepInEx/interop`, hoặc trỏ `-p:InteropDir=` |
 | `session start` fail 3 lần | hết slot trial (1 session đồng thời) hoặc APK > 150 MB |
+| `ramus status` trả `unauthorized` | key sai/hết hạn → rotate at ramus.dev/settings, `gh secret set` lại |
 | Ảnh 413 | giảm độ phân giải hoặc dùng `ramus screenshot` |

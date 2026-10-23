@@ -36,6 +36,7 @@ const opt = {
   mode: 'auto',
   logcatWait: 60,
   budget: 0,
+  statics: 'Stage_Datas,Player_Get_Datas,Enemy_Get_Datas,Stage_Get_Datas',
 };
 
 for (let i = 0; i < argv.length; i++) {
@@ -51,9 +52,11 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === '--mode') opt.mode = next();
   else if (a === '--logcat-wait') opt.logcatWait = Number(next());
   else if (a === '--budget') opt.budget = Number(next());
+  else if (a === '--statics') opt.statics = next();
   else if (a === '--help' || a === '-h') {
     console.log('usage: ramus-probe.mjs [--out DIR] [--label TEXT] [--base URL] [--mode auto|key|trial]');
     console.log('                         [--wait-server SEC] [--logcat-wait SEC] [--wait-scene NAME] [--budget SEC] [--strict]');
+    console.log('                         [--statics "Stage_Datas,Player_Get_Datas,..."]');
     process.exit(0);
   }
 }
@@ -251,7 +254,6 @@ async function main() {
       hierarchy: '/hierarchy?depth=3&max=1500',
       findSub: '/find?name=Sub&max=40',
       findBoard: '/find?name=Board&max=40',
-      statics: '/statics?type=Stage_Datas&max=200',
       logs: '/logs?n=150',
     };
     for (const [key, url] of Object.entries(calls)) {
@@ -259,6 +261,23 @@ async function main() {
       if (r.json) result.bridge[key] = r.json;
       else fail(`GET ${url}`, r.error || `status ${r.status}`);
     }
+
+    // Game state via reflection — one call per type, keep going if one fails.
+    const types = opt.statics.split(',').map((t) => t.trim()).filter(Boolean).slice(0, 12);
+    result.bridge.staticsByType = {};
+    for (const type of types) {
+      const r = await get(`/statics?type=${encodeURIComponent(type)}&max=200`, 15000);
+      if (r.json && r.json.ok) {
+        result.bridge.staticsByType[type] = r.json;
+        const n = r.json.written ?? Object.keys(r.json.fields || {}).length;
+        log(`statics ${type}: ${n} field(s)`);
+      } else if (r.json) {
+        note(`statics ${type}: ${r.json.error || 'not ok'}`);
+      } else {
+        fail(`GET /statics?type=${type}`, r.error || `status ${r.status}`);
+      }
+    }
+    result.bridge.statics = Object.values(result.bridge.staticsByType)[0] || {};
 
     const shot = await get('/screenshot', 20000);
     if (shot.image && shot.image.length > 100) {
@@ -385,11 +404,19 @@ function renderReport(r) {
     lines.push('');
   }
 
-  if (st.fields && typeof st.fields === 'object' && Object.keys(st.fields).length) {
-    lines.push('## Static game state (`/statics?type=Stage_Datas`)');
+  const byType = r.bridge.staticsByType || (st && st.fields ? { [st.type || 'statics']: st } : {});
+  const typeNames = Object.keys(byType).filter((k) => byType[k] && byType[k].fields && Object.keys(byType[k].fields).length);
+  if (typeNames.length) {
+    lines.push('## Static game state (`/statics`)');
     lines.push('');
-    for (const [k, v] of Object.entries(st.fields).slice(0, 25)) lines.push(`- \`${k}\` = ${JSON.stringify(v)}`);
-    lines.push('');
+    for (const type of typeNames) {
+      lines.push(`### \`${type}\``);
+      lines.push('');
+      for (const [k, v] of Object.entries(byType[type].fields).slice(0, 30)) {
+        lines.push(`- \`${k}\` = ${JSON.stringify(v)}`);
+      }
+      lines.push('');
+    }
   }
 
   if (r.screenshots.length) {

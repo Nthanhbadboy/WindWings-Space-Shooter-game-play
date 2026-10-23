@@ -38,6 +38,11 @@ on:
         required: false
         default: ''
         type: string
+      statics:
+        description: 'Comma-separated game types to dump via /statics (key mode only)'
+        required: false
+        default: 'Stage_Datas,Player_Get_Datas,Enemy_Get_Datas,Stage_Get_Datas'
+        type: string
       strict:
         description: 'Fail the job when the bridge produced no data at all'
         required: false
@@ -79,6 +84,16 @@ jobs:
       apk_source: ${{ steps.gate.outputs.apk_source }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Secret leak guard
+        run: |
+          set -euo pipefail
+          # A Ramus key looks like rms_<base62>. It must never live in the repo.
+          if git grep -nE 'rms_[A-Za-z0-9_-]{20,}' -- .; then
+            echo "::error::A Ramus API key is committed to this repository. Revoke it at ramus.dev/settings and purge it from history."
+            exit 1
+          fi
+          echo "no key material in the tree"
 
       - id: gate
         env:
@@ -184,6 +199,16 @@ jobs:
             fi
           fi
 
+      - name: Validate key
+        if: env.RAMUS_MODE == 'key'
+        run: |
+          set -euo pipefail
+          if ! npx --yes "$RAMUS_CLI" status | tee "$PROBE_OUT/status.json"; then
+            echo "::error::RAMUS_API_KEY was rejected. Rotate it at ramus.dev/settings and re-set the secret:"
+            echo "::error::  gh secret set RAMUS_API_KEY"
+            exit 1
+          fi
+
       - name: Start session
         id: session
         run: |
@@ -283,6 +308,7 @@ jobs:
           else
             args+=(--wait-server 120 --logcat-wait 30)
             if [ -n "${{ inputs.wait_scene }}" ]; then args+=(--wait-scene "${{ inputs.wait_scene }}"); fi
+            if [ -n "${{ inputs.statics }}" ]; then args+=(--statics "${{ inputs.statics }}"); fi
           fi
           if [ "$budget" -gt 0 ] && [ "$budget" -lt 600 ]; then args+=(--budget "$budget"); fi
           if [ "${{ inputs.strict }}" != "false" ]; then args+=(--strict); fi
