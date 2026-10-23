@@ -10,8 +10,8 @@
 
 | Hệ | Có trong APK | Đã đọc | Kết luận |
 |---|---:|---:|---|
-| **Spine** (xương) | 27 rig · **180** animation · 616 bone | **100%** | đủ để dựng lại nhịp |
-| **Unity Animator** | **791** clip · **308** controller · **5.792** `Animator` | **0 %** curve giải được (**9,19 MB** chưa giải) · **100 % tên** | **3.620/5.792 = 62,5 % là UI** (`Board_*` 2.938 · `Popup` 675 · `Menu` 7); **enemy/boss chỉ 203** (§4.5) |
+| **Spine** (xương) | 27 rig · **185** animation · 616 bone | **100%** | đủ để dựng lại nhịp |
+| **Unity Animator** | **791** clip · **308** controller · **5.792** `Animator` | **0 %** curve giải được (**9,19 MB** chưa giải) · **100 % tên** | **3.620/5.792 = 62,5 % là UI** (`Board_*` 2.938 · `Popup` 675 · `Menu` 7); **enemy/boss 154** theo đếm lại — con số **203** không tái lập được (§4.5, `ANIMATION_GAPS.md` §4) |
 | **Procedural** (`Rotate`) | **1.120** instance | class 100% · tham số 0% | biết công thức, chưa biết tốc độ |
 | **Flipbook sprite** | **28** chuỗi · 160 ảnh / 2.185 `Sprite` | 100% | game **hầu như không dùng** |
 
@@ -50,7 +50,12 @@ Tỷ lệ: **1 controller → 18,8 `Animator`** (5.792 / 308) · **1 clip → 7,
 
 ## 2. Spine — đọc được 100%
 
-**Tổng:** 27 rig · **180** animation · **616** bone · **446** slot · **577** region · Spine **3.8.99** (1 rig 3.8.84).
+**Tổng:** 27 rig · **185** animation · **616** bone · **446** slot · **577** region · Spine **3.8.99** (1 rig 3.8.84).
+
+> **Đã sửa 23/10 (kiểm lại bằng `datas/spine_anim.json.gz`):** bản trước ghi **180** ở dòng này.
+> 180 là tổng của **26 rig `skeleton*`**; `Saw` có thêm **5** (`Fly · Fly_Idle · Idle · Idle_Fly ·
+> Teleport`), nên tổng thật là **185**. Con số 616 bone thì vẫn đúng và **đã gồm** Saw — bản cũ
+> trộn hai cách đếm trong cùng một dòng.
 
 Phân bố animation mỗi rig: **6** × 21 rig · **7** × 1 · **9** × 1 · **10** × 2 · **18** × 1.
 

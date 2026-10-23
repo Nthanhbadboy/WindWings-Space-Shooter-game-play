@@ -16,7 +16,7 @@
 
 | Lớp | Số lượng | Đọc được | Chưa đọc được |
 |---|---:|---|---|
-| **Spine** (25 rig + `Saw`) | 27 rig · **185** animation · **12.274** keyframe | **100 %** timeline + **21** event có mốc thời gian | rig → đơn vị trong game (**đóng được 1 phần**, §3) |
+| **Spine** (26 rig + `Saw`) | 27 rig · **185** animation · **12.274** keyframe | **100 %** timeline + **21** event có mốc thời gian | rig → đơn vị trong game (**đóng được 1 phần**, §3) |
 | **`Enemy_Movement`** | **981** instance / 109 prefab | **100 %** — 9 field serialize | thân hàm (nhưng logic đã rõ từ field) |
 | **`Enemy_Appear`** | **914** instance / 107 prefab | **0 field** — tree serialize **rỗng** | **toàn bộ**, và **asm cũng chưa export** (§2a) |
 | **Unity `AnimationClip`** | **791** clip (226 tên) | tên · thời lượng · loop · event | **keyframe: 0/791** — curve bị stream |

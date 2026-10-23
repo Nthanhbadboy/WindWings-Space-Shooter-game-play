@@ -1,0 +1,61 @@
+name: docs-verify
+
+# Re-measures every numeric claim written in the docs and fails when one drifts.
+#
+# The point is not that the numbers are interesting; it is that three of them
+# have already been wrong once, and nothing in the repo caught it. A claim is
+# checked in both directions: the measurement must equal the number the doc
+# states, AND the doc line must still contain it. Editing a doc without changing
+# the data (or the reverse) turns this job red.
+#
+# The data branch is fetched best-effort. When it is unavailable, claims that
+# need it report SKIP with a reason and the job still passes — so the check is
+# useful on a fresh clone and offline.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'tools/verify-claims.py'
+      - '.github/workflows/docs-verify.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'tools/verify-claims.py'
+
+permissions:
+  contents: read
+
+jobs:
+  claims:
+    name: re-measure documented numbers
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the data branch (optional)
+        continue-on-error: true
+        run: |
+          git fetch --depth=1 origin \
+            arena/ef6b75ef-windwings-space-shooter-game-p:refs/remotes/origin/arena/ef6b75ef-windwings-space-shooter-game-p \
+            && echo "data branch available" \
+            || echo "data branch not reachable — claims B/C/F will report SKIP"
+
+      - name: Re-measure
+        run: |
+          set -o pipefail
+          python3 tools/verify-claims.py | tee verify.log
+
+      - name: Publish the table
+        if: always()
+        run: |
+          {
+            echo "### Numeric claims"
+            echo
+            echo '```'
+            sed -n '/^mã\|^PASS/,$p' verify.log 2>/dev/null || tail -40 verify.log 2>/dev/null || echo "no output"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

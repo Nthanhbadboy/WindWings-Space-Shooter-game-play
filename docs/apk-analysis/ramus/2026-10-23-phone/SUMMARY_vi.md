@@ -136,13 +136,18 @@ Bảng "Kết quả cuối" ở trên ghi ✅ cho phần **số liệu balance**
 | `Enemy_Get_Datas` | **không có file** | chưa gọi lần nào trong run này |
 | `Bonus_Get_Datas.listAllFortificationBonus` | 4 phần tử, toàn tên type | như trên |
 
-Tổng trên **18 file có `fields`** trong thư mục này (đếm ngày 23/10, mọi commit tới `5b3c8ae`):
+Tổng trên **21 file có `fields`** trong thư mục này:
 
 **575 field đọc được · 88 field chỉ trả về tên type (15,3 %)**.
 
 Phân bố: `GP_Datas` đóng góp **65/88** (toàn bộ `NativeFieldInfoPtr_*`), `SpaceShooter.Gameplay.GP_Datas`
 thêm 8, `Player_Get_Datas` 5, còn lại rải rác.
 
+> **Đã sửa 23/10 — số file:** bản trước ghi **18 file**, sai. Đếm lại đúng 21 (`statics_*` 20 file +
+> `boss_boss_gp.json`); ngay tại `5b3c8ae` mà bản cũ dẫn cũng đã là 21. **575 và 88 không đổi** —
+> hai file bị đếm sót không có field nào rơi vào nhóm tên type. Phép đếm nằm ở
+> `tools/verify-claims.py` (mã `A1`–`A3`), chạy lại được bất cứ lúc nào.
+>
 > Hai con số tôi từng ghi sai ở bản trước: "377 field / 80" (đếm trên commit `5470902`, ít file hơn)
 > và "listStatValues có 39 phần tử" (sai — **10**). Bản này là số đếm lại.
 
