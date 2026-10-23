@@ -1171,8 +1171,8 @@ GetHpStatPercent() = stepCommon × Tech_Datas.GetTechStatPoints(0)
 
 | Field | Class | Offset | Vai trò |
 |---|---|---|---|
-| `StartHp` | `Player_Get_Datas` | `0x6C` | HP gốc (**giá trị chưa có**) |
-| `stepCommon` | `Player_Get_Datas` | `0x68` | **0,168** — % mỗi điểm stat (dùng chung với `stepLevel`) |
+| `StartHp` | `Player_Get_Datas` | `0x6C` | HP gốc = **2500,0** (đọc từ `.cctor`, `6109008c`) |
+| `stepCommon` | `Player_Get_Datas` | `0x68` | **0,18** — % mỗi điểm stat (**KHÔNG** dùng chung với `stepLevel` = 0,168) |
 | `abi7AddPlayerStartHp` | `Player_Get_Datas` | `0x314` | % mỗi bậc ability 7 |
 | `StartHealth` | `Player_Health` | `0x0` (**static**) | = `GetStartHp()` lúc vào màn |
 | `CurrentHealth` | `Player_Health` | `0x4` (**static**) | HP hiện tại |
@@ -1336,12 +1336,17 @@ xin phép dump thêm"*. **Sai** — dumper dump **liền mạch theo địa ch�
 
 ```
 ResetStaticVariables():   StartHealth(@0x0) → CurrentHealth(@0x4)      // chỉ chép
-Start():                  mainModule = fxHealHpBar.main + tạo lambda   // không đụng HP
+Start():                  mainModule = fxHealHpBar.main + tạo lambda   // ⚠ SAI — xem đính chính dưới
 TakeDamage():             5 cổng chặn trước khi trừ giáp
 ```
 
 **c) `StartHealth` là `static`** ⇒ HP tối đa là **một biến toàn cục**, không phải field per-tàu.
 Hồi sinh (`ResetStaticVariables`) **chép lại**, **không** tính lại stat.
+
+> ⚠ **ĐÍNH CHÍNH (bản `6109008c`):** dòng `// không đụng HP` ở khối (b) là **SAI** — nó viết khi
+> asm còn cụt. Thân lambda `<Start>b__14_1` (604 B) **gọi `GetStartHp()`** rồi `stp s0,s1,[x8]`
+> ghi `StartHealth@0x0` + `CurrentHealth@0x4`. Xem `BALANCE` §0.6.15 và `ASM_INTEGRITY` §1.
+> `ResetStaticVariables()` vẫn chỉ **chép** — phần đó giữ nguyên.
 
 **d) `Player_Device_Saved_Datas.GetPlayerDevices(int playerIndex)`** — device lưu **theo từng tàu**.
 Đây là mắt ghép cuối của giả thuyết *"HP là của tàu"*: `StartHp` **không** theo tàu, nhưng

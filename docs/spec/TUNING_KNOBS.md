@@ -155,8 +155,9 @@ Hai thứ khác hệ nhưng **cùng dùng chung cho mọi tàu**.
 >                               + abi7AddPlayerStartHp × GetNumberAbility(7))
 > ```
 >
-> `stepCommon` (`@0x68`) = **0,168** — cùng hằng số dùng trong `stepLevel` cho damage.
-> **Núm vặn HP gồm 3 cái:** `StartHp` (gốc, **giá trị chưa có**) · điểm tech stat **index 0** ·
+> `stepCommon` (`@0x68`) = **0,18** — **khác** `stepLevel` (0,168) dùng cho damage.
+> `StartHp` (`@0x6C`) = **2500,0** (đọc từ `.cctor`, bản `6109008c`).
+> **Núm vặn HP gồm 3 cái:** `StartHp` (**2500,0** — đã có) · điểm tech stat **index 0** ·
 > ability **7**. Giáp `Player_Health.Armor` là **núm thứ tư nhưng tách riêng** — nó giảm damage
 > nhận vào, không cộng vào HP.
 | 8 | `abi8AddDodgeRate` | +tỉ lệ né |

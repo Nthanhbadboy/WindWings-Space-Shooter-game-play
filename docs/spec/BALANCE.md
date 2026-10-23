@@ -127,6 +127,10 @@ vì lý do ở §0.6.3a.
 
 #### 0.6.3a **File asm bị cắt cụt — 11/12 file**
 
+> ⚠ **Mục này là BẢN GHI LỊCH SỬ** của bản export `8871068a`. Bản `6109008c` **đã hết cụt**
+> (`size_capped` 0/425); cách kiểm nay nằm ở `ASM_INTEGRITY.md`. Đọc mục này để biết **vì sao**
+> 3 kết luận âm tính cũ bị rút, **không** đọc để lấy số hiện hành.
+
 Đo trực tiếp: lệnh cuối cùng của mỗi file.
 
 | File | Method (header) | Số lệnh | Lệnh cuối | Kết thúc bằng `ret`? |
@@ -491,7 +495,7 @@ Tab này có nhãn UI **`txt_basic` = "Basic / Cơ bản"** và nhiệm vụ **`
 **b) Nối vào công thức HP đã đọc:**
 
 ```
-GetHpStatPercent = stepCommon(0,168) × TechStatPoints(0) + abi7AddPlayerStartHp × GetNumberAbility(7)
+GetHpStatPercent = stepCommon(0,18) × TechStatPoints(0) + abi7AddPlayerStartHp × GetNumberAbility(7)
 GetStartHp       = StartHp × (1 + GetHpStatPercent)
 ```
 

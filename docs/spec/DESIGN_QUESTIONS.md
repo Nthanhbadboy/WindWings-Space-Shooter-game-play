@@ -14,8 +14,8 @@
 | ⚠ | có **một phần** — có số nhưng thiếu điều kiện hoặc thiếu vế còn lại |
 | ❌ | **chưa trả lời được** bằng dữ liệu hiện có |
 
-**Tổng: 48 câu — ✅ 28 · ⚠ 12 · ❌ 8.** **8 câu ❌** nằm trong danh sách blocker, cộng thêm
-**B2** (⚠ — thiếu 1 hằng số) và **B3** (⚠) ⇒ **9 hàng blocker**.
+**Tổng: 48 câu — ✅ 29 · ⚠ 11 · ❌ 8.** **8 câu ❌** nằm trong danh sách blocker, cộng thêm
+**B3** (⚠) ⇒ **9 hàng blocker**. (B2 đã đóng ở bản `6109008c`: `StartHp` = **2500**.)
 
 ---
 
@@ -44,7 +44,7 @@
 | # | Câu hỏi | Trạng thái | Số / nguồn |
 |---:|---|---|---|
 | B1 | HP của enemy thường? | ❌ | **231/236 wave campaign có HP = 0**; toàn bộ 2.440.000 nằm ở `Wave_0136` ⇒ HP do công thức runtime (`ENCOUNTERS` §3.3) |
-| B2 | HP của người chơi? | ⚠ | **công thức đầy đủ (mức A)**: `GetStartHp = StartHp × (1 + stepCommon×TechStatPoints(0) + abi7×GetNumberAbility(7))`, `stepCommon` = **0,168**; giáp `Player_Health.Armor` **tách riêng** (giảm damage, không cộng HP) — `BALANCE` §0.6. **Thiếu đúng 1 giá trị `StartHp`** (gán runtime, không có trong `.cctor`). **vòng đời đã chốt (A/B)**: `StartHealth` **`static`** · `ResetStaticVariables()` = `CurrentHealth = StartHealth` (chỉ **chép**, hồi sinh **không** tính lại) · `Start()` **không** đụng HP ⇒ **chốt 1 lần trước khi spawn**, dùng cả màn (`BALANCE` §0.6.8). **Thiếu đúng 1 giá trị `StartHp`**. ⚠ **SỬA: device CÓ ảnh hưởng HP** qua `Player_Health.OnChangeDataDevice(int)`, và device lưu **theo từng tàu** (`Player_Device_Saved_Datas.GetPlayerDevices(playerIndex)`) ⇒ **HP khác nhau giữa các tàu, qua đường device** (`BALANCE` §0.6.7) |
+| B2 | HP của người chơi? | ✅ | **`HPmax = 2500 × (1 + 0,18×TechStatPoints(0) + abi7×GetNumberAbility(7))`** (mức **A**, bản `6109008c`). `str d0,[x8,#0x68]` ghi **cặp** {**0,18** @`0x68`; **2500,0** @`0x6C`}. ✅ **ĐÍNH CHÍNH:** `stepCommon` = **0,18** (0,168 là `stepLevel`). HP gán trong **`Player_Health.Start()`** → `GetStartHp` → `StartHealth@0x0`/`CurrentHealth@0x4`; `ResetStaticVariables()` chỉ **chép** (hồi sinh không tính lại). Giáp **tách riêng** (`Armor@0x20`, hyperbolic) — không cộng HP, nhưng device tăng **HP hiệu dụng** qua `reduceDamageByDevice` + hồi máu. Bảng: 0→**2.500** · 10→7.000 · 30→16.000 · 60→29.500 — `BALANCE` §0.6.13–0.6.15 |
 | B3 | Damage người chơi tăng theo cấp thế nào? | ⚠ | `Player_Get_Datas.stepLevel`: **4 ngưỡng cấp 30 / 58 / 118 / 248**, hằng số **0,168 · 1,0 · 1,05 · 1,15** (0,1764 = 0,168×1,05; 0,1932 = 0,168×1,15); `GetMainCannonDamage` = `base × (1 + k)` với k = 0,168 · 0,1764 · 0,1932 |
 | B4 | Giết một enemy mất bao lâu (TTK)? | ⚠ | có **DPS median 454,5** (`COMBAT` §4) + **HP boss 6,38 M/instance**; còn thiếu **giá trị `StartHp`** (`BALANCE` §0.6) và **HP enemy runtime** |
 | B5 | Độ khó tăng bằng gì? | ✅ | **bằng damage đòn boss, không bằng HP**: `Boss10` 800→1.350 · `Boss6` 600→2.800 · `Boss9` 500→800 (`BOSSES` §8.4.1) |
@@ -122,7 +122,7 @@ Xếp theo **chi phí trả lời thấp → cao**, không theo mức quan trọ
 
 | Hạng | Câu | Vì sao chặn | Cách trả lời | Chi phí |
 |---:|---|---|---|---|
-| 1 | **B2 — giá trị `StartHp`** | không có HP thì **không có TTK** — nhưng **công thức đã xong** | ✅ **đã giải xong cấu trúc** (`BALANCE` §0.6, đọc lệnh arm64). Chỉ còn **1 hằng số**. ⚠ **ĐÍNH CHÍNH:** kết luận cũ *"`.cctor` không gán `StartHp`"* **vô hiệu** — asm export **bị cắt cụt ở 11/12 file**, `Player_Get_Datas..cctor` dừng giữa chừng tại `0x14e5cc4` (`DATA_SYNC` §7.29). Yêu cầu **hẹp nhất**: dump **200 lệnh sau `0x14e5cc4`** | **rất thấp** — 1 khối 200 lệnh |
+| 1 | ✅ **ĐÓNG — B2 giá trị `StartHp`** = **2500** (bản `6109008c`) | không có HP thì **không có TTK** — nhưng **công thức đã xong** | ✅ **đã giải xong cấu trúc** (`BALANCE` §0.6, đọc lệnh arm64). Chỉ còn **1 hằng số**. ⚠ **ĐÍNH CHÍNH:** kết luận cũ *"`.cctor` không gán `StartHp`"* **vô hiệu** — asm export **bị cắt cụt ở 11/12 file**, `Player_Get_Datas..cctor` dừng giữa chừng tại `0x14e5cc4` (`DATA_SYNC` §7.29). Yêu cầu **hẹp nhất**: dump **200 lệnh sau `0x14e5cc4`** | **rất thấp** — 1 khối 200 lệnh |
 | 2 | **A6 — stage ↔ wave** | quyết định **số màn** và **độ dài phiên** | `Stage_Behaviour.textStageIndex` → `Text` component; hoặc đọc thứ tự con của `Parent_Stages` trong `Board_Maps` | **thấp** — đã có `transform-tree` |
 | 3 | **E2/E3 — hit flash / hit stop** | quyết định **feel**, thứ người chơi cảm nhận mạnh nhất | đọc `Enemy_Display` field + tìm `timeScale`/`Material.color` trong 305 trace đã có | **thấp** |
 | 4 | **D3 — thứ tự pha boss** | mỗi trận boss là **điểm nhấn**; không có thứ tự thì chỉ clone được "boss bắn loạn" | giải mã `m_StreamedClip` để lấy `time` của **793 event** | **trung bình** — cần decoder |
@@ -132,9 +132,10 @@ Xếp theo **chi phí trả lời thấp → cao**, không theo mức quan trọ
 | 8 | **A5 — độ dài phiên** | quyết định **retention**, IAP, số mạng | cần **cả** A6 **và** luật continue (chưa có trong dữ liệu) | **cao** — cần chơi thử / đọc `GamePlayManager` |
 | 9 | **B3 — đường cong damage player** | quyết định **số enemy chịu được** ở mỗi cấp | đọc rẽ nhánh đầy đủ của `stepLevel` + map 4 ngưỡng 30/58/118/248 vào **loại cấp nào** (player level? tech lab?) | **cao** — cần đọc asm có ngữ cảnh |
 
-> **Nhận định (mức A):** trong 9 blocker, **5 câu (1, 2, 3, 5, 6) trả lời được bằng dữ liệu đã có**
+> **Nhận định (mức A):** trong 9 blocker, **câu 1 đã ĐÓNG** (`StartHp` = 2500, bản `6109008c`);
+> **4 câu còn lại (2, 3, 5, 6) trả lời được bằng dữ liệu đã có**
 > — không cần chạy lại pipeline, không cần dump APK. Chỉ **2 câu (4, 9)** cần việc mới thật sự
-> (decoder streamed clip · đọc asm có ngữ cảnh), và **1 câu (1)** có thể cần 1 class dump thêm.
+> (decoder streamed clip · đọc asm có ngữ cảnh), và **1 câu (1) nay đã đóng** — không cần dump thêm.
 >
 > **Điều kiện lật ngược:** nếu `GetStartHp` trả **hằng số cứng** nằm trong `.rdata` mà `formula_trace`
 > không bắt (vì nó chỉ bắt float pool + flow), thì blocker #1 rẻ hơn nữa — chỉ cần đọc thân hàm.

@@ -48,7 +48,7 @@
 | D2 | Thứ tự resolve stat lúc runtime | **cần chạy game** | B | đã có mô hình, chưa xác nhận |
 | D3 | Tỉ lệ rơi item trong màn | **cần chạy game** | D | phải tự thiết kế |
 | D4 | % giảm damage thực tế của giáp/device | **cần chạy game** | D | phải tự thiết kế |
-| E1 | **Asm export bị cắt cụt 11/12 file** | **lỗi công cụ** | A | **vô hiệu mọi kết luận âm tính cũ** |
+| E1 | Asm **từng** bị cắt cụt 11/12 file (`8871068a`) → **`6109008c` đã hết cụt** (`size_capped` 0/425), còn **`RankManager` thiếu 8 B** | **lỗi công cụ** | A | **đã có `ASM_INTEGRITY.md`**; kết luận âm tính cũ đã rút lại |
 | E2 | `ships.json` thiếu 13 dòng so với `Data_Players` | **lỗi công cụ** | A | số tàu trong SPEC phải ghi 38 |
 | E3 | `RankManager.asm` **thiếu 8 B** (`ctor`) — cờ gác cổng bắt được | **lỗi công cụ** | A | không ảnh hưởng kết luận; đã có `ASM_INTEGRITY.md` |
 
@@ -56,16 +56,23 @@
 
 ## 2. Nhóm A — **lỗi export**: chốt được bằng **một yêu cầu rất nhỏ**
 
-### A1. Giá trị `StartHp` — **D**
+### A1. Giá trị `StartHp` — ✅ **ĐÓNG = 2500** (bản `6109008c`)
 
-- **Công thức đã xong (A):** `GetStartHp = StartHp × (1 + stepCommon × TechStatPoints(0) + abi7 × GetNumberAbility(7))`; `stepCommon = 0,168` (`BALANCE` §0.6.1).
+- **Kết quả (A):** `str d0,[x8,#0x68]` trong `.cctor` của `Player_Get_Datas` ghi **cặp liền nhau**:
+  **{`stepCommon` = 0,18 @`0x68`; `StartHp` = 2500,0 @`0x6C`}**.
+- **Công thức đầy đủ:** `HPmax = 2500 × (1 + 0,18×TechStatPoints(0) + abi7×GetNumberAbility(7))`,
+  gán trong **`Player_Health.Start()`** → `bl GetStartHp 0x14e311c` → `stp s0,s1,[x8]` @`0x14c7e48`
+  ⇒ `StartHealth@0x0`, `CurrentHealth@0x4` (`BALANCE` §0.6.13–0.6.15).
 - **`TechStatPoints(0)` = stat "Health" của tab Basic** (A) — `txt_techstat_label_0` = `Health`,
-  `txt_techstat_desc_0` = "Increase health points"; tab `txt_basic`. ⇒ `StartHp` chỉ là **HP gốc ở cấp 0**;
-  phần lớn HP đến từ **nâng cấp**, không phải từ tàu (`BALANCE` §0.6.9).
-- **Vì sao thiếu:** `.cctor` của `Player_Get_Datas` **bị cắt giữa chừng** tại `0x14e5cc4`, vẫn đang dựng `List`, **chưa tới** đoạn gán float (`DATA_SYNC` §7.29).
-- **Bằng chứng `.cctor` có gán float:** đã thấy đúng **1** hằng `0x41700000` = **15,0** trong phần đọc được.
-- **Cách chốt (rẻ nhất toàn dự án):** dump **200 lệnh tiếp theo sau `0x14e5cc4`**.
-- **Nếu không chốt:** chọn `StartHp` theo thang damage đã biết — damage đạn 28 giá trị, median **300**, max **1.500**; boss 350–2.800 ⇒ HP player hợp lý **≈ 5.000–20.000**. Ghi là **quyết định thiết kế**, không phải số gốc.
+  `txt_techstat_desc_0` = "Increase health points"; tab `txt_basic`. ⇒ phần lớn HP đến từ **nâng cấp**,
+  không từ tàu (`BALANCE` §0.6.9).
+- **Vì sao trước đây tưởng "thiếu":** không phải game thiếu, mà **asm bị cắt** ở bản `8871068a`
+  (dừng ở `0x14e5cc4`). Bản `6109008c` đã đủ — `size_capped` **0/425** (`ASM_INTEGRITY.md`).
+- **Bảng HP theo điểm stat 0:** 0 → **2.500** · 10 → 7.000 · 30 → 16.000 · 60 → 29.500.
+- **Hai số tôi từng ghi sai, nay đính chính:** `stepCommon` = **0,18** (không phải 0,168 — 0,168 là
+  `stepLevel`); `StartHp` **có** trong `.cctor` (không phải "gán runtime").
+- **Điều kiện lật ngược:** nếu tech stat 0 hoặc ability 7 được cộng thêm ở một đường khác chưa đọc
+  (**device đã bị loại**: `OnChangeDataDevice` **không** ghi `StartHealth`) thì HPmax phải cộng thêm.
 
 ### A2. Bảng **map → wave** — **uỷ thác cho nhánh dữ liệu**
 
@@ -287,13 +294,13 @@ kiểm từng id** — nhưng **không còn là ẩn số về cơ chế**.
 |---|---|---|
 | Device: bao nhiêu loại, mấy stat | **5 loại × 2 stat**, `type 4` = phần trăm | A |
 | Device: mấy slot mỗi tàu | **4** (`GetPlayerUse` `cmp x8,#4`) | A |
-| Device có cộng HP không | **CÓ** — `Player_Health.OnChangeDataDevice(int)` | B |
+| Device có cộng HP **tối đa** không | ❌ **KHÔNG** — `OnChangeDataDevice` 452 B **không** ghi `StartHealth`; chỉ **giáp** (id 1000–1999) và **hồi máu** (id 5000–5999). HP **hiệu dụng** vẫn tăng, HP **tối đa** thì không | A |
 | Device thuộc về tàu nào | **đúng 1 tàu** (`Player_Device_Saved_Datas.GetPlayerDevices` theo `playerIndex`) | A |
-| HP chốt lúc nào | `StartHealth` **static**; `ResetStaticVariables()` chỉ **chép**; `Start()` **không** tính | A |
+| HP chốt lúc nào | **`Player_Health.Start()`** → lambda `<Start>b__14_1` → `bl GetStartHp 0x14e311c` → `stp s0,s1,[x8]` @`0x14c7e48` ⇒ `StartHealth@0x0`, `CurrentHealth@0x4` | A |
 | Hồi sinh có tính lại stat | **KHÔNG** | A |
 | Damage 18/37 class Director | bảng đầy đủ ở §3 B6 | A |
 | `GetSurvivalScore` | công thức đầy đủ; **không phải HP** | A |
-| Asm export bị cắt | **11/12 file**, rút lại 3 kết luận âm tính | A |
+| Asm export bị cắt | `8871068a`: **11/12 file** ⇒ rút lại 3 kết luận âm tính. `6109008c`: **hết cụt** (`size_capped` 0/425), chỉ `RankManager` thiếu 8 B | A |
 
 ---
 
