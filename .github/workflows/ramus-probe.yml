@@ -70,7 +70,7 @@ concurrency:
 
 env:
   RAMUS_CLI: ramus-cli@0.1.17
-  RAMUS_PACKAGE: com.wind.wings.Space.Shooter
+  RAMUS_PACKAGE: com.Wind.wings.Space.Shooter   # exact case from the XAPK manifest
   PROBE_OUT: reports/runtime-probe
   TRIAL_APK_MAX_MB: '150'
 
@@ -311,8 +311,16 @@ jobs:
             echo "RAMUS_APK=$apk"
             echo "APK_SPLITS=$splits"
             # The XAPK manifest.json reports com.Wind.wings.Space.Shooter (capital W).
-            [ -n "$pkg" ] && echo "RAMUS_PACKAGE=$pkg"
+            if [ -n "$pkg" ]; then echo "RAMUS_PACKAGE=$pkg"; fi
           } >> "$GITHUB_ENV"
+
+          # These were referenced as steps.apk.outputs.* but never written, so every
+          # check that used them compared against an empty string and silently did
+          # nothing. Emit them for real.
+          for key in package base_mb abis has_x86 bridge kind; do
+            val=$(sed -n "s/^$key=//p" "$PROBE_OUT/apk-prepare.log" | tail -1)
+            if [ -n "$val" ]; then echo "$key=$val" >> "$GITHUB_OUTPUT"; fi
+          done
           cp .ci/apk/apk-inventory.txt "$PROBE_OUT/apk-inventory.txt" 2>/dev/null || true
           echo "RAMUS_APK=$apk   splits: ${splits:-none}"
 
@@ -404,6 +412,45 @@ jobs:
           if [ "${{ steps.apk.outputs.has_x86 }}" != "true" ]; then
             echo "::warning::No x86/x86_64 native libraries — this build is ${{ steps.apk.outputs.abis }} only."
             echo "::warning::Ramus runs x86_64 emulators, so the game may fail at native load even when install succeeds."
+          fi
+
+      # Everything below mints a 15-minute credential. These checks are cheap and
+      # run first: a wrong package name or an unreachable CLI would otherwise only
+      # surface after the trial is spent.
+      - name: Pre-session checks
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          APK_PKG: ${{ steps.apk.outputs.package }}
+          BASE_MB: ${{ steps.apk.outputs.base_mb }}
+        run: |
+          set -euo pipefail
+          {
+            echo "mode:      $RAMUS_MODE"
+            echo "apk:       $(ls -lh "$RAMUS_APK" 2>/dev/null | awk '{print $5}')  (${BASE_MB} MB of ${TRIAL_APK_MAX_MB} MB)"
+            echo "package:   ${APK_PKG:-<unreadable>}   (env: $RAMUS_PACKAGE)"
+            echo "abis:      ${{ steps.apk.outputs.abis }}   x86_64 present: ${{ steps.apk.outputs.has_x86 }}"
+            echo "bridge:    ${{ steps.apk.outputs.bridge }}"
+            echo "session:   $([ "$RAMUS_MODE" = trial ] && echo 'trial — 15 min, 1 session, NO adb' || echo 'key — adb tunnel + HTTP')"
+          } | tee "$PROBE_OUT/preflight.txt"
+
+          if [ -z "${APK_PKG:-}" ]; then
+            echo "::error::Package name unreadable from the APK — refusing to spend a session."
+            exit 1
+          fi
+
+          # Registry reachability, checked before `ramus trial`, so a npm outage
+          # does not look like a device failure.
+          if ! npm view "$RAMUS_CLI" version 2>/dev/null | tail -1; then
+            echo "::error::$RAMUS_CLI is not resolvable from npm right now."
+            exit 1
+          fi
+
+          # Prediction, stated before the run so the result cannot be rewritten after.
+          if [ "${{ steps.apk.outputs.has_x86 }}" != "true" ]; then
+            echo "::warning::Predicted: app may die at native load — build is arm64-only, Ramus is x86_64."
+          fi
+          if [ "${{ steps.apk.outputs.bridge }}" != "yes" ]; then
+            echo "::notice::No bridge in the APK → this run can only prove install/launch/logcat, not /statics."
           fi
 
       - name: Credentials
@@ -570,6 +617,11 @@ jobs:
           fi
 
           args=(--out "$PROBE_OUT" --label "${{ inputs.scenario || github.event_name }}" --mode "$RAMUS_MODE")
+          # Trust what is inside the APK over the env default: a case mismatch in
+          # a package name makes every logcat signal a false negative.
+          if [ -n "${{ steps.apk.outputs.package }}" ]; then
+            export RAMUS_PACKAGE="${{ steps.apk.outputs.package }}"
+          fi
           if [ "$RAMUS_MODE" = "trial" ]; then
             args+=(--wait-server 5 --logcat-wait 90)
           else
