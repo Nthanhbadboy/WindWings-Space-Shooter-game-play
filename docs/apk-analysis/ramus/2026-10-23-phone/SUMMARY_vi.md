@@ -129,14 +129,22 @@ Bảng "Kết quả cuối" ở trên ghi ✅ cho phần **số liệu balance**
 |---|---|---|
 | `Map_Get_Datas.listMapDatas` | `_count = 250` nhưng chỉ **128** phần tử, mỗi phần tử là **chuỗi tên type** `Il2CppInterop...Il2CppStructArray`1[System.Int32]` | bridge only unrolled **1 tầng**, chặn cứng **128** |
 | `Map_Get_Datas.AllArenaStartMaps` / `AllArenaRandomMaps` / `AllPvPStartMaps` / `listMapFightBossDatas` / `listMapChallangeDatas` | cùng dạng tên type | y như trên |
-| `Device_Get_Data.listStatValues` | **39** phần tử, **tất cả** là tên type | y như trên |
+| `Device_Get_Data.listStatValues` | **10** phần tử, **tất cả** là tên type (mỗi phần tử là một `Il2CppStructArray<float>` = `float[5]`) | y như trên |
 | `Device_Get_Data.percentByLevels1/2` | `[0.5,0.6,0.4,0.8,1]` / `[0.1,0.1,0.3,0.4,0.5]` | **đọc được thật** |
 | `Enemy_Data_Balance.listStaticEmemies` | `"(List`1)"` | List chưa mở |
 | `GP_Datas` (65 field) | toàn `NativeFieldInfoPtr_*` | `/statics` không follow sang **instance** |
 | `Enemy_Get_Datas` | **không có file** | chưa gọi lần nào trong run này |
 | `Bonus_Get_Datas.listAllFortificationBonus` | 4 phần tử, toàn tên type | như trên |
 
-Tổng trên cả thư mục: **377 field đọc được**, **80 field chỉ trả về tên type**.
+Tổng trên **18 file có `fields`** trong thư mục này (đếm ngày 23/10, mọi commit tới `5b3c8ae`):
+
+**575 field đọc được · 88 field chỉ trả về tên type (15,3 %)**.
+
+Phân bố: `GP_Datas` đóng góp **65/88** (toàn bộ `NativeFieldInfoPtr_*`), `SpaceShooter.Gameplay.GP_Datas`
+thêm 8, `Player_Get_Datas` 5, còn lại rải rác.
+
+> Hai con số tôi từng ghi sai ở bản trước: "377 field / 80" (đếm trên commit `5470902`, ít file hơn)
+> và "listStatValues có 39 phần tử" (sai — **10**). Bản này là số đếm lại.
 
 ### Nguyên nhân đã sửa (commit `9fb827c`)
 

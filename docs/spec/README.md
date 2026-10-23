@@ -84,14 +84,27 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | Mã IL2CPP (enum + class) | `reverse-engineering/il2cpp/dump.cs.gz` | tất cả (enum, field name) |
 | Text/graphics | `reverse-engineering/textassets/` | `ASSETS` |
 
-> ⚠ **Trạng thái 23/10 — các đường dẫn trên KHÔNG có trong nhánh này.** `datas/`,
-> `docs/apk-analysis/*.csv` và `reverse-engineering/` nằm ở một nhánh phân tích riêng đã
-> **bị xoá khỏi remote** (không còn trong `main`, không còn object local). Hệ quả: mọi con số
-> trong bộ spec vẫn là số đã đo, nhưng **không thể tính lại từ repo** cho tới khi dữ liệu được
-> đưa trở lại. Đừng coi "không tìm thấy file" là "số sai".
+> ⚠ **Trạng thái 23/10 — các đường dẫn trên không nằm ở nhánh này, nhưng KHÔNG mất.**
+> Chúng ở nhánh phân tích **`arena/ef6b75ef-windwings-space-shooter-game-p`** (`8492c220`,
+> 241 commit, 53.698 file), vẫn còn trên remote. Nhánh này và nhánh đó cùng tách từ
+> `8b3689dc` nên **không** chia sẻ commit nào ngoài gốc.
 >
-> Dữ liệu **duy nhất còn truy được** là run điện thoại 23/10:
-> `docs/apk-analysis/ramus/2026-10-23-phone/*.json` (JSON thô, đọc thẳng bằng `jq`).
+> Đọc được **không cần merge, không cần checkout**:
+>
+> ```bash
+> git fetch origin 'refs/heads/arena/ef6b75ef-windwings-space-shooter-game-p:refs/remotes/origin/arena/ef6b75ef-windwings-space-shooter-game-p'
+> git show origin/arena/ef6b75ef-windwings-space-shooter-game-p:datas/waves.json | jq
+> git ls-tree -r --name-only origin/arena/ef6b75ef-windwings-space-shooter-game-p -- datas/
+> ```
+>
+> Ba cái tên trong bảng trên cần sửa cho đúng khi fetch:
+> `datas/formula_traces.json` và `datas/anim_clips.json` thực tế là **`.json.gz`**;
+> `reverse-engineering/scriptableobjects/*.csv` là **`reverse-engineering/scriptableobjects/*.csv`**
+> cộng `reverse-engineering/raw/typetrees/*.jsonl.gz` (111 class).
+>
+> Dữ liệu chạy thật (điện thoại) nằm ngay nhánh này:
+> `docs/apk-analysis/ramus/2026-10-23-phone/*.json` — đối chiếu với dữ liệu tĩnh ở
+> `CROSSCHECK-static-vs-runtime.md` cùng thư mục.
 
 **Quy ước trong mọi file:**
 - Mỗi bảng ghi `(nguồn: <file>)` hoặc có cột **Nguồn**.
