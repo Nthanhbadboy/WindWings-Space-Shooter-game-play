@@ -89,7 +89,7 @@ dữ liệu bị cắt. Bản `Call_Data` 1.500 dòng trước đây mới là c
 | `Boss_BodyPhysics.m_GameObject` → prefab gốc | 0% | **251 / 251 = 100%** |
 | `Enemy_Movement.parentRotate` → prefab gốc | 0% | **558 / 558 = 100%** |
 | `Wave.startPoint/endPoint` → prefab gốc | 0% | **1.372 / 1.372 = 100%** (ra `Wave_XXXX`, không phải `PathCreator`) |
-| `Stage_Behaviour.bossObj` | 0% | **vẫn 0 / 250** — trỏ tới MonoBehaviour, không phải Transform; cần đọc `bossObj` theo class đích |
+| `Stage_Behaviour.bossObj` | 0% | **250 / 250 = 100%** — nhưng cả 250 đều về root `Board_Maps`: `bossObj` là **icon boss trên bản đồ stage**, không phải prefab boss. Mắt này nối được nhưng nối vào UI |
 
 Cấu trúc cây: **228.432** transform, **2.089** root (0,9%) — tức 99,1% object có `m_Father`,
 nên lo ngại "prefab lồng làm đứt chuỗi" **không xảy ra** ở build này.
@@ -150,7 +150,7 @@ xuất hiện trong trận. Số enemy "dùng được" nằm trong khoảng **7
 
 | # | Thứ | Trạng thái | Cách làm tiếp |
 |---:|---|---|---|
-| 1 | `Stage_Behaviour.bossObj` (250) | 0% | đọc class đích của `bossObj` (MonoBehaviour) rồi lấy `m_GameObject` của chính nó |
+| 1 | ~~`Stage_Behaviour.bossObj`~~ | ✅ xong | hoá ra trỏ thẳng GameObject (250/250 khớp cột `gameobject` của transform-tree) và đều thuộc `Board_Maps` — là icon bản đồ, không cần nối tiếp. Bảng nối tái lập được: `datas/prefab_joins.csv.gz` (`tools/apk-analyze/prefab_joins.py`, 3.870 dòng, 7 mắt đều 100%) |
 | 2 | `AnimationClip` (791) · `AnimatorController` (308) | chưa export | cần reader riêng (không phải MonoBehaviour) |
 | 3 | `ParticleSystem` | chưa dump | thêm vào `unity_data.py` như `Transform` |
 | 4 | Số quân 45.659 | chưa kiểm | tính lại từ `Call_Data` 23.757 dòng đầy đủ + `number` |

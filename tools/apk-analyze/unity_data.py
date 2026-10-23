@@ -262,6 +262,51 @@ def export_transform_tree(env) -> None:
     print(f"prefab roots: {len(roots)}")
 
 
+def export_native_types(env) -> None:
+    """Xuất tóm tắt `AnimationClip` + `AnimatorController` (object gốc, không phải MonoBehaviour).
+
+    Vì sao: 791 clip + 308 controller chưa từng được export — đây là lớp animation
+    thứ hai ngoài Spine. Chỉ ghi **tóm tắt** (tên, độ dài, số curve/tham số/layer):
+    curve đầy đủ rất nặng và muốn dựng lại chuyển động thì Spine đã đủ chi tiết hơn.
+    `ParticleSystem` chỉ đếm số lượng (typetree của nó gồm ~30 module, xuất hết sẽ phình).
+    """
+    import gzip
+
+    wanted = {"AnimationClip", "AnimatorController", "ParticleSystem"}
+    counts: Counter = Counter()
+    out_path = os.path.join(RAW, "native-types.jsonl.gz")
+    written = 0
+    with gzip.open(out_path, "wt", encoding="utf-8", compresslevel=9) as fh:
+        for obj in env.objects:
+            tname = obj.type.name
+            if tname not in wanted:
+                continue
+            counts[tname] += 1
+            if tname == "ParticleSystem":
+                continue  # chỉ đếm, xem docstring
+            try:
+                tree = obj.read_typetree()
+            except Exception:  # noqa: BLE001
+                continue
+            if not isinstance(tree, dict):
+                continue
+            summary = {"type": tname, "path_id": obj.path_id}
+            for key, val in tree.items():
+                if isinstance(val, (int, float, str, bool)) or val is None:
+                    summary[key] = val
+                elif isinstance(val, list):
+                    summary[f"{key}__count"] = len(val)
+                elif isinstance(val, dict):
+                    # giữ lại các scalar một cấp (vd m_MuscleClipInfo)
+                    scalars = {k: v for k, v in val.items()
+                               if isinstance(v, (int, float, str, bool))}
+                    if scalars:
+                        summary[key] = scalars
+            fh.write(json.dumps(summary, ensure_ascii=False, default=str) + "\n")
+            written += 1
+    print(f"native types: {dict(counts)}, tóm tắt đã ghi {written} -> {out_path}")
+
+
 def load_env() -> UnityPy.Environment:
     files = [os.path.join(EXTRACT, f) for f in ("data.unity3d", "resources.resource")]
     files = [f for f in files if os.path.isfile(f)]
@@ -403,7 +448,11 @@ def main() -> int:
     try:
         export_transform_tree(env)
     except Exception as e:  # noqa: BLE001
-        print(f"transform tree failed (bỏ qua, các bảng khác vẫn dùng được): {e!r}")
+        print(f"transform tree failed (bỏ qua): {e!r}")
+    try:
+        export_native_types(env)
+    except Exception as e:  # noqa: BLE001
+        print(f"native types failed (bỏ qua, các bảng khác vẫn dùng được): {e!r}")
 
     for fh in raw_files.values():
         try:
