@@ -249,10 +249,13 @@ store offset kiểm bằng asm: `0x38 / 0x78 / 0x80 / 0x88 / 0x1C8 / 0x308`.
 - `shipCloneDamage` = **1,35 · 1,6 · 1,86** (`0x1C8`) · `PercentToCompleteMissions222` = **0,2 · 0,6 · 0,98** (`0x308`).
 - **16/24** tàu có giá ≥ 0; **8** tàu `−1`. `PlayerCosts` là **int**, ba mảng damage/rate là **float** — trước đây
   mình đọc nhầm cả 4 là float*24, xem `DATA_SYNC.md` §21.
-- `index` là **playerIndex**; bind sang ID tàu **ĐÃ XONG** — id − 10001 (`0x14e2ce4`, `CROSS_BRANCH` T4).
-  **⚠ DPS = damage × rate KHÔNG phải DPS chứng minh** (25/10, report 79 peer `549a7b5b7c`): tàu 1 dùng
-  `rate` làm **interval đặt hạn bắn** (deadline = `Time.time` + rate); `damage ÷ rate` cũng chưa đủ —
-  còn phát phụ, nhiều nòng, modifier; không suy 23 tàu từ tàu 1.
+- `index` là **playerIndex của implementation** — **KHÔNG phải `id − 10001` cho combat** (sửa 25/10
+  theo report 81/82 peer): impl `Player_Attack_N` đọc mảng index **N−1** (CFG 72/72); tàu
+  **10001→index 2** · **10003→index 0** · 10004–10024 → id−10001. `0x14e2ce4` (id − 10001) giữ nguyên
+  ở consumer **save/load**.
+  **⚠ DPS = damage × rate KHÔNG phải DPS chứng minh** (reports 79–83): rate = base × (1 − percent
+  tech `GetTechStatLevel(1)` — tier **0/3/5/8/10/12 %**); là **interval nhóm phát** (dual deadline,
+  N extra ⇒ N+1 entry, không catch-up); demo override 3,0/4,0; crit random ≤ critPercent ⇒ ×2.
 - HP vẫn **không** có bảng theo tàu: `StartHp` là **một** float.
 ⇒ Nếu mỗi tàu có HP riêng, bảng đó **không** nằm ở ScriptableObject; phải là **mảng cứng trong
 code** hoặc gán ở chỗ khác.
@@ -1390,7 +1393,7 @@ Chỉ biết **signature**, không biết thân hàm (nguồn: `class Enemy_Data
 
 | Nhóm | Lý do |
 |---|---|
-| ~~Damage nền từng tàu~~ | **ĐÃ CÓ** (§1.1b) + bind **ĐÃ XONG** (`0x14e2ce4`, id − 10001); DPS runtime còn là **proxy** (report 79) — đừng xếp vào mức D nữa |
+| ~~Damage nền từng tàu~~ | **ĐÃ CÓ** (§1.1b) + bind combat **theo report 81/82** (impl N → index N−1; tàu 10001→2 · 10003→0); DPS runtime còn là **proxy** — đừng xếp vào mức D nữa |
 | Giá nâng cấp (coin/gem) | `PlayerCosts[]`, `GetUpgadeCostCoins()` — thân hàm; **0 cột giá** trong 91 CSV (`ECONOMY.md` §8) |
 | Tỉ lệ rơi item | Không có field trọng số; chỉ suy được **tỉ lệ instance** 676 coin : 26 item (`Item_Movement.csv`) |
 | Hệ số scale HP theo stage | `Enemy_Data_Balance` + `Stage_Get_Datas` (scene bundle khác, chưa tìm ra) |
@@ -1424,7 +1427,7 @@ Chỉ biết **signature**, không biết thân hàm (nguồn: `class Enemy_Data
 | Hitbox đạn | ✅ `border.w = 15` (184/186) | `Bullet_Linearly.csv` |
 | Đạn xuyên khiên | ✅ 58/186 | `Bullet_Linearly.csv` |
 | Sát thương va chạm boss | ✅ 247 cặp | `Boss_BodyPhysics.csv` |
-| Armor / `noDamage` | ✅ 189/800 | `Enemy_Health.csv` |
+| Armor / `noDamage` | `noDamage` **241/981** true (report 81 peer đếm lại); `armor` **không serialize** — công thức mất máu đã có (report 81 §E: `100/(100+armor)`), giá trị runtime chưa | `Enemy_Health.csv` + report 81 |
 | Số wave + spawner | ✅ 282 / **48 archetype** / **11.089** dòng = **10.782** cấu hình | `waves.json` → `ENCOUNTERS.md` |
 | Số map + parallax | ✅ 250 map, 5 lớp | `MapController.csv` |
 | Số stage theo loại | ✅ 299 (Normal 199 · Boss 26 · Combat 49 · MiniBoss 25) | `Stage_Behaviour.csv` |

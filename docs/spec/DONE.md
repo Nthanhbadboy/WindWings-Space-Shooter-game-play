@@ -72,6 +72,18 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 18 — 25/10, đồng bộ reports 80–83 peer tip `23b1ceec31` — ĐÍNH CHÍNH bind):**
+> ① **"id − 10001" bị hẹp scope**: peer CFG-proof **72/72** getter call (report 82) + source prefab
+> (report 81) ⇒ **combat**: impl `Player_Attack_N` đọc mảng index **N−1**, tàu **10001 → index 2**
+> (proxy 12.864) · **10003 → index 0** (proxy 21.600) · 10004–10024 → id−10001; công thức cũ
+> (`0x14e2ce4`) **giữ nguyên ở consumer save/load**. Sửa 8 file: MISSING §2.2/row 9/§2-đầu/§6 ·
+> COMBAT §0/§6.1 · BALANCE §1.1b/§5.2 · DESIGN_READINESS ①/B3 · README 2 dòng · SYSTEM_MANIFEST ·
+> DATA_SYNC §22.3/§24.8. ② **Nhịp bắn đủ 24/24** (report 83): interval nhóm phát — dual deadline,
+> N extra ⇒ N+1 entry, không catch-up (80), modifier tech tier 0/3/5/8/10/12 % (82), demo override
+> 3,0/4,0; OPEN_ISSUES D5 cập nhật A/B. ③ **Luật mất máu enemy** (81 §E): armor factor ±, overkill
+> clamp 0, IsCaAttack@0x2F, noDamage 241/981 (sửa 189/800 cũ), Shield_Sub riêng; COMBAT §6.2.
+> ④ 38 ends_clean = coroutine Reset/OnDrawGizmos — không cắt (đừng xin dump). DATA_SYNC §24.13–24.16.
+>
 > **Sửa lại (lần 17 — 25/10, chuyển bổ sung "mục đích" sang nhánh dữ liệu):** chủ dự án yêu cầu
 > cập nhật cả bên nhánh dữ liệu. Khuôn phiên chỉ push nhánh spec ⇒ giao bằng kênh chuẩn: file
 > **`docs/HANDOFF_DATA_PURPOSE_6144d7cb.md`** (3 chỗ chèn paste-ready vào `START_HERE_NEW_GAME.md` ·
@@ -341,7 +353,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 | **Kiểm bằng** | máy: replay 1 wave, so DPS/TTK/HP với bản gốc trong **dung sai khai báo trước** |
 | **Đạt khi** | (dung sai do bạn chọn — ví dụ ±5%) |
 | **Bắt chước đủ?** | ✅ **đủ** (lần 14, 25/10) — mọi giá trị đã decode + bind xong |
-| **Đã có gì** | 6 mảng `Player_Get_Datas` (bind **id − 10001**) · **576** mảng `Map_Get_Datas` (**11 cấu trúc**, `DIFFICULTY_MODES` §7) · **150 cặp HP enemy** · `StartHpPoint`←dict · `kHp` **không tồn tại** (`DIFFICULTY_MODES` §3–5) |
+| **Đã có gì** | 6 mảng `Player_Get_Datas` (bind: save/load **id−10001** · combat **impl N→index N−1**, report 81/82) · **576** mảng `Map_Get_Datas` (**11 cấu trúc**, `DIFFICULTY_MODES` §7) · **150 cặp HP enemy** · `StartHpPoint`←dict · `kHp` **không tồn tại** (`DIFFICULTY_MODES` §3–5) |
 | **Còn thiếu** | chứng minh **DPS runtime** (report 79 — `rate` = interval; peer làm parity tàu 1) + **2** tái đối chiếu `CROSSCHECK` |
 | **Chi phí** | ~~AssetRipper + Ghidra~~ → **không cần tool** — replay + đối chiếu |
 

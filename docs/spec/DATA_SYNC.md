@@ -2452,8 +2452,9 @@ Trước đó `MISSING_FOR_NEW_GAME.md` viết *“573 blob còn lại chưa dum
 `StartWingCannonDamages[0]` = **218** · `shipCloneDamage` = **1,35/1,6/1,86** ·
 `PercentToCompleteMissions222` = **0,2/0,6/0,98**. Dẫn xuất: `datas/player_start_stats.json`.
 
-> **Cập nhật 25/10 (lần 13)** — 3/4 mục "vẫn chưa" ở đây **đã xong**: ~~`playerIndex` → ID tàu~~ ✅
-> (id − 10001, `0x14e2ce4`, T4) · ~~576 mảng map → (chapter, stage, mode)~~ ✅ bind cấu trúc
+> **Cập nhật 25/10 (lần 13; sửa lần 18)** — 3/4 mục "vẫn chưa" ở đây **đã xong**: ~~`playerIndex` →
+> ID tàu~~ ✅ (id − 10001 — **hẹp scope: chỉ save/load; combat = impl N → index N−1, tàu 10001→2 ·
+> 10003→0, report 81/82 peer**) · ~~576 mảng map → (chapter, stage, mode)~~ ✅ bind cấu trúc
 > (**11 bảng / 614 mảng**, `DIFFICULTY_MODES` §7) · ~~`rate` có phải *shot/giây*~~ ✅ **interval đặt hạn
 > bắn** tàu 1 (report 79 peer — DPS = proxy). Còn: **HP riêng của tàu** (D) + parity phát phụ/nòng.
 > Đó là việc **bind + kiểm runtime**, không phải việc **dump**.
@@ -2577,7 +2578,7 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
 
 | Bind | Trạng thái |
 |---|---|
-| `playerIndex` ↔ ID tàu | ✅ **index = id − 10001** (asm `0x14e2ce4`, `CROSS_BRANCH` T4) |
+| `playerIndex` ↔ ID tàu | ✅ **save/load: index = id − 10001** (asm `0x14e2ce4`, T4) — **combat: impl N → index N−1** (report 81/82, xem §24.14) |
 | Cấu trúc bảng Map (614 mảng → 11 cấu trúc) | ✅ `DIFFICULTY_MODES` §7: 320×len3 ↔ 3 mode · 118×len2 = stage→boss · 104×len7 ↔ 7 PlayMode |
 | Chi tiết entry từng mảng campaign | ✅ nhánh dữ liệu ghép xong (`datas/map_table_segments.json` + `maps.json`) |
 | `kHp[mode]` | ✅ **KHÔNG TỒN TẠI** — chế độ không nhân HP (chỉ `levelDelta` thưởng; 0/5 hàm `stageLevel` liên quan HP); khác biệt = composition bảng len-3 |
@@ -2652,3 +2653,54 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   `OPEN_ISSUES` D5 (mới) · `BOSSES` · `ENEMY_HP_RUNTIME` · `COVERAGE_AUDIT` §1 row 3 · README.
 - **Bàn giao mới:** `SYSTEM_MANIFEST.md` — bảng tối giản `hệ thống → raw/hợp đồng → luật → tự chọn →
   test` (đúng task ⑤ của peer). Reply trên PR12 sau khi push + CI.
+
+### 24.13 Report 80 — phát phụ, emitter, damage callback (peer, scope `Player_Attack_1`)
+
+- **Không phải mỗi lần gọi đều phát**: dual gate — main deadline `@0x10c` + extra deadline
+  `@0x118` (`rateAddMainCannon @0x124`); extra count từ `GetNumberAbility(4)` (OnEnable; ctor
+  default 1 · 0,2 s không chứng minh runtime); **N extra ⇒ N+1 entry emitter**; **không có
+  catch-up timer** (gọi muộn chỉ đặt deadline tương lai). `N / interval` **không** phải rate.
+- Emitter phụ `MainCannonAttack` theo **rank `@0x44`**: rank 3 → 2 vòng · ≥4 → 4 vòng · <3 → return.
+- Damage tính **trong callback** `OnBulletMainCannonCollided`: `Random.Range(0,1) ≤
+  GetMainCannonCritPercent` ⇒ multiplier **2**, ngược lại **1**; nhân vào `GetMainCannonDamage`
+  rồi `Damager(float, Action)` → `IDamageable.TakeDamage(ignoreInvincible=false)`.
+- Model `player_main_cannon_timer.py` chỉ trả `entered_emitter` — không phải bullet/hit/DPS.
+
+### 24.14 Report 81 — combat-chain family 24 implementation → bullet → receiver ⚠ **sửa bind bên mình**
+
+- Raw `raw/combat-chain/`: **123 class · 1563 method · 24 ships · 4133 component**, capped 0;
+  498 GOT cells nối qua **ELF RELA**; `datas/combat_chain_contract.json.gz` = hợp đồng.
+- **Hậu tố class ≠ ID tàu**: impl1 (`Player_Attack_1`) source **10003** · impl2→10002 ·
+  **impl3 → 10001** · impl4–24 → 10004–10024. Report 82 CFG-proof **72/72** getter call truyền
+  **N−1** ⇒ **bên spec đã sửa mọi claim "id − 10001" sang scope save/load** (`MISSING` §2.2 ·
+  `COMBAT` §0/§6.1 · `BALANCE` §1.1b/§5.2 · `DESIGN_READINESS` ①/B3 · `README` · `SYSTEM_MANIFEST` ·
+  `DATA_SYNC` §22.3/§24.8). Lưu ý report 82: source impl2 còn chỉ đọc prefix (4 EOF typetree).
+- **Luật mất máu enemy (§E)**: `factor = 100/(100+armor)` nếu `armor ≥ 0`, else `2 − 100/(100−armor)`
+  (armor −100 ⇒ ×1,5); overkill clamp 0; `loss` = HP re-read **sau** `hitCallback`; gate
+  `currentHP@0x28` + flag (report 82 đặt tên **`IsCaAttack@0x2F`**); **1.623 collider** → 1.472
+  `Enemy_Sub` + 76 `Shield_Sub` (không dùng công thức enemy) + 6 `Sub_Player` + 1 `Sub_ShipProtect`;
+  68 root không receiver = 64 null + 4 root không Mono. `armor` **private runtime, không serialize**
+  — không bịa default 0. `noDamage`: 740 false / **241 true** (981).
+- Typed bullet: main `80003` → **Bullet_Plasma**, pool `88004` → **Homing_Missile** — không áp
+  hành vi `Bullet_Linearly` base cho override.
+
+### 24.15 Report 82 — audit chứng cứ: đóng caveat, không để "chưa runtime" thay việc đọc native
+
+- **72/72** đối số getter CFG-proved (must-value, cả hai nhánh, back edge): `w0 = N−1` — đóng
+  candidate-index của 81; **cấm áp mù `id−10001` thay chuỗi source→implementation→argument**.
+- **Modifier rate ĐÓNG**: `rate = base × (1 − percent)`; percent = `GetTechStatLevel(1)` tier:
+  ≤0 → 0 · 1 → 0,03 · 2–3 → 0,05 · 4–6 → 0,08 · 7–8 → 0,10 · ≥9 → 0,12 (binary32 literals giữ raw).
+- 38 `ends_clean=false` audit xong: **36 coroutine Reset throw NotSupportedException + 2
+  OnDrawGizmos** — **không phải body bị cắt, không xin dump lại**; 132 overlap clip bằng next-RVA.
+
+### 24.16 Report 83 + tip `23b1ceec31` — main-rate → deadline → dispatch đủ 24
+
+- Cả **24 SetupDatas** gọi getter, đọc `demo bool@0x30` (`fcsel`), ghi `timeRateMainCannon`;
+  demo=true → **3,0** (impl 1–23) / **4,0** (impl 24). **4 access/impl** (ctor ghi · SetupDatas ghi ·
+  MainCannonShoot đọc · StartAttack đọc) — **48 read site** vào đúng 2 consumer; giá trị getter là
+  **interval** cho main deadline, không phải số đạn/s.
+- 25 `MoveNext` + 14 `WaitForSeconds` inventoried; tip: **coroutine byte jump-tables pinned**
+  (`raw/combat-chain/coroutine-jump-tables.json`) — scheduler từng family đọc/implement được.
+- Bên spec đã cập nhật theo 80–83: `COMBAT` §0/§6.1–6.2 (TTK + luật mất máu) · `BALANCE` §1.1b/§5.2 ·
+  `MISSING` §2.2/row 9/§2-đầu/§6 · `OPEN_ISSUES` D5 · `SYSTEM_MANIFEST` 3 dòng · `DESIGN_READINESS` ①/B3 ·
+  `README` 2 dòng · mục này.

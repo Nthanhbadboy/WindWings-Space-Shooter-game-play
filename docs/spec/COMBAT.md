@@ -19,17 +19,18 @@
 | Tầm bay (thực tế trên từng súng) | **3 – 360** unit, median **40** | `bltSpeed × bltLifetime` |
 | DPS lý thuyết (492 cấu hình) | **7,8 – 3.333**, median **454** (dedup: 452 / 506,7) | §4 |
 | Súng của **player** trong dump | **0** — toàn bộ 458 là enemy/boss | `forceType = Enemy` 458/458 |
-| Enemy có `noDamage` (bất tử với đạn) | **189 / 800 (23,6%)** | `Enemy_Health.csv` |
+| Enemy có `noDamage` (bất tử với đạn) | **241 / 981 (24,6%)** true — report 81 peer đếm lại trên 981 snapshot (cũ 189/800 trên CSV trích) | `Enemy_Health.csv` + report 81 |
 | Đạn xuyên khiên | **58 / 186** loại đạn | `Bullet_Linearly.csv` `throughShield` |
-| TTK | **ước lượng được theo tàu** — DPS player **KHÔNG phải** `damage × rate`: report 79 peer `549a7b5b7c` chứng minh tàu 1 dùng `rate` làm **interval đặt hạn bắn** (deadline = `Time.time` + rate), chưa đếm phát phụ/nhiều nòng. Bind index→ID tàu **ĐÃ XONG** (`0x14e2ce4`, id − 10001) | §6.1 |
+| TTK | **ước lượng được theo tàu** — DPS = damage × rate là **proxy**: reports 79–83 peer (`23b1ceec31`) chứng minh `rate` (× tech modifier tier) là **interval nhóm phát** (dual deadline, N extra ⇒ N+1 entry, không catch-up, đủ 24/24 impl). Bind combat: **impl N → index N−1** — tàu 10001→index 2 · 10003→index 0 (report 81/82; id−10001 chỉ đúng save/load). Luật mất máu enemy đã có (armor `100/(100+armor)`) — DPS runtime còn cần health/shield gates | §6.1 |
 
 > ⚠ **Phát hiện quan trọng nhất:** `Gun_Attack.csv` **không chứa súng của người chơi**.
 > Bằng chứng: cột `forceType` có đúng 2 giá trị (`Enemy = 0`, `Ally = 1`) và **458/458 dòng = 0**.
 > Damage của player nằm ở `Player_Get_Datas.StartMainCannonDamages[]` — class **không được
 > serialize** trong `data.unity3d`. **Đính chính 25/10:** câu *"phải decompile `libil2cpp.so`"* là
 > **cũ** — 6 mảng đã decode từ `reverse-engineering/il2cpp/ia-resolved.json`
-> → `datas/player_start_stats.json` (§6.1). ~~Cái còn thiếu là bind index → ID tàu~~ — **bind ĐÃ XONG**
-> (`0x14e2ce4`, id − 10001, `CROSS_BRANCH` T4); cái thiếu là **chứng minh DPS runtime** (report 79).
+> → `datas/player_start_stats.json` (§6.1). Bind **combat**: impl N → index N−1 (report 81/82 — tàu
+> 10001→2 · 10003→0; `id − 10001` chỉ còn đúng consumer **save/load**); cái thiếu là **DPS runtime**
+> (health/shield gates) — luật nhịp đã đủ 24/24 (reports 79–83).
 
 ---
 
@@ -346,7 +347,7 @@ Nguồn: `Gun_Attack.csv`, `_gameobject` cắt phần trước `/`.
 > `pN_startBltSpeed` cho **20 archetype tàu**. Tất cả là `static` → khởi tạo trong `.cctor()`.
 > **Cập nhật 25/10:** 6 mảng (`PlayerCosts` int[24] · 3× float[24] · 2× float[3]) **đã decode**
 > từ `ia-resolved.json` ⇒ **đã có giá trị**, không còn câu "chưa chạy Ghidra". Cái thiếu là
-> **bind** `playerIndex` → ID tàu **ĐÃ XONG** (`0x14e2ce4`, id − 10001, T4). Xem `TUNING_KNOBS.md` §2.2–2.3 · `BALANCE.md` §1.1b.
+> **bind combat** `playerIndex` → tàu **theo report 81/82**: impl N → index N−1 (tàu 10001→2 · 10002→1 · 10003→0 · 10004–10024 → id−10001); `0x14e2ce4` (id − 10001) chỉ còn đúng consumer **save/load**. Xem `TUNING_KNOBS.md` §2.2–2.3 · `BALANCE.md` §1.1b.
 
 TTK = `HP / DPS_player`. Trong đó:
 - **HP enemy**: **đã có** — `datas/enemy_hp_by_id.json` **150 cặp `id → HP`** (runtime, claim **WRH2**)
@@ -357,10 +358,18 @@ TTK = `HP / DPS_player`. Trong đó:
   `datas/player_start_stats.json` (index 0 = **21.600**, min **456**, max **46.400**) — chỉ dùng
   **ước lượng**. Report 79: tàu 1 dùng `rate` làm **interval** (deadline `@0x10c = Time.time + rate
   @0xa8`); còn phát phụ, nhiều nòng, modifier; không suy 23 tàu từ tàu 1.
-  Bind index→ID tàu **ĐÃ XONG** (`0x14e2ce4`, id − 10001).
+  Bind combat: impl N → index N−1 — tàu **10001→index 2** · **10003→index 0** (report 81/82; `id−10001` chỉ đúng save/load).
 
-⇒ Lập được **hai** bảng TTK: (a) theo **ID tàu** (bind xong — số mảng thật, DPS là proxy), (b) theo
-**giả thiết DPS** cho designer. Cả hai đều **ước lượng**: nhịp bắn thật chưa chứng minh (report 79).
+⇒ Lập được **hai** bảng TTK: (a) theo **ID tàu** (bind combat xong — số mảng thật, DPS là proxy),
+(b) theo **giả thiết DPS** cho designer. Cả hai đều **ước lượng**; nhịp thật = interval nhóm phát
+(reports 79–83), mất máu theo công thức armor dưới đây.
+
+**Luật mất máu enemy** (report 81 §E peer, native tĩnh): `factor = 100/(100+armor)` nếu `armor ≥ 0`,
+còn `armor < 0` thì `factor = 2 − 100/(100−armor)` (armor −100 ⇒ **×1,5**); overkill clamp **0**;
+`loss` đọc lại HP **sau** `hitCallback` (≠ raw damage); gate `Enemy_Datas.IsCaAttack@0x2F` +
+`currentHP@0x28`; **Shield_Sub KHÔNG dùng công thức này** — không áp một mô hình cho mọi
+`IDamageable`; 68 collider root không receiver = 64 null rootTransform + 4 root không MonoBehaviour.
+`armor` là field **private runtime** (không serialize) ⇒ TTK theo armor cụ thể vẫn cần giá trị runtime.
 
 ### 6.2 Bảng TTK (giây)
 

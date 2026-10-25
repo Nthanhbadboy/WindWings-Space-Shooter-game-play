@@ -35,7 +35,7 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 | 6 | **Wave / spawn** | ✅ **đủ** | **282 wave · 11.089 dòng cấu hình · 23.757 spawner · 22.451 entry** (`H2`, `I3`, `M3`, `AQ7`) | `rate = 0` **chưa** kết luận "spawn cả loạt" — xem §2.4 |
 | 7 | **Độ khó 3 chế độ** | ✅ **đủ** | `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · không nhân số quân | ngưỡng % riêng = tự chọn |
 | 8 | **Kinh tế / rơi đồ** | ✅ **đủ** | 3 tầng rơi: **702** vật đặt sẵn (**676 coin / 26 item**) · **246/2.094** slot mang item · **6** loại (`AE1`–`AE3`) | trọng số chọn giữa 6 loại — **tự chọn** |
-| 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu**; `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) — nhưng damage **có** lookup theo tàu: `GetMainCannonDamage(playerIndex)` đọc **mảng static float** `0x78` theo `playerIndex` (§2.2); `Player_Talent` **23 method** · **13 drone** | 6 mảng damage/rate/cost **đã decode** (§2.2); **bind index↔tàu ĐÃ XONG**: index = **id − 10001** (asm `0x14e2ce4`, `CROSS_BRANCH` T4) ⇒ TTK theo **từng tàu** tính được. Còn: **HP riêng của tàu** (chưa biết, **khác** HP enemy đã có); `rate` runtime **đã đào tàu 1** — interval đặt hạn bắn (report 79), 23 tàu chưa xét |
+| 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu**; `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) — nhưng damage **có** lookup theo tàu: `GetMainCannonDamage(playerIndex)` đọc **mảng static float** `0x78` theo `playerIndex` (§2.2); `Player_Talent` **23 method** · **13 drone** | 6 mảng damage/rate/cost **đã decode** (§2.2); **bind combat ĐÃ SỬA (report 81/82)**: impl N → index N−1 (tàu 10001→2 · 10003→0; id−10001 chỉ đúng save/load) ⇒ TTK **ước lượng** theo từng tàu. Còn: **HP riêng của tàu** (chưa biết, **khác** HP enemy đã có); DPS **runtime** (cần health/shield gates) — luật nhịp đã đủ **24/24** impl (report 83) |
 | 10 | **UI** | ✅ **cấu trúc** · ✅ **luật thị giác** / ❌ **asset** | **797 màn · 150.131 node · 5.831 nút** (`N2`, `P6`); **55.584** layout file; khung hình **0,4813** · accent **≤10 %** · tương phản **0,45–0,80** (`VISUAL_DESIGN.md`, **AN1**, **AN2**) | asset gốc: **vẽ mới**; luật thì **đã có số** |
 | 11 | **Âm thanh** | 🟡 **có dữ liệu + 15 luật tĩnh** | **69 clip / 571,5 s** (`audio-index.csv`) · `datas/audio_rules.json`: **15 rules** (mute/volume/pause/oneshot/music…) · registry **92** id · enum **118** (report 67; `DATA_SYNC` §21.1) | **đối chiếu nghe + trigger lúc chơi** — tĩnh hiện PROVISIONAL, cần 1 lần chạy để nâng mức |
 | 12 | **Save / load + live-ops** | 🟡 **một phần** | key đã đọc: **`StarCount`** · **`StarStageMaster{stageIndex}_{modeIndex}`** (default 0) qua `PlayerPreferences.SetInt → PlayerPrefs.SetInt`; model `savedStars/result` (report 57); **170 IAP** | **schema đầy đủ** (mọi khoá/kiểu/migrate) + **chưa** chứng minh flush đĩa — xem §2.3 |
@@ -49,7 +49,7 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 
 A6 và B3 **không còn là "dữ liệu chưa dump"** (câu cũ đã sai từ 25/10): raw **đã có** trong
 `ia-resolved.json` (576 mảng Map · 6 mảng Player). **Bind chính ĐÃ XONG** (sửa 25/10, đừng lặp lại
-TODO cũ): ① index ↔ tàu = **id − 10001** (`CROSS_BRANCH` T4); ② cấu trúc bảng Map = **11 cấu trúc,
+TODO cũ): ① index ↔ tàu = **id − 10001 — hẹp scope 25/10 (report 81/82)**: đúng cho save/load (`0x14e2ce4`); combat = impl N → index N−1 (tàu 10001→2 · 10002→1 · 10003→0 · 10004+→id−10001); ② cấu trúc bảng Map = **11 cấu trúc,
 đã phân loại 614 mảng** — 320×len3 ↔ 3 chế độ · 118×len2 = `stage → boss` · 104×len7 ↔ 7 `PlayMode`
 (`DIFFICULTY_MODES` §7). **Sửa 25/10 (lần 2): 4 mục "còn thiếu" trước đây đều đã có theo dạng khác** —
 `kHp[mode]` **không tồn tại** như hệ số (chế độ đổi composition + thưởng, `DIFFICULTY_MODES` §3–5);
@@ -106,13 +106,20 @@ từ hex trong `ia-resolved.json` — **theo kiểu của field**, không
 - **~~DPS suy ra~~ → ĐỔI CÁCH GIAO (25/10 theo report 79 peer `549a7b5b7c`):** `damages[i] × rate[i]`
   (index 0 → **21.600**; min **456** · max **46.400**) chỉ là **tích proxy**. Tàu 1 dùng `rate` làm
   **interval đặt hạn bắn**: deadline `@0x10c = Time.time + rate @0xa8` (`MainCannonShoot 0x147a920`) —
-  chưa đếm phát phụ (`@0x118/@0x124`), nhiều nòng (`@0x88`), modifier percent, nhánh demo literal 3.
-  `damage ÷ rate` cũng **chưa đủ**; không suy 23 tàu từ tàu 1.
+  **reports 80–83 peer (`23b1ceec31`) đã nối tiếp:** **24/24 implementation** trace vào deadline
+  scheduler (48 read site, report 83); phát phụ = **nhóm** (N extra ⇒ N+1 entry, dual deadline
+  `@0x118/@0x10c`, không catch-up — report 80); modifier percent theo `GetTechStatLevel(1)`
+  (tier **0/3/5/8/10/12 %** — report 82 §2); demo override 3,0/4,0; crit `random ≤ critPercent`
+  ⇒ **×2** trong callback. DPS runtime **vẫn chưa chứng minh** (cần health/shield gates) nhưng
+  **luật đã đủ để implement** (report 80 §4).
 - **Đã có file dẫn xuất:** `datas/player_start_stats.json` (6 mảng + cột `main_cannon_dps` + cờ purchasable).
 - **Khác lớp (đừng gộp):** `raw/player-loadout/array-blobs.json.gz` — **5 blob** · **49 int** · **5/5 sha256 OK** (claim **CM5**) là **int** của `Player_Saved_Datas` (giá craft/unlock), **không** phải mảng float damage ở trên.
-- **Bind index↔tàu — ĐÃ XONG:** asm tại `0x14e2ce4` **trừ 10001** khỏi ID tàu ra index
-  (`adds w19,w19,#-0x2711`, `CROSS_BRANCH` T4) ⇒ tàu `10001` → index **0** (proxy **21.600**),
-  … tới `10024` → index **23**; `10999` (tàu khoá) nằm ngoài mảng 24.
+- **Bind index↔tàu — ĐÃ HẸP SCOPE (sửa 25/10 theo report 81/82 peer):** ~~id − 10001 cho mọi consumer~~
+  → **chỉ đúng ở consumer save/load** (`0x14e2ce4`, `CROSS_BRANCH` T4 — giữ nguyên scope đó).
+  **Combat**: impl `Player_Attack_N` đọc mảng index **N−1** (CFG **72/72** call — 24 rate + 24 damage +
+  24 wing, report 82 §1); source tàu: impl1→**10003** · impl2→10002 · impl3→**10001** · impl4–24→
+  10004–10024 ⇒ tàu **10001 → index 2** (proxy **12.864**), tàu **10003 → index 0** (proxy **21.600**).
+  Hợp đồng: `datas/combat_chain_contract.json.gz` + `datas/combat_argument_audit.json` (peer).
 - **Vẫn chưa:** (1) **HP riêng của tàu** — chưa có bằng chứng theo cả hai chiều ⇒ giữ **D**.
   (2) **rate player ĐÃ ĐÀO (25/10, report 79 peer):** tàu 1 dùng `StartMainCannonRate` làm **interval**
   đặt hạn bắn tiếp — không phải shot/giây. ⚠ **Đính chính:** report **53** (từng dùng để đóng mục này)
@@ -277,7 +284,7 @@ không phủ toàn bộ công thức chiến đấu.
 
 | việc | mở khoá | trạng thái |
 |---|---|---|
-| ~~Đọc consumer để nối `playerIndex` ↔ **ID tàu**~~ | **B3** đóng → TTK tuyệt đối | ✅ **XONG** — index = id − 10001 (T4, `0x14e2ce4`) |
+| ~~Đọc consumer để nối `playerIndex` ↔ **ID tàu**~~ | **B3** đóng → TTK ước lượng | ✅ **XONG (hẹp scope 25/10)** — save/load: id − 10001; **combat: impl N → index N−1** (report 81/82, tàu 10001→index 2) |
 | ~~Bind 576 mảng map → (chapter, stage, mode)~~ | **A6** đóng → **A5** đóng | ✅ **XONG phần cấu trúc** — 11 cấu trúc, 614 mảng phân loại xong (`DIFFICULTY_MODES` §7); chi tiết từng entry là việc nhánh dữ liệu đã ghép (`datas/map_table_segments.json` + `maps.json`) |
 | ~~Tính `kHp[mode]`~~ | L2 | ✅ **KHÔNG TỒN TẠI** — chế độ không nhân HP (`DIFFICULTY_MODES` §3–5); khác biệt = composition bảng len-3 |
 | ~~`missionKillPercent` 6/9 số~~ | nhiệm vụ/sao | ✅ **ĐỦ 3/3** — một `float[3]` theo mission index `[0.2/0.6/0.98]`; "3×3" là ảo đơn vị |

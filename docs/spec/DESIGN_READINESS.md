@@ -13,7 +13,7 @@
 > art đã có đáp án; **việc thiết kế duy nhất là art**.
 >
 > **Cập nhật 25/10 — lần 3 (đồng bộ lần 7–10 của `DONE`):**
-> ① **bind xong**: index↔tàu = id − 10001 (`CROSS_BRANCH` T4) · bảng Map **11 cấu trúc / 614 mảng**
+> ① **bind xong**: save/load = id−10001 · **combat = impl N → index N−1** (report 81/82: tàu 10001→2 · 10003→0) · bảng Map **11 cấu trúc / 614 mảng**
 > (`DIFFICULTY_MODES` §7) · HP enemy **150 cặp theo id** (claim **WRH2**);
 > ② **`kHp[mode]` không tồn tại** — chế độ đổi composition + thưởng, không nhân HP; `pct` đủ **3/3**;
 > ③ **playback thật đã có** (phiên phone 23/10 trong repo) — "cần thiết bị" chỉ còn 2 tái đối chiếu;
@@ -55,7 +55,7 @@ chúng là **tham khảo**, không phải điều kiện.
 | 6 | **C4 — vàng/giờ** | mở | 🟡 **có mẫu runtime (25/10)** — phiên 23/10: **276 kill → 540 coin** Stage 1 (≈ 2 coin/kill, `live_1_gp.json`); công thức `GetBonusCoin` **100,0 · 20,0** | **Không** |
 | 7 | **A7 — mật độ địch** | mở, "làm bằng script" | 🟡 tính được **một nửa** — nhưng vướng #9 (xem dưới) | **Không** |
 | 8 | **A5 — độ dài phiên** | mở, "chi phí cao" | 🔴 mở — cần A6 + luật continue | **Không** (tự chọn) |
-| 9 | **B3 — đường cong damage** | mở, "chi phí cao" | 🟡 **đã có 6 mảng + ngưỡng (25/10)** — damage/rate/wing/cost theo index, index = **id − 10001** (`CROSS_BRANCH` T4); còn **rẽ nhánh `stepLevel`** đầy đủ (mức C) | **Không** (tự chọn) |
+| 9 | **B3 — đường cong damage** | mở, "chi phí cao" | 🟡 **đã có 6 mảng + ngưỡng (25/10)** — damage/rate/wing/cost theo index; bind combat = impl N → index N−1 (report 81/82); còn **rẽ nhánh `stepLevel`** đầy đủ (mức C) | **Không** (tự chọn) |
 
 **D3 KHÔNG đóng** (sửa 25/10, review R5). Trước đây câu này ghi *"đóng thêm 1 câu (D3), không cần
 decoder nữa"* — **mâu thuẫn** với chính bảng §2 ở trên (D3 = 🟡 một phần). Cái đã có là **nguồn
