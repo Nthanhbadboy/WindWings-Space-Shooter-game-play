@@ -1,0 +1,28 @@
+;;; ctor  public void .ctor() { }
+    0x14b5810: mov      x1, xzr
+    0x14b5814: b        #0x2143330
+
+;;; <MainCannonAttack>b__0  internal void <MainCannonAttack>b__0() { }
+    0x14b6224: str      x30, [sp, #-0x20]!
+    0x14b6228: stp      x20, x19, [sp, #0x10]
+    0x14b622c: adrp     x20, #0x2ce2000
+    0x14b6230: ldrb     w8, [x20, #0x114]
+    0x14b6234: mov      x19, x0
+    0x14b6238: tbnz     w8, #0, #0x14b6250
+    0x14b623c: adrp     x0, #0x2adc000
+    0x14b6240: ldr      x0, [x0, #0xbb0]
+    0x14b6244: bl       #0x110d028
+    0x14b6248: mov      w8, #1
+    0x14b624c: strb     w8, [x20, #0x114]
+    0x14b6250: ldr      x8, [x19, #0x18]
+    0x14b6254: cbz      x8, #0x14b627c
+    0x14b6258: ldr      x0, [x8, #0xf8]
+    0x14b625c: cbz      x0, #0x14b627c
+    0x14b6260: adrp     x8, #0x2adc000
+    0x14b6264: ldr      x8, [x8, #0xbb0]
+    0x14b6268: ldr      x1, [x19, #0x10]
+    0x14b626c: ldp      x20, x19, [sp, #0x10]
+    0x14b6270: ldr      x2, [x8]
+    0x14b6274: ldr      x30, [sp], #0x20
+    0x14b6278: b        #0x1bd91a0
+    0x14b627c: bl       #0x110d250

@@ -1,0 +1,153 @@
+{
+ "class": "Bullet_DropDown",
+ "note": "Pinned player firing consumer recovery; provisional",
+ "methods": [
+  {
+   "method": "FixedUpdate",
+   "signature": "protected override void FixedUpdate() { }",
+   "offset": "0x158b090",
+   "getter_value": null,
+   "rva": "0x158f090",
+   "bytes": 192,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x158f0c8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": -1.0,
+     "via": "ldr_pool_d",
+     "va": "0x757714",
+     "addr": "0x158f0d8",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": -20.42035,
+     "via": "ldr_pool",
+     "va": "0x757014",
+     "addr": "0x158f0e8",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x158f118",
+     "reg": "w8",
+     "op": "w8, w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SetBullet",
+   "signature": "public override void SetBullet(BulletForceType force, Transform target, LayerMask targetLayer, float startSpeed, float startLifetime, float startAngle, Action<GameObject, Vector3> onCollision, Action<GameObject, Vector3> onDestroy, bool throughShield = False) { }",
+   "offset": "0x158b150",
+   "getter_value": null,
+   "rva": "0x158f150",
+   "bytes": 52,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 4294967295,
+     "via": "and",
+     "addr": "0x158f154",
+     "reg": "x3",
+     "op": "x3, x3, #0xffffffff",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x158f158",
+     "reg": "w6",
+     "op": "w6, w6, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x158b184",
+   "getter_value": null,
+   "rva": "0x158f184",
+   "bytes": 64,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 0.5,
+     "via": "ldr_pool_d",
+     "va": "0x7579f8",
+     "addr": "0x158f188",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.1,
+     "via": "ldr_pool_d",
+     "va": "0x7579fc",
+     "addr": "0x158f188",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 300,
+     "via": "add",
+     "addr": "0x158f18c",
+     "reg": "x8",
+     "op": "x8, x0, #0x12c",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 90003,
+     "via": "mov+movk",
+     "addr": "0x158f1a8",
+     "reg": "w9",
+     "op": "w9, #0x5f93",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x158f1ac",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1056964608,
+     "via": "mov",
+     "bits": "0x3f000000",
+     "addr": "0x158f190",
+     "note": "bit-pattern giống float nhưng không thấy fmov — để riêng",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

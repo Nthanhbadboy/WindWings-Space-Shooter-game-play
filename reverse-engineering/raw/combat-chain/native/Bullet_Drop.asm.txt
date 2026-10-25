@@ -1,0 +1,155 @@
+;;; SetBullet  public override void SetBullet(BulletForceType force, Transform target, LayerMask targetLayer, float startSpeed, float startLifetime, float startAngle, Action<GameObject, Vector3> onCollision, Action<GameObject, Vector3> onDestroy, bool throughShield = False) { }
+    0x158ec20: str      d10, [sp, #-0x60]!
+    0x158ec24: stp      d9, d8, [sp, #0x10]
+    0x158ec28: stp      x30, x25, [sp, #0x20]
+    0x158ec2c: stp      x24, x23, [sp, #0x30]
+    0x158ec30: stp      x22, x21, [sp, #0x40]
+    0x158ec34: stp      x20, x19, [sp, #0x50]
+    0x158ec38: mov      x25, x0
+    0x158ec3c: mov      x0, xzr
+    0x158ec40: mov      w19, w6
+    0x158ec44: mov      x20, x5
+    0x158ec48: mov      x21, x4
+    0x158ec4c: mov      v8.16b, v2.16b
+    0x158ec50: mov      v9.16b, v1.16b
+    0x158ec54: mov      v10.16b, v0.16b
+    0x158ec58: mov      x22, x3
+    0x158ec5c: mov      x23, x2
+    0x158ec60: mov      w24, w1
+    0x158ec64: bl       #0x2786dc0
+    0x158ec68: str      s0, [x25, #0x12c]
+    0x158ec6c: fmov     v0.2s, #1.00000000
+    0x158ec70: and      x3, x22, #0xffffffff
+    0x158ec74: and      w6, w19, #1
+    0x158ec78: str      d0, [x25, #0x130]
+    0x158ec7c: mov      x0, x25
+    0x158ec80: mov      w1, w24
+    0x158ec84: mov      x2, x23
+    0x158ec88: mov      v1.16b, v9.16b
+    0x158ec8c: mov      v2.16b, v8.16b
+    0x158ec90: mov      x4, x21
+    0x158ec94: mov      x5, x20
+    0x158ec98: ldp      x20, x19, [sp, #0x50]
+    0x158ec9c: ldp      x22, x21, [sp, #0x40]
+    0x158eca0: ldp      x24, x23, [sp, #0x30]
+    0x158eca4: ldp      x30, x25, [sp, #0x20]
+    0x158eca8: ldp      d9, d8, [sp, #0x10]
+    0x158ecac: mov      v0.16b, v10.16b
+    0x158ecb0: ldr      d10, [sp], #0x60
+    0x158ecb4: b        #0x158e0c0
+
+;;; FixedUpdate  protected override void FixedUpdate() { }
+    0x158ecb8: stp      d11, d10, [sp, #-0x40]!
+    0x158ecbc: stp      d9, d8, [sp, #0x10]
+    0x158ecc0: str      x30, [sp, #0x20]
+    0x158ecc4: stp      x20, x19, [sp, #0x30]
+    0x158ecc8: ldr      s9, [x0, #0xb0]
+    0x158eccc: mov      x19, x0
+    0x158ecd0: mov      x0, xzr
+    0x158ecd4: bl       #0x2786dc0
+    0x158ecd8: ldr      s10, [x19, #0x130]
+    0x158ecdc: ldr      s11, [x19, #0x12c]
+    0x158ece0: mov      x0, xzr
+    0x158ece4: mov      v8.16b, v0.16b
+    0x158ece8: bl       #0x2786de8
+    0x158ecec: fmul     s1, s8, s10
+    0x158ecf0: fsub     s1, s1, s11
+    0x158ecf4: ldr      s8, [x19, #0x130]
+    0x158ecf8: fmul     s0, s1, s0
+    0x158ecfc: fadd     s0, s9, s0
+    0x158ed00: mov      x0, xzr
+    0x158ed04: str      s0, [x19, #0xb0]
+    0x158ed08: bl       #0x2786de8
+    0x158ed0c: ldr      s2, [x19, #0x134]
+    0x158ed10: ldr      x20, [x19, #0x28]
+    0x158ed14: fmov     s1, #0.50000000
+    0x158ed18: fmul     s0, s0, s1
+    0x158ed1c: fadd     s0, s8, s0
+    0x158ed20: fadd     s8, s2, s1
+    0x158ed24: str      s0, [x19, #0x130]
+    0x158ed28: str      s8, [x19, #0x134]
+    0x158ed2c: cbz      x20, #0x158ee34
+    0x158ed30: ldr      s9, [x20, #0x1c]
+    0x158ed34: mov      x0, xzr
+    0x158ed38: bl       #0x2786de8
+    0x158ed3c: mov      w8, #-0x3ccc0000
+    0x158ed40: fmov     s1, w8
+    0x158ed44: mov      w8, #0x43b40000
+    0x158ed48: fmov     s2, w8
+    0x158ed4c: fsub     s1, s1, s9
+    0x158ed50: mov      w8, #-0x3c4c0000
+    0x158ed54: fdiv     s4, s1, s2
+    0x158ed58: fmov     s3, w8
+    0x158ed5c: frintm   s4, s4
+    0x158ed60: fmul     s4, s4, s3
+    0x158ed64: fadd     s1, s1, s4
+    0x158ed68: fmov     s4, wzr
+    0x158ed6c: mov      w8, #0x43340000
+    0x158ed70: fmin     s2, s1, s2
+    0x158ed74: fcmp     s1, #0.0
+    0x158ed78: fmov     s1, w8
+    0x158ed7c: fcsel    s2, s2, s4, pl
+    0x158ed80: fmul     s0, s8, s0
+    0x158ed84: fcmp     s2, s1
+    0x158ed88: fmov     s1, #1.00000000
+    0x158ed8c: fadd     s3, s2, s3
+    0x158ed90: fmin     s1, s0, s1
+    0x158ed94: fcsel    s2, s3, s2, gt
+    0x158ed98: fcmp     s0, #0.0
+    0x158ed9c: fcsel    s0, s1, s4, pl
+    0x158eda0: fmul     s0, s0, s2
+    0x158eda4: fadd     s0, s9, s0
+    0x158eda8: mov      x0, x19
+    0x158edac: mov      x1, xzr
+    0x158edb0: str      s0, [x20, #0x1c]
+    0x158edb4: bl       #0x277f14c
+    0x158edb8: ldr      x8, [x19, #0x28]
+    0x158edbc: cbz      x8, #0x158ee34
+    0x158edc0: cbz      x0, #0x158ee34
+    0x158edc4: ldr      s2, [x8, #0x1c]
+    0x158edc8: fmov     s0, wzr
+    0x158edcc: fmov     s1, wzr
+    0x158edd0: mov      x1, xzr
+    0x158edd4: bl       #0x27894a8
+    0x158edd8: ldr      x8, [x19, #0x28]
+    0x158eddc: cbz      x8, #0x158ee34
+    0x158ede0: ldr      s0, [x8, #0x1c]
+    0x158ede4: adrp     x9, #0x756000
+    0x158ede8: ldr      s1, [x9, #0xa9c]
+    0x158edec: mov      w8, #0x42b40000
+    0x158edf0: fmov     s2, w8
+    0x158edf4: fadd     s0, s0, s2
+    0x158edf8: mov      w8, #0x43340000
+    0x158edfc: fmul     s0, s0, s1
+    0x158ee00: fmov     s1, w8
+    0x158ee04: fdiv     s0, s0, s1
+    0x158ee08: add      x0, sp, #0x2c
+    0x158ee0c: add      x1, sp, #0x28
+    0x158ee10: bl       #0x2990b80
+    0x158ee14: ldp      s0, s1, [sp, #0x28]
+    0x158ee18: mov      x0, x19
+    0x158ee1c: ldr      x30, [sp, #0x20]
+    0x158ee20: ldp      d9, d8, [sp, #0x10]
+    0x158ee24: stp      s0, s1, [x19, #0xb4]
+    0x158ee28: ldp      x20, x19, [sp, #0x30]
+    0x158ee2c: ldp      d11, d10, [sp], #0x40
+    0x158ee30: b        #0x158ee38
+    0x158ee34: bl       #0x110d250
+
+;;; Update  protected override void Update() { }
+    0x158ee84: b        #0x158ee88
+    0x158ee88: stp      d9, d8, [sp, #-0x30]!
+
+;;; ctor  public void .ctor() { }
+    0x158f060: adrp     x9, #0x779000
+    0x158f064: ldr      q1, [x9, #0x340]
+    0x158f068: mov      w9, #0x5f93
+    0x158f06c: fmov     v0.2s, #1.00000000
+    0x158f070: mov      w8, #1
+    0x158f074: movk     w9, #1, lsl #16
+    0x158f078: mov      x1, xzr
+    0x158f07c: str      d0, [x0, #0x130]
+    0x158f080: strb     w8, [x0, #0x8c]
+    0x158f084: str      q1, [x0, #0xc0]
+    0x158f088: str      w9, [x0, #0x128]
+    0x158f08c: b        #0x158c268

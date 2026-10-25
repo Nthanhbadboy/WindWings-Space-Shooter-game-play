@@ -1,0 +1,86 @@
+;;; FixedUpdate  protected override void FixedUpdate() { }
+    0x1598f18: str      d10, [sp, #-0x30]!
+    0x1598f1c: stp      d9, d8, [sp, #0x10]
+    0x1598f20: stp      x30, x19, [sp, #0x20]
+    0x1598f24: ldrb     w8, [x0, #0x60]
+    0x1598f28: cbz      w8, #0x1598f38
+    0x1598f2c: ldrb     w8, [x0, #0x8c]
+    0x1598f30: mov      x19, x0
+    0x1598f34: cbz      w8, #0x1598f48
+    0x1598f38: ldp      x30, x19, [sp, #0x20]
+    0x1598f3c: ldp      d9, d8, [sp, #0x10]
+    0x1598f40: ldr      d10, [sp], #0x30
+    0x1598f44: ret      
+    0x1598f48: mov      x0, xzr
+    0x1598f4c: bl       #0x2786dc0
+    0x1598f50: ldr      s1, [x19, #0x88]
+    0x1598f54: fcmp     s0, s1
+    0x1598f58: b.ge     #0x1598fdc
+    0x1598f5c: ldr      s8, [x19, #0x12c]
+    0x1598f60: ldr      s9, [x19, #0xb0]
+    0x1598f64: ldr      s10, [x19, #0x140]
+    0x1598f68: mov      x0, xzr
+    0x1598f6c: bl       #0x2786de8
+    0x1598f70: ldr      s2, [x19, #0x140]
+    0x1598f74: ldr      s3, [x19, #0x13c]
+    0x1598f78: ldr      s1, [x19, #0x134]
+    0x1598f7c: fmul     s0, s10, s0
+    0x1598f80: ldr      s4, [x19, #0x12c]
+    0x1598f84: fsub     s0, s9, s0
+    0x1598f88: fcmp     s8, s0
+    0x1598f8c: fsub     s2, s2, s3
+    0x1598f90: fcsel    s0, s8, s0, gt
+    0x1598f94: fcmp     s1, s2
+    0x1598f98: fcsel    s1, s1, s2, gt
+    0x1598f9c: fcmp     s0, s4
+    0x1598fa0: str      s0, [x19, #0xb0]
+    0x1598fa4: str      s1, [x19, #0x140]
+    0x1598fa8: b.hi     #0x1598fd0
+    0x1598fac: ldrb     w8, [x19, #0x144]
+    0x1598fb0: cbnz     w8, #0x1598fd0
+    0x1598fb4: mov      w8, #1
+    0x1598fb8: mov      x0, xzr
+    0x1598fbc: strb     w8, [x19, #0x144]
+    0x1598fc0: bl       #0x2786dc0
+    0x1598fc4: ldr      s1, [x19, #0x130]
+    0x1598fc8: fadd     s0, s0, s1
+    0x1598fcc: str      s0, [x19, #0x88]
+    0x1598fd0: mov      x0, x19
+    0x1598fd4: bl       #0x158dfbc
+    0x1598fd8: tbz      w0, #0, #0x1598f38
+    0x1598fdc: mov      x0, x19
+    0x1598fe0: ldp      x30, x19, [sp, #0x20]
+    0x1598fe4: ldp      d9, d8, [sp, #0x10]
+    0x1598fe8: ldr      d10, [sp], #0x30
+    0x1598fec: b        #0x158df54
+
+;;; SetBullet  public override void SetBullet(BulletForceType force, Transform target, LayerMask targetLayer, float startSpeed, float startLifetime, float startAngle, Action<GameObject, Vector3> onCollision, Action<GameObject, Vector3> onDestroy, bool throughShield = False) { }
+    0x1598ff0: stp      x30, x19, [sp, #-0x10]!
+    0x1598ff4: and      x3, x3, #0xffffffff
+    0x1598ff8: and      w6, w6, #1
+    0x1598ffc: mov      x19, x0
+    0x1599000: bl       #0x158e0c0
+    0x1599004: ldr      s0, [x19, #0x138]
+    0x1599008: strb     wzr, [x19, #0x144]
+    0x159900c: str      s0, [x19, #0x140]
+    0x1599010: ldp      x30, x19, [sp], #0x10
+    0x1599014: ret      
+
+;;; ctor  public void .ctor() { }
+    0x1599018: adrp     x8, #0x778000
+    0x159901c: ldr      q0, [x8, #0x910]
+    0x1599020: add      x8, x0, #0x12c
+    0x1599024: mov      w9, #0xcccd
+    0x1599028: movk     w9, #0x3e4c, lsl #16
+    0x159902c: str      q0, [x8]
+    0x1599030: adrp     x8, #0x779000
+    0x1599034: ldr      q0, [x8, #0x340]
+    0x1599038: str      w9, [x0, #0x13c]
+    0x159903c: mov      w9, #0x5f93
+    0x1599040: mov      w8, #1
+    0x1599044: movk     w9, #1, lsl #16
+    0x1599048: mov      x1, xzr
+    0x159904c: strb     w8, [x0, #0x8c]
+    0x1599050: str      q0, [x0, #0xc0]
+    0x1599054: str      w9, [x0, #0x128]
+    0x1599058: b        #0x158c268

@@ -1,0 +1,132 @@
+;;; SetBullet  public virtual void SetBullet(BulletForceType force, Transform target, LayerMask targetLayer, float startSpeed, float startLifetime, float startAngle, Action<GameObject, Vector3> onCollision, Action<GameObject, Vector3> onDestroy, bool throughShield = False) { }
+    0x158c0d8: str      x30, [sp, #-0x10]!
+    0x158c0dc: ldr      x8, [x0, #0x28]
+    0x158c0e0: str      w1, [x0, #0x50]
+    0x158c0e4: str      x2, [x0, #0x38]
+    0x158c0e8: cbz      x8, #0x158c114
+    0x158c0ec: str      w3, [x8, #0x10]
+    0x158c0f0: ldr      x8, [x0, #0x28]
+    0x158c0f4: cbz      x8, #0x158c114
+    0x158c0f8: ldr      s3, [x0, #0x54]
+    0x158c0fc: stp      s1, s2, [x8, #0x18]
+    0x158c100: fmul     s0, s3, s0
+    0x158c104: str      s0, [x8, #0x14]
+    0x158c108: stp      x4, x5, [x0, #0x40]
+    0x158c10c: ldr      x30, [sp], #0x10
+    0x158c110: ret      
+    0x158c114: bl       #0x110d250
+
+;;; Revoke  public virtual void Revoke() { }
+    0x158c118: str      x30, [sp, #-0x10]!
+    0x158c11c: ldrb     w8, [x0, #0x30]
+    0x158c120: cbz      w8, #0x158c12c
+    0x158c124: ldr      x30, [sp], #0x10
+    0x158c128: ret      
+    0x158c12c: mov      x1, xzr
+    0x158c130: bl       #0x277f188
+    0x158c134: mov      x1, xzr
+    0x158c138: ldr      x30, [sp], #0x10
+    0x158c13c: b        #0x123acd0
+
+;;; GetTargetLayer  public LayerMask GetTargetLayer() { }
+    0x158c140: str      x30, [sp, #-0x10]!
+    0x158c144: ldr      x8, [x0, #0x28]
+    0x158c148: cbz      x8, #0x158c158
+    0x158c14c: ldr      w0, [x8, #0x10]
+    0x158c150: ldr      x30, [sp], #0x10
+    0x158c154: ret      
+    0x158c158: bl       #0x110d250
+
+;;; GetBulletForce  public BulletForceType GetBulletForce() { }
+    0x158c15c: ldr      w0, [x0, #0x50]
+    0x158c160: ret      
+
+;;; SetStaticBullet  public virtual void SetStaticBullet() { }
+    0x158c164: ret      
+    0x158c168: str      d8, [sp, #-0x20]!
+
+;;; SetSpeedMultiplier  public void SetSpeedMultiplier(float multiplier, float duration) { }
+    0x158c168: str      d8, [sp, #-0x20]!
+    0x158c16c: stp      x30, x19, [sp, #0x10]
+    0x158c170: ldr      s2, [x0, #0x54]
+    0x158c174: mov      x19, x0
+    0x158c178: mov      v8.16b, v1.16b
+    0x158c17c: fcmp     s2, s0
+    0x158c180: b.eq     #0x158c188
+    0x158c184: str      s0, [x19, #0x54]
+    0x158c188: ldr      x1, [x19, #0x58]
+    0x158c18c: cbz      x1, #0x158c19c
+    0x158c190: mov      x0, x19
+    0x158c194: mov      x2, xzr
+    0x158c198: bl       #0x27829d8
+    0x158c19c: fcmp     s8, #0.0
+    0x158c1a0: b.le     #0x158c1c4
+    0x158c1a4: mov      x0, x19
+    0x158c1a8: mov      v1.16b, v8.16b
+    0x158c1ac: bl       #0x158c1d0
+    0x158c1b0: mov      x1, x0
+    0x158c1b4: mov      x0, x19
+    0x158c1b8: mov      x2, xzr
+    0x158c1bc: bl       #0x278276c
+    0x158c1c0: str      x0, [x19, #0x58]
+    0x158c1c4: ldp      x30, x19, [sp, #0x10]
+    0x158c1c8: ldr      d8, [sp], #0x20
+    0x158c1cc: ret      
+
+;;; IESetSpeedMultiplier  private IEnumerator IESetSpeedMultiplier(float mul, float dur) { }
+    0x158c1d0: str      d8, [sp, #-0x30]!
+    0x158c1d4: stp      x30, x21, [sp, #0x10]
+    0x158c1d8: stp      x20, x19, [sp, #0x20]
+    0x158c1dc: adrp     x20, #0x2ce2000
+    0x158c1e0: adrp     x21, #0x2aec000
+    0x158c1e4: ldrb     w8, [x20, #0x7aa]
+    0x158c1e8: ldr      x21, [x21, #0x5c8]
+    0x158c1ec: mov      v8.16b, v1.16b
+    0x158c1f0: mov      x19, x0
+    0x158c1f4: tbnz     w8, #0, #0x158c20c
+    0x158c1f8: adrp     x0, #0x2aec000
+    0x158c1fc: ldr      x0, [x0, #0x5c8]
+    0x158c200: bl       #0x110d028
+    0x158c204: mov      w8, #1
+    0x158c208: strb     w8, [x20, #0x7aa]
+    0x158c20c: ldr      x0, [x21]
+    0x158c210: bl       #0x110d240
+    0x158c214: mov      x1, xzr
+    0x158c218: mov      x20, x0
+    0x158c21c: bl       #0x2143330
+    0x158c220: str      wzr, [x20, #0x10]
+    0x158c224: str      x19, [x20, #0x28]
+    0x158c228: str      s8, [x20, #0x20]
+    0x158c22c: mov      x0, x20
+    0x158c230: ldp      x20, x19, [sp, #0x20]
+    0x158c234: ldp      x30, x21, [sp, #0x10]
+    0x158c238: ldr      d8, [sp], #0x30
+    0x158c23c: ret      
+
+;;; ctor  public void .ctor() { }
+    0x158c268: stp      x30, x21, [sp, #-0x20]!
+    0x158c26c: stp      x20, x19, [sp, #0x10]
+    0x158c270: adrp     x20, #0x2ce2000
+    0x158c274: adrp     x21, #0x2aec000
+    0x158c278: ldrb     w8, [x20, #0x7ab]
+    0x158c27c: ldr      x21, [x21, #0x5d0]
+    0x158c280: mov      x19, x0
+    0x158c284: tbnz     w8, #0, #0x158c29c
+    0x158c288: adrp     x0, #0x2aec000
+    0x158c28c: ldr      x0, [x0, #0x5d0]
+    0x158c290: bl       #0x110d028
+    0x158c294: mov      w8, #1
+    0x158c298: strb     w8, [x20, #0x7ab]
+    0x158c29c: ldr      x0, [x21]
+    0x158c2a0: bl       #0x110d240
+    0x158c2a4: mov      x1, xzr
+    0x158c2a8: mov      x20, x0
+    0x158c2ac: bl       #0x144fec0
+    0x158c2b0: mov      w8, #0x3f800000
+    0x158c2b4: str      x20, [x19, #0x28]
+    0x158c2b8: str      w8, [x19, #0x54]
+    0x158c2bc: mov      x0, x19
+    0x158c2c0: ldp      x20, x19, [sp, #0x10]
+    0x158c2c4: mov      x1, xzr
+    0x158c2c8: ldp      x30, x21, [sp], #0x20
+    0x158c2cc: b        #0x123bafc

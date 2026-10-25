@@ -1,0 +1,354 @@
+{
+ "class": "Bullet_MissileSine",
+ "note": "Pinned player firing consumer recovery; provisional",
+ "methods": [
+  {
+   "method": "OnTriggerEnter2D",
+   "signature": "protected void OnTriggerEnter2D(Collider2D col) { }",
+   "offset": "0x158e3c4",
+   "getter_value": null,
+   "rva": "0x15923c4",
+   "bytes": 344,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15923f0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x159241c",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x159244c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1592498",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_layerMask",
+   "signature": "protected LayerMask get_layerMask() { }",
+   "offset": "0x158e51c",
+   "getter_value": null,
+   "rva": "0x159251c",
+   "bytes": 28,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "Start",
+   "signature": "private void Start() { }",
+   "offset": "0x158e538",
+   "getter_value": null,
+   "rva": "0x1592538",
+   "bytes": 80,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "get_destroyBorder",
+   "signature": "private Vector4 get_destroyBorder() { }",
+   "offset": "0x158e588",
+   "getter_value": null,
+   "rva": "0x1592588",
+   "bytes": 96,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 9.6,
+     "via": "ldr_pool",
+     "va": "0x756fb8",
+     "addr": "0x15925b0",
+     "role": "arith:fsub"
+    },
+    {
+     "kind": "float",
+     "value": -3.0,
+     "via": "fmov",
+     "addr": "0x15925b8",
+     "role": "arith:fadd"
+    }
+   ]
+  },
+  {
+   "method": "IsOutScreen",
+   "signature": "protected bool IsOutScreen() { }",
+   "offset": "0x158e5e8",
+   "getter_value": null,
+   "rva": "0x15925e8",
+   "bytes": 208,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1592674",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "FixedUpdate",
+   "signature": "private void FixedUpdate() { }",
+   "offset": "0x158e6b8",
+   "getter_value": null,
+   "rva": "0x15926b8",
+   "bytes": 36,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "OnDestroyed",
+   "signature": "protected void OnDestroyed() { }",
+   "offset": "0x158e6dc",
+   "getter_value": null,
+   "rva": "0x15926dc",
+   "bytes": 116,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "Update",
+   "signature": "private void Update() { }",
+   "offset": "0x158e750",
+   "getter_value": null,
+   "rva": "0x1592750",
+   "bytes": 292,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 80,
+     "via": "sub",
+     "addr": "0x1592750",
+     "reg": "sp",
+     "op": "sp, sp, #0x50",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 80,
+     "via": "add",
+     "addr": "0x159277c",
+     "reg": "sp",
+     "op": "sp, sp, #0x50",
+     "role": "return"
+    },
+    {
+     "kind": "int",
+     "value": 80,
+     "via": "add",
+     "addr": "0x1592868",
+     "reg": "sp",
+     "op": "sp, sp, #0x50",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SetBullet",
+   "signature": "public override void SetBullet(BulletForceType force, Transform target, LayerMask targetLayer, float startSpeed, float startLifetime, float startAngle, Action<GameObject, Vector3> onCollision, Action<GameObject, Vector3> onDestroy, bool throughShield = False) { }",
+   "offset": "0x158e874",
+   "getter_value": null,
+   "rva": "0x1592874",
+   "bytes": 180,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 4294967295,
+     "via": "and",
+     "addr": "0x159287c",
+     "reg": "x3",
+     "op": "x3, x3, #0xffffffff",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x1592880",
+     "reg": "w6",
+     "op": "w6, w6, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x15928cc",
+     "reg": "w0",
+     "op": "w0, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 10,
+     "via": "mov",
+     "addr": "0x15928d0",
+     "reg": "w1",
+     "op": "w1, #0xa",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 10,
+     "via": "mov",
+     "addr": "0x15928f4",
+     "reg": "w1",
+     "op": "w1, #0xa",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "cmp",
+     "addr": "0x159290c",
+     "reg": "w0",
+     "op": "w0, #5",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "OnCollide",
+   "signature": "protected virtual void OnCollide(Collider2D hit) { }",
+   "offset": "0x158e928",
+   "getter_value": null,
+   "rva": "0x1592928",
+   "bytes": 104,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "DestroyedEffect",
+   "signature": "protected virtual void DestroyedEffect(Transform fxParent, Vector3 fxPosition) { }",
+   "offset": "0x158e990",
+   "getter_value": null,
+   "rva": "0x1592990",
+   "bytes": 84,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15929d0",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x158e9e4",
+   "getter_value": null,
+   "rva": "0x15929e4",
+   "bytes": 52,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 2.0,
+     "via": "ldr_pool_d",
+     "va": "0x7574d0",
+     "addr": "0x15929ec",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 10.0,
+     "via": "ldr_pool_d",
+     "va": "0x7574d4",
+     "addr": "0x15929ec",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 90003,
+     "via": "mov+movk",
+     "addr": "0x15929f4",
+     "reg": "w8",
+     "op": "w8, #0x5f93",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1065353216,
+     "via": "mov",
+     "bits": "0x3f800000",
+     "addr": "0x15929fc",
+     "note": "bit-pattern giống float nhưng không thấy fmov — để riêng",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

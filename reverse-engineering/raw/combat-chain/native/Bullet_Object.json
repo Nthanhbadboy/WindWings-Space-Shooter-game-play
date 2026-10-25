@@ -1,0 +1,139 @@
+{
+ "class": "Bullet_Object",
+ "note": "Pinned player firing consumer recovery; provisional",
+ "methods": [
+  {
+   "method": "SetBullet",
+   "signature": "public virtual void SetBullet(BulletForceType force, Transform target, LayerMask targetLayer, float startSpeed, float startLifetime, float startAngle, Action<GameObject, Vector3> onCollision, Action<GameObject, Vector3> onDestroy, bool throughShield = False) { }",
+   "offset": "0x15880d8",
+   "getter_value": null,
+   "rva": "0x158c0d8",
+   "bytes": 64,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "Revoke",
+   "signature": "public virtual void Revoke() { }",
+   "offset": "0x1588118",
+   "getter_value": null,
+   "rva": "0x158c118",
+   "bytes": 40,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "GetTargetLayer",
+   "signature": "public LayerMask GetTargetLayer() { }",
+   "offset": "0x1588140",
+   "getter_value": null,
+   "rva": "0x158c140",
+   "bytes": 28,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "GetBulletForce",
+   "signature": "public BulletForceType GetBulletForce() { }",
+   "offset": "0x158815c",
+   "getter_value": null,
+   "rva": "0x158c15c",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "field",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "SetStaticBullet",
+   "signature": "public virtual void SetStaticBullet() { }",
+   "offset": "0x1588164",
+   "getter_value": null,
+   "rva": "0x158c164",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "SetSpeedMultiplier",
+   "signature": "public void SetSpeedMultiplier(float multiplier, float duration) { }",
+   "offset": "0x1588168",
+   "getter_value": null,
+   "rva": "0x158c168",
+   "bytes": 104,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "IESetSpeedMultiplier",
+   "signature": "private IEnumerator IESetSpeedMultiplier(float mul, float dur) { }",
+   "offset": "0x15881d0",
+   "getter_value": null,
+   "rva": "0x158c1d0",
+   "bytes": 112,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x158c204",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x1588268",
+   "getter_value": null,
+   "rva": "0x158c268",
+   "bytes": 104,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x158c294",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1065353216,
+     "via": "mov",
+     "bits": "0x3f800000",
+     "addr": "0x158c2b0",
+     "note": "bit-pattern giống float nhưng không thấy fmov — để riêng",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

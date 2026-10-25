@@ -1,0 +1,314 @@
+{
+ "class": "Bullet_SineWave",
+ "note": "Pinned player firing consumer recovery; provisional",
+ "methods": [
+  {
+   "method": "get_destroyBorder",
+   "signature": "private Vector4 get_destroyBorder() { }",
+   "offset": "0x1594988",
+   "getter_value": null,
+   "rva": "0x1598988",
+   "bytes": 96,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 9.6,
+     "via": "ldr_pool",
+     "va": "0x756fb8",
+     "addr": "0x15989b0",
+     "role": "arith:fsub"
+    },
+    {
+     "kind": "float",
+     "value": -3.0,
+     "via": "fmov",
+     "addr": "0x15989b8",
+     "role": "arith:fadd"
+    }
+   ]
+  },
+  {
+   "method": "IsOutScreen",
+   "signature": "protected bool IsOutScreen() { }",
+   "offset": "0x15949e8",
+   "getter_value": null,
+   "rva": "0x15989e8",
+   "bytes": 208,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1598a74",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "FixedUpdate",
+   "signature": "private void FixedUpdate() { }",
+   "offset": "0x1594ab8",
+   "getter_value": null,
+   "rva": "0x1598ab8",
+   "bytes": 36,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "OnDestroyed",
+   "signature": "protected void OnDestroyed() { }",
+   "offset": "0x1594adc",
+   "getter_value": null,
+   "rva": "0x1598adc",
+   "bytes": 116,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "Update",
+   "signature": "private void Update() { }",
+   "offset": "0x1594b50",
+   "getter_value": null,
+   "rva": "0x1598b50",
+   "bytes": 244,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 6.28319,
+     "via": "ldr_pool",
+     "va": "0x756c34",
+     "addr": "0x1598b98",
+     "role": "arith:fdiv"
+    }
+   ]
+  },
+  {
+   "method": "OnTriggerEnter2D",
+   "signature": "protected void OnTriggerEnter2D(Collider2D col) { }",
+   "offset": "0x1594c44",
+   "getter_value": null,
+   "rva": "0x1598c44",
+   "bytes": 344,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1598c70",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x1598c9c",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1598ccc",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1598d18",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_layerMask",
+   "signature": "protected LayerMask get_layerMask() { }",
+   "offset": "0x1594d9c",
+   "getter_value": null,
+   "rva": "0x1598d9c",
+   "bytes": 28,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "SetBullet",
+   "signature": "public override void SetBullet(BulletForceType force, Transform target, LayerMask targetLayer, float startSpeed, float startLifetime, float startAngle, Action<GameObject, Vector3> onCollision, Action<GameObject, Vector3> onDestroy, bool throughShield = False) { }",
+   "offset": "0x1594db8",
+   "getter_value": null,
+   "rva": "0x1598db8",
+   "bytes": 156,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 4294967295,
+     "via": "and",
+     "addr": "0x1598dc0",
+     "reg": "x3",
+     "op": "x3, x3, #0xffffffff",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x1598dc4",
+     "reg": "w6",
+     "op": "w6, w6, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 6.0,
+     "via": "fmov",
+     "addr": "0x1598e14",
+     "role": "arith:fdiv"
+    },
+    {
+     "kind": "float",
+     "value": 4.0,
+     "via": "fmov",
+     "addr": "0x1598e1c",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 2.0,
+     "via": "fmov",
+     "addr": "0x1598e20",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.25,
+     "via": "fmov",
+     "addr": "0x1598e2c",
+     "role": "arith:fmul"
+    }
+   ]
+  },
+  {
+   "method": "OnCollide",
+   "signature": "protected virtual void OnCollide(Collider2D hit) { }",
+   "offset": "0x1594e54",
+   "getter_value": null,
+   "rva": "0x1598e54",
+   "bytes": 104,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "DestroyedEffect",
+   "signature": "protected virtual void DestroyedEffect(Transform fxParent, Vector3 fxPosition) { }",
+   "offset": "0x1594ebc",
+   "getter_value": null,
+   "rva": "0x1598ebc",
+   "bytes": 40,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1598ed0",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x1594ee4",
+   "getter_value": null,
+   "rva": "0x1598ee4",
+   "bytes": 52,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 0.5,
+     "via": "ldr_pool_d",
+     "va": "0x757ea8",
+     "addr": "0x1598eec",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 30.0,
+     "via": "ldr_pool_d",
+     "va": "0x757eac",
+     "addr": "0x1598eec",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 90003,
+     "via": "mov+movk",
+     "addr": "0x1598ef4",
+     "reg": "w10",
+     "op": "w10, #0x5f93",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1077936128,
+     "via": "mov",
+     "bits": "0x40400000",
+     "addr": "0x1598ef8",
+     "note": "bit-pattern giống float nhưng không thấy fmov — để riêng",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

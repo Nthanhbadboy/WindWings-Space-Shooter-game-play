@@ -1,0 +1,218 @@
+;;; OnEnable  protected override void OnEnable() { }
+    0x158d100: mov      x1, xzr
+    0x158d104: b        #0x158e330
+
+;;; OnTriggerEnter2D  protected override void OnTriggerEnter2D(Collider2D col) { }
+    0x158d108: str      x30, [sp, #-0x30]!
+    0x158d10c: stp      x22, x21, [sp, #0x10]
+    0x158d110: stp      x20, x19, [sp, #0x20]
+    0x158d114: mov      x19, x1
+    0x158d118: mov      x1, xzr
+    0x158d11c: mov      x20, x0
+    0x158d120: bl       #0x1591e0c
+    0x158d124: and      x0, x0, #0xffffffff
+    0x158d128: mov      x1, xzr
+    0x158d12c: bl       #0x2781bd4
+    0x158d130: mov      w21, w0
+    0x158d134: mov      x0, x20
+    0x158d138: mov      x1, xzr
+    0x158d13c: bl       #0x1591e0c
+    0x158d140: str      w0, [sp, #8]
+    0x158d144: add      x0, sp, #8
+    0x158d148: mov      x1, xzr
+    0x158d14c: bl       #0x2781be0
+    0x158d150: cbz      x19, #0x158d1bc
+    0x158d154: mov      w22, w0
+    0x158d158: mov      x0, x19
+    0x158d15c: mov      x1, xzr
+    0x158d160: bl       #0x277f188
+    0x158d164: cbz      x0, #0x158d1bc
+    0x158d168: mov      x1, xzr
+    0x158d16c: bl       #0x2781784
+    0x158d170: mov      w8, #1
+    0x158d174: lsl      w8, w8, w0
+    0x158d178: orr      w8, w8, w22
+    0x158d17c: cmp      w21, w8
+    0x158d180: b.ne     #0x158d1ac
+    0x158d184: ldrb     w8, [x20, #0x8c]
+    0x158d188: cbnz     w8, #0x158d1ac
+    0x158d18c: ldrb     w8, [x20, #0x12c]
+    0x158d190: cbnz     w8, #0x158d1ac
+    0x158d194: ldr      x8, [x20]
+    0x158d198: mov      x0, x20
+    0x158d19c: mov      x1, x19
+    0x158d1a0: ldr      x9, [x8, #0x278]
+    0x158d1a4: ldr      x2, [x8, #0x280]
+    0x158d1a8: blr      x9
+    0x158d1ac: ldp      x20, x19, [sp, #0x20]
+    0x158d1b0: ldp      x22, x21, [sp, #0x10]
+    0x158d1b4: ldr      x30, [sp], #0x30
+    0x158d1b8: ret      
+    0x158d1bc: bl       #0x110d250
+
+;;; OnTriggerStay2D  private void OnTriggerStay2D(Collider2D other) { }
+    0x158d1c0: str      x30, [sp, #-0x30]!
+    0x158d1c4: stp      x22, x21, [sp, #0x10]
+    0x158d1c8: stp      x20, x19, [sp, #0x20]
+    0x158d1cc: ldrb     w8, [x0, #0x12c]
+    0x158d1d0: cbz      w8, #0x158d264
+    0x158d1d4: mov      x20, x1
+    0x158d1d8: mov      x1, xzr
+    0x158d1dc: mov      x19, x0
+    0x158d1e0: bl       #0x1591e0c
+    0x158d1e4: and      x0, x0, #0xffffffff
+    0x158d1e8: mov      x1, xzr
+    0x158d1ec: bl       #0x2781bd4
+    0x158d1f0: mov      w21, w0
+    0x158d1f4: mov      x0, x19
+    0x158d1f8: mov      x1, xzr
+    0x158d1fc: bl       #0x1591e0c
+    0x158d200: str      w0, [sp, #8]
+    0x158d204: add      x0, sp, #8
+    0x158d208: mov      x1, xzr
+    0x158d20c: bl       #0x2781be0
+    0x158d210: cbz      x20, #0x158d274
+    0x158d214: mov      w22, w0
+    0x158d218: mov      x0, x20
+    0x158d21c: mov      x1, xzr
+    0x158d220: bl       #0x277f188
+    0x158d224: cbz      x0, #0x158d274
+    0x158d228: mov      x1, xzr
+    0x158d22c: bl       #0x2781784
+    0x158d230: mov      w8, #1
+    0x158d234: lsl      w8, w8, w0
+    0x158d238: orr      w8, w8, w22
+    0x158d23c: cmp      w21, w8
+    0x158d240: b.ne     #0x158d264
+    0x158d244: ldrb     w8, [x19, #0x8c]
+    0x158d248: cbnz     w8, #0x158d264
+    0x158d24c: ldr      x8, [x19]
+    0x158d250: mov      x0, x19
+    0x158d254: mov      x1, x20
+    0x158d258: ldr      x9, [x8, #0x278]
+    0x158d25c: ldr      x2, [x8, #0x280]
+    0x158d260: blr      x9
+    0x158d264: ldp      x20, x19, [sp, #0x20]
+    0x158d268: ldp      x22, x21, [sp, #0x10]
+    0x158d26c: ldr      x30, [sp], #0x30
+    0x158d270: ret      
+    0x158d274: bl       #0x110d250
+
+;;; SetBullet  public override void SetBullet(BulletForceType force, Transform target, LayerMask targetLayer, float startSpeed, float startLifetime, float startAngle, Action<GameObject, Vector3> onCollision, Action<GameObject, Vector3> onDestroy, bool throughShield = False) { }
+    0x158d278: stp      x30, x19, [sp, #-0x10]!
+    0x158d27c: and      x3, x3, #0xffffffff
+    0x158d280: and      w6, w6, #1
+    0x158d284: mov      x7, xzr
+    0x158d288: mov      x19, x0
+    0x158d28c: bl       #0x158e0c0
+    0x158d290: ldr      s0, [x19, #0xb0]
+    0x158d294: str      s0, [x19, #0x13c]
+    0x158d298: ldp      x30, x19, [sp], #0x10
+    0x158d29c: ret      
+
+;;; OnCollide  protected override void OnCollide(Collider2D hit) { }
+    0x158d2a0: stp      x30, x21, [sp, #-0x20]!
+    0x158d2a4: stp      x20, x19, [sp, #0x10]
+    0x158d2a8: ldrb     w8, [x0, #0x60]
+    0x158d2ac: cbz      w8, #0x158d304
+    0x158d2b0: ldr      x21, [x0, #0x40]
+    0x158d2b4: mov      x20, x0
+    0x158d2b8: cbz      x21, #0x158d304
+    0x158d2bc: cbz      x1, #0x158d310
+    0x158d2c0: mov      x0, x1
+    0x158d2c4: mov      x1, xzr
+    0x158d2c8: bl       #0x277f188
+    0x158d2cc: mov      x19, x0
+    0x158d2d0: mov      x0, x20
+    0x158d2d4: mov      x1, xzr
+    0x158d2d8: bl       #0x277f14c
+    0x158d2dc: cbz      x0, #0x158d310
+    0x158d2e0: mov      x1, xzr
+    0x158d2e4: bl       #0x27891b8
+    0x158d2e8: ldr      x3, [x21, #0x18]
+    0x158d2ec: ldr      x0, [x21, #0x40]
+    0x158d2f0: ldr      x2, [x21, #0x28]
+    0x158d2f4: mov      x1, x19
+    0x158d2f8: ldp      x20, x19, [sp, #0x10]
+    0x158d2fc: ldp      x30, x21, [sp], #0x20
+    0x158d300: br       x3
+    0x158d304: ldp      x20, x19, [sp, #0x10]
+    0x158d308: ldp      x30, x21, [sp], #0x20
+    0x158d30c: ret      
+    0x158d310: bl       #0x110d250
+
+;;; Update  protected override void Update() { }
+    0x158d314: str      d8, [sp, #-0x20]!
+    0x158d318: stp      x30, x19, [sp, #0x10]
+    0x158d31c: ldr      s8, [x0, #0xe0]
+    0x158d320: mov      x19, x0
+    0x158d324: mov      x0, xzr
+    0x158d328: bl       #0x2786dc0
+    0x158d32c: fcmp     s8, s0
+    0x158d330: b.gt     #0x158d41c
+    0x158d334: ldrb     w8, [x19, #0xdc]
+    0x158d338: cbnz     w8, #0x158d358
+    0x158d33c: ldr      w0, [x19, #0xd8]
+    0x158d340: mov      w8, #1
+    0x158d344: strb     w8, [x19, #0xdc]
+    0x158d348: cbz      w0, #0x158d358
+    0x158d34c: fmov     s0, #1.00000000
+    0x158d350: mov      x1, xzr
+    0x158d354: bl       #0x15b50ac
+    0x158d358: ldrb     w8, [x19, #0x60]
+    0x158d35c: cbz      w8, #0x158d41c
+    0x158d360: ldrb     w8, [x19, #0x8c]
+    0x158d364: cbnz     w8, #0x158d41c
+    0x158d368: ldr      s0, [x19, #0x130]
+    0x158d36c: ldr      s8, [x19, #0x13c]
+    0x158d370: fcmp     s0, #0.0
+    0x158d374: b.eq     #0x158d398
+    0x158d378: ldr      s1, [x19, #0x138]
+    0x158d37c: ldr      s2, [x19, #0x134]
+    0x158d380: fadd     s0, s0, s8
+    0x158d384: fcmp     s0, s1
+    0x158d388: fcsel    s1, s1, s0, gt
+    0x158d38c: fcmp     s0, s2
+    0x158d390: fcsel    s8, s1, s2, pl
+    0x158d394: str      s8, [x19, #0x13c]
+    0x158d398: mov      x0, xzr
+    0x158d39c: bl       #0x2786de8
+    0x158d3a0: fmul     s0, s8, s0
+    0x158d3a4: mov      x0, x19
+    0x158d3a8: mov      x1, xzr
+    0x158d3ac: str      s0, [x19, #0x64]
+    0x158d3b0: bl       #0x277f14c
+    0x158d3b4: cbz      x0, #0x158d428
+    0x158d3b8: mov      x1, xzr
+    0x158d3bc: bl       #0x27891b8
+    0x158d3c0: ldr      s3, [x19, #0x64]
+    0x158d3c4: ldur     d4, [x19, #0xb4]
+    0x158d3c8: ldr      s5, [x19, #0xbc]
+    0x158d3cc: stp      s1, s2, [x19, #0x78]
+    0x158d3d0: mov      x0, x19
+    0x158d3d4: fmul     v4.2s, v4.2s, v3.s[0]
+    0x158d3d8: fmul     s3, s3, s5
+    0x158d3dc: fadd     s2, s2, s3
+    0x158d3e0: stp      s2, s0, [x19, #0x70]
+    0x158d3e4: mov      v0.s[1], v1.s[0]
+    0x158d3e8: fadd     v0.2s, v0.2s, v4.2s
+    0x158d3ec: mov      x1, xzr
+    0x158d3f0: str      d0, [x19, #0x68]
+    0x158d3f4: bl       #0x277f14c
+    0x158d3f8: cbz      x0, #0x158d428
+    0x158d3fc: ldp      s1, s2, [x19, #0x6c]
+    0x158d400: ldr      s0, [x19, #0x68]
+    0x158d404: mov      x1, xzr
+    0x158d408: bl       #0x2789258
+    0x158d40c: ldr      s0, [x19, #0x80]
+    0x158d410: ldr      s1, [x19, #0x64]
+    0x158d414: fadd     s0, s0, s1
+    0x158d418: str      s0, [x19, #0x80]
+    0x158d41c: ldp      x30, x19, [sp, #0x10]
+    0x158d420: ldr      d8, [sp], #0x20
+    0x158d424: ret      
+    0x158d428: bl       #0x110d250
+
+;;; ctor  public void .ctor() { }
+    0x158d42c: mov      x1, xzr
+    0x158d430: b        #0x158e2d8

@@ -1,0 +1,82 @@
+;;; FixedUpdate  protected override void FixedUpdate() { }
+    0x158f090: stp      x30, x19, [sp, #-0x10]!
+    0x158f094: ldrb     w8, [x0, #0x60]
+    0x158f098: cbz      w8, #0x158f0a8
+    0x158f09c: ldrb     w8, [x0, #0x8c]
+    0x158f0a0: mov      x19, x0
+    0x158f0a4: cbz      w8, #0x158f0b0
+    0x158f0a8: ldp      x30, x19, [sp], #0x10
+    0x158f0ac: ret      
+    0x158f0b0: mov      x0, xzr
+    0x158f0b4: bl       #0x2786dc0
+    0x158f0b8: ldr      s1, [x19, #0x138]
+    0x158f0bc: fcmp     s0, s1
+    0x158f0c0: b.lt     #0x158f120
+    0x158f0c4: ldr      w8, [x19, #0x13c]
+    0x158f0c8: cmp      w8, #1
+    0x158f0cc: b.gt     #0x158f120
+    0x158f0d0: cbz      w8, #0x158f0fc
+    0x158f0d4: adrp     x9, #0x757000
+    0x158f0d8: ldr      d0, [x9, #0x710]
+    0x158f0dc: ldr      x9, [x19, #0x28]
+    0x158f0e0: stur     d0, [x19, #0xb4]
+    0x158f0e4: cbz      x9, #0x158f14c
+    0x158f0e8: ldr      s0, [x9, #0x14]
+    0x158f0ec: ldr      s1, [x19, #0x134]
+    0x158f0f0: fmul     s0, s0, s1
+    0x158f0f4: str      s0, [x19, #0xb0]
+    0x158f0f8: b        #0x158f118
+    0x158f0fc: mov      x0, xzr
+    0x158f100: bl       #0x2786dc0
+    0x158f104: ldr      s1, [x19, #0x130]
+    0x158f108: ldr      w8, [x19, #0x13c]
+    0x158f10c: str      wzr, [x19, #0xb0]
+    0x158f110: fadd     s0, s0, s1
+    0x158f114: str      s0, [x19, #0x138]
+    0x158f118: add      w8, w8, #1
+    0x158f11c: str      w8, [x19, #0x13c]
+    0x158f120: mov      x0, xzr
+    0x158f124: bl       #0x2786dc0
+    0x158f128: ldr      s1, [x19, #0x88]
+    0x158f12c: fcmp     s0, s1
+    0x158f130: b.ge     #0x158f140
+    0x158f134: mov      x0, x19
+    0x158f138: bl       #0x158dfbc
+    0x158f13c: tbz      w0, #0, #0x158f0a8
+    0x158f140: mov      x0, x19
+    0x158f144: ldp      x30, x19, [sp], #0x10
+    0x158f148: b        #0x158df54
+    0x158f14c: bl       #0x110d250
+
+;;; SetBullet  public override void SetBullet(BulletForceType force, Transform target, LayerMask targetLayer, float startSpeed, float startLifetime, float startAngle, Action<GameObject, Vector3> onCollision, Action<GameObject, Vector3> onDestroy, bool throughShield = False) { }
+    0x158f150: stp      x30, x19, [sp, #-0x10]!
+    0x158f154: and      x3, x3, #0xffffffff
+    0x158f158: and      w6, w6, #1
+    0x158f15c: mov      x19, x0
+    0x158f160: bl       #0x158e0c0
+    0x158f164: mov      x0, xzr
+    0x158f168: str      wzr, [x19, #0x13c]
+    0x158f16c: bl       #0x2786dc0
+    0x158f170: ldr      s1, [x19, #0x12c]
+    0x158f174: fadd     s0, s0, s1
+    0x158f178: str      s0, [x19, #0x138]
+    0x158f17c: ldp      x30, x19, [sp], #0x10
+    0x158f180: ret      
+
+;;; ctor  public void .ctor() { }
+    0x158f184: adrp     x8, #0x757000
+    0x158f188: ldr      d0, [x8, #0x9f8]
+    0x158f18c: add      x8, x0, #0x12c
+    0x158f190: mov      w9, #0x3f000000
+    0x158f194: mov      x1, xzr
+    0x158f198: str      d0, [x8]
+    0x158f19c: adrp     x8, #0x779000
+    0x158f1a0: ldr      q0, [x8, #0x340]
+    0x158f1a4: str      w9, [x0, #0x134]
+    0x158f1a8: mov      w9, #0x5f93
+    0x158f1ac: mov      w8, #1
+    0x158f1b0: movk     w9, #1, lsl #16
+    0x158f1b4: strb     w8, [x0, #0x8c]
+    0x158f1b8: str      q0, [x0, #0xc0]
+    0x158f1bc: str      w9, [x0, #0x128]
+    0x158f1c0: b        #0x158c268

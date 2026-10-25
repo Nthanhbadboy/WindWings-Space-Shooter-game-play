@@ -1,0 +1,170 @@
+{
+ "class": "Bullet_Drop",
+ "note": "Pinned player firing consumer recovery; provisional",
+ "methods": [
+  {
+   "method": "SetBullet",
+   "signature": "public override void SetBullet(BulletForceType force, Transform target, LayerMask targetLayer, float startSpeed, float startLifetime, float startAngle, Action<GameObject, Vector3> onCollision, Action<GameObject, Vector3> onDestroy, bool throughShield = False) { }",
+   "offset": "0x158ac20",
+   "getter_value": null,
+   "rva": "0x158ec20",
+   "bytes": 152,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 4294967295,
+     "via": "and",
+     "addr": "0x158ec70",
+     "reg": "x3",
+     "op": "x3, x22, #0xffffffff",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x158ec74",
+     "reg": "w6",
+     "op": "w6, w19, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "FixedUpdate",
+   "signature": "protected override void FixedUpdate() { }",
+   "offset": "0x158acb8",
+   "getter_value": null,
+   "rva": "0x158ecb8",
+   "bytes": 384,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 0.5,
+     "via": "fmov",
+     "addr": "0x158ed14",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x158ed88",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 3.14159,
+     "via": "ldr_pool",
+     "va": "0x756a9c",
+     "addr": "0x158ede8",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 44,
+     "via": "add",
+     "addr": "0x158ee08",
+     "reg": "x0",
+     "op": "x0, sp, #0x2c",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 40,
+     "via": "add",
+     "addr": "0x158ee0c",
+     "reg": "x1",
+     "op": "x1, sp, #0x28",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 360.0,
+     "via": "mov+fmov",
+     "bits": "0x43b40000",
+     "addr": "0x158ed44",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 180.0,
+     "via": "mov+fmov",
+     "bits": "0x43340000",
+     "addr": "0x158ed6c",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 90.0,
+     "via": "mov+fmov",
+     "bits": "0x42b40000",
+     "addr": "0x158edec",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 180.0,
+     "via": "mov+fmov",
+     "bits": "0x43340000",
+     "addr": "0x158edf8",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "Update",
+   "signature": "protected override void Update() { }",
+   "offset": "0x158ae84",
+   "getter_value": null,
+   "rva": "0x158ee84",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x158b060",
+   "getter_value": null,
+   "rva": "0x158f060",
+   "bytes": 48,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 90003,
+     "via": "mov+movk",
+     "addr": "0x158f068",
+     "reg": "w9",
+     "op": "w9, #0x5f93",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x158f070",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}
