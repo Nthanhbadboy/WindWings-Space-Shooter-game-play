@@ -629,3 +629,10 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 - Report74 local218tests/Pillow13+datasvalidationPASS;assembly40199471450 có216tests/Pillow12, finalVerify sau2delivery/publishingtests mới kiểmriêng.
 
 - **Report74 final:** Verify40199813697 SUCCESS trêncode4fe0cef8e,218tests/pinnedPillow12;datasvalidatePASS. Assembly/delivery40199471450SUCCESS,sourceassetIDs/digests giữ nguyên;khôngmởfile/diff/preview.
+
+
+## Report75 — serialized Sprite meshes/origin, không PNG-pivot guess
+- `datas/sprite_mesh_contract.json.gz`, verifier `sprite_mesh_contracts.py`:2185Sprites/27072vertices/24375triangles, float32positions/uint16indices từpreservedrawgeometry;typedidentity/object+payloadhash/PNGrefs. Raw/sprite-meshes/derivation.json làderivationmetadata, khôngcaptureAPK mới; nguồnrawreport62/72 giữ nguyên.
+- 1652non-quadmeshes,497PPUvalues (980SpritesPPU100).467mesh-AABB origin diagnostics khácsourcepivot >1e-5.7strictoutside/6beyond1e-5, 2836chỉ−3.076e−8;khôngclamp/recenter. 2185serializedsubmeshlocalAABBs đều0 nhưngmeasuredvertexbounds không0, giữnguyênhaibảngkhácnhau.
+- Trianglecrosssignsnegative24013/positive17/zero345, khôngGPUcullingverdict/khôngrepairwinding/khôngxóatriangles. UV0allzero khôngđủđểfabricateUVs.6tests mới;release/media khôngđổi, khôngfullAPKpipeline/preview.
+- **Task peer:** importtypedmesh/PPU khi cầnguồngeometry;sourcepivot/mesh-origin/serializedAABB/trimmedPNGregistrationkhácnhau. Quad/recenter/UVmappingmới lànewdesign/approximation nếuchưacóconsumerproof. ConcreteUV/rendererflip/transform/material/sceneplacementvẫnunknown;Premium/poolhistoryhoãn.

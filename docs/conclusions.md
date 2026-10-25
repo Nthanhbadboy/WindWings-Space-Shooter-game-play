@@ -11,7 +11,12 @@
 >
 > Kết luận C **không được** dùng làm thông số implement; chỉ để định hướng.
 
-## Trạng thái kiểm lại hiện hành — sau report74 (ưu tiên hơn bảng lịch sử dưới đây)
+## Trạng thái kiểm lại hiện hành — sau report75 (ưu tiên hơn bảng lịch sử dưới đây)
+
+**Report75:**2185serializedSprite mesh contracts/27072vertices/24375triangles,
+497PPUvalues, sourcepivot khácmesh-AABB origin diagnostic ở467rows >1e-5.
+2185zero serializedsubmeshAABBs giữnguyên,measuredvertexbounds táchriêng.
+KhôngPNGpivot/UV/sceneplacement/GPUapproval, khôngrepairwinding/clamporigin.
 
 **Report74:** draft thêmfont-reference-v1.zip tựchứa7SDFassets/primarymaterials/1separateTTF,
 19members; sourceV2bytesgiữnguyên,post-uploadredownload/memberhashPASS,existingassetskhôngđổi.

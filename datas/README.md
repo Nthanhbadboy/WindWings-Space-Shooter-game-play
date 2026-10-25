@@ -122,3 +122,13 @@ Dùng `tools/verify/font_reference_contracts.py` kiểmmanifest/audit/release me
 full rawfont+primarymaterial projections,1TTF inventoryriêng,post-uploadreadback.
 Draft `font-reference-v1.zip` mởindexoffline trực tiếp, không cần ghépV2.
 KhôngUnityimport/render/RTL/shapingapproval; khôngoriginalmedia mới trongGit.
+
+
+## Sprite mesh contract — report75
+
+`sprite_mesh_contract.json.gz`:2185typedSprite meshes/27072positions/24375triangles,
+rawobject/payloadhashes,sourcepivot/rect/PPU,bounds/PNGrefs. Regenerate bằng
+`python3 tools/verify/sprite_mesh_contracts.py`;raw/sprite-meshes/derivation.json giữsource
+hashes vàdiagnostics, khôngAPKcapture mới. Mesh-AABB origin ratio khôngPNGpivot;
+497PPUvalues,serializedzeroAABBkhôngmeasuredbounds. KhôngUVfabrication/windingrepair/
+renderertransform hoặcUnityGPUapproval.6tests mới;media/release khôngđổi.

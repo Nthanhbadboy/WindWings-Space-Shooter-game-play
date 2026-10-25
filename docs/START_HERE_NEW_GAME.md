@@ -1,6 +1,6 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report74. Tất cả kết luận APK vẫn tạm thời.**
+**Cập nhật 25/10/2026, sau report75. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
@@ -138,6 +138,11 @@ English`txt_free_after` đãsửaCSVlast-wins→nativefirst-index. Khôngfont/re
 Không cần copybrowsercạnhV2 nữa; source bytes giữnguyên, post-upload redownload hashes PASS.
 Đọc [report74](apk-analysis/74-self-contained-font-reference-pack-and-delivery-audit.md).
 KhôngUnityimport/renderapproval; khônggánTTFvàosourceFontFile=nullbằngheuristic.
+
+**Sprite mesh report75:** `datas/sprite_mesh_contract.json.gz` giữ2185typedmeshes,
+27072vertices/24375triangles, sourcepivot/PPU/bounds táchriêng.497PPUvalues;
+serializedsubmeshAABB đều0 khôngthaymeasuredvertexbounds. KhôngđoánPNGpivot/clamporigin,
+khôngfabricateUV/windingrepair; [report75](apk-analysis/75-serialized-sprite-mesh-origins-and-bounds.md).
 
 Nghiệm thu fidelity còn mở: UnityGPU/PMA/filtering/sceneplacement và pivot consumer,
 nghe audio, font runtime/shaping/RTL/coverage và Spine import; staticfallback/rigidentityđãcóscope.
