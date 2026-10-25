@@ -898,3 +898,19 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 - 5 việc được ghi nhận: UI node→sprite→screen joins; gameplay prefab sprite refs;
   unknown/passthrough labels; unmatched atlas names; actual27 spine rig identities.
   Các số đếm trong comment là peer audit, chưa nâng thành kết quả đo độc lập ở branch này.
+
+## Report96 — USER REPRIORITIZATION: L3 lên trước, không hoãn sau wing/map-save
+- User26/10: “L3 đang thiếu trầm trọng… bộ mặt thật của game”. Thay queue trước:
+  L3 appearance/UI/gameplay/VFX/motion/audio chains là trục chính; wing/map-save chỉ tiếp
+  khi là named dependency của chain nhìn thấy. Arena/PvP vẫn không chen trước việc này.
+- Peer spec b000f905 reviewed L3 wording;6 source docs snapshot raw/peer-review/l3-b000f905.
+  DONE/START_HERE đã hạ “đủ”; README historical “L3 bỏ” và conditional readiness dễ gây hiểu sai.
+- Đã làm UI drawing-use index datas/ui_l3_bindings.json.gz:797files/117class labels,
+  76,806 sprite observations,75,749 exact scoped PPtr resolutions,1057null,1099 distinct sprites.
+  Inventory55,584 KHÔNG coverage:54,787 ngoài index chưa join. Existing scoped work43/46
+  không bị phủ nhận;96 mở rộng indexed coverage thành artifact tra trực tiếp.
+-12 tests mới PASS; validate PASS. Chưa pass render/composition/motion/audio; local activeSelf
+  không là effective visibility. Không tự nhận visual semantics cho unknown/passthrough/spine.
+- Tiếp: ngoài-index scoped references + hierarchy/state/sorting/font/material; gameplay
+  prefab→sprite/VFX/rig→clip/event; scene-level reference outputs. Không vẽ từ screenshot,
+  không yêu cầu playtest người thật/screenshot mới làm điều kiện bắt đầu phần raw đã có.
