@@ -172,3 +172,17 @@ stage2; victory_next không chứng minh đã chuyển stage. Contact sheets kh�
 timeline. Để nội dung Premium sang sau, ưu tiên thu chuỗi kết quả sạch→Continue
 →titleStage2→titleStage3 có timestamps/actions. Manifest/raw quan sát được giữ
 trong raw/ui-flow-review; JPEG duyệt ở docs/apk-analysis/ui-flow-review.
+
+### Đã đào stage2/3 từ APK raw — report50 supersedes inventory gate OPEN cũ
+
+Nguồn `ui-audit/stage23-ui-flow.json.gz` giữ24methods asm/hash/calls/metadata +
+panelbinding/text; rodata literal/jumptable ở stage23-rodata.json. Recovery
+40183022449 và40183197035 success. Board_Begin.Start chứng minh label stageIndex+1.
+Stage2: internal1 && IndexTutorial1 → TutDrones(panel1906,delay2) → chờdrone →
+3.9scaled s → timescale0/cover/focus skill → chờhasUseDroneSkill → restore GP_Time.
+Stage3: internal2 && TUT_TOUCH_SKILL!=1 (KHÔNG yêu cầuIndexTutorial2 trong gate)
+→ nếuTalentIndex!=-1 chạy TutTalents(panel1911,delay3), ẩnPause, lock input,
+chờhasTouchBurst; callbackghiTUT_TOUCH_SKILL1, chỉ++Index khiindex2 && StageCurrent2,
+bậtPause. TalentIndex==-1 có nhánh skip+ghi flag, không vẽ modal bắt buộc.
+Không đòi thêm ảnh stage2/3 để bắt đầu dựng các panel/flow này. Giữ unknown ở
+consumer eventState/grant/unlock/advance và runtime, không trộn với gate đã resolve.
