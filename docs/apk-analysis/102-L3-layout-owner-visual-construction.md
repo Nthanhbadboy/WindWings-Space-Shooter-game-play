@@ -114,3 +114,8 @@ simulation hay live text shaping/layout. Chuỗi102 đã nối nguồn layout→
 property→material/shader→recipe; **L3 chưa hoàn tất**. Bước kế tiếp: camera/composition/culling
 và renderer geometry generation thực tế trên các chain đã có, giữ rõ engine/runtime inputs.
 Không chờ screenshot, không vẽ lại UI. Peer phải review độc lập, không tự ACK.
+
+## Receipt102
+
+Finalcode **d1a65f01d**, Verify **40238106907 SUCCESS4m7s**. Local1012PASS178.853s.
+Raw CI/handoff receipts giữ riêng; PR12 đã nhận request review, chưa independent ACK.
