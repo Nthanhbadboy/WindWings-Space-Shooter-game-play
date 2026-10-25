@@ -530,10 +530,43 @@ Nguồn: `reverse-engineering/raw/ui-audit/drawing-inputs.json.gz` (11 màn) + r
 chọn/nâng cấp tàu & drone — **wireframe + asset reference**, phải ghi rõ nhãn "vị trí tương đối theo
 parent", "sprite là *candidate*", và **không** được bật đồng thời mọi popup con.
 
-**Chưa đủ để vẽ sát gốc:** overlay tutorial điều khiển (layout panel gameplay **thiếu** trong exporter
-cũ) và prototype click-through 1→2→3 (cần trạng thái lưu, finish/skip, hàng đợi popup).
+**⚠️ Trần dữ liệu — đừng đọc bảng trên là độ sâu thật:** `walk_diagnostics` của `Board_Maps` =
+`at_old_6000_limit: true` ⇒ **4.237 node của `drawing-inputs` và 6.000 node của `_index` đều là CẬN
+DƯỚI** (bị cắt ở trần 6.000). 14 màn còn lại không chạm trần.
 
-**Gate tutorial đã giải bằng native** (`ui-audit/early-native-gates.json` — 5/5 kiểm tra branch/instruction
+**Chưa đủ để vẽ sát gốc:** prototype click-through 1→2→3 (cần trạng thái lưu, finish/skip, hàng đợi
+popup, đích của Continue) và **pixel** (font/sprite đã có PPtr + style nhưng chưa resolve external
+`file3` → asset font/material).
+
+### 9.3 Overlay tutorial — **đã có layout** (report 44, snapshot `0a42eaa42`)
+
+`visual-coverage.json` (snapshot `0a42eaa42`) — 15 màn · 14.730 node · 7.087 `SpriteRenderer` · 1.913 TMP,
+style đã giữ (font PPtr/cỡ chữ/sorting) nhưng **chưa** resolve `file3` → asset font/material; **1** màn
+chạm trần 6.000.
+
+`GP_Tutorials` (126 node · 53 `SpriteRenderer` · 25 TMP) có **8 panel reference → 7 GO** khác nhau
+(`tutSettings` và `tutSettings2` **cùng** GO `634` ⇒ **không** vẽ thành 2 modal).
+`ui-audit/tutorial-texts.csv`: **19 dòng · 7 field · 6 GO · 13 key**, trong đó **17** dòng có tiếng Việt,
+kèm `serialized_text` (tiếng Anh trong prefab), `font_size` (**6.0** = đơn vị serialize TMP, **không**
+phải 6 px), `font PPtr (file 3, path 105)`, `local_pos`, `size_delta`.
+
+| field | GO | node | chữ Việt (key) |
+|---|---:|---:|---|
+| `tutobjControl` | 1909 | 3 | Di chuyển ngón tay của bạn để điều khiển máy bay |
+| `tutobjChangePlane` | 1904 | 6 | Thả ngón tay… đổi máy bay và kích hoạt pháo đặc biệt |
+| `tutobjChangePlane2` | 329 | 9 | Hãy thay đổi máy bay linh hoạt · Không thể tiêu diệt · Tiêu diệt dễ dàng |
+| `tutobjUseDroneSkill` | 1906 | 2 | Kỹ năng máy bay phụ phá giáp… |
+| `tutobjTouchSkill` | 1911 | 6 | Chạm hai ngón tay… kỹ năng đặc biệt (tài năng) |
+| `coverObject` | 1908 | 1 | (không có text) |
+| `tutSettings` · `tutSettings2` | 634 | 30 | Đổi tốc độ chơi khi tạm dừng · Nhạc nền · Âm thanh · Đồng ý |
+
+**Nhánh Endgame sau tutorial đã có callback thật:** `Board_Endgame.<CheckPremiumPopup>g__ThroughTut|91_2`
+@ **`0x126d3cc`**: nhánh `true` **ẩn Replay** (`+0x80`), **bật Continue** (`+0x88`), đặt focus Continue, rồi
+`get_IndexTutorial` → **+1** → `set_IndexTutorial` @ `0x14f9f84`; nhánh `false` xử lý Replay theo mode và
+**không** tăng index. Chưa resolve **tên** static bool (slot `0x2adc6b0`) ⇒ **không** đặt tên nhánh là
+"victory". `CheckPremiumPopup` chỉ đi nhánh tutorial khi `IndexTutorial <= 1`.
+
+**Gate tutorial đã giải bằng native** (`ui-audit/early-native-gates.json` — **6**/6 kiểm tra branch/instruction
 **PASS**, **6** call target resolve được từ RVA) — không còn suy từ tên hàm. Cột *delay* lấy từ report 43
 (**mức B**: report ghi `delay argument`, không có trong JSON kiểm tự động):
 

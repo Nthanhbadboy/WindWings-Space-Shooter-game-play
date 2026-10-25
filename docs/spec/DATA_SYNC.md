@@ -1784,7 +1784,7 @@ Ngoài ra nhánh kia **bắt hai lỗi của tài liệu này**, đã sửa:
 
 ---
 
-## 13. Đồng bộ **hai snapshot** `9aed767b1` → `1989defc2` (25/10, sau bàn giao `HANDOFF_DATA_SYNC.md`)
+## 13. Đồng bộ **ba snapshot** `9aed767b1` → `1989defc2` → `0a42eaa42` (25/10, sau bàn giao `HANDOFF_DATA_SYNC.md`)
 
 Bàn giao của nhánh dữ liệu (`docs/HANDOFF_DATA_SYNC.md`, blob `1c88a027`) nói rõ: **cấm** lặp lại
 "nhánh dữ liệu không có commit"; phải so **`ls-remote` với `rev-parse` sau fetch**; nếu bot đẩy tiếp
@@ -1794,8 +1794,13 @@ thì **ghi hai snapshot**. Đây là bản ghi đúng.
 
 | lúc | `git ls-remote origin refs/heads/arena/ef6b75ef-…` | `git rev-parse origin/arena/ef6b75ef-…` | khớp |
 |---|---|---|---|
-| trước fetch | `9aed767b1313690d29b3c3ff764f838a8f4c4ebd` | `9aed767b1…` | ✅ |
-| **sau fetch** | **`1989defc281461cee18a4352078ab5e67a2c8516`** | **`1989defc2…`** | ✅ |
+| trước fetch #1 | `9aed767b1313690d29b3c3ff764f838a8f4c4ebd` | `9aed767b1…` | ✅ |
+| **sau fetch #1** | **`1989defc281461cee18a4352078ab5e67a2c8516`** | **`1989defc2…`** | ✅ |
+| **sau fetch #2** (bot đẩy tiếp) | **`0a42eaa422d961c0de1f86252e86a0810b21cf7d`** | **`0a42eaa42…`** | ✅ |
+
+⇒ **ref của nhánh dữ liệu là mục tiêu di động** (bot đẩy trong lúc tôi đang đọc). Đúng như handoff dặn:
+ghi **nhiều snapshot**, không kết luận "không có commit". Số commit sau `019e704d1`: **12** (tại
+`1989defc2`) rồi **14** (tại `0a42eaa42`).
 
 `git fetch` in ra: `9aed767b1..1989defc2  arena/ef6b75ef-… -> origin/arena/ef6b75ef-…` ⇒ **có** commit
 mới. Đếm: **12 commit** sau `019e704d1`, trong đó **2 commit sau `9aed767b1`**.
@@ -1835,7 +1840,22 @@ mọi input **dữ liệu** rơi về local đều **exit 2**. Kết quả: **13
 trên nhánh dữ liệu nên buộc phải đọc local; `local_inputs()` chỉ tính `datas/`,
 `reverse-engineering/`, `docs/apk-analysis/`).
 
-### 13.4 Đã import từ snapshot này
+### 13.4 Snapshot thứ ba `0a42eaa42` — import thật (5 file, ghi source SHA)
+
+`git checkout 0a42eaa42 -- <path>` cho 5 file, mỗi file ghi blob:
+
+| file | blob tại `0a42eaa42` | nội dung |
+|---|---|---|
+| `docs/apk-analysis/44-ui-tutorial-panels-and-gaps.md` | `a97fc0ce` | **layout tutorial đã có** (8 ref / 7 GO) + callback Endgame `0x126d3cc` |
+| `reverse-engineering/raw/ui-audit/tutorial-texts.csv` | `f8c27aa8` | 19 dòng · 7 field · 6 GO · 13 key · 17 dòng có tiếng Việt |
+| `reverse-engineering/raw/ui-audit/visual-coverage.json` | `cdd9455f` | 15 màn · 14.730 node · 7.087 `SpriteRenderer` · 1.913 TMP · `Board_Maps` **chạm trần 6.000** |
+| `reverse-engineering/raw/ui-audit/early-native-gates.json` | `4ef70ddc` | thêm check `endgame_callback_reveals_continue_and_increments_tutorial` ⇒ **6/6 PASS**, 6 call target |
+| `docs/HANDOFF_AI_TASKS.md` | `141202503` | việc kế: Map **chưa** full coverage (đạt trần), raw mới phải nghiệm thu trước khi bỏ OPEN |
+
+**Đã cập nhật vào:** `UI.md` **§9.2** (cảnh báo trần 6.000) + **§9.3** (bảng 7 panel tutorial + nhánh
+Endgame), `COVERAGE_AUDIT.md` hàng UI. Claim **Y2** sửa `5/5 → 6/6`, thêm **Z1–Z3**.
+
+### 13.4b Đã import từ snapshot thứ hai
 
 | việc | vào đâu |
 |---|---|
@@ -1848,3 +1868,5 @@ trên nhánh dữ liệu nên buộc phải đọc local; `local_inputs()` chỉ
 - `1989defc2` / `a2fac1df7`: **chỉ sửa `tools/apk-analyze/**`** ⇒ không có file dữ liệu/tài liệu để kéo;
   nếu sau này exporter đó xuất raw **mới** thì phải kiểm lại `_index.csv` (đang là 797 dòng).
 - `early-stage-coverage.json.gz` (1,99 MB): **chưa** phân tích — report 42/43 mới đọc phần kết luận.
+- `Board_Maps`: **chưa** có độ sâu đầy đủ (đạt trần 6.000 ở snapshot này) ⇒ mọi số của `Board_Maps`
+  phải ghi **cận dưới**; `handoff AI tasks` nói phải chờ raw tái xuất rồi mới bỏ OPEN.

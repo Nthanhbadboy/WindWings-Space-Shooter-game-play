@@ -2449,9 +2449,67 @@ claim("Y1", "docs/spec/UI.md",
       "bộ đầu vào vẽ: đếm từ drawing-inputs.json.gz, không chép bảng report 43")
 
 claim("Y2", "docs/spec/UI.md",
-      "5/5 kiểm tra branch/instruction",
-      (5, 5, 6), tutorial_gate_stats,
+      "**6**/6 kiểm tra branch/instruction",
+      (6, 6, 6), tutorial_gate_stats,
       "gate tutorial native: 5 check PASS, 6 call target resolve từ RVA")
+
+# ── Z. layout tutorial + visual coverage (snapshot 0a42eaa42, §9.3) ────
+TUT_TEXTS = "reverse-engineering/raw/ui-audit/tutorial-texts.csv"
+VISUAL = "reverse-engineering/raw/ui-audit/visual-coverage.json"
+
+
+def tutorial_text_stats():
+    """(dòng, field, GO, key, dòng có tiếng Việt)."""
+    rows = _csv_rows(TUT_TEXTS)
+    if not rows:
+        return None
+    return (len(rows),
+            len({r.get("owner_field") for r in rows}),
+            len({r.get("panel_path_id") for r in rows}),
+            len({r.get("key") for r in rows}),
+            sum(1 for r in rows if (r.get("vi") or "").strip()))
+
+
+def visual_coverage_stats():
+    """(màn, node, SpriteRenderer, TMP, số màn chạm trần 6.000)."""
+    d = _json_plain(VISUAL)
+    if not d:
+        return None
+    screens = d.get("screens") or []
+    if not screens:
+        return None
+    return (len(screens),
+            sum(s.get("node_count") or 0 for s in screens),
+            sum((s.get("counts") or {}).get("sprite_renderer") or 0 for s in screens),
+            sum((s.get("counts") or {}).get("tmp") or 0 for s in screens),
+            sum(1 for s in screens
+                if (s.get("walk_diagnostics") or {}).get("at_old_6000_limit")))
+
+
+claim("Z1", "docs/spec/UI.md",
+      "**19 dòng · 7 field · 6 GO · 13 key**",
+      (19, 7, 6, 13, 17), tutorial_text_stats,
+      "tutorial-texts.csv: 8 ref nhưng chỉ 6 GO có text (634 dùng cho 2 field)")
+
+claim("Z2", "docs/spec/UI.md",
+      "15 màn · 14.730 node · 7.087 `SpriteRenderer` · 1.913 TMP",
+      (15, 14730, 7087, 1913, 1), visual_coverage_stats,
+      "visual-coverage.json: 15 màn, Board_Maps chạm trần 6.000 ⇒ cận dưới")
+
+def endgame_callback_ref():
+    """(check PASS, có 0x126d3cc, có 0x14f9f84) trong raw của nhánh dữ liệu."""
+    d = _json_plain(GATES)
+    if not d:
+        return None
+    blob = json.dumps(d)
+    return (1 if (d.get("checks") or {}).get(
+        "endgame_callback_reveals_continue_and_increments_tutorial") else 0,
+        "0x126d3cc" in blob, "0x14f9f84" in blob)
+
+
+claim("Z3", "docs/spec/UI.md",
+      "@ **`0x126d3cc`**", (1, True, True), endgame_callback_ref,
+      "callback Endgame ThroughTut: ẩn Replay, bật Continue, IndexTutorial+1 @0x14f9f84")
 
 # ── chạy ───────────────────────────────────────────────────────────────
 
