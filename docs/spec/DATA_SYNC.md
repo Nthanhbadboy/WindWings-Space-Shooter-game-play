@@ -90,7 +90,7 @@ Phân bố 109 prefab: **Boss 39** · CB 33 · CD 15 · W2 6 · XB 5 · GD 4 · 
 
 | Chỉ số | Tôi tính (từ bản cũ) | Vòng 3 | Khớp? |
 |---|---:|---:|---|
-| Spawner sau dedup | 10.776 | **11.099** | 🟡 lệch **3%** (khác khoá dedup) — đo 25/10: **10.782** / **11.094** |
+| Dòng cấu hình sau dedup | 10.776 | **11.099** | 🟡 lệch **3%** (khác khoá dedup) — đo lại 25/10 trên `622b700e5`: **10.782** / **11.089** |
 | `Boss-` root | 39 | **39** | ✅ |
 | Prefab enemy | 92 (đếm từ `Enemy_Datas`) | **109** (đếm từ usage) | 🟡 vòng 3 nhiều hơn **17** |
 
@@ -1972,7 +1972,10 @@ lý do là *dữ liệu mới không nhất quán*, không phải *lười*. N�
 | text node UI | 17.066 | **17.276** | — | `UI.md` §9 |
 | node UI lớn nhất | 12.000 (**trần walker**) | **15.334** | **P6** | `UI.md` §9, `COVERAGE_AUDIT.md` §1 |
 | node layout (`ui_screens.json.gz`) | 8.435.335 | **8.437.020** | **P6** | `COVERAGE_AUDIT.md` §3 |
-| spawner / lượt spawn | 11.092 / 22.460 | **11.094 / 22.482** | **H2**, **I3**, **M3** | `ANIMATION.md` §4, `DESIGN_READINESS.md` §3, `ENCOUNTERS`-related |
+| dòng cấu hình / lượt spawn | 11.092 / 22.460 | **11.094 / 22.482** | **H2**, **I3**, **M3** | `ANIMATION.md` §4, `DESIGN_READINESS.md` §3, `ENCOUNTERS`-related |
+
+> ⚠ Bảng trên là **log của vòng 3** (`61d5385`). Số hiện hành (bản `622b700e5`) ở **§17.1** và §17.2:
+> **11.089** dòng cấu hình · **23.757** spawner (`Σ copies`) · **22.451** entry · `rate = 0` **2.366**.
 
 Hai hệ quả phụ, cũng đã sửa: `rate = 0` **2.370 → 2.371**; `rate = 0` **và** >1 quân
 **1.203 → 1.206**. `rate` histogram mới: `1,0 → 7.740 · 0,0 → 2.371 · 0,5 → 532 · 2,0 → 163 ·
