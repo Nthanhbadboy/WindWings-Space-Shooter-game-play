@@ -81,10 +81,48 @@ jobs:
           dest.write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
           print({k:len(v) for k,v in rows.items()})
           assert any(rows.values()), 'No matching slots: do not claim resolution'
+          # Keep metadata/relocations, not the 49MB script.json or native binary.
+          # This lets later audits resolve new UI slots offline without rerunning
+          # the full APK extraction for every small question.
+          import gzip
+          root=dest.parent
+          for name,value in [
+              ('metadata-index.json.gz', {'source_run':40180363840,
+               'script_sha256':out['source_sha256'],
+               'tables':{k:d[k] for k in ('ScriptMetadata','ScriptMetadataMethod','ScriptString') if k in d}}),
+              ('native-relocations.json.gz', {'source_run':40180363840,
+               'native_sha256':out['native_sha256'],
+               'relocations':{hex(k):hex(v) for k,v in native.RELOCS.items()}})]:
+              path=root/name
+              with gzip.open(path,'wt') as fh: json.dump(value,fh,ensure_ascii=False)
+              assert path.stat().st_size < 5000000, f'{name} too large for repository'
           PY
+      - name: Extract missing loader and preference native bodies
+        run: |
+          python3 -m pip install -q capstone
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys
+          sys.path.insert(0,'tools/apk-analyze')
+          import il2cpp_consts as native
+          dump=next(Path('/tmp/ui-metadata-evidence').rglob('dump.cs'))
+          parents=('Home_Loader','PlayerPreferences','Stage_Datas','GP_Setup','SkipTutorial')
+          methods=native.parse_dump(str(dump))
+          targets={m[0] for m in methods if m[0] and any(m[0]==p or m[0].startswith(p+'.') for p in parents)}
+          native.TARGET_CLASSES.clear()
+          native.TARGET_CLASSES.update({name:'UI loader/persistence recovery — provisional' for name in targets})
+          native.OUT_RAW='reverse-engineering/raw/ui-audit/extra-native'
+          native.OUT_MD='/tmp/ui-native/extra-native-inventory.md'
+          native.OUT_CSV='/tmp/ui-native/extra-native-floats.csv'
+          sys.argv=['native',str(dump),'/tmp/ui-native/libil2cpp.so']
+          assert native.main()==0
+          assert (Path(native.OUT_RAW)/'Home_Loader.asm.txt').exists()
+          PY
+      - name: Commit recovered UI evidence
+        run: |
           git config user.name 'Arena evidence collector'
           git config user.email 'agent@arena.ai'
-          git add reverse-engineering/raw/ui-audit/metadata-slots.json
+          git add reverse-engineering/raw/ui-audit/metadata-slots.json reverse-engineering/raw/ui-audit/metadata-index.json.gz reverse-engineering/raw/ui-audit/native-relocations.json.gz reverse-engineering/raw/ui-audit/extra-native
           git diff --cached --quiet || git commit -m 'research(ui): recover exact UI metadata slots from run 40180363840 [skip ci]'
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
