@@ -1,5 +1,7 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
+**Cập nhật report90:** [wing level → barrels và current drone base-fire](apk-analysis/90-wing-level-barrels-and-current-drone-base-fire.md). Shared lazy Level getter + wing implementation1/source10003;12 current drone implementations (9 projectile,1 sweep,2 laser),44 numeric fields và damage source.92 tests mới/full592 PASS. ACK88/89 đã nhận,90 chưa ACK. Không suy all24 wing laws, prefab sourceID binding hay DPS từ fixture.
+
 **Cập nhật report89:** [pickup tới currency](apk-analysis/89-pickup-dispatch-and-collected-currency.md) nối report88 enemy-hit→burst. Không lấy ngân sách28 làm28tiền, không chặn item pickup bằng contact-hit flags; formula đọc balance mỗi lần, event48 sau store. ACK87 đã nhận;88/89 chưa ACK. Full evidence/fixtures không phải whole-game runtime approval.
 
 

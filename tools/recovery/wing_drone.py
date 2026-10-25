@@ -1,4 +1,4 @@
-"""Bounded pickup/currency roots and exact dependencies from pinned APK only."""
+"""Bounded current/legacy drone roots and wing-level dependencies from pinned APK only."""
 import argparse,bisect,gzip,hashlib,io,json,re,struct,sys,tempfile,zipfile
 from pathlib import Path
 from combat_coroutine_cells import APK_SHA,LIB_SHA,extract

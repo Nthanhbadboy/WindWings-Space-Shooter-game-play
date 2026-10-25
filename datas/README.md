@@ -1,5 +1,7 @@
 # `datas/` — data pack WindWings
 
+`wing_drone_flow.json`:73 ranges/6041 instructions,68 anchors,44 numeric fields,9 projectile-loop proofs,2 SHA-checked arrays; wing1 level0..10 và all12 current drone implementations. `python3 -m tools.verify.wing_drone_flow --check`;92 new tests. Current Drone_Attack ≠ legacy Droid_Attack; ability25 base/(2.5*points), counter per barrel, laser7/9 strict timers; drone damage .16 level coefficient/abi21=2.5. Wing1/source10003 only, no all24 wing extrapolation or serialized droneID/spawn/DPS approval. [report90](../docs/apk-analysis/90-wing-level-barrels-and-current-drone-base-fire.md).
+
 ## Pickup → collected currency — report89
 
 `pickup_currency_flow.json`:20 method ranges/3530 instructions,63 anchors,13 dispatch entries,4 bindings,3 literals,36 payout pairs. `python3 -m tools.verify.pickup_currency_flow --check`;50 new tests. Coin1/2 stage/tech/live-balance bands/device/.86/truncation; player collider and drone event2 routes, store48 before sound-helper/pool, alias70011/12. Burst28 is8 objects, conditional69/165 currency, not denomination28. Raw `reverse-engineering/raw/pickup-currency/`; [report89](../docs/apk-analysis/89-pickup-dispatch-and-collected-currency.md). Provisional finite/stable fixtures, no full Unity movement or equipment-table approval.

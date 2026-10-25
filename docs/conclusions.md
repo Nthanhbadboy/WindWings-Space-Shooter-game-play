@@ -1,5 +1,7 @@
 # Kết luận — trạng thái và độ tin cậy
 
+[Report90](apk-analysis/90-wing-level-barrels-and-current-drone-base-fire.md): Level−1 lazy/cache/setter; wing1 numbers0..10=3,4,5,5,6,6,7,7,8,8,9; packet2/3 attempts, spacing divisor10. All12 modern Drone_Attack tách legacy:9 projectile, sweep4, laser7/9;44 static fields, abi25=2.5 và rate=base/(2.5*points); count từng barrel/không re-gate giữa loop. Drone7 expired tick có AttackLaser nhưng Check chặn damage;9 return. BaseDamages12 và .16×level/rank/abi21=2.5 được nối raw.92 tests mới/full592 PASS. Scope wing1 không all24; ctor turnRate3=8 là SerializeField default, không mọi prefab. ACK88/89 đã nhận;90 chờ peer.
+
 ## Report89 — pickup đã nối tới số xu thật
 
 [Report89](apk-analysis/89-pickup-dispatch-and-collected-currency.md): player collider và Droid_Movement1 event2→Physics→Coin1/2→GP_Datas.coinCount→event48→sound-helper→pool. 20 ranges/3530 instructions/63 anchors,13 dispatch rows,4 bindings,3 literals. Strict balance thresholds5500/4300/3300/2500×techfactor,stage/device/.86 rồi trunc; delta0 vẫn event48. Burst28 conditional stage1=69/stage41=165 nếu thu đủ từbalance0; pickup order có thể đổi tổng khi qua threshold.50 tests mới; không đồng nhất gameplay ledger với wallet hay fixtures với Unity runtime. GetStatValue2 formula đã đọc, không dựng bảng thiết bị còn chưa trích trong batch này. Peer ACK87, chưa ACK88/89; tiếp wing-cannon/drone combat.
