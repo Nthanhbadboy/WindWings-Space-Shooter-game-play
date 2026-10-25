@@ -475,7 +475,7 @@ nhánh bên kia chạy được mà không phải hỏi lại.
 python3 tools/verify-claims.py --only J     # 10/10 claim nhóm J (nhịp + event)
 python3 tools/verify-claims.py --only K     # 6/6 claim nhóm K (tên entry + bảng chuyển state)
 python3 tools/verify-claims.py --only R     # 6/6 claim nhóm R (timeline theo giây)
-python3 tools/verify-claims.py              # toàn bộ: 133 PASS · 0 FAIL · 2 SKIP
+python3 tools/verify-claims.py              # toàn bộ: 134 PASS · 0 FAIL · 2 SKIP
 ```
 
 Nguồn: `reverse-engineering/raw/animation-audit/event-receivers.json.gz` (795 event) ·

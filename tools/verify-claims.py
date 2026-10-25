@@ -1644,9 +1644,22 @@ claim("N2", DATA_SYNC, "**797 instance · 117 lớp · 140.797 node · 5.711 nú
       (797, 117, 140797, 5711), ui_index_stats,
       "manifest UI: đếm lại trên file, không chép báo cáo")
 
-claim("N3", UI_DOC, "**11 lớp = 4 tên lớp lồng + 7 không có instance trong dump.**", (11, 4, 7),
+def ui_class_overlap():
+    """(lớp _index, lớp screens.csv, chung, chỉ screens, chỉ _index)."""
+    idx = {r.get("class") for r in (_csv_rows(UI_INDEX) or [])}
+    scr = {r.get("class") for r in (_csv_rows("docs/spec/screens.csv") or [])}
+    if not idx or not scr:
+        return None
+    return (len(idx), len(scr), len(idx & scr), len(scr - idx), len(idx - scr))
+
+
+claim("N3", UI_DOC, "**11 lớp (chỉ có trong `screens.csv`) = 4 tên lớp lồng + 7 không có instance trong dump.**", (11, 4, 7),
       ui_class_gap,
-      "giải thích 125 vs 114: cùng một tập, khác cách đặt tên + 7 màn không dump")
+      "giải thích 125 vs 117: cùng một tập, khác cách đặt tên + 7 màn không dump")
+
+claim("N5", UI_DOC, "**`screens.csv` 125 · `_index.csv` 117 · chung 114**",
+      (117, 125, 114, 11, 3), ui_class_overlap,
+      "hai tập KHÔNG lồng nhau: 3 lớp tutorial chỉ có trong _index (khác bản cũ nói _index ⊂ screens)")
 
 # ── P. kiểm lại toàn bộ: quy mô tài liệu + dữ liệu đã có ────────────────
 # Nhóm này trả lời "thiếu chỗ nào" bằng cách đếm *cái đang có*, để không ai

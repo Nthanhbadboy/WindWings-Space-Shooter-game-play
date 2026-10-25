@@ -464,35 +464,45 @@ Nguồn: field `popup*` của `Board_Arena`, `Board_PVP`, `Board_BattlePassPro`,
 
 ## 9. Manifest chi tiết từ `_index.csv` (kéo 24/10)
 
-Nguồn mới: `reverse-engineering/raw/ui/_index.csv` — manifest của **733 instance UI** đã dump (mỗi
-dòng: `class, root_path_id, nodes, text_nodes, buttons, bytes, file`). Đây là **bản đồ độ sâu** của
-từng màn, thứ mà `screens.csv` không có.
+Nguồn: `reverse-engineering/raw/ui/_index.csv` (snapshot `9aed767b1`) — manifest của **797 instance UI**
+đã dump (mỗi dòng: `class, root_path_id, nodes, text_nodes, buttons, bytes, file`). Đây là **bản đồ
+độ sâu** của từng màn, thứ mà `screens.csv` không có. Số cũ (`733 · 114 · 103.227 · 5.174`) là của
+`019e704d1`, đã thay — claim **N2**.
 
 | Số đo | Giá trị |
 |---|---:|
-| instance UI | **733** |
-| lớp phân biệt | **114** |
-| tổng node | **103.227** (trung vị **25**/màn, max **6.000**) |
-| tổng **button** | **5.174** (trung vị **2**/màn, max **341**) |
-| tổng text node | **12.910** (trung vị **3**) |
+| instance UI | **797** |
+| lớp phân biệt | **117** |
+| tổng node | **140.797** (trung vị **26**/màn, max **6.000**) |
+| tổng **button** | **5.711** (trung vị **2**/màn, max **353**) |
+| tổng text node | **17.066** (trung vị **3**, max **848**) |
 
-Ba màn nặng nhất theo số nút: **`Board_Maps` 341** · **`Board_Shop` 170** · **`Board_PVP` 161**.
-Instance nhiều nhất: **`Popup_Notices` 440** (một lớp, 440 biến thể) · `Tab_BattlePass` 29 ·
-`Popup_BuyMoreGems` 20.
+Ba màn nặng nhất theo số nút: **`Board_Maps` 353** · **`Board_Shop` 190** · **`Board_PVP` 180**.
+Instance nhiều nhất: **`Popup_Notices` 499** (một lớp, 499 biến thể) · `Tab_BattlePass` 30 ·
+`Popup_BuyMoreGems` 20 · `Tab_Boss` 17.
 
-### 9.1 Vì sao `_index.csv` có 114 lớp còn `screens.csv` có 125
+### 9.1 Vì sao `_index.csv` có 117 lớp còn `screens.csv` có 125
 
-Giao của hai tập = **114** (đúng bằng `_index`), tức `_index ⊂ screens.csv`. 11 lớp còn lại chia
-làm hai nhóm:
+**`screens.csv` 125 · `_index.csv` 117 · chung 114** ⇒ **11** lớp chỉ có trong `screens.csv` (không có
+bố cục) và **3** lớp chỉ có trong `_index.csv`:
+
+| lớp chỉ có trong `_index` | instance | node | đọc là |
+|---|---:|---:|---|
+| `GP_Tutorials` | 1 | 126 | màn tutorial (khớp `SCRIPTS.md` §0.5: tutorial **5 bước**) |
+| `Tut_Settings` | 1 | 64 | tutorial cài đặt |
+| `Tut_Settings1` | 2 | 44 | tutorial cài đặt, biến thể 2 |
+
+⇒ 3 lớp này **không nằm** trong `screens.csv` vì `screens.csv` lập từ `Board_*`/`Popup_*`/`Tab_*` của
+dump cũ, còn tutorial chỉ có trong dump mới. 11 lớp còn lại chia làm hai nhóm:
 
 | nhóm | lớp | đọc là |
 |---|---|---|
 | **tên lớp lồng** (4) | `Board_Arena.ArenaRewards` · `Board_BattlePassPro.BattlePassMission` · `Board_EventSeasonPass.EventRewards` · `Board_Reborn.SortPlayerLevelStruct` | cùng một màn, khác cách đặt tên ⇒ **không mất gì** |
 | **không có instance trong dump** (7) | `Board_Settings` · `Board_YourTeam` · `Board_Droids` · `Cell_Select` · `Popup_Confirm` · `Popup_Notice` · `Popup_Redeem` | hoặc sinh lúc chạy, hoặc scene chưa được dump ⇒ **chưa có bố cục** |
 
-**11 lớp = 4 tên lớp lồng + 7 không có instance trong dump.**
+**11 lớp (chỉ có trong `screens.csv`) = 4 tên lớp lồng + 7 không có instance trong dump.**
 
-⇒ Dùng **125** khi cần *danh sách màn*, dùng **733 / 114** khi cần *độ sâu bố cục*. Hai số **không
+⇒ Dùng **125** khi cần *danh sách màn*, dùng **797 / 117** khi cần *độ sâu bố cục*. Hai số **không
 mâu thuẫn**; đừng tráo cho nhau (đây đúng là lỗi "đếm hai tập rồi ghi một dòng" đã 5 lần trong repo).
 
 ---
