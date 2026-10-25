@@ -3084,6 +3084,8 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   formula + factor 5,4/min 9,6 ✓ — **khớp 100% cả 6 điểm đo được**. 5 điểm nhờ review: header
   authority/ambiguity/discrete-keys = proof gốc ở raw (bên peer); camera ownership + callback/sound
   gates **đã xác mức data**. ACK97/98 ✓ (comment `6402657559`); batch L3 **CI xanh toàn chuỗi**.
+- **Không phải**: rendered approval · 805 views ≠ 805 prefab độc lập · batch 12 core không nhận công
+  797. Tiếp: recipe → composition/playback, không thêm vòng inventory.
 
 ### 24.32 Report 99 — Animator programs + property probes (peer `4d0dc6906`→code `5c3ba250d`, CI `40230913183 SUCCESS`, **940 tests**)
 
@@ -3141,5 +3143,39 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
 - **L3 CHƯA render-complete** (peer ghi rõ): CFG là over-approximation, chưa transition
   scheduler/runtime delegate/particles/shaders/composition; 5 header-only + 52 default-mesh
   giữ nguyên. Bước tiếp: composition/playback thực. ACK100 qua PR12.
-- **Không phải**: rendered approval · 805 views ≠ 805 prefab độc lập · batch 12 core không nhận công
-  797. Tiếp: recipe → composition/playback, không thêm vòng inventory.
+
+### 24.34 Report 101 — camera → safe-area → UI anchors/renderer → recipe (peer `91a0ad6df`→code `b18e783a7`, CI `40236171639 SUCCESS`, **984 tests**)
+
+- **Quét toàn APK 125.453 MonoBehaviour headers**: **584 TuPro.UIObjectAnchors + 1 ObjectScaler**
+  (= 585 typed instances); **1 header chưa phân loại giữ nguyên** (`resources.assets:580792` —
+  thiếu `unity default resources`, không coi là chắc chắn không có target class); typed read
+  errors 0. Bounded context **2.526 objects · 9.161 edges resolved / 660 null · 0 unresolved**;
+  parent poses đủ 585 targets; 0 pose errors; 0 unmodeled affine bridges.
+- **Camera**: 6 camera nối đúng **6 native CameraScaler writer bindings**; 4 MainCamera-tag
+  candidates thuộc scene khác nhau (không phải 4 camera đồng thời); **576 anchors thiếu
+  serialized uiCamera / 8 explicit** — không tự chọn Camera.main từ danh sách global. Native
+  Start gán Camera.main qua `op_Implicit`; **gọi ObjectAnchor trực tiếp KHÔNG tự chạy Start**
+  (guard playOnStart). 461 playOnStart=true / 55 fixed-max (flags có thể runtime đổi).
+- **Semantics lấy từ native**: enum None0…Right9; GetRootAnchor jump bytes `00090f03070d0a10`;
+  roots ±5,4/±9,6 đọc literal + kiểm bằng execution. General path ghi world rồi restore local.z;
+  Left/Right chỉ sửa world-X, **không restore local.z**. Fixed-max: min(UI half-height,
+  clampCamSize default **12.420000076293945** — static mutable, CLI hỗ trợ override finite) +
+  aspect clamp [0,43478259444236755; 0,75]. Top/bottom dùng SafeArea của Camera.main; cache chỉ
+  recompute khi top/bottom có 0.
+- **Alert (level2)**: ObjectScaler **6686 → SpriteRenderer 5105**, cùng owner **GO110 `Alert`**
+  (+ Animator **4647** — metadata-only, KHÔNG có attachment trong bank animator-programs); H14
+  full/clamp: height **24.84000015258789**; drawMode1/width 10,8; sprite `sharedassets2.assets:114`
+  · material `globalgamemanagers.assets:2` — size/identity chain, KHÔNG phải render proof.
+  Join bank100: **92 call links / 85 anchors** (không phải complete census); Pause:
+  callsite 0x12cb150→597593 (top) · 0x12cb160→616420 (bottom).
+- **Probe synthetic** 1080×2400, safeRect [0,96,1080,2208] → half-height
+  **12.000000953674316**; Pause top 597593 worldY 7,9→**9,34** (model = native); H14 → 11,18
+  (raw, không gán cho máy thật). Unicorn chạy source bodies NHƯNG metadata/engine stubs + dùng
+  chung float64 affine bridge ⇒ **không phải Unity transform/render proof**.
+- Kéo về: `datas/l3_layout.json.gz`. **Đối chéo độc lập (lần 40): counts khớp 13/13**
+  (2.526 · 9.161+660 · 585=584+1 · 6 cameras · 4 candidates · 576+8 · 20+4 native checks ·
+  0 pose · 0 read · 1 header error đúng 580792) + **461 playOnStart / 55 fixed / 85 anchors-92
+  links đếm lại từ instances** ✓ · chuỗi Alert 6686→5105/4647 + Pause 597593/616420/690342 +
+  callsites ✓ (sprite/material lưu tách field file+path_id). **L3 CHƯA hoàn tất** (peer): tiếp
+  geometry/material/font + particle/shader/composition + engine transition/blending. ACK101
+  qua PR12.

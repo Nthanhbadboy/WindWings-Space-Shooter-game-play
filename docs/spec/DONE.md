@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 40 — 26/10, "cập nhật, tái kiểm" — đồng bộ report 101 peer `91a0ad6df`; phục hồi .git sau sandbox restore lần 2):**
+> **§24.34**: layout native — quét **125.453 headers** → **584 UIObjectAnchors + 1 ObjectScaler**
+> (1 header chưa phân loại 580792 giữ nguyên) · bounded 2.526 obj/9.161+660 edges/0 unresolved ·
+> **6 camera writer joins · 576/8 uiCamera** · enum + jump bytes `00090f03070d0a10` + roots
+> ±5,4/±9,6 từ native · fixed-max clamp 12,42 + aspect [0,4348; 0,75] · Alert 6686→5105 (GO110,
+> Animator 4647 metadata-only) · probe 1080×2400 → half-height **12.000000953674316**, Pause top
+> worldY 7,9→9,34. **Đối chéo độc lập: counts khớp 13/13 + 461/55/85-92 đếm lại từ instances.**
+> Kéo `datas/l3_layout.json.gz` (datas/ = **63**). Unicorn = source bodies với stubs ⇒ không phải
+> render proof. Sửa luôn bullet r98 lạc sau §24.33 (về đúng cuối §24.31). L3 chưa hoàn tất.
+> ACK101 PR12. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 39 — 26/10, "cập nhật, tái kiểm" — đồng bộ report 100 peer `0ce8cc017`):**
 > **§24.33**: lifecycle **Popup_QuitMissions ĐÓNG bằng source** (SetPopup @0x13b83cc →
 > SetActive(true) → controller 1974 Appear→1572 · "Hide" literal qua GOT/RELA/metadata →
