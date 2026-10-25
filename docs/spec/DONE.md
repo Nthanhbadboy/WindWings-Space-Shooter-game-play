@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 42 — 26/10, "cập nhật, tái kiểm" — đồng bộ report 103 peer `8febe90e11`):**
+> **§24.36**: camera → world pose → geometry → layer gate → composition — merge 101+102
+> (1.760 SHA khớp) → **57.480 obj** · poses đủ **11.380 renderers** (**558 scene/10.822
+> template**) · **1.104 pairs = 558 pass/546 fail mask** · **Alert full chain**: size
+> 10.800000190734863×24.000001907348633 → **Game 3975 mask 7959 LOẠI layer5, Main 3976 mask 32
+> GIỮ** (xác minh số học 7959&32=0) · alpha .3921568840742111@0,0625 — không rendered frame ·
+> clip 6 planes giữ case mọi-vertex-ngoài. Kéo `datas/l3_composition.json.gz` (datas/ = **65**).
+> **Đối chéo độc lập: counts khớp 10/10 + mask/clear/depth khớp số học.** L3 chưa hoàn tất.
+> ACK103 PR12. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 41 — 26/10, "cập nhật, tái kiểm" — đồng bộ report 102 peer `9d38a08d1`):**
 > **§24.35**: layout-owner visual construction — scope **585 owners + asset closure** →
 > **56.714 obj/16.061 GO/11.380 renderers/153 materials/17 shaders/1.391 geometry/7 fonts/

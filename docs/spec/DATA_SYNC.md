@@ -3209,3 +3209,34 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   skinning/TMP procedural; integer-list buffer redaction; glyph rect/atlas bounds + static
   fallback; source-qualified Alpha CRC binding; recipe scope coverage. **L3 CHƯA hoàn tất**:
   tiếp camera/composition/culling + actual geometry generation/engine execution. ACK102 qua PR12.
+
+### 24.36 Report 103 — camera → world pose → geometry → layer gate/clip → composition (peer `8febe90e11`→code `dddd75aed8`, CI `40240026886 SUCCESS`, **1043 tests**)
+
+- **Merge raw101+102** (không recovery mới): qualified file/pathID, kiểm **1.760 overlapping
+  bodies cùng raw SHA** + pointer edges không xung đột → **57.480 objects** trong merged graph.
+- **11.380 renderer world poses** dựng đủ từ typed Transform/RectTransform parent PPtrs (gồm
+  root local TRS — khác matrix layout-root frame r95); parent thiếu/cycle KHÔNG thay bằng
+  identity. Phân loại: **558 thuộc serialized scene level0–3 · 10.822 asset templates** (không
+  tự coi đã instantiate).
+- **6 camera** đầy đủ pose/projection/mask/clear/depth/display/target + writer bank101
+  (sharedassets0:79 vẫn là template). **1.104 same-scene pairs = 558 pass / 546 fail layer
+  mask** — chưa cộng footprint/alpha/shader, không gọi là visible; không tạo total draw-order
+  từ sortingLayerID; không coi camera khác scene là một live stack.
+- **Alert chain full**: 1080×2400 → half **12.000000953674316** → native ObjectScaler size
+  **10.800000190734863 × 24.000001907348633** → position-only zero-border sliced rect (border≠0/
+  tiled = not_generated, không dựng quad thay) → world z=1 → depth 11/21 ở Game 3975 (z=−10) /
+  Main 3976 (z=−20); footprint giao viewport ở cả hai NHƯNG **mask 7959 (Game) LOẠI layer5 ·
+  mask 32 (Main) GIỮ**; Main footprint ~full viewport
+  [0.000033378598385258584, 0, 1079.9999666214017, 2400]; alpha alert42@0,0625 =
+  **0.3921568840742111** (từ 102) — không apply trigger, không thành rendered frame.
+- Geometry/clip làm thật: affine inverse + uint32 layer test + ortho projection (+Z forward);
+  triangle clip **6 planes** giữ case mọi vertex ngoài mà triangle vẫn cắt màn hình; simple
+  sprite dùng decoded vertices; TMP/procedural/skinned/particle/line/trail + UV/live-atlas/
+  skinning/vertex shader/raster/occlusion/depth/blend CHƯA áp; float64 + non-rigid camera từ
+  chối; probe từ chối template/cross-scene khi thiếu explicit full override matrix.
+- Kéo về: `datas/l3_composition.json.gz`. **Đối chéo độc lập (lần 42): counts khớp 10/10**
+  (11.380 · 6 · 1.760 · 57.480 · 558+10.822 · 1.104 = 558+546) + **mask xác minh bằng số học**:
+  7959 & 32 = 0 (Game loại layer5) · 32 & 32 = 32 (Main giữ) · depth −1/0 + clearFlags 2/3 ✓.
+  Probe values (10.8×24.0 · alpha .3921 · footprint) sống ở CLI/raw bên peer, KHÔNG trong
+  contract. Recipe10 +8 template composition records. **L3 CHƯA hoàn tất**: tiếp actual
+  geometry/driver application + shader/particle/text/spine execution. ACK103 qua PR12.
