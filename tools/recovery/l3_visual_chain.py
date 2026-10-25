@@ -133,12 +133,24 @@ def main():
                     if not father.get('m_PathID'):break
                     tr=deref(tr,father)
     process_queue()
+    def safe_tree(value,location,redactions):
+        if isinstance(value,(bytes,bytearray)):
+            r=dict(location=location,bytes=len(value),sha256=sha(bytes(value)));redactions.append(r)
+            return dict(binary_buffer_omitted=True,bytes=r['bytes'],sha256=r['sha256'])
+        if isinstance(value,dict):return {k:safe_tree(v,location+'.'+str(k),redactions) for k,v in value.items()}
+        if isinstance(value,(list,tuple)):return [safe_tree(v,location+f'[{i}]',redactions) for i,v in enumerate(value)]
+        return value
     def chunks(rows,prefix,n=200):
         result=[]
         for start in range(0,len(rows),n):
             group=rows[start:start+n];b=''.join(json.dumps(r,ensure_ascii=True,separators=(',',':'))+'\n' for r in group).encode();p=out/f'{prefix}-{start//n:04d}.jsonl.gz';compressed=gzip.compress(b,mtime=0);assert len(compressed)<5_000_000,(p,len(compressed));p.write_bytes(compressed);result.append(dict(path=p.name,rows=len(group),sha256=sha(compressed)))
         return result
-    rows=[r for _,r in sorted(records.items())];assert all(rows)
+    rows=[]
+    for _,r in sorted(records.items()):
+        assert r is not None
+        redactions=[];r=safe_tree(r,'',redactions)
+        if redactions:r['binary_buffer_redactions']=redactions
+        rows.append(r)
     index=dict(schema=1,provisional=True,status='PINNED_SERIALIZED_VISUAL_CHAIN_NOT_RENDER_OR_RUNTIME',ui_classes=sorted(CORE_UI),xapk_sha256=XAPK_SHA,inputs=inputs,tool_sha256=sha(Path(__file__).read_bytes()),toolchain=dict(UnityPy=UnityPy.__version__),roots=roots,resource_roots=resource_rows,files=[dict(serialized_file=n,externals=[dict(path=e.path,type=e.type) for e in sf.externals]) for n,sf in files],objects=chunks(rows,'objects'),links=chunks(links,'links',2000),counts=dict(Counter(r['type'] for r in rows)),read_failures=[{k:r[k] for k in ('serialized_file','path_id','type','error')} for r in rows if r['status']=='failed'],header_only=[{k:r[k] for k in ('serialized_file','path_id','class_name','tree_error')} for r in rows if 'tree_error' in r],unresolved_link_count=sum(l['status']=='unresolved' for l in links))
     (out/'index.json').write_text(json.dumps(index,indent=2)+'\n');print(json.dumps(dict(objects=len(rows),links=len(links),counts=index['counts'],read_failures=len(index['read_failures']),header_only=len(index['header_only']),unresolved=index['unresolved_link_count'])))
 if __name__=='__main__':
