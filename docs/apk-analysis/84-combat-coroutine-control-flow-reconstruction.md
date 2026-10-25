@@ -284,7 +284,8 @@ stage/loadout/schedule cụ thể, không cần chúng để dịch các body đ
 - Models là executable **control reconstructions**, không đầy đủ Unity/IL2CPP;
   chỉ wait/frame events đánh dấu Unity suspension, helper events không phải yield
   gameplay. Float32 literals giữ bytes; test không chứng minh FPCR/lifecycle/collision.
-- Đã chạy **327 tests PASS**, datasvalidate và diffcheck PASS. CI receipt bổ sung sau push.
+- Đã chạy **327 tests PASS**, datasvalidate và diffcheck PASS. Code **58ef9809a**, Verify **40209405979 SUCCESS** (37s);
+  regenerate-map/pinned dependency/regression steps đều PASS.
 - Có25 tests mới: pair17/terminal frame, live denominator23/24 (kể cả0), post-attack
   delay7/9, wait-before-emission12, final wait10, particle-vs-projectile18,
   factory9 không caller, computed tables, iterator spill proof và bốn delegated behavior tests.
