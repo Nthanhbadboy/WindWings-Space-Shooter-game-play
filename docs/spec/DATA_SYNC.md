@@ -2284,9 +2284,9 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **149** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
-| **DOC** | **3** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
-| **CONST** | **37** | không mở file ⇒ **đo một lần** |
+| **RAW** | **159** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **DOC** | **2** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
+| **CONST** | **28** | không mở file ⇒ **đo một lần** |
 
 Claim **RB1** khoá đúng 4 số trên; **chạy lại `python3 tools/raw-audit.py` là biết ngay** nếu ai thêm
 một hằng số rồi gọi nó là bằng chứng. Danh sách 37 CONST nằm trong file — toàn bộ nhóm `A*` (phiên điện

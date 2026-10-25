@@ -172,9 +172,9 @@ Nhánh bạn đi tiếp 3 commit (`7c7c9f064 → 6ababbd31`). Mình kéo **đún
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **149** | hàm đo **mở file** raw ⇒ tái đo được |
-| **DOC** | **3** | chỉ đọc `docs/**` |
-| **CONST** | **37** | không mở file ⇒ \"đo một lần\" |
+| **RAW** | **159** | hàm đo **mở file** raw ⇒ tái đo được |
+| **DOC** | **2** | chỉ đọc `docs/**` |
+| **CONST** | **28** | không mở file ⇒ \"đo một lần\" |
 
 Claim **RB1** khoá 4 số đó, nên ai thêm một `lambda: <hằng số>` rồi gọi là bằng chứng thì sổ sẽ lệch ngay.
 Danh sách 37 CONST (A*, D*, E*, R*, W4/W5) nằm trong file, kèm luật: *số CONST không được dùng để bác

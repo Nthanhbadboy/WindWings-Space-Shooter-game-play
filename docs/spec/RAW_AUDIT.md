@@ -6,16 +6,16 @@
 
 ## 0. Tổng
 
-**RAW 149 · DOC 3 · CONST 37 · tổng 189**
+**RAW 159 · DOC 2 · CONST 28 · tổng 189**
 
 | loại | số claim | nghĩa |
 |---|---:|---|
-| **RAW** | **149** | hàm đo **mở file** trong `datas/` · `reverse-engineering/` · `docs/assets/` |
-| **DOC** | **3** | chỉ đọc `docs/**` — kiểm tính nhất quán tài liệu, **không** phải dữ liệu gốc |
-| **CONST** | **37** | **không mở file** — số đo một lần, không tái đo bằng máy |
+| **RAW** | **159** | hàm đo **mở file** trong `datas/` · `reverse-engineering/` · `docs/assets/` |
+| **DOC** | **2** | chỉ đọc `docs/**` — kiểm tính nhất quán tài liệu, **không** phải dữ liệu gốc |
+| **CONST** | **28** | **không mở file** — số đo một lần, không tái đo bằng máy |
 | **cộng** | **189** | |
 
-⇒ **149/189** claim tái đo được từ raw. **37** claim là hằng số (xem §2) — dùng để **tham khảo**, không dùng làm bằng chứng khi thiết kế.
+⇒ **159/189** claim tái đo được từ raw. **28** claim là hằng số (xem §2) — dùng để **tham khảo**, không dùng làm bằng chứng khi thiết kế.
 
 ## 1. Cách phân loại
 
@@ -34,21 +34,12 @@
 | **A1** | `SUMMARY_vi.md` | số file /statics đọc được trong thư mục phiên |
 | **A2** | `SUMMARY_vi.md` | — |
 | **A3** | `SUMMARY_vi.md` | — |
-| **A4** | `SUMMARY_vi.md` | — |
-| **A5** | `SUMMARY_vi.md` | — |
-| **A6** | `SUMMARY_vi.md` | — |
-| **A7** | `SUMMARY_vi.md` | — |
-| **A8** | `SUMMARY_vi.md` | — |
-| **A9** | `SUMMARY_vi.md` | — |
-| **A10** | `CROSSCHECK-static-vs-runtime.md` | số động đo được; số tĩnh 12 nằm trong APK, không có trong ảnh chụp này |
 | **B9** | `ANIMATION.md` | con số duy nhất trong ANIMATION.md không kiểm lại được offline |
 | **F4** | `ANIMATION.md` | Sprite chỉ kiểm được nếu export thêm typetree Sprite |
 | **D1** | `RamusBridge.cs` | route tồn tại trong bridge |
 | **D2** | `collect.sh` | collect.sh gọi endpoint ở mỗi mốc dump |
-| **D3** | `collect.sh` | gate đòi file chứa số đo playback |
 | **D4** | `build-bridge.sh` | 5 lần biên dịch; mục thứ 6 của ma trận là self-test chạy, không compile |
 | **D5** | `README.md` | — |
-| **E1** | `DIFFICULTY_MODES.md` | Stage_Datas.MaxModeIndex — số chế độ |
 | **E2** | `BALANCE.md` | — |
 | **E3** | `BALANCE.md` | — |
 | **E4** | `BALANCE.md` | — |
@@ -75,7 +66,6 @@
 |---|---|---|
 | **P1** | `COVERAGE_AUDIT.md` | quy mô tài liệu hiện có trong docs/spec |
 | **RD1** | `README.md` | mỗi dòng `N dòng · M bảng` trong bảng tài liệu README được đo lại từ file thật; lệch 1 dòng là FAIL |
-| **RB1** | `RAW_AUDIT.md` | sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập |
 
 ## 4. Luật dùng số
 

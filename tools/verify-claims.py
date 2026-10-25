@@ -3417,7 +3417,12 @@ def classify_claims():
     out = []
     for c in CLAIMS:
         src = _measure_source(c.measure)
-        if any(h in src for h in _RAW_HINTS):
+        # Nêu tên một file dữ liệu cụ thể (đuôi .json/.csv/.txt/.gz) cũng là đo từ file:
+        # nhiều hàm đo nhận đường dẫn qua tham số/thư mục, không chứa tiền tố "datas/".
+        named_file = re.search(
+            r"""[\'"]/?(?:[\w.\-]+/)*[\w.\-]+\.(?:json|csv|txt|gz|asm\.txt)[\'"]""", src
+        ) is not None
+        if named_file or any(h in src for h in _RAW_HINTS):
             kind = "RAW"
         elif "docs/" in src:
             kind = "DOC"
@@ -3569,8 +3574,8 @@ claim("GE2", "docs/spec/ASSET_TRIAGE.md",
 
 
 claim("RB1", "docs/spec/RAW_AUDIT.md",
-      "**RAW 149 · DOC 3 · CONST 37 · tổng 189**",
-      (149, 3, 37, 189), raw_audit_counts,
+      "**RAW 159 · DOC 2 · CONST 28 · tổng 189**",
+      (159, 2, 28, 189), raw_audit_counts,
       "sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. "
       "CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập")
 
