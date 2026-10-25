@@ -47,16 +47,40 @@ RULES = [
     # --- fx --------------------------------------------------------------
     (r"^(Circle_blue|Circle_mask|Circle_)", "fx", "R20 Circle_* = quầng sáng (ảnh 03 #1-6)", "A"),
     (r"^(Light|Gate|Ghost|Blink)", "fx", "R21 hiệu ứng hình học", "C"),
+    # --- drone / tàu ------------------------------------------------------
+    (r"^drone", "drones", "R24 drone*", "A"),
+    (r"^mini_ship", "ships", "R25 mini_ship*", "A"),
     # --- font ------------------------------------------------------------
     (r"^(Coda_|GooTest_)", "font", "R22 chữ cái của logo (ảnh 03 #9-12, #52-62)", "A"),
     # --- bộ phận ---------------------------------------------------------
     (r"^(Rock|Head|Foot|XVideo)", "items", "R23 bộ phận/mảnh rời", "C"),
 ]
 
+# Nhãn xem **bằng mắt** trên contact sheet: (số sheet, tile) -> (nhãn, luật, mức).
+# Chỉ ghi cái đã nhìn thấy; tile không chắc thì để trống cho vòng sau.
+EYE = {
+    7: {5: "fx", 6: "drones", 7: "ui", 8: "ships", 9: "ships", 10: "ui", 11: "ui", 12: "ui",
+        13: "items", 14: "items", 15: "ui", 16: "enemy", 17: "parts", 18: "parts", 19: "parts",
+        20: "parts", 21: "parts", 22: "parts", 23: "parts", 24: "parts", 25: "parts", 26: "parts",
+        27: "parts", 28: "enemy", 29: "parts", 30: "parts", 31: "parts", 32: "parts", 33: "bullet",
+        34: "bullet", 35: "bullet", 36: "bullet", 37: "parts", 38: "fx", 39: "parts", 40: "parts",
+        41: "parts", 42: "parts", 43: "bullet", 44: "parts", 45: "parts", 46: "parts", 47: "parts",
+        48: "parts", 49: "parts", 50: "parts", 51: "parts", 52: "enemy", 53: "parts", 54: "parts",
+        55: "bullet", 56: "ui", 57: "enemy", 58: "parts", 59: "parts", 60: "enemy", 61: "ui",
+        62: "ui", 63: "ui", 64: "parts"},
+}
+
 FAMILY = re.compile(r"_\d+$")
 
 
-def classify(name, atlas):
+def sheet_no(contact_sheet):
+    m = re.search(r"unclassified-(\d+)\.jpg", contact_sheet or "")
+    return int(m.group(1)) if m else 0
+
+
+def classify(name, atlas, eye=None, sheet=0):
+    if eye:
+        return eye, f"R30 xem contact sheet {sheet:02d}", "A"
     for pat, cat, rule, level in RULES:
         if re.search(pat, name):
             return cat, rule, level
@@ -81,7 +105,9 @@ def main():
             out.append(dict(r, proposed_category=r["category"], rule="(giữ nhãn gốc)",
                             confidence="A", bucket="", needs_eye=""))
             continue
-        cat, rule, level = classify(name, r.get("atlas") or "")
+        eye_cat = EYE.get(sheet_no(r["contact_sheet"]), {}).get(int(r["tile"]))
+        cat, rule, level = classify(name, r.get("atlas") or "", eye_cat,
+                                    sheet_no(r["contact_sheet"]))
         if cat:
             tally[level] += 1
         else:
