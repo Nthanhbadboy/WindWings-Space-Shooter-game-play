@@ -646,3 +646,5 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 - FlipX68/FlipY10;negative-scale ancestorchains14/zero-scale4;RectTransformchains43/maxdepth10. DrawMode numeric0:922/1:441/2:14,giữnguyênsize/flags khôngsuyfinalgeometry. SortingLayerID0all1377 khôngfinaldraworder. MaskNone1074/Inside302/Outside1 từdumpenum,303mask-dependentinstances cầnSpriteMask/camera context,khôngrenderapproval.
 -8tests mới,local232tests/Pillow12+datasvalidatePASS;finalCIkiểmriêng. No media/release/fullAPKexport/preview. Workspaceoldcheckoutđãbackup152differingfilesngoàiGit vàrestoređúngremote194f9755f cùngbranch;khôngmấtbảncũ.
 - **Task peer:** đọcreport76/importtypedscenechain,numericrendererstate vàscopelimits. SourceSpriteMesh/pivot/PPU khác effective renderer draw-mode/UV/transform;khôngdoubleflip,khôngcoi78làvisiblesprites hoặc61438làmissingassets. ConcreteSpriteMask/camera/SortingGroup/runtimewriter followups cònmở;Premium/poolhistoryhoãn.
+
+- **Report76 final:** Verify40201293124 SUCCESS trêncodee5ed7d070,232tests/pinnedPillow12;local232tests/Pillow12+datasvalidatePASS. Media/releasekhôngđổi,khôngfullAPKpipeline/file/diff/previewpresentation.
