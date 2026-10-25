@@ -1573,3 +1573,53 @@ Cập nhật cuối: 2026-10-23 01:00. Mọi mục dưới đây **đã đo**, k
 | **458** | số khẩu `Gun_Attack` **kể cả preview UI** | "458 khẩu trong trận" — **319** là thật |
 
 > Ba nhãn này là kết quả của 3 lần tôi bị dữ liệu mới sửa lại. Ghi ở đây để không lặp.
+
+---
+
+## 10. Kéo bản `019e704d1` — **1.339 file `scriptableobjects/`** (24/10)
+
+`git fetch` nhánh dữ liệu: **không có commit mới** so với lần trước (đỉnh vẫn `019e704d1`), nhưng
+lần này tôi kéo thêm một cây chưa từng lấy: `reverse-engineering/scriptableobjects/`.
+
+| Cây | File | Dung lượng | Lấy? |
+|---|---:|---:|---|
+| `reverse-engineering/scriptableobjects/` | **1.339** | **7,8 MB** | ✅ lấy |
+| `reverse-engineering/raw/ui/` | 53.318 | **142,7 MB** | ❌ **không** — vượt hạn mức snapshot, và cấu trúc UI đã có ở `UI.md` + `screens.csv` |
+
+`scriptableobjects/` gồm **một CSV phẳng cho mỗi lớp** (mọi instance, mọi field) + JSON từng asset:
+
+| Nhóm | Ví dụ | Giá trị |
+|---|---|---|
+| Dữ liệu spawn | `Call_Data.csv` · `Wave.csv` · `Spawner.csv` · `Call_Point.csv` | **tên field thật** của dữ liệu wave |
+| Nhân vật/boss | `Boss1_Director.csv` · 23 file `Boss*_AnimationEvents.csv` · `Enemy_*.csv` | field serialized của từng lớp |
+| Rig | `SkeletonAnimation.csv` · `SkeletonDataAsset.csv` | nối rig ↔ prefab |
+| Khác | `Gun_Attack.csv` · `Sub_Item.csv` · `language.LanguageAssets/` | súng, item, chuỗi ngôn ngữ |
+
+### 10.1 Cái nó **trả lời được ngay**: schema của spawner
+
+`Call_Data.csv` = **1.200 dòng · 23 field** — đúng bảng mà `datas/waves.json` được giải ra từ đó:
+
+```
+angle · color.rgba · editType · listBringItems · listIdEnemies · listPrefabEnemies ·
+maxValX · minValX · number · radius · rate · showGizmos · spawnType · speed · ySpawn · yStart
+```
+
+Hai điều đọc được:
+
+1. **không có field `delay`** — `rate` là **field thời gian duy nhất** của một spawner.
+2. `number` = **0 ở 1.200/1.200** dòng ⇒ trường "số lượng" **không được dùng**; số quân thật sự nằm ở
+   **độ dài `listPrefabEnemies`**.
+
+⇒ Thu hẹp câu `rate = 0` (blocker #1 của `DESIGN_READINESS.md`): khi chỉ có một field thời gian và
+`rate = 0` xuất hiện **295/1.200** spawner, thì khả năng cao `rate` là **giãn cách**, và `rate = 0`
+= **không giãn cách** (spawn cả loạt) — chứ không phải "không bao giờ spawn". Nhưng **chưa đóng**:
+vẫn có thể là "số quân/giây" với 0 = không spawn. Xem `DESIGN_READINESS.md` §3.
+
+### 10.2 Cái nó **không** trả lời
+
+- `Spawner.csv`: `dataScript` **null** trên mọi instance (đúng như `UNITY_RULES` C3) ⇒ dữ liệu spawn
+  không nằm trong prefab, phải đọc từ `Call_Data`/blob.
+- **Không có** `Animator` / `AnimatorController` (vẫn là T4 của `HANDOFF_ANIM_RAW.md`).
+- **Không có** `Boss1_AnimationEvents` trong `scriptableobjects/` (chỉ có asm của nó) ⇒ T2 vẫn nguyên.
+- 23 file `*_AnimationEvents.csv` chỉ có **field serialized**; field **delegate** không serialize nên
+  **không** xuất hiện ⇒ không giúp tìm "ai gán delegate".

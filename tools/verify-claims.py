@@ -27,6 +27,7 @@ nguồn (chưa fetch nhánh, clone nông) được báo riêng và không tính 
 from __future__ import annotations
 
 import argparse
+import csv
 import gzip
 import io
 import json
@@ -1399,6 +1400,81 @@ claim("L2", READY, "**125 màn hình**", 125, ui_screens,
 claim("L3", READY, "`Boss-37003/37005/37006/37008`",
       ("Boss-37003", "Boss-37005", "Boss-37006", "Boss-37008"), boss_script_missing,
       "4 prefab boss không có cả clip event lẫn Spine")
+
+# ── M. schema spawner kéo từ nhánh dữ liệu (24/10) ─────────────────────
+# `Call_Data.csv` là bảng phẳng mọi instance: nó cho *tên field thật* của dữ
+# liệu spawn, thứ mà `datas/waves.json` không nói ra.
+
+CALL_DATA = "reverse-engineering/scriptableobjects/Call_Data.csv"
+DATA_SYNC = "docs/spec/DATA_SYNC.md"
+
+
+def _call_data():
+    key = "csv:" + CALL_DATA
+    if key in _cache:
+        return _cache[key]
+    raw = ref_blob(CALL_DATA)
+    val = None
+    if raw:
+        try:
+            val = list(csv.DictReader(io.StringIO(raw.decode("utf-8", "replace"))))
+        except (UnicodeDecodeError, csv.Error):
+            val = None
+    _cache[key] = val
+    return val
+
+
+def _num(v):
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
+
+
+def call_data_schema():
+    """(số dòng, số field gốc, có field delay?) — `delay` phải KHÔNG có."""
+    rows = _call_data()
+    if not rows:
+        return None
+    base = [h for h in rows[0] if "[" not in h and not h.endswith((".m_FileID", ".m_PathID"))]
+    has_delay = any(k in h.lower() for h in base for k in ("delay", "wait", "interval"))
+    return (len(rows), len(base), has_delay)
+
+
+def call_data_rate0():
+    """(số spawner rate=0, list quân dài nhất của nhóm đó) trong Call_Data."""
+    rows = _call_data()
+    if not rows:
+        return None
+    zero = [r for r in rows if _num(r.get("rate")) == 0]
+
+    def n_enemies(r):
+        try:
+            return int(str(r.get("listPrefabEnemies", "")).strip("[]") or 0)
+        except ValueError:
+            return 0
+    return (len(zero), max((n_enemies(r) for r in zero), default=0))
+
+
+def waves_rate0_big():
+    """(spawner rate=0 có >1 quân, dài nhất) trong `datas/waves.json`."""
+    d = ref_json("datas/waves.json")
+    if d is None:
+        return None
+    big = [len(s.get("enemies") or [])
+           for w in d.get("waves", []) for s in (w.get("spawners") or [])
+           if _num(s.get("rate")) == 0 and len(s.get("enemies") or []) > 1]
+    return (len(big), max(big, default=0))
+
+
+claim("M1", DATA_SYNC, "**1.200 dòng · 23 field**", (1200, 23, False), call_data_schema,
+      "không có delay/wait/interval ⇒ rate là field thời gian duy nhất")
+
+claim("M2", READY, "| `rate = 0` (trong `Call_Data`) | **295** | 1 | **6** |", (295, 6),
+      call_data_rate0, "list quân ngắn ⇒ rate=0 không thể là 'never'")
+
+claim("M3", READY, "và 1.203 spawner `rate = 0` có **>1 quân**", (1203, 30),
+      waves_rate0_big, "có burst 30 quân ⇒ phải đọc là 'không giãn cách'")
 
 # ── chạy ───────────────────────────────────────────────────────────────
 

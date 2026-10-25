@@ -151,6 +151,11 @@ task kế là xref các lệnh gọi `Play`, **không** phải đọc parameter.
 Không phải việc animation, nhưng **cùng loại việc** (cần asm chưa export), và nó là **blocker #1**
 của `DESIGN_READINESS.md` §6.
 
+> **Cập nhật 24/10 — đã hẹp bằng dữ liệu kéo về:** `Call_Data.csv` (1.200 dòng, 23 field) **không
+> có** field `delay`/`wait`/`interval` nào ⇒ `rate` là **field thời gian duy nhất**; và `number = 0`
+> ở 1.200/1.200 dòng ⇒ số quân = **độ dài `listPrefabEnemies`**. Xem `DESIGN_READINESS.md` §3.1.
+> Task này vì thế **không còn chặn thiết kế**, chỉ còn để lên mức A.
+
 **Giả định:** `rate` là **khoảng cách giây giữa hai lần spawn** ⇒ `rate = 0` = spawn **tức thời cả
 loạt** (không phải mỗi frame).
 

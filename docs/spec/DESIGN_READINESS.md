@@ -61,6 +61,30 @@ Câu hỏi thật vẫn mở và **nó chặn A7**: `rate = 0` nghĩa là **spaw
 hình**? 2.371/11.095 spawner (21 %) rơi vào trường hợp này, nên mọi phép "địch/giây" đều có sai số
 21 % cho tới khi phân xử.
 
+### 3.1 Kéo thêm dữ liệu (24/10) — câu này **hẹp lại**, chưa đóng
+
+Kéo `reverse-engineering/scriptableobjects/` (1.339 file) thì `Call_Data.csv` cho **schema thật**
+của spawner: **1.200 dòng · 23 field**, và hai điều đo được:
+
+| Điều | Bằng chứng | Hệ quả |
+|---|---|---|
+| **không có field `delay`** | 23 field gốc, không field nào tên `delay`/`wait`/`interval` | `rate` là **field thời gian duy nhất** ⇒ nó phải là **giãn cách** |
+| `number` **vô dụng** | `number = 0` ở **1.200/1.200** dòng | số quân = **độ dài `listPrefabEnemies`**, không phải `number` |
+
+| Nhóm | Số spawner | list quân trung vị | dài nhất |
+|---|---:|---:|---:|
+| `rate = 0` (trong `Call_Data`) | **295** | 1 | **6** |
+| `rate > 0` | 898 | 1 | 16 |
+| `rate = 0` (trong `waves.json`, đã nhân `copies`) | 2.371 | 2 | **30** |
+
+⇒ **Nghiêng mạnh về "không giãn cách ⇒ spawn cả loạt"** (mức **B**): nếu `rate` là "số quân/giây"
+thì 295 spawner `rate = 0` sẽ **không bao giờ** spawn, và 1.203 spawner `rate = 0` có **>1 quân**
+(dài nhất **30**) sẽ là quân chết — vô lý trong một game đã phát hành.
+
+**Không chặn thiết kế nữa:** mật độ tính từ **độ dài danh sách quân** (đã có), không từ `rate`. Xấu
+nhất 30 quân cùng lúc; nhịp còn lại là do `rate` của **các spawner khác**. Vẫn cần asm để lên **A** —
+việc đó vẫn nằm ở T5 của `HANDOFF_ANIM_RAW.md`.
+
 ---
 
 ## 4. Chỗ **thật sự** sẽ làm đau khi thiết kế — không phải mấy con số trên
@@ -125,7 +149,7 @@ xong:
 
 | | Việc | Vì sao trước | Giao ai |
 |---:|---|---|---|
-| 1 | **Chốt `rate = 0`** — spawn tức thời hay mỗi frame | 21 % spawner bị ảnh hưởng ⇒ mật độ địch, hiệu năng, độ khó | **nhánh dữ liệu** (T5, cần asm lớp spawn) |
+| 1 | **Chốt `rate = 0`** — spawn cả loạt hay mỗi frame | đã hẹp còn **B** (§3.1); mật độ **không còn phụ thuộc** nó | nhánh dữ liệu (T5, cần asm) — **không chặn** |
 | 2 | **A6 stage ↔ wave** | quyết định **số màn**; hiện chỉ 7/250 map chắc chắn | offline — tự làm được |
 | 3 | **Prototype feel 30 giây** (hit flash 0,05 s · alpha 0,5 · rung · âm) | thứ duy nhất vẫn phải **quyết**, không phải **đo** | designer |
 
@@ -145,14 +169,14 @@ không phải chỗ còn thiếu số.
 | Điều khiển & va chạm | `ENEMY_BEHAVIOUR.md` (biên 20×25, radius 15 unit) | ✅ đủ | có giữ "di chuyển tự động" hay không |
 | Enemy: 9 component, đường bay | `ENEMY_BEHAVIOUR.md` · `BOSSES.md` §5 | ✅ đủ | 8 họ enemy nào giữ, nào bỏ |
 | Boss: pha, bộ phận, HP | `BOSSES.md` · `ANIMATION_SCRIPT.md` | ✅ đủ | 3 đòn lặp + chuyển pha — giữ nguyên sơ đồ, đổi art |
-| Wave & mật độ | `ENCOUNTERS.md` · `datas/waves.json` | ✅ đủ (trừ `rate = 0`) | **đợi T5** hoặc tự định nghĩa |
+| Wave & mật độ | `ENCOUNTERS.md` · `datas/waves.json` · `Call_Data.csv` | ✅ **đủ** — schema 23 field, số quân = độ dài list | nhịp `rate` (B) hoặc tự định nghĩa |
 | Độ khó 3 chế độ | `DIFFICULTY_MODES.md` (không nhân số quân) | ✅ đủ | ngưỡng % riêng |
 | Kinh tế, sao, IAP | `ECONOMY.md` · `MISSIONS_STARS.md` | ✅ đủ | giá theo bản mới |
 | UI 125 màn hình | `UI.md` · `screens.csv` | ✅ đủ cấu trúc | art + 9-slice mới |
 | Animation | `ANIMATION_SCRIPT.md` | ✅ script · 🟡 điều kiện enemy | art + rig mới |
 | Âm thanh | `ASSETS.md` §audio (69 file) | 🟡 danh mục | nhạc/âm mới |
 
-**9/10 mục viết được ngay.** Mục duy nhất còn treo là **mật độ** (một nửa của `rate = 0`) — và nó
+**10/10 mục viết được ngay.** Mục duy nhất còn treo là **mật độ** (một nửa của `rate = 0`) — và nó
 treo **cách diễn giải**, không treo **số lượng**: 22.461 lượt spawn trên 282 wave đã có, nên vẫn
 dựng được wave với mật độ tự chọn rồi chỉnh sau.
 
@@ -162,4 +186,4 @@ dựng được wave với mật độ tự chọn rồi chỉnh sau.
 |---|---:|---|
 | **35/39** | prefab boss có script animation đọc được | 4 prefab còn lại **không có cả clip event lẫn Spine** |
 | **125** | màn hình UI có cấu trúc | mỗi màn có điều kiện mở + dữ liệu cần load |
-| **9/10** | mục design doc viết được ngay | 1 mục treo ở cách diễn giải `rate` |
+| **10/10** | mục design doc viết được ngay | sau khi `Call_Data` cho schema spawner |
