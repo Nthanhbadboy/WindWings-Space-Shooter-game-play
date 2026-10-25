@@ -36,7 +36,7 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 | 6 | **Wave / spawn** | ✅ **đủ** | **282 wave · 11.089 dòng cấu hình · 23.757 spawner · 22.451 entry** (`H2`, `I3`, `M3`, `AQ7`) | `rate = 0` **chưa** kết luận "spawn cả loạt" — xem §2.4 |
 | 7 | **Độ khó 3 chế độ** | ✅ **đủ** | `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · không nhân số quân | ngưỡng % riêng = tự chọn |
 | 8 | **Kinh tế / rơi đồ** | ✅ **đủ** | 3 tầng rơi: **702** vật đặt sẵn (**676 coin / 26 item**) · **246/2.094** slot mang item · **6** loại (`AE1`–`AE3`) · chuỗi nổ vàng **đã nối (report 88)**: DropGold `lost > iPlus×10` → event6 → budget **28 → 8 object** (chia 5) → pool · **tiền nhặt ĐÃ CÓ CÔNG THỨC (report 89)**: Coin1 `A=min(1,5g;16)+2,5` · Coin2 `B=min(3g;23)+12`, 4 band balance ×L(tech) ×device ×.86(stage≤40); Burst 8 item = **69/165 xu** (stage 1/41) | trọng số chọn giữa 6 loại — **tự chọn** |
-| 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu**; `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) — nhưng damage **có** lookup theo tàu: `GetMainCannonDamage(playerIndex)` đọc **mảng static float** `0x78` theo `playerIndex` (§2.2); `Player_Talent` **23 method** · **13 drone** | 6 mảng damage/rate/cost **đã decode** (§2.2); **bind combat ĐÃ SỬA (report 81/82)**: impl N → index N−1 (tàu 10001→2 · 10003→0; id−10001 chỉ đúng save/load) ⇒ TTK **ước lượng** theo từng tàu. Còn: **HP riêng của tàu** (cấu trúc = **static `StartHealth`**, writer chưa đọc — §2.2, mức D); DPS **runtime** (cần health/shield gates) — luật nhịp đã đủ **24/24** impl (report 83); **luật bắn nền drone + wing-cannon nhịp/barrels**: peer đang recover (raw `Drone_Attack6–9`/`Drone_Get_Datas` + `wing_drone.py` — `39b377383`, chưa report) |
+| 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu**; `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) — nhưng damage **có** lookup theo tàu: `GetMainCannonDamage(playerIndex)` đọc **mảng static float** `0x78` theo `playerIndex` (§2.2); `Player_Talent` **23 method** · **13 drone** | 6 mảng damage/rate/cost **đã decode** (§2.2); **bind combat ĐÃ SỬA (report 81/82)**: impl N → index N−1 (tàu 10001→2 · 10003→0; id−10001 chỉ đúng save/load) ⇒ TTK **ước lượng** theo từng tàu. **HP max tàu ĐÃ CÓ CÔNG THỨC (report 91)**: `GetStartHp` = **2500 × (1 + 0,18×TechStatPoints(0) + 1×ability7)** — công thức chung, không bảng theo tàu (§2.2); luật bắn **12 impl drone + wing barrels theo Level ĐÃ CÓ (report 90)** (`DATA_SYNC` §24.23). Còn: DPS **runtime** (cần health/shield gates); **23 wing impl** còn lại · mapping drone prefab→sourceID · `turnRate3` serialized · DPS closure (scope report 90) |
 | 10 | **UI** | ✅ **cấu trúc** · ✅ **luật thị giác** / ❌ **asset** | **797 màn · 150.131 node · 5.831 nút** (`N2`, `P6`); **55.584** layout file; khung hình **0,4813** · accent **≤10 %** · tương phản **0,45–0,80** (`VISUAL_DESIGN.md`, **AN1**, **AN2**) | asset gốc: **vẽ mới**; luật thì **đã có số** |
 | 11 | **Âm thanh** | 🟡 **có dữ liệu + 15 luật tĩnh** | **69 clip / 571,5 s** (`audio-index.csv`) · `datas/audio_rules.json`: **15 rules** (mute/volume/pause/oneshot/music…) · registry **92** id · enum **118** (report 67; `DATA_SYNC` §21.1) | **đối chiếu nghe + trigger lúc chơi** — tĩnh hiện PROVISIONAL, cần 1 lần chạy để nâng mức |
 | 12 | **Save / load + live-ops** | 🟡 **một phần** | key đã đọc: **`StarCount`** · **`StarStageMaster{stageIndex}_{modeIndex}`** (default 0) qua `PlayerPreferences.SetInt → PlayerPrefs.SetInt`; model `savedStars/result` (report 57); **170 IAP** | **schema đầy đủ** (mọi khoá/kiểu/migrate) + **chưa** chứng minh flush đĩa — xem §2.3 |
@@ -123,13 +123,14 @@ từ hex trong `ia-resolved.json` — **theo kiểu của field**, không
   24 wing, report 82 §1); source tàu: impl1→**10003** · impl2→10002 · impl3→**10001** · impl4–24→
   10004–10024 ⇒ tàu **10001 → index 2** (proxy **12.864**), tàu **10003 → index 0** (proxy **21.600**).
   Hợp đồng: `datas/combat_chain_contract.json.gz` + `datas/combat_argument_audit.json` (peer).
-- **Vẫn chưa:** (1) **HP riêng của tàu** — giữ **D**, nhưng **cấu trúc đã xác định (tái kiểm 25/10,
-  `dump.cs`):** `Player_Health` giữ HP bằng **2 static float** `StartHealth`/`CurrentHealth`
-  (`0x0/0x4`) + instance `Armor 0x20` · `amountAutoGainHpByTech/Device 0x24/0x28` ·
-  `reduceDamageByDevice 0x58` · `TakeDamage(Damager, ignoreInvincible, dieCallback)` — **không có
-  bảng HP theo tàu** trong 6 mảng `Player_Get_Datas` (raw mới peer `39b377383` cũng không) ⇒ giá trị
-  do **runtime ghi**; writer (`Start`/`ResetStaticVariables`/`OnChangeDataDevice(int)`) **chưa đọc**;
-  tàu 1 đã đo runtime **2500** (phiên phone 23/10).
+- **(1) HP riêng của tàu — ĐÃ ĐỌC XONG WRITER (report 91, `datas/player_hp_board_flow.json`):**
+  **KHÔNG có bảng theo tàu.** Max HP = `GetStartHp 14e311c`: **2500 × (1 + 0,18×TechStatPoints(0) +
+  1×ability7)** — cùng input ⇒ cùng max; cctor default **2000**; writers: `ResetStaticVariables`
+  (Current=Start) · **event36** (payload==7 → chỉ ghi StartHealth) · **event64** (playMode1 ∧
+  waveIndex≠0 → **giữ tỉ lệ** Current/Start; else reset — điều kiện là waveIndex, không phải tàu) ·
+  `OnChangeDataDevice` **không** ghi max (chỉ band giảm-damage 1000–1999 / heal 5000–5999).
+  Auto-gain 5 s, clamp Start, không nhân deltaTime. Tàu 1 runtime **2500** = 0 point/0 abi7 —
+  **không universal**; cách `TakeDamage` áp `reduceDamageByDevice` là consumer riêng, chưa đọc.
   (2) **rate player ĐÃ ĐÀO (25/10, report 79 peer):** tàu 1 dùng `StartMainCannonRate` làm **interval**
   đặt hạn bắn tiếp — không phải shot/giây. ⚠ **Đính chính:** report **53** (từng dùng để đóng mục này)
   là **delay spawn** `Call_Data.rate` — **khác consumer/field**; tên `rate` giống nhau không nối được
@@ -148,7 +149,7 @@ từ hex trong `ia-resolved.json` — **theo kiểu của field**, không
 - Cái **đo được** và nên giữ: mỗi wave có **1 `StartPoint` + 1 `EndPoint`** (tổng **608** dòng mốc) và
   danh sách enemy nằm trong `listPrefabEnemies` — đó là **cấu trúc**, không phải nhịp.
 
-### 2.2c Board_* — raw **đã có**, field **đã bind**, ý nghĩa **chưa chốt**
+### 2.2c Board_* — `Board_Drones` **ĐÃ CÓ CONSUMER (report 91)**; `Board_Players` vẫn **B**
 
 `ia-resolved.json` (bản `3ac2faa45`) có thêm **5 nhóm `Board_*`** ⇒ tổng **17 nhóm · 623 record** (claim **IA7**).
 Hai mảng của `Board_Players` đã bind được **tên field** bằng asm (store ngay sau `InitializeArray`):
@@ -157,20 +158,17 @@ Hai mảng của `Board_Players` đã bind được **tên field** bằng asm (s
 |---|---|---|---|
 | `Board_Players.allBasicAtk` (`0x10`) | **float[24]** | `4640, 5120, 5040, 6160, 8896, 6880, 8889, 5680, 5500, 9100, 6750, 7589, 6000, 7588, 9100, 10050, …` | **chưa chốt**: “atk” theo tên, nhưng chưa thấy consumer ⇒ **B** |
 | `Board_Players.allDeltaAtk` (`0x18`) | **float[24]** | **0,168** × 24 | **chưa chốt**: nếu là “delta mỗi rank” thì damage(rank) = basic + 0,168·rank — **giả thuyết**, chưa kiểm |
-| `Board_Drones.cctor[0]` | float[12] | `500, 600, 800, 1250, 1500, 1800, 2300, 2800, 2535, 2500, 1251, 2680` | 12 mốc drone — giá hay HP: **chưa chốt** |
-| `Board_Drones.cctor[1]` | float[12] | **0,16** × 12 | hệ số — chưa rõ nhân vào đâu |
-| `Board_Drones.ctor` | float[24] | `1,0 ×3 · 2,2 · 1,0 · 1,875 · …` | hệ số theo index — chưa rõ |
+| `Board_Drones.allBasicAtk` (static10) | float[12] | `500, 600, 800, 1250, 1500, 1800, 2300, 2800, 2535, 2500, 1251, 2680` | ✅ **UI power** — `GetPlayerPower 1263860`: round-half-even(basic[i] × (1 + delta[i] × GetDroneLevel)) → `textDispDamage` (report 91 §5b) |
+| `Board_Drones.allDeltaAtk` (static18) | float[12] | **0,16** × 12 | ✅ **hệ số level** của công thức UI power trên |
+| `Board_Drones.ctor` (`playerPriceMultipleA` @238) | float[24] | `1,0 ×3 · 2,2 · 1,0 · 1,875 · …` | ✅ **giá nâng cấp UI** — `SetUpgradeCost`, index = cellIndex − 20001 (report 91 §5a) |
 | `Board_Endgame.ctor` | **int[10]** | `900, 890, 880, 870, 860, 850, 840, 830, 820, 810` | giảm đều **10** mỗi bậc — dải ngưỡng, chưa rõ dùng cho gì |
 | `Board_Players.ctor` | float[24] | **1,0** × 24 | baseline |
 
-> **Đừng suy ý nghĩa từ tên field.** `allBasicAtk` chưa có consumer đã đọc ⇒ chỉ ghi “raw + tên field”,
-> mức **B**. Muốn lên **A** phải đọc chỗ dùng (offset `0x10/0x18` của class static).
->
-> **Tái kiểm 25/10:** `Board_Drones` **đang được peer đào** — raw
-> `wing-drone/native/Drone_Get_Datas.json` (commit `39b377383`, chưa report) liệt kê đúng nhóm
-> consumer: `GetBaseDamage(droneIndex, rank)` · `GetDroneSkillDamage` · `GetDroneAbilityCooldown` ·
-> `GetDroneSkillAttackDuration` (= 5,0) · cost/unlock ×9 — report ra là chốt được nhóm này.
-> `Board_Players.allBasicAtk/allDeltaAtk` **vẫn chưa có consumer nào** (B3 damage-theo-rank).
+> ⚠ **Cấm xác nhận chéo (góp ý #3, report 91 §6):** UI power (`allBasicAtk`) **≠** combat
+> `GetBaseDamage` (report 90): 20001 → UI **500** vs combat **450** · 20003 → UI **800** vs combat
+> **6000** — hai nguồn số khác consumer, không damage×rate proxy. `Board_Players.allBasicAtk/
+> allDeltaAtk` (float[24], `4640…`/`,168`) **vẫn chưa có consumer** ⇒ giữ mức **B**, B3
+> damage-theo-rank của tàu chưa chốt.
 
 ### 2.3 Save / load — **8 key family đã có contract**, chưa phải schema đầy đủ
 
@@ -301,7 +299,7 @@ không phủ toàn bộ công thức chiến đấu.
 | việc | mở khoá | trạng thái |
 |---|---|---|
 | ~~Đọc consumer để nối `playerIndex` ↔ **ID tàu**~~ | **B3** đóng → TTK ước lượng | ✅ **XONG (hẹp scope 25/10)** — save/load: id − 10001; **combat: impl N → index N−1** (report 81/82, tàu 10001→index 2) |
-| ~~Bind 576 mảng map → (chapter, stage, mode)~~ | **A6** đóng → **A5** đóng | ✅ **XONG phần cấu trúc** — 11 cấu trúc, 614 mảng phân loại xong (`DIFFICULTY_MODES` §7); chi tiết từng entry là việc nhánh dữ liệu đã ghép (`datas/map_table_segments.json` + `maps.json`) |
+| ~~Bind 576 mảng map → (chapter, stage, mode)~~ | **A6** đóng → **A5** đóng | ✅ **XONG phần phân loại cấu trúc** — 11 cấu trúc, 614 mảng (`DIFFICULTY_MODES` §7). ⚠ **Binding entry cụ thể vẫn UNKNOWN** (góp ý #4 report 91): thứ tự nạp `listMapDatas` chưa chứng minh (§2.1); `map_table_segments.json`/`map_waves_candidate.json` = **candidate**, `maps.json` = dẫn xuất khác nguồn — không dùng xác nhận |
 | ~~Tính `kHp[mode]`~~ | L2 | ✅ **KHÔNG TỒN TẠI** — chế độ không nhân HP (`DIFFICULTY_MODES` §3–5); khác biệt = composition bảng len-3 |
 | ~~`missionKillPercent` 6/9 số~~ | nhiệm vụ/sao | ✅ **ĐỦ 3/3** — một `float[3]` theo mission index `[0.2/0.6/0.98]`; "3×3" là ảo đơn vị |
 | ~~`StartHpPoint` ← dict~~ | TTK enemy | ✅ **đã bind theo id** — dict 150 cặp là nguồn (`GetStartHealthPoint(id)`); `Init` chỉ là plumbing |

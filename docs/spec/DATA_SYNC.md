@@ -2854,6 +2854,62 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   124 arithmetic rows · 4 callback bindings · 6 type joins · 3 literals · **36 payout pairs**).
   Full **500 tests PASS**; code `0a700993d` · Verify `40214936072 SUCCESS 55s`; findings peer giao
   PR12 comment `6400594184`.
-- **Queue peer (2 gap L1 còn mở)**: wing-cannon getter `14b1eb0`/SetBarrels + drone base-fire —
-  peer đã chuẩn bị `tools/recovery/wing_drone.py` (commit `c30dd46eb2`), **chưa có report** ⇒ chờ
-  report tiếp theo. ACK87 ✓ · **chưa ACK89** ⇒ ACK bằng comment PR12.
+- ACK87 ✓ · **ACK89 ✓** (PR12 comment `6400668714`).
+
+### 24.23 Report 90 — Level → wing barrels + luật bắn 12 drone hiện hành (peer `39b377383`→`bf4827ae2`, **592 tests**)
+
+- **Level là shared, không đọc từ prefab**: `Player_Ingame.get_Level 14b1eb0` (static+4, cache −1 →
+  `GetStartPowerUpPoints 14e5404`) · tech tier 0–4 · `cap = 6 + min(techTier + abi12 + 2·abi13, 4)` ·
+  `startLevel = min(startTier + UseItems[3] (cộng 3, xóa cờ), cap)` — không thêm lower clamp.
+- **Wing (chỉ impl1/source10003, binding 81)**: ctor int[10] **[3,4,5,6,7,8,9,12,13,14]** (SHA-bound);
+  `SetBarrels`: `index = L>2 ? (L−2)/2+2 : max(L,0)` ⇒ bảng L0–10 = **3,4,5,5,6,6,7,7,8,8,9**;
+  `shotRate = .12 − .0035L` · `speed = min(14 + 1,1L; 42)` · `angle = min(3·trunc(L/10)+5; 15)`;
+  super(.06, 20) · `numberSuper = 20` riêng, không tráo; Shoot dual-timer — nhịp barrel =
+  `((shotRate−.01)×.3)/10` (**mẫu số 10 = độ dài array**, không phải numberNormal); StartAttack BC =
+  +,168 (`31082c3e`).
+- **Drone 12 impl hiện hành** (`Drone_Get_Datas 2adbd90`, **không** dùng legacy `Droid_Attack`):
+  shotRate/turn/charge/speed/projectile từng impl (1–12); ⚠ **Drone3 `turnRate8` chỉ là ctor default**
+  (SerializeField, OnEnable không ghi lại) · Drone4 turnRate=0 do **OnEnable ghi** · Drone9 width10
+  cũng ctor default. **ability25**: `newRate = baseRate / (2,5 × abi25 đọc lại)` — **không phải**
+  `/(1+2,5×)`, không giảm 2,5 %. Scheduler: families 2/3/5/6/8/10/11/12 (charge → shot deadline →
+  đếm từng barrel tới `turnNumber` → charge); sweep4 (quay 20°/s theo phase ±16) và laser 7/9
+  (timer strict >, laser 7 tick hết hạn **không damage** vì Check thấy actived đã clear) — riêng từng
+  cái, không quy về projectile loop.
+- **Damage drone**: `GetBaseDamage 14da6f0` = `BaseDamages[sourceID−20001]` × (1 + ,16×GetDroneLevel)
+  × (1+rankExtra: r1 0 · r2 ,2 · r3 ,35 · r4 ,5 · else ,56) × (1 + 2,5×abi21);
+  **BaseDamages[12] = [450, 600, 6000, 135, 935, 315, 650, 1200, 248, 650, 1200, 2650]**.
+- **Scope giữ đúng**: sourceID→impl/spawn **chưa mapping** (class suffix không tự chứng minh source
+  ID); 23 wing impl còn lại; `turnRate3` serialized live value; DPS closure — chưa.
+  Kéo về: `datas/wing_drone_flow.json` (**73 ranges/6041 instr** · 68 anchors · 44 numeric fields ·
+  9 projectile-loop proofs). 92 tests mới; full **592 PASS**; code `bf4827ae2` · CI `40216724849`.
+
+### 24.24 Report 91 — trả lời request spec: HP writer + consumer `Board_Drones` (peer `142eb5998`, **648 tests**)
+
+- **HP max tàu = công thức chung, KHÔNG bảng theo tàu**: `GetStartHp 14e311c→14e318c` =
+  **2500 × (1 + 0,18 × TechStatPoints(0) + 1 × ability7)** (f32 từng phép; point1/ability0 =
+  2950.000244140625 — không ép int; ability7=1 → 5000; wrapper tech mode4/scene Game → 0 cho
+  index0). `Player_Health.cctor 14c7cd8`: default **StartHealth=2000/Current=0**; tàu 1 đo runtime
+  **2500** = 0 point/0 abi7 — **không universal**.
+- **3 loại writer**: `ResetStaticVariables 14c6ca0` (Current=Start, không post21) · callback
+  **event36** (payload==7 → chỉ ghi StartHealth — mất bonus có thể Current>Start mới) · **event64**
+  (`playMode==1 ∧ waveIndex≠0` → giữ tỉ lệ Current/Start rồi post21; else reset) — điều kiện là
+  **waveIndex**, không phải index tàu. **`OnChangeDataDevice 14c58ec` không ghi max** — chỉ
+  `reduceDamageByDevice` (Device.id 1000–1999, `GetStatValue1`/100) + `deviceHeal` (5000–5999,
+  `StartHealth×GetStatValue1`/100), reset trước null-check, không clamp.
+- **Auto-gain**: `AutoGainHealth 14c7bc8` mỗi **5 s** (InvokeRepeating literal đã decode) = techHeal
+  (`GetHpRecoverSpeed` theo **TechStatLevel(0)**: ,01×1,0/1,03/1,06/1,08/1,10) + deviceHeal, clamp
+  StartHealth, **không nhân deltaTime**; `TimeToImmuneOneHit`: ≤0→MaxValue · 1–3→50 · 4–5→45 ·
+  6→40 · 7–8→35 · 9→30 · ≥10→25.
+- **`Board_Drones` 3 bảng UI có consumer thật** (≠ combat): ctor float[24] = **`playerPriceMultipleA`
+  @238** → `SetUpgradeCost` (giá nâng cấp UI, index = cellIndex − 20001); static10/18 =
+  **allBasicAtk/allDeltaAtk** (12 float `[500,600,800,1250,1500,1800,2300,2800,2535,2500,1251,2680]`
+  / ,16×12) → `GetPlayerPower 1263860` → `SetPlayerInfo` → `textDispDamage`: `power =
+  round-half-even(basic[i] × (1 + delta[i] × GetDroneLevel))`. **UI power ≠ combat
+  `GetBaseDamage`** (20001: UI 500 vs combat 450 · 20003: UI 800 vs combat 6000) — cấm xác nhận chéo.
+  `Board_Players.allBasicAtk/allDeltaAtk` (24 float) **vẫn chưa có consumer**.
+- Kéo về: `datas/player_hp_board_flow.json` (**20 ranges/1589 instr** · 80 anchors · 5 joins · 3 array
+  bindings · 1 literal). 56 tests mới; full **648 PASS**; code `4b7a01a69` · Verify `40217833652`.
+- **Góp ý 5 điểm của peer vào spec (report 91 §6) — đã xử lý hết ở lần 28 này**: ① áp 90 đúng scope;
+  ② HP writer thay mức D bằng công thức; ③ không xác nhận chéo Board↔GetBaseDamage; ④ tách
+  "phân loại cấu trúc 576 (xong)" khỏi "binding entry (unknown)" ở `MISSING` §5; ⑤ ledger ACK
+  đồng bộ (đã sửa "chưa ACK89" ở §24.22). ACK90+91 qua PR12.
