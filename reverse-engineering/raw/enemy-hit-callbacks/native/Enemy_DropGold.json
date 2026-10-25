@@ -1,0 +1,228 @@
+{
+ "class": "Enemy_DropGold",
+ "note": "Delegated clone/pumpkin combat control",
+ "methods": [
+  {
+   "method": "Start",
+   "signature": "private void Start() { }",
+   "offset": "0x157d724",
+   "getter_value": null,
+   "rva": "0x1581724",
+   "bytes": 260,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x158176c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "DropGold",
+   "signature": "public void DropGold(float _damage) { }",
+   "offset": "0x157d828",
+   "getter_value": null,
+   "rva": "0x1581828",
+   "bytes": 524,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1581874",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x15818ac",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x15818c0",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15818c8",
+     "reg": "w2",
+     "op": "w2, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15818dc",
+     "reg": "w9",
+     "op": "w9, w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x15818e0",
+     "reg": "x8",
+     "op": "x8, x8, w9, sxtw #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x15818e4",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x1581920",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x1581934",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x1581950",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x1581954",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2139095040,
+     "via": "mov",
+     "addr": "0x1581970",
+     "reg": "w11",
+     "op": "w11, #0x7f800000",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 100,
+     "via": "mov",
+     "addr": "0x158197c",
+     "reg": "w10",
+     "op": "w10, #0x64",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2147483748,
+     "via": "mov+movk",
+     "addr": "0x158198c",
+     "reg": "w11",
+     "op": "w11, #0x64",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15819a8",
+     "reg": "w8",
+     "op": "w8, w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "mov",
+     "addr": "0x15819fc",
+     "reg": "w1",
+     "op": "w1, #6",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1581a14",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x1581964",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x157da34",
+   "getter_value": null,
+   "rva": "0x1581a34",
+   "bytes": 28,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1581a3c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}
