@@ -32,11 +32,14 @@ jobs:
           rows = {}
           for k, values in d.items():
               if k not in ('ScriptMetadata','ScriptMetadataMethod','ScriptString'): continue
-              rows[k] = [r for r in values if number(r.get('Address')) in wanted]
+              rows[k] = [r for r in values if number(r.get('Address')) in wanted or
+                         any(name in str(r.get('Name', r.get('Value', ''))) for name in
+                             ('Board_Endgame', 'GP_Tutorials', 'Stage_Datas', 'GP_Setup',
+                              'ScenesManager', 'BoardManager', 'Tutorial', 'tutorial'))]
           out = {'status':'PROVISIONAL','source_run':40180363840,
                  'source_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),
                  'source_keys':list(d),'requested_addresses':[hex(a) for a in sorted(wanted)],
-                 'rows':rows}
+                 'rows':rows,'samples':{k:v[:3] for k,v in d.items() if k in rows}}
           dest=Path('reverse-engineering/raw/ui-audit/metadata-slots.json')
           dest.parent.mkdir(parents=True,exist_ok=True)
           dest.write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
