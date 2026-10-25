@@ -42,18 +42,22 @@ def recover(binary,metadata):
 if __name__=='__main__':
     ap=argparse.ArgumentParser();ap.add_argument('--xapk',required=True);ap.add_argument('--output',required=True);a=ap.parse_args()
     data=Path(a.xapk).read_bytes();assert hashlib.sha256(data).hexdigest()==APK_SHA
-    results=[]
-    with zipfile.ZipFile(io.BytesIO(data)) as z:
-        for n in z.namelist():
-            if not n.endswith('.apk'):continue
-            with zipfile.ZipFile(io.BytesIO(z.read(n))) as inner:
-                if 'lib/arm64-v8a/libil2cpp.so' not in inner.namelist():continue
-                try:
-                    results.append(recover(inner.read('lib/arm64-v8a/libil2cpp.so'),inner.read('assets/bin/Data/Managed/Metadata/global-metadata.dat')))
-                except Exception:
-                    import traceback
-                    p=Path(a.output);p.parent.mkdir(parents=True,exist_ok=True)
-                    (p.parent/'recovery-error.txt').write_text(traceback.format_exc())
-                    raise
-    assert len(results)==1
-    p=Path(a.output);p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(results[0],indent=2)+'\n')
+    members={}
+    wanted=('lib/arm64-v8a/libil2cpp.so','assets/bin/Data/Managed/Metadata/global-metadata.dat')
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as z:
+            for n in z.namelist():
+                if not n.endswith('.apk'):continue
+                with zipfile.ZipFile(io.BytesIO(z.read(n))) as inner:
+                    for name in wanted:
+                        if name in inner.namelist():
+                            assert name not in members, name
+                            members[name]=inner.read(name)
+        result=recover(*(members[name] for name in wanted))
+    except Exception:
+        import traceback
+        p=Path(a.output);p.parent.mkdir(parents=True,exist_ok=True)
+        (p.parent/'recovery-error.txt').write_text(traceback.format_exc())
+        raise
+    p=Path(a.output);p.parent.mkdir(parents=True,exist_ok=True)
+    p.write_text(json.dumps(result,indent=2)+'\n')
