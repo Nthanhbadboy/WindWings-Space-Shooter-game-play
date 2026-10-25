@@ -2098,7 +2098,7 @@ Lần đầu tôi viết ở đây "dữ liệu cũ sai, export nhân đôi". **
 | "Spawner 23.757" | **`Σ copies`** (lượt sinh) | 9/9 wave trong bảng cũ khớp `Σ copies` hôm nay (**AQ5**), và `Σcopies` của **cả** `waves.json` ở `8c6da25` **và** bản hiện tại đều = **23.757** |
 | "median 62" | median **lượt**/wave | median dòng = 28,5; median lượt = **62** (**AQ4**) |
 | "`point_range` 16.498" | số **lượt** | theo lượt: 16.498 / 4.199 / 1.688 / 686 / 686 — **khớp đúng** dãy `CROSS_BRANCH` §3c ghi từ trước (**AQ6**) |
-| "`Wave_0163` 621" | lượt của wave đó | 257 dòng × `copies` = **621** (**AQ5**) |
+| "`Wave_0163` 621" | lượt của wave đó | 257 dòng × `copies` = **621** ở snapshot cũ; **`622`** từ `622b700e5` (§17.1, **AQ5**) |
 
 ⇒ Bảng cũ **đúng số, sai nhãn cột**. Việc phải làm là **ghi rõ đơn vị**, không phải "sửa số".
 `ENCOUNTERS.md` §1.1/§1.4/§1.5/§3 giờ in **cả hai cột**.
@@ -2119,3 +2119,80 @@ của lúc đó — **đừng** lấy 22.462/22.483 làm hiện trạng.
 - `tools/verify/peer_spec_review.py`, `tests/` của nhánh dữ liệu (mã của họ — chỉ đọc, không chép).
 - Toàn bộ `docs/apk-analysis/` khác.
 - `raw/ui/*` (803 file) — đã kéo ở §14, không kéo lại.
+
+---
+
+## 17. Đồng bộ lại 25/10 — nhánh dữ liệu `622b700e5` (11:33 UTC)
+
+> **Nguồn:** `origin/arena/ef6b75ef-…-game-p` = **`622b700e5`**, fetch + `rev-parse` xác nhận, không merge.
+> `git diff --stat 7e0da2ee3 622b700e5` = **1.121 file, +20.279 / −7.211**.
+> File đã kéo về working tree: `datas/waves.json` · `reverse-engineering/raw/sprite-geometry/{index.json,
+> resolved-geometry.json.gz}` · `raw/early-waves/movement-completion.json.gz` · `docs/apk-analysis/62-raw-audit-and-sprite-geometry.md`.
+
+### 17.1 Wave: **tổng không đổi, nội dung 9 wave đã đổi**
+
+Đo cả hai bản (`git show 35dceaa37:datas/waves.json` ↔ bản `622b700e5`):
+
+| | bản `35dceaa37` | bản `622b700e5` |
+|---|---:|---:|
+| Wave | 282 | **282** |
+| Dòng cấu hình | 11.094 | **11.089** |
+| **Spawner** (`Σ copies` = `Call_Data` object) | 23.757 | **23.757** |
+| Quân (`Σ len × copies`, mức B) | 45.659 | **45.659** |
+| Enemy entry (`Σ len`) | 22.482 | **22.451** |
+| `boss_hp.json` | 253 item | **246** |
+| `enemy_hp.json` | 981 item · 73 hp | 981 · 73 (**không đổi**) |
+
+⚠ **Tổng khớp không có nghĩa là dữ liệu không đổi.** Đo theo từng wave, **9 wave + `unknown`** đã đổi
+`copies`/quân, và các thay đổi **bù trừ nhau**:
+
+| Wave | Dòng | Lượt (`Σ copies`) | Quân |
+|---|---:|---:|---:|
+| `Wave_0002` | 127 → **125** | 250 → **248** | 787 → **768** |
+| `Wave_0025` | 233 | 561 → **560** | 576 → **575** |
+| `Wave_0026` | 42 | 84 → **83** | 225 → **224** |
+| `Wave_0027` | 36 | 71 → **72** | 116 → **117** |
+| `Wave_0048` | 10 | 18 | 111 → **116** |
+| `Wave_0049` | 9 | 16 → **17** | 120 → **129** |
+| `Wave_0137` | 48 | 235 → **229** | 233 → **227** |
+| `Wave_0163` | 257 | 621 → **622** | 619 → **620** |
+| `Wave_0198` | 13 | 457 | 715 → **713** |
+| `unknown` | 20 → **17** | 56 → **63** | 103 → **116** |
+
+⇒ Đây là lý do mọi bảng trong `ENCOUNTERS.md` phải **in cả dòng và lượt**, và lý do **không** được
+dùng "tổng khớp" làm bằng chứng "không đổi". Mức: **A** cho số, **D** cho nguyên nhân (chưa đọc commit
+nào trong 24 commit của nhánh sửa wave).
+
+### 17.2 Sửa đơn vị lần 3: **11.089 là dòng cấu hình, KHÔNG phải spawner**
+
+Đối chiếu chéo `class-inventory.csv` (`Call_Data` = **23.757** instance) với `Σ copies` trong
+`waves.json` = **23.757** ⇒ hai nguồn khớp. Vậy:
+
+- **spawner** = **23.757** `Call_Data` object;
+- **dòng `waves.json`** = **11.089** — export gộp object trùng thành 1 dòng + cột `copies`;
+- **quân** = 45.659 tham chiếu (mức **B**: `copies` không có field trong raw `Call_Data`).
+
+Claim **AQ7** kiểm bằng máy (23757, 23757, 11089). Bản sáng 25/10 gọi 11.089 là "spawner" — **sai**,
+đã sửa trong `ENCOUNTERS.md` §0/§1.1 và nhãn các bảng.
+
+### 17.3 Sprite geometry (report 62) — **có toạ độ, chưa phải bằng chứng render**
+
+`resolved-geometry.json.gz`: **2.185** Sprite · **66** SpriteAtlas · **654** Texture2D; route `m_RD`
+trực tiếp **635** + qua atlas **1.550** = **2.185/2.185 resolve** (`unresolved` = 0). `packed` 1.550 ·
+rotation `0: 2.041 · 1: 53 · 2: 54 · 3: 37` (**144** sprite cần lật/xoay) · downscale toàn bộ = 1.
+**40** rect lọt ngoài texture (0,0000019–0,9963 px, đều route `m_RD`) — **chưa** kết luận nguyên nhân.
+
+> Status trong file: `PROVISIONAL_GEOMETRY_JOINS_NOT_PIXEL_CROP_VALIDATION` ⇒ đây là **join metadata**,
+> **không** phải 2.185 ảnh crop đã kiểm. Dùng để: (a) biết **trang texture thật** của từng sprite
+> (⇒ gán nhãn, `ASSET_TRIAGE.md` §9.6b: **282**/340 ca biết trang, **18** gán được); (b) biết sprite nào
+> cần flip/rotation; (c) chuẩn bị cắt chính xác. **Không** dùng để nói "ảnh đã cắt đúng".
+
+### 17.4 Chưa kéo (ghi rõ để không ai tưởng đã đồng bộ)
+
+- 6 chunk `raw/sprite-geometry/objects-00N.jsonl.gz` (~0,9 MB) + `toolchain/` ⇒ **không** tự kiểm lại
+  được `sha256_decompressed` trong `sources`.
+- Report **59** (movement completion & pooling) · **60** (BB-36001 streamed animation) · **61** (BB pool
+  parent/scroll/gun lifecycle) — mới kéo **62**.
+- `raw/process-audit/` · `raw/balloon-animation/` · `raw/animation-audit/` · `raw/runtime-probe/` ·
+  `raw/il2cpp-consts/` (273) · `raw/ui-audit/` (407) · tools/tests mới (`sprite_geometry.py`,
+  `balloon_animation.py`, `enemy_move_completion.py`, 6 test).

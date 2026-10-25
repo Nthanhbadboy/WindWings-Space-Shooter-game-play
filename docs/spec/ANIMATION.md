@@ -301,7 +301,7 @@ datas/waves.json → waves[].spawners[].enemies[]  → đếm tên phân biệt 
 ```
 
 Phân bố: `Boss-` **39** · `CB-` **33** · `CD-` **15** · `W2-` **6** · `XB-` **5** · `GD-` **4** ·
-`BB-` **4** · `H-` **2** · `W1-` **1**. Tổng **22.482 lượt spawn trên 282 wave và 11.094 spawner** (số cập nhật theo `datas/waves.json` ở `9edc21f4d`).
+`BB-` **4** · `H-` **2** · `W1-` **1**. Tổng **22.451 entry spawn trên 282 wave và 11.089 dòng cấu hình** (số cập nhật theo `datas/waves.json` ở `9edc21f4d`).
 
 > Đây là **bảng spawn**, không phải danh sách prefab có trong build: cả build có **182 prefab root**
 > mang `Enemy_Movement` (đi lên `transform-tree` tới `prefab-roots.csv`). 109 là số **thực sự được

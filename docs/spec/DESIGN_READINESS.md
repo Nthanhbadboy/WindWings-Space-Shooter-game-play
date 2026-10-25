@@ -58,7 +58,7 @@ Timestamp chỉ chứng minh **mốc cục bộ trong clip**, không chứng min
 `DESIGN_QUESTIONS.md` ghi **`rate = 0` ở 2.373 spawner**. Đếm lại trên `datas/waves.json`:
 
 ```
-11.094 spawner · rate = 0 : 2.371 · rate thiếu: 0
+11.089 dòng cấu hình · rate = 0 : 2.366 · rate thiếu: 0
 phân bố: 1,0 → 7.740 · 0,0 → 2.371 · 0,5 → 532 · 2,0 → 163 · 0,65 → 111 · 6,0 → 58
 ```
 
@@ -66,7 +66,7 @@ phân bố: 1,0 → 7.740 · 0,0 → 2.371 · 0,5 → 532 · 2,0 → 163 · 0,65
 không kèm phép đếm. Nay `I3` khoá lại.
 
 Câu hỏi thật vẫn mở và **nó chặn A7**: `rate = 0` nghĩa là **spawn tức thời** hay **mỗi khung
-hình**? 2.371/11.094 spawner (21 %) rơi vào trường hợp này, nên mọi phép "địch/giây" đều có sai số
+hình**? 2.366/11.089 dòng cấu hình (21 %) rơi vào trường hợp này, nên mọi phép "địch/giây" đều có sai số
 21 % cho tới khi phân xử.
 
 ### 3.1 Kéo thêm dữ liệu (24/10) — câu này **hẹp lại**, chưa đóng
@@ -150,7 +150,7 @@ trạng thái của enemy — và nó **không chặn** vì L1 cho phép tự đ
 
 | Hệ | Đủ để thiết kế? | Cơ sở |
 |---|---|---|
-| **Vòng lặp / wave / spawn** | ✅ **A** | 109 prefab roster · 282 wave · 11.094 spawner · 22.482 lượt spawn (`waves.json`) |
+| **Vòng lặp / wave / spawn** | ✅ **A** | 109 prefab roster · 282 wave · 11.089 dòng cấu hình · 22.451 entry spawn (`waves.json`) |
 | **Độ khó / chế độ** | ✅ **A** | `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · 3 chế độ mỗi stage |
 | **Kinh tế / sao / HP** | ✅ **A** cho hằng số | `StartHp 2500` · `stepCommon 0,18` · `DeltaStarCost 50` · `PercentToCompleteMissions222 [0.2,0.6,0.98]` |
 | **Boss** | ✅ **A** cho cấu trúc | 46 boss · **39 prefab `Boss-*`** · **2 prefab Spine** (`Boss-39001/39002`) · 92 `Animator`/36 prefab · 795 event có mốc thời gian |
@@ -216,7 +216,7 @@ không phải chỗ còn thiếu số.
 
 **8/10 mục đủ ngay · 2/10 mục viết được nhưng phải ghi rõ chỗ chưa đóng** (Animation: 6 chuỗi trigger +
 hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật độ** treo **cách diễn giải**
-`rate = 0`, **không** treo số lượng — 22.482 lượt spawn trên 282 wave đã có.
+`rate = 0`, **không** treo số lượng — 22.451 entry spawn trên 282 wave đã có.
 
 ### 7.1 Ba con số "đã sẵn sàng" đáng nhớ
 

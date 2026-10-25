@@ -10,6 +10,7 @@
 > **Cập nhật 25/10 (§9):** phân loại bằng số đo pixel ⇒ **1.857/2.197 có nhãn**, còn **340 `unresolved`**;
 > lần đầu có **bảng tách sheet** (`sheet-splits.csv`: **307** entry · **4.250** mảnh · **98** texture page).
 > Thêm: gợi ý kNN có **đo sai số** cho **89**/340 ca còn lại (§9.6) — không gộp vào nhãn.
+> **Cập nhật 25/10 (report 62):** có **geometry thật** ⇒ **282**/340 ca nay biết **trang texture**, tự gán được **18** (§9.6b).
 Ba con số đó là **ba việc khác nhau**, đừng cộng thành một.
 
 ---
@@ -349,6 +350,8 @@ Tức chúng là **một hình vừa phải, nhiều màu, ít mảnh** — đú
 không có chỗ. Tên cũng vô nghĩa: `1011`, `11_0`, `128x128`.
 
 - Phân bố: rải trên **sheet `unclassified-*.jpg`** (nhiều nhất `-15` 38 · `-24` 37 · `-06` 28).
+- **282**/340 nay biết **trang texture thật** (report 62); trong đó chỉ **18** gán được bằng luật
+  trang (§9.6b). Biết trang ≠ biết nhãn.
 - Cách đóng: xem mắt 340 ô (đã nằm sẵn trên các sheet `unclassified-*`) rồi gán tay — **~2 giờ**;
   hoặc tách thành nhóm `misc` nếu L1 không cần.
 - **Không** được coi `unresolved` là "đã xong": nó là **việc còn lại**, không phải nhãn.
@@ -388,7 +391,37 @@ phải xem mắt, không có đường tắt.
 
 **Đường cụt đã thử và loại:** dùng **tên atlas page** làm nhãn (sprite cùng page ⇒ cùng loại). Chỉ
 **59**/340 ca có atlas, và **0** ca đạt đa số ≥60 % trong page — page `11`, `128x128`, `256` là
-**page đánh số**, không mang ngữ nghĩa. Không thử lại.
+**page đánh số**, không mang ngữ nghĩa. Không thử lại **với cột `atlas` đó** — xem §9.6b: cột này lấy
+từ tên sheet trong index, **không phải** trang texture thật.
+
+### 9.6b Sửa lại sau report 62: **geometry cho biết trang thật**, gán được **18**
+
+Report 62 giải `m_RD.m_Texture` cho **2.185** sprite ⇒ biết **trang texture thật** của từng sprite
+(`reverse-engineering/raw/sprite-geometry/resolved-geometry.json.gz`), khác hẳn cột `atlas` của index.
+Trang thật có tên **có nghĩa**: `sactx-…-Bullets-…`, `…-UI_Home-…`, `…-Boss6-…`.
+
+Cách dùng — **đo trước, dùng sau** (`tools/classify-by-atlas.py`): gom sprite đã có nhãn A/B theo **họ
+trang**, chỉ tin họ nào `n ≥ 10` **và** precision `≥ 0,95`, rồi mới áp lên 340 ca `unresolved`.
+
+| | số |
+|---|---:|
+| `unresolved` có trang thật | **282**/340 (58 ca không có geometry) |
+| họ trang đủ chuẩn (n≥10 · precision≥0,95) | **13** |
+| ca tự gán được từ trang | **18** (`ui` 13 · `bullet` 3 · `parts` 2) |
+
+Họ mạnh nhất: `Bullets` → `bullet` (prec 0,978 · n=136) · `ARENA`/`VIP`/`UIEvent`/`PVP*` → `ui`
+(1,00) · `Boss6` → `parts` (1,00). Họ **không** đủ chuẩn (chỉ là gợi ý): `UI_Home` 0,56 ·
+`QueenBee` 0,55 · `Boss39014` 0,36 — đúng như trực giác: page gộp nhiều thứ.
+
+Đọc đúng: **18 ca là con số thật**, không phải "282 ⇒ gán được 282". 282 chỉ nói **biết nơi ở**;
+282 − 18 = 264 ca vẫn phải xem mắt vì họ trang của chúng trộn nhãn. Ghi ra
+`docs/assets/sprites-atlas-page.csv` (2.197 dòng, cột `texture_page` · `page_family` · `suggested_category`
+· `precision` · `n_labeled` · `applied`) — **không** gộp vào `category_auto`.
+
+| **trang atlas** | 2.197 asset · **340** `unresolved` · **282** có trang thật · **18** tự gán được · **13** họ trang đủ chuẩn |
+
+> **Ranh giới bằng chứng:** geometry ở đây là **join metadata** (`PROVISIONAL_GEOMETRY_JOINS_NOT_PIXEL_CROP_VALIDATION`),
+> không phải ảnh crop đã kiểm. Tên trang là bằng chứng **phân loại**, không phải bằng chứng **render**.
 
 
 ### 9.8 Luật bị che + provenance nhãn (sửa theo review R4)

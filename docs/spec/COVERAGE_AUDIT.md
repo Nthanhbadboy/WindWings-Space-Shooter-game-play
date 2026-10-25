@@ -37,7 +37,7 @@ phải **cơ chế**.
 | 3 | **Súng / đạn / DPS** | ✅ **A** | 458 `Gun_Attack` (319 thật) · 102 pattern · TTK trong `COMBAT.md` | damage boss ở 19 class director (B6) |
 | 4 | **Enemy** | ✅ **A** | 109 prefab roster · 9 component/enemy · 399 đường bay · `Enemy_Movement` 3 nhánh | **điều kiện** chuyển state `Animator` (T4) |
 | 5 | **Boss** | ✅ **A** | **46 boss** · 39 prefab `Boss-*` · 793 event có mốc · 8 tên entry + 5 nhánh (boss 1) | hành vi 12 handler (T2) |
-| 6 | **Wave / spawn** | ✅ **A** | 282 wave · 11.094 spawner · 22.482 lượt · schema `Call_Data` 23 field | nghĩa `rate = 0` (B, không chặn) |
+| 6 | **Wave / spawn** | ✅ **A** | 282 wave · 11.089 dòng cấu hình · 22.451 entry · schema `Call_Data` 23 field | nghĩa `rate = 0` (B, không chặn) |
 | 7 | **Map / stage** | 🟡 **B** | 299 stage · 2 chapter · `maps.json` **250** map | **đánh số map → wave**: chỉ **7/250** chắc (A6) |
 | 8 | **Độ khó 3 chế độ** | ✅ **A** | `MaxModeIndex 4` · `kCount ≡ 1` · `pct[mode]` · `levelDelta` | hệ số **HP** theo chế độ (B8) |
 | 9 | **Kinh tế / IAP** | ✅ **A** | **170 sản phẩm** (71 consumable + 99 non-consumable) · `stepCommon 0,18` · `DeltaStarCost 50` | — |

@@ -29,7 +29,7 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 | 3 | **Súng / đạn / sát thương** | ✅ **đủ** cho L1 | **458 súng** · damage **40–1.200** (median 400) · **186 loại đạn** · burst 5 tham số (`COMBAT.md`) | **B3**: đường cong damage theo rank — xem §2.2 |
 | 4 | **Enemy** | ✅ **đủ** | **109 prefab** (39 boss + 70) · 9 component · 399 đường bay · **150 HP id** (`datas/enemy_hp_by_id.json`) | — (B1 coi như đóng: HP theo **id**, không theo wave) |
 | 5 | **Boss** | 🟡 **một phần** | 39 prefab `Boss-*` · **795 event** có mốc thời gian · 268 cặp (prefab, clip) · nhịp **0,17 / 0,33 / 1,0 / 5,0 s** | **D3**: thứ tự pha + điều kiện vào/thoát — có mốc, **chưa có** thứ tự (mức C) |
-| 6 | **Wave / spawn** | ✅ **đủ** | **282 wave · 11.094 spawner · 22.482 slot** (`H2`, `I3`, `M3`) | — (`rate = 0` là "spawn cả loạt", mức B, đã ghi) |
+| 6 | **Wave / spawn** | ✅ **đủ** | **282 wave · 11.089 dòng cấu hình · 22.451 entry** (`H2`, `I3`, `M3`) | — (`rate = 0` là "spawn cả loạt", mức B, đã ghi) |
 | 7 | **Độ khó 3 chế độ** | ✅ **đủ** | `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · không nhân số quân | ngưỡng % riêng = tự chọn |
 | 8 | **Kinh tế / rơi đồ** | ✅ **đủ** | 3 tầng rơi: **702** vật đặt sẵn (**676 coin / 26 item**) · **246/2.094** slot mang item · **6** loại (`AE1`–`AE3`) | trọng số chọn giữa 6 loại — **tự chọn** |
 | 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu** nhưng `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) ⇒ tàu **không** có HP/damage riêng; `Player_Talent` **23 method** · **13 drone** | giá nâng cấp theo sao (**dữ liệu có, chưa bóc**); công thức talent (C) |

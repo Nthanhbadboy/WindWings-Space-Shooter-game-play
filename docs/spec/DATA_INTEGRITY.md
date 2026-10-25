@@ -33,7 +33,7 @@ git diff --name-only 677c24feb..HEAD -- datas docs/apk-analysis reverse-engineer
 
 | nhóm | file |
 |---|---|
-| dữ liệu **phái sinh** (do tool sinh) | `art-study.csv` · `sprites-auto-classified.csv` · `sheet-splits.csv` · `sprites-knn.csv` · `classify-knn.json` · `sheet-splits-sample.png` |
+| dữ liệu **phái sinh** (do tool sinh) | `art-study.csv` · `sprites-auto-classified.csv` · `sheet-splits.csv` · `sprites-knn.csv` · `sprites-atlas-page.csv` · `classify-knn.json` · `sheet-splits-sample.png` |
 | tool | `art-study.py` · `classify-by-measure.py` · `classify-knn.py` · `verify-claims.py` |
 | tài liệu | `ASSET_TRIAGE.md` · `README.md` · `COVERAGE_AUDIT.md` · `ANIMATION_SCRIPT.md` |
 

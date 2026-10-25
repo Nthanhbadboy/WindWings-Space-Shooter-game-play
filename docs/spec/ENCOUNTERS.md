@@ -12,35 +12,39 @@
 | Chỉ số | Giá trị | Nguồn |
 |---|---:|---|
 | Wave khai báo | **282** (281 có tên + 1 `unknown`) | `waves.json` |
-| Spawner (dòng = 1 `Call_Data` component) | **11.094** (11.074 ở 281 wave có tên + 20 ở `unknown`) | `waves.json` |
-| Spawner **thật** (bỏ 601 dòng `StartPoint`/`EndPoint`) | **10.493** | tính từ `waves.json` |
+| **Spawner = `Call_Data` object** | **23.757** (= Σ `copies`; khớp `class-inventory.csv` 23.757) | hai nguồn độc lập |
+| Dòng trong `waves.json` (đã **gộp** object trùng, mỗi dòng mang `copies`) | **11.089** (11.072 ở 281 wave có tên + 17 ở `unknown`) | `waves.json` |
+| Dòng **thật** (bỏ **608** dòng mốc `StartPoint`/`EndPoint`) | **10.481** | tính từ `waves.json` |
 | Tên spawner khác nhau (toàn cục) | **1.015** — *tên, không phải số component* | tính từ `waves.json` |
 | Wave campaign | **236** (`Wave_0000` – `Wave_0235`) | `waves.json` |
 | Wave boss ch1 | **22** (`Wave_7001` – `Wave_7022`) | `waves.json` |
 | Wave boss ch2 | **23** (`Wave_9001` – `Wave_9024`, thiếu `9016`) | `waves.json` |
-| Spawner/wave | min **3** · median **28,5** · max **257** (`Wave_0163`) | tính từ `waves.json` |
-| Enemy entry (tổng `listPrefabEnemies`) | **22.482** | `waves.json` |
+| Dòng cấu hình/wave | min **3** · median **28,5** · max **257** (`Wave_0163`) | tính từ `waves.json` |
+| Enemy entry (tổng `listPrefabEnemies`) | **22.451** | `waves.json` |
 | Archetype spawner | **48** (+5 marker) từ **53** tên gốc | §2.4 |
 | Prefab enemy | **92** = 52 thường + 39 boss + 1 MB | §2.5 |
 | Map | **250** (`Map-0000` – `Map-0249`) | `MapController.csv` |
 | Stage trên board | **299** (Normal 199 · Boss 26 · Combat 49 · MiniBoss 25) | `Stage_Behaviour.csv` |
-| Tên enemy prefab | ✅ **đã resolve** (pipeline vòng 3): **22.482** entry · **109** prefab khác nhau | `waves.json` nhánh `ef6b75ef` |
+| Tên enemy prefab | ✅ **đã resolve** (pipeline vòng 3): **22.451** entry · **109** prefab khác nhau | `waves.json` nhánh `ef6b75ef` |
 | Enemy prefab / wave | min **2** · median **6** · max **28** | tính từ `waves.json` vòng 3 |
 | `Wave.indexWave` | **0 cho 686/686 dòng** — vô dụng | `Wave.csv` |
 
 > ⚠ **Ba lỗi dữ liệu phải nêu trước khi đọc bảng:**
 >
 > 1. ~~**Tên enemy không resolve được.**~~ **ĐÃ SỬA (vòng 3, 23/10):** trạng thái `"?"` là của
->    **snapshot cũ**. `waves.json` hiện tại resolve **22.482 entry · 109 prefab** (bảng trên).
+>    **snapshot cũ**. `waves.json` hiện tại resolve **22.451 entry · 109 prefab** (bảng trên).
 >    Đoạn `"?"` giữ lại chỉ để đọc báo cáo cũ — **không** phải hiện trạng.
 > 2. **`spawn_type` 5 và 6 KHÔNG phải boss/special.** `waves.json` gán nhãn `boss`/`special`
 >    nhưng spawner tương ứng tên là `EndPoint` (**320** + 7 `Endpoint`) và `StartPoint` (**281**).
 >    Theo enum `SpawnTypes` trong `dump.cs`: `5 = EndMapPoint`, `6 = StartWavePoint`.
->    Đây là **mốc đầu/cuối wave** (tổng **601** dòng), không phải loại enemy.
-> 3. **Không có "spawner bị nhân đôi" — đó là chuyện ĐƠN VỊ.** Bảng cũ cộng theo **lượt sinh**
->    (`Σ copies` = 23.757); bảng ở đây đếm theo **dòng** (11.094). Chín trên chín wave của bảng cũ
->    khớp **chính xác** `Σ copies` (§1.1), nên **không số nào sai** — chỉ sai **nhãn cột**.
->    ⚠ Vẫn **đừng chia 2**: hai bản cùng tên có thể là **hai resource** khác nhau (§1.3).
+>    Đây là **mốc đầu/cuối wave** (tổng **608** dòng = 320 `EndPoint` + 7 `Endpoint` + 281 `StartPoint`),
+>    không phải loại enemy. Kiểm chéo: `spawn_type` `boss` 327 + `special` 281 = **608** — khớp đúng.
+> 3. **"Spawner" có ba cách đếm — đừng trộn** (sửa lần 3, 25/10, sau khi đối chiếu `class-inventory.csv`):
+>    **object** **23.757** `Call_Data` · **dòng `waves.json`** **11.089** (gộp object trùng, mỗi dòng mang
+>    `copies`) · **quân** Σ`len × copies` = **45.659** (mức **B**). Σ `copies` = 23.757 = số object ⇒
+>    **hai nguồn gặp nhau**, không có "export nhân đôi".
+>    ⚠ `copies` **không** có field tương ứng trong raw `Call_Data` (`number`/`rate` thôi) ⇒ *vì sao* trùng
+>    thì **chưa kết luận**; chỉ kết luận **số khớp**. Bản sáng 25/10 gọi 11.089 dòng là "spawner" là **sai đơn vị**.
 
 ---
 
@@ -48,23 +52,26 @@
 
 ### 1.1 Phân nhóm (nguồn: `waves.json`, tên `Wave_NNNN`)
 
-**Hai đơn vị, đừng trộn** (đo 25/10 trên `waves.json`):
+**Ba đơn vị, đừng trộn** (đo 25/10 trên `waves.json` + `class-inventory.csv`):
 
-- **dòng** = một `Call_Data` component (một cấu hình spawn);
-- **lượt** = `Σ copies` = số lần cấu hình đó sinh quân.
-  23.757 **lượt** chính là con số bảng cũ ghi ở cột "Spawner"; 11.094 **dòng** mới là số cấu hình.
+- **object** = một `Call_Data` instance trong dump: **23.757** (`class-inventory.csv` cùng số);
+- **dòng** = một cấu hình trong `waves.json` — export **gộp object trùng**, mỗi dòng mang `copies`:
+  **11.089** dòng, và **Σ `copies` = 23.757** ⇒ hai cách đếm **gặp nhau**;
+- **lượt** = `Σ copies` của một nhóm/wave = số object. 23.757 **lượt** toàn bộ chính là con số bảng cũ
+  ghi ở cột "Spawner" — nên bảng cũ **không sai**, chỉ gọi tên khác đơn vị.
+  ⚠ Vì vậy **11.089 là số cấu hình, KHÔNG phải số spawner**. Bản sáng 25/10 viết "11.089 dòng cấu hình" là sai.
 
 | Nhóm | Khoảng tên | Số wave | **Dòng** | **Lượt** (`Σ copies`) | Median dòng | Median lượt |
 |---|---|---|---:|---:|---:|---:|
-| **Campaign** | `Wave_0000` – `Wave_0235` | 236 | 10.896 | **23.345** | 33,5 | **72** |
+| **Campaign** | `Wave_0000` – `Wave_0235` | 236 | 10.894 | **23.338** | 33,5 | **72** |
 | **Boss ch1** | `Wave_7001` – `Wave_7022` | 22 | 109 | 218 | 3 | 6 |
 | **Boss ch2** | `Wave_9001` – `Wave_9024` | 23 | 69 | 138 | 3 | 6 |
-| `unknown` | — | 1 | 20 | 56 | 20 | 56 |
-| **Tổng** | | **282** | **11.094** | **23.757** | 28,5 | **62** |
+| `unknown` | — | 1 | 17 | 63 | 17 | 63 |
+| **Tổng** | | **282** | **11.089** | **23.757** | 28,5 | **62** |
 
 Cột `Lượt` khớp bảng cũ **theo từng nhóm** (boss 218 · 138) và **từng wave 9/9** — bảng dưới.
-Chênh duy nhất: `campaign` **+9 lượt** và `unknown` **−9** so với bảng cũ, vì hai snapshot khác
-nhau (§16.3 `DATA_SYNC`).
+Chênh: `campaign` **−7 lượt**, `unknown` **+7** so với bảng cũ, vì hai snapshot khác nhau
+(§17 `DATA_SYNC`). **Tổng không đổi** — ví dụ: tổng khớp mà nội dung đã đổi.
 
 | Wave | Dòng (mới) | `Σ copies` (mới) | Bảng cũ ghi |
 |---|---:|---:|---:|
@@ -73,14 +80,14 @@ nhau (§16.3 `DATA_SYNC`).
 | `Wave_0050` | 36 | **72** | 72 |
 | `Wave_0100` | 18 | **36** | 36 |
 | `Wave_0150` | 27 | **54** | 54 |
-| `Wave_0163` | 257 | **621** | 621 |
+| `Wave_0163` | 257 | **622** | 622 |
 | `Wave_0200` | 21 | **42** | 42 |
 | `Wave_0235` | 42 | **84** | 84 |
 | `Wave_7001` | 3 | **6** | 6 |
 
 **Kiểm tự động (`AQ5`): 9/9 wave khớp** `Σ copies` = số bảng cũ — chạy `tools/verify-claims.py`.
 
-Wave `unknown` (20 dòng · 56 lượt) không có tên `Wave_NNNN` — nhiều khả năng là
+Wave `unknown` (17 dòng · 63 lượt) không có tên `Wave_NNNN` — nhiều khả năng là
 object lỗi khi export. Nó chiếm **0,2 %** dòng, không ảnh hưởng kết luận.
 
 Số `Wave_7001…7022` và `Wave_9001…9024` **trùng khít** danh sách `idWave` trong
@@ -146,7 +153,7 @@ cặp `(wave, spawner)` khác tên (nay **10.504**, chênh 6 do các dòng `unkn
 
 | `spawn_type` trong json | Thực chất | **Dòng** | % dòng | **Lượt** | % lượt |
 |---|---|---:|---:|---:|---:|
-| `point_range` | point-to-point range | 7.541 | 68,0 % | **16.498** | 69,4 % |
+| `point_range` | point-to-point range | 7.536 | 68,0 % | **16.498** | 69,4 % |
 | `point` | điểm cố định | 2.084 | 18,8 % | **4.199** | 17,7 % |
 | `path` | theo đường | 861 | 7,8 % | **1.688** | 7,1 % |
 | `boss` | **`EndMapPoint`** (mốc cuối: 320 `EndPoint` + 7 `Endpoint`) | 327 | 2,9 % | 686 | 2,9 % |
@@ -172,7 +179,7 @@ Số dưới đây là **lượt** (`Σ copies`) — đơn vị cũ; cột **Dò
 | | 2,0 | 163 | 319 | 0,5 giây/enemy |
 | | 6,0 | 58 | 110 | 6 giây/enemy |
 | `speed` | **1,5** | 4.983 | 10.920 | tốc độ di chuyển chuẩn |
-| | 0,0 | 3.599 | 7.541 | đứng yên |
+| | 0,0 | 3.599 | 7.536 | đứng yên |
 | | **5,2** | 1.462 | 2.890 | lao nhanh (3,5×) |
 | | 2,0 | 749 | 1.620 | |
 | `y_spawn` | **9,6** | 7.428 | 15.485 | mép trên màn hình |
@@ -207,7 +214,7 @@ Vì `enemies` toàn `?`, ta dùng **tên spawner** để suy ra họ enemy. **1.
 | `CheckPlayerNo` | 372 | **trigger điều kiện** (kiểm tra vị trí player) |
 | `KhoaPlayer` | 371 | **"khoá player"** — chặn di chuyển (cơ chế đặc biệt) |
 
-Nguồn: `waves.json`, đếm bằng khớp chuỗi con trên `spawners[].spawner` (**11.094** dòng).
+Nguồn: `waves.json`, đếm bằng khớp chuỗi con trên `spawners[].spawner` (**11.089** dòng).
 `CB13` 267 · `CB14` 180 · `CB4` 60 · `CD05` 36 · `CD3_1` 277.
 
 ### 2.2 Họ đặc biệt (không phải enemy)
@@ -270,7 +277,7 @@ Mỗi archetype có bộ tham số **gần như hằng số** — đây là quy 
 Nguồn: `waves.json`, tính bằng cách bỏ `\s*\(\d+\)$` khỏi `spawners[].spawner`.
 
 > **Hệ quả cho dựng lại:** chỉ cần **48 định nghĩa archetype** + bảng vị trí, không cần
-> 11.094 cấu hình. Đây là phần **tự động hoá được gần hết**.
+> 11.089 cấu hình. Đây là phần **tự động hoá được gần hết**.
 
 ### 2.5 Prefab enemy thật: **92** (52 thường + 39 boss + 1 MB)
 
@@ -302,7 +309,7 @@ Nguồn: `waves.json`, tính bằng cách bỏ `\s*\(\d+\)$` khỏi `spawners[].
 |---|---:|
 | Wave | **282** (236 campaign + 45 boss + 1 lỗi) |
 | Spawner (đã dedup) | **11.099** (bản `8c6da25`) |
-| **Entry enemy** | **22.482** — **0** giá trị `"?"` |
+| **Entry enemy** | **22.451** — **0** giá trị `"?"` |
 | **Prefab enemy khác nhau** | **109** |
 | Entry enemy / wave | min **2** · median **63** · max **603** |
 | **Prefab khác nhau / wave** | min **2** · median **6** · max **28** |
@@ -342,7 +349,7 @@ Phân bố 109 prefab theo họ:
 ## 3. 10 wave tiêu biểu (số thật)
 
 Nguồn: `waves.json` hiện tại. "Real" = spawner thật (đã bỏ `StartPoint`/`EndPoint`).
-> **25/10:** bảng này **đo lại toàn bộ**. Cột `Lượt` = đúng các số bảng cũ (150/331/621…) —
+> **25/10:** bảng này **đo lại toàn bộ**. Cột `Lượt` = đúng các số bảng cũ (150/331/622…) —
 > xem lại thì bảng cũ **đếm lượt**, không đếm dòng. Cột `Real`/`point_range`/… đếm **dòng**.
 
 | Wave | Vị trí | Dòng | Lượt | Real | point_range | point | path | Họ chiếm ưu thế |
@@ -352,7 +359,7 @@ Nguồn: `waves.json` hiện tại. "Real" = spawner thật (đã bỏ `StartPoi
 | `Wave_0050` | giữa ch1 | 36 | **72** | 34 | 27 | 4 | 3 | `CB1` 25 · `Path_CB3_5` 3 |
 | `Wave_0100` | giữa | 18 | **36** | 16 | 0 | 14 | 2 | `Point` 14 · `Path_CB13` 2 |
 | `Wave_0150` | giữa | 27 | **54** | 25 | 13 | 12 | 0 | `1-CB09_Top` 6 · `KhoaPlayer` 5 |
-| `Wave_0163` | **lớn nhất** | 257 | **621** | 255 | 248 | 0 | 7 | `CB1` 217 · `Point` 24 |
+| `Wave_0163` | **lớn nhất** | 257 | **622** | 255 | 248 | 0 | 7 | `CB1` 217 · `Point` 24 |
 | `Wave_0200` | muộn | 21 | **42** | 19 | 0 | 8 | 11 | `Path_CB3_5` 11 · `Point` 6 |
 | `Wave_0235` | cuối campaign | 42 | **84** | 40 | 4 | 36 | 0 | `Point` 17 · `Point_H` 7 |
 | `Wave_7001` | boss ch1 | 3 | **6** | 1 | 0 | 1 | 0 | `Boss_1` 1 · `StartPoint` 1 |
@@ -375,13 +382,13 @@ boss      : 2 spawner → đấu 1-1
 
 ### 3.2 5 wave nhỏ nhất / lớn nhất (campaign)
 
-| Nhỏ nhất | Tổng | Real | | Lớn nhất | Tổng | Real |
+| Nhỏ nhất | Lượt | Lượt không-mốc | | Lớn nhất | Lượt | Lượt không-mốc |
 |---|---:|---:|---|---|---:|---:|
-| `Wave_0114` | 6 | 2 | | `Wave_0163` | 621 | **617** |
-| `Wave_0115` | 6 | 2 | | `Wave_0025` | 555 | 555 |
-| `Wave_0016` | 8 | 2 | | `Wave_0006` | 471 | – |
-| `Wave_0031` | 8 | 2 | | `Wave_0104` | 464 | – |
-| `Wave_0098` | 14 | 10 | | `Wave_0198` | 451 | 451 |
+| `Wave_0114` | 6 | 2 | | `Wave_0163` | **622** | **618** |
+| `Wave_0115` | 6 | 2 | | `Wave_0025` | **560** | **554** |
+| `Wave_0016` | 8 | 2 | | `Wave_0006` | **491** | **471** |
+| `Wave_0031` | 8 | 2 | | `Wave_0104` | **467** | **463** |
+| `Wave_0098` | 14 | 10 | | `Wave_0198` | **457** | **453** |
 
 Thành phần 4 wave nhỏ nhất (raw):
 
@@ -471,17 +478,17 @@ Bản `cd0372d`.
 ⚠ **Con số 178 prefab "toàn bộ enemy" phải ghi kèm:** 178 là **prefab có `Enemy_Controller`**.
 Tổng prefab gốc **453**; 25 trong số đó **gây damage mà không có AI**.
 
-### 3.5 `copies` — **22.482 entry khai báo → 45.659 "quân" nếu `copies` là số bản sao**
+### 3.5 `copies` — **22.451 entry khai báo → 45.659 "quân" nếu `copies` là số bản sao**
 
 Mỗi spawner có field **`copies`** (số bản sao của chính spawner đó). Đây là field **quyết định
 quy mô** mà các bảng trước bỏ qua:
 
 | | Số |
 |---|---:|
-| Phần tử `listPrefabEnemies` (khai báo) | **22.482** |
+| Phần tử `listPrefabEnemies` (khai báo) | **22.451** |
 | **× `copies` = quân thực tế** | **45.659** |
 | Hệ số phóng | **2,03×** |
-| Dòng có `copies = 2` | **9.793 / 11.094 = 88,3 %** |
+| Dòng có `copies = 2` | **9.793 / 11.089 = 88,3 %** |
 | Quân đến từ dòng `copies > 1` | **43.189 = 94,6 %** |
 | Quân đến từ dòng `copies = 1` | **2.470 = 5,4 %** |
 
@@ -700,7 +707,7 @@ class `MapController`.
 | 1 | **Enemy prefab nào trong wave nào** | **D** — 45.659 entry = `"?"` | phải chạy lại `wave_report.py` với pathID→name (cần `data.unity3d`) |
 | 2 | `spawn_type` 5/6 bị đặt tên sai (`boss`/`special`) | **A — lỗi đã xác nhận** | đọc là `EndMapPoint`/`StartWavePoint` |
 | 3 | `Wave.indexWave` = 0 toàn bộ | **A** | dùng tên GameObject |
-| 4 | Số enemy thực tế trong 1 spawner | **D** — `count = 0` cho **11.094/11.094** dòng (`number` không serialize); `radius` = 0,1 toàn bộ | không biết wave có bao nhiêu enemy |
+| 4 | Số enemy thực tế trong 1 spawner | **D** — `count = 0` cho **11.089/11.089** dòng (`number` không serialize); `radius` = 0,1 toàn bộ | không biết wave có bao nhiêu enemy |
 | 5 | Toạ độ start/end point (world) | **D** — chỉ có pathID; `PathCreator.csv` **0 cột `points[i].x/y`** | xem `ENEMY_BEHAVIOUR.md` §2 |
 | 6 | 1 wave nối wave khác thế nào | **C** — `y_spawn` + `EndPoint` gợi ý tuần tự | |
 | 7 | Wave nào thuộc stage nào | **D** — `Map_Get_Datas.GetListWaves()` trong code | không map được 236 wave → 299 stage |

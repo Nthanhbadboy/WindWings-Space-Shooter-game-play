@@ -6,7 +6,7 @@
 > Unity 2022.3.62f3, IL2CPP). Súng của tàu — kể cả drone — chỉ dùng để ra **một con số damage**,
 > nên không nằm trong file này; xem `COMBAT.md` và `BALANCE.md`.
 >
-> Nguồn: `datas/waves.json` (22.482 entry), `15-enemy-hp.csv` (**981 dòng**, bản vòng 3),
+> Nguồn: `datas/waves.json` (22.451 entry), `15-enemy-hp.csv` (**981 dòng**, bản vòng 3),
 > `Enemy_Datas.csv` (981), `Enemy_Movement.csv` (981), `Boss_BodyPhysics.csv` (251),
 > `class-inventory.csv` (677 class). Bản cũ `docs/apk-analysis/` chỉ có **800 dòng** cho các bảng
 > `Enemy_*` — mọi số dưới đây lấy từ **bản vòng 3**.
@@ -34,8 +34,8 @@
 | Prefab boss | **39** | A |
 | Tổng HP 39 boss | **206.167.000** trên **206** bộ phận | A |
 | Prefab enemy thường | **70** | A |
-| **Entry** enemy thường (đếm list) | **22.437 / 22.482** | A |
-| **Entry** boss (đếm list) | **45 / 22.482** | A |
+| **Entry** enemy thường (đếm list) | **22.437 / 22.451** | A |
+| **Entry** boss (đếm list) | **45 / 22.451** | A |
 | **Quân** enemy thường (× `copies`) | **45.569 / 45.659** | A |
 | **Quân** boss (× `copies`) | **90 / 45.659** | A |
 | Boss có vùng va chạm | **27 / 39** | A |
@@ -46,7 +46,7 @@
 > Nghĩa là boss **không phải một enemy to hơn** — nó là **một loại màn khác**, xác nhận đúng cách
 > hiểu "boss là màn riêng". Ngược lại, enemy thường gần như toàn bộ nội dung: **45.569 quân** trong 45.659.
 >
-> **Hai đơn vị đếm, đừng lẫn:** *entry* = số phần tử trong `listPrefabEnemies` (**22.462**);
+> **Hai đơn vị đếm, đừng lẫn:** *entry* = số phần tử trong `listPrefabEnemies` (**22.451**);
 > *quân* = entry × `copies` (**45.659**). `BOSSES.md` và `GAMEPLAY.md` §1.3.1 luôn ghi rõ đang dùng đơn vị nào.
 
 ---
@@ -388,8 +388,8 @@ và **chưa có một dòng CSV nào**.
 
 | # | Lớp kịch bản | Class | Instance | Đã đọc | Trạng thái |
 |---:|---|---|---:|---:|---|
-| 1 | **Sinh quân** (wave, spawner, list enemy) | `Call_Data` | **11.094** dòng
-(= **23.757** `Σ copies**) | **11.094** | ✅ **100%** |
+| 1 | **Sinh quân** (wave, spawner, list enemy) | `Call_Data` | **11.089** dòng
+(= **23.757** `Σ copies**) | **11.089** | ✅ **100%** |
 | 2 | **Di chuyển** (path, speed, turret, hướng) | `Enemy_Movement` | 981 | 981 | ✅ **100%** |
 | 3 | **HP** | `Enemy_Datas` | 981 | 981 | ✅ **100%** |
 | 4 | **Bắn** (cadence, burst) | `Gun_Attack` | 458 | 458 | ✅ **100%** |

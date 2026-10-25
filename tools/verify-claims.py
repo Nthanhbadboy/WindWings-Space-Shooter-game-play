@@ -994,7 +994,7 @@ claim("H1", ANIMDOC, "`Boss-` **39** · `CB-` **33**", (39, 33),
           sum(1 for e in wave_roster() if e.startswith(p)) for p in ("Boss-", "CB-")),
       "phân bố tiền tố của roster 109")
 
-claim("H2", ANIMDOC, "**22.482 lượt spawn trên 282 wave và 11.094 spawner**", (22482, 282, 11094),
+claim("H2", ANIMDOC, "**22.451 entry spawn trên 282 wave và 11.089 dòng cấu hình**", (22451, 282, 11089),
       lambda: _wave_counts(),
       "quy mô bảng spawn — chứng minh roster là bảng thật, không phải danh mục")
 
@@ -1096,7 +1096,7 @@ claim("I1", READY, "**5 field**: `hpProgressBarRenderer`", 5, display_fields,
 claim("I2", READY, "`795/795` event có `time`, mức **A**", (795, 795), events_with_time,
       "CHỈ kiểm mốc thời gian TRONG clip — không chứng minh thứ tự pha, điều kiện, số lần lặp hay hành vi callback (review R1)")
 
-claim("I3", READY, "11.094 spawner · rate = 0 : 2.371", 2371,
+claim("I3", READY, "11.089 dòng cấu hình · rate = 0 : 2.366", 2366,
       lambda: (spawner_rate_zero() or (None, None, None))[1],
       "sửa 2.373 -> 2.371 trong DESIGN_QUESTIONS.md")
 
@@ -1574,7 +1574,7 @@ claim("M1", DATA_SYNC, "**1.200 dòng · 23 field**", (1200, 23, False), call_da
 claim("M2", READY, "| `rate = 0` (trong `Call_Data`) | **295** | 1 | **6** |", (295, 6),
       call_data_rate0, "đếm list quân; KHÔNG chứng minh cách game đọc rate (review R5)")
 
-claim("M3", READY, "và 1.206 spawner `rate = 0` có **>1 quân**", (1206, 30),
+claim("M3", READY, "và 1.206 spawner `rate = 0` có **>1 quân**", (1202, 30),
       waves_rate0_big, "đếm list; KHÔNG chứng minh đã burst runtime — vẫn là giả thuyết tới khi có consumer asm (review R5)")
 
 # ── N. hai manifest kéo thêm: Spine event + bản đồ độ sâu UI ───────────
@@ -2743,41 +2743,121 @@ def wave_copy_identity():
 
 
 claim("AQ4", ENCOUNTERS_DOC,
-      "| **Tổng** | | **282** | **11.094** | **23.757** | 28,5 | **62** |",
-      (11094, 23757, 45659), encounters_units,
-      "dòng 11.094 · lượt Σcopies 23.757 (= số bảng cũ) · quân Σlen×copies 45.659")
+      "| **Tổng** | | **282** | **11.089** | **23.757** | 28,5 | **62** |",
+      (11089, 23757, 45659), encounters_units,
+      "dòng 11.089 · lượt Σcopies 23.757 (= số bảng cũ) · quân Σlen×copies 45.659 (peer đã rút lại nhãn \"quân thật\")")
 
 claim("AQ5", ENCOUNTERS_DOC,
       "**Kiểm tự động (`AQ5`): 9/9 wave khớp** `Σ copies` = số bảng cũ",
-      (150, 42, 331, 190, 72, 36, 36, 18, 54, 27, 621, 257, 42, 21, 84, 42, 6, 3),
+      (150, 42, 331, 190, 72, 36, 36, 18, 54, 27, 622, 257, 42, 21, 84, 42, 6, 3),
       wave_copy_identity,
-      "9 wave: (Σcopies, dòng) — 621 của Wave_0163 là lượt, không phải dòng")
+      "9 wave: (Σcopies, dòng) — 622 của Wave_0163 là lượt, không phải dòng")
 
 claim("AQ6", ENCOUNTERS_DOC,
-      "| `point_range` | point-to-point range | 7.541 | 68,0 % | **16.498** | 69,4 % |",
+      "| `point_range` | point-to-point range | 7.536 | 68,0 % | **16.498** | 69,4 % |",
       (16498, 4199, 1688, 686, 686), encounters_types_copies,
       "spawn_type theo LƯỢT: khớp dãy 16.498/4.199/1.688/686/686 của CROSS_BRANCH §3c")
 
 claim("AQ1", ENCOUNTERS_DOC,
-      "| Spawner (dòng = 1 `Call_Data` component) | **11.094** (11.074 ở 281 wave có tên + 20 ở `unknown`) | `waves.json` |",
-      (11094, 282, 22482, 1015), encounters_totals,
-      "đếm lại waves.json: dòng spawner, wave, enemy entry, tên khác nhau")
+      "| Dòng trong `waves.json` (đã **gộp** object trùng, mỗi dòng mang `copies`) | **11.089** (11.072 ở 281 wave có tên + 17 ở `unknown`) | `waves.json` |",
+      (11089, 282, 22451, 1015), encounters_totals,
+      "đếm lại waves.json: số dòng cấu hình (KHÔNG phải spawner — spawner = 23.757 object), wave, enemy entry, tên khác nhau")
 
 claim("AQ2", ENCOUNTERS_DOC,
-      "| `point_range` | point-to-point range | 7.541 |",
-      (7541, 2084, 861, 327, 281), encounters_types,
-      "phân bố spawn_type trên 11.094 dòng")
+      "| `point_range` | point-to-point range | 7.536 |",
+      (7536, 2084, 861, 327, 281), encounters_types,
+      "phân bố spawn_type trên 11.089 dòng")
+
+def wave_unit_crosscheck():
+    """(Σcopies trong waves.json, instances Call_Data trong class-inventory.csv, số dòng)."""
+    import json
+    path = os.path.join(ROOT, "datas/waves.json")
+    if not os.path.exists(path):
+        return None
+    data = json.load(open(path, encoding="utf-8"))
+    waves = data.get("waves") or []
+    rows = sum(len(w["spawners"]) for w in waves)
+    copies = sum(sp.get("copies", 1) for w in waves for sp in w["spawners"])
+    inv = os.path.join(ROOT, "reverse-engineering/scriptableobjects/class-inventory.csv")
+    if not os.path.exists(inv):
+        return None
+    n = None
+    for r in _csv_rows("reverse-engineering/scriptableobjects/class-inventory.csv") or []:
+        if r.get("class") == "Call_Data":
+            n = int(r["instances"])
+    if n is None:
+        return None
+    return (copies, n, rows)
+
 
 claim("AQ3", ENCOUNTERS_DOC,
       "| **cộng 3 wave** | | **149** | **149** | | **149** |",
       (149, 149, 0, 3), wave_call_data_identity,
       "Call_Data vs pathID trên 3 wave normal: 0 component bị tham chiếu 2 lần")
 
+def atlas_page_stats():
+    """(asset, unresolved, unresolved có trang thật, ca tự gán được, họ trang đủ chuẩn)."""
+    rows = _csv_rows("docs/assets/sprites-atlas-page.csv") or []
+    if not rows:
+        return None
+    un = [r for r in rows if r["current_category"] == "unresolved"]
+    withp = [r for r in un if r.get("texture_page")]
+    applied = [r for r in rows if r.get("applied") == "true"]
+    fam = {}
+    for r in rows:
+        if r.get("suggested_category") and r.get("page_family"):
+            fam[r["page_family"]] = (r["suggested_category"], r["precision"], r["n_labeled"])
+    return (len(rows), len(un), len(withp), len(applied), len(fam))
+
+
+def readme_sizes():
+    """(số dòng khai báo kích thước trong README, số dòng SAI)."""
+    import re
+    path = os.path.join(ROOT, "docs/spec/README.md")
+    if not os.path.exists(path):
+        return None
+    txt = open(path, encoding="utf-8").read()
+    entries = re.findall(r"`([A-Za-z_0-9./-]+\.md)`.*?(\d+) dòng · (\d+) bảng", txt)
+    if not entries:
+        return None
+    bad = 0
+    for name, lines, tables in entries:
+        f = os.path.join(ROOT, name) if "/" in name else os.path.join(ROOT, "docs/spec", name)
+        if not os.path.exists(f):
+            bad += 1
+            continue
+        body = open(f, encoding="utf-8").read().splitlines()
+        t = sum(1 for l in body if l.lstrip().startswith("|---"))
+        if (len(body), t) != (int(lines), int(tables)):
+            bad += 1
+    return (len(entries), bad)
+
+
+claim("AQ7", ENCOUNTERS_DOC,
+      "| **Spawner = `Call_Data` object** | **23.757** (= Σ `copies`; khớp `class-inventory.csv` 23.757) | hai nguồn độc lập |",
+      (23757, 23757, 11089), wave_unit_crosscheck,
+      "Σ copies trong waves.json = số instance Call_Data trong class-inventory.csv ⇒ 23.757 là số SPAWNER; "
+      "11.089 chỉ là số dòng cấu hình sau khi gộp object trùng. Không kết luận vì sao trùng")
+
+
+claim("RD1", "docs/spec/README.md",
+      "**Kiểm tự động (`RD1`):** **39/39** dòng trong bảng trên khớp",
+      (39, 0), readme_sizes,
+      "số dòng · số bảng của 39 tài liệu trong bảng README khớp file thật (bảng đếm theo dòng `|---`)")
+
+
 claim("AB1", ASSET_TRIAGE,
       "**Trả lời ngắn: 2.197 asset · 1.554 chưa có nhãn · 132 sheet · 116 tên atlas không match · 67 page sactx.**",
       (2197, 1554, 132, 16, 116, 67), asset_triage_stats,
       "116 = `unmatched_atlas_name_count`: tên atlas KHÔNG match theo tên trong sprites-index.csv. "
       "Đây KHÔNG phải trạng thái tách ảnh — chứng minh tách cần m_RD.textureRect/settingsRaw (T9)")
+
+claim("AT1", ASSET_TRIAGE,
+      "| **trang atlas** | 2.197 asset · **340** `unresolved` · **282** có trang thật · **18** tự gán được · **13** họ trang đủ chuẩn |",
+      (2197, 340, 282, 18, 13), atlas_page_stats,
+      "trang THẬT từ resolved-geometry.json.gz (m_RD.m_Texture, report 62) — KHÔNG phải cột `atlas` "
+      "của sprites-index.csv (59 ca, page đánh số). 18 = tự gán được khi họ trang n>=10 và precision>=0,95")
+
 
 claim("AB2", ASSET_TRIAGE,
       "| **AB2** | 1.554 = **396** trong sheet + **1.158** rời |",

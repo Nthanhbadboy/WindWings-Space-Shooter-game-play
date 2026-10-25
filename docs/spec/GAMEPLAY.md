@@ -112,9 +112,9 @@ StageType { Normal, MiniBoss, Boss, Combat }   (07-enums.md)
 
 ### 1.3.1 Số quân mỗi wave — kiểm bằng số
 
-Mỗi spawner không có `count` tường minh (0 trên **11.099/11.099**), số quân = `len(enemies) × copies`.
+Mỗi dòng không có `count` tường minh (0 trên **11.089/11.089** dòng), số quân = `len(enemies) × copies`.
 
-⇒ **22.483 × copies = 45.659** khớp **chính xác 100%**; **94,6%** quân đến từ spawner `copies > 1` (`ENCOUNTERS` §3.5).
+⇒ Σ `len × copies` = **45.659** (mức **B**); **94,7%** quân đến từ dòng có `copies > 1` (`ENCOUNTERS` §3.5).
 
 | Chỉ số | Giá trị | Nguồn |
 |---|---:|---|

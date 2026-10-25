@@ -5,12 +5,12 @@
 > Mục cuối: **Còn thiếu / phải đoán**.
 
 > **Sửa lại (lần 3):** pipeline vòng 3 (nhánh `ef6b75ef`, commit `61d5385`) đã resolve
-> **tên enemy trong wave** — **22.482** entry, **109** prefab, **0** `"?"`. Đây là mục
+> **tên enemy trong wave** — **22.451** entry, **109** prefab, **0** `"?"`. Đây là mục
 > tôi từng ghi là "chưa biết". Số mới ở `ENCOUNTERS.md` §2.6.
 >
 > **Sửa lại (lần 2):** bản đầu của file này phóng đại khối lượng. Sau khi đọc **tên gốc** spawner
 > và **dedup**, con số thật nhỏ hơn nhiều: **48 archetype spawner**, **109 prefab enemy được spawn**,
-> **11.094 dòng / 10.782 cấu hình khác nhau** (median **28,5 dòng/wave**), **boss là 45 wave riêng**. Xem §1.
+> **11.089 dòng / 10.782 cấu hình khác nhau** (median **28,5 dòng/wave**), **boss là 45 wave riêng**. Xem §1.
 
 ---
 
@@ -33,7 +33,7 @@
 ## 1. Hoá đơn sản xuất — **sửa lại: nhỏ hơn tôi nói**
 
 > ⚠ **Mục này bản trước sai** — nhưng sai vì **lẫn đơn vị**, không phải vì dữ liệu có bản trùng.
-> `waves.json` có **11.094 dòng** (mỗi dòng = 1 `Call_Data`), và **23.757 lượt** (`Σ copies`).
+> `waves.json` có **11.089 dòng** (mỗi dòng = 1 `Call_Data`), và **23.757 lượt** (`Σ copies`).
 > Câu "84,2 spawner/wave" là lấy **lượt/wave**; câu "1.015 cấu hình đặt tay" đúng (1.015 tên khác
 > nhau), nhưng **1.015 tên rút về 53 tên gốc** — cả hai đều thật, ở hai mức khác nhau.
 
@@ -66,7 +66,7 @@ xuất hiện ở y 9,6" — chạy 4.622 lần với đúng cùng tham số. Đ
 
 | Câu hỏi | Số đúng | Đơn vị |
 |---|---:|---|
-| Có bao nhiêu **cấu hình** spawn? | **11.094** | dòng = 1 `Call_Data` component |
+| Có bao nhiêu **cấu hình** spawn? | **11.089** | dòng = 1 `Call_Data` component |
 | Có bao nhiêu **lượt sinh quân**? | **23.757** | `Σ copies` (bảng cũ ghi số này) |
 | Bỏ marker thì còn bao nhiêu lượt? | **22.385** | `Σ copies` của dòng không phải `StartPoint`/`EndPoint` |
 | Bao nhiêu **cấu hình khác nhau** (gộp `tên + type + rate + speed + y` trong từng wave)? | **10.782** | dòng, dedup **trong từng wave** (đo 25/10) |
@@ -105,7 +105,7 @@ như tôi ghi trước đó — 690 là **mọi** object trong prefab (súng, hi
 > trong `waves.json` (đo 25/10) · **189** = mọi GameObject có HP trong `datas/enemy_hp.json`.
 > Khi nói "game có bao nhiêu loại quân" thì dùng **109**; **92** là số *loại có script HP*.
 
-> **Đã resolve (vòng 3):** **22.462** entry · **109** prefab · **0** `"?"` — xem `ENCOUNTERS.md` §2.6.
+> **Đã resolve (vòng 3):** **22.451** entry · **109** prefab · **0** `"?"` — xem `ENCOUNTERS.md` §2.6.
 > Trần nội dung enemy là **109 prefab**, không phải hàng chục nghìn.
 
 ### 1.4 Boss là **màn riêng** — xác nhận
@@ -186,7 +186,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 |---|---|
 | **Nghĩa** | cơ chế hành xử đúng như spec, không chỉ "giống giống" |
 | **Kiểm bằng** | máy: **test tự động** đối chiếu từng con số đã có (mức A) |
-| **Ví dụ test cụ thể** | wave 0163 spawn **621** spawner · `rate` mặc định **1,0** (16.173 spawner) · `y_spawn` **9,6** (15.485) · vùng chơi **20×25** unit · bán kính va chạm đạn **15** · `border.w` 15 cho **799/800** |
+| **Ví dụ test cụ thể** | wave 0163 spawn **622** spawner · `rate` mặc định **1,0** (16.173 spawner) · `y_spawn` **9,6** (15.485) · vùng chơi **20×25** unit · bán kính va chạm đạn **15** · `border.w` 15 cho **799/800** |
 | **Đạt khi** | **100%** test pass |
 | **Bắt chước đủ?** | ✅ **đủ cho phần đã có số** — nhưng phải **viết test**, bắt chước không sinh ra test |
 | **Chi phí** | trung bình |
@@ -227,7 +227,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 
 | Việc | Bắt chước có giúp? | Vì sao |
 |---|---|---|
-| Biết **cần làm gì** | ✅ **gần hết** | 22.462 entry enemy, 109 prefab, 48 archetype, 420 súng — **đã có danh sách** |
+| Biết **cần làm gì** | ✅ **gần hết** | 22.451 entry enemy, 109 prefab, 48 archetype, 420 súng — **đã có danh sách** |
 | Biết **con số đúng** | 🟡 **một phần** | 25 hằng số đọc ngay; 5.818 field còn ở mức D |
 | **Làm ra** 282 wave × 84 spawner | ❌ **không** | khối lượng, không phải hiểu biết |
 | **Vẽ** 2.185 sprite thay thế | ❌ **không** | gu thẩm mỹ |
@@ -253,8 +253,8 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 - **"Hoàn hảo" phải định nghĩa ở mức nào** — L0/L1/L2/L3 ở trên. Không có định nghĩa thì không
   kiểm được, và cái gì không kiểm được thì không biết đã đạt chưa.
 - **Đơn giản và nhỏ — cả hai đều đúng ở đây.** 48 archetype + 92 prefab enemy là **bộ từ vựng nhỏ**.
-  Khối lượng thật là **11.094 dòng** (**10.782** cấu hình khác nhau), median **28,5 dòng/wave** — không phải 84.
-- **Đã resolve xong:** pipeline vòng 3 đọc được **22.462** entry · **109** prefab · **0** `"?"`.
+  Khối lượng thật là **11.089 dòng** (**10.782** cấu hình khác nhau), median **28,5 dòng/wave** — không phải 84.
+- **Đã resolve xong:** pipeline vòng 3 đọc được **22.451** entry · **109** prefab · **0** `"?"`.
   Trần nội dung enemy là **109 prefab** — không phải 45.659 thiết kế mới.
 
 > `> Kết luận (mức B):` bắt chước đưa bạn tới **L1** nhanh. **L2** cần 2 tool. **L3** cần
@@ -357,7 +357,7 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 | # | Thứ | Mức | Ghi chú |
 |---:|---|---|---|
 | 1 | Giá trị **5.818** field (`4.861` serialized + `957` static) | **D** | chưa chạy AssetRipper/Ghidra |
-| 2 | ~~45.659 tham chiếu enemy~~ | ~~D~~ → **A** | ✅ **đã resolve** (`ENCOUNTERS.md` §2.6): 22.462 entry · 109 prefab |
+| 2 | ~~45.659 tham chiếu enemy~~ | ~~D~~ → **A** | ✅ **đã resolve** (`ENCOUNTERS.md` §2.6): 22.451 entry · 109 prefab |
 | 3 | Ngưỡng N người cho test L3 | **C** | phải tự chọn; chưa ai trong dự án đo |
 | 4 | Dung sai cho L2 | **C** | phải tự chọn (đề xuất ±5%, chưa có cơ sở) |
 | 5 | Thời gian làm 282 wave | **C** | không đoán ở đây; phụ thuộc công cụ authoring |
@@ -367,3 +367,18 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 >
 > **Sau khi chốt phạm vi L1 (§4.2):** dòng 1, 2 và 4 **không còn là yêu cầu** — chúng chỉ còn
 > là thông tin tham khảo. Dòng 3 và 5 vẫn phải chọn, nhưng chọn **theo ý mình**, không theo bản gốc.
+
+---
+
+## 12. Cập nhật 25/10 (lần 3) — đơn vị spawner, và geometry có toạ độ
+
+| Việc | Trước | **Sau (đo lại)** | Bằng chứng |
+|---|---|---|---|
+| "spawner" là gì | 11.089 (gọi là spawner) | **spawner = 23.757 `Call_Data` object**; 11.089 = **dòng cấu hình** (đã gộp object trùng, mỗi dòng mang `copies`) | `Σ copies` = 23.757 = `class-inventory.csv` → **AQ7** |
+| Dòng thật (bỏ mốc wave) | 10.493 | **10.481** (bỏ **608** dòng `StartPoint`/`EndPoint`) | `spawn_type` boss 327 + special 281 = 608 |
+| Tổng có đổi khi đồng bộ `622b700e5`? | tưởng "không đổi" | **9 wave + `unknown` đã đổi** (`Σ copies` vẫn 23.757) | `DATA_SYNC.md` §17.1 |
+| Sprite có toạ độ chưa | chưa | **2.185** sprite resolve `m_RD` · **40** rect lọt ngoài texture · **144** cần lật/xoay | report 62, `DATA_SYNC.md` §17.3 |
+| 340 `unresolved` | 0 ca dùng được trang atlas | **282** ca biết trang thật, **18** gán được (precision ≥ 0,95) | `ASSET_TRIAGE.md` §9.6b (**AT1**) |
+
+> ⚠ Geometry là **join metadata** (`PROVISIONAL_GEOMETRY_JOINS_NOT_PIXEL_CROP_VALIDATION`) — **không**
+> phải bằng chứng "ảnh đã cắt đúng". 6 chunk `objects-*.jsonl.gz` **chưa kéo** ⇒ chưa tự kiểm `sha256`.

@@ -375,7 +375,7 @@ Vì sao đếm phát bắn là đủ: `số_phát = ceil(HP × f(giáp) / damage
 | Số đang ghi | Vấn đề | Sửa |
 |---|---|---|
 | **45.659 quân** | ✅ **dùng chung cho cả 3 chế độ** — `kCount ≡ 1` (§5) | giữ nguyên, thêm dòng "**cùng số quân ở 3 chế độ**" |
-| **11.094 spawner** | số spawner trong asset, không phải số quân | giữ, ghi rõ |
+| **11.089 dòng cấu hình** | số spawner trong asset, không phải số quân | giữ, ghi rõ |
 | **282 wave** | `GetListWaves(stageIndex)` — **1 tham số**, không mode | ✅ **wave dùng chung 3 chế độ** |
 | **299 stage** | mỗi stage × 3 chế độ = **897 lượt chơi** | thêm dòng **897** |
 | **63,5 phút** (282 wave) | `rate` không đổi theo chế độ | ✅ **giữ nguyên cho cả 3 chế độ** — độ dài **không** đổi; cái đổi là **thời gian mỗi con sống** (HP) |

@@ -261,7 +261,7 @@ Cộng thêm: `border` của `Enemy_Movement` cho **vùng chơi 20×25 unit** c�
 | Phần | Khó vì 2.5D? | Thực tế |
 |---|---|---|
 | Khung gameplay (bắn, di chuyển, va chạm, spawn) | **Không** — dễ | AI làm tốt, spec đã đủ số |
-| **Khối lượng nội dung** | Không liên quan | **48 archetype spawner · **109** prefab enemy · 282 wave · **10.782** cấu hình khác nhau (11.094 dòng) · 458 súng** (nguồn: `ENCOUNTERS.md` §1–2) |
+| **Khối lượng nội dung** | Không liên quan | **48 archetype spawner · **109** prefab enemy · 282 wave · **10.782** cấu hình khác nhau (11.089 dòng) · 458 súng** (nguồn: `ENCOUNTERS.md` §1–2) |
 | **Art thay thế** | Không liên quan | 2.185 sprite gốc **không dùng được** (bản quyền) → phải vẽ mới |
 | **Cân bằng + feel** | Không liên quan | vẫn phải playtest |
 
@@ -283,7 +283,7 @@ Cộng thêm: `border` của `Enemy_Movement` cho **vùng chơi 20×25 unit** c�
 | Physics phức tạp | ✅ | ✅ | – | **2D đơn giản** (AABB/circle/polygon) |
 | Sinh nội dung thủ tục | – | ✅ | – | **không có** (282 wave đặt tay) |
 | Ánh sáng / shader PBR | ✅ | ✅ | – | **không có** (sprite + 70 shader) |
-| **Khối lượng nội dung** | ✅ | ✅✅ | – | ✅ (48 archetype · **109** enemy · **11.094** dòng = **10.782** cấu hình khác nhau) |
+| **Khối lượng nội dung** | ✅ | ✅✅ | – | ✅ (48 archetype · **109** enemy · **11.089** dòng = **10.782** cấu hình khác nhau) |
 | **Art thay thế** | ✅ | ✅✅ | ✅ | **✅✅** (2.185 sprite) |
 | **Cân bằng + feel** | ✅ | ✅ | ✅ | **✅** |
 
@@ -557,7 +557,7 @@ Bản trước của mục này ghi mỗi file "phủ ~85% · ~72% · ~40%…". 
 **Đúng:** AI viết được **khung** game này nhanh hơn con người nhiều lần, vì:
 - 125 class UI + screen graph → sinh được toàn bộ scene/prefab
 - 458 cấu hình súng + burst 5 tham số → weapon system data-driven
-- 282 wave + **11.094** cấu hình spawner (23.757 lượt) → level generator có tham số
+- 282 wave + **11.089** cấu hình spawner (23.757 lượt) → level generator có tham số
 - 800 enemy × 9 component → enemy framework đúng kiến trúc gốc
 
 **Điều kiện:** phải **thay 3 thứ** mà spec không cho:

@@ -17,7 +17,7 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **63** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **64** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
 | `datas/` | JSON/CSV bóc trực tiếp | **30** file · 13 MB | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
@@ -28,7 +28,9 @@
 | `docs/assets/sprites-index.csv` | Danh mục sprite | **2.197** dòng | tra cứu nhanh theo tên/kích thước |
 | `docs/assets/sheet-splits.csv` | Toạ độ cắt từng mảnh | **307** sheet · **4.250** mảnh | biết một "sprite" thật ra là mấy hình |
 | `docs/assets/sprites-auto-classified.csv` | Nhãn + provenance | **1.857/2.197** có nhãn | biết cái nào là UI / đạn / FX / boss |
-| `tools/` | 8 script đo lại được | — | `verify-claims.py`, `art-study.py`, `design-metrics.py`, … |
+| `reverse-engineering/raw/sprite-geometry/` | **Geometry thật** của sprite (`m_RD`) | **2.185** sprite · **67** page `sactx` | cắt đúng chỗ, biết sprite nằm trang nào |
+| `docs/assets/sprites-atlas-page.csv` | Trang texture thật của từng sprite | **282**/340 ca chưa nhãn biết trang | gán nhãn theo trang (đo precision trước) |
+| `tools/` | **9** script đo lại được | — | `verify-claims.py`, `art-study.py`, `classify-by-atlas.py`, … |
 
 **Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **30** file `datas/`.
 
@@ -68,7 +70,7 @@ Không cần đọc hết 40 file trước khi bắt đầu. Tám con số này 
 | 1 | Khung hình dọc | tỉ lệ **0,4813** (≈ 9:18,7) → canvas **1080×2244** | `VISUAL_DESIGN.md` §1 (**AN1**) |
 | 2 | Điều khiển | kéo ngón để lái · biên **20×25** · radius **15** unit | `GAMEPLAY.md` §1 |
 | 3 | Súng / đạn | **458** cấu hình · damage **40–1.200** (median **400**) · **186** loại đạn | `COMBAT.md` §0 |
-| 4 | Wave | **282** wave · **11.094** dòng · median **28,5** dòng/wave · **109** prefab enemy | `ENCOUNTERS.md` §1 (**AQ1/AQ4**) |
+| 4 | Wave | **282** wave · **11.089** dòng · median **28,5** dòng/wave · **109** prefab enemy | `ENCOUNTERS.md` §1 (**AQ1/AQ4**) |
 | 5 | Spawn | 1 enemy / **1,0 s** · `y` **9,6** (giữa mép trên) · radius **0,1** · **68 %** là `point_range` | `SCRIPTS.md` §3 (**AQ6**) |
 | 6 | Độ khó | **3** chế độ · `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · **không** nhân số quân | `DIFFICULTY_MODES.md` §5 (**E1/E2**) |
 | 7 | HP | HP bar trên **109/109** prefab · HP thật = bảng × `kHp[mode]` | `ENEMY_HP_RUNTIME.md` §0 |
@@ -134,7 +136,7 @@ vẽ viền dày.
 
 | # | Bẫy | Đúng |
 |---:|---|---|
-| 1 | **23.757 "spawner"** | **23.757 = `Σ copies` (lượt)**; **11.094 = số dòng**. Đừng đổi chỗ hai số |
+| 1 | **23.757 "spawner"** | **23.757 = `Σ copies` = số `Call_Data` object** (`class-inventory.csv` khớp); **11.089 = số dòng cấu hình**. Đừng đổi chỗ hai số |
 | 2 | "Spawner bị nhân đôi trong export" | Không có. Đó là field `copies`. **Đừng chia 2, đừng dedup theo tên** |
 | 3 | `45.659 "quân"` | Chỉ đúng **nếu** `copies` = số bản sao — **mức B** (raw `Call_Data` không có field này) |
 | 4 | **92 / 109 / 189 enemy** | 92 = prefab có `Enemy_Datas` · **109 = được spawn** (dùng cái này) · 189 = mọi GO có HP |
