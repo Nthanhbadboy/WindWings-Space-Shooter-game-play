@@ -168,6 +168,8 @@ receiver ở trên. Callback fixture vẫn là input, không tuyên bố mặc �
 
 ## 6. Nghiệm thu và bàn giao
 
+**375 tests PASS (36.026s local); Verify40210554491 SUCCESS (50s), code035a64f4404588993982a1ef2a80fdd65a38524b.** validate/regen/diff checks PASS.
+
 - `python3 -m tools.verify.damage_receiver_flow --check`
 - `python3 -m unittest tests.test_damage_receiver_models tests.test_damage_receiver_flow -q`
 - Chạy full suite + datas/validate.py; receipt trong
