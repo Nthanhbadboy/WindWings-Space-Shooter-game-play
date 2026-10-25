@@ -5,6 +5,7 @@ import io
 import json
 from pathlib import Path
 import sys
+import struct
 import zipfile
 from asset_pack_v2 import extract_payload,serialized_files,sha
 from audio_native import INPUTS
@@ -59,7 +60,15 @@ def main():
     methods=native.parse_dump(str(dump));native.parse_dump=lambda _:[(cls if cls in NATIVE else '__not_selected__',ns,name,offset,rva,sig) for cls,ns,name,offset,rva,sig in methods]
     native.TARGET_CLASSES.clear();native.TARGET_CLASSES.update({c:'Camera size runtime writer recovery' for c in NATIVE})
     native.OUT_RAW=str(out/'native');native.OUT_MD=str(work/'native.md');native.OUT_CSV=str(work/'native.csv');sys.argv=['native',str(dump),str(work/'libil2cpp.so')];assert native.main()==0
-    paths=[out/'components.json.gz',*sorted((out/'native').iterdir())]
+    slices=[]
+    for va in (0x756f00,0x756fb8):
+        segment=next(s for s in native.elf_segments(str(work/'libil2cpp.so')) if s[0]<=va and va+4<=s[0]+s[2])
+        offset=segment[1]+va-segment[0]
+        with (work/'libil2cpp.so').open('rb') as binary:
+            binary.seek(offset);data=binary.read(4)
+        slices.append(dict(va=hex(va),file_offset=offset,hex=data.hex(),sha256=sha(data),float32=struct.unpack('<f',data)[0]))
+    (out/'native-data.json').write_text(json.dumps(dict(native_sha256=found['lib/arm64-v8a/libil2cpp.so'],slices=slices),indent=2)+'\n')
+    paths=[out/'native-data.json',out/'components.json.gz',*sorted((out/'native').iterdir())]
     (out/'index.json').write_text(json.dumps(dict(dump_sha256_decompressed=sha(dump.read_bytes()),files=[dict(path=p.relative_to(out).as_posix(),sha256_decompressed=sha(gzip.decompress(p.read_bytes()) if p.suffix=='.gz' else p.read_bytes())) for p in paths]),indent=2)+'\n')
     print('::notice::'+json.dumps(dict(components=len(rows),camera_refs=sum(len(r['cameras']) for r in rows),header_errors=len(errors))))
 
