@@ -106,7 +106,7 @@ jobs:
           sys.path.insert(0,'tools/apk-analyze')
           import il2cpp_consts as native
           dump=next(Path('/tmp/ui-metadata-evidence').rglob('dump.cs'))
-          parents=('Home_Loader','PlayerPreferences','Stage_Datas','GP_Setup','SkipTutorial')
+          parents=('Home_Loader','PlayerPreferences','Stage_Datas','GP_Setup','SkipTutorial','Board_Begin','Stage_Behaviour')
           methods=native.parse_dump(str(dump))
           targets={m[0] for m in methods if m[0] and any(m[0]==p or m[0].startswith(p+'.') for p in parents)}
           native.TARGET_CLASSES.clear()
