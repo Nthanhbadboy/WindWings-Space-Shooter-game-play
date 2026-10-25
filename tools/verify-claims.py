@@ -1620,7 +1620,7 @@ def ui_two_levels():
             sum(int(r.get("nodes") or 0) for r in idx))
 
 
-claim("P1", AUDIT, "**33 tài liệu** trong `docs/spec/` (chưa kể file này)", 33, doc_inventory,
+claim("P1", AUDIT, "**34 tài liệu** trong `docs/spec/` (chưa kể file này)", 34, doc_inventory,
       "quy mô tài liệu hiện có trong docs/spec")
 
 claim("P2", AUDIT, "**2.885** sprite, **2.816** có `width/height`; `04-asset-manifest.csv`: **2.907** asset, **2.838** có kích thước",
@@ -1850,6 +1850,43 @@ claim("R5", TIMELINE_DOC, "| **Mốc cuối clip** | trung vị **3,52 s**, dài
 
 claim("R6", TIMELINE_DOC, "> `CB-30040` có **2** event trong clip `Die`, **cùng mốc 1,5 s**",
       (2, 1.5, 33), timeline_enemy_row, "enemy gần như không có event clip; 2 event trùng mốc = double damage")
+
+# ── S. ghép prefab ↔ lớp *_AnimationEvents (ANIMATION_SCRIPT.md §3.2) ───
+import glob as _glob
+import os as _os
+
+
+def handler_class_join():
+    """(prefab khớp lớp, prefab có event mà thiếu lớp, event của nhóm thiếu, tổng prefab)."""
+    import gzip
+    import json
+    try:
+        with gzip.open(EV_RECV, "rt", encoding="utf-8") as fh:
+            ev = json.load(fh)["events"]
+    except (OSError, KeyError, ValueError):
+        return None
+    counts = {}
+    for e in ev:
+        counts[e["prefab"]] = counts.get(e["prefab"], 0) + 1
+    have = set()
+    for f in _glob.glob("reverse-engineering/raw/typetrees/*AnimationEvents*.jsonl.gz"):
+        try:
+            with gzip.open(f, "rt", encoding="utf-8") as fh:
+                for line in fh:
+                    root = (json.loads(line).get("gameobject") or "").split("/")[0]
+                    if root:
+                        have.add(root)
+        except (OSError, ValueError):
+            continue
+    matched = {p for p in counts if p in have}
+    missing = {p for p in counts if p not in have}
+    return (len(matched), len(missing), sum(counts[p] for p in missing), len(counts))
+
+
+claim("S1", "docs/spec/ANIMATION_SCRIPT.md",
+      "**18 prefab còn lại có event clip nhưng chưa export lớp handler**",
+      (16, 18, 262, 34), handler_class_join,
+      "chỉ 16/34 prefab ghép được lớp handler; 262 event chưa biết lớp")
 
 # ── chạy ───────────────────────────────────────────────────────────────
 

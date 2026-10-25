@@ -22,6 +22,8 @@
 | Nhịp 33 prefab boss | **793 event**, 129 tên hàm, nhịp **0,17 / 0,33 / 1,0 / 5,0 s** | `event-receivers.json.gz` |
 | Hit flash enemy | **0,05 s** qua `Invoke`, alpha **0,5**, 2 hằng số trong `Enemy_Display.OnHit` | `native-calls.json` |
 | Nhịp pha boss | **22** lần `WaitForSeconds`, **4** hằng số (0,5 / 1 / 2 / 3 s), **18** lấy từ biến | asm 69 file |
+| Ghép **prefab ↔ lớp handler** | **16/34** prefab, quan hệ **1:1**, từ **14** lớp `*_AnimationEvents` đã export (`typetrees/*AnimationEvents*` là export **theo instance**, `gameobject` = đường dẫn trong prefab) | claim **S1** |
+| Timeline theo giây của 269 cặp (prefab, clip) | `BOSS_ANIM_TIMELINE.md` — 795 event, 130 tên hàm | claim **R1–R6** |
 
 Tất cả số trên đã khoá bằng claim `J*` + `K*` trong `tools/verify-claims.py`.
 
@@ -29,14 +31,26 @@ Tất cả số trên đã khoá bằng claim `J*` + `K*` trong `tools/verify-cl
 
 ## 1. Bốn task
 
-### T1 — Ba lớp **có asm nhưng không có typetree**
+### T1 — **18 prefab** có event clip nhưng chưa export lớp handler
 
-**Giả định:** `Boss1_AnimationEvents`, `BossSpineEventHandler`, `Boss_1_Animation` **có** instance
-trên prefab boss 1 (`Boss-39001` / `Boss-39002`), và field chuỗi của chúng nằm trong **cùng bộ tên
-entry** đã biết ở §0.
+**Cập nhật 24/10 (hẹp hơn bản đầu):** bản đầu ghi *"3 lớp thiếu typetree"*. Đo lại bằng
+`typetrees/*AnimationEvents*` + `event-receivers.json.gz` thì phạm vi thật là **18 prefab**
+(`Boss-37001/02/04/09/10/11/12/13/14/15/16/17`, `Boss-39003/05/09/11/21`, `CB-30040`) với
+**262/795 event** — chiếm **33 %**, không phải 68 %.
 
-**Việc:** thêm 3 lớp vào `TARGETS` của exporter typetree, chạy lại, xuất
-`typetrees/{class}.jsonl.gz` + đếm instance qua `script-links.jsonl.gz`.
+**3 lớp có asm nhưng không có typetree** (có `il2cpp-consts/*.json`, **0** instance export):
+`Boss1_AnimationEvents` · `BossSpineEventHandler` · `Boss_1_Animation`. Đây là phần *nhỏ nhất* của T1,
+không phải toàn bộ.
+
+**Giả định:** mỗi prefab trong 18 cái đó có **đúng một** lớp `*_AnimationEvents` (như 16 prefab đã
+ghép được, quan hệ 1:1), và lớp đó **có** trong `il2cpp-consts/*.json` (69 lớp đã dump) nhưng chỉ
+**thiếu bước export instance**.
+
+**Việc:**
+1. thêm **toàn bộ** lớp có tên khớp `*_AnimationEvents` + `BossSpineEventHandler` + `Boss_1_Animation`
+   vào `TARGETS` của exporter typetree — **không** chỉ 3 lớp như bản đầu;
+2. xuất `typetrees/{class}.jsonl.gz` (**instance**, kèm `gameobject`) và `script-links.jsonl.gz`;
+3. với lớp có field chuỗi serialized (`BossSpineEventHandler`, `Boss_1_Animation`), in **giá trị** field.
 
 **Artifact:** `anim-raw-T1/instances.json`
 ```json
@@ -44,16 +58,18 @@ entry** đã biết ở §0.
  "string_fields": {"onEventName": "...", "offEventName": "..."}}
 ```
 
-**Tự kiểm:** in ra `(số instance, số field chuỗi)` cho từng lớp. Hiện tại `script-links` có **0**
-instance cho cả 3 lớp — nếu sau khi export vẫn **0** thì kết luận của task là **REVERSED**:
-chúng là **code không gắn prefab nào** (và 12 handler ở §T2 chỉ có thể do `Boss-37xxx` dùng).
+**Tự kiểm:** in `(số prefab ghép được, số prefab còn thiếu)` — mốc hiện tại **(16, 18)**; sau task
+phải là **(34, 0)** hoặc ghi rõ lớp nào **không tồn tại** trong assembly.
 
-**Lật ngược nếu:** field chuỗi của `BossSpineEventHandler` **không phải** `Stop` / `Banplasma`
-(2 tên event duy nhất trong rig `skeleton__21`) ⇒ ứng viên ở `ANIMATION_SCRIPT.md` §2.2 sai và
-phải tìm tên khác trong `datas/spine_anim.json.gz`.
+**Lật ngược nếu:** export xong mà `Boss1_AnimationEvents` vẫn **0 instance** ⇒ lớp đó **không gắn
+prefab nào** (code chết), và 12 handler ở §T2 **không** phải đường mà 16 prefab kia dùng. Điều này
+không làm hỏng gì: 16 prefab đã ghép được lớp thật (`Boss10_…`, `BossAnimationEvents`, …).
 
-**Mở khoá:** nhánh Spine từ **B** lên **A**; biết `Boss_1_Animation` có phải bản cũ của
-`Boss1_Director` hay không.
+**Lật ngược (2):** field chuỗi của `BossSpineEventHandler` **không phải** `Stop` / `Banplasma` (2 tên
+event duy nhất trong rig `skeleton__21`) ⇒ ứng viên ở `ANIMATION_SCRIPT.md` §2.2 sai.
+
+**Mở khoá:** nhánh Spine từ **B** lên **A**; biết `Boss_1_Animation` là bản cũ của `Boss1_Director`
+hay lớp riêng; và **33 % event** còn lại có chủ.
 
 ---
 
@@ -72,6 +88,10 @@ phải tìm tên khác trong `datas/spine_anim.json.gz`.
 | `0x38` | `Attack2HandRight` | `0x68` | `OnCallAttack6Event` |
 | `0x40` | `Attack3TwoHands` | `0x70` | `OnCallAttack9StartEvent` |
 | `0x48` | `Attack1StartCheckShoot` | `0x78` | `OnCallAttack9EndEvent` |
+
+> **Cập nhật 24/10:** 12 field dưới đây là của **`Boss1_AnimationEvents`**. 16 prefab đã ghép lớp
+> dùng **lớp khác** (`Boss10_AnimationEvents`, `BossAnimationEvents`, `Boss4_…`), mỗi lớp có bộ tên
+> riêng ⇒ task này phải chạy **theo từng lớp**, không chỉ lớp `Boss1`. Bản đồ prefab→lớp: claim **S1**.
 
 **Việc:** trong toàn bộ asm (không chỉ 69 file đã export), tìm lệnh ghi vào `[xN + offset]` với
 `offset ∈ {0x20…0x78}` trên đối tượng thuộc lớp `*_AnimationEvents`; hoặc tìm `Delegate.Combine` /

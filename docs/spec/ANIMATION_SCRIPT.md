@@ -214,6 +214,33 @@ ldr x1,[x8,#0x28]; br x2` ⇒ **chỉ gọi một delegate, không có logic**. 
 
 Vì vậy: chép được **tên sự kiện + thời điểm** (§3), **không** chép được "sự kiện đó làm gì".
 
+### 3.2 Prefab nào dùng **lớp handler** nào — đã ghép được **16/34** (mức **A**)
+
+`typetrees/*AnimationEvents*.jsonl.gz` là export **theo instance** (mỗi dòng = 1 MonoBehaviour, có
+`gameobject` = đường dẫn trong prefab) ⇒ ghép được **prefab ↔ lớp handler** mà không cần chạy gì.
+**14 lớp** đã export, phủ **16 prefab**, quan hệ **1:1** (không prefab nào có 2 lớp):
+
+| prefab | event | lớp handler | | prefab | event | lớp handler |
+|---|---:|---|---|---|---:|---|
+| `Boss-39012` | 78 | `Boss10_AnimationEvents` | | `Boss-39007` | 19 | `Boss6_AnimationEvents` |
+| `Boss-39019` | 76 | `BossAnimationEvents` | | `Boss-39010` | 19 | `Boss4_AnimationEvents` |
+| `Boss-39020` | 75 | `BossAnimationEvents` | | `Boss-39016` | 14 | `Boss6_Mini_AnimationEvents` |
+| `Boss-39015` | 58 | `Boss15_AnimationEvents` | | `Boss-37018` | 12 | `BossAnimationEvents` |
+| `Boss-39017` | 42 | `Boss17_AnimationEvents` | | `Boss-37019` | 8 | `BossAnimationEvents` |
+| `Boss-39018` | 34 | `Boss18_AnimationEvents` | | `Boss-39004` | 6 | `Boss5_AnimationEvents` |
+| `Boss-39014` | 27 | `Boss12_AnimationEvents` | | | | |
+| `Boss-39013` | 26 | `Boss11_AnimationEvents` | | | | |
+| `Boss-39008` | 20 | `Boss7_AnimationEvents` | | | | |
+| `Boss-39006` | 19 | `Boss4_AnimationEvents` | | | | |
+
+⇒ **18 prefab còn lại có event clip nhưng chưa export lớp handler** (`Boss-37001/02/04/09…17`,
+`Boss-39003/05/09/11/21`, `CB-30040`) — **262/795 event (33 %)** chưa biết thuộc lớp nào.
+
+> **Sửa một hiểu sai quan trọng:** 12 handler ở §3.1 là của `Boss1_AnimationEvents` — lớp đó **không**
+> phải lớp của 10 prefab lớn nhất. `Boss-39012` dùng `Boss10_AnimationEvents`, `Boss-39019/39020`
+> dùng `BossAnimationEvents`. Nghĩa là **không thể** lấy 12 tên ở §3.1 làm bộ handler chung; mỗi lớp
+> có bộ tên riêng (đúng như 130 tên hàm quan sát được).
+
 ---
 
 ## 4. Enemy — animation do code điều khiển, không do event (mức **A**/**B**)
