@@ -994,7 +994,7 @@ claim("H1", ANIMDOC, "`Boss-` **39** · `CB-` **33**", (39, 33),
           sum(1 for e in wave_roster() if e.startswith(p)) for p in ("Boss-", "CB-")),
       "phân bố tiền tố của roster 109")
 
-claim("H2", ANIMDOC, "**22.460 lượt spawn trên 282 wave và 11.092 spawner**", (22460, 282, 11092),
+claim("H2", ANIMDOC, "**22.482 lượt spawn trên 282 wave và 11.094 spawner**", (22482, 282, 11094),
       lambda: _wave_counts(),
       "quy mô bảng spawn — chứng minh roster là bảng thật, không phải danh mục")
 
@@ -1096,7 +1096,7 @@ claim("I1", READY, "**5 field**: `hpProgressBarRenderer`", 5, display_fields,
 claim("I2", READY, "`795/795` event có `time`, mức **A**", (795, 795), events_with_time,
       "CHỈ kiểm mốc thời gian TRONG clip — không chứng minh thứ tự pha, điều kiện, số lần lặp hay hành vi callback (review R1)")
 
-claim("I3", READY, "11.092 spawner · rate = 0 : 2.370", 2370,
+claim("I3", READY, "11.094 spawner · rate = 0 : 2.371", 2371,
       lambda: (spawner_rate_zero() or (None, None, None))[1],
       "sửa 2.373 -> 2.371 trong DESIGN_QUESTIONS.md")
 
@@ -1574,7 +1574,7 @@ claim("M1", DATA_SYNC, "**1.200 dòng · 23 field**", (1200, 23, False), call_da
 claim("M2", READY, "| `rate = 0` (trong `Call_Data`) | **295** | 1 | **6** |", (295, 6),
       call_data_rate0, "đếm list quân; KHÔNG chứng minh cách game đọc rate (review R5)")
 
-claim("M3", READY, "và 1.203 spawner `rate = 0` có **>1 quân**", (1203, 30),
+claim("M3", READY, "và 1.206 spawner `rate = 0` có **>1 quân**", (1206, 30),
       waves_rate0_big, "đếm list; KHÔNG chứng minh đã burst runtime — vẫn là giả thuyết tới khi có consumer asm (review R5)")
 
 # ── N. hai manifest kéo thêm: Spine event + bản đồ độ sâu UI ───────────
@@ -1640,8 +1640,8 @@ def ui_class_gap():
 claim("N1", SCRIPT, "**`skeleton__21`: 6 event · 2 tên phân biệt**", (21, 6, 2), spine_event_stats,
       "22 dòng toàn bảng; rig boss 1 chỉ có 2 tên ⇒ tập ứng viên của BossSpineEventHandler là A")
 
-claim("N2", DATA_SYNC, "**797 instance · 117 lớp · 146.797 node · 5.831 nút**",
-      (797, 117, 146797, 5831), ui_index_stats,
+claim("N2", DATA_SYNC, "**797 instance · 117 lớp · 150.131 node · 5.831 nút**",
+      (797, 117, 150131, 5831), ui_index_stats,
       "manifest UI: đếm lại trên file, không chép báo cáo")
 
 def ui_class_overlap():
@@ -1751,7 +1751,7 @@ claim("P5", AUDIT, "**4.845** hệ hạt · **92/92** âm thanh · **150** HP id
       (4845, 92, 150, 253, 250), data_counts,
       "một dòng để nhớ datas/ đang có gì — khỏi làm lại")
 
-claim("P6", AUDIT, "**55.584** file · **8.435.335** node", (55584, 8435335, 797, 146797),
+claim("P6", AUDIT, "**55.584** file · **8.437.020** node", (55584, 8437020, 797, 150131),
       ui_two_levels, "UI hai tầng: layout file vs màn cấp cao — đừng tráo")
 
 # ── Q. atlas plan kiểm bằng kích thước thật ─────────────────────────────

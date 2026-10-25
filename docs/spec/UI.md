@@ -473,15 +473,17 @@ Nguồn: `reverse-engineering/raw/ui/_index.csv` (snapshot `9aed767b1`) — mani
 |---|---:|
 | instance UI | **797** |
 | lớp phân biệt | **117** |
-| tổng node | **146.797** (trung vị **26**/màn, max **12.000**) |
+| tổng node | **150.131** (trung vị **26**/màn, max **15.334**) |
 | tổng **button** | **5.831** (trung vị **2**/màn, max **473**) |
-| tổng text node | **17.066** (trung vị **3**, max **848**) |
+| tổng text node | **17.276** (trung vị **3**, max **848**) |
 
 Ba màn nặng nhất theo số nút: **`Board_Maps` 473** · **`Board_Shop` 190** · **`Board_PVP` 180**.
 
-> **Cập nhật 25/10 (bản `55bd18ac8`):** `Board_Maps` từ **6.000 → 12.000 node** và **353 → 473 nút**.
-> Tức trần 6.000 của bản trước **không còn**; nhưng 12.000 có thể là trần mới ⇒ vẫn ghi **cận dưới**
-> cho tới khi có bản sâu hơn.
+> **Cập nhật 25/10 (bản `9edc21f4d`):** `Board_Maps` **12.000 → 15.334 node** (473 nút **không đổi**).
+> **Trần 12.000 đã được chứng minh là trần của walker, không phải của màn**: file cũ ghi
+> `walk_diagnostics = {node_limit: 12000, truncated: true, pending_transforms: 2760}`, bản mới ghi
+> `{node_limit: 50000, truncated: false, pending_transforms: 0}`. ⇒ **15.334 là số đọc hết**, không
+> còn là cận dưới. Tổng node **146.797 → 150.131** (+3.334), text **17.066 → 17.276**; nút **không đổi**.
 Instance nhiều nhất: **`Popup_Notices` 499** (một lớp, 499 biến thể) · `Tab_BattlePass` 30 ·
 `Popup_BuyMoreGems` 20 · `Tab_Boss` 17.
 

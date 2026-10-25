@@ -133,7 +133,7 @@ class `Enemy_*` là `Enemy_Data_Balance` (điểm số). **`Enemy_Get_Datas` và
 | Wave > 500 quân | **14/282 = 5 %** |
 | Wave > 700 quân | **8/282 = 3 %** |
 
-**Số con cùng lúc trên màn** — phụ thuộc thời gian sống, hiện **chưa đo được** (`rate`=0 ở 2.370
+**Số con cùng lúc trên màn** — phụ thuộc thời gian sống, hiện **chưa đo được** (`rate`=0 ở 2.371
 spawner, `count`=0 ở 100 %):
 
 | Giả định thời gian trên màn | Con cùng lúc (trung bình) |
@@ -210,7 +210,7 @@ Cả ba cùng một lần export ⇒ **rẻ hơn** việc tôi suy luận thêm 
 
 ## 6. Còn thiếu / phải đoán
 
-- **Số con cùng lúc (§3.1) là cận, không phải số đo** — `A7` vẫn mở vì `rate`=0 ở 2.370 spawner và
+- **Số con cùng lúc (§3.1) là cận, không phải số đo** — `A7` vẫn mở vì `rate`=0 ở 2.371 spawner và
   `count`=0 ở 100 %. Muốn đo thật phải chạy game hoặc đọc `Spawner` code.
 - **Tôi chưa chứng minh được `GetStartHealth()` gọi `GetStartHealthPoint()`** — hai method cùng tồn
   tại và cùng trả `float`, nhưng **call graph này là suy luận**, chưa đọc lệnh `bl`. Nhãn **B**.

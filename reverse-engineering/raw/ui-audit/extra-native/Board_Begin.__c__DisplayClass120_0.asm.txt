@@ -1,0 +1,109 @@
+;;; ctor  public void .ctor() { }
+    0x15e577c: mov      x1, xzr
+    0x15e5780: b        #0x2143330
+
+;;; <ShowPlayer>b__0  internal void <ShowPlayer>b__0() { }
+    0x15e5784: stp      d9, d8, [sp, #-0x40]!
+    0x15e5788: stp      x30, x23, [sp, #0x10]
+    0x15e578c: stp      x22, x21, [sp, #0x20]
+    0x15e5790: stp      x20, x19, [sp, #0x30]
+    0x15e5794: adrp     x20, #0x2ce2000
+    0x15e5798: adrp     x23, #0x2adb000
+    0x15e579c: ldrb     w8, [x20, #0x9f9]
+    0x15e57a0: ldr      x23, [x23, #0xde8]
+    0x15e57a4: mov      x19, x0
+    0x15e57a8: tbnz     w8, #0, #0x15e57d8
+    0x15e57ac: adrp     x0, #0x2adb000
+    0x15e57b0: ldr      x0, [x0, #0xb00]
+    0x15e57b4: bl       #0x110d028
+    0x15e57b8: adrp     x0, #0x2adb000
+    0x15e57bc: ldr      x0, [x0, #0xde8]
+    0x15e57c0: bl       #0x110d028
+    0x15e57c4: adrp     x0, #0x2aed000
+    0x15e57c8: ldr      x0, [x0, #0xfc0]
+    0x15e57cc: bl       #0x110d028
+    0x15e57d0: mov      w8, #1
+    0x15e57d4: strb     w8, [x20, #0x9f9]
+    0x15e57d8: ldr      x0, [x23]
+    0x15e57dc: ldr      w8, [x0, #0xe0]
+    0x15e57e0: cbnz     w8, #0x15e57e8
+    0x15e57e4: bl       #0x110d12c
+    0x15e57e8: mov      x0, xzr
+    0x15e57ec: bl       #0x12b1f68
+    0x15e57f0: cmp      w0, #4
+    0x15e57f4: b.ge     #0x15e580c
+    0x15e57f8: ldr      x8, [x19, #0x20]
+    0x15e57fc: cbz      x8, #0x15e58f8
+    0x15e5800: mov      w9, #1
+    0x15e5804: strb     w9, [x8, #0x1e8]
+    0x15e5808: b        #0x15e58ac
+    0x15e580c: mov      x0, xzr
+    0x15e5810: bl       #0x141d8e0
+    0x15e5814: ldr      x8, [x19, #0x20]
+    0x15e5818: cbz      x8, #0x15e58f8
+    0x15e581c: ldr      x0, [x8, #0x1d0]
+    0x15e5820: cbz      x0, #0x15e58f8
+    0x15e5824: mov      x1, xzr
+    0x15e5828: mov      v8.16b, v0.16b
+    0x15e582c: bl       #0x27891b8
+    0x15e5830: ldr      x20, [x19, #0x20]
+    0x15e5834: str      wzr, [x19, #0x10]
+    0x15e5838: stp      s8, s2, [x19, #0x14]
+    0x15e583c: cbz      x20, #0x15e58f8
+    0x15e5840: adrp     x8, #0x2adb000
+    0x15e5844: ldr      x21, [x20, #0x1d0]
+    0x15e5848: ldr      x8, [x8, #0xb00]
+    0x15e584c: mov      v9.16b, v2.16b
+    0x15e5850: ldr      x0, [x8]
+    0x15e5854: bl       #0x110d240
+    0x15e5858: adrp     x8, #0x2aed000
+    0x15e585c: ldr      x8, [x8, #0xfc0]
+    0x15e5860: mov      x1, x19
+    0x15e5864: mov      x3, xzr
+    0x15e5868: mov      x22, x0
+    0x15e586c: ldr      x2, [x8]
+    0x15e5870: bl       #0x20bc330
+    0x15e5874: mov      w8, #0x42480000
+    0x15e5878: fmov     s0, wzr
+    0x15e587c: fmov     s3, w8
+    0x15e5880: mov      x0, x20
+    0x15e5884: mov      x1, x21
+    0x15e5888: mov      v1.16b, v8.16b
+    0x15e588c: mov      v2.16b, v9.16b
+    0x15e5890: mov      x2, x22
+    0x15e5894: mov      x3, xzr
+    0x15e5898: bl       #0x15e2bc0
+    0x15e589c: mov      x1, x0
+    0x15e58a0: mov      x0, x20
+    0x15e58a4: mov      x2, xzr
+    0x15e58a8: bl       #0x278276c
+    0x15e58ac: ldr      x0, [x23]
+    0x15e58b0: ldr      w8, [x0, #0xe0]
+    0x15e58b4: cbnz     w8, #0x15e58bc
+    0x15e58b8: bl       #0x110d12c
+    0x15e58bc: mov      x0, xzr
+    0x15e58c0: bl       #0x12b1f68
+    0x15e58c4: ldr      x8, [x19, #0x20]
+    0x15e58c8: cbz      x8, #0x15e58f8
+    0x15e58cc: ldr      x8, [x8, #0x1d8]
+    0x15e58d0: cbz      x8, #0x15e58f8
+    0x15e58d4: ldp      x20, x19, [sp, #0x30]
+    0x15e58d8: ldp      x22, x21, [sp, #0x20]
+    0x15e58dc: ldp      x30, x23, [sp, #0x10]
+    0x15e58e0: cmp      w0, #0x1e
+    0x15e58e4: cset     w1, gt
+    0x15e58e8: mov      x0, x8
+    0x15e58ec: mov      x2, xzr
+    0x15e58f0: ldp      d9, d8, [sp], #0x40
+    0x15e58f4: b        #0x2781804
+    0x15e58f8: bl       #0x110d250
+
+;;; <ShowPlayer>b__1  internal void <ShowPlayer>b__1() { }
+    0x15e58fc: str      x30, [sp, #-0x10]!
+    0x15e5900: ldr      x8, [x0, #0x20]
+    0x15e5904: cbz      x8, #0x15e5918
+    0x15e5908: mov      w9, #1
+    0x15e590c: strb     w9, [x8, #0x1e8]
+    0x15e5910: ldr      x30, [sp], #0x10
+    0x15e5914: ret      
+    0x15e5918: bl       #0x110d250

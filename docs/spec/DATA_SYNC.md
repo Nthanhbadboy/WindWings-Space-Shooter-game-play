@@ -1640,7 +1640,7 @@ Hai món mở được ngay:
 | Món | Số | Dùng vào đâu |
 |---|---|---|
 | `spine-events.csv` | **21 dòng** (rig × animation × time × event) | xác nhận rig boss 1 **chỉ có 2 tên event** (`Stop` ×5 trong `Attack3`, `Banplasma` trong `Attack4`) ⇒ `ANIMATION_SCRIPT.md` §2.2 lên **A** cho *tập ứng viên* |
-| `_index.csv` | **797 instance · 117 lớp · 146.797 node · 5.831 nút** | `UI.md` §9 — độ sâu bố cục từng màn; giải thích luôn vì sao **117 ≠ 125** |
+| `_index.csv` | **797 instance · 117 lớp · 150.131 node · 5.831 nút** | `UI.md` §9 — độ sâu bố cục từng màn; giải thích luôn vì sao **117 ≠ 125** |
 
 **Một điều phải ghi:** `_index.csv` (117 lớp) là **tập con** của `screens.csv` (125 lớp); 8 lớp
 thiếu gồm 4 tên lớp lồng và 7 màn/popup **không có instance nào trong dump**. Đừng tráo hai số.
@@ -1923,3 +1923,80 @@ trong `docs/spec/` đều phải nằm trong `tools/verify-claims.py`; nếu kh�
 - `reverse-engineering/raw/**` của `55bd18ac8`: **chưa** kéo (142 MB, 53.320 file) — chỉ kéo khi có task raw cụ thể.
 - `.github/**` của bản đó: **chưa** kéo (workflow khác với CI đang chạy 5 check của nhánh này).
 - `docs/handoff/**`: **chưa** đọc bản `55bd18ac8`.
+
+---
+
+## 15. Đồng bộ `9edc21f4d` (25/10) — kéo **phần lớn**, từ chối **phần bị thoái hoá**
+
+`ls-remote` = `9edc21f4d5a9f8be57094e863f81e11100a6fb21`; `git rev-parse FETCH_HEAD` khớp. Chặng này
+dài **11 commit** sau `55bd18ac8`, **1.125 file** thay đổi. Nguyên tắc giữ nguyên: **fetch đúng ref,
+`git checkout FETCH_HEAD -- <file>`, không merge / không rebase** — nhánh này không có commit nào của
+nhánh dữ liệu.
+
+### 15.1 Đã kéo (**285** file)
+
+| nhóm | nội dung | ghi chú |
+|---|---|---|
+| `datas/` | `waves.json` · `ui_screens.json.gz` · `ui_text_keys.csv.gz` | xem §15.3 |
+| manifest UI | `reverse-engineering/raw/ui/_index.csv` | **797 · 117 · 150.131 node · 5.831 nút** |
+| bằng chứng native | `raw/ui-audit/` (**253** file: 34 mới trong chặng này, 219 file đã có ở `55bd18ac8` nhưng nhánh này **chưa từng kéo**) · `raw/ui/render-context/` (**5**) · `raw/ui-flow-review/` (**2**) · `raw/runtime-probe/` (**15**) | ~7,1 MB; **275 thêm / 1 sửa**, không đè dữ liệu đã dùng |
+| report **mới** | `docs/apk-analysis/48-runtime-probe-review.md` · `49-visual-ui-stage-flow.md` · `50-stage2-stage3-ui-from-raw.md` + 3 contact sheet | 3 JPG ≈ 1,2 MB |
+
+### 15.2 **Từ chối** kéo — và bằng chứng tại sao
+
+Bản mới chạy lại dumper với **cách xác định gốc cây khác**, nên nhiều file *cùng ruột* nhưng
+`gameobject` bị **cắt cụt hoặc đổi gốc**. Đã kiểm từng nhóm:
+
+| nhóm | phát hiện | ví dụ đo được | quyết định |
+|---|---|---|---|
+| `raw/typetrees/` (**20** file khác) | **chỉ** khác trường `gameobject`; bỏ trường này thì 20/20 file **giống tuyệt đối** (đã so bằng JSON sort) | — | **không kéo** (không thêm thông tin) |
+| `reverse-engineering/scriptableobjects/` (**71** CSV) | cùng dạng: giá trị giữ nguyên, đường dẫn bị cắt | `Tab (5)/Boss/…/Gun5/Gun1/Gun5` → `Gun1/Gun5` | **không kéo** |
+| `datas/boss_hp.json` | gộp theo gốc ⇒ **gốc bị cắt làm sai phép gộp** | `Boss-37004`: cũ **6 instance / hp_max 4.000.000** ([68.000, 4.000.000]) → mới **4 instance / 68.000** | **không kéo** |
+| `datas/enemy_hp.json` | HP **không đổi** (981 dòng, cùng `path_id`), chỉ `path` đổi: 268 dòng **đầy hơn** (`Board_FightBoss/Parent/…`) nhưng một số **cụt hơn** (`ScrollView/…` thay cho `Tab (5)/…`) | `Tab (5)/Boss/…/HP3` ⇄ `ScrollView/…/HP3` | **không kéo** — trộn hai kiểu gốc là tự tạo lỗi |
+
+⇒ Bốn nhóm trên **giữ bản `55bd18ac8`**. Đây là lần đầu tiên **không** kéo toàn bộ một snapshot:
+lý do là *dữ liệu mới không nhất quán*, không phải *lười*. Nếu nhánh dữ liệu sửa lại cách lấy gốc
+(một gốc duy nhất cho mọi object), kéo lại cả 4 nhóm là việc của một lệnh.
+
+### 15.3 Năm con số **đổi** (đã sửa doc + claim)
+
+| chỉ số | `55bd18ac8` | **`9edc21f4d`** | claim | sửa ở |
+|---|---:|---:|---|---|
+| node UI (`_index.csv`) | 146.797 | **150.131** | **N2**, **P6** | `UI.md` §9, `COVERAGE_AUDIT.md` §1/§3/§4, `README.md`, `DATA_SYNC.md` §13 |
+| text node UI | 17.066 | **17.276** | — | `UI.md` §9 |
+| node UI lớn nhất | 12.000 (**trần walker**) | **15.334** | **P6** | `UI.md` §9, `COVERAGE_AUDIT.md` §1 |
+| node layout (`ui_screens.json.gz`) | 8.435.335 | **8.437.020** | **P6** | `COVERAGE_AUDIT.md` §3 |
+| spawner / lượt spawn | 11.092 / 22.460 | **11.094 / 22.482** | **H2**, **I3**, **M3** | `ANIMATION.md` §4, `DESIGN_READINESS.md` §3, `ENCOUNTERS`-related |
+
+Hai hệ quả phụ, cũng đã sửa: `rate = 0` **2.370 → 2.371**; `rate = 0` **và** >1 quân
+**1.203 → 1.206**. `rate` histogram mới: `1,0 → 7.740 · 0,0 → 2.371 · 0,5 → 532 · 2,0 → 163 ·
+0,65 → 111 · 6,0 → 58`.
+
+**Vì sao node UI tăng:** file cũ của `Board_Maps` ghi `walk_diagnostics = {node_limit: 12000,
+truncated: true, pending_transforms: 2760}`; bản mới `{node_limit: 50000, truncated: false,
+pending_transforms: 0}`. Nói cách khác **12.000 là trần của walker**, và mọi tổng node trước đây là
+**cận dưới**. Nay `Board_Maps` **15.334/15.334** node ⇒ tổng **150.131** là số đọc hết, không phải cận.
+
+**Vì sao wave tăng 2:** **wave 2** thêm 2 spawner **mới** `Left`/`Right` (`point_range`, 7 × `CB-30002`,
+`rate = 0`) = +14 slot; **wave 281** từ **47 → 55** quân (một spawner được ghi lại với 8 slot) = +8.
+Bảy wave còn lại (25 · 26 · 49 · 104 · 137 · 163 · 198) chỉ **đổi tên** spawner trùng tên
+(`CB1 (20)` ⇄ `CB1 (35)`…) — **multiset không đổi**. Tập prefab **109 → 109**, không mất tên nào.
+
+### 15.4 Ghi chú dữ liệu
+
+- `datas/ui_text_keys.csv.gz`: **+96 dòng / −70** (net +26) — chủ yếu là `Board_Maps/.../TextStageIndex`
+  của các stage **81–92** mà bản cũ **không thấy vì bị cắt ở 12.000 node**. Đây là bằng chứng phụ
+  cho việc trần cũ làm **mất dữ liệu thật**.
+- `datas/ui_screens.json.gz` (55.584 màn) **vẫn** có `Board_Maps = 12.000` ⇒ **dataset này vẫn bị
+  chặn ở 12.000**; chỉ `_index.csv` (đi từ `raw/ui`) là đọc hết. **Đừng tráo hai nguồn**: 8.437.020
+  là tổng của dataset bị chặn, 150.131 là tổng của walker không chặn.
+- `reverse-engineering/il2cpp/dump.cs.gz`: khác **header gzip**, nội dung **y hệt** (SHA-1 sau khi giải
+  nén trùng) ⇒ không kéo.
+
+### 15.5 Chưa đồng bộ (ghi đúng chữ "chưa")
+
+- **803** file `reverse-engineering/raw/ui/*.json.gz` (mỗi màn một file; cả cây là **55.591 file /
+  142 MB**) — vẫn chỉ giữ **manifest** `_index.csv` như chính sách cũ. Muốn xem bố cục một màn cụ thể
+  thì kéo **đúng file đó**.
+- `.github/**`, `tools/verify/*.py`, `tests/` của bản `9edc21f4d`: **chưa** kéo (là mã của nhánh kia).
+- `docs/HANDOFF_AI_TASKS.md` của bản đó: **chưa** đọc.

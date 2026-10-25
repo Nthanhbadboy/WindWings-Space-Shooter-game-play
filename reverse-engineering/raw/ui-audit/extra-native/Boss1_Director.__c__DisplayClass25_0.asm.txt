@@ -1,0 +1,21 @@
+;;; ctor  public void .ctor() { }
+    0x1500eac: mov      x1, xzr
+    0x1500eb0: b        #0x2143330
+
+;;; <IEAttack1>b__0  internal void <IEAttack1>b__0() { }
+    0x1500eb4: ldr      w8, [x0, #0x10]
+    0x1500eb8: add      w8, w8, #1
+    0x1500ebc: str      w8, [x0, #0x10]
+    0x1500ec0: ret      
+
+;;; <IEAttack1>b__1  internal void <IEAttack1>b__1() { }
+    0x1500ec4: ldr      w8, [x0, #0x10]
+    0x1500ec8: add      w8, w8, #1
+    0x1500ecc: str      w8, [x0, #0x10]
+    0x1500ed0: ret      
+
+;;; <IEAttack1>b__2  internal bool <IEAttack1>b__2() { }
+    0x1500ed4: ldr      w8, [x0, #0x10]
+    0x1500ed8: cmp      w8, #2
+    0x1500edc: cset     w0, eq
+    0x1500ee0: ret      

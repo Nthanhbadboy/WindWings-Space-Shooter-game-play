@@ -37,12 +37,12 @@ phải **cơ chế**.
 | 3 | **Súng / đạn / DPS** | ✅ **A** | 458 `Gun_Attack` (319 thật) · 102 pattern · TTK trong `COMBAT.md` | damage boss ở 19 class director (B6) |
 | 4 | **Enemy** | ✅ **A** | 109 prefab roster · 9 component/enemy · 399 đường bay · `Enemy_Movement` 3 nhánh | **điều kiện** chuyển state `Animator` (T4) |
 | 5 | **Boss** | ✅ **A** | **46 boss** · 39 prefab `Boss-*` · 793 event có mốc · 8 tên entry + 5 nhánh (boss 1) | hành vi 12 handler (T2) |
-| 6 | **Wave / spawn** | ✅ **A** | 282 wave · 11.095 spawner · 22.461 lượt · schema `Call_Data` 23 field | nghĩa `rate = 0` (B, không chặn) |
+| 6 | **Wave / spawn** | ✅ **A** | 282 wave · 11.094 spawner · 22.482 lượt · schema `Call_Data` 23 field | nghĩa `rate = 0` (B, không chặn) |
 | 7 | **Map / stage** | 🟡 **B** | 299 stage · 2 chapter · `maps.json` **250** map | **đánh số map → wave**: chỉ **7/250** chắc (A6) |
 | 8 | **Độ khó 3 chế độ** | ✅ **A** | `MaxModeIndex 4` · `kCount ≡ 1` · `pct[mode]` · `levelDelta` | hệ số **HP** theo chế độ (B8) |
 | 9 | **Kinh tế / IAP** | ✅ **A** | **170 sản phẩm** (71 consumable + 99 non-consumable) · `stepCommon 0,18` · `DeltaStarCost 50` | — |
 | 10 | **Nhiệm vụ / sao** | ✅ **A** | `pct[mode][slot] × countEnemies` · `PercentToCompleteMissions222` | — |
-| 11 | **UI** | ✅ **A** cấu trúc · **B** cho *vẽ lại* | **125 lớp** · **797 màn** · **146.797 node** · **5.831 nút** · 55.584 file layout · **11 board có bộ đầu vào vẽ** (10.710 node, 100 % `local_pos`, 4.987/5.067 sprite *candidate*, 312/317 key Việt) · gate tutorial native 5/5 | **art** (D) — L1 làm art mới; overlay tutorial **đã có layout** (`UI.md` §9.3: 7 GO + 19 dòng text) — còn thiếu **pixel** (external font/sprite); `Board_Maps` nay **12.000 node / 473 nút** (bản `55bd18ac8`, trước là 6.000 — vẫn có thể là trần mới ⇒ cận dưới) |
+| 11 | **UI** | ✅ **A** cấu trúc · **B** cho *vẽ lại* | **125 lớp** · **797 màn** · **150.131 node** · **5.831 nút** · 55.584 file layout · **11 board có bộ đầu vào vẽ** (10.710 node, 100 % `local_pos`, 4.987/5.067 sprite *candidate*, 312/317 key Việt) · gate tutorial native 5/5 | **art** (D) — L1 làm art mới; overlay tutorial **đã có layout** (`UI.md` §9.3: 7 GO + 19 dòng text) — còn thiếu **pixel** (external font/sprite); `Board_Maps` nay **15.334 node / 473 nút** (bản `9edc21f4d`; trần 12.000 của bản trước là `node_limit` của walker ⇒ nay **đọc hết**, không còn là cận dưới) |
 | 12 | **Animation** | 🟡 **B** cho **mốc** · **C** cho **điều kiện + hành vi** | 793 event có mốc **trong clip** (không phải thứ tự pha) · nhịp 0,17/0,33/1,0/5,0 s · hit flash 0,05 s | **thứ tự pha + điều kiện vào/thoát** (R1) · **hành vi** handler (T2) · **0/791 keyframe** (cố ý bỏ) |
 | 13 | **FX** | 🟡 **B** | **4.845** `ParticleSystem` · ~23 module · scalar + `length_in_sec` + `looping` | **curve** module (chưa đọc) |
 | 14 | **Âm thanh** | 🟡 **B** | **92 sound id** → **92/92** resolve ra file (83 sfx + 9 bgm) trên **69** `AudioClip` | **trigger**: âm nào phát ở sự kiện nào (chưa xref) |
@@ -91,7 +91,7 @@ nằm trong `m_StreamedClip` nén. L1 làm art mới nên **không cần**.
 | IAP | "170 SKU" (chưa đối chiếu) | `datas/iap_products.json` = **170**, khớp `13-iap-products.csv` (**71** consumable + **99** non-consumable) |
 | Âm thanh | `ASSETS.md`: 69 file | đúng **69** `AudioClip`, nhưng **92 sound id** trỏ vào chúng ⇒ 23 id **dùng chung file** |
 | FX | "`ParticleSystem` 4.845 chưa đọc" | `datas/particle_systems.csv.gz`: **4.845** dòng, có `length_in_sec` + `looping` |
-| UI layout | "53k file chưa kéo về" | `datas/ui_screens.json.gz`: **55.584** file · **8.435.335** node; `_index.csv`: **797** màn · **146.797** node |
+| UI layout | "53k file chưa kéo về" | `datas/ui_screens.json.gz`: **55.584** file · **8.437.020** node; `_index.csv`: **797** màn · **150.131** node |
 | Boss ↔ wave | "chưa có" | `14-Data_Boss.csv`: **46** boss, mỗi boss có `idWave` |
 | Bảng map | "chỉ 7 ghép chắc" | vẫn đúng, nhưng `31-map-tables.md`: **540/540** token có blob, **0** token bó tay ⇒ *nội dung* map là **A−**, chỉ **đánh số** là chưa |
 
@@ -105,7 +105,7 @@ nằm trong `m_StreamedClip` nén. L1 làm art mới nên **không cần**.
 
 | Cặp | Số đúng | Nghĩa | Đừng viết |
 |---|---|---|---|
-| **UI** | **797** màn / 146.797 node | màn **cấp cao** (mỗi dòng = 1 màn) | "797 file layout" — file layout là **55.584** (8,44 M node) |
+| **UI** | **797** màn / 150.131 node | màn **cấp cao** (mỗi dòng = 1 màn) | "797 file layout" — file layout là **55.584** (8,44 M node) |
 | **Audio** | **69** `AudioClip` | file trên đĩa | "69 âm thanh" — id mà code dùng là **92** |
 | **Sprite** | **2.885** dòng `sprites.csv` | mọi asset đồ hoạ kèm `png` | "2.885 sprite" — trong đó **2.184** `Sprite`, **632** `Texture2D`, **69** `AudioClip` (dòng) |
 | **Art** | **62,95 MB** toàn bộ texture | 632 `Texture2D` = **67** page `sactx-*` (31,05 MB) + **565** texture rời (31,94 MB) | "giảm 53 %" — con số đó chỉ đúng cho **page**; tính cả texture rời là **31,05 → 9,0 MB (−71 %)** trên phần page và **62,95 → 40,9 MB (−35 %)** trên toàn bộ. Chi tiết `ASSETS.md` §4.5 |
