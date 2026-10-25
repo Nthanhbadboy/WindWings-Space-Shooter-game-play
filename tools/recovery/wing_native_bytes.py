@@ -30,6 +30,7 @@ def recover(binary,out):
                 relocations.append(dict(offset=hex(va),addend=hex(target),rela_file_offset=p,rela_hex=binary[p:p+24].hex()))
     extra=out.parent/'wing-emission';extra.mkdir(parents=True,exist_ok=True)
     (extra/'pool.json').write_text(json.dumps(extract(binary,[(0x7575e0,8)]),indent=2)+'\n')
+    (extra/'formation-trampoline.json').write_text(json.dumps(extract(binary,[(0x2990890,64)]),indent=2)+'\n')
     out.mkdir(parents=True,exist_ok=True);payload=dict(xapk_sha256=APK_SHA,lib_sha256=LIB_SHA,methods=selected,pool=pool,relocations=relocations)
     p=out/'method-bytes.json.gz';p.write_bytes(gzip.compress(json.dumps(payload,indent=2).encode(),mtime=0));assert p.stat().st_size<5_000_000
     (out/'index.json').write_text(json.dumps(dict(status='PINNED_ALL24_PLAYER_ATTACK_METHOD_BYTES_NOT_LIVE_UNITY',methods=len(selected),roots=sorted(roots),sha256=hashlib.sha256(p.read_bytes()).hexdigest()),indent=2)+'\n')
