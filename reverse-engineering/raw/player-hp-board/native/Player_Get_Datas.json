@@ -1,0 +1,280 @@
+{
+ "class": "Player_Get_Datas",
+ "note": "Bounded drone attack recovery; selected RVAs for extra dependencies",
+ "methods": [
+  {
+   "method": "GetStartHp",
+   "signature": "public static float GetStartHp() { }",
+   "offset": "0x14df11c",
+   "getter_value": null,
+   "rva": "0x14e311c",
+   "bytes": 112,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14e3148",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14e3178",
+     "role": "arith:fadd"
+    }
+   ]
+  },
+  {
+   "method": "GetHpStatPercent",
+   "signature": "public static float GetHpStatPercent() { }",
+   "offset": "0x14df18c",
+   "getter_value": null,
+   "rva": "0x14e318c",
+   "bytes": 224,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14e31d0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 7,
+     "via": "mov",
+     "addr": "0x14e323c",
+     "reg": "w0",
+     "op": "w0, #7",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetHpRecoverSpeed",
+   "signature": "public static float GetHpRecoverSpeed() { }",
+   "offset": "0x14df78c",
+   "getter_value": null,
+   "rva": "0x14e378c",
+   "bytes": 260,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14e37c0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 7,
+     "via": "cmp",
+     "addr": "0x14e380c",
+     "reg": "w19",
+     "op": "w19, #7",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14e3814",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.1,
+     "via": "ldr_pool",
+     "va": "0x756c78",
+     "addr": "0x14e382c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14e383c",
+     "reg": "w19",
+     "op": "w19, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.08,
+     "via": "ldr_pool",
+     "va": "0x75706c",
+     "addr": "0x14e3848",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x14e3850",
+     "reg": "w19",
+     "op": "w19, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.06,
+     "via": "ldr_pool",
+     "va": "0x756cc8",
+     "addr": "0x14e385c",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 0.03,
+     "via": "ldr_pool",
+     "va": "0x756ecc",
+     "addr": "0x14e3868",
+     "role": "arith:fmul"
+    }
+   ]
+  },
+  {
+   "method": "TimeToImmuneOneHit",
+   "signature": "public static float TimeToImmuneOneHit() { }",
+   "offset": "0x14df890",
+   "getter_value": 25.0,
+   "rva": "0x14e3890",
+   "bytes": 184,
+   "pure_getter": true,
+   "getter_kind": "const",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14e38b8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "cmp",
+     "addr": "0x14e38dc",
+     "reg": "w0",
+     "op": "w0, #9",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 25.0,
+     "via": "fmov",
+     "addr": "0x14e38e0",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 30.0,
+     "via": "fmov",
+     "addr": "0x14e38e8",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "cmp",
+     "addr": "0x14e38f0",
+     "reg": "w0",
+     "op": "w0, #6",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "cmp",
+     "addr": "0x14e38f8",
+     "reg": "w0",
+     "op": "w0, #6",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x14e3910",
+     "reg": "w0",
+     "op": "w0, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 2139095039,
+     "via": "mov",
+     "addr": "0x14e391c",
+     "reg": "w9",
+     "op": "w9, #0x7f7fffff",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14e3920",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 40.0,
+     "via": "mov+fmov",
+     "bits": "0x42200000",
+     "addr": "0x14e3900",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 35.0,
+     "via": "mov+fmov",
+     "bits": "0x420c0000",
+     "addr": "0x14e3908",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 50.0,
+     "via": "mov+fmov",
+     "bits": "0x42480000",
+     "addr": "0x14e3918",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 45.0,
+     "via": "mov+fmov",
+     "bits": "0x42340000",
+     "addr": "0x14e3934",
+     "role": "load"
+    }
+   ]
+  }
+ ]
+}
