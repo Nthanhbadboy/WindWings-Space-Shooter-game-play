@@ -5,38 +5,38 @@
 > chiếu. Dữ liệu thô: `reverse-engineering/raw/ui/*.json.gz`.
 
 - màn hình dump được: **797**
-- tổng node: **146797**
+- tổng node: **150131**
 - dung lượng thô (gz): **4.0 MB**
 
 ## Component gặp nhiều nhất
 
 | class | số node |
 |---|---:|
-| `Transform` | 128305 |
-| `SpriteRenderer` | 73501 |
-| `MeshRenderer` | 20988 |
-| `RectTransform` | 18492 |
-| `TextMeshPro` | 18402 |
-| `MeshFilter` | 16931 |
+| `Transform` | 131581 |
+| `SpriteRenderer` | 76536 |
+| `MeshRenderer` | 21063 |
+| `RectTransform` | 18550 |
+| `TextMeshPro` | 18460 |
+| `MeshFilter` | 16987 |
 | `BoxCollider2D` | 8364 |
-| `Animator` | 6750 |
+| `Animator` | 6778 |
 | `ButtonEvents` | 5806 |
 | `Button_Sound` | 5644 |
-| `ParticleSystem` | 5022 |
-| `ParticleSystemRenderer` | 5022 |
-| `LanguageTextMeshPro` | 4892 |
+| `ParticleSystem` | 5038 |
+| `ParticleSystemRenderer` | 5038 |
+| `LanguageTextMeshPro` | 4904 |
 | `ChangeSorting` | 2343 |
 | `BgObjectScaler` | 1744 |
-| `TMP_SubMesh` | 1717 |
+| `TMP_SubMesh` | 1732 |
 | `Popup_Notices` | 1335 |
 | `Box_Rewards` | 1324 |
 | `Shop_Cell` | 801 |
 | `UIObjectAnchors` | 772 |
 | `FixUIShop` | 723 |
-| `Rigidbody2D` | 564 |
-| `ObjectPool` | 456 |
-| `Obj_Collider` | 441 |
-| `LineRenderer` | 416 |
+| `Rigidbody2D` | 565 |
+| `ObjectPool` | 457 |
+| `Obj_Collider` | 442 |
+| `LineRenderer` | 417 |
 
 - node không đọc được component: **0**
 
@@ -44,7 +44,7 @@
 
 | class | node | text | button | KB |
 |---|---:|---:|---:|---:|
-| `Board_Maps` | 12000 | 652 | 473 | 132 |
+| `Board_Maps` | 15334 | 710 | 473 | 166 |
 | `Board_Shop` | 4876 | 848 | 190 | 96 |
 | `Board_SelectBoss` | 3837 | 144 | 17 | 73 |
 | `Board_PVP` | 3789 | 540 | 180 | 82 |
