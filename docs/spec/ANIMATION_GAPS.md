@@ -292,21 +292,40 @@ file đó.
 
 ---
 
-## 4. Một chỗ **hai nhánh đá nhau** — chưa phân xử
+## 4. ~~Hai nhánh đá nhau~~ → **đã phân xử: cả hai đều đúng, khác định nghĩa**
 
-| Nguồn | Số `Animator` trên enemy/boss |
-|---|---|
-| Nhánh kia (`32-enemy-boss-animation.md`) | **63 prefab · 154 instance** (lọc `CB-`/`Boss-`/`MB-` + id) |
-| Nhánh spec (`ANIMATION.md` §4.5) | **87 / 109 prefab · 203 instance** (roster "prefab thực sự được spawn") |
+| Nguồn | Cách đếm | Kết quả |
+|---|---|---|
+| Nhánh kia (`32-enemy-boss-animation.md`) | `animator_map.prefab_root` khớp mẫu `CB-` · `Boss-` · `MB-` | **154 instance / 63 prefab** |
+| Nhánh spec (`ANIMATION.md` §4.5) | `animator_map.prefab_root` ∈ **109 tên trong `waves.json`** | **203 instance / 87 prefab** |
 
-Tôi đếm lại trên `datas/animator_map.csv.gz`: đúng **154 instance / 63 prefab** với bộ lọc của
-nhánh kia, và **117 prefab** nếu mở rộng mẫu tên (`Boss-` · `CB-` · `MB-` · `W-**` · `HT-`).
-Không bộ lọc nào cho ra 87/109.
+Cả hai **tái lập được**, chính xác đến từng instance. Khác nhau vì tập lọc khác nhau:
 
-⇒ **Khác biệt nằm ở định nghĩa roster**, không phải ở dữ liệu — nhưng chưa ai viết ra định nghĩa
-của con số 109. Cho tới lúc đó, **203 và 87 là số không kiểm lại được**.
+```
+roster waves.json (109)              203 Animator / 87 prefab
+mẫu tên CB-/Boss-/MB-                154 Animator / 63 prefab
+roster ∩ mẫu tên                     148 Animator / 60 prefab
+prefab tên Boss- (mọi nơi)            **92 Animator / 36 prefab**
+```
 
----
+`203 > 154` được vì roster **không phải** tập con của mẫu tên: nó còn `CD-` (15) · `W2-` (6) ·
+`XB-` (5) · `GD-` (4) · `BB-` (4) · `H-` (2) · `W1-` (1) — 37 prefab không mang ba tiền tố kia.
+
+**Mức A** cho cả hai. Dùng số nào là tuỳ câu hỏi: "enemy/boss đánh bằng clip có bao nhiêu" →
+**203/87**; "chỉ nhóm CB/Boss/MB" → **154/63**.
+
+### 4′. Tôi đã sửa một con số **đúng** thành **sai** — và đây là lỗi
+
+Ở `VERIFY_ROUND2`, tôi kết luận *"203 không tái lập được"* rồi sửa `ANIMATION.md` từ **203** xuống
+**154**. Sai. 203 tái lập được ngay — chỉ cần biết roster là gì. Nay đã khôi phục 203 và ghi kèm
+định nghĩa.
+
+Nguyên nhân: tôi đếm theo **mẫu tên** rồi so với một con số đếm theo **roster spawn**. Hai đại
+lượng khác nhau. Đúng **loại lỗi** mà `VERIFY_ROUND2` §5 ghi là đã mắc bốn lần — và tôi mắc lần
+thứ năm ngay trong tài liệu đi sửa lỗi đó.
+
+> **Lần này khác ở chỗ:** con số 109 chưa từng có định nghĩa, nên không có gì để đối chiếu. Nay
+> định nghĩa đã viết ở `ANIMATION.md` §4.5, và claim `B14` khoá nó lại.
 
 ## 5. Việc nên làm, xếp theo chi phí
 
@@ -314,7 +333,7 @@ của con số 109. Cho tới lúc đó, **203 và 87 là số không kiểm l�
 |---:|---|---|---|
 | ~~**1**~~ | ~~Thêm `Enemy_Appear`, `Enemy_Rotate`, `Enemy_Sub` vào `TARGETS`~~ | ✅ **xong** ở nhánh dữ liệu `6dc5c4bf5` | §2a′ — `Appear` là vỏ delegate, 39 lớp con |
 | ~~**2**~~ | ~~Nối `SkeletonAnimation.AnimationName` + `Skeleton.time` vào bridge~~ | ✅ **xong** — `GET /anim` | §2e — còn thiếu **số đo trên máy** |
-| **3** | Ghi rõ định nghĩa "109 prefab roster" trong `ANIMATION.md` | Chỉ là viết lại | §4 |
+| ~~**3**~~ | ~~Ghi rõ định nghĩa "109 prefab roster"~~ | ✅ **xong** — định nghĩa ở `ANIMATION.md` §4.5, claim `B15` khoá lại | §4 — hai nhánh **cùng đúng** |
 | ~~**4**~~ | ~~Ghép rig → prefab cho 3 rig còn lại~~ | ✅ **xong** — typetree `SkeletonAnimation` đã export | §2c′, §3.1′ — **2 rig boss**, 2 rig UI |
 | **5** | Đối chiếu `Attack1` 33 s với nhịp thật | Cần #2 trước | §2d |
 | 6 | Giải mã `m_StreamedClip` | Đắt, và đã có nhịp + Spine | §1 #2 |
@@ -333,7 +352,8 @@ của con số 109. Cho tới lúc đó, **203 và 87 là số không kiểm l�
   `skeleton__5` cùng popup đó.
 - **Chưa rõ `UIShow` / `UiShow`** nằm trong rig boss (`skeleton__21`, `skeleton__8`) nghĩa là gì
   — có thể là animation cho màn preview boss trước khi vào trận. Chưa kiểm.
-- **Số 87/109 và 203** ở §4 **không tái lập được** bằng dữ liệu trong repo.
+- ~~**Số 87/109 và 203** ở §4 không tái lập được.~~ → **tái lập được**, xem §4: roster =
+  109 tên trong `waves.json`; 203 `Animator` / 87 prefab trên đúng roster đó.
 - **Chưa có `timeScale` runtime** (cả hai nhánh đều thiếu) ⇒ mọi thời lượng ở §2d là thời lượng
   **asset**, có thể bị scale khi chơi.
 - **`/anim` chưa chạy trên thiết bị lần nào.** Tự kiểm chứng minh bộ đọc trả đúng với

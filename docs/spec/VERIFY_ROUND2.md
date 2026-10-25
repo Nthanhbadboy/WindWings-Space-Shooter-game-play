@@ -14,7 +14,7 @@
 |---|---:|
 | Tuyên bố được kiểm | **55** |
 | Đo ra đúng như doc | **53** |
-| **Sai — đã sửa doc** | **4** |
+| **Sai — đã sửa doc** | **4**, trong đó **1 mục (1.4) hoá ra đúng** — xem §5d |
 | Không kiểm được offline (SKIP, có lý do) | **2** |
 | FAIL còn lại | **0** |
 
@@ -52,14 +52,18 @@ Ba số trong **cùng một dòng** đếm theo hai cách:
 Tên file thật: `skeleton.json` + `skeleton__2` … `skeleton__26` = **26**, cộng `Saw.json` = 27.
 Bản cũ ghi 25, cộng `Saw` chỉ ra 26 — thiếu một rig.
 
-### 1.4 `ANIMATION.md`: "enemy/boss chỉ **203**" → **154**
+### 1.4 ~~`ANIMATION.md`: "enemy/boss chỉ **203**" → **154**~~ ⚠️ **MỤC NÀY SAI — xem §5d**
 
 Đếm lại trên `datas/animator_map.csv.gz`, lọc prefab root khớp `CB-|Boss-|MB-`: **154 Animator /
 63 prefab**. Không bộ lọc nào ra 203. Doc nay ghi 154 và trỏ về `ANIMATION_GAPS.md` §4 để giữ dấu
 vết con số cũ.
 
-> **Đây là con số đã được treo từ vòng trước** — vòng này xác nhận lại lần hai và sửa luôn ở nơi
-> nó còn sót.
+> ⚠️ **Sửa lại ở §5d: mục này SAI.** 203 tái lập được **chính xác** — chỉ cần biết định nghĩa
+> roster (109 tên trong `waves.json`). Đã khôi phục 203 trong `ANIMATION.md`. Con số 154 chỉ đúng
+> với một tập lọc khác (mẫu tên), không phải một sửa chữa.
+>
+> Giữ nguyên mục này thay vì xoá, vì đây là lần thứ năm mắc cùng một lỗi: lấy một tập khác thay
+> cho định nghĩa.
 
 ---
 
@@ -157,6 +161,51 @@ chữ — đúng loại lỗi mà cả tài liệu này đang chống.
 đọc nhầm "20 = tất cả" thì đỏ ngay. Tổng **69 claim** (67 PASS · 2 SKIP).
 
 > **Bài học:** một cổng kiểm cũng có thể đo sai thứ. Nó chỉ bảo vệ được đúng cái nó thật sự đo.
+
+## 5d. Sửa lại chính §1.4 — con số **203 là đúng**, tôi đã sửa nó thành sai
+
+Đây là chỗ tệ nhất trong cả vòng kiểm.
+
+§1.4 ở trên ghi *"enemy/boss 203 → 154"*, và `ANIMATION.md` đã bị sửa theo. **Sai.** Con số 203
+tái lập được **chính xác**, chỉ cần biết "109 prefab roster" nghĩa là gì — và cái đó chưa ai viết
+ra cho tới hôm nay.
+
+Định nghĩa thật:
+
+```
+datas/waves.json → waves[].spawners[].enemies[] → đếm tên phân biệt = 109
+```
+
+Đếm `Animator` trên đúng 109 tên đó: **203 instance / 87 prefab**. Khớp từng số với nhánh spec.
+
+| tập lọc | Animator / prefab |
+|---|---:|
+| **roster `waves.json` (109)** | **203 / 87** |
+| mẫu tên `CB-`·`Boss-`·`MB-` | 154 / 63 |
+| roster ∩ mẫu tên | 148 / 60 |
+| prefab tên `Boss-` | 92 / 36 |
+
+**Cả hai nhánh đều đúng** — khác tập, không khác dữ liệu. `203 > 154` được vì roster còn 37 prefab
+mang tiền tố khác (`CD-` 15 · `W2-` 6 · `XB-` 5 · `GD-` 4 · `BB-` 4 · `H-` 2 · `W1-` 1).
+
+### Vì sao tôi sai — cùng một lỗi, lần thứ năm
+
+Tôi đếm theo **mẫu tên** rồi đem so với con số đếm theo **roster spawn**. Hai đại lượng khác
+nhau. §5 ở trên viết *"bốn lỗi, cả bốn cùng một dạng"* — giờ là **năm**, và lần này tôi mắc nó
+ngay trong tài liệu đi sửa lỗi đó.
+
+Khác biệt duy nhất lần này: **109 chưa từng có định nghĩa**, nên không có gì để đối chiếu. Một con
+số không định nghĩa thì không thể kiểm — và tôi đã lấy một tập khác thay vào rồi tuyên bố nó sai.
+
+Đã sửa: `ANIMATION.md` khôi phục 203 kèm định nghĩa; claim `B14` đo **đúng roster**, `B15` khoá
+định nghĩa 109, `B16`/`B17` giữ hai định nghĩa kia để không ai lẫn nữa. Thêm nhóm **H** (3 claim)
+cho chính bảng spawn — phân bố tiền tố, quy mô 22.461 lượt spawn, và **182** prefab có
+`Enemy_Movement` trong asset (khác 109 được spawn).
+
+Tổng **75 claim** (73 PASS · 2 SKIP).
+
+> **Bài học:** thứ tự đúng là *viết định nghĩa trước, đếm sau*. Làm ngược lại thì con số đúng
+> cũng bị xoá vì không ai tái lập được nó.
 
 ## 6. Cách chạy lại
 

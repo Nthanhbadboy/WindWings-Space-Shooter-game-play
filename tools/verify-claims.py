@@ -355,10 +355,53 @@ claim("B12", ANIMDOC, "1,9 s", 1.9,
 claim("B13", ANIMDOC, "**75,0**", 75.0,
       lambda: agg(clips(), lambda cs: max(c["duration"] for c in cs if "duration" in c)))
 
-claim("B14", ANIMDOC, "**enemy/boss 154**", 154,
-      lambda: agg(amap_rows(), lambda rows: sum(
-          1 for r in rows if len(r) > 2 and re.match(r"^(CB-|Boss-|MB-)", r[2]))),
-      "nhánh spec ghi 203; đếm lại theo mẫu tên CB-/Boss-/MB- ra 154 — doc đã sửa")
+def wave_roster() -> set[str] | None:
+    """109 tên prefab enemy thực sự được spawn.
+
+    Định nghĩa (ANIMATION.md §4.5): `datas/waves.json` →
+    `waves[].spawners[].enemies[]`, đếm tên phân biệt. Đây là con số 109 mà
+    tài liệu dùng suốt mà chưa từng viết ra định nghĩa.
+    """
+    d = ref_json("datas/waves.json")
+    if d is None:
+        return None
+    names: set[str] = set()
+    for w in d.get("waves", []):
+        for sp in w.get("spawners") or []:
+            for e in sp.get("enemies") or []:
+                names.add(e)
+    return names
+
+
+def animators_on_roster():
+    """(số instance, số prefab) Animator nằm trên roster spawn."""
+    roster = wave_roster()
+    rows = amap_rows()
+    if roster is None or rows is None:
+        return None
+    hit = [r for r in rows if len(r) > 2 and r[2] in roster]
+    return (len(hit), len({r[2] for r in hit}))
+
+
+claim("B14", ANIMDOC, "**enemy/boss 203 `Animator` trên 87/109 prefab**",
+      (203, 87), animators_on_roster,
+      "roster waves.json — cả hai con số của nhánh spec đều tái lập được")
+
+claim("B15", ANIMDOC, "**109 prefab enemy/boss thực sự được spawn**", 109,
+      lambda: None if wave_roster() is None else len(wave_roster()),
+      "định nghĩa: tên phân biệt trong waves[].spawners[].enemies[]")
+
+claim("B16", GAPS, "**154 instance / 63 prefab**", (154, 63),
+      lambda: agg(amap_rows(), lambda rows: (
+          sum(1 for r in rows if len(r) > 2 and re.match(r"^(CB-|Boss-|MB-)", r[2])),
+          len({r[2] for r in rows if len(r) > 2 and re.match(r"^(CB-|Boss-|MB-)", r[2])}))),
+      "định nghĩa của nhánh kia: mẫu tên — cũng đúng, chỉ khác tập")
+
+claim("B17", GAPS, "**92 Animator / 36 prefab**", (92, 36),
+      lambda: agg(amap_rows(), lambda rows: (
+          sum(1 for r in rows if len(r) > 2 and r[2].startswith("Boss-")),
+          len({r[2] for r in rows if len(r) > 2 and r[2].startswith("Boss-")}))),
+      "chỉ prefab tên Boss-")
 
 
 # ── C. TextAsset Spine + typetree ──────────────────────────────────────
@@ -842,6 +885,59 @@ def _boss1_director_root():
     return []
 
 
+# ── H. roster spawn: nguồn của mọi con số "enemy" ──────────────────────
+
+claim("H1", ANIMDOC, "`Boss-` **39** · `CB-` **33**", (39, 33),
+      lambda: None if wave_roster() is None else tuple(
+          sum(1 for e in wave_roster() if e.startswith(p)) for p in ("Boss-", "CB-")),
+      "phân bố tiền tố của roster 109")
+
+claim("H2", ANIMDOC, "**22.461 lượt spawn trên 282 wave và 11.095 spawner**", (22461, 282, 11095),
+      lambda: _wave_counts(),
+      "quy mô bảng spawn — chứng minh roster là bảng thật, không phải danh mục")
+
+claim("H3", ANIMDOC, "**182 prefab root**", 182,
+      lambda: enemy_prefab_roots(),
+      "prefab có Enemy_Movement trong asset — KHÁC 109 được spawn")
+
+
+def _wave_counts():
+    d = ref_json("datas/waves.json")
+    if d is None:
+        return None
+    total = 0
+    for w in d.get("waves", []):
+        for sp in w.get("spawners") or []:
+            total += len(sp.get("enemies") or [])
+    return (total, len(d.get("waves", [])), d.get("count_spawners"))
+
+
+def enemy_prefab_roots() -> int | None:
+    """Số prefab root mang Enemy_Movement, đi lên transform-tree."""
+    lines = ref_lines("reverse-engineering/raw/typetrees/Enemy_Movement.jsonl.gz")
+    maps = _tt_maps()
+    if lines is None or maps is None:
+        return None
+    go2tr, father, roots = maps
+    seen = set()
+    for ln in lines:
+        if not ln.strip():
+            continue
+        try:
+            o = json.loads(ln)
+        except json.JSONDecodeError:
+            continue
+        tr = go2tr.get(str((o.get("tree") or {}).get("m_GameObject", {}).get("m_PathID")))
+        guard = set()
+        while tr and tr not in guard:
+            guard.add(tr)
+            if tr in roots:
+                seen.add(roots[tr])
+                break
+            tr = father.get(tr)
+    return len(seen)
+
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:
@@ -859,7 +955,9 @@ def evaluate(c: Claim) -> None:
         c.status, c.why = "SKIP", "nguồn vắng"
         return
 
-    if isinstance(c.stated, list):
+    if isinstance(c.stated, tuple):
+        same = tuple(got) == c.stated
+    elif isinstance(c.stated, list):
         same = list(got) == c.stated
     elif isinstance(c.stated, float):
         same = approx(got, c.stated)
@@ -913,7 +1011,7 @@ def main() -> int:
         if args.only and not c.cid.startswith(args.only):
             continue
         got = "—" if c.got is None else str(c.got)
-        if isinstance(c.got, list):
+        if isinstance(c.got, (list, tuple)):
             got = ",".join(str(x) for x in c.got)
         stated = ",".join(str(x) for x in c.stated) if isinstance(c.stated, list) else str(c.stated)
         print(f"{c.cid:<{width}}  {c.status:<6} {got:>10}  {stated:>10}  {c.note or c.why}")

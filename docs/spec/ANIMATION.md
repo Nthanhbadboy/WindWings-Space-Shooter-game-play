@@ -11,7 +11,7 @@
 | Hệ | Có trong APK | Đã đọc | Kết luận |
 |---|---:|---:|---|
 | **Spine** (xương) | 27 rig · **185** animation · 616 bone | **100%** | đủ để dựng lại nhịp |
-| **Unity Animator** | **791** clip · **308** controller · **5.792** `Animator` | **0 %** curve giải được (**9,19 MB** chưa giải) · **100 % tên** | **3.620/5.792 = 62,5 % là UI** (`Board_*` 2.938 · `Popup` 675 · `Menu` 7); **enemy/boss 154** theo đếm lại — con số **203** không tái lập được (§4.5, `ANIMATION_GAPS.md` §4) |
+| **Unity Animator** | **791** clip · **308** controller · **5.792** `Animator` | **0 %** curve giải được (**9,19 MB** chưa giải) · **100 % tên** | **3.620/5.792 = 62,5 % là UI** (`Board_*` 2.938 · `Popup` 675 · `Menu` 7); **enemy/boss 203 `Animator` trên 87/109 prefab** — đếm trên roster spawn của `waves.json` (§4.5) |
 | **Procedural** (`Rotate`) | **1.120** instance | class 100% · tham số 0% | biết công thức, chưa biết tốc độ |
 | **Flipbook sprite** | **28** chuỗi · 160 ảnh / 2.185 `Sprite` | 100% | game **hầu như không dùng** |
 
@@ -293,6 +293,19 @@ biết cơ chế xoay, chưa biết con nào xoay bao nhiêu độ/giây.
 
 > Câu hỏi: *"đã có animation của enemy chưa?"* — **Có, nhưng chia làm hai nửa: một nửa đọc được 100 %,
 > một nửa chỉ có TÊN.** Bảng dưới đếm trên **109 prefab enemy/boss thực sự được spawn**.
+
+**Định nghĩa "109 prefab thực sự được spawn"** (viết ra 23/10, trước đó chỉ là con số trần):
+
+```
+datas/waves.json → waves[].spawners[].enemies[]  → đếm tên phân biệt = 109
+```
+
+Phân bố: `Boss-` **39** · `CB-` **33** · `CD-` **15** · `W2-` **6** · `XB-` **5** · `GD-` **4** ·
+`BB-` **4** · `H-` **2** · `W1-` **1**. Tổng **22.461 lượt spawn trên 282 wave và 11.095 spawner**.
+
+> Đây là **bảng spawn**, không phải danh sách prefab có trong build: cả build có **182 prefab root**
+> mang `Enemy_Movement` (đi lên `transform-tree` tới `prefab-roots.csv`). 109 là số **thực sự được
+> wave gọi ra**, 182 là số **tồn tại trong asset**. Hai đại lượng khác nhau — đừng lẫn.
 
 | Hệ | Instance trên enemy | Phủ prefab | Đọc được | Ghi chú |
 |---|---:|---:|---|---|
