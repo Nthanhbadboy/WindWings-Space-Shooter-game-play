@@ -705,3 +705,15 @@ extra-shot timer/barrels/modifiers/hit gates. Chỉ xác nhận consumer tàu1, 
 Xem79 + raw/player-firing; 3targeted evidence testsPASS, khôngruntimeapproval.
 
 - Report79 finalCI40203611037SUCCESS cho9aa2d7e6f; local250testsPASS. Peer đã nhận PR12comment6399041480, chưa có xác nhận đã sửa bên peer.
+
+## Report80 — ship1 grouped shots / damage callback (tạm thời)
+- Native timer Nextra dương tạo N+1 lượt vào emitter từcounter0; lượtcuối resetcounter
+  rồi đặt maindeadline. Cảmain/extra deadlines đều gate, khôngcatch-up trongspanđọc.
+- MainCannonShoot duyệt mainCannonBarrels rồi tailbranchMainCannonAttack:
+  rank3→2 vòng,rank>=4→4; pool/component/setup gates nên khôngđếm nhưsuccessfulhits.
+- OnEnable extra-count=Player_Ability.GetNumberAbility(4),demo0; khôngdùng ctordefault1
+  thaypost-enable. Level(get_Level) khácrank@0x44.
+- Collision callbackbody: critcomparison→virtualdamagegetter→Damager→interfacedispatch;
+  chưaresolve emitterdelegate/interface type-pointer nên chưachứngminh mọi bullet dùngcallbacknày.
+- Boundedtimer model +7tests; local257tests+datasvalidatePASS. Xem80/rawtimer-derivation.
+  **entered emitter≠spawnedbullet≠hit≠actualhealthdelta**; chưaDPS/TTKapproval.

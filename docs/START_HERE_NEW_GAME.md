@@ -221,3 +221,5 @@ Inventory không tự bind Map container/index, không chứng minh stagecount h
 - **79 — review peer029559d47 + player firing timer:** sửa claim damage×rate=DPS;
   scoped ship1 native dùng rate làm deadline interval. Xem
   `apk-analysis/79-peer-gap-review-and-player-main-cannon-timer.md` và HANDOFF.
+- **80 — ship1 extra shots / callback:** Nextra→N+1 emitter entries, dualdeadline/no catchup;
+  rank branch và damage callback khác deliveredhit. Bounded model có7tests, xem report80.

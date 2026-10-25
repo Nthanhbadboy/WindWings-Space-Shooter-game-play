@@ -136,3 +136,9 @@ Raw recovery40203414134SUCCESS/bb896f1da: ship1 sử dụng GetMainCannonRate tr
 Time.time+interval deadline, không chứng minh damage×rate là DPS.
 Giới hạn ship1, chưa collision/emittedbullet/allships/runtime closure. Xem report79/HANDOFF.
 Local250tests+datasvalidatePASS; khôngruntime/renderapproval.
+
+## 80 — Ship1 extra-shot timer/collision body (tạm thời)
+Nextra dương→N+1 emitter entries từcounter0; dualdeadline, no catchup trongspanđãđọc.
+MainCannonAttack rank3→2/rank>=4→4 vòng cópool/component gates; khôngactualhitcount.
+Callback damage cócrit/getter/Damager dispatch nhưng delegate/type-pointer binding chưađóng.
+Report80 + raw/player-firing/timer-derivation.json + boundedtimer model; local257testsPASS.

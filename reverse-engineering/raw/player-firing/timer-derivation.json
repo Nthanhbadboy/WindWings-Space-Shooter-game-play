@@ -1,0 +1,39 @@
+{
+  "status": "PROVISIONAL_DERIVATION_NOT_RUNTIME",
+  "source_files": [
+    {
+      "path": "reverse-engineering/raw/player-firing/index.json",
+      "sha256_file": "2cec26c92f42b085364d08a46920ff00679b3b1340b0fbbaf75c5693654c2464"
+    },
+    {
+      "path": "reverse-engineering/raw/player-firing/native/Player_Attack_1.asm.txt",
+      "sha256_file": "ebd749901548939bfc0970752f4a9fe65505c5861eeed6788dfac909691a662d"
+    },
+    {
+      "path": "reverse-engineering/il2cpp/dump.cs.gz",
+      "sha256_file": "79b4028c6f59ddf203baef99f8982e152518c0224b416f57933d257d4f8c1f9a"
+    }
+  ],
+  "native_anchors": [
+    "0x147a924",
+    "0x147a944",
+    "0x147a978",
+    "0x147a990",
+    "0x147acec",
+    "0x147b67c",
+    "0x147c2fc",
+    "0x147c328"
+  ],
+  "model": "tools/verify/player_main_cannon_timer.py",
+  "scope": "ship1 reached invocation, stable Time.time, finite normal binary32, bounded counters; entered emitter not emitted bullet or damage",
+  "toy_inputs_not_apk_capture": {
+    "interval": 4,
+    "extra_delay": 0.25,
+    "extra_count": 2,
+    "invocations": [
+      0,
+      0.25,
+      0.5
+    ]
+  }
+}
