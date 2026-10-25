@@ -30,6 +30,7 @@ def interpret(instructions,decls,relocations,literals,static=False):
             calls[pc]=dict(pc=pc,instruction=mn,target_rva=dest,declarations=declarations,arguments=arguments,indirect_register=op if mn in ('blr','br') else None)
             returned=None
             if declarations and all(d['method']=='get_gameObject' and d['class']=='Component' and d['namespace']=='UnityEngine' for d in declarations):returned=dict(kind='component_gameobject',component=arguments[0]) if arguments[0] else None
+            if declarations and all(d['method']=='get_transform' and d['class'] in ('Component','GameObject') and d['namespace']=='UnityEngine' for d in declarations):returned=dict(kind='component_transform',component=arguments[0]) if arguments[0] else None
             s.pop('nzcv',None)
             for n in range(19):s.pop('x'+str(n),None)
             if returned:s['x0']=returned

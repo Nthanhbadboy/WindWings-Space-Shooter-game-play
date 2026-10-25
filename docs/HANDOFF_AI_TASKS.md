@@ -989,7 +989,7 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   from13core UI/root families+nested, pinned executable intervals/RELA/native consts.
   First40231346501 failed namespace: UIObjectAnchors isTuPro, corrected from dump, not omitted.
 - datas/l3_ui_drivers.json.gz:214serialized instances,1751potential appearance-call instances,
-  1274exact receiver joins/477unknown,230Animator routes,687exact direct-callee links,409callback
+  1414exact receiver joins/337unknown,230Animator routes,687exact direct-callee links,409callback
   entries. Recipe includes native_ui/global indices/artifactSHA, not just unordered state clips.
 - Popup_QuitMissions GO57508/Script644901/Animator495980: SetPopup→SetActive(true),
   defaultAppear/controller1974/clip1572; OnExit→RELA/literalHide→SetTrigger→Hideclip1573;

@@ -40,8 +40,11 @@ def build():
         if r['type']=='MonoBehaviour':script_types[key(r)]=(r.get('namespace',''),r.get('class_name',''))
         if r['type']=='MonoBehaviour' and any(c in classes for ns,c in lineage(script_types[key(r)],parents)):
             instances.append(dict(identity=identity(key(r)),class_name=r['class_name'],namespace=r.get('namespace',''),enabled=r.get('header',{}).get('m_Enabled'),raw_object_sha256=r['raw_object_sha256']))
-    owners={key(i['identity']) for i in instances};refs={}
+    owners={key(i['identity']) for i in instances};refs={};component_go={};go_transforms=defaultdict(list)
     for l in read_chunks(source_index,'links'):
+        if l['status']=='resolved' and l['location']=='.m_GameObject':
+            component_go[key(l['owner'])]=l['target']
+            if l['owner']['type'] in ('Transform','RectTransform'):go_transforms[key(l['target'])].append(l['owner'])
         if l['status']=='resolved' and key(l['owner']) in wanted_go and l['location'].startswith('.m_Component['):components[key(l['owner'])].append(l['target'])
         if key(l['owner']) in owners and l['status']=='resolved':refs[(key(l['owner']),l['location'])]=l['target']
     field_maps={}
@@ -53,7 +56,14 @@ def build():
         if not expr:return None
         if expr['kind']=='this':return instance['identity']
         if expr['kind']=='component_gameobject':
-            c=resolve(expr['component'],instance);return refs.get((key(c),'.m_GameObject')) if c else None
+            c=resolve(expr['component'],instance);return component_go.get(key(c)) if c else None
+        if expr['kind']=='component_transform':
+            c=resolve(expr['component'],instance)
+            if c:
+                go=component_go.get(key(c),c if c.get('type')=='GameObject' else None)
+                transforms=go_transforms.get(key(go),[]) if go else []
+                if len(transforms)==1:return transforms[0]
+            return None
         if expr['kind']=='field':
             base=resolve(expr['base'],instance)
             if base:
@@ -84,7 +94,7 @@ def build():
                                     elif d['method'] in ('Play','CrossFade'):
                                         for state in sm['states']:
                                             if h in (state['raw']['m_NameID'],state['raw']['m_FullPathID']):routes.append(dict(controller=cid,machine_index=sm['machine_index'],state_index=state['state_index'],state_names=state['name_candidates'],kind='name_hash_state_candidate_not_runtime_execution'))
-                joined.append(dict(owner=instance['identity'],class_name=instance['class_name'],method_index=mi,method=m['method'],callsite=hex(call['pc']),target_rva=hex(call['target_rva']) if call['target_rva'] is not None else None,declarations=call['declarations'],receiver=receiver,argument=argument,animator_routes=routes,status='resolved_serialized_receiver' if receiver else 'receiver_not_statically_resolved'))
+                joined.append(dict(owner=instance['identity'],class_name=instance['class_name'],method_index=mi,method=m['method'],callsite=hex(call['pc']),target_rva=hex(call['target_rva']) if call['target_rva'] is not None else None,declarations=call['declarations'],receiver=receiver,argument=argument,argument_abi='x1 register symbol only; float/struct parameters are NOT decoded by this field',animator_routes=routes,status='resolved_serialized_receiver' if receiver else 'receiver_not_statically_resolved'))
     inherited_events=[]
     for event in event_gaps:
         candidates=[]

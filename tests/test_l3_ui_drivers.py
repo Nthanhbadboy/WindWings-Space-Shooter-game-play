@@ -24,6 +24,8 @@ class CFGFixtures(unittest.TestCase):
         d={0x100:[dict(namespace='UnityEngine',**{'class':'Component'},method='get_gameObject')]}
         p=self.run_cfg([('bl','#0x100',['lr']),('mov','w1, wzr',['w1']),('b','#0x104',[])],d)
         self.assertEqual(p['calls'][1]['arguments'][0]['kind'],'component_gameobject');self.assertEqual(p['calls'][1]['arguments'][1]['value'],0)
+        transform=self.run_cfg([('bl','#0x100',['lr']),('bl','#0x104',['lr']),('ret','',[])],{0x100:[dict(namespace='UnityEngine',**{'class':'Component'},method='get_transform')]})
+        self.assertEqual(transform['calls'][1]['arguments'][0]['kind'],'component_transform')
     def test_static_argument_is_not_this(self):
         p=self.run_cfg([('bl','#0x100',['lr']),('ret','',[])],static=True)
         self.assertEqual(p['calls'][0]['arguments'][0]['kind'],'argument')
@@ -48,7 +50,7 @@ class UIDrivers(unittest.TestCase):
         for m in n['methods']:self.assertEqual(len(bytes.fromhex(m['hex'])),m['width'])
         self.assertEqual(len(n['methods']),1074)
     def test_conservative_resolution_counts_remain_explicit(self):
-        self.assertEqual(self.d['counts']['receiver_status'],dict(resolved_serialized_receiver=1274,receiver_not_statically_resolved=477))
+        self.assertEqual(self.d['counts']['receiver_status'],dict(resolved_serialized_receiver=1414,receiver_not_statically_resolved=337))
         self.assertEqual(self.d['counts']['inherited_event_candidates'],9)
     def test_popup_exit_resolves_hide_trigger_and_exact_controller(self):
         e=next(e for e in self.d['effects'] if e['owner']['path_id']==644901 and e['method']=='OnPressedButtonExit')

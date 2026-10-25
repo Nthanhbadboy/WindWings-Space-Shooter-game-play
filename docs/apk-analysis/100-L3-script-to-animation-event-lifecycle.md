@@ -62,7 +62,7 @@ Không có screenshot redraw, không thay source tween bằng animation tự thi
 | Native methods |1074|
 | Serialized UI instances, kể cả selected-family descendants |214|
 | Potential appearance-call instances |1751|
-| Receiver exact-join / unresolved |1274 /477|
+| Receiver exact-join / unresolved |1414 /337|
 | Animator condition/state routes |230|
 | Exact receiver + target RVA direct-callee links |687|
 | Persistent-call/animation-event entries nối native effects |409|
@@ -105,7 +105,7 @@ Không global-match class cùng tên ở namespace khác.
   paths. Có CFG/guard source **không** đồng nghĩa đã có transition scheduler/runtime trace.
 - Static arg0 không bị gọi là this. Metadata initialization không được giả lập; chỉ chứng minh
   slot/string identity từ relocation + pinned metadata table.
--477 unresolved receivers vẫn còn, thường do runtime arguments/indirect/runtime object paths;
+-337 unresolved receivers vẫn còn, không đồng nghĩa source thiếu: còn unsupported register/field chains, runtime values hoặc null;
   đây là **model không resolve**, không chứng minh source thiếu/bỏ được call. Không chọn
   unknown thành default receiver hoặc false/true cho đẹp số.
 - Alpha/scale probe99 vẫn là arithmetic model; batch100 nối được script entry/exit tới model,
@@ -123,3 +123,12 @@ runtime delegate execution, driven layout, particle/shader/composition-render.5 
 MonoBehaviours và52default-mesh refs ở98 vẫn không được tự nhận đã xử lý. L3 chưa complete.
 
 Local final: **957 tests PASS /147.821s**,17new tests. CI receipt follows separately.
+
+### Rà model getter trước bàn giao
+
+Đã sửa thêm140 receiver joins: Component/GameObject.get_transform và component.get_gameObject
+đi tiếp qua typed GO↔Transform edges ở raw, không đoán parent bằng tên. Đây là thiếu transfer
+function trong model ban đầu, không phải140 object/transform bị APK thiếu.337receiver unresolved
+cuối vẫn để nguyên. Field `argument` là symbolic **x1 ABI register**, không tự gọi là Vector3/
+float argument; các FP/struct parameters của setters chưa decode. Không biến x1=0 method-info
+thành vị trí local(0,0,0). Bool/string examples bên trên có đúng signature/ABI tương ứng.
