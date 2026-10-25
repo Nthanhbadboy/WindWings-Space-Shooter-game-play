@@ -67,3 +67,17 @@ Tái tạo: `python3 tools/verify/player_loadout_persistence.py`. Không sửa t
 Phân biệt saved/trial/effective/cached: getter equip lỗi có thể reset cả hai slot;
 rank repair base trước override; floor2 nằm ở loader; mode4/Game override tech và
 device không xóa saved state. Xem [report66](../docs/apk-analysis/66-player-loadout-save-rank-trial-tech-consumers.md).
+
+## Audio contract — report67; pack audit — report68
+
+`audio_rules.json` giữ118enum names,92registry rows,15rules dẫn xuất và reference
+raw `reverse-engineering/raw/audio-rules/contracts.json.gz` (65methods/25checks).
+Method refs có RVA để phân biệt overload. Registry PPtr→export file là **candidate
+legacy pathID join**, chưa file-scoped identity proof. Tái tạo bằng
+`python3 tools/verify/audio_rules.py`. Float pool defaults≈0.73/.30 và fade≈.01
+là decimal rounded từ exporter, không full IEEE bits. Không nhầm realtime playlist
+với fade theo coroutine frame, mute preference với AudioListener.pause.
+
+Asset pack ngoài Git đã kiểm CRC nhưng chưa đủ: raw/asset-pack/catalog.json.gz
+có151collision paths và320manifest size mismatches. Đọc report68/browser instructions;
+không dùng manifest filename như object identity, không coi0missing paths là đủ.

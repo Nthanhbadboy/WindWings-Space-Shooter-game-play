@@ -1,6 +1,6 @@
 # Phân việc vòng 4 — cái còn thiếu thật
 
-> **Cửa vào hiện hành (sau report66):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) và [review cf27b9755](HANDOFF_REVIEW_cf27b9755.md). Các vòng/snapshot cũ dưới đây là lịch sử, không tự là task hay phán xét hiện hành.
+> **Cửa vào hiện hành (sau report68):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) và [review cf27b9755](HANDOFF_REVIEW_cf27b9755.md). Các vòng/snapshot cũ dưới đây là lịch sử, không tự là task hay phán xét hiện hành.
 
 > Trạng thái hiện tại: `docs/conclusions.md`. Đã có **dữ liệu thô** trong
 > `reverse-engineering/raw/` (typetree JSONL gz, UI layout gz, hằng số IL2CPP + asm).
@@ -564,3 +564,13 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 - GP_Setup cached two-slot array -> GP_Loader rank/unlock/skin consumer. Tech wrapper mode4 AND sceneGame trả0; device wrapper trả[-1]*4, không xóa saved. TALENT_SELECTED default−1, startup callback cần StageTarget>=Board_Begin.stageUnlockTalents + mode!=4; numeric threshold còn mở. Stat5 rocket count6..8=>3 giữ nguyên, không sửa monotonic.
 - **Task peer** nhánh arena/20330d0e-windwings-space-shooter-game-p: cập nhật spec save/loadout theo report65–66, phân biệt saved/trial/effective/cached, exact1 flags và getter write-on-read. Giữ trial expiry/full upgrade lifecycle là unknown; nếu thêm validation/atomicity hay sửa branch thì ghi new design. Không dùng snapshot spec cũ làm bằng chứng APK.
 - Tiếp audio trigger/rules và full pack sprite/audio/spine/font browsing/validation. Premium, speculative BB pool history vẫn không phải task/blocker.
+
+
+## Report67–68 — audio rules và asset-pack audit, hiện hành
+- Audio `datas/audio_rules.json` + raw/audio-rules/contracts.json.gz:65method không capped/25checks/15rules,118enum names/92registry rows/69legacyPPtr pairs. Source recovery40192970188success; overload method refs có RVA, không collapse GetAudioSource/get_Current.
+- MUTE_AUDIO missing0 exact1; VolumeSound≈0.73/VolumeMusic≈0.3, mute getters trả0; mute setter body chỉ persist, Pause→AudioListener.pause. Music ignoreListenerPause=true; fade≈.01 mỗi coroutine iteration/yieldnull, không duration cố định. Game playlist33..36, realtime(length−2)/None/realtime2, reroll previous; không tự thêm Bgm_Game5. Endgame.MovePlayer Sfx_Flying26, không mặc định Victory27.
+- Draft asset audit40193251582success, raw/asset-pack/{catalog.json.gz,manifest-full.csv}. ReleaseID421174835 vẫn draft; hashes/digests+CRC PASS, nhưng **151 collision paths/321extra manifest rows/320size mismatches**. Sprite archive1903 vs manifest2185;Texture614 vs653. Producer export_assets reset used=set mỗi object. Không gọi full pack đủ.
+- Browser docs/assets/pack-browser.html offline metadata-only; cần copy cạnh media đã giải nén. Hiển thị identity ambiguous; fullmedia không trongGit. Fonts actual1TTF ≠ toàn game1font;26skeletonJSON/27atlas presence ≠ binding xong.
+- Tổng162testsPASS (8audio/recovery +6packtools/catalog mới), data validatePASS. Numeric float pool là rounded approximation, không bit-pattern proof. Registry/export filename mapping chỉ legacy PPtr/pathID candidate do thiếu serialized-file identity.
+- **Task tiếp agent extraction:** narrow identity-safe asset re-export từ cached original: serialized-file+type+pathID filenames, population check/no silent skip, versioned new draft assets không clobber originals, rig/atlas-page joins/crop/listening kiểm riêng. Không full APK pipeline. Chưa hoàn tất task này ở report68.
+- **Task peer** nhánh arena/20330d0e-windwings-space-shooter-game-p: đưa rules report67 vào spec với scope/refs; ghi pack completeness FAIL từ report68, không lấy basename collision làm image metric của nhiều object. Không đảo static facts thành runtime approval; Premium/BB-history vẫn hoãn.

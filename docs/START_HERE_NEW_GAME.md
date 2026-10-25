@@ -1,6 +1,6 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report66. Tất cả kết luận APK vẫn tạm thời.**
+**Cập nhật 25/10/2026, sau report68. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
@@ -41,7 +41,8 @@ Không trộn input lấy từ latest APK khác vào raw này. Không commit APK
 | Sprite → texture/atlas | 62 | `raw/sprite-geometry/{index.json,objects-000..005.jsonl.gz,resolved-geometry.json.gz}` |
 | Ship save/equip/rank/trial/tech/talent | 65–66 | `datas/player_loadout_persistence.json`, `raw/player-loadout/{index.json,array-blobs.json.gz,contracts.json.gz,native/*}`; saved khác trial/effective/cached |
 | Ship/drone/gun/HP/economy | 14–15, 19, 28 + native consumer | `datas/README.md`, config CSV, `raw/il2cpp-consts/Player_Get_Datas*`. HP prefab không mặc định là HP runtime; thiếu field không chứng minh không có khác biệt theo tàu |
-| Asset/audio/spine/font | `docs/assets/INDEX.md`, 17, 21–23 | Contact sheet để duyệt; full pack ngoài Git để tra/crop/nghe; audio-index + Spine mapping |
+| Audio rules/trigger | 67 | `datas/audio_rules.json`, `raw/audio-rules/contracts.json.gz`;65method/25checks/15rules; mute vs pause, realtime playlist vs per-frame fade |
+| Asset/audio/spine/font | 68 + `docs/assets/INDEX.md` | `raw/asset-pack/catalog.json.gz`, browser offline `docs/assets/pack-browser.html`; CRC PASS nhưng151path collisions/320size mismatches, chưa full pack |
 
 Không rerun full analyze chỉ để đọc một raw đã có. Muốn giữ/rebuild kết quả mới, giữ cả raw/source hash và tool/test tương ứng.
 
@@ -87,6 +88,9 @@ Spawn enum: 0PinMap/1Path/2Points/3RandomTopDown/4Rocket/5EndMap/6StartWave. Con
 
 ## 4. Asset pack — bắt buộc cho tham khảo thiết kế, chưa được gọi là đã kiểm đủ
 
+**Update report68:** đã test existing draft releaseID421174835: CRC+release digest PASS nhưng **151 collision paths,321 extra manifest rows,320 size mismatches**. Pack hiện có KHÔNG đủ source identities. Producer reset `used=set()` mỗi object, ghi đè basename. Chưa được gọi full pack xong; cần narrow identity-safe re-export, versioned draft output, không sửa CSV để che mất file. [Report68](apk-analysis/68-draft-asset-pack-integrity-collisions-and-browser.md) có raw/hash, browser và cách giải nén an toàn. Browser HTML chỉ có metadata; cần media bên ngoài Git.
+
+
 - Browse nhanh: `docs/assets/INDEX.md`, contact-sheets JPG, manifest, sprites-index, audio-index.
 - Draft release `windwings-assets-1.3.118`: đã kiểm API thấy `assets.z01`, `assets.zip`, `manifest-full.csv`, `asset-previews.zip`. **API listing không chứng minh nội dung đủ/zip không lỗi.**
 - Download vào thư mục **ngoài Git**, kiểm dung lượng/hash nếu có manifest, giữ nguyên các part. Với split ZIP tạo bởi `zip -s`:
@@ -125,6 +129,7 @@ python3 datas/validate.py
 python3 tools/verify/shared_stage_victory.py
 python3 tools/verify/opening_persistence.py
 python3 tools/verify/player_loadout_persistence.py
+python3 tools/verify/audio_rules.py
 python3 tools/verify/peer_handoff_review.py
 python3 -m unittest discover -s tests -q
 ```

@@ -1,5 +1,8 @@
 # Asset tham chiếu — WindWings 1.3.118
 
+
+> **Audit mới — report68:** archive CRC/SHA hợp lệ nhưng **151 manifest paths va chạm,321 extra rows,320 size mismatches**; chưa phải full pack. Có [browser offline](pack-browser.html) cho các file còn tồn tại, cần đặt cạnh media đã giải nén. Đọc [report68](../apk-analysis/68-draft-asset-pack-integrity-collisions-and-browser.md) trước khi dùng số liệu/manifest lịch sử dưới đây; [report67](../apk-analysis/67-audio-manager-preferences-triggers-and-playlist.md) nối audio rules/trigger.
+
 > **Danh mục preview lịch sử**, không phải chứng nhận full pack/crop đúng. Xem [bàn giao asset hiện hành](../START_HERE_NEW_GAME.md#4-asset-pack--bắt-buộc-cho-tham-khảo-thiết-kế-chưa-được-gọi-là-đã-kiểm-đủ) và report62 cho geometry; số nhãn peer khác population ở đây.
 
 - Tổng asset: **2197**  (133.6MB)
