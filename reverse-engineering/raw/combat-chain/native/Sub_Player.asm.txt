@@ -1,0 +1,212 @@
+;;; GetStartHealth  public override float GetStartHealth() { }
+    0x14c8268: str      x30, [sp, #-0x20]!
+    0x14c826c: stp      x20, x19, [sp, #0x10]
+    0x14c8270: adrp     x20, #0x2ce2000
+    0x14c8274: adrp     x19, #0x2ae8000
+    0x14c8278: ldrb     w8, [x20, #0x1a2]
+    0x14c827c: ldr      x19, [x19, #0x580]
+    0x14c8280: tbnz     w8, #0, #0x14c8298
+    0x14c8284: adrp     x0, #0x2ae8000
+    0x14c8288: ldr      x0, [x0, #0x580]
+    0x14c828c: bl       #0x110d028
+    0x14c8290: mov      w8, #1
+    0x14c8294: strb     w8, [x20, #0x1a2]
+    0x14c8298: ldr      x0, [x19]
+    0x14c829c: ldr      w8, [x0, #0xe0]
+    0x14c82a0: cbnz     w8, #0x14c82ac
+    0x14c82a4: bl       #0x110d12c
+    0x14c82a8: ldr      x0, [x19]
+    0x14c82ac: ldr      x8, [x0, #0xb8]
+    0x14c82b0: ldp      x20, x19, [sp, #0x10]
+    0x14c82b4: ldr      s0, [x8]
+    0x14c82b8: ldr      x30, [sp], #0x20
+    0x14c82bc: ret      
+
+;;; GetCurrentHealth  public override float GetCurrentHealth() { }
+    0x14c82c0: str      x30, [sp, #-0x20]!
+    0x14c82c4: stp      x20, x19, [sp, #0x10]
+    0x14c82c8: adrp     x20, #0x2ce2000
+    0x14c82cc: adrp     x19, #0x2ae8000
+    0x14c82d0: ldrb     w8, [x20, #0x1a3]
+    0x14c82d4: ldr      x19, [x19, #0x580]
+    0x14c82d8: tbnz     w8, #0, #0x14c82f0
+    0x14c82dc: adrp     x0, #0x2ae8000
+    0x14c82e0: ldr      x0, [x0, #0x580]
+    0x14c82e4: bl       #0x110d028
+    0x14c82e8: mov      w8, #1
+    0x14c82ec: strb     w8, [x20, #0x1a3]
+    0x14c82f0: ldr      x0, [x19]
+    0x14c82f4: ldr      w8, [x0, #0xe0]
+    0x14c82f8: cbnz     w8, #0x14c8304
+    0x14c82fc: bl       #0x110d12c
+    0x14c8300: ldr      x0, [x19]
+    0x14c8304: ldr      x8, [x0, #0xb8]
+    0x14c8308: ldp      x20, x19, [sp, #0x10]
+    0x14c830c: ldr      s0, [x8, #4]
+    0x14c8310: ldr      x30, [sp], #0x20
+    0x14c8314: ret      
+
+;;; GainHealth  public override void GainHealth(float amount) { }
+    0x14c8318: str      x30, [sp, #-0x10]!
+    0x14c831c: ldr      x0, [x0, #0x28]
+    0x14c8320: cbz      x0, #0x14c8330
+    0x14c8324: mov      w1, wzr
+    0x14c8328: ldr      x30, [sp], #0x10
+    0x14c832c: b        #0x14c63b4
+    0x14c8330: bl       #0x110d250
+
+;;; GainHealth  public override void GainHealth(float amount, float addOverTime, float addTime) { }
+    0x14c8334: str      x30, [sp, #-0x10]!
+    0x14c8338: ldr      x0, [x0, #0x28]
+    0x14c833c: cbz      x0, #0x14c8348
+    0x14c8340: ldr      x30, [sp], #0x10
+    0x14c8344: b        #0x14c6cfc
+    0x14c8348: bl       #0x110d250
+
+;;; SetInvisible  public void SetInvisible(GameObject zone, bool invisible, bool heal) { }
+    0x14c834c: str      x30, [sp, #-0x10]!
+    0x14c8350: ldr      x0, [x0, #0x30]
+    0x14c8354: cbz      x0, #0x14c836c
+    0x14c8358: and      w2, w2, #1
+    0x14c835c: and      w3, w3, #1
+    0x14c8360: mov      x4, xzr
+    0x14c8364: ldr      x30, [sp], #0x10
+    0x14c8368: b        #0x14c2e68
+    0x14c836c: bl       #0x110d250
+
+;;; IsAlive  public override bool IsAlive() { }
+    0x14c8370: str      x30, [sp, #-0x10]!
+    0x14c8374: ldr      x8, [x0, #0x28]
+    0x14c8378: cbz      x8, #0x14c8388
+    0x14c837c: ldrb     w0, [x8, #0x48]
+    0x14c8380: ldr      x30, [sp], #0x10
+    0x14c8384: ret      
+    0x14c8388: bl       #0x110d250
+
+;;; SetDieCallback  public override void SetDieCallback(Action<GameObject> dieCallback) { }
+    0x14c838c: ret      
+    0x14c8390: stp      x30, x25, [sp, #-0x40]!
+
+;;; TakeDamage  public override void TakeDamage(Damager damager, bool ignoreInvincible = False) { }
+    0x14c8390: stp      x30, x25, [sp, #-0x40]!
+    0x14c8394: stp      x24, x23, [sp, #0x10]
+    0x14c8398: stp      x22, x21, [sp, #0x20]
+    0x14c839c: stp      x20, x19, [sp, #0x30]
+    0x14c83a0: adrp     x21, #0x2ce2000
+    0x14c83a4: adrp     x25, #0x2adb000
+    0x14c83a8: adrp     x24, #0x2ae8000
+    0x14c83ac: ldrb     w8, [x21, #0x1a4]
+    0x14c83b0: ldr      x25, [x25, #0xb00]
+    0x14c83b4: ldr      x24, [x24, #0x550]
+    0x14c83b8: mov      w20, w2
+    0x14c83bc: mov      x19, x1
+    0x14c83c0: mov      x22, x0
+    0x14c83c4: tbnz     w8, #0, #0x14c83e8
+    0x14c83c8: adrp     x0, #0x2adb000
+    0x14c83cc: ldr      x0, [x0, #0xb00]
+    0x14c83d0: bl       #0x110d028
+    0x14c83d4: adrp     x0, #0x2ae8000
+    0x14c83d8: ldr      x0, [x0, #0x550]
+    0x14c83dc: bl       #0x110d028
+    0x14c83e0: mov      w8, #1
+    0x14c83e4: strb     w8, [x21, #0x1a4]
+    0x14c83e8: ldr      x0, [x25]
+    0x14c83ec: ldp      x21, x23, [x22, #0x28]
+    0x14c83f0: bl       #0x110d240
+    0x14c83f4: ldr      x2, [x24]
+    0x14c83f8: mov      x1, x23
+    0x14c83fc: mov      x3, xzr
+    0x14c8400: mov      x22, x0
+    0x14c8404: bl       #0x20bc330
+    0x14c8408: cbz      x21, #0x14c8430
+    0x14c840c: and      w2, w20, #1
+    0x14c8410: mov      x0, x21
+    0x14c8414: mov      x1, x19
+    0x14c8418: mov      x3, x22
+    0x14c841c: ldp      x20, x19, [sp, #0x30]
+    0x14c8420: ldp      x22, x21, [sp, #0x20]
+    0x14c8424: ldp      x24, x23, [sp, #0x10]
+    0x14c8428: ldp      x30, x25, [sp], #0x40
+    0x14c842c: b        #0x14c6de4
+    0x14c8430: bl       #0x110d250
+
+;;; Destroyed  public override void Destroyed() { }
+    0x14c8434: ret      
+    0x14c8438: str      x30, [sp, #-0x10]!
+
+;;; SetVictory  public void SetVictory() { }
+    0x14c8438: str      x30, [sp, #-0x10]!
+    0x14c843c: ldr      x8, [x0, #0x28]
+    0x14c8440: cbz      x8, #0x14c8454
+    0x14c8444: mov      w9, #1
+    0x14c8448: strb     w9, [x8, #0x4a]
+    0x14c844c: ldr      x30, [sp], #0x10
+    0x14c8450: ret      
+    0x14c8454: bl       #0x110d250
+
+;;; SetMoveVictory  public void SetMoveVictory() { }
+    0x14c8458: str      x30, [sp, #-0x10]!
+    0x14c845c: ldr      x0, [x0, #0x30]
+    0x14c8460: cbz      x0, #0x14c8470
+    0x14c8464: mov      x1, xzr
+    0x14c8468: ldr      x30, [sp], #0x10
+    0x14c846c: b        #0x14c2920
+    0x14c8470: bl       #0x110d250
+
+;;; SetStateAnimationPlayer  public void SetStateAnimationPlayer(StateAnimationPlayer _animationState, float _timescale = 1) { }
+    0x14c8474: str      x30, [sp, #-0x10]!
+    0x14c8478: ldr      x0, [x0, #0x30]
+    0x14c847c: cbz      x0, #0x14c848c
+    0x14c8480: mov      x2, xzr
+    0x14c8484: ldr      x30, [sp], #0x10
+    0x14c8488: b        #0x14c2ae0
+    0x14c848c: bl       #0x110d250
+
+;;; ChangePlayerTypes  public void ChangePlayerTypes(Action _transformed) { }
+    0x14c8490: str      x30, [sp, #-0x10]!
+    0x14c8494: ldr      x0, [x0, #0x30]
+    0x14c8498: cbz      x0, #0x14c84a8
+    0x14c849c: mov      x2, xzr
+    0x14c84a0: ldr      x30, [sp], #0x10
+    0x14c84a4: b        #0x14c2c3c
+    0x14c84a8: bl       #0x110d250
+
+;;; Startup  public void Startup() { }
+    0x14c84ac: str      x30, [sp, #-0x10]!
+    0x14c84b0: ldr      x0, [x0, #0x30]
+    0x14c84b4: cbz      x0, #0x14c84c4
+    0x14c84b8: mov      x1, xzr
+    0x14c84bc: ldr      x30, [sp], #0x10
+    0x14c84c0: b        #0x14c2d04
+    0x14c84c4: bl       #0x110d250
+
+;;; UsePlayerSkill  public void UsePlayerSkill() { }
+    0x14c84c8: str      x30, [sp, #-0x10]!
+    0x14c84cc: ldr      x0, [x0, #0x30]
+    0x14c84d0: cbz      x0, #0x14c84e0
+    0x14c84d4: mov      x1, xzr
+    0x14c84d8: ldr      x30, [sp], #0x10
+    0x14c84dc: b        #0x14c2d7c
+    0x14c84e0: bl       #0x110d250
+
+;;; UseDroneSkill  public void UseDroneSkill(int _indexSlot) { }
+    0x14c84e4: str      x30, [sp, #-0x10]!
+    0x14c84e8: ldr      x0, [x0, #0x30]
+    0x14c84ec: cbz      x0, #0x14c84fc
+    0x14c84f0: mov      x2, xzr
+    0x14c84f4: ldr      x30, [sp], #0x10
+    0x14c84f8: b        #0x14c2db0
+    0x14c84fc: bl       #0x110d250
+
+;;; UnlockSpecialCannon  public void UnlockSpecialCannon() { }
+    0x14c8500: str      x30, [sp, #-0x10]!
+    0x14c8504: ldr      x0, [x0, #0x30]
+    0x14c8508: cbz      x0, #0x14c8518
+    0x14c850c: mov      x1, xzr
+    0x14c8510: ldr      x30, [sp], #0x10
+    0x14c8514: b        #0x14c2de4
+    0x14c8518: bl       #0x110d250
+
+;;; ctor  public void .ctor() { }
+    0x14c851c: mov      x1, xzr
+    0x14c8520: b        #0x123baf4
