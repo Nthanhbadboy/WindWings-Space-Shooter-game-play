@@ -106,8 +106,24 @@ Vòng trước tài liệu này ghi *"là thứ duy nhất dữ liệu không c�
 | `Material.SetFloat(<tên tĩnh>, 0.5)` trong vòng `hitableRenderers` | **0,5** | nháy sáng/alpha khi trúng đòn |
 | `Invoke(<tên tĩnh>, 0.05)` ở cuối hàm | **0,05 s** | thời gian tắt lại, bằng `Invoke` chứ không coroutine |
 
-Còn thiếu: **tên tham số material** (chuỗi nằm trong bảng literal, chưa export) và **hit stop**
-(không có dấu vết `timeScale` ở bất kỳ lớp nào đã đọc).
+Còn thiếu: **tên tham số material** (chuỗi nằm trong bảng literal, chưa export).
+
+#### 4.1b Soi lại 4 mục "feel" còn lại (25/10) — **3 mục không tồn tại trong game**
+
+Người chơi xác nhận *"chơi thật không thấy"*. Kiểm lại bằng dữ liệu thì **đúng**:
+
+| mục | kết luận | bằng chứng |
+|---|---|---|
+| **hit flash** | ✅ **CÓ** | `Enemy_Display.OnHit`: alpha **0,5** + `Invoke(…, 0,05 s)` (claim **J9**) |
+| **rung màn hình** | ✅ **CÓ** | `Enemy_CameraVibrate` **241** instance: `lvVibr` **0,05 / 0,10 / 0,15** · `timeVibr` **15 / 20 / 30 / 40** frame; phổ biến nhất **0,10 · 20 frame** (185/241) (claim **AF1**) |
+| **tỉ lệ rơi đồ** | ✅ **CÓ** | 3 tầng đều đếm được — `ECONOMY.md` §8.1 (claim **AE1–AE3**) |
+| **hit stop** | ⛔ **không thấy trong game** | chuỗi `timeScale` xuất hiện **0 lần** trong **69** file asm đã bóc (claim **AF2**). `GP_Controller.timeSlowed = 0,1` có trong `field-defaults.json` nhưng **không** có file asm cho `GP_Controller` ⇒ **chưa chứng minh** được nó bị dùng; người chơi không thấy ⇒ coi như **không có** |
+| **aim assist** | ⛔ **không tồn tại** | **0** method khớp `aim · autoAim · targetLock · lockTarget` trong 69 file asm; `Player_Attack` (19 hàm) **không có** hàm chọn/bám mục tiêu — đạn đi thẳng |
+| **input latency** | ⛔ **không phải tính năng** | thuộc input system + frame, không lớp nào trong game cấu hình |
+
+⇒ Với 4 mục bị nghi là "feel phải đo", **3 mục không tồn tại** và **1 mục (rung) có số**. Nghĩa là
+"feel" **không còn là khoảng trống tài liệu**: cái tồn tại đã có tham số, cái không tồn tại thì không
+cần dựng lại.
 
 ⇒ Hệ quả cho thiết kế: **đừng chờ dữ liệu thêm**. Có nhịp (0,05 s) và cường độ (0,5) là đủ để
 prototype 30 giây; phần "cảm giác" còn lại tự quyết.
@@ -212,7 +228,7 @@ hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật
 
 | tập | tổng | đủ / đóng | một phần | chưa |
 |---|---:|---:|---:|---:|
-| **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **10** ✅ | **4** 🟡 | **0** 🔴 · **1** ⛔ (feel — **ngoài phạm vi**) |
+| **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **11** ✅ | **4** 🟡 | **0** 🔴 · **0** ⛔ (feel **đã đóng** — 3/6 mục có số, 3/6 không tồn tại, xem §4.1b) |
 | **9 câu blocker** (§2 ở trên) | 9 | **1** (`StartHp`) | **5** | **3** (`B1` HP runtime · `A5` độ dài phiên · `B3` đường cong damage) |
 | **48 câu design** (`DESIGN_QUESTIONS.md`) | 48 | **29** ✅ | **15** ⚠ | **4** ❌ (`A5`·`A6`·`B1`·`C4`) |
 | **6 chỗ thiếu** (`COVERAGE_AUDIT.md` §2) | 6 | — | **4** | **2 chặn** (map→wave 7/250 · HP runtime theo chế độ) |

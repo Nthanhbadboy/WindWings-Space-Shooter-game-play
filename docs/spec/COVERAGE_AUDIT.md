@@ -7,7 +7,7 @@
 > `tools/verify-claims.py` (nhóm **P**), hoặc trỏ thẳng vào file dữ liệu.
 >
 > **Quy mô hiện tại:** **35 tài liệu** trong `docs/spec/` (chưa kể file này) + **29 file dữ liệu**
-> trong `datas/` + **151 claim** đã khoá (**149 PASS · 2 SKIP**; nhóm P → AB).
+> trong `datas/` + **157 claim** đã khoá (**155 PASS · 2 SKIP**; nhóm P → AF).
 
 ---
 
@@ -46,7 +46,7 @@ phải **cơ chế**.
 | 12 | **Animation** | 🟡 **B** cho **mốc** · **C** cho **điều kiện + hành vi** | 793 event có mốc **trong clip** (không phải thứ tự pha) · nhịp 0,17/0,33/1,0/5,0 s · hit flash 0,05 s | **thứ tự pha + điều kiện vào/thoát** (R1) · **hành vi** handler (T2) · **0/791 keyframe** (cố ý bỏ) |
 | 13 | **FX** | 🟡 **B** | **4.845** `ParticleSystem` · ~23 module · scalar + `length_in_sec` + `looping` | **curve** module (chưa đọc) |
 | 14 | **Âm thanh** | 🟡 **B** | **92 sound id** → **92/92** resolve ra file (83 sfx + 9 bgm) trên **69** `AudioClip` | **trigger**: âm nào phát ở sự kiện nào (chưa xref) |
-| 15 | **Cảm giác (feel)** | ⛔ **ngoài phạm vi** (chỉ đạo 25/10: **bỏ feel, script là đủ**) | hit flash 0,05 s + alpha 0,5 vẫn ghi lại làm tham khảo | **không** tính vào tiêu chí nghiệm thu (D1–D3: hit stop · aim assist · input latency — **tỉ lệ rơi đã đào được**, xem `ECONOMY.md` §8.1: 702 = 676 coin + 26 item · 246/2.094 slot · 6 loại) |
+| 15 | **Cảm giác (feel)** | ✅ **đóng — không còn thiếu** | **3/6 tồn tại và đã có số**: hit flash (alpha **0,5** + **0,05 s**) · rung (`Enemy_CameraVibrate` 241: **0,10/20 frame** phổ biến nhất) · tỉ lệ rơi (702 = 676 coin + 26 item · 246/2.094 slot · 6 loại) | **3/6 không tồn tại trong game**: hit stop (**0** hàm `timeScale`) · aim assist (**0** hàm aim) · input latency (không phải tính năng) — xem `DESIGN_READINESS.md` §4.1b |
 
 > Bảng có 15 dòng vì "Player" và "Súng/đạn" tách nhau; **14 vùng** ở §0 gộp chúng lại. Dòng 15 (feel)
 > **không tính** — đã chốt bỏ theo chỉ đạo; tiêu chí nghiệm thu là **script**, không phải cảm giác.

@@ -2551,8 +2551,8 @@ def blocker_tally():
 
 
 claim("AA1", READINESS,
-      "| **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **10** ✅ | **4** 🟡 | **0** 🔴 · **1** ⛔ (feel — **ngoài phạm vi**) |",
-      (15, 10, 4, 0), coverage_region_tally,
+      "| **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **11** ✅ | **4** 🟡 | **0** 🔴 · **0** ⛔ (feel **đã đóng**",
+      (15, 11, 4, 0), coverage_region_tally,
       "đếm trạng thái từng vùng trong COVERAGE_AUDIT §1, không chép tay")
 
 claim("AA2", READINESS,
@@ -2694,6 +2694,7 @@ claim("AB5", ASSET_TRIAGE,
       "505 unknown: 448 họ tên, 410 tên đơn lẻ, trải trên 17 contact sheet")
 
 # ── AE. tỉ lệ rơi đồ: 3 tầng đều đếm được (ECONOMY.md §8.1) ────────────
+TUNING = "docs/spec/TUNING_KNOBS.md"
 ECONOMY = "docs/spec/ECONOMY.md"
 
 
@@ -2756,6 +2757,89 @@ claim("AE2", ECONOMY,
 claim("AE3", ECONOMY,
       "**6** loại, index `1 · 2 · 3 · 101 · 102 · 103`",
       6, drop_catalog, "tầng 3: danh mục item có thể rơi trong Data_Items")
+
+# ── AF. feel: rung màn hình có số, hit stop / aim assist rỗng ──────────
+
+def asm_paths():
+    """Danh sách file asm của bộ const (local trước, ref sau)."""
+    d = os.path.join(ROOT, "reverse-engineering/raw/il2cpp-consts")
+    if os.path.isdir(d):
+        names = sorted(n for n in os.listdir(d) if n.endswith(".asm.txt"))
+        if names:
+            return ["reverse-engineering/raw/il2cpp-consts/" + n for n in names]
+    raw = git("ls-tree", "-r", "--name-only", REFS[0],
+              "reverse-engineering/raw/il2cpp-consts/")
+    if not raw:
+        return None
+    return [x for x in raw.decode().splitlines() if x.endswith(".asm.txt")]
+
+
+def asm_texts():
+    paths = asm_paths()
+    if not paths:
+        return None
+    out = []
+    for p in paths:
+        raw = ref_blob(p)
+        if raw:
+            out.append(raw.decode("utf-8", "replace"))
+    return out or None
+
+
+def camera_vibrate():
+    """(số instance, 0.10/20, 0.05/15, 0.15/30, 0.10/30, 0.10/40)."""
+    import collections
+    import json as js
+    lines = ref_lines("reverse-engineering/raw/typetrees/Enemy_CameraVibrate.jsonl.gz")
+    if not lines:
+        return None
+    c = collections.Counter()
+    for ln in lines:
+        t = js.loads(ln)["tree"]
+        c[(round(float(t.get("lvVibr", 0)), 2), int(t.get("timeVibr", 0)))] += 1
+    return (len(lines), c[(0.10, 20)], c[(0.05, 15)], c[(0.15, 30)],
+            c[(0.10, 30)], c[(0.10, 40)])
+
+
+def timescale_hits():
+    """(số lần chuỗi timeScale, số file asm)."""
+    import re
+    texts = asm_texts()
+    if texts is None:
+        return None
+    n = sum(len(re.findall("timeScale", t, re.I)) for t in texts)
+    return (n, len(texts))
+
+
+def aim_hits():
+    """(số method khớp aim/autoAim/targetLock/lockTarget, số file asm)."""
+    import re
+    texts = asm_texts()
+    if texts is None:
+        return None
+    pat = re.compile(r"\b(aim|autoaim|targetlock|aimassist|locktarget)\b", re.I)
+    n = 0
+    for t in texts:
+        for ln in t.splitlines():
+            if ln.startswith(";;;") and pat.search(ln):
+                n += 1
+    return (n, len(texts))
+
+
+claim("AF1", TUNING,
+      "**Đã đo** (241 instance): `0,10 · 20` ×**185** · `0,05 · 15` ×**46** · `0,15 · 30` ×**6** · `0,10 · 30` ×**3** · `0,10 · 40` ×1",
+      (241, 185, 46, 6, 3, 1), camera_vibrate,
+      "rung màn hình: tham số đọc trực tiếp từ 241 prefab enemy")
+
+claim("AF2", READY,
+      "chuỗi `timeScale` xuất hiện **0 lần** trong **69** file asm đã bóc",
+      (0, 69), timescale_hits,
+      "hit stop không có: không chỗ nào đụng timeScale")
+
+claim("AF3", READY,
+      "**0** method khớp `aim · autoAim · targetLock · lockTarget` trong 69 file asm",
+      (0, 69), aim_hits,
+      "aim assist không tồn tại: 0 method bám mục tiêu")
 
 # ── chạy ───────────────────────────────────────────────────────────────
 
