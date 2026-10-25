@@ -358,10 +358,10 @@ dòng, cùng một `PathID` có thể trỏ hai object khác nhau ở hai file k
 
 | # | Ẩn số | Vì sao engine không giúp | Đường còn lại |
 |---:|---|---|---|
-| 1 | **`kHp[mode]`** | Nếu là `static`/`const` ⇒ không serialize (§6) | asm `Enemy_Controller.GetStartHealth` / đo số phát bắn |
-| 2 | **`pct[mode][slot]`** | Cùng lý do (`static`); **đính chính 23/10:** hàm nằm ngay trong **`Player_Get_Datas`** — class **đã** có trong pack 17 (`0x14E5618`, 188 B), trả `float[3]` bằng `memcpy` **một trong 3 mảng static** (`0xB78`/`0xB80`/`0xB88`). Giá trị là blob `InitializeArray` | đọc 3 mảng static bằng RVA; hoặc 3 con số UI |
+| 1 | ~~**`kHp[mode]`**~~ **KHÔNG tồn tại** (25/10) | — | chế độ đổi **composition + thưởng**, không nhân HP (`DIFFICULTY_MODES` §3–5) |
+| 2 | **`pct[mode][slot]`** | Cùng lý do (`static`); **đính chính 23/10:** hàm nằm ngay trong **`Player_Get_Datas`** — class **đã** có trong pack 17 (`0x14E5618`, 188 B), trả `float[3]` bằng `memcpy` **một trong 3 mảng static** (`0xB78`/`0xB80`/`0xB88`). Giá trị là blob `InitializeArray` | **ĐÃ ĐỌC xong**: **[0,2 · 0,6 · 0,98]** (`PercentToCompleteMissions222` `@0x308`) |
 | 3 | **Rig → prefab** | `m_Name` 26/27 trùng (§8) | export `SkeletonAnimation.skeletonDataAsset` (117 component) |
-| 4 | **Cảm giác / aim assist / input** | Không nằm trong asset | phải tự thiết kế (`D1`) |
+| 4 | **Cảm giác / aim assist / input** | Không nằm trong asset | ~~phải tự thiết kế~~ **BỎ (25/10)** — game mới không thêm (`OPEN_ISSUES` D1) |
 | 5 | **Nhịp bắn 87,7 % súng** | `timeShot = 0` là **giá trị thật** (§4.4) | event clip (793, §4.3) hoặc tự đặt |
 
 ---

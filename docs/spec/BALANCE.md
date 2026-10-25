@@ -1390,7 +1390,7 @@ Chỉ biết **signature**, không biết thân hàm (nguồn: `class Enemy_Data
 
 | Nhóm | Lý do |
 |---|---|
-| ~~Damage nền từng tàu~~ | **ĐÃ CÓ** (§1.1b). Chỉ còn **chưa bind** `playerIndex` ↔ ID tàu; đừng xếp vào mức D nữa |
+| ~~Damage nền từng tàu~~ | **ĐÃ CÓ** (§1.1b) + bind **ĐÃ XONG** (`0x14e2ce4`, id − 10001); DPS runtime còn là **proxy** (report 79) — đừng xếp vào mức D nữa |
 | Giá nâng cấp (coin/gem) | `PlayerCosts[]`, `GetUpgadeCostCoins()` — thân hàm; **0 cột giá** trong 91 CSV (`ECONOMY.md` §8) |
 | Tỉ lệ rơi item | Không có field trọng số; chỉ suy được **tỉ lệ instance** 676 coin : 26 item (`Item_Movement.csv`) |
 | Hệ số scale HP theo stage | `Enemy_Data_Balance` + `Stage_Get_Datas` (scene bundle khác, chưa tìm ra) |

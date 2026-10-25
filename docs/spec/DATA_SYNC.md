@@ -2452,8 +2452,11 @@ Trước đó `MISSING_FOR_NEW_GAME.md` viết *“573 blob còn lại chưa dum
 `StartWingCannonDamages[0]` = **218** · `shipCloneDamage` = **1,35/1,6/1,86** ·
 `PercentToCompleteMissions222` = **0,2/0,6/0,98**. Dẫn xuất: `datas/player_start_stats.json`.
 
-> **Vẫn chưa** (đừng đọc là xong): `playerIndex` → **ID tàu**; 576 mảng map → **(chapter, stage, mode)**;
-> `rate` có phải *shot/giây*; HP riêng của tàu. Đó là việc **bind + kiểm runtime**, không phải việc **dump**.
+> **Cập nhật 25/10 (lần 13)** — 3/4 mục "vẫn chưa" ở đây **đã xong**: ~~`playerIndex` → ID tàu~~ ✅
+> (id − 10001, `0x14e2ce4`, T4) · ~~576 mảng map → (chapter, stage, mode)~~ ✅ bind cấu trúc
+> (**11 bảng / 614 mảng**, `DIFFICULTY_MODES` §7) · ~~`rate` có phải *shot/giây*~~ ✅ **interval đặt hạn
+> bắn** tàu 1 (report 79 peer — DPS = proxy). Còn: **HP riêng của tàu** (D) + parity phát phụ/nòng.
+> Đó là việc **bind + kiểm runtime**, không phải việc **dump**.
 
 ---
 

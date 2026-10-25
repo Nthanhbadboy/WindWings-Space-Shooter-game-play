@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 13 — 25/10, audit "còn chỗ nào ngu" trước khi bàn giao AI mới):** sửa 6 chỗ mâu
+> thuẫn/stale mà verifier không bắt (không có claim neo): `START_HERE` §2 **L2** ("6 blob rodata
+> chưa bóc" — sai, số đã decode/bind; sót DPS-runtime + 2 tái đối chiếu) và **L3** ("bỏ" → **HOÃN,
+> không bỏ**) + 2×"40 file" → 43 + §4 thêm `SYSTEM_MANIFEST.md`; `README` row Damage ("còn thiếu
+> bind" → xong + proxy) + "phải decompile" (strike); `BALANCE` §5.2 (bind xong); `UNITY_RULES` §11
+> row 1 `kHp` (không tồn tại) · row 2 `pct` (đã đọc [0,2/0,6/0,98]) · row 4 feel (BỎ); `DATA_SYNC`
+> §22.3 "Vẫn chưa" 3/4 mục đã xong. Kiểm lại: MISSING §1 tally **8 đủ · 5 một phần · 0 thiếu**
+> khớp `START_HERE`; `AI_FEASIBILITY` mức-B `.so` giữ nguyên (đúng — có guard chống xin .so cho HP).
+> verify **209** PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 12 — 25/10, đồng bộ report 78–79 peer `549a7b5b7c`, peer 250 tests):** peer review
 > nhánh mình tại `029559d47` + đào native nhịp bắn tàu 1 (raw `player-firing`). P0 qua PR12:
 > ① DPS/TTK — **sửa rồi**: report 79 chứng minh tàu 1 dùng `StartMainCannonRate` làm **interval đặt

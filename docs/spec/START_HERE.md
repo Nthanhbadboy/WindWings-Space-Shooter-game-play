@@ -67,13 +67,14 @@
 |---|---|---|---|
 | **L0** | chạy được: mở, vào màn, bắn, chết, qua màn | chạy 30 phút không crash | ✅ bắt buộc |
 | **L1** | đúng **luật** cơ chế, không cần giống số | chơi thử theo checklist cơ chế | ✅ **mục tiêu của bộ spec này** |
-| **L2** | đúng **số** (DPS, HP, nhịp spawn khớp bản gốc) | so bảng số | ❌ chưa (6 blob rodata chưa bóc) |
-| **L3** | người chơi **không phân biệt được** | test mù | ❌ bỏ |
+| **L2** | đúng **số** (giá trị + nhịp spawn khớp bản gốc) | so bảng số | ⚠ **số đã decode + bind xong**; sót chứng minh **DPS runtime** (report 79 — `rate` = interval) + 2 tái đối chiếu |
+| **L3** | người chơi **không phân biệt được** | test mù + playtest | ⏸ **HOÃN — đích cuối sau L2, KHÔNG bỏ** |
 
-> ⚠ **"Bỏ L3" chỉ có nghĩa là bỏ tái lập 1:1 asset/cảm giác** — **không** phải bỏ chất lượng.
-> Chất lượng thị giác **vẫn bắt buộc** và có test bằng máy: `VISUAL_DESIGN.md` §5.
+> ⚠ **L3 HOÃN, không bỏ** (quyết định 25/10) — và "giống bản gốc" ở đây là **bắt chước luật + tự vẽ
+> art**, **không copy asset** (bản quyền). Chất lượng thị giác **vẫn bắt buộc** và có test bằng máy:
+> `VISUAL_DESIGN.md` §5.
 
-Không cần đọc hết 40 file trước khi bắt đầu. Tám con số này đủ để dựng khung chơi được:
+Không cần đọc hết 43 file trước khi bắt đầu. Tám con số này đủ để dựng khung chơi được:
 
 | # | Cái gì | Số | Ở đâu (claim) |
 |---:|---|---|---|
@@ -134,11 +135,11 @@ Gradient p50 **0,20–0,26** ở 5 nhóm chủ thể, **nhưng** `background` **
 
 ---
 
-## 4. Đọc theo vai (đừng đọc tuần tự 40 file)
+## 4. Đọc theo vai (đừng đọc tuần tự 43 file)
 
 | Vai | Thứ tự |
 |---|---|
-| **AI/agent dựng game** | file này → `MISSING_FOR_NEW_GAME.md` (13 hệ + **§6 gate 3 stage & khuôn victory**) → `GAMEPLAY.md` §0+§7 → `TUNING_KNOBS.md` → `ENEMY_BEHAVIOUR.md` §6 |
+| **AI/agent dựng game** | file này → `SYSTEM_MANIFEST.md` (hợp đồng 15 hệ: luật đã chứng minh vs tự chọn) → `MISSING_FOR_NEW_GAME.md` (13 hệ + **§6 gate 3 stage & khuôn victory**) → `GAMEPLAY.md` §0+§7 → `TUNING_KNOBS.md` → `ENEMY_BEHAVIOUR.md` §6 |
 | **Designer / cân bằng** | `GAMEPLAY.md` §0 → `BALANCE.md` §0 → `COMBAT.md` §0 → `ECONOMY.md` §0 → `TUNING_KNOBS.md` |
 | **Engineer gameplay** | `GAMEPLAY.md` → `COMBAT.md` → `ENCOUNTERS.md` → `UI.md` → `MISSIONS_STARS.md` |
 | **Art / tech art** | `ART_STUDY.md` (số đo mẫu gốc) → `VISUAL_DESIGN.md` (luật khung) → `ASSETS.md` §1 (art direction) + §7 (atlas plan) |
