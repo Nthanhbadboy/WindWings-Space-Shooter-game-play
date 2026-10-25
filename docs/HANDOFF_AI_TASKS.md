@@ -206,3 +206,23 @@ star-search; KHÔNG unconditional+1. LoadToLoading direct LoadScene2=Game,
 không phải enumLoading. Fade callback và Game loader chưa nối hết.
 Next: grant/unlock callsites, talent-selection caller, fade/loader, map-wave
 consumer. Giữ raw mới GP_Spawner để nối tiếp; không cần screenshot làm điều kiện.
+
+### Report52 — scene/fade → terrain → map wave consumer đã nối
+
+Recovery40183973174 success/bot575113776; report52 và
+raw/ui-audit/scene-map-flow.json.gz giữ12methods/13checks/cctor literals.
+41tests pass. Fade callback1276e1c cũng LoadScene2=Game; wrapper gọi Unity
+LoadScene(int sceneBuildIndex), không sceneLoading. FadeTo lưu Action+38,
+MoveNext có invoke+38; chưa giải jump table8states/timing.
+GP_Setup.Awake chỉ singleton; getterstageIndex đọc StageCurrent+24 khi nonbranch,
+StageBranchCurrent+2c nếubranch; companyNameTest&&fixedStagePlay override riêng.
+GP_Manager.Start14f3460→Spawner.LoadPlayer; normal terrain prefix
+Datas/Maps/Terrains/Map- + stageIndex.ToString0000, GetComponentMapController.
+MapController.Start132a84c getter→132a878GetListWaves, không +/-1. Normal
+GetListWaves lấy listMapDatas+28/clamp. Tái đọc cctor literal array1406c9c=[164],
+1406d10=[113,5], Listx28→static+28@140e19c; không đọc datas/maps.json.
+Consumer formatID0000→Resources/Instantiate dướiparentWaves→SetLastWave→active.
+GameMode0/nonbranch/ChapterCurrent0: display2→Wave_0164;
+display3→Wave_0113 rồiWave_0005. Chapter>=1 đổi prefix Chapter2; branch riêng.
+Đây là số prefab wave, KHÔNG enemy count hoặc thời gian chạy tuần tự.
+Next: Wave/Spawner activation/completion; grant/select callers; fade dispatch.
