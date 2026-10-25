@@ -107,3 +107,9 @@ pipeline UI. Không được đọc kết quả 0 thành “game không có tuto
 Hash node list khác nhau giữa các export cũng không chứng minh layout khác thật:
 export có thể thay metadata/sprite ID, node fields. Raw giữ source file/hash để
 truy ngược, không báo số hash là số màn.
+
+## Cập nhật tiếp — native đã về
+
+Actions 40176643619 đã success, raw tại daa2c3a03. Xem **report 43** cho gate
+hasTutStage1/2/3, nhánh Endgame ẩn ba nút và kết luận đủ/thiếu để vẽ. Các câu
+“chưa nhận raw/đang chạy” phía trên chỉ mô tả snapshot lúc viết report 42.

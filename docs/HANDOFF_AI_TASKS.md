@@ -69,3 +69,16 @@ Nhánh dữ liệu đã mở export native/typetree (921dc909b, Actions 40176643
 Nhánh spec lập matrix first clear/replay/defeat/back/continue cho stage 1–3,
 giữ UNKNOWN đến khi có branch evidence. Tutorial gameplay/HUD không nằm chắc
 trong scope exporter root Board_/Popup_/Tab_; cần kiểm coverage riêng.
+
+## UI drawing readiness — cập nhật sau native export
+
+Report **43-ui-drawing-readiness.md**: đã có raw native daa2c3a03/40176643619.
+Bắt đầu wireframe các board lõi được; chưa gọi đủ full onboarding. Đã resolve
+stageIndex 0/1/2 → gate tutorial control/transform, drone, touch-skill (có thêm
+điều kiện). Endgame.SetupTut với IndexTutorial<=1 ẩn Back/Replay/Continue.
+Nhánh spec phải vẽ trạng thái này riêng và giữ callback bật lại OPEN.
+Raw `ui-audit/drawing-inputs.json.gz` nối node → sprite gallery/contact-sheet;
+raw `early-native-gates.json` giữ asm/check. Đừng match trực tiếp tên Unity với
+tên gallery sanitize; dùng bảng original-name → type/path_id → gallery.
+Exporter lượt tới bổ sung TMP/sprite properties và tutorial panel sibling;
+chưa được xem như đã đủ pixel-accurate cho đến khi raw mới về/đã kiểm.

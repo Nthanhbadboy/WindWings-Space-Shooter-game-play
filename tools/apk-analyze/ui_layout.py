@@ -38,6 +38,7 @@ MAX_NODES = int(os.environ.get("UI_MAX_NODES", "6000"))
 MAX_COMPONENTS = int(os.environ.get("UI_MAX_COMPONENTS", "12"))
 MAX_BYTES = int(os.environ.get("UI_MAX_BYTES", "4000000"))
 ROOT_PREFIXES = ("Board_", "Popup_", "Tab_")
+EXTRA_UI_ROOTS = {"GP_Tutorials", "Tut_Settings", "Tut_Settings1"}
 TRANSFORM_TYPES = ("Transform", "RectTransform")
 RECT_KEYS = ("m_AnchorMin", "m_AnchorMax", "m_AnchoredPosition", "m_SizeDelta", "m_Pivot")
 
@@ -84,6 +85,15 @@ def load_env():
     except Exception as e:  # noqa: BLE001
         print("no typetree generator (attributes only):", repr(e)[:160])
     return env
+
+
+def stable_object_id(obj):
+    """Unity asset ID, not Python id(parsed_object), for deterministic output."""
+    reader = getattr(obj, "object_reader", None)
+    value = getattr(reader, "path_id", None)
+    if value is None:
+        value = getattr(obj, "path_id", None)
+    return value if value is not None else id(obj)
 
 
 def _pptr(value):
@@ -259,6 +269,20 @@ def node_info(tr):
                     entry["sprite"] = (getattr(sp, "m_Name", "") or "")[:80]
             except Exception:  # noqa: BLE001
                 pass
+        # Preserve drawing-critical properties omitted by the earlier layout
+        # summary. These are serialized values, not runtime screen geometry.
+        if cname in ("SpriteRenderer", "SpriteMask", "Image", "TextMeshPro",
+                     "TextMeshProUGUI", "Camera"):
+            tree = tree_of(comp)
+            keys = ("m_Sprite", "m_Color", "m_FlipX", "m_FlipY", "m_DrawMode",
+                    "m_Size", "m_SortingLayerID", "m_SortingOrder", "m_Materials",
+                    "m_fontAsset", "m_sharedMaterial", "m_fontSize", "m_fontSizeBase",
+                    "m_fontColor", "m_fontStyle", "m_enableAutoSizing",
+                    "m_fontSizeMin", "m_fontSizeMax", "m_HorizontalAlignment",
+                    "m_VerticalAlignment", "m_textAlignment", "m_margin",
+                    "m_overflowMode", "m_enableWordWrapping", "m_Orthographic",
+                    "orthographic size", "m_ViewportRect")
+            entry["visual_properties"] = {k: tree[k] for k in keys if k in tree}
         comps.append(entry)
     node = {"name": name, "active": active, "components": comps}
     node.update(rect_fields(tr))
@@ -273,7 +297,7 @@ def walk(root, budget):
         tr, parent_path, depth = queue.pop(0)
         if tr is None:
             continue
-        key = getattr(tr, "path_id", id(tr))
+        key = stable_object_id(tr)
         if key in seen:
             continue
         seen.add(key)
@@ -294,6 +318,36 @@ def walk(root, budget):
     return out
 
 
+def linked_tutorial_panels(head):
+    """Panel references may be siblings, not children of GP_Tutorials."""
+    result = []
+    reader = getattr(head, "object_reader", None)
+    asset_file = getattr(reader, "assets_file", None)
+    objects = getattr(asset_file, "objects", {})
+    for field, ref in tree_of(head).items():
+        if not (field.startswith("tutobj") or field in
+                ("tutSettings", "tutSettings2", "coverObject")):
+            continue
+        item = {"field": field, "reference": ref}
+        try:
+            if not isinstance(ref, dict) or ref.get("m_FileID", 0) != 0:
+                item["status"] = "external_or_non_pptr"
+            elif not ref.get("m_PathID"):
+                item["status"] = "null"
+            else:
+                obj = objects[ref["m_PathID"]].read()
+                tr = transform_of(obj)
+                if tr is None:
+                    raise ValueError("referenced object has no transform")
+                item["nodes"] = walk(tr, MAX_NODES)
+                item["status"] = "local_panel_exported"
+        except Exception as exc:
+            item["status"] = "unresolved"
+            item["error"] = str(exc)[:160]
+        result.append(item)
+    return result
+
+
 def main() -> int:
     env = load_env()
     build_class_map(env)
@@ -311,7 +365,7 @@ def main() -> int:
             cls = head.m_Script.deref_parse_as_object().m_ClassName or ""
         except Exception:  # noqa: BLE001
             continue
-        if cls.startswith(ROOT_PREFIXES):
+        if cls.startswith(ROOT_PREFIXES) or cls in EXTRA_UI_ROOTS:
             candidates.append((cls, head))
     print(f"screen candidates: {len(candidates)}")
 
@@ -330,7 +384,7 @@ def main() -> int:
         # the subtree we want. (Climbing to the scene root instead produced the
         # whole canvas for every screen - 593k duplicated nodes.)
         top = go
-        root_key = getattr(top, "path_id", id(top))
+        root_key = stable_object_id(top)
         # Trước đây dedupe theo GameObject và bỏ qua lặng lẽ: 793 candidate chỉ
         # ra 607 file, `skipped` rỗng, và cả class biến mất (Board_Shop...) vì
         # nhiều Board_* MB nằm chung một GameObject gốc. Nay dedupe theo
@@ -358,6 +412,8 @@ def main() -> int:
         payload = {"class": cls, "root_path_id": root_key, "nodes": nodes,
                    "note": "RectTransform layout as stored in the prefab. Temporary: runtime "
                            "layout groups / safe area may override these numbers."}
+        if cls == "GP_Tutorials":
+            payload["linked_panels"] = linked_tutorial_panels(head)
         with gzip.open(fn, "wt", encoding="utf-8") as f:
             json.dump(payload, f, ensure_ascii=False)
         size = os.path.getsize(fn)
