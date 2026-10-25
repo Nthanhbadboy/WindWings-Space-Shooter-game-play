@@ -119,3 +119,10 @@ Cờ là victory, key là TUTORIAL; fade callbacks load scene Home1/Game2.
 Nhánh sau chuẩn bị: victory && IndexTutorial<=2 đi Game, còn lại đi scene Home.
 Còn đọc Home_Loader consumer/queue để chốt màn hiện thực tế. Raw +10checks giữ
 ở ui-audit/routing-and-persistence.json.gz, không chỉ lời bàn giao.
+
+### Nghiệm thu raw UI 4c8d6461e (report46)
+
+40180792800 success nhưng audit bắt 2 lỗi: native render-context thiếu file
+scope; Map10315 node vẫn skip120 child do cap80. Không gọi full. 9f4f8fa10 sửa
+cả hai và có test; chờ raw lượt sau nghiệm thu. Camera6/Material261/Sprite2185/
+TMP7 typetree đã có để tham khảo, chưa được join external pathID khi scope rỗng.
