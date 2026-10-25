@@ -6,9 +6,10 @@ from contextlib import ExitStack
 
 
 def file_context(obj):
-    reader = getattr(obj, 'object_reader', obj)
-    sf = getattr(reader, 'assets_file', None)
-    return {'serialized_file': str(getattr(sf, 'name', '')),
+    reader = getattr(obj, 'object_reader', None) or obj
+    sf = getattr(obj, 'assets_file', None) or getattr(reader, 'assets_file', None)
+    return {'context_status': 'resolved' if sf is not None and getattr(sf, 'name', '') else 'missing_serialized_file',
+            'serialized_file': str(getattr(sf, 'name', '')),
             'externals': [{'file_id': i + 1, 'path': str(getattr(e, 'path', getattr(e, 'name', '')))}
                           for i, e in enumerate(getattr(sf, 'externals', []))]}
 

@@ -314,9 +314,9 @@ def walk(root, budget, diagnostics=None):
             children = tr.m_Children or []
         except Exception:  # noqa: BLE001
             children = []
-        if len(children) > 80:
-            diagnostics["child_limit_skipped"] = diagnostics.get("child_limit_skipped", 0) + len(children) - 80
-        for ch in children[:80]:
+        # The global node budget bounds traversal; a per-parent child cap
+        # silently dropped stage buttons even after raising that budget.
+        for ch in children:
             child = _pptr(ch)
             if child is not None:
                 queue.append((child, path, depth + 1))
