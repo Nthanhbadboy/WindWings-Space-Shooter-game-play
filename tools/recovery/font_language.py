@@ -6,6 +6,7 @@ import io
 import json
 from pathlib import Path
 import sys
+import struct
 import zipfile
 from asset_pack_v2 import extract_payload,serialized_files,sha
 from audio_native import INPUTS
@@ -130,7 +131,17 @@ def main():
     native.TARGET_CLASSES.clear();native.TARGET_CLASSES.update({c:'Pinned font/fallback/localization consumer recovery' for c in NATIVE})
     native.OUT_RAW=str(out/'native');native.OUT_MD=str(work/'native.md');native.OUT_CSV=str(work/'native.csv');sys.argv=['native',str(dump),str(work/'libil2cpp.so')]
     assert native.main()==0
-    produced=[out/'graph-index.json',out/'links.json.gz',*[out/c['path'] for c in chunks],*sorted((out/'native').iterdir())]
+    # Getter bounds systemLanguage 9..40 then indexes exactly 32 signed ints.
+    va=0x779fb8;length=32*4
+    segments=native.elf_segments(str(work/'libil2cpp.so'))
+    segment=next(s for s in segments if s[0]<=va and va+length<=s[0]+s[2])
+    offset=segment[1]+va-segment[0]
+    with (work/'libil2cpp.so').open('rb') as binary:
+        binary.seek(offset);blob=binary.read(length)
+    (out/'native-data.json').write_text(json.dumps(dict(source='libil2cpp.so',source_sha256=INPUTS['lib/arm64-v8a/libil2cpp.so'],
+        slices=[dict(consumer='LanguageManager.get_language',va=hex(va),file_offset=offset,bytes=length,hex=blob.hex(),sha256=sha(blob),
+                     int32_le=list(struct.unpack('<32i',blob)))]),indent=2)+'\n')
+    produced=[out/'native-data.json',out/'graph-index.json',out/'links.json.gz',*[out/c['path'] for c in chunks],*sorted((out/'native').iterdir())]
     files_manifest=[]
     for path in produced:
         blob=path.read_bytes();assert len(blob)<5_000_000
