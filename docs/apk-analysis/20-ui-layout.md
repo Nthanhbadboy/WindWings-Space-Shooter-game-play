@@ -5,37 +5,37 @@
 > chiếu. Dữ liệu thô: `reverse-engineering/raw/ui/*.json.gz`.
 
 - màn hình dump được: **797**
-- tổng node: **145112**
+- tổng node: **146797**
 - dung lượng thô (gz): **4.0 MB**
 
 ## Component gặp nhiều nhất
 
 | class | số node |
 |---|---:|
-| `Transform` | 126682 |
-| `SpriteRenderer` | 72535 |
-| `MeshRenderer` | 20943 |
-| `RectTransform` | 18430 |
-| `TextMeshPro` | 18340 |
-| `MeshFilter` | 16987 |
-| `BoxCollider2D` | 8244 |
-| `Animator` | 6657 |
-| `ButtonEvents` | 5686 |
-| `Button_Sound` | 5524 |
-| `ParticleSystem` | 5012 |
-| `ParticleSystemRenderer` | 5012 |
-| `LanguageTextMeshPro` | 4904 |
-| `ChangeSorting` | 2342 |
+| `Transform` | 128305 |
+| `SpriteRenderer` | 73501 |
+| `MeshRenderer` | 20988 |
+| `RectTransform` | 18492 |
+| `TextMeshPro` | 18402 |
+| `MeshFilter` | 16931 |
+| `BoxCollider2D` | 8364 |
+| `Animator` | 6750 |
+| `ButtonEvents` | 5806 |
+| `Button_Sound` | 5644 |
+| `ParticleSystem` | 5022 |
+| `ParticleSystemRenderer` | 5022 |
+| `LanguageTextMeshPro` | 4892 |
+| `ChangeSorting` | 2343 |
 | `BgObjectScaler` | 1744 |
-| `TMP_SubMesh` | 1732 |
+| `TMP_SubMesh` | 1717 |
 | `Popup_Notices` | 1335 |
 | `Box_Rewards` | 1324 |
 | `Shop_Cell` | 801 |
 | `UIObjectAnchors` | 772 |
 | `FixUIShop` | 723 |
-| `Rigidbody2D` | 563 |
+| `Rigidbody2D` | 564 |
 | `ObjectPool` | 456 |
-| `Obj_Collider` | 440 |
+| `Obj_Collider` | 441 |
 | `LineRenderer` | 416 |
 
 - node không đọc được component: **0**
@@ -44,7 +44,7 @@
 
 | class | node | text | button | KB |
 |---|---:|---:|---:|---:|
-| `Board_Maps` | 10315 | 614 | 353 | 130 |
+| `Board_Maps` | 12000 | 652 | 473 | 132 |
 | `Board_Shop` | 4876 | 848 | 190 | 96 |
 | `Board_SelectBoss` | 3837 | 144 | 17 | 73 |
 | `Board_PVP` | 3789 | 540 | 180 | 82 |
