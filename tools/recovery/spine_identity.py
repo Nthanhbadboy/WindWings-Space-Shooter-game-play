@@ -16,7 +16,7 @@ from audio_native import INPUTS
 
 ROOT = Path(__file__).resolve().parents[2]
 SELECTED = {'SkeletonDataAsset', 'SpineAtlasAsset', 'SpineSpriteAtlasAsset'}
-NATIVE = {'SpineAtlasAsset', 'MaterialsTextureLoader'}
+NATIVE = {'SpineAtlasAsset', 'MaterialsTextureLoader', 'Material'}
 
 
 def walk_pointers(value, location=''):
@@ -174,7 +174,7 @@ def recover(xapk, work, out):
     dump = work/'dump.cs'
     dump.write_bytes(gzip.decompress((ROOT/'reverse-engineering/il2cpp/dump.cs.gz').read_bytes()))
     all_rows = native.parse_dump(str(dump))
-    native.parse_dump = lambda _: [(cls if cls in NATIVE else '__not_selected__',ns,name,offset,rva,sig) for cls,ns,name,offset,rva,sig in all_rows]
+    native.parse_dump = lambda _: [(cls if cls in NATIVE and (cls != 'Material' or name == 'get_mainTexture') else '__not_selected__',ns,name,offset,rva,sig) for cls,ns,name,offset,rva,sig in all_rows]
     native.TARGET_CLASSES.clear()
     native.TARGET_CLASSES.update({cls:'Pinned Spine loader native recovery' for cls in NATIVE})
     native.OUT_RAW=str(out/'native')

@@ -26,6 +26,19 @@ jobs:
       - run: python3 -m pip install 'UnityPy==1.25.4' 'TypeTreeGeneratorAPI==0.0.10' 'capstone==5.0.3'
       - name: Recover only Spine chain metadata and loader native
         run: python3 tools/recovery/spine_identity.py --xapk /tmp/apk/windwings.xapk --work /tmp/spine-identity
+      - name: Expose scoped recovery diagnostics without relying on runner log download
+        if: always()
+        run: |
+          python3 - <<'PYCODE'
+          import gzip,json,pathlib
+          p=pathlib.Path('reverse-engineering/raw/spine-identity/chains.json.gz')
+          if p.exists():
+              d=json.loads(gzip.decompress(p.read_bytes()))
+              bad=[r for r in d['objects'] if r.get('status')!='recovered']
+              unresolved=[r for r in d['links'] if r['status']=='unresolved']
+              text=json.dumps(dict(counts=d['scan_counts'],header_errors=d['header_errors'][:3],header_error_count=len(d['header_errors']),failed=bad[:3],unresolved=unresolved[:3]))
+              print('::notice::'+text.replace('%','%25').replace('\n','%0A'))
+          PYCODE
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -33,10 +46,12 @@ jobs:
           path: reverse-engineering/raw/spine-identity/
       - run: python3 -m unittest discover -s tests -q
       - name: Preserve scoped raw on session branch
+        if: always()
         run: |
           test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
           git config user.name 'Arena evidence collector'
           git config user.email 'agent@arena.ai'
+          test -f reverse-engineering/raw/spine-identity/chains.json.gz
           git add reverse-engineering/raw/spine-identity
           git diff --cached --quiet || git commit -m 'research(spine): preserve file-scoped raw chain and loader native [skip ci]'
           for attempt in 1 2 3; do
