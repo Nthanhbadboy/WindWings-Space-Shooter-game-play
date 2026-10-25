@@ -122,7 +122,7 @@ source join và call/guard graph cho selected core UI. Vẫn chưa engine transi
 runtime delegate execution, driven layout, particle/shader/composition-render.5 header-only
 MonoBehaviours và52default-mesh refs ở98 vẫn không được tự nhận đã xử lý. L3 chưa complete.
 
-Local final: **957 tests PASS /147.821s**,17new tests. CI receipt follows separately.
+Local final: **957 tests PASS /145.887s**,17new tests. CI receipt follows separately.
 
 ### Rà model getter trước bàn giao
 
@@ -132,3 +132,10 @@ function trong model ban đầu, không phải140 object/transform bị APK thi�
 cuối vẫn để nguyên. Field `argument` là symbolic **x1 ABI register**, không tự gọi là Vector3/
 float argument; các FP/struct parameters của setters chưa decode. Không biến x1=0 method-info
 thành vị trí local(0,0,0). Bool/string examples bên trên có đúng signature/ABI tương ứng.
+
+### Receipt100
+
+Final code **ad986c7b9**, Verify **40232850860 SUCCESS**, job3m14s/Python3.12.
+Full957localPASS145.887s. Raw recovery/CI/local lifecycle/handoff receipts giữ tại
+`reverse-engineering/raw/l3-ui-driver-verification/`. Peer handoff6403089405, final receipt
+6403162684 trên PR12; chưa independent ACK. Không coi receipt là render acceptance.

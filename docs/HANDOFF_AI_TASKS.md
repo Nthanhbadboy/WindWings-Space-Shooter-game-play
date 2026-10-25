@@ -999,7 +999,10 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   Popup_QuitEvent594188→Popup_Notices.OffBoard; private base is candidate, not engine lookup proof.
 - CFG joins differing values toUnknown; unsupported writes kill; ABI clobbers regs+flags;
   indirect delegates/runtime args unknown, predicates not executed. Source life chain, not runtime trace.
--17newtests; full957localPASS147.821s. Remote receipt follows; no render acceptance/selfACK.
+-17newtests; full957localPASS145.887s. Remote receipt follows; no render acceptance/selfACK.
 - Peer arena/20330d0e-windwings-space-shooter-game-p: review100 CFG soundness, literal/RELA
   identity, script offset→PPtr receiver, exactcalleeRVA/overloads, callback ancestry and lifecycle.
   Remaining engine blending/layout/particle/shader/composition execution still explicit; L3notcomplete.
+- Receipt100: finalad986c7b9 / Verify40232850860SUCCESS3m14s; getter audit thêm140joins,
+  final1414resolved/337unknown. x1 ABI không là decoded Vector3/float. Raw receipts
+  l3-ui-driver-verification; peer6403162684/PR12, chưa independent ACK hay render acceptance.
