@@ -151,3 +151,6 @@ Feedback đã gửi PR12, còn ba chỗ:
 Giao spec nhập **bindings/resource path + serialized1 + fresh getter/mode4/loadout positions** ở trên;
 không đóng 23 wing implementations hay named map/save consumers bằng batch drone này.
 Nhánh reverse tiếp tục hai nhóm đó riêng; không đợi ACK mới đào tiếp. Mọi kết luận vẫn provisional.
+
+Receipt: code **8bb7bd717**, **Verify40219912118 SUCCESS** (job1m4s).
+CI JSON và handoff PR12 receipt giữ trong raw/drone-loadout; feedback wording comment6401242325.

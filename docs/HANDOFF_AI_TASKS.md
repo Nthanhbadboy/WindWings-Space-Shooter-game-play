@@ -834,3 +834,5 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   AutoGain guardCurrent>0/level0zero, map footer stale; feedback receipt raw/peer-review/review92-*.
 - Spec nhập ba đáp án drone trên; reverse tiếp23wing implementations/named map-save consumers.
   Không coi batch này đóng hai nhóm đó; không đợi ACK để làm tiếp.
+- Receipt92: code8bb7bd717, Verify40219912118 SUCCESS/job1m4s; đã gửi report92 qua PR12,
+  raw/drone-loadout/handoff92-receipt.json giữ ID/response. Không tự coi peer đã ACK92.
