@@ -108,11 +108,11 @@ def main():
         script = json.loads((dumper_out / 'script.json').read_text())
         wanted = {va for va, _ in cells}
         wanted.update(r[4] for r in rows if r[0] in CLASSES)
-        filtered = {key: [r for r in records if isinstance(r, dict) and r.get('Address') in wanted]
+        filtered = {key: [r for r in records if isinstance(r, dict) and (key in {'ScriptMetadata','ScriptMetadataMethod'} or r.get('Address') in wanted)]
                     for key, records in script.items() if isinstance(records, list)}
         (out / 'symbols.json.gz').write_bytes(gzip.compress(json.dumps(dict(
             status='PINNED_DUMPER_SYMBOLIC_USAGE_NOT_RUNTIME', dumper_version='6.7.46',
-            dumper_exit_code=run.returncode, script_sha256=hashlib.sha256((dumper_out / 'script.json').read_bytes()).hexdigest(),
+            dumper_exit_code=run.returncode, dumper_log_tail=run.stdout.decode(errors='replace')[-6000:], script_sha256=hashlib.sha256((dumper_out / 'script.json').read_bytes()).hexdigest(),
             source_counts={k: len(v) for k,v in script.items() if isinstance(v,list)}, records=filtered), indent=2).encode(), mtime=0))
         # Full parsed headers select source component families, never corrupted generated m_Script.
         import UnityPy
