@@ -49,6 +49,18 @@
 
 ## 2. Làm cho **ĐÚNG** — tám con số xương sống
 
+**Trước hết, bốn mức "xong"** (định nghĩa đầy đủ ở `DONE.md` §2 — dùng đúng tên này khi báo cáo):
+
+| Mức | Nghĩa | Kiểm bằng | Phạm vi đã chốt |
+|---|---|---|---|
+| **L0** | chạy được: mở, vào màn, bắn, chết, qua màn | chạy 30 phút không crash | ✅ bắt buộc |
+| **L1** | đúng **luật** cơ chế, không cần giống số | chơi thử theo checklist cơ chế | ✅ **mục tiêu của bộ spec này** |
+| **L2** | đúng **số** (DPS, HP, nhịp spawn khớp bản gốc) | so bảng số | ❌ chưa (6 blob rodata chưa bóc) |
+| **L3** | người chơi **không phân biệt được** | test mù | ❌ bỏ |
+
+> ⚠ **"Bỏ L3" chỉ có nghĩa là bỏ tái lập 1:1 asset/cảm giác** — **không** phải bỏ chất lượng.
+> Chất lượng thị giác **vẫn bắt buộc** và có test bằng máy: `VISUAL_DESIGN.md` §5.
+
 Không cần đọc hết 40 file trước khi bắt đầu. Tám con số này đủ để dựng khung chơi được:
 
 | # | Cái gì | Số | Ở đâu (claim) |
