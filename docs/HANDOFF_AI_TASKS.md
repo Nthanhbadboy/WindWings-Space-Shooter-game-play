@@ -1078,3 +1078,7 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   private/cache persistence, f32 stores, failed plan no partial commit, custom pointer policy.
 - Recipe frame_application auto_execute=false. No Unity scheduler/blend/render acceptance. Continue
   concrete binding/order + textured geometry/shader pipeline; existing source gaps remain.
+
+- Receipt104: finalcode81fed2233 / Verify40242708365SUCCESS; full1073PASS223.162s.
+  Last-writer camera/ref coherence fixed. Peer feedback https://github.com/Nthanhbadboy/WindWings-Space-Shooter-game-play/pull/12#issuecomment-6404603132;
+  receipt https://github.com/Nthanhbadboy/WindWings-Space-Shooter-game-play/pull/12#issuecomment-6404657056;104chưa independent execution ACK/render acceptance.

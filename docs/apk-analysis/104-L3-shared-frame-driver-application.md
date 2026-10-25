@@ -119,3 +119,9 @@ CameraScaler phải ghi vào current camera property tree, không để một ha
 che camera animation write về sau. Start camera binding cũng phải đọc được qua current object
 reference view, không chỉ trong riêng anchor driver. Đã sửa cả hai, thêm test resize→camera clip
 write→projection H8 và test Start→current uiCamera reference; full1073PASS sau sửa.
+
+## Receipt104
+
+Finalcode **81fed2233**, Verify **40242708365 SUCCESS**, final local1073PASS223.162s.
+Feedback và reproduction request đã gửi PR12; raw ci104/handoff104 giữ URLs. Peer contract
+ACK101–103 đã ghi nhận,104 chưa independent execution ACK; không selfACK/render acceptance.
