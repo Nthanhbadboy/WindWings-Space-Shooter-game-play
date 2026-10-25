@@ -141,3 +141,21 @@ OpenBoard56(BoardEvent selectedBoard,mode0), resetdefaultBoard1, rồi CheckSpec
 Queue/callback/override vẫn OPEN. PlayerPreferences int wrappers tailcall Unity
 PlayerPrefs; custom SaveToDisk không chứng minh flush TUTORIAL. Đọc report47
 trước khi dùng report45/46; mọi kết luận PROVISIONAL, không blind-merge branch.
+
+### Runtime probe — đọc report48 trước khi chạy thêm phiên
+
+Đã audit remote25c367aca, không chỉ code cũ của nhánh này. Bản kia có injection,
+property/array/anim/phone-interop fixes; không lặp lại kết luận "chưa sửa" từ bản cũ.
+**Phát hiện từ APK gốc:** GP_Tutorials.get_IndexTutorial @14f4a14 có nhánh
+StageTarget>=2 && cachedIndex==0 → cache6 +SetInt(TUTORIAL,6). `/statics` gọi mọi
+property getter có thể tự làm đổi thứ cần đo. Dùng allowlist native field,
+không arbitrary getter/forced init/Save. Raw asm/calls/metadata:
+`raw/runtime-probe/getter-observer-effect.json.gz`; plan14fields/13methods ở
+`stage1-3-watchpoints.json.gz` (kế hoạch, KHÔNG phải giá trị đã thu).
+
+Run40181812673 CI xanh nhưng session/probe SKIPPED, artifact bridge:no; XAPK SHA
+khớp nguồn gốc. Đã recovery40182134370 không bật phiên cloud. Phone log remote
+lại thuộc packagePremium: không nhận làm gameplay evidence bản gốc.
+`collect.sh` của remote còn gọi get ở4b trước definition: chuyển helper lên đầu,
+kiểm JSON ok và missing/errors từng field, không lấy HTTP200/CIgreen làm nghiệm thu.
+Giữ raw/provenance cho mọi lần đo, không blind-merge tooling.
