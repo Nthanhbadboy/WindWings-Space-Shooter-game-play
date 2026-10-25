@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CLASSES = ()
 
 def selected(cls):
-    return bool(re.match(r'Player_Attack(?:_\d+)?(?:\.|$)|Bullet(?:_|[A-Z])|Homing_Missile|Rocket_No_Attack', cls)) or cls in {'Damager', 'Sub_Object', 'Sub_Character', 'Enemy_Sub', 'Sub_Player', 'Sub_ShipProtect', 'Skeleton_SubObj', 'Enemy_Ingame', 'Enemy_Health', 'Enemy_Destroy', 'Enemy_Display', 'Shield_Sub', 'Player_Health', 'Player_Ingame', 'Player_Get_Datas', 'GP_Datas', 'Pool_GameObjects', 'BulletInfo', 'IBullet', 'IDamageable'}
+    return bool(re.match(r'Player_Attack(?:_\d+)?(?:\.|$)|Bullet(?:_|[A-Z])|Homing_Missile|Rocket_No_Attack', cls)) or cls in {'Damager', 'Sub_Object', 'Sub_Character', 'Enemy_Sub', 'Enemy_Controller', 'Sub_Player', 'Sub_ShipProtect', 'Skeleton_SubObj', 'Enemy_Ingame', 'Enemy_Health', 'Enemy_Destroy', 'Enemy_Display', 'Shield_Sub', 'Player_Health', 'Player_Ingame', 'Player_Get_Datas', 'GP_Datas', 'Pool_GameObjects', 'BulletInfo', 'IBullet', 'IDamageable'}
 APK_SHA = 'f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
 INPUTS = {'lib/arm64-v8a/libil2cpp.so': '9cb038e88709f38318d183d3616eed054b36c3186ead8f1c37246ece87393c99',
           'assets/bin/Data/Managed/Metadata/global-metadata.dat': '449a0698a1b71d0e4d04efafdb4e2fad97fd02ca8f8528715ad9638aa813ba69'}
@@ -138,17 +138,17 @@ def main():
                     namespace, cls = scripts[key]
                 except Exception as error:
                     errors.append(dict(serialized_file=filename, path_id=obj.path_id, error=repr(error))); continue
-                if not (re.fullmatch(r'Player_Attack_\d+', cls) or cls in {
+                if not (re.fullmatch(r'Player_Attack_\d+', cls) or cls.startswith(('Bullet_', 'BulletZig', 'BulletClock', 'Homing_Missile', 'Rocket_No_Attack')) or cls in {
                     'Bullet_Object','Bullet_Linearly','Bullet_Player3','Bullet_Player7','Bullet_Sword',
                     'Enemy_Sub','Enemy_Health','Shield_Sub','Sub_Player','Skeleton_SubObj'}): continue
                 try:
                     tree = obj.read_typetree()
                     go = head.m_GameObject.deref()
                     components.append(dict(serialized_file=filename, path_id=obj.path_id, class_name=cls,
-                        namespace=namespace, raw_object_sha256=hashlib.sha256(obj.get_raw_data()).hexdigest(),
+                        namespace=namespace, raw_object_hex=(obj.get_raw_data().hex() if cls.startswith('Player_Attack_') else None), raw_object_sha256=hashlib.sha256(obj.get_raw_data()).hexdigest(),
                         tree=tree, gameobject=dict(path_id=go.path_id, tree=go.read_typetree())))
                 except Exception as error:
-                    errors.append(dict(serialized_file=filename, path_id=obj.path_id, class_name=cls,error=repr(error)))
+                    errors.append(dict(serialized_file=filename, path_id=obj.path_id, class_name=cls,error=repr(error), raw_object_hex=obj.get_raw_data().hex(), raw_object_sha256=hashlib.sha256(obj.get_raw_data()).hexdigest(), gameobject=dict(path_id=head.m_GameObject.deref().path_id, tree=head.m_GameObject.deref().read_typetree())))
         shards=[]
         for start in range(0,len(components),250):
             path=out / f'components-{start//250:03d}.json.gz'
