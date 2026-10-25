@@ -39,4 +39,8 @@ jobs:
           git config user.email 'agent@arena.ai'
           git add reverse-engineering/raw/drone-loadout reverse-engineering/raw/player-hp-board reverse-engineering/raw/wing-drone reverse-engineering/raw/pickup-currency reverse-engineering/raw/enemy-hit-callbacks reverse-engineering/raw/combat-chain/coroutine-jump-tables.json reverse-engineering/raw/combat-delegates reverse-engineering/raw/combat-receivers reverse-engineering/raw/player-lifecycle reverse-engineering/raw/player-invincibility
           git diff --cached --quiet || git commit -m 'Preserve pinned coroutine byte jump tables [skip ci]'
-          git push origin arena/ef6b75ef-windwings-space-shooter-game-p
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+            if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
+          done
+          exit 1

@@ -40,6 +40,18 @@ def main():
                 obj=ptr.deref() if hasattr(ptr,'deref') else ptr
                 containers.setdefault((id(obj.assets_file),obj.path_id),[]).append(name)
             except Exception as e:errors.append(dict(container=name,error=repr(e)))
+        resource_managers=[]
+        from UnityPy.classes.PPtr import PPtr
+        for filename,sf in files:
+            for obj in sf.objects.values():
+                if obj.type.name!='ResourceManager':continue
+                tree=obj.read_typetree();resource_managers.append(dict(**identity(obj),tree=tree))
+                for key,ptr in tree['m_Container']:
+                    try:
+                        resolved=PPtr(m_FileID=ptr['m_FileID'],m_PathID=ptr['m_PathID'],assetsfile=sf).deref()
+                        containers.setdefault((id(resolved.assets_file),resolved.path_id),[]).append(key)
+                    except Exception as e:errors.append(dict(resource=key,error=repr(e)))
+        rp=out/'resource-managers.json.gz';rp.write_bytes(gzip.compress(json.dumps(resource_managers,indent=2).encode(),mtime=0))
         for filename,sf in files:
             for obj in sf.objects.values():
                 if obj.type.name!='MonoBehaviour':continue
@@ -68,6 +80,6 @@ def main():
                 except Exception as e:row['error']=repr(e);errors.append(dict(**identity(obj),class_name=cls,phase='selected',error=repr(e)))
                 records.append(row)
         path=out/'components.json.gz';path.write_bytes(gzip.compress(json.dumps(records,indent=2).encode(),mtime=0))
-        (out/'component-index.json').write_text(json.dumps(dict(status='PINNED_SERIALIZED_IDENTITY_NOT_AUTOMATIC_RUNTIME_SPAWN',xapk_sha256=XAPK_SHA,lib_sha256=LIB_SHA,inputs=inputs,scanned_headers=scanned,records=len(records),errors=errors,externals=[dict(serialized_file=n,externals=[dict(path=e.path,type=e.type) for e in sf.externals]) for n,sf in files],sha256=hashlib.sha256(path.read_bytes()).hexdigest()),indent=2)+'\n')
+        (out/'component-index.json').write_text(json.dumps(dict(status='PINNED_SERIALIZED_IDENTITY_NOT_AUTOMATIC_RUNTIME_SPAWN',xapk_sha256=XAPK_SHA,lib_sha256=LIB_SHA,inputs=inputs,scanned_headers=scanned,records=len(records),resource_managers_sha256=hashlib.sha256(rp.read_bytes()).hexdigest(),errors=errors,externals=[dict(serialized_file=n,externals=[dict(path=e.path,type=e.type) for e in sf.externals]) for n,sf in files],sha256=hashlib.sha256(path.read_bytes()).hexdigest()),indent=2)+'\n')
         print('drone prefab snapshot',len(records),'records;',len(errors),'explicit errors')
 if __name__=='__main__':main()
