@@ -717,3 +717,7 @@ Xem79 + raw/player-firing; 3targeted evidence testsPASS, khôngruntimeapproval.
   chưaresolve emitterdelegate/interface type-pointer nên chưachứngminh mọi bullet dùngcallbacknày.
 - Boundedtimer model +7tests; local257tests+datasvalidatePASS. Xem80/rawtimer-derivation.
   **entered emitter≠spawnedbullet≠hit≠actualhealthdelta**; chưaDPS/TTKapproval.
+
+- Report80 final: ability getter thuộc **GP_Datas.GetNumberAbility(4)**, không Player_Ability.
+  Declaration regression đãthêm; 8newtests/full258localPASS; Verify40204504124SUCCESS cho5989366d7.
+  Gap tiếp: delegate/type-pointer + bullet/receiver TakeDamage; chưaactualDPS/TTK.

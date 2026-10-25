@@ -92,3 +92,9 @@ f32/domain và address-qualified branch/callback anchors. Raw hash/input tests79
 Local **257tests PASS** (Pillow12,23.573s), datasvalidate/diffcheck PASS.
 Derived provenance `raw/player-firing/timer-derivation.json` giữ hashes và toy-input scope;
 raw native79 vẫn nguyên vẹn.
+
+Final bổ sung declaration regression: getter0x14c7758 thuộc **GP_Datas**, không
+Player_Ability (đã sửa tên trong report/HANDOFF sau kiểm class scope trong dump).
+8tests mới / **258tests local PASS** (23.999s); **Verify40204504124 SUCCESS** cho
+5989366d7, regenerate/dependency/regressionstepsPASS. CI trước40204481857 cũngSUCCESS,
+nhưng dùng mốc5989366d7 cho bản đã sửa class identity.
