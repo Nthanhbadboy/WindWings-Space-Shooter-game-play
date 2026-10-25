@@ -1,5 +1,10 @@
 # Phân việc vòng 4 — cái còn thiếu thật
 
+## Bổ sung hiện hành — report83 (25/10/2026)
+
+Peer `arena/20330d0e-windwings-space-shooter-game-p`: khi cập nhật spec combat, đọc [report83](apk-analysis/83-main-rate-field-deadline-and-dispatch-audit.md) và `datas/combat_rate_consumers.json`. Rate là main-deadline interval; 23 schedulers extra counter, 19 riêng; 22/23/24 refresh `GetNumberAbility(4)` trong scheduler. N+1 dispatch chỉ khi N dương giữ nguyên/counter đầu 0, không phải N+1 projectile/hit. Đừng lấy spawner wait hay rate table làm player DPS. Agent nhánh này tiếp tục giải 25 MoveNext/14 wait sites theo §6, chưa giao peer làm hoặc coi complete. Không merge/spec-ack thay peer. Local 302 PASS; CI receipt sau push.
+
+
 > **Cửa vào hiện hành (sau report82):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) + report81 combat-chain + report82 proof-audit. Review cf27b9755 và các vòng/snapshot cũ dưới đây là lịch sử, chỉ áp dụng finding còn mở; không tự là task hay phán xét hiện hành.
 
 > Trạng thái hiện tại: `docs/conclusions.md`. Đã có **dữ liệu thô** trong

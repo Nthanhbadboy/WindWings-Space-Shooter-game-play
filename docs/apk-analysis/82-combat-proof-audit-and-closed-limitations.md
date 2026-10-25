@@ -1,5 +1,7 @@
 # 82 — Kiểm lại chứng cứ combat: đóng giới hạn sai/quá rộng
 
+> **Tiếp nối83:** main-rate field/deadline/dispatch đã nối đủ 24; 25 coroutine bodies/14 wait sites có inventory và câu hỏi còn lại cụ thể. Xem [report83](83-main-rate-field-deadline-and-dispatch-audit.md), không giữ consumer field/deadline là unknown chung.
+
 **Tạm thời nhưng không để “chưa runtime” thay việc đọc native.** Report này tái dùng raw81,
 không cần dump/media mới. Kết quả máy đọc: `datas/combat_argument_audit.json`.
 

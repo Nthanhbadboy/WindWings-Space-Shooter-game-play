@@ -1,0 +1,29 @@
+{
+  "status": "PROVISIONAL_APK_STATIC_FIELD_DEADLINE_DISPATCH_NOT_MEASURED_CADENCE",
+  "inputs_manifest": "datas/combat_rate_consumers.json#/inputs",
+  "artifacts": [
+    {
+      "path": "tools/verify/combat_rate_consumers.py",
+      "sha256": "1e05896c2951d1cd43aa63785467f8d112a67f678dd49049e62d594136b207e3"
+    },
+    {
+      "path": "datas/combat_rate_consumers.json",
+      "sha256": "2b183a5d44482fce6ebadd1ff2067cdac79bdfa8989fd82959306908ef66ffe1"
+    },
+    {
+      "path": "tests/test_combat_rate_consumers.py",
+      "sha256": "f07df15d5f47679209adad63ba07b01431eeb496219991907c29e13b0682c8ac"
+    }
+  ],
+  "reproduce": "python3 -m tools.verify.combat_rate_consumers --check",
+  "raw_modified": false,
+  "scope": "24 main rate bindings and scheduler prefixes; owner-qualified byte-range accesses; coroutine sites inventoried, complete coroutine emission semantics pending report83 section6",
+  "local_tests": {
+    "total": 302,
+    "new": 12,
+    "result": "PASS",
+    "seconds": 32.245
+  },
+  "validate": "PASS",
+  "diff_check": "PASS"
+}

@@ -1,5 +1,10 @@
 # `datas/` — data pack WindWings
 
+## Combat rate consumers — report83
+
+`combat_rate_consumers.json`: 24 rate-field/demo/deadline bindings, 96 owner-qualified accesses (có wide write overlap), scheduler prefixes/dispatches, StartAttack contexts, 25 MoveNext/14 WaitForSeconds sites. Sinh/check bằng `python3 -m tools.verify.combat_rate_consumers [--check]`. Hash từng raw input trong JSON; derivation receipt dưới `reverse-engineering/raw/combat-chain/rate-consumer-derivation.json`. Không phải bảng projectile cadence/DPS; coroutine site inventory chưa phải toàn bộ emission semantics. Xem [report83](../docs/apk-analysis/83-main-rate-field-deadline-and-dispatch-audit.md).
+
+
 Dữ liệu bóc từ APK **WindWings: Space Shooter 1.3.118**, đã chuẩn hoá thành JSON để dùng cho
 bản clone (engine nào cũng đọc được). Sinh tự động bằng:
 

@@ -1,5 +1,10 @@
 # Kết luận — trạng thái và độ tin cậy
 
+## Bổ sung report83 — 24 main-rate consumers (25/10/2026)
+
+[Report83](apk-analysis/83-main-rate-field-deadline-and-dispatch-audit.md) + `datas/combat_rate_consumers.json`: đủ 24 getter-return → demo FCSEL → rate field → main deadline → dispatch; 96 owner-qualified byte-overlap-aware accesses. 19 không extra counter; 22/23/24 refresh ability trong scheduler. Giữ phân biệt dispatch/spawn/hit/requested damage/HP loss. 25 MoveNext/14 wait sites mới inventory kèm các câu hỏi native cụ thể, không tuyên bố hoàn tất coroutine semantics. Local 302 tests PASS, validate/diffcheck PASS. Tạm thời APK-static, không measured cadence/DPS.
+
+
 > **Mọi kết luận trong repo này là TẠM THỜI.** Mỗi lần pipeline chạy lại, số liệu có thể đổi
 > (đổi version APK, đổi backend typetree, sửa parser). File này là sổ đăng ký: kết luận nào,
 > lấy từ đâu, độ tin cậy bao nhiêu, và **cách kiểm lại**.

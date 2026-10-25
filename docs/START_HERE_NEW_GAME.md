@@ -1,6 +1,9 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report82. Tất cả kết luận APK vẫn tạm thời.**
+**Report83 — main-rate consumers:** [24 field → deadline → dispatch](apk-analysis/83-main-rate-field-deadline-and-dispatch-audit.md). 96 owner-qualified accesses (48 reads), 23 extra-counter schedulers / riêng 19 single-deadline; 22/23/24 refresh ability trong scheduler. Đừng đồng nhất rate với projectile cadence/DPS. 25 MoveNext/14 wait sites đã inventory, remaining semantics có RVA cụ thể ở §6. Local 302 PASS; raw giữ nguyên.
+
+
+**Cập nhật 25/10/2026, sau report83. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
