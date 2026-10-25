@@ -87,6 +87,17 @@ Chuỗi offset — `0x28=Xuathien` · `0x30=Baydi` · `0x38=Dead` · `0x40=Attac
 
 Thứ tự so chuỗi trong `BossWork`: `0x28` → `0x58` → `0x60` → `0x30` → `0x38`.
 
+**8 tên entry kiểm chứng bằng dữ liệu serialize** (24/10, dòng mới kéo từ nhánh dữ liệu:
+`docs/apk-analysis/Boss1_Director.csv`). Trước đây 8 chuỗi này suy ra **gián tiếp** từ offset; nay đọc
+thẳng giá trị field:
+
+| prefab | instance | `stateAppear` | `stateRunAway` | `stateDie` | `stateAttack1/2/3` | `statePreAttack2/3` |
+|---|---:|---|---|---|---|---|
+| `Boss-39002` | **1** | `Xuathien` | `Baydi` | `Dead` | `Attack1` · `Attack2` · `Attack3` | `Chuyensangattack2` · `Chuyensangattack3` |
+
+⇒ 8/8 khớp suy luận offset trước đó, và **`Boss1_Director` chỉ có đúng 1 instance** (trên `Boss-39002`),
+không phải "mỗi boss một director".
+
 **Chuỗi gọi** (đọc từ asm, không suy đoán):
 
 ```
@@ -138,8 +149,22 @@ trên các static `MethodInfo` cache).
 | slot **#2** | `Behaviour.set_enabled(true)` — không invoke |
 | không khớp | `ret` |
 
-Hai tên đó **không có literal trong asm** (field serialized). Ứng viên duy nhất là **2 tên event
-có thật trong rig**: `Stop` và `Banplasma` — nhưng **không biết tên nào vào slot nào** ⇒ mức **B**.
+**Tên field — nay biết chính xác (mức A)** từ `reverse-engineering/il2cpp/interesting-classes.cs`
+(kéo 24/10), đúng 5 field serialized:
+
+| offset | field | kiểu | vai trò trong `HandleEvent` |
+|---|---|---|---|
+| `0x20` | `attackEventName` | `string` | khớp ⇒ `chargeEffect.set_enabled(false)` + `onAttack.Invoke()` |
+| `0x28` | `preAttackEffectEventName` | `string` | khớp ⇒ `chargeEffect.set_enabled(true)` |
+| `0x30` | `skeletonAnimation` | `SkeletonAnimation` | đăng ký delegate trong `Start` |
+| `0x38` | `onAttack` | `UnityEvent` | gọi khi khớp `attackEventName` |
+| `0x40` | `chargeEffect` | `GameObject` | bật/tắt theo 2 event trên |
+
+⇒ Cơ chế **đọc được trọn** (A): "event trước đòn" **bật hiệu ứng tích tụ**, "event đòn" **tắt hiệu ứng +
+gọi `UnityEvent`** để gây sát thương. Còn **giá trị 2 chuỗi** thì vẫn **B** — ứng viên duy nhất vẫn là
+**`Stop`** và **`Banplasma`**, và theo tên field thì `attackEventName` nhiều khả năng = **`Banplasma`**
+(nghĩa đen "bắn plasma"), `preAttackEffectEventName` = **`Stop`**. **Chưa có bằng chứng trực tiếp** vì
+`BossSpineEventHandler` vẫn **0 instance export** ⇒ §T1 của `HANDOFF_ANIM_RAW.md`.
 
 **Nguồn thứ hai, độc lập** — `docs/apk-analysis/spine-events.csv` (21 dòng dữ liệu, kéo từ nhánh dữ liệu
 24/10) xác nhận đúng **2 tên event** đó, kèm mốc thời gian:
@@ -202,9 +227,19 @@ nhịp **tắt/bật một bộ phận** giữa đòn, khớp với hành vi `se
 `OnCallAttack6Event` · `OnCallAttack9StartEvent` · `OnCallAttack9EndEvent` ·
 `OnAnimationEndedEvent` — **12 handler · 28 byte** mỗi cái.
 
+**12 field delegate `0x20`…`0x78` có tên** (từ `interesting-classes.cs`, kéo 24/10) — đúng thứ tự khai báo:
+
+| offset | field | method gán vào | | offset | field | method |
+|---|---|---|---|---|---|---|
+| `0x20` | `onAnimationEndedEvent` | `OnAnimationEndedEvent` | | `0x50` | `onCallAttack2CheckEvent` | `Attack2StartCheckShoot` |
+| `0x28` | `die` | `OnDie` | | `0x58` | `onCallAttack12ShootEvent` | `Attack12Shoot` |
+| `0x30` | `onCallAttack1Event` | `Attack1HandLeft` | | `0x60` | `onAttack4Event` | `OnCallAttack4Event` |
+| `0x38` | `onCallAttack2Event` | `Attack2HandRight` | | `0x68` | `onAttack6Event` | `OnCallAttack6Event` |
+| `0x40` | `onCallAttack3Event` | `Attack3TwoHands` | | `0x70` | `onAttack9StartEvent` | `OnCallAttack9StartEvent` |
+| `0x48` | `onCallAttack1CheckEvent` | `Attack1StartCheckShoot` | | `0x78` | `onAttack9EndEvent` | `OnCallAttack9EndEvent` |
+
 Thân mỗi hàm đúng 4 lệnh: `ldr x8,[x0,#off]; cbz; ldr x2,[x8,#0x18]; ldr x0,[x8,#0x40];
-ldr x1,[x8,#0x28]; br x2` ⇒ **chỉ gọi một delegate, không có logic**. Offset delegate khác nhau
-(`0x28`, `0x30`, …).
+ldr x1,[x8,#0x28]; br x2` ⇒ **chỉ gọi một delegate, không có logic**.
 
 > **Chỗ tôi từng viết sai:** bản đầu của mục này ghi *"hành vi nằm ở UnityEvent binding trên
 > prefab"*. **Sai.** Đó là **field delegate** (`Action`), **không** phải `UnityEvent`: lệnh
@@ -240,6 +275,30 @@ Vì vậy: chép được **tên sự kiện + thời điểm** (§3), **không*
 > phải lớp của 10 prefab lớn nhất. `Boss-39012` dùng `Boss10_AnimationEvents`, `Boss-39019/39020`
 > dùng `BossAnimationEvents`. Nghĩa là **không thể** lấy 12 tên ở §3.1 làm bộ handler chung; mỗi lớp
 > có bộ tên riêng (đúng như 130 tên hàm quan sát được).
+
+### 3.3 Ma trận `*_Director` ↔ `*_AnimationEvents` (kéo 24/10, mức **A**)
+
+`docs/apk-analysis/*_Director.csv` (**16** file) + `*_AnimationEvents.csv` (**14** file), mỗi dòng có
+`_gameobject` ⇒ ma trận đầy đủ. Trong **34 prefab có event clip**:
+
+| có cả hai (**13**) | chỉ `_Director` (**4**) | chỉ `_AnimationEvents` (**3**) | không có gì (**14**) |
+|---|---|---|---|
+| 39004 · 39006 · 39007 · 39008 · 39012 · 39013 · 39014 · 39015 · 39016 · 39017 · 39018 · 39019 · 39020 | 39005 · 39009 · 39011 · 39021 | 37018 · 37019 · 39010 | 37001 · 37002 · 37004 · 37009…37017 (9) · 39003 · `CB-30040` |
+
+Ngoài ra **`Boss-39002` có `Boss1_Director` nhưng không có event clip** (Spine — xem §2.0b). Tính trên
+**39 prefab `Boss-*`**: **18 có `*_Director`** (17 trong số đó có event clip + `Boss-39002`) và **16 có
+lớp `*_AnimationEvents`**.
+
+**Ba điều đọc được:**
+
+1. **Tên lớp ≠ tên prefab**: `Boss-39012` → `Boss10_Director` + `Boss10_AnimationEvents`; `Boss-39006`
+   → `Boss4_Director`; `Boss-39008` → `Boss7_Director`. Đánh số lớp **không** theo thứ tự prefab ⇒
+   mọi phép ghép phải dùng **`_gameobject`**, không dùng số.
+2. **`Boss_Director` dùng chung**: `Boss-39019/39020/39021` cùng chạy lớp base `Boss_Director`
+   ⇒ 3 prefab khác art nhưng **cùng script**.
+3. **13 prefab không có director** trong export (đa số là `Boss-370xx`) ⇒ script của chúng **chỉ** là
+   event clip (§3) — không có máy trạng thái nào để đọc, và đó là lý do **262 event (33 %)** vẫn
+   chưa biết lớp handler.
 
 ---
 

@@ -1916,6 +1916,96 @@ claim("S1", "docs/spec/ANIMATION_SCRIPT.md",
       (16, 18, 262, 34), handler_class_join,
       "chỉ 16/34 prefab ghép được lớp handler; 262 event chưa biết lớp")
 
+# ── T. dữ liệu serialize kéo 24/10 (ANIMATION_SCRIPT.md §2.0b/§2.2/§3.1/§3.3) ─
+IL2CPP_CLASSES = "reverse-engineering/il2cpp/interesting-classes.cs"
+
+
+def _class_block(name):
+    try:
+        text = ref_blob(IL2CPP_CLASSES).decode("utf-8")
+    except Exception:
+        return ""
+    start = text.find("class %s :" % name)
+    if start < 0:
+        return ""
+    end = text.find("// RVA", start)
+    return text[start:end if end > 0 else len(text)]
+
+
+def boss1_state_values():
+    """(số field trạng thái, số instance của Boss1_Director) từ CSV serialize."""
+    rows = _csv_rows("docs/apk-analysis/Boss1_Director.csv")
+    if not rows:
+        return None
+    keys = [k for k in rows[0] if k.startswith("state")]
+    vals = {rows[0].get(k) for k in keys}
+    expect = {"Xuathien", "Baydi", "Dead", "Attack1", "Attack2", "Attack3",
+              "Chuyensangattack2", "Chuyensangattack3"}
+    return (len(keys), len(rows), len(vals & expect))
+
+
+def delegate_field_names():
+    """(số field delegate, offset đầu, offset cuối) của Boss1_AnimationEvents."""
+    block = _class_block("Boss1_AnimationEvents")
+    if not block:
+        return None
+    offs = []
+    for line in block.splitlines():
+        if "Action " in line and "// 0x" in line:
+            try:
+                offs.append(int(line.split("// 0x")[1].strip(), 16))
+            except ValueError:
+                continue
+    return (len(offs), min(offs), max(offs)) if offs else None
+
+
+def spine_handler_fields():
+    """(số field, offset đầu, offset cuối, số field chuỗi) của BossSpineEventHandler."""
+    block = _class_block("BossSpineEventHandler")
+    if not block:
+        return None
+    import re
+    fields = re.findall(r"(?:public|private) (\w+) (\w+); // 0x(\w+)", block)
+    if not fields:
+        return None
+    offs = [int(f[2], 16) for f in fields]
+    strings = sum(1 for f in fields if f[0] == "string")
+    return (len(fields), min(offs), max(offs), strings)
+
+
+def director_matrix():
+    """(prefab có *_Director, prefab có *_AnimationEvents, có cả hai) trong 39 prefab Boss-*."""
+    import glob as g
+    import os as o
+    d = set()
+    e = set()
+    for pat, box in (("*_Director.csv", d), ("*AnimationEvents.csv", e)):
+        for f in g.glob("docs/apk-analysis/" + pat):
+            for r in _csv_rows(f):
+                root = (r.get("_gameobject") or "").split("/")[0]
+                if root.startswith("Boss-"):
+                    box.add(root)
+    if not d:
+        return None
+    return (len(d), len(e), len(d & e))
+
+
+claim("T1", "docs/spec/ANIMATION_SCRIPT.md", "**8 tên entry kiểm chứng bằng dữ liệu serialize**",
+      (8, 1, 8), boss1_state_values,
+      "8 state + 8/8 khớp bộ tên; Boss1_Director chỉ 1 instance (Boss-39002)")
+
+claim("T2", "docs/spec/ANIMATION_SCRIPT.md", "**12 field delegate `0x20`…`0x78` có tên**",
+      (12, 0x20, 0x78), delegate_field_names,
+      "12 delegate kề nhau — T2 chỉ còn câu 'ai gán'")
+
+claim("T3", "docs/spec/ANIMATION_SCRIPT.md", "| `0x20` | `attackEventName` | `string` |",
+      (5, 0x20, 0x40, 2), spine_handler_fields,
+      "5 field serialized, 2 cái là chuỗi tên event")
+
+claim("T4", "docs/spec/ANIMATION_SCRIPT.md", "**18 có `*_Director`**",
+      (18, 16, 13), director_matrix,
+      "ma trận director <-> animation-events trên prefab, ghép bằng _gameobject")
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:

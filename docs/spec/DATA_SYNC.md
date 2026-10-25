@@ -1642,3 +1642,49 @@ Hai món mở được ngay:
 
 **Một điều phải ghi:** `_index.csv` (114 lớp) là **tập con** của `screens.csv` (125 lớp); 11 lớp
 thiếu gồm 4 tên lớp lồng và 7 màn/popup **không có instance nào trong dump**. Đừng tráo hai số.
+
+---
+
+## 11. Kéo bản thứ hai (24/10) — **74 file / 5,1 MB**, không kéo 53.316 file raw
+
+Nhánh dữ liệu vẫn ở `019e704d1` (**không có commit mới** — lần thứ 4 liên tiếp). Nhưng `git ls-tree`
+so hai cây cho thấy **nội dung của cùng commit đó mà ta chưa có**: **171 file** ngoài
+`reverse-engineering/raw/`. Đã kéo **72 file** (thêm 2 file sửa):
+
+| Nhóm | File | Vì sao kéo |
+|---|---:|---|
+| `docs/apk-analysis/*_Director.csv` | **16** | field **serialize thật** của từng lớp đạo diễn: `stateAppear`…, `gun1..3Slots`, `allHand8/9Points`, `allHpParents` |
+| `docs/apk-analysis/*_AnimationEvents.csv` | **14** | instance + `_gameobject` ⇒ **ghép prefab ↔ lớp handler** |
+| `docs/apk-analysis/Boss*_AttackPhases.csv` · `_AttackTypes` · `_ExplosionTimer` | **7** | bộ phận boss có HP riêng + kiểu đòn |
+| `docs/apk-analysis/*.json` · `03-il2cpp-*` | 9 | inventory/strings của bản APK |
+| `reverse-engineering/il2cpp/interesting-classes.cs` | 1 | **dump lớp có tên field + offset** (T2) |
+| `reverse-engineering/il2cpp/{stringliteral,field-defaults,ia-*}.json` | 4 | literal + `fieldDefaultValues` từ `global-metadata.dat` |
+| `docs/CROSS_BRANCH_20330d0e.md` · `HANDOFF_AI_TASKS.md` | 2 | nhánh kia viết về **ta**; 2 nhận định của họ về ta đã kiểm |
+
+**Không kéo (có lý do, ghi lại):**
+
+| Bỏ | Dung lượng | Vì sao |
+|---|---:|---|
+| `reverse-engineering/raw/ui/**` 53.316 file `.gz` | 142,7 MB | chỉ cần 2 manifest `.csv` đã kéo từ trước |
+| `datas/ui_text_keys.csv.gz` | **7,1 MB** | vượt trần 5 MB/file; nội dung là key text UI, `12-localization.csv` đã đủ dùng |
+| `tools/**` (34 file) · `tests/**` (3) · `.github/workflows` (6) | ~0,3 MB | là **pipeline của họ**; ta không chạy lại được mà dễ lệch với tool của ta |
+
+### 11.1 Ba thứ **đóng được** ngay nhờ 74 file này
+
+| Trước | Sau | Bằng chứng |
+|---|---|---|
+| 8 tên entry boss 1: **suy từ offset** | ✅ **đọc thẳng giá trị** `stateAppear = Xuathien` … (`Boss-39002`, **1** instance) | claim **T1** |
+| 12 handler: chỉ biết **offset** `0x20…0x78` | ✅ **biết tên field**: `onAnimationEndedEvent` · `die` · `onCallAttack1Event` … `onAttack9EndEvent` | claim **T2** |
+| `BossSpineEventHandler`: "2 slot chuỗi **chưa biết tên**" | ✅ **5 field**: `attackEventName` `0x20` · `preAttackEffectEventName` `0x28` · `skeletonAnimation` `0x30` · `onAttack` `0x38` (`UnityEvent`) · `chargeEffect` `0x40` ⇒ **cơ chế đọc trọn**: event trước đòn **bật** hiệu ứng, event đòn **tắt + gọi `UnityEvent`** | claim **T3** |
+
+Và **ma trận** `*_Director` ↔ `*_AnimationEvents` trên **39 prefab `Boss-*`**: **18** có director ·
+**16** có lớp handler · **13** có cả hai (claim **T4**). Tên lớp **không** theo số prefab
+(`Boss-39012` → `Boss10_*`), nên mọi phép ghép phải dùng `_gameobject`.
+
+### 11.2 Ba thứ **vẫn** chưa
+
+1. **Giá trị 2 chuỗi** của `BossSpineEventHandler` — class vẫn **0 instance export**. Ứng viên duy nhất
+   trong rig `skeleton__21` là `Stop` / `Banplasma` (`spine-events.csv`, **21 dòng** dữ liệu).
+2. **Ai gán 12 delegate** — T2 của `HANDOFF_ANIM_RAW.md` **hẹp lại** còn đúng câu này (tên + offset đã có).
+3. **`Boss_1_Animation`** (lớp 5 lần `String.op_Equality`) vẫn không có trong `interesting-classes.cs`
+   (file này **lọc theo từ khoá**, không phải dump toàn bộ) và không có instance export.
