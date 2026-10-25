@@ -3,6 +3,10 @@ from tools.verify.ui_l3_bindings import build,OUT,match
 class DrawingBindings(unittest.TestCase):
     @classmethod
     def setUpClass(cls):cls.data=json.loads(gzip.decompress(OUT.read_bytes()))
+    @classmethod
+    def tearDownClass(cls):
+        cls.data=None
+        import gc;gc.collect()
     def test_regenerates(self):self.assertEqual(build(),self.data)
     def test_inventory_not_coverage(self):self.assertEqual(self.data['inventory'],dict(layout_files_present=55584,indexed_files=797,unindexed_files=54787))
     def test_sources_preserved(self):self.assertEqual(len(self.data['sources']),797);self.assertTrue(all(len(s['sha256'])==64 for s in self.data['sources']))

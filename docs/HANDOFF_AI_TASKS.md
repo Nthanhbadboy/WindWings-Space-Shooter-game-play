@@ -916,3 +916,20 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   không yêu cầu playtest người thật/screenshot mới làm điều kiện bắt đầu phần raw đã có.
 - Receipt96: code8789ef433 Verify40224533473 SUCCESS/job1m10s; raw/l3-ui giữ CI/handoff.
   Không tự ACK peer hay tự gọi UI binding regression là L3 composition/render approval.
+
+## Report97 — L3 full saved-layout audit + composition metadata
+- Tất cả55.584 saved UI layouts đã scan/hash:54.787 outside index có3.843.228 sprite-name
+  observations,0 scoped sprite PPtrs;1.003.504 TMP components khôngfontPPtr.117class labels
+  trùng current index; KHÔNG54.787 màn mới.30.827 topology groups;14.081 outsidefiles match
+  indexed topology candidates, nhưng KHÔNG chuyển bindings/semantic identity; giữraw tất cả.
+- `datas/ui_layout_inventory.json.gz` +4shards; `datas/ui_composition.json.gz` +6shards.
+  Composition797sources:100.312visual components;99.731 root-frame matrices/581unknown;
+  serialized activity false89754/true10409/unknown149, không runtime visibility.
+-76802 material-array scoped joins;18467font +18467sharedMaterial joins, mỗi loại thêm1null.
+  Parent reconstruction unique path/depth NOT typed PPtr edges.160ambiguous nodes giữunknown.
+  Đã sửa slash-in-name TMP SubMesh path handling, không match-first.
+- Renderer m_Enabled không có trong exporter whitelist -> UNKNOWN, không defaulttrue;
+  RectTransform anchored/driven layout chưa chạy; matrix float64 không Unity world/render approval.
+-37new tests +12tests96 lifecycle cleanup; full suite/CI receipt follows. Việc tiếp:
+  scoped GO/Transform/parent/component+enabled recovery; camera/Canvas/dynamic state;
+  gameplay prefab→sprite/material/rig/VFX→clip/event/audio. L3 vẫn ưu tiên trước wing backlog.

@@ -2,6 +2,8 @@
 
 ## Ưu tiên hiện hành 26/10 — L3 là bộ mặt game, chưa đủ
 
+**Tiếp report97:** [full layout audit + composition](apk-analysis/97-L3-layout-inventory-and-composition.md). Đã đọc55.584 saved layouts: ngoài index chỉ có sprite-name, không có scoped sprite PPtrs; không thừa kế identity theo topology. Artifact mới `datas/ui_composition.json.gz` + shards nối parent/activity/TRS root-frame, material/font cho797 layouts.160 parent nodes ambiguous; m_Enabled không được export nên chưa thể coi renderer visible. Tiếp scoped identity/state recovery và gameplay appearance chains, không gọi matrix/reference index là rendered output.
+
 **L3 lên trước**: đọc [report96](apk-analysis/96-L3-priority-and-ui-sprite-bindings.md). Không hoãn visual/animation/VFX/audio binding sau một chuỗi native report. Wing/map-save tiếp tục khi là dependency cụ thể của scene/feedback. Asset export, pixel contract và logic tests không phải L3 acceptance. Index mới `datas/ui_l3_bindings.json.gz`:797 indexed layouts,75,749 exact scoped sprite observations/1,099 identities;54,787 ngoài index chưa join; không coi activeSelf là runtime visibility. Cần tiếp appearance chains, composition/state/motion/audio và đối chiếu đầu ra thật.
 
 **Cập nhật report91:** [HP writers và drone Board consumers](apk-analysis/91-spec-review-hp-writers-and-drone-board-consumers.md). Theo yêu cầu spec, nguồn HP đã nối (TechStatPoints0/ability7, shared scalar), không phải cứ2500 hay bảng24 ship. Cctor2000/0; event36 max-only,64 reset/preserve ratio. UI drone power có bảng riêng, không combat damage.56 tests mới/full648 PASS; review gửi peer, chưa tự ACK90/91.
