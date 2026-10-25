@@ -8,7 +8,7 @@ from asset_pack_v2 import extract_payload,serialized_files,sha,XAPK_SHA
 from spine_identity import walk_pointers
 ROOT=Path(__file__).resolve().parents[2]
 ASSETS={'Sprite','SpriteAtlas','Material','Texture2D','Font','AnimationClip','AnimatorController','AnimatorOverrideController','AudioClip','Shader','Mesh','Avatar','TextAsset'}
-BUILTINS={'GameObject','Transform','RectTransform','SpriteRenderer','SpriteMask','MeshRenderer','SkinnedMeshRenderer','MeshFilter','ParticleSystem','ParticleSystemRenderer','Animator','Animation','AudioSource','Canvas','CanvasRenderer','Camera','SortingGroup','Light','LineRenderer','TrailRenderer'}
+BUILTINS={'TextMesh','GameObject','Transform','RectTransform','SpriteRenderer','SpriteMask','MeshRenderer','SkinnedMeshRenderer','MeshFilter','ParticleSystem','ParticleSystemRenderer','Animator','Animation','AudioSource','Canvas','CanvasRenderer','Camera','SortingGroup','Light','LineRenderer','TrailRenderer'}
 CORE_UI={'Board_Home','Board_Maps','Board_Stage','Board_Players','Board_Drones','Board_Pause','Board_Reborn','Board_Reborn_IAP','Board_Endgame','GP_Tutorials'}
 ASSET_CLASSES={'TMP_FontAsset','TMP_Settings','SkeletonDataAsset','SpineAtlasAsset','AtlasAsset','SoundClip'}
 
@@ -94,6 +94,11 @@ def main():
                     tree=obj.read_typetree();row.update(tree=tree,projection='typed_metadata_binary_buffers_hashed')
                     for loc,ptr in walk_pointers(tree):follow(obj,loc,ptr)
                     if kind=='Mesh':decode_geometry(obj,row)
+                    if kind=='Shader':
+                        try:
+                            from UnityPy.export.ShaderConverter import export_shader
+                            text=export_shader(obj.read());row['shader_analysis']=dict(status='UnityPy_decompiled_analysis_NOT_valid_shader_or_render',text=text,sha256=sha(text.encode()))
+                        except Exception as e:row['shader_analysis']=dict(status='decode_error',error=repr(e))
                 elif kind=='Texture2D':
                     d=obj.read();row.update(projection='texture_metadata_no_pixels',name=d.m_Name,width=d.m_Width,height=d.m_Height,texture_format=int(d.m_TextureFormat))
                 elif kind=='TextAsset':
@@ -106,6 +111,9 @@ def main():
     print('root-selection',len(roots),'unique queued',len(queue),flush=True)
     process_queue()
     def safe_tree(value,location,redactions):
+        if location.startswith('.tree.') and location.rsplit('.',1)[-1] in ('compressedBlob','m_FontData','m_DataSize','m_IndexBuffer') and isinstance(value,list):
+            assert all(isinstance(n,int) and 0<=n<=255 for n in value),(location,'expected byte buffer')
+            value=bytes(value)
         if isinstance(value,(bytes,bytearray)):
             r=dict(location=location,bytes=len(value),sha256=sha(bytes(value)));redactions.append(r)
             return dict(binary_buffer_omitted=True,bytes=r['bytes'],sha256=r['sha256'])
