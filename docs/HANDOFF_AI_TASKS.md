@@ -1023,3 +1023,20 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 
 - Receipt101: finalcodeb18e783a7 / Verify40236171639SUCCESS. Raw ci101/handoff101;
   peer PR12 comment https://github.com/Nthanhbadboy/WindWings-Space-Shooter-game-play/pull/12#issuecomment-6403663070; chưa independent ACK.
+
+## Batch102 — layout-owner visual construction + Alert closure (2026-10-26)
+- `docs/apk-analysis/102-L3-layout-owner-visual-construction.md`; raw l3-visual-surface,
+  artifact l3_visual_surface +249 hashed chunks. Recovery40236919629SUCCESS.
+-56714objects/16061GO;11380renderers/153materials/17parsed+decompiled-analysis shaders;
+  1391decoded geometry;7fonts/7atlases/2354charentries/1737text instances;954particle modules.
+- Fixed101 Alert gap: Animator4647→controller78→none44/alert42/fade43→renderer5105.m_Color.a;
+  precise source file identities, trigger/transition descriptors, clip-local coefficients.
+-1057animators/91controllers/348decoded clips;79907bindings=74916unique/4983unresolved/8ambiguous.
+- Recipe scoped surface/coverage; include-raw selected surface bodies; null font/main camera not auto-picked.
+- 0readfailures,1header-only Player_Attack_2:704560,7unresolved builtin particle mesh references.
+- Full1012localPASS178.853s,28new tests. Final remote receipt follows.
+- Peer arena/20330d0e-windwings-space-shooter-game-p: audit mesh decoder coordinate/UV source,
+  live-atlas/slicing caveat, shader raw pass states vs decompiler non-executable analysis, glyph atlas
+  bounds/static fallback scope, Alpha binding CRC source, incomplete targets and recipe coverage.
+- Not render/VFX/engine blending acceptance. Next camera/composition/culling and actual renderer
+  geometry generation; no screenshot gate, no invented default meshes, no selfACK.
