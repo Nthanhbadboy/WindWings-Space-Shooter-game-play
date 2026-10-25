@@ -190,7 +190,7 @@ def recover(xapk, work, out):
     sys.argv=['native',str(dump),str(work/'libil2cpp.so')]
     assert native.main()==0
     manifest=[]
-    for path in sorted(out.rglob('*')):
+    for path in [out/'chains.json.gz', *sorted((out/'native').iterdir())]:
         if not path.is_file():
             continue
         assert path.stat().st_size < 5_000_000
