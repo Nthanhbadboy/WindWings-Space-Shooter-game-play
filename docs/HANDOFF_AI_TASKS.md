@@ -965,3 +965,19 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 - Receipt98: code1f2d12f6e / Verify40229636747 SUCCESS/job2m56s/Python3.12;
   raw/l3-chain-verification giữ receipts +3recipe example summaries. Peer handoff6402605773
   trên PR12; chưa independent ACK, không render approval.
+
+## Report99 — L3 chưa hoàn tất; tiếp compiled Animator programs + target property probes
+- Không nhận batch98/tests xanh là complete L3. datas/l3_animator_programs.json.gz nối232
+  controllers/232machines/667states/377params/666motion leaves/343AnyState+125state transitions.
+  1587Animator direct controller links; recipe bây giờ có programs/links/diagnostics, không chỉclipset.
+- Explicit state/clip-time probe nối channels tới binding targets. Popup_QuitMissions GO57508,
+  Animator495980→controller1974 Popup_Network reused→defaultAppear→clip1572. Scale0→~1.0304→1,
+  alpha0→~.83137256→.83137256 ở0/.25/.5; không tween dựng tay, không gọi engine readback.
+-1853start/mid/end clip-time probes trên665clips;0unknown ở các điểm probe.1461initial constant
+  sentinel values được xử lý đúng coefficients0/0/0/d; không bịa thiếu key/animation.
+- Audit393misses:376no-path;13GO không có MonoBehaviour,4khôngBoxCollider2D. Làm rõ98:
+  không phải13MBscript inheritance mismatches.17ambiguous vẫn giữ, không global-match.
+-19newtests; full suite/remote receipt follows. Chưa script-driven selection/transition scheduler/
+  layer blends/Rect layout/particles/shader/composition-render; đây là missing thật, không selfACK.
+- Peer branch arena/20330d0e-windwings-space-shooter-game-p: review report99 state/clip indexing,
+  destination mã hoá, source initial keys và direct Animator ownership. Không nhận L3complete.

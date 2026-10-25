@@ -44,6 +44,11 @@ class Recipes:
         out['animation_bindings']=[b for b in self.section('animation_bindings') if key(b['animator']) in animator_ids]
         clips={key(c) for a in out['animators'] for c in a['clips']}
         out['motion']=[m for m in self.section('motion') if key(m['identity']) in clips]
+        from tools.verify.l3_animator_programs import load
+        programs=load()
+        out['controller_programs']=[c for c in programs['controllers'] if key(c['identity']) in asset_ids]
+        out['animator_program_links']=[a for a in programs['animator_attachments'] if key(a['animator']) in animator_ids]
+        out['binding_diagnostics']=[b for b in programs['binding_diagnostics'] if key(b['animator']) in animator_ids]
         if include_raw:
             locators={}
             for n in out['nodes']:

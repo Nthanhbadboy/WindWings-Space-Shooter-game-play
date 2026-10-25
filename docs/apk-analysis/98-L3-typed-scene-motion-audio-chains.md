@@ -121,7 +121,7 @@ Unity Animator state machine/layer blending/override selection.
 
 Native classID thay bảng class-name đoán tay: GameObject active bindings target GO; Transform
 binding nhận Transform/RectTransform; script binding yêu cầu đúng scoped MonoScript. Còn393
-unresolved:376 không có path trong subtree,13 không khớp script ở path có thật,4 yêu cầu
+unresolved:376 không có path trong subtree,13 path có thật nhưng GO không có MonoBehaviour (audit99 làm rõ, không phải inheritance mismatch),4 yêu cầu
 BoxCollider2D ở path không có component ấy. Giữ17 ambiguous, không chọn candidate đầu tiên.
 CRC32 field candidates chỉ lấy scalar field thật trên target; vẫn ghi là candidate, không giả là
 mọi packed engine attribute đã giải thành field API. Không gọi unresolved static match là
