@@ -132,3 +132,13 @@ rawobject/payloadhashes,sourcepivot/rect/PPU,bounds/PNGrefs. Regenerate bằng
 hashes vàdiagnostics, khôngAPKcapture mới. Mesh-AABB origin ratio khôngPNGpivot;
 497PPUvalues,serializedzeroAABBkhôngmeasuredbounds. KhôngUVfabrication/windingrepair/
 renderertransform hoặcUnityGPUapproval.6tests mới;media/release khôngđổi.
+
+
+## Initial-scene SpriteRenderer contract — report76
+
+`scene_sprite_contract.json.gz`:1377rendererroots chỉlevel0..3,218typedSprite/meshjoins,
+7materials vàleaf-to-rootTransform/RectTransformchains;raw/scene-sprites cóindex/chunks/links.
+`python3 tools/verify/scene_sprite_contracts.py` táikiểmPPtrs/sourcehashes/ancestors/numericstate.
+78activityAND khôngvisibility,303mask-dependentstates;61438prefabrenderers ngoàirootscope.
+Khôngworldmatrix/UV/runtimewriter/camera/shader/PMAapproval,khôngresetflip/scale/nullSprite.
+8tests mới;release/media khôngđổi.

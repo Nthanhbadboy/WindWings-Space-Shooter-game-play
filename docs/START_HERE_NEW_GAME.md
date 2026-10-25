@@ -1,6 +1,6 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report75. Tất cả kết luận APK vẫn tạm thời.**
+**Cập nhật 25/10/2026, sau report76. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
@@ -143,6 +143,12 @@ KhôngUnityimport/renderapproval; khônggánTTFvàosourceFontFile=nullbằngheur
 27072vertices/24375triangles, sourcepivot/PPU/bounds táchriêng.497PPUvalues;
 serializedsubmeshAABB đều0 khôngthaymeasuredvertexbounds. KhôngđoánPNGpivot/clamporigin,
 khôngfabricateUV/windingrepair; [report75](apk-analysis/75-serialized-sprite-mesh-origins-and-bounds.md).
+
+**Scene SpriteRenderer report76:** `datas/scene_sprite_contract.json.gz` nối1377initial
+level0..3renderers tới218typedSprites/7materials vàancestorTransformchains.78serialized
+activityAND predicates khôngvisibility;303mask-dependentstates cần thêmmask/camera context.
+61438resources/sharedassets renderers khôngmởrộng, khôngruntimepopulation.
+[Report76](apk-analysis/76-initial-scene-sprite-renderers-and-transform-chains.md).
 
 Nghiệm thu fidelity còn mở: UnityGPU/PMA/filtering/sceneplacement và pivot consumer,
 nghe audio, font runtime/shaping/RTL/coverage và Spine import; staticfallback/rigidentityđãcóscope.

@@ -11,7 +11,11 @@
 >
 > Kết luận C **không được** dùng làm thông số implement; chỉ để định hướng.
 
-## Trạng thái kiểm lại hiện hành — sau report75 (ưu tiên hơn bảng lịch sử dưới đây)
+## Trạng thái kiểm lại hiện hành — sau report76 (ưu tiên hơn bảng lịch sử dưới đây)
+
+**Report76:**1377initialsceneSpriteRenderers/218Spritejoins/7materials/fullancestorchains;
+78serializedactivityAND khôngvisibility,303mask-dependentstates,61438excludedprefabroots.
+Raw/scene-sprites +typedcontract giữPPtr/flip/scale/sorting/drawmode state, chưaUnityrender.
 
 **Report75:**2185serializedSprite mesh contracts/27072vertices/24375triangles,
 497PPUvalues, sourcepivot khácmesh-AABB origin diagnostic ở467rows >1e-5.

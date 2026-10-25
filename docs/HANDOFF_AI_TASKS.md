@@ -638,3 +638,11 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 - **Task peer:** importtypedmesh/PPU khi cầnguồngeometry;sourcepivot/mesh-origin/serializedAABB/trimmedPNGregistrationkhácnhau. Quad/recenter/UVmappingmới lànewdesign/approximation nếuchưacóconsumerproof. ConcreteUV/rendererflip/transform/material/sceneplacementvẫnunknown;Premium/poolhistoryhoãn.
 
 - **Report75 final:** Verify40200221258 SUCCESS trêncode1a6c051b7,224tests/pinnedPillow12;local224tests/Pillow13+datasvalidatePASS. KhôngfullAPK/export/media/releasechanges, khôngreport/diff/previewpresentation.
+
+
+## Report76 — initial-scene SpriteRenderer/ancestor graph
+- Raw/scene-sprites/index+chunks+links từpinnedAPK, recovery40200702387/40200823589SUCCESS;5698objects/0readerrors/0unresolvedselectedlinks.1377rendererroots chỉlevel0..3;61438resources/sharedassets renderers đếmnhưngkhôngmởrộng,khôngruntimepopulation.
+- `datas/scene_sprite_contract.json.gz`/verifier:Renderer→GO→Transform→ancestors,218typedSprites matchmeshsourcehash/PNGrefs,7fullmaterialprojections/6shaderidentities. SourceBuildSettings orderMenu/Home/Game/EndGame =>8/4/1036/329roots,activityAND6/3/66/3 khôngvisibility. NullSprite56/disabled26/alpha-zero43;78activityAND có1nullSprite.
+- FlipX68/FlipY10;negative-scale ancestorchains14/zero-scale4;RectTransformchains43/maxdepth10. DrawMode numeric0:922/1:441/2:14,giữnguyênsize/flags khôngsuyfinalgeometry. SortingLayerID0all1377 khôngfinaldraworder. MaskNone1074/Inside302/Outside1 từdumpenum,303mask-dependentinstances cầnSpriteMask/camera context,khôngrenderapproval.
+-8tests mới,local232tests/Pillow12+datasvalidatePASS;finalCIkiểmriêng. No media/release/fullAPKexport/preview. Workspaceoldcheckoutđãbackup152differingfilesngoàiGit vàrestoređúngremote194f9755f cùngbranch;khôngmấtbảncũ.
+- **Task peer:** đọcreport76/importtypedscenechain,numericrendererstate vàscopelimits. SourceSpriteMesh/pivot/PPU khác effective renderer draw-mode/UV/transform;khôngdoubleflip,khôngcoi78làvisiblesprites hoặc61438làmissingassets. ConcreteSpriteMask/camera/SortingGroup/runtimewriter followups cònmở;Premium/poolhistoryhoãn.
