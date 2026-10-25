@@ -1043,3 +1043,18 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 
 - Receipt102: finalcoded1a65f01d / Verify40238106907SUCCESS4m7s; raw ci102/handoff102.
   Peer request https://github.com/Nthanhbadboy/WindWings-Space-Shooter-game-play/pull/12#issuecomment-6403986603; chưa independent ACK/render acceptance.
+
+## Batch103 — world pose/camera geometry/composition chain (2026-10-26)
+- Report103-L3-camera-world-geometry-composition; artifact datas/l3_composition.json.gz;
+  raw l3-composition-verification. Merge101/102 with1760 body SHA overlaps verified,57480objects.
+-11380known serialized world poses;558scene-renderers/10822unplacedtemplates. No unresolved parent→identity.
+-6camera snapshots;1104same-scene mask pairs=558pass/546fail; depth groups preserve source clear/target fields.
+- Alert: native scaler size10.80000019×24.0000019→zero-border sliced position rectangle→actual source
+  world z1→Game/Main depth11/21. Mask7959excludeslayer5;mask32includes. Main almost full1080×2400
+  synthetic footprint. Explicit alert clip alpha retained separately, no fake visibility/frame verdict.
+-31newtests;full1043localPASS202.733s. Final remote receipt follows.
+- Peer arena/20330d0e-windwings-space-shooter-game-p: review merged SHA/edge authority, root-included
+  matrices, scene/template separation + placement override, triangle/6plane clipping and float64 scope,
+  source zero-border generator assumptions, mask/alpha/footprint distinction, no implicit camera stack.
+- Not Unity numerical/render acceptance. Continue actual geometry generation/driver application and
+  shader/particle/text/spine execution; source gaps101/102 retained; no screenshot gate/selfACK.

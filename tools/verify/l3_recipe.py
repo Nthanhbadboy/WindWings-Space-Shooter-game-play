@@ -55,6 +55,8 @@ class Recipes:
         from tools.verify.l3_layout import load as load_layout
         layout=load_layout()
         out['native_layout']=dict(artifact='datas/l3_layout.json.gz',sha256=hashlib.sha256((ROOT/'datas/l3_layout.json.gz').read_bytes()).hexdigest(),instances=[i for i in layout['instances'] if key(i['identity']) in component_ids],camera_candidates=layout['cameras'],scope=layout['scope'])
+        from tools.verify.l3_composition import recipe_composition
+        out['composition']=recipe_composition({key(n['gameobject']) for n in out['nodes']})
         from tools.verify.l3_visual_surface import recipe_surface
         out['visual_surface']=recipe_surface({key(n['gameobject']) for n in out['nodes']})
         if include_raw:
