@@ -47,10 +47,10 @@ def recover(binary,metadata,destination):
             if line.startswith(';;;'):pages={}
             m=re.search(r': adrp\s+(x\d+), #0x([0-9a-f]+)',line)
             if m:pages[m[1]]=int(m[2],16);continue
-            m=re.search(r': ldr\s+([sd])\d+, \[(x\d+)(?:, #0x([0-9a-f]+))?\]',line)
+            m=re.search(r': ldr\s+([sdq])\d+, \[(x\d+)(?:, #0x([0-9a-f]+))?\]',line)
             if m and m[2] in pages:
                 va=pages[m[2]]+int(m[3] or '0',16)
-                if 0x750000<=va<0x780000:pool.add((va,4 if m[1]=='s' else 8))
+                if 0x750000<=va<0x780000:pool.add((va,{'s':4,'d':8,'q':16}[m[1]]))
     raw['float_load_candidates']=extract(binary,sorted(pool))['cells']
     raw['status']='PINNED_DRONE_ROOTS_AND_WING_POOL_CANDIDATES_NOT_GENERAL_POINTER_FLOW'
     (destination/'cells.json').write_text(json.dumps(raw,indent=2)+'\n')
