@@ -64,7 +64,7 @@ def recover(binary,metadata,out):
     roots=sorted({o['cls'].split('.')[0] for r in refs for o in r['owners']})
     assert 'Enemy_Controller' in roots and 'Test_Enemy' in roots,(roots,refs)
     out.mkdir(parents=True,exist_ok=True)
-    recover_delegates(binary,out/'native',tuple(roots+['Items_Manager','BurstGold']))
+    recover_delegates(binary,out/'native',tuple(roots+['Items_Manager','BurstGold','MyPhysics2D']))
     # Preserve the exact metadata cells referenced by exported roots. These are
     # address candidates; critical constructor/store dataflow is audited separately.
     wanted=set()
@@ -76,7 +76,7 @@ def recover(binary,metadata,out):
             if m:pages_by_reg[m[1]]=int(m[2],16);continue
             m=re.search(r': ldr\s+x\d+, \[(x\d+)(?:, #0x([0-9a-f]+))?\]',line)
             if m and m[1] in pages_by_reg:wanted.add(pages_by_reg[m[1]]+int(m[2] or '0',16))
-    cells=extract(binary,((0x7576b8,8),(0x756fe0,4)))
+    cells=extract(binary,((0x7576b8,8),(0x756fe0,4),(0x756a68,4),(0x758130,8)))
     cells['status']='PINNED_CALLBACK_BINDINGS_LITERAL_CANDIDATES_NOT_RUNTIME'
     bindings=[]
     magic,version,ls,lc,ds,dc=struct.unpack_from('<6I',metadata)
@@ -102,7 +102,7 @@ def recover(binary,metadata,out):
     result=dict(status='DIRECT_METADATA_ADDRESS_REFERENCE_CANDIDATES_NOT_WHOLE_PROGRAM_WRITER_CLOSURE',
       xapk_sha256=APK_SHA,lib_sha256=LIB_SHA,scan_words=scanned,window_limit_bytes=512,
       scope='Executable PT_LOAD; wanted Enemy_Health metadata symbols; stop at branches/register clobber/method boundary. Does not cover propagated pointers, indirect/reflection/native writes.',
-      metadata_bindings=list(got.values()),references=refs,direct_reference_roots=roots,exported_roots=roots+['Items_Manager','BurstGold'])
+      metadata_bindings=list(got.values()),references=refs,direct_reference_roots=roots,exported_roots=roots+['Items_Manager','BurstGold','MyPhysics2D'])
     (out/'references.json').write_text(json.dumps(result,indent=2)+'\n')
 
 
