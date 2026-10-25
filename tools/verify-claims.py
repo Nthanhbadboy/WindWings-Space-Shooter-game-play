@@ -2411,6 +2411,48 @@ claim("X3", "docs/spec/ANIMATION_SCRIPT.md",
       "`CD-31002` | **12** (`CD-31002/03/04/05/06/07/08/09/10/13/15/16`)", 12,
       cd31002_cluster, "cluster không-boss lớn nhất: 12 prefab dùng 1 controller")
 
+# ── Y. bộ đầu vào vẽ UI + gate tutorial (§9.2) ─────────────────────────
+DRAWING = "reverse-engineering/raw/ui-audit/drawing-inputs.json.gz"
+GATES = "reverse-engineering/raw/ui-audit/early-native-gates.json"
+
+
+def drawing_inputs_stats():
+    """(board, node, có local_pos, sprite có candidate, sprite có tên, key Việt, key)."""
+    d = _json_gz(DRAWING)
+    if not d:
+        return None
+    screens = d.get("screens") or []
+    if not screens:
+        return None
+
+    def tot(k):
+        return sum((s.get("counts") or {}).get(k) or 0 for s in screens)
+
+    return (len(screens), tot("nodes"), tot("position_present"),
+            tot("unique_name_candidate"), tot("sprite_components_with_name"),
+            tot("vi_resolved"), tot("localization_keys"))
+
+
+def tutorial_gate_stats():
+    """(số check, số check PASS, số call target resolve được)."""
+    d = _json_plain(GATES)
+    if not d:
+        return None
+    checks = d.get("checks") or {}
+    calls = d.get("resolved_direct_calls_from_dump") or {}
+    return (len(checks), sum(1 for v in checks.values() if v), len(calls))
+
+
+claim("Y1", "docs/spec/UI.md",
+      "**11 board · 10.710 node · 100 % có `local_pos` · 4.987/5.067 sprite có candidate · 312/317 key tiếng Việt.**",
+      (11, 10710, 10710, 4987, 5067, 312, 317), drawing_inputs_stats,
+      "bộ đầu vào vẽ: đếm từ drawing-inputs.json.gz, không chép bảng report 43")
+
+claim("Y2", "docs/spec/UI.md",
+      "5/5 kiểm tra branch/instruction",
+      (5, 5, 6), tutorial_gate_stats,
+      "gate tutorial native: 5 check PASS, 6 call target resolve từ RVA")
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:

@@ -1578,8 +1578,9 @@ Cập nhật cuối: 2026-10-23 01:00. Mọi mục dưới đây **đã đo**, k
 
 ## 10. Kéo bản `019e704d1` — **1.339 file `scriptableobjects/`** (24/10)
 
-`git fetch` nhánh dữ liệu: **không có commit mới** so với lần trước (đỉnh vẫn `019e704d1`), nhưng
-lần này tôi kéo thêm một cây chưa từng lấy: `reverse-engineering/scriptableobjects/`.
+`git fetch` nhánh dữ liệu: **ref của tôi khi đó vẫn là `019e704d1`** (⚠️ **cách nói sai** — xem §12:
+refspec thiếu nên ref không tự cập nhật; nhánh dữ liệu **đã** có commit mới). Vẫn kéo thêm một cây
+chưa từng lấy: `reverse-engineering/scriptableobjects/`.
 
 | Cây | File | Dung lượng | Lấy? |
 |---|---:|---:|---|
@@ -1647,7 +1648,8 @@ thiếu gồm 4 tên lớp lồng và 7 màn/popup **không có instance nào tr
 
 ## 11. Kéo bản thứ hai (24/10) — **74 file / 5,1 MB**, không kéo 53.316 file raw
 
-Nhánh dữ liệu vẫn ở `019e704d1` (**không có commit mới** — lần thứ 4 liên tiếp). Nhưng `git ls-tree`
+Ref của tôi khi đó vẫn là `019e704d1` (⚠️ **sai** — nhánh dữ liệu **đã** đi tiếp; xem §12/§13. Đây đúng là
+lỗi "báo không có commit mới" mà handoff nhánh dữ liệu đã bắt). Nhưng `git ls-tree`
 so hai cây cho thấy **nội dung của cùng commit đó mà ta chưa có**: **171 file** ngoài
 `reverse-engineering/raw/`. Đã kéo **72 file** (thêm 2 file sửa):
 
@@ -1779,3 +1781,70 @@ Chạy thật: `python3 tools/verify-claims.py --self-test` → **PASS** ("bỏ 
 Ngoài ra nhánh kia **bắt hai lỗi của tài liệu này**, đã sửa:
 `Boss-39001` dùng **`Boss_1_Animation`** (UnityEvent `defeatEvent`→`OnDefeated`, `burstEvent`→`OnBusrtItems`),
 `Boss-39002` mới dùng `Boss1_Director` — xem `ANIMATION_SCRIPT.md` §3.4.
+
+---
+
+## 13. Đồng bộ **hai snapshot** `9aed767b1` → `1989defc2` (25/10, sau bàn giao `HANDOFF_DATA_SYNC.md`)
+
+Bàn giao của nhánh dữ liệu (`docs/HANDOFF_DATA_SYNC.md`, blob `1c88a027`) nói rõ: **cấm** lặp lại
+"nhánh dữ liệu không có commit"; phải so **`ls-remote` với `rev-parse` sau fetch**; nếu bot đẩy tiếp
+thì **ghi hai snapshot**. Đây là bản ghi đúng.
+
+### 13.1 Kiểm ref — hai mốc, không phải một
+
+| lúc | `git ls-remote origin refs/heads/arena/ef6b75ef-…` | `git rev-parse origin/arena/ef6b75ef-…` | khớp |
+|---|---|---|---|
+| trước fetch | `9aed767b1313690d29b3c3ff764f838a8f4c4ebd` | `9aed767b1…` | ✅ |
+| **sau fetch** | **`1989defc281461cee18a4352078ab5e67a2c8516`** | **`1989defc2…`** | ✅ |
+
+`git fetch` in ra: `9aed767b1..1989defc2  arena/ef6b75ef-… -> origin/arena/ef6b75ef-…` ⇒ **có** commit
+mới. Đếm: **12 commit** sau `019e704d1`, trong đó **2 commit sau `9aed767b1`**.
+
+| commit | nội dung | ảnh hưởng nhánh spec |
+|---|---|---|
+| `1989defc2` | `fix(ui): expose traversal truncation and expand capped map layout` | chỉ `tools/apk-analyze/ui_layout.py` — **ngoài phạm vi**, không có dữ liệu mới |
+| `a2fac1df7` | `research(ui): preserve scoped font material camera context and sprite geometry` | chỉ `tools/apk-analyze/ui_render_context.py` + `ui_layout.py` — **ngoài phạm vi** |
+| `9aed767b1` | `docs: clarify data branch updates and stale local-first verifier inputs` | **đã đọc** (xem 13.2) |
+| `c570485c5` | report 39–43 + raw lượt kế | đã kéo/đọc một phần |
+| `d05a147f0` | gate tutorial + `43-ui-drawing-readiness.md` | **đã đọc**, đã import vào `UI.md` §9.2 |
+| `d06046eec` | coverage stage 1–3, report 42 | đã đọc |
+| `921dc909b` · `daa2c3a03` | export native/typetree early UI | `early-native-gates.json` đã có |
+
+### 13.2 Đã đọc thật — kiểm bằng blob SHA-1, không bằng "verifier PASS"
+
+`git hash-object <file local>` so với `git rev-parse 9aed767b1:<file>`:
+
+| file | blob | kết quả |
+|---|---|---|
+| `docs/HANDOFF_DATA_SYNC.md` | `1c88a027` | **SAME** — bàn giao đọc đúng bản của `9aed767b1` |
+| `docs/apk-analysis/43-ui-drawing-readiness.md` | `a169e628` | **SAME** |
+| `reverse-engineering/raw/ui-audit/early-native-gates.json` | `e3119293` | **SAME** |
+| `reverse-engineering/raw/ui-audit/drawing-inputs.json.gz` | `3dec031b` | **SAME** |
+| `reverse-engineering/raw/ui-audit/early-stage-coverage.json.gz` | `751e4160` | **SAME** |
+
+⇒ 5/5 file của snapshot `9aed767b1` trùng **byte-for-byte** với bản local ⇒ số liệu import từ chúng
+là của snapshot đó, không phải của `019e704d1`.
+
+### 13.3 Chạy verifier trên **ref mới** (không local-first)
+
+`python3 tools/verify-claims.py --ref 1989defc2 --strict-ref` — chế độ này đọc `git show` **trước**,
+mọi input **dữ liệu** rơi về local đều **exit 2**. Kết quả: **139 PASS · 0 FAIL · 2 SKIP**, `exit 0`.
+
+`--provenance` lúc đó: **186 input = `ref:1989defc2`** · **0 input dữ liệu local** · **1
+`local-fallback`** — chính là `docs/spec/DESIGN_QUESTIONS.md`, file **của nhánh spec** (không tồn tại
+trên nhánh dữ liệu nên buộc phải đọc local; `local_inputs()` chỉ tính `datas/`,
+`reverse-engineering/`, `docs/apk-analysis/`).
+
+### 13.4 Đã import từ snapshot này
+
+| việc | vào đâu |
+|---|---|
+| 11 board có bộ đầu vào vẽ (10.710 node · 100 % `local_pos` · 4.987/5.067 sprite candidate · 312/317 key Việt) | `UI.md` **§9.2** |
+| gate tutorial native (`hasTutStage1/2/3`, delay **9 / 2 / 3 s**, 5/5 check PASS) | `UI.md` **§9.2** |
+| 107 CSV `docs/apk-analysis/*.csv` + 5 report 39–43 | commit `bc0e11bf2` |
+
+### 13.5 Chưa đồng bộ (ghi đúng chữ "chưa", không suy)
+
+- `1989defc2` / `a2fac1df7`: **chỉ sửa `tools/apk-analyze/**`** ⇒ không có file dữ liệu/tài liệu để kéo;
+  nếu sau này exporter đó xuất raw **mới** thì phải kiểm lại `_index.csv` (đang là 797 dòng).
+- `early-stage-coverage.json.gz` (1,99 MB): **chưa** phân tích — report 42/43 mới đọc phần kết luận.

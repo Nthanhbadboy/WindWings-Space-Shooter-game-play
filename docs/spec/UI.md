@@ -505,6 +505,48 @@ dump cũ, còn tutorial chỉ có trong dump mới. 11 lớp còn lại chia là
 ⇒ Dùng **125** khi cần *danh sách màn*, dùng **797 / 117** khi cần *độ sâu bố cục*. Hai số **không
 mâu thuẫn**; đừng tráo cho nhau (đây đúng là lỗi "đếm hai tập rồi ghi một dòng" đã 5 lần trong repo).
 
+### 9.2 Sẵn sàng **vẽ** chưa? — 11 board đã có bộ đầu vào (snapshot `9aed767b1`, mức **A** cho số đếm)
+
+Nguồn: `reverse-engineering/raw/ui-audit/drawing-inputs.json.gz` (11 màn) + report
+`43-ui-drawing-readiness.md`. Mỗi node có **path · `active_in_prefab` · component · `local_pos` ·
+`scale` · sprite-candidate**; sprite nối tên Unity gốc qua `datas/sprites.csv` rồi mới sang gallery
+⇒ gọi là **candidate**, **không** phải binding PPtr chính xác (layout cũ chưa lưu sprite PPtr).
+
+**11 board · 10.710 node · 100 % có `local_pos` · 4.987/5.067 sprite có candidate · 312/317 key tiếng Việt.**
+
+| board | node | có `local_pos` | sprite có tên | sprite có candidate | key Việt / key |
+|---|---:|---:|---:|---:|---:|
+| `Board_Maps` | 4.237 | 4.237 | 2.429 | **2.419** | 113 / 114 |
+| `Board_Players` | 1.790 | 1.790 | 619 | 607 | 37 / 38 |
+| `Board_Drones` | 976 | 976 | 422 | 413 | 30 / 30 |
+| `Board_Reborn` | 837 | 837 | 369 | 355 | 34 / 35 |
+| `Board_Endgame` | 822 | 822 | 355 | 352 | 33 / 33 |
+| `Board_Stage` | 802 | 802 | 358 | 347 | 26 / 26 |
+| `Board_Reborn_IAP` (3 biến thể) | 369 + 330 + 257 | 956 | 168 + 143 + 104 | 161 + 135 + 98 | 6 + 6 + 4 |
+| `Board_Home` | 198 | 198 | 58 | 58 | 11 / 13 |
+| `Board_Pause` | 92 | 92 | 42 | 42 | 12 / 12 |
+
+**Vẽ được ngay:** Home, Map/chọn stage, Stage/pre-battle, Endgame (tách thắng/thua), Pause + revive,
+chọn/nâng cấp tàu & drone — **wireframe + asset reference**, phải ghi rõ nhãn "vị trí tương đối theo
+parent", "sprite là *candidate*", và **không** được bật đồng thời mọi popup con.
+
+**Chưa đủ để vẽ sát gốc:** overlay tutorial điều khiển (layout panel gameplay **thiếu** trong exporter
+cũ) và prototype click-through 1→2→3 (cần trạng thái lưu, finish/skip, hàng đợi popup).
+
+**Gate tutorial đã giải bằng native** (`ui-audit/early-native-gates.json` — 5/5 kiểm tra branch/instruction
+**PASS**, **6** call target resolve được từ RVA) — không còn suy từ tên hàm. Cột *delay* lấy từ report 43
+(**mức B**: report ghi `delay argument`, không có trong JSON kiểm tự động):
+
+| cờ | điều kiện trong thân getter | nhánh `CheckRunTutorialNew` |
+|---|---|---|
+| `hasTutStage1` | `stageIndex == 0` **và** `IndexTutorial == 0` | `TutMoveFingers` · `TutTransform` (index 1, panel `tutobjChangePlane`, delay **9 s**) |
+| `hasTutStage2` | `IndexTutorial == 1` **và** `stageIndex == 1` | `TutDrones` (panel `tutobjUseDroneSkill`, delay **2 s**) |
+| `hasTutStage3` | `stageIndex == 2` **và** `!IsTutTouchSkillDone()` | `TutTalents` nếu `Board_Talents.GetTalentIndex != -1` (panel `tutobjTouchSkill`, delay **3 s**); `-1` ⇒ nhánh skip |
+
+Call target resolve từ RVA: `0x14efdec = GP_Setup.get_Instance` · `0x14f0da0 = get_stageIndex` ·
+`0x14f4a14 = GP_Tutorials.get_IndexTutorial` · `0x14fa7b0 = IsTutTouchSkillDone` ·
+`0x1397438 = Board_Talents.get_GetTalentIndex`.
+
 ---
 
 ## 10. Nguồn
