@@ -68,6 +68,15 @@ EYE = {
         48: "parts", 49: "parts", 50: "parts", 51: "parts", 52: "enemy", 53: "parts", 54: "parts",
         55: "bullet", 56: "ui", 57: "enemy", 58: "parts", 59: "parts", 60: "enemy", 61: "ui",
         62: "ui", 63: "ui", 64: "parts"},
+    8: {1: "parts", 2: "parts", 3: "enemy", 4: "items", 5: "enemy", 6: "parts", 7: "enemy",
+        8: "parts", 9: "enemy", 10: "enemy", 11: "bullet", 12: "parts", 13: "parts", 14: "drones",
+        15: "parts", 16: "enemy", 17: "bullet", 18: "bullet", 19: "enemy", 20: "parts", 21: "ui",
+        22: "enemy", 23: "parts", 24: "bullet", 25: "ui", 26: "ui", 27: "ui", 28: "fx", 29: "ui",
+        30: "ui", 31: "ui", 32: "ui", 33: "parts", 34: "parts", 35: "items", 36: "items",
+        37: "parts", 38: "ui", 39: "ui", 40: "ui", 41: "parts", 42: "ui", 43: "ui", 44: "ui",
+        45: "items", 46: "items", 47: "items", 48: "ui", 49: "parts", 50: "parts", 51: "ui",
+        52: "fx", 53: "fx", 54: "fx", 55: "parts", 56: "parts", 57: "parts", 58: "parts",
+        59: "ui", 60: "parts", 61: "fx", 62: "parts", 63: "parts", 64: "parts"},
 }
 
 FAMILY = re.compile(r"_\d+$")

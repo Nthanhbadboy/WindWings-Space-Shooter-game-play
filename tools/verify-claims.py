@@ -2684,14 +2684,14 @@ def asset_unknown_families():
 
 
 claim("AB4", ASSET_TRIAGE,
-      "| **AB4** | phân loại lại: **915** có nhãn (**799 A · 46 B · 70 C**) · **639** `unknown` (**56** numeric · **242** word · **341** other) |",
-      (915, 799, 46, 70, 639, 56, 242, 341), asset_classified_stats,
-      "sprites-classified.csv: 915/1.554 có nhãn (A799 B46 C70), 639 unknown chia 3 nhóm")
+      "| **AB4** | phân loại lại: **979** có nhãn (**863 A · 46 B · 70 C**) · **575** `unknown` (**33** numeric · **224** word · **318** other) |",
+      (979, 863, 46, 70, 575, 33, 224, 318), asset_classified_stats,
+      "sprites-classified.csv: 979/1.554 có nhãn (A863 B46 C70), 575 unknown chia 3 nhóm")
 
 claim("AB5", ASSET_TRIAGE,
-      "| **AB5** | 639 unknown = **568** họ tên, **524** tên đơn lẻ; **19/25** contact sheet còn tile chưa gán |",
-      (568, 524, 19), asset_unknown_families,
-      "639 unknown: 568 họ tên, 524 tên đơn lẻ, trải trên 19 contact sheet")
+      "| **AB5** | 575 unknown = **516** họ tên, **476** tên đơn lẻ; **18/25** contact sheet còn tile chưa gán |",
+      (516, 476, 18), asset_unknown_families,
+      "575 unknown: 516 họ tên, 476 tên đơn lẻ, trải trên 18 contact sheet")
 
 # ── chạy ───────────────────────────────────────────────────────────────
 
