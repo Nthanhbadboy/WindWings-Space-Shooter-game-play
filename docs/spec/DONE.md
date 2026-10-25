@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 19 — 25/10, vai "AI tiếp nhận" soi tài liệu — thiếu/nhất quán):** ① **worklist art**
+> (thiếu lớn nhất cho nhiệm vụ thiết kế duy nhất — vẽ art): có số "~641" nhưng **không có danh sách**
+> ⇒ tạo `tools/art-worklist.py` + `docs/assets/art-worklist.csv` (**624 thứ phải vẽ + font 292 glyph**,
+> luật pin tái tạo được; "~641" = ước lượng cũ chênh ≈2,7 %); ② SYSTEM_MANIFEST/DATA_SYNC đánh dấu
+> 3 file hợp đồng combat **chỉ có ở nhánh dữ liệu** (`combat_chain_contract` · `combat_argument_audit` ·
+> `combat_rate_consumers` — xin qua PR12); ③ GAMEPLAY §0: "800 instance HP" → **981 + 150 cặp id** +
+> trỏ path đầy đủ; DONE art row 641→**624** + link; ④ TUNING_KNOBS: "chạy AssetRipper" → pack v2 bên
+> peer đã chứa binary. Kiểm khác: §-trỏ từ SYSTEM_MANIFEST/START_HERE **0 lệch**; MISSING §6 gate
+> victory đủ; GAMEPLAY §7 thứ tự build giữ nguyên.
+>
 > **Sửa lại (lần 18 — 25/10, đồng bộ reports 80–83 peer tip `23b1ceec31` — ĐÍNH CHÍNH bind):**
 > ① **"id − 10001" bị hẹp scope**: peer CFG-proof **72/72** getter call (report 82) + source prefab
 > (report 81) ⇒ **combat**: impl `Player_Attack_N` đọc mảng index **N−1**, tàu **10001 → index 2**
@@ -287,6 +297,10 @@ MiniBoss **25** (nguồn: `Stage_Behaviour.csv`).
 | **Tỉ lệ nén** | **~3,4×** | |
 
 **Hệ quả:** hoá đơn art là **~641 hình + 1 bộ font**, không phải 2.185.
+**Danh sách thật để vẽ (lần 19):** `docs/assets/art-worklist.csv` — **624 thứ phải vẽ + 1 bộ font
+292 glyph**, sinh bằng `tools/art-worklist.py` từ `docs/apk-analysis/04-asset-manifest.csv`
+(luật pin: glyph = ≤2 ký tự/toàn số; gốc = lowercase + bỏ `(n)` + bỏ đuôi số ×2; số "~641" ở bảng
+trên là **ước lượng cũ** — chênh 624 vs 641 ≈ 2,7 %, dùng danh sách cho việc vẽ).
 Với năng suất 10 hình/ngày, đó là **~64 ngày làm việc** — khớp với ước lượng
 **2–3 tháng/1 artist** đã ghi ở `AI_FEASIBILITY.md` §6. **Ước lượng đó giữ nguyên**, nhưng
 lý do đúng hơn: không phải vì "2.185 hình" mà vì **641 hình + sửa đi sửa lại**.
@@ -307,8 +321,8 @@ lý do đúng hơn: không phải vì "2.185 hình" mà vì **641 hình + sửa 
 | `Gun_Attack` → cấu hình súng | **458 → 420** | `Gun_Attack.csv` |
 | Ô shop | **315** trên **20** board | `Shop_Cell.csv` |
 | Class UI | **125** | `class-inventory.csv` |
-| Sprite ghi nhận | **2.185** | `04-asset-manifest.csv` |
-| **Art phải vẽ (sau dedup)** | **~641** tên gốc + **1 bộ font** | §1.6 |
+| Sprite ghi nhận | **2.185** | `docs/apk-analysis/04-asset-manifest.csv` |
+| **Art phải vẽ (sau dedup)** | **624** tên gốc + **1 bộ font 292 glyph** | `docs/assets/art-worklist.csv` (`tools/art-worklist.py`; §1.6) |
 | Atlas page | **67** · 31,0 MB | `04-asset-manifest.csv` |
 | AudioClip | **69** | `04-unity-assets.md` |
 | Chuỗi localization | **1.416** | `12-localization.csv` |

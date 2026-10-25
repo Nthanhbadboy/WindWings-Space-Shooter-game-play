@@ -23,7 +23,9 @@ trị đang nằm trong bundle và **chưa được xuất**.
 
 > `> Nhận định (mức B):` phần lớn khả năng là **phạm vi export quá hẹp**, không phải APK thiếu dữ liệu.
 > Nhưng **chưa kiểm chứng** — có thể một phần trong đó là giá trị mặc định, không mang thông tin.
-> Tỉ lệ thật chỉ biết sau khi chạy AssetRipper.
+> **Đính chính 25/10 (lần 19):** binary đã có — **pack v2 bên nhánh dữ liệu** (report 70) chứa
+> asset gốc; khi cần một giá trị SerializeField cụ thể: xin nhánh dữ liệu đọc từ pack (không cần
+> tự chạy AssetRipper).
 
 ---
 

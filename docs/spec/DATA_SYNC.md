@@ -2669,7 +2669,9 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
 ### 24.14 Report 81 — combat-chain family 24 implementation → bullet → receiver ⚠ **sửa bind bên mình**
 
 - Raw `raw/combat-chain/`: **123 class · 1563 method · 24 ships · 4133 component**, capped 0;
-  498 GOT cells nối qua **ELF RELA**; `datas/combat_chain_contract.json.gz` = hợp đồng.
+  498 GOT cells nối qua **ELF RELA**; `datas/combat_chain_contract.json.gz` = hợp đồng
+  (⚠ cùng `combat_argument_audit.json` · `combat_rate_consumers.json`: **file nằm ở nhánh dữ
+  liệu `arena/ef6b75ef…` — repo này không có**; xin qua PR12 khi cần đối chiếu địa chỉ).
 - **Hậu tố class ≠ ID tàu**: impl1 (`Player_Attack_1`) source **10003** · impl2→10002 ·
   **impl3 → 10001** · impl4–24 → 10004–10024. Report 82 CFG-proof **72/72** getter call truyền
   **N−1** ⇒ **bên spec đã sửa mọi claim "id − 10001" sang scope save/load** (`MISSING` §2.2 ·

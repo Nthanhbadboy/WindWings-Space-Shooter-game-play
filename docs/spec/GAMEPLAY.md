@@ -25,8 +25,8 @@
 | Ngôn ngữ | 19 (có tiếng Việt) | `LanguageAssets.csv`, `12-localization.csv` |
 | Damage địch | 458 súng, 40–1.200 | `Gun_Attack.csv` → `COMBAT.md` |
 
-> Nguồn số ở bảng trên: `01-apk-inventory.md` (phiên bản), `14-ships.csv` (25 tàu),
-> `14-drones.csv` (13 drone), `14-bosses.csv` (46 wave-boss), `15-enemy-hp.csv` (800 instance HP),
+> Nguồn số ở bảng trên: `docs/apk-analysis/01-apk-inventory.md` (phiên bản), `docs/apk-analysis/14-ships.csv` (25 tàu),
+> `14-drones.csv` (13 drone), `14-bosses.csv` (46 wave-boss), `15-enemy-hp.csv` (**981** instance HP · **150** cặp id — `datas/enemy_hp_by_id.json`),
 > `13-iap-products.csv` (170 SKU), `AdPos` (19 vị trí, `07-enums.md`).
 
 ### 0.1 Ba vòng lặp
@@ -39,7 +39,7 @@ thấy enemy → kéo tàu né đạn → auto-fire giết → nhặt coin/item 
    └──────────── power-up tạm thời (item drop) ◄────────────────┘
 ```
 Mục tiêu: **3–8 giây/enemy wave nhỏ**, 1 item drop mỗi 15–20 giây
-(nguồn: `15-enemy-hp.csv` — 800 instance, median HP 600.000 khi khác 0; xem `BALANCE.md` §2).
+(nguồn: `docs/apk-analysis/15-enemy-hp.csv` — **981** dòng, **467** > 0; **150 cặp id → HP** ở `datas/enemy_hp_by_id.json` (chuẩn — WRH2); xem `BALANCE.md` §2).
 
 **10 phút — vòng lặp phiên**
 
