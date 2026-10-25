@@ -45,7 +45,7 @@ def main():
         for filename,sf in files:
             for obj in sf.objects.values():
                 if obj.type.name!='ResourceManager':continue
-                tree=obj.read_typetree();resource_managers.append(dict(**identity(obj),tree=tree))
+                tree=obj.read_typetree();resource_managers.append(dict(**identity(obj),tree={'m_Container':tree['m_Container']},dependent_assets_count=len(tree.get('m_DependentAssets',[]))))
                 for key,ptr in tree['m_Container']:
                     try:
                         resolved=PPtr(m_FileID=ptr['m_FileID'],m_PathID=ptr['m_PathID'],assetsfile=sf).deref()
