@@ -62,6 +62,6 @@ if __name__ == '__main__':
                     path='lib/arm64-v8a/libil2cpp.so'
                     if path in inner.namelist():
                         binary=inner.read(path);found.append(extract(binary))
-                        if args.delegates_dir:recover_delegates(binary,Path(args.delegates_dir))
+                        if args.delegates_dir:recover_delegates(binary,Path(args.delegates_dir).resolve())
     assert len(found)==1
     out=Path(args.output);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(found[0],indent=2)+'\n')
