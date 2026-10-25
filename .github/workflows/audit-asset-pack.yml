@@ -1,0 +1,50 @@
+name: Audit existing draft asset pack
+on:
+  push:
+    paths: ['tools/recovery/asset_pack_audit.py', '.github/workflows/audit-asset-pack.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: pack-audit-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download current draft without publishing or replacing assets
+        run: |
+          mkdir -p /tmp/pack-audit
+          gh api repos/${{ github.repository }}/releases/tags/windwings-assets-1.3.118 > /tmp/pack-audit/release.json
+          gh release download windwings-assets-1.3.118 --pattern 'assets.*' --pattern 'manifest-full.csv' --dir /tmp/pack-audit
+          cd /tmp/pack-audit
+          zip -s 0 assets.zip --out assets-full.zip
+      - name: Audit archive and produce metadata-only browser
+        run: python3 tools/recovery/asset_pack_audit.py --directory /tmp/pack-audit
+      - name: Regression gate
+        run: python3 -m unittest discover -s tests -q
+      - uses: actions/upload-artifact@v4
+        with:
+          name: asset-pack-audit-and-browser
+          path: |
+            reverse-engineering/raw/asset-pack/
+            docs/assets/pack-browser.html
+      - name: Preserve scoped metadata only
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/asset-pack docs/assets/pack-browser.html
+          git diff --cached --quiet || git commit -m 'research(assets): audit existing draft pack and generate offline reference browser [skip ci]'
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+            if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
+          done
+          exit 1
