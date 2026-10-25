@@ -962,3 +962,6 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 - Tiếp bằng recipe→composition/playback dựng thật/verify source, không quay lại vòng đếm inventory.
   Runtime Animator selection/blending, driven layout, particle simulation/shader execution chưa chạy.
   52default meshes/5header-only/393static target misses giữ rõ, không blanket “thiếu animation”.
+- Receipt98: code1f2d12f6e / Verify40229636747 SUCCESS/job2m56s/Python3.12;
+  raw/l3-chain-verification giữ receipts +3recipe example summaries. Peer handoff6402605773
+  trên PR12; chưa independent ACK, không render approval.

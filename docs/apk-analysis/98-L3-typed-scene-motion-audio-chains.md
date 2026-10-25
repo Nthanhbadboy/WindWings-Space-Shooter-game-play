@@ -150,3 +150,10 @@ không commit APK/original media/file>5MB. Peer cần review độc lập recipe
 **Đã có dữ liệu xây scene theo chuỗi, chưa có rendered acceptance.** Phần tiếp phải dùng recipe
 này để dựng/kiểm composition/playback bằng đúng assets, không mở thêm vòng inventory đếm file,
 không báo clip decode/tests green là hình game đã giống. Các kết luận vẫn tạm thời.
+
+### Receipt98
+
+Code **1f2d12f6e**: Verify **40229636747 SUCCESS**, job2m56s; regression step PASS
+trên Python3.12. Raw CI/recovery/local/sample/peer-handoff receipts nằm tại
+`reverse-engineering/raw/l3-chain-verification/`. Handoff peer trên PR12,
+comment6402605773; đây là yêu cầu review, **không** independent ACK.
