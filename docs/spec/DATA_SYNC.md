@@ -1510,7 +1510,7 @@ tự nhân. Median quân/wave 130,5 → **131,5**; max **951**; **109** prefab. 
 |---:|---|---|---|
 | 1 | ~~Giá trị 957 `static`~~ | ~~D~~ → 🟡 | **623 record** của 17 method đã decode (`ia-resolved.json` — HP/damage/giá/hệ số); còn literal store + field vô hướng |
 | 2 | ~~Giá trị 4.861 `[SerializeField]`~~ | ~~D~~ → 🟡 | **binary đã có** trong pack v2 (report 70) — xin giá trị qua PR12, không cần tự chạy |
-| 3 | ~~Đơn vị đếm tổng HP boss~~ | ~~C~~ → **A** | ✅ chốt: gom theo **prefab gốc** — `datas/boss_hp.json` **253 prefab** (meta `count=253`, bỏ bản trùng scene, `hp_max` = bản mạnh nhất; pack v2 peer đo 256 — report 78/P5) |
+| 3 | ~~Đơn vị đếm tổng HP boss~~ | ~~C~~ → **A** | ✅ chốt: gom theo **prefab gốc** — `datas/boss_hp.json` **246 prefab** (peer refresh 26/10 — cũ 253; `hp_max` = bản mạnh nhất; bảng đối chiếu lịch sử: 254→256 report 78/P5, 253→246 §17.1) |
 | 4 | 23 `SoundClip` không có clip | **D** | 92 khai báo vs 69 thật |
 | 5 | Loop point của 8 track nhạc | **D** | không có trong index |
 | 6 | ~~Pivot / border sprite~~ | ~~D~~ → **A** | ✅ **ĐÓNG (report 75 peer)** — `sprite_mesh_contract` giữ source rect/pivot/border/PPU từng sprite |
@@ -3007,7 +3007,9 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
 - Kéo về: `datas/wing_pooled_leaves.json` (**5 bodies/837 instructions** · 4 RELA joins).
   40 tests mới; full **854 PASS**; code `772839187a`. **Chưa chạy bên trong** (ghi rõ consumer tiếp):
   PoolManager, engine transform, IBullet concrete, `Bullet_Formation.CreateBullets 123d98c` (raw có
-  ở combat-chain) — không lấy 95 làm giấy đóng 23 wing hay DPS/hit.
+  ở combat-chain) — không lấy 95 làm giấy đóng 23 wing hay DPS/hit. (⚠ giữ `datas/PROVENANCE.md`
+  · `boss_anim_events.csv` · `player_start_stats.json` bên mình dù peer xóa ở nhánh họ — spec
+  tham chiếu trực tiếp; tổ chức datas hai bên có thể khác.)
 
 ### 24.29 Report 96 — Đưa L3 lên ưu tiên chính + UI screen→node→sprite index (peer `79fd382fff`, code `8789ef433`)
 
@@ -3034,3 +3036,48 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   effective state, sorting/material/font, selected/pressed/disabled; đi Home → chọn màn/tàu/drone →
   HUD → pause/reborn → kết trận) ② gameplay appearance chain (player/drone/enemy/boss/bullet/
   pickup/background → prefab → SpriteRenderer/mesh/material/particle/Spine → clip/state/event).
+
+### 24.30 Report 97 — audit đủ 55.584 layout + composition (peer `06ab4ef2b`, tests UI mới)
+
+- **Không bỏ 54.787 file ngoài index — cũng không coi là 54.787 màn thiếu**: full scan
+  (`ui_layout_inventory.py`, ~132 s + hash regression toàn file) → `datas/ui_layout_inventory.json.gz`
+  + 4 shards: ngoài index **3.843.228** sprite-obs **chỉ còn tên** · **0** scoped `m_Sprite` ·
+  **1.003.504** TMP không font PPtr (schema legacy không giữ) ⇒ **exact identity từ layout legacy
+  là bất khả** — muốn exact phải về serialized source; 30.827 topology groups · 14.081 file match
+  indexed (409 groups) · 30.418 groups không candidate. ⚠ **Sửa hướng đọc report 96 của mình**:
+  "54.787 chưa join" ≠ "54.787 màn độc lập chưa biết" — cùng 117 class label có trong index.
+- **Composition** (`datas/ui_composition.json.gz` + 6 shards): **100.312** visual-component obs ·
+  **99.731** matrix TRS (581 ambiguous — không thay bằng identity) · activity 89.754 F / 10.409 T /
+  149 unknown · **76.802** material exact scoped join · **18.467** TMP font + sharedMaterial.
+- **Bẫy slash thật**: node `TMP SubMesh [TextMeshPro/Sprite]` chứa `/` — split cuối bịa thêm cấp,
+  mất 1.478 parent matches; sửa bằng suffix `/` + name; **160 ambiguous parents** giữ nguyên.
+- ⚠ **renderer_enabled = unknown** (exporter whitelist không có m_Enabled) — không default true.
+- Backlog đổi từ file-sang **source/scene chains**: ① recovery PPtr identity + m_Enabled ② ghép
+  font/material/renderer + camera/Canvas theo flow Home→chọn→HUD→pause/reborn→kết trận
+  ③ gameplay appearance chain ④ sau khi đủ chuỗi mới dựng/đối chiếu output.
+
+### 24.31 Report 98 — chuỗi APK → scene recipe → hình/motion/VFX/audio (peer `1f2d12f6e`, **921 tests**)
+
+- **Root views: 805** (12 core UI: Maps/Players/Drones/Reborn/Endgame/Stage, 3 Reborn_IAP, Home,
+  Pause, GP_Tutorials + 793 resource GO) · 37.766 logical/25.536 visual nodes · 3.504 typed assets ·
+  1.587 animators · **665/665 clips numeric channel-exact** (301.603 streamed keys; đã sửa 31 sprite
+  clips: cộng `discreteCurveCount`; sprite keys giữ mapping rời rạc, không blend pointer) ·
+  **52.400 bindings** (51.990 unique / 393 unresolved / 17 ambiguous) · **2.139 callbacks** (904
+  persistent + 1.235 anim-event) · 2.037 AllClipName · 92 SoundClip. Raw 128.724 objects /
+  345.090 edges; 0 read failure; 5 header-only (GunEventCatcher, Player_Attack_2…) giữ rõ.
+- **3 recipe mẫu** (CLI `tools/verify/l3_recipe.py`, `--include-raw`, header thắng raw cũ):
+  **Board_Pause** root10 — 235 nodes/404 assets/4 Animator/5 clips (Appear 0,5 s · Hide 0,333 s)/
+  15 callbacks/26 sound fields; `Button_Sound.soundClickDown=1 → Sfx_ClickDown → AudioClip:1695`,
+  native `OnDown@0x141fdc4`/`OnClick@0x141fddc` nối đúng class+field; **Effect90045** root402 —
+  48 nodes/68 assets/310 bindings, ParticleSystem giữ serialized modules; **Player_Attack_13**
+  root769 — 33 nodes, bridge enum5 `Sfx_Shot1 → AudioClip:1752` (khớp `wing_emission_flow`).
+- **Camera không bị bỏ**: 5 Camera + 1 Canvas (level0) + native size writers nối qualified identity
+  với `datas/camera_scaler_contract.json` (SHA pin): `max(h/w × 5,4; 9,6)` — không nhầm
+  CameraScaler (game) với CanvasScaler (Unity).
+- Kéo về: `datas/l3_scene_chains.json.gz` + 37 shards `l3-scene-chains/` · `ui_layout_inventory` +
+  `ui_composition`. **Đối chéo độc lập bằng datas trong repo (lần 36): counts khớp 100% report 98 ·
+  camera contract + composition + inventory totals khớp 97.** Peer nhờ review 5 điểm (header
+  authority · class/path/script ambiguity · discrete sprite keys · camera ownership · callback/
+  sound gates) — đã đối mức counts/contract; proof sâu là việc có raw (bên peer).
+- **Không phải**: rendered approval · 805 views ≠ 805 prefab độc lập · batch 12 core không nhận công
+  797. Tiếp: recipe → composition/playback, không thêm vòng inventory.

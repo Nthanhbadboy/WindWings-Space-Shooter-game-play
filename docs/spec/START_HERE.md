@@ -53,7 +53,7 @@
 | `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **180 RAW · 3 DOC · 28 CONST / 211** | biết số nào tái đo được, số nào "đo một lần" |
 | `tools/` | **9** script đo lại được | — | `verify-claims.py`, `art-study.py`, `classify-by-atlas.py`, … |
 
-**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **43** file `datas/`.
+**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **60** file `datas/`.
 
 > **Đừng "sửa" 142.136 thành 142.131:** `wc -l *.asm.txt` cho **142.131** vì **`wc` đếm ký tự
 > newline**, còn `AI1` đếm **dòng** (`sum(1 for _ in fh)` = `splitlines()`). **5** file
@@ -84,7 +84,7 @@
 | **L0** | chạy được: mở, vào màn, bắn, chết, qua màn | chạy 30 phút không crash | ✅ bắt buộc |
 | **L1** | đúng **luật** cơ chế, không cần giống số | chơi thử theo checklist cơ chế | ✅ **mục tiêu của bộ spec này** |
 | **L2** | đúng **số** (giá trị + nhịp spawn khớp bản gốc) | so bảng số | ⚠ **số đã decode + bind xong**; receivers 85–87 · producer/serialized **88** · công thức xu **89** · **wing barrels + 12 drone impl (90)** · **HP max tàu + `Board_Drones` consumer (91)** — sót: **DPS runtime** + **2 tái đối chiếu** `CROSSCHECK` · wing còn special/named leaves (mapping 12 drone + turnRate3 **ĐÓNG 92** · config 17/24 — 93 · Shoot/coroutine 13/22/23/24 — 94 · 5 pooled leaves — 95) · `Board_Players` · bind entry map · save schema (`MISSING` §2) |
-| **L3** | khớp **trải nghiệm + art** bản gốc (chuẩn màu/sáng/nhịp) | đối chiếu reference: metrics + so ảnh + timeline/audio — **không cần người test** | 🎯 **ĐÍCH dự án — KHÔNG hoãn** · 🟡 **một phần** (đính chính lần 33): contract pixel/pivot/border đủ **vẽ lại từng sprite đã biết**; **chưa đủ L3 trọn** — 505 sprite unknown · chưa có bảng sprite→màn/prefab (UI chưa join) · rig spine inferred · metrics/so-ảnh/timeline là **gate chưa chạy**; bắt đầu phần đã biết **song song L2** sau khi L1 chạy được · **đổi ưu tiên (report 96 — theo chủ dự án): L3 TRƯỚC** — wing/map-save chỉ đào khi là dependency cảnh · UI binding index **797 màn ĐÃ CÓ** (76.806 obs · **1.099 sprite identity** · 54.787 file chưa join) |
+| **L3** | khớp **trải nghiệm + art** bản gốc (chuẩn màu/sáng/nhịp) | đối chiếu reference: metrics + so ảnh + timeline/audio — **không cần người test** | 🎯 **ĐÍCH dự án — KHÔNG hoãn** · 🟡 **một phần** (đính chính lần 33): contract pixel/pivot/border đủ **vẽ lại từng sprite đã biết**; **chưa đủ L3 trọn** — 505 sprite unknown · chưa có bảng sprite→màn/prefab (UI chưa join) · rig spine inferred · metrics/so-ảnh/timeline là **gate chưa chạy**; bắt đầu phần đã biết **song song L2** sau khi L1 chạy được · **đổi ưu tiên (report 96 — theo chủ dự án): L3 TRƯỚC** — wing/map-save chỉ đào khi là dependency cảnh · **recipes L3 ĐÃ CÓ (97/98)**: inventory đủ **55.584** layout + composition **100.312** component (matrix 99.731) + **805 root views**/665 clips channel-exact/2.139 callbacks — xuất recipe: `l3_recipe.py --label Board_Pause`; còn: exact-identity legacy bất khả (peer đào tiếp theo chuỗi) · renderer_enabled unknown · gate chưa chạy |
 
 > ⚠ **L3 là ĐÍCH của dự án học tập thiết kế — KHÔNG hoãn** (lần 14, 25/10; siết措 từ review peer
 > lần 21): APK gốc là **chuẩn đã kiểm nghiệm** ⇒ **không cần blind A/B/playtest người thật**, nhưng

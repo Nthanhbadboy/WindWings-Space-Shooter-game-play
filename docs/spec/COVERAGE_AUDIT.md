@@ -91,11 +91,11 @@ nằm trong `m_StreamedClip` nén. L1 làm art mới nên **không cần**.
 | IAP | "170 SKU" (chưa đối chiếu) | `datas/iap_products.json` = **170**, khớp `13-iap-products.csv` (**71** consumable + **99** non-consumable) |
 | Âm thanh | `ASSETS.md`: 69 file | đúng **69** `AudioClip`, nhưng **92 sound id** trỏ vào chúng ⇒ 23 id **dùng chung file** |
 | FX | "`ParticleSystem` 4.845 chưa đọc" | `datas/particle_systems.csv.gz`: **4.845** dòng, có `length_in_sec` + `looping` |
-| UI layout | "53k file chưa kéo về" | `datas/ui_screens.json.gz`: **55.584** file · **8.437.020** node; `_index.csv`: **797** màn · **150.131** node |
+| UI layout | "53k file chưa kéo về" | `datas/ui_screens.json.gz`: **55.584** file · **8.440.354** node (peer refresh 26/10); `_index.csv`: **797** màn · **150.131** node |
 | Boss ↔ wave | "chưa có" | `14-Data_Boss.csv`: **46** boss, mỗi boss có `idWave` |
 | Bảng map | "chỉ 7 ghép chắc" | vẫn đúng, nhưng `31-map-tables.md`: **540/540** token có blob, **0** token bó tay ⇒ *nội dung* map là **A−**, chỉ **đánh số** là chưa |
 
-**Một dòng để nhớ `datas/` đang có gì:** **4.845** hệ hạt · **92/92** âm thanh · **150** HP id · **253** boss HP · **250** map · **170** IAP · **1.416** chuỗi.
+**Một dòng để nhớ `datas/` đang có gì:** **4.845** hệ hạt · **92/92** âm thanh · **150** HP id · **246** boss HP (peer refresh 26/10 — cũ 253) · **250** map · **170** IAP · **1.416** chuỗi.
 
 ---
 

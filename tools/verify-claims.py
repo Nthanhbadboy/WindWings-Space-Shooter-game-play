@@ -1747,11 +1747,11 @@ claim("P3", AUDIT, "**1.416 key × 19 ngôn ngữ**, **1.416** có bản tiếng
 claim("P4", AUDIT, "**170 sản phẩm** (71 consumable + 99 non-consumable)", (170, 71, 99),
       iap_stats, "IAP khớp giữa datas/iap_products.json và 13-iap-products.csv")
 
-claim("P5", AUDIT, "**4.845** hệ hạt · **92/92** âm thanh · **150** HP id · **253** boss HP · **250** map",
-      (4845, 92, 150, 253, 250), data_counts,
+claim("P5", AUDIT, "**4.845** hệ hạt · **92/92** âm thanh · **150** HP id · **246** boss HP (peer refresh 26/10 — cũ 253) · **250** map",
+      (4845, 92, 150, 246, 250), data_counts,
       "một dòng để nhớ datas/ đang có gì — khỏi làm lại")
 
-claim("P6", AUDIT, "**55.584** file · **8.437.020** node", (55584, 8437020, 797, 150131),
+claim("P6", AUDIT, "**55.584** file · **8.440.354** node (peer refresh 26/10)", (55584, 8440354, 797, 150131),
       ui_two_levels, "UI hai tầng: layout file vs màn cấp cao — đừng tráo")
 
 # ── Q. atlas plan kiểm bằng kích thước thật ─────────────────────────────
@@ -3801,8 +3801,8 @@ def data_inventory():
 
 claim("AI1", "docs/spec/START_HERE.md",
       "**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree"
-      " · **126** bảng ScriptableObject · **42** contact sheet · **43** file `datas/`.",
-      (139, 142136, 142, 126, 42, 43), data_inventory,
+      " · **126** bảng ScriptableObject · **42** contact sheet · **60** file `datas/`.",
+      (139, 142136, 142, 126, 42, 60), data_inventory,
       "kho dữ liệu gốc đã phân tích: asm, typetree, ScriptableObject, contact sheet, datas")
 
 claim("AP1", "docs/spec/DATA_INTEGRITY.md",

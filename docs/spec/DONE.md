@@ -72,6 +72,23 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 36b — 26/10, verify bắt 2 claim lệch sau khi kéo datas peer refresh):**
+> `boss_hp.json` **253 → 246 prefab** (peer refresh — sửa DATA_SYNC §8 row 3 + COVERAGE_AUDIT
+> dòng-một + claim P5) · `ui_screens.json.gz` nodes **8.437.020 → 8.440.354** (summary regenerate —
+> COVERAGE_AUDIT + claim P6). Log "253" cũ ở lần 24 giữ nguyên là lịch sử. verify PASS lại 209/0/2.
+>
+> **Sửa lại (lần 36 — 26/10, "cập nhật, tái kiểm ×2" — đồng bộ reports 97+98 peer `1f2d12f6e` (batch L3) + SỰ CỐ restore local .git:**
+> **Phục hồi**: local object store mất (HEAD rơi về Initial commit) — **remote an toàn**; đã
+> `reset --hard` về `c4d9d925909` (lần 35) + fetch lại — verify 209/0/2 ngay sau phục hồi.
+> **Report 97**: audit đủ 55.584 layout (ngoài index: 3.843.228 obs chỉ tên · 0 scoped PPtr ⇒
+> exact-identity legacy bất khả) + composition 100.312 (matrix 99.731/581 unknown · material
+> 76.802 · TMP font 18.467) — **sửa hướng đọc "54.787 chưa join"**: không phải màn độc lập thiếu.
+> **Report 98**: 805 root views (12 core UI) · 665/665 clips channel-exact · 52.400 bindings ·
+> 2.139 callbacks · camera `max(h/w×5,4; 9,6)` + 3 recipe mẫu (Pause/Effect90045/Attack13);
+> **đối chéo độc lập bằng datas repo: khớp 100% counts/contract**. Kéo `ui_layout_inventory` +
+> `ui_composition` + `l3_scene_chains` + shards (datas/ = **60** file). Giữ 3 file peer xóa
+> (spec tham chiếu). ACK97+98 PR12. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 35 — 26/10, đồng bộ report 96 peer `79fd382fff` — ĐỔI ƯU TIÊN: L3 TRƯỚC theo chủ dự án):**
 > ① `START_HERE` row L3 + `DONE` §2/§4.2: ghi ưu tiên mới (chuỗi L3 trước; wing/map-save chỉ đào
 > theo dependency cảnh) + UI binding index **797 màn** (76.806 obs · **1.099 sprite identity** ·
