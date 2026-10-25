@@ -1,6 +1,6 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report68. Tất cả kết luận APK vẫn tạm thời.**
+**Cập nhật 25/10/2026, sau report69. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
@@ -150,3 +150,11 @@ python3 -m unittest discover -s tests -q
 - Raw chỉ đào tiếp theo thiếu hụt cụ thể ảnh hưởng implementation. Không mở lại Premium hoặc speculative lifecycle proof ngoài scope.
 
 `HANDOFF_AI_TASKS.md`, `HANDOFF_DATA_SYNC.md`, `CROSS_BRANCH_20330d0e.md` giữ lịch sử phối hợp; phần cũ không phải lệnh hiện hành. Tài liệu này là điểm bắt đầu, report/raw được dẫn mới là căn cứ.
+
+## Blob Map/Player đã có — report69
+
+Không chờ dump mới cho576Map/6Player InitializeArray records: xem
+`apk-analysis/69-existing-initializearray-blobs-and-typed-player-bindings.md` và
+`reverse-engineering/raw/initialize-arrays/typed-inventory.json.gz`.
+PlayerCosts là int[24], ba main/rate/wing arrays là float[24].
+Inventory không tự bind Map container/index, không chứng minh stagecount hay DPS/TTK.
