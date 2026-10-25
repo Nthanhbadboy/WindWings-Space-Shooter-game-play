@@ -1,6 +1,6 @@
 # Phân việc vòng 4 — cái còn thiếu thật
 
-> **Cửa vào hiện hành (sau report68):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) và [review cf27b9755](HANDOFF_REVIEW_cf27b9755.md). Các vòng/snapshot cũ dưới đây là lịch sử, không tự là task hay phán xét hiện hành.
+> **Cửa vào hiện hành (sau report81):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) + report81 combat-chain. Review cf27b9755 và các vòng/snapshot cũ dưới đây là lịch sử, chỉ áp dụng finding còn mở; không tự là task hay phán xét hiện hành.
 
 > Trạng thái hiện tại: `docs/conclusions.md`. Đã có **dữ liệu thô** trong
 > `reverse-engineering/raw/` (typetree JSONL gz, UI layout gz, hằng số IL2CPP + asm).
@@ -721,3 +721,31 @@ Xem79 + raw/player-firing; 3targeted evidence testsPASS, khôngruntimeapproval.
 - Report80 final: ability getter thuộc **GP_Datas.GetNumberAbility(4)**, không Player_Ability.
   Declaration regression đãthêm; 8newtests/full258localPASS; Verify40204504124SUCCESS cho5989366d7.
   Gap tiếp: delegate/type-pointer + bullet/receiver TakeDamage; chưaactualDPS/TTK.
+
+
+## Report81 — Giao nguyên gói combat, không task lẻ (25/10/2026)
+
+Final recovery40205786566SUCCESS/raw99ba44829. `raw/combat-chain` gồm123classes/1563methods,
+24attackimplementations+coroutines,bulletfamilies,Obj_Collider,Damager,enemy/player/shield receivers.
+4133components/1623collider roots,1419pool links; 498GOT joins quaRELA rows (count xem index/contract),
+khôngđọc on-diskzeroGOT là runtime null. 0caps/38unclean/132clipped giữ scope;5sourceexceptions.
+
+**P0 sửa SPEC trước khi giao AI mới:**
+1. Hậu tốclass KHÔNG phảiID: Player_Attack_1 sourceID10003/nativeGetMainRate index0;
+   Player_Attack_3 sourceID10001/index2. Player_Attack_2 source10002/index1: fulltree4EOF,
+   chỉprefix ID/demo bámbytes, validated với101fullsourcecomponents. Bảngđủ24 trong81/contract.
+   Đừng lấy save getter `id−10001` làm allcombatidentity binding.
+2. Primarybullet80003→Bullet_Plasma,extra88004→Homing_Missile,khôngdefaultbaseLinearly.
+3. Chỗhở80 delegate/interface đãnối static: RELA→Dumperusage→constructor→SetBullet→Plasma
+   collisiondelegate→Obj_Collider.GetIDamageable lazyrootcache→Enemy_Sub→Enemy_Controller
+   →Enemy_Health.CalculateDamage. Còn branchgates,khôngmỗiinvocationđềuhit.
+4. Armor>=0:100/(100+a);armor<0:2−100/(100−a); clampHP0,hitcallback chạytrước rereadloss.
+   Không áp enemyformula cho Shield_Sub/Player_Health. SnapshotnoDamage740false/241true;
+   armorprivate runtime khôngcó trongserializedtree,khôngfabricate0.
+5. Không damage×rate/DPS/TTKequivalence. Fullfamilyinventory≠semanticapprovalallships.
+
+**Gói AI nhận:** report81 bảngsystem→contract→rule→newdesign/test + datas/combat_chain_contract.json.gz
+(regeneratable verifier),rawnative/symbols/RELA/componentshards,declarative all24mapping,
+player_main_cannon_timer +enemy_damage_model. 20newtests/full278localPASS/datasvalidatePASS.
+Đọc81§F thayviệc đợitừngreportnhỏ. Khôngchờ Premium/pool-history hayplayback đểkhởicôngL1.
+Decoderexit−6 sauoutputởConsole.ReadKey đượcgiữlog,khônggiấu/khônggọidecoderexit0.

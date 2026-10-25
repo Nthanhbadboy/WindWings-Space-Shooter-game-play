@@ -1,5 +1,10 @@
 # 79 — Review phần thiếu bên spec và main-cannon timer tàu 1
 
+> **Cập nhật scope từ report81:** “tàu1” ở đây là implementation `Player_Attack_1`,
+> source prefab ID10003, không suy ID10001 từ hậu tố. Report81 đã nối thêm ELF RELA/metadata
+> callback→concrete Bullet_Plasma→Obj_Collider→receiver; limitation binding ở bản này là lịch sử.
+
+
 **Tạm thời, static APK evidence; không runtime/playback approval.**
 
 ## Đã cập nhật bên kia

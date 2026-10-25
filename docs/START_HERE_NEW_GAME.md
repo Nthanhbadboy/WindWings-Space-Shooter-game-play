@@ -1,6 +1,6 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report78. Tất cả kết luận APK vẫn tạm thời.**
+**Cập nhật 25/10/2026, sau report81. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
@@ -9,7 +9,7 @@ Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**,
 2. `datas/`: bảng dẫn xuất để import; kiểm schema/nguồn/scope trước khi dùng. `datas/waves.json` grouped theo export **không phải** timeline runtime hay danh sách spawn đã dedup đúng theo resource.
 3. `docs/apk-analysis/`: phân tích có phạm vi và cách tái kiểm. Tìm report mới theo **chủ đề**, không coi số report cao hơn là phủ định mọi report cũ.
 4. `docs/spec/` trên nhánh này **chỉ có snapshot cũ**, không phải spec đầy đủ mới nhất của peer. Không bắt đầu triển khai từ bốn file đó mà bỏ review.
-5. Nhánh spec `arena/20330d0e-windwings-space-shooter-game-p` đã cập nhật tới **2d0a0e139981f1c38ace03e786237f210dbda1f1**: typedPlayer arrays/report69 corrections đã có. Xem report69/73 và rawpeer-review snapshot; review cf27b9755 là lịch sử, chỉ áp dụng finding chưa được sửa, không wholesale merge hai nhánh.
+5. Nhánh spec `arena/20330d0e-windwings-space-shooter-game-p` đã kiểm explicit tới **029559d47** (snapshot trong raw/peer-review/update-029559d47.json.gz); report79–81 có các sửa mới về rate/DPS, ID→implementation và concrete bullet/receiver. Peer chưa xác nhận đã áp dụng toàn bộ. Xem HANDOFF_AI_TASKS và report81; review cf27b9755 là lịch sử, chỉ áp dụng finding chưa được sửa, không wholesale merge hai nhánh.
 6. Screenshot dùng để xem UI/flow/tham khảo, không chứng minh numeric/native của build khác. **Không vẽ lại game từ screenshot.**
 
 Mỗi lựa chọn triển khai phải ghi một trong: `APK fact + raw_ref + scope`, `derived + formula + inputs`, `new design + rationale`, `unknown + fallback cần duyệt`. Không nâng giả định thành A vì unit test PASS.
@@ -29,6 +29,9 @@ Không trộn input lấy từ latest APK khác vào raw này. Không commit APK
 ## 2. Thứ tự đọc để viết gameplay, không phải đọc tuần tự mọi report
 
 `raw/` trong bảng là `reverse-engineering/raw/`.
+
+**Combat entrypoint mới:** [report81](apk-analysis/81-combat-chain-family-reference-and-receiver-rules.md)
++ `datas/combat_chain_contract.json.gz`. Đọc bảng mapping24implementation trước khi gán chỉ số tàu.
 
 | Cần dựng | Đọc report | Input triển khai / bằng chứng |
 |---|---|---|

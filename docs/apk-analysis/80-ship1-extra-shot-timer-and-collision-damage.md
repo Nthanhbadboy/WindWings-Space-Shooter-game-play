@@ -1,5 +1,10 @@
 # 80 — Tàu1: phát phụ, emitter và damage callback
 
+> **Cập nhật scope từ report81:** “tàu1” ở đây là implementation `Player_Attack_1`,
+> source prefab ID10003, không suy ID10001 từ hậu tố. Report81 đã nối thêm ELF RELA/metadata
+> callback→concrete Bullet_Plasma→Obj_Collider→receiver; limitation binding ở bản này là lịch sử.
+
+
 **Tạm thời, static APK + bounded model; không runtime/DPS/TTK approval.**
 Dùng lại raw79 `reverse-engineering/raw/player-firing/` (pinned index + native SHA),
 không cần recovery/full export/media mới. Source declarations: `il2cpp/dump.cs.gz`.

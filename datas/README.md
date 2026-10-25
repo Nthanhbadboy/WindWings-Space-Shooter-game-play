@@ -162,3 +162,12 @@ max(Screen.height/Screen.width*5.4f,9.6f). Raw/camera-scaler giữexact4byte lit
 khôngroundedreportnumbers. Verifier `camera_scaler_contracts.py`,8tests mới.
 Khôngfixed9.6mọiresolution,khôngactualdevice/FPCR/startup/projection/renderapproval;
 khônginventresizeevent/nullskip/absenceofotherwriters. Release/media khôngđổi.
+
+
+### Combat chain family pack — report81
+
+`combat_chain_contract.json.gz`:123classes/1563method records,24implementation source-ID/rate-index
+inventory,1419poolbindings,1623colliderroots,498GOT→ELFRELA→symbolicjoins. Regenerate:
+`python3 tools/verify/combat_chain_contracts.py`; regression checks raw/index hashes.
+Không phải actualDPS/TTK simulator; đọc scope report81. Prefix-only Player_Attack_2 khôngfulltree.
+Enemy damage bounded arithmetic: `tools/verify/enemy_damage_model.py`; khôngáp cho player/shield.

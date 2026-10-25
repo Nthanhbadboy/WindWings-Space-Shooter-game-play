@@ -142,3 +142,13 @@ Nextra dương→N+1 emitter entries từcounter0; dualdeadline, no catchup tron
 MainCannonAttack rank3→2/rank>=4→4 vòng cópool/component gates; khôngactualhitcount.
 Callback damage cócrit/getter/Damager dispatch nhưng delegate/type-pointer binding chưađóng.
 Report80 + raw/player-firing/timer-derivation.json + boundedtimer model; local257testsPASS.
+
+
+## 81 — Combat chain family reference (tạm thời, entrypoint mới)
+Đã gom123classes/1563methods của24attackimplementations/coroutines +bullet/receiver families;
+4133sourcecomponents/1623colliderroots,498ELF RELA→symbolicGOTjoins. Khôngchỉship1method.
+SourceID implementation1=10003/index0;implementation3=10001/index2: khônggánID từsuffix.
+Đãnối static callback+IBullet+Obj_Collider+enemyreceiver→armor/HP;80003 concreteBullet_Plasma,
+88004Homing_Missile. Piecewisearmor/HPclamp/callbackorder cóboundedmodel,khôngactualDPS.
+Report81+datas/combat_chain_contract.json.gz+raw/combat-chain;0caps nhưng38unclean/132clipped,
+4attack2EOF prefix-only +1builtinheadererror. 278localtestsPASS,khôngruntime/playbackapproval.
