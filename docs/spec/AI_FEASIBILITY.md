@@ -261,7 +261,7 @@ Cộng thêm: `border` của `Enemy_Movement` cho **vùng chơi 20×25 unit** c�
 | Phần | Khó vì 2.5D? | Thực tế |
 |---|---|---|
 | Khung gameplay (bắn, di chuyển, va chạm, spawn) | **Không** — dễ | AI làm tốt, spec đã đủ số |
-| **Khối lượng nội dung** | Không liên quan | **48 archetype spawner · 92 prefab enemy · 282 wave · 10.776 placement sau dedup · 458 súng** (nguồn: `ENCOUNTERS.md` §1–2) |
+| **Khối lượng nội dung** | Không liên quan | **48 archetype spawner · **109** prefab enemy · 282 wave · **10.782** cấu hình khác nhau (11.094 dòng) · 458 súng** (nguồn: `ENCOUNTERS.md` §1–2) |
 | **Art thay thế** | Không liên quan | 2.185 sprite gốc **không dùng được** (bản quyền) → phải vẽ mới |
 | **Cân bằng + feel** | Không liên quan | vẫn phải playtest |
 
@@ -283,7 +283,7 @@ Cộng thêm: `border` của `Enemy_Movement` cho **vùng chơi 20×25 unit** c�
 | Physics phức tạp | ✅ | ✅ | – | **2D đơn giản** (AABB/circle/polygon) |
 | Sinh nội dung thủ tục | – | ✅ | – | **không có** (282 wave đặt tay) |
 | Ánh sáng / shader PBR | ✅ | ✅ | – | **không có** (sprite + 70 shader) |
-| **Khối lượng nội dung** | ✅ | ✅✅ | – | ✅ (48 archetype · 92 enemy · 10.776 placement) |
+| **Khối lượng nội dung** | ✅ | ✅✅ | – | ✅ (48 archetype · **109** enemy · **11.094** dòng = **10.782** cấu hình khác nhau) |
 | **Art thay thế** | ✅ | ✅✅ | ✅ | **✅✅** (2.185 sprite) |
 | **Cân bằng + feel** | ✅ | ✅ | ✅ | **✅** |
 

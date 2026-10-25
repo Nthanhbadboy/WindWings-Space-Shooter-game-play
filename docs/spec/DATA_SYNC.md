@@ -90,7 +90,7 @@ Phân bố 109 prefab: **Boss 39** · CB 33 · CD 15 · W2 6 · XB 5 · GD 4 · 
 
 | Chỉ số | Tôi tính (từ bản cũ) | Vòng 3 | Khớp? |
 |---|---:|---:|---|
-| Spawner sau dedup | 10.776 | **11.099** | 🟡 lệch **3%** (khác khoá dedup) |
+| Spawner sau dedup | 10.776 | **11.099** | 🟡 lệch **3%** (khác khoá dedup) — đo 25/10: **10.782** / **11.094** |
 | `Boss-` root | 39 | **39** | ✅ |
 | Prefab enemy | 92 (đếm từ `Enemy_Datas`) | **109** (đếm từ usage) | 🟡 vòng 3 nhiều hơn **17** |
 

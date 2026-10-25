@@ -24,7 +24,7 @@
 | Damage vũ khí | **458 giá trị** (457 > 0), 40–1.200, median 400 — nhưng **toàn bộ là súng địch** | `Gun_Attack.csv` → `COMBAT.md` |
 | DPS lý thuyết của địch | 7,8 – 3.333 (median 454), tính từ burst pattern | `Gun_Attack.csv` → `COMBAT.md` §4 |
 | Sát thương chạm thân boss | 251 hitbox: `dmgFirst` 200–10.000 (median 500) + 14 sentinel, `dmgPerSec` 5–1.000 | `Boss_BodyPhysics.csv` |
-| Số wave / spawner | **282 wave** (236 campaign + 45 boss), **48 archetype**, 10.776 placement sau dedup, 250 map | `waves.json` → `ENCOUNTERS.md` §1–2 |
+| Số wave / spawner | **282 wave** (236 campaign + 45 boss), **48 archetype**, **10.782** cấu hình khác nhau sau dedup (11.094 dòng), 250 map | `waves.json` → `ENCOUNTERS.md` §1–2 |
 | Giá coin/gem/IAP | **0 cột giá** trong 91 CSV — **không thấy** trong asset (phạm vi: chỉ CSV) | `ECONOMY.md` §0 |
 | Phần thưởng trong hộp | **0 giá trị** — `Box_Rewards.id = 0` cho 800/800 dòng | `Box_Rewards.csv` |
 | Damage của **player** | **0 giá trị** — `forceType = Enemy` 458/458 | `Gun_Attack.csv` |
@@ -56,7 +56,7 @@
    *"giá trị serialize, thực tế do công thức"*.
 
 > **Nhận định (mức A):** không thể suy độ khó campaign từ HP prefab. Phải chọn công thức riêng
-> và calibrate bằng số quân + nhịp spawn (đã có: `1,0 s/con`, `rate` 1,0 ở **7.743/11.099** spawner (69,8%)).
+> và calibrate bằng số quân + nhịp spawn (đã có: `1,0 s/con`, `rate` 1,0 ở **7.741/11.094** dòng (69,8 %)).
 
 ## 0.6 HP player — **công thức đầy đủ**, chỉ thiếu đúng **một** giá trị
 
@@ -1372,7 +1372,7 @@ Chỉ biết **signature**, không biết thân hàm (nguồn: `class Enemy_Data
 | Đạn xuyên khiên | ✅ 58/186 | `Bullet_Linearly.csv` |
 | Sát thương va chạm boss | ✅ 247 cặp | `Boss_BodyPhysics.csv` |
 | Armor / `noDamage` | ✅ 189/800 | `Enemy_Health.csv` |
-| Số wave + spawner | ✅ 282 / **48 archetype** / 10.776 placement | `waves.json` → `ENCOUNTERS.md` |
+| Số wave + spawner | ✅ 282 / **48 archetype** / **11.094** dòng = **10.782** cấu hình | `waves.json` → `ENCOUNTERS.md` |
 | Số map + parallax | ✅ 250 map, 5 lớp | `MapController.csv` |
 | Số stage theo loại | ✅ 299 (Normal 199 · Boss 26 · Combat 49 · MiniBoss 25) | `Stage_Behaviour.csv` |
 | Tỉ lệ rơi tương đối | ✅ 676 coin / 26 item | `Item_Movement.csv` → `ECONOMY.md` §1 |

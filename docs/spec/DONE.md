@@ -9,8 +9,8 @@
 > tôi từng ghi là "chưa biết". Số mới ở `ENCOUNTERS.md` §2.6.
 >
 > **Sửa lại (lần 2):** bản đầu của file này phóng đại khối lượng. Sau khi đọc **tên gốc** spawner
-> và **dedup**, con số thật nhỏ hơn nhiều: **48 archetype spawner**, **92 prefab enemy**,
-> **10.776 placement** (median **28/wave**), và **boss là 45 wave riêng**. Xem §1.
+> và **dedup**, con số thật nhỏ hơn nhiều: **48 archetype spawner**, **109 prefab enemy được spawn**,
+> **11.094 dòng / 10.782 cấu hình khác nhau** (median **28,5 dòng/wave**), **boss là 45 wave riêng**. Xem §1.
 
 ---
 
@@ -32,8 +32,10 @@
 
 ## 1. Hoá đơn sản xuất — **sửa lại: nhỏ hơn tôi nói**
 
-> ⚠ **Mục này bản trước sai.** Tôi viết "23.757 spawner / 282 wave = 84,2 mỗi wave" và
-> "1.015 cấu hình đặt tay". **Cả hai đều phóng đại.** Đếm lại theo **tên gốc** và **dedup**:
+> ⚠ **Mục này bản trước sai** — nhưng sai vì **lẫn đơn vị**, không phải vì dữ liệu có bản trùng.
+> `waves.json` có **11.094 dòng** (mỗi dòng = 1 `Call_Data`), và **23.757 lượt** (`Σ copies`).
+> Câu "84,2 spawner/wave" là lấy **lượt/wave**; câu "1.015 cấu hình đặt tay" đúng (1.015 tên khác
+> nhau), nhưng **1.015 tên rút về 53 tên gốc** — cả hai đều thật, ở hai mức khác nhau.
 
 ### 1.1 Quy luật spawn — có, và rất rõ
 
@@ -60,18 +62,23 @@ Bỏ hậu tố đó: **1.015 tên → 53 tên gốc**, trừ 5 marker (`StartPo
 xuất hiện ở y 9,6" — chạy 4.622 lần với đúng cùng tham số. Đây là **quy luật**, không phải
 đặt tay từng cái. **Bạn đúng.**
 
-### 1.2 Số thật sau khi bỏ bản trùng export
+### 1.2 Ba đơn vị — và con số đúng cho từng câu hỏi
 
-| Chỉ số | Bản trước (sai) | **Đếm lại** | Ghi chú |
-|---|---:|---:|---|
-| Spawner ghi nhận | 23.757 | 23.757 | giữ nguyên (đúng là dữ liệu thô) |
-| − trừ marker `StartPoint`/`EndPoint` | — | **22.385** | khớp `ENCOUNTERS.md` §0 |
-| **Sau dedup (cùng tên + type + rate + speed + y)** | — | **10.776** | **45,4%** — 12.981 dòng là bản trùng |
-| Placement/wave | **84,2** | **median 28** (min 3 · max 255) | **giảm 3×** |
+| Câu hỏi | Số đúng | Đơn vị |
+|---|---:|---|
+| Có bao nhiêu **cấu hình** spawn? | **11.094** | dòng = 1 `Call_Data` component |
+| Có bao nhiêu **lượt sinh quân**? | **23.757** | `Σ copies` (bảng cũ ghi số này) |
+| Bỏ marker thì còn bao nhiêu lượt? | **22.385** | `Σ copies` của dòng không phải `StartPoint`/`EndPoint` |
+| Bao nhiêu **cấu hình khác nhau** (gộp `tên + type + rate + speed + y` trong từng wave)? | **10.782** | dòng, dedup **trong từng wave** (đo 25/10) |
+| Median mỗi wave | **28,5 dòng** · **62 lượt** | — |
 
-> `> Nhận định (mức B):` 10.776 placement, dựng từ **48 archetype**. Nghĩa là nội dung wave
-> **không phải** 23.757 lần đặt tay — mà là **~11.000 lần** chọn-trong-48-và-đặt-vị-trí.
-> Đây là công việc **có thể tự động hoá phần lớn**.
+> **Cái từng bị gọi là "bản trùng export" thực ra là `copies`** — một field của dữ liệu, không
+> phải lỗi export. Sau khi gộp theo 5 trường, **10.782 / 23.757 = 45,4 %** lượt là *cấu hình mới*;
+> phần còn lại là **cùng cấu hình chạy nhiều lần** (`copies`).
+>
+> `> Nhận định (mức B):` nội dung wave **không phải** 23.757 lần đặt tay — mà là **~10.800 lần**
+> chọn-trong-**48 archetype**-và-đặt-vị-trí (53 tên gốc − 5 marker). Đây là phần **tự động hoá được
+> gần hết**.
 
 ### 1.3 Chỉ có **92 prefab enemy** — không phải hàng trăm
 
@@ -93,6 +100,11 @@ xuất hiện ở y 9,6" — chạy 4.622 lần với đúng cùng tham số. Đ
 **Bạn đúng lần nữa:** **52 loại enemy thường** + **40 boss-family**. Không phải 690 GameObject
 như tôi ghi trước đó — 690 là **mọi** object trong prefab (súng, hitbox, con, hiệu ứng).
 
+> ⚠ **Ba số "enemy" khác nhau — đừng tráo:**
+> **92** = prefab có script `Enemy_Datas` (bảng trên) · **109** = tên prefab **thực sự được spawn**
+> trong `waves.json` (đo 25/10) · **189** = mọi GameObject có HP trong `datas/enemy_hp.json`.
+> Khi nói "game có bao nhiêu loại quân" thì dùng **109**; **92** là số *loại có script HP*.
+
 > **Đã resolve (vòng 3):** **22.462** entry · **109** prefab · **0** `"?"` — xem `ENCOUNTERS.md` §2.6.
 > Trần nội dung enemy là **109 prefab**, không phải hàng chục nghìn.
 
@@ -110,7 +122,8 @@ Board cũng tách: `Stage_Behaviour.stageType` = Normal **199** · **Combat 49**
 MiniBoss **25** (nguồn: `Stage_Behaviour.csv`).
 
 > **Sửa lỗi đọc trước:** tôi từng ghi "686 spawner `spawn_type = boss`". Sai — `boss` ở đây là
-> **marker `EndMapPoint`** có mặt ở **mọi** wave (686 lần trên 281 wave), không phải nội dung boss.
+> **marker `EndMapPoint`**: **327 dòng = 686 lượt**, có ở **gần như mọi** wave; `special` là
+> **`StartPoint`**: **281 dòng = 686 lượt** (hai số 686 trùng nhau, đừng đọc thành một).
 > Nội dung boss nằm ở **45 wave riêng** (`70xx`/`90xx`).
 
 ### 1.6 Art cũng co lại — **2.185 sprite → ~641 thứ phải vẽ**
@@ -139,7 +152,7 @@ lý do đúng hơn: không phải vì "2.185 hình" mà vì **641 hình + sửa 
 | Hạng mục | Số lượng (A) | Nguồn |
 |---|---:|---|
 | Wave | **282** = 236 campaign + 45 boss + 1 lỗi | `waves.json` |
-| Placement spawner **sau dedup** | **10.776** | tính lại §1.2 |
+| Cấu hình khác nhau **sau dedup** | **10.782** | tính lại §1.2 |
 | Archetype spawner | **48** (+5 marker) | tính lại §1.1 |
 | Prefab enemy | **92** = 52 thường + 39 boss + 1 MB | `Enemy_Datas.csv` §1.3 |
 | Stage trên board | **299** (Normal 199 · Combat 49 · Boss 26 · MiniBoss 25) | `Stage_Behaviour.csv` |
@@ -240,7 +253,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 - **"Hoàn hảo" phải định nghĩa ở mức nào** — L0/L1/L2/L3 ở trên. Không có định nghĩa thì không
   kiểm được, và cái gì không kiểm được thì không biết đã đạt chưa.
 - **Đơn giản và nhỏ — cả hai đều đúng ở đây.** 48 archetype + 92 prefab enemy là **bộ từ vựng nhỏ**.
-  Khối lượng thật là **10.776 placement** (sau dedup), median **28/wave** — không phải 84.
+  Khối lượng thật là **11.094 dòng** (**10.782** cấu hình khác nhau), median **28,5 dòng/wave** — không phải 84.
 - **Đã resolve xong:** pipeline vòng 3 đọc được **22.462** entry · **109** prefab · **0** `"?"`.
   Trần nội dung enemy là **109 prefab** — không phải 45.659 thiết kế mới.
 
@@ -262,7 +275,7 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 |---|---|---|---|---|
 | **1. Chưa đọc** | 4.861 `[SerializeField]` · 957 `static` | chưa chạy AssetRipper/Ghidra | chạy 2 tool | **ngắn**, không khó |
 | **2. Chưa chọn** | dung sai L2 · ngưỡng N cho L3 · bộ archetype nào đưa vào game | chưa ai quyết | quyết định thiết kế | **ngắn** |
-| **3. Chưa làm** | ~641 hình art · 69 audio · 10.776 placement · 1.416 chuỗi | **không nằm trong APK để đọc** — phải tự sinh ra | sản xuất | **dài**, không khó |
+| **3. Chưa làm** | ~641 hình art · 69 audio · **10.782** cấu hình wave · 1.416 chuỗi | **không nằm trong APK để đọc** — phải tự sinh ra | sản xuất | **dài**, không khó |
 | **4. Ngoài sản phẩm** | giá IAP · live-ops · dữ liệu người chơi | không thuộc bản build | quan sát, không trích xuất | **không cần** cho bản clone |
 
 > **Không loại nào là "không thể".** Nhưng loại **3** là loại duy nhất **không rút ngắn bằng

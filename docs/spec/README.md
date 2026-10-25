@@ -7,6 +7,14 @@ v1.3.118, Unity 2022.3.62f3, IL2CPP arm64) từ kết quả dịch ngược APK.
 không phải để clone y nguyên. Toàn bộ asset gốc (sprite, atlas, Spine, audio) thuộc bản quyền
 **GCenter / GCENTER VIET NAM TECHNOLOGY JSC** và **không được tái sử dụng**.
 
+> **Dữ liệu gốc ĐÃ được phân tích — dùng để học, không để chép.** Kho đo nằm ngay trong repo:
+> **2.112** sprite × 12 số đo (`docs/assets/art-study.csv`) · **42** contact sheet · **35** ảnh chụp
+> thật có số đo khung hình (`design-metrics.json`) · **54.019** layout · **139** file asm
+> (**142.136** dòng) · **126** bảng ScriptableObject · **1.857/2.197** sprite đã phân loại.
+> **Cách dùng đúng:** đọc **số** (tỉ lệ, tương phản, ngân sách màu, mật độ chi tiết, nhịp) rồi
+> **vẽ mới**; **không** phát hành file gốc. "Không tái lập 1:1" **không** phải lý do hạ chuẩn —
+> chất lượng thị giác có test bằng máy ở `VISUAL_DESIGN.md` §5. Danh mục đầy đủ: **`START_HERE.md` §1**.
+
 > Đây là **tài liệu**, không phải code. Không có file nguồn game nào trong repo này.
 > Mọi con số đều kèm nguồn là file dữ liệu bóc trực tiếp từ APK.
 
@@ -24,11 +32,12 @@ không phải để clone y nguyên. Toàn bộ asset gốc (sprite, atlas, Spin
 
 | Nếu bạn là… | Đọc theo thứ tự này |
 |---|---|
+| **AI/agent sắp dựng game mới** | **`START_HERE.md`** (kho dữ liệu + 8 số xương sống + 12 bẫy) → `MISSING_FOR_NEW_GAME.md` → `GAMEPLAY.md` §0+§7 → `TUNING_KNOBS.md` |
 | **Designer / cân bằng số** | `GAMEPLAY.md` §0 → `BALANCE.md` §0 → `COMBAT.md` §0 → `ECONOMY.md` §0 → **`TUNING_KNOBS.md`** (núm vặn + công thức) |
 | **Engineer dựng lại gameplay** | `GAMEPLAY.md` (core loop) → `COMBAT.md` (súng/đạn) → `ENCOUNTERS.md` (wave) → `UI.md` (màn hình) |
-| **Art / tech art** | `ASSETS.md` §0–§5 (art direction "Ink & Ember") → `sprite-list.csv` |
-| **Producer / ước lượng** | **`COVERAGE_AUDIT.md`** (còn thiếu gì, cái gì chặn) → `GAMEPLAY.md` §9 (thứ tự build) → **`DONE.md`** (hoá đơn sản xuất + 4 mức kiểm) → `ASSETS.md` §7 (atlas plan) → `AI_FEASIBILITY.md` (rủi ro) |
-| **AI/agent sắp dựng game** | `AI_FEASIBILITY.md` §2 (lỗ hổng) → `TUNING_KNOBS.md` (núm vặn + nơi lấy) → `ENEMY_BEHAVIOUR.md` §6 (kiến trúc enemy) |
+| **Art / tech art** | **`ART_STUDY.md`** (số đo mẫu gốc: màu/gradient/outline) → **`VISUAL_DESIGN.md`** (khung, tương phản, accent, juice + test máy) → `ASSETS.md` §0–§5 (art direction "Ink & Ember", atlas plan) → `sprite-list.csv` |
+| **Producer / ước lượng** | **`COVERAGE_AUDIT.md`** (còn thiếu gì, cái gì chặn) → `GAMEPLAY.md` §7 (thứ tự build) → **`DONE.md`** (hoá đơn sản xuất + 4 mức kiểm) → `ASSETS.md` §7 (atlas plan) → `AI_FEASIBILITY.md` (rủi ro) |
+| **Đánh giá rủi ro trước khi build** | `AI_FEASIBILITY.md` §2 (lỗ hổng) → `COVERAGE_AUDIT.md` (cái gì chặn) → `DESIGN_READINESS.md` (D3 còn 🟡) |
 
 Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSETS` là **cấu trúc**;
 `ECONOMY` là **cái gì có thật và cái gì không**.
@@ -39,6 +48,7 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 
 | File | Nội dung | Kích thước |
 |---|---|---:|
+| **`START_HERE.md`** | **Cửa vào cho AI dựng game mới.** Trả lời đúng 2 câu: *có đủ không* (**L1 đủ**) và *có dữ liệu gốc để học không* (**có**: 2.112 sprite có số đo · 42 contact sheet · 35 ảnh chụp · 54.019 layout · 139 file asm · 126 bảng SO). Gồm: kho dữ liệu + ranh giới **học vs phát hành** (không hạ chuẩn) · **8 số xương sống** để dựng đúng · **bảng số để làm đẹp** (màu/gradient/accent/tương phản/juice) + test máy · thứ tự đọc theo vai · **12 bẫy đơn vị** đã từng sai · lệnh tự kiểm. | 152 dòng · 7 bảng |
 | **`ART_STUDY.md`** | **Học mẫu gốc bằng số** — **2.112** sprite / 42 contact sheet: ngân sách màu (**30–60** phụ · **110–160** chủ thể), gradient **0,20–0,26** cho mọi nhóm, thứ bậc sáng/bão hoà, **outline đen chỉ ~1 %** (sửa niềm tin "viền dày"), `fill` **0,08–0,87** ⇒ pack theo hình bao; 9 luật kiểm bằng `tools/art-study.py` | 132 dòng · 6 bảng |
 | **`VISUAL_DESIGN.md`** | **"Đẹp" đo được** — khung hình **0,4813** · **3 chế độ sáng** (gameplay accent ≤10 %, khung thưởng ~47 %, màn tối) · tương phản **0,45–0,80** · chi tiết **13–22** · hình học **54.019** layout (panel dọc **2:3**) · juice **0,05 s / 0,10·20 frame** · **giữ/đổi** + test bằng máy (`tools/design-metrics.py`) | 128 dòng · 6 bảng |
 | **`DATA_INTEGRITY.md`** | **Dữ liệu gốc có bị sửa?** Hai commit của phiên này **không chạm** 5 đường dẫn dữ liệu gốc (`git diff` rỗng). Bảng `sha256` trong `datas/PROVENANCE.md` **đã cũ**: **244/383** khớp · **139** lệch vì kéo lại. So đầu nhánh dữ liệu (`7e0da2ee3`): **2.211/2.465** file giống hệt, **254** khác — **244 khớp nguyên blob một snapshot đã pin**, **10** khớp đúng **HEAD** (kéo ở commit ngoài danh sách), **0 đang sửa** ⇒ **0 sửa tay**. **157** file `.gz` đổi byte nhưng **88 giống nội dung** sau giải nén, chỉ **69 khác thật**. Kiểm bằng `tools/data-integrity.py` (3,2 s). | 131 dòng · 7 bảng |
@@ -53,7 +63,7 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 | `ENEMY_BEHAVIOUR.md` | Tốc độ enemy **0,2–30** (bản cũ 800 dòng; bản đủ 981: **1,0–20,0** — xem `BOSSES.md` §5.3), **95 turret** (bản cũ), bán kính va chạm **15 unit**, biên vùng chơi **20×25**, **399** đường bay, thiên thạch, nhịp nổ boss, kiến trúc **9 component/enemy** | 248 dòng · 12 bảng |
 | `AI_FEASIBILITY.md` | AI dựng lại được đến đâu — đối chiếu nghiên cứu 2025–2026 (`Spec2Game`, GameCraft-Bench, Play2Code) với lỗ hổng của bộ spec; chuỗi công cụ; xếp hạng độ khó | 650 dòng · 32 bảng |
 | `TUNING_KNOBS.md` | **Toàn bộ núm vặn**: `Player_Get_Datas` 178 field, công thức giá, feel (shake/slow-mo/hit color), art scale 10,8×19,2; **giá trị nằm ở đâu** (const / prefab / `.cctor`) | 310 dòng · 17 bảng |
-| `DONE.md` | **Định nghĩa "hoàn hảo" thành 4 mức kiểm được** (L0 chạy được · L1 đúng luật · L2 đúng số · L3 không phân biệt được) + **hoá đơn sản xuất** 282 wave / 23.757 spawner / 45.659 slot `"?"` / 1.015 spawner | 356 dòng · 22 bảng |
+| `DONE.md` | **Định nghĩa "hoàn hảo" thành 4 mức kiểm được** (L0 chạy được · L1 đúng luật · L2 đúng số · L3 không phân biệt được) + **hoá đơn sản xuất** 282 wave / **11.094** dòng (**23.757** lượt) / **22.482** slot enemy (0 `"?"`) / 1.015 tên | 356 dòng · 22 bảng |
 | **`BOSSES.md`** | **39 boss** đầy đủ (HP, bộ phận, wave, va chạm) · **45/45 wave boss có boss, 0/237 wave thường** · enemy thường **70 prefab / 8 họ** · turret **21** · **87 class hành vi chưa đọc** · **§8 kiểm 7 lớp kịch bản**: sinh quân 100%, damage enemy thường **0%** (`Enemy_Physics` 981) | 585 dòng · 22 bảng |
 | **`PIPELINE_AUDIT.md`** | **Đánh giá nhánh phân tích ngược:** 42 commit thật/4h39 · 5/6 tuyến cho dữ liệu thật · **lạc ở IL2CPP constants** (60/98 dòng là rác `288733`) · **`Enemy_Physics` 981 không có trong `TARGETS`** · 3 dòng code mở 100% lớp hành vi | 424 dòng · 26 bảng |
 | **`ANIMATION.md`** | **4 hệ animation:** Spine **27 rig / 180 animation / 616 bone** (đọc 100%, có event bắn trong rig) · Unity Animator **791 clip / 308 controller / 5.792 instance** (**0 %** curve giải được — **9,19 MB** chưa giải · **100 % tên**; **62,5 % là UI**, enemy chỉ **203**) · `Rotate` **1.044** instance · flipbook **0 clip** (`m_PPtrCurves` **0/791**; 28 chuỗi/160 ảnh chỉ là tên sprite) ⇒ game **không dùng khung hình**. **§4.5 đếm riêng enemy**: `Enemy_Movement` **109/109** · `Enemy_Appear` **107/109** · Animator **87/109** · Spine chỉ **2 boss** | 433 dòng · 20 bảng |
@@ -91,28 +101,28 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 |---|---|---|
 | ScriptableObject (91 loại) | `reverse-engineering/scriptableobjects/*.csv` | `COMBAT`, `ECONOMY`, `BALANCE` |
 | Bảng dữ liệu bóc sẵn | `docs/apk-analysis/*.csv` (**+64 file kéo 24/10**: 16 `*_Director`, 14 `*_AnimationEvents`, 7 `*_AttackPhases/_AttackTypes` …) | `BALANCE`, `UI`, `ASSETS`, `ECONOMY` |
-| Bản đồ wave (23.757 spawner) | `datas/waves.json` | `ENCOUNTERS` |
+| Bản đồ wave (**11.094** dòng / 23.757 lượt) | `datas/waves.json` | `ENCOUNTERS` |
 | Roster / IAP / item | `datas/{ships,drones,items,iap_products}.json` | `BALANCE`, `GAMEPLAY`, `ECONOMY` |
 | Mã IL2CPP (enum + class) | `reverse-engineering/il2cpp/dump.cs.gz` | tất cả (enum, field name) |
 | Text/graphics | `reverse-engineering/textassets/` | `ASSETS` |
 
-> ⚠ **Trạng thái 23/10 — các đường dẫn trên không nằm ở nhánh này, nhưng KHÔNG mất.**
-> Chúng ở nhánh phân tích **`arena/ef6b75ef-windwings-space-shooter-game-p`** (`8492c220`,
-> 241 commit, 53.698 file), vẫn còn trên remote. Nhánh này và nhánh đó cùng tách từ
-> `8b3689dc` nên **không** chia sẻ commit nào ngoài gốc.
+> ✅ **Cập nhật 25/10: phần lớn đường dẫn trên ĐÃ nằm ngay trong repo này** — không cần fetch để đọc:
+> `datas/` (**30** file, 13 MB) · `reverse-engineering/` (**2.218** file, 45 MB: 139 file asm
+> **142.136** dòng · 142 typetree · 126 bảng ScriptableObject · 64 textasset) · `docs/apk-analysis/`
+> (**63** báo cáo `.md` + **107** bảng `.csv` + **83** ảnh chụp thật) · `docs/assets/` (42 contact
+> sheet + 5 bảng đo). Danh mục đầy đủ + cách dùng: **`START_HERE.md` §1**.
 >
-> Đọc được **không cần merge, không cần checkout**:
+> Còn **chỉ có ở nhánh dữ liệu** `arena/ef6b75ef-windwings-space-shooter-game-p` (`7e0da2ee3`):
+> `raw/ui/*` (**803** file, ~142 MB cả cây) và ảnh chụp gốc chưa chọn lọc. Đọc **không cần merge**:
 >
 > ```bash
 > git fetch origin 'refs/heads/arena/ef6b75ef-windwings-space-shooter-game-p:refs/remotes/origin/arena/ef6b75ef-windwings-space-shooter-game-p'
 > git show origin/arena/ef6b75ef-windwings-space-shooter-game-p:datas/waves.json | jq
-> git ls-tree -r --name-only origin/arena/ef6b75ef-windwings-space-shooter-game-p -- datas/
+> git show origin/arena/ef6b75ef-windwings-space-shooter-game-p:docs/apk-analysis/52-game-scene-to-stage-map-waves.md
 > ```
 >
-> Ba cái tên trong bảng trên cần sửa cho đúng khi fetch:
-> `datas/formula_traces.json` và `datas/anim_clips.json` thực tế là **`.json.gz`**;
-> `reverse-engineering/scriptableobjects/*.csv` là **`reverse-engineering/scriptableobjects/*.csv`**
-> cộng `reverse-engineering/raw/typetrees/*.jsonl.gz` (111 class).
+> Tên file cần lưu ý: `formula_traces` và `anim_clips` là **`.json.gz`**; typetree là
+> `reverse-engineering/raw/typetrees/*.json.gz` (**142** file).
 >
 > Dữ liệu chạy thật (điện thoại) nằm ngay nhánh này:
 > `docs/apk-analysis/ramus/2026-10-23-phone/*.json` — đối chiếu với dữ liệu tĩnh ở
@@ -121,8 +131,8 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 **Quy ước trong mọi file:**
 - Mỗi bảng ghi `(nguồn: <file>)` hoặc có cột **Nguồn**.
 - Suy đoán luôn đánh dấu `> Giả định:` — không trộn với số đo được.
-- Số **raw** (nguyên văn file) và số **sau khi bỏ bản trùng** được ghi tách biệt;
-  xem cảnh báo nhân đôi ở `ENCOUNTERS.md` §1.3 và `COMBAT.md` §1.
+- **Ghi rõ đơn vị** mỗi khi có hai cách đếm: *dòng* vs *lượt* (`Σ copies`) ở wave, *asset* vs *sprite*
+  ở art. Quy tắc + 12 bẫy đã từng sai: `START_HERE.md` §5; số cụ thể: `ENCOUNTERS.md` §1.1.
 - Mỗi file kết thúc bằng **"Còn thiếu / phải đoán"**, chỉ liệt kê cái thật sự thiếu.
 
 ---
@@ -136,7 +146,7 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | DPS lý thuyết của địch | **7,8 – 3.333**, median 454 | tính từ `Gun_Attack.csv` | `COMBAT.md` §4 |
 | HP boss (tổng/prefab) | **470 K – 14,5 M**; tổng 39 boss = **206.167.000** | `15-enemy-hp.csv` (981 dòng) | **`BOSSES.md` §2** |
 | HP enemy thường | **68 / 70 prefab = 0**; 2 prefab = 20.000 | `15-enemy-hp.csv` + `Enemy_Datas.csv` | **`BOSSES.md` §6** |
-| Wave / spawner / map | **282 / 23.757 / 250** | `waves.json`, `MapController.csv` | `ENCOUNTERS.md` §0 |
+| Wave / spawner / map | **282 / 11.094 dòng (23.757 lượt) / 250** | `waves.json`, `MapController.csv` | `ENCOUNTERS.md` §1 |
 | Prefab có súng | **68** (Boss 26 · Wave/BLT 22 · CD 13 · CB 6 · BB 1) · **319 súng thật** + 139 preview UI | `prefab_joins.csv.gz` | **`DATA_SYNC.md` §7.19** |
 | Tốc độ enemy / turret | **0,2–30,0**, median 5,0; 69,3% rơi vào 2 nấc 5,0 và 20,0 | `Enemy_Movement.csv` (981 bản ghi) | **`BOSSES.md` §5.3** |
 | **Turret** | **112 component / 44 prefab · hai tầng**: **21 prefab spawn** (7.568 quân = 16,6%) + **23 prefab đặt sẵn trong `Wave_*`** (71 component) · tỷ lệ theo prefab thật **14,4%** (112/777) | `prefab_joins` + `transform-tree` | **`BOSSES.md` §5.1** · `DATA_SYNC.md` §7.20 |

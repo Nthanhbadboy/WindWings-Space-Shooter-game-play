@@ -1734,7 +1734,7 @@ def ui_two_levels():
             sum(int(r.get("nodes") or 0) for r in idx))
 
 
-claim("P1", AUDIT, "**39 tài liệu** trong `docs/spec/` (chưa kể file này)", 39, doc_inventory,
+claim("P1", AUDIT, "**40 tài liệu** trong `docs/spec/` (chưa kể file này)", 40, doc_inventory,
       "quy mô tài liệu hiện có trong docs/spec")
 
 claim("P2", AUDIT, "**2.885** sprite, **2.816** có `width/height`; `04-asset-manifest.csv`: **2.907** asset, **2.838** có kích thước",
@@ -3182,6 +3182,28 @@ def provenance_check():
             stale += 1
     return (len(rows), ok, stale)
 
+
+def data_inventory():
+    """(asm files, asm dòng, typetree, bảng ScriptableObject, contact sheet, file datas/)."""
+    import glob
+    asm = glob.glob(os.path.join(ROOT, "reverse-engineering/raw/il2cpp-consts/*.asm.txt"))
+    nlines = 0
+    for f in asm:
+        with open(f, encoding="utf-8", errors="replace") as fh:
+            nlines += sum(1 for _ in fh)
+    ty = glob.glob(os.path.join(ROOT, "reverse-engineering/raw/typetrees/*"))
+    so = glob.glob(os.path.join(ROOT, "reverse-engineering/scriptableobjects/*.csv"))
+    sheets = glob.glob(os.path.join(ROOT, "docs/assets/contact-sheets/*.jpg"))
+    datas = [f for f in glob.glob(os.path.join(ROOT, "datas/*"))
+             if os.path.isfile(f)]
+    return (len(asm), nlines, len(ty), len(so), len(sheets), len(datas))
+
+
+claim("AI1", "docs/spec/START_HERE.md",
+      "**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree"
+      " · **126** bảng ScriptableObject · **42** contact sheet · **30** file `datas/`.",
+      (139, 142136, 142, 126, 42, 30), data_inventory,
+      "kho dữ liệu gốc đã phân tích: asm, typetree, ScriptableObject, contact sheet, datas")
 
 claim("AP1", "docs/spec/DATA_INTEGRITY.md",
       "**PROVENANCE: 244/383 khớp · 139 lệch · 0 thiếu**",
