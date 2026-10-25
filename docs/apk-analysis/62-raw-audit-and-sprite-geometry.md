@@ -190,3 +190,7 @@ Rebuild vẫn tính lại experiments/native findings, không lấy kết luận
 input. `--from-git` là đối chiếu thêm có chủ đích khi có peer history, không dùng
 cho acceptance mặc định. Thêm test cấm subprocess Git trong default path.
 **111tests pass** cả workspace lẫn tracked-file archive không có `.git`.
+
+CI sau fix **đều success**: Verify40189296572, geometry recovery40189296654,
+native recovery40189296604; hai producer chạy regression trước commit. Không
+kích lại full analyze cho các recovery thay đổi này. Unit tests hiện **111**.
