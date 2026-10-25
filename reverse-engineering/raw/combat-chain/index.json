@@ -58,6 +58,7 @@
     "Enemy_Destroy",
     "Enemy_Display",
     "Enemy_Health",
+    "Enemy_Sub",
     "GP_Datas",
     "Homing_Missile",
     "Homing_Missile1",
@@ -122,13 +123,64 @@
     "Player_Ingame",
     "Rocket_No_Attack",
     "Shield_Sub",
+    "Skeleton_SubObj",
     "Sub_Character",
-    "Sub_Object"
+    "Sub_Object",
+    "Sub_Player",
+    "Sub_ShipProtect"
   ],
   "files": [
     {
       "path": "reverse-engineering/raw/combat-chain/referenced-cells.json.gz",
-      "sha256_decompressed": "b38d8c68abcab1b42121c5d46260bac8b14b089719099c22f9a9d2cb6176375a"
+      "sha256_decompressed": "4de0cfd34df7556c68dfb09588741a0ff54ed8aa1e10db31bf14ed3235a06fe4"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/symbols.json.gz",
+      "sha256_decompressed": "4a28654f783d175761de8cb61b6d53b55a33c63235ab1ee68ae200245f7a3d56"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/component-index.json",
+      "sha256_decompressed": "ee3fce0c726b260f2dc3a517dbcfbee528844c3ec6a3495ef8fa57a00b5e6de1"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/components-000.json.gz",
+      "sha256_decompressed": "dbdb3a7482f5f4cac45349aadf32959a666244523ec7c8e2ad4125a23ba59814"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/components-001.json.gz",
+      "sha256_decompressed": "6e1131f9b0ec14869ed4ce9ca5a3c31357213cbdda5f4f4f70e61d71fc442373"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/components-002.json.gz",
+      "sha256_decompressed": "b6f0ee50d4e836ceb4b78d1e4d5c310894756156950670d9770cdbf648e04f13"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/components-003.json.gz",
+      "sha256_decompressed": "ab1504e4b24c605732c0140ce881a76336e9e93cae959ca52ebbe11fe937c383"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/components-004.json.gz",
+      "sha256_decompressed": "b4c824b3ed0654c290b59155b8703ce994e094a4e069e2decd4096ec5ac34e1b"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/components-005.json.gz",
+      "sha256_decompressed": "d04f3235170dafec5c5aac3f068b9c3cff455d86dfbbbae1e21cec98f1550f2a"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/components-006.json.gz",
+      "sha256_decompressed": "c604d23ca8fb1885ddb0b3e01cdc7c14a82fc4d40c3af77950b473cd09adcef9"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/components-007.json.gz",
+      "sha256_decompressed": "34922052c4971bf5ab1c713e9fda00e5e72588f4ac99e9e74ac096d6fc657b70"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/components-008.json.gz",
+      "sha256_decompressed": "36b24741fea44cb6716715dfa630685004052af82373a42545b5028412b7a753"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/components-009.json.gz",
+      "sha256_decompressed": "578786a8f9eead0f5c9ed4250ef87420fc418e680afcb6c7b47b46622629fcd7"
     },
     {
       "path": "reverse-engineering/raw/combat-chain/native/BulletClock.asm.txt",
@@ -537,6 +589,14 @@
     {
       "path": "reverse-engineering/raw/combat-chain/native/Enemy_Health.json",
       "sha256_decompressed": "15af1e477e6716a2dff33f81945942936456796eb75abf4ae55fcfede64fae03"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Enemy_Sub.asm.txt",
+      "sha256_decompressed": "25a7783ac98307aef51607c85a786b7443153daa8485298aed106d2caeb9f17d"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Enemy_Sub.json",
+      "sha256_decompressed": "642c2d612cbc52d947647f169c982a7e1af4a8c9868b45ea92bc78cc5850fa4b"
     },
     {
       "path": "reverse-engineering/raw/combat-chain/native/GP_Datas.asm.txt",
@@ -1051,6 +1111,14 @@
       "sha256_decompressed": "ca536feb7c90b8a4b694ee5e201db5d098b9e82344420c05013e164c39611bbc"
     },
     {
+      "path": "reverse-engineering/raw/combat-chain/native/Skeleton_SubObj.asm.txt",
+      "sha256_decompressed": "578ae962fcdcc7f12a7c7b1250337f6d220575c2ce344bcae8c1695a6e47fd5e"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Skeleton_SubObj.json",
+      "sha256_decompressed": "c701dc8f03670a44de26edd596f4f4d73af85327a56038a820e7e7f156d6e8f3"
+    },
+    {
       "path": "reverse-engineering/raw/combat-chain/native/Sub_Character.asm.txt",
       "sha256_decompressed": "0d7dc166e6fc1da69bdda61b539cfe2326143f7f7f240cdc50b0f68ff1a0257d"
     },
@@ -1065,6 +1133,22 @@
     {
       "path": "reverse-engineering/raw/combat-chain/native/Sub_Object.json",
       "sha256_decompressed": "e807c7cdbfd923882b37edecaacd376f59310c11ee3af5a3c5b9f34fd1dbcd6c"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Sub_Player.asm.txt",
+      "sha256_decompressed": "128207fee68aa5deebb62cc7f710b2ba09d6add7d4e7e4cfa8f972978dfa23c6"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Sub_Player.json",
+      "sha256_decompressed": "0db75dc6bfb981ee6b0ac9429b8e405b53a4afe8d3f66b886b299d6d73a23ce0"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Sub_ShipProtect.asm.txt",
+      "sha256_decompressed": "6960500a98f3280a6497e5bf31b45e695c2ccd8b0fa8dff3ec6d356f90d5e734"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Sub_ShipProtect.json",
+      "sha256_decompressed": "c13b8b159c2d529d9c68e21e78748de37f704dec843b6c11387472f9baee7fde"
     }
   ]
 }
