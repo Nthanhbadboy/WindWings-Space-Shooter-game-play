@@ -43,5 +43,14 @@ jobs:
           git config user.email 'agent@arena.ai'
           git add reverse-engineering/raw/endgame-missions
           git diff --cached --quiet || git commit -m 'research(waves): preserve exact container prefab identities and raw components [skip ci]'
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then exit 0; fi
+          done
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exact-endgame-mission-prefab
+          path: reverse-engineering/raw/endgame-missions
+          if-no-files-found: error
