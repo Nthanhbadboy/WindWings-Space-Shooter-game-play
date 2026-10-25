@@ -24,7 +24,7 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 
 ---
 
-## 1. Mười ba hệ — trạng thái
+## 1. Mười bốn hệ — trạng thái
 
 | # | Hệ | Đủ để dựng lại? | Đang có (bằng chứng) | Thiếu gì |
 |---:|---|---|---|---|
@@ -41,8 +41,9 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 | 11 | **Âm thanh** | 🟡 **có dữ liệu + 15 luật tĩnh** | **69 clip / 571,5 s** (`audio-index.csv`) · `datas/audio_rules.json`: **15 rules** (mute/volume/pause/oneshot/music…) · registry **92** id · enum **118** (report 67; `DATA_SYNC` §21.1) | **đối chiếu nghe + trigger lúc chơi** — tĩnh hiện PROVISIONAL, cần 1 lần chạy để nâng mức |
 | 12 | **Save / load + live-ops** | 🟡 **một phần** | key đã đọc: **`StarCount`** · **`StarStageMaster{stageIndex}_{modeIndex}`** (default 0) qua `PlayerPreferences.SetInt → PlayerPrefs.SetInt`; model `savedStars/result` (report 57); **170 IAP** | **schema đầy đủ** (mọi khoá/kiểu/migrate) + **chưa** chứng minh flush đĩa — xem §2.3 |
 | 13 | **Tech / build** | 🟡 **một phần** | Unity **2022.3.x** (`UNITY_RULES.md`) · Spine · DOTween · 3 loader trong repo này | plugin list đầy đủ + cấu hình build (lấy từ `dump.cs`/manifest, không cần thiết bị) |
+| 14 | **Arena / PvP** | 🟡 **khung mode A — luật in-game CHƯA đào** | `GAMEPLAY` §2: PlayMode 5 = **Arena** (async, **10 league** Bronze→Champion, luật mùa/phòng: `ArenaConfig.MaxRoomCount/MinUserCount` · `RankUpIndexs/RankDropIndexs` · `txt_rule_desc1..6`) · 6 = **PVP** (**10 rank** Herald→God; 3 `PVPMode` {Tournament/Solo/Hunter} vs text Leagues/**Betting**/Hunter — **lệch mức A**, phải quyết thiết kế: bỏ/hay thay Betting) · 2 luật PVP tình cờ theo reports 86/87 (`Player_Controller` PVP `0x14c44e0` · PVP `HealHp` 1 không WaitUntil) · asset `PVP1..10` = 91 sprite huy hiệu · `Board_PVP` 42 slot UI | **0 report/batch riêng về Arena/PvP**; dump.cs **40 class** (ArenaManager 34 · ArenaHub 23 · GP_PVP_Manager 21 · PVP_Manager 15 method — **chưa dịch class nào**); map pool `AllArenaStartMaps/AllArenaRandomMaps/AllPvPStartMaps` — tên+offset biết (`DIFFICULTY_MODES` §7), **giá trị chưa decode**; thân `GetArenaScore/GetPVPPlayScore/GetArenaPlayScore` mức **D** (`BALANCE` §6.6); medal/shop exchange; `datas/` **0 file** — đã queue PR12 (không khẩn) |
 
-**Đọc bảng này theo đúng nghĩa:** 8 hệ **đủ** để dựng lại, **5 hệ một phần**, **0 hệ thiếu hoàn toàn** (save/load đã có key, chưa đủ schema — §2.3).
+**Đọc bảng này theo đúng nghĩa:** 8 hệ **đủ** để dựng lại, **6 hệ một phần** (thêm Arena/PvP — khung mode có, luật in-game chưa đào), **0 hệ thiếu hoàn toàn** (save/load đã có key, chưa đủ schema — §2.3).
 
 ---
 

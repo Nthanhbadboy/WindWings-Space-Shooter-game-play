@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 30 — 25/10, kiểm "Arena/PvP đã làm tới đâu" theo nhắc của chủ dự án):**
+> **Chưa có batch/report nào đào riêng Arena/PvP** — hiện có (mức rải rác): `GAMEPLAY` §2 khung
+> mode A (PlayMode 5=Arena · 6=PVP · 10 league · 10 rank · PVPMode lệch enum/text — Betting);
+> `DIFFICULTY_MODES` §7 (AllArena*/AllPvP* tên+offset, giá trị chưa decode); `BALANCE` §6.4/6.6/6.8
+> (GetArenaScore/PVPPlayScore chỉ signature; arenaPoints/arenaMedal/pvpMedal chưa giá trị);
+> `DATA_SYNC` §e (GetListMapPvP — cấu trúc A/giá trị D); 2 luật PVP tình cờ theo reports 86/87
+> (Player_Controller PVP `0x14c44e0` · HealHp 1 không WaitUntil); asset PVP1..10 (91 sprite) +
+> Board_PVP 42 slot UI; dump.cs **40 class** chưa dịch class nào; `datas/` 0 file. ⇒ thêm **row 14
+> MISSING** (🟡 khung A — luật in-game chưa đào) + queue PR12 (không khẩn, sau 23 wing impl).
+> verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 29 — 25/10, đồng bộ report 92 peer `713be8c85a0` + xử lý 3 góp ý wording review `de2d1366` (PR12 `6401242325`)):**
 > ① §24.22: đường **player KHÔNG post event2** (`ItemCollected` trực tiếp → pool; chỉ drone post2 →
 > `OnCollectItem` — tránh đếm kép); ② §24.24 + `MISSING` §2.2: AutoGain **guard Current>0** +
