@@ -359,3 +359,31 @@ collector `tools/verify/peer_spec_review.py`,76tests pass.
 
 Nhánh spec sửa trên nhánh của họ; không merge/push thay nhánh spec. Mọi kết
 luận vẫn provisional. Premium deferred; không dùng screenshot làm nguồn số.
+
+## Agent hiện tại — report59: concrete movement end → pool (không phải kill)
+
+- Recovery40187130445→12280632a có Enemy_Movement/VertexPath full native.
+-14 enemy root referenced trong exact early waves đều Controller PPtr→base
+  Enemy_Movement/Enemy_Appear/Enemy_Destroy; verify critical joins bằng Mono
+  bytes. Tất cả typeMoveEnded0Destroy/endInstruction2Stop/persistent-eventempty.
+- Controller.OnEnable→Appear gắn OnMoveCompleted1584778 qua slot2aec4d8;
+  baseAppear gọi Appeared1584868 ngay→movingtrue. SetEventMoveEnded resetold
+  delegate, self-stop+UnityEvent rồi appendcontroller chỉ khi mode0&&nonnull.
+- PathFollow speed×deltaTime→VertexPath.GetPointAtDistance: normalize length,
+  Stopclamp; callback cần finalinterpolation==1 && endpointdistance²<1e−10.
+  PointToPoint cuối segment gọi cùng onEnded. Turretmovingtrue worldy<−15
+  cũng gọi; Linearly cầnmoveintrue và vượt borderx±10/y±15.
+- DestroyWhenDone2 BỎQUA death/hit handlers rồi Pool→event79→Contains/Remove
+  active-list; KHÔNG tự chèn Enemy_Destroy.OnMoveCompleted hook vào CFG.
+  Pool path không phát kill19; external listener effects vẫn chưa replay.
+- Slots exact0164:Path150/Way104/Pin19/AirFree1=274;
+ 0113:PointToPoint80/Pin15=95;0005:Path140/Pin15=155. Không phải actualspawns/kills.
+- AirFree BB-36001 córootAnimator, khôngturret, spawnerchỉITransform.SetAngle/
+  SetPosition; CHƯA gánpath/waypoint ở bodyđó. Không suy tựpool hayphảibắn.
+- Parser phát hiện2 ITransform trùngtên: globalTypeDef228 là3methods game;
+  UIElementsTypeDef4428 làpropertiesUI. Giữnamespacekeys+testcollision, tránh
+  nhầmglobal interface slot0/1 thànhget_position/set_position củaUI.
+- Rawearly-waves/movement-completion.json.gz28methods20checks/14joins;
+ 84tests pass. Low-kill witness58 mạnhhơnnhưng vẫnstaticconditional, khôngreplay.
+- Tiếp tự đào BB-36001Animator/controller/clips/events và terrainparent/scroll;
+  T9assetrect/texture/rotation/trim vẫn taskraw nhận từspec. Premiumdeferred.
