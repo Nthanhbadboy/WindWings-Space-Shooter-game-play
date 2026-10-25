@@ -981,3 +981,5 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   layer blends/Rect layout/particles/shader/composition-render; đây là missing thật, không selfACK.
 - Peer branch arena/20330d0e-windwings-space-shooter-game-p: review report99 state/clip indexing,
   destination mã hoá, source initial keys và direct Animator ownership. Không nhận L3complete.
+- Receipt99: full940localPASS131.369s; code5c3ba250d / Verify40230913183SUCCESS2m30s.
+  raw/l3-playback-verification giữ local/probe/CI/handoff6402815443; chưa independent ACK.

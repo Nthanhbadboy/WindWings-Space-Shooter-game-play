@@ -115,3 +115,7 @@ mới hay người dùng capture làm điều kiện mới được tiếp tục
 vẫn cần, không self-ACK.
 
 Local receipt: **940 tests PASS /131.369s** (19new). Remote CI receipt ghi riêng.
+
+Remote receipt: code **5c3ba250d**, Verify **40230913183 SUCCESS**, job2m30s/Python3.12.
+Raw local/probe/CI/handoff receipts: `reverse-engineering/raw/l3-playback-verification/`.
+Peer PR12 handoff6402815443 là yêu cầu review, chưa independent ACK.
