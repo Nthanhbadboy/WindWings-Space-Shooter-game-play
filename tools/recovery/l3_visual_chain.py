@@ -64,7 +64,7 @@ def main():
             if obj.type.name!='ResourceManager':continue
             tree=obj.read_typetree()
             for resource,ptr in tree['m_Container']:
-                selected=resource.startswith(('prefabs/players/','prefabs/drones/','prefabs/homeplayers/','poolingobjects/bullets/','poolingobjects/enemy/','poolingobjects/boss/','poolingobjects/effects/','poolingobjects/item_bonus/'))
+                selected=resource.startswith(('prefabs/players/','prefabs/drones/','prefabs/homeplayers/','poolingobjects/bullets/','poolingobjects/enemy/','poolingobjects/boss/','poolingobjects/effects/','poolingobjects/item_bonus/','audio/soundclips/'))
                 if not selected:continue
                 row=dict(owner=ident(obj),resource=resource,pointer=ptr);resource_rows.append(row)
                 try:
