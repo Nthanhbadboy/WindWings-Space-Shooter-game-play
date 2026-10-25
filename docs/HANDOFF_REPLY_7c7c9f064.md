@@ -141,3 +141,44 @@ git log --oneline -3                      # các commit trả lời review
 
 Nếu bạn thấy chỗ nào mình vẫn **suy quá tay**, chỉ cần nêu **file + dòng + raw đối chiếu** — mình sửa
 thành câu hẹp hơn và thêm claim, đúng cách đã làm ở N2.
+
+---
+
+## 8. Cập nhật sau `6ababbd31` — và một sổ kiểm mới để **không nói mồm**
+
+Nhánh bạn đi tiếp 3 commit (`7c7c9f064 → 6ababbd31`). Mình kéo **đúng 5 file raw** của
+`raw/player-loadout/` + `datas/opening_persistence.json` + report 65, rồi **tự kiểm hash**:
+
+| file | sha256 (16 ký tự đầu) | khớp `index.json` |
+|---|---|---|
+| `Player_Saved_Datas.asm.txt` | `bf90fe4d926e0007` | ✅ |
+| `Player_Saved_Datas.json` | `e4c5e1a37f8e07682` | ✅ |
+| `Player_Device_Saved_Datas.asm.txt` | `4cd845eca6efa22b` | ✅ |
+| `Player_Device_Saved_Datas.json` | `a410ecc45e6956f5` | ✅ |
+| `array-blobs.json.gz` | `2ff95f6464eeb0c5` | ✅ |
+
+⇒ Claim **CM5** (5 blob · 49 int · 5/5 sha256). Lần đầu một raw của bạn được kiểm hash **trong repo này**.
+
+**Những gì mình viết lại theo raw mới:**
+
+- Save: 2 key → **8 key family · 2 store · 7 limitation** (claim **CM4**), kèm cảnh báo **getter có side
+  effect** (`get_StageTarget` tăng 1 mỗi lần đọc; `get_IndexTutorial` tự ghi 6).
+- Blob int `[0,0,0,6500,8500,9500,12500]` = **giá craft** (chưa bind field, mức **B**) — **không** gộp với
+  4 mảng **float damage**; **B3 vẫn mở**.
+- Trạng thái trong raw được giữ nguyên chữ: `PROVISIONAL_STATIC_PARTIAL_SAVE_CONTRACT_NOT_FULL_SCHEMA`.
+
+**Sổ kiểm mới — trả lời câu \"dựa raw hay nói mồm\" bằng máy:** `docs/spec/RAW_AUDIT.md`
+(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **185 claim**:
+
+| loại | số | nghĩa |
+|---|---:|---|
+| **RAW** | **145** | hàm đo **mở file** raw ⇒ tái đo được |
+| **DOC** | **3** | chỉ đọc `docs/**` |
+| **CONST** | **37** | không mở file ⇒ \"đo một lần\" |
+
+Claim **RB1** khoá 4 số đó, nên ai thêm một `lambda: <hằng số>` rồi gọi là bằng chứng thì sổ sẽ lệch ngay.
+Danh sách 37 CONST (A*, D*, E*, R*, W4/W5) nằm trong file, kèm luật: *số CONST không được dùng để bác
+một kết luận khác*.
+
+**Vẫn chưa kéo:** report **59 · 60 · 61**; 6 chunk `sprite-geometry/objects-*.jsonl.gz`; `raw/ui-audit`
+(407) · `raw/il2cpp-consts` (273) · `raw/animation-audit` · `raw/runtime-probe`.

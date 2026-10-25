@@ -1734,7 +1734,7 @@ def ui_two_levels():
             sum(int(r.get("nodes") or 0) for r in idx))
 
 
-claim("P1", AUDIT, "**40 tài liệu** trong `docs/spec/` (chưa kể file này)", 40, doc_inventory,
+claim("P1", AUDIT, "**41 tài liệu** trong `docs/spec/` (chưa kể file này)", 41, doc_inventory,
       "quy mô tài liệu hiện có trong docs/spec")
 
 claim("P2", AUDIT, "**2.885** sprite, **2.816** có `width/height`; `04-asset-manifest.csv`: **2.907** asset, **2.838** có kích thước",
@@ -3281,8 +3281,8 @@ def data_inventory():
 
 claim("AI1", "docs/spec/START_HERE.md",
       "**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree"
-      " · **126** bảng ScriptableObject · **42** contact sheet · **30** file `datas/`.",
-      (139, 142136, 142, 126, 42, 30), data_inventory,
+      " · **126** bảng ScriptableObject · **42** contact sheet · **31** file `datas/`.",
+      (139, 142136, 142, 126, 42, 31), data_inventory,
       "kho dữ liệu gốc đã phân tích: asm, typetree, ScriptableObject, contact sheet, datas")
 
 claim("AP1", "docs/spec/DATA_INTEGRITY.md",
@@ -3360,6 +3360,119 @@ claim("AM1", "docs/spec/MISSING_FOR_NEW_GAME.md",
       "`Map_Get_Datas..cctor` **100.896 B · `ends_clean: true`** · **4.020** const · **576** `init_array`",
       (100896, 4020, 576), map_cctor_arrays,
       "A6 nằm trong tầm tay: 576 mảng đã được tách địa chỉ, chỉ thiếu bytes rodata")
+
+_RAW_HINTS = (
+    "datas/", "reverse-engineering/", "docs/assets/",
+    "ref_lines(", "ref_json(", "_il2cpp_asm_files(", "_csv_rows(", "git(", "read_text(",
+)
+
+
+def _measure_source(fn, depth: int = 3, seen=None) -> str:
+    """Source của hàm đo + các hàm nó gọi (để bắt đường dẫn file nằm ở helper)."""
+    import inspect
+    import re as _re
+    seen = seen if seen is not None else set()
+    try:
+        src = inspect.getsource(fn)
+    except (OSError, TypeError):
+        return ""
+    if depth <= 0:
+        return src
+    chunks = [src]
+    for name in sorted(set(_re.findall(r"\b([A-Za-z_][A-Za-z_0-9]{2,})\b", src))):
+        if name in seen:
+            continue
+        target = globals().get(name)
+        if callable(target) and getattr(target, "__module__", None) == __name__:
+            seen.add(name)
+            chunks.append(_measure_source(target, depth - 1, seen))
+    return "\n".join(chunks)
+
+
+def classify_claims():
+    """[(cid, 'RAW'|'DOC'|'CONST', doc, note)] — claim nào đo từ file nào."""
+    import linecache
+    linecache.checkcache()  # tránh source cũ khi file vừa sửa trong cùng giây
+    out = []
+    for c in CLAIMS:
+        src = _measure_source(c.measure)
+        if any(h in src for h in _RAW_HINTS):
+            kind = "RAW"
+        elif "docs/" in src:
+            kind = "DOC"
+        else:
+            kind = "CONST"
+        out.append((c.cid, kind, c.doc, c.note))
+    return out
+
+
+def raw_audit_counts():
+    """(RAW, DOC, CONST, tổng) — đếm trực tiếp trên CLAIMS, không chạy measure."""
+    rows = classify_claims()
+    return (sum(1 for r in rows if r[1] == "RAW"),
+            sum(1 for r in rows if r[1] == "DOC"),
+            sum(1 for r in rows if r[1] == "CONST"),
+            len(rows))
+
+
+def save_contract_stats():
+    """(số key family, số store, số limitation) trong datas/opening_persistence.json."""
+    d = ref_json("datas/opening_persistence.json")
+    if not d:
+        return None
+    return (len(d.get("contracts") or []), len(d.get("stores") or []),
+            len(d.get("limitations") or []))
+
+
+def player_array_blobs():
+    """(số mảng, tổng phần tử, số file kiểm sha256 OK) trong raw/player-loadout."""
+    import gzip
+    import hashlib
+    import json as _json
+    base = "reverse-engineering/raw/player-loadout"
+    idx_path = os.path.join(ROOT, base, "index.json")
+    if not os.path.exists(idx_path):
+        return None
+    with open(idx_path, encoding="utf-8") as fh:
+        idx = _json.load(fh)
+    ok = 0
+    for f in idx.get("files") or []:
+        p = os.path.join(ROOT, f["path"])
+        if not os.path.exists(p):
+            continue
+        raw = open(p, "rb").read()
+        data = gzip.decompress(raw) if p.endswith(".gz") else raw
+        if hashlib.sha256(data).hexdigest() == f.get("sha256_decompressed"):
+            ok += 1
+    blob_path = os.path.join(ROOT, base, "array-blobs.json.gz")
+    if not os.path.exists(blob_path):
+        return None
+    with gzip.open(blob_path, "rt", encoding="utf-8") as fh:
+        blob = _json.load(fh)
+    arrs = []
+    for _meth, items in (blob.get("resolved", {}).get("methods") or {}).items():
+        arrs.extend(items)
+    return (len(arrs), sum(a.get("len", 0) for a in arrs), ok)
+
+
+claim("RB1", "docs/spec/RAW_AUDIT.md",
+      "**RAW 145 · DOC 3 · CONST 37 · tổng 185**",
+      (145, 3, 37, 185), raw_audit_counts,
+      "sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. "
+      "CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập")
+
+claim("CM4", "docs/spec/MISSING_FOR_NEW_GAME.md",
+      "**8 key family** · **2 store** · **7 limitation** (claim **CM4**)",
+      (8, 2, 7), save_contract_stats,
+      "datas/opening_persistence.json: 8 contract, 2 store (Unity.PlayerPrefs + PlayerPreferences.dictionary), "
+      "7 limitation. status PROVISIONAL_STATIC_PARTIAL_SAVE_CONTRACT_NOT_FULL_SCHEMA ⇒ KHÔNG gọi là schema đầy đủ")
+
+claim("CM5", "docs/spec/MISSING_FOR_NEW_GAME.md",
+      "**5 blob** · **49 int** · **5/5 sha256 OK** (claim **CM5**)",
+      (5, 49, 5), player_array_blobs,
+      "raw/player-loadout: 5 blob mảng int (len 4·7·7·7·24 = 49) + 5/5 sha256_decompressed khớp. "
+      "Đây là int của Player_Saved_Datas, KHÔNG phải 4 mảng float damage của Player_Get_Datas")
+
 
 claim("CM1", "docs/spec/MISSING_FOR_NEW_GAME.md",
       "(`CM1`): **3 entry** = `[25, 9010]` · `[164]` · `[113, 5]` · **13** check;",

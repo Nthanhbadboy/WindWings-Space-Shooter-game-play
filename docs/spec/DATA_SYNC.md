@@ -2230,3 +2230,59 @@ rotation `0: 2.041 · 1: 53 · 2: 54 · 3: 37` (**144** sprite cần lật/xoay)
 
 **"Tổng khớp ≠ không đổi"** và **"field vắng ≠ không tồn tại"** — hai câu này vừa lật một kết luận của mình
 (§17.1) và một kết luận khác (§18.1 N2). Cả hai đều đã thành claim máy kiểm (`AQ7`, `CM2`).
+
+---
+
+## 19. `7c7c9f064 → 6ababbd31` — player loadout + save contract, và **sổ kiểm raw**
+
+> **Tip mới:** **`6ababbd31`** (4 commit). Kéo về (nguồn **`6ababbd31`**):
+> `reverse-engineering/raw/player-loadout/{index.json,array-blobs.json.gz,native/*}` ·
+> `reverse-engineering/raw/persistence/opening-contracts.json.gz` · `datas/opening_persistence.json` ·
+> report **65** · `tools/verify/opening_persistence.py`.
+
+### 19.1 Đã tự kiểm **sha256** của 5/5 file (không tin lời)
+
+`raw/player-loadout/index.json` ghi `sha256_decompressed` cho từng file. Đo lại trên máy này:
+
+| file | sha256 (16 ký tự đầu) | khớp |
+|---|---|---|
+| `Player_Device_Saved_Datas.asm.txt` | `4cd845eca6efa22b` | ✅ |
+| `Player_Device_Saved_Datas.json` | `a410ecc45e6956f5` | ✅ |
+| `Player_Saved_Datas.asm.txt` | `bf90fe4d926e0007` | ✅ |
+| `Player_Saved_Datas.json` | `e4c5e1a37f8e07682` | ✅ |
+| `array-blobs.json.gz` | `2ff95f6464eeb0c5` | ✅ |
+
+⇒ **Lần đầu** một artifact raw của nhánh dữ liệu được kiểm hash **trong repo này** (claim **CM5**).
+Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn.
+
+### 19.2 Cái **mở ra**, và cái **vẫn đóng**
+
+| Việc | Trước | Sau `6ababbd31` |
+|---|---|---|
+| Save contract | 2 key, suy từ report 57 | **8 key family · 2 store · 7 limitation** (claim **CM4**), có asm + 41 method + 25 check |
+| Getter có side effect | chưa biết | **biết**: `get_StageTarget` **tăng 1** mỗi lần đọc; `get_IndexTutorial` tự ghi `TUTORIAL=6` |
+| Mảng int của `Player_Saved_Datas` | — | **5 blob · 49 int** (giá craft/unlock), **5/5 sha256** |
+| 4 mảng **float** damage theo tàu (`Player_Get_Datas`) | thiếu | **vẫn thiếu** ⇒ **B3 vẫn mở**, DPS/TTK tuyệt đối vẫn chưa có |
+| Field binding của blob int | — | **chưa chốt** (`PROVISIONAL_METADATA_ARRAY_BLOBS_NOT_ALL_FIELD_BINDINGS`) |
+
+> ⚠ **Đừng gộp hai thứ:** blob int `[0,0,0,6500,8500,9500,12500]` là **giá craft** (chưa bind field),
+> **không** phải damage. Nếu game mới dùng nó làm giá thì ghi **B**, không ghi **A**.
+
+### 19.3 Sổ kiểm mới: `RAW_AUDIT.md` — trả lời "nói mồm hay dựa raw?"
+
+`tools/raw-audit.py` phân loại **từng claim** theo source của hàm đo:
+
+| loại | số | nghĩa |
+|---|---:|---|
+| **RAW** | **145** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **DOC** | **3** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
+| **CONST** | **37** | không mở file ⇒ **đo một lần** |
+
+Claim **RB1** khoá đúng 4 số trên; **chạy lại `python3 tools/raw-audit.py` là biết ngay** nếu ai thêm
+một hằng số rồi gọi nó là bằng chứng. Danh sách 37 CONST nằm trong file — toàn bộ nhóm `A*` (phiên điện
+thoại), `D*` (script bridge), `E*` (vài hằng balance), `R*` (timeline boss), `W4/W5`.
+
+### 19.4 Chưa kéo (vẫn nguyên như §17.4)
+
+Report **59 · 60 · 61** chưa đọc; 6 chunk `sprite-geometry/objects-*.jsonl.gz` chưa có; `raw/ui-audit`
+(407) · `raw/il2cpp-consts` (273) · `raw/animation-audit` · `raw/runtime-probe` chưa kéo.

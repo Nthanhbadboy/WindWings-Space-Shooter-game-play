@@ -18,7 +18,7 @@
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
 | `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **66** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
-| `datas/` | JSON/CSV bóc trực tiếp | **30** file · 13 MB | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
+| `datas/` | JSON/CSV bóc trực tiếp | **31** file · 13 MB | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
 | `reverse-engineering/scriptableobjects/` | Bảng ScriptableObject | **126** CSV · 13 MB | số cân bằng: súng, enemy, stage, shop |
@@ -30,9 +30,12 @@
 | `docs/assets/sprites-auto-classified.csv` | Nhãn + provenance | **1.857/2.197** có nhãn | biết cái nào là UI / đạn / FX / boss |
 | `reverse-engineering/raw/sprite-geometry/` | **Geometry thật** của sprite (`m_RD`) | **2.185** sprite · **67** page `sactx` | cắt đúng chỗ, biết sprite nằm trang nào |
 | `docs/assets/sprites-atlas-page.csv` | Trang texture thật của từng sprite | **282**/340 ca chưa nhãn biết trang | gán nhãn theo trang (đo precision trước) |
+| `datas/opening_persistence.json` | **Contract save mở đầu** | **8 key family · 2 store · 7 limitation** | dựng first-run/tutorial/progression mà không đoán key |
+| `reverse-engineering/raw/player-loadout/` | Mảng int + asm `Player_Saved_Datas` | **5 blob · 49 int · 5/5 sha256 OK** | giá craft/unlock, chứng cứ save |
+| `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **145 RAW · 3 DOC · 37 CONST / 185** | biết số nào tái đo được, số nào "đo một lần" |
 | `tools/` | **9** script đo lại được | — | `verify-claims.py`, `art-study.py`, `classify-by-atlas.py`, … |
 
-**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **30** file `datas/`.
+**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **31** file `datas/`.
 
 
 ### 1.1 Ranh giới duy nhất — và nó **không** hạ chuẩn
@@ -166,9 +169,14 @@ python3 tools/verify-claims.py                 # 180 PASS · 0 FAIL · 2 SKIP ·
 python3 tools/verify-claims.py --only AQ       # riêng nhóm wave/đơn vị
 python3 -m unittest discover -s tests -q       # 5 test luật phân loại
 python3 tools/data-integrity.py; echo $?       # 0 = không có file gốc nào bị sửa tay
+python3 tools/raw-audit.py                     # sổ claim↔raw (RAW/DOC/CONST)
 python3 tools/art-study.py                     # dựng lại art-study.csv (2.112 sprite)
 python3 tools/design-metrics.py <ảnh>          # đo khung hình bản mới
 ```
 
 Quy ước mức chắc chắn (**A/B/C/D**) ở `AI_FEASIBILITY.md` §0.0 — mọi dòng trong bộ spec phải ghi
 mức, và **số không có mức là số chưa được kiểm**.
+
+> **Luật số (25/10):** số dùng để **quyết định thiết kế** phải là claim **RAW** (tái đo được từ
+> `datas/` · `reverse-engineering/` · `docs/assets/`). Số **CONST** trong `RAW_AUDIT.md` là *"đo một lần"* —
+> được trích để tham khảo, **không** được dùng để bác một kết luận khác.

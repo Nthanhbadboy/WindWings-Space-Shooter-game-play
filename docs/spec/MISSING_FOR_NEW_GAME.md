@@ -79,6 +79,9 @@ Tự chọn ở A6/B3 thì game mới **lệch số**; tự chọn ở `rate = 0
   `ldr s8,[x8, w19, sxtw #2 + 0x20]` (`14e3a78..14e3a90`). Rank/upgrade vào phần tính **sau** (`0x14e3c40`),
   **không** xoá lookup theo tàu ⇒ **damage phụ thuộc tàu là có thật**; chỉ **giá trị** là chưa biết.
 - **Bằng chứng asm (`CM2`):** `0x78` + `sxtw #2` + index `w19` — kiểm bằng máy trên `Player_Get_Datas.asm.txt`.
+- **Đã có thêm (nhưng KHÁC lớp):** `raw/player-loadout/array-blobs.json.gz` — **5 blob** · **49 int** · **5/5 sha256 OK** (claim **CM5**). Đây là **int** của `Player_Saved_Datas` (giá craft/unlock), **không**
+  phải 4 mảng **float** damage của `Player_Get_Datas`; field binding cũng chưa chốt
+  (`PROVISIONAL_METADATA_ARRAY_BLOBS_NOT_ALL_FIELD_BINDINGS`). ⇒ **B3 vẫn mở.**
 - **Còn thiếu:** giá trị **6 mảng rodata** (24 float × 4 + 2 mảng × 3) ⇒ DPS/TTK tuyệt đối vẫn chưa tính.
   HP riêng của tàu: **chưa có bằng chứng** theo cả hai chiều ⇒ giữ **D**, không kết luận.
 - **Việc kế tiếp:** cùng một lần dump rodata với §2.1 (hai class, 6 blob).
@@ -94,20 +97,31 @@ Tự chọn ở A6/B3 thì game mới **lệch số**; tự chọn ở `rate = 0
 - Cái **đo được** và nên giữ: mỗi wave có **1 `StartPoint` + 1 `EndPoint`** (tổng **608** dòng mốc) và
   danh sách enemy nằm trong `listPrefabEnemies` — đó là **cấu trúc**, không phải nhịp.
 
-### 2.3 Save / load — **một phần** (không còn là "0 tài liệu")
+### 2.3 Save / load — **8 key family đã có contract**, chưa phải schema đầy đủ
 
-- **ĐÃ có (A cho lời gọi, B cho ngữ nghĩa):**
-  - key **`StarCount`** — `GameDatas` setter `13256f0` → `PlayerPrefs.SetInt` tại `132576c`;
-  - key **`StarStageMaster{stageIndex}_{modeIndex}`** — `Stage_Datas.Get/SetStarStageMaster`, getter default **0**,
-    setter `12c4620` → `PlayerPreferences.SetInt` → `UnityEngine.PlayerPrefs.SetInt`;
-  - mô hình điểm danh: `oldFlags[i] = savedStars > i`; `savedAfter = max(savedStars, result + 1)` (report **57**).
-  - **Chưa** chứng minh `PlayerPrefs.Save` / flush xuống đĩa — đừng coi lời gọi set là đã ghi bền.
-- **Còn thiếu:** danh sách **đầy đủ** khoá/kiểu/default/migrate; cả 15.053 chuỗi (`03-il2cpp-strings.json`
-  chỉ expose `urls · ips · emails · suspicious · json`).
-- **Vì sao vẫn quan trọng:** tự đặt schema thì **không** giữ được "mất dữ liệu thì mất gì" — ảnh hưởng trực
-  tiếp kinh tế (**170 gói IAP**).
-- **Việc kế tiếp:** (a) export **toàn bộ** 15.053 chuỗi; (b) grep `PlayerPrefs|Save|Load` trong **139** asm
-  (đã có trong repo). Không cần thiết bị.
+Từ report **65** + `datas/opening_persistence.json` (raw: `raw/persistence/opening-contracts.json.gz`,
+**41** method · **25** check):
+
+| Key / format | Owner → kiểu | Cache | Khi **đọc** có gì ngoài đọc |
+|---|---|---|---|
+| `TUTORIAL` | `GP_Tutorials.IndexTutorial` → int | +0x10, sentinel −1 | đọc `StageTarget`; nếu target ≥ 2 và tutorial = 0 thì ghi **6** |
+| `TUT_TOUCH_SKILL` | `GP_Tutorials.IsTutTouchSkillDone` → bool | — | trả `stored == 1` (không phải `!= 0`) |
+| `StageTarget` | `Stage_Datas.StageTarget` → int | +0x3C, sentinel −1 | **tăng 1 mỗi lần đọc** khi `target < ZoneUnlocked*10`, rồi ghi lại |
+| `ZoneUnlocked` | `Stage_Datas.ZoneUnlocked` → int | +0x40, sentinel −1 | setter ghi cache + prefs, **không** tự clamp |
+| `StarStageMaster{stage}_{mode}` | `Stage_Datas.GetStarStageMaster` → int | — | saved star count, **không** phải kills |
+| `StarCount` | `GameDatas.StarCount` → int | +0x4C, sentinel −1 | gọi Unity `PlayerPrefs` trực tiếp; tổng sao |
+| `DroneUsed{slot}` | `Drone_Saved_Datas.GetDroneUsed` → int | — | giá trị âm → ghi 0 rồi đọc lại |
+| `DroneUnlocked{drone}` | `Drone_Saved_Datas.IsDroneUnlocked` → bool | — | ID 20001 có đường tự ghi 1; ID ≥ 20002 đòi `stored == 1` |
+
+**8 key family** · **2 store** · **7 limitation** (claim **CM4**). Hai store: `Unity.PlayerPrefs` (typed wrapper
+tail-call) và `PlayerPreferences.dictionary` → file `persistentDataPath + /Prefs`.
+
+> ⚠ **Getter có side effect.** `get_StageTarget` **tăng 1** rồi lưu lại; `get_IndexTutorial` tự sửa
+> `TUTORIAL = 6`. Nghĩa là **HUD/debug/serializer gọi getter nhiều lần có thể đổi dữ liệu**. Nếu game mới
+> chọn getter thuần + migrate rõ ràng thì **ghi là quyết định thiết kế**, đừng giả là phục dựng nguyên hàm.
+
+**Còn thiếu (đừng gọi là đủ):** IAP/cloud/Premium chưa bóc; chưa có migrate; **chưa** chứng minh flush đĩa
+(status trong file: `PROVISIONAL_STATIC_PARTIAL_SAVE_CONTRACT_NOT_FULL_SCHEMA`).
 
 ---
 

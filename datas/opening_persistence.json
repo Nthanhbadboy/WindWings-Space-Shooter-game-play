@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "status": "PROVISIONAL_STATIC_PARTIAL_SAVE_CONTRACT_NOT_FULL_SCHEMA",
+  "scope": "Opening campaign persistence; company!=Test defaults; getters may mutate; no runtime durability/migration proof.",
+  "raw_evidence": "reverse-engineering/raw/persistence/opening-contracts.json.gz",
+  "raw_evidence_sha256_decompressed": "fc6f4d143e3522533650b7cc3009b97966ffe0f5b231883ac87169fd1cb5b3b3",
+  "contracts": [
+    {
+      "key_format": "TUTORIAL",
+      "value_type": "int32",
+      "store": "Unity.PlayerPrefs",
+      "backend_GetInt_default_normal_company_not_Test": 0,
+      "reader_return_type": "int32",
+      "owner": "GP_Tutorials",
+      "reader": "get_IndexTutorial",
+      "writers": [
+        "set_IndexTutorial",
+        "get_IndexTutorial"
+      ],
+      "reader_method_id": "GP_Tutorials.get_IndexTutorial",
+      "writer_method_ids": [
+        "GP_Tutorials.set_IndexTutorial",
+        "GP_Tutorials.get_IndexTutorial"
+      ],
+      "cache": "static indexTut+0x10, sentinel -1",
+      "read_effects": [
+        "loads cached value; reads StageTarget",
+        "if StageTarget>=2 and cached tutorial==0: cache and write 6"
+      ],
+      "key_parameters": [],
+      "evidence_method_ids": [
+        "GP_Tutorials.get_IndexTutorial",
+        "GP_Tutorials.set_IndexTutorial",
+        "GP_Tutorials.get_IndexTutorial"
+      ]
+    },
+    {
+      "key_format": "TUT_TOUCH_SKILL",
+      "value_type": "int32",
+      "store": "Unity.PlayerPrefs",
+      "backend_GetInt_default_normal_company_not_Test": 0,
+      "reader_return_type": "bool",
+      "owner": "GP_Tutorials",
+      "reader": "IsTutTouchSkillDone",
+      "writers": [
+        "CheckRunTutorialNew"
+      ],
+      "reader_method_id": "GP_Tutorials.IsTutTouchSkillDone",
+      "writer_method_ids": [
+        "GP_Tutorials.CheckRunTutorialNew",
+        "GP_Tutorials.__c__DisplayClass39_0.<CheckRunTutorialNew>b__1"
+      ],
+      "cache": "none in predicate",
+      "read_effects": [
+        "returns value==1, not value!=0; callback b__1 also writes 1",
+        "callback increments IndexTutorial only if IndexTutorial==2 and StageCurrent==2; flag write itself is before those guards"
+      ],
+      "key_parameters": [],
+      "evidence_method_ids": [
+        "GP_Tutorials.IsTutTouchSkillDone",
+        "GP_Tutorials.CheckRunTutorialNew",
+        "GP_Tutorials.__c__DisplayClass39_0.<CheckRunTutorialNew>b__1"
+      ]
+    },
+    {
+      "key_format": "StageTarget",
+      "value_type": "int32",
+      "store": "Unity.PlayerPrefs",
+      "backend_GetInt_default_normal_company_not_Test": 0,
+      "reader_return_type": "int32",
+      "owner": "Stage_Datas",
+      "reader": "get_StageTarget",
+      "writers": [
+        "set_StageTarget",
+        "get_StageTarget"
+      ],
+      "reader_method_id": "Stage_Datas.get_StageTarget",
+      "writer_method_ids": [
+        "Stage_Datas.set_StageTarget",
+        "Stage_Datas.get_StageTarget"
+      ],
+      "cache": "static stageTarget+0x3c, sentinel -1",
+      "read_effects": [
+        "if ZoneUnlocked<MAX_ZONE_INDEX and target<ZoneUnlocked*10: increment once and persist through capped setter"
+      ],
+      "key_parameters": [],
+      "evidence_method_ids": [
+        "Stage_Datas.get_StageTarget",
+        "Stage_Datas.set_StageTarget",
+        "Stage_Datas.get_StageTarget"
+      ]
+    },
+    {
+      "key_format": "ZoneUnlocked",
+      "value_type": "int32",
+      "store": "Unity.PlayerPrefs",
+      "backend_GetInt_default_normal_company_not_Test": 0,
+      "reader_return_type": "int32",
+      "owner": "Stage_Datas",
+      "reader": "get_ZoneUnlocked",
+      "writers": [
+        "set_ZoneUnlocked"
+      ],
+      "reader_method_id": "Stage_Datas.get_ZoneUnlocked",
+      "writer_method_ids": [
+        "Stage_Datas.set_ZoneUnlocked"
+      ],
+      "cache": "static zoneUnlock+0x40, sentinel -1",
+      "read_effects": [],
+      "key_parameters": [],
+      "evidence_method_ids": [
+        "Stage_Datas.get_ZoneUnlocked",
+        "Stage_Datas.set_ZoneUnlocked"
+      ]
+    },
+    {
+      "key_format": "StarStageMaster{stage}_{mode}",
+      "value_type": "int32",
+      "store": "Unity.PlayerPrefs",
+      "backend_GetInt_default_normal_company_not_Test": 0,
+      "reader_return_type": "int32",
+      "owner": "Stage_Datas",
+      "reader": "GetStarStageMaster",
+      "writers": [
+        "SetStarStageMaster"
+      ],
+      "reader_method_id": "Stage_Datas.GetStarStageMaster",
+      "writer_method_ids": [
+        "Stage_Datas.SetStarStageMaster"
+      ],
+      "cache": "none in these methods",
+      "read_effects": [],
+      "key_parameters": [
+        "stage: internal stageIndex int32",
+        "mode: modeIndex int32"
+      ],
+      "evidence_method_ids": [
+        "Stage_Datas.GetStarStageMaster",
+        "Stage_Datas.SetStarStageMaster"
+      ]
+    },
+    {
+      "key_format": "StarCount",
+      "value_type": "int32",
+      "store": "Unity.PlayerPrefs",
+      "backend_GetInt_default_normal_company_not_Test": 0,
+      "reader_return_type": "int32",
+      "owner": "GameDatas",
+      "reader": "get_StarCount",
+      "writers": [
+        "set_StarCount"
+      ],
+      "reader_method_id": "GameDatas.get_StarCount",
+      "writer_method_ids": [
+        "GameDatas.set_StarCount"
+      ],
+      "cache": "static starCount+0x4c, sentinel -1",
+      "read_effects": [],
+      "key_parameters": [],
+      "evidence_method_ids": [
+        "GameDatas.get_StarCount",
+        "GameDatas.set_StarCount"
+      ]
+    },
+    {
+      "key_format": "DroneUsed{slot}",
+      "value_type": "int32",
+      "store": "Unity.PlayerPrefs",
+      "backend_GetInt_default_normal_company_not_Test": 0,
+      "reader_return_type": "int32",
+      "owner": "Drone_Saved_Datas",
+      "reader": "GetDroneUsed",
+      "writers": [
+        "SetDroneUsed",
+        "GetDroneUsed"
+      ],
+      "reader_method_id": "Drone_Saved_Datas.GetDroneUsed",
+      "writer_method_ids": [
+        "Drone_Saved_Datas.SetDroneUsed",
+        "Drone_Saved_Datas.GetDroneUsed"
+      ],
+      "cache": "none in these methods",
+      "read_effects": [
+        "stored<0 writes 0 then rereads; missing0 does not autoequip 20001"
+      ],
+      "key_parameters": [
+        "slot: slotIndex int32, not drone ID"
+      ],
+      "evidence_method_ids": [
+        "Drone_Saved_Datas.GetDroneUsed",
+        "Drone_Saved_Datas.SetDroneUsed",
+        "Drone_Saved_Datas.GetDroneUsed"
+      ]
+    },
+    {
+      "key_format": "DroneUnlocked{drone}",
+      "value_type": "int32",
+      "store": "Unity.PlayerPrefs",
+      "backend_GetInt_default_normal_company_not_Test": 0,
+      "reader_return_type": "bool",
+      "owner": "Drone_Saved_Datas",
+      "reader": "IsDroneUnlocked",
+      "writers": [
+        "SetDroneUnlocked",
+        "IsDroneUnlocked"
+      ],
+      "reader_method_id": "Drone_Saved_Datas.IsDroneUnlocked",
+      "writer_method_ids": [
+        "Drone_Saved_Datas.SetDroneUnlocked",
+        "Drone_Saved_Datas.IsDroneUnlocked"
+      ],
+      "cache": "none in these methods",
+      "read_effects": [
+        "normal branch: ID20001 writes1 if stored0 then returns true",
+        "ID<20002 returns true (no valid roster inference)",
+        "ID>=20002 returns stored==1"
+      ],
+      "key_parameters": [
+        "drone: index/id int32, not slot"
+      ],
+      "evidence_method_ids": [
+        "Drone_Saved_Datas.IsDroneUnlocked",
+        "Drone_Saved_Datas.SetDroneUnlocked",
+        "Drone_Saved_Datas.IsDroneUnlocked"
+      ]
+    }
+  ],
+  "stores": [
+    {
+      "id": "Unity.PlayerPrefs",
+      "access": "typed wrappers tailcall Unity; GameDatas star count calls Unity directly",
+      "flush": "not established by selected custom SaveToDisk/lifecycle bodies"
+    },
+    {
+      "id": "PlayerPreferences.dictionary",
+      "access": "SetValue/GetValue use static dictionary+0x0",
+      "file": "Application.persistentDataPath + /Prefs",
+      "save": "GetRawData -> JsonParse.ToJson(dictionary) -> Encrypt -> ASCII bytes -> File.WriteAllBytes",
+      "load": "File.Exists/ReadAllBytes -> ASCII decode -> Decrypt -> deserialize dictionary; missing file initializes empty dictionary"
+    }
+  ],
+  "limitations": [
+    "Not a complete save schema, no cloud/IAP/Premium analysis.",
+    "No automatic lower-bound validation inferred from capped StageTarget setter.",
+    "Getters can change persistent progress; read order matters.",
+    "Key formatting derived from native Concat/int ToString; parameters in bounded ordinary range.",
+    "No native-wide absence proof of PlayerPrefs.Save; only three named wrapper/lifecycle bodies checked.",
+    "DeleteKey only targets Unity; DeleteAll clears Unity+dictionary but selected body does not invalidate other class caches.",
+    "No custom encryption security claim, crash safety, migration, or atomic disk-write guarantee."
+  ]
+}
