@@ -77,3 +77,60 @@
     0x14e5530: ret      
     0x14e5534: bl       #0x110d258
     0x14e5538: bl       #0x110d250
+
+;;; GetMaxPowerUpPoints  public static int GetMaxPowerUpPoints() { }
+    0x14e553c: str      x30, [sp, #-0x20]!
+    0x14e5540: stp      x20, x19, [sp, #0x10]
+    0x14e5544: adrp     x19, #0x2ce2000
+    0x14e5548: adrp     x20, #0x2adc000
+    0x14e554c: ldrb     w8, [x19, #0x2ad]
+    0x14e5550: ldr      x20, [x20, #0x128]
+    0x14e5554: tbnz     w8, #0, #0x14e5578
+    0x14e5558: adrp     x0, #0x2adc000
+    0x14e555c: ldr      x0, [x0, #0xdd0]
+    0x14e5560: bl       #0x110d028
+    0x14e5564: adrp     x0, #0x2adc000
+    0x14e5568: ldr      x0, [x0, #0x128]
+    0x14e556c: bl       #0x110d028
+    0x14e5570: mov      w8, #1
+    0x14e5574: strb     w8, [x19, #0x2ad]
+    0x14e5578: ldr      x0, [x20]
+    0x14e557c: ldr      w8, [x0, #0xe0]
+    0x14e5580: cbnz     w8, #0x14e5588
+    0x14e5584: bl       #0x110d12c
+    0x14e5588: adrp     x19, #0x2adc000
+    0x14e558c: ldr      x19, [x19, #0xdd0]
+    0x14e5590: mov      x0, xzr
+    0x14e5594: bl       #0x13999ac
+    0x14e5598: cmp      w0, #5
+    0x14e559c: b.le     #0x14e55a8
+    0x14e55a0: mov      w20, #4
+    0x14e55a4: b        #0x14e55cc
+    0x14e55a8: cmp      w0, #3
+    0x14e55ac: b.le     #0x14e55b8
+    0x14e55b0: mov      w20, #3
+    0x14e55b4: b        #0x14e55cc
+    0x14e55b8: cmp      w0, #1
+    0x14e55bc: b.le     #0x14e55c8
+    0x14e55c0: mov      w20, #2
+    0x14e55c4: b        #0x14e55cc
+    0x14e55c8: cset     w20, eq
+    0x14e55cc: ldr      x0, [x19]
+    0x14e55d0: ldr      w8, [x0, #0xe0]
+    0x14e55d4: cbnz     w8, #0x14e55dc
+    0x14e55d8: bl       #0x110d12c
+    0x14e55dc: mov      w0, #0xc
+    0x14e55e0: mov      x1, xzr
+    0x14e55e4: bl       #0x14c7758
+    0x14e55e8: add      w19, w0, w20
+    0x14e55ec: mov      w0, #0xd
+    0x14e55f0: mov      x1, xzr
+    0x14e55f4: bl       #0x14c7758
+    0x14e55f8: add      w8, w19, w0, lsl #1
+    0x14e55fc: ldp      x20, x19, [sp, #0x10]
+    0x14e5600: cmp      w8, #4
+    0x14e5604: mov      w9, #4
+    0x14e5608: csel     w8, w8, w9, lt
+    0x14e560c: add      w0, w8, #6
+    0x14e5610: ldr      x30, [sp], #0x20
+    0x14e5614: ret      
