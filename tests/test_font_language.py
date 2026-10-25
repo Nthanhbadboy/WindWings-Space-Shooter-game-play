@@ -17,6 +17,15 @@ class FontLanguageTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):cls.contract=fl.build()
 
+    def test_offline_generator_does_not_trigger_full_export(self):
+        full=(ROOT/'.github/workflows/analyze-apk.yml').read_text()
+        verify=(ROOT/'.github/workflows/verify-extracted-tables.yml').read_text()
+        self.assertIn("- '!tools/apk-analyze/data_pack.py'",full)
+        self.assertIn("- 'tools/apk-analyze/data_pack.py'",verify)
+        self.assertIn("[scoped-only]",full)
+        commit_step=full.split('- name: Commit reports',1)[1]
+        self.assertIn('if: ${{ !cancelled() }}',commit_step)
+
     def test_reproduces_contract(self):
         self.assertEqual(self.contract,json.load(gzip.open(ROOT/'datas/font_language_contract.json.gz','rt')))
 

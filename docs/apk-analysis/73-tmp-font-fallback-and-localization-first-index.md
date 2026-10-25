@@ -12,7 +12,7 @@ font shaping/RTL, playthrough hay độ phủ mọi chuỗi runtime.
   blob IDs/SHA. **Snapshot peer không phải bằng chứng APK**, không merge wholesale.
   Các summary gap/assets cũ vẫn phải đọc cùng report67–73, không phủ định raw mới.
 - Recovery scoped **40197895269 SUCCESS**; bổ sung128bytes table lựa chọn ngôn ngữ
-  ở **40198072388 SUCCESS**. Raw bot cuối **61083ec31**. Không chạy full asset export.
+  ở **40198072388 SUCCESS**. Raw bot cuối **61083ec31**. Hai recovery này không chạy full asset export; lượt broad tự kích hoạt nhầm đã hủy, xem incident cuối report.
 - Cùng XAPK SHA `f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e`;
   data.unity3d SHA `7383563ebe6e42d099bd2348a420146a308f2f14224daf4e4de9ad52845ae4e7`;
   native SHA `9cb038e88709f38318d183d3616eed054b36c3186ead8f1c37246ece87393c99`;
@@ -178,9 +178,9 @@ python3 datas/validate.py
 ```
 
 Verifier kiểmhashinventory/owningexternals/links/glyphindices/rect bounds/native34methods,
-10static checks, metadata loads/direct-call signatures vàregeneratecontract.9tests mới;
-**211testsPASS local cóPillow13**, datasvalidationPASS. RecoveryCI40198072388 vàexisting
-Verify40198072652success trước9tests mới; finalVerify củacommitbàn giao kiểmriêng.
+10static checks, metadata loads/direct-call signatures vàregeneratecontract.10tests mới;
+**212testsPASS local cóPillow13**, datasvalidationPASS. RecoveryCI40198072388 vàexisting
+Verify40198072652success trước10tests mới; finalVerify củacommitbàn giao kiểmriêng.
 
 **Task peer** `arena/20330d0e-windwings-space-shooter-game-p`:
 1. Cập nhậtspec nguồnfont: default105+6localfallback, khôngglobalnull→nofallback,
@@ -194,3 +194,23 @@ Verify40198072652success trước9tests mới; finalVerify củacommitbàn giao 
 
 Tiếp phù hợp: consumer placement/material/render hoặc audio listening riêng; không biến
 fontstaticdeltas thành yêu cầudumpfullAPK hay tựvẽlạigame.
+
+
+### CI scope incident và khôi phục, không đổi kết luận game
+
+Commit56d05126d sửa offline `data_pack.py` đã vô tình kích hoạt workflow fullAnalyze
+40198724717 qua pathfilter rộng. CancelAPI trả403 vìintegration không cóactions-write.
+Workflow-level concurrency đã hủy lượt đó khi run40198794947 thay thế; runthaythế
+**SKIPPED** với marker `[scoped-only]`. Releasepublish step của lượt cũ **SKIPPED**;
+đối chiếu releaseAPI xác nhận IDs/digests/update-times của media giữ nguyên, releasevẫn draft.
+Không gọi fullpipeline đó là fontrecovery success.
+
+Step Commit reports cũ dùngalways() nên vẫn push partialbot8c9e0217c gồm3historicalreports
+vàgzipdump. Đã khôi phục cả4file vềbaseline7bcc14f10; giữpartial3texts/jobstatus/digests
+ở `raw/font-language/workflow-scope-incident.json.gz` (operational provenance, không
+bằngchứnggame). Dumpdecompressed bytes trước/sau giống hệt.
+
+Đã loại `data_pack.py` khỏifullAnalyze pushfilter, thêm nó vàoofflineVerify; scopedmarker
+guard cho maintenance workflow, và Commit reports nay khôngchạy khi cancelled.
+**Verify40198724636 và40198794930 SUCCESS** đều211tests vớipinnedPillow12.
+FinalVerify saucommitkhôi phục theo dõi riêng; không thayrawfontgraph/contract.

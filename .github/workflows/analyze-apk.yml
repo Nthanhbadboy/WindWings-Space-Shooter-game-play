@@ -504,7 +504,8 @@ jobs:
           retention-days: 30
 
       - name: Commit reports
-        if: always()
+        # A cancelled broad run must not overwrite preserved reports with partial output.
+        if: ${{ !cancelled() }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

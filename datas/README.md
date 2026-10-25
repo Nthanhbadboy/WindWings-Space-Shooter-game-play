@@ -107,7 +107,7 @@ normalizedpivot nhưfinalPNGpivot**, khôngclamp/center tựý. Report72 ghiđ�
 7atlasPNGrefs/hashes, asset-localfallbackorder105→110→106→108→109→111→107.
 19LanguageAssets first-index/effective translations (1415nonemptykeys mỗi language),
 duplicate evidence/system-language defaultmap/native34methods/10checks/provenance.
-`tools/verify/font_language.py` regenerates bằngraw/font-language;9tests mới.
+`tools/verify/font_language.py` regenerates bằngraw/font-language;10tests mới.
 Globalfallbacknull khôngnghĩanofallback;1TTF khôngnghĩa1fonttoàngame.
 `i18n/en.json` sửa`txt_free_after` thànhnativefirst-value`Free after`; generator ưu tiên
 rawarrays thayCSVđãdedup. Glyphcodepointdeltas khôngphảirenderedmissingglyphs;
