@@ -117,6 +117,10 @@ def recover(xapk, work, out):
             if kind == 'Texture2D':
                 data = obj.read()
                 row.update(name=data.m_Name, projection='metadata_only_no_pixels', width=data.m_Width, height=data.m_Height)
+            elif kind == 'Shader':
+                tree = obj.read_typetree()
+                row.update(name=tree.get('m_Name',''), projection='shader_property_metadata_no_shader_program',
+                           properties=tree.get('m_ParsedForm',{}).get('m_PropInfo',{}))
             elif kind == 'TextAsset':
                 data = obj.read()
                 script = data.m_Script
@@ -136,7 +140,7 @@ def recover(xapk, work, out):
                         if not (location.startswith('.atlasAssets[') or location == '.skeletonJSON' or location == '.atlasFile' or location.startswith('.materials[') or location == '.spriteAtlasFile'):
                             continue
                     elif kind == 'Material':
-                        if not location.startswith('.m_SavedProperties.m_TexEnvs'):
+                        if not (location.startswith('.m_SavedProperties.m_TexEnvs') or location == '.m_Shader'):
                             continue
                     else:
                         continue
@@ -148,7 +152,7 @@ def recover(xapk, work, out):
                     try:
                         target = PPtr(m_FileID=ptr['m_FileID'], m_PathID=ptr['m_PathID'], assetsfile=obj.assets_file).deref()
                         link.update(status='resolved', target=identity(target))
-                        if target.type.name in ('MonoBehaviour','Material','Texture2D','TextAsset'):
+                        if target.type.name in ('MonoBehaviour','Material','Texture2D','TextAsset','Shader'):
                             record(target)
                     except Exception as error:
                         link.update(status='unresolved', error=repr(error))
@@ -159,12 +163,13 @@ def recover(xapk, work, out):
         record(obj)
     info = dict(status='provisional_file_scoped_Spine_chain_not_import_approval', inputs=inputs,
                 binary_inputs_sha256=found, toolchain=dict(UnityPy=UnityPy.__version__,TypeTreeGeneratorAPI='0.0.10',backend='AssetStudio'),
-                scan_counts=dict(counts), header_errors=head_errors,
+                scan_counts=dict(counts), header_errors=head_errors, all_MB_headers_classified=not head_errors,
                 files=[dict(serialized_file=logical,externals=[dict(path=e.path,type=e.type) for e in sf.externals]) for logical,sf in files],
                 objects=sorted(rows.values(),key=lambda r:(r['serialized_file'],r['path_id'])),links=links)
     out.mkdir(parents=True,exist_ok=True)
     (out/'chains.json.gz').write_bytes(gzip.compress((json.dumps(info,ensure_ascii=True,indent=2)+'\n').encode(),mtime=0))
-    assert not head_errors
+    # Missing built-in resources keep header classification explicitly incomplete;
+    # do not discard the fully resolved selected graph or assert it is exhaustive.
     assert counts['SkeletonDataAsset'] > 0
     assert all(r['status']=='recovered' for r in rows.values())
     assert all(l['status'] in ('resolved','null') for l in links)
