@@ -1627,7 +1627,8 @@ vẫn có thể là "số quân/giây" với 0 = không spawn. Xem `DESIGN_READI
 
 ### 10.3 Kéo tiếp cùng đỉnh `019e704d1` (24/10, lần 2)
 
-Vẫn **không có commit mới** trên nhánh dữ liệu. Lấy thêm **phần nhỏ nhưng nặng thông tin**:
+Ghi chú lúc đó: "vẫn không có commit mới" — ⚠️ **sai** (xem §12/§13: ref của tôi chưa cập nhật, nhánh
+dữ liệu **đã** đi tiếp). Đã lấy thêm **phần nhỏ nhưng nặng thông tin**:
 
 | Cây | Lấy | Bỏ | Vì sao |
 |---|---|---|---|
@@ -1790,7 +1791,7 @@ Bàn giao của nhánh dữ liệu (`docs/HANDOFF_DATA_SYNC.md`, blob `1c88a027`
 "nhánh dữ liệu không có commit"; phải so **`ls-remote` với `rev-parse` sau fetch**; nếu bot đẩy tiếp
 thì **ghi hai snapshot**. Đây là bản ghi đúng.
 
-### 13.1 Kiểm ref — hai mốc, không phải một
+### 13.1 Kiểm ref — **ba** mốc, không phải một
 
 | lúc | `git ls-remote origin refs/heads/arena/ef6b75ef-…` | `git rev-parse origin/arena/ef6b75ef-…` | khớp |
 |---|---|---|---|
@@ -1802,8 +1803,15 @@ thì **ghi hai snapshot**. Đây là bản ghi đúng.
 ghi **nhiều snapshot**, không kết luận "không có commit". Số commit sau `019e704d1`: **12** (tại
 `1989defc2`) rồi **14** (tại `0a42eaa42`).
 
-`git fetch` in ra: `9aed767b1..1989defc2  arena/ef6b75ef-… -> origin/arena/ef6b75ef-…` ⇒ **có** commit
-mới. Đếm: **12 commit** sau `019e704d1`, trong đó **2 commit sau `9aed767b1`**.
+Hai lần `git fetch` in ra:
+
+```
+9aed767b1..1989defc2  arena/ef6b75ef-… -> origin/arena/ef6b75ef-…
+1989defc2..0a42eaa42  arena/ef6b75ef-… -> origin/arena/ef6b75ef-…
+```
+
+⇒ **có** commit mới ở **cả hai** lần. Đếm: `019e704d1..9aed767b1` = 10 · `9aed767b1..1989defc2` = 2 ·
+`1989defc2..0a42eaa42` = 2 ⇒ **14 commit** sau `019e704d1`.
 
 | commit | nội dung | ảnh hưởng nhánh spec |
 |---|---|---|
@@ -1813,6 +1821,8 @@ mới. Đếm: **12 commit** sau `019e704d1`, trong đó **2 commit sau `9aed767
 | `c570485c5` | report 39–43 + raw lượt kế | đã kéo/đọc một phần |
 | `d05a147f0` | gate tutorial + `43-ui-drawing-readiness.md` | **đã đọc**, đã import vào `UI.md` §9.2 |
 | `d06046eec` | coverage stage 1–3, report 42 | đã đọc |
+| `0a42eaa42` | tutorial panel + Endgame callback, report 44, `visual-coverage.json` | **đã import 5 file** (13.4) |
+| `e690da837` | re-export `03-il2cpp-files`, `04-unity-assets`, `18-pipeline-diagnostics`, `dump.cs.gz` | **chưa** đọc bản mới — ghi "chưa đồng bộ" |
 | `921dc909b` · `daa2c3a03` | export native/typetree early UI | `early-native-gates.json` đã có |
 
 ### 13.2 Đã đọc thật — kiểm bằng blob SHA-1, không bằng "verifier PASS"
