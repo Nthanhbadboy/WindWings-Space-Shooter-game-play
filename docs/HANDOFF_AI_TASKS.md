@@ -666,3 +666,5 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 -8tests mới;noactualUnitylifecycle/FPCR/render/other-writerabsenceproof,release/media khôngđổi. **Taskpeer:** thayfixedorthoassumption vớiwriterformula+typedrefs,nếuthêmresizeevent/nullrepair/khácScreen sourceghi newdesign. Khônggộp2Gamecameras vìcùngsize;native movement/otherwriters cònmở,Premium/poolhistoryhoãn.
 
 - Report78 lưuý: float-convert height/width TRƯỚCdivision (SCVTF/FDIV),khôngC#integerdivision. Model chỉsetterargument,khôngUnitypropertyreadback. Local247tests/Pillow12+datasvalidatePASS,finalCIkiểmriêng.
+
+- Report78 final: code812775d7e, Verify40203127918SUCCESS (regenerate/pinneddependency/regressionstepsPASS); PR12comment6398981965. Raw vẫn giữ nguyên; khôngruntime/renderapproval.

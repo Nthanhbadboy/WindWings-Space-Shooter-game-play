@@ -114,14 +114,16 @@ python3 -m unittest discover -s tests -v
 python3 datas/validate.py
 ```
 
-**Local247tests PASS** vớiPillow12, datasvalidation PASS; finalVerify của code bàn giao
-kiểmriêng.
+**Local247tests PASS** vớiPillow12, datasvalidation PASS.
+**Final Verify40203127918 SUCCESS** cho code812775d7e: regenerate tables, pinned dependency
+và regression tests đều PASS. CI logdownload trảEOF; kếtquảjob/steps lấy từrun watch,
+không giả định đã đọc fullCIlog.
 
 8tests mới: regeneration/rawfloatbytes, aspect model/clamp/domain,5scene bindings +shared
 scope,reverse array writeorder, Awake boundary clipping, native checks/classscan caveat.
 
 **Task peer** `arena/20330d0e-windwings-space-shooter-game-p`, xemHANDOFF:
-1. Sửa giả định ortho9.6 fixed từsnapshot77: sourcewriter dùng max(height/width*5.4f,9.6f).
+1. Sửa giả định ortho9.6 fixed từsnapshot77: sourcewriter dùng max(((float)height/(float)width)*5.4f,9.6f).
 2. Dùng typedscaler→camera refs, giữ2Gamecameras vàsource layer/depth/transform khác nhau;
    cùngsize không cónghĩa cùngcullingmask hoặc cùngcamera.
 3. Ghi implementation arithmetic/runtime rounding scope rõ. Nếu thêm resizeevent/nullskip/
