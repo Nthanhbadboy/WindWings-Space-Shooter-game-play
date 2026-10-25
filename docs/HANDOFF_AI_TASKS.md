@@ -669,7 +669,7 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 
 - Report78 final: code812775d7e, Verify40203127918SUCCESS (regenerate/pinneddependency/regressionstepsPASS); PR12comment6398981965. Raw vẫn giữ nguyên; khôngruntime/renderapproval.
 
-## Review peer029559d47 — thiếu thật để giao AI game mới (26/10/2026)
+## Review peer029559d47 — thiếu thật để giao AI game mới (25/10/2026)
 
 Đã fetch explicit nhánh spec, không merge/sửa nhánh bạn. Snapshot nguyên văn 4 tài liệu:
 `raw/peer-review/update-029559d47.json.gz` (peer docs KHÔNG phải APK evidence).
@@ -695,3 +695,11 @@ rule → new-design choices → acceptance test`, ghi rõ reference pack có s�
 runtime/import/visualapproval. L1 có thể khởi công, không chờ playback để chọn cơ chế mới.
 Save migrate/cloud, plugin/build parity, allboss phase closure và shader/stencil/runtime feel
 vẫn scopedunknown; chỉ đào khi task triển khai cần cụ thể. Premium/pool-history tiếp tục hoãn.
+
+### Kết quả đào gap player firing — report79
+Recovery40203414134SUCCESS/rawbb896f1da. Player_Attack_1.SetupDatas gọi
+GetMainCannonRate(0) rồi ghi timeRateMainCannon@0xa8 (demo override3);
+MainCannonShoot0x147a988..990 đặt deadline@0x10c = Time.time + interval@0xa8.
+**Không giao damage×StartMainCannonRate như actualDPS/TTK**; ngay cả damage/rate còn thiếu
+extra-shot timer/barrels/modifiers/hit gates. Chỉ xác nhận consumer tàu1, không suy24tàu.
+Xem79 + raw/player-firing; 3targeted evidence testsPASS, khôngruntimeapproval.

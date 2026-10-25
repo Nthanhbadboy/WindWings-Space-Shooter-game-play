@@ -129,3 +129,10 @@ xác nhận các suy luận cũ. Raw vẫn được giữ, không xoá chỉ đ�
 2. Mọi bảng tóm tắt đều sinh lại được từ thô bằng script trong `tools/apk-analyze/`.
 3. Khi sửa parser, chạy lại pipeline rồi `git diff` — chênh lệch chính là chỗ kết luận cũ sai.
 4. Đừng xoá file thô để "cho gọn": nếu thiếu dung lượng thì nâng cap trong workflow, không xoá.
+
+## 79 — Peer gap review / player main-cannon timer (tạm thời)
+Đã đối chiếu peer029559d47, giao sửa bảngtổng audio/assets và claim DPS/TTK.
+Raw recovery40203414134SUCCESS/bb896f1da: ship1 sử dụng GetMainCannonRate trong
+Time.time+interval deadline, không chứng minh damage×rate là DPS.
+Giới hạn ship1, chưa collision/emittedbullet/allships/runtime closure. Xem report79/HANDOFF.
+Local250tests+datasvalidatePASS; khôngruntime/renderapproval.

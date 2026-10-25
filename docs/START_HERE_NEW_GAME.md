@@ -217,3 +217,7 @@ Không chờ dump mới cho576Map/6Player InitializeArray records: xem
 `reverse-engineering/raw/initialize-arrays/typed-inventory.json.gz`.
 PlayerCosts là int[24], ba main/rate/wing arrays là float[24].
 Inventory không tự bind Map container/index, không chứng minh stagecount hay DPS/TTK.
+
+- **79 — review peer029559d47 + player firing timer:** sửa claim damage×rate=DPS;
+  scoped ship1 native dùng rate làm deadline interval. Xem
+  `apk-analysis/79-peer-gap-review-and-player-main-cannon-timer.md` và HANDOFF.
