@@ -489,3 +489,26 @@ luận vẫn provisional. Premium deferred; không dùng screenshot làm nguồn
   TestcấmsubprocessGitdefault,111testspasscảworkspacevàarchivekhông.git.
 - CI saufixđềusuccess:Verify40189296572/geometry40189296654/native40189296604;
   producerregressionpass,tránhfullanalyze. Local+cleanarchive111PASS.
+
+## Agent hiện tại — report63: movement state writers/reuse contracts
+
+- Không rerunAPK vìđủraw; `tools/verify/movement_state_writers.py`→
+  rawballoon-animation/movement-state-writers.json.gz:21EnemyMovementmethods,
+ 9checks+5Subsetterbodies+sourceSHA. Scannerlinearthis-aliasstoreHINTS,
+ KHÔNGCFG/whole-nativewriterclosure;testtránhstack4C/callerclobber/wordalias.
+- Trongclassđãđọc:typeMove4CwritersSetPathFollower0/SetWaypoints1/
+ SetMoveLinearly2/RocketResumeMove2;path50storechỉSetPathFollower.
+- EnablechỉzFixed48;Stop/Startchỉmoving;separateSetPosition/Anglekhôngdirect
+ resetmode/path/movein;combinedSetPositionAndAngleclear5C/D0. AirFreedùng
+ separatenênKHÔNGgộpthànhcombinedlúctáidựngvìthayđổifieldeffects.
+- Pháthiệnmới:SetWaypointsnonnulllen<2ghiMode1/distance0TRƯỚClog-return,
+ chưaoverwritewaypoints60/index/cache;khôngno-op,oldstatecóthểcònlại.
+ Nullinputexceptionkhôngđượcmôhìnhtựsetupthànhcông.
+- ExactAirFreerefduynhất3earlywaves:0164/w15/Boss_2/CallData599908→
+ resources.assets185704BB. CallDataspawnType0nhưngconcretespawnerAirFree;
+ khôngphânloạichỉtheoenum/nodename. KhôngnewclaimBBmustdie/autoescape.
+- ModelreusepriorMode2/pathold/moveintrueCHỈconditionalfieldcontract,
+ khôngchứngminhactualBBhistory/reachableplaythrough. SetActivecallbackorder,
+ externalwriters/parentmatrix/alternatehealth-removalchưakhép.
+-8testsmới,**119tests pass**local. Report63entrypointmovementcontracts;
+ T9pixelcrop/mask40fractionalrectcònmở;Premiumdeferred.
