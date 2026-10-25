@@ -24,8 +24,18 @@ jobs:
           key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
           fail-on-cache-miss: true
       - run: python3 -m pip install 'UnityPy==1.25.4' 'TypeTreeGeneratorAPI==0.0.10' 'capstone==5.0.3' 'Pillow==12.0.0'
-      - name: Recover player firing native consumers
-        run: python3 tools/recovery/combat_chain.py --xapk /tmp/apk/windwings.xapk
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Prepare symbolic decoder
+        run: |
+          mkdir -p /tmp/combat-dumper
+          curl -fSL --retry 3 -o /tmp/combat-dumper.zip https://github.com/Perfare/Il2CppDumper/releases/download/v6.7.46/Il2CppDumper-net7-v6.7.46.zip
+          unzip -q /tmp/combat-dumper.zip -d /tmp/combat-dumper
+      - name: Recover combat native, symbolic bindings and source components
+        env:
+          DOTNET_ROLL_FORWARD: LatestMajor
+        run: python3 tools/recovery/combat_chain.py --xapk /tmp/apk/windwings.xapk --dumper /tmp/combat-dumper/Il2CppDumper.dll
       - uses: actions/upload-artifact@v4
         if: always()
         with:

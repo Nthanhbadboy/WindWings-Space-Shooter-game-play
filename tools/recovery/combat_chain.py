@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CLASSES = ()
 
 def selected(cls):
-    return bool(re.match(r'Player_Attack(?:_\d+)?(?:\.|$)|Bullet(?:_|[A-Z])|Homing_Missile|Rocket_No_Attack', cls)) or cls in {'Damager', 'Sub_Object', 'Sub_Character', 'Enemy_Ingame', 'Enemy_Health', 'Enemy_Destroy', 'Enemy_Display', 'Shield_Sub', 'Player_Health', 'Player_Ingame', 'Player_Get_Datas', 'GP_Datas', 'Pool_GameObjects', 'BulletInfo', 'IBullet', 'IDamageable'}
+    return bool(re.match(r'Player_Attack(?:_\d+)?(?:\.|$)|Bullet(?:_|[A-Z])|Homing_Missile|Rocket_No_Attack', cls)) or cls in {'Damager', 'Sub_Object', 'Sub_Character', 'Enemy_Sub', 'Sub_Player', 'Sub_ShipProtect', 'Skeleton_SubObj', 'Enemy_Ingame', 'Enemy_Health', 'Enemy_Destroy', 'Enemy_Display', 'Shield_Sub', 'Player_Health', 'Player_Ingame', 'Player_Get_Datas', 'GP_Datas', 'Pool_GameObjects', 'BulletInfo', 'IBullet', 'IDamageable'}
 APK_SHA = 'f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
 INPUTS = {'lib/arm64-v8a/libil2cpp.so': '9cb038e88709f38318d183d3616eed054b36c3186ead8f1c37246ece87393c99',
           'assets/bin/Data/Managed/Metadata/global-metadata.dat': '449a0698a1b71d0e4d04efafdb4e2fad97fd02ca8f8528715ad9638aa813ba69'}
@@ -33,6 +33,7 @@ def mask_unselected(rows):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--xapk', required=True)
+    parser.add_argument('--dumper', required=True)
     args = parser.parse_args()
     apk = Path(args.xapk)
     assert hashlib.sha256(apk.read_bytes()).hexdigest() == APK_SHA
@@ -96,7 +97,68 @@ def main():
         (out / 'referenced-cells.json.gz').write_bytes(gzip.compress(json.dumps(dict(
             status='RAW_ADRP_LDR_CANDIDATES_NOT_RUNTIME_POINTERS_OR_DATAFLOW_PROOF',
             cells=list(cells.values())), indent=2).encode(), mtime=0))
-        files = [out / 'referenced-cells.json.gz', *list(sorted((out / 'native').iterdir()))]
+        # Decode symbolic metadata usage cells with the same dumper version as the original dump.
+        dumper_out = temp / 'symbolic'
+        dumper_out.mkdir()
+        run = subprocess.run(['dotnet', str(Path(args.dumper).resolve()), str(temp / 'libil2cpp.so'),
+                              str(temp / 'global-metadata.dat'), str(dumper_out)],
+                             cwd=str(Path(args.dumper).resolve().parent), stdin=subprocess.DEVNULL,
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=300)
+        assert (dumper_out / 'script.json').is_file(), run.stdout[-4000:]
+        script = json.loads((dumper_out / 'script.json').read_text())
+        wanted = {va for va, _ in cells}
+        wanted.update(r[4] for r in rows if r[0] in CLASSES)
+        filtered = {key: [r for r in records if isinstance(r, dict) and r.get('Address') in wanted]
+                    for key, records in script.items() if isinstance(records, list)}
+        (out / 'symbols.json.gz').write_bytes(gzip.compress(json.dumps(dict(
+            status='PINNED_DUMPER_SYMBOLIC_USAGE_NOT_RUNTIME', dumper_version='6.7.46',
+            dumper_exit_code=run.returncode, script_sha256=hashlib.sha256((dumper_out / 'script.json').read_bytes()).hexdigest(),
+            source_counts={k: len(v) for k,v in script.items() if isinstance(v,list)}, records=filtered), indent=2).encode(), mtime=0))
+        # Full parsed headers select source component families, never corrupted generated m_Script.
+        import UnityPy
+        from UnityPy.helpers.TypeTreeGenerator import TypeTreeGenerator
+        from asset_pack_v2 import extract_payload, serialized_files
+        inputs = extract_payload(apk, temp / 'unity')
+        env = UnityPy.load(*(str(p) for p in sorted((temp / 'unity').iterdir())))
+        gen = TypeTreeGenerator('2022.3.62f3', generator='AssetStudio')
+        gen.load_il2cpp((temp / 'libil2cpp.so').read_bytes(), (temp / 'global-metadata.dat').read_bytes())
+        env.typetree_generator = gen
+        scripts, components, errors = {}, [], []
+        scanned = 0
+        for filename, sf in serialized_files(env):
+            for obj in sf.objects.values():
+                if obj.type.name != 'MonoBehaviour': continue
+                scanned += 1
+                try:
+                    head = obj.parse_monobehaviour_head(); ptr = head.m_Script
+                    key = (id(sf), ptr.m_FileID, ptr.m_PathID)
+                    if key not in scripts:
+                        script_obj = ptr.deref_parse_as_object()
+                        scripts[key] = (script_obj.m_Namespace, script_obj.m_ClassName)
+                    namespace, cls = scripts[key]
+                except Exception as error:
+                    errors.append(dict(serialized_file=filename, path_id=obj.path_id, error=repr(error))); continue
+                if not (re.fullmatch(r'Player_Attack_\d+', cls) or cls in {
+                    'Bullet_Object','Bullet_Linearly','Bullet_Player3','Bullet_Player7','Bullet_Sword',
+                    'Enemy_Sub','Enemy_Health','Shield_Sub','Sub_Player','Skeleton_SubObj'}): continue
+                try:
+                    tree = obj.read_typetree()
+                    go = head.m_GameObject.deref()
+                    components.append(dict(serialized_file=filename, path_id=obj.path_id, class_name=cls,
+                        namespace=namespace, raw_object_sha256=hashlib.sha256(obj.get_raw_data()).hexdigest(),
+                        tree=tree, gameobject=dict(path_id=go.path_id, tree=go.read_typetree())))
+                except Exception as error:
+                    errors.append(dict(serialized_file=filename, path_id=obj.path_id, class_name=cls,error=repr(error)))
+        shards=[]
+        for start in range(0,len(components),250):
+            path=out / f'components-{start//250:03d}.json.gz'
+            path.write_bytes(gzip.compress(json.dumps(components[start:start+250],indent=2).encode(),mtime=0));shards.append(path)
+        (out / 'component-index.json').write_text(json.dumps(dict(status='SERIALIZED_SNAPSHOT_NOT_SPAWN_PROOF',
+            inputs=inputs, scanned_headers=scanned, errors=errors, components=len(components),
+            externals=[dict(serialized_file=name,externals=[dict(path=e.path,type=e.type) for e in sf.externals])
+                       for name,sf in serialized_files(env)],
+            shards=[p.name for p in shards]),indent=2)+'\n')
+        files = [out / 'referenced-cells.json.gz', out / 'symbols.json.gz', out / 'component-index.json', *shards, *list(sorted((out / 'native').iterdir()))]
         for path in files:
             if path.suffix == '.json':
                 info = json.loads(path.read_text())
