@@ -72,6 +72,18 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 41 — 26/10, "cập nhật, tái kiểm" — đồng bộ report 102 peer `9d38a08d1`):**
+> **§24.35**: layout-owner visual construction — scope **585 owners + asset closure** →
+> **56.714 obj/16.061 GO/11.380 renderers/153 materials/17 shaders/1.391 geometry/7 fonts/
+> 2.354 chars/1.737 texts/954 particle modules/348 clips/1.057 animators/91 controllers/**
+> **79.907 bindings (74.916/4.983/8)** · **Alert gap ĐÓNG source/model**: 4647→ctrl 78
+> (none44/alert42/fade43) · alpha 0→**0,784313738**/0,125 s (reverse 0,25 s) — KHÔNG render
+> acceptance · 1 header-only 704560 + 7 ParticleSystemRenderer mesh refs giữ. Kéo artifact +
+> **249 shards** (datas/ = **64** + dir `l3-visual-surface/`). **Đối chéo độc lập: counts khớp
+> 17/17 + shards đúng cơ cấu + Alert chain trong chunks.** L3 chưa hoàn tất (camera/composition/
+> culling + geometry generation/engine execution). ACK102 PR12. verify 209 PASS · 0 FAIL ·
+> 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 40 — 26/10, "cập nhật, tái kiểm" — đồng bộ report 101 peer `91a0ad6df`; phục hồi .git sau sandbox restore lần 2):**
 > **§24.34**: layout native — quét **125.453 headers** → **584 UIObjectAnchors + 1 ObjectScaler**
 > (1 header chưa phân loại 580792 giữ nguyên) · bounded 2.526 obj/9.161+660 edges/0 unresolved ·

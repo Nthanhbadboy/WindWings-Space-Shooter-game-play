@@ -3179,3 +3179,33 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   callsites ✓ (sprite/material lưu tách field file+path_id). **L3 CHƯA hoàn tất** (peer): tiếp
   geometry/material/font + particle/shader/composition + engine transition/blending. ACK101
   qua PR12.
+
+### 24.35 Report 102 — layout-owner visual construction (peer `9d38a08d1`→code `d1a65f01d`, CI `40238106907 SUCCESS`, **1012 tests**)
+
+- **Scope: descendants dưới 585 layout owners + asset closure** — KHÔNG phải toàn APK, KHÔNG
+  phải cả 797 recipe roots; recipes công bố coverage/out-of-scope IDs.
+- **Đào visual thật từ source**: **56.714 objects / 16.061 GO · 11.380 renderers · 153
+  materials · 17 shaders** (parsed + decompiled-analysis — **KHÔNG phải replacement shader hợp
+  lệ**) · **1.389 sprites + 2 meshes** decode geometry số (không phải render) · **7 fonts /
+  7 atlases / 2.354 character entries · 1.737 texts · 954 particle modules** (data có, simulation
+  KHÔNG claim) · **đủ 348 clips** decode đúng channel widths · **1.057 animators / 91 controllers /
+  79.907 bindings (74.916 unique / 4.983 unresolved / 8 ambiguous)**. 0 read failures; **1
+  header-only** giữ nguyên (Player_Attack_2 `resources.assets:704560`); **7 unresolved builtin
+  ParticleSystemRenderer mesh refs** (`unity default resources`) giữ — không bịa default mesh.
+- **Alert gap (101) ĐÓNG mức source/model**: level2 GO110 scaler 6686 → renderer 5105 / sprite
+  `sharedassets2.assets:114` / material `:2` / shader `Sprites/Default`; animator **4647 →
+  controller `sharedassets2.assets:78`** với states **none44 / alert42 / fade43**; binding
+  path0/type212 → cùng `renderer.m_Color.a`; clip alpha **0 → 0,784313738 trong 0,125 s**,
+  reverse trong 0,25 s; params Alert/Fade giữ. **KHÔNG** state scheduling / trigger delivery /
+  blending / render acceptance.
+- Kéo về: `datas/l3_visual_surface.json.gz` + **249 shards** `l3-visual-surface/` (3 animators ·
+  200 bindings · 1 controllers · 1 fonts · 4 geometry · 1 materials · 1 motion · 3 particles ·
+  29 renderers · 1 shaders · 5 texts). **Đối chéo độc lập (lần 41): counts khớp 17/17** (gồm GO
+  16.061 đếm lại từ `source_gameobjects` · header-only đúng 704560 · unresolved_edges đúng
+  ParticleSystemRenderer/.m_Mesh) + **249 shards đúng cơ cấu** + **Alert chain trong chunks**:
+  controller 78 tên "Alert" · clips none44/alert42/fade43 · alert42 chứa 784313738 + 0.125 ·
+  fade43 chứa 784313738 ✓.
+- Xin audit: MeshHelper coords/UV/index vs không sign-flip OBJ; live-atlas/sliced/tiled/
+  skinning/TMP procedural; integer-list buffer redaction; glyph rect/atlas bounds + static
+  fallback; source-qualified Alpha CRC binding; recipe scope coverage. **L3 CHƯA hoàn tất**:
+  tiếp camera/composition/culling + actual geometry generation/engine execution. ACK102 qua PR12.
