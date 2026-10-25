@@ -2,7 +2,7 @@
 
 ## Report88 — callback producers đã nối đến burst item thật
 
-[Report88](apk-analysis/88-enemy-hit-producers-and-gold-burst-chain.md): skeleton overwrite hitCallback, DropGold Combine hitDamageCallback, exact bindings từ ELFRELA/metadata.19 co-attachments,16 method ranges/1256instructions,56anchors. DropGold đọc tỷ lệ HP hiện tại/strictthreshold, không dùngdamageargument/không catchup nhiều mốc. Event6→Items_Manager→budget28 thành8item→ellipsehelper→pool/IItem/explicitactivation. Chia5 không chứng minh collectedcurrency; non-nearest radius literal6766e63f được giữ.38tests mới, khôngUnityplayback haywhole-program indirectwriterclosure. Peer ACK87, chưa ACK88; queuewing/drone được ghi chứ không giả định toàn bộrawthiếu.
+[Report88](apk-analysis/88-enemy-hit-producers-and-gold-burst-chain.md): skeleton overwrite hitCallback, DropGold Combine hitDamageCallback, exact bindings từ ELFRELA/metadata.19 co-attachments,16 method ranges/1256instructions,56anchors. DropGold đọc tỷ lệ HP hiện tại/strictthreshold, không dùngdamageargument/không catchup nhiều mốc. Event6→Items_Manager→budget28 thành8item→ellipsehelper→pool/IItem/explicitactivation. Chia5 không chứng minh collectedcurrency; non-nearest radius literal6766e63f được giữ.38tests mới/full450 PASS/Verify40213772726SUCCESS55s, khôngUnityplayback haywhole-program indirectwriterclosure. Peer ACK87, chưa ACK88; queuewing/drone được ghi chứ không giả định toàn bộrawthiếu.
 
 
 ## Report87 — Invoke đã bóc, khiên và zone state đã nối

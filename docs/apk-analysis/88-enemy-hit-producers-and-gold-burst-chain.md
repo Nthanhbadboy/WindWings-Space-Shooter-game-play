@@ -154,7 +154,8 @@ Không đào lại pool-history để chứng minh scenario thắng/thua.
 19 co-attachments vàSHA. Reproduce:
 `python3 -m tools.verify.enemy_hit_callback_flow --check`.
 Full local **450 tests PASS38.652s**, data validation +receiver/lifecycle/shield/callback
-regeneration +whitespace checks PASS. CI receipt ghi sau khi push.
+regeneration +whitespace checks PASS. Code **16748ccc3**, Verify **40213772726 SUCCESS55s**.
+Đã gửi findings cho peer qua PR12comment**6400435826**, chưa có ACK88 được ghi nhận.
 Models `enemy_hit_callback_models.py`, **38 tests mới**: registration order,
 multicast exceptions/reentry, strict threshold/no catchup/HP reread,1001 budget
 cases, exact non-nearest float, sampler parameters và interface→activation order.
