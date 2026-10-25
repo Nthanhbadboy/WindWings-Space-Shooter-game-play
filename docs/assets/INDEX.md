@@ -1,5 +1,8 @@
 # Asset tham chiếu — WindWings 1.3.118
 
+> **Spine report71:** draft thêm `spine-reference-v1.zip` (27folder riêng, mỗi folder skeleton.json/atlas/source-texture/Unity settings). [Báo cáo71](../apk-analysis/71-spine-file-scoped-chains-loader-and-reference-folders.md), `datas/spine_identity.json` và raw/spine-identity giữ chain/PPtr/native/provenance. Không còn chọn giữa26texture cùng basename; vẫn chưa nghiệm thu render/PMA/blend/import.
+
+
 > **Hiện hành — report70:** [identity-safe v2](../apk-analysis/70-identity-safe-asset-pack-v2-and-zero-font-texture.md) đã có trên draft release: `assets-v2.zip` + `assets-v2.sha256`. Giải nén ZIP thường và mở `index.html`; [browser metadata trong Git](pack-browser-v2.html) cần đặt cạnh media. V2 có2185Sprite/653Texture2D/69WAV/64TextAsset/1TTF/66SpriteAtlasJSON; texture thứ654 là Font Texture0×0/empty payload có raw exception. Archive SHA/size/CRC,2838PNG full decode PASS, không phải crop/listening/Spine import approval. **Danh mục dưới đây là lịch sử v1**, không phải population/identity map v2.
 
 

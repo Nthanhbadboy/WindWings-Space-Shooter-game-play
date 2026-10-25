@@ -81,3 +81,13 @@ với fade theo coroutine frame, mute preference với AudioListener.pause.
 Asset pack ngoài Git đã kiểm CRC nhưng chưa đủ: raw/asset-pack/catalog.json.gz
 có151collision paths và320manifest size mismatches. Đọc report68/browser instructions;
 không dùng manifest filename như object identity, không coi0missing paths là đủ.
+
+## Spine identity hiện hành — report71
+
+`spine_identity.json` giữ27selected SkeletonDataAsset→SpineAtlasAsset→Material→Texture
+file-scoped chains +source output hashes, Unity scale/defaultMix/transition/blend và12native checks.
+Tái tạo: `python3 tools/verify/spine_chain_contracts.py`; raw tại `raw/spine-identity/`.
+185animation names không phải185rig; bảng spine.json/spine_anim.json.gz cũ
+vẫn là nội dung animation tham khảo, không dùng global pathID của chúng làm primary key.
+7atlas headers1024 cótexture512, không tự sửa tọa độ; source-associated reference folders
+ở draft `spine-reference-v1.zip`, chưa runtime/import approval. Xem report71 cho scan exception.

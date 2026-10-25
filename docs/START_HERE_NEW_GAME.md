@@ -1,6 +1,6 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report70. Tất cả kết luận APK vẫn tạm thời.**
+**Cập nhật 25/10/2026, sau report71. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
@@ -110,10 +110,18 @@ unzip -t assets-v2.zip
 unzip assets-v2.zip -d extracted
 ```
 
+**Spine update report71:** `datas/spine_identity.json` khép27selected rig chains qua owning
+atlas/material/texture và12native checks. Draft có `spine-reference-v1.zip`:27folder riêng,
+skeleton/atlas nguyên byte và texture đúng identity, kèmUnity mix/scale/blend settings.
+Đọc [report71](apk-analysis/71-spine-file-scoped-chains-loader-and-reference-folders.md).
+7atlas1024×1024 dùngtexture512×512: giữ nguyên, không tự resize/sửa coordinates.
+Root580647 có2blend replacement materials; không gộp vào material chính.
+Scope125453MB có1header chưa classifiable; không tuyên bố toànbuild đã đóng.
+
 Nghiệm thu fidelity còn mở: crop alpha/trim/pivot/flip/rotation,40rect fractional vượt biên<1px,
 nghe audio, font runtime/fallback và Spine rig/atlas-page identity/import.
-27atlas pages đều có nhiều name candidates; không tự chọn `skeleton.png`.
-Spine text nguyên byte nhưng page paths chưa rewrite theo output mới, **không gọi import-ready**.
+27atlas pages đều có nhiều **global** name candidates, nhưng report71 đã resolve qua local material chain.
+Folder pack mới giữpagebasename trongfolder riêng, không phải rewrite atlas text; vẫn **không gọi runtime/import-approved**.
 JPEG preview metrics không thay texel/alpha gốc.
 
 Art/audio/font của game phát hành mới cần nội dung và quyền sử dụng phù hợp. Không nhúng tài nguyên gốc chỉ vì đã tải được. Tư liệu gốc vẫn giữ cho tham khảo, không xoá vì đã chọn art mới.
@@ -154,7 +162,7 @@ python3 -m unittest discover -s tests -q
 ## 7. Việc tiếp theo thực sự còn mở
 
 - Spec peer: sửa N1–N5 trong `HANDOFF_REVIEW_cf27b9755.md`, cập nhật report64, soát thông tin stale ở cửa vào.
-- Assets: identity-safe pack/archive/browsability đã có report70; tiếp Spine rig/atlas/material/texture identity joins, crop/fidelity, nghe audio và font fallback. Không rerun full export chỉ vì còn exception Font Texture0×0.
+- Assets: identity-safe pack/archive/browsability đã có report70; Spine rig/atlas/material/texture joins và reference folders đã có report71; tiếp rendered/PMA/blend/crop fidelity, nghe audio và font fallback. Không rerun full export chỉ vì còn exception Font Texture0×0.
 - Triển khai: chốt platform/engine/scope rồi viết vertical-slice plan, không lấy một bảng “8/13 hệ đủ” thay acceptance.
 - Raw chỉ đào tiếp theo thiếu hụt cụ thể ảnh hưởng implementation. Không mở lại Premium hoặc speculative lifecycle proof ngoài scope.
 

@@ -11,7 +11,7 @@
 >
 > Kết luận C **không được** dùng làm thông số implement; chỉ để định hướng.
 
-## Trạng thái kiểm lại hiện hành — sau report70 (ưu tiên hơn bảng lịch sử dưới đây)
+## Trạng thái kiểm lại hiện hành — sau report71 (ưu tiên hơn bảng lịch sử dưới đây)
 
 Đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md). Report64 tách gate tutorial1/2/3 khỏi victory/Board_Endgame campaign dùng chung. User đã bỏ ưu tiên chứng minh low-kill playthrough/BB pool history; không lấy chúng làm blocker scenario. Review spec mới: [cf27b9755](HANDOFF_REVIEW_cf27b9755.md), không lặp finding snapshot25 như chưa được sửa.
 
@@ -24,6 +24,7 @@ playthrough/design đã hoàn tất.** Xem `docs/apk-analysis/62-raw-audit-and-s
 | BB-36001 | 3 clip streamed đã giải binding/root keys60; lifecycle/pool-parent/scroll61 | không suy tự thoát hoặc bắt buộc diệt; không generalize sang791clip |
 | Audio | raw67:65methods/25checks/15rules; prefs/pool/fade/playlist + scoped consumers | chưa listening/replay/toàn consumer/settings; registry legacy thiếu serialized-file identity |
 | Draft pack v2 | raw70:3039source objects/3038outputs, identity-safe paths; archive CRC/SHA/size +2838PNG full decode PASS;535Font Texture0×0/empty payload raw | v1 collisions giữ lịch sử; v2 exception explicit, không pixel/listening/Spine import approval;27atlas pages đều name-ambiguous |
+| Spine associations | raw71:27selected rig chains,167metadata objects/168links,15native methods/12checks;27reference folders draft ZIP | 7atlas1024/texture512 giữnguyên;2blend replacements; chưa render/PMA/import approval,1MBheader chưa classify |
 | Sprite/atlas | raw62:2185Sprite/66SpriteAtlas/654Texture2D metadata,2185file-scoped joins | pixel crop/mask/trim/flip kiểm ảnh;40rect fractional vượt biên<1pixel; v2 đã giữ outputs riêng; fidelity/import acceptance vẫn mở |
 | UI hiện tại | `_index.csv` snapshot audit:797file/117class/150131nodes | 55584file có trên đĩa không phải55584layout hợp lệ;54787ngoàiindex không tự là duplicate hay rác |
 | Spawn | enum raw53:0PinMap/1Path/2Points/3RandomTopDown/4Rocket/5EndMap/6StartWave | “45659quân thật đã chốt” ở kết luận cũ bị rút: cần scoped whole-build recount và runtime semantics |
