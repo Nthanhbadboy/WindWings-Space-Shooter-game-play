@@ -1734,7 +1734,7 @@ def ui_two_levels():
             sum(int(r.get("nodes") or 0) for r in idx))
 
 
-claim("P1", AUDIT, "**36 tài liệu** trong `docs/spec/` (chưa kể file này)", 36, doc_inventory,
+claim("P1", AUDIT, "**37 tài liệu** trong `docs/spec/` (chưa kể file này)", 37, doc_inventory,
       "quy mô tài liệu hiện có trong docs/spec")
 
 claim("P2", AUDIT, "**2.885** sprite, **2.816** có `width/height`; `04-asset-manifest.csv`: **2.907** asset, **2.838** có kích thước",
@@ -2926,6 +2926,53 @@ def player_info_fields():
     body = src[m.start():].split("// Methods")[0]
     return len(rx.findall(r"; // 0x[0-9a-f]+", body))
 
+
+def design_metrics():
+    """(số ảnh, tỉ lệ khung, accent trung vị, chi tiết trung vị) từ JSON tool sinh ra."""
+    import statistics as st
+    path = os.path.join(ROOT, "docs/assets/design-metrics.json")
+    if not os.path.isfile(path):
+        return None
+    with open(path, encoding="utf-8") as fh:
+        rows = json.load(fh)
+    if not rows:
+        return None
+    return (len(rows), rows[0]["aspect"],
+            round(st.median(r["accent_share"] for r in rows), 4),
+            round(st.median(r["detail_gradient"] for r in rows), 2))
+
+
+def ui_bbox_stats():
+    """(số màn có bbox, trung vị rộng/cao/tỉ lệ) từ datas/ui_screens.json.gz."""
+    import statistics as st
+    data = ref_json("datas/ui_screens.json.gz")  # ref_json đã giải nén .gz
+    if not data:
+        return None
+    screens = data["screens"]
+    W, H = [], []
+    for s in screens:
+        b = s.get("bbox")
+        if not b or len(b) != 4:
+            continue
+        w, h = b[2] - b[0], b[3] - b[1]
+        if w > 0 and h > 0:
+            W.append(w)
+            H.append(h)
+    if not W:
+        return None
+    return (len(W), round(st.median(W), 2), round(st.median(H), 2),
+            round(st.median([w / h for w, h in zip(W, H)]), 2))
+
+
+claim("AN1", "docs/spec/VISUAL_DESIGN.md",
+      "**35** ảnh · tỉ lệ **0,4813** · accent trung vị **0,0571** · chi tiết trung vị **17,26**",
+      (35, 0.4813, 0.0571, 17.26), design_metrics,
+      "số đo thị giác sinh bằng tools/design-metrics.py, không chép tay")
+
+claim("AN2", "docs/spec/VISUAL_DESIGN.md",
+      "| Số màn có `bbox` dùng được | **54.019** | rộng trung vị **4,05** · cao **7,50** · tỉ lệ **0,67** |",
+      (54019, 4.05, 7.5, 0.67), ui_bbox_stats,
+      "hình học bố cục: panel dọc 2:3, đuôi dài tới 699 unit")
 
 claim("AM1", "docs/spec/MISSING_FOR_NEW_GAME.md",
       "`Map_Get_Datas..cctor` **100.896 B · `ends_clean: true`** · **4.020** const · **576** `init_array`",

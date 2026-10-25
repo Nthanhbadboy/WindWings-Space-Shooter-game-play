@@ -6,8 +6,8 @@
 > File này **không** đánh giá lại bằng cảm nhận. Mỗi dòng là một phép đếm chạy lại được bằng
 > `tools/verify-claims.py` (nhóm **P**), hoặc trỏ thẳng vào file dữ liệu.
 >
-> **Quy mô hiện tại:** **36 tài liệu** trong `docs/spec/` (chưa kể file này) + **29 file dữ liệu**
-> trong `datas/` + **161 claim** đã khoá (**159 PASS · 2 SKIP**; nhóm P → AM).
+> **Quy mô hiện tại:** **37 tài liệu** trong `docs/spec/` (chưa kể file này) + **29 file dữ liệu**
+> trong `datas/` + **163 claim** đã khoá (**161 PASS · 2 SKIP**; nhóm P → AN).
 
 ---
 
@@ -42,7 +42,7 @@ phải **cơ chế**.
 | 8 | **Độ khó 3 chế độ** | ✅ **A** | `MaxModeIndex 4` · `kCount ≡ 1` · `pct[mode]` · `levelDelta` | hệ số **HP** theo chế độ (B8) |
 | 9 | **Kinh tế / IAP** | ✅ **A** | **170 sản phẩm** (71 consumable + 99 non-consumable) · `stepCommon 0,18` · `DeltaStarCost 50` | — |
 | 10 | **Nhiệm vụ / sao** | ✅ **A** | `pct[mode][slot] × countEnemies` · `PercentToCompleteMissions222` | — |
-| 11 | **UI** | ✅ **A** cấu trúc · **B** cho *vẽ lại* | **125 lớp** · **797 màn** · **150.131 node** · **5.831 nút** · 55.584 file layout · **11 board có bộ đầu vào vẽ** (10.710 node, 100 % `local_pos`, 4.987/5.067 sprite *candidate*, 312/317 key Việt) · gate tutorial native 5/5 | **art** (D) — L1 làm art mới; overlay tutorial **đã có layout** (`UI.md` §9.3: 7 GO + 19 dòng text) — còn thiếu **pixel** (external font/sprite); `Board_Maps` nay **15.334 node / 473 nút** (bản `9edc21f4d`; trần 12.000 của bản trước là `node_limit` của walker ⇒ nay **đọc hết**, không còn là cận dưới) |
+| 11 | **UI** | ✅ **A** cấu trúc · ✅ **A** luật thị giác · **B** cho *vẽ lại* | **125 lớp** · **797 màn** · **150.131 node** · **5.831 nút** · 55.584 file layout · **11 board có bộ đầu vào vẽ** (10.710 node, 100 % `local_pos`, 4.987/5.067 sprite *candidate*, 312/317 key Việt) · gate tutorial native 5/5 | **art** (D) — L1 làm art mới; overlay tutorial **đã có layout** (`UI.md` §9.3: 7 GO + 19 dòng text) — còn thiếu **pixel** (external font/sprite); `Board_Maps` nay **15.334 node / 473 nút** (bản `9edc21f4d`; trần 12.000 của bản trước là `node_limit` của walker ⇒ nay **đọc hết**, không còn là cận dưới) |
 | 12 | **Animation** | 🟡 **B** cho **mốc** · **C** cho **điều kiện + hành vi** | 793 event có mốc **trong clip** (không phải thứ tự pha) · nhịp 0,17/0,33/1,0/5,0 s · hit flash 0,05 s | **thứ tự pha + điều kiện vào/thoát** (R1) · **hành vi** handler (T2) · **0/791 keyframe** (cố ý bỏ) |
 | 13 | **FX** | 🟡 **B** | **4.845** `ParticleSystem` · ~23 module · scalar + `length_in_sec` + `looping` | **curve** module (chưa đọc) |
 | 14 | **Âm thanh** | 🟡 **B** | **92 sound id** → **92/92** resolve ra file (83 sfx + 9 bgm) trên **69** `AudioClip` | **trigger**: âm nào phát ở sự kiện nào (chưa xref) |

@@ -33,7 +33,7 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 | 7 | **Độ khó 3 chế độ** | ✅ **đủ** | `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · không nhân số quân | ngưỡng % riêng = tự chọn |
 | 8 | **Kinh tế / rơi đồ** | ✅ **đủ** | 3 tầng rơi: **702** vật đặt sẵn (**676 coin / 26 item**) · **246/2.094** slot mang item · **6** loại (`AE1`–`AE3`) | trọng số chọn giữa 6 loại — **tự chọn** |
 | 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu** nhưng `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) ⇒ tàu **không** có HP/damage riêng; `Player_Talent` **23 method** · **13 drone** | giá nâng cấp theo sao (**dữ liệu có, chưa bóc**); công thức talent (C) |
-| 10 | **UI** | ✅ **cấu trúc** / ❌ **art** | **797 màn · 150.131 node · 5.831 nút** (`N2`, `P6`); **55.584** layout file | art: L1 **vẽ mới** — không phải thiếu |
+| 10 | **UI** | ✅ **cấu trúc** · ✅ **luật thị giác** / ❌ **asset** | **797 màn · 150.131 node · 5.831 nút** (`N2`, `P6`); **55.584** layout file; khung hình **0,4813** · accent **≤10 %** · tương phản **0,45–0,80** (`VISUAL_DESIGN.md`, **AN1**, **AN2**) | asset gốc: **vẽ mới**; luật thì **đã có số** |
 | 11 | **Âm thanh** | 🟡 **có dữ liệu, chưa có luật phát** | **69 clip / 571,5 s**, trong đó **5 vòng nhạc > 60 s** (`docs/assets/audio-index.csv`) | **ai phát cái gì, lúc nào** (`AudioSource`/`AudioManager` chưa bóc) |
 | 12 | **Save / load + live-ops** | ❌ **thiếu** | **170 IAP** (2 nhóm); `MISSIONS_STARS.md`; `ui_text_keys` 1,25 M dòng | **schema save** (khoá, kiểu, mặc định) — **0** tài liệu; **chưa** trích bảng chuỗi |
 | 13 | **Tech / build** | 🟡 **một phần** | Unity **2022.3.x** (`UNITY_RULES.md`) · Spine · DOTween · 3 loader trong repo này | plugin list đầy đủ + cấu hình build (lấy từ `dump.cs`/manifest, không cần thiết bị) |
@@ -91,7 +91,7 @@ sẽ **lệch cơ chế**, không phải lệch số.
 | Thứ | Vì sao không thiếu |
 |---|---|
 | **feel** (hit stop · aim assist · input latency) | **không tồn tại trong build** — 0 site `timeScale`, 0 method `aim` trên **139** file asm (**AF2**, **AF3**). Cái có thật đã có số: hit flash **0,5 / 0,05 s** (`J9`), rung **241** prefab (`AF1`) |
-| **art, font, atlas** | L1 **vẽ mới**. Bộ ảnh gốc chỉ dùng để **đối chiếu tỉ lệ**, đã phân loại 1.049 asset (`ASSET_TRIAGE.md`) |
+| **art, font, atlas (bản gốc)** | L1 **vẽ mới**. Cái **không** bỏ là **luật thị giác**: khung hình · ba chế độ sáng · ngân sách accent · vignette khung thưởng · mật độ chi tiết — đã đo và ghi ở `VISUAL_DESIGN.md` |
 | **số cân bằng cụ thể** (giá, tốc độ, mật độ) | L1 cho phép tự chọn; cái phải giữ là **cơ chế** (3 chế độ, không nhân quân, rơi đồ 3 tầng) |
 | **thứ tự pha boss (D3)** | Có **795 event + mốc thời gian**; thứ tự là **lựa chọn thiết kế**, dữ liệu chỉ cần đủ để biết "mỗi pha có đòn gì" |
 | **13 class "chưa phân loại" trong ASSET_TRIAGE** | vẫn còn **1.554** `unclassified` / 2.197 — nhưng đây là việc **phân loại ảnh**, không chặn dựng game (L1 vẽ mới) |
@@ -104,7 +104,10 @@ sẽ **lệch cơ chế**, không phải lệch số.
   thiếu đều **không chặn** (D3 = chọn thiết kế; audio = tự chọn; talent = tự chọn giá).
 - **L2 (giống **số** đến mức chơi thấy tương đương): CHƯA.** Cần đúng **§2.1 + §2.2** (6 blob rodata).
   Ngoài ra cần playback thật để so cảm giác — việc này cần **thiết bị**.
-- **L3 (tái lập 1:1): BỎ** — đã bỏ từ trước: art pack, font, shader và physics không tái lập từ APK.
+- **L3 (tái lập **1:1 asset** gốc): BỎ** — art pack, font, shader, physics không tái lập từ APK.
+  **Không** có nghĩa là bỏ "thiết kế cho đẹp": phần đó là `VISUAL_DESIGN.md` (khung hình **0,4813**,
+  tương phản **0,45–0,80**, accent **≤10 %** gameplay / **~47 %** khung thưởng, chi tiết **13–22**,
+  juice **0,05 s** + **0,10 · 20 frame**) và **kiểm được bằng máy**.
 
 ---
 

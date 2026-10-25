@@ -39,6 +39,7 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 
 | File | Nội dung | Kích thước |
 |---|---|---:|
+| **`VISUAL_DESIGN.md`** | **"Đẹp" đo được** — khung hình **0,4813** · **3 chế độ sáng** (gameplay accent ≤10 %, khung thưởng ~47 %, màn tối) · tương phản **0,45–0,80** · chi tiết **13–22** · hình học **54.019** layout (panel dọc **2:3**) · juice **0,05 s / 0,10·20 frame** · **giữ/đổi** + test bằng máy (`tools/design-metrics.py`) | 128 dòng · 6 bảng |
 | **`MISSING_FOR_NEW_GAME.md`** | **Còn thiếu gì để làm game mới** — 13 hệ (8 đủ · 4 một phần · 1 thiếu), **3 chỗ chặn thật** kèm **địa chỉ rodata** (`Map_Get_Datas` 576 blob · `Player_Get_Datas` 6 blob), danh sách **không phải thiếu**, và trả lời **L1 đủ / L2 chưa / L3 bỏ** | 122 dòng · 3 bảng |
 | `GAMEPLAY.md` | One-pager, 3 vòng lặp (30 s / 10 phút / 1 tuần), core loop, **7 `PlayMode` + 3 `PVPMode`**, 9 nhánh progression, SOURCE/SINK, meta, boss, thứ tự build | 689 dòng · 31 bảng |
 | `UI.md` | `BoardManager`/`UIManager`, screen graph, **125 class UI** (53 board · 63 popup · 8 tab), điều kiện mở từng popup · **§9 manifest `_index.csv`: 797 instance · 117 lớp · 150.131 node · 5.831 nút** (giải thích luôn vì sao 117 ≠ 125) · **§9.2 bộ đầu vào vẽ** (11 board, 10.710 node, 100 % `local_pos`) · **§9.3 layout tutorial** (8 ref → 7 GO, 19 dòng text, callback Endgame `0x126d3cc`) | 596 dòng · 23 bảng |

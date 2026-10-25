@@ -241,6 +241,11 @@ hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật
 - **Chưa đủ cho L2** (khớp **số** bản gốc): còn **3** câu 🔴 + **2** chỗ chặn — `B1` HP runtime (thiếu
   thứ tự nhân hằng số), `A5` độ dài phiên (cần A6 + luật continue), `B3` damage curve, **map→wave 7/250**,
   **HP theo chế độ** (B8).
-- **Chưa đủ cho L3** (không phân biệt được): còn **thứ tự pha boss** (C). **Feel đã bỏ** khỏi phạm vi theo
-  chỉ đạo ⇒ L3 **không** còn là mục tiêu; tiêu chí là **script enemy + boss**, và tiêu chí đó đã đạt ở
-  mức **A cho mốc**, **C cho điều kiện/hành vi** (2 việc: 6 chuỗi `SetTrigger` + ai gán 12 delegate).
+- **L3 theo nghĩa "tái lập 1:1 asset gốc": BỎ** — không phải vì không quan trọng, mà vì **không được phép**
+  và **không cần** (người chơi nhận ra "đẹp" qua tỉ lệ/tương phản/nhịp, không qua từng pixel).
+  Phần **thiết kế cho đẹp** vẫn là yêu cầu và **đã có số**: `VISUAL_DESIGN.md` (khung hình **0,4813**,
+  tương phản **0,45–0,80**, accent **≤10 %** gameplay / **~47 %** khung thưởng, chi tiết **13–22**,
+  juice **0,05 s** + **0,10 · 20 frame**; claim **AN1**, **AN2**).
+- **Chưa đủ cho L3 theo nghĩa "không phân biệt được"**: còn **thứ tự pha boss** (C). Tiêu chí nghiệm thu
+  vẫn là **script enemy + boss**, đã đạt **A cho mốc**, **C cho điều kiện/hành vi** (2 việc: 6 chuỗi
+  `SetTrigger` + ai gán 12 delegate).
