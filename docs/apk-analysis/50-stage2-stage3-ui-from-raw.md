@@ -61,6 +61,7 @@ Chờ WaitForSeconds(2)
 → WaitUntil(droneAppear)
 → WaitForSeconds(~3.9)
 → Time.timeScale=0
+→ eventState(4) — consumer/UI đã nối tiếp ở report51
 → hiện panel drone + cover + hiệu ứng focus nút skill
 → reset hasUseDroneSkill=false
 → WaitUntil(hasUseDroneSkill)

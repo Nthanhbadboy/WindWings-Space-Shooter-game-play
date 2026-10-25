@@ -186,3 +186,23 @@ chờhasTouchBurst; callbackghiTUT_TOUCH_SKILL1, chỉ++Index khiindex2 && Stage
 bậtPause. TalentIndex==-1 có nhánh skip+ghi flag, không vẽ modal bắt buộc.
 Không đòi thêm ảnh stage2/3 để bắt đầu dựng các panel/flow này. Giữ unknown ở
 consumer eventState/grant/unlock/advance và runtime, không trộn với gate đã resolve.
+
+### Report51 — consumer callback / equip / Continue đã bóc tiếp từ raw
+
+`docs/apk-analysis/51-tutorial-consumer-equipment-continue.md` + raw
+`ui-audit/tutorial-consumer-flow.json.gz`17methods/11checks;37tests pass.
+Recovery40183580920 và40183664095 success. OnThroughTut table77a13e
+`0029233d41555d634f74` dùng selector eventState+1:8=StartDrones,
+4=lockUiTut+ShowDroneSkillButtons,2=unlockUiTut,5=HideSkillButtons,
+7=ShowSkillButtons,-1=setup Controller/UI/unlocks. KHÔNG EventID.
+GameStarted veneer2990898 load callback slot2ae8fb8 rồi quay14f4008;
+slot→2bc4950→GP_Manager.OnThroughTut. Không bỏ branch veneer khi đọc asm.
+Continue có nhánh IndexTutorial1 && slot0empty→SetDroneUsed(0,20001),
+KHÔNG chứng minh ownership unlock. Loader đọc selection→Prefabs/Drones/Drone_.
+Talent keyTALENT_SELECTED default-1. OpenBoardVictory normal route có tăng
+StageTarget khi setup.stageIndex==target và target<ZoneUnlocked*10+9;
+không tự thêm boolvictory gate. Continue nhánh min(target,current+1), nhánh khác
+star-search; KHÔNG unconditional+1. LoadToLoading direct LoadScene2=Game,
+không phải enumLoading. Fade callback và Game loader chưa nối hết.
+Next: grant/unlock callsites, talent-selection caller, fade/loader, map-wave
+consumer. Giữ raw mới GP_Spawner để nối tiếp; không cần screenshot làm điều kiện.
