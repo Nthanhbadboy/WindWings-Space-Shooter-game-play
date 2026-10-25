@@ -2966,3 +2966,21 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   12 sync/animation-event · 15 laser `GunCheckEnemies` — 2 site chưa must-owner proof, ghi false rõ)
   + super branches + các impl thuộc special — **không** báo đóng toàn bộ 23 firing impl.
   ACK93 qua PR12; peer **đã nhận queue Arena/PvP** (`arena-pvp-queue-6401593117.json`).
+
+### 24.27 Report 94 — wing 13/22/23/24: Shoot → coroutine → packet geometry (peer `e03fdb1515`, **814 tests**)
+
+- **4 Shoot chain** (đúng thứ tự, không cache "now"): 13 `StartCoroutine` **trước** rồi mới ghi
+  deadline; 22 loop đồng bộ đọc `childCount` sống — mỗi child 1 Basic packet; 23/24 ghi deadline
+  trước rồi coroutine, **đọc lại rate/childCount sau mỗi packet** + trailing yield. Callback sửa
+  shotRate trong StartCoroutine ảnh hưởng deadline 13, **không hồi tố** 23/24; 22 không child vẫn
+  tiêu deadline; barrel null có thể throw **sau** khi ghi.
+- **13 IBullet → SetBullet/SetActive**: 2 sides/yield · x ± width·i · angle ±4·i · lifetime **2**
+  (không damage) · `through = super ∧ throughShield` — nhánh IBullet PRESENT đã chạy tới SDK adapter.
+- **Basic 22/23/24**: N chẵn + spacingX = 0 ra **N+1 terminal calls** (N=0 có thể center); Circle
+  dùng worldXYZ và **không** lọc id−1. **Leaf ENTRY = ranh giới quan sát** — không suy pool/hit/DPS.
+- **Sửa nhãn sai của collector**: `15b50ac` = `PlayOneShot(AllClipName, float)` clip 5 (super ,04 /
+  normal ,08) — **không phải camera shake**.
+- Kéo về: `datas/wing_emission_flow.json` (**39 method bodies/3.208 instructions** · pool 8 bytes
+  VA `7575e0` = f32(.04), f32(.08)). 53 tests mới; full **814 PASS**; code `589e1f588`; ACK93 ✓
+  (`6401658709`), spec mới chưa bị review độc lập. Tiếp peer: named firing leaves/consumers →
+  named map/save → Arena/PvP (giữ thứ tự, không chờ ACK94).

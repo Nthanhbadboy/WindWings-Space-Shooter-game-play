@@ -72,6 +72,18 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 33 — 25/10, đính chính tuyên bố L3 theo bắt lỗi của chủ dự án — "thế mà dám tuyên bố L3 đủ"):**
+> Hạ **L3 từ "input đã đủ / bắt chước đủ ✅" → 🟡 một phần** ở cả `START_HERE` row L3 · `DONE` §2
+> row "Bắt chước đủ?" · §4.2 row L3: đủ để **vẽ lại từng sprite đã biết** (pixel/pivot/border ĐÓNG);
+> **chưa đủ L3 trọn** — 505 unknown + 643 passthrough · chưa có bảng sprite→màn/prefab (UI chưa
+> join) · rig spine inferred · worklist bucket glyph sai nhãn · **metrics/so-ảnh/timeline = gate
+> chưa chạy lần nào** (kể cả câu "Đo cảm giác cần người chơi thật" cũ cũng sai — đã sửa: đo được
+> bằng máy, blind-A/B bị thay lần 14/21). Sửa nốt §3 "5.818 field còn D" → 623 record decode +
+> 4.861 SerializeField pack v2. **§24.27 report 94** (wing 13/22/23/24 emission — N chẵn ra N+1
+> call, leaf entry là ranh giới quan sát; sửa nhãn `15b50ac` = PlayOneShot không phải camera
+> shake); kéo `datas/wing_emission_flow.json` (datas/ = **41**). verify 209 PASS · 0 FAIL · 2 SKIP ·
+> unittest OK.
+>
 > **Sửa lại (lần 32 — 25/10, kiểm "asset/sprite/prefab: ý nghĩa + gắn đầy đủ chưa" theo nhắc của chủ dự án — đo từ file thật, không suy):**
 > `ASSETS` thêm **§9.1** + row 11: ý nghĩa 2.197 sprite = 925 rule + 124 mắt + 643 passthrough +
 > **505 unknown**; **binding sprite→consumer CHƯA có join toàn cục** — `prefab_joins.csv` 3.870
@@ -537,7 +549,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 | **Nghĩa** | game mới **tái lập trải nghiệm + art của bản gốc 1:1** — chuẩn màu, ánh sáng, khung, nhịp (APK gốc là **chuẩn trải nghiệm đã kiểm nghiệm**; dự án = **học tập thiết kế**) |
 | **Kiểm bằng** | **đối chiếu reference — đo được bằng máy, KHÔNG cần người test thật**: metrics `VISUAL_DESIGN` trong dung sai · so ảnh cùng scene · timeline khớp **795** event · audio khớp **15** rules |
 | **Đạt khi** | mọi chỉ số khớp reference trong **dung sai khai báo trước** |
-| **Bắt chước đủ?** | ✅ **có** — input đã đủ: pack v2 (report 70) + pixel/geometry/spine/font contract + metrics **35** ảnh chụp thật |
+| **Bắt chước đủ?** | 🟡 **một phần — đính chính lần 33** (tuyên bố cũ "input đã đủ" là **quá mềm**, không đo đủ trước khi viết): đủ để **vẽ lại từng sprite đã biết** — pack v2 (70) + pixel/geometry/pivot/border ĐÓNG (62/72/75) + font 292 · **chưa đủ cho L3 trọn**: **505 sprite unknown** + 643 passthrough chưa kiểm (`ASSETS` §9.1) · **chưa có bảng sprite→màn/prefab** (UI 55.584 layout chưa join — queue PR12) · rig spine 27 *inferred* · worklist 624 có bucket glyph sai nhãn · metrics **35** ảnh/so ảnh/timeline = **gate chưa chạy**, không phải approval |
 | **Chi phí** | sản xuất art + đối chiếu — **không cần playtest** |
 
 > **Đây là đích của dự án — KHÔNG hoãn** (lần 14, 25/10, chủ dự án: *"không cần người test thật vì
@@ -553,10 +565,10 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 | Việc | Bắt chước có giúp? | Vì sao |
 |---|---|---|
 | Biết **cần làm gì** | ✅ **gần hết** | 22.451 entry enemy, 109 prefab, 48 archetype, 420 súng — **đã có danh sách** |
-| Biết **con số đúng** | 🟡 **một phần** | 25 hằng số đọc ngay; 5.818 field còn ở mức D |
+| Biết **con số đúng** | 🟡 **một phần** | hằng số + static **623 record** đã decode (`ia-resolved`); **4.861** SerializeField binary có trong pack v2 — giá trị xin peer |
 | **Làm ra** 282 wave × 84 spawner | ❌ **không** | khối lượng, không phải hiểu biết |
 | **Vẽ** 2.185 sprite thay thế | ❌ **không** | gu thẩm mỹ |
-| **Đo** cảm giác (L3) | ❌ **không** | cần người chơi thật |
+| **Đo** cảm giác (L3) | ✅ **đo được bằng máy** | metrics + so ảnh + timeline/audio đối reference — blind-A/B đã bị thay (lần 14/21); gate **chưa chạy lần nào** |
 | Chọn **bỏ gì, thêm gì** | ❌ **không** | quyết định thiết kế |
 
 > **Cách nói chính xác:** bắt chước biến **"không biết làm gì"** thành **"biết phải làm gì, rất nhiều"**.
@@ -633,8 +645,8 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 
 | Mục | Trước (mục tiêu L3) | **Sau khi chốt L1** | Hệ quả |
 |---|---|---|---|
-| **L2 — đúng số** | bắt buộc | ✅ **số đã đủ — làm ngay sau L1** | giá trị decode + bind xong; sót chứng minh **DPS runtime** (peer parity tàu 1) + 2 tái đối chiếu + scope-90 (23 wing impl — mapping/turnRate3 **ĐÓNG 92**)/`Board_Players`/bind entry map/save schema (`MISSING` §2) |
-| **L3 — khớp trải nghiệm + art** | bắt buộc | ✅ **ĐÍCH dự án — KHÔNG hoãn** | đối chiếu reference đo được (metrics + so ảnh + timeline/audio) — **song song L2** sau khi L1 chạy được, **không cần người test** |
+| **L2 — đúng số** | bắt buộc | ✅ **số đã đủ — làm ngay sau L1** | giá trị decode + bind xong; sót chứng minh **DPS runtime** (peer parity tàu 1) + 2 tái đối chiếu + wing còn special paths/named leaves (config 17/24 — 93 · emission 13/22/23/24 — 94; mapping/turnRate3 **ĐÓNG 92**)/`Board_Players`/bind entry map/save schema (`MISSING` §2) |
+| **L3 — khớp trải nghiệm + art** | bắt buộc | ✅ **ĐÍCH dự án — KHÔNG hoãn** · 🟡 **input một phần** (đính chính lần 33) | đối chiếu reference đo được (metrics + so ảnh + timeline/audio) — **song song L2** sau khi L1 chạy được, **không cần người test**; còn thiếu: join sprite→màn + 505 unknown + gate chưa chạy (lần 32/33) |
 | Giá trị **4.861** `[SerializeField]` | phải có | 🟡 **tuỳ chọn** | dùng làm **tham khảo**, không phải để khớp |
 | Giá trị **957** `static` | phải có | 🟡 **tuỳ chọn** | " |
 | **45.659** tham chiếu enemy | phải resolve | 🟡 **tuỳ chọn** | danh sách **109 prefab** (đã resolve) đủ để chọn |
