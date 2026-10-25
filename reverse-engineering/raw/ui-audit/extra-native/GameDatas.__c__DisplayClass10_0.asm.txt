@@ -1,0 +1,19 @@
+;;; ctor  public void .ctor() { }
+    0x1325318: mov      x1, xzr
+    0x132531c: b        #0x2143330
+
+;;; <IsCountryPremium>b__1  internal bool <IsCountryPremium>b__1(RegionInfo region) { }
+    0x1327cb0: stp      x30, x19, [sp, #-0x10]!
+    0x1327cb4: cbz      x1, #0x1327ce4
+    0x1327cb8: ldr      x8, [x1]
+    0x1327cbc: mov      x19, x0
+    0x1327cc0: mov      x0, x1
+    0x1327cc4: ldp      x9, x8, [x8, #0x188]
+    0x1327cc8: mov      x1, x8
+    0x1327ccc: blr      x9
+    0x1327cd0: cbz      x0, #0x1327ce4
+    0x1327cd4: ldr      x1, [x19, #0x10]
+    0x1327cd8: mov      x2, xzr
+    0x1327cdc: ldp      x30, x19, [sp], #0x10
+    0x1327ce0: b        #0x1ff0dec
+    0x1327ce4: bl       #0x110d250

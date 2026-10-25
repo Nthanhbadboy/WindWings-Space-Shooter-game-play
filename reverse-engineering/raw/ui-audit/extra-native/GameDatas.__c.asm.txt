@@ -1,0 +1,61 @@
+;;; cctor  private static void .cctor() { }
+    0x1327bd0: str      x30, [sp, #-0x20]!
+    0x1327bd4: stp      x20, x19, [sp, #0x10]
+    0x1327bd8: adrp     x19, #0x2ce1000
+    0x1327bdc: adrp     x20, #0x2ae1000
+    0x1327be0: ldrb     w8, [x19, #0x62b]
+    0x1327be4: ldr      x20, [x20, #0x7f8]
+    0x1327be8: tbnz     w8, #0, #0x1327c00
+    0x1327bec: adrp     x0, #0x2ae1000
+    0x1327bf0: ldr      x0, [x0, #0x7f8]
+    0x1327bf4: bl       #0x110d028
+    0x1327bf8: mov      w8, #1
+    0x1327bfc: strb     w8, [x19, #0x62b]
+    0x1327c00: ldr      x0, [x20]
+    0x1327c04: bl       #0x110d240
+    0x1327c08: mov      x1, xzr
+    0x1327c0c: mov      x19, x0
+    0x1327c10: bl       #0x2143330
+    0x1327c14: ldr      x8, [x20]
+    0x1327c18: ldr      x8, [x8, #0xb8]
+    0x1327c1c: str      x19, [x8]
+    0x1327c20: ldp      x20, x19, [sp, #0x10]
+    0x1327c24: ldr      x30, [sp], #0x20
+    0x1327c28: ret      
+
+;;; ctor  public void .ctor() { }
+    0x1327c2c: mov      x1, xzr
+    0x1327c30: b        #0x2143330
+
+;;; <IsCountryPremium>b__10_0  internal RegionInfo <IsCountryPremium>b__10_0(CultureInfo x) { }
+    0x1327c34: str      x30, [sp, #-0x20]!
+    0x1327c38: stp      x20, x19, [sp, #0x10]
+    0x1327c3c: adrp     x20, #0x2ce1000
+    0x1327c40: ldrb     w8, [x20, #0x62c]
+    0x1327c44: mov      x19, x1
+    0x1327c48: tbnz     w8, #0, #0x1327c60
+    0x1327c4c: adrp     x0, #0x2ade000
+    0x1327c50: ldr      x0, [x0, #0xea8]
+    0x1327c54: bl       #0x110d028
+    0x1327c58: mov      w8, #1
+    0x1327c5c: strb     w8, [x20, #0x62c]
+    0x1327c60: cbz      x19, #0x1327cac
+    0x1327c64: ldr      x8, [x19]
+    0x1327c68: adrp     x20, #0x2ade000
+    0x1327c6c: mov      x0, x19
+    0x1327c70: ldp      x9, x1, [x8, #0x198]
+    0x1327c74: ldr      x20, [x20, #0xea8]
+    0x1327c78: blr      x9
+    0x1327c7c: ldr      x8, [x20]
+    0x1327c80: mov      w19, w0
+    0x1327c84: mov      x0, x8
+    0x1327c88: bl       #0x110d240
+    0x1327c8c: mov      w1, w19
+    0x1327c90: mov      x2, xzr
+    0x1327c94: mov      x20, x0
+    0x1327c98: bl       #0x20d3450
+    0x1327c9c: mov      x0, x20
+    0x1327ca0: ldp      x20, x19, [sp, #0x10]
+    0x1327ca4: ldr      x30, [sp], #0x20
+    0x1327ca8: ret      
+    0x1327cac: bl       #0x110d250
