@@ -15,4 +15,9 @@ class SpineRecoveryTests(unittest.TestCase):
         value={'atlasAssets':[ptr], 'materials':[dict(m_FileID=0,m_PathID=0)]}
         self.assertEqual(list(walk_pointers(value)),[('.atlasAssets[0]',ptr),('.materials[0]',dict(m_FileID=0,m_PathID=0))])
 
+    def test_unity_map_pairs_are_tuples(self):
+        ptr=dict(m_FileID=0,m_PathID=123)
+        tree={'m_SavedProperties':{'m_TexEnvs':[('_MainTex', {'m_Texture':ptr})]}}
+        self.assertEqual(list(walk_pointers(tree)),[('.m_SavedProperties.m_TexEnvs[0][1].m_Texture',ptr)])
+
 if __name__=='__main__':unittest.main()

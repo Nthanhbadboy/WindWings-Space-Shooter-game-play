@@ -26,7 +26,7 @@ def walk_pointers(value, location=''):
         else:
             for key, child in value.items():
                 yield from walk_pointers(child, location + '.' + str(key))
-    elif isinstance(value, list):
+    elif isinstance(value, (list, tuple)):
         for index, child in enumerate(value):
             yield from walk_pointers(child, location + f'[{index}]')
 
