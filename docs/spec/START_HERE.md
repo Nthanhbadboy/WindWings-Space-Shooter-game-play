@@ -81,7 +81,7 @@ Không cần đọc hết 40 file trước khi bắt đầu. Tám con số này 
 | 2 | Điều khiển | kéo ngón để lái · biên **20×25** · radius **15** unit | `GAMEPLAY.md` §1 |
 | 3 | Súng / đạn | **458** cấu hình · damage **40–1.200** (median **400**) · **186** loại đạn | `COMBAT.md` §0 |
 | 4 | Wave | **282** wave · **11.089** dòng · median **28,5** dòng/wave · **109** prefab enemy | `ENCOUNTERS.md` §1 (**AQ1/AQ4**) |
-| 5 | Spawn | `rate` trung vị **1,0 s** · `y` **9,6** · radius **0,1** · **68 %** là `point_range` (**số đo, không phải luật**) | `SCRIPTS.md` §3 (**AQ6**) |
+| 5 | Spawn | `rate` trung vị **1,0 s** · `y` **9,6** · radius **0,1** · **68 %** là `point_range` (**số đo, không phải luật**) — **khớp chéo runtime 25/10:** camera ortho **9,6** (report 77 peer `d66037d10`) ⇒ mép trên khung nhìn **= 9,6** | `SCRIPTS.md` §3 (**AQ6**) · `DATA_SYNC` §24.10 |
 | 6 | Độ khó | **3** chế độ · `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · **không** nhân số quân | `DIFFICULTY_MODES.md` §5 (**E1/E2**) |
 | 7 | HP | HP bar trên **109/109** prefab · HP theo **id** (150 cặp) · **không có** `kHp[mode]` — chế độ đổi composition, không nhân HP | `ENEMY_HP_RUNTIME.md` §0 · `DIFFICULTY_MODES.md` §3–5 |
 | 8 | Rơi đồ | **702** vật đặt sẵn (**676** coin / **26** item) · **246/2.094** slot có item · **6** loại | `ECONOMY.md` (**AE1–AE3**) |

@@ -2580,3 +2580,40 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
 | `kHp[mode]` | ✅ **KHÔNG TỒN TẠI** — chế độ không nhân HP (chỉ `levelDelta` thưởng; 0/5 hàm `stageLevel` liên quan HP); khác biệt = composition bảng len-3 |
 | `missionKillPercent` | ✅ **đủ 3/3** — MỘT `float[3]` [0.2/0.6/0.98] theo **mission index**; "3×3" là ảo đơn vị (sửa 25/10) |
 | `StartHpPoint` ← dict 150 cặp | ✅ **đã bind theo id** — dict là nguồn (`GetStartHealthPoint(id)`); `Init` `0x1582f5c` chỉ là plumbing, không chặn số nào |
+| Playback thật | ✅ **phiên phone 23/10** (`ramus/2026-10-23-phone/`): statics khi chơi · freeze/slow-mo · 7 live chụp instance (kill 276 / coin 540) · HP khớp 2500 — *(dòng này sót từ lần 9 do script abort, bổ sung lần 10)*. Sót: 2 phép tái đối chiếu `CROSSCHECK` |
+
+### 24.9 Report 76 — SpriteRenderer của scene mở đầu + chuỗi ancestor (peer → `e5ed7d070`, **232 tests**)
+
+- Raw `scene-sprites/` (5698 object, **0 read error / 0 unresolved link**); **1377** renderer-root
+  chỉ ở level 0–3; 61.438 renderer trong `resources/sharedassets` **chỉ đếm, không mở rộng** ⇒
+  không gọi là "population runtime".
+- `datas/scene_sprite_contract.json.gz` (peer): Renderer→GO→Transform→ancestor; **218** typed Sprite
+  khớp mesh-source hash + PNG ref; 7 material projection đầy đủ / 6 shader identity.
+- Thứ tự scene `Menu/Home/Game/EndGame` (BuildSettings) ⇒ root **8 / 4 / 1036 / 329**; gate
+  `activity AND` cho **8 / 4 / 1036 / 3** — **đếm ≠ visible**.
+- Trạng thái numeric: `NullSprite` **56** · disabled **26** · alpha-zero **43**; **78** instance đếm
+  bằng activity+AND có đúng 1 null-Sprite ⇒ **đừng coi 78 là "sprite visible"**.
+- FlipX **68** / FlipY **10**; ancestor negative-scale **14** / zero-scale **4**; RectTransform chain
+  43 (depth max 10); DrawMode numeric 0:922 · 1:441 · 2:14 — **giữ nguyên size/flags, không suy
+  geometry cuối**; SortingLayerID = 0 cả 1377 ⇒ **không** là draw order cuối. Mask interaction
+  None **1074** / Inside **302** / Outside **1**; **303** instance phụ thuộc mask cần ngữ cảnh
+  SpriteMask/camera (report 77).
+
+### 24.10 Report 77 — camera scene + SpriteMask + layer predicate (peer `0f7ae8853`→`d66037d10`, **239 tests**)
+
+- **5 Camera + 12 SpriteMask** là scene-root; **0 read error**; 191 mask trong `resources` + 1 camera
+  shared **ngoài scope root**; catalog 0 serialized `SortingGroup` **không** chứng minh runtime vắng.
+- `datas/scene_render_context_contract.json.gz` (peer): camera source **ortho 9,600000381469727**,
+  full viewport, targetTexture null — **khớp chéo với spec mình**: vùng thấy cao **19,2** unit,
+  mép trên đúng mốc spawn **y = 9,6** (`SCRIPTS` §3 · `START_HERE` số 5).
+- Culling mask **disjoint**: camera Game (`3975`) loại UI, giữ Map; camera UI (`3976`) chỉ UI
+  — hai namespace **layer name** và **camera mask** phải giữ riêng, đừng gộp.
+- 12 mask dùng cùng typed Sprite `sharedassets0:37` (source hash → mesh 75); **3** mask serialized
+  active (6373/6375/6377), **9** custom-range active, cutoff ≈ **0,2** (giữ raw float, không làm tròn).
+- **Task peer (report 76+77):** (1) import typed scene-chain, đọc numeric state đúng scope —
+  source mesh/pivot/PPU ≠ draw-mode/UV/transform hiệu lực, **không double-flip**, không coi 78 là
+  visible hay 61.438 là asset thiếu; (2) import typed render-context — không gộp namespace,
+  giữ mask range; depth/clear/native writer **chưa biết**; (3) không nâng bool predicate thành
+  "visible list", không coi 191 mask bị loại là "asset missing".
+- Đang làm tiếp bên peer (chưa có report): **CameraScaler** — camera binding + native resize writer,
+  raw giữ float-pool byte gốc thay vì hằng số làm tròn.

@@ -60,6 +60,13 @@
 > `DESIGN_QUESTIONS`: **A6 ✅** (bind map xong) · **B1 ✅** (HP theo id) · **C4 ⚠** (mẫu runtime
 > 276→540) — tally mới **✅ 31 · ⚠ 16 · ❌ 1**. Runtime còn sót: 2 phép tái đối chiếu `CROSSCHECK`
 > (Map content `&arr=256&depth=2` · device 12↔10) — làm khi có lần chạy, không chặn.
+>
+> **Sửa lại (lần 10 — 25/10, đồng bộ peer tới report 77 / `d66037d10`, peer 239 tests):** đọc chọn
+> lọc report **76** (SpriteRenderer scene mở đầu: 1377 root, 218 typed Sprite, đếm activity ≠ visible)
+> và **77** (5 Camera + 12 SpriteMask, ortho **9,6** khớp mốc spawn y=9,6 của mình, culling mask
+> disjoint Game/UI, cutoff 0,2 raw) — `DATA_SYNC` §24.9–24.10 + task peer 3 nhóm. `START_HERE` số 5
+> thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
+> runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
 > **Sửa lại (lần 3):** pipeline vòng 3 (nhánh `ef6b75ef`, commit `61d5385`) đã resolve
 > **tên enemy trong wave** — **22.451** entry, **109** prefab, **0** `"?"`. Đây là mục
