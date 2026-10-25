@@ -117,12 +117,29 @@ jobs:
           sys.argv=['native',str(dump),'/tmp/ui-native/libil2cpp.so']
           assert native.main()==0
           assert (Path(native.OUT_RAW)/'Home_Loader.asm.txt').exists()
+          # Preserve the five-state coroutine dispatch table, not just BR asm.
+          import hashlib,json,struct
+          blob=so.read_bytes() if 'so' in globals() else Path('/tmp/ui-native/libil2cpp.so').read_bytes()
+          segs=native.elf_segments('/tmp/ui-native/libil2cpp.so')
+          def ro(va,n):
+              assert any(v<=va and va+n<=v+size and not flags & 2 for v,off,size,flags in segs)
+              data=native.va_read(blob,segs,va,n,ro_only=True)
+              assert data is not None and len(data)==n
+              return data
+          table=ro(0x77a148,5)
+          out={'status':'PROVISIONAL','native_sha256':hashlib.sha256(blob).hexdigest(),
+               'source':'pinned APK lib/arm64-v8a/libil2cpp.so',
+               'drone_dispatch':{'table_va':'0x77a148','branch_base':'0x14fc574',
+                 'bytes_hex':table.hex(),'entries':[{'state':i,'target':hex(0x14fc574+4*v)} for i,v in enumerate(table)]},
+               'drone_post_appear_wait':{'va':'0x756e58','bytes_hex':ro(0x756e58,4).hex(),
+                 'float32':struct.unpack('<f',ro(0x756e58,4))[0]}}
+          Path('reverse-engineering/raw/ui-audit/stage23-rodata.json').write_text(json.dumps(out,indent=2)+'\n')
           PY
       - name: Commit recovered UI evidence
         run: |
           git config user.name 'Arena evidence collector'
           git config user.email 'agent@arena.ai'
-          git add reverse-engineering/raw/ui-audit/metadata-slots.json reverse-engineering/raw/ui-audit/metadata-index.json.gz reverse-engineering/raw/ui-audit/native-relocations.json.gz reverse-engineering/raw/ui-audit/extra-native
+          git add reverse-engineering/raw/ui-audit/stage23-rodata.json reverse-engineering/raw/ui-audit/metadata-slots.json reverse-engineering/raw/ui-audit/metadata-index.json.gz reverse-engineering/raw/ui-audit/native-relocations.json.gz reverse-engineering/raw/ui-audit/extra-native
           git diff --cached --quiet || git commit -m 'research(ui): recover exact UI metadata slots from run 40180363840 [skip ci]'
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
