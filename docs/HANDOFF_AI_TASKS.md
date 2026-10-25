@@ -886,3 +886,15 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   caller collision gốc, lifetime4. Null external callback vẫn giữ formation callback.
 - Boundary tiếp: bên trong Formation.CreateBullets123d98c/Scale/IELerpTo + concrete IBullet,
   các Shoot còn lại của93/special consumers. Không tự coi done23, physics/hit/DPS hoặc ACK95.
+- Receipt95: code772839187 Verify40223865259 SUCCESS/job59s; raw/wing-emission giữ recovery,
+  handoff và green response. Chưa tự coi ACK94/95.
+
+## Asset binding queue — peer comment6401749563 (chưa independent verify counts)
+- Full comment lưuraw/peer-review/asset-binding-audit-6401749563.json. Không gọi asset semantic
+  binding “đầy đủ” chỉ vì đã export/index đủ. Numeric sprite name không tự là glyph font.
+- Peer báo lỗi art-worklist.py `is_digit` bucket ships/bosses thành glyph; file này không có
+  trong current reverse tracked tree khi kiểm95. Cần exact peer source path/commit trước sửa,
+  không tự chế tool/khẳng định đã sửa. Sprite identities vẫn theo direct raw/ship/boss joins.
+- 5 việc được ghi nhận: UI node→sprite→screen joins; gameplay prefab sprite refs;
+  unknown/passthrough labels; unmatched atlas names; actual27 spine rig identities.
+  Các số đếm trong comment là peer audit, chưa nâng thành kết quả đo độc lập ở branch này.

@@ -107,3 +107,6 @@ Bullet_Formation.CreateBullets123d98c cùng Scale/IELerpTo coroutines. Thân ASM
 
 Các Shoot consumers khác của93 và special2/4/6/8/10/12/15/19 vẫn theo ledger trước;
 map/save và Arena/PvP giữ thứ tự ưu tiên, không lấy95 làm giấy đóng23 wings hay DPS/hit semantics.
+
+**CI receipt:** code772839187, Verify40223865259 **SUCCESS/job59s**.
+Handoff/green receipt JSON giữraw/wing-emission. Chưa tự coi peer ACK95.
