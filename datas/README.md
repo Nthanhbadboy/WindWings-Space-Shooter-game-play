@@ -1,5 +1,10 @@
 # `datas/` — data pack WindWings
 
+## Damage receiver flow — report85
+
+`damage_receiver_flow.json`: 44 receiver/helper source walks/3485 native instructions, pinned critical order anchors, CFG-proven ability arguments, exact MB4-state byte targets, event names và coefficient identities. Reproduce `python3 -m tools.verify.damage_receiver_flow [--check]`. Executable finite-domain fixtures `tools/verify/{enemy_damage_model,damage_receiver_models}.py` và48 checks; không giả lập Unity, physics, full FPCR hoặc subscriber registration. Raw bổ sung `reverse-engineering/raw/combat-receivers/`; [report85](../docs/apk-analysis/85-damage-receivers-callbacks-hp-and-death.md).
+
+
 ## Combat coroutine flow — report84
 
 `combat_coroutine_flow.json`: bản dịch control-flow25 MoveNext, CFG branch edges/3 byte-table dispatches, state/current stores và anchors, literal cells,7 factory parameter-copy bodies/direct callers. Reproduce `python3 -m tools.verify.combat_coroutine_flow [--check]`. `tools/verify/combat_coroutine_models.py` là control reconstructions có thể chạy (không thay Unity/IL2CPP); report84 giải nghĩa14 waits, không measured cadence/DPS.

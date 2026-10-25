@@ -1,5 +1,10 @@
 # Kết luận — trạng thái và độ tin cậy
 
+## Report85 — dịch receiver qua callbacks, HP reread và death overrides
+
+[Report85](apk-analysis/85-damage-receivers-callbacks-hp-and-death.md), `datas/damage_receiver_flow.json`: 44 bodies/3485 instructions +48 checks mới, full375 PASS. Enemy delta callback đọc lại ref sau hitCallback; controller đọc lại data sau UpdateHpBar. Player device/armor → truncate → ability reductions → truncate → HP → events21/39 → HP reread. Có cả extra-life/death, hai Enemy_Destroy overrides và ability32 recursive requested damage. Delayed không dùng delayTime2; MB ba Wait1, không base Pool. Các fixture callback không chứng minh actual subscribers/stage outcomes. Raw220fa2d53/recovery40210107165 SUCCESS; không đổi draft media release. Bước tiếp là producer/serialized binding và extra-life/heal rewiring, không phải mở lại inventory coroutine84.
+
+
 ## Report84 — đóng control/yield của25 combat coroutine
 
 [Report84](apk-analysis/84-combat-coroutine-control-flow-reconstruction.md): native source walk đủ25 MoveNext +3 computed BR từ9 byte đã pin +14 wait origins +7 factory parameter copies + executable control reconstructions. Phát hiện cụ thể: 17 wait sau cặp,7/9 delay sau attack trước return,18 set_rateOverDistance particle không phải pool-spawn loop. Local327 tests PASS; vẫn phân biệt helper dispatch/spawn/hit/HP loss. Không phải bản dịch toàn bộ APK hay project game có thể build.

@@ -1,5 +1,10 @@
 # Phân việc vòng 4 — cái còn thiếu thật
 
+## Hiện hành — report85, receiver callback/damage/HP/death
+
+[Report85](apk-analysis/85-damage-receivers-callbacks-hp-and-death.md) + `datas/damage_receiver_flow.json`: 44 body source walks/3485 instructions; enemy mutable ref + hai callbacks; controller rereadHP sau UpdateHpBar; player hai truncations → synchronous events21/39 → rereadHP → extra-life/death. Hai death overrides đã recover/dịch: Delayed dùng WaitUntil(condition), KHÔNG delayTime2; MB ba Wait1, không base Pool tail. Ability32 Destroyed là recursive damage request radius3, không chỉ FX, không dedup receiver. 48 checks mới; full375 PASS (36.026s), validate/regen/diff PASS. Raw220fa2d53, recovery40210107165 SUCCESS. Tiếp: exact producer/serialized receiver joins và extra-life/heal rewiring từ raw Player_Controller mới, không khai báo thiếu raw hoặc ép dependency này cần runtime. GOT2ae8480 ở Start cần metadata binding chính xác, không đoán theo tên. Không nâng callback fixtures thành subscriber thực tế. Peer nhánh `arena/20330d0e-windwings-space-shooter-game-p` áp corrections receiver cùng reports81–84; chưa có ack/merge. Coroutine recipe7 sửa typo return threshold .5, outbound .1 giữ nguyên.
+
+
 ## Hiện hành — report84, đóng coroutine control/yield ledger83
 
 Đã dịch control-flow đủ25 MoveNext (không còn inventory-only), giải3 computed BR từ9 byte APK, nối14 wait origins và7 factory args, có executable control models/regression. Quan trọng: 7/9 `_delay` sau attack;17 chờ sau cặp;18 toggle ParticleSystem.rateOverDistance chứ không spawn projectile. Xem [report84](apk-analysis/84-combat-coroutine-control-flow-reconstruction.md), `datas/combat_coroutine_flow.json`, `tools/verify/combat_coroutine_models.py`. Không suy dispatch thành hit/DPS hoặc coi đã có project Unity/C# hoàn chỉnh. Đã recover và nối thêm clone/pumpkin +2 iterator (30 methods); clone stop→wait0.34→pool, pumpkin deadline active2/charge1/duration4 +callback→Hide. Không chạy lại full APK/media. Local327 PASS; code58ef9809a, Verify40209405979 SUCCESS (37s). Peer đã được báo PR12 comment6399840843; chưa có ack. Peer cập nhật combat spec theo các correction này.
@@ -10,7 +15,7 @@
 Peer `arena/20330d0e-windwings-space-shooter-game-p`: khi cập nhật spec combat, đọc [report83](apk-analysis/83-main-rate-field-deadline-and-dispatch-audit.md) và `datas/combat_rate_consumers.json`. Rate là main-deadline interval; 23 schedulers extra counter, 19 riêng; 22/23/24 refresh `GetNumberAbility(4)` trong scheduler. N+1 dispatch chỉ khi N dương giữ nguyên/counter đầu 0, không phải N+1 projectile/hit. Đừng lấy spawner wait hay rate table làm player DPS. Agent nhánh này tiếp tục giải 25 MoveNext/14 wait sites theo §6, chưa giao peer làm hoặc coi complete. Không merge/spec-ack thay peer. Local 302 PASS; code `07f98ba80`, Verify `40207885962` SUCCESS (50s); peer đã được báo PR12 comment6399630253, chưa có ack.
 
 
-> **Cửa vào hiện hành (sau report84):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) + report81 combat-chain + report82 proof-audit + report83/84 rate/coroutine control. Review cf27b9755 và các vòng/snapshot cũ dưới đây là lịch sử, chỉ áp dụng finding còn mở; không tự là task hay phán xét hiện hành.
+> **Cửa vào hiện hành (sau report85):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) + report81 combat-chain + report82 proof-audit + report83/84 rate/coroutine control và85 receiver. Review cf27b9755 và các vòng/snapshot cũ dưới đây là lịch sử, chỉ áp dụng finding còn mở; không tự là task hay phán xét hiện hành.
 
 > Trạng thái hiện tại: `docs/conclusions.md`. Đã có **dữ liệu thô** trong
 > `reverse-engineering/raw/` (typetree JSONL gz, UI layout gz, hằng số IL2CPP + asm).

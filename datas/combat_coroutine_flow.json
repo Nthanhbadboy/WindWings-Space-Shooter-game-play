@@ -19192,7 +19192,7 @@
       "raw": "reverse-engineering/raw/combat-chain/native/Player_Attack_7._ControlMainCannonBullet_d__50.asm.txt",
       "instructions": 345,
       "role": "existing_projectile_control",
-      "reconstructed_control_flow": "State0 initializes attack=false/speed6 and starts attack movement toward _target, null yield state1; state1 resumes attack movement. Within distance<1 set attack=true/speed4 and Animator.SetTrigger once. At distance<=0.1 yield Wait(f32(0.35)) to state2. State2 optionally Wait(_delay)>0 to state3, then return toward owner at24*deltaTime, null yield state4. States3/4 enter return path; when within0.1 call PoolObject then required _ended, finish. _delay is AFTER attack, not initial: exact byte table proves state0 != state2.",
+      "reconstructed_control_flow": "State0 initializes attack=false/speed6 and starts attack movement toward _target, null yield state1; state1 resumes attack movement. Within distance<1 set attack=true/speed4 and Animator.SetTrigger once. At distance<=0.1 yield Wait(f32(0.35)) to state2. State2 optionally Wait(_delay)>0 to state3, then return toward owner at24*deltaTime, null yield state4. States3/4 enter return path; when within0.5 call PoolObject then required _ended, finish. _delay is AFTER attack, not initial: exact byte table proves state0 != state2.",
       "semantic_anchors": [
         {
           "at": "0x14b6318",

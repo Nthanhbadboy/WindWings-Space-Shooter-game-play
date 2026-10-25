@@ -4,7 +4,7 @@
   "artifacts": [
     {
       "path": "tools/verify/combat_coroutine_flow.py",
-      "sha256": "29afbc9e48800273d30c401787ac98ba55137087c4b2e6269eaf8ec294d79d96"
+      "sha256": "abb41906addc4d03d80f58cb8c3920831162bf2894e0b23ae624a44b15e1c22a"
     },
     {
       "path": "tools/verify/combat_coroutine_models.py",
@@ -16,11 +16,11 @@
     },
     {
       "path": "datas/combat_coroutine_flow.json",
-      "sha256": "6c507eda89650442159163bef3e0c03bff770a4f5cc564c8fec8c201556be8c5"
+      "sha256": "66cafa88fb7ed89e91720a11a93f35bb643f4f3b792d0e1512985c4fd6d40080"
     },
     {
       "path": "tools/recovery/combat_coroutine_cells.py",
-      "sha256": "1d3fc7090491c6a6c505f75249718e70ed9063791b62379cb1325f6eb25d8b2e"
+      "sha256": "6c1b9af90ad55d756eff8c60e19d6f46f03e43ebe57d656cb99f03e2cd7c00e8"
     }
   ],
   "scope": {
@@ -52,11 +52,37 @@
   },
   "validate": "PASS",
   "diff_check": "PASS",
-  "next": "callback-specific enemy HP reread/receiver path; do not reopen25 yield ledger as inventory-only",
+  "next": "Receiver chain translated in report85; producer bindings and extra-life/heal rewiring next",
   "ci": {
     "code_commit": "58ef9809ac8705d050ce97c800d339db7c89958b",
     "run": 40209405979,
     "conclusion": "SUCCESS",
     "job_seconds": 37
+  },
+  "report84_original_artifacts": [
+    {
+      "path": "tools/verify/combat_coroutine_flow.py",
+      "sha256": "29afbc9e48800273d30c401787ac98ba55137087c4b2e6269eaf8ec294d79d96"
+    },
+    {
+      "path": "tools/verify/combat_coroutine_models.py",
+      "sha256": "92cf75a2be3f1dd46ccc5b5d707cfe16c292533637b2868d916a6502ae3a2212"
+    },
+    {
+      "path": "tests/test_combat_coroutine_flow.py",
+      "sha256": "9f3b4cc4ebc611a055e22a5c55bd5346c641b24c0f22f65fc211323281734e06"
+    },
+    {
+      "path": "datas/combat_coroutine_flow.json",
+      "sha256": "6c507eda89650442159163bef3e0c03bff770a4f5cc564c8fec8c201556be8c5"
+    },
+    {
+      "path": "tools/recovery/combat_coroutine_cells.py",
+      "sha256": "1d3fc7090491c6a6c505f75249718e70ed9063791b62379cb1325f6eb25d8b2e"
+    }
+  ],
+  "report85_correction": {
+    "detail": "Recipe7 return-leg text .1 corrected to .5; outbound .1 unchanged; original327-test/CI receipt remains historical.",
+    "tests": 375
   }
 }
