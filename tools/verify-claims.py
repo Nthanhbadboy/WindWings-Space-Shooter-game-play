@@ -3050,6 +3050,134 @@ claim("IA5", "docs/spec/BALANCE.md",
       (16, 8), player_costs,
       "PlayerCosts là int[24]; -1 = không bán")
 
+def peer_comparison():
+    """(record Map, record Player) trong raw/initialize-arrays/peer-comparison.json khi khớp tuyệt đối."""
+    import json as _json
+    p = os.path.join(ROOT, "reverse-engineering/raw/initialize-arrays/peer-comparison.json")
+    if not os.path.exists(p):
+        return None
+    with open(p, encoding="utf-8") as fh:
+        d = _json.load(fh)
+    g = {x.get("method"): x for x in (d.get("groups") or [])}
+    out = []
+    for name in ("Map_Get_Datas.cctor", "Player_Get_Datas.cctor"):
+        x = g.get(name) or {}
+        if not x.get("exact_record_equality") or not x.get("all_length_valid"):
+            return None
+        out.append(x.get("records"))
+    return tuple(out)
+
+
+def ia_method_records():
+    """(số method, tổng record, số record Map, số record Player) trong ia-resolved.json."""
+    import json as _json
+    p = os.path.join(ROOT, "reverse-engineering/il2cpp/ia-resolved.json")
+    if not os.path.exists(p):
+        return None
+    with open(p, encoding="utf-8") as fh:
+        d = _json.load(fh)
+    m = d.get("methods") or {}
+    total = sum(len(v or []) for v in m.values())
+    return (len(m), total, len(m.get("Map_Get_Datas.cctor") or []),
+            len(m.get("Player_Get_Datas.cctor") or []))
+
+
+claim("IA6", "docs/spec/DATA_SYNC.md",
+      "**576** và **6**, `exact_record_equality=true`, `all_length_valid=true`",
+      (576, 6), peer_comparison,
+      "peer-comparison.json chỉ so 2 nhóm method, KHÔNG phải toàn file — đừng phóng đại thành 'hai file giống nhau'")
+
+claim("IA7", "docs/spec/MISSING_FOR_NEW_GAME.md",
+      "tổng **17 nhóm · 623 record**",
+      (17, 623, 576, 6), ia_method_records,
+      "ia-resolved.json bản 3ac2faa45: 12 nhóm cũ + 5 nhóm Board_*")
+
+def enemy_hp_inserts():
+    """(số lệnh insert Dictionary, id nhỏ nhất, id lớn nhất) trong `Enemy_Get_Datas.cctor`."""
+    p = os.path.join(ROOT, "reverse-engineering/raw/il2cpp-consts/Enemy_Get_Datas.asm.txt")
+    if not os.path.exists(p):
+        return None
+    lines = open(p, encoding="utf-8", errors="replace").read().splitlines()
+    start = next((i for i, l in enumerate(lines) if l.startswith(";;; cctor")), None)
+    if start is None:
+        return None
+    seg = "\n".join(lines[start:])
+    n = len(re.findall(r"bl\s+#0x193a074", seg))
+    ids = [int(x, 16) for x in re.findall(r"mov\s+w1, #(0x7[0-9a-f]{3})", seg)]
+    if not n or not ids:
+        return None
+    return (n, min(ids), max(ids))
+
+
+def stage_arrays():
+    """(len int[], len float[], levelDelta[0..2]) của `Stage_Get_Datas.cctor`."""
+    import json as _json
+    import struct as _struct
+    p = os.path.join(ROOT, "reverse-engineering/il2cpp/ia-resolved.json")
+    if not os.path.exists(p):
+        return None
+    with open(p, encoding="utf-8") as fh:
+        d = _json.load(fh)
+    recs = (d.get("methods") or {}).get("Stage_Get_Datas.cctor") or []
+    lens = sorted(r.get("len") for r in recs)
+    if lens != [4, 5]:
+        return None
+    delta = None
+    for r in recs:
+        if r.get("len") != 4:
+            continue
+        b = bytes.fromhex(r["raw"])[: 4 * r["len"]]
+        f = _struct.unpack("<4f", b)
+        delta = [round(x, 3) for x in f]
+    if delta is None:
+        return None
+    return (5, 4, delta[0], delta[1], delta[2])
+
+
+def apk_doc_counts():
+    """(số `.md`, số `.csv`) trong `docs/apk-analysis/`."""
+    d = os.path.join(ROOT, "docs", "apk-analysis")
+    if not os.path.isdir(d):
+        return None
+    names = os.listdir(d)
+    return (sum(1 for n in names if n.endswith(".md")),
+            sum(1 for n in names if n.endswith(".csv")))
+
+
+def hardcoded_pass_counts():
+    """Số chỗ tài liệu **chép cứng** `# N PASS ·` — con số đó đổi mỗi lần thêm claim."""
+    pat = re.compile(r"#\s*\d+\s+PASS\s*·")
+    hits = 0
+    for root, _, files in os.walk(os.path.join(ROOT, "docs")):
+        for n in files:
+            if not n.endswith(".md"):
+                continue
+            with open(os.path.join(root, n), encoding="utf-8", errors="replace") as fh:
+                hits += len(pat.findall(fh.read()))
+    return hits
+
+
+claim("IAB1", "docs/spec/ENEMY_HP_RUNTIME.md",
+      "**150** lệnh insert `Dictionary`, id **30001–31017**",
+      (150, 30001, 31017), enemy_hp_inserts,
+      ".cctor Enemy_Get_Datas hoàn chỉnh 3.624 B: 150 insert, 0 loop ⇒ bảng HP 150 dòng, KHÔNG phải 981; "
+      "giá trị nằm ở .rodata nên cần .so, không cần dump class mới")
+
+claim("IAB2", "docs/spec/BALANCE.md",
+      "**float[4]** | **1,0 · 2,0 · 3,6 · 3,6**",
+      (5, 4, 1.0, 2.0, 3.6), stage_arrays,
+      "Stage_Get_Datas.cctor: int[5] startBonusValues + float[4] levelDelta; 0x40666666 = 3.6 (KHÔNG phải 2.1)")
+
+claim("APKD1", "docs/spec/START_HERE.md",
+      "**71** `.md` · **107** `.csv`",
+      (71, 107), apk_doc_counts,
+      "đếm trực tiếp thư mục apk-analysis — thêm báo cáo mới là phải cập nhật dòng này")
+
+claim("IA8", "docs/spec/START_HERE.md",
+      "đừng chép số vào đây",
+      0, hardcoded_pass_counts,
+      "số PASS/FAIL đổi mỗi lần thêm claim ⇒ tài liệu chỉ được ghi LỆNH, không chép kết quả")
+
 claim("AU1", "docs/spec/DATA_SYNC.md",
       "**65 method · 25 checks · 15 rules**",
       (65, 25, 15), audio_rule_counts,
@@ -3631,6 +3759,12 @@ _RAW_HINTS = (
 )
 
 
+# Ngoại lệ khai báo tay, mỗi cái một dòng lý do (đừng lạm dụng):
+#   APKD1 — đếm file trong `docs/apk-analysis/`, thư mục **dữ liệu** theo `local_inputs()`;
+#   IA8   — quét `docs/` để tìm số PASS chép cứng ⇒ claim về tính nhất quán tài liệu.
+KIND_OVERRIDE = {"APKD1": "RAW", "IA8": "DOC"}
+
+
 def _measure_source(fn, depth: int = 3, seen=None) -> str:
     """Source của hàm đo + các hàm nó gọi (để bắt đường dẫn file nằm ở helper)."""
     import inspect
@@ -3665,7 +3799,9 @@ def classify_claims():
         named_file = re.search(
             r"""[\'"]/?(?:[\w.\-]+/)*[\w.\-]+\.(?:json|csv|txt|gz|asm\.txt)[\'"]""", src
         ) is not None
-        if named_file or any(h in src for h in _RAW_HINTS):
+        if c.cid in KIND_OVERRIDE:
+            kind = KIND_OVERRIDE[c.cid]
+        elif named_file or any(h in src for h in _RAW_HINTS):
             kind = "RAW"
         elif "docs/" in src:
             kind = "DOC"
@@ -3817,8 +3953,8 @@ claim("GE2", "docs/spec/ASSET_TRIAGE.md",
 
 
 claim("RB1", "docs/spec/RAW_AUDIT.md",
-      "**RAW 170 · DOC 2 · CONST 28 · tổng 200**",
-      (170, 2, 28, 200), raw_audit_counts,
+      "**RAW 175 · DOC 3 · CONST 28 · tổng 206**",
+      (175, 3, 28, 206), raw_audit_counts,
       "sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. "
       "CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập")
 

@@ -4,6 +4,16 @@
 > Không mức nào dùng % tự đánh giá. Số đếm được ghi **(A)**, ước lượng ghi **(C)**.
 > Mục cuối: **Còn thiếu / phải đoán**.
 
+> **Sửa lại (lần 4 — 25/10, audit toàn bộ 42 tài liệu `docs/spec/` + 71 `.md` apk-analysis):**
+> câu **“chưa có giá trị / thiếu blob / 573 / 957 static mức D”** đã **sai**, và sai ở nhiều file.
+> Hiện trạng đúng: `reverse-engineering/il2cpp/ia-resolved.json` có **17 method · 623 record**
+> (**576** Map + **6** Player + 5 nhóm `Board_*` + Tech 7 + Device 12 + Droid 3 + Stage 2 + GameDatas 1).
+> **Cái thiếu là `bind`, không phải `dump`.** Còn **thật sự** thiếu: HP enemy (150 float trong
+> `.rodata`), coin/gem delta, thưởng hộp, trọng số rơi, ngưỡng VIP, mapping wave→stage.
+> Đã sửa: `BALANCE` §6 (thêm §6.10), `DATA_SYNC` §18.2 + §23, `MISSING` §2.2c, `OPEN_ISSUES` B3,
+> `ENEMY_HP_RUNTIME` §0, `AI_FEASIBILITY` §1.7, `apk-analysis/31`. Claim mới: **IA6 · IA7 · IAB1 ·
+> IAB2 · APKD1 · IA8**.
+
 > **Sửa lại (lần 3):** pipeline vòng 3 (nhánh `ef6b75ef`, commit `61d5385`) đã resolve
 > **tên enemy trong wave** — **22.451** entry, **109** prefab, **0** `"?"`. Đây là mục
 > tôi từng ghi là "chưa biết". Số mới ở `ENCOUNTERS.md` §2.6.
@@ -202,7 +212,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 | **Kiểm bằng** | máy: replay 1 wave, so DPS/TTK/HP với bản gốc trong **dung sai khai báo trước** |
 | **Đạt khi** | (dung sai do bạn chọn — ví dụ ±5%) |
 | **Bắt chước đủ?** | ❌ **chưa** — cần **giá trị thật**, hiện còn ở mức **D** |
-| **Đang thiếu gì** | **4.861** `[SerializeField]` + **957** `static` chưa có giá trị (`AI_FEASIBILITY.md` §1.10) |
+| **Đang thiếu gì** | **4.861** `[SerializeField]` + **957** `static` — nay **đã decode 623 record** của 17 method (`ia-resolved.json`); thiếu **bind** + **`.rodata`** (HP enemy) + field vô hướng |
 | **Chi phí** | chạy AssetRipper + Ghidra |
 
 > L2 là mức **"bắt chước" đúng nghĩa nhất** — và cũng là mức **chưa đạt được hôm nay**.

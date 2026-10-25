@@ -14,6 +14,11 @@
    do làm tròn 16B). 0 token không giải được trên toàn 20 class
    (`ia-resolved.json`: 573 mảng / 10 method).
 
+> ⚠ **Đính chính 25/10:** con số *573 mảng / 10 method* là **snapshot cũ**. Bản hiện tại
+> `reverse-engineering/il2cpp/ia-resolved.json` có **576** mảng Map + **6** mảng Player trên **17** method
+> (**623** record). **576** là số `InitializeArray`; **3** entry mở đầu dựng bằng **literal store** ⇒
+> **không** tồn tại “573 stage” và **không** được trừ 3 (`DATA_SYNC.md` §22–23).
+
 → `datas/map_segments_full.json`: mọi segment của `.cctor` kèm giá trị từng mảng
 (nguồn `immediates` = hằng số trong asm, chắc chắn; `blob` = token→PID ở trên).
 

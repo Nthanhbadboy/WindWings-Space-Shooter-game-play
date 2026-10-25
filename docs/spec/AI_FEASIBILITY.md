@@ -201,10 +201,10 @@ cùng `dump.cs`) là mọi hàm đã có tên, rồi decompile đúng địa ch�
 
 | Thứ tưởng "không có" | Thực tế trong `dump.cs` | Lấy bằng |
 |---|---|---|
-| 8 class config không serialize | **259 `static` field** (trong tổng **957** static), khởi tạo trong `.cctor()` | Ghidra + RVA → đọc literal trong `.cctor` |
+| 8 class config **không serialize vào asset** (giá trị nằm trong `.cctor`) | **259 `static` field** (trong tổng **957** static) | **đã đọc một phần**: 17 method / **623** record trong `ia-resolved.json`; còn lại literal store + `.rodata` |
 | Toạ độ đường bay | `BezierPath.points` là `[SerializeField] List<Vector3>` → **có trong `data.unity3d`** | AssetRipper (CSV exporter cũ bỏ nested struct) |
 | Thưởng/rơi theo enemy | `Enemy_Data_Balance.GetBonusCoin(int id)` · `GetBonusExp(int id)` · `GetSurvivalScore` · `GetArenaScore(idE, timeLife)` | Ghidra → 6 thân hàm |
-| Damage/HP/cost của player | `Player_Get_Datas` **178 field** | Ghidra → `.cctor` |
+| Damage/HP/cost của player | `Player_Get_Datas` **178 field** — **damage/rate/wing/cost đã decode** từ `ia-resolved.json` (`BALANCE.md` §1.1b); HP vẫn là **một** float | Ghidra → `.cctor` |
 | Giá tech/drone | `Tech_Datas` 13 field + `Droid_Data_Balance` 6 field | " |
 
 Phân rã 259 field: `Player_Get_Datas` **178** · `GameDatas` **40** · `Tech_Datas` **13** ·
@@ -494,7 +494,7 @@ những vòng đó** — chúng là **kết quả**, không phải **dữ liệu
 
 | Chỉ số nghiên cứu | Điểm | Ứng với lỗ hổng nào trong repo | Trạng thái |
 |---|---:|---|---|
-| **Rule & Mechanism** 45,6 | thấp | 8 class config **không serialize**: `Player_Get_Datas`, `Enemy_Data_Balance`, `Stage_Get_Datas`, `Map_Get_Datas`, `Tech_Datas`, `Droid_Data_Balance`, `Device_Get_Data`, `GameDatas` | ❌ phải tự định nghĩa |
+| **Rule & Mechanism** 45,6 | thấp | 8 class config **không serialize** — nhưng **6 mảng `Player_Get_Datas` + 576 mảng `Map_Get_Datas` đã decode** từ `ia-resolved.json`; phần còn thiếu là **bind** (index→tàu, mảng→stage) | 🟡 một phần (25/10) |
 | **Goal & Termination** 44,0 | thấp | 45.659 tham chiếu `enemies` = `"?"` ⇒ **chưa biết wave nào có enemy nào** — nhưng trần chỉ **92 prefab** | 🟡 resolve được |
 | **Dynamic Feedback Fidelity** 32,1 | thấp nhất | feel: gia tốc, hitstop, shake, flash — nằm trong `libil2cpp.so` | ❌ không có số |
 
@@ -520,7 +520,7 @@ hợp: đó là **cùng một giới hạn** — *đặc tả tĩnh không chuy�
 |---|---|---|---|
 | Toạ độ đường bay | `PathCreator.csv`: 30 cột `editorData` nhưng **0 cột `points[i].x/y`** | **AssetRipper** — `BezierPath.points` là `[SerializeField]` | 399 path × ~9 điểm = **~3.600 Vector3** |
 | Tham số spawner | 6/7 file `*_Spawner.csv` có **0 cột dữ liệu** | Ghidra (RVA từng `*_Spawner`) | trường `[SerializeField]` + hằng số |
-| Damage/HP của player | `forceType = Enemy` **458/458**; `Player_Get_Datas` không serialize | Ghidra `.cctor` | **178 field** |
+| Damage/HP của player | ~~`Player_Get_Datas` không serialize~~ → **damage/rate/wing đã decode**; HP **vẫn chưa** có bảng theo tàu | `ia-resolved.json` + `datas/player_start_stats.json` | **178 field**, 6 mảng có số |
 | Giá / tỉ lệ rơi | `Box_Rewards.id = 0` **800/800**; không cột `weight`/`price` | Ghidra `GetBonusCoin/Exp` + Frida | hàm thưởng theo `id` |
 | Hiệu ứng item | `Sub_Item.csv` **0 cột hiệu ứng** | Ghidra (class item) + Frida | hiệu ứng + thời gian |
 | **Toàn bộ feel** | chỉ export ScriptableObject, **bỏ prefab** | **AssetRipper** — 4.861 field `[SerializeField]` | shake, tốc độ, màu hit, trail, delay bắn |

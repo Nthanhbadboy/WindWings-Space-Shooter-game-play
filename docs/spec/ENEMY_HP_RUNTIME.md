@@ -13,7 +13,7 @@
 |---|---|---|
 | **Enemy thường KHÔNG chết 1 phát** | ✅ **BẠN ĐÚNG — tôi sai** | **109/109** prefab được spawn có HP bar (hai cơ chế, xem §1 của `DIFFICULTY_MODES.md`); **909** instance, **909/909 `m_Enabled = 1`**; con enemy bị spawn nhiều nhất `CB-30003` (**4.793** quân) có `CB-30003/Enemy_UI/HP_Bar` |
 | **Tính damage qua HP sẽ treo máy** | ❌ **Không** | **12 quân/giây**, **~50–950 con cùng lúc**, **~40–100 phép tính damage/giây**. Điện thoại làm **10⁹** phép/giây. Cách nhau **7 bậc** |
-| **Vậy phải tìm ở đâu?** | **2 class chưa dump** | `Enemy_Get_Datas` (`Dictionary<int,float> AllStartHealthPointEnemies`) + `Enemy_Controller` (`GetStartHealth`/`TakeDamage`/`UpdateHpBar`) |
+| **Vậy phải tìm ở đâu?** | **1 chỗ duy nhất: `.rodata`** | `Enemy_Get_Datas.cctor` **hoàn chỉnh 3.624 B** (không bị cắt) có **150** lệnh insert `Dictionary`, id **30001–31017**; mỗi HP là `ldr s0, [x8, #0x…]` (**40** offset `.rodata` khác nhau) ⇒ **đã có id, chỉ thiếu 40 float**. Consumer: `GetStartHealthPoint` (`ContainsKey` → `TryGetValue` → trả `float`) |
 
 **Câu quan trọng nhất:** HP enemy **có thật**, nhưng **không** nằm trong dữ liệu serialize —
 nó nằm trong **một `Dictionary` dựng ở `.cctor`** của một class **chưa ai dump**.

@@ -106,6 +106,24 @@ từ hex trong `ia-resolved.json` — **theo kiểu của field**, không
 - Cái **đo được** và nên giữ: mỗi wave có **1 `StartPoint` + 1 `EndPoint`** (tổng **608** dòng mốc) và
   danh sách enemy nằm trong `listPrefabEnemies` — đó là **cấu trúc**, không phải nhịp.
 
+### 2.2c Board_* — raw **đã có**, field **đã bind**, ý nghĩa **chưa chốt**
+
+`ia-resolved.json` (bản `3ac2faa45`) có thêm **5 nhóm `Board_*`** ⇒ tổng **17 nhóm · 623 record** (claim **IA7**).
+Hai mảng của `Board_Players` đã bind được **tên field** bằng asm (store ngay sau `InitializeArray`):
+
+| field | kiểu | giá trị (index 0…) | đọc là gì? |
+|---|---|---|---|
+| `Board_Players.allBasicAtk` (`0x10`) | **float[24]** | `4640, 5120, 5040, 6160, 8896, 6880, 8889, 5680, 5500, 9100, 6750, 7589, 6000, 7588, 9100, 10050, …` | **chưa chốt**: “atk” theo tên, nhưng chưa thấy consumer ⇒ **B** |
+| `Board_Players.allDeltaAtk` (`0x18`) | **float[24]** | **0,168** × 24 | **chưa chốt**: nếu là “delta mỗi rank” thì damage(rank) = basic + 0,168·rank — **giả thuyết**, chưa kiểm |
+| `Board_Drones.cctor[0]` | float[12] | `500, 600, 800, 1250, 1500, 1800, 2300, 2800, 2535, 2500, 1251, 2680` | 12 mốc drone — giá hay HP: **chưa chốt** |
+| `Board_Drones.cctor[1]` | float[12] | **0,16** × 12 | hệ số — chưa rõ nhân vào đâu |
+| `Board_Drones.ctor` | float[24] | `1,0 ×3 · 2,2 · 1,0 · 1,875 · …` | hệ số theo index — chưa rõ |
+| `Board_Endgame.ctor` | **int[10]** | `900, 890, 880, 870, 860, 850, 840, 830, 820, 810` | giảm đều **10** mỗi bậc — dải ngưỡng, chưa rõ dùng cho gì |
+| `Board_Players.ctor` | float[24] | **1,0** × 24 | baseline |
+
+> **Đừng suy ý nghĩa từ tên field.** `allBasicAtk` chưa có consumer đã đọc ⇒ chỉ ghi “raw + tên field”,
+> mức **B**. Muốn lên **A** phải đọc chỗ dùng (offset `0x10/0x18` của class static).
+
 ### 2.3 Save / load — **8 key family đã có contract**, chưa phải schema đầy đủ
 
 Từ report **65** + `datas/opening_persistence.json` (raw: `raw/persistence/opening-contracts.json.gz`,

@@ -346,11 +346,13 @@ Nguồn: `Gun_Attack.csv`, `_gameobject` cắt phần trước `/`.
 
 TTK = `HP / DPS_player`. Trong đó:
 - **HP**: có (**800** instance, 394 > 0; `15-enemy-hp.csv`).
-- **DPS player**: **không có** — `Gun_Attack` toàn enemy (§2.2),
-  `Player_Get_Datas.StartMainCannonDamages[]` không serialize.
+- **DPS player**: **ĐÃ CÓ SỐ** (25/10) — `StartMainCannonDamages[24]` × `StartMainCannonRate[24]` decode từ
+  `reverse-engineering/il2cpp/ia-resolved.json` → `datas/player_start_stats.json`
+  (DPS index 0 = **21.600**, min **456**, max **46.400**).
+  Còn **chưa bind** `playerIndex` → **ID tàu**, và **chưa** kiểm `rate` có phải *shot/giây*.
 
-⇒ Chỉ lập được bảng TTK theo **giả thiết DPS player**. Đây là công cụ để designer chọn DPS
-mục tiêu, không phải số của game gốc.
+⇒ Lập được **hai** bảng TTK: (a) theo **index** 0–23 của mảng (số thật), (b) theo **giả thiết DPS**
+cho designer. Cái (a) vẫn là *số của game gốc* ở mức mảng, chưa phải mức “tàu X”.
 
 ### 6.2 Bảng TTK (giây)
 

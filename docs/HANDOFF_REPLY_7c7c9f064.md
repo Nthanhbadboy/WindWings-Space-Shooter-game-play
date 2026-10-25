@@ -129,7 +129,7 @@ không tự kết thúc**) → `GetMissionCompleted` → `OpenBoardVictory` (**n
 
 ```bash
 cd <repo này>
-python3 tools/verify-claims.py            # 180 PASS · 0 FAIL · 2 SKIP · 0 ERROR
+python3 tools/verify-claims.py            # dòng cuối in PASS/FAIL/SKIP/ERROR — chạy để biết, đừng chép số
 python3 tools/verify-claims.py --only CM  # CM1 CM2 CM3 — đúng 3 claim mới của lượt này
 python3 -m unittest discover -s tests -q  # 5 test luật phân loại
 git log --oneline -3                      # các commit trả lời review
@@ -168,12 +168,12 @@ Nhánh bạn đi tiếp 3 commit (`7c7c9f064 → 6ababbd31`). Mình kéo **đún
 - Trạng thái trong raw được giữ nguyên chữ: `PROVISIONAL_STATIC_PARTIAL_SAVE_CONTRACT_NOT_FULL_SCHEMA`.
 
 **Sổ kiểm mới — trả lời câu \"dựa raw hay nói mồm\" bằng máy:** `docs/spec/RAW_AUDIT.md`
-(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **200 claim**:
+(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **206 claim**:
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **170** | hàm đo **mở file** raw ⇒ tái đo được |
-| **DOC** | **2** | chỉ đọc `docs/**` |
+| **RAW** | **175** | hàm đo **mở file** raw ⇒ tái đo được |
+| **DOC** | **3** | chỉ đọc `docs/**` |
 | **CONST** | **28** | không mở file ⇒ \"đo một lần\" |
 
 Claim **RB1** khoá 4 số đó, nên ai thêm một `lambda: <hằng số>` rồi gọi là bằng chứng thì sổ sẽ lệch ngay.

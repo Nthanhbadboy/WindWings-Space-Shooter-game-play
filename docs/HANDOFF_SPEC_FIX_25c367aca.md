@@ -58,7 +58,7 @@ field `copies` (chỉ `number` = 0 và `rate`), nên `copies` do exporter sinh r
 
 ```bash
 python3 -m unittest discover -s tests -q          # 5 test OK
-python3 tools/verify-claims.py                    # 173 PASS · 0 FAIL · 2 SKIP · 0 ERROR
+python3 tools/verify-claims.py                    # dòng cuối in PASS/FAIL/SKIP/ERROR — chạy để biết
 python3 tools/verify-claims.py --no-skip; echo $?  # 1 (2 SKIP có chủ đích: B9, F4)
 python3 tools/data-integrity.py; echo $?          # 0 — 0 file đang sửa trong working tree
 ```

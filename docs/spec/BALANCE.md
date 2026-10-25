@@ -1363,8 +1363,13 @@ HP boss hiển thị = HP serialized (bảng §2.2)
                   × hệ số Enemy_Data_Balance / Stage_Get_Datas theo chapter-stage (chưa bóc)
 ```
 Bằng chứng: `Enemy_Datas.StartHealthPoint` là giá trị **serialize trong prefab**; hệ số nhân
-theo chapter/stage nằm ở `Enemy_Data_Balance` + `Stage_Get_Datas` — hai class **không serialize**
-(`datas/README.md` §Quy ước xác nhận; `dump.cs` xác nhận chỉ có thân hàm).
+theo chapter/stage nằm trong **mã**, không nằm ở asset — **nhưng** đừng gộp hai class làm một:
+
+| class | trạng thái |
+|---|---|
+| `Stage_Get_Datas` | ✅ **đã decode** 2/2 mảng: `startBonusValues` int[5] · `levelDelta` float[4] = **1 / 2 / 3,6 / 3,6** — nhưng `levelDelta` là hệ số **thưởng**, **không** phải HP (§6.4) |
+| `Enemy_Data_Balance` | ❌ **chưa có nhóm nào** trong `ia-resolved.json` (chỉ `Droid_Data_Balance` là droid item, khác class) |
+| `Enemy_Get_Datas` | ✅ `.cctor` **hoàn chỉnh 3.624 B**, **150** lệnh insert `Dictionary` (id **30001–31017**); **giá trị HP là float trong `.rodata`** ⇒ cần `libil2cpp.so` |
 
 ```
 Điểm arena/PvP = f(idEnemy, timeLife)   // GetArenaScore, GetPVPPlayScore, GetArenaPlayScore
@@ -1418,14 +1423,16 @@ Chỉ biết **signature**, không biết thân hàm (nguồn: `class Enemy_Data
 | Tỉ lệ rơi tương đối | ✅ 676 coin / 26 item | `Item_Movement.csv` → `ECONOMY.md` §1 |
 | Số mốc ability tech | ✅ 6 bảng × 5 mốc | `Tech_Ability_Data.csv` |
 
-**Vẫn còn thiếu thật** (đã kiểm, không có trong bất kỳ CSV nào):
-**giá trị số** của: damage player · giá coin/gem · thưởng trong hộp · trọng số rơi · HP player ·
-ngưỡng VIP · số stage/chapter · mapping wave→stage.
+**Trạng thái đúng (sửa 25/10)** — chia làm **ba** loại, đừng gộp:
 
-> ⚠ **Sửa lại:** *tên field* của tất cả các mục trên **đã có** — chúng nằm trong
-> `Player_Get_Datas` (178 field), `Tech_Datas` (13), `Droid_Data_Balance` (6),
-> `Stage_Get_Datas` (5), `Device_Get_Data` (3). Cái thiếu là **giá trị** trong `.cctor()`.
-> Bảng đầy đủ: `TUNING_KNOBS.md` §2–3.
+| loại | gồm những gì | ở đâu |
+|---|---|---|
+| ✅ **Đã có giá trị** | damage/rate/wing/**giá tàu** (Player 6/6 mảng) · thưởng theo stage (`startBonusValues` int[5], `levelDelta` float[4]) · stat **droid/device/tech** (3 + 12 + 7 mảng) · `GameDatas` float[6] · **576** mảng wave→wave-id (Map) | §1.1b · §6.4 · §6.10 · `ia-resolved.json` (**17 method / 623 record**) |
+| 🟡 **Có raw, thiếu bind** | tên field ↔ mảng (Droid/Tech/Device/`Board_*`) · `playerIndex` → ID tàu · mảng Map → (chapter, stage, mode) | §6.10 · `DATA_SYNC.md` §23 |
+| ❌ **Thật sự chưa có** | **HP enemy** (150 insert trong `.cctor` nhưng giá trị là float trong `.rodata` ⇒ cần `libil2cpp.so`) · coin/gem **delta** vô hướng · thưởng trong hộp · **trọng số rơi** · ngưỡng VIP · mapping wave→stage | `ENEMY_HP_RUNTIME.md` §0 |
+
+> ⚠ Câu cũ *“cái thiếu là **giá trị** trong `.cctor()`”* đã **sai từ 25/10**: giá trị đã nằm trong
+> repo. Cái thiếu là **bind** — và đúng là trước đó bộ spec đã **xin dump lại** thứ mình đang có.
 
 ### 6.0b Vì sao các class dưới đây **không được serialize** vào `data.unity3d`
 
@@ -1437,7 +1444,9 @@ không có instance trong scene, hoặc field là `static`/`property` (không se
 (trong tổng **957** static của toàn bộ class game),
 và `dump.cs` đã có **RVA của từng `.cctor`** (ví dụ `Droid_Data_Balance..cctor` @ `0x1451…`).
 Nạp `libil2cpp.so` vào Ghidra headless + `script.json` là **có đường đọc** literal của các field đó —
-chưa chạy nên **chưa biết đọc được bao nhiêu**.
+và **đã đọc được**: `ia-resolved.json` hiện có **17 method / 623 record** (Player **6/6**, Map **576**,
+Device **12**, Tech **7**, Droid **3**, Stage **2**, GameDatas **1**, `Board_*` **5**).
+Việc còn lại là **bind tên field** cho các nhóm chưa bind (`Board_*`, Droid, Tech, Device) — §6.10.
 Chi tiết + danh sách field: `AI_FEASIBILITY.md` §1.7.
 
 Đây là 8 class được nêu trong handoff. Mỗi class: field cần, ảnh hưởng gì, và nơi nên tìm.
@@ -1465,8 +1474,12 @@ Chi tiết + danh sách field: `AI_FEASIBILITY.md` §1.7.
 | `abi5GainHp` … `abi34Rate` (30 field) | float | hiệu ứng tech ability |
 | `stepCommon`, `BaseHpRecoverSpeed`, `stepLevel(playerLv)` | float | đường cong level |
 
-Nơi tìm: scene bundle `Player_Get_Datas` (MonoBehaviour trên prefab/`GP_Manager`), hoặc
-asset `.unity3d` khác trong split APK (handoff phần 2 bước 2).
+> **Đã đọc (25/10) — 6/6 mảng, không cần tìm thêm:** hex nằm trong
+> `reverse-engineering/il2cpp/ia-resolved.json`; decode ra `PlayerCosts` **int[24]** +
+> 3 mảng **float[24]** (damage · rate · wing) + 2 mảng **float[3]** (clone · mission %).
+> Số thật ở §1.1b; bind store offset kiểm bằng asm: claim **IA2** (`0x38 / 0x78 / 0x80 / 0x88 / 0x1C8 / 0x308`).
+> **Còn thiếu:** bind `playerIndex` → **ID tàu** (thứ tự index *không* phải thứ tự tàu 1…25) và
+> các field **vô hướng** (`StartHp` = 2.500 đã đọc bằng literal store; `StartMagnetRange`, … chưa).
 
 ### 6.2 `Droid_Data_Balance` (SpaceShooter, TypeDefIndex 1623)
 
@@ -1488,6 +1501,21 @@ asset `.unity3d` khác trong split APK (handoff phần 2 bước 2).
 + thân hàm `GetBonus(stageIndex, stageLevel, missionIndex)`, `GetCountEnemies`,
 `GetCountSpecialEnemies`, `GetCountSupplyNormal`, `GetCountAllEnemies`.
 → Cần cho: **thưởng theo stage** và **đếm enemy** (dùng để tính độ dài stage).
+
+**Đã decode 2/2 mảng** của `.cctor` (claim **IAB2**); bind theo **kiểu** — class chỉ có đúng
+**một** `int[]` và **một** `float[]`:
+
+| field | kiểu | giá trị | đọc ra |
+|---|---|---|---|
+| `startBonusValues` (`0x0`) | **int[5]** | `350 · 600 · 5 · 10 · 10` | bonus khởi đầu theo nhóm stage |
+| `levelDelta` (`0x10`) | **float[4]** | **1,0 · 2,0 · 3,6 · 3,6** | hệ số **thưởng** theo chế độ (index = mode) |
+
+> ⚠ Hai số `3,6` là **float32 `0x40666666`**. Đọc bằng mắt theo hex dễ ra “2,1”/“3,6” lẫn nhau —
+> luôn `struct.unpack('<f')`. Và `levelDelta` **scale phần thưởng**, **không** scale HP
+> (`GetBonus`: `fmul s0, s8, s0`) — HP theo chế độ vẫn là **B8, chưa biết**.
+
+`coinDelta` / `gemDelta` là **vô hướng** (`0x8`/`0xC`) — không có blob, nằm ở **literal store** trong
+`.cctor`; chưa đọc.
 
 ### 6.5 `Map_Get_Datas` (TypeDefIndex 270)
 
@@ -1529,12 +1557,41 @@ arenaPoints/campaignPoints/arenaMedal/pvpMedal/…`
 | `Popup_BuyEnergy` / `Board_ShopEnergy` | `GetCostBuyEnergy/GetValueBuyEnergy` (thân hàm) |
 | `Board_ShopCoins.allCosts[]` / `.allValues[]` | giá shop coin |
 
+### 6.10 **Bảng giá trị đã decode cho 7 class còn lại** (`ia-resolved.json`, 25/10)
+
+Toàn bộ hex của các `.cctor` **đã nằm trong repo**; decode theo kiểu field (float vs int) là ra số.
+**Chưa bind tên field** cho Droid/Tech/Device/`Board_*` — nên đọc ở **mức B**, đừng gán nhãn tuỳ ý.
+
+| class | số mảng | nội dung (float, nếu là số nguyên thì ghi int) | đọc ra |
+|---|---:|---|---|
+| `Droid_Data_Balance` | 3 | `500 · 120 · 816 · 400 · 400` · **10,0** × 6 · int[3] `50 · 125 · 250` | damage/thời gian/giá mở 3 droid item |
+| `Tech_Datas` | 7 | `1,9 · 1,8 · 1,68` · int[7] `500…1800` · float[24] `0,108 0,108 0,106 0,098 …` · float[13] `0,3 0,28 0,26 … 0,15` · int[10] `200…1800` · float[12] `0,1135 0,135 0,18 0,65 …` · int[10] `1500…13000` | **24 + 13** phần tử ≈ đúng số stat tech/ability đang thiếu |
+| `Device_Get_Data` | 12 | 12 mảng × **float[5]**: `3 5 7 8 9` · `8 15 23 30 36` · `3 6 9 12 15` · `5 8 11 13 15` · `10 50 100 150 200` · … | stat device theo **5 cấp** |
+| `GameDatas` | 1 | float[6] = `0,5 · 0,6 · 0,7 · 0,8 · 0,9 · 1,0` | hệ số chung theo chế độ/độ khó |
+| `Stage_Get_Datas` | 2 | int[5] `350 600 5 10 10` · float[4] `1 · 2 · 3,6 · 3,6` | §6.4 |
+| `Player_Get_Datas` | 6 | §1.1b | damage/rate/wing/cost/clone/mission % |
+| `Board_*` | 5 | `Board_Players.allBasicAtk` float[24] `4640 5120 5040 6160 8896 …` · `allDeltaAtk` = **0,168** × 24 · `Board_Drones` float[12] `500 600 800 1250 …` · `Board_Endgame` int[10] `900…810` | **ứng viên HP/atk theo hạng** — chưa có consumer ⇒ **B** |
+
+**Cách tái tạo** (`ia-resolved.json` → số):
+
+```python
+import json, struct
+d = json.load(open("reverse-engineering/il2cpp/ia-resolved.json"))
+for r in d["methods"]["Tech_Datas.cctor"]:
+    b = bytes.fromhex(r["raw"])[: 4 * r["len"]]          # luôn cắt theo len
+    print(r["len"], struct.unpack(f'<{r["len"]}f', b))    # hoặc '<{n}i' nếu là mảng int
+```
+
+> **Luật:** `len` là **số phần tử**; raw có thể dài hơn `4·len` (đuôi alignment) — cắt trước khi unpack.
+> Cột `ints` trong file là **bit pattern**, không phải “số nguyên của thiết kế”.
+
 ---
 
 ## 7. Đề xuất balance cho bản clone (KHÔNG phải số của WindWings)
 
-Vì §6 chưa có, đây là **target thiết kế** để đội làm clone có mốc, dựa trên *hình dạng* dữ liệu
-đã đo (HP boss ch1 median 4,2 M, ch2 6,0 M; enemy median 500 K — `BALANCE.md` §2.3).
+§6 **đã có số thật** cho player/tech/droid/device/stage — nhưng **chưa có** HP enemy theo bảng.
+Phần dưới là **target thiết kế** cho clone, dựa trên *hình dạng* dữ liệu đã đo
+(HP boss ch1 median 4,2 M, ch2 6,0 M; enemy median 500 K — §2.3).
 
 ### 7.1 Khung HP đề xuất
 
@@ -1586,7 +1643,9 @@ Cách kiểm: DPS người chơi ≈ `damage × số đạn/giây` (tính từ b
 | 31–60 | 10,000 × 1.12^n | +2% | |
 | 61–max | 100,000 × 1.10^n | +1.5% | |
 
-> Đây là **gợi ý**, không có cơ sở từ APK. Nếu phần 2 bóc được `PlayerCosts[]` thì thay bằng số thật.
+> Đây là **gợi ý**. `PlayerCosts[]` **đã bóc** — dùng số thật thay cho bảng này khi làm clone:
+> `[0, 0, 1050, 3150, −1, 3850, 4550, 2450, 2450, −1, 3850, −1, 3150, 4550, 4550, −1,
+> 4550, 2450, −1, 4550, −1, 4550, −1, −1]` (**16** tàu bán được, **8** tàu `−1`; claim **IA5**).
 
 ---
 

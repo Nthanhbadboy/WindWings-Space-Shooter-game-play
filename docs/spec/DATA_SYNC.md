@@ -180,7 +180,10 @@ Nguồn: `docs/apk-analysis/19-il2cpp-constants.md`, `reverse-engineering/raw/il
 
 > **Kết luận (mức A):** bước này **chưa chạy đúng**. `GameDatas.GetUpgradeCost` thật nằm ở RVA
 > khác (trong `dump.cs`), và `0x1000` là offset của **header ELF**, không phải thân hàm.
-> Nghĩa là **957 `static` field vẫn ở mức D** — chưa có giá trị nào.
+> Nghĩa là **bước IL2CPP đó** không đọc được gì — nhưng **đừng** suy ra “957 static không có giá trị”:
+> từ 25/10 đường khác **đã đọc được** — `reverse-engineering/il2cpp/ia-resolved.json` có
+> **17 method · 623 record** (Player **6/6**, Map **576**, Tech **7**, Device **12**, Droid **3**,
+> Stage **2**, GameDatas **1**, `Board_*` **5**). Câu dưới đây là **bản ghi lịch sử**, đã bị thay thế.
 >
 > Đồng thời: chính `docs/conclusions.md` của nhánh kia xếp mục #12 ở mức **"B→C"**,
 > và ghi *"cần đọc control flow, không chỉ hằng số"*.
@@ -208,7 +211,7 @@ Nguồn: `docs/apk-analysis/19-il2cpp-constants.md`, `reverse-engineering/raw/il
 | **2.185 Sprite / 653 Texture2D** | ✅ không đổi |
 | **9 mesh?** → **2 `Mesh`**, 2.5D | ✅ không đổi |
 | **48 archetype spawner** (tôi tự tính) | ✅ khớp với `count_spawners` 11.099 của họ (sai số 3%) |
-| **957 `static` field chưa có giá trị** | ✅ **vẫn đúng** — bước IL2CPP thất bại |
+| ~~**957 `static` field chưa có giá trị**~~ | ❌ **SAI (25/10)** — **623 record** của 17 method đã decode; còn thiếu **bind** + các field vô hướng |
 | **4.861 `[SerializeField]` chưa có giá trị** | ✅ **vẫn đúng** — chưa ai chạy AssetRipper |
 
 ---
@@ -2231,7 +2234,12 @@ rotation `0: 2.041 · 1: 53 · 2: 54 · 3: 37` (**144** sprite cần lật/xoay)
 
 ### 18.2 Cái **chưa** sửa (đừng đọc §18.1 thành "xong hết")
 
-- **573/576** blob `Map_Get_Datas` vẫn chưa dump; **6 blob** `Player_Get_Datas` vẫn chưa có ⇒ **L2 vẫn CHƯA**.
+- ~~**573/576** blob `Map_Get_Datas` vẫn chưa dump; **6 blob** `Player_Get_Datas` vẫn chưa có~~
+  **SAI — đính chính 25/10:** **576/576** mảng Map + **6/6** mảng Player **đã có** trong
+  `reverse-engineering/il2cpp/ia-resolved.json` (17 method · 623 record). **L2 vẫn CHƯA**, nhưng lý do
+  đúng là **thiếu bind** (`playerIndex`→ID tàu, mảng Map→(chapter, stage, mode)) — xem §23.
+- **HP enemy:** `.cctor` có **150** lệnh insert (id **30001–31017**) nhưng **giá trị là float trong
+  `.rodata`** ⇒ muốn có bảng phải có `libil2cpp.so`, không phải “dump thêm class”.
 - Save: chưa có **schema đầy đủ**, chưa chứng minh **flush đĩa**.
 - Report **59 · 60 · 61** + 6 chunk `sprite-geometry/objects-*.jsonl.gz` vẫn **chưa kéo** (như §17.4).
 - Review của họ là **tĩnh trên snapshot đã pin**, không chạy suite của mình; mình cũng **chưa** chạy suite của họ.
@@ -2284,8 +2292,8 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **170** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
-| **DOC** | **2** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
+| **RAW** | **175** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **DOC** | **3** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
 | **CONST** | **28** | không mở file ⇒ **đo một lần** |
 
 Claim **RB1** khoá đúng 4 số trên; **chạy lại `python3 tools/raw-audit.py` là biết ngay** nếu ai thêm
@@ -2433,3 +2441,30 @@ Trước đó `MISSING_FOR_NEW_GAME.md` viết *“573 blob còn lại chưa dum
 
 > **Vẫn chưa** (đừng đọc là xong): `playerIndex` → **ID tàu**; 576 mảng map → **(chapter, stage, mode)**;
 > `rate` có phải *shot/giây*; HP riêng của tàu. Đó là việc **bind + kiểm runtime**, không phải việc **dump**.
+
+---
+
+## 23. Đồng bộ `3ac2faa45` — report 69: **blob đã có**, và so khớp hai nhánh
+
+Nhánh dữ liệu tự kiểm chính điều mình vừa phát hiện và **pin phép so sánh**:
+
+| việc | kết quả |
+|---|---|
+| `raw/initialize-arrays/peer-comparison.json` | so **từng record** hai nhánh cho 2 nhóm: **576** và **6**, `exact_record_equality=true`, `all_length_valid=true`, kèm `canonical_records_sha256` (**IA6**) |
+| `raw/initialize-arrays/typed-inventory.json.gz` | bản **typed** (thêm `values`, `payload length`, `trailing bytes`), chạy `tools/verify/initialize_array_inventory.py` tái tạo **giống hệt** (decompressed) |
+| `il2cpp/ia-resolved.json` của họ | **superset**: **17 nhóm · 623 record** (thêm `Board_Drones`, `Board_Players`, `Board_Endgame`) — claim **IA7** |
+| phạm vi so khớp | **chỉ 2 nhóm**, không phải toàn file — đúng như report 69 ghi |
+
+**Đã đổi trong repo này:** lấy `ia-resolved.json` **17 nhóm** (thay bản 12 nhóm), thêm 2 file raw trên,
+thêm `tools/verify/initialize_array_inventory.py` + test của họ (**5 test**, tổng **45**).
+
+### 23.1 Vì sao chuyện này quan trọng
+
+`ia-resolved.json` **đã nằm trong repo từ trước**, nhưng bộ spec lại đi **xin dump** — tức là sai ở khâu
+**kiểm tra cái mình đang có**. Từ nay luật số **4** của `RAW_AUDIT.md` bắt buộc: *grep `reverse-engineering/`
+trước khi xin dữ liệu*.
+
+### 23.2 Cái mới thực sự dùng được
+
+`Board_Players.allBasicAtk` (float[24]) và `allDeltaAtk` (float[24] = **0,168** × 24) — **tên field đã bind
+theo asm**, nhưng **consumer chưa đọc** ⇒ ghi **B**, chưa gọi là “damage theo rank”. Chi tiết: `MISSING` §2.2c.

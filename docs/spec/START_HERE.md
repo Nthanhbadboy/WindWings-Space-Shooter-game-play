@@ -17,7 +17,7 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **68** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **71** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
 | `datas/` | JSON/CSV bóc trực tiếp | **34** file · 13 MB | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
@@ -34,7 +34,7 @@
 | `reverse-engineering/il2cpp/ia-resolved.json` | **Hex thật của mọi `InitializeArray`** | **576** mảng map · **6** mảng `Player_Get_Datas` (0 record lỗi) | **damage/rate/cost từng tàu**, danh sách wave của bảng map |
 | `datas/player_start_stats.json` | 6 mảng đã decode + DPS suy ra | **24** tàu · **16** bán được · **8** giá `−1` | dựng bảng cân bằng tàu, không đoán |
 | `reverse-engineering/raw/player-loadout/` | Mảng int + asm `Player_Saved_Datas` | **5 blob · 49 int · 5/5 sha256 OK** | giá craft/unlock, chứng cứ save |
-| `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **170 RAW · 2 DOC · 28 CONST / 200** | biết số nào tái đo được, số nào "đo một lần" |
+| `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **175 RAW · 3 DOC · 28 CONST / 206** | biết số nào tái đo được, số nào "đo một lần" |
 | `tools/` | **9** script đo lại được | — | `verify-claims.py`, `art-study.py`, `classify-by-atlas.py`, … |
 
 **Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **34** file `datas/`.
@@ -164,6 +164,10 @@ Gradient p50 **0,20–0,26** ở 5 nhóm chủ thể, **nhưng** `background` **
 | 15 | **“573 blob còn lại cần dump”** | **576** là số `InitializeArray`; 3 entry mở đầu dựng bằng **literal store** ⇒ **không** trừ. Và hex đã có trong `reverse-engineering/il2cpp/ia-resolved.json` — thiếu là phần **bind**, không phải phần **dump** |
 | 16 | **Cột `ints` = damage** | Cột đó là **bit pattern**. `PlayerCosts` là **int[24]**; ba mảng damage/rate là **float[24]**; hai mảng **float[3]** ⇒ phải unpack theo kiểu field |
 | 17 | **Zip CRC PASS ⇒ đủ asset** | Pack draft có **151** path bị nhiều row cùng dùng · **321** row gộp path · **320** size mismatch; `complete APK reference` = **NOT ESTABLISHED** (`DATA_SYNC.md` §21.2) |
+| 18 | **“Thiếu blob, phải xin nhánh kia dump lại”** | `ia-resolved.json` **đã có** **576** mảng Map + **6** mảng Player + 5 nhóm `Board_*` (17 method · **623** record). Thiếu là **decode + bind**, không phải dump. Trước khi xin dữ liệu: `grep reverse-engineering/` trước (`RAW_AUDIT` luật 4) |
+| 19 | **`levelDelta` = 2,1 (hoặc 3,6 đọc bằng mắt)** | Float32 `0x40666666` = **3,6**; giải đúng ra **`[1, 0 · 2,0 · 3,6 · 3,6]`** — và nó scale **phần thưởng**, **không** scale HP (`BALANCE` §6.4, claim **IAB2**) |
+| 20 | **“Bảng HP enemy 981 dòng”** | 981 là **số prefab**. `Enemy_Get_Datas.cctor` chỉ có **150** lệnh insert (id **30001–31017**), giá trị là **float trong `.rodata`** ⇒ thiếu **`.so`**, không thiếu “class chưa dump” (claim **IAB1**) |
+| 21 | **“5 nhóm `Board_*` đã hiểu”** | Mới bind được **2** field (`allBasicAtk` float[24], `allDeltaAtk` = 0,168×24); 3 nhóm còn lại (Drones ×2, Endgame, Players.ctor) **chưa có consumer** ⇒ mức **B**, cấm gán “HP tàu = 4.640” (`MISSING` §2.2c) |
 
 
 ---
@@ -171,7 +175,7 @@ Gradient p50 **0,20–0,26** ở 5 nhóm chủ thể, **nhưng** `background` **
 ## 6. Tự kiểm trước khi tin bất kỳ con số nào
 
 ```bash
-python3 tools/verify-claims.py                 # 180 PASS · 0 FAIL · 2 SKIP · 0 ERROR
+python3 tools/verify-claims.py                 # đọc dòng cuối: PASS/FAIL/SKIP/ERROR (đừng chép số vào đây)
 python3 tools/verify-claims.py --only AQ       # riêng nhóm wave/đơn vị
 python3 -m unittest discover -s tests -q       # 5 test luật phân loại
 python3 tools/data-integrity.py; echo $?       # 0 = không có file gốc nào bị sửa tay

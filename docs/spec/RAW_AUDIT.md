@@ -6,16 +6,16 @@
 
 ## 0. Tổng
 
-**RAW 170 · DOC 2 · CONST 28 · tổng 200**
+**RAW 175 · DOC 3 · CONST 28 · tổng 206**
 
 | loại | số claim | nghĩa |
 |---|---:|---|
-| **RAW** | **170** | hàm đo **mở file** trong `datas/` · `reverse-engineering/` · `docs/assets/` |
-| **DOC** | **2** | chỉ đọc `docs/**` — kiểm tính nhất quán tài liệu, **không** phải dữ liệu gốc |
+| **RAW** | **175** | hàm đo **mở file** trong `datas/` · `reverse-engineering/` · `docs/assets/` |
+| **DOC** | **3** | chỉ đọc `docs/**` — kiểm tính nhất quán tài liệu, **không** phải dữ liệu gốc |
 | **CONST** | **28** | **không mở file** — số đo một lần, không tái đo bằng máy |
-| **cộng** | **200** | |
+| **cộng** | **206** | |
 
-⇒ **170/200** claim tái đo được từ raw. **28** claim là hằng số (xem §2) — dùng để **tham khảo**, không dùng làm bằng chứng khi thiết kế.
+⇒ **175/206** claim tái đo được từ raw. **28** claim là hằng số (xem §2) — dùng để **tham khảo**, không dùng làm bằng chứng khi thiết kế.
 
 ## 1. Cách phân loại
 
@@ -65,6 +65,7 @@
 | claim | tài liệu | ghi chú |
 |---|---|---|
 | **P1** | `COVERAGE_AUDIT.md` | quy mô tài liệu hiện có trong docs/spec |
+| **IA8** | `START_HERE.md` | số PASS/FAIL đổi mỗi lần thêm claim ⇒ tài liệu chỉ được ghi LỆNH, không chép kết quả |
 | **RD1** | `README.md` | mỗi dòng `N dòng · M bảng` trong bảng tài liệu README được đo lại từ file thật; lệch 1 dòng là FAIL |
 
 ## 4. Luật dùng số
