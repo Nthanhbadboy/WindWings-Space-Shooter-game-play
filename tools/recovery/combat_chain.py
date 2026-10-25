@@ -160,7 +160,7 @@ def main():
             shards=[p.name for p in shards]),indent=2)+'\n')
         files = [out / 'referenced-cells.json.gz', out / 'symbols.json.gz', out / 'component-index.json', *shards, *list(sorted((out / 'native').iterdir()))]
         for path in files:
-            if path.suffix == '.json':
+            if path.parent.name == 'native' and path.suffix == '.json':
                 info = json.loads(path.read_text())
                 assert info['methods']
         assert {p.name for p in (out / 'native').iterdir()} == {re.sub(r'[^\w.]', '_', c) + ext for c in CLASSES for ext in ('.asm.txt', '.json')}
