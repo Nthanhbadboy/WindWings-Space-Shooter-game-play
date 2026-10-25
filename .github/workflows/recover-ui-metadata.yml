@@ -1,0 +1,51 @@
+name: Recover UI metadata evidence
+on:
+  push:
+    paths: ['.github/workflows/recover-ui-metadata.yml']
+permissions:
+  actions: read
+  contents: write
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: windwings-analysis
+          run-id: 40180363840
+          github-token: ${{ github.token }}
+          path: /tmp/ui-metadata-evidence
+      - name: Keep only UI metadata slots (no original binary/assets)
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          p = next(Path('/tmp/ui-metadata-evidence').rglob('script.json'))
+          d = json.loads(p.read_text())
+          wanted = {0x2adc6b0,0x2adc840,0x2adc768,0x2adbde8,0x2adbd98,0x2adc200,
+                    0x2addc78,0x2addc68,0x2addc70,0x2addce0,0x2addcf0,0x2addcc0}
+          def number(v):
+              if isinstance(v,int): return v
+              try: return int(v,0)
+              except (ValueError,TypeError): return None
+          rows = {}
+          for k, values in d.items():
+              if k not in ('ScriptMetadata','ScriptMetadataMethod','ScriptString'): continue
+              rows[k] = [r for r in values if number(r.get('Address')) in wanted]
+          out = {'status':'PROVISIONAL','source_run':40180363840,
+                 'source_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),
+                 'source_keys':list(d),'requested_addresses':[hex(a) for a in sorted(wanted)],
+                 'rows':rows}
+          dest=Path('reverse-engineering/raw/ui-audit/metadata-slots.json')
+          dest.parent.mkdir(parents=True,exist_ok=True)
+          dest.write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
+          print({k:len(v) for k,v in rows.items()})
+          assert any(rows.values()), 'No matching slots: do not claim resolution'
+          PY
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/ui-audit/metadata-slots.json
+          git diff --cached --quiet || git commit -m 'research(ui): recover exact UI metadata slots from run 40180363840 [skip ci]'
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
