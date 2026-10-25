@@ -16,6 +16,32 @@ jobs:
           run-id: 40180363840
           github-token: ${{ github.token }}
           path: /tmp/ui-metadata-evidence
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+          fail-on-cache-miss: true
+      - name: Read native relocation source from pinned cached APK
+        run: |
+          python3 - <<'PYCODE'
+          from pathlib import Path
+          import hashlib,io,zipfile
+          p=Path('/tmp/apk/windwings.xapk')
+          # The cache key pins the source; record actual hash and enforce the
+          # same checksum as the acquisition pipeline before trusting joins.
+          expected='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==expected
+          dest=Path('/tmp/ui-native'); dest.mkdir(exist_ok=True)
+          with zipfile.ZipFile(p) as outer:
+              for entry in outer.namelist():
+                  if not entry.endswith('.apk'): continue
+                  with zipfile.ZipFile(io.BytesIO(outer.read(entry))) as apk:
+                      name='lib/arm64-v8a/libil2cpp.so'
+                      if name in apk.namelist():
+                          (dest/'libil2cpp.so').write_bytes(apk.read(name))
+                          break
+          assert (dest/'libil2cpp.so').exists()
+          PYCODE
       - name: Keep only UI metadata slots (no original binary/assets)
         run: |
           python3 - <<'PY'
@@ -29,16 +55,26 @@ jobs:
               if isinstance(v,int): return v
               try: return int(v,0)
               except (ValueError,TypeError): return None
+          import sys
+          sys.path.insert(0,'tools/apk-analyze')
+          import il2cpp_consts as native
+          so=Path('/tmp/ui-native/libil2cpp.so')
+          blob=so.read_bytes()
+          native.RELOCS.update(native.elf_relocs(str(so)))
+          segs=native.elf_segments(str(so))
+          effective={a:native.slot_value(blob,segs,a) for a in wanted}
           rows = {}
           for k, values in d.items():
               if k not in ('ScriptMetadata','ScriptMetadataMethod','ScriptString'): continue
-              rows[k] = [r for r in values if number(r.get('Address')) in wanted or
+              rows[k] = [r for r in values if number(r.get('Address')) in wanted | set(effective.values()) or
                          any(name in str(r.get('Name', r.get('Value', ''))) for name in
                              ('Board_Endgame', 'GP_Tutorials', 'Stage_Datas', 'GP_Setup',
                               'ScenesManager', 'BoardManager', 'Tutorial', 'tutorial'))]
           out = {'status':'PROVISIONAL','source_run':40180363840,
                  'source_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),
                  'source_keys':list(d),'requested_addresses':[hex(a) for a in sorted(wanted)],
+                 'native_sha256':hashlib.sha256(blob).hexdigest(),
+                 'slot_effective_addresses':{hex(k):hex(v) if v is not None else None for k,v in effective.items()},
                  'rows':rows,'samples':{k:v[:3] for k,v in d.items() if k in rows}}
           dest=Path('reverse-engineering/raw/ui-audit/metadata-slots.json')
           dest.parent.mkdir(parents=True,exist_ok=True)
