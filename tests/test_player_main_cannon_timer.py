@@ -1,4 +1,6 @@
 import unittest
+import gzip
+import re
 from pathlib import Path
 from tools.verify.player_main_cannon_timer import Timer, step, f32
 
@@ -52,3 +54,8 @@ class MainCannonTimerTests(unittest.TestCase):
             r'0x147c338: bl\s+#0x123b7a4',
         ]:
             self.assertRegex(text, pattern)
+
+    def test_ability_getter_declaring_class(self):
+        dump = gzip.decompress((ROOT / 'reverse-engineering/il2cpp/dump.cs.gz').read_bytes()).decode()
+        prefix = dump[:dump.index('// RVA: 0x14C7758')]
+        self.assertRegex(re.findall(r'public class [^\n]+', prefix)[-1], r'^public class GP_Datas :')

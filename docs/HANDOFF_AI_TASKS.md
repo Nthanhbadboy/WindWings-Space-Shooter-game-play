@@ -711,7 +711,7 @@ Xem79 + raw/player-firing; 3targeted evidence testsPASS, khôngruntimeapproval.
   rồi đặt maindeadline. Cảmain/extra deadlines đều gate, khôngcatch-up trongspanđọc.
 - MainCannonShoot duyệt mainCannonBarrels rồi tailbranchMainCannonAttack:
   rank3→2 vòng,rank>=4→4; pool/component/setup gates nên khôngđếm nhưsuccessfulhits.
-- OnEnable extra-count=Player_Ability.GetNumberAbility(4),demo0; khôngdùng ctordefault1
+- OnEnable extra-count=GP_Datas.GetNumberAbility(4),demo0; khôngdùng ctordefault1
   thaypost-enable. Level(get_Level) khácrank@0x44.
 - Collision callbackbody: critcomparison→virtualdamagegetter→Damager→interfacedispatch;
   chưaresolve emitterdelegate/interface type-pointer nên chưachứngminh mọi bullet dùngcallbacknày.

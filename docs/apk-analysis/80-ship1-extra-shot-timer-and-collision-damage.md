@@ -33,7 +33,7 @@ Cả hai gate đều được kiểm: khoảng nghỉ nhóm kế tiếp có th�
 nếu extra_delay lớn hơn main interval. Vì vậy không thể chỉ lấy `N / interval` làm rate.
 
 `OnEnable0x147a634..650` gọi getter với argument4 rồi ghi extra-count; demo chọn0.
-Dump resolve0x14c7758 = `Player_Ability.GetNumberAbility(int)` (argument4), không suy
+Dump resolve0x14c7758 = `GP_Datas.GetNumberAbility(int)` (argument4), không suy
 con số thực của getter từ constructor. `.ctor0x147cd74/78` ghi count1 và delay bits
 `0x3e4ccccd` (~0.2f), nhưng **constructor defaults không chứng minh trạng thái sau OnEnable**.
 
