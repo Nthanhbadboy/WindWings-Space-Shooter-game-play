@@ -820,3 +820,17 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 
 - Receipt91: code4b7a01a69, Verify40217833652 SUCCESS/job56s; full648 local PASS39.654s.
   Findings/review PR12comment6400980901; HP/Board tasks answered, chưa tự ACK90/91.
+
+## Report92 — Đã trả lời modern drone binding/loadout/serialized turnRate
+- Report `docs/apk-analysis/92-modern-drone-resource-bindings-and-loadout.md`, contract
+  `datas/drone_loadout_flow.json`; raw/drone-prefabs + raw/drone-loadout giữ đủ pointer/bytes/native.
+- Đủ12 ResourceManager→rootGO→MonoScript/id bindings20001..20012; thêm24 bản UI tách riêng.
+  Drone3 resource serialized turnRate=1.0, không ctor8; OnEnable không ghi đè turnRate.
+- GP_Setup getter **new int[2] mỗi lần**, mode4 trả0/0, còn lại saved DroneUsed0/1.
+  StartDrones gọi getter từng slot, prefix Prefabs/Drones/Drone_, localScale f32.8/ .8/1,
+  positions±20,−20,0, SetActive true. Không nhét dedup vào loader: routine riêng sửa slot0.
+- 35new/full683tests PASS42.905s, datas validate PASS;5ranges319instructions29anchors4symboljoins.
+- ACK90/91 đã nhận6401051274. Review peer de2d1366: còn event2/player-route wording,
+  AutoGain guardCurrent>0/level0zero, map footer stale; feedback receipt raw/peer-review/review92-*.
+- Spec nhập ba đáp án drone trên; reverse tiếp23wing implementations/named map-save consumers.
+  Không coi batch này đóng hai nhóm đó; không đợi ACK để làm tiếp.
