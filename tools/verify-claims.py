@@ -1476,6 +1476,77 @@ claim("M2", READY, "| `rate = 0` (trong `Call_Data`) | **295** | 1 | **6** |", (
 claim("M3", READY, "và 1.203 spawner `rate = 0` có **>1 quân**", (1203, 30),
       waves_rate0_big, "có burst 30 quân ⇒ phải đọc là 'không giãn cách'")
 
+# ── N. hai manifest kéo thêm: Spine event + bản đồ độ sâu UI ───────────
+# Cả hai đều là *manifest*: dữ liệu tổng hợp do nhánh kia sinh, nên phép kiểm
+# là "đếm lại trên file", không phải "tin báo cáo".
+
+UI_DOC = "docs/spec/UI.md"
+SPINE_EVENTS = "docs/apk-analysis/spine-events.csv"
+UI_INDEX = "reverse-engineering/raw/ui/_index.csv"
+
+
+def _csv_rows(path: str):
+    key = "csv:" + path
+    if key in _cache:
+        return _cache[key]
+    raw = ref_blob(path)
+    val = None
+    if raw:
+        try:
+            val = list(csv.DictReader(io.StringIO(raw.decode("utf-8", "replace"))))
+        except (UnicodeDecodeError, csv.Error):
+            val = None
+    _cache[key] = val
+    return val
+
+
+def spine_event_stats():
+    """(tổng dòng, event trong skeleton__21, tên phân biệt trong rig đó)."""
+    rows = _csv_rows(SPINE_EVENTS)
+    if not rows:
+        return None
+    rig = [r for r in rows if r.get("rig") == "skeleton__21"]
+    return (len(rows), len(rig), len({r.get("event") for r in rig}))
+
+
+def ui_index_stats():
+    """(instance, lớp, tổng node, tổng button) của `_index.csv`."""
+    rows = _csv_rows(UI_INDEX)
+    if not rows:
+        return None
+    def total(k):
+        out = 0
+        for r in rows:
+            try:
+                out += int(r.get(k) or 0)
+            except ValueError:
+                pass
+        return out
+    return (len(rows), len({r.get("class") for r in rows}), total("nodes"), total("buttons"))
+
+
+def ui_class_gap():
+    """(lớp chỉ có trong screens.csv, tên lớp lồng, không có instance trong dump)."""
+    idx = {r.get("class") for r in (_csv_rows(UI_INDEX) or [])}
+    scr = {r.get("class") for r in (_csv_rows("docs/spec/screens.csv") or [])}
+    if not idx or not scr:
+        return None
+    only = scr - idx
+    nested = {c for c in only if "." in c}
+    return (len(only), len(nested), len(only) - len(nested))
+
+
+claim("N1", SCRIPT, "**`skeleton__21`: 6 event · 2 tên phân biệt**", (21, 6, 2), spine_event_stats,
+      "22 dòng toàn bảng; rig boss 1 chỉ có 2 tên ⇒ tập ứng viên của BossSpineEventHandler là A")
+
+claim("N2", DATA_SYNC, "**733 instance · 114 lớp · 103.227 node · 5.174 nút**",
+      (733, 114, 103227, 5174), ui_index_stats,
+      "manifest UI: đếm lại trên file, không chép báo cáo")
+
+claim("N3", UI_DOC, "**11 lớp = 4 tên lớp lồng + 7 không có instance trong dump.**", (11, 4, 7),
+      ui_class_gap,
+      "giải thích 125 vs 114: cùng một tập, khác cách đặt tên + 7 màn không dump")
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:

@@ -141,6 +141,23 @@ trên các static `MethodInfo` cache).
 Hai tên đó **không có literal trong asm** (field serialized). Ứng viên duy nhất là **2 tên event
 có thật trong rig**: `Stop` và `Banplasma` — nhưng **không biết tên nào vào slot nào** ⇒ mức **B**.
 
+**Nguồn thứ hai, độc lập** — `docs/apk-analysis/spine-events.csv` (21 dòng dữ liệu, kéo từ nhánh dữ liệu
+24/10) xác nhận đúng **2 tên event** đó, kèm mốc thời gian:
+
+| rig | animation | event | mốc (s) |
+|---|---|---|---|
+| `skeleton__21` | `Attack3` | `Stop` ×**5** | 0,6333 · 3,3 · 5,8667 · 8,2 · 10,6 |
+| `skeleton__21` | `Attack4` | `Banplasma` ×1 | 0,7 |
+| `skeleton__8` | — | **không có event nào** | — |
+| `skeleton__17` | `Attack01…12` | `Shot` ×12 | 0,3333 (mỗi clip) |
+
+**`skeleton__21`: 6 event · 2 tên phân biệt** (5×`Stop` + 1×`Banplasma`).
+
+⇒ Với rig boss 1, **chỉ tồn tại 2 tên**: `Stop` và `Banplasma` — nên 2 slot chuỗi của
+`BossSpineEventHandler` **chắc chắn** lấy từ tập này (mức **A** cho *tập ứng viên*). Còn **slot nào
+là tên nào** thì vẫn **B**. Đọc thêm: `Stop` nằm trong `Attack3` (12,667 s) cách nhau ~2,4 s ⇒ nó là
+nhịp **tắt/bật một bộ phận** giữa đòn, khớp với hành vi `set_enabled` ở bảng trên.
+
 > **Chưa biết lớp này có ai dùng hay không:** `BossSpineEventHandler` **không có** trong
 > `script-links.jsonl.gz` (5 instance của `BossAnimationEvents`, **0** của lớp này) và **không có**
 > trong `typetrees/`. Nhưng tập `script-links` chỉ phủ các lớp nằm trong `TARGETS`, nên **không

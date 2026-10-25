@@ -1623,3 +1623,22 @@ vẫn có thể là "số quân/giây" với 0 = không spawn. Xem `DESIGN_READI
 - **Không có** `Boss1_AnimationEvents` trong `scriptableobjects/` (chỉ có asm của nó) ⇒ T2 vẫn nguyên.
 - 23 file `*_AnimationEvents.csv` chỉ có **field serialized**; field **delegate** không serialize nên
   **không** xuất hiện ⇒ không giúp tìm "ai gán delegate".
+
+### 10.3 Kéo tiếp cùng đỉnh `019e704d1` (24/10, lần 2)
+
+Vẫn **không có commit mới** trên nhánh dữ liệu. Lấy thêm **phần nhỏ nhưng nặng thông tin**:
+
+| Cây | Lấy | Bỏ | Vì sao |
+|---|---|---|---|
+| `docs/apk-analysis/**` (md + csv) | **140 file · 6,5 MB** | ảnh `.png` | báo cáo gốc + CSV; ảnh đã có contact-sheet riêng |
+| `reverse-engineering/raw/ui/_index.csv` · `_skipped.csv` | **2 file** | 53.316 file `.json.gz` (142,7 MB) | **manifest** cho biết từng màn có bao nhiêu node/nút — đủ để thiết kế, không cần asset |
+
+Hai món mở được ngay:
+
+| Món | Số | Dùng vào đâu |
+|---|---|---|
+| `spine-events.csv` | **21 dòng** (rig × animation × time × event) | xác nhận rig boss 1 **chỉ có 2 tên event** (`Stop` ×5 trong `Attack3`, `Banplasma` trong `Attack4`) ⇒ `ANIMATION_SCRIPT.md` §2.2 lên **A** cho *tập ứng viên* |
+| `_index.csv` | **733 instance · 114 lớp · 103.227 node · 5.174 nút** | `UI.md` §9 — độ sâu bố cục từng màn; giải thích luôn vì sao **114 ≠ 125** |
+
+**Một điều phải ghi:** `_index.csv` (114 lớp) là **tập con** của `screens.csv` (125 lớp); 11 lớp
+thiếu gồm 4 tên lớp lồng và 7 màn/popup **không có instance nào trong dump**. Đừng tráo hai số.

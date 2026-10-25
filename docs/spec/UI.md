@@ -462,7 +462,42 @@ Nguồn: field `popup*` của `Board_Arena`, `Board_PVP`, `Board_BattlePassPro`,
 
 ---
 
-## 9. Nguồn
+## 9. Manifest chi tiết từ `_index.csv` (kéo 24/10)
+
+Nguồn mới: `reverse-engineering/raw/ui/_index.csv` — manifest của **733 instance UI** đã dump (mỗi
+dòng: `class, root_path_id, nodes, text_nodes, buttons, bytes, file`). Đây là **bản đồ độ sâu** của
+từng màn, thứ mà `screens.csv` không có.
+
+| Số đo | Giá trị |
+|---|---:|
+| instance UI | **733** |
+| lớp phân biệt | **114** |
+| tổng node | **103.227** (trung vị **25**/màn, max **6.000**) |
+| tổng **button** | **5.174** (trung vị **2**/màn, max **341**) |
+| tổng text node | **12.910** (trung vị **3**) |
+
+Ba màn nặng nhất theo số nút: **`Board_Maps` 341** · **`Board_Shop` 170** · **`Board_PVP` 161**.
+Instance nhiều nhất: **`Popup_Notices` 440** (một lớp, 440 biến thể) · `Tab_BattlePass` 29 ·
+`Popup_BuyMoreGems` 20.
+
+### 9.1 Vì sao `_index.csv` có 114 lớp còn `screens.csv` có 125
+
+Giao của hai tập = **114** (đúng bằng `_index`), tức `_index ⊂ screens.csv`. 11 lớp còn lại chia
+làm hai nhóm:
+
+| nhóm | lớp | đọc là |
+|---|---|---|
+| **tên lớp lồng** (4) | `Board_Arena.ArenaRewards` · `Board_BattlePassPro.BattlePassMission` · `Board_EventSeasonPass.EventRewards` · `Board_Reborn.SortPlayerLevelStruct` | cùng một màn, khác cách đặt tên ⇒ **không mất gì** |
+| **không có instance trong dump** (7) | `Board_Settings` · `Board_YourTeam` · `Board_Droids` · `Cell_Select` · `Popup_Confirm` · `Popup_Notice` · `Popup_Redeem` | hoặc sinh lúc chạy, hoặc scene chưa được dump ⇒ **chưa có bố cục** |
+
+**11 lớp = 4 tên lớp lồng + 7 không có instance trong dump.**
+
+⇒ Dùng **125** khi cần *danh sách màn*, dùng **733 / 114** khi cần *độ sâu bố cục*. Hai số **không
+mâu thuẫn**; đừng tráo cho nhau (đây đúng là lỗi "đếm hai tập rồi ghi một dòng" đã 5 lần trong repo).
+
+---
+
+## 10. Nguồn
 
 `docs/apk-analysis/08-ui-map.md` · `docs/apk-analysis/07-enums.md` (`BoardID`, `LoadBoardMode`,
 `ShopTab`, `PurchaseType`) · `docs/apk-analysis/12-localization.csv`
@@ -472,3 +507,5 @@ Nguồn: field `popup*` của `Board_Arena`, `Board_PVP`, `Board_BattlePassPro`,
 `Box_Rewards.csv` (800 khung thưởng theo board) · `docs/spec/screens.csv`.
 
 > Số liệu kinh tế của từng board (có bao nhiêu ô shop, bao nhiêu ô thưởng): `ECONOMY.md` §2–§3.
+
+---
