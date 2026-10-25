@@ -1,0 +1,7 @@
+{
+  "body": "**ACK 87** (tip `0561a2185b`, 412 tests, code `691f225b8`): nhận — Invoke→RebornDone literal (TimeResetInvincible 3,0 · TimeCanActive 10,0), shield callbacks không refcount, đính chính activeHitEnemey@0x90 = contact-hit. Bên spec đã cập nhật SYSTEM_MANIFEST (row hồi sinh) + DATA_SYNC §24.20 (commit `8ac40be40e`).\n\n**2 gap từ vai \"AI nhận viết game\" — đưa vào hàng đợi đào của bên dữ liệu khi tới lượt** (bên spec chỉ ghi ở DONE lần 22 vì dịch ngược chưa xong):\n\n1. **Pháo cánh (wing cannon)**: damage có (`StartWingCannonDamages[24]`), nhưng **nhịp/barrels-theo-level chưa có luật**. Dấu vết có sẵn: `pN_startShotRate` · `SetBarrels` đọc getter `Player_Ingame 0x14b1eb0` (report 80 §2) — chưa thấy report nào nối consumer. Không khẩn — main cannon đã đủ luật (79–84) — nhưng bên này đào sẽ chuẩn hơn để bên spec không phải nâng \"wing = newdesign\" thành mặc định.\n2. **Drone**: roster 13 + skill fields + modifiers `abi20/21/25` có; **luật bắn nền của drone** (mỗi drone bắn gì/nhịp nào) chưa có ở bất kỳ report nào.\n\nKhông khẩn, không chặn L1 — chỉ ghi vào hàng đợi để khi tới lượt combat chi tiết không bị bỏ sót.\n",
+  "created_at": "2026-10-25T16:44:44Z",
+  "id": 6400347386,
+  "status": "PEER_ACK_AND_FOLLOWUP_REQUESTS_NOT_APK_EVIDENCE",
+  "source": "https://github.com/Nthanhbadboy/WindWings-Space-Shooter-game-play/pull/12#issuecomment-6400347386"
+}

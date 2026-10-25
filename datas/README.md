@@ -1,5 +1,10 @@
 # `datas/` — data pack WindWings
 
+## Enemy hit producers / gold burst — report88
+
+`enemy_hit_callback_flow.json`:4 exact constructor callback/listener joins +6 type joins,2 exact literals/4 raw cells,16 method ranges/1256instructions/56anchors và19 serialized co-attachments. `python3 -m tools.verify.enemy_hit_callback_flow [--check]`; `enemy_hit_callback_models.py`,38tests mới. Producer skeleton overwrite vsDropGold Combine; strict HP threshold/oneevent; budget28→8objects; actual `_Black`/CancelEffect. Không đồng nhất spawn budget với currency, directmetadata census với indirectwriterclosure, hoặc co-attachment với actualspawn. Raw `reverse-engineering/raw/enemy-hit-callbacks/`; [report88](../docs/apk-analysis/88-enemy-hit-producers-and-gold-burst-chain.md).
+
+
 ## Reborn/shield/zone state — report87
 
 `player_shield_flow.json`: Invoke string exact ELF RELA→metadata literal RebornDone, packed initializer3/10, TypeInfo/typed-field joins,7 method roots/417 instructions,32 primary anchors +6 cross-root checks. `python3 -m tools.verify.player_shield_flow [--check]`;18 tests mới. **Correction:** Lifecycle.hit_enemy_enabled tương ứng Physics.activeHitEnemey@90, không phải movement. Shield callbacks không refcount; zone list không OR protection. [Report87](../docs/apk-analysis/87-reborn-invincibility-shields-and-zone-state.md), raw/player-invincibility gồm provenance/toolchain format reference; không Unity timing approval.

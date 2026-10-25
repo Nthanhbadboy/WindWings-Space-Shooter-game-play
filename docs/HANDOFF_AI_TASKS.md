@@ -1,6 +1,13 @@
 # Phân việc vòng 4 — cái còn thiếu thật
 
-## Hiện hành — report87: end-invincibility, shield và invisible-zone
+## Hiện hành — report88: producer địch thật → FX/gold/items
+
+[Report88](apk-analysis/88-enemy-hit-producers-and-gold-burst-chain.md), `datas/enemy_hit_callback_flow.json`: **16 method ranges/1256 instructions/56 anchors,19 serialized co-attachments**,4 exact callback/listener bindings +6 type joins. Skeleton.Start **overwrite** hitCallback; DropGold.Start **Combine** hitDamageCallback; Test_Enemy.Combine chỉ là component test, không thay gameplay producer. Skeleton17 và DropGold2 trên GO cóHealth đã joinfile-qualified/membership, không tự coi đãspawn. DropGold ctor28/10/iPlus1, strictlost>iPlus×10, mỗi invocation chỉ1event, damage argumentunused. Event6→Items_Manager chia spawn budget:28→3×70001+5×70002 (8objects),không28objects/28tiền; radius4pieces literal6766e63f khácnearest1.8. Đã đọc ellipsehelper +pool/IItem/explicitactivation, không measured playback.
+
+**Đã ACK87** ở PR12comment6400347386, peertip8ac40be40e; chưa ACK88. AI spec cập nhật findings88 cùng87, không merge/push nhánhpeer. **Tiếp static:** pickupbranch Player_Physics.ItemCollected14bc328/OnTriggerEnter2D14bc9c0→Controller.OnCollectCoin1/2 để nối collectedcurrency, không suy giá trị nhặt từchia5. Queuepeer: wing-cannon SetBarrels/getter14b1eb0 và dronebasefire; reviewrawđãcó trước khi gọi thiếu dữliệu. Khôngreopenpool-history/screenshot/runtime để né static. Recovery40213095828SUCCESS33s/raw098135279, mediarelease vẫn draft.
+
+
+## Lịch sử — report87: end-invincibility, shield và invisible-zone
 
 [Report87](apk-analysis/87-reborn-invincibility-shields-and-zone-state.md), `datas/player_shield_flow.json`: đã nối GOT2ae8560→RELA2be4670→metadata literal **RebornDone**, initializer delay3/10;7 roots/417instructions và18 tests mới. Không còn ghi Invoke target unknown hay tự gán2s. **Sửa85/86:** Physics.activeHitEnemey@90 là enemy-contact hit, KHÔNGmovement; Controller+48 là Player_Talent, bool20=reborning, KHÔNGinput. RebornDone giữ invincible ở shield branches, chỉ clear trực tiếp khi4flagsfalse; preserve≠settrue. Shield callbacks aggregate skill/101/103, không refcount rebirth/onehit. SetInvisible heal setup trước live reborn guard, exit A còn B vẫn clear invisible; không tự thêm replay zone trong RebornDone.
 

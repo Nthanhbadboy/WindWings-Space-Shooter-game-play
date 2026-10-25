@@ -1,5 +1,10 @@
 # Kết luận — trạng thái và độ tin cậy
 
+## Report88 — callback producers đã nối đến burst item thật
+
+[Report88](apk-analysis/88-enemy-hit-producers-and-gold-burst-chain.md): skeleton overwrite hitCallback, DropGold Combine hitDamageCallback, exact bindings từ ELFRELA/metadata.19 co-attachments,16 method ranges/1256instructions,56anchors. DropGold đọc tỷ lệ HP hiện tại/strictthreshold, không dùngdamageargument/không catchup nhiều mốc. Event6→Items_Manager→budget28 thành8item→ellipsehelper→pool/IItem/explicitactivation. Chia5 không chứng minh collectedcurrency; non-nearest radius literal6766e63f được giữ.38tests mới, khôngUnityplayback haywhole-program indirectwriterclosure. Peer ACK87, chưa ACK88; queuewing/drone được ghi chứ không giả định toàn bộrawthiếu.
+
+
 ## Report87 — Invoke đã bóc, khiên và zone state đã nối
 
 [Report87](apk-analysis/87-reborn-invincibility-shields-and-zone-state.md): raw ELF RELA→encoded metadata literal chứng minh Invoke **RebornDone**, initializer TimeResetInvincible=3 và TimeCanActiveInvincible=10 (không wall-clock approval).7 roots/417 instructions; bốn shield flags không phải refcount; SetInvisible heal trước reborn guard, exit không OR theo số zone. **Erratum85/86:** Physics.activeHitEnemey@90 là contact-hit, không movement; Controller+48 là Talent, không input.18 tests mới, full412 PASS/Verify40212492774 SUCCESS56s, có branch combinations/live reread. Peer đã ACK85/86 tại6400213174, chưa ACK87. `datas/player_shield_flow.json`, raw/player-invincibility. Tiếp producer hitCallback/hitDamageCallback thật của Enemy_Health, không lặp inventory hay pool-history.
