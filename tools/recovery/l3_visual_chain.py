@@ -70,7 +70,7 @@ def main():
                 except Exception as e:row.update(status='unresolved',error=repr(e))
     while queue:
         obj=queue.popleft();kind=obj.type.name;row=dict(**ident(obj),raw_object_sha256=sha(obj.get_raw_data()));records[key(obj)]=row
-        if len(records)>150000:raise RuntimeError('explicit graph budget exceeded; do not silently truncate')
+        if len(records)>300000:raise RuntimeError('explicit graph budget exceeded; do not silently truncate')
         try:
             cls=''
             if kind=='MonoBehaviour':row.update(classify(obj));cls=row['class_name']
@@ -103,4 +103,11 @@ def main():
     rows=[r for _,r in sorted(records.items())];assert all(rows)
     index=dict(schema=1,provisional=True,status='PINNED_SERIALIZED_VISUAL_CHAIN_NOT_RENDER_OR_RUNTIME',xapk_sha256=XAPK_SHA,inputs=inputs,tool_sha256=sha(Path(__file__).read_bytes()),toolchain=dict(UnityPy=UnityPy.__version__),roots=roots,resource_roots=resource_rows,files=[dict(serialized_file=n,externals=[dict(path=e.path,type=e.type) for e in sf.externals]) for n,sf in files],objects=chunks(rows,'objects'),links=chunks(links,'links',2000),counts=dict(Counter(r['type'] for r in rows)),read_failures=[{k:r[k] for k in ('serialized_file','path_id','type','error')} for r in rows if r['status']=='failed'],header_only=[{k:r[k] for k in ('serialized_file','path_id','class_name','tree_error')} for r in rows if 'tree_error' in r],unresolved_link_count=sum(l['status']=='unresolved' for l in links))
     (out/'index.json').write_text(json.dumps(index,indent=2)+'\n');print(json.dumps(dict(objects=len(rows),links=len(links),counts=index['counts'],read_failures=len(index['read_failures']),header_only=len(index['header_only']),unresolved=index['unresolved_link_count'])))
-if __name__=='__main__':main()
+if __name__=='__main__':
+    try:main()
+    except Exception:
+        import traceback
+        detail=traceback.format_exc()
+        print('::error::'+detail.replace('%','%25').replace('\r','%0D').replace('\n','%0A'),flush=True)
+        raise
+
