@@ -9,6 +9,7 @@ from spine_identity import walk_pointers
 ROOT=Path(__file__).resolve().parents[2]
 ASSETS={'Sprite','SpriteAtlas','Material','Texture2D','AnimationClip','AnimatorController','AnimatorOverrideController','AudioClip','Shader','Mesh','Avatar','TextAsset'}
 BUILTINS={'GameObject','Transform','RectTransform','SpriteRenderer','SpriteMask','MeshRenderer','SkinnedMeshRenderer','MeshFilter','ParticleSystem','ParticleSystemRenderer','Animator','Animation','AudioSource','Canvas','CanvasRenderer','Camera','SortingGroup','Light'}
+CORE_UI={'Board_Home','Board_Maps','Board_Stage','Board_Players','Board_Drones','Board_Pause','Board_Reborn','Board_Reborn_IAP','Board_Endgame','GP_Tutorials'}
 ASSET_CLASSES={'TMP_FontAsset','TMP_Settings','SkeletonDataAsset','SpineAtlasAsset','AtlasAsset','SoundClip'}
 
 def main():
@@ -54,6 +55,7 @@ def main():
         except Exception as e:edge.update(status='unresolved',error=repr(e))
     source_index=json.loads(gzip.decompress((ROOT/'datas/ui_l3_bindings.json.gz').read_bytes()))
     for s in source_index['sources']:
+        if s['screen'] not in CORE_UI:continue
         candidates=[(n,sf) for n,sf in files if n==s['serialized_file'] or n.rsplit('/',1)[-1]==s['serialized_file']]
         assert len(candidates)==1,s;name,sf=candidates[0];obj=sf.objects[s['root_path_id']];assert obj.type.name=='GameObject'
         roots.append(dict(kind='ui',label=s['screen'],source_layout=s['path'],source_sha256=s['sha256'],target=ident(obj)));enqueue(obj)
@@ -68,40 +70,76 @@ def main():
                 try:
                     dest=PPtr(m_FileID=ptr['m_FileID'],m_PathID=ptr['m_PathID'],assetsfile=sf).deref();row.update(status='resolved',target=ident(dest));roots.append(dict(kind='resource',label=resource,target=ident(dest)));enqueue(dest)
                 except Exception as e:row.update(status='unresolved',error=repr(e))
-    while queue:
-        obj=queue.popleft();kind=obj.type.name;row=dict(**ident(obj),raw_object_sha256=sha(obj.get_raw_data()));records[key(obj)]=row
-        if len(records)>300000:raise RuntimeError('explicit graph budget exceeded; do not silently truncate')
+    def process_queue():
+        while queue:
+            obj=queue.popleft();kind=obj.type.name;row=dict(**ident(obj),raw_object_sha256=sha(obj.get_raw_data()));records[key(obj)]=row
+            if len(records)>300000:raise RuntimeError('explicit graph budget exceeded; do not silently truncate')
+            try:
+                cls=''
+                if kind=='MonoBehaviour':row.update(classify(obj));cls=row['class_name']
+                if kind in BUILTINS|{'MonoBehaviour','Sprite','SpriteAtlas','Material','AnimatorController','AnimatorOverrideController'}:
+                    try:tree=obj.read_typetree();row.update(tree=tree,projection='full_typetree')
+                    except Exception as e:
+                        if kind!='MonoBehaviour':raise
+                        row.update(tree=row.get('header',{}),projection='parsed_monobehaviour_header_only',tree_error=repr(e));tree=row['tree']
+                    for loc,ptr in walk_pointers(tree):
+                        force=(kind=='GameObject' and loc.startswith('.m_Component[')) or (kind in ('Transform','RectTransform') and (loc=='.m_GameObject' or loc.startswith('.m_Children[')))
+                        follow(obj,loc,ptr,force)
+                elif kind=='AnimationClip':
+                    tree=obj.read_typetree();keep={'m_Name','m_SampleRate','m_WrapMode','m_Legacy','m_Events','m_ClipBindingConstant','m_AnimationClipSettings','m_StopTime','m_StartTime','m_FloatCurves','m_PositionCurves','m_RotationCurves','m_ScaleCurves','m_PPtrCurves'}
+                    row.update(tree={k:v for k,v in tree.items() if k in keep},projection='clip_events_bindings_ordinary_curves_no_streamed_payload')
+                    for loc,ptr in walk_pointers(row['tree']):follow(obj,loc,ptr)
+                elif kind=='Texture2D':
+                    d=obj.read();row.update(projection='texture_metadata_no_pixels',name=d.m_Name,width=d.m_Width,height=d.m_Height,texture_format=int(d.m_TextureFormat))
+                elif kind=='TextAsset':
+                    d=obj.read();v=d.m_Script;b=v.encode('utf-8','surrogateescape') if isinstance(v,str) else bytes(v);row.update(projection='textasset_name_payload_hash_only',name=d.m_Name,payload_bytes=len(b),payload_sha256=sha(b))
+                elif kind=='AudioClip':
+                    d=obj.read();row.update(projection='audio_metadata_no_samples',name=d.m_Name,channels=d.m_Channels,frequency=d.m_Frequency,length=d.m_Length,load_type=int(d.m_LoadType))
+                else:row.update(projection='identity_and_object_hash_only')
+                row['status']='recovered'
+            except Exception as e:row.update(status='failed',error=repr(e))
+    print('root-selection',len(roots),'unique queued',len(queue),flush=True)
+    process_queue()
+    def context_record(obj):
+        k=key(obj)
+        if k in records:return records[k]
+        row=dict(**ident(obj),raw_object_sha256=sha(obj.get_raw_data()),traversal='scene_context_ancestors_only')
+        records[k]=row
         try:
-            cls=''
-            if kind=='MonoBehaviour':row.update(classify(obj));cls=row['class_name']
-            if kind in BUILTINS|{'MonoBehaviour','Sprite','SpriteAtlas','Material','AnimatorController','AnimatorOverrideController'}:
-                try:tree=obj.read_typetree();row.update(tree=tree,projection='full_typetree')
-                except Exception as e:
-                    if kind!='MonoBehaviour':raise
-                    row.update(tree=row.get('header',{}),projection='parsed_monobehaviour_header_only',tree_error=repr(e));tree=row['tree']
-                for loc,ptr in walk_pointers(tree):
-                    force=(kind=='GameObject' and loc.startswith('.m_Component[')) or (kind in ('Transform','RectTransform') and (loc=='.m_GameObject' or loc.startswith('.m_Children[')))
-                    follow(obj,loc,ptr,force)
-            elif kind=='AnimationClip':
-                tree=obj.read_typetree();keep={'m_Name','m_SampleRate','m_WrapMode','m_Legacy','m_Events','m_ClipBindingConstant','m_AnimationClipSettings','m_StopTime','m_StartTime','m_FloatCurves','m_PositionCurves','m_RotationCurves','m_ScaleCurves','m_PPtrCurves'}
-                row.update(tree={k:v for k,v in tree.items() if k in keep},projection='clip_events_bindings_ordinary_curves_no_streamed_payload')
-                for loc,ptr in walk_pointers(row['tree']):follow(obj,loc,ptr)
-            elif kind=='Texture2D':
-                d=obj.read();row.update(projection='texture_metadata_no_pixels',name=d.m_Name,width=d.m_Width,height=d.m_Height,texture_format=int(d.m_TextureFormat))
-            elif kind=='TextAsset':
-                d=obj.read();v=d.m_Script;b=v.encode('utf-8','surrogateescape') if isinstance(v,str) else bytes(v);row.update(projection='textasset_name_payload_hash_only',name=d.m_Name,payload_bytes=len(b),payload_sha256=sha(b))
-            elif kind=='AudioClip':
-                d=obj.read();row.update(projection='audio_metadata_no_samples',name=d.m_Name,channels=d.m_Channels,frequency=d.m_Frequency,length=d.m_Length,load_type=int(d.m_LoadType))
-            else:row.update(projection='identity_and_object_hash_only')
-            row['status']='recovered'
+            tree=obj.read_typetree();row.update(tree=tree,status='recovered',projection='full_builtin_typetree')
+            for loc,ptr in walk_pointers(tree):follow(obj,loc,ptr)
         except Exception as e:row.update(status='failed',error=repr(e))
+        return row
+    def deref(obj,ptr):return PPtr(m_FileID=ptr['m_FileID'],m_PathID=ptr['m_PathID'],assetsfile=obj.assets_file).deref()
+    for name,sf in files:
+        if name not in {f'data.unity3d/level{i}' for i in range(4)}:continue
+        for obj in sf.objects.values():
+            if obj.type.name not in ('Camera','Canvas','AudioSource','Light'):continue
+            row=context_record(obj);roots.append(dict(kind='scene_context',label=obj.type.name,target=ident(obj)))
+            ptr=row.get('tree',{}).get('m_GameObject',{})
+            if not ptr.get('m_PathID'):continue
+            go=deref(obj,ptr);gr=context_record(go)
+            transforms=[]
+            for loc,cp in walk_pointers(gr.get('tree',{})):
+                if loc.startswith('.m_Component[') and cp['m_PathID']:
+                    dest=deref(go,cp)
+                    if dest.type.name in ('Transform','RectTransform'):transforms.append(dest)
+            for tr in transforms:
+                seen=set()
+                while key(tr) not in seen:
+                    seen.add(key(tr));rr=context_record(tr);tree=rr.get('tree',{})
+                    if tree.get('m_GameObject',{}).get('m_PathID'):context_record(deref(tr,tree['m_GameObject']))
+                    father=tree.get('m_Father',{})
+                    if not father.get('m_PathID'):break
+                    tr=deref(tr,father)
+    process_queue()
     def chunks(rows,prefix,n=200):
         result=[]
         for start in range(0,len(rows),n):
             group=rows[start:start+n];b=''.join(json.dumps(r,ensure_ascii=True,separators=(',',':'))+'\n' for r in group).encode();p=out/f'{prefix}-{start//n:04d}.jsonl.gz';compressed=gzip.compress(b,mtime=0);assert len(compressed)<5_000_000,(p,len(compressed));p.write_bytes(compressed);result.append(dict(path=p.name,rows=len(group),sha256=sha(compressed)))
         return result
     rows=[r for _,r in sorted(records.items())];assert all(rows)
-    index=dict(schema=1,provisional=True,status='PINNED_SERIALIZED_VISUAL_CHAIN_NOT_RENDER_OR_RUNTIME',xapk_sha256=XAPK_SHA,inputs=inputs,tool_sha256=sha(Path(__file__).read_bytes()),toolchain=dict(UnityPy=UnityPy.__version__),roots=roots,resource_roots=resource_rows,files=[dict(serialized_file=n,externals=[dict(path=e.path,type=e.type) for e in sf.externals]) for n,sf in files],objects=chunks(rows,'objects'),links=chunks(links,'links',2000),counts=dict(Counter(r['type'] for r in rows)),read_failures=[{k:r[k] for k in ('serialized_file','path_id','type','error')} for r in rows if r['status']=='failed'],header_only=[{k:r[k] for k in ('serialized_file','path_id','class_name','tree_error')} for r in rows if 'tree_error' in r],unresolved_link_count=sum(l['status']=='unresolved' for l in links))
+    index=dict(schema=1,provisional=True,status='PINNED_SERIALIZED_VISUAL_CHAIN_NOT_RENDER_OR_RUNTIME',ui_classes=sorted(CORE_UI),xapk_sha256=XAPK_SHA,inputs=inputs,tool_sha256=sha(Path(__file__).read_bytes()),toolchain=dict(UnityPy=UnityPy.__version__),roots=roots,resource_roots=resource_rows,files=[dict(serialized_file=n,externals=[dict(path=e.path,type=e.type) for e in sf.externals]) for n,sf in files],objects=chunks(rows,'objects'),links=chunks(links,'links',2000),counts=dict(Counter(r['type'] for r in rows)),read_failures=[{k:r[k] for k in ('serialized_file','path_id','type','error')} for r in rows if r['status']=='failed'],header_only=[{k:r[k] for k in ('serialized_file','path_id','class_name','tree_error')} for r in rows if 'tree_error' in r],unresolved_link_count=sum(l['status']=='unresolved' for l in links))
     (out/'index.json').write_text(json.dumps(index,indent=2)+'\n');print(json.dumps(dict(objects=len(rows),links=len(links),counts=index['counts'],read_failures=len(index['read_failures']),header_only=len(index['header_only']),unresolved=index['unresolved_link_count'])))
 if __name__=='__main__':
     try:main()
