@@ -126,3 +126,18 @@ Còn đọc Home_Loader consumer/queue để chốt màn hiện thực tế. Raw
 scope; Map10315 node vẫn skip120 child do cap80. Không gọi full. 9f4f8fa10 sửa
 cả hai và có test; chờ raw lượt sau nghiệm thu. Camera6/Material261/Sprite2185/
 TMP7 typetree đã có để tham khảo, chưa được join external pathID khi scope rỗng.
+
+### Cập nhật mới nhất — report47 thay trạng thái chờ của report46
+
+Analyze40181265305 success/bot7325738be: scope đã đầy đủ; linker exact scoped
+PPtr nối được 10.568 sprite +1.642 font +1.642 material occurrence trong 11root
+được chọn. Raw `ui-audit/scoped-visual-links.json.gz` có hash/source/link từng node.
+**Map vẫn truncated:**12.000node/2.760pending, không được gọi full. Collector mới
+50.000/deque cần nghiệm thu snapshot kế; đừng lấy output cũ rồi báo đã sửa.
+
+Recovery40181445658/f7f7ad7f3 giữ full metadata+relocations và extra-native.
+`loader-and-prefs.json.gz` chứng minh Home loader nhận defaultBoard6, phát
+OpenBoard56(BoardEvent selectedBoard,mode0), resetdefaultBoard1, rồi CheckSpecPopup.
+Queue/callback/override vẫn OPEN. PlayerPreferences int wrappers tailcall Unity
+PlayerPrefs; custom SaveToDisk không chứng minh flush TUTORIAL. Đọc report47
+trước khi dùng report45/46; mọi kết luận PROVISIONAL, không blind-merge branch.

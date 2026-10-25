@@ -1,4 +1,5 @@
 import ast
+from collections import deque
 import importlib.util
 import unittest
 from pathlib import Path
@@ -24,7 +25,7 @@ class VisualCoverageTests(unittest.TestCase):
         fn = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == 'walk')
         child = SimpleNamespace(m_Children=[])
         root = SimpleNamespace(m_Children=[child])
-        ns = {'stable_object_id': id, '_pptr': lambda x: x,
+        ns = {'deque': deque, 'stable_object_id': id, '_pptr': lambda x: x,
               'node_info': lambda x: {'name': 'node', 'components': []}}
         exec(compile(ast.Module(body=[fn], type_ignores=[]), '<walk>', 'exec'), ns)
         d = {}

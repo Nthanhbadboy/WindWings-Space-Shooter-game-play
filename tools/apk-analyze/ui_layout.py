@@ -25,7 +25,7 @@ import gzip
 import json
 import os
 import sys
-from collections import Counter
+from collections import Counter, deque
 
 import UnityPy
 from ui_render_context import file_context, export_context
@@ -35,7 +35,7 @@ OUT_RAW = os.environ.get("UI_RAW", "reverse-engineering/raw/ui")
 OUT_MD = os.environ.get("UI_MD", "docs/apk-analysis/20-ui-layout.md")
 UNITY_VERSION = os.environ.get("UNITY_VERSION", "2022.3.62f3")
 TTG_BACKEND = os.environ.get("TTG_BACKEND", "AssetStudio")
-MAX_NODES = int(os.environ.get("UI_MAX_NODES", "12000"))
+MAX_NODES = int(os.environ.get("UI_MAX_NODES", "50000"))
 MAX_COMPONENTS = int(os.environ.get("UI_MAX_COMPONENTS", "12"))
 MAX_BYTES = int(os.environ.get("UI_MAX_BYTES", "4000000"))
 ROOT_PREFIXES = ("Board_", "Popup_", "Tab_")
@@ -294,10 +294,10 @@ def walk(root, budget, diagnostics=None):
     if diagnostics is None:
         diagnostics = {}
     out = []
-    queue = [(root, "", 0)]
+    queue = deque([(root, "", 0)])
     seen = set()
     while queue and len(out) < budget:
-        tr, parent_path, depth = queue.pop(0)
+        tr, parent_path, depth = queue.popleft()
         if tr is None:
             continue
         key = stable_object_id(tr)
