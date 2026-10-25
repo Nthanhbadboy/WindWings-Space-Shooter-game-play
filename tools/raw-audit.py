@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import importlib.util
 import os
+import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,6 +24,61 @@ def load_verifier():
     sys.modules[spec.name] = mod  # dataclass cần module đã đăng ký
     spec.loader.exec_module(mod)
     return mod
+
+
+RB1_PAT = re.compile(
+    r'"\*\*RAW \d+ · DOC \d+ · CONST \d+ · tổng \d+\*\*",\s*'
+    r"\(\d+, \d+, \d+, \d+\), raw_audit_counts"
+)
+
+# Cùng 4 số, hai cách viết, rải ở 3 tài liệu ⇒ sửa tay là chắc chắn lệch. Sửa một lần ở đây.
+COUNT_PATTERNS = (
+    (re.compile(r"RAW \d+ · DOC \d+ · CONST \d+ · tổng \d+"),
+     "RAW {raw} · DOC {doc} · CONST {const} · tổng {total}"),
+    (re.compile(r"\*\*\d+ RAW · \d+ DOC · \d+ CONST / \d+\*\*"),
+     "**{raw} RAW · {doc} DOC · {const} CONST / {total}**"),
+    (re.compile(r"Nó phân loại \*\*\d+ claim\*\*"),
+     "Nó phân loại **{total} claim**"),
+    (re.compile(r"\| \*\*RAW\*\* \| \*\*\d+\*\* \|"),
+     "| **RAW** | **{raw}** |"),
+    (re.compile(r"\| \*\*DOC\*\* \| \*\*\d+\*\* \|"),
+     "| **DOC** | **{doc}** |"),
+    (re.compile(r"\| \*\*CONST\*\* \| \*\*\d+\*\* \|"),
+     "| **CONST** | **{const}** |"),
+)
+
+
+def sync_rb1(raw: int, doc: int, const: int, total: int) -> None:
+    """Ghi 4 số vừa đo vào claim RB1 + mọi chỗ trong docs (một nguồn, khỏi sửa tay)."""
+    vals = dict(raw=raw, doc=doc, const=const, total=total)
+    path = os.path.join(ROOT, "tools/verify-claims.py")
+    with open(path, encoding="utf-8") as fh:
+        body = fh.read()
+    latest = (
+        f'"**RAW {raw} · DOC {doc} · CONST {const} · tổng {total}**",\n'
+        f"      ({raw}, {doc}, {const}, {total}), raw_audit_counts"
+    )
+    new, n = RB1_PAT.subn(lambda m: latest, body)
+    if n != 1:
+        print("CẢNH BÁO: không tìm thấy đúng 1 claim RB1 để đồng bộ")
+    elif new != body:
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write(new)
+        print("đã đồng bộ claim RB1 trong tools/verify-claims.py")
+
+    for rel in ("docs/spec/START_HERE.md", "docs/spec/DATA_SYNC.md", "docs/HANDOFF_REPLY_7c7c9f064.md"):
+        fp = os.path.join(ROOT, rel)
+        if not os.path.exists(fp):
+            continue
+        with open(fp, encoding="utf-8") as fh:
+            text = fh.read()
+        out = text
+        for pat, tpl in COUNT_PATTERNS:
+            out = pat.sub(lambda m, t=tpl: t.format(**vals), out)
+        if out != text:
+            with open(fp, "w", encoding="utf-8") as fh:
+                fh.write(out)
+            print(f"đã đồng bộ số claim trong {rel}")
 
 
 def main() -> int:
@@ -102,6 +158,7 @@ def main() -> int:
     with open(OUT, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines))
 
+    sync_rb1(counts["RAW"], counts["DOC"], counts["CONST"], total)
     print(f"RAW {counts['RAW']} · DOC {counts['DOC']} · CONST {counts['CONST']} · tổng {total}")
     print(f"đã ghi {os.path.relpath(OUT, ROOT)}")
     return 0

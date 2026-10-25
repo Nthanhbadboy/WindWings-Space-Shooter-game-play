@@ -470,14 +470,16 @@ Và các con số quyết định **cách cắt**:
 | `packed` (nằm trong atlas) | **1.550** | phải cắt trong page, không phải ảnh rời |
 | mã xoay/lật `0` | **2.041** | cắt thẳng |
 | mã xoay/lật `1 · 2 · 3` | **53 · 54 · 37** = **144** | **144 sprite phải lật/xoay** sau khi cắt — cắt thẳng là **sai** |
-| `rect_outside` (rect vượt texture) | **40** | vượt **0,0000019 – 0,9963 px** ⇒ phải **clamp**, không coi là lỗi dữ liệu |
+| `rect_outside` (`textureRect` vượt page) | **40** | vượt **0,0000019 – 0,9963 px** ⇒ phải **clamp**, không coi là lỗi dữ liệu |
+| `source_rect` ≠ `texture_rect` | **1.795** / 2.185 | **hai rect khác nhau** ⇒ crop theo `texture_rect` (rect **trong page**), đừng lẫn với `m_Rect` |
+| `alpha_texture` | **0** | không có sprite nào dùng texture alpha riêng ⇒ cắt từ page là đủ |
 | `sources` (hash file nguồn) | **6** | 6 chunk nguồn **chưa kéo** ⇒ chưa tự kiểm `sha256` |
 
 > **Trạng thái trong file:** `PROVISIONAL_GEOMETRY_JOINS_NOT_PIXEL_CROP_VALIDATION` ⇒ đây là **join
 > metadata đúng**, **chưa** phải bằng chứng "đã crop ra 2.185 ảnh đúng". Muốn thành bằng chứng phải crop
 > thật rồi so pixel với atlas gốc.
 >
-> ⇒ **Việc phải làm khi cắt:** (1) đọc `source_rect`; (2) **áp mã xoay** cho 144 sprite; (3) **clamp** 40 rect;
+> ⇒ **Việc phải làm khi cắt:** (1) đọc **`texture_rect`** (không phải `source_rect`); (2) **áp mã xoay** cho 144 sprite; (3) **clamp** 40 rect;
 > (4) crop từ **PNG/alpha gốc** chứ không từ contact sheet JPEG. Khi đó `sheet-splits.csv` (4.250 mảnh ước
 > lượng) chỉ còn là **bản cũ để đối chiếu**, không phải nguồn.
 

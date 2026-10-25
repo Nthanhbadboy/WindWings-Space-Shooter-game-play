@@ -17,7 +17,7 @@
 | Tôi đã viết | Mức cũ | **Dữ liệu vòng 3** | Mức mới |
 |---|---|---|---|
 | "69 `AudioClip` nhưng **0 file export được** (FSB5 trong `.resS`)" | D | **69/69 export được WAV** · **571 giây** · **47,6 MB** | **A** |
-| "`enemies` trong wave **toàn bộ là `?`** (45.659)" | D | **22.462 entry**, **`?` = 0**, **109 prefab** | **A** |
+| "`enemies` trong wave **toàn bộ là `?`** (45.659)" | D | **22.451 entry** (`Σ len`; **45.659** quân khi ×`copies`), **`?` = 0**, **109 prefab** | **A** |
 | "Wave `Call_Data` → **không biết enemy nào**" | D | **median 6 prefab/wave** (min 2 · max 28) | **A** |
 
 > Cả ba đều nằm ở nhóm tôi từng gọi là "chưa có đường lấy". **Không phải** — chỉ là **pipeline cũ chưa chạy đúng**.
@@ -74,8 +74,9 @@ Nguồn: `datas/waves.json` nhánh `ef6b75ef` (ghi ở `docs/conclusions.md` #8)
 | Chỉ số | Giá trị (**A**) |
 |---|---:|
 | Wave | **282** |
-| Spawner (đã dedup) | **11.099** (bản `8c6da25`; 11.093 ở `cd0372d`) |
-| Entry enemy | **22.462** |
+| Spawner (đã dedup) | **11.089** (`count_spawners` ở `6ababbd31`; 11.099 ở `8c6da25`) |
+| Entry enemy (`Σ len`) | **22.451** |
+| Quân thật (`Σ len × copies`) | **45.659** |
 | `"?"` | **0** |
 | **Prefab enemy khác nhau** | **109** |
 | Entry enemy / wave | min **2** · median **63** · max **603** |
@@ -193,7 +194,7 @@ Nguồn: `docs/apk-analysis/19-il2cpp-constants.md`, `reverse-engineering/raw/il
 | Câu tôi viết | Vì sao sai |
 |---|---|
 | "0 `AudioClip` export được" | **69/69** export được, 571 s |
-| "enemy trong wave không resolve được" | **22.462** entry, 109 prefab, 0 `?` |
+| "enemy trong wave không resolve được" | **22.451** entry, 109 prefab, 0 `?` |
 | "`15-enemy-hp.csv` 800 dòng" (như số cố định) | lần chạy mới ra **981**; số này **phụ thuộc pipeline** |
 | "HP max boss `39006` = 11.235.000" (như số cố định) | lần chạy mới ra **13.480.000** — cùng boss, khác số bộ phận |
 
@@ -291,7 +292,7 @@ Nhưng `MAX_CSV_ROWS = 1200` **vẫn còn cắt `Call_Data`**: 1.200/23.757 = **
 > **Nhận định (mức A):** mô tả "cap 800 làm mất enemy" chỉ đúng với **bản cũ**. Trên bản vòng 3,
 > ba bảng `Enemy_Datas`/`Enemy_Movement`/`15-enemy-hp` đã **đủ 981 dòng**, và ghép prefab đạt **102/109**.
 > Chỗ còn cắt thật là **`Call_Data`** — bảng mô tả **cách wave sinh quân** — và ba bảng spawner không có file vòng 3.
-> `datas/waves.json` (22.462 entry) **không** bị ảnh hưởng: sinh bởi `wave_report.py`, script này không cap.
+> `datas/waves.json` (22.451 entry) **không** bị ảnh hưởng: sinh bởi `wave_report.py`, script này không cap.
 
 **Điều kiện lật ngược:** nếu `Call_Data` ở vòng 3 thật sự chỉ có 1.200 instance trong file (không phải do cap)
 thì `class-inventory` 23.757 đang đếm cả object rỗng — phải đối chiếu `path_id` duy nhất.
@@ -2114,8 +2115,17 @@ Kiểm bằng máy: **AQ1–AQ6**. AQ3 đếm `Call_Data` vs pathID trên 3 wave
 
 ### 16.3b Các số 22.462 / 22.483 ở §9–§12 là **của snapshot cũ**
 
-Đo lại hôm nay: `Σ len(listPrefabEnemies)` = **22.482** (109 prefab, 0 `?`). Log cũ giữ nguyên số
-của lúc đó — **đừng** lấy 22.462/22.483 làm hiện trạng.
+Đo lại trên `6ababbd31` (`datas/waves.json`): `Σ len(spawner.enemies)` = **22.451** (109 prefab, 0 `?`);
+nhân `copies` = **45.659 quân**; **11.089** dòng spawner. Log cũ giữ nguyên số của lúc đó —
+**đừng** lấy 22.462/22.483 làm hiện trạng.
+
+| đại lượng | 22.462 (cũ) | hôm nay | vì sao đổi |
+|---|---:|---:|---|
+| `Σ len` entry | 22.462 | **22.451** | 3 wave `7xxx/9xxx` bị export lại (`DATA_SYNC` §17) |
+| `Σ len × copies` = quân | 45.659 | **45.659** | **không đổi** — 7 entry chuyển từ `campaign` sang `unknown` |
+| dòng spawner | 11.099 | **11.089** | dedup + chuyển đơn vị (§17.2) |
+
+Min/median/max **không đổi**: `Σ len` 2 · 63 · 603; số dòng spawner 3 · 28,5 · 257.
 
 ### 16.4 Chưa kéo
 
@@ -2274,8 +2284,8 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **147** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
-| **DOC** | **3** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
+| **RAW** | **151** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **DOC** | **4** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
 | **CONST** | **37** | không mở file ⇒ **đo một lần** |
 
 Claim **RB1** khoá đúng 4 số trên; **chạy lại `python3 tools/raw-audit.py` là biết ngay** nếu ai thêm

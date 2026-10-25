@@ -168,12 +168,12 @@ Nhánh bạn đi tiếp 3 commit (`7c7c9f064 → 6ababbd31`). Mình kéo **đún
 - Trạng thái trong raw được giữ nguyên chữ: `PROVISIONAL_STATIC_PARTIAL_SAVE_CONTRACT_NOT_FULL_SCHEMA`.
 
 **Sổ kiểm mới — trả lời câu \"dựa raw hay nói mồm\" bằng máy:** `docs/spec/RAW_AUDIT.md`
-(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **187 claim**:
+(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **192 claim**:
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **147** | hàm đo **mở file** raw ⇒ tái đo được |
-| **DOC** | **3** | chỉ đọc `docs/**` |
+| **RAW** | **151** | hàm đo **mở file** raw ⇒ tái đo được |
+| **DOC** | **4** | chỉ đọc `docs/**` |
 | **CONST** | **37** | không mở file ⇒ \"đo một lần\" |
 
 Claim **RB1** khoá 4 số đó, nên ai thêm một `lambda: <hằng số>` rồi gọi là bằng chứng thì sổ sẽ lệch ngay.
@@ -218,7 +218,7 @@ callback guard) + 3 test loadout (sha APK, mask giữ method boundary, workflow 
 
 **Sổ kiểm cũng lớn lên:** thêm claim **GE1** (2.185 Sprite · 654 Texture2D · 66 SpriteAtlas · resolve
 2.185/2.185 · `unresolved` **rỗng**) và **GE2** (**144** sprite phải lật/xoay = 53+54+37 · **1.550** packed ·
-**40** rect vượt texture ≤1 px · **6** nguồn chưa kéo). ⇒ **RAW 147 · DOC 3 · CONST 37 / 187**.
+**40** rect vượt texture ≤1 px · **6** nguồn chưa kéo). ⇒ **RAW 150 · DOC 4 · CONST 37 / 191**.
 
 **Việc còn lại phía mình, không xin thêm:** crop thử 1 page `sactx-*` bằng `resolved-geometry.json.gz`
 để tự chứng minh join là đúng (hiện chỉ là *join metadata*, đúng như `status` bạn ghi); và xem mắt 340 ô

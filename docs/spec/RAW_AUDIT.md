@@ -6,16 +6,16 @@
 
 ## 0. Tổng
 
-**RAW 147 · DOC 3 · CONST 37 · tổng 187**
+**RAW 151 · DOC 4 · CONST 37 · tổng 192**
 
 | loại | số claim | nghĩa |
 |---|---:|---|
-| **RAW** | **147** | hàm đo **mở file** trong `datas/` · `reverse-engineering/` · `docs/assets/` |
-| **DOC** | **3** | chỉ đọc `docs/**` — kiểm tính nhất quán tài liệu, **không** phải dữ liệu gốc |
+| **RAW** | **151** | hàm đo **mở file** trong `datas/` · `reverse-engineering/` · `docs/assets/` |
+| **DOC** | **4** | chỉ đọc `docs/**` — kiểm tính nhất quán tài liệu, **không** phải dữ liệu gốc |
 | **CONST** | **37** | **không mở file** — số đo một lần, không tái đo bằng máy |
-| **cộng** | **187** | |
+| **cộng** | **192** | |
 
-⇒ **147/187** claim tái đo được từ raw. **37** claim là hằng số (xem §2) — dùng để **tham khảo**, không dùng làm bằng chứng khi thiết kế.
+⇒ **151/192** claim tái đo được từ raw. **37** claim là hằng số (xem §2) — dùng để **tham khảo**, không dùng làm bằng chứng khi thiết kế.
 
 ## 1. Cách phân loại
 
@@ -75,6 +75,7 @@
 |---|---|---|
 | **P1** | `COVERAGE_AUDIT.md` | quy mô tài liệu hiện có trong docs/spec |
 | **RD1** | `README.md` | số dòng · số bảng của 39 tài liệu trong bảng README khớp file thật (bảng đếm theo dòng `|---`) |
+| **RD1** | `README.md` | mỗi dòng `N dòng · M bảng` trong bảng tài liệu README được đo lại từ file; lệch 1 dòng là FAIL |
 | **RB1** | `RAW_AUDIT.md` | sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập |
 
 ## 4. Luật dùng số

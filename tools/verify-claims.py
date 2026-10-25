@@ -2840,6 +2840,24 @@ claim("AQ7", ENCOUNTERS_DOC,
       "11.089 chỉ là số dòng cấu hình sau khi gộp object trùng. Không kết luận vì sao trùng")
 
 
+def wave_unit_stats():
+    """(Σ len, Σ len×copies, số dòng spawner, min/median/max Σ len mỗi wave)."""
+    import statistics
+    d = ref_json("datas/waves.json")
+    if not d:
+        return None
+    per = [sum(len(sp["enemies"]) for sp in w["spawners"]) for w in d["waves"]]
+    quân = sum(len(sp["enemies"]) * sp.get("copies", 1) for w in d["waves"] for sp in w["spawners"])
+    rows = sum(len(w["spawners"]) for w in d["waves"])
+    return (sum(per), quân, rows, min(per), statistics.median(per), max(per))
+
+
+claim("WR7", "docs/spec/DATA_SYNC.md",
+      "`Σ len(spawner.enemies)` = **22.451** (109 prefab, 0 `?`)",
+      (22451, 45659, 11089, 2, 63, 603), wave_unit_stats,
+      "cùng một file waves.json nhưng BA đơn vị: Σ len 22.451 · Σ len×copies 45.659 quân · 11.089 dòng; "
+      "min/med/max Σ len mỗi wave 2/63/603 — đừng trộn với 45.659")
+
 claim("RD1", "docs/spec/README.md",
       "**Kiểm tự động (`RD1`):** **39/39** dòng trong bảng trên khớp",
       (39, 0), readme_sizes,
@@ -3364,6 +3382,9 @@ claim("AM1", "docs/spec/MISSING_FOR_NEW_GAME.md",
 _RAW_HINTS = (
     "datas/", "reverse-engineering/", "docs/assets/",
     "ref_lines(", "ref_json(", "_il2cpp_asm_files(", "_csv_rows(", "git(", "read_text(",
+    # Chạy một script khác rồi đọc stdout cũng là đo từ dữ liệu thật (OP1/TS1):
+    # hàm đo không tự mở file, nhưng tiến trình con thì có.
+    "subprocess.run(", "_run([",
 )
 
 
@@ -3483,21 +3504,106 @@ def sprite_rotation_stats():
     return (need, d.get("packed_count"), len(d.get("rect_outside") or []), len(d.get("sources") or []))
 
 
+def sprite_rect_fields():
+    """(số sprite source_rect != texture_rect, số bằng nhau, số có alpha_texture)."""
+    import gzip
+    import json as _json
+    p = os.path.join(ROOT, "reverse-engineering/raw/sprite-geometry/resolved-geometry.json.gz")
+    if not os.path.exists(p):
+        return None
+    with gzip.open(p, "rt", encoding="utf-8") as fh:
+        d = _json.load(fh)
+    keys = ("x", "y", "width", "height")
+    diff = same = alpha = 0
+    for sp in d.get("sprites") or []:
+        a, b = sp.get("source_rect") or {}, sp.get("texture_rect") or {}
+        if all(abs(a.get(k, 0) - b.get(k, 0)) < 1e-6 for k in keys):
+            same += 1
+        else:
+            diff += 1
+        if sp.get("alpha_texture"):
+            alpha += 1
+    return (diff, same, alpha)
+
+
+def _run(cmd, timeout=300):
+    import subprocess
+    import sys as _sys
+    return subprocess.run([_sys.executable, *cmd], cwd=ROOT, capture_output=True, text=True, timeout=timeout)
+
+
+def opening_persistence_counts():
+    """(số method, số check, số key family) — chạy chính verifier của nhánh dữ liệu."""
+    r = _run(["tools/verify/opening_persistence.py"])
+    if r.returncode != 0:
+        return None
+    m = re.search(r"(\d+) methods; (\d+) checks; (\d+) key families", r.stdout)
+    return tuple(int(x) for x in m.groups()) if m else None
+
+
+def test_suite_count():
+    """Số unit test chạy được trong tests/ (chạy thật, không đếm hàm)."""
+    r = _run(["-m", "unittest", "discover", "-s", "tests", "-q"])
+    if r.returncode != 0:
+        return None
+    m = re.search(r"Ran (\d+) tests?", r.stderr + r.stdout)
+    return int(m.group(1)) if m else None
+
+
+def readme_sizes():
+    """(số dòng bảng README có số đo, số dòng lệch so với file thật)."""
+    import re as _re
+    text = open(os.path.join(ROOT, "docs/spec/README.md"), encoding="utf-8").read()
+    entries = 0
+    bad = 0
+    for name, want_lines, want_tables in _re.findall(
+        r"`([A-Za-z_0-9./-]+\.md)`.*?(\d+) dòng · (\d+) bảng", text
+    ):
+        rel = name if "/" in name else "docs/spec/" + name
+        body = open(os.path.join(ROOT, rel), encoding="utf-8").read().splitlines()
+        got = (len(body), sum(1 for line in body if line.lstrip().startswith("|---")))
+        entries += 1
+        bad += got != (int(want_lines), int(want_tables))
+    return (entries, bad)
+
+
+claim("RD1", "docs/spec/README.md",
+      "**Kiểm tự động (`RD1`):** **39 dòng · 0 lệch**",
+      (39, 0), readme_sizes,
+      "mỗi dòng `N dòng · M bảng` trong bảng tài liệu README được đo lại từ file; lệch 1 dòng là FAIL")
+
+claim("OP1", "docs/spec/DATA_SYNC.md",
+      "**41 method · 25 check · 8 key family**",
+      (41, 25, 8), opening_persistence_counts,
+      "chạy chính tools/verify/opening_persistence.py của nhánh dữ liệu trên raw đã kéo ⇒ không phải chép số từ report")
+
+claim("TS1", "docs/spec/DATA_SYNC.md",
+      "**16 test OK**",
+      16, test_suite_count,
+      "chạy thật `python3 -m unittest discover -s tests -q`; đếm test đã chạy, không đếm hàm test")
+
+
 claim("GE1", "docs/spec/ASSET_TRIAGE.md",
       "**2.185** `Sprite` · **654** `Texture2D` · **66** `SpriteAtlas`; resolve **2.185/2.185**, `unresolved` = **[]**",
       (2185, 654, 66, 2185, 0), sprite_geometry_stats,
       "report 62: geometry join metadata, status PROVISIONAL_GEOMETRY_JOINS_NOT_PIXEL_CROP_VALIDATION "
       "⇒ biết rect, KHÔNG phải đã crop đúng")
 
+claim("GE3", "docs/spec/ASSET_TRIAGE.md",
+      "| `source_rect` ≠ `texture_rect` | **1.795** / 2.185 |",
+      (1795, 390, 0), sprite_rect_fields,
+      "crop phải theo texture_rect (rect trong page), KHÔNG lẫn source_rect; 0 sprite có alpha texture riêng")
+
+
 claim("GE2", "docs/spec/ASSET_TRIAGE.md",
       "| mã xoay/lật `1 · 2 · 3` | **53 · 54 · 37** = **144** |",
       (144, 1550, 40, 6), sprite_rotation_stats,
-      "144 sprite cần lật/xoay (53+54+37), 1.550 packed, 40 rect vượt texture ≤1 px, 6 nguồn chưa kéo ⇒ chưa tự kiểm sha256")
+      "144 sprite cần lật/xoay (53+54+37), 1.550 packed, 40 `textureRect` vượt page ≤0,9963 px, 6 nguồn chưa kéo ⇒ chưa tự kiểm sha256")
 
 
 claim("RB1", "docs/spec/RAW_AUDIT.md",
-      "**RAW 147 · DOC 3 · CONST 37 · tổng 187**",
-      (147, 3, 37, 187), raw_audit_counts,
+      "**RAW 151 · DOC 4 · CONST 37 · tổng 192**",
+      (151, 4, 37, 192), raw_audit_counts,
       "sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. "
       "CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập")
 

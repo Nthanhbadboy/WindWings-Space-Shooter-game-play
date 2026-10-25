@@ -382,3 +382,29 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 
 > ⚠ Geometry là **join metadata** (`PROVISIONAL_GEOMETRY_JOINS_NOT_PIXEL_CROP_VALIDATION`) — **không**
 > phải bằng chứng "ảnh đã cắt đúng". 6 chunk `objects-*.jsonl.gz` **chưa kéo** ⇒ chưa tự kiểm `sha256`.
+
+---
+
+## 13. Cập nhật 25/10 (lần 4) — **chạy code**, không chỉ đọc report
+
+Lượt này khác hẳn 3 lượt trước: chép **code của nhánh dữ liệu** vào rồi chạy trên raw đã kéo.
+
+| việc | trước | nay |
+|---|---|---|
+| Save contract | đọc report 57, 2 key | **chạy** `tools/verify/opening_persistence.py` ⇒ **41 method · 25 check · 8 key family** (claim **OP1**) |
+| Test của nhánh dữ liệu | không có | **16 test OK** trong repo này (claim **TS1**) — gồm side effect `StageTarget +1`, `TUTORIAL=6`, 2 store |
+| Geometry | report 62: 2.185 sprite | **GE1/GE2/GE3**: 2.185/654/66 · `unresolved` **rỗng** · 144 lật-xoay · 40 `textureRect` vượt page ≤0,9963 px · **1.795** sprite có `source_rect ≠ texture_rect` ⇒ crop theo **`texture_rect`** |
+| Sổ kiểm claim | người viết tự khai | **RB1 tự đồng bộ**: `tools/raw-audit.py` ghi lại 4 số vào doc **và** vào verifier ⇒ **151 RAW · 4 DOC · 37 CONST / 192** |
+| README 39 dòng | sửa tay hay quên | **RD1** đo lại từng file + `tools/refresh-readme-sizes.py` |
+
+**Số đã sai và đã sửa lượt này** (ghi lại vì cùng loại lỗi đã lặp 4 lần):
+
+| Số cũ | Số đúng | Vì sao |
+|---|---|---|
+| "11.094 spawner" | **11.089** dòng cấu hình (**23.757** spawner khi ×`copies`) | vẫn là lỗi đơn vị; nay có `WR7` khoá **cả ba** đơn vị: 22.451 `Σ len` · 45.659 quân · 11.089 dòng |
+| "Wave_0163 = 622 entry" | **620** | export lại ở `6ababbd31`; 45.659 quân **không đổi** |
+| "`raw/ui-audit` chưa kéo" | **đã có** 320/388 `extra-native` + 273 `il2cpp-consts` | câu cũ sai, đã sửa ở `DATA_SYNC` §19.4 |
+| "crop theo `source_rect`" | **`texture_rect`** | 1.795/2.185 sprite có hai rect khác nhau |
+
+> Vẫn **chưa** kiểm pixel: 6 chunk nguồn của geometry chưa kéo, nên `status` của file vẫn là
+> `PROVISIONAL_GEOMETRY_JOINS_NOT_PIXEL_CROP_VALIDATION`. Crop thử 1 page `sactx-*` là việc tiếp theo.
