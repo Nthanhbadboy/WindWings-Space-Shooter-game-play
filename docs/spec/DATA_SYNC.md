@@ -2274,7 +2274,7 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **145** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **RAW** | **147** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
 | **DOC** | **3** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
 | **CONST** | **37** | không mở file ⇒ **đo một lần** |
 
@@ -2282,7 +2282,40 @@ Claim **RB1** khoá đúng 4 số trên; **chạy lại `python3 tools/raw-audit
 một hằng số rồi gọi nó là bằng chứng. Danh sách 37 CONST nằm trong file — toàn bộ nhóm `A*` (phiên điện
 thoại), `D*` (script bridge), `E*` (vài hằng balance), `R*` (timeline boss), `W4/W5`.
 
-### 19.4 Chưa kéo (vẫn nguyên như §17.4)
+### 19.4 Đã **chạy được** verifier và unit test của nhánh dữ liệu
 
-Report **59 · 60 · 61** chưa đọc; 6 chunk `sprite-geometry/objects-*.jsonl.gz` chưa có; `raw/ui-audit`
-(407) · `raw/il2cpp-consts` (273) · `raw/animation-audit` · `raw/runtime-probe` chưa kéo.
+Đây là khác biệt so với các lượt trước: không chỉ đọc report, mà **import code của bạn vào repo này** rồi chạy.
+
+| việc | file | kết quả (chạy tại `9a70d30c9`) |
+|---|---|---|
+| save contract | `tools/verify/opening_persistence.py` | **41 method · 25 check · 8 key family** — đúng bằng số trong report 65 |
+| test persistence | `tests/test_opening_persistence.py` | **11 test OK** (gồm side effect `StageTarget +1`, `TUTORIAL=6`, 2 store, callback guard) |
+| test loadout | `tests/test_player_loadout_recovery.py` | 3 test OK (mask giữ 3 method boundary, sha APK `f5d3c7a1…`, workflow **không** gọi `analyze-apk.yml`) |
+| toàn bộ `tests/` | — | **16 test OK** |
+| module phụ phải kéo theo | `tools/verify/{early_ui_native,ui_loader_analysis,ui_routing}.py` | 232 dòng, để `opening_persistence.py` import được |
+
+Raw phải kéo thêm để chạy được (đều từ `6ababbd31`, sha256 ghi lại):
+
+| file | sha256 (16) | vì sao cần |
+|---|---|---|
+| `ui-audit/extra-native/GameDatas.{asm.txt,json}` | `61a4130eff925ebb` · `cbc1dc4760eb2e80` | class `GameDatas` — 9/388 file `extra-native` còn thiếu |
+| `ui-audit/endgame-rodata.json` | `d51e3459816bf782` | rodata đuôi game |
+| `ui-audit/tutorial-consumer-flow.json.gz` | `6a23f9f81ed6cfdc` | consumer tutorial |
+| `ui-audit/wave-spawn-flow.json.gz` | `07ec43d00d8c5848` | luồng spawn |
+
+> **Sửa một dòng cũ:** §17.4 từng ghi `raw/ui-audit (407) · raw/il2cpp-consts (273)` là *chưa kéo*. Sai:
+> `il2cpp-consts` **đã có 273 file** và `ui-audit/extra-native` **đã có 320/388**, nay thêm 5 file còn thiếu.
+> Chỉ `raw/animation-audit` + `runtime-probe` là chưa cần.
+
+**Workflow của bạn** `.github/workflows/recover-player-loadout.yml` được chép vào, **khác đúng 1 chỗ**:
+`on:` chỉ còn `workflow_dispatch` (bản gốc chạy khi push vào nhánh `arena/ef6b75ef-…` và **commit thẳng**
+vào đó). Giữ nguyên `on: push` thì mỗi lần mình sửa tài liệu là một job đỏ vì thiếu cache XAPK — vô nghĩa.
+Test `test_scoped_workflow_not_full_analyze` vẫn pass vì nó kiểm nội dung job, không kiểm trigger.
+
+`docs-verify` nay chạy thêm 2 bước: `tools/raw-audit.py` (tái sinh sổ kiểm) và
+`tools/verify/opening_persistence.py` (41 method/25 check).
+
+### 19.5 Chưa kéo
+
+Report **59 · 60 · 61** chưa đọc; 6 chunk `sprite-geometry/objects-*.jsonl.gz` chưa có;
+`raw/animation-audit` + `raw/runtime-probe` chưa cần cho tài liệu.

@@ -168,11 +168,11 @@ Nhánh bạn đi tiếp 3 commit (`7c7c9f064 → 6ababbd31`). Mình kéo **đún
 - Trạng thái trong raw được giữ nguyên chữ: `PROVISIONAL_STATIC_PARTIAL_SAVE_CONTRACT_NOT_FULL_SCHEMA`.
 
 **Sổ kiểm mới — trả lời câu \"dựa raw hay nói mồm\" bằng máy:** `docs/spec/RAW_AUDIT.md`
-(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **185 claim**:
+(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **187 claim**:
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **145** | hàm đo **mở file** raw ⇒ tái đo được |
+| **RAW** | **147** | hàm đo **mở file** raw ⇒ tái đo được |
 | **DOC** | **3** | chỉ đọc `docs/**` |
 | **CONST** | **37** | không mở file ⇒ \"đo một lần\" |
 
@@ -182,3 +182,44 @@ một kết luận khác*.
 
 **Vẫn chưa kéo:** report **59 · 60 · 61**; 6 chunk `sprite-geometry/objects-*.jsonl.gz`; `raw/ui-audit`
 (407) · `raw/il2cpp-consts` (273) · `raw/animation-audit` · `raw/runtime-probe`.
+
+---
+
+## 9. Lượt này mình **chạy code của bạn**, không chỉ đọc report
+
+Trước đây mình chỉ đối chiếu chữ. Lần này chép `tools/verify/opening_persistence.py` + 3 module nó import
++ 2 test vào repo này rồi chạy thật:
+
+```
+$ python3 tools/verify/opening_persistence.py
+41 methods; 25 checks; 8 key families
+
+$ python3 -m unittest discover -s tests -q
+Ran 16 tests in 1.146s
+OK
+```
+
+⇒ **41/25/8 khớp đúng report 65**, và 11 test persistence (gồm `StageTarget +1`, `TUTORIAL=6`, 2 store,
+callback guard) + 3 test loadout (sha APK, mask giữ method boundary, workflow **không** gọi `analyze-apk.yml`)
+đều xanh **trên raw của bạn**, không phải trên lời kể.
+
+Để chạy được phải kéo thêm **5 file raw** còn thiếu (đều từ `6ababbd31`): `extra-native/GameDatas.{asm.txt,json}`
+(`61a4130e…`, `cbc1dc47…`), `ui-audit/endgame-rodata.json`, `ui-audit/tutorial-consumer-flow.json.gz`,
+`ui-audit/wave-spawn-flow.json.gz`. Tức repo này **không** còn thiếu raw nào để `ui-audit` chạy.
+
+**Hai chỗ mình cố ý khác bản gốc, nói rõ để bạn khỏi bất ngờ:**
+
+1. `.github/workflows/recover-player-loadout.yml` giữ nguyên job/step, **chỉ đổi `on:` thành
+   `workflow_dispatch`**. Bản gốc push-trigger vào nhánh `arena/ef6b75ef-…` và **commit thẳng** vào đó; nếu
+   giữ nguyên thì mỗi lần mình sửa tài liệu sẽ bắn một job đỏ vì thiếu cache XAPK. Test của bạn vẫn pass vì
+   nó kiểm nội dung job, không kiểm trigger.
+2. `tools/verify/opening_persistence.py` import `early_ui_native` / `ui_loader_analysis` / `ui_routing` —
+   mình chép nguyên 3 file đó theo, **không sửa**.
+
+**Sổ kiểm cũng lớn lên:** thêm claim **GE1** (2.185 Sprite · 654 Texture2D · 66 SpriteAtlas · resolve
+2.185/2.185 · `unresolved` **rỗng**) và **GE2** (**144** sprite phải lật/xoay = 53+54+37 · **1.550** packed ·
+**40** rect vượt texture ≤1 px · **6** nguồn chưa kéo). ⇒ **RAW 147 · DOC 3 · CONST 37 / 187**.
+
+**Việc còn lại phía mình, không xin thêm:** crop thử 1 page `sactx-*` bằng `resolved-geometry.json.gz`
+để tự chứng minh join là đúng (hiện chỉ là *join metadata*, đúng như `status` bạn ghi); và xem mắt 340 ô
+`unresolved` để đóng nốt nhãn.

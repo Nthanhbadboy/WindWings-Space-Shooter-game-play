@@ -32,7 +32,7 @@
 | `docs/assets/sprites-atlas-page.csv` | Trang texture thật của từng sprite | **282**/340 ca chưa nhãn biết trang | gán nhãn theo trang (đo precision trước) |
 | `datas/opening_persistence.json` | **Contract save mở đầu** | **8 key family · 2 store · 7 limitation** | dựng first-run/tutorial/progression mà không đoán key |
 | `reverse-engineering/raw/player-loadout/` | Mảng int + asm `Player_Saved_Datas` | **5 blob · 49 int · 5/5 sha256 OK** | giá craft/unlock, chứng cứ save |
-| `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **145 RAW · 3 DOC · 37 CONST / 185** | biết số nào tái đo được, số nào "đo một lần" |
+| `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **147 RAW · 3 DOC · 37 CONST / 187** | biết số nào tái đo được, số nào "đo một lần" |
 | `tools/` | **9** script đo lại được | — | `verify-claims.py`, `art-study.py`, `classify-by-atlas.py`, … |
 
 **Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **31** file `datas/`.

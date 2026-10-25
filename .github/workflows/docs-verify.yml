@@ -18,6 +18,9 @@ on:
     paths:
       - 'docs/**'
       - 'tools/verify-claims.py'
+      - 'tools/raw-audit.py'
+      - 'tools/verify/**'
+      - 'reverse-engineering/raw/**'
       - 'tests/**'
       - '.github/workflows/docs-verify.yml'
   push:
@@ -25,6 +28,9 @@ on:
     paths:
       - 'docs/**'
       - 'tools/verify-claims.py'
+      - 'tools/raw-audit.py'
+      - 'tools/verify/**'
+      - 'reverse-engineering/raw/**'
       - 'tests/**'
       - '.github/workflows/docs-verify.yml'
 
@@ -51,6 +57,12 @@ jobs:
 
       - name: Rule-contract tests
         run: python3 -m unittest discover -s tests -q
+
+      - name: Sổ kiểm claim ↔ raw (tái sinh RAW_AUDIT.md)
+        run: python3 tools/raw-audit.py
+
+      - name: Persistence contracts (save keys, getter side effects)
+        run: python3 tools/verify/opening_persistence.py
 
       - name: Re-measure
         id: claims

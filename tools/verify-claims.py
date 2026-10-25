@@ -3455,9 +3455,49 @@ def player_array_blobs():
     return (len(arrs), sum(a.get("len", 0) for a in arrs), ok)
 
 
+def sprite_geometry_stats():
+    """(Sprite, Texture2D, SpriteAtlas, resolved, unresolved) trong resolved-geometry.json.gz."""
+    import gzip
+    import json as _json
+    p = os.path.join(ROOT, "reverse-engineering/raw/sprite-geometry/resolved-geometry.json.gz")
+    if not os.path.exists(p):
+        return None
+    with gzip.open(p, "rt", encoding="utf-8") as fh:
+        d = _json.load(fh)
+    c = d.get("object_counts") or {}
+    return (c.get("Sprite"), c.get("Texture2D"), c.get("SpriteAtlas"),
+            d.get("resolved"), len(d.get("unresolved") or []))
+
+
+def sprite_rotation_stats():
+    """(số sprite cần lật/xoay, số packed, số rect ngoài texture, số nguồn chưa kéo)."""
+    import gzip
+    import json as _json
+    p = os.path.join(ROOT, "reverse-engineering/raw/sprite-geometry/resolved-geometry.json.gz")
+    if not os.path.exists(p):
+        return None
+    with gzip.open(p, "rt", encoding="utf-8") as fh:
+        d = _json.load(fh)
+    rot = d.get("rotation_codes") or {}
+    need = sum(v for k, v in rot.items() if str(k) != "0")
+    return (need, d.get("packed_count"), len(d.get("rect_outside") or []), len(d.get("sources") or []))
+
+
+claim("GE1", "docs/spec/ASSET_TRIAGE.md",
+      "**2.185** `Sprite` · **654** `Texture2D` · **66** `SpriteAtlas`; resolve **2.185/2.185**, `unresolved` = **[]**",
+      (2185, 654, 66, 2185, 0), sprite_geometry_stats,
+      "report 62: geometry join metadata, status PROVISIONAL_GEOMETRY_JOINS_NOT_PIXEL_CROP_VALIDATION "
+      "⇒ biết rect, KHÔNG phải đã crop đúng")
+
+claim("GE2", "docs/spec/ASSET_TRIAGE.md",
+      "| mã xoay/lật `1 · 2 · 3` | **53 · 54 · 37** = **144** |",
+      (144, 1550, 40, 6), sprite_rotation_stats,
+      "144 sprite cần lật/xoay (53+54+37), 1.550 packed, 40 rect vượt texture ≤1 px, 6 nguồn chưa kéo ⇒ chưa tự kiểm sha256")
+
+
 claim("RB1", "docs/spec/RAW_AUDIT.md",
-      "**RAW 145 · DOC 3 · CONST 37 · tổng 185**",
-      (145, 3, 37, 185), raw_audit_counts,
+      "**RAW 147 · DOC 3 · CONST 37 · tổng 187**",
+      (147, 3, 37, 187), raw_audit_counts,
       "sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. "
       "CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập")
 

@@ -317,7 +317,7 @@ mảnh thì lộ ra vấn đề: **792** mảnh ≥20×20 px, chỉ **158** mả
   vùng caro nằm **kín bên trong** — không nối ra viền được. Xem `docs/assets/sheet-splits-sample.png`
   (60 mảnh sạch nhất trong top 160) để thấy phần cắt **đúng** trông thế nào;
 - cách sửa gốc: cắt từ **PNG có alpha** (không phải JPEG contact sheet), tức lại cần §9.7;
-- muốn con số chính xác: cần `m_RD.rect` + PNG gốc.
+- muốn con số chính xác: cần `m_RD.rect` + PNG gốc — **nay đã có** (xem §9.9).
 
 **Giới hạn phải nói rõ:** **4.250 không phải "số hình"** — nó là **số mảnh rời ≥20 px** đo trên ảnh
 150 px/ô, và hai sai lệch chạy **ngược chiều nhau**:
@@ -329,7 +329,7 @@ mảnh thì lộ ra vấn đề: **792** mảnh ≥20×20 px, chỉ **158** mả
 
 Vì hiệu ứng thứ hai áp đảo (4.250 → 792), con số dùng được để lập kế hoạch là **~790 mảnh "đủ to"**,
 còn **4.250** là số **dòng CSV để cắt thử**, không phải số sprite. Ngoài ra rect sai số ~±2 px ở
-kích thước gốc. Muốn cắt **chính xác** thì phải có `Sprite.m_RD.rect` (xem §9.7).
+kích thước gốc. Muốn cắt **chính xác** thì phải có `Sprite.m_RD.rect` — **nay đã có** (§9.9).
 
 ### 9.5 Còn **340** — chúng là gì
 
@@ -452,8 +452,37 @@ mà không cần `rule_id`; `rule_id` chỉ tồn tại ở bảng của vòng �
 
 ⇒ Số đọc đúng: **1.049** nhãn do luật/ảnh (848 A · 131 B · 70 C) + **643** nhãn chép lại (không mức)
 + **505** unknown. Không cộng 643 vào "A".
+### 9.9 **Đã có toạ độ thật** (report 62) — cắt được chính xác, không cần đoán từ ảnh 150 px
+
+`reverse-engineering/raw/sprite-geometry/resolved-geometry.json.gz` (268 KB, commit trong repo):
+**2.185** `Sprite` · **654** `Texture2D` · **66** `SpriteAtlas`; resolve **2.185/2.185**, `unresolved` = **[]**
+(claim **GE1**).
+
+| Đường resolve | số sprite |
+|---|---:|
+| `sprite_render_data` (trực tiếp) | **635** |
+| `atlas_pointer_and_render_key` (qua atlas) | **1.550** |
+
+Và các con số quyết định **cách cắt**:
+
+| | số | hệ quả |
+|---|---:|---|
+| `packed` (nằm trong atlas) | **1.550** | phải cắt trong page, không phải ảnh rời |
+| mã xoay/lật `0` | **2.041** | cắt thẳng |
+| mã xoay/lật `1 · 2 · 3` | **53 · 54 · 37** = **144** | **144 sprite phải lật/xoay** sau khi cắt — cắt thẳng là **sai** |
+| `rect_outside` (rect vượt texture) | **40** | vượt **0,0000019 – 0,9963 px** ⇒ phải **clamp**, không coi là lỗi dữ liệu |
+| `sources` (hash file nguồn) | **6** | 6 chunk nguồn **chưa kéo** ⇒ chưa tự kiểm `sha256` |
+
+> **Trạng thái trong file:** `PROVISIONAL_GEOMETRY_JOINS_NOT_PIXEL_CROP_VALIDATION` ⇒ đây là **join
+> metadata đúng**, **chưa** phải bằng chứng "đã crop ra 2.185 ảnh đúng". Muốn thành bằng chứng phải crop
+> thật rồi so pixel với atlas gốc.
+>
+> ⇒ **Việc phải làm khi cắt:** (1) đọc `source_rect`; (2) **áp mã xoay** cho 144 sprite; (3) **clamp** 40 rect;
+> (4) crop từ **PNG/alpha gốc** chứ không từ contact sheet JPEG. Khi đó `sheet-splits.csv` (4.250 mảnh ước
+> lượng) chỉ còn là **bản cũ để đối chiếu**, không phải nguồn.
+
 ### 9.7 Việc giao nhánh dữ liệu
 
-Export `Sprite.m_RD.rect` (x,y,w,h) + `settingsRaw` cho **2.185** sprite và **67** page `sactx`. Đổi lại:
+~~Export `Sprite.m_RD.rect` (x,y,w,h) + `settingsRaw` cho **2.185** sprite và **67** page `sactx`.~~ **ĐÃ CÓ** (§9.9). Còn xin: 6 chunk nguồn + validate crop. Đổi lại:
 (a) cắt sheet **chính xác** thay vì scale từ 150 px; (b) mở luôn 67 page đang thiếu rect; (c) `9-slice`
 border (`ASSETS.md` §5) lấy được **số thật** thay vì đề xuất 8/12/16 px.
