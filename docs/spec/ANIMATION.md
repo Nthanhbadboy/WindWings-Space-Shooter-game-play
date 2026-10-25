@@ -311,7 +311,7 @@ Phân bố: `Boss-` **39** · `CB-` **33** · `CD-` **15** · `W2-` **6** · `XB
 |---|---:|---:|---|---|
 | **`Enemy_Movement`** (di chuyển theo path) | **981** | **109 / 109 = 100 %** | công thức + tham số | `listSpeeds` · `facingMove` · `isTurret` · `endOfPathInstruction` · `parentRotate` |
 | **`Enemy_Appear`** (xuất hiện / biến mất) | **914** | **107 / 109** | **cơ chế**, không tham số | tree serialize **rỗng** — không field nào |
-| **Animator** (clip Unity) | **203** | **87 / 109 = 79,8 %** | **tên clip** · 0 % curve | 36 root `Boss-*` = **92** instance; 22 prefab **không có** Animator |
+| **Animator** (clip Unity) | **203** | **87 / 109 = 79,8 %** (39 boss + 48 enemy) | **tên clip** · 0 % curve | 36 root `Boss-*` = **92** instance; 22 prefab **không có** Animator |
 | **`Enemy_Rotate`** (xoay) | **35** | 1 root roster | ✅ đủ | trap `W2-30043` (7) · `W2-30042` · `W2-30056` · `W2-30036` · `W2-30055` |
 | **Spine** (xương) | **17** `Enemy_HitSkeletonRenderer` | **3 root** | ✅ đủ | **`Boss-39001` / `Boss-39002` / `Boss-39003`** — sửa 23/10, trước ghi 2; xem `ANIMATION_GAPS.md` §2b |
 | **Flipbook** | **0** | 0 | — | 28 chuỗi/160 ảnh toàn game ⇒ enemy **không** dùng khung hình |
@@ -363,7 +363,9 @@ path (PathCreator) → Enemy_Movement.listSpeeds → hướng/mặt → xoay (Ro
 
 | Câu | Trả lời |
 |---|---|
-| **Enemy có animation không?** | **Có** — 87/109 prefab có Animator; 100 % có di chuyển procedural |
+| **Enemy có animation không?** | **Gần như không** — **87/109 roster** có Animator, nhưng **39 trong 87 là boss**.
+Riêng enemy: **51/70** có Animator, trong đó **27 chỉ** dùng `Afterburner` (**0 param · 1 state**), **19 không có**
+Animator ⇒ **46/70** enemy không có máy trạng thái nào. 100 % có di chuyển procedural. Chi tiết: `ANIMATION_SCRIPT.md` §4.2 |
 | **Đã dựng lại được chưa?** | **Chưa.** Tên clip + nhịp: **có**; pose/khung hình: **không** — nhưng **9,19 MB curve có trong asset** (`UNITY_RULES` §4.2), thiếu **decoder** chứ không thiếu dữ liệu |
 | **Bao nhiêu %?** | Theo **hệ**: procedural **100 %** · clip **0 % curve giải được / 100 % tên / 100 % dung lượng curve** · Spine **100 %** (nhưng chỉ 2 boss) |
 | **Cần gì để dựng lại?** | **1 decoder `m_StreamedClip`** — không phải export thêm asset |

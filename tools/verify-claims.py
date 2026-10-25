@@ -2305,6 +2305,112 @@ claim("W6", "docs/spec/ANIMATION_SCRIPT.md",
       "**22 lần `WaitForSeconds` · 4 hằng số · 18 lấy từ biến**",
       (22, 4, 18), waits_seconds_stats, "nhịp pha boss 1: 4 hằng, 18 biến")
 
+# ── X. enemy có bao nhiêu animation thật (§4.2) ────────────────────────
+WAVES = "datas/waves.json"
+AMAP = "datas/animator_map.csv.gz"
+
+
+def _csv_gz_rows(path):
+    key = "csvgz:" + path
+    if key in _cache:
+        return _cache[key]
+    raw = ref_blob(path)
+    val = None
+    if raw:
+        try:
+            # ref_blob đã giải nén .gz; chỉ cần decode
+            val = list(csv.DictReader(io.StringIO(raw.decode("utf-8", "replace"))))
+        except (UnicodeDecodeError, csv.Error):
+            val = None
+    _cache[key] = val
+    return val
+
+
+def _enemy_sets():
+    d = _json_plain(WAVES)
+    if not d:
+        return None
+    roster = set()
+    for wv in d.get("waves") or []:
+        for sp in wv.get("spawners") or []:
+            roster.update(sp.get("enemies") or [])
+    if not roster:
+        return None
+    amap = _csv_gz_rows(AMAP) or []
+    roots = {r.get("prefab_root") for r in amap}
+    return roster, roots
+
+
+def enemy_anim_split():
+    """(roster, boss, enemy, có Animator, Afterburner, không Animator)."""
+    sets = _enemy_sets()
+    if not sets:
+        return None
+    roster, roots = sets
+    boss = {e for e in roster if e.startswith("Boss-")}
+    enemy = roster - boss
+    with_anim = enemy & roots
+    amap = _csv_gz_rows(AMAP) or []
+    per = {}
+    for r in amap:
+        root = r.get("prefab_root")
+        if root in with_anim:
+            per.setdefault(root, set()).add(r.get("controller_name") or "")
+    aft = {p for p, s in per.items() if s == {"Afterburner"}}
+    return (len(roster), len(boss), len(enemy), len(enemy & roots), len(aft),
+            len(enemy) - len(enemy & roots))
+
+
+def enemy_controller_gap():
+    """(controller non-boss, chưa có graph, tên phân biệt chưa có graph)."""
+    sets = _enemy_sets()
+    d = _json_gz(CTRLGRAPH)
+    if not sets or not d:
+        return None
+    roster, _ = sets
+    enemy = {e for e in roster if not e.startswith("Boss-")}
+    amap = _csv_gz_rows(AMAP) or []
+    have = {c["path_id"] for c in d.get("controllers") or []}
+    ids, names_in, names_out = set(), set(), set()
+    for r in amap:
+        if r.get("prefab_root") not in enemy or not r.get("controller_path_id"):
+            continue
+        pid = int(r["controller_path_id"])
+        ids.add(pid)
+        if pid in have:
+            names_in.add(r.get("controller_name") or "")
+        else:
+            names_out.add(r.get("controller_name") or "")
+    return (len(ids), len(ids - have), len(names_out))
+
+
+def cd31002_cluster():
+    """số prefab ENEMY dùng controller tên `CD-31002`."""
+    sets = _enemy_sets()
+    if not sets:
+        return None
+    roster, _ = sets
+    enemy = {e for e in roster if not e.startswith("Boss-")}
+    amap = _csv_gz_rows(AMAP) or []
+    n = len({r["prefab_root"] for r in amap
+             if r.get("controller_name") == "CD-31002" and r.get("prefab_root") in enemy})
+    return n or None
+
+
+claim("X1", "docs/spec/ANIMATION_SCRIPT.md",
+      "**109 roster = 39 boss + 70 enemy · 87 có Animator · 27 chỉ `Afterburner` · 19 không Animator.**",
+      (109, 39, 70, 51, 27, 19), enemy_anim_split,
+      "tách boss khỏi enemy: 87/109 là ROSTER, riêng enemy chỉ 51/70")
+
+claim("X2", "docs/spec/ANIMATION_SCRIPT.md",
+      "**14** controller không thuộc boss; **11** trong số đó **chưa có graph** (10 tên, `BB-36002` có 2 id)",
+      (14, 11, 10), enemy_controller_gap,
+      "việc còn thiếu của enemy animation: 11 controller, không phải 87")
+
+claim("X3", "docs/spec/ANIMATION_SCRIPT.md",
+      "`CD-31002` | **12** (`CD-31002/03/04/05/06/07/08/09/10/13/15/16`)", 12,
+      cd31002_cluster, "cluster không-boss lớn nhất: 12 prefab dùng 1 controller")
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:

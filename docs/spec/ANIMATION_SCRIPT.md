@@ -442,6 +442,41 @@ Nhưng `OnHit` (352 B) chứa **hai hằng số**:
 
 ---
 
+### 4.2 **70 enemy** có bao nhiêu animation thật? — đo bằng join 3 tập (mới 25/10, mức **A**)
+
+Nguồn: roster **109** tên lấy từ `datas/waves.json` (39 `Boss-*` + **70** enemy), **87** root có
+`Animator` trong `datas/animator_map.csv.gz`, graph đọc từ `controller-graphs.json.gz`. Đây là lần
+đầu tách **boss khỏi enemy** khi nói "87/109 có Animator" — con số 87 **không phải** của riêng enemy:
+
+**109 roster = 39 boss + 70 enemy · 87 có Animator · 27 chỉ `Afterburner` · 19 không Animator.**
+
+| nhóm | số prefab | Animator | đọc là |
+|---|---:|---|---|
+| boss `Boss-*` | **39** | 36 | có máy trạng thái riêng (§3.6) |
+| **enemy (không boss)** | **70** | **51** | trong đó **27 chỉ** có `Afterburner` = **0 param · 1 state** (`idle`) ⇒ **không có** máy trạng thái |
+| enemy có máy trạng thái thật | **24** | 24 | 10 controller riêng (dưới); 5 `XB-*` có `Afterburner` **thêm** controller riêng |
+| enemy **không có** `Animator` | **19** | 0 | chỉ có sprite + script chuyển động (§4.0) |
+
+**Danh sách 24 prefab có controller riêng** (10 tên — cluster lớn nhất ngoài boss):
+
+| controller | prefab | param | state |
+|---|---:|---:|---|
+| `CD-31002` | **12** (`CD-31002/03/04/05/06/07/08/09/10/13/15/16`) | *chưa có graph* | *chưa có graph* |
+| `Body` | 1 (`CB-30038`) | **2** trigger (`Move` · `Idle`) | **2** |
+| `Enemy_Ingame` | 1 (`CB-30040`) | **1** trigger (`Die`) | **2** |
+| `BB-36001` · `BB-36002` (dùng cho cả `BB-36003`) · `BB-36004` | 4 | *chưa có graph* | *chưa có graph* |
+| `Jelly` (`CD-31014`) · `Nguoi`+`Supply` (`H-38002`) · `W2-30033` (`W2-30033/34`) · `Trap_Circle` (`W2-30035`) · `W2-30037` | 7 | *chưa có graph* | *chưa có graph* |
+
+⇒ **14** controller không thuộc boss; **11** trong số đó **chưa có graph** (10 tên, `BB-36002` có 2 id) ⇒
+đây là **việc còn thiếu duy nhất** của phần enemy animation, và nó **nhỏ**: 11 controller, không phải 87.
+
+**Kết luận cho người dựng lại:** với **46/70** enemy (**27** chỉ `Afterburner` + **19** không Animator), "animation"
+= **1 sprite + script 3 nhánh + nháy trúng đòn 0,05 s**. Chỉ **24** prefab cần dựng state machine, và
+phần lớn là 2 state (`Move`/`Idle`) hoặc `Idle`/`Die`. Đừng dựng 109 bộ animation.
+
+> ⚠️ Nếu ai đó nói "87/109 enemy có Animator", câu đúng là: **87/109 roster**, trong đó **39 con là boss`;
+> riêng enemy là **51/70**, và **27/51** chỉ là một state.
+
 ## 5. Bảng chép lại được / không chép được
 
 | hạng mục | chép được? | nguồn |
@@ -475,7 +510,7 @@ nhánh bên kia chạy được mà không phải hỏi lại.
 python3 tools/verify-claims.py --only J     # 10/10 claim nhóm J (nhịp + event)
 python3 tools/verify-claims.py --only K     # 6/6 claim nhóm K (tên entry + bảng chuyển state)
 python3 tools/verify-claims.py --only R     # 6/6 claim nhóm R (timeline theo giây)
-python3 tools/verify-claims.py              # toàn bộ: 134 PASS · 0 FAIL · 2 SKIP
+python3 tools/verify-claims.py              # toàn bộ: 137 PASS · 0 FAIL · 2 SKIP
 ```
 
 Nguồn: `reverse-engineering/raw/animation-audit/event-receivers.json.gz` (795 event) ·
