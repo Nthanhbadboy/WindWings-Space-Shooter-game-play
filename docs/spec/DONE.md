@@ -72,6 +72,21 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 22 — 25/10, vai "AI nhận viết game" phản biện + đồng bộ report 87 peer `0561a2185b`, 412 tests):**
+> **(a) Phát hiện khi dựng thử 30 s đầu — CHỈ ghi ở đây vì dịch ngược CHƯA XONG** (chưa sửa
+> `SYSTEM_MANIFEST`/`MISSING` để khỏi đóng đinh): ① **pháo cánh**: damage có (`StartWingCannonDamages[24]`)
+> nhưng **nhịp/barrels-theo-level chưa có luật** — dấu vết: `pN_startShotRate` · `SetupBarrels` đọc
+> getter `Player_Ingame 0x14b1eb0` (report 80) — AI dựng sẽ phải newdesign có ghi hoặc chờ đào;
+> ② **drone**: roster 13 + skill fields + modifiers (`abi20/21/25`) có, **luật bắn nền của drone
+> chưa có**; ③ tài liệu = **snapshot tới tip `0561a2185b`** — bên kia đào mỗi ngày, người dựng cần
+> biết tuổi bản đồng bộ. Cả 3 **không chặn bắt đầu L1** (main cannon/enemy/boss đầy đủ nhất);
+> đã gửi 2 gap ① ② sang PR12 cho hàng đợi đào của nhánh dữ liệu.
+> **(b) Report 87**: RebornDone `TimeResetInvincible 3,0` · `TimeCanActiveInvincible 10,0`; shield
+> callbacks **không refcount** (callback(false) có thể tắt invincible của extra-life); `activeHitEnemey@90`
+> = contact-hit, không phải khóa di chuyển; zone invisible/heal — `SYSTEM_MANIFEST` row hồi sinh +
+> `DATA_SYNC` §24.20. Peer pin ACK85/86 (`raw/peer-review/ack-85-86-6400213174.json`).
+> verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 21 — 25/10, nhận review 6 finding của peer trên tip `b8f72a4127` + đồng bộ reports 85–86 peer `82f14784e5`):**
 > Peer review trực tiếp nhánh spec (không chỉ changelog) — **sửa đủ 6**: ① DATA_SYNC §24.17 impl **11**
 > ≠ `shotRate/number` (chỉ 13; descriptor 0,04 + duration theo rank); ② tách **Player9_Clone** (0,34)

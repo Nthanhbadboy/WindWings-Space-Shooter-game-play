@@ -2761,3 +2761,26 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   **1,235 % maxHP** sau wait 0,2. Raw `2738ad848`, recovery SUCCESS, 19 checks mới.
 - Peer đã tự cập nhật 3 cửa vào nhánh dữ liệu với định hướng (bản của họ), không chép "coverage đủ/
   không test" thành APK fact — đúng hướng; khối "mục đích" (v2 anchors) **vẫn chờ commit** bên đó.
+
+### 24.20 Report 87 — Invoke→RebornDone, khiên, invisible-zone (peer `691f225b8`→`0561a2185b`, **412 tests**)
+
+- **Invoke không đoán theo tên**: GOT `2ae8560` → RELA → metadata literal → **`RebornDone`**
+  (root `Player_Controller.RebornDone 0x14c4d5c`). Normal `0x14c6130` + PVP `0x14c44e0` đều
+  `IsInvoking → CancelInvoke → Invoke(name, TimeResetInvincible)`.
+- **Initializer**: `TimeResetInvincible = 3,0` · `TimeCanActiveInvincible = 10,0` (2 field 32-bit
+  static+8, store64 tại `0x14e5b0c`) — giá trị khởi tạo, Invoke đọc live field.
+- **Đính chính 85/86**: `Player_Physics.activeHitEnemey@0x90` (giữ typo gốc) = cờ **enemy-contact
+  hit** — write false khi chết/extra-life là tắt va-chạm-damage, **không phải** khóa di chuyển
+  (model `Lifecycle.move_enabled` → `hit_enemy_enabled`); `Controller+48` = `playerTalentScript`,
+  write false trỏ `Player_Talent.reborning@0x20`.
+- **RebornDone**: clear `inReborning@a8`, particle, bone TimeScale → 1; flag block — cả 4 flag false
+  mới ghi `invincible=false` + contact-hit=true; skill/droid101 giữ giá trị trước; one-hit contact
+  = `!droid103`. Một-hit-only với invincible đã false → **giữ false**, không bật lại.
+- **Shield callbacks không refcount** (`OnShieldActive`/`Droid101`/`Droid103`/`OneHit`): ghi flag
+  rồi tính aggregate skill OR 101 OR 103; onehit không cộng vào aggregate và không gate
+  `inReborning` ⇒ callback(false) có thể tắt invincible của extra-life — static store/order.
+- **SetInvisible**: list add/remove; heal 1,235 % maxHP (86) qua `IEHealInZoneInvisible`; **đọc lại
+  `inReborning` sau helper** — đang reborn thì return trước khi ghi invisible.
+- Models `player_shield_models.py`; raw `raw/player-invincibility/invoke.json`. Bên spec đã cập
+  nhật: `SYSTEM_MANIFEST` (row hồi sinh) · mục này; peer pin ACK85/86 của mình
+  (`raw/peer-review/ack-85-86-6400213174.json`).
