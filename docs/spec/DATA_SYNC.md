@@ -1951,10 +1951,15 @@ Bản mới chạy lại dumper với **cách xác định gốc cây khác**, n
 |---|---|---|---|
 | `raw/typetrees/` (**20** file khác) | **chỉ** khác trường `gameobject`; bỏ trường này thì 20/20 file **giống tuyệt đối** (đã so bằng JSON sort) | — | **không kéo** (không thêm thông tin) |
 | `reverse-engineering/scriptableobjects/` (**71** CSV) | cùng dạng: giá trị giữ nguyên, đường dẫn bị cắt | `Tab (5)/Boss/…/Gun5/Gun1/Gun5` → `Gun1/Gun5` | **không kéo** |
+| `docs/apk-analysis/*_Director.csv` · `*AnimationEvents.csv` | cùng dạng; **nhưng** đổi gốc làm **T4 nhảy (18, 16, 13) → (18, 19, 16)** | 3 prefab `Boss-*` “mới” chỉ vì dòng CSV còn lại đúng tên gốc | **không kéo** — không phải thêm event thật |
 | `datas/boss_hp.json` | gộp theo gốc ⇒ **gốc bị cắt làm sai phép gộp** | `Boss-37004`: cũ **6 instance / hp_max 4.000.000** ([68.000, 4.000.000]) → mới **4 instance / 68.000** | **không kéo** |
 | `datas/enemy_hp.json` | HP **không đổi** (981 dòng, cùng `path_id`), chỉ `path` đổi: 268 dòng **đầy hơn** (`Board_FightBoss/Parent/…`) nhưng một số **cụt hơn** (`ScrollView/…` thay cho `Tab (5)/…`) | `Tab (5)/Boss/…/HP3` ⇄ `ScrollView/…/HP3` | **không kéo** — trộn hai kiểu gốc là tự tạo lỗi |
 
-⇒ Bốn nhóm trên **giữ bản `55bd18ac8`**. Đây là lần đầu tiên **không** kéo toàn bộ một snapshot:
+⇒ Năm nhóm trên **giữ bản `55bd18ac8`**. Hệ quả kiểm chứng: `--ref 9edc21f4d --strict-ref` **FAIL đúng 2
+claim** là **P5** (253 → 244 boss HP) và **T4** (16 → 19 AnimationEvents) — cả hai đều đọc file đã từ chối.
+`--ref 55bd18ac8 --strict-ref` thì FAIL đúng 5 claim vừa cập nhật (H2 · I3 · M3 · N2 · P6).
+**Không có chế độ ref nào làm cả 157 claim cùng đúng** — vì cây làm việc là **lai có chủ ý**; chạy
+local (`python3 tools/verify-claims.py`) cho **155 PASS · 0 FAIL · 2 SKIP**. Đây là lần đầu tiên **không** kéo toàn bộ một snapshot:
 lý do là *dữ liệu mới không nhất quán*, không phải *lười*. Nếu nhánh dữ liệu sửa lại cách lấy gốc
 (một gốc duy nhất cho mọi object), kéo lại cả 4 nhóm là việc của một lệnh.
 
