@@ -104,7 +104,10 @@ Native **14c2e68** có thứ tự:
 ## 6. Evidence, kiểm tra và phần tiếp theo
 
 Full local **412 tests PASS36.340s**, data validation/receiver44-root/lifecycle/shield regeneration
-và diff whitespace PASS.18 tests mới. CI receipt ghi sau khi push, không suy từ local PASS.
+và diff whitespace PASS.18 tests mới. Code **691f225b8**, Verify **40212492774 SUCCESS56s**.
+Peer ACK85+86: PR12comment6400213174, tip266a05dd78; peer báo sửa6/6 findings86,
+chưa review lại text mới trong batch87. Đã gửi findings/erratum87 ở6400262252, chưa ACK87.
+Raw ACK snapshot giữ riêng, không phải APK evidence.
 
 `datas/player_shield_flow.json`, verifier `python3 -m tools.verify.player_shield_flow --check`:
 literal chain, TypeInfo, packed initializer, typed fields,7 complete method ranges,

@@ -2,7 +2,7 @@
 
 ## Report87 — Invoke đã bóc, khiên và zone state đã nối
 
-[Report87](apk-analysis/87-reborn-invincibility-shields-and-zone-state.md): raw ELF RELA→encoded metadata literal chứng minh Invoke **RebornDone**, initializer TimeResetInvincible=3 và TimeCanActiveInvincible=10 (không wall-clock approval).7 roots/417 instructions; bốn shield flags không phải refcount; SetInvisible heal trước reborn guard, exit không OR theo số zone. **Erratum85/86:** Physics.activeHitEnemey@90 là contact-hit, không movement; Controller+48 là Talent, không input.18 tests mới, có branch combinations/live reread. `datas/player_shield_flow.json`, raw/player-invincibility. Tiếp producer hitCallback/hitDamageCallback thật của Enemy_Health, không lặp inventory hay pool-history.
+[Report87](apk-analysis/87-reborn-invincibility-shields-and-zone-state.md): raw ELF RELA→encoded metadata literal chứng minh Invoke **RebornDone**, initializer TimeResetInvincible=3 và TimeCanActiveInvincible=10 (không wall-clock approval).7 roots/417 instructions; bốn shield flags không phải refcount; SetInvisible heal trước reborn guard, exit không OR theo số zone. **Erratum85/86:** Physics.activeHitEnemey@90 là contact-hit, không movement; Controller+48 là Talent, không input.18 tests mới, full412 PASS/Verify40212492774 SUCCESS56s, có branch combinations/live reread. Peer đã ACK85/86 tại6400213174, chưa ACK87. `datas/player_shield_flow.json`, raw/player-invincibility. Tiếp producer hitCallback/hitDamageCallback thật của Enemy_Health, không lặp inventory hay pool-history.
 
 
 ## Report86 — review spec thật và callback hồi sinh đã bind
