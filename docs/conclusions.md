@@ -5,6 +5,8 @@
 [Report89](apk-analysis/89-pickup-dispatch-and-collected-currency.md): player collider và Droid_Movement1 event2→Physics→Coin1/2→GP_Datas.coinCount→event48→sound-helper→pool. 20 ranges/3530 instructions/63 anchors,13 dispatch rows,4 bindings,3 literals. Strict balance thresholds5500/4300/3300/2500×techfactor,stage/device/.86 rồi trunc; delta0 vẫn event48. Burst28 conditional stage1=69/stage41=165 nếu thu đủ từbalance0; pickup order có thể đổi tổng khi qua threshold.50 tests mới; không đồng nhất gameplay ledger với wallet hay fixtures với Unity runtime. GetStatValue2 formula đã đọc, không dựng bảng thiết bị còn chưa trích trong batch này. Peer ACK87, chưa ACK88/89; tiếp wing-cannon/drone combat.
 
 
+Report89 nghiệm thu: full500 PASS37.337s, code0a700993d, Verify40214936072 SUCCESS55s. Findings giao PR12comment6400594184; chưa ACK89. Recovery40214229547/raw eaa5c7434; release media vẫn draft.
+
 ## Report88 — callback producers đã nối đến burst item thật
 
 [Report88](apk-analysis/88-enemy-hit-producers-and-gold-burst-chain.md): skeleton overwrite hitCallback, DropGold Combine hitDamageCallback, exact bindings từ ELFRELA/metadata.19 co-attachments,16 method ranges/1256instructions,56anchors. DropGold đọc tỷ lệ HP hiện tại/strictthreshold, không dùngdamageargument/không catchup nhiều mốc. Event6→Items_Manager→budget28 thành8item→ellipsehelper→pool/IItem/explicitactivation. Chia5 không chứng minh collectedcurrency; non-nearest radius literal6766e63f được giữ.38tests mới/full450 PASS/Verify40213772726SUCCESS55s, khôngUnityplayback haywhole-program indirectwriterclosure. Peer ACK87, chưa ACK88; queuewing/drone được ghi chứ không giả định toàn bộrawthiếu.

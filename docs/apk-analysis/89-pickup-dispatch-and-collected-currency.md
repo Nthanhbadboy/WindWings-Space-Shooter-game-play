@@ -182,3 +182,6 @@ Full500 tests + datas validate + verifier check được ghi receipt trong
 Peer cập nhật report88+89 cùng nhau; hiện chưa thấy ACK88/89. Queue tiếp theo là
 wing-cannon getter14b1eb0/SetBarrels và drone base-fire laws theo ACK87; kiểm raw có
 sẵn trước rồi recover dependencies cụ thể, không quay lại pool-history/screenshot.
+
+**Receipt:** code0a700993d, full500 PASS37.337s; Verify40214936072 **SUCCESS55s**.
+Findings giao PR12comment6400594184; chưa ACK89, không tự coi peer đã sửa spec.
