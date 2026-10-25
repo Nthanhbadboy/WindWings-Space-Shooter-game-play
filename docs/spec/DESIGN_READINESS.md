@@ -164,12 +164,12 @@ thiếu, và nó chỉ cần cho L2/L3.
 
 | Việc | Trước | Sau | Bằng chứng |
 |---|---|---|---|
-| **D3 — thứ tự pha boss** (`DESIGN_QUESTIONS.md`) | ❌ "chỉ có `__count`" | ✅ **đóng** | `795/795` event có `time` ⇒ `BOSS_ANIM_TIMELINE.md` |
+| **D3 — thứ tự pha boss** (`DESIGN_QUESTIONS.md`) | ❌ "chỉ có `__count`" | ⚠ **một phần** (hạ mức 25/10, review R1): **A** cho mốc trong clip, **C** cho thứ tự/điều kiện/hành vi | `795/795` event có `time` ⇒ `BOSS_ANIM_TIMELINE.md` |
 | **E2 — hit flash** | ❌ "chưa đọc" | ⚠ **có số** | alpha **0,5** + `Invoke(…, 0,05 s)` trong `Enemy_Display.OnHit` |
 | **A7 — mật độ địch** | ❌ | ⚠ **một nửa** | số quân = độ dài `listPrefabEnemies`; `rate = 0` nghiêng **B** "cả loạt" |
 
-⇒ `DESIGN_QUESTIONS.md` nay là **48 câu · ✅ 30 · ⚠ 14 · ❌ 4** (claim **S2** giữ cho dòng tổng không lệch
-bảng). **Câu trả lời cho câu hỏi của tài liệu này không đổi: thiết kế được cho L1** — chỉ khác là
+⇒ `DESIGN_QUESTIONS.md` nay là **48 câu · ✅ 29 · ⚠ 15 · ❌ 4** (claim **S2** giữ cho dòng tổng không lệch
+bảng; D3 hạ ✅→⚠ sau review R1). **Câu trả lời cho câu hỏi của tài liệu này không đổi: thiết kế được cho L1** — chỉ khác là
 **animation không còn nằm trong danh sách "phải chờ"**, và *thứ duy nhất* vẫn phải **quyết** (không phải
 **đo**) là **feel**.
 
@@ -189,13 +189,13 @@ không phải chỗ còn thiếu số.
 | Wave & mật độ | `ENCOUNTERS.md` · `datas/waves.json` · `Call_Data.csv` | ✅ **đủ** — schema 23 field, số quân = độ dài list | nhịp `rate` (B) hoặc tự định nghĩa |
 | Độ khó 3 chế độ | `DIFFICULTY_MODES.md` (không nhân số quân) | ✅ đủ | ngưỡng % riêng |
 | Kinh tế, sao, IAP | `ECONOMY.md` · `MISSIONS_STARS.md` | ✅ đủ | giá theo bản mới |
-| UI 125 màn hình | `UI.md` · `screens.csv` | ✅ đủ cấu trúc | art + 9-slice mới |
-| Animation | `ANIMATION_SCRIPT.md` | ✅ script · 🟡 điều kiện enemy | art + rig mới |
+| UI 125 màn hình | `UI.md` §9–§9.3 · `screens.csv` | ✅ đủ cấu trúc · **11 board có bộ đầu vào vẽ** + layout tutorial 7 GO | art + 9-slice mới; `Board_Maps` **cận dưới** (trần 6.000) |
+| Animation | `ANIMATION_SCRIPT.md` | 🟡 **mốc + danh sách trigger (A)**, **6 chuỗi `SetTrigger` (C)**, hành vi handler (C); enemy **46/70** không có máy trạng thái | art + rig mới; có giữ 16 đòn/boss hay rút |
 | Âm thanh | `ASSETS.md` §audio (69 file) | 🟡 danh mục | nhạc/âm mới |
 
-**10/10 mục viết được ngay.** Mục duy nhất còn treo là **mật độ** (một nửa của `rate = 0`) — và nó
-treo **cách diễn giải**, không treo **số lượng**: 22.461 lượt spawn trên 282 wave đã có, nên vẫn
-dựng được wave với mật độ tự chọn rồi chỉnh sau.
+**8/10 mục đủ ngay · 2/10 mục viết được nhưng phải ghi rõ chỗ chưa đóng** (Animation: 6 chuỗi trigger +
+hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật độ** treo **cách diễn giải**
+`rate = 0`, **không** treo số lượng — 22.461 lượt spawn trên 282 wave đã có.
 
 ### 7.1 Ba con số "đã sẵn sàng" đáng nhớ
 
@@ -204,3 +204,25 @@ dựng được wave với mật độ tự chọn rồi chỉnh sau.
 | **35/39** | prefab boss có **nguồn** animation/event trong tập đã xét | 4 prefab còn lại **không có cả clip event lẫn Spine trong tập đó** — không phải "không có animation" |
 | **125** | màn hình UI có cấu trúc | mỗi màn có điều kiện mở + dữ liệu cần load |
 | **10/10** | mục design doc viết được ngay | sau khi `Call_Data` cho schema spawner |
+
+---
+
+## 8. Trả lời "đủ chưa" bằng **số đếm** (25/10, không dùng %)
+
+| tập | tổng | đủ / đóng | một phần | chưa |
+|---|---:|---:|---:|---:|
+| **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **10** ✅ | **4** 🟡 | **1** 🔴 (feel) |
+| **9 câu blocker** (§2 ở trên) | 9 | **1** (`StartHp`) | **5** | **3** (`B1` HP runtime · `A5` độ dài phiên · `B3` đường cong damage) |
+| **48 câu design** (`DESIGN_QUESTIONS.md`) | 48 | **29** ✅ | **15** ⚠ | **4** ❌ (`A5`·`A6`·`B1`·`C4`) |
+| **6 chỗ thiếu** (`COVERAGE_AUDIT.md` §2) | 6 | — | **4** | **2 chặn** (map→wave 7/250 · HP runtime theo chế độ) |
+| **claim tự kiểm** (`tools/verify-claims.py`) | **146** | **144** PASS | 2 SKIP | 0 FAIL |
+
+**Đọc bảng này thế nào:**
+
+- **Đủ cho L1** (giống **cơ chế**, tự chọn số + art): **10/15** vùng dựng được ngay; 2/10 mục design doc
+  phải ghi rõ chỗ chưa đóng; **0** chỗ nào bắt buộc phải chờ dữ liệu mới để **bắt đầu**.
+- **Chưa đủ cho L2** (khớp **số** bản gốc): còn **3** câu 🔴 + **2** chỗ chặn — `B1` HP runtime (thiếu
+  thứ tự nhân hằng số), `A5` độ dài phiên (cần A6 + luật continue), `B3` damage curve, **map→wave 7/250**,
+  **HP theo chế độ** (B8).
+- **Chưa đủ cho L3** (không phân biệt được): thêm **feel** (D1–D4: hit stop · aim assist · input latency ·
+  tỉ lệ rơi) và **thứ tự pha boss** (C) — hai thứ này **phải quyết**, không đo được từ dữ liệu đang có.

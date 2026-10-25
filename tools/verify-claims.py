@@ -2511,6 +2511,55 @@ claim("Z3", "docs/spec/UI.md",
       "@ **`0x126d3cc`**", (1, True, True), endgame_callback_ref,
       "callback Endgame ThroughTut: ẩn Replay, bật Continue, IndexTutorial+1 @0x14f9f84")
 
+# ── AA. đếm trạng thái trong bảng "đủ chưa" (DESIGN_READINESS §8) ───────
+READINESS = "docs/spec/DESIGN_READINESS.md"
+COVERAGE = "docs/spec/COVERAGE_AUDIT.md"
+
+
+def _status_tally(text, start, end, first_col=3):
+    """(tổng dòng, ✅, 🟡, 🔴) của một bảng giữa hai mốc `start`/`end`."""
+    if start not in text:
+        return None
+    body = text.split(start, 1)[1]
+    if end and end in body:
+        body = body.split(end, 1)[0]
+    total = ok = warn = bad = 0
+    for line in body.splitlines():
+        parts = line.split("|")
+        if len(parts) < 5 or not parts[1].strip().isdigit():
+            continue
+        total += 1
+        cell = parts[first_col].strip()
+        if cell.startswith("✅"):
+            ok += 1
+        elif cell.startswith("🟡"):
+            warn += 1
+        elif cell.startswith("🔴"):
+            bad += 1
+    return (total, ok, warn, bad) if total else None
+
+
+def coverage_region_tally():
+    txt = ref_blob(COVERAGE).decode("utf-8")
+    return _status_tally(txt, "## 1. Mười bốn vùng năng lực", "## 2.")
+
+
+def blocker_tally():
+    # bảng blocker có thêm cột "Trạng thái cũ" ⇒ trạng thái mới nằm ở cột 4
+    txt = ref_blob(READINESS).decode("utf-8")
+    return _status_tally(txt, "## 2. Chín blocker", "## 3.", first_col=4)
+
+
+claim("AA1", READINESS,
+      "| **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **10** ✅ | **4** 🟡 | **1** 🔴 (feel) |",
+      (15, 10, 4, 1), coverage_region_tally,
+      "đếm trạng thái từng vùng trong COVERAGE_AUDIT §1, không chép tay")
+
+claim("AA2", READINESS,
+      "| **9 câu blocker** (§2 ở trên) | 9 | **1** (`StartHp`) | **5** | **3**",
+      (9, 1, 5, 3), blocker_tally,
+      "đếm trạng thái 9 blocker trong chính bảng §2")
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:
