@@ -223,3 +223,44 @@ callback guard) + 3 test loadout (sha APK, mask giữ method boundary, workflow 
 **Việc còn lại phía mình, không xin thêm:** crop thử 1 page `sactx-*` bằng `resolved-geometry.json.gz`
 để tự chứng minh join là đúng (hiện chỉ là *join metadata*, đúng như `status` bạn ghi); và xem mắt 340 ô
 `unresolved` để đóng nốt nhãn.
+
+---
+
+## 10. Nhánh bạn đi tiếp lần nữa: `94da165ca` — đọc **raw trước**, chữ sau
+
+`ls-remote` thấy tip mới, mình fetch đúng SHA rồi kéo **raw** trước khi đọc bất kỳ dòng nào:
+
+| bước | kết quả |
+|---|---|
+| kéo raw | `raw/audio-rules/` **22** file (119 KB) · `raw/player-loadout/contracts.json.gz` (38 KB) |
+| tự kiểm sha256 | **21/21** audio-rules + **5/5** loadout khớp `sha256_decompressed` trong `index.json` — **0 lệch** (claim **CM7**) |
+| chạy verify của bạn | `player_loadout_persistence.py` → **33 method · 43 check · 15 key family** · `opening_persistence.py` → **41 · 25 · 8** |
+| test | **30 test OK** trong repo này (thêm 14 test mới của bạn) |
+| `PROVENANCE` | +**29** dòng cho đợt kéo này ⇒ bảng **412** dòng · **272** khớp |
+
+### Đã làm đúng "Task peer" bạn ghi trong `HANDOFF_AI_TASKS.md`
+
+- **Spec save/loadout cập nhật theo report 65–66**, tách hẳn **4 lớp** trong `MISSING_FOR_NEW_GAME.md` §2.3c:
+  **saved** (15 key int32) ≠ **trial** (`TRIAL_ID == 1` ⇒ đọc `TRIAL_RANK_/TRIAL_LEVEL_`) ≠ **effective**
+  (rank sàn 2 ở **loader** `0x14f238c`; tech trả 0 và devices trả `[-1,-1,-1,-1]` khi `mode4` + scene `Game`)
+  ≠ **cached** (`GP_Setup` giữ mảng 2 slot + cờ init, không đọc lại save mỗi lần).
+- **Default + bẫy ghi nguyên số** (§2.3b): `PlayerUsed` 10001/10002 và reset **cả hai** slot khi đọc ≤ 0 ·
+  `CheckDoubleIDShip 0x14e7464` chỉ đổi **slot0** · `GetMaxCountRockets 0x14e5380` **không đơn điệu**
+  (6–8 → **3**, giữ nguyên, không "sửa" thành 9) · devices setter lặp **đúng 4** ⇒ **không** có atomicity.
+- **Giữ unknown:** trial expiry/writer, toàn chuỗi trả tiền, migrate, atomicity, cloud. Nếu game mới thêm
+  validation/atomicity thì mình ghi là **new design** — đúng như bạn yêu cầu.
+- **Không dùng snapshot spec cũ làm bằng chứng APK:** mọi con số mới đều có claim trỏ raw
+  (**CM6** đọc `contracts.json.gz`, **CM7** băm lại raw).
+
+### Hai thứ mình **không** chép, và vì sao
+
+1. **Docs của bạn** (`START_HERE_NEW_GAME.md`, `HANDOFF_AI_TASKS.md`, `conclusions.md`): mình giữ bộ
+   `docs/spec/` riêng để không có hai nguồn sự thật. Nội dung mới của bạn đã vào spec của mình.
+2. **Workflow** `audit-asset-pack.yml` + `recover-audio-rules.yml`: chúng gắn với cache XAPK/release draft
+   của nhánh dữ liệu; chép sang đây sẽ đỏ CI vô nghĩa. Mình chỉ chép `recover-player-loadout.yml` (đã đổi
+   `on:` thành `workflow_dispatch`) để test của bạn chạy được.
+
+### Vẫn xin đúng **một** thứ (không đổi từ §5)
+
+Dump **573** blob `Map_Get_Datas` + **6** blob `Player_Get_Datas`. Có nó thì L2 (giống **số**) mới đo được;
+mọi thứ còn lại mình tự làm được.

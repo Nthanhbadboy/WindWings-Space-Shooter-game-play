@@ -145,6 +145,32 @@ Raw: `raw/player-loadout/contracts.json.gz` (38 KB, **sha256 kiểm tại chỗ*
 `CardUpgrades` **[0, 20, 50, 80, 250, 500, 800]** · `StartRanks` **24 × 2** · `MAX_RANK_INDEX` **6**.
 Các bảng này **không** tự áp cap — limit nằm ở wrapper gameplay, nên đừng dùng bảng làm luật cứng.
 
+#### 2.3c **saved ≠ trial ≠ effective ≠ cached** — bốn lớp, đừng gộp
+
+Đây là thứ dễ làm sai nhất khi dựng lại hệ tàu, nên tách hẳn ra (report 66, địa chỉ asm trong đó):
+
+| lớp | là gì | bằng chứng |
+|---|---|---|
+| **saved** | 15 key int32 trong Unity `PlayerPrefs`, default như bảng §2.3b | `raw/player-loadout/contracts.json.gz` |
+| **trial** | khi `TRIAL_ID_{ship} == 1` (đúng bằng **1**): đọc `TRIAL_RANK_`/`TRIAL_LEVEL_` (default **0**) **thay** cho rank/level đã lưu | getter `PLAYER_RANK`/`PLAYER_LEVEL` |
+| **effective** | **rank sàn 2** áp ở **loader** (`0x14f238c..0x14f2394`), **không** phải getter, không phải migration · `Tech_Datas.GetTechStatLevel` trả **0** khi `mode4` **và** scene `Game` · devices ở cùng điều kiện trả mảng mới `[-1,-1,-1,-1]` | loader/tech/device wrapper — **không xoá** giá trị đã lưu |
+| **cached** | `GP_Setup` giữ **mảng 2 slot** + cờ khởi tạo instance ⇒ **không** đọc lại save mỗi lần gọi; `set_indexPlayers` **không** tự refresh trận đang chạy | `GP_Setup.get_indexPlayers` |
+
+Bốn bẫy cụ thể, đã có test của họ:
+
+1. `PlayerUsed{slot}` đọc **≤ 0** ⇒ ghi lại **cả** `PlayerUsed0=10001` và `PlayerUsed1=10002` rồi đọc lại.
+   `CheckDoubleIDShip` (`0x14e7464`) là routine **riêng**: trùng slot ⇒ tìm tàu unlocked khác và đổi **slot0**,
+   **không** đổi slot1 — đừng nhét luật này vào mọi setter.
+2. `GetMaxCountRockets` (`0x14e5380`, stat **5**) **không đơn điệu**: level ≤ 0 → **7** · 1–5 → **8** ·
+   **6–8 → 3** · ≥ 9 → **10**. Giữ nguyên; **đừng** "sửa" 3 thành 9 cho đẹp.
+3. Setter devices lặp **đúng 4 slot**, không theo độ dài mảng ⇒ mảng ngắn có thể ghi một phần rồi lỗi;
+   **không** có atomicity được chứng minh.
+4. `TALENT_SELECTED` default **−1**; startup chỉ chép khi `StageTarget ≥ Board_Begin.stageUnlockTalents`
+   (số **chưa** nối value — đừng đoán) **và** selection ≠ −1 **và** `mode != 4`.
+
+> **Giữ là unknown:** trial expiry/writer lifecycle, toàn chuỗi trả tiền nâng cấp, migrate save, atomicity,
+> cloud/durability. Nếu game mới thêm validation/atomicity thì ghi **"new design"**, không ghi là phục dựng.
+
 **8 limitation ghi nguyên trong file** (đừng đọc là đã xong): schema_version là version **của pack**, không
 phải save version của APK · chỉ nhánh normal non-Test/non-Premium · không có first-install runtime/atomicity/
 migration/cloud · trial writer + expiry chưa bóc (**không** suy trial từ trạng thái unlock) · bảng rank không
