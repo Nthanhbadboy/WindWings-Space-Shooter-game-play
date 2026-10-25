@@ -56,13 +56,15 @@ caro là gần đen, cách này giữ được mảng đen **nằm trong** sprit
 ⇒ Luật dùng được: sprite nhỏ/nền (≤ 150 px) **30–60** màu; chủ thể chính (tàu, boss, drone)
 **110–160** màu. Đừng vẽ boss 30 màu (chìm) hay enemy 130 màu (nhiễu).
 
-### 3.2 Độ sâu gradient là **hằng số** — 0,21 – 0,26 cho **mọi** nhóm
+### 3.2 Độ chênh sáng **gần nhau ở 5 nhóm chủ thể** — 0,21 – 0,26 (không phải hằng số toàn cục)
 
-`val_std` gần như không đổi giữa enemy (0,23), ships (0,22), bosses (0,21), UI (0,26), fx (0,24).
-Chỉ nền (0,12) và font (0,09) là phẳng hơn.
+`val_std` gần nhau giữa enemy (0,23), ships (0,22), bosses (0,21), UI (0,26), fx (0,24).
+**Nền (0,12) và font (0,09) phẳng hơn rõ** — nên không có "hằng số cho mọi nhóm".
 
-⇒ Đây là "gradient bóng" của bản gốc, **định lượng**: mỗi khối tô bóng lệch khoảng **1/5 dải sáng**,
-áp **đồng nhất** cho mọi loại sprite. Đây là thứ dễ tái tạo nhất mà vẫn giữ đúng "chất".
+⇒ Đọc được: 5 nhóm chủ thể có độ chênh sáng **~1/5 dải**, tức mỗi khối tô bóng lệch khoảng 20 % độ sáng.
+**Không** đọc được: đây là "độ sâu gradient bóng" — `val_std` chỉ là độ lệch chuẩn độ sáng, và nó đo trên
+**contact sheet JPEG đã resize + nền caro**, không phải texel/alpha gốc. Vì vậy dùng làm **tham khảo
+tương đối giữa các nhóm trên cùng một mẫu**, không dùng làm ngưỡng tuyệt đối để chấm ảnh mới.
 
 ### 3.3 Thứ bậc **sáng** (ai nổi trước)
 

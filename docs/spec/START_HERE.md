@@ -67,17 +67,22 @@ Không cần đọc hết 40 file trước khi bắt đầu. Tám con số này 
 
 | # | Cái gì | Số | Ở đâu (claim) |
 |---:|---|---|---|
-| 1 | Khung hình dọc | tỉ lệ **0,4813** (≈ 9:18,7) → canvas **1080×2244** | `VISUAL_DESIGN.md` §1 (**AN1**) |
+| 1 | Khung hình dọc | tỉ lệ **0,4813** (≈ 9:18,7) — **tham chiếu trên một thiết bị**, không phải canvas bắt buộc | `VISUAL_DESIGN.md` §1 (**AN1**) |
 | 2 | Điều khiển | kéo ngón để lái · biên **20×25** · radius **15** unit | `GAMEPLAY.md` §1 |
 | 3 | Súng / đạn | **458** cấu hình · damage **40–1.200** (median **400**) · **186** loại đạn | `COMBAT.md` §0 |
 | 4 | Wave | **282** wave · **11.089** dòng · median **28,5** dòng/wave · **109** prefab enemy | `ENCOUNTERS.md` §1 (**AQ1/AQ4**) |
-| 5 | Spawn | 1 enemy / **1,0 s** · `y` **9,6** (giữa mép trên) · radius **0,1** · **68 %** là `point_range` | `SCRIPTS.md` §3 (**AQ6**) |
+| 5 | Spawn | `rate` trung vị **1,0 s** · `y` **9,6** · radius **0,1** · **68 %** là `point_range` (**số đo, không phải luật**) | `SCRIPTS.md` §3 (**AQ6**) |
 | 6 | Độ khó | **3** chế độ · `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · **không** nhân số quân | `DIFFICULTY_MODES.md` §5 (**E1/E2**) |
 | 7 | HP | HP bar trên **109/109** prefab · HP thật = bảng × `kHp[mode]` | `ENEMY_HP_RUNTIME.md` §0 |
 | 8 | Rơi đồ | **702** vật đặt sẵn (**676** coin / **26** item) · **246/2.094** slot có item · **6** loại | `ECONOMY.md` (**AE1–AE3**) |
 
+> ⚠ **Đọc 8 số này đúng cách:** chúng là **mô tả phân bố** của bản gốc, **không** phải luật engine.
+> `rate = 0` **chưa** chứng minh "spawn cả loạt cùng frame": report 53 cho thấy Path/Waypoints đưa `rate`
+> vào `WaitForSeconds`, và 0 chỉ là một nhánh — **không** suy thứ tự thực thi. Muốn khác cũng được,
+> nhưng phải **ghi là lựa chọn thiết kế**, không giả làm "đúng bản gốc".
+
 Thứ tự dựng đề xuất + hoá đơn sản xuất: `GAMEPLAY.md` §7 · `DONE.md` · cái gì **chưa** có:
-`MISSING_FOR_NEW_GAME.md` (13 hệ: **8 đủ · 4 một phần · 1 thiếu**). Bộ **48 câu hỏi thiết kế**
+`MISSING_FOR_NEW_GAME.md` (13 hệ: **8 đủ · 5 một phần · 0 thiếu hoàn toàn**). Bộ **48 câu hỏi thiết kế**
 phải tự trả lời (29 câu đã có số): `DESIGN_QUESTIONS.md`.
 
 ---
@@ -96,19 +101,20 @@ Hai tầng số, đều đo trên dữ liệu gốc:
 | `ui` | **52** | 0,29 | 0,26 | 0,095 | **0,87** |
 | `drones` / `bosses` / `ships` | **114 / 130 / 136** | 0,55 / 0,58 / 0,50 | 0,23 / 0,21 / 0,22 | ≤0,017 | 0,24–0,31 |
 
-⇒ Luật dùng ngay: **nền/nhỏ 30–60 màu · chủ thể chính 110–160 màu**; gradient **0,20–0,26** cho
-**mọi** nhóm (đây là "hằng số" của bản gốc, không phải sở thích); outline đen chỉ **~1 %** — đừng
-vẽ viền dày.
+⇒ Dùng được: **nền/nhỏ 30–60 màu · chủ thể chính 110–160 màu**; outline đen chỉ **~1 %** — đừng vẽ viền dày.
+Gradient p50 **0,20–0,26** ở 5 nhóm chủ thể, **nhưng** `background` **0,12** và `font` **0,09** ⇒ đây là
+**mô tả theo nhóm trên mẫu**, **không** phải hằng số toàn cục. `val_std` cũng **không** đồng nghĩa
+"độ sâu gradient bóng" — nó chỉ là độ lệch chuẩn độ sáng trên **contact sheet JPEG đã resize**.
 
 **b) Khung hình — "đẹp" ở mức cả màn** (`VISUAL_DESIGN.md` §1–§5, claim **AN1/AN2**)
 
-| Số đo | Giá trị | Luật |
+| Số đo | Giá trị | Đọc thế nào (trên **35 ảnh chụp**, không phải mọi máy) |
 |---|---:|---|
 | Tương phản (p95−p05) | **0,45 – 0,80** | dưới 0,4 = phẳng · trên 0,8 = chói |
 | Accent gameplay | **≤ 10 %** pixel | panel thưởng mới được **~45 %** |
 | Độ chi tiết (|ΔRGB| kề) | **13 – 22** | dưới 10 = trống · trên 25 = nhiễu |
 | Panel | tỉ lệ **0,67** (≈ 2:3 dọc) | p95 cao **28,4** ⇒ phải chịu danh sách cuộn |
-| Juice | flash **0,05 s** · shake **0,10 / 20 frame** · nhịp đòn **0,17 – 0,33 s** | **đừng** thêm slow-mo (bản gốc: 0 site) |
+| Juice | flash **0,05 s** · shake **0,10 / 20 frame** · nhịp đòn **0,17 – 0,33 s** | 0 site `timeScale` trên **139** file asm = **mẫu**, không phải toàn build ⇒ **không** kết luận "bản gốc không có slow-mo". Dùng thì ghi là **lựa chọn thiết kế** |
 
 **Test "đẹp" chạy bằng máy** (không cần người chấm): chụp 10 khung gameplay + 3 khung thưởng rồi
 `python3 tools/design-metrics.py <thư mục ảnh>` — đạt 4 khoảng ở `VISUAL_DESIGN.md` §5 là đạt.
@@ -122,7 +128,7 @@ vẽ viền dày.
 
 | Vai | Thứ tự |
 |---|---|
-| **AI/agent dựng game** | file này → `MISSING_FOR_NEW_GAME.md` (13 hệ) → `GAMEPLAY.md` §0+§7 → `TUNING_KNOBS.md` → `ENEMY_BEHAVIOUR.md` §6 |
+| **AI/agent dựng game** | file này → `MISSING_FOR_NEW_GAME.md` (13 hệ + **§6 gate 3 stage & khuôn victory**) → `GAMEPLAY.md` §0+§7 → `TUNING_KNOBS.md` → `ENEMY_BEHAVIOUR.md` §6 |
 | **Designer / cân bằng** | `GAMEPLAY.md` §0 → `BALANCE.md` §0 → `COMBAT.md` §0 → `ECONOMY.md` §0 → `TUNING_KNOBS.md` |
 | **Engineer gameplay** | `GAMEPLAY.md` → `COMBAT.md` → `ENCOUNTERS.md` → `UI.md` → `MISSIONS_STARS.md` |
 | **Art / tech art** | `ART_STUDY.md` (số đo mẫu gốc) → `VISUAL_DESIGN.md` (luật khung) → `ASSETS.md` §1 (art direction) + §7 (atlas plan) |
@@ -130,7 +136,7 @@ vẽ viền dày.
 
 ---
 
-## 5. Mười hai cái bẫy — đọc trước khi viết design doc riêng
+## 5. Mười bốn cái bẫy — đọc trước khi viết design doc riêng
 
 Đây là những chỗ **bộ spec này từng sai thật**, đã sửa; đừng lặp lại:
 
@@ -148,13 +154,15 @@ vẽ viền dày.
 | 10 | 0 xref = không tồn tại | ⇔ **chưa thấy chỗ dùng**, không phải không có |
 | 11 | `WaitForSeconds(0)` = cùng frame | **Không** suy được thứ tự thực thi từ đó |
 | 12 | "Có timestamp = đã giải script" | Timestamp **chỉ là mốc**, không phải thứ tự/điều kiện (D3 vẫn 🟡) |
+| 13 | **0 site trong 139 file asm = không tồn tại** | 139 file là **mẫu**, không phải whole-build closure. Nói "chưa thấy", không nói "không có" — và **cấm** dùng nó để cấm tính năng |
+| 14 | **Tỉ lệ 0,4813 = canvas bắt buộc** | Đó là **một thiết bị** (720×1496). Game mới phải **responsive + safe-area**; giữ *quan hệ* (dọc, panel 2:3), không khoá cứng số |
 
 ---
 
 ## 6. Tự kiểm trước khi tin bất kỳ con số nào
 
 ```bash
-python3 tools/verify-claims.py                 # 173 PASS · 0 FAIL · 2 SKIP · 0 ERROR
+python3 tools/verify-claims.py                 # 180 PASS · 0 FAIL · 2 SKIP · 0 ERROR
 python3 tools/verify-claims.py --only AQ       # riêng nhóm wave/đơn vị
 python3 -m unittest discover -s tests -q       # 5 test luật phân loại
 python3 tools/data-integrity.py; echo $?       # 0 = không có file gốc nào bị sửa tay

@@ -2199,3 +2199,34 @@ rotation `0: 2.041 · 1: 53 · 2: 54 · 3: 37` (**144** sprite cần lật/xoay)
 - `raw/process-audit/` · `raw/balloon-animation/` · `raw/animation-audit/` · `raw/runtime-probe/` ·
   `raw/il2cpp-consts/` (273) · `raw/ui-audit/` (407) · tools/tests mới (`sprite_geometry.py`,
   `balloon_animation.py`, `enemy_move_completion.py`, 6 test).
+
+---
+
+## 18. Nhánh dữ liệu lên **`7c7c9f064`** — review N1–N5 và phần đã sửa
+
+> **Tip mới:** `622b700e5 → 7c7c9f064` (3 commit). `git diff --stat 622b700e5 7c7c9f064` = **23 file,
+> +976 / −6**. Không merge. Kéo về: report **52 · 53 · 57 · 63 · 64** + raw `ui-audit/scene-map-flow.json.gz`
+> · `endgame-missions/shared-stage-victory.json.gz` · `balloon-animation/movement-state-writers.json.gz`
+> (ghi **source SHA** = `7c7c9f064`).
+
+### 18.1 Bên đó review snapshot `cf27b9755` của mình — 5 điểm, trạng thái sửa
+
+| # | Review nói gì | Mình đã sửa | Bằng chứng |
+|---|---|---|---|
+| **N1** | Map→wave bị ghi là blocker chưa bóc, dù campaign list đã resolve | `MISSING` §2.1: **3/576 entry đã resolve** (`[25,9010]` · `[164]` · `[113,5]`), tách rõ phần chưa decode; bỏ "phải bóc lại APK" | report 52 + `scene-map-flow.json.gz`, claim **CM1** |
+| **N2** | Suy "tàu không có HP/damage riêng" từ 4 field là **không hợp lệ** | `MISSING` §1 hàng 9 + §2.2: `GetMainCannonDamage(index)` đọc **mảng `0x78` theo `playerIndex`** ⇒ damage **có** phụ thuộc tàu; HP để **D** | asm `14e3a78..14e3a90`, claim **CM2** |
+| **N3** | Proxy ảnh bị nâng thành định luật art + "máy chấm đẹp" | `START_HERE` §3, `VISUAL_DESIGN` §1/§3/§4/§5, `ART_STUDY` §3.2: gọi là **tham khảo trên mẫu JPEG**, nêu phản ví dụ `background 0,12` / `font 0,09`, 54.019 là **bbox dẫn xuất**, tỉ lệ screenshot **không** phải canvas | sửa câu chữ + cảnh báo trong 3 file |
+| **N4** | Default/0-xref bị biến thành luật toàn game | `MISSING` §2.4 mới + `START_HERE` §2 (ghi chú 8 số) + bẫy #13/#14 + `MISSING` §3: 139 asm = **mẫu**; `rate = 0` chưa suy thứ tự | `WaitForSeconds` (report 53) |
+| **N5** | Save "0 tài liệu"; thiếu contract tutorial/result | `MISSING` §2.3: key **`StarCount`** · **`StarStageMaster{stage}_{mode}`** + model `savedStars`; **§6 mới**: gate 3 stage + khuôn victory chung | report 57 · 64, claim **CM3** |
+
+### 18.2 Cái **chưa** sửa (đừng đọc §18.1 thành "xong hết")
+
+- **573/576** blob `Map_Get_Datas` vẫn chưa dump; **6 blob** `Player_Get_Datas` vẫn chưa có ⇒ **L2 vẫn CHƯA**.
+- Save: chưa có **schema đầy đủ**, chưa chứng minh **flush đĩa**.
+- Report **59 · 60 · 61** + 6 chunk `sprite-geometry/objects-*.jsonl.gz` vẫn **chưa kéo** (như §17.4).
+- Review của họ là **tĩnh trên snapshot đã pin**, không chạy suite của mình; mình cũng **chưa** chạy suite của họ.
+
+### 18.3 Điều đáng giữ nhất từ review này
+
+**"Tổng khớp ≠ không đổi"** và **"field vắng ≠ không tồn tại"** — hai câu này vừa lật một kết luận của mình
+(§17.1) và một kết luận khác (§18.1 N2). Cả hai đều đã thành claim máy kiểm (`AQ7`, `CM2`).

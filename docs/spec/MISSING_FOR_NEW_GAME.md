@@ -29,36 +29,42 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 | 3 | **Súng / đạn / sát thương** | ✅ **đủ** cho L1 | **458 súng** · damage **40–1.200** (median 400) · **186 loại đạn** · burst 5 tham số (`COMBAT.md`) | **B3**: đường cong damage theo rank — xem §2.2 |
 | 4 | **Enemy** | ✅ **đủ** | **109 prefab** (39 boss + 70) · 9 component · 399 đường bay · **150 HP id** (`datas/enemy_hp_by_id.json`) | — (B1 coi như đóng: HP theo **id**, không theo wave) |
 | 5 | **Boss** | 🟡 **một phần** | 39 prefab `Boss-*` · **795 event** có mốc thời gian · 268 cặp (prefab, clip) · nhịp **0,17 / 0,33 / 1,0 / 5,0 s** | **D3**: thứ tự pha + điều kiện vào/thoát — có mốc, **chưa có** thứ tự (mức C) |
-| 6 | **Wave / spawn** | ✅ **đủ** | **282 wave · 11.089 dòng cấu hình · 22.451 entry** (`H2`, `I3`, `M3`) | — (`rate = 0` là "spawn cả loạt", mức B, đã ghi) |
+| 6 | **Wave / spawn** | ✅ **đủ** | **282 wave · 11.089 dòng cấu hình · 23.757 spawner · 22.451 entry** (`H2`, `I3`, `M3`, `AQ7`) | `rate = 0` **chưa** kết luận "spawn cả loạt" — xem §2.4 |
 | 7 | **Độ khó 3 chế độ** | ✅ **đủ** | `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · không nhân số quân | ngưỡng % riêng = tự chọn |
 | 8 | **Kinh tế / rơi đồ** | ✅ **đủ** | 3 tầng rơi: **702** vật đặt sẵn (**676 coin / 26 item**) · **246/2.094** slot mang item · **6** loại (`AE1`–`AE3`) | trọng số chọn giữa 6 loại — **tự chọn** |
-| 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu** nhưng `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) ⇒ tàu **không** có HP/damage riêng; `Player_Talent` **23 method** · **13 drone** | giá nâng cấp theo sao (**dữ liệu có, chưa bóc**); công thức talent (C) |
+| 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu**; `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) — nhưng damage **có** lookup theo tàu: `GetMainCannonDamage(playerIndex)` đọc **mảng static float** `0x78` theo `playerIndex` (§2.2); `Player_Talent` **23 method** · **13 drone** | **giá trị** mảng damage theo tàu (6 blob rodata); HP riêng của tàu = **chưa biết**, không suy từ field vắng |
 | 10 | **UI** | ✅ **cấu trúc** · ✅ **luật thị giác** / ❌ **asset** | **797 màn · 150.131 node · 5.831 nút** (`N2`, `P6`); **55.584** layout file; khung hình **0,4813** · accent **≤10 %** · tương phản **0,45–0,80** (`VISUAL_DESIGN.md`, **AN1**, **AN2**) | asset gốc: **vẽ mới**; luật thì **đã có số** |
 | 11 | **Âm thanh** | 🟡 **có dữ liệu, chưa có luật phát** | **69 clip / 571,5 s**, trong đó **5 vòng nhạc > 60 s** (`docs/assets/audio-index.csv`) | **ai phát cái gì, lúc nào** (`AudioSource`/`AudioManager` chưa bóc) |
-| 12 | **Save / load + live-ops** | ❌ **thiếu** | **170 IAP** (2 nhóm); `MISSIONS_STARS.md`; `ui_text_keys` 1,25 M dòng | **schema save** (khoá, kiểu, mặc định) — **0** tài liệu; **chưa** trích bảng chuỗi |
+| 12 | **Save / load + live-ops** | 🟡 **một phần** | key đã đọc: **`StarCount`** · **`StarStageMaster{stageIndex}_{modeIndex}`** (default 0) qua `PlayerPreferences.SetInt → PlayerPrefs.SetInt`; model `savedStars/result` (report 57); **170 IAP** | **schema đầy đủ** (mọi khoá/kiểu/migrate) + **chưa** chứng minh flush đĩa — xem §2.3 |
 | 13 | **Tech / build** | 🟡 **một phần** | Unity **2022.3.x** (`UNITY_RULES.md`) · Spine · DOTween · 3 loader trong repo này | plugin list đầy đủ + cấu hình build (lấy từ `dump.cs`/manifest, không cần thiết bị) |
 
-**Đọc bảng này theo đúng nghĩa:** 8 hệ **đủ** để dựng lại, 4 hệ **một phần**, 1 hệ **thiếu** (save/load).
+**Đọc bảng này theo đúng nghĩa:** 8 hệ **đủ** để dựng lại, **5 hệ một phần**, **0 hệ thiếu hoàn toàn** (save/load đã có key, chưa đủ schema — §2.3).
 
 ---
 
-## 2. Ba chỗ **chặn thật** — và địa chỉ để mở
+## 2. Bốn chỗ **cần biết trước** — và địa chỉ để mở
 
-Ba chỗ này khác hẳn 10 chỗ còn lại: chúng **không** phải "tự chọn được", vì nếu tự chọn thì game mới
-sẽ **lệch cơ chế**, không phải lệch số.
+A6 và B3 là **dữ liệu chưa dump**; save đã có **một phần**; `rate = 0` là **giới hạn suy luận**.
+Tự chọn ở A6/B3 thì game mới **lệch số**; tự chọn ở `rate = 0` thì lệch **nhịp**, nhưng được phép nếu ghi rõ.
 
-### 2.1 A6 — một **stage** gồm mấy wave (chặn A5: độ dài phiên)
+### 2.1 A6 — một **stage** gồm mấy wave: **3/576 entry đã resolve**, phần còn lại chưa dump
 
-- **Có gì:** `Map_Get_Datas..cctor` **100.896 B · `ends_clean: true`** · **4.020** const · **576** `init_array`
-  (claim **AM1**) — export **đầy đủ, không bị cắt**. Hàm `GetListWaves` **1.112 B**, trả `int[]`.
-- **Thiếu gì:** **bytes** của 576 blob. Mỗi `init_array` đã có địa chỉ nguồn (`a:`), ví dụ
-  `0x2bd4838` (len **36**), `0x2bd5488` (len **36**), `0x2bd58a8` (len **3**). Phân bố độ dài:
-  **3 → 320 mảng**, **7 → 104**, **36 → 63**, 4 → 21, 5 → 12, 6 → 9.
-- **Vì sao chặn:** 250 map ↔ 282 wave. Không biết map nào gồm wave nào thì **không** tính được một
-  phiên dài bao lâu, và **không** kiểm được 299 stage ↔ 250 map.
-- **Việc kế tiếp:** nhánh dữ liệu dump **576 blob** ở các địa chỉ `a:` (tổng chỉ vài KB) —
-  **cùng cách** đã làm cho `stage23-rodata.json`. Không cần thiết bị, chỉ cần `libil2cpp.so`.
-- **Sau khi có:** parse `int32[len]` → map × wave list → A5 tự đóng.
+- **Kích thước export:** `Map_Get_Datas..cctor` **100.896 B · `ends_clean: true`** · **4.020** const · **576** `init_array` (claim **AM1**) — **đầy đủ, không bị cắt**. `GetListWaves` **1.112 B**, trả `int[]`.
+- **ĐÃ RESOLVE (mức A, phạm vi hẹp)** (`CM1`): **3 entry** = `[25, 9010]` · `[164]` · `[113, 5]` · **13** check;
+  `Map_Get_Datas..cctor` dựng `listMapDatas`; **3 entry đầu** đọc được
+  **literal trong asm**: entry0 `[25, 9010]` · entry1 `[164]` · entry2 `[113, 5]` — ứng với **stage nội bộ
+  0/1/2** của **ChapterCurrent = 0, GameMode = 0, nonbranch** (không áp cho branch/test/mode khác).
+  Consumer đã nối tới cuối: `MapController.Start → setup.get_stageIndex → Map_Get_Datas.GetListWaves(index)`,
+  **không** +1/−1 giữa getter và tham số. Nguồn: report **52** + `raw/ui-audit/scene-map-flow.json.gz`
+  (**13** check) + `raw/il2cpp-consts/Map_Get_Datas.asm.txt`.
+- **CHƯA RESOLVE:** **573** entry còn lại (tổng **576**). `datas/maps.json` là **bảng dẫn xuất** —
+  **không** phải nguồn độc lập; đừng dùng nó để "xác nhận" chính nó.
+- **Địa chỉ để dump tiếp:** mỗi `init_array` có địa chỉ nguồn (`a:`), ví dụ `0x2bd4838` (len **36**),
+  `0x2bd5488` (len **36**), `0x2bd58a8` (len **3**). Phân bố độ dài: **3 → 320 mảng**, **7 → 104**,
+  **36 → 63**, 4 → 21, 5 → 12, 6 → 9.
+- **Vì sao vẫn tính là chặn A5:** 250 map ↔ 282 wave; biết 3 stage **không** suy ra độ dài phiên. Nhưng
+  **không còn** là "phải bóc lại APK từ đầu" — chỉ còn **đọc 573 blob** (vài KB).
+- **Nếu chỉ cần L1:** tự chọn độ dài map là **hợp lệ**, miễn ghi rõ là **lựa chọn thiết kế**.
 
 ### 2.2 B3 — đường cong damage của **tàu** theo rank
 
@@ -67,22 +73,41 @@ sẽ **lệch cơ chế**, không phải lệch số.
   `StartWingCannonDamages` (`0x88`) — đọc offset từ `dump.cs.gz`.
 - **Thiếu gì:** bytes của **4 mảng × 24 float** + 2 mảng × 3, tại `0x2bd5a40`, `0x2bd4d28`, `0x2bd5af8`,
   `0x2bd45c0`.
-- **Vì sao chặn:** `Player_Info` **chỉ 4 field** (claim **AM3**) ⇒ **tàu không có damage riêng**. Toàn bộ
-  khác biệt giữa 25 tàu nằm ở **rank** (`GetMainCannonDamage`) và ở `Star`. Không có mảng này thì
-  DPS/TTK tuyệt đối **không** tính được, chỉ có damage **của đạn** (40–1.200).
+- **Sửa 25/10 (review peer N2):** **KHÔNG** được suy "tàu không có damage riêng" từ việc `Player_Info` chỉ
+  có 4 field (claim **AM3**). Asm `Player_Get_Datas.GetMainCannonDamage(int playerIndex)` đọc **mảng static
+  float** tại offset **`0x78`** và **index theo `playerIndex`**: `ldr x8,[x8,#0x78]` → so `w9, w19` →
+  `ldr s8,[x8, w19, sxtw #2 + 0x20]` (`14e3a78..14e3a90`). Rank/upgrade vào phần tính **sau** (`0x14e3c40`),
+  **không** xoá lookup theo tàu ⇒ **damage phụ thuộc tàu là có thật**; chỉ **giá trị** là chưa biết.
+- **Bằng chứng asm (`CM2`):** `0x78` + `sxtw #2` + index `w19` — kiểm bằng máy trên `Player_Get_Datas.asm.txt`.
+- **Còn thiếu:** giá trị **6 mảng rodata** (24 float × 4 + 2 mảng × 3) ⇒ DPS/TTK tuyệt đối vẫn chưa tính.
+  HP riêng của tàu: **chưa có bằng chứng** theo cả hai chiều ⇒ giữ **D**, không kết luận.
 - **Việc kế tiếp:** cùng một lần dump rodata với §2.1 (hai class, 6 blob).
 - **Sau khi có:** `TTK` từ "tương đối" lên **số thật**; `COMBAT.md` §6 hết câu "chưa có số tuyệt đối".
 
-### 2.3 Save / load — **0 tài liệu**
+### 2.4 `rate = 0` **không** phải "spawn cả loạt cùng frame"
 
-- **Có gì:** **170 IAP** (2 nhóm), mission/sao, 1,25 M dòng text UI.
-- **Thiếu gì:** tên khoá lưu, kiểu, giá trị mặc định, thứ tự migrate. `03-il2cpp-strings.json` có
-  **15.053** chuỗi nhưng chỉ expose `urls · ips · emails · suspicious · json` ⇒ **chưa** tra được
-  `PlayerPrefs.*` / tên file save.
-- **Vì sao chặn:** nếu làm game mới, **tự đặt schema** là được — nhưng khi đó **không** giữ được
-  hành vi "mất dữ liệu thì mất gì" (điều ảnh hưởng trực tiếp tới kinh tế: 170 gói IAP).
-- **Việc kế tiếp:** (a) export **toàn bộ** 15.053 chuỗi; (b) grep `PlayerPrefs|Save|Load` trong asm
-  **tất cả** 139 file (đã có sẵn trong repo). Không cần thiết bị.
+- `rate` là field thật (`Call_Data.rate`), nhưng **cách dùng khác nhau theo loại spawner**: nhánh
+  Path/Waypoints đưa giá trị vào `WaitForSeconds`, nhánh khác dùng trực tiếp (report **53**). `WaitForSeconds(0)`
+  **không** chứng minh mọi enemy sinh trong cùng một frame — nó chỉ nói "không chờ thêm" trong nhánh đó.
+- Vì vậy: **68 %** dòng là `point_range` và `rate` trung vị **1,0 s** là **mô tả phân bố**, không phải
+  "luật spawn của game". Muốn mô phỏng khác thì ghi **lựa chọn thiết kế**.
+- Cái **đo được** và nên giữ: mỗi wave có **1 `StartPoint` + 1 `EndPoint`** (tổng **608** dòng mốc) và
+  danh sách enemy nằm trong `listPrefabEnemies` — đó là **cấu trúc**, không phải nhịp.
+
+### 2.3 Save / load — **một phần** (không còn là "0 tài liệu")
+
+- **ĐÃ có (A cho lời gọi, B cho ngữ nghĩa):**
+  - key **`StarCount`** — `GameDatas` setter `13256f0` → `PlayerPrefs.SetInt` tại `132576c`;
+  - key **`StarStageMaster{stageIndex}_{modeIndex}`** — `Stage_Datas.Get/SetStarStageMaster`, getter default **0**,
+    setter `12c4620` → `PlayerPreferences.SetInt` → `UnityEngine.PlayerPrefs.SetInt`;
+  - mô hình điểm danh: `oldFlags[i] = savedStars > i`; `savedAfter = max(savedStars, result + 1)` (report **57**).
+  - **Chưa** chứng minh `PlayerPrefs.Save` / flush xuống đĩa — đừng coi lời gọi set là đã ghi bền.
+- **Còn thiếu:** danh sách **đầy đủ** khoá/kiểu/default/migrate; cả 15.053 chuỗi (`03-il2cpp-strings.json`
+  chỉ expose `urls · ips · emails · suspicious · json`).
+- **Vì sao vẫn quan trọng:** tự đặt schema thì **không** giữ được "mất dữ liệu thì mất gì" — ảnh hưởng trực
+  tiếp kinh tế (**170 gói IAP**).
+- **Việc kế tiếp:** (a) export **toàn bộ** 15.053 chuỗi; (b) grep `PlayerPrefs|Save|Load` trong **139** asm
+  (đã có trong repo). Không cần thiết bị.
 
 ---
 
@@ -90,7 +115,7 @@ sẽ **lệch cơ chế**, không phải lệch số.
 
 | Thứ | Vì sao không thiếu |
 |---|---|
-| **feel** (hit stop · aim assist · input latency) | **không tồn tại trong build** — 0 site `timeScale`, 0 method `aim` trên **139** file asm (**AF2**, **AF3**). Cái có thật đã có số: hit flash **0,5 / 0,05 s** (`J9`), rung **241** prefab (`AF1`) |
+| **feel** (hit stop · aim assist · input latency) | 0 site `timeScale` / 0 method `aim` trên **139** file asm (**AF2**, **AF3**) = **chưa thấy**, **không** phải "không tồn tại" (139 file là **mẫu**, không phải whole-build closure). Cái **đo được**: hit flash **0,5 / 0,05 s** (`J9`), rung **241** prefab (`AF1`). Game mới muốn có feel thì **được** — ghi là lựa chọn thiết kế |
 | **art, font, atlas (bản gốc)** | L1 **vẽ mới**. Cái **không** bỏ là **luật thị giác**: khung hình · ba chế độ sáng · ngân sách accent · vignette khung thưởng · mật độ chi tiết — đã đo và ghi ở `VISUAL_DESIGN.md` |
 | **số cân bằng cụ thể** (giá, tốc độ, mật độ) | L1 cho phép tự chọn; cái phải giữ là **cơ chế** (3 chế độ, không nhân quân, rơi đồ 3 tầng) |
 | **thứ tự pha boss (D3)** | Có **795 event + mốc thời gian**; thứ tự là **lựa chọn thiết kế**, dữ liệu chỉ cần đủ để biết "mỗi pha có đòn gì" |
@@ -100,9 +125,10 @@ sẽ **lệch cơ chế**, không phải lệch số.
 
 ## 4. Trả lời "đủ chưa" — theo L1 / L2 / L3
 
-- **L1 (làm game **giống cơ chế**, art mới, số tự chọn): ĐỦ.** 8/13 hệ đủ, 4 hệ một phần nhưng phần
+- **L1 (làm game **giống cơ chế**, art mới, số tự chọn): ĐỦ.** 8/13 hệ đủ, **5** hệ một phần nhưng phần
   thiếu đều **không chặn** (D3 = chọn thiết kế; audio = tự chọn; talent = tự chọn giá).
-- **L2 (giống **số** đến mức chơi thấy tương đương): CHƯA.** Cần đúng **§2.1 + §2.2** (6 blob rodata).
+- **L2 (giống **số** đến mức chơi thấy tương đương): CHƯA.** Cần **6 blob** rodata của `Player_Get_Datas`
+  + **573** entry `Map_Get_Datas` còn lại (§2.1 + §2.2).
   Ngoài ra cần playback thật để so cảm giác — việc này cần **thiết bị**.
 - **L3 (tái lập **1:1 asset** gốc): BỎ** — art pack, font, shader, physics không tái lập từ APK.
   **Không** có nghĩa là bỏ "thiết kế cho đẹp": phần đó là `VISUAL_DESIGN.md` (khung hình **0,4813**,
@@ -113,13 +139,35 @@ sẽ **lệch cơ chế**, không phải lệch số.
 
 ## 5. Nếu chỉ làm được **một** việc tiếp theo
 
-Xin nhánh dữ liệu **một lần dump rodata** gồm 6 blob của `Player_Get_Datas` và 576 blob của
-`Map_Get_Datas` (tất cả địa chỉ đã có trong `init_array.a`). Đổi lại:
+Xin nhánh dữ liệu **một lần dump rodata**: **6 blob** của `Player_Get_Datas` + **573 blob còn lại** của
+`Map_Get_Datas` (3/576 entry đã đọc literal; tất cả địa chỉ đã có trong `init_array.a`):
 
 | được gì | mở khoá |
 |---|---|
-| 4 mảng 24 float | **B3** đóng → TTK tuyệt đối, cân bằng súng theo rank |
-| 576 mảng int | **A6** đóng → **A5** đóng → biết một phiên dài bao lâu |
+| 4 mảng 24 float (damage theo **playerIndex**) | **B3** đóng → TTK tuyệt đối, cân bằng súng theo rank/tàu |
+| 573 mảng int | **A6** đóng → **A5** đóng → biết một phiên dài bao lâu |
 
 Đó là **hai** trong **bốn** câu ❌ cuối cùng của `DESIGN_QUESTIONS.md` (48 câu: **29 ✅ · 15 ⚠ · 4 ❌**,
 claim **S2**), và cả hai đều **không cần thiết bị**.
+
+---
+
+## 6. Đã có, không còn thiếu: **gate 3 stage mở đầu + khuôn victory chung** (report 64)
+
+Ba stage mở đầu **khác nhau ở tutorial**, **không** phải ba hệ thống victory riêng — đã đọc ra predicate
+và luồng chung (mức **A** cho lời gọi, **B** cho việc "cùng khuôn"):
+
+| Stage | Predicate trong raw | Tutorial |
+|---|---|---|
+| 1 | `stageIndex == 0 && IndexTutorial == 0` (`1327e90`) | `TutMoveFingers`, `TutTransform` (delay đầu **9 s**) |
+| 2 | `stageIndex == 1 && IndexTutorial == 1` (`1327f08`) | `TutDrones` + pause/resume |
+| 3 | `stageIndex == 2 && !IsTutTouchSkillDone()` (`1327f8c`) | nhánh talent/touch-skill — **không** gate `IndexTutorial == 2` |
+
+Khuôn chung: `GP_Manager.<Start>b__11_7 → GP_Endgame.StartCheckEndgame` → coroutine `_CheckEndgame_d__4`
+(gate hoàn tất địch/wave **và** trạng thái `Playing`; **đủ kill giữa wave không tự kết thúc**) →
+`Board_Endgame.GetMissionCompleted` → `OpenBoardVictory` (nhận **cả** bool false; health = 0 ép **false**) →
+`Board_Endgame.Init` → `SetMissions` → sao/save.
+
+> **Ranh giới:** đây là **direct-call trên 3 thân core đã đọc**, không phải chứng minh vắng mặt trên toàn
+> chương trình. Nguồn: report 64 + `raw/endgame-missions/shared-stage-victory.json.gz` (**21** method ·
+> **18** check, claim **CM3**). **Không** cần BB pool-history hay playthrough ít kill để kết luận cấu trúc này.

@@ -16,8 +16,8 @@
 
 | Số đo | Giá trị | Hệ quả thiết kế |
 |---|---|---|
-| Độ phân giải ảnh chụp | **720 × 1.496** | canvas tham chiếu nên là **1080 × 2244** (cùng tỉ lệ) |
-| Tỉ lệ | **0,4813** (≈ **9 : 18,7**) | dọc, cao hơn 16:9 điện thoại; **đừng** dựng trên canvas 1080×1920 (0,5625) rồi crop |
+| Độ phân giải ảnh chụp | **720 × 1.496** | canvas tham chiếu **một thiết bị** 1080 × 2244 — **không** phải canvas engine bắt buộc |
+| Tỉ lệ | **0,4813** (≈ **9 : 18,7**) | dọc, cao hơn 16:9 — dùng làm **tham chiếu thiết kế**; game mới phải **responsive + safe-area**, không khoá cứng theo tỉ lệ này |
 | Ảnh dùng được để đo | **35** | 28 cụm bố cục khác nhau (nhiều ảnh chụp lại cùng trạng thái) |
 | **Tổng hợp đo được** | **35** ảnh · tỉ lệ **0,4813** · accent trung vị **0,0571** · chi tiết trung vị **17,26** | claim **AN1** |
 
@@ -50,9 +50,12 @@ hoà" **vô nghĩa** (chia cho max≈0). Đừng trích 0,93 của cụm C làm 
 
 ---
 
-## 3. Hình học bố cục — đo trên **54.019** layout
+## 3. Hình học bố cục — đo trên **54.019** bbox **dẫn xuất** (không phải 54.019 màn độc lập)
 
-Không đoán từ ảnh: `datas/ui_screens.json.gz` có `bbox` cho từng màn.
+`datas/ui_screens.json.gz` có `bbox` cho từng màn. **Đây là dữ liệu phái sinh từ dump UI** (một số file
+có nhiều instance), nên **54.019 là số bbox**, không phải số màn đã kiểm độc lập — index được audit kỹ là
+**797** file (report 62 tách riêng hàng chục nghìn file ngoài index). Muốn dùng làm số thiết kế thì phải
+chốt **mẫu / frame / hash nguồn / cách gộp instance trùng** trước.
 
 | Số màn có `bbox` dùng được | **54.019** | rộng trung vị **4,05** · cao **7,50** · tỉ lệ **0,67** | claim **AN2** |
 
@@ -65,8 +68,8 @@ Không đoán từ ảnh: `datas/ui_screens.json.gz` có `bbox` cho từng màn.
 **Đọc ra luật thiết kế:**
 
 - Panel **cao hơn rộng** (0,67 ≈ 2:3). Đừng thiết kế panel ngang kiểu tablet.
-- **p95 cao 28,4** và **max 699** ⇒ rất nhiều màn là **danh sách cuộn dọc**; layout phải chịu được
-  nội dung dài gấp ~90 lần trung vị mà **không** vỡ.
+- **p95 cao 28,4** và **max 699** ⇒ **có** màn cao bất thường; đây là **dấu hiệu** danh sách cuộn, **không**
+  chứng minh mọi màn là ScrollRect. Kết luận dùng được: layout phải chịu nội dung dài, **không** vỡ.
 - **p95 rộng 10,72** so với trung vị 4,05 ⇒ có màn rộng gấp 2,6 lần; nếu làm theo lưới cố định 1 cột
   sẽ hỏng ở nhóm này (đây là các board bản đồ / sự kiện).
 
@@ -81,8 +84,9 @@ Không đoán từ ảnh: `datas/ui_screens.json.gz` có `bbox` cho từng màn.
 | Nhịp đòn boss | **0,17 · 0,33 · 1,0 · 5,0 s** | `BOSS_ANIM_TIMELINE.md` | 0,17 s ≈ nửa nhịp thở; 5 s là "đòn nặng" |
 | Chờ trong code | **38** chỗ `WaitForSeconds`, 4 hằng **0,5 / 1 / 2 / 3 s** | claim **J8** | nhịp chờ **thô** (nguyên giây) ⇒ game gốc canh nhịp bằng clip, không bằng code |
 
-⇒ Bản mới muốn "đẹp" phần chuyển động thì dùng đúng 3 con số: **flash 0,05 s · shake 0,10/20 frame ·
-nhịp 0,17–0,33 s**, và **đừng** thêm slow-mo (bản gốc **không có** — 0 site `timeScale`, claim **AF2**).
+⇒ Ba con số dùng ngay: **flash 0,05 s · shake 0,10/20 frame · nhịp 0,17–0,33 s**. Về slow-mo: **0 site**
+`timeScale` trên **139** file asm (claim **AF2**) chỉ là **mẫu**, **không** phải whole-build closure ⇒
+**không** được nói "bản gốc không có slow-mo". Game mới dùng thì ghi rõ là **lựa chọn thiết kế**.
 
 ---
 
@@ -97,7 +101,7 @@ nhịp 0,17–0,33 s**, và **đừng** thêm slow-mo (bản gốc **không có*
 | Chuyển động | **0,05 s** flash · **0,10/20 frame** shake · nhịp **0,17–0,33 s** | easing, trail, particle |
 | Hình khối | silhouette đọc được ở **64 px** (`ASSETS.md` §1.3) | hình học, outline, "mặt cười" hay không |
 
-**Test "đẹp" của bản mới (làm được bằng máy, không cần người chấm):** chụp 10 khung gameplay + 3 khung
+**Cổng phát hiện lệch (máy đo, **không** phải chứng nhận "đẹp"):** chụp 10 khung gameplay + 3 khung
 thưởng, chạy `python3 tools/design-metrics.py <thư mục ảnh>` rồi so:
 
 - tương phản **0,45 – 0,80**;
@@ -105,7 +109,10 @@ thưởng, chạy `python3 tools/design-metrics.py <thư mục ảnh>` rồi so:
 - chi tiết **13 – 22**;
 - ba dải sáng của khung thưởng: viền/tâm **≤ 0,15**.
 
-Lệch khỏi 4 khoảng đó thì **sửa art**, không sửa số.
+Lệch khỏi 4 khoảng đó = **cờ để xem lại**, không phải phán quyết. Máy **không** đo được silhouette,
+độ đọc của đạn, font, thứ bậc thị giác, rối ren theo thời gian hay chất lượng art. Vì vậy **bắt buộc**
+thêm: review **ảnh gameplay thật** + **motion** + kiểm trên **nhiều tỉ lệ màn hình** (không chỉ 0,4813).
+Muốn đổi số thì phải ghi lý do thiết kế; muốn đổi art thì phải xem ảnh.
 
 ---
 

@@ -308,7 +308,7 @@ Nguồn: `waves.json`, tính bằng cách bỏ `\s*\(\d+\)$` khỏi `spawners[].
 | Chỉ số | Giá trị |
 |---|---:|
 | Wave | **282** (236 campaign + 45 boss + 1 lỗi) |
-| Spawner (đã dedup) | **11.099** (bản `8c6da25`) |
+| Dòng cấu hình (đã gộp) | **11.089** (bản `622b700e5`; `8c6da25`: 11.099) |
 | **Entry enemy** | **22.451** — **0** giá trị `"?"` |
 | **Prefab enemy khác nhau** | **109** |
 | Entry enemy / wave | min **2** · median **63** · max **603** |

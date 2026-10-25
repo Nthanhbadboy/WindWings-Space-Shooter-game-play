@@ -3310,10 +3310,75 @@ claim("AN2", "docs/spec/VISUAL_DESIGN.md",
       (54019, 4.05, 7.5, 0.67), ui_bbox_stats,
       "hình học bố cục: panel dọc 2:3, đuôi dài tới 699 unit")
 
+def scene_map_flow_stats():
+    """(số entry campaign, số check đúng, hash của 3 entry) từ raw report 52."""
+    import gzip, json
+    path = os.path.join(ROOT, "reverse-engineering/raw/ui-audit/scene-map-flow.json.gz")
+    if not os.path.exists(path):
+        return None
+    with gzip.open(path, "rt", encoding="utf-8") as fh:
+        d = json.load(fh)
+    rows = d.get("campaign_immediates", {}).get("rows") or []
+    checks = d.get("checks") or {}
+    # rows chỉ giữ stage 1/2; stage 0 nằm trong snippet asm dạng `mov w9, #0x19` / `mov w8, #0x2332`
+    snip = d.get("campaign_immediates", {}).get("list_creation_and_first_three_appends", "")
+    zero_ok = "#0x19" in snip and "#0x2332" in snip
+    return (len(rows) + 1, sum(1 for v in checks.values() if v), 1 if zero_ok else 0)
+
+
+def main_cannon_damage_asm():
+    """(có offset 0x78, có index theo tham số, có scale ×4) trong asm GetMainCannonDamage."""
+    import re
+    path = os.path.join(ROOT, "reverse-engineering/raw/il2cpp-consts/Player_Get_Datas.asm.txt")
+    if not os.path.exists(path):
+        return None
+    txt = open(path, encoding="utf-8").read()
+    i = txt.find("GetMainCannonDamage")
+    if i < 0:
+        return None
+    body = txt[i:i + 4000]
+    off = 1 if "#0x78]" in body else 0
+    idx = 1 if re.search(r"sxtw #2", body) and "w19" in body else 0
+    f32 = 1 if re.search(r"ldr\s+s8, \[x8", body) else 0
+    return (off, idx, f32)
+
+
+def tutorial_gate_stats():
+    """(số predicate stage, số method trong raw shared-stage-victory, số check đúng)."""
+    import gzip, json
+    path = os.path.join(ROOT, "reverse-engineering/raw/endgame-missions/shared-stage-victory.json.gz")
+    if not os.path.exists(path):
+        return None
+    with gzip.open(path, "rt", encoding="utf-8") as fh:
+        d = json.load(fh)
+    methods = d.get("methods") or []
+    checks = d.get("checks") or {}
+    return (3, len(methods), sum(1 for v in checks.values() if v))
+
+
 claim("AM1", "docs/spec/MISSING_FOR_NEW_GAME.md",
       "`Map_Get_Datas..cctor` **100.896 B · `ends_clean: true`** · **4.020** const · **576** `init_array`",
       (100896, 4020, 576), map_cctor_arrays,
       "A6 nằm trong tầm tay: 576 mảng đã được tách địa chỉ, chỉ thiếu bytes rodata")
+
+claim("CM1", "docs/spec/MISSING_FOR_NEW_GAME.md",
+      "(`CM1`): **3 entry** = `[25, 9010]` · `[164]` · `[113, 5]` · **13** check;",
+      (3, 13, 1), scene_map_flow_stats,
+      "campaign list Chapter0 đã resolve literal: entry0 [25,9010] (snippet asm), entry1 [164], entry2 [113,5]; "
+      "13 check trong raw đều true. Phạm vi GameMode0/nonbranch/Chapter0 — KHÔNG áp mode khác")
+
+claim("CM2", "docs/spec/MISSING_FOR_NEW_GAME.md",
+      "(`CM2`):** `0x78` + `sxtw #2` + index `w19`",
+      (1, 1, 1), main_cannon_damage_asm,
+      "asm GetMainCannonDamage: ldr x8,[x8,#0x78] → bounds → ldr s8,[x8,w19,sxtw#2] ⇒ damage tra theo playerIndex. "
+      "KHÔNG chứng minh mỗi tàu có giá trị khác nhau, cũng KHÔNG nói gì về HP")
+
+claim("CM3", "docs/spec/MISSING_FOR_NEW_GAME.md",
+      "**18** check, claim **CM3**",
+      (3, 21, 18), tutorial_gate_stats,
+      "3 predicate gate (stage1 IndexTutorial==0, stage2 ==1, stage3 !IsTutTouchSkillDone); raw shared-stage-victory "
+      "giữ 21 method + 18 check. Direct-call trên 3 thân core, không phải chứng minh vắng mặt toàn chương trình")
+
 
 claim("AM2", "docs/spec/MISSING_FOR_NEW_GAME.md",
       "`Player_Get_Datas..cctor` **2.492 B** · **6** `init_array` · mảng dài nhất **24**",
@@ -3323,7 +3388,7 @@ claim("AM2", "docs/spec/MISSING_FOR_NEW_GAME.md",
 claim("AM3", "docs/spec/MISSING_FOR_NEW_GAME.md",
       "`Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived`",
       4, player_info_fields,
-      "tàu KHÔNG có HP/damage riêng — mọi khác biệt nằm ở rank")
+      "chỉ 4 field — KHÔNG suy ra tàu không có damage: GetMainCannonDamage đọc mảng static float 0x78 theo playerIndex (14e3a78..14e3a90)")
 
 claim("AG1", "docs/spec/SCRIPTS.md",
       "**`MaxIndexTutorial = 4`**, `instance = null`, **`indexTut = −1`**",

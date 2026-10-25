@@ -415,7 +415,7 @@ và **chưa có một dòng CSV nào**.
 | Tổng `copies` trong `waves.json` | **23.757** |
 | `Call_Data` trong `class-inventory.csv` | **23.757** |
 | **Lệch** | **0** |
-| Spawner duy nhất (sau dedupe) | **11.099** (bản `8c6da25`; bản `cd0372d`: 11.093) |
+| Dòng cấu hình (sau dedupe) | **11.089** (bản `622b700e5`; `8c6da25`: 11.099 · `cd0372d`: 11.093) |
 | Tổng quân (`len(enemies) × copies`) | **45.659** |
 
 > **Nhận định (mức A):** lớp sinh quân **không mất một object nào**. Con số 45.659 quân không phải ước lượng —
