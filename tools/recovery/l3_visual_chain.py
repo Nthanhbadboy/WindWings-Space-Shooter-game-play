@@ -82,12 +82,15 @@ def main():
                     except Exception as e:
                         if kind!='MonoBehaviour':raise
                         row.update(tree=row.get('header',{}),projection='parsed_monobehaviour_header_only',tree_error=repr(e));tree=row['tree']
+                    if kind=='MonoBehaviour' and row.get('header'):
+                        row['header_tree_disagreements']={k:dict(parsed=v,generated=tree.get(k)) for k,v in row['header'].items() if tree.get(k)!=v}
                     for loc,ptr in walk_pointers(tree):
+                        if kind=='MonoBehaviour' and loc in ('.m_Script','.m_GameObject'):ptr=row.get('header',{}).get(loc[1:],ptr)
                         force=(kind=='GameObject' and loc.startswith('.m_Component[')) or (kind in ('Transform','RectTransform') and (loc=='.m_GameObject' or loc.startswith('.m_Children[')))
                         follow(obj,loc,ptr,force)
                 elif kind=='AnimationClip':
-                    tree=obj.read_typetree();keep={'m_Name','m_SampleRate','m_WrapMode','m_Legacy','m_Events','m_ClipBindingConstant','m_AnimationClipSettings','m_StopTime','m_StartTime','m_FloatCurves','m_PositionCurves','m_RotationCurves','m_ScaleCurves','m_PPtrCurves'}
-                    row.update(tree={k:v for k,v in tree.items() if k in keep},projection='clip_events_bindings_ordinary_curves_no_streamed_payload')
+                    tree=obj.read_typetree();keep={'m_Name','m_SampleRate','m_WrapMode','m_Legacy','m_Events','m_ClipBindingConstant','m_AnimationClipSettings','m_StopTime','m_StartTime','m_FloatCurves','m_PositionCurves','m_RotationCurves','m_ScaleCurves','m_PPtrCurves','m_MuscleClip','m_EulerCurves','m_CompressedRotationCurves'}
+                    row.update(tree={k:v for k,v in tree.items() if k in keep},projection='clip_metadata_numeric_curves_opaque_byte_buffers_hashed')
                     for loc,ptr in walk_pointers(row['tree']):follow(obj,loc,ptr)
                 elif kind=='Texture2D':
                     d=obj.read();row.update(projection='texture_metadata_no_pixels',name=d.m_Name,width=d.m_Width,height=d.m_Height,texture_format=int(d.m_TextureFormat))
