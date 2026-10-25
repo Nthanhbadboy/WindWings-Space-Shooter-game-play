@@ -96,7 +96,7 @@ python3 -m tools.verify.l3_frame
 python3 -m unittest discover -s tests -p test_l3_frame.py -v
 ```
 
-**29 tests mới; full1072 localPASS219.316s.** Có regenerate equality, actual source native
+**30 tests mới; full1073 localPASS223.162s.** Có regenerate equality, actual source native
 Start/Align/cache,320-child propagation, f32 alpha, failed transaction rollback, mount+root writes,
 raw immutability/isolation, exact pointer policy vs unknown→null, wrong camera/clip and recipe guard.
 Synthetic fault-injection tests được tách khỏi actual source cases, không phải dữ liệu game.
@@ -112,3 +112,10 @@ chưa chạy ở đây. Nguồn101/102 gaps vẫn nguyên, không được reset
 Ưu tiên tiếp: giải native/custom binding và driver order trên concrete chain, tiếp đến textured
 geometry/shader execution dùng media APK, không kéo dài bằng count-only ACK. Không screenshot
 gate, không redraw; L3 vẫn **một phần**, peer reproduction chưa phải render acceptance.
+
+### Last-writer audit trước chốt
+
+CameraScaler phải ghi vào current camera property tree, không để một half-height side-cache
+che camera animation write về sau. Start camera binding cũng phải đọc được qua current object
+reference view, không chỉ trong riêng anchor driver. Đã sửa cả hai, thêm test resize→camera clip
+write→projection H8 và test Start→current uiCamera reference; full1073PASS sau sửa.

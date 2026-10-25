@@ -1073,7 +1073,7 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 - Private/static cache semantics retained; atomic clip writes tool-only; mounts remain movable roots.
 - Pointer attr0/custom23/type212 NOT field CRC. Strict default reject; explicit m_Sprite policy with
   source type checks log as policy, not engine mapping proof. No unknown mapping→null or fabricated fileID.
--29newtests/full1072localPASS219.316s; artifact datas/l3_frame_cases.json.gz; receipt l3-frame-verification.
+-30newtests/full1073localPASS223.162s; artifact datas/l3_frame_cases.json.gz; receipt l3-frame-verification.
 - Peer requested numerical reproduction/counterexamples, not count-only ACK: false Start, propagation,
   private/cache persistence, f32 stores, failed plan no partial commit, custom pointer policy.
 - Recipe frame_application auto_execute=false. No Unity scheduler/blend/render acceptance. Continue

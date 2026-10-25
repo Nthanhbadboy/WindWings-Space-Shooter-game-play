@@ -42,11 +42,13 @@ class SharedFrame(unittest.TestCase):
         with self.assertRaises(ValueError):f.anchor(ident(7048),[0,96,1080,2208],start=True)
         self.assertIsNone(f.bindings[F,7048])
     def test_10_false_start_binds_without_initializing_anchor_cache(self):
-        f=self.frame();f.anchor(ident(7048),[0,96,1080,2208],start=True);self.assertEqual(f.bindings[F,7048],(F,3976));self.assertNotIn((F,7048),f.states);self.assertEqual(f.safe,[0,0])
+        f=self.frame();f.anchor(ident(7048),[0,96,1080,2208],start=True);self.assertEqual(f.bindings[F,7048],(F,3976));self.assertEqual(f.view.target((F,7048),'.uiCamera'),(F,3976));self.assertNotIn((F,7048),f.states);self.assertEqual(f.safe,[0,0])
     def test_11_root_cache_not_recaptured_after_external_position_change(self):
         f=self.frame();f.resize_camera(ident(3976));f.anchor(ident(7048),[0,96,1080,2208],start=True);f.anchor(ident(7048),[0,96,1080,2208]);i=f.instance(ident(7048),'UIObjectAnchors');tr=key(i['transform']);state=copy.deepcopy(f.states[F,7048]);tree=copy.deepcopy(f.view.tree(tr));tree['m_LocalPosition']['y']=30.;f.trees[tr]=tree;f.anchor(ident(7048),[0,96,1080,2208]);self.assertEqual(f.states[F,7048]['start'],state['start']);self.assertAlmostEqual(f.matrix(tr)[7],8.440000534057617)
     def test_12_safe_cache_persists_when_camera_inputs_change(self):
-        f=self.frame();f.resize_camera(ident(3976));f.anchor(ident(7048),[0,96,1080,2208],start=True);f.anchor(ident(7048),[0,96,1080,2208]);safe=list(f.safe);f.half[F,3976]=14.;n=f.anchor(ident(7048),[0,0,1080,2400]);self.assertEqual(f.safe,safe);self.assertNotIn('get_safeArea',n['engine_stub_calls'])
+        f=self.frame();f.resize_camera(ident(3976));f.anchor(ident(7048),[0,96,1080,2208],start=True);f.anchor(ident(7048),[0,96,1080,2208]);safe=list(f.safe);sample=self.clip_fixture((F,3976),20,zlib.crc32(b'orthographic size'),[14.],'orthographic size');
+        with patch('tools.verify.l3_frame.clip_probe',return_value=sample):f.clip(ident(4647),ident(42,A),0.)
+        n=f.anchor(ident(7048),[0,0,1080,2400]);self.assertEqual(f.safe,safe);self.assertNotIn('get_safeArea',n['engine_stub_calls'])
     def test_13_native_scaler_reads_current_renderer_size(self):
         f=self.frame();f.resize_camera(ident(3976));f.scaler(ident(6686));f.clip(ident(4647),ident(42,A),.0625);self.assertEqual(f.view.tree((F,5105))['m_Size']['y'],24.000001907348633);self.assertGreater(f.view.tree((F,5105))['m_Color']['a'],0.)
     def test_14_instances_isolated_raw_not_mutated(self):
@@ -106,6 +108,10 @@ class SharedFrame(unittest.TestCase):
     def test_28_camera_lookup_and_dimensions_not_guessed(self):
         with self.assertRaises(ValueError):Frame(0,2400,source=self.g)
         with self.assertRaises(ValueError):Frame(1080,2400,ident(99999),self.g)
+    def test_30_camera_write_after_resize_is_not_shadowed(self):
+        f=self.frame();f.resize_camera(ident(3976));self.assertAlmostEqual(f.view.tree((F,3976))['orthographic size'],12.000000953674316);sample=self.clip_fixture((F,3976),20,zlib.crc32(b'orthographic size'),[8.],'orthographic size')
+        with patch('tools.verify.l3_frame.clip_probe',return_value=sample):f.clip(ident(4647),ident(42,A),0.)
+        self.assertEqual(f.cam_values((F,3976))[0],8.);self.assertEqual(f.project(ident(5105),ident(3976))['projection']['parameters']['half_height'],8.)
     def test_29_recipe_does_not_auto_execute_frame(self):
         from tools.verify.l3_recipe import Recipes
         r=Recipes().recipe(10);self.assertIn('frame_application',r);self.assertFalse(r['frame_application']['auto_execute']);self.assertTrue(r['frame_application']['requires_explicit_order_and_instance_context'])

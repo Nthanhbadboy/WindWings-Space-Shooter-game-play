@@ -20,7 +20,7 @@ class View:
 class Frame:
     def __init__(self,width,height,main_camera=None,source=None):
         if any(isinstance(v,bool) or type(v) is not int or not 0<v<2**31 for v in (width,height)):raise ValueError('positive int32 screen dimensions required')
-        self.width=width;self.height=height;self.g=source or merged_source()[0];self.surface=surface_load();self.layout=layout_load();self.composition=composition_load();self.trees={};self.refs={};self.states={};self.safe=[0.,0.];self.bindings={key(i['identity']):key(i['ui_camera']) if i.get('ui_camera') else None for i in self.layout['instances'] if i['class_name']=='UIObjectAnchors'};self.half={};self.clamp=constants()['clamp'];self.log=[];self.mounts={};self.view=View(self);self.main=key(main_camera) if main_camera else None
+        self.width=width;self.height=height;self.g=source or merged_source()[0];self.surface=surface_load();self.layout=layout_load();self.composition=composition_load();self.trees={};self.refs={};self.states={};self.safe=[0.,0.];self.bindings={key(i['identity']):key(i['ui_camera']) if i.get('ui_camera') else None for i in self.layout['instances'] if i['class_name']=='UIObjectAnchors'};self.clamp=constants()['clamp'];self.log=[];self.mounts={};self.view=View(self);self.main=key(main_camera) if main_camera else None
         if self.main:self.camera(self.main)
     @property
     def clamp(self):return self._clamp
@@ -55,9 +55,9 @@ class Frame:
         from tools.verify.camera_scaler_contracts import scaled_ortho
         k=key(camera);c=self.camera(k)
         if not c['size_writers']:raise ValueError('source CameraScaler writer not joined')
-        contract=json.loads((ROOT/'datas/camera_scaler_contract.json').read_bytes());self.half[k]=scaled_ortho(self.width,self.height,contract['factor'],contract['minimum']);self.log.append(dict(kind='explicit_CameraScaler_contract_application',camera=camera,half_height=self.half[k]))
+        contract=json.loads((ROOT/'datas/camera_scaler_contract.json').read_bytes());h=scaled_ortho(self.width,self.height,contract['factor'],contract['minimum']);pending={};self._set(k,'orthographic size',h,pending);self.trees.update(pending);self.log.append(dict(kind='explicit_CameraScaler_contract_application',camera=camera,half_height=h))
     def cam_values(self,k):
-        c=self.camera(k);r=c['properties']['m_NormalizedViewPortRect'];return self.half.get(k,c['properties']['orthographic size']),f32((self.width*r['width'])/(self.height*r['height']))
+        self.camera(k);t=self.view.tree(k);r=t['m_NormalizedViewPortRect'];return t['orthographic size'],f32((self.width*r['width'])/(self.height*r['height']))
     def instance(self,component,cls):
         i=next((i for i in self.layout['instances'] if key(i['identity'])==key(component) and i['class_name']==cls),None)
         if i is None:raise ValueError('typed component outside layout bank')
@@ -90,7 +90,7 @@ class Frame:
             m=model_probe(case)
             for f in ('state','local','world','writes'):assert m[f]==n[f],f
             assert m['safe']['bounds']==n['safe'];pending={};self._set(tr,'m_LocalPosition.x',n['local'][0],pending);self._set(tr,'m_LocalPosition.y',n['local'][1],pending);self._set(tr,'m_LocalPosition.z',n['local'][2],pending);self.trees.update(pending);self.states[k]=copy.deepcopy(n['state']);self.safe=list(n['safe'])
-        self.bindings[k]=bound;self.log.append(dict(kind='native_Start' if start else 'native_ObjectAnchor',component=component,explicit_camera_binding=identity(bound),applied_position=play,case=case,native=n));return n
+        self.bindings[k]=bound;self.refs[k,'.uiCamera']=bound;self.log.append(dict(kind='native_Start' if start else 'native_ObjectAnchor',component=component,explicit_camera_binding=identity(bound),applied_position=play,case=case,native=n));return n
     def scaler(self,component):
         if self.main is None:raise ValueError('explicit modeled Camera.main required')
         i=self.instance(component,'ObjectScaler');rk=key(i['renderer']);tree=self.view.tree(rk);size=[tree['m_Size'][c] for c in 'xy'];h=self.cam_values(self.main)[0];t=self.view.tree(key(component));m=scaler_step(size,h,bool(t['isFullScreen']),bool(t['clampSize']),dict(constants(),clamp=self.clamp));n=execute(('ObjectScaler','Start'),constants(),[0,0,0],list(IDENTITY),main_half_height=h,size=size,full=bool(t['isFullScreen']),clamp=bool(t['clampSize']),clamp_value=self.clamp);assert m==n['size'];pending={}
@@ -155,7 +155,7 @@ class Frame:
         pose=self.poses().get(tr)
         from tools.verify.l3_composition_math import layer_gate
         result=dict(renderer=renderer,camera=camera,mounted=mounted,world_matrix=pose['matrix'],current_color=props.get('m_Color'),current_size=props.get('m_Size'),current_sprite=identity(sprite),current_mesh=identity(mesh),layer_gate=layer_gate(ct['m_CullingMask']['m_Bits'],self.view.tree(key(r['gameobject']))['m_Layer']),serialized_chain_activity=pose['activity'],renderer_enabled=props.get('m_Enabled'),geometry=generated,scope='Shared modeled state after explicitly ordered writes; NOT actual Unity scheduling/rendered visibility')
-        result['projection']=project_geometry(generated['vertices'],generated['triangles'],pose['matrix'],cam,self.width,self.height,self.half.get(ck)) if generated and generated.get('vertices') is not None else dict(status='position_geometry_not_generated')
+        result['projection']=project_geometry(generated['vertices'],generated['triangles'],pose['matrix'],cam,self.width,self.height,ct['orthographic size']) if generated and generated.get('vertices') is not None else dict(status='position_geometry_not_generated')
         return result
 
 def scenarios():
