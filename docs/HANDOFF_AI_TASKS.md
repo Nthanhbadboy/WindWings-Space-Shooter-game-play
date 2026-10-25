@@ -512,3 +512,23 @@ luận vẫn provisional. Premium deferred; không dùng screenshot làm nguồn
  externalwriters/parentmatrix/alternatehealth-removalchưakhép.
 -8testsmới,**119tests pass**local. Report63entrypointmovementcontracts;
  T9pixelcrop/mask40fractionalrectcònmở;Premiumdeferred.
+
+## Điều chỉnh ưu tiên theo người dùng — đọc kịch bản, không cố chứng minh playthrough
+
+Người dùng nhắc: “xem kịch bản là biết ngay, số địch diệt và player còn sống
+chứ không cần cố chứng minh”. Áp dụng từ đây:
+- Đọc kịch bản stage/wave và luồng kết quả theo số địch diệt + trạng thái player
+  còn sống; dùng denominator/threshold và điều kiện health đã bóc khi mô tả.
+- Dừng đào pool history/live parent/writer closure chỉ để chứng minh tồn tại một
+  low-kill playthrough hoặc tranh luận BB bắt buộc chết/tự thoát. Không lấy các
+  gap chứng minh đó làm blocker cho mô tả hay dựng kịch bản.
+- Giữ raw/report59–63 làm tham chiếu; không xoá hoặc đổi chúng thành bằng chứng
+  runtime. Chỉ đào lifecycle thêm nếu có mâu thuẫn cụ thể ảnh hưởng kịch bản.
+- Các bước tiếp tập trung thiếu dữ liệu triển khai thật (kịch bản, UI, assets),
+  không lặp audit mang tính chứng minh vượt nhu cầu. Premium vẫn để sau.
+
+## Report 64 — ưu tiên hiện tại đã kiểm lại: tutorial riêng, victory chung
+- Đọc raw APK và giữ snapshot `raw/endgame-missions/shared-stage-victory.json.gz`: 21 method, 18 checks; collector `tools/verify/shared_stage_victory.py`, 4 test mới; tổng 123 tests PASS.
+- Stage1 gate stageIndex0/tutorialIndex0; Stage2 1/1; Stage3 stageIndex2/!touchDone (không gate tutorialIndex2). Khác biệt gate/overlay/Continue không được mô hình hóa thành ba victory system riêng.
+- Campaign normal/nonbranch: manager callback → shared CheckEndgame (kills/mission + health) → MoveOutPlayer → OpenBoardVictory(bool) → Board_Endgame.Init/SetMissions chung, gồm ba opening stage. `VictoryNow` ép true nhưng cũng về cùng board; không nói mọi entry phải tính kill trước.
+- Board SetupTut <=1 và ThroughTut thay đổi UI/index; Continue routing còn guard. Không khẳng định mọi mode/giao diện/reward giống hệt nhau. Kết luận tạm từ static raw, không cần pool-history/playthrough proof.
