@@ -72,6 +72,18 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 29 — 25/10, đồng bộ report 92 peer `713be8c85a0` + xử lý 3 góp ý wording review `de2d1366` (PR12 `6401242325`)):**
+> ① §24.22: đường **player KHÔNG post event2** (`ItemCollected` trực tiếp → pool; chỉ drone post2 →
+> `OnCollectItem` — tránh đếm kép); ② §24.24 + `MISSING` §2.2: AutoGain **guard Current>0** +
+> **TechStatLevel(0)≤0 → techHeal 0** (level0 không phải ,01×1,0); ③ `MISSING` §5 footer: chỉ
+> "phân loại cấu trúc" xong, named binding/thứ tự nạp còn đào; ④ **§24.25 report 92**: mapping
+> sourceID 20001..20012 → Drone_Attack1..12 + Drone3 serialized **turnRate 1,0** (gap turnRate3
+> ĐÓNG; idBlt 80084 serialized ≠ 80014 OnEnable — không bê serialized vào runtime) + save slots
+> (`DroneUsed{slot}` default 0 · `CheckDoubleIDDrone` riêng · `get_indexDrones` new int[2] mỗi call,
+> playMode4→[0,0]) + StartDrones (scale ,8 · pos ±20); ⑤ `MISSING` row 9 + DONE §4 gạch
+> mapping/turnRate3. Kéo `datas/drone_loadout_flow.json` (datas/ = **39**). verify 209 PASS ·
+> 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 28 — 25/10, áp report 90+91 peer `142eb5998` + xử lý 5 góp ý review spec (report 91 §6 / PR12 `6400980901`)):**
 > **2 gap L1 ĐÓNG**: wing barrels + drone base-fire (90 — `wing_drone_flow.json`, hẹp scope
 > impl1/source10003); **HP tàu ĐÓNG bằng công thức** (91 — `2500×(1+,18×TechStatPoints(0)+abi7)`,
@@ -463,7 +475,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 | **Đạt khi** | **100%** test pass |
 | **Bắt chước đủ?** | ✅ **đủ cho phần đã có số** — nhưng phải **viết test**, bắt chước không sinh ra test |
 | **Chi phí** | trung bình |
-| **Còn thiếu (đã biết, không chặn)** | ① ~~wing-cannon nhịp/barrels~~ **ĐÓNG (report 90)**: `shotRate = .12−.0035L` · barrels L0–10 = 3,4,5,5,6,6,7,7,8,8,9 · super(.06,20) — hẹp scope impl1/source10003 (23 impl còn lại) · ② ~~drone bắn nền~~ **ĐÓNG (report 90)**: 12 impl shotRate/turn/charge/speed + ability25 `rate/(2,5×p)`; còn mapping prefab→sourceID · ③ D3 thứ tự pha boss (mức C) — dựng theo `BOSS_ANIM_TIMELINE.md` + ghi lựa chọn thiết kế; ④ `rate = 0` (**2.366** dòng) — tự chọn, ghi rõ (`MISSING` §2.4) |
+| **Còn thiếu (đã biết, không chặn)** | ① ~~wing-cannon nhịp/barrels~~ **ĐÓNG (report 90)**: `shotRate = .12−.0035L` · barrels L0–10 = 3,4,5,5,6,6,7,7,8,8,9 · super(.06,20) — hẹp scope impl1/source10003 (23 impl còn lại) · ② ~~drone bắn nền~~ **ĐÓNG (report 90)**: 12 impl shotRate/turn/charge/speed + ability25 `rate/(2,5×p)`; ~~mapping prefab→sourceID~~ **ĐÓNG (92: bindings 20001..20012 → Drone_Attack1..12)** · ③ D3 thứ tự pha boss (mức C) — dựng theo `BOSS_ANIM_TIMELINE.md` + ghi lựa chọn thiết kế; ④ `rate = 0` (**2.366** dòng) — tự chọn, ghi rõ (`MISSING` §2.4) |
 
 > Đây là mức mà `Spec2Game` đo được **Rule & Mechanism 45,6/100** — tức mức mà AI **hay trượt nhất**
 > khi chỉ có đặc tả. Cách chặn: **test viết trước**, không phải review bằng mắt.
@@ -476,7 +488,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 | **Kiểm bằng** | máy: replay 1 wave, so DPS/TTK/HP với bản gốc trong **dung sai khai báo trước** |
 | **Đạt khi** | (dung sai do bạn chọn — ví dụ ±5%) |
 | **Bắt chước đủ?** | ✅ **đủ** (lần 14, 25/10) — mọi giá trị đã decode + bind xong |
-| **Đã có gì** | 6 mảng `Player_Get_Datas` (bind: save/load **id−10001** · combat **impl N→index N−1**, report 81/82) · **576** mảng `Map_Get_Datas` (**11 cấu trúc**, `DIFFICULTY_MODES` §7) · **150 cặp HP enemy** · `StartHpPoint`←dict · `kHp` **không tồn tại** (`DIFFICULTY_MODES` §3–5) · **HP max tàu 2500×(1+,18×points+abi7) + luật 12 drone impl (reports 90/91)** |
+| **Đã có gì** | 6 mảng `Player_Get_Datas` (bind: save/load **id−10001** · combat **impl N→index N−1**, report 81/82) · **576** mảng `Map_Get_Datas` (**11 cấu trúc**, `DIFFICULTY_MODES` §7) · **150 cặp HP enemy** · `StartHpPoint`←dict · `kHp` **không tồn tại** (`DIFFICULTY_MODES` §3–5) · **HP max tàu 2500×(1+,18×points+abi7) + luật 12 drone impl (reports 90–92 — mapping sourceID + turnRate3=1,0 đóng bởi 92)** |
 | **Còn thiếu** | chứng minh **DPS runtime** (report 79 — `rate` = interval; peer làm parity tàu 1) + **2** tái đối chiếu `CROSSCHECK` · ~~HP riêng của tàu~~ **ĐÓNG (report 91)**: max = 2500×(1+,18×points+abi7), không bảng theo tàu · `Board_Drones` **ĐÓNG (91)** — còn `Board_Players` (B) · **binding entry** 576 map (unknown, §2.1) · save schema đầy đủ (§2.3) · scope-90: 23 wing impl/mapping sourceID/turnRate3 |
 | **Chi phí** | ~~AssetRipper + Ghidra~~ → **không cần tool** — replay + đối chiếu |
 
@@ -586,7 +598,7 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 
 | Mục | Trước (mục tiêu L3) | **Sau khi chốt L1** | Hệ quả |
 |---|---|---|---|
-| **L2 — đúng số** | bắt buộc | ✅ **số đã đủ — làm ngay sau L1** | giá trị decode + bind xong; sót chứng minh **DPS runtime** (peer parity tàu 1) + 2 tái đối chiếu + scope-90/`Board_Players`/bind entry map/save schema (`MISSING` §2) |
+| **L2 — đúng số** | bắt buộc | ✅ **số đã đủ — làm ngay sau L1** | giá trị decode + bind xong; sót chứng minh **DPS runtime** (peer parity tàu 1) + 2 tái đối chiếu + scope-90 (23 wing impl — mapping/turnRate3 **ĐÓNG 92**)/`Board_Players`/bind entry map/save schema (`MISSING` §2) |
 | **L3 — khớp trải nghiệm + art** | bắt buộc | ✅ **ĐÍCH dự án — KHÔNG hoãn** | đối chiếu reference đo được (metrics + so ảnh + timeline/audio) — **song song L2** sau khi L1 chạy được, **không cần người test** |
 | Giá trị **4.861** `[SerializeField]` | phải có | 🟡 **tuỳ chọn** | dùng làm **tham khảo**, không phải để khớp |
 | Giá trị **957** `static` | phải có | 🟡 **tuỳ chọn** | " |

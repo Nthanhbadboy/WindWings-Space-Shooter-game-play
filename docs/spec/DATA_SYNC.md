@@ -2824,11 +2824,13 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
 
 ### 24.22 Report 89 — pickup → callback thật → số xu được cộng (peer `eaa5c74342`→`c30dd46eb2`, **500 tests**)
 
-- **Hai đường nhặt, đều post event2 `CollectItems`**: **player** — `OnTriggerEnter2D 14bc9c0` check
-  tag **Item** TRƯỚC `activeHitEnemey@0x90`/invisible@0x91 (nhặt xu **không** dính contact-hit
-  permission; `ItemCollected` xong mới pool) · **drone** — `Droid_Movement1.Update/CollectItems`:
-  distance<5 → `CollectTo` (chỉ set force flag, chưa post); distance<0,5 → post2 rồi pool; cả hai
-  **strict**; `Item_Movement` cleanup y<−25 chỉ pool, **không** cộng xu.
+- **Hai đường nhặt — KHÔNG đều post event2** (sửa theo góp ý review `de2d1366`, PR12 `6401242325`):
+  **player** — `OnTriggerEnter2D 14bc9c0` check tag **Item** TRƯỚC `activeHitEnemey@0x90`/
+  invisible@0x91 → gọi **`ItemCollected` TRỰC TIẾP** → pool — **không post event2** (thêm post2 vào
+  đường player = đếm kép) · **drone** — `Droid_Movement1.Update/CollectItems`: distance<5 →
+  `CollectTo` (chỉ set force flag, chưa post); distance<0,5 → **post2** → receiver `OnCollectItem` →
+  `ItemCollected` (receiver này **không** pool); cả hai **strict**; `Item_Movement` cleanup y<−25
+  chỉ pool, **không** cộng xu.
 - `ItemCollected` định ID qua **`IPooling.GetID` slot 0** (interface — không theo tên prefab); byte
   table `77a086`, 13 entries `70001..70013`; alias coin **70001=70011 · 70002=70012** → Coin1/Coin2
   callbacks (**gán đè**, không Combine); callback null vẫn gọi `PlaySoundCoins` (helper có Time.time
@@ -2868,9 +2870,9 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   `((shotRate−.01)×.3)/10` (**mẫu số 10 = độ dài array**, không phải numberNormal); StartAttack BC =
   +,168 (`31082c3e`).
 - **Drone 12 impl hiện hành** (`Drone_Get_Datas 2adbd90`, **không** dùng legacy `Droid_Attack`):
-  shotRate/turn/charge/speed/projectile từng impl (1–12); ⚠ **Drone3 `turnRate8` chỉ là ctor default**
-  (SerializeField, OnEnable không ghi lại) · Drone4 turnRate=0 do **OnEnable ghi** · Drone9 width10
-  cũng ctor default. **ability25**: `newRate = baseRate / (2,5 × abi25 đọc lại)` — **không phải**
+  shotRate/turn/charge/speed/projectile từng impl (1–12); **Drone3 `turnRate8` chỉ là ctor default —
+  serialized live = 1,0 (report 92: offset 100, bytes `0000803f`; OnEnable không ghi lại)** ·
+  Drone4 turnRate=0 do **OnEnable ghi** · Drone9 width10 cũng serialized được bóc (92). **ability25**: `newRate = baseRate / (2,5 × abi25 đọc lại)` — **không phải**
   `/(1+2,5×)`, không giảm 2,5 %. Scheduler: families 2/3/5/6/8/10/11/12 (charge → shot deadline →
   đếm từng barrel tới `turnNumber` → charge); sweep4 (quay 20°/s theo phase ±16) và laser 7/9
   (timer strict >, laser 7 tick hết hạn **không damage** vì Check thấy actived đã clear) — riêng từng
@@ -2896,9 +2898,11 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   **waveIndex**, không phải index tàu. **`OnChangeDataDevice 14c58ec` không ghi max** — chỉ
   `reduceDamageByDevice` (Device.id 1000–1999, `GetStatValue1`/100) + `deviceHeal` (5000–5999,
   `StartHealth×GetStatValue1`/100), reset trước null-check, không clamp.
-- **Auto-gain**: `AutoGainHealth 14c7bc8` mỗi **5 s** (InvokeRepeating literal đã decode) = techHeal
-  (`GetHpRecoverSpeed` theo **TechStatLevel(0)**: ,01×1,0/1,03/1,06/1,08/1,10) + deviceHeal, clamp
-  StartHealth, **không nhân deltaTime**; `TimeToImmuneOneHit`: ≤0→MaxValue · 1–3→50 · 4–5→45 ·
+- **Auto-gain**: `AutoGainHealth 14c7bc8` mỗi **5 s** (InvokeRepeating literal đã decode) — **guard
+  `CurrentHealth > 0`** (không hồi sinh tàu đã chết; clamp-đầy + post21 không thay guard) =
+  techHeal + deviceHeal, clamp StartHealth, **không nhân deltaTime**; `GetHpRecoverSpeed` theo
+  **TechStatLevel(0): ≤0 → 0** (level0 KHÔNG phải ,01×1,0 — sửa theo góp ý) · 1→,01 · 2→,01×1,03 ·
+  3–4→,01×1,06 · 5–7→,01×1,08 · ≥8→,01×1,10; `TimeToImmuneOneHit`: ≤0→MaxValue · 1–3→50 · 4–5→45 ·
   6→40 · 7–8→35 · 9→30 · ≥10→25.
 - **`Board_Drones` 3 bảng UI có consumer thật** (≠ combat): ctor float[24] = **`playerPriceMultipleA`
   @238** → `SetUpgradeCost` (giá nâng cấp UI, index = cellIndex − 20001); static10/18 =
@@ -2913,3 +2917,30 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   ② HP writer thay mức D bằng công thức; ③ không xác nhận chéo Board↔GetBaseDamage; ④ tách
   "phân loại cấu trúc 576 (xong)" khỏi "binding entry (unknown)" ở `MISSING` §5; ⑤ ledger ACK
   đồng bộ (đã sửa "chưa ACK89" ở §24.22). ACK90+91 qua PR12.
+
+### 24.25 Report 92 — 12 modern drone: save → getter → resource → prefab → serialized (peer `713be8c85a0`, **683 tests**)
+
+- **Mapping sourceID → implementation ĐÓNG** (không còn đoán theo suffix): `StartDrones 14f2864`
+  ghép literal **`Prefabs/Drones/Drone_`** + ID; ResourceManager keys lowercase; **12 bindings
+  20001..20012 → `Drone_Attack1..12`** (root GO + component pathID + MonoScript, đều trong
+  `resources.assets`); mỗi class có thêm **2 bản UI** (`boards/board_drones`,
+  `popup_common/popup_newdrone`) — giữ riêng 3 context, không lấy UI thay gameplay prefab; 5 legacy
+  `Droid_Attack*` không thuộc bộ 12.
+- **Drone3 serialized** (component 627384/GO 26346, 124 B): id=20003@32 · barrels 1@84 ·
+  **turnRate 1,0@100** (`0000803f`) · shotRate 2,0@104 · shotSpeed 24@108 · idBlt **80084@112** ·
+  turnNumber 3@116 · damage 0@120. ⚠ **Không bê serialized vào runtime**: idBlt 80084 nhưng OnEnable
+  cấu hình **80014**; Drone4 serialized turnRate 1 nhưng OnEnable ghi 0; Drone8/11/12 nhiều field 0
+  được OnEnable cấu hình lại. ⇒ **gap `turnRate3` ĐÓNG: live = 1,0** (chargeDeadline = now + 1).
+- **Save slots**: `GetDroneUsed(slot)` key `DroneUsed{slot}` default **0 = không drone** (không
+  20001); âm → SetInt 0 rồi đọc lại; `SetDroneUsed` arg2 = **drone resource ID** (không phải player
+  impl index); `CheckDoubleIDDrone` là **routine riêng** (2 slot bằng nhau ∧ slot0≥1 → duyệt 20001+,
+  ≠ slot1 ∧ unlocked → ghi slot0; **không cap 20012**). `get_indexDrones 14f2a2c`: **new int[2]
+  mỗi call**; playMode≠4 → [slot0, slot1]; **playMode4 → [0,0] không đọc save** (không có scene gate).
+- **StartDrones**: gọi getter **lại từng slot** (không snapshot dùng chung); ID<1 skip; Load +
+  Instantiate dưới `parentDrones.GetChild(slot)`; scale **(0,8 · 0,8 · 1)** exact f32 (`cdcc4c3f`);
+  localPosition slot0 **(−20,−20,0)** · slot1 **(+20,−20,0)**; SetActive true; không range-check/
+  dedup trong method (ID dương không tồn tại vẫn đi tới resource-load attempt).
+- Kéo về: `datas/drone_loadout_flow.json` (**5 ranges/319 instr** · 29 anchors · 4 RELA joins · 36
+  serialized IDs đối chéo raw bytes). 35 tests mới; full **683 PASS**; code `8bb7bd717` · Verify
+  `40219912118`; review độc lập `de2d1366` của peer: 3 sửa 91 **ĐÚNG** + 3 góp ý wording (đã xử lý
+  hết ở lần 29 này); ACK92 qua PR12. **Còn: 23 wing impl** + named map/save consumers.

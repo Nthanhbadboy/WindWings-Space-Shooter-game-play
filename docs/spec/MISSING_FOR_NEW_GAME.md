@@ -36,7 +36,7 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 | 6 | **Wave / spawn** | ✅ **đủ** | **282 wave · 11.089 dòng cấu hình · 23.757 spawner · 22.451 entry** (`H2`, `I3`, `M3`, `AQ7`) | `rate = 0` **chưa** kết luận "spawn cả loạt" — xem §2.4 |
 | 7 | **Độ khó 3 chế độ** | ✅ **đủ** | `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · không nhân số quân | ngưỡng % riêng = tự chọn |
 | 8 | **Kinh tế / rơi đồ** | ✅ **đủ** | 3 tầng rơi: **702** vật đặt sẵn (**676 coin / 26 item**) · **246/2.094** slot mang item · **6** loại (`AE1`–`AE3`) · chuỗi nổ vàng **đã nối (report 88)**: DropGold `lost > iPlus×10` → event6 → budget **28 → 8 object** (chia 5) → pool · **tiền nhặt ĐÃ CÓ CÔNG THỨC (report 89)**: Coin1 `A=min(1,5g;16)+2,5` · Coin2 `B=min(3g;23)+12`, 4 band balance ×L(tech) ×device ×.86(stage≤40); Burst 8 item = **69/165 xu** (stage 1/41) | trọng số chọn giữa 6 loại — **tự chọn** |
-| 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu**; `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) — nhưng damage **có** lookup theo tàu: `GetMainCannonDamage(playerIndex)` đọc **mảng static float** `0x78` theo `playerIndex` (§2.2); `Player_Talent` **23 method** · **13 drone** | 6 mảng damage/rate/cost **đã decode** (§2.2); **bind combat ĐÃ SỬA (report 81/82)**: impl N → index N−1 (tàu 10001→2 · 10003→0; id−10001 chỉ đúng save/load) ⇒ TTK **ước lượng** theo từng tàu. **HP max tàu ĐÃ CÓ CÔNG THỨC (report 91)**: `GetStartHp` = **2500 × (1 + 0,18×TechStatPoints(0) + 1×ability7)** — công thức chung, không bảng theo tàu (§2.2); luật bắn **12 impl drone + wing barrels theo Level ĐÃ CÓ (report 90)** (`DATA_SYNC` §24.23). Còn: DPS **runtime** (cần health/shield gates); **23 wing impl** còn lại · mapping drone prefab→sourceID · `turnRate3` serialized · DPS closure (scope report 90) |
+| 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu**; `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) — nhưng damage **có** lookup theo tàu: `GetMainCannonDamage(playerIndex)` đọc **mảng static float** `0x78` theo `playerIndex` (§2.2); `Player_Talent` **23 method** · **13 drone** | 6 mảng damage/rate/cost **đã decode** (§2.2); **bind combat ĐÃ SỬA (report 81/82)**: impl N → index N−1 (tàu 10001→2 · 10003→0; id−10001 chỉ đúng save/load) ⇒ TTK **ước lượng** theo từng tàu. **HP max tàu ĐÃ CÓ CÔNG THỨC (report 91)**: `GetStartHp` = **2500 × (1 + 0,18×TechStatPoints(0) + 1×ability7)** — công thức chung, không bảng theo tàu (§2.2); luật bắn **12 impl drone + wing barrels theo Level ĐÃ CÓ (report 90)** (`DATA_SYNC` §24.23). Còn: DPS **runtime** (cần health/shield gates); **23 wing impl** còn lại + DPS closure (scope 90) — ~~mapping drone prefab→sourceID · `turnRate3` serialized~~ **ĐÓNG (report 92: bindings 20001..20012 → Drone_Attack1..12; turnRate3 live = 1,0)** |
 | 10 | **UI** | ✅ **cấu trúc** · ✅ **luật thị giác** / ❌ **asset** | **797 màn · 150.131 node · 5.831 nút** (`N2`, `P6`); **55.584** layout file; khung hình **0,4813** · accent **≤10 %** · tương phản **0,45–0,80** (`VISUAL_DESIGN.md`, **AN1**, **AN2**) | asset gốc: **vẽ mới**; luật thì **đã có số** |
 | 11 | **Âm thanh** | 🟡 **có dữ liệu + 15 luật tĩnh** | **69 clip / 571,5 s** (`audio-index.csv`) · `datas/audio_rules.json`: **15 rules** (mute/volume/pause/oneshot/music…) · registry **92** id · enum **118** (report 67; `DATA_SYNC` §21.1) | **đối chiếu nghe + trigger lúc chơi** — tĩnh hiện PROVISIONAL, cần 1 lần chạy để nâng mức |
 | 12 | **Save / load + live-ops** | 🟡 **một phần** | key đã đọc: **`StarCount`** · **`StarStageMaster{stageIndex}_{modeIndex}`** (default 0) qua `PlayerPreferences.SetInt → PlayerPrefs.SetInt`; model `savedStars/result` (report 57); **170 IAP** | **schema đầy đủ** (mọi khoá/kiểu/migrate) + **chưa** chứng minh flush đĩa — xem §2.3 |
@@ -129,7 +129,8 @@ từ hex trong `ia-resolved.json` — **theo kiểu của field**, không
   (Current=Start) · **event36** (payload==7 → chỉ ghi StartHealth) · **event64** (playMode1 ∧
   waveIndex≠0 → **giữ tỉ lệ** Current/Start; else reset — điều kiện là waveIndex, không phải tàu) ·
   `OnChangeDataDevice` **không** ghi max (chỉ band giảm-damage 1000–1999 / heal 5000–5999).
-  Auto-gain 5 s, clamp Start, không nhân deltaTime. Tàu 1 runtime **2500** = 0 point/0 abi7 —
+  Auto-gain 5 s — **guard Current>0** (không hồi sinh tàu đã chết); techHeal = **0** khi
+  TechStatLevel(0)≤0; clamp Start, không nhân deltaTime. Tàu 1 runtime **2500** = 0 point/0 abi7 —
   **không universal**; cách `TakeDamage` áp `reduceDamageByDevice` là consumer riêng, chưa đọc.
   (2) **rate player ĐÃ ĐÀO (25/10, report 79 peer):** tàu 1 dùng `StartMainCannonRate` làm **interval**
   đặt hạn bắn tiếp — không phải shot/giây. ⚠ **Đính chính:** report **53** (từng dùng để đóng mục này)
@@ -306,8 +307,10 @@ không phủ toàn bộ công thức chiến đấu.
 | ~~Kiểm runtime `rate` (shot/giây?)~~ | L2 | ✅ **đã chốt (A)**: = giây delay theo nhánh (report 53, §2.4) |
 | Playtest so TTK/cảm giác + `PlayerUsed` refresh | L2 → L3 | cần **thiết bị** — kiểm hành vi, không phải thiếu số |
 
-> Bảng này **thay TODO cũ** (“đọc consumer nối playerIndex”, “bind 576 mảng”) — hai việc đó
-> **đã xong**, đừng lặp nữa (sửa 25/10 sau khi bị nhắc).
+> Bảng này **thay TODO cũ** (“đọc consumer nối playerIndex”, “bind 576 mảng”) — việc đầu **đã xong**;
+> “bind 576” chỉ **xong phần phân loại cấu trúc** — **named binding entry/thứ tự nạp `listMapDatas`
+> vẫn phải đào** (§2.1; sửa footer theo góp ý review `de2d1366`). Đừng lặp việc xong, đừng gọi
+> phần chưa xong là xong.
 
 ---
 
