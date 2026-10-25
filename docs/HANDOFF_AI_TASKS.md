@@ -82,3 +82,10 @@ raw `early-native-gates.json` giữ asm/check. Đừng match trực tiếp tên 
 tên gallery sanitize; dùng bảng original-name → type/path_id → gallery.
 Exporter lượt tới bổ sung TMP/sprite properties và tutorial panel sibling;
 chưa được xem như đã đủ pixel-accurate cho đến khi raw mới về/đã kiểm.
+
+## Ưu tiên đồng bộ — tránh đọc mốc 019e704d1 cũ
+
+Đọc **docs/HANDOFF_DATA_SYNC.md**. Kiểm trực tiếp remote ngày 25/10 thấy data
+đã tới c570485c5, có 9 commit sau 019e704d1. Verifier spec local-first có thể
+bỏ qua raw ở --ref mới khi file local cũ còn tồn tại. Fetch explicit remote
+tracking ref, đối chiếu ls-remote/rev-parse và ghi source SHA trước khi báo lại.
