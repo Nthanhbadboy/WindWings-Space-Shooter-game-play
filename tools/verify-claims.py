@@ -1547,6 +1547,99 @@ claim("N3", UI_DOC, "**11 lớp = 4 tên lớp lồng + 7 không có instance tr
       ui_class_gap,
       "giải thích 125 vs 114: cùng một tập, khác cách đặt tên + 7 màn không dump")
 
+# ── P. kiểm lại toàn bộ: quy mô tài liệu + dữ liệu đã có ────────────────
+# Nhóm này trả lời "thiếu chỗ nào" bằng cách đếm *cái đang có*, để không ai
+# đi làm lại thứ đã nằm trong repo.
+
+AUDIT = "docs/spec/COVERAGE_AUDIT.md"
+APK_DOCS = "docs/apk-analysis"
+
+
+def doc_inventory():
+    """Số tài liệu trong `docs/spec/`, **không kể** chính file audit.
+
+    Không đếm tổng số dòng: nó đổi mỗi lần sửa một chữ, và một claim đổi theo
+    từng lần sửa là claim vô dụng.
+    """
+    local = os.path.join(ROOT, "docs", "spec")
+    if not os.path.isdir(local):
+        return None
+    files = [n for n in os.listdir(local)
+             if n.endswith(".md") and n != "COVERAGE_AUDIT.md"]
+    return len(files) or None
+
+
+def sprite_sizes():
+    """(dòng sprites.csv, có width, dòng asset-manifest, có kích thước)."""
+    spr = _csv_rows("datas/sprites.csv")
+    man = _csv_rows(f"{APK_DOCS}/04-asset-manifest.csv")
+    if not spr or not man:
+        return None
+    return (len(spr), sum(1 for r in spr if (r.get("width") or "0") not in ("", "0")),
+            len(man), sum(1 for r in man if (r.get("width") or "0") not in ("", "0")))
+
+
+def localization_stats():
+    """(số key, số ngôn ngữ, số key có bản tiếng Việt)."""
+    rows = _csv_rows(f"{APK_DOCS}/12-localization.csv")
+    if not rows:
+        return None
+    return (len(rows), len(rows[0]) - 1, sum(1 for r in rows if r.get("Vietnamese")))
+
+
+def iap_stats():
+    """(tổng SKU, consumable, non-consumable)."""
+    rows = _csv_rows(f"{APK_DOCS}/13-iap-products.csv")
+    if not rows:
+        return None
+    c = sum(1 for r in rows if r.get("type") == "ConsumableProducts")
+    n = sum(1 for r in rows if r.get("type") == "NonConsumableProducts")
+    return (len(rows), c, n)
+
+
+def data_counts():
+    """(hệ hạt, âm thanh resolve, HP id, boss HP, map)."""
+    parts = _csv_rows("datas/particle_systems.csv.gz")
+    audio = ref_json("datas/audio_map.json")
+    hp = ref_json("datas/enemy_hp_by_id.json")
+    boss = ref_json("datas/boss_hp.json")
+    maps = ref_json("datas/maps.json")
+    if parts is None or not audio or hp is None or boss is None or maps is None:
+        return None
+    return (len(parts), audio.get("resolved"), hp.get("count"),
+            boss.get("count"), len(maps.get("maps") or []))
+
+
+def ui_two_levels():
+    """(file layout, node tổng, màn cấp cao, node của chúng)."""
+    screens = ref_json("datas/ui_screens.json.gz")
+    idx = _csv_rows("reverse-engineering/raw/ui/_index.csv")
+    if not screens or not idx:
+        return None
+    return (screens.get("files"), screens.get("nodes"), len(idx),
+            sum(int(r.get("nodes") or 0) for r in idx))
+
+
+claim("P1", AUDIT, "**33 tài liệu** trong `docs/spec/` (chưa kể file này)", 33, doc_inventory,
+      "quy mô tài liệu hiện có trong docs/spec")
+
+claim("P2", AUDIT, "**2.885** sprite, **2.816** có `width/height`; `04-asset-manifest.csv`: **2.907** asset, **2.838** có kích thước",
+      (2885, 2816, 2907, 2838), sprite_sizes,
+      "kích thước sprite: đóng mục #4 của DATA_SYNC §8")
+
+claim("P3", AUDIT, "**1.416 key × 19 ngôn ngữ**, **1.416** có bản tiếng Việt", (1416, 19, 1416),
+      localization_stats, "bản địa hoá: lần đầu có dữ liệu")
+
+claim("P4", AUDIT, "**170 sản phẩm** (71 consumable + 99 non-consumable)", (170, 71, 99),
+      iap_stats, "IAP khớp giữa datas/iap_products.json và 13-iap-products.csv")
+
+claim("P5", AUDIT, "**4.845** hệ hạt · **92/92** âm thanh · **150** HP id · **254** boss HP · **250** map",
+      (4845, 92, 150, 254, 250), data_counts,
+      "một dòng để nhớ datas/ đang có gì — khỏi làm lại")
+
+claim("P6", AUDIT, "**52.583** file · **7.980.772** node", (52583, 7980772, 733, 103227),
+      ui_two_levels, "UI hai tầng: layout file vs màn cấp cao — đừng tráo")
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:

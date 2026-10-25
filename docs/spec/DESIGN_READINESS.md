@@ -5,6 +5,9 @@
 > **Trả lời ngắn: ĐỦ — cho phạm vi đã chốt (L1: giống cơ chế, không cần giống số).**
 > Và **không** đủ nếu ai đó định làm L2/L3 (khớp số / không phân biệt được).
 >
+> **Kiểm lại toàn bộ 14 vùng năng lực:** xem **`COVERAGE_AUDIT.md`** — bản này trả lời *"đủ cho L1 chưa"*,
+> bản kia trả lời *"còn thiếu chính xác chỗ nào"*. Kết luận khớp nhau: **2 chỗ chặn** (map→wave · HP runtime).
+>
 > **Cập nhật 24/10 — vòng 2:** sau khi giải script animation (`ANIMATION_SCRIPT.md`), hệ
 > **Animation** không còn là bức tường: **35/39 prefab boss** có script đọc được, boss 1 giải
 > xong 8 tên entry. Hàng "feel" cũng hết trống: hit flash **0,05 s** đo được. Xem §7.

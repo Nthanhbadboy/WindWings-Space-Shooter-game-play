@@ -25,7 +25,10 @@
 
 > **Cập nhật 23/10 (`UNITY_RULES.md`):** **+3 đóng** (**C3** · **C4** · **C6**) và **2 hạ mức**
 > (**C1** · **C2** từ **D** → **B**) sau khi áp luật serialization/asset của Unity.
-> Số đếm: **8 mục đóng / 28** (trước vòng này: **5 / 28**).
+>
+> **Cập nhật 24/10 (`COVERAGE_AUDIT.md`):** **+2 đóng** — **C1** (795/795 event có `time`) và
+> **C2** (`animator_map.csv.gz` 5.792 dòng) đã **export xong** ở nhánh dữ liệu, hết phải tự đặt nhịp.
+> Số đếm: **10 mục đóng / 28** (23/10: 8/28).
 
 | # | Vấn đề | Nhóm | Mức | Ảnh hưởng thiết kế |
 |---|---|---|---|---|
@@ -41,8 +44,8 @@
 | B5 | 43/305 trace chưa đối chiếu | **chưa lấy** | — | rủi ro sai số nhỏ |
 | B6 | Damage boss không khai báo (19 class) | **chưa lấy** | C | thiếu 19/37 nhóm đòn |
 | B7 | ~~12 stat Basic vs `NumberTechStats()` = 60~~ | ✅ **đã chốt** | A | = `List.Count`, không phải hằng số |
-| C1 | Thời điểm (time) của animation event | **thiếu export độ sâu** | **B** | 793 event có `time` — `UNITY_RULES` §4.3 |
-| C2 | Bảng controller→clip | **thiếu export độ sâu** | **B** | 793 PPtr + 3.871 tên state — `UNITY_RULES` §5 |
+| C1 | ~~Thời điểm (time) của animation event~~ ✅ **ĐÓNG 24/10** | **đã export** | **A** | `event-receivers.json.gz`: **795/795** event use có `time` (cả 793 của boss) |
+| C2 | ~~Bảng controller→clip~~ ✅ **ĐÓNG 24/10** | **đã export** | **A** | `datas/animator_map.csv.gz`: **5.792** dòng `prefab_root → controller`; `event-receivers` join clip ↔ event |
 | C3 | ~~`Spawner.dataScript` rỗng~~ ✅ **ĐÓNG** — field chết **23.570/23.570** | **PPtr null** | **A** | quy luật spawn ở `Wave` — `UNITY_RULES` §2 |
 | C4 | ~~`Wave.indexWave` = 0~~ ✅ **ĐÓNG** — **686/686** | **field chết** | **A** | thứ tự = thứ tự mảng — `UNITY_RULES` §7 |
 | C5 | `Call_Data.number/editType` = 0 | **vắng mặt thật** | D | số quân mỗi lần gọi |
@@ -366,8 +369,8 @@ kiểm từng id** — nhưng **không còn là ẩn số về cơ chế**.
 
 | # | Thiếu gì | Bằng chứng (số) | Bản clone phải quyết |
 |---|---|---|---|
-| C1 | **Time** của animation event | **318** clip / **793** event; `m_Events` là mảng struct **không nén**, dump chỉ lấy `__count` (`UNITY_RULES` §4.3) | tạm dùng `Gun_Attack.timeShot` cho **13,3 %** súng; **86,7 %** còn lại tự đặt nhịp (0,08–0,25 s) — nhưng **nên export 793 event** |
-| C2 | controller → clip | `m_AnimationClips` = **793** PPtr; `m_TOS` = **3.871** tên state (`UNITY_RULES` §5) | tạm đặt tên state `idle`/`move`/`attack`/`die`; export **308** controller là ra tên thật |
+| ~~C1~~ | ~~**Time** của animation event~~ ✅ **ĐÓNG** | nhánh dữ liệu đã export **795/795** event kèm `time` (`event-receivers.json.gz`); xem `ANIMATION_SCRIPT.md` §3 — nhịp đòn **0,17 / 0,33 / 1,0 / 5,0 s** | không còn phải tự đặt nhịp |
+| ~~C2~~ | ~~controller → clip~~ ✅ **ĐÓNG** | `datas/animator_map.csv.gz` (**5.792** dòng) + tên clip trong `event-receivers` | tên state/param vẫn **C** — việc **T4** của `HANDOFF_ANIM_RAW.md` |
 | C3 | ~~`Spawner.dataScript`~~ ✅ **ĐÓNG** | **23.570/23.570** null (7 class); đối chứng `Enemy_Controller.dataScript` **981/981** có giá trị | dùng `waves.json` (45.659 quân) làm nguồn duy nhất |
 | C4 | ~~`Wave.indexWave`~~ ✅ **ĐÓNG** | **686/686 = 0** | thứ tự wave = thứ tự trong `waves.json` |
 | C5 | `Call_Data.number` / `editType` | **0** ở 23.757/23.757 | số quân mỗi lần gọi = `len(listPrefabEnemies) × copies` |

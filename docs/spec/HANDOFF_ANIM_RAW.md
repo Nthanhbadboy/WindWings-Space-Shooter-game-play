@@ -177,6 +177,51 @@ spawn**, và 2.371 spawner đó phải có cơ chế khác kích hoạt (ví d�
 
 ---
 
+## 1c. T6 — **map → wave**: đánh số 250 map
+
+Đây là **blocker #1** của `COVERAGE_AUDIT.md` §2.
+
+**Giả định:** `maps.json` (**250** map, thứ tự zero-based, `listMapDatas @0x28`) + `31-map-tables.md`
+(**540/540** token `InitializeArray` có blob, **0** token bó tay) là **đủ** để suy `map N ↔ wave nào`.
+
+**Việc:** ghép 250 mảng với 282 wave bằng **khoá nội dung** (số wave + tổng spawner của từng mảng),
+**không** bằng thứ tự. `14-Data_Boss.csv` (**46** boss, mỗi boss có `idWave`) dùng làm **mỏ neo
+ngược**: boss nào thuộc wave id nào thì map chứa wave đó phải chứa boss.
+
+**Artifact:** `map-wave-join.json`
+```json
+[{"map_index": 1, "wave_ids": [..], "confidence": "token|content|boss-anchor"}]
+```
+
+**Tự kiểm:** số map ghép được **bằng chứng token** phải **tăng từ 7**; mọi map ghép phải khớp **tổng
+spawner** của các wave được gán; 46 boss phải rơi đúng map.
+
+**Lật ngược nếu:** vẫn **7/250** ⇒ nội dung `maps.json` **không** phải map→wave; khi đó chỉ còn
+đường `idWave` của boss (46 mỏ neo) và phải nói rõ "chỉ biết 46/299 stage".
+
+---
+
+## 1d. T7 — **trigger âm thanh**: 92 sound id ↔ sự kiện
+
+**Giả định:** code gọi âm thanh qua một registry (`SoundClip`) bằng **tên hằng chuỗi**, nên tìm được
+xref "sự kiện nào phát id nào" trong asm đã có.
+
+**Việc:** tìm các lời gọi phát âm (method nhận `string`/`enum` sound id), đối chiếu với **92 id**
+trong `datas/audio_map.json` (**92/92** đã resolve ra file).
+
+**Artifact:** `audio-triggers.json`
+```json
+[{"sound_id": "Bgm_Boss1", "caller_class": "...", "caller_method": "...", "rva": "0x..."}]
+```
+
+**Tự kiểm:** `(số id có ít nhất 1 caller, số class gọi)` trên 92 id. Id **không** có caller phải
+liệt kê — đó là dữ liệu (có thể do prefab `UnityEvent` phát).
+
+**Lật ngược nếu:** **0/92** tìm thấy ⇒ âm thanh phát qua `UnityEvent`/`AudioSource` trên prefab;
+khi đó gộp vào T3 và đóng bằng `m_PersistentCalls`.
+
+---
+
 ## 2. Hợp đồng chạy (giống `PARALLEL_TASKS.md`, rút gọn cho 4 task)
 
 | # | Luật | Vì sao |
@@ -188,8 +233,9 @@ spawn**, và 2.371 spawner đó phải có cơ chế khác kích hoạt (ví d�
 | 5 | Exit code: **0** PASS · **2** REVERSED · **3** MISSING (thiếu input) | mã thoát = phán quyết |
 
 **Thứ tự ưu tiên nếu chỉ chạy được một task:** **T1** (rẻ nhất — chỉ thêm 3 dòng vào `TARGETS`,
-mở khoá nhánh Spine) → **T2** (mở khoá 793 event) → **T5** (mật độ địch, blocker #1 của
-`DESIGN_READINESS.md`) → **T3** → **T4** (đắt nhất, cần đọc `AnimatorController` trong bundle).
+mở khoá nhánh Spine) → **T2** (mở khoá 793 event) → **T6** (map→wave, blocker #1 của
+`COVERAGE_AUDIT.md`) → **T5** (mật độ địch) → **T3** → **T7** (âm thanh) → **T4** (đắt nhất, cần đọc
+`AnimatorController` trong bundle).
 
 ---
 
