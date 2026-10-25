@@ -3,7 +3,7 @@ import argparse,bisect,gzip,hashlib,io,json,re,struct,sys,tempfile,zipfile
 from pathlib import Path
 from combat_coroutine_cells import APK_SHA,LIB_SHA,extract
 ROOT=Path(__file__).resolve().parents[2]
-ROOTS={'Droid_Attack','Droid_Attack_1','Droid_Attack_2','Droid_Attack_3'}
+ROOTS={'Droid_Attack','Droid_Attack_1','Droid_Attack_2','Droid_Attack_3','Drone_Attack'}|{'Drone_Attack'+str(i) for i in range(1,13)}
 EXTRA={0x14e5404,0x14e553c,0x1450928}
 
 
