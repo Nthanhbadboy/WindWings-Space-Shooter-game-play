@@ -1,0 +1,45 @@
+;;; get_mainTexture  public Texture get_mainTexture() { }
+    0x2769448: stp      x30, x21, [sp, #-0x20]!
+    0x276944c: stp      x20, x19, [sp, #0x10]
+    0x2769450: adrp     x20, #0x2ce9000
+    0x2769454: ldrb     w8, [x20, #0xd8a]
+    0x2769458: mov      x19, x0
+    0x276945c: tbnz     w8, #0, #0x2769474
+    0x2769460: adrp     x0, #0x2adc000
+    0x2769464: ldr      x0, [x0, #0xd60]
+    0x2769468: bl       #0x110d028
+    0x276946c: mov      w8, #1
+    0x2769470: strb     w8, [x20, #0xd8a]
+    0x2769474: adrp     x20, #0x2ce9000
+    0x2769478: ldr      x8, [x20, #0xd90]
+    0x276947c: cbnz     x8, #0x2769494
+    0x2769480: adrp     x0, #0x776000
+    0x2769484: add      x0, x0, #0xf38
+    0x2769488: bl       #0x110cfec
+    0x276948c: mov      x8, x0
+    0x2769490: str      x0, [x20, #0xd90]
+    0x2769494: mov      w1, #0x80
+    0x2769498: mov      x0, x19
+    0x276949c: blr      x8
+    0x27694a0: tbnz     w0, #0x1f, #0x27694dc
+    0x27694a4: adrp     x21, #0x2ce9000
+    0x27694a8: ldr      x2, [x21, #0xe18]
+    0x27694ac: mov      w20, w0
+    0x27694b0: cbnz     x2, #0x27694c8
+    0x27694b4: adrp     x0, #0x776000
+    0x27694b8: add      x0, x0, #0xf9b
+    0x27694bc: bl       #0x110cfec
+    0x27694c0: mov      x2, x0
+    0x27694c4: str      x0, [x21, #0xe18]
+    0x27694c8: mov      x0, x19
+    0x27694cc: mov      w1, w20
+    0x27694d0: ldp      x20, x19, [sp, #0x10]
+    0x27694d4: ldp      x30, x21, [sp], #0x20
+    0x27694d8: br       x2
+    0x27694dc: adrp     x8, #0x2adc000
+    0x27694e0: ldr      x8, [x8, #0xd60]
+    0x27694e4: mov      x0, x19
+    0x27694e8: ldp      x20, x19, [sp, #0x10]
+    0x27694ec: ldr      x1, [x8]
+    0x27694f0: ldp      x30, x21, [sp], #0x20
+    0x27694f4: b        #0x276953c
