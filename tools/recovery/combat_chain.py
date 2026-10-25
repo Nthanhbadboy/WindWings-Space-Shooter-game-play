@@ -97,6 +97,17 @@ def main():
         (out / 'referenced-cells.json.gz').write_bytes(gzip.compress(json.dumps(dict(
             status='RAW_ADRP_LDR_CANDIDATES_NOT_RUNTIME_POINTERS_OR_DATAFLOW_PROOF',
             cells=list(cells.values())), indent=2).encode(), mtime=0))
+        import capstone
+        disassembler = capstone.Cs(capstone.CS_ARCH_ARM64, capstone.CS_MODE_ARM)
+        helper_start, helper_end = 0x19a9434, 0x19a954c
+        helper_seg = next(p for p in segments if p[0] <= helper_start and helper_end <= p[0]+p[2])
+        helper_offset = helper_seg[1]+helper_start-helper_seg[0]
+        helper_blob = binary[helper_offset:helper_offset+helper_end-helper_start]
+        (out / 'delegate-constructor.json').write_text(json.dumps(dict(
+            name='Action<object,Vector3>..ctor', rva=hex(helper_start), next_generic_rva=hex(helper_end),
+            file_offset=helper_offset, hex=helper_blob.hex(), sha256=hashlib.sha256(helper_blob).hexdigest(),
+            asm=[dict(address=hex(i.address), mnemonic=i.mnemonic, operands=i.op_str)
+                 for i in disassembler.disasm(helper_blob,helper_start)]),indent=2)+'\n')
         # ELF GOT cells contain zero on disk: RELA addends resolve their pointees.
         shoff = struct.unpack_from('<Q', binary, 40)[0]
         shentsize, shnum = struct.unpack_from('<HH', binary, 58)
@@ -160,9 +171,19 @@ def main():
                 try:
                     tree = obj.read_typetree()
                     go = head.m_GameObject.deref()
+                    pool_entry = None
+                    if tree.get('m_OPScript', {}).get('m_PathID'):
+                        try:
+                            from UnityPy.classes.PPtr import PPtr
+                            ptr = tree['m_OPScript']
+                            obj_pool = PPtr(m_FileID=ptr['m_FileID'],m_PathID=ptr['m_PathID'],assetsfile=obj.assets_file).deref()
+                            pool_entry = dict(path_id=obj_pool.path_id, tree=obj_pool.read_typetree(),
+                                              raw_object_sha256=hashlib.sha256(obj_pool.get_raw_data()).hexdigest())
+                        except Exception as error:
+                            pool_entry = dict(error=repr(error), pointer=tree['m_OPScript'])
                     components.append(dict(serialized_file=filename, path_id=obj.path_id, class_name=cls,
                         namespace=namespace, raw_object_hex=(obj.get_raw_data().hex() if cls.startswith('Player_Attack_') else None), raw_object_sha256=hashlib.sha256(obj.get_raw_data()).hexdigest(),
-                        tree=tree, gameobject=dict(path_id=go.path_id, tree=go.read_typetree())))
+                        tree=tree, pool_entry=pool_entry, gameobject=dict(path_id=go.path_id, tree=go.read_typetree())))
                 except Exception as error:
                     errors.append(dict(serialized_file=filename, path_id=obj.path_id, class_name=cls,error=repr(error), raw_object_hex=obj.get_raw_data().hex(), raw_object_sha256=hashlib.sha256(obj.get_raw_data()).hexdigest(), gameobject=dict(path_id=head.m_GameObject.deref().path_id, tree=head.m_GameObject.deref().read_typetree())))
         shards=[]
@@ -174,7 +195,7 @@ def main():
             externals=[dict(serialized_file=name,externals=[dict(path=e.path,type=e.type) for e in sf.externals])
                        for name,sf in serialized_files(env)],
             shards=[p.name for p in shards]),indent=2)+'\n')
-        files = [out / 'relocations.json.gz', out / 'referenced-cells.json.gz', out / 'symbols.json.gz', out / 'component-index.json', *shards, *list(sorted((out / 'native').iterdir()))]
+        files = [out / 'delegate-constructor.json', out / 'relocations.json.gz', out / 'referenced-cells.json.gz', out / 'symbols.json.gz', out / 'component-index.json', *shards, *list(sorted((out / 'native').iterdir()))]
         for path in files:
             if path.parent.name == 'native' and path.suffix == '.json':
                 info = json.loads(path.read_text())
