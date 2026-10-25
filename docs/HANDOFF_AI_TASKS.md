@@ -413,3 +413,42 @@ luận vẫn provisional. Premium deferred; không dùng screenshot làm nguồn
   gates59 cònthiếu. Khôngnângconditional lowkillwitness thànhreachableplaythrough.
 - Tiếp tựđào AirFree spawn-parent/terrain-scroll và Machine_Gun_Attack lifecycle;
   T9atlasrect cònrawtask;Premiumdeferred. Chi tiết report60,8tests mới.
+
+## Agent hiện tại — report61: pool-parent/scroll/gun lifecycle (provisional)
+
+- User yêu cầu tự làm tiếp cho đầy đủ, không cần hỏi từng bước. Đã chạy native
+  recovery40188073425→c0ffce078: PoolingManager/Machine_Gun_Attack/
+  Boss_BodyPhysics/Obj_Collider/Enemy_Datas fullasm+JSON; khôngbinary/APK.
+- `tools/verify/balloon_lifecycle.py` + rawballoon-animation/
+  lifecycle-parent-scroll.json.gz:40methods26checks,8tests mới/**100tests pass**.
+  SHA gzip theo DECOMPRESSEDbytes;declarations namespacequalified.
+- Pool getObject123a2c8:reuse list[0]/RemoveAt0 hoặc instantiateinactive,
+  common worldposition+rotation, KHÔNG directSetParent/detach. GetObject(int)
+  dùngposition(-255,-255,-255);ctorprefPos(-99,-99,-99),khônggameplayborder.
+- Pool return123a66c:deactivate trước;nhánhvalidID/notContains/existingobjects
+  SetParent(manager.transform)123a970 rồiappendlist. Guarded,khôngmọicall.
+  Vìgetkhôngdetach,assetrootFather0 KHÔNGchứngminh reusedruntimeparent0.
+- AirFreekhôngdirectreparent;PinMap→spawner.transform.parent1466b60;
+  PinTerrain→serializedparentTerrains+30 tại1467154 (KHÔNGraycast/tựsuyMaplayer).
+- MapControllerAwake lấyallMoveLayers[1]→enemyParentMove,RemoveAt1.
+  UpdatebranchScrollMaptrực tiếp;commonDelta=multipleSpeed*deltaTime;
+  allMoveLayers.localY-=delta*speed*boostSpeed;
+  enemyParentMove.localY-=delta*speed CHỈisMoveEnemyLayertrue,KHÔNGboostfactor.
+  ScrollBackgroundswrap worldY<−1.5*bgLength→+bgLength*countBg;khôngenemyPool.
+  IsScrollingcómethodnhưngkhôngtựchènvàoUpdate/ScrollMapvìkhôngcallởbodyđãđọc.
+- Gun exact690037normalbRate0/shotRate.15/speed8;639146barrelbRate.1/
+  shotRate0/speed6;bothdelay1/Border0/turnRate2/turnNumber3/id80054/lifetime5/
+  damage300serialized/allGunDatas[]/bltPinMapfalse/emptyturneventpersistent.
+- GunOnEnabletimeToShot=Time.time+delay,resettimeToTurn/countTurn,bCount,
+  inverse,stun;KHÔNGresetisTurnStarted/timeToBarrelShot/timeToStart.
+  FixedUpdateisAttack→Border/Timer gate→stun→Shoot;khôngcoroutine.
+  NoOnDisabledeclared;animationdisabled≠OnEndTurnShoot/death/remove.
+  TurnhooksUnityEventkhôngownerpool;runtime listeners/actualshotschưareplay.
+- EnemyMovementOnEnable1586024 chỉzFixed48,khôngresettypeMove/path.
+  PathFollowpathnullreturn. Conditionalmovingtrue/typeMovePath0/pathnull/
+  nonturret→khôngpathcallbackhayFixedUpdateboundaryroute,ngaycảanimationraxa.
+  KHÔNGchứngminhstateđónắmgiữmọiruntimeBB;poolhistory/writerscònthiếu.
+- Đọc report61 trước khi chốt stage2lowkill. Không được suy rootlocal=world,
+  mọiAirFreeautoescape,hoặcBBmustdie. Kếtiếp:exactmapjoin+poolinstancehistory,
+  typeMove/pathwritersvàexternalremoval/health/collision. T9atlasrect vẫnrawtask
+  riêng;Premiumdeferred. Nhữnggapruntimekhôngđượcđóngbằng100unitPASS.
