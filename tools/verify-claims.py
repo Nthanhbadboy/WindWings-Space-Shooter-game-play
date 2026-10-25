@@ -1734,7 +1734,7 @@ def ui_two_levels():
             sum(int(r.get("nodes") or 0) for r in idx))
 
 
-claim("P1", AUDIT, "**37 tài liệu** trong `docs/spec/` (chưa kể file này)", 37, doc_inventory,
+claim("P1", AUDIT, "**38 tài liệu** trong `docs/spec/` (chưa kể file này)", 38, doc_inventory,
       "quy mô tài liệu hiện có trong docs/spec")
 
 claim("P2", AUDIT, "**2.885** sprite, **2.816** có `width/height`; `04-asset-manifest.csv`: **2.907** asset, **2.838** có kích thước",
@@ -2963,6 +2963,26 @@ def ui_bbox_stats():
     return (len(W), round(st.median(W), 2), round(st.median(H), 2),
             round(st.median([w / h for w, h in zip(W, H)]), 2))
 
+
+def art_study_stats():
+    """(số sprite, số nhóm, trung vị số màu, trung vị bão hoà) từ art-study.csv."""
+    import statistics as st
+    path = os.path.join(ROOT, "docs/assets/art-study.csv")
+    if not os.path.isfile(path):
+        return None
+    with open(path, encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
+    if not rows:
+        return None
+    return (len(rows), len({r["category"] for r in rows}),
+            round(st.median(int(r["colors"]) for r in rows)),
+            round(st.median(float(r["sat"]) for r in rows), 3))
+
+
+claim("AO1", "docs/spec/ART_STUDY.md",
+      "**2.112** sprite · **12** nhóm · trung vị **55** màu · bão hoà trung vị **0,483**",
+      (2112, 12, 55, 0.483), art_study_stats,
+      "đo lại từ art-study.csv do tools/art-study.py sinh, không chép tay")
 
 claim("AN1", "docs/spec/VISUAL_DESIGN.md",
       "**35** ảnh · tỉ lệ **0,4813** · accent trung vị **0,0571** · chi tiết trung vị **17,26**",

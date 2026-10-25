@@ -39,6 +39,7 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 
 | File | Nội dung | Kích thước |
 |---|---|---:|
+| **`ART_STUDY.md`** | **Học mẫu gốc bằng số** — **2.112** sprite / 42 contact sheet: ngân sách màu (**30–60** phụ · **110–160** chủ thể), gradient **0,20–0,26** cho mọi nhóm, thứ bậc sáng/bão hoà, **outline đen chỉ ~1 %** (sửa niềm tin "viền dày"), `fill` **0,08–0,87** ⇒ pack theo hình bao; 9 luật kiểm bằng `tools/art-study.py` | 132 dòng · 6 bảng |
 | **`VISUAL_DESIGN.md`** | **"Đẹp" đo được** — khung hình **0,4813** · **3 chế độ sáng** (gameplay accent ≤10 %, khung thưởng ~47 %, màn tối) · tương phản **0,45–0,80** · chi tiết **13–22** · hình học **54.019** layout (panel dọc **2:3**) · juice **0,05 s / 0,10·20 frame** · **giữ/đổi** + test bằng máy (`tools/design-metrics.py`) | 128 dòng · 6 bảng |
 | **`MISSING_FOR_NEW_GAME.md`** | **Còn thiếu gì để làm game mới** — 13 hệ (8 đủ · 4 một phần · 1 thiếu), **3 chỗ chặn thật** kèm **địa chỉ rodata** (`Map_Get_Datas` 576 blob · `Player_Get_Datas` 6 blob), danh sách **không phải thiếu**, và trả lời **L1 đủ / L2 chưa / L3 bỏ** | 122 dòng · 3 bảng |
 | `GAMEPLAY.md` | One-pager, 3 vòng lặp (30 s / 10 phút / 1 tuần), core loop, **7 `PlayMode` + 3 `PVPMode`**, 9 nhánh progression, SOURCE/SINK, meta, boss, thứ tự build | 689 dòng · 31 bảng |

@@ -116,6 +116,11 @@ Nếu không → sửa hình, không thêm chi tiết.
 
 ---
 
+> **Đo lại 25/10 — `ART_STUDY.md`:** 2.112 sprite được đo từ contact sheet. Kết quả **không** ủng hộ
+> câu *"bản gốc outline đen dày 3–4 px"* ở §1.1: `dark_share` của ships **0,017** · bosses **0,009** ·
+> enemy **0,008**. Ngân sách màu thật: enemy **30** · drones **114** · bosses **130** · ships **136**.
+> Dùng bảng §2 của `ART_STUDY.md` làm chuẩn khi vẽ art mới.
+
 ## 2. Kho sprite thật — phân nhóm
 
 | Nhóm | Số sprite | Dung lượng PNG | Ghi chú |
