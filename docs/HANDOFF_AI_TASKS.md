@@ -636,3 +636,5 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 - 1652non-quadmeshes,497PPUvalues (980SpritesPPU100).467mesh-AABB origin diagnostics khácsourcepivot >1e-5.7strictoutside/6beyond1e-5, 2836chỉ−3.076e−8;khôngclamp/recenter. 2185serializedsubmeshlocalAABBs đều0 nhưngmeasuredvertexbounds không0, giữnguyênhaibảngkhácnhau.
 - Trianglecrosssignsnegative24013/positive17/zero345, khôngGPUcullingverdict/khôngrepairwinding/khôngxóatriangles. UV0allzero khôngđủđểfabricateUVs.6tests mới;release/media khôngđổi, khôngfullAPKpipeline/preview.
 - **Task peer:** importtypedmesh/PPU khi cầnguồngeometry;sourcepivot/mesh-origin/serializedAABB/trimmedPNGregistrationkhácnhau. Quad/recenter/UVmappingmới lànewdesign/approximation nếuchưacóconsumerproof. ConcreteUV/rendererflip/transform/material/sceneplacementvẫnunknown;Premium/poolhistoryhoãn.
+
+- **Report75 final:** Verify40200221258 SUCCESS trêncode1a6c051b7,224tests/pinnedPillow12;local224tests/Pillow13+datasvalidatePASS. KhôngfullAPK/export/media/releasechanges, khôngreport/diff/previewpresentation.
