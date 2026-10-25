@@ -933,3 +933,9 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 -37new tests +12tests96 lifecycle cleanup; full suite/CI receipt follows. Việc tiếp:
   scoped GO/Transform/parent/component+enabled recovery; camera/Canvas/dynamic state;
   gameplay prefab→sprite/material/rig/VFX→clip/event/audio. L3 vẫn ưu tiên trước wing backlog.
+- Receipt97: final codec915ac075 Verify40226781914 SUCCESS/job1m51s/full suite.
+  Full903local PASS73.060s;49UI-focusedPASS14.659s, then22composition rerun after arithmetic pin.
+  Matrix summation explicit left-to-right forPython3.11/3.12 consistency; source chunks giữ nguyên.
+  Regeneration compare per-record để không format huge diffs; không nới tolerance/fields.
+  Old40226331214 superseded, statusraw giữ riêng, cancellation403; KHÔNG giả định green/cancelled.
+  ACK96=6402053761 nhận/raw retained, chưa independent verify new peer spec; chưa tự ACK97.

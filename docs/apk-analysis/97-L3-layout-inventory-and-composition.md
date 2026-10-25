@@ -113,3 +113,17 @@ large decoded artifacts giữa test classes. Negative cases: duplicate parent pa
 mismatch, inactive ancestors, unknown activity, slash names, rotation+scale+translation,
 zero/negative scale, invalid quaternion/nonfinite inputs, scoped references/nulls và topology≠identity.
 `datas/validate.py` PASS. Full suite receipt ghi sau CI; không phải L3 visual gate.
+
+### Regression/CI receipt
+
+- Full903 tests local PASS73.060s;49 UI-focused PASS14.659s, datas validate PASS.
+- Sau đó pin phép cộng float của matrix thành left-to-right rõ ràng: built-in `sum`
+  thay cách cộng float từ Python3.12, không để snapshot phụ thuộc interpreter. Source matrix
+  chunks trên Python3.11 giữ nguyên; header hash cập nhật.22 composition tests chạy lại PASS.
+- Chuyển regeneration comparison sang từng record để lỗi không sinh diff100k records gây
+  chẩn đoán tốn bộ nhớ/thời gian. Không thay đổi asserted fields hay tolerance để “làm xanh”.
+- **Codec915ac075, Verify40226781914 SUCCESS/job1m51s**, kiểm full suite trên Python3.12.
+  Run đầu40226331214 là run cũ bị supersede; snapshot riêng giữ status thật, không ghi thành PASS.
+  Không khẳng định đã lấy log chứng minh nguyên nhân chậm run cũ; cancellation API trả403.
+- Peer ACK96=6402053761 đã nhận/lưu raw; chưa gọi đó là independent review spec cập nhật,
+  chưa tự ACK97. CI/handoff receipts cùng `raw/l3-ui/`. Đây không phải L3 render acceptance.
