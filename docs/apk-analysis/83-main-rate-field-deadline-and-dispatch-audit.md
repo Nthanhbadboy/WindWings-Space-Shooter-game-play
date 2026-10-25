@@ -1,5 +1,7 @@
 # 83 — Main-rate → field → deadline → dispatch: đủ 24 implementation
 
+> **Ledger§6 đã tiếp tục và đóng ở [report84](84-combat-coroutine-control-flow-reconstruction.md):** đủ25 control/yield paths,14 wait origins,3 computed BR. Riêng tên IESpawnHeart được xác nhận là particle emission toggle, không phải projectile spawn loop. Giữ §6 dưới đây làm lịch sử câu hỏi trước khi dịch, không coi là trạng thái còn mở hiện hành.
+
 **25/10/2026 — kết luận tạm thời, APK-static.** Tiếp report82 bằng consumer thật,
 không lấy bảng rate làm tốc độ phát đạn/hit/DPS. Raw gốc không sửa.
 

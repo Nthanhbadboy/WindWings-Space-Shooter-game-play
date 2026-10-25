@@ -12,7 +12,7 @@ DUMP = ROOT / 'reverse-engineering/il2cpp/dump.cs.gz'
 CONTRACT = ROOT / 'datas/combat_chain_contract.json.gz'
 
 
-def owner_states(body, entry, iterator_offset=None):
+def owner_states(body, entry, iterator_offset=None, computed_edges=None, proven_restores=None):
     """Must-alias analysis, normal CFG paths; owner/iterator/unknown only.
 
     W writes destroy X pointer aliases. Calls clobber x0..x18. The iterator's
@@ -40,10 +40,13 @@ def owner_states(body, entry, iterator_offset=None):
                 m = re.fullmatch(r'([xw])(\d+)', dest.strip())
                 if m and int(m[2]) < 31:
                     state[int(m[2])] = value if i == 0 and m[1] == 'x' else None
+        if at in (proven_restores or {}):
+            register, alias = proven_restores[at]
+            state[register] = alias
         writeback = re.search(r'\[x(\d+)(?:, [^\]]+)?\](?:!|,)', args)
         if writeback:
             state[int(writeback[1])] = None
-        for nxt in successors(at,op,args,body):
+        for nxt in (computed_edges or {}).get(at, successors(at,op,args,body)):
             new = tuple(state) if nxt not in incoming else tuple(a if a == b else None for a,b in zip(incoming[nxt],state))
             if incoming.get(nxt) != new:
                 incoming[nxt] = new; todo.append(nxt)

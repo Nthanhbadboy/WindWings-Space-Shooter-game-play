@@ -1,5 +1,10 @@
 # Kết luận — trạng thái và độ tin cậy
 
+## Report84 — đóng control/yield của25 combat coroutine
+
+[Report84](apk-analysis/84-combat-coroutine-control-flow-reconstruction.md): native source walk đủ25 MoveNext +3 computed BR từ9 byte đã pin +14 wait origins +7 factory parameter copies + executable control reconstructions. Phát hiện cụ thể: 17 wait sau cặp,7/9 delay sau attack trước return,18 set_rateOverDistance particle không phải pool-spawn loop. Local327 tests PASS; vẫn phân biệt helper dispatch/spawn/hit/HP loss. Không phải bản dịch toàn bộ APK hay project game có thể build.
+
+
 ## Bổ sung report83 — 24 main-rate consumers (25/10/2026)
 
 [Report83](apk-analysis/83-main-rate-field-deadline-and-dispatch-audit.md) + `datas/combat_rate_consumers.json`: đủ 24 getter-return → demo FCSEL → rate field → main deadline → dispatch; 96 owner-qualified byte-overlap-aware accesses. 19 không extra counter; 22/23/24 refresh ability trong scheduler. Giữ phân biệt dispatch/spawn/hit/requested damage/HP loss. 25 MoveNext/14 wait sites mới inventory kèm các câu hỏi native cụ thể, không tuyên bố hoàn tất coroutine semantics. Local 302 tests PASS, validate/diffcheck PASS. Tạm thời APK-static, không measured cadence/DPS.

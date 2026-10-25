@@ -1,5 +1,10 @@
 # `datas/` — data pack WindWings
 
+## Combat coroutine flow — report84
+
+`combat_coroutine_flow.json`: bản dịch control-flow25 MoveNext, CFG branch edges/3 byte-table dispatches, state/current stores và anchors, literal cells,7 factory parameter-copy bodies/direct callers. Reproduce `python3 -m tools.verify.combat_coroutine_flow [--check]`. `tools/verify/combat_coroutine_models.py` là control reconstructions có thể chạy (không thay Unity/IL2CPP); report84 giải nghĩa14 waits, không measured cadence/DPS.
+
+
 ## Combat rate consumers — report83
 
 `combat_rate_consumers.json`: 24 rate-field/demo/deadline bindings, 96 owner-qualified accesses (có wide write overlap), scheduler prefixes/dispatches, StartAttack contexts, 25 MoveNext/14 WaitForSeconds sites. Sinh/check bằng `python3 -m tools.verify.combat_rate_consumers [--check]`. Hash từng raw input trong JSON; derivation receipt dưới `reverse-engineering/raw/combat-chain/rate-consumer-derivation.json`. Không phải bảng projectile cadence/DPS; coroutine site inventory chưa phải toàn bộ emission semantics. Xem [report83](../docs/apk-analysis/83-main-rate-field-deadline-and-dispatch-audit.md).
