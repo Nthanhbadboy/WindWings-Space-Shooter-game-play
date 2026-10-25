@@ -23,17 +23,22 @@ Không có file nào của nhánh dữ liệu bị sửa; mọi thay đổi nằ
 ## 2. Một lỗi của **chính bản sửa này** — đơn vị, không phải dữ liệu
 
 Lần đầu tôi "sửa" `ENCOUNTERS.md` từ **23.757 → 11.094** và viết "bảng cũ sai vì export nhân đôi".
-**Sai.** Đo lại:
+**Sai.** Lần hai tôi sửa thành "11.094 dòng = số `Call_Data` component" — **vẫn sai**, và đã sửa lần ba
+(25/10, sau khi kéo `class-inventory.csv`):
 
-- **11.094** = số **dòng** = số `Call_Data` component;
-- **23.757** = **`Σ copies`** = số **lượt** sinh quân;
-- bảng cũ khớp `Σ copies` **9/9 wave** (150 · 331 · 72 · 36 · 54 · 621 · 42 · 84 · 6) và khớp **cả**
-  ở `8c6da25` lẫn bản hiện tại ⇒ bảng cũ **đúng số, sai nhãn cột**;
+- **23.757** = `Σ copies` trong `waves.json` **=** số instance `Call_Data` trong `class-inventory.csv`
+  ⇒ **đây là số spawner/object**. Hai nguồn khớp, không có "export nhân đôi";
+- **11.094** (nay **11.089** ở bản `622b700e5`) = số **dòng cấu hình** — export **gộp object trùng**,
+  mỗi dòng mang `copies`. **Không** phải "1 dòng = 1 `Call_Data` component";
+- bảng cũ khớp `Σ copies` **9/9 wave** (150 · 331 · 72 · 36 · 54 · **622** · 42 · 84 · 6; `Wave_0163`
+  là **621** ở snapshot `8c6da25`, **622** từ `622b700e5`) ⇒ bảng cũ **đúng số, sai nhãn cột**;
 - dãy `16.498 / 4.199 / 1.688 / 686 / 686` mà `CROSS_BRANCH_20330d0e.md` §3c ghi cũng là **lượt**.
 
-⇒ Đã in **cả hai cột** (§1.1, §1.4, §1.5, §3) + claim `AQ4`/`AQ5`/`AQ6` khoá lại.
-**Bài học cho nhánh dữ liệu: nếu bên đó đang ghi "23.757 spawner", nó là lượt — đừng đổi thành 11.094
-mà không ghi đơn vị.**
+⇒ Đã in **cả hai cột** (§1.1, §1.4, §1.5, §3) + claim `AQ4`/`AQ5`/`AQ6`/`AQ7` khoá lại.
+**Bài học cho nhánh dữ liệu:** (a) nếu bên đó ghi "23.757 spawner" thì **đúng** — đó là object;
+(b) nếu bên đó theo bản sửa thứ hai của tôi mà ghi "**11.089 spawner**" thì **sai** — 11.089 là **dòng
+cấu hình**; (c) đừng bao giờ kết luận "tổng không đổi ⇒ dữ liệu không đổi": 9 wave + `unknown` đã đổi
+trong lúc tổng giữ nguyên (`DATA_SYNC.md` §17.1).
 
 **Chỗ vẫn là suy diễn:** `45.659 "quân"` phụ thuộc `copies`. Raw `Call_Data` đã kéo **không có**
 field `copies` (chỉ `number` = 0 và `rate`), nên `copies` do exporter sinh ra — **mức B**, và báo cáo
