@@ -1054,17 +1054,17 @@ Bản `cd0372d`. Ba phép đo độc lập, cùng một kết luận.
 
 | | |
 |---|---:|
-| `sum(len(listPrefabEnemies))` | **22.483** |
+| `sum(len(listPrefabEnemies))` | **22.482** |
 | `sum(len × copies)` | **45.659** |
 | Khớp `45.659` đã ghi ở §7.13? | ✅ **chính xác 100%** |
 | Spawner `copies = 2` | 9.790 / 11.099 |
 
 ⚠ **Trung thực về mức mới:** công thức `len(enemies) × copies` **đã có** trong `GAMEPLAY.md`.
-Cái mới ở vòng này là **phép kiểm số học**: 22.483 × copies ra **đúng 45.659**, khớp con số đếm
+Cái mới ở vòng này là **phép kiểm số học**: 22.482 × copies ra **đúng 45.659**, khớp con số đếm
 độc lập từ `Call_Data` — nên `45.659` nay là **mức A**, không còn là *"mức B"* như nhánh dữ liệu
 ghi trong `CROSS_BRANCH_20330d0e.md` §2.
 
-⇒ **45.659 = quân thực tế**, **22.483 = quân khai báo**. Cả hai đúng, khác phạm vi — từ nay ghi rõ.
+⇒ **45.659 = quân thực tế**, **22.482 = quân khai báo**. Cả hai đúng, khác phạm vi — từ nay ghi rõ.
 
 **b) 282 wave chia 3 nhóm — hết mục mở "wave thứ 282"**
 
@@ -2108,6 +2108,11 @@ Lần đầu tôi viết ở đây "dữ liệu cũ sai, export nhân đôi". **
 bên nhánh dữ liệu cũng viết *"không coi `copies` là số đợt"*.
 
 Kiểm bằng máy: **AQ1–AQ6**. AQ3 đếm `Call_Data` vs pathID trên 3 wave normal: **149 / 149 / 0 trùng**.
+
+### 16.3b Các số 22.462 / 22.483 ở §9–§12 là **của snapshot cũ**
+
+Đo lại hôm nay: `Σ len(listPrefabEnemies)` = **22.482** (109 prefab, 0 `?`). Log cũ giữ nguyên số
+của lúc đó — **đừng** lấy 22.462/22.483 làm hiện trạng.
 
 ### 16.4 Chưa kéo
 

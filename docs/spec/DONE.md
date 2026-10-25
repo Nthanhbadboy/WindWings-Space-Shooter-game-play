@@ -5,7 +5,7 @@
 > Mục cuối: **Còn thiếu / phải đoán**.
 
 > **Sửa lại (lần 3):** pipeline vòng 3 (nhánh `ef6b75ef`, commit `61d5385`) đã resolve
-> **tên enemy trong wave** — **22.462** entry, **109** prefab, **0** `"?"`. Đây là mục
+> **tên enemy trong wave** — **22.482** entry, **109** prefab, **0** `"?"`. Đây là mục
 > tôi từng ghi là "chưa biết". Số mới ở `ENCOUNTERS.md` §2.6.
 >
 > **Sửa lại (lần 2):** bản đầu của file này phóng đại khối lượng. Sau khi đọc **tên gốc** spawner
