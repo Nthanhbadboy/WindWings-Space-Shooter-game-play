@@ -49,6 +49,9 @@ class Recipes:
         out['controller_programs']=[c for c in programs['controllers'] if key(c['identity']) in asset_ids]
         out['animator_program_links']=[a for a in programs['animator_attachments'] if key(a['animator']) in animator_ids]
         out['binding_diagnostics']=[b for b in programs['binding_diagnostics'] if key(b['animator']) in animator_ids]
+        from tools.verify.l3_ui_drivers import load as load_drivers
+        drivers=load_drivers();component_ids={key(c['identity']) for n in out['nodes'] for c in n['component_identities']}
+        out['native_ui']=dict(artifact='datas/l3_ui_drivers.json.gz',sha256=hashlib.sha256((ROOT/'datas/l3_ui_drivers.json.gz').read_bytes()).hexdigest(),effects=[dict(effect_index=i,**e) for i,e in enumerate(drivers['effects']) if key(e['owner']) in component_ids],callback_entries=[e for e in drivers['callback_entries'] if key(e['owner']) in component_ids],inherited_events=[e for e in drivers['inherited_events'] if key(e['owner']) in component_ids])
         if include_raw:
             locators={}
             for n in out['nodes']:

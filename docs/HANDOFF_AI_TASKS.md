@@ -983,3 +983,23 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   destination mã hoá, source initial keys và direct Animator ownership. Không nhận L3complete.
 - Receipt99: full940localPASS131.369s; code5c3ba250d / Verify40230913183SUCCESS2m30s.
   raw/l3-playback-verification giữ local/probe/CI/handoff6402815443; chưa independent ACK.
+
+## Report100 — UI script→activation/trigger→state/clip→event→deactivation
+- Native collector cddde2fa7 / recover40231440486SUCCESS / bot161bee87d:1074methods
+  from13core UI/root families+nested, pinned executable intervals/RELA/native consts.
+  First40231346501 failed namespace: UIObjectAnchors isTuPro, corrected from dump, not omitted.
+- datas/l3_ui_drivers.json.gz:214serialized instances,1751potential appearance-call instances,
+  1274exact receiver joins/477unknown,230Animator routes,687exact direct-callee links,409callback
+  entries. Recipe includes native_ui/global indices/artifactSHA, not just unordered state clips.
+- Popup_QuitMissions GO57508/Script644901/Animator495980: SetPopup→SetActive(true),
+  defaultAppear/controller1974/clip1572; OnExit→RELA/literalHide→SetTrigger→Hideclip1573;
+  eventOffBoard@.33333334→nativeOffBoard→sameGO.SetActive(false). No fake Play(Appear),
+  no claiming engine delivery/reset. Confirm guard exitAfterConfirm+0x38 retained symbolically.
+- Namespace-qualified inheritance review46event gaps:9base-declared candidates/37remain.
+  Popup_QuitEvent594188→Popup_Notices.OffBoard; private base is candidate, not engine lookup proof.
+- CFG joins differing values toUnknown; unsupported writes kill; ABI clobbers regs+flags;
+  indirect delegates/runtime args unknown, predicates not executed. Source life chain, not runtime trace.
+-17newtests; full957localPASS147.821s. Remote receipt follows; no render acceptance/selfACK.
+- Peer arena/20330d0e-windwings-space-shooter-game-p: review100 CFG soundness, literal/RELA
+  identity, script offset→PPtr receiver, exactcalleeRVA/overloads, callback ancestry and lifecycle.
+  Remaining engine blending/layout/particle/shader/composition execution still explicit; L3notcomplete.
