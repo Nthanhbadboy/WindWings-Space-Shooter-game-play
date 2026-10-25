@@ -40,3 +40,16 @@ python3 datas/validate.py                          # kiểm tra tính nhất qu�
 
 ID, số liệu và khoá chuỗi là dữ liệu kỹ thuật của game gốc (GCenter). Dùng để tham chiếu thiết kế
 cho bản clone của bạn; **không** phát hành lại kèm asset/âm thanh/nội dung chữ gốc.
+
+## Contract save mở đầu — bổ sung sau report65
+
+`opening_persistence.json` là bảng **dẫn xuất tạm thời** của 8 nhóm khóa (tutorial,
+stage/zone, sao, drone equip/unlock), không phải save thực hay schema toàn game.
+Có kiểu lưu, kiểu getter trả về, default theo scope, cache, side effect, method IDs
+và SHA256 raw evidence. `schema_version=1` là version **định dạng contract**, không
+phải version save của APK. Xem
+[`65-opening-save-keys-cache-and-read-side-effects.md`](../docs/apk-analysis/65-opening-save-keys-cache-and-read-side-effects.md).
+
+Tái tạo: `python3 tools/verify/opening_persistence.py`. Không sửa bảng này tay.
+Không gọi getter trong serializer/debug như truy vấn thuần: StageTarget và
+IndexTutorial có nhánh ghi ngược tiến độ; Unity PlayerPrefs khác dictionary `/Prefs`.

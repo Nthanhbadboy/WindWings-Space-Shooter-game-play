@@ -1,6 +1,6 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report64. Tất cả kết luận APK vẫn tạm thời.**
+**Cập nhật 25/10/2026, sau report65. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
@@ -34,7 +34,7 @@ Không trộn input lấy từ latest APK khác vào raw này. Không commit APK
 |---|---|---|
 | Scene → stage → map → waves | 52 | `raw/ui-audit/scene-map-flow.json.gz`, `datas/maps.json`, `datas/map_segments_full.json`; nhánh chapter/branch/mode phải đi theo consumer |
 | Wave/spawn/wave-end | 53–54 | `raw/early-waves/index.json`, exact root exports, `resolved-default-waves.json.gz`; index chứa file/root/PPtr identity |
-| Mission denominator + result + save | 55–58, 64 | `raw/early-waves/mission-denominators.json.gz`, `raw/endgame-missions/{mission-progress-flow,false-result-reachability,shared-stage-victory}.json.gz` |
+| Mission denominator + result + save | 55–58, 64–65 | `raw/early-waves/mission-denominators.json.gz`, `raw/endgame-missions/{mission-progress-flow,false-result-reachability,shared-stage-victory}.json.gz` |
 | Tutorial và UI Continue | 45, 47, 50–51, 64 | `raw/ui-audit/{stage23-ui-flow,tutorial-consumer-flow}.json.gz`, `raw/il2cpp-consts/{DataTutorials,GP_Tutorials,Board_Endgame}.{asm.txt,json}` |
 | Enemy/controller/boss/animation | 34–41, 59–63 khi liên quan | raw controller graph, native receiver/consumer, decoded clips. Timestamp không đủ làm state machine |
 | UI render/layout/sprite refs | 43–47, 62 | `raw/ui/_index.csv`, UI reference/render exports, typed PPtr. Lấy index làm population, không glob mọi layout cũ |
@@ -76,6 +76,10 @@ Spawn enum: 0PinMap/1Path/2Points/3RandomTopDown/4Rocket/5EndMap/6StartWave. Con
 
 **Không lấy việc chưa chứng minh low-kill playthrough/BB pool history làm blocker** cho đọc/dựng scenario. Chỉ quay lại lifecycle khi có mâu thuẫn cụ thể ảnh hưởng logic đang viết.
 
+### Save mở đầu — contract mới đã bóc (report65)
+
+Đọc [65 — khóa save/cache/side effect](apk-analysis/65-opening-save-keys-cache-and-read-side-effects.md) và import tham khảo `datas/opening_persistence.json` (8 key families, raw `raw/persistence/opening-contracts.json.gz`). Có key/default/backend/cache và method IDs, không phải schema đầy đủ toàn game. Đặc biệt **StageTarget và IndexTutorial getter có thể ghi tiến độ**, typed PlayerPrefs khác dictionary `/Prefs`; không biến SaveToDisk custom thành flush tất cả. Scope company!=Test cho default. Đọc callback guard và refresh-vs-reset trước khi làm profile/replay.
+
 ## 4. Asset pack — bắt buộc cho tham khảo thiết kế, chưa được gọi là đã kiểm đủ
 
 - Browse nhanh: `docs/assets/INDEX.md`, contact-sheets JPG, manifest, sprites-index, audio-index.
@@ -114,6 +118,7 @@ Chưa có quyết định rõ thì hỏi user, không tự đoán từ engine ga
 ```bash
 python3 datas/validate.py
 python3 tools/verify/shared_stage_victory.py
+python3 tools/verify/opening_persistence.py
 python3 tools/verify/peer_handoff_review.py
 python3 -m unittest discover -s tests -q
 ```

@@ -1,6 +1,6 @@
 # Phân việc vòng 4 — cái còn thiếu thật
 
-> **Cửa vào hiện hành (sau report64):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) và [review cf27b9755](HANDOFF_REVIEW_cf27b9755.md). Các vòng/snapshot cũ dưới đây là lịch sử, không tự là task hay phán xét hiện hành.
+> **Cửa vào hiện hành (sau report65):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) và [review cf27b9755](HANDOFF_REVIEW_cf27b9755.md). Các vòng/snapshot cũ dưới đây là lịch sử, không tự là task hay phán xét hiện hành.
 
 > Trạng thái hiện tại: `docs/conclusions.md`. Đã có **dữ liệu thô** trong
 > `reverse-engineering/raw/` (typetree JSONL gz, UI layout gz, hằng số IL2CPP + asm).
@@ -542,3 +542,15 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 - Raw giữ15 input peer nguyên văn+SHA và5 input local (native body/map/save/shared-victory/geometry) trong raw/peer-review/*cf27b9755*.json.gz. Collector hermetic `peer_handoff_review.py`,16checks; 4test mới. Tổng127testsPASS; datas/validate PASS. Peer tests chỉ được đọc tĩnh, không báo đã chạy chúng.
 - Sửa lệnh nối ZIP phá input trong README và template release của workflow; không chạy full analyze hay publish release. API xác nhận asset release còn draft/có4file; chưa download/extract/integrity toàn pack.
 - Tiếp: peer sửa N1–N5; full-pack/crop/browsability; agent implement đọc contract rồi chốt scope/engine với user. Premium deferred, không speculative pool-history detour.
+
+
+## Report65 — dữ liệu triển khai save mở đầu, không chỉ review spec
+- `datas/opening_persistence.json`:8keyfamilies typed/default/cache/read-write effect/method IDs/store + raw hash. Format schema_version1 KHÔNG phải version save APK.
+- `raw/persistence/opening-contracts.json.gz`:41method ASM/inventory không capped + metadata/relocation strings/direct calls/dump fields/source hashes,25checks. Collector `tools/verify/opening_persistence.py`,8tests mới; tổng135testsPASS, data validatePASS. Không rerunAPK/Premium.
+- Keys: TUTORIAL/TUT_TOUCH_SKILL/StageTarget/ZoneUnlocked/StarStageMaster{stage}_{mode}/StarCount/DroneUsed{slot}/DroneUnlocked{drone}. Backend default0 chỉ scope company!=Test; đây không có nghĩa mọi getter trả0 hoặc thuần đọc.
+- StageTarget getter cache hit/miss đều có nhánh zone<MAX_ZONE_INDEX && target<zone*10→tăng1/lưu qua upper-capped setter mỗi lần đọc, không loop/clamp ngay tới zone*10. IndexTutorial đọc StageTarget; target>=2 && tutorial0→ghi6. Không gọi logging/serializer getter như pure read.
+- Touch flag stored==1 mới done. Callback b__1 ghi flag1 trước, chỉ tăng index nếu IndexTutorial2 && StageCurrent2; không đổi gate stage3 thành tutorialIndex2.
+- DroneUsed âm→ghi0/reread; missing0 không autoequip20001. IsDroneUnlocked20001 tựghi1 nếu0; ID>=20002 stored==1; invalid lowerIDs true trong native không chứng minh roster hợp lệ. Keep fallback Continue riêng.
+- Typed Set/Get Int/Float/String→Unity PlayerPrefs; SetValue/GetValue→dictionary static riêng→JSON/Encrypt/ASCII/file persistentDataPath+/Prefs. SaveToDisk/focus/quit custom không có direct Unity Save trong3body đã đọc, không chứng minh flush mọi prefs/toàn game không flush.
+- DeleteKey chỉUnity; DeleteAll clearUnity+dict+customSave nhưng thân đó không invalidate progression caches. RefreshDatas chỉcache−1, không resetprofile. Caller/runtime/cloud/migration chưa audit đủ.
+- Entry START_HERE, conclusions, datasREADME đã nối report65. Tiếp bóc ship/equip/talent/audio/save còn thiếu theo nhu cầu implement; fullassetpack/crop/browsability vẫn mở. Không speculative BB-history và Premium.

@@ -11,7 +11,7 @@
 >
 > Kết luận C **không được** dùng làm thông số implement; chỉ để định hướng.
 
-## Trạng thái kiểm lại hiện hành — sau report64 (ưu tiên hơn bảng lịch sử dưới đây)
+## Trạng thái kiểm lại hiện hành — sau report65 (ưu tiên hơn bảng lịch sử dưới đây)
 
 Đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md). Report64 tách gate tutorial1/2/3 khỏi victory/Board_Endgame campaign dùng chung. User đã bỏ ưu tiên chứng minh low-kill playthrough/BB pool history; không lấy chúng làm blocker scenario. Review spec mới: [cf27b9755](HANDOFF_REVIEW_cf27b9755.md), không lặp finding snapshot25 như chưa được sửa.
 
@@ -25,6 +25,7 @@ playthrough/design đã hoàn tất.** Xem `docs/apk-analysis/62-raw-audit-and-s
 | Sprite/atlas | raw62:2185Sprite/66SpriteAtlas/654Texture2D metadata,2185file-scoped joins | pixel crop/mask/trim/flip kiểm ảnh;40rect fractional vượt biên<1pixel; chưa xác nhận full asset-pack release |
 | UI hiện tại | `_index.csv` snapshot audit:797file/117class/150131nodes | 55584file có trên đĩa không phải55584layout hợp lệ;54787ngoàiindex không tự là duplicate hay rác |
 | Spawn | enum raw53:0PinMap/1Path/2Points/3RandomTopDown/4Rocket/5EndMap/6StartWave | “45659quân thật đã chốt” ở kết luận cũ bị rút: cần scoped whole-build recount và runtime semantics |
+| Save mở đầu | raw65:41method/8keyfamilies; typed Unity prefs và dictionary /Prefs riêng, getter progression có side effect | schema toàn game/cloud/migration/crash durability chưa có; không dùng SaveToDisk custom làm bằng chứng flush PlayerPrefs |
 | Pipeline | pin SHA được enforce trước extract; raw-only changes trigger tests; recovery exporter không kích full analyze | tests hiện tại kiểm static predicates/joins, không thay emulator/Unity replay |
 
 Các mục lịch sử không được kiểm lại dưới đây **không tự nhận mức A hiện hành**.
