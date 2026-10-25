@@ -50,6 +50,16 @@
 > *shot/giây*. Số sửa: `MISSING` §2/§4/§5 · `DIFFICULTY_MODES` §5.2/§5.5/§6/§8 · `OPEN_ISSUES` B8 ·
 > `COMBAT` §6.1 · `DESIGN_QUESTIONS` · `ENEMY_HP_RUNTIME` §6 · `START_HERE` số 7 · `WHERE_TO_LOOK` ×2 ·
 > `EXTERNAL_REFS` §7 · `UNITY_RULES` · `DATA_SYNC` §24.8 · `BALANCE` §6.0a.
+>
+> **Sửa lại (lần 9 — 25/10, chủ dự án xác nhận):** (1) **playback thật ĐÃ LÀM** — phiên phone
+> 23/10 nằm sẵn trong repo (`ramus/2026-10-23-phone/`): bridge 8/9 endpoint, freeze/slow-mo,
+> statics khi đang chơi, 7 lần chụp live với instance fields (`killCount` **276** · `coinCount`
+> **540**), HP trong game khớp **2500** ⇒ mọi mục "cần thiết bị" chuyển thành "đọc JSON có sẵn";
+> (2) **feel BỎ theo quyết định** — game gốc không có (0 site trên mẫu asm) và quá nhỏ ⇒ game mới
+> không thêm (`OPEN_ISSUES` D1 · `DESIGN_QUESTIONS` hạng 3 · `MISSING` §3). Mở lại 3 câu cũ trong
+> `DESIGN_QUESTIONS`: **A6 ✅** (bind map xong) · **B1 ✅** (HP theo id) · **C4 ⚠** (mẫu runtime
+> 276→540) — tally mới **✅ 31 · ⚠ 16 · ❌ 1**. Runtime còn sót: 2 phép tái đối chiếu `CROSSCHECK`
+> (Map content `&arr=256&depth=2` · device 12↔10) — làm khi có lần chạy, không chặn.
 
 > **Sửa lại (lần 3):** pipeline vòng 3 (nhánh `ef6b75ef`, commit `61d5385`) đã resolve
 > **tên enemy trong wave** — **22.451** entry, **109** prefab, **0** `"?"`. Đây là mục
