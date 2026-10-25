@@ -332,6 +332,10 @@ Trước đây mục này ghi *"mức C — giả định"* và dòng 11 ở §8
 | **2. Cờ "mang item" theo spawner** | `Call_Data.listBringItems` (bool cho từng enemy slot) | **411/23.757** spawner có list · **246/2.094** slot = **11,7 %** | **A** |
 | **3. Danh mục item có thể rơi** | `Data_Items.allDropItems` | **6** loại, index `1 · 2 · 3 · 101 · 102 · 103` | **A** |
 
+> ⚠️ **Đừng cộng hai cách đếm:** **676/26** là chia theo cờ `isCoin`; còn **70012 ×529 · 70011 ×145 ·
+> 70010 ×14** là chia theo **id trong tên object** (cộng 688, không bằng 676). Hai phép đếm **vuông góc**:
+> một object id `70012` vẫn có thể có `isCoin = false`. Không được suy "70012 = coin" chỉ từ số lượng.
+
 **Cái không có trong dữ liệu:** *trọng số chọn giữa 6 loại* lúc rơi — không serialize ở đâu.
 Và `Enemy_Destroy` (**971** instance) chỉ có 3 field `pointBurst` · `isNoPool` · `delayDestroy` ⇒
 **drop không gắn vào enemy**, nó gắn vào **wave/spawner** và vào **prefab đặt sẵn**. Đó là lý do
