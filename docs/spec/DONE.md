@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 16 — 25/10, chủ dự án: "đừng đóng đinh mọi thứ — chỉ thiết kế lại art là được"):**
+> viết lại các khối "mục đích" của lần 15 theo hướng **giảm việc, không thêm rào cản**: bỏ giọng cấm
+> đoán ("không được lệch hướng / không suy diễn / không cải tiến") → nói điều dương: **mọi thứ trừ
+> art bản gốc đã trả lời hết — tra reference là xong, không test không hỏi; việc thiết kế duy nhất
+> là vẽ lại art, giữ chuẩn ở `VISUAL_DESIGN`**. Sửa 7 chỗ: `START_HERE` (khối đầu) · `DONE` §2 ·
+> `MISSING` §0 · `DESIGN_READINESS` · `SYSTEM_MANIFEST` · `VISUAL_DESIGN` · `README`.
+>
 > **Sửa lại (lần 15 — 25/10, chủ dự án chốt mục đích — ghi vào mọi điểm vào):** *"dịch ngược để làm
 > gì: để có các thứ để từ đó thiết kế game mới theo cách **bắt chước**, chứ không phải phát triển
 > game mới theo kiểu **sáng tạo**. Để AI phát triển mà không bị lệch hướng hay sai logic hay sai art
@@ -290,8 +297,8 @@ lý do đúng hơn: không phải vì "2.185 hình" mà vì **641 hình + sửa 
 
 ## 2. Bốn mức "hoàn hảo" — và mỗi mức kiểm bằng gì
 
-> **Mục đích tổng** (đọc khối đầu `START_HERE.md`): dịch ngược để **BẮT CHƯỚC bản gốc**, không sáng
-> tạo tự do — mọi thứ có bản gốc đối chiếu; **không test, không hỏi lại — có bản gốc trả lời**.
+> **Mục đích tổng** (khối đầu `START_HERE.md`): dịch ngược để **bắt chước bản gốc** — mọi thứ trừ
+> art đã có đáp án sẵn (tra reference là xong, không test không hỏi); **việc thiết kế duy nhất là art**.
 
 Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có **bài kiểm cụ thể**.
 

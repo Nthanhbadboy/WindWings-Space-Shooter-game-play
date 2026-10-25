@@ -1,20 +1,18 @@
 # START_HERE — dựng một game mới từ bộ spec này
 
-> ## ⚠ Mục đích của việc dịch ngược — đọc trước mọi thứ
+> ## Mục đích của bộ spec này — đọc trước khi làm
 >
-> **Dịch ngược để CÓ ĐỦ THỨ để thiết kế game mới theo cách BẮT CHƯỚC bản gốc — KHÔNG phải phát triển
-> game mới theo kiểu SÁNG TẠO tự do.**
+> **Dịch ngược để có đủ thứ để thiết kế game mới theo cách BẮT CHƯỚC bản gốc** — dự án này không
+> sáng tạo cơ chế mới. Điều này **giảm việc cho bạn, không phải thêm rào cản**:
 >
-> - Mọi thứ **đã có bản gốc đối chiếu**: logic · cơ chế · số · art · animation · nhịp · màu · ánh
->   sáng — AI **không được lệch hướng, không suy diễn theo ý mình, không "cải tiến" lung tung**.
-> - **Không test, không hỏi lại — có bản gốc trả lời.** Thắc mắc một thông số/hành vi = tra reference
->   trong repo (`datas/` · hợp đồng · report); **bản gốc là nguồn câu trả lời cuối cùng**.
-> - Cơ chế thể loại này **đã có từ nghìn đời nay — mọi game đều bắt chước nhau**; cái duy nhất cần
->   làm khác là **thiết kế lại hình ảnh** (vẽ lại, không copy file asset; **chuẩn màu/ánh sáng/khung/
->   nhịp vẫn theo bản gốc** — `VISUAL_DESIGN.md`).
->
-> Tư duy đúng khi làm với bộ spec này: **"bắt chước chuẩn đã kiểm nghiệm"**, không phải
-> "đề xuất phương án mới".
+> - **Cơ chế · logic · số · animation · nhịp · màu · ánh sáng: bản gốc đã trả lời hết.** Không phải
+>   nghĩ, không phải test, không phải hỏi ai — tra reference trong repo (`datas/` · hợp đồng ·
+>   report) là có đáp án.
+> - **Việc thiết kế duy nhất là ART**: vẽ lại hình ảnh cho khác (tàu · enemy · UI · FX · font), giữ
+>   chuẩn khung/màu/ánh sáng/nhịp theo số đo ở `VISUAL_DESIGN.md`. Làm đẹp đúng chuẩn = xong L3.
+> - Cơ chế thể loại **đã có từ nghìn đời nay — mọi game trong thể loại bắt chước nhau**; cái làm
+>   game nổi bật là hình ảnh. Chỗ tài liệu ghi "tự chọn" thì mới chọn — còn lại làm theo reference
+>   là xong.
 
 > **Câu hỏi của bạn:** *"Bộ tài liệu này có đủ để AI làm game mới không, và có dữ liệu gốc đã
 > phân tích để học cho đúng và đẹp không?"*

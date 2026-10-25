@@ -9,8 +9,8 @@
 > bản kia trả lời *"còn thiếu chính xác chỗ nào"*. Kết luận khớp nhau: **0 chỗ chặn số** — 2 chỗ "chặn"
 > cũ (map→wave · HP theo chế độ) **ĐÃ ĐÓNG 25/10**; sót 2 phép tái đối chiếu runtime (không chặn).
 
-> **Mục đích dịch ngược** (khối đầu `START_HERE.md`): đủ thứ để **BẮT CHƯỚC bản gốc** — không sáng tạo
-> tự do; mọi thứ có bản gốc đối chiếu; **không test, không hỏi lại — có bản gốc trả lời**.
+> **Mục đích dịch ngược** (khối đầu `START_HERE.md`): đủ thứ để **bắt chước bản gốc** — mọi thứ trừ
+> art đã có đáp án; **việc thiết kế duy nhất là art**.
 >
 > **Cập nhật 25/10 — lần 3 (đồng bộ lần 7–10 của `DONE`):**
 > ① **bind xong**: index↔tàu = id − 10001 (`CROSS_BRANCH` T4) · bảng Map **11 cấu trúc / 614 mảng**

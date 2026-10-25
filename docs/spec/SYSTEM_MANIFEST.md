@@ -9,9 +9,8 @@
 > **L1 khởi công được ngay, không chờ playback**; 2 phép tái đối chiếu runtime (`CROSSCHECK`) làm khi
 > có lần chạy mới. Chi tiết từng hệ: `DATA_SYNC.md` · `COVERAGE_AUDIT.md` · `DESIGN_READINESS.md`.
 >
-> **Tư duy làm:** cột "Luật đã chứng minh" = **bắt chước đúng bản gốc** — không sáng tạo tự do, không
-> suy diễn theo ý mình; cột "AI tự chọn" chỉ áp dụng khi dòng đó ghi rõ. Mọi thắc mắc **tra reference
-> trước** — không test, không hỏi lại: **có bản gốc trả lời**.
+> **Cách dùng:** cột "Luật đã chứng minh" — làm theo là xong, bản gốc đã trả lời; cột "AI tự chọn"
+> chỉ vài dòng. Phần thiết kế thật sự của project = **art** (`VISUAL_DESIGN.md`).
 
 | Hệ thống | Raw / hợp đồng (nguồn) | Luật triển khai **đã chứng minh** | AI game mới **tự chọn** | Test nghiệm thu |
 |---|---|---|---|---|
