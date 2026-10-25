@@ -1731,6 +1731,126 @@ claim("Q5", ASSETS_DOC, "> `sprites.csv` chỉ có **kích thước** cho **632*
 claim("Q4", ASSETS_DOC, "**88** asset vượt 512: **60** `Texture2D` + **28** `Sprite`",
       (88, 60, 28), oversized_assets, "luật >512 px: số asset phải để standalone")
 
+# ── R. timeline animation boss theo giây (BOSS_ANIM_TIMELINE.md) ────────
+TIMELINE_DOC = "docs/spec/BOSS_ANIM_TIMELINE.md"
+EV_RECV = "reverse-engineering/raw/animation-audit/event-receivers.json.gz"
+
+
+def _boss_events():
+    import gzip
+    import json
+    try:
+        with gzip.open(EV_RECV, "rt", encoding="utf-8") as fh:
+            return json.load(fh)["events"]
+    except (OSError, KeyError, ValueError):
+        return []
+
+
+def timeline_shape():
+    """(prefab, event, clip, cặp (prefab,clip), tên hàm)."""
+    ev = _boss_events()
+    if not ev:
+        return None
+    pairs = {(e["prefab"], e["clip_name"]) for e in ev}
+    return (len({e["prefab"] for e in ev}), len(ev),
+            len({e["clip_name"] for e in ev}), len(pairs),
+            len({e["event"]["functionName"] for e in ev}))
+
+
+def timeline_fn_split():
+    """(state, damage, khác) — phân loại theo tên hàm."""
+    import re
+    ev = _boss_events()
+    if not ev:
+        return None
+    st = dm = ot = 0
+    for e in ev:
+        f = e["event"]["functionName"]
+        if f.startswith("On"):
+            st += 1
+        elif re.search(r"(Hand|Knife|Shoot|Ban|Plasma|Laser|Circle|Tail|Spike|Bullet|Fire)", f):
+            dm += 1
+        else:
+            ot += 1
+    return (st, dm, ot)
+
+
+def timeline_top_state():
+    """(OnStartAttack, OnAnimationEndedEvent, OnStateExit, tổng 3 hàm)."""
+    ev = _boss_events()
+    if not ev:
+        return None
+    c = {}
+    for e in ev:
+        c[e["event"]["functionName"]] = c.get(e["event"]["functionName"], 0) + 1
+    return (c.get("OnStartAttack", 0), c.get("OnAnimationEndedEvent", 0),
+            c.get("OnStateExit", 0), sum(c.get(k, 0) for k in
+                                        ("OnStartAttack", "OnAnimationEndedEvent",
+                                         "OnStateExit")))
+
+
+def timeline_cadence():
+    """(số khoảng multi-hit, trung vị giây)."""
+    import statistics
+    ev = _boss_events()
+    if not ev:
+        return None
+    g = {}
+    for e in ev:
+        g.setdefault((e["prefab"], e["clip_name"]), []).append(
+            (e["event"]["time"], e["event"]["functionName"]))
+    gaps = []
+    for v in g.values():
+        ts = [t for t, f in sorted(v) if f.startswith(("AttackHand", "Shoot", "Ban"))]
+        gaps += [round(b - a, 2) for a, b in zip(ts, ts[1:])]
+    return (len(gaps), round(statistics.median(gaps), 2)) if gaps else None
+
+
+def timeline_lengths():
+    """(trung vị mốc cuối clip, mốc cuối lớn nhất, trung vị số clip/boss)."""
+    import statistics
+    ev = _boss_events()
+    if not ev:
+        return None
+    g = {}
+    for e in ev:
+        g.setdefault((e["prefab"], e["clip_name"]), []).append(e["event"]["time"])
+    lasts = [max(v) for v in g.values()]
+    per = {}
+    for p, c in g:
+        per[p] = per.get(p, 0) + 1
+    return (round(statistics.median(lasts), 2), round(max(lasts), 2),
+            round(statistics.median(per.values()), 1))
+
+
+def timeline_enemy_row():
+    """(số event của CB-30040, mốc thời gian, số prefab boss có event)."""
+    ev = _boss_events()
+    if not ev:
+        return None
+    cb = [e for e in ev if e["prefab"] == "CB-30040"]
+    return (len(cb), round(cb[0]["event"]["time"], 1) if cb else 0,
+            len({e["prefab"] for e in ev if e["prefab"].startswith("Boss-")}))
+
+
+claim("R1", TIMELINE_DOC, "> **34 prefab · 795 event · 97 clip · 269 cặp (prefab, clip) · 130 tên hàm**",
+      (34, 795, 97, 269, 130), timeline_shape, "quy mô timeline: mọi số khác suy từ đây")
+
+claim("R2", TIMELINE_DOC, "cộng lại **339/795 = 43 %**", (534, 215, 46), timeline_fn_split,
+      "67% event là state, 27% là đòn — không phải 100% damage")
+
+claim("R3", TIMELINE_DOC, "Ba hàm **state** (`OnStartAttack`, `OnAnimationEndedEvent`, `OnStateExit`) cộng lại **339/795 = 43 %**.",
+      (146, 137, 56, 339), timeline_top_state, "3 callback state = 43% event")
+
+claim("R4", TIMELINE_DOC, "| **Nhịp multi-hit** | **93** khoảng, trung vị **0,17 s** |",
+      (93, 0.17), timeline_cadence, "đòn liên hoàn ~6 hit/giây")
+
+claim("R5", TIMELINE_DOC, "| **Mốc cuối clip** | trung vị **3,52 s**, dài nhất **73,17 s**",
+      (3.52, 73.17, 6.0), timeline_lengths, "clip chờ 73 s — đừng chờ nó xong mới cho bắn")
+
+claim("R6", TIMELINE_DOC, "> `CB-30040` có **2** event trong clip `Die`, **cùng mốc 1,5 s**",
+      (2, 1.5, 33), timeline_enemy_row, "enemy gần như không có event clip; 2 event trùng mốc = double damage")
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:

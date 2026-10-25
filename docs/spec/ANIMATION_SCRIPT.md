@@ -250,7 +250,7 @@ Nhưng `OnHit` (352 B) chứa **hai hằng số**:
 
 | hạng mục | chép được? | nguồn |
 |---|---|---|
-| Tên + mốc thời gian 793 event boss | **A** | `event-receivers.json.gz` |
+| Tên + mốc thời gian 793 event boss (+2 event `CB-30040`) | **A** | `event-receivers.json.gz` · chi tiết: **`BOSS_ANIM_TIMELINE.md`** |
 | Nhịp đòn (0,17 · 0,33 · 1,0 · 5,0 s) | **A** | suy từ `time` |
 | Danh sách clip theo boss (14 đòn/boss) | **A** | `clip_name` |
 | Chuỗi hàm boss 1 + hằng chờ (0,5/1/2/3 s) | **A** | asm `Boss1_Director` |
@@ -278,7 +278,8 @@ nhánh bên kia chạy được mà không phải hỏi lại.
 ```bash
 python3 tools/verify-claims.py --only J     # 10/10 claim nhóm J (nhịp + event)
 python3 tools/verify-claims.py --only K     # 6/6 claim nhóm K (tên entry + bảng chuyển state)
-python3 tools/verify-claims.py              # toàn bộ: 93 PASS · 0 FAIL · 2 SKIP
+python3 tools/verify-claims.py --only R     # 6/6 claim nhóm R (timeline theo giây)
+python3 tools/verify-claims.py              # toàn bộ: 119 PASS · 0 FAIL · 2 SKIP
 ```
 
 Nguồn: `reverse-engineering/raw/animation-audit/event-receivers.json.gz` (795 event) ·
