@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 20 — 25/10, đồng bộ report 84 peer tip `c7f72fe22e`, 327 tests):** peer dịch đủ
+> **25 combat coroutine** (CFG + jump-table + models chạy được) — 3 đính chính ghi vào
+> `SYSTEM_MANIFEST` (nhịp bắn) + `OPEN_ISSUES` D5 + `DATA_SYNC` §24.17: `_delay` 7/9 **sau** attack ·
+> 17 chờ theo cặp · **18 = toggle particle, không spawn đạn**; clone 0,34/pumpkin 2-1-4. Peer chờ
+> ack (PR12 `6399840843`) — đã ack sau khi cập nhật. Khối "mục đích" bên dữ liệu **vẫn chưa được
+> commit** (grep tip = 0) ⇒ refresh `docs/HANDOFF_DATA_PURPOSE_6144d7cb.md` **v2** với anchor mới
+> (report 84 đã đổi 3 chỗ chèn) + nhắc lại trên PR12.
+>
 > **Sửa lại (lần 19 — 25/10, vai "AI tiếp nhận" soi tài liệu — thiếu/nhất quán):** ① **worklist art**
 > (thiếu lớn nhất cho nhiệm vụ thiết kế duy nhất — vẽ art): có số "~641" nhưng **không có danh sách**
 > ⇒ tạo `tools/art-worklist.py` + `docs/assets/art-worklist.csv` (**624 thứ phải vẽ + font 292 glyph**,

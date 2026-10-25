@@ -2706,3 +2706,22 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
 - Bên spec đã cập nhật theo 80–83: `COMBAT` §0/§6.1–6.2 (TTK + luật mất máu) · `BALANCE` §1.1b/§5.2 ·
   `MISSING` §2.2/row 9/§2-đầu/§6 · `OPEN_ISSUES` D5 · `SYSTEM_MANIFEST` 3 dòng · `DESIGN_READINESS` ①/B3 ·
   `README` 2 dòng · mục này.
+
+### 24.17 Report 84 — dịch control-flow đủ 25 combat coroutine (peer `58ef9809ac`→`c7f72fe22e`, 327 tests)
+
+- `datas/combat_coroutine_flow.json`: **25 MoveNext** dịch đủ (không còn inventory-only) — branch
+  edges, **3 computed BR từ 9 byte jump-table** (`coroutine-jump-tables.json`, pin lib SHA), **14 wait
+  sites** nối nguồn + resume, 7 factory parameter-copy; raw `combat-delegates/` thêm clone/pumpkin
+  (+2 iterator, 30 method). Models **chạy được**: `tools/verify/combat_coroutine_models.py`
+  (10/11/12/13/14/17/18/23/24 + 7/9) — phân biệt helper dispatch / wait / frame / callback / particle.
+- **Ba đính chính cho spec:** ① `_delay` impl **7/9** = chờ **sau attack hold** (byte-table chứng minh
+  state0 ≠ state2 — không đọc state theo vị trí code); ② impl **17** chờ **sau cặp** vị trí
+  (`i % 2 == 1` ⇒ wait 0,2 ⇒ floor(N/2) wait, không phải N); ③ impl **18** `IESpawnHeart` = **toggle
+  particle** `rateOverDistance` 2→0 (0,5 s/1,0 s) — **không** spawn projectile (câu hỏi "heart spawn
+  loop" của §24.16 hết). Số wait = **không** tự thành cadence/hit/DPS.
+- Chi tiết dùng để implement: 10 = round theo rank (1/2/3), wait 0,25 kể cả round cuối · 11/13 =
+  `shotRate/number` clamp 0,05 (FMINNM) · 23/24 = `shotRate/childCount` đọc lại sau helper ·
+  6 = điều khiển đạn có sẵn (radius 10/20, speed 15/12) · clone (impl 9) stop→wait **0,35**→delay→
+  về owner→pool; pumpkin: deadline active **2**/charge **1**/duration **4** + callback→Hide.
+- **Việc kế tiếp của peer:** callback→damage request→HP re-read (không suy helper event = hit).
+  Bên spec đã cập nhật: `SYSTEM_MANIFEST` (nhịp bắn) · `OPEN_ISSUES` D5 · mục này; ack qua PR12.
