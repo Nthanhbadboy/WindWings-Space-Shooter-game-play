@@ -1,5 +1,10 @@
 # `datas/` — data pack WindWings
 
+## Player HP lifecycle — report86
+
+`player_lifecycle_flow.json`: 3 exact GOT/ELF RELA/metadata callback bindings +43 native anchors và4 literal binary32. `python3 -m tools.verify.player_lifecycle_flow [--check]`; model `player_lifecycle_models.py`,19 tests bao gồm nối receiver85→extra-life→HP1. Bám logic/số bản gốc khi có chứng cứ, art mới; không biến mục tiêu sản phẩm thành “đã phủ toàn APK/không cần kiểm thử”. Raw `reverse-engineering/raw/player-lifecycle/` và peer snapshot riêng (không phải APK evidence).
+
+
 ## Damage receiver flow — report85
 
 `damage_receiver_flow.json`: 44 receiver/helper source walks/3485 native instructions, pinned critical order anchors, CFG-proven ability arguments, exact MB4-state byte targets, event names và coefficient identities. Reproduce `python3 -m tools.verify.damage_receiver_flow [--check]`. Executable finite-domain fixtures `tools/verify/{enemy_damage_model,damage_receiver_models}.py` và48 checks; không giả lập Unity, physics, full FPCR hoặc subscriber registration. Raw bổ sung `reverse-engineering/raw/combat-receivers/`; [report85](../docs/apk-analysis/85-damage-receivers-callbacks-hp-and-death.md).

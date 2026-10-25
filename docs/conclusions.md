@@ -1,5 +1,10 @@
 # Kết luận — trạng thái và độ tin cậy
 
+## Report86 — review spec thật và callback hồi sinh đã bind
+
+[Report86](apk-analysis/86-peer-spec-review-and-player-extra-life-heal.md): peer b8f72a412 đã ACK84 nhưng còn hai nhầm timing (11/13, clone/projectile9), TTK từ damage×interval sai đơn vị và noDamage bị suy thành đồ trang trí. Snapshot10docs cóSHA, peer được giao sửa cụ thể. Ba producer callback được chốt qua ELF RELA/metadata: OnExtralife, DestroyShieldOneHit, noTouch wrapper. Normal/PVP hồiHP1 trước, HealHp(.5/1) riêng; normal resume timeScale.05; zone heal literal1.235% mỗi wait.2. Không tuyên bố fullHP tức thời hay runtime2s.19 tests mới; scope/nguồn ở `datas/player_lifecycle_flow.json`.
+
+
 ## Report85 — dịch receiver qua callbacks, HP reread và death overrides
 
 [Report85](apk-analysis/85-damage-receivers-callbacks-hp-and-death.md), `datas/damage_receiver_flow.json`: 44 bodies/3485 instructions +48 checks mới, full375 PASS. Enemy delta callback đọc lại ref sau hitCallback; controller đọc lại data sau UpdateHpBar. Player device/armor → truncate → ability reductions → truncate → HP → events21/39 → HP reread. Có cả extra-life/death, hai Enemy_Destroy overrides và ability32 recursive requested damage. Delayed không dùng delayTime2; MB ba Wait1, không base Pool. Các fixture callback không chứng minh actual subscribers/stage outcomes. Raw220fa2d53/recovery40210107165 SUCCESS; không đổi draft media release. Bước tiếp là producer/serialized binding và extra-life/heal rewiring, không phải mở lại inventory coroutine84.

@@ -1,11 +1,18 @@
 # Phân việc vòng 4 — cái còn thiếu thật
 
-## Hiện hành — report85, receiver callback/damage/HP/death
+## Hiện hành — report86: review peer và producer extra-life/heal
+
+Peer tip **b8f72a4127dbc2e7a24f8ff212172eb2f6eeb2ef**, snapshot10docs giữ raw. **Đã ACK84** qua PR12 (trước đây ghi chưa ack là trạng thái cũ), chưa ACK85. [Review86](apk-analysis/86-peer-spec-review-and-player-extra-life-heal.md) yêu cầu sửa: DATA_SYNC2723–2725 gộp11/13 waits và clone/projectile9; COMBAT355–365 dùng damage×interval ước lượngTTK; COMBAT416–432 bảng800/189 và noDamage=đồ trang trí; worklist cũ xin dữ liệu đã có; không nâng mục tiêu sản phẩm thành coverage/visual approval. Gửi peer sửa trên chính nhánh spec, không merge/push nhánh đó.
+
+Tiếp việc đã hoàn thành **binding onExtraLife thật**: GOT2ae8480→RELA2bc83d0→OnExtralife14c42d4, cùng destroyShieldOneHit và WaitUntil noTouch; normal hồiHP1 trước pause/wait, resume timeScale .05 + HealHp(.5); PVP không wait/pause, HealHp(1). HealHp target snapshot, progress bắt đầu1, theo scaled deltaTime/null yield, không currentHP loop hay fullHP snap. Zone heal1.235%maxHP sau wait.2. Có19 checks mới, raw2738ad848/recovery40211002716 SUCCESS. Tiếp: **Invoke string GOT2ae8560** + end-invincibility flags/rewiring và enemy callback producers; rawController/RebornDone đã có, không xinfullAnalyze. Định hướng bám cơ chế bản gốc/art mới đã ghi; không chép câu “mọi thứ đã có/không test” thành bằng chứng.
+
+
+## Lịch sử nghiệm thu — report85, receiver callback/damage/HP/death
 
 [Report85](apk-analysis/85-damage-receivers-callbacks-hp-and-death.md) + `datas/damage_receiver_flow.json`: 44 body source walks/3485 instructions; enemy mutable ref + hai callbacks; controller rereadHP sau UpdateHpBar; player hai truncations → synchronous events21/39 → rereadHP → extra-life/death. Hai death overrides đã recover/dịch: Delayed dùng WaitUntil(condition), KHÔNG delayTime2; MB ba Wait1, không base Pool tail. Ability32 Destroyed là recursive damage request radius3, không chỉ FX, không dedup receiver. 48 checks mới; full375 PASS (36.026s), validate/regen/diff PASS. Code035a64f44, Verify40210554491 SUCCESS (50s). Raw220fa2d53, recovery40210107165 SUCCESS. Tiếp: exact producer/serialized receiver joins và extra-life/heal rewiring từ raw Player_Controller mới, không khai báo thiếu raw hoặc ép dependency này cần runtime. GOT2ae8480 ở Start cần metadata binding chính xác, không đoán theo tên. Không nâng callback fixtures thành subscriber thực tế. Peer nhánh `arena/20330d0e-windwings-space-shooter-game-p` áp corrections receiver cùng reports81–84; chưa có ack/merge. Coroutine recipe7 sửa typo return threshold .5, outbound .1 giữ nguyên.
 
 
-## Hiện hành — report84, đóng coroutine control/yield ledger83
+## Lịch sử nghiệm thu — report84, đóng coroutine control/yield ledger83
 
 Đã dịch control-flow đủ25 MoveNext (không còn inventory-only), giải3 computed BR từ9 byte APK, nối14 wait origins và7 factory args, có executable control models/regression. Quan trọng: 7/9 `_delay` sau attack;17 chờ sau cặp;18 toggle ParticleSystem.rateOverDistance chứ không spawn projectile. Xem [report84](apk-analysis/84-combat-coroutine-control-flow-reconstruction.md), `datas/combat_coroutine_flow.json`, `tools/verify/combat_coroutine_models.py`. Không suy dispatch thành hit/DPS hoặc coi đã có project Unity/C# hoàn chỉnh. Đã recover và nối thêm clone/pumpkin +2 iterator (30 methods); clone stop→wait0.34→pool, pumpkin deadline active2/charge1/duration4 +callback→Hide. Không chạy lại full APK/media. Local327 PASS; code58ef9809a, Verify40209405979 SUCCESS (37s). Peer đã được báo PR12 comment6399840843; chưa có ack. Peer cập nhật combat spec theo các correction này.
 
@@ -15,7 +22,7 @@
 Peer `arena/20330d0e-windwings-space-shooter-game-p`: khi cập nhật spec combat, đọc [report83](apk-analysis/83-main-rate-field-deadline-and-dispatch-audit.md) và `datas/combat_rate_consumers.json`. Rate là main-deadline interval; 23 schedulers extra counter, 19 riêng; 22/23/24 refresh `GetNumberAbility(4)` trong scheduler. N+1 dispatch chỉ khi N dương giữ nguyên/counter đầu 0, không phải N+1 projectile/hit. Đừng lấy spawner wait hay rate table làm player DPS. Agent nhánh này tiếp tục giải 25 MoveNext/14 wait sites theo §6, chưa giao peer làm hoặc coi complete. Không merge/spec-ack thay peer. Local 302 PASS; code `07f98ba80`, Verify `40207885962` SUCCESS (50s); peer đã được báo PR12 comment6399630253, chưa có ack.
 
 
-> **Cửa vào hiện hành (sau report85):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) + report81 combat-chain + report82 proof-audit + report83/84 rate/coroutine control và85 receiver. Review cf27b9755 và các vòng/snapshot cũ dưới đây là lịch sử, chỉ áp dụng finding còn mở; không tự là task hay phán xét hiện hành.
+> **Cửa vào hiện hành (sau report86):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) + report81 combat-chain + report82 proof-audit + report83/84 rate/coroutine control,85 receiver và86 review/lifecycle. Review cf27b9755 và các vòng/snapshot cũ dưới đây là lịch sử, chỉ áp dụng finding còn mở; không tự là task hay phán xét hiện hành.
 
 > Trạng thái hiện tại: `docs/conclusions.md`. Đã có **dữ liệu thô** trong
 > `reverse-engineering/raw/` (typetree JSONL gz, UI layout gz, hằng số IL2CPP + asm).
@@ -267,7 +274,7 @@ add/remove và missionthresholds. Raw mới nhiều spawn implementations sẵn 
 - Đã resolve14 container entries từ APK pinned, giữ full trees + raw component
   bytes ở `reverse-engineering/raw/early-waves/`. Đúng default roots0164→148604,
   0113→21468,0005→38187 trong resources.assets; Chapter2/branch là roots khác.
-- Report54 + verifier18 checks;48 tests pass. Slot cấu hình không marker:
+- Report54 + verifier19 checks;48 tests pass. Slot cấu hình không marker:
   274/95/155, **không phải kill denominator hoặc observed enemy counts**.
 - Không dùng `datas/waves.json` nhóm theo tên hoặc enum5/6 cũ. Không resolve
   generated typetree m_Script header; class exporter đọc parsed Mono head.
@@ -545,7 +552,7 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
   không lặp audit mang tính chứng minh vượt nhu cầu. Premium vẫn để sau.
 
 ## Report 64 — ưu tiên hiện tại đã kiểm lại: tutorial riêng, victory chung
-- Đọc raw APK và giữ snapshot `raw/endgame-missions/shared-stage-victory.json.gz`: 21 method, 18 checks; collector `tools/verify/shared_stage_victory.py`, 4 test mới; tổng 123 tests PASS.
+- Đọc raw APK và giữ snapshot `raw/endgame-missions/shared-stage-victory.json.gz`: 21 method, 19 checks; collector `tools/verify/shared_stage_victory.py`, 4 test mới; tổng 123 tests PASS.
 - Stage1 gate stageIndex0/tutorialIndex0; Stage2 1/1; Stage3 stageIndex2/!touchDone (không gate tutorialIndex2). Khác biệt gate/overlay/Continue không được mô hình hóa thành ba victory system riêng.
 - Campaign normal/nonbranch: manager callback → shared CheckEndgame (kills/mission + health) → MoveOutPlayer → OpenBoardVictory(bool) → Board_Endgame.Init/SetMissions chung, gồm ba opening stage. `VictoryNow` ép true nhưng cũng về cùng board; không nói mọi entry phải tính kill trước.
 - Board SetupTut <=1 và ThroughTut thay đổi UI/index; Continue routing còn guard. Không khẳng định mọi mode/giao diện/reward giống hệt nhau. Kết luận tạm từ static raw, không cần pool-history/playthrough proof.

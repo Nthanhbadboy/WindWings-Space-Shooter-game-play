@@ -1,5 +1,10 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
+## Định hướng sản phẩm đã đồng bộ với nhánh spec
+
+Bám logic, cơ chế, nhịp và số của bản gốc theo **APK/reference đã kiểm chứng**; không tự thêm cơ chế hoặc hỏi lại quyết định đã có. Art vẽ mới, không bê asset gốc vào game phát hành và không vẽ lại từ screenshot. Dùng đối chiếu reference/motion/render và kiểm máy để nghiệm thu, không đặt blind A/B hay playtest người thật thành điều kiện bắt buộc. **Mục tiêu bắt chước không đồng nghĩa dữ liệu đã phủ hết hoặc bỏ regression tests**: phần có raw thì triển khai theo raw; scoped unknown thì tiếp tục bóc, không bịa. Review chéo mới: [report86](apk-analysis/86-peer-spec-review-and-player-extra-life-heal.md), peer b8f72a412 đã ACK84;85 đang chờ đồng bộ.
+
+
 **Report85 — nhận damage tới HP/sống/chết:** [receiver translation](apk-analysis/85-damage-receivers-callbacks-hp-and-death.md), 44 source walks +48 checks. Enemy hit callbacks có thể đổi HP/delegate/ref; player hai truncations, events21/39 đồng bộ trước rereadHP. Delayed death là WaitUntil không phải2s; MB death ba Wait1; ability32 blast có thể gửi damage tiếp. Local375 PASS. Không gộp dispatch/requested damage/HP loss/death event/pool. Các facts vẫn tạm thời; raw + dependencies được giữ, không phải full gameplay rewrite.
 
 
@@ -9,8 +14,8 @@
 **Report83 — main-rate consumers:** [24 field → deadline → dispatch](apk-analysis/83-main-rate-field-deadline-and-dispatch-audit.md). 96 owner-qualified accesses (48 reads), 23 extra-counter schedulers / riêng 19 single-deadline; 22/23/24 refresh ability trong scheduler. Đừng đồng nhất rate với projectile cadence/DPS. 25 MoveNext/14 wait sites đã inventory, remaining semantics có RVA cụ thể ở §6. Local 302 PASS; raw giữ nguyên.
 
 
-**Cập nhật 25/10/2026, sau report85. Tất cả kết luận APK vẫn tạm thời.**
-Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
+**Cập nhật 25/10/2026, sau report86. Tất cả kết luận APK vẫn tạm thời.**
+Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; quyết định bám bản gốc/art mới đã có; vẫn phải nối đủ raw, triển khai và nghiệm thu, không cần hỏi lại định hướng.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
 
@@ -18,7 +23,7 @@ Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**,
 2. `datas/`: bảng dẫn xuất để import; kiểm schema/nguồn/scope trước khi dùng. `datas/waves.json` grouped theo export **không phải** timeline runtime hay danh sách spawn đã dedup đúng theo resource.
 3. `docs/apk-analysis/`: phân tích có phạm vi và cách tái kiểm. Tìm report mới theo **chủ đề**, không coi số report cao hơn là phủ định mọi report cũ.
 4. `docs/spec/` trên nhánh này **chỉ có snapshot cũ**, không phải spec đầy đủ mới nhất của peer. Không bắt đầu triển khai từ bốn file đó mà bỏ review.
-5. Nhánh spec `arena/20330d0e-windwings-space-shooter-game-p` đã kiểm explicit tới **029559d47** (snapshot trong raw/peer-review/update-029559d47.json.gz); report79–81 có các sửa mới về rate/DPS, ID→implementation và concrete bullet/receiver. Peer chưa xác nhận đã áp dụng toàn bộ. Xem HANDOFF_AI_TASKS và report81; review cf27b9755 là lịch sử, chỉ áp dụng finding chưa được sửa, không wholesale merge hai nhánh.
+5. Nhánh spec `arena/20330d0e-windwings-space-shooter-game-p` đã kiểm explicit tới **b8f72a4127** (snapshot10docs trong raw/peer-review/review-b8f72a412.json.gz; report86 ghi các lỗi còn lại, peer đã ACK84); report79–81 có các sửa mới về rate/DPS, ID→implementation và concrete bullet/receiver. Peer chưa xác nhận đã áp dụng toàn bộ. Xem HANDOFF_AI_TASKS và report81; review cf27b9755 là lịch sử, chỉ áp dụng finding chưa được sửa, không wholesale merge hai nhánh.
 6. Screenshot dùng để xem UI/flow/tham khảo, không chứng minh numeric/native của build khác. **Không vẽ lại game từ screenshot.**
 
 Mỗi lựa chọn triển khai phải ghi một trong: `APK fact + raw_ref + scope`, `derived + formula + inputs`, `new design + rationale`, `unknown + fallback cần duyệt`. Không nâng giả định thành A vì unit test PASS.
