@@ -224,8 +224,14 @@ sandbox hiện **không tải được** (host `release-assets.githubusercontent
 | 11 | `atlas_fx` | nổ, hit, shield, muzzle | 1024² | ETC2 RGBA | vào trận |
 | 12 | `atlas_boss` | boss không dùng Spine | 2048² | ASTC 6×6 | wave boss |
 
-Tổng: 2048²×3 + 1024²×5 + 512²×4 = **≈ 14,7 MB VRAM** (ETC2 4bpp) so với **31,0 MB** bản gốc
-(nguồn: cộng `bytes` của **67** page `sactx-*` trong `04-asset-manifest.csv`) → **giảm ~53%**.
+Tổng: 2048²×3 + 1024²×5 + 512²×4 = 18,87 M px² ⇒ **≈ 9,0 MB VRAM** (ETC2 4 bpp, **không** mipmap)
+so với **31,05 MB** của **67** page `sactx-*` (nguồn: `datas/sprites.csv`, xem §4.5) → **giảm ~71 %**
+**cho phần atlas**.
+
+> ⚠️ **Đính chính 24/10:** bản trước ghi *"≈ 14,7 MB … giảm ~53 %"*. Hai số đó **không khớp phép
+> tính**: 18,87 M px² ở 4 bpp là **9,0 MB**, không phải 14,7. Và "giảm 53 %" chỉ đúng cho **phần
+> atlas**; tính cả **565 texture rời** (31,94 MB) thì tổng art đi từ **62,95 MB → 40,9 MB = −35 %**.
+> Chi tiết: §4.5.
 
 ### 4.3 Quy tắc đóng gói
 
@@ -460,3 +466,65 @@ liên tục; pitch randomization cho kết quả tương đương với 1/7 dung
 
 **Liên quan:** `Gun_Attack.csv` có cột `shootAudioClipName` (13 clip bắn khác nhau) — map id →
 `AllClipName` ở `COMBAT.md` §2.3.
+
+---
+
+## 4.5 Kiểm kế hoạch atlas bằng **kích thước thật** (24/10)
+
+Từ trước tới §4.4, "12 page / 14,7 MB" là **đề xuất** dựa trên 67 page gốc — chưa ai kiểm nó có
+**chứa nổi** số sprite thật. Nay `datas/sprites.csv` có `width/height` cho **2.816** asset, nên kiểm
+được. Kết quả: **kế hoạch đúng nhưng con số tiết kiệm bị đọc quá tay.**
+
+### 4.5.1 Hai tập texture của bản gốc
+
+| Tập | Số | Dung lượng | Diện tích | ghi chú |
+|---|---:|---:|---:|---|
+| **Page atlas đã bake** (`sactx-*`) | **67** | **31,05 MB** | **60,0 M px²** | ETC2 — đúng 4 bpp, không mipmap |
+| **Texture rời** (background, font SDF, splash, skeleton atlas) | **565** | **31,94 MB** | **51,3 M px²** | phần lớn **không nên** đưa vào atlas |
+| **Cộng** | 632 | **62,95 MB** | **111,3 M px²** | |
+
+> **Cận dưới, không phải số tuyệt đối:** `04-asset-manifest.csv` có **653** dòng `Texture2D` nhưng
+> `sprites.csv` chỉ có **kích thước** cho **632** — **21** texture thiếu số đo (khớp tên thì thấy
+> **20** nhóm; tên trong manifest **trùng nhiều**, 653 dòng chỉ 604 tên unique, nên đếm **dòng**), phần lớn là atlas font
+> SDF `AGENCYB` · `Agency SDF-Cyrillic` · `Amiri-Bold` · `NotoSansKR` · `SDF-Thai`, splash, `Alert`,
+> `Slider`, `PowerUp`, `Tut5`, `BossMode`). Chúng **không** vào atlas nên không đổi kết luận, nhưng
+> diện tích art thật **cao hơn** 111,3 M px² một chút (xem claim **Q5**).
+
+67 page gốc phân bố kích thước: `1024²` **21** · `512²` **17** · `512×1024` **9** · `1024×512` **6** ·
+`2048×1024` **4** · `1024×2048` **4** · `2048²` **2** · còn lại 4 page nhỏ. Kiểm lại §4.1:
+`sactx-0-2048x2048-ETC2-UI_Stage` = **2048×2048 · 3,09 MB** ✅ đúng.
+
+### 4.5.2 Kế hoạch 12 page chứa được bao nhiêu
+
+| | px² | MB (4 bpp, không mip) |
+|---|---:|---:|
+| **Sức chứa** 12 page đề xuất | **18,87 M** | **9,0** |
+| Dùng được ở 85 % lấp đầy | 16,04 M | 7,65 |
+| **Sprite thật cần chỗ** (2.184 `Sprite`, đã padding 4 px) | **72,9 M** | 34,8 |
+| **Tỉ lệ** | **17 %** của 111,3 M | |
+
+⇒ **Kế hoạch 12 page chỉ đủ cho ~1/6 lượng art.** Nó vẫn hợp lý **nếu** giữ 565 texture rời ở dạng
+rời (đúng như §4.3 quy định: sprite > 512 px để standalone). Nhưng câu **"giảm ~53 %"** trong §4.2
+phải đọc chính xác là:
+
+| Cách tính | Trước | Sau | Giảm |
+|---|---:|---:|---:|
+| **Chỉ phần atlas** (điều §4.2 thật sự so) | 31,05 MB | **9,0 MB** | **−71 %** |
+| **Toàn bộ art** (atlas + texture rời) | 62,95 MB | **40,9 MB** | **−35 %** |
+
+Đừng trích "−53 %" cho toàn bộ art — đó là lỗi *đếm hai tập rồi ghi một dòng*.
+
+### 4.5.3 Hệ quả cho kế hoạch 12 page
+
+| # | Điều chỉnh | Vì sao |
+|---:|---|---|
+| 1 | **Thêm 1 page `atlas_bg`** (2048², ASTC 6×6) hoặc để background **standalone** | texture rời chiếm **51,3 M px²**; background 1024² không nên vào atlas UI |
+| 2 | **Font SDF không bao giờ vào atlas** | `NotoSansSC-Medium SDF Atlas` 1024² là atlas font riêng của TMP |
+| 3 | **Áp luật > 512 px** | **88** asset vượt 512: **60** `Texture2D` + **28** `Sprite` |
+| 4 | **Tính lại budget theo subset** | nếu chỉ atlasing **UI + trong trận** thì 12 page là **dư**, không phải thiếu |
+
+### 4.5.4 Cách kiểm lại
+
+```bash
+python3 tools/verify-claims.py --only Q     # 4 claim: page gốc, texture rời, sức chứa, asset > 512
+```

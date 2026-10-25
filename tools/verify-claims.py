@@ -1640,6 +1640,97 @@ claim("P5", AUDIT, "**4.845** hệ hạt · **92/92** âm thanh · **150** HP id
 claim("P6", AUDIT, "**52.583** file · **7.980.772** node", (52583, 7980772, 733, 103227),
       ui_two_levels, "UI hai tầng: layout file vs màn cấp cao — đừng tráo")
 
+# ── Q. atlas plan kiểm bằng kích thước thật ─────────────────────────────
+# Trước nhóm này, "12 page / 14,7 MB" là đề xuất không có phép đo phía sau.
+
+ASSETS_DOC = "docs/spec/ASSETS.md"
+SPRITES = "datas/sprites.csv"
+
+
+def _sized_sprites():
+    rows = _csv_rows(SPRITES)
+    if not rows:
+        return []
+    return [r for r in rows if (r.get("width") or "0") not in ("", "0")]
+
+
+def _px(r):
+    return int(r["width"]) * int(r["height"])
+
+
+def _mb(rows):
+    return round(sum(int(r["bytes"]) for r in rows) / 1048576, 2)
+
+
+def _mpx(rows):
+    return round(sum(_px(r) for r in rows) / 1e6, 1)
+
+
+def atlas_pages():
+    """(số page sactx, MB, M px²)."""
+    rows = [r for r in _sized_sprites() if "sactx" in (r.get("png") or "")]
+    return (len(rows), _mb(rows), _mpx(rows)) if rows else None
+
+
+def atlas_totals():
+    """(tổng texture, MB, M px²) — page + texture rời."""
+    rows = [r for r in _sized_sprites() if r.get("type") == "Texture2D"]
+    return (len(rows), _mb(rows), _mpx(rows)) if rows else None
+
+
+def atlas_capacity():
+    """(M px² sức chứa, MB ở 4bpp, M px² dùng được ở 85 %, MB tương ứng)."""
+    cap = 2048 ** 2 * 3 + 1024 ** 2 * 5 + 512 ** 2 * 4
+    return (round(cap / 1e6, 2), round(cap / 2 / 1048576, 2),
+            round(cap * 0.85 / 1e6, 2), round(cap * 0.85 / 2 / 1048576, 2))
+
+
+def oversized_assets():
+    """(asset > 512 px, trong đó Texture2D, Sprite)."""
+    rows = _sized_sprites()
+    if not rows:
+        return None
+    big = [r for r in rows if max(int(r["width"]), int(r["height"])) > 512]
+    return (len(big), sum(1 for r in big if r["type"] == "Texture2D"),
+            sum(1 for r in big if r["type"] == "Sprite"))
+
+
+claim("Q1", ASSETS_DOC, "| **Page atlas đã bake** (`sactx-*`) | **67** | **31,05 MB** | **60,0 M px²** |",
+      (67, 31.05, 60.0), atlas_pages, "page gốc: đúng 4 bpp, không mipmap")
+
+claim("Q2", ASSETS_DOC, "| **Cộng** | 632 | **62,95 MB** | **111,3 M px²** |", (632, 62.95, 111.3),
+      atlas_totals, "page + texture rời: mẫu số đúng cho câu 'giảm bao nhiêu'")
+
+claim("Q3", ASSETS_DOC, "| **Sức chứa** 12 page đề xuất | **18,87 M** | **9,0** |",
+      (18.87, 9.0, 16.04, 7.65), atlas_capacity,
+      "12 page chỉ chứa ~17% lượng px² của toàn bộ art")
+
+def texture_size_coverage():
+    """(Texture2D manifest, Texture2D có size trong sprites.csv, hiệu số dòng).
+
+    Đếm theo DÒNG, không theo tên: manifest 653 dòng chỉ có 604 tên unique.
+    """
+    mf = [r for r in _csv_rows("docs/apk-analysis/04-asset-manifest.csv")
+          if r.get("type") == "Texture2D"]
+    ha = [r for r in _sized_sprites() if r.get("type") == "Texture2D"]
+    if not mf:
+        return None
+    mfn = {norm_name(r["name"]) for r in mf}
+    extra = sum(1 for r in ha if norm_name(r["name"]) not in mfn)
+    return (len(mf), len(ha) - extra, len(mf) - (len(ha) - extra))
+
+
+def norm_name(n):
+    return n.strip().replace("_", "").replace(" ", "").lower()
+
+
+claim("Q5", ASSETS_DOC, "> `sprites.csv` chỉ có **kích thước** cho **632** — **21** texture thiếu số đo",
+      (653, 632, 21), texture_size_coverage,
+      "diện tích art §4.5 là CẬN DƯỚI: 21 texture không có w/h")
+
+claim("Q4", ASSETS_DOC, "**88** asset vượt 512: **60** `Texture2D` + **28** `Sprite`",
+      (88, 60, 28), oversized_assets, "luật >512 px: số asset phải để standalone")
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:

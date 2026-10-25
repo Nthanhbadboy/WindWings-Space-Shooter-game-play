@@ -7,7 +7,7 @@
 > `tools/verify-claims.py` (nhóm **P**), hoặc trỏ thẳng vào file dữ liệu.
 >
 > **Quy mô hiện tại:** **33 tài liệu** trong `docs/spec/` (chưa kể file này) + **28 file dữ liệu**
-> trong `datas/` + **102 claim** đã khoá.
+> trong `datas/` + **115 claim** đã khoá (**113 PASS · 2 SKIP**; nhóm P + Q).
 
 ---
 
@@ -98,15 +98,21 @@ nằm trong `m_StreamedClip` nén. L1 làm art mới nên **không cần**.
 
 ---
 
-## 4. Ba cặp số **dễ tráo** — đừng trộn tập rồi ghi một dòng
+## 4. Bốn cặp số **dễ tráo** — đừng trộn tập rồi ghi một dòng
 
-Đây là lỗi đã xảy ra **5 lần** trong repo này. Ba cặp dưới đây là chỗ dễ tái phạm nhất:
+Đây là lỗi đã xảy ra **6 lần** trong repo này. Bốn cặp dưới đây là chỗ dễ tái phạm nhất:
 
 | Cặp | Số đúng | Nghĩa | Đừng viết |
 |---|---|---|---|
 | **UI** | **733** màn / 103.227 node | màn **cấp cao** (mỗi dòng = 1 màn) | "733 file layout" — file layout là **52.583** (7,98 M node) |
 | **Audio** | **69** `AudioClip` | file trên đĩa | "69 âm thanh" — id mà code dùng là **92** |
-| **Sprite** | **2.885** dòng `sprites.csv` | mọi asset đồ hoạ kèm `png` | "2.885 sprite" — trong đó **2.185** `Sprite`, **653** `Texture2D`, **69** `AudioClip` |
+| **Sprite** | **2.885** dòng `sprites.csv` | mọi asset đồ hoạ kèm `png` | "2.885 sprite" — trong đó **2.184** `Sprite`, **632** `Texture2D`, **69** `AudioClip` (dòng) |
+| **Art** | **62,95 MB** toàn bộ texture | 632 `Texture2D` = **67** page `sactx-*` (31,05 MB) + **565** texture rời (31,94 MB) | "giảm 53 %" — con số đó chỉ đúng cho **page**; tính cả texture rời là **31,05 → 9,0 MB (−71 %)** trên phần page và **62,95 → 40,9 MB (−35 %)** trên toàn bộ. Chi tiết `ASSETS.md` §4.5 |
+
+**Ba mẫu số khác nhau, đừng cộng chéo:** `04-asset-manifest.csv` **2.907** dòng (`Sprite` **2.185** ·
+`Texture2D` **653** · `AudioClip` **69**) vs `sprites.csv` **2.885** dòng (**2.184** · **632** · **69**).
+Chênh **22 dòng** = 1 `Sprite` + 21 `Texture2D` **không có kích thước**. Muốn nói "bao nhiêu asset" thì
+phải nói rõ **file nào**; muốn nói "bao nhiêu px²" thì chỉ dùng `sprites.csv` và ghi rõ là **cận dưới**.
 
 ---
 
@@ -123,3 +129,9 @@ Hai chỗ **chặn dựng** cần chốt trước khi khoá bảng cân bằng:
 
 Cả hai đều là **việc của nhánh dữ liệu**, không cần thiết bị. Việc **duy nhất** cần thiết bị vẫn là
 **feel** (D1–D4), và nó chỉ cần cho L2/L3.
+
+**Đã hết số ước lượng.** Bản trước §4 của `ASSETS.md` ghi "12 page = 14,7 MB, giảm 53 %" mà **không có
+phép đo nào phía sau**; nay đo bằng kích thước thật trong `sprites.csv`: 12 page chứa **18,87 M px² =
+9,0 MB** (4 bpp), tức **17 %** lượng px² art của bản gốc. Kế hoạch 12 page **vẫn đúng** — nhưng chỉ khi
+**565 texture rời giữ nguyên dạng rời**, và câu "giảm 53 %" phải thay bằng **−71 % cho page / −35 % cho
+toàn bộ**. Xem `ASSETS.md` §4.5.
