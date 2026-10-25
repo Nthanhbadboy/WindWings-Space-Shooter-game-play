@@ -72,6 +72,20 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 31 — 25/10, kiểm "stage/mode/thưởng ngày" theo nhắc của chủ dự án + đồng bộ report 93 peer `32bed14da8a`):**
+> **Stage/mode — đã có từ trước, không phải chưa làm:** tổng **299 stage · 250 map · 282 wave ·
+> 2 chapter** (`GAMEPLAY` §0/§3.6) · 3 độ khó đủ luật (`DIFFICULTY_MODES`) · khung 7 PlayMode + BP/
+> quest/event season (`GAMEPLAY` §2/§3). **Gap còn lại của stage**: `MAX_STAGE_OF_CHAPTERS[]`/
+> `MAX_ZONE_OF_CHAPTERS[]` **0 hit** trong `ia-resolved` (giá trị chưa bóc — độ dài từng chapter D) +
+> **binding map→stage→wave** vẫn UNKNOWN (§2.1, chờ peer named map). **Thưởng ngày — chưa làm thật**:
+> `MISSING` thêm **row 15** (gift login 30 ô · quest ngày/BP 85+39 · season · premium daily ·
+> holiday 75 · rewarded video 48 · VIP · energy — cấu trúc A, **0 giá trị decode**: `MAX_LEVEL_BP`/
+> `timeRewards`/`vipPoints` 0 hit; dump.cs chưa dịch class nào) + queue PR12. **Report 93**:
+> review ACK92 ✓ không góp ý mới; wing config **17/24 impl** (count 3 kiểu, 14 array SHA,
+> bẫy 13/21-clampL · 20-super-angleDelta) + fixture Unicorn chạy native bytes; kéo
+> `datas/wing_implementations.json` (datas/ = **40**); peer đã nhận queue Arena/PvP.
+> verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 30 — 25/10, kiểm "Arena/PvP đã làm tới đâu" theo nhắc của chủ dự án):**
 > **Chưa có batch/report nào đào riêng Arena/PvP** — hiện có (mức rải rác): `GAMEPLAY` §2 khung
 > mode A (PlayMode 5=Arena · 6=PVP · 10 league · 10 rank · PVPMode lệch enum/text — Betting);

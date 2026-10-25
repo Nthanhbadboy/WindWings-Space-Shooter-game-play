@@ -2944,3 +2944,25 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   serialized IDs đối chéo raw bytes). 35 tests mới; full **683 PASS**; code `8bb7bd717` · Verify
   `40219912118`; review độc lập `de2d1366` của peer: 3 sửa 91 **ĐÚNG** + 3 góp ý wording (đã xử lý
   hết ở lần 29 này); ACK92 qua PR12. **Còn: 23 wing impl** + named map/save consumers.
+
+### 24.26 Report 93 — review ACK92 ✓ + đọc rộng 24 wing, cấu hình SetBarrels 17 impl (peer `32bed14da8a`, **761 tests**)
+
+- **Review `c80b1c50dfd` ĐÚNG hết** (3 góp ý 92 xử lý đúng, không pending ACK) — không góp ý mới.
+- **Đọc rộng**: raw `wing-implementations/method-bytes.json.gz` — **876 method bodies/24 impl+class
+  lồng nhau · 66.845 instructions** disassemble Cap 5.0.3 đối từng instruction (0 decode gap); sửa
+  collector giữ GOT load offset **decimal `#8`**. Kéo về: `datas/wing_implementations.json` (24 rows ·
+  14 constructor-array joins · 85 vtable-load sites/83 CFG must-owner · 7 named special paths).
+- **Cấu hình normal SetBarrels: 17/24 impl** (impl1 cũ + **16 mới**): `S−kL` (k ,001–,03, có floor
+  ,02–,2) · `min(V+cL, cap 38–45)` · angleDelta riêng từng impl (impl19 không có speed field ·
+  3/18 chọn barrel-list). **Count 3 kiểu**: compressed two-read (index 0,1,2,2,3,3,4,4,5,5,6) —
+  1/3/11/16/17/18/20/22/23/24 · **L−1** — 5/7/9/14 (không upper-clamp trước bounds) ·
+  **clamp(L)** — 13/21. **14 constructor arrays** đã nối SHA (vd impl7 `3,5,5,7,7,7,9,9,9,9` ·
+  impl20 `6,6,8,8,10,10,12,12,14,14` · impl14/16/23/24 toàn 1 — **không** kết luận 1 đạn/volley).
+  ⚠ Bẫy đã bắt: 13/21 dùng clampL **không phải** L−1; **impl20 super vẫn ghi angleDelta** (không
+  universal "super bỏ qua SetBarrels").
+- **Fixture Unicorn2.1.4 chạy nguyên native bytes** (FPCR=0, adapter 6 dependency): 78 tests mới ·
+  full **761 PASS**; impl2=10002 giữ proof raw prefix (id@byte32 ×4 objects).
+- **Còn**: 7 special paths named (2 particle · 4 FindAndAttack · 6/8 saw · 10 AttackNormal/Enemy ·
+  12 sync/animation-event · 15 laser `GunCheckEnemies` — 2 site chưa must-owner proof, ghi false rõ)
+  + super branches + các impl thuộc special — **không** báo đóng toàn bộ 23 firing impl.
+  ACK93 qua PR12; peer **đã nhận queue Arena/PvP** (`arena-pvp-queue-6401593117.json`).
