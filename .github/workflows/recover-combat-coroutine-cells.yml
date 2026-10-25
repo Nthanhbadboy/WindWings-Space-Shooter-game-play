@@ -4,7 +4,7 @@ on:
     paths: ['tools/recovery/combat_coroutine_cells.py', '.github/workflows/recover-combat-coroutine-cells.yml']
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   recover:
     runs-on: ubuntu-latest
@@ -24,3 +24,11 @@ jobs:
         with:
           name: combat-coroutine-jump-tables
           path: reverse-engineering/raw/combat-chain/coroutine-jump-tables.json
+      - name: Preserve exact recovered bytes
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/combat-chain/coroutine-jump-tables.json
+          git diff --cached --quiet || git commit -m 'Preserve pinned coroutine byte jump tables [skip ci]'
+          git push origin arena/ef6b75ef-windwings-space-shooter-game-p
