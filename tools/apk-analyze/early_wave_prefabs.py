@@ -11,6 +11,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import sys
 import UnityPy
 from UnityPy.helpers.TypeTreeGenerator import TypeTreeGenerator
 from ui_render_context import file_context
@@ -35,6 +36,8 @@ def record(reader, raw=False):
         script=head.m_Script.deref_parse_as_object()
         row['script_class']=script.m_ClassName
         row['script_namespace']=script.m_Namespace
+        row['header_script_pointer']={'m_FileID':head.m_Script.m_FileID,'m_PathID':head.m_Script.m_PathID}
+        row['script_identity']=identity(script.object_reader)
     row['tree']=reader.read_typetree()
     if raw:
         blob=reader.get_raw_data()
@@ -88,6 +91,31 @@ def main():
     gen=TypeTreeGenerator('2022.3.62f3',generator='AssetStudio')
     gen.load_il2cpp((DATA/'libil2cpp.so').read_bytes(),(DATA/'global-metadata.dat').read_bytes())
     env.typetree_generator=gen
+    if '--enemy-details' in sys.argv:
+        index=json.loads((ROOT/'index.json').read_text())
+        targets={}
+        for entry in index['entries']:
+            if not entry['container_key'].startswith('datas/maps/waves/'):continue
+            prior=json.load(gzip.open(ROOT/entry['export'],'rt'))
+            assert prior['inputs_sha256']==inputs
+            for ref in prior['enemy_references']:
+                ident=ref['gameobject']
+                targets[(ident['serialized_file'],ident['path_id'])]=ident
+        found=[]
+        for reader in env.objects:
+            if reader.type.name!='GameObject':continue
+            k=(file_context(reader)['serialized_file'],reader.path_id)
+            if k not in targets:continue
+            found.append({'gameobject':record(reader), 'components':[
+                record(c,raw=c.type.name=='MonoBehaviour') for c in go_components(reader)]})
+        assert len(found)==len(targets)
+        output={'status':'PROVISIONAL — exact referenced enemy root components, not runtime replay',
+                'inputs_sha256':inputs,'enemy_roots':found}
+        path=ROOT/'default-enemy-components.json.gz'
+        path.write_bytes(gzip.compress(json.dumps(output,ensure_ascii=False,indent=2).encode(),mtime=0))
+        assert path.stat().st_size<5_000_000
+        print('Exported',len(found),'exact enemy roots')
+        return
     entries=[]
     for reader in env.objects:
         if reader.type.name not in ('AssetBundle','ResourceManager'):continue

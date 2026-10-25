@@ -36,7 +36,7 @@ jobs:
           assert all((dest/Path(s).name).exists() for s in wanted)
           PY
       - run: pip install -q 'UnityPy==1.25.4' 'TypeTreeGeneratorAPI==0.0.10'
-      - run: python3 tools/apk-analyze/early_wave_prefabs.py
+      - run: python3 tools/apk-analyze/early_wave_prefabs.py --enemy-details
       - name: Preserve evidence without APK or original assets
         run: |
           git config user.name 'Arena evidence collector'
