@@ -38,7 +38,7 @@ Tất cả số trên đã khoá bằng claim `J*` + `K*` trong `tools/verify-cl
 (`Boss-37001/02/04/09/10/11/12/13/14/15/16/17`, `Boss-39003/05/09/11/21`, `CB-30040`) với
 **262/795 event** — chiếm **33 %**, không phải 68 %.
 
-**3 lớp có asm nhưng không có typetree** (có `il2cpp-consts/*.json`, **0** instance export):
+**3 lớp** ở trạng thái **có asm nhưng không có typetree** (có `il2cpp-consts/*.json`, **0** instance export):
 `Boss1_AnimationEvents` · `BossSpineEventHandler` · `Boss_1_Animation`. Đây là phần *nhỏ nhất* của T1,
 không phải toàn bộ.
 
