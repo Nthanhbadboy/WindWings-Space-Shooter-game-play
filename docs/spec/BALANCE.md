@@ -1436,7 +1436,7 @@ Chỉ biết **signature**, không biết thân hàm (nguồn: `class Enemy_Data
 | ✅ **Đã có giá trị** | damage/rate/wing/**giá tàu** (Player 6/6 mảng) · thưởng theo stage (`startBonusValues` int[5], `levelDelta` float[4]) · stat **droid/device/tech** (3 + 12 + 7 mảng) · `GameDatas` float[6] · **576** mảng wave→wave-id (Map) | §1.1b · §6.4 · §6.10 · `ia-resolved.json` (**17 method / 623 record**) |
 | 🟡 **Có raw, thiếu bind** | tên field ↔ mảng (Droid/Tech/Device/`Board_*`) · `playerIndex` → ID tàu · mảng Map → (chapter, stage, mode) | §6.10 · `DATA_SYNC.md` §23 |
 | ✅ **Đã có (không cần xin)** | **HP enemy**: `datas/enemy_hp_by_id.json` = **150 cặp `id → HP`** parse từ `.cctor` (claim **WRH2**); `15-enemy-hp.csv` = 981 dòng **serialize**, **467** dòng > 0 (claim **WRH1**); 3 class enemy đã có asm (claim **WRH3**). Gộp lại **108/109** prefab spawn có số HP (claim **WRH5**) ⇒ **không cần `.so`** | `ENEMY_HP_RUNTIME.md` §0 · `WHERE_TO_LOOK.md` §3 |
-| ❌ **Thật sự chưa có** | coin/gem **delta** vô hướng · thưởng trong hộp · **trọng số rơi** · ngưỡng VIP · mapping wave→stage (raw có, **thiếu bind**) | `MISSING` §3 |
+| ❌ **Thật sự chưa có** | coin/gem **delta** vô hướng · thưởng trong hộp · **trọng số rơi** · ngưỡng VIP (mapping wave→stage **đã phân loại 11 cấu trúc**, `DIFFICULTY_MODES` §7 — không còn ở đây) | `MISSING` §3 |
 
 > ⚠ Câu cũ *“cái thiếu là **giá trị** trong `.cctor()`”* đã **sai từ 25/10**: giá trị đã nằm trong
 > repo. Cái thiếu là **bind** — và đúng là trước đó bộ spec đã **xin dump lại** thứ mình đang có.

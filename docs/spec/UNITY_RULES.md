@@ -382,3 +382,6 @@ dòng, cùng một `PathID` có thể trỏ hai object khác nhau ở hai file k
 > flipbook), 4 mục **hạ mức** (`C1` · `C2` · keyframe · `§7 #9`), 1 mục **bị loại khỏi hướng tìm**
 > (`kHp`/`pct` trong asset). Cái **không đổi**: hai ẩn số cân bằng vẫn phải **đo trong game** — nhưng
 > giờ đã biết chắc **không phải vì thiếu công cụ**, mà vì **chúng nằm ngoài dữ liệu serialize**.
+> **Cập nhật 25/10:** `pct` đã có (`PercentToCompleteMissions222` `float[3]` [0.2/0.6/0.98] — decode
+> từ `.cctor` + statics điện thoại); `kHp` **không tồn tại** như hệ số (`DIFFICULTY_MODES` §3–5).
+> Luật engine ở §6 giữ nguyên — đúng vô điều kiện.

@@ -350,7 +350,7 @@ Nguồn: `Gun_Attack.csv`, `_gameobject` cắt phần trước `/`.
 TTK = `HP / DPS_player`. Trong đó:
 - **HP enemy**: **đã có** — `datas/enemy_hp_by_id.json` **150 cặp `id → HP`** (runtime, claim **WRH2**)
   + `15-enemy-hp.csv` **981** dòng serialize (**467** > 0 — cũ ghi 800/394 là **sai**; claim **WRH1**).
-  Gộp lại **108/109** prefab spawn có số HP (claim **WRH5**). Còn thiếu hệ số `kHp[mode]`.
+  Gộp lại **108/109** prefab spawn có số HP (claim **WRH5**). ~~Còn thiếu hệ số `kHp[mode]`~~ — **không có `kHp`** (sửa 25/10, `DIFFICULTY_MODES` §3–5); TTK = HP(id) ÷ DPS, đủ để tính.
 - **DPS player**: **ĐÃ CÓ SỐ** (25/10) — `StartMainCannonDamages[24]` × `StartMainCannonRate[24]` decode từ
   `reverse-engineering/il2cpp/ia-resolved.json` → `datas/player_start_stats.json`
   (DPS index 0 = **21.600**, min **456**, max **46.400**).

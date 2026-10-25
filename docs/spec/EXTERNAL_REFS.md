@@ -157,7 +157,7 @@ sao lưu **theo từng (stage, mode)** ⇒ muốn 3 sao **phải chơi lại cù
 ## 7. Còn thiếu / phải đoán
 
 - **Chưa** tìm được bất kỳ ai đã dump `global-metadata.dat` / `dump.cs` của game này ⇒ nếu có, sẽ trả lời
-  dứt điểm `kHp[mode]` và `pct[mode]` (2 ẩn số còn lại).
+  dứt điểm `kHp[mode]` và `pct[mode]` ~~(2 ẩn số còn lại)~~ — **25/10: cả hai có lời đáp** (`pct` = `float[3]` [0.2/0.6/0.98] đã decode; `kHp` không tồn tại — `DIFFICULTY_MODES` §3–5).
 - **Chưa** kiểm được repo `beerphilipp/*` có phiên bản mới hơn 2025-05-20 không (file cố định).
 - **Chưa** đọc trực tiếp `r/Windwingsgame` (Reddit trả **403**). Snippet cho thấy subreddit **nhỏ**
   (vài chục bài, 2021) và **không** có datamine — nhưng đây là suy luận từ snippet, **mức C**.

@@ -162,8 +162,9 @@ thật sự cần "chỗ khác": **export thêm class** mới đọc được đ
 >
 > **Đính chính 25/10 — việc còn lại ĐÃ XONG:** `Enemy_Get_Datas` (4 method) đã có asm; `.cctor`
 > parse ra **150 cặp `id → HP`** trong `datas/enemy_hp_by_id.json` (**không** phải 981 — 981 là số
-> dòng serialize). `Enemy_Controller` + `Enemy_Health` cũng đã có. Cái còn mở là **bind**
-> `StartHpPoint ← dict` và hệ số `kHp[mode]`. Xem `ENEMY_HP_RUNTIME.md` §5.
+> dòng serialize). `Enemy_Controller` + `Enemy_Health` cũng đã có. ~~Cái còn mở là **bind**
+> `StartHpPoint ← dict` và hệ số `kHp[mode]`~~ → **chốt 25/10**: dict **là** nguồn (bind theo id);
+> `kHp` không tồn tại — xem `ENEMY_HP_RUNTIME.md` §5 · `DIFFICULTY_MODES.md` §3–5.
 
 ---
 
@@ -220,5 +221,6 @@ không nêu được ca đó, phép kiểm là **trang trí**.
 - **Phép thử ở §0 chỉ đúng với 2 mẫu.** Chưa đủ gọi là quy luật cho 17 class; chỉ đủ để **phân biệt
   hai cái đang chặn**.
 - **B3 đã đổi hai lần** — 23/10: "chưa biết" → "biết cơ chế, thiếu bảng số"; **25/10: có bảng số**
-  (`datas/enemy_hp_by_id.json`, 150 cặp `id → HP`). Việc **duy nhất** còn lại: **bind** bảng vào
-  `StartHpPoint` + đọc hệ số `kHp[mode]` — không phải dump (`ENEMY_HP_RUNTIME.md` §5).
+  (`datas/enemy_hp_by_id.json`, 150 cặp `id → HP`). ~~Việc **duy nhất** còn lại: **bind** bảng vào
+  `StartHpPoint` + đọc hệ số `kHp[mode]`~~ → **không còn việc nào**: dict là nguồn, `kHp` không tồn tại
+  (sửa 25/10 — `ENEMY_HP_RUNTIME.md` §5).

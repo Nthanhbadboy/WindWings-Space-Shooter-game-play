@@ -284,7 +284,7 @@ Ba getter khác nghĩa mà **dài bằng nhau tuyệt đối** ⇒ cùng một k
 > **Tôi rút lại điều gì:** bản trước tôi kết luận "hệ số nằm trong thân `MoveNext`" — vì tôi dựa vào câu
 > *"chắc chắn đông hơn"* của bạn thay vì dựa vào số liệu. Số liệu **luôn** nói không nhân. Nay bạn kiểm lại
 > và cũng nói không nhân ⇒ **không có phép nhân nào cần tìm**, và **3 thân hàm spawn không còn là blocker**
-> cho số quân (chúng vẫn có thể chứa `kHp`, xem §5.2).
+> cho số quân (giả thuyết `kHp` đã rút 25/10 — xem §5.2).
 
 ### 5.1 Vậy vì sao *cảm giác* đông hơn — và nó **không** mâu thuẫn với "không nhân"
 
@@ -311,13 +311,18 @@ trong **cùng một** wave.
 > **Điều kiện lật ngược:** nếu `GP_Datas.countEnemies` (tổng dự kiến) khác nhau giữa 3 chế độ trên **cùng
 > một stage** — đo được bằng cách so số trên HUD/tiến trình, hoặc so `{0} / pct`.
 
-### 5.2 `kHp` — chỗ duy nhất còn lại của "nhiều máu hơn"
+### 5.2 ~~`kHp` — chỗ duy nhất còn lại của "nhiều máu hơn"~~ → **ĐÃ GIẢI 25/10: không có `kHp`**
+
+> **Sửa 25/10:** giả thuyết `hp_spawn = HP(id) × kHp[mode]` **không có số để tìm**. Bốn dấu vết bên
+> dưới dẫn tới tầng spawn, nhưng **bảng HP 150 id + composition theo mode** giải hết mà không cần hệ
+> số nào: chế độ đổi **bảng wave len-3** (đã decode, §7) + **thưởng** (`levelDelta`, §3). Giữ dấu vết
+> làm **lịch sử của giả thuyết** — đừng đi tìm `kHp` nữa.
 
 ```
-hp_spawn = Enemy_Get_Datas.GetStartHealthPoint(id) × kHp[mode]
+hp_spawn = Enemy_Get_Datas.GetStartHealthPoint(id) × kHp[mode]   ← giả thuyết ĐÃ RÚT 25/10
 ```
 
-Bốn dấu vết ép phép nhân vào **đúng** chỗ này:
+Bốn dấu vết ép phép nhân vào **đúng** chỗ này (giả thuyết cũ):
 
 | Dấu vết | Số | Nói lên điều gì |
 |---|---:|---|
@@ -352,7 +357,9 @@ viết hàm `f(wave)`.
 > đầu và to nhất: 883 · 936 · 951 · 761 · 846). **Chưa** xác định chúng có thật sự đứng đầu campaign hay
 > chỉ là wave dùng chung. Mức **C**.
 
-### 5.5 Cách đo `kHp` trong 10 phút — thứ duy nhất còn thiếu
+### 5.5 ~~Cách đo `kHp` trong 10 phút — thứ duy nhất còn thiếu~~ → **KHÔNG cần đo `kHp` nữa (25/10)**
+
+> Kế hoạch dưới đây chỉ còn dùng để **đối chiếu UI / tuỳ chọn runtime**; `kHp` không phải số cần tìm.
 
 | Cần đo | Cách đọc | Suy ra |
 |---|---|---|
@@ -390,7 +397,7 @@ Khác nhau ở **4 bảng**; ba cái đầu **có trong dữ liệu gốc**, cá
 
 ```
 levelDelta[3]        → thưởng          (gốc: float[] ẩn;   clone: 1.0 / 1.35 / 1.7)
-missionKillPercent[3][3] → 3 mốc % mỗi chế độ (gốc: 3×float[3] ẩn; clone: 60/80/100 · 70/88/100 · 80/95/100)
+missionKillPercent → MỘT `float[3]` theo **mission index** [0.2 · 0.6 · 0.98] (sửa 25/10: không phải 3×3, không theo mode); clone muốn 3 mốc khác (60/80/100 · 70/88/100 · 80/95/100) = lựa chọn thiết kế
 energyCost[stage][3]     → giá năng lượng   (clone: +0 % / +25 % / +50 %)
 kHp[3]                   → HP enemy         (gốc: hard-code, CHƯA biết; clone: 1.0 / 1.5 / 2.0)
 kCount                   → **1.0 — ĐỪNG nhân** (gốc = 1, mức A)
@@ -443,16 +450,20 @@ vì sao 117 cặp tôi bóc ra trông như "quan hệ" chứ không phải "nhó
   đúng **4 phần tử** của `levelDelta`. Hai dữ kiện cùng chỉ về 4, nhưng cả hai đều từ **cùng một
   nguồn** (cùng file JSON) nên **không phải hai bằng chứng độc lập**.
 - ~~`levelDelta[3]` chưa có số~~ → **`[1, 2, 3.6, 3.6]`** (§3). Blocker T5 **không còn** cho field này.
-- **`missionKillPercent[3][3]`**: đọc được **3 trong 9** số — `[0.2, 0.6, 0.98]`
-  (`MISSIONS_STARS` §7). Còn 6 số và chưa biết mảng vừa đọc ứng với chế độ nào.
+- ~~**`missionKillPercent[3][3]`** — "còn 6 trong 9"~~ → **ẢO ĐƠN VỊ, đủ 3/3 (sửa 25/10)**:
+  `PercentToCompleteMissions222` là **MỘT** `float[3]` @`0x308` (`Player_Get_Datas`; dump.cs có đúng
+  **1** field) theo **mission index** — `[0.2 · 0.6 · 0.98]` cho 3 mốc nhiệm vụ, **không** có chiều
+  chế độ (`MISSIONS_STARS` §7: "một mảng, không phải 9"). Ý "3×float[3] ẩn" ở §6 là sai đơn vị.
 - **`kCount ≡ 1`** — **ĐÓNG** (A): ba nguồn độc lập (bạn chơi lại · 304 lệnh `GetCountEnemies` · 278 lệnh
   `GetListWaves`) cùng nói **không nhân**. Ba thân hàm spawn **không** còn là blocker cho số quân.
-- **`kHp[mode]` CHƯA BIẾT GIÁ TRỊ** — cơ chế **A** (bạn chơi), vị trí **C** (nghi tầng spawn, §5.2).
-  **Không** suy được từ bảng (không có bảng). Hai đường: dump `Path_Spawner`/`PointToPoint_Spawner`, hoặc
-  đếm số phát bắn trong game (§5.5).
+- ~~**`kHp[mode]` CHƯA BIẾT GIÁ TRỊ**~~ → **KHÔNG TỒN TẠI như một hệ số (sửa 25/10)**: §3 — chỗ duy
+  nhất chế độ nhân con số là `levelDelta` (**thưởng**); §4 — 0/5 hàm nhận `stageLevel` liên quan HP,
+  HP = **1 số/prefab**; §5 — `kCount ≡ 1`. Khác biệt "nhiều máu hơn" = **composition theo bảng len-3**
+  (đã decode §7) + tiến stage. "Hai đường dump spawn / đếm phát bắn" là câu cũ, không còn cần.
 - **Bảng dữ liệu KHÔNG có chiều chế độ** — phủ định có phạm vi: 17 class asm + toàn bộ chữ ký `dump.cs`
   + 23.757 `Call_Data` + 981 `Enemy_Datas` + `Wave.csv` + `Stage_Behaviour.csv`. Kết luận đúng, và nó
-  **khớp** với "không nhân số quân"; nó **không** loại trừ `kHp` vì HP được ghi **lúc spawn**.
+  **khớp** với "không nhân số quân"; ~~nó **không** loại trừ `kHp`~~ — **25/10: tự nó cũng phủ định
+  `kHp`** (không có bảng, không có hằng số, không thấy phép nhân nào).
 - ~~`stageLevel ≡ stageMode` chỉ là mức B~~ → **A**: `GetStringInfo` `ldr w21,[x9,#0x34]` (`ModeCurrent`) rồi truyền vào `GetKillPercentMissionComplete` — `MISSIONS_STARS.md` §1.
 - **118 cặp `stage → boss`** mới là *giả thuyết khớp số*, chưa đọc được phần tử.
 - **Nhánh `stageIndex ≥ 60 → ×1,25`** trong `GetBonus` **chưa hiểu ngữ nghĩa**: `stageIndex` bị clamp
@@ -460,8 +471,9 @@ vì sao 117 cặp tôi bóc ra trông như "quan hệ" chứ không phải "nhó
   (0…298) chứ không phải trong chương. **Chưa** xác định.
 - **Số quân mỗi wave là dữ liệu, không phải công thức** (§5.4: CV **1,01**, **150/282** giá trị khác nhau,
   `r = −0,456`) ⇒ clone phải **nhúng bảng**, đừng viết hàm `f(wave)`.
-- **Nếu chỉ được chọn một hệ số cho clone:** chọn `kHp` (đó là kênh duy nhất gốc thật sự có thể nhân),
-  và **để `kCount = 1`** — nhân số quân sẽ phá ngưỡng sao.
+- **Nếu chỉ được chọn một hệ số cho clone:** ~~chọn `kHp`~~ → **không nhân gì cả**: HP theo id +
+  composition theo bảng mode; `kCount = 1` (nhân số quân phá ngưỡng sao). Muốn game mới khó hơn thì
+  ghi **lựa chọn thiết kế**, đừng gọi là khôi phục `kHp`.
 - Tôi **đã rút lại hai lần**: (1) "chưa có bằng chứng" → sai, phải nói "bảng phẳng"; (2) "kCount nằm
   trong `MoveNext`" → **sai**, `kCount ≡ 1`. Lần rút lại thứ hai là do tôi tin câu nói thay vì số liệu —
   **số liệu đã đúng ngay từ đầu.**

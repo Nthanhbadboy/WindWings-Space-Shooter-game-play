@@ -83,7 +83,7 @@ Không cần đọc hết 40 file trước khi bắt đầu. Tám con số này 
 | 4 | Wave | **282** wave · **11.089** dòng · median **28,5** dòng/wave · **109** prefab enemy | `ENCOUNTERS.md` §1 (**AQ1/AQ4**) |
 | 5 | Spawn | `rate` trung vị **1,0 s** · `y` **9,6** · radius **0,1** · **68 %** là `point_range` (**số đo, không phải luật**) | `SCRIPTS.md` §3 (**AQ6**) |
 | 6 | Độ khó | **3** chế độ · `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · **không** nhân số quân | `DIFFICULTY_MODES.md` §5 (**E1/E2**) |
-| 7 | HP | HP bar trên **109/109** prefab · HP thật = bảng × `kHp[mode]` | `ENEMY_HP_RUNTIME.md` §0 |
+| 7 | HP | HP bar trên **109/109** prefab · HP theo **id** (150 cặp) · **không có** `kHp[mode]` — chế độ đổi composition, không nhân HP | `ENEMY_HP_RUNTIME.md` §0 · `DIFFICULTY_MODES.md` §3–5 |
 | 8 | Rơi đồ | **702** vật đặt sẵn (**676** coin / **26** item) · **246/2.094** slot có item · **6** loại | `ECONOMY.md` (**AE1–AE3**) |
 
 > ⚠ **Đọc 8 số này đúng cách:** chúng là **mô tả phân bố** của bản gốc, **không** phải luật engine.

@@ -153,12 +153,12 @@ Xếp theo **chi phí trả lời thấp → cao**, không theo mức quan trọ
 1. ~~**Giá trị `StartHp`**~~ — **ĐÃ ĐÓNG = 2500** (hạng 1 ở bảng trên). Nguyên nhân *"không thấy"*
    trước đây là **asm bản `8871068a` bị cắt cụt** (`DATA_SYNC` §7.29); bản `6109008c` đã đọc trọn.
    Câu *"toàn file asm không có lệnh ghi `#0x6c`"* chỉ đúng trên bản cụt — **đừng** dùng lại.
-2. **Hệ số HP enemy theo chế độ `kHp[mode]`** — **HP gốc đã có** (`datas/enemy_hp_by_id.json`,
-   **150** cặp `id → HP`, claim **WRH2**; `15-enemy-hp.csv` 981 dòng serialize, claim **WRH1**).
-   Cái chưa có là **thứ tự nhân / giá trị hệ số**: `GetSurvivalScore` có hằng số (6,0 · 3,0 · 1,1 ·
-   0,2 · 0,5 · 500,0 · 23,0 · 40,0) và `enemy_hp.json` ghi *"runtime HP scaled by
-   `Enemy_Data_Balance` and stage"* mà **không nói stage nào**. `Enemy_Data_Balance` **đã có asm**,
-   không cần dump.
+2. ~~**Hệ số HP enemy theo chế độ `kHp[mode]`**~~ — **KHÔNG TỒN TẠI (sửa 25/10)**: chỉ `levelDelta`
+   (**thưởng**, `[1, 2, 3.6, 3.6]`) là chỗ duy nhất chế độ nhân; 0/5 hàm `stageLevel` liên quan HP;
+   HP = 1 số/prefab; `kCount ≡ 1` ⇒ khác biệt khó/dễ = **composition theo bảng mode**
+   (`DIFFICULTY_MODES` §3–5). **HP gốc đã có** (150 cặp, claim **WRH2**) ⇒ TTK tính được đầy đủ.
+   Câu *"runtime HP scaled by `Enemy_Data_Balance` and stage"* trong `enemy_hp.json` là **note thừa**,
+   chưa thấy cơ chế nào làm điều đó.
 3. **stage ↔ wave** — 299 stage và 281 wave chưa khớp; `Stage_Behaviour` không có field `wave`.
 4. **Độ dài phiên chơi** — phụ thuộc (2), (3) và luật continue.
 5. ~~**Timing của 793 event**~~ — **ĐÃ CÓ**: **795/795** event trong clip có `time` (hạng 4 ở bảng

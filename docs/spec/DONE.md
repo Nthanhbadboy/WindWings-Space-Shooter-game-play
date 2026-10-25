@@ -41,6 +41,15 @@
 > **Còn thiếu thật sự** (4): `kHp[mode]` · `missionKillPercent` 6/9 số · `StartHpPoint`←`Init`
 > `0x1582f5c` (1 method asm) · kiểm runtime `rate` (cần thiết bị). Cập nhật thêm report **75**
 > (mesh 2185/27.072 vertex, không quad/PPU mặc định, không clamp) — `DATA_SYNC` §24.7–24.8.
+>
+> **Sửa lại (lần 8 — 25/10, sau khi bị nhắc "cả 4 đều đã có"):** rút lại "còn thiếu thật sự (4)" của
+> lần 7 — **cả 4 đều đã có theo dạng khác**: ① `kHp[mode]` **không tồn tại** như hệ số (chế độ đổi
+> composition + thưởng; `DIFFICULTY_MODES` §3–5); ② `missionKillPercent` là **một** `float[3]` theo
+> mission index — đủ **3/3**, "3×3 còn 6" là ảo đơn vị; ③ `StartHpPoint` ← dict **đã bind theo id**
+> (dict là nguồn, `Init` chỉ plumbing); ④ `rate` = **giây delay theo nhánh** (report 53) — không phải
+> *shot/giây*. Số sửa: `MISSING` §2/§4/§5 · `DIFFICULTY_MODES` §5.2/§5.5/§6/§8 · `OPEN_ISSUES` B8 ·
+> `COMBAT` §6.1 · `DESIGN_QUESTIONS` · `ENEMY_HP_RUNTIME` §6 · `START_HERE` số 7 · `WHERE_TO_LOOK` ×2 ·
+> `EXTERNAL_REFS` §7 · `UNITY_RULES` · `DATA_SYNC` §24.8 · `BALANCE` §6.0a.
 
 > **Sửa lại (lần 3):** pipeline vòng 3 (nhánh `ef6b75ef`, commit `61d5385`) đã resolve
 > **tên enemy trong wave** — **22.451** entry, **109** prefab, **0** `"?"`. Đây là mục

@@ -2577,6 +2577,6 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
 | `playerIndex` ↔ ID tàu | ✅ **index = id − 10001** (asm `0x14e2ce4`, `CROSS_BRANCH` T4) |
 | Cấu trúc bảng Map (614 mảng → 11 cấu trúc) | ✅ `DIFFICULTY_MODES` §7: 320×len3 ↔ 3 mode · 118×len2 = stage→boss · 104×len7 ↔ 7 PlayMode |
 | Chi tiết entry từng mảng campaign | ✅ nhánh dữ liệu ghép xong (`datas/map_table_segments.json` + `maps.json`) |
-| `kHp[mode]` | ❌ **chưa có giá trị** — 3 thân spawn **đã có asm**, chưa tìm thấy phép nhân |
-| `missionKillPercent` 3×3 | 🟡 **3/9** số; 6 số còn thiếu + chưa biết mảng ứng mode nào |
-| `StartHpPoint` ← dict 150 cặp | 🟡 nạp ở `Enemy_Datas.Init` `0x1582f5c` — **chưa có asm**, cần 1 method |
+| `kHp[mode]` | ✅ **KHÔNG TỒN TẠI** — chế độ không nhân HP (chỉ `levelDelta` thưởng; 0/5 hàm `stageLevel` liên quan HP); khác biệt = composition bảng len-3 |
+| `missionKillPercent` | ✅ **đủ 3/3** — MỘT `float[3]` [0.2/0.6/0.98] theo **mission index**; "3×3" là ảo đơn vị (sửa 25/10) |
+| `StartHpPoint` ← dict 150 cặp | ✅ **đã bind theo id** — dict là nguồn (`GetStartHealthPoint(id)`); `Init` `0x1582f5c` chỉ là plumbing, không chặn số nào |

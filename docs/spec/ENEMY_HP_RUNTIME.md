@@ -230,12 +230,13 @@ Ba việc dưới đây đã có kết quả trong repo — **đừng xin dump l
   ⇒ Chỗ gán `StartHpPoint` từ `GetStartHealthPoint(id)` là `Enemy_Datas.Init()` (`0x1582f5c`),
   được gọi từ `Appear` (`bl` tại `0x1582760`); thân `Init()` **chưa có asm** ⇒ vẫn nhãn **B**.
 - ~~**Chưa biết HP bao nhiêu** cho từng enemy~~ — **ĐÃ CÓ 25/10**: `datas/enemy_hp_by_id.json`
-  (**150** cặp, ví dụ `CB-30003` = **650**). Còn thiếu để tính TTK thật là **hệ số chế độ `kHp`**
-  (nhân ở tầng spawn, xem `DIFFICULTY_MODES.md` §5), không phải HP gốc.
-- **HP thực tế = HP bảng × `kHp[mode]`** — người chơi kiểm chứng khó hơn thì **nhiều máu hơn** (A, chơi
-  game). Phép nhân **không** nằm trong `.cctor`/bảng (`StartHpPoint = 0` ở **981/981** dòng serialize
-  ⇒ field này do mã gán lúc spawn) mà ở **tầng spawn** — xem `DIFFICULTY_MODES.md` §5. ⇒ Mọi TTK
-  tính từ bảng HP là **TTK của Normal**. Giá trị `kHp` **chưa có số** ⇒ đây mới là blocker TTK.
+  (**150** cặp, ví dụ `CB-30003` = **650**). ~~Còn thiếu hệ số chế độ `kHp`~~ → **không có `kHp`**
+  (sửa 25/10, `DIFFICULTY_MODES.md` §3–5): TTK = HP(id) ÷ DPS — đủ để tính ngay.
+- ~~**HP thực tế = HP bảng × `kHp[mode]`**~~ — người chơi kiểm chứng khó hơn thì **nhiều máu hơn**
+  (A, chơi game), nhưng **phép nhân không tồn tại** trong mã/bảng đã đọc: 0/5 hàm `stageLevel` liên
+  quan HP, HP = 1 số/prefab, `kCount ≡ 1`, chỉ `levelDelta` (**thưởng**) là chỗ chế độ nhân. Khác biệt
+  khó/dễ = **composition theo bảng mode** (len-3, đã decode) + tiến stage. TTK từ bảng HP là TTK theo
+  id; so **mode thật** thì playtest (thiết bị) — không phải thiếu số.
 - ~~`Enemy_Hp_Bar` 909 / 981 ⇒ 72 enemy không có thanh máu~~ — **đã giải**: `Enemy_Display`
   `hpProgressBarRenderer` phủ **976/981**; hợp hai cơ chế ⇒ **109/109 prefab spawn có bar**. Xem
   `DIFFICULTY_MODES.md` §1.

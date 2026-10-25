@@ -48,9 +48,11 @@ A6 và B3 **không còn là "dữ liệu chưa dump"** (câu cũ đã sai từ 2
 `ia-resolved.json` (576 mảng Map · 6 mảng Player). **Bind chính ĐÃ XONG** (sửa 25/10, đừng lặp lại
 TODO cũ): ① index ↔ tàu = **id − 10001** (`CROSS_BRANCH` T4); ② cấu trúc bảng Map = **11 cấu trúc,
 đã phân loại 614 mảng** — 320×len3 ↔ 3 chế độ · 118×len2 = `stage → boss` · 104×len7 ↔ 7 `PlayMode`
-(`DIFFICULTY_MODES` §7). Còn thiếu **thật sự**: `kHp[mode]` · `missionKillPercent` (6/9 số) ·
-`StartHpPoint` ← dict (nạp ở `Init` `0x1582f5c`, chưa có asm) · save **một phần**; `rate = 0` là
-**giới hạn suy luận**.
+(`DIFFICULTY_MODES` §7). **Sửa 25/10 (lần 2): 4 mục "còn thiếu" trước đây đều đã có theo dạng khác** —
+`kHp[mode]` **không tồn tại** như hệ số (chế độ đổi composition + thưởng, `DIFFICULTY_MODES` §3–5);
+`missionKillPercent` là **một** `float[3]` theo mission index, đủ **3/3**; `StartHpPoint` ← dict
+**đã bind theo id** (dict là nguồn, `Init` chỉ là plumbing); `rate` = **giây delay theo nhánh**, đã
+chốt (A, report 53). Vẫn còn: save **một phần**; `rate = 0` là giới hạn suy luận.
 Tự chọn ở A6/B3 thì game mới **lệch số**; tự chọn ở `rate = 0` thì lệch **nhịp**, nhưng được phép nếu ghi rõ.
 
 ### 2.1 A6 — stage ↔ wave: **dữ liệu ĐÃ CÓ trong repo**, thiếu phần *bind*, không thiếu blob
@@ -105,8 +107,9 @@ từ hex trong `ia-resolved.json` — **theo kiểu của field**, không
 - **Bind index↔tàu — ĐÃ XONG:** asm tại `0x14e2ce4` **trừ 10001** khỏi ID tàu ra index
   (`adds w19,w19,#-0x2711`, `CROSS_BRANCH` T4) ⇒ tàu `10001` → index **0** (DPS **21.600**),
   … tới `10024` → index **23**; `10999` (tàu khoá) nằm ngoài mảng 24.
-- **Vẫn chưa:** (1) **HP riêng của tàu** — chưa có bằng chứng theo cả hai chiều ⇒ giữ **D**;
-  (2) kiểm runtime để biết `rate` là *shot/giây* hay *hệ số khác*.
+- **Vẫn chưa:** (1) **HP riêng của tàu** — chưa có bằng chứng theo cả hai chiều ⇒ giữ **D**.
+  (2) ~~kiểm runtime `rate`~~ → **đã chốt (A, report 53)**: nhánh Path/Waypoints `WaitForSeconds(rate)`
+  = **khoảng giây giữa lượt sinh**, không phải *shot/giây*; `rate = 0` chỉ là "không chờ thêm" (§2.4).
 - **Việc kế tiếp:** viết bảng TTK **theo ID tàu** từ `datas/player_start_stats.json` (dữ liệu +
   ánh xạ đều đã có) — không cần đọc thêm consumer để "nối" gì nữa.
 
@@ -243,11 +246,12 @@ không phủ toàn bộ công thức chiến đấu.
 
 - **L1 (làm game **giống cơ chế**, art mới, số tự chọn): ĐỦ.** 8/13 hệ đủ, **5** hệ một phần nhưng phần
   thiếu đều **không chặn** (D3 = chọn thiết kế; audio = tự chọn; talent = tự chọn giá).
-- **L2 (giống **số** đến mức chơi thấy tương đương): CHƯA — bind chính ĐÃ XONG, chỉ còn 4 số + kiểm runtime.**
-  Giá trị damage/rate/cost/độ dài map **đã có** (§2.1 + §2.2); ánh xạ index↔tàu (T4) và cấu trúc bảng Map
-  (`DIFFICULTY_MODES` §7) **đã bind**. Cái còn: (1) **`kHp[mode]`**; (2) `missionKillPercent` 6/9 số;
-  (3) `StartHpPoint` ← dict; (4) playback thật để xác nhận `rate` là *shot/giây* — cần **thiết bị**.
-  > Đừng nói “chờ bind” hay “chờ dump thêm” nữa — cả hai đều là **câu trả lời cũ**, sai.
+- **L2 (giống **số** đến mức chơi thấy tương đương): CHƯA — nhưng không còn thiếu SỐ nào.**
+  Giá trị damage/rate/cost/độ dài map **đã có** (§2.1 + §2.2); index↔tàu (T4) + cấu trúc bảng Map
+  (`DIFFICULTY_MODES` §7) **đã bind**. Bốn mục từng liệt kê ở đây đều đã có/không tồn tại (§2):
+  `kHp` không phải hệ số · `missionKillPercent` đủ 3/3 · HP enemy bind theo id · `rate` = giây.
+  Cái còn là **playback thật để so TTK/cảm giác** — cần **thiết bị**, không phải thiếu số.
+  > Đừng nói “chờ bind”, “chờ dump thêm” hay “còn 4 số” nữa — cả ba đều là **câu trả lời cũ**, sai.
 - **L3 (không phân biệt được với bản gốc): HOÃN — KHÔNG BỎ.** L3 vẫn là **đích cuối** của dự án;
   nó không giải được bằng reverse (cần **playtest người thật**), nên **xếp sau L2**, không nằm trong
   vòng L1 hiện tại. **Không** có nghĩa là bỏ "thiết kế cho đẹp": phần đó là `VISUAL_DESIGN.md`
@@ -264,10 +268,11 @@ không phủ toàn bộ công thức chiến đấu.
 |---|---|---|
 | ~~Đọc consumer để nối `playerIndex` ↔ **ID tàu**~~ | **B3** đóng → TTK tuyệt đối | ✅ **XONG** — index = id − 10001 (T4, `0x14e2ce4`) |
 | ~~Bind 576 mảng map → (chapter, stage, mode)~~ | **A6** đóng → **A5** đóng | ✅ **XONG phần cấu trúc** — 11 cấu trúc, 614 mảng phân loại xong (`DIFFICULTY_MODES` §7); chi tiết từng entry là việc nhánh dữ liệu đã ghép (`datas/map_table_segments.json` + `maps.json`) |
-| Tính **`kHp[mode]`** (dump 3 thân spawn `Path_Spawner`/`PointToPoint_Spawner` — **asm đã có**, hoặc đếm phát bắn) | L2 | **việc thật còn lại** |
-| **`missionKillPercent`** 6/9 số còn thiếu + biết mảng ứng chế độ nào | nhiệm vụ/sao | việc thật còn lại |
-| `StartHpPoint` ← dict 150 cặp (đọc `Enemy_Datas.Init` `0x1582f5c` — **chưa có asm**) | TTK enemy tuyệt đối | cần 1 method asm |
-| Kiểm runtime `rate` (shot/giây?) + `PlayerUsed` refresh | L2 “giống số khi chơi” | cần **thiết bị** |
+| ~~Tính `kHp[mode]`~~ | L2 | ✅ **KHÔNG TỒN TẠI** — chế độ không nhân HP (`DIFFICULTY_MODES` §3–5); khác biệt = composition bảng len-3 |
+| ~~`missionKillPercent` 6/9 số~~ | nhiệm vụ/sao | ✅ **ĐỦ 3/3** — một `float[3]` theo mission index `[0.2/0.6/0.98]`; "3×3" là ảo đơn vị |
+| ~~`StartHpPoint` ← dict~~ | TTK enemy | ✅ **đã bind theo id** — dict 150 cặp là nguồn (`GetStartHealthPoint(id)`); `Init` chỉ là plumbing |
+| ~~Kiểm runtime `rate` (shot/giây?)~~ | L2 | ✅ **đã chốt (A)**: = giây delay theo nhánh (report 53, §2.4) |
+| Playtest so TTK/cảm giác + `PlayerUsed` refresh | L2 → L3 | cần **thiết bị** — kiểm hành vi, không phải thiếu số |
 
 > Bảng này **thay TODO cũ** (“đọc consumer nối playerIndex”, “bind 576 mảng”) — hai việc đó
 > **đã xong**, đừng lặp nữa (sửa 25/10 sau khi bị nhắc).
