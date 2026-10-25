@@ -836,3 +836,16 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   Không coi batch này đóng hai nhóm đó; không đợi ACK để làm tiếp.
 - Receipt92: code8bb7bd717, Verify40219912118 SUCCESS/job1m4s; đã gửi report92 qua PR12,
   raw/drone-loadout/handoff92-receipt.json giữ ID/response. Không tự coi peer đã ACK92.
+
+## Report93 — ACK92 reviewed; remaining wings configuration batch
+- Peer c80b1c50, ACK92=6401411518: 3/3 wording fixes independently verified, snapshots/raw retained.
+- `docs/apk-analysis/93-spec-review-and-wing-configurations.md`, `datas/wing_implementations.json`:
+  all24 roots/nested 876 method bodies/66845 instructions byte→ASM checked;14 ctor numeric-array joins.
+  17 SetBarrels functions/1314 instructions, including16 beyond impl1, normal/index/super config laws.
+  78new/full761 tests PASS49.228s; native Unicorn2.1.4 fixture, FPCR0 explicit, not live Unity/FPS/DPS.
+- Spec nhập floors14/16/19/21; direct-clamp level13/21; super20 still updates angle; keep S/V instance
+  inputs separate from ctor defaults. 10002 raw-prefix ID proof remains valid despite curve parse error.
+- NOT all23wing firing closure: next named Shoot/packet/coroutine consumers for17 configs and
+  special paths2/4/6/8/10/12/15 (report93§6), plus named map/save consumers unchanged.
+- 85 virtual-entry sites,83 receiver-must-owner; two15 GunCheckEnemies stack-spill sites explicit
+  unproven automatically, not missing native bytes. Do not replace this with global UNKNOWN rhetoric.
