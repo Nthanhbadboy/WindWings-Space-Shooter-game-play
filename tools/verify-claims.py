@@ -1734,7 +1734,7 @@ def ui_two_levels():
             sum(int(r.get("nodes") or 0) for r in idx))
 
 
-claim("P1", AUDIT, "**38 tài liệu** trong `docs/spec/` (chưa kể file này)", 38, doc_inventory,
+claim("P1", AUDIT, "**39 tài liệu** trong `docs/spec/` (chưa kể file này)", 39, doc_inventory,
       "quy mô tài liệu hiện có trong docs/spec")
 
 claim("P2", AUDIT, "**2.885** sprite, **2.816** có `width/height`; `04-asset-manifest.csv`: **2.907** asset, **2.838** có kích thước",
@@ -3030,6 +3030,33 @@ claim("AO4", "docs/spec/ASSET_TRIAGE.md",
       "**773**/1.857 ca đủ tự tin · đúng **666** (**86,2 %**)",
       (773, 666, 89, 0.862), knn_stats,
       "leave-one-out của tools/classify-knn.py; số đúng đo trên nhãn đã có, không phải nhãn mới")
+
+def provenance_check():
+    """(dòng bảng, khớp sha256, lệch) từ bảng sha256 trong datas/PROVENANCE.md."""
+    import hashlib
+    import re
+    path = os.path.join(ROOT, "datas/PROVENANCE.md")
+    if not os.path.isfile(path):
+        return None
+    txt = open(path, encoding="utf-8").read()
+    rows = re.findall(r"^([0-9a-f]{16})\s+(\d+)\s+(\S+)\s*$", txt, re.M)
+    ok = stale = 0
+    for sha, size, p in rows:
+        full = os.path.join(ROOT, p)
+        if not os.path.isfile(full):
+            continue
+        data = open(full, "rb").read()
+        if hashlib.sha256(data).hexdigest()[:16] == sha and len(data) == int(size):
+            ok += 1
+        else:
+            stale += 1
+    return (len(rows), ok, stale)
+
+
+claim("AP1", "docs/spec/DATA_INTEGRITY.md",
+      "**PROVENANCE: 244/383 khớp · 139 lệch · 0 thiếu**",
+      (383, 244, 139), provenance_check,
+      "băm lại 383 file gốc rồi so với bảng sha256 ghi lúc kéo 019e704d1")
 
 claim("AO2", "docs/spec/ASSET_TRIAGE.md",
       "### 9.2 Kết quả: **1.857/2.197 có nhãn**, còn **340**",

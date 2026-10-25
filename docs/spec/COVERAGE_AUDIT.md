@@ -6,8 +6,8 @@
 > File này **không** đánh giá lại bằng cảm nhận. Mỗi dòng là một phép đếm chạy lại được bằng
 > `tools/verify-claims.py` (nhóm **P**), hoặc trỏ thẳng vào file dữ liệu.
 >
-> **Quy mô hiện tại:** **38 tài liệu** trong `docs/spec/` (chưa kể file này) + **29 file dữ liệu**
-> trong `datas/` + **167 claim** đã khoá (**165 PASS · 2 SKIP**; nhóm P → AO).
+> **Quy mô hiện tại:** **39 tài liệu** trong `docs/spec/` (chưa kể file này) + **29 file dữ liệu**
+> trong `datas/` + **168 claim** đã khoá (**166 PASS · 2 SKIP**; nhóm P → AP).
 
 ---
 
