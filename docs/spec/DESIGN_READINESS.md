@@ -155,7 +155,7 @@ prototype 30 giây; phần "cảm giác" còn lại tự quyết.
 | biết **nhịp đòn** | 🔴 chưa | ✅ **0,17 · 0,33 · 1,0 · 5,0 s** |
 | biết **điều kiện chuyển state của enemy** | 🔴 chưa | 🟡 cần tham số `Animator` — **T4** của `HANDOFF_ANIM_RAW.md` |
 | đồ hoạ chuyển động (keyframe) | 🔴 0/791 | 🔴 **0/791** — nhưng L1 **làm art mới**, nên không cần |
-| đo playback trên máy | 🔴 0 lần | 🔴 **0 lần** — chỉ cần nếu làm L2/L3 |
+| đo playback trên máy | 🔴 0 lần | 🔴 **0 lần** — L2/L3 là **đích, KHÔNG hoãn** (lần 14 · report 96: **ưu tiên L3 trước**) ⇒ gate này **phải chạy** khi dựng cảnh/anim, không phải "nếu làm" |
 
 ⇒ Hệ quả: **thiết kế animation được ngay**. Cái duy nhất còn phụ thuộc dữ liệu là *điều kiện* máy
 trạng thái của enemy — và nó **không chặn** vì L1 cho phép tự đặt điều kiện.
@@ -170,7 +170,7 @@ trạng thái của enemy — và nó **không chặn** vì L1 cho phép tự đ
 | **Boss** | ✅ **A** cho cấu trúc | 46 boss · **39 prefab `Boss-*`** · **2 prefab Spine** (`Boss-39001/39002`) · 92 `Animator`/36 prefab · 795 event có mốc thời gian |
 | **Enemy** | ✅ **A** cho cơ chế | **399 đường bay** theo path (tập prefab đã đọc) · `Enemy_Appear` = base nhận `Action` qua tham số (**chưa** rõ binding) · `Enemy_Display` 5 field |
 | **Animation — *mốc trong clip*** | 🟡 **A** cho mốc / **C** cho điều kiện + hành vi | 33 prefab **793 event có mốc thời gian** · boss 1: **8 tên entry + 5 nhánh** chuyển state · nhịp đòn **0,17/0,33/1,0/5,0 s** · enemy = máy trạng thái 3 nhánh + hit flash **0,05 s** — xem **`ANIMATION_SCRIPT.md`** |
-| **Animation — *playback / feel*** | ⛔ **ngoài phạm vi** (feel bỏ; *script* đã có) | 0/791 keyframe · 0 phép đo playback runtime · hành vi 12 handler còn **C** — **chỉ cần nếu làm L2/L3** |
+| **Animation — *playback / feel*** | ⛔ **ngoài phạm vi** (feel bỏ; *script* đã có) | 0/791 keyframe · 0 phép đo playback runtime · hành vi 12 handler còn **C** — **L2/L3 là đích KHÔNG hoãn** (lần 14 · report 96): playback = gate phải chạy khi dựng |
 | **UI — cấu trúc** | ✅ **A** | **125 màn hình** (`screens.csv`: 125 dòng) · 53 board · 63 popup · 8 tab · screen graph + điều kiện mở từng popup ở `UI.md` |
 | **UI — art** | 🟡 **B** | asset pack v2 **đã xuất bản** (release `windwings-assets-1.3.118`, **175.684.102 B**, SHA `4b18cc23…`, report 70 — `DATA_SYNC` §21) + **đã phân tích tĩnh tới mức pixel/mesh/scene**: pixel tái tạo **2185/2185** (report 72) · mesh/pivot/PPU/border (report 75) · **1377** SpriteRenderer scene mở đầu + 5 camera (reports 76/77); **chưa render/import approval**; **không bê file về repo này** (cấm) — L1 làm art mới nên **không cần** |
 
@@ -193,7 +193,7 @@ xong:
 
 Và **một việc không nên làm**: đừng chờ thêm **mốc thời gian** trong clip — đã có. Nhưng **đừng** gọi là
 "đã có script": thứ tự pha, điều kiện chuyển state, số lần lặp và hành vi callback vẫn **C**. Chỉ *playback* là
-thiếu, và nó chỉ cần cho L2/L3.
+thiếu — và L2/L3 là đích KHÔNG hoãn (lần 14 · report 96 ⇒ **ưu tiên L3 trước**): playback/feel phải được đo bằng máy khi dựng cảnh.
 
 ### 6.1 Vòng 3 (24/10) — ba thay đổi so với bảng trên
 

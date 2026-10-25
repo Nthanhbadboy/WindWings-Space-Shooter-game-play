@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 35 — 26/10, đồng bộ report 96 peer `79fd382fff` — ĐỔI ƯU TIÊN: L3 TRƯỚC theo chủ dự án):**
+> ① `START_HERE` row L3 + `DONE` §2/§4.2: ghi ưu tiên mới (chuỗi L3 trước; wing/map-save chỉ đào
+> theo dependency cảnh) + UI binding index **797 màn** (76.806 obs · **1.099 sprite identity** ·
+> 54.787 chưa join); ② **sửa 3 stale peer bắt** (review `b000f905`): README row MISSING "L3 bỏ" →
+> hiện hành (16 hệ · L3 một phần), README row 2l "bỏ L2/L3" → đánh dấu **[LỊCH SỬ — đã bị thay]**,
+> `DESIGN_READINESS` "chỉ cần nếu làm L2/L3" ×3 → "L2/L3 là đích KHÔNG hoãn — gate phải chạy khi
+> dựng"; ③ **sửa nhận định của mình**: report 43/46 đã có scoped joins — thiếu là bảng đủ rộng;
+> ④ `MISSING` row 16 cập nhật; kéo `datas/ui_l3_bindings.json.gz` (datas/ = **43**). ACK96 PR12.
+> verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 34 — 25/10, tái kiểm CẨN THẬN theo nhắc của chủ dự án "cứ làm kiểu quán tính" — tự bắt lỗi của chính mình):**
 > ① **Bucket glyph lần 32 ghi SAI cơ chế**: CSV 624 chỉ chứa tên-chữ — bucket glyph (292) nằm NGOÀI
 > CSV; đo lại: **118 tên số = 25 tàu + 32 boss + 13 drone + 48 unclassified** (số "~34 boss" là
@@ -561,7 +571,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 | **Nghĩa** | game mới **tái lập trải nghiệm + art của bản gốc 1:1** — chuẩn màu, ánh sáng, khung, nhịp (APK gốc là **chuẩn trải nghiệm đã kiểm nghiệm**; dự án = **học tập thiết kế**) |
 | **Kiểm bằng** | **đối chiếu reference — đo được bằng máy, KHÔNG cần người test thật**: metrics `VISUAL_DESIGN` trong dung sai · so ảnh cùng scene · timeline khớp **795** event · audio khớp **15** rules |
 | **Đạt khi** | mọi chỉ số khớp reference trong **dung sai khai báo trước** |
-| **Bắt chước đủ?** | 🟡 **một phần — đính chính lần 33** (tuyên bố cũ "input đã đủ" là **quá mềm**, không đo đủ trước khi viết): đủ để **vẽ lại từng sprite đã biết** — pack v2 (70) + pixel/geometry/pivot/border ĐÓNG (62/72/75) + font 292 · **chưa đủ cho L3 trọn**: **505 sprite unknown** + 643 passthrough chưa kiểm (`ASSETS` §9.1) · **chưa có bảng sprite→màn/prefab** (UI 55.584 layout chưa join — queue PR12) · rig spine 27 *inferred* · worklist 624 có bucket glyph sai nhãn · metrics **35** ảnh/so ảnh/timeline = **gate chưa chạy**, không phải approval |
+| **Bắt chước đủ?** | 🟡 **một phần — đính chính lần 33** (tuyên bố cũ "input đã đủ" là **quá mềm**, không đo đủ trước khi viết): đủ để **vẽ lại từng sprite đã biết** — pack v2 (70) + pixel/geometry/pivot/border ĐÓNG (62/72/75) + font 292 · **chưa đủ cho L3 trọn**: **505 sprite unknown** + 643 passthrough chưa kiểm (`ASSETS` §9.1) · **UI binding index 797 màn ĐÃ CÓ (96** — 76.806 obs · **1.099 sprite identity** · 1.057 null; **54.787 file ngoài index chưa join**) · rig spine 27 *inferred* · worklist 624 có bucket glyph sai nhãn · metrics **35** ảnh/so ảnh/timeline = **gate chưa chạy**, không phải approval |
 | **Chi phí** | sản xuất art + đối chiếu — **không cần playtest** |
 
 > **Đây là đích của dự án — KHÔNG hoãn** (lần 14, 25/10, chủ dự án: *"không cần người test thật vì
@@ -658,7 +668,7 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 | Mục | Trước (mục tiêu L3) | **Sau khi chốt L1** | Hệ quả |
 |---|---|---|---|
 | **L2 — đúng số** | bắt buộc | ✅ **số đã đủ — làm ngay sau L1** | giá trị decode + bind xong; sót chứng minh **DPS runtime** (peer parity tàu 1) + 2 tái đối chiếu + wing còn special paths/named leaves (config 17/24 — 93 · emission 13/22/23/24 — 94; mapping/turnRate3 **ĐÓNG 92**)/`Board_Players`/bind entry map/save schema (`MISSING` §2) |
-| **L3 — khớp trải nghiệm + art** | bắt buộc | ✅ **ĐÍCH dự án — KHÔNG hoãn** · 🟡 **input một phần** (đính chính lần 33) | đối chiếu reference đo được (metrics + so ảnh + timeline/audio) — **song song L2** sau khi L1 chạy được, **không cần người test**; còn thiếu: join sprite→màn + 505 unknown + gate chưa chạy (lần 32/33) |
+| **L3 — khớp trải nghiệm + art** | bắt buộc | ✅ **ĐÍCH dự án — KHÔNG hoãn** · 🟡 **input một phần** (lần 33) · **⚡ ƯU TIÊN L3 TRƯỚC (report 96, theo chủ dự án)** | đối chiếu reference đo được (metrics + so ảnh + timeline/audio) — **không cần người test**; UI binding index 797 màn ĐÃ CÓ (96) · wing/map-save **chỉ đào khi là dependency cảnh**; còn thiếu: 54.787 file ngoài index + 505 unknown + gate chưa chạy |
 | Giá trị **4.861** `[SerializeField]` | phải có | 🟡 **tuỳ chọn** | dùng làm **tham khảo**, không phải để khớp |
 | Giá trị **957** `static` | phải có | 🟡 **tuỳ chọn** | " |
 | **45.659** tham chiếu enemy | phải resolve | 🟡 **tuỳ chọn** | danh sách **109 prefab** (đã resolve) đủ để chọn |

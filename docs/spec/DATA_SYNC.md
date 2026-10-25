@@ -3008,3 +3008,29 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   40 tests mới; full **854 PASS**; code `772839187a`. **Chưa chạy bên trong** (ghi rõ consumer tiếp):
   PoolManager, engine transform, IBullet concrete, `Bullet_Formation.CreateBullets 123d98c` (raw có
   ở combat-chain) — không lấy 95 làm giấy đóng 23 wing hay DPS/hit.
+
+### 24.29 Report 96 — Đưa L3 lên ưu tiên chính + UI screen→node→sprite index (peer `79fd382fff`, code `8789ef433`)
+
+- **Đổi ưu tiên theo chủ dự án**: **hoàn thiện chuỗi L3 trước** (hình trong đúng cảnh · bố cục ·
+  thứ lớp · ánh sáng · chuyển động · nhịp FX/âm); wing/map-save chỉ đào khi là **dependency cụ thể**
+  của cảnh/hiệu ứng cần dựng. Không lấy export/test xanh/số native kết luận L3 đủ; không blind-A/B.
+- **Bảng 6 mắt xích L3** (§1) — mỗi mắt ghi "thiếu cần làm", cấm đổi thành "đủ": identity/meaning →
+  **asset→UI/cảnh** → composited (hierarchy/material/blend/light/particle trong cảnh) → motion/juice
+  (ghép object/state, transitions, camera/feedback) → sound-đi-với-hình → **đối chiếu đầu ra** (gate
+  chưa chứng nhận; cùng metric ≠ cùng hình).
+- **Review spec `b000f905`**: lần 33 đính chính L3 **ĐÚNG** ✓ — nhưng còn stale: README mục "L3 bỏ"/
+  "bỏ L2/L3" + `DESIGN_READINESS` câu "chỉ cần nếu làm L2/L3" ⇒ đã sửa ở lần 35 này (đánh dấu
+  LỊCH SỬ / hiện hành). Đếm 505/643/27 của mình = **peer audit, chưa đo mới** — giữ nguyên nhãn.
+- **UI binding index — ĐÓNG một phần gap lần 32**: `datas/ui_l3_bindings.json.gz` tra theo
+  `sources`/`uses` (source index · node/component index · path · position/scale/rotation/size ·
+  activeSelf · visual_properties raw); identity exact = **(serialized_file, path_id)** qua PPtr +
+  externals, **không join tên toàn cục** (name_candidate_only không nâng thành exact). Đo:
+  **797 sources/117 class** (thuộc `_index.csv`) · **76.806** sprite component observations ·
+  **75.749** resolve nonnull · **1.057** null PPtr (không phải failed join) · **1.099 sprite identity
+  khác nhau**; **54.787 file ngoài index chưa join** — không âm thầm gộp coverage. ⚠ **Sửa nhận định
+  của mình**: report 43/46 **đã có** scoped joins — thiếu là bảng đủ rộng đưa cho design, không phải
+  "chưa từng có". 12 tests binding mới; Verify `40224533473 SUCCESS`.
+- **Queue L3 (thứ tự mới)**: ① UI reference chain (mở rộng ngoài index theo owner-scope: parent
+  effective state, sorting/material/font, selected/pressed/disabled; đi Home → chọn màn/tàu/drone →
+  HUD → pause/reborn → kết trận) ② gameplay appearance chain (player/drone/enemy/boss/bullet/
+  pickup/background → prefab → SpriteRenderer/mesh/material/particle/Spine → clip/state/event).
