@@ -244,3 +244,15 @@ còncheckplayer; không auto-win/không hardcodekill100%. Wait2scaled s→manage
 cleanup/stateEndgame→MoveOutPlayer→closurebool→OpenBoardVictory.
 Next: đúngprefabWave0164/0113/0005→Call_Data/Spawner counts/timing; liveenemylist
 add/remove và missionthresholds. Raw mới nhiều spawn implementations sẵn để nối.
+
+## Agent hiện tại — report54, exact early-wave resource joins
+
+- Đã resolve14 container entries từ APK pinned, giữ full trees + raw component
+  bytes ở `reverse-engineering/raw/early-waves/`. Đúng default roots0164→148604,
+  0113→21468,0005→38187 trong resources.assets; Chapter2/branch là roots khác.
+- Report54 + verifier18 checks;48 tests pass. Slot cấu hình không marker:
+  274/95/155, **không phải kill denominator hoặc observed enemy counts**.
+- Không dùng `datas/waves.json` nhóm theo tên hoặc enum5/6 cũ. Không resolve
+  generated typetree m_Script header; class exporter đọc parsed Mono head.
+- Premium tiếp tục deferred. Agent đang tự nối GP_Datas event78/79 và
+  Enemy_Destroy/pooling với mission thresholds, không cần chờ screenshot.
