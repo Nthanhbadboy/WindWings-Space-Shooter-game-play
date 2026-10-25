@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CLASSES = ()
 
 def selected(cls):
-    return bool(re.match(r'Player_Attack(?:_\d+)?(?:\.|$)|Bullet(?:_|[A-Z])|Homing_Missile|Rocket_No_Attack', cls)) or cls in {'Damager', 'Sub_Object', 'Sub_Character', 'Enemy_Sub', 'Enemy_Controller', 'Sub_Player', 'Sub_ShipProtect', 'Skeleton_SubObj', 'Enemy_Ingame', 'Enemy_Health', 'Enemy_Destroy', 'Enemy_Display', 'Shield_Sub', 'Player_Health', 'Player_Ingame', 'Player_Get_Datas', 'GP_Datas', 'Pool_GameObjects', 'BulletInfo', 'IBullet', 'IDamageable'}
+    return bool(re.match(r'Player_Attack(?:_\d+)?(?:\.|$)|Bullet(?:_|[A-Z])|Homing_Missile|Rocket_No_Attack', cls)) or cls in {'Damager', 'Obj_Collider', 'Sub_Object', 'Sub_Character', 'Enemy_Sub', 'Enemy_Controller', 'Sub_Player', 'Sub_ShipProtect', 'Skeleton_SubObj', 'Enemy_Ingame', 'Enemy_Health', 'Enemy_Destroy', 'Enemy_Display', 'Shield_Sub', 'Player_Health', 'Player_Ingame', 'Player_Get_Datas', 'GP_Datas', 'Pool_GameObjects', 'BulletInfo', 'IBullet', 'IDamageable'}
 APK_SHA = 'f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
 INPUTS = {'lib/arm64-v8a/libil2cpp.so': '9cb038e88709f38318d183d3616eed054b36c3186ead8f1c37246ece87393c99',
           'assets/bin/Data/Managed/Metadata/global-metadata.dat': '449a0698a1b71d0e4d04efafdb4e2fad97fd02ca8f8528715ad9638aa813ba69'}
@@ -167,7 +167,7 @@ def main():
                     errors.append(dict(serialized_file=filename, path_id=obj.path_id, error=repr(error))); continue
                 if not (re.fullmatch(r'Player_Attack_\d+', cls) or cls.startswith(('Bullet_', 'BulletZig', 'BulletClock', 'Homing_Missile', 'Rocket_No_Attack')) or cls in {
                     'Bullet_Object','Bullet_Linearly','Bullet_Player3','Bullet_Player7','Bullet_Sword',
-                    'Enemy_Sub','Enemy_Health','Shield_Sub','Sub_Player','Skeleton_SubObj'}): continue
+                    'Enemy_Sub','Enemy_Health','Obj_Collider','Shield_Sub','Sub_Player','Skeleton_SubObj'}): continue
                 try:
                     tree = obj.read_typetree()
                     go = head.m_GameObject.deref()
@@ -181,9 +181,31 @@ def main():
                                               raw_object_sha256=hashlib.sha256(obj_pool.get_raw_data()).hexdigest())
                         except Exception as error:
                             pool_entry = dict(error=repr(error), pointer=tree['m_OPScript'])
+                    root_binding = None
+                    if cls == 'Obj_Collider' and tree.get('rootTransform', {}).get('m_PathID'):
+                        try:
+                            from UnityPy.classes.PPtr import PPtr
+                            ptr = tree['rootTransform']
+                            transform = PPtr(m_FileID=ptr['m_FileID'],m_PathID=ptr['m_PathID'],assetsfile=obj.assets_file).deref()
+                            tr_tree=transform.read_typetree(); gp=tr_tree['m_GameObject']
+                            root_go=PPtr(m_FileID=gp['m_FileID'],m_PathID=gp['m_PathID'],assetsfile=transform.assets_file).deref()
+                            go_tree=root_go.read_typetree(); root_components=[]
+                            for cp in go_tree['m_Component']:
+                                pp=cp['component']
+                                co=PPtr(m_FileID=pp['m_FileID'],m_PathID=pp['m_PathID'],assetsfile=root_go.assets_file).deref()
+                                item=dict(path_id=co.path_id,type=co.type.name)
+                                if co.type.name=='MonoBehaviour':
+                                    hh=co.parse_monobehaviour_head(); ss=hh.m_Script.deref_parse_as_object()
+                                    item.update(class_name=ss.m_ClassName,namespace=ss.m_Namespace)
+                                root_components.append(item)
+                            root_binding=dict(serialized_file=next(n for n,f in serialized_files(env) if f is root_go.assets_file),
+                                transform_path_id=transform.path_id,gameobject_path_id=root_go.path_id,
+                                gameobject_tree=go_tree,components=root_components)
+                        except Exception as error:
+                            root_binding=dict(error=repr(error),pointer=tree['rootTransform'])
                     components.append(dict(serialized_file=filename, path_id=obj.path_id, class_name=cls,
                         namespace=namespace, raw_object_hex=(obj.get_raw_data().hex() if cls.startswith('Player_Attack_') else None), raw_object_sha256=hashlib.sha256(obj.get_raw_data()).hexdigest(),
-                        tree=tree, pool_entry=pool_entry, gameobject=dict(path_id=go.path_id, tree=go.read_typetree())))
+                        tree=tree, pool_entry=pool_entry, root_binding=root_binding, gameobject=dict(path_id=go.path_id, tree=go.read_typetree())))
                 except Exception as error:
                     errors.append(dict(serialized_file=filename, path_id=obj.path_id, class_name=cls,error=repr(error), raw_object_hex=obj.get_raw_data().hex(), raw_object_sha256=hashlib.sha256(obj.get_raw_data()).hexdigest(), gameobject=dict(path_id=head.m_GameObject.deref().path_id, tree=head.m_GameObject.deref().read_typetree())))
         shards=[]
