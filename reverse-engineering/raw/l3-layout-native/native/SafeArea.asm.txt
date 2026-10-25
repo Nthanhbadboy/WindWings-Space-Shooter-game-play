@@ -1,0 +1,100 @@
+;;; get_top  public static float get_top() { }
+    0x141d7c0: str      x30, [sp, #-0x20]!
+    0x141d7c4: stp      x20, x19, [sp, #0x10]
+    0x141d7c8: adrp     x20, #0x2ce1000
+    0x141d7cc: adrp     x19, #0x2ae6000
+    0x141d7d0: ldrb     w8, [x20, #0xc86]
+    0x141d7d4: ldr      x19, [x19, #0x158]
+    0x141d7d8: tbnz     w8, #0, #0x141d7f0
+    0x141d7dc: adrp     x0, #0x2ae6000
+    0x141d7e0: ldr      x0, [x0, #0x158]
+    0x141d7e4: bl       #0x110d028
+    0x141d7e8: mov      w8, #1
+    0x141d7ec: strb     w8, [x20, #0xc86]
+    0x141d7f0: bl       #0x141d80c
+    0x141d7f4: ldr      x8, [x19]
+    0x141d7f8: ldp      x20, x19, [sp, #0x10]
+    0x141d7fc: ldr      x8, [x8, #0xb8]
+    0x141d800: ldr      s0, [x8]
+    0x141d804: ldr      x30, [sp], #0x20
+    0x141d808: ret      
+
+;;; GetSafePoint  private static void GetSafePoint() { }
+    0x141d80c: str      d10, [sp, #-0x30]!
+    0x141d810: stp      d9, d8, [sp, #8]
+    0x141d814: str      x30, [sp, #0x18]
+    0x141d818: stp      x20, x19, [sp, #0x20]
+    0x141d81c: adrp     x19, #0x2ce1000
+    0x141d820: adrp     x20, #0x2ae6000
+    0x141d824: ldrb     w8, [x19, #0xc88]
+    0x141d828: ldr      x20, [x20, #0x158]
+    0x141d82c: tbnz     w8, #0, #0x141d844
+    0x141d830: adrp     x0, #0x2ae6000
+    0x141d834: ldr      x0, [x0, #0x158]
+    0x141d838: bl       #0x110d028
+    0x141d83c: mov      w8, #1
+    0x141d840: strb     w8, [x19, #0xc88]
+    0x141d844: ldr      x8, [x20]
+    0x141d848: ldr      x8, [x8, #0xb8]
+    0x141d84c: ldr      s0, [x8]
+    0x141d850: fcmp     s0, #0.0
+    0x141d854: b.eq     #0x141d864
+    0x141d858: ldr      s0, [x8, #4]
+    0x141d85c: fcmp     s0, #0.0
+    0x141d860: b.ne     #0x141d8c8
+    0x141d864: mov      x0, xzr
+    0x141d868: bl       #0x27666dc
+    0x141d86c: mov      x0, xzr
+    0x141d870: mov      v8.16b, v1.16b
+    0x141d874: mov      v9.16b, v3.16b
+    0x141d878: bl       #0x27665e4
+    0x141d87c: mov      w19, w0
+    0x141d880: mov      x0, xzr
+    0x141d884: bl       #0x275e868
+    0x141d888: cbz      x0, #0x141d8dc
+    0x141d88c: mov      x1, xzr
+    0x141d890: scvtf    s10, w19
+    0x141d894: fadd     s9, s8, s9
+    0x141d898: bl       #0x275e174
+    0x141d89c: ldr      x8, [x20]
+    0x141d8a0: fsub     s1, s10, s9
+    0x141d8a4: fadd     s2, s0, s0
+    0x141d8a8: fmul     s1, s1, s2
+    0x141d8ac: ldr      x8, [x8, #0xb8]
+    0x141d8b0: fmul     s2, s8, s2
+    0x141d8b4: fdiv     s1, s1, s10
+    0x141d8b8: fdiv     s2, s2, s10
+    0x141d8bc: fsub     s1, s0, s1
+    0x141d8c0: fsub     s0, s2, s0
+    0x141d8c4: stp      s1, s0, [x8]
+    0x141d8c8: ldp      x20, x19, [sp, #0x20]
+    0x141d8cc: ldr      x30, [sp, #0x18]
+    0x141d8d0: ldp      d9, d8, [sp, #8]
+    0x141d8d4: ldr      d10, [sp], #0x30
+    0x141d8d8: ret      
+    0x141d8dc: bl       #0x110d250
+
+;;; get_bot  public static float get_bot() { }
+    0x141d8e0: str      x30, [sp, #-0x20]!
+    0x141d8e4: stp      x20, x19, [sp, #0x10]
+    0x141d8e8: adrp     x20, #0x2ce1000
+    0x141d8ec: adrp     x19, #0x2ae6000
+    0x141d8f0: ldrb     w8, [x20, #0xc87]
+    0x141d8f4: ldr      x19, [x19, #0x158]
+    0x141d8f8: tbnz     w8, #0, #0x141d910
+    0x141d8fc: adrp     x0, #0x2ae6000
+    0x141d900: ldr      x0, [x0, #0x158]
+    0x141d904: bl       #0x110d028
+    0x141d908: mov      w8, #1
+    0x141d90c: strb     w8, [x20, #0xc87]
+    0x141d910: bl       #0x141d80c
+    0x141d914: ldr      x8, [x19]
+    0x141d918: ldp      x20, x19, [sp, #0x10]
+    0x141d91c: ldr      x8, [x8, #0xb8]
+    0x141d920: ldr      s0, [x8, #4]
+    0x141d924: ldr      x30, [sp], #0x20
+    0x141d928: ret      
+
+;;; ctor  public void .ctor() { }
+    0x141d92c: mov      x1, xzr
+    0x141d930: b        #0x2782ba0
