@@ -159,3 +159,16 @@ lại thuộc packagePremium: không nhận làm gameplay evidence bản gốc.
 `collect.sh` của remote còn gọi get ở4b trước definition: chuyển helper lên đầu,
 kiểm JSON ok và missing/errors từng field, không lấy HTTP200/CIgreen làm nghiệm thu.
 Giữ raw/provenance cho mọi lần đo, không blind-merge tooling.
+
+### Ưu tiên mới từ người dùng — xem ảnh đọc flow, Premium để sau
+
+Report49 đã xem35PNG của phone capture (ref25c367aca), chỉ dùng để nhận diện
+trạng thái/luồng UI, không dùng balance, không đo/vẽ lại từ screenshot.
+Có intro STAGE1 NORMAL/TOUCH TO PLAY; hint kéo tay; hint nhả tay đổi tàu;
+Switch ships wisely Hard fight/Easy kill; combat; boss; VICTORY bị modal che.
+Hint nhả tay còn xuất hiện lúc boss: không tự cố định nó ở đầu stage.
+**Chưa thấy title stage2/3 hoặc kết quả sạch/Home/Map.** Tên p_2/r2_2 không phải
+stage2; victory_next không chứng minh đã chuyển stage. Contact sheets không phải
+timeline. Để nội dung Premium sang sau, ưu tiên thu chuỗi kết quả sạch→Continue
+→titleStage2→titleStage3 có timestamps/actions. Manifest/raw quan sát được giữ
+trong raw/ui-flow-review; JPEG duyệt ở docs/apk-analysis/ui-flow-review.
