@@ -99,3 +99,13 @@ static bool branch chưa resolve tên bằng registration map, không tự nâng
 Map đạt trần6000 node, không báo full coverage. Commit1989defc2 tăng12000 và
 báo truncation; a2fac1df7 thêm external/font/material/camera context. Nghiệm thu
 raw mới rồi mới bỏ OPEN. Tất cả là PROVISIONAL.
+
+## UI routing vòng tiếp — report45
+
+Raw routing-and-persistence.json.gz có direct-call sites, asm/hash và enum scene.
+Continue không phải cạnh Next Stage duy nhất: có Home/Game routes, có nhánh
+popupNotice khi btnX20Coins active; callback confirm tail-call Continue.
+set_IndexTutorial gọi PlayerPreferences.SetInt, chưa chứng minh flush/restart.
+GOT slot chưa được gọi là metadata address: metadata name recovery đã có raw,
+lượt relocation recovery dùng native checksum-pinned để resolve đúng slot.
+Không nâng Unknown chỉ vì có tên gần giống. Xem trạng thái nghiệm thu report45.
