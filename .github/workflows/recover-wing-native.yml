@@ -26,7 +26,7 @@ jobs:
           test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
           git config user.name 'Arena evidence collector'
           git config user.email 'agent@arena.ai'
-          git add reverse-engineering/raw/wing-implementations
+          git add reverse-engineering/raw/wing-implementations reverse-engineering/raw/wing-emission
           git diff --cached --quiet || git commit -m 'Preserve all24 player attack executable evidence [skip ci]'
           for attempt in 1 2 3; do
             git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
