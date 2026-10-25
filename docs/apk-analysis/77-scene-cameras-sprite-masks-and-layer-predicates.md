@@ -101,7 +101,8 @@ kiểm66overlap object hashes, typedmaskSprite→mesh, layernames và source-cam
 maskstate/no-bindingclaims, activity≠visibility và preserved camera projection fields.
 
 **Local239tests PASS** vớiPillow12, datasvalidation PASS; finalVerify của code bàn giao
-được theo dõi riêng. Tests không thực thiUnityrendering.
+**40202243648 SUCCESS** trêncode0f7ae8853:239tests/pinnedPillow12.
+Tests không thực thiUnityrendering.
 
 Không ảnh/PNG/ZIP gốc mới trongGit, release/media không đổi. Không ngụy tạo UV/world matrix,
 không dùng camera setup khác để thay original data. Premium/pool-history vẫnhoãn.
