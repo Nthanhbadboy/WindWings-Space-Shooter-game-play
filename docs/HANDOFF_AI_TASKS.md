@@ -50,3 +50,11 @@ Nguồn: `raw/ui/*.json.gz` (field `components[].text` + `key`) + `i18n/vi.json`
 ## Xong khi
 - 4 file, mọi con số có `(nguồn, mức)`, không có kết luận nào ở mức C bị trình bày như số thật.
 - Mỗi file có mục "còn thiếu" riêng.
+
+## Ưu tiên mới — review nhánh spec 25/10/2026
+
+Đọc **docs/HANDOFF_SPEC_REVIEW_71b1e9861.md** trước khi viết design tiếp.
+R1–R3 là P0: timestamp không chứng minh thứ tự pha; 12 handler không mở khóa
+793 event; base Enemy_Appear không chứng minh appearance của mọi enemy.
+R4–R7 cập nhật raw và sửa điều kiện kết luận quá mạnh. Nhánh spec sửa tài liệu/
+claim bên nhánh mình; nhánh dữ liệu giữ các task đào raw còn mở. Không merge.
