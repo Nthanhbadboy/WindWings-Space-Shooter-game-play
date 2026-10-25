@@ -82,3 +82,41 @@ thu hồi để kiểm GOT slots vs metadata addresses, không thay chúng cho n
 **Đầu vào vẽ tăng thêm:** tách frame Endgame tutorial/confirmation/loading-route;
 không nối Continue thành “luôn next stage”, không gọi setter preference là bằng
 chứng persistence runtime đã hoàn tất. Các kết luận vẫn tạm thời.
+
+## Cập nhật trong cùng vòng: đã resolve bằng relocation, không đoán offset
+
+Recovery **40180955473 success**, bot **633d552b1**. Raw metadata-slots.json giữ
+SHA256 script.json, SHA256 libil2cpp.so và từng GOT→effective address. Native
+source lấy từ XAPK cache có checksum đúng bản APKPure đang phân tích.
+Recovery40180858092 trước đó đã lấy được metadata names nhưng chưa đủ join GOT;
+lượt40180955473 lấp đúng bước còn thiếu này.
+
+| GOT slot | Effective address | Resolve chính xác |
+|---|---|---|
+| 0x2adc6b0 | 0x2ba5400 | Board_Endgame_TypeInfo → static +0 là **victory** theo dump |
+| 0x2adc200 | 0x2be6688 | key string **TUTORIAL** |
+| 0x2adc840 | 0x2ba6d38 | GameMode_TypeInfo → +0 là playMode |
+| 0x2adc768 | 0x2ba7030 | Home_Loader_TypeInfo → +0 là defaultBoard |
+| 0x2adbde8 | 0x2baa360 | Stage_Datas_TypeInfo |
+| 0x2addcc0 | 0x2bceb78 | Fade Home callback → RVA0x1276e10 |
+| 0x2addcf0 | 0x2bceb80 | Fade Game callback → RVA0x1276e1c |
+
+Hai Fade callback trong Board_Endgame.__c đã có asm: lần lượt gọi LoadScene(1)
+và LoadScene(2), khớp fallback. Không còn treo đích hai callback này.
+Script kiểm routing hiện giữ **10 method selections/10 instruction+join checks**.
+
+**Các OPEN phía trên được thu hẹp như sau:**
+- Tên bool đã xác nhận là victory. Nhánh sau chuẩn bị state: thua hoặc
+  IndexTutorial>2 → scene Home; thắng và IndexTutorial<=2 → scene Game.
+- Key preference đã xác nhận là `TUTORIAL`; setter viết key đó, chưa chứng minh
+  wrapper flush/atomicity khi app bị kill.
+- Continue mode Normal đặt Home_Loader.defaultBoard=6 (**BoardStage**) ở nhánh
+  mặc định; zone/stars có nhánh ghi đè BoardMaps=5. Cần phân biệt **scene Home**
+  với **màn Home**: vào scene Home không có nghĩa mở Board_Home.
+- Stage_Datas.IsContinue/IsReplay liền nhau +0x38/+0x39 được ghi strh1, tức
+  IsContinue=true, IsReplay=false trên little-endian ARM64. Không chỉ đổi màn.
+- Victory callback trong report44 giờ được gọi đúng tên: bật Continue, ẩn Replay,
+  tăng IndexTutorial. Không còn phải giữ tên nhánh “bool chưa biết”.
+
+Còn OPEN: Home_Loader consumer/defaultBoard ưu tiên popup, đầy đủ queue sau
+reward, crash/restart persistence; nghiệm thu raw render-context/Map lượt mới.

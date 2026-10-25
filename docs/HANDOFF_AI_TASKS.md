@@ -109,3 +109,13 @@ set_IndexTutorial gọi PlayerPreferences.SetInt, chưa chứng minh flush/resta
 GOT slot chưa được gọi là metadata address: metadata name recovery đã có raw,
 lượt relocation recovery dùng native checksum-pinned để resolve đúng slot.
 Không nâng Unknown chỉ vì có tên gần giống. Xem trạng thái nghiệm thu report45.
+
+### Relocation recovery đã xác nhận (report45 bổ sung)
+
+40180955473 success/633d552b1: GOT→effective metadata giữ native/script SHA.
+Cờ là victory, key là TUTORIAL; fade callbacks load scene Home1/Game2.
+Đừng gộp scene Home với Board_Home: Continue Normal chuẩn bị defaultBoard=6
+(BoardStage), có zone/stars override=5 (BoardMaps). IsContinue=true/IsReplay=false.
+Nhánh sau chuẩn bị: victory && IndexTutorial<=2 đi Game, còn lại đi scene Home.
+Còn đọc Home_Loader consumer/queue để chốt màn hiện thực tế. Raw +10checks giữ
+ở ui-audit/routing-and-persistence.json.gz, không chỉ lời bàn giao.
