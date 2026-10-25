@@ -2859,9 +2859,9 @@ claim("WR7", "docs/spec/DATA_SYNC.md",
       "min/med/max Σ len mỗi wave 2/63/603 — đừng trộn với 45.659")
 
 claim("RD1", "docs/spec/README.md",
-      "**Kiểm tự động (`RD1`):** **39/39** dòng trong bảng trên khớp",
-      (39, 0), readme_sizes,
-      "số dòng · số bảng của 39 tài liệu trong bảng README khớp file thật (bảng đếm theo dòng `|---`)")
+      "**Kiểm tự động (`RD1`):** **40 dòng · 0 lệch**",
+      (40, 0), readme_sizes,
+      "mỗi dòng `N dòng · M bảng` trong bảng tài liệu README được đo lại từ file thật; lệch 1 dòng là FAIL")
 
 
 claim("AB1", ASSET_TRIAGE,
@@ -3550,39 +3550,6 @@ def test_suite_count():
     return int(m.group(1)) if m else None
 
 
-def readme_sizes():
-    """(số dòng bảng README có số đo, số dòng lệch so với file thật)."""
-    import re as _re
-    text = open(os.path.join(ROOT, "docs/spec/README.md"), encoding="utf-8").read()
-    entries = 0
-    bad = 0
-    for name, want_lines, want_tables in _re.findall(
-        r"`([A-Za-z_0-9./-]+\.md)`.*?(\d+) dòng · (\d+) bảng", text
-    ):
-        rel = name if "/" in name else "docs/spec/" + name
-        body = open(os.path.join(ROOT, rel), encoding="utf-8").read().splitlines()
-        got = (len(body), sum(1 for line in body if line.lstrip().startswith("|---")))
-        entries += 1
-        bad += got != (int(want_lines), int(want_tables))
-    return (entries, bad)
-
-
-claim("RD1", "docs/spec/README.md",
-      "**Kiểm tự động (`RD1`):** **39 dòng · 0 lệch**",
-      (39, 0), readme_sizes,
-      "mỗi dòng `N dòng · M bảng` trong bảng tài liệu README được đo lại từ file; lệch 1 dòng là FAIL")
-
-claim("OP1", "docs/spec/DATA_SYNC.md",
-      "**41 method · 25 check · 8 key family**",
-      (41, 25, 8), opening_persistence_counts,
-      "chạy chính tools/verify/opening_persistence.py của nhánh dữ liệu trên raw đã kéo ⇒ không phải chép số từ report")
-
-claim("TS1", "docs/spec/DATA_SYNC.md",
-      "**16 test OK**",
-      16, test_suite_count,
-      "chạy thật `python3 -m unittest discover -s tests -q`; đếm test đã chạy, không đếm hàm test")
-
-
 claim("GE1", "docs/spec/ASSET_TRIAGE.md",
       "**2.185** `Sprite` · **654** `Texture2D` · **66** `SpriteAtlas`; resolve **2.185/2.185**, `unresolved` = **[]**",
       (2185, 654, 66, 2185, 0), sprite_geometry_stats,
@@ -3602,8 +3569,8 @@ claim("GE2", "docs/spec/ASSET_TRIAGE.md",
 
 
 claim("RB1", "docs/spec/RAW_AUDIT.md",
-      "**RAW 151 · DOC 4 · CONST 37 · tổng 192**",
-      (151, 4, 37, 192), raw_audit_counts,
+      "**RAW 149 · DOC 3 · CONST 37 · tổng 189**",
+      (149, 3, 37, 189), raw_audit_counts,
       "sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. "
       "CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập")
 

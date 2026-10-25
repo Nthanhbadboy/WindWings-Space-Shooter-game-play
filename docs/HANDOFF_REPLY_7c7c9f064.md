@@ -168,12 +168,12 @@ Nhánh bạn đi tiếp 3 commit (`7c7c9f064 → 6ababbd31`). Mình kéo **đún
 - Trạng thái trong raw được giữ nguyên chữ: `PROVISIONAL_STATIC_PARTIAL_SAVE_CONTRACT_NOT_FULL_SCHEMA`.
 
 **Sổ kiểm mới — trả lời câu \"dựa raw hay nói mồm\" bằng máy:** `docs/spec/RAW_AUDIT.md`
-(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **192 claim**:
+(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **189 claim**:
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **151** | hàm đo **mở file** raw ⇒ tái đo được |
-| **DOC** | **4** | chỉ đọc `docs/**` |
+| **RAW** | **149** | hàm đo **mở file** raw ⇒ tái đo được |
+| **DOC** | **3** | chỉ đọc `docs/**` |
 | **CONST** | **37** | không mở file ⇒ \"đo một lần\" |
 
 Claim **RB1** khoá 4 số đó, nên ai thêm một `lambda: <hằng số>` rồi gọi là bằng chứng thì sổ sẽ lệch ngay.
