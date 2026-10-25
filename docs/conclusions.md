@@ -11,7 +11,11 @@
 >
 > Kết luận C **không được** dùng làm thông số implement; chỉ để định hướng.
 
-## Trạng thái kiểm lại hiện hành — sau report76 (ưu tiên hơn bảng lịch sử dưới đây)
+## Trạng thái kiểm lại hiện hành — sau report77 (ưu tiên hơn bảng lịch sử dưới đây)
+
+**Report77:**5initial-sceneCamera+12SpriteMask/layercontext,66overlaprawhashesmatch76.
+Gamecamera masks7959/32disjoint;12maskcontexts khôngaffectingbindings,78bit+activityAND
+khôngvisibility. Sourceortho/maskranges/alpha/layernames giữnguyên, chưaGPU/stencil/runtimeproof.
 
 **Report76:**1377initialsceneSpriteRenderers/218Spritejoins/7materials/fullancestorchains;
 78serializedactivityAND khôngvisibility,303mask-dependentstates,61438excludedprefabroots.

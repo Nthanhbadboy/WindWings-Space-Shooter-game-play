@@ -142,3 +142,13 @@ renderertransform hoặcUnityGPUapproval.6tests mới;media/release khôngđổi
 78activityAND khôngvisibility,303mask-dependentstates;61438prefabrenderers ngoàirootscope.
 Khôngworldmatrix/UV/runtimewriter/camera/shader/PMAapproval,khôngresetflip/scale/nullSprite.
 8tests mới;release/media khôngđổi.
+
+
+## Scene camera / mask context — report77
+
+`scene_render_context_contract.json.gz`:5initial-sceneCamera/12SpriteMask/TagManagerlayers,
+sourcechains/bitpredicates cho1377renderers từ76,khôngvisiblelist/affectingmaskbindings.
+Raw/scene-context giữ122objects/chunks/links;66cross-captureobjects rawhashequal.
+`python3 tools/verify/scene_context_contracts.py` kiểmhashes/PPtrs/typedmaskSprite/layerbits.
+Gamecameras mask7959/32disjoint,3masksserializedactive,191resourcesmasks ngoài rootscope.
+7tests mới;khôngcamera projection/stencil/runtime/GPUapproval,media/release khôngđổi.

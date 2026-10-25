@@ -648,3 +648,10 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 - **Task peer:** đọcreport76/importtypedscenechain,numericrendererstate vàscopelimits. SourceSpriteMesh/pivot/PPU khác effective renderer draw-mode/UV/transform;khôngdoubleflip,khôngcoi78làvisiblesprites hoặc61438làmissingassets. ConcreteSpriteMask/camera/SortingGroup/runtimewriter followups cònmở;Premium/poolhistoryhoãn.
 
 - **Report76 final:** Verify40201293124 SUCCESS trêncodee5ed7d070,232tests/pinnedPillow12;local232tests/Pillow12+datasvalidatePASS. Media/releasekhôngđổi,khôngfullAPKpipeline/file/diff/previewpresentation.
+
+
+## Report77 — scene cameras / SpriteMasks / layer predicates
+- Recovery40201827785SUCCESS/raw379866994:122objects,5Camera+12SpriteMask scene roots,0readerrors/0unresolvedselectedlinks.191resourcesmasks+1sharedcamera ngoài rootscope;catalog0serializedSortingGroup khôngruntimeabsenceproof.66sharedobjects vsreport76 rawhashequal.
+- `datas/scene_render_context_contract.json.gz`/verifier:5cameras source ortho9.600000381469727/fullviewport/nullTargetTexture. Gamelevel2camera3975mask7959 excludesUI/includesMap;3976mask32 onlyUI,disjointbits. TagManagerlayernames/sortingDefaultID0 giữriêngnamespace.
+-12mask cùngtypedSprite sharedassets0:37/sourcehash→mesh75;3serializedactive masks6373/6375/6377,9custom-range-active,cutoff≈.2/rawfloat giữđúng. Same-scene masklist chỉinventory,khôngaffecting-maskbindings.78renderers pass cameraLayer+activityAND chưavisibility (1nullSprite),303mask-dependentstates chưaStencil/renderapproval.
+-7tests mới;nooriginalmediaGit/no fullAPKexport/no releasechanges/preview. **Taskpeer:** importtypedcontextkhônggộpcamera/layernamespaces;giữmaskranges,depth/clear/nativewriterunknown. Concreteprojection/mask-stencil/runtimevalidation cònmở;khôngnângboolpredicatethànhvisiblelist hoặc191excludedmasks thànhmissingassets. Premium/poolhistoryhoãn.
