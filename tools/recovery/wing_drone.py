@@ -4,7 +4,7 @@ from pathlib import Path
 from combat_coroutine_cells import APK_SHA,LIB_SHA,extract
 ROOT=Path(__file__).resolve().parents[2]
 ROOTS={'Droid_Attack','Droid_Attack_1','Droid_Attack_2','Droid_Attack_3'}
-EXTRA={0x14e5404}
+EXTRA={0x14e5404,0x14e553c,0x1450928}
 
 
 def recover(binary,metadata,destination):
