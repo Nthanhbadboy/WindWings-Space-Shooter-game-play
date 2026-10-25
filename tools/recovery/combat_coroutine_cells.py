@@ -28,7 +28,7 @@ def extract(binary):
     return {'status':'PINNED_ELF_COROUTINE_TABLES_AND_DELEGATE_LITERAL_CELLS','xapk_sha256':APK_SHA,'lib_sha256':LIB_SHA,'cells':cells}
 
 
-def recover_delegates(binary, destination):
+def recover_delegates(binary, destination, roots=('Player9_Clone','Player23_Pumpkin')):
     root=Path(__file__).resolve().parents[2]
     sys.path.insert(0,str(root/'tools/apk-analyze'))
     import il2cpp_consts as native
@@ -37,8 +37,8 @@ def recover_delegates(binary, destination):
         dump.write_bytes(gzip.decompress((root/'reverse-engineering/il2cpp/dump.cs.gz').read_bytes()))
         lib.write_bytes(binary)
         rows=native.parse_dump(str(dump))
-        selected={r[0] for r in rows if r[0].split('.')[0] in ('Player9_Clone','Player23_Pumpkin')}
-        assert {'Player9_Clone','Player23_Pumpkin'}<=selected
+        selected={r[0] for r in rows if r[0].split('.')[0] in roots}
+        assert set(roots)<=selected
         masked=[(cls if cls in selected else '__not_selected__',ns,name,offset,rva,sig) for cls,ns,name,offset,rva,sig in rows]
         native.parse_dump=lambda _:masked
         native.TARGET_CLASSES.clear();native.TARGET_CLASSES.update({c:'Delegated clone/pumpkin combat control' for c in selected})
@@ -52,7 +52,7 @@ def recover_delegates(binary, destination):
 
 
 if __name__ == '__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--xapk',required=True);parser.add_argument('--output',required=True);parser.add_argument('--delegates-dir');args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--xapk',required=True);parser.add_argument('--output',required=True);parser.add_argument('--delegates-dir');parser.add_argument('--receivers-dir');args=parser.parse_args()
     data=Path(args.xapk).read_bytes();assert hashlib.sha256(data).hexdigest()==APK_SHA
     found=[]
     with zipfile.ZipFile(io.BytesIO(data)) as outer:
@@ -63,5 +63,8 @@ if __name__ == '__main__':
                     if path in inner.namelist():
                         binary=inner.read(path);found.append(extract(binary))
                         if args.delegates_dir:recover_delegates(binary,Path(args.delegates_dir).resolve())
+                        if args.receivers_dir:
+                            dest=Path(args.receivers_dir).resolve()
+                            recover_delegates(binary,dest,('Enemy_DestroyDelayed','MB_Destroy','EventDispatcherExtension','EventDispatcher'))
     assert len(found)==1
     out=Path(args.output);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(found[0],indent=2)+'\n')
