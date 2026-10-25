@@ -5,6 +5,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: l3-layout-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   recover:
     runs-on: ubuntu-latest
