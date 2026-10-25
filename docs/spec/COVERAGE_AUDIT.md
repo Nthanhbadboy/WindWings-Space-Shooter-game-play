@@ -6,8 +6,8 @@
 > File này **không** đánh giá lại bằng cảm nhận. Mỗi dòng là một phép đếm chạy lại được bằng
 > `tools/verify-claims.py` (nhóm **P**), hoặc trỏ thẳng vào file dữ liệu.
 >
-> **Quy mô hiện tại:** **34 tài liệu** trong `docs/spec/` (chưa kể file này) + **29 file dữ liệu**
-> trong `datas/` + **146 claim** đã khoá (**144 PASS · 2 SKIP**; nhóm P → AA).
+> **Quy mô hiện tại:** **35 tài liệu** trong `docs/spec/` (chưa kể file này) + **29 file dữ liệu**
+> trong `datas/` + **149 claim** đã khoá (**147 PASS · 2 SKIP**; nhóm P → AB).
 
 ---
 
@@ -46,9 +46,10 @@ phải **cơ chế**.
 | 12 | **Animation** | 🟡 **B** cho **mốc** · **C** cho **điều kiện + hành vi** | 793 event có mốc **trong clip** (không phải thứ tự pha) · nhịp 0,17/0,33/1,0/5,0 s · hit flash 0,05 s | **thứ tự pha + điều kiện vào/thoát** (R1) · **hành vi** handler (T2) · **0/791 keyframe** (cố ý bỏ) |
 | 13 | **FX** | 🟡 **B** | **4.845** `ParticleSystem` · ~23 module · scalar + `length_in_sec` + `looping` | **curve** module (chưa đọc) |
 | 14 | **Âm thanh** | 🟡 **B** | **92 sound id** → **92/92** resolve ra file (83 sfx + 9 bgm) trên **69** `AudioClip` | **trigger**: âm nào phát ở sự kiện nào (chưa xref) |
-| 15 | **Cảm giác (feel)** | 🔴 **D** | hit flash 0,05 s + alpha 0,5 (đo được) | hit stop · aim assist · input latency · thứ tự stat · tỉ lệ rơi · giảm damage của giáp (D1–D4) |
+| 15 | **Cảm giác (feel)** | ⛔ **ngoài phạm vi** (chỉ đạo 25/10: **bỏ feel, script là đủ**) | hit flash 0,05 s + alpha 0,5 vẫn ghi lại làm tham khảo | **không** tính vào tiêu chí nghiệm thu (D1–D4: hit stop · aim assist · input latency · tỉ lệ rơi) |
 
-> Bảng có 15 dòng vì "Player" và "Súng/đạn" tách nhau; **14 vùng** ở §0 gộp chúng lại.
+> Bảng có 15 dòng vì "Player" và "Súng/đạn" tách nhau; **14 vùng** ở §0 gộp chúng lại. Dòng 15 (feel)
+> **không tính** — đã chốt bỏ theo chỉ đạo; tiêu chí nghiệm thu là **script**, không phải cảm giác.
 
 ---
 
@@ -119,7 +120,7 @@ phải nói rõ **file nào**; muốn nói "bao nhiêu px²" thì chỉ dùng `s
 ## 5. Kết luận
 
 **Đủ để bắt chước dựng game mới ở mức cơ chế.** Bằng chứng không phải lời: **14 vùng** ở §1 có
-nguồn dữ liệu đếm được, **10** vùng đã A/B, và **6 chỗ thiếu** đều đã có người nhận (5 giao nhánh dữ
+nguồn dữ liệu đếm được, **10** vùng đã A/B (14 vùng trong phạm vi; feel ⛔ **ngoài phạm vi**), và **6 chỗ thiếu** đều đã có người nhận (5 giao nhánh dữ
 liệu qua T2/T4/T5/T6 + âm thanh trigger; 1 để sau).
 
 Hai chỗ **chặn dựng** cần chốt trước khi khoá bảng cân bằng:

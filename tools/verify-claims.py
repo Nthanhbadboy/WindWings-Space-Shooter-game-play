@@ -1734,7 +1734,7 @@ def ui_two_levels():
             sum(int(r.get("nodes") or 0) for r in idx))
 
 
-claim("P1", AUDIT, "**34 tài liệu** trong `docs/spec/` (chưa kể file này)", 34, doc_inventory,
+claim("P1", AUDIT, "**35 tài liệu** trong `docs/spec/` (chưa kể file này)", 35, doc_inventory,
       "quy mô tài liệu hiện có trong docs/spec")
 
 claim("P2", AUDIT, "**2.885** sprite, **2.816** có `width/height`; `04-asset-manifest.csv`: **2.907** asset, **2.838** có kích thước",
@@ -2551,14 +2551,107 @@ def blocker_tally():
 
 
 claim("AA1", READINESS,
-      "| **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **10** ✅ | **4** 🟡 | **1** 🔴 (feel) |",
-      (15, 10, 4, 1), coverage_region_tally,
+      "| **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **10** ✅ | **4** 🟡 | **0** 🔴 · **1** ⛔ (feel — **ngoài phạm vi**) |",
+      (15, 10, 4, 0), coverage_region_tally,
       "đếm trạng thái từng vùng trong COVERAGE_AUDIT §1, không chép tay")
 
 claim("AA2", READINESS,
       "| **9 câu blocker** (§2 ở trên) | 9 | **1** (`StartHp`) | **5** | **3**",
       (9, 1, 5, 3), blocker_tally,
       "đếm trạng thái 9 blocker trong chính bảng §2")
+
+# ── AB. bộ ảnh gốc: chưa phân loại / chưa tách (ASSET_TRIAGE.md) ──────
+SPRITES_INDEX = "docs/assets/sprites-index.csv"
+ASSET_TRIAGE = "docs/spec/ASSET_TRIAGE.md"
+
+
+def _sprite_index():
+    return _csv_rows(SPRITES_INDEX) or []
+
+
+def _atlas_counts(rows):
+    out = {}
+    for r in rows:
+        a = (r.get("atlas") or "").strip()
+        if a:
+            out[a] = out.get(a, 0) + 1
+    return out
+
+
+def asset_triage_stats():
+    """(asset, unclassified, sheet Texture2D, sheet có sprite, sheet chưa tách)."""
+    rows = _sprite_index()
+    if not rows:
+        return None
+    un = [r for r in rows if r.get("category") == "unclassified"]
+    sheets = {r["name"] for r in rows if r.get("category") == "atlas"}
+    if not sheets:
+        return None
+    by = _atlas_counts(rows)
+    with_sp = sum(1 for s in sheets if by.get(s))
+    return (len(rows), len(un), len(sheets), with_sp, len(sheets) - with_sp)
+
+
+def _rule_hits(name):
+    import re
+    low = name.lower()
+    return bool(re.match(r"^blt_", low)
+                or re.match(r"^(hotro|vip|goigem|khung)", low)
+                or re.match(r"^rank", low)
+                or re.match(r"^boss", low)
+                or re.match(r"^(cb|cd|e_)", low)
+                or re.match(r"^(manhplane|xvideo|rock|head|foot)", low))
+
+
+def asset_unclassified_split():
+    """(trong sheet, rời, khớp 6 luật tên, còn lại)."""
+    rows = _sprite_index()
+    if not rows:
+        return None
+    un = [r for r in rows if r.get("category") == "unclassified"]
+    if not un:
+        return None
+    inside = sum(1 for r in un if (r.get("atlas") or "").strip())
+    outside = [r for r in un if not (r.get("atlas") or "").strip()]
+    covered = sum(1 for r in outside if _rule_hits(r.get("name") or ""))
+    return (inside, len(outside), covered, len(outside) - covered)
+
+
+def asset_sheet_worklist():
+    """(sheet ≥8 sprite, sprite trong đó, ô lưới khai báo, ô đã tách)."""
+    import re
+    rows = _sprite_index()
+    if not rows:
+        return None
+    by = _atlas_counts(rows)
+    sheets = {r["name"] for r in rows if r.get("category") == "atlas"}
+    big = {s: c for s, c in by.items() if c >= 8}
+    un_by = _atlas_counts([r for r in rows if r.get("category") == "unclassified"])
+    big_un = {s: c for s, c in un_by.items() if c >= 8}
+    cells = 0
+    done = 0
+    for s in sheets:
+        m = re.search(r"_(\d+)x(\d+)$", s)
+        if m:
+            cells += int(m.group(1)) * int(m.group(2))
+            done += by.get(s, 0)
+    return (len(big), sum(big.values()), cells, done, len(big_un), sum(big_un.values()))
+
+
+claim("AB1", ASSET_TRIAGE,
+      "**Trả lời ngắn: 2.197 asset · 1.554 chưa có nhãn · 132 sheet (116 chưa tách) · 67 page chưa có rect.**",
+      (2197, 1554, 132, 16, 116), asset_triage_stats,
+      "sprites-index.csv: 1.554 unclassified, 132 sheet, 116 sheet không có sprite nào")
+
+claim("AB2", ASSET_TRIAGE,
+      "| **AB2** | 1.554 = **396** trong sheet + **1.158** rời; luật tên phủ **518**, còn **640** chưa suy được |",
+      (396, 1158, 518, 640), asset_unclassified_split,
+      "tách 1.554: 396 trong sheet, 1.158 rời; 6 luật tên phủ 518, còn 640 phải xem ảnh")
+
+claim("AB3", ASSET_TRIAGE,
+      "| **AB3** | 17 sheet ≥ 8 sprite = **184** sprite (10 sheet / **113** sprite thuộc `unclassified`) · 2 sheet lưới = **16** ô, **0** ô đã tách |",
+      (17, 184, 16, 0, 10, 113), asset_sheet_worklist,
+      "worklist cắt: 10 sheet ≥8 (113 sprite); 2 sheet lưới 16 ô, 0 ô đã tách")
 
 # ── chạy ───────────────────────────────────────────────────────────────
 

@@ -10,7 +10,8 @@
 >
 > **Cập nhật 24/10 — vòng 2:** sau khi giải script animation (`ANIMATION_SCRIPT.md`), hệ
 > **Animation**: **35/39 prefab boss** có **nguồn** animation/event trong tập đã xét, boss 1 giải
-> xong 8 tên entry. Hàng "feel" cũng hết trống: hit flash **0,05 s** đo được. Xem §7.
+> xong 8 tên entry. Hàng "feel" đo được một phần (hit flash **0,05 s**) nhưng **đã ra khỏi phạm vi**
+> theo chỉ đạo 25/10 ⇒ không còn là hàng phải chốt, không chặn nghiệm thu (tiêu chí là **script**).
 >
 > Tài liệu này đo lại **9 câu blocker** của `DESIGN_QUESTIONS.md` bằng dữ liệu đang có trong repo,
 > không chép lại đánh giá cũ. Mỗi dòng đều chạy lại được bằng `tools/verify-claims.py` (nhóm `I`).
@@ -135,7 +136,7 @@ trạng thái của enemy — và nó **không chặn** vì L1 cho phép tự đ
 | **Boss** | ✅ **A** cho cấu trúc | 46 boss · **39 prefab `Boss-*`** · **2 prefab Spine** (`Boss-39001/39002`) · 92 `Animator`/36 prefab · 795 event có mốc thời gian |
 | **Enemy** | ✅ **A** cho cơ chế | **399 đường bay** theo path (tập prefab đã đọc) · `Enemy_Appear` = base nhận `Action` qua tham số (**chưa** rõ binding) · `Enemy_Display` 5 field |
 | **Animation — *mốc trong clip*** | 🟡 **A** cho mốc / **C** cho điều kiện + hành vi | 33 prefab **793 event có mốc thời gian** · boss 1: **8 tên entry + 5 nhánh** chuyển state · nhịp đòn **0,17/0,33/1,0/5,0 s** · enemy = máy trạng thái 3 nhánh + hit flash **0,05 s** — xem **`ANIMATION_SCRIPT.md`** |
-| **Animation — *playback / feel*** | 🔴 **D** | 0/791 keyframe · 0 phép đo playback runtime · hành vi 12 handler còn **C** — **chỉ cần nếu làm L2/L3** |
+| **Animation — *playback / feel*** | ⛔ **ngoài phạm vi** (feel bỏ; *script* đã có) | 0/791 keyframe · 0 phép đo playback runtime · hành vi 12 handler còn **C** — **chỉ cần nếu làm L2/L3** |
 | **UI — cấu trúc** | ✅ **A** | **125 màn hình** (`screens.csv`: 125 dòng) · 53 board · 63 popup · 8 tab · screen graph + điều kiện mở từng popup ở `UI.md` |
 | **UI — art** | 🔴 **D** | 53k file dump có trong nhánh dữ liệu nhưng **chưa kéo về**, chưa phân tích — và L1 làm art mới nên không cần |
 
@@ -154,7 +155,7 @@ xong:
 |---:|---|---|---|
 | 1 | **Chốt `rate = 0`** — spawn cả loạt hay mỗi frame | đã hẹp còn **B** (§3.1); mật độ **không còn phụ thuộc** nó | nhánh dữ liệu (T5, cần asm) — **không chặn** |
 | 2 | **A6 stage ↔ wave** | quyết định **số màn**; hiện chỉ 7/250 map chắc chắn | offline — tự làm được |
-| 3 | **Prototype feel 30 giây** (hit flash 0,05 s · alpha 0,5 · rung · âm) | thứ duy nhất vẫn phải **quyết**, không phải **đo** | designer |
+| 3 | ~~Prototype feel 30 giây~~ | **đã bỏ** theo chỉ đạo 25/10 (*"feel bỏ rồi, script là đủ"*) ⇒ không còn việc này | — |
 
 Và **một việc không nên làm**: đừng chờ thêm **mốc thời gian** trong clip — đã có. Nhưng **đừng** gọi là
 "đã có script": thứ tự pha, điều kiện chuyển state, số lần lặp và hành vi callback vẫn **C**. Chỉ *playback* là
@@ -170,8 +171,8 @@ thiếu, và nó chỉ cần cho L2/L3.
 
 ⇒ `DESIGN_QUESTIONS.md` nay là **48 câu · ✅ 29 · ⚠ 15 · ❌ 4** (claim **S2** giữ cho dòng tổng không lệch
 bảng; D3 hạ ✅→⚠ sau review R1). **Câu trả lời cho câu hỏi của tài liệu này không đổi: thiết kế được cho L1** — chỉ khác là
-**animation không còn nằm trong danh sách "phải chờ"**, và *thứ duy nhất* vẫn phải **quyết** (không phải
-**đo**) là **feel**.
+**animation không còn nằm trong danh sách "phải chờ"**, và **feel đã ra khỏi phạm vi** (chỉ đạo 25/10:
+*bỏ feel, script là đủ*) ⇒ không còn hạng mục nào phải "quyết thay vì đo".
 
 ---
 
@@ -211,11 +212,11 @@ hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật
 
 | tập | tổng | đủ / đóng | một phần | chưa |
 |---|---:|---:|---:|---:|
-| **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **10** ✅ | **4** 🟡 | **1** 🔴 (feel) |
+| **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **10** ✅ | **4** 🟡 | **0** 🔴 · **1** ⛔ (feel — **ngoài phạm vi**) |
 | **9 câu blocker** (§2 ở trên) | 9 | **1** (`StartHp`) | **5** | **3** (`B1` HP runtime · `A5` độ dài phiên · `B3` đường cong damage) |
 | **48 câu design** (`DESIGN_QUESTIONS.md`) | 48 | **29** ✅ | **15** ⚠ | **4** ❌ (`A5`·`A6`·`B1`·`C4`) |
 | **6 chỗ thiếu** (`COVERAGE_AUDIT.md` §2) | 6 | — | **4** | **2 chặn** (map→wave 7/250 · HP runtime theo chế độ) |
-| **claim tự kiểm** (`tools/verify-claims.py`) | **146** | **144** PASS | 2 SKIP | 0 FAIL |
+| **claim tự kiểm** (`tools/verify-claims.py`) | **149** | **147** PASS | 2 SKIP | 0 FAIL |
 
 **Đọc bảng này thế nào:**
 
@@ -224,5 +225,6 @@ hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật
 - **Chưa đủ cho L2** (khớp **số** bản gốc): còn **3** câu 🔴 + **2** chỗ chặn — `B1` HP runtime (thiếu
   thứ tự nhân hằng số), `A5` độ dài phiên (cần A6 + luật continue), `B3` damage curve, **map→wave 7/250**,
   **HP theo chế độ** (B8).
-- **Chưa đủ cho L3** (không phân biệt được): thêm **feel** (D1–D4: hit stop · aim assist · input latency ·
-  tỉ lệ rơi) và **thứ tự pha boss** (C) — hai thứ này **phải quyết**, không đo được từ dữ liệu đang có.
+- **Chưa đủ cho L3** (không phân biệt được): còn **thứ tự pha boss** (C). **Feel đã bỏ** khỏi phạm vi theo
+  chỉ đạo ⇒ L3 **không** còn là mục tiêu; tiêu chí là **script enemy + boss**, và tiêu chí đó đã đạt ở
+  mức **A cho mốc**, **C cho điều kiện/hành vi** (2 việc: 6 chuỗi `SetTrigger` + ai gán 12 delegate).

@@ -323,6 +323,28 @@ khi đó gộp vào T3 và đóng bằng `m_PersistentCalls`.
 
 ---
 
+---
+
+## 1e. T9 — **rect của `Sprite`** để cắt 67 page `sactx-*` (asset, không phải animation)
+
+**Vì sao:** `ASSET_TRIAGE.md` §2 đo được **132** sheet `Texture2D` (**116** chưa có sprite nào) và
+**67** page `sactx-*` (31,05 MB) — muốn cắt đúng sprite ra khỏi page phải có rect, hiện **không có**
+trong export nào.
+
+**Việc:** export cho **2.185** `Sprite` (và 653 `Texture2D` nếu có): `m_RD.texture` (PPtr),
+`m_RD.rect` (x,y,w,h), `m_RD.textureRect`, `m_RD.settingsRaw` (packed/packingMode), `m_PixelsToUnits`.
+
+**Artifact:** `asset-raw-T9/sprite-rects.jsonl.gz` — mỗi dòng
+`{"sprite": "NutBuySkin 1", "path_id": 123, "texture": {"fileID": 3, "pathID": 456}, "rect": [x,y,w,h], "ppu": 100}`
+
+**Tự kiểm:** `(số sprite có rect, số page nhận được ≥1 sprite)`; mọi rect phải nằm trong page tương ứng;
+tổng diện tích rect ≤ diện tích page.
+
+**Lật ngược nếu:** export ra **0** rect ⇒ sprite sinh lúc chạy hoặc atlas đóng gói bằng công cụ khác;
+khi đó chỉ còn đường cắt theo lưới khai báo trong tên (`1_5x2` · `k_1__2x3`, 16 ô) và ghi rõ là **thiếu**.
+
+---
+
 ## 2. Hợp đồng chạy (giống `PARALLEL_TASKS.md`, rút gọn cho 4 task)
 
 | # | Luật | Vì sao |
