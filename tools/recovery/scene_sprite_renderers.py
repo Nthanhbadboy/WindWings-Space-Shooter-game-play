@@ -33,7 +33,9 @@ def main():
         row=dict(**identity(obj),raw_object_sha256=sha(obj.get_raw_data()));records[k]=row;kind=obj.type.name
         try:
             if kind in ('SpriteRenderer','Transform','RectTransform','GameObject','Material','BuildSettings'):
-                tree=obj.read_typetree();row.update(tree=tree,projection='full_builtin_typetree')
+                tree=obj.read_typetree()
+                if kind=='BuildSettings':tree={k:v for k,v in tree.items() if k in ('scenes','m_Version','enableDynamicBatching','m_GraphicsAPIs')}
+                row.update(tree=tree,projection='buildsettings_scene_projection' if kind=='BuildSettings' else 'full_builtin_typetree')
                 if kind=='SpriteRenderer':
                     for location,ptr in walk_pointers(tree):
                         if location in ('.m_GameObject','.m_Sprite') or location.startswith('.m_Materials['):follow(obj,location,ptr)
