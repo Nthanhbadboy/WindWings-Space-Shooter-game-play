@@ -39,7 +39,7 @@ cross-check trực tiếp với component bytes, không chỉ tin typetree gener
 132a4dc: đọc Stage_Datas.IsBranch +30
 132a4e8: nonbranch →132a59c
 132a5b0: GP_Datas.get_Instance @14c78cc →x19
-132a5c8: GP_Setup.GetStageIndex @14f0da0 →w20
+132a5c8: GP_Setup.get_stageIndex @14f0da0 →w20
 132a5ec: Stage_Get_Datas.GetCountEnemies(w20) @12c5f60
 132a5f4: lưu result vào GP_Datas.countEnemies +58
 ```
