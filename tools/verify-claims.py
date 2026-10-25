@@ -438,7 +438,7 @@ claim("B8", ANIMDOC, "**226**", 226,
       lambda: agg(clips(), lambda cs: len({c.get("name") for c in cs})))
 
 claim("B9", ANIMDOC, "**251** loop", 251,
-      lambda: (_ for _ in ()).throw(RuntimeError(
+      lambda: (_ for _ in ()).throw(NoSource(
           "không nguồn: anim_clips.json không có trường loop, typetree native-types "
           "có m_WrapMode nhưng toàn 0 (reader không giải) — 251 chỉ tái lập được "
           "bằng UnityPy trực tiếp")),
@@ -665,7 +665,7 @@ claim("F3", GAPS, "**39 prefab `Boss-*`**", 39, boss_prefab_roots,
       "prefab root tên Boss-* trong prefab-roots.csv (không phải số có Animator)")
 
 claim("F4", ANIMDOC, "2.185", 2185,
-      lambda: (_ for _ in ()).throw(RuntimeError(
+      lambda: (_ for _ in ()).throw(NoSource(
           "không nguồn: native-types chỉ có 5 loại type (Animator/ParticleSystem/"
           "AnimationClip/AnimatorController/Camera); 2.185 Sprite đến từ asset scan "
           "của UnityPy, không có trong bản export này")),
@@ -2570,6 +2570,7 @@ claim("AA2", READINESS,
 # ── AB. bộ ảnh gốc: chưa phân loại / chưa tách (ASSET_TRIAGE.md) ──────
 SPRITES_INDEX = "docs/assets/sprites-index.csv"
 ASSET_TRIAGE = "docs/spec/ASSET_TRIAGE.md"
+ENCOUNTERS_DOC = "docs/spec/ENCOUNTERS.md"
 
 
 def _sprite_index():
@@ -2596,7 +2597,9 @@ def asset_triage_stats():
         return None
     by = _atlas_counts(rows)
     with_sp = sum(1 for s in sheets if by.get(s))
-    return (len(rows), len(un), len(sheets), with_sp, len(sheets) - with_sp)
+    # 67 = texture sactx-* theo TÊN (không theo category: 11 page bị xếp nhầm nhóm)
+    sactx = sum(1 for r in rows if r["name"].startswith("sactx"))
+    return (len(rows), len(un), len(sheets), with_sp, len(sheets) - with_sp, sactx)
 
 
 def _rule_hits(name):
@@ -2644,10 +2647,137 @@ def asset_sheet_worklist():
     return (len(big), sum(big.values()), cells, done, len(big_un), sum(big_un.values()))
 
 
+def unresolved_sheets_stats():
+    """(sheet có ≥1 sprite unresolved, tổng sheet unclassified-*)."""
+    path = os.path.join(ROOT, "docs/assets/sprites-auto-classified.csv")
+    if not os.path.isfile(path):
+        return None
+    with open(path, encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
+    uncls = {r["sheet"] for r in rows if r["sheet"].startswith("unclassified")}
+    un = {r["sheet"] for r in rows if r["category_auto"] == "unresolved"}
+    if not uncls:
+        return None
+    return (len(un), len(uncls))
+
+
+claim("AB6", ASSET_TRIAGE,
+      "**17/25** sheet `unclassified-*` còn",
+      (17, 25), unresolved_sheets_stats,
+      "định nghĩa 'chưa xem hết' = sheet còn ≥1 sprite unresolved trong sprites-auto-classified.csv")
+
+def encounters_totals():
+    """(dòng spawner, wave, enemy entry, tên khác nhau) từ waves.json."""
+    d = ref_json("datas/waves.json")
+    if not d:
+        return None
+    rows = [s for w in d.get("waves", []) for s in w.get("spawners") or []]
+    return (len(rows), len(d.get("waves", [])),
+            sum(len(s.get("enemies") or []) for s in rows),
+            len({s["spawner"] for s in rows}))
+
+
+def encounters_types():
+    """Số dòng theo `spawn_type` (point_range, point, path, boss, special)."""
+    d = ref_json("datas/waves.json")
+    if not d:
+        return None
+    rows = [s for w in d.get("waves", []) for s in w.get("spawners") or []]
+    import collections as _c
+    k = _c.Counter(s.get("spawn_type") for s in rows)
+    return (k["point_range"], k["point"], k["path"], k["boss"], k["special"])
+
+
+def wave_call_data_identity():
+    """(Call_Data, pathID khác nhau, trùng, số wave) cho 3 wave normal đã export."""
+    tot = 0
+    uniq = 0
+    names = ("0164__148604", "0113__21468", "0005__38187")
+    for tag in names:
+        d = ref_json("reverse-engineering/raw/early-waves/"
+                     f"datas_maps_waves_wave_{tag}.json.gz")
+        if not d:
+            return None
+        cds = [c for n in d.get("nodes", []) for c in n.get("components", [])
+               if c.get("script_class") == "Call_Data"]
+        tot += len(cds)
+        uniq += len({c["path_id"] for c in cds})
+    return (tot, uniq, tot - uniq, len(names))
+
+
+def encounters_units():
+    """(dòng, lượt Σcopies, quân Σlen×copies) — hai đơn vị đừng trộn."""
+    d = ref_json("datas/waves.json")
+    if not d:
+        return None
+    rows = [s for w in d.get("waves", []) for s in w.get("spawners") or []]
+    return (len(rows), sum(int(s.get("copies") or 0) for s in rows),
+            sum(len(s.get("enemies") or []) * int(s.get("copies") or 0) for s in rows))
+
+
+def encounters_types_copies():
+    """Số **lượt** theo `spawn_type` = đúng dãy CROSS_BRANCH đã ghi (45.659 tổng)."""
+    d = ref_json("datas/waves.json")
+    if not d:
+        return None
+    import collections as _c
+    k = _c.Counter()
+    for w in d.get("waves", []):
+        for s in w.get("spawners") or []:
+            k[s.get("spawn_type")] += int(s.get("copies") or 0)
+    return (k["point_range"], k["point"], k["path"], k["boss"], k["special"])
+
+
+def wave_copy_identity():
+    """9 wave của bảng §3: (Σcopies, dòng) — bảng cũ ghi đúng Σcopies."""
+    d = ref_json("datas/waves.json")
+    if not d:
+        return None
+    w = {x["wave"]: x.get("spawners") or [] for x in d.get("waves", [])}
+    order = ("Wave_0000", "Wave_0010", "Wave_0050", "Wave_0100", "Wave_0150",
+             "Wave_0163", "Wave_0200", "Wave_0235", "Wave_7001")
+    out = []
+    for k in order:
+        out += [sum(int(s.get("copies") or 0) for s in w.get(k, [])), len(w.get(k, []))]
+    return tuple(out)
+
+
+claim("AQ4", ENCOUNTERS_DOC,
+      "| **Tổng** | | **282** | **11.094** | **23.757** | 28,5 | **62** |",
+      (11094, 23757, 45659), encounters_units,
+      "dòng 11.094 · lượt Σcopies 23.757 (= số bảng cũ) · quân Σlen×copies 45.659")
+
+claim("AQ5", ENCOUNTERS_DOC,
+      "**Kiểm tự động (`AQ5`): 9/9 wave khớp** `Σ copies` = số bảng cũ",
+      (150, 42, 331, 190, 72, 36, 36, 18, 54, 27, 621, 257, 42, 21, 84, 42, 6, 3),
+      wave_copy_identity,
+      "9 wave: (Σcopies, dòng) — 621 của Wave_0163 là lượt, không phải dòng")
+
+claim("AQ6", ENCOUNTERS_DOC,
+      "| `point_range` | point-to-point range | 7.541 | 68,0 % | **16.498** | 69,4 % |",
+      (16498, 4199, 1688, 686, 686), encounters_types_copies,
+      "spawn_type theo LƯỢT: khớp dãy 16.498/4.199/1.688/686/686 của CROSS_BRANCH §3c")
+
+claim("AQ1", ENCOUNTERS_DOC,
+      "| Spawner (dòng = 1 `Call_Data` component) | **11.094** (11.074 ở 281 wave có tên + 20 ở `unknown`) | `waves.json` |",
+      (11094, 282, 22482, 1015), encounters_totals,
+      "đếm lại waves.json: dòng spawner, wave, enemy entry, tên khác nhau")
+
+claim("AQ2", ENCOUNTERS_DOC,
+      "| `point_range` | point-to-point range | 7.541 |",
+      (7541, 2084, 861, 327, 281), encounters_types,
+      "phân bố spawn_type trên 11.094 dòng")
+
+claim("AQ3", ENCOUNTERS_DOC,
+      "| **cộng 3 wave** | | **149** | **149** | | **149** |",
+      (149, 149, 0, 3), wave_call_data_identity,
+      "Call_Data vs pathID trên 3 wave normal: 0 component bị tham chiếu 2 lần")
+
 claim("AB1", ASSET_TRIAGE,
-      "**Trả lời ngắn: 2.197 asset · 1.554 chưa có nhãn · 132 sheet (116 chưa tách) · 67 page chưa có rect.**",
-      (2197, 1554, 132, 16, 116), asset_triage_stats,
-      "sprites-index.csv: 1.554 unclassified, 132 sheet, 116 sheet không có sprite nào")
+      "**Trả lời ngắn: 2.197 asset · 1.554 chưa có nhãn · 132 sheet · 116 tên atlas không match · 67 page sactx.**",
+      (2197, 1554, 132, 16, 116, 67), asset_triage_stats,
+      "116 = `unmatched_atlas_name_count`: tên atlas KHÔNG match theo tên trong sprites-index.csv. "
+      "Đây KHÔNG phải trạng thái tách ảnh — chứng minh tách cần m_RD.textureRect/settingsRaw (T9)")
 
 claim("AB2", ASSET_TRIAGE,
       "| **AB2** | 1.554 = **396** trong sheet + **1.158** rời |",
@@ -2691,9 +2821,9 @@ def asset_unknown_families():
 
 
 claim("AB4", ASSET_TRIAGE,
-      "| **AB4** | phân loại lại: **1.049** có nhãn (**863 A · 116 B · 70 C**) · **505** `unknown` (**33** numeric · **204** word · **268** other) |",
-      (1049, 863, 116, 70, 505, 33, 204, 268), asset_classified_stats,
-      "sprites-classified.csv: 1.049/1.554 có nhãn (A863 B116 C70), 505 unknown chia 3 nhóm")
+      "| **AB4** | phân loại lại: **1.049** có nhãn (**848 A · 131 B · 70 C**) · **643** passthrough **không có mức** · **505** `unknown` (**33** numeric · **204** word · **268** other) |",
+      (1049, 848, 131, 70, 505, 33, 204, 268), asset_classified_stats,
+      "sprites-classified.csv: 1.049/1.554 có nhãn (A848 B131 C70); 643 nhãn passthrough có confidence rỗng; 505 unknown")
 
 claim("AB5", ASSET_TRIAGE,
       "| **AB5** | 505 unknown = **448** họ tên, **410** tên đơn lẻ; **17/25** contact sheet còn tile chưa gán |",
@@ -3027,8 +3157,8 @@ def knn_stats():
 
 
 claim("AO4", "docs/spec/ASSET_TRIAGE.md",
-      "**773**/1.857 ca đủ tự tin · đúng **666** (**86,2 %**)",
-      (773, 666, 89, 0.862), knn_stats,
+      "**781**/1.857 ca đủ tự tin · đúng **674** (**86,3 %**)",
+      (781, 674, 89, 0.863), knn_stats,
       "leave-one-out của tools/classify-knn.py; số đúng đo trên nhãn đã có, không phải nhãn mới")
 
 def provenance_check():
@@ -3105,6 +3235,14 @@ claim("AF3", READY,
 
 # ── chạy ───────────────────────────────────────────────────────────────
 
+class NoSource(Exception):
+    """Nguồn dữ liệu **không tồn tại** trong repo ⇒ SKIP có chủ đích.
+
+    Khác mọi exception khác: exception thường là **lỗi đo** và phải làm cổng đỏ
+    (`ERROR`), không được lặng lẽ thành SKIP (review R6).
+    """
+
+
 def evaluate(c: Claim) -> None:
     lines = doc_lines(c.doc)
     if lines is None:
@@ -3112,8 +3250,13 @@ def evaluate(c: Claim) -> None:
         return
     try:
         got = c.measure()
+    except NoSource as e:
+        c.status, c.why = "SKIP", f"nguồn vắng: {e}"
+        return
     except Exception as e:  # noqa: BLE001
-        c.status, c.why = "SKIP", f"đo lỗi: {type(e).__name__}: {e}"
+        # Lỗi parser/lập trình **không** phải "nguồn vắng". Trước 25/10 chỗ này
+        # trả SKIP nên một hàm đo hỏng vẫn cho cổng xanh (review R6).
+        c.status, c.why = "ERROR", f"đo lỗi: {type(e).__name__}: {e}"
         return
     c.got = got
     if got is None:
@@ -3159,6 +3302,10 @@ def main() -> int:
                     help="thoát 2 nếu có input KHÔNG đọc từ ref (chống báo nhầm snapshot)")
     ap.add_argument("--self-test", action="store_true",
                     help="kiểm chính chế độ ref-first (không đọc file local cũ)")
+    ap.add_argument("--no-skip", action="store_true",
+                    help="cổng nghiệm thu: SKIP cũng tính là hỏng (dùng cho CI bắt buộc)")
+    ap.add_argument("--require", metavar="PREFIXES",
+                    help="danh sách tiền tố claim BẮT BUỘC phải PASS, vd AB,AF,AG")
     args = ap.parse_args()
 
     REFS = args.ref or DEFAULT_REFS
@@ -3196,14 +3343,14 @@ def main() -> int:
         stated = ",".join(str(x) for x in c.stated) if isinstance(c.stated, list) else str(c.stated)
         print(f"{c.cid:<{width}}  {c.status:<6} {got:>10}  {stated:>10}  {c.note or c.why}")
 
-    n = {"PASS": 0, "FAIL": 0, "SKIP": 0}
+    n = {"PASS": 0, "FAIL": 0, "SKIP": 0, "ERROR": 0}
     for c in CLAIMS:
         if args.only and not c.cid.startswith(args.only):
             continue
         n[c.status] = n.get(c.status, 0) + 1
 
     print("─" * (width + 62))
-    print(f"PASS {n['PASS']} · FAIL {n['FAIL']} · SKIP {n['SKIP']}")
+    print(f"PASS {n['PASS']} · FAIL {n['FAIL']} · SKIP {n['SKIP']} · ERROR {n['ERROR']}")
     if args.provenance:
         print("\nprovenance (input → nguồn):")
         print(provenance_report())
@@ -3222,11 +3369,28 @@ def main() -> int:
         print("  ⇒ KHÔNG được báo 'đã kiểm snapshot mới' với các input này.")
         return 2
 
-    fails = [c for c in CLAIMS if c.status == "FAIL"]
-    if fails:
-        print("\nFAIL:")
-        for c in fails:
-            print(f"  {c.cid}  {c.doc}  — {c.why}")
+    selected = [c for c in CLAIMS if not args.only or c.cid.startswith(args.only)]
+    if not selected:
+        print(f"\nKHÔNG có claim nào khớp --only {args.only!r} ⇒ coi là hỏng, không phải 'xanh'.")
+        return 1
+
+    bad = [c for c in selected if c.status in ("FAIL", "ERROR")]
+    if args.no_skip:
+        bad += [c for c in selected if c.status == "SKIP"]
+    if args.require:
+        need = tuple(x.strip() for x in args.require.split(",") if x.strip())
+        unknown = [p for p in need if not any(c.cid.startswith(p) for c in CLAIMS)]
+        if unknown:
+            # gõ sai tiền tố mà vẫn xanh = cổng giả. Không im lặng.
+            print(f"\n--require {','.join(unknown)}: KHÔNG có claim nào mang tiền tố này"
+                  f" ⇒ coi là hỏng (cổng giả), không phải 'xanh'.")
+            return 2
+        missing = [c for c in selected if c.cid.startswith(need) and c.status != "PASS"]
+        bad += [c for c in missing if c not in bad]
+    if bad:
+        print("\nHỎNG:")
+        for c in bad:
+            print(f"  {c.cid}  [{c.status}]  {c.doc}  — {c.why}")
         return 1
     return 0
 

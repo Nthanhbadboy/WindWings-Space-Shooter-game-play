@@ -5,7 +5,8 @@ Nhưng khi kiểm kỹ thì lộ ra **hai vấn đề về dấu vết dữ li�
 đợt từ nhiều snapshot khác nhau*. Tài liệu này ghi cả hai, kèm cách kiểm lại bằng máy.
 
 Máy kiểm: `python3 tools/data-integrity.py` (1,7 s) → `docs/assets/data-integrity.json`.
-Mã thoát **1** nếu có file **không khớp snapshot nào** (dấu hiệu sửa tay).
+Mã thoát **1** nếu có file **đang sửa trong working tree** khác HEAD, hoặc khác đầu nhánh dữ liệu mà
+không khớp snapshot nào (dấu hiệu sửa tay). Bản kéo cũ khớp HEAD **không** làm đỏ.
 
 ---
 
@@ -62,24 +63,28 @@ lại thì phải ghi **sha256 hiện tại kèm commit** (việc này chưa là
 
 ## 4. Kiểm 3 — so từng blob với **đầu nhánh dữ liệu**
 
-`ref = origin/arena/ef6b75ef-windwings-space-shooter-game-p @ 575113776010` (25/10).
+`ref = origin/arena/ef6b75ef-windwings-space-shooter-game-p @ 7e0da2ee3b07` (25/10, đo lại
+lần cuối sau khi kéo bằng chứng review).
 
 | | số file |
 |---|---:|
-| có ở cả hai nhánh | **2.435** |
-| **giống hệt blob** | **2.181** |
+| có ở cả hai nhánh | **2.465** |
+| **giống hệt blob** | **2.211** |
 | **khác** | **254** |
-| chỉ có ở nhánh dữ liệu | 55.616 (chủ yếu `raw/ui` + ảnh chụp) |
+| chỉ có ở nhánh dữ liệu | 55.672 (chủ yếu `raw/ui` + ảnh chụp) |
 | chỉ có ở đây | 85 (`datas/PROVENANCE.md`, ảnh chụp ramus, CSV do phân tích) |
 
-254 file khác — **tất cả** đều khớp **nguyên blob** với một snapshot **cũ** của nhánh dữ liệu:
+254 file khác — **244** khớp **nguyên blob** với một snapshot **cũ** đã pin; **10** khớp đúng HEAD
+của mình nhưng cũ hơn danh sách snapshot (kéo ở commit không nằm trong danh sách):
 
 | khớp snapshot | số file |
 |---|---:|
-| `9aed767b1` (25/10) | 147 |
-| `55bd18ac8` (25/10) | 41 |
-| `019e704d1` / `6dc5c4bf5` (23/10) | 78 |
-| **không khớp snapshot nào** | **0** |
+| `9aed767b1` (25/10) | 141 |
+| `55bd18ac8` (25/10) | 30 |
+| `019e704d1` / `6dc5c4bf5` (23/10) | 66 |
+| khớp nhiều snapshot | 7 |
+| khớp **HEAD** nhưng cũ hơn snapshot (không sửa tay) | **10** |
+| **đang sửa trong working tree** | **0** |
 
 ⇒ **Kết luận 2: không có sửa tay.** Nhưng bản local là **hỗn hợp 3 snapshot**, không phải một bản chụp
 nguyên khối — vì mỗi lần sync chỉ kéo một danh sách file, không kéo cả cây.
@@ -91,15 +96,15 @@ Bằng chứng phụ: `git log -1 -- <file>` của cả 254 file đều là comm
 
 ## 5. Kiểm 4 — đổi `.gz` byte ≠ đổi dữ liệu
 
-148 file `.gz` nằm trong nhóm 254 (gzip ghi `mtime` vào header nên kéo lại là đổi byte):
+157 file `.gz` nằm trong nhóm 254 (gzip ghi `mtime` vào header nên kéo lại là đổi byte):
 
 | | số file |
 |---|---:|
-| giải nén ra **giống hệt** | **82** |
-| giải nén ra **khác thật** | **66** |
+| giải nén ra **giống hệt** | **88** |
+| giải nén ra **khác thật** | **69** |
 
-⇒ Nói "nhánh dữ liệu có 254 file mới" là **sai**: chỉ **66** file `.gz` + phần `.csv/.json/.md` là đổi
-**nội dung**; 82 file chỉ đổi header.
+⇒ Nói "nhánh dữ liệu có 254 file mới" là **sai**: chỉ **69** file `.gz` + phần `.csv/.json/.md` là đổi
+**nội dung**; 88 file chỉ đổi header.
 
 ---
 
@@ -122,5 +127,5 @@ Việc đúng, nếu muốn bám đầu nhánh dữ liệu: kéo **theo lô**, m
 | mã | nội dung | đo bằng |
 |---|---|---|
 | **AP1** | **PROVENANCE: 244/383 khớp · 139 lệch · 0 thiếu** | đọc bảng sha256 trong `datas/PROVENANCE.md`, băm lại 383 file |
-| — | 254 file khác đầu nhánh dữ liệu, **0** không khớp snapshot | `tools/data-integrity.py` (cần `git fetch` nhánh dữ liệu) |
-| — | 148 `.gz` đổi byte → 82 giống nội dung, 66 khác | cùng tool, mục 3 |
+| — | 254 file khác đầu nhánh dữ liệu, **0** đang sửa trong working tree | `tools/data-integrity.py` (cần `git fetch` nhánh dữ liệu) |
+| — | 157 `.gz` đổi byte → 88 giống nội dung, 69 khác | cùng tool, mục 3 |

@@ -100,10 +100,16 @@ def main() -> int:
             "comps": s.get("comps", ""),
         }
         prev = (r.get("proposed_category") or "").strip()
-        if prev and prev not in ("", "unclassified", "unknown") and r.get("confidence"):
-            rec.update({"category_auto": prev, "evidence": r.get("confidence") or "A",
+        if prev and prev not in ("", "unclassified", "unknown"):
+            # Giữ nhãn vòng trước **kèm nguồn**: nhãn passthrough (lấy thẳng cột
+            # `category`) KHÔNG được nâng thành mức A — confidence giữ nguyên (có
+            # thể rỗng) và `label_source` nói rõ nó đến từ đâu.
+            src = r.get("label_source") or "legacy"
+            rec.update({"category_auto": prev, "label_source": src,
                         "rule": r.get("rule") or "giữ nhãn vòng trước",
-                        "confidence": r.get("confidence") or "A"})
+                        "confidence": r.get("confidence") or "",
+                        "reviewed": "true" if (r.get("reviewed") or "").strip().lower()
+                                    in ("true", "1", "yes") else "false"})
             stats[prev] += 1
             rules["giữ nhãn vòng trước"] += 1
         else:
@@ -113,25 +119,27 @@ def main() -> int:
                     hit = (cat, conf, why)
                     break
             if hit:
-                rec.update({"category_auto": hit[0], "evidence": hit[1],
-                            "rule": hit[2], "confidence": hit[1]})
+                rec.update({"category_auto": hit[0], "label_source": "rule:name",
+                            "rule": hit[2], "confidence": hit[1], "reviewed": "false"})
                 rules[hit[2]] += 1
                 stats[hit[0]] += 1
             else:
                 fr = feature_rule(rec)
                 if fr:
-                    rec.update({"category_auto": fr[0], "evidence": "B",
-                                "rule": fr[1], "confidence": "B"})
+                    rec.update({"category_auto": fr[0], "label_source": "rule:measure",
+                                "rule": fr[1], "confidence": "B", "reviewed": "false"})
                     rules[fr[1]] += 1
                     stats[fr[0]] += 1
                 else:
-                    rec.update({"category_auto": "unresolved", "evidence": "—",
-                                "rule": "không luật nào khớp", "confidence": "—"})
+                    rec.update({"category_auto": "unresolved", "label_source": "none",
+                                "rule": "không luật nào khớp", "confidence": "—",
+                                "reviewed": "false"})
                     stats["unresolved"] += 1
         rows.append(rec)
 
     cols = ["name", "path_id", "category_now", "category_auto", "confidence",
-            "rule", "w", "h", "ncomp", "fill", "sat", "val", "dark", "colors",
+            "label_source", "reviewed", "rule",
+            "w", "h", "ncomp", "fill", "sat", "val", "dark", "colors",
             "sheet", "tile"]
     with open(OUT_CLASS, "w", encoding="utf-8", newline="") as fh:
         wr = csv.DictWriter(fh, fieldnames=cols)

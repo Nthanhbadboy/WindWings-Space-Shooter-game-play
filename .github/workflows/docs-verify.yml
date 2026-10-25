@@ -18,12 +18,15 @@ on:
     paths:
       - 'docs/**'
       - 'tools/verify-claims.py'
+      - 'tests/**'
       - '.github/workflows/docs-verify.yml'
   push:
     branches: [main]
     paths:
       - 'docs/**'
       - 'tools/verify-claims.py'
+      - 'tests/**'
+      - '.github/workflows/docs-verify.yml'
 
 permissions:
   contents: read
@@ -46,12 +49,20 @@ jobs:
             && echo "data branch available" \
             || echo "data branch not reachable — claims B/C/F will report SKIP"
 
+      - name: Rule-contract tests
+        run: python3 -m unittest discover -s tests -q
+
       - name: Re-measure
         id: claims
         run: |
           set -o pipefail
-          python3 tools/verify-claims.py | tee verify.log
-          echo "exit=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+          # --require: các nhóm claim BẮT BUỘC pass. Lỗi đo = ERROR (đỏ), không
+          # còn lặng lẽ thành SKIP; SKIP chỉ dành cho nguồn vắng có chủ đích.
+          set +e
+          python3 tools/verify-claims.py --require AB,AO,AP | tee verify.log
+          rc=${PIPESTATUS[0]}
+          echo "exit=$rc" >> "$GITHUB_OUTPUT"
+          exit $rc
 
       # The job log lives behind blob storage that the API will not serve, so the
       # result goes into a PR comment where it can actually be read later.

@@ -44,8 +44,12 @@ chúng là **tham khảo**, không phải điều kiện.
 | 8 | **A5 — độ dài phiên** | mở, "chi phí cao" | 🔴 mở — cần A6 + luật continue | **Không** (tự chọn) |
 | 9 | **B3 — đường cong damage** | mở, "chi phí cao" | 🔴 mở | **Không** (tự chọn) |
 
-**Đóng thêm được 1 câu (D3)** so với lần đánh giá trước — không cần decoder nữa, vì nhánh dữ liệu
-đã join event với Animator và giữ nguyên `time`.
+**D3 KHÔNG đóng** (sửa 25/10, review R5). Trước đây câu này ghi *"đóng thêm 1 câu (D3), không cần
+decoder nữa"* — **mâu thuẫn** với chính bảng §2 ở trên (D3 = 🟡 một phần). Cái đã có là **nguồn
+animation**: nhánh dữ liệu join event ↔ Animator và giữ `time` (795/795 event, mức **A**).
+Cái **chưa** có là **script sequence**: thứ tự pha, điều kiện vào/thoát, số lần lặp, callback.
+Timestamp chỉ chứng minh **mốc cục bộ trong clip**, không chứng minh **control-flow runtime**.
+⇒ Giữ D3 ở mức 🟡; không ghi "đã đóng" ở bất kỳ đâu.
 
 ---
 

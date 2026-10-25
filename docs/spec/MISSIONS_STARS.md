@@ -66,26 +66,25 @@ Ba dòng cuối là **toàn bộ** câu trả lời cho câu hỏi của bạn: 
 
 ```asm
 0x14e563c: ldrb  w8,  [x24, #0x2ae]   ; cờ khởi tạo static
-0x14e5640: ldr   x20, [x20, #0xb78]   ; mảng static #0  (float[3])
-0x14e5644: ldr   x21, [x21, #0xb80]   ; mảng static #1
-0x14e5648: ldr   x22, [x22, #0xb88]   ; mảng static #2
+0x14e5640: ldr   x20, [x20, #0xb78]   ; slot 0x2ae8b78 = mảng FALLBACK (0.50/0.80/1.00)
+0x14e5644: ldr   x21, [x21, #0xb80]   ; slot 0x2ae8b80 = mảng mode 1 (0.35/0.60/0.98)
+0x14e5648: ldr   x22, [x22, #0xb88]   ; slot 0x2ae8b88 = mảng mode 0 (0.20/0.45/0.80)
 0x14e5694: cmp   w19, #1
-0x14e5698: csel  x8,  x21, x20, eq    ; mode==1 ? #1 : #0
+0x14e5698: csel  x8,  x21, x20, eq    ; mode==1 ? mode1 : fallback
 0x14e569c: cmp   w19, #0
 0x14e56a0: mov   w1,  #3
-0x14e56a4: csel  x19, x22, x8,  eq    ; mode==0 ? #2 : ở trên
+0x14e56a4: csel  x19, x22, x8,  eq    ; mode==0 ? mode0 : ở trên
 0x14e56a8: bl    #0x110d09c           ; new float[3]
 0x14e56ac: ldr   x1,  [x19]
 0x14e56b8: bl    #0x205b07c           ; memcpy 3 float
 ```
 
-⇒ **`pct` = đúng 9 số**: 3 chế độ × 3 nhiệm vụ, mỗi chế độ là **một `static float[3]`**;
-mode ngoài `0..2` rơi về **chế độ 0** (không kiểm biên).
+⇒ **`pct` = đúng 9 số**: 3 chế độ × 3 nhiệm vụ, mỗi chế độ là **một `static float[3]`**.
 
-> **Vẫn chưa có giá trị:** 3 mảng là `static` ⇒ **không serialize** (`UNITY_RULES` §6), và `.cctor`
-> của `Player_Get_Datas` **không** chứa float literal nào cho chúng ⇒ nạp bằng `InitializeArray`.
-> Đo trên pack 17 class @`68ce86a7`: **1.929** slot `debug_rva`, **2** slot resolve = **0,1 %**
-> (cả 2 nằm trong `Player_Health.TakeDamage`). Đây là **blocker T5**, không phải thiếu class.
+> ⚠️ **Sửa 25/10 — dòng cũ ở đây SAI hai chỗ.** Bản trước ghi `0xb78` là "mảng #0", `0xb88` là "#2",
+> rồi kết luận *"mode ngoài `0..2` rơi về chế độ 0"*. Đọc đúng thứ tự `csel`: mode `0` → **0xb88**,
+> mode `1` → **0xb80**, **mọi giá trị khác** → **0xb78** (fallback riêng, `.50/.80/1.00`), **không**
+> rơi về mode 0. Đây là đúng lỗi `P0` của review `25c367aca` (R1).
 
 > **Chốt thêm một mắt ghép (nâng B → A):** `ldr w21, [x9, #0x34]` đọc **`Stage_Datas.ModeCurrent`**
 > (field `@0x34`) rồi truyền thẳng vào `GetKillPercentMissionComplete`.
@@ -101,13 +100,22 @@ mode ngoài `0..2` rơi về **chế độ 0** (không kiểm biên).
 0x12c55e4: mov  w0, w21        ; stageIndex
 0x12c55e8: mov  w1, w20        ; stageLevel = ModeCurrent
 0x12c55ec: mov  x2, xzr        ; 0
-0x12c55f0: bl   #0x12b79a8     ; → int: SỐ NHIỆM VỤ ĐÃ XONG
+0x12c55f0: bl   #0x12b79a8     ; → int: **số sao ĐÃ LƯU** (GetStarStageMaster), không phải kills lượt này
 0x12c5624: cmp  w0, w19        ; so với missionIndex
-0x12c5630: cset w0, gt         ; return  completed > missionIndex
+0x12c5630: cset w0, gt         ; return  savedStars > missionIndex
 ```
 
-⇒ Nhiệm vụ `i` được tính là xong **khi số nhiệm vụ đã hoàn thành > i**. Đây là quan hệ **cộng dồn**:
-xong nhiệm vụ 3 thì 1 và 2 cũng xong. Với 3 nhiệm vụ ⇒ **0/1/2/3 sao**. Khớp đúng câu của bạn.
+⇒ Nhiệm vụ `i` được coi là **đã xong (đã lưu)** khi **`savedStars > i`**. Với 3 nhiệm vụ ⇒ `saved` 0/1/2/3
+⇒ row 0/1/2 sáng dần. Khớp đúng câu của bạn.
+
+> ⚠️ **Sửa 25/10 — bản trước ghi `0x12b79a8` là "SỐ NHIỆM VỤ ĐÃ XONG" và để ngỏ *"nghi tính từ kills"*.**
+> Sai ngữ nghĩa: `0x12b79a8` = **`GetStarStageMaster`** đọc `StarStageMaster{stageIndex}_{modeIndex}`
+> (`PlayerPrefs`), tức **trạng thái đã lưu giữa các lượt**, không phải kết quả lượt đang chơi.
+> Kết quả **lượt đang chơi** do `GetMissionCompleted(killCount, countEnemies, slot)` tính từ counter
+> snapshot ở `Board_Endgame` — hai hàm khác nhau, đừng gộp (review R1).
+>
+> Chuỗi lưu thật (`57-endgame-mission-stars-save-continue.md` §4): `result ∈ −1..2` →
+> `newStars = result + 1` → **chỉ ghi khi `newStars > savedStars`** (guard ở caller, không phải trong setter).
 
 Và sao được lưu **theo từng chế độ**:
 
@@ -211,7 +219,11 @@ từ bảng**. Bản clone: **nhúng bảng**, đừng viết hàm.
 > **Cẩn thận với `r = −0,456`:** 5 wave "to nhất" đều là wave **đầu** (`Wave_0000` 883 · `Wave_0001` 936 ·
 > `Wave_0010` 951). Có thể chúng là wave **dùng chung** chứ không đứng đầu campaign. Mức **C**.
 
-### 5.2 Vậy `pct[mode]` — đo bằng con số UI in ra
+### 5.2 Vậy `pct[mode]` — ~~đo bằng con số UI in ra~~ *(đã bị thay bằng §7.3)*
+
+> **25/10:** không cần đọc `{0}` trên UI nữa — ba mảng `pct` đã lấy **trực tiếp từ `field_default`**
+> (`§7.3`). Cách dưới đây giữ lại làm **đường kiểm độc lập** nếu có thiết bị: nếu số UI khớp bảng §7.3
+> thì cả hai cùng đúng.
 
 Vì `{0}` là **số nguyên chính xác** và mẫu số **giống nhau** ở 3 chế độ:
 
@@ -314,20 +326,55 @@ Ba khả năng, **chưa cái nào được chứng minh**:
 
 ---
 
+### 7.3 Đã resolve **9/9 số** + mẫu số stage 2/3 (25/10, review R1)
+
+Ba mảng `static` đọc thẳng từ `field_default` của `<PrivateImplementationDetails>` — **không** phải
+đoán từ tên hàm, không cần screenshot:
+
+| `ModeCurrent` | slot | float32 | hex | Ý nghĩa |
+|---|---|---|---:|---|
+| **0** | `0x2ae8b88` | **0.20 / 0.45 / 0.80** | `cdcc4c3e 6666e63e cdcc4c3f` | chế độ 0 |
+| **1** | `0x2ae8b80` | **0.35 / 0.60 / 0.98** | `3333b33e 9a99193f 48e17a3f` | chế độ 1 |
+| **khác 0/1** | `0x2ae8b78` | **0.50 / 0.80 / 1.00** | `0000003f cdcc4c3f 0000803f` | **fallback** |
+
+**Mẫu số** (normal, non-branch, `ChapterCurrent = 0`, `LevelCurrent = 0`):
+
+| Stage hiển thị | Wave mặc định | Slot không marker − ID38001 | `GetCountEnemies` |
+|---|---|---:|---:|
+| 2 | `0164` | 274 − 12 | **262** |
+| 3 | `0113` + `0005` | (95 − 8) + (155 − 4) | **238** |
+
+**Ngưỡng `{0}`** = `fcvtzs(pct × denominator)` (không `ceil`):
+
+| Stage | Mode 0 | Mode 1 | Khác 0/1 |
+|---|---|---|---|
+| 2 (262) | **52 / 117 / 209** | 91 / 157 / 256 | 131 / 209 / 262 |
+| 3 (238) | **47 / 107 / 190** | 83 / 142 / 233 | 119 / 190 / 238 |
+
+Kết quả `GetMissionCompleted` được gọi là **tier 0/1/2**, **không** tự gọi "1/2/3 sao UI".
+
+**Phạm vi — đừng mở rộng:** bảng này là campaign `GameMode0`, non-branch, mission thường.
+**Không** áp cho `Chapter2`, branch, special mission 3/4, challenge, map debug hay bản Premium.
+Đây là mẫu số **cấu hình theo thuật toán**, không phải số object đang sống hay số kill chắc chắn đạt được.
+
+Nguồn (đã kéo về repo, xem `DATA_SYNC.md` §kéo 25/10): `reverse-engineering/raw/early-waves/mission-denominators.json.gz`,
+`raw/endgame-missions/mission-progress-flow.json.gz`, `raw/ui-audit/enemy-exit-missions.json.gz`;
+đường đọc: `docs/apk-analysis/56-early-stage-mission-denominators.md`, `57-endgame-mission-stars-save-continue.md`.
+
 ## 8. Còn thiếu / phải đoán
 
-- ~~Giá trị `pct[mode][slot]` chưa đọc~~ → **đọc được 3 trong 9**: `[0.2, 0.6, 0.98]` (§7).
-  **Còn thiếu 6 số** (hai chế độ còn lại) và **chưa biết** mảng vừa đọc ứng với chế độ nào.
-- **`countEnemies` cho từng stage chưa có** (`A2` — bảng map→wave chưa bóc). Nhưng nếu bạn đọc `{0}` ở
-  **cả 3 chế độ** thì **không cần** `count`: tỉ lệ `{0}` cho ra thẳng `pct` tương đối.
-- **`PercentToCompleteMissions222`** = `[0.2, 0.6, 0.98]` (§7). Vẫn **chưa biết** 3 phần tử đó là
-  "3 nhiệm vụ" (slot) hay "3 chế độ" — hai cách đọc cho ra hai bảng ngưỡng khác nhau.
-  Cách phân biệt rẻ nhất: so với con số `{0}` **hiện trên UI** ở một stage đã biết `countEnemies`.
-- **`0x12b79a8` / `0x12b7860`** (hai hàm mà `IsMissionCompleted` gọi) **chưa export** ⇒ chưa biết
-  "số nhiệm vụ đã xong" được tính từ đâu (nghi: so `killCount` với `target` của từng slot).
+- ~~Giá trị `pct[mode][slot]` chưa đọc~~ → **đã đọc đủ 9/9** (§7.3). Ba mảng `float[3]` và **ánh xạ
+  chế độ đã rõ**: mode 0 `0x2ae8b88`, mode 1 `0x2ae8b80`, **khác 0/1 → fallback `0x2ae8b78`**.
+- ~~`countEnemies` cho từng stage chưa có~~ → **có mẫu số stage 2/3**: **262** và **238** (§7.3).
+  Vẫn **chưa** có cho mọi stage và cho branch / Chapter2 / special mission — đừng ngoại suy.
+- ~~`PercentToCompleteMissions222` = `[0.2, 0.6, 0.98]` … chưa biết 3 phần tử là gì~~ → **dòng này SAI
+  và đã bỏ.** Giá trị đó là **trộn** hai mảng khác nhau; ba mảng thật là `[.20,.45,.80]`,
+  `[.35,.60,.98]`, `[.50,.80,1.00]`, và mỗi mảng là **3 tier của một chế độ** (§7.3).
+- ~~`0x12b79a8` / `0x12b7860` chưa export ⇒ nghi tính từ kills~~ → **`0x12b79a8` đọc `savedStars`
+  (`GetStarStageMaster`)**, không phải kills (§2 + §7.3). Không còn là ẩn số về *nguồn số*; chỉ còn
+  **chưa** export `0x12b7860` (nhánh branch) — nhánh branch ngoài phạm vi bảng §7.3.
 - **Số sao tối đa** = 3 chỉ là **B** (§2). `SetStarCheat` mặc định `star = 5` không chặn.
 - **Bảng 6 loại nhiệm vụ ↔ 6 nguồn đếm** là **B** — nối theo *hàm nào được gọi trong `GetStringInfo`*,
   chưa đọc hết 6 nhánh. **Điều kiện lật ngược:** một stage thật có loại nhiệm vụ khác bảng §3.
-- **`listIgroneEnemies` đã có 31 ID** (§7.2), nhưng **chưa tính** chúng chiếm bao nhiêu bản ghi
-  trong `waves.json` ⇒ mẫu số vẫn đang dùng 45.659, tức **có thể cao hơn thực tế**. Phép tính này
-  làm được offline, không cần thiết bị.
+- **`listIgroneEnemies`** (31 ID, §7.2): **đã tính cho stage 2/3** — chính là 12 và 8+4 slot bị loại
+  (`§7.3`). **Chưa** tính cho các stage còn lại; với những stage đó mẫu số 45.659 vẫn là **cận trên**.

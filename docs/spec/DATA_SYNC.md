@@ -2032,3 +2032,85 @@ vì thứ được thêm là **thân hàm native**, không phải dữ liệu se
 
 Còn **chưa** kéo (giữ nguyên chính sách): `.github/**`, `tools/verify/*.py`, `tests/`, `docs/HANDOFF_AI_TASKS.md`
 của nhánh dữ liệu.
+
+## 16. Kéo **bằng chứng review** từ `7e0da2ee3` (25/10) — phục vụ R1/R2
+
+Review `25c367aca` (PR #12) kết luận dựa trên raw ở nhánh dữ liệu. Để **sửa được chứ không phải tin lời**,
+kéo đúng những file review dùng làm bằng chứng:
+
+| nhóm | file | cỡ |
+|---|---:|---:|
+| báo cáo phân tích | `docs/apk-analysis/52-…` → `58-…` | 7 file · 62 KB |
+| template wave đầy đủ | `reverse-engineering/raw/early-waves/` | 18 file · 852 KB |
+| luồng mission/endgame | `reverse-engineering/raw/endgame-missions/` | 4 file · 536 KB |
+| mission exit từ UI | `reverse-engineering/raw/ui-audit/enemy-exit-missions.json.gz` | 1 file · 19 KB |
+
+`ls-remote` khớp `7e0da2ee3b07`; kéo bằng `git show <ref>:<path> > <path>` — **không merge, không checkout**.
+
+### 16.1 `sha256` (16 ký tự đầu) — để phát hiện sửa tay
+
+| file | bytes | sha256 |
+|---|---:|---|
+| `reverse-engineering/raw/early-waves/datas_maps_chapter2_waves_wave_0005__38205.json.gz` | 16,619 | `9ccd2e75616058ff` |
+| `reverse-engineering/raw/early-waves/datas_maps_chapter2_waves_wave_0113__21456.json.gz` | 42,654 | `f700f510f4d211cf` |
+| `reverse-engineering/raw/early-waves/datas_maps_chapter2_waves_wave_0164__148637.json.gz` | 48,425 | `19c40be50f46278e` |
+| `reverse-engineering/raw/early-waves/datas_maps_waves_branch_evade_wave_0005__154465.json.gz` | 473,672 | `e78264fc00046185` |
+| `reverse-engineering/raw/early-waves/datas_maps_waves_branch_help_wave_0005__57863.json.gz` | 8,280 | `e58f766ed4822c47` |
+| `reverse-engineering/raw/early-waves/datas_maps_waves_branch_protect_wave_0005__213990.json.gz` | 9,101 | `a8bf0cfedc8cbac1` |
+| `reverse-engineering/raw/early-waves/datas_maps_waves_branch_specialenemies_wave_0005__213925.json.gz` | 11,690 | `087aeefccd730be3` |
+| `reverse-engineering/raw/early-waves/datas_maps_waves_challange0_wave_0005__213945.json.gz` | 9,090 | `bbca1cc286fa2047` |
+| `reverse-engineering/raw/early-waves/datas_maps_waves_challange1_wave_0005__57870.json.gz` | 8,284 | `fe1a3244ad629f95` |
+| `reverse-engineering/raw/early-waves/datas_maps_waves_challange2_wave_0005__57817.json.gz` | 13,138 | `4dbbfea6fa621b7d` |
+| `reverse-engineering/raw/early-waves/datas_maps_waves_challange3_wave_0005__109344.json.gz` | 19,226 | `c5400bcdcf2f2ad5` |
+| `reverse-engineering/raw/early-waves/datas_maps_waves_wave_0005__38187.json.gz` | 16,630 | `f8fbc687233e10df` |
+| `reverse-engineering/raw/early-waves/datas_maps_waves_wave_0113__21468.json.gz` | 42,616 | `0849781fab7d9db2` |
+| `reverse-engineering/raw/early-waves/datas_maps_waves_wave_0164__148604.json.gz` | 48,355 | `965cdfb6e88ede69` |
+| `reverse-engineering/raw/early-waves/default-enemy-components.json.gz` | 19,575 | `a4b69066d303f48b` |
+| `reverse-engineering/raw/early-waves/index.json` | 5,259 | `4b232f4ad990bdb5` |
+| `reverse-engineering/raw/early-waves/mission-denominators.json.gz` | 25,998 | `6b7f5299dc0f414d` |
+| `reverse-engineering/raw/early-waves/resolved-default-waves.json.gz` | 6,632 | `51bd86535b8ee1af` |
+| `reverse-engineering/raw/endgame-missions/boards_board_endgame__113205.json.gz` | 447,285 | `36032ed7b4949fa4` |
+| `reverse-engineering/raw/endgame-missions/false-result-reachability.json.gz` | 28,728 | `33a8994ab9362030` |
+| `reverse-engineering/raw/endgame-missions/index.json` | 558 | `b5b84ac0c06c20b1` |
+| `reverse-engineering/raw/endgame-missions/mission-progress-flow.json.gz` | 57,210 | `7be31909326d5407` |
+| `reverse-engineering/raw/ui-audit/enemy-exit-missions.json.gz` | 19,662 | `5d164df061397e99` |
+| `docs/apk-analysis/52-game-scene-to-stage-map-waves.md` | 8,195 | `8bace55e66e3cca2` |
+| `docs/apk-analysis/53-wave-spawner-endgame-gates.md` | 9,695 | `86b28aa1f1d20828` |
+| `docs/apk-analysis/54-exact-early-wave-resource-prefabs.md` | 6,246 | `922ddaeb0039f380` |
+| `docs/apk-analysis/55-enemy-pool-active-list-mission-thresholds.md` | 7,825 | `4dc12e08653c32f7` |
+| `docs/apk-analysis/56-early-stage-mission-denominators.md` | 9,268 | `7172bf41e2d3ad2a` |
+| `docs/apk-analysis/57-endgame-mission-stars-save-continue.md` | 11,650 | `e754d8abee4926f3` |
+| `docs/apk-analysis/58-false-result-target-advance-reachability.md` | 9,380 | `d92094bcd97e1069` |
+
+### 16.2 Vì sao kéo đúng mấy file này
+
+| review | cần gì | file |
+|---|---|---|
+| **R1** fallback mode + mảng `pct` + mẫu số | mẫu số stage 2/3, luồng mission, `GetStarStage*` | `mission-denominators`, `mission-progress-flow`, `enemy-exit-missions`, report 56/57 |
+| **R2** dedup theo tên | **cùng wave khác `root`** (normal vs Chapter2) + `Call_Data` pathID | 3 cặp `datas_maps_[chapter2_]waves_wave_*` |
+
+### 16.3 **KHÔNG con số nào đổi — chỉ đổi đơn vị** (tự sửa lần 2, 25/10)
+
+Lần đầu tôi viết ở đây "dữ liệu cũ sai, export nhân đôi". **Sai.** Đo lại thì ra:
+
+| cột cũ | thực ra là | bằng chứng |
+|---|---|---|
+| "Spawner 23.757" | **`Σ copies`** (lượt sinh) | 9/9 wave trong bảng cũ khớp `Σ copies` hôm nay (**AQ5**), và `Σcopies` của **cả** `waves.json` ở `8c6da25` **và** bản hiện tại đều = **23.757** |
+| "median 62" | median **lượt**/wave | median dòng = 28,5; median lượt = **62** (**AQ4**) |
+| "`point_range` 16.498" | số **lượt** | theo lượt: 16.498 / 4.199 / 1.688 / 686 / 686 — **khớp đúng** dãy `CROSS_BRANCH` §3c ghi từ trước (**AQ6**) |
+| "`Wave_0163` 621" | lượt của wave đó | 257 dòng × `copies` = **621** (**AQ5**) |
+
+⇒ Bảng cũ **đúng số, sai nhãn cột**. Việc phải làm là **ghi rõ đơn vị**, không phải "sửa số".
+`ENCOUNTERS.md` §1.1/§1.4/§1.5/§3 giờ in **cả hai cột**.
+
+**Một chỗ vẫn là suy diễn:** `copies` (→ 45.659 "quân") **không có field tương ứng** trong raw
+`Call_Data` đã kéo (`number` + `rate` thôi), nên mức bằng chứng là **B**, không phải A. Báo cáo `54`
+bên nhánh dữ liệu cũng viết *"không coi `copies` là số đợt"*.
+
+Kiểm bằng máy: **AQ1–AQ6**. AQ3 đếm `Call_Data` vs pathID trên 3 wave normal: **149 / 149 / 0 trùng**.
+
+### 16.4 Chưa kéo
+
+- `tools/verify/peer_spec_review.py`, `tests/` của nhánh dữ liệu (mã của họ — chỉ đọc, không chép).
+- Toàn bộ `docs/apk-analysis/` khác.
+- `raw/ui/*` (803 file) — đã kéo ở §14, không kéo lại.

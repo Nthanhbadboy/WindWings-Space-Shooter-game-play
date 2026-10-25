@@ -38,7 +38,7 @@ RULES = [
     (r"^(Khung|NenAvatar|NenBoss|Hotro|Vip|Goigem|Shop_|Stat|SubStat|Nut|Overdrive_|_Hp_|Hoicham|Hoisinh|NoAds|Notice|CheckBox|Lock|Knob|Loading|Line|Number|End$|End1$|Enegry|Gift_Box|Finger|Hand$|Alert|Cover$|PA$|Dot$)", "ui", "R11 khung/nút/icon UI", "A"),
     (r"^(Rank\d|Rank_)", "ui", "R12 Rank* = huy hiệu rank", "A"),
     (r"^PVP\d", "ui", "R13 PVP* = huy hiệu PVP", "A"),
-    (r"^(Coin|Goigem|Coda_)", "ui", "R14 Coin_* (đã xem ảnh 03 #13-20)", "A"),
+    (r"^(Coin|Goigem)", "ui", "R14 Coin_* (đã xem ảnh 03 #13-20)", "A"),
     (r"^(A_?\d|A\d+$)", "ui", "R15 A(n) = avatar/huy hiệu (ảnh 01 #41-50)", "A"),
     (r"^Avatar", "ui", "R16 Avatar*", "A"),
     (r"^(AppleInAppPurchase|ApplePay|GooglePay|GooglePlayWordmark|Google_Play_Games|ArenaMedal|BOm|BombAttack|Blink|Change|Circle6|Circle7|Circle$|Circle_2)", "ui", "R17 logo IAP/nút", "A"),
@@ -58,9 +58,9 @@ RULES = [
     (r"^drone", "drones", "R24 drone*", "A"),
     (r"^mini_ship", "ships", "R25 mini_ship*", "A"),
     # --- font ------------------------------------------------------------
-    (r"^(Coda_|GooTest_)", "font", "R22 chữ cái của logo (ảnh 03 #9-12, #52-62)", "A"),
+    (r"^(Coda_|GooTest_)", "font", "R22 Coda/GooTest = họ font (tên font, chưa xem ảnh)", "B"),
     # --- bộ phận ---------------------------------------------------------
-    (r"^(Rock|Head|Foot|XVideo)", "items", "R23 bộ phận/mảnh rời", "C"),
+    (r"^(Rock|Head|Foot)", "items", "R23 bộ phận/mảnh rời", "C"),
 ]
 
 # Nhãn xem **bằng mắt** trên contact sheet: (số sheet, tile) -> (nhãn, luật, mức).
@@ -111,6 +111,34 @@ def bucket(name):
     return "other"
 
 
+def rule_id_of(rule):
+    m = re.match(r"(R\d+)", rule or "")
+    return m.group(1) if m else ""
+
+
+def shadowed_rules(names):
+    """Luật **không bao giờ** thắng vì luật đứng trước đã bắt hết tên.
+
+    Đây là lỗi `R14` che `R22` (Coda_*) và `R18` che `R23` (XVideo) mà review
+    `25c367aca` bắt được: bảng tài liệu liệt kê nhãn theo một luật, nhưng dữ liệu
+    ra lại theo luật khác. Trả [(rule, số tên bị che)].
+    """
+    out = []
+    for i, (pat, _cat, rule, _lvl) in enumerate(RULES):
+        rx = re.compile(pat)
+        hit = miss = 0
+        for n in names:
+            if not rx.search(n):
+                continue
+            if any(re.search(p, n) for p, *_ in RULES[:i]):
+                miss += 1
+            else:
+                hit += 1
+        if miss and not hit:
+            out.append((rule, miss))
+    return out
+
+
 def main():
     rows = list(csv.DictReader(SRC.open(encoding="utf-8")))
     out = []
@@ -118,8 +146,12 @@ def main():
     for r in rows:
         name = r["name"]
         if r["category"] != "unclassified":
+            # Nhãn lấy từ cột `category` (raw class) — KHÔNG phải audit lại.
+            # Vì vậy confidence để trống, và ghi rõ nguồn; đừng gộp với mức A của luật.
             out.append(dict(r, proposed_category=r["category"], rule="(giữ nhãn gốc)",
-                            confidence="A", bucket="", needs_eye=""))
+                            confidence="", label_source="category_passthrough",
+                            rule_id="", evidence_ref="sprites-index.csv:category",
+                            reviewed="false", bucket="", needs_eye=""))
             continue
         eye_cat = EYE.get(sheet_no(r["contact_sheet"]), {}).get(int(r["tile"]))
         cat, rule, level = classify(name, r.get("atlas") or "", eye_cat,
@@ -129,10 +161,20 @@ def main():
         else:
             tally["unknown"] += 1
         out.append(dict(r, proposed_category=cat, rule=rule, confidence=level,
+                        label_source="eye" if eye_cat else ("rule" if cat else "unknown"),
+                        rule_id=rule_id_of(rule),
+                        evidence_ref=("docs/assets/contact-sheets/" + r["contact_sheet"]
+                                      if eye_cat else ("NAME_RULES" if cat else "")),
+                        reviewed="true" if (eye_cat or level in ("A", "B")) else "false",
                         bucket="" if cat else bucket(name),
                         needs_eye="" if cat else f'{r["contact_sheet"]}#{r["tile"]}'))
+    sh = shadowed_rules([r["name"] for r in rows])
+    if sh:
+        print("CẢNH BÁO luật bị che (không bao giờ khớp):",
+              ", ".join(f"{r} ({n} tên)" for r, n in sh))
     cols = ["name", "kind", "path_id", "atlas", "bytes", "contact_sheet", "tile",
-            "category", "proposed_category", "rule", "confidence", "bucket", "needs_eye",
+            "category", "proposed_category", "rule", "confidence", "label_source",
+            "rule_id", "evidence_ref", "reviewed", "bucket", "needs_eye",
             "relative_path"]
     with OUT.open("w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=cols)

@@ -557,7 +557,7 @@ Bản trước của mục này ghi mỗi file "phủ ~85% · ~72% · ~40%…". 
 **Đúng:** AI viết được **khung** game này nhanh hơn con người nhiều lần, vì:
 - 125 class UI + screen graph → sinh được toàn bộ scene/prefab
 - 458 cấu hình súng + burst 5 tham số → weapon system data-driven
-- 282 wave + 10.498 spawner → level generator có tham số
+- 282 wave + **11.094** cấu hình spawner (23.757 lượt) → level generator có tham số
 - 800 enemy × 9 component → enemy framework đúng kiến trúc gốc
 
 **Điều kiện:** phải **thay 3 thứ** mà spec không cho:

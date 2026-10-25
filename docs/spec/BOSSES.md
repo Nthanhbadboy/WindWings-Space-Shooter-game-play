@@ -388,7 +388,8 @@ và **chưa có một dòng CSV nào**.
 
 | # | Lớp kịch bản | Class | Instance | Đã đọc | Trạng thái |
 |---:|---|---|---:|---:|---|
-| 1 | **Sinh quân** (wave, spawner, list enemy) | `Call_Data` | **23.757** | **23.757** | ✅ **100%** |
+| 1 | **Sinh quân** (wave, spawner, list enemy) | `Call_Data` | **11.094** dòng
+(= **23.757** `Σ copies**) | **11.094** | ✅ **100%** |
 | 2 | **Di chuyển** (path, speed, turret, hướng) | `Enemy_Movement` | 981 | 981 | ✅ **100%** |
 | 3 | **HP** | `Enemy_Datas` | 981 | 981 | ✅ **100%** |
 | 4 | **Bắn** (cadence, burst) | `Gun_Attack` | 458 | 458 | ✅ **100%** |

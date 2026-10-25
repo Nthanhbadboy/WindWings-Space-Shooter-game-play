@@ -4,7 +4,9 @@
 > blob **`d9e27f94a`**), `docs/assets/INDEX.md` (blob `72c9f12c3`), `docs/apk-analysis/04-asset-manifest.csv`.
 > Mọi số dưới đây đọc lại được bằng `tools/verify-claims.py` (nhóm **AB**). Không dùng ảnh điện thoại.
 
-**Trả lời ngắn: 2.197 asset · 1.554 chưa có nhãn · 132 sheet (116 chưa tách) · 67 page chưa có rect.**
+**Trả lời ngắn: 2.197 asset · 1.554 chưa có nhãn · 132 sheet · 116 tên atlas không match · 67 page sactx.**
+> ⚠ **116 KHÔNG phải "116 sheet chưa tách"** — đó là **số tên atlas không match theo tên** trong
+> `sprites-index.csv`; nó **không** chứng minh texture đó chưa từng được cắt. Xem §2 (b) và review R3.
 > **Cập nhật 25/10 (§9):** phân loại bằng số đo pixel ⇒ **1.857/2.197 có nhãn**, còn **340 `unresolved`**;
 > lần đầu có **bảng tách sheet** (`sheet-splits.csv`: **307** entry · **4.250** mảnh · **98** texture page).
 > Thêm: gợi ý kNN có **đo sai số** cho **89**/340 ca còn lại (§9.6) — không gộp vào nhãn.
@@ -36,13 +38,18 @@ Ba con số đó là **ba việc khác nhau**, đừng cộng thành một.
 
 ---
 
+
+> **Chênh 56 vs 67 (ghi 25/10, review R3):** 67 là số texture `sactx-*` **theo tên** trong manifest;
+> `sprites-index.csv` chỉ gắn `category=atlas` cho **56** trong số đó — **11 page bị luật tên xếp vào
+> nhóm khác**. Đây là **lỗi nhãn**, không phải thay đổi dữ liệu; AB1 đếm theo **tên** nên vẫn 67.
+
 ## 2. Ba loại "chưa xong" — khác nhau
 
 | loại | số | nghĩa | đóng bằng cách nào |
 |---|---:|---|---|
 | **(a) chưa đặt nhãn** | **1.554** sprite `unclassified` | có ảnh, không biết thuộc nhóm nào | luật tên + xem contact sheet (§4) |
-| **(b) chưa tách** | **132** sheet `Texture2D`; **116** trong đó **không có sprite nào** được cắt ra | ảnh gộp nhiều sprite | cắt theo rect (§5) |
-| **(c) chưa có rect** | **67** page `sactx-*` | atlas runtime; muốn cắt phải có `Sprite.m_RD.rect` | **giao nhánh dữ liệu** (§6) |
+| **(b) tách ảnh — CHƯA CHỨNG MINH** | **132** sheet `Texture2D`; **116** = `unmatched_atlas_name_count` = tên atlas **không match tên** trong index | ảnh gộp nhiều sprite (**giả thuyết**) | cần `Sprite.m_RD.textureRect` + `settingsRaw` + `rotation/trim` + manifest PNG (T9) |
+| **(c) chưa có rect** | **67** page `sactx-*` (đếm theo **tên**; chỉ **56** trong số đó được gắn `category=atlas`) | atlas runtime; muốn cắt phải có `Sprite.m_RD.rect` | **giao nhánh dữ liệu** (§6) |
 
 > ⚠️ **Không** cộng 1.554 + 132 + 67: 1.554 là *sprite*, 132 là *texture sheet*, 67 là *page atlas* —
 > ba mẫu số khác nhau (xem `COVERAGE_AUDIT.md` §4, đúng loại lỗi "đếm hai tập rồi ghi một dòng").
@@ -68,11 +75,17 @@ gán nhãn **chỉ khi có bằng chứng**. Bốn mức:
 
 | mức | nghĩa | số sprite (trong 1.554) |
 |---|---|---:|
-| **A** | tên tự mô tả **hoặc** đã xem contact sheet xác nhận | **863** |
-| **B** | suy từ tên **nhóm** (nhiều sprite cùng họ, cùng ngữ nghĩa) | **116** |
+| **A** | tên tự mô tả **hoặc** đã xem contact sheet xác nhận | **848** |
+| **B** | suy từ tên **nhóm** (nhiều sprite cùng họ, cùng ngữ nghĩa) | **131** |
 | **C** | suy từ tên tương tự — **phải xem ảnh mới chắc** | **70** |
 | **chưa gán** | không có bằng chứng nào | **505** |
 | **cộng** | | **1.554** |
+
+> **25/10 (review R4):** trước đây bảng này ghi **863 A / 116 B** và **643** nhãn lấy thẳng từ cột
+> `category` bị **tự cấp A**. Nay 643 nhãn đó có `confidence` **rỗng** + `label_source=category_passthrough`
+> — chúng **không** nằm trong 1.554 dòng này mà nằm ở nhóm sprite đã có `category` sẵn: đó là lý do
+> `sprites-classified.csv` có **848 A · 131 B · 70 C** (chỉ tính phần phải phân loại) và **643** dòng
+> passthrough riêng.
 
 Nhãn đề xuất cho 1.554 sprite chưa phân loại:
 
@@ -188,11 +201,12 @@ nhóm `unclassified` (**113** sprite), 7 sheet còn lại đã có nhãn (`Bg1`/
   đã có nhãn đề xuất (kèm mã luật để kiểm), **505** còn lại có toạ độ tile để xem.
 - **Cần** cho việc dựng art mới: 13 nhóm đã phân loại (**643** asset: 132+109+80+73+69+67+32+31+25+13+8+4)
   là đủ để lấy tỉ lệ kích thước/phong cách; **không** cần cắt hết sheet.
-- **Việc rẻ nhất, làm ngay:** cắt `1_5x2` + `k_1__2x3` (**16 ô**, lưới khai báo trong tên, không phải
-  đoán) và dùng `sprites-classified.csv` thay cho `sprites-index.csv` khi cần tra nhãn.
-- **Việc còn lại là "xem ảnh"**, không phải "đọc thêm raw": **21** contact sheet chưa xem hết, **505**
-  tile (nhiều nhất `unclassified-15` **46**, rồi `-11`/`-18` **44**, `-06`/`-19`/`-24` **42**). Trừ khi có **rect** (T9)
-  thì mới đóng được bằng máy.
+- **Việc rẻ nhất, làm ngay:** cắt thử `1_5x2` + `k_1__2x3` — **16 ô theo tên** (suffix `5x2` / `2x3`).
+  ⚠ Tên chỉ là **gợi ý layout**: chưa biết `padding`, `margin`, `rotation`, `trim` và kích thước ảnh
+  gốc thật, nên **16 ô chưa phải bằng chứng** là cắt đúng. Dùng `sprites-classified.csv` khi tra nhãn.
+- **Việc còn lại là "xem ảnh"**, không phải "đọc thêm raw": **17/25** sheet `unclassified-*` còn
+  ≥1 sprite **chưa có nhãn** (định nghĩa: "chưa xem hết" = còn `unresolved`, không phải "chưa mở ảnh").
+  Trừ khi có **rect** (T9) thì mới đóng được bằng máy.
 
 ## 8. Tự kiểm
 
@@ -204,10 +218,10 @@ python3 tools/verify-claims.py               # toàn bộ
 
 | claim | nội dung |
 |---|---|
-| **AB1** | 2.197 asset · 1.554 `unclassified` · 132 sheet · 16 sheet có sprite · **116** chưa tách |
+| **AB1** | 2.197 asset · 1.554 `unclassified` · 132 sheet · 16 sheet có sprite · **116** `unmatched_atlas_name_count` (**không** phải "chưa tách") |
 | **AB2** | 1.554 = **396** trong sheet + **1.158** rời |
 | **AB3** | 17 sheet ≥ 8 sprite = **184** sprite (10 sheet / **113** sprite thuộc `unclassified`) · 2 sheet lưới = **16** ô, **0** ô đã tách |
-| **AB4** | phân loại lại: **1.049** có nhãn (**863 A · 116 B · 70 C**) · **505** `unknown` (**33** numeric · **204** word · **268** other) |
+| **AB4** | phân loại lại: **1.049** có nhãn (**848 A · 131 B · 70 C**) · **643** passthrough **không có mức** · **505** `unknown` (**33** numeric · **204** word · **268** other) |
 | **AB5** | 505 unknown = **448** họ tên, **410** tên đơn lẻ; **17/25** contact sheet còn tile chưa gán |
 
 ---
@@ -232,16 +246,20 @@ và lần đầu có **toạ độ cắt sheet**.
 
 | nhãn cuối | số | | nhãn cuối | số |
 |---|---:|---|---|---:|
-| `ui` | **719** | | `enemy` | 103 |
+| `ui` | **715** | | `enemy` | 103 |
 | `bullet` | **239** | | `audio` | 69 |
 | `atlas` (texture page) | 132 | | `items` | 43 |
 | `background` | 129 | | `ships` | 27 |
-| `fx` | 126 | | `font` | 19 |
+| `fx` | 126 | | `font` | **23** |
 | `bosses` | 119 | | `drones` | 15 |
 | `parts` | **117** | | **`unresolved`** | **340** |
 
-Mức tin cậy: **A 1.587** (tên/id tự mô tả) · **B 200** (chỉ số đo) · **C 70** (từ vòng trước, cần xem mắt)
-· **— 340** (không luật nào khớp).
+Mức tin cậy: **A 929** (tên/id tự mô tả + 124 tile đã xem ảnh) · **B 215** (chỉ số đo/tên nhóm) ·
+**C 70** (cần xem mắt) · **trống 643** = nhãn **passthrough** từ cột `category` · **— 340** (không luật nào khớp).
+
+> ⚠ **643 nhãn đó KHÔNG phải mức A.** Bản trước gán `A` cho mọi row lấy từ cột `category` — đó là
+> *chép nhãn cũ*, không phải *audit*. Từ 25/10 chúng có `confidence` rỗng + `label_source=category_passthrough`
+> + `reviewed=false`. Muốn nâng lên A thì phải xem ảnh hoặc có luật (`review R4`).
 
 ### 9.3 Luật mới — và vì sao tin được
 
@@ -358,7 +376,7 @@ log bytes · log tỉ lệ), chuẩn hoá z-score, lấy **3 hàng xóm gần nh
 | `font` | 0,75 | 1,00 | 4 |
 | `drones` / `ships` | 1,00 | 0,50 | 1 · 1 |
 
-**773**/1.857 ca đủ tự tin · đúng **666** (**86,2 %**) · nền đoán-bừa (nhóm lớn nhất) là 39 %.
+**781**/1.857 ca đủ tự tin · đúng **674** (**86,3 %**) · nền đoán-bừa (nhóm lớn nhất) là 39 %.
 
 Áp lên 340 ca: gợi ý được **89** (`ui` 72 · `bullet` 8 · `enemy` 4 · `bosses` 4 · `parts` 1),
 **251** vẫn để trống. Ghi ra `docs/assets/sprites-knn.csv` (cột `category_knn`, `margin`,
@@ -372,6 +390,35 @@ phải xem mắt, không có đường tắt.
 **59**/340 ca có atlas, và **0** ca đạt đa số ≥60 % trong page — page `11`, `128x128`, `256` là
 **page đánh số**, không mang ngữ nghĩa. Không thử lại.
 
+
+### 9.8 Luật bị che + provenance nhãn (sửa theo review R4)
+
+Review `25c367aca` chỉ ra hai luật **không bao giờ thắng** vì bị luật đứng trước bắt hết:
+
+| case | trước | sau | vì sao |
+|---|---|---|---|
+| `Coda_0..3` | `ui` (R14 `^(Coin\|Goigem\|Coda_)`) | **`font`** (R22) | `Coda` là **tên họ font**; R14 chỉ nên giữ `Coin`/`Goigem` |
+| `XVideo_0..8` | `ui` (R18, đúng) | `ui` (R18) | `XVideo` **bị R18 bắt trước** R23 ⇒ nhánh `items` cho XVideo là **chết**, đã bỏ khỏi R23 |
+| `CodaWhite*` | `fx` (giữ nhãn gốc) | `fx` (passthrough) | nằm ở cột `category` từ trước, **không** phải kết quả R22 |
+
+Cách kiểm tự động: `tools/classify-assets.py` chạy `shadowed_rules()` — luật nào **có tên khớp nhưng
+0 tên thắng** thì in cảnh báo. Hiện tại **0 luật bị che**.
+
+Cột provenance — `sprites-classified.csv` (đầu vào, 4 cột) và `sprites-auto-classified.csv` (đầu ra,
+2 cột mà nó **tự** ghi):
+
+| cột | có ở | nghĩa |
+|---|---|---|
+| `label_source` | cả hai | `rule` 925 · `eye` 124 · `category_passthrough` 643 · `unknown` 505 (đầu vào); `rule:name` 81 · `rule:measure` 84 · `none` 340 (đầu ra) |
+| `rule_id` | đầu vào | `R14`, `R22`… để truy ngược |
+| `evidence_ref` | đầu vào | luật / ảnh contact sheet / cột `category` |
+| `reviewed` | cả hai | `true` chỉ khi có luật A/B hoặc đã xem ảnh; **643 passthrough là `false`** |
+
+Cột `rule` của đầu ra ghi **nguyên văn** luật đã bắn (kể cả `(giữ nhãn gốc)`), nên truy được từng nhãn
+mà không cần `rule_id`; `rule_id` chỉ tồn tại ở bảng của vòng đặt tên.
+
+⇒ Số đọc đúng: **1.049** nhãn do luật/ảnh (848 A · 131 B · 70 C) + **643** nhãn chép lại (không mức)
++ **505** unknown. Không cộng 643 vào "A".
 ### 9.7 Việc giao nhánh dữ liệu
 
 Export `Sprite.m_RD.rect` (x,y,w,h) + `settingsRaw` cho **2.185** sprite và **67** page `sactx`. Đổi lại:

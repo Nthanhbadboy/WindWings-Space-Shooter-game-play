@@ -37,7 +37,7 @@ SOURCE_PATHS = ("datas", "docs/apk-analysis", "reverse-engineering", "raw",
 
 DEFAULT_REF = "origin/arena/ef6b75ef-windwings-space-shooter-game-p"
 # Các snapshot đã từng kéo. File gốc phải khớp **một** trong số này.
-DEFAULT_SNAPSHOTS = ("9aed767b1", "55bd18ac8", "019e704d1", "6dc5c4bf5")
+DEFAULT_SNAPSHOTS = ("7e0da2ee3", "9aed767b1", "55bd18ac8", "019e704d1", "6dc5c4bf5")
 
 GZ_SKIP_OVER = 8 * 1024 * 1024   # giải nén file lớn hơn mức này thì bỏ qua
 
@@ -79,8 +79,26 @@ def local_tree() -> dict[str, str]:
                 full = os.path.join(dirpath, n)
                 rel = os.path.relpath(full, ROOT)
                 if rel not in d:
-                    d[rel] = "worktree:" + hashlib.sha1(open(full, "rb").read()).hexdigest()
+                    # file chưa track: băm **đúng kiểu git** (blob header) để so được với snapshot
+                    data = open(full, "rb").read()
+                    d[rel] = hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
     return d
+
+
+def head_tree() -> dict[str, str]:
+    """{path: blob-sha} tại HEAD — để tách 'bản kéo cũ' khỏi 'sửa cục bộ'."""
+    out = subprocess.run(["git", "ls-tree", "-r", "HEAD", "--", *SOURCE_PATHS], cwd=ROOT,
+                         capture_output=True, text=True, check=True).stdout
+    d = {}
+    for line in out.splitlines():
+        meta, path = line.split("\t", 1)
+        d[path] = meta.split()[2]
+    return d
+
+
+def blob_sha(path: str) -> str:
+    data = open(os.path.join(ROOT, path), "rb").read()
+    return hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
 
 
 def provenance() -> list[tuple[str, str, str]]:
@@ -131,21 +149,33 @@ def main(argv: list[str]) -> int:
     print(f"   (chỉ có ở nhánh dữ liệu: {len(set(up) - set(loc))} · "
           f"chỉ có ở đây: {len(set(loc) - set(up))})")
 
+    head = head_tree()
+    dirty = sorted(p for p in loc if p in head and blob_sha(p) != head[p])
+    new_files = sorted(p for p in loc if p not in head)
+    if dirty:
+        print(f"   ⚠ {len(dirty)} file ĐANG SỬA trong working tree (khác HEAD): {dirty[:5]}")
+    if new_files:
+        print(f"   {len(new_files)} file chưa track (lần kéo mới, chưa commit)")
+
     snap_trees = {s: tree(s) for s in snaps}
     per = collections.Counter()
     unexplained = []
+    old_pull = []
     for p in diff:
         hits = tuple(s for s, t in snap_trees.items() if t.get(p) == loc[p])
         if hits:
             per[hits] += 1
+        elif p not in dirty:
+            # nội dung = đúng blob đã commit ⇒ chỉ là bản kéo cũ hơn danh sách snapshot
+            old_pull.append(p)
         else:
             unexplained.append(p)
     if diff:
         print("   khớp snapshot nào (⇒ chỉ là bản kéo cũ, không sửa tay):")
         for hits, n in per.most_common():
             print(f"     {n:4d}  {' + '.join(hits)}")
-        print(f"   KHÔNG khớp snapshot nào: {len(unexplained)}"
-              + ("  ← có thay đổi cục bộ" if unexplained else "  ← không có sửa tay"))
+        print(f"   khớp HEAD nhưng cũ hơn snapshot (không sửa tay): {len(old_pull)}")
+        print(f"   KHÔNG khớp snapshot nào VÀ đang sửa: {len(unexplained)}")
 
     # ── 3. .gz: byte khác nhưng nội dung có khác? ──
     gz = [p for p in diff if p.endswith(".gz")]
@@ -175,7 +205,8 @@ def main(argv: list[str]) -> int:
         "common": len(both), "same_as_ref": len(same), "differs": len(diff),
         "only_upstream": len(set(up) - set(loc)), "only_here": len(set(loc) - set(up)),
         "snapshot_match": {" + ".join(k): v for k, v in per.items()},
-        "unexplained": unexplained,
+        "unexplained": unexplained, "old_pull": old_pull,
+        "dirty": dirty, "new_files": len(new_files),
         "gz": {"files": len(gz), "same_content": gz_same,
                "diff_content": gz_diff, "skipped": gz_skip},
     }
@@ -183,7 +214,7 @@ def main(argv: list[str]) -> int:
     with open(OUT, "w", encoding="utf-8") as fh:
         json.dump(summary, fh, ensure_ascii=False, indent=1)
     print("đã ghi", os.path.relpath(OUT, ROOT))
-    return 1 if unexplained else 0
+    return 1 if (unexplained or dirty) else 0
 
 
 if __name__ == "__main__":
