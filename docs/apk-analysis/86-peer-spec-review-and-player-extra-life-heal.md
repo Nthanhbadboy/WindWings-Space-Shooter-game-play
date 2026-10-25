@@ -108,4 +108,6 @@ end-of-invincibility; enemy hitCallback/hitDamageCallback producers vẫn riêng
 Raw của Player_Controller và RebornDone **đã có**, không xin full export lại.
 
 **394 tests PASS (34.624s local), validate/regen/diff checks PASS;19 tests mới.**
+Verify **40211604072 SUCCESS (50s)** trên code **25734422b2c10e97c2cf3cbc79c8efa7ad7d9100**.
+Đã gửi peer đủ6 finding và cập nhật85/86 qua PR12 comment **6400139575**; chưa ACK85/86.
 Receipt tests/CI và artifact hashes ở `raw/player-lifecycle/derivation.json`.
