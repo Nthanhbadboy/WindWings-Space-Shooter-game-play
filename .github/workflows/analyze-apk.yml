@@ -4,7 +4,8 @@ on:
   push:
     paths:
       - 'tools/apk-analyze/**'
-      - '.github/workflows/analyze-apk.yml'
+      # Recovery-only exporter has its own pinned, narrow workflow.
+      - '!tools/apk-analyze/early_wave_prefabs.py'
   workflow_dispatch:
     inputs:
       run_rea:
@@ -59,7 +60,7 @@ jobs:
           if [ ! -s /tmp/apk/windwings.xapk ]; then
             curl -fSL --retry 3 --retry-delay 5 -A 'Mozilla/5.0 Chrome/124' -o /tmp/apk/windwings.xapk "$XAPK_URL"
           fi
-          sha256sum /tmp/apk/windwings.xapk
+          echo 'f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e  /tmp/apk/windwings.xapk' | sha256sum --check --strict
 
       - name: Extract Unity payload
         run: |

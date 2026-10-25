@@ -11,6 +11,24 @@
 >
 > Kết luận C **không được** dùng làm thông số implement; chỉ để định hướng.
 
+## Trạng thái kiểm lại hiện hành — report62 (ưu tiên hơn bảng lịch sử dưới đây)
+
+**Không dùng số lượng export, số file trên đĩa hoặc unit-test PASS làm bằng chứng
+playthrough/design đã hoàn tất.** Xem `docs/apk-analysis/62-raw-audit-and-sprite-geometry.md`.
+
+| Phạm vi | Đã có bằng chứng | Còn thiếu / không được suy |
+|---|---|---|
+| Stage2/3 | exact resource/prefab joins, denominator và threshold normal có raw53–59 | actual low-kill reachability, collision/reborn, runtime parent/history |
+| BB-36001 | 3 clip streamed đã giải binding/root keys60; lifecycle/pool-parent/scroll61 | không suy tự thoát hoặc bắt buộc diệt; không generalize sang791clip |
+| Sprite/atlas | raw62:2185Sprite/66SpriteAtlas/654Texture2D metadata,2185file-scoped joins | pixel crop/mask/trim/flip kiểm ảnh;40rect fractional vượt biên<1pixel; chưa xác nhận full asset-pack release |
+| UI hiện tại | `_index.csv` snapshot audit:797file/117class/150131nodes | 55584file có trên đĩa không phải55584layout hợp lệ;54787ngoàiindex không tự là duplicate hay rác |
+| Spawn | enum raw53:0PinMap/1Path/2Points/3RandomTopDown/4Rocket/5EndMap/6StartWave | “45659quân thật đã chốt” ở kết luận cũ bị rút: cần scoped whole-build recount và runtime semantics |
+| Pipeline | pin SHA được enforce trước extract; raw-only changes trigger tests; recovery exporter không kích full analyze | tests hiện tại kiểm static predicates/joins, không thay emulator/Unity replay |
+
+Các mục lịch sử không được kiểm lại dưới đây **không tự nhận mức A hiện hành**.
+Riêng hàng18,17,13d,16b,21b cần đọc cảnh báo giới hạn; việc giữ lịch sử không phải
+xác nhận các suy luận cũ. Raw vẫn được giữ, không xoá chỉ để làm số coverage đẹp.
+
 ## Đăng ký kết luận
 
 | # | Kết luận | Mức | Nguồn | Kiểm lại bằng |
@@ -31,25 +49,25 @@
 | 12c | Getter **hầu hết không** trả hằng số: **244 getter** đã phân loại → `call` **173**, `computed` **37**, `field` **23**, `const` **11** (`GetMaxRebornCount` 5, `GetTimeFreeOverdrive` 60.0, `GetMaxCountRockets` 10, `TimeToImmuneOneHit` 25.0…). Bảng cân bằng nằm trong dữ liệu, không hard-code trong getter | **A** | `19-il2cpp-constants.md` mục "Getter: trả hằng số hay đọc dữ liệu?" | chạy lại `il2cpp_consts.py`, xem cột `getter_kind` trong JSON |
 | 13 | Layout từng màn: **608 màn, 80.806 node**, có `local_pos`/`scale`/`rotation`, class component, text + nút | **B** | `20-ui-layout.md`, `raw/ui/*.json.gz` (584 file) | so với screenshot; layout group có thể override |
 | 13b | UI của game là **SpriteRenderer world-space**, không phải Canvas/RectTransform (chỉ 1 `Canvas` trong toàn build) | **A** | `20-ui-layout.md` (bảng component) | đếm lại `Canvas`/`RectTransform` trong raw |
-| 13d | **Đĩa có nhiều hơn báo cáo 20**: 6.580 file layout / **114 tên màn** / 1.404.553 node; "
+| 13d (SNAPSHOT CŨ) | **Không dùng số dưới đây thay index hiện tại; xem snapshot62 ở trên.** Lịch sử: 6.580 file layout / **114 tên màn** / 1.404.553 node; "
 "`_index.csv` của lần chạy mới nhất chỉ có 630 file / 98 màn → **16 màn chỉ còn ở file cũ** "
 "(`Board_Shop`, `Board_Pause`, `Board_Drones`, `Board_Items`…) | **A** | `24-ui-screens.md`, "
 "`datas/ui_screens.json.gz`, `datas/ui_text_keys.csv.gz` | `python3 tools/apk-analyze/ui_index.py` |
 "
  "| 13c | **Spine: 27 rig / 185 animation / 12.274 keyframe**, thời lượng thật từng anim, 21 event (`Shot` đúng 0.3333 s trong 12 anim đánh, boss `Attack3` có `Stop` tại 0.63/3.3/5.87/8.2 s) | **A** | `23-spine-anim.md`, `datas/spine_anim.json.gz`, `spine-events.csv` | `python3 tools/apk-analyze/spine_anim.py` |
 | 16 | **Lớp hành vi enemy/boss đã export**: 981 `Enemy_Physics` · 971 `Enemy_Destroy` · 695 `Enemy_Burned` · 391 `Enemy_LookAtPlayer` · 140 `Enemy_Stun` · 981 `Enemy_Display`; `Enemy_Controller.uiScript` → **`Enemy_Display`** (không có class `Enemy_UI`) | **A** | `25-enemy-behaviour.md`, `raw/typetrees/*.jsonl.gz` | đọc lại `Enemy_Controller` + `script-links.jsonl.gz` |
-| 16b | **`Enemy_Physics` rỗng**: chỉ 2 field serialize, **0/981** dòng có giá trị → va chạm nằm ở `BoxCollider2D` runtime, không phải dữ liệu thiết kế | **A** | `25-enemy-behaviour.md` §2 | đếm lại field trong `Enemy_Physics.jsonl.gz` |
+| 16b (SUY LUẬN CHƯA ĐỦ) | **0 field có giá trị không chứng minh collision runtime hoặc class không làm gì.** Lịch sử: chỉ 2 field serialize, **0/981** dòng có giá trị → va chạm nằm ở `BoxCollider2D` runtime, không phải dữ liệu thiết kế | **A** | `25-enemy-behaviour.md` §2 | đếm lại field trong `Enemy_Physics.jsonl.gz` |
 | 16c | **`Transform` 228.432 dòng** (2.089 root, 0,9%): mở **5 mắt ghép 0% → 100%** (458 súng · 251 hitbox boss · 558 `parentRotate` · 1.372 điểm đầu/cuối đường bay · 250 `bossObj` — mắt cuối nối vào `Board_Maps`, tức icon bản đồ chứ không phải prefab boss) | **A** | `25-enemy-behaviour.md` §5, `raw/typetrees/transform-tree.tsv.gz`, `datas/prefab_joins.csv.gz` | chạy `tools/apk-analyze/prefab_joins.py` |
 | 16d | **`Call_Data` đủ 23.757** (trước cắt 1.500); `Call_Point` cùng 23.757 là **lớp bọc** trỏ `dataScript → Call_Data`, không phải bảng dữ liệu mới | **A** | `25-enemy-behaviour.md` §4 | `script-links.jsonl.gz` |
-| 17 | **Animation gốc Unity đã có danh mục**: 791 `AnimationClip` (226 tên, median 1,9 s, 251 clip lặp, 793 event) + 308 `AnimatorController`; keyframe curve **không lấy được bằng UnityPy** (2 cách đọc đều 0 — dữ liệu streamed) → lớp này ở mức nhịp, chưa dựng lại được | **A** (danh mục + việc curve không đọc được) / **C** (curve) | `26-native-animation.md`, `27-anim-curves.md`, `datas/anim_clips.json.gz` | giải mã streamed clip |
-| 18 | **Số quân đã chốt**: `len(enemies) × copies` cộng dồn = **45.659 quân thật** (22.475 lượt khai báo trong `waves.json` của mình — nhánh spec đếm 22.483, lệch 8 do khoá dedupe; tích cuối khớp tuyệt đối). **Enum `spawnType` đã giải mã**: `0=point · 1=path · 2=point_range · 5=special · 6=boss` (16.498/4.199/1.688/686/686 trên 23.757 spawner); tổng lượt xuất hiện **45.659**; `number`/`editType` = 0 ở 100% → số con mỗi lượt **không** nằm trong prefab | **A** (phân bố) / **B** (gán nhãn) | `25-enemy-behaviour.md` §8 | đếm lại `Call_Data.jsonl.gz` |
+| 17 (PHẠM VI CŨ) | **Report60 đã giải3clip BB; không còn đúng nếu nói mọi curve đều chưa đọc được.** Danh mục cũ: 791 `AnimationClip` (226 tên, median 1,9 s, 251 clip lặp, 793 event) + 308 `AnimatorController`; keyframe curve **không lấy được bằng UnityPy** (2 cách đọc đều 0 — dữ liệu streamed) → lớp này ở mức nhịp, chưa dựng lại được | **A** (danh mục + việc curve không đọc được) / **C** (curve) | `26-native-animation.md`, `27-anim-curves.md`, `datas/anim_clips.json.gz` | giải mã streamed clip |
+| 18 (ĐÃ RÚT KẾT LUẬN) | **Không dùng hàng này làm thông số implement**. Bản lịch sử ghi: `len(enemies) × copies` cộng dồn = **45.659 quân thật** (22.475 lượt khai báo trong `waves.json` của mình — nhánh spec đếm 22.483, lệch 8 do khoá dedupe; tích cuối khớp tuyệt đối). **Enum `spawnType` đã giải mã**: `0=point · 1=path · 2=point_range · 5=special · 6=boss` (16.498/4.199/1.688/686/686 trên 23.757 spawner); tổng lượt xuất hiện **45.659**; `number`/`editType` = 0 ở 100% → số con mỗi lượt **không** nằm trong prefab | **A** (phân bố) / **B** (gán nhãn) | `25-enemy-behaviour.md` §8 | đếm lại `Call_Data.jsonl.gz` |
 | 17b | **`Animator` 5.792 instance đã nối**: prefab gốc 5.686/5.792 (98,2%), tên controller 5.603/5.792; `ParticleSystem` **4.845** đã ghi `path_id` (chưa có chi tiết module). Số instance khớp độc lập với nhánh spec đếm | **A** | `26-native-animation.md`, `datas/animator_map.csv.gz`, `raw/typetrees/native-types.jsonl.gz` | chạy `tools/apk-analyze/animator_joins.py` |
 | 18b | **Truy vết công thức**: 305 method có flow hằng số theo địa chỉ + đích `bl` đã giải tên (200 bl); đọc thử `GetWingCannonDamage`: hệ số theo ngưỡng 4/58/118/248 (0.168 → ×1.05 → ×1.15) rồi `+1.0` | **A** (thứ tự lệnh) / **B** (diễn giải ngưỡng) | `28-formula-traces.md`, `datas/formula_traces.json.gz` | chạy `tools/apk-analyze/formula_trace.py` |
 | 19 | **`ParticleSystem` 4.845 đã có tóm tắt module + MinMaxCurve**: thời lượng hệ median 5,0 s, tuổi thọ hạt median 1,0 s, tốc độ đầu = 0 ở 66% (FX dạng burst) | **A** | `29-particle-systems.md`, `raw/typetrees/native-types.jsonl.gz` | đọc lại mục ParticleSystem trong native-types |
 | 19b | **Sprite/Texture đã có kích thước**: 2.816/2.885 dòng `sprites.csv` có `width×height` (từ ảnh export thật) | **A** | `datas/sprites.csv`, `04-asset-manifest.csv` | so `width/height` với PNG trong bản export |
 | 20 | **Camera**: 6 cái, tất cả orthographic, `orthographicSize = 9,6` → chiều cao thấy được **19,2 world-unit**; khớp mốc spawn `y = 9,6` của wave (quân hiện đúng mép trên) | **A** | `24-ui-screens.md` mục Camera, `raw/typetrees/native-types.jsonl.gz` | đọc mục `Camera` trong native-types |
 | 21 | **Đã quét asm thêm 5 class runtime** (`Player_Health`, `Player_Talent`, `Player_Ability`, `Player_Ingame`, `Player_Attack`): tổng **425 method / 324 `bl`** giải được tên. `Player_Health` gọi `GetStartHp` 3 lần trong lambda của `Start`, `TakeDamage` gọi `IsInvisible/SetInvisible` + `TimeToImmuneOneHit` | **A** | `19-il2cpp-constants.md`, `28-formula-traces.md`, `raw/il2cpp-consts/Player_Health.asm.txt` | chạy lại `il2cpp_consts.py` + `formula_trace.py` |
-| 21b | **Không method HP nào nhận `playerIndex`**: 8/55 method float/int có tham số này và tất cả là damage/nhịp bắn/giá mở tàu → talent + nâng cấp là **chung mọi tàu**, tàu chỉ khác damage | **A** | `raw/il2cpp-consts/Player_Get_Datas.json` (cột signature) | đếm lại chữ ký hàm |
+| 21b (GIỚI HẠN) | **Thiếu tham số không đủ chứng minh mọi tàu có HP/talent giống nhau.** Chữ ký đã ghi: **Không method HP nào nhận `playerIndex`**: 8/55 method float/int có tham số này và tất cả là damage/nhịp bắn/giá mở tàu → talent + nâng cấp là **chung mọi tàu**, tàu chỉ khác damage | **A** | `raw/il2cpp-consts/Player_Get_Datas.json` (cột signature) | đếm lại chữ ký hàm |
 | 22 | **`StartHp = 2500`** (HP gốc người chơi): nạp bằng `ldr d` từ VA `0x757bc4` trong `.cctor`, ghi vào static offset `0x6c` (nửa trên của cặp đôi ghi ở `0x68`, nửa dưới là 0.18). `GetStartHp() = 2500 × (1 + GetHpStatPercent())` — fadd 1.0 + fmul thấy rõ trong asm | **A** | `raw/il2cpp-consts/Player_Get_Datas.json` (`.cctor`, via `ldr_pool_d`), `19-il2cpp-constants.md` | đọc lại 8 byte tại VA `0x757bc0` trong `.so` |
 | 14 | Damage/giá/thưởng suy ra từ field serialize | **B** | `docs/spec/COMBAT.md`, `ECONOMY.md` | so với hằng số ở #12 |
 | 15 | Nhận định "game dễ bypass", "nên dùng Spine"… | **C** | `PHAN_TICH_WINDWINGS_APK.md` | chỉ là đánh giá, không phải số |
@@ -59,7 +77,7 @@
 | Thiếu | Vì sao | Cách làm tiếp |
 |---|---|---|
 | Thân hàm của các class cân bằng | **0 instance** trong `data.unity3d` → giá trị nằm trong IL2CPP; đã quét **17 class** (gồm `Player_Health/Talent/Ability/Ingame/Attack`) | `19-il2cpp-constants.md` + `raw/il2cpp-consts/*.asm.txt` |
-| Curve keyframe của 791 `AnimationClip` | **cả typetree lẫn UnityPy reader đều cho 0 keyframe** (đã thử, `27-anim-curves.md`) — curve nằm trong streamed clip nén | giải mã `m_StreamedClip` thủ công, hoặc dựng lại bằng nhịp ở `26-native-animation.md` |
+| Curve keyframe ngoài3clip BB report60 | **cả typetree lẫn UnityPy reader đều cho 0 keyframe** (đã thử, `27-anim-curves.md`) — curve nằm trong streamed clip nén | giải mã `m_StreamedClip` thủ công, hoặc dựng lại bằng nhịp ở `26-native-animation.md` |
 | Curve chi tiết trong module ParticleSystem + nối PS → prefab | mới ở mức scalar/module | mở rộng `animator_joins` cho ParticleSystem |
 | Công thức đầy đủ (thứ tự nhân, clamp, nội suy) | cần đọc control flow, không chỉ hằng số | Ghidra/IDA trên `libil2cpp.so` (đã có trong artifact) |
 | Ý nghĩa từng hằng số ở #12 | capstone chỉ thấy số, không thấy phép tính | **Đã bóc được giá trị float thật từ literal pool** (#12b); còn thiếu *thứ tự nhân/chia* → đọc `raw/il2cpp-consts/*.asm.txt` hoặc Ghidra |

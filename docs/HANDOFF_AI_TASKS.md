@@ -452,3 +452,33 @@ luận vẫn provisional. Premium deferred; không dùng screenshot làm nguồn
   mọiAirFreeautoescape,hoặcBBmustdie. Kếtiếp:exactmapjoin+poolinstancehistory,
   typeMove/pathwritersvàexternalremoval/health/collision. T9atlasrect vẫnrawtask
   riêng;Premiumdeferred. Nhữnggapruntimekhôngđượcđóngbằng100unitPASS.
+
+## Agent hiện tại — report62: audit raw + T9 geometry recovery
+
+- User yêu cầu kiểm thừa/thiếu phần dịch ngược rồi tự đào. Report62 là audit,
+  KHÔNGđóngtoàngame. `docs/conclusions.md` thêmregistryưu tiên,mark17/18/13d/
+  16b/21bcũrút/giớihạn:enumspawn0PinMap1Path2Points3Random4Rocket5EndMap6StartWave;
+ 45,659"quânthậtchốt"KHÔNGđượcdùng;missingparam≠mọitàuHPgiốngnhau.
+- Rawprocess-audit/scope-inventory.json.gz:55584UIgztrênđĩa,157576919compressed
+  bytes;index797file/117class/150131nodes,54787ngoàiindex,0missing. **KHÔNG**
+  kếtluậnngoàiindex=duplicate/rác;khôngxoárawchưaprovenance/semanticcompare.
+- Fullanalyze trướcchỉinSHA,cachemissURLlatest cóthểmixbuild: naySHAstrictfail
+  trướcextract. Earlywaveexporterloạikhỏifullanalyzetrigger;config-onlyfullrun
+  dùngmanualdispatch;raw/il2cppedittriggerverify. Hai recoveryproducer chạy
+  unittesttrướcbotcommit vì[skipci]/GITHUB_TOKENkhôngbảođảmtriggerverifyriêng.
+- T9GAPTHẬT đãđào:CI40188735212→d97399106;tools/apk-probe/sprite_geometry.py
+  giữ6chunksfullSprite/Atlas,Texturemetadata/noimage;counts2185/66/654,0error.
+  inputsdataSHA7383563ebe6e42d099bd2348a420146a308f2f14224daf4e4de9ad52845ae4e7.
+- `tools/verify/sprite_geometry.py`→rawsprite-geometry/resolved-geometry.json.gz:
+ 2185/2185file-scopedPPtrjoins;635m_RDdirect/1550Atlaspointer+exactrenderkey,
+ 0unresolved. No atlasnameguesses/globalpathID. Rawhasrect/offset/pivot/PPU/
+  border/mesh/UV/settings;toolchainUnityPy1.25.4wheelref+MITseparatefromgamefacts.
+- Settingsrotation0:2041,1flipH:53,2flipV:54,3rot180:37,4rot90:0;144nonzero.
+ 40directRDrectboundsfractionaloutby~1.9e−6..0.9963px;giữnguyênkhôngclamp,
+  KHÔNGnói40spritehỏng. T9metadatajoinđãcó≠pixelcrop/trim/maskđãvalidated.
+-7geometry+3process tests mới,**110tests pass**. Fullpackreleaseintegrity/audio/
+  spine/fonts/browsabilitychưaauditlạitrongvòngnày. ChưađedupUI,chưarenderảnh.
+- Tiếpưu tiênstage2/3BBwriters/liveparent/history/removal;T9pixelcrop/mask/
+  packing40fractionalcaseslàbướcassettiếp. Đừngbóclạidanhmụcđếmcountschođẹp,
+  khôngfullAPKexportvìtargetedcollector,khôngchốtgameplaytừunittestPASS.
+  Premiumdeferred. Report62vàregistrymớilàentrypointchứkhôngbảngkếtluậncũ.
