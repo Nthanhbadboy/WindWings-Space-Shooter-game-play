@@ -1,7 +1,7 @@
 name: Recover L3 layout native helpers
 on:
   push:
-    paths: ['tools/recovery/l3_layout_native.py', '.github/workflows/recover-l3-layout-native.yml']
+    paths: ['tools/recovery/l3_layout_native.py', 'tools/recovery/l3_layout_objects.py', '.github/workflows/recover-l3-layout-native.yml']
   workflow_dispatch:
 permissions:
   contents: write
@@ -19,7 +19,7 @@ jobs:
           path: /tmp/apk/windwings.xapk
           key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
           fail-on-cache-miss: true
-      - run: python3 -m pip install 'capstone==5.0.3'
+      - run: python3 -m pip install 'capstone==5.0.3' 'UnityPy==1.25.4' 'TypeTreeGeneratorAPI==0.0.10' 'Pillow==12.0.0'
       - run: python3 tools/recovery/l3_layout_native.py --xapk /tmp/apk/windwings.xapk
       - name: Preserve scoped evidence
         run: |
