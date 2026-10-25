@@ -1,5 +1,10 @@
 # `datas/` — data pack WindWings
 
+## Pickup → collected currency — report89
+
+`pickup_currency_flow.json`:20 method ranges/3530 instructions,63 anchors,13 dispatch entries,4 bindings,3 literals,36 payout pairs. `python3 -m tools.verify.pickup_currency_flow --check`;50 new tests. Coin1/2 stage/tech/live-balance bands/device/.86/truncation; player collider and drone event2 routes, store48 before sound-helper/pool, alias70011/12. Burst28 is8 objects, conditional69/165 currency, not denomination28. Raw `reverse-engineering/raw/pickup-currency/`; [report89](../docs/apk-analysis/89-pickup-dispatch-and-collected-currency.md). Provisional finite/stable fixtures, no full Unity movement or equipment-table approval.
+
+
 ## Enemy hit producers / gold burst — report88
 
 `enemy_hit_callback_flow.json`:4 exact constructor callback/listener joins +6 type joins,2 exact literals/4 raw cells,16 method ranges/1256instructions/56anchors và19 serialized co-attachments. `python3 -m tools.verify.enemy_hit_callback_flow [--check]`; `enemy_hit_callback_models.py`,38tests mới. Producer skeleton overwrite vsDropGold Combine; strict HP threshold/oneevent; budget28→8objects; actual `_Black`/CancelEffect. Không đồng nhất spawn budget với currency, directmetadata census với indirectwriterclosure, hoặc co-attachment với actualspawn. Raw `reverse-engineering/raw/enemy-hit-callbacks/`; [report88](../docs/apk-analysis/88-enemy-hit-producers-and-gold-burst-chain.md).

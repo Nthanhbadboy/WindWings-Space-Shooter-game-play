@@ -7,6 +7,8 @@ IL2CPP, metadata v31) để làm tài liệu tham chiếu cho bản clone.
 
 **Đọc [`docs/START_HERE_NEW_GAME.md`](docs/START_HERE_NEW_GAME.md) trước.** Repo này là kho dữ liệu tham khảo, chưa có project game chạy được. Spec local là snapshot cũ; review nhánh spec mới tại [`docs/HANDOFF_REVIEW_cf27b9755.md`](docs/HANDOFF_REVIEW_cf27b9755.md).
 
+**Batch mới:** [report89 — pickup → collected currency](docs/apk-analysis/89-pickup-dispatch-and-collected-currency.md), gồm player/drone, các threshold và callback/pool order; nối tiếp burst88. Mọi kết luận vẫn tạm thời.
+
 ## Đọc gì trước
 
 | Muốn gì | Mở |

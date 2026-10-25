@@ -1,5 +1,8 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
+**Cập nhật report89:** [pickup tới currency](apk-analysis/89-pickup-dispatch-and-collected-currency.md) nối report88 enemy-hit→burst. Không lấy ngân sách28 làm28tiền, không chặn item pickup bằng contact-hit flags; formula đọc balance mỗi lần, event48 sau store. ACK87 đã nhận;88/89 chưa ACK. Full evidence/fixtures không phải whole-game runtime approval.
+
+
 ## Định hướng sản phẩm đã đồng bộ với nhánh spec
 
 Bám logic, cơ chế, nhịp và số của bản gốc theo **APK/reference đã kiểm chứng**; không tự thêm cơ chế hoặc hỏi lại quyết định đã có. Art vẽ mới, không bê asset gốc vào game phát hành và không vẽ lại từ screenshot. Dùng đối chiếu reference/motion/render và kiểm máy để nghiệm thu, không đặt blind A/B hay playtest người thật thành điều kiện bắt buộc. **Mục tiêu bắt chước không đồng nghĩa dữ liệu đã phủ hết hoặc bỏ regression tests**: phần có raw thì triển khai theo raw; scoped unknown thì tiếp tục bóc, không bịa. Review chéo mới: [report86](apk-analysis/86-peer-spec-review-and-player-extra-life-heal.md), peer b8f72a412 đã ACK84;85 đang chờ đồng bộ.
