@@ -36,12 +36,12 @@ jobs:
           assert all((dest/Path(s).name).exists() for s in wanted)
           PY
       - run: pip install -q 'UnityPy==1.25.4' 'TypeTreeGeneratorAPI==0.0.10'
-      - run: python3 tools/apk-analyze/early_wave_prefabs.py --endgame-details
+      - run: python3 tools/apk-analyze/early_wave_prefabs.py --balloon-details
       - name: Preserve evidence without APK or original assets
         run: |
           git config user.name 'Arena evidence collector'
           git config user.email 'agent@arena.ai'
-          git add reverse-engineering/raw/endgame-missions
+          git add reverse-engineering/raw/balloon-animation
           git diff --cached --quiet || git commit -m 'research(waves): preserve exact container prefab identities and raw components [skip ci]'
           for attempt in 1 2 3; do
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
@@ -51,6 +51,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: exact-endgame-mission-prefab
-          path: reverse-engineering/raw/endgame-missions
+          name: exact-balloon-animation
+          path: reverse-engineering/raw/balloon-animation
           if-no-files-found: error

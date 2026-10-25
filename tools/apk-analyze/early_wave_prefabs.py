@@ -91,6 +91,28 @@ def main():
     gen=TypeTreeGenerator('2022.3.62f3',generator='AssetStudio')
     gen.load_il2cpp((DATA/'libil2cpp.so').read_bytes(),(DATA/'global-metadata.dat').read_bytes())
     env.typetree_generator=gen
+    if '--balloon-details' in sys.argv:
+        dest=Path('reverse-engineering/raw/balloon-animation');dest.mkdir(parents=True,exist_ok=True)
+        roots=[r for r in env.objects if r.type.name=='GameObject' and identity(r)=={'serialized_file':'resources.assets','path_id':185704}]
+        assert len(roots)==1 and roots[0].read().m_Name=='BB-36001'
+        root=roots[0];output=export_tree(root)
+        animators=[c for c in go_components(root) if c.type.name=='Animator']
+        assert len(animators)==1
+        animator=animators[0].read();controller=deref(animator.m_Controller)
+        assert identity(controller)=={'serialized_file':'resources.assets','path_id':1908}
+        clips=[deref(p) for p in controller.read().m_AnimationClips]
+        output.update(status='PROVISIONAL — BB-36001 full subtree/controller/clip bytes, not playback',
+                      inputs_sha256=inputs,root=identity(root),serialized_file_context=file_context(root),
+                      controller=record(controller,raw=True),clips=[record(c,raw=True) for c in clips])
+        def binary_json(value):
+            if isinstance(value,(bytes,bytearray)):
+                return {'encoding':'base64','bytes_base64':base64.b64encode(value).decode()}
+            raise TypeError(type(value).__name__)
+        path=dest/'bb-36001-animation.json.gz'
+        path.write_bytes(gzip.compress(json.dumps(output,ensure_ascii=False,indent=2,default=binary_json).encode(),mtime=0))
+        assert path.stat().st_size<5_000_000
+        print('BB-36001',len(output['nodes']),'nodes;',len(clips),'complete clips')
+        return
     if '--endgame-details' in sys.argv:
         dest=Path('reverse-engineering/raw/endgame-missions');dest.mkdir(parents=True,exist_ok=True)
         entries=[]
