@@ -57,13 +57,38 @@ def recover_delegates(binary, destination, roots=('Player9_Clone','Player23_Pump
             (destination/('EventDispatcher.__c'+suffix)).unlink(missing_ok=True)
     manifest={'status':'PINNED_DELEGATED_COMBAT_NATIVE_NOT_RUNTIME','xapk_sha256':APK_SHA,'lib_sha256':LIB_SHA,'classes':sorted(selected),'files':[]}
     for path in sorted(destination.iterdir()):
-        if path.name=='index.json':continue
+        permitted = {__import__('re').sub(r'[^\w.]','_',c)+ext for c in selected for ext in ('.json','.asm.txt')} | {'jump-table.json'}
+        if path.name not in permitted:continue
         manifest['files'].append({'path':str(path.relative_to(root)),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
     (destination/'index.json').write_text(json.dumps(manifest,indent=2)+'\n')
 
 
+def recover_lifecycle_cells(binary, destination):
+    # Exact GOT->ELF RELA->metadata-usage address, no pointer initialization guess.
+    locations=((0x2ae8480,8),(0x2ae8418,8),(0x2ae85a8,8),
+               (0x756e14,4),(0x756b7c,4),(0x75700c,4),(0x756e18,4))
+    data=extract(binary,locations)
+    data['status']='PINNED_PLAYER_LIFECYCLE_CELLS_AND_RELA_NOT_RUNTIME'
+    wanted={va for va,width in locations if va>0x2000000}
+    shoff=struct.unpack_from('<Q',binary,40)[0]
+    size,count=struct.unpack_from('<HH',binary,58)
+    rows=[]
+    for i in range(count):
+        sh=struct.unpack_from('<IIQQQQIIQQ',binary,shoff+i*size)
+        if sh[1]!=4:continue
+        for off in range(sh[4],sh[4]+sh[5],sh[9] or 24):
+            va,info,addend=struct.unpack_from('<QQq',binary,off)
+            if va in wanted:
+                assert info&0xffffffff==1027
+                rows.append({'offset':hex(va),'addend':hex(addend),'raw_hex':binary[off:off+24].hex(),'file_offset':off})
+    assert {int(r['offset'],16) for r in rows}==wanted
+    data['relocations']=rows
+    destination.parent.mkdir(parents=True,exist_ok=True)
+    destination.write_text(json.dumps(data,indent=2)+'\n')
+
+
 if __name__ == '__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--xapk',required=True);parser.add_argument('--output',required=True);parser.add_argument('--delegates-dir');parser.add_argument('--receivers-dir');args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--xapk',required=True);parser.add_argument('--output',required=True);parser.add_argument('--delegates-dir');parser.add_argument('--receivers-dir');parser.add_argument('--lifecycle-output');args=parser.parse_args()
     data=Path(args.xapk).read_bytes();assert hashlib.sha256(data).hexdigest()==APK_SHA
     found=[]
     with zipfile.ZipFile(io.BytesIO(data)) as outer:
@@ -73,6 +98,7 @@ if __name__ == '__main__':
                     path='lib/arm64-v8a/libil2cpp.so'
                     if path in inner.namelist():
                         binary=inner.read(path);found.append(extract(binary))
+                        if args.lifecycle_output:recover_lifecycle_cells(binary,Path(args.lifecycle_output).resolve())
                         if args.delegates_dir:recover_delegates(binary,Path(args.delegates_dir).resolve())
                         if args.receivers_dir:
                             dest=Path(args.receivers_dir).resolve()
