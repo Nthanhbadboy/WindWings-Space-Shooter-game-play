@@ -68,7 +68,7 @@ Nhánh kia có nhiều file mà bộ spec hiện tại chỉ trích dẫn chứ 
 | `datas/map_table_segments.json` | 70.632 B | `Map_Get_Datas` 11 cấu trúc — `DIFFICULTY_MODES` §7 |
 | `datas/map_segments_full.json` | — | cùng chủ đề |
 | `datas/device_table.json` | 3.732 B | bảng stat device (mục 2 ở trên) |
-| `datas/enemy_hp_by_id.json` | — | `ENEMY_HP_RUNTIME` |
+| `datas/enemy_hp_by_id.json` | **3.079 B · 150 cặp** | `ENEMY_HP_RUNTIME` §0 — **đã dùng** (claim **WRH2**) |
 | `datas/boss_hp.json` · `bosses.json` | — | `BOSSES` |
 | `datas/verify_checks.json` | — | bộ tự kiểm của chính pipeline bóc |
 | `datas/validate.py` | — | script kiểm dữ liệu |
@@ -76,6 +76,10 @@ Nhánh kia có nhiều file mà bộ spec hiện tại chỉ trích dẫn chứ 
 
 `datas/validate.py` + `verify_checks.json` đáng đọc trước: nếu pipeline đã tự kiểm thì biết ngay
 file nào được coi là đã xác thực, file nào còn tạm thời — thay vì đoán.
+
+> **Cập nhật 25/10:** tiêu đề mục này từng là "chưa dùng". Nay `datas/enemy_hp_by_id.json`
+> (**150 cặp `id → HP`**) là mỏ neo cho HP enemy (`ENEMY_HP_RUNTIME.md` §0, claim **WRH2**) —
+> **`.so` không cần** để có số HP; `datas/device_table.json` cũng đã đối chiếu ở `BALANCE.md` §6.10.
 
 ---
 

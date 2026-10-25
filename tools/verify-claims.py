@@ -3092,8 +3092,8 @@ claim("IA7", "docs/spec/MISSING_FOR_NEW_GAME.md",
       (17, 623, 576, 6), ia_method_records,
       "ia-resolved.json bản 3ac2faa45: 12 nhóm cũ + 5 nhóm Board_*")
 
-def enemy_hp_inserts():
-    """(số lệnh insert Dictionary, id nhỏ nhất, id lớn nhất) trong `Enemy_Get_Datas.cctor`."""
+def _enemy_dict_ids():
+    """150 id trong `Enemy_Get_Datas.cctor` — lấy `mov w1,#imm` **ngay trước** mỗi lệnh insert."""
     p = os.path.join(ROOT, "reverse-engineering/raw/il2cpp-consts/Enemy_Get_Datas.asm.txt")
     if not os.path.exists(p):
         return None
@@ -3101,12 +3101,116 @@ def enemy_hp_inserts():
     start = next((i for i, l in enumerate(lines) if l.startswith(";;; cctor")), None)
     if start is None:
         return None
-    seg = "\n".join(lines[start:])
-    n = len(re.findall(r"bl\s+#0x193a074", seg))
-    ids = [int(x, 16) for x in re.findall(r"mov\s+w1, #(0x7[0-9a-f]{3})", seg)]
-    if not n or not ids:
+    seg = lines[start + 1:]
+    ids = []
+    for k, line in enumerate(seg):
+        if "bl       #0x193a074" not in line and not re.search(r"bl\s+#0x193a074", line):
+            continue
+        for j in range(k - 1, max(k - 9, 0), -1):
+            m = re.search(r"mov\s+w1, #(0x[0-9a-f]+)", seg[j])
+            if m:
+                ids.append(int(m.group(1), 16))
+                break
+    return ids or None
+
+
+def enemy_hp_inserts():
+    """(số insert, id nhỏ nhất, id lớn nhất, số id khác nhau) của `Enemy_Get_Datas.cctor`."""
+    ids = _enemy_dict_ids()
+    if not ids:
         return None
-    return (n, min(ids), max(ids))
+    return (len(ids), min(ids), max(ids), len(set(ids)))
+
+
+def enemy_hp_csv():
+    """(số dòng, số gameobject khác nhau, số dòng HP > 0) của `15-enemy-hp.csv`.
+
+    Đây là field **serialize** `Enemy_Datas.StartHealthPoint`, KHÔNG phải bảng HP
+    runtime: enemy thường `CB-*` có 0/69 dòng > 0 ⇒ phải đọc thêm dict theo id.
+    """
+    rows = _csv_rows("docs/apk-analysis/15-enemy-hp.csv")
+    if not rows:
+        return None
+    by_name = {r.get("gameobject") for r in rows}
+    pos = sum(1 for r in rows if (r.get("start_hp") or "0") not in ("", "0", "0.0")
+              and float(r.get("start_hp") or 0) > 0)
+    return (len(rows), len(by_name), pos)
+
+
+def enemy_hp_by_id():
+    """(số cặp, id nhỏ nhất, id lớn nhất, HP của 30003) trong `datas/enemy_hp_by_id.json`.
+
+    Bảng này là kết quả parse trực tiếp `.cctor` `Enemy_Get_Datas` ⇒ **không cần `.so`**.
+    """
+    d = ref_json("datas/enemy_hp_by_id.json")
+    hp = (d or {}).get("hp_by_id") or {}
+    if not hp:
+        return None
+    ids = [int(k) for k in hp]
+    return (len(hp), min(ids), max(ids), float(hp.get("30003", -1)))
+
+
+def enemy_asm_methods():
+    """(số file asm, tổng số method) của 3 class enemy từng bị ghi 'chưa dump'."""
+    total = 0
+    for name in ("Enemy_Get_Datas", "Enemy_Controller", "Enemy_Health"):
+        path = os.path.join(ROOT, "reverse-engineering/raw/il2cpp-consts",
+                            name + ".asm.txt")
+        if not os.path.exists(path):
+            return None
+        raw = ref_blob(os.path.join("reverse-engineering/raw/il2cpp-consts",
+                                    name + ".asm.txt"))
+        if raw is None:
+            return None
+        total += sum(1 for ln in raw.decode("utf-8", "replace").splitlines()
+                     if ln.startswith(";;;"))
+    return (3, total)
+
+
+def wave_name_resolution():
+    """(số entry tên `?`, số prefab khác nhau) trong `datas/waves.json`."""
+    import json as _json
+    p = os.path.join(ROOT, "datas", "waves.json")
+    if not os.path.exists(p):
+        return None
+    with open(p, encoding="utf-8") as fh:
+        d = _json.load(fh)
+    names = set()
+    unknown = 0
+    for w in d.get("waves") or []:
+        for sp in w.get("spawners") or []:
+            for e in sp.get("enemies") or []:
+                if e == "?":
+                    unknown += 1
+                else:
+                    names.add(e)
+    return (unknown, len(names))
+
+
+def spawned_hp_coverage():
+    """(số prefab spawn, số prefab có nguồn HP) — gộp dict 150 id + CSV HP > 0."""
+    import json as _json
+    p = os.path.join(ROOT, "datas", "waves.json")
+    if not os.path.exists(p):
+        return None
+    with open(p, encoding="utf-8") as fh:
+        d = _json.load(fh)
+    names = set()
+    for w in d.get("waves") or []:
+        for sp in w.get("spawners") or []:
+            names.update(sp.get("enemies") or [])
+    if not names:
+        return None
+    rows = _csv_rows("docs/apk-analysis/15-enemy-hp.csv") or []
+    roots = {(r.get("gameobject") or "").split("/")[0] for r in rows
+             if float(r.get("start_hp") or 0) > 0}
+    ids = set(_enemy_dict_ids() or [])
+    have = 0
+    for n in names:
+        m = re.search(r"(\d{5})", n)
+        if (m and int(m.group(1)) in ids) or n in roots:
+            have += 1
+    return (len(names), have)
 
 
 def stage_arrays():
@@ -3158,10 +3262,37 @@ def hardcoded_pass_counts():
 
 
 claim("IAB1", "docs/spec/ENEMY_HP_RUNTIME.md",
-      "**150** lệnh insert `Dictionary`, id **30001–31017**",
-      (150, 30001, 31017), enemy_hp_inserts,
-      ".cctor Enemy_Get_Datas hoàn chỉnh 3.624 B: 150 insert, 0 loop ⇒ bảng HP 150 dòng, KHÔNG phải 981; "
-      "giá trị nằm ở .rodata nên cần .so, không cần dump class mới")
+      "**150** insert, **150** id khác nhau **30001–38001**",
+      (150, 30001, 38001, 150), enemy_hp_inserts,
+      ".cctor Enemy_Get_Datas hoàn chỉnh 3.624 B, 0 vòng lặp ⇒ bảng runtime 150 dòng (KHÔNG phải 981); "
+      "981 là số prefab serialize, HP runtime theo id nằm ở WRH2")
+
+claim("WRH1", "docs/spec/ENEMY_HP_RUNTIME.md",
+      "981 dòng · 865 tên · **467** dòng HP > 0",
+      (981, 865, 467), enemy_hp_csv,
+      "15-enemy-hp.csv là field SERIALIZE StartHealthPoint: CB-* 0/69 dòng > 0 ⇒ "
+      "KHÔNG phải bảng HP runtime, không thể tự nó nuôi TTK")
+
+claim("WRH2", "docs/spec/ENEMY_HP_RUNTIME.md",
+      "**150** cặp `id → HP`",
+      (150, 30001, 38001, 650.0), enemy_hp_by_id,
+      "datas/enemy_hp_by_id.json parse trực tiếp .cctor (CB-30003 = 650) ⇒ "
+      "HP runtime ĐÃ CÓ, không cần xin libil2cpp.so hay dump lại class")
+
+claim("WRH3", "docs/spec/WHERE_TO_LOOK.md",
+      "3 file asm · **41** method",
+      (3, 41), enemy_asm_methods,
+      "Enemy_Get_Datas / Enemy_Controller / Enemy_Health đều đã có thân hàm trong raw/il2cpp-consts")
+
+claim("WRH4", "docs/spec/ENCOUNTERS.md",
+      "**0** dấu `?` · **109** prefab",
+      (0, 109), wave_name_resolution,
+      "waves.json bản hiện hành đã resolve tên prefab; câu '45.659 entry = ?' là lịch sử")
+
+claim("WRH5", "docs/spec/ENEMY_HP_RUNTIME.md",
+      "**109** prefab · **108** có nguồn HP",
+      (109, 108), spawned_hp_coverage,
+      "gộp dict 150 id + CSV HP>0: 108/109 prefab spawn có số HP; 1 prefab (H-38002) là supply, không có HP")
 
 claim("IAB2", "docs/spec/BALANCE.md",
       "**float[4]** | **1,0 · 2,0 · 3,6 · 3,6**",
@@ -3953,8 +4084,8 @@ claim("GE2", "docs/spec/ASSET_TRIAGE.md",
 
 
 claim("RB1", "docs/spec/RAW_AUDIT.md",
-      "**RAW 175 · DOC 3 · CONST 28 · tổng 206**",
-      (175, 3, 28, 206), raw_audit_counts,
+      "**RAW 180 · DOC 3 · CONST 28 · tổng 211**",
+      (180, 3, 28, 211), raw_audit_counts,
       "sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. "
       "CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập")
 

@@ -21,12 +21,14 @@
 | Súng của **player** trong dump | **0** — toàn bộ 458 là enemy/boss | `forceType = Enemy` 458/458 |
 | Enemy có `noDamage` (bất tử với đạn) | **189 / 800 (23,6%)** | `Enemy_Health.csv` |
 | Đạn xuyên khiên | **58 / 186** loại đạn | `Bullet_Linearly.csv` `throughShield` |
-| TTK | **sẽ tính được** — DPS player nằm trong `Player_Get_Datas.StartMainCannonDamages[]` (chưa đọc giá trị) | §6 |
+| TTK | **đã tính được theo index** — DPS player = `StartMainCannonDamages[24] × StartMainCannonRate[24]`, **đã decode** từ `ia-resolved.json` (index 0 = **21.600**). Còn thiếu bind `playerIndex` → ID tàu | §6.1 |
 
 > ⚠ **Phát hiện quan trọng nhất:** `Gun_Attack.csv` **không chứa súng của người chơi**.
 > Bằng chứng: cột `forceType` có đúng 2 giá trị (`Enemy = 0`, `Ally = 1`) và **458/458 dòng = 0**.
 > Damage của player nằm ở `Player_Get_Datas.StartMainCannonDamages[]` — class **không được
-> serialize** trong `data.unity3d`, phải decompile `libil2cpp.so`.
+> serialize** trong `data.unity3d`. **Đính chính 25/10:** câu *"phải decompile `libil2cpp.so`"* là
+> **cũ** — 6 mảng đã decode từ `reverse-engineering/il2cpp/ia-resolved.json`
+> → `datas/player_start_stats.json` (§6.1). Cái còn thiếu là **bind** index → ID tàu.
 
 ---
 
@@ -341,11 +343,14 @@ Nguồn: `Gun_Attack.csv`, `_gameobject` cắt phần trước `/`.
 > `Player_Get_Datas`: `StartMainCannonDamages[]` · `StartMainCannonRate[]` ·
 > `StartWingCannonDamages[]` · `StartSecretWeaponDamage`, cộng bộ `pN_startShotRate` /
 > `pN_startBltSpeed` cho **20 archetype tàu**. Tất cả là `static` → khởi tạo trong `.cctor()`.
-> Chưa có **giá trị** vì chưa chạy Ghidra, không phải vì không tồn tại.
-> Xem `TUNING_KNOBS.md` §2.2–2.3.
+> **Cập nhật 25/10:** 6 mảng (`PlayerCosts` int[24] · 3× float[24] · 2× float[3]) **đã decode**
+> từ `ia-resolved.json` ⇒ **đã có giá trị**, không còn câu "chưa chạy Ghidra". Cái thiếu là
+> **bind** `playerIndex` → ID tàu. Xem `TUNING_KNOBS.md` §2.2–2.3 · `BALANCE.md` §1.1b.
 
 TTK = `HP / DPS_player`. Trong đó:
-- **HP**: có (**800** instance, 394 > 0; `15-enemy-hp.csv`).
+- **HP enemy**: **đã có** — `datas/enemy_hp_by_id.json` **150 cặp `id → HP`** (runtime, claim **WRH2**)
+  + `15-enemy-hp.csv` **981** dòng serialize (**467** > 0 — cũ ghi 800/394 là **sai**; claim **WRH1**).
+  Gộp lại **108/109** prefab spawn có số HP (claim **WRH5**). Còn thiếu hệ số `kHp[mode]`.
 - **DPS player**: **ĐÃ CÓ SỐ** (25/10) — `StartMainCannonDamages[24]` × `StartMainCannonRate[24]` decode từ
   `reverse-engineering/il2cpp/ia-resolved.json` → `datas/player_start_stats.json`
   (DPS index 0 = **21.600**, min **456**, max **46.400**).

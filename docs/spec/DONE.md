@@ -8,11 +8,23 @@
 > câu **“chưa có giá trị / thiếu blob / 573 / 957 static mức D”** đã **sai**, và sai ở nhiều file.
 > Hiện trạng đúng: `reverse-engineering/il2cpp/ia-resolved.json` có **17 method · 623 record**
 > (**576** Map + **6** Player + 5 nhóm `Board_*` + Tech 7 + Device 12 + Droid 3 + Stage 2 + GameDatas 1).
-> **Cái thiếu là `bind`, không phải `dump`.** Còn **thật sự** thiếu: HP enemy (150 float trong
-> `.rodata`), coin/gem delta, thưởng hộp, trọng số rơi, ngưỡng VIP, mapping wave→stage.
+> **Cái thiếu là `bind`, không phải `dump`.** Còn **thật sự** thiếu: ~~HP enemy (150 float trong
+> `.rodata`)~~ — **gạch bỏ ở lần 5**, đã có bảng — coin/gem delta, thưởng hộp, trọng số rơi,
+> ngưỡng VIP, mapping wave→stage.
 > Đã sửa: `BALANCE` §6 (thêm §6.10), `DATA_SYNC` §18.2 + §23, `MISSING` §2.2c, `OPEN_ISSUES` B3,
 > `ENEMY_HP_RUNTIME` §0, `AI_FEASIBILITY` §1.7, `apk-analysis/31`. Claim mới: **IA6 · IA7 · IAB1 ·
 > IAB2 · APKD1 · IA8**.
+>
+> **Sửa lại (lần 5 — 25/10, rà nốt các câu "xin dump"):** phát hiện 3 nhóm câu **ảo** mà lần 4 bỏ sót.
+> (1) `datas/enemy_hp_by_id.json` **đã có 150 cặp `id → HP`** từ chính `.cctor` đang bị "xin"; 3 file
+> asm `Enemy_Get_Datas` / `Enemy_Controller` / `Enemy_Health` **đã có 41 method** ⇒ **không cần `.so`,
+> không cần dump lại class**. (2) `15-enemy-hp.csv` là **field serialize** — `CB-*` **0/69** dòng > 0 —
+> nên câu "109/109 prefab có HP" ở lần 4 là **ảo ngược**; sửa thành 981 dòng · **467** > 0, gộp dict
+> được **108/109** prefab spawn có số HP. (3) `waves.json` hiện có **0** dấu `?` · **109** prefab tên
+> thật ⇒ mọi câu "45.659 entry = `?`" là lịch sử. Claim mới: **WRH1–WRH5** (thay 2 claim WRH cũ).
+> Đã sửa thêm: `ENEMY_HP_RUNTIME` §2/§4/§5/§6, `WHERE_TO_LOOK` §3/§4, `ENCOUNTERS` §9, `COMBAT` §6.1,
+> `DESIGN_QUESTIONS`, `README` §5, `AI_FEASIBILITY` §1.7/§2.1, `START_HERE` bẫy 20, `HANDOFF_REPLY` §6,
+> `CROSS_BRANCH` · `CROSSCHECK`.
 
 > **Sửa lại (lần 3):** pipeline vòng 3 (nhánh `ef6b75ef`, commit `61d5385`) đã resolve
 > **tên enemy trong wave** — **22.451** entry, **109** prefab, **0** `"?"`. Đây là mục
@@ -212,7 +224,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 | **Kiểm bằng** | máy: replay 1 wave, so DPS/TTK/HP với bản gốc trong **dung sai khai báo trước** |
 | **Đạt khi** | (dung sai do bạn chọn — ví dụ ±5%) |
 | **Bắt chước đủ?** | ❌ **chưa** — cần **giá trị thật**, hiện còn ở mức **D** |
-| **Đang thiếu gì** | **4.861** `[SerializeField]` + **957** `static` — nay **đã decode 623 record** của 17 method (`ia-resolved.json`); thiếu **bind** + **`.rodata`** (HP enemy) + field vô hướng |
+| **Đang thiếu gì** | **4.861** `[SerializeField]` + **957** `static` — nay **đã decode 623 record** của 17 method (`ia-resolved.json`) + **150 cặp HP enemy** (`enemy_hp_by_id.json`); thiếu **bind** (index→ID tàu, mảng Map→stage, `StartHpPoint`←dict) + hệ số `kHp[mode]` + field vô hướng |
 | **Chi phí** | chạy AssetRipper + Ghidra |
 
 > L2 là mức **"bắt chước" đúng nghĩa nhất** — và cũng là mức **chưa đạt được hôm nay**.

@@ -6,16 +6,16 @@
 
 ## 0. Tổng
 
-**RAW 175 · DOC 3 · CONST 28 · tổng 206**
+**RAW 180 · DOC 3 · CONST 28 · tổng 211**
 
 | loại | số claim | nghĩa |
 |---|---:|---|
-| **RAW** | **175** | hàm đo **mở file** trong `datas/` · `reverse-engineering/` · `docs/assets/` |
+| **RAW** | **180** | hàm đo **mở file** trong `datas/` · `reverse-engineering/` · `docs/assets/` |
 | **DOC** | **3** | chỉ đọc `docs/**` — kiểm tính nhất quán tài liệu, **không** phải dữ liệu gốc |
 | **CONST** | **28** | **không mở file** — số đo một lần, không tái đo bằng máy |
-| **cộng** | **206** | |
+| **cộng** | **211** | |
 
-⇒ **175/206** claim tái đo được từ raw. **28** claim là hằng số (xem §2) — dùng để **tham khảo**, không dùng làm bằng chứng khi thiết kế.
+⇒ **180/211** claim tái đo được từ raw. **28** claim là hằng số (xem §2) — dùng để **tham khảo**, không dùng làm bằng chứng khi thiết kế.
 
 ## 1. Cách phân loại
 

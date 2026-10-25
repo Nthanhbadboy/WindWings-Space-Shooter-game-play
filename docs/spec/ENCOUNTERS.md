@@ -704,7 +704,7 @@ class `MapController`.
 
 | # | Điều | Trạng thái | Cách xử lý |
 |---:|---|---|---|
-| 1 | **Enemy prefab nào trong wave nào** | **D** — 45.659 entry = `"?"` | phải chạy lại `wave_report.py` với pathID→name (cần `data.unity3d`) |
+| 1 | **Enemy prefab nào trong wave nào** | ✅ **ĐÃ GIẢI** — **0** dấu `?` · **109** prefab (claim **WRH4**); bản `datas/waves.json` hiện hành ghi tên prefab thật | ~~chạy lại `wave_report.py`~~ — câu "45.659 entry = `?`" là **lịch sử** (report 3 / `DONE.md` lần 3) |
 | 2 | `spawn_type` 5/6 bị đặt tên sai (`boss`/`special`) | **A — lỗi đã xác nhận** | đọc là `EndMapPoint`/`StartWavePoint` |
 | 3 | `Wave.indexWave` = 0 toàn bộ | **A** | dùng tên GameObject |
 | 4 | Số enemy thực tế trong 1 spawner | **D** — `count = 0` cho **11.089/11.089** dòng (`number` không serialize); `radius` = 0,1 toàn bộ | không biết wave có bao nhiêu enemy |

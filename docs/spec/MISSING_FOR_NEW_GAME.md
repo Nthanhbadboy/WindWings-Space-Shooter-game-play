@@ -32,7 +32,7 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 | 6 | **Wave / spawn** | ✅ **đủ** | **282 wave · 11.089 dòng cấu hình · 23.757 spawner · 22.451 entry** (`H2`, `I3`, `M3`, `AQ7`) | `rate = 0` **chưa** kết luận "spawn cả loạt" — xem §2.4 |
 | 7 | **Độ khó 3 chế độ** | ✅ **đủ** | `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · không nhân số quân | ngưỡng % riêng = tự chọn |
 | 8 | **Kinh tế / rơi đồ** | ✅ **đủ** | 3 tầng rơi: **702** vật đặt sẵn (**676 coin / 26 item**) · **246/2.094** slot mang item · **6** loại (`AE1`–`AE3`) | trọng số chọn giữa 6 loại — **tự chọn** |
-| 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu**; `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) — nhưng damage **có** lookup theo tàu: `GetMainCannonDamage(playerIndex)` đọc **mảng static float** `0x78` theo `playerIndex` (§2.2); `Player_Talent` **23 method** · **13 drone** | **giá trị** mảng damage theo tàu (6 blob rodata); HP riêng của tàu = **chưa biết**, không suy từ field vắng |
+| 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu**; `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) — nhưng damage **có** lookup theo tàu: `GetMainCannonDamage(playerIndex)` đọc **mảng static float** `0x78` theo `playerIndex` (§2.2); `Player_Talent` **23 method** · **13 drone** | 6 mảng damage/rate/cost **đã decode** (§2.2); còn: **bind** `playerIndex` → ID tàu, **HP riêng của tàu** = chưa biết (**khác** HP enemy đã có), không suy từ field vắng |
 | 10 | **UI** | ✅ **cấu trúc** · ✅ **luật thị giác** / ❌ **asset** | **797 màn · 150.131 node · 5.831 nút** (`N2`, `P6`); **55.584** layout file; khung hình **0,4813** · accent **≤10 %** · tương phản **0,45–0,80** (`VISUAL_DESIGN.md`, **AN1**, **AN2**) | asset gốc: **vẽ mới**; luật thì **đã có số** |
 | 11 | **Âm thanh** | 🟡 **có dữ liệu, chưa có luật phát** | **69 clip / 571,5 s**, trong đó **5 vòng nhạc > 60 s** (`docs/assets/audio-index.csv`) | **ai phát cái gì, lúc nào** (`AudioSource`/`AudioManager` chưa bóc) |
 | 12 | **Save / load + live-ops** | 🟡 **một phần** | key đã đọc: **`StarCount`** · **`StarStageMaster{stageIndex}_{modeIndex}`** (default 0) qua `PlayerPreferences.SetInt → PlayerPrefs.SetInt`; model `savedStars/result` (report 57); **170 IAP** | **schema đầy đủ** (mọi khoá/kiểu/migrate) + **chưa** chứng minh flush đĩa — xem §2.3 |
@@ -44,7 +44,9 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 
 ## 2. Bốn chỗ **cần biết trước** — và địa chỉ để mở
 
-A6 và B3 là **dữ liệu chưa dump**; save đã có **một phần**; `rate = 0` là **giới hạn suy luận**.
+A6 và B3 **không còn là "dữ liệu chưa dump"** (câu cũ đã sai từ 25/10): raw **đã có** trong
+`ia-resolved.json` (576 mảng Map · 6 mảng Player). Cái thiếu là **bind** — `playerIndex` → ID tàu,
+mảng Map → (chapter, stage, mode); save đã có **một phần**; `rate = 0` là **giới hạn suy luận**.
 Tự chọn ở A6/B3 thì game mới **lệch số**; tự chọn ở `rate = 0` thì lệch **nhịp**, nhưng được phép nếu ghi rõ.
 
 ### 2.1 A6 — stage ↔ wave: **dữ liệu ĐÃ CÓ trong repo**, thiếu phần *bind*, không thiếu blob
@@ -68,7 +70,11 @@ Tự chọn ở A6/B3 thì game mới **lệch số**; tự chọn ở `rate = 0
 - `datas/maps.json` (**250** map) là **bảng dẫn xuất khác nguồn** — không dùng nó để "xác nhận" 576.
 - **Nếu chỉ cần L1:** chọn số map × độ dài map là **hợp lệ**, miễn ghi rõ là **lựa chọn thiết kế**.
 
-### 2.2 B3 — damage tàu: **giá trị đã có**, chỉ còn HP là chưa
+### 2.2 B3 — damage tàu: **giá trị đã có**, chỉ còn **HP riêng của tàu** là chưa
+
+> **Phân biệt (đừng nhầm với B3 ở `OPEN_ISSUES`):** "HP" ở mục này là **HP của tàu người chơi**
+> (`Player_Health`), vẫn mức **D**. **HP enemy** thì **đã có** — **150 cặp `id → HP`** trong
+> `datas/enemy_hp_by_id.json` (§3, claim **WRH2**).
 
 > Sửa 25/10: mục này từng ghi *"4 mảng × 24 float"* và *"thiếu 6 blob rodata"*. Cả hai đều sai.
 
@@ -217,6 +223,10 @@ không phủ toàn bộ công thức chiến đấu.
 | **art, font, atlas (bản gốc)** | L1 **vẽ mới**. Cái **không** bỏ là **luật thị giác**: khung hình · ba chế độ sáng · ngân sách accent · vignette khung thưởng · mật độ chi tiết — đã đo và ghi ở `VISUAL_DESIGN.md` |
 | **số cân bằng cụ thể** (giá, tốc độ, mật độ) | L1 cho phép tự chọn; cái phải giữ là **cơ chế** (3 chế độ, không nhân quân, rơi đồ 3 tầng) |
 | **thứ tự pha boss (D3)** | Có **795 event + mốc thời gian**; thứ tự là **lựa chọn thiết kế**, dữ liệu chỉ cần đủ để biết "mỗi pha có đòn gì" |
+| **blob `InitializeArray`** | **Đã có**: 576 mảng Map + 6 Player + 5 nhóm `Board_*` trong `ia-resolved.json` (**623** record). Xin dump lại = bỏ qua việc **grep repo trước** (`RAW_AUDIT` luật 4) |
+| **HP enemy** | **Đã có**: `datas/enemy_hp_by_id.json` = **150 cặp `id → HP`** (claim **WRH2**); `15-enemy-hp.csv` = 981 dòng serialize (claim **WRH1**). Gộp lại **108/109** prefab spawn có số HP (claim **WRH5**). 3 class enemy đã có asm (claim **WRH3**) ⇒ **không cần `.so`** |
+| **damage/rate/wing/cost của player** | **Đã decode** (float[24] + int[24], `BALANCE` §1.1b) — thiếu **bind index→ID tàu**, không thiếu số |
+| **“cần dump thêm class config”** | 17 method / **623** record đã đọc; phần còn lại là **literal store** + `.rodata`, không phải class chưa dump |
 | **13 class "chưa phân loại" trong ASSET_TRIAGE** | vẫn còn **1.554** `unclassified` / 2.197 — nhưng đây là việc **phân loại ảnh**, không chặn dựng game (L1 vẽ mới) |
 
 ---

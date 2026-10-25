@@ -1384,6 +1384,9 @@ dữ liệu game mà từ **công cụ export**.
 | `Stage_Get_Datas` | 10 | 2.328 | `ldr x8, [x8, #0xc0]` ❌ |
 | `Tech_Datas` | 24 | 7.348 | `mov x2, x20` ❌ |
 
+> **Đính chính 25/10:** bảng trên là bản `8871068a`. Bản `6109008c` **hết cụt**
+> (§7.31 ngay dưới), `Stage_Get_Datas` đã decode **2/2 mảng**. Đừng đọc cột ❌ thành hiện trạng.
+
 **b) Cái bị cắt:** đuôi của **method cuối theo thứ tự địa chỉ**. Ở **8/12 file** method cuối là
 **`.cctor`** — tức là đúng chỗ **gán các giá trị khởi tạo**.
 
@@ -2238,8 +2241,10 @@ rotation `0: 2.041 · 1: 53 · 2: 54 · 3: 37` (**144** sprite cần lật/xoay)
   **SAI — đính chính 25/10:** **576/576** mảng Map + **6/6** mảng Player **đã có** trong
   `reverse-engineering/il2cpp/ia-resolved.json` (17 method · 623 record). **L2 vẫn CHƯA**, nhưng lý do
   đúng là **thiếu bind** (`playerIndex`→ID tàu, mảng Map→(chapter, stage, mode)) — xem §23.
-- **HP enemy:** `.cctor` có **150** lệnh insert (id **30001–31017**) nhưng **giá trị là float trong
-  `.rodata`** ⇒ muốn có bảng phải có `libil2cpp.so`, không phải “dump thêm class”.
+- **HP enemy — không thiếu:** `datas/enemy_hp_by_id.json` có **150 cặp `id → HP`** (parse trực tiếp
+  `.cctor`, claim **WRH2**). `15-enemy-hp.csv` là field **serialize**: 981 dòng · 865 tên · **467** dòng
+  > 0 (claim **WRH1**), `CB-*` **0/69** dòng > 0 ⇒ **không** tự nó nuôi TTK. Gộp hai nguồn **108/109**
+  prefab spawn có số HP (claim **WRH5**); 3 file asm enemy đã có (claim **WRH3**) ⇒ **`.so` không cần**.
 - Save: chưa có **schema đầy đủ**, chưa chứng minh **flush đĩa**.
 - Report **59 · 60 · 61** + 6 chunk `sprite-geometry/objects-*.jsonl.gz` vẫn **chưa kéo** (như §17.4).
 - Review của họ là **tĩnh trên snapshot đã pin**, không chạy suite của mình; mình cũng **chưa** chạy suite của họ.
@@ -2280,7 +2285,7 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 | Save contract | 2 key, suy từ report 57 | **8 key family · 2 store · 7 limitation** (claim **CM4**), có asm + 41 method + 25 check |
 | Getter có side effect | chưa biết | **biết**: `get_StageTarget` **tăng 1** mỗi lần đọc; `get_IndexTutorial` tự ghi `TUTORIAL=6` |
 | Mảng int của `Player_Saved_Datas` | — | **5 blob · 49 int** (giá craft/unlock), **5/5 sha256** |
-| 4 mảng **float** damage theo tàu (`Player_Get_Datas`) | thiếu | **vẫn thiếu** ⇒ **B3 vẫn mở**, DPS/TTK tuyệt đối vẫn chưa có |
+| ~~4 mảng **float** damage theo tàu~~ | thiếu | **vẫn thiếu tại `6ababbd31`** ⇒ B3 còn mở *lúc đó*. **Đã decode sau này** (25/10): thực tế là **6 mảng** — `PlayerCosts` int[24] · damage/rate/wing float[24] · 2× float[3] — trong `ia-resolved.json` (`BALANCE` §1.1b, `MISSING` §2.2). Cái còn thiếu là **bind** `playerIndex` → ID tàu, **không** phải giá trị |
 | Field binding của blob int | — | **chưa chốt** (`PROVISIONAL_METADATA_ARRAY_BLOBS_NOT_ALL_FIELD_BINDINGS`) |
 
 > ⚠ **Đừng gộp hai thứ:** blob int `[0,0,0,6500,8500,9500,12500]` là **giá craft** (chưa bind field),
@@ -2292,7 +2297,7 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **175** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **RAW** | **180** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
 | **DOC** | **3** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
 | **CONST** | **28** | không mở file ⇒ **đo một lần** |
 

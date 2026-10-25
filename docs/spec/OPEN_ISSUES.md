@@ -38,9 +38,9 @@
 | A4 | ~~Caller của `GetStartHp()`~~ ✅ **ĐÓNG** = `<Start>b__14_1` | **lỗi export** | **A** | HP chốt **trong `Start()`** — `BALANCE` §0.6.15 |
 | B1 | 3 bảng stat của device | **RVA data** | D | chặn "device mạnh bao nhiêu" |
 | B2 | ~~13 tàu `20001–20013`~~ ✅ **ĐÓNG — là 13 DRONE**, không phải tàu | — | **A** | số tàu vẫn **25**; drone đã có ở `BALANCE` §3.2 |
-| B3 | ~~HP enemy scale theo stage~~ ✅ **cơ chế ĐÃ RÕ**: HP = `Dictionary<int,float>` trong `Enemy_Get_Datas.cctor` · **enemy KHÔNG có giáp per-prefab** (`armor` private ⇒ **0/981** serialize; `UNITY_RULES` §1.1). **Đo lại 25/10:** `.cctor` **hoàn chỉnh 3.624 B**, **150** lệnh insert `Dictionary` (id **30001–31017**), **giá trị load từ `.rodata`** (`ldr s, [x8, #off]`, **40** offset khác nhau) ⇒ bảng HP có **150 dòng, không phải 981** (981 = số prefab) | **cần `.so` để đọc `.rodata`** | **B** | không phải “dump thêm class”: chỉ cần đọc float tại `adrp+off` (hoặc gọi `GetStartHealthPoint`) — `ENEMY_HP_RUNTIME.md` §0 |
+| B3 | ~~HP enemy scale theo stage~~ ✅ **cơ chế ĐÃ RÕ**: HP = `Dictionary<int,float>` trong `Enemy_Get_Datas.cctor` · **enemy KHÔNG có giáp per-prefab** (`armor` private ⇒ **0/981** serialize; `UNITY_RULES` §1.1). **Đo lại 25/10:** `.cctor` **hoàn chỉnh 3.624 B**, **150** lệnh insert `Dictionary`, **150** id khác nhau **30001–38001**, **0** vòng lặp ⇒ bảng runtime **150 dòng, không phải 981** (981 = số prefab). **HP runtime đã có số**: `datas/enemy_hp_by_id.json` **150 cặp `id → HP`** (claim **WRH2**) + 981 dòng serialize (claim **WRH1**), gộp **108/109** prefab spawn (claim **WRH5**) | **đủ để làm clone** | **A** | 3 class enemy đã có asm (claim **WRH3**); còn **bind** `StartHpPoint` ← dict + hệ số `kHp[mode]` — `.so` **không** cần |
 | B4 | `GetCountEnemies` mỗi stage | **chưa lấy** | D | ảnh hưởng nhiệm vụ/độ dài |
-| B8 | ~~Hệ số chế độ cho số quân~~ ✅ **ĐÓNG: `kCount ≡ 1`** (304 lệnh · 0 `mul`; người chơi xác nhận). **HP theo chế độ** thì **còn mở**: bảng HP phẳng (981) ⇒ hệ số nằm trong mã, **giá trị chưa biết** | **chưa dump class spawn** | **A** (quân) · **C** (HP) | clone: `kCount = 1`, chỉ nhân `kHp` — `DIFFICULTY_MODES.md` §5.5 |
+| B8 | ~~Hệ số chế độ cho số quân~~ ✅ **ĐÓNG: `kCount ≡ 1`** (304 lệnh · 0 `mul`; người chơi xác nhận). **HP theo chế độ** thì **còn mở**: bảng HP gốc **150 id** đã có ⇒ hệ số nằm ở tầng spawn, **giá trị chưa biết** | **đã có asm**, chưa tìm thấy phép nhân | **A** (quân) · **C** (HP) | clone: `kCount = 1`, chỉ nhân `kHp` — `DIFFICULTY_MODES.md` §5.5 |
 | B5 | 43/305 trace chưa đối chiếu | **chưa lấy** | — | rủi ro sai số nhỏ |
 | B6 | Damage boss không khai báo (19 class) | **chưa lấy** | C | thiếu 19/37 nhóm đòn |
 | B7 | ~~12 stat Basic vs `NumberTechStats()` = 60~~ | ✅ **đã chốt** | A | = `List.Count`, không phải hằng số |
@@ -214,7 +214,11 @@ return  Mathf.RoundToInt(bracket × base)
 | **`CB-*`** (enemy thường) | **1 / 37** — chỉ `CB(TEST)` = 10.000.000 |
 | `CB-30003` · `CB-30015` · `CD-31002` | **0,0** · **0,0** · **0,0** |
 
-### ✅ ĐÃ CHỐT (23/10): HP enemy **CÓ THẬT**, nằm trong **một `Dictionary` chưa dump**
+### ✅ ĐÃ CHỐT (23/10) + **CÓ SỐ (25/10)**: HP enemy nằm trong một `Dictionary` **đã dump & parse**
+
+> **Cập nhật 25/10:** `datas/enemy_hp_by_id.json` có **150 cặp `id → HP`** (parse từ `.cctor`,
+> claim **WRH2**); `Enemy_Get_Datas` / `Enemy_Controller` / `Enemy_Health` đã có **3 file asm · 41
+> method** (claim **WRH3**). Các câu "chưa dump / cần `.so`" trong lịch sử dưới đây **không còn đúng**.
 
 Chi tiết: `ENEMY_HP_RUNTIME.md`. Ba mắt ghép:
 

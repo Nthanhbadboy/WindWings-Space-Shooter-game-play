@@ -192,6 +192,12 @@ keyframe".
 `(clip, time, functionName)`** — không cần giải nén gì. Đây là **việc rẻ nhất trong toàn bộ danh sách
 còn mở**, và nó chốt luôn **thời điểm ra đòn của boss** (cùng `m_StopTime`).
 
+> **Đính chính 25/10 — việc này ĐÃ XONG, đừng xin export lại:** `datas/boss_anim_events.csv` có
+> **795 dòng** `(prefab, clip, time, function, data, float, int)`, **795/795 có cả `time` lẫn
+> `function`**. **793** (event trong `m_Events` của clip) và **795** (event *use*, đã gộp
+> `CB-30040` + 1) là **hai đơn vị khác nhau**, không phải mâu thuẫn. Cái còn mở là **join**
+> `function` → handler (`ANIMATION_SCRIPT.md` §3), không phải dump phần tử.
+
 > **Vì sao trước đây tưởng mất:** dump `native-types.jsonl.gz` là **census nông** — nó ghi
 > `mảng.__count` thay vì phần tử. Không phải giới hạn của định dạng Unity.
 

@@ -34,10 +34,15 @@
 | `reverse-engineering/il2cpp/ia-resolved.json` | **Hex thật của mọi `InitializeArray`** | **576** mảng map · **6** mảng `Player_Get_Datas` (0 record lỗi) | **damage/rate/cost từng tàu**, danh sách wave của bảng map |
 | `datas/player_start_stats.json` | 6 mảng đã decode + DPS suy ra | **24** tàu · **16** bán được · **8** giá `−1` | dựng bảng cân bằng tàu, không đoán |
 | `reverse-engineering/raw/player-loadout/` | Mảng int + asm `Player_Saved_Datas` | **5 blob · 49 int · 5/5 sha256 OK** | giá craft/unlock, chứng cứ save |
-| `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **175 RAW · 3 DOC · 28 CONST / 206** | biết số nào tái đo được, số nào "đo một lần" |
+| `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **180 RAW · 3 DOC · 28 CONST / 211** | biết số nào tái đo được, số nào "đo một lần" |
 | `tools/` | **9** script đo lại được | — | `verify-claims.py`, `art-study.py`, `classify-by-atlas.py`, … |
 
 **Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **34** file `datas/`.
+
+> **Đừng "sửa" 142.136 thành 142.131:** `wc -l *.asm.txt` cho **142.131** vì **`wc` đếm ký tự
+> newline**, còn `AI1` đếm **dòng** (`sum(1 for _ in fh)` = `splitlines()`). **5** file
+> `_probe_*.asm.txt` không có newline ở cuối ⇒ hơn **đúng 5** dòng. Cả hai số đều đúng, khác định
+> nghĩa; verifier dùng số **142.136** (claim **AI1**).
 
 
 ### 1.1 Ranh giới duy nhất — và nó **không** hạ chuẩn
@@ -166,7 +171,7 @@ Gradient p50 **0,20–0,26** ở 5 nhóm chủ thể, **nhưng** `background` **
 | 17 | **Zip CRC PASS ⇒ đủ asset** | Pack draft có **151** path bị nhiều row cùng dùng · **321** row gộp path · **320** size mismatch; `complete APK reference` = **NOT ESTABLISHED** (`DATA_SYNC.md` §21.2) |
 | 18 | **“Thiếu blob, phải xin nhánh kia dump lại”** | `ia-resolved.json` **đã có** **576** mảng Map + **6** mảng Player + 5 nhóm `Board_*` (17 method · **623** record). Thiếu là **decode + bind**, không phải dump. Trước khi xin dữ liệu: `grep reverse-engineering/` trước (`RAW_AUDIT` luật 4) |
 | 19 | **`levelDelta` = 2,1 (hoặc 3,6 đọc bằng mắt)** | Float32 `0x40666666` = **3,6**; giải đúng ra **`[1, 0 · 2,0 · 3,6 · 3,6]`** — và nó scale **phần thưởng**, **không** scale HP (`BALANCE` §6.4, claim **IAB2**) |
-| 20 | **“Bảng HP enemy 981 dòng”** | 981 là **số prefab**. `Enemy_Get_Datas.cctor` chỉ có **150** lệnh insert (id **30001–31017**), giá trị là **float trong `.rodata`** ⇒ thiếu **`.so`**, không thiếu “class chưa dump” (claim **IAB1**) |
+| 20 | **“Thiếu bảng HP enemy, phải xin `.so`”** | 981 là **số prefab serialize**, không phải số dòng bảng. **HP đã có**: `datas/enemy_hp_by_id.json` = **150 cặp `id → HP`** (claim **WRH2**), parse từ `.cctor` **150 insert · 0 vòng lặp · 30001–38001** (claim **IAB1**). `15-enemy-hp.csv` chỉ là serialize (981 dòng · **467** > 0, `CB-*` 0/69 — claim **WRH1**); gộp lại **108/109** prefab spawn có số HP (claim **WRH5**). 3 class enemy đã có asm (claim **WRH3**) ⇒ `.so` **không** phải blocker |
 | 21 | **“5 nhóm `Board_*` đã hiểu”** | Mới bind được **2** field (`allBasicAtk` float[24], `allDeltaAtk` = 0,168×24); 3 nhóm còn lại (Drones ×2, Endgame, Players.ctor) **chưa có consumer** ⇒ mức **B**, cấm gán “HP tàu = 4.640” (`MISSING` §2.2c) |
 
 

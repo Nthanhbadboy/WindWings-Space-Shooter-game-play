@@ -61,8 +61,11 @@ Chữ *"đầy đủ"* quyết định toàn bộ câu trả lời. Cần phân 
 > - Ở mức **B/C**: **clone được về kỹ thuật**, nhưng lúc đó nó là **bản sao vi phạm bản quyền**,
 >   không còn là "game khác bắt chước".
 >
-> Mức B vẫn cần `libil2cpp.so` (arm64) + Il2CppDumper + Ghidra/IDA để có **thân hàm** — `dump.cs`
-> 18,8 MB chỉ chứa khai báo. **Nhưng từ 9–10/2026 chi phí mức B đã giảm mạnh** (xem §1.6a):
+> Mức B vẫn cần `libil2cpp.so` (arm64) + Il2CppDumper + Ghidra/IDA để có **thân hàm của toàn
+> chương trình** — `dump.cs` 18,8 MB chỉ chứa khai báo. **Đừng** dùng câu này để xin `.so` cho
+> riêng **HP enemy**: `Enemy_Get_Datas.cctor` đã parse xong (150 cặp, `datas/enemy_hp_by_id.json`),
+> và repo đã có **139 file asm** thân hàm (mẫu, không phải whole-build closure).
+> **Nhưng từ 9–10/2026 chi phí mức B đã giảm mạnh** (xem §1.6a):
 > AI agent làm được việc này trong **vài giờ đến vài ngày**, không còn là "nhiều tháng".
 > `DecompileBench` vẫn đúng ở chỗ code dịch ngược **dễ đọc nhưng có thể sai chức năng** — nên
 > mức B **không** phải "bấm nút là xong", nhưng đã **rẻ hơn mức A về công sức thu thập số**.
@@ -201,7 +204,7 @@ cùng `dump.cs`) là mọi hàm đã có tên, rồi decompile đúng địa ch�
 
 | Thứ tưởng "không có" | Thực tế trong `dump.cs` | Lấy bằng |
 |---|---|---|
-| 8 class config **không serialize vào asset** (giá trị nằm trong `.cctor`) | **259 `static` field** (trong tổng **957** static) | **đã đọc một phần**: 17 method / **623** record trong `ia-resolved.json`; còn lại literal store + `.rodata` |
+| 8 class config **không serialize vào asset** (giá trị nằm trong `.cctor`) | **259 `static` field** (trong tổng **957** static) | **đã đọc một phần**: 17 method / **623** record trong `ia-resolved.json` + **150 cặp HP enemy** trong `datas/enemy_hp_by_id.json` (claim **WRH2**, **không cần `.so`**); còn lại literal store + field vô hướng |
 | Toạ độ đường bay | `BezierPath.points` là `[SerializeField] List<Vector3>` → **có trong `data.unity3d`** | AssetRipper (CSV exporter cũ bỏ nested struct) |
 | Thưởng/rơi theo enemy | `Enemy_Data_Balance.GetBonusCoin(int id)` · `GetBonusExp(int id)` · `GetSurvivalScore` · `GetArenaScore(idE, timeLife)` | Ghidra → 6 thân hàm |
 | Damage/HP/cost của player | `Player_Get_Datas` **178 field** — **damage/rate/wing/cost đã decode** từ `ia-resolved.json` (`BALANCE.md` §1.1b); HP vẫn là **một** float | Ghidra → `.cctor` |
@@ -495,7 +498,7 @@ những vòng đó** — chúng là **kết quả**, không phải **dữ liệu
 | Chỉ số nghiên cứu | Điểm | Ứng với lỗ hổng nào trong repo | Trạng thái |
 |---|---:|---|---|
 | **Rule & Mechanism** 45,6 | thấp | 8 class config **không serialize** — nhưng **6 mảng `Player_Get_Datas` + 576 mảng `Map_Get_Datas` đã decode** từ `ia-resolved.json`; phần còn thiếu là **bind** (index→tàu, mảng→stage) | 🟡 một phần (25/10) |
-| **Goal & Termination** 44,0 | thấp | 45.659 tham chiếu `enemies` = `"?"` ⇒ **chưa biết wave nào có enemy nào** — nhưng trần chỉ **92 prefab** | 🟡 resolve được |
+| **Goal & Termination** 44,0 | thấp | ~~45.659 tham chiếu `enemies` = `"?"`~~ **ĐÃ GIẢI (claim WRH4)**: `datas/waves.json` hiện có **0** dấu `?` · **109** prefab tên thật — trần **92 prefab** của nghiên cứu là **thấp hơn** số thật | 🟡 đã xong phần map tên |
 | **Dynamic Feedback Fidelity** 32,1 | thấp nhất | feel: gia tốc, hitstop, shake, flash — nằm trong `libil2cpp.so` | ❌ không có số |
 
 Ba lỗ hổng của repo **trùng khít** ba điểm thấp nhất trong nghiên cứu. Đây không phải trùng

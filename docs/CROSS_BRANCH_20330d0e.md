@@ -171,9 +171,9 @@ Cả hai đều **kiểm được bằng dữ liệu lần chạy tới**, khôn
 | T4: `0x2711` là **TRỪ** (`adds w19,w19,#-0x2711`) | Đọc asm tại 0x14e2ce4: đúng, trừ 10001 khỏi id ra index | **Đúng**; đã sửa chi tiết T4. Kết luận ánh xạ id↔index không đổi. |
 | T10: 45 (`^900\d\d$`) vs 48 (tiền tố) | Khác định nghĩa regex, cả hai đều "đúng" | Ghi kèm regex trong report. |
 | T13 định nghĩa bin 20 (VERIFY_ROUND1 §4.2) | Chạy độc lập: tổng **474,70M** vs họ **480,89M** (Δ1,3%); bin 240–259 khớp tuyệt đối **8,60M** | **PASS có ghi chú**: lệch nhỏ ở bin cuối (n=2) và bin 260–279 (14,9M vs 15,40M) — cần soi lại cách cộng copies/HP bộ phận. |
-| HP enemy nằm ở `Enemy_Get_Datas` (Dictionary ở .cctor), class chưa export | dump.cs có cả `Enemy_Get_Datas`/`Enemy_Controller`/`Enemy_Health` | Đã thêm 3 class vào TARGET_CLASSES; chờ asm vòng CI này. |
+| HP enemy nằm ở `Enemy_Get_Datas` (Dictionary ở .cctor), class chưa export | dump.cs có cả `Enemy_Get_Datas`/`Enemy_Controller`/`Enemy_Health` | Đã thêm 3 class vào TARGET_CLASSES. **25/10: asm đã có** — 3 file · 41 method (claim **WRH3**). |
 | Việc rẻ #3: parse `.cctor` trước khi sửa RVA | Đã làm vòng trước (`map_table.py`): bảng map dựng bằng List.Add + immediate/InitializeArray | Khớp nhận định của họ. |
-| HP enemy runtime ở `Enemy_Get_Datas` (Dictionary tại .cctor 0x157F7CC) | Export 3 class mới + parse chuỗi `Add(id, hp)`: **150 cặp** (id 30001+, CB-30003 = 650 trong khi serialize = 0) | **Đúng — B3 đóng theo hướng của họ.** Bảng ở `datas/enemy_hp_by_id.json` (`tools/verify/enemy_hp.py`). |
+| HP enemy runtime ở `Enemy_Get_Datas` (Dictionary tại .cctor 0x157F7CC) | Export 3 class mới + parse chuỗi `Add(id, hp)`: **150 cặp** (id 30001+, CB-30003 = 650 trong khi serialize = 0) | **Đúng — B3 đóng theo hướng của họ.** Bảng ở `datas/enemy_hp_by_id.json` (claim **WRH2**; script gốc nằm ở nhánh dữ liệu — **không** có `tools/verify/enemy_hp.py` trong repo này). |
 | `get_IsAttacking` có điều kiện phụ ngoài field 0x2c | Sau tái export: `ldrb [x0,#0x2c]; cbz → 0; ldrb [x0,#0x50]; cset eq` | **Đúng**: `IsAttacking = f@0x2c && f@0x50 == 0`. |
 | T2 sau sửa exporter | T2 chạy lại: vắng mặt = 0/466 method (20 class) | PASS đầy đủ. |
 

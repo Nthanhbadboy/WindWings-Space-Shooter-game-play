@@ -127,7 +127,7 @@ Xếp theo **chi phí trả lời thấp → cao**, không theo mức quan trọ
 
 | Hạng | Câu | Vì sao chặn | Cách trả lời | Chi phí |
 |---:|---|---|---|---|
-| 1 | ✅ **ĐÓNG — B2 giá trị `StartHp`** = **2500** (bản `6109008c`) | không có HP thì **không có TTK** — nhưng **công thức đã xong** | ✅ **đã giải xong cấu trúc** (`BALANCE` §0.6, đọc lệnh arm64). Chỉ còn **1 hằng số**. ⚠ **ĐÍNH CHÍNH:** kết luận cũ *"`.cctor` không gán `StartHp`"* **vô hiệu** — asm export **bị cắt cụt ở 11/12 file**, `Player_Get_Datas..cctor` dừng giữa chừng tại `0x14e5cc4` (`DATA_SYNC` §7.29). Yêu cầu **hẹp nhất**: dump **200 lệnh sau `0x14e5cc4`** | **rất thấp** — 1 khối 200 lệnh |
+| 1 | ✅ **ĐÓNG — B2 giá trị `StartHp`** = **2500** (bản `6109008c`) | không có HP thì **không có TTK** — nhưng **công thức đã xong** | ✅ **đã giải xong cấu trúc** (`BALANCE` §0.6, đọc lệnh arm64) **và có hằng số 2500**. ⚠ **ĐÍNH CHÍNH:** kết luận cũ *"`.cctor` không gán `StartHp`"* **vô hiệu** — asm export **bị cắt cụt ở 11/12 file**, `Player_Get_Datas..cctor` dừng giữa chừng tại `0x14e5cc4` (`DATA_SYNC` §7.29). Yêu cầu cũ *"dump 200 lệnh sau `0x14e5cc4`"* **không còn** — bản `6109008c` đã đọc trọn | **rất thấp** — đã xong |
 | 2 | **A6 — stage ↔ wave** | quyết định **số màn** và **độ dài phiên** | `Stage_Behaviour.textStageIndex` → `Text` component; hoặc đọc thứ tự con của `Parent_Stages` trong `Board_Maps` | **thấp** — đã có `transform-tree` |
 | 3 | ⚠ **MỘT PHẦN — E2 có số (0,05 s · 0,5), E3 chưa thấy dấu vết** | quyết định **feel**, thứ người chơi cảm nhận mạnh nhất | đọc `Enemy_Display` field + tìm `timeScale`/`Material.color` trong 305 trace đã có | **thấp** |
 | 4 | ⚠ **MỘT PHẦN — D3 thứ tự pha boss** (hạ mức 25/10, review R1): **mốc TRONG clip** đã có (**795/795** event có `time`) nhưng **thứ tự pha, điều kiện vào/thoát, số lần lặp, hành vi callback** vẫn **chưa** | mỗi trận boss là **điểm nhấn** | mốc: `BOSS_ANIM_TIMELINE.md` (269 cặp clip, nhịp 0,17 s) — **không cần decoder**. Còn thiếu: join state-machine (`controller-graphs.json.gz` có 395 state/357 transition, **302** có condition) với nhịp `time`, và hành vi handler (T2) | **thấp** cho thứ tự state, **trung bình** cho hành vi |
@@ -150,14 +150,20 @@ Xếp theo **chi phí trả lời thấp → cao**, không theo mức quan trọ
 
 ## Còn thiếu / phải đoán
 
-1. **Giá trị `StartHp`** — công thức HP player đã xong (`BALANCE` §0.6), chỉ thiếu **một hằng số**; nguyên nhân *"không thấy"* đã xác định: **asm bị cắt cụt** (`DATA_SYNC` §7.29), không phải dữ liệu không tồn tại;
-   `Player_Get_Datas..cctor` không gán, toàn file asm không có lệnh ghi `#0x6c`.
-2. **Công thức HP enemy runtime** — có hằng số `GetSurvivalScore` (6,0 · 3,0 · 1,1 · 0,2 · 0,5 ·
-   500,0 · 23,0 · 40,0) nhưng **chưa có thứ tự nhân**; `enemy_hp.json` ghi *"runtime HP scaled by
-   `Enemy_Data_Balance` and stage"* mà **không nói stage nào**.
+1. ~~**Giá trị `StartHp`**~~ — **ĐÃ ĐÓNG = 2500** (hạng 1 ở bảng trên). Nguyên nhân *"không thấy"*
+   trước đây là **asm bản `8871068a` bị cắt cụt** (`DATA_SYNC` §7.29); bản `6109008c` đã đọc trọn.
+   Câu *"toàn file asm không có lệnh ghi `#0x6c`"* chỉ đúng trên bản cụt — **đừng** dùng lại.
+2. **Hệ số HP enemy theo chế độ `kHp[mode]`** — **HP gốc đã có** (`datas/enemy_hp_by_id.json`,
+   **150** cặp `id → HP`, claim **WRH2**; `15-enemy-hp.csv` 981 dòng serialize, claim **WRH1**).
+   Cái chưa có là **thứ tự nhân / giá trị hệ số**: `GetSurvivalScore` có hằng số (6,0 · 3,0 · 1,1 ·
+   0,2 · 0,5 · 500,0 · 23,0 · 40,0) và `enemy_hp.json` ghi *"runtime HP scaled by
+   `Enemy_Data_Balance` and stage"* mà **không nói stage nào**. `Enemy_Data_Balance` **đã có asm**,
+   không cần dump.
 3. **stage ↔ wave** — 299 stage và 281 wave chưa khớp; `Stage_Behaviour` không có field `wave`.
 4. **Độ dài phiên chơi** — phụ thuộc (2), (3) và luật continue.
-5. **Timing của 793 event** — export chỉ có `__count`; cần decoder `m_StreamedClip`.
+5. ~~**Timing của 793 event**~~ — **ĐÃ CÓ**: **795/795** event trong clip có `time` (hạng 4 ở bảng
+   trên, `BOSS_ANIM_TIMELINE.md`). Cái còn thiếu là **join** mốc `time` với state-machine và callback,
+   không phải decoder `m_StreamedClip`.
 6. **Mật độ địch đồng thời** — cần mô phỏng timeline, chưa làm.
 7. **Vàng/giờ** — cần drop rate × số quân/giờ.
 8. **`stepLevel` map vào cấp nào** — 4 ngưỡng 30/58/118/248 nhưng chưa biết `playerLv` thuộc hệ thống nào.

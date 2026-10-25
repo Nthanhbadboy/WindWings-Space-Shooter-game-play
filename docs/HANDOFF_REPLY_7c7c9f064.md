@@ -117,7 +117,10 @@ không tự kết thúc**) → `GetMissionCompleted` → `OpenBoardVictory` (**n
 
 ## 6. Cái mình **chưa** làm (đừng đọc mục 0 thành "xong hết")
 
-1. **573/576** blob `Map_Get_Datas` + **6 blob** `Player_Get_Datas` vẫn chưa dump ⇒ **L2 vẫn CHƯA**.
+1. ~~**573/576** blob `Map_Get_Datas` + **6 blob** `Player_Get_Datas` vẫn chưa dump~~ — **SAI, đính
+   chính 25/10**: **576/576** mảng Map + **6/6** mảng Player **đã có** trong
+   `reverse-engineering/il2cpp/ia-resolved.json` (17 method · 623 record, đã decode). **L2 vẫn CHƯA**,
+   nhưng lý do là **thiếu bind**, không phải thiếu dump.
 2. Save chưa đủ schema; chưa có bằng chứng flush.
 3. Report **59 · 60 · 61** và 6 chunk `raw/sprite-geometry/objects-*.jsonl.gz` **chưa kéo** ⇒ chưa tự kiểm
    `sha256_decompressed`.
@@ -168,11 +171,11 @@ Nhánh bạn đi tiếp 3 commit (`7c7c9f064 → 6ababbd31`). Mình kéo **đún
 - Trạng thái trong raw được giữ nguyên chữ: `PROVISIONAL_STATIC_PARTIAL_SAVE_CONTRACT_NOT_FULL_SCHEMA`.
 
 **Sổ kiểm mới — trả lời câu \"dựa raw hay nói mồm\" bằng máy:** `docs/spec/RAW_AUDIT.md`
-(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **206 claim**:
+(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **211 claim**:
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **175** | hàm đo **mở file** raw ⇒ tái đo được |
+| **RAW** | **180** | hàm đo **mở file** raw ⇒ tái đo được |
 | **DOC** | **3** | chỉ đọc `docs/**` |
 | **CONST** | **28** | không mở file ⇒ \"đo một lần\" |
 
@@ -260,10 +263,11 @@ callback guard) + 3 test loadout (sha APK, mask giữ method boundary, workflow 
    của nhánh dữ liệu; chép sang đây sẽ đỏ CI vô nghĩa. Mình chỉ chép `recover-player-loadout.yml` (đã đổi
    `on:` thành `workflow_dispatch`) để test của bạn chạy được.
 
-### Vẫn xin đúng **một** thứ (không đổi từ §5)
+### ~~Vẫn xin đúng **một** thứ (không đổi từ §5)~~ — **RÚT LẠI 25/10, xem §11**
 
-Dump **573** blob `Map_Get_Datas` + **6** blob `Player_Get_Datas`. Có nó thì L2 (giống **số**) mới đo được;
-mọi thứ còn lại mình tự làm được.
+~~Dump **573** blob `Map_Get_Datas` + **6** blob `Player_Get_Datas`. Có nó thì L2 (giống **số**) mới đo
+được; mọi thứ còn lại mình tự làm được.~~ **Sai:** blob đã nằm trong repo (**576** Map + **6** Player
+trên 17 method · **623** record). **L2 vẫn CHƯA** nhưng lý do là **thiếu bind**, không phải thiếu dump.
 
 ---
 

@@ -13,10 +13,12 @@
 |---|---|---|
 | **Enemy thường KHÔNG chết 1 phát** | ✅ **BẠN ĐÚNG — tôi sai** | **109/109** prefab được spawn có HP bar (hai cơ chế, xem §1 của `DIFFICULTY_MODES.md`); **909** instance, **909/909 `m_Enabled = 1`**; con enemy bị spawn nhiều nhất `CB-30003` (**4.793** quân) có `CB-30003/Enemy_UI/HP_Bar` |
 | **Tính damage qua HP sẽ treo máy** | ❌ **Không** | **12 quân/giây**, **~50–950 con cùng lúc**, **~40–100 phép tính damage/giây**. Điện thoại làm **10⁹** phép/giây. Cách nhau **7 bậc** |
-| **Vậy phải tìm ở đâu?** | **1 chỗ duy nhất: `.rodata`** | `Enemy_Get_Datas.cctor` **hoàn chỉnh 3.624 B** (không bị cắt) có **150** lệnh insert `Dictionary`, id **30001–31017**; mỗi HP là `ldr s0, [x8, #0x…]` (**40** offset `.rodata` khác nhau) ⇒ **đã có id, chỉ thiếu 40 float**. Consumer: `GetStartHealthPoint` (`ContainsKey` → `TryGetValue` → trả `float`) |
+| **Vậy phải tìm ở đâu?** | **Không phải tìm nữa** | `datas/enemy_hp_by_id.json` có **150** cặp `id → HP` — parse trực tiếp từ `.cctor`, **không cần `libil2cpp.so`** (claim **WRH2**). `.cctor` (3.624 B, **0** vòng lặp) có **150** insert, **150** id khác nhau **30001–38001** (claim **IAB1**). `15-enemy-hp.csv` là field **serialize**: 981 dòng · 865 tên · **467** dòng HP > 0 (claim **WRH1**), trong đó enemy thường `CB-*` **0/69** dòng > 0 ⇒ **không** tự nó nuôi TTK. Gộp hai nguồn: **109** prefab · **108** có nguồn HP (claim **WRH5**) |
 
-**Câu quan trọng nhất:** HP enemy **có thật**, nhưng **không** nằm trong dữ liệu serialize —
-nó nằm trong **một `Dictionary` dựng ở `.cctor`** của một class **chưa ai dump**.
+**Câu quan trọng nhất:** HP enemy **có thật** và **đã có số**: `datas/enemy_hp_by_id.json`
+(**150** cặp `id → HP`, parse từ `Dictionary` dựng ở `.cctor`). Dữ liệu serialize chỉ là một nguồn phụ.
+**Đính chính 25/10:** các mục §2, §4, §5, §6 bên dưới từng viết "class chưa ai dump / cần dump 1 class /
+chưa biết HP bao nhiêu" — đó là **trạng thái ngày 23/10**, nay đã sai. Xem các dòng **Đính chính 25/10** trong từng mục.
 
 ---
 
@@ -107,16 +109,26 @@ private                  float armor;      // 0x34   ← field CÓ, nhưng KHÔN
 ```
 
 ⇒ **Enemy có HP + callback damage.** `armor` là field **không serialize** (xem `UNITY_RULES` §1.1):
-981/981 prefab **không** mang giá trị giáp ⇒ coi như **0** trừ khi mã gán lúc `Init`. Chuỗi đầy đủ:
-`Enemy_Controller.GetStartHealth()` → `Enemy_Get_Datas.GetStartHealthPoint(id)` → `CalculateDamage(ref hp)` → `UpdateHpBar()` → `OnDieWhenZeroHp()`.
+981/981 prefab **không** mang giá trị giáp ⇒ coi như **0** trừ khi mã gán lúc `Init`.
+**Chuỗi from `dump.cs` (mức A về chữ ký):** `GetStartHealth()` · `GetStartHealthPoint(id)` ·
+`CalculateDamage(ref hp)` · `UpdateHpBar()` · `OnDieWhenZeroHp()`.
+⚠ **Call graph nối chúng là suy luận, đã kiểm lại 25/10:** `GetStartHealth()` (`0x15828e4`, 7 lệnh)
+chỉ đọc `ldr s0, [x8, #0x24]` (field `StartHpPoint` của `Enemy_Datas`) rồi `ret` — nó **không gọi**
+`GetStartHealthPoint`. Trong 139 file asm cũng **0** lệnh `bl #0x157f6a8`. Đừng viết chuỗi này như
+đã chứng minh; chỗ nạp `StartHpPoint` từ dict nằm ở `Enemy_Datas.Init()` (`0x1582f5c`, gọi từ
+`Appear`), **chưa đọc thân hàm đó** ⇒ nhãn **B**.
 
-### Cả hai class này **chưa** nằm trong danh sách dump
+### ~~Cả hai class này **chưa** nằm trong danh sách dump~~ — **ĐÃ DUMP**
 
-`tools/apk-analyze/il2cpp_consts.py` → `TARGET_CLASSES` có **17 class**. Trong đó chỉ có **một**
-class `Enemy_*` là `Enemy_Data_Balance` (điểm số). **`Enemy_Get_Datas` và `Enemy_Controller` không có.**
+> **Đính chính 25/10:** `reverse-engineering/raw/il2cpp-consts/` hiện có
+> **`Enemy_Get_Datas.asm.txt` (4 method) · `Enemy_Controller.asm.txt` (33) · `Enemy_Health.asm.txt` (4)**
+> = **3 file asm · 41 method** (claim **WRH3**). Đoạn dưới đây là bản ghi ngày 23/10, giữ lại để
+> hiểu vì sao từng có kết luận "cần chỗ khác" — **không còn đúng** để lập kế hoạch.
 
-⇒ Đây chính là *"phân tích ngược chỗ khác"* mà bạn hỏi ở lượt trước — và nó **nhỏ**: 2 class,
-~40 method, trong đó `.cctor` của `Enemy_Get_Datas` là cái đáng giá nhất (**RVA `0x157F7CC`**).
+Bản ghi 23/10: `tools/apk-analyze/il2cpp_consts.py` → `TARGET_CLASSES` có **17 class**, trong đó
+chỉ có **một** class `Enemy_*` là `Enemy_Data_Balance`. Khi ấy `Enemy_Get_Datas` và
+`Enemy_Controller` chưa có — nên kết luận "cần 2 class, ~40 method, `.cctor` @ `0x157F7CC`"
+là đúng **vào lúc đó**. Export đã chạy sau đó; `.cctor` nay đọc trọn **3.624 B**.
 
 ---
 
@@ -182,29 +194,29 @@ dùng **spawn có nhịp** thay vì dồn — đó là chỗ duy nhất cần đ
 
 | Mục | Trước | **Sau** |
 |---|---|---|
-| `B3` (HP enemy) | **D** — hai giả thuyết, nghiêng "chết 1 phát" | **B** — HP **có** (dictionary runtime); thiếu **nội dung bảng**, không thiếu cơ chế |
+| `B3` (HP enemy) | **D** — hai giả thuyết, nghiêng "chết 1 phát" | **A** — HP **có cả số**: **150** cặp `id → HP` (`datas/enemy_hp_by_id.json`) + 981 dòng serialize. Cái còn thiếu là **bind** `StartHpPoint` ← dict, không phải nội dung bảng |
 | "HP bar chỉ trên boss" | bằng chứng cho "1 phát" | ❌ **SAI** — **109/109** prefab có bar (100 % quân) |
 | Enemy có giáp? | chưa biết | ⚠ **CÓ field, KHÔNG có dữ liệu per-prefab** — `armor` @`0x34` là `private` **không** `[SerializeField]` ⇒ **0/981** prefab serialize; `noDamage` (có attribute) xuất hiện **981/981** (`UNITY_RULES` §1.1) |
 | Damage enemy scale? | chưa biết | ✅ có `Enemy_Get_Datas.GetDamagePowered(float)` |
-| `T14` (mới) | — | dump `Enemy_Get_Datas` → **bảng HP 981 enemy** |
+| `T14` (mới) | — | ~~dump `Enemy_Get_Datas` → bảng HP 981 enemy~~ **SAI ĐƠN VỊ**: đã dump, bảng là **150 id** (981 là số prefab serialize) |
 
 ---
 
-## 5. Việc cần làm — **1 class**, không phải một mảng mới
+## 5. ~~Việc cần làm — 1 class~~ → **ĐÃ LÀM XONG (25/10)**
 
-| # | Việc | Chi phí | Ra được gì |
+Ba việc dưới đây đã có kết quả trong repo — **đừng xin dump lại**:
+
+| # | Việc ngày 23/10 | Kết quả hiện có | Vẫn còn mở |
 |---:|---|---|---|
-| 1 | Dump **`Enemy_Get_Datas`** (4 method, `.cctor` `0x157F7CC`) | 1 mục `TARGET_CLASSES` | **981 giá trị HP** — đóng `B3` hoàn toàn |
-| 2 | Dump **`Enemy_Controller`** (`TakeDamage` `0x1582938` 1.344 B) | cùng lần chạy | thứ tự cổng chặn damage của enemy; có bất tử theo thời gian không (`_igroneInvincible`) |
-| 3 | **`Enemy_Health.CalculateDamage`** `0x158479C` | cùng lần chạy | enemy dùng `100/(100+armor)` giống player hay công thức khác |
+| 1 | Dump `Enemy_Get_Datas` (4 method) | `.cctor` **3.624 B · 150 insert · 0 vòng lặp**; 150 id **30001–38001**; bảng parse thành `datas/enemy_hp_by_id.json` (**150** cặp `id → HP`) | — |
+| 2 | Dump `Enemy_Controller` | **33 method**, gồm `TakeDamage` `0x1582938` (1.344 B) và `GetStartHealth` 7 lệnh | đọc thứ tự cổng chặn damage (chưa viết ra doc) |
+| 3 | `Enemy_Health.CalculateDamage` `0x158479C` | **4 method** đã có asm | chưa đọc công thức `100/(100+armor)` |
 
-Cả ba cùng một lần export ⇒ **rẻ hơn** việc tôi suy luận thêm một vòng.
-
-> **Điều kiện lật ngược:** nếu `AllStartHealthPointEnemies` được nạp **lúc runtime** (không phải
-> trong `.cctor`) thì dictionary rỗng trong asm, và HP phải lấy từ `Enemy_Datas` asset theo id —
-> khi đó 467/981 dòng `StartHealthPoint > 0` mới là nguồn, và **40/109** prefab được spawn mới có HP.
-> **Cách phân biệt:** đếm số lệnh `Dictionary.Add`/`set_Item` trong `.cctor` — nếu ≥ 900 thì bảng
-> nằm trong `.cctor`; nếu 0 thì nạp runtime.
+> **Điều kiện lật ngược — ĐÃ CHỐT:** `.cctor` có **150** lệnh insert (không phải 0, không phải ≥900)
+> và **0 vòng lặp** ⇒ dictionary được nạp **ngay trong `.cctor`**, không phải lúc runtime. Bảng
+> **150 id** và 981 dòng `StartHealthPoint` serialize là **hai nguồn khác nhau**: 69 id giao với
+> prefab spawn, 39 prefab chỉ có số ở CSV, 1 prefab (`H-38002`, supply) không có số HP nào.
+> Gộp lại **108/109** prefab spawn có HP (claim **WRH5**). `.so` **không** còn là việc cần làm.
 
 ---
 
@@ -212,15 +224,18 @@ Cả ba cùng một lần export ⇒ **rẻ hơn** việc tôi suy luận thêm 
 
 - **Số con cùng lúc (§3.1) là cận, không phải số đo** — `A7` vẫn mở vì `rate`=0 ở 2.371 spawner và
   `count`=0 ở 100 %. Muốn đo thật phải chạy game hoặc đọc `Spawner` code.
-- **Tôi chưa chứng minh được `GetStartHealth()` gọi `GetStartHealthPoint()`** — hai method cùng tồn
-  tại và cùng trả `float`, nhưng **call graph này là suy luận**, chưa đọc lệnh `bl`. Nhãn **B**.
-  **Điều kiện lật ngược:** đọc `Enemy_Controller.GetStartHealth` (`0x15828E4`, 28 B) — 7 lệnh là đủ.
-- **Chưa biết HP bao nhiêu** cho từng enemy ⇒ **chưa tính được TTK thật**. Đây là con số duy nhất
-  còn thiếu để cân bằng, và nó nằm trong **một** `.cctor`.
+- ~~**Tôi chưa chứng minh được `GetStartHealth()` gọi `GetStartHealthPoint()`**~~ — **ĐÃ BÁC 25/10**:
+  đọc đủ 7 lệnh tại `0x15828E4`: `ldr x8,[x0,#0x20]` → `cbz` → `ldr s0,[x8,#0x24]` → `ret`.
+  Nó trả field `StartHpPoint`, **không gọi** dict. 139 file asm có **0** `bl #0x157f6a8`.
+  ⇒ Chỗ gán `StartHpPoint` từ `GetStartHealthPoint(id)` là `Enemy_Datas.Init()` (`0x1582f5c`),
+  được gọi từ `Appear` (`bl` tại `0x1582760`); thân `Init()` **chưa có asm** ⇒ vẫn nhãn **B**.
+- ~~**Chưa biết HP bao nhiêu** cho từng enemy~~ — **ĐÃ CÓ 25/10**: `datas/enemy_hp_by_id.json`
+  (**150** cặp, ví dụ `CB-30003` = **650**). Còn thiếu để tính TTK thật là **hệ số chế độ `kHp`**
+  (nhân ở tầng spawn, xem `DIFFICULTY_MODES.md` §5), không phải HP gốc.
 - **HP thực tế = HP bảng × `kHp[mode]`** — người chơi kiểm chứng khó hơn thì **nhiều máu hơn** (A, chơi
-  game). Phép nhân **không** nằm trong `.cctor`/bảng (HP là **1 số/prefab**, `StartHpPoint = 0` ở
-  **981/981** ⇒ HP ghi lúc spawn) mà ở **tầng spawn** — xem `DIFFICULTY_MODES.md` §5. ⇒ Mọi TTK tính từ
-  bảng HP là **TTK của Normal**.
+  game). Phép nhân **không** nằm trong `.cctor`/bảng (`StartHpPoint = 0` ở **981/981** dòng serialize
+  ⇒ field này do mã gán lúc spawn) mà ở **tầng spawn** — xem `DIFFICULTY_MODES.md` §5. ⇒ Mọi TTK
+  tính từ bảng HP là **TTK của Normal**. Giá trị `kHp` **chưa có số** ⇒ đây mới là blocker TTK.
 - ~~`Enemy_Hp_Bar` 909 / 981 ⇒ 72 enemy không có thanh máu~~ — **đã giải**: `Enemy_Display`
   `hpProgressBarRenderer` phủ **976/981**; hợp hai cơ chế ⇒ **109/109 prefab spawn có bar**. Xem
   `DIFFICULTY_MODES.md` §1.

@@ -15,7 +15,7 @@
 |---|---|---|---|
 | **A2 / T1** map→wave | **hằng `int` literal** trong `.cctor` của `Map_Get_Datas` | `.cctor` = **100.896 B · 3.444 hằng int** vs chỉ **40 `debug_rva`** (1,1 %) | **parser** — không cần APK |
 | **B1 / T5** bảng stat device | **FieldRVA** (`InitializeArray`) | `.cctor` của `Device_Get_Data` = **1.636 B**: **43 int** vs **39 `debug_rva`** (47 %) | **relocation** — đúng chỗ `1.192/1.194` slot đọc ra `\x7fELF` |
-| **B3** HP enemy runtime | **không có trong dữ liệu serialize** | `Enemy_Health` chỉ có **1 field `noDamage`**; `Enemy_Data_Balance` **8 method, 0 trả HP** | **export 1 class** rồi **quyết** |
+| **B3** HP enemy runtime | **đã có** (`datas/enemy_hp_by_id.json`, 150 cặp) | `Enemy_Health` chỉ có **1 field `noDamage`**; `Enemy_Data_Balance` **8 method, 0 trả HP** — nhưng `Enemy_Get_Datas.cctor` có 150 insert | **đọc bảng**, không export |
 
 **Tỉ lệ `debug_rva` / tổng hằng trong `.cctor` là phép thử phân loại:**
 
@@ -140,10 +140,13 @@ Ba lớp bằng chứng, không lớp nào là "không thấy trong file X":
 | `Enemy_Data_Balance` | **8 method**: `GetBonusCoin` · `GetBonusExp` · `GetSurvivalScore` · `GetArenaScore` · `GetPVPPlayScore` · `GetArenaPlayScore` · `ctor` · `cctor` — **0 trả HP** |
 | `Enemy_Datas.StartHealthPoint` | **467/981** > 0; enemy thường `CB-*` / `CD-*` = **0** |
 
-Và **`Enemy_Ingame`, `Enemy_Health`, `Enemy_Controller` KHÔNG có asm** — 17 class đã export chỉ có
-**một** class `Enemy_*` là `Enemy_Data_Balance`.
+> **Đính chính 25/10:** câu "KHÔNG có asm" bên dưới là bản ghi ngày 23/10. Hiện
+> `reverse-engineering/raw/il2cpp-consts/` có 3 file asm · **41** method
+> (`Enemy_Get_Datas` 4 · `Enemy_Controller` 33 · `Enemy_Health` 4 — claim **WRH3**).
 
-⇒ Đây là blocker **duy nhất** thật sự cần "chỗ khác": **export thêm class** mới đọc được đường gán HP.
+Bản ghi 23/10: **`Enemy_Ingame`, `Enemy_Health`, `Enemy_Controller` KHÔNG có asm** — 17 class đã
+export chỉ có **một** class `Enemy_*` là `Enemy_Data_Balance`. Khi ấy đây là blocker **duy nhất**
+thật sự cần "chỗ khác": **export thêm class** mới đọc được đường gán HP. Export đã chạy xong.
 
 > ### ✅ ĐÃ GIẢI NGAY SAU ĐÓ (23/10) — xem `ENEMY_HP_RUNTIME.md`
 > Không cần đoán nữa: `dump.cs` có **`Enemy_Get_Datas`** với
@@ -157,7 +160,10 @@ Và **`Enemy_Ingame`, `Enemy_Health`, `Enemy_Controller` KHÔNG có asm** — 17
 > đang bật (**99,8 %** quân) ⇒ enemy **không** chết 1 phát. Câu *"HP bar chỉ trên boss"* ở bản trước
 > của mục này là **sai** — tôi chưa kiểm nó.
 >
-> **Việc còn lại:** dump **`Enemy_Get_Datas`** (4 method) để lấy **981 giá trị HP**. Một class.
+> **Đính chính 25/10 — việc còn lại ĐÃ XONG:** `Enemy_Get_Datas` (4 method) đã có asm; `.cctor`
+> parse ra **150 cặp `id → HP`** trong `datas/enemy_hp_by_id.json` (**không** phải 981 — 981 là số
+> dòng serialize). `Enemy_Controller` + `Enemy_Health` cũng đã có. Cái còn mở là **bind**
+> `StartHpPoint ← dict` và hệ số `kHp[mode]`. Xem `ENEMY_HP_RUNTIME.md` §5.
 
 ---
 
@@ -167,7 +173,7 @@ Và **`Enemy_Ingame`, `Enemy_Health`, `Enemy_Controller` KHÔNG có asm** — 17
 |---|---|---|---|
 | **T1** | ❌ **Không** | parse `.cctor` đã có (25.224 lệnh) | ~60–120 dòng, **ngay trong repo này** |
 | **T5** | ⚠ **Không phải chỗ khác** — vẫn `libil2cpp.so`, khác **khâu**: đọc `.rela.dyn` thay vì `.data` | 1 dòng sửa + chạy lại | **1 dòng** |
-| **B3** | ✅ **Đúng, cần chỗ khác** | export **1 class** (`Enemy_Ingame` hoặc `Enemy_Health`) | 1 lần dump |
+| **B3** | ❌ **Không còn cần chỗ khác** | 3 class đã có asm; bảng 150 cặp đã parse | 0 lần dump |
 
 ⇒ **Không blocker nào cần "mở một mảng phân tích mới".** T1 là **parser**, T5 là **1 dòng**,
 B3 là **1 class** — và B3 là cái duy nhất thật sự nằm ngoài dữ liệu đang có.
@@ -213,5 +219,6 @@ không nêu được ca đó, phép kiểm là **trang trí**.
   (`GameDatas` 73 method?) thì 39 chỉ là một phần — **chưa kiểm**.
 - **Phép thử ở §0 chỉ đúng với 2 mẫu.** Chưa đủ gọi là quy luật cho 17 class; chỉ đủ để **phân biệt
   hai cái đang chặn**.
-- **B3 đã đổi trạng thái trong cùng ngày** — từ "chưa biết" sang "biết cơ chế, thiếu bảng số"
-  (`ENEMY_HP_RUNTIME.md`). Việc **duy nhất** còn lại: dump `Enemy_Get_Datas`.
+- **B3 đã đổi hai lần** — 23/10: "chưa biết" → "biết cơ chế, thiếu bảng số"; **25/10: có bảng số**
+  (`datas/enemy_hp_by_id.json`, 150 cặp `id → HP`). Việc **duy nhất** còn lại: **bind** bảng vào
+  `StartHpPoint` + đọc hệ số `kHp[mode]` — không phải dump (`ENEMY_HP_RUNTIME.md` §5).

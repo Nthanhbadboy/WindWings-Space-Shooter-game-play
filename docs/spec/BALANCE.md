@@ -148,6 +148,10 @@ vì lý do ở §0.6.3a.
 | `Stage_Get_Datas` | 10 | 2.328 | `ldr x8, [x8, #0xc0]` | ❌ cụt |
 | `Tech_Datas` | 24 | 7.348 | `mov x2, x20` | ❌ cụt |
 
+> **Đọc xong bảng này phải dừng ở đây:** đó là trạng thái bản `8871068a`. Bản hiện hành
+> **`6109008c` đã hết cụt** (`size_capped` **0/425**), và `Stage_Get_Datas` **đã decode 2/2 mảng**
+> (`startBonusValues` int[5] · `levelDelta` float[4], §6.4). **Không** dùng cột "❌ cụt" để xin dump lại.
+
 **Cái bị cắt là đuôi của method CUỐI** — và ở **8/12 file**, method cuối chính là **`.cctor`**.
 `Player_Get_Datas..cctor` bắt đầu dòng 5.206 và **dừng giữa chừng tại `0x14e5cc4`**, vẫn đang dựng
 `List`, **chưa tới đoạn gán các float stat**.
@@ -470,8 +474,10 @@ public static float CurrentHealth; // 0x4   ← static
 `GainHealthOverTime` (`0x14c6d70`) → **`TakeDamage`** (`0x14c6de4`).
 
 ⇒ **`Player_Health` không hề thiếu asm** như tôi ghi trước đây — nó nằm **lẫn** trong file của
-`Player_Datas`. Muốn đọc `OnChangeDataDevice` (`0x14C58EC`) thì **vẫn** phải dump thêm, vì địa chỉ
-đó **thấp hơn** điểm bắt đầu file.
+`Player_Datas`. **Đính chính 25/10:** câu *"Muốn đọc `OnChangeDataDevice` (`0x14C58EC`) thì vẫn phải
+dump thêm"* là **sai** — method đó **đã có** ngay dòng 1 của
+`reverse-engineering/raw/il2cpp-consts/Player_Health.asm.txt` (`0x14c58ec: stp d9, d8, …`). Địa chỉ
+thấp hơn điểm bắt đầu file kia **không** có nghĩa là method bị thiếu trên toàn repo.
 
 **f) `TakeDamage` — thứ tự kiểm tra đọc được từ asm**
 
@@ -1369,7 +1375,7 @@ theo chapter/stage nằm trong **mã**, không nằm ở asset — **nhưng** đ
 |---|---|
 | `Stage_Get_Datas` | ✅ **đã decode** 2/2 mảng: `startBonusValues` int[5] · `levelDelta` float[4] = **1 / 2 / 3,6 / 3,6** — nhưng `levelDelta` là hệ số **thưởng**, **không** phải HP (§6.4) |
 | `Enemy_Data_Balance` | ❌ **chưa có nhóm nào** trong `ia-resolved.json` (chỉ `Droid_Data_Balance` là droid item, khác class) |
-| `Enemy_Get_Datas` | ✅ `.cctor` **hoàn chỉnh 3.624 B**, **150** lệnh insert `Dictionary` (id **30001–31017**); **giá trị HP là float trong `.rodata`** ⇒ cần `libil2cpp.so` |
+| `Enemy_Get_Datas` | ✅ `.cctor` **hoàn chỉnh 3.624 B**, **150** lệnh insert `Dictionary` (**150** id khác nhau, **30001–38001**, **0** vòng lặp). **Đã parse thành `datas/enemy_hp_by_id.json` = 150 cặp `id → HP`** (claim **WRH2**) ⇒ **không cần `.so`**. `15-enemy-hp.csv` là field serialize (981 dòng · **467** > 0; `CB-*` 0/69, claim **WRH1**); gộp hai nguồn **108/109** prefab spawn có HP (claim **WRH5**) |
 
 ```
 Điểm arena/PvP = f(idEnemy, timeLife)   // GetArenaScore, GetPVPPlayScore, GetArenaPlayScore
@@ -1429,7 +1435,8 @@ Chỉ biết **signature**, không biết thân hàm (nguồn: `class Enemy_Data
 |---|---|---|
 | ✅ **Đã có giá trị** | damage/rate/wing/**giá tàu** (Player 6/6 mảng) · thưởng theo stage (`startBonusValues` int[5], `levelDelta` float[4]) · stat **droid/device/tech** (3 + 12 + 7 mảng) · `GameDatas` float[6] · **576** mảng wave→wave-id (Map) | §1.1b · §6.4 · §6.10 · `ia-resolved.json` (**17 method / 623 record**) |
 | 🟡 **Có raw, thiếu bind** | tên field ↔ mảng (Droid/Tech/Device/`Board_*`) · `playerIndex` → ID tàu · mảng Map → (chapter, stage, mode) | §6.10 · `DATA_SYNC.md` §23 |
-| ❌ **Thật sự chưa có** | **HP enemy** (150 insert trong `.cctor` nhưng giá trị là float trong `.rodata` ⇒ cần `libil2cpp.so`) · coin/gem **delta** vô hướng · thưởng trong hộp · **trọng số rơi** · ngưỡng VIP · mapping wave→stage | `ENEMY_HP_RUNTIME.md` §0 |
+| ✅ **Đã có (không cần xin)** | **HP enemy**: `datas/enemy_hp_by_id.json` = **150 cặp `id → HP`** parse từ `.cctor` (claim **WRH2**); `15-enemy-hp.csv` = 981 dòng **serialize**, **467** dòng > 0 (claim **WRH1**); 3 class enemy đã có asm (claim **WRH3**). Gộp lại **108/109** prefab spawn có số HP (claim **WRH5**) ⇒ **không cần `.so`** | `ENEMY_HP_RUNTIME.md` §0 · `WHERE_TO_LOOK.md` §3 |
+| ❌ **Thật sự chưa có** | coin/gem **delta** vô hướng · thưởng trong hộp · **trọng số rơi** · ngưỡng VIP · mapping wave→stage (raw có, **thiếu bind**) | `MISSING` §3 |
 
 > ⚠ Câu cũ *“cái thiếu là **giá trị** trong `.cctor()`”* đã **sai từ 25/10**: giá trị đã nằm trong
 > repo. Cái thiếu là **bind** — và đúng là trước đó bộ spec đã **xin dump lại** thứ mình đang có.
