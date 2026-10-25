@@ -106,7 +106,7 @@ jobs:
           sys.path.insert(0,'tools/apk-analyze')
           import il2cpp_consts as native
           dump=next(Path('/tmp/ui-metadata-evidence').rglob('dump.cs'))
-          parents=('Home_Loader','PlayerPreferences','Stage_Datas','GP_Setup','SkipTutorial','Board_Begin','Stage_Behaviour','GP_Manager','GP_Loader','GP_Starter','GP_Spawner','GP_Controller','GP_Endgame','Drone_Saved_Datas','Board_Talents','MapController','ScenesManager','FadeScreen','Wave','Spawner','Call_Point','Call_Data','GP_Datas','Enemy_Controller','Enemy_Movement','VertexPath','Enemy_Health','Enemy_Destroy','Sub_Object','Stage_Mission','GameDatas','PinMap_Spawner','PointToPoint_Spawner','Path_Spawner','Waypoints_Spawner','PointToPoint_Spawner','AirFree_Spawner','PinMap_Spawner','PinTerrain_Spawner','Rocket_Spawner')
+          parents=('PoolingManager','Machine_Gun_Attack','Enemy_Datas','Boss_BodyPhysics','Obj_Collider','Home_Loader','PlayerPreferences','Stage_Datas','GP_Setup','SkipTutorial','Board_Begin','Stage_Behaviour','GP_Manager','GP_Loader','GP_Starter','GP_Spawner','GP_Controller','GP_Endgame','Drone_Saved_Datas','Board_Talents','MapController','ScenesManager','FadeScreen','Wave','Spawner','Call_Point','Call_Data','GP_Datas','Enemy_Controller','Enemy_Movement','VertexPath','Enemy_Health','Enemy_Destroy','Sub_Object','Stage_Mission','GameDatas','PinMap_Spawner','PointToPoint_Spawner','Path_Spawner','Waypoints_Spawner','PointToPoint_Spawner','AirFree_Spawner','PinMap_Spawner','PinTerrain_Spawner','Rocket_Spawner')
           methods=native.parse_dump(str(dump))
           targets={m[0] for m in methods if m[0] and any(m[0]==p or m[0].startswith(p+'.') for p in parents)}
           native.TARGET_CLASSES.clear()
