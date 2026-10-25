@@ -32,7 +32,7 @@ def main():
     args = parser.parse_args()
     apk = Path(args.xapk)
     assert hashlib.sha256(apk.read_bytes()).hexdigest() == APK_SHA
-    out = ROOT / 'reverse-engineering/raw/player-loadout'
+    out = ROOT / 'reverse-engineering/raw/audio-rules'
     out.mkdir(exist_ok=True)
     sys.path.insert(0, str(ROOT / 'tools/apk-analyze'))
     import il2cpp_consts as native
