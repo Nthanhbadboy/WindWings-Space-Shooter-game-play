@@ -34,7 +34,7 @@
 
 > **Nhận định (mức B) — A1/A2:** 11,4 s/wave × 236 = 44,8 phút thuần spawn, nhưng cộng 6,4 s bay
 > vào mỗi đợt và thời gian người chơi bắn hạ ⇒ **thực tế ước 90–150 phút**. Đây là **ước lượng**,
-> không phải số đo: `rate = 0` ở **2.373 spawner** nghĩa là spawn tức thời, nên `t = n × rate`
+> không phải số đo: `rate = 0` ở **2.371 spawner** nghĩa là spawn tức thời, nên `t = n × rate`
 > **đánh giá thấp** ở các wave đó.
 > **Điều kiện lật ngược:** nếu `rate = 0` thực ra là "spawn theo `count` mỗi khung hình" thì A1 phải
 > tính lại hoàn toàn.
@@ -155,7 +155,8 @@ Xếp theo **chi phí trả lời thấp → cao**, không theo mức quan trọ
 6. **Mật độ địch đồng thời** — cần mô phỏng timeline, chưa làm.
 7. **Vàng/giờ** — cần drop rate × số quân/giờ.
 8. **`stepLevel` map vào cấp nào** — 4 ngưỡng 30/58/118/248 nhưng chưa biết `playerLv` thuộc hệ thống nào.
-9. **`rate = 0` ở 2.373 spawner** — "spawn tức thời" hay "mỗi khung hình"? Ảnh hưởng trực tiếp A1/A2.
+9. **`rate = 0` ở 2.371 spawner** — "spawn tức thời" hay "mỗi khung hình"? Ảnh hưởng trực tiếp A1/A2.
+   *Đếm lại 23/10 (`DESIGN_READINESS.md` §3): bản cũ ghi 2.373 — sai 2. Claim `I3` khoá con số.*
 10. **`stageType` 0/1/2/3** — chỉ 100/299 dòng có giá trị, chưa biết map với 4 loại stage nào.
 
 > ~~HP player~~ đã **đóng một phần lớn** ở vòng này: từ *"không có dữ liệu"* thành

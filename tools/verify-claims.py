@@ -938,6 +938,70 @@ def enemy_prefab_roots() -> int | None:
     return len(seen)
 
 
+# ── I. mức sẵn sàng để thiết kế ────────────────────────────────────────
+
+READY = "docs/spec/DESIGN_READINESS.md"
+
+
+def display_fields() -> int | None:
+    """Số field serialize của Enemy_Display (ngoài m_*)."""
+    lines = ref_lines("reverse-engineering/raw/typetrees/Enemy_Display.jsonl.gz")
+    if not lines:
+        return None
+    try:
+        o = json.loads(lines[0])
+    except json.JSONDecodeError:
+        return None
+    return sum(1 for k in (o.get("tree") or {}) if not k.startswith("m_"))
+
+
+def events_with_time():
+    d = ref_json("reverse-engineering/raw/animation-audit/event-receivers.json.gz")
+    if d is None:
+        return None
+    ev = d.get("events", [])
+    return (len(ev), sum(1 for e in ev
+                         if isinstance(e.get("event"), dict) and e["event"].get("time") is not None))
+
+
+def spawner_rate_zero():
+    d = ref_json("datas/waves.json")
+    if d is None:
+        return None
+    total = zero = none = 0
+    for w in d.get("waves", []):
+        for sp in w.get("spawners") or []:
+            total += 1
+            r = sp.get("rate")
+            if r is None:
+                none += 1
+            elif r == 0:
+                zero += 1
+    return (total, zero, none)
+
+
+def map_candidates():
+    d = ref_json("datas/map_waves_candidate.json")
+    if d is None:
+        return None
+    maps = d.get("maps", [])
+    return (len(maps), sum(1 for m in maps if m.get("source") == "immediates"))
+
+
+claim("I1", READY, "**5 field**: `hpProgressBarRenderer`", 5, display_fields,
+      "Enemy_Display không có tham số hit flash / hit stop")
+
+claim("I2", READY, "**795/795 event use có `time`**", (795, 795), events_with_time,
+      "D3 đóng: event đã join Animator và giữ mốc thời gian")
+
+claim("I3", READY, "11.095 spawner · rate = 0 : 2.371", 2371,
+      lambda: (spawner_rate_zero() or (None, None, None))[1],
+      "sửa 2.373 -> 2.371 trong DESIGN_QUESTIONS.md")
+
+claim("I4", READY, "**250 map**, nhưng chỉ **7** ghép chắc", (250, 7), map_candidates,
+      "A6: 243 map còn lại ghép theo thứ tự blob, chưa xác thực")
+
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:
