@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 32 — 25/10, kiểm "asset/sprite/prefab: ý nghĩa + gắn đầy đủ chưa" theo nhắc của chủ dự án — đo từ file thật, không suy):**
+> `ASSETS` thêm **§9.1** + row 11: ý nghĩa 2.197 sprite = 925 rule + 124 mắt + 643 passthrough +
+> **505 unknown**; **binding sprite→consumer CHƯA có join toàn cục** — `prefab_joins.csv` 3.870
+> rows **0 row sprite** (chỉ Wave/Controller/Movement/Gun/Boss/Stage); UI 55.584 layout = summary
+> bên này (cây ở peer raw); có sẵn: tàu 25/25 · boss 46 → sprite_path_id · scene-1 218/1.377 ·
+> spine 27 rig *inferred*. **Lỗi ngữ nghĩa worklist 624**: `is_digit` gom tàu "10001"/boss "7001"
+> vào bucket glyph-font (không mất sprite, nhãn sai — tách ra khi vẽ). `MISSING` thêm **row 16**
+> (8 hệ một phần). Queue PR12 5 việc peer (join UI/prefab-sprite, 505+643 nhãn, 116 atlas, rig
+> thật). verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 31 — 25/10, kiểm "stage/mode/thưởng ngày" theo nhắc của chủ dự án + đồng bộ report 93 peer `32bed14da8a`):**
 > **Stage/mode — đã có từ trước, không phải chưa làm:** tổng **299 stage · 250 map · 282 wave ·
 > 2 chapter** (`GAMEPLAY` §0/§3.6) · 3 độ khó đủ luật (`DIFFICULTY_MODES`) · khung 7 PlayMode + BP/

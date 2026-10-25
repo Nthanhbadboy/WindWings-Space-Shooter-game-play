@@ -457,6 +457,41 @@ liên tục; pitch randomization cho kết quả tương đương với 1/7 dung
 | 8 | `skeleton__13` 170 bone là rig gì | **D** — bất thường, cần xem trực quan |
 | 9 | Có sprite nào > 512 px không | **không xác định** (không có rect) |
 | 10 | Atlas gốc dùng Crunch/ETC2 quality nào | **C** — tên `ETC2` cho biết format, không cho biết quality |
+| 11 | **Sprite/prefab → consumer (gắn vào đâu)** | 🔴 **chưa có phép join toàn cục nào trong repo** — đo 25/10 lần 32 (§9.1): `prefab_joins.csv` 3.870 rows **0 row sprite** (chỉ logic); UI `ui_screens.json.gz` bên này chỉ summary; mảnh rời: ships 25/25 · bosses 46 · scene-1 218/1.377 (report 76) |
+
+### 9.1 Kiểm "ý nghĩa + gắn đầy đủ chưa" (25/10 lần 32 — theo nhắc chủ dự án, đo từ file thật, không suy)
+
+**Ý nghĩa (2.197 sprite index):**
+
+| Nhãn | Số | Nguồn |
+|---|---:|---|
+| theo **rule** | 925 | `sprites-classified.csv` (R01 blt_* · R11 khung/nút/icon · R13 PVP*…) |
+| bằng **mắt** | 124 | review thủ công |
+| **giữ nhãn gốc** (passthrough) | 643 | lấy category cũ, **không kiểm chứng** |
+| **unknown** | **505** | `label_source=unknown` — chưa có ý nghĩa ⇒ mức thấp nhất |
+
+⚠ **Lỗi ngữ nghĩa trong `art-worklist` (624):** luật `is_digit` gom sprite tên **toàn số** vào
+bucket "glyph font" — trong đó có **25 sprite tàu** ("10001"…) và ~34 sprite boss (id_wave "7001"…).
+Không mất sprite (2185 vẫn phủ đủ qua 623 gốc + glyph) nhưng **nhãn bucket sai** — vẽ lại theo
+bucket glyph sẽ hiểu nhầm. Tàu/boss đã có binding riêng (`ships.json`/`bosses.json`) nên truy ra
+được; phải tách khỏi bucket glyph khi vẽ. Cùng nhóm meaning chưa xong: **116 atlas-name không
+match** (claim AB1) · row 5 "1.487 Other" (C) · row 6 `Saw` rig 27 (C).
+
+**Binding (sprite/prefab → consumer):**
+
+| Kênh | Đo được | Ghi |
+|---|---|---|
+| Gameplay logic → object | **3.870 rows** | `prefab_joins.csv`: Wave 1372 · Enemy_Controller 981 · Enemy_Movement 558 · Gun_Attack 458 · Boss_BodyPhysics 251 · Stage_Behaviour 250 — **0 row có field sprite/icon/skin** |
+| Tàu (25) | ✅ **25/25** | `ships.json`: id → `sprite_path_id` (∈ index) + `sprite_name` |
+| Boss (46) | ✅ **46** | `bosses.json`: id_wave → `sprite_path_id` + `has_icon` |
+| Scene mở đầu | mảnh | report 76: 1.377 SpriteRenderer / **218 typed Sprite** — chỉ scene 1 |
+| **UI (55.584 layout)** | 🔴 **không đo được bên này** | `datas/ui_screens.json.gz` chỉ là **summary** (files/nodes là số đếm) — cây node + sprite ref nằm ở peer `raw/ui/` |
+| Spine | yếu | `spine.json` 27 rig — *"identity **inferred** from atlas region names"* (tự ghi Temporary); `38-spine-prefab-links` chỉ 3 prefabs |
+
+⇒ Trả lời thẳng: **CHƯA gắn đầy đủ** — chưa từng tồn tại bảng **sprite → screen/prefab** toàn cục;
+đang có = binding mức **item** (tàu/boss) + 1 scene. Cần peer (giữ raw): ① join sprite→màn từ
+55.584 layout ② sprite refs từ prefab gameplay (`Player_Info.Sprite`/Gun/Bullet/Boss) qua typetree
+③ 505 unknown + 643 passthrough ④ 116 atlas-name ⑤ rig identity thật của 27 spine.
 
 ---
 
