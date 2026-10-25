@@ -1,8 +1,8 @@
 """Finite native-order HP/extra-life fixtures; not Unity scheduler/input/visual approval.
 
 Controller startup assigns health.onExtraLife directly (not Delegate.Combine).
-Normal and PVP paths dispatch actual callbacks, but Invoke's string target and
-its later execution are external scheduler inputs here; not guessed RebornDone.
+Normal/PVP schedule the metadata-proven RebornDone target; its execution timing
+is still an external Unity scheduler input, not a fixture clock measurement.
 """
 from dataclasses import dataclass
 from tools.verify.damage_receiver_models import finite, f32
@@ -10,7 +10,7 @@ from tools.verify.damage_receiver_models import finite, f32
 
 @dataclass
 class Lifecycle:
-    move_enabled: bool = True
+    hit_enemy_enabled: bool = True
     time_scale: float = 1.0
     flag_pair: tuple = (False, False)  # exact bool-pair store; no invented field names
 
@@ -61,7 +61,7 @@ def normal_extra_life(player,state,*,gain,no_touch_predicate,schedule_done,start
     prepare()
     gain(1.0)
     player.invincible=True
-    state.move_enabled=False
+    state.hit_enemy_enabled=False
     schedule_done()
     state.time_scale=0.0;state.flag_pair=(True,True)
     yield ('wait_until',no_touch_predicate)
@@ -74,6 +74,6 @@ def normal_extra_life(player,state,*,gain,no_touch_predicate,schedule_done,start
 def pvp_extra_life(player,state,*,post,gain,schedule_done,start_heal,prepare=lambda: None):
     post(86,None)
     prepare();gain(1.0)
-    player.invincible=True;state.move_enabled=False
+    player.invincible=True;state.hit_enemy_enabled=False
     schedule_done();start_heal(1.0)
     # No Time.timeScale write or WaitUntil in DoExtraLifePVP.

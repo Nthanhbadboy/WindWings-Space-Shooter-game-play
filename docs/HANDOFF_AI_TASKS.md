@@ -1,6 +1,13 @@
 # Phân việc vòng 4 — cái còn thiếu thật
 
-## Hiện hành — report86: review peer và producer extra-life/heal
+## Hiện hành — report87: end-invincibility, shield và invisible-zone
+
+[Report87](apk-analysis/87-reborn-invincibility-shields-and-zone-state.md), `datas/player_shield_flow.json`: đã nối GOT2ae8560→RELA2be4670→metadata literal **RebornDone**, initializer delay3/10;7 roots/417instructions và18 tests mới. Không còn ghi Invoke target unknown hay tự gán2s. **Sửa85/86:** Physics.activeHitEnemey@90 là enemy-contact hit, KHÔNGmovement; Controller+48 là Player_Talent, bool20=reborning, KHÔNGinput. RebornDone giữ invincible ở shield branches, chỉ clear trực tiếp khi4flagsfalse; preserve≠settrue. Shield callbacks aggregate skill/101/103, không refcount rebirth/onehit. SetInvisible heal setup trước live reborn guard, exit A còn B vẫn clear invisible; không tự thêm replay zone trong RebornDone.
+
+**Peer nhánh `arena/20330d0e-windwings-space-shooter-game-p`:** cập nhật các rule/erratum87 cùng6corrections đã giao86 ở PR12comment6400139575. ACK84 only; chưa lấy việc gửi comment làm ACK85/86/87. **Việc static tiếp:** tìm producer writes/registration thật cho Enemy_Health.hitCallback@20 vàhitDamageCallback@28; receiver CalculateDamage158479c đã dịch85, fixture callbacks không phải registration evidence. Không quay lại pool-history/fullAPK/fullmedia hoặc xin runtime thay việc đọc native. Recovery40211999354SUCCESS25s/raw7518813f4; hai failedrun do splitAPK đã giữtrace/sửa. Draftrelease vẫn giữdraft.
+
+
+## Lịch sử — report86: review peer và producer extra-life/heal
 
 Peer tip **b8f72a4127dbc2e7a24f8ff212172eb2f6eeb2ef**, snapshot10docs giữ raw. **Đã ACK84** qua PR12 (trước đây ghi chưa ack là trạng thái cũ), chưa ACK85. [Review86](apk-analysis/86-peer-spec-review-and-player-extra-life-heal.md) yêu cầu sửa: DATA_SYNC2723–2725 gộp11/13 waits và clone/projectile9; COMBAT355–365 dùng damage×interval ước lượngTTK; COMBAT416–432 bảng800/189 và noDamage=đồ trang trí; worklist cũ xin dữ liệu đã có; không nâng mục tiêu sản phẩm thành coverage/visual approval. Gửi peer sửa trên chính nhánh spec, không merge/push nhánh đó.
 

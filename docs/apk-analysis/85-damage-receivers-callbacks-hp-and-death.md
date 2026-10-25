@@ -154,7 +154,7 @@ nếu có rồi return. Null onExtraLife vẫn return: không tự fallthrough d
 
 Ngược lại ghi isAlive=false tại14c76ac → invoke onDie **bắt buộc** tại14c76c0
 (null đi failure, không im lặng skip) → cleanup invoke/tween/particle → event18
-OnPlayerDie với transform payload. Player_Controller.OnDie đã recover: clear move
+OnPlayerDie với transform payload. Player_Controller.OnDie đã recover: clear Physics.activeHitEnemey (enemy-contact hit, không phải movement; erratum87)
 flag, gọi attack virtual teardown, StopAllCoroutines, tắt hai child objects và particle
 systems; không lấy death event làm measured game-over timestamp.
 

@@ -82,7 +82,7 @@ class LifecycleTests(unittest.TestCase):
             schedule_done=lambda:seen.append(('schedule',p.hp,p.invincible)),start_heal=seen.append)
         kind,predicate=next(g)
         self.assertEqual((kind,predicate()),('wait_until',False))
-        self.assertEqual((p.hp,p.invincible,state.move_enabled,state.time_scale),(1,True,False,0))
+        self.assertEqual((p.hp,p.invincible,state.hit_enemy_enabled,state.time_scale),(1,True,False,0))
         self.assertEqual(seen,[('schedule',1,True)])
         g.close()
 

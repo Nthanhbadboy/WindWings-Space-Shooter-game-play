@@ -1,5 +1,10 @@
 # `datas/` — data pack WindWings
 
+## Reborn/shield/zone state — report87
+
+`player_shield_flow.json`: Invoke string exact ELF RELA→metadata literal RebornDone, packed initializer3/10, TypeInfo/typed-field joins,7 method roots/417 instructions,32 primary anchors +6 cross-root checks. `python3 -m tools.verify.player_shield_flow [--check]`;18 tests mới. **Correction:** Lifecycle.hit_enemy_enabled tương ứng Physics.activeHitEnemey@90, không phải movement. Shield callbacks không refcount; zone list không OR protection. [Report87](../docs/apk-analysis/87-reborn-invincibility-shields-and-zone-state.md), raw/player-invincibility gồm provenance/toolchain format reference; không Unity timing approval.
+
+
 ## Player HP lifecycle — report86
 
 `player_lifecycle_flow.json`: 3 exact GOT/ELF RELA/metadata callback bindings +43 native anchors và4 literal binary32. `python3 -m tools.verify.player_lifecycle_flow [--check]`; model `player_lifecycle_models.py`,19 tests bao gồm nối receiver85→extra-life→HP1. Bám logic/số bản gốc khi có chứng cứ, art mới; không biến mục tiêu sản phẩm thành “đã phủ toàn APK/không cần kiểm thử”. Raw `reverse-engineering/raw/player-lifecycle/` và peer snapshot riêng (không phải APK evidence).

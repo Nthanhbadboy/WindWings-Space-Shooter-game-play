@@ -1,5 +1,10 @@
 # Kết luận — trạng thái và độ tin cậy
 
+## Report87 — Invoke đã bóc, khiên và zone state đã nối
+
+[Report87](apk-analysis/87-reborn-invincibility-shields-and-zone-state.md): raw ELF RELA→encoded metadata literal chứng minh Invoke **RebornDone**, initializer TimeResetInvincible=3 và TimeCanActiveInvincible=10 (không wall-clock approval).7 roots/417 instructions; bốn shield flags không phải refcount; SetInvisible heal trước reborn guard, exit không OR theo số zone. **Erratum85/86:** Physics.activeHitEnemey@90 là contact-hit, không movement; Controller+48 là Talent, không input.18 tests mới, có branch combinations/live reread. `datas/player_shield_flow.json`, raw/player-invincibility. Tiếp producer hitCallback/hitDamageCallback thật của Enemy_Health, không lặp inventory hay pool-history.
+
+
 ## Report86 — review spec thật và callback hồi sinh đã bind
 
 [Report86](apk-analysis/86-peer-spec-review-and-player-extra-life-heal.md): peer b8f72a412 đã ACK84 nhưng còn hai nhầm timing (11/13, clone/projectile9), TTK từ damage×interval sai đơn vị và noDamage bị suy thành đồ trang trí. Snapshot10docs cóSHA, peer được giao sửa cụ thể. Ba producer callback được chốt qua ELF RELA/metadata: OnExtralife, DestroyShieldOneHit, noTouch wrapper. Normal/PVP hồiHP1 trước, HealHp(.5/1) riêng; normal resume timeScale.05; zone heal literal1.235% mỗi wait.2. Không tuyên bố fullHP tức thời hay runtime2s.19 tests mới; scope/nguồn ở `datas/player_lifecycle_flow.json`.

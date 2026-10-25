@@ -57,13 +57,13 @@ SHA input. Script check `python3 -m tools.verify.player_lifecycle_flow --check`.
 OnExtralife: mode6→DoExtraLifePVP; còn lại StartCoroutine DoExtraLife.
 
 **Normal, state0:** prepare animation .3 → GainHealth(**1**, hasFx=false) →
-Invincible=true → movement disabled/particles stopped/UI flags → schedule Invoke
+Invincible=true → enemy-contact hit disabled (Physics.activeHitEnemey=false; erratum87)/particles stopped/UI flags → schedule Invoke
 → Time.timeScale=**0**, bool pair store0x0101 → effect90066 → **WaitUntil(noTouch)**.
 noTouch kiểm cả mouse-up→down→held button0 và touchCount==0, short-circuit.
 State1: effect90031 → Time.timeScale=**f32(.05)** (không phải1) →
 StartCoroutine HealHp(**.5**) → clear bool pair → finish.
 
-**PVP:** event86 **OnExtraLife trước GainHealth(1)** → Invincible=true/move disabled
+**PVP:** event86 **OnExtraLife trước GainHealth(1)** → Invincible=true/enemy-contact hit disabled (erratum87)
 → schedule Invoke → effect90031 → StartCoroutine HealHp(**1**). Body không có
 Time.timeScale=0 hay WaitUntil. Không ép cơ chế chờ nhả touch của normal lên PVP.
 
@@ -101,7 +101,7 @@ a8574a3c**, không làm tròn thành1% hay1.25%. Đọc maxHP live mỗi resume.
 `tests/test_player_lifecycle_flow.py` nối cả zeroHP receiver85→concrete extra-life
 callback→HP1 và event21 mới. Model không giả lập Unity clock/Invoke/input/physics.
 
-**Còn việc cụ thể**, không phải thiếu toàn bộ raw: decode **Invoke string GOT2ae8560**
+**Ledger tại thời điểm86 (Invoke/flags đã nối tiếp ở [87](87-reborn-invincibility-shields-and-zone-state.md))**, không phải thiếu toàn bộ raw: decode **Invoke string GOT2ae8560**
 và state flags quanh RebornDone/Reborning, join những scene/runtime writes ảnh hưởng
 end-of-invincibility; enemy hitCallback/hitDamageCallback producers vẫn riêng. Không
 đoán Invoke target=RebornDone chỉ vì có hàm cùng chủ đề, hoặc tự nói invincible2s.
