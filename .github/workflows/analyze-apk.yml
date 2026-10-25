@@ -6,6 +6,9 @@ on:
       - 'tools/apk-analyze/**'
       # Recovery-only exporter has its own pinned, narrow workflow.
       - '!tools/apk-analyze/early_wave_prefabs.py'
+      # Offline data-pack changes are verified without an APK re-export.
+      - '!tools/apk-analyze/data_pack.py'
+      - '.github/workflows/analyze-apk.yml'
   workflow_dispatch:
     inputs:
       run_rea:
@@ -29,6 +32,9 @@ env:
 
 jobs:
   analyze:
+    # A scoped maintenance run can supersede/cancel an accidentally broad run
+    # through the workflow-level concurrency group without exporting assets.
+    if: ${{ github.event_name != 'push' || !contains(github.event.head_commit.message, '[scoped-only]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 150
     steps:
