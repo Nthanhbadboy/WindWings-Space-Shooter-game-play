@@ -226,3 +226,21 @@ GameMode0/nonbranch/ChapterCurrent0: display2→Wave_0164;
 display3→Wave_0113 rồiWave_0005. Chapter>=1 đổi prefix Chapter2; branch riêng.
 Đây là số prefab wave, KHÔNG enemy count hoặc thời gian chạy tuần tự.
 Next: Wave/Spawner activation/completion; grant/select callers; fade dispatch.
+
+### Report53 — wave/spawn-ended ≠ kill-ended
+
+Recoveries40184325868/40184418916 success; bot00d23f3c1. Report53,
+raw/ui-audit/wave-spawn-flow.json.gz22methods/15checks;45tests pass.
+Spawner.Awake nối virtualOnSpawn vào Call_Point.onSpawn, không spawn thẳng.
+Call_Point.FixedUpdate: chưaspawned, state!=Endgame3, MapController.isMoveEnemyLayer,
+y<=ySpawn→spawnedtrue/invoke. WarningySpawn+3 là khoảngcách, KHÔNG3giây.
+Wave.SetLastWave khởi CheckSpawnEnded; GetComponentsInChildrenSpawner(false).
+Normal aggregation countPoints đợi ended callback, loại5EndMapPoint/6StartWavePoint;
+branch-even riêng. WaitUntil countPoints<1→WaveEndedEvent74, nếulast→SpawnEnded73.
+Path coroutine number/rate/IDpool, kết thúcinvokeended+28; không phải enemydeath.
+Manager listener73→b__11_7→StartCheckEndgame. Poll đợi listActiveEnemies.Count0
+&& Playing1; sau đó normal dùng GetMissionCompleted(killCount,countEnemies)>=0,
+còncheckplayer; không auto-win/không hardcodekill100%. Wait2scaled s→manager
+cleanup/stateEndgame→MoveOutPlayer→closurebool→OpenBoardVictory.
+Next: đúngprefabWave0164/0113/0005→Call_Data/Spawner counts/timing; liveenemylist
+add/remove và missionthresholds. Raw mới nhiều spawn implementations sẵn để nối.
