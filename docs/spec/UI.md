@@ -595,7 +595,7 @@ Call target resolve từ RVA: `0x14efdec = GP_Setup.get_Instance` · `0x14f0da0 
 (text nút: `txt_label_*`, `txt_tab_*`) · `reverse-engineering/il2cpp/dump.cs.gz`
 (`BoardManager`, `UIManager`, `UINativeAd`, `Popup`, `Popup_Notices`, `Shop_Cell`, `Box_Rewards`) ·
 `reverse-engineering/scriptableobjects/Shop_Cell.csv` (315 ô / 20 board) ·
-`Box_Rewards.csv` (800 khung thưởng theo board) · `docs/spec/screens.csv`.
+`Box_Rewards.csv` (**1065** khung thưởng theo 75 board — đo lại 25/10) · `docs/spec/screens.csv`.
 
 > Số liệu kinh tế của từng board (có bao nhiêu ô shop, bao nhiêu ô thưởng): `ECONOMY.md` §2–§3.
 

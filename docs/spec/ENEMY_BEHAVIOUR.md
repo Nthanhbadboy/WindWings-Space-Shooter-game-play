@@ -13,12 +13,12 @@ spawner thì đã biết (`ENCOUNTERS.md`), nhưng enemy **bay thế nào**?*
 
 | Chỉ số | Giá trị | Nguồn |
 |---|---:|---|
-| Instance `Enemy_Movement` | **800** (= đúng số enemy trong `Enemy_Datas`) | `Enemy_Movement.csv` |
+| Instance `Enemy_Movement` | **981** (982 dòng CSV gồm header — đo lại 25/10 trên bản hiện hành) | `Enemy_Movement.csv` |
 | Tốc độ di chuyển (`listSpeeds[0]`) | **0,2 – 30,0**, median **5,0** | `Enemy_Movement.csv` |
-| Tốc độ phổ biến nhất | **5,0** (473/800 = 59%) | `Enemy_Movement.csv` |
-| Enemy **đứng yên bắn** (`isTurret`) | **95 / 800 (11,9%)** | `Enemy_Movement.csv` |
-| Enemy có **≥2 tốc độ** (đổi tốc giữa chừng) | **104 / 800 (13%)** | `listSpeeds[1]` |
-| Quay mặt theo hướng bay | `facingMove = True` **775 / 800** | `Enemy_Movement.csv` |
+| Tốc độ phổ biến nhất | **5,0** (562/981 = 57,3% — đo lại 25/10) | `Enemy_Movement.csv` |
+| Enemy **đứng yên bắn** (`isTurret`) | **112 / 981 (11,4%)** — đo lại 25/10 | `Enemy_Movement.csv` |
+| Enemy có **≥2 tốc độ** (đổi tốc giữa chừng) | **137 / 981 (14,0%)** — đo lại 25/10 | `listSpeeds[1]` |
+| Quay mặt theo hướng bay | `facingMove = True` **949 / 981 (96,7%)** — đo lại 25/10 | `Enemy_Movement.csv` |
 | Khoá góc (không xoay) | `fixedAngle = True` **13** | `Enemy_Movement.csv` |
 | Đường bay (`PathCreator`) | **399** path, **16** độ dài khác nhau | `PathCreator.csv` |
 | Toạ độ đường bay | ❌ **không có** — chỉ có số anchor | `PathCreator.csv` |
@@ -27,7 +27,7 @@ spawner thì đã biết (`ENCOUNTERS.md`), nhưng enemy **bay thế nào**?*
 
 ---
 
-## 1. `Enemy_Movement` — 800 instance, 5 tham số thật
+## 1. `Enemy_Movement` — **981** instance (đo lại 25/10), 5 tham số thật
 
 ### 1.1 Phân bố tốc độ
 
@@ -108,7 +108,7 @@ Biến thể duy nhất khác: `25 / −20 / 20 / −25` (1 dòng).
 | 19 | 16 | 2,0% |
 | 34 | 12 | 1,5% |
 | Khác (8 giá trị) | 34 | 4,3% |
-| **Tổng** | **800 dòng = 399 path** | 100% |
+| **Tổng** | **981 dòng** (đo lại 25/10; "399 path" là đo từ bản 800-cũ — CSV không có cột path để đếm lại) | 100% |
 
 Nguồn: `PathCreator.csv`, cột `editorData._bezierPath.points` (mảng chỉ serialize **độ dài**).
 
@@ -156,7 +156,7 @@ Nguồn: 7 file `*_Spawner.csv`, đếm cột có giá trị số biến thiên 
 | `minmaxTime` | **2–4 s** (270) · 3–5 s (268) · 2–1 s (262) | 800 |
 | `minmaxColor` | x 0,0–1,0 / y 0,3–0,8 (biến thiên màu) | 800 |
 
-Nguồn: `MeteoriteGenerator.csv` (800 dòng / **517** object).
+Nguồn: `MeteoriteGenerator.csv` (**852** dòng / **577** object — đo lại 25/10).
 
 > **Đọc ra:** thiên thạch rơi **từ trên xuống (Y 12 hoặc 15)**, trong **2 dải X**:
 > bên phải (2…5) và **bên trái (−7…−1)**. Trong 517 object đã đọc, **không có giá trị nào**
@@ -184,7 +184,7 @@ Nguồn: `Boss4_ExplosionTimer.csv` (155 dòng / 138 object; root nhiều nhất
 
 ## 6. `Enemy_Controller` — kiến trúc 1 enemy gồm 9 script
 
-Mỗi `Enemy_Controller` (800 instance) tham chiếu tới **9 MonoBehaviour con**:
+Mỗi `Enemy_Controller` (**981** instance — đo lại 25/10) tham chiếu tới **9 MonoBehaviour con**:
 
 | Script | Vai trò | Có dữ liệu trong CSV? |
 |---|---|---|
@@ -198,7 +198,7 @@ Mỗi `Enemy_Controller` (800 instance) tham chiếu tới **9 MonoBehaviour con
 | `burnedScript` | trạng thái cháy | ❌ |
 | `stunScript` | choáng | ❌ |
 
-Nguồn: `Enemy_Controller.csv` (800 dòng).
+Nguồn: `Enemy_Controller.csv` (**981** dòng — đo lại 25/10).
 
 > **Đây là blueprint kiến trúc tốt nhất trong cả bộ spec**: 1 enemy = 9 component tách rời,
 > ghép bằng reference. Khi clone, dựng đúng 9 component này thì mọi loại enemy chỉ còn là

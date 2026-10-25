@@ -26,7 +26,7 @@
 | Sát thương chạm thân boss | 251 hitbox: `dmgFirst` 200–10.000 (median 500) + 14 sentinel, `dmgPerSec` 5–1.000 | `Boss_BodyPhysics.csv` |
 | Số wave / spawner | **282 wave** (236 campaign + 45 boss), **48 archetype**, **10.782** cấu hình khác nhau sau dedup (11.089 dòng), 250 map | `waves.json` → `ENCOUNTERS.md` §1–2 |
 | Giá coin/gem/IAP | **0 cột giá** trong 91 CSV — **không thấy** trong asset (phạm vi: chỉ CSV) | `ECONOMY.md` §0 |
-| Phần thưởng trong hộp | **0 giá trị** — `Box_Rewards.id = 0` cho 800/800 dòng | `Box_Rewards.csv` |
+| Phần thưởng trong hộp | **0 giá trị** — `Box_Rewards.id = 0` cho 1065/1065 dòng (đo lại 25/10) | `Box_Rewards.csv` |
 | Damage của **player** | **0 giá trị** — `forceType = Enemy` 458/458 | `Gun_Attack.csv` |
 | Có thể dựng lại balance đầy đủ? | Không. Nhưng đã có **HP + damage địch + nhịp wave** — đủ để suy đường cong | §7 |
 
@@ -901,7 +901,7 @@ bị cắt** (`DATA_SYNC` §7.29).
 
 | Bảng | File | Trạng thái |
 |---|---|---|
-| HP **800** enemy/boss | `15-enemy-hp.csv` = `Enemy_Datas.csv` (800 dòng, 394 có HP > 0) | ✅ có số |
+| HP enemy/boss | `15-enemy-hp.csv` (**981** dòng, **467** > 0) + **150 cặp id** (`datas/enemy_hp_by_id.json`, WRH2) | ✅ có số |
 | Cờ enemy | `docs/apk-analysis/Enemy_Datas.csv` | ✅ có số |
 | Roster tàu/drone/boss/item | `14-ships.csv`, `14-drones.csv`, `14-bosses.csv`, `14-items.csv` | ✅ có số |
 | Tên tàu/drone/boss/talent/ability | `12-localization.csv` | ✅ có text |
@@ -910,7 +910,7 @@ bị cắt** (`DATA_SYNC` §7.29).
 | **Burst pattern** | `Gun_Attack.csv` `allGunDatas[0..2].{countShots,timeShot,timeReload,timeRounds,countMags}` | ✅ có số → `COMBAT.md` §3 |
 | Đạn (hitbox, xuyên khiên) | `Bullet_Linearly.csv` (186 dòng) | ✅ có số → `COMBAT.md` §7 |
 | Damage va chạm boss | `Boss_BodyPhysics.csv` (`dmgFirst`, `dmgPerSec`) | ✅ có số → `COMBAT.md` §6.3 |
-| Armor / `noDamage` | `Enemy_Health.csv` (800 dòng) | ✅ 189 / 800 `True` |
+| Armor / `noDamage` | `Enemy_Health.csv` (**981** dòng) | ✅ **241 / 981** `True` (report 81) |
 | **Wave / spawner / map** | `datas/waves.json`, `MapController.csv`, `Stage_Behaviour.csv` | ✅ có số → `ENCOUNTERS.md` |
 | **Giá & phần thưởng cụ thể** | `Box_Rewards.csv`, `Shop_Cell.csv`, `DataShopPack.csv`, `13-iap-products.csv` | ❌ **thật sự không có số** → `ECONOMY.md` §0 |
 | **Tỉ lệ rơi item** | `Sub_Item.csv` + `Item_Movement.csv` (702 lượt) | ✅ 676 coin / 26 item → `ECONOMY.md` §1.1 |

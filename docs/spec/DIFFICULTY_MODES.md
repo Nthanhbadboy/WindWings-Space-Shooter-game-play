@@ -36,7 +36,7 @@
 | **Ngưỡng sao / nhiệm vụ** (`pct[mode]`) | `(int)(pct × countEnemies)` in ra UI — `MISSIONS_STARS` §1 | **A** |
 | **Thưởng** (`levelDelta[mode]`) | `float[]` index bằng `ModeCurrent` — §3 | **A** |
 | **Giá năng lượng** | `GetCostEnergyForPlay(stageIndex, stageLevel)` | **A** |
-| **HP enemy** (`kHp[mode]`) | bạn chơi game, chưa có phép nhân tĩnh để đối chiếu | **A (chơi game)** |
+| ~~**HP enemy** (`kHp[mode]`)~~ **KHÔNG tồn tại** (25/10) | chế độ đổi **composition + thưởng** (`§3–5`); HP theo **id** — `datas/enemy_hp_by_id.json` | **A (tĩnh)** |
 | ~~Số quân~~ | **không** — xem hàng trên | **A (phủ định)** |
 
 **Chế độ KHÔNG đổi:** **map · danh sách wave · số quân · loại enemy · bảng HP gốc**.

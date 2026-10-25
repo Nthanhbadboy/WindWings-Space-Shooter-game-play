@@ -72,6 +72,25 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 24 — 25/10, audit toàn bộ sau nhắc của chủ dự án — quét pattern trên 45 file):**
+> ① **ENEMY_BEHAVIOUR đo lại trên bản hiện hành 981** (CSV 982 dòng gồm header; cũ ghi 800):
+> turret **112/981** · facingMove **949/981** · ≥2 tốc độ **137/981** · phổ biến **5,0 (562/981)** ·
+> Meteorite **852 dòng/577 object**; "399 path" là đo bản 800-cũ — CSV không có cột path ⇒ ghi chú
+> ở MISSING row 4; ② BALANCE §1 bảng nguồn (800/394 → **981/467 + 150 cặp**; 189/800 → **241/981**);
+> ③ DIFFICULTY §bảng đối chiếu: row `kHp` → KHÔNG tồn tại; ④ DATA_SYNC: §kiểm lại SerializeField
+> (pack v2) · §8 rows 1/2/3/6 (static 623 record · SerializeField pack · HP boss gom prefab
+> `boss_hp.json` **253 prefab** (đo lại từ meta của file — 277 ghi trước đó sai) · pivot/border report 75) · §22.3 ("DPS = proxy" → damage·s); ⑤ 6 worklist
+> còn "xin AssetRipper" → pack v2 (TUNING_KNOBS ×3 · AI_FEASIBILITY ×3 — feel row BỎ) · PARALLEL_TASKS
+> header LỊCH SỬ · ENCOUNTERS cách-đọc-cũ (m_PathID/AssetRipper/Frida) → ĐÃ RESOLVE (WRH4);
+> ⑥ DONE các row cũ (Chưa-đọc tool · 5.818 field · 92 prefab/800 dòng · 641 → **624** ×5 chỗ) ·
+> README 3 row (COMBAT TTK · BALANCE +150 cặp · DESIGN_READINESS proxy → damage·s) ·
+> DESIGN_QUESTIONS B4. **Sau verify bắt thêm 2 nhóm:** ⑦ **ECONOMY `Box_Rewards` đo lại = 1065
+> dòng** (cũ ghi 800 — `id=0`/`number=0` **1065/1065**; bảng phân bố root làm lại từ CSV: 75 root,
+> top `Board_BattlePass` 85 · `Board_Shop` 84 · `EndgameLoader` **36** · BP tổng 85+39=124; sửa
+> ECONOMY ×11 + AI_FEASIBILITY + BALANCE + UI) · ⑧ **`boss_hp.json` = 253 prefab** (meta
+> `count=253`; 277 ghi trước đó sai nguồn — pack v2 peer đo 256/P5; DATA_SYNC §8 + DONE log).
+> verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 23 — 25/10, kiểm câu hỏi chủ dự án "peer đã đính chính ảnh/asset/sprite — cập nhật chưa?"):**
 > `DATA_SYNC` §24.1–24.7/24.9–24.10 **đã đồng bộ đủ reports 70–77 từ các lần trước**; kiểm lại spec
 > thấy 3 chỗ còn stale so với các report đó — đã sửa: ① `ASSETS` §9 (4/6 "không xác định" → **ĐÓNG**:
@@ -494,9 +513,9 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 
 | Loại | Nội dung | Vì sao còn thiếu | Cách xử lý | Bản chất |
 |---|---|---|---|---|
-| **1. Chưa đọc** | 4.861 `[SerializeField]` · 957 `static` | chưa chạy AssetRipper/Ghidra | chạy 2 tool | **ngắn**, không khó |
+| **1. Chưa đọc** | ~~4.861 `[SerializeField]` · 957 `static`~~ → SerializeField: **binary trong pack v2** (report 70 — xin peer); static: **623 record** 17 method đã decode | ~~chạy 2 tool~~ → xin pack + đã decode | **ngắn**, không khó |
 | **2. Chưa chọn** | dung sai L2 · ngưỡng N cho L3 · bộ archetype nào đưa vào game | chưa ai quyết | quyết định thiết kế | **ngắn** |
-| **3. Chưa làm** | ~641 hình art · 69 audio · **10.782** cấu hình wave · 1.416 chuỗi | **không nằm trong APK để đọc** — phải tự sinh ra | sản xuất | **dài**, không khó |
+| **3. Chưa làm** | **624** hình art (`art-worklist.csv`) · 69 audio · **10.782** cấu hình wave · 1.416 chuỗi | **không nằm trong APK để đọc** — phải tự sinh ra | sản xuất | **dài**, không khó |
 | **4. Ngoài sản phẩm** | giá IAP · live-ops · dữ liệu người chơi | không thuộc bản build | quan sát, không trích xuất | **không cần** cho bản clone |
 
 > **Không loại nào là "không thể".** Nhưng loại **3** là loại duy nhất **không rút ngắn bằng
@@ -507,14 +526,14 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 | Việc | Loại | Có rút ngắn được bằng hiểu biết? |
 |---|---|---|
 | Biết 48 archetype thay vì 1.015 tên | 1 | ✅ rút từ **nhiều tuần** xuống **một buổi** |
-| Biết 641 hình thay vì 2.185 sprite | 1 | ✅ rút 3,4× |
-| **Vẽ** 641 hình | 3 | ❌ **không** — hiểu biết không vẽ hộ |
+| Biết **624** hình thay vì 2.185 sprite (`art-worklist.csv`) | 1 | ✅ rút 3,4× |
+| **Vẽ** 624 hình (worklist) | 3 | ❌ **không** — hiểu biết không vẽ hộ |
 | **Chạy** 100 vòng playtest | 3 | ❌ không — nhưng AI làm mỗi vòng **rẻ hơn** |
 | Biết damage player | 1 | ✅ sau khi chạy Ghidra |
 
 > `> Kết luận (mức B):` hiểu biết đã **gần như miễn phí** — đó là phần bạn đúng, và đúng
 > nhiều hơn tôi dự đoán ban đầu. Nhưng thứ còn lại không phải "khó", mà là **"phải làm"**.
-> Với một game 2.5D, "phải làm" nghĩa là **~641 hình + ~11k placement + vài chục vòng test** —
+> Với một game 2.5D, "phải làm" nghĩa là **624 hình (worklist) + ~11k placement + vài chục vòng test** —
 > đó là **lịch**, không phải **rào cản**.
 
 ## 4.2 Phạm vi đã chốt — **L1: giống cơ chế, không cần giống số**
@@ -548,12 +567,12 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 | Bán kính va chạm đạn | **15** unit (799/800) | `COMBAT.md` |
 | Tốc độ enemy | **0,2–30**, median **5,0**; wave 3,5 · boss 5,0 | `ENEMY_BEHAVIOUR.md` §1 |
 | 48 archetype spawn + tham số | bảng đầy đủ (`rate` 1,0 · `y` 9,6 · `spawn_type`) | `ENCOUNTERS.md` §2.4 |
-| 92 prefab enemy + HP | 800 dòng HP, 39 boss | `BALANCE.md` §2–5 |
+| **109** prefab enemy + HP | **981** dòng HP · **150** cặp id (`enemy_hp_by_id.json`) · 39 boss | `BALANCE.md` §2–5 |
 | 420 cấu hình súng + damage | damage 40–1.200, median 400 | `COMBAT.md` §2 |
 | 6 dạng đạn + `bltSpeed`/`lifetime` | đầy đủ | `COMBAT.md` §7 |
 | Nhịp wave | median **28** placement/wave, max 255 | `ENCOUNTERS.md` §1.3 |
 | 9 component/enemy | kiến trúc chuẩn | `ENEMY_BEHAVIOUR.md` §6 |
-| Atlas + tỉ lệ màn | 9:16, page ≤ 2048², **~641 hình** | `ASSETS.md`, `DONE.md` §1.6 |
+| Atlas + tỉ lệ màn | 9:16, page ≤ 2048², **624 hình** (`art-worklist.csv`) | `ASSETS.md`, `DONE.md` §1.6 |
 
 > **Không có dòng nào trong bảng trên cần chạy thêm tool.** Toàn bộ đã nằm trong 14 file spec.
 
@@ -580,7 +599,7 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 
 | # | Thứ | Mức | Ghi chú |
 |---:|---|---|---|
-| 1 | Giá trị **5.818** field (`4.861` serialized + `957` static) | **D** | chưa chạy AssetRipper/Ghidra |
+| 1 | ~~Giá trị **5.818** field~~ | ~~D~~ → 🟡 | static: **623 record** 17 method (`ia-resolved.json`); SerializeField: binary trong **pack v2** (report 70) — xin peer |
 | 2 | ~~45.659 tham chiếu enemy~~ | ~~D~~ → **A** | ✅ **đã resolve** (`ENCOUNTERS.md` §2.6): 22.451 entry · 109 prefab |
 | 3 | Ngưỡng N người cho test L3 | **C** | phải tự chọn; chưa ai trong dự án đo |
 | 4 | Dung sai cho L2 | **C** | phải tự chọn (đề xuất ±5%, chưa có cơ sở) |

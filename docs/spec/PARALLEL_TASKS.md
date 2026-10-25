@@ -3,6 +3,10 @@
 > **Đây là bản yêu cầu cho nhánh dữ liệu** (`arena/ef6b75ef-…`, bản `6109008c`).
 > Tôi **không** commit sang nhánh đó; tôi chỉ fetch/đọc. File này nằm trong `docs/spec/` của tôi.
 >
+> ⚠ **LỊCH SỬ (đánh dấu 25/10):** lô T này đã được thay bởi `HANDOFF_ANIM_RAW.md` + các report
+> 70–87 của nhánh dữ liệu (pack v2 · combat chain · receivers · lifecycle). Các ô "chưa chạy"
+> dưới đây **không còn là hàng đợi hiện hành** — trạng thái thật xem `OPEN_ISSUES.md` + `DONE.md`.
+>
 > **Ý của chủ dự án:** *"tổng hợp nhiều thứ, đưa ra nhiều giả định, báo bên kia chạy song song
 > nhiều GitHub Action, đỡ phải đợi nhau từng việc."* ⇒ File này gom **13 việc độc lập** thành
 > **một lô**, mỗi việc là **một giả định có thể sai** (không phải "xem có gì"), và mỗi việc

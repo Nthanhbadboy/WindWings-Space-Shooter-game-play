@@ -11,7 +11,7 @@
 | Câu hỏi | Trả lời | Bằng chứng |
 |---|---|---|
 | Có giá coin/gem trong dump không? | **KHÔNG** — 0 giá trị | §4, §5 |
-| `Box_Rewards` có phần thưởng không? | **KHÔNG** — `id = 0` và `number = 0` cho **800/800** dòng | `Box_Rewards.csv` |
+| `Box_Rewards` có phần thưởng không? | **KHÔNG** — `id = 0` và `number = 0` cho **1065/1065** dòng (đo lại 25/10) | `Box_Rewards.csv` |
 | `Shop_Cell` có giá không? | **KHÔNG** — chỉ `indexCell` + ref TextMeshPro | `Shop_Cell.csv` |
 | `DataShopPack` có giá không? | **KHÔNG** — 69 cột: **61 cột sprite/ref** + 8 metadata, 0 cột số | `DataShopPack.csv` |
 | IAP có giá không? | **KHÔNG** — chỉ `type` (99 non-consumable / 71 consumable) + `product_id`, 170 dòng | `13-iap-products.csv` |
@@ -19,7 +19,7 @@
 | `PurchaseType` có 6 loại? | **Có** (enum), nhưng **không** serialize vào data | §5.2 |
 
 > ⚠ **Đính chính phân công:** `HANDOFF_AI_TASKS.md` (vòng 2) viết *"`Box_Rewards`/`Shop_Cell`
-> có thưởng"*. **Sai.** Đã kiểm 800 + 315 dòng: `Box_Rewards.id` = 0 toàn bộ,
+> có thưởng"*. **Sai.** Đã kiểm **1065** + 315 dòng (đo lại 25/10): `Box_Rewards.id` = 0 toàn bộ,
 > `Box_Rewards.number` = 0 toàn bộ, `Shop_Cell` không có cột số nào ngoài `indexCell`.
 > Chỉ phần **damage** trong phân công là đúng (458 giá trị, xem `COMBAT.md`).
 >
@@ -75,38 +75,40 @@ Gift Box · Lucky Star (`txt_item_powerup`, `_superpower`, `_gainhp`, `_getdroid
 
 ---
 
-## 2. `Box_Rewards` — 800 dòng, **không có dữ liệu**
+## 2. `Box_Rewards` — **1065** dòng (đo lại 25/10), **không có dữ liệu**
 
 | Field | Giá trị | Số dòng | Kết luận |
 |---|---|---:|---|
-| `id` | **0** | **800 / 800** | không có id phần thưởng |
-| `number` | **0** | **800 / 800** | không có số lượng |
-| `borderNumber` | pathID ref | 800 | chỉ là `SpriteRenderer` viền |
-| `boxRenderer` / `iconRenderer` / `objCards` | pathID ref | 800 | sprite |
-| `textBonus` / `textNumber` | pathID ref | 800 | `TextMeshPro` — **chữ do code set** |
+| `id` | **0** | **1065 / 1065** | không có id phần thưởng |
+| `number` | **0** | **1065 / 1065** | không có số lượng |
+| `borderNumber` | pathID ref | 1065 | chỉ là `SpriteRenderer` viền |
+| `boxRenderer` / `iconRenderer` / `objCards` | pathID ref | 1065 | sprite |
+| `textBonus` / `textNumber` | pathID ref | 1065 | `TextMeshPro` — **chữ do code set** |
 
 Nguồn: `Box_Rewards.csv`.
 
 ### 2.1 Nó là gì thì dùng được
 
-Đây là **800 instance UI của khung phần thưởng**, phân bố theo board:
+Đây là **1065 instance UI của khung phần thưởng** (đo lại 25/10), phân bố theo **75 root** — top:
 
 | Root | Số instance | Board/hệ thống |
 |---|---:|---|
-| `Parent_Rewards` | 109 | khung reward dùng chung |
-| `Board_Shop` | 66 | shop |
-| `Board_BattlePass` | 62 | battle pass |
-| `Parent` | 46 | generic |
-| `EndgameLoader` | 31 | **màn kết trận** |
-| `Board_BattlePassNew` | 30 | battle pass 2 |
-| `Board_GiftLogin` | 28 | gift login 30 ngày |
-| `Board_PVP` | 28 | PvP |
-| `Popup_HolidayGift` (+` 1`) | 48 | quà lễ |
-| `ObjectMove` | 19 | scroll |
-| `Popup_PremiumDailyCollect` | 19 | premium daily |
+| `Board_BattlePass` | **85** | battle pass |
+| `Board_Shop` | **84** | shop |
+| `Parent_Rewards` | 51 | khung reward dùng chung |
+| `Parent` | 48 | generic |
+| `Board_GiftLogin` | 46 | gift login |
+| `Board_PVP` | 42 | PvP |
+| `Board_BattlePassNew` | 39 | battle pass 2 |
+| `Popup_HolidayGift` (+` 1`) | **75** (38+37) | quà lễ |
+| `EndgameLoader` | **36** | **màn kết trận** |
+| `Popup_WatchVideos` (+`New`) | 48 (25+23) | xem video |
+| `Pack_Weeks` | 25 | gói tuần |
+| `ObjectMove` | 24 | scroll |
+| `Board_Combo` | 22 | combo |
 
-**Dùng được để:** biết **hệ thống nào có bao nhiêu ô thưởng** (ví dụ `EndgameLoader` = 31 ô →
-màn kết trận hiển thị tối đa 31 phần thưởng; `Board_BattlePass` = 62 ô → BP có ≥ 62 mốc).
+**Dùng được để:** biết **hệ thống nào có bao nhiêu ô thưởng** (ví dụ `EndgameLoader` = **36** ô →
+màn kết trận hiển thị tối đa 36 phần thưởng; `Board_BattlePass` = **85** ô → BP có ≥ 85 mốc).
 
 **Không dùng được để:** biết thưởng cái gì, bao nhiêu.
 
@@ -311,7 +313,7 @@ Không có ngưỡng rank, không có điểm, không có thưởng. `RankManage
 | Nguồn | Số thật | Dùng được cho |
 |---|---|---|
 | `Gun_Attack` | 458 damage, 5 tham số burst, speed/lifetime | **COMBAT** (`COMBAT.md`) |
-| `Enemy_Datas` / `15-enemy-hp` | **800** HP (394 > 0) | **BALANCE** |
+| `Enemy_Datas` / `15-enemy-hp` | **981** HP (467 > 0) + **150 cặp id** | **BALANCE** |
 | `Boss_BodyPhysics` | 251 hitbox `dmgFirst`/`dmgPerSec` | **COMBAT** §6.3 |
 | `Sub_Item` + `Item_Movement` | 17 item id + 702 lượt rơi (676 coin / 26 item) | **tỉ lệ rơi tương đối** |
 | `Box_Rewards` | **0** | chỉ đếm số ô thưởng |

@@ -236,10 +236,9 @@ Nguồn: `waves.json`, đếm bằng khớp chuỗi con trên `spawners[].spawne
 `CD3_1`, `Path_CB3_5`. **Không** mã nào khớp tên trực tiếp với `15-enemy-hp.csv` — vì
 `15-enemy-hp.csv` dùng **đường dẫn instance trong prefab wave** (`Wave_0005/...`,
 `Boss-37001/...`), còn đây là **tên spawner** (component đặt enemy lên màn).
-> Nối "họ spawner → prefab enemy → HP" **cần resolve `Call_Data.listPrefabEnemies[i].m_PathID`**
-> (xem §9) — hoặc đọc `Call_Data` bằng **AssetRipper** (giữ nguyên nested `[SerializeField]`
-> mà exporter CSV bỏ qua), hoặc hook `Enemy_Controller.Awake()` bằng Frida để thấy prefab
-> thật được instantiate. Xem `AI_FEASIBILITY.md` §1.7.
+> ✅ **ĐÃ RESOLVE** — `waves.json` **0** dấu `?` · **22.451** entry · **109** prefab tên thật (WRH4).
+> Các cách cũ ghi dưới đây **không cần nữa**: resolve `m_PathID` thủ công · đọc `Call_Data` bằng
+> AssetRipper · hook `Enemy_Controller.Awake()` bằng Frida. Xem `AI_FEASIBILITY.md` §1.7.
 
 **Ngoài `waves.json`**, 3 mã `W2-*`/`MB-*`/`BB-*` xuất hiện ở **`Gun_Attack.csv`** và
 `Boss_BodyPhysics.csv` — đây là **mini-boss/prefab riêng**, không phải spawner:

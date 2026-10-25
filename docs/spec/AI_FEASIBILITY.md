@@ -363,7 +363,7 @@ Trong **2.580** class game của `dump.cs` có **4.861** field `[SerializeField]
 | Tầng | Nội dung | Trạng thái |
 |---|---|---|
 | 1 | `const` trong `dump.cs` — **900** const, nhưng **875 là thành viên enum**; chỉ **25** là hằng số thật | ✅ **25 giá trị đọc trực tiếp** — `timeSlowed` 0,1, `haftOfW/H` 5,4/9,6, `accuracy` 10 |
-| 2 | `[SerializeField]` trong prefab (**4.861**) | 🟡 **chưa export** — chạy AssetRipper |
+| 2 | `[SerializeField]` trong prefab (**4.861**) | ✅ **binary trong pack v2** (report 70) — xin giá trị qua PR12 |
 | 3 | `static` khởi tạo trong `.cctor()` — **957** tổng (riêng 8 class config: **259**) | 🟡 **chưa đọc** — chạy Ghidra |
 
 **Kết luận sửa lại:** cả **feel**, **cân bằng** và **art** đều đào được — không mảng nào
@@ -524,12 +524,12 @@ hợp: đó là **cùng một giới hạn** — *đặc tả tĩnh không chuy�
 | Toạ độ đường bay | `PathCreator.csv`: 30 cột `editorData` nhưng **0 cột `points[i].x/y`** | **AssetRipper** — `BezierPath.points` là `[SerializeField]` | 399 path × ~9 điểm = **~3.600 Vector3** |
 | Tham số spawner | 6/7 file `*_Spawner.csv` có **0 cột dữ liệu** | Ghidra (RVA từng `*_Spawner`) | trường `[SerializeField]` + hằng số |
 | Damage/HP của player | ~~`Player_Get_Datas` không serialize~~ → **damage/rate/wing đã decode**; HP **vẫn chưa** có bảng theo tàu | `ia-resolved.json` + `datas/player_start_stats.json` | **178 field**, 6 mảng có số |
-| Giá / tỉ lệ rơi | `Box_Rewards.id = 0` **800/800**; không cột `weight`/`price` | Ghidra `GetBonusCoin/Exp` + Frida | hàm thưởng theo `id` |
+| Giá / tỉ lệ rơi | `Box_Rewards.id = 0` **1065/1065** (đo lại 25/10); không cột `weight`/`price` | Ghidra `GetBonusCoin/Exp` + Frida | hàm thưởng theo `id` |
 | Hiệu ứng item | `Sub_Item.csv` **0 cột hiệu ứng** | Ghidra (class item) + Frida | hiệu ứng + thời gian |
-| **Toàn bộ feel** | chỉ export ScriptableObject, **bỏ prefab** | **AssetRipper** — 4.861 field `[SerializeField]` | shake, tốc độ, màu hit, trail, delay bắn |
+| ~~**Toàn bộ feel**~~ **BỎ (25/10)** — game mới không thêm | — | SerializeField binary nằm trong pack v2 (report 70) nếu cần tham khảo | — |
 | Âm thanh | 69 `AudioClip` nhưng **0 file export** (FSB5 trong `.resS`) | **AssetRipper** / vgmstream | 69 file `.wav` |
 | Hành vi (appear/burn/stun) | `Enemy_Appear.csv` chỉ có ref | Ghidra: `Enemy_Appear.Appear(Action)` … | toàn bộ state machine |
-| Pivot/border sprite | 586 sprite không-Atlas ghi `?` | **AssetRipper** | pivot, border, mesh |
+| ~~Pivot/border sprite~~ | ✅ **ĐÓNG (report 75 peer)** — `sprite_mesh_contract` có pivot/border/mesh từng sprite | — | — |
 
 ---
 

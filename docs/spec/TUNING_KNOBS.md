@@ -34,7 +34,7 @@ trị đang nằm trong bundle và **chưa được xuất**.
 | Nơi | Có gì | Lấy bằng | Chi phí |
 |---|---|---|---|
 | **A. CSV đã có** | 91 ScriptableObject + `waves.json` | (đã xong) | **0** |
-| **B. `[SerializeField]` trong prefab** | **4.861 field** — shake, tốc độ, size, màu, kéo dài (đếm regex, sai số vài chục) | **AssetRipper** (hoặc UnityPy + typetree) | ước lượng, mức **C** |
+| **B. `[SerializeField]` trong prefab** | **4.861 field** — shake, tốc độ, size, màu, kéo dài (đếm regex, sai số vài chục) | ~~AssetRipper~~ → **binary trong pack v2** (report 70 — xin giá trị qua PR12) | mức **C → B** khi đọc được |
 | **C. `static` field khởi tạo trong `.cctor()`** | **957** static tổng (riêng 8 class config: **259**) — HP, damage, giá, hệ số | **Ghidra + `script.json`** | ước lượng, mức **C** |
 | **D. `const` khai báo** | 9905 const toàn dump; **900** ở game class — nhưng **875 là enum**, chỉ **25** hằng số thật | đọc trực tiếp `dump.cs` | **0** |
 | **E. Hành vi lúc chạy** | giá theo mùa, A/B, server | Frida | tuần |
@@ -283,7 +283,7 @@ normal map, không cần rig 3D.
 | Bước | Việc | Lấy được | Công |
 |---:|---|---|---|
 | 1 | Đọc `const` trong `dump.cs` | **25** hằng số thật (`Ease` 31 giá trị enum, `timeSlowed` 0,1, `haftOfW/H` 5,4/9,6) | **0** — đã có |
-| 2 | **AssetRipper** trên `data.unity3d` | 4.861 `[SerializeField]`: shake, tốc độ, damage/súng, màu, size (chưa biết đọc được bao nhiêu) | chưa đo |
+| 2 | ~~**AssetRipper** trên `data.unity3d`~~ → **pack v2 đã có** (report 70) | 4.861 `[SerializeField]`: xin giá trị cụ thể qua PR12 | không cần tự chạy |
 | 3 | **Ghidra + `script.json`** đọc 1.359 `.cctor` | 259 static field: HP, damage, giá, hệ số | ngày |
 | 4 | **Frida** hook lúc chạy | giá server, A/B, giá IAP thật | tuần |
 | 5 | Playtest | cảm giác cuối — **luôn** phải tự làm | liên tục |
@@ -300,7 +300,7 @@ Chỉ liệt kê cái **thật sự** chưa có đường lấy:
 | # | Thứ | Vì sao vẫn thiếu |
 |---:|---|---|
 | 1 | **Giá trị số cụ thể** trong `.cctor` | cần chạy Ghidra; hiện chỉ có **tên + kiểu** của 259 field |
-| 2 | **Giá trị `[SerializeField]`** | cần chạy AssetRipper; hiện chỉ có **tên + kiểu** của 4.861 field |
+| 2 | **Giá trị `[SerializeField]`** | binary trong **pack v2** (report 70) — xin qua PR12; hiện chỉ có **tên + kiểu** của 4.861 field |
 | 3 | Giá IAP / doanh thu thật | nằm trên **server**, không có trong APK |
 | 4 | Nội dung enemy trong wave | `waves.json` để `"?"` — cần resolve `m_PathID` (`ENCOUNTERS.md` §9) |
 | 5 | Cảm giác "đã tay" | không có trong bất kỳ file nào — **phải chơi** |

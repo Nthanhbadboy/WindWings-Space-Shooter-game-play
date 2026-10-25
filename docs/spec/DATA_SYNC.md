@@ -212,7 +212,7 @@ Nguồn: `docs/apk-analysis/19-il2cpp-constants.md`, `reverse-engineering/raw/il
 | **9 mesh?** → **2 `Mesh`**, 2.5D | ✅ không đổi |
 | **48 archetype spawner** (tôi tự tính) | ✅ khớp với `count_spawners` 11.099 của họ (sai số 3%) |
 | ~~**957 `static` field chưa có giá trị**~~ | ❌ **SAI (25/10)** — **623 record** của 17 method đã decode; còn thiếu **bind** + các field vô hướng |
-| **4.861 `[SerializeField]` chưa có giá trị** | ✅ **vẫn đúng** — chưa ai chạy AssetRipper |
+| **4.861 `[SerializeField]` chưa có giá trị** | 🟡 **một phần** — binary nằm trong **pack v2** (report 70); xin giá trị cụ thể qua PR12 |
 
 ---
 
@@ -1508,12 +1508,12 @@ tự nhân. Median quân/wave 130,5 → **131,5**; max **951**; **109** prefab. 
 
 | # | Thứ | Mức | Ghi chú |
 |---:|---|---|---|
-| 1 | Giá trị **957 `static`** | **D** | vòng 3 chạy nhưng **thu được 0 hằng số** (lỗi truyền `"ls"`) |
-| 2 | Giá trị **4.861 `[SerializeField]`** | **D** | chưa chạy AssetRipper; prefab vẫn chưa đọc |
-| 3 | **Đơn vị đếm** của "tổng HP boss" | **C** | 2 lần chạy lệch 11–71% — phải chốt đếm root hay đếm bộ phận |
+| 1 | ~~Giá trị 957 `static`~~ | ~~D~~ → 🟡 | **623 record** của 17 method đã decode (`ia-resolved.json` — HP/damage/giá/hệ số); còn literal store + field vô hướng |
+| 2 | ~~Giá trị 4.861 `[SerializeField]`~~ | ~~D~~ → 🟡 | **binary đã có** trong pack v2 (report 70) — xin giá trị qua PR12, không cần tự chạy |
+| 3 | ~~Đơn vị đếm tổng HP boss~~ | ~~C~~ → **A** | ✅ chốt: gom theo **prefab gốc** — `datas/boss_hp.json` **253 prefab** (meta `count=253`, bỏ bản trùng scene, `hp_max` = bản mạnh nhất; pack v2 peer đo 256 — report 78/P5) |
 | 4 | 23 `SoundClip` không có clip | **D** | 92 khai báo vs 69 thật |
 | 5 | Loop point của 8 track nhạc | **D** | không có trong index |
-| 6 | Pivot / border sprite | **D** | `sprites-index.csv` chỉ có `bytes`, không có `rect`/`pivot` |
+| 6 | ~~Pivot / border sprite~~ | ~~D~~ → **A** | ✅ **ĐÓNG (report 75 peer)** — `sprite_mesh_contract` giữ source rect/pivot/border/PPU từng sprite |
 | 7 | 22.957 mẫu `Call_Data` (96,6%) | **A** (là cap) | `unity_data.py` dừng ở `MAX_READ_PER_CLASS=800`; chưa chạy lại với cap cao |
 | 8 | 12.492 mẫu `PointToPoint_Spawner` (94,0%) | **A** (là cap) | như trên |
 | 9 | Bảng `Transform` (`m_Father`) cho toàn bộ `data.unity3d` | **B** | chưa export lần nào; là mảnh duy nhất còn thiếu để ghép súng/xác |
@@ -2456,7 +2456,8 @@ Trước đó `MISSING_FOR_NEW_GAME.md` viết *“573 blob còn lại chưa dum
 > ID tàu~~ ✅ (id − 10001 — **hẹp scope: chỉ save/load; combat = impl N → index N−1, tàu 10001→2 ·
 > 10003→0, report 81/82 peer**) · ~~576 mảng map → (chapter, stage, mode)~~ ✅ bind cấu trúc
 > (**11 bảng / 614 mảng**, `DIFFICULTY_MODES` §7) · ~~`rate` có phải *shot/giây*~~ ✅ **interval đặt hạn
-> bắn** tàu 1 (report 79 peer — DPS = proxy). Còn: **HP riêng của tàu** (D) + parity phát phụ/nòng.
+> bắn** tàu 1 (report 79 peer; **tích damage×rate không dùng** — đơn vị damage·s, review peer).
+> Còn: **HP riêng của tàu** (D) + parity phát phụ/nòng.
 > Đó là việc **bind + kiểm runtime**, không phải việc **dump**.
 
 ---
