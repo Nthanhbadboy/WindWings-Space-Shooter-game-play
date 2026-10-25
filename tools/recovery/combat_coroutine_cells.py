@@ -32,6 +32,8 @@ def recover_delegates(binary, destination, roots=('Player9_Clone','Player23_Pump
     root=Path(__file__).resolve().parents[2]
     sys.path.insert(0,str(root/'tools/apk-analyze'))
     import il2cpp_consts as native
+    import importlib
+    native = importlib.reload(native)  # each export gets the real parser, not prior masked closure
     with tempfile.TemporaryDirectory() as folder:
         temp=Path(folder);dump=temp/'dump.cs';lib=temp/'libil2cpp.so'
         dump.write_bytes(gzip.decompress((root/'reverse-engineering/il2cpp/dump.cs.gz').read_bytes()))
