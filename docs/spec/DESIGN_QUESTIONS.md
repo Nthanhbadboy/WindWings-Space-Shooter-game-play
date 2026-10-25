@@ -14,8 +14,13 @@
 | ⚠ | có **một phần** — có số nhưng thiếu điều kiện hoặc thiếu vế còn lại |
 | ❌ | **chưa trả lời được** bằng dữ liệu hiện có |
 
-**Tổng: 48 câu — ✅ 29 · ⚠ 11 · ❌ 8.** **8 câu ❌** nằm trong danh sách blocker, cộng thêm
-**B3** (⚠) ⇒ **9 hàng blocker**. (B2 đã đóng ở bản `6109008c`: `StartHp` = **2500**.)
+**Tổng: 48 câu — ✅ 30 · ⚠ 14 · ❌ 4** (cập nhật 24/10; bản gốc `4539709`: ✅ 29 · ⚠ 11 · ❌ 8).
+Bốn câu còn ❌: **A5 · A6 · B1 · C4**; ba câu vừa lên ⚠ là **E2 · E3 · A7**, một câu vừa đóng là **D3**.
+Cộng **B3** (⚠) ⇒ **5 hàng blocker** trong 9 hàng ban đầu.
+
+> **Nhật ký 24/10 (nhánh Arena):** đóng **D3** bằng `event-receivers.json.gz` (**795/795 có `time`**) sau khi nhánh dữ liệu
+> export đúng; nâng **E2** lên ⚠ bằng hằng số trong `Enemy_Display.OnHit`; nâng **A7** lên ⚠ bằng schema `Call_Data`.
+> Số khớp claim **R1–R6** + **S2** trong `tools/verify-claims.py`.
 
 ---
 
@@ -29,7 +34,7 @@
 | A4 | Bao lâu gặp boss một lần? | ✅ | **45 wave boss / 282 = 1 mỗi 6,3 wave**; mỗi wave boss = **2 boss + 2 turret + 6,8 `CB-30015`** (`ENCOUNTERS` §3.6) |
 | A5 | Một phiên chơi dài bao lâu? | ❌ | cần biết **stage ↔ wave** (A6) và luật continue |
 | A6 | Một stage = mấy wave? | ❌ | **299 stage** vs **281 wave**. `Stage_Behaviour` không có field `wave`, **nhưng** đã tìm ra đường nối: **`Map_Get_Datas.GetListWaves(int mapIndex)` → `int[]`** (`DATA_SYNC` §7.26 e). Giá trị còn thiếu vì `.cctor` chưa export |
-| A7 | Trên màn hình có bao nhiêu địch cùng lúc? | ❌ | spawner chạy **song song**; `copies` max 76 ⇒ cần mô phỏng timeline, chưa làm |
+| A7 | Trên màn hình có bao nhiêu địch cùng lúc? | ⚠ | **CẬP NHẬT 24/10:** số quân mỗi spawner = **độ dài `listPrefabEnemies`** (`number = 0` ở **1.200/1.200** dòng `Call_Data`), dài nhất **30** quân khi `rate = 0`; `rate = 0` nay nghiêng **B** về "spawn cả loạt". Vẫn cần mô phỏng timeline để ra **địch/giây** |
 | A8 | Địch bay nhanh cỡ nào? | ✅ | `speed` median **1,5** · bay vào max **30,0** · `BLT` speed median **8,0** max 23 (`BALANCE` §5) |
 
 > **Nhận định (mức B) — A1/A2:** 11,4 s/wave × 236 = 44,8 phút thuần spawn, nhưng cộng 6,4 s bay
@@ -83,7 +88,7 @@
 |---:|---|---|---|
 | D1 | Có bao nhiêu loại enemy? | ✅ | **178 prefab có AI** · **109 dùng trong wave** · **22 chưa từng xuất hiện** · **70 loại** xuất hiện trong campaign |
 | D2 | Có bao nhiêu boss? | ✅ | **39 prefab** · **45 wave boss** · **90 instance** · **206.167.000 HP** tổng |
-| D3 | Boss có mấy pha, thứ tự ra sao? | ❌ | **0/308 controller có `m_StateMachineBehaviours`**; **793 event / 318 clip** nhưng export **chỉ có `__count`, không có `time`** |
+| D3 | Boss có mấy pha, thứ tự ra sao? | ✅ | **CẬP NHẬT 24/10 — ĐÓNG.** `event-receivers.json.gz`: **795/795 event có `time`** (793 boss + 2 `CB-30040`) trên **34 prefab · 97 clip · 269 cặp (prefab, clip)**; timeline từng clip ở **`BOSS_ANIM_TIMELINE.md`**. Boss 1 (Spine, không event): **8 tên entry + 5 nhánh** chuyển state. Pha = 3 đòn **lặp** (`Attack1/2/3`, `loop=true`) ngăn bằng clip chuyển `Chuyensangattack2/3` — **không** phải đếm pha theo thời gian |
 | D4 | Turret hoạt động thế nào? | ✅ | **44 prefab / 112 component**: **21 spawn qua wave (41)** + **23 đặt sẵn trong `Wave_*` (71)** ⇒ **63,4% turret không do wave sinh** (`BOSSES` §5.1) |
 | D5 | Đạn có mấy loại, nhanh cỡ nào? | ✅ | **186 loại** `Bullet_Linearly`; `bltDamage` **28 giá trị**, phổ biến 300 (135 lần); `bltSpeed` median 8,0 |
 | D6 | Có bẫy / vùng sát thương môi trường? | ✅ | **16 prefab**: 13 mã `900xx` + **3 `Expl-*` (Poision Zone)** 500 first + 50/s; **không** spawn qua `Call_Data` |
@@ -95,8 +100,8 @@
 | # | Câu hỏi | Trạng thái | Số / nguồn |
 |---:|---|---|---|
 | E1 | Có rung màn hình không? | ⚠ | `Enemy_CameraVibrate` **241 instance** — có **cơ chế**, chưa đo **biên độ / thời gian** |
-| E2 | Có nháy trắng khi trúng đòn (hit flash)? | ❌ | chưa đọc `Enemy_Display` / shader; 163 sprite không nói lên điều này |
-| E3 | Có khựng hình khi trúng (hit stop)? | ❌ | không có class tên `HitStop`; phải đọc `Enemy_Display`/`Time.timeScale` |
+| E2 | Có nháy trắng khi trúng đòn (hit flash)? | ⚠ | **CẬP NHẬT 24/10:** `Enemy_Display.OnHit` (352 B) có **alpha 0,5** trên material của `hitableRenderers` + `Invoke(<tên tĩnh>, 0,05 s)` để tắt ⇒ **có flash, 0,05 s, cường độ 0,5**. Thiếu **tên tham số material** (chuỗi trong bảng literal chưa export) và **màu** (0,5 là hệ số, không phải màu) |
+| E3 | Có khựng hình khi trúng (hit stop)? | ⚠ | **CẬP NHẬT 24/10:** đã đọc hết **69** asm đã export + `native-calls.json` (**272 method**): **0** lệnh gọi `set_timeScale`. Không có `HitStop` ⇒ **không tìm thấy**, nhưng 69 lớp ≠ toàn bộ 677 ⇒ chưa phủ định được |
 | E4 | Âm thanh dài bao nhiêu? | ✅ | **69/69 WAV · 571 s** (`ASSETS`); `shootAudioClipName` gắn từng súng |
 | E5 | Nhịp bắn của súng? | ✅ | `timeShot` median **0,10 s**; **397/458 loạt tức thời** · **61/458 băng liên tục** · **29 súng có 3 vòng** (`COMBAT` §3.1) |
 | E6 | Tỷ lệ màn hình? | ✅ | canvas **10,8 × 19,2** (9:16) |
@@ -124,18 +129,19 @@ Xếp theo **chi phí trả lời thấp → cao**, không theo mức quan trọ
 |---:|---|---|---|---|
 | 1 | ✅ **ĐÓNG — B2 giá trị `StartHp`** = **2500** (bản `6109008c`) | không có HP thì **không có TTK** — nhưng **công thức đã xong** | ✅ **đã giải xong cấu trúc** (`BALANCE` §0.6, đọc lệnh arm64). Chỉ còn **1 hằng số**. ⚠ **ĐÍNH CHÍNH:** kết luận cũ *"`.cctor` không gán `StartHp`"* **vô hiệu** — asm export **bị cắt cụt ở 11/12 file**, `Player_Get_Datas..cctor` dừng giữa chừng tại `0x14e5cc4` (`DATA_SYNC` §7.29). Yêu cầu **hẹp nhất**: dump **200 lệnh sau `0x14e5cc4`** | **rất thấp** — 1 khối 200 lệnh |
 | 2 | **A6 — stage ↔ wave** | quyết định **số màn** và **độ dài phiên** | `Stage_Behaviour.textStageIndex` → `Text` component; hoặc đọc thứ tự con của `Parent_Stages` trong `Board_Maps` | **thấp** — đã có `transform-tree` |
-| 3 | **E2/E3 — hit flash / hit stop** | quyết định **feel**, thứ người chơi cảm nhận mạnh nhất | đọc `Enemy_Display` field + tìm `timeScale`/`Material.color` trong 305 trace đã có | **thấp** |
-| 4 | **D3 — thứ tự pha boss** | mỗi trận boss là **điểm nhấn**; không có thứ tự thì chỉ clone được "boss bắn loạn" | giải mã `m_StreamedClip` để lấy `time` của **793 event** | **trung bình** — cần decoder |
+| 3 | ⚠ **MỘT PHẦN — E2 có số (0,05 s · 0,5), E3 chưa thấy dấu vết** | quyết định **feel**, thứ người chơi cảm nhận mạnh nhất | đọc `Enemy_Display` field + tìm `timeScale`/`Material.color` trong 305 trace đã có | **thấp** |
+| 4 | ✅ **ĐÓNG 24/10 — D3 thứ tự pha boss**: `time` của **795 event** đã có (**795/795**) | mỗi trận boss là **điểm nhấn** | **không cần decoder nữa** — nhánh dữ liệu export đúng ⇒ `BOSS_ANIM_TIMELINE.md` (269 cặp clip, nhịp 0,17 s) | **0** |
 | 5 | **B1 — HP enemy runtime** | toàn bộ **231 wave** phụ thuộc công thức này | đọc thân `Enemy_Data_Balance.GetSurvivalScore` (đã có hằng số **6,0 · 3,0 · 1,1 · 0,2 · 0,5 · 500,0 · 23,0 · 40,0**) + tìm chỗ **stage** được truyền vào | **trung bình** |
 | 6 | **C4 — vàng/giờ** | quyết định **toàn bộ đường cong meta** | `Enemy_Data_Balance.GetBonusCoin` (**100,0 · 20,0**) × số quân/giờ (tính từ A1) | **trung bình** |
 | 7 | **A7 — mật độ địch đồng thời** | quyết định **hiệu năng** và **cảm giác ngộp** | mô phỏng timeline: 11.099 spawner × `rate` × `copies` | **trung bình** — làm được bằng script |
 | 8 | **A5 — độ dài phiên** | quyết định **retention**, IAP, số mạng | cần **cả** A6 **và** luật continue (chưa có trong dữ liệu) | **cao** — cần chơi thử / đọc `GamePlayManager` |
 | 9 | **B3 — đường cong damage player** | quyết định **số enemy chịu được** ở mỗi cấp | đọc rẽ nhánh đầy đủ của `stepLevel` + map 4 ngưỡng 30/58/118/248 vào **loại cấp nào** (player level? tech lab?) | **cao** — cần đọc asm có ngữ cảnh |
 
-> **Nhận định (mức A):** trong 9 blocker, **câu 1 đã ĐÓNG** (`StartHp` = 2500, bản `6109008c`);
-> **4 câu còn lại (2, 3, 5, 6) trả lời được bằng dữ liệu đã có**
-> — không cần chạy lại pipeline, không cần dump APK. Chỉ **2 câu (4, 9)** cần việc mới thật sự
-> (decoder streamed clip · đọc asm có ngữ cảnh), và **1 câu (1) nay đã đóng** — không cần dump thêm.
+> **Nhận định (cập nhật 24/10, mức A):** trong 9 blocker, **2 câu đã ĐÓNG** (1 — `StartHp` = 2500;
+> 4 — `time` của 795 event). **Câu 3 nửa đóng** (E2 có số, E3 chưa thấy). **3 câu (2, 5, 6) trả lời
+> được bằng dữ liệu đã có** — không cần chạy lại pipeline. Chỉ **2 câu (7, 9)** cần việc mới thật sự
+> (mô phỏng timeline địch/giây · đọc asm có ngữ cảnh cho đường cong damage), và **cả hai đều KHÔNG
+> chặn L1** vì L1 cho phép tự chọn số.
 >
 > **Điều kiện lật ngược:** nếu `GetStartHp` trả **hằng số cứng** nằm trong `.rdata` mà `formula_trace`
 > không bắt (vì nó chỉ bắt float pool + flow), thì blocker #1 rẻ hơn nữa — chỉ cần đọc thân hàm.

@@ -115,7 +115,7 @@ prototype 30 giây; phần "cảm giác" còn lại tự quyết.
 
 | hạng mục | vòng 1 | **vòng 2** |
 |---|---|---|
-| biết **clip nào chạy lúc nào** (boss) | 🔴 chưa | ✅ **35/39 prefab boss** có script: 33 prefab **793 event có `time`**, +3 prefab Spine; **4 prefab không có** (`Boss-37003/37005/37006/37008`) |
+| biết **clip nào chạy lúc nào** (boss) | 🔴 chưa | ✅ **35/39 prefab boss** có script: **33 prefab · 793 event có `time`** + **2 prefab Spine** (`Boss-39001/39002`); **4 prefab không có gì** (`Boss-37003/37005/37006/37008`). Timeline **từng giây**: **`BOSS_ANIM_TIMELINE.md`** (269 cặp clip) |
 | biết **tên entry** | 🔴 chưa | ✅ boss 1: **8 chuỗi**, bảng chuyển state **5 nhánh** |
 | biết **nhịp đòn** | 🔴 chưa | ✅ **0,17 · 0,33 · 1,0 · 5,0 s** |
 | biết **điều kiện chuyển state của enemy** | 🔴 chưa | 🟡 cần tham số `Animator` — **T4** của `HANDOFF_ANIM_RAW.md` |
@@ -132,7 +132,7 @@ trạng thái của enemy — và nó **không chặn** vì L1 cho phép tự đ
 | **Vòng lặp / wave / spawn** | ✅ **A** | 109 prefab roster · 282 wave · 11.095 spawner · 22.461 lượt spawn (`waves.json`) |
 | **Độ khó / chế độ** | ✅ **A** | `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · 3 chế độ mỗi stage |
 | **Kinh tế / sao / HP** | ✅ **A** cho hằng số | `StartHp 2500` · `stepCommon 0,18` · `DeltaStarCost 50` · `PercentToCompleteMissions222 [0.2,0.6,0.98]` |
-| **Boss** | ✅ **A** cho cấu trúc | 46 boss · 39 prefab `Boss-*` · 3 prefab Spine · 92 `Animator`/36 prefab · 795 event có mốc thời gian |
+| **Boss** | ✅ **A** cho cấu trúc | 46 boss · **39 prefab `Boss-*`** · **2 prefab Spine** (`Boss-39001/39002`) · 92 `Animator`/36 prefab · 795 event có mốc thời gian |
 | **Enemy** | ✅ **A** cho cơ chế | di chuyển procedural theo path 100 % · `Enemy_Appear` = vỏ delegate · `Enemy_Display` 5 field |
 | **Animation — *script*** | ✅ **A** cho boss (**35/39 prefab**), **B** cho enemy | 33 prefab **793 event có mốc thời gian** · boss 1: **8 tên entry + 5 nhánh** chuyển state · nhịp đòn **0,17/0,33/1,0/5,0 s** · enemy = máy trạng thái 3 nhánh + hit flash **0,05 s** — xem **`ANIMATION_SCRIPT.md`** |
 | **Animation — *playback / feel*** | 🔴 **D** | 0/791 keyframe · 0 phép đo playback runtime · hành vi 12 handler còn **C** — **chỉ cần nếu làm L2/L3** |
@@ -158,6 +158,19 @@ xong:
 
 Và **một việc không nên làm**: đừng chờ dữ liệu animation nữa. Script đã có; chỉ *playback* là
 thiếu, và nó chỉ cần cho L2/L3.
+
+### 6.1 Vòng 3 (24/10) — ba thay đổi so với bảng trên
+
+| Việc | Trước | Sau | Bằng chứng |
+|---|---|---|---|
+| **D3 — thứ tự pha boss** (`DESIGN_QUESTIONS.md`) | ❌ "chỉ có `__count`" | ✅ **đóng** | `795/795` event có `time` ⇒ `BOSS_ANIM_TIMELINE.md` |
+| **E2 — hit flash** | ❌ "chưa đọc" | ⚠ **có số** | alpha **0,5** + `Invoke(…, 0,05 s)` trong `Enemy_Display.OnHit` |
+| **A7 — mật độ địch** | ❌ | ⚠ **một nửa** | số quân = độ dài `listPrefabEnemies`; `rate = 0` nghiêng **B** "cả loạt" |
+
+⇒ `DESIGN_QUESTIONS.md` nay là **48 câu · ✅ 30 · ⚠ 14 · ❌ 4** (claim **S2** giữ cho dòng tổng không lệch
+bảng). **Câu trả lời cho câu hỏi của tài liệu này không đổi: thiết kế được cho L1** — chỉ khác là
+**animation không còn nằm trong danh sách "phải chờ"**, và *thứ duy nhất* vẫn phải **quyết** (không phải
+**đo**) là **feel**.
 
 ---
 

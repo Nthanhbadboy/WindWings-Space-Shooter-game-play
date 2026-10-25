@@ -1883,6 +1883,34 @@ def handler_class_join():
     return (len(matched), len(missing), sum(counts[p] for p in missing), len(counts))
 
 
+def design_question_tally():
+    """(tổng, ✅, ⚠, ❌) đếm từ bảng DESIGN_QUESTIONS.md."""
+    import re
+    try:
+        text = ref_blob("docs/spec/DESIGN_QUESTIONS.md").decode("utf-8")
+    except Exception:
+        return None
+    ok = warn = bad = tot = 0
+    for line in text.splitlines():
+        m = re.match(r"^\|\s*([A-F]\d+)\s*\|[^|]*\|([^|]*)\|", line)
+        if not m:
+            continue
+        tot += 1
+        st = m.group(2).strip()
+        if st == "✅":
+            ok += 1
+        elif st == "⚠":
+            warn += 1
+        elif st == "❌":
+            bad += 1
+    return (tot, ok, warn, bad) if tot else None
+
+
+claim("S2", "docs/spec/DESIGN_QUESTIONS.md",
+      "**Tổng: 48 câu — ✅ 30 · ⚠ 14 · ❌ 4**",
+      (48, 30, 14, 4), design_question_tally,
+      "đếm trong bảng phải khớp dòng tổng; đổi 1 hàng là FAIL ngay")
+
 claim("S1", "docs/spec/ANIMATION_SCRIPT.md",
       "**18 prefab còn lại có event clip nhưng chưa export lớp handler**",
       (16, 18, 262, 34), handler_class_join,
