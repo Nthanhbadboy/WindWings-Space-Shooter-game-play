@@ -1,0 +1,79 @@
+;;; GetStartPowerUpPoints  public static int GetStartPowerUpPoints() { }
+    0x14e5404: str      x30, [sp, #-0x20]!
+    0x14e5408: stp      x20, x19, [sp, #0x10]
+    0x14e540c: adrp     x19, #0x2ce2000
+    0x14e5410: adrp     x20, #0x2adc000
+    0x14e5414: ldrb     w8, [x19, #0x2ac]
+    0x14e5418: ldr      x20, [x20, #0x128]
+    0x14e541c: tbnz     w8, #0, #0x14e544c
+    0x14e5420: adrp     x0, #0x2adc000
+    0x14e5424: ldr      x0, [x0, #0xdd0]
+    0x14e5428: bl       #0x110d028
+    0x14e542c: adrp     x0, #0x2adb000
+    0x14e5430: ldr      x0, [x0, #0xdd8]
+    0x14e5434: bl       #0x110d028
+    0x14e5438: adrp     x0, #0x2adc000
+    0x14e543c: ldr      x0, [x0, #0x128]
+    0x14e5440: bl       #0x110d028
+    0x14e5444: mov      w8, #1
+    0x14e5448: strb     w8, [x19, #0x2ac]
+    0x14e544c: ldr      x0, [x20]
+    0x14e5450: ldr      w8, [x0, #0xe0]
+    0x14e5454: cbnz     w8, #0x14e545c
+    0x14e5458: bl       #0x110d12c
+    0x14e545c: adrp     x20, #0x2adc000
+    0x14e5460: ldr      x20, [x20, #0xdd0]
+    0x14e5464: mov      x0, xzr
+    0x14e5468: bl       #0x13999ac
+    0x14e546c: cmp      w0, #7
+    0x14e5470: b.le     #0x14e547c
+    0x14e5474: mov      w19, #4
+    0x14e5478: b        #0x14e54a0
+    0x14e547c: b.ne     #0x14e5488
+    0x14e5480: mov      w19, #3
+    0x14e5484: b        #0x14e54a0
+    0x14e5488: cmp      w0, #4
+    0x14e548c: b.le     #0x14e5498
+    0x14e5490: mov      w19, #2
+    0x14e5494: b        #0x14e54a0
+    0x14e5498: cmp      w0, #2
+    0x14e549c: cset     w19, gt
+    0x14e54a0: ldr      x0, [x20]
+    0x14e54a4: ldr      w8, [x0, #0xe0]
+    0x14e54a8: cbnz     w8, #0x14e54b4
+    0x14e54ac: bl       #0x110d12c
+    0x14e54b0: ldr      x0, [x20]
+    0x14e54b4: ldr      x8, [x0, #0xb8]
+    0x14e54b8: ldr      x8, [x8, #0x58]
+    0x14e54bc: cbz      x8, #0x14e5538
+    0x14e54c0: ldr      w9, [x8, #0x18]
+    0x14e54c4: cmp      w9, #3
+    0x14e54c8: b.ls     #0x14e5534
+    0x14e54cc: ldrb     w9, [x8, #0x23]
+    0x14e54d0: cbz      w9, #0x14e5504
+    0x14e54d4: ldr      w9, [x0, #0xe0]
+    0x14e54d8: cbnz     w9, #0x14e54f0
+    0x14e54dc: bl       #0x110d12c
+    0x14e54e0: ldr      x8, [x20]
+    0x14e54e4: ldr      x8, [x8, #0xb8]
+    0x14e54e8: ldr      x8, [x8, #0x58]
+    0x14e54ec: cbz      x8, #0x14e5538
+    0x14e54f0: ldr      w9, [x8, #0x18]
+    0x14e54f4: cmp      w9, #3
+    0x14e54f8: b.ls     #0x14e5534
+    0x14e54fc: add      w19, w19, #3
+    0x14e5500: strb     wzr, [x8, #0x23]
+    0x14e5504: adrp     x8, #0x2adb000
+    0x14e5508: ldr      x8, [x8, #0xdd8]
+    0x14e550c: ldr      x0, [x8]
+    0x14e5510: ldr      w8, [x0, #0xe0]
+    0x14e5514: cbnz     w8, #0x14e551c
+    0x14e5518: bl       #0x110d12c
+    0x14e551c: bl       #0x14e553c
+    0x14e5520: cmp      w19, w0
+    0x14e5524: csel     w0, w19, w0, lt
+    0x14e5528: ldp      x20, x19, [sp, #0x10]
+    0x14e552c: ldr      x30, [sp], #0x20
+    0x14e5530: ret      
+    0x14e5534: bl       #0x110d258
+    0x14e5538: bl       #0x110d250
