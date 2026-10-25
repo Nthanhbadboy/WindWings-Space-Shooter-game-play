@@ -59,6 +59,8 @@ class Recipes:
         out['composition']=recipe_composition({key(n['gameobject']) for n in out['nodes']})
         from tools.verify.l3_visual_surface import recipe_surface
         out['visual_surface']=recipe_surface({key(n['gameobject']) for n in out['nodes']})
+        frame_cases=ROOT/'datas/l3_frame_cases.json.gz'
+        out['frame_application']=dict(artifact='datas/l3_frame_cases.json.gz',sha256=hashlib.sha256(frame_cases.read_bytes()).hexdigest(),auto_execute=False,requires_explicit_order_and_instance_context=True,scope='Examples of explicitly ordered shared modeled state; not a recipe scheduler, live scene, controller selection or rendered frame')
         if include_raw:
             from tools.verify.l3_visual_surface import selected_raw_objects
             out['selected_surface_raw_objects']=selected_raw_objects(out['visual_surface'])

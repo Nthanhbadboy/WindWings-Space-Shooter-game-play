@@ -1061,3 +1061,20 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 
 - Receipt103: finalcodedddd75aed / Verify40240026886SUCCESS; raw ci103/handoff103.
   Peer request https://github.com/Nthanhbadboy/WindWings-Space-Shooter-game-play/pull/12#issuecomment-6404277110; chưa independent ACK/render acceptance.
+
+## Batch104 — peer update/feedback + shared modeled write application (2026-10-26)
+- Peer head23bf66c7, DATA_SYNC24.34–36/DESIGN_READINESS frozen in raw/peer-review/l3-23bf66c7;
+  reported ACK101–103 confirmed, only contract/identity/mask checks, not full numerical/engine acceptance.
+- New l3_frame applies native Start/Anchor/Scaler and explicit clip typed writes on SAME instance state;
+  current hierarchy/geometry/projection read overlays. Raw immutable; Frame worlds isolated.
+- Alert size19.2→24 + sample alpha.392156884→f32 stored.392156899→fade0, footprint unchanged by fade.
+- Border_Info7048 playOnStart=false: Start bind only; direct Anchor moves Y7→8.440000534,
+  all320descendants propagate; child renderer5452 projection moves144.00004196px. Root border≠0 not_generated.
+- Private/static cache semantics retained; atomic clip writes tool-only; mounts remain movable roots.
+- Pointer attr0/custom23/type212 NOT field CRC. Strict default reject; explicit m_Sprite policy with
+  source type checks log as policy, not engine mapping proof. No unknown mapping→null or fabricated fileID.
+-29newtests/full1072localPASS219.316s; artifact datas/l3_frame_cases.json.gz; receipt l3-frame-verification.
+- Peer requested numerical reproduction/counterexamples, not count-only ACK: false Start, propagation,
+  private/cache persistence, f32 stores, failed plan no partial commit, custom pointer policy.
+- Recipe frame_application auto_execute=false. No Unity scheduler/blend/render acceptance. Continue
+  concrete binding/order + textured geometry/shader pipeline; existing source gaps remain.
