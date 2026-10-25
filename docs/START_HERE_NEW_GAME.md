@@ -1,6 +1,6 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report65. Tất cả kết luận APK vẫn tạm thời.**
+**Cập nhật 25/10/2026, sau report66. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
@@ -26,7 +26,7 @@ Lấy từ `reverse-engineering/raw/early-waves/index.json`:
 
 Không trộn input lấy từ latest APK khác vào raw này. Không commit APK/XAPK/full audio/full atlas hoặc file >5MB; release gốc giữ **draft**.
 
-## 2. Thứ tự đọc để viết gameplay, không phải đọc tuần tự 64 report
+## 2. Thứ tự đọc để viết gameplay, không phải đọc tuần tự mọi report
 
 `raw/` trong bảng là `reverse-engineering/raw/`.
 
@@ -39,6 +39,7 @@ Không trộn input lấy từ latest APK khác vào raw này. Không commit APK
 | Enemy/controller/boss/animation | 34–41, 59–63 khi liên quan | raw controller graph, native receiver/consumer, decoded clips. Timestamp không đủ làm state machine |
 | UI render/layout/sprite refs | 43–47, 62 | `raw/ui/_index.csv`, UI reference/render exports, typed PPtr. Lấy index làm population, không glob mọi layout cũ |
 | Sprite → texture/atlas | 62 | `raw/sprite-geometry/{index.json,objects-000..005.jsonl.gz,resolved-geometry.json.gz}` |
+| Ship save/equip/rank/trial/tech/talent | 65–66 | `datas/player_loadout_persistence.json`, `raw/player-loadout/{index.json,array-blobs.json.gz,contracts.json.gz,native/*}`; saved khác trial/effective/cached |
 | Ship/drone/gun/HP/economy | 14–15, 19, 28 + native consumer | `datas/README.md`, config CSV, `raw/il2cpp-consts/Player_Get_Datas*`. HP prefab không mặc định là HP runtime; thiếu field không chứng minh không có khác biệt theo tàu |
 | Asset/audio/spine/font | `docs/assets/INDEX.md`, 17, 21–23 | Contact sheet để duyệt; full pack ngoài Git để tra/crop/nghe; audio-index + Spine mapping |
 
@@ -75,6 +76,10 @@ Stage2 denominator **262**, stage3 **238** → mode0 thresholds **52/117/209**, 
 Spawn enum: 0PinMap/1Path/2Points/3RandomTopDown/4Rocket/5EndMap/6StartWave. Concrete spawner mới quyết định hành vi: enum/nodename không thay được class/consumer. Rate0 không tự là cùng frame; `number=0` không có nghĩa không spawn. Không chia đôi/dedup enemy theo tên.
 
 **Không lấy việc chưa chứng minh low-kill playthrough/BB pool history làm blocker** cho đọc/dựng scenario. Chỉ quay lại lifecycle khi có mâu thuẫn cụ thể ảnh hưởng logic đang viết.
+
+### Loadout save và consumer — bổ sung report66
+
+Đọc [66 — tàu/rank/trial/tech/talent](apk-analysis/66-player-loadout-save-rank-trial-tech-consumers.md), `datas/player_loadout_persistence.json` (15keyfamilies; raw33methods/43checks). Có exact keys/defaults, mảng rank metadata-backed và consumer gameplay. **Equip getter lỗi reset cả hai slot; rank base repair trước trial override; floor2 ở loader không phải getter; mode4/Game có effective-tech/device override, không xóa save.** Talent selection−1 khác tech level0. Không tự sửa rocket count stat5 level6..8→3 thành9. Chưa có schema/migration toàn game hay full upgrade/trial lifecycle.
 
 ### Save mở đầu — contract mới đã bóc (report65)
 
@@ -119,6 +124,7 @@ Chưa có quyết định rõ thì hỏi user, không tự đoán từ engine ga
 python3 datas/validate.py
 python3 tools/verify/shared_stage_victory.py
 python3 tools/verify/opening_persistence.py
+python3 tools/verify/player_loadout_persistence.py
 python3 tools/verify/peer_handoff_review.py
 python3 -m unittest discover -s tests -q
 ```

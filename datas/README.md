@@ -53,3 +53,17 @@ phải version save của APK. Xem
 Tái tạo: `python3 tools/verify/opening_persistence.py`. Không sửa bảng này tay.
 Không gọi getter trong serializer/debug như truy vấn thuần: StageTarget và
 IndexTutorial có nhánh ghi ngược tiến độ; Unity PlayerPrefs khác dictionary `/Prefs`.
+
+## Contract ship/loadout — bổ sung report66
+
+`player_loadout_persistence.json`:15 nhóm khóa int32 cho ship equip/unlock,
+level/rank/trial/cards/skin, tech/device/talent; có reader return type riêng,
+method refs, raw hash, mảng rank đã join metadata và consumer gameplay.
+**Tạm thời/partial**, không phải full save schema hay save version của APK.
+Raw `reverse-engineering/raw/player-loadout/` giữ native ASM/JSON, metadata array
+blobs có padding và `contracts.json.gz` (33methods/43checks).
+
+Tái tạo: `python3 tools/verify/player_loadout_persistence.py`. Không sửa tay.
+Phân biệt saved/trial/effective/cached: getter equip lỗi có thể reset cả hai slot;
+rank repair base trước override; floor2 nằm ở loader; mode4/Game override tech và
+device không xóa saved state. Xem [report66](../docs/apk-analysis/66-player-loadout-save-rank-trial-tech-consumers.md).

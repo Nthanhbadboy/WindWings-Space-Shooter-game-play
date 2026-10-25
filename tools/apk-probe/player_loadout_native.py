@@ -43,7 +43,7 @@ def main():
                 if not entry.endswith('.apk'):
                     continue
                 with zipfile.ZipFile(io.BytesIO(outer.read(entry))) as part:
-                    for name in INPUTS.keys() & set(part.namelist()):
+                    for name in sorted(INPUTS.keys() & set(part.namelist())):
                         data = part.read(name)
                         assert hashlib.sha256(data).hexdigest() == INPUTS[name]
                         destination = temp / Path(name).name

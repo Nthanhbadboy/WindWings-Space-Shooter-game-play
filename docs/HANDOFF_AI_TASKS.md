@@ -1,6 +1,6 @@
 # Phân việc vòng 4 — cái còn thiếu thật
 
-> **Cửa vào hiện hành (sau report65):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) và [review cf27b9755](HANDOFF_REVIEW_cf27b9755.md). Các vòng/snapshot cũ dưới đây là lịch sử, không tự là task hay phán xét hiện hành.
+> **Cửa vào hiện hành (sau report66):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) và [review cf27b9755](HANDOFF_REVIEW_cf27b9755.md). Các vòng/snapshot cũ dưới đây là lịch sử, không tự là task hay phán xét hiện hành.
 
 > Trạng thái hiện tại: `docs/conclusions.md`. Đã có **dữ liệu thô** trong
 > `reverse-engineering/raw/` (typetree JSONL gz, UI layout gz, hằng số IL2CPP + asm).
@@ -554,3 +554,13 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 - Typed Set/Get Int/Float/String→Unity PlayerPrefs; SetValue/GetValue→dictionary static riêng→JSON/Encrypt/ASCII/file persistentDataPath+/Prefs. SaveToDisk/focus/quit custom không có direct Unity Save trong3body đã đọc, không chứng minh flush mọi prefs/toàn game không flush.
 - DeleteKey chỉUnity; DeleteAll clearUnity+dict+customSave nhưng thân đó không invalidate progression caches. RefreshDatas chỉcache−1, không resetprofile. Caller/runtime/cloud/migration chưa audit đủ.
 - Entry START_HERE, conclusions, datasREADME đã nối report65. Tiếp bóc ship/equip/talent/audio/save còn thiếu theo nhu cầu implement; fullassetpack/crop/browsability vẫn mở. Không speculative BB-history và Premium.
+
+
+## Report66 — ship save/loadout và tech/talent consumer, hiện hành
+- Report `apk-analysis/66-player-loadout-save-rank-trial-tech-consumers.md`; `datas/player_loadout_persistence.json`:15keyfamilies, exact defaults/type/method refs; raw `player-loadout/contracts.json.gz`:33methods/43checks. 10tests mới +3recoverytests; tổng148PASS. Các con số là static checks, không replay.
+- Hai lớp Player_Saved_Datas/Player_Device_Saved_Datas được recover riêng từ cached XAPK/native/metadata đã pin hash: CI40192146035success. Raw ASM+JSON/index/metadata array blobs giữ đủ, không commit original binary/full assets.
+- PlayerUsed slot0default10001/other10002; missing không write. Stored<=0 reset CẢ PlayerUsed0/1 rồi reread. SetPlayerUsed không tự check unlock/duplicate hay flush loadout cache. CheckDoubleIDShip là routine riêng, khi trùng tìm ship unlocked khác để đổi slot0.
+- Base PLAYER_RANK default2/repair<=1 trước trial flag; TRIAL_ID_==1 chọn TRIAL_RANK_/TRIAL_LEVEL_ default0. Không gộp getter với loader floor2. Rank arrays metadata-backed MaxLevel=[10,20,30,60,120,250,500], Cards=[0,20,50,80,250,500,800], StartRanks=[2]*24, MAX_RANK_INDEX6; không suy full payment flow/cap enforcement.
+- GP_Setup cached two-slot array -> GP_Loader rank/unlock/skin consumer. Tech wrapper mode4 AND sceneGame trả0; device wrapper trả[-1]*4, không xóa saved. TALENT_SELECTED default−1, startup callback cần StageTarget>=Board_Begin.stageUnlockTalents + mode!=4; numeric threshold còn mở. Stat5 rocket count6..8=>3 giữ nguyên, không sửa monotonic.
+- **Task peer** nhánh arena/20330d0e-windwings-space-shooter-game-p: cập nhật spec save/loadout theo report65–66, phân biệt saved/trial/effective/cached, exact1 flags và getter write-on-read. Giữ trial expiry/full upgrade lifecycle là unknown; nếu thêm validation/atomicity hay sửa branch thì ghi new design. Không dùng snapshot spec cũ làm bằng chứng APK.
+- Tiếp audio trigger/rules và full pack sprite/audio/spine/font browsing/validation. Premium, speculative BB pool history vẫn không phải task/blocker.
