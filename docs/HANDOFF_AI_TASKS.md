@@ -851,3 +851,20 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   unproven automatically, not missing native bytes. Do not replace this with global UNKNOWN rhetoric.
 - Receipt93: code8d5d2eba7, Verify40222156868 SUCCESS/job1m9s. Handoff93/green-receipt
   đã gửi PR12, raw/wing-implementations giữ response IDs. Chưa tự nhận ACK93.
+
+## Report94 — Wing13/22/23/24 emission chains, not whole23 closure
+- `docs/apk-analysis/94-wing-emission-coroutines-and-packet-geometry.md`, `datas/wing_emission_flow.json`:
+  39 bodies/3208 instructions byte→ASM;53new/full814 local PASS67.850s; datas validate PASS.
+-13 StartCoroutine before deadline;22/23/24 after deadline.13 two pool attempts/yield, frozen
+  width/rate-per-number capped.05. Present IBullet branch exercised to SetBullet/SetActive,
+  x±width*i, angles±4*i, lifetime2 (NOT damage), through=super&&throughShield.
+-23/24 one child packet/yield incl trailing wait; live shotRate/live childCount after packet,
+  mutation to count0 passes+inf to Wait ctor, not silent clamp.
+-Basic22/23/24: even N + spacingX0 can emit N+1 calls; N0 can center; only id−1 earlyfilter.
+  Circle22/23 uses full worldXYZ; no duplicate endpoint; doesn't apply Basic id−1 filter.
+-Closure ABI22 differs23/24; callbacks decoded separately. Basic/Circle terminal helper entry
+  remains explicit observation boundary; no successful pool/hit/DPS claim.13 quaternion adapter
+  returns controlled identity, records native Euler inputs, not Unity quaternion implementation.
+-Sound pool.04super/.08normal, PlayOneShot clip5 volume1/.6, not camera shake; pinned8byte recovery.
+-ACK93 received6401658709/raw retained; peer spec not yet independently re-reviewed. Queue Arena/PvP
+  after remaining named wing consumers + map/save, per6401593117. Don't wait ACK94 to continue.
