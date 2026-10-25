@@ -470,12 +470,14 @@ liên tục; pitch randomization cho kết quả tương đương với 1/7 dung
 | **giữ nhãn gốc** (passthrough) | 643 | lấy category cũ, **không kiểm chứng** |
 | **unknown** | **505** | `label_source=unknown` — chưa có ý nghĩa ⇒ mức thấp nhất |
 
-⚠ **Lỗi ngữ nghĩa trong `art-worklist` (624):** luật `is_digit` gom sprite tên **toàn số** vào
-bucket "glyph font" — trong đó có **25 sprite tàu** ("10001"…) và ~34 sprite boss (id_wave "7001"…).
-Không mất sprite (2185 vẫn phủ đủ qua 623 gốc + glyph) nhưng **nhãn bucket sai** — vẽ lại theo
-bucket glyph sẽ hiểu nhầm. Tàu/boss đã có binding riêng (`ships.json`/`bosses.json`) nên truy ra
-được; phải tách khỏi bucket glyph khi vẽ. Cùng nhóm meaning chưa xong: **116 atlas-name không
-match** (claim AB1) · row 5 "1.487 Other" (C) · row 6 `Saw` rig 27 (C).
+⚠ **Lỗi ngữ nghĩa trong bucket glyph của `art-worklist.py`** (⚠ lần 34 đo lại — lần 32 ghi **sai
+cơ chế**: CSV **624 rows chỉ chứa phần tên-chữ**; bucket glyph **không nằm trong CSV**, tool chỉ in
+"+1 bộ font 292 glyph, không vẽ từng cái"). Đo thật: 292 glyph có **118 tên toàn số** = **25 tàu**
+("10001"…, category ships) + **32 boss** (id_wave) + **13 drone** + 48 unclassified ⇒ vẽ theo
+bucket đó sẽ **bỏ sót 70 sprite nhân vật chính**. Tàu/boss/drone truy ra được qua
+`ships.json`/`bosses.json`/`drones.json` (sprite_path_id) — **phải tách khỏi bucket glyph khi vẽ**
+(số "~34" của lần 32 là ước lượng sai, số thật = 32 boss). Cùng nhóm meaning chưa xong:
+**116 atlas-name không match** (claim AB1) · row 5 "1.487 Other" (C) · row 6 `Saw` rig 27 (C).
 
 **Binding (sprite/prefab → consumer):**
 

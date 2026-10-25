@@ -2901,7 +2901,7 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
 - **Auto-gain**: `AutoGainHealth 14c7bc8` mỗi **5 s** (InvokeRepeating literal đã decode) — **guard
   `CurrentHealth > 0`** (không hồi sinh tàu đã chết; clamp-đầy + post21 không thay guard) =
   techHeal + deviceHeal, clamp StartHealth, **không nhân deltaTime**; `GetHpRecoverSpeed` theo
-  **TechStatLevel(0): ≤0 → 0** (level0 KHÔNG phải ,01×1,0 — sửa theo góp ý) · 1→,01 · 2→,01×1,03 ·
+  **TechStatLevel(0): 0 → 0** (level0 KHÔNG phải ,01×1,0; **âm rơi nhánh base** — report 91, không tự thêm ≤0) · 1→,01 · 2→,01×1,03 ·
   3–4→,01×1,06 · 5–7→,01×1,08 · ≥8→,01×1,10; `TimeToImmuneOneHit`: ≤0→MaxValue · 1–3→50 · 4–5→45 ·
   6→40 · 7–8→35 · 9→30 · ≥10→25.
 - **`Board_Drones` 3 bảng UI có consumer thật** (≠ combat): ctor float[24] = **`playerPriceMultipleA`
@@ -2984,3 +2984,27 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   VA `7575e0` = f32(.04), f32(.08)). 53 tests mới; full **814 PASS**; code `589e1f588`; ACK93 ✓
   (`6401658709`), spec mới chưa bị review độc lập. Tiếp peer: named firing leaves/consumers →
   named map/save → Arena/PvP (giữ thứ tự, không chờ ACK94).
+
+### 24.28 Report 95 — 5 pooled leaves Basic/Circle 22/23/24 + trampoline (peer `4981c4ce2`, **854 tests**)
+
+- **5 leaves KHÔNG chung lifetime/speed**: 22 Basic `14a3f50` (**5**/owner.btlSpeed) · 22 Circle
+  `14a3d80` (**5**/speed arg) · 23 Basic `14a5d2c` (**4**/owner + **có formation**) · 23 Circle
+  `14a58b4` (**10**/speed arg) · 24 Basic `14a8420` (**4**/owner + formation). Force 1 · target null ·
+  mask = `owner.targetLayer`. **throughShield = owner trực tiếp** cả 5 (khác 13: super ∧
+  throughShield ở consumer — không từ leaf suy xuyên shield).
+- **Rotation/pool**: Basic = `point.eulerAngles.z + packetAngle` → FromEulerRad; Circle = packetAngle
+  thôi; **SetBullet đọc lại pooled `eulerAngles.z`** (không truyền packetAngle làm startAngle);
+  Pool null → throw (không silent-skip).
+- **Activate TRƯỚC khi biết IBullet** (khác 13): cả 5 leaf SetActive(true) rồi mới GetComponent —
+  thiếu IBullet: 22/23-Circle return **không** PoolObject · 23/24-Basic **có** PoolObject.
+- **Trampoline 23** `14a6008` **branch ra ngoài method** → `2990890`: peer không đoán opcode —
+  recovery `40223486658` lấy 64 raw bytes (`ldr x10,[x10,#0xbf0]; b #0x14a600c`), fixture chạy
+  nguyên bytes, lân cận giữ raw **không** gọi là code đã đi qua.
+- **Basic23/24 formation callbacks**: Combine **formation.OnCollided/OnDestroyed trước, caller sau**
+  (GOT `2ae8020/28`); `CreateBullets(force, null, layer, btlSpeed, 4, caller-collision-gốc)` đọc
+  speed/mask **lại** sau SetBullet. N=2 spacing 0 đi **3 leaf/3 SetBullet thật** (không chỉ entry);
+  Circle id−1 vẫn Pool với bitpattern `ffffffff` (Pool thật xử lý là việc riêng).
+- Kéo về: `datas/wing_pooled_leaves.json` (**5 bodies/837 instructions** · 4 RELA joins).
+  40 tests mới; full **854 PASS**; code `772839187a`. **Chưa chạy bên trong** (ghi rõ consumer tiếp):
+  PoolManager, engine transform, IBullet concrete, `Bullet_Formation.CreateBullets 123d98c` (raw có
+  ở combat-chain) — không lấy 95 làm giấy đóng 23 wing hay DPS/hit.

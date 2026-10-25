@@ -72,6 +72,18 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 34 — 25/10, tái kiểm CẨN THẬN theo nhắc của chủ dự án "cứ làm kiểu quán tính" — tự bắt lỗi của chính mình):**
+> ① **Bucket glyph lần 32 ghi SAI cơ chế**: CSV 624 chỉ chứa tên-chữ — bucket glyph (292) nằm NGOÀI
+> CSV; đo lại: **118 tên số = 25 tàu + 32 boss + 13 drone + 48 unclassified** (số "~34 boss" là
+> ước lượng sai, thật = 32) ⇒ sửa `ASSETS` §9.1 + `MISSING` row 16: vẽ theo bucket sẽ bỏ sót
+> **70 sprite chính**; ② **TechStatLevel âm** rơi nhánh base (report 91) — sửa "≤0 → 0" thành
+> "0 → 0; âm → base" ở §24.24 + `MISSING` §2.2 (lần 29 khái quát quá); ③ `START_HERE` L2 refresh
+> tiến độ wing (93 config 17/24 · 94 emission · 95 pooled leaves); ④ **§24.28 report 95**
+> (`4981c4ce2`): 5 leaves lifetime 5/5/4/10/4 · Activate TRƯỚC GetComponent<IBullet> ·
+> **trampoline 23** branch ngoài method (64 raw bytes, không đoán opcode) · formation callbacks
+> Combine trước caller; kéo `datas/wing_pooled_leaves.json` (datas/ = **42**).
+> verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 33 — 25/10, đính chính tuyên bố L3 theo bắt lỗi của chủ dự án — "thế mà dám tuyên bố L3 đủ"):**
 > Hạ **L3 từ "input đã đủ / bắt chước đủ ✅" → 🟡 một phần** ở cả `START_HERE` row L3 · `DONE` §2
 > row "Bắt chước đủ?" · §4.2 row L3: đủ để **vẽ lại từng sprite đã biết** (pixel/pivot/border ĐÓNG);
