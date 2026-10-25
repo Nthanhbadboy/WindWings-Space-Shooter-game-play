@@ -817,3 +817,6 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 
 - Report82 final: codecd2b317dd, Verify40207070647SUCCESS;290localtestsPASS.
   PeerPR12comment6399518575 nhậnproof/realparserfix vàledger mới, chưapeerack.
+
+- Receipt91: code4b7a01a69, Verify40217833652 SUCCESS/job56s; full648 local PASS39.654s.
+  Findings/review PR12comment6400980901; HP/Board tasks answered, chưa tự ACK90/91.

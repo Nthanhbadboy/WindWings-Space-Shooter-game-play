@@ -187,3 +187,7 @@ Snapshot ecff896c còn các điểm cần sửa:
 thêm queue. Việc sau:23 wing implementation còn lại, drone prefab/loadout sourceID
 và serialized turnRate3; rồi named map/save consumers còn mở. Không yêu cầu thêm
 screenshot/runtime để đọc tiếp static, không merge/push peer.
+
+**Receipt91:** code4b7a01a69, Verify40217833652 SUCCESS (job56s). Full648 local
+PASS39.654s; verifier/datasvalidate PASS. Góp ý + findings gửi PR12comment6400980901;
+chưa có ACK90/91 quan sát được lúc ghi receipt. Peer tip vẫn ecff896c.
