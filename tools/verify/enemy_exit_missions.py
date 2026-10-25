@@ -78,5 +78,5 @@ def build():
 
 if __name__=='__main__':
     d=build()
-    with gzip.open(ROOT/'reverse-engineering/raw/ui-audit/enemy-exit-missions.json.gz','wt') as f:json.dump(d,f,indent=2)
+    (ROOT/'reverse-engineering/raw/ui-audit/enemy-exit-missions.json.gz').write_bytes(gzip.compress(json.dumps(d,indent=2).encode(),mtime=0))
     print(len(d['methods']),'methods;',len(d['checks']),'checks',d['checks'])

@@ -64,5 +64,5 @@ def build():
 
 if __name__=='__main__':
     result=build()
-    with gzip.open(RAW/'resolved-default-waves.json.gz','wt') as f:json.dump(result,f,ensure_ascii=False,indent=2)
+    (RAW/'resolved-default-waves.json.gz').write_bytes(gzip.compress(json.dumps(result,ensure_ascii=False,indent=2).encode(),mtime=0))
     print(json.dumps({w['resource_key']:{k:w[k] for k in ('configured_spawn_slots','prefab_histogram','spawner_class_histogram')} for w in result['waves']},indent=2))
