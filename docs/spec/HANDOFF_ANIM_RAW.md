@@ -22,11 +22,14 @@
 | Nhịp 33 prefab boss | **793 event**, 129 tên hàm, nhịp **0,17 / 0,33 / 1,0 / 5,0 s** | `event-receivers.json.gz` |
 | Hit flash enemy | **0,05 s** qua `Invoke`, alpha **0,5**, 2 hằng số trong `Enemy_Display.OnHit` | `native-calls.json` |
 | Nhịp pha boss | **22** lần `WaitForSeconds`, **4** hằng số (0,5 / 1 / 2 / 3 s), **18** lấy từ biến | asm 69 file |
-| Ghép **prefab ↔ lớp handler** | **16/34** prefab, quan hệ **1:1**, từ **14** lớp `*_AnimationEvents` đã export (`typetrees/*AnimationEvents*` là export **theo instance**, `gameobject` = đường dẫn trong prefab) | claim **S1** |
+| Ghép **prefab ↔ lớp handler** | **17/34** prefab (17 còn thiếu, **145** event), quan hệ **1:1**, từ **18** lớp `*_AnimationEvents` đã export (`typetrees/*AnimationEvents*` là export **theo instance**, `gameobject` = đường dẫn trong prefab) | claim **S1** |
 | Timeline theo giây của 269 cặp (prefab, clip) | `BOSS_ANIM_TIMELINE.md` — 795 event, 130 tên hàm | claim **R1–R6** |
 | Tên field 12 delegate + 5 field `BossSpineEventHandler` | `interesting-classes.cs` (kéo 24/10) | claim **T2**, **T3** |
 | 8 tên entry boss 1 đọc thẳng từ prefab | `Boss1_Director.csv`: `Boss-39002`, **1** instance | claim **T1** |
-| Ma trận `*_Director` ↔ `*_AnimationEvents` | **18** / **16** / **13** trên 39 prefab `Boss-*` | claim **T4** |
+| Ma trận `*_Director` ↔ `*_AnimationEvents` | **18** / **18** / **15** trên 39 prefab `Boss-*` | claim **T4** |
+| **Ai đặt trigger `Animator`** | **7 call site `Animator.SetTrigger` / 5 method**, tất cả trong `Boss_AttackPhases` (`CallMixAnimation` · `OnGunDie` · 3 vòng `IEAttackRound*`) | `native-calls.json`, claim **W1** — **đừng** đi tìm lại |
+| **Tên trigger** | **288** trigger (`m_Type=9`) · **15** bool · **49/52** controller boss; `Appear` 30 · `Attack2` 23 · `Die` 22 · `Attack1` 20 | `controller-graphs.json.gz`, claim **W2–W3** |
+| **Chuyển động enemy** | `Update` 3 nhánh · `PathFollow` dùng `VertexPath.GetPointAtDistance` + hướng `atan2`×`57.29578` · `OnPathEnded` = `UnityEvent.Invoke()` | `native-calls.json`, claim **W4** |
 
 Tất cả số trên đã khoá bằng claim `J*` + `K*` trong `tools/verify-claims.py`.
 
@@ -34,12 +37,13 @@ Tất cả số trên đã khoá bằng claim `J*` + `K*` trong `tools/verify-cl
 
 ## 1. Bốn task
 
-### T1 — **18 prefab** có event clip nhưng chưa export lớp handler
+### T1 — **17 prefab** có event clip nhưng chưa export lớp handler
 
-**Cập nhật 24/10 (hẹp hơn bản đầu):** bản đầu ghi *"3 lớp thiếu typetree"*. Đo lại bằng
-`typetrees/*AnimationEvents*` + `event-receivers.json.gz` thì phạm vi thật là **18 prefab**
-(`Boss-37001/02/04/09/10/11/12/13/14/15/16/17`, `Boss-39003/05/09/11/21`, `CB-30040`) với
-**262/795 event** — chiếm **33 %**, không phải 68 %.
+**Cập nhật 25/10 (số đúng của snapshot `9aed767b1`):** bản đầu ghi *"3 lớp thiếu typetree"*; bản
+24/10 ghi **18 prefab / 262 event** (số của `019e704d1`). Đo lại: **17 prefab** còn thiếu, **145 event
+/ 795 = 18 %** (`Boss-37001/02/04/09/10/11/12/13/14/15/16/17`, `Boss-39003/05/09/11/21` bớt nhóm đã
+ghép, `CB-30040`) — claim **S1** giữ đúng bộ số `(17, 17, 145, 34)`. Danh sách chính xác phải lấy
+bằng `event-receivers.json.gz` ⋈ `typetrees/*AnimationEvents*`, **không** chép tay từ đây.
 
 **2 lớp** ở trạng thái **có asm nhưng không có typetree** (có `il2cpp-consts/*.json`, **0** instance
 export): `Boss1_AnimationEvents` · `BossSpineEventHandler`. Lớp thứ ba, **`Boss_1_Animation`, đã xong
@@ -72,9 +76,11 @@ ghép được, quan hệ 1:1), và lớp đó **có** trong `il2cpp-consts/*.js
 **Tự kiểm:** in `(số prefab ghép được, số prefab còn thiếu)` — mốc hiện tại **(16, 18)**; sau task
 phải là **(34, 0)** hoặc ghi rõ lớp nào **không tồn tại** trong assembly.
 
-**Lật ngược nếu:** export xong mà `Boss1_AnimationEvents` vẫn **0 instance** ⇒ lớp đó **không gắn
-prefab nào** (code chết), và 12 handler ở §T2 **không** phải đường mà 16 prefab kia dùng. Điều này
-không làm hỏng gì: 16 prefab đã ghép được lớp thật (`Boss10_…`, `BossAnimationEvents`, …).
+**Lật ngược nếu:** export xong mà `Boss1_AnimationEvents` vẫn **0 instance** trong **phạm vi export** ⇒
+ghi **"không tìm thấy trong tập này"**, **không** kết luận "code chết": 0 instance export ≠ 0 instance
+runtime (có thể lớp được `AddComponent` lúc chạy, hoặc prefab nằm ngoài tập). Khi đó 12 handler ở §T2
+**không** phải đường mà 16 prefab kia dùng — điều này không làm hỏng gì: 16 prefab đã ghép được lớp thật
+(`Boss10_…`, `BossAnimationEvents`, …). (Hạ mức theo review 25/10, mục R6-T1.)
 
 **Lật ngược (2):** field chuỗi của `BossSpineEventHandler` **không phải** `Stop` / `Banplasma` (2 tên
 event duy nhất trong rig `skeleton__21`) ⇒ ứng viên ở `ANIMATION_SCRIPT.md` §2.2 sai.
@@ -120,11 +126,16 @@ Task này vì thế **chỉ còn một câu**: *ai gán chúng*.
 **Tự kiểm:** đếm **số handler có ít nhất một chỗ gán** (kỳ vọng 12, không phải "có vẻ nhiều").
 Handler chưa tìm thấy phải liệt kê riêng — đó là dữ liệu, không phải thất bại.
 
-**Lật ngược nếu:** **0/12** tìm thấy ⇒ 12 handler không được gán bằng code C# trong assembly này
-(có thể do prefab `AnimationEvent` gọi thẳng, hoặc lớp chưa từng được dùng). Ghi rõ là REVERSED.
+**Lật ngược nếu:** **0/12** tìm thấy ⇒ ghi **"0 xref trong phạm vi đã quét"**, **không** suy ra
+"không có C# assignment": chưa chứng minh coverage toàn binary / toàn type / indirect call /
+registration. Trùng offset **không** đủ xác định type. Ghi REVERSED kèm phạm vi quét. (review R6-T2)
 
-**Mở khoá:** "sự kiện → hành vi" của **793 event** trên 33 prefab boss, tức mức **C → A** cho nửa
-còn lại của `ANIMATION_SCRIPT.md`.
+**Mở khoá (thu hẹp 25/10, review R2):** 12 handler này **chỉ** thuộc lớp `Boss1_AnimationEvents`; **không**
+phải chìa khoá cho 793 event của 33 prefab boss — các prefab đó dùng lớp khác (`Boss10_AnimationEvents`
+78 use · `BossAnimationEvents` 246 · `Boss9_…` 48 · `Enemy_Sync_Attack2` 24 …). Số đó là **candidate
+records**, không cộng thành unique event khi còn nhập nhằng. Việc phải làm là bảng theo từng
+**(prefab, Animator GO, receiver component/class, method, binding, hành vi)**, ưu tiên receiver **có
+instance thật**. Không tìm thấy lớp ≠ lớp không bao giờ được tạo runtime.
 
 ---
 
@@ -152,6 +163,11 @@ nên đọc được "gọi hàm nào trên object nào" mà không cần chạy
 ```
 
 **Tự kiểm:** `(số prefab có ≥1 persistent call, tổng số call)`.
+
+**Lưu ý phạm vi (R6-T3):** `UnityEvent` thường là dữ liệu **inline** trong prefab, **không** phải asset
+PPtr riêng — PPtr chỉ là `m_Target`/`m_ObjectArgument` bên trong. Tập export rỗng **không** đại diện
+mọi prefab nếu thiếu class/tree. Raw mới **đã có** persistent calls ⇒ trong tập này **không** còn giả
+thuyết "mọi thứ nối bằng code".
 
 **Lật ngược nếu:** tổng số call = **0** trên toàn bộ prefab ⇒ game **không** dùng Inspector-wired
 event; mọi thứ nối bằng code. Đó cũng là một câu trả lời đóng §T3, không phải lỗi.
@@ -187,10 +203,43 @@ event; mọi thứ nối bằng code. Đó cũng là một câu trả lời đó
 Mốc đã biết: `datas/animator_map.csv.gz` có **5.792** dòng, `Afterburner` là controller phổ biến
 nhất (**72** dòng enemy).
 
+**Lưu ý phạm vi (R6-T4):** 0 parameter **không** chứng minh `Animator.Play` — graph có thể tự chạy /
+thoát theo exit-time, crossfade, override, hoặc Playables. Chỉ **xref `Play`** mới xác nhận `Play`.
+
 **Lật ngược nếu:** tổng parameter = **0** ⇒ enemy dùng `Animator.Play("tên clip")` từ code; khi đó
 task kế là xref các lệnh gọi `Play`, **không** phải đọc parameter.
 
 **Mở khoá:** "animation enemy = máy trạng thái" từ mức **A về cấu trúc** lên **A về điều kiện**.
+
+---
+
+### T4b — **6 chuỗi trigger** mà `Boss_AttackPhases` truyền vào `Animator.SetTrigger` (mới 25/10)
+
+**Đã biết (không cần tìm lại):** `Animator.SetTrigger` có **7 call site / 5 method**, tất cả trong
+`Boss_AttackPhases` — `CallMixAnimation` `0x152e880` · `OnGunDie` `0x15326d0` · 3 vòng
+`IEAttackRound1/2/3` `0x1532f74`/`0x1533428`/`0x1533978` (+2 trong cùng coroutine); mỗi site nạp
+đối số `x1` từ **hằng chuỗi metadata** rồi `bl #0x27583b0`. Tên trigger trong controller là **288**
+chuỗi đã có (`Appear`, `Attack1`…`Attack16`, `Mix1..4`, `Die`, …).
+
+**Còn thiếu:** **chuỗi cụ thể** ở 6 site đó. Đây là chỗ **không** suy được từ asset: cần bảng
+`string literal` của `global-metadata.dat` (offset metadata ↔ chuỗi) — việc **đào raw**, không phải
+đọc prefab.
+
+**Việc:** với mỗi site, lấy `ldr x1, [x8, #off]` (x8 = `Il2CppMetadataUsage` của lớp) → tra bảng literal
+→ in `(method, rva, chuỗi)`. Nếu bảng literal không có, xuất **offset metadata** thôi cũng đủ để tôi
+đối chiếu chéo với 288 tên trigger đã có (khớp duy nhất hay không).
+
+**Artifact:** `anim-raw-T4b/trigger-strings.json`
+```json
+[{"caller": "Boss_AttackPhases.CallMixAnimation", "rva": "0x152e880",
+  "metadata_offset": "0x...", "string": "Mix1" | null}]
+```
+
+**Tự kiểm:** `(số site có chuỗi, số site chỉ có offset)` = **(6, 0)** khi xong; chuỗi phải nằm trong
+tập **288** tên trigger đã export — nếu không, ghi rõ là trigger **không** thuộc 49 controller đã đọc.
+
+**Lật ngược nếu:** chuỗi không khớp bất kỳ tên trigger nào ⇒ `SetTrigger` gọi trên Animator **khác**
+(không phải controller của prefab boss) — khi đó phải export thêm `Animator` runtime.
 
 ---
 
@@ -218,6 +267,10 @@ sánh ngưỡng.
 ```
 
 **Tự kiểm:** đếm **số chỗ đọc field `rate`** trong asm (kỳ vọng ≥1, liệt kê đủ).
+
+> **Cảnh báo diễn giải (R5, 25/10):** `rate = 0` là **quan sát A**; cách đọc nó (không giãn cách /
+sentinel / default) vẫn là **giả thuyết** cho tới khi có consumer asm. Số quân/wave **không** đồng
+nghĩa mật độ theo thời gian (quân/giây). Không dùng lý do "game đã phát hành" làm bằng chứng.
 
 **Lật ngược nếu:** `rate` là **số quân mỗi giây** (không phải khoảng cách) ⇒ `rate = 0` = **không
 spawn**, và 2.371 spawner đó phải có cơ chế khác kích hoạt (ví dụ `copies`). Khi đó §3 của
@@ -281,7 +334,7 @@ khi đó gộp vào T3 và đóng bằng `m_PersistentCalls`.
 | 5 | Exit code: **0** PASS · **2** REVERSED · **3** MISSING (thiếu input) | mã thoát = phán quyết |
 
 **Thứ tự ưu tiên nếu chỉ chạy được một task:** **T1** (rẻ nhất — chỉ thêm 3 dòng vào `TARGETS`,
-mở khoá nhánh Spine) → **T2** (mở khoá 793 event) → **T6** (map→wave, blocker #1 của
+mở khoá nhánh Spine) → **T2** (chỉ lớp `Boss1_AnimationEvents`, **không** phải 793 event) → **T6** (map→wave, blocker #1 của
 `COVERAGE_AUDIT.md`) → **T5** (mật độ địch) → **T3** → **T7** (âm thanh) → **T4** (đắt nhất, cần đọc
 `AnimatorController` trong bundle).
 

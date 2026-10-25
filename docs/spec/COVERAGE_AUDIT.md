@@ -7,7 +7,7 @@
 > `tools/verify-claims.py` (nhóm **P**), hoặc trỏ thẳng vào file dữ liệu.
 >
 > **Quy mô hiện tại:** **34 tài liệu** trong `docs/spec/` (chưa kể file này) + **29 file dữ liệu**
-> trong `datas/` + **121 claim** đã khoá (**119 PASS · 2 SKIP**; nhóm P + Q + R).
+> trong `datas/` + **135 claim** đã khoá (**133 PASS · 2 SKIP**; nhóm P → W).
 
 ---
 
@@ -43,7 +43,7 @@ phải **cơ chế**.
 | 9 | **Kinh tế / IAP** | ✅ **A** | **170 sản phẩm** (71 consumable + 99 non-consumable) · `stepCommon 0,18` · `DeltaStarCost 50` | — |
 | 10 | **Nhiệm vụ / sao** | ✅ **A** | `pct[mode][slot] × countEnemies` · `PercentToCompleteMissions222` | — |
 | 11 | **UI** | ✅ **A** cấu trúc | **125 lớp** · **797 màn** · **140.797 node** · **5.711 nút** · 54.787 file layout | **art** (D) — L1 làm art mới |
-| 12 | **Animation** | 🟡 **B** | 793 event có mốc · nhịp 0,17/0,33/1,0/5,0 s · hit flash 0,05 s | **điều kiện** enemy (T4) · **hành vi** handler (T2) · **0/791 keyframe** (cố ý bỏ) |
+| 12 | **Animation** | 🟡 **B** cho **mốc** · **C** cho **điều kiện + hành vi** | 793 event có mốc **trong clip** (không phải thứ tự pha) · nhịp 0,17/0,33/1,0/5,0 s · hit flash 0,05 s | **thứ tự pha + điều kiện vào/thoát** (R1) · **hành vi** handler (T2) · **0/791 keyframe** (cố ý bỏ) |
 | 13 | **FX** | 🟡 **B** | **4.845** `ParticleSystem` · ~23 module · scalar + `length_in_sec` + `looping` | **curve** module (chưa đọc) |
 | 14 | **Âm thanh** | 🟡 **B** | **92 sound id** → **92/92** resolve ra file (83 sfx + 9 bgm) trên **69** `AudioClip` | **trigger**: âm nào phát ở sự kiện nào (chưa xref) |
 | 15 | **Cảm giác (feel)** | 🔴 **D** | hit flash 0,05 s + alpha 0,5 (đo được) | hit stop · aim assist · input latency · thứ tự stat · tỉ lệ rơi · giảm damage của giáp (D1–D4) |

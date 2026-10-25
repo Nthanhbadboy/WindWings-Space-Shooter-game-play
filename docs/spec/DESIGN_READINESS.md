@@ -9,7 +9,7 @@
 > bản kia trả lời *"còn thiếu chính xác chỗ nào"*. Kết luận khớp nhau: **2 chỗ chặn** (map→wave · HP runtime).
 >
 > **Cập nhật 24/10 — vòng 2:** sau khi giải script animation (`ANIMATION_SCRIPT.md`), hệ
-> **Animation** không còn là bức tường: **35/39 prefab boss** có script đọc được, boss 1 giải
+> **Animation**: **35/39 prefab boss** có **nguồn** animation/event trong tập đã xét, boss 1 giải
 > xong 8 tên entry. Hàng "feel" cũng hết trống: hit flash **0,05 s** đo được. Xem §7.
 >
 > Tài liệu này đo lại **9 câu blocker** của `DESIGN_QUESTIONS.md` bằng dữ liệu đang có trong repo,
@@ -36,7 +36,7 @@ chúng là **tham khảo**, không phải điều kiện.
 | 1 | `StartHp` | đóng (2500) | ✅ **đóng** — `statics_Player_Get_Datas.StartHp = 2500` | **Không** |
 | 2 | **A6 — stage ↔ wave** | mở | 🟡 **một phần** — `map_waves_candidate.json`: **250 map**, nhưng chỉ **7** ghép chắc (`immediates`), **243** ghép theo thứ tự blob *"chưa xác thực bằng token"* | **Không** (chỉ cần biết có bao nhiêu màn) |
 | 3 | **E2/E3 — hit flash / hit stop** | mở, "chi phí thấp" | 🟡 **nửa đóng** — `Enemy_Display` không chứa tham số (**5 field**: `hpProgressBarRenderer` · `size` · `hitableRenderers` · `appearOff` · `dieOff`), nhưng **`OnHit` có 2 hằng số**: alpha **0,5** trên material + `Invoke("OffHitEffect", `**`0,05 s`**`)` ⇒ nháy trúng đòn **đã đo được**; còn thiếu tên tham số material | **Không** nữa |
-| 4 | **D3 — thứ tự pha boss** | mở, "cần decoder" | ✅ **ĐÓNG** — `event-receivers.json.gz`: **795/795 event use có `time`** | **Không** |
+| 4 | **D3 — thứ tự pha boss** | mở, "cần decoder" | 🟡 **MỘT PHẦN** (hạ mức 25/10) — có **mốc trong clip** (`795/795` event có `time`, mức **A**), **chưa** có thứ tự pha / điều kiện vào-thoát / số lần lặp / hành vi callback (mức **C**) | **Không** |
 | 5 | **B1 — HP enemy runtime** | mở | 🔴 mở — có hằng số, chưa có thứ tự nhân | **Không** (L1 tự chọn số) |
 | 6 | **C4 — vàng/giờ** | mở | 🟡 tính được, **chưa làm** | **Không** |
 | 7 | **A7 — mật độ địch** | mở, "làm bằng script" | 🟡 tính được **một nửa** — nhưng vướng #9 (xem dưới) | **Không** |
@@ -115,7 +115,7 @@ prototype 30 giây; phần "cảm giác" còn lại tự quyết.
 
 | hạng mục | vòng 1 | **vòng 2** |
 |---|---|---|
-| biết **clip nào chạy lúc nào** (boss) | 🔴 chưa | ✅ **35/39 prefab boss** có script: **33 prefab · 793 event có `time`** + **2 prefab Spine** (`Boss-39001/39002`); **4 prefab không có gì** (`Boss-37003/37005/37006/37008`). Timeline **từng giây**: **`BOSS_ANIM_TIMELINE.md`** (269 cặp clip) |
+| biết **clip nào chạy lúc nào** (boss) | 🔴 chưa | 🟡 **35/39 prefab boss** có **nguồn** animation/event (không phải "đã giải script"): **33 prefab · 793 event có `time`** + **2 prefab Spine** (`Boss-39001/39002`); **4 prefab không có gì** (`Boss-37003/37005/37006/37008`). Timeline **từng giây**: **`BOSS_ANIM_TIMELINE.md`** (269 cặp clip) |
 | biết **tên entry** | 🔴 chưa | ✅ boss 1: **8 chuỗi**, bảng chuyển state **5 nhánh** |
 | biết **nhịp đòn** | 🔴 chưa | ✅ **0,17 · 0,33 · 1,0 · 5,0 s** |
 | biết **điều kiện chuyển state của enemy** | 🔴 chưa | 🟡 cần tham số `Animator` — **T4** của `HANDOFF_ANIM_RAW.md` |
@@ -133,8 +133,8 @@ trạng thái của enemy — và nó **không chặn** vì L1 cho phép tự đ
 | **Độ khó / chế độ** | ✅ **A** | `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · 3 chế độ mỗi stage |
 | **Kinh tế / sao / HP** | ✅ **A** cho hằng số | `StartHp 2500` · `stepCommon 0,18` · `DeltaStarCost 50` · `PercentToCompleteMissions222 [0.2,0.6,0.98]` |
 | **Boss** | ✅ **A** cho cấu trúc | 46 boss · **39 prefab `Boss-*`** · **2 prefab Spine** (`Boss-39001/39002`) · 92 `Animator`/36 prefab · 795 event có mốc thời gian |
-| **Enemy** | ✅ **A** cho cơ chế | di chuyển procedural theo path 100 % · `Enemy_Appear` = vỏ delegate · `Enemy_Display` 5 field |
-| **Animation — *script*** | ✅ **A** cho boss (**35/39 prefab**), **B** cho enemy | 33 prefab **793 event có mốc thời gian** · boss 1: **8 tên entry + 5 nhánh** chuyển state · nhịp đòn **0,17/0,33/1,0/5,0 s** · enemy = máy trạng thái 3 nhánh + hit flash **0,05 s** — xem **`ANIMATION_SCRIPT.md`** |
+| **Enemy** | ✅ **A** cho cơ chế | **399 đường bay** theo path (tập prefab đã đọc) · `Enemy_Appear` = base nhận `Action` qua tham số (**chưa** rõ binding) · `Enemy_Display` 5 field |
+| **Animation — *mốc trong clip*** | 🟡 **A** cho mốc / **C** cho điều kiện + hành vi | 33 prefab **793 event có mốc thời gian** · boss 1: **8 tên entry + 5 nhánh** chuyển state · nhịp đòn **0,17/0,33/1,0/5,0 s** · enemy = máy trạng thái 3 nhánh + hit flash **0,05 s** — xem **`ANIMATION_SCRIPT.md`** |
 | **Animation — *playback / feel*** | 🔴 **D** | 0/791 keyframe · 0 phép đo playback runtime · hành vi 12 handler còn **C** — **chỉ cần nếu làm L2/L3** |
 | **UI — cấu trúc** | ✅ **A** | **125 màn hình** (`screens.csv`: 125 dòng) · 53 board · 63 popup · 8 tab · screen graph + điều kiện mở từng popup ở `UI.md` |
 | **UI — art** | 🔴 **D** | 53k file dump có trong nhánh dữ liệu nhưng **chưa kéo về**, chưa phân tích — và L1 làm art mới nên không cần |
@@ -156,7 +156,8 @@ xong:
 | 2 | **A6 stage ↔ wave** | quyết định **số màn**; hiện chỉ 7/250 map chắc chắn | offline — tự làm được |
 | 3 | **Prototype feel 30 giây** (hit flash 0,05 s · alpha 0,5 · rung · âm) | thứ duy nhất vẫn phải **quyết**, không phải **đo** | designer |
 
-Và **một việc không nên làm**: đừng chờ dữ liệu animation nữa. Script đã có; chỉ *playback* là
+Và **một việc không nên làm**: đừng chờ thêm **mốc thời gian** trong clip — đã có. Nhưng **đừng** gọi là
+"đã có script": thứ tự pha, điều kiện chuyển state, số lần lặp và hành vi callback vẫn **C**. Chỉ *playback* là
 thiếu, và nó chỉ cần cho L2/L3.
 
 ### 6.1 Vòng 3 (24/10) — ba thay đổi so với bảng trên
@@ -200,6 +201,6 @@ dựng được wave với mật độ tự chọn rồi chỉnh sau.
 
 | | Số | Nghĩa |
 |---|---:|---|
-| **35/39** | prefab boss có script animation đọc được | 4 prefab còn lại **không có cả clip event lẫn Spine** |
+| **35/39** | prefab boss có **nguồn** animation/event trong tập đã xét | 4 prefab còn lại **không có cả clip event lẫn Spine trong tập đó** — không phải "không có animation" |
 | **125** | màn hình UI có cấu trúc | mỗi màn có điều kiện mở + dữ liệu cần load |
 | **10/10** | mục design doc viết được ngay | sau khi `Call_Data` cho schema spawner |

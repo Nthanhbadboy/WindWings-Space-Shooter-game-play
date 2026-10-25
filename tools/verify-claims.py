@@ -1093,8 +1093,8 @@ def map_candidates():
 claim("I1", READY, "**5 field**: `hpProgressBarRenderer`", 5, display_fields,
       "Enemy_Display không có tham số hit flash / hit stop")
 
-claim("I2", READY, "**795/795 event use có `time`**", (795, 795), events_with_time,
-      "D3 đóng: event đã join Animator và giữ mốc thời gian")
+claim("I2", READY, "`795/795` event có `time`, mức **A**", (795, 795), events_with_time,
+      "CHỈ kiểm mốc thời gian TRONG clip — không chứng minh thứ tự pha, điều kiện, số lần lặp hay hành vi callback (review R1)")
 
 claim("I3", READY, "11.089 spawner · rate = 0 : 2.365", 2365,
       lambda: (spawner_rate_zero() or (None, None, None))[1],
@@ -1279,7 +1279,7 @@ claim("J4", SCRIPT, "**268 cặp (prefab, clip)**, trong đó **61 cặp (prefab
       (268, 61), clip_pairs, "chuỗi đòn đọc được nhịp")
 
 claim("J5", SCRIPT, "**0 event clip**", 0, boss1_clip_events,
-      "boss 1 thuần Spine; 12 handler của Boss1_AnimationEvents thuộc 23 prefab khác")
+      "boss 1: 0 AnimationClip event (Spine event thì có). KHÔNG có nghĩa 12 handler của Boss1_AnimationEvents phủ 23 prefab (review R2)")
 
 claim("J6", SCRIPT, "**5** lần `String.op_Equality`", 5, boss_work_compares,
       "Boss_1_Animation.BossWork rẽ 5 nhánh entry")
@@ -1492,8 +1492,8 @@ def ui_screens():
     return len(rows)
 
 
-claim("L1", READY, "**35/39 prefab boss** có script", (35, 4, 39), boss_script_coverage,
-      "35 = 33 prefab clip event ∪ 3 prefab Spine (Boss-39003 nằm cả hai)")
+claim("L1", READY, "**35/39 prefab boss** có **nguồn** animation/event", (35, 4, 39), boss_script_coverage,
+      "35 = 33 prefab có clip event ∪ 3 prefab Spine HARD-CODE (39003 nằm cả hai); đây là coverage NGUỒN, không phải đã giải script (review R1)")
 
 claim("L2", READY, "**125 màn hình**", 125, ui_screens,
       "UI cấu trúc đủ để thiết kế; chỉ art là chưa")
@@ -1569,13 +1569,13 @@ def waves_rate0_big():
 
 
 claim("M1", DATA_SYNC, "**1.200 dòng · 23 field**", (1200, 23, False), call_data_schema,
-      "không có delay/wait/interval ⇒ rate là field thời gian duy nhất")
+      "chỉ là SCHEMA: không có field delay/wait/interval. KHÔNG suy ra rate là khoảng giãn (review R5)")
 
 claim("M2", READY, "| `rate = 0` (trong `Call_Data`) | **295** | 1 | **6** |", (295, 6),
-      call_data_rate0, "list quân ngắn ⇒ rate=0 không thể là 'never'")
+      call_data_rate0, "đếm list quân; KHÔNG chứng minh cách game đọc rate (review R5)")
 
 claim("M3", READY, "và 1.203 spawner `rate = 0` có **>1 quân**", (1203, 30),
-      waves_rate0_big, "có burst 30 quân ⇒ phải đọc là 'không giãn cách'")
+      waves_rate0_big, "đếm list; KHÔNG chứng minh đã burst runtime — vẫn là giả thuyết tới khi có consumer asm (review R5)")
 
 # ── N. hai manifest kéo thêm: Spine event + bản đồ độ sâu UI ───────────
 # Cả hai đều là *manifest*: dữ liệu tổng hợp do nhánh kia sinh, nên phép kiểm
@@ -2008,8 +2008,8 @@ def design_question_tally():
 
 
 claim("S2", "docs/spec/DESIGN_QUESTIONS.md",
-      "**Tổng: 48 câu — ✅ 30 · ⚠ 14 · ❌ 4**",
-      (48, 30, 14, 4), design_question_tally,
+      "**Tổng: 48 câu — ✅ 29 · ⚠ 15 · ❌ 4**",
+      (48, 29, 15, 4), design_question_tally,
       "đếm trong bảng phải khớp dòng tổng; đổi 1 hàng là FAIL ngay")
 
 claim("S1", "docs/spec/ANIMATION_SCRIPT.md",
@@ -2166,6 +2166,131 @@ claim("U2", "docs/spec/ANIMATION_SCRIPT.md",
       "**52** controller · **63** prefab root · **303** parameter",
       (52, 63, 303, 395, 357, 302), controller_graph_stats,
       "T4: đếm lại từ raw (395 state, 357 transition, 302 có condition)")
+
+# ── W. ai đặt trigger Animator + số đo chuyển động enemy (§3.6, §4.0) ──
+ANIMCALLS = "reverse-engineering/raw/animation-audit/native-calls.json"
+
+
+def _json_plain(path):
+    raw = ref_blob(path)
+    if raw is None:
+        return None
+    try:
+        return json.loads(raw.decode("utf-8"))
+    except ValueError:
+        return None
+
+
+def _anim_method_calls():
+    d = _json_plain(ANIMCALLS)
+    return (d or {}).get("methods") or []
+
+
+def settrigger_sites():
+    """(số call site Animator.SetTrigger, số method chứa chúng)."""
+    methods = _anim_method_calls()
+    if not methods:
+        return None
+    sites = meths = 0
+    for m in methods:
+        n = sum(1 for c in (m.get("calls") or []) for cand in (c.get("candidates") or [])
+                if cand.get("class_name") == "Animator" and cand.get("method") == "SetTrigger")
+        if n:
+            meths += 1
+            sites += n
+    return (sites, meths)
+
+
+def trigger_param_stats():
+    """(trigger, bool, controller boss) từ controller-graphs.json.gz."""
+    d = _json_gz(CTRLGRAPH)
+    if not d:
+        return None
+    cs = d.get("controllers") or []
+    trig = bools = boss = 0
+    for c in cs:
+        if any(r.startswith("Boss-") for r in (c.get("prefab_roots") or [])):
+            boss += 1
+        for p in c.get("parameters") or []:
+            t = p["raw"]["m_Type"]
+            trig += 1 if t == 9 else 0
+            bools += 1 if t == 4 else 0
+    return (trig, bools, boss)
+
+
+def trigger_top_names():
+    """(Appear, Attack2, Die, Attack1) — 4 tên trigger phổ biến."""
+    d = _json_gz(CTRLGRAPH)
+    if not d:
+        return None
+    c = {}
+    for ctrl in d.get("controllers") or []:
+        for p in ctrl.get("parameters") or []:
+            if p["raw"]["m_Type"] == 9:
+                c[p["name"]] = c.get(p["name"], 0) + 1
+    return (c.get("Appear", 0), c.get("Attack2", 0), c.get("Die", 0), c.get("Attack1", 0))
+
+
+def _float_in(cls_prefix, method, value):
+    for m in _anim_method_calls():
+        if m.get("class_name") == cls_prefix and m.get("method") == method:
+            for f in m.get("float_evidence") or []:
+                if abs(float(f["value"]) - value) < 1e-6:
+                    return float(f["value"])
+    return None
+
+
+def pathfollow_deg():
+    return _float_in("Enemy_Movement", "PathFollow", 57.29578)
+
+
+def circle_rad_step():
+    return _float_in("Boss_AttackTypes.<IEGunAttackAutoCircleBase>d__12", "MoveNext", 0.01745)
+
+
+def waits_seconds_stats():
+    """(tổng WaitForSeconds, hằng số, biến) đếm từ asm đã export."""
+    files = _glob.glob("reverse-engineering/raw/il2cpp-consts/*.asm.txt")
+    if not files:
+        return None
+    const = var = 0
+    for f in files:
+        try:
+            lines = open(f, encoding="utf-8", errors="replace").read().splitlines()
+        except OSError:
+            continue
+        for i, ln in enumerate(lines):
+            if "#0x2786508" not in ln:
+                continue
+            back = lines[max(0, i - 5):i]
+            if any("fmov" in b for b in back):
+                const += 1
+            else:
+                var += 1
+    return (const + var, const, var)
+
+
+claim("W1", "docs/spec/ANIMATION_SCRIPT.md",
+      "**`Animator.SetTrigger` có đúng 7 call site, trên 5 method**",
+      (7, 5), settrigger_sites, "ai đổi state Animator — chỉ Boss_AttackPhases")
+
+claim("W2", "docs/spec/ANIMATION_SCRIPT.md",
+      "**288** trigger · **15** bool · **49** controller boss",
+      (288, 15, 49), trigger_param_stats, "máy trạng thái: 288 trigger, 15 bool, 42 controller boss")
+
+claim("W3", "docs/spec/ANIMATION_SCRIPT.md",
+      "`Appear` **30** · `Attack2` **23** · `Die` **22** · `Attack1` **20**",
+      (30, 23, 22, 20), trigger_top_names, "tên trigger = tên clip, không mã hoá")
+
+claim("W4", "docs/spec/ANIMATION_SCRIPT.md", "`57.29578` (rad→deg)",
+      57.29578, pathfollow_deg, "PathFollow đổi hướng bằng atan2 rồi rad→deg")
+
+claim("W5", "docs/spec/ANIMATION_SCRIPT.md", "`0.01745`", 0.01745,
+      circle_rad_step, "bước quét vòng tròn = 1 độ mỗi bước")
+
+claim("W6", "docs/spec/ANIMATION_SCRIPT.md",
+      "**22 lần `WaitForSeconds` · 4 hằng số · 18 lấy từ biến**",
+      (22, 4, 18), waits_seconds_stats, "nhịp pha boss 1: 4 hằng, 18 biến")
 
 # ── chạy ───────────────────────────────────────────────────────────────
 

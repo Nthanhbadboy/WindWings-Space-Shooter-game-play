@@ -13,7 +13,8 @@
 
 1. Game có **hai hệ animation độc lập**, không phải một: **Spine** (`SkeletonAnimation`) và
    **Unity AnimationClip + event** (`Animator` / `AnimationEvent`).
-2. **Boss 1 (`Boss-39001`, `Boss-39002`) hoàn toàn bằng Spine** — **0 event clip**; script của nó
+2. **Boss 1 (`Boss-39001`, `Boss-39002`) hoàn toàn bằng Spine** — **0 event clip** (`AnimationClip`; còn
+   **Spine event** thì **có**: `Stop` · `Banplasma`); driver của nó
    là **`Boss1_Director`**, một lớp C# gọi `AnimationState.SetAnimation(track, entryName, loop)`.
 3. **33 prefab `Boss-*` khác thì ngược lại**: **793 event clip**, mang theo **mốc thời gian** —
    tức nhịp ra đòn **nằm trong asset**, đọc được chính xác đến 0,01 s.
@@ -192,7 +193,8 @@ nhịp **tắt/bật một bộ phận** giữa đòn, khớp với hành vi `se
 
 ## 3. 33 prefab boss còn lại — nhịp đòn nằm trong clip (mức **A**)
 
-**33 prefab boss · 793 event · 2 ngoài boss**. 129 tên hàm phân biệt; dày nhất:
+**33 prefab boss · 793 event · 2 ngoài boss**. **129 tên hàm phân biệt** trong nhóm boss (**130** nếu tính cả `CB-30040` —
+xem `BOSS_ANIM_TIMELINE.md`); dày nhất:
 
 `OnStartAttack` 146 · `OnAnimationEndedEvent` 137 · `OnStateExit` 56 · `OnStopAttack` 50
 
@@ -343,6 +345,52 @@ UnityEvent **không** nằm trong code — đọc từ prefab mới thấy.
 > ⚠️ **Không** được ghi "đã đóng 87/87 roster": 63 prefab root của T4 lọc theo tiền tố
 > `CB-`/`Boss-`/`MB-`, **khác** mẫu số roster 109/87. Muốn so thì phải ghép hai tập trước.
 
+### 3.6 Ai **đặt** trigger — chỗ nối code ↔ máy trạng thái (mới 25/10, mức **A** cho call site)
+
+§3.5 nói parameter kiểu `Trigger` trùng tên clip, nhưng chưa nói **ai** đặt. Raw
+`animation-audit/native-calls.json` trả lời: **`Animator.SetTrigger` có đúng 7 call site, trên 5 method**
+— **tất cả** trong `Boss_AttackPhases` (không có ở `Boss_AttackTypes`, cũng không có ở nhánh Spine):
+
+| method | RVA | SetTrigger | Ghi chú |
+|---|---|---:|---|
+| `Boss_AttackPhases.CallMixAnimation` | `0x152e7ec` | 1 | "mix" đòn = đặt trigger, **không** phải gọi `Play` |
+| `Boss_AttackPhases.OnGunDie` | `0x1532390` | 1 | súng chết ⇒ đổi state; float **0,15** trong thân |
+| `<IEAttackRound1>d__13.MoveNext` | — | 1 | vòng 1 |
+| `<IEAttackRound2>d__14.MoveNext` | — | 1 | vòng 2 |
+| `<IEAttackRound3>d__15.MoveNext` | — | 1 | vòng 3 |
+
+**Máy trạng thái đọc được ở mức nào:**
+
+| thứ | số đo | mức | nghĩa |
+|---|---:|---|---|
+| Tham số **Trigger** (`m_Type = 9`) | **288** | **A** | mỗi state vào bằng 1 trigger đặt tên |
+| Tham số **Bool** (`m_Type = 4`) | **15** | **A** | 15 chỗ dùng bool (bật/tắt liên tục) |
+| Controller thuộc prefab `Boss-*` | **49** / 52 | **A** | chỉ 3 controller ngoài boss |
+| **(tổng kiểm lại)** | **288** trigger · **15** bool · **49** controller boss | **A** | đọc từ `controller-graphs.json.gz`, không chép report |
+| **Tên trigger phổ biến** | `Appear` **30** · `Attack2` **23** · `Die` **22** · `Attack1` **20** · `Attack3` **20** · `Attack4` **13** · `Attack6` **12** · `Attack5` **11** · `Attack7` **7** · `Mix2` **6** · `Idle3` **6** | **A** | tên **=** tên clip/state, không phải mã hoá |
+| **Tên trigger cụ thể mà 6 call site trên truyền vào** | **chưa giải** — đối số là `string` hằng nạp từ metadata | **C** | cần bảng string literal của `global-metadata.dat`; **không** suy từ tên method |
+
+⇒ **Chép lại đúng cách**: viết state machine **theo trigger tên clip** (`Appear`/`Attack1..16`/`Mix1..4`/
+`Die`), rồi code gọi `SetTrigger(tên)` tại 3 vòng đòn + lúc súng chết + lúc mix. **Không** cần
+`Animator.Play`, **không** cần timeline. Đây là "script animation" của 33 prefab boss ở mức
+**cơ chế (A)**, chỉ thiếu **đúng 6 chuỗi** (C).
+
+**Cùng họ, phía bắn đạn** — `Boss_AttackTypes` có **22 method**, trong đó 5 kiểu bắn lặp lại được
+theo tên: `Fixed` · `Circle` · `Check` · `ArrangePositionX` · `RandomPositionX` (mỗi kiểu một cặp
+`GetData…` + `IEGun…`), cộng `RegisterEvents` (**154** call — nối event 1 lần khi spawn) và
+`OnBulletCollided` (**16** call). Đây là **bảng kiểu đạn của boss** cần dựng lại, không phải animation.
+
+**Số đo của 5 kiểu bắn** (từ `float_evidence` của từng coroutine — mức **A** cho hằng số, **B** cho ý nghĩa):
+
+| kiểu | hằng số đo được | đọc ra |
+|---|---|---|
+| `IEGunAttackAutoCircleBase` | `0.01745` · `90.0` · `−0.5` | bước quét **1° ≈ 0,01745 rad**/frame, cung 90°, bắt đầu lệch nửa bước |
+| `IEGunAttackAutoCircle` | (dùng base) | quét liên tục |
+| `IEGunAttackFixed` | `6.0` | bắn cố định (6 = số đạn? số đợt?) — **chưa chắc** |
+| `IEGunAttackArrangePositionX` | `5.0` · `6.0` · `180.0` | dàn theo trục X, đối xứng 180° |
+| `IEGunAttackRandomPositionX` | `−0.03141` · `180.0` | ngẫu nhiên trong nửa vòng |
+| `IEGunCheckAttack` | `±6.0` · `±1.0` · `57.29578` | kiểm tra góc ngắm, đổi rad→deg |
+
 ---
 
 ## 4. Enemy — animation do code điều khiển, không do event (mức **A**/**B**)
@@ -356,8 +404,27 @@ Toàn bộ **795** event chỉ có **2** ngoài nhóm boss (`CB-30040`, clip `Di
 | `Enemy_Movement` | `Update` → **`PathFollow` / `MoveLinearly` / `MovePointToPoint`** · `MoveToPoint` → `StartCoroutine(IELinearMove)` · `OnPathEnded` → `UnityEvent.Invoke` · `SetEventMoveEnded` | 21 method | **máy trạng thái di chuyển** = "animation" của enemy |
 | `Enemy_Destroy` | `Destroyed` 1052 · `OnDefeated` 544 · `OnBusrtItems` 500 · `OnDestroyByZeroHp` 292 · `OnDestroyWhenHitPlayer` 292 · `Pool` 320 | 12 method | chết → nổ item → trả pool |
 
-`Enemy_Appear` chỉ là **vỏ delegate** (không field) ⇒ "xuất hiện" là **callback gắn từ prefab**,
-không phải animation riêng.
+`Enemy_Appear` là **base method** nhận `Action` **qua tham số `x1`** rồi tail-call đồng bộ. Điều đó
+**không** chứng minh callback được gắn từ prefab: `Enemy_Controller.Appear` gọi **virtual dispatch**,
+nên phải xét lớp con/override trước khi nói "không có animation riêng". (Sửa theo review 25/10, mục R3.)
+
+### 4.0 Chuyển động — số đo trong code (mức **A**, mới 25/10)
+
+`Enemy_Movement.Update` (`0x15861a4`) là **switch 3 nhánh**: `PathFollow` · `MoveLinearly` ·
+`MovePointToPoint` — cả ba dùng `Time.get_deltaTime`, chỉ **khác nguồn toạ độ**:
+
+| nhánh | nguồn toạ độ | hằng số | suy ra |
+|---|---|---|---|
+| `PathFollow` (`0x15861d4`) | `PathCreation.VertexPath.GetPointAtDistance(dst, …)` | `57.29578` (rad→deg) · `±1.0` (dấu) · `Time.deltaTime` | bay theo **path**; **hướng nhìn** = `atan2` của vector vận tốc ⇒ `set_eulerAngles` — đây là "animation quay đầu" của enemy |
+| `MoveLinearly` (`0x1586618`) | `transform.position` + hướng | `deltaTime` | bay thẳng |
+| `MovePointToPoint` (`0x158643c`) | `transform.position` → đích | `deltaTime` | bay tới điểm |
+
+`OnPathEnded` (`0x15867e4`) chỉ có **một** lệnh: `UnityEvent.Invoke()` ⇒ "hết path" là **event rỗng
+dây từ Inspector**, không phải code. `Enemy_Display.FixedUpdate` (`0x1585908`) lấy
+`transform.parent.parent` rồi `set_eulerAngles` — **giữ sprite đúng hướng** mỗi frame vật lý.
+
+⇒ Enemy **không có animation timeline**: chuyển động = tích phân path theo `deltaTime`, hướng = `atan2`,
+va chạm/đổi trạng thái = `UnityEvent` hoặc trigger. Chép lại đúng 3 nhánh + 1 phép quay là đủ.
 
 ### 4.1 Hit flash — con số duy nhất của "feel" còn lại (mức **B**)
 
@@ -408,7 +475,7 @@ nhánh bên kia chạy được mà không phải hỏi lại.
 python3 tools/verify-claims.py --only J     # 10/10 claim nhóm J (nhịp + event)
 python3 tools/verify-claims.py --only K     # 6/6 claim nhóm K (tên entry + bảng chuyển state)
 python3 tools/verify-claims.py --only R     # 6/6 claim nhóm R (timeline theo giây)
-python3 tools/verify-claims.py              # toàn bộ: 119 PASS · 0 FAIL · 2 SKIP
+python3 tools/verify-claims.py              # toàn bộ: 133 PASS · 0 FAIL · 2 SKIP
 ```
 
 Nguồn: `reverse-engineering/raw/animation-audit/event-receivers.json.gz` (795 event) ·

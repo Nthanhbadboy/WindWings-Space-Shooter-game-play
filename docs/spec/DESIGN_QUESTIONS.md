@@ -14,7 +14,7 @@
 | ⚠ | có **một phần** — có số nhưng thiếu điều kiện hoặc thiếu vế còn lại |
 | ❌ | **chưa trả lời được** bằng dữ liệu hiện có |
 
-**Tổng: 48 câu — ✅ 30 · ⚠ 14 · ❌ 4** (cập nhật 24/10; bản gốc `4539709`: ✅ 29 · ⚠ 11 · ❌ 8).
+**Tổng: 48 câu — ✅ 29 · ⚠ 15 · ❌ 4** (cập nhật **25/10**, hạ mức câu 4/D3 theo review R1; trước đó ✅ 30 · ⚠ 14 · ❌ 4).
 Bốn câu còn ❌: **A5 · A6 · B1 · C4**; ba câu vừa lên ⚠ là **E2 · E3 · A7**, một câu vừa đóng là **D3**.
 Cộng **B3** (⚠) ⇒ **5 hàng blocker** trong 9 hàng ban đầu.
 
@@ -88,7 +88,7 @@ Cộng **B3** (⚠) ⇒ **5 hàng blocker** trong 9 hàng ban đầu.
 |---:|---|---|---|
 | D1 | Có bao nhiêu loại enemy? | ✅ | **178 prefab có AI** · **109 dùng trong wave** · **22 chưa từng xuất hiện** · **70 loại** xuất hiện trong campaign |
 | D2 | Có bao nhiêu boss? | ✅ | **39 prefab** · **45 wave boss** · **90 instance** · **206.167.000 HP** tổng |
-| D3 | Boss có mấy pha, thứ tự ra sao? | ✅ | **CẬP NHẬT 24/10 — ĐÓNG.** `event-receivers.json.gz`: **795/795 event có `time`** (793 boss + 2 `CB-30040`) trên **34 prefab · 97 clip · 269 cặp (prefab, clip)**; timeline từng clip ở **`BOSS_ANIM_TIMELINE.md`**. Boss 1 (Spine, không event): **8 tên entry + 5 nhánh** chuyển state. Pha = 3 đòn **lặp** (`Attack1/2/3`, `loop=true`) ngăn bằng clip chuyển `Chuyensangattack2/3` — **không** phải đếm pha theo thời gian |
+| D3 | Boss có mấy pha, thứ tự ra sao? | ⚠ | **HẠ MỨC 25/10 (review R1) — MỘT PHẦN.** Có **mốc trong clip** (mức A), **chưa** có thứ tự/điều kiện chuyển pha (mức C). Cũ:** `event-receivers.json.gz`: **795/795 event có `time`** (793 boss + 2 `CB-30040`) trên **34 prefab · 97 clip · 269 cặp (prefab, clip)**; timeline từng clip ở **`BOSS_ANIM_TIMELINE.md`**. Boss 1 (Spine, không event): **8 tên entry + 5 nhánh** chuyển state. Pha = 3 đòn **lặp** (`Attack1/2/3`, `loop=true`) ngăn bằng clip chuyển `Chuyensangattack2/3` — **không** phải đếm pha theo thời gian |
 | D4 | Turret hoạt động thế nào? | ✅ | **44 prefab / 112 component**: **21 spawn qua wave (41)** + **23 đặt sẵn trong `Wave_*` (71)** ⇒ **63,4% turret không do wave sinh** (`BOSSES` §5.1) |
 | D5 | Đạn có mấy loại, nhanh cỡ nào? | ✅ | **186 loại** `Bullet_Linearly`; `bltDamage` **28 giá trị**, phổ biến 300 (135 lần); `bltSpeed` median 8,0 |
 | D6 | Có bẫy / vùng sát thương môi trường? | ✅ | **16 prefab**: 13 mã `900xx` + **3 `Expl-*` (Poision Zone)** 500 first + 50/s; **không** spawn qua `Call_Data` |
@@ -130,7 +130,7 @@ Xếp theo **chi phí trả lời thấp → cao**, không theo mức quan trọ
 | 1 | ✅ **ĐÓNG — B2 giá trị `StartHp`** = **2500** (bản `6109008c`) | không có HP thì **không có TTK** — nhưng **công thức đã xong** | ✅ **đã giải xong cấu trúc** (`BALANCE` §0.6, đọc lệnh arm64). Chỉ còn **1 hằng số**. ⚠ **ĐÍNH CHÍNH:** kết luận cũ *"`.cctor` không gán `StartHp`"* **vô hiệu** — asm export **bị cắt cụt ở 11/12 file**, `Player_Get_Datas..cctor` dừng giữa chừng tại `0x14e5cc4` (`DATA_SYNC` §7.29). Yêu cầu **hẹp nhất**: dump **200 lệnh sau `0x14e5cc4`** | **rất thấp** — 1 khối 200 lệnh |
 | 2 | **A6 — stage ↔ wave** | quyết định **số màn** và **độ dài phiên** | `Stage_Behaviour.textStageIndex` → `Text` component; hoặc đọc thứ tự con của `Parent_Stages` trong `Board_Maps` | **thấp** — đã có `transform-tree` |
 | 3 | ⚠ **MỘT PHẦN — E2 có số (0,05 s · 0,5), E3 chưa thấy dấu vết** | quyết định **feel**, thứ người chơi cảm nhận mạnh nhất | đọc `Enemy_Display` field + tìm `timeScale`/`Material.color` trong 305 trace đã có | **thấp** |
-| 4 | ✅ **ĐÓNG 24/10 — D3 thứ tự pha boss**: `time` của **795 event** đã có (**795/795**) | mỗi trận boss là **điểm nhấn** | **không cần decoder nữa** — nhánh dữ liệu export đúng ⇒ `BOSS_ANIM_TIMELINE.md` (269 cặp clip, nhịp 0,17 s) | **0** |
+| 4 | ⚠ **MỘT PHẦN — D3 thứ tự pha boss** (hạ mức 25/10, review R1): **mốc TRONG clip** đã có (**795/795** event có `time`) nhưng **thứ tự pha, điều kiện vào/thoát, số lần lặp, hành vi callback** vẫn **chưa** | mỗi trận boss là **điểm nhấn** | mốc: `BOSS_ANIM_TIMELINE.md` (269 cặp clip, nhịp 0,17 s) — **không cần decoder**. Còn thiếu: join state-machine (`controller-graphs.json.gz` có 395 state/357 transition, **302** có condition) với nhịp `time`, và hành vi handler (T2) | **thấp** cho thứ tự state, **trung bình** cho hành vi |
 | 5 | **B1 — HP enemy runtime** | toàn bộ **231 wave** phụ thuộc công thức này | đọc thân `Enemy_Data_Balance.GetSurvivalScore` (đã có hằng số **6,0 · 3,0 · 1,1 · 0,2 · 0,5 · 500,0 · 23,0 · 40,0**) + tìm chỗ **stage** được truyền vào | **trung bình** |
 | 6 | **C4 — vàng/giờ** | quyết định **toàn bộ đường cong meta** | `Enemy_Data_Balance.GetBonusCoin` (**100,0 · 20,0**) × số quân/giờ (tính từ A1) | **trung bình** |
 | 7 | **A7 — mật độ địch đồng thời** | quyết định **hiệu năng** và **cảm giác ngộp** | mô phỏng timeline: 11.099 spawner × `rate` × `copies` | **trung bình** — làm được bằng script |
