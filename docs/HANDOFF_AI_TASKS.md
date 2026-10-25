@@ -870,3 +870,19 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   after remaining named wing consumers + map/save, per6401593117. Don't wait ACK94 to continue.
 - Receipt94: code589e1f588, Verify40223289936 SUCCESS/job1m4s; handoff/green response JSON
   giữraw/wing-emission. Chưa tự nhận ACK94. Không show diff/file/preview cho user.
+
+## Report95 — Bỏ cả5 leaf interceptions94; nối pooled/formation dispatch
+- `docs/apk-analysis/95-wing-pooled-leaves-and-formation-dispatch.md`, `datas/wing_pooled_leaves.json`:
+  5 bodies/837instructions + exact2instruction trampoline2990890→14a600c (recovery40223486658).
+  40new/full854 local PASS69.819s; validate PASS. Không sửa fixture/hash report94.
+- Actual leaves22Basic/Circle,23Basic/Circle,24Basic chạy tới Pool/IBullet SDK boundaries.
+  Lifetimes22=5,23Circle=10,23/24Basic=4; Circle speed captured arg, Basic live field.
+  All5 throughShield đọc trực tiếp field, không local super guard như13.
+- All5 activate trước GetComponent. Thiếu IBullet22/Circle23 return sau activation;
+  Basic23/24 recycle; thiếu/Unity-null formation cũng recycle. Poolnull throws.
+- Basic rotation cộng pointEuler; Circle không; SetBullet angle reread pooledEuler.
+  Quaternion identity/pooledEuler77 là controlled inputs, không Unity numeric truth.
+- Basic23/24 callbacks formation first + caller second. CreateBullets sau SetBullet nhận
+  caller collision gốc, lifetime4. Null external callback vẫn giữ formation callback.
+- Boundary tiếp: bên trong Formation.CreateBullets123d98c/Scale/IELerpTo + concrete IBullet,
+  các Shoot còn lại của93/special consumers. Không tự coi done23, physics/hit/DPS hoặc ACK95.
