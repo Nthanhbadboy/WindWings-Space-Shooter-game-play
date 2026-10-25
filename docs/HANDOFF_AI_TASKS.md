@@ -387,3 +387,29 @@ luận vẫn provisional. Premium deferred; không dùng screenshot làm nguồn
  84tests pass. Low-kill witness58 mạnhhơnnhưng vẫnstaticconditional, khôngreplay.
 - Tiếp tự đào BB-36001Animator/controller/clips/events và terrainparent/scroll;
   T9assetrect/texture/rotation/trim vẫn taskraw nhận từspec. Premiumdeferred.
+
+## Agent hiện tại — report60: BB-36001 streamed animation (provisional)
+
+- CI40187741686→192d2290f: raw `balloon-animation/bb-36001-animation.json.gz`,
+  exact root185704/Animator496390/controller1908;37nodes/full3clips+bytesSHA.
+- `tools/verify/balloon_animation.py`→`decoded-clips.json.gz`:3clips17checks,
+  giữframes/coeff/keyoffset/bindings/targets. Formatref AssetStudio pinned
+  d158e864b556b5970709c2a52e47944d53aa98a2 +MIT giữ riêngtoolchain;khônggamefacts.
+- Graph defaultSpawn1468(2.5)→Idle1467(10)↔Attack11466(12),speed1,
+  exitTime1/duration0/no conditions;no params/AnyState/behaviours/events.
+- QUANTRỌNG: **cả3clip animate root-local position** path0/attr1/Transform4.
+  Animator.applyRootMotionfalse KHÔNG phủđịnh ordinary localtransform animation.
+  Spawn(-12.41,7.33)→(-3.66,2.3);Idle ends(-3.77,6.04)=Attackstart;
+  Attackend(-3.66,2.3)=Idlestart. Đây làkeyvalues,khôngworld/runtimebounds.
+- 12/15/12streamedchannels;9/66/76frames kểsentinels;0dense;Attack3constant
+  rootEulerzero. Firsttime−FLT_MAX không−inf;last+inf0keys. Khôngdecode dense.
+- CRCm_Enabled3305885265: Barrels1MachineGun690037/Barrels2639146/script1:338
+  resolve bằngrawMonoheader,KHÔNG lệchtypetreem_Script. Spawn2súngoff;
+  IdleBarrels1on@0/off@9;AttackBarrels2on@0/off@10. Collider490394off@0Spawn,
+  on@2.5Spawn/onIdleAttack. Enabledkey≠đãchứngminhshotcount/damage.
+-9duplicatePointpaths giữlistkhôngoverwrite;mọibindingđangxétuniquetarget.
+- Khôngterminalflyaway/poolstate/events/GameObjectbinding trong3clip; KHÔNG suy
+  BBphảibắn/tựpool. Root-localkeys≠worldcubicbounds;parent/update-order/movein
+  gates59 cònthiếu. Khôngnângconditional lowkillwitness thànhreachableplaythrough.
+- Tiếp tựđào AirFree spawn-parent/terrain-scroll và Machine_Gun_Attack lifecycle;
+  T9atlasrect cònrawtask;Premiumdeferred. Chi tiết report60,8tests mới.
