@@ -1,0 +1,471 @@
+{
+ "class": "GP_Setup",
+ "note": "Bounded drone attack recovery; selected RVAs for extra dependencies",
+ "methods": [
+  {
+   "method": "get_Instance",
+   "signature": "public static GP_Setup get_Instance() { }",
+   "offset": "0x14ebdec",
+   "getter_value": null,
+   "rva": "0x14efdec",
+   "bytes": 300,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14efe4c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_uiOnLeft",
+   "signature": "public bool get_uiOnLeft() { }",
+   "offset": "0x14ebf18",
+   "getter_value": null,
+   "rva": "0x14eff18",
+   "bytes": 92,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14eff40",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_stageIndex",
+   "signature": "public int get_stageIndex() { }",
+   "offset": "0x14ecda0",
+   "getter_value": null,
+   "rva": "0x14f0da0",
+   "bytes": 332,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f0df8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x14f0e78",
+     "reg": "x8",
+     "op": "x8, x8, #0x20",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 44,
+     "via": "add",
+     "addr": "0x14f0ea0",
+     "reg": "x8",
+     "op": "x8, x8, #0x2c",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 36,
+     "via": "add",
+     "addr": "0x14f0ec4",
+     "reg": "x8",
+     "op": "x8, x8, #0x24",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_indexPlayers",
+   "signature": "public int[] get_indexPlayers() { }",
+   "offset": "0x14ee678",
+   "getter_value": null,
+   "rva": "0x14f2678",
+   "bytes": 492,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f26c0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f26e4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14f2710",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14f2730",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "mov",
+     "addr": "0x14f278c",
+     "reg": "w1",
+     "op": "w1, #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14f279c",
+     "reg": "w19",
+     "op": "w19, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f2824",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14f2834",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "get_indexDrones",
+   "signature": "public int[] get_indexDrones() { }",
+   "offset": "0x14eea2c",
+   "getter_value": null,
+   "rva": "0x14f2a2c",
+   "bytes": 200,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f2a60",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "mov",
+     "addr": "0x14f2a8c",
+     "reg": "w1",
+     "op": "w1, #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14f2a98",
+     "reg": "w19",
+     "op": "w19, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f2ac0",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14f2ad0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "set_Instance",
+   "signature": "private static void set_Instance(GP_Setup value) { }",
+   "offset": "0x14f2734",
+   "getter_value": null,
+   "rva": "0x14f6734",
+   "bytes": 76,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f6760",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_stageMode",
+   "signature": "public int get_stageMode() { }",
+   "offset": "0x14f2780",
+   "getter_value": null,
+   "rva": "0x14f6780",
+   "bytes": 88,
+   "pure_getter": false,
+   "getter_kind": "field",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f67a8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "set_indexPlayers",
+   "signature": "public void set_indexPlayers(int[] value) { }",
+   "offset": "0x14f27d8",
+   "getter_value": null,
+   "rva": "0x14f67d8",
+   "bytes": 76,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f6804",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_leftToCenterTouch",
+   "signature": "public bool get_leftToCenterTouch() { }",
+   "offset": "0x14f2824",
+   "getter_value": null,
+   "rva": "0x14f6824",
+   "bytes": 92,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f684c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_autoChange",
+   "signature": "public bool get_autoChange() { }",
+   "offset": "0x14f2880",
+   "getter_value": null,
+   "rva": "0x14f6880",
+   "bytes": 92,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f68a8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14f68cc",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "get_autoChangePosition",
+   "signature": "public bool get_autoChangePosition() { }",
+   "offset": "0x14f28dc",
+   "getter_value": null,
+   "rva": "0x14f68dc",
+   "bytes": 92,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f6904",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14f6928",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "get_maxCountOverDrive",
+   "signature": "public int get_maxCountOverDrive() { }",
+   "offset": "0x14f2938",
+   "getter_value": null,
+   "rva": "0x14f6938",
+   "bytes": 80,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f6960",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "Awake",
+   "signature": "private void Awake() { }",
+   "offset": "0x14f2988",
+   "getter_value": null,
+   "rva": "0x14f6988",
+   "bytes": 76,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f69ac",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x14f29d4",
+   "getter_value": null,
+   "rva": "0x14f69d4",
+   "bytes": 24,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 0.6,
+     "via": "ldr_pool_d",
+     "va": "0x75814c",
+     "addr": "0x14f69d8",
+     "role": "load"
+    }
+   ]
+  }
+ ]
+}
