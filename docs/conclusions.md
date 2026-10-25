@@ -1,5 +1,7 @@
 # Kết luận — trạng thái và độ tin cậy
 
+[Report91](apk-analysis/91-spec-review-hp-writers-and-drone-board-consumers.md): yêu cầu spec6400762294 đã xử lý. HP common source=2500×(1+.18×TechStatPoints(0)+Ability7), khác cctorStart2000/Current0; event36 payload7 chỉ max,64 mode1/wave≠0 giữ ratio/post21 else reset. Device bands1000..1999 reduction,5000..5999 heal từ GetStatValue1, không ghi HP max. Board UI price24 và basic/delta12 có actual consumer; UI source20001 basic500 khác combat450,20003 UI800 khác combat6000.20 ranges/1589 instructions/80 anchors,56 new/full648 PASS. Review ecff896c: report90 pending/ACK89/map structure vs entry bind ledger còn stale; nhờ peer sửa trên nhánh spec.
+
 [Report90](apk-analysis/90-wing-level-barrels-and-current-drone-base-fire.md): Level−1 lazy/cache/setter; wing1 numbers0..10=3,4,5,5,6,6,7,7,8,8,9; packet2/3 attempts, spacing divisor10. All12 modern Drone_Attack tách legacy:9 projectile, sweep4, laser7/9;44 static fields, abi25=2.5 và rate=base/(2.5*points); count từng barrel/không re-gate giữa loop. Drone7 expired tick có AttackLaser nhưng Check chặn damage;9 return. BaseDamages12 và .16×level/rank/abi21=2.5 được nối raw.92 tests mới/full592 PASS. Scope wing1 không all24; ctor turnRate3=8 là SerializeField default, không mọi prefab. ACK88/89 đã nhận;90 chờ peer.
 
 ## Report89 — pickup đã nối tới số xu thật

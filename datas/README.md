@@ -1,5 +1,7 @@
 # `datas/` — data pack WindWings
 
+`player_hp_board_flow.json`:20 ranges/1589 instructions/80 anchors,5 type/callback joins,3 SHA-checked UI arrays,1 InvokeRepeating literal. `python3 -m tools.verify.player_hp_board_flow --check`;56 new tests. Shared HP source2500×(1+.18 TechStatPoints0+Ability7), cctor2000/0, event36 max-only vs64 reset/preserve ratio. Board allBasicAtk/allDeltaAtk UI display differs from combat BaseDamages. [report91](../docs/apk-analysis/91-spec-review-hp-writers-and-drone-board-consumers.md).
+
 `wing_drone_flow.json`:73 ranges/6041 instructions,68 anchors,44 numeric fields,9 projectile-loop proofs,2 SHA-checked arrays; wing1 level0..10 và all12 current drone implementations. `python3 -m tools.verify.wing_drone_flow --check`;92 new tests. Current Drone_Attack ≠ legacy Droid_Attack; ability25 base/(2.5*points), counter per barrel, laser7/9 strict timers; drone damage .16 level coefficient/abi21=2.5. Wing1/source10003 only, no all24 wing extrapolation or serialized droneID/spawn/DPS approval. [report90](../docs/apk-analysis/90-wing-level-barrels-and-current-drone-base-fire.md).
 
 ## Pickup → collected currency — report89

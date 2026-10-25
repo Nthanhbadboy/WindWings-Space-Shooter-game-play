@@ -7,7 +7,7 @@ IL2CPP, metadata v31) để làm tài liệu tham chiếu cho bản clone.
 
 **Đọc [`docs/START_HERE_NEW_GAME.md`](docs/START_HERE_NEW_GAME.md) trước.** Repo này là kho dữ liệu tham khảo, chưa có project game chạy được. Spec local là snapshot cũ; review nhánh spec mới tại [`docs/HANDOFF_REVIEW_cf27b9755.md`](docs/HANDOFF_REVIEW_cf27b9755.md).
 
-**Batch mới:** [report90 — wing level/barrels và 12 drone base-fire implementations](docs/apk-analysis/90-wing-level-barrels-and-current-drone-base-fire.md): getters/cache,44 numeric fields, per-barrel charge counters, sweep/laser timers và drone damage. 92 tests mới; mọi kết luận vẫn tạm thời.
+**Batch mới:** [report91 — review spec, nguồn HP và consumer Board_Drones](docs/apk-analysis/91-spec-review-hp-writers-and-drone-board-consumers.md). Đã làm yêu cầu HP writer, phân biệt UI power/combat damage và gửi các mục spec cần sửa;56 tests mới/full648 PASS. Mọi kết luận vẫn tạm thời.
 
 ## Đọc gì trước
 
