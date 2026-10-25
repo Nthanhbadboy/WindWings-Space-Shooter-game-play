@@ -1,7 +1,7 @@
 """Pinned executable bytes for all24 player attack classes/nested state machines.
 Not an APK copy: bounded methods plus their already-identified numeric pool cells.
 """
-import argparse,bisect,gzip,hashlib,io,json,sys,tempfile,zipfile
+import argparse,bisect,gzip,hashlib,io,json,struct,sys,tempfile,zipfile
 from pathlib import Path
 from combat_coroutine_cells import APK_SHA,LIB_SHA,extract
 ROOT=Path(__file__).resolve().parents[2]
@@ -20,7 +20,15 @@ def recover(binary,out):
     pool=json.load(gzip.open(ROOT/'reverse-engineering/raw/combat-chain/referenced-cells.json.gz'))['cells']
     pool=[x for x in pool if 0x750000<=int(x['va'],16)<0x780000]
     for x in pool:assert extract(binary,[(int(x['va'],16),x['width'])])['cells'][0]==x
-    out.mkdir(parents=True,exist_ok=True);payload=dict(xapk_sha256=APK_SHA,lib_sha256=LIB_SHA,methods=selected,pool=pool)
+    shoff=struct.unpack_from('<Q',binary,40)[0];size,count=struct.unpack_from('<HH',binary,58);relocations=[]
+    for i in range(count):
+        sh=struct.unpack_from('<IIQQQQIIQQ',binary,shoff+i*size)
+        if sh[1]!=4:continue
+        for p in range(sh[4],sh[4]+sh[5],sh[9] or 24):
+            va,info,target=struct.unpack_from('<QQq',binary,p)
+            if 0x2ad0000<=va<0x2b00000 and info==1027:
+                relocations.append(dict(offset=hex(va),addend=hex(target),rela_file_offset=p,rela_hex=binary[p:p+24].hex()))
+    out.mkdir(parents=True,exist_ok=True);payload=dict(xapk_sha256=APK_SHA,lib_sha256=LIB_SHA,methods=selected,pool=pool,relocations=relocations)
     p=out/'method-bytes.json.gz';p.write_bytes(gzip.compress(json.dumps(payload,indent=2).encode(),mtime=0));assert p.stat().st_size<5_000_000
     (out/'index.json').write_text(json.dumps(dict(status='PINNED_ALL24_PLAYER_ATTACK_METHOD_BYTES_NOT_LIVE_UNITY',methods=len(selected),roots=sorted(roots),sha256=hashlib.sha256(p.read_bytes()).hexdigest()),indent=2)+'\n')
 if __name__=='__main__':
