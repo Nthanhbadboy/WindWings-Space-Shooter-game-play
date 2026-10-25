@@ -994,7 +994,7 @@ claim("H1", ANIMDOC, "`Boss-` **39** · `CB-` **33**", (39, 33),
           sum(1 for e in wave_roster() if e.startswith(p)) for p in ("Boss-", "CB-")),
       "phân bố tiền tố của roster 109")
 
-claim("H2", ANIMDOC, "**22.452 lượt spawn trên 282 wave và 11.089 spawner**", (22452, 282, 11089),
+claim("H2", ANIMDOC, "**22.460 lượt spawn trên 282 wave và 11.092 spawner**", (22460, 282, 11092),
       lambda: _wave_counts(),
       "quy mô bảng spawn — chứng minh roster là bảng thật, không phải danh mục")
 
@@ -1096,7 +1096,7 @@ claim("I1", READY, "**5 field**: `hpProgressBarRenderer`", 5, display_fields,
 claim("I2", READY, "`795/795` event có `time`, mức **A**", (795, 795), events_with_time,
       "CHỈ kiểm mốc thời gian TRONG clip — không chứng minh thứ tự pha, điều kiện, số lần lặp hay hành vi callback (review R1)")
 
-claim("I3", READY, "11.089 spawner · rate = 0 : 2.365", 2365,
+claim("I3", READY, "11.092 spawner · rate = 0 : 2.370", 2370,
       lambda: (spawner_rate_zero() or (None, None, None))[1],
       "sửa 2.373 -> 2.371 trong DESIGN_QUESTIONS.md")
 
@@ -1747,11 +1747,11 @@ claim("P3", AUDIT, "**1.416 key × 19 ngôn ngữ**, **1.416** có bản tiếng
 claim("P4", AUDIT, "**170 sản phẩm** (71 consumable + 99 non-consumable)", (170, 71, 99),
       iap_stats, "IAP khớp giữa datas/iap_products.json và 13-iap-products.csv")
 
-claim("P5", AUDIT, "**4.845** hệ hạt · **92/92** âm thanh · **150** HP id · **256** boss HP · **250** map",
-      (4845, 92, 150, 256, 250), data_counts,
+claim("P5", AUDIT, "**4.845** hệ hạt · **92/92** âm thanh · **150** HP id · **253** boss HP · **250** map",
+      (4845, 92, 150, 253, 250), data_counts,
       "một dòng để nhớ datas/ đang có gì — khỏi làm lại")
 
-claim("P6", AUDIT, "**54.787** file · **8.290.223** node", (54787, 8290223, 797, 140797),
+claim("P6", AUDIT, "**55.584** file · **8.435.335** node", (55584, 8435335, 797, 140797),
       ui_two_levels, "UI hai tầng: layout file vs màn cấp cao — đừng tráo")
 
 # ── Q. atlas plan kiểm bằng kích thước thật ─────────────────────────────
@@ -2116,8 +2116,8 @@ claim("T3", "docs/spec/ANIMATION_SCRIPT.md", "| `0x20` | `attackEventName` | `st
       (5, 0x20, 0x40, 2), spine_handler_fields,
       "5 field serialized, 2 cái là chuỗi tên event")
 
-claim("T4", "docs/spec/ANIMATION_SCRIPT.md", "**18 có `*_Director`**",
-      (18, 18, 15), director_matrix,
+claim("T4", "docs/spec/ANIMATION_SCRIPT.md", "**18 có `*_Director`** và **16 có lớp `*_AnimationEvents`**",
+      (18, 16, 13), director_matrix,
       "ma trận director <-> animation-events trên prefab, ghép bằng _gameobject")
 
 # ── U. T3/T4 đo lại từ raw (ANIMATION_SCRIPT.md §3.5) ───────────────────

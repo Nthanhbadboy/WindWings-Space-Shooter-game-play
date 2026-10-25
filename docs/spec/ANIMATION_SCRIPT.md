@@ -289,9 +289,11 @@ Vì vậy: chép được **tên sự kiện + thời điểm** (§3), **không*
 |---|---|---|---|
 | 39004 · 39006 · 39007 · 39009 · 39011 · 39012 · 39013 · 39014 · 39015 · 39016 · 39017 · 39018 · 39019 · 39020 · 39021 | 39005 · 39008 | 37018 · 37019 · 39010 | 37001 · 37002 · 37004 · 37009…37017 (9) · 39003 · `CB-30040` |
 
-Tính trên **39 prefab `Boss-*`**: **18 có `*_Director`** (17 có event clip + `Boss-39002`) và **18 có
-lớp `*_AnimationEvents`** — hai tập **lệch nhau 3** (`Boss-39002`, `Boss-39005`, `Boss-39008` có
-director mà không có lớp handler trong export).
+Tính trên **39 prefab `Boss-*`**: **18 có `*_Director`** và **16 có lớp `*_AnimationEvents`** — hai tập
+**lệch 5 + 3** (sau khi đồng bộ `55bd18ac8`): **5** prefab có director mà **không** có lớp handler
+(`Boss-39002`, `39005`, `39008`, `39013`, `39016`) và **3** prefab có handler mà không có director
+(`Boss-37018`, `37019`, `39010`). Bản trước ghi *"lệch 3"* — số đó đúng với export cũ, **không** đúng
+với export mới; giữ lại để thấy vì sao phải neo claim vào **tên file** chứ vào trí nhớ.
 
 **Ba điều đọc được:**
 

@@ -6,7 +6,7 @@
 > phải để chép nguyên. Dữ liệu thô: `reverse-engineering/raw/il2cpp-consts/`.
 
 - .so: `libil2cpp.so` — aarch64
-- class đích: **64**, method: **778**
+- class đích: **134**, method: **1662**
 
 ## Getter: trả hằng số hay đọc dữ liệu?
 
@@ -21,6 +21,58 @@ Mỗi getter trong build này đều bị bọc bởi guard khởi tạo static 
 | class | field | computed | call | const |
 |---|---:|---:|---:|---:|
 | `ArenaManager` | 0 | 1 | 18 | **0** |
+| `BoardManager` | 0 | 0 | 20 | **0** |
+| `Board_Drones` | 0 | 2 | 75 | **0** |
+| `Board_Endgame` | 0 | 3 | 72 | **0** |
+| `Board_Endgame.<>c` | 0 | 0 | 2 | **3** |
+| `Board_Endgame.<>c__DisplayClass123_0` | 0 | 0 | 2 | **0** |
+| `Board_Endgame.<>c__DisplayClass142_0` | 0 | 0 | 2 | **0** |
+| `Board_Endgame.<>c__DisplayClass142_1` | 0 | 0 | 4 | **0** |
+| `Board_Endgame.<>c__DisplayClass143_0` | 0 | 0 | 5 | **0** |
+| `Board_Endgame.<>c__DisplayClass144_0` | 0 | 0 | 1 | **0** |
+| `Board_Endgame.<>c__DisplayClass144_1` | 0 | 0 | 2 | **0** |
+| `Board_Endgame.<CheckLoadingTimeOut>d__122` | 0 | 0 | 2 | **0** |
+| `Board_Endgame.<IEGetTimeOnline>d__144` | 0 | 0 | 2 | **0** |
+| `Board_Endgame.<IESetEndgameEndless>d__142` | 0 | 0 | 2 | **0** |
+| `Board_Endgame.<IETryGetRoomRankEndless>d__143` | 0 | 0 | 2 | **0** |
+| `Board_Endgame.<RewardCoins>d__164` | 0 | 0 | 2 | **0** |
+| `Board_Endgame.<RunMissions>d__162` | 0 | 0 | 2 | **0** |
+| `Board_Endgame.<SetShopPrices>d__193` | 0 | 0 | 2 | **0** |
+| `Board_Endgame.<UnboxGifts>d__191` | 0 | 0 | 2 | **0** |
+| `Board_Home` | 0 | 4 | 78 | **0** |
+| `Board_Home.<>c` | 0 | 0 | 3 | **0** |
+| `Board_Home.<>c__DisplayClass147_0` | 0 | 0 | 1 | **0** |
+| `Board_Home.<>c__DisplayClass147_1` | 0 | 0 | 2 | **0** |
+| `Board_Home.<AutoPopFeedback>d__175` | 0 | 0 | 2 | **0** |
+| `Board_Home.<DelayFx>d__114` | 0 | 0 | 2 | **0** |
+| `Board_Home.<HideGifts>d__202` | 0 | 0 | 2 | **0** |
+| `Board_Home.<IECheckPackTimer>d__111` | 0 | 0 | 2 | **0** |
+| `Board_Home.<IECheckSpecialDayGift>d__148` | 0 | 0 | 2 | **0** |
+| `Board_Home.<IEGetTimeOnline>d__147` | 0 | 0 | 2 | **0** |
+| `Board_Home.<UpdateTimers>d__170` | 0 | 0 | 2 | **0** |
+| `Board_Maps` | 0 | 4 | 87 | **2** |
+| `Board_Maps.<>c` | 0 | 0 | 1 | **0** |
+| `Board_Maps.<>c__DisplayClass102_0` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<>c__DisplayClass88_0` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<>c__DisplayClass97_0` | 0 | 0 | 1 | **0** |
+| `Board_Maps.<>c__DisplayClass97_1` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<HideGifts>d__91` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<HideRank>d__92` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<IECheckOpenWinnerBenefits>d__116` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<IECheckPackTimers>d__174` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<IECheckStarterTimer>d__173` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<IEGetTimeOnline>d__97` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<IEOpenRank>d__102` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<IEUpdateAbilityEventTimer>d__153` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<IEUpdateEventTimer>d__164` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<SetProcessBattlePass2>d__154` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<SetProcessBattlePass>d__160` | 0 | 0 | 2 | **0** |
+| `Board_Maps.<UpdateTimers>d__167` | 0 | 0 | 2 | **0** |
+| `Board_Players` | 0 | 1 | 70 | **0** |
+| `Board_Stage` | 0 | 2 | 17 | **1** |
+| `Board_Stage.<>c` | 0 | 0 | 1 | **1** |
+| `Board_Stage.<CheckSpecInrerest>d__18` | 0 | 0 | 2 | **0** |
+| `Board_Stage.<CheckTutStartItemToPlay>d__19` | 0 | 0 | 2 | **0** |
 | `Boss1_AnimationEvents` | 0 | 0 | 1 | **0** |
 | `Boss1_Director` | 0 | 0 | 21 | **0** |
 | `Boss1_Director.<>c__DisplayClass25_0` | 0 | 2 | 1 | **0** |
@@ -58,6 +110,7 @@ Mỗi getter trong build này đều bị bọc bởi guard khởi tạo static 
 | `Boss_AttackTypes.<IEGunAttackFixed>d__10` | 0 | 0 | 2 | **0** |
 | `Boss_AttackTypes.<IEGunAttackRandomPositionX>d__14` | 0 | 0 | 2 | **0** |
 | `Boss_AttackTypes.<IEGunCheckAttack>d__9` | 0 | 0 | 2 | **0** |
+| `DataTutorials` | 0 | 0 | 4 | **0** |
 | `Device_Get_Data` | 0 | 2 | 8 | **0** |
 | `Droid_Data_Balance` | 0 | 0 | 9 | **0** |
 | `Enemy_Appear` | 0 | 0 | 2 | **0** |
@@ -71,6 +124,20 @@ Mỗi getter trong build này đều bị bọc bởi guard khởi tạo static 
 | `Enemy_Movement.<IELinearMove>d__37` | 0 | 0 | 2 | **0** |
 | `Enemy_Rotate` | 0 | 0 | 2 | **0** |
 | `Enemy_Sub` | 0 | 0 | 21 | **0** |
+| `GP_Tutorials` | 1 | 2 | 19 | **0** |
+| `GP_Tutorials.<>c` | 0 | 0 | 3 | **0** |
+| `GP_Tutorials.<>c__DisplayClass39_0` | 0 | 0 | 4 | **0** |
+| `GP_Tutorials.<>c__DisplayClass40_0` | 0 | 0 | 2 | **0** |
+| `GP_Tutorials.<>c__DisplayClass55_0` | 0 | 0 | 2 | **0** |
+| `GP_Tutorials.<>c__DisplayClass58_0` | 0 | 0 | 2 | **0** |
+| `GP_Tutorials.<HideSettings>d__38` | 0 | 0 | 2 | **0** |
+| `GP_Tutorials.<TutChangeGameSpeed>d__55` | 0 | 0 | 2 | **0** |
+| `GP_Tutorials.<TutChangeGameSpeedBoss>d__58` | 0 | 0 | 2 | **0** |
+| `GP_Tutorials.<TutDrones>d__48` | 0 | 0 | 2 | **0** |
+| `GP_Tutorials.<TutLaserSkill>d__60` | 0 | 0 | 2 | **0** |
+| `GP_Tutorials.<TutMoveFingers>d__40` | 0 | 0 | 2 | **0** |
+| `GP_Tutorials.<TutTalents>d__52` | 0 | 0 | 2 | **0** |
+| `GP_Tutorials.<TutTransform>d__42` | 0 | 0 | 2 | **0** |
 | `GameDatas` | 23 | 3 | 39 | **1** |
 | `IAP_Manager` | 0 | 0 | 33 | **0** |
 | `Map_Get_Datas` | 0 | 0 | 10 | **0** |
@@ -82,9 +149,12 @@ Mỗi getter trong build này đều bị bọc bởi guard khởi tạo static 
 | `Player_Ingame` | 1 | 0 | 11 | **0** |
 | `Player_Talent` | 1 | 2 | 18 | **0** |
 | `RankManager` | 0 | 0 | 8 | **0** |
+| `SkipTutorial` | 0 | 0 | 12 | **0** |
 | `Stage_Get_Datas` | 0 | 0 | 11 | **0** |
 | `Tech_Datas` | 0 | 7 | 16 | **0** |
-| **tổng** | 28 | 44 | 488 | **12** |
+| `Tut_Settings` | 0 | 0 | 2 | **0** |
+| `Tut_Settings1` | 0 | 0 | 5 | **0** |
+| **tổng** | 29 | 62 | 1069 | **19** |
 
 ### Float đọc từ literal pool (`.rodata`) — số thật, không phải suy luận
 
@@ -95,6 +165,88 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 
 | class | method | giá trị | VA |
 |---|---|---:|---|
+| `BoardManager` | `LoadSingle` | 0.8 | `0x756c14` |
+| `BoardManager` | `LoadSingle` | 0.2 | `0x75700c` |
+| `BoardManager` | `LoadAdditive` | 0.8 | `0x756c14` |
+| `BoardManager` | `LoadAdditive` | 0.2 | `0x75700c` |
+| `BoardManager` | `LoadPopUp` | 0.8 | `0x756c14` |
+| `BoardManager` | `LoadPopUp` | 0.2 | `0x75700c` |
+| `BoardManager` | `FadeOff` | 0.8 | `0x756c14` |
+| `BoardManager` | `FadeOff` | 0.1 | `0x756c78` |
+| `Board_Drones` | `SetBounds` | 14.4 | `0x756dd8` |
+| `Board_Drones` | `OnPressedButtonCell` | -0.1 | `0x757018` |
+| `Board_Drones` | `SetActiveButtons` | 0.4 | `0x756fbc` |
+| `Board_Drones` | `SetUpgradeCost` | 4.12 | `0x756de0` |
+| `Board_Drones` | `SetUpgradeCost` | 0.65 | `0x756ddc` |
+| `Board_Drones` | `CheckFocus` | 0.845 | `0x756d68` |
+| `Board_Drones` | `CheckFocus` | -0.4 | `0x756de4` |
+| `Board_Drones` | `CheckFocus` | 1.475 | `0x756f0c` |
+| `Board_Drones` | `CheckFocus` | 0.567 | `0x756cb4` |
+| `Board_Drones` | `CheckFocus` | 0.6 | `0x756c44` |
+| `Board_Drones` | `SetPopupPlayer` | 0.86 | `0x756de8` |
+| `Board_Drones` | `SetPopupPlayer` | -0.4 | `0x756de4` |
+| `Board_Endgame` | `OnEnable` | 0.68 | `0x756ed0` |
+| `Board_Endgame` | `OnEnable` | 0.8 | `0x756c14` |
+| `Board_Endgame` | `OnEnable` | 3.95 | `0x756cf8` |
+| `Board_Endgame` | `OnEnable` | 1.2 | `0x756cb8` |
+| `Board_Endgame` | `OnEnable` | 0.95 | `0x756cfc` |
+| `Board_Endgame` | `OnEnable` | 3.45 | `0x756ed4` |
+| `Board_Endgame` | `OnEnable` | -0.89 | `0x756f8c` |
+| `Board_Endgame` | `OnEnable` | -0.4 | `0x756de4` |
+| `Board_Endgame` | `OnEnable` | 0.7 | `0x756cac` |
+| `Board_Endgame` | `OnEnable` | 0.65 | `0x756ddc` |
+| `Board_Endgame` | `OnEnable` | -0.1 | `0x757018` |
+| `Board_Endgame` | `Init` | 0.91765 | `0x756e90` |
+| `Board_Endgame` | `Init` | -0.1 | `0x757018` |
+| `Board_Endgame` | `Init` | 3.2 | `0x756b40` |
+| `Board_Endgame` | `Init` | 2.85 | `0x756dec` |
+| `Board_Endgame` | `Init` | 1.2 | `0x756cb8` |
+| `Board_Endgame` | `Init` | 2.15 | `0x756c18` |
+| `Board_Endgame` | `Init` | 0.6 | `0x756c44` |
+| `Board_Endgame` | `Init` | 0.64 | `0x756f58` |
+| `Board_Endgame` | `Init` | 0.68 | `0x756ed0` |
+| `Board_Endgame` | `Init` | 6.55 | `0x756a60` |
+| `Board_Endgame` | `Init` | 6.64 | `0x756c80` |
+| `Board_Endgame` | `Init` | -3.4 | `0x756b44` |
+| `Board_Endgame.<CheckLoadingTimeOut>d__122` | `MoveNext` | 0.2 | `0x75700c` |
+| `Board_Endgame.<UnboxGifts>d__191` | `MoveNext` | 0.1 | `0x756c78` |
+| `Board_Home` | `CheckStarterTimer` | 0.86 | `0x756de8` |
+| `Board_Home` | `CheckTutorialFocus` | -0.3 | `0x756e40` |
+| `Board_Home.<IECheckPackTimer>d__111` | `MoveNext` | 0.86 | `0x756de8` |
+| `Board_Home.<IECheckPackTimer>d__111` | `MoveNext` | 0.2 | `0x75700c` |
+| `Board_Home.<UpdateTimers>d__170` | `MoveNext` | 0.01569 | `0x756bd0` |
+| `Board_Home.<UpdateTimers>d__170` | `MoveNext` | 0.92157 | `0x756ae4` |
+| `Board_Home.<UpdateTimers>d__170` | `MoveNext` | 5.37891 | `0x75811c` |
+| `Board_Home.<UpdateTimers>d__170` | `MoveNext` | 0.2 | `0x75700c` |
+| `Board_Maps` | `Refresh` | 0.7 | `0x756cac` |
+| `Board_Maps` | `Refresh` | 0.65 | `0x756ddc` |
+| `Board_Maps` | `Refresh` | -0.1 | `0x757018` |
+| `Board_Maps` | `Collect` | 1.28 | `0x756f10` |
+| `Board_Maps` | `Collect` | 0.8 | `0x756c14` |
+| `Board_Maps` | `Collect` | 1.42 | `0x756b08` |
+| `Board_Maps` | `GetRandomPosition` | 3.2 | `0x756b40` |
+| `Board_Maps` | `GetRandomPosition` | 2.85 | `0x756dec` |
+| `Board_Maps` | `CreateStages` | -3.6 | `0x756c88` |
+| `Board_Maps.<IECheckPackTimers>d__174` | `MoveNext` | 0.2 | `0x75700c` |
+| `Board_Maps.<IECheckStarterTimer>d__173` | `MoveNext` | 0.2 | `0x75700c` |
+| `Board_Maps.<IEUpdateAbilityEventTimer>d__153` | `MoveNext` | 0.2 | `0x75700c` |
+| `Board_Maps.<SetProcessBattlePass>d__160` | `MoveNext` | 4.15 | `0x756db0` |
+| `Board_Maps.<SetProcessBattlePass>d__160` | `MoveNext` | 0.01 | `0x756fe0` |
+| `Board_Maps.<SetProcessBattlePass>d__160` | `MoveNext` | 0.1 | `0x756c78` |
+| `Board_Maps.<UpdateTimers>d__167` | `MoveNext` | 7.65918 | `0x7578ec` |
+| `Board_Maps.<UpdateTimers>d__167` | `MoveNext` | 5.37891 | `0x75811c` |
+| `Board_Players` | `SetBounds` | 14.4 | `0x756dd8` |
+| `Board_Players` | `OnPressedButtonCell` | -0.1 | `0x757018` |
+| `Board_Players` | `SetActiveButtons` | -1.8 | `0x756f64` |
+| `Board_Players` | `SetActiveButtons` | 0.6 | `0x756c44` |
+| `Board_Players` | `SetActiveButtons` | -0.4 | `0x756de4` |
+| `Board_Players` | `SetPlayerInfo` | 2.44 | `0x756e64` |
+| `Board_Players` | `SetAbilityInfo` | 0.667 | `0x756fe8` |
+| `Board_Players` | `SetAbilities` | 0.4 | `0x756fbc` |
+| `Board_Stage` | `OnEnable` | 0.7 | `0x756cac` |
+| `Board_Stage` | `OnEnable` | 0.65 | `0x756ddc` |
+| `Board_Stage` | `OnEnable` | -0.1 | `0x757018` |
+| `Board_Stage.<CheckTutStartItemToPlay>d__19` | `MoveNext` | 0.1 | `0x756c78` |
 | `Boss1_Director` | `Defeat` | 0.2 | `0x75700c` |
 | `Boss1_Director` | `OnGunDie` | 0.12 | `0x756b38` |
 | `Boss1_Director` | `ClearGuns` | 0.1 | `0x756c78` |
@@ -165,6 +317,11 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 | `Enemy_Movement.<IELinearMove>d__37` | `MoveNext` | 0.01 | `0x756fe0` |
 | `Enemy_Rotate` | `ctor` | 2.0 | `0x7571d0` |
 | `Enemy_Rotate` | `ctor` | 80.0 | `0x7571d4` |
+| `GP_Tutorials` | `Start` | -9.6 | `0x756d60` |
+| `GP_Tutorials.<TutDrones>d__48` | `MoveNext` | 3.9 | `0x756e58` |
+| `GP_Tutorials.<TutMoveFingers>d__40` | `MoveNext` | 0.8 | `0x756c14` |
+| `GP_Tutorials.<TutTransform>d__42` | `MoveNext` | 0.1 | `0x756c78` |
+| `GP_Tutorials.<TutTransform>d__42` | `MoveNext` | 0.05 | `0x756e18` |
 | `Player_Ability` | `OnBulletDroneSkill6Destroyed` | 0.68 | `0x756ed0` |
 | `Player_Attack` | `get_dmgTechItem0` | 0.3 | `0x7570e0` |
 | `Player_Attack` | `ctor` | -1.0 | `0x757910` |
@@ -217,11 +374,20 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 | `Tech_Datas` | `GetPlayerUpgradePrice` | 150000.0 | `0x756cc4` |
 | `Tech_Datas` | `GetDroneUpgradePrice` | 0.12 | `0x756b38` |
 | `Tech_Datas` | `GetDroneUpgradePrice` | 150000.0 | `0x756cc4` |
+| `Tut_Settings1` | `Start` | 7.2 | `0x756e94` |
+| `Tut_Settings1` | `<Start>b__11_0` | 7.2 | `0x756e94` |
 
 ### Getter trả hằng số (nếu có)
 
 | class | method | giá trị |
 |---|---|---:|
+| `Board_Endgame.<>c` | `<OnPressedButtonConfirmBuyX20>b__115_1` | 1 |
+| `Board_Endgame.<>c` | `<LoadSceneHome>b__129_0` | 1 |
+| `Board_Endgame.<>c` | `<LoadToLoading>b__130_0` | 2 |
+| `Board_Maps` | `GetSpecIndexRandom` | 5 |
+| `Board_Maps` | `IsCanActiveSpecInrerest` | 1 |
+| `Board_Stage` | `IsNotStrongest` | 1 |
+| `Board_Stage.<>c` | `<ThrowGetStrongest>b__29_0` | 2 |
 | `BossAnimationEvents` | `Vibrate` | 30 |
 | `Enemy_Data_Balance` | `GetBonusExp` | 6 |
 | `GameDatas` | `IsPremiumExpired` | 1 |
@@ -236,6 +402,41 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 | `Player_Get_Datas` | `GetMaxCountRockets` | 10 |
 
 
+## `Board_Maps` — early-stage UI/tutorial gates — pending native verification
+
+- method đọc được: **116**, có hằng số: **104**
+- float: `-22.0, -3.6, -1.25, -0.1, 0.65, 0.7, 0.8, 1.0, 1.25, 1.28, 1.42, 1.5, 2.0, 2.5, 2.85, 3.2, 3.5`
+- int: `2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 19, 20, 21, 24, 25, 26, 27, 28, 30, 32, 34`
+- hằng số dùng trong phép tính: `arith:fadd:-1.25, arith:fadd:1.25, arith:fadd:2.0, arith:fadd:3.2`
+
+## `Board_Home` — early-stage UI/tutorial gates — pending native verification
+
+- method đọc được: **101**, có hằng số: **87**
+- float: `-30.0, -28.0, -24.0, -22.0, -1.0, -0.3, 0.86, 1.0`
+- int: `2, 3, 4, 5, 7, 8, 10, 12, 16, 17, 23, 24, 25, 28, 30, 31, 32, 36, 56, 57, 60, 64, 96, 112`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Drones` — early-stage UI/tutorial gates — pending native verification
+
+- method đọc được: **81**, có hằng số: **67**
+- float: `-1.0, -0.5, -0.4, -0.25, -0.1, 0.4, 0.5, 0.567, 0.6, 0.65, 0.845, 0.86, 0.875, 1.0, 1.475, 1.5, 3.5, 4.12, 14.4`
+- int: `2, 3, 4, 5, 8, 12, 16, 17, 20, 24, 28, 40, 48, 56, 60, 64, 80, 96, 112, 128, 272, 432, 448, 460`
+- hằng số dùng trong phép tính: `arith:fadd:1.0, arith:fmul:0.5, arith:fmul:4.12, arith:scvtf:0.65, arith:scvtf:4.12`
+
+## `Board_Endgame` — early-stage UI/tutorial gates — pending native verification
+
+- method đọc được: **79**, có hằng số: **70**
+- float: `-3.75, -3.4, -3.25, -1.55, -1.1, -1.0, -0.89, -0.5, -0.4, -0.1, 0.45, 0.5, 0.6, 0.64, 0.65, 0.68, 0.7, 0.8, 0.91765, 0.95, 1.0, 1.2, 1.25, 1.28`
+- int: `2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 24, 25, 26, 27, 28`
+- hằng số dùng trong phép tính: `arith:fadd:-3.75, arith:fadd:-3.4, arith:fadd:-1.55, arith:fadd:2.15, arith:fadd:5.0, arith:fmul:-0.5, arith:fmul:0.5, arith:fmul:1.2, arith:fsub:6.55, arith:fsub:6.64, arith:fsub:10.5`
+
+## `Board_Players` — early-stage UI/tutorial gates — pending native verification
+
+- method đọc được: **79**, có hằng số: **71**
+- float: `-1.8, -1.0, -0.5, -0.4, -0.25, -0.1, 0.4, 0.5, 0.6, 0.667, 1.0, 1.5, 2.44, 3.5, 14.4`
+- int: `2, 3, 4, 5, 6, 8, 10, 12, 16, 17, 20, 24, 28, 32, 37, 40, 48, 56, 60, 64, 80, 96, 128, 264`
+- hằng số dùng trong phép tính: `arith:fadd:1.0, arith:fmul:0.5, arith:fmul:1.0, arith:fmul:2.44`
+
 ## `GameDatas` — cờ save/anti-cheat, cheat counters
 
 - method đọc được: **73**, có hằng số: **72**
@@ -249,6 +450,13 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - float: `0.0111, 0.0125, 0.025, 0.03, 0.04, 0.05, 0.06, 0.075, 0.08, 0.1, 0.12, 0.15, 0.168, 0.1764, 0.18, 0.1932, 0.2, 0.22, 0.25, 0.3, 0.4, 0.5, 0.666, 0.8`
 - int: `2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 18, 21, 24, 30, 32, 48, 58, 64, 78, 96, 98, 100`
 - hằng số dùng trong phép tính: `arith:fadd:0.05, arith:fadd:0.06, arith:fadd:0.1, arith:fadd:0.2, arith:fadd:1.0, arith:fdiv:1.8, arith:fdiv:3.5, arith:fmul:0.0111, arith:fmul:0.0125, arith:fmul:0.03, arith:fmul:0.1, arith:fmul:0.1932, arith:fmul:0.2, arith:fmul:0.22, arith:fmul:0.5, arith:fmul:1.15, arith:fmul:1.5, arith:fmul:1.6, arith:fmul:1.68, arith:fmul:1.8, arith:fmul:2.2, arith:fmul:2.6, arith:fmul:7.3, arith:fmul:1500.0`
+
+## `GP_Tutorials` — early-stage UI/tutorial gates — pending native verification
+
+- method đọc được: **46**, có hằng số: **35**
+- float: `-9.6, 1.0, 2.0, 3.0, 9.0`
+- int: `2, 4, 6, 8, 12, 28, 29, 48`
+- hằng số dùng trong phép tính: `arith:fadd:-9.6`
 
 ## `Player_Ability` — ability: khiên, drone skill, dodge
 
@@ -299,6 +507,20 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - int: `2, 3, 4, 5, 6, 8, 12, 14, 16, 18, 24, 28, 48, 64, 83, 100, 147, 312`
 - hằng số dùng trong phép tính: `arith:fadd:0.2`
 
+## `BoardManager` — early-stage UI/tutorial gates — pending native verification
+
+- method đọc được: **22**, có hằng số: **20**
+- float: `-25.0, -10.0, -2.0, 0.1, 0.2, 0.8`
+- int: `2, 3, 4, 7, 8, 9, 10, 16, 29, 32, 40, 56, 57, 58, 59, 96, 112, 128, 312, 1413, 1422`
+- hằng số dùng trong phép tính: `arith:fmul:-2.0, arith:fsub:-25.0, arith:fsub:-10.0`
+
+## `Board_Stage` — early-stage UI/tutorial gates — pending native verification
+
+- method đọc được: **22**, có hằng số: **19**
+- float: `-0.1, 0.65, 0.7, 2.5, 6.0, 8.0, 10.0`
+- int: `2, 3, 4, 5, 6, 8, 10, 12, 13, 36, 56, 57, 60, 858993459`
+- hằng số dùng trong phép tính: `—`
+
 ## `Boss1_Director` — animation control: event, state, phase or movement (pending asm verification)
 
 - method đọc được: **22**, có hằng số: **18**
@@ -339,6 +561,27 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - method đọc được: **19**, có hằng số: **16**
 - float: `—`
 - int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Endgame.<>c__DisplayClass142_0` — 
+
+- method đọc được: **15**, có hằng số: **6**
+- float: `—`
+- int: `2, 3, 4, 8, 12, 80`
+- hằng số dùng trong phép tính: `—`
+
+## `SkipTutorial` — early-stage UI/tutorial gates — pending native verification
+
+- method đọc được: **15**, có hằng số: **11**
+- float: `-3.0, -1.0`
+- int: `4, 12, 64`
+- hằng số dùng trong phép tính: `arith:fadd:-3.0, arith:fadd:-1.0`
+
+## `Board_Endgame.<>c` — 
+
+- method đọc được: **14**, có hằng số: **5**
+- float: `—`
+- int: `2`
 - hằng số dùng trong phép tính: `—`
 
 ## `Device_Get_Data` — device: stat, giá
@@ -397,6 +640,13 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - int: `2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25`
 - hằng số dùng trong phép tính: `—`
 
+## `Board_Endgame.<>c__DisplayClass143_0` — 
+
+- method đọc được: **9**, có hằng số: **5**
+- float: `—`
+- int: `3, 4, 8, 12, 16, 20, 24, 28, 112, 128`
+- hằng số dùng trong phép tính: `—`
+
 ## `Boss_AttackPhases` — animation control: event, state, phase or movement (pending asm verification)
 
 - method đọc được: **9**, có hằng số: **9**
@@ -417,6 +667,216 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - float: `0.01, 0.1, 0.2, 0.5, 0.56, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 2.0, 2.3, 2.8, 3.0, 4.2, 5.0, 6.0, 9.0, 11.0, 15.0`
 - int: `2, 6, 8, 10, 15, 21, 23, 29, 30, 59, 64, 120, 200, 250, 387, 450, 998, 30010, 30014, 30015, 30016, 30029, 30031, 30032`
 - hằng số dùng trong phép tính: `arith:fadd:1.0, arith:fmul:0.1, arith:fmul:9.0, arith:fmul:11.0, arith:fmul:25.0`
+
+## `Board_Endgame.<CheckLoadingTimeOut>d__122` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.2, 60.0`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Endgame.<IEGetTimeOnline>d__144` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `1.0`
+- int: `2, 3, 3193`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Endgame.<IESetEndgameEndless>d__142` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `1.0`
+- int: `2, 3, 4, 5, 6, 7, 8, 9, 3198, 2139095040`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Endgame.<IETryGetRoomRankEndless>d__143` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.5`
+- int: `2, 3, 4, 3218`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Endgame.<RewardCoins>d__164` — 
+
+- method đọc được: **6**, có hằng số: **2**
+- float: `1.0`
+- int: `2, 24, 28, 30, 31, 36, 60, 96`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Endgame.<RunMissions>d__162` — 
+
+- method đọc được: **6**, có hằng số: **2**
+- float: `-1.0, 0.5`
+- int: `2, 3, 4, 6, 8, 12, 60, 64`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Endgame.<SetShopPrices>d__193` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Endgame.<UnboxGifts>d__191` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.1`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Home.<>c` — 
+
+- method đọc được: **6**, có hằng số: **3**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Home.<AutoPopFeedback>d__175` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `1.0`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Home.<DelayFx>d__114` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.5`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Home.<HideGifts>d__202` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `1.0`
+- int: `3`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Home.<IECheckPackTimer>d__111` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.2, 0.86`
+- int: `3`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Home.<IECheckSpecialDayGift>d__148` — 
+
+- method đọc được: **6**, có hằng số: **2**
+- float: `—`
+- int: `8, 48`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Home.<IEGetTimeOnline>d__147` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `1.0`
+- int: `2, 3, 3193`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Home.<UpdateTimers>d__170` — 
+
+- method đọc được: **6**, có hằng số: **2**
+- float: `-4.0, -2.0, 0.01569, 0.2, 0.92157, 1.0, 5.37891`
+- int: `2, 3, 4, 5, 8, 12, 40, 48, 96`
+- hằng số dùng trong phép tính: `arith:fadd:-2.0, arith:fdiv:5.37891`
+
+## `Board_Maps.<HideGifts>d__91` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<HideRank>d__92` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `1.0`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<IECheckOpenWinnerBenefits>d__116` — 
+
+- method đọc được: **6**, có hằng số: **2**
+- float: `—`
+- int: `2, 8, 24, 80`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<IECheckPackTimers>d__174` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.2`
+- int: `3`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<IECheckStarterTimer>d__173` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.2`
+- int: `2, 3, 32, 4294967295`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<IEGetTimeOnline>d__97` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `1.0`
+- int: `2, 3, 3193`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<IEOpenRank>d__102` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `-22.0, 1.0`
+- int: `2, 5`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<IEUpdateAbilityEventTimer>d__153` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.2`
+- int: `2, 8`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<IEUpdateEventTimer>d__164` — 
+
+- method đọc được: **6**, có hằng số: **2**
+- float: `—`
+- int: `2, 8, 24, 128`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<SetProcessBattlePass2>d__154` — 
+
+- method đọc được: **6**, có hằng số: **2**
+- float: `—`
+- int: `12, 16, 24, 40, 112`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<SetProcessBattlePass>d__160` — 
+
+- method đọc được: **6**, có hằng số: **2**
+- float: `0.01, 0.1, 1.0, 4.15, 24.0`
+- int: `2, 3, 4, 8, 32, 40, 128, 3454, 2139095040`
+- hằng số dùng trong phép tính: `arith:fdiv:24.0, arith:fmul:1.0, arith:fmul:4.15`
+
+## `Board_Maps.<UpdateTimers>d__167` — 
+
+- method đọc được: **6**, có hằng số: **2**
+- float: `5.37891, 7.65918`
+- int: `2, 3, 4, 8, 12, 80`
+- hằng số dùng trong phép tính: `arith:fdiv:5.37891, arith:fdiv:7.65918`
+
+## `Board_Stage.<CheckSpecInrerest>d__18` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `1.0`
+- int: `2`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Stage.<CheckTutStartItemToPlay>d__19` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.1`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
 
 ## `Boss1_Director.<IEAttack1>d__25` — 
 
@@ -537,6 +997,62 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - int: `—`
 - hằng số dùng trong phép tính: `arith:fmul:0.01`
 
+## `GP_Tutorials.<HideSettings>d__38` — 
+
+- method đọc được: **6**, có hằng số: **2**
+- float: `16.0`
+- int: `128`
+- hằng số dùng trong phép tính: `arith:fmul:16.0`
+
+## `GP_Tutorials.<TutChangeGameSpeed>d__55` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `—`
+- int: `2`
+- hằng số dùng trong phép tính: `—`
+
+## `GP_Tutorials.<TutChangeGameSpeedBoss>d__58` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `-0.5`
+- int: `2`
+- hằng số dùng trong phép tính: `arith:fadd:-0.5`
+
+## `GP_Tutorials.<TutDrones>d__48` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `3.9`
+- int: `2, 3, 4, 8, 80, 88, 328`
+- hằng số dùng trong phép tính: `—`
+
+## `GP_Tutorials.<TutLaserSkill>d__60` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `GP_Tutorials.<TutMoveFingers>d__40` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.8`
+- int: `—`
+- hằng số dùng trong phép tính: `arith:fadd:0.8`
+
+## `GP_Tutorials.<TutTalents>d__52` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `—`
+- int: `2, 5, 7`
+- hằng số dùng trong phép tính: `—`
+
+## `GP_Tutorials.<TutTransform>d__42` — 
+
+- method đọc được: **6**, có hằng số: **1**
+- float: `0.05, 0.1, 1.0`
+- int: `2, 3, 4, 5, 6, 7, 8, 16, 257, 312, 334`
+- hằng số dùng trong phép tính: `—`
+
 ## `BossAnimationEvents` — animation control: event, state, phase or movement (pending asm verification)
 
 - method đọc được: **5**, có hằng số: **3**
@@ -593,11 +1109,53 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - int: `—`
 - hằng số dùng trong phép tính: `—`
 
+## `GP_Tutorials.<>c` — 
+
+- method đọc được: **5**, có hằng số: **4**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Tut_Settings1` — early-stage UI/tutorial gates — pending native verification
+
+- method đọc được: **5**, có hằng số: **4**
+- float: `-1.0, 1.0, 6.0, 7.2`
+- int: `2, 3, 4, 12, 2139095040`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Endgame.<>c__DisplayClass142_1` — 
+
+- method đọc được: **4**, có hằng số: **3**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<>c__DisplayClass102_0` — 
+
+- method đọc được: **4**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Stage.<>c` — 
+
+- method đọc được: **4**, có hằng số: **2**
+- float: `—`
+- int: `2`
+- hằng số dùng trong phép tính: `—`
+
 ## `Boss1_Director.<>c__DisplayClass25_0` — 
 
 - method đọc được: **4**, có hằng số: **3**
 - float: `—`
 - int: `2`
+- hằng số dùng trong phép tính: `—`
+
+## `DataTutorials` — early-stage UI/tutorial gates — pending native verification
+
+- method đọc được: **4**, có hằng số: **4**
+- float: `—`
+- int: `2, 3`
 - hằng số dùng trong phép tính: `—`
 
 ## `Enemy_Get_Datas` — enemy: HP khởi đầu theo prefab (Dictionary dựng ở .cctor)
@@ -613,6 +1171,41 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - float: `2.0, 100.0`
 - int: `—`
 - hằng số dùng trong phép tính: `arith:fsub:2.0`
+
+## `GP_Tutorials.<>c__DisplayClass39_0` — 
+
+- method đọc được: **4**, có hằng số: **3**
+- float: `5.0`
+- int: `2`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Endgame.<>c__DisplayClass144_1` — 
+
+- method đọc được: **3**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Home.<>c__DisplayClass147_1` — 
+
+- method đọc được: **3**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<>c` — 
+
+- method đọc được: **3**, có hằng số: **2**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<>c__DisplayClass97_1` — 
+
+- method đọc được: **3**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
 
 ## `BossSpineEventHandler` — animation control: event, state, phase or movement (pending asm verification)
 
@@ -663,6 +1256,20 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 - int: `—`
 - hằng số dùng trong phép tính: `—`
 
+## `Board_Endgame.<>c__DisplayClass123_0` — 
+
+- method đọc được: **2**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<>c__DisplayClass88_0` — 
+
+- method đọc được: **2**, có hằng số: **1**
+- float: `—`
+- int: `3`
+- hằng số dùng trong phép tính: `—`
+
 ## `Boss_AttackPhases.<>c__DisplayClass12_0` — 
 
 - method đọc được: **2**, có hằng số: **1**
@@ -673,6 +1280,55 @@ script đổi VA → offset qua `PT_LOAD` rồi đọc 4 byte, **chỉ trong seg
 ## `Enemy_Appear` — enemy appear/death/callback control — pending native verification
 
 - method đọc được: **2**, có hằng số: **0**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `GP_Tutorials.<>c__DisplayClass40_0` — 
+
+- method đọc được: **2**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `GP_Tutorials.<>c__DisplayClass55_0` — 
+
+- method đọc được: **2**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `GP_Tutorials.<>c__DisplayClass58_0` — 
+
+- method đọc được: **2**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Tut_Settings` — early-stage UI/tutorial gates — pending native verification
+
+- method đọc được: **2**, có hằng số: **1**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Endgame.<>c__DisplayClass144_0` — 
+
+- method đọc được: **1**, có hằng số: **0**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Home.<>c__DisplayClass147_0` — 
+
+- method đọc được: **1**, có hằng số: **0**
+- float: `—`
+- int: `—`
+- hằng số dùng trong phép tính: `—`
+
+## `Board_Maps.<>c__DisplayClass97_0` — 
+
+- method đọc được: **1**, có hằng số: **0**
 - float: `—`
 - int: `—`
 - hằng số dùng trong phép tính: `—`

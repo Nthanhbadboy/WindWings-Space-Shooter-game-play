@@ -1880,3 +1880,46 @@ Endgame), `COVERAGE_AUDIT.md` hàng UI. Claim **Y2** sửa `5/5 → 6/6`, thêm 
 - `early-stage-coverage.json.gz` (1,99 MB): **chưa** phân tích — report 42/43 mới đọc phần kết luận.
 - `Board_Maps`: **chưa** có độ sâu đầy đủ (đạt trần 6.000 ở snapshot này) ⇒ mọi số của `Board_Maps`
   phải ghi **cận dưới**; `handoff AI tasks` nói phải chờ raw tái xuất rồi mới bỏ OPEN.
+
+---
+
+## 14. Kéo bản `55bd18ac8` (25/10, sau khi tự chốt *"feel bỏ, script là đủ"*)
+
+**Refspec:** `git fetch origin arena/ef6b75ef-windwings-space-shooter-game-p` → `FETCH_HEAD` = **`55bd18ac8`**
+(kiểm bằng `git rev-parse FETCH_HEAD`; `ls-remote` xác nhận trước khi kéo). **Không** merge, không đổi nhánh.
+
+**Đã kéo 44 file** (`--diff-filter=AM`, chỉ `datas/` + `docs/apk-analysis/`, **không** kéo `reverse-engineering/raw`
+= 53.320 file ~142 MB):
+
+| nhóm | file |
+|---|---|
+| `datas/` **mới** | **`ui_text_keys.csv.gz`** ← đóng đúng phần *"thiếu text key tutorial"* |
+| `datas/` cập nhật | `waves.json` · `boss_hp.json` · `enemy_hp.json` · `ui_screens.json.gz` · `anim_clips.json.gz` · `animator_map.csv.gz` · `spine_anim.json.gz` · `formula_traces.json.gz` · `particle_systems.csv.gz` · `prefab_joins.csv.gz` |
+| **CSV lớp script (mới)** | `Boss1_Director.csv` · `Boss4_Director.csv` · `Boss5_Director.csv` · `Boss6_Director.csv` · `Boss12_Director.csv` · `Boss15_Director.csv` · `Boss18_Director.csv` · + **16** `Boss*_AnimationEvents.csv` (gồm `Boss6_Mini_`) · `Boss4_ExplosionTimer.csv` · `AirFree_Spawner.csv` |
+| report mới | `45-ui-routing-and-persistence.md` · `46-ui-render-context-validation.md` · `47-scoped-ui-and-home-loader.md` |
+
+### 14.1 Năm con số **đổi** vì dữ liệu mới (đã sửa doc + claim, không nới claim)
+
+| chỉ số | trước | **sau (`55bd18ac8`)** | claim | sửa ở |
+|---|---:|---:|---|---|
+| spawner | 11.089 | **11.092** | **H2**, **I3** | `ANIMATION.md` §4, `DESIGN_READINESS.md` §3 |
+| `rate = 0` | 2.365 | **2.370** | **I3** | `DESIGN_READINESS.md` §3, bảng §3.1 |
+| lượt spawn | 22.452 | **22.460** | **H2** | `ANIMATION.md` §4 |
+| HP id boss | 256 | **253** | **P5** | `COVERAGE_AUDIT.md` §3 |
+| UI layout file / node | 54.787 / 8.290.223 | **55.584 / 8.435.335** | **P6** | `COVERAGE_AUDIT.md` §3–§4, `UI.md` |
+| `*_Director` ↔ `*_AnimationEvents` | 18 / 18 (lệch 3) | **18 / 16 (lệch 5 + 3)** | **T4** | `ANIMATION_SCRIPT.md` §3.2 |
+
+⇒ **Bài học lặp lại lần thứ sáu:** mỗi lần kéo dữ liệu là một lần **5–6 con số phải sửa**. Vì vậy mọi con số
+trong `docs/spec/` đều phải nằm trong `tools/verify-claims.py`; nếu không, lần kéo sau sẽ lại "phát hiện" nó sai.
+
+### 14.2 Cái **không** đổi (để khỏi làm lại)
+
+- 797 màn cấp cao · 140.797 node · 5.711 nút · 125 lớp · 117 lớp trong `_index.csv` (**P6**, **N2**).
+- 250 map (**I4**), 282 wave (**H2**), 39 prefab `Boss-*` (**T4**, **X1**).
+- 1.554 `unclassified` / 2.197 asset (**AB1**) — bộ asset **không** được xuất lại trong bản này.
+
+### 14.3 Chưa đồng bộ (ghi đúng chữ "chưa")
+
+- `reverse-engineering/raw/**` của `55bd18ac8`: **chưa** kéo (142 MB, 53.320 file) — chỉ kéo khi có task raw cụ thể.
+- `.github/**` của bản đó: **chưa** kéo (workflow khác với CI đang chạy 5 check của nhánh này).
+- `docs/handoff/**`: **chưa** đọc bản `55bd18ac8`.

@@ -92,3 +92,10 @@ Lượt export tiếp do commit 1989defc2 kích hoạt; trạng thái job phải
 **Bắt đầu vẽ được nhiều hơn report43: gồm cả tutorial panel. Chưa gọi toàn bộ
 luồng 1–3 hoặc mọi trạng thái UI đã đủ.** Các task còn OPEN là đầu việc cụ thể,
 không phải yêu cầu designer bịa phần thiếu.
+
+### Bổ sung sau relocation recovery
+
+Report45 đã resolve slot0x2adc6b0 → Board_Endgame_TypeInfo; static+0 là **victory**.
+Nhánh bool true nói ở §3 được xác nhận là victory. Key index tutorial là
+`TUTORIAL`. Fade callback Home/Game cũng đã join metadata→asm. Không đọc các
+OPEN của snapshot §3 như thể relocation chưa được làm.
