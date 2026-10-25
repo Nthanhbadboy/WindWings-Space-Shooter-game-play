@@ -58,22 +58,66 @@ rơi vào `unclassified`. Đo lại:
 
 ---
 
-## 4. Gợi ý nhãn cho 1.158 ảnh rời (theo **tên**, có đếm)
+## 4. Đã phân loại lại: **855/1.554 có nhãn**, còn **699 `unknown`**
 
-| luật | số sprite | gợi ý nhãn | mức |
-|---|---:|---|---|
-| `blt_*` | **133** | `bullet` (nhóm `bullet` đã có 67, cùng tiền tố) | **A** cho tiền tố, **B** cho việc gộp |
-| `Hotro*` · `Vip*` · `Goigem*` · `Khung*` | **107** | `ui` (khung kỹ năng / huy hiệu VIP / gói gem) | **B** |
-| `Rank*` | **94** | `ui` (huy hiệu rank) | **B** |
-| `Boss*` · `boss_*` | **78** | `bosses` (đang có 32) | **B** |
-| `CB*` · `cd*` · `E_*` | **58** | `enemy` (trùng tiền tố prefab `CB-30xxx` / `CD-31xxx`) | **B** |
-| `ManhPlane*` · `XVideo*` · `Rock*` · `Head*` · `Foot*` | **48** | bộ phận / mảnh (cần xem) | **C** |
-| **còn lại** | **640** | **chưa suy được từ tên** — phải xem contact sheet | — |
+Bộ phân loại `tools/classify-assets.py` (chạy lại được, xuất `docs/assets/sprites-classified.csv`)
+gán nhãn **chỉ khi có bằng chứng**. Ba mức:
 
-Với 640 còn lại, tín hiệu duy nhất đang có là **dung lượng**: **13** ảnh ≥ 100 KB (nghi background:
-`Lv69` 462 KB · `SplashFree` 403 KB · `DF5_512x512` 378 KB · `Hotgirl2` 349 KB · `AvatarP9` 241 KB ·
-`Map_ong` 234 KB …) và **69** ảnh ≤ 2 KB (nghi icon). Không đủ để gán nhãn — cần **xem 25 contact
-sheet** `unclassified-01…25.jpg` (có ở nhánh dữ liệu, `docs/assets/contact-sheets/`).
+| mức | nghĩa | số sprite (trong 1.554) |
+|---|---|---:|
+| **A** | tên tự mô tả **hoặc** đã xem contact sheet xác nhận | **739** |
+| **B** | suy từ tên **nhóm** (nhiều sprite cùng họ, cùng ngữ nghĩa) | **46** |
+| **C** | suy từ tên tương tự — **phải xem ảnh mới chắc** | **70** |
+| **chưa gán** | không có bằng chứng nào | **699** |
+| **cộng** | | **1.554** |
+
+Nhãn đề xuất (1.554 sprite chưa phân loại ⇒ nhãn mới):
+
+| nhãn đề xuất | thêm | vì sao (mã luật trong CSV) |
+|---|---:|---|
+| `ui` | **500** | `Khung*`/`Khungskill*` khung · `Rank1…10` huy hiệu · `PVP1…10` huy hiệu PVP · `A1…A24` avatar · `Coin_*` xu · `ApplePay`/`GooglePay`/`AppleInAppPurchase` logo IAP · `Nut*` nút · `Overdrive_Timer`/`_Hp_Timer` icon · `Shop_*` ô shop |
+| `bullet` | **158** | `blt_*` **148** + họ số **10** (`2011–2015`, `4011–4015` — ảnh 01 tile #18–22/#31–35 là tên lửa) |
+| `background` | **19** | `Nen*` (nền) · `Earth`/`Mars`/`Moon`/`Jupiter` · `Cloud_3` |
+| `bosses` | **66** | `boss_*` (19+13+12) · `Boss*` · `miniboss*` · `sieuhopthe*` (siêu hợp thể = boss ghép bộ phận) |
+| `enemy` | **56** | `CB-*`/`CD-*` trùng mã prefab enemy (**34**) · `E_*` (**10**) · `DA-2xxxx` (**12**, mức C) |
+| `fx` | **14** | `Circle_blue*`/`Circle_mask*` quầng sáng · `Gate*`/`Light`/`Ghost` |
+| `font` | **11** | `Coda_*` (chữ của logo) · `GooTest_*` (chữ Google Play) |
+| `items` | **31** | `Manh*` mảnh · `Rock`/`Head`/`Foot` |
+| **cộng** | **855** | |
+
+**Cảnh báo về chất lượng nhãn (đừng đọc "855" là "855 đúng"):** xem ảnh 03 cho thấy tên **không**
+luôn mô tả nội dung — `Ghost` là **một con tàu**, `Enegry` là **lon nước tăng lực**, `Hand` là **cánh
+tay robot**, `DA-20001…20012` là **hình năng lượng xanh** (không phải enemy). Vì vậy luật
+`Ghost`/`Light`/`Gate`/`Manh`/`DA-` chỉ ở mức **C**, và **mọi nhãn A/B đều ghi rõ luật** trong cột
+`rule` của CSV để người dùng kiểm lại từng cái.
+
+### 4.1 Còn lại **699 `unknown`** — chia ba nhóm, mỗi nhóm một cách đóng
+
+| nhóm | số | cách đóng |
+|---|---:|---|
+| `numeric` — tên là **số**: `1`, `11_0`, `208.0`, `1011`, `7day` | **107** | xem contact sheet (nhiều khả năng là **số/điểm** hoặc icon theo bộ) |
+| `word` — tên là **từ đơn**: `About`, `Add`, `Body`, `Border_Big`, `Boom`, `Bag1` | **248** | phần lớn là **khung/viền/nút UI** + mảnh tàu — xem ảnh |
+| `other` — có số + chữ: `10010Radar`, `Arow1`, `Beemap_0`, `BH1`, `Trap3`, `asteroid` | **344** | xem ảnh |
+
+**608 họ tên** trong 699 unknown, trong đó **555** là **tên đơn lẻ** (không có `_n` đi kèm) ⇒ không
+gom nhóm được, buộc phải xem từng tile. Mỗi dòng CSV có cột **`needs_eye` = `unclassified-NN.jpg#k`**
+để biết xem tile nào.
+
+### 4.2 Trạng thái xem ảnh — nói thẳng
+
+| | |
+|---|---:|
+| contact sheet đã **xem bằng mắt** | **3/25** (`unclassified-01…03`) |
+| sprite trong 3 sheet đó | 192 |
+| sheet còn lại **chưa xem** | **22** |
+
+5 sheet (**02, 03, 05, 21, 22**) đã hết `unknown` **nhờ luật tên**, không cần xem. 20 sheet còn
+unknown, nhiều nhất: `unclassified-08` **64**, `unclassified-09` **64**, `unclassified-07` **60**,
+`unclassified-06` **42**, `unclassified-24` **42**.
+
+> **Vì sao không "xem 25 ảnh rồi xong" trong một lượt:** mỗi ảnh là 64 tile; gán nhãn bằng mắt cần
+> đối chiếu *tên ↔ tile* (CSV có sẵn), nhưng một tile sai sẽ kéo theo nhãn sai trong cả một họ. Cách
+> đang làm: **luật trước (được 855), mắt sau (từng sheet)** — mỗi vòng xử lý 3–5 sheet.
 
 ---
 
@@ -118,22 +162,28 @@ nhóm `unclassified` (**113** sprite), 7 sheet còn lại đã có nhãn (`Bg1`/
 
 ## 7. Kết luận cho người dựng lại
 
-- **Không cần** chờ đủ 2.197 ảnh mới bắt đầu: 1.903 sprite đã có PNG riêng, **1.554** trong đó chưa có
-  nhãn nhưng **vẫn dùng được** nếu biết tên (contact sheet + `tile`).
+- **Không cần** chờ phân loại hết 2.197 ảnh mới bắt đầu: 1.903 sprite đã có PNG riêng; **855** sprite nay
+  đã có nhãn đề xuất (kèm mã luật để kiểm), **699** còn lại có toạ độ tile để xem.
 - **Cần** cho việc dựng art mới: 13 nhóm đã phân loại (**643** asset: 132+109+80+73+69+67+32+31+25+13+8+4)
   là đủ để lấy tỉ lệ kích thước/phong cách; **không** cần cắt hết sheet.
-- **Nên** làm ngay 2 việc rẻ: cắt `1_5x2` + `k_1__2x3` (16 ô), và áp 6 luật tên ở §4 (**518** sprite có nhãn
-  mới) — đưa `unclassified` từ **1.554 → 1.036** mà không cần xem ảnh.
+- **Việc rẻ nhất, làm ngay:** cắt `1_5x2` + `k_1__2x3` (**16 ô**, lưới khai báo trong tên, không phải
+  đoán) và dùng `sprites-classified.csv` thay cho `sprites-index.csv` khi cần tra nhãn.
+- **Việc còn lại là "xem ảnh"**, không phải "đọc thêm raw": 22 contact sheet chưa xem, **699** tile
+  (nhiều nhất `unclassified-08`/`09` mỗi sheet 64 tile). Trừ khi có **rect** (T9) thì mới đóng được
+  bằng máy.
 
 ## 8. Tự kiểm
 
 ```bash
-python3 tools/verify-claims.py --only AB      # 3 claim của tài liệu này
+python3 tools/classify-assets.py             # sinh lại sprites-classified.csv
+python3 tools/verify-claims.py --only AB     # 5 claim của tài liệu này
 python3 tools/verify-claims.py               # toàn bộ
 ```
 
 | claim | nội dung |
 |---|---|
 | **AB1** | 2.197 asset · 1.554 `unclassified` · 132 sheet · 16 sheet có sprite · **116** chưa tách |
-| **AB2** | 1.554 = **396** trong sheet + **1.158** rời; luật tên phủ **518**, còn **640** chưa suy được |
+| **AB2** | 1.554 = **396** trong sheet + **1.158** rời |
 | **AB3** | 17 sheet ≥ 8 sprite = **184** sprite (10 sheet / **113** sprite thuộc `unclassified`) · 2 sheet lưới = **16** ô, **0** ô đã tách |
+| **AB4** | phân loại lại: **855** có nhãn (**739 A · 46 B · 70 C**) · **699** `unknown` (**107** numeric · **248** word · **344** other) |
+| **AB5** | 699 unknown = **608** họ tên, **555** tên đơn lẻ; **20/25** contact sheet còn tile chưa gán |

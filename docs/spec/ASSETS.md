@@ -523,6 +523,10 @@ phải đọc chính xác là:
 | 3 | **Áp luật > 512 px** | **88** asset vượt 512: **60** `Texture2D` + **28** `Sprite` |
 | 4 | **Tính lại budget theo subset** | nếu chỉ atlasing **UI + trong trận** thì 12 page là **dư**, không phải thiếu |
 
+> **Phân loại 2.197 asset bản gốc** (2.197 dòng `docs/assets/sprites-index.csv`: 1.554 `unclassified`,
+> 132 sheet Texture2D, 116 chưa tách) → **`ASSET_TRIAGE.md`** + `docs/assets/sprites-classified.csv`.
+> Tài liệu đó **không** thay §4 này: §4 nói *nên đóng gói lại thế nào*, `ASSET_TRIAGE` nói *asset nào là cái gì*.
+
 ### 4.5.4 Cách kiểm lại
 
 ```bash

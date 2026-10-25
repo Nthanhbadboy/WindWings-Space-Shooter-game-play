@@ -2613,8 +2613,7 @@ def asset_unclassified_split():
         return None
     inside = sum(1 for r in un if (r.get("atlas") or "").strip())
     outside = [r for r in un if not (r.get("atlas") or "").strip()]
-    covered = sum(1 for r in outside if _rule_hits(r.get("name") or ""))
-    return (inside, len(outside), covered, len(outside) - covered)
+    return (inside, len(outside))
 
 
 def asset_sheet_worklist():
@@ -2644,14 +2643,55 @@ claim("AB1", ASSET_TRIAGE,
       "sprites-index.csv: 1.554 unclassified, 132 sheet, 116 sheet không có sprite nào")
 
 claim("AB2", ASSET_TRIAGE,
-      "| **AB2** | 1.554 = **396** trong sheet + **1.158** rời; luật tên phủ **518**, còn **640** chưa suy được |",
-      (396, 1158, 518, 640), asset_unclassified_split,
-      "tách 1.554: 396 trong sheet, 1.158 rời; 6 luật tên phủ 518, còn 640 phải xem ảnh")
+      "| **AB2** | 1.554 = **396** trong sheet + **1.158** rời |",
+      (396, 1158), asset_unclassified_split,
+      "tách 1.554: 396 trong sheet (đến từ 269 tên sheet), 1.158 ảnh rời")
 
 claim("AB3", ASSET_TRIAGE,
       "| **AB3** | 17 sheet ≥ 8 sprite = **184** sprite (10 sheet / **113** sprite thuộc `unclassified`) · 2 sheet lưới = **16** ô, **0** ô đã tách |",
       (17, 184, 16, 0, 10, 113), asset_sheet_worklist,
       "worklist cắt: 10 sheet ≥8 (113 sprite); 2 sheet lưới 16 ô, 0 ô đã tách")
+
+
+def asset_classified_stats():
+    """(có nhãn, A, B, C, unknown, numeric, word, other) trong sprites-classified.csv."""
+    import collections
+    rows = _csv_rows("docs/assets/sprites-classified.csv") or []
+    if not rows:
+        return None
+    un = [r for r in rows if r.get("category") == "unclassified"]
+    if not un:
+        return None
+    labeled = [r for r in un if r.get("proposed_category")]
+    conf = collections.Counter(r.get("confidence") for r in un)
+    unk = [r for r in un if not r.get("proposed_category")]
+    b = collections.Counter(r.get("bucket") for r in unk)
+    return (len(labeled), conf.get("A", 0), conf.get("B", 0), conf.get("C", 0),
+            len(unk), b.get("numeric", 0), b.get("word", 0), b.get("other", 0))
+
+
+def asset_unknown_families():
+    """(số họ tên, số họ chỉ 1 sprite, số contact sheet còn tile chưa gán)."""
+    import collections
+    import re
+    rows = _csv_rows("docs/assets/sprites-classified.csv") or []
+    unk = [r for r in rows if r.get("category") == "unclassified" and not r.get("proposed_category")]
+    if not unk:
+        return None
+    fam = collections.Counter(re.sub(r"_\d+$", "", r.get("name") or "") for r in unk)
+    sheets = {r.get("contact_sheet") for r in unk}
+    return (len(fam), sum(1 for v in fam.values() if v == 1), len(sheets))
+
+
+claim("AB4", ASSET_TRIAGE,
+      "| **AB4** | phân loại lại: **855** có nhãn (**739 A · 46 B · 70 C**) · **699** `unknown` (**107** numeric · **248** word · **344** other) |",
+      (855, 739, 46, 70, 699, 107, 248, 344), asset_classified_stats,
+      "sprites-classified.csv: 855/1.554 có nhãn (A739 B46 C70), 699 unknown chia 3 nhóm")
+
+claim("AB5", ASSET_TRIAGE,
+      "| **AB5** | 699 unknown = **608** họ tên, **555** tên đơn lẻ; **20/25** contact sheet còn tile chưa gán |",
+      (608, 555, 20), asset_unknown_families,
+      "699 unknown: 608 họ tên, 555 tên đơn lẻ, trải trên 20 contact sheet")
 
 # ── chạy ───────────────────────────────────────────────────────────────
 

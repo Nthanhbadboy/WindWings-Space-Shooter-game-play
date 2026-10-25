@@ -216,7 +216,7 @@ hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật
 | **9 câu blocker** (§2 ở trên) | 9 | **1** (`StartHp`) | **5** | **3** (`B1` HP runtime · `A5` độ dài phiên · `B3` đường cong damage) |
 | **48 câu design** (`DESIGN_QUESTIONS.md`) | 48 | **29** ✅ | **15** ⚠ | **4** ❌ (`A5`·`A6`·`B1`·`C4`) |
 | **6 chỗ thiếu** (`COVERAGE_AUDIT.md` §2) | 6 | — | **4** | **2 chặn** (map→wave 7/250 · HP runtime theo chế độ) |
-| **claim tự kiểm** (`tools/verify-claims.py`) | **149** | **147** PASS | 2 SKIP | 0 FAIL |
+| **claim tự kiểm** (`tools/verify-claims.py`) | **151** | **149** PASS | 2 SKIP | 0 FAIL |
 
 **Đọc bảng này thế nào:**
 
