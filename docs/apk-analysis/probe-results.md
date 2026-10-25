@@ -1,4 +1,4 @@
-# APK source probe (2026-10-25T12:13:21Z)
+# APK source probe (2026-10-25T12:21:00Z)
 
 ### APKPure d.apkpure.com APK
 - url: `https://d.apkpure.com/b/APK/com.Wind.wings.Space.Shooter?version=latest`
@@ -14,7 +14,7 @@
 
 ### APKPure d.apkpure.net APK
 - url: `https://d.apkpure.net/b/APK/com.Wind.wings.Space.Shooter?version=latest`
-- http: 200  bytes: 142125649  content-length: 142125649  type: https://data.winudf.com/XAPK/Y29tLldpbmQud2luZ3MuU3BhY2UuU2hvb3Rlcl8zMTJfMzYwZGY0OTI?_p=Y29tLldpbmQud2luZ3MuU3BhY2UuU2hvb3Rlcg%3D%3D&filename=WindWings%3A+Galaxy+Attack_1.3.118_APKPure.xapk&full_size=142125649&is_hot=false&k=4fadd7899d84fba4e68c8329838fef646ae09562&package_name=com.Wind.wings.Space.Shooter&source=web&token=1792930402-a5851dc382-0-688929e5e6ea85b7fedfa7b3a87b3432
+- http: 200  bytes: 142125649  content-length: 142125649  type: https://data.winudf.com/XAPK/Y29tLldpbmQud2luZ3MuU3BhY2UuU2hvb3Rlcl8zMTJfMzYwZGY0OTI?_p=Y29tLldpbmQud2luZ3MuU3BhY2UuU2hvb3Rlcg%3D%3D&filename=WindWings%3A+Galaxy+Attack_1.3.118_APKPure.xapk&full_size=142125649&is_hot=false&k=426d8fe53fa81108dcd861f4544c67e16ae0972d&package_name=com.Wind.wings.Space.Shooter&source=web&token=1792930861-06c5ea7a9e-0-c54a503272b176ebb8caf83849fe2fc6
 - final: ``
   /tmp/body.bin: Zip archive data, at least v2.0 to extract, compression method=store
 
@@ -38,13 +38,13 @@
 
 ### Uptodown download page
 - url: `https://wind-wings-space-shooter.en.uptodown.com/android/download`
-- http: 410  bytes: 114  content-length: 114  type: https://wind-wings-space-shooter.en.uptodown.com/android/download
+- http: 200  bytes: 178284  content-length: 178284  type: https://wind-wings-space-shooter.en.uptodown.com/android/download
 - final: ``
-  /tmp/body.bin: HTML document, ASCII text
+  /tmp/body.bin: HTML document, ASCII text, with very long lines (429)
 
 ### Aptoide search API
 - url: `https://ws75.aptoide.com/api/7/apps/search?query=WindWings%20Space%20Shooter&limit=10`
-- http: 200  bytes: 6669  content-length: ?  type: https://ws75.aptoide.com/api/7/apps/search?query=WindWings%20Space%20Shooter&limit=10
+- http: 200  bytes: 6668  content-length: ?  type: https://ws75.aptoide.com/api/7/apps/search?query=WindWings%20Space%20Shooter&limit=10
 - final: ``
   /tmp/body.bin: JSON text data
 
@@ -68,7 +68,7 @@
 
 ### APKMirror search
 - url: `https://www.apkmirror.com/?post_type=app_release&searchtype=apk&s=windwings`
-- http: 200  bytes: 280476  content-length: ?  type: https://www.apkmirror.com/?post_type=app_release&searchtype=apk&s=windwings
+- http: 200  bytes: 281113  content-length: ?  type: https://www.apkmirror.com/?post_type=app_release&searchtype=apk&s=windwings
 - final: ``
   /tmp/body.bin: HTML document, Unicode text, UTF-8 text, with very long lines (14277), with CRLF, LF line terminators
 
