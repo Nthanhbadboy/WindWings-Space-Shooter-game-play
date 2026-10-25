@@ -218,3 +218,12 @@ path_id duy nhất. Report 38 dùng PPtr thật xác nhận:
 Boss-39001 + Boss-39002 cùng SDA 580611 → TextAsset 918;
 Boss-39003 dùng SDA 580613 → TextAsset 895. Không gán theo skeleton__N filename.
 Giữ mức PROVISIONAL runtime/dispatch; không suy timeline đánh chỉ từ tên Idle.
+
+## Animation handoff @90453024 — đáp ứng raw vòng tiếp
+
+Report 41: T1 tìm thấy Boss_1_Animation trên Boss-39001 (1 instance), hai
+class còn lại không có file trong export; chưa kết luận dead code.
+T3 hiện có 115 persistent call /114 trong nhóm enemy/boss. T4 full raw 308
+controller, derived 52 controller/63 prefab: 303 params, 395 states, 357
+transitions, 302 conditional. Không đồng nhất coverage với roster 109/87.
+T2 typed delegate setter xref vẫn OPEN; không nhận absence proof từ asm subset.
