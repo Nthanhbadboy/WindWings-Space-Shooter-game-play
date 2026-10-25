@@ -38,6 +38,19 @@ OUT_MD = os.environ.get("CONSTS_MD", "docs/apk-analysis/19-il2cpp-constants.md")
 OUT_CSV = os.environ.get("CONSTS_CSV", "docs/apk-analysis/il2cpp-pool-floats.csv")
 
 TARGET_CLASSES = {
+    "DataTutorials": "early-stage UI/tutorial gates — pending native verification",
+    "GP_Tutorials": "early-stage UI/tutorial gates — pending native verification",
+    "Board_Home": "early-stage UI/tutorial gates — pending native verification",
+    "Board_Maps": "early-stage UI/tutorial gates — pending native verification",
+    "Board_Stage": "early-stage UI/tutorial gates — pending native verification",
+    "Board_Endgame": "early-stage UI/tutorial gates — pending native verification",
+    "Board_Players": "early-stage UI/tutorial gates — pending native verification",
+    "Board_Drones": "early-stage UI/tutorial gates — pending native verification",
+    "BoardManager": "early-stage UI/tutorial gates — pending native verification",
+    "SkipTutorial": "early-stage UI/tutorial gates — pending native verification",
+    "Tut_Settings": "early-stage UI/tutorial gates — pending native verification",
+    "Tut_Settings1": "early-stage UI/tutorial gates — pending native verification",
+
     "Enemy_Appear": "enemy appear/death/callback control — pending native verification",
     "Enemy_Rotate": "enemy appear/death/callback control — pending native verification",
     "Enemy_Sub": "enemy appear/death/callback control — pending native verification",
@@ -601,7 +614,9 @@ def main() -> int:
         # Coroutine bodies and captured callbacks live in nested generated
         # types; exporting only the parent misses actual per-frame logic.
         animation_families = ("Boss1_Director", "Boss_AttackPhases", "Boss_AttackTypes",
-                              "Boss_1_Animation", "Enemy_Movement")
+                              "Boss_1_Animation", "Enemy_Movement",
+                              "GP_Tutorials", "Board_Home", "Board_Maps",
+                              "Board_Stage", "Board_Endgame")
         nested_animation = any(cls and cls.startswith(parent + ".")
                                for parent in animation_families)
         if cls in TARGET_CLASSES or nested_animation or (ns and ns.split(".")[-1] in TARGET_CLASSES):

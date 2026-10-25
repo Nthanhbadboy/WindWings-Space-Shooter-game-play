@@ -141,7 +141,10 @@ RUNTIME = {
 # liệt kê tay từng cái và không bỏ sót class mới khi game cập nhật.
 TARGET_SUFFIXES = ("_Director", "_MiniDirector", "ChildDirector", "_AttackPhases", "_AnimationEvents", "_AttackTypes")
 
-TARGETS = CONFIG | RUNTIME
+EARLY_UI = {"GP_Tutorials", "Board_Home", "Board_Maps", "Board_Stage",
+            "Board_Endgame", "Board_Players", "Board_Drones", "BoardManager",
+            "SkipTutorial", "Tut_Settings", "Tut_Settings1"}
+TARGETS = CONFIG | RUNTIME | EARLY_UI
 
 
 def is_target(cls: str) -> bool:
