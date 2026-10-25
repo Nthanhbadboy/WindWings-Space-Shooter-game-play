@@ -470,7 +470,7 @@ Và các con số quyết định **cách cắt**:
 | `packed` (nằm trong atlas) | **1.550** | phải cắt trong page, không phải ảnh rời |
 | mã xoay/lật `0` | **2.041** | cắt thẳng |
 | mã xoay/lật `1 · 2 · 3` | **53 · 54 · 37** = **144** | **144 sprite phải lật/xoay** sau khi cắt — cắt thẳng là **sai** |
-| `rect_outside` (`textureRect` vượt page) | **40** | vượt **0,0000019 – 0,9963 px** ⇒ phải **clamp**, không coi là lỗi dữ liệu |
+| `rect_outside` (`textureRect` vượt page) | **40** | vượt **0,0000019 – 0,9963 px** ⇒ **KHÔNG clamp**: round **từng biên**, **9** case pad 1 px (8 top: 2072·2099·2114·2134·2169·4006·4050·4085; 1 right: 4092), 31 case round xong vẫn trong page — clamp là **sai size** (report 72 peer `4fe0cef8e`) |
 | `source_rect` ≠ `texture_rect` | **1.795** / 2.185 | **hai rect khác nhau** ⇒ crop theo `texture_rect` (rect **trong page**), đừng lẫn với `m_Rect` |
 | `alpha_texture` | **0** | không có sprite nào dùng texture alpha riêng ⇒ cắt từ page là đủ |
 | `sources` (hash file nguồn) | **6** | 6 chunk nguồn **chưa kéo** ⇒ chưa tự kiểm `sha256` |
@@ -479,7 +479,12 @@ Và các con số quyết định **cách cắt**:
 > metadata đúng**, **chưa** phải bằng chứng "đã crop ra 2.185 ảnh đúng". Muốn thành bằng chứng phải crop
 > thật rồi so pixel với atlas gốc.
 >
-> ⇒ **Việc phải làm khi cắt:** (1) đọc **`texture_rect`** (không phải `source_rect`); (2) **áp mã xoay** cho 144 sprite; (3) **clamp** 40 rect;
+> **✅ Đã có bằng chứng pixel (25/10, report 72 peer `4fe0cef8e`):** auditor độc lập tái tạo từ raw
+> geometry khớp **2185/2185** sprite (size + toàn bộ RGBA) với pack v2 — ở mức **export pipeline**,
+> chưa phải Unity renderer. **517** PNG bị trim (output ≠ full canvas) ⇒ đặt sprite phải đọc
+> source_rect/pivot riêng, đừng tự center cho "vừa khuôn".
+>
+> ⇒ **Việc phải làm khi cắt:** (1) đọc **`texture_rect`** (không phải `source_rect`); (2) **áp mã xoay** cho 144 sprite; (3) round từng biên cho 40 rect, **pad 1 px** cho 9 case — **không clamp** (report 72);
 > (4) crop từ **PNG/alpha gốc** chứ không từ contact sheet JPEG. Khi đó `sheet-splits.csv` (4.250 mảnh ước
 > lượng) chỉ còn là **bản cũ để đối chiếu**, không phải nguồn.
 
@@ -501,9 +506,10 @@ border (`ASSETS.md` §5) lấy được **số thật** thay vì đề xuất 8/
 |---|---:|---|
 | `packed` (nằm trong atlas) | **1.550** | cắt trong page, không phải ảnh rời |
 | `rotation` khác 0 (mã **1/2/3** = 53/54/37) | **144** | **phải lật/xoay** — cắt thẳng là sai |
-| `rect_outside` (rect vượt page) | **40** | vượt **0,0000019 – 0,9963 px** ⇒ cần clamp, không phải lỗi dữ liệu |
+| `rect_outside` (rect vượt page) | **40** | vượt **0,0000019 – 0,9963 px** ⇒ round từng biên + pad 1 px khi cần, **KHÔNG clamp** (report 72 peer) |
 | `sources` (hash file nguồn) | **6** | 6 chunk nguồn **chưa kéo** ⇒ chưa tự kiểm sha256 (claim **GE2**) |
 
 > **Trạng thái trong file:** `PROVISIONAL_GEOMETRY_JOINS_NOT_PIXEL_CROP_VALIDATION` ⇒ join metadata đúng,
-> **chưa** phải bằng chứng “đã cắt ra 2.185 ảnh đúng”. Muốn thành bằng chứng phải crop thật rồi so pixel.
+> **chưa** phải bằng chứng “đã cắt ra 2.185 ảnh đúng”. Muốn thành bằng chứng phải crop thật rồi so pixel
+> — **đã có** ở mức export: 2185/2185 RGBA match (report 72 peer, `DATA_SYNC` §24.3).
 > `4.250` mảnh trong `sheet-splits.csv` là **cận trên heuristic** từ ảnh JPEG 150 px — **thay được** bằng rect thật.

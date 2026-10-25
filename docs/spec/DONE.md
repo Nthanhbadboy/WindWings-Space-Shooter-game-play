@@ -25,6 +25,14 @@
 > Đã sửa thêm: `ENEMY_HP_RUNTIME` §2/§4/§5/§6, `WHERE_TO_LOOK` §3/§4, `ENCOUNTERS` §9, `COMBAT` §6.1,
 > `DESIGN_QUESTIONS`, `README` §5, `AI_FEASIBILITY` §1.7/§2.1, `START_HERE` bẫy 20, `HANDOFF_REPLY` §6,
 > `CROSS_BRANCH` · `CROSSCHECK`.
+>
+> **Sửa lại (lần 6 — 25/10, đọc chọn lọc report 70–74 của nhánh dữ liệu `4fe0cef8e`, không kéo file):**
+> (1) **khôi phục L2/L3**: không còn “❌ bỏ” — L2 **hoãn sau L1**, L3 là **đích cuối** sau L2
+> (ý chủ dự án); (2) sửa hướng dẫn cắt sprite: **KHÔNG clamp** 40 rect — round từng biên + pad 1 px
+> cho 9 case (report 72) — sửa 3 chỗ trong `ASSET_TRIAGE` §9; (3) sửa `txt_free_after` English thành
+> “Free after” (lookup **first-index**, report 73) trong 2 CSV; (4) bổ sung nguồn font thật
+> (7 TMP SDF + fallback chain) vào `ASSETS.md`; (5) pack **v2 identity-safe** bổ sung vào §21.2 +
+> bẫy 17. Chi tiết + 6 việc peer giao: `DATA_SYNC.md` §24.
 
 > **Sửa lại (lần 3):** pipeline vòng 3 (nhánh `ef6b75ef`, commit `61d5385`) đã resolve
 > **tên enemy trong wave** — **22.451** entry, **109** prefab, **0** `"?"`. Đây là mục
@@ -330,12 +338,12 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 
 | Mục | Trước (mục tiêu L3) | **Sau khi chốt L1** | Hệ quả |
 |---|---|---|---|
-| **L2 — đúng số** | bắt buộc | ❌ **bỏ** | không cần chạy AssetRipper/Ghidra để **khớp số** |
-| **L3 — không phân biệt được** | bắt buộc | ❌ **bỏ** | không cần blind A/B, không cần N người |
+| **L2 — đúng số** | bắt buộc | 🟡 **hoãn sau L1 — không bỏ** | dữ liệu đã có (`ia-resolved.json` 623 record + 150 cặp HP); còn thiếu **bind** — làm tiếp được, không cần tool mới |
+| **L3 — không phân biệt được** | bắt buộc | 🟡 **hoãn — đích cuối, không bỏ** | blind A/B + playtest người thật, làm **sau L2** |
 | Giá trị **4.861** `[SerializeField]` | phải có | 🟡 **tuỳ chọn** | dùng làm **tham khảo**, không phải để khớp |
 | Giá trị **957** `static` | phải có | 🟡 **tuỳ chọn** | " |
 | **45.659** tham chiếu enemy | phải resolve | 🟡 **tuỳ chọn** | danh sách **109 prefab** (đã resolve) đủ để chọn |
-| 1.416 chuỗi localization | phải có | ❌ **bỏ** | viết text riêng |
+| 1.416 chuỗi localization | phải có | 🟡 **có sẵn** | **1.415 key nonempty, lookup first-index** (report 73 peer `4fe0cef8e`) — dùng hoặc viết riêng đều được |
 | 170 SKU IAP | phải khớp | ❌ **bỏ** | tự thiết kế shop |
 | 282 wave | phải đủ | 🟡 **tự chọn số** | 20–40 wave là đủ cho bản đầu |
 
@@ -373,6 +381,8 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 > `> Kết luận (mức B):` chọn L1 làm **rơi khỏi kế hoạch toàn bộ loại 1 và 2** ở §4.1
 > (chưa đọc · chưa chọn) — tức **hai tool và mọi tranh luận về dung sai**.
 > Phần còn lại là **loại 3: sản xuất**, và quy mô do bạn tự đặt, không do bản gốc áp.
+> **L2/L3 không bị bỏ — bị HOÃN có thứ tự**: L2 ngay sau L1 (dữ liệu đã có, thiếu bind),
+> L3 là **đích cuối** sau L2 (blind A/B + playtest). Sửa 25/10 theo yêu cầu của chủ dự án.
 
 ## 5. Còn thiếu / phải đoán
 

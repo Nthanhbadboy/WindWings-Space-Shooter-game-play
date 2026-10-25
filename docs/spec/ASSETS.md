@@ -430,7 +430,7 @@ liên tục; pitch randomization cho kết quả tương đương với 1/7 dung
 | 3 | **Không** dùng UI layout 1:1 (kể cả wireframe — chỉ dùng cấu trúc chức năng) | ⛔ |
 | 4 | Vẽ lại 100% sprite theo art direction §1 | ✅ bắt buộc |
 | 5 | Thu âm/mua license audio mới; ghi nguồn từng clip vào `CREDITS.md` | ✅ bắt buộc |
-| 6 | Font: chỉ dùng font có license thương mại (bản gốc dùng Noto/Roboto/Agency/Amiri — **không** copy file `.ttf` từ APK) | ✅ |
+| 6 | Font: chỉ dùng font có license thương mại. **Bản gốc: 7 TMP SDF** — main `AGENCYB SDF` (asset 105, 512×256) + fallback **105→110→106→108→109→111→107** (Roboto-Currency · Agency-Cyrillic · Amiri-Bold · NotoSansKR · NotoSansSC · SDF-Thai), Static + SDFAA, `sourceFontFile=null`; 1 TTF riêng (56.312 B) **không phải** source của chúng — **không** copy `.ttf`/PNG SDF từ APK, **không** nhét SDF PNG vào `@font-face` như TTF (report 73–74 peer `4fe0cef8e`) | ✅ |
 | 7 | Kiểm tra trademark "WindWings", "GCenter", "GCENTER VIET NAM TECHNOLOGY JSC" — không xuất hiện trong store listing | ⛔ |
 | 8 | Nếu giữ cơ chế (arena league, battle pass) → OK, cơ chế không được bảo hộ; **tên league** (Bronze…Champion) là generic, dùng được | ✅ |
 | 9 | Tên boss lấy từ thần thoại/dân gian (Monkey King, Dracula, Hydra…) là public domain — **nhưng** hình dạng cụ thể thì không | ⚠️ |

@@ -2409,6 +2409,14 @@ Claim **AP2**: **2.652** file · **151** path va chạm · **321** row vượt u
 > **Đừng nói “0 missing path ⇒ đủ asset”**: 321 row bị gộp đường dẫn, và 320 size mismatch nghĩa là **không thể
 > phục hồi từng row chỉ bằng đọc file hiện tại**. Muốn biết ảnh nào thật sự khác nhau phải so **pixel**, không
 > phải so tên.
+>
+> **Cập nhật 25/10 — pack v2 của nhánh dữ liệu (report 70, HEAD `4fe0cef8e`):** `assets-v2.zip`
+> (175.684.102 B, SHA256 `4b18cc23…`) xuất **3.038/3.039** object của **6 loại** (Sprite **2185** PNG ·
+> Texture2D **653/654** · AudioClip **69** WAV · TextAsset **64** · Font **1** TTF · SpriteAtlas **66**)
+> với tên `<type>__<SHA256-đường-dẫn>__<pathID>` ⇒ **lỗi ghi đè 151 path của v1 đã loại** (v1 giữ nguyên
+> làm bằng chứng lịch sử). Audit độc lập tải lại archive: **2.838** PNG decode đủ ảnh, **69** WAV =
+> 571,465 s, TTF **258 glyph**. Vẫn chỉ **6 loại object** ⇒ `complete APK reference` **vẫn NOT
+> ESTABLISHED**. Câu “phải so pixel” ở trên đã có lời đáp — xem §24.3.
 
 ---
 
@@ -2473,3 +2481,78 @@ trước khi xin dữ liệu*.
 
 `Board_Players.allBasicAtk` (float[24]) và `allDeltaAtk` (float[24] = **0,168** × 24) — **tên field đã bind
 theo asm**, nhưng **consumer chưa đọc** ⇒ ghi **B**, chưa gọi là “damage theo rank”. Chi tiết: `MISSING` §2.2c.
+
+---
+
+## 24. Đọc **chọn lọc** nhánh dữ liệu `4fe0cef8e` — report 70–74 (không kéo file)
+
+> 25/10: đọc 5 report mới **bằng `git show` từ FETCH_HEAD**, không bê cây dữ liệu về repo này.
+> Số dưới đây là báo cáo của nhánh kia (static APK evidence, **chưa** nghiệm thu runtime/render);
+> nhánh kia cũng đã thấy nhánh mình ở `2d0a0e139` — *“không lấy ‘chưa có Map/Player blob’ làm blocker nữa”*.
+
+### 24.1 Report 70 — pack v2 identity-safe, “zero font texture” có chủ đích
+
+- 3.038/3.039 object của 6 loại; exception duy nhất: Texture2D `pathID 535` **“Font Texture” 0×0,
+  `image data=[]`** — nguồn serialize **không chứa pixel**, không tự vẽ thay thế; cơ chế runtime font
+  atlas **chưa chứng minh** (đáp án ở report 73: TMP SDF atlas).
+- 27 atlas text: **0 trang** giải được identity chỉ bằng tên page (26 trang × 26 candidate + 1 trang × 2).
+
+### 24.2 Report 71 — Spine: 27 rig bound **file-scoped** (hết bài toán basename)
+
+- **27 SkeletonDataAsset → 27 SpineAtlasAsset → 27 atlas TextAsset → 27 page Texture2D**; graph
+  **167 objects / 168 links** (54 MB + 54 TextAsset + 29 Material + 27 Texture2D + 3 shader projections);
+  **185 animation names**; format **26×3.8.99 + 1×3.8.84** (khớp `ANIMATION.md` §1).
+- Loader native `MaterialsTextureLoader.Load` **0x222f580**: page→material qua **mảng `materials` của
+  owning atlas** + `get_mainTexture` + so tên, first match, duplicate reject — **không tìm toàn cục**.
+- **7 atlas header 1024×1024 nhưng texture 512×512** (pathID 540·565·259·646·601·273·666):
+  `dimension_match=false`, **không resize, không sửa toạ độ** — loader giữ parsed dimensions.
+- Settings: scale ≈0,01 · defaultMix 0,2 (Saw = **0,5**) · 1 rig có additive/blend replacement
+  (material 38/39 → texture 413). Reference folder mỗi rig 1 ZIP (`spine-reference-v1.zip`,
+  110 members) — **source-associated**, chưa import/render.
+
+### 24.3 Report 72 — sprite: tái tạo pixel 2185/2185, và **KHÔNG clamp**
+
+- Auditor riêng (không dùng UnityPy helper) tái tạo từ raw geometry: **2185/2185 sprite khớp size +
+  toàn bộ RGBA bytes** với PNG v2. Đóng câu “so pixel” của §21.2 **ở mức export pipeline** — chưa
+  nghiệm thu Unity renderer.
+- **40 rect vượt page ≠ 40 PNG hỏng**: 9 case round xong cần **pad 1 px** (8 top: pathID
+  2072·2099·2114·2134·2169·4006·4050·4085; 1 right: 4092), 31 case round xong vẫn trong page.
+  Clamp thay vì pad ⇒ **sai size** (counterfactual kiểm từng case).
+- **517 PNG bị trim** (output ≠ full canvas) ⇒ **đừng gắn pivot chuẩn hoá của source rect vào PNG đã
+  trim**; muốn đặt đúng chỗ phải đọc consumer (`datas/sprite_export_contract.json.gz` giữ
+  source_rect/pivot/offset riêng).
+- Flip: 2041/53/54/37 (khớp GE2). Separate alpha 0, mesh UV0 0 (đi polygon mask).
+
+### 24.4 Report 73 — font TMP + localization **first-index**
+
+- **7 TMP font assets**, đều **Static + SDFAA**, `sourceFontFile=null`: main **105 AGENCYB SDF**
+  (512×256, 234 glyph) + fallback **105→110→106→108→109→111→107** (Roboto-Currency · Agency-Cyrillic ·
+  Amiri-Bold · NotoSansKR · NotoSansSC · SDF-Thai; tổng 2352 glyph row / **2285** codepoint union).
+  Global `m_fallbackFontAssets=[null]` **không** có nghĩa là không fallback — fallback nằm **trên từng
+  asset**. **7 SDF ≠ 1 TTF** exported — đừng suy “1 font toàn game”.
+- Census: **9797** TMP component (9796 → font 105, 1 null `resources.assets:699094`), RTL false toàn bộ;
+  2442 `Language*` wrapper gọi `LanguageManager.GetText`.
+- Localization: **19 LanguageAssets × 1426 row; 1415 key nonempty**; `GetText` dùng
+  `IndexOf` ⇒ **duplicate dùng occurrence ĐẦU** (không last-wins). CSV cũ của chính mình đã collapse
+  last-wins ⇒ **sai 1 giá trị English**: `txt_free_after` = “**Free after**” (index 690), không phải
+  “Free After” (1243). Vietnamese không lệch key nào. Đã sửa 2 CSV ở repo này.
+- Chọn ngôn ngữ: preference `Language`; mặc định theo **systemLanguage → bảng 32 int native**
+  (`0x779fb8`, ví dụ **Vietnamese 39→1**, Arabic 1→6, zh-CN 40→18); fallback value rỗng → English(0) → trả key.
+- Coverage delta (chuỗi tĩnh vs 2285 codepoint): vi thiếu **1** (U+0340) — **chưa phải** kết luận
+  glyph thiếu lúc render.
+
+### 24.5 Report 74 — gói font tham khảo tự chứa
+
+`font-reference-v1.zip` (1.627.375 B · 19 members · SHA256 `1c20bda1…`): 7 folder
+(atlas.png exact-byte + JSON glyph/character/fallback/kerning) + **1 TTF** (56.312 B, Font object 2044,
+`globalgamemanagers.assets`) + `index.html`. Kerning serialized **0 entries** ở cả 7. JSON là **reference
+projection, không import thẳng**; TTF giữ inventory riêng, **không** gán thành sourceFontFile.
+
+### 24.6 Việc peer giao nhánh này (report 73) — đã xử lý trong commit này
+
+| Task peer | Trạng thái |
+|---|---|
+| 1. Spec nguồn font: main 105 + 6 fallback, cấm “global null → no fallback” / “1 font toàn game” | ✅ `ASSETS.md` mục checklist font + §24.4 |
+| 2. Lookup first-index; sửa `txt_free_after` nếu đã copy CSV last-wins | ✅ sửa 2 CSV `12-localization*.csv` + §24.4 |
+| 3. Không nhét SDF PNG vào CSS @font-face như TTF | ✅ ghi ở `ASSETS.md` (không có chỗ nào làm vậy) |
+| 4. Refresh summary gap/asset counts theo 67–73 | ✅ đối chiếu: 2185/654/69/64/1/66 đã khớp từ trước; thêm pixel/spine/font ở §24 + `ASSET_TRIAGE` §9.9

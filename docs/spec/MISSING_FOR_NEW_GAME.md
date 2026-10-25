@@ -240,10 +240,11 @@ không phủ toàn bộ công thức chiến đấu.
   → **ID tàu**; (2) entry map → **(chapter, stage, mode)**; (3) playback thật để so cảm giác và xác nhận `rate`
   là *shot/giây* — việc này cần **thiết bị**.
   > Đừng nói “chờ nhánh kia dump thêm APK” nữa: đó là **câu trả lời cũ**, sai.
-- **L3 (tái lập **1:1 asset** gốc): BỎ** — art pack, font, shader, physics không tái lập từ APK.
-  **Không** có nghĩa là bỏ "thiết kế cho đẹp": phần đó là `VISUAL_DESIGN.md` (khung hình **0,4813**,
-  tương phản **0,45–0,80**, accent **≤10 %** gameplay / **~47 %** khung thưởng, chi tiết **13–22**,
-  juice **0,05 s** + **0,10 · 20 frame**) và **kiểm được bằng máy**.
+- **L3 (không phân biệt được với bản gốc): HOÃN — KHÔNG BỎ.** L3 vẫn là **đích cuối** của dự án;
+  nó không giải được bằng reverse (cần **playtest người thật**), nên **xếp sau L2**, không nằm trong
+  vòng L1 hiện tại. **Không** có nghĩa là bỏ "thiết kế cho đẹp": phần đó là `VISUAL_DESIGN.md`
+  (khung hình **0,4813**, tương phản **0,45–0,80**, accent **≤10 %** gameplay / **~47 %** khung thưởng,
+  chi tiết **13–22**, juice **0,05 s** + **0,10 · 20 frame**) và **kiểm được bằng máy**.
 
 ---
 
