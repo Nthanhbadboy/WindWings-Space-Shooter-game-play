@@ -1,0 +1,51 @@
+;;; GetDevice  public static Device GetDevice(int instanceId) { }
+    0x12546d0: sub      sp, sp, #0x30
+    0x12546d4: stp      x30, x21, [sp, #0x10]
+    0x12546d8: stp      x20, x19, [sp, #0x20]
+    0x12546dc: adrp     x21, #0x2ce1000
+    0x12546e0: adrp     x20, #0x2adb000
+    0x12546e4: ldrb     w8, [x21, #0x57]
+    0x12546e8: ldr      x20, [x20, #0xd58]
+    0x12546ec: mov      w19, w0
+    0x12546f0: tbnz     w8, #0, #0x1254714
+    0x12546f4: adrp     x0, #0x2adb000
+    0x12546f8: ldr      x0, [x0, #0xd58]
+    0x12546fc: bl       #0x110d028
+    0x1254700: adrp     x0, #0x2add000
+    0x1254704: ldr      x0, [x0, #0x4b8]
+    0x1254708: bl       #0x110d028
+    0x125470c: mov      w8, #1
+    0x1254710: strb     w8, [x21, #0x57]
+    0x1254714: ldr      x0, [x20]
+    0x1254718: ldr      w8, [x0, #0xe0]
+    0x125471c: cbnz     w8, #0x1254728
+    0x1254720: bl       #0x110d12c
+    0x1254724: ldr      x0, [x20]
+    0x1254728: ldr      x8, [x0, #0xb8]
+    0x125472c: ldr      x8, [x8, #0x10]
+    0x1254730: cbnz     x8, #0x1254748
+    0x1254734: ldr      w8, [x0, #0xe0]
+    0x1254738: cbnz     w8, #0x1254740
+    0x125473c: bl       #0x110d12c
+    0x1254740: bl       #0x1257844
+    0x1254744: ldr      x0, [x20]
+    0x1254748: str      xzr, [sp, #8]
+    0x125474c: ldr      w8, [x0, #0xe0]
+    0x1254750: cbnz     w8, #0x125475c
+    0x1254754: bl       #0x110d12c
+    0x1254758: ldr      x0, [x20]
+    0x125475c: ldr      x8, [x0, #0xb8]
+    0x1254760: ldr      x0, [x8, #0x10]
+    0x1254764: cbz      x0, #0x1254794
+    0x1254768: adrp     x8, #0x2add000
+    0x125476c: ldr      x8, [x8, #0x4b8]
+    0x1254770: add      x2, sp, #8
+    0x1254774: mov      w1, w19
+    0x1254778: ldr      x3, [x8]
+    0x125477c: bl       #0x1935b10
+    0x1254780: ldr      x0, [sp, #8]
+    0x1254784: ldp      x20, x19, [sp, #0x20]
+    0x1254788: ldp      x30, x21, [sp, #0x10]
+    0x125478c: add      sp, sp, #0x30
+    0x1254790: ret      
+    0x1254794: bl       #0x110d250

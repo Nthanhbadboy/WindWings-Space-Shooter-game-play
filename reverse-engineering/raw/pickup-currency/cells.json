@@ -336,6 +336,12 @@
       "rela_hex": "48cbad020000000003040000000000002071ba0200000000"
     },
     {
+      "got": "0x2adcb70",
+      "effective": "0x2ba9278",
+      "rela_file_offset": 3526368,
+      "rela_hex": "70cbad020000000003040000000000007892ba0200000000"
+    },
+    {
       "got": "0x2adcb78",
       "effective": "0x2bc12c0",
       "rela_file_offset": 3526392,
@@ -390,16 +396,40 @@
       "rela_hex": "d0cdad02000000000304000000000000406cba0200000000"
     },
     {
+      "got": "0x2adce78",
+      "effective": "0x2bab360",
+      "rela_file_offset": 3528696,
+      "rela_hex": "78cead0200000000030400000000000060b3ba0200000000"
+    },
+    {
       "got": "0x2add000",
       "effective": "0x2bc2cd8",
       "rela_file_offset": 3529872,
       "rela_hex": "00d0ad02000000000304000000000000d82cbc0200000000"
     },
     {
+      "got": "0x2add0b8",
+      "effective": "0x2bc2d90",
+      "rela_file_offset": 3530424,
+      "rela_hex": "b8d0ad02000000000304000000000000902dbc0200000000"
+    },
+    {
       "got": "0x2add1d8",
       "effective": "0x2ba6358",
       "rela_file_offset": 3531288,
       "rela_hex": "d8d1ad020000000003040000000000005863ba0200000000"
+    },
+    {
+      "got": "0x2add3b0",
+      "effective": "0x2bb7008",
+      "rela_file_offset": 3532704,
+      "rela_hex": "b0d3ad020000000003040000000000000870bb0200000000"
+    },
+    {
+      "got": "0x2add4b8",
+      "effective": "0x2bb3508",
+      "rela_file_offset": 3533496,
+      "rela_hex": "b8d4ad020000000003040000000000000835bb0200000000"
     },
     {
       "got": "0x2ade000",
@@ -1026,10 +1056,95 @@
       "rela_hex": "f88dae02000000000304000000000000d07abc0200000000"
     },
     {
+      "got": "0x2aec000",
+      "effective": "0x2baf068",
+      "rela_file_offset": 3714192,
+      "rela_hex": "00c0ae0200000000030400000000000068f0ba0200000000"
+    },
+    {
+      "got": "0x2aec5c0",
+      "effective": "0x2bc1418",
+      "rela_file_offset": 3718608,
+      "rela_hex": "c0c5ae020000000003040000000000001814bc0200000000"
+    },
+    {
       "got": "0x2ce0000",
       "effective": "0x2989250",
       "rela_file_offset": 7141992,
       "rela_hex": "0000ce020000000003040000000000005092980200000000"
+    }
+  ],
+  "metadata_header_hex": "af1bb1fa1f0000000001000088d6010088d7010020d30500",
+  "literals": [
+    {
+      "got": "0x2adf300",
+      "pointee": {
+        "va": "0x2be12d8",
+        "file_offset": 45961944,
+        "width": 8,
+        "hex": "2d2a00a000000000"
+      },
+      "index": 5398,
+      "definition_hex": "04000000ca5b0200",
+      "data_file_offset": 275282,
+      "hex": "4974656d",
+      "utf8": "Item"
+    },
+    {
+      "got": "0x2adf3e0",
+      "pointee": {
+        "va": "0x2be6870",
+        "file_offset": 45983856,
+        "width": 8,
+        "hex": "953f00a000000000"
+      },
+      "index": 8138,
+      "definition_hex": "040000009d600300",
+      "data_file_offset": 342053,
+      "hex": "54657374",
+      "utf8": "Test"
+    },
+    {
+      "got": "0x2adcca0",
+      "pointee": {
+        "va": "0x2bdf3b0",
+        "file_offset": 45953968,
+        "width": 8,
+        "hex": "632200a000000000"
+      },
+      "index": 4401,
+      "definition_hex": "04000000c7ef0100",
+      "data_file_offset": 247631,
+      "hex": "47616d65",
+      "utf8": "Game"
+    }
+  ],
+  "direct_event2_post_candidates": [
+    {
+      "start": "0x1589a2c",
+      "mov": "0x1589f68",
+      "post": "0x1589f74",
+      "window_hex": "41008052e00313aae3031faa50abfa97",
+      "owners": [
+        {
+          "cls": "Droid_Movement1",
+          "namespace": "SpaceShooter.Droid",
+          "method": "Update"
+        }
+      ]
+    },
+    {
+      "start": "0x158a224",
+      "mov": "0x158a58c",
+      "post": "0x158a598",
+      "window_hex": "41008052e00313aae3031faac7a9fa97",
+      "owners": [
+        {
+          "cls": "Droid_Movement1",
+          "namespace": "SpaceShooter.Droid",
+          "method": "CollectItems"
+        }
+      ]
     }
   ]
 }
