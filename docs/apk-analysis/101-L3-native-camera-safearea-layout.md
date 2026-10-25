@@ -54,11 +54,14 @@ Profile thử1080×2400, safeRect[0,96,1080,2208], CameraScaler dự đoán half
 Pause top597593 worldY **7.900000095367432→9.34000015258789**, model=native.
 Probe riêng H14 cho worldY11.180000305175781; không gán các số này cho điện thoại thật.
 
-ObjectScaler **level2:6686→SpriteRenderer5105**, drawMode1, width10.800000190734863.
+ObjectScaler **level2:6686→SpriteRenderer5105**, cùng owner **GO110 `Alert`**, drawMode1, width10.800000190734863.
 Với H14, full/clamp true: height24.84000015258789. Sprite identity
 `sharedassets2.assets:114`, catalog PNG256×256/SHA được nối; material
 `globalgamemanagers.assets:2`. Media vẫn dùng asset-pack artifact, không đưa ảnh gốc vào Git.
 Đây là size/identity chain, không phải bằng chứng shader/draw-call đã render.
+Owner còn có Animator4647: có PPtr/type metadata nhưng body không nằm trong bounded layout
+context, cũng chưa có attachment trong bank animator-programs hiện tại. Giữ component refs
+và snapshot flags rõ ràng; không gọi alert renderer là background hay coi visual alert đã hoàn tất.
 
 ## Deliverables và cách tái chạy
 

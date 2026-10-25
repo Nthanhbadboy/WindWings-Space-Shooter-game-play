@@ -108,6 +108,7 @@ class LayoutContracts(unittest.TestCase):
         chain=self.d['camera_chain_check'];self.assertEqual(chain['predicted_half_height'],12.000000953674316);self.assertEqual(chain['probe']['model']['world'],chain['probe']['native']['world']);self.assertAlmostEqual(chain['probe']['model']['world'][1],9.34000015258789)
     def test_actual_background_renderer_and_size_write(self):
         i=next(i for i in self.d['instances'] if i['class_name']=='ObjectScaler')
+        self.assertEqual(i['gameobject_properties']['m_Name'],'Alert');self.assertTrue(any(c['type']=='Animator' and not c['snapshot_in_layout_context'] for c in i['components']))
         self.assertTrue(i['sprite_media']);self.assertTrue(i['materials']);self.assertEqual(i['renderer_properties']['m_DrawMode'],1)
         self.assertEqual(i['renderer']['path_id'],5105);self.assertEqual(i['identity']['serialized_file'],'data.unity3d/level2')
         d=instance_probe(i,dict(main_half_height=14.));self.assertEqual(d['model'],d['native']['size']);self.assertEqual(d['model'],[10.800000190734863,24.84000015258789])
