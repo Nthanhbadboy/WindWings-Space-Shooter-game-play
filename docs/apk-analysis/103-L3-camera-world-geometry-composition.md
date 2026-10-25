@@ -101,3 +101,8 @@ header-only và7 builtin particle mesh references chưa resolve.103 không xoá/
 application, actual shader/particle/text/spine execution và composition frame còn phải nối tiếp.
 Không lấy screenshot làm gate, không vẽ lại game, không nhận model PASS làm render PASS.
 Peer review độc lập; không tự ACK.
+
+## Receipt103
+
+Finalcode **dddd75aed**, Verify **40240026886 SUCCESS**, full1043localPASS202.733s.
+Raw CI/handoff receipts giữ riêng; PR12 đã nhận peer review request, chưa independent ACK.
