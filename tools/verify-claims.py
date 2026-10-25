@@ -1002,6 +1002,198 @@ claim("I4", READY, "**250 map**, nhưng chỉ **7** ghép chắc", (250, 7), map
       "A6: 243 map còn lại ghép theo thứ tự blob, chưa xác thực")
 
 
+# ── J. script animation (enemy + boss) ─────────────────────────────────
+#
+# Nhóm này kiểm phần *script*: event nào nổ, ở giây thứ mấy, hàm nào nhận.
+# Không kiểm "trông thế nào" — feel đã bị bỏ khỏi phạm vi.
+
+SCRIPT = "docs/spec/ANIMATION_SCRIPT.md"
+IL2CPP = "reverse-engineering/raw/il2cpp-consts"
+EVENT_RX = "reverse-engineering/raw/animation-audit/event-receivers.json.gz"
+NATIVE = "reverse-engineering/raw/animation-audit/native-calls.json"
+
+
+def _boss_events():
+    """(prefab boss, event trên boss, event ngoài boss)."""
+    d = ref_json(EVENT_RX)
+    if d is None:
+        return None
+    ev = d.get("events", [])
+    boss = [e for e in ev if (e.get("prefab") or "").startswith("Boss-")]
+    return (len({e["prefab"] for e in boss}), len(boss), len(ev) - len(boss))
+
+
+def _boss_fn_counts(names: tuple[str, ...]):
+    d = ref_json(EVENT_RX)
+    if d is None:
+        return None
+    boss = [e for e in d.get("events", []) if (e.get("prefab") or "").startswith("Boss-")]
+    c: dict[str, int] = {}
+    for e in boss:
+        fn = (e.get("event") or {}).get("functionName")
+        if fn:
+            c[fn] = c.get(fn, 0) + 1
+    return tuple(c.get(n, 0) for n in names)
+
+
+def boss_fn_distinct():
+    d = ref_json(EVENT_RX)
+    if d is None:
+        return None
+    return len({(e.get("event") or {}).get("functionName")
+                for e in d.get("events", [])
+                if (e.get("prefab") or "").startswith("Boss-")
+                and (e.get("event") or {}).get("functionName")})
+
+
+def clip_pairs():
+    """(cặp prefab×clip, cặp prefab×clip×hàm có ≥3 event)."""
+    d = ref_json(EVENT_RX)
+    if d is None:
+        return None
+    boss = [e for e in d.get("events", []) if (e.get("prefab") or "").startswith("Boss-")]
+    pairs = {(e["prefab"], e.get("clip_name")) for e in boss}
+    by: dict[tuple, int] = {}
+    for e in boss:
+        k = (e["prefab"], e.get("clip_name"), (e.get("event") or {}).get("functionName"))
+        by[k] = by.get(k, 0) + 1
+    return (len(pairs), sum(1 for v in by.values() if v >= 3))
+
+
+def boss1_clip_events():
+    """Số event clip trên boss 1 — phải là 0 (thuần Spine)."""
+    d = ref_json(EVENT_RX)
+    if d is None:
+        return None
+    return sum(1 for e in d.get("events", [])
+               if e.get("prefab") in ("Boss-39001", "Boss-39002"))
+
+
+def _asm_section(path: str, method: str):
+    lines = ref_lines(path)
+    if lines is None:
+        return None
+    out, on = [], False
+    for ln in lines:
+        if ln.startswith(";;; "):
+            on = ln[len(";;; "):].split(" ", 1)[0].strip() == method
+            continue
+        if on:
+            out.append(ln)
+    return out
+
+
+def boss_work_compares():
+    """Số lần `String.op_Equality` trong `Boss_1_Animation.BossWork`."""
+    sec = _asm_section(f"{IL2CPP}/Boss_1_Animation.asm.txt", "BossWork")
+    return None if sec is None else sum(1 for ln in sec if "0x1feca34" in ln)
+
+
+def boss1_event_handlers():
+    """(số handler, byte lớn nhất) của `Boss1_AnimationEvents`."""
+    d = ref_json(f"{IL2CPP}/Boss1_AnimationEvents.json")
+    if d is None:
+        return None
+    ms = [m for m in d.get("methods", []) if m.get("method") != "ctor"]
+    return None if not ms else (len(ms), max(int(m.get("bytes") or 0) for m in ms))
+
+
+def _il2cpp_asm_files() -> list[str]:
+    local = os.path.join(ROOT, IL2CPP)
+    if os.path.isdir(local):
+        return sorted(f"{IL2CPP}/{n}" for n in os.listdir(local) if n.endswith(".asm.txt"))
+    for ref in REFS:
+        out = git("ls-tree", "-r", "--name-only", ref, "--", IL2CPP)
+        if out:
+            return sorted(p for p in out.decode().split() if p.endswith(".asm.txt"))
+    return []
+
+
+def wait_for_seconds():
+    """(tổng `WaitForSeconds`, số hằng literal, số lấy từ biến) trong asm boss."""
+    files = _il2cpp_asm_files()
+    if not files:
+        return None
+    tot = lit = 0
+    for p in files:
+        lines = ref_lines(p)
+        if not lines:
+            continue
+        for i, ln in enumerate(lines):
+            if "0x2786508" not in ln:
+                continue
+            tot += 1
+            hit = False
+            for j in range(i - 1, max(i - 16, -1), -1):
+                if re.search(r"fmov\s+s0,\s*#", lines[j]) or \
+                        re.search(r"ldr\s+s0,\s*\[x\d+, #0x[0-9a-f]+\]", lines[j]):
+                    hit = True
+                    break
+            lit += bool(hit)
+    return (tot, lit, tot - lit)
+
+
+def enemy_hit_flash():
+    """Hai hằng số trong `Enemy_Display.OnHit` (0.5 alpha, 0.05 giây)."""
+    d = ref_json(NATIVE)
+    if d is None:
+        return None
+    for m in d.get("methods", []):
+        if m.get("class_name") == "Enemy_Display" and m.get("method") == "OnHit":
+            vals = [f.get("value") for f in (m.get("float_evidence") or [])
+                    if f.get("kind") == "float"]
+            return tuple(vals) if vals else None
+    return None
+
+
+def enemy_move_branches():
+    """Số nhánh `Enemy_Movement.Update` gọi (PathFollow / MoveLinearly / MovePointToPoint)."""
+    d = ref_json(NATIVE)
+    if d is None:
+        return None
+    for m in d.get("methods", []):
+        if m.get("class_name") == "Enemy_Movement" and m.get("method") == "Update":
+            return sum(1 for c in (m.get("calls") or [])
+                       if c.get("candidates")
+                       and c["candidates"][0].get("method")
+                       in ("PathFollow", "MoveLinearly", "MovePointToPoint"))
+    return None
+
+
+claim("J1", SCRIPT, "**33 prefab boss · 793 event · 2 ngoài boss**", (33, 793, 2),
+      _boss_events, "hai hệ animation: Spine (boss 1) và clip event (33 boss khác)")
+
+claim("J2", SCRIPT,
+      "`OnStartAttack` 146 · `OnAnimationEndedEvent` 137 · `OnStateExit` 56 · `OnStopAttack` 50",
+      (146, 137, 56, 50),
+      lambda: _boss_fn_counts(("OnStartAttack", "OnAnimationEndedEvent",
+                               "OnStateExit", "OnStopAttack")),
+      "4 handler dày nhất, đếm trên cùng tập 793 event")
+
+claim("J3", SCRIPT, "129 tên hàm phân biệt", 129, boss_fn_distinct,
+      "danh sách hàm nhận event trên prefab boss")
+
+claim("J4", SCRIPT, "**268 cặp (prefab, clip)**, trong đó **61 cặp (prefab, clip, hàm)**",
+      (268, 61), clip_pairs, "chuỗi đòn đọc được nhịp")
+
+claim("J5", SCRIPT, "**0 event clip**", 0, boss1_clip_events,
+      "boss 1 thuần Spine; 12 handler của Boss1_AnimationEvents thuộc 23 prefab khác")
+
+claim("J6", SCRIPT, "**5** lần `String.op_Equality`", 5, boss_work_compares,
+      "Boss_1_Animation.BossWork rẽ 5 nhánh entry")
+
+claim("J7", SCRIPT, "**12 handler · 28 byte**", (12, 28), boss1_event_handlers,
+      "mỗi handler chỉ gọi một delegate, không có logic riêng")
+
+claim("J8", SCRIPT, "**22 lần `WaitForSeconds` · 4 hằng số · 18 lấy từ biến**", (22, 4, 18),
+      wait_for_seconds, "nhịp pha boss phần lớn do dữ liệu prefab, không do code")
+
+claim("J9", SCRIPT, "**0,5** | đặt một tham số material", (0.5, 0.05), enemy_hit_flash,
+      "hit flash: alpha 0,5 và Invoke 0,05 s")
+
+claim("J10", SCRIPT, "`Enemy_Movement` 3 nhánh", 3, enemy_move_branches,
+      "animation enemy = máy trạng thái di chuyển, 3 nhánh trong Update")
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:

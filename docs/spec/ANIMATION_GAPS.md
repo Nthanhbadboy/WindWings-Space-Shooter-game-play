@@ -173,6 +173,12 @@ Các rig còn lại cũng lộ nguyên hình: `580615` (`Saw`) → `EndgameLoade
 Con số này quan trọng cho clone: nếu chép "boss tấn công 33 s" thì sai nhịp so với cảm giác
 người chơi.
 
+**Đã đối chiếu (24/10)** — nhưng bằng **họ boss khác**, không phải chính rig này: 33 prefab `Boss-*`
+kia mang **793 `AnimationEvent` có mốc thời gian**, và ở đó `attack1` dài tới **40,67 s** với **8 đòn**
+cách đều **5,0 s** (`Boss-39021`). Tức trong trò chơi này, **một clip đòn dài 30–40 s là bình thường**;
+`Attack1` 33,367 s của `skeleton__21` không phải dữ liệu hỏng. Cái **vẫn chưa** biết là rig Spine đó
+có tự cắt ở `Stop` hay không — cần đọc tên entry (`ANIMATION_SCRIPT.md` §6, mức **C**).
+
 ### 2e. ~~Chưa có **một** phép đo runtime nào về playback~~ → **đã có công cụ**
 
 > **Cập nhật cùng ngày:** đã thêm endpoint `GET /anim` vào bridge (`RamusBridge.cs`),
@@ -335,7 +341,7 @@ thứ năm ngay trong tài liệu đi sửa lỗi đó.
 | ~~**2**~~ | ~~Nối `SkeletonAnimation.AnimationName` + `Skeleton.time` vào bridge~~ | ✅ **xong** — `GET /anim` | §2e — còn thiếu **số đo trên máy** |
 | ~~**3**~~ | ~~Ghi rõ định nghĩa "109 prefab roster"~~ | ✅ **xong** — định nghĩa ở `ANIMATION.md` §4.5, claim `B15` khoá lại | §4 — hai nhánh **cùng đúng** |
 | ~~**4**~~ | ~~Ghép rig → prefab cho 3 rig còn lại~~ | ✅ **xong** — typetree `SkeletonAnimation` đã export | §2c′, §3.1′ — **2 rig boss**, 2 rig UI |
-| **5** | Đối chiếu `Attack1` 33 s với nhịp thật | Cần #2 trước | §2d |
+| ~~**5**~~ | ~~Đối chiếu `Attack1` 33 s với nhịp thật~~ | ✅ **xong** — nhịp thật đọc từ 793 event clip: `attack1` họ Animator dài **40,67 s** với **8 đòn cách đều 5,0 s** ⇒ clip đòn dài là **chuẩn của game**, 33 s không dị thường. Xem `ANIMATION_SCRIPT.md` §3 | §2d |
 | 6 | Giải mã `m_StreamedClip` | Đắt, và đã có nhịp + Spine | §1 #2 |
 | 7 | 43 director còn lại | Rất đắt, giá trị biên | §1 #5 |
 

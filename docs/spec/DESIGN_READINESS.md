@@ -93,7 +93,8 @@ phải bằng đọc thêm tài liệu.
 | **Kinh tế / sao / HP** | ✅ **A** cho hằng số | `StartHp 2500` · `stepCommon 0,18` · `DeltaStarCost 50` · `PercentToCompleteMissions222 [0.2,0.6,0.98]` |
 | **Boss** | ✅ **A** cho cấu trúc | 46 boss · 39 prefab `Boss-*` · 3 prefab Spine · 92 `Animator`/36 prefab · 795 event có mốc thời gian |
 | **Enemy** | ✅ **A** cho cơ chế | di chuyển procedural theo path 100 % · `Enemy_Appear` = vỏ delegate · `Enemy_Display` 5 field |
-| **Animation / feel** | 🔴 **D** | 0/791 keyframe · 0 phép đo playback runtime · hit flash không có trong dữ liệu |
+| **Animation — *script*** | ✅ **A** cho boss, **B** cho enemy | **33 prefab boss · 793 event có mốc thời gian** · nhịp đòn **0,17/0,33/1,0/5,0 s** · `Boss1_Director` gọi `SetAnimation` · enemy = máy trạng thái 3 nhánh + hit flash 0,05 s — xem **`ANIMATION_SCRIPT.md`** |
+| **Animation — *playback / feel*** | 🔴 **D** | 0/791 keyframe · 0 phép đo playback runtime · hành vi 12 handler + tên entry/clip **chưa có** (mức **C**) |
 | **UI** | 🟡 chưa đánh giá | 53k file dump có trong nhánh dữ liệu nhưng **chưa kéo về**, chưa phân tích |
 
 ---
