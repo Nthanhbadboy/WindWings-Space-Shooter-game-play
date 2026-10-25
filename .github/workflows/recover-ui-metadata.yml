@@ -145,12 +145,25 @@ jobs:
           out['game_started_veneer']={'va':hex(va),'bytes_hex':code.hex(),
               'instructions':[{'address':hex(i.address),'mnemonic':i.mnemonic,'op_str':i.op_str} for i in md.disasm(code,va)]}
           Path('reverse-engineering/raw/ui-audit/stage23-rodata.json').write_text(json.dumps(out,indent=2)+'\n')
+          # Resolve all four MovePlayer coroutine states from original bytes.
+          table=ro(0x77a13a,4)
+          endgame={'status':'PROVISIONAL','native_sha256':hashlib.sha256(blob).hexdigest(),
+                   'source':'pinned APK lib/arm64-v8a/libil2cpp.so',
+                   'move_player_dispatch':{'table_va':'0x77a13a','branch_base':'0x14f1c00',
+                     'bytes_hex':table.hex(),
+                     'entries':[{'state':i,'target':hex(0x14f1c00+4*v)} for i,v in enumerate(table)]},
+                   'movement_floats':[{'va':hex(va),'bytes_hex':ro(va,4).hex(),
+                     'float32':struct.unpack('<f',ro(va,4))[0]} for va in (0x756a58,0x7570e0)]}
+          Path('reverse-engineering/raw/ui-audit/endgame-rodata.json').write_text(json.dumps(endgame,indent=2)+'\n')
           PY
       - name: Commit recovered UI evidence
         run: |
           git config user.name 'Arena evidence collector'
           git config user.email 'agent@arena.ai'
-          git add reverse-engineering/raw/ui-audit/stage23-rodata.json reverse-engineering/raw/ui-audit/metadata-slots.json reverse-engineering/raw/ui-audit/metadata-index.json.gz reverse-engineering/raw/ui-audit/native-relocations.json.gz reverse-engineering/raw/ui-audit/extra-native
+          git add reverse-engineering/raw/ui-audit/endgame-rodata.json reverse-engineering/raw/ui-audit/stage23-rodata.json reverse-engineering/raw/ui-audit/metadata-slots.json reverse-engineering/raw/ui-audit/metadata-index.json.gz reverse-engineering/raw/ui-audit/native-relocations.json.gz reverse-engineering/raw/ui-audit/extra-native
           git diff --cached --quiet || git commit -m 'research(ui): recover exact UI metadata slots from run 40180363840 [skip ci]'
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then exit 0; fi
+          done
+          exit 1
