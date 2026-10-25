@@ -8,7 +8,7 @@ from asset_pack_v2 import extract_payload,serialized_files,sha,XAPK_SHA
 from spine_identity import walk_pointers
 ROOT=Path(__file__).resolve().parents[2]
 ASSETS={'Sprite','SpriteAtlas','Material','Texture2D','AnimationClip','AnimatorController','AnimatorOverrideController','AudioClip','Shader','Mesh','Avatar','TextAsset'}
-BUILTINS={'GameObject','Transform','RectTransform','SpriteRenderer','SpriteMask','MeshRenderer','SkinnedMeshRenderer','MeshFilter','ParticleSystem','ParticleSystemRenderer','Animator','Animation','AudioSource','Canvas','CanvasRenderer','Camera','SortingGroup','Light'}
+BUILTINS={'GameObject','Transform','RectTransform','SpriteRenderer','SpriteMask','MeshRenderer','SkinnedMeshRenderer','MeshFilter','ParticleSystem','ParticleSystemRenderer','Animator','Animation','AudioSource','Canvas','CanvasRenderer','Camera','SortingGroup','Light','LineRenderer','TrailRenderer'}
 CORE_UI={'Board_Home','Board_Maps','Board_Stage','Board_Players','Board_Drones','Board_Pause','Board_Reborn','Board_Reborn_IAP','Board_Endgame','GP_Tutorials'}
 ASSET_CLASSES={'TMP_FontAsset','TMP_Settings','SkeletonDataAsset','SpineAtlasAsset','AtlasAsset','SoundClip'}
 
