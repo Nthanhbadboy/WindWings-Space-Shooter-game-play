@@ -28,6 +28,7 @@ import sys
 from collections import Counter
 
 import UnityPy
+from ui_render_context import file_context, export_context
 
 EXTRACT = os.environ.get("UNITY_DATA", "/tmp/apk/extract")
 OUT_RAW = os.environ.get("UI_RAW", "reverse-engineering/raw/ui")
@@ -412,6 +413,7 @@ def main() -> int:
         payload = {"class": cls, "root_path_id": root_key, "nodes": nodes,
                    "note": "RectTransform layout as stored in the prefab. Temporary: runtime "
                            "layout groups / safe area may override these numbers."}
+        payload.update(file_context(head))
         if cls == "GP_Tutorials":
             payload["linked_panels"] = linked_tutorial_panels(head)
         with gzip.open(fn, "wt", encoding="utf-8") as f:
@@ -478,7 +480,7 @@ def main() -> int:
               "- **UI của game này phần lớn là SpriteRenderer trong world space** (chỉ 1 Canvas),",
               "  nên dùng `local_pos` + `scale` là chính; `anchor_*` chỉ có ở node RectTransform.",
               "- `local_pos` là **local space của Transform cha**, đơn vị Unity",
-              "  (canvas tham chiếu thường 1080×1920 → 1 unit = 100 px).",
+              "  không gán một tỉ lệ px/unit cố định nếu chưa resolve camera/runtime viewport).",
               "- `anchor_min`/`anchor_max` quyết định responsive: `[0,0]`–`[1,1]` = full stretch.",
               "- `size_delta` = kích thước khi anchor không stretch; khi stretch thì là phần cộng thêm.",
               ""]
@@ -486,6 +488,7 @@ def main() -> int:
     with open(OUT_MD, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
     print("\n".join(lines[:16]))
+    print("UI render context:", export_context(env, os.path.join(OUT_RAW, "render-context")))
     return 0
 
 
