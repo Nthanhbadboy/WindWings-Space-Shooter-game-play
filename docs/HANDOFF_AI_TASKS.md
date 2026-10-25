@@ -703,3 +703,5 @@ MainCannonShoot0x147a988..990 đặt deadline@0x10c = Time.time + interval@0xa8.
 **Không giao damage×StartMainCannonRate như actualDPS/TTK**; ngay cả damage/rate còn thiếu
 extra-shot timer/barrels/modifiers/hit gates. Chỉ xác nhận consumer tàu1, không suy24tàu.
 Xem79 + raw/player-firing; 3targeted evidence testsPASS, khôngruntimeapproval.
+
+- Report79 finalCI40203611037SUCCESS cho9aa2d7e6f; local250testsPASS. Peer đã nhận PR12comment6399041480, chưa có xác nhận đã sửa bên peer.

@@ -63,3 +63,5 @@ chưa được chạy qua Unity/FPCR để đóng các special cases.
 Recovery workflow regression step PASS; local targeted3tests PASS. Full suite ghi riêng sau khi chạy.
 
 Local fullsuite **250tests PASS** (Pillow12,23.220s), datasvalidate và diffcheck PASS.
+
+Final Verify **40203611037 SUCCESS** cho code9aa2d7e6f: regenerate tables/dependency/regressionsteps PASS.
