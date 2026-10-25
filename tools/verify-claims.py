@@ -1734,7 +1734,7 @@ def ui_two_levels():
             sum(int(r.get("nodes") or 0) for r in idx))
 
 
-claim("P1", AUDIT, "**35 tài liệu** trong `docs/spec/` (chưa kể file này)", 35, doc_inventory,
+claim("P1", AUDIT, "**36 tài liệu** trong `docs/spec/` (chưa kể file này)", 36, doc_inventory,
       "quy mô tài liệu hiện có trong docs/spec")
 
 claim("P2", AUDIT, "**2.885** sprite, **2.816** có `width/height`; `04-asset-manifest.csv`: **2.907** asset, **2.838** có kích thước",
@@ -2884,6 +2884,63 @@ def tutorial_cctor_consts():
         return None
     return (got[offs["MaxIndexTutorial"]], got[offs["indexTut"]])
 
+
+def _cctor(consts_path):
+    import json as js
+    d = ref_json("reverse-engineering/raw/il2cpp-consts/" + consts_path)
+    if not d:
+        return None
+    for m in d.get("methods") or []:
+        if m.get("method") == "cctor":
+            return m
+    return None
+
+
+def map_cctor_arrays():
+    """(byte, số const, số init_array) của Map_Get_Datas..cctor."""
+    m = _cctor("Map_Get_Datas.json")
+    if not m:
+        return None
+    ia = [k for k in (m.get("constants") or []) if k.get("kind") == "init_array"]
+    return (m.get("bytes"), len(m.get("constants") or []), len(ia))
+
+
+def player_cctor_arrays():
+    """(byte, số init_array, độ dài mảng lớn nhất) của Player_Get_Datas..cctor."""
+    m = _cctor("Player_Get_Datas.json")
+    if not m:
+        return None
+    ia = [k for k in (m.get("constants") or []) if k.get("kind") == "init_array"]
+    return (m.get("bytes"), len(ia), max((k.get("len") or 0) for k in ia) if ia else 0)
+
+
+def player_info_fields():
+    """Số field của Player_Info (tàu) trong dump.cs.gz."""
+    import gzip as gz
+    import re as rx
+    src = gz.open(os.path.join(ROOT, "reverse-engineering/il2cpp/dump.cs.gz"),
+                  "rt", encoding="utf-8", errors="replace").read()
+    m = rx.search(r"\n(?:public |internal |private )?class Player_Info\b[^\n]*\n", src)
+    if not m:
+        return None
+    body = src[m.start():].split("// Methods")[0]
+    return len(rx.findall(r"; // 0x[0-9a-f]+", body))
+
+
+claim("AM1", "docs/spec/MISSING_FOR_NEW_GAME.md",
+      "`Map_Get_Datas..cctor` **100.896 B · `ends_clean: true`** · **4.020** const · **576** `init_array`",
+      (100896, 4020, 576), map_cctor_arrays,
+      "A6 nằm trong tầm tay: 576 mảng đã được tách địa chỉ, chỉ thiếu bytes rodata")
+
+claim("AM2", "docs/spec/MISSING_FOR_NEW_GAME.md",
+      "`Player_Get_Datas..cctor` **2.492 B** · **6** `init_array` · mảng dài nhất **24**",
+      (2492, 6, 24), player_cctor_arrays,
+      "B3: 4 mảng 24 float (damage/rate) + 2 mảng 3 — thiếu bytes rodata")
+
+claim("AM3", "docs/spec/MISSING_FOR_NEW_GAME.md",
+      "`Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived`",
+      4, player_info_fields,
+      "tàu KHÔNG có HP/damage riêng — mọi khác biệt nằm ở rank")
 
 claim("AG1", "docs/spec/SCRIPTS.md",
       "**`MaxIndexTutorial = 4`**, `instance = null`, **`indexTut = −1`**",
