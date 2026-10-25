@@ -749,3 +749,7 @@ khôngđọc on-diskzeroGOT là runtime null. 0caps/38unclean/132clipped giữ s
 player_main_cannon_timer +enemy_damage_model. 20newtests/full278localPASS/datasvalidatePASS.
 Đọc81§F thayviệc đợitừngreportnhỏ. Khôngchờ Premium/pool-history hayplayback đểkhởicôngL1.
 Decoderexit−6 sauoutputởConsole.ReadKey đượcgiữlog,khônggiấu/khônggọidecoderexit0.
+
+- Report81 final: Verify40206236112SUCCESS cho b5f2cc62a; full278localPASS. PR12comment6399402332.
+  498GOT joins là candidate-address joins (collectorkhôngfullregisterliveness); criticalpath§D đãđốichiếuriêng.
+  Khôngnâng fullnativeinventory thành allshipsemantic/DPS/runtimeapproval; chưapeerack.

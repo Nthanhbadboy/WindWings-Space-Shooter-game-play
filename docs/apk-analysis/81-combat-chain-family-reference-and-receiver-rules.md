@@ -35,7 +35,9 @@ coverage và rule nối được, không thêm một báo cáo chỉ về một 
 | direct_sites | 13144 |
 | indirect_sites | 622 |
 
-- 498 GOT cells nối được qua ELF RELA→symbolic usage.
+- 498 candidate GOT cells nối được qua ELF RELA→symbolic usage. Candidate collector chỉ
+  theo ADRP/LDR sơ bộ, không là toàn bộ register-liveness/dataflow proof. Các critical joins
+  §D được đối chiếu instruction cụ thể; không nâng toàn498 candidates thành executed uses.
 - 1419 source component→m_OPScript entries; 1623 Obj_Collider roots.
 - 5 source exceptions: 1 known builtin script-header resource580792; 4 Player_Attack_2 full
   typetree EOF. Giữ raw bytes/GO cho cả4, **không dựng full tree giả**.
@@ -200,3 +202,6 @@ Premium/pool-history vẫn hoãn. Raw/reference art/audio/fonts/Spine pack trư�
 
 20tests mới (12contract +8damage model); full **278tests local PASS**,Pillow12,25.950s;
 `datas/validate.py` và `git diff --check` PASS. FinalCI ghi riêng sau push.
+
+**Final Verify40206236112 SUCCESS** cho codeb5f2cc62a: regenerate tables, pinned dependency
+và regression steps PASS. Peer delivery PR12comment6399402332; chưa coi gửi task là peer đã sửa.
