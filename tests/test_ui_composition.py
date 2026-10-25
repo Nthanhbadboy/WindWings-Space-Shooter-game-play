@@ -44,7 +44,9 @@ class CompositionEvidence(unittest.TestCase):
   self.assertEqual(len(self.d['sources']),797)
   for s in self.d['sources']:self.assertEqual(hashlib.sha256((ROOT/s['path']).read_bytes()).hexdigest(),s['sha256'])
  def test_regeneration(self):
-  d=build();self.assertEqual(d.pop('records'),self.records);d['chunks']=self.d['chunks'];self.assertEqual(d,self.d)
+  d=build();records=d.pop('records');self.assertEqual(len(records),len(self.records))
+  for i,(actual,expected) in enumerate(zip(records,self.records)):self.assertEqual(actual,expected,f'record {i}')
+  d['chunks']=self.d['chunks'];self.assertEqual(d,self.d)
  def test_enabled_unknown_not_default_true(self):self.assertTrue(all(r['renderer_enabled'] is None for r in self.records))
  def test_components_not_screens(self):self.assertEqual(len(self.records),100312)
  def test_fonts_and_materials_exact(self):self.assertEqual(self.d['references']['m_fontAsset:resolved_exact_scoped_pptr'],18467);self.assertEqual(self.d['references']['m_Materials:resolved_exact_scoped_pptr'],76802)

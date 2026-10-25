@@ -8,13 +8,18 @@ from tools.verify.ui_reference_links import resolve
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'datas/ui_composition.json.gz'
 IDENTITY=[1.,0.,0.,0.,0.,1.,0.,0.,0.,0.,1.,0.,0.,0.,0.,1.]
-def multiply(a,b):return [sum(a[i*4+k]*b[k*4+j] for k in range(4)) for i in range(4) for j in range(4)]
+def sequential_sum(values):
+    # Python3.12 changed built-in float sum; pin left-to-right arithmetic.
+    total=0.0
+    for value in values:total=total+value
+    return total
+def multiply(a,b):return [sequential_sum(a[i*4+k]*b[k*4+j] for k in range(4)) for i in range(4) for j in range(4)]
 def trs(node):
     p,q,s=(node.get(k) for k in ('local_pos','rotation','scale'))
     if p is None or q is None or s is None:return None
     if len(p)!=3 or len(q)!=4 or len(s)!=3 or not all(math.isfinite(v) for seq in (p,q,s) for v in seq):return None
     x,y,z,w=q
-    if abs(sum(v*v for v in q)-1.)>.001:return None
+    if abs(sequential_sum(v*v for v in q)-1.)>.001:return None
     # Standard row-major T*R*S, raw near-unit quaternion components; float64.
     return [(1-2*y*y-2*z*z)*s[0],(2*x*y-2*z*w)*s[1],(2*x*z+2*y*w)*s[2],p[0],(2*x*y+2*z*w)*s[0],(1-2*x*x-2*z*z)*s[1],(2*y*z-2*x*w)*s[2],p[1],(2*x*z-2*y*w)*s[0],(2*y*z+2*x*w)*s[1],(1-2*x*x-2*y*y)*s[2],p[2],0.,0.,0.,1.]
 def conjunction(a,b):return False if a is False or b is False else True if a is True and b is True else None
