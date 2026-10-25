@@ -3084,5 +3084,35 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   formula + factor 5,4/min 9,6 ✓ — **khớp 100% cả 6 điểm đo được**. 5 điểm nhờ review: header
   authority/ambiguity/discrete-keys = proof gốc ở raw (bên peer); camera ownership + callback/sound
   gates **đã xác mức data**. ACK97/98 ✓ (comment `6402657559`); batch L3 **CI xanh toàn chuỗi**.
+
+### 24.32 Report 99 — Animator programs + property probes (peer `4d0dc6906`→code `5c3ba250d`, CI `40230913183 SUCCESS`, **940 tests**)
+
+- **Controller → state → clip → thuộc tính đúng object** (không còn controller là raw blob):
+  **232 controllers/232 machines/667 states** (mỗi controller 1 layer) · **1.587 Animator** nối
+  direct `m_Controller` (không nối vì trùng clip/name) · **377 parameters** (tên theo `m_TOS`,
+  typed default slot) · **343 AnyState + 125 state transitions** (destination/điều kiện/eventID/
+  threshold/exit-time/duration/interruption — giữ source) · **666 motion leaves** nối hết đúng
+  scoped clip; 1 empty machine + 1 state không motion **không tự chèn**; destination encoded
+  30001/30000/UINT_MAX giữ là selector/exit (không ép index).
+- **Probe 665/665 clips** đầu/giữa/cuối — **1.853 clip-time probes**: 86.905 streamed + 51.926
+  constant + 69 discrete + **1.461 initial-constant** (lỗi mô hình đã sửa: frame `-FLT_MAX` là
+  key initial-value thật a=b=c=0, d = giá trị ban đầu — không phải unknown giả; sprite clip 965:
+  mapping 0 có sẵn từ frame 0, key đầu 0,2333 s mới đổi) — **0 unknown tại các điểm probe**
+  (không suy thành mọi timestamp). Kết quả = arithmetic model, **không** phải readback Unity.
+- **Ví dụ Popup_QuitMissions** (Board_Pause): GO57508 → Animator **495980** → controller
+  **1974** (tên Popup_Network reused — tên không đổi identity) → default state **Appear** → clip
+  **1572**; probe: t0 scale 0/0 alpha 0 · t0,25 scale ~1,0304 alpha ~0,83137 · t0,5 scale 1/1,
+  alpha **giữ ~0,83137** (serialized curve — không sửa thành 1 theo cảm giác).
+- **Audit 410 non-unique bindings** = **376 path không có trong subtree + 17 thiếu hẳn component
+  class** (13 cần MonoBehaviour mà GO chỉ có Transform/SpriteRenderer; 4 cần BoxCollider2D —
+  *wording 98 sửa: không phải inheritance mismatch*) + **17 ambiguous giữ nguyên**.
+- Kéo về: `datas/l3_animator_programs.json.gz`. **Đối chéo độc lập (lần 38): counts khớp
+  10/10** (232/232/667/377/343/125/666/1587/410/1) · diagnostics **376/17/17** ✓ · Animator
+  495980 → controller 1974 (324 refs) → clip 1572 (62 refs) ✓; probe values sống ở CLI output +
+  raw `local99.json` (bên peer), không trong contract.
+- **L3 VẪN CHƯA hoàn tất** (peer ghi rõ): còn script-driven runtime selection · transition
+  scheduler/layer blending · driven RectTransform · particle sim · shader/stencil/culling ·
+  composition qua viewport. Bước phải đi: **program/property model → composition/playback thực
+  với external original assets**. ACK99 qua PR12.
 - **Không phải**: rendered approval · 805 views ≠ 805 prefab độc lập · batch 12 core không nhận công
   797. Tiếp: recipe → composition/playback, không thêm vòng inventory.

@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 38 — 26/10, "cập nhật, tái kiểm" — đồng bộ report 99 peer `4d0dc6906`):**
+> **§24.32**: controller→state→clip→property programs (**232 controllers/667 states · 377 params ·
+> 343+125 transitions · 666 leaves**) + **1.853 probe/665 clips — 0 unknown tại điểm probe**
+> (sửa lỗi mô hình: `-FLT_MAX` = key initial-value thật, cứu 1.461 giá trị) · audit **410
+> bindings** = 376/17(13 MB + 4 Box2D)/17 ambiguous · ví dụ Popup_QuitMissions (495980→1974→
+> Appear→1572; alpha t0,5 **giữ 0,83137** — không sửa theo cảm giác). **Đối chéo độc lập:
+> counts khớp 10/10 + diagnostics 376/17/17 + chuỗi 495980→1974→1572 có trong contract.**
+> Kéo `datas/l3_animator_programs.json.gz` (datas/ = **61**). L3 VẪN CHƯA hoàn tất — còn
+> runtime selection/blending/particles/shaders/composition. ACK99 PR12. verify 209 PASS ·
+> 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 37 — 26/10, "cập nhật, tái kiểm" — review độc lập đợt 2 cho batch L3):**
 > Peer ghi **CI xanh `40229636747`** cho report 98 (receipt98/handoff `6402605773`) — trước đó
 > "đang chạy". Bên spec đếm **từng loại từ 22 shards riêng** (không tin counts tổng): callbacks
