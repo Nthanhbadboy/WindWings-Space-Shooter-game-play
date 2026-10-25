@@ -849,3 +849,5 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   special paths2/4/6/8/10/12/15 (report93§6), plus named map/save consumers unchanged.
 - 85 virtual-entry sites,83 receiver-must-owner; two15 GunCheckEnemies stack-spill sites explicit
   unproven automatically, not missing native bytes. Do not replace this with global UNKNOWN rhetoric.
+- Receipt93: code8d5d2eba7, Verify40222156868 SUCCESS/job1m9s. Handoff93/green-receipt
+  đã gửi PR12, raw/wing-implementations giữ response IDs. Chưa tự nhận ACK93.

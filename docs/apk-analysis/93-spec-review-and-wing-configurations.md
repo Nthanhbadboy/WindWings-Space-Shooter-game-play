@@ -160,3 +160,6 @@ curve phía sau thành “mất cả ID”; cũng không đổi provenance thàn
 - **Chưa đóng toàn bộ23 wing firing laws:** phần đã đóng thêm là16 normal SetBarrels configs,
   array joins/index/super behavior; phần kế tiếp là Shoot/packet/coroutine consumers cho17 configs
   cùng7 special paths cụ thể ở§6. Không thiếu APK/raw/native nên không dùng “cần thiết bị” để né đọc.
+
+Receipt93: code **8d5d2eba7**, **Verify40222156868 SUCCESS/job1m9s**. Handoff và CI receipts
+trong raw/wing-implementations; bên spec chưa được tự coi đã ACK93.
