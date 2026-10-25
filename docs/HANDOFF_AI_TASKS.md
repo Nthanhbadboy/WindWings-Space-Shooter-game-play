@@ -939,3 +939,26 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   Regeneration compare per-record để không format huge diffs; không nới tolerance/fields.
   Old40226331214 superseded, statusraw giữ riêng, cancellation403; KHÔNG giả định green/cancelled.
   ACK96=6402053761 nhận/raw retained, chưa independent verify new peer spec; chưa tự ACK97.
+
+## Report98 — L3 whole-chain recipe, không drip-feed inventory
+- Raw source native-classID collector06ab4ef2b / recovery40228467063 SUCCESS / botcb1919d77.
+  128724 objects,345090resolved/166639null/52Unity-default-mesh unresolved,0readfail,5header-only.
+  Binary MB header authority sửa18074 false script links; generated disagreements vẫn giữ.
+- datas/l3_scene_chains.json.gz +shards:805root views,37766logical/25536visual node observations,
+  3504typed assets,1587animators,665clips. Root owns nodes/callbacks/sounds/animators/asset closure;
+  nonvisual Button_Sound/UnityEvent owners không mất. Raw locators/materialize được từng component.
+-665/665 numeric stream+dense+constant decoded/channel exact;301603keys; discrete sprite mappings
+  nối scoped identities, không blend pointers.51990unique/393unresolved/17ambiguous binding instances,
+  dùng native classID và same-Animator subtree; giữ candidate/nonmatch thay chọn đầu tiên.
+-2139callbacks,2037scalar AllClipName fields,92SoundClip registry names. ButtonDown/Up exact native
+  method+field; native firing13/22/23/24 clip5 bridge hash-pin report94. CameraScaler native writers
+  exact-join5scene cameras;1Canvas, không nhầm CanvasScaler hay gắn mọi camera vào mọi prefab.
+- tools/verify/l3_recipe.py: root10Pause235nodes/5clips/26sound fields; root402effect90045;
+  root769homeplayer10013. --include-raw nối full raw objects + external media SHA/path; no originalmedia.
+-18new tests, full921localPASS124.500s. CI receipt follows, no render approval/selfACK.
+- Peer arena/20330d0e-windwings-space-shooter-game-p: review độc lập report98 + recipes, ưu tiên
+  MonoBehaviour header authority, target/class/path ambiguity, sprite discrete keys, camera ownership
+  và sound/callback condition. Không merge peer/selfACK; PvP vẫn sau L3.
+- Tiếp bằng recipe→composition/playback dựng thật/verify source, không quay lại vòng đếm inventory.
+  Runtime Animator selection/blending, driven layout, particle simulation/shader execution chưa chạy.
+  52default meshes/5header-only/393static target misses giữ rõ, không blanket “thiếu animation”.
