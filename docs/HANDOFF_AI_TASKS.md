@@ -309,3 +309,31 @@ add/remove và missionthresholds. Raw mới nhiều spawn implementations sẵn 
   full63tests pass. Premium remains deferred.
 - Next raw joins: movement-completion wiring/timing; target-advance defeat
   reachability; actual Continue visibility gates/Animator clips (without Premium).
+
+## Agent hiện tại — report58: conditional false result reaches target++
+
+- GP_Manager.<Start>b__11_7→StartCheckEndgame; `_endgame` callback metadata
+  resolves14f6190→stateEndgame3. CheckEndgame gate active-listempty&&Playing1.
+- Normal GameMode0/IsBranchfalse: kill result>=0 sets closure.victory;
+  IHealth interface slot1=GetCurrentHealth()==0 forcesfalse. IPlayer slot0
+  SetVictory() call is NOT evidence that closure bool is overwritten true.
+- Join regardless bool→display.SetEndgame(bool)→2s SCALED→_endgame action→
+  MoveOutPlayer(same closure callback)→OpenBoardVictory(bool). Distinguish
+  force-VictoryNow callback which passes literaltrue.
+- Exact MovePlayer dispatch recovery40186449228→755480732: bytes00162d8d at
+  77a13a, base14f1c00; states0/1/2/3→1c00/1c58/1cb4/1e34.
+  Move-out starts4sREALTIMEwatchdog before1sSCALEDwait. Watchdog invokes same
+  callback then stops move handle. World movement y−2 then y15;0.3/0.5 are
+  speed-accumulator increments per frame, NOT seconds; squared-distance1e−10.
+- Target++ has GameMode0/stage==target/zonecap guards regardless incomingbool.
+  Setter ADDITIONALLY clamps min(value,MAX_STAGE_INDEX), writes cache+3c and
+  PlayerPreferences.SetInt("StageTarget"). No durable flush proof.
+- False-input STATIC witness now connected to target-advance path, stronger
+  than report57's local absence-of-guard. Still NOT a runtime defeat-unlock
+  replay; assumptions: valid components, stable inputs/getters, live owner,
+  external interface/event handlers don't prevent callback completion.
+  Not mid-wave death/reborn; don't generalize to all defeat/Premium flows.
+-15method bodies21checks in raw/endgame-missions/false-result-reachability.json.gz;
+  source hashes for gzip use DECOMPRESSED bytes (timestamps are not game data).
+  72tests pass. Next: actual Enemy_Movement completion/counter reachability,
+  Continue visibility and Animator graph. Premium still deferred.
