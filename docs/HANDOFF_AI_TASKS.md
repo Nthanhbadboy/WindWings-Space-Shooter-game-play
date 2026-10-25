@@ -58,3 +58,14 @@ R1–R3 là P0: timestamp không chứng minh thứ tự pha; 12 handler không 
 793 event; base Enemy_Appear không chứng minh appearance của mọi enemy.
 R4–R7 cập nhật raw và sửa điều kiện kết luận quá mạnh. Nhánh spec sửa tài liệu/
 claim bên nhánh mình; nhánh dữ liệu giữ các task đào raw còn mở. Không merge.
+
+## UI onboarding / first clear stage 1–3 — 25/10/2026
+
+Xem report `docs/apk-analysis/42-early-stage-ui-flows.md`, raw
+`reverse-engineering/raw/ui-audit/early-stage-coverage.json.gz`.
+Chưa tuyên bố đủ luồng UI: có board/layout không chứng minh stage gate hoặc
+queue popup. DataTutorials có getter hasTutStage1..4; chưa được tự gán nội dung.
+Nhánh dữ liệu đã mở export native/typetree (921dc909b, Actions 40176643619).
+Nhánh spec lập matrix first clear/replay/defeat/back/continue cho stage 1–3,
+giữ UNKNOWN đến khi có branch evidence. Tutorial gameplay/HUD không nằm chắc
+trong scope exporter root Board_/Popup_/Tab_; cần kiểm coverage riêng.
