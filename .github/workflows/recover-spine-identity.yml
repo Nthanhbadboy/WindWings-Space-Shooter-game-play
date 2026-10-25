@@ -1,0 +1,46 @@
+name: Recover pinned file-scoped Spine identities
+on:
+  push:
+    paths: ['tools/recovery/spine_identity.py', '.github/workflows/recover-spine-identity.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: spine-identity-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+          fail-on-cache-miss: true
+      - run: python3 -m pip install 'UnityPy==1.25.4' 'TypeTreeGeneratorAPI==0.0.10' 'capstone==5.0.3'
+      - name: Recover only Spine chain metadata and loader native
+        run: python3 tools/recovery/spine_identity.py --xapk /tmp/apk/windwings.xapk --work /tmp/spine-identity
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: spine-identity-raw
+          path: reverse-engineering/raw/spine-identity/
+      - run: python3 -m unittest discover -s tests -q
+      - name: Preserve scoped raw on session branch
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/spine-identity
+          git diff --cached --quiet || git commit -m 'research(spine): preserve file-scoped raw chain and loader native [skip ci]'
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+            if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
+          done
+          exit 1
