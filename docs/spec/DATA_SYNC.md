@@ -1638,9 +1638,9 @@ Hai món mở được ngay:
 | Món | Số | Dùng vào đâu |
 |---|---|---|
 | `spine-events.csv` | **21 dòng** (rig × animation × time × event) | xác nhận rig boss 1 **chỉ có 2 tên event** (`Stop` ×5 trong `Attack3`, `Banplasma` trong `Attack4`) ⇒ `ANIMATION_SCRIPT.md` §2.2 lên **A** cho *tập ứng viên* |
-| `_index.csv` | **733 instance · 114 lớp · 103.227 node · 5.174 nút** | `UI.md` §9 — độ sâu bố cục từng màn; giải thích luôn vì sao **114 ≠ 125** |
+| `_index.csv` | **797 instance · 117 lớp · 140.797 node · 5.711 nút** | `UI.md` §9 — độ sâu bố cục từng màn; giải thích luôn vì sao **117 ≠ 125** |
 
-**Một điều phải ghi:** `_index.csv` (114 lớp) là **tập con** của `screens.csv` (125 lớp); 11 lớp
+**Một điều phải ghi:** `_index.csv` (117 lớp) là **tập con** của `screens.csv` (125 lớp); 8 lớp
 thiếu gồm 4 tên lớp lồng và 7 màn/popup **không có instance nào trong dump**. Đừng tráo hai số.
 
 ---
@@ -1688,3 +1688,94 @@ Và **ma trận** `*_Director` ↔ `*_AnimationEvents` trên **39 prefab `Boss-*
 2. **Ai gán 12 delegate** — T2 của `HANDOFF_ANIM_RAW.md` **hẹp lại** còn đúng câu này (tên + offset đã có).
 3. **`Boss_1_Animation`** (lớp 5 lần `String.op_Equality`) vẫn không có trong `interesting-classes.cs`
    (file này **lọc theo từ khoá**, không phải dump toàn bộ) và không có instance export.
+
+---
+
+## 12. Đồng bộ thật (25/10) — **"không có commit mới" là sai**, lỗi ở refspec của tôi
+
+### 12.1 Lỗi gốc: `remote.origin.fetch` chỉ theo dõi **2 nhánh**
+
+```console
+$ git config --get-all remote.origin.fetch
++refs/heads/main:refs/remotes/origin/main
++refs/heads/arena/20330d0e-...:refs/remotes/origin/arena/20330d0e-...
+```
+
+Nhánh dữ liệu **không** nằm trong refspec ⇒ `git fetch origin` **không bao giờ** cập nhật
+`origin/arena/ef6b75ef-…`. Bốn lần trước tôi chạy `fetch` rồi `git log origin/arena/ef6b75ef-…` và thấy
+"0 commit mới" — thực chất là đang đọc một **ref đóng băng ở `019e704d1`**, không phải remote.
+
+| kiểm | lúc chưa sửa | sau khi sửa refspec |
+|---|---|---|
+| `git ls-remote origin` (remote thật) | `9aed767b1…` | `9aed767b1…` |
+| `git rev-parse origin/arena/ef6b75ef-…` | **`019e704d1`** ❌ | **`9aed767b1`** ✅ |
+
+`ls-remote` nói một đằng, ref local nói một nẻo ⇒ **`ls-remote` là nguồn, ref local chỉ là cache**.
+Từ nay: báo "không có commit mới" **phải** kèm `ls-remote` cùng thời điểm.
+
+### 12.2 Nhánh dữ liệu có **10 commit** sau `019e704d1`
+
+| commit | nội dung |
+|---|---|
+| `1250a8a82` | audit `UnityEvent` persistent + giữ **full controller graph** ⇒ **T3 · T4** |
+| `d1efb610e` | giải controller graph, xác minh callback Inspector, **instance `Boss_1_Animation`** |
+| `7f3158c12` | `HANDOFF_SPEC_REVIEW_71b1e9861.md` — **review lỗi suy luận của nhánh này** |
+| `921dc909b` · `daa2c3a03` | export native/typetree **UI đầu game** + **thân coroutine** |
+| `d06046eec` | phủ **stage 1–3**, report 42 |
+| `d05a147f0` | gate tutorial, **drawing inputs**, report 43 |
+| `c570485c5` · `03195916e` · `b1…` (bot) | raw cho lượt export mới |
+| `9aed767b1` | `HANDOFF_DATA_SYNC.md` — chỉ ra đúng lỗi refspec + lỗi verifier dưới đây |
+
+### 12.3 Sáu con số **đổi** giữa hai snapshot (đã cập nhật doc theo `9aed767b1`)
+
+| chỉ số | `019e704d1` (doc cũ) | **`9aed767b1` (nay)** | ai bắt được |
+|---|---:|---:|---|
+| lượt spawn / spawner | 22.461 / 11.095 | **22.452 / 11.089** | claim **H2** |
+| `rate = 0` | 2.371 | **2.365** | claim **I3** |
+| `boss_hp.json` | 254 | **256** | claim **P5** |
+| `_index.csv` (UI) | 733 · 114 lớp · 103.227 node · 5.174 nút | **797 · 117 · 140.797 · 5.711** | claim **N2** |
+| `ui_screens.json.gz` | 52.583 file · 7.980.772 node | **54.787 · 8.290.223** | claim **P6** |
+| lớp `*_AnimationEvents` export | 14 lớp · 16 prefab | **18 lớp · 17 prefab** (còn **145/795** event chưa rõ lớp) | claim **S1 · T4** |
+
+⇒ UI là chỗ **tăng nhiều nhất**: +64 màn, +37.570 node, +537 nút. Không phải "dữ liệu đứng yên".
+
+### 12.4 Lỗi verifier: `ref_blob()` **local-first** — đã sửa
+
+Bản trước đọc **file local trước**, chỉ vắng mới `git show ref` ⇒ `--ref <sha mới>` vẫn có thể trả dữ
+liệu **cũ** mà không nói gì. Nay:
+
+| cờ | việc |
+|---|---|
+| `--ref <sha>` | đọc **ref trước**; local chỉ để fallback và bị ghi là `local-fallback` |
+| `--provenance` | in bảng `nguồn · blob SHA · byte · path` cho **mọi** input |
+| `--provenance-log F` | ghi JSONL để dán vào báo cáo |
+| `--strict-ref` | thoát **2** nếu có input **dữ liệu** nào không đọc từ ref |
+| `--self-test` | dựng `datas/sprites.csv` **giả** trong thư mục tạm rồi kiểm chế độ explicit-ref **bỏ qua** nó |
+
+Chạy thật: `python3 tools/verify-claims.py --self-test` → **PASS** ("bỏ qua bản local giả").
+Đối chiếu hai chế độ sau khi đồng bộ: **125 PASS · 0 FAIL · 2 SKIP** ở **cả** local và
+`--ref 9aed767b1 --strict-ref` (0 input dữ liệu nào là local).
+
+### 12.5 Đã kéo gì (snapshot `9aed767b1`)
+
+| Nhóm | Số | Dung lượng | Ghi chú |
+|---|---:|---:|---|
+| `docs/apk-analysis/*.md` mới (39–43) + `HANDOFF_*` | 7 | ~90 KB | report T3/T4/UI + **review của họ về ta** |
+| `docs/apk-analysis/*.csv` (Director/AnimationEvents/Board…) | 107 | 5,18 MB | có **`Boss_1_Animation.csv`** — lớp tưởng chết |
+| `datas/*` (trừ `ui_text_keys`) | 27 | 4,8 MB | `waves.json`, `ui_screens.json.gz`, `boss_hp`, `enemy_hp` |
+| `reverse-engineering/raw/{animation-audit,typetrees,ui-audit}` | 20 | 2,5 MB | controller graph + persistent calls + UI audit |
+| `reverse-engineering/raw/ui/_index.csv` · `_skipped.csv` | 2 | 52 KB | manifest UI **797** màn |
+| **Không kéo** | — | — | `raw/ui/*.gz` (53.316 file, 142,7 MB) · `datas/ui_text_keys.csv.gz` (**7,7 MB** > trần 5 MB) |
+
+### 12.6 Trạng thái bàn giao sau snapshot này
+
+| task | trạng thái | bằng chứng |
+|---|---|---|
+| **T1** 3 lớp thiếu instance | 🟡 **2/3 xong**: `Boss_1_Animation` **1 instance** (`Boss-39001`), 8 field `state*`; còn `Boss1_AnimationEvents` · `BossSpineEventHandler` | `Boss_1_Animation.csv`, report 41 |
+| **T2** ai gán 12 delegate | 🔴 **mở** — nhánh kia nói rõ: chưa có **typed xref toàn binary**, `str [xN,#0x20]` không đủ nếu chưa biết type của `xN` | report 41 §T2 |
+| **T3** UnityEvent | ✅ **xong** — 1.335 field · 111 không rỗng · 115 call (114 nhóm enemy/boss) | report 39 |
+| **T4** Animator graph | ✅ **có raw** — 52 controller / 63 prefab / 303 param / 357 transition (302 condition) — **chưa** phải 87/87 | report 40 · `animator-controller-graphs.jsonl.gz` |
+
+Ngoài ra nhánh kia **bắt hai lỗi của tài liệu này**, đã sửa:
+`Boss-39001` dùng **`Boss_1_Animation`** (UnityEvent `defeatEvent`→`OnDefeated`, `burstEvent`→`OnBusrtItems`),
+`Boss-39002` mới dùng `Boss1_Director` — xem `ANIMATION_SCRIPT.md` §3.4.

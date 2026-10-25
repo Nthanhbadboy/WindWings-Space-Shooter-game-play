@@ -62,37 +62,138 @@ def git(*args: str) -> bytes | None:
     return out.stdout if out.returncode == 0 else None
 
 
-def ref_blob(path: str) -> bytes | None:
-    """Thân file, đã giải nén nếu là .gz.
+PROVENANCE: dict[str, dict] = {}
+EXPLICIT_REF = False
 
-    Đọc bản **local trước** (`datas/`, `reverse-engineering/` đã được kéo về repo),
-    chỉ khi vắng mới rơi về `git show` trên nhánh dữ liệu. Nhờ vậy bộ kiểm không
-    phụ thuộc vào một nhánh có thể biến mất, và vẫn chạy được trên clone sạch nếu
-    dữ liệu đã nằm trong repo.
+
+def _record(path: str, source: str, blob_sha: str | None, size: int | None) -> None:
+    PROVENANCE[path] = {"path": path, "source": source,
+                        "blob_sha": blob_sha, "bytes": size}
+
+
+def ref_blob(path: str, local_root: str | None = None) -> bytes | None:
+    """Thân file, đã giải nén nếu là .gz. **Ghi provenance cho từng input.**
+
+    Hai chế độ, khác nhau ở **thứ tự đọc**:
+
+    * **`--ref <sha>` (explicit)**: `git show` **trước**, chỉ rơi về local khi
+      path không có trong ref — và ghi rõ `local-fallback`. Đây là chế độ dùng
+      khi báo "đã kiểm snapshot mới".
+    * **mặc định**: local trước (dữ liệu đã kéo về repo), rồi mới tới ref.
+
+    Lỗi cũ (sửa 25/10): bản trước **luôn** local-first, nên `--ref <sha mới>`
+    vẫn có thể trả dữ liệu local cũ mà không nói gì. Nay có `--provenance`
+    (in nguồn + blob SHA) và `--strict-ref` (mọi input local ⇒ exit 2).
     """
     key = "blob:" + path
     if key in _cache:
         return _cache[key]  # type: ignore[return-value]
     raw = None
-    local = os.path.join(ROOT, path)
-    if os.path.isfile(local):
-        try:
-            with open(local, "rb") as f:
-                raw = f.read()
-        except OSError:
-            raw = None
+    source = None
+    blob_sha = None
+
+    if EXPLICIT_REF:
+        for ref in REFS:
+            raw = git("show", f"{ref}:{path}")
+            if raw:
+                source = f"ref:{ref}"
+                sha = git("rev-parse", f"{ref}:{path}")
+                blob_sha = sha.decode().strip() if sha else None
+                break
+
+    if raw is None:
+        local = os.path.join(local_root or ROOT, path)
+        if os.path.isfile(local):
+            try:
+                with open(local, "rb") as f:
+                    raw = f.read()
+                source = "local-fallback" if EXPLICIT_REF else "local"
+            except OSError:
+                raw = None
+
     if raw is None:
         for ref in REFS:
             raw = git("show", f"{ref}:{path}")
             if raw:
+                source = f"ref:{ref}"
+                sha = git("rev-parse", f"{ref}:{path}")
+                blob_sha = sha.decode().strip() if sha else None
                 break
+
     if raw is not None and path.endswith(".gz") and raw[:2] == b"\x1f\x8b":
         try:
             raw = gzip.decompress(raw)
         except OSError:
             raw = None
+    _record(path, source or "missing", blob_sha, len(raw) if raw is not None else None)
     _cache[key] = raw
     return raw
+
+
+def provenance_report(only_local: bool = False) -> str:
+    """Bảng provenance: mỗi input đọc từ **đâu**, blob SHA là gì."""
+    rows = []
+    for path, meta in sorted(PROVENANCE.items()):
+        if only_local and not meta["source"].startswith(("local", "missing")):
+            continue
+        sha = (meta["blob_sha"] or "—")[:12]
+        rows.append(f'{meta["source"]:<24} {sha:<13} {meta["bytes"] or 0:>9}  {path}')
+    head = f'{"nguồn":<24} {"blob":<13} {"byte":>9}  path'
+    return "\n".join([head, "-" * 78] + rows)
+
+
+def local_inputs() -> list[str]:
+    """Input **dữ liệu** KHÔNG đến từ ref (dùng cho `--strict-ref`).
+
+    `docs/spec/**` là tài liệu của nhánh này — nó **phải** là local, không tính.
+    Chỉ `datas/`, `reverse-engineering/`, `docs/apk-analysis/` mới là dữ liệu
+    phải chứng minh là đọc từ ref.
+    """
+    data_prefixes = ("datas/", "reverse-engineering/", "docs/apk-analysis/")
+    return sorted(p for p, m in PROVENANCE.items()
+                  if m["source"] in ("local", "local-fallback", "missing")
+                  and p.startswith(data_prefixes))
+
+
+def selftest_provenance() -> tuple[bool, str]:
+    """Kiểm chế độ explicit-ref **không** đọc file local cũ.
+
+    Dựng thư mục tạm có `datas/sprites.csv` **giả**, gọi `ref_blob` ở chế độ
+    explicit-ref. Trả về bản của ref ⇒ ĐẠT; trả về bản giả ⇒ lỗi provenance.
+    """
+    import tempfile
+
+    target = "datas/sprites.csv"
+    ref_bytes = None
+    ref = None
+    for candidate in REFS:
+        ref_bytes = git("show", f"{candidate}:{target}")
+        if ref_bytes:
+            ref = candidate
+            break
+    if not ref_bytes:
+        return False, "không đọc được %s từ ref nào" % target
+
+    global EXPLICIT_REF
+    before = EXPLICIT_REF
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            dst = os.path.join(tmp, target)
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            with open(dst, "wb") as fh:
+                fh.write(b"name,type,width,height\nFAKE_STALE,Texture2D,1,1\n")
+            EXPLICIT_REF = True
+            _cache.pop("blob:" + target, None)
+            got = ref_blob(target, local_root=tmp)
+    finally:
+        EXPLICIT_REF = before
+        _cache.pop("blob:" + target, None)
+
+    if got == ref_bytes:
+        return True, f"explicit-ref đọc {ref}:{target} ({len(ref_bytes)} B), bỏ qua bản local giả"
+    if got is not None and b"FAKE_STALE" in got:
+        return False, "VẪN đọc file local giả ⇒ lỗi provenance chưa sửa"
+    return False, "dữ liệu trả về khác cả ref lẫn bản giả"
 
 
 def ref_json(path: str):
@@ -893,7 +994,7 @@ claim("H1", ANIMDOC, "`Boss-` **39** · `CB-` **33**", (39, 33),
           sum(1 for e in wave_roster() if e.startswith(p)) for p in ("Boss-", "CB-")),
       "phân bố tiền tố của roster 109")
 
-claim("H2", ANIMDOC, "**22.461 lượt spawn trên 282 wave và 11.095 spawner**", (22461, 282, 11095),
+claim("H2", ANIMDOC, "**22.452 lượt spawn trên 282 wave và 11.089 spawner**", (22452, 282, 11089),
       lambda: _wave_counts(),
       "quy mô bảng spawn — chứng minh roster là bảng thật, không phải danh mục")
 
@@ -995,7 +1096,7 @@ claim("I1", READY, "**5 field**: `hpProgressBarRenderer`", 5, display_fields,
 claim("I2", READY, "**795/795 event use có `time`**", (795, 795), events_with_time,
       "D3 đóng: event đã join Animator và giữ mốc thời gian")
 
-claim("I3", READY, "11.095 spawner · rate = 0 : 2.371", 2371,
+claim("I3", READY, "11.089 spawner · rate = 0 : 2.365", 2365,
       lambda: (spawner_rate_zero() or (None, None, None))[1],
       "sửa 2.373 -> 2.371 trong DESIGN_QUESTIONS.md")
 
@@ -1337,8 +1438,8 @@ claim("K4", HANDOFF, "**tail-call** `BossWork(trackEntry.Animation.Name)`", True
       complete_calls_bosswork,
       "Complete → Animation.Name → BossWork, không copy trung gian")
 
-claim("K5", HANDOFF, "**có asm nhưng không có typetree**", 3, missing_typetrees,
-      "3 lớp chưa export ⇒ T1 là việc rẻ nhất trong lô giao")
+claim("K5", HANDOFF, "**có asm nhưng không có typetree**", 2, missing_typetrees,
+      "2 lớp chưa export (Boss_1_Animation đã xong 25/10) ⇒ T1 còn phần rẻ nhất")
 
 claim("K6", HANDOFF, "**12 delegate field liền nhau `0x20`…`0x78`**", (12, 0x20, 0x78),
       boss1_handler_offsets,
@@ -1539,8 +1640,8 @@ def ui_class_gap():
 claim("N1", SCRIPT, "**`skeleton__21`: 6 event · 2 tên phân biệt**", (21, 6, 2), spine_event_stats,
       "22 dòng toàn bảng; rig boss 1 chỉ có 2 tên ⇒ tập ứng viên của BossSpineEventHandler là A")
 
-claim("N2", DATA_SYNC, "**733 instance · 114 lớp · 103.227 node · 5.174 nút**",
-      (733, 114, 103227, 5174), ui_index_stats,
+claim("N2", DATA_SYNC, "**797 instance · 117 lớp · 140.797 node · 5.711 nút**",
+      (797, 117, 140797, 5711), ui_index_stats,
       "manifest UI: đếm lại trên file, không chép báo cáo")
 
 claim("N3", UI_DOC, "**11 lớp = 4 tên lớp lồng + 7 không có instance trong dump.**", (11, 4, 7),
@@ -1633,11 +1734,11 @@ claim("P3", AUDIT, "**1.416 key × 19 ngôn ngữ**, **1.416** có bản tiếng
 claim("P4", AUDIT, "**170 sản phẩm** (71 consumable + 99 non-consumable)", (170, 71, 99),
       iap_stats, "IAP khớp giữa datas/iap_products.json và 13-iap-products.csv")
 
-claim("P5", AUDIT, "**4.845** hệ hạt · **92/92** âm thanh · **150** HP id · **254** boss HP · **250** map",
-      (4845, 92, 150, 254, 250), data_counts,
+claim("P5", AUDIT, "**4.845** hệ hạt · **92/92** âm thanh · **150** HP id · **256** boss HP · **250** map",
+      (4845, 92, 150, 256, 250), data_counts,
       "một dòng để nhớ datas/ đang có gì — khỏi làm lại")
 
-claim("P6", AUDIT, "**52.583** file · **7.980.772** node", (52583, 7980772, 733, 103227),
+claim("P6", AUDIT, "**54.787** file · **8.290.223** node", (54787, 8290223, 797, 140797),
       ui_two_levels, "UI hai tầng: layout file vs màn cấp cao — đừng tráo")
 
 # ── Q. atlas plan kiểm bằng kích thước thật ─────────────────────────────
@@ -1912,8 +2013,8 @@ claim("S2", "docs/spec/DESIGN_QUESTIONS.md",
       "đếm trong bảng phải khớp dòng tổng; đổi 1 hàng là FAIL ngay")
 
 claim("S1", "docs/spec/ANIMATION_SCRIPT.md",
-      "**18 prefab còn lại có event clip nhưng chưa export lớp handler**",
-      (16, 18, 262, 34), handler_class_join,
+      "**17 prefab còn lại có event clip nhưng chưa export lớp handler**",
+      (17, 17, 145, 34), handler_class_join,
       "chỉ 16/34 prefab ghép được lớp handler; 262 event chưa biết lớp")
 
 # ── T. dữ liệu serialize kéo 24/10 (ANIMATION_SCRIPT.md §2.0b/§2.2/§3.1/§3.3) ─
@@ -2003,8 +2104,68 @@ claim("T3", "docs/spec/ANIMATION_SCRIPT.md", "| `0x20` | `attackEventName` | `st
       "5 field serialized, 2 cái là chuỗi tên event")
 
 claim("T4", "docs/spec/ANIMATION_SCRIPT.md", "**18 có `*_Director`**",
-      (18, 16, 13), director_matrix,
+      (18, 18, 15), director_matrix,
       "ma trận director <-> animation-events trên prefab, ghép bằng _gameobject")
+
+# ── U. T3/T4 đo lại từ raw (ANIMATION_SCRIPT.md §3.5) ───────────────────
+PERSIST = "reverse-engineering/raw/animation-audit/persistent-calls.json.gz"
+CTRLGRAPH = "reverse-engineering/raw/animation-audit/controller-graphs.json.gz"
+
+
+def _json_gz(path):
+    raw = ref_blob(path)
+    if raw is None:
+        return None
+    try:
+        return json.loads(raw.decode("utf-8"))
+    except ValueError:
+        return None
+
+
+def persistent_event_stats():
+    """(field, field không rỗng, call, field enemy/boss, call enemy/boss)."""
+    d = _json_gz(PERSIST)
+    if not d:
+        return None
+    fields = d.get("fields") or []
+    nonempty = [f for f in fields if f.get("calls")]
+    return (len(fields), len(nonempty), sum(len(f["calls"]) for f in nonempty),
+            int(d["summary"]["relevant_enemy_boss_fields"]),
+            int(d["summary"]["relevant_enemy_boss_calls"]))
+
+
+def controller_graph_stats():
+    """(controller, prefab root, parameter, state, transition, transition có điều kiện)."""
+    d = _json_gz(CTRLGRAPH)
+    if not d:
+        return None
+    cs = d.get("controllers") or []
+    states = trans = cond = 0
+    roots = set()
+    for c in cs:
+        roots.update(c.get("prefab_roots") or [])
+        for m in c.get("machines") or []:
+            for s in m.get("states") or []:
+                states += 1
+                for tr in s.get("transitions") or []:
+                    trans += 1
+                    cond += 1 if tr.get("conditions") else 0
+            for tr in m.get("any_state_transitions") or []:
+                trans += 1
+                cond += 1 if tr.get("conditions") else 0
+    params = sum(len(c.get("parameters") or []) for c in cs)
+    return (len(cs), len(roots), params, states, trans, cond)
+
+
+claim("U1", "docs/spec/ANIMATION_SCRIPT.md",
+      "**1.335** field · **111** field không rỗng · **115** call",
+      (1335, 111, 115, 1202, 114), persistent_event_stats,
+      "T3: đếm lại từ raw, không chép report 39")
+
+claim("U2", "docs/spec/ANIMATION_SCRIPT.md",
+      "**52** controller · **63** prefab root · **303** parameter",
+      (52, 63, 303, 395, 357, 302), controller_graph_stats,
+      "T4: đếm lại từ raw (395 state, 357 transition, 302 có condition)")
 
 # ── chạy ───────────────────────────────────────────────────────────────
 
@@ -2049,11 +2210,19 @@ def evaluate(c: Claim) -> None:
 
 
 def main() -> int:
-    global REFS
+    global REFS, EXPLICIT_REF
     ap = argparse.ArgumentParser()
     ap.add_argument("--ref", action="append", help="ref nhánh dữ liệu (lặp được)")
     ap.add_argument("--only", default="", help="chỉ chạy nhóm có mã bắt đầu bằng chữ này")
     ap.add_argument("--verbose", action="store_true")
+    ap.add_argument("--provenance", action="store_true",
+                    help="in bảng: mỗi input đọc từ ref nào + blob SHA")
+    ap.add_argument("--provenance-log", metavar="FILE",
+                    help="ghi provenance ra JSONL (path, source, blob_sha, bytes)")
+    ap.add_argument("--strict-ref", action="store_true",
+                    help="thoát 2 nếu có input KHÔNG đọc từ ref (chống báo nhầm snapshot)")
+    ap.add_argument("--self-test", action="store_true",
+                    help="kiểm chính chế độ ref-first (không đọc file local cũ)")
     args = ap.parse_args()
 
     REFS = args.ref or DEFAULT_REFS
@@ -2066,6 +2235,13 @@ def main() -> int:
     else:
         REFS = live
         print(f"ref dữ liệu: {live[0]}\n")
+
+    EXPLICIT_REF = bool(args.ref)
+
+    if args.self_test:
+        ok, msg = selftest_provenance()
+        print(("PASS  " if ok else "FAIL  ") + msg)
+        return 0 if ok else 1
 
     for c in CLAIMS:
         if args.only and not c.cid.startswith(args.only):
@@ -2092,6 +2268,24 @@ def main() -> int:
 
     print("─" * (width + 62))
     print(f"PASS {n['PASS']} · FAIL {n['FAIL']} · SKIP {n['SKIP']}")
+    if args.provenance:
+        print("\nprovenance (input → nguồn):")
+        print(provenance_report())
+
+    if args.provenance_log:
+        with open(args.provenance_log, "w", encoding="utf-8") as fh:
+            for path in sorted(PROVENANCE):
+                fh.write(json.dumps(PROVENANCE[path], ensure_ascii=False) + "\n")
+        print(f"\nprovenance → {args.provenance_log} ({len(PROVENANCE)} input)")
+
+    local = local_inputs()
+    if args.strict_ref and local:
+        print(f"\nSTRICT-REF: {len(local)}/{len(PROVENANCE)} input KHÔNG đọc từ ref:")
+        for path in local:
+            print(f"  {PROVENANCE[path]['source']:<16} {path}")
+        print("  ⇒ KHÔNG được báo 'đã kiểm snapshot mới' với các input này.")
+        return 2
+
     fails = [c for c in CLAIMS if c.status == "FAIL"]
     if fails:
         print("\nFAIL:")

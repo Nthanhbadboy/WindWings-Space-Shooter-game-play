@@ -53,15 +53,15 @@ chúng là **tham khảo**, không phải điều kiện.
 `DESIGN_QUESTIONS.md` ghi **`rate = 0` ở 2.373 spawner**. Đếm lại trên `datas/waves.json`:
 
 ```
-11.095 spawner · rate = 0 : 2.371 · rate thiếu: 0
-phân bố: 1,0 → 7.741 · 0,0 → 2.371 · 0,5 → 532 · 2,0 → 163 · 0,65 → 111 · 6,0 → 58
+11.089 spawner · rate = 0 : 2.365 · rate thiếu: 0
+phân bố: 1,0 → 7.741 · 0,0 → 2.365 · 0,5 → 532 · 2,0 → 163 · 0,65 → 111 · 6,0 → 58
 ```
 
-**2.371**, không phải 2.373. Lệch 2, nhưng cùng loại lỗi đã năm lần trong repo này: một con số
+**2.365**, không phải 2.373. Lệch 2, nhưng cùng loại lỗi đã năm lần trong repo này: một con số
 không kèm phép đếm. Nay `I3` khoá lại.
 
 Câu hỏi thật vẫn mở và **nó chặn A7**: `rate = 0` nghĩa là **spawn tức thời** hay **mỗi khung
-hình**? 2.371/11.095 spawner (21 %) rơi vào trường hợp này, nên mọi phép "địch/giây" đều có sai số
+hình**? 2.365/11.089 spawner (21 %) rơi vào trường hợp này, nên mọi phép "địch/giây" đều có sai số
 21 % cho tới khi phân xử.
 
 ### 3.1 Kéo thêm dữ liệu (24/10) — câu này **hẹp lại**, chưa đóng
@@ -78,7 +78,7 @@ của spawner: **1.200 dòng · 23 field**, và hai điều đo được:
 |---|---:|---:|---:|
 | `rate = 0` (trong `Call_Data`) | **295** | 1 | **6** |
 | `rate > 0` | 898 | 1 | 16 |
-| `rate = 0` (trong `waves.json`, đã nhân `copies`) | 2.371 | 2 | **30** |
+| `rate = 0` (trong `waves.json`, đã nhân `copies`) | 2.365 | 2 | **30** |
 
 ⇒ **Nghiêng mạnh về "không giãn cách ⇒ spawn cả loạt"** (mức **B**): nếu `rate` là "số quân/giây"
 thì 295 spawner `rate = 0` sẽ **không bao giờ** spawn, và 1.203 spawner `rate = 0` có **>1 quân**

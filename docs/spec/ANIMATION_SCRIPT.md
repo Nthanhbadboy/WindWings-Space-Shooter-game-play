@@ -249,56 +249,99 @@ ldr x1,[x8,#0x28]; br x2` ⇒ **chỉ gọi một delegate, không có logic**.
 
 Vì vậy: chép được **tên sự kiện + thời điểm** (§3), **không** chép được "sự kiện đó làm gì".
 
-### 3.2 Prefab nào dùng **lớp handler** nào — đã ghép được **16/34** (mức **A**)
+### 3.2 Prefab nào dùng **lớp handler** nào — đã ghép được **17/34** (mức **A**)
 
 `typetrees/*AnimationEvents*.jsonl.gz` là export **theo instance** (mỗi dòng = 1 MonoBehaviour, có
 `gameobject` = đường dẫn trong prefab) ⇒ ghép được **prefab ↔ lớp handler** mà không cần chạy gì.
-**14 lớp** đã export, phủ **16 prefab**, quan hệ **1:1** (không prefab nào có 2 lớp):
+**18 lớp** đã export, phủ **17 prefab**, quan hệ **1:1** (không prefab nào có 2 lớp):
 
 | prefab | event | lớp handler | | prefab | event | lớp handler |
 |---|---:|---|---|---|---:|---|
 | `Boss-39012` | 78 | `Boss10_AnimationEvents` | | `Boss-39007` | 19 | `Boss6_AnimationEvents` |
 | `Boss-39019` | 76 | `BossAnimationEvents` | | `Boss-39010` | 19 | `Boss4_AnimationEvents` |
 | `Boss-39020` | 75 | `BossAnimationEvents` | | `Boss-39016` | 14 | `Boss6_Mini_AnimationEvents` |
-| `Boss-39015` | 58 | `Boss15_AnimationEvents` | | `Boss-37018` | 12 | `BossAnimationEvents` |
-| `Boss-39017` | 42 | `Boss17_AnimationEvents` | | `Boss-37019` | 8 | `BossAnimationEvents` |
-| `Boss-39018` | 34 | `Boss18_AnimationEvents` | | `Boss-39004` | 6 | `Boss5_AnimationEvents` |
+| `Boss-39021` | 75 | `BossAnimationEvents` | | `Boss-37018` | 12 | `BossAnimationEvents` |
+| `Boss-39015` | 58 | `Boss15_AnimationEvents` | | `Boss-39004` | 6 | `Boss5_AnimationEvents` |
+| `Boss-39011` | 48 | `Boss9_AnimationEvents` | | | | |
+| `Boss-39017` | 42 | `Boss17_AnimationEvents` | | | | |
+| `Boss-39018` | 34 | `Boss18_AnimationEvents` | | | | |
 | `Boss-39014` | 27 | `Boss12_AnimationEvents` | | | | |
 | `Boss-39013` | 26 | `Boss11_AnimationEvents` | | | | |
-| `Boss-39008` | 20 | `Boss7_AnimationEvents` | | | | |
+| `Boss-39009` | 22 | `Boss8_AnimationEvents` | | | | |
 | `Boss-39006` | 19 | `Boss4_AnimationEvents` | | | | |
 
-⇒ **18 prefab còn lại có event clip nhưng chưa export lớp handler** (`Boss-37001/02/04/09…17`,
-`Boss-39003/05/09/11/21`, `CB-30040`) — **262/795 event (33 %)** chưa biết thuộc lớp nào.
+⇒ **17 prefab còn lại có event clip nhưng chưa export lớp handler** (`Boss-37001/02/04/09…17`,
+`Boss-39003/05/08`, `CB-30040`) — **145/795 event (18 %)** chưa biết thuộc lớp nào.
 
 > **Sửa một hiểu sai quan trọng:** 12 handler ở §3.1 là của `Boss1_AnimationEvents` — lớp đó **không**
-> phải lớp của 10 prefab lớn nhất. `Boss-39012` dùng `Boss10_AnimationEvents`, `Boss-39019/39020`
+> phải lớp của các prefab lớn nhất. `Boss-39012` dùng `Boss10_AnimationEvents`, `Boss-39019/20/21`
 > dùng `BossAnimationEvents`. Nghĩa là **không thể** lấy 12 tên ở §3.1 làm bộ handler chung; mỗi lớp
 > có bộ tên riêng (đúng như 130 tên hàm quan sát được).
 
-### 3.3 Ma trận `*_Director` ↔ `*_AnimationEvents` (kéo 24/10, mức **A**)
+### 3.3 Ma trận `*_Director` ↔ `*_AnimationEvents` (mức **A**)
 
-`docs/apk-analysis/*_Director.csv` (**16** file) + `*_AnimationEvents.csv` (**14** file), mỗi dòng có
+`docs/apk-analysis/*_Director.csv` (**16** file) + `*_AnimationEvents.csv` (**18** file), mỗi dòng có
 `_gameobject` ⇒ ma trận đầy đủ. Trong **34 prefab có event clip**:
 
-| có cả hai (**13**) | chỉ `_Director` (**4**) | chỉ `_AnimationEvents` (**3**) | không có gì (**14**) |
+| có cả hai (**15**) | chỉ `_Director` (**2**) | chỉ `_AnimationEvents` (**3**) | không có gì (**14**) |
 |---|---|---|---|
-| 39004 · 39006 · 39007 · 39008 · 39012 · 39013 · 39014 · 39015 · 39016 · 39017 · 39018 · 39019 · 39020 | 39005 · 39009 · 39011 · 39021 | 37018 · 37019 · 39010 | 37001 · 37002 · 37004 · 37009…37017 (9) · 39003 · `CB-30040` |
+| 39004 · 39006 · 39007 · 39009 · 39011 · 39012 · 39013 · 39014 · 39015 · 39016 · 39017 · 39018 · 39019 · 39020 · 39021 | 39005 · 39008 | 37018 · 37019 · 39010 | 37001 · 37002 · 37004 · 37009…37017 (9) · 39003 · `CB-30040` |
 
-Ngoài ra **`Boss-39002` có `Boss1_Director` nhưng không có event clip** (Spine — xem §2.0b). Tính trên
-**39 prefab `Boss-*`**: **18 có `*_Director`** (17 trong số đó có event clip + `Boss-39002`) và **16 có
-lớp `*_AnimationEvents`**.
+Tính trên **39 prefab `Boss-*`**: **18 có `*_Director`** (17 có event clip + `Boss-39002`) và **18 có
+lớp `*_AnimationEvents`** — hai tập **lệch nhau 3** (`Boss-39002`, `Boss-39005`, `Boss-39008` có
+director mà không có lớp handler trong export).
 
 **Ba điều đọc được:**
 
 1. **Tên lớp ≠ tên prefab**: `Boss-39012` → `Boss10_Director` + `Boss10_AnimationEvents`; `Boss-39006`
-   → `Boss4_Director`; `Boss-39008` → `Boss7_Director`. Đánh số lớp **không** theo thứ tự prefab ⇒
+   → `Boss4_Director`; `Boss-39011` → `Boss9_Director`. Đánh số lớp **không** theo thứ tự prefab ⇒
    mọi phép ghép phải dùng **`_gameobject`**, không dùng số.
 2. **`Boss_Director` dùng chung**: `Boss-39019/39020/39021` cùng chạy lớp base `Boss_Director`
    ⇒ 3 prefab khác art nhưng **cùng script**.
-3. **13 prefab không có director** trong export (đa số là `Boss-370xx`) ⇒ script của chúng **chỉ** là
-   event clip (§3) — không có máy trạng thái nào để đọc, và đó là lý do **262 event (33 %)** vẫn
+3. **14 prefab không có director** trong export (đa số là `Boss-370xx`) ⇒ script của chúng **chỉ** là
+   event clip (§3) — không có máy trạng thái nào để đọc, và đó là lý do **145 event (18 %)** vẫn
    chưa biết lớp handler.
+
+### 3.4 Boss 1 là **hai** prefab, **hai** driver — không phải một (sửa 25/10)
+
+Trước đây tài liệu này gộp `Boss-39001` + `Boss-39002` thành "boss 1 dùng `Boss1_Director`". **Sai một
+nửa.** Dữ liệu serialize mới (`Boss_1_Animation.csv`, kéo 25/10 từ `9aed767b1`) cho:
+
+| prefab | lớp driver | instance | bằng chứng |
+|---|---|---:|---|
+| `Boss-39001` | **`Boss_1_Animation`** | **1** (`Boss-39001/Enemy_Ingame/Body/Boss 1`) | `skeAnim` → component `602882` → SDA `580611` → TextAsset `918` |
+| `Boss-39002` | **`Boss1_Director`** | **1** | `Boss1_Director.csv`, 8 field `state*` |
+
+Cả hai dùng **chung rig** `skeleton__21` và **chung 8 tên entry** (`Xuathien` · `Baydi` · `Dead` ·
+`Attack1/2/3` · `Chuyensangattack2/3`) — nhưng **driver khác nhau**:
+
+- `Boss1_Director` (39002) chuyển state **bằng code**: `BossWork(name)` 5 nhánh (§2.0).
+- `Boss_1_Animation` (39001) chuyển state **bằng Inspector**: 2 `UnityEvent` có persistent call —
+  `defeatEvent` → **`OnDefeated`**, `burstEvent` → **`OnBusrtItems`** (giữ nguyên chính tả của game),
+  cùng trỏ component `601110`.
+
+⇒ Khi dựng lại: **một** lớp driver là đủ; nhưng phải biết bản gốc có **hai** cách nối, và cái nối bằng
+UnityEvent **không** nằm trong code — đọc từ prefab mới thấy.
+
+### 3.5 Hai mắt còn thiếu của phần animation — **đã có raw** (25/10)
+
+| mắt | số **đo lại từ raw** (không chép report) | nghĩa khi dựng lại |
+|---|---|---|
+| **T3 — `UnityEvent` nối bằng Inspector** | **1.335** field · **111** field không rỗng · **115** call (riêng enemy/boss **1.202** field · **114** call) | nối "bắn ↔ cửa sổ bắn" của enemy **không** nằm trong code: `Enemy_Attack_Event.startShootEvent` / `stopShootEvent` là cặp **mở/đóng**, wire trên từng khẩu súng |
+| **T4 — graph `Animator`** | **52** controller · **63** prefab root · **303** parameter · **395** state · **357** transition (**302** có condition) | parameter **trùng tên state** (`Appear`, `Attack1`…, kiểu `Trigger`) ⇒ enemy chuyển state bằng **trigger đặt tên theo clip**; `Afterburner` (**27** prefab) có **0** parameter, **1** state = đứng yên |
+
+**Ba con số đáng nhớ từ T4:**
+
+1. `Afterburner` phủ **27** prefab mà **không có parameter nào** ⇒ gần **1/4 roster** là enemy
+   "một state": bay theo path, không có animation đổi trạng thái. Dựng lại chỉ cần **1** clip.
+2. `Boss 1` (controller `1833`) có **20 state**, `Body 2` (`1822`) có **28** — đây là mức "nhiều đòn"
+   thật của bản gốc; boss ít nhất (`Boss`/`TayPhai`/`Rocket`) chỉ **2–3** state.
+3. Tổng transition **357** mà **302** có condition ⇒ **85 %** chuyển state là **có điều kiện**, không
+   phải "tự chạy hết clip". Đây là chỗ dựng lại hay sai nhất: nếu để clip tự chạy hết, boss sẽ ra đòn
+   chậm hơn bản gốc.
+
+> ⚠️ **Không** được ghi "đã đóng 87/87 roster": 63 prefab root của T4 lọc theo tiền tố
+> `CB-`/`Boss-`/`MB-`, **khác** mẫu số roster 109/87. Muốn so thì phải ghép hai tập trước.
 
 ---
 

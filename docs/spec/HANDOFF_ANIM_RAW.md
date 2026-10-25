@@ -41,9 +41,11 @@ Tất cả số trên đã khoá bằng claim `J*` + `K*` trong `tools/verify-cl
 (`Boss-37001/02/04/09/10/11/12/13/14/15/16/17`, `Boss-39003/05/09/11/21`, `CB-30040`) với
 **262/795 event** — chiếm **33 %**, không phải 68 %.
 
-**3 lớp** ở trạng thái **có asm nhưng không có typetree** (có `il2cpp-consts/*.json`, **0** instance export):
-`Boss1_AnimationEvents` · `BossSpineEventHandler` · `Boss_1_Animation`. Đây là phần *nhỏ nhất* của T1,
-không phải toàn bộ.
+**2 lớp** ở trạng thái **có asm nhưng không có typetree** (có `il2cpp-consts/*.json`, **0** instance
+export): `Boss1_AnimationEvents` · `BossSpineEventHandler`. Lớp thứ ba, **`Boss_1_Animation`, đã xong
+25/10**: có **1 instance** trên `Boss-39001` (`Boss_1_Animation.csv`, snapshot `9aed767b1`), 8 field
+`state*` + 2 `UnityEvent` (`defeatEvent` → `OnDefeated`, `burstEvent` → `OnBusrtItems`).
+Đây chỉ là phần *nhỏ nhất* của T1, không phải toàn bộ.
 
 **Giả định:** mỗi prefab trong 18 cái đó có **đúng một** lớp `*_AnimationEvents` (như 16 prefab đã
 ghép được, quan hệ 1:1), và lớp đó **có** trong `il2cpp-consts/*.json` (69 lớp đã dump) nhưng chỉ
@@ -55,7 +57,7 @@ ghép được, quan hệ 1:1), và lớp đó **có** trong `il2cpp-consts/*.js
 |---|---|---|---|
 | `BossSpineEventHandler` | **5 field** + offset + cơ chế `HandleEvent` | **giá trị** `attackEventName` / `preAttackEffectEventName` | export **instance** (chỉ cần 1 dòng) |
 | `Boss1_AnimationEvents` | **12 field** `0x20…0x78` + tên | **có gắn prefab nào không** | export **instance** |
-| `Boss_1_Animation` | chỉ có asm (5 lần `op_Equality`) | **định nghĩa lớp + instance** | đưa vào `interesting-classes.cs` hoặc dump đầy đủ |
+| `Boss_1_Animation` | ✅ **XONG 25/10**: 1 instance trên `Boss-39001`; 8 field `state*`; 2 `UnityEvent` | — | — |
 
 1. thêm 3 lớp trên vào `TARGETS` của exporter typetree (**lớp `*_AnimationEvents` khác đã export đủ 14**);
 2. xuất `typetrees/{class}.jsonl.gz` (**instance**, kèm `gameobject`) + `script-links.jsonl.gz`;
@@ -126,7 +128,14 @@ còn lại của `ANIMATION_SCRIPT.md`.
 
 ---
 
-### T3 — `UnityEvent` persistent calls
+### T3 — `UnityEvent` persistent calls  · ✅ **đã có raw 25/10**
+
+> **Kết quả từ nhánh dữ liệu (report 39, snapshot `9aed767b1`):** **1.335** field `UnityEvent`,
+> **111** field không rỗng, **115** persistent call — **114** trong nhóm enemy/boss.
+> `Enemy_Movement.moveEndedEvent` chỉ có **2** instance không rỗng (không phải cả 981).
+> `Enemy_Attack_Event.startShootEvent` / `stopShootEvent` là cặp **mở/đóng cửa sổ bắn** wire bằng
+> Inspector trên từng khẩu súng. ⇒ Phần *liệt kê* xong; phần còn lại chỉ là **đọc giá trị**.
+
 
 **Giả định:** các callback không phải delegate field — `Enemy_Movement.OnPathEnded`,
 `BossSpineEventHandler` slot #1 `[0x38]` — là **`UnityEvent` có `m_PersistentCalls` khác rỗng**,
@@ -151,7 +160,14 @@ event; mọi thứ nối bằng code. Đó cũng là một câu trả lời đó
 
 ---
 
-### T4 — `Animator`: tham số + transition của **87 prefab roster**
+### T4 — `Animator`: tham số + transition của **87 prefab roster**  · ✅ **đã có raw 25/10**
+
+> **Kết quả (report 40):** **52** controller trên **63** prefab root (lọc `CB-`/`Boss-`/`MB-`),
+> **303** parameter, **395** state, **357** transition (**302** có condition). Parameter lấy tên từ
+> `m_TOS` bằng hash id; condition lấy từ `m_ConditionConstantArray` (**không** đoán từ tên state).
+> Raw: `raw/typetrees/animator-controller-graphs.jsonl.gz` (**308** controller).
+> ⚠️ **Không** cùng mẫu số với roster 109/87 ⇒ **chưa** được báo "đóng 87/87".
+
 
 **Giả định:** enemy chuyển state bằng **tham số Animator** (Bool/Trigger/Float), nên đọc được
 điều kiện chuyển state từ `AnimatorController`.
