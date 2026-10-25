@@ -52,6 +52,18 @@ def recover(binary,metadata,destination):
                 va=pages[m[2]]+int(m[3] or '0',16)
                 if 0x750000<=va<0x780000:pool.add((va,{'s':4,'d':8,'q':16}[m[1]]))
     raw['float_load_candidates']=extract(binary,sorted(pool))['cells']
+    assert hashlib.sha256(metadata).hexdigest()=='449a0698a1b71d0e4d04efafdb4e2fad97fd02ca8f8528715ad9638aa813ba69'
+    magic,version,ls,lc,ds,dc=struct.unpack_from('<6I',metadata)
+    assert magic==0xfab11baf and version==31
+    literals=[]
+    for got in ('0x2ae8618',):
+        row=next(r for r in rels if r['got']==got);cell=extract(binary,((int(row['effective'],16),8),))['cells'][0]
+        encoded=struct.unpack('<Q',bytes.fromhex(cell['hex']))[0];idx=(encoded&0x1ffffffe)>>1
+        assert encoded>>29==5 and idx<lc//8
+        length,index=struct.unpack_from('<II',metadata,ls+idx*8);assert index+length<=dc
+        text=metadata[ds+index:ds+index+length]
+        literals.append(dict(got=got,pointee=cell,index=idx,definition_hex=metadata[ls+idx*8:ls+idx*8+8].hex(),data_file_offset=ds+index,hex=text.hex(),utf8=text.decode()))
+    raw['metadata_header_hex']=metadata[:24].hex();raw['literals']=literals
     raw['status']='PINNED_HP_BOARD_CELLS_CANDIDATES_NOT_GENERAL_POINTER_FLOW'
     (destination/'cells.json').write_text(json.dumps(raw,indent=2)+'\n')
     manifest=dict(status='PINNED_HP_WRITERS_AND_BOARD_CONSUMERS',roots=sorted(ROOTS),xapk_sha256=APK_SHA,lib_sha256=LIB_SHA,files=[])
