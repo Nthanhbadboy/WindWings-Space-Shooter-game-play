@@ -1,6 +1,6 @@
 # Phân việc vòng 4 — cái còn thiếu thật
 
-> **Cửa vào hiện hành (sau report81):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) + report81 combat-chain. Review cf27b9755 và các vòng/snapshot cũ dưới đây là lịch sử, chỉ áp dụng finding còn mở; không tự là task hay phán xét hiện hành.
+> **Cửa vào hiện hành (sau report82):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) + report81 combat-chain + report82 proof-audit. Review cf27b9755 và các vòng/snapshot cũ dưới đây là lịch sử, chỉ áp dụng finding còn mở; không tự là task hay phán xét hiện hành.
 
 > Trạng thái hiện tại: `docs/conclusions.md`. Đã có **dữ liệu thô** trong
 > `reverse-engineering/raw/` (typetree JSONL gz, UI layout gz, hằng số IL2CPP + asm).
@@ -753,3 +753,17 @@ Decoderexit−6 sauoutputởConsole.ReadKey đượcgiữlog,khônggiấu/không
 - Report81 final: Verify40206236112SUCCESS cho b5f2cc62a; full278localPASS. PR12comment6399402332.
   498GOT joins là candidate-address joins (collectorkhôngfullregisterliveness); criticalpath§D đãđốichiếuriêng.
   Khôngnâng fullnativeinventory thành allshipsemantic/DPS/runtimeapproval; chưapeerack.
+
+
+## Report82 — Không ghi giới hạn chung thay việc đọc native
+72/72 directstatcalls (rate/mainDamage/wingDamage×24) đã CFG must-valueprove argument suffix−1,
+khôngcòncandidateMOV. SourceID mapping81 vẫn táchriêng (impl1=10003/index0,impl3=10001/index2).
+CommonGetMainRatePercent đãđọc: Tech_Datas.GetTechStatLevel(1) tiers≤0:0,1:.03,2–3:.05,
+4–6:.08,7–8:.10,≥9:.12; exactpoolbits+24baserates/arrayfield bindingtrongargumentauditJSON.
+Enemyflag0x2f=IsCaAttack. 38unclean=36Reset exceptionbodies+2GizmosREToutside12window,
+KHÔNG38truncation. 68roots=64nullpointer+4noMonoBehaviour,khôngreceiverunknownchung.
+Xem82§6: từngviệccònchưađọc phải ghi method/consumer/callback cầnnối,khônggọimất dữliệu
+haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_argument_audit.json.
+
+- Audit82 còn sửa parser operandlessRET nuốt instructionkếtiếp do\s* crossingnewline;
+  đãregencontract81: directsites13144→13616,rawkhôngthiếu;72CFGproofs giữnguyên.

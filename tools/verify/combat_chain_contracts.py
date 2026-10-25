@@ -43,7 +43,7 @@ def build():
         info = json.loads(path.read_text())
         asm = path.with_suffix('.asm.txt').read_text()
         instructions = [(int(a, 16), op, operands.strip()) for a, op, operands in
-                        re.findall(r'^\s*0x([0-9a-f]+):\s+(\S+)\s*(.*?)$', asm, re.M)]
+                        re.findall(r'^[ \t]*0x([0-9a-f]+):[ \t]+(\S+)[ \t]*(.*?)$', asm, re.M)]
         for m in info['methods']:
             start = int(m['rva'], 16)
             end = min(start + m['bytes'], next_rva.get(start, start + m['bytes']))
@@ -151,7 +151,7 @@ def build():
                              'Clipping at next declared RVA bounds overlap but does not prove every native body boundary.',
                              'Parsed component headers select script identity; generated tree m_Script is not trusted.',
                              'Snapshot id/demo/barrels are not proof of instantiated runtime loadout.',
-                             'Implementation suffix is not a proven player ID or array index mapping.',
+                             'Implementation suffix is not a player ID; report82 separately proves suffix-1 arguments for three captured stat getters using CFG.',
                              'No all-ship DPS, collision frequency, playback, FPCR or import/render approval.'])
 
 

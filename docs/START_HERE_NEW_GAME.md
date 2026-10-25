@@ -1,6 +1,6 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report81. Tất cả kết luận APK vẫn tạm thời.**
+**Cập nhật 25/10/2026, sau report82. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
@@ -226,3 +226,6 @@ Inventory không tự bind Map container/index, không chứng minh stagecount h
   `apk-analysis/79-peer-gap-review-and-player-main-cannon-timer.md` và HANDOFF.
 - **80 — ship1 extra shots / callback:** Nextra→N+1 emitter entries, dualdeadline/no catchup;
   rank branch và damage callback khác deliveredhit. Bounded model có7tests, xem report80.
+
+- **82 — proof audit:**72stat-argument proofs/all24,mainrate tech1 modifier,IsCaAttack flag,
+  38unclean heuristic/68root classification đãđóng; đọcledger82§6 thayunknownchung81.

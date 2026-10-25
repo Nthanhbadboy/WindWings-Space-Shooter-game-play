@@ -171,3 +171,10 @@ inventory,1419poolbindings,1623colliderroots,498GOT→ELFRELA→symbolicjoins. R
 `python3 tools/verify/combat_chain_contracts.py`; regression checks raw/index hashes.
 Không phải actualDPS/TTK simulator; đọc scope report81. Prefix-only Player_Attack_2 khôngfulltree.
 Enemy damage bounded arithmetic: `tools/verify/enemy_damage_model.py`; khôngáp cho player/shield.
+
+
+### Combat argument audit — report82
+`combat_argument_audit.json`:72CFG must-value proofs/24implementation,commonrate tech1tiers,
+exactbinary32/basearray binding,38ends_clean classifications,68receiver-absence snapshots.
+Regenerate `python3 tools/verify/combat_argument_audit.py`. KhôngcònchỉlastMOVcandidate;
+sourceID/implementation mapping vẫn riêng. Xem82§6 cho ledger đãđóng/consumer cầnđọc tiếp.

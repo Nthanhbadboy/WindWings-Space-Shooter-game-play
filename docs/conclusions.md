@@ -152,3 +152,10 @@ SourceID implementation1=10003/index0;implementation3=10001/index2: khônggánID
 88004Homing_Missile. Piecewisearmor/HPclamp/callbackorder cóboundedmodel,khôngactualDPS.
 Report81+datas/combat_chain_contract.json.gz+raw/combat-chain;0caps nhưng38unclean/132clipped,
 4attack2EOF prefix-only +1builtinheadererror. 278localtestsPASS,khôngruntime/playbackapproval.
+
+
+## 82 — Rà và đóng giới hạn quá rộng
+CFG must-value proves72/72statgetter arguments suffix−1 (rate/main/wing×24),tách sourceID81.
+Mainrate Techstat1modifier+exactfloatpools/base24arraybinding đãđọc. Enemyflag@0x2f IsCaAttack.
+38unclean=36Resetexception+2GizmosREToutside12window,khôngmissingbodies;
+68roots=64null+4noMonoBehaviour. Report82ledger§6 chỉmethod/consumer thực cầnđọc tiếp.

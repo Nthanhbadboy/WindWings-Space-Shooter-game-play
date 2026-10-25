@@ -56,7 +56,7 @@ sourceID lấy từ parsed script identity + serialized component, không từ t
 Không dùng `id−10001` để gán mù chỉ số combat từ ID serialized; công thức đó ở consumer
 save/load khác vẫn có thể đúng tại scope riêng. Không suy gameplay roster từ preview/demo.
 
-| Implementation | Source IDs | Native rate-index candidate | Family method records | Source scope |
+| Implementation | Source IDs | Native rate-index (CFG proved82) | Family method records | Source scope |
 |---|---|---|---:|---|
 | Player_Attack_1 | [10003] | [0] | 28 | full parsed snapshots |
 | Player_Attack_2 | [10002] | [1] | 27 | prefix only (4 EOF) |
@@ -83,8 +83,9 @@ save/load khác vẫn có thể đúng tại scope riêng. Không suy gameplay r
 | Player_Attack_23 | [10023] | [22] | 44 | full parsed snapshots |
 | Player_Attack_24 | [10024] | [23] | 37 | full parsed snapshots |
 
-Candidate means last straightline w0 constant before direct getter call, not a general
-whole-program dataflow/roster proof. Exact call address/method/constant instruction is in
+**Đính chính report82:** các giá trị trong bảng đã được kiểm CFG must-value:72/72
+rate/main-damage/wing-damage calls của24implementation đều truyền suffix−1. Candidate
+text-scan của81 được thay bằng proof này; không tự biến argument proof thành roster/lifecycle proof. Exact call address/method/constant instruction is in
 `datas/combat_chain_contract.json.gz`. Không cho rằng 24 tàu có cùng timer/emitter:
 coroutine lasers/saws/bursts/homing của từng family đã có native riêng để đọc/implement.
 
@@ -143,7 +144,8 @@ Không có nghĩa tất cả622 indirect sites trong toàn batch đã resolve.
   candidate trong inventory. Không phải1.623 receiver khác nhau hay concurrent instances.
 - Enemy_Sub.TakeDamage0x1587ecc→controller0x1582938→OnTakeDamage0x1582ad4.
   Gate currentHP@Enemy_Datas0x28 và flag@0x2f; valid Damager/healthScript mới gọi
-  Enemy_Health.CalculateDamage0x158479c với by-ref currentHP. Không tự đặt tên flag khi chưa đối chiếu.
+  Enemy_Health.CalculateDamage0x158479c với by-ref currentHP. Report82 đối chiếu dump:
+  flag@0x2f là `Enemy_Datas.IsCaAttack`, không còn unknown.
 - Sub_Player→Player_Health.TakeDamage0x14c6de4 có nhánh health/flags/ability/invincibility riêng.
   Shield_Sub.TakeDamage không dùng enemy armor formula, chủ yếu hit effect/scheduled state.
   **Không áp một mô hình enemy armor cho mọi IDamageable.**
@@ -192,7 +194,8 @@ không gộp demo/live; test timer equality/late frame/extra gates; chọn concr
 test callbacknull/rootnull/nodamage/ignore/dead/overkill/armor±/callback mutation;
 log simulated emitted/hit/HPchange riêng. Các lựa chọn khác phải ghi newdesign.
 
-**Còn hở, nói đúng mức:** inventory toàn family không tương đương decompile semantic sạch
+**Trạng thái còn lại đã cụ thể hóa tại report82§6; không dùng đoạn lịch sử này làm checklist
+unknown hiện hành.** Inventory toàn family không tương đương decompile semantic sạch
 cả24tàu; chưa runtime scheduling/collision rate, toàn modifier của từng tàu, mọi receiver subtype,
 FPCR/playback hoặc actualDPS/TTK. Không dùng những phần này để bắt hoãn L1, cũng không gọi L2 đủ.
 Premium/pool-history vẫn hoãn. Raw/reference art/audio/fonts/Spine pack trước đây giữ nguyên.
@@ -205,3 +208,9 @@ Premium/pool-history vẫn hoãn. Raw/reference art/audio/fonts/Spine pack trư�
 
 **Final Verify40206236112 SUCCESS** cho codeb5f2cc62a: regenerate tables, pinned dependency
 và regression steps PASS. Peer delivery PR12comment6399402332; chưa coi gửi task là peer đã sửa.
+
+Report82 đóng72stat-argument proofs, commonmainrate modifier, tênflag,38unclean heuristic
+và68source-root classifications. Không dùng các caveat cũ tương ứng để xin thêm capture.
+
+**Parser correction82:** regex operandlessRET sửa đểkhôngnuốt nextinstruction; currentcontract
+directsites13616 (khôngphải historical13144). Raw native/methodcounts khôngđổi.
