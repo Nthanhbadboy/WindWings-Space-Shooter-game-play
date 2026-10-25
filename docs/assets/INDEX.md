@@ -1,5 +1,7 @@
 # Asset tham chiếu — WindWings 1.3.118
 
+> **Fonts report73:**7staticTMP SDFassets vớidefault105+6localfallback, metrics/character/glyph/atlasjoins ở`datas/font_language_contract.json.gz`; [fontbrowser](font-browser.html) copycạnhTexture2D/ trong extractedV2đểxem7rawatlases+metadata.1exportedTTF khôngphải1fonttoàngame. KhôngTTFgiảtừSDFPNG/khôngRTL/shaping/renderapproval; [report73](../apk-analysis/73-tmp-font-fallback-and-localization-first-index.md).
+
 > **Pixel report72:**2185/2185SpritePNG v2 match separate rawgeometry/texture crop+flip+mesh-mask reproduction.40fractional-outside rects chỉ9roundedpadding;517PNGkhácsourcecanvas size. `datas/sprite_export_contract.json.gz` giữsourcepivot/offsets, khôngfinalPNGpivot. [Report72](../apk-analysis/72-sprite-pixel-reproduction-fractional-crops-and-pivots.md): **không UnityGPU/PMA/placement approval**.
 
 

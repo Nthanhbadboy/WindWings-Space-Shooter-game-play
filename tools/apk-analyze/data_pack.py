@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import gzip
 import json
 import os
 import re
@@ -206,6 +207,28 @@ def main() -> int:
                             s.get("width", 0), s.get("height", 0)])
 
     # ---------------------------------------------------------------- i18n
+    # CSV was already deduplicated last-wins. Prefer preserved APK arrays:
+    # LanguageAssets.GetText uses Contains/IndexOf (report 73).
+    native_tables = {}
+    graph_dir = os.path.join(root, "reverse-engineering/raw/font-language")
+    graph_path = os.path.join(graph_dir, "graph-index.json")
+    if os.path.isfile(graph_path):
+        with open(graph_path, encoding="utf-8") as f:
+            graph = json.load(f)
+        for chunk in graph["chunks"]:
+            with gzip.open(os.path.join(graph_dir, chunk["path"]), "rt", encoding="utf-8") as f:
+                for line in f:
+                    row = json.loads(line)
+                    if row.get("class_name") != "LanguageAssets":
+                        continue
+                    table = {}
+                    tree = row["tree"]
+                    assert len(tree["listKey"]) == len(tree["listValue"])
+                    for key, value in zip(tree["listKey"], tree["listValue"]):
+                        if key:
+                            table.setdefault(key, value)
+                    native_tables[row["name"].removeprefix("Language Assets ")] = table
+        assert len(native_tables) == graph["scan_counts"]["LanguageAssets"]
     rows = read_csv(os.path.join(docs, "12-localization.csv"))
     if rows:
         langs = [l for l in LANGS if l in rows[0]]
@@ -213,9 +236,15 @@ def main() -> int:
             if lang not in langs:
                 continue
             table = {r["Key"]: r.get(lang, "") for r in rows if r.get("Key")}
+            source = f"12-localization.csv column {lang}"
+            note = SOURCE_NOTE
+            if lang in native_tables:
+                table = native_tables[lang]
+                source = f"raw/font-language LanguageAssets {lang}, first IndexOf (report 73)"
+                note += " Duplicate keys follow APK LanguageAssets.GetText first IndexOf, not CSV last-wins; see report 73."
             dump(os.path.join(i18n, f"{lang[:2].lower()}.json"),
-                 {"_source": f"12-localization.csv column {lang}",
-                  "_count": len(table), "_note": SOURCE_NOTE, "strings": table})
+                 {"_source": source,
+                  "_count": len(table), "_note": note, "strings": table})
         cfg = {"_note": "Languages available in the build (LanguageAssets).",
                "languages": langs, "default": "English", "fallback": "English"}
         dump(os.path.join(i18n, "languages.json"), cfg)

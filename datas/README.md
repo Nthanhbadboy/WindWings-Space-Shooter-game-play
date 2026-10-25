@@ -100,3 +100,16 @@ bằng `python3 tools/verify/sprite_pixel_contracts.py` từ `raw/sprite-pixels/
 2185RGBA matches là format-tool crop/flip/mask reproduction, khôngUnityGPU approval.
 40float-outside→9roundedpadding;517output khácroundedsourcecanvas. **Không dùngsource
 normalizedpivot nhưfinalPNGpivot**, khôngclamp/center tựý. Report72 ghiđủscope/source.
+
+## Fonts / localization contract — report73
+
+`font_language_contract.json.gz`:7typedstaticTMPfontassets, glyph+character/face metrics,
+7atlasPNGrefs/hashes, asset-localfallbackorder105→110→106→108→109→111→107.
+19LanguageAssets first-index/effective translations (1415nonemptykeys mỗi language),
+duplicate evidence/system-language defaultmap/native34methods/10checks/provenance.
+`tools/verify/font_language.py` regenerates bằngraw/font-language;9tests mới.
+Globalfallbacknull khôngnghĩanofallback;1TTF khôngnghĩa1fonttoàngame.
+`i18n/en.json` sửa`txt_free_after` thànhnativefirst-value`Free after`; generator ưu tiên
+rawarrays thayCSVđãdedup. Glyphcodepointdeltas khôngphảirenderedmissingglyphs;
+chưaUnityfontshader/RTL/shaping/normalization/runtimefontmutationapproval.
+OfflineSDFatlas+metrics reference: `docs/assets/font-browser.html` copycạnhmediaV2.

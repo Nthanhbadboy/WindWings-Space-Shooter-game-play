@@ -1,6 +1,6 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report72. Tất cả kết luận APK vẫn tạm thời.**
+**Cập nhật 25/10/2026, sau report73. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
@@ -9,7 +9,7 @@ Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**,
 2. `datas/`: bảng dẫn xuất để import; kiểm schema/nguồn/scope trước khi dùng. `datas/waves.json` grouped theo export **không phải** timeline runtime hay danh sách spawn đã dedup đúng theo resource.
 3. `docs/apk-analysis/`: phân tích có phạm vi và cách tái kiểm. Tìm report mới theo **chủ đề**, không coi số report cao hơn là phủ định mọi report cũ.
 4. `docs/spec/` trên nhánh này **chỉ có snapshot cũ**, không phải spec đầy đủ mới nhất của peer. Không bắt đầu triển khai từ bốn file đó mà bỏ review.
-5. Nhánh spec `arena/20330d0e-windwings-space-shooter-game-p` đã đọc ở **cf27b97553ef25107b45b039f316d9ca7850a885**. Họ có START_HERE và sửa nhiều lỗi cũ, nhưng **đọc docs/HANDOFF_REVIEW_cf27b9755.md trước**. Không import wholesale/merge hai nhánh.
+5. Nhánh spec `arena/20330d0e-windwings-space-shooter-game-p` đã cập nhật tới **2d0a0e139981f1c38ace03e786237f210dbda1f1**: typedPlayer arrays/report69 corrections đã có. Xem report69/73 và rawpeer-review snapshot; review cf27b9755 là lịch sử, chỉ áp dụng finding chưa được sửa, không wholesale merge hai nhánh.
 6. Screenshot dùng để xem UI/flow/tham khảo, không chứng minh numeric/native của build khác. **Không vẽ lại game từ screenshot.**
 
 Mỗi lựa chọn triển khai phải ghi một trong: `APK fact + raw_ref + scope`, `derived + formula + inputs`, `new design + rationale`, `unknown + fallback cần duyệt`. Không nâng giả định thành A vì unit test PASS.
@@ -42,7 +42,8 @@ Không trộn input lấy từ latest APK khác vào raw này. Không commit APK
 | Ship save/equip/rank/trial/tech/talent | 65–66 | `datas/player_loadout_persistence.json`, `raw/player-loadout/{index.json,array-blobs.json.gz,contracts.json.gz,native/*}`; saved khác trial/effective/cached |
 | Ship/drone/gun/HP/economy | 14–15, 19, 28 + native consumer | `datas/README.md`, config CSV, `raw/il2cpp-consts/Player_Get_Datas*`. HP prefab không mặc định là HP runtime; thiếu field không chứng minh không có khác biệt theo tàu |
 | Audio rules/trigger | 67 | `datas/audio_rules.json`, `raw/audio-rules/contracts.json.gz`;65method/25checks/15rules; mute vs pause, realtime playlist vs per-frame fade |
-| Asset/audio/spine/font | 68 + `docs/assets/INDEX.md` | `raw/asset-pack/catalog.json.gz`, browser offline `docs/assets/pack-browser.html`; CRC PASS nhưng151path collisions/320size mismatches, chưa full pack |
+| Asset pack / Spine / Sprite pixels | 70–72 + `docs/assets/INDEX.md` | V2identity-safe archive audit;27localSpine chains;2185exactSpriteRGBA matches, khôngUnityGPUapproval. V1collisionreport68 là lịch sử |
+| Fonts / localization | 73 | `raw/font-language/`, `datas/font_language_contract.json.gz`, `docs/assets/font-browser.html`;7staticSDFassets/default105+6fallback,19locales/nativefirstIndex |
 
 Không rerun full analyze chỉ để đọc một raw đã có. Muốn giữ/rebuild kết quả mới, giữ cả raw/source hash và tool/test tương ứng.
 
@@ -125,8 +126,15 @@ crop/flip/mesh-mask reconstruction từowningtexture PNG; không phải UnityGPU
 517output sizes khácroundedsourcecanvas, không reuse normalizedsourcepivot trênPNGtrim.
 Đọc [report72](apk-analysis/72-sprite-pixel-reproduction-fractional-crops-and-pivots.md).
 
+**Font/localization report73:**7staticTMPassets/default105+6orderedasset-localfallback,
+19LanguageAssets/nativefirstIndex; globalsettingsnull khôngnghĩanofallback.
+`datas/font_language_contract.json.gz` giữmetrics/atlasPNGs/lookup/systemmap;
+`docs/assets/font-browser.html` copycạnhmediaV2đểxemSDFatlases vàmetadata.
+English`txt_free_after` đãsửaCSVlast-wins→nativefirst-index. Khôngfont/renderapproval.
+Đọc [report73](apk-analysis/73-tmp-font-fallback-and-localization-first-index.md).
+
 Nghiệm thu fidelity còn mở: UnityGPU/PMA/filtering/sceneplacement và pivot consumer,
-nghe audio, font runtime/fallback và Spine rig/atlas-page identity/import.
+nghe audio, font runtime/shaping/RTL/coverage và Spine import; staticfallback/rigidentityđãcóscope.
 27atlas pages đều có nhiều **global** name candidates, nhưng report71 đã resolve qua local material chain.
 Folder pack mới giữpagebasename trongfolder riêng, không phải rewrite atlas text; vẫn **không gọi runtime/import-approved**.
 JPEG preview metrics không thay texel/alpha gốc.
@@ -169,7 +177,7 @@ python3 -m unittest discover -s tests -q
 ## 7. Việc tiếp theo thực sự còn mở
 
 - Spec peer: sửa N1–N5 trong `HANDOFF_REVIEW_cf27b9755.md`, cập nhật report64, soát thông tin stale ở cửa vào.
-- Assets: identity-safe pack/archive/browsability đã có report70; Spine rig/atlas/material/texture joins và reference folders đã có report71; report72 đã matchexportcrop/flip/mask2185Sprite; tiếp UnityGPU/PMA/blend/placement fidelity, nghe audio và font fallback. Không rerun full export chỉ vì còn exception Font Texture0×0.
+- Assets: identity-safe pack/archive/browsability đã có report70; Spine rig/atlas/material/texture joins và reference folders đã có report71; report72 đã matchexportcrop/flip/mask2185Sprite; report73 đãcó7fontassetfallback+19localizationlookup; tiếp UnityGPU/PMA/blend/placement fidelity, nghe audio vàfontruntime/shaping/RTL. Không rerun full export chỉ vì còn exception Font Texture0×0.
 - Triển khai: chốt platform/engine/scope rồi viết vertical-slice plan, không lấy một bảng “8/13 hệ đủ” thay acceptance.
 - Raw chỉ đào tiếp theo thiếu hụt cụ thể ảnh hưởng implementation. Không mở lại Premium hoặc speculative lifecycle proof ngoài scope.
 

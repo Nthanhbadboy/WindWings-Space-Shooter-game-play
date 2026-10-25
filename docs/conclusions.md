@@ -11,7 +11,14 @@
 >
 > Kết luận C **không được** dùng làm thông số implement; chỉ để định hướng.
 
-## Trạng thái kiểm lại hiện hành — sau report72 (ưu tiên hơn bảng lịch sử dưới đây)
+## Trạng thái kiểm lại hiện hành — sau report73 (ưu tiên hơn bảng lịch sử dưới đây)
+
+**Report73:**7staticTMPfonts, main105→110/106/108/109/111/107localfallback,7v2atlasPNGs;
+globalnullfallback khôngphủđịnhasset-localchain.19LanguageAssets1426rows/1415nonemptykeys,
+nativefirstIndex chứkhônglast-wins. Current→English→key; initialselection/systemmap khác
+Englishfallback. English`txt_free_after` sửa thành`Free after`;9797serializedtextcomponents
+khônglivescreencounts. Raw/typedcontract/fontbrowserđãcó; chưaRTL/shaping/renderapproval.
+Peerpin2d0a0e139 đãtypedPlayerarrays, khôngcòngiữ“chờ573+6dump” làblocker.
 
 Đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md). Report64 tách gate tutorial1/2/3 khỏi victory/Board_Endgame campaign dùng chung. User đã bỏ ưu tiên chứng minh low-kill playthrough/BB pool history; không lấy chúng làm blocker scenario. Review spec mới: [cf27b9755](HANDOFF_REVIEW_cf27b9755.md), không lặp finding snapshot25 như chưa được sửa.
 
