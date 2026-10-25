@@ -1,5 +1,7 @@
 # Asset tham chiếu — WindWings 1.3.118
 
+> **Font ZIP report74:** draft `font-reference-v1.zip` (1627375bytes,asset675170630) tựchứa7SDFatlas+font/primarymaterial metadata,1TTF inventoryriêng,indexoffline.19members/sourcehashes/CRC vàpost-uploadHTTPredownload PASS,7existingreleaseassets khôngđổi. [Report74](../apk-analysis/74-self-contained-font-reference-pack-and-delivery-audit.md), raw/font-reference. Khôngfontimport/render/RTL/shapingapproval; khôngcần tựghépbrowserreport73vớiV2.
+
 > **Fonts report73:**7staticTMP SDFassets vớidefault105+6localfallback, metrics/character/glyph/atlasjoins ở`datas/font_language_contract.json.gz`; [fontbrowser](font-browser.html) copycạnhTexture2D/ trong extractedV2đểxem7rawatlases+metadata.1exportedTTF khôngphải1fonttoàngame. KhôngTTFgiảtừSDFPNG/khôngRTL/shaping/renderapproval; [report73](../apk-analysis/73-tmp-font-fallback-and-localization-first-index.md).
 
 > **Pixel report72:**2185/2185SpritePNG v2 match separate rawgeometry/texture crop+flip+mesh-mask reproduction.40fractional-outside rects chỉ9roundedpadding;517PNGkhácsourcecanvas size. `datas/sprite_export_contract.json.gz` giữsourcepivot/offsets, khôngfinalPNGpivot. [Report72](../apk-analysis/72-sprite-pixel-reproduction-fractional-crops-and-pivots.md): **không UnityGPU/PMA/placement approval**.

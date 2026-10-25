@@ -113,3 +113,12 @@ Globalfallbacknull khôngnghĩanofallback;1TTF khôngnghĩa1fonttoàngame.
 rawarrays thayCSVđãdedup. Glyphcodepointdeltas khôngphảirenderedmissingglyphs;
 chưaUnityfontshader/RTL/shaping/normalization/runtimefontmutationapproval.
 OfflineSDFatlas+metrics reference: `docs/assets/font-browser.html` copycạnhmediaV2.
+
+
+## Font reference delivery — report74
+
+Dùng `tools/verify/font_reference_contracts.py` kiểmmanifest/audit/release metadata dưới
+`reverse-engineering/raw/font-reference/`:7typedfontfolders/8exactmedia/19ZIPmembers,
+full rawfont+primarymaterial projections,1TTF inventoryriêng,post-uploadreadback.
+Draft `font-reference-v1.zip` mởindexoffline trực tiếp, không cần ghépV2.
+KhôngUnityimport/render/RTL/shapingapproval; khôngoriginalmedia mới trongGit.

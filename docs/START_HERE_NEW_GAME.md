@@ -1,6 +1,6 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report73. Tất cả kết luận APK vẫn tạm thời.**
+**Cập nhật 25/10/2026, sau report74. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
@@ -132,6 +132,12 @@ crop/flip/mesh-mask reconstruction từowningtexture PNG; không phải UnityGPU
 `docs/assets/font-browser.html` copycạnhmediaV2đểxemSDFatlases vàmetadata.
 English`txt_free_after` đãsửaCSVlast-wins→nativefirst-index. Khôngfont/renderapproval.
 Đọc [report73](apk-analysis/73-tmp-font-fallback-and-localization-first-index.md).
+
+**Font pack report74:** draft có `font-reference-v1.zip` (1627375bytes,19members):
+7typedfontfolders gồm PNG+fullfont/primarymaterial metadata,1TTF inventory riêng vàindexoffline.
+Không cần copybrowsercạnhV2 nữa; source bytes giữnguyên, post-upload redownload hashes PASS.
+Đọc [report74](apk-analysis/74-self-contained-font-reference-pack-and-delivery-audit.md).
+KhôngUnityimport/renderapproval; khônggánTTFvàosourceFontFile=nullbằngheuristic.
 
 Nghiệm thu fidelity còn mở: UnityGPU/PMA/filtering/sceneplacement và pivot consumer,
 nghe audio, font runtime/shaping/RTL/coverage và Spine import; staticfallback/rigidentityđãcóscope.

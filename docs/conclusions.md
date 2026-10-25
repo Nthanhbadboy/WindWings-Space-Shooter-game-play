@@ -11,7 +11,11 @@
 >
 > Kết luận C **không được** dùng làm thông số implement; chỉ để định hướng.
 
-## Trạng thái kiểm lại hiện hành — sau report73 (ưu tiên hơn bảng lịch sử dưới đây)
+## Trạng thái kiểm lại hiện hành — sau report74 (ưu tiên hơn bảng lịch sử dưới đây)
+
+**Report74:** draft thêmfont-reference-v1.zip tựchứa7SDFassets/primarymaterials/1separateTTF,
+19members; sourceV2bytesgiữnguyên,post-uploadredownload/memberhashPASS,existingassetskhôngđổi.
+Raw/font-reference cóaudit/delivery; offlineindexkhôngphảiTMPshaderpreview/importapproval.
 
 **Report73:**7staticTMPfonts, main105→110/106/108/109/111/107localfallback,7v2atlasPNGs;
 globalnullfallback khôngphủđịnhasset-localchain.19LanguageAssets1426rows/1415nonemptykeys,

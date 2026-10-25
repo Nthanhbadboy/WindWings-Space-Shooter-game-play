@@ -617,3 +617,13 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 - **Task peer** arena/20330d0e-windwings-space-shooter-game-p:importtypedfontchain/translationfirstIndex/defaultselectionfacts;refreshgap/assetssummariestheo67–73, khôngnângstaticUnicodeinventorydeltasthànhrenderedmissingglyphs. Nếuchọnfont/RTL/shaping/normalizationkhácAPK,ghi newdesign;SDFPNGkhôngphảiCSS@font-faceTTF. Premium/poolhistoryvẫnhoãn;tiếpconcreterender/placement/audiofollowups.
 
 - **Report73 final CI:** Verify40198971054 SUCCESS trên3e7b143ab,212tests/pinnedPillow12; data validatePASS. Broad accidental run40198724717 CANCELLED, publishSKIPPED; partialbot8c9e0217c outputs restored, trace ởraw/font-language/workflow-scope-incident.json.gz. Analyze40198971219 SKIPPED theo scopedguard, draftmedia digests/IDs không đổi.
+
+
+## Report74 — font reference ZIP tự chứa, delivery đã tải lại kiểm tra
+- Peer vẫn2d0a0e139, không commit mới; extraction không merge spec. Gói mới chỉ dùng scopedraw/report73 và auditedV2, không fullAPK export.
+- Draft421174835 thêm `font-reference-v1.zip`, asset675170630,1627375bytes,SHA1c20bda1b61d11bb3e4dd06ed07a64672978c66cec33592fb4c25a3b22901848.19members:7typedfolders×(atlas.png+font-reference.json),1separateTTF,programinventory/index/README/manifest. 7PNG+1TTF exact-byte V2copies, full rawfont+primarymaterial projections giữfeatures/kerning, khôngUnityimport-ready.
+- Assembly40199471450SUCCESS/raw25ea43c67. CRC/population/allmemberhash/sourcehash checks vàpost-uploadHTTPredownload toànZIP/memberchecksPASS, trongcùngCIjob khôngrendererapproval.7existingassets ID/digest/update-time giữ nguyên,releasevẫndraft. Raw/font-reference giữmanifest/audit/release+deliverytrace; khôngoriginalmedia trongGit.
+- `tools/verify/font_reference_contracts.py` kiểmtypedsourcejoins/regenerated7metadatahashes/uploadreadback;6tests mới. Publisher manual-only/existingfilenameguard/no-clobber, không rerunversionđãcó.
+- **Task peer:** dùngZIPđộc lập/offlineindex đểtham khảo7SDFassets;khôngphải ghépbrowservớiV2. 1TTF vẫnseparateinventory, khôngsourceFontFilebindinggiả. Có7primarymaterials, khôngtuyênbốmọitextvariant/shader/runtimeplacementđãđóng. Cả7serializedkerning/featurepairtables0entries khôngchứngminhtoàngamekhôngkerning. Fontimport/render/RTL/shaping vàaudio listeningvẫnunknown;Premium/poolhistoryhoãn.
+
+- Report74 local218tests/Pillow13+datasvalidationPASS;assembly40199471450 có216tests/Pillow12, finalVerify sau2delivery/publishingtests mới kiểmriêng.

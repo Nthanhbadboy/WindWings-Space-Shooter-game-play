@@ -28,6 +28,14 @@ def key(identity):return(identity['serialized_file'],identity['type'],identity['
 def folder(identity):return 'font__'+sha(identity['serialized_file'].encode())+'__'+str(identity['path_id'])
 
 
+def reference_json(font,raw,material):
+    return dict(status='PROVISIONAL_REFERENCE_JSON_NOT_A_UNITY_IMPORT_ASSET',identity=font['identity'],font=font,
+            raw_font_projection=raw,raw_primary_material_projection=material,
+            notes=['Generated tree m_Script is not authoritative; use parsed_script_pointer and owning-file identity.',
+                   'Full font typetree retains font features/kerning and serialized settings; primary material retains saved properties.',
+                   'Shader native code and Unity rendering are not reproduced. External PPtrs are reference identities, not portable resolved imports.'])
+
+
 def assemble(archive,destination,contract,catalog,objects,expected_archive_sha):
     assert sha(archive.read_bytes())==expected_archive_sha,'source archive digest mismatch'
     # Validate every member before creating any destination (including duplicate ZIP names).
@@ -63,11 +71,7 @@ def assemble(archive,destination,contract,catalog,objects,expected_archive_sha):
         path=destination/target;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(blob)
     generated=[]
     for r in font_records:
-        value=dict(status='PROVISIONAL_REFERENCE_JSON_NOT_A_UNITY_IMPORT_ASSET',identity=r['identity'],font=r['font'],
-            raw_font_projection=r['raw_font'],raw_primary_material_projection=r['raw_primary_material'],
-            notes=['Generated tree m_Script is not authoritative; use parsed_script_pointer and owning-file identity.',
-                   'Full font typetree retains font features/kerning and serialized settings; primary material retains saved properties.',
-                   'Shader native code and Unity rendering are not reproduced. External PPtrs are reference identities, not portable resolved imports.'])
+        value=reference_json(r['font'],r['raw_font'],r['raw_primary_material'])
         write_json(destination/r['metadata'],value);generated.append(r['metadata'])
     write_json(destination/'font-programs.json',programs);generated.append('font-programs.json')
     page=render(browser)

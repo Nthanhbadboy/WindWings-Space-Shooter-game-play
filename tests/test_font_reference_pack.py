@@ -74,5 +74,21 @@ class FontReferenceTests(unittest.TestCase):
             self.assertIn('m_SavedProperties',material['tree'])
             self.assertEqual(raw['raw_object_sha256'],f['raw']['raw_object_sha256'])
 
+class PreservedFontReferenceTests(unittest.TestCase):
+    def test_real_bundle_metadata_and_delivery(self):
+        sys.path.insert(0,str(ROOT/'tools/verify'))
+        import font_reference_contracts
+        result=font_reference_contracts.verify()
+        self.assertEqual(result['fonts'],7)
+        self.assertEqual(result['source_media'],8)
+        self.assertTrue(result['post_upload_redownload_verified'])
+
+    def test_publisher_is_manual_and_never_clobbers(self):
+        workflow=(ROOT/'.github/workflows/assemble-font-reference.yml').read_text()
+        self.assertIn('workflow_dispatch:',workflow)
+        self.assertNotIn('  push:',workflow)
+        self.assertNotIn('--clobber',workflow)
+        self.assertIn("assert after['draft'] is True",workflow)
+
 
 if __name__=='__main__':unittest.main()
