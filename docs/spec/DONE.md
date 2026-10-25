@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 43 — 26/10, góp ý chủ dự án: dừng tăng counts — chuyển sang probe compose):**
+> Định hướng mới: **layout-write (101) + animation-write (99/102) trên CÙNG Transform/renderer
+> → camera (103)** (§24.37). Gửi PR12 2 probe cụ thể: **A** Alert 5105 — ObjectScaler.Start
+> (size 10.800000190734863×24.000001907348633) + alert42 alpha @t{0; 0,0625; 0,125} trên cùng
+> renderer → Main 3976 → footprint + RGBA theo t (muốn 3 readback layout-only/animation-only/
+> composed) · **B** Popup_QuitMissions — Appear1572 @t{0; 0,25; 0,5} + placement authority
+> (resources.assets = template context per 103) + camera nào giữ layer popup. Không kéo dữ
+> liệu mới vòng này (datas/ = 65 giữ). verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 42 — 26/10, "cập nhật, tái kiểm" — đồng bộ report 103 peer `8febe90e11`):**
 > **§24.36**: camera → world pose → geometry → layer gate → composition — merge 101+102
 > (1.760 SHA khớp) → **57.480 obj** · poses đủ **11.380 renderers** (**558 scene/10.822

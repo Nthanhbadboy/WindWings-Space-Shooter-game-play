@@ -3240,3 +3240,28 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   Probe values (10.8×24.0 · alpha .3921 · footprint) sống ở CLI/raw bên peer, KHÔNG trong
   contract. Recipe10 +8 template composition records. **L3 CHƯA hoàn tất**: tiếp actual
   geometry/driver application + shader/particle/text/spine execution. ACK103 qua PR12.
+
+### 24.37 Định hướng vòng kế (chủ dự án — lần 43): probe compose thay vì tăng counts
+
+Dừng mở rộng counts/contract riêng lẻ. Bước kế: **layout-write (101) + animation-write
+(99/102) tác động lên CÙNG trạng thái Transform/renderer, rồi đưa trạng thái đó qua camera
+(103)**. Đã gửi peer 2 probe cụ thể qua PR12 (dùng lại 101/102/103, không recovery mới,
+không render):
+
+- **Probe A — Alert 5105 (same-state compose)**: layout-write `ObjectScaler.Start` → size
+  [10.800000190734863, 24.000001907348633] + anchor/parent pose GO110 → world transform;
+  animation-write clip alert42 tại t ∈ {0; 0,0625; 0,125} → `m_Color.a` theo đường
+  0 → 0.784313738/0,125 s (@0,0625 = 0.3921568840742111 từ 103) — xác nhận hai write chạm
+  **khác field của cùng renderer**, không ghi đè; composed qua **Main 3976** (mask 32 giữ
+  layer5, depth 21) → footprint px + camera-local depth + RGBA theo t. Đầu ra mong muốn:
+  **3 dòng readback cùng một t** (layout-only / animation-only / composed).
+- **Probe B — Popup_QuitMissions (Board_Pause root10)**: Appear (clip1572) tại
+  t ∈ {0; 0,25; 0,5} → scale {0; ~1,0304; 1} · alpha {0; ~0,83137; giữ 0,83137}; popup
+  GO57508 + Canvas thuộc resources.assets — theo phân loại 103 là **template context**: peer
+  cho biết **placement authority** (override matrix tường minh hay scene2 instance) rồi camera
+  nào trong 6 có mask giữ layer popup (nhiều pass thì depth/clear nào thắng theo snapshot,
+  không tự tạo stack); xuất footprint theo t.
+
+Câu hỏi kèm: harness Unicorn (101) + math (103) trả được composed state mức model không, hay
+cần stub thêm? Ranh giới giữ nguyên: model ≠ readback Unity ≠ render — probe là **gate
+compose-state**, không phải render approval. Không kéo dữ liệu mới vòng này (datas/ = 65).
