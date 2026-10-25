@@ -8,7 +8,7 @@ permissions:
   actions: read
 concurrency:
   group: spine-identity-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   recover:
     runs-on: ubuntu-latest
@@ -46,7 +46,7 @@ jobs:
           path: reverse-engineering/raw/spine-identity/
       - run: python3 -m unittest discover -s tests -q
       - name: Preserve scoped raw on session branch
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
           git config user.name 'Arena evidence collector'
@@ -55,7 +55,7 @@ jobs:
           git add reverse-engineering/raw/spine-identity
           git diff --cached --quiet || git commit -m 'research(spine): preserve file-scoped raw chain and loader native [skip ci]'
           for attempt in 1 2 3; do
-            git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+            git pull --rebase --autostash -X theirs origin arena/ef6b75ef-windwings-space-shooter-game-p
             if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
           done
           exit 1
