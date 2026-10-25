@@ -32,4 +32,8 @@ jobs:
           git add reverse-engineering/raw/drone-prefabs
           git diff --cached --quiet || git commit -m 'Preserve pinned serialized drone identity and hierarchy [skip ci]'
           git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
-          git push origin arena/ef6b75ef-windwings-space-shooter-game-p
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+            if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
+          done
+          exit 1
