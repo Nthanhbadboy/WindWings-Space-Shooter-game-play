@@ -2984,6 +2984,63 @@ claim("AO1", "docs/spec/ART_STUDY.md",
       (2112, 12, 55, 0.483), art_study_stats,
       "đo lại từ art-study.csv do tools/art-study.py sinh, không chép tay")
 
+def classify_stats():
+    """(có nhãn, tổng, unresolved, nhãn mới) từ sprites-auto-classified.csv."""
+    path = os.path.join(ROOT, "docs/assets/sprites-auto-classified.csv")
+    old = os.path.join(ROOT, "docs/assets/sprites-classified.csv")
+    if not (os.path.isfile(path) and os.path.isfile(old)):
+        return None
+    with open(path, encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
+    with open(old, encoding="utf-8") as fh:
+        prev = {r["rule"] for r in csv.DictReader(fh) if (r.get("rule") or "").strip()}
+    lab = [r for r in rows if r["category_auto"] != "unresolved"]
+    new = [r for r in lab if r["rule"] not in prev]
+    return (len(lab), len(rows),
+            sum(1 for r in rows if r["category_auto"] == "unresolved"), len(new))
+
+
+def split_stats():
+    """(entry, mảnh, texture page, page sactx) từ sheet-splits.csv."""
+    path = os.path.join(ROOT, "docs/assets/sheet-splits.csv")
+    if not os.path.isfile(path):
+        return None
+    with open(path, encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
+    pages = [r for r in rows if r.get("category") == "atlas"]
+    return (len(rows), sum(int(r["ncomp"]) for r in rows), len(pages),
+            sum(1 for r in rows if r["name"].startswith("sactx")))
+
+
+def knn_stats():
+    """(LOO phủ, LOO đúng, gợi ý, độ chính xác) từ classify-knn.json + sprites-knn.csv."""
+    jp = os.path.join(ROOT, "docs/assets/classify-knn.json")
+    cp = os.path.join(ROOT, "docs/assets/sprites-knn.csv")
+    if not (os.path.isfile(jp) and os.path.isfile(cp)):
+        return None
+    with open(jp, encoding="utf-8") as fh:
+        d = json.load(fh)
+    with open(cp, encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
+    return (d["loo_covered"], d["loo_correct"],
+            sum(1 for r in rows if r["category_knn"]), d["loo_accuracy"])
+
+
+claim("AO4", "docs/spec/ASSET_TRIAGE.md",
+      "**773**/1.857 ca đủ tự tin · đúng **666** (**86,2 %**)",
+      (773, 666, 89, 0.862), knn_stats,
+      "leave-one-out của tools/classify-knn.py; số đúng đo trên nhãn đã có, không phải nhãn mới")
+
+claim("AO2", "docs/spec/ASSET_TRIAGE.md",
+      "### 9.2 Kết quả: **1.857/2.197 có nhãn**, còn **340**",
+      (1857, 2197, 340, 165), classify_stats,
+      "đếm lại từ sprites-auto-classified.csv; 165 = số nhãn vòng này thêm so với sprites-classified.csv")
+
+claim("AO3", "docs/spec/ASSET_TRIAGE.md",
+      "`sheet-splits.csv`: **307** sprite thật ra là **nhiều hình**, tổng **4.250 mảnh**",
+      (307, 4250, 98, 64), split_stats,
+      "đếm lại từ sheet-splits.csv do tools/classify-by-measure.py sinh")
+
 claim("AN1", "docs/spec/VISUAL_DESIGN.md",
       "**35** ảnh · tỉ lệ **0,4813** · accent trung vị **0,0571** · chi tiết trung vị **17,26**",
       (35, 0.4813, 0.0571, 17.26), design_metrics,

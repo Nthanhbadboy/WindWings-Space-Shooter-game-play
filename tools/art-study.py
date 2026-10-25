@@ -114,6 +114,7 @@ def measure_tile(px, iw, x0, y0, cell, tones, stride=2):
             hist[(r >> 5 << 5, g >> 5 << 5, b >> 5 << 5)] += 1
     if cnt < 30:
         return None
+    comps = components(bg, cell)
     lums.sort()
     std = (sum((v - lum / cnt) ** 2 for v in lums) / cnt) ** 0.5
     top = hist.most_common(3)
@@ -130,7 +131,51 @@ def measure_tile(px, iw, x0, y0, cell, tones, stride=2):
         "dark_share": round(dark / cnt, 3),
         "top_share": round(top[0][1] / cnt, 3) if top else 0.0,
         "top_hex": "#%02x%02x%02x" % top[0][0] if top else "",
+        "ncomp": len(comps),
+        "comps": ";".join(f"{x},{y},{w},{h},{a}" for x, y, w, h, a in comps[:8]),
     }
+
+
+def components(bg, cell, min_area=20, keep=8):
+    """Các cụm pixel không-phải-nền (4 hướng), trả [(x,y,w,h,area)] lớn trước.
+
+    Dùng để (a) phát hiện sprite thật ra là **sheet nhiều hình**, và (b) lấy rect
+    để tách. Toạ độ theo ô contact sheet.
+    """
+    seen = bytearray(cell * cell)
+    out = []
+    for sy in range(cell):
+        for sx in range(cell):
+            p0 = sy * cell + sx
+            if bg[p0] or seen[p0]:
+                continue
+            seen[p0] = 1
+            stack = [(sx, sy)]
+            n = 0
+            x0 = x1 = sx
+            y0 = y1 = sy
+            while stack:
+                x, y = stack.pop()
+                n += 1
+                if x < x0:
+                    x0 = x
+                if x > x1:
+                    x1 = x
+                if y < y0:
+                    y0 = y
+                if y > y1:
+                    y1 = y
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    nx, ny = x + dx, y + dy
+                    if 0 <= nx < cell and 0 <= ny < cell:
+                        q = ny * cell + nx
+                        if not bg[q] and not seen[q]:
+                            seen[q] = 1
+                            stack.append((nx, ny))
+            if n >= min_area:
+                out.append((x0, y0, x1 - x0 + 1, y1 - y0 + 1, n))
+    out.sort(key=lambda t: -t[4])
+    return out
 
 
 def main(argv):
@@ -189,7 +234,8 @@ def main(argv):
         print("không đo được ô nào")
         return 1
     cols = ["category", "name", "sheet", "tile", "px", "bbox_w", "bbox_h", "aspect",
-            "fill", "colors", "sat", "val", "val_std", "dark_share", "top_share", "top_hex"]
+            "fill", "colors", "sat", "val", "val_std", "dark_share", "top_share", "top_hex",
+            "ncomp", "comps"]
     with open(out_csv, "w", encoding="utf-8", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=cols)
         w.writeheader()

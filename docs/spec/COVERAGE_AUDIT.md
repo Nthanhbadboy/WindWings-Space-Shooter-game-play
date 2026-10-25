@@ -7,7 +7,7 @@
 > `tools/verify-claims.py` (nhóm **P**), hoặc trỏ thẳng vào file dữ liệu.
 >
 > **Quy mô hiện tại:** **38 tài liệu** trong `docs/spec/` (chưa kể file này) + **29 file dữ liệu**
-> trong `datas/` + **164 claim** đã khoá (**162 PASS · 2 SKIP**; nhóm P → AO).
+> trong `datas/` + **167 claim** đã khoá (**165 PASS · 2 SKIP**; nhóm P → AO).
 
 ---
 

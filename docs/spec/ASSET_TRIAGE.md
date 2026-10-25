@@ -5,6 +5,9 @@
 > Mọi số dưới đây đọc lại được bằng `tools/verify-claims.py` (nhóm **AB**). Không dùng ảnh điện thoại.
 
 **Trả lời ngắn: 2.197 asset · 1.554 chưa có nhãn · 132 sheet (116 chưa tách) · 67 page chưa có rect.**
+> **Cập nhật 25/10 (§9):** phân loại bằng số đo pixel ⇒ **1.857/2.197 có nhãn**, còn **340 `unresolved`**;
+> lần đầu có **bảng tách sheet** (`sheet-splits.csv`: **307** entry · **4.250** mảnh · **98** texture page).
+> Thêm: gợi ý kNN có **đo sai số** cho **89**/340 ca còn lại (§9.6) — không gộp vào nhãn.
 Ba con số đó là **ba việc khác nhau**, đừng cộng thành một.
 
 ---
@@ -206,3 +209,171 @@ python3 tools/verify-claims.py               # toàn bộ
 | **AB3** | 17 sheet ≥ 8 sprite = **184** sprite (10 sheet / **113** sprite thuộc `unclassified`) · 2 sheet lưới = **16** ô, **0** ô đã tách |
 | **AB4** | phân loại lại: **1.049** có nhãn (**863 A · 116 B · 70 C**) · **505** `unknown` (**33** numeric · **204** word · **268** other) |
 | **AB5** | 505 unknown = **448** họ tên, **410** tên đơn lẻ; **17/25** contact sheet còn tile chưa gán |
+
+---
+
+## 9. Vòng 2 (25/10) — phân loại bằng **số đo pixel** + bảng tách sheet
+
+Vòng trước phân loại **bằng tên** (33 luật) được **1.692** sprite, còn **505** trống. Vòng này thêm
+**số đo pixel** cho từng sprite nên gán thêm **165** ca (**81** theo tên + **84** theo số đo), còn **340**,
+và lần đầu có **toạ độ cắt sheet**.
+
+
+### 9.1 Đường đi của số
+
+| | tên | làm gì |
+|---|---|---|
+| tool | `tools/art-study.py` | giải 42 contact sheet → mỗi ô: `ncomp` (số mảnh rời), `fill`, `sat`, `val`, `colors`, `dark_share`, `comps` (rect từng mảnh) |
+| tool | `tools/classify-by-measure.py` | ghép 3 nguồn (index · manifest · art-study) → gán nhãn theo luật, xuất 2 bảng |
+| vào | `sprites-classified.csv` (**1.692** nhãn vòng trước) · `04-asset-manifest.csv` (kích thước gốc) · `art-study.csv` | |
+| ra | **`sprites-auto-classified.csv`** · **`sheet-splits.csv`** | |
+
+### 9.2 Kết quả: **1.857/2.197 có nhãn**, còn **340**
+
+| nhãn cuối | số | | nhãn cuối | số |
+|---|---:|---|---|---:|
+| `ui` | **719** | | `enemy` | 103 |
+| `bullet` | **239** | | `audio` | 69 |
+| `atlas` (texture page) | 132 | | `items` | 43 |
+| `background` | 129 | | `ships` | 27 |
+| `fx` | 126 | | `font` | 19 |
+| `bosses` | 119 | | `drones` | 15 |
+| `parts` | **117** | | **`unresolved`** | **340** |
+
+Mức tin cậy: **A 1.587** (tên/id tự mô tả) · **B 200** (chỉ số đo) · **C 70** (từ vòng trước, cần xem mắt)
+· **— 340** (không luật nào khớp).
+
+### 9.3 Luật mới — và vì sao tin được
+
+**Luật tên (A)** — dùng từ vựng đã có trong repo, không tự nghĩ. Cột `mới` là số ca **vòng này**
+chiếm được; số 0 nghĩa là vòng trước **đã** phủ hết nhóm đó nên luật không có đất dùng:
+
+| luật | nhãn | mới | dựa vào |
+|---|---|---:|---|
+| `^(Head|Gun|Wing|Body|Bone|Hand|Leg|Tail|Vai|Tay…)` | `parts` | **52** | `BOSSES.md` §5: boss **tháo rời thành bộ phận** |
+| `^(Avatar|Btn|Board|Popup|Tab|Icon|Frame|Bg…)` | `ui` | **15** | tên chức năng UI |
+| `^(Giam|Tang|Time|Sao|Star|Lock|Khoa|Hp)` | `ui` | 4 | nhãn/thanh UI (giảm·tăng·sao·khoá) |
+| `^(Rank|PVP|Vip|Hotro)` | `ui` | 5 | huy hiệu/cấp/bảng |
+| `^(CB|W1-|W2-|MB\d)` | `enemy` | 3 | id prefab enemy |
+| `\d+Radar$` | `ui` | 2 | radar/minimap màn chọn |
+| `^blt` · `^[Bb]oss.*Gray$` · `^boss_` · `^sieuhopthe` | `bullet` 148 · `ui` 15 · `bosses` 49 · `parts` 17 | 0 | vòng trước **đã** phủ (R01 · R26 · R03 · R04) |
+
+**Luật số đo (B)** — chỉ dùng khi tên không nói gì. **84 ca** vòng này:
+
+| luật | nhãn | số | ngưỡng |
+|---|---|---:|---|
+| lấp ≥60 % ô · ≤2 mảnh | `ui` | **30** | `fill ≥ 0,60` ⇒ nền nút/panel |
+| ≥8 mảnh trong ≤256 px | `ui` | **27** | bộ icon ghép |
+| gần vô sắc · sáng · thưa | `fx` | **22** | `sat ≤ 0,15`, `val ≥ 0,65`, `fill ≤ 0,25` |
+| `dark_share` ≥0,30 · ≤3 mảnh | `bullet` | **4** | thân tối + viền sáng (đúng luật `ART_STUDY.md` §3.4) |
+| ≥512 px · sáng ≤0,50 · bão hoà ≤0,45 | `background` | **1** | nền lớn, tối |
+
+⇒ Cả vòng này chỉ thêm **165** nhãn (**81** theo tên + **84** theo số đo). Luật số đo **cố tình ít**: nó chỉ
+nhận khi dấu hiệu trùng số đo trung vị của nhóm đó trong `ART_STUDY.md`, không đoán theo cảm giác.
+Ca nào không khớp ⇒ để **`unresolved`**, không gán bừa.
+
+### 9.4 Tách sheet — lần đầu có **toạ độ**
+
+`sheet-splits.csv`: **307** sprite thật ra là **nhiều hình**, tổng **4.250 mảnh**, mỗi mảnh một rect
+**theo pixel gốc** (đã nhân tỉ lệ từ ô 150 px lên `width/height` thật):
+
+| nhóm | entry | mảnh |
+|---|---:|---:|
+| **texture page** (`category = atlas`) | **98** (trong đó **64** page `sactx`) | **1.387** |
+| sprite thường nhưng nhiều mảnh | 209 | **2.863** |
+| **cộng** | **307** | **4.250** |
+
+Nhiều mảnh nhất: hai page `2048×2048` và `1024×1024` đều **47 mảnh**; `BGBox1` (256×256) **40 mảnh**.
+
+`tools/classify-by-measure.py --crop DIR` cắt **thật** ra PNG trong suốt (nền caro → alpha 0, giữ outline đen),
+mỗi mảnh một file + `crops.csv`. Chạy thử: **4.250** PNG · 3,44 Mpx · **11,8 s**. Nhưng đếm kích thước
+mảnh thì lộ ra vấn đề: **792** mảnh ≥20×20 px, chỉ **158** mảnh ≥64×64 px ⇒ phần lớn "mảnh" là
+**vụn glow/nhiễu JPEG**, không phải sprite. Vì vậy:
+
+- **4.250 là CẬN TRÊN** của số hình (đã lọc ≥20 px nhưng 150 px/ô làm vụn dính nhau);
+- con số dùng được là **792** mảnh "đủ to để là một hình" ⇒ 307 sheet chứa **~800–4.250** hình;
+- ảnh cắt ra chỉ là **bản xem trước 150 px/ô** ⇒ **không** commit vào repo (nằm ngoài git, xem §9.7);
+- **nền trong suốt chưa sạch 100 %**: lấy mẫu 200 mảnh ≥48×48 thì **113 (56 %)** còn **góc ô caro**
+  chưa bị xoá. Nguyên nhân: flood fill chỉ ăn nền **nối với viền ô**, mà mảnh lớn hoặc page atlas thì
+  vùng caro nằm **kín bên trong** — không nối ra viền được. Xem `docs/assets/sheet-splits-sample.png`
+  (60 mảnh sạch nhất trong top 160) để thấy phần cắt **đúng** trông thế nào;
+- cách sửa gốc: cắt từ **PNG có alpha** (không phải JPEG contact sheet), tức lại cần §9.7;
+- muốn con số chính xác: cần `m_RD.rect` + PNG gốc.
+
+**Giới hạn phải nói rõ:** **4.250 không phải "số hình"** — nó là **số mảnh rời ≥20 px** đo trên ảnh
+150 px/ô, và hai sai lệch chạy **ngược chiều nhau**:
+
+| hiệu ứng | chiều | bằng chứng |
+|---|---|---|
+| hai sprite dính nhau ⇒ gộp 1 mảnh | **đếm thiếu** | sheet lưới 4×4 ô vuông đều bị gộp |
+| glow/nhiễu JPEG tách thành nhiều mảnh | **đếm thừa** | chỉ **792** mảnh ≥20×20 px, **158** mảnh ≥64×64 px |
+
+Vì hiệu ứng thứ hai áp đảo (4.250 → 792), con số dùng được để lập kế hoạch là **~790 mảnh "đủ to"**,
+còn **4.250** là số **dòng CSV để cắt thử**, không phải số sprite. Ngoài ra rect sai số ~±2 px ở
+kích thước gốc. Muốn cắt **chính xác** thì phải có `Sprite.m_RD.rect` (xem §9.7).
+
+### 9.5 Còn **340** — chúng là gì
+
+Số đo thật của 340 ca (p25 · p50 · p75):
+
+| | p25 | **p50** | p75 |
+|---|---:|---:|---:|
+| `w`×`h` | 93×94 | **128×128** | 204×172 |
+| `ncomp` | 3 | **4** | 5 |
+| `fill` | 0,18 | **0,30** | 0,46 |
+| `sat` | 0,38 | **0,58** | 0,75 |
+| `val` | 0,50 | **0,61** | 0,73 |
+| `dark` | 0,00 | **0,00** | 0,01 |
+
+Đọc bảng này: chúng **không tối** (`dark` p75 = 0,01 ⇒ loại `bullet`), **không thưa-vô sắc**
+(`sat` 0,58 ⇒ loại `fx`), **không đặc** (`fill` 0,30 ⇒ loại `ui`), và **≤5 mảnh** (⇒ loại bộ icon ghép).
+Tức chúng là **một hình vừa phải, nhiều màu, ít mảnh** — đúng kiểu *icon/prefab* mà 13 nhóm hiện có
+không có chỗ. Tên cũng vô nghĩa: `1011`, `11_0`, `128x128`.
+
+- Phân bố: rải trên **sheet `unclassified-*.jpg`** (nhiều nhất `-15` 38 · `-24` 37 · `-06` 28).
+- Cách đóng: xem mắt 340 ô (đã nằm sẵn trên các sheet `unclassified-*`) rồi gán tay — **~2 giờ**;
+  hoặc tách thành nhóm `misc` nếu L1 không cần.
+- **Không** được coi `unresolved` là "đã xong": nó là **việc còn lại**, không phải nhãn.
+
+### 9.6 340 ca còn lại — thử **hàng xóm gần nhất**, và đo sai số trước khi tin
+
+Luật tay đã hết đất. Cách cuối không cần thêm dữ liệu: xếp 1.857 sprite **đã có nhãn** vào không
+gian **10 số đo** (log w · log h · log màu · `fill` · `sat` · `val` · `dark` · log `ncomp` ·
+log bytes · log tỉ lệ), chuẩn hoá z-score, lấy **3 hàng xóm gần nhất**, nhận khi **≥2/3 đồng ý**.
+
+Điều quan trọng là **đo sai số trước, dùng sau** (leave-one-out: bỏ nhãn của chính nó rồi đoán lại):
+
+| nhóm | recall | precision | n |
+|---|---:|---:|---:|
+| `audio` | **1,00** | **1,00** | 69 |
+| `ui` | 0,95 | 0,85 | 337 |
+| `bullet` | 0,94 | 0,89 | 107 |
+| `fx` | 0,82 | **0,92** | 57 |
+| `background` | 0,79 | 0,86 | 47 |
+| `items` | 0,73 | 0,89 | 11 |
+| `atlas` | 0,74 | 0,86 | 58 |
+| `bosses` | 0,61 | 0,74 | 28 |
+| `enemy` | 0,50 | 0,70 | 32 |
+| **`parts`** | **0,24** | **0,50** | 21 |
+| `font` | 0,75 | 1,00 | 4 |
+| `drones` / `ships` | 1,00 | 0,50 | 1 · 1 |
+
+**773**/1.857 ca đủ tự tin · đúng **666** (**86,2 %**) · nền đoán-bừa (nhóm lớn nhất) là 39 %.
+
+Áp lên 340 ca: gợi ý được **89** (`ui` 72 · `bullet` 8 · `enemy` 4 · `bosses` 4 · `parts` 1),
+**251** vẫn để trống. Ghi ra `docs/assets/sprites-knn.csv` (cột `category_knn`, `margin`,
+`precision_measured`) — **không** gộp vào `category_auto`.
+
+Đọc đúng: `ui`/`bullet`/`audio`/`fx` là **gợi ý dùng được** (precision 0,85–1,00); `parts` precision
+0,50 là **tung đồng xu** ⇒ đừng dùng; `drones`/`ships` n=1, không nói được gì. Ba nhóm cuối này
+phải xem mắt, không có đường tắt.
+
+**Đường cụt đã thử và loại:** dùng **tên atlas page** làm nhãn (sprite cùng page ⇒ cùng loại). Chỉ
+**59**/340 ca có atlas, và **0** ca đạt đa số ≥60 % trong page — page `11`, `128x128`, `256` là
+**page đánh số**, không mang ngữ nghĩa. Không thử lại.
+
+### 9.7 Việc giao nhánh dữ liệu
+
+Export `Sprite.m_RD.rect` (x,y,w,h) + `settingsRaw` cho **2.185** sprite và **67** page `sactx`. Đổi lại:
+(a) cắt sheet **chính xác** thay vì scale từ 150 px; (b) mở luôn 67 page đang thiếu rect; (c) `9-slice`
+border (`ASSETS.md` §5) lấy được **số thật** thay vì đề xuất 8/12/16 px.
