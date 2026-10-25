@@ -1,5 +1,7 @@
 # Review nhánh spec — snapshot25c367aca, cập nhật raw tới61fce8ae7
 
+> **Cửa vào hiện hành (sau report64):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) và [review cf27b9755](HANDOFF_REVIEW_cf27b9755.md). Các vòng/snapshot cũ dưới đây là lịch sử, không tự là task hay phán xét hiện hành.
+
 **PROVISIONAL, review có giới hạn. Ngày25/10/2026.**
 Nhánh được review: `arena/20330d0e-windwings-space-shooter-game-p`.
 Pin chính xác: **25c367aca99f06f14df546d2f30e60b427827157**. Nhánh có thể tiếp tục

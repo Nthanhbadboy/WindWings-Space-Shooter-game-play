@@ -11,14 +11,16 @@
 >
 > Kết luận C **không được** dùng làm thông số implement; chỉ để định hướng.
 
-## Trạng thái kiểm lại hiện hành — report62 (ưu tiên hơn bảng lịch sử dưới đây)
+## Trạng thái kiểm lại hiện hành — sau report64 (ưu tiên hơn bảng lịch sử dưới đây)
+
+Đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md). Report64 tách gate tutorial1/2/3 khỏi victory/Board_Endgame campaign dùng chung. User đã bỏ ưu tiên chứng minh low-kill playthrough/BB pool history; không lấy chúng làm blocker scenario. Review spec mới: [cf27b9755](HANDOFF_REVIEW_cf27b9755.md), không lặp finding snapshot25 như chưa được sửa.
 
 **Không dùng số lượng export, số file trên đĩa hoặc unit-test PASS làm bằng chứng
 playthrough/design đã hoàn tất.** Xem `docs/apk-analysis/62-raw-audit-and-sprite-geometry.md`.
 
 | Phạm vi | Đã có bằng chứng | Còn thiếu / không được suy |
 |---|---|---|
-| Stage2/3 | exact resource/prefab joins, denominator và threshold normal có raw53–59 | actual low-kill reachability, collision/reborn, runtime parent/history |
+| Stage2/3 | exact resource/prefab joins, denominator và threshold normal có raw53–59 | chưa nghiệm thu runtime; không lấy low-kill reachability/pool-history làm blocker scenario |
 | BB-36001 | 3 clip streamed đã giải binding/root keys60; lifecycle/pool-parent/scroll61 | không suy tự thoát hoặc bắt buộc diệt; không generalize sang791clip |
 | Sprite/atlas | raw62:2185Sprite/66SpriteAtlas/654Texture2D metadata,2185file-scoped joins | pixel crop/mask/trim/flip kiểm ảnh;40rect fractional vượt biên<1pixel; chưa xác nhận full asset-pack release |
 | UI hiện tại | `_index.csv` snapshot audit:797file/117class/150131nodes | 55584file có trên đĩa không phải55584layout hợp lệ;54787ngoàiindex không tự là duplicate hay rác |

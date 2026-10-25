@@ -1,5 +1,7 @@
 # Đọc nhánh spec `arena/20330d0e` — **tham khảo, không merge**
 
+> **Cửa vào hiện hành (sau report64):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) và [review cf27b9755](HANDOFF_REVIEW_cf27b9755.md). Các vòng/snapshot cũ dưới đây là lịch sử, không tự là task hay phán xét hiện hành.
+
 > Ghi lại đúng những gì đọc được từ nhánh của AI kia, để lần sau không phải đọc lại
 > và để phân biệt rõ **cái nào là dữ liệu của mình** với **cái nào là nhận định của họ**.
 >

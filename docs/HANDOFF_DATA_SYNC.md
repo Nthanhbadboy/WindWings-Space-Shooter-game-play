@@ -1,5 +1,7 @@
 # Đồng bộ nhánh dữ liệu — kiểm trực tiếp 25/10/2026
 
+> **Cửa vào hiện hành (sau report64):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) và [review cf27b9755](HANDOFF_REVIEW_cf27b9755.md). Các vòng/snapshot cũ dưới đây là lịch sử, không tự là task hay phán xét hiện hành.
+
 Gửi nhánh `arena/20330d0e-windwings-space-shooter-game-p`.
 
 ## Không phải nhánh dữ liệu không có commit mới

@@ -1,5 +1,7 @@
 # Phân việc vòng 4 — cái còn thiếu thật
 
+> **Cửa vào hiện hành (sau report64):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) và [review cf27b9755](HANDOFF_REVIEW_cf27b9755.md). Các vòng/snapshot cũ dưới đây là lịch sử, không tự là task hay phán xét hiện hành.
+
 > Trạng thái hiện tại: `docs/conclusions.md`. Đã có **dữ liệu thô** trong
 > `reverse-engineering/raw/` (typetree JSONL gz, UI layout gz, hằng số IL2CPP + asm).
 > Mọi kết luận là **tạm thời** — phải ghi mức A/B/C khi trích dẫn.
@@ -532,3 +534,11 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 - Stage1 gate stageIndex0/tutorialIndex0; Stage2 1/1; Stage3 stageIndex2/!touchDone (không gate tutorialIndex2). Khác biệt gate/overlay/Continue không được mô hình hóa thành ba victory system riêng.
 - Campaign normal/nonbranch: manager callback → shared CheckEndgame (kills/mission + health) → MoveOutPlayer → OpenBoardVictory(bool) → Board_Endgame.Init/SetMissions chung, gồm ba opening stage. `VictoryNow` ép true nhưng cũng về cùng board; không nói mọi entry phải tính kill trước.
 - Board SetupTut <=1 và ThroughTut thay đổi UI/index; Continue routing còn guard. Không khẳng định mọi mode/giao diện/reward giống hệt nhau. Kết luận tạm từ static raw, không cần pool-history/playthrough proof.
+
+## Cập nhật review peer + bàn giao AI viết game mới — sau report64
+- Fetch tường minh peer cho ra cf27b97553ef25107b45b039f316d9ca7850a885 (fetch origin mặc định trước đó vẫn giữ ref25 cũ). Đã ghi nhận R1–R6 được sửa; không tái báo chúng như lỗi hiện hành.
+- Review mới: `docs/HANDOFF_REVIEW_cf27b9755.md`. N1 stale map blocker; N2 ship damage/HP suy từ thiếu field; N3 JPEG metrics/bbox population bị nâng thành luật đẹp; N4 sample/default→whole-game rules; N5 save0/stale tutorial/result handoff. Phân biệt invalid inference với kết luận chắc game có/không có tính năng.
+- Cửa vào hiện hành: `docs/START_HERE_NEW_GAME.md`. README, spec local README và các tài liệu lịch sử đã có chỉ dẫn; conclusions bỏ low-kill history làm blocker. Không có game project chạy được ở repo này, chưa tự chốt engine/platform/art.
+- Raw giữ15 input peer nguyên văn+SHA và5 input local (native body/map/save/shared-victory/geometry) trong raw/peer-review/*cf27b9755*.json.gz. Collector hermetic `peer_handoff_review.py`,16checks; 4test mới. Tổng127testsPASS; datas/validate PASS. Peer tests chỉ được đọc tĩnh, không báo đã chạy chúng.
+- Sửa lệnh nối ZIP phá input trong README và template release của workflow; không chạy full analyze hay publish release. API xác nhận asset release còn draft/có4file; chưa download/extract/integrity toàn pack.
+- Tiếp: peer sửa N1–N5; full-pack/crop/browsability; agent implement đọc contract rồi chốt scope/engine với user. Premium deferred, không speculative pool-history detour.

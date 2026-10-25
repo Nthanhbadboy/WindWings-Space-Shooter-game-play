@@ -1,5 +1,7 @@
 # Asset tham chiếu — WindWings 1.3.118
 
+> **Danh mục preview lịch sử**, không phải chứng nhận full pack/crop đúng. Xem [bàn giao asset hiện hành](../START_HERE_NEW_GAME.md#4-asset-pack--bắt-buộc-cho-tham-khảo-thiết-kế-chưa-được-gọi-là-đã-kiểm-đủ) và report62 cho geometry; số nhãn peer khác population ở đây.
+
 - Tổng asset: **2197**  (133.6MB)
 - Contact sheet: **42** file trong [`contact-sheets/`](contact-sheets/)
 - Ảnh gốc full-size: artifact `windwings-analysis` (mục `/tmp/apk/unity/export`)
