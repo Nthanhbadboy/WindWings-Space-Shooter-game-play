@@ -113,6 +113,8 @@ def recover(xapk, work, out):
         kind = obj.type.name
         if kind == 'MonoBehaviour':
             row['namespace'], row['class_name'] = class_cache[ident]
+            head = obj.parse_monobehaviour_head()
+            row['parsed_header'] = dict(m_Script=dict(m_FileID=head.m_Script.m_FileID,m_PathID=head.m_Script.m_PathID))
         try:
             if kind == 'Texture2D':
                 data = obj.read()
@@ -137,7 +139,7 @@ def recover(xapk, work, out):
                 row.update(name=tree.get('m_Name',''), projection='full_typetree', tree=tree)
                 for location, ptr in walk_pointers(tree):
                     if kind == 'MonoBehaviour':
-                        if not (location.startswith('.atlasAssets[') or location == '.skeletonJSON' or location == '.atlasFile' or location.startswith('.materials[') or location == '.spriteAtlasFile'):
+                        if not (location.startswith('.atlasAssets[') or location == '.skeletonJSON' or location == '.atlasFile' or location.startswith('.materials[') or location == '.spriteAtlasFile' or (location.startswith('.blendModeMaterials.') and location.endswith('.material'))):
                             continue
                     elif kind == 'Material':
                         if not (location.startswith('.m_SavedProperties.m_TexEnvs') or location == '.m_Shader'):
