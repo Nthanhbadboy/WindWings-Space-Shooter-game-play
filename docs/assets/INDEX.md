@@ -1,5 +1,8 @@
 # Asset tham chiếu — WindWings 1.3.118
 
+> **Hiện hành — report70:** [identity-safe v2](../apk-analysis/70-identity-safe-asset-pack-v2-and-zero-font-texture.md) đã có trên draft release: `assets-v2.zip` + `assets-v2.sha256`. Giải nén ZIP thường và mở `index.html`; [browser metadata trong Git](pack-browser-v2.html) cần đặt cạnh media. V2 có2185Sprite/653Texture2D/69WAV/64TextAsset/1TTF/66SpriteAtlasJSON; texture thứ654 là Font Texture0×0/empty payload có raw exception. Archive SHA/size/CRC,2838PNG full decode PASS, không phải crop/listening/Spine import approval. **Danh mục dưới đây là lịch sử v1**, không phải population/identity map v2.
+
+
 
 > **Audit mới — report68:** archive CRC/SHA hợp lệ nhưng **151 manifest paths va chạm,321 extra rows,320 size mismatches**; chưa phải full pack. Có [browser offline](pack-browser.html) cho các file còn tồn tại, cần đặt cạnh media đã giải nén. Đọc [report68](../apk-analysis/68-draft-asset-pack-integrity-collisions-and-browser.md) trước khi dùng số liệu/manifest lịch sử dưới đây; [report67](../apk-analysis/67-audio-manager-preferences-triggers-and-playlist.md) nối audio rules/trigger.
 

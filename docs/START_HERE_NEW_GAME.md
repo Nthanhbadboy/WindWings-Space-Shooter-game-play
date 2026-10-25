@@ -1,6 +1,6 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report69. Tất cả kết luận APK vẫn tạm thời.**
+**Cập nhật 25/10/2026, sau report70. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
@@ -88,24 +88,33 @@ Spawn enum: 0PinMap/1Path/2Points/3RandomTopDown/4Rocket/5EndMap/6StartWave. Con
 
 ## 4. Asset pack — bắt buộc cho tham khảo thiết kế, chưa được gọi là đã kiểm đủ
 
-**Update report68:** đã test existing draft releaseID421174835: CRC+release digest PASS nhưng **151 collision paths,321 extra manifest rows,320 size mismatches**. Pack hiện có KHÔNG đủ source identities. Producer reset `used=set()` mỗi object, ghi đè basename. Chưa được gọi full pack xong; cần narrow identity-safe re-export, versioned draft output, không sửa CSV để che mất file. [Report68](apk-analysis/68-draft-asset-pack-integrity-collisions-and-browser.md) có raw/hash, browser và cách giải nén an toàn. Browser HTML chỉ có metadata; cần media bên ngoài Git.
+**Update report70:** đã có **identity-safe v2** từ pinned APK, không overwrite pack cũ.
+3038outputs:2185Sprite/653Texture2D/69WAV/64TextAsset/1TTF/66SpriteAtlasJSON.
+Object Texture2D còn lại (`resources.assets:535`, Font Texture) là0×0/0bytes/empty stream có raw,
+không bịa PNG. Source-accounting3039object, archive member SHA/size/CRC và full PNG decode PASS.
+Không còn basename-overwrite trong v2; `all_target_objects_exported` vẫn false vì exception.
+Đọc [report70](apk-analysis/70-identity-safe-asset-pack-v2-and-zero-font-texture.md) và
+`raw/asset-pack-v2/` cho input/digest/scope. Release vẫn **draft**.
 
-
-- Browse nhanh: `docs/assets/INDEX.md`, contact-sheets JPG, manifest, sprites-index, audio-index.
-- Draft release `windwings-assets-1.3.118`: đã kiểm API thấy `assets.z01`, `assets.zip`, `manifest-full.csv`, `asset-previews.zip`. **API listing không chứng minh nội dung đủ/zip không lỗi.**
-- Download vào thư mục **ngoài Git**, kiểm dung lượng/hash nếu có manifest, giữ nguyên các part. Với split ZIP tạo bởi `zip -s`:
+- Dùng `assets-v2.zip` + `assets-v2.sha256`, ZIP thường; không ghép với `assets.z01`/`assets.zip` cũ.
+- Giải nén **ngoài Git**, mở `extracted/index.html` để xem ảnh/nghe audio/tìm name+file+pathID.
+- `docs/assets/pack-browser-v2.html` trong Git chỉ metadata; không có ảnh/audio gốc đi kèm.
+- Pack v1/report68 giữ nguyên151collisionpaths/320size mismatches; không lấy manifest v1 làm identity map mới.
 
 ```bash
-gh release download windwings-assets-1.3.118 --dir /home/user/windwings-reference-assets --pattern 'assets.*' --pattern 'manifest-full.csv'
-cd /home/user/windwings-reference-assets
-zip -s 0 assets.zip --out assets-full.zip
-unzip -t assets-full.zip
-unzip assets-full.zip -d extracted
+mkdir -p /home/user/windwings-reference-v2
+cd /home/user/windwings-reference-v2
+gh release download windwings-assets-1.3.118 --pattern assets-v2.zip --pattern assets-v2.sha256 --dir .
+sha256sum -c assets-v2.sha256
+unzip -t assets-v2.zip
+unzip assets-v2.zip -d extracted
 ```
 
-Không dùng `cat assets.z01 assets.zip > assets.zip` — sẽ phá file đầu vào. Không publish draft.
-
-Full-pack acceptance còn mở: đối chiếu manifest→file thực, browse tất cả sprite/texture/atlas, nghe audio, mở Spine skeleton/atlas/texture liên quan và fonts. 2185/2185 geometry joins chỉ là metadata; kiểm crop alpha/trim/pivot/flip/rotation, 40 rect vượt biên <1px vẫn phải xử lý có chứng cứ, không tự clamp. JPEG preview metrics không thay texel/alpha gốc.
+Nghiệm thu fidelity còn mở: crop alpha/trim/pivot/flip/rotation,40rect fractional vượt biên<1px,
+nghe audio, font runtime/fallback và Spine rig/atlas-page identity/import.
+27atlas pages đều có nhiều name candidates; không tự chọn `skeleton.png`.
+Spine text nguyên byte nhưng page paths chưa rewrite theo output mới, **không gọi import-ready**.
+JPEG preview metrics không thay texel/alpha gốc.
 
 Art/audio/font của game phát hành mới cần nội dung và quyền sử dụng phù hợp. Không nhúng tài nguyên gốc chỉ vì đã tải được. Tư liệu gốc vẫn giữ cho tham khảo, không xoá vì đã chọn art mới.
 
@@ -145,7 +154,7 @@ python3 -m unittest discover -s tests -q
 ## 7. Việc tiếp theo thực sự còn mở
 
 - Spec peer: sửa N1–N5 trong `HANDOFF_REVIEW_cf27b9755.md`, cập nhật report64, soát thông tin stale ở cửa vào.
-- Assets: full-pack integrity/browsability và pixel-crop validation, không chỉ tăng số label.
+- Assets: identity-safe pack/archive/browsability đã có report70; tiếp Spine rig/atlas/material/texture identity joins, crop/fidelity, nghe audio và font fallback. Không rerun full export chỉ vì còn exception Font Texture0×0.
 - Triển khai: chốt platform/engine/scope rồi viết vertical-slice plan, không lấy một bảng “8/13 hệ đủ” thay acceptance.
 - Raw chỉ đào tiếp theo thiếu hụt cụ thể ảnh hưởng implementation. Không mở lại Premium hoặc speculative lifecycle proof ngoài scope.
 
