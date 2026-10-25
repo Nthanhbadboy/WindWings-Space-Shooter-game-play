@@ -473,11 +473,15 @@ Nguồn: `reverse-engineering/raw/ui/_index.csv` (snapshot `9aed767b1`) — mani
 |---|---:|
 | instance UI | **797** |
 | lớp phân biệt | **117** |
-| tổng node | **140.797** (trung vị **26**/màn, max **6.000**) |
-| tổng **button** | **5.711** (trung vị **2**/màn, max **353**) |
+| tổng node | **146.797** (trung vị **26**/màn, max **12.000**) |
+| tổng **button** | **5.831** (trung vị **2**/màn, max **473**) |
 | tổng text node | **17.066** (trung vị **3**, max **848**) |
 
-Ba màn nặng nhất theo số nút: **`Board_Maps` 353** · **`Board_Shop` 190** · **`Board_PVP` 180**.
+Ba màn nặng nhất theo số nút: **`Board_Maps` 473** · **`Board_Shop` 190** · **`Board_PVP` 180**.
+
+> **Cập nhật 25/10 (bản `55bd18ac8`):** `Board_Maps` từ **6.000 → 12.000 node** và **353 → 473 nút**.
+> Tức trần 6.000 của bản trước **không còn**; nhưng 12.000 có thể là trần mới ⇒ vẫn ghi **cận dưới**
+> cho tới khi có bản sâu hơn.
 Instance nhiều nhất: **`Popup_Notices` 499** (một lớp, 499 biến thể) · `Tab_BattlePass` 30 ·
 `Popup_BuyMoreGems` 20 · `Tab_Boss` 17.
 

@@ -321,13 +321,26 @@ Không có ngưỡng rank, không có điểm, không có thưởng. `RankManage
 | `Tech_Ability_Data` | 30 mốc Level/TypeIndex | số mốc ability |
 | `RankManager` | **0** | — |
 
-### 8.1 Suy ra tỉ lệ rơi (mức C)
+### 8.1 Tỉ lệ rơi — **số thật**, không phải giả định (sửa 25/10)
 
-Từ `Item_Movement`: 676 coin / 26 item = **96,3% : 3,7%**. Nhưng đây là **số instance đặt sẵn
-trong prefab wave**, không phải trọng số random lúc chạy.
+Trước đây mục này ghi *"mức C — giả định"* và dòng 11 ở §8.2b ghi *"cần `Enemy_Data_Balance`"*.
+**Cả hai đều sai**: tỉ lệ rơi nằm trong **dữ liệu tĩnh**, chia 3 tầng đều đếm được.
 
-> **Giả định:** tỉ lệ rơi thực tế ≈ **1 item thật / 26 lượt rơi**. Dùng làm mốc thiết kế:
-> mỗi 25–30 enemy chết → 1 item có ý nghĩa. Không nên dùng làm trọng số tuyệt đối.
+| tầng | nguồn | số đo | mức |
+|---|---|---|---|
+| **1. Vật rơi đặt sẵn trong wave** | `Item_Movement` **702** instance | **676 coin / 26 item** = **96,3 % : 3,7 %**; id: **70012 ×529** (75,4 %) · **70011 ×145** (20,7 %) · **70010 ×14** (2,0 %) · 9 id lẻ ×1 | **A** |
+| **2. Cờ "mang item" theo spawner** | `Call_Data.listBringItems` (bool cho từng enemy slot) | **411/23.757** spawner có list · **246/2.094** slot = **11,7 %** | **A** |
+| **3. Danh mục item có thể rơi** | `Data_Items.allDropItems` | **6** loại, index `1 · 2 · 3 · 101 · 102 · 103` | **A** |
+
+**Cái không có trong dữ liệu:** *trọng số chọn giữa 6 loại* lúc rơi — không serialize ở đâu.
+Và `Enemy_Destroy` (**971** instance) chỉ có 3 field `pointBurst` · `isNoPool` · `delayDestroy` ⇒
+**drop không gắn vào enemy**, nó gắn vào **wave/spawner** và vào **prefab đặt sẵn**. Đó là lý do
+"tỉ lệ rơi theo loại enemy" không đòi `Enemy_Data_Balance` như bản trước ghi — class đó (8 method)
+chỉ lo **coin/exp/score**.
+
+> **Dùng làm mốc thiết kế:** tầng 1 cho tỉ lệ **1 item thật / 26 lượt rơi**; tầng 2 cho biết chỉ
+> **11,7 %** slot enemy được đánh dấu mang item. Hai con số này **không** phải trọng số random —
+> chúng là **thiết kế đặt sẵn**, nên chép lại được y nguyên.
 
 ### 8.2 Ngân sách kinh tế đề xuất (không phải số gốc)
 
@@ -370,6 +383,6 @@ enum `PurchaseType`, `class Tech_Ability_Data`, `class RankManager`.
 | 8 | Giá IAP thật | **D** | Google Play Console, không có trong APK |
 | 9 | Ngưỡng VIP 1–6 | **D** | `GameDatas.GetVipLevel` |
 | 10 | `72000` là item gì | **D** | 1 instance duy nhất |
-| 11 | Tỉ lệ rơi theo loại enemy | **D** | cần `Enemy_Data_Balance` |
+| 11 | Tỉ lệ rơi theo loại enemy | **B** — **đã đào** §8.1: `Enemy_Destroy` không có bảng rơi; drop ở `Call_Data.listBringItems` (**246/2.094** slot = 11,7 %) + `Data_Items.allDropItems` (**6** loại) + **702** lượt đặt sẵn | thiếu: trọng số chọn giữa 6 loại |
 
 ---

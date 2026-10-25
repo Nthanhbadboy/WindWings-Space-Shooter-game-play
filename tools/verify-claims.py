@@ -1640,8 +1640,8 @@ def ui_class_gap():
 claim("N1", SCRIPT, "**`skeleton__21`: 6 event · 2 tên phân biệt**", (21, 6, 2), spine_event_stats,
       "22 dòng toàn bảng; rig boss 1 chỉ có 2 tên ⇒ tập ứng viên của BossSpineEventHandler là A")
 
-claim("N2", DATA_SYNC, "**797 instance · 117 lớp · 140.797 node · 5.711 nút**",
-      (797, 117, 140797, 5711), ui_index_stats,
+claim("N2", DATA_SYNC, "**797 instance · 117 lớp · 146.797 node · 5.831 nút**",
+      (797, 117, 146797, 5831), ui_index_stats,
       "manifest UI: đếm lại trên file, không chép báo cáo")
 
 def ui_class_overlap():
@@ -1751,7 +1751,7 @@ claim("P5", AUDIT, "**4.845** hệ hạt · **92/92** âm thanh · **150** HP id
       (4845, 92, 150, 253, 250), data_counts,
       "một dòng để nhớ datas/ đang có gì — khỏi làm lại")
 
-claim("P6", AUDIT, "**55.584** file · **8.435.335** node", (55584, 8435335, 797, 140797),
+claim("P6", AUDIT, "**55.584** file · **8.435.335** node", (55584, 8435335, 797, 146797),
       ui_two_levels, "UI hai tầng: layout file vs màn cấp cao — đừng tráo")
 
 # ── Q. atlas plan kiểm bằng kích thước thật ─────────────────────────────
@@ -2692,6 +2692,70 @@ claim("AB5", ASSET_TRIAGE,
       "| **AB5** | 505 unknown = **448** họ tên, **410** tên đơn lẻ; **17/25** contact sheet còn tile chưa gán |",
       (448, 410, 17), asset_unknown_families,
       "505 unknown: 448 họ tên, 410 tên đơn lẻ, trải trên 17 contact sheet")
+
+# ── AE. tỉ lệ rơi đồ: 3 tầng đều đếm được (ECONOMY.md §8.1) ────────────
+ECONOMY = "docs/spec/ECONOMY.md"
+
+
+def drop_placed():
+    """(tổng, coin, item, 70012, 70011, 70010) từ Item_Movement."""
+    import collections
+    import json as js
+    import re
+    lines = ref_lines("reverse-engineering/raw/typetrees/Item_Movement.jsonl.gz")
+    if not lines:
+        return None
+    coin = 0
+    ids = collections.Counter()
+    for ln in lines:
+        d = js.loads(ln)
+        if d["tree"].get("isCoin"):
+            coin += 1
+        m = re.search(r"Item-(\d+)", d.get("gameobject") or "")
+        if m:
+            ids[int(m.group(1))] += 1
+    return (len(lines), coin, len(lines) - coin,
+            ids.get(70012, 0), ids.get(70011, 0), ids.get(70010, 0))
+
+
+def drop_spawner_flags():
+    """(spawner có listBringItems, tổng Call_Data, slot true, tổng slot)."""
+    import json as js
+    lines = ref_lines("reverse-engineering/raw/typetrees/Call_Data.jsonl.gz")
+    if not lines:
+        return None
+    withlist = tru = tot = 0
+    for ln in lines:
+        br = js.loads(ln)["tree"].get("listBringItems") or []
+        if br:
+            withlist += 1
+        tot += len(br)
+        tru += sum(1 for b in br if b)
+    return (withlist, len(lines), tru, tot)
+
+
+def drop_catalog():
+    """Số loại item trong Data_Items.allDropItems."""
+    import json as js
+    lines = ref_lines("reverse-engineering/raw/typetrees/Data_Items.jsonl.gz")
+    if not lines:
+        return None
+    return len(js.loads(lines[0])["tree"].get("allDropItems") or [])
+
+
+claim("AE1", ECONOMY,
+      "| **1. Vật rơi đặt sẵn trong wave** | `Item_Movement` **702** instance | **676 coin / 26 item** = **96,3 % : 3,7 %**; id: **70012 ×529** (75,4 %) · **70011 ×145** (20,7 %) · **70010 ×14** (2,0 %)",
+      (702, 676, 26, 529, 145, 14), drop_placed,
+      "tầng 1: vật rơi đặt sẵn trong prefab wave, không phải random runtime")
+
+claim("AE2", ECONOMY,
+      "**411/23.757** spawner có list · **246/2.094** slot = **11,7 %**",
+      (411, 23757, 246, 2094), drop_spawner_flags,
+      "tầng 2: cờ mang-item theo từng enemy slot của spawner")
+
+claim("AE3", ECONOMY,
+      "**6** loại, index `1 · 2 · 3 · 101 · 102 · 103`",
+      6, drop_catalog, "tầng 3: danh mục item có thể rơi trong Data_Items")
 
 # ── chạy ───────────────────────────────────────────────────────────────
 

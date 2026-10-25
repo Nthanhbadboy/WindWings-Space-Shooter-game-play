@@ -40,7 +40,7 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 | File | Nội dung | Kích thước |
 |---|---|---:|
 | `GAMEPLAY.md` | One-pager, 3 vòng lặp (30 s / 10 phút / 1 tuần), core loop, **7 `PlayMode` + 3 `PVPMode`**, 9 nhánh progression, SOURCE/SINK, meta, boss, thứ tự build | 689 dòng · 31 bảng |
-| `UI.md` | `BoardManager`/`UIManager`, screen graph, **125 class UI** (53 board · 63 popup · 8 tab), điều kiện mở từng popup · **§9 manifest `_index.csv`: 797 instance · 117 lớp · 140.797 node · 5.711 nút** (giải thích luôn vì sao 117 ≠ 125) · **§9.2 bộ đầu vào vẽ** (11 board, 10.710 node, 100 % `local_pos`) · **§9.3 layout tutorial** (8 ref → 7 GO, 19 dòng text, callback Endgame `0x126d3cc`) | 596 dòng · 23 bảng |
+| `UI.md` | `BoardManager`/`UIManager`, screen graph, **125 class UI** (53 board · 63 popup · 8 tab), điều kiện mở từng popup · **§9 manifest `_index.csv`: 797 instance · 117 lớp · 146.797 node · 5.831 nút** (giải thích luôn vì sao 117 ≠ 125) · **§9.2 bộ đầu vào vẽ** (11 board, 10.710 node, 100 % `local_pos`) · **§9.3 layout tutorial** (8 ref → 7 GO, 19 dòng text, callback Endgame `0x126d3cc`) | 596 dòng · 23 bảng |
 | `ASSETS.md` | Art direction **"Ink & Ember"**, inventory sprite/atlas/Spine/audio, **atlas plan 12 page đã kiểm bằng px² thật (§4.5)**, **legal checklist** | 530 dòng · 25 bảng |
 | `BALANCE.md` | HP **39 prefab boss** + so sánh 2 chương, roster tàu/drone/item, công thức damage, khung balance đề xuất | 1.577 dòng · 64 bảng |
 | `COMBAT.md` | **458** `Gun_Attack`, histogram damage, burst pattern, **DPS lý thuyết**, súng boss, **TTK**, hitbox va chạm, đạn | 483 dòng · 20 bảng |

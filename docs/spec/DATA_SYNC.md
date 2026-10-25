@@ -1640,7 +1640,7 @@ Hai món mở được ngay:
 | Món | Số | Dùng vào đâu |
 |---|---|---|
 | `spine-events.csv` | **21 dòng** (rig × animation × time × event) | xác nhận rig boss 1 **chỉ có 2 tên event** (`Stop` ×5 trong `Attack3`, `Banplasma` trong `Attack4`) ⇒ `ANIMATION_SCRIPT.md` §2.2 lên **A** cho *tập ứng viên* |
-| `_index.csv` | **797 instance · 117 lớp · 140.797 node · 5.711 nút** | `UI.md` §9 — độ sâu bố cục từng màn; giải thích luôn vì sao **117 ≠ 125** |
+| `_index.csv` | **797 instance · 117 lớp · 146.797 node · 5.831 nút** | `UI.md` §9 — độ sâu bố cục từng màn; giải thích luôn vì sao **117 ≠ 125** |
 
 **Một điều phải ghi:** `_index.csv` (117 lớp) là **tập con** của `screens.csv` (125 lớp); 8 lớp
 thiếu gồm 4 tên lớp lồng và 7 màn/popup **không có instance nào trong dump**. Đừng tráo hai số.
@@ -1736,7 +1736,7 @@ Từ nay: báo "không có commit mới" **phải** kèm `ls-remote` cùng thờ
 | lượt spawn / spawner | 22.461 / 11.095 | **22.452 / 11.089** | claim **H2** |
 | `rate = 0` | 2.371 | **2.365** | claim **I3** |
 | `boss_hp.json` | 254 | **256** | claim **P5** |
-| `_index.csv` (UI) | 733 · 114 lớp · 103.227 node · 5.174 nút | **797 · 117 · 140.797 · 5.711** | claim **N2** |
+| `_index.csv` (UI) | 733 · 114 lớp · 103.227 node · 5.174 nút | **797 · 117 · 146.797 · 5.831** | claim **N2** |
 | `ui_screens.json.gz` | 52.583 file · 7.980.772 node | **54.787 · 8.290.223** | claim **P6** |
 | lớp `*_AnimationEvents` export | 14 lớp · 16 prefab | **18 lớp · 17 prefab** (còn **145/795** event chưa rõ lớp) | claim **S1 · T4** |
 
@@ -1914,7 +1914,7 @@ trong `docs/spec/` đều phải nằm trong `tools/verify-claims.py`; nếu kh�
 
 ### 14.2 Cái **không** đổi (để khỏi làm lại)
 
-- 797 màn cấp cao · 140.797 node · 5.711 nút · 125 lớp · 117 lớp trong `_index.csv` (**P6**, **N2**).
+- 797 màn cấp cao · 146.797 node · 5.831 nút · 125 lớp · 117 lớp trong `_index.csv` (**P6**, **N2**).
 - 250 map (**I4**), 282 wave (**H2**), 39 prefab `Boss-*` (**T4**, **X1**).
 - 1.554 `unclassified` / 2.197 asset (**AB1**) — bộ asset **không** được xuất lại trong bản này.
 
