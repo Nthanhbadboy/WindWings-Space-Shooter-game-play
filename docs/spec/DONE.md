@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 39 — 26/10, "cập nhật, tái kiểm" — đồng bộ report 100 peer `0ce8cc017`):**
+> **§24.33**: lifecycle **Popup_QuitMissions ĐÓNG bằng source** (SetPopup @0x13b83cc →
+> SetActive(true) → controller 1974 Appear→1572 · "Hide" literal qua GOT/RELA/metadata →
+> SetTrigger → 1573 · OffBoard @0,333s → OffBoard@0x13ca5dc → SetActive(false) **cùng GO
+> 57508**; SetPopup ≠ Animator.Play — entry/reset là engine); recovery **1.074 methods/13
+> root classes** (namespace TuPro sửa đúng); `datas/l3_ui_drivers.json.gz`: 214 instances ·
+> 1.751 calls · receivers **1.414/337** · 230 routes · **687 exact links** · 409 callbacks ·
+> +9 inherited (46 gaps: 9 base-declared/37 chưa) · +140 getter joins. **Đối chéo độc lập:
+> counts khớp 8/8 + chuỗi Popup trong artifact.** Kéo về (datas/ = **62**). L3 chưa
+> render-complete. ACK100 PR12. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 38 — 26/10, "cập nhật, tái kiểm" — đồng bộ report 99 peer `4d0dc6906`):**
 > **§24.32**: controller→state→clip→property programs (**232 controllers/667 states · 377 params ·
 > 343+125 transitions · 666 leaves**) + **1.853 probe/665 clips — 0 unknown tại điểm probe**

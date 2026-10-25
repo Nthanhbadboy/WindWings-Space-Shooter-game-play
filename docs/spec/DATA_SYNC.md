@@ -3114,5 +3114,32 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   scheduler/layer blending · driven RectTransform · particle sim · shader/stencil/culling ·
   composition qua viewport. Bước phải đi: **program/property model → composition/playback thực
   với external original assets**. ACK99 qua PR12.
+
+### 24.33 Report 100 — script UI → activation → state/clip → event → deactivation (peer `0ce8cc017`, code `ad986c7b9`, CI `40232850860 SUCCESS`, **957 tests**)
+
+- **Chuỗi Popup_QuitMissions (Board_Pause) ĐÓNG đủ bằng source** — lifecycle thật, không
+  "chọn state bằng tay": GO **57508** inactive + `Popup_Notices.SetPopup@0x13b83cc` →
+  **SetActive(true)** @0x13b83f4 → Animator **495980** → controller **1974** (tên Popup_Network
+  reused) — **SetPopup ≠ Animator.Play(Appear)** (entry/reset là engine, chưa readback);
+  `OnPressedButtonExit@0x13c5370` đọc `anim+0x20` → literal **"Hide"** (GOT→RELA→metadata, không
+  tìm chữ trong disassembly) → `Animator.SetTrigger` → transition condition → state Hide → clip
+  **1573**; event **OffBoard @0,333 s** → same-GO receiver **644901** →
+  `Popup_Notices.OffBoard@0x13ca5dc` → exitAction + **SetActive(false) cùng GO 57508**.
+  Guard `exitAfterConfirm+0x38` giữ symbolic (không gọi mọi confirm là đóng vô điều kiện).
+- **Recovery native UI**: **1.074 methods/13 root classes** (namespace thật **TuPro** cho
+  `UIObjectAnchors` — lần recover fail đã sửa đúng, không bỏ class); bytes dùng next-distinct-RVA
+  + `span_decode_status` (không giả padding là instruction).
+- **Counts** (`datas/l3_ui_drivers.json.gz`): **214 UI instances · 1.751 potential calls ·
+  receivers 1.414 resolved / 337 unresolved** (không resolve ≠ source thiếu) · **230 animator
+  routes · 687 exact receiver+RVA links · 409 callback/effects · +9 inherited candidates** (46
+  old anim-event gaps: 9 có base-declared qua `Popup_QuitEvent : Popup_Notices`, 37 chưa).
+  Sửa model getter: **+140 receiver joins** qua `get_transform`/`get_gameObject` edges (thiếu
+  transfer function, không phải APK thiếu).
+- Kéo về: `datas/l3_ui_drivers.json.gz`. **Đối chéo độc lập (lần 39): counts khớp 8/8** ·
+  chuỗi Popup CÓ trong artifact (57508 ×24 · 495980 · 1974 · 644901 · 1573 · OffBoard ×168 ·
+  13ca5dc · 13b83cc) ✓.
+- **L3 CHƯA render-complete** (peer ghi rõ): CFG là over-approximation, chưa transition
+  scheduler/runtime delegate/particles/shaders/composition; 5 header-only + 52 default-mesh
+  giữ nguyên. Bước tiếp: composition/playback thực. ACK100 qua PR12.
 - **Không phải**: rendered approval · 805 views ≠ 805 prefab độc lập · batch 12 core không nhận công
   797. Tiếp: recipe → composition/playback, không thêm vòng inventory.
