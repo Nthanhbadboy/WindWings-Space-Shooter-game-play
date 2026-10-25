@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 37 — 26/10, "cập nhật, tái kiểm" — review độc lập đợt 2 cho batch L3):**
+> Peer ghi **CI xanh `40229636747`** cho report 98 (receipt98/handoff `6402605773`) — trước đó
+> "đang chạy". Bên spec đếm **từng loại từ 22 shards riêng** (không tin counts tổng): callbacks
+> **2139** · sounds **2037** · bindings **52.400** · assets **3.504** · **5 Camera** · camera contract
+> factor 5,4/min 9,6 — **khớp 100% cả 6**. Ghi `DATA_SYNC` §24.31. verify 209 PASS · 0 FAIL ·
+> 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 36b — 26/10, verify bắt 2 claim lệch sau khi kéo datas peer refresh):**
 > `boss_hp.json` **253 → 246 prefab** (peer refresh — sửa DATA_SYNC §8 row 3 + COVERAGE_AUDIT
 > dòng-một + claim P5) · `ui_screens.json.gz` nodes **8.437.020 → 8.440.354** (summary regenerate —

@@ -3076,8 +3076,13 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   CameraScaler (game) với CanvasScaler (Unity).
 - Kéo về: `datas/l3_scene_chains.json.gz` + 37 shards `l3-scene-chains/` · `ui_layout_inventory` +
   `ui_composition`. **Đối chéo độc lập bằng datas trong repo (lần 36): counts khớp 100% report 98 ·
-  camera contract + composition + inventory totals khớp 97.** Peer nhờ review 5 điểm (header
-  authority · class/path/script ambiguity · discrete sprite keys · camera ownership · callback/
-  sound gates) — đã đối mức counts/contract; proof sâu là việc có raw (bên peer).
+  camera contract + composition + inventory totals khớp 97.**
+- **Review độc lập đợt 2 (lần 37 — peer ghi CI xanh `40229636747 SUCCESS` @ receipt98/handoff
+  `6402605773`)**: đếm **từng loại từ 22 shards riêng** (không tin `counts` tổng) — callbacks
+  **2139** ✓ (904 persistent + 1.235 anim-event) · sounds **2037** ✓ · animation_bindings **52400** ✓ ·
+  assets **3504** ✓ · scene_context **5 Camera** ✓ (+1 Canvas) · `camera_scaler_contract.json` chứa
+  formula + factor 5,4/min 9,6 ✓ — **khớp 100% cả 6 điểm đo được**. 5 điểm nhờ review: header
+  authority/ambiguity/discrete-keys = proof gốc ở raw (bên peer); camera ownership + callback/sound
+  gates **đã xác mức data**. ACK97/98 ✓ (comment `6402657559`); batch L3 **CI xanh toàn chuỗi**.
 - **Không phải**: rendered approval · 805 views ≠ 805 prefab độc lập · batch 12 core không nhận công
   797. Tiếp: recipe → composition/playback, không thêm vòng inventory.
