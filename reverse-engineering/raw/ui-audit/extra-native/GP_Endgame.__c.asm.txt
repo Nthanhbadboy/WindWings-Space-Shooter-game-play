@@ -1,0 +1,42 @@
+;;; cctor  private static void .cctor() { }
+    0x14f1320: str      x30, [sp, #-0x20]!
+    0x14f1324: stp      x20, x19, [sp, #0x10]
+    0x14f1328: adrp     x19, #0x2ce2000
+    0x14f132c: adrp     x20, #0x2ae8000
+    0x14f1330: ldrb     w8, [x19, #0x32d]
+    0x14f1334: ldr      x20, [x20, #0xe50]
+    0x14f1338: tbnz     w8, #0, #0x14f1350
+    0x14f133c: adrp     x0, #0x2ae8000
+    0x14f1340: ldr      x0, [x0, #0xe50]
+    0x14f1344: bl       #0x110d028
+    0x14f1348: mov      w8, #1
+    0x14f134c: strb     w8, [x19, #0x32d]
+    0x14f1350: ldr      x0, [x20]
+    0x14f1354: bl       #0x110d240
+    0x14f1358: mov      x1, xzr
+    0x14f135c: mov      x19, x0
+    0x14f1360: bl       #0x2143330
+    0x14f1364: ldr      x8, [x20]
+    0x14f1368: ldr      x8, [x8, #0xb8]
+    0x14f136c: str      x19, [x8]
+    0x14f1370: ldp      x20, x19, [sp, #0x10]
+    0x14f1374: ldr      x30, [sp], #0x20
+    0x14f1378: ret      
+
+;;; ctor  public void .ctor() { }
+    0x14f137c: mov      x1, xzr
+    0x14f1380: b        #0x2143330
+
+;;; <OpenBoardVictory>b__7_0  internal void <OpenBoardVictory>b__7_0() { }
+    0x14f1384: mov      x0, xzr
+    0x14f1388: b        #0x141b5dc
+
+;;; <OpenEndgame>b__8_0  internal void <OpenEndgame>b__8_0() { }
+    0x14f138c: mov      w0, #1
+    0x14f1390: mov      x1, xzr
+    0x14f1394: b        #0x141b488
+
+;;; <OpenEndgame>b__8_1  internal void <OpenEndgame>b__8_1() { }
+    0x14f1398: mov      w0, #3
+    0x14f139c: mov      x1, xzr
+    0x14f13a0: b        #0x141b488
