@@ -3,8 +3,10 @@ from pathlib import Path
 import sys
 from types import SimpleNamespace as NS
 import unittest
+import tempfile
+from unittest.mock import patch
 sys.path.insert(0, str(Path('tools/recovery').resolve()))
-from asset_pack_v2 import identity_path, serialized_files, text_bytes, font_extension, browser_html
+from asset_pack_v2 import identity_path, serialized_files, text_bytes, font_extension, browser_html, export
 
 
 class AssetPackV2Tests(unittest.TestCase):
@@ -32,6 +34,30 @@ class AssetPackV2Tests(unittest.TestCase):
         self.assertEqual(font_extension(b'\x00\x01\x00\x00'), '.ttf')
         with self.assertRaises(ValueError):
             font_extension(b'notafont')
+
+    def test_export_accounts_failures_empty_fonts_and_duplicate_names(self):
+        def obj(kind, pid, value):
+            return NS(type=NS(name=kind), path_id=pid, read=lambda: value)
+        objects = [obj('TextAsset', 1, NS(m_Name='same', m_Script=b'one')),
+                   obj('TextAsset', 2, NS(m_Name='same', m_Script=b'two')),
+                   obj('Font', 3, NS(m_Name='external', m_FontData=b'')),
+                   obj('Font', 4, NS(m_Name='bad', m_FontData=b'notafont'))]
+        sf = NS(name='resources.assets', unity_version='test', objects={o.path_id:o for o in objects})
+        env = NS(files={'bundle':NS(files={'resources.assets':sf})}, objects=objects)
+        modules = {'UnityPy':NS(), 'UnityPy.export':NS(),
+                   'UnityPy.export.AudioClipConverter':NS(extract_audioclip_samples=lambda _: {}),
+                   'PIL':NS(Image=NS())}
+        with tempfile.TemporaryDirectory() as folder, patch.dict(sys.modules, modules):
+            destination=Path(folder)/'pack'
+            data=export(env, destination, [])
+            self.assertEqual(data['source_counts'], {'TextAsset':2, 'Font':2})
+            self.assertEqual(data['outcomes'], {'exported':2, 'no_embedded_font_data':1, 'failed':1})
+            self.assertFalse(data['gates']['all_target_objects_exported'])
+            self.assertEqual(data['output_files'], 2)
+            paths=[o['path'] for r in data['objects'] for o in r['outputs']]
+            self.assertEqual(len(set(paths)), 2)
+            self.assertEqual(sorted((destination/p).read_bytes() for p in paths), [b'one', b'two'])
+            self.assertIn('unrecognized embedded font', next(r['error'] for r in data['objects'] if r['status']=='failed'))
 
     def test_offline_browser_escapes_script_and_uses_text_nodes(self):
         value=browser_html(dict(objects=[dict(name='</script><script>alert(1)</script>')]))
