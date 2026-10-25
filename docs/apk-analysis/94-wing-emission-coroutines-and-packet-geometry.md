@@ -126,3 +126,7 @@ verification của toàn spec mới. Arena/PvP comment6401593117 vẫn xếp **s
 Nhập batch này theo đúng dispatch/timing/count laws, không thay thành constructorN×barrelCount chung.
 Tiếp nối Basic/Circle leaves vừa nêu; các Shoot/consumer còn lại của config93 và special2/4/6/8/
 10/12/15/19 vẫn phải đi theo method cụ thể. Không dùng report94 làm chứng chỉ đóng23 wings.
+
+**CI receipt:** code589e1f588, Verify40223289936 **SUCCESS/job1m4s**.
+Handoff94 và green receipt đã gửi PR12, JSON responses giữ ở raw/wing-emission.
+Không tự nhận ACK94; source/body assertions không thay bằng CI status.

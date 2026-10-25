@@ -868,3 +868,5 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 -Sound pool.04super/.08normal, PlayOneShot clip5 volume1/.6, not camera shake; pinned8byte recovery.
 -ACK93 received6401658709/raw retained; peer spec not yet independently re-reviewed. Queue Arena/PvP
   after remaining named wing consumers + map/save, per6401593117. Don't wait ACK94 to continue.
+- Receipt94: code589e1f588, Verify40223289936 SUCCESS/job1m4s; handoff/green response JSON
+  giữraw/wing-emission. Chưa tự nhận ACK94. Không show diff/file/preview cho user.
