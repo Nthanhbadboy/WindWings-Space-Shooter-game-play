@@ -3,15 +3,15 @@
 ## Unity payload
 ```
 total 137M
--rw-r--r-- 1 runner runner   11K Oct 25 08:12 RuntimeInitializeOnLoads.json
--rw-r--r-- 1 runner runner  3.9K Oct 25 08:12 ScriptingAssemblies.json
--rw-r--r-- 1 runner runner   120 Oct 25 08:12 _listing.txt
--rw-r--r-- 1 runner runner   61M Oct 25 08:12 data.unity3d
--rw-r--r-- 1 runner runner  8.3M Oct 25 08:12 global-metadata.dat
--rw-r--r-- 1 runner runner   45M Oct 25 08:12 libil2cpp.so
--rw-r--r-- 1 runner runner   17M Oct 25 08:12 libunity.so
--rw-r--r-- 1 runner runner 1023K Oct 25 08:12 resources.arsc
--rw-r--r-- 1 runner runner  4.9M Oct 25 08:12 resources.resource
+-rw-r--r-- 1 runner runner   11K Oct 25 08:27 RuntimeInitializeOnLoads.json
+-rw-r--r-- 1 runner runner  3.9K Oct 25 08:27 ScriptingAssemblies.json
+-rw-r--r-- 1 runner runner   120 Oct 25 08:27 _listing.txt
+-rw-r--r-- 1 runner runner   61M Oct 25 08:27 data.unity3d
+-rw-r--r-- 1 runner runner  8.3M Oct 25 08:27 global-metadata.dat
+-rw-r--r-- 1 runner runner   45M Oct 25 08:27 libil2cpp.so
+-rw-r--r-- 1 runner runner   17M Oct 25 08:27 libunity.so
+-rw-r--r-- 1 runner runner 1023K Oct 25 08:27 resources.arsc
+-rw-r--r-- 1 runner runner  4.9M Oct 25 08:27 resources.resource
 ```
 
 ## assets/bin/Data listing (from APK)
@@ -39,34 +39,34 @@ typetree OK
 ```
 docs/assets:
 total 364
-drwxr-xr-x 3 runner runner   4096 Oct 25 08:12 .
-drwxr-xr-x 6 runner runner   4096 Oct 25 08:12 ..
--rw-r--r-- 1 runner runner   2190 Oct 25 08:13 INDEX.md
--rw-r--r-- 1 runner runner   7275 Oct 25 08:13 audio-index.csv
-drwxr-xr-x 2 runner runner   4096 Oct 25 08:13 contact-sheets
--rw-r--r-- 1 runner runner 146648 Oct 25 08:13 manifest.csv
--rw-r--r-- 1 runner runner 191560 Oct 25 08:13 sprites-index.csv
--rw-r--r-- 1 runner runner   4634 Oct 25 08:13 stats.json
+drwxr-xr-x 3 runner runner   4096 Oct 25 08:27 .
+drwxr-xr-x 6 runner runner   4096 Oct 25 08:27 ..
+-rw-r--r-- 1 runner runner   2190 Oct 25 08:28 INDEX.md
+-rw-r--r-- 1 runner runner   7275 Oct 25 08:28 audio-index.csv
+drwxr-xr-x 2 runner runner   4096 Oct 25 08:28 contact-sheets
+-rw-r--r-- 1 runner runner 146648 Oct 25 08:28 manifest.csv
+-rw-r--r-- 1 runner runner 191560 Oct 25 08:28 sprites-index.csv
+-rw-r--r-- 1 runner runner   4634 Oct 25 08:28 stats.json
 
 docs/assets/contact-sheets:
 total 7400
-drwxr-xr-x 2 runner runner   4096 Oct 25 08:13 .
-drwxr-xr-x 3 runner runner   4096 Oct 25 08:12 ..
--rw-r--r-- 1 runner runner 233344 Oct 25 08:13 atlas-01.jpg
--rw-r--r-- 1 runner runner 326577 Oct 25 08:13 atlas-02.jpg
--rw-r--r-- 1 runner runner  14242 Oct 25 08:13 atlas-03.jpg
--rw-r--r-- 1 runner runner 177064 Oct 25 08:13 background-01.jpg
--rw-r--r-- 1 runner runner 142920 Oct 25 08:13 background-02.jpg
--rw-r--r-- 1 runner runner 166141 Oct 25 08:13 bosses-01.jpg
--rw-r--r-- 1 runner runner 175411 Oct 25 08:13 bullet-01.jpg
--rw-r--r-- 1 runner runner  13861 Oct 25 08:13 bullet-02.jpg
--rw-r--r-- 1 runner runner  56140 Oct 25 08:13 drones-01.jpg
--rw-r--r-- 1 runner runner 104215 Oct 25 08:13 enemy-01.jpg
--rw-r--r-- 1 runner runner  31031 Oct 25 08:13 font-01.jpg
--rw-r--r-- 1 runner runner 204312 Oct 25 08:13 fx-01.jpg
--rw-r--r-- 1 runner runner  56927 Oct 25 08:13 fx-02.jpg
--rw-r--r-- 1 runner runner  16007 Oct 25 08:13 items-01.jpg
--rw-r--r-- 1 runner runner 125812 Oct 25 08:13 ships-01.jpg
+drwxr-xr-x 2 runner runner   4096 Oct 25 08:28 .
+drwxr-xr-x 3 runner runner   4096 Oct 25 08:27 ..
+-rw-r--r-- 1 runner runner 233344 Oct 25 08:28 atlas-01.jpg
+-rw-r--r-- 1 runner runner 326577 Oct 25 08:28 atlas-02.jpg
+-rw-r--r-- 1 runner runner  14242 Oct 25 08:28 atlas-03.jpg
+-rw-r--r-- 1 runner runner 177064 Oct 25 08:28 background-01.jpg
+-rw-r--r-- 1 runner runner 142920 Oct 25 08:28 background-02.jpg
+-rw-r--r-- 1 runner runner 166141 Oct 25 08:28 bosses-01.jpg
+-rw-r--r-- 1 runner runner 175411 Oct 25 08:28 bullet-01.jpg
+-rw-r--r-- 1 runner runner  13861 Oct 25 08:28 bullet-02.jpg
+-rw-r--r-- 1 runner runner  56140 Oct 25 08:28 drones-01.jpg
+-rw-r--r-- 1 runner runner 104215 Oct 25 08:28 enemy-01.jpg
+-rw-r--r-- 1 runner runner  31031 Oct 25 08:28 font-01.jpg
+-rw-r--r-- 1 runner runner 204312 Oct 25 08:28 fx-01.jpg
+-rw-r--r-- 1 runner runner  56927 Oct 25 08:28 fx-02.jpg
+-rw-r--r-- 1 runner runner  16007 Oct 25 08:28 items-01.jpg
+-rw-r--r-- 1 runner runner 125812 Oct 25 08:28 ships-01.jpg
 ```
 
 ## Step logs (tail)
@@ -124,17 +124,14 @@ stats: {'clips': 69, 'has_resource': 69, 'res_bytes': 5105184, 'src:resources.re
 unresolved: 0
 
 ===== /tmp/apk/logs/consts.log
-Enemy_Appear             2 methods,   0 with constants
-Enemy_Controller        33 methods,  16 with constants
-Enemy_Data_Balance       8 methods,   7 with constants
-Enemy_Destroy           12 methods,   9 with constants
-Enemy_Display            6 methods,   6 with constants
-Enemy_Get_Datas          4 methods,   3 with constants
-Enemy_Health             4 methods,   1 with constants
-Enemy_Movement          21 methods,  16 with constants
-Enemy_Movement.<IELinearMove>d__37   6 methods,   1 with constants
-Enemy_Rotate             3 methods,   2 with constants
-Enemy_Sub               23 methods,   6 with constants
+GP_Tutorials.<HideSettings>d__38   6 methods,   2 with constants
+GP_Tutorials.<TutChangeGameSpeed>d__55   6 methods,   1 with constants
+GP_Tutorials.<TutChangeGameSpeedBoss>d__58   6 methods,   1 with constants
+GP_Tutorials.<TutDrones>d__48   6 methods,   1 with constants
+GP_Tutorials.<TutLaserSkill>d__60   6 methods,   1 with constants
+GP_Tutorials.<TutMoveFingers>d__40   6 methods,   1 with constants
+GP_Tutorials.<TutTalents>d__52   6 methods,   1 with constants
+GP_Tutorials.<TutTransform>d__42   6 methods,   1 with constants
 GameDatas               73 methods,  72 with constants
 IAP_Manager             35 methods,  34 with constants
 Map_Get_Datas           10 methods,   9 with constants
@@ -146,8 +143,11 @@ Player_Health           12 methods,  11 with constants
 Player_Ingame           20 methods,  17 with constants
 Player_Talent           23 methods,  19 with constants
 RankManager             19 methods,  16 with constants
+SkipTutorial            15 methods,  11 with constants
 Stage_Get_Datas         11 methods,  10 with constants
 Tech_Datas              25 methods,  24 with constants
+Tut_Settings             2 methods,   1 with constants
+Tut_Settings1            5 methods,   4 with constants
 written docs/apk-analysis/19-il2cpp-constants.md
 
 ===== /tmp/apk/logs/export.log
@@ -170,12 +170,12 @@ typeDefinitions: 10909 types, struct size 88; metadata fields: 50606
   usagePairs: 213; sample: [(1, 9), (46, 24), (8, 43), (33, 39), (11, 47)]
 dump.cs field types: 46275; mapped indices: 50606
 decoded: 10493, skipped: 0 {}
-IA audit: {'Device_Get_Data.cctor': (12, 0), 'Droid_Data_Balance.cctor': (3, 0), 'GameDatas.cctor': (1, 0), 'IAP_Manager.cctor': (5, 0), 'Map_Get_Datas.cctor': (576, 0), 'Player_Ability.ctor': (1, 0), 'Player_Get_Datas.GetCostReborn': (1, 0), 'Player_Get_Datas.GetCostReborn2': (1, 0), 'Player_Get_Datas.cctor': (6, 0), 'Stage_Get_Datas.cctor': (2, 0), 'Tech_Datas.GetStringAbiInfo': (1, 0), 'Tech_Datas.cctor': (7, 0)}
-ia-resolved: 616 mảng / 12 method (không giải được: 0)
+IA audit: {'Board_Drones.ctor': (1, 0), 'Board_Drones.cctor': (2, 0), 'Board_Endgame.ctor': (1, 0), 'Board_Players.ctor': (1, 0), 'Board_Players.cctor': (2, 0), 'Device_Get_Data.cctor': (12, 0), 'Droid_Data_Balance.cctor': (3, 0), 'GameDatas.cctor': (1, 0), 'IAP_Manager.cctor': (5, 0), 'Map_Get_Datas.cctor': (576, 0), 'Player_Ability.ctor': (1, 0), 'Player_Get_Datas.GetCostReborn': (1, 0), 'Player_Get_Datas.GetCostReborn2': (1, 0), 'Player_Get_Datas.cctor': (6, 0), 'Stage_Get_Datas.cctor': (2, 0), 'Tech_Datas.GetStringAbiInfo': (1, 0), 'Tech_Datas.cctor': (7, 0)}
+ia-resolved: 623 mảng / 17 method (không giải được: 0)
 wrote reverse-engineering/il2cpp/field-defaults.json (1945298 B)
 
 ===== /tmp/apk/logs/formula_trace.log
-778 method, 290 bl giải đúng tên -> datas/formula_traces.json.gz
+1662 method, 1227 bl giải đúng tên -> datas/formula_traces.json.gz
 
 ===== /tmp/apk/logs/gallery.log
 assets found: 2197
@@ -276,24 +276,24 @@ source files: ['/tmp/apk/extract/data.unity3d', '/tmp/apk/extract/resources.reso
 exported 64 text assets, 1.2MB
 
 ===== /tmp/apk/logs/ui_index.log
-53316 file, 114 màn, 8,083,999 node, 1,150,709 dòng text/key -> datas/ui_screens.json.gz
+54049 file, 114 màn, 8,187,086 node, 1,167,018 dòng text/key -> datas/ui_screens.json.gz
 
 ===== /tmp/apk/logs/ui_layout.log
 typetree generator ready: AssetStudio
 class map: 125452 MonoBehaviours
 screen candidates: 793
-skipped: {'duplicate (class, root)': 60}
+skipped: {'duplicate (class, root)': 55}
 # UI layout (số đo bóc từ prefab)
 
 > **Kết luận tạm thời.** Đây là giá trị *serialize trong prefab*. Runtime có thể
 > ghi đè (layout group, safe area, code set anchor), nên chỉ dùng làm khung tham
 > chiếu. Dữ liệu thô: `reverse-engineering/raw/ui/*.json.gz`.
 
-- màn hình dump được: **733**
-- tổng node: **103087**
+- màn hình dump được: **738**
+- tổng node: **103137**
 - dung lượng thô (gz): **2.0 MB**
 
-- bỏ qua: duplicate (class, root) (60)
+- bỏ qua: duplicate (class, root) (55)
 
 ## Component gặp nhiều nhất
 
@@ -331,7 +331,7 @@ errors: {'script': 1, 'typetree:Boss19_AttackTypes': 1}
 # Wave composition (campaign maps)
 
 - waves: **282**
-- spawners: **11088**
+- spawners: **11096**
 - typetree backend: **AssetStudio**
 
 - lỗi đọc: 1 object

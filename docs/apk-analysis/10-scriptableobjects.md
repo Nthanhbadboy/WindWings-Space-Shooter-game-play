@@ -63,6 +63,7 @@
 | `Boss18_AnimationEvents` | 5 | 5 |
 | `BossAnimationEvents` | 5 | 5 |
 | `Enemy_Rocket_Attack` | 5 | 5 |
+| `BoardManager` | 4 | 4 |
 | `Boss4_AnimationEvents` | 4 | 4 |
 | `Boss15_AnimationEvents` | 4 | 4 |
 | `Boss5_AnimationEvents` | 3 | 3 |
@@ -75,6 +76,7 @@
 | `RankManager` | 3 | 3 |
 | `Boss6_AnimationEvents` | 3 | 3 |
 | `Boss17_AnimationEvents` | 3 | 3 |
+| `Tut_Settings1` | 2 | 2 |
 | `DataShopPack` | 2 | 2 |
 | `Data_Players` | 2 | 2 |
 | `Boss4_Director` | 2 | 2 |
@@ -97,6 +99,9 @@
 | `Boss9_Director` | 2 | 2 |
 | `Enemy_DropGold` | 2 | 2 |
 | `GP_Datas` | 1 | 1 |
+| `SkipTutorial` | 1 | 1 |
+| `Tut_Settings` | 1 | 1 |
+| `GP_Tutorials` | 1 | 1 |
 | `TMP_ColorGradient` | 1 | 1 |
 | `Data_Items` | 1 | 1 |
 | `Data_Boss` | 1 | 1 |
@@ -108,18 +113,23 @@
 | `Enemy_BurstBulletWhenDie` | 1 | 1 |
 | `MiniBoss1_Director` | 1 | 1 |
 | `MB9_Director` | 1 | 1 |
+| `Board_Maps` | 1 | 1 |
 | `Boss21_AttackPhases` | 1 | 1 |
 | `Boss21_AttackTypes` | 1 | 1 |
 | `MB7_Director` | 1 | 1 |
+| `Board_Endgame` | 1 | 1 |
 | `MB3_Director` | 1 | 1 |
 | `MB8_Director` | 1 | 1 |
+| `Board_Stage` | 1 | 1 |
 | `MB14_Director` | 1 | 1 |
 | `Boss20_AttackTypes` | 1 | 1 |
 | `Boss20_AttackPhases` | 1 | 1 |
 | `MB2_Director` | 1 | 1 |
 | `MB4_Director` | 1 | 1 |
+| `Board_Home` | 1 | 1 |
 | `MB6_Director` | 1 | 1 |
 | `MiniBoss1_Events` | 1 | 1 |
+| `Board_Players` | 1 | 1 |
 | `ArenaManager` | 1 | 1 |
 | `Boss6_Mini_Director` | 1 | 1 |
 | `MB13_Director` | 1 | 1 |
@@ -130,6 +140,7 @@
 | `Boss6_Mini_AnimationEvents` | 1 | 1 |
 | `MB11_Director` | 1 | 1 |
 | `Boss19_AttackPhases` | 1 | 1 |
+| `Board_Drones` | 1 | 1 |
 | `Enemy_Passive_Attack` | 1 | 1 |
 | `Enemy_SpawnChilds` | 1 | 1 |
 
@@ -143,36 +154,36 @@
 
 | class | object | bytes (chưa nén) |
 |---|---:|---:|
-| `Call_Point` | 23757 | 6,831,033 |
-| `Call_Data` | 23757 | 17,413,452 |
-| `PointToPoint_Spawner` | 13292 | 3,490,210 |
-| `PinMap_Spawner` | 3165 | 821,215 |
-| `Rocket_Spawner` | 2019 | 635,145 |
-| `PathCreator` | 1714 | 3,945,361 |
-| `Path_Spawner` | 1688 | 442,768 |
+| `Call_Point` | 23757 | 6,831,500 |
+| `Call_Data` | 23757 | 17,413,870 |
+| `PointToPoint_Spawner` | 13292 | 3,490,055 |
+| `PinMap_Spawner` | 3165 | 821,085 |
+| `Rocket_Spawner` | 2019 | 635,160 |
+| `PathCreator` | 1714 | 3,945,274 |
+| `Path_Spawner` | 1688 | 442,678 |
 | `Spawner` | 1370 | 348,937 |
-| `Waypoints_Spawner` | 1151 | 297,074 |
-| `Enemy_EfxDestroyed` | 1134 | 513,089 |
-| `Box_Rewards` | 1065 | 632,454 |
-| `Enemy_Sub` | 981 | 319,095 |
-| `Enemy_Controller` | 981 | 677,653 |
-| `Enemy_Display` | 981 | 415,242 |
-| `Enemy_Movement` | 981 | 508,938 |
-| `Enemy_Physics` | 981 | 266,728 |
-| `Enemy_Health` | 981 | 236,075 |
-| `Enemy_Datas` | 981 | 374,958 |
-| `Enemy_Destroy` | 971 | 299,429 |
-| `Enemy_Appear` | 914 | 204,823 |
-| `Enemy_Hp_Bar` | 909 | 312,936 |
-| `AirFree_Spawner` | 885 | 231,808 |
-| `MeteoriteGenerator` | 852 | 425,681 |
-| `Item_Movement` | 702 | 186,539 |
-| `Sub_Item` | 702 | 239,405 |
-| `Enemy_Burned` | 695 | 211,209 |
+| `Waypoints_Spawner` | 1151 | 297,325 |
+| `Enemy_EfxDestroyed` | 1134 | 513,612 |
+| `Box_Rewards` | 1065 | 633,653 |
+| `Enemy_Sub` | 981 | 319,756 |
+| `Enemy_Controller` | 981 | 678,050 |
+| `Enemy_Display` | 981 | 416,100 |
+| `Enemy_Movement` | 981 | 509,815 |
+| `Enemy_Physics` | 981 | 267,409 |
+| `Enemy_Health` | 981 | 236,922 |
+| `Enemy_Datas` | 981 | 375,736 |
+| `Enemy_Destroy` | 971 | 300,442 |
+| `Enemy_Appear` | 914 | 204,914 |
+| `Enemy_Hp_Bar` | 909 | 312,763 |
+| `AirFree_Spawner` | 885 | 231,828 |
+| `MeteoriteGenerator` | 852 | 425,663 |
+| `Item_Movement` | 702 | 186,452 |
+| `Sub_Item` | 702 | 239,731 |
+| `Enemy_Burned` | 695 | 210,817 |
 | `Wave` | 686 | 216,575 |
-| `Gun_Attack` | 458 | 324,205 |
+| `Gun_Attack` | 458 | 324,909 |
 | `MapController` | 396 | 343,597 |
-| `Enemy_LookAtPlayer` | 391 | 232,317 |
+| `Enemy_LookAtPlayer` | 391 | 232,011 |
 
 ## MonoBehaviour class inventory (top 40)
 
@@ -221,6 +232,51 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
 | `UIObjectAnchors` | 584 |
 | `Popup_Notices` | 499 |
 
+## `BoardManager` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 11,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5754585088,
+ "m_Name": "",
+ "parentBoards.m_FileID": 0,
+ "parentBoards.m_PathID": 38,
+ "boardsPrefabs": "[34]",
+ "boardsPrefabs[0].id": 1,
+ "boardsPrefabs[0].boardName": "Board_Home",
+ "boardsPrefabs[1].id": 2,
+ "boardsPrefabs[1].boardName": "Board_Upgrades",
+ "boardsPrefabs[2].id": 3,
+ "boardsPrefabs[2].boardName": "Board_Players",
+ "boardsPrefabs[3].id": 4,
+ "boardsPrefabs[3].boardName": "Board_Drones",
+ "boardsPrefabs[4].id": 5,
+ "boardsPrefabs[4].boardName": "Board_Maps",
+ "loading.m_FileID": 0,
+ "loading.m_PathID": 13,
+ "_gameobject": "BOARD_MANAGER"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 742,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5754585088,
+ "m_Name": "",
+ "parentBoards.m_FileID": 0,
+ "parentBoards.m_PathID": 2792,
+ "boardsPrefabs": "[0]",
+ "loading.m_FileID": 0,
+ "loading.m_PathID": 0,
+ "_gameobject": "BOARD_MANAGER"
+}
+```
+
 ## `GridLayoutManager` samples
 
 ```json
@@ -249,7 +305,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "maskObject.m_PathID": 0,
  "onDone.m_PersistentCalls.m_Calls": "[0]",
  "refresh": false,
- "_gameobject": "All_Abilities/Grid"
+ "_gameobject": "parent_Top/Border_Info/All_Abilities/Grid"
 }
 ```
 ```json
@@ -278,7 +334,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "maskObject.m_PathID": 0,
  "onDone.m_PersistentCalls.m_Calls": "[0]",
  "refresh": false,
- "_gameobject": "Board_BeginPlay/Board_Talents/ParentBot/All_Talents"
+ "_gameobject": "Board_Talents/ParentBot/All_Talents"
 }
 ```
 
@@ -311,6 +367,129 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "listActiveEnemies": "[0]",
  "enemyLayer.m_Mask": 512,
  "_gameobject": "GP_Manager"
+}
+```
+
+## `SkipTutorial` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 603,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 1325400064,
+ "m_Name": "",
+ "popupNoInternet.m_FileID": 0,
+ "popupNoInternet.m_PathID": 6918,
+ "loadingObject.m_FileID": 0,
+ "loadingObject.m_PathID": 1606,
+ "btnObject.m_FileID": 0,
+ "btnObject.m_PathID": 377,
+ "_gameobject": "Board_BeginPlay/Parent/parent_Top/SKIP_TUTORIAL"
+}
+```
+
+## `Tut_Settings1` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 634,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 32078036992,
+ "m_Name": "",
+ "sliderTimeScale.m_FileID": 0,
+ "sliderTimeScale.m_PathID": 6826,
+ "textTimeScale.m_FileID": 0,
+ "textTimeScale.m_PathID": 6394,
+ "textInfo.m_FileID": 0,
+ "textInfo.m_PathID": 0,
+ "btnAccept.m_FileID": 0,
+ "btnAccept.m_PathID": 68,
+ "bgRend.m_FileID": 0,
+ "bgRend.m_PathID": 0,
+ "allTimeSliderRends": "[0]",
+ "allTimeSliderBlueSprites": "[0]",
+ "allTimeSliderRedSprites": "[0]",
+ "focusGameSpeed.m_FileID": 0,
+ "focusGameSpeed.m_PathID": 4648,
+ "btnSave.m_FileID": 0,
+ "btnSave.m_PathID": 0,
+ "boxSave.m_FileID": 0,
+ "boxSave.m_PathID": 0,
+ "boxSprites": "[0]",
+ "_gameobject": "GP_Tutorials/TutSettings (1)"
+}
+```
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 780,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 32078036992,
+ "m_Name": "",
+ "sliderTimeScale.m_FileID": 0,
+ "sliderTimeScale.m_PathID": 6656,
+ "textTimeScale.m_FileID": 0,
+ "textTimeScale.m_PathID": 6408,
+ "textInfo.m_FileID": 0,
+ "textInfo.m_PathID": 6421,
+ "btnAccept.m_FileID": 0,
+ "btnAccept.m_PathID": 0,
+ "bgRend.m_FileID": 0,
+ "bgRend.m_PathID": 5346,
+ "allTimeSliderRends": "[3]",
+ "allTimeSliderRends[0].m_FileID": 0,
+ "allTimeSliderRends[0].m_PathID": 5329,
+ "allTimeSliderRends[1].m_FileID": 0,
+ "allTimeSliderRends[1].m_PathID": 5401,
+ "allTimeSliderRends[2].m_FileID": 0,
+ "allTimeSliderRends[2].m_PathID": 5254,
+ "allTimeSliderBlueSprites": "[3]",
+ "allTimeSliderBlueSprites[0].m_FileID": 2,
+ "allTimeSliderBlueSprites[0].m_PathID": 3111,
+ "allTimeSliderBlueSprites[1].m_FileID": 2,
+ "allTimeSliderBlueSprites[1].m_PathID": 3780,
+ "allTimeSliderBlueSprites[2].m_FileID": 2,
+ "allTimeSliderBlueSprites[2].m_PathID": 3436,
+ "allTimeSliderRedSprites": "[3]",
+ "allTimeSliderRedSprites[0].m_FileID": 2,
+ "allTimeSliderRedSprites[0].m_PathID": 2990,
+ "allTimeSliderRedSprites[1].m_FileID": 2,
+ "allTimeSliderRedSprites[1].m_PathID": 3682,
+ "allTimeSliderRedSprites[2].m_FileID": 2,
+ "allTimeSliderRedSprites[2].m_PathID": 2661,
+ "focusGameSpeed.m_FileID": 0,
+ "focusGameSpeed.m_PathID": 0,
+ "btnSave.m_FileID": 0,
+ "btnSave.m_PathID": 709,
+ "boxSave.m_FileID": 0,
+ "boxSave.m_PathID": 5111,
+ "boxSprites": "[2]",
+ "boxSprites[0].m_FileID": 2,
+ "boxSprites[0].m_PathID": 3741,
+ "boxSprites[1].m_FileID": 2,
+ "boxSprites[1].m_PathID": 2305,
+ "_gameobject": "Board_BeginPlay/Parent/Bottom/Parent_Systems"
+}
+```
+
+## `Tut_Settings` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 702,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 29091692544,
+ "m_Name": "",
+ "focusEffect.m_FileID": 0,
+ "focusEffect.m_PathID": 1621,
+ "_gameobject": "GP_Tutorials/TutSettings"
 }
 ```
 
@@ -375,7 +554,51 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "indexCell": 0,
  "fc.m_FileID": 0,
  "fc.m_PathID": 0,
- "_gameobject": "Board_BeginPlay/Board_RebornIAP/Parent/Group 1/Special_Packs/Btn_Cell (7)"
+ "_gameobject": "Board_RebornIAP/Parent/Group 1/Special_Packs/Btn_Cell (7)"
+}
+```
+
+## `GP_Tutorials` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 1902,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 26122125312,
+ "m_Name": "",
+ "player.m_FileID": 0,
+ "player.m_PathID": 2625,
+ "tutobjControl.m_FileID": 0,
+ "tutobjControl.m_PathID": 1909,
+ "tutobjChangePlane.m_FileID": 0,
+ "tutobjChangePlane.m_PathID": 1904,
+ "btnSkillPlayer.m_FileID": 0,
+ "btnSkillPlayer.m_PathID": 2358,
+ "btnTalent.m_FileID": 0,
+ "btnTalent.m_PathID": 2184,
+ "btnSkillDrone.m_FileID": 0,
+ "btnSkillDrone.m_PathID": 2722,
+ "btnSkillDrone2.m_FileID": 0,
+ "btnSkillDrone2.m_PathID": 2239,
+ "tutobjChangePlane2.m_FileID": 0,
+ "tutobjChangePlane2.m_PathID": 329,
+ "tutobjUseDroneSkill.m_FileID": 0,
+ "tutobjUseDroneSkill.m_PathID": 1906,
+ "tutobjTouchSkill.m_FileID": 0,
+ "tutobjTouchSkill.m_PathID": 1911,
+ "btnPause.m_FileID": 0,
+ "btnPause.m_PathID": 523,
+ "coverObject.m_FileID": 0,
+ "coverObject.m_PathID": 1908,
+ "tutDrone.m_FileID": 0,
+ "tutDrone.m_PathID": 263,
+ "tutSettings.m_FileID": 0,
+ "tutSettings.m_PathID": 634,
+ "tutSettings2.m_FileID": 0,
+ "tutSettings2.m_PathID": 634,
+ "_gameobject": "GP_Tutorials"
 }
 ```
 
@@ -1442,7 +1665,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "burnedScript.m_PathID": 580927,
  "stunScript.m_FileID": 0,
  "stunScript.m_PathID": 0,
- "_gameobject": "Enemy_Ingame/Body/Than/Gun1/Gun4"
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
 }
 ```
 
@@ -1508,7 +1731,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "pointBurst.m_PathID": 0,
  "isNoPool": false,
  "delayDestroy": 0.0,
- "_gameobject": "Enemy_Ingame/Body/Than/Gun1/Gun4"
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
 }
 ```
 
@@ -1551,7 +1774,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "hitableRenderers[0].m_PathID": 509460,
  "appearOff": true,
  "dieOff": true,
- "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun1/Gun4"
+ "_gameobject": "Body/Than/Gun1/Gun4"
 }
 ```
 
@@ -1647,7 +1870,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 17716740096,
  "m_Name": "",
- "_gameobject": "Gun7/Gun6"
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun7/Gun6"
 }
 ```
 ```json
@@ -1757,7 +1980,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "hpProgressBarRenderer.m_PathID": 509945,
  "width": 1.0,
  "height": 0.11999999731779099,
- "_gameobject": "Body/Than/Gun6/Gun5/Enemy_UI/HP_Bar"
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/Than/Gun6/Gun5/Enemy_UI/HP_Bar"
 }
 ```
 
@@ -2163,7 +2386,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "bltPinToMap": false,
  "shootAudioClipName": 0,
  "isStunned": false,
- "_gameobject": "Hand4/Hand6/Sword/Gun3.1"
+ "_gameobject": "Hand3/Hand4/Hand6/Sword/Gun3.1"
 }
 ```
 
@@ -2292,7 +2515,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "parentDestroy.m_PathID": 628340,
  "turretAttackScript.m_FileID": 0,
  "turretAttackScript.m_PathID": 638489,
- "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (5)/Boss/Boss-39006"
+ "_gameobject": "ObjectMove/Parent_View/Parent/Tab (5)/Boss/Boss-39006"
 }
 ```
 
@@ -2349,7 +2572,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "dfAngle": 0.0,
  "spdLerpDefault": 80.0,
  "local": false,
- "_gameobject": "Gun1/Gun4/Enemy_Ingame"
+ "_gameobject": "Boss-39006/Enemy_Ingame/Body/CanhTrai/3/Gun1/Gun4/Enemy_Ingame"
 }
 ```
 ```json
@@ -2510,7 +2733,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "attackScript.m_PathID": 581801,
  "startShootEvent.m_PersistentCalls.m_Calls": "[1]",
  "stopShootEvent.m_PersistentCalls.m_Calls": "[1]",
- "_gameobject": "Boss-39006/Enemy_Ingame/Body/CanhTrai/3/Gun4/Gun5/Enemy_Ingame"
+ "_gameobject": "CanhTrai/3/Gun4/Gun5/Enemy_Ingame"
 }
 ```
 
@@ -2681,7 +2904,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 12968787968,
  "m_Name": "",
- "_gameobject": "Enemy_Ingame/Boss"
+ "_gameobject": "Boss-39014/Enemy_Ingame/Boss"
 }
 ```
 
@@ -2710,7 +2933,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Name": "",
  "isCoin": true,
  "idle": true,
- "_gameobject": "GameObject (13)/Item-70012 (1)"
+ "_gameobject": "Coin_Arrow/GameObject (13)/Item-70012 (1)"
 }
 ```
 
@@ -2743,7 +2966,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_OPScript.m_PathID": 644899,
  "movementScript.m_FileID": 0,
  "movementScript.m_PathID": 628026,
- "_gameobject": "GameObject (13)/Item-70011 (2)"
+ "_gameobject": "Wave_0003/Coin_Arrow/GameObject (13)/Item-70011 (2)"
 }
 ```
 
@@ -2953,7 +3176,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "refresh": false,
  "bossObj.m_FileID": 0,
  "bossObj.m_PathID": 176880,
- "_gameobject": "Board_Maps/Parent/ScrollView-Chap 1/ObjectMove/Parent_Stages/Stage_Normal (72)"
+ "_gameobject": "Parent/ScrollView-Chap 1/ObjectMove/Parent_Stages/Stage_Normal (72)"
 }
 ```
 ```json
@@ -3008,7 +3231,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "refresh": false,
  "bossObj.m_FileID": 0,
  "bossObj.m_PathID": 175830,
- "_gameobject": "Board_Maps/Parent/ScrollView-Chap 2/ObjectMove/Parent_Stages/Stage_Normal (221)"
+ "_gameobject": "Parent_Stages/Stage_Normal (221)"
 }
 ```
 
@@ -3189,7 +3412,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "playerAttack.m_FileID": 0,
  "playerAttack.m_PathID": 616561,
  "targetLayer.m_Mask": 512,
- "_gameobject": "Board_Players/Parent/Panel_Info/Player_Demo/Player_Types/Player_10019/AllDrones/Drone (10)"
+ "_gameobject": "Parent/Panel_Info/Player_Demo/Player_Types/Player_10019/AllDrones/Drone (10)"
 }
 ```
 
@@ -3207,7 +3430,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "fixedTime": -1.0,
  "timeMin": 0.25,
  "timeMax": 1.75,
- "_gameobject": "FxDie/Fx (19)"
+ "_gameobject": "Boss-39010/Enemy_Ingame/Body/FxDie/Fx (19)"
 }
 ```
 ```json
@@ -3222,7 +3445,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "fixedTime": -1.0,
  "timeMin": 0.5,
  "timeMax": 6.800000190734863,
- "_gameobject": "Board_FightBoss/Parent/Tab (5)/Boss/Parent_Bosses/Boss 6/Boss 6/FxDie/Fx (29)"
+ "_gameobject": "Boss 6/Boss 6/FxDie/Fx (29)"
 }
 ```
 
@@ -3346,7 +3569,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 35383148544,
  "m_Name": "",
- "_gameobject": "Tab (9)/Boss/Boss-39012/Enemy_Ingame/Boss 10"
+ "_gameobject": "ObjectMove/Parent_View/Parent/Tab (9)/Boss/Boss-39012/Enemy_Ingame/Boss 10"
 }
 ```
 
@@ -3659,7 +3882,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "pointHandGuns[1].m_PathID": 358745,
  "bltHandBullet": 80203,
  "damageBulletArea": 1200.0,
- "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (19)/Boss/Boss-39015"
+ "_gameobject": "Boss/Boss-39015"
 }
 ```
 
@@ -3842,7 +4065,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "bltIdAttack9[2]": 80156,
  "dmgBltIdAttack9": 1500.0,
  "targetLayer.m_Mask": 256,
- "_gameobject": "ScrollView/ObjectMove/Parent_View/Parent/Tab (11)/Boss/Boss-39014"
+ "_gameobject": "Parent/Tab (11)/Boss/Boss-39014"
 }
 ```
 
@@ -3856,7 +4079,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 31675383808,
  "m_Name": "",
- "_gameobject": "Enemy_Ingame/Boss 11"
+ "_gameobject": "Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (10)/Boss/Boss-39013/Enemy_Ingame/Boss 11"
 }
 ```
 ```json
@@ -3952,7 +4175,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "attack5Point.m_FileID": 0,
  "attack5Point.m_PathID": 265257,
  "targetLayer.m_Mask": 256,
- "_gameobject": "ObjectMove/Parent_View/Parent/Tab (10)/Boss/Boss-39013"
+ "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (10)/Boss/Boss-39013"
 }
 ```
 ```json
@@ -4048,7 +4271,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 33084669952,
  "m_Name": "",
- "_gameobject": "Board_FightBoss/Parent/Tab (5)/Boss/Parent_Bosses/Boss 8/Boss 8"
+ "_gameobject": "Tab (5)/Boss/Parent_Bosses/Boss 8/Boss 8"
 }
 ```
 ```json
@@ -4082,7 +4305,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "hitColor.g": 0.729411780834198,
  "hitColor.b": 0.729411780834198,
  "hitColor.a": 1.0,
- "_gameobject": "Boss-39001/Enemy_Ingame/Body/Boss 1/Slot_Guns1/Gun_Wing1.2/Gun_Wing1.2"
+ "_gameobject": "Gun_Wing1.2/Gun_Wing1.2"
 }
 ```
 ```json
@@ -4102,7 +4325,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "hitColor.g": 0.729411780834198,
  "hitColor.b": 0.729411780834198,
  "hitColor.a": 1.0,
- "_gameobject": "Body/Boss 1/Slot_Guns1/Gun_Wing1.1/Gun_Wing1.1"
+ "_gameobject": "Boss-39001/Enemy_Ingame/Body/Boss 1/Slot_Guns1/Gun_Wing1.1/Gun_Wing1.1"
 }
 ```
 
@@ -4243,7 +4466,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "moveObject.m_FileID": 0,
  "moveObject.m_PathID": 352553,
  "targetLayer.m_Mask": 256,
- "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (9)/Boss/Boss-39012"
+ "_gameobject": "Boss/Boss-39012"
 }
 ```
 ```json
@@ -4431,7 +4654,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 31356616704,
  "m_Name": "",
- "_gameobject": "Boss17/Boss18"
+ "_gameobject": "Board_FightBoss/Parent/Tab (5)/Boss/Parent_Bosses/Boss17/Boss18"
 }
 ```
 
@@ -4581,7 +4804,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "allHpParents[0].m_PathID": 180966,
  "allHpParents[1].m_FileID": 0,
  "allHpParents[1].m_PathID": 180969,
- "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (14)/Boss/Boss-37014"
+ "_gameobject": "Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (14)/Boss/Boss-37014"
 }
 ```
 
@@ -4730,8 +4953,132 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "blackHoldPoint.m_FileID": 0,
  "blackHoldPoint.m_PathID": 464199,
  "damageBulletTransform": 450.0,
- "_gameobject": "Parent/Tab (16)/Boss/Boss-39018"
+ "_gameobject": "Board_SelectBoss/Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (16)/Boss/Boss-39018"
 }
+```
+
+## `Board_Maps` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 60426,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 16777216000,
+ "m_Name": "",
+ "requireLevels.m_FileID": 0,
+ "requireLevels.m_PathID": 371659,
+ "requireCommingSoonLevels.m_FileID": 0,
+ "requireCommingSoonLevels.m_PathID": 370559,
+ "requireZoneLevels.m_FileID": 0,
+ "requireZoneLevels.m_PathID": 404002,
+ "btnBack.m_FileID": 0,
+ "btnBack.m_PathID": 60424,
+ "btnFightBoss.m_FileID": 0,
+ "btnFightBoss.m_PathID": 126950,
+ "btnChallange.m_FileID": 0,
+ "btnChallange.m_PathID": 90771,
+ "btnSurvival.m_FileID": 0,
+ "btnSurvival.m_PathID": 221272,
+ "btnObstacle.m_FileID": 0,
+ "btnObstacle.m_PathID": 13321,
+ "btnAbilityEvent1.m_FileID": 0,
+ "btnAbilityEvent1.m_PathID": 86067,
+ "btnAbilityEvent2.m_FileID": 0,
+ "btnAbilityEvent2.m_PathID": 95568,
+ "popupFightBossCommingSoon.m_FileID": 0,
+ "popupFightBossCommingSoon.m_PathID": 689176,
+ "popupFollowTutorial.m_FileID": 0,
+ "popupFollowTutorial.m_PathID": 221016,
+ "focusBattlePass.m_FileID": 0,
+ "focusBattlePass.m_PathID": 67061,
+ "btnRanks.m_FileID": 0,
+ "btnRanks.m_PathID": 16454,
+ "effectRankUp.m_FileID": 0,
+ "effectRankUp.m_PathID": 171129,
+ "focusBPMission.m_FileID": 0,
+ "focusBPMission.m_PathID": 127412,
+ "focusBPLevel.m_FileID": 0,
+ "focusBPLevel.m_PathID": 39946,
+ "parentFocusButtons.m_FileID": 0,
+ "parentFocusButtons.m_PathID": 135056,
+ "fxVip.m_FileID": 0,
+ "fxVip.m_PathID": 223157,
+ "btnSpecInrerest.m_FileID": 0,
+ "btnSpecInrerest.m_PathID": 234974,
+ "textEventTime.m_FileID": 0,
+ "textEventTime.m_PathID": 659064,
+ "allChapterParents": "[2]",
+ "allChapterParents[0].m_FileID": 0,
+ "allChapterParents[0].m_PathID": 60423,
+ "allChapterParents[1].m_FileID": 0,
+ "allChapterParents[1].m_PathID": 7754,
+ "allChapterStageParents": "[2]",
+ "allChapterStageParents[0].m_FileID": 0,
+ "allChapterStageParents[0].m_PathID": 60420,
+ "allChapterStageParents[1].m_FileID": 0,
+ "allChapterStageParents[1].m_PathID": 179734,
+ "allChapterSubParents": "[2]",
+ "allChapterSubParents[0].m_FileID": 0,
+ "allChapterSubParents[0].m_PathID": 5098,
+ "allChapterSubParents[1].m_FileID": 0,
+ "allChapterSubParents[1].m_PathID": 151243,
+ "allChapterZoneParents": "[2]",
+ "allChapterZoneParents[0].m_FileID": 0,
+ "allChapterZoneParents[0].m_PathID": 171633,
+ "allChapterZoneParents[1].m_FileID": 0,
+ "allChapterZoneParents[1].m_PathID": 188347,
+ "allStageTarget": "[2]",
+ "allStageTarget[0].m_FileID": 0,
+ "allStageTarget[0].m_PathID": 293283,
+ "allStageTarget[1].m_FileID": 0,
+ "allStageTarget[1].m_PathID": 415382,
+ "scrollView.m_FileID": 0,
+ "scrollView.m_PathID": 609051,
+ "boardRank.m_FileID": 0,
+ "boardRank.m_PathID": 660914,
+ "popupEvent1.m_FileID": 0,
+ "popupEvent1.m_PathID": 625839,
+ "popupEvent2.m_FileID": 0,
+ "popupEvent2.m_PathID": 587244,
+ "popupUnlock.m_FileID": 0,
+ "popupUnlock.m_PathID": 649646,
+ "popupUnlockEvent.m_FileID": 0,
+ "popupUnlockEvent.m_PathID": 701978,
+ "popupUnlockEventAbility.m_FileID": 0,
+ "popupUnlockEventAbility.m_PathID": 587376,
+ "cover.m_FileID": 0,
+ "cover.m_PathID": 62824,
+ "btnEvent1.m_FileID": 0,
+ "btnEvent1.m_PathID": 75441,
+ "processRenderer.m_FileID": 0,
+ "processRenderer.m_PathID": 563622,
+ "textLvMax.m_FileID": 0,
+ "textLvMax.m_PathID": 597314,
+ "btnOpenBattlePass.m_FileID": 0,
+ "btnOpenBattlePass.m_PathID": 209313,
+ "btnOpenBattlePass2.m_FileID": 0,
+ "btnOpenBattlePass2.m_PathID": 169815,
+ "coverRewards.m_FileID": 0,
+ "coverRewards.m_PathID": 199339,
+ "parentRewards.m_FileID": 0,
+ "parentRewards.m_PathID": 373262,
+ "textAbiEventTime1.m_FileID": 0,
+ "textAbiEventTime1.m_PathID": 596812,
+ "textAbiEventTime2.m_FileID": 0,
+ "textAbiEventTime2.m_PathID": 674071,
+ "textBPLevel2.m_FileID": 0,
+ "textBPLevel2.m_PathID": 686558,
+ "textTimeBPReset2.m_FileID": 0,
+ "textTimeBPReset2.m_PathID": 619957,
+ "btnBattlePassAnim.m_FileID": 0,
+ "btnBattlePassAnim.m_PathID": 495339,
+ "fxFocusBattlePass.m_FileID": 0,
+ "fxFocusBattlePass.m_PathID": 210137,
+ "objectDouble.m_FileID": 0,
+ "objectDouble.m_PathID": 44165,
+ "textTimeDou
 ```
 
 ## `Boss7_AnimationEvents` samples
@@ -4744,7 +5091,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 14931722240,
  "m_Name": "",
- "_gameobject": "Boss-39008/Enemy_Ingame/Body"
+ "_gameobject": "Enemy_Ingame/Body"
 }
 ```
 ```json
@@ -4755,7 +5102,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 14931722240,
  "m_Name": "",
- "_gameobject": "ObjectMove/Parent_View/Parent/Tab (6)/Boss/Boss-39008/Enemy_Ingame/Boss 7"
+ "_gameobject": "Boss/Boss-39008/Enemy_Ingame/Boss 7"
 }
 ```
 
@@ -5102,7 +5449,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 32111591424,
  "m_Name": "",
- "_gameobject": "Boss-39021/Enemy_Ingame/Body"
+ "_gameobject": "Enemy_Ingame/Body"
 }
 ```
 ```json
@@ -5224,8 +5571,136 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "gunAttack1.m_PathID": 655353,
  "gunAttack2.m_FileID": 0,
  "gunAttack2.m_PathID": 655315,
- "_gameobject": "Parent/ScrollView/ObjectMove/Parent_View/Parent/Tab (4)/Boss/Boss-39007/Enemy_Ingame/Boss 5"
+ "_gameobject": "Boss-39007/Enemy_Ingame/Boss 5"
 }
+```
+
+## `Board_Endgame` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 113205,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 14545846272,
+ "m_Name": "",
+ "allVictoryObjects": "[3]",
+ "allVictoryObjects[0].m_FileID": 0,
+ "allVictoryObjects[0].m_PathID": 77490,
+ "allVictoryObjects[1].m_FileID": 0,
+ "allVictoryObjects[1].m_PathID": 95035,
+ "allVictoryObjects[2].m_FileID": 0,
+ "allVictoryObjects[2].m_PathID": 181475,
+ "allDefeatObjects": "[3]",
+ "allDefeatObjects[0].m_FileID": 0,
+ "allDefeatObjects[0].m_PathID": 130800,
+ "allDefeatObjects[1].m_FileID": 0,
+ "allDefeatObjects[1].m_PathID": 236131,
+ "allDefeatObjects[2].m_FileID": 0,
+ "allDefeatObjects[2].m_PathID": 104631,
+ "effectVictory.m_FileID": 0,
+ "effectVictory.m_PathID": 175292,
+ "effectDefeat.m_FileID": 0,
+ "effectDefeat.m_PathID": 109060,
+ "parentMissions.m_FileID": 0,
+ "parentMissions.m_PathID": 62221,
+ "parentRewards.m_FileID": 0,
+ "parentRewards.m_PathID": 158928,
+ "parentChallangeMissions.m_FileID": 0,
+ "parentChallangeMissions.m_PathID": 13684,
+ "parentPvP.m_FileID": 0,
+ "parentPvP.m_PathID": 216436,
+ "textHeaderVic.m_FileID": 0,
+ "textHeaderVic.m_PathID": 607084,
+ "textHeaderDef.m_FileID": 0,
+ "textHeaderDef.m_PathID": 620634,
+ "textStage.m_FileID": 0,
+ "textStage.m_PathID": 649912,
+ "btnBack.m_FileID": 0,
+ "btnBack.m_PathID": 113204,
+ "btnReplay.m_FileID": 0,
+ "btnReplay.m_PathID": 113203,
+ "btnContinue.m_FileID": 0,
+ "btnContinue.m_PathID": 92306,
+ "btnBackRend.m_FileID": 0,
+ "btnBackRend.m_PathID": 514532,
+ "sprBtnBack.m_FileID": 0,
+ "sprBtnBack.m_PathID": 3596,
+ "parentGifts.m_FileID": 0,
+ "parentGifts.m_PathID": 266048,
+ "parentMissionNormals.m_FileID": 0,
+ "parentMissionNormals.m_PathID": 143353,
+ "parentMissionSpecials.m_FileID": 0,
+ "parentMissionSpecials.m_PathID": 132513,
+ "popupCheatForceExit.m_FileID": 0,
+ "popupCheatForceExit.m_PathID": 693347,
+ "popupConfirmBuy.m_FileID": 0,
+ "popupConfirmBuy.m_PathID": 581174,
+ "popupConfirmBuy2.m_FileID": 0,
+ "popupConfirmBuy2.m_PathID": 634691,
+ "textPricePack.m_FileID": 0,
+ "textPricePack.m_PathID": 630002,
+ "textVipPoint.m_FileID": 0,
+ "textVipPoint.m_PathID": 581831,
+ "textPricePackPopup.m_FileID": 0,
+ "textPricePackPopup.m_PathID": 704009,
+ "textVipPointPopup.m_FileID": 0,
+ "textVipPointPopup.m_PathID": 621951,
+ "textCointPopup.m_FileID": 0,
+ "textCointPopup.m_PathID": 642739,
+ "textXCoins.m_FileID": 0,
+ "textXCoins.m_PathID": 700951,
+ "textX3Coins.m_FileID": 0,
+ "textX3Coins.m_PathID": 581727,
+ "fxBtnX2.m_FileID": 0,
+ "fxBtnX2.m_PathID": 79879,
+ "tipDefeat.m_FileID": 0,
+ "tipDefeat.m_PathID": 126676,
+ "rankManager.m_FileID": 0,
+ "rankManager.m_PathID": 636339,
+ "bgRend.m_FileID": 0,
+ "bgRend.m_PathID": 537665,
+ "allBgSpr": "[2]",
+ "allBgSpr[0].m_FileID": 4,
+ "allBgSpr[0].m_PathID": 38,
+ "allBgSpr[1].m_FileID": 4,
+ "allBgSpr[1].m_PathID": 42,
+ "bossFx.m_FileID": 0,
+ "bossFx.m_PathID": 131342,
+ "btnX2Box.m_FileID": 0,
+ "btnX2Box.m_PathID": 311544,
+ "btnX2BoxPremium.m_FileID": 0,
+ "btnX2BoxPremium.m_PathID": 394507,
+ "popupNotice.m_FileID": 0,
+ "popupNotice.m_PathID": 581365,
+ "btnX2Coins.m_FileID": 0,
+ "btnX2Coins.m_PathID": 79025,
+ "btnX20Coins.m_FileID": 0,
+ "btnX20Coins.m_PathID": 79030,
+ "btnPremium.m_FileID": 0,
+ "btnPremium.m_PathID": 12571,
+ "btnAutoX3Coins.m_FileID": 0,
+ "btnAutoX3Coins.m_PathID": 173526,
+ "popupVideoNotReady.m_FileID": 0,
+ "popupVideoNotReady.m_PathID": 663653,
+ "popupNetworkNotConnected.m_FileID": 0,
+ "popupNetworkNotConnected.m_PathID": 619965,
+ "popupInitialize.m_FileID": 0,
+ "popupInitialize.m_PathID": 703937,
+ "loadingObject.m_FileID": 0,
+ "loadingObject.m_PathID": 101076,
+ "loadingRankObject.m_FileID": 0,
+ "loadingRankObject.m_PathID": 236733,
+ "popupReachVip.m_FileID": 0,
+ "popupReachVip.m_PathID": 655100,
+ "parentAllChallangeMissions.m_FileID": 0,
+ "parentAllChallangeMissions.m_PathID": 294530,
+ "parentChallangeRewards.m_FileID": 0,
+ "parentChallangeRewards.m_PathID": 336060,
+ "borderMission.m_FileID": 0,
+ "borderMission.m_PathID": 553303,
+ "borderMission2.m_FileID": 0,
 ```
 
 ## `MB3_Director` samples
@@ -5776,6 +6251,51 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
 }
 ```
 
+## `Board_Stage` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 160795,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 33051115520,
+ "m_Name": "",
+ "btnBack.m_FileID": 0,
+ "btnBack.m_PathID": 160806,
+ "btnPlay.m_FileID": 0,
+ "btnPlay.m_PathID": 160774,
+ "btnUpgrade.m_FileID": 0,
+ "btnUpgrade.m_PathID": 100090,
+ "parentModes.m_FileID": 0,
+ "parentModes.m_PathID": 266715,
+ "popupFollowTut.m_FileID": 0,
+ "popupFollowTut.m_PathID": 92982,
+ "btnUpPower.m_FileID": 0,
+ "btnUpPower.m_PathID": 348786,
+ "btnThrowPower.m_FileID": 0,
+ "btnThrowPower.m_PathID": 348789,
+ "focusAnim.m_FileID": 0,
+ "focusAnim.m_PathID": 498828,
+ "panelMissions.m_FileID": 0,
+ "panelMissions.m_PathID": 648426,
+ "bgRend.m_FileID": 0,
+ "bgRend.m_PathID": 549962,
+ "allBgSpr": "[2]",
+ "allBgSpr[0].m_FileID": 4,
+ "allBgSpr[0].m_PathID": 38,
+ "allBgSpr[1].m_FileID": 4,
+ "allBgSpr[1].m_PathID": 42,
+ "bossFx.m_FileID": 0,
+ "bossFx.m_PathID": 149995,
+ "popupNoEnergy.m_FileID": 0,
+ "popupNoEnergy.m_PathID": 652754,
+ "popupGetStrongest.m_FileID": 0,
+ "popupGetStrongest.m_PathID": 641091,
+ "_gameobject": "Board_Stage"
+}
+```
+
 ## `Boss15_AnimationEvents` samples
 
 ```json
@@ -6061,7 +6581,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 24528289792,
  "m_Name": "",
- "_gameobject": "Board_FightBoss/Parent/Tab (5)/Boss/Parent_Bosses/Boss16/Boss17"
+ "_gameobject": "Tab (5)/Boss/Parent_Bosses/Boss16/Boss17"
 }
 ```
 ```json
@@ -6074,6 +6594,134 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Name": "",
  "_gameobject": "Boss-39017/Enemy_Ingame/Body"
 }
+```
+
+## `Board_Home` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 160921,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 15586033664,
+ "m_Name": "",
+ "parentPlayers.m_FileID": 0,
+ "parentPlayers.m_PathID": 373293,
+ "parentDrones.m_FileID": 0,
+ "parentDrones.m_PathID": 414625,
+ "btnDroneSlot1.m_FileID": 0,
+ "btnDroneSlot1.m_PathID": 195270,
+ "btnDroneSlot2.m_FileID": 0,
+ "btnDroneSlot2.m_PathID": 205586,
+ "btnTechLab.m_FileID": 0,
+ "btnTechLab.m_PathID": 108327,
+ "btnSettings.m_FileID": 0,
+ "btnSettings.m_PathID": 58944,
+ "btnFirstPurchase.m_FileID": 0,
+ "btnFirstPurchase.m_PathID": 80573,
+ "textPlayerSlots": "[2]",
+ "textPlayerSlots[0].m_FileID": 0,
+ "textPlayerSlots[0].m_PathID": 646380,
+ "textPlayerSlots[1].m_FileID": 0,
+ "textPlayerSlots[1].m_PathID": 670911,
+ "textDroneSlots": "[2]",
+ "textDroneSlots[0].m_FileID": 0,
+ "textDroneSlots[0].m_PathID": 627709,
+ "textDroneSlots[1].m_FileID": 0,
+ "textDroneSlots[1].m_PathID": 667512,
+ "dotFocusGiftLogin.m_FileID": 0,
+ "dotFocusGiftLogin.m_PathID": 143236,
+ "dotFocusVipDaily.m_FileID": 0,
+ "dotFocusVipDaily.m_PathID": 233535,
+ "dotFocusDrones.m_FileID": 0,
+ "dotFocusDrones.m_PathID": 125715,
+ "dotFocusUpgrades.m_FileID": 0,
+ "dotFocusUpgrades.m_PathID": 214344,
+ "dotFocusGoodDeal.m_FileID": 0,
+ "dotFocusGoodDeal.m_PathID": 137923,
+ "allBtnPacks": "[3]",
+ "allBtnPacks[0].m_FileID": 0,
+ "allBtnPacks[0].m_PathID": 198547,
+ "allBtnPacks[1].m_FileID": 0,
+ "allBtnPacks[1].m_PathID": 133068,
+ "allBtnPacks[2].m_FileID": 0,
+ "allBtnPacks[2].m_PathID": 132453,
+ "btnBL.m_FileID": 0,
+ "btnBL.m_PathID": 378563,
+ "btnBR.m_FileID": 0,
+ "btnBR.m_PathID": 437470,
+ "textPackTimers": "[3]",
+ "textPackTimers[0].m_FileID": 0,
+ "textPackTimers[0].m_PathID": 606168,
+ "textPackTimers[1].m_FileID": 0,
+ "textPackTimers[1].m_PathID": 643742,
+ "textPackTimers[2].m_FileID": 0,
+ "textPackTimers[2].m_PathID": 629191,
+ "giftAnim.m_FileID": 0,
+ "giftAnim.m_PathID": 497275,
+ "giftLights": "[2]",
+ "giftLights[0].m_FileID": 0,
+ "giftLights[0].m_PathID": 564572,
+ "giftLights[1].m_FileID": 0,
+ "giftLights[1].m_PathID": 569288,
+ "specialGiftColors": "[2]",
+ "specialGiftColors[0].r": 0.7932853698730469,
+ "specialGiftColors[0].g": 0.2971698045730591,
+ "specialGiftColors[0].b": 1.0,
+ "specialGiftColors[0].a": 1.0,
+ "specialGiftColors[1].r": 0.5568627715110779,
+ "specialGiftColors[1].g": 0.25882354378700256,
+ "specialGiftColors[1].b": 1.0,
+ "specialGiftColors[1].a": 0.5098039507865906,
+ "videoGiftColors": "[2]",
+ "videoGiftColors[0].r": 1.0,
+ "videoGiftColors[0].g": 0.5215686559677124,
+ "videoGiftColors[0].b": 0.3176470696926117,
+ "videoGiftColors[0].a": 1.0,
+ "videoGiftColors[1].r": 0.849056601524353,
+ "videoGiftColors[1].g": 0.25231412053108215,
+ "videoGiftColors[1].b": 0.2523139715194702,
+ "videoGiftColors[1].a": 0.5098039507865906,
+ "textGiftLogin.m_FileID": 0,
+ "textGiftLogin.m_PathID": 679493,
+ "avatar.m_FileID": 0,
+ "avatar.m_PathID": 544222,
+ "coverBtnArena.m_FileID": 0,
+ "coverBtnArena.m_PathID": 128013,
+ "coverBtnPvP.m_FileID": 0,
+ "coverBtnPvP.m_PathID": 89034,
+ "boxBtnArena.m_FileID": 0,
+ "boxBtnArena.m_PathID": 489153,
+ "boxBtnPvP.m_FileID": 0,
+ "boxBtnPvP.m_PathID": 489289,
+ "pointPacks": "[2]",
+ "pointPacks[0].m_FileID": 0,
+ "pointPacks[0].m_PathID": 265464,
+ "pointPacks[1].m_FileID": 0,
+ "pointPacks[1].m_PathID": 259819,
+ "fxNormal.m_FileID": 0,
+ "fxNormal.m_PathID": 158583,
+ "fxSpecial.m_FileID": 0,
+ "fxSpecial.m_PathID": 236656,
+ "parentVipPlayers.m_FileID": 0,
+ "parentVipPlayers.m_PathID": 254282,
+ "textTimeOffer.m_FileID": 0,
+ "textTimeOffer.m_PathID": 602985,
+ "textTimeFirstPurchase.m_FileID": 0,
+ "textTimeFirstPurchase.m_PathID": 585374,
+ "textOffer.m_FileID": 0,
+ "textOffer.m_PathID": 656432,
+ "btnPlayerOffer.m_FileID": 0,
+ "btnPlayerOffer.m_PathID": 104542,
+ "playerOfferIcon.m_FileID": 0,
+ "playerOfferIcon.m_PathID": 511120,
+ "textGoodDeal.m_FileID": 0,
+ "textGoodDeal.m_PathID": 592786,
+ "allRankHexColors": "[7]",
+ "allRankHexColors[0]": "CAC6FF",
+ "allRankHexColors[1]": "68F33D",
+ "a
 ```
 
 ## `MB6_Director` samples
@@ -6259,6 +6907,133 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Name": "",
  "_gameobject": "Boss-37002/Enemy_Ingame"
 }
+```
+
+## `Board_Players` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 139738,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 26809991168,
+ "m_Name": "",
+ "parentCells.m_FileID": 0,
+ "parentCells.m_PathID": 369059,
+ "cellSelected.m_FileID": 0,
+ "cellSelected.m_PathID": 369070,
+ "textPlayerName.m_FileID": 0,
+ "textPlayerName.m_PathID": 650959,
+ "textPlayerLv.m_FileID": 0,
+ "textPlayerLv.m_PathID": 632903,
+ "textPlayerPower.m_FileID": 0,
+ "textPlayerPower.m_PathID": 619564,
+ "textPlayerRank.m_FileID": 0,
+ "textPlayerRank.m_PathID": 703405,
+ "textPlayerDesc.m_FileID": 0,
+ "textPlayerDesc.m_PathID": 703406,
+ "textCardProgress.m_FileID": 0,
+ "textCardProgress.m_PathID": 703403,
+ "cardProgressRenderer.m_FileID": 0,
+ "cardProgressRenderer.m_PathID": 570098,
+ "textUpgradeCostCoins.m_FileID": 0,
+ "textUpgradeCostCoins.m_PathID": 619563,
+ "textUpgradeCostGems.m_FileID": 0,
+ "textUpgradeCostGems.m_PathID": 632902,
+ "btnBuyNow.m_FileID": 0,
+ "btnBuyNow.m_PathID": 139743,
+ "btnUnlockByStars.m_FileID": 0,
+ "btnUnlockByStars.m_PathID": 141150,
+ "btnSwitch.m_FileID": 0,
+ "btnSwitch.m_PathID": 139749,
+ "btnIAPBuyNow.m_FileID": 0,
+ "btnIAPBuyNow.m_PathID": 75867,
+ "btnBeginner.m_FileID": 0,
+ "btnBeginner.m_PathID": 222327,
+ "btnCraft.m_FileID": 0,
+ "btnCraft.m_PathID": 84457,
+ "btnGoBattlePass.m_FileID": 0,
+ "btnGoBattlePass.m_PathID": 136502,
+ "btnTry.m_FileID": 0,
+ "btnTry.m_PathID": 16736,
+ "btnUpgradeByCoins.m_FileID": 0,
+ "btnUpgradeByCoins.m_PathID": 237122,
+ "btnUpgradeByGems.m_FileID": 0,
+ "btnUpgradeByGems.m_PathID": 237118,
+ "textUnlockByStars.m_FileID": 0,
+ "textUnlockByStars.m_PathID": 673369,
+ "textTimeStars.m_FileID": 0,
+ "textTimeStars.m_PathID": 630371,
+ "textIAPPrice.m_FileID": 0,
+ "textIAPPrice.m_PathID": 590916,
+ "textIAPPriceFake.m_FileID": 0,
+ "textIAPPriceFake.m_PathID": 670891,
+ "textIAPVipPoints.m_FileID": 0,
+ "textIAPVipPoints.m_PathID": 613898,
+ "textOffer.m_FileID": 0,
+ "textOffer.m_PathID": 66966,
+ "listCellSprites": "[8]",
+ "listCellSprites[0].m_FileID": 0,
+ "listCellSprites[0].m_PathID": 2401,
+ "listCellSprites[1].m_FileID": 0,
+ "listCellSprites[1].m_PathID": 3061,
+ "listCellSprites[2].m_FileID": 0,
+ "listCellSprites[2].m_PathID": 2616,
+ "listCellSprites[3].m_FileID": 0,
+ "listCellSprites[3].m_PathID": 3508,
+ "listCellSprites[4].m_FileID": 0,
+ "listCellSprites[4].m_PathID": 2446,
+ "listPlayerAvatars": "[24]",
+ "listPlayerAvatars[0].m_FileID": 0,
+ "listPlayerAvatars[0].m_PathID": 2899,
+ "listPlayerAvatars[1].m_FileID": 0,
+ "listPlayerAvatars[1].m_PathID": 3117,
+ "listPlayerAvatars[2].m_FileID": 0,
+ "listPlayerAvatars[2].m_PathID": 3553,
+ "listPlayerAvatars[3].m_FileID": 0,
+ "listPlayerAvatars[3].m_PathID": 2473,
+ "listPlayerAvatars[4].m_FileID": 0,
+ "listPlayerAvatars[4].m_PathID": 3249,
+ "avatarPlayer.m_FileID": 0,
+ "avatarPlayer.m_PathID": 570099,
+ "gridLayoutScript.m_FileID": 0,
+ "gridLayoutScript.m_PathID": 650951,
+ "allUnlockAnims": "[4]",
+ "allUnlockAnims[0].m_FileID": 0,
+ "allUnlockAnims[0].m_PathID": 495204,
+ "allUnlockAnims[1].m_FileID": 0,
+ "allUnlockAnims[1].m_PathID": 497840,
+ "allUnlockAnims[2].m_FileID": 0,
+ "allUnlockAnims[2].m_PathID": 497133,
+ "allUnlockAnims[3].m_FileID": 0,
+ "allUnlockAnims[3].m_PathID": 496974,
+ "popupNoInternet.m_FileID": 0,
+ "popupNoInternet.m_PathID": 135039,
+ "popupNoVideo.m_FileID": 0,
+ "popupNoVideo.m_PathID": 183230,
+ "pointTopAnchors.m_FileID": 0,
+ "pointTopAnchors.m_PathID": 632588,
+ "pointBotAnchors.m_FileID": 0,
+ "pointBotAnchors.m_PathID": 600426,
+ "boxBound.m_FileID": 0,
+ "boxBound.m_PathID": 491337,
+ "coverBound.m_FileID": 0,
+ "coverBound.m_PathID": 514691,
+ "loadingObject.m_FileID": 0,
+ "loadingObject.m_PathID": 35500,
+ "panelMain.m_FileID": 0,
+ "panelMain.m_PathID": 287187,
+ "fxAbiSelected.m_FileID": 0,
+ "fxAbiSelected.m_PathID": 465395,
+ "tipCover.m_FileID": 0,
+ "tipCover.m_PathID": 232417,
+ "arrowRenderer.m_FileID": 0,
+ "arrowRenderer.m_PathID": 537671,
+ "panelTopPosition.x": 0.0,
+ "panelTopPosition.y": 0.0,
+ "panelTopPosition.z": -0.5,
+ "panelBotPosit
 ```
 
 ## `ArenaManager` samples
@@ -6684,7 +7459,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "corePoint.m_PathID": 334941,
  "targetLayer.m_Mask": 256,
  "fireDamage": 500.0,
- "_gameobject": "Parent/Tab (8)/Boss/Boss-39011"
+ "_gameobject": "Boss/Boss-39011"
 }
 ```
 
@@ -7117,6 +7892,137 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
 "ERROR EOFError('read_i out of bounds')"
 ```
 
+## `Board_Drones` samples
+
+```json
+{
+ "m_GameObject.m_FileID": 0,
+ "m_GameObject.m_PathID": 217441,
+ "m_Enabled": 1,
+ "m_Script.m_FileID": 16777216,
+ "m_Script.m_PathID": 5972688896,
+ "m_Name": "",
+ "parentPlayerDemo.m_FileID": 0,
+ "parentPlayerDemo.m_PathID": 287809,
+ "textDispName.m_FileID": 0,
+ "textDispName.m_PathID": 678092,
+ "textDispRank.m_FileID": 0,
+ "textDispRank.m_PathID": 693178,
+ "textDispLevel.m_FileID": 0,
+ "textDispLevel.m_PathID": 693177,
+ "textDispDamage.m_FileID": 0,
+ "textDispDamage.m_PathID": 693185,
+ "textDispAbiInfo.m_FileID": 0,
+ "textDispAbiInfo.m_PathID": 693168,
+ "textExpProgress.m_FileID": 0,
+ "textExpProgress.m_PathID": 606112,
+ "text_Description.m_FileID": 0,
+ "text_Description.m_PathID": 693171,
+ "textCardProgress.m_FileID": 0,
+ "textCardProgress.m_PathID": 693170,
+ "textUpgradeCostCoins.m_FileID": 0,
+ "textUpgradeCostCoins.m_PathID": 606121,
+ "textUpgradeCostGems.m_FileID": 0,
+ "textUpgradeCostGems.m_PathID": 606109,
+ "textUnlock.m_FileID": 0,
+ "textUnlock.m_PathID": 606097,
+ "textTimeStars.m_FileID": 0,
+ "textTimeStars.m_PathID": 595717,
+ "textUnlockNow.m_FileID": 0,
+ "textUnlockNow.m_PathID": 606117,
+ "expProgressRenderer.m_FileID": 0,
+ "expProgressRenderer.m_PathID": 526976,
+ "cardProgressRenderer.m_FileID": 0,
+ "cardProgressRenderer.m_PathID": 540471,
+ "parentExp.m_FileID": 0,
+ "parentExp.m_PathID": 82057,
+ "btnTry.m_FileID": 0,
+ "btnTry.m_PathID": 152912,
+ "btnUnlock.m_FileID": 0,
+ "btnUnlock.m_PathID": 152912,
+ "btnUnlockNow.m_FileID": 0,
+ "btnUnlockNow.m_PathID": 20941,
+ "btnUnlockIAP.m_FileID": 0,
+ "btnUnlockIAP.m_PathID": 236009,
+ "btnUpByCoins.m_FileID": 0,
+ "btnUpByCoins.m_PathID": 47037,
+ "btnUpByGems.m_FileID": 0,
+ "btnUpByGems.m_PathID": 61739,
+ "btnCraft2.m_FileID": 0,
+ "btnCraft2.m_PathID": 203911,
+ "btnRemove.m_FileID": 0,
+ "btnRemove.m_PathID": 48739,
+ "btnSelect.m_FileID": 0,
+ "btnSelect.m_PathID": 81060,
+ "parentCells.m_FileID": 0,
+ "parentCells.m_PathID": 430851,
+ "gridLayoutScript.m_FileID": 0,
+ "gridLayoutScript.m_PathID": 650176,
+ "cellSelected.m_FileID": 0,
+ "cellSelected.m_PathID": 246056,
+ "listCellSprites": "[8]",
+ "listCellSprites[0].m_FileID": 0,
+ "listCellSprites[0].m_PathID": 2401,
+ "listCellSprites[1].m_FileID": 0,
+ "listCellSprites[1].m_PathID": 3061,
+ "listCellSprites[2].m_FileID": 0,
+ "listCellSprites[2].m_PathID": 2616,
+ "listCellSprites[3].m_FileID": 0,
+ "listCellSprites[3].m_PathID": 3508,
+ "listCellSprites[4].m_FileID": 0,
+ "listCellSprites[4].m_PathID": 2446,
+ "panelMain.m_FileID": 0,
+ "panelMain.m_PathID": 451608,
+ "fxAbiSelected.m_FileID": 0,
+ "fxAbiSelected.m_PathID": 443945,
+ "tipCover.m_FileID": 0,
+ "tipCover.m_PathID": 126131,
+ "arrowRenderer.m_FileID": 0,
+ "arrowRenderer.m_PathID": 521785,
+ "panelTopPosition.x": 0.0,
+ "panelTopPosition.y": -2.700000047683716,
+ "panelTopPosition.z": -0.5,
+ "panelBotPosition.x": 0.0,
+ "panelBotPosition.y": -7.199999809265137,
+ "panelBotPosition.z": -0.5,
+ "parentAbilities.m_FileID": 0,
+ "parentAbilities.m_PathID": 287798,
+ "textAbiName.m_FileID": 0,
+ "textAbiName.m_PathID": 693176,
+ "textAbiTip.m_FileID": 0,
+ "textAbiTip.m_PathID": 693181,
+ "textAbiInfo.m_FileID": 0,
+ "textAbiInfo.m_PathID": 693173,
+ "tipFx.m_FileID": 0,
+ "tipFx.m_PathID": 79432,
+ "popupPlayer.m_FileID": 0,
+ "popupPlayer.m_PathID": 133552,
+ "cellInPopup": "[2]",
+ "cellInPopup[0].m_FileID": 0,
+ "cellInPopup[0].m_PathID": 667863,
+ "cellInPopup[1].m_FileID": 0,
+ "cellInPopup[1].m_PathID": 582792,
+ "popupCraft.m_FileID": 0,
+ "popupCraft.m_PathID": 43698,
+ "scrollView.m_FileID": 0,
+ "scrollView.m_PathID": 587955,
+ "craftAnim.m_FileID": 0,
+ "craftAnim.m_PathID": 498815,
+ "allUnlockAnims": "[3]",
+ "allUnlockAnims[0].m_FileID": 0,
+ "allUnlockAnims[0].m_PathID": 497243,
+ "allUnlockAnims[1].m_FileID": 0,
+ "allUnlockAnims[1].m_PathID": 496459,
+ "allUnlockAnims[2].m_FileID": 0,
+ "allUnlockAnims[2].m_PathID": 496417,
+ "pointTopAnchors.m_FileID": 0,
+ "pointTopAnchors.m_PathID": 642355,
+ "pointBotAnchors.m_FileID": 0,
+ "pointBotAnchors.m_PathID": 654602,
+ "boxBound.m_FileID": 0,
+ "boxBound.m_PathID"
+```
+
 ## `Enemy_Passive_Attack` samples
 
 ```json
@@ -7136,7 +8042,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "allBarrels[0].m_PathID": 437374,
  "allBarrels[1].m_FileID": 0,
  "allBarrels[1].m_PathID": 444316,
- "_gameobject": "Boss-37001/Enemy_Ingame/Body/MB-39005"
+ "_gameobject": "Body/MB-39005"
 }
 ```
 
@@ -7171,7 +8077,7 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "attackFollowerScripts": "[0]",
  "startShootEvent.m_PersistentCalls.m_Calls": "[1]",
  "stopShootEvent.m_PersistentCalls.m_Calls": "[1]",
- "_gameobject": "Boss-39003/Enemy_Ingame/Body/Boss 1/Skeleton/SkeletonUtility-SkeletonRoot/GUN 1/SungTrai2 [Follower] 3"
+ "_gameobject": "Enemy_Ingame/Body/Boss 1/Skeleton/SkeletonUtility-SkeletonRoot/GUN 1/SungTrai2 [Follower] 3"
 }
 ```
 
@@ -7185,6 +8091,6 @@ Toàn bộ class name trong `data.unity3d` (đầy đủ: `class-inventory.csv`)
  "m_Script.m_FileID": 16777216,
  "m_Script.m_PathID": 10989076480,
  "m_Name": "",
- "_gameobject": "Gun_Rocket3.2/Enemy_Ingame/Parent_Rotate/Type4"
+ "_gameobject": "Enemy_Ingame/Parent_Rotate/Type4"
 }
 ```

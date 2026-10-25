@@ -1,0 +1,15 @@
+;;; ctor  public void .ctor() { }
+    0x14fbafc: mov      x1, xzr
+    0x14fbb00: b        #0x2143330
+
+;;; <TutChangeGameSpeed>b__0  internal bool <TutChangeGameSpeed>b__0() { }
+    0x14fbb04: str      x30, [sp, #-0x10]!
+    0x14fbb08: ldr      x0, [x0, #0x10]
+    0x14fbb0c: cbz      x0, #0x14fbb28
+    0x14fbb10: mov      x1, xzr
+    0x14fbb14: bl       #0x2781848
+    0x14fbb18: mvn      w8, w0
+    0x14fbb1c: and      w0, w8, #1
+    0x14fbb20: ldr      x30, [sp], #0x10
+    0x14fbb24: ret      
+    0x14fbb28: bl       #0x110d250
