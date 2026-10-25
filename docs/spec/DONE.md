@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 26 — 25/10, "cập nhật bổ sung + tái kiểm" — đồng bộ report 89 peer `c30dd46eb2` + chốt bảng L1/L2/L3 còn thiếu vào `DONE`):**
+> `DATA_SYNC` §24.22 (2 đường nhặt player/drone — tag Item trước hit-guard · `IPooling.GetID` ·
+> **công thức xu Coin1/Coin2**: 4 band balance ×L(tech) ×device ×.86 stage≤40 · store `coinCount`
+> trước PostEvent48 · Burst 8 = **69/165 xu** — KHÔNG còn suy tiền từ chia 5); `MISSING` row 8
+> (tiền nhặt **đã có công thức** — đóng gap) · row 9 (+ drone bắn nền/wing nhịp: peer đang
+> recover, chưa report); `START_HERE` row L2 (+89, sót đủ 6 mục `MISSING` §2); `DONE` §L1 thêm
+> row "Còn thiếu" (4 mục) · §L2 "Còn thiếu" mở đủ 6 mục; kéo `datas/pickup_currency_flow.json`;
+> ACK89 PR12. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 25 — 25/10, rà tài liệu trả lời "L1/L2/L3 còn thiếu gì" + đồng bộ report 88 peer `eaa5c74342`):**
 > `DATA_SYNC` §24.21 (producer hit thật: skeleton gán đè/DropGold Combine/19 co-attachments ·
 > DropGold **28/10** strict-threshold, HP reread, không dùng `_damage` · event6 budget **28 → 8
@@ -434,6 +443,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 | **Đạt khi** | **100%** test pass |
 | **Bắt chước đủ?** | ✅ **đủ cho phần đã có số** — nhưng phải **viết test**, bắt chước không sinh ra test |
 | **Chi phí** | trung bình |
+| **Còn thiếu (đã biết, không chặn)** | ① wing-cannon nhịp/barrels-theo-level · ② drone bắn nền — peer đang recover (`wing_drone.py` đã có, chưa report); ③ D3 thứ tự pha boss (mức C) — dựng theo `BOSS_ANIM_TIMELINE.md` + ghi lựa chọn thiết kế; ④ `rate = 0` (**2.366** dòng, `DESIGN_READINESS` §) — tự chọn, ghi rõ (`MISSING` §2.4) |
 
 > Đây là mức mà `Spec2Game` đo được **Rule & Mechanism 45,6/100** — tức mức mà AI **hay trượt nhất**
 > khi chỉ có đặc tả. Cách chặn: **test viết trước**, không phải review bằng mắt.
@@ -447,7 +457,7 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 | **Đạt khi** | (dung sai do bạn chọn — ví dụ ±5%) |
 | **Bắt chước đủ?** | ✅ **đủ** (lần 14, 25/10) — mọi giá trị đã decode + bind xong |
 | **Đã có gì** | 6 mảng `Player_Get_Datas` (bind: save/load **id−10001** · combat **impl N→index N−1**, report 81/82) · **576** mảng `Map_Get_Datas` (**11 cấu trúc**, `DIFFICULTY_MODES` §7) · **150 cặp HP enemy** · `StartHpPoint`←dict · `kHp` **không tồn tại** (`DIFFICULTY_MODES` §3–5) |
-| **Còn thiếu** | chứng minh **DPS runtime** (report 79 — `rate` = interval; peer làm parity tàu 1) + **2** tái đối chiếu `CROSSCHECK` |
+| **Còn thiếu** | chứng minh **DPS runtime** (report 79 — `rate` = interval; peer làm parity tàu 1) + **2** tái đối chiếu `CROSSCHECK` · HP riêng của tàu (`MISSING` §2.2, mức D) · consumer `Board_*` (§2.2c) · bind 576 mảng map (§2.1) · save schema đầy đủ (§2.3) |
 | **Chi phí** | ~~AssetRipper + Ghidra~~ → **không cần tool** — replay + đối chiếu |
 
 > L2 là mức **"bắt chước" đúng nghĩa nhất** — **số đã đủ hôm nay**; sót việc **chứng minh nhịp bắn
@@ -556,7 +566,7 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 
 | Mục | Trước (mục tiêu L3) | **Sau khi chốt L1** | Hệ quả |
 |---|---|---|---|
-| **L2 — đúng số** | bắt buộc | ✅ **số đã đủ — làm ngay sau L1** | giá trị decode + bind xong; sót chứng minh **DPS runtime** (peer parity tàu 1) + 2 tái đối chiếu |
+| **L2 — đúng số** | bắt buộc | ✅ **số đã đủ — làm ngay sau L1** | giá trị decode + bind xong; sót chứng minh **DPS runtime** (peer parity tàu 1) + 2 tái đối chiếu + HP tàu/`Board_*`/bind map/save schema (`MISSING` §2) |
 | **L3 — khớp trải nghiệm + art** | bắt buộc | ✅ **ĐÍCH dự án — KHÔNG hoãn** | đối chiếu reference đo được (metrics + so ảnh + timeline/audio) — **song song L2** sau khi L1 chạy được, **không cần người test** |
 | Giá trị **4.861** `[SerializeField]` | phải có | 🟡 **tuỳ chọn** | dùng làm **tham khảo**, không phải để khớp |
 | Giá trị **957** `static` | phải có | 🟡 **tuỳ chọn** | " |

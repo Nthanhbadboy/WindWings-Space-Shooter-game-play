@@ -53,7 +53,7 @@
 | `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **180 RAW · 3 DOC · 28 CONST / 211** | biết số nào tái đo được, số nào "đo một lần" |
 | `tools/` | **9** script đo lại được | — | `verify-claims.py`, `art-study.py`, `classify-by-atlas.py`, … |
 
-**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **35** file `datas/`.
+**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **36** file `datas/`.
 
 > **Đừng "sửa" 142.136 thành 142.131:** `wc -l *.asm.txt` cho **142.131** vì **`wc` đếm ký tự
 > newline**, còn `AI1` đếm **dòng** (`sum(1 for _ in fh)` = `splitlines()`). **5** file
@@ -83,7 +83,7 @@
 |---|---|---|---|
 | **L0** | chạy được: mở, vào màn, bắn, chết, qua màn | chạy 30 phút không crash | ✅ bắt buộc |
 | **L1** | đúng **luật** cơ chế, không cần giống số | chơi thử theo checklist cơ chế | ✅ **mục tiêu của bộ spec này** |
-| **L2** | đúng **số** (giá trị + nhịp spawn khớp bản gốc) | so bảng số | ⚠ **số đã decode + bind xong**; receivers đã dịch (reports 85–87) · producer + serialized joins **đã nối** (report 88) — sót chứng minh **DPS runtime** (parity tàu 1, peer làm tiếp) + **2 tái đối chiếu** `CROSSCHECK` (cần 1 lần chạy, không chặn) |
+| **L2** | đúng **số** (giá trị + nhịp spawn khớp bản gốc) | so bảng số | ⚠ **số đã decode + bind xong**; receivers 85–87 · producer/serialized **88** · **công thức xu nhặt (89)** — sót chứng minh **DPS runtime** (parity tàu 1) + **2 tái đối chiếu** `CROSSCHECK` + HP tàu · consumer `Board_*` · bind 576 map · save schema (`MISSING` §2) |
 | **L3** | khớp **trải nghiệm + art** bản gốc (chuẩn màu/sáng/nhịp) | đối chiếu reference: metrics + so ảnh + timeline/audio — **không cần người test** | 🎯 **ĐÍCH dự án — KHÔNG hoãn**: input đã đủ, chạy **song song L2** sau khi L1 chạy được |
 
 > ⚠ **L3 là ĐÍCH của dự án học tập thiết kế — KHÔNG hoãn** (lần 14, 25/10; siết措 từ review peer

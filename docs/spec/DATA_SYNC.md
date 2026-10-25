@@ -2821,3 +2821,39 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   **chưa ACK88** ⇒ ACK bằng comment PR12.
 - Models `enemy_hit_callback_models.py` (**38 tests mới**); full **450 PASS**; code `16748ccc3` ·
   Verify `40213772726 SUCCESS 55s`.
+
+### 24.22 Report 89 — pickup → callback thật → số xu được cộng (peer `eaa5c74342`→`c30dd46eb2`, **500 tests**)
+
+- **Hai đường nhặt, đều post event2 `CollectItems`**: **player** — `OnTriggerEnter2D 14bc9c0` check
+  tag **Item** TRƯỚC `activeHitEnemey@0x90`/invisible@0x91 (nhặt xu **không** dính contact-hit
+  permission; `ItemCollected` xong mới pool) · **drone** — `Droid_Movement1.Update/CollectItems`:
+  distance<5 → `CollectTo` (chỉ set force flag, chưa post); distance<0,5 → post2 rồi pool; cả hai
+  **strict**; `Item_Movement` cleanup y<−25 chỉ pool, **không** cộng xu.
+- `ItemCollected` định ID qua **`IPooling.GetID` slot 0** (interface — không theo tên prefab); byte
+  table `77a086`, 13 entries `70001..70013`; alias coin **70001=70011 · 70002=70012** → Coin1/Coin2
+  callbacks (**gán đè**, không Combine); callback null vẫn gọi `PlaySoundCoins` (helper có Time.time
+  gate riêng — không suy "mỗi item phát một tiếng").
+- **Công thức xu — KHÔNG còn suy từ chia 5** (đọc `GP_Datas.coinCount static+20`): `g =
+  trunc((stage+10)/10)`; **Coin1** `A = min(1,5g;16)+2,5` · **Coin2** `B = min(3g;23)+12`; hệ số tech
+  `L` (≤14 → 1; ≥15 → `1+(tech−14)/3`, f32 không int-div); **4 band strict theo balance**
+  (FCMP `threshold,balance` — không đảo dấu): >5500L → **1/2** · >4300L → A×.25 / B/6 · >3300L →
+  A/3 / B×.25 · >2500L → A×.5 / B×.5 · ≤2500L → A/B; ×(1+`addPercentCoinByDevice@54`) — device
+  **id 5000..5999** → `GetStatValue2`/100; **×.86 nếu stage≤40** (bits `f6285c3f`
+  = .8600000143051147); truncate → **ADD vào coinCount TRƯỚC** PostEvent48 `AddCoin` — delta 0
+  vẫn store/post, không minimum 1; post đồng bộ, listener có thể reenter.
+- **Mốc dễ sai**: stage41/tech0/device0 — balance2500 = (10,27) · 5501 = **(1,2)**; **không ép xu
+  tối thiểu 1**; tech17 → L=2 (thresholds ×2); stage40 khác stage41 ở hệ số .86. Burst 8 item của
+  88 thu đủ từ 0: stage1 = **69 xu** · stage41 = **165 xu** — conditional example, không fixed
+  payout, mỗi pickup đọc balance mới. `coinCount` = ledger gameplay, **không** đồng nhất wallet
+  persistent.
+- Nguồn stage/tech có mode gate: `get_stageIndex` (Test → `mapCurrentPlayTest`) ·
+  `GetTechLabLevel` (mode==4 ∧ scene "Game" → 0). `GetStatValue2`: `row =
+  listStatValues[trunc(id/1000)+4]`, row[rank]=0 → 0; **bảng số trong test là synthetic**, không
+  phải bảng APK mới trích.
+- Kéo về: `datas/pickup_currency_flow.json` (**20 method ranges/3530 instructions** · 63 anchors ·
+  124 arithmetic rows · 4 callback bindings · 6 type joins · 3 literals · **36 payout pairs**).
+  Full **500 tests PASS**; code `0a700993d` · Verify `40214936072 SUCCESS 55s`; findings peer giao
+  PR12 comment `6400594184`.
+- **Queue peer (2 gap L1 còn mở)**: wing-cannon getter `14b1eb0`/SetBarrels + drone base-fire —
+  peer đã chuẩn bị `tools/recovery/wing_drone.py` (commit `c30dd46eb2`), **chưa có report** ⇒ chờ
+  report tiếp theo. ACK87 ✓ · **chưa ACK89** ⇒ ACK bằng comment PR12.
