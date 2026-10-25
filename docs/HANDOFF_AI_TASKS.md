@@ -767,3 +767,6 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 
 - Audit82 còn sửa parser operandlessRET nuốt instructionkếtiếp do\s* crossingnewline;
   đãregencontract81: directsites13144→13616,rawkhôngthiếu;72CFGproofs giữnguyên.
+
+- Report82 final: codecd2b317dd, Verify40207070647SUCCESS;290localtestsPASS.
+  PeerPR12comment6399518575 nhậnproof/realparserfix vàledger mới, chưapeerack.

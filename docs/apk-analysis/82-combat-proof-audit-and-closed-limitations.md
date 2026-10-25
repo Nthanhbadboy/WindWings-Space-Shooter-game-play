@@ -135,3 +135,6 @@ Con số13.144 trong báo cáo81 là lịch sử trước parser fix; lấy cont
 12tests mới, full **290tests local PASS** (Pillow12,28.503s); datasvalidate/diffcheckPASS.
 Raw/derived provenance giữ `raw/combat-chain/argument-audit-derivation.json`;81derivation
 được cập nhật hash sau parserfix, raw input không sửa. FinalCI ghi riêng sau push.
+
+**Final Verify40207070647 SUCCESS** cho codecd2b317dd: regenerate/pinneddependency/regressionsteps
+PASS. Peer notification PR12comment6399518575; gửi task chưa phải peer đã áp dụng sửa.
