@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 17 — 25/10, chuyển bổ sung "mục đích" sang nhánh dữ liệu):** chủ dự án yêu cầu
+> cập nhật cả bên nhánh dữ liệu. Khuôn phiên chỉ push nhánh spec ⇒ giao bằng kênh chuẩn: file
+> **`docs/HANDOFF_DATA_PURPOSE_6144d7cb.md`** (3 chỗ chèn paste-ready vào `START_HERE_NEW_GAME.md` ·
+> `HANDOFF_AI_TASKS.md` · `datas/README.md`, anchor trích từ tip **`ffa9959c9e`** — peer đã lên
+> report 82, sync đầy đủ để vòng sau) + comment PR12 yêu cầu peer tự commit theo quy trình bên đó.
+> Không đụng luật bằng chứng (mức A/B/C, pin SHA) — chỉ bổ sung mục đích sản phẩm.
+>
 > **Sửa lại (lần 16 — 25/10, chủ dự án: "đừng đóng đinh mọi thứ — chỉ thiết kế lại art là được"):**
 > viết lại các khối "mục đích" của lần 15 theo hướng **giảm việc, không thêm rào cản**: bỏ giọng cấm
 > đoán ("không được lệch hướng / không suy diễn / không cải tiến") → nói điều dương: **mọi thứ trừ
