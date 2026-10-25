@@ -5,7 +5,10 @@ import json
 from pathlib import Path
 import re
 import struct
-from early_ui_native import section
+try:
+    from .early_ui_native import section
+except ImportError:
+    from early_ui_native import section
 ROOT=Path(__file__).resolve().parents[2]
 RAW=ROOT/'reverse-engineering/raw/camera-scaler'
 

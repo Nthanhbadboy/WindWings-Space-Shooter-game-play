@@ -1006,3 +1006,17 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 - Receipt100: finalad986c7b9 / Verify40232850860SUCCESS3m14s; getter audit thêm140joins,
   final1414resolved/337unknown. x1 ABI không là decoded Vector3/float. Raw receipts
   l3-ui-driver-verification; peer6403162684/PR12, chưa independent ACK hay render acceptance.
+
+## Batch101 — native camera/safe-area layout → recipe (2026-10-26)
+- Report `docs/apk-analysis/101-L3-native-camera-safearea-layout.md`; raw native/objects manifest
+  `raw/l3-layout-native`, generated585 typed contracts `datas/l3_layout.json.gz`.
+-125453 headers scanned;584anchors+1scaler;1unclassified built-in-resource header explicitly retained.
+ 2526boundedobjects/9161resolvededges/660null; six camera/scaler-writer joins; no automatic main pick.
+- Native20anchor/fixed combinations+4scaler modes,4Start camera/flag combinations; model state/cache,
+  world-vs-local-z special cases, actual-instance CLI probes and sprite/material references joined.
+- Local984PASS160.186s; final27layout tests rechecked after finite-clamp boundary validation.
+- Peer arena/20330d0e-windwings-space-shooter-game-p: audit root jump table/literal provenance,
+  native Start camera fallback vs direct call, safeArea cache/main-camera distinction, parent bridge
+  shared-oracle caveat, source-qualified identities and non-runtime camera selection. No selfACK.
+- Next coherent L3 chain: geometry/material/font + particle/shader/composition scene construction,
+  then engine transition/blending. Do not mark Unity rendering accepted from model/native-stub tests.

@@ -1,0 +1,224 @@
+{
+  "provisional": true,
+  "scope": "All APK target-class headers/bindings and serialized parent poses. Explicit camera/safeArea inputs; native scalar/control-flow checked with stubbed engine/metadata and shared affine bridge, NOT Unity playback/render or actual device safeArea.",
+  "counts": {
+    "raw_objects": 2526,
+    "edge_status": {
+      "resolved": 9161,
+      "null": 660
+    },
+    "unmodeled_affine_bridges": 0,
+    "instances": 585,
+    "classes": {
+      "UIObjectAnchors": 584,
+      "ObjectScaler": 1
+    },
+    "cameras": 6,
+    "main_tag_candidates": 4,
+    "camera_bindings": {
+      "runtime_Camera.main_fallback_NOT_selected": 576,
+      "explicit_serialized_camera": 8
+    },
+    "anchor_native_checks": 20,
+    "scaler_native_checks": 4,
+    "pose_errors": 0,
+    "read_errors": 0,
+    "header_scan_errors": 1
+  },
+  "layout_sha256": "3a5d7ed6443ee078942774738e0626d081d4d37a3300c1ec550de6652ecaa036",
+  "recovery_run": 40234506938,
+  "local_full_suite": {
+    "tests": 984,
+    "seconds": 160.186,
+    "result": "PASS",
+    "note": "Before final finite-clamp boundary validation; final 27 layout tests rechecked PASS 11.049s; final full CI receipt follows"
+  },
+  "camera_chain": {
+    "scope": "Synthetic viewport, selected modeled main/UI camera same size and serialized Awake pose; NOT device/engine readback",
+    "profile": {
+      "width": 1080,
+      "height": 2400,
+      "safe_rect": [
+        0.0,
+        96.0,
+        1080.0,
+        2208.0
+      ]
+    },
+    "predicted_half_height": 12.000000953674316,
+    "probe": {
+      "instance": {
+        "serialized_file": "data.unity3d/resources.assets",
+        "path_id": 597593
+      },
+      "camera_binding": "runtime_Camera.main_fallback_NOT_selected",
+      "scope": "Serialized pose + explicit modeled camera inputs, NOT runtime Camera.main selection or actual Awake cache",
+      "case": {
+        "anchor": 5,
+        "fixed": false,
+        "local": [
+          0.0,
+          7.900000095367432,
+          -4.5
+        ],
+        "parent": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "ui_half_height": 12.000000953674316,
+        "ui_aspect": 0.44999998807907104,
+        "main_half_height": 12.000000953674316,
+        "screen_height": 2400,
+        "safe_rect": [
+          0.0,
+          96.0,
+          1080.0,
+          2208.0
+        ]
+      },
+      "model": {
+        "state": {
+          "root": [
+            0.0,
+            9.600000381469727
+          ],
+          "real": [
+            0.0,
+            11.040000915527344
+          ],
+          "start": [
+            0.0,
+            7.900000095367432,
+            -4.5
+          ],
+          "cached_z": -4.5
+        },
+        "local": [
+          0.0,
+          9.34000015258789,
+          -4.5
+        ],
+        "world": [
+          0.0,
+          9.34000015258789,
+          -4.5
+        ],
+        "writes": [
+          {
+            "setter": "position",
+            "value": [
+              0.0,
+              9.34000015258789,
+              -4.5
+            ]
+          },
+          {
+            "setter": "localPosition",
+            "value": [
+              0.0,
+              9.34000015258789,
+              -4.5
+            ]
+          }
+        ],
+        "safe": {
+          "bounds": [
+            11.040000915527344,
+            -11.040000915527344
+          ],
+          "recomputed": true
+        }
+      },
+      "native": {
+        "bound_ui_camera": "explicit_stub",
+        "state": {
+          "root": [
+            0.0,
+            9.600000381469727
+          ],
+          "real": [
+            0.0,
+            11.040000915527344
+          ],
+          "start": [
+            0.0,
+            7.900000095367432,
+            -4.5
+          ],
+          "cached_z": -4.5
+        },
+        "world": [
+          0.0,
+          9.34000015258789,
+          -4.5
+        ],
+        "local": [
+          0.0,
+          9.34000015258789,
+          -4.5
+        ],
+        "size": [
+          3.0,
+          4.0
+        ],
+        "writes": [
+          {
+            "setter": "position",
+            "value": [
+              0.0,
+              9.34000015258789,
+              -4.5
+            ]
+          },
+          {
+            "setter": "localPosition",
+            "value": [
+              0.0,
+              9.34000015258789,
+              -4.5
+            ]
+          }
+        ],
+        "safe": [
+          11.040000915527344,
+          -11.040000915527344
+        ],
+        "clamp": 12.420000076293945,
+        "engine_stub_calls": {
+          "metadata_init_stub": 4,
+          "get_transform": 6,
+          "get_position": 1,
+          "get_localPosition": 3,
+          "op_Implicit": 1,
+          "get_orthographicSize": 2,
+          "get_aspect": 1,
+          "get_safeArea": 1,
+          "get_height": 1,
+          "get_main": 1,
+          "set_position": 1,
+          "set_localPosition": 1
+        },
+        "scope": "Bounded native instructions executed; engine, transform bridge and type metadata are stubs, NOT Unity."
+      }
+    }
+  },
+  "remaining": [
+    "Unity engine execution/render not claimed",
+    "One unclassified built-in-resource MonoBehaviour header",
+    "Camera.main and Awake pose require modeled selection, not observed runtime"
+  ]
+}
