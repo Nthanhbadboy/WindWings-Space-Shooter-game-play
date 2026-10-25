@@ -21,14 +21,15 @@
 | Súng của **player** trong dump | **0** — toàn bộ 458 là enemy/boss | `forceType = Enemy` 458/458 |
 | Enemy có `noDamage` (bất tử với đạn) | **189 / 800 (23,6%)** | `Enemy_Health.csv` |
 | Đạn xuyên khiên | **58 / 186** loại đạn | `Bullet_Linearly.csv` `throughShield` |
-| TTK | **đã tính được theo index** — DPS player = `StartMainCannonDamages[24] × StartMainCannonRate[24]`, **đã decode** từ `ia-resolved.json` (index 0 = **21.600**). Còn thiếu bind `playerIndex` → ID tàu | §6.1 |
+| TTK | **ước lượng được theo tàu** — DPS player **KHÔNG phải** `damage × rate`: report 79 peer `549a7b5b7c` chứng minh tàu 1 dùng `rate` làm **interval đặt hạn bắn** (deadline = `Time.time` + rate), chưa đếm phát phụ/nhiều nòng. Bind index→ID tàu **ĐÃ XONG** (`0x14e2ce4`, id − 10001) | §6.1 |
 
 > ⚠ **Phát hiện quan trọng nhất:** `Gun_Attack.csv` **không chứa súng của người chơi**.
 > Bằng chứng: cột `forceType` có đúng 2 giá trị (`Enemy = 0`, `Ally = 1`) và **458/458 dòng = 0**.
 > Damage của player nằm ở `Player_Get_Datas.StartMainCannonDamages[]` — class **không được
 > serialize** trong `data.unity3d`. **Đính chính 25/10:** câu *"phải decompile `libil2cpp.so`"* là
 > **cũ** — 6 mảng đã decode từ `reverse-engineering/il2cpp/ia-resolved.json`
-> → `datas/player_start_stats.json` (§6.1). Cái còn thiếu là **bind** index → ID tàu.
+> → `datas/player_start_stats.json` (§6.1). ~~Cái còn thiếu là bind index → ID tàu~~ — **bind ĐÃ XONG**
+> (`0x14e2ce4`, id − 10001, `CROSS_BRANCH` T4); cái thiếu là **chứng minh DPS runtime** (report 79).
 
 ---
 
@@ -345,23 +346,27 @@ Nguồn: `Gun_Attack.csv`, `_gameobject` cắt phần trước `/`.
 > `pN_startBltSpeed` cho **20 archetype tàu**. Tất cả là `static` → khởi tạo trong `.cctor()`.
 > **Cập nhật 25/10:** 6 mảng (`PlayerCosts` int[24] · 3× float[24] · 2× float[3]) **đã decode**
 > từ `ia-resolved.json` ⇒ **đã có giá trị**, không còn câu "chưa chạy Ghidra". Cái thiếu là
-> **bind** `playerIndex` → ID tàu. Xem `TUNING_KNOBS.md` §2.2–2.3 · `BALANCE.md` §1.1b.
+> **bind** `playerIndex` → ID tàu **ĐÃ XONG** (`0x14e2ce4`, id − 10001, T4). Xem `TUNING_KNOBS.md` §2.2–2.3 · `BALANCE.md` §1.1b.
 
 TTK = `HP / DPS_player`. Trong đó:
 - **HP enemy**: **đã có** — `datas/enemy_hp_by_id.json` **150 cặp `id → HP`** (runtime, claim **WRH2**)
   + `15-enemy-hp.csv` **981** dòng serialize (**467** > 0 — cũ ghi 800/394 là **sai**; claim **WRH1**).
   Gộp lại **108/109** prefab spawn có số HP (claim **WRH5**). ~~Còn thiếu hệ số `kHp[mode]`~~ — **không có `kHp`** (sửa 25/10, `DIFFICULTY_MODES` §3–5); TTK = HP(id) ÷ DPS, đủ để tính.
-- **DPS player**: **ĐÃ CÓ SỐ** (25/10) — `StartMainCannonDamages[24]` × `StartMainCannonRate[24]` decode từ
-  `reverse-engineering/il2cpp/ia-resolved.json` → `datas/player_start_stats.json`
-  (DPS index 0 = **21.600**, min **456**, max **46.400**).
-  Còn **chưa bind** `playerIndex` → **ID tàu**, và **chưa** kiểm `rate` có phải *shot/giây*.
+- **DPS player**: **proxy — KHÔNG giao như DPS thật** (sửa 25/10 lần 2 theo report 79 peer). Tích
+  `StartMainCannonDamages[24] × StartMainCannonRate[24]` decode từ `ia-resolved.json` →
+  `datas/player_start_stats.json` (index 0 = **21.600**, min **456**, max **46.400**) — chỉ dùng
+  **ước lượng**. Report 79: tàu 1 dùng `rate` làm **interval** (deadline `@0x10c = Time.time + rate
+  @0xa8`); còn phát phụ, nhiều nòng, modifier; không suy 23 tàu từ tàu 1.
+  Bind index→ID tàu **ĐÃ XONG** (`0x14e2ce4`, id − 10001).
 
-⇒ Lập được **hai** bảng TTK: (a) theo **index** 0–23 của mảng (số thật), (b) theo **giả thiết DPS**
-cho designer. Cái (a) vẫn là *số của game gốc* ở mức mảng, chưa phải mức “tàu X”.
+⇒ Lập được **hai** bảng TTK: (a) theo **ID tàu** (bind xong — số mảng thật, DPS là proxy), (b) theo
+**giả thiết DPS** cho designer. Cả hai đều **ước lượng**: nhịp bắn thật chưa chứng minh (report 79).
 
 ### 6.2 Bảng TTK (giây)
 
 5 mốc HP phổ biến (nguồn: `15-enemy-hp.csv`, giá trị serialize):
+
+> DPS các cột là **tham số giả định** để suy TTK; DPS player thật **chưa chứng minh** (report 79).
 
 | HP mục tiêu | Nguồn giá trị | DPS 50k | DPS 100k | DPS 250k | DPS 500k | DPS 1M |
 |---|---:|---:|---:|---:|---:|---:|
@@ -372,7 +377,7 @@ cho designer. Cái (a) vẫn là *số của game gốc* ở mức mảng, chưa
 | 5.000.000 | component max (`37018`, `37019`) | 100,0 | 50,0 | 20,0 | 10,0 | 5,0 |
 | 11.235.000 | `Boss-39006` tổng prefab (max) | 224,7 | 112,4 | 44,9 | 22,5 | 11,2 |
 
-Nguồn HP: `15-enemy-hp.csv` (800 dòng, xem `BALANCE.md` §2.2 cho bảng đầy đủ 39 prefab).
+Nguồn HP: `datas/enemy_hp_by_id.json` (**150 cặp id → HP**, chuẩn — WRH2) · `15-enemy-hp.csv` **981 dòng** serialize (WRH1); xem `BALANCE.md` §2.2.
 
 **Chọn DPS:** với mục tiêu TTK boss 60–95 s (`GAMEPLAY.md` §6.4) và median tổng HP boss
 chương 2 = **6,0 M** → **DPS player cuối chương 2 ≈ 65k–100k**; chương 1 (median 4,2 M) ≈ 45k–70k.

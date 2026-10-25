@@ -56,6 +56,7 @@
 | D2 | Thứ tự resolve stat lúc runtime | **cần chạy game** | B | đã có mô hình, chưa xác nhận |
 | D3 | Tỉ lệ rơi item trong màn | **cần chạy game** | D | phải tự thiết kế |
 | D4 | % giảm damage thực tế của giáp/device | **cần chạy game** | D | phải tự thiết kế |
+| D5 | **Nhịp bắn player — `rate` là interval** | **đã đào tàu 1 (native, report 79 peer `549a7b5b7c`)** | B | deadline `@0x10c = Time.time + rate @0xa8` ⇒ `damage × rate` **không** phải DPS; còn phát phụ `@0x118/@0x124` + nòng `@0x88` + modifier — **không suy 23 tàu từ tàu 1** |
 | E1 | Asm **từng** bị cắt cụt 11/12 file (`8871068a`) → `6109008c` hết cụt (`size_capped` 0/425). **`68ce86a7`: 25 method vắng hẳn khỏi asm** (24 stub 8 B + 1 method 32 B) | **lỗi công cụ** | A | **cờ 4** ở `ASM_INTEGRITY` §3; `RankManager` FAIL là **thật nhưng vô hại** |
 | E2 | ~~`ships.json` thiếu 13 dòng~~ ✅ **ĐÓNG — KHÔNG phải lỗi công cụ: tôi đọc sai** `Data_Players` (class dùng chung tàu + drone) | **tôi đọc sai** | **A** | **25 tàu**, không phải 38 |
 | E3 | `RankManager.asm` **thiếu 8 B** (`ctor` = `ret` rỗng) — cờ gác cổng bắt được, **vẫn còn ở `68ce86a7`** | **lỗi công cụ** | A | **không mất dữ liệu**; FAIL đúng, không phải dương tính giả |
@@ -391,6 +392,7 @@ kiểm từng id** — nhưng **không còn là ẩn số về cơ chế**.
 | D2 | Thứ tự resolve stat | mô hình **B**: `save → device(tàu) → tech → ability → StartHealth → CurrentHealth`, chốt **1 lần** trước spawn (`BALANCE` §0.6.8) | giữ đúng thứ tự này |
 | D3 | Tỉ lệ rơi item | không có; item hồi máu gọi `GetStartHp()` (A4) | tự đặt: 1 item/45 s hoặc theo wave |
 | D4 | % giảm damage của `Armor` / `reduceDamageByDevice` | có **tên field**, chưa có hệ số | tự đặt: giáp giảm 20–40%, trần 75% |
+| D5 | Nhịp bắn player (`StartMainCannonRate`) | **interval đặt hạn bắn** — native tàu 1 (report 79): deadline = `Time.time` + rate; `damage × rate` ≠ DPS | AI mới: tự chọn nhịp, hoặc chờ nhánh dữ liệu nối phát phụ + nòng (parity tàu 1 trước) |
 
 > Playback thật **đã có sẵn trong repo** (phiên phone 23/10 — `ramus/2026-10-23-phone/`): D2/D4
 > đối chiếu thêm được bằng dump JSON của phiên khi cần — không cần thiết bị mới.

@@ -6,7 +6,7 @@
 > File này **không** đánh giá lại bằng cảm nhận. Mỗi dòng là một phép đếm chạy lại được bằng
 > `tools/verify-claims.py` (nhóm **P**), hoặc trỏ thẳng vào file dữ liệu.
 >
-> **Quy mô hiện tại:** **41 tài liệu** trong `docs/spec/` (chưa kể file này) + **30 file dữ liệu**
+> **Quy mô hiện tại:** **42 tài liệu** trong `docs/spec/` (chưa kể file này) + **30 file dữ liệu**
 > trong `datas/` + **176 claim** đã khoá (**174 PASS · 2 SKIP**; nhóm P → AP).
 
 ---
@@ -34,7 +34,7 @@ cái còn thiếu là **con số hiệu chỉnh**, không phải **cơ chế**.
 |---:|---|---|---|---|
 | 1 | **Vòng lặp / meta** | ✅ **A** | 3 vòng 30 s / 10 phút / 1 tuần · 7 `PlayMode` + 3 `PVPMode` (`GAMEPLAY.md`) | — |
 | 2 | **Player / tàu / drone** | ✅ **A** | `Player_Get_Datas` 178 field · 13 drone · `StartHp 2500` | 3 bảng stat **device** (B1, 12 array *chưa chắc* là 12 device) |
-| 3 | **Súng / đạn / DPS** | ✅ **A** | 458 `Gun_Attack` (319 thật) · 102 pattern · TTK trong `COMBAT.md` | damage boss ở 19 class director (B6) |
+| 3 | **Súng / đạn / DPS** | ✅ **A** | 458 `Gun_Attack` (319 thật) · 102 pattern · TTK ước lượng trong `COMBAT.md` (DPS player = proxy — report 79) | damage boss ở 19 class director (B6) |
 | 4 | **Enemy** | ✅ **A** | 109 prefab roster · 9 component/enemy · 399 đường bay · `Enemy_Movement` 3 nhánh | **điều kiện** chuyển state `Animator` (T4) |
 | 5 | **Boss** | ✅ **A** | **46 boss** · 39 prefab `Boss-*` · 793 event có mốc · 8 tên entry + 5 nhánh (boss 1) | hành vi 12 handler (T2) |
 | 6 | **Wave / spawn** | ✅ **A** | 282 wave · 11.089 dòng cấu hình · 22.451 entry · schema `Call_Data` 23 field | nghĩa `rate = 0` (B, không chặn) |

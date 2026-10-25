@@ -231,7 +231,7 @@ Ba việc dưới đây đã có kết quả trong repo — **đừng xin dump l
   được gọi từ `Appear` (`bl` tại `0x1582760`); thân `Init()` **chưa có asm** ⇒ vẫn nhãn **B**.
 - ~~**Chưa biết HP bao nhiêu** cho từng enemy~~ — **ĐÃ CÓ 25/10**: `datas/enemy_hp_by_id.json`
   (**150** cặp, ví dụ `CB-30003` = **650**). ~~Còn thiếu hệ số chế độ `kHp`~~ → **không có `kHp`**
-  (sửa 25/10, `DIFFICULTY_MODES.md` §3–5): TTK = HP(id) ÷ DPS — đủ để tính ngay.
+  (sửa 25/10, `DIFFICULTY_MODES.md` §3–5): TTK = HP(id) ÷ DPS — tính được ngay; DPS = **proxy** `damage × rate` (report 79: interval — ghi ước lượng).
 - ~~**HP thực tế = HP bảng × `kHp[mode]`**~~ — người chơi kiểm chứng khó hơn thì **nhiều máu hơn**
   (A, chơi game), nhưng **phép nhân không tồn tại** trong mã/bảng đã đọc: 0/5 hàm `stageLevel` liên
   quan HP, HP = 1 số/prefab, `kCount ≡ 1`, chỉ `levelDelta` (**thưởng**) là chỗ chế độ nhân. Khác biệt

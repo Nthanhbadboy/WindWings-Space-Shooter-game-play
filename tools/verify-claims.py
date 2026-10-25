@@ -1734,7 +1734,7 @@ def ui_two_levels():
             sum(int(r.get("nodes") or 0) for r in idx))
 
 
-claim("P1", AUDIT, "**41 tài liệu** trong `docs/spec/` (chưa kể file này)", 41, doc_inventory,
+claim("P1", AUDIT, "**42 tài liệu** trong `docs/spec/` (chưa kể file này)", 42, doc_inventory,
       "quy mô tài liệu hiện có trong docs/spec")
 
 claim("P2", AUDIT, "**2.885** sprite, **2.816** có `width/height`; `04-asset-manifest.csv`: **2.907** asset, **2.838** có kích thước",
@@ -3361,8 +3361,8 @@ claim("GE2", "docs/spec/ASSET_TRIAGE.md",
 
 
 claim("RD1", "docs/spec/README.md",
-      "**Kiểm tự động (`RD1`):** **40 dòng · 0 lệch**",
-      (40, 0), readme_sizes,
+      "**Kiểm tự động (`RD1`):** **41 dòng · 0 lệch**",
+      (41, 0), readme_sizes,
       "mỗi dòng `N dòng · M bảng` trong bảng tài liệu README được đo lại từ file thật; lệch 1 dòng là FAIL")
 
 

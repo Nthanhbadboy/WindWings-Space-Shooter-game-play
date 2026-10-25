@@ -32,7 +32,7 @@
 | `docs/assets/sprites-atlas-page.csv` | Trang texture thật của từng sprite | **282**/340 ca chưa nhãn biết trang | gán nhãn theo trang (đo precision trước) |
 | `datas/opening_persistence.json` | **Contract save mở đầu** | **8 key family · 2 store · 7 limitation** | dựng first-run/tutorial/progression mà không đoán key |
 | `reverse-engineering/il2cpp/ia-resolved.json` | **Hex thật của mọi `InitializeArray`** | **576** mảng map · **6** mảng `Player_Get_Datas` (0 record lỗi) | **damage/rate/cost từng tàu**, danh sách wave của bảng map |
-| `datas/player_start_stats.json` | 6 mảng đã decode + DPS suy ra | **24** tàu · **16** bán được · **8** giá `−1` | dựng bảng cân bằng tàu, không đoán |
+| `datas/player_start_stats.json` | 6 mảng đã decode + damage × rate (proxy — report 79) | **24** tàu · **16** bán được · **8** giá `−1` | dựng bảng cân bằng tàu, không đoán |
 | `reverse-engineering/raw/player-loadout/` | Mảng int + asm `Player_Saved_Datas` | **5 blob · 49 int · 5/5 sha256 OK** | giá craft/unlock, chứng cứ save |
 | `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **180 RAW · 3 DOC · 28 CONST / 211** | biết số nào tái đo được, số nào "đo một lần" |
 | `tools/` | **9** script đo lại được | — | `verify-claims.py`, `art-study.py`, `classify-by-atlas.py`, … |
@@ -81,7 +81,7 @@ Không cần đọc hết 40 file trước khi bắt đầu. Tám con số này 
 | 2 | Điều khiển | kéo ngón để lái · biên **20×25** · radius **15** unit | `GAMEPLAY.md` §1 |
 | 3 | Súng / đạn | **458** cấu hình · damage **40–1.200** (median **400**) · **186** loại đạn | `COMBAT.md` §0 |
 | 4 | Wave | **282** wave · **11.089** dòng · median **28,5** dòng/wave · **109** prefab enemy | `ENCOUNTERS.md` §1 (**AQ1/AQ4**) |
-| 5 | Spawn | `rate` trung vị **1,0 s** · `y` **9,6** · radius **0,1** · **68 %** là `point_range` (**số đo, không phải luật**) — **khớp chéo runtime 25/10:** camera ortho **9,6** (report 77 peer `d66037d10`) ⇒ mép trên khung nhìn **= 9,6** | `SCRIPTS.md` §3 (**AQ6**) · `DATA_SYNC` §24.10 |
+| 5 | Spawn | `rate` trung vị **1,0 s** · `y` **9,6** · radius **0,1** · **68 %** là `point_range` (**số đo, không phải luật**) — **khớp chéo runtime 25/10:** camera ortho **9,6** (report 77 peer `d66037d10`) ⇒ mép trên khung nhìn **= 9,6**; **report 78 peer `549a7b5b7c`:** ortho = `max(h/w × 5.4f, 9.6f)` — 9,6 là **sàn**, không cố định mọi màn hình | `SCRIPTS.md` §3 (**AQ6**) · `DATA_SYNC` §24.10–24.11 |
 | 6 | Độ khó | **3** chế độ · `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · **không** nhân số quân | `DIFFICULTY_MODES.md` §5 (**E1/E2**) |
 | 7 | HP | HP bar trên **109/109** prefab · HP theo **id** (150 cặp) · **không có** `kHp[mode]` — chế độ đổi composition, không nhân HP | `ENEMY_HP_RUNTIME.md` §0 · `DIFFICULTY_MODES.md` §3–5 |
 | 8 | Rơi đồ | **702** vật đặt sẵn (**676** coin / **26** item) · **246/2.094** slot có item · **6** loại | `ECONOMY.md` (**AE1–AE3**) |
@@ -93,7 +93,7 @@ Không cần đọc hết 40 file trước khi bắt đầu. Tám con số này 
 
 Thứ tự dựng đề xuất + hoá đơn sản xuất: `GAMEPLAY.md` §7 · `DONE.md` · cái gì **chưa** có:
 `MISSING_FOR_NEW_GAME.md` (13 hệ: **8 đủ · 5 một phần · 0 thiếu hoàn toàn**). Bộ **48 câu hỏi thiết kế**
-phải tự trả lời (29 câu đã có số): `DESIGN_QUESTIONS.md`.
+phải tự trả lời (33 câu đã có số): `DESIGN_QUESTIONS.md`.
 
 ---
 

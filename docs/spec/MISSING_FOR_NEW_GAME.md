@@ -32,7 +32,7 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 | 6 | **Wave / spawn** | ✅ **đủ** | **282 wave · 11.089 dòng cấu hình · 23.757 spawner · 22.451 entry** (`H2`, `I3`, `M3`, `AQ7`) | `rate = 0` **chưa** kết luận "spawn cả loạt" — xem §2.4 |
 | 7 | **Độ khó 3 chế độ** | ✅ **đủ** | `MaxModeIndex = 4` · `levelDelta [1, 2, 3.6, 3.6]` · không nhân số quân | ngưỡng % riêng = tự chọn |
 | 8 | **Kinh tế / rơi đồ** | ✅ **đủ** | 3 tầng rơi: **702** vật đặt sẵn (**676 coin / 26 item**) · **246/2.094** slot mang item · **6** loại (`AE1`–`AE3`) | trọng số chọn giữa 6 loại — **tự chọn** |
-| 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu**; `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) — nhưng damage **có** lookup theo tàu: `GetMainCannonDamage(playerIndex)` đọc **mảng static float** `0x78` theo `playerIndex` (§2.2); `Player_Talent` **23 method** · **13 drone** | 6 mảng damage/rate/cost **đã decode** (§2.2); **bind index↔tàu ĐÃ XONG**: index = **id − 10001** (asm `0x14e2ce4`, `CROSS_BRANCH` T4) ⇒ TTK theo **từng tàu** tính được. Còn: **HP riêng của tàu** (chưa biết, **khác** HP enemy đã có), `rate` runtime |
+| 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu**; `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) — nhưng damage **có** lookup theo tàu: `GetMainCannonDamage(playerIndex)` đọc **mảng static float** `0x78` theo `playerIndex` (§2.2); `Player_Talent` **23 method** · **13 drone** | 6 mảng damage/rate/cost **đã decode** (§2.2); **bind index↔tàu ĐÃ XONG**: index = **id − 10001** (asm `0x14e2ce4`, `CROSS_BRANCH` T4) ⇒ TTK theo **từng tàu** tính được. Còn: **HP riêng của tàu** (chưa biết, **khác** HP enemy đã có); `rate` runtime **đã đào tàu 1** — interval đặt hạn bắn (report 79), 23 tàu chưa xét |
 | 10 | **UI** | ✅ **cấu trúc** · ✅ **luật thị giác** / ❌ **asset** | **797 màn · 150.131 node · 5.831 nút** (`N2`, `P6`); **55.584** layout file; khung hình **0,4813** · accent **≤10 %** · tương phản **0,45–0,80** (`VISUAL_DESIGN.md`, **AN1**, **AN2**) | asset gốc: **vẽ mới**; luật thì **đã có số** |
 | 11 | **Âm thanh** | 🟡 **có dữ liệu + 15 luật tĩnh** | **69 clip / 571,5 s** (`audio-index.csv`) · `datas/audio_rules.json`: **15 rules** (mute/volume/pause/oneshot/music…) · registry **92** id · enum **118** (report 67; `DATA_SYNC` §21.1) | **đối chiếu nghe + trigger lúc chơi** — tĩnh hiện PROVISIONAL, cần 1 lần chạy để nâng mức |
 | 12 | **Save / load + live-ops** | 🟡 **một phần** | key đã đọc: **`StarCount`** · **`StarStageMaster{stageIndex}_{modeIndex}`** (default 0) qua `PlayerPreferences.SetInt → PlayerPrefs.SetInt`; model `savedStars/result` (report 57); **170 IAP** | **schema đầy đủ** (mọi khoá/kiểu/migrate) + **chưa** chứng minh flush đĩa — xem §2.3 |
@@ -100,18 +100,23 @@ từ hex trong `ia-resolved.json` — **theo kiểu của field**, không
 - **Bind đã kiểm bằng asm** (claim **IA2**): ngay sau mỗi `InitializeArray` là store đúng offset
   `0x38 / 0x78 / 0x80 / 0x88 / 0x1C8 / 0x308` (`0x14e5b48`, `0x14e5e9c`, `0x14e5ec4`, `0x14e5f18`,
   `0x14e60c4`, `0x14e6244`), và `mov w1,#0x18` (=24) / `#3` là độ dài mảng.
-- **DPS suy ra** = `damages[i] × rate[i]` (index 0 → **21.600**; min **456** · max **46.400**) — ghi rõ đây là
-  **suy ra**, chưa chứng minh nhịp bắn runtime dùng đúng trường `rate` này.
+- **~~DPS suy ra~~ → ĐỔI CÁCH GIAO (25/10 theo report 79 peer `549a7b5b7c`):** `damages[i] × rate[i]`
+  (index 0 → **21.600**; min **456** · max **46.400**) chỉ là **tích proxy**. Tàu 1 dùng `rate` làm
+  **interval đặt hạn bắn**: deadline `@0x10c = Time.time + rate @0xa8` (`MainCannonShoot 0x147a920`) —
+  chưa đếm phát phụ (`@0x118/@0x124`), nhiều nòng (`@0x88`), modifier percent, nhánh demo literal 3.
+  `damage ÷ rate` cũng **chưa đủ**; không suy 23 tàu từ tàu 1.
 - **Đã có file dẫn xuất:** `datas/player_start_stats.json` (6 mảng + cột `main_cannon_dps` + cờ purchasable).
 - **Khác lớp (đừng gộp):** `raw/player-loadout/array-blobs.json.gz` — **5 blob** · **49 int** · **5/5 sha256 OK** (claim **CM5**) là **int** của `Player_Saved_Datas` (giá craft/unlock), **không** phải mảng float damage ở trên.
 - **Bind index↔tàu — ĐÃ XONG:** asm tại `0x14e2ce4` **trừ 10001** khỏi ID tàu ra index
-  (`adds w19,w19,#-0x2711`, `CROSS_BRANCH` T4) ⇒ tàu `10001` → index **0** (DPS **21.600**),
+  (`adds w19,w19,#-0x2711`, `CROSS_BRANCH` T4) ⇒ tàu `10001` → index **0** (proxy **21.600**),
   … tới `10024` → index **23**; `10999` (tàu khoá) nằm ngoài mảng 24.
 - **Vẫn chưa:** (1) **HP riêng của tàu** — chưa có bằng chứng theo cả hai chiều ⇒ giữ **D**.
-  (2) ~~kiểm runtime `rate`~~ → **đã chốt (A, report 53)**: nhánh Path/Waypoints `WaitForSeconds(rate)`
-  = **khoảng giây giữa lượt sinh**, không phải *shot/giây*; `rate = 0` chỉ là "không chờ thêm" (§2.4).
-- **Việc kế tiếp:** viết bảng TTK **theo ID tàu** từ `datas/player_start_stats.json` (dữ liệu +
-  ánh xạ đều đã có) — không cần đọc thêm consumer để "nối" gì nữa.
+  (2) **rate player ĐÃ ĐÀO (25/10, report 79 peer):** tàu 1 dùng `StartMainCannonRate` làm **interval**
+  đặt hạn bắn tiếp — không phải shot/giây. ⚠ **Đính chính:** report **53** (từng dùng để đóng mục này)
+  là **delay spawn** `Call_Data.rate` — **khác consumer/field**; tên `rate` giống nhau không nối được
+  hai consumer. (3) **phát phụ + nhiều nòng** chưa nối — giao nhánh dữ liệu (parity tàu 1 trước).
+- **Việc kế tiếp:** viết bảng TTK **ước lượng** theo ID tàu từ `datas/player_start_stats.json` (cột
+  DPS ghi rõ là proxy); **DPS thật** cần nối extra-shot + barrels tàu 1 rồi mở rộng — việc nhánh dữ liệu.
 
 ### 2.4 `rate = 0` **không** phải "spawn cả loạt cùng frame"
 

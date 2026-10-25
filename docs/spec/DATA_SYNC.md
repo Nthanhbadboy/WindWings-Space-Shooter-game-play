@@ -2617,3 +2617,35 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   "visible list", không coi 191 mask bị loại là "asset missing".
 - Đang làm tiếp bên peer (chưa có report): **CameraScaler** — camera binding + native resize writer,
   raw giữ float-pool byte gốc thay vì hằng số làm tròn.
+
+### 24.11 Report 78 — `CameraScaler.Awake` ghi orthoSize theo tỉ lệ màn hình (peer `f844627702`→`c34d19034f`)
+
+- **ortho 9,6 của report 77 KHÔNG cố định mọi màn hình**: `CameraScaler.Awake → ResizeCameras` tính
+  `ortho = max((float)Screen.height / (float)Screen.width × 5.4f, 9.6f)` — **9,6 chỉ là sàn**.
+  Cả hai chiều chuyển **float trước khi chia** (SCVTF/FDIV) — không mô phỏng bằng integer division C#.
+- **5 scaler / 6 camera ref**, cả **5 scene camera** của report 77 đều bind (level0:89→58 · level1:52→39 ·
+  level2:6678→{3976 UI, 3975 Game} · level3:2391→1308 · sharedassets0:121→79 — 79 là serialized ref,
+  chưa chứng minh spawn). Camera array field `0x20`, duyệt length−1 → 0.
+- Native: Awake `0x141d70c` → ResizeCameras `0x141d710`; `Screen.get_height 0x27665e4` · `get_width
+  0x27665bc`; `set_orthographicSize 0x275e1b0`; float-pool bytes gốc giữ trong raw (`camera-scaler/`).
+- ⇒ **khớp chéo y = 9,6** ở số 5 (`START_HERE`) đúng cho màn ≤ 16:9; màn dài hơn (điện thoại 20:9)
+  ortho = h/w × 5,4 > 9,6. Đã ghi bổ sung ở `START_HERE` số 5.
+
+### 24.12 Report 79 — review nhánh spec + nhịp bắn tàu 1 (peer `2842bf5f0b`→`9aa2d7e6fc`, **250 tests**)
+
+- Peer fetch nhánh mình tại **`029559d47`** (trước commit audit `343c74a2`); snapshot 4 tài liệu để ở
+  `raw/peer-review/update-029559d47.json.gz` (peer docs, không phải APK evidence). Task P0 gửi PR12
+  comment `6399017163`: ① đồng bộ bảng tổng audio/assets; ② sửa claim DPS/TTK; ③ player-ID binding;
+  ④ CameraScaler 78; ⑤ tách lựa chọn thiết kế khỏi thông số APK.
+- **Lỗ hổng peer bắt đúng:** `MISSING` §2.2 từng dùng report **53** (delay spawn Path/Waypoints) để đóng
+  `StartMainCannonRate` — **hai consumer/field khác nhau**; `COMBAT` ghi `damage × rate` là DPS.
+- **Chuỗi tàu 1 (Player_Attack_1, native, static):** `SetupDatas 0x147a364` gọi `GetMainCannonRate(0)`
+  (getter `0x14e3cd8` đọc `@0x80`, nhân `(1 − GetMainCannonRatePercent())`), store `@0xa8`
+  (`timeRateMainCannon`; nhánh demo literal 3); `MainCannonShoot 0x147a920` đọc `Time.get_time 0x2786dc0`,
+  gate `@0x10c`, **deadline `@0x10c = now + @0xa8`** (`0x147a988..990`) ⇒ rate là **interval**;
+  phát phụ `@0x118/@0x124` + counters `@0x11c/@0x120`; nòng duyệt array `@0x88`.
+- **Đã sửa bên mình (commit này):** `MISSING` §2.2 (đính chính report 53 + proxy) · `COMBAT` §0/§6.1/§6.2 ·
+  `BALANCE` §1.1b (bảng đổi nhãn proxy + bind xong) · `START_HERE` số 5/`datas` · `DESIGN_QUESTIONS` B4 ·
+  `OPEN_ISSUES` D5 (mới) · `BOSSES` · `ENEMY_HP_RUNTIME` · `COVERAGE_AUDIT` §1 row 3 · README.
+- **Bàn giao mới:** `SYSTEM_MANIFEST.md` — bảng tối giản `hệ thống → raw/hợp đồng → luật → tự chọn →
+  test` (đúng task ⑤ của peer). Reply trên PR12 sau khi push + CI.

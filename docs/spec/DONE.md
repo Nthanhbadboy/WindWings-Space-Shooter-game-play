@@ -72,6 +72,18 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 12 — 25/10, đồng bộ report 78–79 peer `549a7b5b7c`, peer 250 tests):** peer review
+> nhánh mình tại `029559d47` + đào native nhịp bắn tàu 1 (raw `player-firing`). P0 qua PR12:
+> ① DPS/TTK — **sửa rồi**: report 79 chứng minh tàu 1 dùng `StartMainCannonRate` làm **interval đặt
+> hạn bắn** (deadline `@0x10c = Time.time + rate @0xa8`) ⇒ `damage × rate` chỉ là **proxy**, không
+> giao như DPS; kèm **đính chính report 53** (delay spawn) từng bị dùng đóng nhầm consumer player —
+> sửa `MISSING` §2.2, `COMBAT` §0/§6.1/§6.2, `BALANCE` §1.1b, `DESIGN_QUESTIONS` B4 (còn stale
+> "thiếu StartHp"), `BOSSES`, `ENEMY_HP_RUNTIME`, `COVERAGE_AUDIT` §1; ② bind "chưa bind" → **ĐÃ
+> XONG** ở COMBAT/BALANCE; ③ CameraScaler **report 78**: `ortho = max(h/w × 5.4f, 9.6f)` — 9,6 là
+> **sàn**, không cố định (`DATA_SYNC` §24.11 + `START_HERE` số 5); ④ **`SYSTEM_MANIFEST.md`** mới —
+> bảng tối giản `hệ thống → raw → luật → tự chọn → test` (task ⑤); ⑤ `OPEN_ISSUES` thêm **D5**.
+> verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK. Reply PR12 sau push + CI.
+>
 > **Sửa lại (lần 11 — 25/10, audit "giao thiết kế được chưa" + cứu lô lần 9):** audit 4 tài liệu
 > điểm vào (`START_HERE` → `MISSING` → `DESIGN_READINESS` → `COVERAGE_AUDIT`) bắt stale: tally cũ
 > 29/15/4 + claim "151/149" (thật **211 claim · 209 PASS · 2 SKIP**), "2 chặn map→wave + HP runtime"

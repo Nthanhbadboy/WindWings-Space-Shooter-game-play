@@ -208,7 +208,7 @@ export"**.
 | `StartHp` | **`float`** | **một** giá trị tại một thời điểm — không phải mảng |
 | `StartMainCannonDamages` | **`float[]`** | damage **riêng từng tàu** |
 | `StartWingCannonDamages` | **`float[]`** | damage pháo cánh **riêng từng tàu** |
-| `StartMainCannonRate` | **`float[]`** | nhịp bắn **riêng từng tàu** |
+| `StartMainCannonRate` | **`float[]`** | **khoảng giữa 2 phát** (interval) — tàu 1 chứng minh (report 79); 23 tàu chưa xét |
 | `StartSecretWeaponDamage` | `float` | dùng chung |
 
 `Data_Players` / `Player_Info` (25 tàu) chỉ có `id · Sprite · Star · Actived` — **0 field HP**.
@@ -219,7 +219,7 @@ Nguồn: `reverse-engineering/il2cpp/ia-resolved.json#Player_Get_Datas.cctor` �
 Mỗi mảng là **hex của `InitializeArray`**, giải mã **theo kiểu field** (int32 nếu `int[]`, float32 nếu `float[]`);
 store offset kiểm bằng asm: `0x38 / 0x78 / 0x80 / 0x88 / 0x1C8 / 0x308`.
 
-| index | `PlayerCosts` (coin, −1 = không bán) | `StartMainCannonDamages` | `StartMainCannonRate` | `StartWingCannonDamages` | DPS chính (suy ra) |
+| index | `PlayerCosts` (coin, −1 = không bán) | `StartMainCannonDamages` | `StartMainCannonRate` | `StartWingCannonDamages` | damage × rate (**proxy** — KHÔNG phải DPS chứng minh, report 79) |
 |---:|---:|---:|---:|---:|---:|
 | 0 | 0 | 4500 | 4.8 | 218 | 21600 |
 | 1 | 0 | 220 | 6.8 | 75 | 1496 |
@@ -249,8 +249,10 @@ store offset kiểm bằng asm: `0x38 / 0x78 / 0x80 / 0x88 / 0x1C8 / 0x308`.
 - `shipCloneDamage` = **1,35 · 1,6 · 1,86** (`0x1C8`) · `PercentToCompleteMissions222` = **0,2 · 0,6 · 0,98** (`0x308`).
 - **16/24** tàu có giá ≥ 0; **8** tàu `−1`. `PlayerCosts` là **int**, ba mảng damage/rate là **float** — trước đây
   mình đọc nhầm cả 4 là float*24, xem `DATA_SYNC.md` §21.
-- `index` là **playerIndex** trong getter; **chưa** bind sang ID tàu. DPS = damage × rate là **suy ra**
-  (chưa chứng minh `rate` là shot/giây thực tế).
+- `index` là **playerIndex**; bind sang ID tàu **ĐÃ XONG** — id − 10001 (`0x14e2ce4`, `CROSS_BRANCH` T4).
+  **⚠ DPS = damage × rate KHÔNG phải DPS chứng minh** (25/10, report 79 peer `549a7b5b7c`): tàu 1 dùng
+  `rate` làm **interval đặt hạn bắn** (deadline = `Time.time` + rate); `damage ÷ rate` cũng chưa đủ —
+  còn phát phụ, nhiều nòng, modifier; không suy 23 tàu từ tàu 1.
 - HP vẫn **không** có bảng theo tàu: `StartHp` là **một** float.
 ⇒ Nếu mỗi tàu có HP riêng, bảng đó **không** nằm ở ScriptableObject; phải là **mảng cứng trong
 code** hoặc gán ở chỗ khác.
@@ -853,7 +855,7 @@ bị cắt** (`DATA_SYNC` §7.29).
 | `StartHp` | **`float`** (một giá trị) | HP **dùng chung cho mọi tàu** |
 | `StartMainCannonDamages` | **`float[]`** | damage **riêng từng tàu** |
 | `StartWingCannonDamages` | **`float[]`** | damage pháo cánh **riêng từng tàu** |
-| `StartMainCannonRate` | **`float[]`** | nhịp bắn **riêng từng tàu** |
+| `StartMainCannonRate` | **`float[]`** | **khoảng giữa 2 phát** (interval) — tàu 1 chứng minh (report 79); 23 tàu chưa xét |
 | `StartSecretWeaponDamage` | `float` | dùng chung |
 
 ⇒ **Tàu khác nhau ở damage và nhịp bắn, không ở HP.** `Data_Players` (25 tàu) chỉ có
