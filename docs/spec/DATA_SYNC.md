@@ -2018,3 +2018,17 @@ Bảy wave còn lại (25 · 26 · 49 · 104 · 137 · 163 · 198) chỉ **đổ
   thì kéo **đúng file đó**.
 - `.github/**`, `tools/verify/*.py`, `tests/` của bản `9edc21f4d`: **chưa** kéo (là mã của nhánh kia).
 - `docs/HANDOFF_AI_TASKS.md` của bản đó: **chưa** đọc.
+
+### 15.7 Kéo tiếp tới **`575113776`** (cùng ngày)
+
+Trong lúc đang ghi §15, nhánh dữ liệu đi thêm **7 commit** (`9edc21f4d` → **`575113776`**). Đã fetch +
+`ls-remote` khớp, rồi kéo **83 file**: `raw/ui-audit/` (+**80 file**: `MapController` **2.584 dòng asm**,
+`ScenesManager`, `stage23-rodata.json` +254 dòng, `tutorial-consumer-flow.json.gz`), cập nhật
+`50-stage2-stage3-ui-from-raw.md` và thêm **`51-tutorial-consumer-equipment-continue.md`**.
+
+Điểm quan trọng: cửa sổ này **không** đụng `datas/` hay CSV lớp script nào ⇒ **0 con số phải sửa**,
+verifier vẫn **156 PASS · 0 FAIL · 2 SKIP**. Đây là lần đầu một lần kéo **không** phá con số nào —
+vì thứ được thêm là **thân hàm native**, không phải dữ liệu serialize.
+
+Còn **chưa** kéo (giữ nguyên chính sách): `.github/**`, `tools/verify/*.py`, `tests/`, `docs/HANDOFF_AI_TASKS.md`
+của nhánh dữ liệu.

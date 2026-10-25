@@ -1,0 +1,38 @@
+;;; cctor  private static void .cctor() { }
+    0x14f648c: str      x30, [sp, #-0x20]!
+    0x14f6490: stp      x20, x19, [sp, #0x10]
+    0x14f6494: adrp     x19, #0x2ce2000
+    0x14f6498: adrp     x20, #0x2ae9000
+    0x14f649c: ldrb     w8, [x19, #0x345]
+    0x14f64a0: ldr      x20, [x20, #8]
+    0x14f64a4: tbnz     w8, #0, #0x14f64bc
+    0x14f64a8: adrp     x0, #0x2ae9000
+    0x14f64ac: ldr      x0, [x0, #8]
+    0x14f64b0: bl       #0x110d028
+    0x14f64b4: mov      w8, #1
+    0x14f64b8: strb     w8, [x19, #0x345]
+    0x14f64bc: ldr      x0, [x20]
+    0x14f64c0: bl       #0x110d240
+    0x14f64c4: mov      x1, xzr
+    0x14f64c8: mov      x19, x0
+    0x14f64cc: bl       #0x2143330
+    0x14f64d0: ldr      x8, [x20]
+    0x14f64d4: ldr      x8, [x8, #0xb8]
+    0x14f64d8: str      x19, [x8]
+    0x14f64dc: ldp      x20, x19, [sp, #0x10]
+    0x14f64e0: ldr      x30, [sp], #0x20
+    0x14f64e4: ret      
+
+;;; ctor  public void .ctor() { }
+    0x14f64e8: mov      x1, xzr
+    0x14f64ec: b        #0x2143330
+
+;;; <OpenEndgame>b__19_0  internal void <OpenEndgame>b__19_0() { }
+    0x14f64f0: mov      w0, #1
+    0x14f64f4: mov      x1, xzr
+    0x14f64f8: b        #0x141b488
+
+;;; <OpenEndgame>b__19_1  internal void <OpenEndgame>b__19_1() { }
+    0x14f64fc: mov      w0, #3
+    0x14f6500: mov      x1, xzr
+    0x14f6504: b        #0x141b488
