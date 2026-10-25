@@ -657,3 +657,12 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 -7tests mới;nooriginalmediaGit/no fullAPKexport/no releasechanges/preview. **Taskpeer:** importtypedcontextkhônggộpcamera/layernamespaces;giữmaskranges,depth/clear/nativewriterunknown. Concreteprojection/mask-stencil/runtimevalidation cònmở;khôngnângboolpredicatethànhvisiblelist hoặc191excludedmasks thànhmissingassets. Premium/poolhistoryhoãn.
 
 - **Report77 final:** Verify40202243648 SUCCESS trêncode0f7ae8853,239tests/pinnedPillow12;local239tests/Pillow12+datasvalidatePASS. Recovery40201827785SUCCESS;nomedia/releasechanges/fullAPKexport/file-diff-previewpresentation.
+
+
+## Report78 — CameraScaler.Awake native screen-ratio writer
+- Recovery40202623509+40202782008SUCCESS/rawf84462770;5capturedscalers/6nonnullcameraRefs,125453headers/1knownbuiltinerror. Cả5scene camera hashes/trees match77;sharedassets0scaler121→camera79 làserializedref chưaspawnproof. Raw/camera-scaler giữcomponents/native/2exactfloatpools/index.
+- Awake0x141d70c→Resize0x141d710,Screenheight0x27665e4/width0x27665bc→scvtf/fdiv/fmul/fmaxnm→Camera.set_orthographicSize0x275e1b0. Formula max(height/width*5.4f,9.6f),exactfloats5.400000095367432/9.600000381469727. Khôngfixed9.6mọidisplay. Gamearray[3976UI,3975Game] viếtreverseGame→UI,cùngscalar.
+- `datas/camera_scaler_contract.json`/verifier:8nativechecks/typedbindings/binary32arithmeticmodel.1080×2400model12.000000953674316,khôngdevicecapture. Modelpositiveint32domain khôngnativevalidationproof. Nullarray/ref đifailurepath,khôngnullskip. Awake rawmin8byteoverlap đượcclipanalysisnextRVA4bytes,rawgiữ nguyên.
+-8tests mới;noactualUnitylifecycle/FPCR/render/other-writerabsenceproof,release/media khôngđổi. **Taskpeer:** thayfixedorthoassumption vớiwriterformula+typedrefs,nếuthêmresizeevent/nullrepair/khácScreen sourceghi newdesign. Khônggộp2Gamecameras vìcùngsize;native movement/otherwriters cònmở,Premium/poolhistoryhoãn.
+
+- Report78 lưuý: float-convert height/width TRƯỚCdivision (SCVTF/FDIV),khôngC#integerdivision. Model chỉsetterargument,khôngUnitypropertyreadback. Local247tests/Pillow12+datasvalidatePASS,finalCIkiểmriêng.

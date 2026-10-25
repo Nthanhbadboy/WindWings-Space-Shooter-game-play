@@ -1,6 +1,6 @@
 # Bắt đầu ở đây — bàn giao cho AI viết game mới
 
-**Cập nhật 25/10/2026, sau report77. Tất cả kết luận APK vẫn tạm thời.**
+**Cập nhật 25/10/2026, sau report78. Tất cả kết luận APK vẫn tạm thời.**
 Repo này là **kho dữ liệu reverse-engineering + tài liệu tham khảo**, **chưa phải project game chạy được**. Có đủ dữ liệu để bắt đầu prototype có scope; chưa phải hợp đồng đầy đủ để một agent tự dựng/phát hành cả game mà không hỏi quyết định sản phẩm.
 
 ## 1. Nguồn nào được tin, tài liệu nào chỉ dẫn đường?
@@ -154,6 +154,11 @@ activityAND predicates khôngvisibility;303mask-dependentstates cần thêmmask/
 12SpriteMask,TagManagerlayers;2Gamecameras cómask7959/32disjointUI-vsnonUI.
 3maskserializedactive,maskranges/cutoff/sourceSprite giữnguyên;78cameraLayer/activityAND
 khôngvisiblelist,maskinventorykhôngaffectingbindings. [Report77](apk-analysis/77-scene-cameras-sprite-masks-and-layer-predicates.md).
+
+**Camera writer report78:** CameraScaler.Awake ghiorthoSize theo
+max(Screen.height/Screen.width*5.4f,9.6f),khôngfixed9.6mọidisplay.5scene camera refs match77;
+sharedcamera referencegiữscope. `datas/camera_scaler_contract.json` cóexactfloatpool/nativechecks,
+khôngdeviceexecution. [Report78](apk-analysis/78-camera-scaler-native-awake-and-screen-ratio.md).
 
 Nghiệm thu fidelity còn mở: UnityGPU/PMA/filtering/sceneplacement và pivot consumer,
 nghe audio, font runtime/shaping/RTL/coverage và Spine import; staticfallback/rigidentityđãcóscope.

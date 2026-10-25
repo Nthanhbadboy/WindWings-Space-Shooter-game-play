@@ -152,3 +152,13 @@ Raw/scene-context giữ122objects/chunks/links;66cross-captureobjects rawhashequ
 `python3 tools/verify/scene_context_contracts.py` kiểmhashes/PPtrs/typedmaskSprite/layerbits.
 Gamecameras mask7959/32disjoint,3masksserializedactive,191resourcesmasks ngoài rootscope.
 7tests mới;khôngcamera projection/stencil/runtime/GPUapproval,media/release khôngđổi.
+
+
+## CameraScaler runtime-writer contract — report78
+
+`camera_scaler_contract.json`:5serializedscalers/6camera refs,5scene camerahashes match77,
+Awake→Resize nativechecks/floatpool/sourcehashes,nominalbinary32model
+max(Screen.height/Screen.width*5.4f,9.6f). Raw/camera-scaler giữexact4byte literals,
+khôngroundedreportnumbers. Verifier `camera_scaler_contracts.py`,8tests mới.
+Khôngfixed9.6mọiresolution,khôngactualdevice/FPCR/startup/projection/renderapproval;
+khônginventresizeevent/nullskip/absenceofotherwriters. Release/media khôngđổi.

@@ -11,7 +11,11 @@
 >
 > Kết luận C **không được** dùng làm thông số implement; chỉ để định hướng.
 
-## Trạng thái kiểm lại hiện hành — sau report77 (ưu tiên hơn bảng lịch sử dưới đây)
+## Trạng thái kiểm lại hiện hành — sau report78 (ưu tiên hơn bảng lịch sử dưới đây)
+
+**Report78:**CameraScaler.Awake→Resize dùng Screenheight/width vàmax(*5.4f,9.6f),
+khôngfixedsource9.6mọimànhình.5scene camerahashes/bindings match77,exactfloatpool giữraw;
+binary32sampleskhôngdevice/FPCR/runtime-writerclosure. Sharedcamera khôngspawnproof.
 
 **Report77:**5initial-sceneCamera+12SpriteMask/layercontext,66overlaprawhashesmatch76.
 Gamecamera masks7959/32disjoint;12maskcontexts khôngaffectingbindings,78bit+activityAND

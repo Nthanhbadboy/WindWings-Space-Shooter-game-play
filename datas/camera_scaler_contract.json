@@ -1,0 +1,420 @@
+{
+  "status": "PROVISIONAL_STATIC_RUNTIME_WRITER_AND_ARITHMETIC_MODEL_NOT_DEVICE_EXECUTION",
+  "sources": {
+    "files_sha256_decompressed": {
+      "native-data.json": "a7cc9419683b3b8d48508b24b043ae3fb91a8a7ab2a2ce3065bb330889d537d5",
+      "components.json.gz": "3e326d5589ee17e098777492fb0c3a75721f95c36a6bdae10d53323a0895a8db",
+      "native/CameraScaler.asm.txt": "a98a93d26befb4403157a2a9f94c6ebae4e67c963943daa85dfeb3bb0830a9b1",
+      "native/CameraScaler.json": "6437955892b41bed7c4bc7fe4621c3c4fcc9b147242714ca991c044fd6101515"
+    },
+    "dump_sha256_decompressed": "8996f7cb9ec9b8c0b9be7a81c746328e632189699a72beb53fdb7364fa168d5c",
+    "scene_context_sha256_decompressed": "8c29af134be2205a967de9d7d6c042a87fc10f3cbeaa1a0195262ef2731699fc"
+  },
+  "scan": {
+    "headers": 125453,
+    "header_errors": [
+      {
+        "serialized_file": "data.unity3d/resources.assets",
+        "type": "MonoBehaviour",
+        "path_id": 580792,
+        "error": "FileNotFoundError('File unity default resources not found in /tmp/camera-scaler/input')"
+      }
+    ]
+  },
+  "native_checks": {
+    "awake_tailcalls_resize": true,
+    "screen_height_then_width": true,
+    "height_over_width_then_factor": true,
+    "raw_pool_locations": true,
+    "camera_array_at_0x20": true,
+    "reverse_index_iteration": true,
+    "same_value_written_to_camera": true,
+    "null_camera_branches_to_failure": true
+  },
+  "resolved_calls": {
+    "0x27665e4": "public static int get_height() { }",
+    "0x27665bc": "public static int get_width() { }",
+    "0x275e1b0": "public void set_orthographicSize(float value) { }"
+  },
+  "awake_declared_span": {
+    "instructions": [
+      "    0x141d70c: b        #0x141d710"
+    ],
+    "outside_declared_span": [
+      "    0x141d710: str      d8, [sp, #-0x30]!"
+    ]
+  },
+  "float_pool": [
+    {
+      "va": "0x756f00",
+      "file_offset": 7696128,
+      "hex": "cdccac40",
+      "sha256": "48b65d28e16d73ffcadf55cb574a5ec438e5fa4a7047720bd13af776cda70500",
+      "float32": 5.400000095367432
+    },
+    {
+      "va": "0x756fb8",
+      "file_offset": 7696312,
+      "hex": "9a991941",
+      "sha256": "8a07970c3226a7e2c08ab497ef4a03edd811eed471404838d0d79b388e936ee9",
+      "float32": 9.600000381469727
+    }
+  ],
+  "formula": "max(float32(float32(float32(Screen.height) / float32(Screen.width)) * factor), minimum)",
+  "factor": 5.400000095367432,
+  "minimum": 9.600000381469727,
+  "components": [
+    {
+      "identity": {
+        "serialized_file": "data.unity3d/level0",
+        "type": "MonoBehaviour",
+        "path_id": 89
+      },
+      "raw_object_sha256": "7396647b98b8d33eb79fe6316f516b279115973393c88c4656b9881dcd0cf8fc",
+      "parsed_script_pointer": {
+        "m_FileID": 1,
+        "m_PathID": 884
+      },
+      "serialized_component_enabled": 1,
+      "gameobject": {
+        "serialized_file": "data.unity3d/level0",
+        "type": "GameObject",
+        "path_id": 1,
+        "tree": {
+          "m_Component": [
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 31
+              }
+            },
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 58
+              }
+            },
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 65
+              }
+            },
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 89
+              }
+            }
+          ],
+          "m_Layer": 0,
+          "m_Name": "Main Camera",
+          "m_Tag": 5,
+          "m_IsActive": true
+        },
+        "raw_object_sha256": "f5a9c0448acfe60439e8fa8c8b841da118bc917e9f5fa1c4e68a5167cee2b498"
+      },
+      "camera_array_order": [
+        {
+          "serialized_file": "data.unity3d/level0",
+          "type": "Camera",
+          "path_id": 58
+        }
+      ],
+      "native_write_order": [
+        {
+          "serialized_file": "data.unity3d/level0",
+          "type": "Camera",
+          "path_id": 58
+        }
+      ]
+    },
+    {
+      "identity": {
+        "serialized_file": "data.unity3d/level1",
+        "type": "MonoBehaviour",
+        "path_id": 52
+      },
+      "raw_object_sha256": "cb34e7bb34421dca6ac453b50fa9bafaf743eaec95ae6906732dc3760868c90a",
+      "parsed_script_pointer": {
+        "m_FileID": 1,
+        "m_PathID": 884
+      },
+      "serialized_component_enabled": 1,
+      "gameobject": {
+        "serialized_file": "data.unity3d/level1",
+        "type": "GameObject",
+        "path_id": 3,
+        "tree": {
+          "m_Component": [
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 22
+              }
+            },
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 39
+              }
+            },
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 42
+              }
+            },
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 52
+              }
+            }
+          ],
+          "m_Layer": 0,
+          "m_Name": "Main Camera",
+          "m_Tag": 5,
+          "m_IsActive": true
+        },
+        "raw_object_sha256": "7bb372d2309432c223efcb003453d6d62e66c4dbe80999aad2951fe89d4fc3ab"
+      },
+      "camera_array_order": [
+        {
+          "serialized_file": "data.unity3d/level1",
+          "type": "Camera",
+          "path_id": 39
+        }
+      ],
+      "native_write_order": [
+        {
+          "serialized_file": "data.unity3d/level1",
+          "type": "Camera",
+          "path_id": 39
+        }
+      ]
+    },
+    {
+      "identity": {
+        "serialized_file": "data.unity3d/level2",
+        "type": "MonoBehaviour",
+        "path_id": 6678
+      },
+      "raw_object_sha256": "e491f904ca6ea8317532818be5c938300ba220cb91b02b5de957a19bb713d24a",
+      "parsed_script_pointer": {
+        "m_FileID": 1,
+        "m_PathID": 884
+      },
+      "serialized_component_enabled": 1,
+      "gameobject": {
+        "serialized_file": "data.unity3d/level2",
+        "type": "GameObject",
+        "path_id": 91,
+        "tree": {
+          "m_Component": [
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 2215
+              }
+            },
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 6678
+              }
+            },
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 6677
+              }
+            }
+          ],
+          "m_Layer": 0,
+          "m_Name": "All_Cameras",
+          "m_Tag": 0,
+          "m_IsActive": true
+        },
+        "raw_object_sha256": "176046dca10580472d165c0ded34cadab65b84e2aa711c43153d793ea5e7c121"
+      },
+      "camera_array_order": [
+        {
+          "serialized_file": "data.unity3d/level2",
+          "type": "Camera",
+          "path_id": 3976
+        },
+        {
+          "serialized_file": "data.unity3d/level2",
+          "type": "Camera",
+          "path_id": 3975
+        }
+      ],
+      "native_write_order": [
+        {
+          "serialized_file": "data.unity3d/level2",
+          "type": "Camera",
+          "path_id": 3975
+        },
+        {
+          "serialized_file": "data.unity3d/level2",
+          "type": "Camera",
+          "path_id": 3976
+        }
+      ]
+    },
+    {
+      "identity": {
+        "serialized_file": "data.unity3d/level3",
+        "type": "MonoBehaviour",
+        "path_id": 2391
+      },
+      "raw_object_sha256": "8d475e259fcfe2aa0e5cf5851d69a0d852b8f6be220db122a662b5f9daa4802a",
+      "parsed_script_pointer": {
+        "m_FileID": 1,
+        "m_PathID": 884
+      },
+      "serialized_component_enabled": 1,
+      "gameobject": {
+        "serialized_file": "data.unity3d/level3",
+        "type": "GameObject",
+        "path_id": 3,
+        "tree": {
+          "m_Component": [
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 717
+              }
+            },
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 2391
+              }
+            }
+          ],
+          "m_Layer": 0,
+          "m_Name": "All_Cameras",
+          "m_Tag": 0,
+          "m_IsActive": true
+        },
+        "raw_object_sha256": "ab5ae654f4fc18a6d670ec477cc34e4c6db5d7ee73fb20e58d87fd2b8a33ecaf"
+      },
+      "camera_array_order": [
+        {
+          "serialized_file": "data.unity3d/level3",
+          "type": "Camera",
+          "path_id": 1308
+        }
+      ],
+      "native_write_order": [
+        {
+          "serialized_file": "data.unity3d/level3",
+          "type": "Camera",
+          "path_id": 1308
+        }
+      ]
+    },
+    {
+      "identity": {
+        "serialized_file": "data.unity3d/sharedassets0.assets",
+        "type": "MonoBehaviour",
+        "path_id": 121
+      },
+      "raw_object_sha256": "377135ef87e7a5bf0b731756048949f141140204794176a8b8d057b5d4028576",
+      "parsed_script_pointer": {
+        "m_FileID": 1,
+        "m_PathID": 884
+      },
+      "serialized_component_enabled": 1,
+      "gameobject": {
+        "serialized_file": "data.unity3d/sharedassets0.assets",
+        "type": "GameObject",
+        "path_id": 50,
+        "tree": {
+          "m_Component": [
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 71
+              }
+            },
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 79
+              }
+            },
+            {
+              "component": {
+                "m_FileID": 0,
+                "m_PathID": 121
+              }
+            }
+          ],
+          "m_Layer": 5,
+          "m_Name": "Camera",
+          "m_Tag": 0,
+          "m_IsActive": true
+        },
+        "raw_object_sha256": "4df5afe4d3d1ce7e469202fbe2d07f276cf848639c517b89e7b6dd39b18fc676"
+      },
+      "camera_array_order": [
+        {
+          "serialized_file": "data.unity3d/sharedassets0.assets",
+          "type": "Camera",
+          "path_id": 79
+        }
+      ],
+      "native_write_order": [
+        {
+          "serialized_file": "data.unity3d/sharedassets0.assets",
+          "type": "Camera",
+          "path_id": 79
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "components": 5,
+    "camera_refs": 6,
+    "scene_cameras_bound": 5
+  },
+  "arithmetic_samples": [
+    {
+      "width": 1080,
+      "height": 1920,
+      "modeled_setter_argument": 9.600000381469727
+    },
+    {
+      "width": 1080,
+      "height": 2400,
+      "modeled_setter_argument": 12.000000953674316
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "modeled_setter_argument": 9.600000381469727
+    },
+    {
+      "width": 720,
+      "height": 1280,
+      "modeled_setter_argument": 9.600000381469727
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "modeled_setter_argument": 11.68615436553955
+    }
+  ],
+  "limits": [
+    "Captured Awake calls ResizeCameras; this does not prove absence of other writers, reflection calls, later camera changes or resolution-change handling.",
+    "Model uses positive signed-int32 Screen dimensions and nominal IEEE binary32 rounding; runtime FPCR/device rendering is not captured.",
+    "Whole Screen height/width getters are used, not a measured per-camera viewport aspect or screenshot dimensions.",
+    "Awake raw export has a minimum-eight-byte overlap into the next method. Semantic instructions are clipped to the next dump RVA, preserving raw separately.",
+    "Five scene camera bindings match report77 snapshots. The sharedassets component/camera is a serialized reference, not a proven spawned instance.",
+    "The arithmetic model predicts the setter argument, not a Unity property readback; internal engine setter behavior is not executed.",
+    "No automatic null skipping, array repair, startup execution, world-to-screen projection, stencil or visibility is simulated."
+  ]
+}
