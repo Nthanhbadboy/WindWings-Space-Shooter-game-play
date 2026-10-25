@@ -1194,6 +1194,155 @@ claim("J9", SCRIPT, "**0,5** | đặt một tham số material", (0.5, 0.05), en
 claim("J10", SCRIPT, "`Enemy_Movement` 3 nhánh", 3, enemy_move_branches,
       "animation enemy = máy trạng thái di chuyển, 3 nhánh trong Update")
 
+# ── K. boss 1: tên entry + bảng chuyển state (giải từ typetree + asm) ──
+#
+# Chuỗi suy luận phải kiểm được từng bước: tên lấy từ typetree, offset lấy từ
+# asm, và *mối nối* giữa hai thứ là lệnh SetAnimation trong `Start`.
+
+HANDOFF = "docs/spec/HANDOFF_ANIM_RAW.md"
+TYPO = "reverse-engineering/raw/typetrees"
+DIRECTOR_ASM = f"{IL2CPP}/Boss1_Director.asm.txt"
+B1_STATE_FIELDS = ("stateAppear", "stateRunAway", "stateDie", "stateAttack1",
+                   "stateAttack2", "stateAttack3", "statePreAttack2", "statePreAttack3")
+
+
+def boss1_states():
+    """8 giá trị field `state*` của `Boss1_Director`, theo thứ tự khai báo."""
+    raw = ref_blob(f"{TYPO}/Boss1_Director.jsonl.gz")
+    if raw is None:
+        return None
+    try:
+        tree = json.loads(raw.decode("utf-8").splitlines()[0])["tree"]
+    except (UnicodeDecodeError, json.JSONDecodeError, KeyError, IndexError):
+        return None
+    return tuple(tree.get(k) for k in B1_STATE_FIELDS)
+
+
+def _setanimation_offset():
+    """`ldr x2` ngay trước `SetAnimation` trong `Start` = field animation vào trận."""
+    sec = _asm_section(DIRECTOR_ASM, "Start")
+    if not sec:
+        return None
+    for i, ln in enumerate(sec):
+        if "0x220d324" in ln:
+            for j in range(i - 1, max(i - 5, -1), -1):
+                m = re.search(r"ldr\s+x2, \[x19, #(0x[0-9a-f]+)\]", sec[j])
+                if m:
+                    return int(m.group(1), 16)
+    return None
+
+
+def boss1_offset_names():
+    """'0x28=Xuathien · 0x30=Baydi · …' — nối offset asm với tên typetree."""
+    base, names = _setanimation_offset(), boss1_states()
+    if base is None or not names or any(n is None for n in names):
+        return None
+    return " · ".join(f"{hex(base + 8 * i)}={n}" for i, n in enumerate(names))
+
+
+def boss_work_compare_offsets():
+    """Offset các chuỗi mà `BossWork` so, theo đúng thứ tự so."""
+    sec = _asm_section(DIRECTOR_ASM, "BossWork")
+    if not sec:
+        return None
+    out = []
+    for i, ln in enumerate(sec):
+        if "0x1feca34" not in ln:
+            continue
+        # tham số thứ nhất của op_Equality được nạp vào x1 ngay trước lời gọi,
+        # riêng lần so đầu tiên thì nạp vào x8 rồi `mov x1, x8` (x19 chưa gán).
+        for j in range(i - 1, max(i - 9, -1), -1):
+            m = re.search(r"ldr\s+x[18], \[(?:x19|x0), #(0x[0-9a-f]+)\]", sec[j])
+            if m:
+                out.append(m.group(1))
+                break
+    return ",".join(out)
+
+
+def complete_calls_bosswork():
+    """`SkeletonAnimation_AnimationState_Complete` có tail-call sang `BossWork`."""
+    sec = _asm_section(DIRECTOR_ASM, "SkeletonAnimation_AnimationState_Complete")
+    raw = ref_lines(DIRECTOR_ASM)
+    if not sec or raw is None:
+        return None
+    boss_rva = None
+    # rva của BossWork lấy từ json (nguồn có cấu trúc, không đoán từ thứ tự)
+    d = ref_json(f"{IL2CPP}/Boss1_Director.json")
+    if d is None:
+        return None
+    for m in d.get("methods", []):
+        if m.get("method") == "BossWork":
+            boss_rva = m.get("rva")
+    if not boss_rva:
+        return None
+    tail = [ln for ln in sec if re.search(r"\bb\s+#0x", ln)]
+    return bool(tail) and boss_rva.lower() in tail[-1].lower()
+
+
+def missing_typetrees():
+    """Số lớp có asm/json nhưng KHÔNG có typetree."""
+    names = ("Boss1_AnimationEvents", "BossSpineEventHandler", "Boss_1_Animation")
+    local = os.path.join(ROOT, TYPO)
+    if not os.path.isdir(local):
+        have = set()
+        for ref in REFS:
+            out = git("ls-tree", "-r", "--name-only", ref, "--", TYPO)
+            if out:
+                have = {os.path.basename(p) for p in out.decode().split()}
+                break
+        if not have:
+            return None
+    else:
+        have = set(os.listdir(local))
+    return sum(1 for n in names if f"{n}.jsonl.gz" not in have)
+
+
+def boss1_handler_offsets():
+    """(số handler, offset đầu, offset cuối) — 12 delegate field liền nhau."""
+    raw = ref_blob(f"{IL2CPP}/Boss1_AnimationEvents.asm.txt")
+    if raw is None:
+        return None
+    offs, cur, seen = [], None, set()
+    for ln in raw.decode("utf-8", "replace").splitlines():
+        m = re.match(r";;; (\S+)", ln.strip())
+        if m:
+            cur = m.group(1)
+            continue
+        m2 = re.search(r"ldr\s+x8, \[x0, #(0x[0-9a-f]+)\]", ln)
+        if cur and m2 and cur not in seen:
+            seen.add(cur)
+            offs.append(int(m2.group(1), 16))
+    return (len(offs), offs[0], offs[-1]) if offs else None
+
+
+claim("K1", SCRIPT, "**8 tên entry**",
+      ("Xuathien", "Baydi", "Dead", "Attack1", "Attack2", "Attack3",
+       "Chuyensangattack2", "Chuyensangattack3"), boss1_states,
+      "typetree Boss1_Director: 8 chuỗi state lấy nguyên văn")
+
+claim("K2", SCRIPT,
+      "Chuỗi offset — `0x28=Xuathien` · `0x30=Baydi` · `0x38=Dead` · `0x40=Attack1` · "
+      "`0x48=Attack2` · `0x50=Attack3` · `0x58=Chuyensangattack2` · `0x60=Chuyensangattack3`",
+      ("0x28=Xuathien · 0x30=Baydi · 0x38=Dead · 0x40=Attack1 · 0x48=Attack2 · "
+       "0x50=Attack3 · 0x58=Chuyensangattack2 · 0x60=Chuyensangattack3"),
+      boss1_offset_names,
+      "offset suy từ SetAnimation([0x28]) trong Start, không chép tay")
+
+claim("K3", SCRIPT, "Thứ tự so chuỗi trong `BossWork`: `0x28` → `0x58` → `0x60` → `0x30` → `0x38`",
+      "0x28,0x58,0x60,0x30,0x38", boss_work_compare_offsets,
+      "5 nhánh = 5 lần String.op_Equality, đúng thứ tự thực thi")
+
+claim("K4", HANDOFF, "**tail-call** `BossWork(trackEntry.Animation.Name)`", True,
+      complete_calls_bosswork,
+      "Complete → Animation.Name → BossWork, không copy trung gian")
+
+claim("K5", HANDOFF, "**có asm nhưng không có typetree**", 3, missing_typetrees,
+      "3 lớp chưa export ⇒ T1 là việc rẻ nhất trong lô giao")
+
+claim("K6", HANDOFF, "**12 delegate field liền nhau `0x20`…`0x78`**", (12, 0x20, 0x78),
+      boss1_handler_offsets,
+      "12 handler = 12 field kề nhau, đủ để xref T2 mà không cần đoán")
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:

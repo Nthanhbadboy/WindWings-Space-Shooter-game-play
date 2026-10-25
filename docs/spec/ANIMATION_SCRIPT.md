@@ -22,9 +22,9 @@
    `Invoke` 0,05 s), không phải event.
 5. **Thời gian chờ trong code boss**: **22 lần `WaitForSeconds`**, chỉ **4** là hằng số
    (0,5 · 1,0 · 2,0 · 3,0 s), **18** lấy từ biến ⇒ nhịp pha boss phần lớn **do dữ liệu prefab**.
-6. **Cái thiếu duy nhất để chép đúng script**: **tên chuỗi** (tên entry Spine, tên clip, tên tham
-   số Animator). Chúng nằm trong `MonoBehaviour` serialized field / `Animator` parameter —
-   **chưa có trong tập đã export**, xem §6.
+6. **Tên entry của boss 1 đã giải xong** (8 chuỗi: `Xuathien` · `Baydi` · `Dead` · `Attack1/2/3` ·
+   `Chuyensangattack2/3`) và `BossWork` là **bảng chuyển state 5 nhánh**. Còn thiếu chỉ là **tên
+   tham số Animator của enemy** + **ai gán 12 delegate** — đã giao nhánh dữ liệu (`HANDOFF_ANIM_RAW.md`).
 
 ---
 
@@ -66,8 +66,52 @@ Phía rig có thêm `Boss_1_Animation` — lớp mỏng cùng tên method:
 | `SetDefeat(int turn, int index)` | 32 | `turn==1` → nhánh A, `turn==0` → nhánh B |
 | `BossDefeat` | 20 | `ldr x0,[x0,#0x70]; cbz; b` → **cùng hàm** với nhánh fallback của `BossWork` |
 
-⇒ Script boss 1 gọn lại còn: **một bảng 5–6 tên entry**, mỗi tên ứng với một delegate, và
-**`SetDieCallback`-style** chuyển pha khi bộ phận chết. Không có event, không có timeline.
+### 2.0 Bảng script — **giải xong, mức A**
+
+`Boss1_Director` có **8 field chuỗi** (typetree `Boss1_Director.jsonl.gz`) và vị trí bộ nhớ của
+chúng suy ra được từ chính asm: `Start` gọi `SetAnimation(track 0, [0x28], loop=false)` ⇒ `[0x28]`
+là **animation lúc vào trận**. Từ đó offset chạy liên tiếp 0x28 → 0x60:
+
+| offset | field | giá trị | ai dùng |
+|---|---|---|---|
+| `0x28` | `stateAppear` | **`Xuathien`** | `Start` phát lúc vào trận, `loop=false` |
+| `0x30` | `stateRunAway` | **`Baydi`** | `BossWork` → `Defeat()` |
+| `0x38` | `stateDie` | **`Dead`** | `BossWork` → `Defeat()` |
+| `0x40` | `stateAttack1` | **`Attack1`** | `BossWork` phát, `loop=true` |
+| `0x48` | `stateAttack2` | **`Attack2`** | `BossWork` phát, `loop=true` |
+| `0x50` | `stateAttack3` | **`Attack3`** | `BossWork` phát, `loop=true` |
+| `0x58` | `statePreAttack2` | **`Chuyensangattack2`** | `BossWork` → `Attack2()` |
+| `0x60` | `statePreAttack3` | **`Chuyensangattack3`** | `BossWork` → `Attack3()` |
+
+Chuỗi offset — `0x28=Xuathien` · `0x30=Baydi` · `0x38=Dead` · `0x40=Attack1` · `0x48=Attack2` · `0x50=Attack3` · `0x58=Chuyensangattack2` · `0x60=Chuyensangattack3`
+
+Thứ tự so chuỗi trong `BossWork`: `0x28` → `0x58` → `0x60` → `0x30` → `0x38`.
+
+**Chuỗi gọi** (đọc từ asm, không suy đoán):
+
+```
+Spine.Complete(TrackEntry)                    # SkeletonAnimation_AnimationState_Complete, 50 B
+  → trackEntry.Animation.Name                 # [x1+0x10] → [x8+0x10]
+  → BossWork(name)                            # tail-call, không copy
+```
+
+và `BossWork` (280 B, **5 nhánh**) là **bảng chuyển state**:
+
+| animation vừa chạy **xong** | gọi | rồi phát | loop |
+|---|---|---|---|
+| `Xuathien` | `Attack1()` 44 B | **`Attack1`** | ✔ |
+| `Chuyensangattack2` | `Attack2()` 516 B | **`Attack2`** | ✔ |
+| `Chuyensangattack3` | `Attack3()` 516 B | **`Attack3`** | ✔ |
+| `Baydi` **hoặc** `Dead` | `Defeat()` 136 B | — (tan biến) | — |
+| tên khác | — | không làm gì (`ret`) | — |
+
+**Đọc ra được gì:** boss 1 **không có timeline**. Nó là **máy trạng thái tự chạy**: mỗi animation
+kết thúc thì tự gọi state kế. Ba đòn `Attack1/2/3` **lặp vô hạn** (`loop=true`) — muốn thoát phải
+có code khác phát clip chuyển (`ChuyensangattackN`), và **đó chính là chỗ `loop=true` + 33 s của
+`Attack1` được giải thích**: 33 s là *một vòng lặp*, không phải một đòn.
+
+⇒ Script boss 1 gọn lại còn: **8 tên entry**, **5 nhánh**, **3 vòng đòn lặp**. Không có event,
+không có timeline, không có random.
 
 ### 2.1 Nhịp pha — hằng số và biến
 
@@ -96,6 +140,11 @@ trên các static `MethodInfo` cache).
 
 Hai tên đó **không có literal trong asm** (field serialized). Ứng viên duy nhất là **2 tên event
 có thật trong rig**: `Stop` và `Banplasma` — nhưng **không biết tên nào vào slot nào** ⇒ mức **B**.
+
+> **Chưa biết lớp này có ai dùng hay không:** `BossSpineEventHandler` **không có** trong
+> `script-links.jsonl.gz` (5 instance của `BossAnimationEvents`, **0** của lớp này) và **không có**
+> trong `typetrees/`. Nhưng tập `script-links` chỉ phủ các lớp nằm trong `TARGETS`, nên **không
+> được kết luận "code chết"** — đó là việc §T1 của `HANDOFF_ANIM_RAW.md`.
 
 ---
 
@@ -138,7 +187,13 @@ có thật trong rig**: `Stop` và `Banplasma` — nhưng **không biết tên n
 
 Thân mỗi hàm đúng 4 lệnh: `ldr x8,[x0,#off]; cbz; ldr x2,[x8,#0x18]; ldr x0,[x8,#0x40];
 ldr x1,[x8,#0x28]; br x2` ⇒ **chỉ gọi một delegate, không có logic**. Offset delegate khác nhau
-(`0x28`, `0x30`, …) ⇒ hành vi thật nằm ở **UnityEvent binding trên prefab** — chưa export.
+(`0x28`, `0x30`, …).
+
+> **Chỗ tôi từng viết sai:** bản đầu của mục này ghi *"hành vi nằm ở UnityEvent binding trên
+> prefab"*. **Sai.** Đó là **field delegate** (`Action`), **không** phải `UnityEvent`: lệnh
+> `ldr x2,[x8,#0x18]` lấy `method_ptr` của delegate, không phải `m_PersistentCalls`. Delegate
+> **không serialize** ⇒ không có trên prefab, mà do **code khác gán lúc chạy**. Ai gán thì **chưa
+> biết** — việc này đã giao sang nhánh dữ liệu (`HANDOFF_ANIM_RAW.md` §T2).
 
 Vì vậy: chép được **tên sự kiện + thời điểm** (§3), **không** chép được "sự kiện đó làm gì".
 
@@ -185,28 +240,28 @@ Nhưng `OnHit` (352 B) chứa **hai hằng số**:
 | Máy trạng thái enemy (3 nhánh move) | **A** | `native-calls.json` |
 | Hit flash 0,05 s | **B** | suy từ asm `Enemy_Display.OnHit` |
 | 2 tên event Spine ↔ hành vi | **B** | ứng viên `Stop`/`Banplasma` |
-| Nội dung 12 handler (UnityEvent binding) | **C** | cần export `UnityEvent` |
-| Tên entry `SetAnimation` thật | **C** | cần đọc field serialized |
+| Nội dung 12 handler (delegate do code gán) | **C** | cần tìm chỗ gán — `HANDOFF_ANIM_RAW.md` §T2 |
+| **8 tên entry + bảng chuyển state boss 1** | **A** | typetree `Boss1_Director` + asm `BossWork` |
 | Tham số Animator của enemy | **C** | chưa có tên nào |
 
 ---
 
-## 6. Ba việc kế tiếp (rẻ → đắt)
+## 6. Việc còn lại — **đã giao sang nhánh dữ liệu**
 
-1. **Export `UnityEvent` persistent calls** — biến 12 handler từ **C** lên **A**. Đây là mảnh duy
-   nhất còn thiếu để "sự kiện → hành vi" khép kín; dữ liệu đã có sẵn trong bundle, chỉ chưa bóc.
-2. **Export field serialized của `BossSpineEventHandler`** (2 chuỗi) + `Boss_1_Animation` (5 chuỗi)
-   — đóng nốt nhánh Spine.
-3. **Thống kê `Animator` parameter + transition** trên 87 prefab roster có Animator — nhánh enemy
-   hiện chỉ có *state*, chưa có *điều kiện chuyển state*.
+Ba mục **C** còn lại đều cần **đào raw** (export thêm asset / xref asm), nên theo chỉ đạo của chủ
+dự án chúng được giao thành một lô cho nhánh phân tích ngược: xem **`HANDOFF_ANIM_RAW.md`**
+(T1 = 3 lớp chưa export · T2 = ai gán 12 delegate · T3 = `UnityEvent` persistent calls ·
+T4 = tham số + transition `Animator` của enemy).
 
----
+Mỗi task trong đó có **giả định sai được**, **artifact cụ thể**, và **điều kiện lật ngược**, để
+nhánh bên kia chạy được mà không phải hỏi lại.
 
 ## 7. Cách kiểm lại
 
 ```bash
-python3 tools/verify-claims.py --only J     # 10/10 claim nhóm J (script animation)
-python3 tools/verify-claims.py              # toàn bộ: 87 PASS · 0 FAIL · 2 SKIP
+python3 tools/verify-claims.py --only J     # 10/10 claim nhóm J (nhịp + event)
+python3 tools/verify-claims.py --only K     # 6/6 claim nhóm K (tên entry + bảng chuyển state)
+python3 tools/verify-claims.py              # toàn bộ: 93 PASS · 0 FAIL · 2 SKIP
 ```
 
 Nguồn: `reverse-engineering/raw/animation-audit/event-receivers.json.gz` (795 event) ·
