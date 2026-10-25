@@ -2858,6 +2858,62 @@ claim("WR7", "docs/spec/DATA_SYNC.md",
       "cùng một file waves.json nhưng BA đơn vị: Σ len 22.451 · Σ len×copies 45.659 quân · 11.089 dòng; "
       "min/med/max Σ len mỗi wave 2/63/603 — đừng trộn với 45.659")
 
+def loadout_contract_counts():
+    """(số key family, số method, số check, số bảng rank, số limitation) từ contracts.json.gz."""
+    import gzip
+    import json as _json
+    p = os.path.join(ROOT, "reverse-engineering/raw/player-loadout/contracts.json.gz")
+    if not os.path.exists(p):
+        return None
+    with gzip.open(p, "rt", encoding="utf-8") as fh:
+        d = _json.load(fh)
+    return (len(d.get("contracts") or []), len(d.get("methods") or []),
+            len(d.get("checks") or {}), len(d.get("rank_tables") or {}),
+            len(d.get("limitations") or []))
+
+
+def raw_manifest_ok():
+    """(số file audio-rules khớp sha, số file loadout khớp sha, số lệch) theo index.json."""
+    import gzip
+    import hashlib
+    import json as _json
+    totals = []
+    bad = 0
+    for base in ("reverse-engineering/raw/audio-rules", "reverse-engineering/raw/player-loadout"):
+        idx_path = os.path.join(ROOT, base, "index.json")
+        if not os.path.exists(idx_path):
+            return None
+        with open(idx_path, encoding="utf-8") as fh:
+            idx = _json.load(fh)
+        ok = 0
+        for f in idx.get("files") or []:
+            p = os.path.join(ROOT, f["path"])
+            if not os.path.exists(p):
+                bad += 1
+                continue
+            data = open(p, "rb").read()
+            if p.endswith(".gz"):
+                data = gzip.decompress(data)
+            if hashlib.sha256(data).hexdigest() == f.get("sha256_decompressed"):
+                ok += 1
+            else:
+                bad += 1
+        totals.append(ok)
+    return (totals[0], totals[1], bad)
+
+
+claim("CM6", "docs/spec/MISSING_FOR_NEW_GAME.md",
+      "thêm **15 key family · 33 method · 43 check**",
+      (15, 33, 43, 6, 8), loadout_contract_counts,
+      "contracts.json.gz của report 66: 15 key · 33 method · 43 check · 6 bảng rank · 8 limitation; "
+      "status PROVISIONAL_STATIC_PARTIAL_PLAYER_LOADOUT_NOT_RUNTIME")
+
+claim("CM7", "docs/spec/DATA_SYNC.md",
+      "**21/21** file `audio-rules` + **5/5** file loadout khớp `index.json` (**0 lệch**)",
+      (21, 5, 0), raw_manifest_ok,
+      "băm lại từng file raw đã kéo và so sha256_decompressed trong index.json của nhánh dữ liệu")
+
+
 claim("RD1", "docs/spec/README.md",
       "**Kiểm tự động (`RD1`):** **40 dòng · 0 lệch**",
       (40, 0), readme_sizes,
@@ -3299,14 +3355,14 @@ def data_inventory():
 
 claim("AI1", "docs/spec/START_HERE.md",
       "**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree"
-      " · **126** bảng ScriptableObject · **42** contact sheet · **31** file `datas/`.",
-      (139, 142136, 142, 126, 42, 31), data_inventory,
+      " · **126** bảng ScriptableObject · **42** contact sheet · **32** file `datas/`.",
+      (139, 142136, 142, 126, 42, 32), data_inventory,
       "kho dữ liệu gốc đã phân tích: asm, typetree, ScriptableObject, contact sheet, datas")
 
 claim("AP1", "docs/spec/DATA_INTEGRITY.md",
-      "**PROVENANCE: 244/383 khớp · 139 lệch · 0 thiếu**",
-      (383, 244, 139), provenance_check,
-      "băm lại 383 file gốc rồi so với bảng sha256 ghi lúc kéo 019e704d1")
+      "**PROVENANCE: 272/412 khớp · 140 lệch · 0 thiếu**",
+      (412, 272, 140), provenance_check,
+      "băm lại 412 file trong bảng rồi so với sha256 ghi lúc kéo; 140 dòng lệch = file đã kéo lại sau 23/10")
 
 claim("AO2", "docs/spec/ASSET_TRIAGE.md",
       "### 9.2 Kết quả: **1.857/2.197 có nhãn**, còn **340**",
@@ -3574,8 +3630,8 @@ claim("GE2", "docs/spec/ASSET_TRIAGE.md",
 
 
 claim("RB1", "docs/spec/RAW_AUDIT.md",
-      "**RAW 159 · DOC 2 · CONST 28 · tổng 189**",
-      (159, 2, 28, 189), raw_audit_counts,
+      "**RAW 161 · DOC 2 · CONST 28 · tổng 191**",
+      (161, 2, 28, 191), raw_audit_counts,
       "sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. "
       "CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập")
 

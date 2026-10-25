@@ -2284,7 +2284,7 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **159** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **RAW** | **161** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
 | **DOC** | **2** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
 | **CONST** | **28** | không mở file ⇒ **đo một lần** |
 
@@ -2329,3 +2329,29 @@ Test `test_scoped_workflow_not_full_analyze` vẫn pass vì nó kiểm nội dun
 
 Report **59 · 60 · 61** chưa đọc; 6 chunk `sprite-geometry/objects-*.jsonl.gz` chưa có;
 `raw/animation-audit` + `raw/runtime-probe` chưa cần cho tài liệu.
+
+---
+
+## 20. Nhánh dữ liệu đi tiếp: `94da165ca` (audio rules + loadout contracts)
+
+Sau `6ababbd31`, nhánh dữ liệu có thêm 1 commit. Kéo **raw trước**, rồi mới đọc chữ:
+
+| việc | kết quả |
+|---|---|
+| file lấy về | `raw/audio-rules/` (**22** file, 119 KB) · `raw/player-loadout/contracts.json.gz` (38 KB) |
+| kiểm sha256 tại chỗ | **21/21** file `audio-rules` + **5/5** file loadout khớp `index.json` (**0 lệch**) |
+| verify của họ chạy được | `tools/verify/player_loadout_persistence.py` → **33 method · 43 check · 15 key family** |
+| verify cũ vẫn chạy | `tools/verify/opening_persistence.py` → **41 method · 25 check · 8 key family** |
+| test toàn repo | **30 test OK** (thêm 14 test mới của họ) |
+| `datas/` | thêm `player_loadout_persistence.json` (15 contract · 6 bảng rank · 8 limitation) + `README.md` |
+
+**Nội dung đáng dùng cho game mới** (đã vào `MISSING_FOR_NEW_GAME.md` §2.3b): default từng key
+(`PlayerUsed` slot0 **10001** / slot khác **10002**; `PLAYER_RANK` **2**; `PLAYER_DEFAULT_SKIN` **−1** là hợp lệ;
+`PLAYER_DEVICE` **4 slot**), bảng rank `MaxLevelPerRanks` **[10, 20, 30, 60, 120, 250, 500]** /
+`CardUpgrades` **[0, 20, 50, 80, 250, 500, 800]** / `StartRanks` **24 × 2** / `MAX_RANK_INDEX` **6**.
+
+> **Vẫn là mô tả tĩnh:** status trong file `PROVISIONAL_PINNED_NATIVE_RECOVERY_NOT_RUNTIME` và
+> `PROVISIONAL_STATIC_PARTIAL_PLAYER_LOADOUT_NOT_RUNTIME`. Chưa có runtime, chưa có atomicity/migration/cloud.
+
+**Đã thêm vào `datas/PROVENANCE.md`:** 29 dòng cho đợt kéo này ⇒ bảng **412** dòng, **272** khớp,
+**140** lệch (file kéo lại sau 23/10). `DATA_INTEGRITY.md` đã cập nhật theo (claim **AP1**).

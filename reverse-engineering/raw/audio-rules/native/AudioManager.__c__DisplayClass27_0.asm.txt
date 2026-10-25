@@ -1,0 +1,22 @@
+;;; ctor  public void .ctor() { }
+    0x15b64bc: mov      x1, xzr
+    0x15b64c0: b        #0x2143330
+
+;;; <DelayFreeSource>b__0  internal bool <DelayFreeSource>b__0() { }
+    0x15b64c4: stp      x30, x19, [sp, #-0x10]!
+    0x15b64c8: mov      x19, x0
+    0x15b64cc: ldr      x0, [x0, #0x10]
+    0x15b64d0: cbz      x0, #0x15b6504
+    0x15b64d4: mov      x1, xzr
+    0x15b64d8: bl       #0x275a928
+    0x15b64dc: fcmp     s0, #0.0
+    0x15b64e0: b.le     #0x15b64f0
+    0x15b64e4: mov      w0, #1
+    0x15b64e8: ldp      x30, x19, [sp], #0x10
+    0x15b64ec: ret      
+    0x15b64f0: ldr      x0, [x19, #0x10]
+    0x15b64f4: cbz      x0, #0x15b6504
+    0x15b64f8: mov      x1, xzr
+    0x15b64fc: ldp      x30, x19, [sp], #0x10
+    0x15b6500: b        #0x275ab60
+    0x15b6504: bl       #0x110d250

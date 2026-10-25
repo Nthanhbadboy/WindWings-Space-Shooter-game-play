@@ -58,7 +58,7 @@ def persistence_key(family, **args):
     return formats[family].format(**args)
 
 
-def build():
+def collect(select):
     dump_path = ROOT / 'reverse-engineering/il2cpp/dump.cs.gz'
     dump_bytes = gzip.decompress(dump_path.read_bytes())
     declarations, by_rva = {}, {}
@@ -86,7 +86,7 @@ def build():
     for path in (dump_path, rel_path, meta_path):
         pin(path)
     records, methods = [], {}
-    for cls, (folder, names) in SELECT.items():
+    for cls, (folder, names) in select.items():
         path = RAW / folder / (cls + '.asm.txt')
         inv_path = RAW / folder / (cls + '.json')
         pin(path); pin(inv_path)
@@ -99,6 +99,11 @@ def build():
                           calls=direct_calls(asm, by_rva), metadata_loads=metadata_loads(asm, relocations, index))
             records.append(record)
             methods[cls, name] = record
+    return declarations, sources, records, methods
+
+
+def build():
+    declarations, sources, records, methods = collect(SELECT)
     def has(cls, name, *parts):
         return all(p in methods[cls, name]['asm'] for p in parts)
     def strings(cls, name):

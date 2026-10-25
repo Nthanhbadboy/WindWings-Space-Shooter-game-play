@@ -1,0 +1,270 @@
+{
+  "schema_version": 1,
+  "status": "PROVISIONAL_STATIC_PARTIAL_PLAYER_LOADOUT_NOT_RUNTIME",
+  "contracts": [
+    {
+      "key_format": "PlayerUsed{slot}",
+      "value_type": "int32",
+      "reader_return_type": "int",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Saved_Datas.GetPlayerUsed",
+      "writer_method_ids": [
+        "Player_Saved_Datas.SetPlayerUsed"
+      ],
+      "normal_missing_default": {
+        "slot_0": 10001,
+        "other_slots": 10002
+      },
+      "semantics": "Read<=0 resets keys PlayerUsed0=10001 and PlayerUsed1=10002, then rereads requested slot; no unlock/duplicate check in setter."
+    },
+    {
+      "key_format": "PlayerUnlocked{ship}",
+      "value_type": "int32",
+      "reader_return_type": "bool",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Saved_Datas.IsPlayerUnlocked",
+      "writer_method_ids": [
+        "Player_Saved_Datas.SetPlayerUnlocked"
+      ],
+      "normal_missing_default": 0,
+      "semantics": "Normal non-Premium: ship<10003 => true (not roster validation); otherwise saved==1. Setter invokes analytics/LastShipUnlocked before flag write; can throw if analyser null."
+    },
+    {
+      "key_format": "PLAYER_RANK{ship}",
+      "value_type": "int32",
+      "reader_return_type": "int",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Saved_Datas.GetPlayerRank",
+      "writer_method_ids": [
+        "Player_Saved_Datas.SetPlayerRank"
+      ],
+      "normal_missing_default": 2,
+      "semantics": "Base<=1 writes2 before checking trial flag; trial==1 returns separate trial rank default0, no final clamp in getter. Setter has offer-reset/analytics side effects, no numeric cap shown."
+    },
+    {
+      "key_format": "PLAYER_LEVEL{ship}",
+      "value_type": "int32",
+      "reader_return_type": "int",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Saved_Datas.GetPlayerLevel",
+      "writer_method_ids": [
+        "Player_Saved_Datas.SetPlayerLevel"
+      ],
+      "normal_missing_default": 0,
+      "semantics": "Reads trial level instead only when TRIAL_ID_{ship}==1; no clamp in selected getter/setter."
+    },
+    {
+      "key_format": "TRIAL_ID_{ship}",
+      "value_type": "int32",
+      "reader_return_type": "int",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Saved_Datas.GetPlayerLevel",
+      "writer_method_ids": [],
+      "normal_missing_default": 0,
+      "semantics": "Trial flag exact1; trial writer/migration lifecycle outside this extraction."
+    },
+    {
+      "key_format": "TRIAL_RANK_{ship}",
+      "value_type": "int32",
+      "reader_return_type": "int",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Saved_Datas.GetPlayerRank",
+      "writer_method_ids": [],
+      "normal_missing_default": 0,
+      "semantics": "Trial flag exact1; trial writer/migration lifecycle outside this extraction."
+    },
+    {
+      "key_format": "TRIAL_LEVEL_{ship}",
+      "value_type": "int32",
+      "reader_return_type": "int",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Saved_Datas.GetPlayerLevel",
+      "writer_method_ids": [],
+      "normal_missing_default": 0,
+      "semantics": "Trial flag exact1; trial writer/migration lifecycle outside this extraction."
+    },
+    {
+      "key_format": "PLAYER_CARDS{ship}",
+      "value_type": "int32",
+      "reader_return_type": "int",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Saved_Datas.GetPlayerCards",
+      "writer_method_ids": [
+        "Player_Saved_Datas.SetPlayerCards"
+      ],
+      "normal_missing_default": 0,
+      "semantics": "Normal company!=Test only; Test missing default comes from CheatGameInfo static+0x24, not an override of existing saved value."
+    },
+    {
+      "key_format": "PLAYER_DEFAULT_SKIN{ship}",
+      "value_type": "int32",
+      "reader_return_type": "int",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Saved_Datas.GetPlayerDefaultSkin",
+      "writer_method_ids": [
+        "Player_Saved_Datas.SetPlayerDefaultSkin"
+      ],
+      "normal_missing_default": -1,
+      "semantics": "Missing -1 is used by GP_Loader to choose default rank skin path; do not turn it into skin0."
+    },
+    {
+      "key_format": "PlayerStatPoints{stat}",
+      "value_type": "int32",
+      "reader_return_type": "int",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Saved_Datas.GetTechStatPoints",
+      "writer_method_ids": [
+        "Player_Saved_Datas.SetTechStatPoints"
+      ],
+      "normal_missing_default": 0,
+      "semantics": "Raw saved integer, no clamp in these bodies; gameplay wrapper may override in mode4/Game."
+    },
+    {
+      "key_format": "PlayerStatLevel{stat}",
+      "value_type": "int32",
+      "reader_return_type": "int",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Saved_Datas.GetTechStatLevel",
+      "writer_method_ids": [
+        "Player_Saved_Datas.SetTechStatLevel"
+      ],
+      "normal_missing_default": 0,
+      "semantics": "Raw saved integer, no clamp in these bodies; gameplay wrapper may override in mode4/Game."
+    },
+    {
+      "key_format": "TECHLAB_LV",
+      "value_type": "int32",
+      "reader_return_type": "int",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Saved_Datas.GetTechLabLevel",
+      "writer_method_ids": [
+        "Player_Saved_Datas.SetTechLabLevel"
+      ],
+      "normal_missing_default": 0,
+      "semantics": "Raw saved integer, no clamp in these bodies; gameplay wrapper may override in mode4/Game."
+    },
+    {
+      "key_format": "PLAYER_DEVICE_{ship}_{slot}",
+      "value_type": "int32",
+      "reader_return_type": "int[]",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Device_Saved_Datas.GetPlayerDevices",
+      "writer_method_ids": [
+        "Player_Device_Saved_Datas.SetPlayerDevices"
+      ],
+      "normal_missing_default": -1,
+      "semantics": "Four slots0..3. Mode4 AND active scene Game returns new [-1,-1,-1,-1] without reading saved slots. Setter loops exactly four, bounds faults/partial writes possible for short arrays."
+    },
+    {
+      "key_format": "FIRST_INSTALL_DEVICE",
+      "value_type": "int32",
+      "reader_return_type": "void",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Player_Device_Saved_Datas.SetPlayerDevices",
+      "writer_method_ids": [
+        "Player_Device_Saved_Datas.SetPlayerDevices"
+      ],
+      "normal_missing_default": 0,
+      "semantics": "Internal first-use flag: after four writes, if any value!=-1 and old flag==0, emit feature0 then write1."
+    },
+    {
+      "key_format": "TALENT_SELECTED",
+      "value_type": "int32",
+      "reader_return_type": "int",
+      "backend": "Unity.PlayerPrefs via typed PlayerPreferences wrappers",
+      "reader_method_id": "Board_Talents.get_GetTalentIndex",
+      "writer_method_ids": [
+        "Board_Talents.set_GetTalentIndex"
+      ],
+      "normal_missing_default": -1,
+      "semantics": "Persisted selection, not the tech stat level. Player_Talent startup callback checks StageTarget>=Board_Begin.stageUnlockTalents (static+0x4, numeric unresolved), selection!=-1 and mode!=4 before assigning component talentIndex."
+    }
+  ],
+  "rank_tables": {
+    "MaxLevelPerRanks": [
+      10,
+      20,
+      30,
+      60,
+      120,
+      250,
+      500
+    ],
+    "CardUpgrades": [
+      0,
+      20,
+      50,
+      80,
+      250,
+      500,
+      800
+    ],
+    "StartRanks": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "MAX_RANK_INDEX": 6,
+    "evidence_method_id": "Player_Saved_Datas.cctor",
+    "binding": "InitializeArray callsite order -> static field offsets0,8,16; metadata token -> same-image private field blob; values truncated to allocation length, padding retained in raw."
+  },
+  "consumers": [
+    {
+      "method_id": "GP_Setup.get_indexPlayers",
+      "role": "Two-slot array, normal reads slots0/1; mode4 first slot comes from separate mode state. Instance initialization flag/static cached array; not a fresh saved read every call."
+    },
+    {
+      "method_id": "GP_Loader.LoadObjects",
+      "role": "Consumes configured ship IDs; unlocked -> rank getter, locked -> TRIAL_RANK_ default0; effective rank floored2; skin -1 selects default path."
+    },
+    {
+      "method_id": "Tech_Datas.GetTechStatLevel",
+      "role": "Saved level except mode4 AND active scene Game ->0, not save overwrite."
+    },
+    {
+      "method_id": "Player_Get_Datas.GetMainCannonRatePercent",
+      "role": "Consumes effective tech stat1; float branch constants retained in native JSON, no full combat formula claim here."
+    },
+    {
+      "method_id": "Player_Get_Datas.GetMaxCountRockets",
+      "role": "Consumes effective tech stat5: level<=0=>7,1..5=>8,6..8=>3,>=9=>10; non-monotonic native result preserved."
+    },
+    {
+      "method_id": "Player_Talent.<Start>b__8_3",
+      "role": "Consumes TALENT_SELECTED after stage/selection/mode gates; separate from unlock/tech persistence."
+    }
+  ],
+  "limitations": [
+    "Contract schema_version is pack format version, not APK save version.",
+    "Static normal non-Test/non-Premium analysis; Premium/offer economy not reconstructed.",
+    "No first-install runtime profile, atomicity, save migration or cloud/durability proof.",
+    "Trial writers and expiry not reconstructed; never infer trial state only from unlock status.",
+    "Rank tables alone do not enforce caps or establish whole upgrade payment/transaction flow.",
+    "No roster validity inferred from broad ID comparisons; no invented validation or monotonic correction.",
+    "Gameplay cache refresh/switching lifecycle is partial; snapshots may outlive saved changes.",
+    "Tech/talent consumers are scoped examples, not full combat formula coverage."
+  ],
+  "raw_evidence": "reverse-engineering/raw/player-loadout/contracts.json.gz",
+  "raw_evidence_sha256_decompressed": "8eb3e18d27232d18984d2290c9682ba3b256f8eeacf942a3528444c28cf6468f"
+}

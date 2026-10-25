@@ -50,7 +50,12 @@ truyền vào (mặc định ngoài repo).
 
 Bảng này ghi sha256 của từng file **lúc kéo 019e704d1 (23/10)** — tức bản chụp để phát hiện sửa tay.
 
-**PROVENANCE: 244/383 khớp · 139 lệch · 0 thiếu**
+**PROVENANCE: 272/412 khớp · 140 lệch · 0 thiếu**
+
+> **Đo lại 25/10 (sau khi kéo `94da165ca`):** bảng có thêm **29 dòng** cho raw mới (audio-rules +
+> loadout contracts), nên tổng là **412** dòng; **140** dòng lệch là các file đã kéo lại (bảng ghi từ 23/10).
+> So với nhánh dữ liệu ở `94da165ca`: **2.512** file chung · **2.250** giống · **262** khác;
+> **157** file `.gz` đổi byte → **89** giống nội dung, **68** khác thật.
 
 139 file lệch **không** phải sửa tay: chúng được **kéo lại** ở các commit sync sau (`bc0e11bf2`,
 `6ae2f5753`, `71b1e9861`), nên bảng ghi từ 23/10 đã **cũ**. Ví dụ `datas/enemy_hp.json`: bảng ghi
@@ -126,6 +131,6 @@ Việc đúng, nếu muốn bám đầu nhánh dữ liệu: kéo **theo lô**, m
 
 | mã | nội dung | đo bằng |
 |---|---|---|
-| **AP1** | **PROVENANCE: 244/383 khớp · 139 lệch · 0 thiếu** | đọc bảng sha256 trong `datas/PROVENANCE.md`, băm lại 383 file |
+| **AP1** | **PROVENANCE: 272/412 khớp · 140 lệch · 0 thiếu** | đọc bảng sha256 trong `datas/PROVENANCE.md`, băm lại 412 file |
 | — | 254 file khác đầu nhánh dữ liệu, **0** đang sửa trong working tree | `tools/data-integrity.py` (cần `git fetch` nhánh dữ liệu) |
 | — | 157 `.gz` đổi byte → 88 giống nội dung, 69 khác | cùng tool, mục 3 |

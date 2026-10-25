@@ -444,3 +444,40 @@ a401be18291ecd3c  21725  reverse-engineering/textassets/skeleton__7.json
 6f21fd7dd6050165  63389  reverse-engineering/textassets/skeleton__8.json
 6247d9233fd2233a  58413  reverse-engineering/textassets/skeleton__9.json
 ```
+
+## Đợt kéo 25/10 — nhánh dữ liệu `94da165ca` (audio rules + loadout contracts)
+
+Mỗi dòng: `sha256[0:16]  size  path` của **file trên đĩa** (file `.gz` là hash của byte nén).
+
+```text
+f7eba4832f119c67 257 reverse-engineering/raw/audio-rules/array-blobs.json.gz
+60d1d716a9f36ac6 4934 reverse-engineering/raw/audio-rules/index.json
+b60bd01ea2d8578c 2178 reverse-engineering/raw/audio-rules/native/AudioBehaviour2.asm.txt
+5c8dc7261001db33 5338 reverse-engineering/raw/audio-rules/native/AudioBehaviour2.json
+d18b3cab68a43a81 4182 reverse-engineering/raw/audio-rules/native/AudioManager._DelayFreeSource_d__27.asm.txt
+83d58fc6827ff25c 2459 reverse-engineering/raw/audio-rules/native/AudioManager._DelayFreeSource_d__27.json
+646cdfb19f96cf39 7908 reverse-engineering/raw/audio-rules/native/AudioManager._SmoothMusic_d__32.asm.txt
+95943550d450382e 2764 reverse-engineering/raw/audio-rules/native/AudioManager._SmoothMusic_d__32.json
+96112449377bfbb7 795 reverse-engineering/raw/audio-rules/native/AudioManager.__c__DisplayClass27_0.asm.txt
+08d911cc48a8f912 869 reverse-engineering/raw/audio-rules/native/AudioManager.__c__DisplayClass27_0.json
+49127a231fa05142 48124 reverse-engineering/raw/audio-rules/native/AudioManager.asm.txt
+5faba8b26ee81412 14428 reverse-engineering/raw/audio-rules/native/AudioManager.json
+2f0e0b1c61579db5 3239 reverse-engineering/raw/audio-rules/native/Button_Sound.asm.txt
+a848c0fb8ebb5e6e 1629 reverse-engineering/raw/audio-rules/native/Button_Sound.json
+4f5984ea879d5ddc 10041 reverse-engineering/raw/audio-rules/native/GP_SoundTracks._Start_d__0.asm.txt
+d331a0a5f5d35566 6902 reverse-engineering/raw/audio-rules/native/GP_SoundTracks._Start_d__0.json
+44f72e62a9229dbd 982 reverse-engineering/raw/audio-rules/native/GP_SoundTracks.asm.txt
+816ad197cdade82e 820 reverse-engineering/raw/audio-rules/native/GP_SoundTracks.json
+db947b33fb05b732 101 reverse-engineering/raw/audio-rules/native/Player_Sounds.asm.txt
+4f7f4e87ff88288f 373 reverse-engineering/raw/audio-rules/native/Player_Sounds.json
+fba28a13996260dd 101 reverse-engineering/raw/audio-rules/native/SoundClip.asm.txt
+d004d26fed70ae2b 369 reverse-engineering/raw/audio-rules/native/SoundClip.json
+03d6fdb1f57268de 1104 reverse-engineering/raw/player-loadout/array-blobs.json.gz
+045dd36ff3f81eb4 38818 reverse-engineering/raw/player-loadout/contracts.json.gz
+f3a049c8c6f43809 1587 reverse-engineering/raw/player-loadout/index.json
+4cd845eca6efa22b 9370 reverse-engineering/raw/player-loadout/native/Player_Device_Saved_Datas.asm.txt
+a410ecc45e6956f5 4854 reverse-engineering/raw/player-loadout/native/Player_Device_Saved_Datas.json
+bf90fe4d926e0007 75758 reverse-engineering/raw/player-loadout/native/Player_Saved_Datas.asm.txt
+e4c5e1a37f8e0768 32292 reverse-engineering/raw/player-loadout/native/Player_Saved_Datas.json
+```
+

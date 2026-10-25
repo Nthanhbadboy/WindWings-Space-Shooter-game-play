@@ -1,0 +1,27 @@
+;;; Start  private IEnumerator Start() { }
+    0x14f69ec: str      x30, [sp, #-0x20]!
+    0x14f69f0: stp      x20, x19, [sp, #0x10]
+    0x14f69f4: adrp     x19, #0x2ce2000
+    0x14f69f8: adrp     x20, #0x2ae9000
+    0x14f69fc: ldrb     w8, [x19, #0x353]
+    0x14f6a00: ldr      x20, [x20, #0x50]
+    0x14f6a04: tbnz     w8, #0, #0x14f6a1c
+    0x14f6a08: adrp     x0, #0x2ae9000
+    0x14f6a0c: ldr      x0, [x0, #0x50]
+    0x14f6a10: bl       #0x110d028
+    0x14f6a14: mov      w8, #1
+    0x14f6a18: strb     w8, [x19, #0x353]
+    0x14f6a1c: ldr      x0, [x20]
+    0x14f6a20: bl       #0x110d240
+    0x14f6a24: mov      x1, xzr
+    0x14f6a28: mov      x19, x0
+    0x14f6a2c: bl       #0x2143330
+    0x14f6a30: str      wzr, [x19, #0x10]
+    0x14f6a34: mov      x0, x19
+    0x14f6a38: ldp      x20, x19, [sp, #0x10]
+    0x14f6a3c: ldr      x30, [sp], #0x20
+    0x14f6a40: ret      
+
+;;; ctor  public void .ctor() { }
+    0x14f6a6c: mov      x1, xzr
+    0x14f6a70: b        #0x2782ba0

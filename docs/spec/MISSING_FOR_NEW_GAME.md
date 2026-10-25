@@ -120,6 +120,37 @@ tail-call) và `PlayerPreferences.dictionary` → file `persistentDataPath + /Pr
 > `TUTORIAL = 6`. Nghĩa là **HUD/debug/serializer gọi getter nhiều lần có thể đổi dữ liệu**. Nếu game mới
 > chọn getter thuần + migrate rõ ràng thì **ghi là quyết định thiết kế**, đừng giả là phục dựng nguyên hàm.
 
+
+#### 2.3b Loadout tàu (report **66**) — thêm **15 key family · 33 method · 43 check**
+
+Raw: `raw/player-loadout/contracts.json.gz` (38 KB, **sha256 kiểm tại chỗ**) + `datas/player_loadout_persistence.json`.
+Đây là **cùng một kiểu lưu** (int32 qua typed `PlayerPreferences` → `Unity.PlayerPrefs`), **khác** dictionary
+`persistentDataPath/Prefs` của report 65. Giá trị default dưới đây là **đọc từ contract**, không suy:
+
+| key | kiểu | default | bẫy khi đọc/ghi |
+|---|---|---:|---|
+| `PlayerUsed{slot}` | int32 | slot0 **10001**, slot khác **10002** | đọc **≤ 0** thì ghi lại 10001/10002 rồi đọc tiếp |
+| `PlayerUnlocked{ship}` | int32 | 0 | `ship < 10003` ⇒ **true** (không phải validate roster); setter gọi analytics **trước** khi ghi |
+| `PLAYER_RANK{ship}` | int32 | **2** | base ≤ 1 ⇒ **ghi 2** trước khi xét trial; `trial==1` trả rank trial default 0 |
+| `PLAYER_LEVEL{ship}` | int32 | 0 | chỉ đọc level trial khi `TRIAL_ID_{ship}==1`; **không clamp** |
+| `TRIAL_ID/RANK/LEVEL_{ship}` | int32 | 0 | cờ trial đúng bằng **1**; vòng đời writer/expiry **chưa** bóc |
+| `PLAYER_CARDS{ship}` | int32 | 0 | nhánh Test lấy default từ CheatGameInfo |
+| `PLAYER_DEFAULT_SKIN{ship}` | int32 | **−1** | `−1` là **hợp lệ**: `GP_Loader` dùng nó để chọn skin mặc định |
+| `PlayerStatPoints{stat}` · `PlayerStatLevel{stat}` · `TECHLAB_LV` | int32 | 0 | không clamp trong các thân hàm đã đọc |
+| `PLAYER_DEVICE_{ship}_{slot}` | int32 | **−1** | **4 slot**; mode 4 ở scene `Game` trả mảng mới `[-1,-1,-1,-1]` |
+| `FIRST_INSTALL_DEVICE` | int32 | 0 | cờ "dùng lần đầu": sau 4 lần ghi, nếu có giá trị ≠ −1 và cờ cũ… |
+| `TALENT_SELECTED` | int32 | **−1** | là **lựa chọn đã lưu**, **không** phải level talent |
+
+**Bảng rank (6 bảng, đọc từ `cctor`):** `MaxLevelPerRanks` **[10, 20, 30, 60, 120, 250, 500]** ·
+`CardUpgrades` **[0, 20, 50, 80, 250, 500, 800]** · `StartRanks` **24 × 2** · `MAX_RANK_INDEX` **6**.
+Các bảng này **không** tự áp cap — limit nằm ở wrapper gameplay, nên đừng dùng bảng làm luật cứng.
+
+**8 limitation ghi nguyên trong file** (đừng đọc là đã xong): schema_version là version **của pack**, không
+phải save version của APK · chỉ nhánh normal non-Test/non-Premium · không có first-install runtime/atomicity/
+migration/cloud · trial writer + expiry chưa bóc (**không** suy trial từ trạng thái unlock) · bảng rank không
+phải luật · không suy roster từ so sánh ID · cache gameplay chỉ một phần · consumer tech/talent là **ví dụ**,
+không phủ toàn bộ công thức chiến đấu.
+
 **Còn thiếu (đừng gọi là đủ):** IAP/cloud/Premium chưa bóc; chưa có migrate; **chưa** chứng minh flush đĩa
 (status trong file: `PROVISIONAL_STATIC_PARTIAL_SAVE_CONTRACT_NOT_FULL_SCHEMA`).
 
