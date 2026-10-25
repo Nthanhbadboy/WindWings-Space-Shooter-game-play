@@ -1,5 +1,8 @@
 # Asset tham chiếu — WindWings 1.3.118
 
+> **Pixel report72:**2185/2185SpritePNG v2 match separate rawgeometry/texture crop+flip+mesh-mask reproduction.40fractional-outside rects chỉ9roundedpadding;517PNGkhácsourcecanvas size. `datas/sprite_export_contract.json.gz` giữsourcepivot/offsets, khôngfinalPNGpivot. [Report72](../apk-analysis/72-sprite-pixel-reproduction-fractional-crops-and-pivots.md): **không UnityGPU/PMA/placement approval**.
+
+
 > **Spine report71:** draft thêm `spine-reference-v1.zip` (27folder riêng, mỗi folder skeleton.json/atlas/source-texture/Unity settings). [Báo cáo71](../apk-analysis/71-spine-file-scoped-chains-loader-and-reference-folders.md), `datas/spine_identity.json` và raw/spine-identity giữ chain/PPtr/native/provenance. Không còn chọn giữa26texture cùng basename; vẫn chưa nghiệm thu render/PMA/blend/import.
 
 

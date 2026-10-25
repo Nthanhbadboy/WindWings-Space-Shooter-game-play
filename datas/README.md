@@ -91,3 +91,12 @@ Tái tạo: `python3 tools/verify/spine_chain_contracts.py`; raw tại `raw/spin
 vẫn là nội dung animation tham khảo, không dùng global pathID của chúng làm primary key.
 7atlas headers1024 cótexture512, không tự sửa tọa độ; source-associated reference folders
 ở draft `spine-reference-v1.zip`, chưa runtime/import approval. Xem report71 cho scan exception.
+
+## Sprite export contract — report72
+
+`sprite_export_contract.json.gz`:2185typedSprite outputs +PNGhash/path, source_rect/
+source_normalized_pivot/ppu/trim+atlasoffsets/exportsize/alphabbox/rawmeshref. Sinh lại
+bằng `python3 tools/verify/sprite_pixel_contracts.py` từ `raw/sprite-pixels/audit.json.gz`.
+2185RGBA matches là format-tool crop/flip/mask reproduction, khôngUnityGPU approval.
+40float-outside→9roundedpadding;517output khácroundedsourcecanvas. **Không dùngsource
+normalizedpivot nhưfinalPNGpivot**, khôngclamp/center tựý. Report72 ghiđủscope/source.

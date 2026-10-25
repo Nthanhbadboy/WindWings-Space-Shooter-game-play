@@ -68,6 +68,6 @@ class SpritePixelAuditTests(unittest.TestCase):
         mesh=mesh_fixture();mesh['m_IndexBuffer']=list(struct.pack('<3H',0,1,2));mesh['m_SubMeshes'][0]['indexCount']=3
         g=dict(texture_rect=dict(x=0,y=0,width=2,height=2),settings=dict(packed=False,packing_rotation=0,packing_mode=0))
         image,_=reconstruct(texture,g,mesh,1.)
-        self.assertEqual(set(image.getchannel('A').getdata()),{0,99})
+        self.assertEqual(set(image.getchannel('A').tobytes()),{0,99})
 
 if __name__=='__main__':unittest.main()
