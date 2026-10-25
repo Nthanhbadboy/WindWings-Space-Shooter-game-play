@@ -21,7 +21,7 @@
 4. **Enemy gần như không có event clip** (toàn bộ 795 event chỉ có **2** ngoài nhóm boss) ⇒
    animation enemy là **máy trạng thái do code điều khiển** (`Enemy_Movement` 3 nhánh, hit flash
    `Invoke` 0,05 s), không phải event.
-5. **Thời gian chờ trong code boss**: **22 lần `WaitForSeconds`**, chỉ **4** là hằng số
+5. **Thời gian chờ trong code boss**: **38 lần `WaitForSeconds`**, chỉ **12** là hằng số
    (0,5 · 1,0 · 2,0 · 3,0 s), **18** lấy từ biến ⇒ nhịp pha boss phần lớn **do dữ liệu prefab**.
 6. **Tên entry của boss 1 đã giải xong** (8 chuỗi: `Xuathien` · `Baydi` · `Dead` · `Attack1/2/3` ·
    `Chuyensangattack2/3`) và `BossWork` là **bảng chuyển state 5 nhánh**. Còn thiếu chỉ là **tên
@@ -135,7 +135,7 @@ không có timeline, không có random.
 | `_OffGun1Head_d__27` · `_OffGun1Static_d__26` | lấy từ biến (`float _duration`) |
 | `Boss_AttackTypes._IE*` (5 kiểu bắn) | **18/22** lần lấy từ biến |
 
-Tổng: **22 lần `WaitForSeconds` · 4 hằng số · 18 lấy từ biến**. Nghĩa là **không thể** suy nhịp
+Tổng: **38 lần `WaitForSeconds` · 12 hằng số · 26 lấy từ biến** (bản `9edc21f4d`, asm **139** file; trước là 22/4/18 trên 69 file). Nghĩa là **không thể** suy nhịp
 pha boss chỉ từ code — phải đọc dữ liệu prefab (chưa export).
 
 ### 2.2 Cầu nối event Spine — `BossSpineEventHandler` (mức **B**)
@@ -512,7 +512,7 @@ nhánh bên kia chạy được mà không phải hỏi lại.
 python3 tools/verify-claims.py --only J     # 10/10 claim nhóm J (nhịp + event)
 python3 tools/verify-claims.py --only K     # 6/6 claim nhóm K (tên entry + bảng chuyển state)
 python3 tools/verify-claims.py --only R     # 6/6 claim nhóm R (timeline theo giây)
-python3 tools/verify-claims.py              # toàn bộ: 155 PASS · 0 FAIL · 2 SKIP
+python3 tools/verify-claims.py              # toàn bộ: 156 PASS · 0 FAIL · 2 SKIP
 ```
 
 Nguồn: `reverse-engineering/raw/animation-audit/event-receivers.json.gz` (795 event) ·

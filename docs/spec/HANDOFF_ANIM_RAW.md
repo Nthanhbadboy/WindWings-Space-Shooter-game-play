@@ -21,7 +21,7 @@
 | Cầu nối Spine → code | `SkeletonAnimation_AnimationState_Complete(TrackEntry)` = **tail-call** `BossWork(trackEntry.Animation.Name)`, 50 B | asm |
 | Nhịp 33 prefab boss | **793 event**, 129 tên hàm, nhịp **0,17 / 0,33 / 1,0 / 5,0 s** | `event-receivers.json.gz` |
 | Hit flash enemy | **0,05 s** qua `Invoke`, alpha **0,5**, 2 hằng số trong `Enemy_Display.OnHit` | `native-calls.json` |
-| Nhịp pha boss | **22** lần `WaitForSeconds`, **4** hằng số (0,5 / 1 / 2 / 3 s), **18** lấy từ biến | asm 69 file |
+| Nhịp pha boss | **38** lần `WaitForSeconds`, **12** hằng số (0,5 / 1 / 2 / 3 s), **26** lấy từ biến | asm **139** file (bản `9edc21f4d`) |
 | Ghép **prefab ↔ lớp handler** | **17/34** prefab (17 còn thiếu, **145** event), quan hệ **1:1**, từ **18** lớp `*_AnimationEvents` đã export (`typetrees/*AnimationEvents*` là export **theo instance**, `gameobject` = đường dẫn trong prefab) | claim **S1** |
 | Timeline theo giây của 269 cặp (prefab, clip) | `BOSS_ANIM_TIMELINE.md` — 795 event, 130 tên hàm | claim **R1–R6** |
 | Tên field 12 delegate + 5 field `BossSpineEventHandler` | `interesting-classes.cs` (kéo 24/10) | claim **T2**, **T3** |

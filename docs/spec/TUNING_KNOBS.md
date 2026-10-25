@@ -231,7 +231,7 @@ Các class kinh tế còn lại:
 |---|---|---|---|
 | **Camera shake** | `VibrateCamera` | `tVibrate` (số frame) · `levelVibrate` (biên độ) · `timeVibrate` static | `[SerializeField]` → **prefab** |
 | **Shake theo từng enemy** | `Enemy_CameraVibrate` | `timeVibr` · `lvVibr` | `[SerializeField]` → **prefab**. **Đã đo** (241 instance): `0,10 · 20` ×**185** · `0,05 · 15` ×**46** · `0,15 · 30` ×**6** · `0,10 · 30` ×**3** · `0,10 · 40` ×1 |
-| **Slow-motion** | `GP_Controller` / `GP_Time` | `timeSlowed = 0,1` · `timeMulti` · `rawTimeScale` | **const + .cctor** — ⚠️ **nghi field chết**: chuỗi `timeScale` **0 lần** trong 69 file asm; riêng `GP_Controller` **không có** file asm nên chưa đọc được hàm dùng nó; người chơi **không thấy** slow-mo ⇒ coi như **không có** |
+| **Slow-motion** | `GP_Controller` / `GP_Time` | `timeSlowed = 0,1` · `timeMulti` · `rawTimeScale` | **const + .cctor** — ⚠️ **nghi field chết**: chuỗi `timeScale` **0 lần** trong 139 file asm; riêng `GP_Controller` **không có** file asm nên chưa đọc được hàm dùng nó; người chơi **không thấy** slow-mo ⇒ coi như **không có** |
 | **Hit flash** | `Enemy_HitSkeletonRenderer` | `hitColor` (Color) | `[SerializeField]` |
 | **Glow / shine** | `EffectGlow` | `speedLight` · `timeRepeat` · `randomShine` | `[SerializeField]` |
 | **Trail** | `TimedTrailRenderer` | `timeTrail` | `[SerializeField]` |

@@ -117,8 +117,8 @@ Người chơi xác nhận *"chơi thật không thấy"*. Kiểm lại bằng d
 | **hit flash** | ✅ **CÓ** | `Enemy_Display.OnHit`: alpha **0,5** + `Invoke(…, 0,05 s)` (claim **J9**) |
 | **rung màn hình** | ✅ **CÓ** | `Enemy_CameraVibrate` **241** instance: `lvVibr` **0,05 / 0,10 / 0,15** · `timeVibr` **15 / 20 / 30 / 40** frame; phổ biến nhất **0,10 · 20 frame** (185/241) (claim **AF1**) |
 | **tỉ lệ rơi đồ** | ✅ **CÓ** | 3 tầng đều đếm được — `ECONOMY.md` §8.1 (claim **AE1–AE3**) |
-| **hit stop** | ⛔ **không thấy trong game** | chuỗi `timeScale` xuất hiện **0 lần** trong **69** file asm đã bóc (claim **AF2**). `GP_Controller.timeSlowed = 0,1` có trong `field-defaults.json` nhưng **không** có file asm cho `GP_Controller` ⇒ **chưa chứng minh** được nó bị dùng; người chơi không thấy ⇒ coi như **không có** |
-| **aim assist** | ⛔ **không tồn tại** | **0** method khớp `aim · autoAim · targetLock · lockTarget` trong 69 file asm; `Player_Attack` (19 hàm) **không có** hàm chọn/bám mục tiêu — đạn đi thẳng |
+| **hit stop** | ⛔ **không thấy trong game** | chuỗi `timeScale` xuất hiện **0 lần** trong **139** file asm đã bóc (claim **AF2**). `GP_Controller.timeSlowed = 0,1` có trong `field-defaults.json` nhưng **không** có file asm cho `GP_Controller` ⇒ **chưa chứng minh** được nó bị dùng; người chơi không thấy ⇒ coi như **không có** |
+| **aim assist** | ⛔ **không tồn tại** | **0** method khớp `aim · autoAim · targetLock · lockTarget` trong 139 file asm; `Player_Attack` (19 hàm) **không có** hàm chọn/bám mục tiêu — đạn đi thẳng |
 | **input latency** | ⛔ **không phải tính năng** | thuộc input system + frame, không lớp nào trong game cấu hình |
 
 ⇒ Với 4 mục bị nghi là "feel phải đo", **3 mục không tồn tại** và **1 mục (rung) có số**. Nghĩa là

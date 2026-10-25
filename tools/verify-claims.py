@@ -1287,7 +1287,7 @@ claim("J6", SCRIPT, "**5** lần `String.op_Equality`", 5, boss_work_compares,
 claim("J7", SCRIPT, "**12 handler · 28 byte**", (12, 28), boss1_event_handlers,
       "mỗi handler chỉ gọi một delegate, không có logic riêng")
 
-claim("J8", SCRIPT, "**22 lần `WaitForSeconds` · 4 hằng số · 18 lấy từ biến**", (22, 4, 18),
+claim("J8", SCRIPT, "**38 lần `WaitForSeconds` · 12 hằng số · 26 lấy từ biến**", (38, 12, 26),
       wait_for_seconds, "nhịp pha boss phần lớn do dữ liệu prefab, không do code")
 
 claim("J9", SCRIPT, "**0,5** | đặt một tham số material", (0.5, 0.05), enemy_hit_flash,
@@ -2262,25 +2262,32 @@ def circle_rad_step():
 
 
 def waits_seconds_stats():
-    """(tổng WaitForSeconds, hằng số, biến) đếm từ asm đã export."""
+    """(tổng WaitForSeconds, hằng literal, biến) — đọc file LOCAL, cùng luật J8.
+
+    J8 đọc qua `ref_blob` (có thể là blob của ref); hàm này đọc thẳng đĩa. Nếu hai
+    đường cho cùng số thì phép đếm không phụ thuộc nguồn đọc.
+    """
     files = _glob.glob("reverse-engineering/raw/il2cpp-consts/*.asm.txt")
     if not files:
         return None
-    const = var = 0
+    tot = lit = 0
     for f in files:
         try:
             lines = open(f, encoding="utf-8", errors="replace").read().splitlines()
         except OSError:
             continue
         for i, ln in enumerate(lines):
-            if "#0x2786508" not in ln:
+            if "0x2786508" not in ln:
                 continue
-            back = lines[max(0, i - 5):i]
-            if any("fmov" in b for b in back):
-                const += 1
-            else:
-                var += 1
-    return (const + var, const, var)
+            tot += 1
+            hit = False
+            for j in range(i - 1, max(i - 16, -1), -1):
+                if re.search(r"fmov\s+s0,\s*#", lines[j]) or \
+                        re.search(r"ldr\s+s0,\s*\[x\d+, #0x[0-9a-f]+\]", lines[j]):
+                    hit = True
+                    break
+            lit += bool(hit)
+    return (tot, lit, tot - lit)
 
 
 claim("W1", "docs/spec/ANIMATION_SCRIPT.md",
@@ -2302,8 +2309,8 @@ claim("W5", "docs/spec/ANIMATION_SCRIPT.md", "`0.01745`", 0.01745,
       circle_rad_step, "bước quét vòng tròn = 1 độ mỗi bước")
 
 claim("W6", "docs/spec/ANIMATION_SCRIPT.md",
-      "**22 lần `WaitForSeconds` · 4 hằng số · 18 lấy từ biến**",
-      (22, 4, 18), waits_seconds_stats, "nhịp pha boss 1: 4 hằng, 18 biến")
+      "**38 lần `WaitForSeconds` · 12 hằng số · 26 lấy từ biến**",
+      (38, 12, 26), waits_seconds_stats, "đếm lại cùng phép đếm J8 nhưng đọc file LOCAL (không qua ref_blob)")
 
 # ── X. enemy có bao nhiêu animation thật (§4.2) ────────────────────────
 WAVES = "datas/waves.json"
@@ -2832,13 +2839,60 @@ claim("AF1", TUNING,
       "rung màn hình: tham số đọc trực tiếp từ 241 prefab enemy")
 
 claim("AF2", READY,
-      "chuỗi `timeScale` xuất hiện **0 lần** trong **69** file asm đã bóc",
-      (0, 69), timescale_hits,
+      "chuỗi `timeScale` xuất hiện **0 lần** trong **139** file asm đã bóc",
+      (0, 139), timescale_hits,
       "hit stop không có: không chỗ nào đụng timeScale")
 
+def tutorial_cctor_consts():
+    """(MaxIndexTutorial, indexTut) đọc từ `.cctor` của GP_Tutorials + offset trong dump.cs."""
+    import gzip as gz
+    import re as rx
+    src = gz.open(os.path.join(ROOT, "reverse-engineering/il2cpp/dump.cs.gz"),
+                  "rt", encoding="utf-8", errors="replace").read()
+    m = rx.search(r"\n(?:public |internal |private )?class GP_Tutorials(?!\.)\b[^\n]*\n", src)
+    if not m:
+        return None
+    body = src[m.start():m.start() + 2500]
+    offs = {}
+    for name in ("MaxIndexTutorial", "indexTut", "inTutorial", "instance"):
+        mo = rx.search(name + r"; // (0x[0-9a-f]+)", body)
+        if not mo:
+            return None
+        offs[name] = int(mo.group(1), 16)
+    raw = ref_blob("reverse-engineering/raw/il2cpp-consts/GP_Tutorials.asm.txt")
+    if not raw:
+        return None
+    text = raw.decode("utf-8", "replace")
+    i = text.find(";;; cctor")
+    if i < 0:
+        return None
+    seg = text[i:i + 1600].split("\n;;;")[0]
+    got = {}
+    regs = {}
+    for ln in seg.splitlines():
+        mv = rx.search(r"mov\s+(w\d+), #(-?\d+)", ln)
+        if mv:
+            regs[mv.group(1)] = int(mv.group(2))
+            continue
+        st = rx.search(r"str\s+(\w+), \[x8, #(0x[0-9a-f]+|\d+)\]", ln)
+        if st:
+            src = st.group(1)
+            val = 0 if src.startswith("xzr") else regs.get(src)
+            if val is not None:
+                got[int(st.group(2), 0)] = val
+    if offs["MaxIndexTutorial"] not in got or offs["indexTut"] not in got:
+        return None
+    return (got[offs["MaxIndexTutorial"]], got[offs["indexTut"]])
+
+
+claim("AG1", "docs/spec/SCRIPTS.md",
+      "**`MaxIndexTutorial = 4`**, `instance = null`, **`indexTut = −1`**",
+      (4, -1), tutorial_cctor_consts,
+      "tutorial đúng 5 bước: `.cctor` ghi 4 vào MaxIndexTutorial (0x4) và -1 vào indexTut (0x10)")
+
 claim("AF3", READY,
-      "**0** method khớp `aim · autoAim · targetLock · lockTarget` trong 69 file asm",
-      (0, 69), aim_hits,
+      "**0** method khớp `aim · autoAim · targetLock · lockTarget` trong 139 file asm",
+      (0, 139), aim_hits,
       "aim assist không tồn tại: 0 method bám mục tiêu")
 
 # ── chạy ───────────────────────────────────────────────────────────────

@@ -60,9 +60,16 @@ tutorial không phải một màn hình, nó là **overlay gắn trong scene Gam
 | Trường | Ý nghĩa |
 |---|---|
 | `public static bool inTutorial` | đang trong tutorial |
-| `public static int MaxIndexTutorial` | tổng số bước |
-| `public static int IndexTutorial { get; set; }` | bước đã qua |
+| `public static int MaxIndexTutorial` | **= 4** (offset `0x4`) ⇒ **5 bước**, đánh số 0…4 |
+| `public static int IndexTutorial { get; set; }` | bước đã qua; field nền `indexTut` (`0x10`) khởi tạo **−1** |
 | `public static GP_Tutorials instance` | singleton |
+
+> **Chốt 25/10 (mức A):** `.cctor` của `GP_Tutorials` tại **`0x14fb4e0`** ghi `inTutorial = false`,
+> **`MaxIndexTutorial = 4`**, `instance = null`, **`indexTut = −1`**. Offset đối chiếu từ `dump.cs.gz`
+> (`MaxIndexTutorial // 0x4`, `indexTut // 0x10`). ⇒ Đúng **5 bước (0…4)**; trạng thái "chưa bước nào"
+> là **−1** chứ không phải 0 — nên nếu thấy `IndexTutorial = −1` thì **đừng** kết luận "bước đầu bị bỏ".
+> Claim **AG1**. (Bản 69 file asm trước đây không có `GP_Tutorials.cctor`, nên con số 5 chỉ là suy từ
+> 5 field `tutobj*`.)
 
 **5 object hướng dẫn** (`GameObject` field — mỗi cái là một bước):
 

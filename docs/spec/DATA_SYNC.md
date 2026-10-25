@@ -1933,7 +1933,7 @@ dài **11 commit** sau `55bd18ac8`, **1.125 file** thay đổi. Nguyên tắc gi
 `git checkout FETCH_HEAD -- <file>`, không merge / không rebase** — nhánh này không có commit nào của
 nhánh dữ liệu.
 
-### 15.1 Đã kéo (**285** file)
+### 15.1 Đã kéo (**425** file)
 
 | nhóm | nội dung | ghi chú |
 |---|---|---|
@@ -1941,6 +1941,7 @@ nhánh dữ liệu.
 | manifest UI | `reverse-engineering/raw/ui/_index.csv` | **797 · 117 · 150.131 node · 5.831 nút** |
 | bằng chứng native | `raw/ui-audit/` (**253** file: 34 mới trong chặng này, 219 file đã có ở `55bd18ac8` nhưng nhánh này **chưa từng kéo**) · `raw/ui/render-context/` (**5**) · `raw/ui-flow-review/` (**2**) · `raw/runtime-probe/` (**15**) | ~7,1 MB; **275 thêm / 1 sửa**, không đè dữ liệu đã dùng |
 | report **mới** | `docs/apk-analysis/48-runtime-probe-review.md` · `49-visual-ui-stage-flow.md` · `50-stage2-stage3-ui-from-raw.md` + 3 contact sheet | 3 JPG ≈ 1,2 MB |
+| **asm bổ sung** | `reverse-engineering/raw/il2cpp-consts/` từ **69 → 139** file `.asm.txt` (**140 file**, 2,47 MB) — gồm **`GP_Tutorials`** (46 method), `Board_Maps`, `Board_Stage`, `Board_Home`, `Board_Endgame`, `Board_Drones`, `DataTutorials`, `SkipTutorial`, `Tut_Settings*` | đây là **lần đầu** nhánh này có thân hàm tutorial |
 
 ### 15.2 **Từ chối** kéo — và bằng chứng tại sao
 
@@ -1987,7 +1988,19 @@ pending_transforms: 0}`. Nói cách khác **12.000 là trần của walker**, v�
 Bảy wave còn lại (25 · 26 · 49 · 104 · 137 · 163 · 198) chỉ **đổi tên** spawner trùng tên
 (`CB1 (20)` ⇄ `CB1 (35)`…) — **multiset không đổi**. Tập prefab **109 → 109**, không mất tên nào.
 
-### 15.4 Ghi chú dữ liệu
+### 15.4 Hai con số **tăng vì asm nhiều hơn** (không phải vì game đổi)
+
+| chỉ số | 69 file asm | **139 file asm** | claim | ghi chú |
+|---|---:|---:|---|---|
+| `WaitForSeconds` (site · hằng · biến) | 22 · 4 · 18 | **38 · 12 · 26** | **J8**, **W6** | **+16 site mới** nằm trong các lớp chờ của UI/tutorial (`Board_Home`, `Board_Maps`, `Board_Endgame`, `GP_Tutorials`); 4 hằng vẫn là **0,5 / 1 / 2 / 3 s** |
+| `timeScale` / method aim | 0 / 0 | **0 / 0** | **AF2**, **AF3** | mẫu số tăng, kết luận **không đổi**: hit stop và aim assist vẫn **không có** |
+
+**Claim mới AG1** (mức **A**): `.cctor` của `GP_Tutorials` tại **`0x14fb4e0`** đặt
+`MaxIndexTutorial = 4` (offset `0x4`) và `indexTut = −1` (offset `0x10`) ⇒ tutorial đúng **5 bước
+(0…4)**, trạng thái “chưa bước nào” là **−1**. Trước bản này chỉ suy từ **5 field `tutobj*`**; nay có
+**giá trị thật trong asm**. Chi tiết ở `SCRIPTS.md` §0.5.1.
+
+### 15.5 Ghi chú dữ liệu
 
 - `datas/ui_text_keys.csv.gz`: **+96 dòng / −70** (net +26) — chủ yếu là `Board_Maps/.../TextStageIndex`
   của các stage **81–92** mà bản cũ **không thấy vì bị cắt ở 12.000 node**. Đây là bằng chứng phụ
@@ -1998,7 +2011,7 @@ Bảy wave còn lại (25 · 26 · 49 · 104 · 137 · 163 · 198) chỉ **đổ
 - `reverse-engineering/il2cpp/dump.cs.gz`: khác **header gzip**, nội dung **y hệt** (SHA-1 sau khi giải
   nén trùng) ⇒ không kéo.
 
-### 15.5 Chưa đồng bộ (ghi đúng chữ "chưa")
+### 15.6 Chưa đồng bộ (ghi đúng chữ "chưa")
 
 - **803** file `reverse-engineering/raw/ui/*.json.gz` (mỗi màn một file; cả cây là **55.591 file /
   142 MB**) — vẫn chỉ giữ **manifest** `_index.csv` như chính sách cũ. Muốn xem bố cục một màn cụ thể
