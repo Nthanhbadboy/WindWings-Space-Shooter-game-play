@@ -156,6 +156,7 @@ jobs:
                      'float32':struct.unpack('<f',ro(va,4))[0]} for va in (0x756a58,0x7570e0)]}
           Path('reverse-engineering/raw/ui-audit/endgame-rodata.json').write_text(json.dumps(endgame,indent=2)+'\n')
           PY
+      # Peer-review regression uses preserved hash-pinned raw, not shallow Git history.
       - name: Check static regressions before bot commit
         run: python3 -m unittest discover -s tests -q
       - name: Commit recovered UI evidence

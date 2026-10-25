@@ -18,11 +18,29 @@ PATHS=['docs/spec/MISSIONS_STARS.md','docs/spec/ENCOUNTERS.md',
        'docs/assets/sprites-index.csv','docs/assets/sprites-classified.csv']
 
 
-def build():
-    snapshots={}
+SNAPSHOTS_SHA256='b9325a6cc3a2fb394b3a0ba37eadeef57e0438be1d972aaee30e3e8be709ece0'
+
+
+def build(from_git=False):
+    if from_git:
+        snapshots={}
+        for p in PATHS:
+            blob=subprocess.check_output(['git','show',f'{PEER}:{p}'],cwd=ROOT)
+            snapshots[p]={'sha256':hashlib.sha256(blob).hexdigest(),'text':blob.decode()}
+    else:
+        # Hermetic default: checkout@v4 is shallow and need not contain peer history.
+        # Use preserved original input text, not prose findings or a network fetch.
+        source=ROOT/'reverse-engineering/raw/peer-review/spec-25c367aca.json.gz'
+        pinned=json.load(gzip.open(source,'rt'))
+        if pinned['peer_commit'] != PEER:
+            raise ValueError('wrong peer snapshot')
+        snapshots=pinned['snapshots']
+    digest=hashlib.sha256(json.dumps(snapshots,sort_keys=True,ensure_ascii=False).encode()).hexdigest()
+    if digest != SNAPSHOTS_SHA256:
+        raise ValueError('peer input snapshot hash mismatch')
     for p in PATHS:
-        blob=subprocess.check_output(['git','show',f'{PEER}:{p}'],cwd=ROOT)
-        snapshots[p]={'sha256':hashlib.sha256(blob).hexdigest(),'text':blob.decode()}
+        if hashlib.sha256(snapshots[p]['text'].encode()).hexdigest() != snapshots[p]['sha256']:
+            raise ValueError('peer file hash mismatch: '+p)
     code=snapshots['tools/classify-assets.py']['text'];tree=ast.parse(code)
     rules=next(ast.literal_eval(n.value) for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='RULES' for t in n.targets))
     def classify_no_eye(name):
@@ -55,6 +73,7 @@ def build():
 
 
 if __name__=='__main__':
-    d=build();p=ROOT/'reverse-engineering/raw/peer-review/spec-25c367aca.json.gz';p.parent.mkdir(parents=True,exist_ok=True)
+    import sys
+    d=build(from_git='--from-git' in sys.argv);p=ROOT/'reverse-engineering/raw/peer-review/spec-25c367aca.json.gz';p.parent.mkdir(parents=True,exist_ok=True)
     p.write_bytes(gzip.compress(json.dumps(d,ensure_ascii=False,indent=2).encode(),mtime=0))
     print(d['peer_commit'],len(d['snapshots']),'pinned files',d['experiments'])

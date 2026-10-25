@@ -37,6 +37,7 @@ jobs:
           PY
       - run: pip install -q 'UnityPy==1.25.4' 'TypeTreeGeneratorAPI==0.0.10'
       - run: python3 tools/apk-probe/sprite_geometry.py
+      # Peer-review regression uses preserved hash-pinned raw, not shallow Git history.
       - name: Validate recovered geometry and static regressions before commit
         run: |
           python3 tools/verify/sprite_geometry.py

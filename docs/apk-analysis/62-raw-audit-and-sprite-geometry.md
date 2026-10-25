@@ -177,3 +177,16 @@ kích full analysis tự động nữa, nhưng vẫn còn workflow_dispatch.
 
 Không tuyên bố đã render ảnh, chạy gameplay, dedup54787file, hoặc kiểm toàn bộ
 release pack trong vòng này. Mọi kết luận vẫn tạm thời.
+
+### Lỗi tái lập phát hiện khi chạy CI audit
+
+Run40189044132/44102/44138 fail; không lấy được signed logs trong sandbox.
+Kiểm lại bằng archive tracked files ở thư mục sạch không có Git history phát
+hiện `peer_spec_review.build()` còn gọi git show peer25c367aca mặc định; local
+checkout chứa commit này nhưng checkout@v4 shallow không bảo đảm có.
+Đã sửa default dùng9file input text/hash nguyên gốc được giữ trong raw review,
+khóa thêm SHA256 canonical input set `b9325a6cc3a2fb394b3a0ba37eadeef57e0438be1d972aaee30e3e8be709ece0`.
+Rebuild vẫn tính lại experiments/native findings, không lấy kết luận prose làm
+input. `--from-git` là đối chiếu thêm có chủ đích khi có peer history, không dùng
+cho acceptance mặc định. Thêm test cấm subprocess Git trong default path.
+**111tests pass** cả workspace lẫn tracked-file archive không có `.git`.

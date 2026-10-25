@@ -482,3 +482,8 @@ luận vẫn provisional. Premium deferred; không dùng screenshot làm nguồn
   packing40fractionalcaseslàbướcassettiếp. Đừngbóclạidanhmụcđếmcountschođẹp,
   khôngfullAPKexportvìtargetedcollector,khôngchốtgameplaytừunittestPASS.
   Premiumdeferred. Report62vàregistrymớilàentrypointchứkhôngbảngkếtluậncũ.
+- Bổ sungauditCI:40189044132/44102/44138fail; signedlogsEOF. Tái lậpcleanarchive
+  phát hiệnpeer_spec_reviewtestphụthuộcgitshowpeerSHAkhôngcóởshallowcheckout.
+  Đãsửadefaultđọc9inputgốctrongrawsnapshot,khóacanonicalSHA b9325a6cc3a2fb394b3a0ba37eadeef57e0438be1d972aaee30e3e8be709ece0;
+  experimentsvẫntínhtừinputtext,khôngdùngprosekếtluận. --from-gitoptional.
+  TestcấmsubprocessGitdefault,111testspasscảworkspacevàarchivekhông.git.

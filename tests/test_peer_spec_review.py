@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 sys.path.insert(0,str(Path('tools/verify').resolve()))
 from peer_spec_review import build
 
@@ -38,3 +39,7 @@ class PeerReviewTests(unittest.TestCase):
         self.assertIn('except Exception as e:',s)
         self.assertIn('c.status, c.why = "SKIP", f"đo lỗi:',s)
         self.assertIn('fails = [c for c in CLAIMS if c.status == "FAIL"]',s)
+
+    def test_default_rebuild_does_not_need_peer_git_history(self):
+        with patch('peer_spec_review.subprocess.check_output', side_effect=AssertionError('must not need git history')):
+            self.assertEqual(build(),self.raw)
