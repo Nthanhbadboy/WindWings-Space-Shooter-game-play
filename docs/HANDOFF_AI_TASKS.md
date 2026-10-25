@@ -668,3 +668,30 @@ chứ không cần cố chứng minh”. Áp dụng từ đây:
 - Report78 lưuý: float-convert height/width TRƯỚCdivision (SCVTF/FDIV),khôngC#integerdivision. Model chỉsetterargument,khôngUnitypropertyreadback. Local247tests/Pillow12+datasvalidatePASS,finalCIkiểmriêng.
 
 - Report78 final: code812775d7e, Verify40203127918SUCCESS (regenerate/pinneddependency/regressionstepsPASS); PR12comment6398981965. Raw vẫn giữ nguyên; khôngruntime/renderapproval.
+
+## Review peer029559d47 — thiếu thật để giao AI game mới (26/10/2026)
+
+Đã fetch explicit nhánh spec, không merge/sửa nhánh bạn. Snapshot nguyên văn 4 tài liệu:
+`raw/peer-review/update-029559d47.json.gz` (peer docs KHÔNG phải APK evidence).
+
+**P0 spec tự sửa trước khi giao AI mới:**
+- MISSING bảng13hệ vẫn nói audio chưa bóc,asset thiếu: lỗi thời so với chính phần cập nhật
+  report67 và pack69–74. Đồng bộ entrypoint/bảng tổng với raw hiện hành, không chỉ append.
+- COMBAT §6.1 còn thiếu bindplayerID trong khi MISSING đã đóng; thống nhất trạng thái.
+- MISSING §2.2 lấy report53 `Path/Waypoints.WaitForSeconds(rate)` để đóng **player
+  StartMainCannonRate**: KHÁC consumer/field. Spawn delay không chứng minh player shot rate.
+  Damage×rate vẫn proxy, chưa phải DPS/TTK runtime tương đương; không giao số này như ground truth.
+- Đồng bộ78: ortho snapshot9.6 không fixed; float-convert dimensions trước chia, typed camera refs.
+- Các con số luật thị giác từ đoảnh/heuristic phải giữ derived/design scope, không nâng thành APK fact.
+
+**Nhánh dữ liệu nhận:** scoped native recovery `Player_Get_Datas` + `Player_Attack` +
+`Player_Attack_1` (SetupDatas/Update/MainCannonAttack/MainCannonShoot/getdamage): lần theo
+mainrate→timer→bullet/damage, trước mắt chỉship1, không suy24ships từ1implementation.
+Recovery mới `recover-player-firing.yml`; raw sẽ lưu riêng `raw/player-firing/`.
+Đây là gap cụ thể ảnh hưởng thiết kế nhịpbắn/TTK, KHÔNG xin fullAPKexport.
+
+**Nhánh spec nhận để giao AI mới:** một bảng tối giản `system → raw/contract → implementation
+rule → new-design choices → acceptance test`, ghi rõ reference pack có sẵn nhưng chưa
+runtime/import/visualapproval. L1 có thể khởi công, không chờ playback để chọn cơ chế mới.
+Save migrate/cloud, plugin/build parity, allboss phase closure và shader/stencil/runtime feel
+vẫn scopedunknown; chỉ đào khi task triển khai cần cụ thể. Premium/pool-history tiếp tục hoãn.
