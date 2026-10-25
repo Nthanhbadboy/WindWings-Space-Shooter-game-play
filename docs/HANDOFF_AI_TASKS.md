@@ -270,3 +270,20 @@ add/remove và missionthresholds. Raw mới nhiều spawn implementations sẵn 
 - Next tự đào: Stage_Get_Datas.GetCountEnemies12c5f60 load resource/Call_Data,
   skip marker5, IPooling-ID filter; nối store GP_Datas+58 + filter membership
   và concrete Enemy_Destroy subclasses. Không dùng274/250 slots làm denominator.
+
+## Agent hiện tại — report56: denominator và concrete destroy đã nối
+
+- Raw mới: `early-waves/default-enemy-components.json.gz`14 exact roots, full
+  root components/raw Mono bytes; Sub_Object.GetID recovered40185361444.
+- MapController.Start132a5ec→GetCountEnemies12c5f60,132a5f4→GP_Datas+58.
+- Filter là Stage_Get_Datas.listIgroneEnemies+18,31 cctor literal IDs; KHÔNG
+  dùng Enemy_Data_Balance.listStaticEmemies thay thế. Chỉ38001 giao14 roots.
+- Default chapter0 denominators: wave0164=262 (274−12),0113=87 (95−8),
+  0005=151 (155−4); stage2=262/stage3=238. Native skip5, không skip6;6 arrayrỗng.
+- Mode0 tier result0/1/2 thresholds:52/117/209 và47/107/190. Không gọi thắng
+  ngay hoặc tự đổi sang UI stars. Mode1/other giữ riêng trong raw/report.
+-14 Enemy_Controller.destroyScript PPtrs đều trỏ base Enemy_Destroy cùng root;
+  đã cross-check ID/critical PPtrs bằng bytes, không resolve generated m_Script.
+- `mission-denominators.json.gz`:4methods11checks;57 tests pass.
+- Tiếp raw join result GetMissionCompleted→star UI/save + victory/unlock/Continue,
+  và movement-completion callback registration/timing. Premium vẫn deferred.

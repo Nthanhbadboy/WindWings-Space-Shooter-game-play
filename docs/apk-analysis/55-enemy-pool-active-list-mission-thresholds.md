@@ -140,3 +140,10 @@ ngay trong bảng này. Không lấy ví dụ100 làm denominator của stage2/3
   y/rate làm timestamp.
 
 Đây là các raw joins tiếp tục đào; screenshot stage2/3 không phải điều kiện chờ.
+
+### Bổ sung sau report này
+
+Report56 đã nối GetCountEnemies→MapController.Start store GP_Datas+58, resolve
+IPooling IDs/filter và concrete destroy references cho14 root. Static normal
+chapter0 denominator stage2/3 là262/238, **không phải274/250 slot**. Các cảnh báo
+runtime, branch và chưa nối tier result sang số sao UI vẫn giữ nguyên.
