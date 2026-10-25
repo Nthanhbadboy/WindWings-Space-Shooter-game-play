@@ -7,14 +7,14 @@
 Đây là layout **trong prefab**. Runtime (layout group, safe area, code đặt vị trí) có thể
 khác — chưa đối chiếu screenshot.
 
-- file: **55584**, màn (class): **117**, node: **8,437,020**
-- dòng text/key: **1,205,538** (CSV.gz: `datas/ui_text_keys.csv.gz`)
+- file: **55584**, màn (class): **117**, node: **8,440,354**
+- dòng text/key: **1,205,608** (CSV.gz: `datas/ui_text_keys.csv.gz`)
 
 ## Theo màn
 
 | màn | file | node (max) | text | key | button | sprite | bbox x | bbox y |
 |---|---:|---:|---:|---:|---:|---:|---|---|
-| `Board_Maps` | 80 | 12,000 | 441 | 95 | 944 | 206 | -12.39…12.24 | -22.6…676.38 |
+| `Board_Maps` | 80 | 15,334 | 441 | 95 | 944 | 243 | -12.39…12.24 | -22.6…676.38 |
 | `Board_Shop` | 72 | 4,876 | 204 | 51 | 358 | 156 | -6.46…9.13 | -18.99…36.98 |
 | `Board_SelectBoss` | 73 | 3,837 | 6 | 2 | 34 | 262 | -17.26…26.59 | -9.6…204.29 |
 | `Board_PVP` | 78 | 3,789 | 207 | 72 | 341 | 164 | -7.15…16.09 | -60.21…8.9 |
@@ -155,7 +155,7 @@ khác — chưa đối chiếu screenshot.
 | `Popup_BuyMoreGems` | 92310 | 9109 | 10% |
 | `Popup_BuyMoreCoins` | 47060 | 10488 | 22% |
 | `Board_Shop` | 45890 | 7095 | 15% |
-| `Board_Maps` | 40788 | 8204 | 20% |
+| `Board_Maps` | 40858 | 8216 | 20% |
 | `Board_Ranks` | 39446 | 9925 | 25% |
 | `Board_Survival` | 36675 | 9013 | 25% |
 | `Board_PVP` | 35608 | 7189 | 20% |
