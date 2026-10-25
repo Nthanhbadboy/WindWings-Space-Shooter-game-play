@@ -43,8 +43,9 @@ Nếu tài liệu của bạn đang ghi "11.089 spawner" thì đó là **số d�
 ## 4. Kiểm trong 60 giây
 
 ```bash
-python3 tools/verify-claims.py --no-skip --require AB,AT1,AQ7   # PASS 190 · FAIL 0 · SKIP 2
-python3 -m unittest discover -s tests -q                        # 16 test OK
+python3 tools/verify-claims.py                                  # 0 FAIL (2 SKIP có chủ đích: B9, F4)
+python3 tools/verify-claims.py --no-skip --require AB,AT1,AQ7   # rc=1 LÀ ĐÚNG — hai SKIP đó cố ý
+python3 -m unittest discover -s tests -q                        # 30 test OK
 python3 tools/refresh-readme-sizes.py --check                   # bảng tài liệu README khớp file
 ```
 
