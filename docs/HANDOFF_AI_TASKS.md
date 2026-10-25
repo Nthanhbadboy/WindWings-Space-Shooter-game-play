@@ -914,3 +914,5 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 - Tiếp: ngoài-index scoped references + hierarchy/state/sorting/font/material; gameplay
   prefab→sprite/VFX/rig→clip/event; scene-level reference outputs. Không vẽ từ screenshot,
   không yêu cầu playtest người thật/screenshot mới làm điều kiện bắt đầu phần raw đã có.
+- Receipt96: code8789ef433 Verify40224533473 SUCCESS/job1m10s; raw/l3-ui giữ CI/handoff.
+  Không tự ACK peer hay tự gọi UI binding regression là L3 composition/render approval.

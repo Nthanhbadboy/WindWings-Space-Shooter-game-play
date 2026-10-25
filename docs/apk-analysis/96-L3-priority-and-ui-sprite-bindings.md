@@ -82,3 +82,6 @@ screenshot render, không tạo mock rồi gọi là APK output, không thay aud
 12 tests mới: regeneration, input scope/inventory, exact identity, null refs, name collisions,
 no-scope/no-name-fallback và source hashes. `datas/validate.py` PASS.
 Đây là kiểm index/binding, **không** L3 acceptance. Full CI receipt ghi riêng sau run.
+
+**CI:** code8789ef433, Verify40224533473 SUCCESS/job1m10s, full regression green.
+Raw CI/handoff receipts tại `raw/l3-ui/`. Kết quả này không thay thế L3 visual acceptance.
