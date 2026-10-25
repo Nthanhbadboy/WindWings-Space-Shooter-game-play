@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 23 — 25/10, kiểm câu hỏi chủ dự án "peer đã đính chính ảnh/asset/sprite — cập nhật chưa?"):**
+> `DATA_SYNC` §24.1–24.7/24.9–24.10 **đã đồng bộ đủ reports 70–77 từ các lần trước**; kiểm lại spec
+> thấy 3 chỗ còn stale so với các report đó — đã sửa: ① `ASSETS` §9 (4/6 "không xác định" → **ĐÓNG**:
+> kích thước pixel — manifest + geometry + **pixel tái tạo 2185/2185** (72); border 9-slice — **75**;
+> pivot — **75**; row 3 spine-mapping 🟡 một phần — **71**; row "thiếu width×height" → ✅); ②
+> `DESIGN_READINESS` §5 UI-art ("chưa phân tích nội dung" → **đã phân tích tĩnh** 72/75/76, chưa
+> render approval); ③ `SYSTEM_MANIFEST` Assets row (đủ reference vẽ: kích thước + pivot + border;
+> worklist 624) + `START_HERE` bẫy 17 (pack chưa "đủ APK" nhưng **đủ reference vẽ**). Không có
+> report asset/sprite mới sau 77 (78–87 = combat/camera/lifecycle).
+> verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 22 — 25/10, vai "AI nhận viết game" phản biện + đồng bộ report 87 peer `0561a2185b`, 412 tests):**
 > **(a) Phát hiện khi dựng thử 30 s đầu — CHỈ ghi ở đây vì dịch ngược CHƯA XONG** (chưa sửa
 > `SYSTEM_MANIFEST`/`MISSING` để khỏi đóng đinh): ① **pháo cánh**: damage có (`StartWingCannonDamages[24]`)

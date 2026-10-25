@@ -172,7 +172,7 @@ trạng thái của enemy — và nó **không chặn** vì L1 cho phép tự đ
 | **Animation — *mốc trong clip*** | 🟡 **A** cho mốc / **C** cho điều kiện + hành vi | 33 prefab **793 event có mốc thời gian** · boss 1: **8 tên entry + 5 nhánh** chuyển state · nhịp đòn **0,17/0,33/1,0/5,0 s** · enemy = máy trạng thái 3 nhánh + hit flash **0,05 s** — xem **`ANIMATION_SCRIPT.md`** |
 | **Animation — *playback / feel*** | ⛔ **ngoài phạm vi** (feel bỏ; *script* đã có) | 0/791 keyframe · 0 phép đo playback runtime · hành vi 12 handler còn **C** — **chỉ cần nếu làm L2/L3** |
 | **UI — cấu trúc** | ✅ **A** | **125 màn hình** (`screens.csv`: 125 dòng) · 53 board · 63 popup · 8 tab · screen graph + điều kiện mở từng popup ở `UI.md` |
-| **UI — art** | 🟡 **B** | asset pack v2 **đã xuất bản** (release `windwings-assets-1.3.118`, **175.684.102 B**, SHA `4b18cc23…`, report 70 — `DATA_SYNC` §21) kèm **hợp đồng sprite/scene/font** đã đồng bộ (`scene_sprite_contract`, `sprite_export_contract`, `font_language_contract`); **chưa phân tích nội dung** và **không bê file về repo này** (cấm) — L1 làm art mới nên **không cần** |
+| **UI — art** | 🟡 **B** | asset pack v2 **đã xuất bản** (release `windwings-assets-1.3.118`, **175.684.102 B**, SHA `4b18cc23…`, report 70 — `DATA_SYNC` §21) + **đã phân tích tĩnh tới mức pixel/mesh/scene**: pixel tái tạo **2185/2185** (report 72) · mesh/pivot/PPU/border (report 75) · **1377** SpriteRenderer scene mở đầu + 5 camera (reports 76/77); **chưa render/import approval**; **không bê file về repo này** (cấm) — L1 làm art mới nên **không cần** |
 
 ---
 

@@ -151,7 +151,7 @@ Ba mức: **đúng hình học** (có số đo, dựng lại được) · **đú
 | **UI** | **114 màn** · **6.580 file** · **103.655** dòng text/key | `local_pos` + `rotation` + `scale` mọi node · **6.964 node có đủ rect** · **325 key đa ngữ** phủ 22.524 node | ✅ **đúng layout** |
 | **Spine** | **27 rig** · 577 region | `xy` · `size` · `orig` · `offset` từng region · 616 bone · 446 slot · 180 animation | ✅ **đúng** |
 | **Audio** | 69 | 69/69 WAV · 44,1 kHz mono · 571 s | ✅ |
-| **Sprite rời** | 2.185 | tên · atlas · bytes · ô trong contact sheet · **871 sprite biết dùng ở màn nào** | ⚠ thiếu `width × height` |
+| **Sprite rời** | 2.185 | tên · atlas · bytes · ô trong contact sheet · **871 sprite biết dùng ở màn nào** | ✅ **có** `width × height` (manifest + `m_RD`, reports 62/72/75 peer) |
 | **Chưa phân loại** | 1.554 / 2.197 | — | ❌ |
 
 Nguồn: `reverse-engineering/raw/ui/*.json.gz` (**3.539 file**) · `docs/assets/sprites-index.csv` · `textassets/*.atlas*.txt`.
@@ -443,14 +443,14 @@ liên tục; pitch randomization cho kết quả tương đương với 1/7 dung
 
 ---
 
-## 9. Còn thiếu / phải đoán
+## 9. Còn thiếu / phải đoán (⚠ cập nhật lần 23: rows 1/2/4 đã đóng bằng reports 62/71/72/75 peer — chỉ còn 3/6)
 
 | # | Điều | Trạng thái |
 |---:|---|---|
-| 1 | Kích thước pixel **từng sprite** | **không xác định được từ APK** — chỉ có size atlas page + region Spine |
-| 2 | Border 9-slice thật của sprite UI | **không xác định** — `Sprite.border` không nằm trong dump |
-| 3 | Mapping `skeleton__N` → nhân vật nào | **không xác định** — JSON không có field `name`; phải so khớp thủ công bằng mắt |
-| 4 | Pivot từng sprite | **không xác định** |
+| 1 | ~~Kích thước pixel từng sprite~~ ✅ **ĐÓNG** — manifest có `width/height` (2.838 dòng) · `raw/sprite-geometry` (`m_RD`) 2.185 · **pixel tái tạo 2185/2185, không clamp** (reports 62/72 peer) |
+| 2 | ~~Border 9-slice~~ ✅ **ĐÓNG (report 75 peer)** — `border` nằm trong `sprite_mesh_contract` (source rect/offset/border/PPU giữ riêng từng sprite) |
+| 3 | Mapping `skeleton__N` → nhân vật nào | 🟡 **một phần (report 71 peer)** — rig bind **file-scoped** (hết bài toán basename); so tên nhân vật vẫn thủ công |
+| 4 | ~~Pivot từng sprite~~ ✅ **ĐÓNG (report 75 peer)** — source pivot + mesh-AABB origin **tách riêng** (467 rows lệch > 1e-5 là diagnostic; không đoán pivot từ PNG đã trim) |
 | 5 | 1.487 sprite "Other" là gì | **C** — tên không theo convention |
 | 6 | `Saw` (skeleton thứ 27) dùng cho enemy nào | **C** — có `Fly`/`Idle_Fly` → khả năng enemy bay có cưa |
 | 7 | 23 `SoundClip` không có `AudioClip` tương ứng | **C** — có thể trỏ clip trùng hoặc clip bị strip |
