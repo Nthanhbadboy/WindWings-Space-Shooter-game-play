@@ -133,6 +133,17 @@ jobs:
                  'bytes_hex':table.hex(),'entries':[{'state':i,'target':hex(0x14fc574+4*v)} for i,v in enumerate(table)]},
                'drone_post_appear_wait':{'va':'0x756e58','bytes_hex':ro(0x756e58,4).hex(),
                  'float32':struct.unpack('<f',ro(0x756e58,4))[0]}}
+          manager=ro(0x77a13e,10)
+          out['manager_dispatch']={'table_va':'0x77a13e','branch_base':'0x14f482c',
+              'selector':'eventState + 1','bytes_hex':manager.hex(),
+              'entries':[{'event_state':i-1,'target':hex(0x14f482c+4*v)} for i,v in enumerate(manager)]}
+          import capstone
+          md=capstone.Cs(capstone.CS_ARCH_ARM64,capstone.CS_MODE_ARM)
+          va=0x2990898
+          assert any(v<=va and va+160<=v+size and flags & 1 for v,off,size,flags in segs)
+          code=native.va_read(blob,segs,va,160)
+          out['game_started_veneer']={'va':hex(va),'bytes_hex':code.hex(),
+              'instructions':[{'address':hex(i.address),'mnemonic':i.mnemonic,'op_str':i.op_str} for i in md.disasm(code,va)]}
           Path('reverse-engineering/raw/ui-audit/stage23-rodata.json').write_text(json.dumps(out,indent=2)+'\n')
           PY
       - name: Commit recovered UI evidence
