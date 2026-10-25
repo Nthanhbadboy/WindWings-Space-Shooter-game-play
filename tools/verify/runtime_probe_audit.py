@@ -83,6 +83,7 @@ def main():
     watch=watchpoints(dump)
     watch.update({'status':'PROVISIONAL — capture plan, NOT observed runtime',
                   'source':str(p.relative_to(ROOT)),'source_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),
+                  'source_uncompressed_sha256':hashlib.sha256(dump.encode()).hexdigest(),
                   'warning':'Match exact APK/native hashes before using RVAs. No property getters, class initialization or Save calls may be invoked to collect evidence.'})
     with gzip.open(BASE/'stage1-3-watchpoints.json.gz','wt') as f:json.dump(watch,f,ensure_ascii=False,indent=2)
     print(json.dumps(out['ci_assessment'],indent=2))
