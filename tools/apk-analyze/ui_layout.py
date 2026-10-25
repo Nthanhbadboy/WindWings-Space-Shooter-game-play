@@ -35,7 +35,7 @@ OUT_RAW = os.environ.get("UI_RAW", "reverse-engineering/raw/ui")
 OUT_MD = os.environ.get("UI_MD", "docs/apk-analysis/20-ui-layout.md")
 UNITY_VERSION = os.environ.get("UNITY_VERSION", "2022.3.62f3")
 TTG_BACKEND = os.environ.get("TTG_BACKEND", "AssetStudio")
-MAX_NODES = int(os.environ.get("UI_MAX_NODES", "6000"))
+MAX_NODES = int(os.environ.get("UI_MAX_NODES", "12000"))
 MAX_COMPONENTS = int(os.environ.get("UI_MAX_COMPONENTS", "12"))
 MAX_BYTES = int(os.environ.get("UI_MAX_BYTES", "4000000"))
 ROOT_PREFIXES = ("Board_", "Popup_", "Tab_")
@@ -290,7 +290,9 @@ def node_info(tr):
     return node
 
 
-def walk(root, budget):
+def walk(root, budget, diagnostics=None):
+    if diagnostics is None:
+        diagnostics = {}
     out = []
     queue = [(root, "", 0)]
     seen = set()
@@ -312,10 +314,15 @@ def walk(root, budget):
             children = tr.m_Children or []
         except Exception:  # noqa: BLE001
             children = []
+        if len(children) > 80:
+            diagnostics["child_limit_skipped"] = diagnostics.get("child_limit_skipped", 0) + len(children) - 80
         for ch in children[:80]:
             child = _pptr(ch)
             if child is not None:
                 queue.append((child, path, depth + 1))
+    diagnostics["pending_transforms"] = len(queue)
+    diagnostics["node_limit"] = budget
+    diagnostics["truncated"] = bool(queue) or bool(diagnostics.get("child_limit_skipped"))
     return out
 
 
@@ -399,7 +406,8 @@ def main() -> int:
         if top_tr is None:
             _skip("no transform")
             continue
-        nodes = walk(top_tr, MAX_NODES)
+        diagnostics = {}
+        nodes = walk(top_tr, MAX_NODES, diagnostics)
         for n in nodes:
             if not n["components"]:
                 empty_nodes[0] += 1
@@ -413,6 +421,7 @@ def main() -> int:
         payload = {"class": cls, "root_path_id": root_key, "nodes": nodes,
                    "note": "RectTransform layout as stored in the prefab. Temporary: runtime "
                            "layout groups / safe area may override these numbers."}
+        payload["walk_diagnostics"] = diagnostics
         payload.update(file_context(head))
         if cls == "GP_Tutorials":
             payload["linked_panels"] = linked_tutorial_panels(head)
