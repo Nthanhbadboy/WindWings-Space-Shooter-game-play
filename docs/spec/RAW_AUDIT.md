@@ -6,16 +6,16 @@
 
 ## 0. Tổng
 
-**RAW 161 · DOC 2 · CONST 28 · tổng 191**
+**RAW 170 · DOC 2 · CONST 28 · tổng 200**
 
 | loại | số claim | nghĩa |
 |---|---:|---|
-| **RAW** | **161** | hàm đo **mở file** trong `datas/` · `reverse-engineering/` · `docs/assets/` |
+| **RAW** | **170** | hàm đo **mở file** trong `datas/` · `reverse-engineering/` · `docs/assets/` |
 | **DOC** | **2** | chỉ đọc `docs/**` — kiểm tính nhất quán tài liệu, **không** phải dữ liệu gốc |
 | **CONST** | **28** | **không mở file** — số đo một lần, không tái đo bằng máy |
-| **cộng** | **191** | |
+| **cộng** | **200** | |
 
-⇒ **161/191** claim tái đo được từ raw. **28** claim là hằng số (xem §2) — dùng để **tham khảo**, không dùng làm bằng chứng khi thiết kế.
+⇒ **170/200** claim tái đo được từ raw. **28** claim là hằng số (xem §2) — dùng để **tham khảo**, không dùng làm bằng chứng khi thiết kế.
 
 ## 1. Cách phân loại
 
@@ -72,6 +72,7 @@
 1. Số để **quyết định thiết kế** phải là claim **RAW** — hoặc ghi rõ "đo một lần, ngày …".
 2. Số **CONST** được phép tồn tại, nhưng **không** được dùng để bác một kết luận khác.
 3. Thêm claim mới: **đừng** viết `lambda: <hằng số>`; mở file raw và đo, hoặc khai báo là CONST.
+4. Trước khi **xin** dữ liệu mới: `grep` trong `reverse-engineering/` — đã có lần báo thiếu trong khi hex nằm sẵn trong repo (`DATA_SYNC.md` §22).
 
 ```bash
 python3 tools/raw-audit.py      # sinh lại file này

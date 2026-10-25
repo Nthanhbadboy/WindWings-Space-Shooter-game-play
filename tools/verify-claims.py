@@ -2914,6 +2914,193 @@ claim("CM7", "docs/spec/DATA_SYNC.md",
       "băm lại từng file raw đã kéo và so sha256_decompressed trong index.json của nhánh dữ liệu")
 
 
+def ia_counts():
+    """(số mảng Map, số mảng Player, số record length_valid sai) trong ia-resolved.json."""
+    d = ref_json("reverse-engineering/il2cpp/ia-resolved.json")
+    if not d:
+        return None
+    m = d["methods"]
+    bad = sum(1 for k in m for r in m[k] if not r.get("length_valid"))
+    return (len(m["Map_Get_Datas.cctor"]), len(m["Player_Get_Datas.cctor"]), bad)
+
+
+def player_arrays():
+    """(5.154, 253, 0) — tổng giá trị, wave id khác nhau, giá trị không có trong waves.json."""
+    import struct
+    d = ref_json("reverse-engineering/il2cpp/ia-resolved.json")
+    w = ref_json("datas/waves.json")
+    if not d or not w:
+        return None
+    vals = [v for r in d["methods"]["Map_Get_Datas.cctor"] for v in r["ints"]]
+    ids = set()
+    for row in w["waves"]:
+        tail = row["wave"].split("_")[-1]
+        if tail.isdigit():
+            ids.add(int(tail))
+    return (len(vals), len(set(vals)), sum(1 for v in vals if v not in ids))
+
+
+def player_values():
+    """(damage[0], rate[0], len damage, len rate, giá trị clone) — decode theo kiểu field."""
+    import struct
+    d = ref_json("reverse-engineering/il2cpp/ia-resolved.json")
+    if not d:
+        return None
+    rows = d["methods"]["Player_Get_Datas.cctor"]
+
+    def dec(r, typ):
+        body = bytes.fromhex(r["raw"])[: 4 * r["len"]]
+        return list(struct.unpack("<%d%s" % (r["len"], typ), body))
+
+    dmg = dec(rows[1], "f")
+    rate = dec(rows[2], "f")
+    clone = dec(rows[4], "f")
+    return (round(dmg[0]), round(rate[0], 2), len(dmg), len(rate),
+            round(clone[0], 2), round(clone[2], 2))
+
+
+def player_costs():
+    """(số tàu bán được, số tàu giá -1) từ PlayerCosts int[24]."""
+    import struct
+    d = ref_json("reverse-engineering/il2cpp/ia-resolved.json")
+    if not d:
+        return None
+    r = d["methods"]["Player_Get_Datas.cctor"][0]
+    cost = list(struct.unpack("<%di" % r["len"], bytes.fromhex(r["raw"])[: 4 * r["len"]]))
+    return (sum(1 for c in cost if c >= 0), sum(1 for c in cost if c == -1))
+
+
+def player_offset_stores():
+    """Số mảng có store đầu tiên của kết quả IA rơi đúng một trong 6 offset field."""
+    import re as _re
+    p = os.path.join(ROOT, "reverse-engineering/raw/il2cpp-consts/Player_Get_Datas.asm.txt")
+    if not os.path.exists(p):
+        return None
+    asm = open(p, encoding="utf-8", errors="replace").read().splitlines()
+    idx = {}
+    for i, line in enumerate(asm):
+        m = _re.match(r"\s*(0x[0-9a-f]+):", line)
+        if m and m.group(1) not in idx:
+            idx[m.group(1)] = i
+    d = ref_json("reverse-engineering/il2cpp/ia-resolved.json")
+    offsets = ("0x38", "0x78", "0x80", "0x88", "0x1c8", "0x308")
+    found = 0
+    for r in d["methods"]["Player_Get_Datas.cctor"]:
+        i = idx.get(r["array_new_addr"])
+        if i is None:
+            continue
+        for line in asm[i:i + 80]:
+            m = _re.search(r"str\s+x19, \[x\d+, #(0x[0-9a-f]+)\]", line, _re.I)
+            if m:
+                found += m.group(1).lower() in offsets
+                break
+    return found
+
+
+def audio_rule_counts():
+    """(số method, số check, số rule) trong raw/audio-rules/contracts.json.gz."""
+    import gzip
+    import json as _json
+    p = os.path.join(ROOT, "reverse-engineering/raw/audio-rules/contracts.json.gz")
+    if not os.path.exists(p):
+        return None
+    with gzip.open(p, "rt", encoding="utf-8") as fh:
+        d = _json.load(fh)
+    return (len(d.get("methods") or []), len(d.get("checks") or {}), len(d.get("rules") or []))
+
+
+def asset_pack_counts():
+    """(file, path va chạm, row vượt unique path, size mismatch) từ catalog.json.gz."""
+    import gzip
+    import json as _json
+    p = os.path.join(ROOT, "reverse-engineering/raw/asset-pack/catalog.json.gz")
+    if not os.path.exists(p):
+        return None
+    with gzip.open(p, "rt", encoding="utf-8") as fh:
+        d = _json.load(fh)
+    cs = d.get("collision_summary") or {}
+    return (len(d.get("files") or []), cs.get("paths"), cs.get("extra_manifest_rows"),
+            len(d.get("manifest_size_mismatches") or []))
+
+
+claim("IA1", "docs/spec/MISSING_FOR_NEW_GAME.md",
+      "đã resolve **576/576** (claim **IA1**)",
+      (576, 6, 0), ia_counts,
+      "ia-resolved.json của chính repo này: 576 mảng Map + 6 mảng Player, 0 record length_valid sai ⇒ "
+      "KHÔNG phải 'chờ nhánh kia dump thêm'")
+
+claim("IA3", "docs/spec/MISSING_FOR_NEW_GAME.md",
+      "**5.154** giá trị · **253** wave id khác nhau · **0** giá trị không có trong `datas/waves.json`",
+      (5154, 253, 0), player_arrays,
+      "576 mảng Map chứa 5.154 wave id, 253 id khác nhau, tất cả đều có trong datas/waves.json")
+
+claim("IA2", "docs/spec/BALANCE.md",
+      "store offset kiểm bằng asm: `0x38 / 0x78 / 0x80 / 0x88 / 0x1C8 / 0x308`",
+      6, player_offset_stores,
+      "cả 6 InitializeArray của Player_Get_Datas.cctor có store đúng một trong 6 offset ngay sau call")
+
+claim("IA4", "docs/spec/BALANCE.md",
+      "`shipCloneDamage` = **1,35 · 1,6 · 1,86** (`0x1C8`)",
+      (4500, 4.8, 24, 24, 1.35, 1.86), player_values,
+      "decode float từ hex: damage[0]=4500, rate[0]=4.8, hai mảng 24 phần tử, clone 3 phần tử — "
+      "cột `ints` của file là bit pattern, KHÔNG phải damage")
+
+claim("IA5", "docs/spec/BALANCE.md",
+      "**16/24** tàu có giá ≥ 0; **8** tàu `−1`",
+      (16, 8), player_costs,
+      "PlayerCosts là int[24]; -1 = không bán")
+
+claim("AU1", "docs/spec/DATA_SYNC.md",
+      "**65 method · 25 checks · 15 rules**",
+      (65, 25, 15), audio_rule_counts,
+      "raw/audio-rules/contracts.json.gz của report 67")
+
+claim("AP2", "docs/spec/DATA_SYNC.md",
+      "**2.652** file · **151** path va chạm · **321** row vượt unique path · **320** size mismatch",
+      (2652, 151, 321, 320), asset_pack_counts,
+      "catalog.json.gz của report 68: CRC PASS nhưng manifest path→identity KHÔNG injective ⇒ zip hợp lệ ≠ đủ asset")
+
+
+def sprite_geometry_stats():
+    """(Sprite, Texture2D, SpriteAtlas, resolved, unresolved) trong resolved-geometry.json.gz."""
+    import gzip
+    import json as _json
+    p = os.path.join(ROOT, "reverse-engineering/raw/sprite-geometry/resolved-geometry.json.gz")
+    if not os.path.exists(p):
+        return None
+    with gzip.open(p, "rt", encoding="utf-8") as fh:
+        d = _json.load(fh)
+    c = d.get("object_counts") or {}
+    return (c.get("Sprite"), c.get("Texture2D"), c.get("SpriteAtlas"),
+            d.get("resolved"), len(d.get("unresolved") or []))
+
+
+def sprite_rotation_stats():
+    """(số sprite cần lật/xoay, số packed, số rect ngoài page, số nguồn chưa tự kiểm)."""
+    import gzip
+    import json as _json
+    p = os.path.join(ROOT, "reverse-engineering/raw/sprite-geometry/resolved-geometry.json.gz")
+    if not os.path.exists(p):
+        return None
+    with gzip.open(p, "rt", encoding="utf-8") as fh:
+        d = _json.load(fh)
+    rot = d.get("rotation_codes") or {}
+    need = sum(v for k, v in rot.items() if str(k) != "0")
+    return (need, d.get("packed_count"), len(d.get("rect_outside") or []), len(d.get("sources") or []))
+
+
+claim("GE1", "docs/spec/ASSET_TRIAGE.md",
+      "**2.185** `Sprite` · **654** `Texture2D` · **66** `SpriteAtlas`; `resolved` **2.185** · `unresolved` **0**",
+      (2185, 654, 66, 2185, 0), sprite_geometry_stats,
+      "join metadata của report 62 (status PROVISIONAL_GEOMETRY_JOINS_NOT_PIXEL_CROP_VALIDATION) — "
+      "biết rect, KHÔNG phải đã crop đúng pixel")
+
+claim("GE2", "docs/spec/ASSET_TRIAGE.md",
+      "| `rotation` khác 0 (mã **1/2/3** = 53/54/37) | **144** |",
+      (144, 1550, 40, 6), sprite_rotation_stats,
+      "144 sprite phải lật/xoay (53+54+37); 40 rect vượt page ≤0,9963 px; 6 nguồn chưa tự kiểm sha256")
+
+
 claim("RD1", "docs/spec/README.md",
       "**Kiểm tự động (`RD1`):** **40 dòng · 0 lệch**",
       (40, 0), readme_sizes,
@@ -3355,8 +3542,8 @@ def data_inventory():
 
 claim("AI1", "docs/spec/START_HERE.md",
       "**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree"
-      " · **126** bảng ScriptableObject · **42** contact sheet · **32** file `datas/`.",
-      (139, 142136, 142, 126, 42, 32), data_inventory,
+      " · **126** bảng ScriptableObject · **42** contact sheet · **34** file `datas/`.",
+      (139, 142136, 142, 126, 42, 34), data_inventory,
       "kho dữ liệu gốc đã phân tích: asm, typetree, ScriptableObject, contact sheet, datas")
 
 claim("AP1", "docs/spec/DATA_INTEGRITY.md",
@@ -3630,8 +3817,8 @@ claim("GE2", "docs/spec/ASSET_TRIAGE.md",
 
 
 claim("RB1", "docs/spec/RAW_AUDIT.md",
-      "**RAW 161 · DOC 2 · CONST 28 · tổng 191**",
-      (161, 2, 28, 191), raw_audit_counts,
+      "**RAW 170 · DOC 2 · CONST 28 · tổng 200**",
+      (170, 2, 28, 200), raw_audit_counts,
       "sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. "
       "CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập")
 

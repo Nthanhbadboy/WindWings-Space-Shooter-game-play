@@ -147,6 +147,7 @@ def main() -> int:
         "1. Số để **quyết định thiết kế** phải là claim **RAW** — hoặc ghi rõ \"đo một lần, ngày …\".",
         "2. Số **CONST** được phép tồn tại, nhưng **không** được dùng để bác một kết luận khác.",
         "3. Thêm claim mới: **đừng** viết `lambda: <hằng số>`; mở file raw và đo, hoặc khai báo là CONST.",
+        "4. Trước khi **xin** dữ liệu mới: `grep` trong `reverse-engineering/` — đã có lần báo thiếu trong khi hex nằm sẵn trong repo (`DATA_SYNC.md` §22).",
         "",
         "```bash",
         "python3 tools/raw-audit.py      # sinh lại file này",

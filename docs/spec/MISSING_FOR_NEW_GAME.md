@@ -47,45 +47,54 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 A6 và B3 là **dữ liệu chưa dump**; save đã có **một phần**; `rate = 0` là **giới hạn suy luận**.
 Tự chọn ở A6/B3 thì game mới **lệch số**; tự chọn ở `rate = 0` thì lệch **nhịp**, nhưng được phép nếu ghi rõ.
 
-### 2.1 A6 — một **stage** gồm mấy wave: **3/576 entry đã resolve**, phần còn lại chưa dump
+### 2.1 A6 — stage ↔ wave: **dữ liệu ĐÃ CÓ trong repo**, thiếu phần *bind*, không thiếu blob
 
-- **Kích thước export:** `Map_Get_Datas..cctor` **100.896 B · `ends_clean: true`** · **4.020** const · **576** `init_array` (claim **AM1**) — **đầy đủ, không bị cắt**. `GetListWaves` **1.112 B**, trả `int[]`.
-- **ĐÃ RESOLVE (mức A, phạm vi hẹp)** (`CM1`): **3 entry** = `[25, 9010]` · `[164]` · `[113, 5]` · **13** check;
-  `Map_Get_Datas..cctor` dựng `listMapDatas`; **3 entry đầu** đọc được
-  **literal trong asm**: entry0 `[25, 9010]` · entry1 `[164]` · entry2 `[113, 5]` — ứng với **stage nội bộ
-  0/1/2** của **ChapterCurrent = 0, GameMode = 0, nonbranch** (không áp cho branch/test/mode khác).
-  Consumer đã nối tới cuối: `MapController.Start → setup.get_stageIndex → Map_Get_Datas.GetListWaves(index)`,
-  **không** +1/−1 giữa getter và tham số. Nguồn: report **52** + `raw/ui-audit/scene-map-flow.json.gz`
-  (**13** check) + `raw/il2cpp-consts/Map_Get_Datas.asm.txt`.
-- **CHƯA RESOLVE:** **573** entry còn lại (tổng **576**). `datas/maps.json` là **bảng dẫn xuất** —
-  **không** phải nguồn độc lập; đừng dùng nó để "xác nhận" chính nó.
-- **Địa chỉ để dump tiếp:** mỗi `init_array` có địa chỉ nguồn (`a:`), ví dụ `0x2bd4838` (len **36**),
-  `0x2bd5488` (len **36**), `0x2bd58a8` (len **3**). Phân bố độ dài: **3 → 320 mảng**, **7 → 104**,
-  **36 → 63**, 4 → 21, 5 → 12, 6 → 9.
-- **Vì sao vẫn tính là chặn A5:** 250 map ↔ 282 wave; biết 3 stage **không** suy ra độ dài phiên. Nhưng
-  **không còn** là "phải bóc lại APK từ đầu" — chỉ còn **đọc 573 blob** (vài KB).
-- **Nếu chỉ cần L1:** tự chọn độ dài map là **hợp lệ**, miễn ghi rõ là **lựa chọn thiết kế**.
+> Sửa 25/10 sau khi đối chiếu: mục này từng ghi *"573 blob còn lại chưa dump"* và **xin nhánh dữ liệu dump
+> thêm**. Sai. Toạ độ + hex đã nằm trong `reverse-engineering/il2cpp/ia-resolved.json` **của chính repo này**
+> (và của cả hai nhánh), `length_valid` **576/576**.
 
-### 2.2 B3 — đường cong damage của **tàu** theo rank
+- **Số thật:** `Map_Get_Datas..cctor` **100.896 B · `ends_clean: true`** · **4.020** const · **576** `init_array` (claim **AM1**), đã resolve **576/576** (claim **IA1**).
+- **Nội dung đọc được:** **576 mảng `int`** · **5.154** giá trị · **253** wave id khác nhau · **0** giá trị không có trong `datas/waves.json` (claim **IA3**).
+  ⇒ **Danh sách wave của bảng map đã đọc được**, không phải chờ dump.
+- **Không phải “573 = 576 − 3”.** Ba entry mở đầu (`CM1`): **3 entry** = `[25, 9010]` · `[164]` · `[113, 5]` · **13** check; chúng được dựng bằng
+  **literal store**, **không** nằm trong 576 `InitializeArray` ⇒ trừ đi là **sai đơn vị**. Và **576 cũng
+  không phải 576 stage**: đó là số *mảng*, chưa bind sang (chapter, stage, mode).
+- **Kiểm bằng asm (`CM2`):** `0x78` + `sxtw #2` + index `w19` — `GetMainCannonDamage` đọc mảng theo `playerIndex`.
+- **Phân bố độ dài** (số mảng): `3 → 320` · `7 → 104` · `36 → 63` · `4 → 21` · `5 → 12` · `6 → 9` ·
+  `20 → 5` · `24 → 2` · dài nhất **69**.
+- **Việc còn lại là *bind*, không phải *dump*:** entry thứ *i* ↔ (chapter, stage, mode). Consumer đã nối tới
+  cuối (`MapController.Start → setup.get_stageIndex → Map_Get_Datas.GetListWaves(index)`), nhưng **thứ tự nạp
+  `listMapDatas` chưa được chứng minh** ⇒ ghi **unknown**, đừng gán theo trực giác.
+- `datas/maps.json` (**250** map) là **bảng dẫn xuất khác nguồn** — không dùng nó để "xác nhận" 576.
+- **Nếu chỉ cần L1:** chọn số map × độ dài map là **hợp lệ**, miễn ghi rõ là **lựa chọn thiết kế**.
 
-- **Có gì:** `Player_Get_Datas..cctor` **2.492 B** · **6** `init_array` · mảng dài nhất **24** (claim **AM2**).
-  Bốn mảng đó ứng với `StartMainCannonDamages` (`0x78`) · `StartMainCannonRate` (`0x80`) ·
-  `StartWingCannonDamages` (`0x88`) — đọc offset từ `dump.cs.gz`.
-- **Thiếu gì:** bytes của **4 mảng × 24 float** + 2 mảng × 3, tại `0x2bd5a40`, `0x2bd4d28`, `0x2bd5af8`,
-  `0x2bd45c0`.
-- **Sửa 25/10 (review peer N2):** **KHÔNG** được suy "tàu không có damage riêng" từ việc `Player_Info` chỉ
-  có 4 field (claim **AM3**). Asm `Player_Get_Datas.GetMainCannonDamage(int playerIndex)` đọc **mảng static
-  float** tại offset **`0x78`** và **index theo `playerIndex`**: `ldr x8,[x8,#0x78]` → so `w9, w19` →
-  `ldr s8,[x8, w19, sxtw #2 + 0x20]` (`14e3a78..14e3a90`). Rank/upgrade vào phần tính **sau** (`0x14e3c40`),
-  **không** xoá lookup theo tàu ⇒ **damage phụ thuộc tàu là có thật**; chỉ **giá trị** là chưa biết.
-- **Bằng chứng asm (`CM2`):** `0x78` + `sxtw #2` + index `w19` — kiểm bằng máy trên `Player_Get_Datas.asm.txt`.
-- **Đã có thêm (nhưng KHÁC lớp):** `raw/player-loadout/array-blobs.json.gz` — **5 blob** · **49 int** · **5/5 sha256 OK** (claim **CM5**). Đây là **int** của `Player_Saved_Datas` (giá craft/unlock), **không**
-  phải 4 mảng **float** damage của `Player_Get_Datas`; field binding cũng chưa chốt
-  (`PROVISIONAL_METADATA_ARRAY_BLOBS_NOT_ALL_FIELD_BINDINGS`). ⇒ **B3 vẫn mở.**
-- **Còn thiếu:** giá trị **6 mảng rodata** (24 float × 4 + 2 mảng × 3) ⇒ DPS/TTK tuyệt đối vẫn chưa tính.
-  HP riêng của tàu: **chưa có bằng chứng** theo cả hai chiều ⇒ giữ **D**, không kết luận.
-- **Việc kế tiếp:** cùng một lần dump rodata với §2.1 (hai class, 6 blob).
-- **Sau khi có:** `TTK` từ "tương đối" lên **số thật**; `COMBAT.md` §6 hết câu "chưa có số tuyệt đối".
+### 2.2 B3 — damage tàu: **giá trị đã có**, chỉ còn HP là chưa
+
+> Sửa 25/10: mục này từng ghi *"4 mảng × 24 float"* và *"thiếu 6 blob rodata"*. Cả hai đều sai.
+
+**Đã decode 6 mảng** (`Player_Get_Datas..cctor` **2.492 B** · **6** `init_array` · mảng dài nhất **24**, claim **AM2**)
+từ hex trong `ia-resolved.json` — **theo kiểu của field**, không
+đọc cột `ints` (cột đó là bit pattern; float phải unpack `<f`):
+
+| field | kiểu | len | offset | giá trị (index 0…) |
+|---|---|---:|---|---|
+| `PlayerCosts` | **int[24]** | 24 | `0x38` | `0, 0, 1050, 3150, −1, 3850, 4550, 2450 …` (**8** phần tử `−1` = không bán) |
+| `StartMainCannonDamages` | **float[24]** | 24 | `0x78` | `4500, 220, 2680, 8000, 710, 1650 …` |
+| `StartMainCannonRate` | **float[24]** | 24 | `0x80` | `4,8 … 12,0` |
+| `StartWingCannonDamages` | **float[24]** | 24 | `0x88` | `218, 75, 186, 118 … 2800` |
+| `shipCloneDamage` | **float[3]** | 3 | `0x1C8` | `1,35 · 1,6 · 1,86` |
+| `PercentToCompleteMissions222` | **float[3]** | 3 | `0x308` | `0,2 · 0,6 · 0,98` |
+
+- **Bind đã kiểm bằng asm** (claim **IA2**): ngay sau mỗi `InitializeArray` là store đúng offset
+  `0x38 / 0x78 / 0x80 / 0x88 / 0x1C8 / 0x308` (`0x14e5b48`, `0x14e5e9c`, `0x14e5ec4`, `0x14e5f18`,
+  `0x14e60c4`, `0x14e6244`), và `mov w1,#0x18` (=24) / `#3` là độ dài mảng.
+- **DPS suy ra** = `damages[i] × rate[i]` (index 0 → **21.600**; min **456** · max **46.400**) — ghi rõ đây là
+  **suy ra**, chưa chứng minh nhịp bắn runtime dùng đúng trường `rate` này.
+- **Đã có file dẫn xuất:** `datas/player_start_stats.json` (6 mảng + cột `main_cannon_dps` + cờ purchasable).
+- **Khác lớp (đừng gộp):** `raw/player-loadout/array-blobs.json.gz` — **5 blob** · **49 int** · **5/5 sha256 OK** (claim **CM5**) là **int** của `Player_Saved_Datas` (giá craft/unlock), **không** phải mảng float damage ở trên.
+- **Vẫn chưa:** (1) `playerIndex` → **ID tàu**; (2) **HP riêng của tàu** — chưa có bằng chứng theo cả hai
+  chiều ⇒ giữ **D**; (3) kiểm runtime để biết `rate` là *shot/giây* hay *hệ số khác*.
+- **Việc kế tiếp:** đọc consumer (`GP_Loader`, `Gun_Attack`) để nối `playerIndex` ↔ tàu, rồi mới tính TTK.
 
 ### 2.4 `rate = 0` **không** phải "spawn cả loạt cùng frame"
 
@@ -198,9 +207,11 @@ không phủ toàn bộ công thức chiến đấu.
 
 - **L1 (làm game **giống cơ chế**, art mới, số tự chọn): ĐỦ.** 8/13 hệ đủ, **5** hệ một phần nhưng phần
   thiếu đều **không chặn** (D3 = chọn thiết kế; audio = tự chọn; talent = tự chọn giá).
-- **L2 (giống **số** đến mức chơi thấy tương đương): CHƯA.** Cần **6 blob** rodata của `Player_Get_Datas`
-  + **573** entry `Map_Get_Datas` còn lại (§2.1 + §2.2).
-  Ngoài ra cần playback thật để so cảm giác — việc này cần **thiết bị**.
+- **L2 (giống **số** đến mức chơi thấy tương đương): CHƯA — nhưng **không còn thiếu dữ liệu**, chỉ thiếu
+  *bind + kiểm runtime*.** Giá trị damage/rate/cost/độ dài map **đã có** (§2.1 + §2.2). Cái còn: (1) `playerIndex`
+  → **ID tàu**; (2) entry map → **(chapter, stage, mode)**; (3) playback thật để so cảm giác và xác nhận `rate`
+  là *shot/giây* — việc này cần **thiết bị**.
+  > Đừng nói “chờ nhánh kia dump thêm APK” nữa: đó là **câu trả lời cũ**, sai.
 - **L3 (tái lập **1:1 asset** gốc): BỎ** — art pack, font, shader, physics không tái lập từ APK.
   **Không** có nghĩa là bỏ "thiết kế cho đẹp": phần đó là `VISUAL_DESIGN.md` (khung hình **0,4813**,
   tương phản **0,45–0,80**, accent **≤10 %** gameplay / **~47 %** khung thưởng, chi tiết **13–22**,
@@ -210,13 +221,13 @@ không phủ toàn bộ công thức chiến đấu.
 
 ## 5. Nếu chỉ làm được **một** việc tiếp theo
 
-Xin nhánh dữ liệu **một lần dump rodata**: **6 blob** của `Player_Get_Datas` + **573 blob còn lại** của
-`Map_Get_Datas` (3/576 entry đã đọc literal; tất cả địa chỉ đã có trong `init_array.a`):
+**Không xin thêm raw nữa.** Việc đúng là **bind dữ liệu đã có**:
 
-| được gì | mở khoá |
-|---|---|
-| 4 mảng 24 float (damage theo **playerIndex**) | **B3** đóng → TTK tuyệt đối, cân bằng súng theo rank/tàu |
-| 573 mảng int | **A6** đóng → **A5** đóng → biết một phiên dài bao lâu |
+| việc | mở khoá | vì sao không cần xin |
+|---|---|---|
+| Đọc consumer để nối `playerIndex` ↔ **ID tàu** (dùng `datas/player_start_stats.json` + `GP_Loader`) | **B3** đóng → TTK tuyệt đối | 6 mảng đã decode, chỉ thiếu ánh xạ |
+| Bind 576 mảng map → **(chapter, stage, mode)** rồi so với `datas/maps.json` (250 map) | **A6** đóng → **A5** đóng | 5.154 wave id đã đọc được, 253/281 wave phủ |
+| Kiểm runtime `rate` (shot/giây?) + `PlayerUsed` refresh | L2 chuyển từ “giống số trên giấy” sang “giống số khi chơi” | cần **thiết bị**, không cần dump |
 
 Đó là **hai** trong **bốn** câu ❌ cuối cùng của `DESIGN_QUESTIONS.md` (48 câu: **29 ✅ · 15 ⚠ · 4 ❌**,
 claim **S2**), và cả hai đều **không cần thiết bị**.

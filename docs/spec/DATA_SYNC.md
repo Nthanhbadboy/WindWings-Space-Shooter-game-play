@@ -2284,7 +2284,7 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **161** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **RAW** | **170** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
 | **DOC** | **2** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
 | **CONST** | **28** | không mở file ⇒ **đo một lần** |
 
@@ -2355,3 +2355,81 @@ Sau `6ababbd31`, nhánh dữ liệu có thêm 1 commit. Kéo **raw trước**, r
 
 **Đã thêm vào `datas/PROVENANCE.md`:** 29 dòng cho đợt kéo này ⇒ bảng **412** dòng, **272** khớp,
 **140** lệch (file kéo lại sau 23/10). `DATA_INTEGRITY.md` đã cập nhật theo (claim **AP1**).
+
+---
+
+## 21. Đồng bộ `a91695a0d` — report 67 (audio) và 68 (asset pack có va chạm tên)
+
+Kéo raw trước, đọc chữ sau, như các lượt trước:
+
+| việc | kết quả |
+|---|---|
+| raw mới | `raw/audio-rules/contracts.json.gz` · `raw/asset-pack/{catalog.json.gz, manifest-full.csv}` (460 KB) |
+| file phải kéo thêm để chạy | `raw/ui-audit/extra-native/Machine_Gun_Attack.{asm.txt,json}` · `datas/audio_rules.json` · `datas/validate.py` |
+| chạy verify của họ | `tools/verify/audio_rules.py` → **65 method · 25 checks · 15 rules** (claim **AU1**) |
+| test | **40 test OK** (thêm 7 test audio + 2 test asset pack) |
+| browser metadata | sinh `docs/assets/pack-browser.html` (1,4 MB) từ catalog — **không** chứa PNG/WAV gốc |
+
+### 21.1 Audio — cái đo được
+
+- `MUTE_AUDIO` **int default 0**, chỉ `stored == 1` là mute.
+- `VolumeSound` missing-default **≈ 0,73** (pool `0x756dd4`), `VolumeMusic` **≈ 0,30** (pool `0x7570e0`) —
+  dấu ≈ vì exporter lưu **decimal đã làm tròn**, không phải bit IEEE.
+- `AudioManager.Pause` = wrapper `AudioListener.pause`, **không** phải `Time.timeScale`; **không** có saved key
+  trong hai body đã đọc ⇒ đừng suy “pause = slow-mo”.
+
+### 21.2 Asset pack — **zip hợp lệ KHÔNG có nghĩa là đủ asset**
+
+| hạng mục | số |
+|---|---:|
+| file thật trong archive | **2.652** |
+| manifest row | **2.907** |
+| path bị nhiều row cùng dùng | **151** |
+| row vượt quá unique path | **321** |
+| row có size khác file | **320** (thuộc 150 path) |
+| CRC toàn bộ entry | **PASS** |
+| `manifest path→identity` injective | **FAIL** |
+| `complete APK reference` | **NOT ESTABLISHED** |
+
+Claim **AP2**: **2.652** file · **151** path va chạm · **321** row vượt unique path · **320** size mismatch.
+
+> **Đừng nói “0 missing path ⇒ đủ asset”**: 321 row bị gộp đường dẫn, và 320 size mismatch nghĩa là **không thể
+> phục hồi từng row chỉ bằng đọc file hiện tại**. Muốn biết ảnh nào thật sự khác nhau phải so **pixel**, không
+> phải so tên.
+
+---
+
+## 22. Sửa lớn: **dữ liệu “còn thiếu” đã nằm trong repo** — `ia-resolved.json`
+
+Lượt này có một phát hiện làm đổi cả phần “còn thiếu” của bộ spec: **hex của mọi `InitializeArray` đã có sẵn**
+trong `reverse-engineering/il2cpp/ia-resolved.json` (264 KB) — **cả hai nhánh**, không phải chờ dump lại APK.
+Trước đó `MISSING_FOR_NEW_GAME.md` viết *“573 blob còn lại chưa dump”* và **xin nhánh dữ liệu dump thêm**.
+Đó là **kết luận sai**, và sai vì **không grep repo trước khi xin**.
+
+### 22.1 Số thật
+
+| thứ | số | ở đâu |
+|---|---:|---|
+| `Map_Get_Datas.cctor` record | **576** | `ia-resolved.json` |
+| `Player_Get_Datas.cctor` record | **6** | cùng file |
+| record `length_valid` sai | **0** | cùng file |
+| tổng giá trị int trong 576 mảng map | **5.154** | cùng file |
+| wave id khác nhau · id không có trong `waves.json` | **253** · **0** | đối chiếu `datas/waves.json` |
+| offset field có store ngay sau `InitializeArray` | **6/6** | asm `Player_Get_Datas.asm.txt` |
+
+### 22.2 Hai lỗi của mình, ghi để không lặp
+
+| lỗi | đúng | vì sao |
+|---|---|---|
+| **“573 = 576 − 3 blob còn lại”** | **576 mảng**, **không** trừ 3 | 3 entry mở đầu dựng bằng **literal store**, không nằm trong 576 `InitializeArray`; và 576 mảng **không** phải 576 stage |
+| **“4 mảng × 24 float damage”** | **1 int[24]** (`PlayerCosts`) + **3 float[24]** (damage/rate/wing) + **2 float[3]** (clone, mission %) | cột `ints` của file là **bit pattern**; float phải unpack `<f` theo kiểu field |
+
+### 22.3 Giá trị đã dùng được (chi tiết ở `BALANCE.md` §1.1b)
+
+`PlayerCosts` = `0, 0, 1050, 3150, −1, 3850, …` (**16/24** bán được, **8** giá `−1`) ·
+`StartMainCannonDamages[0]` = **4500**, `StartMainCannonRate[0]` = **4,8** ·
+`StartWingCannonDamages[0]` = **218** · `shipCloneDamage` = **1,35/1,6/1,86** ·
+`PercentToCompleteMissions222` = **0,2/0,6/0,98**. Dẫn xuất: `datas/player_start_stats.json`.
+
+> **Vẫn chưa** (đừng đọc là xong): `playerIndex` → **ID tàu**; 576 mảng map → **(chapter, stage, mode)**;
+> `rate` có phải *shot/giây*; HP riêng của tàu. Đó là việc **bind + kiểm runtime**, không phải việc **dump**.

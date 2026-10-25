@@ -208,6 +208,46 @@ export"**.
 | `StartSecretWeaponDamage` | `float` | dùng chung |
 
 `Data_Players` / `Player_Info` (25 tàu) chỉ có `id · Sprite · Star · Actived` — **0 field HP**.
+
+#### 1.1b **Đã decode 6 mảng** (25/10) — bảng số thật, không còn "không serialize"
+
+Nguồn: `reverse-engineering/il2cpp/ia-resolved.json#Player_Get_Datas.cctor` → `datas/player_start_stats.json`.
+Mỗi mảng là **hex của `InitializeArray`**, giải mã **theo kiểu field** (int32 nếu `int[]`, float32 nếu `float[]`);
+store offset kiểm bằng asm: `0x38 / 0x78 / 0x80 / 0x88 / 0x1C8 / 0x308`.
+
+| index | `PlayerCosts` (coin, −1 = không bán) | `StartMainCannonDamages` | `StartMainCannonRate` | `StartWingCannonDamages` | DPS chính (suy ra) |
+|---:|---:|---:|---:|---:|---:|
+| 0 | 0 | 4500 | 4.8 | 218 | 21600 |
+| 1 | 0 | 220 | 6.8 | 75 | 1496 |
+| 2 | 1050 | 2680 | 4.8 | 186 | 12864 |
+| 3 | 3150 | 8000 | 5.8 | 118 | 46400 |
+| 4 | -1 | 710 | 4.8 | 236 | 3408 |
+| 5 | 3850 | 1650 | 4.8 | 309 | 7920 |
+| 6 | 4550 | 255 | 5 | 365 | 1275 |
+| 7 | 2450 | 800 | 4.8 | 99 | 3840 |
+| 8 | 2450 | 500 | 4.8 | 165 | 2400 |
+| 9 | -1 | 95 | 4.8 | 725 | 456 |
+| 10 | 3850 | 336 | 4.8 | 230 | 1612.8 |
+| 11 | -1 | 3000 | 4.8 | 2800 | 14400 |
+| 12 | 3150 | 2350 | 6.8 | 595 | 15980 |
+| 13 | 4550 | 400 | 10.5 | 800 | 4200 |
+| 14 | 4550 | 515 | 4.8 | 265 | 2472 |
+| 15 | -1 | 3000 | 10.5 | 2150 | 31500 |
+| 16 | 4550 | 2689 | 5.6 | 589 | 15058.4 |
+| 17 | 2450 | 1800 | 4.8 | 345 | 8640 |
+| 18 | -1 | 100 | 12 | 250 | 1200 |
+| 19 | 4550 | 2250 | 7.5 | 435 | 16875 |
+| 20 | -1 | 100 | 9 | 1650 | 900 |
+| 21 | 4550 | 2800 | 10.5 | 686 | 29400 |
+| 22 | -1 | 110 | 9 | 400 | 990 |
+| 23 | -1 | 3300 | 10.5 | 820 | 34650 |
+
+- `shipCloneDamage` = **1,35 · 1,6 · 1,86** (`0x1C8`) · `PercentToCompleteMissions222` = **0,2 · 0,6 · 0,98** (`0x308`).
+- **16/24** tàu có giá ≥ 0; **8** tàu `−1`. `PlayerCosts` là **int**, ba mảng damage/rate là **float** — trước đây
+  mình đọc nhầm cả 4 là float*24, xem `DATA_SYNC.md` §21.
+- `index` là **playerIndex** trong getter; **chưa** bind sang ID tàu. DPS = damage × rate là **suy ra**
+  (chưa chứng minh `rate` là shot/giây thực tế).
+- HP vẫn **không** có bảng theo tàu: `StartHp` là **một** float.
 ⇒ Nếu mỗi tàu có HP riêng, bảng đó **không** nằm ở ScriptableObject; phải là **mảng cứng trong
 code** hoặc gán ở chỗ khác.
 
@@ -862,7 +902,7 @@ bị cắt** (`DATA_SYNC` §7.29).
 | **Wave / spawner / map** | `datas/waves.json`, `MapController.csv`, `Stage_Behaviour.csv` | ✅ có số → `ENCOUNTERS.md` |
 | **Giá & phần thưởng cụ thể** | `Box_Rewards.csv`, `Shop_Cell.csv`, `DataShopPack.csv`, `13-iap-products.csv` | ❌ **thật sự không có số** → `ECONOMY.md` §0 |
 | **Tỉ lệ rơi item** | `Sub_Item.csv` + `Item_Movement.csv` (702 lượt) | ✅ 676 coin / 26 item → `ECONOMY.md` §1.1 |
-| Damage của **player** | `Player_Get_Datas.StartMainCannonDamages[]` (không serialize) | ❌ trong `libil2cpp.so` |
+| Damage của **player** | `Player_Get_Datas.StartMainCannonDamages[]` | ✅ **đã decode** từ `ia-resolved.json` → §1.1b + `datas/player_start_stats.json` |
 
 > Bảng trên là **kết quả kiểm lại toàn bộ 91 CSV** ở `reverse-engineering/scriptableobjects/`
 > bằng cách lọc cột số và đếm giá trị phân biệt. Chi tiết phép kiểm: `ECONOMY.md` §8.
@@ -1337,7 +1377,7 @@ Chỉ biết **signature**, không biết thân hàm (nguồn: `class Enemy_Data
 
 | Nhóm | Lý do |
 |---|---|
-| Damage nền từng tàu | `StartMainCannonDamages[]` **không serialize**; `Gun_Attack.forceType` = Enemy 458/458 xác nhận không có súng player trong asset |
+| ~~Damage nền từng tàu~~ | **ĐÃ CÓ** (§1.1b). Chỉ còn **chưa bind** `playerIndex` ↔ ID tàu; đừng xếp vào mức D nữa |
 | Giá nâng cấp (coin/gem) | `PlayerCosts[]`, `GetUpgadeCostCoins()` — thân hàm; **0 cột giá** trong 91 CSV (`ECONOMY.md` §8) |
 | Tỉ lệ rơi item | Không có field trọng số; chỉ suy được **tỉ lệ instance** 676 coin : 26 item (`Item_Movement.csv`) |
 | Hệ số scale HP theo stage | `Enemy_Data_Balance` + `Stage_Get_Datas` (scene bundle khác, chưa tìm ra) |

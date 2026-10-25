@@ -168,11 +168,11 @@ Nhánh bạn đi tiếp 3 commit (`7c7c9f064 → 6ababbd31`). Mình kéo **đún
 - Trạng thái trong raw được giữ nguyên chữ: `PROVISIONAL_STATIC_PARTIAL_SAVE_CONTRACT_NOT_FULL_SCHEMA`.
 
 **Sổ kiểm mới — trả lời câu \"dựa raw hay nói mồm\" bằng máy:** `docs/spec/RAW_AUDIT.md`
-(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **191 claim**:
+(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **200 claim**:
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **161** | hàm đo **mở file** raw ⇒ tái đo được |
+| **RAW** | **170** | hàm đo **mở file** raw ⇒ tái đo được |
 | **DOC** | **2** | chỉ đọc `docs/**` |
 | **CONST** | **28** | không mở file ⇒ \"đo một lần\" |
 
@@ -264,3 +264,45 @@ callback guard) + 3 test loadout (sha APK, mask giữ method boundary, workflow 
 
 Dump **573** blob `Map_Get_Datas` + **6** blob `Player_Get_Datas`. Có nó thì L2 (giống **số**) mới đo được;
 mọi thứ còn lại mình tự làm được.
+
+---
+
+## 11. Bạn đúng: **dữ liệu đã nằm trong repo**, mình đã sửa kết luận
+
+Mình đã kiểm `reverse-engineering/il2cpp/ia-resolved.json` trong **chính** checkout này: **576** record
+`Map_Get_Datas.cctor`, **6** record `Player_Get_Datas.cctor`, `length_valid` **576/576 + 6/6**, hex đầy đủ.
+Cả hai lỗi bạn chỉ ra đều đúng, và mình đã sửa tận gốc:
+
+| mình từng viết | đúng |
+|---|---|
+| “573 blob còn lại chưa dump” + **xin nhánh dữ liệu dump thêm** | **576 mảng**, `576−3` **vô nghĩa** (3 entry mở đầu là **literal store**, không nằm trong 576 `InitializeArray`); **576 không phải số stage** |
+| “4 mảng × 24 float” | **1 `int[24]`** (`PlayerCosts`) + **3 `float[24]`** (`StartMainCannonDamages/Rate/WingCannonDamages`) + **2 `float[3]`** (`shipCloneDamage`, `PercentToCompleteMissions222`) — cột `ints` là **bit pattern**, phải unpack `<f` |
+
+**Đã decode và bind bằng asm** (`0x38 / 0x78 / 0x80 / 0x88 / 0x1C8 / 0x308`, store ngay sau mỗi
+`InitializeArray`; `w1 = #0x18` / `#3` là độ dài):
+
+| field | giá trị (index 0…) |
+|---|---|
+| `PlayerCosts` (int[24]) | `0, 0, 1050, 3150, −1, 3850, 4550, 2450 …` — **16/24** bán được, **8** giá `−1` |
+| `StartMainCannonDamages` | `4500, 220, 2680, 8000, 710 …` |
+| `StartMainCannonRate` | `4,8 … 12,0` |
+| `StartWingCannonDamages` | `218, 75, 186, 118 … 2800` |
+| `shipCloneDamage` | `1,35 · 1,6 · 1,86` |
+| `PercentToCompleteMissions222` | `0,2 · 0,6 · 0,98` |
+
+Dẫn xuất nằm ở `datas/player_start_stats.json` (kèm cột `main_cannon_dps` = damage × rate, **ghi rõ là suy ra**).
+Spec đã sửa: `MISSING` §2.1/§2.2/§4/§5 · `BALANCE.md` §1.1b (bảng 24 tàu) · `DATA_SYNC.md` §22 · thêm **bẫy #15/#16**
+vào `START_HERE.md`, và một luật mới trong `RAW_AUDIT.md`: **grep repo trước khi xin dữ liệu**.
+
+**576 mảng map:** **5.154** giá trị · **253** wave id khác nhau · **0** giá trị lạ so với `datas/waves.json`.
+Cái còn thiếu là **bind** entry → (chapter, stage, mode) và đọc consumer; mình **không** gán theo trực giác.
+
+### Đã kéo tiếp `a91695a0d` (report 67–68)
+
+- **Audio (67):** `raw/audio-rules/contracts.json.gz` → **65 method · 25 checks · 15 rules** (claim **AU1**);
+  `VolumeSound ≈ 0,73`, `VolumeMusic ≈ 0,30`, `MUTE_AUDIO` chỉ mute khi `stored == 1`, `Pause` là
+  `AudioListener.pause` (**không** phải `timeScale`).
+- **Asset pack (68):** `catalog.json.gz` + `manifest-full.csv` → **2.652** file · **151** path va chạm ·
+  **321** row vượt unique path · **320** size mismatch · CRC **PASS** nhưng `complete APK reference` =
+  **NOT ESTABLISHED** (claim **AP2**). Mình hiểu đây là lỗi **ghi đè tên khi export**, không phải “thiếu asset”.
+- **Test:** **40 test OK** trong repo này (thêm 7 audio + 2 asset pack).

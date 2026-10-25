@@ -35,7 +35,7 @@ Ba con số đó là **ba việc khác nhau**, đừng cộng thành một.
 | **tổng** | **2.197** | 133,6 MB (bản preview JPEG, PNG gốc ở draft release) |
 
 **Sprite đã có PNG riêng:** **1.903** dòng `kind = Sprite` đều có `relative_path = Sprite/<tên>.png`
-⇒ phần *sprite* **đã** được tách sẵn. Cái còn thiếu là **nhãn**, **sheet gộp** và **rect**.
+⇒ phần *sprite* **đã** được tách sẵn. Cái còn thiếu là **nhãn** và **sheet gộp**; **rect nay đã có** (report 62, §9.9).
 
 ---
 
@@ -49,8 +49,8 @@ Ba con số đó là **ba việc khác nhau**, đừng cộng thành một.
 | loại | số | nghĩa | đóng bằng cách nào |
 |---|---:|---|---|
 | **(a) chưa đặt nhãn** | **1.554** sprite `unclassified` | có ảnh, không biết thuộc nhóm nào | luật tên + xem contact sheet (§4) |
-| **(b) tách ảnh — CHƯA CHỨNG MINH** | **132** sheet `Texture2D`; **116** = `unmatched_atlas_name_count` = tên atlas **không match tên** trong index | ảnh gộp nhiều sprite (**giả thuyết**) | cần `Sprite.m_RD.textureRect` + `settingsRaw` + `rotation/trim` + manifest PNG (T9) |
-| **(c) chưa có rect** | **67** page `sactx-*` (đếm theo **tên**; chỉ **56** trong số đó được gắn `category=atlas`) | atlas runtime; muốn cắt phải có `Sprite.m_RD.rect` | **giao nhánh dữ liệu** (§6) |
+| **(b) tách ảnh — CHƯA CHỨNG MINH** | **132** sheet `Texture2D`; **116** = `unmatched_atlas_name_count` = tên atlas **không match tên** trong index | ảnh gộp nhiều sprite (**giả thuyết**) | `Sprite.m_RD` **đã có** (§9.9) — còn cần manifest PNG để đối chiếu pixel (T9) |
+| **(c) rect** | **67** page `sactx-*` (đếm theo **tên**; chỉ **56** trong số đó được gắn `category=atlas`) | atlas runtime; cắt cần `Sprite.m_RD.textureRect` | **ĐÃ CÓ** (§9.9) — không còn phải xin |
 
 > ⚠️ **Không** cộng 1.554 + 132 + 67: 1.554 là *sprite*, 132 là *texture sheet*, 67 là *page atlas* —
 > ba mẫu số khác nhau (xem `COVERAGE_AUDIT.md` §4, đúng loại lỗi "đếm hai tập rồi ghi một dòng").
@@ -187,9 +187,9 @@ nhóm `unclassified` (**113** sprite), 7 sheet còn lại đã có nhãn (`Bg1`/
 ## 6. Việc phải giao nhánh dữ liệu (không tự làm được)
 
 **67 page `sactx-*`** (31,05 MB, chứa phần lớn 2.184 sprite runtime) **không cắt được** vì thiếu
-**rect**: cần export `Sprite.m_RD.rect` + `m_RD.textureRect`/`settingsRaw` cho 2.185 `Sprite`.
+**rect**: ~~cần export~~ — **đã có** trong `reverse-engineering/raw/sprite-geometry/resolved-geometry.json.gz` (§9.9).
 
-- Nếu có rect ⇒ cắt đúng 2.185 sprite từ 67 page (thay vì đoán theo tên).
+- Đã có rect ⇒ **cắt đúng 2.185 sprite** từ 67 page (thay vì đoán theo tên, và thay cho `sheet-splits.csv` 4.250 mảnh).
 - Đồng thời trả lời luôn "**sprite nào thuộc page nào**" — thứ mà cột `atlas` hiện **không** nói được.
 
 Đã ghi thành task **T9** trong `HANDOFF_ANIM_RAW.md` (cùng cơ chế `git show <sha>:<path>` + `verdict.json`).
@@ -488,3 +488,22 @@ Và các con số quyết định **cách cắt**:
 ~~Export `Sprite.m_RD.rect` (x,y,w,h) + `settingsRaw` cho **2.185** sprite và **67** page `sactx`.~~ **ĐÃ CÓ** (§9.9). Còn xin: 6 chunk nguồn + validate crop. Đổi lại:
 (a) cắt sheet **chính xác** thay vì scale từ 150 px; (b) mở luôn 67 page đang thiếu rect; (c) `9-slice`
 border (`ASSETS.md` §5) lấy được **số thật** thay vì đề xuất 8/12/16 px.
+
+---
+
+## 9.9 **Đã có toạ độ thật** (report 62) — cắt được chính xác, không phải xin nữa
+
+`reverse-engineering/raw/sprite-geometry/resolved-geometry.json.gz` (đã commit trong repo):
+**2.185** `Sprite` · **654** `Texture2D` · **66** `SpriteAtlas`; `resolved` **2.185** · `unresolved` **0**
+(claim **GE1**). Cách resolve: **635** theo `sprite_render_data` · **1.550** theo `atlas_pointer_and_render_key`.
+
+| đặc điểm | số | hệ quả khi cắt |
+|---|---:|---|
+| `packed` (nằm trong atlas) | **1.550** | cắt trong page, không phải ảnh rời |
+| `rotation` khác 0 (mã **1/2/3** = 53/54/37) | **144** | **phải lật/xoay** — cắt thẳng là sai |
+| `rect_outside` (rect vượt page) | **40** | vượt **0,0000019 – 0,9963 px** ⇒ cần clamp, không phải lỗi dữ liệu |
+| `sources` (hash file nguồn) | **6** | 6 chunk nguồn **chưa kéo** ⇒ chưa tự kiểm sha256 (claim **GE2**) |
+
+> **Trạng thái trong file:** `PROVISIONAL_GEOMETRY_JOINS_NOT_PIXEL_CROP_VALIDATION` ⇒ join metadata đúng,
+> **chưa** phải bằng chứng “đã cắt ra 2.185 ảnh đúng”. Muốn thành bằng chứng phải crop thật rồi so pixel.
+> `4.250` mảnh trong `sheet-splits.csv` là **cận trên heuristic** từ ảnh JPEG 150 px — **thay được** bằng rect thật.

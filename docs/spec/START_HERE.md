@@ -17,8 +17,8 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **66** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
-| `datas/` | JSON/CSV bóc trực tiếp | **31** file · 13 MB | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **68** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `datas/` | JSON/CSV bóc trực tiếp | **34** file · 13 MB | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
 | `reverse-engineering/scriptableobjects/` | Bảng ScriptableObject | **126** CSV · 13 MB | số cân bằng: súng, enemy, stage, shop |
@@ -31,11 +31,13 @@
 | `reverse-engineering/raw/sprite-geometry/` | **Geometry thật** của sprite (`m_RD`) | **2.185** sprite · **67** page `sactx` | cắt đúng chỗ, biết sprite nằm trang nào |
 | `docs/assets/sprites-atlas-page.csv` | Trang texture thật của từng sprite | **282**/340 ca chưa nhãn biết trang | gán nhãn theo trang (đo precision trước) |
 | `datas/opening_persistence.json` | **Contract save mở đầu** | **8 key family · 2 store · 7 limitation** | dựng first-run/tutorial/progression mà không đoán key |
+| `reverse-engineering/il2cpp/ia-resolved.json` | **Hex thật của mọi `InitializeArray`** | **576** mảng map · **6** mảng `Player_Get_Datas` (0 record lỗi) | **damage/rate/cost từng tàu**, danh sách wave của bảng map |
+| `datas/player_start_stats.json` | 6 mảng đã decode + DPS suy ra | **24** tàu · **16** bán được · **8** giá `−1` | dựng bảng cân bằng tàu, không đoán |
 | `reverse-engineering/raw/player-loadout/` | Mảng int + asm `Player_Saved_Datas` | **5 blob · 49 int · 5/5 sha256 OK** | giá craft/unlock, chứng cứ save |
-| `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **161 RAW · 2 DOC · 28 CONST / 191** | biết số nào tái đo được, số nào "đo một lần" |
+| `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **170 RAW · 2 DOC · 28 CONST / 200** | biết số nào tái đo được, số nào "đo một lần" |
 | `tools/` | **9** script đo lại được | — | `verify-claims.py`, `art-study.py`, `classify-by-atlas.py`, … |
 
-**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **32** file `datas/`.
+**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **34** file `datas/`.
 
 
 ### 1.1 Ranh giới duy nhất — và nó **không** hạ chuẩn
@@ -139,7 +141,7 @@ Gradient p50 **0,20–0,26** ở 5 nhóm chủ thể, **nhưng** `background` **
 
 ---
 
-## 5. Mười bốn cái bẫy — đọc trước khi viết design doc riêng
+## 5. Mười bảy cái bẫy — đọc trước khi viết design doc riêng
 
 Đây là những chỗ **bộ spec này từng sai thật**, đã sửa; đừng lặp lại:
 
@@ -159,6 +161,10 @@ Gradient p50 **0,20–0,26** ở 5 nhóm chủ thể, **nhưng** `background` **
 | 12 | "Có timestamp = đã giải script" | Timestamp **chỉ là mốc**, không phải thứ tự/điều kiện (D3 vẫn 🟡) |
 | 13 | **0 site trong 139 file asm = không tồn tại** | 139 file là **mẫu**, không phải whole-build closure. Nói "chưa thấy", không nói "không có" — và **cấm** dùng nó để cấm tính năng |
 | 14 | **Tỉ lệ 0,4813 = canvas bắt buộc** | Đó là **một thiết bị** (720×1496). Game mới phải **responsive + safe-area**; giữ *quan hệ* (dọc, panel 2:3), không khoá cứng số |
+| 15 | **“573 blob còn lại cần dump”** | **576** là số `InitializeArray`; 3 entry mở đầu dựng bằng **literal store** ⇒ **không** trừ. Và hex đã có trong `reverse-engineering/il2cpp/ia-resolved.json` — thiếu là phần **bind**, không phải phần **dump** |
+| 16 | **Cột `ints` = damage** | Cột đó là **bit pattern**. `PlayerCosts` là **int[24]**; ba mảng damage/rate là **float[24]**; hai mảng **float[3]** ⇒ phải unpack theo kiểu field |
+| 17 | **Zip CRC PASS ⇒ đủ asset** | Pack draft có **151** path bị nhiều row cùng dùng · **321** row gộp path · **320** size mismatch; `complete APK reference` = **NOT ESTABLISHED** (`DATA_SYNC.md` §21.2) |
+
 
 ---
 
