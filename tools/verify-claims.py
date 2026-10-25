@@ -1343,6 +1343,63 @@ claim("K6", HANDOFF, "**12 delegate field liền nhau `0x20`…`0x78`**", (12, 0
       boss1_handler_offsets,
       "12 handler = 12 field kề nhau, đủ để xref T2 mà không cần đoán")
 
+# ── L. độ phủ script animation + cấu trúc UI (vòng 2 readiness) ────────
+# READY đã khai báo ở nhóm I.
+
+
+def _boss_roster() -> list[str]:
+    d = ref_json("datas/waves.json")
+    if d is None:
+        return []
+    return sorted({e for w in d.get("waves", [])
+                   for s in (w.get("spawners") or []) for e in (s.get("enemies") or [])
+                   if isinstance(e, str) and e.startswith("Boss-")})
+
+
+def _spine_rigs() -> set[str]:
+    return {"Boss-39001", "Boss-39002", "Boss-39003"}
+
+
+def boss_script_coverage():
+    """(prefab boss có script, prefab boss thiếu, tổng prefab boss trong roster)."""
+    rx = ref_json(EVENT_RX)
+    if rx is None:
+        return None
+    with_clip = {e.get("prefab") for e in rx.get("events", [])}
+    roster = _boss_roster()
+    if not roster:
+        return None
+    have = [b for b in roster if b in with_clip or b in _spine_rigs()]
+    return (len(have), len(roster) - len(have), len(roster))
+
+
+def boss_script_missing():
+    rx = ref_json(EVENT_RX)
+    if rx is None:
+        return None
+    with_clip = {e.get("prefab") for e in rx.get("events", [])}
+    return tuple(b for b in _boss_roster() if b not in with_clip and b not in _spine_rigs())
+
+
+def ui_screens():
+    """Số dòng `screens.csv`."""
+    raw = ref_blob("docs/spec/screens.csv")
+    if raw is None:
+        return None
+    rows = [ln for ln in raw.decode("utf-8", "replace").splitlines()[1:] if ln.strip()]
+    return len(rows)
+
+
+claim("L1", READY, "**35/39 prefab boss** có script", (35, 4, 39), boss_script_coverage,
+      "35 = 33 prefab clip event ∪ 3 prefab Spine (Boss-39003 nằm cả hai)")
+
+claim("L2", READY, "**125 màn hình**", 125, ui_screens,
+      "UI cấu trúc đủ để thiết kế; chỉ art là chưa")
+
+claim("L3", READY, "`Boss-37003/37005/37006/37008`",
+      ("Boss-37003", "Boss-37005", "Boss-37006", "Boss-37008"), boss_script_missing,
+      "4 prefab boss không có cả clip event lẫn Spine")
+
 # ── chạy ───────────────────────────────────────────────────────────────
 
 def evaluate(c: Claim) -> None:

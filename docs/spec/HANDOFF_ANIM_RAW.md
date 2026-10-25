@@ -146,6 +146,32 @@ task kế là xref các lệnh gọi `Play`, **không** phải đọc parameter.
 
 ---
 
+## 1b. T5 — `rate = 0` nghĩa là gì (mật độ địch)
+
+Không phải việc animation, nhưng **cùng loại việc** (cần asm chưa export), và nó là **blocker #1**
+của `DESIGN_READINESS.md` §6.
+
+**Giả định:** `rate` là **khoảng cách giây giữa hai lần spawn** ⇒ `rate = 0` = spawn **tức thời cả
+loạt** (không phải mỗi frame).
+
+**Việc:** export asm của lớp spawner (lớp có method dùng `rate`; hiện **không có** trong
+`il2cpp-consts/`), tìm chỗ `rate` được dùng: `InvokeRepeating`, `Time.deltaTime` cộng dồn, hay so
+sánh ngưỡng.
+
+**Artifact:** `anim-raw-T5/rate-semantics.json`
+```json
+{"class": "...", "method": "...", "rva": "0x...", "use": "invoke_repeating|accumulator|threshold",
+ "rate0_behaviour": "burst|per_frame|never"}
+```
+
+**Tự kiểm:** đếm **số chỗ đọc field `rate`** trong asm (kỳ vọng ≥1, liệt kê đủ).
+
+**Lật ngược nếu:** `rate` là **số quân mỗi giây** (không phải khoảng cách) ⇒ `rate = 0` = **không
+spawn**, và 2.371 spawner đó phải có cơ chế khác kích hoạt (ví dụ `copies`). Khi đó §3 của
+`DESIGN_READINESS.md` phải viết lại, không chỉ sửa số.
+
+---
+
 ## 2. Hợp đồng chạy (giống `PARALLEL_TASKS.md`, rút gọn cho 4 task)
 
 | # | Luật | Vì sao |
@@ -157,8 +183,8 @@ task kế là xref các lệnh gọi `Play`, **không** phải đọc parameter.
 | 5 | Exit code: **0** PASS · **2** REVERSED · **3** MISSING (thiếu input) | mã thoát = phán quyết |
 
 **Thứ tự ưu tiên nếu chỉ chạy được một task:** **T1** (rẻ nhất — chỉ thêm 3 dòng vào `TARGETS`,
-mở khoá nhánh Spine) → **T2** (mở khoá 793 event) → **T3** → **T4** (đắt nhất, cần đọc
-`AnimatorController` trong bundle).
+mở khoá nhánh Spine) → **T2** (mở khoá 793 event) → **T5** (mật độ địch, blocker #1 của
+`DESIGN_READINESS.md`) → **T3** → **T4** (đắt nhất, cần đọc `AnimatorController` trong bundle).
 
 ---
 
