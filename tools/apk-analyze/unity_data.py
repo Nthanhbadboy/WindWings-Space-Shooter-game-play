@@ -55,6 +55,8 @@ CONFIG = {
 # --------------------------------------------------------------- runtime group
 # These are the components that carry the numbers the balance report needs.
 RUNTIME = {
+    "Boss1_AnimationEvents",
+    "Boss_1_Animation",
     # Animation event receivers and Spine components must survive export to
     # join event function -> component and skeleton -> SkeletonDataAsset.
     "BossSpineEventHandler",
@@ -285,7 +287,9 @@ def export_native_types(env) -> None:
     counts: Counter = Counter()
     out_path = os.path.join(RAW, "native-types.jsonl.gz")
     written = 0
-    with gzip.open(out_path, "wt", encoding="utf-8", compresslevel=9) as fh:
+    graph_path = os.path.join(RAW, "animator-controller-graphs.jsonl.gz")
+    with gzip.open(out_path, "wt", encoding="utf-8", compresslevel=9) as fh, \
+            gzip.open(graph_path, "wt", encoding="utf-8", compresslevel=9) as graphs:
         for obj in env.objects:
             tname = obj.type.name
             if tname not in wanted:
@@ -332,6 +336,11 @@ def export_native_types(env) -> None:
                 continue
             if not isinstance(tree, dict):
                 continue
+            if tname == "AnimatorController":
+                # Preserve nested ControllerConstant, states, transitions and
+                # value-array parameters verbatim; summary discards these.
+                graphs.write(json.dumps({"type": tname, "path_id": obj.path_id,
+                                         "tree": tree}, ensure_ascii=False, default=str) + "\n")
             summary = {"type": tname, "path_id": obj.path_id}
             for key, val in tree.items():
                 if isinstance(val, (int, float, str, bool)) or val is None:
