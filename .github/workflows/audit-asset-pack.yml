@@ -24,7 +24,7 @@ jobs:
           python3 - <<'PYCODE'
           import os, pathlib, subprocess
           p=pathlib.Path('/tmp/pack-audit');p.mkdir(exist_ok=True)
-          commands=[['gh','api',f"repos/{os.environ['GITHUB_REPOSITORY']}/releases/tags/windwings-assets-1.3.118"],
+          commands=[['gh','api',f"repos/{os.environ['GITHUB_REPOSITORY']}/releases/421174835"],
                     ['gh','release','download','windwings-assets-1.3.118','--pattern','assets.*','--pattern','manifest-full.csv','--dir',str(p)],
                     ['zip','-s','0','assets.zip','--out','assets-full.zip']]
           for i,command in enumerate(commands):
