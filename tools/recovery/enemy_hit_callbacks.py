@@ -8,7 +8,7 @@ from combat_coroutine_cells import APK_SHA,LIB_SHA,extract,recover_delegates
 ROOT=Path(__file__).resolve().parents[2]
 
 
-def recover(binary,out):
+def recover(binary,metadata,out):
     assert hashlib.sha256(binary).hexdigest()==LIB_SHA
     symbols=json.loads(gzip.decompress((ROOT/'reverse-engineering/raw/combat-chain/symbols.json.gz').read_bytes()))['records']
     selected={r['Address']:r for kind in ('ScriptMetadata','ScriptMetadataMethod') for r in symbols[kind] if 'Enemy_Health' in r['Name']}
@@ -64,23 +64,59 @@ def recover(binary,out):
     roots=sorted({o['cls'].split('.')[0] for r in refs for o in r['owners']})
     assert 'Enemy_Controller' in roots and 'Test_Enemy' in roots,(roots,refs)
     out.mkdir(parents=True,exist_ok=True)
-    recover_delegates(binary,out/'native',tuple(roots))
+    recover_delegates(binary,out/'native',tuple(roots+['Items_Manager','BurstGold']))
+    # Preserve the exact metadata cells referenced by exported roots. These are
+    # address candidates; critical constructor/store dataflow is audited separately.
+    wanted=set()
+    for path in (out/'native').glob('*.asm.txt'):
+        pages_by_reg={}
+        for line in path.read_text().splitlines():
+            if line.startswith(';;;'):pages_by_reg={}
+            m=re.search(r': adrp\s+(x\d+), #0x([0-9a-f]+)',line)
+            if m:pages_by_reg[m[1]]=int(m[2],16);continue
+            m=re.search(r': ldr\s+x\d+, \[(x\d+)(?:, #0x([0-9a-f]+))?\]',line)
+            if m and m[1] in pages_by_reg:wanted.add(pages_by_reg[m[1]]+int(m[2] or '0',16))
+    cells=extract(binary,((0x7576b8,8),(0x756fe0,4)))
+    cells['status']='PINNED_CALLBACK_BINDINGS_LITERAL_CANDIDATES_NOT_RUNTIME'
+    bindings=[]
+    magic,version,ls,lc,ds,dc=struct.unpack_from('<6I',metadata)
+    assert hashlib.sha256(metadata).hexdigest()=='449a0698a1b71d0e4d04efafdb4e2fad97fd02ca8f8528715ad9638aa813ba69'
+    assert magic==0xfab11baf and version==31
+    for i in range(count):
+        sh=struct.unpack_from('<IIQQQQIIQQ',binary,shoff+i*size)
+        if sh[1]!=4:continue
+        for p in range(sh[4],sh[4]+sh[5],sh[9] or 24):
+            va,info,target=struct.unpack_from('<QQq',binary,p)
+            if va not in wanted or info!=1027:continue
+            cell=extract(binary,((target,8),))['cells'][0]
+            row=dict(got=hex(va),effective=hex(target),rela_file_offset=p,rela_hex=binary[p:p+24].hex(),pointee_cell=cell)
+            encoded=struct.unpack('<Q',bytes.fromhex(cell['hex']))[0]
+            if encoded>>29==5:
+                idx=(encoded&0x1ffffffe)>>1;assert idx<lc//8
+                length,offset=struct.unpack_from('<II',metadata,ls+8*idx);assert offset+length<=dc
+                text=metadata[ds+offset:ds+offset+length]
+                row['literal']=dict(index=idx,definition_file_offset=ls+8*idx,definition_hex=metadata[ls+8*idx:ls+8*idx+8].hex(),data_file_offset=ds+offset,hex=text.hex(),utf8=text.decode())
+            bindings.append(row)
+    cells.update(metadata_sha256=hashlib.sha256(metadata).hexdigest(),metadata_header_hex=metadata[:24].hex(),relocations=bindings)
+    (out/'bindings.json').write_text(json.dumps(cells,indent=2)+'\n')
     result=dict(status='DIRECT_METADATA_ADDRESS_REFERENCE_CANDIDATES_NOT_WHOLE_PROGRAM_WRITER_CLOSURE',
       xapk_sha256=APK_SHA,lib_sha256=LIB_SHA,scan_words=scanned,window_limit_bytes=512,
       scope='Executable PT_LOAD; wanted Enemy_Health metadata symbols; stop at branches/register clobber/method boundary. Does not cover propagated pointers, indirect/reflection/native writes.',
-      metadata_bindings=list(got.values()),references=refs,exported_roots=roots)
+      metadata_bindings=list(got.values()),references=refs,direct_reference_roots=roots,exported_roots=roots+['Items_Manager','BurstGold'])
     (out/'references.json').write_text(json.dumps(result,indent=2)+'\n')
 
 
 if __name__=='__main__':
     ap=argparse.ArgumentParser();ap.add_argument('--xapk',required=True);ap.add_argument('--output',required=True);a=ap.parse_args()
     data=Path(a.xapk).read_bytes();assert hashlib.sha256(data).hexdigest()==APK_SHA
-    found=[]
+    found=[];metas=[]
     with zipfile.ZipFile(io.BytesIO(data)) as z:
         for n in z.namelist():
             if not n.endswith('.apk'):continue
             with zipfile.ZipFile(io.BytesIO(z.read(n))) as inner:
                 p='lib/arm64-v8a/libil2cpp.so'
                 if p in inner.namelist():found.append(inner.read(p))
-    assert len(found)==1
-    recover(found[0],Path(a.output).resolve())
+                m='assets/bin/Data/Managed/Metadata/global-metadata.dat'
+                if m in inner.namelist():metas.append(inner.read(m))
+    assert len(found)==len(metas)==1
+    recover(found[0],metas[0],Path(a.output).resolve())
