@@ -91,6 +91,28 @@ def main():
     gen=TypeTreeGenerator('2022.3.62f3',generator='AssetStudio')
     gen.load_il2cpp((DATA/'libil2cpp.so').read_bytes(),(DATA/'global-metadata.dat').read_bytes())
     env.typetree_generator=gen
+    if '--endgame-details' in sys.argv:
+        dest=Path('reverse-engineering/raw/endgame-missions');dest.mkdir(parents=True,exist_ok=True)
+        entries=[]
+        for reader in env.objects:
+            if reader.type.name not in ('AssetBundle','ResourceManager'):continue
+            for name,value in reader.read().m_Container:
+                clean=name.lower().removesuffix('.prefab')
+                if clean.rsplit('/',1)[-1]!='board_endgame':continue
+                root=deref(getattr(value,'asset',value))
+                output=export_tree(root)
+                output.update(status='PROVISIONAL — exact endgame resource subtree, not runtime replay',
+                              inputs_sha256=inputs,container_key=name,container_object=identity(reader),
+                              root=identity(root),serialized_file_context=file_context(root))
+                filename=re.sub(r'[^a-zA-Z0-9_-]','_',name)+'__'+str(root.path_id)+'.json.gz'
+                path=dest/filename
+                path.write_bytes(gzip.compress(json.dumps(output,ensure_ascii=False,indent=2).encode(),mtime=0))
+                assert path.stat().st_size<5_000_000
+                entries.append({'container_key':name,'root':identity(root),'export':filename})
+        assert entries,'No exact Board_Endgame resource container entry'
+        (dest/'index.json').write_text(json.dumps({'status':'PROVISIONAL','inputs_sha256':inputs,'entries':entries},indent=2)+'\n')
+        print(json.dumps(entries,indent=2))
+        return
     if '--enemy-details' in sys.argv:
         index=json.loads((ROOT/'index.json').read_text())
         targets={}

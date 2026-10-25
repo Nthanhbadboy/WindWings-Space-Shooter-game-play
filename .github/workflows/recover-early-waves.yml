@@ -36,12 +36,12 @@ jobs:
           assert all((dest/Path(s).name).exists() for s in wanted)
           PY
       - run: pip install -q 'UnityPy==1.25.4' 'TypeTreeGeneratorAPI==0.0.10'
-      - run: python3 tools/apk-analyze/early_wave_prefabs.py --enemy-details
+      - run: python3 tools/apk-analyze/early_wave_prefabs.py --endgame-details
       - name: Preserve evidence without APK or original assets
         run: |
           git config user.name 'Arena evidence collector'
           git config user.email 'agent@arena.ai'
-          git add reverse-engineering/raw/early-waves
+          git add reverse-engineering/raw/endgame-missions
           git diff --cached --quiet || git commit -m 'research(waves): preserve exact container prefab identities and raw components [skip ci]'
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
