@@ -258,11 +258,13 @@ không phủ toàn bộ công thức chiến đấu.
   Playback thật **đã có sẵn trong repo** (phiên phone 23/10 — `docs/apk-analysis/ramus/2026-10-23-phone/`);
   sót **2 phép tái đối chiếu** (`CROSSCHECK`) — làm khi có lần chạy mới, không phải thiếu số.
   > Đừng nói “chờ bind”, “chờ dump thêm” hay “còn 4 số” nữa — cả ba đều là **câu trả lời cũ**, sai.
-- **L3 (không phân biệt được với bản gốc): HOÃN — KHÔNG BỎ.** L3 vẫn là **đích cuối** của dự án;
-  nó không giải được bằng reverse (cần **playtest người thật**), nên **xếp sau L2**, không nằm trong
-  vòng L1 hiện tại. **Không** có nghĩa là bỏ "thiết kế cho đẹp": phần đó là `VISUAL_DESIGN.md`
-  (khung hình **0,4813**, tương phản **0,45–0,80**, accent **≤10 %** gameplay / **~47 %** khung thưởng,
-  chi tiết **13–22**, juice **0,05 s** + **0,10 · 20 frame**) và **kiểm được bằng máy**.
+- **L3 (khớp trải nghiệm + art bản gốc): ĐÍCH của dự án — KHÔNG hoãn** (lần 14, 25/10). APK gốc là
+  **chuẩn trải nghiệm đã kiểm nghiệm** ⇒ nghiệm thu = **đối chiếu reference đo được bằng máy, không
+  cần playtest người thật**: `VISUAL_DESIGN.md` (khung **0,4813** · tương phản **0,45–0,80** · accent
+  **≤10 %** gameplay / **~47 %** khung thưởng · chi tiết **13–22** · juice **0,05 s** + **0,10 · 20
+  frame**) + so ảnh cùng scene + timeline **795** event + audio **15** rules. Input **đã đủ** (pack v2
+  report 70 + pixel/geometry/spine/font + metrics **35** ảnh); bắt đầu khi L1 chạy được — **song song
+  với L2**.
 
 ---
 

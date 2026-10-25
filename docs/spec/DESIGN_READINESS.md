@@ -3,7 +3,7 @@
 > **Câu hỏi:** *"Đã OK để thiết kế game mới chưa?"*
 >
 > **Trả lời ngắn: ĐỦ — cho phạm vi đã chốt (L1: giống cơ chế, không cần giống số).**
-> Và **không** đủ nếu ai đó định làm L2/L3 (khớp số / không phân biệt được).
+> Và **không** đủ nếu đích là L2/L3 (khớp số / khớp trải nghiệm + art — xem `DONE.md` §2).
 >
 > **Kiểm lại toàn bộ 14 vùng năng lực:** xem **`COVERAGE_AUDIT.md`** — bản này trả lời *"đủ cho L1 chưa"*,
 > bản kia trả lời *"còn thiếu chính xác chỗ nào"*. Kết luận khớp nhau: **0 chỗ chặn số** — 2 chỗ "chặn"
@@ -255,9 +255,12 @@ hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật
   mới bắt đầu được ngay từ `START_HERE.md` + `datas/`. Số theo **từng tàu/enemy/mode** đều có (bind xong).
 - **L2 (khớp số bản gốc): KHÔNG còn thiếu số** — mọi giá trị đã decode + bind; **playback thật đã có**
   (phiên phone 23/10). Việc còn lại của L2 = **replay đối chiếu** khi có lần chạy mới (2 mục `CROSSCHECK`).
-- **L3 theo nghĩa "khớp asset gốc": HOÃN — đích cuối, không bỏ** (sửa 25/10 theo yêu cầu chủ dự án);
-  phải sau L2, và **không được phép** copy asset (bản quyền). Phần **thiết kế cho đẹp** vẫn là yêu cầu
-  và **đã có số**: `VISUAL_DESIGN.md` (khung hình **0,4813**, tương phản **0,45–0,80**, accent **≤10 %**
-  gameplay / **~47 %** khung thưởng, chi tiết **13–22**, juice **0,05 s** + **0,10 · 20 frame**; claim **AN1**, **AN2**).
-- **Chưa đủ cho L3 theo nghĩa "không phân biệt được"** — đúng, và nó cần **playtest người thật** sau L2;
-  phần tĩnh còn mở nhỏ nhất là **thứ tự pha boss** (C, 2 việc: 6 chuỗi `SetTrigger` + ai gán 12 delegate).
+- **L3 (khớp trải nghiệm + art bản gốc): ĐÍCH của dự án học tập thiết kế — KHÔNG hoãn** (lần 14,
+  25/10, chủ dự án: *"APK gốc đã thiết kế chuẩn trải nghiệm, phải copy; art cũng thế — chuẩn màu
+  sắc, ánh sáng; sao lại hoãn"*). Nghiệm thu = **đối chiếu reference đo được bằng máy — KHÔNG cần
+  playtest người thật**: `VISUAL_DESIGN.md` (khung **0,4813** · tương phản **0,45–0,80** · accent
+  **≤10 %** gameplay / **~47 %** khung thưởng · chi tiết **13–22** · juice **0,05 s** + **0,10 · 20
+  frame**; claim **AN1**, **AN2**) + so ảnh cùng scene + timeline **795** event + audio **15** rules.
+  Input **đã đủ** (pack v2 + pixel/geometry/spine/font + metrics **35** ảnh). Bắt đầu khi **L1 chạy
+  được**, **song song với L2**; art **vẽ lại theo chuẩn gốc**, file asset không lưu trong repo này.
+  Phần tĩnh còn mở nhỏ nhất: **thứ tự pha boss** (C, 2 việc: 6 chuỗi `SetTrigger` + ai gán 12 delegate).

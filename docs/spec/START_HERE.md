@@ -68,11 +68,12 @@
 | **L0** | chạy được: mở, vào màn, bắn, chết, qua màn | chạy 30 phút không crash | ✅ bắt buộc |
 | **L1** | đúng **luật** cơ chế, không cần giống số | chơi thử theo checklist cơ chế | ✅ **mục tiêu của bộ spec này** |
 | **L2** | đúng **số** (giá trị + nhịp spawn khớp bản gốc) | so bảng số | ⚠ **số đã decode + bind xong**; sót chứng minh **DPS runtime** (report 79 — `rate` = interval) + 2 tái đối chiếu |
-| **L3** | người chơi **không phân biệt được** | test mù + playtest | ⏸ **HOÃN — đích cuối sau L2, KHÔNG bỏ** |
+| **L3** | khớp **trải nghiệm + art** bản gốc (chuẩn màu/sáng/nhịp) | đối chiếu reference: metrics + so ảnh + timeline/audio — **không cần người test** | 🎯 **ĐÍCH dự án — KHÔNG hoãn**: input đã đủ, chạy **song song L2** sau khi L1 chạy được |
 
-> ⚠ **L3 HOÃN, không bỏ** (quyết định 25/10) — và "giống bản gốc" ở đây là **bắt chước luật + tự vẽ
-> art**, **không copy asset** (bản quyền). Chất lượng thị giác **vẫn bắt buộc** và có test bằng máy:
-> `VISUAL_DESIGN.md` §5.
+> ⚠ **L3 là ĐÍCH của dự án học tập thiết kế — KHÔNG hoãn** (lần 14, 25/10): APK gốc là **chuẩn trải
+> nghiệm đã kiểm nghiệm** ⇒ nghiệm thu = **đối chiếu reference đo được bằng máy** (`VISUAL_DESIGN.md`
+> §5: metrics + so ảnh cùng scene), **không cần blind A/B/playtest người thật**. Art **vẽ lại theo
+> chuẩn gốc**; file asset gốc không lưu trong repo này (pack do peer giữ).
 
 Không cần đọc hết 43 file trước khi bắt đầu. Tám con số này đủ để dựng khung chơi được:
 

@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 14 — 25/10, chủ dự án đổi định nghĩa nghiệm thu L3):** *"không cần người test thật
+> vì APK gốc đã thiết kế chuẩn trải nghiệm, ta phải copy những trải nghiệm ấy; art cũng thế — chuẩn
+> màu sắc, ánh sáng; dự án để học tập thiết kế, sao lại hoãn"*. ⇒ **L3 đổi nghĩa + đổi thứ tự**:
+> (a) nghiệm thu = **đối chiếu reference đo được bằng máy** (metrics `VISUAL_DESIGN` + so ảnh cùng
+> scene + timeline 795 event + audio 15 rules) — **bỏ blind A/B + playtest thống kê**; (b) **KHÔNG
+> hoãn** — đích của dự án, bắt đầu khi L1 chạy được, **song song với L2** (câu "đích cuối sau L2" của
+> sáng cùng ngày bị thay); (c) input xác nhận **đã đủ** (pack v2 + pixel/geometry/spine/font +
+> metrics 35 ảnh). Sửa: `DONE` §2 (L2 + L3) · §4.1 · `START_HERE` §2 · `MISSING` §4 ·
+> `DESIGN_READINESS` đầu trang + §5 · `VISUAL_DESIGN` mở đầu + §6. Cụm "playtest người thật" trong
+> log lần 11 bên dưới là **lịch sử, không còn đúng**.
+>
 > **Sửa lại (lần 13 — 25/10, audit "còn chỗ nào ngu" trước khi bàn giao AI mới):** sửa 6 chỗ mâu
 > thuẫn/stale mà verifier không bắt (không có claim neo): `START_HERE` §2 **L2** ("6 blob rodata
 > chưa bóc" — sai, số đã decode/bind; sót DPS-runtime + 2 tái đối chiếu) và **L3** ("bỏ" → **HOÃN,
@@ -302,25 +313,29 @@ Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có *
 | **Nghĩa** | cùng một phát bắn ra **cùng một lượng damage**; cùng một wave ra **cùng nhịp** |
 | **Kiểm bằng** | máy: replay 1 wave, so DPS/TTK/HP với bản gốc trong **dung sai khai báo trước** |
 | **Đạt khi** | (dung sai do bạn chọn — ví dụ ±5%) |
-| **Bắt chước đủ?** | ❌ **chưa** — cần **giá trị thật**, hiện còn ở mức **D** |
-| **Đang thiếu gì** | **4.861** `[SerializeField]` + **957** `static` — nay **đã decode 623 record** của 17 method (`ia-resolved.json`) + **150 cặp HP enemy** (`enemy_hp_by_id.json`); thiếu **bind** (index→ID tàu, mảng Map→stage, `StartHpPoint`←dict) + hệ số `kHp[mode]` + field vô hướng |
-| **Chi phí** | chạy AssetRipper + Ghidra |
+| **Bắt chước đủ?** | ✅ **đủ** (lần 14, 25/10) — mọi giá trị đã decode + bind xong |
+| **Đã có gì** | 6 mảng `Player_Get_Datas` (bind **id − 10001**) · **576** mảng `Map_Get_Datas` (**11 cấu trúc**, `DIFFICULTY_MODES` §7) · **150 cặp HP enemy** · `StartHpPoint`←dict · `kHp` **không tồn tại** (`DIFFICULTY_MODES` §3–5) |
+| **Còn thiếu** | chứng minh **DPS runtime** (report 79 — `rate` = interval; peer làm parity tàu 1) + **2** tái đối chiếu `CROSSCHECK` |
+| **Chi phí** | ~~AssetRipper + Ghidra~~ → **không cần tool** — replay + đối chiếu |
 
-> L2 là mức **"bắt chước" đúng nghĩa nhất** — và cũng là mức **chưa đạt được hôm nay**.
-> Không phải vì khó, mà vì **chưa chạy 2 tool**.
+> L2 là mức **"bắt chước" đúng nghĩa nhất** — **số đã đủ hôm nay**; sót việc **chứng minh nhịp bắn
+> runtime** (việc của nhánh dữ liệu).
 
 ### L3 — Không phân biệt được
 
 | | |
 |---|---|
-| **Nghĩa** | người đã chơi bản gốc **không chỉ ra được** bản nào là gốc |
-| **Kiểm bằng** | **người**: blind A/B, N người chơi, mỗi người 2 bản, chọn bản nào là gốc |
-| **Đạt khi** | tỉ lệ chọn đúng **không khác 50%** có ý nghĩa thống kê |
-| **Bắt chước đủ?** | ❌ **không** — cái này là **cảm giác**, không nằm trong file nào |
-| **Chi phí** | **cao nhất** — cần playtest thật |
+| **Nghĩa** | game mới **tái lập trải nghiệm + art của bản gốc 1:1** — chuẩn màu, ánh sáng, khung, nhịp (APK gốc là **chuẩn trải nghiệm đã kiểm nghiệm**; dự án = **học tập thiết kế**) |
+| **Kiểm bằng** | **đối chiếu reference — đo được bằng máy, KHÔNG cần người test thật**: metrics `VISUAL_DESIGN` trong dung sai · so ảnh cùng scene · timeline khớp **795** event · audio khớp **15** rules |
+| **Đạt khi** | mọi chỉ số khớp reference trong **dung sai khai báo trước** |
+| **Bắt chước đủ?** | ✅ **có** — input đã đủ: pack v2 (report 70) + pixel/geometry/spine/font contract + metrics **35** ảnh chụp thật |
+| **Chi phí** | sản xuất art + đối chiếu — **không cần playtest** |
 
-> **Đây là mức duy nhất xứng với chữ "hoàn hảo".** Và nó **không** được giải quyết bởi
-> reverse engineering — nó được giải quyết bởi **số vòng playtest**.
+> **Đây là đích của dự án — KHÔNG hoãn** (lần 14, 25/10, chủ dự án: *"không cần người test thật vì
+> APK gốc đã thiết kế chuẩn trải nghiệm, ta phải copy những trải nghiệm ấy; art cũng thế — chuẩn màu
+> sắc, ánh sáng; để học tập thiết kế, sao lại hoãn"*). Bắt đầu ngay khi **L1 chạy được**, làm **song
+> song với L2**. Reference dùng để **đo và vẽ lại**; repo spec không lưu asset (pack do peer giữ).
+> Định nghĩa blind-A/B cũ chỉ còn giá trị tham khảo — **đã bị thay**.
 
 ---
 
@@ -409,8 +424,8 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 
 | Mục | Trước (mục tiêu L3) | **Sau khi chốt L1** | Hệ quả |
 |---|---|---|---|
-| **L2 — đúng số** | bắt buộc | 🟡 **hoãn sau L1 — không bỏ** | dữ liệu đã có (`ia-resolved.json` 623 record + 150 cặp HP); còn thiếu **bind** — làm tiếp được, không cần tool mới |
-| **L3 — không phân biệt được** | bắt buộc | 🟡 **hoãn — đích cuối, không bỏ** | blind A/B + playtest người thật, làm **sau L2** |
+| **L2 — đúng số** | bắt buộc | ✅ **số đã đủ — làm ngay sau L1** | giá trị decode + bind xong; sót chứng minh **DPS runtime** (peer parity tàu 1) + 2 tái đối chiếu |
+| **L3 — khớp trải nghiệm + art** | bắt buộc | ✅ **ĐÍCH dự án — KHÔNG hoãn** | đối chiếu reference đo được (metrics + so ảnh + timeline/audio) — **song song L2** sau khi L1 chạy được, **không cần người test** |
 | Giá trị **4.861** `[SerializeField]` | phải có | 🟡 **tuỳ chọn** | dùng làm **tham khảo**, không phải để khớp |
 | Giá trị **957** `static` | phải có | 🟡 **tuỳ chọn** | " |
 | **45.659** tham chiếu enemy | phải resolve | 🟡 **tuỳ chọn** | danh sách **109 prefab** (đã resolve) đủ để chọn |
@@ -452,8 +467,9 @@ Hai câu khác nhau, và cái thứ hai mới là cái quyết định.
 > `> Kết luận (mức B):` chọn L1 làm **rơi khỏi kế hoạch toàn bộ loại 1 và 2** ở §4.1
 > (chưa đọc · chưa chọn) — tức **hai tool và mọi tranh luận về dung sai**.
 > Phần còn lại là **loại 3: sản xuất**, và quy mô do bạn tự đặt, không do bản gốc áp.
-> **L2/L3 không bị bỏ — bị HOÃN có thứ tự**: L2 ngay sau L1 (dữ liệu đã có, thiếu bind),
-> L3 là **đích cuối** sau L2 (blind A/B + playtest). Sửa 25/10 theo yêu cầu của chủ dự án.
+> **L2/L3 không bị bỏ** (sửa 25/10): L2 **làm ngay sau L1** — số đã decode + bind xong.
+> **L3 KHÔNG hoãn** (lần 14, 25/10): APK gốc là chuẩn trải nghiệm đã kiểm nghiệm ⇒ nghiệm thu =
+> **đối chiếu reference đo được** (không cần blind A/B/playtest); bắt đầu khi L1 chạy được, song song L2.
 
 ## 5. Còn thiếu / phải đoán
 

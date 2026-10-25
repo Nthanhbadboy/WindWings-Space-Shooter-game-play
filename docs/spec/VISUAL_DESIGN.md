@@ -1,8 +1,9 @@
 # VISUAL_DESIGN — "đẹp" là thứ **đo được**, không phải thứ phải bỏ
 
-> Viết 25/10, sau khi bị hỏi đúng: *"sao bỏ L3 được, yếu tố để thiết kế cho đẹp"*. Câu trả lời:
-> **L3 bỏ = bỏ việc tái lập 1:1 asset gốc**, **không** phải bỏ chất lượng thị giác. Chất lượng thị
-> giác là một **yêu cầu riêng**, và nó có số — tài liệu này là bộ số đó.
+> Viết 25/10, sau khi bị hỏi đúng: *"sao bỏ L3 được, yếu tố để thiết kế cho đẹp"*. **Cập nhật lần 14
+> (25/10): L3 = tái lập 1:1 trải nghiệm + art bản gốc là ĐÍCH của dự án học tập thiết kế — không bỏ,
+> KHÔNG hoãn**; APK gốc là chuẩn đã kiểm nghiệm ⇒ nghiệm thu = **đối chiếu reference đo được** (không
+> cần người test thật). Tài liệu này là **bộ số nghiệm thu** cho phần thị giác.
 >
 > Đo bằng `tools/design-metrics.py` trên **35 ảnh chụp thật** (`docs/apk-analysis/ramus/2026-10-23-phone/`).
 > Kết quả thô: `docs/assets/design-metrics.json`. Claim **AN1**, **AN2**.
@@ -124,4 +125,4 @@ Muốn đổi số thì phải ghi lý do thiết kế; muốn đổi art thì p
 - Cái **phải** tái lập là **cấu trúc thị giác**: khung hình dọc, ba chế độ sáng, ngân sách accent,
   vignette khung thưởng, mật độ chi tiết, nhịp juice. Tất cả đã có số ở §1–§4.
 
-⇒ **L3 "tái lập 1:1 asset" bỏ. "Thiết kế cho đẹp" không bỏ — nó là §1–§5 của tài liệu này.**
+⇒ **L3 "tái lập 1:1 trải nghiệm + art" = ĐÍCH — không bỏ, KHÔNG hoãn (lần 14, 25/10); nghiệm thu chính là §1–§5 của tài liệu này, đối chiếu reference đo được.**
