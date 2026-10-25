@@ -2555,4 +2555,28 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
 | 1. Spec nguồn font: main 105 + 6 fallback, cấm “global null → no fallback” / “1 font toàn game” | ✅ `ASSETS.md` mục checklist font + §24.4 |
 | 2. Lookup first-index; sửa `txt_free_after` nếu đã copy CSV last-wins | ✅ sửa 2 CSV `12-localization*.csv` + §24.4 |
 | 3. Không nhét SDF PNG vào CSS @font-face như TTF | ✅ ghi ở `ASSETS.md` (không có chỗ nào làm vậy) |
-| 4. Refresh summary gap/asset counts theo 67–73 | ✅ đối chiếu: 2185/654/69/64/1/66 đã khớp từ trước; thêm pixel/spine/font ở §24 + `ASSET_TRIAGE` §9.9
+| 4. Refresh summary gap/asset counts theo 67–73 | ✅ đối chiếu: 2185/654/69/64/1/66 đã khớp từ trước; thêm pixel/spine/font ở §24 + `ASSET_TRIAGE` §9.9 |
+
+### 24.7 Report 75 — mesh gốc + origin (HEAD mới của peer: `be112f36c`)
+
+- `datas/sprite_mesh_contract.json.gz` (peer): **2185** Sprite · **27.072** vertex · **24.375** triangle,
+  float32 position / uint16 index giữ nguyên — **không đoán pivot từ PNG đã trim**.
+- **1652 mesh ≠ quad** · **497 giá trị PPU** (980 Sprite = 100) ⇒ **đừng mặc định quad/PPU100**.
+- Mesh-AABB origin ≠ source pivot (>1e-5): **467**; **7** ngoài AABB (2146·2316·2692·2836·3050·3304·3687)
+  — **không clamp, không recenter**. Submesh localAABB serialized **0 ở cả 2185** ≠ measured bounds.
+- Winding: negative **24.013** / positive **17** / zero **345** — chưa phải GPU culling verdict,
+  không repair.
+- **Task peer mới (4 ý):** dùng typed mesh + PPU thật khi cần geometry; phân biệt source pivot /
+  mesh origin / serialized AABB / registration PNG trim; quad-recenter = **new design**; UV/renderer/
+  placement còn mở.
+
+### 24.8 Chốt “bind” — đã xong, đừng lặp TODO cũ
+
+| Bind | Trạng thái |
+|---|---|
+| `playerIndex` ↔ ID tàu | ✅ **index = id − 10001** (asm `0x14e2ce4`, `CROSS_BRANCH` T4) |
+| Cấu trúc bảng Map (614 mảng → 11 cấu trúc) | ✅ `DIFFICULTY_MODES` §7: 320×len3 ↔ 3 mode · 118×len2 = stage→boss · 104×len7 ↔ 7 PlayMode |
+| Chi tiết entry từng mảng campaign | ✅ nhánh dữ liệu ghép xong (`datas/map_table_segments.json` + `maps.json`) |
+| `kHp[mode]` | ❌ **chưa có giá trị** — 3 thân spawn **đã có asm**, chưa tìm thấy phép nhân |
+| `missionKillPercent` 3×3 | 🟡 **3/9** số; 6 số còn thiếu + chưa biết mảng ứng mode nào |
+| `StartHpPoint` ← dict 150 cặp | 🟡 nạp ở `Enemy_Datas.Init` `0x1582f5c` — **chưa có asm**, cần 1 method |

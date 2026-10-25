@@ -33,6 +33,14 @@
 > “Free after” (lookup **first-index**, report 73) trong 2 CSV; (4) bổ sung nguồn font thật
 > (7 TMP SDF + fallback chain) vào `ASSETS.md`; (5) pack **v2 identity-safe** bổ sung vào §21.2 +
 > bẫy 17. Chi tiết + 6 việc peer giao: `DATA_SYNC.md` §24.
+>
+> **Sửa lại (lần 7 — 25/10, sau khi bị nhắc "bind xong lâu rồi"):** rút lại toàn bộ câu
+> "việc kế tiếp = bind" trong `MISSING` §2/§4/§5 — **bind chính đã xong từ trước**: index↔tàu
+> = **id − 10001** (T4), cấu trúc bảng Map = **11 cấu trúc / 614 mảng** đã phân loại
+> (`DIFFICULTY_MODES` §7), chi tiết entry đã ghép (`map_table_segments.json` + `maps.json`).
+> **Còn thiếu thật sự** (4): `kHp[mode]` · `missionKillPercent` 6/9 số · `StartHpPoint`←`Init`
+> `0x1582f5c` (1 method asm) · kiểm runtime `rate` (cần thiết bị). Cập nhật thêm report **75**
+> (mesh 2185/27.072 vertex, không quad/PPU mặc định, không clamp) — `DATA_SYNC` §24.7–24.8.
 
 > **Sửa lại (lần 3):** pipeline vòng 3 (nhánh `ef6b75ef`, commit `61d5385`) đã resolve
 > **tên enemy trong wave** — **22.451** entry, **109** prefab, **0** `"?"`. Đây là mục

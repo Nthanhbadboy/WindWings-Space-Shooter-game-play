@@ -484,6 +484,10 @@ Và các con số quyết định **cách cắt**:
 > chưa phải Unity renderer. **517** PNG bị trim (output ≠ full canvas) ⇒ đặt sprite phải đọc
 > source_rect/pivot riêng, đừng tự center cho "vừa khuôn".
 >
+> **Bổ sung report 75 (peer `be112f36c`):** `sprite_mesh_contract` — **2185** Sprite · 27.072 vertex ·
+> 24.375 triangle; **1652 mesh ≠ quad**, **497 PPU** (980 = 100) ⇒ không mặc định quad/PPU100;
+> mesh-origin ≠ source pivot ở **467**, 7 ngoài AABB — **không clamp/recenter**.
+>
 > ⇒ **Việc phải làm khi cắt:** (1) đọc **`texture_rect`** (không phải `source_rect`); (2) **áp mã xoay** cho 144 sprite; (3) round từng biên cho 40 rect, **pad 1 px** cho 9 case — **không clamp** (report 72);
 > (4) crop từ **PNG/alpha gốc** chứ không từ contact sheet JPEG. Khi đó `sheet-splits.csv` (4.250 mảnh ước
 > lượng) chỉ còn là **bản cũ để đối chiếu**, không phải nguồn.
