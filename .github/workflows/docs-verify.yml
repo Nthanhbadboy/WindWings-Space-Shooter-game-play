@@ -64,6 +64,11 @@ jobs:
       - name: Persistence contracts (save keys, getter side effects)
         run: python3 tools/verify/opening_persistence.py
 
+      - name: Loadout + audio contracts
+        run: |
+          python3 tools/verify/player_loadout_persistence.py
+          python3 tools/verify/audio_rules.py
+
       - name: Re-measure
         id: claims
         run: |
