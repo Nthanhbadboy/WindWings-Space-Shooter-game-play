@@ -1,7 +1,7 @@
 name: Recover bounded combat native evidence
 on:
   push:
-    paths: ['tools/recovery/player_hp_board.py', 'tools/recovery/wing_drone.py', 'tools/recovery/pickup_currency.py', 'tools/recovery/enemy_hit_callbacks.py', 'tools/recovery/player_invincibility.py', 'tools/recovery/combat_coroutine_cells.py', '.github/workflows/recover-combat-coroutine-cells.yml']
+    paths: ['tools/recovery/drone_loadout.py', 'tools/recovery/player_hp_board.py', 'tools/recovery/wing_drone.py', 'tools/recovery/pickup_currency.py', 'tools/recovery/enemy_hit_callbacks.py', 'tools/recovery/player_invincibility.py', 'tools/recovery/combat_coroutine_cells.py', '.github/workflows/recover-combat-coroutine-cells.yml']
   workflow_dispatch:
 permissions:
   contents: write
@@ -26,6 +26,7 @@ jobs:
       - run: python3 tools/recovery/pickup_currency.py --xapk /tmp/apk/windwings.xapk --output reverse-engineering/raw/pickup-currency
       - run: python3 tools/recovery/wing_drone.py --xapk /tmp/apk/windwings.xapk --output reverse-engineering/raw/wing-drone
       - run: python3 tools/recovery/player_hp_board.py --xapk /tmp/apk/windwings.xapk --output reverse-engineering/raw/player-hp-board
+      - run: python3 tools/recovery/drone_loadout.py --xapk /tmp/apk/windwings.xapk --output reverse-engineering/raw/drone-loadout
       - uses: actions/upload-artifact@v4
         with:
           name: combat-coroutine-jump-tables
@@ -36,6 +37,6 @@ jobs:
           test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
           git config user.name 'Arena evidence collector'
           git config user.email 'agent@arena.ai'
-          git add reverse-engineering/raw/player-hp-board reverse-engineering/raw/wing-drone reverse-engineering/raw/pickup-currency reverse-engineering/raw/enemy-hit-callbacks reverse-engineering/raw/combat-chain/coroutine-jump-tables.json reverse-engineering/raw/combat-delegates reverse-engineering/raw/combat-receivers reverse-engineering/raw/player-lifecycle reverse-engineering/raw/player-invincibility
+          git add reverse-engineering/raw/drone-loadout reverse-engineering/raw/player-hp-board reverse-engineering/raw/wing-drone reverse-engineering/raw/pickup-currency reverse-engineering/raw/enemy-hit-callbacks reverse-engineering/raw/combat-chain/coroutine-jump-tables.json reverse-engineering/raw/combat-delegates reverse-engineering/raw/combat-receivers reverse-engineering/raw/player-lifecycle reverse-engineering/raw/player-invincibility
           git diff --cached --quiet || git commit -m 'Preserve pinned coroutine byte jump tables [skip ci]'
           git push origin arena/ef6b75ef-windwings-space-shooter-game-p
