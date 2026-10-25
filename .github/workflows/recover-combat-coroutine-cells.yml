@@ -27,6 +27,7 @@ jobs:
           name: combat-coroutine-jump-tables
           path: reverse-engineering/raw/combat-chain/coroutine-jump-tables.json
       - name: Preserve exact recovered bytes
+        if: ${{ always() }}
         run: |
           test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
           git config user.name 'Arena evidence collector'

@@ -23,7 +23,7 @@ def recover(binary,metadata):
     assert len(rel)==2
     row=next(r for r in rel if r['got']=='0x2ae8560')
     encoded=struct.unpack('<Q',bytes.fromhex(row['pointee_cell']['hex']))[0]
-    assert encoded>>32==0 and encoded>>29==5  # IL2CPP string literal usage
+    assert encoded>>32==0 and encoded>>29==5, {'encoded':hex(encoded),'relocations':rel}  # IL2CPP string literal usage
     index=(encoded&0x1ffffffe)>>1
     magic,version,start,bytecount,data_start,data_size=struct.unpack_from('<6I',metadata)
     assert magic==0xfab11baf and version==31 and index<bytecount//8
@@ -48,6 +48,12 @@ if __name__=='__main__':
             if not n.endswith('.apk'):continue
             with zipfile.ZipFile(io.BytesIO(z.read(n))) as inner:
                 if 'lib/arm64-v8a/libil2cpp.so' not in inner.namelist():continue
-                results.append(recover(inner.read('lib/arm64-v8a/libil2cpp.so'),inner.read('assets/bin/Data/Managed/Metadata/global-metadata.dat')))
+                try:
+                    results.append(recover(inner.read('lib/arm64-v8a/libil2cpp.so'),inner.read('assets/bin/Data/Managed/Metadata/global-metadata.dat')))
+                except Exception:
+                    import traceback
+                    p=Path(a.output);p.parent.mkdir(parents=True,exist_ok=True)
+                    (p.parent/'recovery-error.txt').write_text(traceback.format_exc())
+                    raise
     assert len(results)==1
     p=Path(a.output);p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(results[0],indent=2)+'\n')
