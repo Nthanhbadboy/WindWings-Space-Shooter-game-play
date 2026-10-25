@@ -10,7 +10,7 @@ def recover(binary,out):
     sys.path.insert(0,str(ROOT/'tools/apk-analyze'));import il2cpp_consts as native
     with tempfile.TemporaryDirectory() as td:
         work=Path(td);dump=work/'dump.cs';lib=work/'libil2cpp.so';dump.write_bytes(gzip.decompress((ROOT/'reverse-engineering/il2cpp/dump.cs.gz').read_bytes()));lib.write_bytes(binary)
-        methods=native.parse_dump(str(dump));eligible=lambda c,n:c.split('.')[0] in CLASSES and not n
+        methods=native.parse_dump(str(dump));eligible=lambda c,n:c.split('.')[0] in CLASSES and (not n or c=='UIObjectAnchors' and n=='TuPro')
         selected=[r for r in methods if eligible(r[0],r[1])];starts=sorted({r[4] for r in methods});rows=[]
         assert CLASSES<={r[0].split('.')[0] for r in selected}
         for cls,ns,name,offset,rva,sig in selected:
