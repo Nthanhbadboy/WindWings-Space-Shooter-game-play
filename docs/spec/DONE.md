@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 25 — 25/10, rà tài liệu trả lời "L1/L2/L3 còn thiếu gì" + đồng bộ report 88 peer `eaa5c74342`):**
+> `DATA_SYNC` §24.21 (producer hit thật: skeleton gán đè/DropGold Combine/19 co-attachments ·
+> DropGold **28/10** strict-threshold, HP reread, không dùng `_damage` · event6 budget **28 → 8
+> object** (chia 5) — chưa chứng minh tiền nhặt; radius 4 = bits6766e63f); `START_HERE` row L2
+> (producer/serialized joins **đã nối** — còn DPS runtime + 2 tái đối chiếu CROSSCHECK); `MISSING`
+> row 8 (+ chuỗi report 88, gap còn `OnCollectCoin1/2`); kéo `datas/enemy_hit_callback_flow.json`;
+> ACK88 qua PR12. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 24 — 25/10, audit toàn bộ sau nhắc của chủ dự án — quét pattern trên 45 file):**
 > ① **ENEMY_BEHAVIOUR đo lại trên bản hiện hành 981** (CSV 982 dòng gồm header; cũ ghi 800):
 > turret **112/981** · facingMove **949/981** · ≥2 tốc độ **137/981** · phổ biến **5,0 (562/981)** ·

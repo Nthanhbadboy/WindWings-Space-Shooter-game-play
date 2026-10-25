@@ -2785,3 +2785,39 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
 - Models `player_shield_models.py`; raw `raw/player-invincibility/invoke.json`. Bên spec đã cập
   nhật: `SYSTEM_MANIFEST` (row hồi sinh) · mục này; peer pin ACK85/86 của mình
   (`raw/peer-review/ack-85-86-6400213174.json`).
+
+### 24.21 Report 88 — producer hit-callback thật → FX và gold burst (peer `0981352791`→`eaa5c74342`, **450 tests**)
+
+- **Producer thật, không đoán theo tên component** (census 6.765.005 ARM64 words, đọc
+  constructor/store từng producer — không dùng candidate làm proof): **Skeleton.Start gán đè**
+  `Enemy_Health.hitCallback@20` (`Enemy_HitSkeletonRenderer.OnHit 1321a1c`) · **DropGold.Start
+  Combine** `hitDamageCallback@28` (`Enemy_DropGold.DropGold 1581828`) · `Test_Enemy` chỉ là
+  component test (không phải producer gameplay) · listener event6 = `Items_Manager.OnBurstGolds`
+  (AddListener từ Start).
+- **19 serialized co-attachments** trong `data.unity3d/resources.assets`: 17
+  `Enemy_HitSkeletonRenderer` (trên Gun/Boss parts) + 2 `Enemy_DropGold`, enabled 1, health snapshot
+  `noDamage=false` — join bằng GO-pointer + component membership, **không** join pathID đơn lẻ.
+  Không suy 19 root là cả game hay prefab đã spawn ở stage nào.
+- **Skeleton OnHit**: property **`_Black`** (không phải `_Color`), SetColor `hitColor` serialized
+  từng instance → Invoke **`CancelEffect`** delay f32(.01) — CancelEffect ghi **RGBA(0,0,0,1)**,
+  không restore `hitColor`.
+- **DropGold**: ctor load64 `1c0000000a000000` = 2 int32 **burstCoins=28 · totalP=10** (`iPlus=1`,
+  không thuộc serialized record); đọc **tỉ lệ HP hiện tại** (`GetCurrentHealth`/`GetStartHealth`),
+  **không dùng `_damage`**; ngưỡng strict `lost > iPlus × 10` (lost=11 mới phát đầu); **1
+  event/lần gọi** — không while-catch-up các mốc bị vượt; heal về `lost < 10` reset `iPlus=1`.
+- **Event6 → budget spawn — KHÔNG phải số tiền nhặt được**: `Items_Manager` chia budget `n/5`:
+  **28 → 3×70001 + 5×70002 = 8 object**; `q≥2 ∧ r=0` → `5×70001 + (q−1)×70002`; radius theo
+  `q+r`: 1→bits9a99193e(≈.15) · 2–3→.75 · 4→bits6766e63f (**1.8000000715255737**, khác nearest
+  1,8 một ULP) · >4→2,4; ellipse helper (eccentricity 0, minRadius) → pool → `IItem.BurstOut` →
+  SetActive. **Chia 5 là luật chia budget — chưa chứng minh 70002 = +5 tiền khi nhặt** ⇒ pickup
+  branch tiếp: `Player_Physics.ItemCollected 14bc328` / `OnTriggerEnter2D 14bc9c0` →
+  `OnCollectCoin1/2` (`MISSING` row 8).
+- **Kéo về:** `datas/enemy_hit_callback_flow.json` (4 bindings + 6 typed joins + 19
+  co-attachments · 16 method ranges/1256 instr/56 anchors). Raw `raw/enemy-hit-callbacks/` +
+  `raw/pickup-currency/` (Item_Movement · Player_Physics · Sub_Item · Tech_Datas ·
+  Droid_Movement1 · GP_Setup · Device_*) giữ ở nhánh peer.
+- **Queue peer đã ghi nhận request của mình** (wing-cannon `SetBarrels`/getter `14b1eb0` + drone
+  base-fire — `DONE` lần 22): peer "review raw đã có trước khi nhận thành thiếu dữ liệu". ACK87 ✓;
+  **chưa ACK88** ⇒ ACK bằng comment PR12.
+- Models `enemy_hit_callback_models.py` (**38 tests mới**); full **450 PASS**; code `16748ccc3` ·
+  Verify `40213772726 SUCCESS 55s`.
