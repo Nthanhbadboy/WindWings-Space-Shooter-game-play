@@ -97,6 +97,22 @@ def main():
         (out / 'referenced-cells.json.gz').write_bytes(gzip.compress(json.dumps(dict(
             status='RAW_ADRP_LDR_CANDIDATES_NOT_RUNTIME_POINTERS_OR_DATAFLOW_PROOF',
             cells=list(cells.values())), indent=2).encode(), mtime=0))
+        # ELF GOT cells contain zero on disk: RELA addends resolve their pointees.
+        shoff = struct.unpack_from('<Q', binary, 40)[0]
+        shentsize, shnum = struct.unpack_from('<HH', binary, 58)
+        relocations = []
+        wanted_cells = {va for va, width in cells}
+        for i in range(shnum):
+            sh = struct.unpack_from('<IIQQQQIIQQ', binary, shoff + i * shentsize)
+            if sh[1] != 4: continue  # SHT_RELA
+            for pos in range(sh[4], sh[4] + sh[5], sh[9] or 24):
+                offset, info, addend = struct.unpack_from('<QQq', binary, pos)
+                if offset in wanted_cells:
+                    relocations.append(dict(offset=hex(offset), info=hex(info), type=info & 0xffffffff,
+                                            symbol_index=info >> 32, addend=hex(addend), source_file_offset=pos,
+                                            raw_hex=binary[pos:pos+24].hex()))
+        (out / 'relocations.json.gz').write_bytes(gzip.compress(json.dumps(dict(
+            status='ELF64_RELA_ROWS_FOR_REFERENCED_CELLS_NOT_RUNTIME', entries=relocations), indent=2).encode(), mtime=0))
         # Decode symbolic metadata usage cells with the same dumper version as the original dump.
         dumper_out = temp / 'symbolic'
         dumper_out.mkdir()
@@ -158,7 +174,7 @@ def main():
             externals=[dict(serialized_file=name,externals=[dict(path=e.path,type=e.type) for e in sf.externals])
                        for name,sf in serialized_files(env)],
             shards=[p.name for p in shards]),indent=2)+'\n')
-        files = [out / 'referenced-cells.json.gz', out / 'symbols.json.gz', out / 'component-index.json', *shards, *list(sorted((out / 'native').iterdir()))]
+        files = [out / 'relocations.json.gz', out / 'referenced-cells.json.gz', out / 'symbols.json.gz', out / 'component-index.json', *shards, *list(sorted((out / 'native').iterdir()))]
         for path in files:
             if path.parent.name == 'native' and path.suffix == '.json':
                 info = json.loads(path.read_text())
