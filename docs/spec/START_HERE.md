@@ -1,5 +1,21 @@
 # START_HERE — dựng một game mới từ bộ spec này
 
+> ## ⚠ Mục đích của việc dịch ngược — đọc trước mọi thứ
+>
+> **Dịch ngược để CÓ ĐỦ THỨ để thiết kế game mới theo cách BẮT CHƯỚC bản gốc — KHÔNG phải phát triển
+> game mới theo kiểu SÁNG TẠO tự do.**
+>
+> - Mọi thứ **đã có bản gốc đối chiếu**: logic · cơ chế · số · art · animation · nhịp · màu · ánh
+>   sáng — AI **không được lệch hướng, không suy diễn theo ý mình, không "cải tiến" lung tung**.
+> - **Không test, không hỏi lại — có bản gốc trả lời.** Thắc mắc một thông số/hành vi = tra reference
+>   trong repo (`datas/` · hợp đồng · report); **bản gốc là nguồn câu trả lời cuối cùng**.
+> - Cơ chế thể loại này **đã có từ nghìn đời nay — mọi game đều bắt chước nhau**; cái duy nhất cần
+>   làm khác là **thiết kế lại hình ảnh** (vẽ lại, không copy file asset; **chuẩn màu/ánh sáng/khung/
+>   nhịp vẫn theo bản gốc** — `VISUAL_DESIGN.md`).
+>
+> Tư duy đúng khi làm với bộ spec này: **"bắt chước chuẩn đã kiểm nghiệm"**, không phải
+> "đề xuất phương án mới".
+
 > **Câu hỏi của bạn:** *"Bộ tài liệu này có đủ để AI làm game mới không, và có dữ liệu gốc đã
 > phân tích để học cho đúng và đẹp không?"*
 >

@@ -6,6 +6,10 @@
 > **Định nghĩa "thiếu" ở đây** = thiếu **dữ liệu / thông số** để dựng lại một hệ, **không** phải thiếu
 > ý tưởng thiết kế. Cái gì dữ liệu không có mà **tự chọn được** thì ghi là *lựa chọn thiết kế*, không
 > ghi là thiếu — đúng mức L1 (*giống cơ chế, không cần giống số*).
+>
+> **Mục đích dịch ngược** (khối đầu `START_HERE.md`): đủ thứ để **BẮT CHƯỚC bản gốc** — không sáng tạo
+> tự do. Mục "Thiếu gì" bên dưới đọc theo tư duy **đối chiếu bản gốc**, không phải "tự do thiết kế";
+> không test, không hỏi lại — **có bản gốc trả lời**.
 
 ---
 

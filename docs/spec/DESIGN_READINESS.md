@@ -9,6 +9,9 @@
 > bản kia trả lời *"còn thiếu chính xác chỗ nào"*. Kết luận khớp nhau: **0 chỗ chặn số** — 2 chỗ "chặn"
 > cũ (map→wave · HP theo chế độ) **ĐÃ ĐÓNG 25/10**; sót 2 phép tái đối chiếu runtime (không chặn).
 
+> **Mục đích dịch ngược** (khối đầu `START_HERE.md`): đủ thứ để **BẮT CHƯỚC bản gốc** — không sáng tạo
+> tự do; mọi thứ có bản gốc đối chiếu; **không test, không hỏi lại — có bản gốc trả lời**.
+>
 > **Cập nhật 25/10 — lần 3 (đồng bộ lần 7–10 của `DONE`):**
 > ① **bind xong**: index↔tàu = id − 10001 (`CROSS_BRANCH` T4) · bảng Map **11 cấu trúc / 614 mảng**
 > (`DIFFICULTY_MODES` §7) · HP enemy **150 cặp theo id** (claim **WRH2**);
@@ -16,7 +19,7 @@
 > ③ **playback thật đã có** (phiên phone 23/10 trong repo) — "cần thiết bị" chỉ còn 2 tái đối chiếu;
 > ④ **feel BỎ** theo quyết định (game gốc không có, quá nhỏ);
 > ⑤ peer tới report **77 / 239 tests** (scene renderer + camera + SpriteMask; ortho 9,6 khớp mốc spawn);
-> ⑥ tally mới **✅ 31 · ⚠ 16 · ❌ 1** · claim **209/211 PASS**. Số dưới đây đã đo lại theo trạng thái này.
+> ⑥ tally **✅ 33 · ⚠ 14 · ❌ 1** (lần 11 kéo lại từ 31/16/1 — lô lần 9 bị mất) · claim **211/209 PASS**. Số dưới đây đã đo lại theo trạng thái này.
 >
 > **Cập nhật 24/10 — vòng 2:** sau khi giải script animation (`ANIMATION_SCRIPT.md`), hệ
 > **Animation**: **35/39 prefab boss** có **nguồn** animation/event trong tập đã xét, boss 1 giải

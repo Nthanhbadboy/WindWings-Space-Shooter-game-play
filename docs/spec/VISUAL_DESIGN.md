@@ -3,7 +3,9 @@
 > Viết 25/10, sau khi bị hỏi đúng: *"sao bỏ L3 được, yếu tố để thiết kế cho đẹp"*. **Cập nhật lần 14
 > (25/10): L3 = tái lập 1:1 trải nghiệm + art bản gốc là ĐÍCH của dự án học tập thiết kế — không bỏ,
 > KHÔNG hoãn**; APK gốc là chuẩn đã kiểm nghiệm ⇒ nghiệm thu = **đối chiếu reference đo được** (không
-> cần người test thật). Tài liệu này là **bộ số nghiệm thu** cho phần thị giác.
+> cần người test thật). Tài liệu này là **bộ số nghiệm thu** cho phần thị giác. Hình **vẽ lại cho
+> khác** (bản quyền — không copy file asset); **chuẩn màu/ánh sáng/khung/nhịp GIỮ theo bản gốc**;
+> thắc mắc = tra reference — **không test, không hỏi lại: có bản gốc trả lời**.
 >
 > Đo bằng `tools/design-metrics.py` trên **35 ảnh chụp thật** (`docs/apk-analysis/ramus/2026-10-23-phone/`).
 > Kết quả thô: `docs/assets/design-metrics.json`. Claim **AN1**, **AN2**.

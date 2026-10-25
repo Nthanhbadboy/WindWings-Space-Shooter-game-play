@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 15 — 25/10, chủ dự án chốt mục đích — ghi vào mọi điểm vào):** *"dịch ngược để làm
+> gì: để có các thứ để từ đó thiết kế game mới theo cách **bắt chước**, chứ không phải phát triển
+> game mới theo kiểu **sáng tạo**. Để AI phát triển mà không bị lệch hướng hay sai logic hay sai art
+> hay animation và tất cả mọi thứ — **đã có bản gốc đối chiếu, không test không hỏi lại, có bản gốc
+> trả lời**. Cơ chế game đã có từ nghìn đời nay, tất cả đều bắt chước nhau, thiết kế lại hình ảnh cho
+> khác thôi."* — Ghi nguyên khối ở **đầu `START_HERE.md`** + dòng dẫn ở `DONE` §2 · `MISSING` §0 ·
+> `DESIGN_READINESS` đầu trang · `SYSTEM_MANIFEST` header · `VISUAL_DESIGN` header (hình khác —
+> chuẩn giữ). Kèm sửa lệch sót của lần 11: `DESIGN_READINESS` header ⑥ tally 31/16/1 → **33/14/1**.
+> verify 209 PASS · 0 FAIL · 2 SKIP.
+>
 > **Sửa lại (lần 14 — 25/10, chủ dự án đổi định nghĩa nghiệm thu L3):** *"không cần người test thật
 > vì APK gốc đã thiết kế chuẩn trải nghiệm, ta phải copy những trải nghiệm ấy; art cũng thế — chuẩn
 > màu sắc, ánh sáng; dự án để học tập thiết kế, sao lại hoãn"*. ⇒ **L3 đổi nghĩa + đổi thứ tự**:
@@ -279,6 +289,9 @@ lý do đúng hơn: không phải vì "2.185 hình" mà vì **641 hình + sửa 
 | SKU IAP | **170** | `IAPProduct.csv` |
 
 ## 2. Bốn mức "hoàn hảo" — và mỗi mức kiểm bằng gì
+
+> **Mục đích tổng** (đọc khối đầu `START_HERE.md`): dịch ngược để **BẮT CHƯỚC bản gốc**, không sáng
+> tạo tự do — mọi thứ có bản gốc đối chiếu; **không test, không hỏi lại — có bản gốc trả lời**.
 
 Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có **bài kiểm cụ thể**.
 
