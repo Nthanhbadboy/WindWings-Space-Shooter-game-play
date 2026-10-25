@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 27 — 25/10, tái kiểm 5 mục L2 còn thiếu theo dữ liệu hiện hành + raw mới peer `39b377383`):**
+> ① DPS runtime — không đổi, peer chưa có commit parity sau 83; ② 2 CROSSCHECK — không đổi (file
+> `ramus/2026-10-23-phone/CROSSCHECK-static-vs-runtime.md`, cần lần chạy); ③ **HP tàu nâng bằng
+> chứng:** `Player_Health` = static `StartHealth/CurrentHealth 0x0/0x4` + `Armor` + auto-gain —
+> KHÔNG có bảng theo tàu trong 6 mảng (raw mới xác nhận), writer chưa đọc; ④ **Board_Drones đang
+> được đào** (`Drone_Get_Datas.json`: GetBaseDamage/GetDroneSkillDamage/GetDroneAbilityCooldown…;
+> `Board_Players` vẫn chưa có consumer); ⑤ bind 576 map — report 89 đã đọc `get_stageIndex`
+> (Test-gate/IsBranch), unknown còn thứ tự nạp; ⑥ save schema — 89 thêm device internals
+> (`GetPlayerDevices`/`GetDevice` dict lazy-load), trial/flush vẫn chưa. `MISSING` §2.1/2.2/2.2c/row 9
+> đã cập nhật; xin peer đọc writer `StartHealth` qua PR12. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 26 — 25/10, "cập nhật bổ sung + tái kiểm" — đồng bộ report 89 peer `c30dd46eb2` + chốt bảng L1/L2/L3 còn thiếu vào `DONE`):**
 > `DATA_SYNC` §24.22 (2 đường nhặt player/drone — tag Item trước hit-guard · `IPooling.GetID` ·
 > **công thức xu Coin1/Coin2**: 4 band balance ×L(tech) ×device ×.86 stage≤40 · store `coinCount`
