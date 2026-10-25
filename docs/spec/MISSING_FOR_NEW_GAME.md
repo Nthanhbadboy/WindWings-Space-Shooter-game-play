@@ -7,8 +7,9 @@
 > ý tưởng thiết kế. Cái gì dữ liệu không có mà **tự chọn được** thì ghi là *lựa chọn thiết kế*, không
 > ghi là thiếu — đúng mức L1 (*giống cơ chế, không cần giống số*).
 >
-> **Mục đích dịch ngược** (khối đầu `START_HERE.md`): đủ thứ để **bắt chước bản gốc** — cái nào bản
-> gốc đã trả lời thì tra là xong; phần "thiết kế" còn lại của project này chỉ là **art** (vẽ lại).
+> **Mục đích dịch ngược** (khối đầu `START_HERE.md`): đủ thứ để **bắt chước bản gốc** — tra reference
+> trước khi tự suy; chỗ ghi scoped unknown thì không bịa; phần "thiết kế" còn lại chỉ là **art**
+> (vẽ lại), nghiệm thu bằng automated reference checks.
 
 ---
 
@@ -125,8 +126,9 @@ từ hex trong `ia-resolved.json` — **theo kiểu của field**, không
   đặt hạn bắn tiếp — không phải shot/giây. ⚠ **Đính chính:** report **53** (từng dùng để đóng mục này)
   là **delay spawn** `Call_Data.rate` — **khác consumer/field**; tên `rate` giống nhau không nối được
   hai consumer. (3) **phát phụ + nhiều nòng** chưa nối — giao nhánh dữ liệu (parity tàu 1 trước).
-- **Việc kế tiếp:** viết bảng TTK **ước lượng** theo ID tàu từ `datas/player_start_stats.json` (cột
-  DPS ghi rõ là proxy); **DPS thật** cần nối extra-shot + barrels tàu 1 rồi mở rộng — việc nhánh dữ liệu.
+- **Việc kế tiếp:** ~~bảng TTK theo tích damage×rate~~ **bỏ — sai đơn vị** (damage·s, review peer).
+  Hai đường: **newdesign** (HP thật + DPS giả định) hoặc **measured** — peer đã dịch receivers
+  (report 85) và đang nối producer/serialized + extra-life (report 86); replay đo khi xong.
 
 ### 2.4 `rate = 0` **không** phải "spawn cả loạt cùng frame"
 

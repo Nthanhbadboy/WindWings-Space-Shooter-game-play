@@ -56,7 +56,7 @@
 | D2 | Thứ tự resolve stat lúc runtime | **cần chạy game** | B | đã có mô hình, chưa xác nhận |
 | D3 | Tỉ lệ rơi item trong màn | **cần chạy game** | D | phải tự thiết kế |
 | D4 | % giảm damage thực tế của giáp/device | **cần chạy game** | D | phải tự thiết kế |
-| D5 | **Nhịp bắn player — `rate` là interval** | **đã dịch đủ 25 coroutine (reports 79–84 peer `c7f72fe22e`)** | A/B | interval = base × (1 − tech tier **0/3/5/8/10/12 %**); dual deadline, N extra ⇒ N+1 entry, không catch-up; demo override 3,0/4,0; crit ⇒ ×2. Report 84: `_delay` 7/9 **sau** attack · 17 chờ theo cặp · **18 = particle toggle**; models chạy được; `damage × rate` **không** phải DPS — DPS runtime còn callback→damage→HP (peer làm tiếp) |
+| D5 | **Nhịp bắn + damage player** | **79–86 peer (`82f14784e5`): 25 coroutine + 44 receiver walks + extra-life lifecycle** | A/B | interval nhóm phát (tier 0/3/5/8/10/12 %, demo 3,0/4,0); crit ⇒ ×2; `damage × rate` = damage·s **không phải DPS**. **Receivers đã dịch (85)**: enemy 2 callbacks + HP re-read · player 2 truncations → events 21/39 → HP re-read · death: Delayed = **WaitUntil** (không delayTime 2), MB 3×Wait(1), ability32 recursive không dedup. **86**: OnExtralife chốt — heal 1 s (normal 0,05 + HealHp 0,5 · PVP HealHp 1 · zone 1,235 % maxHP). Sót: producer/serialized joins + extra-life rewiring (peer làm tiếp) |
 | E1 | Asm **từng** bị cắt cụt 11/12 file (`8871068a`) → `6109008c` hết cụt (`size_capped` 0/425). **`68ce86a7`: 25 method vắng hẳn khỏi asm** (24 stub 8 B + 1 method 32 B) | **lỗi công cụ** | A | **cờ 4** ở `ASM_INTEGRITY` §3; `RankManager` FAIL là **thật nhưng vô hại** |
 | E2 | ~~`ships.json` thiếu 13 dòng~~ ✅ **ĐÓNG — KHÔNG phải lỗi công cụ: tôi đọc sai** `Data_Players` (class dùng chung tàu + drone) | **tôi đọc sai** | **A** | **25 tàu**, không phải 38 |
 | E3 | `RankManager.asm` **thiếu 8 B** (`ctor` = `ret` rỗng) — cờ gác cổng bắt được, **vẫn còn ở `68ce86a7`** | **lỗi công cụ** | A | **không mất dữ liệu**; FAIL đúng, không phải dương tính giả |
@@ -392,7 +392,7 @@ kiểm từng id** — nhưng **không còn là ẩn số về cơ chế**.
 | D2 | Thứ tự resolve stat | mô hình **B**: `save → device(tàu) → tech → ability → StartHealth → CurrentHealth`, chốt **1 lần** trước spawn (`BALANCE` §0.6.8) | giữ đúng thứ tự này |
 | D3 | Tỉ lệ rơi item | không có; item hồi máu gọi `GetStartHp()` (A4) | tự đặt: 1 item/45 s hoặc theo wave |
 | D4 | % giảm damage của `Armor` / `reduceDamageByDevice` | có **tên field**, chưa có hệ số | tự đặt: giáp giảm 20–40%, trần 75% |
-| D5 | Nhịp bắn player (`StartMainCannonRate`) | **interval nhóm phát** — 24/24 impl + 25 coroutine dịch (reports 79–84): dual deadline, N extra ⇒ N+1 entry, không catch-up; laser/saw/burst/clone/pumpkin có models | AI mới: implement theo luật report 80 §4 + models 84; ghi `newdesign` nếu thêm catch-up / bỏ extra gate / gộp nòng / coi helper = hit |
+| D5 | Nhịp bắn + damage player (`StartMainCannonRate`) | interval nhóm phát + receivers đã dịch (reports 79–86): luật bắn · mất máu · chết · hồi sinh đều có | AI mới: implement theo report 80 §4 + models 84 + receivers 85 + heal 86; DPS thật đợi measured — tích damage×rate không dùng |
 
 > Playback thật **đã có sẵn trong repo** (phiên phone 23/10 — `ramus/2026-10-23-phone/`): D2/D4
 > đối chiếu thêm được bằng dump JSON của phiên khi cần — không cần thiết bị mới.

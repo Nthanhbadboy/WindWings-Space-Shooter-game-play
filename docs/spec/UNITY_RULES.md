@@ -366,16 +366,16 @@ dòng, cùng một `PathID` có thể trỏ hai object khác nhau ở hai file k
 
 ---
 
-## 12. Còn thiếu / phải đoán
+## 12. Còn thiếu / phải đoán (⚠ bảng vòng cũ — rows ✅ đã đóng inline; trạng thái hiện hành: `OPEN_ISSUES` + `DONE`)
 
 | # | Việc | Mức | Chi phí | Ra được gì |
 |---:|---|---|---|---|
-| 1 | Export **793 `m_Events`** (`clip · time · functionName`) | **B** | 1 lần chạy, độ sâu 3 | **thời điểm ra đòn của boss** — mục mở lâu nhất của `ANIMATION` |
+| 1 | ~~Export 793 `m_Events`~~ ✅ **ĐÃ CÓ** — `datas/boss_anim_events.csv` **795** event có `time` (claim J9) | — | — |
 | 2 | Export **308 `AnimatorController`**: `m_AnimationClips` + `m_TOS` | **B** | cùng lần chạy | controller → clip → **tên state** (`C2`) |
 | 3 | Viết decoder `m_StreamedClip` (**9,19 MB**, 782 clip) | **A/B** | việc lớn, thuật toán đã có | **pose thật** của 791 clip — nâng `ANIMATION` từ "biết tên" lên "biết dáng" |
 | 4 | Export **117 `SkeletonAnimation`** (`skeletonDataAsset` PPtr) | **B** | 1 lần chạy | đóng `§7 #9` (rig nào của prefab nào) |
 | 5 | Re-export `animator_map` **kèm `m_FileID`** | **C** | rất rẻ | loại rủi ro **3,0 %** ở §9 |
-| 6 | Đọc `Enemy_Health.Init` (asm) xem `armor` **có được gán** không | **B** | 1 method | chốt hẳn "enemy có giáp" — hiện chỉ biết **không per-prefab** |
+| 6 | ~~Đọc `Enemy_Health.Init` xem `armor` có được gán~~ ✅ **ĐÓNG (report 81 §E peer)** — armor là **private runtime** (không serialize, không per-prefab); công thức mất máu đã có | — | — |
 | 7 | ~~**Đo `kHp` / `pct` trong game**~~ → **KHÔNG cần (25/10)** | **A** | — | `pct` đã decode **[0.2/0.6/0.98]** · `kHp` không tồn tại (`DIFFICULTY_MODES` §3–5); playback mẫu đã có (phiên 23/10) |
 
 > **Tổng kết vòng này:** 6 mục **đóng** bằng luật engine (`C3` · `C6` · `C4` · appear · armor ·

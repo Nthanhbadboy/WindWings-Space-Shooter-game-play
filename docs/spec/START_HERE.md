@@ -5,11 +5,13 @@
 > **Dịch ngược để có đủ thứ để thiết kế game mới theo cách BẮT CHƯỚC bản gốc** — dự án này không
 > sáng tạo cơ chế mới. Điều này **giảm việc cho bạn, không phải thêm rào cản**:
 >
-> - **Cơ chế · logic · số · animation · nhịp · màu · ánh sáng: bản gốc đã trả lời hết.** Không phải
->   nghĩ, không phải test, không phải hỏi ai — tra reference trong repo (`datas/` · hợp đồng ·
->   report) là có đáp án.
-> - **Việc thiết kế duy nhất là ART**: vẽ lại hình ảnh cho khác (tàu · enemy · UI · FX · font), giữ
->   chuẩn khung/màu/ánh sáng/nhịp theo số đo ở `VISUAL_DESIGN.md`. Làm đẹp đúng chuẩn = xong L3.
+> - **Cơ chế · logic · số · animation · nhịp · màu · ánh sáng: tra reference TRƯỚC khi tự suy** —
+>   đa số đã có đáp án trong repo (`datas/` · hợp đồng · report). Chỗ tài liệu ghi **scoped unknown**
+>   thì **đừng bịa** — ghi rõ như tài liệu và cần thêm đào mới hỏi bên nhánh dữ liệu.
+> - **Việc thiết kế duy nhất là ART**: vẽ lại hình ảnh cho khác (worklist **624** mục —
+>   `docs/assets/art-worklist.csv`), giữ chuẩn khung/màu/ánh sáng/nhịp theo `VISUAL_DESIGN.md`.
+>   **Metrics là gate phát hiện lệch, chưa phải approval** — nghiệm thu = chạy automated
+>   regression/reference checks và ĐẠT, không phải "tin là giống".
 > - Cơ chế thể loại **đã có từ nghìn đời nay — mọi game trong thể loại bắt chước nhau**; cái làm
 >   game nổi bật là hình ảnh. Chỗ tài liệu ghi "tự chọn" thì mới chọn — còn lại làm theo reference
 >   là xong.
@@ -81,13 +83,14 @@
 |---|---|---|---|
 | **L0** | chạy được: mở, vào màn, bắn, chết, qua màn | chạy 30 phút không crash | ✅ bắt buộc |
 | **L1** | đúng **luật** cơ chế, không cần giống số | chơi thử theo checklist cơ chế | ✅ **mục tiêu của bộ spec này** |
-| **L2** | đúng **số** (giá trị + nhịp spawn khớp bản gốc) | so bảng số | ⚠ **số đã decode + bind xong**; sót chứng minh **DPS runtime** (report 79 — `rate` = interval) + 2 tái đối chiếu |
+| **L2** | đúng **số** (giá trị + nhịp spawn khớp bản gốc) | so bảng số | ⚠ **số đã decode + bind xong**; receivers đã dịch (reports 85–86) — sót producer/serialized joins + extra-life rewiring (peer làm tiếp) + 2 tái đối chiếu |
 | **L3** | khớp **trải nghiệm + art** bản gốc (chuẩn màu/sáng/nhịp) | đối chiếu reference: metrics + so ảnh + timeline/audio — **không cần người test** | 🎯 **ĐÍCH dự án — KHÔNG hoãn**: input đã đủ, chạy **song song L2** sau khi L1 chạy được |
 
-> ⚠ **L3 là ĐÍCH của dự án học tập thiết kế — KHÔNG hoãn** (lần 14, 25/10): APK gốc là **chuẩn trải
-> nghiệm đã kiểm nghiệm** ⇒ nghiệm thu = **đối chiếu reference đo được bằng máy** (`VISUAL_DESIGN.md`
-> §5: metrics + so ảnh cùng scene), **không cần blind A/B/playtest người thật**. Art **vẽ lại theo
-> chuẩn gốc**; file asset gốc không lưu trong repo này (pack do peer giữ).
+> ⚠ **L3 là ĐÍCH của dự án học tập thiết kế — KHÔNG hoãn** (lần 14, 25/10; siết措 từ review peer
+> lần 21): APK gốc là **chuẩn đã kiểm nghiệm** ⇒ **không cần blind A/B/playtest người thật**, nhưng
+> **automated regression + reference checks vẫn bắt buộc** — metrics (`VISUAL_DESIGN` §5) là **gate
+> phát hiện lệch**, đạt gate mới gọi khớp, không tự approval. Art vẽ lại theo chuẩn gốc; file asset
+> gốc không lưu trong repo này (pack do peer giữ).
 
 Không cần đọc hết 43 file trước khi bắt đầu. Tám con số này đủ để dựng khung chơi được:
 

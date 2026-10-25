@@ -72,6 +72,23 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 21 — 25/10, nhận review 6 finding của peer trên tip `b8f72a4127` + đồng bộ reports 85–86 peer `82f14784e5`):**
+> Peer review trực tiếp nhánh spec (không chỉ changelog) — **sửa đủ 6**: ① DATA_SYNC §24.17 impl **11**
+> ≠ `shotRate/number` (chỉ 13; descriptor 0,04 + duration theo rank); ② tách **Player9_Clone** (0,34)
+> khỏi **projectile 7/9** (0,35) — gộp nhầm trước đây; ③ **bỏ TTK theo tích damage×rate** (đơn vị
+> **damage·s**) — COMBAT §0/§6.1/§6.2 · BALANCE §1.1b · MISSING · ENEMY_HP_RUNTIME · BOSSES ·
+> COVERAGE_AUDIT · README — TTK = **newdesign** (HP thật + DPS giả định) hoặc **measured**; ④ COMBAT
+> §6.4 **241/981** (sửa 189/800) + native rule `noDamage && !ignoreInvincible` skip / ignore bypass
+> (report 85) — bỏ kết luận "chỉ trang trí"; ⑤ **superseded ngay tại đoạn**: COMBAT §10 (5 rows đã
+> đóng), BALANCE §0.6.2/§0.6.x, UNITY_RULES §12 (rows 1/6); ⑥ START_HERE "tra là có hết / không test"
+> → **tra reference trước + scoped unknown không bịa + automated regression/reference checks bắt buộc**
+> (metrics = gate phát hiện lệch, không phải approval) — đồng bộ DONE §2 · MISSING §0 ·
+> SYSTEM_MANIFEST · START_HERE khối mục đích + L3. **Reports 85–86**: receivers enemy/player đã dịch
+> (2 callbacks + truncations + HP re-read; Delayed = WaitUntil · MB 3×Wait(1) · ability32 recursive
+> không dedup) + OnExtralife/heal lifecycle (1 s, normal 0,05+0,5 · PVP 1 · zone 1,235 % maxHP) —
+> `SYSTEM_MANIFEST` 2 dòng mới/cập nhật · `OPEN_ISSUES` D5 · `DATA_SYNC` §24.18–24.19.
+> verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 20 — 25/10, đồng bộ report 84 peer tip `c7f72fe22e`, 327 tests):** peer dịch đủ
 > **25 combat coroutine** (CFG + jump-table + models chạy được) — 3 đính chính ghi vào
 > `SYSTEM_MANIFEST` (nhịp bắn) + `OPEN_ISSUES` D5 + `DATA_SYNC` §24.17: `_delay` 7/9 **sau** attack ·
@@ -338,8 +355,9 @@ lý do đúng hơn: không phải vì "2.185 hình" mà vì **641 hình + sửa 
 
 ## 2. Bốn mức "hoàn hảo" — và mỗi mức kiểm bằng gì
 
-> **Mục đích tổng** (khối đầu `START_HERE.md`): dịch ngược để **bắt chước bản gốc** — mọi thứ trừ
-> art đã có đáp án sẵn (tra reference là xong, không test không hỏi); **việc thiết kế duy nhất là art**.
+> **Mục đích tổng** (khối đầu `START_HERE.md`): dịch ngược để **bắt chước bản gốc** — tra reference
+> TRƯỚC khi tự suy (scoped unknown thì đừng bịa); **việc thiết kế duy nhất là art**; automated
+> regression/reference checks **vẫn bắt buộc** — metrics là gate phát hiện lệch, không phải approval.
 
 Thay vì tranh luận, định nghĩa **4 mức tăng dần**, mỗi mức có **bài kiểm cụ thể**.
 

@@ -21,7 +21,7 @@
 | Súng của **player** trong dump | **0** — toàn bộ 458 là enemy/boss | `forceType = Enemy` 458/458 |
 | Enemy có `noDamage` (bất tử với đạn) | **241 / 981 (24,6%)** true — report 81 peer đếm lại trên 981 snapshot (cũ 189/800 trên CSV trích) | `Enemy_Health.csv` + report 81 |
 | Đạn xuyên khiên | **58 / 186** loại đạn | `Bullet_Linearly.csv` `throughShield` |
-| TTK | **ước lượng được theo tàu** — DPS = damage × rate là **proxy**: reports 79–83 peer (`23b1ceec31`) chứng minh `rate` (× tech modifier tier) là **interval nhóm phát** (dual deadline, N extra ⇒ N+1 entry, không catch-up, đủ 24/24 impl). Bind combat: **impl N → index N−1** — tàu 10001→index 2 · 10003→index 0 (report 81/82; id−10001 chỉ đúng save/load). Luật mất máu enemy đã có (armor `100/(100+armor)`) — DPS runtime còn cần health/shield gates | §6.1 |
+| TTK | **KHÔNG lập được từ tích `damage × rate`** — tích có đơn vị **damage·s**, không phải DPS (review peer 25/10); đừng dùng nó xếp tàu hay ước lượng TTK. TTK thật: **DPS measured** — receivers đã dịch xong (reports 79–86 peer), peer đang nối producer/serialized joins + extra-life rewiring — hoặc **newdesign** (HP thật + DPS giả định). Bind combat: impl N → index N−1 (tàu 10001→2 · 10003→0; id−10001 chỉ đúng save/load). Luật mất máu enemy đã có (report 81 §E + 85) | §6.1 |
 
 > ⚠ **Phát hiện quan trọng nhất:** `Gun_Attack.csv` **không chứa súng của người chơi**.
 > Bằng chứng: cột `forceType` có đúng 2 giá trị (`Enemy = 0`, `Ally = 1`) và **458/458 dòng = 0**.
@@ -353,16 +353,19 @@ TTK = `HP / DPS_player`. Trong đó:
 - **HP enemy**: **đã có** — `datas/enemy_hp_by_id.json` **150 cặp `id → HP`** (runtime, claim **WRH2**)
   + `15-enemy-hp.csv` **981** dòng serialize (**467** > 0 — cũ ghi 800/394 là **sai**; claim **WRH1**).
   Gộp lại **108/109** prefab spawn có số HP (claim **WRH5**). ~~Còn thiếu hệ số `kHp[mode]`~~ — **không có `kHp`** (sửa 25/10, `DIFFICULTY_MODES` §3–5); TTK = HP(id) ÷ DPS, đủ để tính.
-- **DPS player**: **proxy — KHÔNG giao như DPS thật** (sửa 25/10 lần 2 theo report 79 peer). Tích
-  `StartMainCannonDamages[24] × StartMainCannonRate[24]` decode từ `ia-resolved.json` →
-  `datas/player_start_stats.json` (index 0 = **21.600**, min **456**, max **46.400**) — chỉ dùng
-  **ước lượng**. Report 79: tàu 1 dùng `rate` làm **interval** (deadline `@0x10c = Time.time + rate
-  @0xa8`); còn phát phụ, nhiều nòng, modifier; không suy 23 tàu từ tàu 1.
-  Bind combat: impl N → index N−1 — tàu **10001→index 2** · **10003→index 0** (report 81/82; `id−10001` chỉ đúng save/load).
+- **DPS player: chưa có số measured — và tích `damage × rate` KHÔNG phải DPS** (đơn vị **damage·s**;
+  sửa 25/10 lần 3 theo review peer). Hai con số đã có: damage **4500** × interval **4,8** (index 0) —
+  dùng để **tính nhịp**, không dùng để suy damage/giây. Nhịp thật đã đủ luật (interval nhóm phát —
+  dual deadline, N extra ⇒ N+1 entry, không catch-up; modifier tech tier 0/3/5/8/10/12 %; demo
+  override 3,0/4,0; crit ⇒ ×2 — reports 79–84). **DPS measured**: receivers đã dịch xong (report 85 —
+  enemy/player receivers + death), peer đang nối producer/serialized joins + extra-life rewiring
+  (report 86). Bind combat: impl N → index N−1 — tàu **10001→index 2** · **10003→index 0**
+  (report 81/82; `id−10001` chỉ đúng save/load).
 
-⇒ Lập được **hai** bảng TTK: (a) theo **ID tàu** (bind combat xong — số mảng thật, DPS là proxy),
-(b) theo **giả thiết DPS** cho designer. Cả hai đều **ước lượng**; nhịp thật = interval nhóm phát
-(reports 79–83), mất máu theo công thức armor dưới đây.
+⇒ **KHÔNG lập bảng TTK theo tàu từ tích damage×rate** (lỗi đơn vị). Hai đường hợp lệ:
+(a) **newdesign** — HP thật (enemy, 150 cặp) + **DPS giả định của designer** (bảng §6.2);
+(b) **measured** — chờ peer xong producer/serialized + extra-life rồi replay đo. Mất máu theo
+công thức armor dưới đây.
 
 **Luật mất máu enemy** (report 81 §E peer, native tĩnh): `factor = 100/(100+armor)` nếu `armor ≥ 0`,
 còn `armor < 0` thì `factor = 2 − 100/(100−armor)` (armor −100 ⇒ **×1,5**); overkill clamp **0**;
@@ -375,7 +378,7 @@ còn `armor < 0` thì `factor = 2 − 100/(100−armor)` (armor −100 ⇒ **×1
 
 5 mốc HP phổ biến (nguồn: `15-enemy-hp.csv`, giá trị serialize):
 
-> DPS các cột là **tham số giả định** để suy TTK; DPS player thật **chưa chứng minh** (report 79).
+> DPS các cột là **giả định newdesign** (designer chọn) — **không** phải DPS measured của bản gốc; đừng dùng kết quả để khẳng định "khớp bản gốc".
 
 | HP mục tiêu | Nguồn giá trị | DPS 50k | DPS 100k | DPS 250k | DPS 500k | DPS 1M |
 |---|---:|---:|---:|---:|---:|---:|
@@ -417,18 +420,16 @@ Nguồn: `Boss_BodyPhysics.csv`. Cờ kèm theo: `isTrigger = True` 249/251,
 
 | `noDamage` | Số dòng | % |
 |---|---:|---:|
-| `True` | **189** | 23,6% |
-| `False` | 611 | 76,4% |
+| `True` | **241** | 24,6% |
+| `False` | **740** | 75,4% |
 
-Nguồn: `Enemy_Health.csv` (800 dòng).
+Nguồn: `Enemy_Health.csv` **981** snapshot (sửa 25/10 — cũ ghi 189/800 trên bản trích; report 81 peer).
 
-Phân bố theo root: `Wave_0005` (34), `Wave_0004` (30), `Wave_0003` (28) — 3 wave đầu chiếm
-**49%** số enemy `noDamage` ⇒ đây là **các part trang trí/cảnh** trong wave mẫu, không phải
-enemy chiến đấu. `W2-30053 Mau` (7) và `Boss-37006` (6) là các part thật sự bất tử.
-
-> Hệ quả thiết kế: `noDamage` **không phải cơ chế "invulnerable"** mà là cờ đánh dấu
-> **object không phải mục tiêu** (đèn, dây, cảnh nền). Khi clone: đừng làm enemy
-> "không thể giết" — người chơi sẽ ức chế.
+**Cờ hoạt động thế nào (native, report 85):** trong `TakeDamage`, `noDamage && !ignoreInvincible`
+⇒ **skip receiver ngay**; `ignoreInvincible = true` (đạn đặc biệt) ⇒ **bypass**. Nghĩa là `noDamage`
+**là** cơ chế bất tử với đạn thường — không kết luận "chỉ trang trí" từ phân bố root (đó là mô tả
+mẫu, không phải chứng cứ vai trò). Khi clone: dùng đúng cờ — đạn thường khôngDamage ăn không,
+đạn đặc biệt phải truyền `ignoreInvincible=true`.
 
 ---
 
@@ -487,18 +488,18 @@ vì không có giá trị gốc. Xem `BALANCE.md` §6.
 
 ---
 
-## 10. Còn thiếu / phải đoán
+## 10. Còn thiếu / phải đoán (⚠ bảng viết trước reports 79–86 — rows đã đóng được ghi đè inline; trạng thái hiện hành: §6.1 + `OPEN_ISSUES` D5)
 
 | # | Điều | Trạng thái | Ảnh hưởng |
 |---:|---|---|---|
-| 1 | **Giá trị** damage player | **có tên field** (`Player_Get_Datas.StartMainCannonDamages[]`), chưa có số | đọc `.cctor` bằng Ghidra là có TTK tuyệt đối |
-| 2 | **HP của player** | không có (`Player_Health.StartHealth` trong code) | không biết "sống được mấy phát" |
+| 1 | ~~Giá trị damage player~~ ✅ **ĐÃ CÓ** — 6 mảng decode (`datas/player_start_stats.json`); DPS measured đang nối (reports 85–86) | — | — |
+| 2 | ~~HP của player~~ ✅ **ĐÃ CÓ** — `StartHp` 2500 + công thức (`BALANCE` §0.6, mức A) | — | — |
 | 3 | 18/39 prefab boss không có súng trong dump + 336 súng root generic | **C** — thiếu `m_Parent` | bảng §5 chỉ phủ 26,6% súng |
 | 4 | `countShots = 0` nghĩa là 1 nòng hay "không giới hạn" | **C** — suy từ constructor default | DPS có thể lệch |
-| 5 | Công thức cộng dồn damage player (crit, device, tech) | **D** — thân hàm IL2CPP | `BALANCE.md` §5.1 |
+| 5 | ~~Công thức cộng dồn~~ 🟡 **một phần** — crit ×2 (report 80) · tech tier rate (report 82) · receivers + truncations (report 85); còn device/ability chi tiết | — | `BALANCE.md` §5.1 |
 | 6 | `BlT_*` (đạn) → `bltId` map tới sprite nào | **C** — cần `sprites.csv` + pathID | art |
-| 7 | Vì sao 189 object `noDamage` | **B** — đọc là "không phải mục tiêu" | tránh hiểu sai là armor |
+| 7 | ~~Vì sao 189 noDamage~~ ✅ **ĐÓNG (report 85)** — cờ skip-receiver thật, `ignoreInvincible` bypass | — | dùng đúng cờ khi clone |
 | 8 | `Bullet_SineWave` (2 dòng) dùng ở đâu | **D** — quá ít mẫu | |
-| 9 | Tốc độ bắn thực tế có bị `Time.timeScale` điều chỉnh | **D** | cảm giác |
+| 9 | ~~timeScale điều chỉnh tốc độ bắn~~ ✅ **ĐÓNG — BỎ feel (25/10)**: 0 site `timeScale` trong game (lần 9) | — | — |
 
 ---

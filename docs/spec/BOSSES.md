@@ -336,7 +336,7 @@ Nhưng **không cột nào cho HP của enemy thường**.
 > **Điều kiện lật ngược:** nếu `MapController` (396 instance, có `IndexWaveArena`, `allMoveLayers[i].speed`)
 > hoặc `Stage_Behaviour` (299, có `stageType`) có trường scale thì HP = base × scale và base nằm ở đó.
 
-Điều này **không** chặn việc dựng lại game — `BALANCE.md` đã có damage/rate người chơi (DPS = proxy — report 79) và HP boss. Nhưng nếu
+Điều này **không** chặn việc dựng lại game — `BALANCE.md` đã có damage + interval người chơi (tích damage×rate **không phải DPS** — reports 79/82, review peer) và HP boss. Nhưng nếu
 muốn **đúng số** cho enemy thường thì phải đọc **thân hàm**: `Enemy_Health` không có field HP, nên
 công thức nằm trong method `Init`/`SetUp` của nó — **dữ liệu method body chưa có** (xem `AI_FEASIBILITY.md` §1).
 

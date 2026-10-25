@@ -18,7 +18,7 @@
 > ② **`kHp[mode]` không tồn tại** — chế độ đổi composition + thưởng, không nhân HP; `pct` đủ **3/3**;
 > ③ **playback thật đã có** (phiên phone 23/10 trong repo) — "cần thiết bị" chỉ còn 2 tái đối chiếu;
 > ④ **feel BỎ** theo quyết định (game gốc không có, quá nhỏ);
-> ⑤ peer tới report **77 / 239 tests** (scene renderer + camera + SpriteMask; ortho 9,6 khớp mốc spawn);
+> ⑤ peer tới report **86 / 375 tests** (combat chain + receivers + extra-life lifecycle);
 > ⑥ tally **✅ 33 · ⚠ 14 · ❌ 1** (lần 11 kéo lại từ 31/16/1 — lô lần 9 bị mất) · claim **211/209 PASS**. Số dưới đây đã đo lại theo trạng thái này.
 >
 > **Cập nhật 24/10 — vòng 2:** sau khi giải script animation (`ANIMATION_SCRIPT.md`), hệ

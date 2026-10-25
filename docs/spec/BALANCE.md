@@ -114,10 +114,9 @@ Bằng chứng lệnh (địa chỉ thật):
 `Damager` chỉ có **2 field**: `float damage` + `Action<GameObject> killEvent` ⇒ **giáp phải được trừ
 bên trong `TakeDamage`**, không nằm ở `Damager`.
 
-> **Nhận định (mức B):** `damageThựcNhận = f(damager.damage, Armor, reduceDamageByDevice)` với
-> `f` nhiều khả năng là `damage × (1 − armor%)` hoặc `damage − Armor`.
-> **Điều kiện lật ngược:** `Armor` là `float` công khai nhưng **không có `[SerializeField]`** ⇒
-> gán lúc chạy; nếu giá trị quan sát được luôn < 1 thì nó là **phần trăm**, nếu > 100 thì là **số trừ**.
+> ~~**Nhận định (mức B):** ...~~ **SUPERSEDED 25/10 (report 81 §E + 85):** công thức thật đã đọc —
+> enemy: `factor = 100/(100+armor)` (armor<0 ⇒ `2−100/(100−armor)`); player: 2 truncations rồi
+> synchronous events 21/39 → HP re-read. `Armor` đúng là gán lúc chạy, **không per-prefab serialize**.
 
 ### 0.6.3 Còn thiếu **đúng một** giá trị: `StartHp` — và **lý do đã tìm ra**
 
@@ -256,6 +255,8 @@ store offset kiểm bằng asm: `0x38 / 0x78 / 0x80 / 0x88 / 0x1C8 / 0x308`.
   **⚠ DPS = damage × rate KHÔNG phải DPS chứng minh** (reports 79–83): rate = base × (1 − percent
   tech `GetTechStatLevel(1)` — tier **0/3/5/8/10/12 %**); là **interval nhóm phát** (dual deadline,
   N extra ⇒ N+1 entry, không catch-up); demo override 3,0/4,0; crit random ≤ critPercent ⇒ ×2.
+  Tích damage×rate có đơn vị **damage·s** — **không dùng xếp tàu / lập TTK** (review peer 25/10);
+  DPS measured: peer đã dịch receivers (report 85), đang nối producer/serialized + extra-life (86).
 - HP vẫn **không** có bảng theo tàu: `StartHp` là **một** float.
 ⇒ Nếu mỗi tàu có HP riêng, bảng đó **không** nằm ở ScriptableObject; phải là **mảng cứng trong
 code** hoặc gán ở chỗ khác.
@@ -705,10 +706,10 @@ nhân `copies` · median chỉ trên wave có HP > 0.
 **`armor` @`0x34`** ⇒ **enemy cũng có giáp**. ⇒ HP **không** nằm trong dữ liệu serialize; đó là lý do
 `StartHealthPoint` = 0 ở enemy thường.
 
-**Hệ quả cho cân bằng:** cột "HP = 0" trong bảng trên **không** có nghĩa "chết 1 phát"; nó có nghĩa
-**"HP do runtime cấp"** ⇒ mọi phép tính TTK dựa trên `enemy_hp.json` **chỉ đúng cho boss**.
-
-**Cách chốt (rất rẻ):** dump `Enemy_Health.asm.txt` — tìm 1 lệnh **ghi** vào `StartHealth`.
+**Hệ quả cho cân bằng:** cột "HP = 0" có nghĩa **"HP do runtime cấp"** — ~~và TTK từ `enemy_hp.json`
+chỉ đúng cho boss~~ **SUPERSEDED 25/10**: HP **150 cặp theo id** (`datas/enemy_hp_by_id.json`, WRH2)
+cho cả enemy thường; mất máu theo công thức report 81 §E. ~~**Cách chốt:** dump asm~~ — **đã chốt**,
+không cần dump.
 
 ### 0.6.13 Hằng số gốc **đã có** — `StartHp = 2500`
 

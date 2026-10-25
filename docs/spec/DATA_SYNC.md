@@ -2719,9 +2719,45 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   (`i % 2 == 1` ⇒ wait 0,2 ⇒ floor(N/2) wait, không phải N); ③ impl **18** `IESpawnHeart` = **toggle
   particle** `rateOverDistance` 2→0 (0,5 s/1,0 s) — **không** spawn projectile (câu hỏi "heart spawn
   loop" của §24.16 hết). Số wait = **không** tự thành cadence/hit/DPS.
-- Chi tiết dùng để implement: 10 = round theo rank (1/2/3), wait 0,25 kể cả round cuối · 11/13 =
-  `shotRate/number` clamp 0,05 (FMINNM) · 23/24 = `shotRate/childCount` đọc lại sau helper ·
-  6 = điều khiển đạn có sẵn (radius 10/20, speed 15/12) · clone (impl 9) stop→wait **0,35**→delay→
-  về owner→pool; pumpkin: deadline active **2**/charge **1**/duration **4** + callback→Hide.
+- Chi tiết dùng để implement: 10 = round theo rank (1/2/3), wait 0,25 kể cả round cuối · **13**
+  (ShotAllBarrels) = `shotRate/number` clamp 0,05 (FMINNM) — **11 thì KHÔNG**: descriptor rate =
+  f32(0,04), duration theo rank/deadline (sửa theo review peer 25/10) · 23/24 = `shotRate/childCount`
+  đọc lại sau helper ·
+  6 = điều khiển đạn có sẵn (radius 10/20, speed 15/12) · **đừng gộp hai chuỗi của impl 9** (review
+  peer): **Player9_Clone** StopAttack → cleanup wait **0,34** → pool; **projectile** 7/9 outbound
+  ≤0,1 → hold **0,35** → optional delay → return ≤0,5 → pool+ended · pumpkin: deadline active **2**/
+  charge **1**/duration **4** + callback→Hide.
 - **Việc kế tiếp của peer:** callback→damage request→HP re-read (không suy helper event = hit).
   Bên spec đã cập nhật: `SYSTEM_MANIFEST` (nhịp bắn) · `OPEN_ISSUES` D5 · mục này; ack qua PR12.
+
+### 24.18 Report 85 — dịch enemy + player receivers qua mutable-HP callbacks + death dispatch (peer `035a64f440`→`e84272e3a9`)
+
+- **44 receiver/helper walks · 3485 instructions**, raw `220fa2d53`, recovery SUCCESS; 48 checks mới,
+  full **375 PASS**. Đóng luôn việc "callback→damage→HP" còn treo ở D5.
+- **Enemy**: `CalculateDamage` chạy **cả hai callbacks** (`hitCallback` + `hitDamageCallback`) và
+  capture HP qua **ref**; controller **HP re-read** sau callback (loss ≠ raw damage — như §24.14).
+- **Player**: **2 truncations** (damage bị cắt về int?) rồi synchronous events **21/39** → HP re-read
+  qua extra-life/death.
+- **Death overrides đã phục hồi (đính chính các phỏng đoán cũ):** `Delayed` = **`WaitUntil(condition)`**,
+  **KHÔNG** phải delayTime 2; `MB` = **3× Wait(1)**, không có base Pool tail; **ability 32 `Destroyed`
+** issue **recursive damage requests**, **không dedup** receiver.
+- Bên spec cập nhật: `SYSTEM_MANIFEST` (Enemy row + row "Chết — hồi sinh") · `OPEN_ISSUES` D5 ·
+  COMBAT §6.4 (noDamage native rule) · mục này.
+
+### 24.19 Report 86 — extra-life/heal lifecycle + review 6 finding trên nhánh spec (peer `25734422b2`→`82f14784e5`)
+
+- **Peer review trực tiếp tip `b8f72a4127` của spec — 6 finding, đã sửa hết (commit này):**
+  ① DATA_SYNC §24.17 impl **11** không phải `shotRate/number` (chỉ 13) — descriptor 0,04 + duration
+  theo rank; ② tách **Player9_Clone** (0,34) khỏi **projectile 7/9** (0,35) — trước đây gộp nhầm;
+  ③ **bỏ TTK theo tích damage×rate** (đơn vị damage·s) — COMBAT §0/§6.1/§6.2, BALANCE §1.1b, MISSING,
+  ENEMY_HP_RUNTIME, BOSSES, COVERAGE_AUDIT, README; ④ COMBAT §6.4 **189/800 → 241/981** + native rule
+  `noDamage && !ignoreInvincible` skip / ignore bypass — bỏ kết luận "chỉ trang trí"; ⑤ đánh dấu
+  **superseded ngay tại đoạn**: COMBAT §10, BALANCE §0.6.2/§0.6.x, UNITY_RULES §12; ⑥ START_HERE
+  "tra là có hết/không test" → đúng mức **tra trước + scoped unknown không bịa + automated checks
+  bắt buộc** (metrics = gate, không phải approval) — đồng bộ DONE/MISSING/SYSTEM_MANIFEST/VISUAL_DESIGN.
+- **Report 86 (nội dung):** GOT `2ae8480` → RELA `2bc83d0` → **`OnExtralife`** chốt; `destroyShieldOneHit`
+  + noTouch wrapper chốt. **Heal lifecycle:** hồi **1 s** sau hết mạng, KHÔNG full ngay — normal:
+  resume timeScale **0,05** + `HealHp` **0,5**; PVP: `HealHp` **1** không WaitUntil; zone heal =
+  **1,235 % maxHP** sau wait 0,2. Raw `2738ad848`, recovery SUCCESS, 19 checks mới.
+- Peer đã tự cập nhật 3 cửa vào nhánh dữ liệu với định hướng (bản của họ), không chép "coverage đủ/
+  không test" thành APK fact — đúng hướng; khối "mục đích" (v2 anchors) **vẫn chờ commit** bên đó.
