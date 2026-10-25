@@ -1,0 +1,32 @@
+;;; cctor  private static void .cctor() { }
+    0x1264e44: str      x30, [sp, #-0x20]!
+    0x1264e48: stp      x20, x19, [sp, #0x10]
+    0x1264e4c: adrp     x19, #0x2ce1000
+    0x1264e50: adrp     x20, #0x2add000
+    0x1264e54: ldrb     w8, [x19, #0xca]
+    0x1264e58: ldr      x20, [x20, #0x958]
+    0x1264e5c: tbnz     w8, #0, #0x1264e74
+    0x1264e60: adrp     x0, #0x2add000
+    0x1264e64: ldr      x0, [x0, #0x958]
+    0x1264e68: bl       #0x110d028
+    0x1264e6c: mov      w8, #1
+    0x1264e70: strb     w8, [x19, #0xca]
+    0x1264e74: ldr      x0, [x20]
+    0x1264e78: bl       #0x110d240
+    0x1264e7c: mov      x1, xzr
+    0x1264e80: mov      x19, x0
+    0x1264e84: bl       #0x2143330
+    0x1264e88: ldr      x8, [x20]
+    0x1264e8c: ldr      x8, [x8, #0xb8]
+    0x1264e90: str      x19, [x8]
+    0x1264e94: ldp      x20, x19, [sp, #0x10]
+    0x1264e98: ldr      x30, [sp], #0x20
+    0x1264e9c: ret      
+
+;;; ctor  public void .ctor() { }
+    0x1264ea0: mov      x1, xzr
+    0x1264ea4: b        #0x2143330
+
+;;; <NoCards>b__178_1  internal void <NoCards>b__178_1() { }
+    0x1264ea8: ret      
+    0x1264eac: mov      x1, xzr

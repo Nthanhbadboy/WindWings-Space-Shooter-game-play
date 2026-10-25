@@ -1,0 +1,22 @@
+;;; ctor  public void .ctor() { }
+    0x12bba50: mov      x1, xzr
+    0x12bba54: b        #0x2143330
+
+;;; <IEGetTimeOnline>b__0  internal void <IEGetTimeOnline>b__0(DateTime time, bool success) { }
+    0x12bba58: str      x30, [sp, #-0x10]!
+    0x12bba5c: ldr      x8, [x0, #0x18]
+    0x12bba60: cbz      x8, #0x12bba88
+    0x12bba64: str      x1, [x8, #0x10]
+    0x12bba68: ldr      x8, [x0, #0x18]
+    0x12bba6c: cbz      x8, #0x12bba88
+    0x12bba70: and      w9, w2, #1
+    0x12bba74: mov      w10, #1
+    0x12bba78: strb     w9, [x8, #0x18]
+    0x12bba7c: strb     w10, [x0, #0x10]
+    0x12bba80: ldr      x30, [sp], #0x10
+    0x12bba84: ret      
+    0x12bba88: bl       #0x110d250
+
+;;; <IEGetTimeOnline>b__1  internal bool <IEGetTimeOnline>b__1() { }
+    0x12bba8c: ldrb     w0, [x0, #0x10]
+    0x12bba90: ret      

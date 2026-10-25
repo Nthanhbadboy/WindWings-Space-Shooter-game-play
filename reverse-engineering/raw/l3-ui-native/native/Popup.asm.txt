@@ -1,0 +1,66 @@
+;;; OnPressedButtonExit  public virtual void OnPressedButtonExit() { }
+    0x1340cfc: stp      x30, x21, [sp, #-0x20]!
+    0x1340d00: stp      x20, x19, [sp, #0x10]
+    0x1340d04: adrp     x21, #0x2ce1000
+    0x1340d08: adrp     x20, #0x2adb000
+    0x1340d0c: ldrb     w8, [x21, #0x6dd]
+    0x1340d10: ldr      x20, [x20, #0x220]
+    0x1340d14: mov      x19, x0
+    0x1340d18: tbnz     w8, #0, #0x1340d3c
+    0x1340d1c: adrp     x0, #0x2adb000
+    0x1340d20: ldr      x0, [x0, #0x220]
+    0x1340d24: bl       #0x110d028
+    0x1340d28: adrp     x0, #0x2adb000
+    0x1340d2c: ldr      x0, [x0, #0xc30]
+    0x1340d30: bl       #0x110d028
+    0x1340d34: mov      w8, #1
+    0x1340d38: strb     w8, [x21, #0x6dd]
+    0x1340d3c: ldr      x0, [x20]
+    0x1340d40: ldr      x20, [x19, #0x28]
+    0x1340d44: ldr      w8, [x0, #0xe0]
+    0x1340d48: cbnz     w8, #0x1340d50
+    0x1340d4c: bl       #0x110d12c
+    0x1340d50: mov      x0, x20
+    0x1340d54: mov      x1, xzr
+    0x1340d58: mov      x2, xzr
+    0x1340d5c: bl       #0x27815fc
+    0x1340d60: tbz      w0, #0, #0x1340d88
+    0x1340d64: ldr      x0, [x19, #0x28]
+    0x1340d68: cbz      x0, #0x1340da0
+    0x1340d6c: adrp     x8, #0x2adb000
+    0x1340d70: ldr      x8, [x8, #0xc30]
+    0x1340d74: ldp      x20, x19, [sp, #0x10]
+    0x1340d78: mov      x2, xzr
+    0x1340d7c: ldr      x1, [x8]
+    0x1340d80: ldp      x30, x21, [sp], #0x20
+    0x1340d84: b        #0x27583b0
+    0x1340d88: ldr      x8, [x19]
+    0x1340d8c: mov      x0, x19
+    0x1340d90: ldp      x20, x19, [sp, #0x10]
+    0x1340d94: ldp      x2, x1, [x8, #0x188]
+    0x1340d98: ldp      x30, x21, [sp], #0x20
+    0x1340d9c: br       x2
+    0x1340da0: bl       #0x110d250
+
+;;; OffBoard  protected virtual void OffBoard() { }
+    0x1340da4: stp      x30, x19, [sp, #-0x10]!
+    0x1340da8: ldr      x8, [x0, #0x20]
+    0x1340dac: mov      x19, x0
+    0x1340db0: cbz      x8, #0x1340dc4
+    0x1340db4: ldr      x9, [x8, #0x18]
+    0x1340db8: ldr      x0, [x8, #0x40]
+    0x1340dbc: ldr      x1, [x8, #0x28]
+    0x1340dc0: blr      x9
+    0x1340dc4: mov      x0, x19
+    0x1340dc8: mov      x1, xzr
+    0x1340dcc: bl       #0x277f188
+    0x1340dd0: cbz      x0, #0x1340de4
+    0x1340dd4: mov      w1, wzr
+    0x1340dd8: mov      x2, xzr
+    0x1340ddc: ldp      x30, x19, [sp], #0x10
+    0x1340de0: b        #0x2781804
+    0x1340de4: bl       #0x110d250
+
+;;; ctor  public void .ctor() { }
+    0x1340de8: mov      x1, xzr
+    0x1340dec: b        #0x2782ba0

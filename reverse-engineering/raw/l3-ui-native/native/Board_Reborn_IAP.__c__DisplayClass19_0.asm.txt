@@ -1,0 +1,51 @@
+;;; ctor  public void .ctor() { }
+    0x133c764: mov      x1, xzr
+    0x133c768: b        #0x2143330
+
+;;; <OnPurchased>b__0  internal void <OnPurchased>b__0() { }
+    0x133caf4: sub      sp, sp, #0x30
+    0x133caf8: stp      x30, x21, [sp, #0x10]
+    0x133cafc: stp      x20, x19, [sp, #0x20]
+    0x133cb00: adrp     x20, #0x2ce1000
+    0x133cb04: adrp     x21, #0x2adb000
+    0x133cb08: ldrb     w8, [x20, #0x6b5]
+    0x133cb0c: ldr      x21, [x21, #0xaf8]
+    0x133cb10: mov      x19, x0
+    0x133cb14: tbnz     w8, #0, #0x133cb38
+    0x133cb18: adrp     x0, #0x2adb000
+    0x133cb1c: ldr      x0, [x0, #0xaf8]
+    0x133cb20: bl       #0x110d028
+    0x133cb24: adrp     x0, #0x2add000
+    0x133cb28: ldr      x0, [x0, #0x1d0]
+    0x133cb2c: bl       #0x110d028
+    0x133cb30: mov      w8, #1
+    0x133cb34: strb     w8, [x20, #0x6b5]
+    0x133cb38: ldr      x0, [x21]
+    0x133cb3c: ldr      w8, [x0, #0xe0]
+    0x133cb40: cbnz     w8, #0x133cb48
+    0x133cb44: bl       #0x110d12c
+    0x133cb48: mov      x0, xzr
+    0x133cb4c: bl       #0x13266fc
+    0x133cb50: tbz      w0, #0, #0x133cb84
+    0x133cb54: adrp     x8, #0x2add000
+    0x133cb58: ldr      x8, [x8, #0x1d0]
+    0x133cb5c: ldr      x20, [x19, #0x10]
+    0x133cb60: add      x1, sp, #0xc
+    0x133cb64: str      wzr, [sp, #0xc]
+    0x133cb68: ldr      x0, [x8]
+    0x133cb6c: bl       #0x110d134
+    0x133cb70: mov      x2, x0
+    0x133cb74: mov      w1, #0x3c
+    0x133cb78: mov      x0, x20
+    0x133cb7c: mov      x3, xzr
+    0x133cb80: bl       #0x1434cb4
+    0x133cb84: ldrb     w8, [x19, #0x18]
+    0x133cb88: cbz      w8, #0x133cb98
+    0x133cb8c: ldr      x0, [x19, #0x10]
+    0x133cb90: cbz      x0, #0x133cba8
+    0x133cb94: bl       #0x133bb84
+    0x133cb98: ldp      x20, x19, [sp, #0x20]
+    0x133cb9c: ldp      x30, x21, [sp, #0x10]
+    0x133cba0: add      sp, sp, #0x30
+    0x133cba4: ret      
+    0x133cba8: bl       #0x110d250

@@ -1,0 +1,40 @@
+;;; ctor  public void .ctor() { }
+    0x1276e7c: mov      x1, xzr
+    0x1276e80: b        #0x2143330
+
+;;; <Purchase>b__0  internal void <Purchase>b__0(string id, string receipt) { }
+    0x1276e84: stp      x30, x21, [sp, #-0x20]!
+    0x1276e88: stp      x20, x19, [sp, #0x10]
+    0x1276e8c: mov      x19, x0
+    0x1276e90: ldr      x0, [x0, #0x10]
+    0x1276e94: cbz      x0, #0x1276f0c
+    0x1276e98: mov      x20, x1
+    0x1276e9c: ldr      x1, [x0, #0x1e8]
+    0x1276ea0: cbz      x1, #0x1276eac
+    0x1276ea4: mov      x2, xzr
+    0x1276ea8: bl       #0x27829d8
+    0x1276eac: ldr      x21, [x19, #0x18]
+    0x1276eb0: mov      x0, x20
+    0x1276eb4: mov      x1, xzr
+    0x1276eb8: bl       #0x1fed004
+    0x1276ebc: cbz      x21, #0x1276f0c
+    0x1276ec0: ldr      x8, [x21, #0x40]
+    0x1276ec4: ldr      x9, [x21, #0x18]
+    0x1276ec8: ldr      x2, [x21, #0x28]
+    0x1276ecc: mvn      w10, w0
+    0x1276ed0: and      w1, w10, #1
+    0x1276ed4: mov      x0, x8
+    0x1276ed8: blr      x9
+    0x1276edc: ldr      x8, [x19, #0x10]
+    0x1276ee0: cbz      x8, #0x1276f0c
+    0x1276ee4: ldr      x0, [x8, #0x1d8]
+    0x1276ee8: cbz      x0, #0x1276f0c
+    0x1276eec: mov      x1, xzr
+    0x1276ef0: bl       #0x2781bc0
+    0x1276ef4: cbz      x0, #0x1276f0c
+    0x1276ef8: ldp      x20, x19, [sp, #0x10]
+    0x1276efc: mov      w1, wzr
+    0x1276f00: mov      x2, xzr
+    0x1276f04: ldp      x30, x21, [sp], #0x20
+    0x1276f08: b        #0x2781804
+    0x1276f0c: bl       #0x110d250
