@@ -337,3 +337,25 @@ add/remove và missionthresholds. Raw mới nhiều spawn implementations sẵn 
   source hashes for gzip use DECOMPRESSED bytes (timestamps are not game data).
   72tests pass. Next: actual Enemy_Movement completion/counter reachability,
   Continue visibility and Animator graph. Premium still deferred.
+
+## Review nhánh spec theo yêu cầu người dùng — snapshot25c367aca
+
+Đọc **docs/HANDOFF_SPEC_REVIEW_25c367aca.md** trước khi viết tiếp design.
+Pin peer25c367aca99f06f14df546d2f30e60b427827157, đối chiếu data61fce8ae7.
+Raw `peer-review/spec-25c367aca.json.gz` giữ9file/code/CSV + classifier experiment;
+collector `tools/verify/peer_spec_review.py`,76tests pass.
+
+- R1/P0: MISSIONS_STARS sai fallbackmode, thiếu arrays đã resolve; getter stars
+  lưu bị nghi là tính kills. Dùng raw55–58, scope normal LevelCurrent0.
+- R2/P0: ENCOUNTERS còn khuyên divide2/dedup theo tên. Rút lời khuyên; dùng
+  container key/file/root pathID, không gộp normal với Chapter2.
+- R3/P1:116 atlas name-unmatched không chứng minh116 sheet chưa tách; suffix
+ 5x2/2x3 không chứng minh crop16ô chắc chắn. T9 rect/atlas là gap THẬT, data nhận.
+- R4/P1: CodaR22 bịR14 bắt trước (CSV4rowui/A); XVideoR23 bịR18 bắt trước;
+ 643 retained labels được cấpA vô điều kiện, không có provenance audit mới.
+- R5/P1: readiness D3 vừapartial vừaclosed ở hai đoạn cùngfile.
+- R6/P1: parser exception→SKIP/exit0; AB1 không đo67rect, AB4 chỉđếm CSV nên
+  PASS không chứng minh semantic mapping. Thêm strict-required, không bỏref-first.
+
+Nhánh spec sửa trên nhánh của họ; không merge/push thay nhánh spec. Mọi kết
+luận vẫn provisional. Premium deferred; không dùng screenshot làm nguồn số.
