@@ -256,3 +256,17 @@ add/remove và missionthresholds. Raw mới nhiều spawn implementations sẵn 
   generated typetree m_Script header; class exporter đọc parsed Mono head.
 - Premium tiếp tục deferred. Agent đang tự nối GP_Datas event78/79 và
   Enemy_Destroy/pooling với mission thresholds, không cần chờ screenshot.
+
+## Agent hiện tại — report55, pool-list và mission arrays
+
+- Đã nối GP_Datas.ResetAlls: event78→Contains/Add listActiveEnemies+70;
+  event79→Contains/Remove; event19→death callback có killCount+1c increment.
+- Base Enemy_Controller movement-complete→DestroyType2→Enemy_Destroy.Pool→79:
+  active-list rỗng không chứng minh diệt hết. Virtual override vẫn chưa join.
+- Decode3 normal mission arrays bằng relocation→field-default12bytes, SHA256
+  khớp hash field: mode0=.20/.45/.80;1=.35/.60/.98;other=.50/.80/1.
+  Caller Stage_Datas.ModeCurrent+34, result−1..2, truncate float32 product.
+- Raw `enemy-exit-missions.json.gz`,15methods12checks; toàn bộ52 tests pass.
+- Next tự đào: Stage_Get_Datas.GetCountEnemies12c5f60 load resource/Call_Data,
+  skip marker5, IPooling-ID filter; nối store GP_Datas+58 + filter membership
+  và concrete Enemy_Destroy subclasses. Không dùng274/250 slots làm denominator.
