@@ -1101,7 +1101,7 @@ claim("I3", READY, "11.089 dòng cấu hình · rate = 0 : 2.366", 2366,
       "sửa 2.373 -> 2.371 trong DESIGN_QUESTIONS.md")
 
 claim("I4", READY, "**250 map**, nhưng chỉ **7** ghép chắc", (250, 7), map_candidates,
-      "A6: 243 map còn lại ghép theo thứ tự blob, chưa xác thực")
+      "A6: (250, 7) là trạng thái TRƯỚC bind — lần 11 (25/10) bind cấu trúc xong, peer ghép entry")
 
 
 # ── J. script animation (enemy + boss) ─────────────────────────────────
@@ -2021,8 +2021,8 @@ def design_question_tally():
 
 
 claim("S2", "docs/spec/DESIGN_QUESTIONS.md",
-      "**Tổng: 48 câu — ✅ 29 · ⚠ 15 · ❌ 4**",
-      (48, 29, 15, 4), design_question_tally,
+      "**Tổng: 48 câu — ✅ 33 · ⚠ 14 · ❌ 1**",
+      (48, 33, 14, 1), design_question_tally,
       "đếm trong bảng phải khớp dòng tổng; đổi 1 hàng là FAIL ngay")
 
 claim("S1", "docs/spec/ANIMATION_SCRIPT.md",
@@ -2563,9 +2563,9 @@ claim("AA1", READINESS,
       "đếm trạng thái từng vùng trong COVERAGE_AUDIT §1, không chép tay")
 
 claim("AA2", READINESS,
-      "| **9 câu blocker** (§2 ở trên) | 9 | **1** (`StartHp`) | **5** | **3**",
-      (9, 1, 5, 3), blocker_tally,
-      "đếm trạng thái 9 blocker trong chính bảng §2")
+      "| **9 câu blocker** (§2 ở trên) | 9 | **4** ✅",
+      (9, 4, 4, 1), blocker_tally,
+      "đếm trạng thái 9 blocker trong chính bảng §2 (25/10: A6/B1/feel-bỏ ✅ · B3 🟡 · còn A5 🔴)")
 
 # ── AB. bộ ảnh gốc: chưa phân loại / chưa tách (ASSET_TRIAGE.md) ──────
 SPRITES_INDEX = "docs/assets/sprites-index.csv"

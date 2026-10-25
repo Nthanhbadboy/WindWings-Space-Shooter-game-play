@@ -13,7 +13,7 @@
 
 ## 0. Trả lời ngắn
 
-**Đủ để bắt đầu dựng, thiếu 6 chỗ — và 4/6 không chặn.**
+**Đủ để bắt đầu dựng, thiếu 6 chỗ — 0/6 chặn số (2 chỗ "chặn" cũ ĐÃ ĐÓNG 25/10).**
 
 | | Số | Ghi chú |
 |---|---:|---|
@@ -21,10 +21,10 @@
 | Vùng **đủ** (A/B, dựng được ngay) | **10** | vòng lặp · player · súng · enemy · boss · wave · map · độ khó · kinh tế · UI |
 | Vùng **thiếu một phần** | **3** | animation điều kiện · FX · âm thanh trigger |
 | Vùng **thiếu** | **1** | cảm giác (feel) — phải chạy máy |
-| Việc còn thiếu **chặn** dựng | **2** | map→wave numbering · HP runtime theo chế độ |
+| Việc còn thiếu **chặn** dựng | **0** | ~~map→wave numbering · HP runtime theo chế độ~~ **ĐÃ ĐÓNG 25/10** — sót 2 tái đối chiếu runtime (không chặn) |
 
-Nói cách khác: **dựng được bản chơi thử ngay hôm nay**; hai chỗ chặn là **con số hiệu chỉnh**, không
-phải **cơ chế**.
+Nói cách khác: **dựng được bản chơi thử ngay hôm nay**; ~~hai chỗ chặn~~ hai chỗ đó **đã đóng 25/10** —
+cái còn thiếu là **con số hiệu chỉnh**, không phải **cơ chế**.
 
 ---
 
@@ -57,8 +57,8 @@ phải **cơ chế**.
 
 | # | Thiếu | Chặn? | Chi phí | Ai làm |
 |---:|---|---|---|---|
-| 1 | **Map → wave**: `maps.json` có **250** map nhưng **đánh số** và **ghép wave** chỉ chắc **7** | **CÓ** (số màn, độ dài phiên) | trung bình | **nhánh dữ liệu** (T6 mới, §2.1) |
-| 2 | **HP runtime theo chế độ** (B8) + bảng `Enemy_Get_Datas` | **CÓ** (cân bằng) | thấp | nhánh dữ liệu (đã có 150 entry *tạm thời*) |
+| 1 | ~~**Map → wave**: chỉ chắc 7~~ | ✅ **ĐÃ ĐÓNG (25/10)** — bind cấu trúc xong (**11 bảng / 614 mảng**, `DIFFICULTY_MODES` §7); peer ghép entry (`map_table_segments.json` + `maps.json`) | — | Xong |
+| 2 | ~~**HP runtime theo chế độ** (B8)~~ | ✅ **ĐÃ ĐÓNG (25/10)** — `kHp` **không tồn tại** (`DIFFICULTY_MODES` §3–5); HP theo id **150 cặp** (claim **WRH2**) | — | Xong |
 | 3 | **Hành vi 12 handler** `*_AnimationEvents` (T2) | không | thấp | nhánh dữ liệu |
 | 4 | **Điều kiện `Animator`** của enemy (T4) | không | trung bình | nhánh dữ liệu |
 | 5 | **Trigger âm thanh**: 92 id ↔ sự kiện trong code | không | trung bình | nhánh dữ liệu |
@@ -123,13 +123,14 @@ phải nói rõ **file nào**; muốn nói "bao nhiêu px²" thì chỉ dùng `s
 nguồn dữ liệu đếm được, **10** vùng đã A/B (14 vùng trong phạm vi; feel ⛔ **ngoài phạm vi**), và **6 chỗ thiếu** đều đã có người nhận (5 giao nhánh dữ
 liệu qua T2/T4/T5/T6 + âm thanh trigger; 1 để sau).
 
-Hai chỗ **chặn dựng** cần chốt trước khi khoá bảng cân bằng:
+~~Hai chỗ **chặn dựng** cần chốt trước khi khoá bảng cân bằng~~ — **ĐÃ ĐÓNG (25/10)**:
 
-1. **map → wave** (T6) — quyết định **số màn** và **độ dài phiên**.
-2. **HP runtime theo chế độ** (B8) — quyết định **cảm giác khó**, dù L1 cho phép tự chọn số.
+1. ~~**map → wave** (T6)~~ ✅ — bind cấu trúc xong (11 bảng / 614 mảng, `DIFFICULTY_MODES` §7); peer ghép entry.
+2. ~~**HP runtime theo chế độ** (B8)~~ ✅ — `kHp` **không tồn tại**; HP theo id **150 cặp** (claim **WRH2**).
 
-Cả hai đều là **việc của nhánh dữ liệu**, không cần thiết bị. Việc **duy nhất** cần thiết bị vẫn là
-**feel** (D1–D4), và nó chỉ cần cho L2/L3.
+Sót **2 phép tái đối chiếu runtime** (không chặn, cần lần chạy mới): Map content `&arr=256&depth=2` ·
+device 12↔10 (`CROSSCHECK`). ~~Feel (D1–D4) cần thiết bị~~ — **ĐÃ BỎ** theo quyết định 25/10:
+game mới không thêm feel.
 
 **Đã hết số ước lượng.** Bản trước §4 của `ASSETS.md` ghi "12 page = 14,7 MB, giảm 53 %" mà **không có
 phép đo nào phía sau**; nay đo bằng kích thước thật trong `sprites.csv`: 12 page chứa **18,87 M px² =

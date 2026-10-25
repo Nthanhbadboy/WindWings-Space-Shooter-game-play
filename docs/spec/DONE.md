@@ -42,7 +42,7 @@
 > `0x1582f5c` (1 method asm) · kiểm runtime `rate` (cần thiết bị). Cập nhật thêm report **75**
 > (mesh 2185/27.072 vertex, không quad/PPU mặc định, không clamp) — `DATA_SYNC` §24.7–24.8.
 >
-> **Sửa lại (lần 8 — 25/10, sau khi bị nhắc "cả 4 đều đã có"):** rút lại "còn thiếu thật sự (4)" của
+> **Sửa lại (lần 8 — 25/10, sau khi bị nhắc "cả 4 đều đã có"):** ⚠ *khối này ĐÃ RÚT ở lần 9 (ngay dưới) — đọc lần 9 trước.* Rút lại "còn thiếu thật sự (4)" của
 > lần 7 — **cả 4 đều đã có theo dạng khác**: ① `kHp[mode]` **không tồn tại** như hệ số (chế độ đổi
 > composition + thưởng; `DIFFICULTY_MODES` §3–5); ② `missionKillPercent` là **một** `float[3]` theo
 > mission index — đủ **3/3**, "3×3 còn 6" là ảo đơn vị; ③ `StartHpPoint` ← dict **đã bind theo id**
@@ -51,7 +51,11 @@
 > `COMBAT` §6.1 · `DESIGN_QUESTIONS` · `ENEMY_HP_RUNTIME` §6 · `START_HERE` số 7 · `WHERE_TO_LOOK` ×2 ·
 > `EXTERNAL_REFS` §7 · `UNITY_RULES` · `DATA_SYNC` §24.8 · `BALANCE` §6.0a.
 >
-> **Sửa lại (lần 9 — 25/10, chủ dự án xác nhận):** (1) **playback thật ĐÃ LÀM** — phiên phone
+> **Sửa lại (lần 9 — 25/10, chủ dự án xác nhận):** ⚠ *lô tài liệu của lần này
+> (`DESIGN_QUESTIONS` · `OPEN_ISSUES` D1 · `MISSING` §3/§4 · `DIFFICULTY` §5.5 · `UNITY_RULES` #7)
+> KHÔNG vào tree — script abort, chỉ DONE + README kịp ghi; "tally ✅ 31 · ⚠ 16 · ❌ 1" dưới đây là
+> số định, lần 11 kéo lại với tally thật **33/14/1** (E2 và E3 là 2 dòng riêng, đều ĐÓNG-BỎ).*
+> (1) **playback thật ĐÃ LÀM** — phiên phone
 > 23/10 nằm sẵn trong repo (`ramus/2026-10-23-phone/`): bridge 8/9 endpoint, freeze/slow-mo,
 > statics khi đang chơi, 7 lần chụp live với instance fields (`killCount` **276** · `coinCount`
 > **540**), HP trong game khớp **2500** ⇒ mọi mục "cần thiết bị" chuyển thành "đọc JSON có sẵn";
@@ -68,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 11 — 25/10, audit "giao thiết kế được chưa" + cứu lô lần 9):** audit 4 tài liệu
+> điểm vào (`START_HERE` → `MISSING` → `DESIGN_READINESS` → `COVERAGE_AUDIT`) bắt stale: tally cũ
+> 29/15/4 + claim "151/149" (thật **211 claim · 209 PASS · 2 SKIP**), "2 chặn map→wave + HP runtime"
+> (**ĐÃ ĐÓNG** — bind xong + `kHp` không tồn tại), L3 ghi "BỎ" (sửa lại **HOÃN — đích cuối, không
+> bỏ**), UI-art "chưa kéo về" (stale — pack v2 report 70), MISSING row 11 audio (**15 luật** trong
+> `datas/audio_rules.json`, report 67), START_HERE bẫy 17→**21**. Cùng lúc phát hiện lô lần 9 mất
+> (xem khối lần 9) — kéo lại hết: `DESIGN_QUESTIONS` A6/B1 ✅ · C4 ⚠ · E2/E3 ✅ ĐÓNG-BỎ (tally
+> **33/14/1**), `OPEN_ISSUES` D1 BỎ, `MISSING` §3/§4, `COVERAGE_AUDIT` §0/§2/§5. **Kết quả audit:
+> L1 GIAO ĐƯỢC** — 0 chặn số; thiếu thật = 2 tái đối chiếu runtime + playtest người thật (sau L2).
+> verify **209** PASS · 0 FAIL · 2 SKIP · unittest 45 OK.
+>
 > **Sửa lại (lần 3):** pipeline vòng 3 (nhánh `ef6b75ef`, commit `61d5385`) đã resolve
 > **tên enemy trong wave** — **22.451** entry, **109** prefab, **0** `"?"`. Đây là mục
 > tôi từng ghi là "chưa biết". Số mới ở `ENCOUNTERS.md` §2.6.

@@ -376,7 +376,7 @@ dòng, cùng một `PathID` có thể trỏ hai object khác nhau ở hai file k
 | 4 | Export **117 `SkeletonAnimation`** (`skeletonDataAsset` PPtr) | **B** | 1 lần chạy | đóng `§7 #9` (rig nào của prefab nào) |
 | 5 | Re-export `animator_map` **kèm `m_FileID`** | **C** | rất rẻ | loại rủi ro **3,0 %** ở §9 |
 | 6 | Đọc `Enemy_Health.Init` (asm) xem `armor` **có được gán** không | **B** | 1 method | chốt hẳn "enemy có giáp" — hiện chỉ biết **không per-prefab** |
-| 7 | **Đo `kHp` / `pct` trong game** | **A** | 3 giá trị UI + số phát bắn | đóng hai ẩn số cuối; **không có đường tĩnh nào rẻ hơn** |
+| 7 | ~~**Đo `kHp` / `pct` trong game**~~ → **KHÔNG cần (25/10)** | **A** | — | `pct` đã decode **[0.2/0.6/0.98]** · `kHp` không tồn tại (`DIFFICULTY_MODES` §3–5); playback mẫu đã có (phiên 23/10) |
 
 > **Tổng kết vòng này:** 6 mục **đóng** bằng luật engine (`C3` · `C6` · `C4` · appear · armor ·
 > flipbook), 4 mục **hạ mức** (`C1` · `C2` · keyframe · `§7 #9`), 1 mục **bị loại khỏi hướng tìm**

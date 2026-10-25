@@ -52,7 +52,7 @@
 | C6 | ~~`Enemy_Physics.allColliders = []`~~ ✅ **ĐÓNG** — `autoCacheColliders = false` **981/981** + list rỗng **981/981** | **field chết** | **A** | enemy thường **không** damage va chạm — `UNITY_RULES` §3 |
 | C7 | **45 root prefab mã `900xx`** ngoài roster | **chưa lấy** | C | nội dung dự phòng |
 | C8 | `Boss_BodyPhysics` 251 instance | **đã có** | B | chỉ boss có damage va chạm |
-| D1 | Feel / aim assist / input latency | **cần chạy game** | D | phải tự thiết kế |
+| D1 | ~~Feel / aim assist / input latency~~ **BỎ (quyết định 25/10)** | **đã quyết** | — | game mới không thêm feel — game gốc 0 site `timeScale`/`aim` trên mẫu 139 asm (`AF2`/`AF3`) |
 | D2 | Thứ tự resolve stat lúc runtime | **cần chạy game** | B | đã có mô hình, chưa xác nhận |
 | D3 | Tỉ lệ rơi item trong màn | **cần chạy game** | D | phải tự thiết kế |
 | D4 | % giảm damage thực tế của giáp/device | **cần chạy game** | D | phải tự thiết kế |
@@ -383,14 +383,17 @@ kiểm từng id** — nhưng **không còn là ẩn số về cơ chế**.
 
 ---
 
-## 5. Nhóm D — cần **chạy game** mới chốt
+## 5. Nhóm D — cần **chạy game** mới chốt (playback đã có sẵn — phiên 23/10 trong repo)
 
 | # | Vấn đề | Đã biết | Phải tự quyết |
 |---|---|---|---|
-| D1 | Feel: aim assist, gia tốc, input latency | không có trong dữ liệu tĩnh | chọn "arcade mượt": aim assist ±12°, drag 0,12 s |
+| D1 | ~~Feel: aim assist, gia tốc, input latency~~ | **BỎ (quyết định 25/10)** — game mới không thêm | — |
 | D2 | Thứ tự resolve stat | mô hình **B**: `save → device(tàu) → tech → ability → StartHealth → CurrentHealth`, chốt **1 lần** trước spawn (`BALANCE` §0.6.8) | giữ đúng thứ tự này |
 | D3 | Tỉ lệ rơi item | không có; item hồi máu gọi `GetStartHp()` (A4) | tự đặt: 1 item/45 s hoặc theo wave |
 | D4 | % giảm damage của `Armor` / `reduceDamageByDevice` | có **tên field**, chưa có hệ số | tự đặt: giáp giảm 20–40%, trần 75% |
+
+> Playback thật **đã có sẵn trong repo** (phiên phone 23/10 — `ramus/2026-10-23-phone/`): D2/D4
+> đối chiếu thêm được bằng dump JSON của phiên khi cần — không cần thiết bị mới.
 
 ---
 

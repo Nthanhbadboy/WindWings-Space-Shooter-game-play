@@ -14,7 +14,7 @@
 | ⚠ | có **một phần** — có số nhưng thiếu điều kiện hoặc thiếu vế còn lại |
 | ❌ | **chưa trả lời được** bằng dữ liệu hiện có |
 
-**Tổng: 48 câu — ✅ 29 · ⚠ 15 · ❌ 4** (cập nhật **25/10**, hạ mức câu 4/D3 theo review R1; trước đó ✅ 30 · ⚠ 14 · ❌ 4).
+**Tổng: 48 câu — ✅ 33 · ⚠ 14 · ❌ 1** (cập nhật **25/10 lần 2**: A6/B1 ✅ bind xong · C4 ⚠ có mẫu runtime · E2/E3 ✅ ĐÓNG-BỎ feel; trước đó 29/15/4).
 Bốn câu còn ❌: **A5 · A6 · B1 · C4**; ba câu vừa lên ⚠ là **E2 · E3 · A7**, một câu vừa đóng là **D3**.
 Cộng **B3** (⚠) ⇒ **5 hàng blocker** trong 9 hàng ban đầu.
 
@@ -33,7 +33,7 @@ Cộng **B3** (⚠) ⇒ **5 hàng blocker** trong 9 hàng ban đầu.
 | A3 | Game có bao nhiêu màn? | ✅ | **299 stage / 2 chapter** — `Stage_Normal` **199** · `Stage_Combat` **49** · `Stage_MiniBoss` **25** · `Stage_Boss` **26** (`Stage_Behaviour.csv`) |
 | A4 | Bao lâu gặp boss một lần? | ✅ | **45 wave boss / 282 = 1 mỗi 6,3 wave**; mỗi wave boss = **2 boss + 2 turret + 6,8 `CB-30015`** (`ENCOUNTERS` §3.6) |
 | A5 | Một phiên chơi dài bao lâu? | ❌ | cần biết **stage ↔ wave** (A6) và luật continue |
-| A6 | Một stage = mấy wave? | ❌ | **299 stage** vs **281 wave**. `Stage_Behaviour` không có field `wave`, **nhưng** đã tìm ra đường nối: **`Map_Get_Datas.GetListWaves(int mapIndex)` → `int[]`** (`DATA_SYNC` §7.26 e). Giá trị còn thiếu vì `.cctor` chưa export |
+| A6 | Một stage = mấy wave? | ✅ | **bind xong (25/10)** — **11 bảng / 614 mảng** (`DIFFICULTY_MODES` §7): 320×len3 ↔ 3 mode · 118×len2 = stage→boss (giải thích 299 stage vs 281 wave) · 104×len7 ↔ 7 `PlayMode`; `GetListWaves(mapIndex)` đọc mảng len-3; peer ghép entry (`map_table_segments.json` + `maps.json`) |
 | A7 | Trên màn hình có bao nhiêu địch cùng lúc? | ⚠ | **CẬP NHẬT 24/10:** số quân mỗi spawner = **độ dài `listPrefabEnemies`** (`number = 0` ở **1.200/1.200** dòng `Call_Data`), dài nhất **30** quân khi `rate = 0`; `rate = 0` nay nghiêng **B** về "spawn cả loạt". Vẫn cần mô phỏng timeline để ra **địch/giây** |
 | A8 | Địch bay nhanh cỡ nào? | ✅ | `speed` median **1,5** · bay vào max **30,0** · `BLT` speed median **8,0** max 23 (`BALANCE` §5) |
 
@@ -48,7 +48,7 @@ Cộng **B3** (⚠) ⇒ **5 hàng blocker** trong 9 hàng ban đầu.
 
 | # | Câu hỏi | Trạng thái | Số / nguồn |
 |---:|---|---|---|
-| B1 | HP của enemy thường? | ❌ | **231/236 wave campaign có HP = 0**; toàn bộ 2.440.000 nằm ở `Wave_0136` ⇒ HP do công thức runtime (`ENCOUNTERS` §3.3) |
+| B1 | HP của enemy thường? | ✅ | **150 cặp id → HP** (`datas/enemy_hp_by_id.json`, claim **WRH2**; `CB-30003` = 650); dict dựng trong `.cctor`, 0 vòng lặp (claim **IAB1**); wave HP = 0 ⇒ lấy theo id — `kHp[mode]` **không tồn tại** |
 | B2 | HP của người chơi? | ✅ | **`HPmax = 2500 × (1 + 0,18×TechStatPoints(0) + abi7×GetNumberAbility(7))`** (mức **A**, bản `6109008c`). `str d0,[x8,#0x68]` ghi **cặp** {**0,18** @`0x68`; **2500,0** @`0x6C`}. ✅ **ĐÍNH CHÍNH:** `stepCommon` = **0,18** (0,168 là `stepLevel`). HP gán trong **`Player_Health.Start()`** → `GetStartHp` → `StartHealth@0x0`/`CurrentHealth@0x4`; `ResetStaticVariables()` chỉ **chép** (hồi sinh không tính lại). Giáp **tách riêng** (`Armor@0x20`, hyperbolic) — không cộng HP, nhưng device tăng **HP hiệu dụng** qua `reduceDamageByDevice` + hồi máu. Bảng: 0→**2.500** · 10→7.000 · 30→16.000 · 60→29.500 — `BALANCE` §0.6.13–0.6.15 |
 | B3 | Damage người chơi tăng theo cấp thế nào? | ⚠ | `Player_Get_Datas.stepLevel`: **4 ngưỡng cấp 30 / 58 / 118 / 248**, hằng số **0,168 · 1,0 · 1,05 · 1,15** (0,1764 = 0,168×1,05; 0,1932 = 0,168×1,15); `GetMainCannonDamage` = `base × (1 + k)` với k = 0,168 · 0,1764 · 0,1932 |
 | B4 | Giết một enemy mất bao lâu (TTK)? | ⚠ | có **DPS median 454,5** (`COMBAT` §4) + **HP boss 6,38 M/instance**; còn thiếu **giá trị `StartHp`** (`BALANCE` §0.6) và **HP enemy runtime** |
@@ -76,7 +76,7 @@ Cộng **B3** (⚠) ⇒ **5 hàng blocker** trong 9 hàng ban đầu.
 | C1 | Có bao nhiêu chỉ số nâng cấp (tech stat)? | ✅ | **60** (`Tech_Datas.NumberTechStats` pool `60.0`) |
 | C2 | Giá nâng cấp tăng thế nào? | ⚠ | `Tech_Datas.GetCostUpgrade` pool **2,55** (hệ số nhân); `SetTechStatLevel` **0,4 · 1,48 · 0,57 · −0,1** |
 | C3 | Cấu trúc chi phí tech? | ⚠ | `Tech_Datas.NumberTechStats` có **0,2 / −0,2 / −4,0** cạnh 60 — chưa rõ là phụ phí hay bậc VIP |
-| C4 | Người chơi kiếm bao nhiêu vàng/giờ? | ❌ | cần `drop rate` × số quân/giờ; `Enemy_Data_Balance.GetBonusCoin` có **100,0 · 20,0** |
+| C4 | Người chơi kiếm bao nhiêu vàng/giờ? | ⚠ | **mẫu runtime (25/10)**: phiên 23/10 — **276 kill → 540 coin** Stage 1 (≈ 2 coin/kill); công thức `GetBonusCoin` **100,0 · 20,0**; chưa có luật drop đầy đủ |
 | C5 | Có bao nhiêu tàu? | ✅ | **25** (id 10001–10024 + 10999), **star 1–5** (`ships.json` 25 · `14-Data_Players.csv` 38 dòng) |
 | C6 | Drone / thiết bị bay kèm? | ✅ | `drones.json`; `Droid_Data_Balance.GetBaseDamage` pool **100,0 · 0,6 · 3,0 · 4,0** |
 | C7 | Có gói IAP nào? | ✅ | `iap_products.json`; `Tech_Datas.NumberTechStats` gọi `IAP_Manager.GetVipPoint` ⇒ **tech stat mở theo VIP** |
@@ -100,8 +100,8 @@ Cộng **B3** (⚠) ⇒ **5 hàng blocker** trong 9 hàng ban đầu.
 | # | Câu hỏi | Trạng thái | Số / nguồn |
 |---:|---|---|---|
 | E1 | Có rung màn hình không? | ⚠ | `Enemy_CameraVibrate` **241 instance** — có **cơ chế**, chưa đo **biên độ / thời gian** |
-| E2 | Có nháy trắng khi trúng đòn (hit flash)? | ⚠ | **CẬP NHẬT 24/10:** `Enemy_Display.OnHit` (352 B) có **alpha 0,5** trên material của `hitableRenderers` + `Invoke(<tên tĩnh>, 0,05 s)` để tắt ⇒ **có flash, 0,05 s, cường độ 0,5**. Thiếu **tên tham số material** (chuỗi trong bảng literal chưa export) và **màu** (0,5 là hệ số, không phải màu) |
-| E3 | Có khựng hình khi trúng (hit stop)? | ⚠ | **CẬP NHẬT 24/10:** đã đọc hết **69** asm đã export + `native-calls.json` (**272 method**): **0** lệnh gọi `set_timeScale`. Không có `HitStop` ⇒ **không tìm thấy**, nhưng 69 lớp ≠ toàn bộ 677 ⇒ chưa phủ định được |
+| E2 | Có nháy trắng khi trúng đòn (hit flash)? | ✅ | **ĐÓNG — BỎ (quyết định 25/10)**: game mới **không thêm**. Số đo để tham khảo: `OnHit` alpha **0,5** + tắt sau **0,05 s** (`J9`) |
+| E3 | Có khựng hình khi trúng (hit stop)? | ✅ | **ĐÓNG — BỎ (quyết định 25/10)**: game mới **không thêm**. **0** site `set_timeScale` trên **139** file asm (`AF2`) |
 | E4 | Âm thanh dài bao nhiêu? | ✅ | **69/69 WAV · 571 s** (`ASSETS`); `shootAudioClipName` gắn từng súng |
 | E5 | Nhịp bắn của súng? | ✅ | `timeShot` median **0,10 s**; **397/458 loạt tức thời** · **61/458 băng liên tục** · **29 súng có 3 vòng** (`COMBAT` §3.1) |
 | E6 | Tỷ lệ màn hình? | ✅ | canvas **10,8 × 19,2** (9:16) |

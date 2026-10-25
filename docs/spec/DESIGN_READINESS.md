@@ -6,7 +6,17 @@
 > Và **không** đủ nếu ai đó định làm L2/L3 (khớp số / không phân biệt được).
 >
 > **Kiểm lại toàn bộ 14 vùng năng lực:** xem **`COVERAGE_AUDIT.md`** — bản này trả lời *"đủ cho L1 chưa"*,
-> bản kia trả lời *"còn thiếu chính xác chỗ nào"*. Kết luận khớp nhau: **2 chỗ chặn** (map→wave · HP runtime).
+> bản kia trả lời *"còn thiếu chính xác chỗ nào"*. Kết luận khớp nhau: **0 chỗ chặn số** — 2 chỗ "chặn"
+> cũ (map→wave · HP theo chế độ) **ĐÃ ĐÓNG 25/10**; sót 2 phép tái đối chiếu runtime (không chặn).
+
+> **Cập nhật 25/10 — lần 3 (đồng bộ lần 7–10 của `DONE`):**
+> ① **bind xong**: index↔tàu = id − 10001 (`CROSS_BRANCH` T4) · bảng Map **11 cấu trúc / 614 mảng**
+> (`DIFFICULTY_MODES` §7) · HP enemy **150 cặp theo id** (claim **WRH2**);
+> ② **`kHp[mode]` không tồn tại** — chế độ đổi composition + thưởng, không nhân HP; `pct` đủ **3/3**;
+> ③ **playback thật đã có** (phiên phone 23/10 trong repo) — "cần thiết bị" chỉ còn 2 tái đối chiếu;
+> ④ **feel BỎ** theo quyết định (game gốc không có, quá nhỏ);
+> ⑤ peer tới report **77 / 239 tests** (scene renderer + camera + SpriteMask; ortho 9,6 khớp mốc spawn);
+> ⑥ tally mới **✅ 31 · ⚠ 16 · ❌ 1** · claim **209/211 PASS**. Số dưới đây đã đo lại theo trạng thái này.
 >
 > **Cập nhật 24/10 — vòng 2:** sau khi giải script animation (`ANIMATION_SCRIPT.md`), hệ
 > **Animation**: **35/39 prefab boss** có **nguồn** animation/event trong tập đã xét, boss 1 giải
@@ -35,14 +45,14 @@ chúng là **tham khảo**, không phải điều kiện.
 | # | Câu | Trạng thái cũ | **Đo lại 23/10** | Chặn thiết kế L1? |
 |---:|---|---|---|---|
 | 1 | `StartHp` | đóng (2500) | ✅ **đóng** — `statics_Player_Get_Datas.StartHp = 2500` | **Không** |
-| 2 | **A6 — stage ↔ wave** | mở | 🟡 **một phần** — `map_waves_candidate.json`: **250 map**, nhưng chỉ **7** ghép chắc (`immediates`), **243** ghép theo thứ tự blob *"chưa xác thực bằng token"* | **Không** (chỉ cần biết có bao nhiêu màn) |
-| 3 | **E2/E3 — hit flash / hit stop** | mở, "chi phí thấp" | 🟡 **nửa đóng** — `Enemy_Display` không chứa tham số (**5 field**: `hpProgressBarRenderer` · `size` · `hitableRenderers` · `appearOff` · `dieOff`), nhưng **`OnHit` có 2 hằng số**: alpha **0,5** trên material + `Invoke("OffHitEffect", `**`0,05 s`**`)` ⇒ nháy trúng đòn **đã đo được**; còn thiếu tên tham số material | **Không** nữa |
+| 2 | **A6 — stage ↔ wave** | mở | ✅ **ĐÃ BIND (25/10)** — trước: `map_waves_candidate.json` có **250 map**, nhưng chỉ **7** ghép chắc; nay bind **11 cấu trúc / 614 mảng** (320×len3 ↔ 3 mode · 118×len2 = stage→boss · 104×len7 ↔ 7 `PlayMode`, `DIFFICULTY_MODES` §7); peer ghép entry vào `map_table_segments.json` + `maps.json` | **Không** |
+| 3 | **E2/E3 — hit flash / hit stop** | mở, "chi phí thấp" | ✅ **ĐÓNG — BỎ (quyết định 25/10)**: game gốc **không có** trên mẫu asm (`Enemy_Display` chỉ **5 field**: `hpProgressBarRenderer` `size` `hitableRenderers` `appearOff` `dieOff` — không có tham số flash) và cảm nhận quá nhỏ ⇒ game mới **không thêm**; số đo cũ (alpha 0,5 · 0,05 s) chỉ để tham khảo | **Không** |
 | 4 | **D3 — thứ tự pha boss** | mở, "cần decoder" | 🟡 **MỘT PHẦN** (hạ mức 25/10) — có **mốc trong clip** (`795/795` event có `time`, mức **A**), **chưa** có thứ tự pha / điều kiện vào-thoát / số lần lặp / hành vi callback (mức **C**) | **Không** |
-| 5 | **B1 — HP enemy runtime** | mở | 🔴 mở — có hằng số, chưa có thứ tự nhân | **Không** (L1 tự chọn số) |
-| 6 | **C4 — vàng/giờ** | mở | 🟡 tính được, **chưa làm** | **Không** |
+| 5 | **B1 — HP enemy runtime** | mở | ✅ **HP THEO ID (25/10)** — `datas/enemy_hp_by_id.json` **150 cặp** (`CB-30003` = 650, claim **WRH2**); dict dựng trong `.cctor`, 0 vòng lặp (claim **IAB1**); `kHp[mode]` **không tồn tại** | **Không** |
+| 6 | **C4 — vàng/giờ** | mở | 🟡 **có mẫu runtime (25/10)** — phiên 23/10: **276 kill → 540 coin** Stage 1 (≈ 2 coin/kill, `live_1_gp.json`); công thức `GetBonusCoin` **100,0 · 20,0** | **Không** |
 | 7 | **A7 — mật độ địch** | mở, "làm bằng script" | 🟡 tính được **một nửa** — nhưng vướng #9 (xem dưới) | **Không** |
 | 8 | **A5 — độ dài phiên** | mở, "chi phí cao" | 🔴 mở — cần A6 + luật continue | **Không** (tự chọn) |
-| 9 | **B3 — đường cong damage** | mở, "chi phí cao" | 🔴 mở | **Không** (tự chọn) |
+| 9 | **B3 — đường cong damage** | mở, "chi phí cao" | 🟡 **đã có 6 mảng + ngưỡng (25/10)** — damage/rate/wing/cost theo index, index = **id − 10001** (`CROSS_BRANCH` T4); còn **rẽ nhánh `stepLevel`** đầy đủ (mức C) | **Không** (tự chọn) |
 
 **D3 KHÔNG đóng** (sửa 25/10, review R5). Trước đây câu này ghi *"đóng thêm 1 câu (D3), không cần
 decoder nữa"* — **mâu thuẫn** với chính bảng §2 ở trên (D3 = 🟡 một phần). Cái đã có là **nguồn
@@ -100,7 +110,7 @@ việc đó vẫn nằm ở T5 của `HANDOFF_ANIM_RAW.md`.
 Ba blocker còn lại (#3, #5, #8, #9) đều **không chặn L1**, vì L1 cho phép tự chọn số. Nhưng có hai
 thứ mà *tự chọn* cũng không cứu được, vì chúng là **cảm giác**, không phải tham số.
 
-### 4.1 Feel — hit flash / hit stop (câu #3): từ "không có dữ liệu" → **đo được một nửa**
+### 4.1 Feel — hit flash / hit stop (câu #3): đo được một nửa → **ĐÓNG — BỎ (25/10)**
 
 Vòng trước tài liệu này ghi *"là thứ duy nhất dữ liệu không có"*. **Sai một nửa.** Đọc asm
 `Enemy_Display.OnHit` (352 B) thì thấy **2 hằng số**:
@@ -127,7 +137,8 @@ Người chơi xác nhận *"chơi thật không thấy"*. Kiểm lại bằng d
 
 ⇒ Với 4 mục bị nghi là "feel phải đo", **3 mục không tồn tại** và **1 mục (rung) có số**. Nghĩa là
 "feel" **không còn là khoảng trống tài liệu**: cái tồn tại đã có tham số, cái không tồn tại thì không
-cần dựng lại.
+cần dựng lại. **Quyết định 25/10: BỎ feel** — game mới **không thêm** mục nào trong bảng này; mọi số
+đo ở trên chỉ để tham khảo.
 
 ⇒ Hệ quả cho thiết kế: **đừng chờ dữ liệu thêm**. Có nhịp (0,05 s) và cường độ (0,5) là đủ để
 prototype 30 giây; phần "cảm giác" còn lại tự quyết.
@@ -158,7 +169,7 @@ trạng thái của enemy — và nó **không chặn** vì L1 cho phép tự đ
 | **Animation — *mốc trong clip*** | 🟡 **A** cho mốc / **C** cho điều kiện + hành vi | 33 prefab **793 event có mốc thời gian** · boss 1: **8 tên entry + 5 nhánh** chuyển state · nhịp đòn **0,17/0,33/1,0/5,0 s** · enemy = máy trạng thái 3 nhánh + hit flash **0,05 s** — xem **`ANIMATION_SCRIPT.md`** |
 | **Animation — *playback / feel*** | ⛔ **ngoài phạm vi** (feel bỏ; *script* đã có) | 0/791 keyframe · 0 phép đo playback runtime · hành vi 12 handler còn **C** — **chỉ cần nếu làm L2/L3** |
 | **UI — cấu trúc** | ✅ **A** | **125 màn hình** (`screens.csv`: 125 dòng) · 53 board · 63 popup · 8 tab · screen graph + điều kiện mở từng popup ở `UI.md` |
-| **UI — art** | 🔴 **D** | 53k file dump có trong nhánh dữ liệu nhưng **chưa kéo về**, chưa phân tích — và L1 làm art mới nên không cần |
+| **UI — art** | 🟡 **B** | asset pack v2 **đã xuất bản** (release `windwings-assets-1.3.118`, **175.684.102 B**, SHA `4b18cc23…`, report 70 — `DATA_SYNC` §21) kèm **hợp đồng sprite/scene/font** đã đồng bộ (`scene_sprite_contract`, `sprite_export_contract`, `font_language_contract`); **chưa phân tích nội dung** và **không bê file về repo này** (cấm) — L1 làm art mới nên **không cần** |
 
 ---
 
@@ -186,11 +197,11 @@ thiếu, và nó chỉ cần cho L2/L3.
 | Việc | Trước | Sau | Bằng chứng |
 |---|---|---|---|
 | **D3 — thứ tự pha boss** (`DESIGN_QUESTIONS.md`) | ❌ "chỉ có `__count`" | ⚠ **một phần** (hạ mức 25/10, review R1): **A** cho mốc trong clip, **C** cho thứ tự/điều kiện/hành vi | `795/795` event có `time` ⇒ `BOSS_ANIM_TIMELINE.md` |
-| **E2 — hit flash** | ❌ "chưa đọc" | ⚠ **có số** | alpha **0,5** + `Invoke(…, 0,05 s)` trong `Enemy_Display.OnHit` |
+| **E2 — hit flash** | ❌ "chưa đọc" | ✅ **ĐÓNG — BỎ (25/10)** | alpha **0,5** + `Invoke(…, 0,05 s)` trong `Enemy_Display.OnHit` — game mới không thêm |
 | **A7 — mật độ địch** | ❌ | ⚠ **một nửa** | số quân = độ dài `listPrefabEnemies`; `rate = 0` nghiêng **B** "cả loạt" |
 
-⇒ `DESIGN_QUESTIONS.md` nay là **48 câu · ✅ 29 · ⚠ 15 · ❌ 4** (claim **S2** giữ cho dòng tổng không lệch
-bảng; D3 hạ ✅→⚠ sau review R1). **Câu trả lời cho câu hỏi của tài liệu này không đổi: thiết kế được cho L1** — chỉ khác là
+⇒ `DESIGN_QUESTIONS.md` nay là **48 câu · ✅ 33 · ⚠ 14 · ❌ 1** (claim **S2** giữ cho dòng tổng không lệch
+bảng; lần 11 — 25/10: A6/B1 ✅ bind xong · C4 ⚠ mẫu runtime · E2/E3 ✅ ĐÓNG-BỎ). **Câu trả lời cho câu hỏi của tài liệu này không đổi: thiết kế được cho L1** — chỉ khác là
 **animation không còn nằm trong danh sách "phải chờ"**, và **feel đã ra khỏi phạm vi** (chỉ đạo 25/10:
 *bỏ feel, script là đủ*) ⇒ không còn hạng mục nào phải "quyết thay vì đo".
 
@@ -224,32 +235,29 @@ hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật
 |---|---:|---|
 | **35/39** | prefab boss có **nguồn** animation/event trong tập đã xét | 4 prefab còn lại **không có cả clip event lẫn Spine trong tập đó** — không phải "không có animation" |
 | **125** | màn hình UI có cấu trúc | mỗi màn có điều kiện mở + dữ liệu cần load |
-| **10/10** | mục design doc viết được ngay | sau khi `Call_Data` cho schema spawner |
+| **10/10** | mục design doc viết được ngay | `Call_Data` **23 field** đã có schema (`waves.json` + `SCRIPTS.md` §3) |
 
 ---
 
-## 8. Trả lời "đủ chưa" bằng **số đếm** (25/10, không dùng %)
+## 8. Trả lời "đủ chưa" bằng **số đếm** (cập nhật 25/10 lần 2 — không dùng %)
 
 | tập | tổng | đủ / đóng | một phần | chưa |
 |---|---:|---:|---:|---:|
 | **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **11** ✅ | **4** 🟡 | **0** 🔴 · **0** ⛔ (feel **đã đóng** — 3/6 mục có số, 3/6 không tồn tại, xem §4.1b) |
-| **9 câu blocker** (§2 ở trên) | 9 | **1** (`StartHp`) | **5** | **3** (`B1` HP runtime · `A5` độ dài phiên · `B3` đường cong damage) |
-| **48 câu design** (`DESIGN_QUESTIONS.md`) | 48 | **29** ✅ | **15** ⚠ | **4** ❌ (`A5`·`A6`·`B1`·`C4`) |
-| **6 chỗ thiếu** (`COVERAGE_AUDIT.md` §2) | 6 | — | **4** | **2 chặn** (map→wave 7/250 · HP runtime theo chế độ) |
-| **claim tự kiểm** (`tools/verify-claims.py`) | **151** | **149** PASS | 2 SKIP | 0 FAIL |
+| **9 câu blocker** (§2 ở trên) | 9 | **4** ✅ (`StartHp` · `A6` · `B1` · feel-bỏ) | **4** 🟡 (`D3` · `C4` · `A7` · `B3`) | **1** 🔴 (`A5` — cần luật continue) |
+| **48 câu design** (`DESIGN_QUESTIONS.md`) | 48 | **33** ✅ | **14** ⚠ | **1** ❌ (`A5`) |
+| **6 chỗ thiếu** (`COVERAGE_AUDIT.md` §2) | 6 | **2** ✅ ĐÃ ĐÓNG | **4** | **0 chặn số** — sót 2 tái đối chiếu runtime (không chặn) |
+| **claim tự kiểm** (`tools/verify-claims.py`) | **211** | **209** PASS | 2 SKIP | 0 FAIL |
 
 **Đọc bảng này thế nào:**
 
-- **Đủ cho L1** (giống **cơ chế**, tự chọn số + art): **10/15** vùng dựng được ngay; 2/10 mục design doc
-  phải ghi rõ chỗ chưa đóng; **0** chỗ nào bắt buộc phải chờ dữ liệu mới để **bắt đầu**.
-- **Chưa đủ cho L2** (khớp **số** bản gốc): còn **3** câu 🔴 + **2** chỗ chặn — `B1` HP runtime (thiếu
-  thứ tự nhân hằng số), `A5` độ dài phiên (cần A6 + luật continue), `B3` damage curve, **map→wave 7/250**,
-  **HP theo chế độ** (B8).
-- **L3 theo nghĩa "tái lập 1:1 asset gốc": BỎ** — không phải vì không quan trọng, mà vì **không được phép**
-  và **không cần** (người chơi nhận ra "đẹp" qua tỉ lệ/tương phản/nhịp, không qua từng pixel).
-  Phần **thiết kế cho đẹp** vẫn là yêu cầu và **đã có số**: `VISUAL_DESIGN.md` (khung hình **0,4813**,
-  tương phản **0,45–0,80**, accent **≤10 %** gameplay / **~47 %** khung thưởng, chi tiết **13–22**,
-  juice **0,05 s** + **0,10 · 20 frame**; claim **AN1**, **AN2**).
-- **Chưa đủ cho L3 theo nghĩa "không phân biệt được"**: còn **thứ tự pha boss** (C). Tiêu chí nghiệm thu
-  vẫn là **script enemy + boss**, đã đạt **A cho mốc**, **C cho điều kiện/hành vi** (2 việc: 6 chuỗi
-  `SetTrigger` + ai gán 12 delegate).
+- **Đủ cho L1** (giống **cơ chế**, tự chọn số + art): **0** chỗ bắt buộc chờ dữ liệu mới; AI làm game
+  mới bắt đầu được ngay từ `START_HERE.md` + `datas/`. Số theo **từng tàu/enemy/mode** đều có (bind xong).
+- **L2 (khớp số bản gốc): KHÔNG còn thiếu số** — mọi giá trị đã decode + bind; **playback thật đã có**
+  (phiên phone 23/10). Việc còn lại của L2 = **replay đối chiếu** khi có lần chạy mới (2 mục `CROSSCHECK`).
+- **L3 theo nghĩa "khớp asset gốc": HOÃN — đích cuối, không bỏ** (sửa 25/10 theo yêu cầu chủ dự án);
+  phải sau L2, và **không được phép** copy asset (bản quyền). Phần **thiết kế cho đẹp** vẫn là yêu cầu
+  và **đã có số**: `VISUAL_DESIGN.md` (khung hình **0,4813**, tương phản **0,45–0,80**, accent **≤10 %**
+  gameplay / **~47 %** khung thưởng, chi tiết **13–22**, juice **0,05 s** + **0,10 · 20 frame**; claim **AN1**, **AN2**).
+- **Chưa đủ cho L3 theo nghĩa "không phân biệt được"** — đúng, và nó cần **playtest người thật** sau L2;
+  phần tĩnh còn mở nhỏ nhất là **thứ tự pha boss** (C, 2 việc: 6 chuỗi `SetTrigger` + ai gán 12 delegate).

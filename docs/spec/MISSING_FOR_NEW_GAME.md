@@ -34,7 +34,7 @@ Mỗi hệ trả lời 4 câu, không được bỏ câu nào:
 | 8 | **Kinh tế / rơi đồ** | ✅ **đủ** | 3 tầng rơi: **702** vật đặt sẵn (**676 coin / 26 item**) · **246/2.094** slot mang item · **6** loại (`AE1`–`AE3`) | trọng số chọn giữa 6 loại — **tự chọn** |
 | 9 | **Meta: tàu / sao / talent / drone** | 🟡 **một phần** | **25 tàu**; `Player_Info` **4 field**: `id` · `Sprite` · `Star` · `Actived` (claim **AM3**) — nhưng damage **có** lookup theo tàu: `GetMainCannonDamage(playerIndex)` đọc **mảng static float** `0x78` theo `playerIndex` (§2.2); `Player_Talent` **23 method** · **13 drone** | 6 mảng damage/rate/cost **đã decode** (§2.2); **bind index↔tàu ĐÃ XONG**: index = **id − 10001** (asm `0x14e2ce4`, `CROSS_BRANCH` T4) ⇒ TTK theo **từng tàu** tính được. Còn: **HP riêng của tàu** (chưa biết, **khác** HP enemy đã có), `rate` runtime |
 | 10 | **UI** | ✅ **cấu trúc** · ✅ **luật thị giác** / ❌ **asset** | **797 màn · 150.131 node · 5.831 nút** (`N2`, `P6`); **55.584** layout file; khung hình **0,4813** · accent **≤10 %** · tương phản **0,45–0,80** (`VISUAL_DESIGN.md`, **AN1**, **AN2**) | asset gốc: **vẽ mới**; luật thì **đã có số** |
-| 11 | **Âm thanh** | 🟡 **có dữ liệu, chưa có luật phát** | **69 clip / 571,5 s**, trong đó **5 vòng nhạc > 60 s** (`docs/assets/audio-index.csv`) | **ai phát cái gì, lúc nào** (`AudioSource`/`AudioManager` chưa bóc) |
+| 11 | **Âm thanh** | 🟡 **có dữ liệu + 15 luật tĩnh** | **69 clip / 571,5 s** (`audio-index.csv`) · `datas/audio_rules.json`: **15 rules** (mute/volume/pause/oneshot/music…) · registry **92** id · enum **118** (report 67; `DATA_SYNC` §21.1) | **đối chiếu nghe + trigger lúc chơi** — tĩnh hiện PROVISIONAL, cần 1 lần chạy để nâng mức |
 | 12 | **Save / load + live-ops** | 🟡 **một phần** | key đã đọc: **`StarCount`** · **`StarStageMaster{stageIndex}_{modeIndex}`** (default 0) qua `PlayerPreferences.SetInt → PlayerPrefs.SetInt`; model `savedStars/result` (report 57); **170 IAP** | **schema đầy đủ** (mọi khoá/kiểu/migrate) + **chưa** chứng minh flush đĩa — xem §2.3 |
 | 13 | **Tech / build** | 🟡 **một phần** | Unity **2022.3.x** (`UNITY_RULES.md`) · Spine · DOTween · 3 loader trong repo này | plugin list đầy đủ + cấu hình build (lấy từ `dump.cs`/manifest, không cần thiết bị) |
 
@@ -230,7 +230,7 @@ không phủ toàn bộ công thức chiến đấu.
 
 | Thứ | Vì sao không thiếu |
 |---|---|
-| **feel** (hit stop · aim assist · input latency) | 0 site `timeScale` / 0 method `aim` trên **139** file asm (**AF2**, **AF3**) = **chưa thấy**, **không** phải "không tồn tại" (139 file là **mẫu**, không phải whole-build closure). Cái **đo được**: hit flash **0,5 / 0,05 s** (`J9`), rung **241** prefab (`AF1`). Game mới muốn có feel thì **được** — ghi là lựa chọn thiết kế |
+| **feel** (hit stop · aim assist · input latency) | 0 site `timeScale` / 0 method `aim` trên **139** file asm (**AF2**, **AF3**) = **chưa thấy**, **không** phải "không tồn tại" (139 file là **mẫu**, không phải whole-build closure). Cái **đo được**: hit flash **0,5 / 0,05 s** (`J9`), rung **241** prefab (`AF1`). **BỎ theo quyết định 25/10**: game mới **không thêm** feel; số đo cũ chỉ để tham khảo |
 | **art, font, atlas (bản gốc)** | L1 **vẽ mới**. Cái **không** bỏ là **luật thị giác**: khung hình · ba chế độ sáng · ngân sách accent · vignette khung thưởng · mật độ chi tiết — đã đo và ghi ở `VISUAL_DESIGN.md` |
 | **số cân bằng cụ thể** (giá, tốc độ, mật độ) | L1 cho phép tự chọn; cái phải giữ là **cơ chế** (3 chế độ, không nhân quân, rơi đồ 3 tầng) |
 | **thứ tự pha boss (D3)** | Có **795 event + mốc thời gian**; thứ tự là **lựa chọn thiết kế**, dữ liệu chỉ cần đủ để biết "mỗi pha có đòn gì" |
@@ -250,7 +250,8 @@ không phủ toàn bộ công thức chiến đấu.
   Giá trị damage/rate/cost/độ dài map **đã có** (§2.1 + §2.2); index↔tàu (T4) + cấu trúc bảng Map
   (`DIFFICULTY_MODES` §7) **đã bind**. Bốn mục từng liệt kê ở đây đều đã có/không tồn tại (§2):
   `kHp` không phải hệ số · `missionKillPercent` đủ 3/3 · HP enemy bind theo id · `rate` = giây.
-  Cái còn là **playback thật để so TTK/cảm giác** — cần **thiết bị**, không phải thiếu số.
+  Playback thật **đã có sẵn trong repo** (phiên phone 23/10 — `docs/apk-analysis/ramus/2026-10-23-phone/`);
+  sót **2 phép tái đối chiếu** (`CROSSCHECK`) — làm khi có lần chạy mới, không phải thiếu số.
   > Đừng nói “chờ bind”, “chờ dump thêm” hay “còn 4 số” nữa — cả ba đều là **câu trả lời cũ**, sai.
 - **L3 (không phân biệt được với bản gốc): HOÃN — KHÔNG BỎ.** L3 vẫn là **đích cuối** của dự án;
   nó không giải được bằng reverse (cần **playtest người thật**), nên **xếp sau L2**, không nằm trong

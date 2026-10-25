@@ -146,7 +146,7 @@ Gradient p50 **0,20–0,26** ở 5 nhóm chủ thể, **nhưng** `background` **
 
 ---
 
-## 5. Mười bảy cái bẫy — đọc trước khi viết design doc riêng
+## 5. Hai mươi mốt cái bẫy — đọc trước khi viết design doc riêng
 
 Đây là những chỗ **bộ spec này từng sai thật**, đã sửa; đừng lặp lại:
 
