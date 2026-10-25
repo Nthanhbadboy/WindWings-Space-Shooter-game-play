@@ -21,11 +21,21 @@ jobs:
           python-version: '3.12'
       - name: Download current draft without publishing or replacing assets
         run: |
-          mkdir -p /tmp/pack-audit
-          gh api repos/${{ github.repository }}/releases/tags/windwings-assets-1.3.118 > /tmp/pack-audit/release.json
-          gh release download windwings-assets-1.3.118 --pattern 'assets.*' --pattern 'manifest-full.csv' --dir /tmp/pack-audit
-          cd /tmp/pack-audit
-          zip -s 0 assets.zip --out assets-full.zip
+          python3 - <<'PYCODE'
+          import os, pathlib, subprocess
+          p=pathlib.Path('/tmp/pack-audit');p.mkdir(exist_ok=True)
+          commands=[['gh','api',f"repos/{os.environ['GITHUB_REPOSITORY']}/releases/tags/windwings-assets-1.3.118"],
+                    ['gh','release','download','windwings-assets-1.3.118','--pattern','assets.*','--pattern','manifest-full.csv','--dir',str(p)],
+                    ['zip','-s','0','assets.zip','--out','assets-full.zip']]
+          for i,command in enumerate(commands):
+              run=subprocess.run(command,cwd=p if i==2 else None,capture_output=True,text=True)
+              if run.returncode:
+                  text=(run.stderr+run.stdout)[-3000:].replace('%','%25').replace('\r','%0D').replace('\n','%0A')
+                  print(f'::error::pack download/conversion step{i}: '+text,flush=True)
+                  raise SystemExit(run.returncode)
+              if i==0:(p/'release.json').write_text(run.stdout)
+              else:print(run.stdout)
+          PYCODE
       - name: Audit archive and produce metadata-only browser
         run: python3 tools/recovery/asset_pack_audit.py --directory /tmp/pack-audit
       - name: Regression gate
