@@ -18,7 +18,7 @@ def section(text, method):
 
 def main():
     selections = {'DataTutorials': ['get_hasTutStage1', 'get_hasTutStage2', 'get_hasTutStage3'],
-                  'GP_Tutorials': ['CheckRunTutorialNew'], 'Board_Endgame': ['SetupTut']}
+                  'GP_Tutorials': ['CheckRunTutorialNew'], 'Board_Endgame': ['SetupTut', 'CheckPremiumPopup', '_2', '<CheckPremiumPopup>b__91_0', '<CheckPremiumPopup>b__91_1']}
     sources = {}
     for cls, methods in selections.items():
         p = ROOT / f'reverse-engineering/raw/il2cpp-consts/{cls}.asm.txt'
@@ -45,6 +45,11 @@ def main():
     t = sources['Board_Endgame']['sections']['SetupTut']
     checks['endgame_hides_buttons_for_early_index'] = all(f in t for f in
         ('cmp      w0, #1', 'b.le', '[x19, #0x88]', '[x19, #0x80]', '[x19, #0x78]', '#0x2781804'))
+    t = sources['Board_Endgame']['sections']['_2']
+    checks['endgame_callback_reveals_continue_and_increments_tutorial'] = all(f in t for f in
+        ('0x126d4e8: ldr      x0, [x19, #0x80]', '0x126d4f0: mov      w1, wzr',
+         '0x126d4fc: ldr      x0, [x19, #0x88]', '0x126d514: mov      w1, #1',
+         '0x126d538: add      w0, w0, #1', '#0x14f9f84'))
     assert all(checks.values()), checks
     out = {'status': 'PROVISIONAL', 'checks': checks, 'resolved_direct_calls_from_dump': targets,
            'sources': sources, 'warning': 'numeric stageIndex gates; not proof of first-clear queue or displayed stage numbering'}

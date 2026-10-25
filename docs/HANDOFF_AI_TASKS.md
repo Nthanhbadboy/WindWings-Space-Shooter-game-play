@@ -89,3 +89,13 @@ chưa được xem như đã đủ pixel-accurate cho đến khi raw mới về/
 đã tới c570485c5, có 9 commit sau 019e704d1. Verifier spec local-first có thể
 bỏ qua raw ở --ref mới khi file local cũ còn tồn tại. Fetch explicit remote
 tracking ref, đối chiếu ls-remote/rev-parse và ghi source SHA trước khi báo lại.
+
+## UI raw vòng tiếp — tutorial đã có layout, Map cần tái xuất
+
+Đọc report44: raw c570485c5 có 8 tutorial refs/7 GO resolve local, text Việt,
+font/style/sorting. Dùng ui-audit/tutorial-texts.csv + visual-coverage.json.
+Endgame callback @0x126d3cc có nhánh bật Continue/ẩn Replay/IndexTutorial++;
+static bool branch chưa resolve tên bằng registration map, không tự nâng kết luận.
+Map đạt trần6000 node, không báo full coverage. Commit1989defc2 tăng12000 và
+báo truncation; a2fac1df7 thêm external/font/material/camera context. Nghiệm thu
+raw mới rồi mới bỏ OPEN. Tất cả là PROVISIONAL.
