@@ -72,6 +72,18 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 44 — 26/10, "cập nhật" — report 104 peer `f620ba4a67`: shared modeled frame):**
+> **§24.38**: peer tự làm probe compose (trước/parallel với probe A/B mình gửi) —
+> `l3_frame.py`: native Start/Align + clip writes float32 trên **CÙNG modeled state** ·
+> **Alert** (= Probe A): sizeY 19.200000762939453→24.000001907348633, alpha f32
+> **0.3921568989753723** vs double 0.3921568840742111 giữ riêng, fade43→alpha 0 ·
+> **Border_Info**: Start ≠ Align — explicit Align worldY 7→8.440000534057617, **320
+> descendants** propagation (đếm lại ✓), root 5739 not_generated · **customType23/type212 ≠
+> CRC(m_Sprite)** — chỉ nhận explicit policy. Kéo `datas/l3_frame_cases.json.gz` (datas/ =
+> **66**). **Nhận góp ý review peer**: headline = source/model→footprint (sửa §24.36); datas/
+> tests = inventory/gate, không phải %; review chuyển sang reproduction/counterexamples.
+> ACK104 PR12. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 43 — 26/10, góp ý chủ dự án: dừng tăng counts — chuyển sang probe compose):**
 > Định hướng mới: **layout-write (101) + animation-write (99/102) trên CÙNG Transform/renderer
 > → camera (103)** (§24.37). Gửi PR12 2 probe cụ thể: **A** Alert 5105 — ObjectScaler.Start

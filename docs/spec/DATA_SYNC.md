@@ -3222,7 +3222,7 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   (sharedassets0:79 vẫn là template). **1.104 same-scene pairs = 558 pass / 546 fail layer
   mask** — chưa cộng footprint/alpha/shader, không gọi là visible; không tạo total draw-order
   từ sortingLayerID; không coi camera khác scene là một live stack.
-- **Alert chain full**: 1080×2400 → half **12.000000953674316** → native ObjectScaler size
+- **Alert chain (source/model đến footprint — siết wording theo góp ý peer, lần 44)**: 1080×2400 → half **12.000000953674316** → native ObjectScaler size
   **10.800000190734863 × 24.000001907348633** → position-only zero-border sliced rect (border≠0/
   tiled = not_generated, không dựng quad thay) → world z=1 → depth 11/21 ở Game 3975 (z=−10) /
   Main 3976 (z=−20); footprint giao viewport ở cả hai NHƯNG **mask 7959 (Game) LOẠI layer5 ·
@@ -3264,4 +3264,41 @@ không render):
 
 Câu hỏi kèm: harness Unicorn (101) + math (103) trả được composed state mức model không, hay
 cần stub thêm? Ranh giới giữ nguyên: model ≠ readback Unity ≠ render — probe là **gate
-compose-state**, không phải render approval. Không kéo dữ liệu mới vòng này (datas/ = 65).
+  compose-state**, không phải render approval. Không kéo dữ liệu mới vòng này (datas/ = 65).
+
+### 24.38 Report 104 — shared modeled frame: layout write + clip write trên CÙNG state (peer `f620ba4a67`, local **1072 tests PASS**; peer LÀM TRƯỚC/song song với probe A/B mình gửi — đúng hướng)
+
+- **Peer review nhánh spec mình** (`raw/peer-review/l3-23bf66c7/` — snapshot DATA_SYNC +
+  DESIGN_READINESS SHA-pinned): ① ACK giúp phát hiện sai sync nhưng **không thay
+  numerical/native audit**; ② headline "Alert chain full"/"geometry làm thật" = **source/model
+  đến footprint**, không phải full visual/runtime (đã siết §24.36); ③ **không dùng số file
+  datas/ hay số tests như tỷ lệ hoàn thiện bộ mặt game** (bên mình: đó là inventory/gate
+  verify, không phải % — giữ đúng nghĩa đó); ④ review chuyển sang **reproduction/
+  counterexamples** (Start false vs direct Align, propagation, cache khi camera đổi, f32
+  rounding, rollback, encoded pointer binding).
+- `tools/verify/l3_frame.py` tạo **một shared modeled state**: explicit modeled Camera.main →
+  CameraScaler half-height; **native bounded Start/ObjectAnchor/ObjectScaler chạy thật**
+  (harness101) → writes persist vào state; clip-local channels → typed writes **float32
+  store**; world matrices đọc lại từ overlay (không stale); projection dùng current
+  size/color/pose/mask. Start explicit ≠ Unity đã dispatch khi inactive.
+- **Case Alert = Probe A thực tế** (camera 3976, 1080×2400): serialized sau camera-resize
+  sizeY **19.200000762939453** → native scaler **24.000001907348633** + alert42@0,0625 alpha
+  store **0.3921568989753723 (float32)** — coefficient double **0.3921568840742111** giữ RIÊNG
+  (không gọi là mismatch); projected 240.000038→2159.999961 rồi 0→2400; fade43@0,25 tiếp theo
+  → alpha 0 (geometry KHÔNG bị xoá). Hai writer chạm khác field cùng renderer 5105.
+- **Case Border_Info (mới)**: `level2:7048` GO1414/renderer5739 playOnStart=false — native
+  Start chỉ bind camera, KHÔNG ghi position; explicit Align → worldY 7→**8.440000534057617**,
+  **320 descendants** nhận cùng delta (đếm lại 320/320 ✓); child sprite 5452 px bottom
+  1717.700156805613→1861.7001987672797; root 5739 border≠0 → **not_generated** (không dựng
+  quad giả); safeArea cache dùng chung per-Frame, không tự refresh.
+- **Pointer quan trọng**: sprite bindings attribute0/customType23/type212 (Animator4695 /
+  resources clip1609) **KHÔNG thể gọi là CRC(m_Sprite)** — default writer từ chối; chỉ nhận
+  explicit per-binding policy `m_Sprite` (log `explicit_custom_binding_field_policy`, sống ở
+  tool/tests, không trong artifact); pointer override = runtime qualified ref, không bịa
+  fileID. Clip transaction atomic = **bảo đảm của tool**, không phải Unity semantics.
+- Kéo về: `datas/l3_frame_cases.json.gz` (2 cases: alert before/after/faded · border_info
+  before/after_start/after_align + descendants + child projections). **Đối chéo độc lập
+  (lần 44): mọi số report có trong artifact đúng case** + 320/320 đếm lại ✓. Recipe chỉ gắn
+  `frame_application` contract auto_execute=false. 101/102 gaps giữ nguyên. **L3 vẫn một
+  phần**; ưu tiên peer: native/custom binding + driver order trên concrete chain → textured
+  geometry/shader execution. ACK104 + trả lời góp ý review qua PR12.
