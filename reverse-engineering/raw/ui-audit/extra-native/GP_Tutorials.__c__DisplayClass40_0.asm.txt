@@ -1,0 +1,25 @@
+;;; ctor  public void .ctor() { }
+    0x14fbaa4: mov      x1, xzr
+    0x14fbaa8: b        #0x2143330
+
+;;; <TutMoveFingers>b__0  internal bool <TutMoveFingers>b__0() { }
+    0x14fbaac: str      d8, [sp, #-0x20]!
+    0x14fbab0: stp      x30, x19, [sp, #0x10]
+    0x14fbab4: ldr      x8, [x0, #0x10]
+    0x14fbab8: cbz      x8, #0x14fbaf8
+    0x14fbabc: mov      x19, x0
+    0x14fbac0: mov      w0, wzr
+    0x14fbac4: mov      x1, xzr
+    0x14fbac8: bl       #0x27bfd5c
+    0x14fbacc: tbz      w0, #0, #0x14fbad8
+    0x14fbad0: mov      w0, #1
+    0x14fbad4: b        #0x14fbaec
+    0x14fbad8: ldr      s8, [x19, #0x18]
+    0x14fbadc: mov      x0, xzr
+    0x14fbae0: bl       #0x2786dc0
+    0x14fbae4: fcmp     s8, s0
+    0x14fbae8: cset     w0, mi
+    0x14fbaec: ldp      x30, x19, [sp, #0x10]
+    0x14fbaf0: ldr      d8, [sp], #0x20
+    0x14fbaf4: ret      
+    0x14fbaf8: bl       #0x110d250

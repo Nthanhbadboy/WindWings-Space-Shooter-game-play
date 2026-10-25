@@ -1,0 +1,96 @@
+;;; cctor  private static void .cctor() { }
+    0x1276d8c: str      x30, [sp, #-0x20]!
+    0x1276d90: stp      x20, x19, [sp, #0x10]
+    0x1276d94: adrp     x19, #0x2ce1000
+    0x1276d98: adrp     x20, #0x2add000
+    0x1276d9c: ldrb     w8, [x19, #0x120]
+    0x1276da0: ldr      x20, [x20, #0xcc8]
+    0x1276da4: tbnz     w8, #0, #0x1276dbc
+    0x1276da8: adrp     x0, #0x2add000
+    0x1276dac: ldr      x0, [x0, #0xcc8]
+    0x1276db0: bl       #0x110d028
+    0x1276db4: mov      w8, #1
+    0x1276db8: strb     w8, [x19, #0x120]
+    0x1276dbc: ldr      x0, [x20]
+    0x1276dc0: bl       #0x110d240
+    0x1276dc4: mov      x1, xzr
+    0x1276dc8: mov      x19, x0
+    0x1276dcc: bl       #0x2143330
+    0x1276dd0: ldr      x8, [x20]
+    0x1276dd4: ldr      x8, [x8, #0xb8]
+    0x1276dd8: str      x19, [x8]
+    0x1276ddc: ldp      x20, x19, [sp, #0x10]
+    0x1276de0: ldr      x30, [sp], #0x20
+    0x1276de4: ret      
+
+;;; ctor  public void .ctor() { }
+    0x1276de8: mov      x1, xzr
+    0x1276dec: b        #0x2143330
+
+;;; <OnPressedButtonX2Coins>b__109_0  internal void <OnPressedButtonX2Coins>b__109_0() { }
+    0x1276df0: ret      
+    0x1276df4: ret      
+
+;;; <OnPressedButtonX2Coins>b__109_2  internal void <OnPressedButtonX2Coins>b__109_2() { }
+    0x1276df4: ret      
+    0x1276df8: ret      
+
+;;; <OnPressedButtonX2Coins>b__109_3  internal void <OnPressedButtonX2Coins>b__109_3() { }
+    0x1276df8: ret      
+    0x1276dfc: ret      
+
+;;; <OnPressedButtonX20Coins>b__114_0  internal void <OnPressedButtonX20Coins>b__114_0() { }
+    0x1276dfc: ret      
+    0x1276e00: ret      
+
+;;; <OnPressedButtonX20Coins>b__114_3  internal void <OnPressedButtonX20Coins>b__114_3() { }
+    0x1276e00: ret      
+    0x1276e04: ret      
+
+;;; <OnPressedButtonX20Coins>b__114_1  internal void <OnPressedButtonX20Coins>b__114_1() { }
+    0x1276e04: ret      
+    0x1276e08: ret      
+
+;;; <OnPressedButtonConfirmBuyX20>b__115_0  internal void <OnPressedButtonConfirmBuyX20>b__115_0() { }
+    0x1276e08: ret      
+    0x1276e0c: ret      
+
+;;; <OnPressedButtonConfirmBuyX20>b__115_1  internal void <OnPressedButtonConfirmBuyX20>b__115_1() { }
+    0x1276e0c: ret      
+    0x1276e10: mov      w0, #1
+
+;;; <LoadSceneHome>b__129_0  internal void <LoadSceneHome>b__129_0() { }
+    0x1276e10: mov      w0, #1
+    0x1276e14: mov      x1, xzr
+    0x1276e18: b        #0x141b488
+
+;;; <LoadToLoading>b__130_0  internal void <LoadToLoading>b__130_0() { }
+    0x1276e1c: mov      w0, #2
+    0x1276e20: mov      x1, xzr
+    0x1276e24: b        #0x141b488
+
+;;; <IESetEndgameEndless>b__142_13  internal void <IESetEndgameEndless>b__142_13() { }
+    0x1276e28: ret      
+    0x1276e2c: str      x30, [sp, #-0x20]!
+
+;;; <SetShopPrices>b__193_0  internal bool <SetShopPrices>b__193_0() { }
+    0x1276e2c: str      x30, [sp, #-0x20]!
+    0x1276e30: stp      x20, x19, [sp, #0x10]
+    0x1276e34: adrp     x19, #0x2ce1000
+    0x1276e38: adrp     x20, #0x2adb000
+    0x1276e3c: ldrb     w8, [x19, #0x121]
+    0x1276e40: ldr      x20, [x20, #0xb48]
+    0x1276e44: tbnz     w8, #0, #0x1276e5c
+    0x1276e48: adrp     x0, #0x2adb000
+    0x1276e4c: ldr      x0, [x0, #0xb48]
+    0x1276e50: bl       #0x110d028
+    0x1276e54: mov      w8, #1
+    0x1276e58: strb     w8, [x19, #0x121]
+    0x1276e5c: ldr      x0, [x20]
+    0x1276e60: ldr      w8, [x0, #0xe0]
+    0x1276e64: cbnz     w8, #0x1276e6c
+    0x1276e68: bl       #0x110d12c
+    0x1276e6c: ldp      x20, x19, [sp, #0x10]
+    0x1276e70: mov      x0, xzr
+    0x1276e74: ldr      x30, [sp], #0x20
+    0x1276e78: b        #0x13f8a10
