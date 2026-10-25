@@ -153,5 +153,6 @@ Không lấy 14 ctor sites làm số lần yield thực tế. Danh sách trên l
 **Local:** 302 tests PASS (32.245s), `datas/validate.py` PASS, `git diff --check` PASS.
 12 tests mới gồm regeneration, đủ 24 field/demo, 96 access, overlapping ctor write,
 19 exception, 22/23/24 refresh, counter branch, coroutine inventory và CFG alias
-clobber/merge/typed iterator/writeback. CI receipt bổ sung sau push.
+clobber/merge/typed iterator/writeback. Code **07f98ba80** đã push; GitHub Verify **40207885962 SUCCESS** (50s),
+regenerate-map/pinned dependency/regression steps đều PASS.
 Test là regression của extraction/proof, không tự nâng giả định thành APK fact hay đo gameplay.
