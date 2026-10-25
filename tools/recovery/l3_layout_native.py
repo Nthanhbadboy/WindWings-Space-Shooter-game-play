@@ -12,7 +12,12 @@ def recover(binary,xapk):
     p=out/'anchor-cells.json';p.write_text(json.dumps(cells,indent=2)+'\n')
     from l3_layout_objects import recover as recover_objects
     with tempfile.TemporaryDirectory() as work:recover_objects(xapk,Path(work),out,binary)
-    index=json.loads((out/'index.json').read_bytes());index['wrapper_tool_sha256']=hashlib.sha256(Path(__file__).read_bytes()).hexdigest();index['files'].append(dict(path=p.name,sha256=hashlib.sha256(p.read_bytes()).hexdigest()));index['files'].append(dict(path='objects.json.gz',sha256=hashlib.sha256((out/'objects.json.gz').read_bytes()).hexdigest()));index['object_tool_sha256']=hashlib.sha256((ROOT/'tools/recovery/l3_layout_objects.py').read_bytes()).hexdigest();(out/'index.json').write_text(json.dumps(index,indent=2)+'\n')
+    index=json.loads((out/'index.json').read_bytes())
+    index['wrapper_tool_sha256']=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    index['object_tool_sha256']=hashlib.sha256((ROOT/'tools/recovery/l3_layout_objects.py').read_bytes()).hexdigest()
+    index['files']=[dict(path=str(p.relative_to(out)),sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in sorted(out.rglob('*')) if p.is_file() and p.name!='index.json']
+    (out/'index.json').write_text(json.dumps(index,indent=2)+'\n')
+
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--xapk',required=True);a=p.parse_args();data=Path(a.xapk).read_bytes();assert hashlib.sha256(data).hexdigest()==APK_SHA;found=[]
