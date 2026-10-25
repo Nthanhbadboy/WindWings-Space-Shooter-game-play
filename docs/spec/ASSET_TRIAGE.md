@@ -58,7 +58,7 @@ rơi vào `unclassified`. Đo lại:
 
 ---
 
-## 4. Đã phân loại lại: **979/1.554 có nhãn**, còn **575 `unknown`**
+## 4. Đã phân loại lại: **1.049/1.554 có nhãn**, còn **505 `unknown`**
 
 Bộ phân loại `tools/classify-assets.py` (chạy lại được, xuất `docs/assets/sprites-classified.csv`)
 gán nhãn **chỉ khi có bằng chứng**. Bốn mức:
@@ -66,43 +66,43 @@ gán nhãn **chỉ khi có bằng chứng**. Bốn mức:
 | mức | nghĩa | số sprite (trong 1.554) |
 |---|---|---:|
 | **A** | tên tự mô tả **hoặc** đã xem contact sheet xác nhận | **863** |
-| **B** | suy từ tên **nhóm** (nhiều sprite cùng họ, cùng ngữ nghĩa) | **46** |
+| **B** | suy từ tên **nhóm** (nhiều sprite cùng họ, cùng ngữ nghĩa) | **116** |
 | **C** | suy từ tên tương tự — **phải xem ảnh mới chắc** | **70** |
-| **chưa gán** | không có bằng chứng nào | **575** |
+| **chưa gán** | không có bằng chứng nào | **505** |
 | **cộng** | | **1.554** |
 
 Nhãn đề xuất cho 1.554 sprite chưa phân loại:
 
 | nhãn đề xuất | thêm | vì sao (mã luật trong CSV) |
 |---|---:|---|
-| `ui` | **526** | `Khung*` khung · `Rank1…10` huy hiệu · `PVP1…10` huy hiệu PVP · `A1…A24` avatar · `Coin_*` xu · logo IAP (`ApplePay`/`GooglePay`/`AppleInAppPurchase`) · `Nut*` nút · `Overdrive_Timer`/`_Hp_Timer` icon · `Shop_*` ô shop · `VS`/`X`/`rename`/`Backtotop` (ảnh 07 #10–12) · bảng/khung/icon nút (ảnh 08 #25–32, #38–44, #48, #59) |
+| `ui` | **563** | `Khung*` khung · `Rank1…10` huy hiệu · `PVP1…10` huy hiệu PVP · `A1…A24` avatar · `Coin_*` xu · logo IAP · `Nut*` nút · `Overdrive_Timer`/`_Hp_Timer` · `Shop_*` · `Border*` viền (14) · `Boss…Gray` chân dung boss khoá · `Bong_Den`/`Botro` · nút/khung ảnh 07–08 |
 | `bullet` | **168** | `blt_*` **148** + họ số (`2011–2015`, `4011–4015`) **10** + 10 tile đạn (ảnh 07 #33–36/#43/#55, ảnh 08 #11/#17/#18/#24) |
-| `bosses` | **66** | `boss_*` (19+13+12) · `miniboss*` · `sieuhopthe*` (siêu hợp thể) · `boss_dong_ho_real_*` (mặt đồng hồ La Mã, ảnh 07 #3–4) |
-| `enemy` | **69** | `CB-*`/`CD-*` trùng mã prefab · `E_*` · `DA-2xxxx` (C) · **17** tile nguyên con enemy (ảnh 07 + ảnh 08 #3/#5/#7/#9/#10/#16/#19/#22) |
-| `parts` | **56** | **nhãn MỚI** — bộ phận rời (xem §4.3): cánh/khiên/vỏ/thân (ảnh 07 + ảnh 08 #1/#2/#6/#8/#12/#13/#20/#23/#33/#34/#37/#41/#49/#50/#55–58/#60/#62–64) |
-| `items` | **39** | `Manh*` mảnh · `Rock`/`Head`/`Foot` · túi/rương/banana/gem (ảnh 07 #13–14, ảnh 08 #4/#35/#36/#45–47) |
+| `bosses` | **87** | `boss_*` (19+13+12) · `miniboss*` · `sieuhopthe*` · `boss_dong_ho_real_*` · **`Boss*` chân dung boss (21)** |
+| `enemy` | **69** | `CB-*`/`CD-*` trùng mã prefab · `E_*` · `DA-2xxxx` (C) · **17** tile nguyên con enemy (ảnh 07–08) |
+| `parts` | **65** | **nhãn MỚI** — bộ phận rời (§4.3): cánh/khiên/vỏ/thân · `Body*` · `Bone*` |
+| `items` | **39** | `Manh*` · `Rock`/`Head`/`Foot` · túi/rương/banana/gem (ảnh 07–08) |
+| `fx` | **24** | quầng sáng `Circle_*` · `Gate*`/`Light` · `Bomb`/`Boom` nổ · hố đen (ảnh 08 #61) |
 | `background` | **19** | `Nen*` · `Earth`/`Mars`/`Moon`/`Jupiter` · `Cloud_3` |
-| `fx` | **21** | `Circle_blue*`/`Circle_mask*` quầng sáng · `Gate*`/`Light` · tinh thể/nổ/hố đen (ảnh 07 #38, ảnh 08 #28/#52–54/#61) |
-| `font` | **11** | `Coda_*` (chữ của logo) · `GooTest_*` (chữ Google Play) |
-| `ships` | **2** | `mini_ship`/`mini_ship_1` (ảnh 07 #8–9) |
-| `drones` | **1** | `drone_may_bay_cam` (ảnh 07 #6) |
-| **cộng** | **979** | |
+| `font` | **11** | `Coda_*` (chữ logo) · `GooTest_*` (chữ Google Play) |
+| `ships` | **2** | `mini_ship`/`mini_ship_1` |
+| `drones` | **2** | `drone_may_bay_cam` · `7.2` (ảnh 08 #14) |
+| **cộng** | **1.049** | |
 
-**Cảnh báo về chất lượng nhãn (đừng đọc "979" là "979 đúng"):** xem ảnh 03 cho thấy tên **không**
+**Cảnh báo về chất lượng nhãn (đừng đọc "1.049" là "1.049 đúng"):** xem ảnh 03 cho thấy tên **không**
 luôn mô tả nội dung — `Ghost` là **một con tàu**, `Enegry` là **lon nước tăng lực**, `Hand` là **cánh
-tay robot**; và ảnh 07 cho thấy `heart` (#7) thực ra là **bông tuyết**. Vì vậy luật
+tay robot**; ảnh 07 cho thấy `heart` (#7) thực ra là **bông tuyết**. Vì vậy luật
 `Ghost`/`Light`/`Gate`/`Manh`/`DA-` chỉ ở mức **C**, và **mọi nhãn đều ghi rõ luật** trong cột `rule`
 của CSV để người dùng kiểm lại từng cái.
 
-### 4.1 Còn lại **575 `unknown`** — chia ba nhóm, mỗi nhóm một cách đóng
+### 4.1 Còn lại **505 `unknown`** — chia ba nhóm, mỗi nhóm một cách đóng
 
 | nhóm | số | cách đóng |
 |---|---:|---|
-| `numeric` — tên là **số**: `1`, `7day`, `208.0` | **56** | xem contact sheet (chủ yếu `unclassified-07/08`) |
-| `word` — tên là **từ đơn**: `About`, `Add`, `Body`, `Border_Big`, `Boom`, `Bag1` | **242** | phần lớn là **khung/viền/nút UI** + mảnh tàu — xem ảnh |
-| `other` — có số + chữ: `10010Radar`, `Arow1`, `Beemap_0`, `BH1`, `Trap3`, `asteroid` | **341** | xem ảnh |
+| `numeric` — tên là **số**: `1`, `7day`, `208.0` | **33** | xem contact sheet |
+| `word` — tên là **từ đơn**: `About`, `Add`, `Bag1`, `Be`… | **204** | phần lớn là **khung/viền/nút UI** + icon — xem ảnh |
+| `other` — có số + chữ: `10010Radar`, `Arow1`, `Beemap_0`, `BH1`, `Trap3`, `asteroid` | **268** | xem ảnh |
 
-**516 họ tên** trong 575 unknown, trong đó **476** là **tên đơn lẻ** (không có `_n` đi kèm) ⇒ không
+**448 họ tên** trong 505 unknown, trong đó **410** là **tên đơn lẻ** (không có `_n` đi kèm) ⇒ không
 gom nhóm được, buộc phải xem từng tile. Mỗi dòng CSV có cột **`needs_eye` = `unclassified-NN.jpg#k`**.
 
 ### 4.2 Trạng thái xem ảnh — nói thẳng
@@ -112,22 +112,24 @@ gom nhóm được, buộc phải xem từng tile. Mỗi dòng CSV có cột **`
 | contact sheet đã **xem bằng mắt** | **4/25** (`unclassified-01`, `-03`, `-07`, `-08`) |
 | sprite trong 4 sheet đó | 256 |
 | sheet còn lại **chưa xem** | **21** |
-| trong số đó còn `unknown` | **18** |
+| trong số đó còn `unknown` | **17** |
 
-7 sheet đã **hết** `unknown`: `-02`, `-03`, `-05`, `-07`, `-08`, `-21`, `-22` — 4 nhờ luật tên (`-02`,
-`-05`, `-21`, `-22`), 3 nhờ xem ảnh (`-01`, `-03`, `-07`/`-08` xem gần đủ 64 tile mỗi sheet).
-Nhiều sheet còn unknown nhất: `-09` **64**, `-15` **46**, `-11`/`-18` **44**, `-06`/`-19`/`-24` **42**.
+8 sheet đã **hết** `unknown`: `-02`, `-03`, `-05`, `-07`, `-08`, `-09`, `-21`, `-22`. Riêng `-09` hết
+**nhờ luật tên** (`Body*` · `Bone*` · `Bomb`/`Boom` · `Border*` · `Boss…Gray` · `Botro`), không tốn một
+lần xem ảnh nào — nghĩa là **đọc tên trước, xem ảnh sau** vẫn là cách rẻ nhất.
+
+Nhiều sheet còn unknown nhất: `-15` **46**, `-11`/`-18` **44**, `-06`/`-19`/`-24` **42**, `-12` **41**.
 
 > **Vì sao không "xem 25 ảnh rồi xong" trong một lượt:** mỗi ảnh là 64 tile; gán nhãn bằng mắt cần
 > đối chiếu *tên ↔ tile* (CSV có sẵn), nhưng một tile sai sẽ kéo theo nhãn sai trong cả một họ. Cách
-> đang làm: **luật trước (được 979), mắt sau (từng sheet)** — mỗi vòng 2–5 sheet.
+> đang làm: **luật trước (được 1.049), mắt sau (từng sheet)** — mỗi vòng 2–5 sheet.
 
 ### 4.3 Phát hiện quan trọng: bản gốc **tháo rời tàu/enemy thành bộ phận**
 
-Ảnh 07 (64 tile) cho thấy phần lớn "ảnh chưa phân loại" **không phải sprite hoàn chỉnh** mà là **bộ
+Ảnh 07–08 (128 tile) cho thấy phần lớn "ảnh chưa phân loại" **không phải sprite hoàn chỉnh** mà là **bộ
 phận**: cánh, khiên chữ V, vỏ giáp, khung thân, đầu máy bay, mũi khoan, khối năng lượng — tên chỉ là
-số (`1.1`, `2.2d`, `211_0`, `212_3`) đúng như kiểu tên khi một prefab bị **explode** ra. Trong danh
-sách có sẵn họ tên `sieuhopthe_tachbophan` = **"siêu hợp thể tách bộ phận"** xác nhận cách đặt tên này.
+số (`1.1`, `2.2d`, `211_0`, `212_3`, `Body3`) đúng như kiểu tên khi một prefab bị **explode** ra. Trong
+danh sách có sẵn họ tên `sieuhopthe_tachbophan` = **"siêu hợp thể tách bộ phận"** xác nhận cách đặt tên này.
 
 ⇒ Hệ quả cho người dựng lại:
 
@@ -179,14 +181,14 @@ nhóm `unclassified` (**113** sprite), 7 sheet còn lại đã có nhãn (`Bg1`/
 
 ## 7. Kết luận cho người dựng lại
 
-- **Không cần** chờ phân loại hết 2.197 ảnh mới bắt đầu: 1.903 sprite đã có PNG riêng; **979** sprite nay
-  đã có nhãn đề xuất (kèm mã luật để kiểm), **575** còn lại có toạ độ tile để xem.
+- **Không cần** chờ phân loại hết 2.197 ảnh mới bắt đầu: 1.903 sprite đã có PNG riêng; **1.049** sprite nay
+  đã có nhãn đề xuất (kèm mã luật để kiểm), **505** còn lại có toạ độ tile để xem.
 - **Cần** cho việc dựng art mới: 13 nhóm đã phân loại (**643** asset: 132+109+80+73+69+67+32+31+25+13+8+4)
   là đủ để lấy tỉ lệ kích thước/phong cách; **không** cần cắt hết sheet.
 - **Việc rẻ nhất, làm ngay:** cắt `1_5x2` + `k_1__2x3` (**16 ô**, lưới khai báo trong tên, không phải
   đoán) và dùng `sprites-classified.csv` thay cho `sprites-index.csv` khi cần tra nhãn.
-- **Việc còn lại là "xem ảnh"**, không phải "đọc thêm raw": **21** contact sheet chưa xem hết, **575**
-  tile (nhiều nhất `unclassified-09` **64**, rồi `-15` **46**, `-11`/`-18` **44**). Trừ khi có **rect** (T9)
+- **Việc còn lại là "xem ảnh"**, không phải "đọc thêm raw": **21** contact sheet chưa xem hết, **505**
+  tile (nhiều nhất `unclassified-15` **46**, rồi `-11`/`-18` **44**, `-06`/`-19`/`-24` **42**). Trừ khi có **rect** (T9)
   thì mới đóng được bằng máy.
 
 ## 8. Tự kiểm
@@ -202,5 +204,5 @@ python3 tools/verify-claims.py               # toàn bộ
 | **AB1** | 2.197 asset · 1.554 `unclassified` · 132 sheet · 16 sheet có sprite · **116** chưa tách |
 | **AB2** | 1.554 = **396** trong sheet + **1.158** rời |
 | **AB3** | 17 sheet ≥ 8 sprite = **184** sprite (10 sheet / **113** sprite thuộc `unclassified`) · 2 sheet lưới = **16** ô, **0** ô đã tách |
-| **AB4** | phân loại lại: **979** có nhãn (**863 A · 46 B · 70 C**) · **575** `unknown` (**33** numeric · **224** word · **318** other) |
-| **AB5** | 575 unknown = **516** họ tên, **476** tên đơn lẻ; **18/25** contact sheet còn tile chưa gán |
+| **AB4** | phân loại lại: **1.049** có nhãn (**863 A · 116 B · 70 C**) · **505** `unknown` (**33** numeric · **204** word · **268** other) |
+| **AB5** | 505 unknown = **448** họ tên, **410** tên đơn lẻ; **17/25** contact sheet còn tile chưa gán |

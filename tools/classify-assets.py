@@ -44,8 +44,15 @@ RULES = [
     (r"^(AppleInAppPurchase|ApplePay|GooglePay|GooglePlayWordmark|Google_Play_Games|ArenaMedal|BOm|BombAttack|Blink|Change|Circle6|Circle7|Circle$|Circle_2)", "ui", "R17 logo IAP/nút", "A"),
     (r"^(DF5_|HotSale_|Web2|XVideo|Shop)", "ui", "R18 ảnh chụp banner/thumb shop", "B"),
     (r"^Manh", "ui", "R19 Manh* (mảnh ghép UI)", "C"),
+    (r"^Boss\w*Gray$", "ui", "R26 Boss*Gray = chân dung boss chưa mở (xám)", "B"),
+    (r"^Boss", "bosses", "R27 Boss* (chân dung/khung boss)", "B"),
+    (r"^Border", "ui", "R28 Border* = viền khung", "B"),
+    (r"^Body", "parts", "R29 Body* = thân rời", "B"),
+    (r"^Bone", "parts", "R31 Bone* = khúc/xương rời", "B"),
+    (r"^(Bong_Den|Botro)", "ui", "R32 bóng đèn / bổ trợ (icon UI)", "B"),
     # --- fx --------------------------------------------------------------
     (r"^(Circle_blue|Circle_mask|Circle_)", "fx", "R20 Circle_* = quầng sáng (ảnh 03 #1-6)", "A"),
+    (r"^(Bomb|Boom)", "fx", "R33 Bomb/Boom = nổ", "B"),
     (r"^(Light|Gate|Ghost|Blink)", "fx", "R21 hiệu ứng hình học", "C"),
     # --- drone / tàu ------------------------------------------------------
     (r"^drone", "drones", "R24 drone*", "A"),
