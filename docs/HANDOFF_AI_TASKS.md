@@ -287,3 +287,25 @@ add/remove và missionthresholds. Raw mới nhiều spawn implementations sẵn 
 - `mission-denominators.json.gz`:4methods11checks;57 tests pass.
 - Tiếp raw join result GetMissionCompleted→star UI/save + victory/unlock/Continue,
   và movement-completion callback registration/timing. Premium vẫn deferred.
+
+## Agent hiện tại — report57: mission UI / saved stars / Continue
+
+- Đúng `boards/board_endgame` root113205/resources.assets;1070nodes, Board
+  component621494.3 normal Stage_Mission components648536/636132/696150;
+  BtnContinue92306 persistent call→this board.OnPressedButtonContinue.
+- Native Stage_Mission/GameDatas40185724759; prefab retry40185845817success.
+- Ordinary LevelCurrent0: savedStars>rowIndex for old flags; result+1 saves
+  only if more than prior completed rows; only NEW rows add GameDatas.StarCount.
+  Keys StarStageMaster{stage}_{mode}, StarCount→Unity PlayerPrefs.SetInt;
+  disk flush not proven. Replay3stars with result0 retains3/no new global stars.
+- Animator triggers None/Collected/Clear, NOT SetBool.3 mission rows confirmed,
+  not yet3 graphical star icons or clip durations.
+- RunMissions new-row clear/reward→WaitForSecondsRealtime(0.5), includinglast;
+  Continue→isQuitingtrue→SkipUnbox→StopAllCoroutines→settle remaining rows.
+- IMPORTANT: GP_Endgame.OpenBoardVictory target++block14f08f4..14f09b4 has
+  mode/target/cap guards but no read/test incomingvictoryw20. Do not restate
+  “victory-only unlock”. Runtime defeat reachability still unproven.
+- Raw endgame-missions/mission-progress-flow.json.gz18methods16checks;
+  full63tests pass. Premium remains deferred.
+- Next raw joins: movement-completion wiring/timing; target-advance defeat
+  reachability; actual Continue visibility gates/Animator clips (without Premium).
