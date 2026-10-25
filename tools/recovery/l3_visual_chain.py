@@ -32,7 +32,7 @@ def main():
     out=ROOT/'reverse-engineering/raw/l3-chain';out.mkdir(parents=True,exist_ok=True)
     records={};links=[];roots=[];queue=deque();classes={};script_cache={};resource_rows=[]
     def key(obj):return(names[id(obj.assets_file)],int(obj.path_id))
-    def ident(obj):return dict(serialized_file=names[id(obj.assets_file)],path_id=int(obj.path_id),type=obj.type.name)
+    def ident(obj):return dict(serialized_file=names[id(obj.assets_file)],path_id=int(obj.path_id),type=obj.type.name,class_id=int(obj.type))
     def enqueue(obj):
         if key(obj) not in records:records[key(obj)]=None;queue.append(obj)
     def classify(obj):
