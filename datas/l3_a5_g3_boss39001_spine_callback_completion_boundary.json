@@ -1,0 +1,161 @@
+{
+  "schema": "l3-a5-g3-boss39001-spine-callback-completion-boundary-v1",
+  "claim_comment_id": 6423862570,
+  "branch": "arena/a5a74747-windwings-space-shooter-game-p",
+  "evidence_mode": "static_only",
+  "disposition": {
+    "status": "BOSS39001_SERIALIZED_SPINE_CHAIN_PROVEN / EVENT_CALLBACK_RET / COMPLETION_STATE_BRANCHES_BOUNDED / EVENT_SLOT_JOIN_UNRESOLVED",
+    "summary": "Boss-39001 serialized component 674445 points through SkeletonAnimation 602882 and SkeletonDataAsset 580611 to Spine JSON 918. Its exported AnimationState_Event callback at RVA 0x1247DA8 is a single RET and contains no event-name slot load or branch. A separate Complete callback extracts the animation name and reaches BossWork, whose conditional state-name branches statically pass Attack1/2/3 fields to SetAnimation or pass defeatEvent to helper 0x278EF98. No Boss-39001 event-slot/marker/handler join is established; Boss-39002 callback evidence is not transferred.",
+    "bounded_result": true
+  },
+  "boss39001_route": {
+    "serialized_component": {
+      "class_label": "Boss_1_Animation",
+      "type_def_index": 141,
+      "component_path_id": 674445,
+      "gameobject": "Boss-39001/Enemy_Ingame/Body/Boss 1",
+      "m_script_target_path_id": 32715571200,
+      "m_script_target_class": "",
+      "skeAnim_field": "skeAnim",
+      "skeAnim_path_id": 602882
+    },
+    "skeleton_component": {
+      "class_label": "SkeletonAnimation",
+      "component_path_id": 602882,
+      "m_script_target_path_id": 29947330560,
+      "m_script_target_class": "",
+      "skeleton_data_path_id": 580611
+    },
+    "skeleton_data": {
+      "path_id": 580611,
+      "skeleton_json_path_id": 918
+    },
+    "serialized_state_fields": [
+      {"field": "stateAppear", "offset": "0x30", "value": "Xuathien"},
+      {"field": "stateRunAway", "offset": "0x38", "value": "Baydi"},
+      {"field": "stateDie", "offset": "0x40", "value": "Dead"},
+      {"field": "stateAttack1", "offset": "0x48", "value": "Attack1"},
+      {"field": "stateAttack2", "offset": "0x50", "value": "Attack2"},
+      {"field": "stateAttack3", "offset": "0x58", "value": "Attack3"},
+      {"field": "statePreAttack2", "offset": "0x60", "value": "Chuyensangattack2"},
+      {"field": "statePreAttack3", "offset": "0x68", "value": "Chuyensangattack3"}
+    ],
+    "serialized_unity_events": [
+      {"field": "defeatEvent", "offset": "0x70", "target_path_id": 601110, "method": "OnDefeated"},
+      {"field": "burstEvent", "offset": "0x78", "target_path_id": 601110, "method": "OnBusrtItems"}
+    ]
+  },
+  "start_registration": {
+    "method": "Boss_1_Animation.Start",
+    "rva": "0x12473EC",
+    "static_code_observation": "The method follows skeAnim at this+0x28 and contains two delegate construction/add sequences: 0x1247480-0x12474C0 (method-table load +0x190; helper targets 0x220E3DC and 0x220A648) and 0x12474C4-0x1247508 (method-table load +0x180; helper targets 0x220E2C8 and 0x220A510). The class declaration identifies the Complete and Event callbacks. This is source registration code only.",
+    "runtime_registration_or_delivery_observed": false
+  },
+  "event_callback": {
+    "method": "Boss_1_Animation.SkeletonAnimation_AnimationState_Event",
+    "rva": "0x1247DA8",
+    "body_instructions": ["ret"],
+    "argument_read": false,
+    "event_name_comparison": false,
+    "string_slot_load": false,
+    "conditional_branch": false,
+    "true_branch": null,
+    "interpretation": "This exported method body has no event-name slot join or event-marker semantics. This is a bounded body result, not a global absence claim."
+  },
+  "complete_to_bosswork": {
+    "complete_callback": {
+      "method": "Boss_1_Animation.SkeletonAnimation_AnimationState_Complete",
+      "rva": "0x1247C38",
+      "observed_flow": "Null-check TrackEntry; load nested animation-name string through the observed pointer fields; tail-branch to BossWork at 0x1247C58.",
+      "event_callback": false
+    },
+    "setanimation_target": {
+      "target_rva": "0x220D324",
+      "identity_source": "Report 141's bounded direct-call analysis",
+      "track_index": 0,
+      "loop_flag": 1
+    },
+    "conditional_branches": [
+      {
+        "match_field": "stateAppear",
+        "field_offset": "0x30",
+        "serialized_value": "Xuathien",
+        "code_range": "0x1247C6C-0x1247CB0",
+        "optional_action": "If nextTurn at this+0x88 is non-null, call its delegate.",
+        "static_true_branch": "Pass stateAttack1 at this+0x48 to SetAnimation target 0x220D324, track 0, loop=true."
+      },
+      {
+        "match_field": "statePreAttack2",
+        "field_offset": "0x60",
+        "serialized_value": "Chuyensangattack2",
+        "code_range": "0x1247CB4-0x1247CF8",
+        "optional_action": "If nextTurn at this+0x88 is non-null, call its delegate.",
+        "static_true_branch": "Pass stateAttack2 at this+0x50 to SetAnimation target 0x220D324, track 0, loop=true."
+      },
+      {
+        "match_field": "statePreAttack3",
+        "field_offset": "0x68",
+        "serialized_value": "Chuyensangattack3",
+        "code_range": "0x1247CFC-0x1247D54",
+        "optional_action": "If nextTurn at this+0x88 is non-null, call its delegate.",
+        "static_true_branch": "Pass stateAttack3 at this+0x58 to SetAnimation target 0x220D324, track 0, loop=true."
+      },
+      {
+        "match_fields_any": ["stateRunAway", "stateDie"],
+        "field_offsets": ["0x38", "0x40"],
+        "serialized_values": ["Baydi", "Dead"],
+        "code_range": "0x1247D58-0x1247DA4",
+        "static_true_branch": "If defeatEvent at this+0x70 is non-null, pass it to helper target 0x278EF98. This branch does not read burstEvent at this+0x78.",
+        "burst_event_read": false
+      }
+    ],
+    "interpretation": "These are static completion-name/state comparisons, not Spine Event callback handling, event-key matching, or observed execution."
+  },
+  "event_slot_and_handler_boundary": {
+    "boss39001_callback_references_slot_0x2ADFB48": false,
+    "slot_0x2ADFB48_value_attributed": false,
+    "spine_marker_joined": false,
+    "defeat_or_burst_assigned_as_spine_marker_effect": false,
+    "handler_type": "BossSpineEventHandler",
+    "handler_type_def_index": 114,
+    "bounded_serialized_handler_instance_count": 0,
+    "boss39001_handler_values_joined": false,
+    "script_identity_gap_source": "Report 142's bounded script-link / component inventory; both Boss_1_Animation and SkeletonAnimation script targets have blank target_class, and no Boss-39001 BossSpineEventHandler instance/value set is present in the checked export.",
+    "blocking_prerequisite": "Resolve a concrete script/type mapping and a serialized handler instance or explicit caller edge on the Boss-39001 object route, then join its serialized field values and any relevant slot-backed literal. No sibling callback evidence substitutes for these joins."
+  },
+  "shared_asset_but_separate_routes": {
+    "boss39001_skeleton_component_path_id": 602882,
+    "boss39002_skeleton_component_path_id": 664302,
+    "shared_skeleton_data_path_id": 580611,
+    "shared_spine_json_path_id": 918,
+    "boss39002_callback_or_selection_evidence_used_for_boss39001": false,
+    "interpretation": "Shared serialized Spine data identity only; callbacks, event slots, and selection routes remain prefab-specific. Report 140's timeline is asset-only and is not assigned here to a receiver or effect."
+  },
+  "boundaries": {
+    "runtime_registration_observed": false,
+    "event_delivery_observed": false,
+    "playback_or_effect_execution_observed": false,
+    "runtime_readback_or_parity_claimed": false,
+    "native_fde_or_libunity_inspected": false,
+    "runtime_probe_or_emulator_used": false,
+    "frozen_raw_regenerated": false,
+    "live_dps_status": "MODEL_NOT_MEASURED"
+  },
+  "source_sha256": [
+    {"path": "reverse-engineering/raw/il2cpp-consts/Boss_1_Animation.asm.txt", "bytes": 24138, "sha256": "bc9514a4f7ea3496ec116fb7533e112d4c2caa6b7176df210084f7e66e0a85f6"},
+    {"path": "reverse-engineering/raw/il2cpp-consts/Boss_1_Animation.json", "bytes": 6736, "sha256": "163a49271bea19ce87983dc6113a8771cf5bcf9fcf6d4be1a837faaa2db3e607"},
+    {"path": "reverse-engineering/il2cpp/dump.cs.gz", "bytes": 2769105, "sha256": "e08f23fb6c90e07288e5b202e0ce1e7c5e82a7feb5ccae7aa08aaec3ad166454"},
+    {"path": "reverse-engineering/raw/typetrees/Boss_1_Animation.jsonl.gz", "bytes": 489, "sha256": "c4557ad639056aea4b74b1323c529b01a60d73da97273319aa956f8aacee03ff"},
+    {"path": "reverse-engineering/raw/typetrees/script-links.jsonl.gz", "bytes": 755652, "sha256": "8263566118f12390289aa839d7c02bf9d8231f96eb860b60f7d1d4b7a7631b44"},
+    {"path": "reverse-engineering/raw/animation-audit/legacy-boss-instances.json", "bytes": 2816, "sha256": "294950517eb313987c0845e11f8fb1f2fe92824b84f613f58c70be529539af07"},
+    {"path": "reverse-engineering/raw/animation-audit/spine-prefabs.json", "bytes": 3589, "sha256": "bd16f12f4cc4dc4e74aa9aa7c1ab0df0907b35ff8173ef5265a3dd1122142db9"},
+    {"path": "datas/spine.json", "bytes": 51070, "sha256": "e365ad3015498d755c359465f37533b0f6d9f12a0fd79e84c0015d3fcfdda5f3"},
+    {"path": "datas/spine_identity.json", "bytes": 342294, "sha256": "5a029ce5be8f9a8b3418a93eaadc1ee204831c87e19a52959f1ba0bcef5a5385"},
+    {"path": "docs/apk-analysis/140-a5a74747-game-side-spine-event-timeline-association.md", "bytes": 4865, "sha256": "5e52045530abf8513b0e1994dcf28658782e8765601873fdbc0ae4557be1e070"},
+    {"path": "datas/l3_a5a74747_game_side_spine_event_timeline_association.json.gz", "bytes": 2564, "sha256": "36cc70e0d263b4cd924347e9e74e06d8c6d4aa63ef124452d4212eb946749963"},
+    {"path": "docs/apk-analysis/141-a5a74747-game-side-spine-attack4-selection-boundary.md", "bytes": 5091, "sha256": "6a1d00cc8337cc9153088e4b1fe89f1d1c6231215753f75519f45d8241ad01da"},
+    {"path": "datas/l3_a5a74747_game_side_spine_attack4_selection_boundary.json.gz", "bytes": 3497, "sha256": "ba295316e1901bef0ce21afd3a69005a9cc6b06f1a1f70b95af3ec8e1477e67f"},
+    {"path": "docs/apk-analysis/142-a5a74747-game-side-bossspine-handler-script-identity-boundary.md", "bytes": 4099, "sha256": "34b55daf7c6ec66b75a472c5d6211b118ae628bf114234808cfb684674276521"},
+    {"path": "datas/l3_a5a74747_game_side_bossspine_handler_script_identity_boundary.json.gz", "bytes": 10136, "sha256": "78a30c435f204cd87a2c8cb8b3643aef11c4738c839649cc03cd1d7b3d55a488"}
+  ]
+}

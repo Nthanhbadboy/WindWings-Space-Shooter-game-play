@@ -33,8 +33,8 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **116** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
-| `datas/` | JSON/CSV bóc trực tiếp | **113** file · **26.516.689 bytes** (**26,5 MB**) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **117** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `datas/` | JSON/CSV bóc trực tiếp | **114** file · **26.527.048 bytes** (**26,5 MB**) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
 | `reverse-engineering/scriptableobjects/` | Bảng ScriptableObject | **126** CSV · 13 MB | số cân bằng: súng, enemy, stage, shop |
@@ -82,8 +82,10 @@
 | `docs/apk-analysis/155-g5-tut-settings1-focusgamespeed-flow.md` | G5 `focusGameSpeed` tutorial/UI trace | `Start` connects the slider callback; callback triggers the linked UI Animator under static guards | No slot-to-parameter join, Boss-39002 key, runtime invocation, playback, or clock effect claimed |
 | `datas/l3_a5_g6_array_blob_field_binding_census.json` | G6 inventory-first array-blob field-binding receipt | Five captured rows classified; three constructor fields bound; one dynamic callsite `NOT_BOUND` | Two tracked exports only; no PvP lane or whole-program absence claim |
 | `docs/apk-analysis/156-g6-array-blob-field-binding-census.md` | G6 bounded array-blob census | Five of six ASM-observed `InitializeArray` sites captured; exact blocker recorded for handle-selected payloads | Field names only where constructor stores prove them; no inferred purpose or runtime claim |
+| `datas/l3_a5_g3_boss39001_spine_callback_completion_boundary.json` | G3 Boss-39001 Spine callback/completion receipt | Serialized chain 674445 → 602882 → 580611 → 918; event callback `RET`; completion-name branches bounded | No event-slot/marker join or BossSpineEventHandler instance; Boss-39002 evidence remains separate |
+| `docs/apk-analysis/157-g3-boss39001-spine-callback-completion-boundary.md` | G3 static Boss-39001 route trace | Empty Spine Event callback distinguished from Complete → BossWork state branches | No runtime delivery/playback/effects or marker attribution claimed |
 
-**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **113** file `datas/`.
+**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **114** file `datas/`.
 
 > **Đừng "sửa" 142.136 thành 142.131:** `wc -l *.asm.txt` cho **142.131** vì **`wc` đếm ký tự
 > newline**, còn `AI1` đếm **dòng** (`sum(1 for _ in fh)` = `splitlines()`). **5** file
