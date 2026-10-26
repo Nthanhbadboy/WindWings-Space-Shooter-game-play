@@ -1,0 +1,37 @@
+;;; cctor  private static void .cctor() { }
+    0x1385820: str      x30, [sp, #-0x20]!
+    0x1385824: stp      x20, x19, [sp, #0x10]
+    0x1385828: adrp     x19, #0x2ce1000
+    0x138582c: adrp     x20, #0x2ae3000
+    0x1385830: ldrb     w8, [x19, #0x8bc]
+    0x1385834: ldr      x20, [x20, #0x188]
+    0x1385838: tbnz     w8, #0, #0x1385850
+    0x138583c: adrp     x0, #0x2ae3000
+    0x1385840: ldr      x0, [x0, #0x188]
+    0x1385844: bl       #0x110d028
+    0x1385848: mov      w8, #1
+    0x138584c: strb     w8, [x19, #0x8bc]
+    0x1385850: ldr      x0, [x20]
+    0x1385854: bl       #0x110d240
+    0x1385858: mov      x1, xzr
+    0x138585c: mov      x19, x0
+    0x1385860: bl       #0x2143330
+    0x1385864: ldr      x8, [x20]
+    0x1385868: ldr      x8, [x8, #0xb8]
+    0x138586c: str      x19, [x8]
+    0x1385870: ldp      x20, x19, [sp, #0x10]
+    0x1385874: ldr      x30, [sp], #0x20
+    0x1385878: ret      
+
+;;; ctor  public void .ctor() { }
+    0x138587c: mov      x1, xzr
+    0x1385880: b        #0x2143330
+
+;;; <ThrowGetStrongest>b__29_0  internal void <ThrowGetStrongest>b__29_0() { }
+    0x1385884: mov      w0, #2
+    0x1385888: mov      x1, xzr
+    0x138588c: b        #0x141b488
+
+;;; <NoEnergy>b__31_1  internal void <NoEnergy>b__31_1() { }
+    0x1385890: ret      
+    0x1385894: ret      

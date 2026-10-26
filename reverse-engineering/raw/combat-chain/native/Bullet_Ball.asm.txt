@@ -1,0 +1,75 @@
+;;; FixedUpdate  protected override void FixedUpdate() { }
+    0x158deb4: stp      d9, d8, [sp, #-0x20]!
+    0x158deb8: stp      x30, x19, [sp, #0x10]
+    0x158debc: ldrb     w8, [x0, #0x60]
+    0x158dec0: cbz      w8, #0x158ded0
+    0x158dec4: ldrb     w8, [x0, #0x8c]
+    0x158dec8: mov      x19, x0
+    0x158decc: cbz      w8, #0x158dedc
+    0x158ded0: ldp      x30, x19, [sp, #0x10]
+    0x158ded4: ldp      d9, d8, [sp], #0x20
+    0x158ded8: ret      
+    0x158dedc: mov      x0, xzr
+    0x158dee0: bl       #0x2786dc0
+    0x158dee4: ldr      s1, [x19, #0x88]
+    0x158dee8: fcmp     s0, s1
+    0x158deec: b.ge     #0x158df44
+    0x158def0: ldr      s8, [x19, #0xb0]
+    0x158def4: ldr      s9, [x19, #0x13c]
+    0x158def8: mov      x0, xzr
+    0x158defc: bl       #0x2786de8
+    0x158df00: ldr      s1, [x19, #0x138]
+    0x158df04: fmul     s0, s9, s0
+    0x158df08: fsub     s0, s8, s0
+    0x158df0c: str      s0, [x19, #0xb0]
+    0x158df10: fmul     s1, s1, s0
+    0x158df14: fcmp     s1, #0.0
+    0x158df18: b.pl     #0x158df38
+    0x158df1c: ldr      s0, [x19, #0x13c]
+    0x158df20: ldr      s1, [x19, #0x134]
+    0x158df24: ldr      s2, [x19, #0x12c]
+    0x158df28: fsub     s0, s0, s1
+    0x158df2c: fcmp     s2, s0
+    0x158df30: fcsel    s0, s2, s0, gt
+    0x158df34: str      s0, [x19, #0x13c]
+    0x158df38: mov      x0, x19
+    0x158df3c: bl       #0x158dfbc
+    0x158df40: tbz      w0, #0, #0x158ded0
+    0x158df44: mov      x0, x19
+    0x158df48: ldp      x30, x19, [sp, #0x10]
+    0x158df4c: ldp      d9, d8, [sp], #0x20
+    0x158df50: b        #0x158df54
+
+;;; SetBullet  public override void SetBullet(BulletForceType force, Transform target, LayerMask targetLayer, float startSpeed, float startLifetime, float startAngle, Action<GameObject, Vector3> onCollision, Action<GameObject, Vector3> onDestroy, bool throughShield = False) { }
+    0x158e08c: str      d8, [sp, #-0x20]!
+    0x158e090: stp      x30, x19, [sp, #0x10]
+    0x158e094: and      x3, x3, #0xffffffff
+    0x158e098: and      w6, w6, #1
+    0x158e09c: mov      v8.16b, v0.16b
+    0x158e0a0: mov      x19, x0
+    0x158e0a4: bl       #0x158e0c0
+    0x158e0a8: ldr      s0, [x19, #0x130]
+    0x158e0ac: str      s8, [x19, #0x138]
+    0x158e0b0: str      s0, [x19, #0x13c]
+    0x158e0b4: ldp      x30, x19, [sp, #0x10]
+    0x158e0b8: ldr      d8, [sp], #0x20
+    0x158e0bc: ret      
+
+;;; ctor  public void .ctor() { }
+    0x158e294: adrp     x8, #0x757000
+    0x158e298: ldr      d0, [x8, #0x798]
+    0x158e29c: add      x8, x0, #0x12c
+    0x158e2a0: mov      w9, #0xcccd
+    0x158e2a4: movk     w9, #0x3e4c, lsl #16
+    0x158e2a8: str      d0, [x8]
+    0x158e2ac: adrp     x8, #0x779000
+    0x158e2b0: ldr      q0, [x8, #0x340]
+    0x158e2b4: str      w9, [x0, #0x134]
+    0x158e2b8: mov      w9, #0x5f93
+    0x158e2bc: mov      w8, #1
+    0x158e2c0: movk     w9, #1, lsl #16
+    0x158e2c4: mov      x1, xzr
+    0x158e2c8: strb     w8, [x0, #0x8c]
+    0x158e2cc: str      q0, [x0, #0xc0]
+    0x158e2d0: str      w9, [x0, #0x128]
+    0x158e2d4: b        #0x158c268

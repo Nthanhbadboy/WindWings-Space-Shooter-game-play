@@ -1,0 +1,52 @@
+;;; RegisterListener  public static void RegisterListener(MonoBehaviour listener, EventID eventID, Action<object> callback) { }
+    0x1434c84: str      x30, [sp, #-0x20]!
+    0x1434c88: stp      x20, x19, [sp, #0x10]
+    0x1434c8c: mov      x19, x2
+    0x1434c90: mov      w20, w1
+    0x1434c94: bl       #0x1434078
+    0x1434c98: cbz      x0, #0x1434cb0
+    0x1434c9c: mov      w1, w20
+    0x1434ca0: mov      x2, x19
+    0x1434ca4: ldp      x20, x19, [sp, #0x10]
+    0x1434ca8: ldr      x30, [sp], #0x20
+    0x1434cac: b        #0x143448c
+    0x1434cb0: bl       #0x110d250
+
+;;; PostEvent  public static void PostEvent(MonoBehaviour listener, EventID eventID, object param) { }
+    0x1434cb4: str      x30, [sp, #-0x20]!
+    0x1434cb8: stp      x20, x19, [sp, #0x10]
+    0x1434cbc: mov      x19, x2
+    0x1434cc0: mov      w20, w1
+    0x1434cc4: bl       #0x1434078
+    0x1434cc8: cbz      x0, #0x1434ce0
+    0x1434ccc: mov      w1, w20
+    0x1434cd0: mov      x2, x19
+    0x1434cd4: ldp      x20, x19, [sp, #0x10]
+    0x1434cd8: ldr      x30, [sp], #0x20
+    0x1434cdc: b        #0x1434720
+    0x1434ce0: bl       #0x110d250
+
+;;; PostEvent  public static void PostEvent(MonoBehaviour sender, EventID eventID) { }
+    0x1434ce4: stp      x30, x19, [sp, #-0x10]!
+    0x1434ce8: mov      w19, w1
+    0x1434cec: bl       #0x1434078
+    0x1434cf0: cbz      x0, #0x1434d04
+    0x1434cf4: mov      w1, w19
+    0x1434cf8: mov      x2, xzr
+    0x1434cfc: ldp      x30, x19, [sp], #0x10
+    0x1434d00: b        #0x1434720
+    0x1434d04: bl       #0x110d250
+
+;;; RemoveListener  public static void RemoveListener(MonoBehaviour listener, EventID eventID, Action<object> callback) { }
+    0x1434d08: str      x30, [sp, #-0x20]!
+    0x1434d0c: stp      x20, x19, [sp, #0x10]
+    0x1434d10: mov      x19, x2
+    0x1434d14: mov      w20, w1
+    0x1434d18: bl       #0x1434078
+    0x1434d1c: cbz      x0, #0x1434d34
+    0x1434d20: mov      w1, w20
+    0x1434d24: mov      x2, x19
+    0x1434d28: ldp      x20, x19, [sp, #0x10]
+    0x1434d2c: ldr      x30, [sp], #0x20
+    0x1434d30: b        #0x14348a4
+    0x1434d34: bl       #0x110d250

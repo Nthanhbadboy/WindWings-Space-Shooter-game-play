@@ -1,0 +1,114 @@
+# 31 — Bảng map đã giải bằng token InitializeArray (A−)
+
+> Mốc giải mã 2026-10-23. Mọi giá trị lấy trực tiếp từ APK (asm .cctor +
+> blob field-default trong `global-metadata.dat`), không suy từ screenshot.
+
+## Cách giải (đã kiểm chứng)
+
+1. `il2cpp_consts.py` ghi với mỗi call `InitializeArray` trong `.cctor`:
+   độ dài mảng (`mov w1,#N`) + handle `x20` → slot qword `0x80000000|(kind<<29)|src`.
+2. Mọi token của `Map_Get_Datas` đều **lẻ**: `src = 2*ordinal + 1`, ordinal là
+   thứ tự field trong type `<PrivateImplementationDetails>` **cùng image**
+   (Assembly-CSharp: type 2461, fields 16300..17039 — 740 field).
+3. Kiểm: 540/540 token có blob; 521/540 khớp `len(blob)/4` với `len` asm (±3
+   do làm tròn 16B). 0 token không giải được trên toàn 20 class
+   (`ia-resolved.json`: 573 mảng / 10 method).
+
+→ `datas/map_segments_full.json`: mọi segment của `.cctor` kèm giá trị từng mảng
+(nguồn `immediates` = hằng số trong asm, chắc chắn; `blob` = token→PID ở trên).
+
+## Gán field — ĐÃ CHỐT ở mức asm (A)
+
+Nối 3 nguồn: offset field trong dump.cs, lệnh `str` vào statics cuối mỗi
+nhóm trong `.cctor`, và thứ tự segment:
+
+| Offset | Field | Segment |
+|---|---|---|
+| 0x0 | `listMapTryPlayerDatas` | 1 |
+| 0x8 | `AllArenaStartMaps` | 2–12 (63 mảng len 36) |
+| 0x10 | `AllArenaRandomMaps` | 13–23 |
+| 0x18 | `AllPvPStartMaps` | 24–34 (10×10 len 7) |
+| 0x20 | `mapCurrentPlayTest` = 0 | — |
+| **0x28** | **`listMapDatas`** | **35 (250 mảng)** |
+| 0x30 | `listMapBranchDatas` | 36–40 |
+| 0x38 | `listIdBosses` (Dictionary) | — |
+| 0x40 | `listMapFightBossDatas` | 41–62 |
+| 0x48 | `listMapChallangeDatas` | 63–67 |
+| 0x50 | `listMapEndlessDatas` | 68 |
+| 0x58 | `listMapObstacleDatas` | 69 |
+| 0x60 | `mapChallangeIndexs` (int[]) | cuối .cctor |
+
+→ `datas/maps.json` = `listMapDatas` theo thứ tự `.cctor` (nội dung A;
+đánh số map 1-based vẫn theo quy ước phần tử *N−1*).
+
+Thiếu đúng 1 mảng (index 4, IA call mà exporter chưa bắt được token); 41 IA
+khác thuộc segment chưa gán field.
+
+## Còn mở
+
+- Offset static store trong `.cctor` để gán segment→field 100% (nâng lên A).
+- Bắt nốt 36 IA call bị hụt trong exporter (token qua thanh ghi khác x20).
+
+### Cảnh báo kiểm toán bổ sung
+
+Nhãn A ở trên chỉ áp dụng việc gán **segment 35 → field @0x28**.
+Resolver token còn là giả thuyết được hỗ trợ mạnh, chưa xác minh runtime:
+19/540 mẫu chưa khớp độ dài, exporter bỏ sót call và chưa loại trừ token cũ
+trong thanh ghi. Vì vậy nội dung `maps.json` / `ia-resolved.json` vẫn
+**PROVISIONAL**, không dùng nhãn PASS hoàn tất cho toàn bộ T1.
+Bảng device hiện là 11 blob bắt được, không phải đã chứng minh danh sách
+11 device: asm có call khởi tạo đầu tiên chưa bắt được, và blob cuối có thể
+thuộc field khác. Chưa gán tên/ý nghĩa cho các hàng.
+
+Kiểm toán exporter: đã khôi phục đoạn ghi field-defaults.json bị xóa nhầm
+khi dọn probe; các raw probe đã có được giữ để truy vết, ngừng sinh mới.
+
+### Vòng sửa capture tiếp theo
+
+`c5859b662`: bỏ chọn wrapper theo tần suất; chỉ ghi sự kiện tại đúng
+`bl 0x205b07c` (được script.json nhận diện InitializeArray). Token x1 bị
+xóa sau call theo ABI để tránh lấy token của mảng trước tại array-new.
+Output mới giữ cả call site, array-new site, raw blob, field và length_valid.
+**Chưa có kết quả tái xuất được lưu:** Actions 39918069220 thất bại tại
+Commit reports; dữ liệu 540 token hiện tại vẫn là bản cũ. Lệnh rerun bị GitHub
+từ chối (workflow không rerun được). Không nâng mức tin cậy từ bản sửa code này.
+
+## Vòng tái xuất thành công — supersedes số liệu 540 token ở trên
+
+Actions **39919731561** thành công, gồm bước Commit reports.
+Capture `actual-initializearray-call-v2` cho **616 mảng / 12 method**, tất cả
+khớp dung lượng blob với chiều dài asm (padding <16 byte).
+Riêng Map: **576/576 IA** giải được, **0 sai độ dài**.
+
+Nguyên nhân lệch trước đó: heuristic chọn đích `bl` theo tần suất và giữ x1
+qua call đã lấy token cũ tại array-new. Bản mới ghi token tại chính wrapper
+InitializeArray đã được script.json xác nhận, không suy từ tần suất.
+
+`tools/verify/map_resolved.py` nối bằng array-new address, assert số lượng,
+độ dài và toàn bộ 250 entry campaign không có None. Kết quả:
+- `datas/maps.json`: **250/250 entry đầy đủ**, index 4 = `[95,11,7008]`.
+- `datas/map_segments_full.json`: lưu field và call-site của mỗi IA.
+- Ngoài campaign còn 2 immediate-array chưa đọc đủ ở segment 69; mảng cuối
+  có thể là field mapChallangeIndexs, không được diễn giải thành obstacle map.
+- `datas/device_table.json`: **12 capture**, giữ provenance, đổi key `devices`
+  thành `arrays` để không ngầm coi mỗi capture là một device.
+
+Mọi kết luận vẫn PROVISIONAL về ngữ nghĩa gameplay/đánh số UI; chưa có
+runtime corroboration. Các bảng candidate cũ chỉ giữ làm lịch sử, không dùng
+làm đầu vào nếu đã có `maps.json` mới.
+
+## Xử lý immediate/zero initialization và độ dài động
+
+- `0x1416b20`: new int[2], chỉ ghi index 1 = 1 tại 0x1416b3c;
+  index 0 giữ mặc định 0. Mảng đầy đủ `[0,1]`, không phải `[unknown,1]`.
+- `0x14178b0`: `ldr w1,[x8,#4]` ghi đè độ dài trước khi array-new tại
+  0x14178b4. Giá trị 43 trong parser cũ là stale immediate, **bị bác bỏ**.
+  Store tại 0x14178d4 gán mảng mới vào statics +0x60 = `mapChallangeIndexs`.
+  Đây là field độc lập, không phải phần tử cuối của `listMapObstacleDatas`.
+  Raw asm được giữ nguyên; JSON `standalone_arrays` ghi rõ len=null,
+  nguồn độ dài và giá trị khởi tạo zero. Chưa xác minh giá trị field runtime.
+
+`tests/test_map_extraction.py`: 4 regression checks (576 joins, campaign 250,
+zero default, dynamic array tách riêng). Workflow `Verify extracted tables`
+tái dựng bằng Python chuẩn và kiểm `git diff --exit-code`; không tải APK,
+không tự commit, không sử dụng mạng cho dữ liệu game.

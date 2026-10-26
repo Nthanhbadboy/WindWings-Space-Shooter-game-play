@@ -1,0 +1,84 @@
+;;; ctor  public void .ctor() { }
+    0x1535d68: mov      x1, xzr
+    0x1535d6c: b        #0x2143330
+
+;;; <IEGunCheckAttack>b__0  internal void <IEGunCheckAttack>b__0(GameObject obj, Vector3 pos) { }
+    0x1535d70: str      d10, [sp, #-0x40]!
+    0x1535d74: stp      d9, d8, [sp, #0x10]
+    0x1535d78: stp      x30, x21, [sp, #0x20]
+    0x1535d7c: stp      x20, x19, [sp, #0x30]
+    0x1535d80: adrp     x21, #0x2ce2000
+    0x1535d84: ldrb     w8, [x21, #0x52a]
+    0x1535d88: mov      v8.16b, v2.16b
+    0x1535d8c: mov      v9.16b, v1.16b
+    0x1535d90: mov      v10.16b, v0.16b
+    0x1535d94: mov      x19, x1
+    0x1535d98: mov      x20, x0
+    0x1535d9c: tbnz     w8, #0, #0x1535db4
+    0x1535da0: adrp     x0, #0x2adc000
+    0x1535da4: ldr      x0, [x0, #0xe10]
+    0x1535da8: bl       #0x110d028
+    0x1535dac: mov      w8, #1
+    0x1535db0: strb     w8, [x21, #0x52a]
+    0x1535db4: ldr      x8, [x20, #0x10]
+    0x1535db8: cbz      x8, #0x1535e0c
+    0x1535dbc: ldr      x0, [x8, #0x40]
+    0x1535dc0: cbz      x0, #0x1535de8
+    0x1535dc4: adrp     x8, #0x2adc000
+    0x1535dc8: ldr      x8, [x8, #0xe10]
+    0x1535dcc: mov      v0.16b, v10.16b
+    0x1535dd0: mov      v1.16b, v9.16b
+    0x1535dd4: mov      v2.16b, v8.16b
+    0x1535dd8: ldr      x1, [x8]
+    0x1535ddc: bl       #0x1e6e404
+    0x1535de0: ldr      x8, [x20, #0x10]
+    0x1535de4: cbz      x8, #0x1535e0c
+    0x1535de8: ldr      x9, [x20, #0x18]
+    0x1535dec: cbz      x9, #0x1535e0c
+    0x1535df0: ldr      s3, [x8, #0x38]
+    0x1535df4: mov      x1, x19
+    0x1535df8: ldp      x20, x19, [sp, #0x30]
+    0x1535dfc: ldp      x30, x21, [sp, #0x20]
+    0x1535e00: ldp      d9, d8, [sp, #0x10]
+    0x1535e04: ldr      d10, [sp], #0x40
+    0x1535e08: b        #0x1530ed8
+    0x1535e0c: bl       #0x110d250
+
+;;; <IEGunCheckAttack>b__1  internal void <IEGunCheckAttack>b__1(GameObject obj, Vector3 pos) { }
+    0x1535e10: str      d10, [sp, #-0x30]!
+    0x1535e14: stp      d9, d8, [sp, #8]
+    0x1535e18: str      x30, [sp, #0x18]
+    0x1535e1c: stp      x20, x19, [sp, #0x20]
+    0x1535e20: adrp     x20, #0x2ce2000
+    0x1535e24: ldrb     w8, [x20, #0x52b]
+    0x1535e28: mov      v8.16b, v2.16b
+    0x1535e2c: mov      v9.16b, v1.16b
+    0x1535e30: mov      v10.16b, v0.16b
+    0x1535e34: mov      x19, x0
+    0x1535e38: tbnz     w8, #0, #0x1535e50
+    0x1535e3c: adrp     x0, #0x2adc000
+    0x1535e40: ldr      x0, [x0, #0xe10]
+    0x1535e44: bl       #0x110d028
+    0x1535e48: mov      w8, #1
+    0x1535e4c: strb     w8, [x20, #0x52b]
+    0x1535e50: ldr      x8, [x19, #0x10]
+    0x1535e54: cbz      x8, #0x1535ea0
+    0x1535e58: ldr      x0, [x8, #0x40]
+    0x1535e5c: cbz      x0, #0x1535e8c
+    0x1535e60: adrp     x8, #0x2adc000
+    0x1535e64: ldr      x8, [x8, #0xe10]
+    0x1535e68: mov      v1.16b, v9.16b
+    0x1535e6c: mov      v2.16b, v8.16b
+    0x1535e70: ldp      x20, x19, [sp, #0x20]
+    0x1535e74: ldr      x1, [x8]
+    0x1535e78: ldr      x30, [sp, #0x18]
+    0x1535e7c: ldp      d9, d8, [sp, #8]
+    0x1535e80: mov      v0.16b, v10.16b
+    0x1535e84: ldr      d10, [sp], #0x30
+    0x1535e88: b        #0x1e6e404
+    0x1535e8c: ldp      x20, x19, [sp, #0x20]
+    0x1535e90: ldr      x30, [sp, #0x18]
+    0x1535e94: ldp      d9, d8, [sp, #8]
+    0x1535e98: ldr      d10, [sp], #0x30
+    0x1535e9c: ret      
+    0x1535ea0: bl       #0x110d250

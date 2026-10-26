@@ -1,0 +1,22 @@
+;;; ctor  public void .ctor() { }
+    0x13bb2d0: mov      x1, xzr
+    0x13bb2d4: b        #0x2143330
+
+;;; <FadeIn>b__0  internal void <FadeIn>b__0() { }
+    0x13bb544: stp      x30, x19, [sp, #-0x10]!
+    0x13bb548: ldr      x8, [x0, #0x10]
+    0x13bb54c: mov      x19, x0
+    0x13bb550: cbz      x8, #0x13bb564
+    0x13bb554: ldr      x9, [x8, #0x18]
+    0x13bb558: ldr      x0, [x8, #0x40]
+    0x13bb55c: ldr      x1, [x8, #0x28]
+    0x13bb560: blr      x9
+    0x13bb564: ldr      x8, [x19, #0x18]
+    0x13bb568: cbz      x8, #0x13bb584
+    0x13bb56c: ldr      x0, [x8, #0x28]
+    0x13bb570: cbz      x0, #0x13bb584
+    0x13bb574: mov      w1, wzr
+    0x13bb578: mov      x2, xzr
+    0x13bb57c: ldp      x30, x19, [sp], #0x10
+    0x13bb580: b        #0x277e6cc
+    0x13bb584: bl       #0x110d250

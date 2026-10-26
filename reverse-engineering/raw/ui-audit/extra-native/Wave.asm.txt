@@ -1,0 +1,172 @@
+;;; GetWaveReduceStartY  public float GetWaveReduceStartY() { }
+    0x13fd920: stp      x30, x21, [sp, #-0x20]!
+    0x13fd924: stp      x20, x19, [sp, #0x10]
+    0x13fd928: adrp     x21, #0x2ce1000
+    0x13fd92c: adrp     x20, #0x2adb000
+    0x13fd930: ldrb     w8, [x21, #0xc5c]
+    0x13fd934: ldr      x20, [x20, #0x220]
+    0x13fd938: mov      x19, x0
+    0x13fd93c: tbnz     w8, #0, #0x13fd954
+    0x13fd940: adrp     x0, #0x2adb000
+    0x13fd944: ldr      x0, [x0, #0x220]
+    0x13fd948: bl       #0x110d028
+    0x13fd94c: mov      w8, #1
+    0x13fd950: strb     w8, [x21, #0xc5c]
+    0x13fd954: ldr      x0, [x20]
+    0x13fd958: ldr      x20, [x19, #0x28]
+    0x13fd95c: ldr      w8, [x0, #0xe0]
+    0x13fd960: cbnz     w8, #0x13fd968
+    0x13fd964: bl       #0x110d12c
+    0x13fd968: mov      x0, x20
+    0x13fd96c: mov      x1, xzr
+    0x13fd970: bl       #0x27849c8
+    0x13fd974: fmov     s0, wzr
+    0x13fd978: tbz      w0, #0, #0x13fd990
+    0x13fd97c: ldr      x0, [x19, #0x28]
+    0x13fd980: cbz      x0, #0x13fd99c
+    0x13fd984: mov      x1, xzr
+    0x13fd988: bl       #0x27892f0
+    0x13fd98c: mov      v0.16b, v1.16b
+    0x13fd990: ldp      x20, x19, [sp, #0x10]
+    0x13fd994: ldp      x30, x21, [sp], #0x20
+    0x13fd998: ret      
+    0x13fd99c: bl       #0x110d250
+
+;;; GetWaveLength  public float GetWaveLength() { }
+    0x13fd9a0: stp      x30, x21, [sp, #-0x20]!
+    0x13fd9a4: stp      x20, x19, [sp, #0x10]
+    0x13fd9a8: adrp     x21, #0x2ce1000
+    0x13fd9ac: adrp     x20, #0x2adb000
+    0x13fd9b0: ldrb     w8, [x21, #0xc5d]
+    0x13fd9b4: ldr      x20, [x20, #0x220]
+    0x13fd9b8: mov      x19, x0
+    0x13fd9bc: tbnz     w8, #0, #0x13fd9d4
+    0x13fd9c0: adrp     x0, #0x2adb000
+    0x13fd9c4: ldr      x0, [x0, #0x220]
+    0x13fd9c8: bl       #0x110d028
+    0x13fd9cc: mov      w8, #1
+    0x13fd9d0: strb     w8, [x21, #0xc5d]
+    0x13fd9d4: ldr      x0, [x20]
+    0x13fd9d8: ldr      x20, [x19, #0x30]
+    0x13fd9dc: ldr      w8, [x0, #0xe0]
+    0x13fd9e0: cbnz     w8, #0x13fd9e8
+    0x13fd9e4: bl       #0x110d12c
+    0x13fd9e8: mov      x0, x20
+    0x13fd9ec: mov      x1, xzr
+    0x13fd9f0: bl       #0x27849c8
+    0x13fd9f4: fmov     s0, #30.00000000
+    0x13fd9f8: tbz      w0, #0, #0x13fda10
+    0x13fd9fc: ldr      x0, [x19, #0x30]
+    0x13fda00: cbz      x0, #0x13fda1c
+    0x13fda04: mov      x1, xzr
+    0x13fda08: bl       #0x27892f0
+    0x13fda0c: mov      v0.16b, v1.16b
+    0x13fda10: ldp      x20, x19, [sp, #0x10]
+    0x13fda14: ldp      x30, x21, [sp], #0x20
+    0x13fda18: ret      
+    0x13fda1c: bl       #0x110d250
+
+;;; SetLastWave  public void SetLastWave(bool lastWave) { }
+    0x13fda20: stp      x30, x19, [sp, #-0x10]!
+    0x13fda24: and      w1, w1, #1
+    0x13fda28: mov      x19, x0
+    0x13fda2c: bl       #0x1417da4
+    0x13fda30: mov      x1, x0
+    0x13fda34: mov      x0, x19
+    0x13fda38: mov      x2, xzr
+    0x13fda3c: ldp      x30, x19, [sp], #0x10
+    0x13fda40: b        #0x278276c
+
+;;; GetLastPoint  public float GetLastPoint() { }
+    0x1417d9c: fmov     s0, wzr
+    0x1417da0: ret      
+
+;;; CheckSpawnEnded  private IEnumerator CheckSpawnEnded(bool lastWave) { }
+    0x1417da4: str      x30, [sp, #-0x30]!
+    0x1417da8: stp      x22, x21, [sp, #0x10]
+    0x1417dac: stp      x20, x19, [sp, #0x20]
+    0x1417db0: adrp     x22, #0x2ce1000
+    0x1417db4: adrp     x21, #0x2ae6000
+    0x1417db8: ldrb     w8, [x22, #0xc5e]
+    0x1417dbc: ldr      x21, [x21, #0x78]
+    0x1417dc0: mov      w20, w1
+    0x1417dc4: mov      x19, x0
+    0x1417dc8: tbnz     w8, #0, #0x1417de0
+    0x1417dcc: adrp     x0, #0x2ae6000
+    0x1417dd0: ldr      x0, [x0, #0x78]
+    0x1417dd4: bl       #0x110d028
+    0x1417dd8: mov      w8, #1
+    0x1417ddc: strb     w8, [x22, #0xc5e]
+    0x1417de0: ldr      x0, [x21]
+    0x1417de4: and      w21, w20, #1
+    0x1417de8: bl       #0x110d240
+    0x1417dec: mov      x1, xzr
+    0x1417df0: mov      x20, x0
+    0x1417df4: bl       #0x2143330
+    0x1417df8: str      wzr, [x20, #0x10]
+    0x1417dfc: str      x19, [x20, #0x20]
+    0x1417e00: strb     w21, [x20, #0x28]
+    0x1417e04: mov      x0, x20
+    0x1417e08: ldp      x20, x19, [sp, #0x20]
+    0x1417e0c: ldp      x22, x21, [sp, #0x10]
+    0x1417e10: ldr      x30, [sp], #0x30
+    0x1417e14: ret      
+
+;;; OnDrawGizmos  private void OnDrawGizmos() { }
+    0x1417e40: stp      d9, d8, [sp, #-0x20]!
+    0x1417e44: stp      x30, x19, [sp, #0x10]
+    0x1417e48: adrp     x19, #0x2ce0000
+    0x1417e4c: ldrb     w8, [x19, #0xffc]
+    0x1417e50: cbnz     w8, #0x1417e68
+    0x1417e54: adrp     x0, #0x2adc000
+    0x1417e58: ldr      x0, [x0, #0xb10]
+    0x1417e5c: bl       #0x110d028
+    0x1417e60: mov      w8, #1
+    0x1417e64: strb     w8, [x19, #0xffc]
+    0x1417e68: adrp     x8, #0x2adc000
+    0x1417e6c: ldr      x8, [x8, #0xb10]
+    0x1417e70: adrp     x9, #0x756000
+    0x1417e74: ldr      s4, [x9, #0xc8c]
+    0x1417e78: fmov     s5, wzr
+    0x1417e7c: ldr      x8, [x8]
+    0x1417e80: mov      x0, xzr
+    0x1417e84: ldr      x8, [x8, #0xb8]
+    0x1417e88: ldp      s0, s1, [x8]
+    0x1417e8c: ldr      s2, [x8, #8]
+    0x1417e90: adrp     x8, #0x756000
+    0x1417e94: ldr      s3, [x8, #0xb3c]
+    0x1417e98: bl       #0x2765808
+    0x1417e9c: fmov     s0, wzr
+    0x1417ea0: fmov     s1, wzr
+    0x1417ea4: fmov     s2, #1.00000000
+    0x1417ea8: fmov     s3, #1.00000000
+    0x1417eac: mov      x0, xzr
+    0x1417eb0: bl       #0x2765930
+    0x1417eb4: adrp     x8, #0x756000
+    0x1417eb8: adrp     x9, #0x756000
+    0x1417ebc: ldr      s8, [x8, #0xd60]
+    0x1417ec0: ldr      s0, [x9, #0xadc]
+    0x1417ec4: mov      w8, #0x447a0000
+    0x1417ec8: fmov     s9, w8
+    0x1417ecc: fmov     s2, wzr
+    0x1417ed0: fmov     s5, wzr
+    0x1417ed4: mov      v1.16b, v8.16b
+    0x1417ed8: mov      v3.16b, v0.16b
+    0x1417edc: mov      v4.16b, v9.16b
+    0x1417ee0: mov      x0, xzr
+    0x1417ee4: bl       #0x2765634
+    0x1417ee8: adrp     x8, #0x756000
+    0x1417eec: ldr      s0, [x8, #0xf00]
+    0x1417ef0: ldp      x30, x19, [sp, #0x10]
+    0x1417ef4: fmov     s2, wzr
+    0x1417ef8: fmov     s5, wzr
+    0x1417efc: mov      v1.16b, v8.16b
+    0x1417f00: mov      v3.16b, v0.16b
+    0x1417f04: mov      v4.16b, v9.16b
+    0x1417f08: mov      x0, xzr
+    0x1417f0c: ldp      d9, d8, [sp], #0x20
+    0x1417f10: b        #0x2765634
+
+;;; ctor  public void .ctor() { }
+    0x1417f14: mov      x1, xzr
+    0x1417f18: b        #0x2782ba0

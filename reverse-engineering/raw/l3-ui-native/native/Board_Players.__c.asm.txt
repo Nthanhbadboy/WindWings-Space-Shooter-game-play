@@ -1,0 +1,33 @@
+;;; cctor  private static void .cctor() { }
+    0x12d68b4: str      x30, [sp, #-0x20]!
+    0x12d68b8: stp      x20, x19, [sp, #0x10]
+    0x12d68bc: adrp     x19, #0x2ce1000
+    0x12d68c0: adrp     x20, #0x2adf000
+    0x12d68c4: ldrb     w8, [x19, #0x3e3]
+    0x12d68c8: ldr      x20, [x20, #0xcb0]
+    0x12d68cc: tbnz     w8, #0, #0x12d68e4
+    0x12d68d0: adrp     x0, #0x2adf000
+    0x12d68d4: ldr      x0, [x0, #0xcb0]
+    0x12d68d8: bl       #0x110d028
+    0x12d68dc: mov      w8, #1
+    0x12d68e0: strb     w8, [x19, #0x3e3]
+    0x12d68e4: ldr      x0, [x20]
+    0x12d68e8: bl       #0x110d240
+    0x12d68ec: mov      x1, xzr
+    0x12d68f0: mov      x19, x0
+    0x12d68f4: bl       #0x2143330
+    0x12d68f8: ldr      x8, [x20]
+    0x12d68fc: ldr      x8, [x8, #0xb8]
+    0x12d6900: str      x19, [x8]
+    0x12d6904: ldp      x20, x19, [sp, #0x10]
+    0x12d6908: ldr      x30, [sp], #0x20
+    0x12d690c: ret      
+
+;;; ctor  public void .ctor() { }
+    0x12d6910: mov      x1, xzr
+    0x12d6914: b        #0x2143330
+
+;;; <OnPressedButtonTryPlayer>b__128_1  internal void <OnPressedButtonTryPlayer>b__128_1() { }
+    0x12d6918: mov      w0, #2
+    0x12d691c: mov      x1, xzr
+    0x12d6920: b        #0x141b488

@@ -1,0 +1,198 @@
+;;; OnEnable  private void OnEnable() { }
+    0x1588560: b        #0x1588564
+    0x1588564: str      x30, [sp, #-0x30]!
+
+;;; CancelEffect  private void CancelEffect() { }
+    0x1588564: str      x30, [sp, #-0x30]!
+    0x1588568: stp      x22, x21, [sp, #0x10]
+    0x158856c: stp      x20, x19, [sp, #0x20]
+    0x1588570: adrp     x20, #0x2ce2000
+    0x1588574: ldrb     w8, [x20, #0x790]
+    0x1588578: mov      x19, x0
+    0x158857c: tbnz     w8, #0, #0x15885a0
+    0x1588580: adrp     x0, #0x2ae1000
+    0x1588584: ldr      x0, [x0, #0x728]
+    0x1588588: bl       #0x110d028
+    0x158858c: adrp     x0, #0x2adc000
+    0x1588590: ldr      x0, [x0, #0xeb8]
+    0x1588594: bl       #0x110d028
+    0x1588598: mov      w8, #1
+    0x158859c: strb     w8, [x20, #0x790]
+    0x15885a0: ldr      x8, [x19, #0x28]
+    0x15885a4: cbz      x8, #0x1588638
+    0x15885a8: adrp     x21, #0x2ae1000
+    0x15885ac: adrp     x22, #0x2adc000
+    0x15885b0: ldr      x21, [x21, #0x728]
+    0x15885b4: ldr      x22, [x22, #0xeb8]
+    0x15885b8: mov      x20, xzr
+    0x15885bc: ldr      w9, [x8, #0x18]
+    0x15885c0: cmp      x20, w9, sxtw
+    0x15885c4: b.ge     #0x158863c
+    0x15885c8: ldr      x10, [x19, #0x30]
+    0x15885cc: cbz      x10, #0x1588638
+    0x15885d0: cmp      x20, x9
+    0x15885d4: b.hs     #0x158864c
+    0x15885d8: ldr      x0, [x10, #0xc8]
+    0x15885dc: cbz      x0, #0x1588638
+    0x15885e0: add      x8, x8, x20, lsl #3
+    0x15885e4: ldr      x1, [x8, #0x20]
+    0x15885e8: mov      x2, xzr
+    0x15885ec: bl       #0x22141c8
+    0x15885f0: ldr      x8, [x19, #0x30]
+    0x15885f4: cbz      x8, #0x1588638
+    0x15885f8: mov      x1, x0
+    0x15885fc: ldr      x0, [x8, #0x90]
+    0x1588600: cbz      x0, #0x1588638
+    0x1588604: ldr      x2, [x21]
+    0x1588608: bl       #0x1960758
+    0x158860c: cbz      x0, #0x1588638
+    0x1588610: ldr      x1, [x22]
+    0x1588614: fmov     s0, wzr
+    0x1588618: fmov     s1, wzr
+    0x158861c: fmov     s2, wzr
+    0x1588620: fmov     s3, #1.00000000
+    0x1588624: mov      x2, xzr
+    0x1588628: bl       #0x27693cc
+    0x158862c: ldr      x8, [x19, #0x28]
+    0x1588630: add      x20, x20, #1
+    0x1588634: cbnz     x8, #0x15885bc
+    0x1588638: bl       #0x110d250
+    0x158863c: ldp      x20, x19, [sp, #0x20]
+    0x1588640: ldp      x22, x21, [sp, #0x10]
+    0x1588644: ldr      x30, [sp], #0x30
+    0x1588648: ret      
+    0x158864c: bl       #0x110d258
+
+;;; OnHit  private void OnHit() { }
+    0x1588650: stp      x30, x23, [sp, #-0x30]!
+    0x1588654: stp      x22, x21, [sp, #0x10]
+    0x1588658: stp      x20, x19, [sp, #0x20]
+    0x158865c: adrp     x20, #0x2ce2000
+    0x1588660: ldrb     w8, [x20, #0x78f]
+    0x1588664: mov      x19, x0
+    0x1588668: tbnz     w8, #0, #0x1588698
+    0x158866c: adrp     x0, #0x2ae1000
+    0x1588670: ldr      x0, [x0, #0x728]
+    0x1588674: bl       #0x110d028
+    0x1588678: adrp     x0, #0x2adc000
+    0x158867c: ldr      x0, [x0, #0xeb8]
+    0x1588680: bl       #0x110d028
+    0x1588684: adrp     x0, #0x2ae1000
+    0x1588688: ldr      x0, [x0, #0x730]
+    0x158868c: bl       #0x110d028
+    0x1588690: mov      w8, #1
+    0x1588694: strb     w8, [x20, #0x78f]
+    0x1588698: ldr      x8, [x19, #0x28]
+    0x158869c: cbz      x8, #0x1588730
+    0x15886a0: adrp     x22, #0x2ae1000
+    0x15886a4: adrp     x23, #0x2adc000
+    0x15886a8: adrp     x20, #0x2ae1000
+    0x15886ac: ldr      x22, [x22, #0x728]
+    0x15886b0: ldr      x23, [x23, #0xeb8]
+    0x15886b4: ldr      x20, [x20, #0x730]
+    0x15886b8: mov      x21, xzr
+    0x15886bc: ldr      w9, [x8, #0x18]
+    0x15886c0: cmp      x21, w9, sxtw
+    0x15886c4: b.ge     #0x1588734
+    0x15886c8: ldr      x10, [x19, #0x30]
+    0x15886cc: cbz      x10, #0x1588730
+    0x15886d0: cmp      x21, x9
+    0x15886d4: b.hs     #0x158877c
+    0x15886d8: ldr      x0, [x10, #0xc8]
+    0x15886dc: cbz      x0, #0x1588730
+    0x15886e0: add      x8, x8, x21, lsl #3
+    0x15886e4: ldr      x1, [x8, #0x20]
+    0x15886e8: mov      x2, xzr
+    0x15886ec: bl       #0x22141c8
+    0x15886f0: ldr      x8, [x19, #0x30]
+    0x15886f4: cbz      x8, #0x1588730
+    0x15886f8: mov      x1, x0
+    0x15886fc: ldr      x0, [x8, #0x90]
+    0x1588700: cbz      x0, #0x1588730
+    0x1588704: ldr      x2, [x22]
+    0x1588708: bl       #0x1960758
+    0x158870c: cbz      x0, #0x1588730
+    0x1588710: ldp      s2, s3, [x19, #0x40]
+    0x1588714: ldp      s0, s1, [x19, #0x38]
+    0x1588718: ldr      x1, [x23]
+    0x158871c: mov      x2, xzr
+    0x1588720: bl       #0x27693cc
+    0x1588724: ldr      x8, [x19, #0x28]
+    0x1588728: add      x21, x21, #1
+    0x158872c: cbnz     x8, #0x15886bc
+    0x1588730: bl       #0x110d250
+    0x1588734: ldr      x1, [x20]
+    0x1588738: mov      x0, x19
+    0x158873c: mov      x2, xzr
+    0x1588740: bl       #0x2782540
+    0x1588744: tbz      w0, #0, #0x1588758
+    0x1588748: ldr      x1, [x20]
+    0x158874c: mov      x0, x19
+    0x1588750: mov      x2, xzr
+    0x1588754: bl       #0x27824b8
+    0x1588758: adrp     x8, #0x756000
+    0x158875c: ldr      x1, [x20]
+    0x1588760: ldr      s0, [x8, #0xfe0]
+    0x1588764: mov      x0, x19
+    0x1588768: ldp      x20, x19, [sp, #0x20]
+    0x158876c: ldp      x22, x21, [sp, #0x10]
+    0x1588770: mov      x2, xzr
+    0x1588774: ldp      x30, x23, [sp], #0x30
+    0x1588778: b        #0x27822d4
+    0x158877c: bl       #0x110d258
+
+;;; GetStartHealth  public override float GetStartHealth() { }
+    0x1588780: fmov     s0, #1.00000000
+    0x1588784: ret      
+
+;;; GetCurrentHealth  public override float GetCurrentHealth() { }
+    0x1588788: fmov     s0, #1.00000000
+    0x158878c: ret      
+
+;;; GainHealth  public override void GainHealth(float amount) { }
+    0x1588790: ret      
+    0x1588794: ret      
+
+;;; GainHealth  public override void GainHealth(float amount, float addOverTime, float addTime) { }
+    0x1588794: ret      
+    0x1588798: mov      w0, #1
+
+;;; IsAlive  public override bool IsAlive() { }
+    0x1588798: mov      w0, #1
+    0x158879c: ret      
+
+;;; SetDieCallback  public override void SetDieCallback(Action<GameObject> dieCallback) { }
+    0x15887a0: ret      
+    0x15887a4: stp      x30, x21, [sp, #-0x20]!
+
+;;; TakeDamage  public override void TakeDamage(Damager damager, bool ignoreInvincible = False) { }
+    0x15887a4: stp      x30, x21, [sp, #-0x20]!
+    0x15887a8: stp      x20, x19, [sp, #0x10]
+    0x15887ac: adrp     x20, #0x2ce2000
+    0x15887b0: adrp     x21, #0x2aec000
+    0x15887b4: ldrb     w8, [x20, #0x791]
+    0x15887b8: ldr      x21, [x21, #0x5a8]
+    0x15887bc: mov      x19, x0
+    0x15887c0: tbnz     w8, #0, #0x15887d8
+    0x15887c4: adrp     x0, #0x2aec000
+    0x15887c8: ldr      x0, [x0, #0x5a8]
+    0x15887cc: bl       #0x110d028
+    0x15887d0: mov      w8, #1
+    0x15887d4: strb     w8, [x20, #0x791]
+    0x15887d8: ldr      x0, [x21]
+    0x15887dc: mov      x1, xzr
+    0x15887e0: bl       #0x15b77b0
+    0x15887e4: mov      x0, x19
+    0x15887e8: ldp      x20, x19, [sp, #0x10]
+    0x15887ec: ldp      x30, x21, [sp], #0x20
+    0x15887f0: b        #0x1588650
+
+;;; Destroyed  public override void Destroyed() { }
+    0x15887f4: ret      
+    0x15887f8: fmov     v0.4s, #1.00000000
+
+;;; ctor  public void .ctor() { }
+    0x15887f8: fmov     v0.4s, #1.00000000
+    0x15887fc: mov      x1, xzr
+    0x1588800: stur     q0, [x0, #0x38]
+    0x1588804: b        #0x123baf4

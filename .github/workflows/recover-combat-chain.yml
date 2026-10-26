@@ -1,0 +1,58 @@
+name: Recover pinned combat chain family batch
+on:
+  push:
+    paths: ['tools/recovery/combat_chain.py', '.github/workflows/recover-combat-chain.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: combat-chain-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+          fail-on-cache-miss: true
+      - run: python3 -m pip install 'UnityPy==1.25.4' 'TypeTreeGeneratorAPI==0.0.10' 'capstone==5.0.3' 'Pillow==12.0.0'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Prepare symbolic decoder
+        run: |
+          mkdir -p /tmp/combat-dumper
+          curl -fSL --retry 3 -o /tmp/combat-dumper.zip https://github.com/Perfare/Il2CppDumper/releases/download/v6.7.46/Il2CppDumper-net7-v6.7.46.zip
+          unzip -q /tmp/combat-dumper.zip -d /tmp/combat-dumper
+      - name: Recover combat native, symbolic bindings and source components
+        env:
+          DOTNET_ROLL_FORWARD: LatestMajor
+        run: python3 tools/recovery/combat_chain.py --xapk /tmp/apk/windwings.xapk --dumper /tmp/combat-dumper/Il2CppDumper.dll
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: combat-chain-evidence
+          path: reverse-engineering/raw/combat-chain/
+      - run: python3 -m unittest discover -s tests -q
+      - name: Preserve scoped raw including explicit exceptions
+        if: ${{ !cancelled() }}
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
+          test -f reverse-engineering/raw/combat-chain/index.json
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/combat-chain
+          git diff --cached --quiet || git commit -m 'research(combat): preserve scoped combat chain family batch [skip ci]'
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash -X theirs origin arena/ef6b75ef-windwings-space-shooter-game-p
+            if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
+          done
+          exit 1

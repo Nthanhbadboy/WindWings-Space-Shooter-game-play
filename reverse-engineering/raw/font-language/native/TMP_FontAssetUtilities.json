@@ -1,0 +1,444 @@
+{
+ "class": "TMP_FontAssetUtilities",
+ "note": "Pinned font/fallback/localization consumer recovery",
+ "methods": [
+  {
+   "method": "GetCharacterFromFontAsset",
+   "signature": "public static TMP_Character GetCharacterFromFontAsset(uint unicode, TMP_FontAsset sourceFontAsset, bool includeFallbacks, FontStyles fontStyle, FontWeight fontWeight, out bool isAlternativeTypeface) { }",
+   "offset": "0x27113cc",
+   "getter_value": null,
+   "rva": "0x27153cc",
+   "bytes": 340,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x2715434",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x27154ec",
+     "reg": "w2",
+     "op": "w2, w23, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetCharacterFromFontAsset_Internal",
+   "signature": "private static TMP_Character GetCharacterFromFontAsset_Internal(uint unicode, TMP_FontAsset sourceFontAsset, bool includeFallbacks, FontStyles fontStyle, FontWeight fontWeight, out bool isAlternativeTypeface) { }",
+   "offset": "0x2711520",
+   "getter_value": null,
+   "rva": "0x2715520",
+   "bytes": 948,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 112,
+     "via": "sub",
+     "addr": "0x2715520",
+     "reg": "sp",
+     "op": "sp, sp, #0x70",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x27155a8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 400,
+     "via": "cmp",
+     "addr": "0x27155c4",
+     "reg": "w20",
+     "op": "w20, #0x190",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 400,
+     "via": "cmp",
+     "addr": "0x27155dc",
+     "reg": "w20",
+     "op": "w20, #0x190",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 600,
+     "via": "cmp",
+     "addr": "0x27155e4",
+     "reg": "w20",
+     "op": "w20, #0x258",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 700,
+     "via": "cmp",
+     "addr": "0x27155ec",
+     "reg": "w20",
+     "op": "w20, #0x2bc",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 800,
+     "via": "cmp",
+     "addr": "0x27155f4",
+     "reg": "w20",
+     "op": "w20, #0x320",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 900,
+     "via": "cmp",
+     "addr": "0x27155fc",
+     "reg": "w20",
+     "op": "w20, #0x384",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "mov",
+     "addr": "0x2715604",
+     "reg": "w9",
+     "op": "w9, #9",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 200,
+     "via": "cmp",
+     "addr": "0x271560c",
+     "reg": "w20",
+     "op": "w20, #0xc8",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 300,
+     "via": "cmp",
+     "addr": "0x2715614",
+     "reg": "w20",
+     "op": "w20, #0x12c",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "mov",
+     "addr": "0x2715618",
+     "reg": "w9",
+     "op": "w9, #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "mov",
+     "addr": "0x2715624",
+     "reg": "w9",
+     "op": "w9, #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "mov",
+     "addr": "0x2715628",
+     "reg": "w10",
+     "op": "w10, #6",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 500,
+     "via": "cmp",
+     "addr": "0x2715630",
+     "reg": "w20",
+     "op": "w20, #0x1f4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x2715634",
+     "reg": "w10",
+     "op": "w10, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "mov",
+     "addr": "0x2715640",
+     "reg": "w9",
+     "op": "w9, #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "mov",
+     "addr": "0x2715644",
+     "reg": "w10",
+     "op": "w10, #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 100,
+     "via": "cmp",
+     "addr": "0x271564c",
+     "reg": "w20",
+     "op": "w20, #0x64",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 7,
+     "via": "mov",
+     "addr": "0x2715658",
+     "reg": "w9",
+     "op": "w9, #7",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "mov",
+     "addr": "0x2715660",
+     "reg": "w9",
+     "op": "w9, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "mov",
+     "addr": "0x2715668",
+     "reg": "w9",
+     "op": "w9, #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x271567c",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 40,
+     "via": "add",
+     "addr": "0x2715688",
+     "reg": "x10",
+     "op": "x10, x8, #0x28",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x271568c",
+     "reg": "x8",
+     "op": "x8, x8, #0x20",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x27156e0",
+     "reg": "x2",
+     "op": "x2, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x27156f0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x2715700",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x2715708",
+     "reg": "x2",
+     "op": "x2, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x2715738",
+     "reg": "x2",
+     "op": "x2, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 112,
+     "via": "add",
+     "addr": "0x2715764",
+     "reg": "sp",
+     "op": "sp, sp, #0x70",
+     "role": "return"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x2715770",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x2715778",
+     "reg": "x2",
+     "op": "x2, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x27157a8",
+     "reg": "w28",
+     "op": "w28, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x2715894",
+     "reg": "w2",
+     "op": "w2, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x27158b8",
+     "reg": "w25",
+     "op": "w25, w25, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetCharacterFromFontAssets",
+   "signature": "public static TMP_Character GetCharacterFromFontAssets(uint unicode, TMP_FontAsset sourceFontAsset, List<TMP_FontAsset> fontAssets, bool includeFallbacks, FontStyles fontStyle, FontWeight fontWeight, out bool isAlternativeTypeface) { }",
+   "offset": "0x27118d4",
+   "getter_value": null,
+   "rva": "0x27158d4",
+   "bytes": 592,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 112,
+     "via": "sub",
+     "addr": "0x27158d4",
+     "reg": "sp",
+     "op": "sp, sp, #0x70",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x2715974",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x2715a30",
+     "reg": "w29",
+     "op": "w29, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x2715ad8",
+     "reg": "w2",
+     "op": "w2, w22, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x2715af0",
+     "reg": "w26",
+     "op": "w26, w26, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 112,
+     "via": "add",
+     "addr": "0x2715b18",
+     "reg": "sp",
+     "op": "sp, sp, #0x70",
+     "role": "return"
+    }
+   ]
+  }
+ ]
+}

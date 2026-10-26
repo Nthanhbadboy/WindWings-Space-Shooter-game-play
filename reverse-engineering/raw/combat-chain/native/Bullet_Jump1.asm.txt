@@ -1,0 +1,213 @@
+;;; SetBullet  public override void SetBullet(BulletForceType force, Transform target, LayerMask targetLayer, float startSpeed, float startLifetime, float startAngle, Action<GameObject, Vector3> onCollision, Action<GameObject, Vector3> onDestroy, bool throughShield = False) { }
+    0x15900b4: str      d8, [sp, #-0x20]!
+    0x15900b8: stp      x30, x19, [sp, #0x10]
+    0x15900bc: and      x3, x3, #0xffffffff
+    0x15900c0: and      w6, w6, #1
+    0x15900c4: mov      x7, xzr
+    0x15900c8: mov      v8.16b, v0.16b
+    0x15900cc: mov      x19, x0
+    0x15900d0: bl       #0x158c0d8
+    0x15900d4: mov      x0, x19
+    0x15900d8: str      s8, [x19, #0x6c]
+    0x15900dc: strb     wzr, [x19, #0x60]
+    0x15900e0: bl       #0x15900fc
+    0x15900e4: mov      x1, x0
+    0x15900e8: mov      x0, x19
+    0x15900ec: ldp      x30, x19, [sp, #0x10]
+    0x15900f0: mov      x2, xzr
+    0x15900f4: ldr      d8, [sp], #0x20
+    0x15900f8: b        #0x278276c
+
+;;; MoveBullet  private IEnumerator MoveBullet() { }
+    0x15900fc: stp      x30, x21, [sp, #-0x20]!
+    0x1590100: stp      x20, x19, [sp, #0x10]
+    0x1590104: adrp     x20, #0x2ce2000
+    0x1590108: adrp     x21, #0x2aec000
+    0x159010c: ldrb     w8, [x20, #0x7bc]
+    0x1590110: ldr      x21, [x21, #0x600]
+    0x1590114: mov      x19, x0
+    0x1590118: tbnz     w8, #0, #0x1590130
+    0x159011c: adrp     x0, #0x2aec000
+    0x1590120: ldr      x0, [x0, #0x600]
+    0x1590124: bl       #0x110d028
+    0x1590128: mov      w8, #1
+    0x159012c: strb     w8, [x20, #0x7bc]
+    0x1590130: ldr      x0, [x21]
+    0x1590134: bl       #0x110d240
+    0x1590138: mov      x1, xzr
+    0x159013c: mov      x20, x0
+    0x1590140: bl       #0x2143330
+    0x1590144: str      wzr, [x20, #0x10]
+    0x1590148: str      x19, [x20, #0x20]
+    0x159014c: mov      x0, x20
+    0x1590150: ldp      x20, x19, [sp, #0x10]
+    0x1590154: ldp      x30, x21, [sp], #0x20
+    0x1590158: ret      
+
+;;; OnTriggerEnter2D  protected void OnTriggerEnter2D(Collider2D col) { }
+    0x159015c: str      x30, [sp, #-0x30]!
+    0x1590160: stp      x22, x21, [sp, #0x10]
+    0x1590164: stp      x20, x19, [sp, #0x20]
+    0x1590168: adrp     x21, #0x2ce2000
+    0x159016c: ldrb     w8, [x21, #0x7bb]
+    0x1590170: mov      x20, x1
+    0x1590174: mov      x19, x0
+    0x1590178: tbnz     w8, #0, #0x1590190
+    0x159017c: adrp     x0, #0x2adc000
+    0x1590180: ldr      x0, [x0, #0xf38]
+    0x1590184: bl       #0x110d028
+    0x1590188: mov      w8, #1
+    0x159018c: strb     w8, [x21, #0x7bb]
+    0x1590190: ldr      x8, [x19, #0x28]
+    0x1590194: cbz      x8, #0x15902b0
+    0x1590198: ldr      w0, [x8, #0x10]
+    0x159019c: mov      x1, xzr
+    0x15901a0: bl       #0x2781bd4
+    0x15901a4: ldr      x8, [x19, #0x28]
+    0x15901a8: cbz      x8, #0x15902b0
+    0x15901ac: ldr      w8, [x8, #0x10]
+    0x15901b0: mov      w21, w0
+    0x15901b4: add      x0, sp, #8
+    0x15901b8: mov      x1, xzr
+    0x15901bc: str      w8, [sp, #8]
+    0x15901c0: bl       #0x2781be0
+    0x15901c4: cbz      x20, #0x15902b0
+    0x15901c8: mov      w22, w0
+    0x15901cc: mov      x0, x20
+    0x15901d0: mov      x1, xzr
+    0x15901d4: bl       #0x277f188
+    0x15901d8: cbz      x0, #0x15902b0
+    0x15901dc: mov      x1, xzr
+    0x15901e0: bl       #0x2781784
+    0x15901e4: mov      w8, #1
+    0x15901e8: lsl      w8, w8, w0
+    0x15901ec: orr      w8, w8, w22
+    0x15901f0: cmp      w21, w8
+    0x15901f4: b.ne     #0x15902a0
+    0x15901f8: ldrb     w8, [x19, #0x60]
+    0x15901fc: cbnz     w8, #0x15902a0
+    0x1590200: ldrb     w8, [x19, #0x61]
+    0x1590204: cbz      w8, #0x159022c
+    0x1590208: mov      x0, x20
+    0x159020c: mov      x1, xzr
+    0x1590210: bl       #0x277f630
+    0x1590214: adrp     x8, #0x2adc000
+    0x1590218: ldr      x8, [x8, #0xf38]
+    0x159021c: mov      x2, xzr
+    0x1590220: ldr      x1, [x8]
+    0x1590224: bl       #0x1feca34
+    0x1590228: tbnz     w0, #0, #0x15902a0
+    0x159022c: ldr      x8, [x19]
+    0x1590230: mov      w9, #1
+    0x1590234: strb     w9, [x19, #0x60]
+    0x1590238: mov      x0, x19
+    0x159023c: ldr      x9, [x8, #0x228]
+    0x1590240: ldr      x2, [x8, #0x230]
+    0x1590244: mov      x1, x20
+    0x1590248: blr      x9
+    0x159024c: mov      x0, x20
+    0x1590250: mov      x1, xzr
+    0x1590254: bl       #0x277f14c
+    0x1590258: mov      x20, x0
+    0x159025c: mov      x0, x19
+    0x1590260: mov      x1, xzr
+    0x1590264: bl       #0x277f14c
+    0x1590268: cbz      x0, #0x15902b0
+    0x159026c: mov      x1, xzr
+    0x1590270: bl       #0x27891b8
+    0x1590274: ldr      x8, [x19]
+    0x1590278: mov      x0, x19
+    0x159027c: mov      x1, x20
+    0x1590280: ldr      x9, [x8, #0x238]
+    0x1590284: ldr      x2, [x8, #0x240]
+    0x1590288: blr      x9
+    0x159028c: mov      x0, x19
+    0x1590290: mov      x1, xzr
+    0x1590294: bl       #0x277f188
+    0x1590298: mov      x1, xzr
+    0x159029c: bl       #0x123acd0
+    0x15902a0: ldp      x20, x19, [sp, #0x20]
+    0x15902a4: ldp      x22, x21, [sp, #0x10]
+    0x15902a8: ldr      x30, [sp], #0x30
+    0x15902ac: ret      
+    0x15902b0: bl       #0x110d250
+
+;;; get_layerMask  protected LayerMask get_layerMask() { }
+    0x15902b4: str      x30, [sp, #-0x10]!
+    0x15902b8: ldr      x8, [x0, #0x28]
+    0x15902bc: cbz      x8, #0x15902cc
+    0x15902c0: ldr      w0, [x8, #0x10]
+    0x15902c4: ldr      x30, [sp], #0x10
+    0x15902c8: ret      
+    0x15902cc: bl       #0x110d250
+
+;;; OnCollide  protected virtual void OnCollide(Collider2D hit) { }
+    0x15902d0: stp      x30, x21, [sp, #-0x20]!
+    0x15902d4: stp      x20, x19, [sp, #0x10]
+    0x15902d8: ldr      x21, [x0, #0x40]
+    0x15902dc: cbz      x21, #0x1590328
+    0x15902e0: cbz      x1, #0x1590334
+    0x15902e4: mov      x19, x0
+    0x15902e8: mov      x0, x1
+    0x15902ec: mov      x1, xzr
+    0x15902f0: bl       #0x277f188
+    0x15902f4: mov      x20, x0
+    0x15902f8: mov      x0, x19
+    0x15902fc: mov      x1, xzr
+    0x1590300: bl       #0x277f14c
+    0x1590304: cbz      x0, #0x1590334
+    0x1590308: mov      x1, xzr
+    0x159030c: bl       #0x27891b8
+    0x1590310: ldr      x8, [x21, #0x18]
+    0x1590314: ldr      x0, [x21, #0x40]
+    0x1590318: ldr      x2, [x21, #0x28]
+    0x159031c: mov      x1, x20
+    0x1590320: blr      x8
+    0x1590324: str      xzr, [x19, #0x40]
+    0x1590328: ldp      x20, x19, [sp, #0x10]
+    0x159032c: ldp      x30, x21, [sp], #0x20
+    0x1590330: ret      
+    0x1590334: bl       #0x110d250
+
+;;; DestroyedEffect  protected virtual void DestroyedEffect(Transform fxParent, Vector3 fxPosition) { }
+    0x1590338: str      x30, [sp, #-0x10]!
+    0x159033c: ldr      w0, [x0, #0x64]
+    0x1590340: mov      x1, xzr
+    0x1590344: bl       #0x123aaa0
+    0x1590348: cbz      x0, #0x159035c
+    0x159034c: mov      w1, #1
+    0x1590350: mov      x2, xzr
+    0x1590354: ldr      x30, [sp], #0x10
+    0x1590358: b        #0x2781804
+    0x159035c: bl       #0x110d250
+
+;;; Lerp  public Vector3 Lerp(Vector3 start_value, Vector3 end_value, float t) { }
+    0x1590388: fmov     s7, #1.00000000
+    0x159038c: fcmp     s6, #0.0
+    0x1590390: fmin     s6, s6, s7
+    0x1590394: fmov     s7, wzr
+    0x1590398: fsub     s3, s3, s0
+    0x159039c: fsub     s4, s4, s1
+    0x15903a0: fsub     s5, s5, s2
+    0x15903a4: fcsel    s6, s6, s7, pl
+    0x15903a8: fmul     s3, s3, s6
+    0x15903ac: fmul     s4, s4, s6
+    0x15903b0: fmul     s5, s5, s6
+    0x15903b4: fadd     s0, s0, s3
+    0x15903b8: fadd     s1, s1, s4
+    0x15903bc: fadd     s2, s2, s5
+    0x15903c0: ret      
+
+;;; ctor  public void .ctor() { }
+    0x15903c4: adrp     x8, #0x757000
+    0x15903c8: ldr      d0, [x8, #0xfb8]
+    0x15903cc: mov      x9, #0xcccd
+    0x15903d0: mov      w8, #0x5f93
+    0x15903d4: movk     x9, #0x3dcc, lsl #16
+    0x15903d8: movk     w8, #1, lsl #16
+    0x15903dc: movk     x9, #0x12, lsl #32
+    0x15903e0: mov      x1, xzr
+    0x15903e4: str      w8, [x0, #0x64]
+    0x15903e8: str      d0, [x0, #0x68]
+    0x15903ec: str      x9, [x0, #0x70]
+    0x15903f0: b        #0x158c268

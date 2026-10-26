@@ -1,0 +1,72 @@
+;;; OnSpawn  protected override void OnSpawn() { }
+    0x1467928: stp      x30, x19, [sp, #-0x10]!
+    0x146792c: mov      x19, x0
+    0x1467930: bl       #0x1467948
+    0x1467934: mov      x1, x0
+    0x1467938: mov      x0, x19
+    0x146793c: mov      x2, xzr
+    0x1467940: ldp      x30, x19, [sp], #0x10
+    0x1467944: b        #0x278276c
+
+;;; SpawnEnemies  private IEnumerator SpawnEnemies() { }
+    0x1467948: stp      x30, x21, [sp, #-0x20]!
+    0x146794c: stp      x20, x19, [sp, #0x10]
+    0x1467950: adrp     x20, #0x2ce1000
+    0x1467954: adrp     x21, #0x2ae7000
+    0x1467958: ldrb     w8, [x20, #0xf24]
+    0x146795c: ldr      x21, [x21, #0x8e8]
+    0x1467960: mov      x19, x0
+    0x1467964: tbnz     w8, #0, #0x146797c
+    0x1467968: adrp     x0, #0x2ae7000
+    0x146796c: ldr      x0, [x0, #0x8e8]
+    0x1467970: bl       #0x110d028
+    0x1467974: mov      w8, #1
+    0x1467978: strb     w8, [x20, #0xf24]
+    0x146797c: ldr      x0, [x21]
+    0x1467980: bl       #0x110d240
+    0x1467984: mov      x1, xzr
+    0x1467988: mov      x20, x0
+    0x146798c: bl       #0x2143330
+    0x1467990: str      wzr, [x20, #0x10]
+    0x1467994: str      x19, [x20, #0x20]
+    0x1467998: mov      x0, x20
+    0x146799c: ldp      x20, x19, [sp, #0x10]
+    0x14679a0: ldp      x30, x21, [sp], #0x20
+    0x14679a4: ret      
+
+;;; OnDrawGizmos  private void OnDrawGizmos() { }
+    0x14679d0: stp      x30, x19, [sp, #-0x10]!
+    0x14679d4: ldrb     w8, [x0, #0x34]
+    0x14679d8: cbz      w8, #0x1467a40
+    0x14679dc: ldr      w8, [x0, #0x30]
+    0x14679e0: mov      x19, x0
+    0x14679e4: cmp      w8, #3
+    0x14679e8: b.eq     #0x14679f0
+    0x14679ec: cbnz     w8, #0x1467a40
+    0x14679f0: fmov     s0, #1.00000000
+    0x14679f4: fmov     s1, wzr
+    0x14679f8: fmov     s2, wzr
+    0x14679fc: fmov     s3, #1.00000000
+    0x1467a00: mov      x0, xzr
+    0x1467a04: bl       #0x2765930
+    0x1467a08: mov      x0, x19
+    0x1467a0c: mov      x1, xzr
+    0x1467a10: bl       #0x277f14c
+    0x1467a14: cbz      x0, #0x1467a48
+    0x1467a18: mov      x1, xzr
+    0x1467a1c: bl       #0x27891b8
+    0x1467a20: adrp     x8, #0x756000
+    0x1467a24: adrp     x9, #0x756000
+    0x1467a28: ldr      s3, [x8, #0xb3c]
+    0x1467a2c: ldr      s4, [x9, #0xc8c]
+    0x1467a30: fmov     s5, wzr
+    0x1467a34: mov      x0, xzr
+    0x1467a38: ldp      x30, x19, [sp], #0x10
+    0x1467a3c: b        #0x2765808
+    0x1467a40: ldp      x30, x19, [sp], #0x10
+    0x1467a44: ret      
+    0x1467a48: bl       #0x110d250
+
+;;; ctor  public void .ctor() { }
+    0x1467a4c: mov      x1, xzr
+    0x1467a50: b        #0x2782ba0

@@ -1,0 +1,733 @@
+{
+ "class": "AudioManager",
+ "note": "Pinned audio recovery; provisional",
+ "methods": [
+  {
+   "method": "PlayOneShot",
+   "signature": "public static void PlayOneShot(AllClipName _clipName, float _volumeScale = 1) { }",
+   "offset": "0x15b10ac",
+   "getter_value": null,
+   "rva": "0x15b50ac",
+   "bytes": 312,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b50ec",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "PlayMusic",
+   "signature": "public static float PlayMusic(AllClipName _clipName) { }",
+   "offset": "0x15b1214",
+   "getter_value": null,
+   "rva": "0x15b5214",
+   "bytes": 84,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b5240",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_Mute",
+   "signature": "public static bool get_Mute() { }",
+   "offset": "0x15b127c",
+   "getter_value": null,
+   "rva": "0x15b527c",
+   "bytes": 120,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b52b0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x15b52e4",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "set_Mute",
+   "signature": "public static void set_Mute(bool value) { }",
+   "offset": "0x15b12f4",
+   "getter_value": null,
+   "rva": "0x15b52f4",
+   "bytes": 124,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b5338",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x15b5354",
+     "reg": "w1",
+     "op": "w1, w19, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "set_VolumeSound",
+   "signature": "public static void set_VolumeSound(float value) { }",
+   "offset": "0x15b1370",
+   "getter_value": null,
+   "rva": "0x15b5370",
+   "bytes": 668,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b53ec",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15b55b8",
+     "reg": "w19",
+     "op": "w19, w19, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_VolumeSound",
+   "signature": "public static float get_VolumeSound() { }",
+   "offset": "0x15b160c",
+   "getter_value": null,
+   "rva": "0x15b560c",
+   "bytes": 124,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b5634",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.73,
+     "via": "ldr_pool",
+     "va": "0x756dd4",
+     "addr": "0x15b5678",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "set_VolumeMusic",
+   "signature": "public static void set_VolumeMusic(float value) { }",
+   "offset": "0x15b1688",
+   "getter_value": null,
+   "rva": "0x15b5688",
+   "bytes": 324,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b56e4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_VolumeMusic",
+   "signature": "public static float get_VolumeMusic() { }",
+   "offset": "0x15b17cc",
+   "getter_value": null,
+   "rva": "0x15b57cc",
+   "bytes": 124,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b57f4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.3,
+     "via": "ldr_pool",
+     "va": "0x7570e0",
+     "addr": "0x15b5838",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "Awake",
+   "signature": "private void Awake() { }",
+   "offset": "0x15b1848",
+   "getter_value": null,
+   "rva": "0x15b5848",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "Init",
+   "signature": "protected void Init() { }",
+   "offset": "0x15b184c",
+   "getter_value": null,
+   "rva": "0x15b584c",
+   "bytes": 520,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b58d0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x15b5974",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15b59b8",
+     "reg": "w8",
+     "op": "w8, w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15b59e8",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15b5a04",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x15b5a08",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15b5a30",
+     "reg": "w22",
+     "op": "w22, w22, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_Pause",
+   "signature": "public static bool get_Pause() { }",
+   "offset": "0x15b1a54",
+   "getter_value": null,
+   "rva": "0x15b5a54",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "set_Pause",
+   "signature": "public static void set_Pause(bool value) { }",
+   "offset": "0x15b1a5c",
+   "getter_value": null,
+   "rva": "0x15b5a5c",
+   "bytes": 12,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x15b5a5c",
+     "reg": "w0",
+     "op": "w0, w0, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetAudioSource",
+   "signature": "public static AudioSource GetAudioSource() { }",
+   "offset": "0x15b1a68",
+   "getter_value": null,
+   "rva": "0x15b5a68",
+   "bytes": 328,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b5ac0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x15b5af4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15b5b94",
+     "reg": "w8",
+     "op": "w8, w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetAudioClip",
+   "signature": "public static AudioClip GetAudioClip(AllClipName _clipName) { }",
+   "offset": "0x15b1bb0",
+   "getter_value": null,
+   "rva": "0x15b5bb0",
+   "bytes": 276,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 80,
+     "via": "sub",
+     "addr": "0x15b5bb0",
+     "reg": "sp",
+     "op": "sp, sp, #0x50",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b5c10",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x15b5c20",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x15b5c68",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 80,
+     "via": "add",
+     "addr": "0x15b5cb8",
+     "reg": "sp",
+     "op": "sp, sp, #0x50",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "DelayFreeSource",
+   "signature": "protected IEnumerator DelayFreeSource(AudioSource _source) { }",
+   "offset": "0x15b1cc4",
+   "getter_value": null,
+   "rva": "0x15b5cc4",
+   "bytes": 108,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b5cf8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "StartSmoothMusic",
+   "signature": "protected float StartSmoothMusic(AllClipName _clipName) { }",
+   "offset": "0x15b1d30",
+   "getter_value": null,
+   "rva": "0x15b5d30",
+   "bytes": 520,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b5d6c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b5da8",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b5dd0",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetAudioSource",
+   "signature": "public static AudioSource GetAudioSource(AllClipName _clipName, bool _loop) { }",
+   "offset": "0x15b1f38",
+   "getter_value": null,
+   "rva": "0x15b5f38",
+   "bytes": 208,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b5f6c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x15b5fd0",
+     "reg": "w1",
+     "op": "w1, w19, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetData",
+   "signature": "private void GetData() { }",
+   "offset": "0x15b2008",
+   "getter_value": null,
+   "rva": "0x15b6008",
+   "bytes": 456,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b6080",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x15b60f4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x15b6110",
+     "reg": "x23",
+     "op": "x23, x19, #0x20",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15b61a8",
+     "reg": "x22",
+     "op": "x22, x22, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "FreeSource",
+   "signature": "protected void FreeSource(AudioSource _source) { }",
+   "offset": "0x15b21d0",
+   "getter_value": null,
+   "rva": "0x15b61d0",
+   "bytes": 256,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b6204",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15b6278",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15b6294",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x15b6298",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SmoothMusic",
+   "signature": "protected IEnumerator SmoothMusic(AllClipName _clipName) { }",
+   "offset": "0x15b22f8",
+   "getter_value": null,
+   "rva": "0x15b62f8",
+   "bytes": 96,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b6324",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SmoothMusicDone",
+   "signature": "protected void SmoothMusicDone() { }",
+   "offset": "0x15b2380",
+   "getter_value": null,
+   "rva": "0x15b6380",
+   "bytes": 236,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b63b8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x15b246c",
+   "getter_value": null,
+   "rva": "0x15b646c",
+   "bytes": 80,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15b6498",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "mov",
+     "addr": "0x15b64a0",
+     "reg": "w8",
+     "op": "w8, #0x20",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

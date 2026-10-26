@@ -1,0 +1,34 @@
+;;; ctor  public void .ctor() { }
+    0x123bafc: mov      x1, xzr
+    0x123bb00: b        #0x2782ba0
+
+;;; OnValidate  protected virtual void OnValidate() { }
+    0x123bb04: stp      x30, x21, [sp, #-0x20]!
+    0x123bb08: stp      x20, x19, [sp, #0x10]
+    0x123bb0c: adrp     x20, #0x2ce0000
+    0x123bb10: adrp     x21, #0x2adc000
+    0x123bb14: ldrb     w8, [x20, #0xf85]
+    0x123bb18: ldr      x21, [x21, #0xae8]
+    0x123bb1c: mov      x19, x0
+    0x123bb20: tbnz     w8, #0, #0x123bb38
+    0x123bb24: adrp     x0, #0x2adc000
+    0x123bb28: ldr      x0, [x0, #0xae8]
+    0x123bb2c: bl       #0x110d028
+    0x123bb30: mov      w8, #1
+    0x123bb34: strb     w8, [x20, #0xf85]
+    0x123bb38: ldr      x1, [x21]
+    0x123bb3c: mov      x0, x19
+    0x123bb40: bl       #0x16f4f54
+    0x123bb44: str      x0, [x19, #0x20]
+    0x123bb48: ldp      x20, x19, [sp, #0x10]
+    0x123bb4c: ldp      x30, x21, [sp], #0x20
+    0x123bb50: ret      
+
+;;; GetID  public int GetID() { }
+    0x123bb54: str      x30, [sp, #-0x10]!
+    0x123bb58: ldr      x8, [x0, #0x20]
+    0x123bb5c: cbz      x8, #0x123bb6c
+    0x123bb60: ldr      w0, [x8, #0x20]
+    0x123bb64: ldr      x30, [sp], #0x10
+    0x123bb68: ret      
+    0x123bb6c: bl       #0x110d250

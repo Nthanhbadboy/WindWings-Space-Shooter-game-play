@@ -1,0 +1,175 @@
+name: Ingest WindWings APK
+
+on:
+  push:
+    paths:
+      - 'tools/apk-ingest/**'
+      - '.github/workflows/ingest-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      XAPK_URL: https://d.apkpure.net/b/XAPK/com.Wind.wings.Space.Shooter?version=latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Cache XAPK
+        uses: actions/cache@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+
+      - name: Fetch XAPK from APKPure CDN
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/apk
+          if [ ! -s /tmp/apk/windwings.xapk ]; then
+            curl -fSL --retry 3 --retry-delay 5 --connect-timeout 30 \
+                 -A 'Mozilla/5.0 (X11; Linux x86_64) Chrome/124.0' \
+                 -o /tmp/apk/windwings.xapk "$XAPK_URL"
+          fi
+          ls -l /tmp/apk/windwings.xapk
+          file /tmp/apk/windwings.xapk
+          sha256sum /tmp/apk/windwings.xapk
+
+      - name: Inventory every APK part
+        run: python3 tools/apk-ingest/inspect.py
+
+      - name: Pick base APK
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, shutil
+          man = json.load(open('/tmp/apk/inventory/inventory.json'))['manifest']
+          print(json.dumps(man, indent=2)[:3000])
+          base = None
+          for s in (man.get('split_apks') or []):
+              if s.get('id') == 'base':
+                  base = s.get('file')
+          if not base:
+              for f in os.listdir('/tmp/apk/parts'):
+                  if f.lower().endswith('.apk') and not f.lower().startswith('config.'):
+                      base = f
+          print('base =', base)
+          src = os.path.join('/tmp/apk/parts', base)
+          shutil.copy(src, '/tmp/apk/base.apk')
+          open('/tmp/apk/base_name.txt', 'w').write(base)
+          print('size', os.path.getsize('/tmp/apk/base.apk'))
+          PY
+
+      - name: Download apktool
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/tools
+          if [ ! -s /tmp/tools/apktool.jar ]; then
+            curl -fSL --retry 3 -o /tmp/tools/apktool.jar \
+              https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar
+          fi
+          java -jar /tmp/tools/apktool.jar --version
+
+      - name: Decode base APK (manifest + resources, keep dex)
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/apk/apktool
+          java -jar /tmp/tools/apktool.jar d -f -s -o /tmp/apk/apktool /tmp/apk/base.apk 2>&1 | tail -20
+          ls -la /tmp/apk/apktool | head -30
+          head -40 /tmp/apk/apktool/apktool.yml || true
+          wc -c /tmp/apk/apktool/AndroidManifest.xml || true
+
+      - name: Signing certificate
+        continue-on-error: true
+        run: |
+          keytool -printcert -jarfile /tmp/apk/base.apk > /tmp/apk/cert.txt 2>&1 || true
+          cat /tmp/apk/cert.txt
+
+      - name: Assemble report
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p docs/apk-analysis
+          cp /tmp/apk/inventory/inventory.md docs/apk-analysis/01-apk-inventory.md
+          cp /tmp/apk/inventory/inventory.json docs/apk-analysis/01-apk-inventory.json
+          {
+            echo ""
+            echo "## Base APK"
+            echo ""
+            echo '```'
+            echo "file: $(cat /tmp/apk/base_name.txt 2>/dev/null || echo '?')"
+            echo "sha256: $(sha256sum /tmp/apk/base.apk 2>/dev/null | cut -d' ' -f1)"
+            echo "size: $(stat -c%s /tmp/apk/base.apk 2>/dev/null || echo 0)"
+            echo '```'
+            echo ""
+            echo "## apktool.yml"
+            echo '```yaml'
+            cat /tmp/apk/apktool/apktool.yml 2>/dev/null || echo "apktool failed"
+            echo '```'
+            echo ""
+            echo "## Signing certificate"
+            echo '```'
+            cat /tmp/apk/cert.txt 2>/dev/null || echo "n/a"
+            echo '```'
+            echo ""
+            echo "## Decoded AndroidManifest.xml"
+            echo '```xml'
+            head -c 60000 /tmp/apk/apktool/AndroidManifest.xml 2>/dev/null || echo "apktool failed"
+            echo '```'
+          } >> docs/apk-analysis/01-apk-inventory.md
+
+      - name: Upload XAPK + parts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windwings-xapk
+          path: |
+            /tmp/apk/windwings.xapk
+            /tmp/apk/base.apk
+            /tmp/apk/parts/*.apk
+            /tmp/apk/inventory/*
+            /tmp/apk/apktool/AndroidManifest.xml
+            /tmp/apk/apktool/apktool.yml
+            /tmp/apk/cert.txt
+          retention-days: 30
+
+      - name: Publish draft release with the APK
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG=windwings-apk-1.3.118
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" /tmp/apk/windwings.xapk --clobber
+          else
+            gh release create "$TAG" --draft \
+              --title "WindWings: Space Shooter 1.3.118 (APK for analysis)" \
+              --notes "Draft: original XAPK downloaded from APKPure for static analysis. Not published." \
+              /tmp/apk/windwings.xapk
+          fi
+          gh release view "$TAG" --json name,tagName,isDraft,assets
+
+      - name: Commit report
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/apk-analysis
+          git diff --cached --quiet || git commit -m "chore(re): APK inventory report [skip ci]"
+          git pull --rebase --autostash || true
+          git push

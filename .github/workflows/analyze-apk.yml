@@ -1,0 +1,517 @@
+name: Analyze WindWings APK
+
+on:
+  push:
+    paths:
+      - 'tools/apk-analyze/**'
+      # Recovery-only exporter has its own pinned, narrow workflow.
+      - '!tools/apk-analyze/early_wave_prefabs.py'
+      # Offline data-pack changes are verified without an APK re-export.
+      - '!tools/apk-analyze/data_pack.py'
+      - '.github/workflows/analyze-apk.yml'
+  workflow_dispatch:
+    inputs:
+      run_rea:
+        description: 'Chạy REA (tốn ~8 phút, 05-rea.md không chứa dữ liệu game)'
+        type: boolean
+        default: false
+
+# Audit của nhánh spec (§9.4): mỗi lần push tạo một run đầy đủ, nhiều run chạy
+# song song cùng nội dung = đốt compute gấp N lần. Giữ 1 run cho mỗi ref.
+concurrency:
+  group: analyze-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  XAPK_URL: https://d.apkpure.net/b/XAPK/com.Wind.wings.Space.Shooter?version=latest
+  DOTNET_ROLL_FORWARD: LatestMajor
+
+jobs:
+  analyze:
+    # A scoped maintenance run can supersede/cancel an accidentally broad run
+    # through the workflow-level concurrency group without exporting assets.
+    if: ${{ github.event_name != 'push' || !contains(github.event.head_commit.message, '[scoped-only]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Restore XAPK
+        uses: actions/cache@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+
+      - name: Fetch XAPK if cache missed
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/apk
+          if [ ! -s /tmp/apk/windwings.xapk ]; then
+            curl -fSL --retry 3 --retry-delay 5 -A 'Mozilla/5.0 Chrome/124' -o /tmp/apk/windwings.xapk "$XAPK_URL"
+          fi
+          echo 'f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e  /tmp/apk/windwings.xapk' | sha256sum --check --strict
+
+      - name: Extract Unity payload
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/apk/extract
+          python3 - <<'PY'
+          import zipfile, os
+          x = zipfile.ZipFile('/tmp/apk/windwings.xapk')
+          os.makedirs('/tmp/apk/parts', exist_ok=True)
+          for n in x.namelist():
+              if n.endswith('.apk'):
+                  with x.open(n) as s, open('/tmp/apk/parts/' + os.path.basename(n), 'wb') as d:
+                      while True:
+                          b = s.read(1 << 20)
+                          if not b: break
+                          d.write(b)
+          base = '/tmp/apk/parts/com.Wind.wings.Space.Shooter.apk'
+          config = '/tmp/apk/parts/config.arm64_v8a.apk'
+          with zipfile.ZipFile(base) as z:
+              for n in ['assets/bin/Data/data.unity3d',
+                        'assets/bin/Data/Managed/Metadata/global-metadata.dat',
+                        'assets/bin/Data/ScriptingAssemblies.json',
+                        'assets/bin/Data/RuntimeInitializeOnLoads.json',
+                        'assets/bin/Data/globalgamemanagers',
+                        'assets/bin/Data/globalgamemanagers.assets',
+                        'assets/bin/Data/resources.resource',
+                        'resources.arsc']:
+                  try:
+                      out = '/tmp/apk/extract/' + os.path.basename(n)
+                      with z.open(n) as s, open(out, 'wb') as d:
+                          d.write(s.read())
+                      print('extracted', n, os.path.getsize(out))
+                  except KeyError:
+                      print('missing', n)
+          # every serialized file under assets/bin/Data (audio FSB, .resS, bundles)
+          listing = []
+          with zipfile.ZipFile(base) as z:
+              for n in z.namelist():
+                  if not n.startswith('assets/bin/Data/'):
+                      continue
+                  if not n.endswith(('.unity3d', '.resource', '.resS', '.assets', '.bundle', '.split0')):
+                      continue
+                  try:
+                      out = '/tmp/apk/extract/' + os.path.basename(n)
+                      if os.path.exists(out):
+                          listing.append((n, os.path.getsize(out), 'cached'))
+                          continue
+                      with z.open(n) as s2, open(out, 'wb') as d2:
+                          d2.write(s2.read())
+                      listing.append((n, os.path.getsize(out), 'extracted'))
+                  except Exception as e:
+                      listing.append((n, 0, f'error {e!r}'))
+          with open('/tmp/apk/extract/_listing.txt', 'w') as fh:
+              for n, sz, st in sorted(listing):
+                  fh.write(f'{sz:>12}  {st:12}  {n}\n')
+          with zipfile.ZipFile(config) as z:
+              for n in ['lib/arm64-v8a/libil2cpp.so', 'lib/arm64-v8a/libunity.so']:
+                  out = '/tmp/apk/extract/' + os.path.basename(n)
+                  with z.open(n) as s, open(out, 'wb') as d:
+                      d.write(s.read())
+                  print('extracted', n, os.path.getsize(out))
+          PY
+          ls -l /tmp/apk/extract
+
+      - name: Unity version + engine strings
+        continue-on-error: true
+        run: |
+          set +e
+          {
+            echo "## Unity version candidates"
+            strings -n 6 /tmp/apk/extract/libunity.so | grep -E '^20[0-9]{2}\.[0-9]+\.[0-9]+[abfp][0-9]+' | sort -u | head -20
+            echo "--- data.unity3d ---"
+            strings -n 6 /tmp/apk/extract/data.unity3d | grep -E '^20[0-9]{2}\.[0-9]+\.[0-9]+[abfp][0-9]+' | sort -u | head -20
+            echo "--- metadata ---"
+            xxd -l 32 /tmp/apk/extract/global-metadata.dat
+          } | tee /tmp/apk/unity_version.txt
+          echo "## ScriptingAssemblies.json"
+          cat /tmp/apk/extract/ScriptingAssemblies.json | tee -a /tmp/apk/unity_version.txt
+          echo "## RuntimeInitializeOnLoads.json"
+          head -c 4000 /tmp/apk/extract/RuntimeInitializeOnLoads.json | tee -a /tmp/apk/unity_version.txt
+
+      - name: Download Il2CppDumper
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/tools/il2cppdumper
+          curl -fSL --retry 3 -o /tmp/tools/il2cppdumper.zip \
+            https://github.com/Perfare/Il2CppDumper/releases/download/v6.7.46/Il2CppDumper-net7-v6.7.46.zip
+          unzip -o -q /tmp/tools/il2cppdumper.zip -d /tmp/tools/il2cppdumper
+          ls -la /tmp/tools/il2cppdumper | head -20
+          dotnet --info | head -20
+
+      - name: Run Il2CppDumper
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          cd /tmp/tools/il2cppdumper
+          DOTNET=$(ls Il2CppDumper.dll 2>/dev/null || ls *.dll | head -1)
+          echo "entry: $DOTNET"
+          mkdir -p /tmp/apk/il2cpp
+          dotnet "$DOTNET" /tmp/apk/extract/libil2cpp.so /tmp/apk/extract/global-metadata.dat /tmp/apk/il2cpp 2>&1 | tail -60 | tee /tmp/apk/il2cpp/run.log
+          ls -la /tmp/apk/il2cpp | head -30
+
+      - name: IL2CPP report
+        continue-on-error: true
+        run: |
+          if [ -f /tmp/apk/il2cpp/dump.cs ]; then
+            python3 tools/apk-analyze/il2cpp_report.py
+            python3 tools/apk-analyze/gameplay_report.py
+          else
+            echo "no dump.cs" > /tmp/apk/il2cpp_report_error.txt
+          fi
+
+      - name: Install UnityPy
+        continue-on-error: true
+        run: pip install --quiet "UnityPy==1.25.4" capstone
+
+      - name: Unity asset probe
+        continue-on-error: true
+        run: |
+          mkdir -p /tmp/apk/unity
+          mkdir -p /tmp/apk/logs
+          python3 tools/apk-analyze/unity_assets.py probe 2>&1 | tee /tmp/apk/logs/probe.log | tail -40
+          python3 tools/apk-analyze/unity_assets.py text 2>&1 | tee /tmp/apk/logs/text.log | tail -20
+
+      - name: Export Unity assets (textures/sprites/audio/fonts)
+        continue-on-error: true
+        run: python3 tools/apk-analyze/unity_assets.py export 2>&1 | tee /tmp/apk/logs/export.log | tail -30
+
+      - name: Audio deep-dive (FFmpeg fallback)
+        continue-on-error: true
+        run: python3 tools/apk-analyze/audio_deep.py 2>&1 | tee /tmp/apk/logs/audio.log | tail -40
+
+      - name: Build asset gallery (contact sheets)
+        continue-on-error: true
+        run: python3 tools/apk-analyze/asset_gallery.py 2>&1 | tee /tmp/apk/logs/gallery.log | tail -30
+
+      - name: Install TypeTreeGeneratorAPI
+        continue-on-error: true
+        run: pip install --quiet "TypeTreeGeneratorAPI==0.0.10"
+
+      - name: Extract ScriptableObject values (IL2CPP typetrees)
+        continue-on-error: true
+        run: |
+          python3 tools/apk-analyze/unity_data.py 2>&1 | tee /tmp/apk/logs/unity_data.log | tail -60
+          python3 tools/apk-analyze/anim_curves.py 2>&1 | tee /tmp/apk/logs/anim_curves.log | tail -10
+
+      - name: Build localization / IAP / data tables
+        continue-on-error: true
+        run: python3 tools/apk-analyze/config_report.py 2>&1 | tail -40
+
+      - name: Extract wave composition
+        continue-on-error: true
+        run: python3 tools/apk-analyze/wave_report.py 2>&1 | tee /tmp/apk/logs/wave.log | tail -40
+
+      - name: Extract IL2CPP constants (method bodies)
+        continue-on-error: true
+        run: python3 tools/apk-analyze/il2cpp_consts.py 2>&1 | tee /tmp/apk/logs/consts.log | tail -40
+
+      - name: Identify IL2CPP helper addresses (script.json)
+        continue-on-error: true
+        run: |
+          python3 - <<'PYEOF' | tee /tmp/apk/logs/helpers.log
+          import json
+          want = {0x110d09c, 0x110d240, 0x110d028, 0x205b07c, 0x1bd768c,
+                  0x1bd7e58, 0x193a074, 0x1939704, 0x110d12c, 0x11840d4}
+          d = json.load(open('/tmp/apk/il2cpp/script.json'))
+          print('script.json keys:', list(d.keys()))
+          for key in ('ScriptMethod', 'ScriptMetadataMethod'):
+              for e in d.get(key, []):
+                  if e.get('Address') in want:
+                      print(hex(e['Address']), key, e.get('Name'), '|', str(e.get('Signature'))[:80])
+          PYEOF
+
+      - name: Extract field default values (literal tables)
+        continue-on-error: true
+        run: python3 tools/apk-analyze/field_defaults.py /tmp/apk/extract/global-metadata.dat /tmp/apk/il2cpp/dump.cs 2>&1 | tee /tmp/apk/logs/field_defaults.log | tail -20
+
+      - name: Dump UI layout (Board/Popup RectTransforms)
+        continue-on-error: true
+        env:
+          UI_RAW: /tmp/apk/unity/raw/ui
+        run: python3 tools/apk-analyze/ui_layout.py 2>&1 | tee /tmp/apk/logs/ui_layout.log | tail -40
+
+      - name: Spine rig + audio map
+        continue-on-error: true
+        run: |
+          python3 tools/apk-analyze/spine_report.py 2>&1 | tee /tmp/apk/logs/spine.log | tail -30
+          python3 tools/apk-analyze/spine_anim.py 2>&1 | tee /tmp/apk/logs/spine_anim.log | tail -20
+          python3 tools/apk-analyze/ui_index.py 2>&1 | tee /tmp/apk/logs/ui_index.log | tail -10
+          python3 tools/apk-analyze/prefab_joins.py 2>&1 | tee /tmp/apk/logs/prefab_joins.log | tail -10
+          python3 tools/apk-analyze/animator_joins.py 2>&1 | tee /tmp/apk/logs/animator_joins.log | tail -10
+          python3 tools/apk-analyze/formula_trace.py 2>&1 | tee /tmp/apk/logs/formula_trace.log | tail -10
+          python3 tools/apk-analyze/audio_map.py 2>&1 | tee /tmp/apk/logs/audio_map.log | tail -20
+
+      - name: Build data pack (datas/ + i18n/)
+        continue-on-error: true
+        run: python3 tools/apk-analyze/data_pack.py --root . 2>&1 | tail -20
+
+      - name: Build REA (mytechnotalent/rea) and analyze APK
+        # Chỉ chạy khi dispatch với run_rea=true: step này chiếm ~70% thời gian run
+        # mà 05-rea.md không chứa dữ liệu gameplay (đo ở docs/spec/PIPELINE_AUDIT.md §9.2).
+        if: github.event_name == 'workflow_dispatch' && inputs.run_rea
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/mytechnotalent/rea /tmp/rea
+          cd /tmp/rea
+          cargo build --release 2>&1 | tail -30
+          ls -l target/release/rea
+          cd /tmp/apk
+          /tmp/rea/target/release/rea analyze /tmp/apk/parts/com.Wind.wings.Space.Shooter.apk 2>&1 | tail -60 | tee /tmp/apk/rea.log
+          timeout 1200 /tmp/rea/target/release/rea analyze /tmp/apk/extract/libil2cpp.so 2>&1 | tail -40 | tee /tmp/apk/rea-native.log || true
+          timeout 900 /tmp/rea/target/release/rea analyze /tmp/apk/extract/libunity.so 2>&1 | tail -30 | tee -a /tmp/apk/rea-native.log || true
+          ls -la /tmp/apk/extract | grep -i '^.*re-' || true
+
+      - name: Assemble reports
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p docs/apk-analysis reverse-engineering/il2cpp reverse-engineering/textassets
+          cp /tmp/apk/unity_version.txt docs/apk-analysis/02-unity-engine.md || true
+          if [ -f /tmp/apk/il2cpp_report/il2cpp-report.md ]; then
+            cp /tmp/apk/il2cpp_report/il2cpp-report.md docs/apk-analysis/03-il2cpp.md
+            cp /tmp/apk/il2cpp_report/strings.json docs/apk-analysis/03-il2cpp-strings.json || true
+            cp /tmp/apk/il2cpp_report/interesting-classes.cs reverse-engineering/il2cpp/interesting-classes.cs || true
+            cp /tmp/apk/il2cpp/stringliteral.json reverse-engineering/il2cpp/stringliteral.json || true
+            SZ=$(stat -c%s /tmp/apk/il2cpp_report/class-index.json 2>/dev/null || echo 0)
+            if [ "$SZ" -lt 12000000 ]; then cp /tmp/apk/il2cpp_report/class-index.json reverse-engineering/il2cpp/class-index.json; fi
+            if [ -f /tmp/apk/il2cpp/dump.cs ]; then
+              gzip -9 -c /tmp/apk/il2cpp/dump.cs > reverse-engineering/il2cpp/dump.cs.gz
+              SZ2=$(stat -c%s reverse-engineering/il2cpp/dump.cs.gz)
+              if [ "$SZ2" -gt 30000000 ]; then rm -f reverse-engineering/il2cpp/dump.cs.gz; fi
+            fi
+            if [ -f /tmp/apk/il2cpp/script.json ]; then
+              # Giữ lại phần field-default của script.json (bảng map->wave và các
+              # bảng tĩnh khác nạp từ RVA data) — file gốc 49 MB không vào repo.
+              python3 - <<'PY'
+          import json
+          try:
+              d = json.load(open('/tmp/apk/il2cpp/script.json'))
+              out = {k: v for k, v in d.items() if 'Field' in k or 'field' in k}
+              print('script.json keys:', list(d.keys()))
+              print('field-ish keys:', {k: (len(v) if hasattr(v, '__len__') else v) for k, v in out.items()})
+              if out:
+                  json.dump(out, open('reverse-engineering/il2cpp/field-defaults.json', 'w'))
+          except Exception as e:
+              print('field-defaults extract failed:', e)
+          PY
+            fi
+            ls -la /tmp/apk/il2cpp > docs/apk-analysis/03-il2cpp-files.txt || true
+            { echo; echo '```'; cat /tmp/apk/il2cpp/run.log 2>/dev/null | tail -40; echo '```'; } >> docs/apk-analysis/03-il2cpp.md
+          else
+            echo "IL2CPP dump failed or was skipped." > docs/apk-analysis/03-il2cpp.md
+            cat /tmp/apk/il2cpp/run.log 2>/dev/null >> docs/apk-analysis/03-il2cpp.md || true
+          fi
+          if [ -f /tmp/apk/unity/probe.md ]; then
+            cp /tmp/apk/unity/probe.md docs/apk-analysis/04-unity-assets.md
+          fi
+          if [ -f /tmp/apk/unity/export.md ]; then
+            cat /tmp/apk/unity/export.md >> docs/apk-analysis/04-unity-assets.md
+          fi
+          if [ -f /tmp/apk/unity/export-manifest.csv ]; then
+            cp /tmp/apk/unity/export-manifest.csv docs/apk-analysis/04-asset-manifest.csv
+          fi
+          if [ -f /tmp/apk/unity/data-report.md ]; then
+            cp /tmp/apk/unity/data-report.md docs/apk-analysis/10-scriptableobjects.md
+            cp /tmp/apk/unity/data/class-inventory.csv docs/apk-analysis/ 2>/dev/null || true
+            cp /tmp/apk/unity/audio-diagnose.json docs/apk-analysis/ 2>/dev/null || true
+            n=0
+            for f in /tmp/apk/unity/data/*.csv; do
+              [ -f "$f" ] || continue
+              case "$(basename "$f")" in class-inventory.csv) continue;; esac
+              SZ=$(stat -c%s "$f")
+              if [ "$SZ" -lt 3000000 ] && [ "$n" -lt 40 ]; then
+                cp "$f" docs/apk-analysis/ || true
+                n=$((n+1))
+              fi
+            done
+            echo "copied $n class CSV files"
+            SZ=$(du -sb /tmp/apk/unity/data 2>/dev/null | cut -f1 || echo 0)
+            if [ "$SZ" -lt 20000000 ]; then
+              mkdir -p reverse-engineering/scriptableobjects
+              cp -r /tmp/apk/unity/data/. reverse-engineering/scriptableobjects/ 2>/dev/null || true
+            fi
+          fi
+          mkdir -p reverse-engineering/raw
+          for d in typetrees ui il2cpp-consts; do
+            SRC=""
+            [ "$d" = "typetrees" ] && SRC=/tmp/apk/unity/raw/typetrees
+            [ "$d" = "ui" ] && SRC=/tmp/apk/unity/raw/ui
+            [ "$d" = "il2cpp-consts" ] && SRC=reverse-engineering/raw/il2cpp-consts
+            [ -d "$SRC" ] || continue
+            SZ=$(du -sb "$SRC" | cut -f1)
+            echo "raw $d: $SZ bytes"
+            if [ "$SZ" -lt 60000000 ]; then
+              mkdir -p "reverse-engineering/raw/$d"
+              cp -r "$SRC/." "reverse-engineering/raw/$d/" 2>/dev/null || true
+            else
+              echo "skip $d (too big)"
+            fi
+          done
+          du -sh reverse-engineering/raw 2>/dev/null || true
+          if [ -d /tmp/apk/unity/textassets ] && [ "$(du -sb /tmp/apk/unity/textassets | cut -f1)" -lt 25000000 ]; then
+            cp -r /tmp/apk/unity/textassets/. reverse-engineering/textassets/ 2>/dev/null || true
+          fi
+          REA_MD=$(ls /tmp/apk/re-suspect.md /tmp/apk/parts/re-*.md 2>/dev/null | head -1 || true)
+          if [ -n "${REA_MD:-}" ] && [ -f "$REA_MD" ]; then
+            python3 - "$REA_MD" <<'PY'
+          import re, sys
+          s = open(sys.argv[1], encoding='utf-8', errors='replace').read()
+          s = re.sub(r'AIza[0-9A-Za-z_-]{35}', 'AIza_REDACTED', s)
+          s = re.sub(r'(?i)(api[_-]?key["\s:=]+)[0-9A-Za-z_-]{16,}', r'\1REDACTED', s)
+          s = re.sub(r'[0-9a-fA-F]{40,}', 'HEX_REDACTED', s)
+          open('docs/apk-analysis/05-rea.md','w').write(s)
+          PY
+            REA_JSON=$(ls /tmp/apk/re-suspect.json /tmp/apk/parts/re-*.json 2>/dev/null | head -1 || true)
+            if [ -n "${REA_JSON:-}" ] && [ -f "$REA_JSON" ]; then cp "$REA_JSON" docs/apk-analysis/05-rea.json; fi
+            cat /tmp/apk/rea.log >> docs/apk-analysis/05-rea.md 2>/dev/null || true
+          elif [ -f docs/apk-analysis/05-rea.md ]; then
+            echo "REA bỏ qua lần này — giữ báo cáo cũ."
+          else
+            echo "REA report not produced." > docs/apk-analysis/05-rea.md
+            cat /tmp/apk/rea.log 2>/dev/null >> docs/apk-analysis/05-rea.md || true
+          fi
+          NATIVE_MD=$(ls /tmp/apk/extract/re-*.so.md 2>/dev/null | head -1 || true)
+          if [ -n "${NATIVE_MD:-}" ] && [ -f "$NATIVE_MD" ]; then
+            python3 - "$NATIVE_MD" <<'PY'
+          import re, sys
+          s = open(sys.argv[1], encoding='utf-8', errors='replace').read()
+          s = re.sub(r'AIza[0-9A-Za-z_-]{35}', 'AIza_REDACTED', s)
+          s = re.sub(r'(?i)(api[_-]?key["\s:=]+)[0-9A-Za-z_-]{16,}', r'\1REDACTED', s)
+          open('docs/apk-analysis/05b-rea-native.md','w').write(s)
+          PY
+            cat /tmp/apk/rea-native.log >> docs/apk-analysis/05b-rea-native.md 2>/dev/null || true
+          fi
+          du -sh docs/apk-analysis reverse-engineering 2>/dev/null || true
+
+      - name: Publish asset release (images / audio / spine, split <90MB)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          D=/tmp/apk/assets
+          mkdir -p "$D"
+          cp -r /tmp/apk/unity/export/. "$D"/ 2>/dev/null || true
+          mkdir -p "$D/textassets"
+          cp -r /tmp/apk/unity/textassets/. "$D/textassets"/ 2>/dev/null || true
+          cp /tmp/apk/unity/export-manifest.csv "$D"/manifest-full.csv 2>/dev/null || true
+          du -sh "$D"/*
+          ( cd "$D" && zip -q -r -0 -s 90m /tmp/apk/assets.zip . )
+          ls -lh /tmp/apk/assets.zip*
+          TAG=windwings-assets-1.3.118
+          TITLE="WindWings assets 1.3.118 (sprites, atlases, audio, spine)"
+          BODY=$'Full Unity asset export for design reference.\n\n- export/  : Sprite + Texture2D PNG, AudioClip WAV, Font\n- textassets/ : Spine skeleton/atlas, font charsets\n- manifest-full.csv : path_id -> name/bytes/path\n\nThe zip is split into parts (<90MB each): `zip -s 0 assets.zip --out assets-full.zip` then `unzip -t assets-full.zip` and `unzip assets-full.zip`. Keep all assets.zNN parts and assets.zip together; do not overwrite the input parts.\n\nCopyrighted by GCenter — reference only, do not redistribute.'
+          if ! gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$TAG" --draft --title "$TITLE" --notes "$BODY" -R "$GITHUB_REPOSITORY" || true
+          fi
+          # zip -s splits into assets.z01 .. assets.zNN + assets.zip (last part)
+          shopt -s nullglob
+          for f in /tmp/apk/assets.z* /tmp/apk/assets.zip; do
+            SZ=$(stat -c%s "$f")
+            if [ "$SZ" -lt 2097152000 ]; then
+              echo "uploading $(basename "$f") ($SZ bytes)"
+              gh release upload "$TAG" "$f" --clobber -R "$GITHUB_REPOSITORY" || echo "upload failed: $f"
+            fi
+          done
+          gh release upload "$TAG" "$D/manifest-full.csv" --clobber -R "$GITHUB_REPOSITORY" || true
+          if [ -d docs/assets ]; then
+            ( cd docs && zip -q -r /tmp/apk/asset-previews.zip assets )
+            gh release upload "$TAG" /tmp/apk/asset-previews.zip --clobber -R "$GITHUB_REPOSITORY" || true
+          fi
+
+      - name: Diagnostics
+        if: always()
+        run: |
+          {
+            echo "# Pipeline diagnostics"
+            echo
+            echo "## Unity payload"; echo '```'
+            ls -lh /tmp/apk/extract | head -40
+            echo '```'
+            echo; echo "## assets/bin/Data listing (from APK)"; echo '```'
+            head -60 /tmp/apk/extract/_listing.txt 2>/dev/null || echo "listing missing"
+            echo '```'
+            echo; echo "## UnityPy import smoke test"; echo '```'
+            python3 -c "import UnityPy; print('UnityPy', UnityPy.__version__)" 2>&1
+            python3 -c "from UnityPy.export.AudioClipConverter import extract_audioclip_samples; print('audio converter OK')" 2>&1
+            python3 -c "from UnityPy.helpers.TypeTreeGenerator import TypeTreeGenerator; print('typetree OK')" 2>&1
+            echo '```'
+            echo; echo "## Export output"; echo '```'
+            for d in /tmp/apk/unity/export/Sprite /tmp/apk/unity/export/Texture2D /tmp/apk/unity/export/AudioClip /tmp/apk/unity/audio; do
+              printf '%-40s %s files %s\n' "$d" "$(ls -1 "$d" 2>/dev/null | wc -l)" "$(du -sh "$d" 2>/dev/null | cut -f1)"
+            done
+            echo '```'
+            echo; echo "## Asset gallery"; echo '```'
+            ls -la docs/assets docs/assets/contact-sheets 2>/dev/null | head -30 || echo "docs/assets missing"
+            echo '```'
+            echo; echo "## Step logs (tail)"; echo '```'
+            for f in /tmp/apk/logs/*.log; do
+              echo "===== $f"
+              tail -25 "$f"
+              echo
+            done 2>/dev/null || echo "no logs"
+            echo '```'
+            echo; echo "## Audio diagnose"; echo '```'
+            cat /tmp/apk/unity/audio/audio-diagnose.json 2>/dev/null | head -c 2000 || echo "no audio diagnose"
+            echo '```'
+          } > docs/apk-analysis/18-pipeline-diagnostics.md
+
+      - name: Upload analysis artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windwings-analysis
+          path: |
+            /tmp/apk/il2cpp/dump.cs
+            /tmp/apk/il2cpp/DummyDll
+            /tmp/apk/il2cpp/stringliteral.json
+            /tmp/apk/il2cpp/script.json
+            /tmp/apk/il2cpp/il2cpp.h
+            /tmp/apk/extract/ScriptingAssemblies.json
+            /tmp/apk/extract/RuntimeInitializeOnLoads.json
+            /tmp/apk/unity/raw/ui
+            /tmp/apk/unity/probe.json
+            /tmp/apk/unity/probe.md
+            /tmp/apk/unity/textassets
+            /tmp/apk/unity/export
+            /tmp/apk/unity/data
+            /tmp/apk/re-suspect.md
+            /tmp/apk/re-suspect.json
+            /tmp/apk/rea.log
+            /tmp/apk/il2cpp/run.log
+          retention-days: 30
+
+      - name: Commit reports
+        # A cancelled broad run must not overwrite preserved reports with partial output.
+        if: ${{ !cancelled() }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A docs reverse-engineering datas i18n
+          git diff --cached --quiet || git commit -m "chore(re): IL2CPP + Unity + REA analysis reports [skip ci]"
+          # Replayed commit contains generated output only. Concurrent bot
+          # output can overlap; prefer this run's generated files on replay.
+          git pull --rebase --autostash -X theirs origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

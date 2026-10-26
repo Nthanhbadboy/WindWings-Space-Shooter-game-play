@@ -1,0 +1,158 @@
+{
+  "status": "DIRECT_METADATA_ADDRESS_REFERENCE_CANDIDATES_NOT_WHOLE_PROGRAM_WRITER_CLOSURE",
+  "xapk_sha256": "f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e",
+  "lib_sha256": "9cb038e88709f38318d183d3616eed054b36c3186ead8f1c37246ece87393c99",
+  "scan_words": 6765005,
+  "window_limit_bytes": 512,
+  "scope": "Executable PT_LOAD; wanted Enemy_Health metadata symbols; stop at branches/register clobber/method boundary. Does not cover propagated pointers, indirect/reflection/native writes.",
+  "metadata_bindings": [
+    {
+      "got": "0x2ae1718",
+      "target": "0x2bc1148",
+      "symbol": {
+        "Address": 45879624,
+        "Name": "Method$UnityEngine.Component.GetComponent<Enemy_Health>()",
+        "MethodAddress": 0
+      },
+      "rela_file_offset": 3584472,
+      "rela_hex": "1817ae020000000003040000000000004811bc0200000000"
+    }
+  ],
+  "references": [
+    {
+      "adrp": "0x1321844",
+      "load": "0x1321850",
+      "got": "0x2ae1718",
+      "method_rva": "0x1321834",
+      "owners": [
+        {
+          "cls": "Enemy_HitSkeletonRenderer",
+          "namespace": "",
+          "method": "Start",
+          "signature": "private void Start() { }"
+        }
+      ],
+      "window_hex": "15be0090d4bd00d0c8265739b58e43f9"
+    },
+    {
+      "adrp": "0x132186c",
+      "load": "0x1321870",
+      "got": "0x2ae1718",
+      "method_rva": "0x1321834",
+      "owners": [
+        {
+          "cls": "Enemy_HitSkeletonRenderer",
+          "namespace": "",
+          "method": "Start",
+          "signature": "private void Start() { }"
+        }
+      ],
+      "window_hex": "00be0090008c43f9"
+    },
+    {
+      "adrp": "0x1322d1c",
+      "load": "0x1322d2c",
+      "got": "0x2ae1718",
+      "method_rva": "0x1322d0c",
+      "owners": [
+        {
+          "cls": "Test_Enemy",
+          "namespace": "",
+          "method": "Start",
+          "signature": "private void Start() { }"
+        }
+      ],
+      "window_hex": "f7bd00f0d5bd00d0d4bd00d0c86e5739f78e43f9"
+    },
+    {
+      "adrp": "0x1322d4c",
+      "load": "0x1322d50",
+      "got": "0x2ae1718",
+      "method_rva": "0x1322d0c",
+      "owners": [
+        {
+          "cls": "Test_Enemy",
+          "namespace": "",
+          "method": "Start",
+          "signature": "private void Start() { }"
+        }
+      ],
+      "window_hex": "e0bd00f0008c43f9"
+    },
+    {
+      "adrp": "0x1581734",
+      "load": "0x158173c",
+      "got": "0x2ae1718",
+      "method_rva": "0x1581724",
+      "owners": [
+        {
+          "cls": "Enemy_DropGold",
+          "namespace": "SpaceShooter.EnemySystem",
+          "method": "Start",
+          "signature": "private void Start() { }"
+        }
+      ],
+      "window_hex": "15ab009088465d39b58e43f9"
+    },
+    {
+      "adrp": "0x1581754",
+      "load": "0x1581758",
+      "got": "0x2ae1718",
+      "method_rva": "0x1581724",
+      "owners": [
+        {
+          "cls": "Enemy_DropGold",
+          "namespace": "SpaceShooter.EnemySystem",
+          "method": "Start",
+          "signature": "private void Start() { }"
+        }
+      ],
+      "window_hex": "00ab0090008c43f9"
+    },
+    {
+      "adrp": "0x158256c",
+      "load": "0x1582590",
+      "got": "0x2ae1718",
+      "method_rva": "0x158254c",
+      "owners": [
+        {
+          "cls": "Enemy_Controller",
+          "namespace": "SpaceShooter.EnemySystem",
+          "method": "CacheComponents",
+          "signature": "private void CacheComponents() { }"
+        }
+      ],
+      "window_hex": "fbaa00f05aab00d059ab00d058ab00d057ab00d056ab009055ab00d054ab00d0bd4b42f97b8f43f9"
+    },
+    {
+      "adrp": "0x15825f8",
+      "load": "0x15825fc",
+      "got": "0x2ae1718",
+      "method_rva": "0x158254c",
+      "owners": [
+        {
+          "cls": "Enemy_Controller",
+          "namespace": "SpaceShooter.EnemySystem",
+          "method": "CacheComponents",
+          "signature": "private void CacheComponents() { }"
+        }
+      ],
+      "window_hex": "e0aa00f0008c43f9"
+    }
+  ],
+  "direct_reference_roots": [
+    "Enemy_Controller",
+    "Enemy_DropGold",
+    "Enemy_HitSkeletonRenderer",
+    "Test_Enemy"
+  ],
+  "exported_roots": [
+    "Enemy_Controller",
+    "Enemy_DropGold",
+    "Enemy_HitSkeletonRenderer",
+    "Test_Enemy",
+    "Items_Manager",
+    "BurstGold",
+    "MyPhysics2D"
+  ]
+}

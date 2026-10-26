@@ -1,0 +1,31 @@
+;;; ctor  public void .ctor() { }
+    0x12b683c: mov      x1, xzr
+    0x12b6840: b        #0x2143330
+
+;;; <OnPressedButtonPacks>b__0  internal void <OnPressedButtonPacks>b__0(Transform obj) { }
+    0x12bb9e0: str      x30, [sp, #-0x20]!
+    0x12bb9e4: stp      x20, x19, [sp, #0x10]
+    0x12bb9e8: ldr      x19, [x0, #0x10]
+    0x12bb9ec: cbz      x19, #0x12bba40
+    0x12bb9f0: ldr      x8, [x19, #0x210]
+    0x12bb9f4: cbz      x8, #0x12bba40
+    0x12bb9f8: ldrsw    x9, [x0, #0x18]
+    0x12bb9fc: ldr      w10, [x8, #0x18]
+    0x12bba00: cmp      w9, w10
+    0x12bba04: b.hs     #0x12bba44
+    0x12bba08: add      x8, x8, x9, lsl #3
+    0x12bba0c: ldr      x0, [x8, #0x20]
+    0x12bba10: cbz      x0, #0x12bba40
+    0x12bba14: mov      x20, x1
+    0x12bba18: mov      x1, xzr
+    0x12bba1c: bl       #0x2781748
+    0x12bba20: mov      x1, x20
+    0x12bba24: bl       #0x12b4e34
+    0x12bba28: mov      x1, x0
+    0x12bba2c: mov      x0, x19
+    0x12bba30: ldp      x20, x19, [sp, #0x10]
+    0x12bba34: mov      x2, xzr
+    0x12bba38: ldr      x30, [sp], #0x20
+    0x12bba3c: b        #0x278276c
+    0x12bba40: bl       #0x110d250
+    0x12bba44: bl       #0x110d258

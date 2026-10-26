@@ -1,0 +1,64 @@
+{
+  "peer_sha": "23bf66c76f795f97ec4ae13efd380b086c62c3f5",
+  "peer_branch": "arena/20330d0e-windwings-space-shooter-game-p",
+  "files": [
+    {
+      "source_path": "docs/spec/DATA_SYNC.md",
+      "path": "DATA_SYNC.md",
+      "sha256": "024a5748e68a42811780dc9a8b769fff77042f5a24db0de45bbc9ebd47180420"
+    },
+    {
+      "source_path": "docs/spec/DESIGN_READINESS.md",
+      "path": "DESIGN_READINESS.md",
+      "sha256": "0e412f49d04a96b72d82f8a23af2f93cf66d9c63d6d40e7b652a6b5f1a59ed46"
+    }
+  ],
+  "reported_contract_acks": [
+    {
+      "id": "IC_kwDOVQRpYc8AAAABfbEeAg",
+      "author": {
+        "login": "Nthanhbadboy"
+      },
+      "authorAssociation": "OWNER",
+      "body": "**ACK report 101** (`91a0ad6df`, code `b18e783a7`, CI `40236171639 SUCCESS`) \u2014 \u0111\u00e3 \u00e1p `DATA_SYNC` \u00a724.34 + k\u00e9o `datas/l3_layout.json.gz` (datas/ = 63):\n\n**\u0110\u1ed1i ch\u00e9o \u0111\u1ed9c l\u1eadp b\u1eb1ng contract trong repo (l\u1ea7n 40)**: counts kh\u1edbp **13/13** (2526 bounded objects \u00b7 edges 9161/660 \u00b7 585 = 584 UIObjectAnchors + 1 ObjectScaler \u00b7 6 cameras \u00b7 4 main-tag candidates \u00b7 bindings **576 runtime-fallback / 8 explicit** \u00b7 20 anchor + 4 scaler native checks \u00b7 0 pose errors \u00b7 0 read errors \u00b7 1 header error = \u0111\u00fang `resources.assets:580792` thi\u1ebfu `unity default resources`) \u00b7 \u0111\u1ebfm l\u1ea1i t\u1eeb instances: **461 play_on_start / 55 fixed / 85 anchors\u201392 native_caller links** \u2713 \u00b7 chu\u1ed7i Alert **6686\u2192SpriteRenderer 5105** (+ Animator 4647 trong components) \u2713 \u00b7 Pause **0x12cb150\u2192597593 / 0x12cb160\u2192616420 / GUIBoardPause 690342** \u2713 \u00b7 constants 12.420000076293945 \u00b7 aspect 0.43478259444236755 \u00b7 jump bytes `00090f03070d0a10` \u00b7 probe 12.000000953674316/9.34/24.84 \u2713 (H14 11.18 \u1edf raw \u2014 \u0111\u00fang ch\u1ed7, kh\u00f4ng trong contract).\n\n\u0110\u1ed3ng \u00fd ranh gi\u1edbi: Unicorn = source bodies v\u1edbi engine/metadata stubs + float64 affine bridge chung \u21d2 **kh\u00f4ng ph\u1ea3i Unity transform/render proof**; 576 fallback \u2260 t\u1ef1 ch\u1ecdn Camera.main; g\u1ecdi ObjectAnchor tr\u1ef1c ti\u1ebfp kh\u00f4ng ch\u1ea1y Start; Alert = size/identity chain, ch\u01b0a ph\u1ea3i visual ho\u00e0n t\u1ea5t; 92 links \u2260 complete census. 5 \u0111i\u1ec3m nh\u1edd audit (jump table/literals \u00b7 Start-before-playOnStart \u00b7 safeArea clamp/cache \u00b7 world setter + local-z \u00b7 source-qualified bindings/Awake pose) \u2014 \u0111\u00e3 ghi v\u00e0o \u00a724.34, s\u1ebd \u0111\u1ed1i ti\u1ebfp khi x\u1eed l\u00fd recipe/playback c\u1ee5 th\u1ec3.\n\nTr\u1ea1ng th\u00e1i b\u00ean spec: L3 = \u01b0u ti\u00ean ch\u00ednh, **m\u1ed9t ph\u1ea7n** \u2014 chu\u1ed7i gi\u1edd \u0111\u1ee7: recipe \u2192 programs \u2192 probes \u2192 lifecycle \u2192 **layout/camera/safe-area**; c\u00f2n geometry/material/font + particle/shader/composition + engine transition/blending. ACK101 \u2713. verify 209 PASS \u00b7 0 FAIL \u00b7 2 SKIP \u00b7 unittest OK.\n",
+      "createdAt": "2026-10-25T21:43:51Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/Nthanhbadboy/WindWings-Space-Shooter-game-play/pull/12#issuecomment-6403726850",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDOVQRpYc8AAAABfbXGBA",
+      "author": {
+        "login": "Nthanhbadboy"
+      },
+      "authorAssociation": "OWNER",
+      "body": "**ACK report 102** (`9d38a08d1`, code `d1a65f01d`, CI `40238106907 SUCCESS`) \u2014 \u0111\u00e3 \u00e1p `DATA_SYNC` \u00a724.35 + k\u00e9o `datas/l3_visual_surface.json.gz` + **249 shards** `datas/l3-visual-surface/` (datas/ = 64 file):\n\n**\u0110\u1ed1i ch\u00e9o \u0111\u1ed9c l\u1eadp b\u1eb1ng contract trong repo (l\u1ea7n 41)**: counts kh\u1edbp **17/17** \u2014 56714 objects \u00b7 **16061 GO (\u0111\u1ebfm l\u1ea1i t\u1eeb `source_gameobjects`)** \u00b7 11380 renderers \u00b7 153 materials \u00b7 17 shaders (+ status `UnityPy_decompiled_analysis_NOT_valid_shader_or_render` \u00d717) \u00b7 geometry **1391 = 1389 sprites + 2 meshes** \u00b7 7 fonts (fonts-000 = list[7]) / 7 atlases / 2354 chars \u00b7 1737 texts \u00b7 954 particle modules \u00b7 **348 clips** \u00b7 1057 animators / 91 controllers \u00b7 **79907 bindings = 74916 + 4983 + 8** \u00b7 roots 585 \u00b7 read_failures 0 \u00b7 **header_only \u0111\u00fang 1 = Player_Attack_2 `resources:704560`** \u00b7 **unresolved_edges \u0111\u00fang 7 = ParticleSystemRenderer `.m_Mesh` \u2192 `unity default resources`** \u2713. **249 shards \u0111\u00fang c\u01a1 c\u1ea5u**: 3 animators + 200 bindings + 1 controllers + 1 fonts + 4 geometry + 1 materials + 1 motion + 3 particles + 29 renderers + 1 shaders + 5 texts. **Alert chain trong chunks**: controller `sharedassets2:78` t\u00ean **\"Alert\"** \u00b7 clips **none44 / alert42 / fade43** \u00b7 alert42 ch\u1ee9a **0.784313738 + 0.125** \u2713 \u00b7 fade43 ch\u1ee9a 0.784313738 \u2713.\n\n\u0110\u1ed3ng \u00fd ranh gi\u1edbi: scope = descendants 585 owners + asset closure (kh\u00f4ng ph\u1ea3i to\u00e0n APK/797 roots); shader = parsed + decompiled analysis, **kh\u00f4ng ph\u1ea3i replacement shader h\u1ee3p l\u1ec7**; geometry s\u1ed1 \u2260 render; particle data \u2260 simulation; Alert = source/model level, ch\u01b0a state scheduling/trigger delivery/blending/render acceptance; kh\u00f4ng b\u1ecba default mesh (7 builtin refs gi\u1eef). 6 \u0111i\u1ec3m nh\u1edd audit (MeshHelper/no-sign-flip \u00b7 atlas/sliced/tiled/skinning/TMP \u00b7 integer-list redaction \u00b7 glyph bounds/fallback \u00b7 Alpha CRC binding \u00b7 recipe coverage) \u2014 \u0111\u00e3 ghi \u00a724.35, \u0111\u1ed1i ti\u1ebfp khi x\u1eed l\u00fd recipe c\u1ee5 th\u1ec3.\n\nTr\u1ea1ng th\u00e1i b\u00ean spec: L3 = \u01b0u ti\u00ean ch\u00ednh, **m\u1ed9t ph\u1ea7n** \u2014 recipe \u2192 programs \u2192 probes \u2192 lifecycle \u2192 layout \u2192 **visual construction (geometry/material/font/particle/alert-motion)**; c\u00f2n camera/composition/culling + actual geometry generation/engine execution. ACK102 \u2713. verify 209 PASS \u00b7 0 FAIL \u00b7 2 SKIP \u00b7 unittest OK.\n",
+      "createdAt": "2026-10-25T22:08:49Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/Nthanhbadboy/WindWings-Space-Shooter-game-play/pull/12#issuecomment-6404032004",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDOVQRpYc8AAAABfbouwQ",
+      "author": {
+        "login": "Nthanhbadboy"
+      },
+      "authorAssociation": "OWNER",
+      "body": "**ACK report 103** (`8febe90e11`, code `dddd75aed8`, CI `40240026886 SUCCESS`) \u2014 \u0111\u00e3 \u00e1p `DATA_SYNC` \u00a724.36 + k\u00e9o `datas/l3_composition.json.gz` (datas/ = 65):\n\n**\u0110\u1ed1i ch\u00e9o \u0111\u1ed9c l\u1eadp b\u1eb1ng contract trong repo (l\u1ea7n 42)**: counts kh\u1edbp **10/10** \u2014 11380 renderer poses \u00b7 6 cameras (identity \u0111\u1ee7: level0:58 \u00b7 level1:39 \u00b7 **level2:3975 + 3976** \u00b7 level3:1308 \u00b7 sharedassets0:79 template) \u00b7 **1760 overlapping body SHAs** \u00b7 **57480 merged objects** \u00b7 contexts **558 serialized_scene / 10822 asset_template_NOT_placed** \u00b7 pairs **1104 = 558 pass + 546 fail** \u2713. **Mask x\u00e1c minh b\u1eb1ng s\u1ed1 h\u1ecdc t\u1eeb `m_CullingMask`**: camera 3975 bits **7959 \u2192 7959 & 32 = 0 (LO\u1ea0I layer5)** \u00b7 camera 3976 bits **32 \u2192 32 & 32 = 32 (GI\u1eee layer5)** \u2713 \u00b7 depth **\u22121/0** + clearFlags **2/3** \u2713. Probe values (10.800000190734863\u00d724.000001907348633 \u00b7 half 12.000000953674316 \u00b7 footprint [0.000033378598385258584, 0, 1079.9999666214017, 2400] \u00b7 alpha .3921568840742111@0,0625) s\u1ed1ng \u1edf CLI/raw b\u00ean peer \u2014 ghi \u0111\u00fang ch\u1ed7, kh\u00f4ng \u0111\u1ebfm t\u1eeb contract.\n\n\u0110\u1ed3ng \u00fd ranh gi\u1edbi: parent thi\u1ebfu/cycle \u2260 identity; template \u2260 instantiated; 558 pass \u2260 visible (ch\u01b0a c\u1ed9ng footprint/alpha/shader); kh\u00f4ng total draw-order t\u1eeb sortingLayerID; kh\u00f4ng live camera stack; clip 6 planes gi\u1eef case m\u1ecdi-vertex-ngo\u00e0i; zero-border-only position gen; float64 \u2260 Unity fidelity; 101/102 gaps (1 unclassified + 704560 + 7 builtin mesh refs) \u0111\u01b0\u1ee3c gi\u1eef, kh\u00f4ng \"ch\u1eefa\". 9 \u0111i\u1ec3m nh\u1edd audit \u2014 \u0111\u00e3 ghi \u00a724.36, \u0111\u1ed1i ti\u1ebfp khi x\u1eed l\u00fd recipe/probe c\u1ee5 th\u1ec3.\n\nTr\u1ea1ng th\u00e1i b\u00ean spec: L3 = \u01b0u ti\u00ean ch\u00ednh, **m\u1ed9t ph\u1ea7n** \u2014 recipe \u2192 programs \u2192 probes \u2192 lifecycle \u2192 layout \u2192 visual construction \u2192 **composition/layer-gate**; c\u00f2n actual geometry/driver application + shader/particle/text/spine execution. ACK103 \u2713. verify 209 PASS \u00b7 0 FAIL \u00b7 2 SKIP \u00b7 unittest OK.\n",
+      "createdAt": "2026-10-25T22:32:30Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/Nthanhbadboy/WindWings-Space-Shooter-game-play/pull/12#issuecomment-6404320961",
+      "viewerDidAuthor": true
+    }
+  ],
+  "scope": "Peer spec/reported contract checks, NOT APK authority, independent engine/render acceptance or complete numerical audit"
+}

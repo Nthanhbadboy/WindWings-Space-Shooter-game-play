@@ -1,0 +1,64 @@
+;;; OnEnable  private void OnEnable() { }
+    0x123d500: str      x30, [sp, #-0x20]!
+    0x123d504: stp      x20, x19, [sp, #0x10]
+    0x123d508: ldr      x19, [x0, #0x20]
+    0x123d50c: cbz      x19, #0x123d560
+    0x123d510: ldr      w8, [x19, #0x18]
+    0x123d514: cmp      w8, #1
+    0x123d518: b.lt     #0x123d550
+    0x123d51c: mov      w20, wzr
+    0x123d520: cmp      w20, w8
+    0x123d524: b.hs     #0x123d55c
+    0x123d528: add      x8, x19, w20, sxtw #3
+    0x123d52c: ldr      x0, [x8, #0x20]
+    0x123d530: cbz      x0, #0x123d560
+    0x123d534: mov      w1, wzr
+    0x123d538: mov      x2, xzr
+    0x123d53c: bl       #0x2781804
+    0x123d540: ldr      w8, [x19, #0x18]
+    0x123d544: add      w20, w20, #1
+    0x123d548: cmp      w20, w8
+    0x123d54c: b.lt     #0x123d520
+    0x123d550: ldp      x20, x19, [sp, #0x10]
+    0x123d554: ldr      x30, [sp], #0x20
+    0x123d558: ret      
+    0x123d55c: bl       #0x110d258
+    0x123d560: bl       #0x110d250
+
+;;; OnDone  public void OnDone() { }
+    0x123d564: str      x30, [sp, #-0x20]!
+    0x123d568: stp      x20, x19, [sp, #0x10]
+    0x123d56c: ldr      x19, [x0, #0x20]
+    0x123d570: cbz      x19, #0x123d5c4
+    0x123d574: ldr      w8, [x19, #0x18]
+    0x123d578: cmp      w8, #1
+    0x123d57c: b.lt     #0x123d5b4
+    0x123d580: mov      w20, wzr
+    0x123d584: cmp      w20, w8
+    0x123d588: b.hs     #0x123d5c0
+    0x123d58c: add      x8, x19, w20, sxtw #3
+    0x123d590: ldr      x0, [x8, #0x20]
+    0x123d594: cbz      x0, #0x123d5c4
+    0x123d598: mov      w1, #1
+    0x123d59c: mov      x2, xzr
+    0x123d5a0: bl       #0x2781804
+    0x123d5a4: ldr      w8, [x19, #0x18]
+    0x123d5a8: add      w20, w20, #1
+    0x123d5ac: cmp      w20, w8
+    0x123d5b0: b.lt     #0x123d584
+    0x123d5b4: ldp      x20, x19, [sp, #0x10]
+    0x123d5b8: ldr      x30, [sp], #0x20
+    0x123d5bc: ret      
+    0x123d5c0: bl       #0x110d258
+    0x123d5c4: bl       #0x110d250
+
+;;; Pool  public void Pool() { }
+    0x123d5c8: str      x30, [sp, #-0x10]!
+    0x123d5cc: mov      x1, xzr
+    0x123d5d0: bl       #0x277f188
+    0x123d5d4: ldr      x30, [sp], #0x10
+    0x123d5d8: b        #0x123acd0
+
+;;; ctor  public void .ctor() { }
+    0x123d5dc: mov      x1, xzr
+    0x123d5e0: b        #0x2782ba0

@@ -1,0 +1,231 @@
+# Đọc nhánh spec `arena/20330d0e` — **tham khảo, không merge**
+
+> **Cửa vào hiện hành (sau report64):** đọc [START_HERE_NEW_GAME.md](START_HERE_NEW_GAME.md) và [review cf27b9755](HANDOFF_REVIEW_cf27b9755.md). Các vòng/snapshot cũ dưới đây là lịch sử, không tự là task hay phán xét hiện hành.
+
+> Ghi lại đúng những gì đọc được từ nhánh của AI kia, để lần sau không phải đọc lại
+> và để phân biệt rõ **cái nào là dữ liệu của mình** với **cái nào là nhận định của họ**.
+>
+> - Nhánh: `arena/20330d0e-windwings-space-shooter-game-p`, commit cuối **`f3e36b7`**
+> - Đã fetch về ref cục bộ `origin/other-ai` **chỉ để đọc** (`git show origin/other-ai:...`)
+> - **Không merge, không cherry-pick.** Nhánh đó chỉ ghi trong `docs/spec/` (19 file, 7.693 dòng);
+>   dữ liệu thô vẫn do nhánh này sinh ra.
+
+## 1. Họ nói gì — 6 ý đáng dùng
+
+| # | Ý | Nơi ghi | Mình kiểm lại được không |
+|---:|---|---|---|
+| 1 | `Enemy_Controller` là **hub**: mỗi enemy tự khai PathID của 9 script con (`dataScript`, `healthScript`, `physicsScript`…), ghép **981/981 = 100%** bằng khoá số | `DATA_SYNC.md` §7.7 | **Có** — đọc thẳng `raw/typetrees/Enemy_Controller.jsonl.gz`, thấy đúng 9 field PPtr |
+| 2 | Cap **1.500** cắt 6 bảng sinh quân/đường bay (`Call_Data` 1.500/23.757 = 6,3%…) | §7.8 | **Có** — đúng là 6 bảng dừng ở 1.500 |
+| 3 | `Enemy_Health.noDamage = True` **241/981 = 24,6%** | §7.8 | **Có** — số nằm trong typetree đã export |
+| 4 | 5 mắt ghép 0% **cùng một nguyên nhân**: thiếu `Transform.m_Father`; `Transform` = **228.432** object chưa export | §7.9–7.10 | **Một phần** — đếm được `Transform` rất nhiều, nhưng con số 228.432 lấy từ log của họ |
+| 5 | Step REA chiếm **460 s / 660 s ≈ 70%** thời gian run mà `05-rea.md` **không có dữ liệu game** | `PIPELINE_AUDIT.md` §9.2 | **Chưa** — cần xem log run; ước lượng khớp với thời gian run mình quan sát (10–12 phút) |
+| 6 | 46% commit trên nhánh là `chore(re) [skip ci]` do bot sinh | §9.6 | **Có** — `git log` đếm được |
+
+## 2. Ba thứ họ nói mà mình **kiểm lại thấy sai / thiếu căn cứ**
+
+| Ý của họ | Kiểm lại |
+|---|---|
+| `uiScript` trỏ tới class `Enemy_UI` | **Không có class `Enemy_UI`** trong `reverse-engineering/il2cpp/class-index.json` (3.662 class). Field tên `uiScript` thì có, class đích thì không. Có thể là `Enemy_Hp_Bar`/`Enemy_Display` — **chưa xác định**, đừng ghi `Enemy_UI` vào tài liệu như thể tồn tại |
+| `Call_Point` 23.757 instance, "có thể là bản đầy đủ của `Call_Data`" | Không tìm thấy class `Call_Point` trong class-index; con số 23.757 **trùng** với số dòng `Call_Data`, nên nhiều khả năng là **cùng dữ liệu đọc theo cách khác**, không phải bảng mới. Vẫn thêm tên vào `TARGETS` để lần chạy sau trả lời dứt điểm |
+| "45.659 quân" | Chính họ ghi là **mức B** (§7.13). Không dùng làm số chuẩn |
+
+## 3. Mình đã làm gì sau khi đọc (chỉ trên dữ liệu của mình)
+
+Sửa `tools/apk-analyze/unity_data.py`:
+
+1. **`TARGETS` mở rộng**: thêm 27 class `Enemy_*` (gồm `Enemy_Physics`, `Enemy_Destroy`,
+   `Enemy_Burned`, `Enemy_Stun`, `Enemy_LookAtPlayer`, `Enemy_SpawnChilds`, `Enemy_DropGold`…)
+   và `Call_Point`.
+2. **`TARGET_SUFFIXES = ("_Director", "_MiniDirector", "ChildDirector", "_AttackPhases")`** —
+   ghép theo hậu tố thay vì liệt kê tay 44 class đạo diễn boss.
+3. **`CAP_OVERRIDES`**: 6 bảng bị cắt 1.500 nay đọc đủ (`Call_Data` 30k, `PointToPoint_Spawner` 14k,
+   `PinMap_Spawner` 3,4k, `Rocket_Spawner` 2,2k, `PathCreator`/`Path_Spawner` 1,8k).
+4. **`export_transform_tree()`**: xuất `transform-tree.tsv.gz` (`path_id · gameobject · father`) +
+   `prefab-roots.csv` (tên prefab gốc) — đây là bảng mở 5 mắt ghép còn 0%.
+5. **`script-links.jsonl.gz`**: mọi PPtr tên `*Script` + class đích, để biết field nào trỏ class nào
+   mà không phải đoán.
+
+Sửa `.github/workflows/analyze-apk.yml`:
+
+- `concurrency: analyze-apk-<ref>` + `cancel-in-progress` → hết cảnh 3 run chạy song song cùng nội dung.
+- Step **REA chỉ chạy khi `workflow_dispatch` với `run_rea=true`** (mặc định tắt). Báo cáo cũ
+  `05-rea.md` **không bị ghi đè** khi bỏ qua.
+
+Sửa `tools/apk-analyze/ui_layout.py`: ghi `_skipped.csv` (class × lý do bỏ) — trước đây chỉ có tổng,
+không biết **màn nào** biến mất giữa hai lần chạy (16 màn chỉ còn ở file cũ, xem `24-ui-screens.md`).
+
+## 3b. Kết quả kiểm lại sau khi export (lần chạy `d84ea72`)
+
+| Ý của nhánh spec | Kết quả thật |
+|---|---|
+| "`Enemy_Physics` 981, thêm 1 dòng là mở 100% lớp hành vi" | Export **được 981 dòng**, nhưng class chỉ có **2 field** và **0/981** dòng có giá trị ⇒ **giả thuyết sai**: va chạm nằm ở `BoxCollider2D` runtime |
+| "`uiScript` → `Enemy_UI`" | Thực tế → **`Enemy_Display`**; class `Enemy_UI` **không tồn tại** |
+| "`Call_Point` có thể là bản đầy đủ của `Call_Data`" | `Call_Point.dataScript → Call_Data` (23.757/23.757) ⇒ là **lớp bọc**, không phải bảng mới |
+| "`Transform` 228.432 object mở 5 mắt ghép" | **Đúng**: xuất đủ **228.432** dòng, 2.089 root; mở **4/5 mắt** lên 100% (458 súng · 251 hitbox · 558 `parentRotate` · 1.372 đường bay). Mắt còn lại `Stage_Behaviour.bossObj` **không** phải vấn đề Transform |
+| "981 enemy" | 981 dòng khớp 3 bảng, nhưng **204 nằm dưới prefab `Board_*`** (126 ở màn chọn boss) ⇒ enemy trong trận ≈ 777–855 |
+| ENEMY_BEHAVIOUR.md tính trên 800 dòng | Bản đủ 981: **tỉ lệ gần như không đổi**, số tuyệt đối thiếu ~18% (xem `25-enemy-behaviour.md` §6) |
+| "Step REA chiếm 70% thời gian" | Đã tắt mặc định → run **11 phút → 4 phút 01** (đo run `39879117958`) |
+
+## 3c. Đọc thêm 3 commit mới của họ (`d8e61c2`, `d303cc0`, `a6a4081`, 00:47)
+
+- Họ **tự sửa** đúng ba điểm mục 3b (`Enemy_Physics` rỗng, `uiScript → Enemy_Display`,
+  981 là số bản ghi) và ghi rõ "tôi đã sai" — hai nhánh độc lập cho **cùng kết quả**, tăng độ tin.
+- Họ giải mã `spawnType` bằng khớp tỉ lệ với `waves.json`. Mình **đếm lại độc lập** trên
+  `Call_Data` đầy đủ: khớp từng con số (16.498/4.199/1.688/686/686, tổng 45.659) → đã ghi vào
+  `25-enemy-behaviour.md` §8 kèm hệ quả `number = 0` ở 100%.
+
+## 3d. Đọc thêm 3 commit (`7818043`, `857259c`, `6278f9e`, 01:00)
+
+- Sổ mắt ghép của họ: **11 mắt 100%** — khớp với `prefab_joins` của mình (7 mắt) cộng các mắt PathID cũ.
+- Số họ đếm `ParticleSystem` **4.845** · `Animator` **5.792**: mình export xong thì **khớp đúng từng số**.
+- Nhãn "458 súng kể cả preview, 319 thật": mình tính lại từ `prefab_joins` — 139/458 dưới `Board_*`
+  (73 `SelectBoss` + 66 `FightBoss`) nên ghi khoảng **319–385** thay vì một số cứng, đã sửa `25` §5.
+- Họ cũng kết luận `parse_as_object` cho 0 keyframe → cần decoder streamed clip. Trùng `27-anim-curves.md`.
+
+## 3e. Đọc thêm 2 commit (`a2cb074d`, `6ba892f0`, 01:12)
+
+- **`copies` giải quyết số quân**: họ kiểm `sum(len × copies) = 45.659`. Mình tính lại trên
+  `datas/waves.json` của mình: **45.659 khớp tuyệt đối** (dedupe lệch nhỏ: 11.101 vs 11.099 spawner,
+  22.475 vs 22.483 entry — không đổi tích). Từ nay: 45.659 = quân thật, ~22,5k = lượt khai báo.
+- **Damage khai báo trong Director**: họ báo 112 field/18 boss (55–2.800). Mình quét nhanh
+  34 file `*Director*.jsonl.gz` đã export: thấy 64 giá trị damage dạng số (`laserDamage`,
+  `damageRocket` 600, `damageBulletArea` 1200…) — **khớp về chất**, số đếm khác do cách tính.
+- `animator_map` của mình họ cũng đối chiếu: 5.792 dòng / 494 prefab gốc / 96,7% có tên controller.
+
+## 3f. Đọc thêm 2 commit (`662e2b27`, `88579a3f`)
+
+- **HP campaign = 0**: họ nói `StartHealthPoint = 0` ở 514/981 — mình đếm lại: **đúng 514/981 (52,4%)**,
+  còn lại tối đa 10.000.000. Độ khó campaign do công thức runtime, không nằm ở prefab.
+- Mục mở "width × height sprite" và "ParticleSystem" trong sổ của họ: phía mình đã đóng cả hai
+  (`sprites.csv` 2.816/2.885 có kích thước; `29-particle-systems.md`).
+
+## 3g. Đọc thêm 3 commit (`13befdd3`, `deeead9b`, `52f329ad`, 01:27)
+
+- Họ bắt đầu **đọc sâu arm64** và ra công thức đầy đủ cho HP người chơi:
+  `GetStartHp = StartHp × (1 + stepCommon×TechStatPoints(0) + abi7×GetNumberAbility(7))`.
+  Kiểm bằng trace của mình: `GetStartHp` đúng là có **fadd 1.0** và gọi `GetHpStatPercent`
+  → cấu trúc `(1 + …)` **khớp**; hệ số chi tiết là phần họ đọc sâu hơn, mức **B**.
+- Họ tách lại mức tin: "không có bảng HP theo tàu trong serialize" (**A**) vs
+  "runtime gán lúc chọn tàu" (**C**, chưa kiểm) — cách ghi này đúng quy ước của mình.
+
+## 3h. Commit `d76108b4` (01:35) + điều kiện lật ngược của họ đã được đáp
+
+- Họ kiểm bằng chữ ký: chỉ 7–8 method nhận `playerIndex`, **không có method HP nào**.
+  Mình đếm lại trên JSON của mình: **8 method có `playerIndex`** (5 damage/rate + 3 giá/thời gian mở tàu),
+  47 method float/int còn lại không tham số ⇒ kết luận **khớp**.
+- Họ ghi điều kiện lật ngược: *"export `Player_Health.asm.txt` đầy đủ"*. Phía mình đã thêm
+  **5 class** vào scan (`Player_Health`, `Player_Talent`, `Player_Ability`, `Player_Ingame`,
+  `Player_Attack`) — asm + JSON + trace đã có, tổng 425 method / 324 `bl` giải được tên.
+  Kết quả đầu tiên: `Player_Health` gọi `GetStartHp` trong lambda của `Start`, không thấy
+  đường gán HP theo tàu trong các class đã quét (mức B — chưa đọc hết rẽ nhánh).
+
+## 3i. Commit `66367993` (device, 01:56)
+
+- Họ sửa lại kết luận của chính họ: device **có** ảnh hưởng HP qua `Player_Health.OnChangeDataDevice`
+  (không qua `GetStartHp`). Đối chiếu dữ liệu mình vừa export: method này có pool
+  `100 / 1.0 / 0.05 / 0.5`, 2 phép `fadd`, và gọi `GainHealth` — **khớp** cơ chế "đổi device → hồi HP".
+- Công thức device `GetStatValue = base[rank] + pct[type]×(lv+1)`: trace của mình cho
+  `GetStatValue2` có ngưỡng compare 4/2/2/1/3/999 + `×0.5` — khớp về cấu trúc rẽ nhánh theo rank/type.
+
+## 3j. Commit `68146424` — họ phát hiện asm bị cắt cụt, và `StartHp` đã được giải
+
+- Họ đo: 11/12 file asm **không kết thúc bằng `ret`**. Mình xác nhận nguyên nhân phía mình:
+  cap cứng **0x1200 (4.608 byte)/method** trong `il2cpp_consts.py`. Đã sửa: độ dài method lấy
+  theo method kế tiếp trong toàn bộ dump, cap 128 KB, ghi thêm cờ `size_capped`. `.cctor` của
+  `Player_Get_Datas` giờ trọn vẹn tới `ret` ở `0x14e6278`.
+- Từ đó giải luôn câu hỏi treo lâu nhất của họ: `StartHp` ghi bằng **`str d0` ở static 0x68**
+  (cặp float), nửa trên `0x6c` nạp từ VA `0x757bc0` = (0.18, **2500.0**) → **`StartHp = 2500`** (mức A).
+  Muốn đọc được phải thêm nhánh `ldr d` vào pool reader — bản cũ chỉ đọc `ldr s` nên bỏ sót.
+
+## 3k. `OPEN_ISSUES.md` của họ (c6ae40de) + commit `6edaa732` — đối chiếu từng mục "lỗi export"
+
+Sổ của họ lập trên bản `8871068a` — **trước** khi phía mình sửa cắt cụt và quét thêm class.
+Trạng thái thật hiện tại:
+
+| Mục của họ | Trạng thái phía mình |
+|---|---|
+| A1 `StartHp` thiếu | ✅ **đã chốt: 2500** (xem §3j) |
+| E1 asm cắt cụt 11/12 | ✅ **đã sửa** (128 KB, `size_capped`) |
+| A3 `OnChangeDataDevice` ngoài vùng dump | ✅ đã export đủ: 452 byte, không cap, 9 hằng số |
+| A4 caller của `GetStartHp` | ✅ liệt kê được: `GetGainHpItem`, `GetGainHpItemAddOverTime`, `Player_Health.<Start>b__14_1` |
+| A2 `Map_Get_Datas` không có `.cctor` | ✅ `.cctor` đã có: **100.896 byte, 3.444 hằng số** — bảng map→wave dựng inline trong đó, chưa bóc thành bảng sạch |
+| E2 "`ships.json` thiếu 13 dòng, phải ghi 38 tàu" | ❌ **họ nhầm**: 13 dòng `20001–20013` là **drone** — có đủ trong `14-drones.csv` → `datas/drones.json` (13 item). `Data_Players` là class dùng chung cho cả tàu lẫn drone |
+| B7 `NumberTechStats = List.Count` | ghi nhận, không mâu thuẫn dữ liệu mình |
+
+Bài học rút ra phía mình: sổ vấn đề phải ghi **bản dữ liệu** nó dựa trên — họ có ghi (`8871068a`)
+nên đối chiếu được ngay mục nào đã tự đóng.
+
+## 4. Điều kiện lật ngược
+
+- Nếu `Enemy_Physics` export ra mà **phần lớn field rỗng** (như `Spawner.dataScript` = 0), thì
+  "mở 100% lớp hành vi bằng 1 dòng" là **sai** — khi đó thứ tự ưu tiên cũ (đọc method body) mới đúng.
+- Nếu `transform-tree.tsv.gz` có `father = 0` ở phần lớn object thì các object đó là **root của
+  prefab lồng**, và cần thêm `PrefabInstance.m_Modification` mới nối được — 5 mắt ghép vẫn 0%.
+
+Cả hai đều **kiểm được bằng dữ liệu lần chạy tới**, không phải tranh luận.
+
+## 4. Đáp VERIFY_ROUND1 (kiểm tại chỗ trên file của họ + file của mình)
+
+| Phản biện của nhánh spec | Kiểm lại | Kết luận |
+|---|---|---|
+| `ends_clean` True rỗng che **25 method vắng mặt** khỏi asm | Đếm độc lập bằng `parallel_checks.py` T2 mới: đúng **25** | **Đúng.** Đã sửa exporter: luôn ghi asm mọi method (không còn cổng `consts or bl`). T2 tạm REVERSED tới khi tái export. |
+| `Player_Ingame.get_IsAttacking` (32 B) mất hẳn; setter ghi field `0x2c` | setter có trong asm hiện tại, getter vắng | **Đúng một nửa đã thấy**; getter sẽ có sau tái export — kiểm lại vòng sau. |
+| T4: `0x2711` là **TRỪ** (`adds w19,w19,#-0x2711`) | Đọc asm tại 0x14e2ce4: đúng, trừ 10001 khỏi id ra index | **Đúng**; đã sửa chi tiết T4. Kết luận ánh xạ id↔index không đổi. |
+| T10: 45 (`^900\d\d$`) vs 48 (tiền tố) | Khác định nghĩa regex, cả hai đều "đúng" | Ghi kèm regex trong report. |
+| T13 định nghĩa bin 20 (VERIFY_ROUND1 §4.2) | Chạy độc lập: tổng **474,70M** vs họ **480,89M** (Δ1,3%); bin 240–259 khớp tuyệt đối **8,60M** | **PASS có ghi chú**: lệch nhỏ ở bin cuối (n=2) và bin 260–279 (14,9M vs 15,40M) — cần soi lại cách cộng copies/HP bộ phận. |
+| HP enemy nằm ở `Enemy_Get_Datas` (Dictionary ở .cctor), class chưa export | dump.cs có cả `Enemy_Get_Datas`/`Enemy_Controller`/`Enemy_Health` | Đã thêm 3 class vào TARGET_CLASSES; chờ asm vòng CI này. |
+| Việc rẻ #3: parse `.cctor` trước khi sửa RVA | Đã làm vòng trước (`map_table.py`): bảng map dựng bằng List.Add + immediate/InitializeArray | Khớp nhận định của họ. |
+| HP enemy runtime ở `Enemy_Get_Datas` (Dictionary tại .cctor 0x157F7CC) | Export 3 class mới + parse chuỗi `Add(id, hp)`: **150 cặp** (id 30001+, CB-30003 = 650 trong khi serialize = 0) | **Đúng — B3 đóng theo hướng của họ.** Bảng ở `datas/enemy_hp_by_id.json` (`tools/verify/enemy_hp.py`). |
+| `get_IsAttacking` có điều kiện phụ ngoài field 0x2c | Sau tái export: `ldrb [x0,#0x2c]; cbz → 0; ldrb [x0,#0x50]; cset eq` | **Đúng**: `IsAttacking = f@0x2c && f@0x50 == 0`. |
+| T2 sau sửa exporter | T2 chạy lại: vắng mặt = 0/466 method (20 class) | PASS đầy đủ. |
+
+## 5. Ghi chú phía branch 20330d0e (chỉ tham khảo, không merge)
+
+- Runtime probe của AI kia kết luận: game chỉ có arm64-v8a, emulator x86_64
+  không chạy được (app chết khi nạp native) — đường runtime trên CI coi như
+  đóng; dữ liệu runtime (HP theo mode, sao...) nếu cần phải qua thiết bị thật.
+- Phía này đã tự giải xong bằng tĩnh: token InitializeArray
+  (`src = 2*ordinal+1` trong `<PrivateImplementationDetails>` cùng image) —
+  không cần runtime để lấy bảng map/device (report 31).
+
+### Update static extraction (sau vòng runtime-probe)
+
+Không merge nhánh kia. Đã tự tái xuất bằng capture đúng call-site:
+Map 576/576 blob đúng độ dài, campaign 250/250 entry có giá trị; report 31.
+Số liệu 540 token, 19 lệch, thiếu entry 4 trước đó được thay thế. File raw
+`ia-resolved.json` / `ia-audit.json` giữ đầy đủ provenance và kiểm tra.
+
+## Update @ dcf6ca90a — source/build separation
+
+Phone bridge now has real `health_game.json`: scene Game, Android, playing=true,
+Unity 2022.3.62f3. **Different source build**: summary reports package
+com.Gcenter.WindWings.SpaceShooter.Premium, mod 1.0.69 repackaged, NOT our
+APKPure com.Wind.wings.Space.Shooter 1.3.118. Saved comparison evidence under
+`raw/cross-build-phone/`; do not overwrite APK-derived balance from it.
+
+ANIMATION_GAPS criticism accepted: Enemy_Appear/Rotate/Sub native exports were
+missing. Added them and Enemy_Destroy (to trace HP/death callback registration).
+But empty serialized base fields do not prove that base Appear implements the
+visual effect; its body is only 32 bytes in our dump and may be a default
+callback. Await native evidence before accepting that interpretation.
+
+VERIFY_ROUND2 fixes 185 vs 180 animations and 154/63 Animator counts are
+consistent with our inventory; runtime and static sources stay separate.
+
+### Animation joins cập nhật từ raw mới
+
+Report 37 nối event receiver trên cùng GameObject: 711/795 event-reference
+uses có candidate, 84 unresolved. Không nhầm số này với 731 event theo clip
+path_id duy nhất. Report 38 dùng PPtr thật xác nhận:
+Boss-39001 + Boss-39002 cùng SDA 580611 → TextAsset 918;
+Boss-39003 dùng SDA 580613 → TextAsset 895. Không gán theo skeleton__N filename.
+Giữ mức PROVISIONAL runtime/dispatch; không suy timeline đánh chỉ từ tên Idle.
+
+## Animation handoff @90453024 — đáp ứng raw vòng tiếp
+
+Report 41: T1 tìm thấy Boss_1_Animation trên Boss-39001 (1 instance), hai
+class còn lại không có file trong export; chưa kết luận dead code.
+T3 hiện có 115 persistent call /114 trong nhóm enemy/boss. T4 full raw 308
+controller, derived 52 controller/63 prefab: 303 params, 395 states, 357
+transitions, 302 conditional. Không đồng nhất coverage với roster 109/87.
+T2 typed delegate setter xref vẫn OPEN; không nhận absence proof từ asm subset.

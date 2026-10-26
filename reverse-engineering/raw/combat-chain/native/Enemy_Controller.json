@@ -1,0 +1,721 @@
+{
+ "class": "Enemy_Controller",
+ "note": "Pinned player firing consumer recovery; provisional",
+ "methods": [
+  {
+   "method": "OnDrawGizmos",
+   "signature": "private void OnDrawGizmos() { }",
+   "offset": "0x157e548",
+   "getter_value": null,
+   "rva": "0x1582548",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "CacheComponents",
+   "signature": "private void CacheComponents() { }",
+   "offset": "0x157e54c",
+   "getter_value": null,
+   "rva": "0x158254c",
+   "bytes": 400,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1582628",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "Awake",
+   "signature": "private void Awake() { }",
+   "offset": "0x157e6dc",
+   "getter_value": null,
+   "rva": "0x15826dc",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "OnEnable",
+   "signature": "private void OnEnable() { }",
+   "offset": "0x157e6e0",
+   "getter_value": null,
+   "rva": "0x15826e0",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "Appear",
+   "signature": "public void Appear() { }",
+   "offset": "0x157e6e4",
+   "getter_value": null,
+   "rva": "0x15826e4",
+   "bytes": 452,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1582748",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "IsAlive",
+   "signature": "public bool IsAlive() { }",
+   "offset": "0x157e8a8",
+   "getter_value": null,
+   "rva": "0x15828a8",
+   "bytes": 60,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "GetStartHealth",
+   "signature": "public float GetStartHealth() { }",
+   "offset": "0x157e8e4",
+   "getter_value": null,
+   "rva": "0x15828e4",
+   "bytes": 28,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "GetCurrentHealth",
+   "signature": "public float GetCurrentHealth() { }",
+   "offset": "0x157e900",
+   "getter_value": null,
+   "rva": "0x1582900",
+   "bytes": 28,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "IsInvisible",
+   "signature": "public bool IsInvisible() { }",
+   "offset": "0x157e91c",
+   "getter_value": null,
+   "rva": "0x158291c",
+   "bytes": 28,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "TakeDamage",
+   "signature": "public void TakeDamage(Damager damager, bool _igroneInvincible = False) { }",
+   "offset": "0x157e938",
+   "getter_value": null,
+   "rva": "0x1582938",
+   "bytes": 60,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x1582958",
+     "reg": "w2",
+     "op": "w2, w19, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "OnTakeDamage",
+   "signature": "private void OnTakeDamage(Damager _damager, bool _igroneInvincible = False) { }",
+   "offset": "0x157ead4",
+   "getter_value": null,
+   "rva": "0x1582ad4",
+   "bytes": 864,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1582b44",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 40,
+     "via": "add",
+     "addr": "0x1582bac",
+     "reg": "x1",
+     "op": "x1, x8, #0x28",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x1582bb0",
+     "reg": "w2",
+     "op": "w2, w21, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 31,
+     "via": "mov",
+     "addr": "0x1582c44",
+     "reg": "w0",
+     "op": "w0, #0x1f",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x1582c50",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 31,
+     "via": "mov",
+     "addr": "0x1582c90",
+     "reg": "w0",
+     "op": "w0, #0x1f",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 100,
+     "via": "mov",
+     "addr": "0x1582cac",
+     "reg": "w1",
+     "op": "w1, #0x64",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 3.0,
+     "via": "fmov",
+     "addr": "0x1582cd0",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 34,
+     "via": "mov",
+     "addr": "0x1582cf0",
+     "reg": "w0",
+     "op": "w0, #0x22",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x1582cfc",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 34,
+     "via": "mov",
+     "addr": "0x1582d3c",
+     "reg": "w0",
+     "op": "w0, #0x22",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.4,
+     "via": "ldr_pool",
+     "va": "0x756fbc",
+     "addr": "0x1582db0",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 6.0,
+     "via": "fmov",
+     "addr": "0x1582dc8",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x1582d4c",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x1582d60",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "GainHealth",
+   "signature": "public void GainHealth(float amount) { }",
+   "offset": "0x157ee34",
+   "getter_value": null,
+   "rva": "0x1582e34",
+   "bytes": 188,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1582e60",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "UpdateHpBar",
+   "signature": "private void UpdateHpBar() { }",
+   "offset": "0x157ef10",
+   "getter_value": null,
+   "rva": "0x1582f10",
+   "bytes": 40,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "Destroyed",
+   "signature": "public void Destroyed() { }",
+   "offset": "0x157ef38",
+   "getter_value": null,
+   "rva": "0x1582f38",
+   "bytes": 36,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1582f48",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "Burn",
+   "signature": "public void Burn(Damager damager, float burnDamage, float duration) { }",
+   "offset": "0x157fd60",
+   "getter_value": null,
+   "rva": "0x1583d60",
+   "bytes": 180,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1583d94",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SetPathFollower",
+   "signature": "public void SetPathFollower(PathCreator pathCreator) { }",
+   "offset": "0x157fe14",
+   "getter_value": null,
+   "rva": "0x1583e14",
+   "bytes": 24,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "SetWaypoints",
+   "signature": "public void SetWaypoints(Vector2[] waypoints) { }",
+   "offset": "0x157fef4",
+   "getter_value": null,
+   "rva": "0x1583ef4",
+   "bytes": 24,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "SetPosition",
+   "signature": "public void SetPosition(Vector3 position) { }",
+   "offset": "0x1580058",
+   "getter_value": null,
+   "rva": "0x1584058",
+   "bytes": 24,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "SetAngle",
+   "signature": "public void SetAngle(float angle) { }",
+   "offset": "0x15800d8",
+   "getter_value": null,
+   "rva": "0x15840d8",
+   "bytes": 24,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "SetPositionAndAngle",
+   "signature": "public void SetPositionAndAngle(Vector3 position, float angle) { }",
+   "offset": "0x1580128",
+   "getter_value": null,
+   "rva": "0x1584128",
+   "bytes": 24,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "SetMoveLinearly",
+   "signature": "public void SetMoveLinearly(Vector3 position, float angle) { }",
+   "offset": "0x15801e0",
+   "getter_value": null,
+   "rva": "0x15841e0",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 3.0,
+     "via": "fmov",
+     "addr": "0x15841ec",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "SetDieCallback",
+   "signature": "public void SetDieCallback(Action<GameObject> dieCallback) { }",
+   "offset": "0x1580308",
+   "getter_value": null,
+   "rva": "0x1584308",
+   "bytes": 168,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1584334",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "Stun",
+   "signature": "public void Stun(float duration) { }",
+   "offset": "0x15803b0",
+   "getter_value": null,
+   "rva": "0x15843b0",
+   "bytes": 148,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15843e4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_IsBringItems",
+   "signature": "public bool get_IsBringItems() { }",
+   "offset": "0x1580680",
+   "getter_value": null,
+   "rva": "0x1584680",
+   "bytes": 28,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "set_IsBringItems",
+   "signature": "public void set_IsBringItems(bool value) { }",
+   "offset": "0x158069c",
+   "getter_value": null,
+   "rva": "0x158469c",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x15846a8",
+     "reg": "w9",
+     "op": "w9, w1, #1",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "get_IsCanAttack",
+   "signature": "public bool get_IsCanAttack() { }",
+   "offset": "0x15806bc",
+   "getter_value": null,
+   "rva": "0x15846bc",
+   "bytes": 28,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "set_IsCanAttack",
+   "signature": "public void set_IsCanAttack(bool value) { }",
+   "offset": "0x15806d8",
+   "getter_value": null,
+   "rva": "0x15846d8",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x15846e4",
+     "reg": "w9",
+     "op": "w9, w1, #1",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "OnDieWhenZeroHp",
+   "signature": "private void OnDieWhenZeroHp() { }",
+   "offset": "0x15806f8",
+   "getter_value": null,
+   "rva": "0x15846f8",
+   "bytes": 84,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1584714",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1584724",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "OnDieWhenHitPlayer",
+   "signature": "private void OnDieWhenHitPlayer() { }",
+   "offset": "0x1580754",
+   "getter_value": null,
+   "rva": "0x1584754",
+   "bytes": 36,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1584764",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "OnMoveCompleted",
+   "signature": "private void OnMoveCompleted() { }",
+   "offset": "0x1580778",
+   "getter_value": null,
+   "rva": "0x1584778",
+   "bytes": 36,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "mov",
+     "addr": "0x1584788",
+     "reg": "w1",
+     "op": "w1, #2",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "Appeared",
+   "signature": "private void Appeared() { }",
+   "offset": "0x1580868",
+   "getter_value": null,
+   "rva": "0x1584868",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1584874",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x1580a5c",
+   "getter_value": null,
+   "rva": "0x1584a5c",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "<Appear>b__19_0",
+   "signature": "private void <Appear>b__19_0(Damager _damager) { }",
+   "offset": "0x1580a64",
+   "getter_value": null,
+   "rva": "0x1584a64",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  }
+ ]
+}

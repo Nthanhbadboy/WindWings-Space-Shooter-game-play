@@ -1,0 +1,36 @@
+;;; OnEnable  private void OnEnable() { }
+    0x123c758: mov      w1, wzr
+    0x123c75c: b        #0x123c760
+
+;;; Change  public void Change(bool change = False) { }
+    0x123c760: stp      x30, x19, [sp, #-0x10]!
+    0x123c764: ldr      x8, [x0, #0x28]
+    0x123c768: and      w9, w1, #1
+    0x123c76c: strb     w9, [x0, #0x20]
+    0x123c770: cbz      x8, #0x123c7c4
+    0x123c774: ldr      w9, [x8, #0x18]
+    0x123c778: cbz      w9, #0x123c7c8
+    0x123c77c: mov      x19, x0
+    0x123c780: ldr      x0, [x8, #0x20]
+    0x123c784: cbz      x0, #0x123c7c4
+    0x123c788: mvn      w8, w1
+    0x123c78c: and      w1, w8, #1
+    0x123c790: mov      x2, xzr
+    0x123c794: bl       #0x2781804
+    0x123c798: ldr      x8, [x19, #0x28]
+    0x123c79c: cbz      x8, #0x123c7c4
+    0x123c7a0: ldr      w9, [x8, #0x18]
+    0x123c7a4: cmp      w9, #1
+    0x123c7a8: b.ls     #0x123c7c8
+    0x123c7ac: ldr      x0, [x8, #0x28]
+    0x123c7b0: cbz      x0, #0x123c7c4
+    0x123c7b4: ldrb     w1, [x19, #0x20]
+    0x123c7b8: mov      x2, xzr
+    0x123c7bc: ldp      x30, x19, [sp], #0x10
+    0x123c7c0: b        #0x2781804
+    0x123c7c4: bl       #0x110d250
+    0x123c7c8: bl       #0x110d258
+
+;;; ctor  public void .ctor() { }
+    0x123c7cc: mov      x1, xzr
+    0x123c7d0: b        #0x2782ba0

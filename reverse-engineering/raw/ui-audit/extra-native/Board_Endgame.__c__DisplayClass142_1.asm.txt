@@ -1,0 +1,86 @@
+;;; ctor  public void .ctor() { }
+    0x1277360: mov      x1, xzr
+    0x1277364: b        #0x2143330
+
+;;; internal void <IESetEndgameEndless>g__OnSuccess|3(DataSnapshot snapshot) { }  internal void <IESetEndgameEndless>g__OnSuccess|3(DataSnapshot snapshot) { }
+    0x1277368: stp      x30, x21, [sp, #-0x20]!
+    0x127736c: stp      x20, x19, [sp, #0x10]
+    0x1277370: adrp     x21, #0x2ce1000
+    0x1277374: ldrb     w8, [x21, #0x123]
+    0x1277378: mov      x20, x1
+    0x127737c: mov      x19, x0
+    0x1277380: tbnz     w8, #0, #0x1277398
+    0x1277384: adrp     x0, #0x2add000
+    0x1277388: ldr      x0, [x0, #0xea8]
+    0x127738c: bl       #0x110d028
+    0x1277390: mov      w8, #1
+    0x1277394: strb     w8, [x21, #0x123]
+    0x1277398: cbz      x20, #0x12773cc
+    0x127739c: mov      x0, x20
+    0x12773a0: mov      x1, xzr
+    0x12773a4: bl       #0x1665170
+    0x12773a8: cbz      x0, #0x12773cc
+    0x12773ac: mov      x0, x20
+    0x12773b0: mov      x1, xzr
+    0x12773b4: bl       #0x1665458
+    0x12773b8: adrp     x8, #0x2add000
+    0x12773bc: ldr      x8, [x8, #0xea8]
+    0x12773c0: ldr      x1, [x8]
+    0x12773c4: bl       #0x1723d24
+    0x12773c8: str      x0, [x19, #0x10]
+    0x12773cc: ldr      x8, [x19, #0x20]
+    0x12773d0: cbz      x8, #0x12773e8
+    0x12773d4: ldp      x20, x19, [sp, #0x10]
+    0x12773d8: mov      w9, #1
+    0x12773dc: strb     w9, [x8, #0x18]
+    0x12773e0: ldp      x30, x21, [sp], #0x20
+    0x12773e4: ret      
+    0x12773e8: bl       #0x110d250
+
+;;; <IESetEndgameEndless>b__5  internal void <IESetEndgameEndless>b__5(string room) { }
+    0x12773ec: str      x30, [sp, #-0x10]!
+    0x12773f0: ldr      x8, [x0, #0x10]
+    0x12773f4: cbz      x8, #0x1277414
+    0x12773f8: str      x1, [x8, #0x18]
+    0x12773fc: ldr      x8, [x0, #0x20]
+    0x1277400: cbz      x8, #0x1277414
+    0x1277404: mov      w9, #1
+    0x1277408: strb     w9, [x8, #0x18]
+    0x127740c: ldr      x30, [sp], #0x10
+    0x1277410: ret      
+    0x1277414: bl       #0x110d250
+
+;;; internal void <IESetEndgameEndless>g__OnLoaded|11(DataSnapshot snapshot) { }  internal void <IESetEndgameEndless>g__OnLoaded|11(DataSnapshot snapshot) { }
+    0x1277418: stp      x30, x21, [sp, #-0x20]!
+    0x127741c: stp      x20, x19, [sp, #0x10]
+    0x1277420: adrp     x21, #0x2ce1000
+    0x1277424: ldrb     w8, [x21, #0x124]
+    0x1277428: mov      x20, x1
+    0x127742c: mov      x19, x0
+    0x1277430: tbnz     w8, #0, #0x1277448
+    0x1277434: adrp     x0, #0x2add000
+    0x1277438: ldr      x0, [x0, #0xeb0]
+    0x127743c: bl       #0x110d028
+    0x1277440: mov      w8, #1
+    0x1277444: strb     w8, [x21, #0x124]
+    0x1277448: cbz      x20, #0x127747c
+    0x127744c: mov      x0, x20
+    0x1277450: mov      x1, xzr
+    0x1277454: bl       #0x1665170
+    0x1277458: cbz      x0, #0x127747c
+    0x127745c: mov      x0, x20
+    0x1277460: mov      x1, xzr
+    0x1277464: bl       #0x1665458
+    0x1277468: adrp     x8, #0x2add000
+    0x127746c: ldr      x8, [x8, #0xeb0]
+    0x1277470: ldr      x1, [x8]
+    0x1277474: bl       #0x1723d24
+    0x1277478: str      x0, [x19, #0x18]
+    0x127747c: ldr      x8, [x19, #0x20]
+    0x1277480: cbz      x8, #0x1277498
+    0x1277484: ldp      x20, x19, [sp, #0x10]
+    0x1277488: mov      w9, #1
+    0x127748c: strb     w9, [x8, #0x18]
+    0x1277490: ldp      x30, x21, [sp], #0x20
+    0x1277494: ret      
+    0x1277498: bl       #0x110d250

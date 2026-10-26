@@ -1,0 +1,63 @@
+;;; GetTechLabLevel  public static int GetTechLabLevel() { }
+    0x13999ac: str      x30, [sp, #-0x20]!
+    0x13999b0: stp      x20, x19, [sp, #0x10]
+    0x13999b4: adrp     x20, #0x2ce1000
+    0x13999b8: adrp     x19, #0x2adc000
+    0x13999bc: ldrb     w8, [x20, #0x98a]
+    0x13999c0: ldr      x19, [x19, #0x840]
+    0x13999c4: tbnz     w8, #0, #0x1399a00
+    0x13999c8: adrp     x0, #0x2adc000
+    0x13999cc: ldr      x0, [x0, #0x840]
+    0x13999d0: bl       #0x110d028
+    0x13999d4: adrp     x0, #0x2adb000
+    0x13999d8: ldr      x0, [x0, #0xde0]
+    0x13999dc: bl       #0x110d028
+    0x13999e0: adrp     x0, #0x2adc000
+    0x13999e4: ldr      x0, [x0, #0x770]
+    0x13999e8: bl       #0x110d028
+    0x13999ec: adrp     x0, #0x2adc000
+    0x13999f0: ldr      x0, [x0, #0xca0]
+    0x13999f4: bl       #0x110d028
+    0x13999f8: mov      w8, #1
+    0x13999fc: strb     w8, [x20, #0x98a]
+    0x1399a00: ldr      x0, [x19]
+    0x1399a04: str      wzr, [sp, #8]
+    0x1399a08: ldr      w8, [x0, #0xe0]
+    0x1399a0c: cbnz     w8, #0x1399a18
+    0x1399a10: bl       #0x110d12c
+    0x1399a14: ldr      x0, [x19]
+    0x1399a18: ldr      x8, [x0, #0xb8]
+    0x1399a1c: ldr      w8, [x8]
+    0x1399a20: cmp      w8, #4
+    0x1399a24: b.ne     #0x1399a78
+    0x1399a28: adrp     x8, #0x2adc000
+    0x1399a2c: ldr      x8, [x8, #0x770]
+    0x1399a30: adrp     x19, #0x2adc000
+    0x1399a34: ldr      x0, [x8]
+    0x1399a38: ldr      w8, [x0, #0xe0]
+    0x1399a3c: ldr      x19, [x19, #0xca0]
+    0x1399a40: cbnz     w8, #0x1399a48
+    0x1399a44: bl       #0x110d12c
+    0x1399a48: mov      x0, xzr
+    0x1399a4c: bl       #0x278fc34
+    0x1399a50: str      w0, [sp, #8]
+    0x1399a54: add      x0, sp, #8
+    0x1399a58: mov      x1, xzr
+    0x1399a5c: bl       #0x278f3f0
+    0x1399a60: ldr      x1, [x19]
+    0x1399a64: mov      x2, xzr
+    0x1399a68: bl       #0x1feca34
+    0x1399a6c: tbz      w0, #0, #0x1399a78
+    0x1399a70: mov      w0, wzr
+    0x1399a74: b        #0x1399a98
+    0x1399a78: adrp     x8, #0x2adb000
+    0x1399a7c: ldr      x8, [x8, #0xde0]
+    0x1399a80: ldr      x0, [x8]
+    0x1399a84: ldr      w8, [x0, #0xe0]
+    0x1399a88: cbnz     w8, #0x1399a90
+    0x1399a8c: bl       #0x110d12c
+    0x1399a90: mov      x0, xzr
+    0x1399a94: bl       #0x14e802c
+    0x1399a98: ldp      x20, x19, [sp, #0x10]
+    0x1399a9c: ldr      x30, [sp], #0x20
+    0x1399aa0: ret      

@@ -1,0 +1,126 @@
+;;; ctor  public void .ctor(int <>1__state) { }
+    0x14c7ca0: str      x30, [sp, #-0x20]!
+    0x14c7ca4: stp      x20, x19, [sp, #0x10]
+    0x14c7ca8: mov      w19, w1
+    0x14c7cac: mov      x1, xzr
+    0x14c7cb0: mov      x20, x0
+    0x14c7cb4: bl       #0x2143330
+    0x14c7cb8: str      w19, [x20, #0x10]
+    0x14c7cbc: ldp      x20, x19, [sp, #0x10]
+    0x14c7cc0: ldr      x30, [sp], #0x20
+    0x14c7cc4: ret      
+
+;;; Dispose  private void System.IDisposable.Dispose() { }
+    0x14c80c8: ret      
+    0x14c80cc: stp      x30, x21, [sp, #-0x20]!
+
+;;; MoveNext  private bool MoveNext() { }
+    0x14c80cc: stp      x30, x21, [sp, #-0x20]!
+    0x14c80d0: stp      x20, x19, [sp, #0x10]
+    0x14c80d4: adrp     x20, #0x2ce2000
+    0x14c80d8: ldrb     w8, [x20, #0x1a1]
+    0x14c80dc: mov      x19, x0
+    0x14c80e0: tbnz     w8, #0, #0x14c8104
+    0x14c80e4: adrp     x0, #0x2ae8000
+    0x14c80e8: ldr      x0, [x0, #0x580]
+    0x14c80ec: bl       #0x110d028
+    0x14c80f0: adrp     x0, #0x2adb000
+    0x14c80f4: ldr      x0, [x0, #0x938]
+    0x14c80f8: bl       #0x110d028
+    0x14c80fc: mov      w8, #1
+    0x14c8100: strb     w8, [x20, #0x1a1]
+    0x14c8104: ldr      w8, [x19, #0x10]
+    0x14c8108: ldr      x20, [x19, #0x28]
+    0x14c810c: cmp      w8, #1
+    0x14c8110: b.eq     #0x14c8164
+    0x14c8114: cbnz     w8, #0x14c820c
+    0x14c8118: adrp     x8, #0x757000
+    0x14c811c: ldr      s0, [x8, #0xc]
+    0x14c8120: ldp      s1, s2, [x19, #0x20]
+    0x14c8124: mov      w8, #-1
+    0x14c8128: str      w8, [x19, #0x10]
+    0x14c812c: fdiv     s0, s1, s0
+    0x14c8130: fdiv     s1, s2, s0
+    0x14c8134: stp      s0, s1, [x19, #0x30]
+    0x14c8138: cbz      x20, #0x14c821c
+    0x14c813c: add      x0, x20, #0x80
+    0x14c8140: mov      w1, #1
+    0x14c8144: mov      x2, xzr
+    0x14c8148: bl       #0x27c2234
+    0x14c814c: ldr      x0, [x20, #0x68]
+    0x14c8150: cbz      x0, #0x14c821c
+    0x14c8154: mov      x1, xzr
+    0x14c8158: bl       #0x27c1f68
+    0x14c815c: ldr      s0, [x19, #0x30]
+    0x14c8160: b        #0x14c817c
+    0x14c8164: ldr      s0, [x19, #0x30]
+    0x14c8168: fmov     s1, #-1.00000000
+    0x14c816c: mov      w8, #-1
+    0x14c8170: str      w8, [x19, #0x10]
+    0x14c8174: fadd     s0, s0, s1
+    0x14c8178: str      s0, [x19, #0x30]
+    0x14c817c: fcmp     s0, #0.0
+    0x14c8180: b.le     #0x14c81f8
+    0x14c8184: adrp     x21, #0x2ae8000
+    0x14c8188: ldr      x21, [x21, #0x580]
+    0x14c818c: ldr      x0, [x21]
+    0x14c8190: ldr      w8, [x0, #0xe0]
+    0x14c8194: cbnz     w8, #0x14c81a0
+    0x14c8198: bl       #0x110d12c
+    0x14c819c: ldr      x0, [x21]
+    0x14c81a0: ldr      x8, [x0, #0xb8]
+    0x14c81a4: ldp      s1, s0, [x8]
+    0x14c81a8: fcmp     s0, s1
+    0x14c81ac: b.pl     #0x14c81f8
+    0x14c81b0: cbz      x20, #0x14c821c
+    0x14c81b4: ldr      s0, [x19, #0x34]
+    0x14c81b8: mov      x0, x20
+    0x14c81bc: mov      w1, wzr
+    0x14c81c0: bl       #0x14c63b4
+    0x14c81c4: adrp     x8, #0x2adb000
+    0x14c81c8: ldr      x8, [x8, #0x938]
+    0x14c81cc: ldr      x0, [x8]
+    0x14c81d0: bl       #0x110d240
+    0x14c81d4: adrp     x8, #0x757000
+    0x14c81d8: ldr      s0, [x8, #0xc]
+    0x14c81dc: mov      x1, xzr
+    0x14c81e0: mov      x20, x0
+    0x14c81e4: bl       #0x2786508
+    0x14c81e8: mov      w0, #1
+    0x14c81ec: str      x20, [x19, #0x18]
+    0x14c81f0: str      w0, [x19, #0x10]
+    0x14c81f4: b        #0x14c8210
+    0x14c81f8: cbz      x20, #0x14c821c
+    0x14c81fc: add      x0, x20, #0x80
+    0x14c8200: mov      w1, wzr
+    0x14c8204: mov      x2, xzr
+    0x14c8208: bl       #0x27c2234
+    0x14c820c: mov      w0, wzr
+    0x14c8210: ldp      x20, x19, [sp, #0x10]
+    0x14c8214: ldp      x30, x21, [sp], #0x20
+    0x14c8218: ret      
+    0x14c821c: bl       #0x110d250
+
+;;; get_Current  private object System.Collections.Generic.IEnumerator<System.Object>.get_Current() { }
+    0x14c8220: ldr      x0, [x0, #0x18]
+    0x14c8224: ret      
+
+;;; Reset  private void System.Collections.IEnumerator.Reset() { }
+    0x14c8228: stp      x30, x19, [sp, #-0x10]!
+    0x14c822c: adrp     x0, #0x2adb000
+    0x14c8230: ldr      x0, [x0, #0x940]
+    0x14c8234: bl       #0x110d03c
+    0x14c8238: bl       #0x110d240
+    0x14c823c: mov      x1, xzr
+    0x14c8240: mov      x19, x0
+    0x14c8244: bl       #0x2107de0
+    0x14c8248: adrp     x0, #0x2ae8000
+    0x14c824c: ldr      x0, [x0, #0x620]
+    0x14c8250: bl       #0x110d03c
+    0x14c8254: mov      x1, x0
+    0x14c8258: mov      x0, x19
+    0x14c825c: bl       #0x110d11c
+
+;;; get_Current  private object System.Collections.IEnumerator.get_Current() { }
+    0x14c8260: ldr      x0, [x0, #0x18]
+    0x14c8264: ret      

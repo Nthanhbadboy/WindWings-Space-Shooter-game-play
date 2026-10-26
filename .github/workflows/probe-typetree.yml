@@ -1,0 +1,68 @@
+name: Probe TypeTree backends
+
+on:
+  push:
+    paths:
+      - 'tools/typetree-probe/**'
+      - '.github/workflows/probe-typetree.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Restore XAPK
+        uses: actions/cache@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+      - name: Extract IL2CPP payload
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/apk/extract
+          python3 - <<'PY'
+          import zipfile, os
+          x = zipfile.ZipFile('/tmp/apk/windwings.xapk')
+          os.makedirs('/tmp/apk/parts', exist_ok=True)
+          for n in x.namelist():
+              if n.endswith('.apk'):
+                  with x.open(n) as s, open('/tmp/apk/parts/' + os.path.basename(n), 'wb') as d:
+                      while True:
+                          b = s.read(1 << 20)
+                          if not b: break
+                          d.write(b)
+          with zipfile.ZipFile('/tmp/apk/parts/com.Wind.wings.Space.Shooter.apk') as z:
+              with z.open('assets/bin/Data/Managed/Metadata/global-metadata.dat') as s, open('/tmp/apk/extract/global-metadata.dat','wb') as d:
+                  d.write(s.read())
+          with zipfile.ZipFile('/tmp/apk/parts/config.arm64_v8a.apk') as z:
+              for n in ('lib/arm64-v8a/libil2cpp.so','lib/arm64-v8a/libunity.so'):
+                  with z.open(n) as s, open('/tmp/apk/extract/'+os.path.basename(n),'wb') as d:
+                      d.write(s.read())
+          PY
+          ls -l /tmp/apk/extract
+
+      - name: Install bindings
+        run: pip install --quiet "TypeTreeGeneratorAPI==0.0.10"
+
+      - name: Probe backends
+        run: python3 tools/typetree-probe/probe.py 2>&1 | tail -200
+
+      - name: Commit probe
+        if: always()
+        run: |
+          mkdir -p docs/apk-analysis
+          cp /tmp/typetree-probe.md docs/apk-analysis/11-typetree-probe.md 2>/dev/null || echo "probe crashed" > docs/apk-analysis/11-typetree-probe.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/apk-analysis/11-typetree-probe.md
+          git diff --cached --quiet || git commit -m "chore(re): typetree backend probe [skip ci]"
+          git pull --rebase --autostash || true
+          git push

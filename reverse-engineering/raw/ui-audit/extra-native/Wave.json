@@ -1,0 +1,225 @@
+{
+ "class": "Wave",
+ "note": "UI loader/persistence recovery — provisional",
+ "methods": [
+  {
+   "method": "GetWaveReduceStartY",
+   "signature": "public float GetWaveReduceStartY() { }",
+   "offset": "0x13f9920",
+   "getter_value": null,
+   "rva": "0x13fd920",
+   "bytes": 128,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x13fd94c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetWaveLength",
+   "signature": "public float GetWaveLength() { }",
+   "offset": "0x13f99a0",
+   "getter_value": null,
+   "rva": "0x13fd9a0",
+   "bytes": 128,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x13fd9cc",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 30.0,
+     "via": "fmov",
+     "addr": "0x13fd9f4",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "SetLastWave",
+   "signature": "public void SetLastWave(bool lastWave) { }",
+   "offset": "0x13f9a20",
+   "getter_value": null,
+   "rva": "0x13fda20",
+   "bytes": 36,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x13fda24",
+     "reg": "w1",
+     "op": "w1, w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetLastPoint",
+   "signature": "public float GetLastPoint() { }",
+   "offset": "0x1413d9c",
+   "getter_value": null,
+   "rva": "0x1417d9c",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "CheckSpawnEnded",
+   "signature": "private IEnumerator CheckSpawnEnded(bool lastWave) { }",
+   "offset": "0x1413da4",
+   "getter_value": null,
+   "rva": "0x1417da4",
+   "bytes": 116,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1417dd8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x1417de4",
+     "reg": "w21",
+     "op": "w21, w20, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "OnDrawGizmos",
+   "signature": "private void OnDrawGizmos() { }",
+   "offset": "0x1413e40",
+   "getter_value": null,
+   "rva": "0x1417e40",
+   "bytes": 212,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1417e60",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 19.2,
+     "via": "ldr_pool",
+     "va": "0x756c8c",
+     "addr": "0x1417e74",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 10.8,
+     "via": "ldr_pool",
+     "va": "0x756b3c",
+     "addr": "0x1417e94",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x1417ea4",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x1417ea8",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": -9.6,
+     "via": "ldr_pool",
+     "va": "0x756d60",
+     "addr": "0x1417ebc",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": -5.4,
+     "via": "ldr_pool",
+     "va": "0x756adc",
+     "addr": "0x1417ec0",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 5.4,
+     "via": "ldr_pool",
+     "va": "0x756f00",
+     "addr": "0x1417eec",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 1000.0,
+     "via": "mov+fmov",
+     "bits": "0x447a0000",
+     "addr": "0x1417ec4",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x1413f14",
+   "getter_value": null,
+   "rva": "0x1417f14",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  }
+ ]
+}

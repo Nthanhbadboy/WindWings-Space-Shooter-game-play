@@ -1,0 +1,37 @@
+;;; cctor  private static void .cctor() { }
+    0x1238060: str      x30, [sp, #-0x20]!
+    0x1238064: stp      x20, x19, [sp, #0x10]
+    0x1238068: adrp     x19, #0x2ce0000
+    0x123806c: adrp     x20, #0x2adc000
+    0x1238070: ldrb     w8, [x19, #0xf69]
+    0x1238074: ldr      x20, [x20, #0x8a8]
+    0x1238078: tbnz     w8, #0, #0x1238090
+    0x123807c: adrp     x0, #0x2adc000
+    0x1238080: ldr      x0, [x0, #0x8a8]
+    0x1238084: bl       #0x110d028
+    0x1238088: mov      w8, #1
+    0x123808c: strb     w8, [x19, #0xf69]
+    0x1238090: ldr      x0, [x20]
+    0x1238094: bl       #0x110d240
+    0x1238098: mov      x1, xzr
+    0x123809c: mov      x19, x0
+    0x12380a0: bl       #0x2143330
+    0x12380a4: ldr      x8, [x20]
+    0x12380a8: ldr      x8, [x8, #0xb8]
+    0x12380ac: str      x19, [x8]
+    0x12380b0: ldp      x20, x19, [sp, #0x10]
+    0x12380b4: ldr      x30, [sp], #0x20
+    0x12380b8: ret      
+
+;;; ctor  public void .ctor() { }
+    0x12380bc: mov      x1, xzr
+    0x12380c0: b        #0x2143330
+
+;;; <IESignInOrRestoreYourDatas>b__7_6  internal void <IESignInOrRestoreYourDatas>b__7_6() { }
+    0x12380c4: mov      w0, #1
+    0x12380c8: mov      x1, xzr
+    0x12380cc: b        #0x141b488
+
+;;; <IEGetGameConfigs>b__11_0  internal bool <IEGetGameConfigs>b__11_0() { }
+    0x12380d0: mov      x0, xzr
+    0x12380d4: b        #0x142b754

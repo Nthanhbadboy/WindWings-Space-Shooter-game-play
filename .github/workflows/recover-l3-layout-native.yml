@@ -1,0 +1,38 @@
+name: Recover L3 layout native helpers
+on:
+  push:
+    paths: ['tools/recovery/l3_layout_native.py', 'tools/recovery/l3_layout_objects.py', '.github/workflows/recover-l3-layout-native.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: l3-layout-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+          fail-on-cache-miss: true
+      - run: python3 -m pip install 'capstone==5.0.3' 'UnityPy==1.25.4' 'TypeTreeGeneratorAPI==0.0.10' 'Pillow==12.0.0'
+      - run: python3 tools/recovery/l3_layout_native.py --xapk /tmp/apk/windwings.xapk
+      - name: Preserve scoped evidence
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/l3-layout-native
+          git diff --cached --quiet || git commit -m 'Preserve pinned L3 layout helpers and anchor cells [skip ci]'
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+            if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
+          done
+          exit 1

@@ -1,0 +1,75 @@
+name: Re-export pinned identity-safe asset pack v2
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: asset-pack-v2-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+          fail-on-cache-miss: true
+      - run: python3 -m pip install 'UnityPy==1.25.4'
+      - name: Narrow Unity media export only
+        run: python3 tools/recovery/asset_pack_v2.py --xapk /tmp/apk/windwings.xapk --work /tmp/asset-pack-v2
+      - name: Regression checks
+        run: python3 -m unittest discover -s tests -q
+      - name: Package and verify unsplit archive
+        run: |
+          cd /tmp/asset-pack-v2/pack
+          zip -q -r -0 ../assets-v2.zip .
+          unzip -t ../assets-v2.zip | tail -1
+          cd ..
+          sha256sum assets-v2.zip > assets-v2.sha256
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: identity-safe-asset-pack-v2
+          path: |
+            /tmp/asset-pack-v2/assets-v2.zip
+            /tmp/asset-pack-v2/assets-v2.sha256
+            reverse-engineering/raw/asset-pack-v2/
+          retention-days: 30
+      - name: Add new versioned assets to existing draft without replacing evidence
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          repo=os.environ['GITHUB_REPOSITORY']
+          info=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/421174835']))
+          assert info['draft'] is True
+          names={a['name'] for a in info['assets']}
+          assert not names.intersection({'assets-v2.zip','assets-v2.sha256'}), 'v2 exists; never overwrite evidence'
+          subprocess.run(['gh','release','upload',info['tag_name'],'/tmp/asset-pack-v2/assets-v2.zip','/tmp/asset-pack-v2/assets-v2.sha256','-R',repo],check=True)
+          after=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/421174835']))
+          assert after['draft'] is True
+          assert names <= {a['name'] for a in after['assets']}
+          new=[{k:a.get(k) for k in ('id','name','size','digest')} for a in after['assets'] if a['name'] in ('assets-v2.zip','assets-v2.sha256')]
+          from pathlib import Path
+          Path('reverse-engineering/raw/asset-pack-v2/release-upload.json').write_text(json.dumps(dict(release_id=after['id'],draft=after['draft'],assets=new),indent=2)+'\n')
+          PY
+      - name: Preserve metadata only on session branch
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/asset-pack-v2 docs/assets/pack-browser-v2.html
+          git diff --cached --quiet || git commit -m 'research(assets): preserve identity-safe v2 catalog and offline browser [skip ci]'
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+            if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
+          done
+          exit 1

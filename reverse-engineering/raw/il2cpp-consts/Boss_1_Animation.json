@@ -1,0 +1,327 @@
+{
+ "class": "Boss_1_Animation",
+ "note": "animation control: event, state, phase or movement (pending asm verification)",
+ "methods": [
+  {
+   "method": "Start",
+   "signature": "private void Start() { }",
+   "offset": "0x12433ec",
+   "getter_value": null,
+   "rva": "0x12473ec",
+   "bytes": 588,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 80,
+     "via": "sub",
+     "addr": "0x12473ec",
+     "reg": "sp",
+     "op": "sp, sp, #0x50",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1247468",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x1247598",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 80,
+     "via": "add",
+     "addr": "0x12475bc",
+     "reg": "sp",
+     "op": "sp, sp, #0x50",
+     "role": "return"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x12475d8",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "SetDefeat",
+   "signature": "public void SetDefeat(int turn, int index) { }",
+   "offset": "0x1243638",
+   "getter_value": null,
+   "rva": "0x1247638",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x1247638",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "SetAttachmentDefeatGun1",
+   "signature": "private void SetAttachmentDefeatGun1(int index) { }",
+   "offset": "0x1243658",
+   "getter_value": null,
+   "rva": "0x1247658",
+   "bytes": 788,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x124771c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x1247724",
+     "reg": "w20",
+     "op": "w20, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 3108,
+     "via": "add",
+     "addr": "0x1247734",
+     "reg": "x9",
+     "op": "x9, x9, #0xc24",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1247740",
+     "reg": "x10",
+     "op": "x10, x10, x11, lsl #2",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SetAttachmentDefeatShields",
+   "signature": "private void SetAttachmentDefeatShields(int index) { }",
+   "offset": "0x124396c",
+   "getter_value": null,
+   "rva": "0x124796c",
+   "bytes": 172,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x12479a0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x12479a8",
+     "reg": "w20",
+     "op": "w20, #1",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "ClearGuns",
+   "signature": "public void ClearGuns(int turn) { }",
+   "offset": "0x1243a18",
+   "getter_value": null,
+   "rva": "0x1247a18",
+   "bytes": 544,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1247a50",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.1,
+     "via": "ldr_pool",
+     "va": "0x756c78",
+     "addr": "0x1247a6c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 15,
+     "via": "mov",
+     "addr": "0x1247a70",
+     "reg": "w0",
+     "op": "w0, #0xf",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x1247a80",
+     "reg": "w20",
+     "op": "w20, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 200,
+     "via": "mov",
+     "addr": "0x1247b50",
+     "reg": "w0",
+     "op": "w0, #0xc8",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": -0.5,
+     "via": "fmov",
+     "addr": "0x1247b7c",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 91006,
+     "via": "mov+movk",
+     "addr": "0x1247b80",
+     "reg": "w0",
+     "op": "w0, #0x637e",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1247ba8",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SkeletonAnimation_AnimationState_Complete",
+   "signature": "public virtual void SkeletonAnimation_AnimationState_Complete(TrackEntry trackEntry) { }",
+   "offset": "0x1243c38",
+   "getter_value": null,
+   "rva": "0x1247c38",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "BossWork",
+   "signature": "private void BossWork(string entryName) { }",
+   "offset": "0x1243c58",
+   "getter_value": null,
+   "rva": "0x1247c58",
+   "bytes": 336,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1247d44",
+     "reg": "w3",
+     "op": "w3, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SkeletonAnimation_AnimationState_Event",
+   "signature": "public virtual void SkeletonAnimation_AnimationState_Event(TrackEntry trackEntry, Event e) { }",
+   "offset": "0x1243da8",
+   "getter_value": null,
+   "rva": "0x1247da8",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "BossDefeat",
+   "signature": "private void BossDefeat() { }",
+   "offset": "0x1243dac",
+   "getter_value": null,
+   "rva": "0x1247dac",
+   "bytes": 20,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x1243dc0",
+   "getter_value": null,
+   "rva": "0x1247dc0",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  }
+ ]
+}

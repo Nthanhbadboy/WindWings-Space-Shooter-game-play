@@ -1,0 +1,90 @@
+name: Assemble identity-bound Spine reference folders
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: spine-reference-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify contracts and download audited v2
+        run: |
+          python3 tools/verify/spine_chain_contracts.py
+          git diff --exit-code -- datas/spine_identity.json
+          python3 - <<'PY'
+          import json,os,subprocess
+          info=json.loads(subprocess.check_output(['gh','api',f"repos/{os.environ['GITHUB_REPOSITORY']}/releases/421174835"]))
+          assert info['draft'] is True
+          assert 'spine-reference-v1.zip' not in {a['name'] for a in info['assets']}
+          subprocess.run(['gh','release','download',info['tag_name'],'--pattern','assets-v2.zip','--dir','/tmp/spine-ref'],check=True)
+          PY
+      - name: Assemble exact source bytes per bound rig
+        run: python3 tools/recovery/spine_reference_pack.py --archive /tmp/spine-ref/assets-v2.zip --output /tmp/spine-ref/rigs
+      - name: Package and independently verify every copied member
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,zipfile
+          root=pathlib.Path('/tmp/spine-ref/rigs');p=root.parent/'spine-reference-v1.zip'
+          with zipfile.ZipFile(p,'w',compression=zipfile.ZIP_STORED) as z:
+              for source in sorted(root.rglob('*')):
+                  if source.is_file():z.write(source,source.relative_to(root).as_posix())
+          manifest=json.loads((root/'manifest.json').read_text())
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              assert len(z.namelist())==len(set(z.namelist()))
+              expected={'manifest.json','README.txt'}
+              for rig in manifest['rigs']:
+                  expected.add(rig['folder']+'/unity-reference-settings.json')
+                  for f in rig['files']:
+                      path=rig['folder']+'/'+f['file'];expected.add(path)
+                      blob=z.read(path)
+                      assert len(blob)==f['bytes'] and hashlib.sha256(blob).hexdigest()==f['sha256']
+              assert set(z.namelist())==expected
+          data=dict(archive_sha256=hashlib.sha256(p.read_bytes()).hexdigest(),bytes=p.stat().st_size,rigs=len(manifest['rigs']),members=len(expected),gates=dict(zip_crc=True,exact_population=True,source_member_hashes=True))
+          pathlib.Path('reverse-engineering/raw/spine-identity/reference-pack-audit.json').write_text(json.dumps(data,indent=2)+'\n')
+          PY
+      - run: python3 -m unittest discover -s tests -q
+      - uses: actions/upload-artifact@v4
+        with:
+          name: identity-bound-spine-reference
+          path: |
+            /tmp/spine-ref/spine-reference-v1.zip
+            reverse-engineering/raw/spine-identity/reference-pack*
+      - name: Add versioned reference ZIP without replacing original evidence
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib,subprocess
+          repo=os.environ['GITHUB_REPOSITORY']
+          info=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/421174835']))
+          assert info['draft'] is True
+          assert 'spine-reference-v1.zip' not in {a['name'] for a in info['assets']}
+          subprocess.run(['gh','release','upload',info['tag_name'],'/tmp/spine-ref/spine-reference-v1.zip','-R',repo],check=True)
+          after=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/421174835']))
+          assert after['draft'] is True
+          asset=next(a for a in after['assets'] if a['name']=='spine-reference-v1.zip')
+          audit=json.loads(pathlib.Path('reverse-engineering/raw/spine-identity/reference-pack-audit.json').read_text())
+          assert asset['size']==audit['bytes'] and asset['digest']=='sha256:'+audit['archive_sha256']
+          pathlib.Path('reverse-engineering/raw/spine-identity/reference-pack-release.json').write_text(json.dumps(dict(release_id=after['id'],draft=after['draft'],asset={k:asset[k] for k in ('id','name','size','digest')}),indent=2)+'\n')
+          PY
+      - name: Preserve metadata only
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/spine-identity/reference-pack*
+          git diff --cached --quiet || git commit -m 'research(spine): preserve bound reference pack provenance and integrity [skip ci]'
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+            if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
+          done
+          exit 1

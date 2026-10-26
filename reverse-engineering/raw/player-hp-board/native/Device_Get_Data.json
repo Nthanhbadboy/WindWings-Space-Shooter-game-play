@@ -1,0 +1,92 @@
+{
+ "class": "Device_Get_Data",
+ "note": "Bounded drone attack recovery; selected RVAs for extra dependencies",
+ "methods": [
+  {
+   "method": "GetStatValue1",
+   "signature": "public static float GetStatValue1(Device _data) { }",
+   "offset": "0x124c01c",
+   "getter_value": null,
+   "rva": "0x125001c",
+   "bytes": 280,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x125004c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 274877907,
+     "via": "mov+movk",
+     "addr": "0x1250088",
+     "reg": "w8",
+     "op": "w8, #0x4dd3",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x12500ac",
+     "reg": "x20",
+     "op": "x20, x8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x12500ec",
+     "reg": "x9",
+     "op": "x9, x9, x20, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x12500f0",
+     "reg": "x8",
+     "op": "x8, x0, x8, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x12500fc",
+     "reg": "w8",
+     "op": "w8, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x125010c",
+     "reg": "w20",
+     "op": "w20, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x1250104",
+     "role": "load"
+    }
+   ]
+  }
+ ]
+}

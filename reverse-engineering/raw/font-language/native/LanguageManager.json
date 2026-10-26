@@ -1,0 +1,261 @@
+{
+ "class": "LanguageManager",
+ "note": "Pinned font/fallback/localization consumer recovery",
+ "methods": [
+  {
+   "method": "set_language",
+   "signature": "public static void set_language(Language value) { }",
+   "offset": "0x1434068",
+   "getter_value": null,
+   "rva": "0x1438068",
+   "bytes": 536,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "sub",
+     "addr": "0x1438068",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14380f8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x1438158",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "add",
+     "addr": "0x1438274",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "get_language",
+   "signature": "public static Language get_language() { }",
+   "offset": "0x1434280",
+   "getter_value": null,
+   "rva": "0x1438280",
+   "bytes": 216,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14382c0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 7,
+     "via": "cmp",
+     "addr": "0x14382e8",
+     "reg": "w0",
+     "op": "w0, #7",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "sub",
+     "addr": "0x14382f0",
+     "reg": "w8",
+     "op": "w8, w0, #9",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 31,
+     "via": "cmp",
+     "addr": "0x14382f4",
+     "reg": "w8",
+     "op": "w8, #0x1f",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 4024,
+     "via": "add",
+     "addr": "0x1438300",
+     "reg": "x9",
+     "op": "x9, x9, #0xfb8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 13,
+     "via": "mov",
+     "addr": "0x143830c",
+     "reg": "w8",
+     "op": "w8, #0xd",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x1438314",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "mov",
+     "addr": "0x1438318",
+     "reg": "w9",
+     "op": "w9, #6",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_languageAssetsDefault",
+   "signature": "private static LanguageAssets get_languageAssetsDefault() { }",
+   "offset": "0x1434358",
+   "getter_value": null,
+   "rva": "0x1438358",
+   "bytes": 400,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "sub",
+     "addr": "0x1438358",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14383cc",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x1438430",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "add",
+     "addr": "0x14384dc",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "GetText",
+   "signature": "public static string GetText(string key, bool defaultLang = False) { }",
+   "offset": "0x14344e8",
+   "getter_value": null,
+   "rva": "0x14384e8",
+   "bytes": 448,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1438528",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetText",
+   "signature": "public static string GetText(string key) { }",
+   "offset": "0x14346a8",
+   "getter_value": null,
+   "rva": "0x14386a8",
+   "bytes": 440,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14386e4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "cctor",
+   "signature": "private static void .cctor() { }",
+   "offset": "0x1434860",
+   "getter_value": null,
+   "rva": "0x1438860",
+   "bytes": 156,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14388b4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

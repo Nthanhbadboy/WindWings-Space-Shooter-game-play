@@ -1,0 +1,92 @@
+name: Assemble identity-bound font reference folders
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: font-reference-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify semantic contract without gzip timestamp or key-order comparison
+        run: |
+          python3 - <<'PYVERIFY'
+          import gzip,json,sys
+          sys.path.insert(0,'tools/verify')
+          from font_language import build
+          saved=json.load(gzip.open('datas/font_language_contract.json.gz','rt'))
+          assert build()==saved
+          print('::notice::Font contract semantic regeneration matches all preserved inputs')
+          PYVERIFY
+      - name: Download audited media only
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib,subprocess
+          info=json.loads(subprocess.check_output(['gh','api',f"repos/{os.environ['GITHUB_REPOSITORY']}/releases/421174835"]))
+          assert info['draft'] is True
+          assert 'font-reference-v1.zip' not in {a['name'] for a in info['assets']}, 'version exists: never overwrite'
+          pathlib.Path('/tmp/font-ref').mkdir()
+          pathlib.Path('/tmp/font-ref/release-before.json').write_text(json.dumps(info))
+          subprocess.run(['gh','release','download',info['tag_name'],'--pattern','assets-v2.zip','--dir','/tmp/font-ref'],check=True)
+          PY
+      - name: Assemble seven SDF references and separately inventoried font program
+        run: python3 tools/recovery/font_reference_pack.py --archive /tmp/font-ref/assets-v2.zip --output /tmp/font-ref/fonts
+      - name: Run regression tests without missing pixel fixtures
+        run: |
+          python3 -m pip install 'Pillow==12.0.0'
+          python3 -m unittest discover -s tests -q
+      - uses: actions/upload-artifact@v4
+        with:
+          name: identity-bound-font-reference
+          path: |
+            /tmp/font-ref/font-reference-v1.zip
+            reverse-engineering/raw/font-reference/
+      - name: Add new versioned ZIP and verify uploaded delivery by redownload
+        run: |
+          python3 - <<'PY'
+          import gzip,hashlib,json,os,pathlib,subprocess,sys
+          sys.path.insert(0,'tools/recovery')
+          from font_reference_pack import audit
+          repo=os.environ['GITHUB_REPOSITORY'];raw=pathlib.Path('reverse-engineering/raw/font-reference')
+          before=json.loads(pathlib.Path('/tmp/font-ref/release-before.json').read_text())
+          info=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/421174835']))
+          assert info['draft'] is True
+          assert 'font-reference-v1.zip' not in {a['name'] for a in info['assets']}
+          subprocess.run(['gh','release','upload',info['tag_name'],'/tmp/font-ref/font-reference-v1.zip','-R',repo],check=True)
+          after=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/releases/421174835']))
+          assert after['draft'] is True
+          attrs=('id','name','size','digest','updated_at')
+          old={a['id']:{k:a.get(k) for k in attrs} for a in before['assets']}
+          new={a['id']:{k:a.get(k) for k in attrs} for a in after['assets']}
+          assert all(new[k]==v for k,v in old.items()), 'existing assets changed'
+          asset=next(a for a in after['assets'] if a['name']=='font-reference-v1.zip')
+          result=json.loads((raw/'archive-audit.json').read_text())
+          assert asset['size']==result['bytes'] and asset['digest']=='sha256:'+result['archive_sha256']
+          pathlib.Path('/tmp/font-ref/downloaded').mkdir()
+          subprocess.run(['gh','release','download',after['tag_name'],'--pattern','font-reference-v1.zip','--dir','/tmp/font-ref/downloaded'],check=True)
+          manifest=json.load(gzip.open(raw/'manifest.json.gz','rt'))
+          delivery=audit(pathlib.Path('/tmp/font-ref/downloaded/font-reference-v1.zip'),manifest)
+          assert delivery==result
+          (raw/'release.json').write_text(json.dumps(dict(release_id=after['id'],draft=after['draft'],asset={k:asset.get(k) for k in attrs},existing_assets_unchanged=True,previous_assets=list(old.values()),post_upload_redownload_audit=delivery),indent=2)+'\n')
+          PY
+      - name: Preserve metadata only
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/font-reference
+          git diff --cached --quiet || git commit -m 'research(fonts): preserve self-contained reference pack and post-upload readback audit [skip ci]'
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+            if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
+          done
+          exit 1
