@@ -28,12 +28,12 @@
 >
 > **Cập nhật 24/10 (`COVERAGE_AUDIT.md`):** **+2 đóng** — **C1** (795/795 event có `time`) và
 > **C2** (`animator_map.csv.gz` 5.792 dòng) đã **export xong** ở nhánh dữ liệu, hết phải tự đặt nhịp.
-> Số đếm (đếm lại 27/10 — audit residual a5, đơn vị = **ID**): **13 ĐÓNG / 25 hàng A–D** (12 marker `~~`/✅ + **B3 dọn xong lần 114**) · **12 MỞ** · +4 mục E = **29 ID**. Luật: mục = ĐÓNG khi không còn mệnh đề nào phải bind; marker phải phủ toàn bộ cell — row cũ "10 đóng / 28" sai đơn vị (28 = số hàng, thiếu E).
+> Số đếm (cập nhật lần 115 — gắn marker **A2**): **14 ĐÓNG / 25 hàng A–D** (13 marker `~~`/✅ — A2 gắn lần 115 · B3 lần 114) · **11 MỞ** · mục E: **2 ĐÓNG** (E1/E2) + 2 mở ⇒ **16 ĐÓNG / 13 MỞ trên 29 ID**. Luật: mục = ĐÓNG khi không còn mệnh đề nào phải bind; marker phải phủ toàn bộ cell — row cũ "10 đóng / 28" sai đơn vị (28 = số hàng, thiếu E).
 
 | # | Vấn đề | Nhóm | Mức | Ảnh hưởng thiết kế |
 |---|---|---|---|---|
 | A1 | ~~Giá trị `StartHp`~~ ✅ **ĐÓNG = 2500** | **lỗi export** | **A** | **mở khoá TTK** — `BALANCE` §0.6.13 |
-| A2 | Bảng map→wave **nằm inline** trong `.cctor` 25.996 lệnh — **giao nhánh dữ liệu**, spec không tự trích | **uỷ thác** | **C** | chặn "màn nào gồm wave nào" |
+| A2 | ~~Bảng map→wave **nằm inline** trong `.cctor` 25.996 lệnh — giao nhánh dữ liệu~~ ✅ **ĐÓNG (H1 — report 160 · lần 109):** 250/250 mảng `listMapDatas` khớp `datas/maps.json` · 3 entry đầu đúng anchors `[25,9010]`/`[164]`/`[113,5]` · legacy candidate 242/250 sai = dead-end · bounded: không map cctor-order→scene identity | **uỷ thác** | **A** | ~~chặn "màn nào gồm wave nào"~~ map-data đủ; scene-identity = bounded-missing |
 | A3 | ~~`OnChangeDataDevice`~~ ✅ **ĐÓNG** — device **không** cộng HP tối đa, chỉ giáp + hồi | **lỗi export** | **A** | `BALANCE` §0.6.7d |
 | A4 | ~~Caller của `GetStartHp()`~~ ✅ **ĐÓNG** = `<Start>b__14_1` | **lỗi export** | **A** | HP chốt **trong `Start()`** — `BALANCE` §0.6.15 |
 | B1 | 3 bảng stat của device | **RVA data** | D | chặn "device mạnh bao nhiêu" |
