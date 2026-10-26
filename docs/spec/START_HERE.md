@@ -33,8 +33,8 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **84** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
-| `datas/` | JSON/CSV bóc trực tiếp | **82** file · **25,5 MB** (25.532.565 bytes) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **85** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `datas/` | JSON/CSV bóc trực tiếp | **83** file · **25,6 MB** (25.562.700 bytes) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
 | `reverse-engineering/scriptableobjects/` | Bảng ScriptableObject | **126** CSV · 13 MB | số cân bằng: súng, enemy, stage, shop |
@@ -51,14 +51,15 @@
 | `datas/player_start_stats.json` | 6 mảng đã decode + damage × rate (proxy — report 79) | **24** tàu · **16** bán được · **8** giá `−1` | dựng bảng cân bằng tàu, không đoán |
 | `reverse-engineering/raw/player-loadout/` | Mảng int + asm `Player_Saved_Datas` | **5 blob · 49 int · 5/5 sha256 OK** | giá craft/unlock, chứng cứ save |
 | `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **180 RAW · 3 DOC · 28 CONST / 211** | biết số nào tái đo được, số nào "đo một lần" |
-| `tools/` | **20** script Python ở cấp thư mục gốc (đếm trực tiếp) | — | Includes the #5 sliced/tiled geometry model, #17 schema-replication, #19 Ramus crosscheck, #24 combat-semantics, and #28 runtime-blocker evidence builders |
+| `tools/` | **21** script Python ở cấp thư mục gốc (đếm trực tiếp) | — | Includes the #5 sliced/tiled geometry model, #17 schema-replication, #19 Ramus crosscheck, #24 combat-semantics, and #28 runtime-blocker/static-crosscheck evidence builders |
 | `datas/l2_ramus_device_crosscheck_19.json.gz` | #19 static/runtime evidence join | 250 static map arrays; 10 static list rows + 2 percent fields; archived runtime Map contents still placeholders | Count 250=250 is not contents parity; await `arr=256&depth=2` readback |
 | `datas/l3_controller_schema_replication_17.json.gz` | #17 bounded native replication receipt | Three literal fields agree on two native paths | REPLICATION only; not independent TypeTree/schema discovery |
 | `datas/l2_runtime_map_depth2_28.json.gz` | #28 PR14 runtime attempt | Bridge gate stopped before session; `map_values=null` | No Map values/readback; scoped blocker only |
+| `datas/l2_a5a74747_28_loader_fallback1.json.gz` | #28 board fallback ① | 250 static rows crosschecked with #21; 0 value/site/initializer mismatches | Static-only `NOT_RUNTIME`; no device nested-value parity claim |
 | `datas/l2_combat_semantics_24.json.gz` | #24 REPLICATION: Board_Players display power vs one combat path | `StartMainCannonDamages@0x78`; rank gates a separate guarded attack loop | Static bounded result; no runtime damage/DPS or all-ship claim |
 | `datas/l3_a5a74747_5_sliced_tiled_geometry.json.gz` | #5 REPLICATION model from serialized border metadata | 112 direct sliced grids + 10 borderless tile models | Not Unity-native generation, runtime readback, or render parity |
 
-**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **82** file `datas/`.
+**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **83** file `datas/`.
 
 > **Đừng "sửa" 142.136 thành 142.131:** `wc -l *.asm.txt` cho **142.131** vì **`wc` đếm ký tự
 > newline**, còn `AI1` đếm **dòng** (`sum(1 for _ in fh)` = `splitlines()`). **5** file

@@ -217,3 +217,8 @@ Enemy damage bounded arithmetic: `tools/verify/enemy_damage_model.py`; khôngáp
 exactbinary32/basearray binding,38ends_clean classifications,68receiver-absence snapshots.
 Regenerate `python3 tools/verify/combat_argument_audit.py`. KhôngcònchỉlastMOVcandidate;
 sourceID/implementation mapping vẫn riêng. Xem82§6 cho ledger đãđóng/consumer cầnđọc tiếp.
+
+
+## #28 static Map-values fallback ① — report124
+
+`l2_a5a74747_28_loader_fallback1.json.gz`: **250** static `listMapDatas` rows from the pinned #21 constructor receipt compared with `datas/maps.json` and segment35 of `map_segments_full.json`; **243** `InitializeArray` + **7** inline rows, **742** integers, **0** value/site/initializer mismatches. Rebuild with `python tools/build_l2_a5a74747_28_static_map_crosscheck.py`; **7** focused checks. `STATIC_CROSSCHECK_NOT_RUNTIME`: no `/statics` request, session, live nested values, or runtime parity claim. Copied peer report108/artifact from the #21 lane and scoped loader-release metadata snapshot: `reverse-engineering/raw/l2-a5a74747-28-static-crosscheck/`. See [report124](../docs/apk-analysis/124-L2-map-depth2-28-static-fallback1-arena-a5a74747-windwings-space-shooter-game-p.md).
