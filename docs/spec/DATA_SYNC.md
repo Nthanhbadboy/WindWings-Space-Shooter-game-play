@@ -4770,3 +4770,47 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - **Datas/ 132 + 4 pulled (134/p20/p21/p22) = 136 (needle sync commit này).** Row
   START_HERE `datas/` sửa 124→136 (đo thật: 139 entry cấp-1 gồm 4 thư mục con ·
   431 file tổng · 52 MB).
+
+### 24.86 Điều phối lần 95 — GIAO VIỆC AI-2 (hết phase slot): hàng đợi 6 mục game-side từ sổ tồn đọng · 136 PROGRESS · ef tip mới
+
+- **Bối cảnh:** a5 hết việc trên thread slot (p15–22 khép, chờ ef123). Chủ dự án
+  yêu cầu kiểm tồn đọng + giao thêm. a5 đã **tự CLAIM sync-review** (`6422694348`
+  — đối chiếu reports 142–151 vs `ANIMATION_SCRIPT/ANIMATION/BOSS_ANIM_TIMELINE/
+  HANDOFF_ANIM_RAW/OPEN_ISSUES/START_HERE` + README; docs-only) — ACCEPTED; hàng
+  đợi dưới áp SAU khi xong review, CLAIM từng mục, first-claim wins.
+- **Hàng đợi game-side C# static (làn a5) — trích từ sổ tồn đọng:**
+  - **G1 `Board_Players` consumer** (`MISSING §2.2c`, mức **B**): 2 mảng
+    `allBasicAtk` float[24] (`4640, 5120, 5040, 6160, 8896, 6880, 8889, 5680, 5500,
+    9100, 6750, 7589, 6000, 7588, 9100, 10050, …` @`0x10`) + `allDeltaAtk` 0,168×24
+    (@`0x18`) **chưa có consumer**; giả thuyết damage(rank) = basic + 0,168·rank
+    **chưa kiểm**. Việc: tìm method ĐỌC statics +0x10/+0x18 (asm 273 files +
+    metadata index), bind consumer hoặc bounded-missing "không consumer". Cấm: gán
+    "HP tàu = 4.640"; xác nhận chéo UI power ↔ combat `GetBaseDamage` (20001: UI
+    500 vs combat 450); tụng B→A không bằng chứng.
+  - **G2 `Board_Endgame.ctor` int[10] `900…810`** (giảm 10/bậc, "chưa rõ dùng cho
+    gì", §2.2c): consumer hunt — nhỏ, 1 vòng.
+  - **G3 Boss-39001 chain** ("remains separate" — p13/p14/p17/p19/p21/p22 đều ghi):
+    mirror chuỗi boss-39002 — script-link rows → director→skeleton→shared-data →
+    event static slot join → true-branch semantics; STATIC; **không đụng
+    native-relocation marker (ef) / không tái sinh raw frozen**.
+  - **G4 `gun3Static` semantics** (p14 để hở "key/semantics không gán"): boss-1
+    defeat burst → iterate `gun3Static` +0xB8 → call `0x2781804` bools 0→1/item —
+    decode nghĩa từng bool/item (anchors 582209/601111/601110).
+  - **G5 `Tut_Settings1.<Start>b__11_0` → focusGameSpeed**: decode flow tutorial
+    game-speed (contextual `Stop` candidate p17) — **chỉ ghi contextual, KHÔNG
+    claim slot identity** (ef owns slot value).
+  - **G6 blob field-binding census ngoài PvP**: tái dùng kỷ luật 135 (PID name =
+    sha256 · declared_bytes · ordinal formula) cho các blob `<PrivateImplementation
+    Details>` chưa bind ngoài lane AI-4 — **inventory-first**, bind khi đủ ràng
+    buộc, còn lại `NOT_BOUND` + bước chặn (đóng dần
+    `PROVISIONAL_METADATA_ARRAY_BLOBS_NOT_ALL_FIELD_BINDINGS`).
+  - Ưu tiên đề xuất: **G1 → G2 → G4 → G5 → G3 → G6** (G1 là blocker §2.2c rõ nhất).
+- **AI-4 #136 PROGRESS** (`6422672065` @ `efceee587`; artifact `7663d2fd…` 3172B —
+  chưa pull, chờ HANDOFF): `ToPoints` 19.903.696 rank·1e6+level·1e5+star·1e4+
+  clamp(point,0,100) 360/360 · `DataFromPoints` 19.871.992 magic ×4 12/12 ·
+  `GetRankNumber` 19.884.996 `MaxRankStars[rank].Length − level` → **string** 44/44
+  khớp 135 · round-trip 108/108 · **đính chính 135**: "không method chạm statics
+  +0x18" SAI — `GetRankNumber` chạm qua `x0`. Suite 282.
+- **ef:** tip mới `1d6fbcbb7` (vẫn chưa comment) — **bảo lãnh chủ dự án giữ hiệu
+  lực**, #123 đang làm; không cần hành động.
+- Datas giữ **136** (không pull vòng này — 136/ef là PROGRESS).

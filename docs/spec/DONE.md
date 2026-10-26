@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 95 — 26/10, GIAO VIỆC AI-2 — hàng đợi 6 mục game-side từ sổ tồn đọng):**
+> **§24.86**: a5 hết việc slot → **G1 `Board_Players` consumer (B, §2.2c)** · G2
+> `Board_Endgame` · G3 Boss-39001 chain · G4 `gun3Static` semantics · G5
+> `Tut_Settings1` focusGameSpeed (contextual-only) · G6 blob-binding census —
+> CLAIM từng mục first-claim, ưu tiên G1→G2→G4→G5→G3→G6 · ACCEPT sync-review
+> CLAIM `6422694348` · 136 PROGRESS (đính chính 135: GetRankNumber chạm statics
+> qua x0 · suite 282) · datas giữ **136**. verify 209/0/2.
+>
 > **Sửa lại (lần 93 — 26/10, 134 ĐÓNG (đính chính 127: AllRewards 42→43) + p20/21 ĐÓNG — census static KHÉP:**
 > **§24.85**: **134** luật PvP trọn (`pvpMaxLife=3` · `pointReduceDie=1500` ·
 > `timePlay=160s` · bẫy cặp-int-8-byte · 5 bảng — runs `40364495335`/…515/…490 ✓) ·
