@@ -34,6 +34,10 @@ Report 119 already records static `Map_Get_Datas.listMapDatas` length **250** an
 
 No screenshot, visual inference, or redraw was used. No credentials or session were created. A valid next runtime attempt needs a provenance-bound bridge-enabled path that can invoke the nested `/statics` read; until then Map nested content remains open.
 
+## Documentation-count follow-up
+
+The earlier `docs-verify` run **40311183323** failed on stale inventory counts. The documentation-only follow-up synchronized APKD1 to **82 `.md` / 107 `.csv`**, AI1 to **80** `datas/` files, and RD1 to **44 rows / 0 mismatches**; README now indexes reports 120 and 121. Local `python tools/verify-claims.py` reports **209 PASS / 0 FAIL / 2 SKIP / 0 ERROR**, and `python tools/refresh-readme-sizes.py --check` reports **0 drift**. This sync does not change the runtime blocker or supply Map values.
+
 ## Reproduction
 
 - Builder: `tools/build_l2_runtime_map_depth2_28.py` (stdlib only).

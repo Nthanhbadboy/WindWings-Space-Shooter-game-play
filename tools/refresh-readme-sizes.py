@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Cập nhật cột `N dòng · M bảng` trong bảng tài liệu của docs/spec/README.md.
 
-Vì sao có file này: claim RD1 đo lại đúng 2 con số đó cho 39 file, nên mỗi lần sửa
-một tài liệu mà quên cập nhật README là docs-verify đỏ. Chạy tay sau mỗi lần sửa;
+Vì sao có file này: claim RD1 đo lại số dòng và bảng cho từng tài liệu được liệt kê,
+nên mỗi lần sửa một tài liệu mà quên cập nhật README là docs-verify đỏ. Chạy tay sau mỗi lần sửa;
 `--check` để chỉ báo lệch mà không ghi (CI dùng được).
 
 Bảng đếm theo dòng bắt đầu bằng `|---` — cùng định nghĩa với `readme_sizes()`
