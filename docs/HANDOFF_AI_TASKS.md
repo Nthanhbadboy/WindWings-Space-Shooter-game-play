@@ -1274,3 +1274,5 @@ Official118HANDOFF **6417057892** posted with scientific79602dd6f / report9f2f42
 Official119HANDOFF **6417225245**; scientificb9e6765fa/reportfb1e1ba45/exact-headCI40330340745/1581localPASS. Independent review pending, no selfACK/full#27closure.
 
 Official120HANDOFF **6417679550**; scientific10b46c13d/report81c9677eb/exact-headCI40332906465/1601localPASS. Independent review pending, no selfACK/full#27closure.
+
+Official121HANDOFF **6418718832**; scientificf58d0ebbb/reporta454e1202/exact-headCI40339667616/1628localPASS. Static-only native lane per6418032974/6418326986. Independent review pending, no selfACK/full#27closure.
