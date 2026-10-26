@@ -3,10 +3,10 @@ import argparse,bisect,gzip,hashlib,io,json,struct,zipfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
-NAMES=[]
+NAMES=['m_StartTime','m_StopTime','m_CycleOffset','m_LoopTime','m_SampleRate','m_BeginTime']
 RANGES=[(0x6d2e94,0x6d2f18),(0x6deefc,0x6df0e4),(0x6df174,0x6df218),(0x6df270,0x6df830)]
 TARGETS={0xb93158:'native_time_conversion',0x6d2e94:'muscle_time_dispatch',0x6df518:'dense_sample',0x6df6c8:'dense_frame_pair',0x6deefc:'aggregate_cache_init'}
-FOLLOW_ENTRIES=[0xb93158,0x6df518]
+FOLLOW_ENTRIES=[0xb93158,0x6df518,0x109acd0]
 
 def sha(b):return hashlib.sha256(b).hexdigest()
 def signed(v,n):return v-(1<<n) if v&(1<<(n-1)) else v
