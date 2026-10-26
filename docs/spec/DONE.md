@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 62 — 26/10, LỆNH "MỞ HẾT ĐÀO TẬN CÙNG" + #17-schema 2 track):**
+> **§24.55**: mở **#24/#25/#26/#27(=15b)/#28** claim tự do + nhắc #2 · chuẩn "tận cùng" =
+> (a) byte-proof có pins hoặc (b) chứng minh có-scoped "không thể xa hơn mà không có X" ·
+> runtime chỉ qua vehicle, cấm bịa readback · **#17-schema**: AI-1 native libunity
+> (`010562d96`) + AI-2 REPLICATION tier-2 (artifact 1.762B ở `4cb2828ec`, pre-verify OK —
+> ACK chờ handoff). datas/ = **85**. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 61 — 26/10, #17 3 lớp framing ĐÓNG + #19 bó scope → L2 trắng board):**
 > **§24.54**: restore .git lần 4 (backup `_user_wip_r61` → reset `45390206c9`, xác minh OK) ·
 > **#17** = payload 109 + metadata 110 (`f4a6346172`: 704.961 rows · 793→791 · witness

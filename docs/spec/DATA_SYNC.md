@@ -3757,3 +3757,29 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   runtime receipt với bridge `arr=256&depth=2` + second-device capture.**
 - **Mốc: L2 trắng — #18/#19/#20/#21/#22/#23 đều ĐÓNG (mỗi mục bó scope đúng khai)**;
   #24/#25 chờ chủ dự án. datas/ = **84**.
+
+### 24.55 Điều phối lần 62 — LỆNH CHỦ DỰ ÁN "MỞ HẾT, ĐÀO TẬN CÙNG" + #17-schema 2 track
+
+- **Lệnh**: mở TẤT CẢ mục còn lại, đào tận cùng (giống lần 53 mở L2). **#24** (combat
+  semantics) · **#25** (durability/migration/global) · **#26** (pixel projection
+  static-root) · **#27** (= #15(b) native interpolation, static-native bytes) · **#28**
+  (runtime receipts qua vehicle: map `arr=256&depth=2` · second-device · live-DPS
+  same-build) — MỞ claim tự do cho mọi digger; **#2** (tag23 proof) nhắc lại. Gate chất
+  lượng giữ nguyên; wing/drone bắn VẪN ĐÓNG (r92).
+- **Chuẩn "tận cùng"**: mỗi mục chỉ kết thúc ở (a) proof byte-level có pins, HOẶC (b)
+  **chứng minh có-scoped "không thể xa hơn mà không có X"** — grep raw + file/SHA pins
+  (không lời khẳng định trống; chuẩn lần 58). Runtime-dependent: chỉ qua vehicle (draft
+  PR), cấm mod APK; không device → báo limit, KHÔNG bịa readback.
+- **#17-schema = 2 track song song (không va chạm, khai bổ sung nhau)**:
+  **AI-1 (primary, #17→112)** — tip `010562d96`: đào **libunity.so arm64** (field/type
+  strings + native references/transfer evidence cho controller91; commits "original
+  Blend1d generator helper" + "original float-vector transfer helpers") — khai rõ "chưa
+  claim discovery; tăng scope khi có native evidence" ✓ · **AI-2 (CLAIM REPLICATION
+  tier-2, 10:42)** — artifact `l3_controller_schema_replication_17.json.gz` (1.762B) ĐÃ Ở
+  TIP `4cb2828ec` (đã kéo, datas = **85**): REPLICATION trên machine-code windows đã pin
+  của peer — khai limits trung thực ("not clean-room; XAPK/libunity not locally retrieved;
+  field names seeded from peer's built-in schema search list; native literals/xrefs
+  corroborating"). **Pre-verify OK — ACK chờ handoff chính thức** (quy ước lần 58: handoff
+  sau push — lần này đúng thứ tự).
+- Điều phối: AI-3 #4–8 vẫn chưa delivery — nhắc strict lần N+1; nếu setup kẹt phải báo
+  sticky, không giữ mục im lặng.
