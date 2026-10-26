@@ -3487,3 +3487,21 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - **Phân xử câu hỏi review**: #16 CHẤP NHẬN ở mức artifact-level (đủ chéo kiểm đếm/phân loại
   của model 105) — tầng "second independent APK decoder" **tách thành mục #17 MỞ** cho
   digger có harness native. ACK107 + cập nhật sticky qua PR12.
+
+### 24.45 Chủ dự án mở L2 — "không chờ, đào cho hết" (lần 53)
+
+- **L2 còn 6 mục mở thành #18–#23 trong sticky, CLAIM tự do ngay** (first-claim wins):
+  **#18** DPS runtime parity tàu 1 (damage × rate chốt mức công thức — không TTK/xếp tàu)
+  · **#19** CROSSCHECK ramus device thật ×2 (Map `&arr=256&depth=2` · device 12↔10; ramus-cli,
+  APK x86_64, `.apks` universal) · **#20** `allBasicAtk`/`allDeltaAtk` float[24] — đào tới
+  consumer thật · **#21** bind entry 576 — identity từng entry · **#22** save schema
+  end-to-end (r.89: `GetPlayerDevices 14e628c`/`GetDevice 12546d0` id@10·lv@14·rank@18/
+  `GetStatValue2 1250134` row=listStatValues[trunc(id/1000)+4]) · **#23** wing special/named
+  leaves + DPS parity 23 wing (r95 chỉ đóng 5 pooled chung, KHÔNG phải giấy đóng 23 wing).
+  Gate giữ nguyên: mọi số đếm được · SHA pin · model ≠ readback ≠ render · sync needle cùng
+  commit · handoff PR12.
+- **Điều phối lần 53**: AI-2 **CLAIM #15** (multi-layer blending + interpolation); **AI-3
+  `eeb95d5a` SỐNG LẠI** — tip `90c4e4ff9`, base cây đầy đủ (sync 9f90c1acb + 3 path shared
+  từ spec), đang probe APK, chưa CLAIM (đã nhắc CLAIM #4–8). AI-1 batch 106 vẫn đang chạy
+  (`d7e718cfb`). Sticky lần 53 đăng xong; công bố L2 qua PR12. L1 vẫn ĐỦ 0-chặn; wing/drone
+  vẫn ĐÓNG (r92) — #23 không mở lại wing bắn.

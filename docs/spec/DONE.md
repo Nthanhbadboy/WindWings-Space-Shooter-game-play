@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 53 — 26/10, chủ dự án MỞ L2 — "không chờ, đào cho hết"):**
+> **§24.45**: 6 mục L2 → **#18–#23** claim tự do (DPS parity tàu 1 · ramus device ×2 ·
+> float[24] consumer · bind 576 identity · save schema e2e · wing named leaves/DPS parity) —
+> gate giữ nguyên. Điều phối: AI-2 CLAIM #15 · **AI-3 `eeb95d5a` SỐNG LẠI** (`90c4e4ff9`,
+> base cây đầy đủ, probe APK, chưa CLAIM — nhắc #4–8) · AI-1 batch 106 đang chạy. Sticky
+> lần 53 + công bố PR12. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 52 — 26/10, HANDOFF107 AI-2 `a5a74747` — #16 replication transition):**
 > **§24.44**: artifact-level recount — **0 mismatch** (232/232/667/377/666 · **932 = 343+125+
 > 464** · destination **698+234** non-local giữ literal · **464 selector omit
