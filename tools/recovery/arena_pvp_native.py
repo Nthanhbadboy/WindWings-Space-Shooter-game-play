@@ -40,7 +40,8 @@ def parse_dump(text):
 
 
 def selected(name):
-    return any(name == f or name.startswith(f + '.') or name.startswith(f + '_') for f in FAMILIES)
+    return ('arena' in name.lower() or 'pvp' in name.lower() or
+            any(name == f or name.startswith(f + '.') for f in FAMILIES))
 
 
 def main():
@@ -99,10 +100,10 @@ def main():
                         if match:
                             regs[match[1]] = int(match[2], 16)
                     elif i['mnemonic'] == 'ldr':
-                        match = re.fullmatch(r'([sd]\d+), \[(x\d+)(?:, #(0x[0-9a-f]+|\d+))?\]', op)
+                        match = re.fullmatch(r'([sdq]\d+), \[(x\d+)(?:, #(0x[0-9a-f]+|\d+))?\]', op)
                         if match and match[2] in regs:
                             va = regs[match[2]] + int(match[3] or '0', 0)
-                            n = 4 if match[1][0] == 's' else 8
+                            n = {'s': 4, 'd': 8, 'q': 16}[match[1][0]]
                             for v, o, length in segments:
                                 if v <= va and va + n <= v + length:
                                     binary.seek(o + va - v)
