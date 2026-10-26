@@ -126,9 +126,13 @@ def recover(path):
                     if add and add[0]==rd:
                         tgt=page+add[2]
                         if tgt in FAMILY and len(vtable_refs[tgt])<MAX_Q:
-                            vtable_refs[tgt].append(dict(pc=pc,add_pc=base+(i+k)*4,owner=owner(pc),hex=b[offset(pc):offset(pc)+8].hex()))
+                            vtable_refs[tgt].append(dict(pc=pc,add_pc=base+(i+k)*4,owner=owner(pc),
+                                                         hex=b[offset(pc):offset(pc)+8].hex(),
+                                                         add_hex=b[offset(base+(i+k)*4):offset(base+(i+k)*4)+4].hex()))
                         elif tgt in GLOBALS and len(globals_refs[tgt])<MAX_Q:
-                            globals_refs[tgt].append(dict(pc=pc,add_pc=base+(i+k)*4,owner=owner(pc),hex=b[offset(pc):offset(pc)+8].hex()))
+                            globals_refs[tgt].append(dict(pc=pc,add_pc=base+(i+k)*4,owner=owner(pc),
+                                                           hex=b[offset(pc):offset(pc)+8].hex(),
+                                                           add_hex=b[offset(base+(i+k)*4):offset(base+(i+k)*4)+4].hex()))
                         break
                     ld=ldr_imm(words[i+k])
                     if ld and ld[1]==rd and ld[3]==8:
