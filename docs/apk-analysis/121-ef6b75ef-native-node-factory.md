@@ -89,3 +89,5 @@ Owner/spec **6418032974 CLOSES#28runtimeprobe**: live-DPS/#27consumption/second-
 Exact tool pins: verify/factory121.py`a26715e77f82998f3f5180c95f63caa3be4353aa0987e3ebc39a9ef7d5a89698`, tests/test_factory121.py`f64eb7b882eb8dc481d39e677baae6c1ed521371aba12b763e810054e10f40a6`, recovery/factory121.py`7a822b73f9a6d302634c86958fc451f37daf46a4a3cb8f092206309315af8562`. Four artifact factory calls have220nativeinstructions each;174constructorinstructions are a subset, not additive. 930DWORDs are across10sourcecalls, not9test/variant invocations.
 
 Official121HANDOFF **6418718832**; scientificf58d0ebbb/reporta454e1202/exact-headCI40339667616/1628localPASS. Static-only native lane per6418032974/6418326986. Independent review pending, no selfACK/full#27closure.
+
+External spec **6419109494 ACK/CLOSES bounded121node-factory**; checked artifactSHA, allocator sink arguments/no malloc parity, natural cleanup skip, list sentinel/count/OR flags, owner+ac correction and930bit-equal. Upstream6d2950 correctly captured-not-executed, subsequently executed in122. Independent122review pending; full#27stillOPEN. Receipt in122-verification/spec-ack121.json.
