@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 113 — 27/10, D5 ĐÓNG-HALF + ef-128 CLAIM + 150 PROGRESS):**
+> **D5** (a5 `0376abe` · `a9655eca…`): 24/24 Player_Attack_N → 4 arrays theo
+> N−1 (§24.14) · owner + extra-life NOT_BOUND (GP_Datas 6767 thiếu 4 cột) ·
+> DPS runtime-gated. **ef-128 CLAIM**: M2a/b/c split + contract builders.
+> **150 PROGRESS** (535 `c9a80c6e`): `0x2ADF238`=`Board_PVP` (Luật C) ·
+> pathRoot 3 nhánh (đính chính 138) · 1076/1076 ô (kind,index). Ceiling còn 4:
+> HANDOFF-150 · ef-128 · HANDOFF-121+reviews (AI-3 im 3 vòng) · D5-residual.
+> datas/ = **169**. verify 209/0/2.
+>
 > **Sửa lại (lần 112 — 27/10, ef HANDOFF127 whole-FDE null-clip):** FDE
 > `6cf7b4..6cff44` entry→RET (51 instr × 3 biến thể) · `6ceeb0` zero-count +
 > dealloc-sink `3c9438`(0) · 6 callee extents · 33 witnesses · **M1–M5 missing-X

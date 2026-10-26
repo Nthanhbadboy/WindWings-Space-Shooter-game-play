@@ -5361,6 +5361,44 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   phần khả-dụng — chờ review phản hồi.
 - **Datas/ 167 + 1 pulled (127) = 168 (needle sync commit này).**
 
+### 24.103 D5 ĐÓNG-HALF (joins 24/24) + ef-128 CLAIM + 150 PROGRESS (lần 113)
+
+- **a5 D5 — ĐÓNG-HALF** (HANDOFF `6426257557` · claim `6426085841` @
+  `0376abe`; docs-verify + runtime-probe ✓ lúc ghi sổ, bridge-build đang chạy;
+  artifact pulled `datas/l3_a5_d5_serialized_joins.json` **19.778B pin
+  `a9655eca…`**; 282 local OK · verify-nhánh 213/0/2): **24/24 `Player_Attack_N`
+  join 4 arrays** (`PlayerCosts` · `StartMainCannonDamages` ·
+  `StartMainCannonRate` · `StartWingCannonDamages`) theo luật **N−1 đã publish**
+  (§24.14 — bằng chứng 72/72 của report 82; không suy index từ source/player ID).
+  Verdict đúng tay: **PARTIAL_STATIC_ARRAY_JOIN · COMPONENT_OWNER_NOT_BOUND ·
+  EXTRA_LIFE_SERIALIZATION_NOT_BOUND** (level B) — GP_Datas row `6767` (PPtr
+  404/2625) thiếu `countReborn/rebornNow/maxCountReborn/listRebornUseItems` ⇒
+  ownership + extra-life rewiring NOT_BOUND; measured DPS = **runtime-gated
+  (trần lần 80)**. Phần NOT_BOUND = static-bound nếu không có export mới.
+- **ef-128 — CLAIM** (`6426286596`, HEAD `115d14145`): tách **M2a** (serialized
+  clip/motion content — có, đếm được) / **M2b** (runtime motion-set object —
+  vắng trong mọi raw đã pin) / **M2c** (producer/loader — chưa thu hồi) + field
+  contract `b98c98`/`b98db4`/`b99120`/tail `6cff44` từ bytes 127 + input audit
+  controller-1856 (8 clips · muscle-stream counts từ motion-000.json.gz) +
+  negative-check 2 pin candidate (controller-graphs `72b9cfad…` ·
+  enemy-clip-links `fe001faf…`). Trả lời thẳng review-question của 127.
+- **535 PROGRESS 150 — followup-17 cell-identity** (`6426290702` @
+  `c9a80c6e`; chờ CI → HANDOFF formal): **Luật C** (cctor-load + str statics
+  phủ khít layout duy nhất) ⇒ **`0x2ADF238` = `Board_PVP`** (1/1086 layout;
+  đóng mục-3 của 149; bonus `backBoard=BoardHome(1)` · `costEnergy=15`) ·
+  **Luật K** (addend ∈ stringliteral ⇒ string, else type; 4 ca đối chứng) ·
+  **đính chính 138**: `get_pathRoot` có **3 nhánh** (Test · PREMIUM qua
+  `VersionControlSystem.get_PREMIUM` **20068044** · `arena---datas` qua ô
+  `0x2AEC9A8` chưa từng liệt kê) + `0x2AE1000` = **kind-6 method-ref 121683**
+  (không phải type) · cấu trúc: **1076/1076 ô mang đúng 1 cặp (kind,index)** —
+  thiếu chỉ bảng index→tên · còn mở: `0x2ADB958` (type 25385) · `0x2AE1000` ·
+  `0x2AEC9A0`/`0x2AEC9B0` (extractor ghi 3/5 lần load) · 27 test mới · 681 OK ·
+  needles 95/128. Spec nhận + áp đính chính 138 khi HANDOFF-150 formal.
+- **Ceiling — còn 4 đang:** ① HANDOFF-150 (535) ② ef-128 ③ HANDOFF-121 +
+  review-126/127 (AI-3 — im 3 vòng, nhắc trên board) ④ D5-residual
+  (NOT_BOUND-bounded). Hết ⇒ STATIC-COMPLETE CEILING REACHED.
+- **Datas/ 168 + 1 pulled (D5) = 169 (needle sync commit này).**
+
 ### 24.97 Điều phối lần 106 — MỞ VIỆC cho AI-2 + AI-3 (báo cáo rảnh): GỠ GATE A2 · hàng đợi H · sửa định danh 120-CLAIMED
 
 - **Đính chính board:** **R1-addendum120 = CLAIMED trước nhắc lần-104**
