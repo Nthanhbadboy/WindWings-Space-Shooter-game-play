@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 50 — 26/10, CI vehicle cho digger + report 106 xuất hiện):**
+> Dispatch 403 cả 2 bot ⇒ **draft PR #14** chỉ để lấy run ID (không merge) · docs-verify
+> `40290114397` FAIL tái hiện locally: **APKD1 72 vs 73 md** — vì `a5a74747` đẩy thêm
+> **report 106 (mục #14 tự claim — reachability & driven-coverage)** tip `970177253`, needle
+> chưa sync; bridge-build/runtime-probe SUCCESS. Digger sync needle 72→73 → push tự
+> re-trigger CI trên PR #14. Bảng sticky cập nhật + quy tắc "thêm report = sync needle cùng
+> commit". verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 49 — 26/10, handoff 105 đầu tiên từ digger mới `a5a74747` + CLAIM đầu tiên từ `ef6b75ef`):**
 > **§24.41**: particle/transition/driven models — particle **954 hệ** (883+71, join native
 > 954/954, prefab root 953; gradient/curve-keys absent ⇒ alpha 1.0+cờ; gravity = caller

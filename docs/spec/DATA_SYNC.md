@@ -3413,3 +3413,19 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - **Lưu ý điều phối**: AI-1 đã CLAIM #1 qua comment (first-claim hoạt động); bảng sticky
   `6410945198` đã cập nhật (#9–11 DONE, thêm #14–16 từ kết quả 105). AI-2 nhờ owner dispatch
   CI cho nhánh `a5a74747`. ACK105-a5a74747 qua PR12.
+
+### 24.42 CI vehicle cho digger + report 106 xuất hiện (lần 50)
+
+- Dispatch workflow bị **403 ở cả 2 phiên bot** (integration thiếu `actions:write`) ⇒ mở
+  **draft PR #14** từ nhánh `a5a74747` — chỉ để kích hoạt trigger `pull_request` của
+  `docs-verify` (KHÔNG merge). Run lần 1: docs-verify `40290114397` **FAIL** · bridge-build
+  `40290114361` · runtime-probe `40290114355` SUCCESS.
+- **Tái hiện locally trên đúng merge ref `0f6a3af9a`**: `APKD1` FAIL — doc ghi 72 md, đo
+  được **73**; nguyên nhân: head `a5a74747` đã chạy tới `970177253` = **report 106** (mục
+  **#14 — reachability & driven-coverage trên 232 controller — TỰ CLAIM từ backlog, đúng
+  thiết kế tự điều phối**) thêm 1 md mà needle còn mốc 105. Tree đơn lẻ `25ac3b46b` PASS
+  209/0/2. Fix: digger sync needle 72→73 trên nhánh họ; push mới **tự re-trigger** checks
+  PR #14 (không cần dispatch/owner).
+- Bài học ghi vào bảng sticky: **thêm report mới = sync needle đếm trong cùng commit**.
+  106 chưa đối chéo — xử lý vòng kế (fetch tip `970177253`, kéo artifact nếu có, đối chéo
+  độc lập, ACK riêng).
