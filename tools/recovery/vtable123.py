@@ -111,5 +111,12 @@ def recover(path):
     selected=[r for r in relas if r['address'] in by_address or r['addend']==0x6d2950 or any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in windows+list(cells.values()))]
     return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,strings=[],references=[],branch_references=direct_refs,windows=windows,cells=list(cells.values()),relocations=selected,imports=selected_imports,vtable_candidates=candidates,graph_populator_relas=graph_relas,vtable_rela_count=len(by_address),limits=['Vtable slot inference is based on exact original RELA addends at +0x10/+0x18/+0x70; semantic class/method names are NOT assigned.','Selected original byte spans and FDEs only, not a whole library, game runtime, Unity TypeTree/readback or render.'])
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);a=p.parse_args();r=recover(a.xapk);out=ROOT/'reverse-engineering/raw/vtable123/probe.json.gz';out.parent.mkdir(parents=True,exist_ok=True);out.write_bytes(gzip.compress((json.dumps(r,sort_keys=True,separators=(',',':'))+'\n').encode(),mtime=0));print('saved',out,'candidates',len(r['vtable_candidates']),'graph_relas',len(r['graph_populator_relas']),'refs',len(r['branch_references']))
+    p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);a=p.parse_args();out=ROOT/'reverse-engineering/raw/vtable123/probe.json.gz';out.parent.mkdir(parents=True,exist_ok=True)
+    try:
+        r=recover(a.xapk)
+    except Exception as e:
+        import traceback
+        (out.parent/'diagnostic.json').write_text(json.dumps(dict(error=repr(e),traceback=traceback.format_exc()),indent=2)+'\n')
+        raise
+    out.write_bytes(gzip.compress((json.dumps(r,sort_keys=True,separators=(',',':'))+'\n').encode(),mtime=0));print('saved',out,'candidates',len(r['vtable_candidates']),'graph_relas',len(r['graph_populator_relas']),'refs',len(r['branch_references']))
 if __name__=='__main__':main()
