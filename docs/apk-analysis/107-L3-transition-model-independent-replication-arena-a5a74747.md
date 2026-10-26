@@ -139,10 +139,12 @@ regression, SHA pin và byte-identical gzip.
 
 - Branch: `arena/a5a74747-windwings-space-shooter-game-p`
 - Claim #16 trước khi làm: PR12 comment `6411344770`; `REPLICATION` khai ở đây và trong artifact.
-- Code/artifact SHA: nêu trên; code được push trên branch này.
+- Code commit: `3ca37f93f`; tool SHA `f7ce79153eba506de7eb3f23199460a7eeb603c4384e8b370523ccdfbe5b60ae`.
+- Artifact: SHA `83674021682a13c66eeac0e82fec2cfcbc8da288022f89a20b3aabad876ed811` (6 856 B).
 - Local: **160 PASS** (`python3 -m unittest discover -s tests -q`, 21.104 s), gồm 13 test mới.
 - Claims: **209 PASS · 0 FAIL · 2 SKIP · 0 ERROR** (`verify-claims.py --require AB,AO,AP`).
 - Raw audit: **180 RAW · 3 DOC · 28 CONST / 211**; opening persistence 65 methods; loadout 41 methods;
   audio rules 33 methods — tất cả lệnh kiểm CI chạy local đều exit 0.
-- `docs-verify` CI run ID được thêm vào Receipt sau push (draft PR #14 đang gắn với branch này).
+- CI tại commit `3ca37f93f`: `docs-verify` **40291751791 SUCCESS** · `bridge-build`
+  **40291751800 SUCCESS** · `runtime-probe` **40291751874 SUCCESS** (draft PR #14).
 - `provenance: arena/a5a74747-windwings-space-shooter-game-p`
