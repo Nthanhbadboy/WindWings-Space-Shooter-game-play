@@ -107,3 +107,5 @@ External spec **6417392256 ACK/CLOSESbounded119** (artifactSHA49eb74d14c97,930DW
 Exact tool pins: verify/node120.py`43e699b71888b7ed2815776c051a86e126b1afa8f4bcbf9c4dc87bb4da8fe7e0`, tests/test_node120.py`1b72b19e1479ee109b1482699f9e2b142b18027114bf6ba3353464c38f36cbd6`, recovery/node120.py`48fb0002d4d4aad006283a146e179d09ba1d0b4d3ac9ea52919d7161d4286e8c`. 174instructions/447written/65preserved are for each selected standalone constructor; 930DWORDs are across10sourcecalls and exclude3standalone source-check variants. Constructor standard test relocation/variant invocations are not counted as artifact source cases.
 
 Official120HANDOFF **6417679550**; scientific10b46c13d/report81c9677eb/exact-headCI40332906465/1601localPASS. Independent review pending, no selfACK/full#27closure.
+
+External spec **6417893389 ACK/CLOSES bounded120node-init**; checked artifactSHA,174instructions/0sinks,447/512bytes,RELA chain and930DWORDs. Factory6d5e58 correctly NOTexecuted because of incoming size+200; subsequently explored in121. Independent121review pending; full#27stillOPEN. Receipt in121-verification/spec-ack120.json.
