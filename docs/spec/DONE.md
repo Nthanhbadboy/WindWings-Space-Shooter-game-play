@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 45 — 26/10, "cập nhật" — report 104 final `81fed2233` + reproduction):**
+> **§24.39**: receipt CI **`40242708365 SUCCESS`** (1073 PASS/223,162 s/30 frame tests) — peer
+> fix 2 pitfalls hai-state (CameraScaler ghi current camera tree — clip H8 last-write thắng;
+> Start uiCamera qua current object reference view; root mount không freeze) · artifact refresh
+> chỉ đổi SHA pin (diff struct 1 path). **Reproduction theo yêu cầu peer — 5/5 PASS từ artifact
+> + số học**: after_start==before **bit-exact** · Align 7→8.440000534057617 · **320/320** đúng
+> 1 phần tử delta 1.440000534057617 · child 5452 current-pose 5.5→6.94 · **f32 rounding khớp
+> chính xác** · fade alpha0 giữ footprint. Chưa chạy được (cần APK + harness): H8/uiCamera/
+> rollback/tag23 — ở 30 tests peer. ACK104-final PR12. verify 209 PASS · 0 FAIL · 2 SKIP ·
+> unittest OK.
+>
 > **Sửa lại (lần 44 — 26/10, "cập nhật" — report 104 peer `f620ba4a67`: shared modeled frame):**
 > **§24.38**: peer tự làm probe compose (trước/parallel với probe A/B mình gửi) —
 > `l3_frame.py`: native Start/Align + clip writes float32 trên **CÙNG modeled state** ·

@@ -3302,3 +3302,25 @@ cần stub thêm? Ranh giới giữ nguyên: model ≠ readback Unity ≠ render
   `frame_application` contract auto_execute=false. 101/102 gaps giữ nguyên. **L3 vẫn một
   phần**; ưu tiên peer: native/custom binding + driver order trên concrete chain → textured
   geometry/shader execution. ACK104 + trả lời góp ý review qua PR12.
+
+### 24.39 Report 104 final — receipt CI + reproduction độc lập từ artifact (peer `9f90c1acb`→final `81fed2233`, CI `40242708365 SUCCESS`, **1073 tests**)
+
+- **Peer fix 2 pitfalls hai-state trước chốt** (`81fed2233`): ① CameraScaler phải ghi vào
+  **current camera property tree** — camera clip về H8 ghi SAU phải thắng resize trước đó
+  (không để half-height side-cache che write); ② Start camera binding phải đọc được qua
+  **current object reference view**; thêm: root mount không freeze che subsequent root writes.
+  30 frame tests; artifact refresh **chỉ đổi SHA pin tool** trong `inputs` (diff struct 1 path —
+  dữ liệu cases giữ nguyên, số đối chéo §24.38 vẫn hợp lệ).
+- **Reproduction từ artifact + số học (lần 45 — theo yêu cầu peer, 5/5 PASS)**:
+  ① **False Start vs explicit Anchor**: `after_start` == `before` **bit-exact** (Start false
+  không move/không capture root) · explicit Align → world_matrix Y 7.0 → **8.440000534057617**;
+  ② **320/320 descendants**: mỗi cái đúng **1 phần tử** đổi (index 7 = translation Y) delta
+  **1.440000534057617** ±1e-9, không phần tử khác bị chạm; ③ **current-pose projection**: child
+  5452 worldY 5.5 → 6.940000534057617 (px bottom 1717.700156805613→1861.7001987672797);
+  ④ **f32 rounding**: `f32(0.3921568840742111)` = **0.3921568989753723** — khớp store chính xác
+  (không phải asset mismatch); ⑤ **fade43 → alpha 0** NHƯNG sizeY 24.000001907348633 GIỮ
+  (footprint không mất vì alpha 0).
+- **Chưa chạy được (cần APK inputs + harness Unicorn — bên peer)**: camera clip H8 last-write
+  projection, Start→current uiCamera, transaction rollback, tag23 policy label — chỉ đọc được
+  qua 30 tests của peer, chưa independent execution (peer cũng ghi `independent_execution_ack:
+  false`). **L3 vẫn một phần**; ACK104-final + kết quả reproduction qua PR12.
