@@ -120,3 +120,10 @@ Recovery runs: **40399193071** (`9707d26a5`), **40399523874** (`b39baaf17`), **4
 ## 9. Coordination
 
 Claim **6426998422**. Review requested: the single-writer argument for `node+0x118` (36 unique windows, word `018c00f9`), the owner=registry claim versus the 126 synthetic-owner model, the 124-lineage reading of `6ceb88`→`6d6aa0`, the `+0x168`/`+0x198` interface-table arithmetic, the nine-table slot counts, and the M1a/M1b boundary. #27 remains OPEN (M1b runtime owner, scheduler/dispatch, clip/clock writers, pose/blend/apply, Unity readback/render). No merge, no main push, no self-ACK; protected3 unchanged.
+
+## 10. Final verification and coordination
+
+- **Code commit** `2c710a7c20c123a65db45ddeca1f18c0807abe02`; **Verify extracted tables run 40401190233 SUCCESS** on that exact head (job `verify`).
+- **Focused** `tests.test_owner129` **24 tests, 0.016 s, OK**; **full** `unittest discover` **1835 tests, 289.771 s, OK** (exit 0); `owner129 --check` PASS against the committed artifact (`6357` B, SHA `217f8893799733f1f36c9d73ac93ab0b9ca903ead81501492b9bab89fb85071a`).
+- **Receipts**: `reverse-engineering/raw/l3-ef6b75ef129-verification/{claim.json (6426998422), ci.json, ci-jobs.json, check.json, local.json, focused.log.gz, full.log.gz, handoff.json}`.
+- **Official handoff**: PR12 comment **6427382388**. Review requests are the six items in §9; M1b and the M2 runtime object stay outside the static lane.
