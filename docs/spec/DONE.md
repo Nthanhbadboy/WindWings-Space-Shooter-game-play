@@ -78,9 +78,12 @@
 > **135** MaxRankStars bind kháng-may (runs 3/3 ✓ @`240f8ab0c`, handoff chờ đăng) ·
 > **p20** RE 2.350 files 0-hit (marker native-relocations KHÔNG parse ✓) · **p21**
 > datas 56 files 0-hit (hex + decimal 44956488) ⇒ **slot 0x2ADFB48 chỉ còn lane
-> ef123** (RELA `0x6d2950` — chủ dự án bảo lãnh, gỡ chế độ dừng tip) · p22 CLAIM ·
-> AI-3 5 commit shards (geometry + batch 1–4) · datas/ = **135** (row START_HERE
-> 124→135, đo thật 52 MB). verify 209/0/2.
+> ef123** (RELA `0x6d2950` — chủ dự án bảo lãnh, gỡ chế độ dừng tip) · **p22 ĐÓNG
+> luôn trong vòng** (`6422508634` @ `b405a8b167` · run `40366160720` ✓ · 3.277
+> paths → 0 eligible ⇒ census văn bản khép: 2.350+56+0) · board a5-refresh: tip
+> spec bị ghi nhầm — lần 96 sửa định danh · AI-3 5 commit shards (geometry +
+> batch 1–4) · datas/ = **136** (row START_HERE 124→136, đo thật 52 MB). verify
+> 209/0/2.
 >
 > **Sửa lại (lần 92 — 26/10, #29-followup ĐÓNG + phase-18/19 ĐÓNG — slot chốt 0-hit toàn kho):**
 > **§24.84**: **PvP hunter** (6 mốc `[PVPMedal…Key2]` · 12 marker chỉ lẻ bấm ·

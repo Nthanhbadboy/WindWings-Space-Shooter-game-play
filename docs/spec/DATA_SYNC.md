@@ -4757,6 +4757,16 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   chưa handoff"; chờ handoff.
 - **@ef6b75ef:** chủ dự án **bảo lãnh đang làm #123** (việc nặng) — GỞ chế độ dừng
   công nhận tip; giữ nhịp PROGRESS/handoff khi có kết quả từng tầng.
-- **Datas/ 132 + 3 pulled (134/p20/p21) = 135 (needle sync commit này).** Row
-  START_HERE `datas/` sửa 124→135 (đo thật: 139 entry cấp-1 gồm 4 thư mục con ·
+- **phase-22 — ĐÓNG thêm trong vòng** (HANDOFF `6422508634` @ `b405a8b167`; run
+  `40366160720` ✓; artifact pulled 4th): inventory **3.277 tracked paths** (nguồn
+  `a87565d`) — sau loại trừ root đã quét + report/tool/test/runtime/native chỉ còn
+  **2 path residual, 0 eligible** (không đọc nội dung tập rỗng). **p20–22 khép
+  census văn bản được phép: 2.350 RE + 56 datas + 0 residual — callback identity
+  vẫn unresolved; marker native-relocation giữ nguyên không parse.**
+- **Lưu ý board:** a5 tự refresh sticky (lần 95 của họ) và ghi nhầm **tip spec =
+  `b405a8b167`** (tip của chính a5) — lần 96 spec sửa lại định danh; sticky là
+  ownership của spec, digger refresh nội dung lane mình thì được, sửa hàng spec
+  thì không.
+- **Datas/ 132 + 4 pulled (134/p20/p21/p22) = 136 (needle sync commit này).** Row
+  START_HERE `datas/` sửa 124→136 (đo thật: 139 entry cấp-1 gồm 4 thư mục con ·
   431 file tổng · 52 MB).
