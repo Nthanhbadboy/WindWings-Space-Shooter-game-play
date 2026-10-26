@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 63 — 26/10, #17-schema 2 track ĐÓNG bounded + #28 BLOCKED cần vehicle):**
+> **§24.56**: **120-a5** REPLICATION (chuỗi m_InterruptionSource→m_OrderedInterruption→
+> m_CanTransitionToSelf; pins AI-1 ✓) — ACK bó scope · **112-ef** native fixture (libunity
+> `d827b83e…` · entry 0xB7E1BC · 74.714 instr gốc trong Unicorn · 281 nodes · **308 payloads
+> decode bằng native schema fulltree-equal** · TransitionConstant 13 vs Selector 2 →
+> 533/616 interruption corroborated native) — ACK bounded corroboration · **#28 BLOCKED**:
+> không `RamusBridge.dll` trong APK/splits (run `40310064929`, gate dừng trước session;
+> map_values=null) — **cần chủ dự án duyệt bridge-enabled vehicle** (RamusBridge.cs +
+> bridge-build.yml sẵn; thiếu loader-apk duyệt). datas/ = **87**. verify 209 PASS · 0 FAIL ·
+> 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 62 — 26/10, LỆNH "MỞ HẾT ĐÀO TẬN CÙNG" + #17-schema 2 track):**
 > **§24.55**: mở **#24/#25/#26/#27(=15b)/#28** claim tự do + nhắc #2 · chuẩn "tận cùng" =
 > (a) byte-proof có pins hoặc (b) chứng minh có-scoped "không thể xa hơn mà không có X" ·

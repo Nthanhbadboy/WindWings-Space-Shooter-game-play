@@ -3783,3 +3783,36 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   sau push — lần này đúng thứ tự).
 - Điều phối: AI-3 #4–8 vẫn chưa delivery — nhắc strict lần N+1; nếu setup kẹt phải báo
   sticky, không giữ mục im lặng.
+
+### 24.56 Điều phối lần 63 — #17-schema: REPLICATION + native-fixture ĐÓNG bounded · #28 BLOCKED (cần bridge-enabled vehicle)
+
+- **120-a5 #17 REPLICATION** (handoff 10:47, code `4cb2828ec`): SHA `d1734e5c…` khớp local ✓
+  — bounded native serializer sequence: **2 paths cùng chuỗi literal refs `m_InterruptionSource
+  → m_OrderedInterruption → m_CanTransitionToSelf`** + helper calls tại địa chỉ đã ghi ·
+  REPLICATION trên AI-1 raw pins (`72041a1d4` / SHA `0b541954…`) — AI-1 xác nhận version pin
+  đúng qua git history ✓ · seeded strings disclosed · XAPK download EOF → hashes = pins của
+  AI-1, không recalc ✓. **ACK bó scope REPLICATION; không đóng #17 (đúng xin).**
+- **112-ef #17 primary** (handoff 11:00, code `9c351b7660`, Verify `40310944208`, full
+  **1338 PASS**): **native schema generator fixture** — `libunity.so` `d827b83e…`
+  **17.783.496 B** từ XAPK pinned · chạy entry **0xB7E1BC (=12050876 ✓ trong artifact)** trong
+  Unicorn — **74.714 instructions gốc thực thi thật**, chỉ hook 0x5eb544 (alloc/interning);
+  end/align/size/Array/version/iterator helpers chạy native · **281 nodes** (280 + 1 synthetic
+  root) · four-core equality ✓ · **Reader109 decode 308 payloads bằng native-generated schema
+  → fulltrees equal 308/308** ✓ · **TransitionConstant 13 fields vs SelectorTransitionConstant
+  2** (`m_Destination`, `m_ConditionConstantArray`): **533 ordinary có interruption fields /
+  616 selector đúng 2 fields** — missing interruption fields từ r108 giờ **corroborated native,
+  không còn chỉ sharedDB** ✓ · guards: 10 code ranges/63 literal cells/37 RELA; 2.184
+  candidates = exploratory KHÔNG validated xrefs (khai đúng) ✓. **ACK bounded
+  native-schema corroboration — KHÔNG full schema discovery** (không TypeTree
+  readback/registration/bootstrap; Unicorn + manual entry + inherited-meta model disclosed).
+- **#28 (121-a5) — handoff BLOCKED đúng phép** (code `601a4df360`, SHA `72830d6bef…` khớp ✓):
+  PR14 run `40310064929` prep official XAPK xong — **không có `RamusBridge.dll` trong
+  base.apk/splits** → bridge gate dừng TRƯỚC credentials/session/install/probe; job success
+  vì gate xử lý skip; `allow_no_bridge=true` = smoke-only, không đọc /statics (không tốn
+  session) ✓ · `map_values=null`, scoped-not-repo-wide ✓. **#28 = BLOCKED — cần CHỦ DỰ ÁN:
+  approve bridge-enabled vehicle path** (nguồn sẵn: `runtime-probe/RamusBridge.cs` +
+  `bridge-build.yml` — thiếu loader-apk được duyệt; cấm mod APK nên không tự inject được).
+  2 hướng đề nghị: (a) duyệt loader-apk từ peer release `windwings-assets-1.3.118` làm
+  vehicle #28, hoặc (b) chủ dự án cấp APK có bridge. Chờ quyết — không ai tự đào runtime hộ.
+- CLAIM #28 10:51 → handoff 10:56 — flow mở-hết chạy đúng; tips lần 63: ef `f720bb7fbd` ·
+  a5 `c114b8728` (sync counts 120/121). datas/ = **87**.
