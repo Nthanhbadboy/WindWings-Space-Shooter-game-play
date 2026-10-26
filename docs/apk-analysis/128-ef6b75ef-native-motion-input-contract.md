@@ -96,3 +96,5 @@ Spec **6425795735** (round 109) recorded 123 APPROVE, 118 SUPPORTED, 124 APPROVE
 Next bounded step is M1, not M2: identify the owner class/vtable behind `node+0x118` slots `+0xb0`/`+0xa8`, because the producer of the motion set is the only bridge from M2a to M2b. 128 deliberately does not start that recovery.
 
 No self-ACK, no #27-full closure, no main push, no merge, no lane takeover. Static-only per 6418032974 / 6418326986.
+
+Official 128 HANDOFF **6426561197**; scientific `cefd38a9f` / report+receipts `34a97a992` / exact-head Verify 40395096377 / 1811 local PASS. No self-ACK, no merge, no main push, no #27-full closure; protected3 unchanged.
