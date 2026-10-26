@@ -20,13 +20,19 @@ ARRAY_NEW = 0x110d09c
 INIT_ARRAY = 0x205b07c
 REF_ADD = 0x1bd7e58
 INT_ADD = 0x1b94d0c
-SKIP = {'fmov', 'ldp', 'strb', 'movk', 'cmp', 'cmn', 'tst', 'fcmp', 'ccmp', 'nop', 'sub', 'tbnz',
+SKIP = {'fmov', 'ldp', 'strb', 'cmp', 'cmn', 'tst', 'fcmp', 'ccmp', 'nop', 'sub', 'tbnz',
         'tbz', 'cbz', 'cbnz', 'b.hi', 'b.hs', 'b.lo', 'b.ls', 'b.eq', 'b.ne', 'b.mi', 'b.pl',
         'b.ge', 'b.gt', 'b.le', 'b.lt'}
 
 
-def class_layouts():
-    """{class: {offset: (field, type)}} from dump.cs."""
+def class_layouts(statics_only=True):
+    """{class: {offset: (field, type)}} from dump.cs.
+
+    `statics_only` (default) drops instance fields: a `.cctor` writes the static
+    base, so an instance field declared at the same numeric offset (e.g.
+    `Board_EventSeasonPass.eventRewards` at 0x0 vs its statics) must not be
+    attributed the static value. Pass `statics_only=False` for raw layouts.
+    """
     text = gzip.decompress((ROOT / 'reverse-engineering/il2cpp/dump.cs.gz').read_bytes()).decode()
     out = {}
     for block in text.split('// Namespace:'):
@@ -35,9 +41,9 @@ def class_layouts():
             continue
         fields = {}
         for line in block.split('\n'):
-            match = re.match(r'\s*(?:public|private|protected|internal)\s+(?:static\s+)?(.+?)\s+(\w+);\s*//\s*0x([0-9A-Fa-f]+)\s*$', line)
-            if match:
-                fields[int(match[3], 16)] = (match[2], match[1].strip())
+            match = re.match(r'\s*(?:public|private|protected|internal)\s+(static\s+)?(.+?)\s+(\w+);\s*//\s*0x([0-9A-Fa-f]+)\s*$', line)
+            if match and (match[1] or not statics_only):
+                fields[int(match[4], 16)] = (match[3], match[2].strip())
         out[head[1]] = fields
     return out
 
@@ -55,13 +61,23 @@ def blob_ints(event):
     return out
 
 
-def decode_class(native, cls, layouts=None):
+def decode_class(native, cls, layouts=None, string_table=None, ia_resolution=None):
     layouts = layouts or class_layouts()
     m = next(x for x in native['methods'] if x['class_name'] == cls and '.cctor' in x['signature'])
     insns = m['instructions']
     index = {i['rva']: n for n, i in enumerate(insns)}
-    ia = {e['initialize_rva']: e for e in m.get('initialization', []) if 'initialize_rva' in e}
+    # `initialize_arrays` is the paired schema (one event per call); `initialization`
+    # is the #29 schema and must keep working for that frozen artifact.
+    ia = {e['initialize_rva']: e for e in
+          (m.get('initialize_arrays') or m.get('initialization') or []) if 'initialize_rva' in e}
     strings = {e['addend']: e['string'] for e in m.get('slot_refs', []) if e.get('string')}
+    if string_table:
+        # Metadata usage slots point at Il2CppString objects; the address index
+        # resolves text the in-binary heuristic could not read.
+        for ref in m.get('slot_refs', []):
+            text = string_table.get(ref['addend'])
+            if text is not None:
+                strings[ref['addend']] = text
     slot_values = {e['slot_va']: e['addend'] for e in m.get('slot_refs', [])}
     pool_bytes = {e['instruction_rva']: e['hex'] for e in m.get('literals', [])}
     regs, objects, arrays, statics = {}, [], [], {}
@@ -74,6 +90,17 @@ def decode_class(native, cls, layouts=None):
 
     def put(name, value):
         regs[key(name)] = value
+
+    def store_fields(bucket, offset, value):
+        """Object store: split multi-word pool bytes into per-lane int constants.
+
+        `stp q0, q1, [x20, #0x10]` writes 32 bytes of `Shop_Pack` fields; keeping the
+        register as one blob would hide every per-field price.
+        """
+        # A vector register stays one record at `offset` (report 127 consumers rely
+        # on that shape); lane-by-lane naming is done by the caller that knows the
+        # object's declared layout.
+        bucket[offset] = value
 
     def resolve(value, depth=0):
         if value is None or depth > 8:
@@ -125,6 +152,10 @@ def decode_class(native, cls, layouts=None):
                 target = regs.get(key(base))
                 if isinstance(target, tuple) and target[0] == 'statics':
                     value = ('const', 0) if src in ('wzr', 'xzr') else regs.get(key(src))
+                    if src.startswith('x') and isinstance(value, tuple) and value[0] == 'const' \
+                            and -2**32 <= value[1] < 2**32:
+                        # An x-register store covers two 4-byte statics (e.g. -1 sentinels).
+                        value = ('pool', 0, (value[1] & 0xFFFFFFFFFFFFFFFF).to_bytes(8, 'little').hex())
                     statics[int(off or '0', 0)] = value
                     continue
             continue
@@ -134,7 +165,29 @@ def decode_class(native, cls, layouts=None):
                 pair = struct.pack('<ii', int(match.group(2)), int(match.group(2))).hex()
                 put('d' + match.group(1), ('pool', 0, pair))
                 continue
+            # `movi v0.2d, #0xffffffffffffffff` is how the compiler fills a 16-byte
+            # static run with -1 (sentinel defaults); the lane count/width must be
+            # honoured or the stored bytes would be wrong.
+            lanes = re.fullmatch(r'v(\d+)\.(\d+)([sd]), #(-?(?:0x[0-9a-fA-F]+|\d+))', args)
+            if lanes:
+                lane, count, kind, imm = lanes.groups()
+                width = {'s': 4, 'd': 8}[kind]
+                value = int(imm, 0) & ((1 << (8 * width)) - 1)
+                put('d' + lane, ('pool', 0, (value.to_bytes(width, 'little') * int(count)).hex()))
+                continue
             raise ValueError(f'{cls}: unmodelled movi {args} @ {rva:#x}')
+        if op == 'strh':
+            match = re.fullmatch(r'(\w+), \[(\w+)(?:, #(-?0x[0-9a-f]+|-?\d+))?\]', args)
+            if match:
+                src, base, off = match.groups()
+                off = int(off or '0', 0)
+                target = regs.get(key(base))
+                if isinstance(target, tuple) and target[0] == 'statics':
+                    value = ('const', 0) if src in ('wzr', 'xzr') else regs.get(key(src))
+                    statics[off] = value
+                    statics[off + 1] = value
+                    continue
+            raise ValueError(f'{cls}: unmodelled strh {args} @ {rva:#x}')
         if op in SKIP:
             continue
         if op == 'mov':
@@ -145,6 +198,16 @@ def decode_class(native, cls, layouts=None):
                 put(a, ('const', 0))
             else:
                 put(a, regs.get(key(b)))
+        elif op == 'movk':
+            # Half-word insert: the double immediates in reward constructors are
+            # built as `mov xN,#lo` + `movk xN,#hi,lsl #48`; ignoring the movk
+            # produced denormal garbage instead of 43200.0/900.0.
+            a, b = [x.strip() for x in args.split(',')][:2]
+            imm = int(b.split('#')[1], 0)
+            shift = int(re.search(r'lsl #(\d+)', args).group(1)) if 'lsl' in args else 0
+            current = regs.get(key(a))
+            base = current[1] if isinstance(current, tuple) and current[0] == 'const' else 0
+            put(a, ('const', (base & ~(0xffff << shift)) | ((imm & 0xffff) << shift)))
         elif op == 'adrp':
             a, b = [x.strip() for x in args.split(',')]
             put(a, ('addr', int(b[1:], 0)))
@@ -184,9 +247,18 @@ def decode_class(native, cls, layouts=None):
                 first, second, base, off = pair.groups()
                 off = int(off or '0', 0)
                 target = regs.get(key(base))
+                if isinstance(target, tuple) and target[0] == 'object':
+                    step = 16 if first.startswith('q') else 8
+                    store_fields(objects[target[1]]['fields'], off, regs.get(key(first)))
+                    store_fields(objects[target[1]]['fields'], off + step, regs.get(key(second)))
+                    continue
                 if isinstance(target, tuple) and target[0] == 'statics':
-                    statics[off] = regs.get(key(first))
-                    statics[off + 8] = regs.get(key(second))
+                    for slot, name in ((off, first), (off + 8, second)):
+                        value = regs.get(key(name))
+                        if name.startswith('x') and isinstance(value, tuple) and \
+                                value[0] == 'const' and -2**32 <= value[1] < 2**32:
+                            value = ('pool', 0, (value[1] & 0xFFFFFFFFFFFFFFFF).to_bytes(8, 'little').hex())
+                        statics[slot] = value
                     continue
                 raise ValueError(f'unmodelled stp target {args} @ {rva:#x}')
             match = re.fullmatch(r'(\w+), \[(\w+)(?:, #(-?0x[0-9a-f]+|-?\d+))?\]', args)
@@ -200,7 +272,7 @@ def decode_class(native, cls, layouts=None):
                 if target[0] == 'addr':
                     put(base, ('slot', target[1] + off))
                 elif target[0] == 'object':
-                    objects[target[1]]['fields'][off] = value
+                    store_fields(objects[target[1]]['fields'], off, value)
                 elif target[0] == 'statics':
                     statics[off] = value
                     if isinstance(value, tuple) and value[0] in ('object', 'array'):
@@ -243,6 +315,8 @@ def decode_class(native, cls, layouts=None):
                 arrays[arg0[1]]['initialize_rva'] = rva
                 arrays[arg0[1]]['blob_slot'] = event['slot_va']
                 arrays[arg0[1]]['candidates'] = blob_ints(event)
+                if ia_resolution and rva in ia_resolution:
+                    arrays[arg0[1]]['resolved'] = ia_resolution[rva]
             elif target in (REF_ADD, INT_ADD):
                 if not isinstance(arg0, tuple) or arg0[0] != 'object':
                     raise ValueError(f'List.Add without list @ {rva:#x}')
@@ -262,6 +336,9 @@ def decode_class(native, cls, layouts=None):
 
     # Arrays that were filled by InitializeArray take the candidate matching their length.
     for arr in arrays:
+        if arr.get('resolved') is not None and len(arr['resolved']) == arr['length']:
+            arr['values'] = list(arr['resolved'])
+            continue
         for candidate in arr.get('candidates', []):
             if len(candidate) == arr['length']:
                 arr['values'] = candidate
@@ -298,6 +375,14 @@ def decode_class(native, cls, layouts=None):
     out = {}
     for offset, value in sorted(expanded.items()):
         name, declared = fields.get(offset, ('<unknown>', '?'))
-        out[name] = dict(offset=hex(offset), declared=declared, value=resolve(value))
+        resolved = resolve(value)
+        if declared == 'float[]' and isinstance(resolved, dict) and resolved.get('kind') == 'array' \
+                and resolved.get('values'):
+            # Initialized blobs are raw little-endian words; a `float[]` field must
+            # be reinterpreted, not reported as int bit patterns.
+            resolved['values'] = [struct.unpack('<f', struct.pack('<I', v & 0xFFFFFFFF))[0]
+                                  if isinstance(v, int) else v for v in resolved['values']]
+            resolved['element_type'] = 'float32'
+        out[name] = dict(offset=hex(offset), declared=declared, value=resolved)
     return dict(method_rva=m['rva'], bytes=m['size'], fields=out,
                 evidence='STATIC_INITIALIZER_IR_NOT_RUNTIME')
