@@ -10,7 +10,7 @@ This closes the **asset-level** timeline gap from phase 10, not the callback/rec
 
 ## Exact asset identity and event markers
 
-The existing local PPtr chain reaches `SkeletonDataAsset` path `580611`, whose `skeletonJSON` reference is `(file 0, path 918)`. `datas/spine_identity.json` records path `918` as a 60,897-byte TextAsset with the SHA-256 above; `reverse-engineering/textassets/skeleton__21.json` matches both values. `datas/spine.json` independently records the same skeleton-data/path-918 association and the four global Spine event names. This is a content-hash join to the recorded TextAsset identity; the numbered filename `skeleton__21.json` is the repository export name, not a Unity path ID.
+The existing local PPtr chain reaches `SkeletonDataAsset` path `580611`, whose `skeletonJSON` reference is `(file 0, path 918)`. `datas/spine_identity.json` records path `918` as a 60,897-byte TextAsset with the SHA-256 above; `reverse-engineering/textassets/skeleton__21.json` matches both values. `datas/spine.json` independently records the same skeleton-data/path-918 association, the four global Spine event names, and rounded animation durations; it does **not** contain per-animation event-keyframe/time associations. Those timeline associations below come from parsing the hash-verified TextAsset JSON, not from `spine.json` or `spine-prefabs.json`. This is a content-hash join to the recorded TextAsset identity; the numbered filename `skeleton__21.json` is the repository export name, not a Unity path ID.
 
 | Animation | Spine event keyframes (time in asset seconds) | Inventory duration (seconds) |
 |---|---|---:|
