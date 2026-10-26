@@ -40,7 +40,7 @@ không phải để clone y nguyên. Toàn bộ asset gốc (sprite, atlas, Spin
 | **AI/agent sắp dựng game mới** | **`START_HERE.md`** (kho dữ liệu + 8 số xương sống + 12 bẫy) → `MISSING_FOR_NEW_GAME.md` → `GAMEPLAY.md` §0+§7 → `TUNING_KNOBS.md` |
 | **Designer / cân bằng số** | `GAMEPLAY.md` §0 → `BALANCE.md` §0 → `COMBAT.md` §0 → `ECONOMY.md` §0 → **`TUNING_KNOBS.md`** (núm vặn + công thức) |
 | **Engineer dựng lại gameplay** | `GAMEPLAY.md` (core loop) → `COMBAT.md` (súng/đạn) → `ENCOUNTERS.md` (wave) → `UI.md` (màn hình) |
-| **Art / tech art** > **Kiểm tự động (`RD1`):** **50 dòng · 0 lệch** — mỗi dòng `N dòng · M bảng` được đo lại từ file;
+| **Art / tech art** > **Kiểm tự động (`RD1`):** **51 dòng · 0 lệch** — mỗi dòng `N dòng · M bảng` được đo lại từ file;
 > sửa tài liệu mà quên cập nhật bảng là đỏ (`python3 tools/refresh-readme-sizes.py --check`).
 
 | **`ART_STUDY.md`** (số đo mẫu gốc: màu/gradient/outline) → **`VISUAL_DESIGN.md`** (khung, tương phản, accent, juice + test máy) → `ASSETS.md` §0–§5 (art direction "Ink & Ember", atlas plan) → `sprite-list.csv` |
@@ -106,7 +106,8 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 | **`VERIFY_ROUND1.md`** | **Kiểm chéo 6 phán quyết của nhánh dữ liệu** (`68ce86a7`): 4/6 đúng nguyên · **`T2` sai cơ chế** (`ends_clean` **True rỗng** che 25 method vắng mặt) · **`T4` phép kiểm yếu** (`#0x2711` là **trừ** không phải cộng) · **`T6` REVERSED** (13 `200xx` là **drone**) · **`T1`/`T5` vẫn MISSING** với số đo **1.192/1.194** slot trỏ `\x7fELF` · số liệu đổi do tái export (HP boss **1,89× → 1,79×**) | 252 dòng · 12 bảng |
 | **`VERIFY_ROUND2.md`** | **Đo lại 75 con số của chính mình** bằng `tools/verify-claims.py`: **73 đúng · 2 không kiểm được**. Bốn lỗi cùng một dạng — *đếm hai tập khác nhau rồi ghi vào một dòng*: **21** file `/statics` (không phải 18) · **185** animation Spine (180 = 26 rig, `Saw` 5) · **26** rig `skeleton*` (không phải 25) · **29 claim nữa ở §5b–§5d**. Trong đó **mục 1.4 hoá ra SAI**: **203** Animator tái lập được đúng khi biết roster = 109 tên trong `waves.json` — đã khôi phục 203, và đó là **lần thứ năm** mắc cùng lỗi. FAIL → mã thoát 1, có job CI riêng | 220 dòng · 8 bảng |
 | **`PARALLEL_TASKS.md`** | **Lô 13 việc kiểm chứng chạy song song** cho nhánh dữ liệu: 13 giả định **sai được** (mỗi cái có *điều kiện lật ngược*) · 13 task độc lập (6 không cần APK) · **vì sao 4 workflow hiện tại không song song được** (`contents: write` + `git push` ở 4/4 job) · 1 workflow matrix 13 job + 1 job hợp nhất · **hợp đồng artifact** (`verdict` PASS/REVERSED/MISSING) · luật hợp nhất **một lần** | 292 dòng · 8 bảng |
-| **`OPEN_ISSUES.md`** | **Sổ 28 vấn đề chưa chốt**, chia theo nguyên nhân — mỗi mục có bằng chứng, cách chốt, và thiết kế ảnh hưởng. **A2 đóng bó scope H1**: static `listMapDatas` 250/250 arrays; stage/scene identity vẫn tách riêng ở A6. C1/C2 đã export; **B8** chốt `kCount ≡ 1`, HP theo chế độ vẫn mở | 419 dòng · 13 bảng |
+| **`OPEN_ISSUES.md`** | Sổ việc chưa chốt theo nguyên nhân. **Count cần reconcile:** phần mở đầu ghi 28 vấn đề / 11 đóng; các ID liệt kê 29 dòng và close-marker có status pha trộn (audit `ANALYSIS_SPEC_RESIDUAL_AUDIT.md`). A2 đóng bounded scope H1; stage/scene identity, B6/C8 semantics, D5 owner/extra-life vẫn riêng | 419 dòng · 13 bảng |
+| **`ANALYSIS_SPEC_RESIDUAL_AUDIT.md`** | Tổng kiểm analysis + SPEC theo snapshot 2026-10-27; tách bounded evidence, open issues, lệch trạng thái và sync queue | 95 dòng · 2 bảng |
 | `screens.csv` | 125 dòng dữ liệu: `class, board_id, mo_tu_dau, popup_con, data_can_load` | 126 dòng · 0 bảng |
 | `sprite-list.csv` | 163 dòng dữ liệu: atlas page (size + MB thật), background, Spine, UI 9-slice, ship/drone, bullet | 164 dòng · 0 bảng |
 
