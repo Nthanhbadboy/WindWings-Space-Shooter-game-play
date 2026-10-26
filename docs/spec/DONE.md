@@ -72,6 +72,10 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 81 — 26/10, mở AI-4: #29 Arena/PvP + #30 meta thưởng):**
+> **§24.74**: prompt tự chứa `6418869062` + board + hàng task #29/#30 · static-only ·
+> first-wins · boundary 3 làn cũ giữ nguyên. Dự kiến rút đuôi 16 hệ từ ~8h còn ~3-5h.
+>
 > **Sửa lại (lần 80 — 26/10, AUDIT TỔNG THỂ "được bao nhiêu %"):**
 > **§24.73** (đếm từ file): **16 hệ = 8 đủ/8 một phần/0 thiếu ≈ 76% weighted** ·
 > DQ 48 câu = 33✅/14⚠/1❌ (trọn 69% · có-partial 98%) · blocker còn 5/9 ·

@@ -4258,6 +4258,13 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   0 sprite) — đã là việc của #16/lane a5-AI-3.
 - **Lớp 5 — Kho evidence:** datas/ **104 file top-level (+4 subdir ~296 file)** ·
   **71 report** docs/apk-analysis · DONE **79 khối** · 13/16 hệ có artifact `datas/`.
+- **LỆNH CHỦ DỰ ÁN 26/10: mở digger thứ 4 (AI-4)** → prompt tự chứa đăng `6418869062`
+  + board + hàng task **#29** (Arena/PvP decode — 40 class dump.cs · map pools
+  AllArena*/AllPvP* · GetArenaScore/GetPVPPlayScore/GetArenaPlayScore · medal/shop) và
+  **#30** (meta thưởng — MAX_LEVEL_BP/timeRewards/vipPoints/giá ô gift-quest-video ·
+  Board_QuestRewards/TimeFreeRewardPack/SeasonRewards; CLAIM sau handoff #29).
+  Static-only tuyệt đối (lệnh 26/10); boundary: không libunity FDE (ef) / #27-GS (a5) /
+  #7-#8 (AI-3); report `127-arena-pvp-<hash8>.md`; needle APKD1/AI1/RD1 sync cùng commit.
 - **KẾT LUẬN HEADLINE: ≈ ¾ đường — 76% weighted / 50% nếu chỉ đếm hệ trọn / 89% theo
   task ledger.** Phần còn lại KHÔNG đều nhau: 2 hệ (Arena/PvP + meta thưởng) chiếm ~⅓
   khoảng cách. **Trần 100% đã đổi định nghĩa từ 26/10:** các câu runtime (live-DPS,
