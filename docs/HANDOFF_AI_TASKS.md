@@ -1120,3 +1120,26 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   provenance: arena/ef6b75ef. No independent execution ACK/render acceptance claimed.
 
 - PR12 handoff105: https://github.com/Nthanhbadboy/WindWings-Space-Shooter-game-play/pull/12#issuecomment-6411373032; nhờ independent review, không selfACK.
+
+## Batch106 — ef6b75ef: GLES vertex/PixelSnap + actual mip0 bilinear
+- Claim6411403047 trước khi bắt đầu; miền #3 AI-1 shader/texture, không live atlas remap/
+  geometry generators/particle/transition/driven. provenance: arena/ef6b75ef.
+- Report106-ef6b75ef-L3-GLES-PixelSnap-bilinear; datas/l3_ef6b75ef106.json.gz.
+- 4source vertices×2explicit variants; full staged Flip/ObjectToWorld/MatrixVP, PixelSnap
+  round-even sau divideW/restoreW, UV/color passthrough; perspective-correct varying CPU ref.
+- 7source105 seeds→same7fixed viewport pixel centers×2variants=14inside queries. 5/7pairs đổi
+  filteredRGBA, không readback/GPU/visibility claim. 5sampler-only probes +46genuine RGBA8
+  texels từ pinned APK (raw-object/fullRGBA SHA khớp105), clamp full texture không crop clamp.
+- Vertex0 window724.4999881982814,404.517600574684→724,405; samepixel726.5,325.5 alpha
+  .05091579864714838→.08276148982721251 khi explicit PixelSnaptrue. Saved material Snap0
+  không bị tự đổi thành observed runtime variant. Source mip_count1/color_space_metadata1
+  chỉ metadata, không sRGB/LOD precision proof. Bilinear raw-UNORM CPU/filter-before-premul.
+- Recovery40291977206SUCCESS/raw l3-shader106; 32newPASS0.131s; full1137PASS270.151s; CI receipt follows.
+- UPDATED specbab67115 DATA_SYNC24.43–44: ACK105-ef6b75ef6411447910 là artifact/count/identity,
+  vẫn chưa independent native execution/tag23 mapping. 107-a5a74747 được spec ACKartifact-level,
+  CI xanh theo6411493961, không second APK decoder. Claim #15 native Animator blending6411524443
+  của họ ngoài miền shader106. Không import/merge/edit tools/artifacts của họ.
+- Own branch không có APKD1/AI1 needle files (docs/spec/START_HERE.md,tools/verify-claims.py);
+  không bịa needle của spec. Shared3paths untouched. Custom23 UNPROVED/default reject giữ nguyên.
+- Review: exact same-pixel UV shift, clipZW/UV unchanged by snap, round-even ties ±,
+  4tap arithmetic/full-texture clamp neighbor, filter→premul order, no GPU/readback promotion.
