@@ -4,9 +4,9 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
 NAMES=['m_StreamedClip','m_DenseClip','m_ConstantClip','m_MuscleClip','AnimationClip','StreamedClip','DenseClip','UnityEngine.AnimationClip::get_length','UnityEngine.AnimationClip::SampleAnimation','UnityEngine.AnimationClip::SampleAnimation_Injected']
-RANGES=[(0x6ad7e4,0x6addac)]
+RANGES=[(0x6ad7e4,0x6addac),(0x6c2000,0x6c4480),(0x6b0000,0x6b1300)]
 TARGETS={0x6ad7e4:'compiler_parent',0x6deeb8:'compiled_data_builder',0xb922a8:'compiled_data_accessor'}
-FOLLOW_ENTRIES=[0x6deeb8,0xb922a8]
+FOLLOW_ENTRIES=[0x6deeb8,0xb922a8,0x398600,0xb714c8,0xb76cf0]
 def sha(b):return hashlib.sha256(b).hexdigest()
 def signed(v,n):return v-(1<<n) if v&(1<<(n-1)) else v
 def recover(path):
@@ -61,6 +61,22 @@ def recover(path):
                 if op&0xffc00000==0x91000000 and ((op>>5)&31)==rd:
                     address=page+((op>>10)&4095)
                     if address in wanted:refs.append(dict(field=wanted[address],va=pc,add_va=va(p),target=address))
+    # Structural discovery only: native StreamedClip header candidates need both u16 counts.
+    sampler_candidates=[]
+    for start,rec in sorted(unwind.items()):
+        length=rec['end']-start
+        if length>0x10000:continue
+        try:pos=offset(start)
+        except StopIteration:continue
+        code=b[pos:pos+length];counts=set();math_sites=[];count_sites=[]
+        for j in range(0,len(code)-3,4):
+            op=struct.unpack_from('<I',code,j)[0]
+            if op&0xffc00000==0x79400000 and ((op>>10)&4095) in (8,9):
+                displacement=((op>>10)&4095)*2;counts.add(displacement);count_sites.append(dict(pc=start+j,offset=displacement,base=(op>>5)&31))
+            if op&0xffe0fc00 in (0x1e200800,0x1e202800,0x1e203800) or op&0xffe08000==0x1f000000:math_sites.append(start+j)
+        if counts=={16,18}:
+            sampler_candidates.append(dict(start=start,unwind=rec,count_sites=count_sites,math_sites=math_sites))
+    RANGES.extend((c['start'],c['unwind']['end']) for c in sampler_candidates if c['math_sites'])
     ranges=list(RANGES)+[(r['va']-256,r['va']+512) for r in refs]+[(r['unwind']['start'],r['unwind']['end']) if r['unwind'] and r['unwind']['end']-r['unwind']['start']<=8192 else (r['pc']-128,r['pc']+128) for r in branch_refs];windows=[]
     for lo,hi in sorted(set(ranges)):
         pos=offset(lo);assert offset(hi-1)==pos+hi-lo-1
@@ -112,7 +128,7 @@ def recover(path):
             if op&0x3b000000==0x18000000:cell(pc+(signed((op>>5)&0x7ffff,19)<<2),16)
     selected_imports=[r for r in imports if any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in list(cells.values()))]
     selected=[r for r in relas if any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in windows+list(cells.values())) or r['addend'] in TARGETS]
-    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,strings=strings,references=refs,branch_references=branch_refs,windows=windows,cells=list(cells.values()),relocations=selected,imports=selected_imports,limits=['Adjacent ADRP/ADD and ADRP/LDR pairs are discovery candidates, not proven register dataflow.','Selected original byte spans only, not a whole library, engine bootstrap or interpolation equivalence.'])
+    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,sampler_candidates=sampler_candidates,strings=strings,references=refs,branch_references=branch_refs,windows=windows,cells=list(cells.values()),relocations=selected,imports=selected_imports,limits=['Adjacent ADRP/ADD and ADRP/LDR pairs are discovery candidates, not proven register dataflow.','Selected original byte spans only, not a whole library, engine bootstrap or interpolation equivalence.'])
 def main():
     p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);a=p.parse_args();r=recover(a.xapk);out=ROOT/'reverse-engineering/raw/packed115/probe.json.gz';out.parent.mkdir(parents=True,exist_ok=True);out.write_bytes(gzip.compress((json.dumps(r,sort_keys=True,separators=(',',':'))+'\n').encode(),mtime=0));print('saved',out,'strings',sum(len(s['occurrences']) for s in r['strings']),'refs',len(r['references']))
 if __name__=='__main__':main()
