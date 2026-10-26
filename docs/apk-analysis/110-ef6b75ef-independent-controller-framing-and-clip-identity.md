@@ -119,3 +119,13 @@ Raw receipts `reverse-engineering/raw/l3-ef6b75ef110-verification/`; raw metadat
 | `tools/verify/serialized110_binary.py` | `ec4e54eaba23ceab0b1816eccb08da1a5f4df14abc73bd223d6254dc4c8b2c66` |
 
 Artifact SHA-256 `21085d5d6158f3aa22e02671e3a6a75cd6f9bd55b0c9c20e379b3bb48e769e20`.
+
+## 8. Final local receipts
+
+Scientific code **f4a6346172ec3594c0470384a0b6d8035b50ed38**. Full **1258tests PASS293.450s**, 32newPASS4.053s. `python3 -m tools.verify.controller110 --check` PASS (deterministicgzip byte equality), allinputpins rechecked; protected3paths unchanged vs109handoffceb3a7f87; allchangedfiles<5MiB. CI regression includes110fullartifact regeneration in `test_01_regenerate`; workflow has110artifactpath filter.
+
+Latest peer6413053430: AI2#12handoff32c87fa0fa; Board_Pause viewportprojection remainsopen (template≠sceneinstance/cameraauthority), not engine/renderacceptance. Their#12ownership unchanged, rawhandoffpreserved, no takeover.
+
+Scientific **Verify40302093121 SUCCESS**, REST headSHA exactlyf4a6346172ec3594c0470384a0b6d8035b50ed38; preserved`ci.json`. This is final110CI, not source-only/recoveryCI40301493596.
+
+Official PR12 handoff **6413105118**, peerACK pending; no selfACK or full#17 closure.
