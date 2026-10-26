@@ -3642,8 +3642,7 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - **#21 AI-1 — artifact xuất hiện ở tip `537e9024d` (`l2_ef6b75ef108_map_entry_bindings.json.gz`,
   SHA `ccf8309e0503dd50…`) — PRE-VERIFY trước handoff**: keys đủ (bindings ·
   capacity_crosscheck · constructor_roots · consumer_campaign_route · legacy_differential ·
-  native_instructions · non_InitializeArray_leaves) · 25.224 instructions ×1 · 548 RELA ×34 ·
-  Add ×1.383 · input APK/lib SHA256 pin trong artifact. **Chưa ACK — chờ handoff comment
+  native_instructions · non_InitializeArray_leaves) · 25.224 instructions ×1 · ~~548 RELA / Add 1383~~ *(sửa lần 59: **550 RELA** — 548 là recovery cũ bỏ 2 decimal-offset; **List.Add cap0=773 hooks / cap1024=0** — 1383 là raw-count nhầm text; handoff đính chính 6412515057)* · input APK/lib SHA256 pin trong artifact. **Chưa ACK — chờ handoff comment
   chính thức** (quy ước SHA nguồn; tip đã push nên provenance trace được).
 - **#23 AI-2 — HANDOFF đăng TRƯỚC commit**: remote `a5a74747` vẫn `5ed3328f8` — artifact
   `l2_wing_special_named_leaves_dps_parity_23` + commit chứa nó CHƯA trên remote; handoff
@@ -3657,3 +3656,36 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   fail vẫn tạo file rỗng khi redirect — kiểm size sau pull.
 - Điều phối: AI-2 **CLAIM #18** (DPS parity tàu 1) — L2 còn #19/#24/#25 TRỐNG. AI1-spec
   needle: datas 76→**77** (map_entry pre-verified; wing chưa có).
+
+### 24.52 Điều phối lần 59 — #21 ACK (review 4/5 từ artifact) + #23/#18 đã push về, ACK bó scope + #17 claim
+
+- **#21 formal handoff `6412515057`** (code `537e9024d` · Verify `40298061301` · full **1190
+  PASS**/25 new). Spec review độc lập TỪ ARTIFACT: **①** 576 unique (newarray site, initPC,
+  index_path) = 576 ✓ · **②** per-root 9/9 khớp (243/100/63/52/41/28/28/20/1) + campaign
+  **literal 7 + IA 243 = 250** ✓ · **④** `canonical_roots_equal=True` cap 0/1024 ✓ · **⑤**
+  external fixture0 explicit "not observed default/runtime value" ✓ — **③** `native_instructions`
+  chỉ là count 25.224 (không phải instruction list) → KHÔNG repro trace 1406bf0→140e19c từ
+  artifact (thuộc raw receipts nhánh ef) — **4/5, không block** (pinned ELF + CI xanh).
+  **Đính chính pre-verify lần 58** (superseded ở §24.51): **550 RELA**; List.Add
+  **cap0=773 hooks / cap1024=0** (zero_calls xác nhận 773). **Verdict #21: ĐÓNG
+  (provisional:true) — "576 constructor field/index identities"; BỎ blocker cũ "thứ tự
+  listMapDatas chưa có evidence" (store/ordered paths có); container/allocator/GC +
+  mode-selection runtime tách.**
+- **#23 push đã về (`fe247fb8c5`)**: SHA `3e8aca26…` khớp handoff ✓ — **7 named special paths**
+  + inventory 7 ✓ · pooled-leaf boundary · growth warning **0,168 UI ≠ 0,16 ship** đúng
+  cross-spec r90 ✓ · status STATIC_MODEL_PARTIAL + SERIALIZED_READBACK_LIMITED + RUNTIME
+  NOT MEASURED. **Verdict: ĐÓNG bó scope static/serialized mapping; wing runtime DPS MỞ
+  (live readback/cadence).**
+- **#18 handoff 111-a5a74747**: SHA `9fe9d1e2…` khớp ✓ — ship 10001 = Player_Attack_3 /
+  combat index 2 · base **2680 dmg / 4,8 s INTERVAL** → **damage×rate 12.864 = damage·s**
+  (đúng r25 peer-review ①) · **558,333 = conditional single-stream model, KHÔNG DPS đo được** ·
+  readback từ **1.0.69 modded ≠ source 1.3.118 — khai rõ, không claim same-build** ✓ ·
+  method pins MainCannonShoot 0x14a9924/292 instr + SHA body ✓. **Verdict: ĐÓNG bó scope
+  REPLICATION + classification; live DPS same-build controlled capture MỞ.** Needles sync
+  trong handoff: APKD1 78/107 · AI1 76 · RD1 41/0 ✓ (lần này có sync đầy đủ).
+- **#17 CLAIM ef6b75ef** (09:23, đọc sticky57 — đúng first-claim): stdlib reader 308/308
+  khớp UnityPy + joins 232/232; schema = **UnityPy builtin version DB** (file stripped) —
+  khai rõ shared framing, KHÔNG gọi independent discovery ✓; handoff SAU commit (đúng bài
+  học #23).
+- datas/ 77→**79** (wing23 + dps18). L2: **#18/#20/#21/#22/#23 ✅** (mỗi mục bó scope đúng
+  khai) · còn **#19** TRỐNG + **#24/#25** chờ chủ dự án.

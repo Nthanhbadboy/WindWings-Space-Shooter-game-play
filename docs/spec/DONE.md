@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 59 — 26/10, #21 ACK + #23/#18 push về + ACK bó scope + #17 claim):**
+> **§24.52**: **#21 ĐÓNG** (provisional) — review độc lập 4/5 từ artifact (576 unique ✓ ·
+> per-root 9/9 + 243+7=250 ✓ · canonical equal ✓ · external fixture ✓; ③ trace chỉ count —
+> không repro từ artifact, không block) · đính chính 550 RELA / 773-0 Add hooks · **#23 ĐÓNG
+> bó scope** (SHA `3e8aca26…` khớp; 7 specials; runtime wing MỞ) · **#18 ĐÓNG bó scope**
+> (SHA `9fe9d1e2…` khớp; 2680/4,8 s = damage·s ≠ DPS; 1.0.69≠1.3.118 khai rõ; live MỞ;
+> needles sync đủ APKD1 78/AI1 76/RD1 41-0) · **#17 CLAIMED ef** (308/308 khớp, schema =
+> UnityPy builtin DB — shared framing khai rõ, handoff sau commit). datas/ = **79**. verify
+> 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 58 — 26/10, ADDENDUM AI-1 bắt lỗi wording §24.50 + #21 pre-verified + #23 pending push):**
 > **§24.51**: sửa **"GetDevice body không khả dụng"** → "batch110 chưa consult — body CÓ ở
 > nhánh dữ liệu r89 (`pickup-currency/Device_Saved_Data`, 200B/50 instr)" (chuẩn ghi chép:

@@ -3801,8 +3801,8 @@ def data_inventory():
 
 claim("AI1", "docs/spec/START_HERE.md",
       "**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree"
-      " · **126** bảng ScriptableObject · **42** contact sheet · **77** file `datas/`.",
-      (139, 142136, 142, 126, 42, 77), data_inventory,
+      " · **126** bảng ScriptableObject · **42** contact sheet · **79** file `datas/`.",
+      (139, 142136, 142, 126, 42, 79), data_inventory,
       "kho dữ liệu gốc đã phân tích: asm, typetree, ScriptableObject, contact sheet, datas")
 
 claim("AP1", "docs/spec/DATA_INTEGRITY.md",
