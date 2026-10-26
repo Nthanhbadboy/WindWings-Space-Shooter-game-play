@@ -248,7 +248,10 @@ def main():
     output = dict(schema=2, evidence='STATIC_ONLY_ORIGINAL_APK', xapk_sha256=XAPK_SHA,
                   libil2cpp_sha256=SO_SHA, dump_sha256=hashlib.sha256(dump).hexdigest(),
                   boundary='next distinct dump offset; no FDE, runtime, emulator, or device',
-                  families=families, rodata_windows=windows, methods=records)
+                  families=families, methods=records)
+    if windows:
+        # Only present when pinned; keeps the #30 raw byte-identical to its own pin.
+        output['rodata_windows'] = windows
     target = ROOT / args.output
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(gzip.compress(json.dumps(output, separators=(',', ':'), sort_keys=True).encode(), mtime=0))
