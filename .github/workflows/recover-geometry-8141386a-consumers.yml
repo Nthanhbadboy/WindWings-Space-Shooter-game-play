@@ -1,0 +1,76 @@
+name: Recover geometry 8141386a native sprite consumers
+on:
+  push:
+    branches: ['arena/8141386a-windwings-space-shooter-game-p']
+    paths:
+      - 'tools/recovery/geometry_8141386a_consumers_bytes.py'
+      - 'tools/verify/geometry_8141386a_consumers_sources.py'
+      - 'reverse-engineering/raw/geometry-8141386a/sprite-consumers/source-inputs.json'
+      - 'reverse-engineering/raw/geometry-8141386a/sprite-consumers/sprite-catalog.jsonl.gz'
+      - 'reverse-engineering/raw/geometry-8141386a/sprite-consumers/native-schemas.json.gz'
+      - '.github/workflows/recover-geometry-8141386a-consumers.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: geometry-8141386a-consumers-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: arena/8141386a-windwings-space-shooter-game-p
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install 'lz4==4.4.4'
+      - uses: actions/cache/restore@v4
+        id: source-cache
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+      - name: Download original pinned release only if cache is absent
+        if: steps.source-cache.outputs.cache-hit != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/apk
+          gh release download windwings-apk-1.3.118 --pattern windwings.xapk --dir /tmp/apk
+      - name: Stream original native renderer and literal GameObject witnesses
+        run: python3 tools/recovery/geometry_8141386a_consumers_bytes.py --xapk /tmp/apk/windwings.xapk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: geometry-8141386a-native-sprite-consumers
+          path: |
+            reverse-engineering/raw/geometry-8141386a/sprite-consumers/native-index.json
+            reverse-engineering/raw/geometry-8141386a/sprite-consumers/native-renderers-*.jsonl.gz
+      - name: Preserve own source shards in commits below4MB, index last
+        run: |
+          set -euo pipefail
+          branch='arena/8141386a-windwings-space-shooter-game-p'
+          test "$GITHUB_REF_NAME" = "$branch"
+          git fetch origin "$branch"
+          test "$(git rev-parse HEAD)" = "$(git rev-parse FETCH_HEAD)"
+          git config user.name 'Arena geometry evidence collector'
+          git config user.email 'agent@arena.ai'
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          base=Path('reverse-engineering/raw/geometry-8141386a/sprite-consumers')
+          files=sorted(base.glob('native-renderers-*.jsonl.gz'))+[base/'native-index.json']
+          batches=[];batch=[];size=0
+          for p in files:
+              n=p.stat().st_size
+              if n>=4_000_000:raise ValueError('single source file exceeds commit budget')
+              if size+n>=4_000_000 and batch:batches.append(batch);batch=[];size=0
+              batch.append(str(p));size+=n
+          if batch:batches.append(batch)
+          for i,group in enumerate(batches,1):
+              subprocess.run(['git','add','--',*group],check=True)
+              if subprocess.run(['git','diff','--cached','--quiet']).returncode==0:continue
+              subprocess.run(['git','commit','-m',f'evidence(8141386a): native sprite-consumer source shard batch{i}/{len(batches)}'],check=True)
+              subprocess.run(['git','push','origin','arena/8141386a-windwings-space-shooter-game-p'],check=True)
+          PY
