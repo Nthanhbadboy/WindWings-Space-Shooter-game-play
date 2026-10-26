@@ -33,7 +33,7 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **102** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **103** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
 | `datas/` | JSON/CSV bóc trực tiếp | **86** file · **26.190.619 bytes** (**26,2 MB**) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
@@ -64,8 +64,9 @@
 | `datas/l3_a5a74747_game_side_spine_event_timeline_association.json.gz` | #27-GS phase 11: hash-verified Boss-39001 Spine TextAsset timeline | 6 markers: 5 `Stop` in `Attack3`, 1 `Banplasma` in `Attack4` | Asset keyframes only; listener binding, invocation, playback, and runtime remain unresolved |
 | `datas/l3_a5a74747_game_side_spine_attack4_selection_boundary.json.gz` | #27-GS phase 12: Boss-39001 `Attack4`/`Banplasma` selector boundary | 8 serialized state fields; 5 direct Spine `SetAnimation` callsites traced to those fields | No static `Attack4` selection or `Banplasma` receiver binding; AnimationClip route kept separate |
 | `datas/l3_a5a74747_game_side_bossspine_handler_script_identity_boundary.json.gz` | #27-GS phase 13: bounded `BossSpineEventHandler` script-identity census | 127,852 script-link rows; 140 typetree JSONL exports scanned | TypeDefIndex 114 has no resolved MonoScript PPtr or serialized Boss-39001 instance/value binding in this slice |
+| `datas/l3_a5a74747_game_side_boss39002_shared_spine_callback_boundary.json.gz` | #27-GS phase 14: separate Boss-39002 callback context for shared Spine JSON 918 | `Boss1_Director` 582209 → `SkeletonAnimation` 664302; event-name string slot unresolved | Conditional callback code exists on Boss-39002; no event-marker, playback, or Boss-39001 binding inferred |
 
-**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **100** file `datas/`.
+**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **101** file `datas/`.
 
 > **Đừng "sửa" 142.136 thành 142.131:** `wc -l *.asm.txt` cho **142.131** vì **`wc` đếm ký tự
 > newline**, còn `AI1` đếm **dòng** (`sum(1 for _ in fh)` = `splitlines()`). **5** file
