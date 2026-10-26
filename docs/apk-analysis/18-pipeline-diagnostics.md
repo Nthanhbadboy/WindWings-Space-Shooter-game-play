@@ -3,15 +3,15 @@
 ## Unity payload
 ```
 total 137M
--rw-r--r-- 1 runner runner   11K Oct 25 11:10 RuntimeInitializeOnLoads.json
--rw-r--r-- 1 runner runner  3.9K Oct 25 11:10 ScriptingAssemblies.json
--rw-r--r-- 1 runner runner   120 Oct 25 11:10 _listing.txt
--rw-r--r-- 1 runner runner   61M Oct 25 11:10 data.unity3d
--rw-r--r-- 1 runner runner  8.3M Oct 25 11:10 global-metadata.dat
--rw-r--r-- 1 runner runner   45M Oct 25 11:10 libil2cpp.so
--rw-r--r-- 1 runner runner   17M Oct 25 11:10 libunity.so
--rw-r--r-- 1 runner runner 1023K Oct 25 11:10 resources.arsc
--rw-r--r-- 1 runner runner  4.9M Oct 25 11:10 resources.resource
+-rw-r--r-- 1 runner runner   11K Oct 26 08:27 RuntimeInitializeOnLoads.json
+-rw-r--r-- 1 runner runner  3.9K Oct 26 08:27 ScriptingAssemblies.json
+-rw-r--r-- 1 runner runner   120 Oct 26 08:27 _listing.txt
+-rw-r--r-- 1 runner runner   61M Oct 26 08:27 data.unity3d
+-rw-r--r-- 1 runner runner  8.3M Oct 26 08:27 global-metadata.dat
+-rw-r--r-- 1 runner runner   45M Oct 26 08:27 libil2cpp.so
+-rw-r--r-- 1 runner runner   17M Oct 26 08:27 libunity.so
+-rw-r--r-- 1 runner runner 1023K Oct 26 08:27 resources.arsc
+-rw-r--r-- 1 runner runner  4.9M Oct 26 08:27 resources.resource
 ```
 
 ## assets/bin/Data listing (from APK)
@@ -38,35 +38,35 @@ typetree OK
 ## Asset gallery
 ```
 docs/assets:
-total 364
-drwxr-xr-x 3 runner runner   4096 Oct 25 11:10 .
-drwxr-xr-x 6 runner runner   4096 Oct 25 11:10 ..
--rw-r--r-- 1 runner runner   2190 Oct 25 11:11 INDEX.md
--rw-r--r-- 1 runner runner   7275 Oct 25 11:11 audio-index.csv
-drwxr-xr-x 2 runner runner   4096 Oct 25 11:11 contact-sheets
--rw-r--r-- 1 runner runner 146648 Oct 25 11:11 manifest.csv
--rw-r--r-- 1 runner runner 191560 Oct 25 11:11 sprites-index.csv
--rw-r--r-- 1 runner runner   4634 Oct 25 11:11 stats.json
+total 5172
+drwxr-xr-x 3 runner runner    4096 Oct 26 08:27 .
+drwxr-xr-x 6 runner runner    4096 Oct 26 08:27 ..
+-rw-r--r-- 1 runner runner    2190 Oct 26 08:28 INDEX.md
+-rw-r--r-- 1 runner runner    7275 Oct 26 08:28 audio-index.csv
+drwxr-xr-x 2 runner runner    4096 Oct 26 08:28 contact-sheets
+-rw-r--r-- 1 runner runner 1802879 Oct 26 08:27 font-browser.html
+-rw-r--r-- 1 runner runner  146648 Oct 26 08:28 manifest.csv
+-rw-r--r-- 1 runner runner 1657293 Oct 26 08:27 pack-browser-v2.html
+-rw-r--r-- 1 runner runner 1456125 Oct 26 08:27 pack-browser.html
+-rw-r--r-- 1 runner runner  191560 Oct 26 08:28 sprites-index.csv
+-rw-r--r-- 1 runner runner    4634 Oct 26 08:28 stats.json
 
 docs/assets/contact-sheets:
 total 7400
-drwxr-xr-x 2 runner runner   4096 Oct 25 11:11 .
-drwxr-xr-x 3 runner runner   4096 Oct 25 11:10 ..
--rw-r--r-- 1 runner runner 233344 Oct 25 11:11 atlas-01.jpg
--rw-r--r-- 1 runner runner 326577 Oct 25 11:11 atlas-02.jpg
--rw-r--r-- 1 runner runner  14242 Oct 25 11:11 atlas-03.jpg
--rw-r--r-- 1 runner runner 177064 Oct 25 11:11 background-01.jpg
--rw-r--r-- 1 runner runner 142920 Oct 25 11:11 background-02.jpg
--rw-r--r-- 1 runner runner 166141 Oct 25 11:11 bosses-01.jpg
--rw-r--r-- 1 runner runner 175411 Oct 25 11:11 bullet-01.jpg
--rw-r--r-- 1 runner runner  13861 Oct 25 11:11 bullet-02.jpg
--rw-r--r-- 1 runner runner  56140 Oct 25 11:11 drones-01.jpg
--rw-r--r-- 1 runner runner 104215 Oct 25 11:11 enemy-01.jpg
--rw-r--r-- 1 runner runner  31031 Oct 25 11:11 font-01.jpg
--rw-r--r-- 1 runner runner 204312 Oct 25 11:11 fx-01.jpg
--rw-r--r-- 1 runner runner  56927 Oct 25 11:11 fx-02.jpg
--rw-r--r-- 1 runner runner  16007 Oct 25 11:11 items-01.jpg
--rw-r--r-- 1 runner runner 125812 Oct 25 11:11 ships-01.jpg
+drwxr-xr-x 2 runner runner   4096 Oct 26 08:28 .
+drwxr-xr-x 3 runner runner   4096 Oct 26 08:27 ..
+-rw-r--r-- 1 runner runner 233344 Oct 26 08:28 atlas-01.jpg
+-rw-r--r-- 1 runner runner 326577 Oct 26 08:28 atlas-02.jpg
+-rw-r--r-- 1 runner runner  14242 Oct 26 08:28 atlas-03.jpg
+-rw-r--r-- 1 runner runner 177064 Oct 26 08:28 background-01.jpg
+-rw-r--r-- 1 runner runner 142920 Oct 26 08:28 background-02.jpg
+-rw-r--r-- 1 runner runner 166141 Oct 26 08:28 bosses-01.jpg
+-rw-r--r-- 1 runner runner 175411 Oct 26 08:28 bullet-01.jpg
+-rw-r--r-- 1 runner runner  13861 Oct 26 08:28 bullet-02.jpg
+-rw-r--r-- 1 runner runner  56140 Oct 26 08:28 drones-01.jpg
+-rw-r--r-- 1 runner runner 104215 Oct 26 08:28 enemy-01.jpg
+-rw-r--r-- 1 runner runner  31031 Oct 26 08:28 font-01.jpg
+-rw-r--r-- 1 runner runner 204312 Oct 26 08:28 fx-01.jpg
 ```
 
 ## Step logs (tail)
@@ -332,7 +332,7 @@ errors: {'script': 1, 'typetree:Boss19_AttackTypes': 1}
 # Wave composition (campaign maps)
 
 - waves: **282**
-- spawners: **11089**
+- spawners: **11094**
 - typetree backend: **AssetStudio**
 
 - lỗi đọc: 1 object
