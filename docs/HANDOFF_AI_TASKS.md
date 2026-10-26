@@ -1143,3 +1143,12 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   không bịa needle của spec. Shared3paths untouched. Custom23 UNPROVED/default reject giữ nguyên.
 - Review: exact same-pixel UV shift, clipZW/UV unchanged by snap, round-even ties ±,
   4tap arithmetic/full-texture clamp neighbor, filter→premul order, no GPU/readback promotion.
+
+- Chốt106 cập nhật PR12 6411617634: L2 ĐÃ mở#18–23, geometry eeb95d5a reportedtip90c4e4ff9
+  đã trở lại. #16 được ACKartifact-level và#17 independent raw transition decoder mở theo
+  6411543326. Shader106 không lấn các miền này; future batch phải claim từ sticky mới.
+
+- Receipt106 final: codeb979cfe657bffe96a2bc89fda184da29e97d7815 / Verify40292776800SUCCESS4m48s;
+  full1137localPASS270.151s/32newPASS0.131s. Handoff PR12 6411725150; raw
+  l3-ef6b75ef106-verification. Peer spec chốtb1e00350; shader batch covered at bounded scope,
+  custom23/GPU/scheduler vẫn mở; no selfACK/readback/render acceptance.

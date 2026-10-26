@@ -190,3 +190,21 @@ LOD/coverage/depth/stencil/raster. No image/frame/render acceptance. Không lấ
 Peer review nên tái tính round-even clip→window, UV tại cùng fixed pixel, 4tap means/clamp
 neighbor, filter→premul order; các phép số học này có thể chạy từ artifact với stdlib,
 không cần APK/Unicorn (decode/hash origins/GPU là tầng khác).
+
+### Điều phối mới lúc chốt
+
+PR12 **6411617634** thông báo L2 mở lại thành#18–23 và geometry digger eeb95d5a đã trở lại
+(reported tip90c4e4ff9); **6411543326** chấp nhận#16 ở artifact-level, mở#17 independent
+raw/APK decoder cho transition. Đây là trạng thái điều phối mới, không dùng trạng thái cũ
+“L2 chờ mở/geometry chưa quay lại”. Batch106 vẫn shader/texture theo claim6411403047;
+**không** đào/import/merge/sửa work của các miền đó trong batch này. Snapshot sticky-final/
+coordination-updates giữ nguồn; bất kỳ batch mới cần claim lại theo bảng mới.
+
+## Receipt106 final
+
+Code **b979cfe657bffe96a2bc89fda184da29e97d7815**, **Verify40292776800 SUCCESS**, job4m48s.
+Full local **1137 PASS270.151s**, **32new PASS0.131s**. PR12 handoff
+**6411725150** có branch/code/CI/test count/review requests/provenance; raw CI/local/handoff
+receipts giữ riêng. Đây là bàn giao nhờ review, **không self-ACK hoặc render acceptance**.
+Spec fetched lúc chốt **b1e0035068e4efa53163a4221807e63da52c89a3**; điều phối mới đã ghi
+ở trên/update-final.json, không import artifacts hoặc đổi miền theo suy đoán.
