@@ -72,6 +72,12 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 79 — 26/10, tồn đọng tổng + phân công lại: a5 nhận game-side writers):**
+> **§24.72**: tồn đọng = #27 native structural (ef 🔄 121) · **#27 game-side
+> writers/bootstrap C# — CHƯA AI LÀM → a5 nhận (static-only, dump.cs/RVA; quick-win:
+> StartDroneSkillDamages static + MISSING-13 plugin list)** · #7 AI-3 🔄 (#8 hàng đợi) ·
+> MISSING 8/8-một-phần · DQ 33/14/9. Boundary: ef giữ libunity FDE; va chạm first-wins.
+>
 > **Sửa lại (lần 78 — 26/10, ĐÓNG #28 runtime theo lệnh chủ dự án + #6-rep ĐÓNG + CLAIM #7):**
 > **§24.71**: **#28 ĐÓNG (scope)** — static đủ; không secret, không run, không nhánh B;
 > receipts 121/124 + bridge `40333586413` giữ; live-DPS = MODEL_NOT_MEASURED runtime,

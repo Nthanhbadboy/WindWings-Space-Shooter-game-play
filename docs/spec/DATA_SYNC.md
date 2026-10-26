@@ -4201,6 +4201,42 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   builtin mesh refs — resolve từ packaged objects HOẶC scoped missing-X có pins; #8
   untouched đến khi handoff #7.
 
+### 24.72 Điều phối lần 79 — TỒN ĐỌNG tổng + PHÂN CÔNG LẠI: ef giữ chuỗi native, a5 nhận miền game-side (C#/il2cpp)
+
+- **⚡ Lệnh chủ dự án (26/10): "còn gì tồn đọng? AI-1 nhiều việc — phân ra để AI-2 có
+  việc làm."** Rà tồn đọng từ FILE (26/10):
+  1. **#27 native structural** (ef 🔄 121 factory — probe intermediate `cca51db0b7`,
+     chưa handoff): còn graph creation/service bootstrap (native)/clip binding/clock+
+     control writers native/previous+active pose/conversion→blend→normalize→apply/
+     readback/render.
+  2. **#27 game-side writers + bootstrap (libil2cpp/Assembly-CSharp) — CHƯA AI LÀM** →
+     tách cho a5 (bảng dưới).
+  3. **#7** AI-3 🔄 (954 PSR · 17 nonnull = 10 other/local + 7 builtin, raw 7/7
+     unresolved → Library/unity default resources, không đoán Quad/Cube ✓) · **#8** hàng
+     đợi sau #7.
+  4. **MISSING_FOR_NEW_GAME 8 đủ / 8 một phần** — câu còn: Boss pha (D3: thứ tự pha +
+     điều kiện vào/thoát) · Meta (23 wing impl + DPS closure → runtime nay
+     MODEL_NOT_MEASURED) · save schema đầy đủ + flush đĩa · Tech plugin list (row 13,
+     "không cần thiết bị") · Arena/PvP · meta thưởng ngày/tuần · sprite/prefab-binding
+     luật số/join.
+  5. **DESIGN_QUESTIONS 33 ❌ / 14 ⚠ / 9 blocker** — lớp thiết kế, không thuộc đào data.
+  6. **StartDroneSkillDamages[12] "chưa có static — mỏ digger kế tiếp"** (RECHECK lần
+     73; runtime `[556,10000,5600,710,1999,2650,933,5500,1085,7200,1868,1199]` đã biết).
+- **PHÂN CÔNG MỚI (hiệu lực ngay):**
+  - **ef (AI-1) GIỮ**: chuỗi native libunity node-pipeline structural (121 factory →
+    graph creation → service bootstrap native → clip binding → clock/control writers
+    native). Miền: `libunity.so` FDE — không đổi.
+  - **a5 (AI-2) NHẬN MIỀN MỚI — game-side writers/bootstrap, static-only**:
+    ① method C# GHI pose/clip/previous buffer (từ node174/clip input ngược lên game
+    side) ② bootstrap game-side cấp service/queue/chunk — đối chéo `116cb40`-harness
+    của ef ③ clock/control writers C#. Công cụ: dump.cs + il2cpp metadata + RVA pin
+    (thế mạnh #28/r90 của a5). **Quick-win phụ khi chờ phản biện**: ④ static mỏ
+    StartDroneSkillDamages (đối chiếu 12 giá trị runtime) ⑤ MISSING row 13 plugin list.
+    Boundary: **KHÔNG đụng libunity FDE (ef)**; va chạm → CLAIM first-wins trên board;
+    artifact/report/datas riêng; static-only (lệnh 26/10) — cấm tụng thành runtime.
+- Supersede dòng cũ RECHECK "Map contents placeholders — chờ probe CI": #28 ĐÓNG theo
+  lệnh 26/10 — giữ placeholders, không chờ probe nữa.
+
 ### 24.66 RE-CHECK 26/10 — mỏ runtime 23/10 (Mate 20 X) × static mới: r90 NÂNG static↔runtime verified
 
 - **Yêu cầu chủ dự án**: "thư mục runtime-probe… kiểm xem rút ra được gì". Spec rà toàn bộ
@@ -4220,4 +4256,4 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
      khác đại lượng, không trộn) + basePriceStatUpgrade[7] + deltaPriceDroids[3] · Drone
      MaxLevelPerRanks[7]/CardUpgrades[7]/UnlockNowCosts[12] + **StartDroneSkillDamages[12]
      (chưa có static — mỏ digger drone kế tiếp)** · Stage 249 ≈ 250 maps ✓.
-  4. ⏳ Map contents vẫn placeholders — chờ probe CI `arr=256&depth=2` (a5 đang chạy).
+  4. ⏳ Map contents vẫn placeholders — ~~chờ probe CI `arr=256&depth=2`~~ **supersede lần 78: #28 ĐÓNG (static đủ) — giữ placeholders, không chờ probe.**
