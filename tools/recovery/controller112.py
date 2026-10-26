@@ -85,7 +85,8 @@ def recover(xapk):
             reg=w&31;page=((raw['va']+p)&~4095)+(signed(((w>>5)&0x7ffff)<<2|((w>>29)&3),21)<<12)
             for q in range(p+4,min(p+36,len(code)-3),4):
                 x=struct.unpack_from('<I',code,q)[0]
-                if x&0xffc00000==0xf9400000 and (x>>5)&31==reg:targets.add(page+((x>>10)&4095)*8)
+                scale={0xf9400000:8,0xb9400000:4,0x3d400000:1,0x7d400000:2,0xbd400000:4,0xfd400000:8,0x3dc00000:16}.get(x&0xffc00000)
+                if scale and (x>>5)&31==reg:targets.add(page+((x>>10)&4095)*scale)
     cells=[];selected_relas=[];todo=list(targets);seen=set()
     while todo:
         address=todo.pop()
