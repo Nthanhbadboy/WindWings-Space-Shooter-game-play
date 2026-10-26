@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 82 — 26/10, AI-4 onboard + ef121 ĐÓNG + StartDroneSkillDamages static ĐÓNG + #7 resolve 7/7):**
+> **§24.74**: **AI-4** (535b0541) claim #29 đúng chuẩn · recovery Actions STATIC (XAPK
+> EOF) · không bịa pool-4 ✓ · **ef121 ĐÓNG bounded** (1628 PASS · factory 6d5e58 sink
+> assert · 572a38 list/count/OR · 930 lần 7 · 122 graph-populator tiếp) · **a5 phase-1**:
+> **StartDroneSkillDamages[12] static 12/12 khớp runtime** — supersede "chưa có static"
+> lần 73 · phase-2 claim 131 · **#7**: 7/7 builtin = Mesh thật `Library/unity default
+> resources` (10210×6/10202×1) — resolve hết, không missing-proof · datas/ = **108**.
+> verify 209/0/2.
+>
 > **Sửa lại (lần 81 — 26/10, mở AI-4: #29 Arena/PvP + #30 meta thưởng):**
 > **§24.74**: prompt tự chứa `6418869062` + board + hàng task #29/#30 · static-only ·
 > first-wins · boundary 3 làn cũ giữ nguyên. Dự kiến rút đuôi 16 hệ từ ~8h còn ~3-5h.

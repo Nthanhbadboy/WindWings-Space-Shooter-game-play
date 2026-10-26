@@ -4290,6 +4290,38 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
      legendary [10016,10019,10021,10024] + 7 rank strings (C…XS) + Invincible 3/10 +
      TouchRanger 15 · Tech MAX_LV_TECHLAB 34 + deltaPricePlayers[24] (0,108… ≠ 0,16 —
      khác đại lượng, không trộn) + basePriceStatUpgrade[7] + deltaPriceDroids[3] · Drone
-     MaxLevelPerRanks[7]/CardUpgrades[7]/UnlockNowCosts[12] + **StartDroneSkillDamages[12]
-     (chưa có static — mỏ digger drone kế tiếp)** · Stage 249 ≈ 250 maps ✓.
+     MaxLevelPerRanks[7]/CardUpgrades[7]/UnlockNowCosts[12] + **StartDroneSkillDamages[12]** ~~(chưa có static — mỏ digger drone kế tiếp)~~ **supersede lần 82: a5 tìm thấy static initializer — 12/12 khớp runtime (§24.74)** · Stage 249 ≈ 250 maps ✓.
   4. ⏳ Map contents vẫn placeholders — ~~chờ probe CI `arr=256&depth=2`~~ **supersede lần 78: #28 ĐÓNG (static đủ) — giữ placeholders, không chờ probe.**
+
+### 24.74 Điều phối lần 82 — AI-4 onboard đúng chuẩn · ef121 ĐÓNG bounded factory (930 lần 7) · a5 phase-1: StartDroneSkillDamages static ĐÓNG · #7 resolve 7/7
+
+- **AI-4 535b0541 KHỞI ĐỘNG ĐÚNG** (CLAIM `6418961386` — đúng form/artifact/report naming,
+  #30 queued): XAPK release-host EOF (cùng lỗi hệt AI-3) → **branch-scoped Actions STATIC
+  recovery** (stream APK parts · pin XAPK+libil2cpp hashes · export riêng Arena/PvP
+  families · decimal RVA + per-method code SHA) — đúng pattern recovery, không runtime ✓ ·
+  **không bịa pool thứ 4**: dump.cs có AllPvPStartMaps nhưng KHÔNG có AllPvPRandomMaps —
+  đang verify accessor thay vì invent ✓ · baseline 209/0/2 imported (c0ff72912) ✓.
+- **#27/121 ef HANDOFF — ĐÓNG bounded node-factory** (scientific `f58d0ebbb1`, Verify
+  `40339667616`, full **1628 PASS**; SHA `ca37bac84e61…` 5569B khớp ✓): factory FDE
+  6d5e58..6d5ec4 entry→BL 3c986c **allocator synthetic-sink** (assert đúng request:
+  X2+200/align16/category94/label 12da21 empty-C-string; variants 200/240/300; KHÔNG
+  claim malloc-parity)→120-ctor→**skip 570ff0 do flags tự nhiên** (không bypass PC)→
+  572a38: node+20=owner · circular intrusive list owner+48 sentinel owner+40 · count
+  41→42 · OR owner+ac C8 →RET. **220 instr/call (174 ctor là subset)**. Tự-sửa minh bạch:
+  node+ac KHÔNG bị sửa (constructor-prefill) ✓. **930 DWORDs bit-equal — lần 7** ✓.
+  Upstream 6d2950..6d29e4 (virtual + loop 6d2990 + 6d81b0) captured KHÔNG execute →
+  **CONTINUE122 graph-populator đang chạy** (tip `0a6387ea7`). *Spec cross-check:
+  decimal 6d5e58/6d5ec4/572a38/6d2950/6d2990/6d29e4/10b1240/12da21/930 đủ ✓; 3c986c/
+  570ff0 ghi dạng HEX trong artifact — đủ, không lệch.*
+- **#27-GS a5 phase-1 pushed** (chưa handoff; 2 artifact pulled SHA `8e34bf8cd492fb80…`
+  4467B + `4e1e4187fb31f089…` 4506B ✓): **StartDroneSkillDamages[12] static TÌM THẤY —
+  12/12 giá trị khớp runtime `[556,10000,5600,710,1999,2650,933,5500,1085,7200,1868,
+  1199]`** → supersede RECHECK lần 73 "chưa có static — mỏ digger kế tiếp" (mỏ ĐÓNG,
+  sửa luôn dòng RECHECK trên) · kèm MISSING row-13 plugin audit ✓. **Phase-2 CLAIM**
+  (`6418936917`): bootstrap/callers C# đối chéo 116cb40 + clock/control writers →
+  report 131 + artifact riêng. Chờ handoff CI để ĐÓNG chính thức phase-1.
+- **#7 AI-3 resolve 7/7** (progress `0018ac7ae` — tip ✓, chờ exact-head CI trước handoff):
+  7 refs builtin KHÔNG phải missing — **là Mesh thật trong `Library/unity default
+  resources`** (FileID 2 · PathID 10210×6/10202×1 · owner resources.assets path 505276),
+  decode vertices từ standalone2 (byte-resolved, không đoán tên) · artifact
+  `2b1c4eace14f…` 24112B khớp ✓ · full 1486 PASS · tự sửa pending-SHA token minh bạch ✓.
