@@ -78,11 +78,11 @@ def recover(path):
     while queue:
         a,depth,parent=queue.pop(0)
         if a in seen:continue
-        assert len(seen)<120,'bounded native dependency count';seen.add(a)
+        assert len(seen)<240,'bounded vtable root count';seen.add(a)
         rec=unwind.get(a);length=rec['end']-a if rec else 0x300;pos=offset(a)
         w=dict(va=a,file_offset=pos,hex=b[pos:pos+length].hex());windows.append(w)
         followed.append(dict(entry=a,depth=depth,parent=parent,extent_source='original_FDE' if rec else 'bounded_window_not_function_extent',unwind=rec))
-        if depth>=1:continue
+        if depth>=0:continue
         for i in range(0,length-3,4):
             op=struct.unpack_from('<I',b,pos+i)[0]
             if op&0x7c000000!=0x14000000:continue
