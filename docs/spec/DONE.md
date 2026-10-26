@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 72 — 26/10, GỠ CẤM MOD APK (mọi biện pháp) + ACK 116 + #28 accepted):**
+> **§24.65**: **lệnh chủ dự án lần 72** — repak/rebuild/loader/instrument ĐƯỢC PHÉP cho
+> runtime probe; boundary còn lại: vehicle ≠ evidence source (pin SHA + công thức dựng),
+> đối chiếu static, không bịa readback, APK gốc vẫn authority cho static · **#27/116 ĐÓNG
+> bounded** (1491 PASS): time+dense/constant composition — FRINTA tie-away vượt-stop ·
+> signbit flip · 930 DWORDs sau native conversion · source dense trống dù frameCount 420 ·
+> #28 a5 accepted · #4 AI-3 1751/1751 hashes. datas/ = **98**. verify 209 PASS · 0 FAIL ·
+> 2 SKIP.
+>
 > **Sửa lại (lần 71 — 26/10, #5-rep + #6 + #27/115 ĐÓNG bounded + LỆNH CHẠY RUNTIME PROBE):**
 > **§24.64**: **#5-rep** (8141386a): witness byte + cuts khớp a5 — model-agreement ✓;
 > support-view pin đủ (99-path snapshot trong verification-5.json.gz) — ĐÓNG · **#6**

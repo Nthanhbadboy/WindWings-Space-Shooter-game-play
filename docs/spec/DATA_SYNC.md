@@ -4019,3 +4019,33 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   provenance; original XAPK bytes KHÔNG đụng); session ưu tiên: ① map
   `arr=256&depth=2` (đối chiếu 742 values) ② second-device ③ live-DPS same-build;
   fail → báo blocker thật, không bịa; mỗi receipt = artifact riêng + report.
+
+### 24.65 Điều phối lần 72 — GỠ CẤM MOD APK (mọi biện pháp) · ACK 116 · #28 accepted · #4 progress
+
+- **⚡ LỆNH CHỦ DỰ ÁN (lần 72): "bỏ cấm mod APK, cho phép dùng mọi biện pháp".** Quy đổi
+  từ nay: **APK gốc vẫn là authority cho mọi static evidence** (SHA XAPK/APK vẫn pin như
+  cũ) — nhưng **repak/rebuild/loader/instrument (APKEditor, merge splits, inject
+  bridge/dll, smali patch…) ĐƯỢC PHÉP** cho mục đích chạy runtime probe. **Boundary còn
+  lại (integrity, không phải công cụ):** ① package đã mod = **vehicle, không phải evidence
+  source** — mọi receipt pin SHA vehicle + công thức dựng (components + commit); ② dữ
+  liệu runtime đọc được phải đối chiếu được với static data đã ĐÓNG (742 values…);
+  ③ KHÔNG bịa readback — fail báo đúng bước; ④ không tự ACK/main/merge; ⑤ static analysis
+  tiếp tục trên APK gốc (không đổi nguồn đào tĩnh). Lệnh này gỡ blocker #28 loader —
+  a5 đã accept (12:42) và giờ có thêm mọi biện pháp nếu loader thuần không đủ.
+- **#27/116 ef** (scientific `61f31ae26f`, Verify `40324149097` exact head, full
+  **1491 PASS**; SHA `bcde214305db…` khớp ✓): **clip-time native chain + dense/constant
+  thực thi**: 6d2e94→b93158→6df270→stream 6df310/dense 6df518/constant 6d9200 · serializer
+  fields pin m_StartTime+0x5f8/m_StopTime+0x5fc/m_CycleOffset+0x608 · **counterexamples
+  từ instruction gốc**: loop −1→phase1/cycles−2 (không `%1`) · S4 negative-zero flips
+  phase qua signbit · **FRINTA tie-away có thể trả sample VƯỢT stop trong khi phase
+  clamp** · dense clamp row-index nhưng KHÔNG clamp fractional (u−0.5→[-5,5]) · 1609
+  2262 words + start/stop/cycle/loop adapt → **930 DWORDs khớp separate-f32 SAU native
+  time conversion** · **source dense curveCount=0/sampleArray[] dù frameCount=420 →
+  branch skipped (data thật)** · subs khai: modff (PLT 17414144) + memcpy host — *spec
+  cross-check decimal: đủ địa chỉ · counts 24+8+5+10=47 calls/29.126 instr/48 modff/
+  5 memcpy ✓.* **Verdict: ĐÓNG bounded time+dense/constant composition; #27 MỞ: Animator
+  context/bootstrap/blend/readback.**
+- **#28**: a5 accept probe 12:42 (receipt `l2_a5a74747_28_loader_runtime_map` + report
+  128; giữ 121/124) — chờ push. **#4**: AI-3 PROGRESS 12:42 — recovery `40322602149`
+  **1751/1751 object hash khớp** · 7 fonts/2352 glyph/2354 char/2285 unicode · artifact
+  local SHA `9cec092de…` · 59 focused PASS — handoff chờ push+CI.
