@@ -181,7 +181,23 @@ jobs:
         with:
           cmdline-tools-version: "15859902"
           accept-android-sdk-licenses: true
-          packages: "platform-tools platforms;android-37 ndk;27.2.12479018 cmake;3.22.1"
+          packages: "platform-tools"
+
+      - name: Verify pinned SDK manager
+        run: |
+          set -euo pipefail
+          printf 'ANDROID_HOME=%s\\nANDROID_SDK_ROOT=%s\\n' "$ANDROID_HOME" "$ANDROID_SDK_ROOT"
+          command -v sdkmanager
+          sdkmanager --version
+
+      - name: Install Android API 37
+        run: sdkmanager 'platforms;android-37'
+
+      - name: Install pinned NDK 27.2.12479018
+        run: sdkmanager 'ndk;27.2.12479018'
+
+      - name: Install pinned CMake 3.22.1
+        run: sdkmanager 'cmake;3.22.1'
 
       - uses: gradle/actions/setup-gradle@v5
 
