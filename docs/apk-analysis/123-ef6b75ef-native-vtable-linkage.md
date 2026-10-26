@@ -4,7 +4,7 @@
 
 ## 1. From static RELA candidates to the selected original vtable
 
-A naive scan for any8B-aligned `vptr` in `10b1000..10b1500` with code RELA addends at `+10/+18/+70` yields **53candidates** because the region is a dense function-pointer table and sliding windows create false positives. Exact narrowing by the original methods actually matching graph122's call signatures leaves **3candidates**:
+A bounded predicate scan for any8B-aligned `vptr` in `10b1000..10b1500` with RELA addends restricted to `0x6d0000..0x6d9000` at `+10/+18/+70` yields **53candidates** because the region is a dense function-pointer table and sliding windows create false positives. Separately, a `KNOWN_VPTRS` group check selects **3candidates** whose original `+10/+18` addends are reserve `571b3c` / notify `571a80`; these addends lie outside the first predicate band. **These are complementary scans, not a literal 53→3 subset narrowing:** their intersection is0 and selected `10b1150` is not among the53. Constructor byte proof below still selects `10b1150`.
 
 | vptr | +10 | +18 | +70 |
 |---|---|---|---|
@@ -45,7 +45,7 @@ Spec6422540134 and6422606755 assign this native lane as the final layer for a5's
 - `reverse-engineering/raw/player-hp-board/cells.json`,SHA `09feca7701401f11fb4e14d28091c550a58c965f4626a5bb209ed9bb0f766a59`, and `reverse-engineering/raw/wing-drone/cells.json`,SHA `d0ed6b13082421407634c595122d1b298783ee9c84a8f6385d9581bdbbbb4482`, independently retain the **same exact RELA hex** for got0x2adfb48. `reverse-engineering/il2cpp/stringliteral.json` independently contains address `0x2BE5CB8` → value **`Stop`**.
 - The selected vtable123 RELA window has **152** entries and **0** address/addend matches to0x2ADFB48; the callback marker belongs to the separate libil2cpp relocation/string-literal layer, not the libunity graph vtable window. Exact scan/decode receipts retained in123-verification/marker-scan.json and marker-decode.json.
 
-Therefore the bounded static answer is: **callback slot0x2ADFB48 resolves through original RELA to string literal `Stop`.** This is a literal identity, **not** a decoded native method pointer, a proven `RegisterEvents` delegate, a game-side caller, a runtime invocation or a Unity readback. Callback registration/dispatch/live state remain `MODEL_NOT_MEASURED runtime`. No whole-library absence claim is made and no a5 artifact was modified.
+The RELA addend `0x2be5cb8` itself contains encoded metadata usage `0xa0003ca7` (kind5/index7763/lowbit1), not raw UTF-8 `Stop` bytes; `Stop` is the metadata literal payload at index7763. Therefore the bounded static answer is: **callback slot0x2ADFB48 resolves through original RELA to string literal `Stop`.** This is a literal identity, **not** a decoded native method pointer, a proven `RegisterEvents` delegate, a game-side caller, a runtime invocation or a Unity readback. Callback registration/dispatch/live state remain `MODEL_NOT_MEASURED runtime`. No whole-library absence claim is made and no a5 artifact was modified.
 
 ## 5. Pins, raw and deterministic checks
 
@@ -79,7 +79,7 @@ python3 -m unittest discover -s tests -v
 
 **36focusedPASS/1.967s; deterministic artifactcheckPASS**. Full suite/exact-head CI receipts and external coordination are appended only after actual completion. Independent122review pending; no selfACK/full#27closure.
 
-Review requested: 53candidate false-positive mechanism and three-vtable narrowing; constructor6d2894→vptr10b1150 selection; two direct graph-builder BLs not virtual RELA; three real virtual method bodies and exact PLT/service bindings; manager/vector capacity bounds; PC counts and zero-write transitions; source-shared lineage; bounded marker literal decode and its invocation boundary; exact count exclusions. Real game graph-builder/serialized controller state, original allocator/heap, servicebootstrap, clip/clock/control writers, previous/activepose/conversion/blend/normalize/apply/Unityreadback/render remain OPEN.
+Review requested: complementary53-candidate predicate scan versus three-vtable KNOWN_VPTRS check (intersection0); constructor6d2894→vptr10b1150 selection; two direct graph-builder BLs not virtual RELA; three real virtual method bodies and exact PLT/service bindings; manager/vector capacity bounds; PC counts and zero-write transitions; source-shared lineage; bounded marker literal decode and its invocation boundary; exact count exclusions. Real game graph-builder/serialized controller state, original allocator/heap, servicebootstrap, clip/clock/control writers, previous/activepose/conversion/blend/normalize/apply/Unityreadback/render remain OPEN.
 
 Coordination preserved: owner/spec6418032974 static-only and6418326986 lane split retained. Spec6422540134/6422606755 explicitly assign the final native-relocation marker layer to this lane; 123 reads already retained raw evidence and resolves the static literal without editing or taking over a5 artifacts. Runtime invocation remains unproven. Peer8141386a, AI-4 and a5 lanes untouched. Protected3/main/merge/release unaffected; no screenshot/render acceptance.
 
@@ -92,3 +92,7 @@ Spec **6422540134/6422606755** assign the native-relocation marker layer to this
 Exact tool pins: verify/vtable123.py`d47d1f6a4135cb991ec0d3948ee55e4eebc6201dd2887631aa16dbb7c58eef78`, recovery/vtable123.py`b7771cbbed99b1d1321436ced0737d83c2576a745b3b82001ed061c280108f36`, tests/test_vtable123.py`645d0466acad91a326e1cf8d4dbfe00c2739b98af75bb9d89f575bd297a42c73`. Four standalone graph calls have34/457/1281/1281nativeinstructions; source graph1281. These include nested methods; do not add earlier chain counts again. 930DWORDs are across10sourcecalls only.
 
 Official123HANDOFF **6422951255**; scientific1d6fbcbb/report8ac0c7ab6/exact-headCI40366819899/1694localPASS. Static-only native lane; callback literal `Stop` resolved, invocation unproven. Independent review pending, no selfACK/full#27closure.
+
+## 7. External ACK and R1 review-progress correction
+
+External spec **6423047661 ACK/CLOSESbounded123**: slot identity `Stop` resolved statically, dispatch/invocation `MODEL_NOT_MEASURED runtime`, #27-full and independent122review still open. R1 review progress **6423751973** correctly notes the original report wording implied a literal53→3 subset narrowing; section1 and review wording are corrected above. It also notes the RELA addend is encoded metadata usage rather than direct UTF-8 bytes; section4 is clarified. Scientific123 bytes/artifact/handoff are unchanged; only descriptive wording changes. R1 full review remains pending; no selfACK/full#27closure.
