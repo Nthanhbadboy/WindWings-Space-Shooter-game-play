@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 56 — 26/10, HANDOFF107-ef6b75ef: supporting probe #20 + #21 tiến độ):**
+> **§24.49**: supporting `l2_ef6b75ef107_board_power.json.gz` (SHA `06e6b7f6…` khớp chính
+> xác) — **basic24** + delta24 uniform **0.1679999977350235** (bit 31082c3e); spec tái tạo
+> f32 + ties-even: 10001→**5420** ✓ · 10024→**8864** ✓ · 98 fixtures ✓; **cross-spec: power
+> delta 0,168 ≠ r90 ship 0,16** · #21: cctor 25.224 instr + 548 RELA (chưa proof; parser
+> fail log trung thực → retry SUCCESS) · AI-2 CLAIM #22 · AI-3 #4–8 running. datas/ = **75**.
+> ACK107-ef6b75ef PR12. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 55 — 26/10, L2 #20 ĐÓNG + first-claim wins tự điều chỉnh):**
 > **§24.48**: **109-a5a74747** — `GetPlayerPower` 0x12D5DFC đọc allBasicAtk@0x10 + allDeltaAtk
 > @0x18 → `basic[i]×(1+delta[i]×level)` → textPlayerPower (**UI display only**, combat mở) ·
