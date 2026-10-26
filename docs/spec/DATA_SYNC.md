@@ -5617,6 +5617,51 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   #27 khép 6/6 ⇒ #27 ĐÓNG-full với các bounds đã ghi (M1b runtime-only).
 - **Datas/ 179 + 2 pulled (156/122-review) = 181 (needle sync commit này).**
 
+### 24.109 ERRATUM-127 (spec xác nhận) + review-127 gần đích + 159 ĐÓNG + 166-correction ĐÓNG (lần 120)
+
+- **AI-3 review-127 — DELIVERABLE `6428296951` @ `a7f4e1f65de`** (1655 full /
+  284 focused / 32 mới PASS; artifact pulled
+  `datas/l3_geometry_review_ef127_8141386a.json.gz` **12.484B pin
+  `c34f6cbc…` ✓**; CI Verify + scoped GREEN): verdict
+  **`SUPPORT_NULL_PATH_ONLY / CALLEE_RET_METADATA_CORRECTION_PENDING`** —
+  3×51 null-paths + 33 witnesses + 6 FDE ends ĐƯỢC SUPPORT; **1 DRIFT xác
+  nhận: `b98c98` RET PC** — 127/128 ghi "RET `b98d68`", byte thật `c0035fd6`
+  (RET) ở **`b98d64`**; `b98d68` = `d6071494` (BL stack-check).
+- **ERRATUM-127 — do SPEC XÁC NHẬN (đường AI-3 nêu: "producer-owned erratum
+  confirmed by spec"):** spec xác nhận drift từ bằng chứng độc lập đã pin của
+  AI-3 (artifact `c34f6cbc…` · fresh recovery của AI-3) + raw 127 của ef
+  (`43adb19f…` — pin khớp) chứa CẢ HAI từ lệnh `c0035fd6` và `d6071494` (tồn
+  tại thật, phân biệt được). **Hiệu lực:** mọi trích dẫn "RET `b98d68`" trong
+  127/128 đọc thành **"RET `b98d64`"**; science/raw/case-51 của 127 GIỮ NGUYÊN
+  (chỉ nhãn return-PC đổi); ef được mời đối chiếu raw riêng 1 vòng — không
+  phản đối ⇒ erratum đứng; kèm 2 P2 wording AI-3 nêu (6ceeb0-executed ·
+  untouched-A5) vào cùng ghi chú. **Không tự bịa correction — dựa pin AI-3.**
+- **535 — 159 exchange-chain ĐÓNG** (HANDOFF `6428214709` @ `ebd5c8197b`;
+  runs `40407674650`/`40407674752`/`40407674646` ✓; artifact pulled
+  `datas/l2_535b0541_exchange_chain.json.gz` **3.458B pin `09672352ef…` ✓**;
+  966 local): **sửa ghi chú 154** — "`SetPopup` không caller" chỉ đúng với
+  `Popup_Exchange` (693); hai shop-popup có đúng 1 caller mỗi bên (22734600/
+  19943488, tail branch) · **`onExit` giải mã xong**: `Action<int>` dựng bằng
+  ctor 25841028, lưu `+0x50`, gọi `blr x9` w1=count · **popup KHÔNG có ví**
+  (0 `set_*Medal`) — mọi câu "popup trừ medal" bỏ · `maxStock` = công thức
+  `rewards.stock − sold`; `MaxStockCount = 10` (158) ⇒ trần slider = 10−sold ·
+  gate ở popup là số dư medal, "mua quá trần" vẫn runtime.
+- **a5 — 166-correction ĐÓNG** (`6428219834` @ `bdd7a6aa38`; CI 3/3 ✓;
+  receipt pulled `datas/l3_a5_d5_23oct_runtime_crosswalk.json` pin
+  `015dbc7b…` ✓; 295 local · MW7): **lead-followup của chủ dự án giao xong** —
+  pin TRỌN thư mục capture 23/10: **84 file (43 JSON/35 PNG/3 MD/3 logs) =
+  23.793.059 B, manifest `19fcf9eb…`** · Premium UI evidence: "member of
+  Premium **FOREVER**" + FREE first revival / NO ads / UNLIMITED energy /
+  3× coin — **correction: FOREVER ≠ 24h** (không timer/fresh-account proof) ·
+  7 GP snapshots `countReborn=0`; `live_2..5_gp.json` **byte-identical**
+  (không phải 4 mẫu độc lập) · HUD HP **2500** + `StartHp=2500` khớp ·
+  bounds: cross-build 1.0.69 vs 1.3.118 giữ nguyên.
+- **review-127 trạng thái:** chờ final exact-head CI của AI-3; với
+  ERRATUM-127 có hiệu lực, **không còn blocker ngoài** — formal HANDOFF
+  erwartet nâng verdict SUPPORT → APPROVE (null-path + corrected-return); sau
+  đó **#27 khép 6/6** (M1b runtime-only).
+- **Datas/ 181 + 3 pulled (159/166/review-127) = 184 (needle sync commit này).**
+
 ### 24.108 #28 ĐỔI CĂN CỨ — PROBE RUNTIME 23/10 ĐÃ CHẠY = BẰNG CHỨNG RUNTIME CỦA #28 (lần 119, theo lệnh chủ dự án)
 
 - **Lệnh:** "sửa #28 cho đúng là lấy probe runtime ngày 23 đã chạy rồi mà

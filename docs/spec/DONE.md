@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 120 — 27/10, ERRATUM-127 + 159 ĐÓNG + 166-correction):**
+> **ERRATUM-127 (spec xác nhận)**: `b98c98` RET = **`b98d64`** (`c0035fd6`)
+> — nhãn cũ `b98d68` (`d6071494` BL) = DRIFT; supersede tại 127/128; science
+> giữ nguyên (dựa pin AI-3 `c34f6cbc…`) ⇒ review-127 không còn blocker ngoài
+> · **159** (`ebd5c8197b` · `09672352ef…`): SetPopup có caller (tail) ·
+> onExit = Action<int> blr · popup không ví · maxStock=10−sold · **166**
+> (`bdd7a6aa38` · `015dbc7b…`): 84-file manifest `19fcf9eb…` · **FOREVER ≠
+> 24h** · countReborn=0 · HP 2500 ✓. datas/ = **184**. verify 209/0/2.
+>
 > **Sửa lại (lần 118 — 27/10, review-126 APPROVE + 156 ĐÓNG + review-127 CLAIM):**
 > **review-126** (`6427626453` · `e1b02b87…` ✓ · 4 CI GREEN): verdict
 > APPROVE_BOUNDED — census 3.456.888 words · 0/29.626 RELA · own-replay
