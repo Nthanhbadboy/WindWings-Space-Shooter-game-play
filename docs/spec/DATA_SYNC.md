@@ -5179,6 +5179,42 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - **Datas/ 152 + 5 pulled (144/145/R1-119/R2-125/N2) = 157 (needle sync commit
   này).**
 
+### 24.95 TÁI KIỂM TỒN ĐỌNG (lần 104 — vòng audit, không comment mới trên PR12; tips giữ nguyên)
+
+- **Bắt được 1 lỗ hổng luồng: HANDOFF 135 KHÔNG BAO GIỜ ĐĂNG** — AI-4 đăng
+  runs-xanh (lần 93) rồi chuyển thẳng sang 136; spec cũng chỉ ACK "runs-xanh".
+  Artifact tự phục vụ từ headSha đã verify `240f8ab0c` — pulled `004898a2…`
+  2559B **khớp đúng PROGRESS** ✓ (datas 158). Bài học: handoff-missing phát
+  hiện bằng đối chiếu "report đã ACK vs artifact đã pull".
+- **Đối chiếu not_decoded artifact-level (superseded chưa ghi):**
+  - 135 "method đọc MaxRankStars… ordering-only" → **SIÊU THU bởi 136**
+    (GetRankNumber chạm qua `x0` — đã áp §24.87).
+  - 134 "MaxRankStars values" → **ĐÓNG bởi 135** (bind kháng-may).
+  - **VẪN MỞ (miền #29 — việc khả dụng):** 133 **rewardValues** (amounts 6 mốc
+    hunter) + **rewardScales** — blob chưa bind, chưa ai quay lại; 134 **14 hàng
+    medal `[rank][index]` nghĩa từng ô** (GetTournamentMedalReward — đúng mục
+    followup-7 đề xuất lần 102 nhưng AI-4 đi nhánh 8/9/…12). Đề nghị: AI-4 gộp
+    thành **followup-13 (2 mục) + close-out 127–145**.
+  - **Trần static (không mở nếu không có quyết chủ dự án):** marker-count scene
+    (133) · remote rewrite (134/140) · ToRoman glyphs (137/138 — cần raw
+    `21103836` được uỷ quyền) · GameConfig/Application runtime values (141/142)
+    · dialog names 4 OpenURL · stored PlayerPrefs values (143–145).
+- **OPEN_ISSUES legacy (23–25/10) — đối chiếu:**
+  - **Runtime — thiết kế tự quyết (trần):** D2 · D3 · D4 (+ C5 "vắng mặt thật").
+  - **Gated — cần lane dữ liệu (không active):** A2 map→wave inline · B1 3 bảng
+    device · B4 GetCountEnemies · B5 43/305 trace · B6 19 boss-damage class ·
+    C7 45 prefab 900xx · D5 phần serialized joins còn lại.
+  - **Đóng/không hại:** E1 (A) · E3 (vô hại) · E4 (flag A) · C8 (đã có, B).
+- **Hàng đợi đang chạy/chờ (sau audit):** ① ef124 addendum R1 — ASSIGNED
+  AI-3, **chưa claim** ② **N1 review-122 — NHẮC LẦN 2** (chưa claim — a5 hoặc
+  AI-4) ③ D3/D1/D2 wording — AI-3 producer-side ④ close-out #29 + followup-13
+  — AI-4 ⑤ serialized-bootstrap next — ef (owner sẵn từ N2) ⑥ 124 review độc
+  lập = nằm trong ef124-addendum (①).
+- **DR ⑨** (lần-88 directive): review milestone — 123 APPROVE-BOUNDED · 118
+  SUPPORTED · save-schema 21+28 key literal khép ⇒ readiness tăng ở hạng
+  "đối chiếu độc lập" & "persistence"; runtime items vẫn trần.
+- **Datas/ 157 + 1 pulled (135) = 158 (needle sync commit này).**
+
 ### 24.87 Điều phối lần 96 — #136 HANDOFF ĐÓNG (rank API interpreter + 2 đính chính 134/135) · CLAIM 137 · AI-2 memo chưa tới
 
 - **#29-followup AI-4 — HANDOFF #136 `6422732465` @ `efceee587` — ĐÓNG** (runs

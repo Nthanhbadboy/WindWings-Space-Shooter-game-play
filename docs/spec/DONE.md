@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 104 — 27/10, TÁI KIỂM TỒN ĐỔNG — bắt lỗ HANDOFF-135 + đối chiếu registry):**
+> **§24.95**: **HANDOFF 135 chưa từng đăng** — artifact tự phục vụ từ headSha
+> verified (`004898a2…` khớp PROGRESS ✓ · datas 158) · superseded-chưa-ghi:
+> 135→136 (MaxRankStars reader) · 134→135 (values) · **VẪN MỞ**: hunter
+> rewardValues/scales (133) + nghĩa 14 hàng medal (134) — **followup-13 đề
+> nghị** · legacy OPEN_ISSUES: runtime-trần D2/D3/D4/C5 · gated-data-lane A2/
+> B1/B4/B5/B6/C7/D5 · **N1 nhắc 2** · ef124-addendum chưa claim · DR ⑨ ·
+> verify 209/0/2.
+>
 > **Sửa lại (lần 103 — 27/10, 144+145 ĐÓNG (khoá save khép) + R1 APPROVE-123 + R2 SUPPORTED-118 + N2 ĐÓNG):**
 > **§24.94**: **144**: 184 calls · 115/43/26 cận dưới (runs `40379769517`/…465/
 > …026 ✓ · `75974f5a…`) · **145**: unknown 26→0 — `stp`-pair bẫy + Key(slot)

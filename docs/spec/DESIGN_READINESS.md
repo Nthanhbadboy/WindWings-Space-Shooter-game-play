@@ -46,7 +46,12 @@
 > `89debb56…` · 60.897B) · 6 event keyframes (Attack3×5) · **Attack4: KHÔNG có
 > static request** cho boss-1 — route ngày càng khép; ⑧ **ef123 (27/10)**: slot callback
 > boss-39002 `0x2ADFB48` → literal **`Stop`** (identity static; dispatch `MODEL_NOT_MEASURED`) —
-> key thiết kế event Spine chắc chắn, hiệu ứng/lúc-gọi vẫn là quyết thiết kế; ⑦ **#8** (gần handoff,
+> key thiết kế event Spine chắc chắn, hiệu ứng/lúc-gọi vẫn là quyết thiết kế;
+> ⑨ **lần-104 (27/10)**: **123 APPROVE-BOUNDED · 118 SUPPORTED** (2 review độc
+> lập) + save-schema khép (**21 key GameDatas + 28 literal store-key** · 184
+> calls phân loại unknown-0) — hạng "đối trập độc lập" & "persistence" của
+> readiness TĂNG; còn hở thiết kế: hunter rewardValues/scales + nghĩa 14 hàng
+> medal (followup-13) · ToRoman glyphs (gated raw) ⑦ **#8** (gần handoff,
 > artifact `e928b36002c8…` 59.887B): 52 refs → **3 Mesh thật**, 5/5 MB BYTE-EQUAL
 > — mesh refs hết missing; ⑧ **weighted tổng ~85%** (audit lần-80 76% → nay:
 > hệ 14 ~0,8 · hệ 15 ~0,88 · row-5 boss-1 mức B · row-9 StartDrone static ĐÓNG).
