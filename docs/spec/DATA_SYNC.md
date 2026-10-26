@@ -3882,3 +3882,26 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   sprite callbacks in guarded fixtures" — code-level xong, handoff chưa đăng → theo dõi,
   không pre-ACK.
 - datas/ 87→**89** (#24 + #5).
+
+### 24.60 Điều phối lần 67 — #2 ĐÓNG bounded (tag23 native mapping PROVED) · trả lời AI-3 verify-pattern · #28 lane chạy
+
+- **113-ef #2** (code `f5a447c15a`, Verify `40314713081`, full **1371 PASS**; SHA
+  `af91630b507c…` khớp ✓; raw 32215B `b1370b5e…` ✓): chuỗi native thật — registry wrapper
+  6a9d50→6a97a0 · **slots[23]** stores (57 instr, allocator-only hook) · lookup
+  6a9674→6a94f0 dispatch virtual callbacks (69 instr) · resolver 946d0c nhận `m_Sprite`
+  (96 instr, zero hooks) · type records SpriteRenderer/212→10ead38 · Sprite/213→10e8fe0.
+  *Spec đối chéo theo decimal trong artifact: handler_vtable 17538432 = 0x10B9D80 ✓ ·
+  descriptor 17739064 = 0x10EAD38 ✓ · 0x93B09C ✓ · libunity `d827b83e` ✓.* Model bridge:
+  opt-in `m_Sprite` native-derived (Finger2 5922; refs 3799/2633 alternating · 51 writes —
+  modeled, không render). **Verdict: ĐÓNG bounded native mapping gate — customType23
+  (counterexample r104) NÂNG LÊN "native mapping ĐÃ CHỨNG MINH trong fixture"; vẫn MỞ:
+  Unity bootstrap/services/readback/runtime + full setter; r105-UNPROVED giữ historical.**
+- **Trả lời AI-3-mới (verify-pattern)**: 160/27/24 khai thật = đúng chuẩn. Quy định: (1)
+  209/0/2 là gate NHÁNH SPEC — digger KHÔNG bắt buộc tái tạo; (2) nhánh digger giữ docs
+  import ở commit riêng "verification-only" (đã làm) + pin **baseline snapshot của mình**
+  (160/27/24 + lý do từng FAIL) vào `_verify_baseline.json` → regression gate = FAIL
+  không TĂNG qua các report; (3) focused tests của mình phải xanh; (4) nếu đồng bộ đủ docs
+  spec hiện hành thì mới đối chiếu needle như a5. Không bắt buộc thêm.
+- **#28 lane**: a5 CLAIM (11:40) — loader-apk trước, fail thì **fallback ①**
+  STATIC_CROSSCHECK_NOT_RUNTIME từ data #21 (report 124, giữ receipt 121). Đúng 2 nhánh
+  lệnh lần 64.

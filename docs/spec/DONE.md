@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 67 — 26/10, #2 ĐÓNG bounded + verify-pattern cho AI-3 + #28 lane):**
+> **§24.60**: **#2** (113-ef `f5a447c15a`): tag23→m_Sprite native mapping PROVED trong
+> fixture (slots[23] · dispatch · resolver; spec cross-check decimal ✓) — customType23
+> r104 nâng "native mapping proved"; Unity/bootstrap/runtime MỞ · verify-pattern: digger
+> pin baseline riêng, FAIL không tăng; 209 là gate spec · #28: a5 chạy loader-apk →
+> fallback ①. datas/ = **90**. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 66 — 26/10, AI-3 mới lên ngành + #24/#5 ĐÓNG bó scope + phân xử #5):**
 > **§24.59**: AI-3-mới `8141386a` setup đúng (base ef tip + 3 shared; đọc 171 comments bằng
 > api-paginate; khai gap tree-digger thiếu tools spec) · **phân xử #5: a5 (11:20) trước
