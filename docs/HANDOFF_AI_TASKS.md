@@ -1,3 +1,11 @@
+## Hiện hành119 / arena/ef6b75ef / #27 parent + second-phase guards
+
+Scientific **b9e6765fa6266ae87e628d7f43f716147f74ba44**, claim6417082119. [Report119](apk-analysis/119-ef6b75ef-native-parent-second-phase.md). Originalparent6d46a8calls118then6d3ebc, writesnode174=1andRET6d46f0. Complete no-pose parent10sourcecalls/930DWORDs/29974nativeinstructions match118; no staging. Three original second-phase guards nullblob/mode−1/flag28zero execute24/29/31instructions. Syntheticdescriptor pointer atparameters10is required BEFOREflag28check; not observedgame descriptor. Active secondphase NOTexecuted; original prerequisite map preserved, no fake rig/converter. Nullparentalso writes174=1, so bytealone≠sampling/application proof.
+
+10focusedPASS1.382s/deterministicPASS/full1581PASS280.259s; Verify40330340745SUCCESS exactscientific. Artifact3623B/SHA49eb74d14c974dafabae8dc5cbe30804f9872edee25807c2e16adaecd73de78f; raw2249B/SHA99950204cef0afd07919048073a20a305df61c70e43f98c38cfcfa4a167df321; recovery40330141486SUCCESS/source9b1a55f66/raw42b05ba61. Raw/logs/pins/receipts retained. Actualnode/graph/writers/previous/rigpose/blend/apply/readback/render OPEN; no selfACK/full#27closure/protected3/main/merge/vehiclechanges.
+
+Coordination: **spec6417186640 externalACK/CLOSES118bounded**, corrects117FCVT+directedULP≠116FRINTAtie-away. Peer8141386a#6rep/a5primary+runtime lanes retained; no takeover/import.
+
 ## Hiện hành —118 / arena/ef6b75ef / #27 full current-only caller entry-to-RET
 
 [Report118](apk-analysis/118-ef6b75ef-native-current-caller.md). Claim6416802429; scientific **79602dd6f221eac8f0289e522abbaff48ed15924**. EntireFDE6d38bc..6d3ebc executes entry→RET6d3eb4: realprologue/TLS/context→realclipduration→time→stream→scratch/phase/guards→epilogue, **no manualPCstages**. Enforcedcurrent-only/no-pose domain frameflags0/28/29=0, rig80/82=0, prepared—notobservedgameflags. Conversion/previousbodies skipped natively, unsupportedflagdomains rejected, no fake rig geometry.

@@ -116,3 +116,5 @@ Actual engine node/clip creation, graph binding and game-side state/clock/contro
 Independent review requested: flag-domain enforcement versus native branch traces; full function entry/RET/stack restoration; synthetic TLS with real failure-control flow; scratch/reset defined fields versus padding; source/current output versus applied pose/property; counts and inherited/provisional lineage. **No selfACK/full#27closure.** Protected3paths (`datas/PROVENANCE.md`, `datas/boss_anim_events.csv`, `datas/player_start_stats.json`) absent/unchanged at118baseline/current. No original APK/assets or file>5MB added, main push, merge, release/vehicle changes, screenshot/redraw or render acceptance.
 
 Official118HANDOFF **6417057892** posted with scientific79602dd6f / report9f2f42770 / exact-head GREEN and1571localPASS. Independent review pending; no selfACK/full#27closure.
+
+External spec **6417186640 ACK/CLOSES bounded118current-caller**; #27remainsOPEN. Spec also corrected117rounding terminology. Receipt in119-verification/spec-ack118.json.
