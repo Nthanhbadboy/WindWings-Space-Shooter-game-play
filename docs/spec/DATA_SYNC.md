@@ -4468,3 +4468,34 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - **Lanes:** ef 🔄123 · a5 🔄phase-8 · AI-3 🔄#8 (600MiB restored) · AI-4 🔄#30-followup
   (report 129). Datas/ 114 lần 85 + phase-7 artifact pulled = **115** (sync needle
   cùng commit này).
+
+### 24.79 Điều phối lần 87 — #30-followup ĐÓNG (jump-table pin mẫu mực) · phase-8 ĐÓNG (UnityEvent receiver) · 2 CLAIM mới · ef123 chưa push
+
+- **#30-followup 535b0541 — ĐÓNG** (HANDOFF `6420429047`, head `f0ed6639c`; spec tự
+  kiểm runs `40352753993`/`40352753990`/`40352753935` **SUCCESS** ✓ — gate-skip khai
+  rõ; SHA `032bac2fdb13a758…` 3101B khớp ✓): **bảng nhảy 27 nhánh GetValueByIndex
+  (RVA 20.202.072) pin bytes + verify ngược 27/27 landing pad** — index 0..26 =
+  `Gcoins, Gems, Item0..3, Overdrive, Energy, DeviceC/B/A/S/SS, DroneExp, DroneCards,
+  PlayerCards, Key0/1/2, WingCoins, VipPoint, TimeRewards, ArenaMedal, PvPMedal,
+  TryDrone, TryShip, Premium` · multipleBonus (0x7C) không có index · out-of-range → 0.
+  **Lý do phải pin: "bảng hoán vị trông y hệt nếu chỉ đọc thứ tự instruction"** — đúng
+  chỗ dễ tự-lừa nhất của decode jump-table. Pro nhận thêm 15 gem ✓. **Regen-churn tự
+  bắt**: khoá `rodata_windows` vô tình đổi SHA raw #30 → sửa về đúng `e91a8c7664…` +
+  test khóa (`test_30_raw_pin_untouched`) — artifact #30 không sinh lại ✓. not_decoded
+  đúng phép: thứ tự rút runtime (Random.Range seed) = MODEL_NOT_MEASURED · hệ 15 →
+  **~0,85** (weighted ~84%).
+- **#27-GS phase-8 a5 — ĐÓNG** (HANDOFF `6420453401`, docs-verify `40353025124`
+  **SUCCESS @ `1ebd693f6`** ✓; artifact pulled SHA `1ac20e9e006c4fdb…` 10596B pin ✓):
+  **2 UnityEvents Boss-39001 resolve local → Enemy_Destroy path 601110 trên root
+  GameObject 185722** · `Enemy_Controller.destroyScript` cùng root trỏ đúng component ·
+  OnDefeated() → OnDefeated(true) · OnBusrtItems có managed body · **pointBurst target
+  384934 KHÔNG có typed record trong 140 exports — boundary khai đúng** · Boss1_Director
+  = Boss-39002/601111 — **tách đúng, không trộn instance** ✓. **Phase-9 CLAIM**
+  (`6420476580`, report 138): state-to-UnityEvent trigger audit — AnimationState_Complete
+  → BossWork string-compare vs 8 labels + ClearGuns(turn) + slot mapping defeat/burst.
+- **CLAIM mới:** AI-4 **#30-followup-2** (`6420472940`, report 130 box_draw): mọi `bl`
+  → GetListIndexRandomRewards/GetListIndexRewards từ **2 raw đã pin** (không recovery
+  mới) + decode nguồn `w2` (typeBox: hằng/static/param) + BuyEnergy 30 gem → 50 energy.
+- **ef 123 vtable-linkage: tip giữ `a0bfa18e2` — chưa push** (claim `6420235916` registered;
+  vtable/RELA recovery là tầng nặng nhất chuỗi — theo dõi, im thêm 1 vòng nữa → nhắc).
+- **Datas/ 115 + 2 artifact pulled = 117 (needle sync cùng commit này).**

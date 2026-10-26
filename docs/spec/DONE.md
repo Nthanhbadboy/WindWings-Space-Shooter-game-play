@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 87 — 26/10, #30-followup ĐÓNG + phase-8 ĐÓNG + 2 CLAIM mới):**
+> **§24.79**: **#30-followup ĐÓNG** (runs `40352753993`/…90/…35 SUCCESS @ `f0ed6639c`
+> ✓ · jump-table 27/27 pin bytes · index map 0..26 · regen-churn tự bắt + test khóa ·
+> hệ 15 ~0,85) · **phase-8 ĐÓNG** (runs `40353025124` ✓ @ `1ebd693f6` · UnityEvents →
+> Enemy_Destroy 601110/root 185722 · pointBurst 384934 no-record khai · Boss1_Director
+> 39002 tách đúng) · CLAIM followup-2 (report 130) + phase-9 (report 138) · ef123
+> chưa push · datas/ = **117**. verify 209/0/2.
+>
 > **Sửa lại (lần 86 — 26/10, #30 ĐÓNG + #8 CORRECTION + a5 phase-7 ĐÓNG):**
 > **§24.78**: **#30 ĐÓNG** (3 runs SUCCESS @ `17e28a289` ✓ · hệ 15: 0,25→~0,75 ·
 > weighted ~83%) · **#30-followup CLAIM** (report 129 — pack-index identity từ raw
