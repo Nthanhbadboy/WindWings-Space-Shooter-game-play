@@ -87,7 +87,10 @@ def recover(xapk):
         for pos in range(h[4],h[4]+h[5],h[9] or 24):
             address,kind,addend=struct.unpack_from('<QQq',b,pos)
             if kind==1027:relas.append(dict(address=address,addend=addend,file_offset=pos,hex=b[pos:pos+24].hex()))
-    anchors={0x946d0c,0x946ce4,0x946d00,0x946da0,0x10b9d80,0x10e8fe0,0x10ead38,0x142d9f};backrefs=[r for r in relas if r['addend'] in anchors]
+    registry_vtable=next(r['addend'] for r in relas if r['address']==0x10e2a58)
+    for lo,hi in [(0x10e2a40,0x10e2a68),(registry_vtable,registry_vtable+0x50)]+[(r['addend'],r['addend']+0x500) for r in relas if registry_vtable+0x10<=r['address']<registry_vtable+0x40]:
+        pos=offset_at(lo);native.append(dict(va=lo,file_offset=pos,hex=b[pos:pos+hi-lo].hex()))
+    anchors={0x946d0c,0x946ce4,0x946d00,0x946da0,0x10b9d80,0x10e8fe0,0x10ead38,0x142d9f,0x10f0628};backrefs=[r for r in relas if r['addend'] in anchors]
     data_regions=[(r['address']-128,r['address']+256) for r in backrefs]
     for lo,hi in data_regions:
         pos=offset_at(lo,hi-lo);native.append(dict(va=lo,file_offset=pos,hex=b[pos:pos+hi-lo].hex()))
@@ -112,7 +115,7 @@ def recover(xapk):
     for v in immediate:
         if v['value']!=212:continue
         pos=v['file_offset'];lo=max(0,pos-128);hi=pos+256;class212_windows.append(dict(va=v['va']-128,file_offset=lo,hex=b[lo:hi].hex()))
-    out=dict(provisional=True,provenance='arena/ef6b75ef',xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=entry,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),query_schema_sha256=sha(source.read_bytes()),query_source='Explicit SpriteRenderer registration/binding strings; scalar immediates are unvalidated candidates',elf_header_hex=b[:64].hex(),native_slices=native,registry_calls=registry_calls,pointed_strings=pointed_strings,relocations=selected_relas,callback_backrefs=backrefs,class212_windows=class212_windows,immediate_candidates=immediate,paired_immediates=paired,segments=segments,strings=strings,references=refs,windows=windows,limits=['Exact string presence/absence and instruction address candidates, NOT recovered type tree/field order/types.','ADRP+ADD scan does not track intervening register clobbers or control flow; candidates require disassembly review.','Bounded native windows are not complete function bodies or runtime execution.'])
+    out=dict(provisional=True,provenance='arena/ef6b75ef',xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=entry,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),query_schema_sha256=sha(source.read_bytes()),query_source='Explicit SpriteRenderer registration/binding strings; scalar immediates are unvalidated candidates',elf_header_hex=b[:64].hex(),native_slices=native,registry_vtable=registry_vtable,registry_calls=registry_calls,pointed_strings=pointed_strings,relocations=selected_relas,callback_backrefs=backrefs,class212_windows=class212_windows,immediate_candidates=immediate,paired_immediates=paired,segments=segments,strings=strings,references=refs,windows=windows,limits=['Exact string presence/absence and instruction address candidates, NOT recovered type tree/field order/types.','ADRP+ADD scan does not track intervening register clobbers or control flow; candidates require disassembly review.','Bounded native windows are not complete function bodies or runtime execution.'])
     dest=ROOT/'reverse-engineering/raw/tag23-113';dest.mkdir(parents=True,exist_ok=True);blob=gzip.compress(canonical(out),mtime=0);assert len(blob)<5*1024*1024;(dest/'probe.json.gz').write_bytes(blob)
     print('libunity',len(b),sha(b),'immediates',len(immediate),'paired',len(paired),'queries',len(strings),'hits',sum(bool(s['occurrences']) for s in strings),'refs',len(refs),'windows',len(windows),flush=True)
 if __name__=='__main__':
