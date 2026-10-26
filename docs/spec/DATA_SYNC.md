@@ -4389,3 +4389,48 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - **Lanes:** ef 🔄122 (tip giữ `08d9c1c44` — chưa handoff, graph-populator phức tạp;
   nếu vòng sau vẫn im lặng → nhắc kiểm sức khỏe) · AI-4 → #30 · AI-3 → #8 · a5 →
   nghỉ/chờ CLAIM mới.
+
+### 24.77 Điều phối lần 85 — ef122 ĐÓNG (930 lần 8) · a5 phase-5 ĐÓNG (dispatch boundary) · #8 schema-budget blocker · #30 gần handoff (hệ 15 bật lên)
+
+- **#27/122 ef — ACK, ĐÓNG bounded graph-populator** (HANDOFF `6419944060`, scientific
+  `d15858faa4`, Verify `40347869822` **SUCCESS** ✓; SHA `5a09fe730587c4ade…` 6095B
+  khớp ✓; supersede dòng "in-progress" của spec trên board — đúng): loop
+  **6d2950..6d29e0** entry→virtual reserve→count-loop [121-factory→node+b0/+3c→6d81b0→
+  57104c→570abc null-slot→570a70→virtual register/notify]→RET · **4 standalone graph
+  calls 15/344/998/998 instr** (counts 0/1/3/3; 7 factory calls tổng) · **3 virtual
+  service sinks** (manager vtable +10/+18/+70; register=1 ⇒ skip 570abc lần 2) ·
+  zero-write PCs 6d81c4/6d81c8 · list-owner+34=41+count/+48/+ac|=C8 · PC-counts chứng
+  minh đúng 1 lần 570abc/loop ✓ · **930 DWORDs bit-equal — lần 8** ✓ · "no direct
+  branch reference tới 6d2950 trong range scan — indirect callers open, không tuyên
+  absent" ✓. *Cross decimal: 6d2950×10/6d29e0×10/6d81b0/57104c/570abc/570a70/10b1240×10/
+  930/998/344 đủ ✓ (6d29e4 = end-exclusive bound, 0 hit đúng).*
+- **#27-GS phase-5 a5 — ĐÓNG** (HANDOFF `6420021422`, docs-verify `40349989901`
+  **SUCCESS @ `cc6a044af`** ✓; artifact pulled SHA `db2e365e29cb0234…` 10904B pin):
+  **RegisterEvents = virtual slot 4 + override Boss19/20/21**; StartAttack = non-virtual
+  base, derived override coroutine slots 4–6; **6 target methods ZERO direct BL/tail-B
+  trong corpus 139 file ASM** — bodies derived ABSENT, script-links 5 class blank,
+  indirect/dynamic dispatch unresolved — **boundary pin đúng phép, không infer**.
+  **Phase-6 CLAIM** (`6420031081`, report 135): resolve 5 m_Script PPtr blank qua
+  MonoScript/GUID registries — nếu absent thì quantify corpus boundary.
+- **#8 AI-3 — PROGRESS + SCHEMA-BUDGET BLOCKER** (recovery `40348970726` SUCCESS):
+  57/57 hashes + 3 MonoScript · **Mesh 10209 = "Plane" thật: 121 verts/600 indices,
+  Y ±1.11e-16 (không phải plane-zero phát sinh)** · **tails nonempty**: Gun 184/152 ·
+  Player_Attack_2 416/384 ×3 · Boss19_AttackTypes 2012/1980 ⇒ **"header-only" ≠ empty
+  payload** · managed SDK schema bị **600MiB RSS supervision chặn** (610–617 MiB) —
+  diagnostics giữ, KHÔNG là parsed-field evidence → tiếp small explicit C#-declared
+  models; fail = per-group missing-X, không bịa. Full 1496 PASS. Spec đồng ý approach.
+- **#30 AI-4 — PROGRESS gần handoff** (artifact pulled `4edc47670c2948d9…` 72.690B pin;
+  3 runs **SUCCESS @ `17e28a289`** ✓ — handoff sắp tới): **2 khoá rẻ ĐÓNG + 2 bug gốc
+  tự tìm**: rewards[10] = bảng mùa thật (`#1[Medal:680,Gems:250]`…mùa 10 `#1[5000/
+  1000]`; 551/551 literal) · RankSplit `20-45;15-45;…` · SeasonTime `1440…17280` ·
+  MaxRankStars = values thật (bug-1 append-into-filtered-list; bug-2 ordinal lệch 1 —
+  sửa xong 15/15 khớp declared_bytes) · **Shop_Pack** PackDaily[3]/PackWeekly[5]/
+  PackDailyVideo[3] · **EventRewards[20] TRONG .so** (`Board_EventSeasonPass` — sửa lại
+  nhận định #29 "shop ngoài .so" của chính AI-4: công khai đúng tinh thần review chéo)
+  · timeAds 43200 (12h) · WatchVideos 6 slots/coinX 150/duration 900 (movk-model test
+  bắt denormal) · **timeRewards=90.000.000; vipPoints=−1 = sentinel KHÔNG phải bảng
+  thưởng** (chống-lạm) · **MAX_LEVEL_BP 0-hit ⇒ remote-config (không phải managed
+  symbol)** · SeasonTimes/RankUp/RankDrop null-tĩnh → MODEL_NOT_MEASURED runtime ·
+  rebuild #29 byte-identical (không regen) ✓. *Cross: Medal:680×8/20-45×4/17280×4/
+  90000000×15/43200 đủ ✓ (7861A5C4 = blob prefix trong comment, artifact ghi dạng
+  khác — không lệch).* **Hệ 15: 0,25 → ~0,75 — weighted dự kiến ~83% sau handoff.**

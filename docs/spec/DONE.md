@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 85 — 26/10, ef122 ĐÓNG + a5 phase-5 ĐÓNG + #8 blocker + #30 gần handoff):**
+> **§24.77**: **ef122 ĐÓNG** (Verify `40347869822` ✓ · graph-populator 6d2950 · 3
+> virtual sinks · 930 lần 8 · indirect-callers open) · **a5 phase-5 ĐÓNG** (0 direct
+> refs 6 methods · slot 4 · corpus 139 · runs `40349989901` ✓; phase-6 claim) · **#8**:
+> Mesh 10209 = Plane thật (121v/600i) · tails nonempty · **600MiB supervision chặn
+> schema expansion** — approach small models ✓ · **#30**: rewards/RankSplit/MaxRankStars
+> values + shop TRONG .so (sửa nhận định #29) + MAX_LEVEL_BP = remote-config 0-hit ·
+> hệ 15: 0,25→~0,75 · datas/ = **114**. verify 209/0/2.
+>
 > **Sửa lại (lần 84 — 26/10, #29 ĐÓNG (Arena/PvP) + phase-2/3 ĐÓNG + #8 đo scope):**
 > **§24.76**: **#29 AI-4 ĐÓNG** (3 runs SUCCESS @ `b37f7d6f1` ✓ · 1361 method/244
 > class · map pools thật · AllPvPRandomMaps = 0 ✓ · hệ 14: 0,25→~0,8; còn shop
