@@ -151,3 +151,5 @@ Coordination updated from spec6416110827:115bounded consumer ACK/CLOSED; #5repli
 -116independent disposition pending;115externalACK6416110827 synchronized; no selfACK/full#27closure.
 
 Official PR12 HANDOFF **6416337983** posted after push/remote confirmation/exact-head CI. Receipt `reverse-engineering/raw/l3-ef6b75ef116-verification/handoff.json`; independent disposition pending, no selfACK.
+
+External disposition update: spec **6416406730** independently ACK/CLOSES **116bounded time+dense/constant composition**, full#27Animator context/bootstrap/blend/readback remainsopen. Receipt retained in `reverse-engineering/raw/l3-ef6b75ef117-verification/spec-ack116.json`.117continues original context writer/actual virtual duration with prepared-node and staged-caller boundaries; no selfACK or all-build dense-absence promotion.
