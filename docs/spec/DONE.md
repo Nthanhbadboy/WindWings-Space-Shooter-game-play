@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 90 — 26/10, #8 ĐÓNG ⇒ CHƯƠNG TRÌNH GỐC #1–#28 TRẮNG BOARD 28/28):**
+> **§24.82**: **#8 ĐÓNG** (4 runs SUCCESS @ `1fa9f4f20` ✓ · 52/52 hashes · Quad×46/
+> Cube×5/Plane×1 thật · 5/5 MB BYTE-EQUAL) · **phase-13/14 ĐÓNG** (runs ✓ · shared
+> data 580611 · script-link 127.852 rows blank = bounded gap; board-label typo —
+> commit đúng nhánh chuẩn) · **nhắc ef123** (3 push không handoff) · datas/ = **126**.
+> verify 209/0/2. Weighted ~87%.
+>
 > **Sửa lại (lần 89 — 26/10, ĐỒNG BỘ SPEC ↔ APK-ANALYSIS theo lệnh chủ dự án):**
 > **§24.81**: MISSING 14 (Arena/PvP ~0,8) · 15 (meta ~0,85–0,88) · 5 (boss-1 mức B) ·
 > 9 (StartDrone static) · 13 (plugin audit) · 16 (mesh refs resolved) — tất cả dẫn

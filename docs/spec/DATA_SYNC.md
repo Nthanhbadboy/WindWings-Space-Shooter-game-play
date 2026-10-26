@@ -4584,3 +4584,40 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   hợp lý nếu tính depth của 2 task đang mở (#8 gần handoff, #27 native 123 + game-side
   phase-13). Trần vẫn là static-complete (lệnh 26/10).
 - **Datas/ 120 + 4 pulled (p11/p12/box_arrays/gaps) = 124 (needle sync commit này).**
+
+### 24.82 Điều phối lần 90 — #8 ĐÓNG ⇒ CHƯƠNG TRÌNH GỐC #1–#28 TRẮNG BOARD (28/28) · phase-13/14 ĐÓNG · board-label typo
+
+- **#8 8141386a — ACK, ĐÓNG** (HANDOFF `6421267527` @ `1fa9f4f20`; spec tự kiểm 4 runs
+  `40357419297`/`40357419606`/`40357438299`/`40357438284` đều **SUCCESS** ✓; artifact
+  `e928b36002c8…` 59.887B đã pull + pin lần 89 ✓; local 1510 PASS/139 focused/24 new):
+  **Group A — 52/52 whole-owner hashes (15.908B) + 52 PPtr spans (624B)** — 3 Mesh
+  THẬT từ standalone `Library/unity default resources`, không primitive phát sinh:
+  **10210 Quad×46** (4 verts/6 idx · Z ±3.0616168e-17 giữ nguyên) · **10202 Cube×5**
+  (24 face verts/36 idx/UV1 — không thay 8-corner) · **10209 Plane×1** (121 verts/
+  600 idx · Y ±1.1102230e-16 — không lý-tưởng-hóa Y0) · Plane 7416B SHA
+  `2f4a5ee17d26…`. Group B: 5/5 MB BYTE-EQUAL inverse (3444B/3284 custom/76 spans) —
+  Gun onDestroy → `OnSpawnPoisionZone` (spelling gốc) · Boss19 arrays 8/2/4/2/0.
+  **Hoàn tất chuỗi #5→#4→#6→#7→#8 (AI-3 primary-replication lane). CHƯƠNG TRÌNH GỐC
+  #1–#28: 28/28 ĐÓNG** — các mục còn mở chỉ là phase/followup mở rộng (#27-GS,
+  #30-followup-4) + ef123.
+- **#27-GS phase-13 a5 — ĐÓNG** (HANDOFF `6421238036` @ `7cfb51740`, docs-verify
+  `40358491899` ✓; artifact pulled `78a30c435f20…` 10136B pin ✓): TypeDefIndex 114
+  có trong managed declarations nhưng **script-link export 127.852 rows để CẢ HAI
+  m_Script targets (32715571200/29947330560) blank target_class** · 0 instance/
+  typetree BossSpineEventHandler trong 140 JSONL · **bounded identity/export gap,
+  KHÔNG global non-use** ✓.
+- **#27-GS phase-14 a5 — ĐÓNG** (HANDOFF `6421365982` @ `d0febd38a`, docs-verify
+  `40359421610` ✓; artifact pulled `ab16013ff880…` 2816B pin ✓): Boss-39002
+  Boss1_Director 582209 → skeleton 664302 → **SHARED data 580611/JSON 918 (cùng
+  asset boss-1 — điểm chéo)** · parentDestroy 601111 ≠ receiver 601110 (tách đúng) ·
+  `SkeletonAnimation_AnimationState_Event` compare event-name vs **static slot
+  0x2ADFB48 chưa resolve**; true-branch iterate `gun3Static` +0xB8 → call 0x2781804
+  bools 0→1/item — **exact key/call semantics KHÔNG gán** ✓. *Lưu ý board-label:
+  tiêu đề comment ghi tag nhánh `…-bossspine-handler-script-identity-boundary` (sai
+  format) nhưng commit `d0febd38a` nằm trên nhánh CHUẨN `arena/a5a74747-windwings-…`
+  — provenance giữ; nhắc a5 dùng đúng tag ở handoff sau.*
+- **@ef6b75ef — NHẮC (lần 1):** 123 đã push 3 tip liên tiếp (`a0bfa18e2`→`aa6120c90`→
+  `7e8d0f861`→`e36d8380e`) **không handoff/PROGRESS** — đăng 1 dòng PROGRESS hoặc
+  HANDOFF; nếu vtable/RELA recovery kéo dài thì nói và chia tầng nhỏ hơn.
+- **@535b0541:** followup-4 (report 132 — nguồn key) claimed `6420964601`, chờ progress.
+- **Datas/ 124 + 2 pulled (p13/p14) = 126 (needle sync commit này). Weighted ~87%.**
