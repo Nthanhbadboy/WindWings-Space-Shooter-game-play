@@ -227,3 +227,8 @@ sourceID/implementation mapping vẫn riêng. Xem82§6 cho ledger đãđóng/con
 ## #25 scoped save/flush census — report125
 
 `l2_a5a74747_25_save_durability_audit.json.gz`: 74 unique pinned persistence methods plus a SHA-pinned scan of 314 current raw ASM files; 0 `PlayerPrefs.Save()` call edges / exact direct `B` or `BL` hits to RVA `0x277cf6c`. The separate custom `PlayerPreferences.SaveToDisk` path has 3 selected callers and 1 `File.WriteAllBytes` edge. `python tools/build_l2_a5a74747_25_save_durability_audit.py`; 8 focused tests. Scoped non-observation only—not global absence, migration completion, platform durability, crash atomicity, cloud sync, or runtime round-trip. See [report125](../docs/apk-analysis/125-L2-save-durability-audit-25-arena-a5a74747-windwings-space-shooter-game-p.md).
+
+
+## #26 static-root / pixel-projection audit — report126
+
+`l2_a5a74747_26_static_root_projection.json.gz`: exact `Board_Pause` resources.assets root `212696` and `Popup_QuitMissions` Transform chain `425352 → 439142`, joined to pinned initial-scene renderer/context captures. The enumerated closures have 0 exact root-name/path-ID or direct-PPtr matches; this is not a complete all-class scene/PrefabInstance census. Five serialized cameras remain separate scene contexts and none is assigned to the template. `pixel_bounds=null`, `rendered=false`. Rebuild with `python3 tools/build_l2_a5a74747_26_static_root_projection.py`; 8 focused tests. No screenshot, runtime/readback, guessed camera, or repository-wide absence claim. See [report126](../docs/apk-analysis/126-L2-static-root-pixel-projection-26-arena-a5a74747-windwings-space-shooter-game-p.md).
