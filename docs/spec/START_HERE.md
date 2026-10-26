@@ -33,7 +33,7 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **118** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **119** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
 | `datas/` | JSON/CSV bóc trực tiếp | **115** file · **26.533.529 bytes** (**26,5 MB**) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
@@ -86,6 +86,7 @@
 | `docs/apk-analysis/157-g3-boss39001-spine-callback-completion-boundary.md` | G3 static Boss-39001 route trace | Empty Spine Event callback distinguished from Complete → BossWork state branches | No runtime delivery/playback/effects or marker attribution claimed |
 | `datas/l3_a5_n2_serialized_owner_graph_builder.json` | N2 bounded serialized-owner receipt for controller graph path `1856` | Animator component `493584` / GameObject PPtr `0:76852` → controller PPtr `0:1856` (`Body 1`) under Boss-37004 | Serialized owner identified; no native graph-builder invocation or Boss_AttackPhases field join claimed |
 | `docs/apk-analysis/158-n2-serialized-owner-graph-builder.md` | N2 serialized-owner hunt for the controller graph | PPtr and Transform ancestry resolve the controller's bounded prefab/component owner | No native/FDE interpretation or runtime/build invocation link claimed |
+| `docs/apk-analysis/159-a5-n1-report122-independent-review.md` | N1 read-only review of report 122 against CORRECTION123/HANDOFF124 | Three virtual-service sinks and old graph counts are superseded; allocator/boundaries retained | No raw/native rerun, AI-1 branch edits, #27-full ACK, or runtime claim |
 
 **Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **115** file `datas/`.
 
