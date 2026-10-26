@@ -3,10 +3,10 @@ import argparse,bisect,gzip,hashlib,io,json,struct,zipfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
-NAMES=['m_StreamedClip','m_DenseClip','m_ConstantClip','m_MuscleClip','AnimationClip','StreamedClip','DenseClip','m_CurveCount','m_DiscreteCurveCount','UnityEngine.AnimationClip::get_length','UnityEngine.AnimationClip::SampleAnimation','UnityEngine.AnimationClip::SampleAnimation_Injected']
+NAMES=['m_StreamedClip','m_DenseClip','m_ConstantClip','m_MuscleClip','AnimationClip','StreamedClip','DenseClip','m_CurveCount','m_DiscreteCurveCount','curveCount','discreteCurveCount','UnityEngine.AnimationClip::get_length','UnityEngine.AnimationClip::SampleAnimation','UnityEngine.AnimationClip::SampleAnimation_Injected']
 RANGES=[(0x6ad7e4,0x6addac),(0x6c2000,0x6c4480),(0x6b0000,0x6b1300),(0x6d0000,0x6e1000)]
-TARGETS={0x6ad7e4:'compiler_parent',0x6deeb8:'compiled_data_builder',0xb922a8:'compiled_data_accessor'}
-FOLLOW_ENTRIES=[0x6deeb8,0xb922a8,0x398600,0xb714c8,0xb76cf0]
+TARGETS={0x6ad7e4:'compiler_parent',0x6deeb8:'compiled_data_builder',0xb922a8:'compiled_data_accessor',0x6df270:'clip_dispatch',0x6df310:'stream_sampler',0x6df768:'frame_selector',0x6d2e94:'time_to_clip_dispatch',0xb69cf4:'native_clip_accessor',0x10f29f0:'AnimationClip_native_type_record',0x10e8b90:'AnimationClip_native_descriptor'}
+FOLLOW_ENTRIES=[0x6deeb8,0xb922a8,0x398600,0xb714c8,0xb76cf0,0xb69cf4]
 def sha(b):return hashlib.sha256(b).hexdigest()
 def signed(v,n):return v-(1<<n) if v&(1<<(n-1)) else v
 def recover(path):
@@ -51,7 +51,7 @@ def recover(path):
             word=struct.unpack_from('<I',b,pos)[0];pc=va(pos)
             if word&0x7c000000==0x14000000:
                 target=pc+(signed(word&0x3ffffff,26)<<2)
-                if target in (0x6ad7e4,0x6deeb8,0xb922a8):
+                if target in TARGETS:
                     j=bisect.bisect_right(starts,pc)-1;owner=unwind[starts[j]] if j>=0 and pc<unwind[starts[j]]['end'] else None
                     branch_refs.append(dict(pc=pc,target=target,unwind=owner))
             if word&0x9f000000!=0x90000000:continue
