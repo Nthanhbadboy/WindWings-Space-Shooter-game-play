@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 74 — 26/10, #4 + #27/117 ĐÓNG bounded; loader probe vướng workflow-file):**
+> **§24.67**: **#4** (8141386a, 1430 PASS): 1751/1751 hashes · 14 spans/160024B ·
+> 7/2352/2354/2285 · 797 previews/940 null-reason · NOT-em — ĐÓNG static fallback ·
+> **#27/117** (ef, 1531 PASS): duration getter thật (ctor vptr + RELA +0xA8) · context
+> writer zero-sub · `.7`→3f333334 tie-away (spec decode ✓) · 930 ✓ — ĐÓNG bounded ·
+> #6-rep claim ✓ · **loader probe: `40326606441` FAILURE = workflow file issue** (chưa
+> chạy); a5 fix đã commit, bridge đỏ 13:07. datas/ = **100**. verify 209/0/2.
+>
 > **Sửa lại (lần 73 — 26/10, RE-CHECK runtime 23/10: r90 nâng static↔runtime verified + giải mystery 12v10):**
 > **§24.66**: mỏ runtime 23/10 rà lại × static mới — **Drone BaseDamages[12] 12/12 exact
 > crossbuild** (r90 → "static↔runtime verified") · mystery listStatValues 12v10 ĐÃ GIẢI

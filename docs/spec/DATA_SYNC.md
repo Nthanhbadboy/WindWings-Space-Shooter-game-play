@@ -4050,6 +4050,36 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   **1751/1751 object hash khớp** · 7 fonts/2352 glyph/2354 char/2285 unicode · artifact
   local SHA `9cec092de…` · 59 focused PASS — handoff chờ push+CI.
 
+### 24.67 Điều phối lần 74 — #4 ĐÓNG bounded + #27/117 ĐÓNG bounded · loader probe vướng workflow · RECHECK-2 độc lập
+
+- **#4 8141386a** (scientific `7ec2f9484e`, Verify `40325454253` + scoped gate
+  `40325454263`, full **1430 PASS**; SHA `9cec092ded27…` khớp ✓): byte proof — recovery
+  `40322602149` **1751/1751 object hashes** · **14 table spans/160024B** unique aligned ·
+  **7 fonts / 2352 glyph rows (52B) / 2354 char rows (16B) / 2285 Unicode union** ·
+  **797 metric previews (768 nonempty/1608 quads) + 940 null-có-reason** · layout
+  52/16B = seeded corroboration (raw102/Graph/111/110/font73 lineage — disclosed) ·
+  **coordinates = pointSize-normalized design units, NOT em (allUnitsPerEM 0)** ·
+  Level0:86 → 28 vertices/28 UVs/42 indices · null-font 699094 ≠ default-assign · tab
+  693185 = control-unknown ≠ visible-missing ✓. **ACK ĐÓNG bó scope static fallback
+  geometry; native TMP parser/SDF quads/runtime text MỞ.** (#6-rep CLAIM đúng thứ tự
+  #5→#4→#6 — ghi board.)
+- **#27/117 ef** (scientific `7f182db37d`, Verify `40326789273`, full **1531 PASS**; SHA
+  `ef1d97806f66…` khớp ✓): **duration virtual getter thật** — clip ctor `b69d14` store
+  vptr `10c3fa8` · RELA `10c4050(+0xA8)→b6bf94` trả `stop(0x5fc)−start(0x5f8)` từ
+  clip+0x1e0 muscle blob · **context writer 6d3744 zero substitutions** · counterexamples
+  gốc: `.7` double→bits **3f333334** (=0,7000000476837158 — *spec decode ✓* tie-away,
+  không nearest 3f333333) · underflow dương→min-subnormal, âm→−0 · duration 0→cả hai 0 ·
+  FSUB→FADD mutation đổi normalization · staged caller 6d3924 (native blob→writer→cache
+  ptr→116-time→115-stream→phase) — **930 DWORDs khớp lần nữa** · 12 context cases/718
+  instr/0 subs · 18 staged/31272 instr/18 modff. **ACK ĐÓNG bounded; Node creation/
+  game-side writers/full caller/weighting/apply MỞ.**
+- **Loader probe #28**: run `40326606441` **FAILURE = "workflow file issue"** (GitHub
+  không parse workflow — probe CHƯA chạy, không phải bridge/session gãy) · a5 đã commit
+  fix "integrate probe into PR CI" (`cea0090cca7` 13:07) — nhưng bridge-build ĐỎ ở commit
+  đó, cần xem lại. RECHECK độc lập của a5 trùng kết luận spec (thêm: chuẩn hóa float32
+  bit-pattern + pins SHA XAPK/libil2cpp/wing_drone_flow/runtime statics).
+- datas 98→**100** (#4 + #117).
+
 ### 24.66 RE-CHECK 26/10 — mỏ runtime 23/10 (Mate 20 X) × static mới: r90 NÂNG static↔runtime verified
 
 - **Yêu cầu chủ dự án**: "thư mục runtime-probe… kiểm xem rút ra được gì". Spec rà toàn bộ
