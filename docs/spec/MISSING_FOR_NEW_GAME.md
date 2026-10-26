@@ -69,20 +69,16 @@ Tự chọn ở A6/B3 thì game mới **lệch số**; tự chọn ở `rate = 0
 > (và của cả hai nhánh), `length_valid` **576/576**.
 
 - **Số thật:** `Map_Get_Datas..cctor` **100.896 B · `ends_clean: true`** · **4.020** const · **576** `init_array` (claim **AM1**), đã resolve **576/576** (claim **IA1**).
-- **Nội dung đọc được:** **576 mảng `int`** · **5.154** giá trị · **253** wave id khác nhau · **0** giá trị không có trong `datas/waves.json` (claim **IA3**).
-  ⇒ **Danh sách wave của bảng map đã đọc được**, không phải chờ dump.
+- **Nội dung đọc được:** **576 mảng `int`** · **5.154** giá trị · **253** wave id khác nhau · **0** giá trị không có trong `datas/waves.json` (claim **IA3**). Riêng `listMapDatas` nay đã được trích chính xác theo `.cctor`: **250 entry / 742 số**, gồm 243 payload `InitializeArray` + 7 literal arrays; xem A2 và report 160.
+  ⇒ **Payload wave đã có; phần còn mở là bind internal index sang stage/scene**, không phải chờ dump.
 - **Không phải “573 = 576 − 3”.** Ba entry mở đầu (`CM1`): **3 entry** = `[25, 9010]` · `[164]` · `[113, 5]` · **13** check; chúng được dựng bằng
   **literal store**, **không** nằm trong 576 `InitializeArray` ⇒ trừ đi là **sai đơn vị**. Và **576 cũng
   không phải 576 stage**: đó là số *mảng*, chưa bind sang (chapter, stage, mode).
 - **Kiểm bằng asm (`CM2`):** `0x78` + `sxtw #2` + index `w19` — `GetMainCannonDamage` đọc mảng theo `playerIndex`.
 - **Phân bố độ dài** (số mảng): `3 → 320` · `7 → 104` · `36 → 63` · `4 → 21` · `5 → 12` · `6 → 9` ·
   `20 → 5` · `24 → 2` · dài nhất **69**.
-- **Việc còn lại là *bind*, không phải *dump*:** entry thứ *i* ↔ (chapter, stage, mode). Consumer đã nối tới
-  cuối (`MapController.Start → setup.get_stageIndex → Map_Get_Datas.GetListWaves(index)`; report 89
-  đã đọc tiếp `get_stageIndex`: Test-gate → `mapCurrentPlayTest@20` · `IsBranch@30` →
-  `StageBranchCurrent@2c`/`StageCurrent@24`), nhưng **thứ tự nạp
-  `listMapDatas` chưa được chứng minh** ⇒ ghi **unknown**, đừng gán theo trực giác.
-- `datas/maps.json` (**250** map) là **bảng dẫn xuất khác nguồn** — không dùng nó để "xác nhận" 576.
+- **Việc còn lại là *identity bind*, không phải *payload/order dump*:** consumer chain đã nối tới cuối (`MapController.Start → setup.get_stageIndex → Map_Get_Datas.GetListWaves(index)`; report 89 đọc tiếp `get_stageIndex`: Test-gate → `mapCurrentPlayTest@20` · `IsBranch@30` → `StageBranchCurrent@2c`/`StageCurrent@24`). H1 xác nhận `.cctor` insertion order của 250 `listMapDatas` rows, nhưng **không** ghép từng internal index với (chapter, stage, mode) hoặc scene name. Giữ identity **unknown**, không gán theo trực giác.
+- `datas/maps.json` (**250** map) khớp **250/250** với source-linked H1 extraction; `datas/map_waves_candidate.json` là legacy candidate và lệch 242 rows, nên không dùng làm full table.
 - **Nếu chỉ cần L1:** chọn số map × độ dài map là **hợp lệ**, miễn ghi rõ là **lựa chọn thiết kế**.
 
 ### 2.2 B3 — damage tàu: **giá trị đã có**, chỉ còn **HP riêng của tàu** là chưa

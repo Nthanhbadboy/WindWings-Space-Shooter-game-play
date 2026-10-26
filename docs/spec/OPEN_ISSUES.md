@@ -28,12 +28,12 @@
 >
 > **Cập nhật 24/10 (`COVERAGE_AUDIT.md`):** **+2 đóng** — **C1** (795/795 event có `time`) và
 > **C2** (`animator_map.csv.gz` 5.792 dòng) đã **export xong** ở nhánh dữ liệu, hết phải tự đặt nhịp.
-> Số đếm: **10 mục đóng / 28** (23/10: 8/28).
+> Số đếm: **11 mục đóng / 28** sau khi A2 đóng bó scope H1 (23/10: 8/28; 24/10: C1+C2).
 
 | # | Vấn đề | Nhóm | Mức | Ảnh hưởng thiết kế |
 |---|---|---|---|---|
 | A1 | ~~Giá trị `StartHp`~~ ✅ **ĐÓNG = 2500** | **lỗi export** | **A** | **mở khoá TTK** — `BALANCE` §0.6.13 |
-| A2 | Bảng map→wave **nằm inline** trong `.cctor` 25.996 lệnh — **giao nhánh dữ liệu**, spec không tự trích | **uỷ thác** | **C** | chặn "màn nào gồm wave nào" |
+| A2 | ~~Bảng map→wave inline~~ ✅ **ĐÓNG BÓ SCOPE** — `listMapDatas`: **250/250** mảng tĩnh đã trích, 3 entry đã resolve khớp | **static source** | **A** | wave IDs theo internal list index; stage/scene identity vẫn tách riêng ở A6 |
 | A3 | ~~`OnChangeDataDevice`~~ ✅ **ĐÓNG** — device **không** cộng HP tối đa, chỉ giáp + hồi | **lỗi export** | **A** | `BALANCE` §0.6.7d |
 | A4 | ~~Caller của `GetStartHp()`~~ ✅ **ĐÓNG** = `<Start>b__14_1` | **lỗi export** | **A** | HP chốt **trong `Start()`** — `BALANCE` §0.6.15 |
 | B1 | 3 bảng stat của device | **RVA data** | D | chặn "device mạnh bao nhiêu" |
@@ -84,29 +84,14 @@
 - **Điều kiện lật ngược:** nếu tech stat 0 hoặc ability 7 được cộng thêm ở một đường khác chưa đọc
   (**device đã bị loại**: `OnChangeDataDevice` **không** ghi `StartHealth`) thì HPmax phải cộng thêm.
 
-### A2. Bảng **map → wave** — **uỷ thác cho nhánh dữ liệu**
+### A2. Bảng **map → wave** — ✅ **ĐÓNG BÓ SCOPE: static `listMapDatas`**
 
-> **Quyết định (23/10):** bảng nằm **inline** trong `.cctor` (25.996 lệnh). Nhánh spec **không tự trích** —
-> để nhánh dữ liệu xuất thành CSV/JSON. Khi có file, việc còn lại chỉ là **đối chiếu**, không phải dịch asm.
+- **Extracted from source:** `Map_Get_Datas..cctor` constructs **250 ordered `int[]` entries** and stores the list into static field `listMapDatas` at offset `0x28` (`0x140e19c`). `GetListWaves(int mapIndex)` statically reads that field and returns the indexed array in its corresponding branch. The internal index is the cctor insertion order; it is **not** equated with displayed map, campaign, or scene numbering.
+- **Completeness of this bounded table:** **243** `RuntimeHelpers.InitializeArray` payloads are joined to allocation and initializer callsites; **7** arrays are recovered from immediate element stores. Array lengths are 243×3, 6×2, 1×1 (**742 integers total**). The three previously resolved rows match at indexes 0–2: `[25,9010]`, `[164]`, `[113,5]`. All **250/250** rows agree with `datas/maps.json`.
+- The older `datas/map_waves_candidate.json` is preserved but **superseded for full table values/order**: **242/250** rows differ from the source-linked extraction, first at internal index 4. See `docs/apk-analysis/160-a5-h1-map-wave-inline-table.md` and pinned receipt `datas/l3_a5_h1_map_wave_inline.json`.
+- **Scope boundary:** A2 now answers which wave-ID arrays occur at each internal `listMapDatas` index. It does not bind each index to a named campaign/stage/scene, resolve other mode-specific lists, or establish runtime readback/parity. Stage/scene identity remains a distinct A6 question; no runtime claim follows.
 
-- **Cấu trúc đã rõ (A):** `Map_Get_Datas.GetListWaves(int mapIndex) → int[]`; `GetNumberWaves()`.
-- **Thân `GetListWaves` (A):** đọc singleton → nếu field `@0x0 == 1` lấy `mapIndex` từ `@0x4` (chế độ test), rồi `listMapDatas[clamp(mapIndex, count−1)]`.
-- **Vì sao thiếu:** `dump.cs` liệt kê **8 method** cho `Map_Get_Datas` và **không có `.cctor`** — trong khi class có **12 static field** (`listMapDatas`, `listMapBranchDatas`, `listIdBosses`…). Dữ liệu nạp ở đâu đó **không export**.
-- **Cách chốt:** dump `Map_Get_Datas..cctor`, hoặc dump runtime `listMapDatas` (12 map × N wave).
-- **Trạng thái `68ce86a7` (đo lại 23/10):** `.cctor` **đã có** — **100.896 B · 3.444 hằng `int`**
-  và chỉ **40 `debug_rva`** (1,1 %) ⇒ **không** phải vấn đề relocation. Con số `1.192/1.194` slot
-  đọc ra `\x7fELF` **chỉ thuộc `Device_Get_Data`** (39 `debug_rva` / 82 hằng = 47,6 %) — xem
-  `WHERE_TO_LOOK.md` §1.
-- **Đã bóc thử:** **117 cặp** `(A,B)` từ khuôn 8 lệnh (`.cctor` tạo **716 record**, 118 cái cùng khuôn).
-  **Giả thuyết "117 cặp = map→wave" BỊ BÁC** bằng phép kiểm thứ tự: wave boss trong `.cctor` là
-  `9010, 7001, 7003, 7002, 7004…` — lệch thứ tự, có lặp (`7005`×2), chỉ phủ **17/45**.
-  Xem `WHERE_TO_LOOK.md` §2.1.
-- **Còn lại:** dạng `w1=3` (**320 record**, lớn nhất) **chưa đọc** — nơi khả năng cao chứa `listMapDatas`.
-- **Nếu không chốt:** tự chia 282 wave thành màn (hiện `ENCOUNTERS` đã có phân bố wave theo 20-wave bin).
-
-> **ĐÍNH CHÍNH:** chênh **299 stage vs 282 wave** từng bị tôi ghi như "lệch 18". **Không phải lỗi.**
-> `GetListWaves` trả **`int[]`** ⇒ quan hệ **nhiều-một**: nhiều stage dùng chung một wave.
-> Hai con số đo **hai thứ khác nhau** (`ENCOUNTERS` §2).
+> **ĐÍNH CHÍNH (historical unit note):** chênh **299 stage vs 282 wave** is not a data error. `GetListWaves` returns `int[]`; multiple stages may reuse a wave. These counts describe different things (`ENCOUNTERS` §2).
 
 ### A3. `Player_Health.OnChangeDataDevice` — ✅ **ĐÓNG** (A)
 

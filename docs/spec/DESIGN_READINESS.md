@@ -48,7 +48,7 @@ chúng là **tham khảo**, không phải điều kiện.
 | # | Câu | Trạng thái cũ | **Đo lại 23/10** | Chặn thiết kế L1? |
 |---:|---|---|---|---|
 | 1 | `StartHp` | đóng (2500) | ✅ **đóng** — `statics_Player_Get_Datas.StartHp = 2500` | **Không** |
-| 2 | **A6 — stage ↔ wave** | mở | ✅ **ĐÃ BIND (25/10)** — trước: `map_waves_candidate.json` có **250 map**, nhưng chỉ **7** ghép chắc; nay bind **11 cấu trúc / 614 mảng** (320×len3 ↔ 3 mode · 118×len2 = stage→boss · 104×len7 ↔ 7 `PlayMode`, `DIFFICULTY_MODES` §7); peer ghép entry vào `map_table_segments.json` + `maps.json` | **Không** |
+| 2 | **A6 — stage ↔ wave identity** | mở | ✅ **TABLE STATIC ĐÃ CÓ (H1/A2)** — `listMapDatas` có đủ **250/250** index→wave arrays theo cctor order; **stage/scene→internal-index** chưa bind. Cấu trúc mode vẫn theo **11 cấu trúc / 614 mảng** (320×len3 ↔ 3 mode · 118×len2 = stage→boss · 104×len7 ↔ 7 `PlayMode`, `DIFFICULTY_MODES` §7). Legacy “7/250 ghép chắc” là candidate cũ, không mô tả table payload hiện hành. | **Không** |
 | 3 | **E2/E3 — hit flash / hit stop** | mở, "chi phí thấp" | ✅ **ĐÓNG — BỎ (quyết định 25/10)**: game gốc **không có** trên mẫu asm (`Enemy_Display` chỉ **5 field**: `hpProgressBarRenderer` `size` `hitableRenderers` `appearOff` `dieOff` — không có tham số flash) và cảm nhận quá nhỏ ⇒ game mới **không thêm**; số đo cũ (alpha 0,5 · 0,05 s) chỉ để tham khảo | **Không** |
 | 4 | **D3 — thứ tự pha boss** | mở, "cần decoder" | 🟡 **MỘT PHẦN** (hạ mức 25/10) — có **mốc trong clip** (`795/795` event có `time`, mức **A**), **chưa** có thứ tự pha / điều kiện vào-thoát / số lần lặp / hành vi callback (mức **C**) | **Không** |
 | 5 | **B1 — HP enemy runtime** | mở | ✅ **HP THEO ID (25/10)** — `datas/enemy_hp_by_id.json` **150 cặp** (`CB-30003` = 650, claim **WRH2**); dict dựng trong `.cctor`, 0 vòng lặp (claim **IAB1**); `kHp[mode]` **không tồn tại** | **Không** |
@@ -188,7 +188,7 @@ xong:
 | | Việc | Vì sao trước | Giao ai |
 |---:|---|---|---|
 | 1 | **Chốt `rate = 0`** — spawn cả loạt hay mỗi frame | đã hẹp còn **B** (§3.1); mật độ **không còn phụ thuộc** nó | nhánh dữ liệu (T5, cần asm) — **không chặn** |
-| 2 | **A6 stage ↔ wave** | quyết định **số màn**; hiện chỉ 7/250 map chắc chắn | offline — tự làm được |
+| 2 | **A6 stage ↔ wave identity** | 250 internal list indexes now have exact wave-ID arrays (H1/A2); the stage/scene identity join to those indexes remains open | offline — bounded static work remains |
 | 3 | ~~Prototype feel 30 giây~~ | **đã bỏ** theo chỉ đạo 25/10 (*"feel bỏ rồi, script là đủ"*) ⇒ không còn việc này | — |
 
 Và **một việc không nên làm**: đừng chờ thêm **mốc thời gian** trong clip — đã có. Nhưng **đừng** gọi là

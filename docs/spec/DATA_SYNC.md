@@ -2299,7 +2299,7 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **180** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **RAW** | **181** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
 | **DOC** | **3** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
 | **CONST** | **28** | không mở file ⇒ **đo một lần** |
 
@@ -3447,3 +3447,10 @@ từ nay:
 - Report 122 graph instruction totals `15/344/998/998` and source total `998` are `SUPERSEDED` by report 123's `34/457/1281/1281` with original virtual bodies. Four standalone calls/seven factories and one source graph/three factories remain `CONFIRMED`. The earlier bounded no-direct-caller result is `SUPERSEDED` by report 123's two direct graph-builder BLs at `6cfc34/6cfc44`.
 - Exact raw-pin/recovery/test claims are `UNVERIFIABLE` in this text-only review; no FDE/native or raw bytes were reopened. The full classification matrix and source references are in `docs/apk-analysis/159-a5-n1-report122-independent-review.md`.
 - This is not an ACK of #27-full or runtime/native parity. No changes were made to AI-1 files or branch.
+
+### 24.51 Report 160 — H1 static map→wave table (A2 bounded closure)
+
+- PR12 H1 claim `6425457933`, opened from queue `6425374777`. Extracted `Map_Get_Datas.listMapDatas` from `Map_Get_Datas..cctor`: **250** array entries in cctor insertion order, **243** `RuntimeHelpers.InitializeArray` payloads + **7** immediate-store arrays, **742** integers total. Static field offset `0x28` is pinned from `dump.cs.gz`; cctor stores the list at `0x140e19c`, and `GetListWaves` reads this field in its indexed branch.
+- Cross-check: indexes 0–2 match the previously resolved `[25,9010]`, `[164]`, `[113,5]`; all **250/250** rows match existing `datas/maps.json`. Legacy `datas/map_waves_candidate.json` has **242/250** mismatches and remains untouched; the report identifies it as superseded for full values/order.
+- **A2 closed for this bounded static table extraction.** The cctor insertion index is not equated with displayed map, scene, campaign, or stage identity. Mode-specific lists, stage/scene identity join, and runtime/readback/parity remain outside this closure.
+- Report `docs/apk-analysis/160-a5-h1-map-wave-inline-table.md`; receipt `datas/l3_a5_h1_map_wave_inline.json`, SHA-256 `48a463b675240caecfcdac6455f3ce9d1147da4629b9cd744ff1fd0fe06e94ed`. Builder `tools/build_a5_h1_map_wave_inline.py`; focused suite `tests/test_a5_h1_map_wave_inline.py` (4 tests). No native/FDE/`libunity.so` or runtime lane used.

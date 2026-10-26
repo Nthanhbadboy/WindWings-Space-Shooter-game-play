@@ -1090,6 +1090,19 @@ def map_candidates():
     return (len(maps), sum(1 for m in maps if m.get("source") == "immediates"))
 
 
+def h1_map_wave_stats():
+    d = ref_json("datas/l3_a5_h1_map_wave_inline.json")
+    if d is None:
+        return None
+    entries = d.get("entries", [])
+    ia = sum(1 for row in entries if row.get("source_kind", "").startswith("RuntimeHelpers"))
+    literal = sum(1 for row in entries if row.get("source_kind") == "immediate element stores in cctor")
+    values = sum(len(row.get("values", [])) for row in entries)
+    known = sum(1 for row in d.get("crosscheck", {}).get("previously_resolved_entries", []) if row.get("match") is True)
+    legacy = d.get("crosscheck", {}).get("superseded_legacy_candidate", {})
+    return (len(entries), ia, literal, values, known, legacy.get("mismatches"))
+
+
 claim("I1", READY, "**5 field**: `hpProgressBarRenderer`", 5, display_fields,
       "Enemy_Display không có tham số hit flash / hit stop")
 
@@ -1100,8 +1113,13 @@ claim("I3", READY, "11.089 dòng cấu hình · rate = 0 : 2.366", 2366,
       lambda: (spawner_rate_zero() or (None, None, None))[1],
       "sửa 2.373 -> 2.371 trong DESIGN_QUESTIONS.md")
 
-claim("I4", READY, "**250 map**, nhưng chỉ **7** ghép chắc", (250, 7), map_candidates,
-      "A6: (250, 7) là trạng thái TRƯỚC bind — lần 11 (25/10) bind cấu trúc xong, peer ghép entry")
+claim("I4", READY, "Legacy “7/250 ghép chắc” là candidate cũ", (250, 7), map_candidates,
+      "A6: (250, 7) is the superseded candidate state; H1 pins the full static listMapDatas payload, not stage identity")
+
+claim("MW1", "docs/apk-analysis/160-a5-h1-map-wave-inline-table.md",
+      "**250 ordered entries**",
+      (250, 243, 7, 742, 3, 242), h1_map_wave_stats,
+      "A2/H1 static listMapDatas extraction; 3 known rows match; legacy candidate mismatches 242/250; index identity is not scene/stage identity")
 
 
 # ── J. script animation (enemy + boss) ─────────────────────────────────
@@ -3300,8 +3318,8 @@ claim("IAB2", "docs/spec/BALANCE.md",
       "Stage_Get_Datas.cctor: int[5] startBonusValues + float[4] levelDelta; 0x40666666 = 3.6 (KHÔNG phải 2.1)")
 
 claim("APKD1", "docs/spec/START_HERE.md",
-      "**119** `.md` · **107** `.csv`",
-      (119, 107), apk_doc_counts,
+      "**120** `.md` · **107** `.csv`",
+      (120, 107), apk_doc_counts,
       "đếm trực tiếp thư mục apk-analysis — thêm báo cáo mới là phải cập nhật dòng này")
 
 claim("IA8", "docs/spec/START_HERE.md",
@@ -3801,8 +3819,8 @@ def data_inventory():
 
 claim("AI1", "docs/spec/START_HERE.md",
       "**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree"
-      " · **126** bảng ScriptableObject · **42** contact sheet · **115** file `datas/`.",
-      (139, 142136, 142, 126, 42, 115), data_inventory,
+      " · **126** bảng ScriptableObject · **42** contact sheet · **116** file `datas/`.",
+      (139, 142136, 142, 126, 42, 116), data_inventory,
       "kho dữ liệu gốc đã phân tích: asm, typetree, ScriptableObject, contact sheet, datas")
 
 claim("AP1", "docs/spec/DATA_INTEGRITY.md",
@@ -4084,8 +4102,8 @@ claim("GE2", "docs/spec/ASSET_TRIAGE.md",
 
 
 claim("RB1", "docs/spec/RAW_AUDIT.md",
-      "**RAW 180 · DOC 3 · CONST 28 · tổng 211**",
-      (180, 3, 28, 211), raw_audit_counts,
+      "**RAW 181 · DOC 3 · CONST 28 · tổng 212**",
+      (181, 3, 28, 212), raw_audit_counts,
       "sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. "
       "CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập")
 
