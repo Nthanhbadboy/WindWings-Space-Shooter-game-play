@@ -80,7 +80,8 @@ def recover(path):
                     j=bisect.bisect_right(starts,pc)-1;owner=unwind[starts[j]] if j>=0 and pc<unwind[starts[j]]['end'] else None
                     direct_refs.append(dict(pc=pc,target=target,owner_start=owner['start'] if owner else None,owner_end=owner['end'] if owner else None))
     entries=[]
-    for a in [0x6d2950]+[a for c in candidates for a in c['slot_addends']]+known_addends:
+    thunk_owners=[x['owner_start'] for x in graph_thunk_refs if x['owner_start'] in unwind]
+    for a in [0x6d2950]+[a for c in candidates for a in c['slot_addends']]+known_addends+thunk_owners:
         if a in unwind and a not in entries:entries.append(a)
     windows=[];followed=[];seen=set();queue=[(a,0,None) for a in entries]
     for lo,hi in sorted(set(RANGES)):
@@ -120,7 +121,7 @@ def recover(path):
             if op&0x3b000000==0x18000000:cell(pc+(signed((op>>5)&0x7ffff,19)<<2),16)
     selected_imports=[r for r in imports if any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in list(cells.values()))]
     selected=[r for r in relas if r['address'] in by_address or r['addend']==0x6d2950 or any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in windows+list(cells.values()))]
-    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,strings=[],references=[],branch_references=direct_refs,windows=windows,cells=list(cells.values()),relocations=selected,imports=selected_imports,vtable_candidates=candidates,known_vtables=known_vtables,graph_populator_relas=graph_relas,graph_thunk_refs=graph_thunk_refs,vtable_rela_count=len(by_address),limits=['Vtable slot inference is based on exact original RELA addends at +0x10/+0x18/+0x70; semantic class/method names are NOT assigned.','Selected original byte spans and FDEs only, not a whole library, game runtime, Unity TypeTree/readback or render.'])
+    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,strings=[],references=[],branch_references=direct_refs,windows=windows,cells=list(cells.values()),relocations=selected,imports=selected_imports,vtable_candidates=candidates,known_vtables=known_vtables,graph_populator_relas=graph_relas,graph_thunk_refs=graph_thunk_refs,thunk_owner_entries=thunk_owners,vtable_rela_count=len(by_address),limits=['Vtable slot inference is based on exact original RELA addends at +0x10/+0x18/+0x70; semantic class/method names are NOT assigned.','Selected original byte spans and FDEs only, not a whole library, game runtime, Unity TypeTree/readback or render.'])
 def main():
     p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);a=p.parse_args();out=ROOT/'reverse-engineering/raw/vtable123/probe.json.gz';out.parent.mkdir(parents=True,exist_ok=True)
     try:
