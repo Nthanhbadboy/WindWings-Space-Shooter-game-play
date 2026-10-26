@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 116 — 27/10, 153/154 ĐÓNG + D5-residual + review-126 R1):**
+> **153** (`0744e72fed` · `792f25b7…`): Arena_Shop≡PVP_Shop (30/30 field) ·
+> 3 dải ô +100/200/300 · dải-100 = id−10001 → trả card · catalogue `Random.Range`
+> (không bảng tĩnh) · **154** (`4fde8ec444` · `e4045686…`): 2 ví 20085132/20084804
+> · cost = price × round(slider/**step**) half-to-even · popup không trừ tiền ⇒
+> **#29-remit shop+exchange HOÀN TẤT** · **D5-residual** (`76f5165` ·
+> `4eba6f53…`): 231.957 records — extra-life vắng trong captured · **D5 =
+> NOT_BOUND chính thức** · review-126 R1: own harness 70/8/8/66 exact (formal
+> chờ). Ceiling còn: review-126/127 · ef-129 · 535-155+. datas/ = **177**.
+> verify 209/0/2.
+>
 > **Sửa lại (lần 114 — 27/10, H4 ĐÓNG + 150/151/152 ĐÓNG + ef-128 + residual-audit ÁP):**
 > **H4/121 formal** (`8d4d362589` · 4 runs GREEN · `51339d7626…` · 7/7 xác
 > nhận) + locator G1 sửa 4 chỗ · **150** (`23be51eba7…` — `0x2ADF238`=

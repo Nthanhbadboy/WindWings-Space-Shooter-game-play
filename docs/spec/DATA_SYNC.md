@@ -5473,6 +5473,56 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   bounded-missing). Hết ⇒ **STATIC-COMPLETE CEILING REACHED**.
 - **Datas/ 169 + 5 pulled (150/151/152/121/128) = 174 (needle sync commit này).**
 
+### 24.105 153/154 ĐÓNG (shop + exchange — #29-remit medal/shop HOÀN TẤT) · D5-RESIDUAL ĐÓNG-bounded · review-126 R1 (lần 116)
+
+- **535 — 153 shop-stock-layout ĐÓNG** (HANDOFF `6427112920` @ `0744e72fed`;
+  runs `40399692466`/`40399692434`/`40399692460` ✓; artifact pulled
+  `792f25b7…` 4.107B ✓; 794 local): **`Arena_Shop` (418) = `PVP_Shop` (912)**
+  — 30/30 field trùng offset, khác đúng kiểu `popupExchange` (đính chính giả
+  định "hai implementation") · khoá lưu ship sẵn `PVP_/ARENA_SHOP_ITEM_ID/STOCK`
+  (PlayerPreferences, default 0) · **3 dải ô +100/+200/+300**
+  (players/drones/resources) · dải-100 lưu `id − 10001` (`#-0x2711`; mua: +0x2711
+  → `Get/SetPlayerCards` = **trả card**) · **không có bảng hàng tĩnh**:
+  `ResetShop` xáo `GetListAllIdPlayerActived` bằng `Random.Range` + `RemoveAt`
+  (giải thích vì sao 133/149 không tìm thấy bảng giá) ⇒ ô nào bán gì = runtime.
+  Bounds: không suy dải 200/300; `MaxStockCount +0x98` no-writer trong 8 slice
+  (bounded).
+- **535 — 154 exchange-cost ĐÓNG** (HANDOFF `6427326809` @ `4fde8ec444`; runs
+  `40401135202`/`40401135212`/`40401135471` ✓; artifact pulled `e4045686…`
+  4.086B ✓; 832 local): **hai popup hai ví** — `Popup_PVPShopExchange` 19888660
+  → `get_PvPMedal` **20085132**; `Popup_ArenaShopExchange` 22835700 →
+  `get_ArenaMedal` **20084804** · **công thức**: `cost = price(+0x1c) ×
+  round(slider.value / step(+0x64))` — chia cho `step` KHÔNG phải `maxValue`
+  (+0x60); round **half-to-even** (`tst/fcsel` — tên `Math.Round` từ call-site,
+  helper `43584368` không có trong dump.cs) · tồn = `stock(+0x20) −
+  GetStockItem(index)` · popup **không trừ tiền** (`onExit(count)` + lambda
+  caller; `SetPopup` 0 caller trong slice) · shader `_EffectAmount` mờ nút khi
+  thiếu medal · **bản thứ 3 `Popup_Exchange` (693)** cùng 11 field nhưng ngoài
+  slice — không suy ví. Values price/stock = event-pass data ⇒ runtime.
+  **⇒ #29-remit "medal/shop exchange" hoàn tất cả hai nửa.**
+- **a5 — D5-RESIDUAL ĐÓNG-bounded** (HANDOFF `6427218189` @ `76f5165`; CI 3/3
+  ✓; artifact pulled `4eba6f53…` ✓; 286 local; verify-nhánh 214/0/2; report
+  164): phạm vi pin **126 SO CSV + 140 TypeTree JSONL = 231.957 records** —
+  extra-life keys **vắng trong phạm vi captured** · `GP_Datas.player` = PPtr
+  `0:2625` (không assert cùng target — class-split exports thiếu source-context)
+  · `Box_Rewards` own-row 2625 không phải join hợp lệ · CSV/TypeTree lệch
+  `listActiveEnemies` `[0]`/`[]` = **export inconsistency** (không phải runtime
+  truth) ⇒ **D5 = NOT_BOUND chính thức trong phạm vi export hiện có** — chỉ chủ
+  dự án mở lại (export mới/runtime).
+- **AI-3 — review-126 R1 PROGRESS** (`6427195743`; setup `a2d299605` · recovery
+  `40399243691` ✓): own harness **không import verifier producer** reproduce
+  **70/8/8/66** exact (same PC-sets) · scan riêng 3.456.888 words xác nhận BL
+  `6cef84`/`6cefe4`→`6cf7b4` · **0 matching addends trên 29.626 RELA** · 27
+  focused PASS · artifact `e1b02b87…` 5.689B · 3 precision boundaries (last-PC
+  `6ceff8` = BR X1; N2 IDs là Python-D8 reads; byte103/A8 = prepared 0) —
+  bounded-approve đang chuẩn bị, **formal HANDOFF chờ CI đủ**.
+- **ef-129 CLAIM** (`6426998422`): M1 owner-linkage (BFS ≤3/≤64 callers của
+  `6cef64`/`6cefdc` + owner-arg x1 context) + test "ControllerConstant = serialized
+  m_Controller image?" trên 308 controllers — đang làm.
+- **Ceiling:** còn ĐANG ① review-126 formal (AI-3) → 127 ② ef-129 ③ 535 fu-22
+  (155+, lane tự-feed). Hết ⇒ **STATIC-COMPLETE CEILING REACHED**.
+- **Datas/ 174 + 3 pulled (153/154/D5-residual) = 177 (needle sync commit này).**
+
 ### 24.97 Điều phối lần 106 — MỞ VIỆC cho AI-2 + AI-3 (báo cáo rảnh): GỠ GATE A2 · hàng đợi H · sửa định danh 120-CLAIMED
 
 - **Đính chính board:** **R1-addendum120 = CLAIMED trước nhắc lần-104**
