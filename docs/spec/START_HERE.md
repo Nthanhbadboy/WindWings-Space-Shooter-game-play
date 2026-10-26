@@ -33,7 +33,7 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **108** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **109** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
 | `datas/` | JSON/CSV bóc trực tiếp | **86** file · **26.190.619 bytes** (**26,2 MB**) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
@@ -70,8 +70,9 @@
 | `datas/l3_a5a74747_game_side_boss39002_event_slot_animator_context.json.gz` | #27-GS phase 17: resolve second use through UI Animator context | `SetTrigger` call target resolves; linked FocusGameSpeed controller has `Stop` parameter | `Stop` is a candidate only; no pointer-slot or Boss-39002 Spine-event identity proof |
 | `datas/l3_a5a74747_game_side_boss39002_event_slot_metadata_index_boundary.json.gz` | #27-GS phase 18: check existing metadata/slot indexes for the callback literal bridge | Metadata index confirms four event-string addresses; provisional slot map covers 12 other addresses | No direct mapping for 0x2ADFB48; `Stop` remains a candidate, not a decoded callback value |
 | `datas/l3_a5a74747_game_side_boss39002_supplemental_slot_xref_boundary.json.gz` | #27-GS phase 19: supplementary exported-method xref check for slot 0x2ADFB48 | 326 files / 3,416,225 bytes searched; no exact slot or base+offset matches | No additional context or literal mapping; callback key remains unresolved |
+| `datas/l3_a5a74747_game_side_boss39002_slot_text_corpus_closure.json.gz` | #27-GS phase 20: final allowed text-export census for the callback slot | 2,350 eligible text exports pinned; no direct slot representation in-scope | Native-relocation token source explicitly excluded; game-side literal bridge remains unresolved |
 
-**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **106** file `datas/`.
+**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **107** file `datas/`.
 
 > **Đừng "sửa" 142.136 thành 142.131:** `wc -l *.asm.txt` cho **142.131** vì **`wc` đếm ký tự
 > newline**, còn `AI1` đếm **dòng** (`sum(1 for _ in fh)` = `splitlines()`). **5** file
