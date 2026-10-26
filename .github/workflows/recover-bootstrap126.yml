@@ -1,0 +1,42 @@
+name: Recover ef6b75ef bootstrap126 evidence
+on:
+  push:
+    paths: ['tools/recovery/bootstrap126.py', '.github/workflows/recover-bootstrap126.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: l3-bootstrap126-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+          fail-on-cache-miss: true
+      - run: git pull --ff-only origin arena/ef6b75ef-windwings-space-shooter-game-p
+      - run: python3 tools/recovery/bootstrap126.py --xapk /tmp/apk/windwings.xapk
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: l3-bootstrap126-evidence
+          path: reverse-engineering/raw/bootstrap126
+      - name: Preserve pinned graph
+        if: always()
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
+          test -f reverse-engineering/raw/bootstrap126/probe.json.gz || test -f reverse-engineering/raw/bootstrap126/diagnostic.json
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/bootstrap126
+          git diff --cached --quiet || git commit -m 'Preserve pinned bootstrap126 native interpolation probe [skip ci]'
+          git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+          git push origin arena/ef6b75ef-windwings-space-shooter-game-p
