@@ -119,7 +119,7 @@ từ hex trong `ia-resolved.json` — **theo kiểu của field**, không
   ⇒ **×2** trong callback. DPS runtime **vẫn chưa chứng minh** (cần health/shield gates) nhưng
   **luật đã đủ để implement** (report 80 §4).
 - **Đã có file dẫn xuất:** `datas/player_start_stats.json` (6 mảng + cột `main_cannon_dps` + cờ purchasable).
-- **Khác lớp (đừng gộp):** `raw/player-loadout/array-blobs.json.gz` — **5 blob** · **49 int** · **5/5 sha256 OK** (claim **CM5**) là **int** của `Player_Saved_Datas` (giá craft/unlock), **không** phải mảng float damage ở trên.
+- **Khác lớp (đừng gộp):** `raw/player-loadout/array-blobs.json.gz` — **5 blob** · **49 int** · **5/5 sha256 OK** (claim **CM5**) — có năm payload records / 49 declared int32 across two classes: ba `Player_Saved_Datas.cctor` arrays bind trực tiếp tới `MaxLevelPerRanks`, `CardUpgrades`, `StartRanks`; hai records còn lại là method-local arrays, không phải named application fields. The separate `GetCostCraftPlayer` `InitializeArray` at `0x14e7c78` selects a handle-indexed int[7] payload for IDs 10001–10024, but those payloads are **NOT_BOUND** in the checked capture (G6). Không gộp các mảng int này với float damage; field name/value alone does not establish broader design purpose.
 - **Bind index↔tàu — ĐÃ HẸP SCOPE (sửa 25/10 theo report 81/82 peer):** ~~id − 10001 cho mọi consumer~~
   → **chỉ đúng ở consumer save/load** (`0x14e2ce4`, `CROSS_BRANCH` T4 — giữ nguyên scope đó).
   **Combat**: impl `Player_Attack_N` đọc mảng index **N−1** (CFG **72/72** call — 24 rate + 24 damage +

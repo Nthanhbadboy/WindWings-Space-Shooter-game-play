@@ -2286,10 +2286,12 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 | Getter có side effect | chưa biết | **biết**: `get_StageTarget` **tăng 1** mỗi lần đọc; `get_IndexTutorial` tự ghi `TUTORIAL=6` |
 | Mảng int của `Player_Saved_Datas` | — | **5 blob · 49 int** (giá craft/unlock), **5/5 sha256** |
 | ~~4 mảng **float** damage theo tàu~~ | thiếu | **vẫn thiếu tại `6ababbd31`** ⇒ B3 còn mở *lúc đó*. **Đã decode sau này** (25/10): thực tế là **6 mảng** — `PlayerCosts` int[24] · damage/rate/wing float[24] · 2× float[3] — trong `ia-resolved.json` (`BALANCE` §1.1b, `MISSING` §2.2). Cái còn thiếu là **bind** `playerIndex` → ID tàu, **không** phải giá trị |
-| Field binding của blob int | — | **chưa chốt** (`PROVISIONAL_METADATA_ARRAY_BLOBS_NOT_ALL_FIELD_BINDINGS`) |
+| Field binding của blob int | — | G6 census: 3 constructor arrays direct-bound, 2 captured arrays are method-local; the second `GetCostCraftPlayer` `InitializeArray` at `0x14e7c78` selects uncaptured handles and remains `NOT_BOUND` (`PROVISIONAL_METADATA_ARRAY_BLOBS_NOT_ALL_FIELD_BINDINGS`) |
 
-> ⚠ **Đừng gộp hai thứ:** blob int `[0,0,0,6500,8500,9500,12500]` là **giá craft** (chưa bind field),
-> **không** phải damage. Nếu game mới dùng nó làm giá thì ghi **B**, không ghi **A**.
+> ⚠ **Đừng gộp hai thứ:** blob `[0,0,0,6500,8500,9500,12500]` là một **method-local fallback** trong
+> `GetCostCraftPlayer`, không phải named application field. Callsite `0x14e7c78` selects a separate,
+> handle-indexed int[7] payload for player indexes 10001–10024; those payloads remain `NOT_BOUND`.
+> Do not turn the fallback values into a general-purpose field/economy table or damage data.
 
 ### 19.3 Sổ kiểm mới: `RAW_AUDIT.md` — trả lời "nói mồm hay dựa raw?"
 
@@ -3413,3 +3415,11 @@ từ nay:
 - The serialized `GP_Tutorials/TutSettings (1)` reference joins Animator path `4648` to controller `FocusGameSpeed` path `1927`. Its controller graph has a `Stop` parameter and AnyState transition to `Base Layer.stop`; this is contextual UI/controller evidence only. It does not decode the slot, prove the argument matches the parameter, or identify the Boss-39002 Spine event key. Boss-39001 and Boss-39002 routes remain separate.
 - The callback also contains amount/value and `TimeSlider.SaveSpeed` UI paths. This report makes no game-clock, runtime invocation/transition, playback, or state claim. No native/FDE or runtime-probe work was performed; Live-DPS remains `MODEL_NOT_MEASURED`.
 - Receipt `datas/l3_a5_g5_tut_settings1_focusgamespeed_flow.json`, SHA-256 `e596df38346e5285803530508de224aed8e7afdbb5313b6238d749151eea0e7a`; report `docs/apk-analysis/155-g5-tut-settings1-focusgamespeed-flow.md`, SHA-256 `a375e894dfc7bd8b62dfecc82d207373ef1f5aa81bc93b794de9b257baee54d6`. Both carry the source hashes and exact anchors.
+
+### 24.47 Report 156 — G6 bounded array-blob field-binding census
+
+- PR12 claim `6423501627`. Inventory-first scope covers the two tracked non-PvP `array-blobs.json.gz` exports only: player-loadout has five captured payload rows / 49 declared int32 values; audio-rules has an empty capture. This is not a whole-program array census.
+- Three `Player_Saved_Datas.cctor` payloads are directly stored to `MaxLevelPerRanks` (`+0x0`), `CardUpgrades` (`+0x8`), and `StartRanks` (`+0x10`). The other two captured payloads are method-local arrays in `GetPlayerDevices` and `GetCostCraftPlayer`, not named application fields. Constructor fields are bound by code store, but no broader purpose is inferred from names or values.
+- The two tracked player-loadout class ASM exports have six `RuntimeHelpers.InitializeArray` sites in total (five in `Player_Saved_Datas`, one in `Player_Device_Saved_Datas`), while the checked capture has five payload rows. The extra `GetCostCraftPlayer` site (`0x14e7c78`, ordinal 1) creates an int[7] from a `RuntimeFieldHandle` selected over indexes 0..23; its field handles and payload rows are not included in the checked capture. This family remains `NOT_BOUND` pending exact handle → metadata field/data index → payload SHA/declared-byte joins. The generic local fallback at `0x14e7c40` is not a substitute.
+- Metadata-backed payloads have no Unity serialized AssetObject PID; the receipt binds the exported rows by method, callsite ordinal, generated field identity, metadata indices, declared length, and payload digests. No PvP artifacts, runtime, native/FDE, or runtime-probe work was used.
+- Receipt `datas/l3_a5_g6_array_blob_field_binding_census.json` (SHA-256 `e31790a1e4ca70950a44c257a0d5978a29b85794fc77dfbbb6caf7bc9ff59e79`); report `docs/apk-analysis/156-g6-array-blob-field-binding-census.md` (SHA-256 `86339468d78f7b208942736f2785057a6e88466c084671b77ace174e485621cb`). Both retain source pins and exact callsite anchors.
