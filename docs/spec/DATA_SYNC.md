@@ -4325,3 +4325,31 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   resources`** (FileID 2 · PathID 10210×6/10202×1 · owner resources.assets path 505276),
   decode vertices từ standalone2 (byte-resolved, không đoán tên) · artifact
   `2b1c4eace14f…` 24112B khớp ✓ · full 1486 PASS · tự sửa pending-SHA token minh bạch ✓.
+
+### 24.75 Điều phối lần 83 — #7 ĐÓNG (falsified-hypothesis mẫu mực) · #27-GS phase-2 HOLD (CI đỏ needle ×2) · CLAIM #8 + phase-3
+
+- **#7 8141386a — ACK, ĐÓNG** (HANDOFF `6419171383`; spec tự kiểm runs:
+  Verify `40342889160` + scoped `40342889106` đều **SUCCESS trên `0018ac7ae`** ✓):
+  **7/7 builtin mesh refs RESOLVED từ nguồn gốc — không phải default-mesh bịa**. Tinh
+  thần report tốt nhất vòng này: **falsify chính hypothesis của mình** — raw102
+  FileNotFoundError không có nghĩa là không có trong APK; recovery mới tìm thấy
+  standalone `assets/bin/Data/unity default resources` (1.121.184B, SHA `a9a74ab36388…`,
+  Unity 2022.3.54f1/v22 — ghi rõ KHÁC generator 62f3) · witness-missing giữ nguyên như
+  historical, KHÔNG viết lại thành absence-proof ✓ · 7 renderer hashes/2180B + 7 PPtr
+  spans/84B (offset 244×6/240×1). **Tasks: 26/28 ĐÓNG** — còn #8 (🔄 đã CLAIM
+  `6419192575`: 5 header-only MonoBehaviour + 52 default-mesh refs) và #27 (🔄 ef 122 +
+  a5 game-side).
+- **#27-GS phase-2 a5 — NHẬN handoff nhưng HOLD (KHÔNG ĐÓNG): handoff CI ĐỎ** —
+  docs-verify `40343849270` FAILURE trên head `1125fbddd`. Spec tái tạo nguyên ver:
+  `verify-claims` trên tree a5 = **207/2/2** — hai needle count quên sync:
+  `APKD1` doc 88 vs đo 91 (+3 reports 130/131/k) · `AI1` datas 86 vs đo 89 (buffer-writer
+  + quickwins + bootstrap). Đúng lỗi lần-48: **thêm report = sync needle cùng commit**.
+  → @a5: sửa 2 dòng needle START_HERE, push commit mới (KHÔNG sửa expected), CI xanh
+  rồi phase-2 ĐÓNG. **Nội dung dữ liệu đã nhận và pin** (artifact `2b6120c00a9f8a70…`
+  5321B ✓ — trong datas/ 109): **negative đúng phép** — "no game-side bootstrap/node-
+  clock provenance proven" · **timeScale control: 29 direct transfers (25 BL + 4 tail B)**
+  với context GP_Time/Tut_Settings1 · 23 source SHA pins.
+- **CLAIM mới registered:** a5 **phase-3** `6419184894` (object/asset provenance — test
+  đường game-side có chạm 116cb40; report 132) · AI-3 **#8** `6419192575` (5+52 refs
+  reconcile — measured unique vs repeated tách riêng).ef 🔄122 (tip `08d9c1c44`, chưa
+  comment) · AI-4 🔄#29 (tip `108d059fa`, recovery Actions đang stream).

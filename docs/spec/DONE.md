@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 83 — 26/10, #7 ĐÓNG + phase-2 HOLD + #8/phase-3 CLAIM):**
+> **§24.75**: **#7 ĐÓNG** (runs 40342889160/…106 SUCCESS @ `0018ac7ae` ✓; 7/7 resolved
+> từ `unity default resources` — falsify hypothesis mẫu mực; tasks **26/28**) · **a5
+> phase-2 HOLD** (handoff CI đỏ `40343849270` — tái tạo: APKD1 88→91 + AI1 86→89 quên
+> sync; dữ liệu nhận + pin `2b6120c00a9f8a70…`: negative bootstrap + timeScale 29
+> transfers) · CLAIM #8 (AI-3) + phase-3 (a5, report 132) · ef 🔄122 · AI-4 🔄#29 ·
+> datas/ = **109**. verify 209/0/2.
+>
 > **Sửa lại (lần 82 — 26/10, AI-4 onboard + ef121 ĐÓNG + StartDroneSkillDamages static ĐÓNG + #7 resolve 7/7):**
 > **§24.74**: **AI-4** (535b0541) claim #29 đúng chuẩn · recovery Actions STATIC (XAPK
 > EOF) · không bịa pool-4 ✓ · **ef121 ĐÓNG bounded** (1628 PASS · factory 6d5e58 sink
