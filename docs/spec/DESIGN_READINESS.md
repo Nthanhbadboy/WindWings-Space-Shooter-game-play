@@ -38,7 +38,16 @@
 > coin/kill); ③ **tasks**: 26/28 gốc ĐÓNG + toàn bộ task mới (#29 Arena/PvP · #30
 > meta thưởng · followup · followup-2) ĐÓNG — còn mở đúng 2: **#8** (byte-equal 5 MBs
 > — gần handoff) + **#27** (native 123 + game-side phase-11); ④ tally DQ giữ
-> **33✅/14⚠/1❌** — chưa lật câu nào lần này, các nâng trên là độ sâu chứng cứ.
+> **33✅/14⚠/1❌** — chưa lật câu nào lần này, các nâng trên là độ sâu chứng cứ;
+> ⑤ **followup-3**: 4 mảng hộp đầy đủ — **AllTimeAds = giây chứng minh**
+> (18.000/259.200/691.200 = 5h/72h/192h, seconds-compare `IsTimeAdsReady`) ·
+> BoxKeyCost 30×3 · KeyPrices 6/20/100 · NumberRewards 5/6/9 ⇒ kinh tế hộp trọn;
+> ⑥ **phase-11/12**: skeleton JSON 918 = `textassets/skeleton__21.json` (SHA
+> `89debb56…` · 60.897B) · 6 event keyframes (Attack3×5) · **Attack4: KHÔNG có
+> static request** cho boss-1 — route ngày càng khép; ⑦ **#8** (gần handoff,
+> artifact `e928b36002c8…` 59.887B): 52 refs → **3 Mesh thật**, 5/5 MB BYTE-EQUAL
+> — mesh refs hết missing; ⑧ **weighted tổng ~85%** (audit lần-80 76% → nay:
+> hệ 14 ~0,8 · hệ 15 ~0,88 · row-5 boss-1 mức B · row-9 StartDrone static ĐÓNG).
 >
 > **Cập nhật 24/10 — vòng 2:** sau khi giải script animation (`ANIMATION_SCRIPT.md`), hệ
 > **Animation**: **35/39 prefab boss** có **nguồn** animation/event trong tập đã xét, boss 1 giải

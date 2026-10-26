@@ -4544,3 +4544,43 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - **ef 123: tip chuyển `a0bfa18e2` → `aa6120c90` (ĐÃ PUSH) — chưa có handoff comment**;
   vtable/RELA là tầng nặng — chờ, không nhắc.
 - **Datas/ 117 + 3 pulled (p9/p10/box_draw) = 120 (needle sync commit này).**
+
+### 24.81 SYNC TÀI LIỆU SPEC ↔ APK-ANALYSIS (lệnh chủ dự án "~90% rồi, đồng bộ spec với apk-analysis đi") — lần 89
+
+- **Phạm vi đồng bộ (đều dẫn nguồn report cụ thể):**
+  1. **`MISSING_FOR_NEW_GAME` hàng 14 Arena/PvP**: khung-A → **luật decoded ~0,8** —
+     1361 method/244 class · map pools thật · Room.IsEmpty · RankSplit/SeasonTime ·
+     rewards mùa · MaxRankStars · GetValueByIndex 27-entry · typeBox 0/1/2 · công thức
+     mở hộp 6/20/100×(30−owned) · AllTimeAds giây 5h/72h/192h. *Nguồn: reports 127–131
+     (`#29` `b37f7d6f1` + followup `f0ed6639c` + followup-2 `f9bba0c10` + followup-3
+     `e1b2fd02a`).* Còn: remote-config (`SeasonTimes/RankUp/RankDrop`) + score mức D +
+     PVP-Betting decision.
+  2. **Hàng 15 Meta thưởng**: 0-hit → **giá trị chính decoded ~0,85–0,88** — Shop_Pack
+     (PackDaily/Weekly/Video/Spec) · EventRewards[20] TRONG .so · timeAds 43200 ·
+     WatchVideos · hộp (30×3/6-20-100/5-6-9) · energy 30→50/video+30 · timeRewards 90M ·
+     vipPoints=−1 sentinel · MAX_LEVEL_BP = remote-config. *Nguồn: reports 128–131.*
+     Còn: BattlePassPro + GiftLogin full + vàng/giờ runtime.
+  3. **Hàng 5 Boss (D3)**: boss-1 **mức B** — route state→defeat/burst (+0x70/+0x78,
+     TypeDefIndex 141) → Enemy_Destroy 601110 · Spine 8/8 + 6 keyframes · Attack4
+     không-request. *Nguồn: reports 136–141 (a5 phase-7..12).* Còn 38 boss + runtime.
+  4. **Hàng 9**: StartDroneSkillDamages static 12/12 (quick-wins) — supersede mỏ.
+  5. **Hàng 13 Tech**: plugin audit xong (quick-wins).
+  6. **Hàng 16**: mesh refs builtin RESOLVED (#7 7/7 + #8 52→3 Mesh, 5/5 MB byte-equal
+     — artifact `e928b36002c8…` 59.887B progress-stage, chưa handoff).
+  7. **`DESIGN_READINESS`**: lần-4 mở rộng ⑤–⑧ (box arrays giây · skeleton pin ·
+     Attack4 · #8 · weighted ~85%).
+  8. **`START_HERE`**: datas row 34-file → **124 file · 52 MB**; AI1 needle 124.
+- **Đồng bộ CI-verified mới trong vòng (đã cross, chưa kịp ACK vòng trước):** phase-11
+  ĐÓNG (`6420858525` @ `17f5d53c7` + UPDATE `6420917959`: spine.json KHÔNG có
+  per-animation keyframes — 6 marker từ TextAsset hash-verified) · **followup-3 ĐÓNG**
+  (`6420922184` @ `e1b2fd02a`, runs `40356244273`/…334/…418 SUCCESS ✓; SHA
+  `b5be797d40daedc1…` khớp ✓) · phase-12 ĐÓNG (`6421112803` @ `550cb5be`,
+  `40357633262` ✓; SHA `ba295316e190…` khớp ✓) · p11 artifact `36cc70e0d263…` ✓ ·
+  **CLAIM mới:** followup-4 (report 132 — nguồn key `GameDatas.set_KeyCount0…`) ·
+  **phase-13 CLAIM** (`6421122159` — BossSpineEventHandler script-identity census) ·
+  **#8**: scientific `1fa9f4f20` PUSHED chưa handoff (1510 PASS; artifact pulled ✓) ·
+  **ef 123**: tip `aa6120c90`→`7e8d0f861` — 2 lần push chưa handoff.
+- **Kết quả đồng bộ:** weighted **76% (lần-80) → ~85%**; cảm nhận "~90%" của chủ dự án
+  hợp lý nếu tính depth của 2 task đang mở (#8 gần handoff, #27 native 123 + game-side
+  phase-13). Trần vẫn là static-complete (lệnh 26/10).
+- **Datas/ 120 + 4 pulled (p11/p12/box_arrays/gaps) = 124 (needle sync commit này).**
