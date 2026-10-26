@@ -21,15 +21,17 @@ Each of the 56 items gets one verdict:
 No disassembly happens here. Every proof reads a field of an existing artifact.
 """
 import argparse
-import glob
 import gzip
 import hashlib
 import json
+import sys
 from functools import lru_cache
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ARTIFACT_GLOB = 'datas/l2_535b0541_*.json.gz'
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import lane_closeout  # noqa: E402   the same twenty artifacts 147 covers
+
 CLOSEOUT = 'datas/l2_535b0541_lane_closeout.json.gz'
 OUTPUT = 'datas/l2_535b0541_open_items_audit.json.gz'
 
@@ -50,9 +52,8 @@ def sha_file(rel):
 
 @lru_cache(maxsize=None)
 def artifacts():
-    return tuple(sorted(path for path in glob.glob(ARTIFACT_GLOB)
-                        if not path.endswith(('_lane_closeout.json.gz',
-                                              '_open_items_audit.json.gz'))))
+    """The twenty lane artifacts, from 147's own closed set."""
+    return lane_closeout.artifacts()
 
 
 @lru_cache(maxsize=None)

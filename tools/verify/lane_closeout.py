@@ -35,7 +35,14 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import store_key_callers as base  # noqa: E402
 
 DOCS = 'docs/apk-analysis/[0-9][0-9][0-9]-*.md'
-ARTIFACT_GLOB = 'datas/l2_535b0541_*.json.gz'
+
+# The lane is a closed set: reports 127-146, one artifact each. Listed by name so a
+# later artifact in the same directory cannot drift into the count by accident.
+LANE = ('application_cell', 'arena_config', 'arena_pvp', 'arena_statics', 'box_arrays',
+        'box_draw', 'computed_key_index', 'economy_keys', 'game_config_gate',
+        'game_store_keys', 'key_sources', 'max_rank_stars', 'meta_rewards', 'pack_index',
+        'pvp_hunter_reward_table', 'pvp_manager_rules', 'pvp_rank_api', 'rank_name',
+        'remote_configs', 'store_key_callers')
 
 EXPECTED_REPORTS = list(range(127, 147))   # 127..146, one artifact each
 REPORT_143 = 143
@@ -56,10 +63,8 @@ def sha_file(rel):
 
 @lru_cache(maxsize=None)
 def artifacts():
-    """The twenty lane artifacts — never this gate's own output."""
-    return tuple(sorted(path for path in glob.glob(ARTIFACT_GLOB)
-                        if not path.endswith(('_lane_closeout.json.gz',
-                                              '_open_items_audit.json.gz'))))
+    """The twenty lane artifacts, in name order."""
+    return tuple(sorted('datas/l2_535b0541_%s.json.gz' % name for name in LANE))
 
 
 @lru_cache(maxsize=None)
