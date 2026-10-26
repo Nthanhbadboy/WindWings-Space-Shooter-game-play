@@ -4874,6 +4874,74 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   exact-head verify/PR15 xanh rồi HANDOFF (không self-ACK ✓).
 - **Datas/ 137 + 2 pulled (137/ef123) = 139 (needle sync commit này).**
 
+### 24.89 Điều phối lần 98 — 138 ĐÓNG (+ đính chính 136/137: số LA MÃ) · 139 ĐÓNG (+ đính chính 138: ArenaConfig.IsOpen) · row16-118 HANDOFF · MỞ VIỆC: swap review AI-3↔ef
+
+- **AI-4 #138 `LoadRemoteConfigs` — ĐÓNG** (HANDOFF `6423055656` @ `136c69855`;
+  runs `40369954732`/`40369955007`/`40369955004` ✓; suite 333; artifact pulled
+  `258f68c0…` 4240B khớp ✓): **6 getter đường remote** — `data-leagues` ·
+  `data-leagues/data-configs` · `…/data-ranks` · `…/data-users` ·
+  `…/data-play/data-play-users` · `…/data-play-machines` (mỗi giá trị truy RVA);
+  `ArenaManager.LoadRemoteConfigs` 22.691.808 = `Concat(get_pathRoot(),
+  "/is-open")`; `get_pathRoot` 22.685.676 3 nhánh (Test → slot `0x2AEC9A0` ·
+  PREMIUM → `0x2AEC9B0` · còn lại `arena---datas`). **Phát hiện then chốt:**
+  `/is-open` Arena là **SỐ LƯỢNG không phải boolean** — handler 22.705.216
+  `Int32.Parse → cmp w20,#0 → cset gt → strb [+0x1C]` ⇒ cổng = `count > 0`;
+  PvP ngược lại dùng object bool (`FromJson<object>` → `IsOpen(+0x4C)=obj[+0x10]`).
+  **Fail-closed đủ chỗ ghi**: PVP 4 (`..cctor` 19.936.560 · parent 19.916.560 ·
+  handler 19.936.736 giá trị remote · 19.936.792 lỗi) + Arena 3; cả 2 parent:
+  `internetReachability == 0` ⇒ false; `Action<bool>` gọi đúng 1 lần/mỗi nhánh.
+- **ĐÍNH CHÍNH 136/137 (áp):** đuôi `b` của `GetRankNumber` = **`0x14204DC`
+  `MyLibrary.ToRoman(int)`**, KHÔNG phải `Int32.ToString` ⇒ số hạng là **số La
+  Mã** — bảng 137 đọc lại **`Herald III … God V`** (spec ghi "Archon 4" ở lần 97
+  — siêu thu bởi mục này; glyph cụ thể vẫn `not_decoded`: thân ToRoman không nằm
+  trong 8 raw đã pin — 139 quét lại xác nhận ⇒ bounded-missing).
+- **AI-4 #139 `ArenaManager` statics — ĐÓNG** (CLAIM followup-6 `6423093619` →
+  HANDOFF `6423210839` @ `15bd9a69a`; runs `40371090660`/`40371090639`/
+  `40371090604` ✓; suite 362 (29 mới); artifact pulled `261eca3a…` 3336B khớp ✓):
+  **9 static `0x0..0x38`, `..cctor` 22.692.372/516B ghi đủ 9** — IsOpen=false ·
+  MaxRoomCount=50 · MinUserCount=25 · SeasonSummaryTime=60.0 · SeasonTimes/
+  RankUpIndexs/RankDropIndexs=null · RankMapsIndex=0 · rewards=string[10]. 2 bẫy
+  ghi đúng: `stur d0,[x8,#4]` phủ 8 byte = **2 int** (literal `3200000019000000`
+  @VA 7.699.216 ⇒ 50/25; đọc double ra 5,3e-313) · `mov x9,#0x404E000000000000`
+  = **bit pattern 60.0** không phải địa chỉ. **Bảng thưởng Arena 10×6 NGUYÊN VĂN**
+  (`#<khung>[Medal:m,Gems:g]` nối `;` — rank0 680/250→60/20 … rank9 5000/1000→
+  440/80; tự kiểm: rebuild chuỗi bằng đúng literal, không giảm theo rank ✓).
+  `Board_Arena.GetConfigs` **22.782.048**/800B nạp SeasonTimes/RankUp/RankDrop từ
+  2 chuỗi `ArenaConfig` (`Replace('"')→Split(';')→Int32.Parse`, dải rank
+  `Split('-')`). **ĐÍNH CHÍNH 138:** cổng `+0x1C` = **`ArenaConfig.IsOpen`**,
+  KHÔNG phải `ArenaManager.IsOpen` (+0x0, chỉ ..cctor ghi) — 3 lớp bằng chứng
+  (bố cục field · metadata slot `0x2AECA98` dùng chung ArenaConfig/Board_Arena ≠
+  khối `0x2AE19D0` · GetConfigs đọc ArenaConfig trước). *Cross 138: data-leagues
+  ×14/arena---datas×4 · 139: 22692372×1/22782048×1/7699216×1/MaxRoomCount×6 ✓.*
+- **AI-3 row16/report118 — HANDOFF** (`6423177428` @ `e3fbb4dbc`; Verify
+  `40369514934` + push-scoped `40369514990` + PR-scoped `40369528335` + PR15
+  `40369528435` **toàn bộ SUCCESS ✓**; artifact pulled `c33ad8a8…` 728.633B
+  khớp ✓ · 252 JSONL shards 14.813.405B · 4 commit evidence <4MB/commit):
+  **census FRESH không union-estimate: 62.815/62.815 SpriteRenderer class-212
+  decode + inverse BYTE-EQUAL (12.311.740B, 196B mỗi cái) · 62.815 unique owning
+  GO inverse-equal · distribution level0-3 8/4/1036/329 + sharedassets0 8 +
+  resources 61.430 · 61.864 nonnull Sprite PPtr/951 null (null giữ null, không
+  thay thế) · mọi nonnull target là class-213 trong catalog 2.185**. Yêu cầu
+  review độc lập — không self-ACK ✓.
+- **a5 G2 — đang làm** (tip `b90d24ec1` "docs: bind Board_Endgame reward divisor
+  consumer" — pushed chưa handoff; chờ).
+- **MỞ VIỆC (kiểm tồn đọng xong):**
+  - **R1 — AI-3 → review độc lập HANDOFF123 ef** (ef yêu cầu; việc phù kỹ năng
+    byte-level của AI-3, đọc chéo được): 53→3 narrowing · ctor `6d2894` selection
+    · 2 BL direct vs 0 RELA · boundary marker-literal vs callback-invocation ·
+    PC/zero-write counts. Review = đọc + đối chéo pin, KHÔNG sửa nhánh ef.
+  - **R2 — ef → review độc lập row16-118 AI-3** (swap công bằng): byte-equal
+    inverse 62.815 · 252 shards SHA · catalog coverage 1897/288 · nhận định
+    "scoped ≠ globally-unused".
+  - **a5:** sau G2 → hàng đợi **G4 (gun3Static) → G5 (Tut_Settings1) → G3
+    (Boss-39001) → G6 (blob-census)** — nhắc CLAIM từng mục.
+  - **AI-4:** tự đèo tốt miền PvP/Arena — gợi ý **followup-7**:
+    `TournamentRewardMedals` 14×6 (nghĩa từng cột) + **3 bảng bet** (not_decoded
+    của 133) hoặc close-out summary miền #29/Arena (127–139). CLAIM trước khi làm.
+  - **spec-own:** P2 của memo 152 (README "4 task" vs T1–T4+T4b+T5) — **ÁP luôn
+    vòng này** (HR §2 + README row 86).
+- **Datas/ 139 + 3 pulled (138/139/118) = 142 (needle sync commit này).**
+
 ### 24.87 Điều phối lần 96 — #136 HANDOFF ĐÓNG (rank API interpreter + 2 đính chính 134/135) · CLAIM 137 · AI-2 memo chưa tới
 
 - **#29-followup AI-4 — HANDOFF #136 `6422732465` @ `efceee587` — ĐÓNG** (runs

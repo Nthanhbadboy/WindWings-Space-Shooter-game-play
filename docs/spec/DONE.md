@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 98 — 27/10, 138+139 ĐÓNG (2 đính chính chuỗi) + row16-118 HANDOFF + MỞ VIỆC review-swap):**
+> **§24.89**: **138** remote paths 6 getter + `/is-open` Arena = SỐ LƯỢNG
+> (count>0) + fail-closed đủ 7 chỗ · **ĐÍNH CHÍNH 136/137: đuôi b = ToRoman ⇒
+> "Herald III…God V"** (glyph bounded-missing) · **139** 9 statics đủ + bảng
+> thưởng Arena 10×6 nguyên văn + **đính chính 138: +0x1C là ArenaConfig.IsOpen**
+> · **118 HANDOFF** (62.815/62.815 BYTE-EQUAL · 61.864/951 · runs 4 ✓ ·
+> `c33ad8a8…` 728.633B) · **MỞ VIỆC: R1 AI-3→review ef123 · R2 ef→review 118 ·
+> a5 G2 đang làm (b90d24ec1) → G4/G5/G3/G6 · AI-4 gợi ý followup-7 (Medals 14×6
+> + 3 bảng bet)** · P2 memo 152 áp (HR+README) · datas/ = **142**. verify
+> 209/0/2.
+>
 > **Sửa lại (lần 97 — 27/10, SLOT `0x2ADFB48` = `"Stop"` (ef123) + G1 ĐÓNG + áp S1–S3 + 137 ĐÓNG):**
 > **§24.88**: **HANDOFF123 ef** — marker decode `0x2ADFB48→0x2BE5CB8→"Stop"`
 > (identity static; dispatch MODEL_NOT_MEASURED · Verify `40366819899` ✓) +

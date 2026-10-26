@@ -351,7 +351,7 @@ khi đó chỉ còn đường cắt theo lưới khai báo trong tên (`1_5x2` �
 
 ---
 
-## 2. Hợp đồng chạy (giống `PARALLEL_TASKS.md`, rút gọn cho 4 task)
+## 2. Hợp đồng chạy (giống `PARALLEL_TASKS.md`, rút gọn cho các task: T1–T4 · T4b · T5 — sync-review `152` P2)
 
 | # | Luật | Vì sao |
 |---|---|---|
