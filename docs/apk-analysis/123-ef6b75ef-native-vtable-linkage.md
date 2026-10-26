@@ -1,6 +1,6 @@
 # 123 — original vtable linkage and real virtual methods behind graph populator
 
-**Provisional / arena/ef6b75ef / #27.** Claim **6420235916**. Scientific **1d6fbcbb7e5f8ae35135ee098b5a10af20deabe288e5514bb3801977950aaf0c**. Follows122handoff6419944060. This replaces three synthetic virtual service sinks with **original vtable RELA slots and original native method bodies**, while retaining an explicit allocator, memset, stack-check and prepared manager/pool/TLS boundary. It is static native analysis, **not** observed game graph creation, original heap, serialized controller bootstrap, Unity readback or render.
+**Provisional / arena/ef6b75ef / #27.** Claim **6420235916**. Scientific **1d6fbcbb7e5f8ae35135ee098b5a4816ea9d4f84**. Follows122handoff6419944060. This replaces three synthetic virtual service sinks with **original vtable RELA slots and original native method bodies**, while retaining an explicit allocator, memset, stack-check and prepared manager/pool/TLS boundary. It is static native analysis, **not** observed game graph creation, original heap, serialized controller bootstrap, Unity readback or render.
 
 ## 1. From static RELA candidates to the selected original vtable
 
@@ -82,3 +82,11 @@ python3 -m unittest discover -s tests -v
 Review requested: 53candidate false-positive mechanism and three-vtable narrowing; constructor6d2894→vptr10b1150 selection; two direct graph-builder BLs not virtual RELA; three real virtual method bodies and exact PLT/service bindings; manager/vector capacity bounds; PC counts and zero-write transitions; source-shared lineage; bounded marker literal decode and its invocation boundary; exact count exclusions. Real game graph-builder/serialized controller state, original allocator/heap, servicebootstrap, clip/clock/control writers, previous/activepose/conversion/blend/normalize/apply/Unityreadback/render remain OPEN.
 
 Coordination preserved: owner/spec6418032974 static-only and6418326986 lane split retained. Spec6422540134/6422606755 explicitly assign the final native-relocation marker layer to this lane; 123 reads already retained raw evidence and resolves the static literal without editing or taking over a5 artifacts. Runtime invocation remains unproven. Peer8141386a, AI-4 and a5 lanes untouched. Protected3/main/merge/release unaffected; no screenshot/render acceptance.
+
+## 6. Final verification and coordination
+
+**36focusedPASS/1.967s; full1694PASS/284.247s; deterministic artifact`--check`PASS; Verify40366819899SUCCESS exactscientific1d6fbcbb7e5f8ae35135ee098b5a4816ea9d4f84.** Recovery40363114036SUCCESS/sourceee1143bd8/raw128cdeebf. Actual compressed logs, RESTrun/jobs, check/local, recoveryhistory/diagnostic, markerdecode/scan and spec receipts in`reverse-engineering/raw/l3-ef6b75ef123-verification/`; protected3absent/unchanged. Full suite and full regeneration ran sequentially, avoiding113memorythrashing. No preview/render/screenshot gate.
+
+Spec **6422540134/6422606755** assign the native-relocation marker layer to this lane; spec **6422747515** records tip1d6fbcbb7e and "no further action needed" while work was in progress. The official123handoff below supersedes that status and supplies the bounded static decode: `0x2ADFB48→0x2BE5CB8→"Stop"`. Callback invocation/dispatch remains MODEL_NOT_MEASURED runtime. No external ACK/CLOSE of122 observed before this handoff; independent122review remains pending. a5 phase20–22 static census is retained, not modified.
+
+Exact tool pins: verify/vtable123.py`d47d1f6a4135cb991ec0d3948ee55e4eebc6201dd2887631aa16dbb7c58eef78`, recovery/vtable123.py`b7771cbbed99b1d1321436ced0737d83c2576a745b3b82001ed061c280108f36`, tests/test_vtable123.py`645d0466acad91a326e1cf8d4dbfe00c2739b98af75bb9d89f575bd297a42c73`. Four standalone graph calls have34/457/1281/1281nativeinstructions; source graph1281. These include nested methods; do not add earlier chain counts again. 930DWORDs are across10sourcecalls only.
