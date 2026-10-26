@@ -198,6 +198,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v5
 
       - name: Build separate loader APK, phone-target bridge, and provenance
+        id: build_vehicle
         env:
           GH_TOKEN: ${{ github.token }}
           REPO_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -287,6 +288,15 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
+      - name: Upload unchanged source XAPK separately
+        if: steps.build_vehicle.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-source-xapk-${{ github.run_id }}
+          path: ${{ runner.temp }}/runtime-loader-scratch/source/windwings.xapk
+          if-no-files-found: error
+          retention-days: 14
+
   map-probe:
     name: one-shot Map arr256 depth2 receipt
     needs: build-loader-vehicle
@@ -295,6 +305,7 @@ jobs:
     timeout-minutes: 35
     permissions:
       contents: read
+      issues: write
       pull-requests: write
     env:
       RAMUS_API_KEY: ${{ secrets.RAMUS_API_KEY }}
@@ -318,9 +329,15 @@ jobs:
           name: runtime-loader-vehicle-${{ github.run_id }}
           path: ${{ runner.temp }}/runtime-loader-vehicle
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: runtime-source-xapk-${{ github.run_id }}
+          path: ${{ runner.temp }}/runtime-source-xapk
+
       - name: Attempt the Map runtime readback once
         env:
           LOADER_BUNDLE: ${{ runner.temp }}/runtime-loader-vehicle
+          SOURCE_XAPK_PATH: ${{ runner.temp }}/runtime-source-xapk/windwings.xapk
           PROBE_OUT: ${{ runner.temp }}/runtime-map-step
         run: |
           set -euo pipefail

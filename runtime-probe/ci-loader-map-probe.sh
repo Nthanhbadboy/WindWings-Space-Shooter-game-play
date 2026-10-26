@@ -135,20 +135,14 @@ fi
 
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"; finish_session' EXIT
-XAPK="$TMP/$APK_ASSET"
-set +e
-gh release download "$APK_TAG" --repo "${GITHUB_REPOSITORY:?}" --pattern "$APK_ASSET" --dir "$TMP" --clobber \
-  > "$OUT/source-download.stdout" 2> "$OUT/source-download.stderr"
-download_rc=$?
-set -e
-if [ "$download_rc" -ne 0 ] || [ ! -s "$XAPK" ]; then
-  block "BLOCKED_SOURCE_DOWNLOAD" "source-xapk-download" "Could not retrieve the pinned XAPK from release $APK_TAG; no source APK was installed."
-fi
+XAPK="${SOURCE_XAPK_PATH:-}"
+[ -n "$XAPK" ] && [ -s "$XAPK" ] || block "BLOCKED_SOURCE_ARTIFACT" "source-xapk-artifact" "The separate immutable XAPK artifact is missing or empty."
 chmod a-w "$XAPK"
 source_before="$(sha256sum "$XAPK" | awk '{print $1}')"
 if [ "$source_before" != "$APK_SHA256" ]; then
-  block "BLOCKED_SOURCE_SHA" "source-xapk-integrity" "Downloaded XAPK SHA-256 $source_before does not match the pinned original $APK_SHA256."
+  block "BLOCKED_SOURCE_SHA" "source-xapk-integrity" "Artifact XAPK SHA-256 $source_before does not match the pinned original $APK_SHA256."
 fi
+printf '%s\n' "$source_before" > "$OUT/source-xapk-artifact-sha256.txt"
 mkdir -p "$TMP/unpacked"
 unzip -q "$XAPK" -d "$TMP/unpacked"
 python3 - "$TMP/unpacked/manifest.json" "$PACKAGE" <<'PY' || block "BLOCKED_SOURCE_PACKAGE" "source-xapk-manifest" "XAPK manifest package does not match the authorized WindWings package."
