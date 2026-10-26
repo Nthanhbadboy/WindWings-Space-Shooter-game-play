@@ -3597,3 +3597,31 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   blob rồi tick done.
 - Điều phối: AI-2 **CLAIM #22** (save schema e2e) · AI-3 #4–8 đang chạy (bắt đầu #5) ·
   ACK107-ef6b75ef (receipt supporting probe) qua PR12.
+
+### 24.50 Report 110-a5a74747 — L2 #22 ĐÓNG (bó scope): save→load schema PLAYER_DEVICE_* (AI-2, commit `5ed3328f8`; local **183 PASS**; SHA `b744f99bda73b542…` khớp handoff chính xác — datas/ = **76**)
+
+- **Trace tĩnh bounded**: writes/reads **4-slot `PLAYER_DEVICE_{ship}_{slot}`** · wrapper
+  PlayerPreferences → Unity PlayerPrefs · **mode-4/Game sentinel override** · consumers
+  **Player_Attack** (`GetDeviceAddPowerPercent` 0x1479E34) / **Player_Health** / UI ·
+  **Device fields: id@0x10 · lv@0x14 · rank@0x18 (rank-indexed base-stat selector) ·
+  instanceId@0x1C** · **GetStatValue2** formula (RVA 0x1250134, listStatValues).
+- **Khớp r89 theo hex** (r89 ghi lược "0x"): id@0x10/lv@0x14/rank@0x18 + RVA GetDevice
+  `0x12546D0` = r89 `12546d0` ✓. **Bổ sung mới so r89**: instanceId@0x1C + chuỗi load đầy đủ
+  `GetPlayerDevices(playerIndex) → skip saved −1 → GetDevice(saved as instanceId) → read
+  Device.id → branch theo category id → GetStatValue1/2 → cộng normal`.
+- **Scope khai đúng**: KHÔNG runtime round-trip/durability/migration/global schema;
+  **GetDevice body không khả dụng** (dump declaration only); không完整性 PlayerPrefs keys.
+  **#22 = ĐÓNG (bó scope static trace này)** — durability/migration là tầng khác nếu chủ
+  dự án muốn (tách #25 khi cần).
+- **Nhận 4 điểm review AI-1 về #20** (đã paginate, đúng hết): ① tool109 source identity từ
+  `PHAN_TICH_WINDWINGS_APK.md` là note có SHA — KHÔNG bytes validation; spec giữ "identity
+  note", không nâng thành "generator reopens verified APK" ✓; ② **clamp riêng từng array
+  TRƯỚC bounds-check + GetPlayerLevel nhận requested sourceID trước clamp** — sửa ghi chú
+  để người dựng không biến out-of-range thành throw; UI indexDefault 10001 ≠ permutation
+  combat 10001→index2 ✓; ③ observed FP32 ops ≠ localized display/engine parity ✓; ④ CI
+  f246e4bd6 chỉ 4/5 (RD1 FAIL) — giữ "source/UI reader acceptance" tách "final green
+  delivery" ✓. Payload SHA AI-1 đối chéo (6a948416…/5e70be35…) khớp artifact AI-2 ✓.
+- **⚠️ Needle nhánh AI-2**: commit #22 không sync APKD1 (75 → cần 76 vì report 110) + RD1
+  README — cùng lỗi lần #20; nhắc sync + push (PR14 tự re-trigger).
+- Điều phối: AI-2 **CLAIM #23** ngay sau #22 (wing named leaves + DPS parity) · AI-1 tiếp
+  #21 · AI-3 #5 running. ACK110 qua PR12.

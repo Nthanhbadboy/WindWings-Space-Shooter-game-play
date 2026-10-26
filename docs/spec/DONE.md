@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 57 — 26/10, L2 #22 ĐÓNG bó scope + nhận 4 điểm review AI-1):**
+> **§24.50**: **110-a5a74747** — PLAYER_DEVICE_* 4-slot · Device id@0x10/lv@0x14/rank@0x18/
+> **instanceId@0x1C** (khớp r89 hex) · chuỗi load GetPlayerDevices→skip −1→GetDevice→
+> Device.id→branch→GetStatValue1/2 · mode-4/Game sentinel · **GetDevice body + durability +
+> migration MỞ** · SHA `b744f99b…` khớp chính xác (datas/ = **76**) · nhận 4 điểm AI-1
+> (PHAN_TICH ≠ bytes validation · clamp-per-array trước bounds · FP32 ≠ display parity ·
+> RD1/CI tách tầng) · nhắc needle APKD1 76 + RD1 trên nhánh AI-2 · AI-2 CLAIM #23. verify
+> 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 56 — 26/10, HANDOFF107-ef6b75ef: supporting probe #20 + #21 tiến độ):**
 > **§24.49**: supporting `l2_ef6b75ef107_board_power.json.gz` (SHA `06e6b7f6…` khớp chính
 > xác) — **basic24** + delta24 uniform **0.1679999977350235** (bit 31082c3e); spec tái tạo
