@@ -6,11 +6,11 @@
 
 **Disposition: `SPINE_COMPLETION_TO_DEFEAT_EVENT_STATIC_ROUTE_PROVEN / BURST_EVENT_CALLER_AND_RUNTIME_EXECUTION_UNRESOLVED`.** The managed completion callback tail-branches to `BossWork(entryName)`. In that method, comparisons against the serialized `stateRunAway` (`Baydi`) or `stateDie` (`Dead`) slots converge on a `UnityEvent.Invoke` call. Reconstructing the serialized field slots from the managed access anchor and the serialized field order maps that event slot to `defeatEvent`; its persistent target is the phase-8-resolved `Enemy_Destroy` path `601110`, method `OnDefeated`.
 
-`ClearGuns(turn)` contains two guarded `UnityEvent.Invoke` paths on the next event slot, aligned by the same field-order reconstruction to `burstEvent`, whose persistent target is also `Enemy_Destroy` path `601110`, method `OnBusrtItems`. A scan of the pinned 139-file top-level ASM corpus found no direct `BL`/tail-`B` caller to `ClearGuns` or the `BossDefeat` wrapper. The route is therefore statically visible, but a caller/activation for the burst-event branch is not established. None of these method bodies proves that Unity invoked a callback, an animation completed, or a death/burst action occurred.
+`ClearGuns(turn)` contains two guarded `UnityEvent.Invoke` paths at the metadata-confirmed `burstEvent` slot `+0x78`; its persistent target is also `Enemy_Destroy` path `601110`, method `OnBusrtItems`. A scan of the pinned 139-file top-level ASM corpus found no direct `BL`/tail-`B` caller to `ClearGuns` or the `BossDefeat` wrapper. The route is therefore statically visible, but a caller/activation for the burst-event branch is not established. None of these method bodies proves that Unity invoked a callback, an animation completed, or a death/burst action occurred.
 
-## State and field-slot reconstruction
+## State and field-slot mapping
 
-The serialized Boss-39001 component `Boss_1_Animation` (path `674445`) lists, in order, `bossLevel`, `skeAnim`, eight state strings, `defeatEvent`, `burstEvent`, and `hitCol`. `Start()` loads the instance slot `+0x30` and passes it to `AnimationState.SetAnimation`; the serialized value there is `stateAppear = "Xuathien"`. The following same-typed string fields occupy the contiguous slots through `+0x68`. This anchors the ordered mapping below:
+The tracked `script-declarations.json` metadata declaration for `Boss_1_Animation` (TypeDefIndex `141`) explicitly gives field offsets: `stateAppear` through `statePreAttack3` at `0x30`–`0x68`, `defeatEvent` at `0x70`, `burstEvent` at `0x78`, `hitCol` at `0x80`, and `nextTurn` at `0x88`. The serialized Boss-39001 component `674445` supplies the corresponding values and persistent calls. Independently, `Start()` loads slot `+0x30` and passes it to `AnimationState.SetAnimation`; its serialized value is `stateAppear = "Xuathien"`. The table below is therefore supported by explicit metadata offsets and method-body access, not merely by field order:
 
 | Reconstructed slot | Serialized field | Exported value |
 |---:|---|---|
@@ -26,7 +26,7 @@ The serialized Boss-39001 component `Boss_1_Animation` (path `674445`) lists, in
 | `+0x78` | `burstEvent` | one persistent call: `OnBusrtItems` → target `601110` |
 | `+0x80` | `hitCol` | PPtr `487921` |
 
-The slot assignment is a static layout reconstruction, not a separately exported compiler field-offset table: it is anchored by `Start()` at `+0x30`, contiguous pointer-sized string slots, serialized field order, and the methods' accesses at `+0x70/+0x78/+0x80`. The method metadata JSON does not itself provide a complete field-offset table. The artifact preserves that qualification.
+The slot assignment is static metadata evidence: the declaration records exact field offsets, and serialized values plus ARM64 loads/invokes agree with those offsets. This proves the managed method-to-field mapping in the checked build; it does not prove that any callback/event path executed.
 
 ## Callback and invocation paths
 
