@@ -2484,8 +2484,10 @@ trước khi xin dữ liệu*.
 
 ### 23.2 Cái mới thực sự dùng được
 
-`Board_Players.allBasicAtk` (float[24]) và `allDeltaAtk` (float[24] = **0,168** × 24) — **tên field đã bind
-theo asm**, nhưng **consumer chưa đọc** ⇒ ghi **B**, chưa gọi là “damage theo rank”. Chi tiết: `MISSING` §2.2c.
+`Board_Players.allBasicAtk` (float[24]) và `allDeltaAtk` (float[24] = **0,168** × 24) — tên field đã bind
+theo asm. Consumer được xác nhận sau đó bằng ARM64 ở **report 109 / §24.41**: `GetPlayerPower` đọc
+cả hai mảng để dựng **UI power** qua `SetPlayerInfo.textPlayerPower`. Điều này vẫn **không** gọi là
+damage combat hoặc “damage theo rank”; xem ranh giới ở `MISSING_FOR_NEW_GAME` §2.2c.
 
 ---
 
@@ -3344,3 +3346,24 @@ từ nay:
 6. **ACK mỗi report = 1 comment PR12 riêng**, ghi rõ nhánh/nguồn; khi đánh số report va chạm
    giữa các digger thì ghi kèm tiền tố nhánh (`Report <N> — <nhánh>`).
 7. Vai không đổi: digger đào sâu; spec = đối chéo + tài liệu + handoff, không tự đào thay.
+
+### 24.41 Report 109 — Board_Players arrays: direct UI-power consumer confirmed (arena/a5a74747-windwings-space-shooter-game-p)
+
+- **#20** claimed on PR12 before work (comment `6411807151`). `Board_Players.GetPlayerPower`
+  (`0x12D5DFC`) reads the class static array refs at `0x10` (`allBasicAtk`) and `0x18`
+  (`allDeltaAtk`), bounds-checks both, calls `Player_Get_Datas.GetPlayerLevel` (`0x14E3B20`),
+  then uses `basic[i] × (1 + delta[i] × level)`; array index = `_indexPlayer - indexDefault`.
+- `Board_Players.SetPlayerInfo` (`0x12D1048`) calls it (`0x12D13FC`) and writes the result to
+  `textPlayerPower` (instance field `0x40`). Therefore the consumer is **UI power display**, not
+  evidence of combat damage or a balance-by-rank formula. Board_Drones' independent 12-entry data
+  and consumer were not used for this binding.
+- This **supersedes** the then-correct unresolved consumer note in §23.2 / report 91 (§24.24):
+  positive recovered ARM64 evidence is now available. It does not make a global absence claim for
+  other code not represented in the workspace.
+- Artifact: `datas/l2_basic_attack_array_consumers.json.gz`, 2,717 B, SHA-256
+  `79d7232db9fcadeb94a9cbe47346c097f87e684d1cf7b55c499b84a3607b90df`; builder
+  `tools/verify/l2_basic_attack_array_consumers.py`, SHA-256
+  `80638e79cedd084e3787f03847fcd5cce5922591bf8e44d8af76a2a40f51100d`. Report:
+  `docs/apk-analysis/109-Board-Players-attack-array-consumer-arena-a5a74747.md`.
+- Sync status: `BALANCE.md` / `MISSING_FOR_NEW_GAME.md` now distinguish the confirmed UI consumer
+  from unresolved combat semantics. `APKD1` / `AI1` counts include this report and artifact.

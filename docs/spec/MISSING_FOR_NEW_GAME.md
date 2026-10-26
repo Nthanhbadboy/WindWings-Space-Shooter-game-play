@@ -154,15 +154,15 @@ từ hex trong `ia-resolved.json` — **theo kiểu của field**, không
 - Cái **đo được** và nên giữ: mỗi wave có **1 `StartPoint` + 1 `EndPoint`** (tổng **608** dòng mốc) và
   danh sách enemy nằm trong `listPrefabEnemies` — đó là **cấu trúc**, không phải nhịp.
 
-### 2.2c Board_* — `Board_Drones` **ĐÃ CÓ CONSUMER (report 91)**; `Board_Players` vẫn **B**
+### 2.2c Board_* — `Board_Drones` và `Board_Players` đều có consumer UI; combat meaning vẫn **B**
 
 `ia-resolved.json` (bản `3ac2faa45`) có thêm **5 nhóm `Board_*`** ⇒ tổng **17 nhóm · 623 record** (claim **IA7**).
 Hai mảng của `Board_Players` đã bind được **tên field** bằng asm (store ngay sau `InitializeArray`):
 
 | field | kiểu | giá trị (index 0…) | đọc là gì? |
 |---|---|---|---|
-| `Board_Players.allBasicAtk` (`0x10`) | **float[24]** | `4640, 5120, 5040, 6160, 8896, 6880, 8889, 5680, 5500, 9100, 6750, 7589, 6000, 7588, 9100, 10050, …` | **chưa chốt**: “atk” theo tên, nhưng chưa thấy consumer ⇒ **B** |
-| `Board_Players.allDeltaAtk` (`0x18`) | **float[24]** | **0,168** × 24 | **chưa chốt**: nếu là “delta mỗi rank” thì damage(rank) = basic + 0,168·rank — **giả thuyết**, chưa kiểm |
+| `Board_Players.allBasicAtk` (`0x10`) | **float[24]** | `4640, 5120, 5040, 6160, 8896, 6880, 8889, 5680, 5500, 9100, 6750, 7589, 6000, 7588, 9100, 10050, …` | ✅ `GetPlayerPower` → `SetPlayerInfo.textPlayerPower`: confirmed UI-power consumer; **not** combat-damage proof (report 109) |
+| `Board_Players.allDeltaAtk` (`0x18`) | **float[24]** | **0,168** × 24 | ✅ `GetPlayerPower` uses `delta[i] × GetPlayerLevel` in the UI-power expression; combat/rank interpretation remains **unproven** (report 109) |
 | `Board_Drones.allBasicAtk` (static10) | float[12] | `500, 600, 800, 1250, 1500, 1800, 2300, 2800, 2535, 2500, 1251, 2680` | ✅ **UI power** — `GetPlayerPower 1263860`: round-half-even(basic[i] × (1 + delta[i] × GetDroneLevel)) → `textDispDamage` (report 91 §5b) |
 | `Board_Drones.allDeltaAtk` (static18) | float[12] | **0,16** × 12 | ✅ **hệ số level** của công thức UI power trên |
 | `Board_Drones.ctor` (`playerPriceMultipleA` @238) | float[24] | `1,0 ×3 · 2,2 · 1,0 · 1,875 · …` | ✅ **giá nâng cấp UI** — `SetUpgradeCost`, index = cellIndex − 20001 (report 91 §5a) |
@@ -172,8 +172,8 @@ Hai mảng của `Board_Players` đã bind được **tên field** bằng asm (s
 > ⚠ **Cấm xác nhận chéo (góp ý #3, report 91 §6):** UI power (`allBasicAtk`) **≠** combat
 > `GetBaseDamage` (report 90): 20001 → UI **500** vs combat **450** · 20003 → UI **800** vs combat
 > **6000** — hai nguồn số khác consumer, không damage×rate proxy. `Board_Players.allBasicAtk/
-> allDeltaAtk` (float[24], `4640…`/`,168`) **vẫn chưa có consumer** ⇒ giữ mức **B**, B3
-> damage-theo-rank của tàu chưa chốt.
+> allDeltaAtk` (float[24], `4640…`/`,168`) có consumer UI `GetPlayerPower` → `textPlayerPower`;
+> điều đó **không** chứng minh combat damage/rank semantics ⇒ B3 damage-theo-rank của tàu chưa chốt.
 
 ### 2.3 Save / load — **8 key family đã có contract**, chưa phải schema đầy đủ
 

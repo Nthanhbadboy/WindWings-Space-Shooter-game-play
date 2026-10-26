@@ -1583,7 +1583,7 @@ Toàn bộ hex của các `.cctor` **đã nằm trong repo**; decode theo kiểu
 | `GameDatas` | 1 | float[6] = `0,5 · 0,6 · 0,7 · 0,8 · 0,9 · 1,0` | hệ số chung theo chế độ/độ khó |
 | `Stage_Get_Datas` | 2 | int[5] `350 600 5 10 10` · float[4] `1 · 2 · 3,6 · 3,6` | §6.4 |
 | `Player_Get_Datas` | 6 | §1.1b | damage/rate/wing/cost/clone/mission % |
-| `Board_*` | 5 | `Board_Players.allBasicAtk` float[24] `4640 5120 5040 6160 8896 …` · `allDeltaAtk` = **0,168** × 24 · `Board_Drones` float[12] `500 600 800 1250 …` · `Board_Endgame` int[10] `900…810` | **ứng viên HP/atk theo hạng** — chưa có consumer ⇒ **B** |
+| `Board_*` | 5 | `Board_Players.allBasicAtk` float[24] `4640 5120 5040 6160 8896 …` · `allDeltaAtk` = **0,168** × 24 · `Board_Drones` float[12] `500 600 800 1250 …` · `Board_Endgame` int[10] `900…810` | `GetPlayerPower` → `textPlayerPower` xác nhận UI-power consumer; combat/rank semantics chưa chứng minh ⇒ **B** (report 109) |
 
 **Cách tái tạo** (`ia-resolved.json` → số):
 
