@@ -5662,6 +5662,44 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   đó **#27 khép 6/6** (M1b runtime-only).
 - **Datas/ 181 + 3 pulled (159/166/review-127) = 184 (needle sync commit này).**
 
+### 24.110 review-127 FORMAL (4 CI GREEN) + ĐÁNH GIÁ ẢNH HƯỞNG VẤN ĐỀ RUNTIME (lần 121, trả lời chủ dự án)
+
+- **AI-3 — review-127 FORMAL HANDOFF `6428493306`** @ `a7f4e1f65de` (4
+  exact-head GREEN: Verify `40408515889` · scoped-push/PR · PR15 vehicle;
+  local 1655 full / 284 focused / 32 mới; receipt `a5fc43cee6…` 38.640B;
+  witness `74c1c83f…` 16.227B — 104 spans/37 FDEs): verdict
+  **`SUPPORT_EF127_NULL_ENTRY_RET_ONLY_CALLEE_RET_METADATA_CORRECTION_PENDING_NOT_27_FULL`**.
+  **Supported:** 3×51 entry→RET null-domain executions + canary + 33 witnesses
+  + 6 FDE ends. **P1 DRIFT xác nhận:** `b98d64`=`c0035fd6` (RET) vs nhãn cũ
+  `b98d68`=`d6071494` (BL `109acc0`); `b98d6c` end-exclusive vẫn đúng; lỗi do
+  generator dùng luật `ret=end−4` sai cho hàm kết-canhary. **4 precision
+  quals:** §3 heading 127 quá rộng (`6ceeb0` CHẠY, 5 callee còn lại không) ·
+  "leaves empty" = unbuilt, không phải literal-0 · 11 role rows = 6 witness +
+  5 unasserted · 153 instr không cộng-gộp với 126. **Trạng thái #27:** null-
+  path SUPPORTED + DRIFT chờ tắt — ERRATUM-127 spec-issue (lần 120) đang mở
+  cho ef đối chiếu 1 vòng (AI-3 ghi nhận "chưa thấy producer correction tới
+  comment 512"); AI-3 sẽ xác minh correction khi có ⇒ sau đó nâng APPROVE,
+  **#27 6/6** (M1b runtime-only giữ trần).
+- **ĐÁNH GIÁ ẢNH HƯỞNG VẤN ĐỀ RUNTIME (trả lời "có ảnh hưởng lớn không"):**
+  ① **Cross-build của probe 23/10 (1.0.69 mod vs 1.3.118):** ảnh hưởng
+  **THẤP** với tính đúng của spec — vì luật dùng đã ghi từ đầu (khớp ⇒ củng
+  cố, lệch ⇒ nghi khác bản; cấm nhập số probe vào spec) và mọi đối chiếu đã
+  chạy đều KHỚP (250 mức A · 2680/4,8 s · balance 24/12); static 1.3.118 vẫn
+  là authority độc lập, probe chỉ là lớp củng cố thêm. Rủi ro thật chỉ nảy
+  sinh nếu ai dùng probe làm bằng chứng tuyệt đối về bản 1.3.118 — bị cấm.
+  ② **Các mục runtime còn mở (19 RUNTIME + live-DPS time-series...):** phụ
+  thuộc mục tiêu — với **clone/playable static-complete** (trần lần 80):
+  ảnh hưởng **THẤP** (mọi giá trị ship-in-binary đã decode; phần thiếu là
+  giá trị lúc-chạy: server-config, random draws, per-player state — bản chất
+  không nằm trong APK); với **L3 parity sống 1:1**: ảnh hưởng **LỚN** — nhưng
+  đó là gate sản phẩm của chủ dự án, không phải thiếu sót phân tích. Điểm
+  runtime duy nhất có thể đổi số spec = **server-override** (`GetConfigs`
+  ghi đè bảng mùa/thưởng): THẤP cho clone-offline, LỚN nếu server thật còn
+  sống và cần mirror hành vi server. ③ **DRIFT `b98c98`:** thực chất ảnh
+  hưởng **NHỎ** (1 nhãn return-PC trong 6 callee, không đổi bằng chứng thực
+  thi; `b98d6c` vẫn đúng) — ý nghĩa chính là **quy trình**: review độc lập
+  bắt được lỗi mà CI xanh producer không thấy.
+
 ### 24.108 #28 ĐỔI CĂN CỨ — PROBE RUNTIME 23/10 ĐÃ CHẠY = BẰNG CHỨNG RUNTIME CỦA #28 (lần 119, theo lệnh chủ dự án)
 
 - **Lệnh:** "sửa #28 cho đúng là lấy probe runtime ngày 23 đã chạy rồi mà
