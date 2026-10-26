@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 102 — 27/10, 143 ĐÓNG (21 key) + CHIA VIỆC ef → AI-2 (N1/N2)):**
+> **§24.93**: **143**: 21 PlayerPrefs key GameDatas · 48 đọc-bl/42 ghi-tail-b
+> (bẫy tail-call) · đính chính 142 (root cause addend) · runs
+> `40379087484`/…250/…262 ✓ · `c655860a…` · ACCEPT followup-11 (144) ·
+> **CHIA VIỆC ef→a5**: **N1** review-122 độc lập + **N2** serialized-owner hunt
+> `6cf7b4` (bounded identity, không libunity) · R2 + FDE giữ ef · a5 làm trước:
+> sửa 154/155 (nhắc 2) · datas/ = **152**. verify 209/0/2.
+>
 > **Sửa lại (lần 101 — 27/10, phục hồi sandbox ×5 + G3 ĐÓNG (G1–G6 closure 6/6) + 142 ĐÓNG):**
 > **§24.92**: restore mất object DB → fetch tip + reset --hard, verify xanh
 > ngay ✓ · **G3**: boss-39001 event body @`0x1247DA8` = **single RET** ·

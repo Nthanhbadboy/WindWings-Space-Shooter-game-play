@@ -5084,6 +5084,46 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   deliverable; không nhắc vòng này.
 - **Datas/ 149 + 2 pulled (142/G3) = 151 (needle sync commit này).**
 
+### 24.93 Điều phối lần 102 — 143 ĐÓNG (21 key PlayerPrefs) · CHIA VIỆC ef → AI-2 (N1 review-122 · N2 serialized-owner) · ACCEPT followup-11
+
+- **AI-4 143 — ĐÓNG** (HANDOFF `6424309527` @ `95e0c674`; runs
+  `40379087484`/`40378989250`/`40378989262` ✓; suite 507 (28 mới); artifact
+  pulled `c655860a…` 3993B khớp ✓): **khoá save `GameDatas` = 21 `PlayerPrefs`
+  key** (4 tiền tệ: `GCoins`/`Gems`/`StarCount`/`WingCoins`) · **90 lời gọi = 48
+  `GetInt` (`bl` đọc) + 42 `SetInt` (tail `b` ghi)** — **bẫy tail-call: quét chỉ
+  `bl` cho 0 phía ghi**; tên khoá lệch property (`TypeControl`→`ControlType` ·
+  `IsCollectPremiumDailyGift`→`PREMIUM_DAILY_COLLECTED`). **Đính chính 142:**
+  "không đọc được key" SAI — root cause không tra `slot_ref.addend`; không dữ
+  liệu 142 nào khác ảnh hưởng (68999/500/0/999999 giữ). Store thứ hai
+  `PlayerPreferences` **174 lời gọi/42 khoá ứng viên — chỉ census** (khoá ghép
+  index + đối số string ⇒ heuristic slot_ref-gần-nhất sai, 11 lời gọi không quy
+  được). *Cross GCoins×4/Gems×11/StarCount×11/174×3 ✓.*
+- **CLAIM followup-11** (`6424334241`, report 144 — 174 store
+  `PlayerPreferences`: theo dõi thanh ghi từng method, phân loại literal/
+  computed/unknown, chỉ đặt tên nhóm literal): ACCEPTED.
+- **CHIA VIỆC ef → AI-2 (chỉ đạo chủ dự án) — hàng đợi N cho a5, CLAIM trước khi
+  làm. Nguyên tắc: chỉ tách phần CHƯA AI claim của ef; việc ef đã CLAIM (R2
+  review-118) + toàn bộ libunity FDE/factory/allocator (đang làm, specialty)
+  GIỮ NGUYÊN cho ef; runtime items đóng theo trần:**
+  - **N1 — review độc lập report 122** (ef để ngỏ "independent 122 review
+    pending" ×2 lần): đối chiếu khẳng định 122 (3 synthetic sinks/fake services)
+    với thực tế sau CORRECTION123 + 124 (method ảo thật +10/+18/+70 · 4 factory
+    thật); liệt kê từng mệnh đề 122: CONFIRMED / SUPERSEDED (trỏ đoạn mới) /
+    UNVERIFIABLE. Deliver: `review:` comment PR12 + artifact nhỏ, read-only,
+    không sửa nhánh ef. *Rationale: AI-3 đang R1 (123+124) — 122 là mục độc lập
+    duy nhất còn thiếu reviewer.*
+  - **N2 — serialized-owner hunt cho graph-builder `6cf7b4..6cff44`** (nửa
+    game-side của OPEN item "serialized controller state" ef liệt kê): từ
+    serialized exports + metadata (nguồn a5 quen — kiểu G3), xác định
+    component/instance/file sở hữu controller mà graph-builder này dựng —
+    **bounded identity: file ID/PPtr/component path; KHÔNG đọc libunity, KHÔNG
+    diễn giải native**. Kết quả cấp cho ef làm bước native kế (nếu có).
+  - **a5 LÀM TRƯỚC (nhỏ):** sửa slot-wording 154/155 (nhắc lần 2 — "unresolved"
+    → identity `Stop` ef123; kết luận SetActive giữ nguyên).
+- **R1 (AI-3 review123+124) + R2 (ef review-118):** đang chạy, chưa
+  deliverable — không nhắc vòng này.
+- **Datas/ 151 + 1 pulled (143) = 152 (needle sync commit này).**
+
 ### 24.87 Điều phối lần 96 — #136 HANDOFF ĐÓNG (rank API interpreter + 2 đính chính 134/135) · CLAIM 137 · AI-2 memo chưa tới
 
 - **#29-followup AI-4 — HANDOFF #136 `6422732465` @ `efceee587` — ĐÓNG** (runs
