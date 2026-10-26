@@ -166,7 +166,7 @@ Hai mảng của `Board_Players` đã bind được **tên field** bằng asm (s
 | `Board_Drones.allBasicAtk` (static10) | float[12] | `500, 600, 800, 1250, 1500, 1800, 2300, 2800, 2535, 2500, 1251, 2680` | ✅ **UI power** — `GetPlayerPower 1263860`: round-half-even(basic[i] × (1 + delta[i] × GetDroneLevel)) → `textDispDamage` (report 91 §5b) |
 | `Board_Drones.allDeltaAtk` (static18) | float[12] | **0,16** × 12 | ✅ **hệ số level** của công thức UI power trên |
 | `Board_Drones.ctor` (`playerPriceMultipleA` @238) | float[24] | `1,0 ×3 · 2,2 · 1,0 · 1,875 · …` | ✅ **giá nâng cấp UI** — `SetUpgradeCost`, index = cellIndex − 20001 (report 91 §5a) |
-| `Board_Endgame.ctor` | **int[10]** | `900, 890, 880, 870, 860, 850, 840, 830, 820, 810` | giảm đều **10** mỗi bậc — dải ngưỡng, chưa rõ dùng cho gì |
+| `Board_Endgame.devidedArenaMedals` (`this+0x2A0`, constructor) | **int[10]** | `900, 890, 880, 870, 860, 850, 840, 830, 820, 810` | ✅ `SetArenaRewards` (PlayMode 5): index = `GameMode.arenaRank`; divides `Board_Endgame.arenaPoints`; positive quotient → `SetGiftInfo` item ID 22 quantity. Item-22 identity is not bound (report 153) |
 | `Board_Players.ctor` | float[24] | **1,0** × 24 | baseline |
 
 > ⚠ **Cấm xác nhận chéo (góp ý #3, report 91 §6):** UI power (`allBasicAtk`) **≠** combat

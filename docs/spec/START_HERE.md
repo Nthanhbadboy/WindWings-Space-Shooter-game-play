@@ -33,7 +33,7 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **112** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **113** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
 | `datas/` | JSON/CSV bóc trực tiếp | **86** file · **26.190.619 bytes** (**26,2 MB**) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
@@ -74,8 +74,10 @@
 | `datas/l3_a5a74747_game_side_boss39002_datas_source_layer_closure.json.gz` | #27-GS phase 21: baseline `datas/` source-layer census | 56 unprefixed baseline exports pinned; no direct exact/decimal slot representation | Callback literal remains unresolved; no global absence or native-lane claim |
 | `datas/l3_a5a74747_game_side_boss39002_residual_static_source_closure.json.gz` | #27-GS phase 22: residual tracked static-source inventory | 3,277 paths inventoried; 0 additional eligible text exports | Text-source census closed at permitted boundary; callback literal unresolved |
 | `docs/apk-analysis/152-a5a74747-apk-analysis-spec-sync-review.md` | #27-GS analysis ↔ SPEC consistency review | Reports 142–151 compared with animation, handoff, and open-issue specs | Partial sync: summary-route and callback-key wording need reconciliation |
+| `datas/l2_board_endgame_consumer_g2.json` | G2 `Board_Endgame` constructor-array consumer receipt | `devidedArenaMedals` int[10] at `this+0x2A0` → `SetArenaRewards` divisor path | Static source-pinned reward-quantity consumer; item ID 22 meaning and runtime result not claimed |
+| `docs/apk-analysis/153-g2-board-endgame-consumer.md` | G2 `Board_Endgame` consumer trace | Constructor array bound to rank-indexed `arenaPoints / devidedArenaMedals[arenaRank]` | Positive static binding; no global consumer census or runtime reward claim |
 
-**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **109** file `datas/`.
+**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **110** file `datas/`.
 
 > **Đừng "sửa" 142.136 thành 142.131:** `wc -l *.asm.txt` cho **142.131** vì **`wc` đếm ký tự
 > newline**, còn `AI1` đếm **dòng** (`sum(1 for _ in fh)` = `splitlines()`). **5** file
