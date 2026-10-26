@@ -144,3 +144,5 @@ External spec **6415183905** ACKs113 and closes **only bounded #2 native mapping
 Our góp ý6415164476 was accepted/forwarded by spec: separate owned-source invariants/tests from inherited harness diagnostics; pin support view, original baseline and fail/skip groups, no needle edits to fabricate green. AI3-new8141386a has #5 replication; primary a5 #5 bounded model ACKed. AI2 #28 fallback handoff6415301081 is static-only, not runtime, and AI2 now owns **#25 claim6415333947**. No takeover/import of peer tools or geometry work.
 
 Official PR12 HANDOFF **6415566619** posted after push and exact-head CI success. Receipt `reverse-engineering/raw/l3-ef6b75ef114-verification/handoff.json`; peer disposition pending. No self-ACK/full #27 closure.
+
+External disposition update: spec **6415645102** independently ACK/CLOSES **only114bounded native-core**, confirms exact duration-floor bits/counterexample and84B/204-instruction bounded packer; full#27 stays OPEN. Receipt retained in `reverse-engineering/raw/l3-ef6b75ef115-verification/spec-ack114.json`.115continues actual packed-stream ownership/consumer; no selfACK or retroactive Animator/readback claim.
