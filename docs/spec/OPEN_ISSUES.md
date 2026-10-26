@@ -50,7 +50,7 @@
 | C4 | ~~`Wave.indexWave` = 0~~ ✅ **ĐÓNG** — **686/686** | **field chết** | **A** | thứ tự = thứ tự mảng — `UNITY_RULES` §7 |
 | C5 | `Call_Data.number/editType` = 0 | **vắng mặt thật** | D | số quân mỗi lần gọi |
 | C6 | ~~`Enemy_Physics.allColliders = []`~~ ✅ **ĐÓNG** — `autoCacheColliders = false` **981/981** + list rỗng **981/981** | **field chết** | **A** | enemy thường **không** damage va chạm — `UNITY_RULES` §3 |
-| C7 | **45 root prefab mã `900xx`** ngoài roster | **chưa lấy** | C | nội dung dự phòng |
+| C7 | **45 root prefab exact `900xx`** ngoài waves roster | **H3: 45 root identities metadata-qualified; roles NOT_ASSIGNED** | B | component/art role and use outside this roster snapshot remain bounded-missing |
 | C8 | `Boss_BodyPhysics` 251 instance | **serialized census H2; values measured** | B | field semantics / 19-class assignment `NOT_BOUND` |
 | D1 | ~~Feel / aim assist / input latency~~ **BỎ (quyết định 25/10)** | **đã quyết** | — | game mới không thêm feel — game gốc 0 site `timeScale`/`aim` trên mẫu 139 asm (`AF2`/`AF3`) |
 | D2 | Thứ tự resolve stat lúc runtime | **cần chạy game** | B | đã có mô hình, chưa xác nhận |
@@ -343,13 +343,11 @@ Kết hợp với `12-localization.csv` (chỉ **12** stat có nhãn, id `0–11
 **riêng từng tàu** (không có nhãn trong file chữ). `60 = 12 + 48` là giả thuyết khớp số, **chưa
 kiểm từng id** — nhưng **không còn là ẩn số về cơ chế**.
 
-### C7. **45 root prefab mã `900xx`** — nằm ngoài roster (A)
+### C7. **45 exact five-digit root IDs `900xx`** — H3 bounded metadata inventory (B)
 
-`prefab-roots.csv`: **2.081 root**, trong đó **45 root** khớp `^900\d\d$` — **đúng 5 chữ số**
-(`90017`–`90071`). ⚠ **Phải ghi regex:** `^900\d\d` (không neo) cho **48**, vì bắt thêm
-`90030 [Quest_Notice]` · `90036-Lasers` · `90053-Laser`. Hai số đúng với hai định nghĩa. **Không mã nào** trong 45 xuất hiện trong **45.659 quân đã spawn** (kiểm 100% qua
-`prefab-roots.csv`). ⇒ hazard/obstacle/zone **đặt sẵn hoặc dự phòng**, không nằm trong luồng wave.
-**Chưa biết** cái nào được dùng trong màn nào.
+`prefab-roots.csv`: **2.081 root records**; regex `^900\d{2}$` gives **45** exact roots. The broader prefix `^900\d\d` gives **48**, including three suffix-bearing names (`90030 [Quest_Notice]`, `90036-Lasers`, `90053-Laser`) excluded from the exact-ID set. Exact-name comparison against the **109** distinct names in `datas/waves.json` finds **0/45** matches. All **45/45** roots have a serialized root record with Transform path ID, GameObject path ID, and direct-child count.
+
+This identifies their **metadata records only**. **No asset role or gameplay use is assigned.** Root metadata is present for all 45 (0 missing); internal component/art identity and use beyond the pinned waves roster remain bounded-missing/not assessed. Full per-root table and source pins: `docs/apk-analysis/162-a5-h3-root-900xx-outside-roster.md` and `datas/l3_a5_h3_root_900xx_outside_roster.json`.
 
 ---
 

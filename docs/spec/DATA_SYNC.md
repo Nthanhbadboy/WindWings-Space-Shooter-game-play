@@ -2299,7 +2299,7 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **182** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **RAW** | **183** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
 | **DOC** | **3** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
 | **CONST** | **28** | không mở file ⇒ **đo một lần** |
 
@@ -3461,3 +3461,10 @@ từ nay:
 - Serialized-value distributions: `dmgFirst` has 15 distinct values (median **500**, range **0–9,000,000**); `dmgPerSec` has 16 (median **50**, range **5–1,000**). The receipt carries complete histograms, 32 joint value pairs, flags, every row, and joins to 61 prefab-root labels.
 - The 19 boss-damage Director-class assignment is **NOT_BOUND**: the available join labels resolve component roots but do not uniquely attach all 251 rows to those 19 classes. This report does not claim the serialized field names encode runtime behavior, and does not assign an asset role from root labels. **Evidence level B maximum; B6 remains open.**
 - Report `docs/apk-analysis/161-a5-h2-boss-bodyphysics-serialized-census.md`; receipt `datas/l3_a5_h2_boss_bodyphysics_serialized_census.json`, SHA-256 `ec5a57c957849b45539ea34eef4b6f0eb506cdbb932be4fc9a586f580fee4d9a`. Source SHA-256 pins and the 251 record-level comparison are in the receipt. Builder `tools/build_a5_h2_boss_bodyphysics_census.py` (SHA-256 `359320a448a0948ef00e53bea3de4e2ae33df742d9825a733a022d4a1651a9b7`); focused tests `tests/test_a5_h2_boss_bodyphysics_census.py` (4 tests). No assembly, runtime, native/FDE, or AI-1 artifacts were used.
+
+### 24.53 Report 162 — H3 exact `900xx` roots outside the waves roster
+
+- PR12 H3 claim `6425853314`, from queue `6425374777`. In pinned `prefab-roots.csv` (2,081 rows), exact `^900\d{2}$` selects **45 unique root names**. The non-anchored prefix selects 48, excluding the three suffix-bearing names `90030 [Quest_Notice]`, `90036-Lasers`, `90053-Laser` from the exact-ID inventory.
+- Exact-name comparison with the **109** distinct `waves.json` enemy names has **0/45** matches. All 45 roots have metadata rows with Transform path ID, GameObject path ID, and child count; **0 missing root identities**. This says nothing about use outside this roster snapshot.
+- No asset role is assigned. Component/art identity and any broader use remain bounded-missing/not assessed; root names and child counts are metadata, not evidence of purpose.
+- Report `docs/apk-analysis/162-a5-h3-root-900xx-outside-roster.md`; receipt `datas/l3_a5_h3_root_900xx_outside_roster.json`, SHA-256 `26b34c7335b2a51c1a2afe0079f05c7951d86457e77719ed575cb22d24ea7c29`. Builder `tools/build_a5_h3_root_900xx_inventory.py`; focused tests `tests/test_a5_h3_root_900xx_inventory.py` (4 tests). Source pins are in the report and receipt. No runtime/native/FDE evidence or role inference used.
