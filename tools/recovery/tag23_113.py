@@ -32,7 +32,7 @@ def recover(xapk):
             except StopIteration:start=pos+1;continue
             positions.append(dict(file_offset=pos,va=v,hex=needle.hex(),preceding_hex=b[max(0,pos-16):pos].hex()));wanted[v]=name;start=pos+1
         strings.append(dict(text=name,occurrences=positions))
-    wanted.update({0x946d0c:'candidate_property_resolver',0x946ce4:'candidate_sprite_writer',0x946d00:'candidate_sprite_reader',0x10e8fe0:'candidate_binding_descriptor',0x10b9d80:'candidate_binding_vtable',0x10ead38:'sprite_native_type',0x492da8:'registry_getter'})
+    wanted.update({0x946d0c:'candidate_property_resolver',0x946ce4:'candidate_sprite_writer',0x946d00:'candidate_sprite_reader',0x10e8fe0:'candidate_binding_descriptor',0x10b9d80:'candidate_binding_vtable',0x10ead38:'sprite_native_type',0x492da8:'registry_getter',0x10f0628:'sprite_type_info_record'})
     # Enumerate adjacent (up to8 instructions) ADRP+ADD/ADR literal references. Candidate only.
     refs=[]
     def signed(v,bits):return v-(1<<bits) if v&(1<<(bits-1)) else v
@@ -54,7 +54,7 @@ def recover(xapk):
     # Bounded original machine-code windows, no inferred function boundaries.
     windows=[]
     for ref in refs:
-        if ref['field'] not in {'m_Sprite','SpriteRenderer','UnityEngine.SpriteRenderer::set_sprite','UnityEngine.SpriteRenderer::get_sprite','candidate_property_resolver','candidate_sprite_writer','candidate_sprite_reader','candidate_binding_descriptor','candidate_binding_vtable','sprite_native_type','registry_getter'}:continue
+        if ref['field'] not in {'m_Sprite','SpriteRenderer','UnityEngine.SpriteRenderer::set_sprite','UnityEngine.SpriteRenderer::get_sprite','candidate_property_resolver','candidate_sprite_writer','candidate_sprite_reader','candidate_binding_descriptor','candidate_binding_vtable','sprite_native_type','registry_getter','sprite_type_info_record'}:continue
         off=ref['file_offset'];s=next(s for s in segments if s['offset']<=off<s['offset']+s['file_size']);lo=max(s['offset'],off-256);hi=min(s['offset']+s['file_size'],off+512);key=(lo,hi)
         if any(w['file_offset']==lo for w in windows):continue
         windows.append(dict(file_offset=lo,va=s['va']+lo-s['offset'],hex=b[lo:hi].hex()))
@@ -99,8 +99,8 @@ def recover(xapk):
             op=struct.unpack_from('<I',b,pos)[0]
             if op&0x7c000000!=0x14000000:continue
             pc=seg['va']+pos-seg['offset'];target=pc+(signed(op&0x3ffffff,26)<<2)
-            if target!=0x492da8:continue
-            lo=max(seg['offset'],pos-64);hi=min(seg['offset']+seg['file_size'],pos+192);registry_calls.append(dict(pc=pc,context=dict(va=seg['va']+lo-seg['offset'],file_offset=lo,hex=b[lo:hi].hex())))
+            if target not in (0x492da8,0x492db4):continue
+            lo=max(seg['offset'],pos-64);hi=min(seg['offset']+seg['file_size'],pos+192);registry_calls.append(dict(pc=pc,target=target,context=dict(va=seg['va']+lo-seg['offset'],file_offset=lo,hex=b[lo:hi].hex())))
     selected_relas=[r for r in relas if any(n['va']<=r['address']<n['va']+len(n['hex'])//2 for n in native)]
     pointed_strings=[]
     for address in sorted({r['addend'] for r in selected_relas}):
