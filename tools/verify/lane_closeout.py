@@ -58,7 +58,8 @@ def sha_file(rel):
 def artifacts():
     """The twenty lane artifacts — never this gate's own output."""
     return tuple(sorted(path for path in glob.glob(ARTIFACT_GLOB)
-                        if not path.endswith('_lane_closeout.json.gz')))
+                        if not path.endswith(('_lane_closeout.json.gz',
+                                              '_open_items_audit.json.gz'))))
 
 
 @lru_cache(maxsize=None)
