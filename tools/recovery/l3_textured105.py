@@ -21,7 +21,7 @@ def recover(xapk,work):
     shader=files['data.unity3d/Resources/unity_builtin_extra'].objects[10753];s=shader.read();programs=[];segments=[]
     for i,platform in enumerate(s.platforms):
         def first(a):return a[i][0] if isinstance(a[i],list) else a[i]
-        off,n,z=first(s.offsets),first(s.compressedLengths),first(s.decompressedLengths);b=CompressionHelper.decompress_lz4(bytes(s.compressedBlob)[off:off+n],z);segments.append(dict(platform=platform,sha256=sha(b),bytes=len(b),ascii_runs=[v.decode('ascii') for v in re.findall(rb'[\x09\x0a\x0d\x20-\x7e]{32,}',b)]));p=ShaderProgram(EndianBinaryReader(b,endian='<'),shader.version)
+        off,n,z=first(s.offsets),first(s.compressedLengths),first(s.decompressedLengths);b=CompressionHelper.decompress_lz4(bytes(s.compressedBlob)[off:off+n],z);segments.append(dict(platform=platform,sha256=sha(b),bytes=len(b),ascii_runs=[v.decode('ascii') for v in re.findall(rb'[\x09\x0a\x0d\x20-\x7e]{32,}',b)],ascii_locations=[dict(offset=m.start(),bytes=len(m.group()),sha256=sha(m.group())) for m in re.finditer(rb'[\x09\x0a\x0d\x20-\x7e]{32,}',b)]));p=ShaderProgram(EndianBinaryReader(b,endian='<'),shader.version)
         for j,sub in enumerate(p.m_SubPrograms):
             code=bytes(sub.m_ProgramCode)
             try:text=sub.Export();status='UnityPy_exported_analysis'
@@ -29,7 +29,9 @@ def recover(xapk,work):
                 start=code.find(b'#version');text=code[start:].decode('utf8',errors='replace') if start>=0 else '';status='binary_prefix_GLSL_suffix_NOT_validated'
             text=text.encode('utf8',errors='replace').decode('utf8')
             programs.append(dict(platform=platform,index=j,program_type=int(sub.m_ProgramType),version=sub.m_Version,keywords=sub.m_Keywords,code_sha256=sha(code),code_bytes=len(code),prefix_hex=code[:48].hex(),status=status,text=text,sha256=sha(text.encode())))
-    analysis=dict(shader_raw_sha256=sha(shader.get_raw_data()),compressed_blob_sha256=sha(bytes(s.compressedBlob)),programs=programs,segments=segments)
+    analysis=dict(parser_scope='UnityPy ShaderProgram entries diagnostic only: new-format keyword/program parser not validated. Execution model uses exact ASCII runs from LZ4-decoded pinned segments, not malformed entries.',shader_raw_sha256=sha(shader.get_raw_data()),compressed_blob_sha256=sha(bytes(s.compressedBlob)),programs=programs,segments=segments)
+    objects=[dict(serialized_file=f,path_id=pid,type=sf.objects[pid].type.name,class_id=int(sf.objects[pid].type),raw_object_sha256=sha(sf.objects[pid].get_raw_data()),tree=sf.objects[pid].read_typetree()) for pid in [493280,492598]]
+    (out/'objects.json').write_text(json.dumps(objects,indent=2)+'\n')
     (out/'gpu-analysis.json').write_text(json.dumps(analysis,indent=2)+'\n')
     lib=metadata=None
     with zipfile.ZipFile(xapk) as outer:
@@ -54,7 +56,7 @@ def recover(xapk,work):
     from combat_coroutine_cells import extract
     literal=extract(lib,[(0x756dd8,4)])['cells'][0]
     wrapper=extract(lib,[(0x278ad60,0x44)])['cells'][0]
-    data=dict(sprite_setter_wrapper=wrapper,align_literal=literal,provisional=True,xapk_sha256=XAPK_SHA,tool_sha256=sha(Path(__file__).read_bytes()),toolchain=dict(UnityPy=UnityPy.__version__),inputs=inputs,sprite=ident(sf.objects[2585]),sprite_raw_sha256=sha(sf.objects[2585].get_raw_data()),atlas=ident(sprite.m_SpriteAtlas.deref()),texture=ident(texture),texture_raw_sha256=sha(texture.get_raw_data()),width=im.width,height=im.height,rgba_sha256=sha(im.tobytes()),png_sha256=sha((external/'atlas.png').read_bytes()),crop_png_sha256=sha((external/'sprite.png').read_bytes()),texture_format=int(t.m_TextureFormat),texture_settings=asdict(t.m_TextureSettings),render_data=dict(texture_rect=asdict(rd.textureRect),uv_transform=asdict(rd.uvTransform),settings_raw=rd.settingsRaw),samples=samples,gpu_analysis_sha256=sha((out/'gpu-analysis.json').read_bytes()),lib_sha256=sha(lib),metadata_sha256=sha(metadata),native_search=search,binding_status='UNPROVED: string occurrence is not a tag23 registration table; explicit policy still required',pixels='external Actions artifact only; never committed')
+    data=dict(objects_sha256=sha((out/'objects.json').read_bytes()),sprite_setter_wrapper=wrapper,align_literal=literal,provisional=True,xapk_sha256=XAPK_SHA,tool_sha256=sha(Path(__file__).read_bytes()),toolchain=dict(UnityPy=UnityPy.__version__),inputs=inputs,sprite=ident(sf.objects[2585]),sprite_raw_sha256=sha(sf.objects[2585].get_raw_data()),atlas=ident(sprite.m_SpriteAtlas.deref()),texture=ident(texture),texture_raw_sha256=sha(texture.get_raw_data()),width=im.width,height=im.height,rgba_sha256=sha(im.tobytes()),png_sha256=sha((external/'atlas.png').read_bytes()),crop_png_sha256=sha((external/'sprite.png').read_bytes()),texture_format=int(t.m_TextureFormat),texture_settings=asdict(t.m_TextureSettings),render_data=dict(texture_rect=asdict(rd.textureRect),uv_transform=asdict(rd.uvTransform),settings_raw=rd.settingsRaw),samples=samples,gpu_analysis_sha256=sha((out/'gpu-analysis.json').read_bytes()),lib_sha256=sha(lib),metadata_sha256=sha(metadata),native_search=search,binding_status='UNPROVED: string occurrence is not a tag23 registration table; explicit policy still required',pixels='external Actions artifact only; never committed')
     (out/'texture.json').write_text(json.dumps(data,indent=2)+'\n')
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
