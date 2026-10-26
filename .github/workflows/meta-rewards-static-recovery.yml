@@ -5,6 +5,7 @@ on:
     branches: [arena/535b0541-windwings-space-shooter-game-p]
     paths:
       - tools/recovery/meta_rewards_native.py
+      - tools/recovery/call_sites.py
       - .github/workflows/meta-rewards-static-recovery.yml
 permissions:
   contents: write
@@ -38,6 +39,13 @@ jobs:
             --families-only Board_Quest,Box_Rewards \
             --rodata 0x757350:8 \
             --output reverse-engineering/raw/box-draw-535b0541/native.json.gz
+      - name: Whole-.text branch scan for the key accessors (own file)
+        run: |
+          python tools/recovery/call_sites.py --xapk "$RUNNER_TEMP/original/windwings.xapk" \
+            --target set_KeyCount0=20070940 --target set_KeyCount1=20071268 \
+            --target set_KeyCount2=20071596 --target get_KeyCount0=20070740 \
+            --target get_KeyCount1=20071068 --target get_KeyCount2=20071396 \
+            --output reverse-engineering/raw/call-sites-535b0541/calls.json.gz
       - name: Commit only own static evidence on session branch
         run: |
           set -euo pipefail
@@ -46,11 +54,12 @@ jobs:
           git config user.email 'agent@arena.ai'
           git add reverse-engineering/raw/meta-rewards-535b0541/native.json.gz \
                   reverse-engineering/raw/pack-index-535b0541/native.json.gz \
-                  reverse-engineering/raw/box-draw-535b0541/native.json.gz
+                  reverse-engineering/raw/box-draw-535b0541/native.json.gz \
+                  reverse-engineering/raw/call-sites-535b0541/calls.json.gz
           if ! git diff --cached --quiet; then
             # Only this workflow's own artifacts, each under the 5 MB commit budget.
-            test "$(git diff --cached --numstat | wc -l)" -le 3
-            ! git diff --cached --name-only | grep -qv '^reverse-engineering/raw/\(meta-rewards\|pack-index\|box-draw\)-535b0541/native.json.gz$'
+            test "$(git diff --cached --numstat | wc -l)" -le 4
+            ! git diff --cached --name-only | grep -qv '^reverse-engineering/raw/\(meta-rewards\|pack-index\|box-draw\)-535b0541/native.json.gz$|^reverse-engineering/raw/call-sites-535b0541/calls.json.gz$'
             for f in $(git diff --cached --name-only); do
               test "$(stat -c %s "$f")" -lt 5000000
             done
