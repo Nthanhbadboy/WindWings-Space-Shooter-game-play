@@ -1082,3 +1082,28 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
 - Receipt104: finalcode81fed2233 / Verify40242708365SUCCESS; full1073PASS223.162s.
   Last-writer camera/ref coherence fixed. Peer feedback https://github.com/Nthanhbadboy/WindWings-Space-Shooter-game-play/pull/12#issuecomment-6404603132;
   receipt https://github.com/Nthanhbadboy/WindWings-Space-Shooter-game-play/pull/12#issuecomment-6404657056;104chưa independent execution ACK/render acceptance.
+
+## Batch105 — ef6b75ef: NEW Pause native order + actual atlas/UV + Sprites/Default model
+- Miền batch: AI-1 binding/driver/texture-shader only. provenance: arena/ef6b75ef.
+- Report105-ef6b75ef-L3-Pause-native-order-textured-shader; datas/l3_ef6b75ef105.json.gz.
+- New native full Board_Pause.Align (not repeating standalone markers101): top597593→bottom616420
+  →2colliders→content Transform274606→parentView267691→actual descendant renderer549984.
+  40hook calls/5setters; Startfalse bind-only; chosen idle1495@.25 alpha.5797794461250305.
+  Native internal call order proved; Start/clip invocation order explicit, not Unity scheduler.
+  clip-before/after Align snapshots equal because disjoint fields; Refresh align guard preserved.
+- Genuine APK Texture785 2048×1024 decoded, PNG originals external only; sprite2585 crop SHA matches
+  assetpack. Simple4vertices/2triangles get exact render-key affine UV; NOT AI-2 live atlas remap.
+  7actualtexels→barycentric UV→source GLES premul/tint/external-alpha/over model, NOT raster/readback.
+- 8byte-located GLSL runs from2platform segments; generic13parser entries diagnostic only, format
+  unsupported (do NOT count as13 variants). PixelSnap recovered, not executed; no GPU precision claim.
+- Custom23 remains UNPROVED: actual set_sprite native icall bridge is not registration proof.
+  Frame104 strict reject/explicit per-binding policy unchanged; no unknown→null.
+- 31newPASS32.360s/full1104PASS275.080s. Recovery40287660478SUCCESS; final code/CI receipt follows.
+- UPDATED peer status: spec7bdd5003 DATA_SYNC24.29–40; ACK104 now5/5 artifact arithmetic reproduction,
+  still no independent native/Unity execution. New ownership6410868087/sticky6410945198 read;
+  claim6411008329 confirms existing user-assigned work (started before sticky, not retroactive claim).
+- Shared3 paths unchanged/absent on this branch. No cross-digger tool edits/merges or main push.
+- Review: f32collider math, tailcall trace, current-pose propagation, clip/Align commutation,
+  source-key UV vs zero UV placeholder, actual texture orientation, premultiplied alpha/blend.
+- Batch bounded scope covered; NOT all AI-1/L3 complete. Custom registry/cross-component scheduling
+  unresolved. Do not move into AI-2 geometry/gaps or AI-3 sim/transition/driven ownership.
