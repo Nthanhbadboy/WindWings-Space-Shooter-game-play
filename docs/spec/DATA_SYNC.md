@@ -5323,6 +5323,40 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - Datas giữ **160** (126 pulled ở commit này → **161**, needle sync commit
   này).
 
+### 24.99 Điều phối lần 109 — 148 ĐÓNG (registry chuẩn: 56→14) · H1 ĐÓNG (A2 closure) · R1-addendum120: APPROVE BOUNDED ef124 · followup-16
+
+- **AI-4 148 — ĐÓNG: RECONCILIATION = REGISTRY CHUẤN** (HANDOFF `6425683477` @
+  `97f989f38`; runs `40389191753`/`40389191341`/`40389191363` ✓; suite 635
+  (27 mới); artifact pulled `5416035a…` 10.010B khớp ✓; needles APKD1 93/
+  AI1 126): **56 → 14 open** — 17 CLOSED (5 declared · 12 by-content, đều khớp
+  pointer vào artifact) · 3 RESTATED (2 direction "earlier" — item-list lag
+  lane của chính nó: 139 ToRoman · 133 blobs stale-at-write) · 2 ACTIONABLE ·
+  19 RUNTIME · 1 NOTE · 53 câu distinct. **#23 = falsified premise** (143 nói
+  chỉ Get/SetInt — 144 đo SetString×32/GetString×25/DeleteKey×2 ⇒ miss, không
+  phải data limit; chỉ float-half sống). Fix 147: runtime_items 19 · 5 null
+  "None" + 4 texts cắt — re-audit đã lấy lại. **Registry này thay danh sách
+  56 thô của 147** (spec đối chiếu ✓: CLOSED×17/RUNTIME×19 đủ).
+- **a5 H1 — ĐÓNG: A2 CLOSURE (bounded)** (HANDOFF `6425710185` @
+  `64d3dd210`; runs 2/3 xanh lúc kiểm +1 pending — docs-only, local gate 270
+  OK): **250 `listMapDatas` arrays / 742 int** (243 InitializeArray + 7
+  immediate); 3 đầu = `[25,9010]`/`[164]`/`[113,5]` ✓; **250/250 rows khớp
+  `datas/maps.json`**; candidate legacy lệch **242/250** (diverge idx 4) ⇒
+  legacy dead-end; offset `0x28` + GetListWaves pinned. Bounded: không map
+  cctor-order→scene identity, no runtime. Report 160 + artifact + builder
+  pinned. **OPEN_ISSUES A2: ĐÓNG (bounded).**
+- **AI-3 R1-addendum120 — HANDOFF: APPROVE BOUNDED ef124, NOT #27-full**
+  (`6425737935` @ `cf09de6fd`; 4 runs ✓ `40388370079`/`40388370076`/
+  `40388381876`/`40388381961`; artifact pulled `9f6056cc…` 10.793B pin ✓;
+  local 1572 PASS): own Unicorn harness khớp độc lập counts + PC-sets +
+  allocator; D1/D2/D3 additive đã tách thành report120-note; historical
+  119/118 frozen giữ nguyên. **#27 chuỗi review giờ: 123 APPROVE · 118
+  SUPPORTED · 124 APPROVE · 126 CHƯA có review độc lập** (giao AI-3 tiếp sau
+  H4 hoặc gộp).
+- **CLAIM followup-16** (`6425708652`, report 149 — 6 arrays
+  `Board_PVP..ctor` từ pinned field defaults, kỷ luật 135): ACCEPTED.
+- **H2 CLAIMED** (`6425715026`) — a5 đang làm; H3 chờ.
+- **Datas/ 161 + 3 pulled (148/H1/120) = 164 (needle sync commit này).**
+
 ### 24.87 Điều phối lần 96 — #136 HANDOFF ĐÓNG (rank API interpreter + 2 đính chính 134/135) · CLAIM 137 · AI-2 memo chưa tới
 
 - **#29-followup AI-4 — HANDOFF #136 `6422732465` @ `efceee587` — ĐÓNG** (runs

@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 109 — 27/10, 148 ĐÓNG (registry 56→14) + H1 ĐÓNG (A2 closure) + 120 APPROVE ef124):**
+> **§24.99**: **148**: 56 → **14 open** (17 CLOSED/3 RESTATED/2 ACTIONABLE/
+> 19 RUNTIME/1 NOTE) · #23 falsified-premise · fix 147 · registry thay list
+> thô (runs `40389191753`/…341/…363 ✓ · `5416035a…`) · **H1**: **250 arrays/
+> 742 int khớp maps.json · A2 ĐÓNG bounded** · legacy 242/250 sai (runs 3 @
+> `64d3dd210`) · **120**: **APPROVE BOUNDED ef124** (4 runs ✓ · `9f6056cc…`) ⇒
+> #27: 123✓ · 118✓ · **124✓** · 126 chưa review · ACCEPT followup-16 (149) ·
+> H2 CLAIMED · datas/ = **164**. verify 209/0/2.
+>
 > **Sửa lại (lần 107 — 27/10, HANDOFF126 ĐÓNG (bounded dispatch) + H1 CLAIMED + followup-15):**
 > **§24.98**: ef126: 2 BL `6cef84`/`6cefe4` · 4 cases 70/8/8/66 instr ·
 > 3 sink/4 virtual/0 RELA trên N2-owner prepared state — **dispatch contract,
