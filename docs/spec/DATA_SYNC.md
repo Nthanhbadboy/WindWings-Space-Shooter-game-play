@@ -2299,7 +2299,7 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **183** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **RAW** | **184** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
 | **DOC** | **3** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
 | **CONST** | **28** | không mở file ⇒ **đo một lần** |
 
@@ -3468,3 +3468,9 @@ từ nay:
 - Exact-name comparison with the **109** distinct `waves.json` enemy names has **0/45** matches. All 45 roots have metadata rows with Transform path ID, GameObject path ID, and child count; **0 missing root identities**. This says nothing about use outside this roster snapshot.
 - No asset role is assigned. Component/art identity and any broader use remain bounded-missing/not assessed; root names and child counts are metadata, not evidence of purpose.
 - Report `docs/apk-analysis/162-a5-h3-root-900xx-outside-roster.md`; receipt `datas/l3_a5_h3_root_900xx_outside_roster.json`, SHA-256 `26b34c7335b2a51c1a2afe0079f05c7951d86457e77719ed575cb22d24ea7c29`. Builder `tools/build_a5_h3_root_900xx_inventory.py`; focused tests `tests/test_a5_h3_root_900xx_inventory.py` (4 tests). Source pins are in the report and receipt. No runtime/native/FDE evidence or role inference used.
+
+### 24.54 Report 163 — D5 bounded class-to-static-array join and extra-life serialization boundary
+
+- PR12 follow-up claim `6426085841`, accepted from the round-110 sticky recommendation. The builder joins **24/24** `Player_Attack_N` class names to four 24-element captured static arrays using the already-published report-82 index rule (`N → N−1`, 72/72 calls). It does not reopen method bodies or derive indices from player/source IDs.
+- This is a **static array join only**, not a serialized component-owner or projectile-instance join. The captured `GP_Datas.csv` has **one** row; its exported fields omit `countReborn`, `rebornNow`, `maxCountReborn`, and `listRebornUseItems`. Extra-life serialized rewiring and concrete Player_Attack component ownership remain **NOT_BOUND**; the one-row export is not global-absence evidence.
+- Report `docs/apk-analysis/163-a5-d5-serialized-producer-joins.md`; receipt `datas/l3_a5_d5_serialized_joins.json`, SHA-256 `a9655eca258593c474baa65d2e69a75811365f0e88cc485c510a9b03e12e4169`. Source pins are in the receipt. Builder `tools/build_a5_d5_serialized_joins.py`; tests `tests/test_a5_d5_serialized_joins.py` (4 tests). No runtime, DPS, native/FDE, or AI-1 lane claim.

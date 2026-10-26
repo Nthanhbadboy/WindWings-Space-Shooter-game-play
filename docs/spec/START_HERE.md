@@ -33,8 +33,8 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **122** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
-| `datas/` | JSON/CSV bóc trực tiếp | **118** file · **26.762.510 bytes** (**26,8 MB**) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **123** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `datas/` | JSON/CSV bóc trực tiếp | **119** file · **26.782.288 bytes** (**26,8 MB**) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
 | `reverse-engineering/scriptableobjects/` | Bảng ScriptableObject | **126** CSV · 13 MB | số cân bằng: súng, enemy, stage, shop |
@@ -50,7 +50,7 @@
 | `reverse-engineering/il2cpp/ia-resolved.json` | **Hex thật của mọi `InitializeArray`** | **576** mảng map · **6** mảng `Player_Get_Datas` (0 record lỗi) | **damage/rate/cost từng tàu**, danh sách wave của bảng map |
 | `datas/player_start_stats.json` | 6 mảng đã decode + damage × rate (proxy — report 79) | **24** tàu · **16** bán được · **8** giá `−1` | dựng bảng cân bằng tàu, không đoán |
 | `reverse-engineering/raw/player-loadout/` | Mảng int + asm `Player_Saved_Datas` | **5 blob · 49 int · 5/5 sha256 OK** | giá craft/unlock, chứng cứ save |
-| `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **183 RAW · 3 DOC · 28 CONST / 214** | biết số nào tái đo được, số nào "đo một lần" |
+| `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **184 RAW · 3 DOC · 28 CONST / 215** | biết số nào tái đo được, số nào "đo một lần" |
 | `tools/` | **24** script Python ở cấp thư mục gốc (đếm trực tiếp) | — | Includes the #5 sliced/tiled geometry model, #6 SpriteAtlas audit, #17 schema-replication, #19 Ramus crosscheck, #24 combat-semantics, and #25/#26/#28 bounded static audits |
 | `datas/l2_ramus_device_crosscheck_19.json.gz` | #19 static/runtime evidence join | 250 static map arrays; 10 static list rows + 2 percent fields; archived runtime Map contents still placeholders | Count 250=250 is not contents parity; await `arr=256&depth=2` readback |
 | `datas/l3_controller_schema_replication_17.json.gz` | #17 bounded native replication receipt | Three literal fields agree on two native paths | REPLICATION only; not independent TypeTree/schema discovery |
@@ -93,8 +93,10 @@
 | `docs/apk-analysis/161-a5-h2-boss-bodyphysics-serialized-census.md` | H2 B6-half bounded serialized census | `dmgFirst`/`dmgPerSec` distributions; no assembly semantics | Does not bind runtime behavior or allocate rows to Director classes |
 | `datas/l3_a5_h3_root_900xx_outside_roster.json` | H3 exact `900xx` root inventory receipt | 45 root metadata identities, all outside current waves roster | No asset-role inference; internal component/art identity remains bounded-missing |
 | `docs/apk-analysis/162-a5-h3-root-900xx-outside-roster.md` | H3 C7 metadata-qualified root identity census | 45 exact IDs with Transform/GameObject IDs and child counts | No gameplay purpose or use outside pinned roster claimed |
+| `datas/l3_a5_d5_serialized_joins.json` | D5 bounded static class-to-array join receipt | 24 `Player_Attack_N` class suffixes joined to array indices | Not a component-owner or projectile join; extra-life wiring remains `NOT_BOUND` |
+| `docs/apk-analysis/163-a5-d5-serialized-producer-joins.md` | D5 producer/serialized join follow-up | 24/24 static class-to-array rows; one bounded `GP_Datas` export check | No measured DPS, runtime, component ownership, or extra-life behavior claim |
 
-**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **118** file `datas/`.
+**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **119** file `datas/`.
 
 > **Đừng "sửa" 142.136 thành 142.131:** `wc -l *.asm.txt` cho **142.131** vì **`wc` đếm ký tự
 > newline**, còn `AI1` đếm **dòng** (`sum(1 for _ in fh)` = `splitlines()`). **5** file
