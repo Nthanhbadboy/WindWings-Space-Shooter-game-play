@@ -66,9 +66,10 @@ def recover(path):
         s=next(s for s in segs if s['offset']<=pos<s['offset']+s['file_size']);return s['va']+pos-s['offset']
     def readable(a):return any(s['va']<=a<s['va']+min(s['file_size'],s['memory_size']) for s in segs)
     text=[s for s in segs if s['flags']&1]
+    phoff=struct.unpack_from('<Q',b,32)[0];phsize,phnum=struct.unpack_from('<HH',b,54)
     unwind={}
-    for i in range(struct.unpack_from('<H',b,54)[1]):
-        ph=struct.unpack_from('<IIQQQQQQ',b,struct.unpack_from('<Q',b,32)[0]+i*struct.unpack_from('<H',b,54)[0])
+    for i in range(phnum):
+        ph=struct.unpack_from('<IIQQQQQQ',b,phoff+i*phsize)
         if ph[0]!=0x6474e550:continue
         h=ph[2];base=ph[3]
         if b[h:h+4]!=bytes([1,0x1b,3,0x3b]):continue
@@ -165,8 +166,13 @@ def recover(path):
                 'No instruction was executed; no symbol or class name is used.'])
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);a=p.parse_args();r=recover(a.xapk)
+    p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);a=p.parse_args()
     out=ROOT/'reverse-engineering/raw/owner131/probe.json.gz';out.parent.mkdir(parents=True,exist_ok=True)
+    try:r=recover(a.xapk)
+    except Exception:
+        import traceback
+        (out.parent/'diagnostic.json').write_text(json.dumps(dict(error=traceback.format_exc()),indent=1)+'\n')
+        raise
     out.write_bytes(gzip.compress((json.dumps(r,sort_keys=True,separators=(',',':'))+'\n').encode(),mtime=0))
     print('saved',out,'sites',{k:len(v) for k,v in r['sites'].items()},'matches',r['site_matches'],'with_blr',r['site_with_blr'],
           'owners',len(r['owners']),'vtable_refs',sum(len(v) for v in r['vtable_refs'].values()),
