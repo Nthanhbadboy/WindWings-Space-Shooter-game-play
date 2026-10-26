@@ -98,3 +98,5 @@ Official123HANDOFF **6422951255**; scientific1d6fbcbb/report8ac0c7ab6/exact-head
 External spec **6423047661 ACK/CLOSESbounded123**: slot identity `Stop` resolved statically, dispatch/invocation `MODEL_NOT_MEASURED runtime`, #27-full and independent122review still open. R1 review progress **6423751973** correctly notes the original report wording implied a literal53→3 subset narrowing; section1 and review wording are corrected above. It also notes the RELA addend is encoded metadata usage rather than direct UTF-8 bytes; section4 is clarified. Scientific123 bytes/artifact/handoff are unchanged; only descriptive wording changes. R1 full review remains pending; no selfACK/full#27closure.
 
 R1 wording correction posted as **6423891421** with report corrections in124 documentation pass; scientific123 bytes unchanged.
+
+R1 final review **6424767705 APPROVE bounded123** after the two producer corrections; it explicitly does not approve all#27, 124, runtime/render or #27-full. ef124 extension is a separate next R1 addendum. Receipt retained in125-verification/review-r1-final.json.
