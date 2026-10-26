@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 100 — 27/10, R1 tìm lỗi thật + CORRECTION123 + 141/G6/ef124 ĐÓNG):**
+> **§24.91**: **R1**: "53→3" = hai quét BỔ TUNG (không subset) + addend =
+> encoded usage `0xa0003ca7` — ef **CORRECTION123** `ea6a3835f` chấp nhận,
+> scientific không đổi; spec siêu thu §24.87(b) · **141 ĐÓNG**: slot cổng thật
+> `0x2ADBB88` 44940168 + **GameConfig** (1/128 theo bố cục) + đính chính 140 ×2
+> (slot + chiều cờ) · runs `40375754127`/…198/…191 ✓ · `241dfc87…` · **G6 ĐÓNG**
+> (3 bind / 2 local / GetCostCraftPlayer NOT_BOUND · `e31790a1…`) · **ef124
+> ĐÓNG** (7 BL → 4 factory · 181/200/196/171/181/171 · `b5a9023b…`) · ACCEPT
+> followup-9 (142) + G3 + R2 · datas/ = **149**. verify 209/0/2.
+>
 > **Sửa lại (lần 99 — 27/10, G2 ĐÓNG (ACK trễ) + G4 ĐÓNG + G5 ĐÓNG + 140 ĐÓNG + điểm đồng bộ slot):**
 > **§24.90**: **G2** consumer = `devidedArenaMedals`@+0x2A0 → SetArenaRewards
 > (arenaRank-index divisor · item ID 22 bounded) · **G4** gun3Static = 3×PPtr

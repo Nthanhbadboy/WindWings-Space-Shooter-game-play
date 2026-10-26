@@ -4828,7 +4828,9 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   ⇒ **slot callback boss-39002 = literal "Stop" — identity static RESOLVED**;
   dispatch/invocation = **MODEL_NOT_MEASURED runtime** (đúng trần). Vtable-123
   window 152 RELA, 0 marker-match ⇒ đúng lớp libil2cpp relocation.
-  **(b) vtable:** RELA scan 0x10b1000–0x10b1500: 53 candidates → **3 vtables**;
+  **(b) vtable:** RELA scan 0x10b1000–0x10b1500: 53 candidates → **3 vtables**
+  *(⚠ siêu thu §24.91: hai quét BỔ TUNG — 53 = predicate band `0x6d0000..0x6d9000`,
+  3 = KNOWN_VPTRS ngoài band; intersection=0; KHÔNG phải subset narrowing)*;
   ctor `6d2894..6d28f8` store vptr `10b1150`; graph-builder `6cf7b4..6cff44`
   gọi trực tiếp `6d2950` ×2 (0 RELA addend = 6d2950 — caller direct);
   **122's 3 synthetic sinks THAY bằng method ảo thật**: +10 = `571b3c` reserve ·
@@ -4995,6 +4997,51 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   sink chỉ khi ctor không cần thêm game state. Tip `98e5ba966` (verify push) —
   đang làm ✓. **R2 (review-118) vẫn chưa CLAIM — nhắc lần 1.**
 - **Datas/ 142 + 4 pulled (G2/G4/G5/140) = 146 (needle sync commit này).**
+
+### 24.91 Điều phối lần 100 — R1 TÌM LỖI THẬT + ef CORRECTION123 · 141 ĐÓNG (GameConfig, đính chính 140 ×2) · G6 ĐÓNG · ef124 HANDOFF · R2/G3/142 CLAIMED
+
+- **R1 (AI-3 review ef123) — PROGRESS chất lượng, 2 vấn đề mô tả THẬT**
+  (`6423751973`): ① "53→3 narrowing" là mô tả sai — **hai quét BỔ TUNG**:
+  53 vptrs từ predicate giới hạn addends +10/+18/+70 trong band
+  `0x6d0000..0x6d9000`; 3 vtables từ `KNOWN_VPTRS` check (reserve `571b3c`/
+  notify `571a80` — ngoài band); **intersection=0**, vptr chọn `10b1150` KHÔNG
+  thuộc 53 — constructor byte-proof vẫn chọn đúng. ② addend `0x2be5cb8` chứa
+  **encoded metadata usage `0xa0003ca7`** (kind5/index7763/lowbit1), không phải
+  raw UTF-8 bytes — "Stop" là literal payload index 7763 (`53746f70`) ⇒
+  **static identity ĐỨNG; invocation vẫn MODEL_NOT_MEASURED**.
+  **ef CORRECTION123** (`6423891421` — commit `ea6a3835f`, không đổi scientific/
+  artifact/handoff): chấp nhận cả 2 điểm ✓. **Spec áp supersede tại đoạn §24.87
+  (b)** — review-swap R1/R2 chứng minh đúng thiết kế.
+- **AI-4 141 GameConfig — ĐÓNG** (HANDOFF `6423847486` @ `a067e254`; runs
+  `40375754127`/`40375754198`/`40375754191` ✓; suite 437 (39 mới); artifact
+  pulled `241dfc87…` 3062B khớp ✓): **slot cổng thật = `0x2ADBB88` = 44940168**
+  (140 ghi `0x2ADB8E0` — không được deref ở 8/8 raw) · class = **`GameConfig`**
+  (TypeDefIndex 34, 9 field) — danh tính qua bố cục `int@0/bool@4/int@8`,
+  **đúng 1/128** class statics; **5 reader** (Arena/PvP `MoveNext` + `b__4` +
+  `ArenaHub.b__0`) **0 ghi**; **ĐÍNH CHÍNH 140 ở 2 chỗ**: hằng số slot + **chiều
+  cờ** (`cbz` nhảy vào khối version ⇒ `true` mới là nhánh nạp lại config) ·
+  luật version `lastestVersionCode > versionCode` ⇒ update. not_decoded 2 đúng
+  phép. *Cross: 44940168×4/GameConfig×14/lastestVersionCode×14 đủ ✓.*
+- **a5 G6 — ĐÓNG** (complete `6423855400` @ `3bd8bfc`; runs 3/3 ✓): census
+  inventory-first 2 `array-blobs.json.gz` — **5 payloads (49 int32): 3 bind
+  field named `Player_Saved_Datas` · 2 method-local**; `GetCostCraftPlayer`
+  ordinal-1 (`0x14e7c78`) **NOT_BOUND** — không có payload row trong capture,
+  **không thay bằng fallback** ✓. Receipt `e31790a1…` 12.448B ✓.
+- **ef HANDOFF124 — ĐÓNG** (`6423892211` @ scientific `98e5ba966`; report/
+  receipts `ea6a3835f` — cùng commit CORRECTION123; verify exact-head SUCCESS
+  ✓): graph-builder `6cf7b4..6cff44` có **7 BL trực tiếp** tới 4 factory
+  (`6d25f4`×1 · `6d2664`×1 · `6d26d4`×2 · `6d2744`×3); map ctor→vptr→size đủ 4
+  (`6d6a1c→10b1440 X2+0x178` · `6d850c→10b1730 X2+0x170` · `6d2894→10b1150
+  X2+0x180` · `6d81f8→10b1640 X2+0x120`); 6 standalone calls
+  **181/200/196/171/181/171** instr; 930 DWORDs bit-equal (shared lineage);
+  boundary sink assert exact-request. Artifact pulled `b5a9023b…` 7107B khớp ✓
+  (cross 930×1/181×25 ✓). Review độc lập ef124: **gộp vào scope R1 khi AI-3
+  xong 119** (cùng miền).
+- **CLAIMS ACCEPTED:** **followup-9** (`6423853649`, report 142 — class sau
+  `0x2ADB8E0` 44939488, not_decoded thứ 2 của 141; tip `03f22b9f0` đang làm) ·
+  **G3** (`6423862570` — Boss-39001 route trace, MỤC CUỐI hàng đợi G) ·
+  **R2** (`6423892767` — ef review row16-118, deliver 125 + artifact + `review:`).
+- **Datas/ 146 + 3 pulled (141/G6/ef124) = 149 (needle sync commit này).**
 
 ### 24.87 Điều phối lần 96 — #136 HANDOFF ĐÓNG (rank API interpreter + 2 đính chính 134/135) · CLAIM 137 · AI-2 memo chưa tới
 
