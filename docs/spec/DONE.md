@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 99 — 27/10, G2 ĐÓNG (ACK trễ) + G4 ĐÓNG + G5 ĐÓNG + 140 ĐÓNG + điểm đồng bộ slot):**
+> **§24.90**: **G2** consumer = `devidedArenaMedals`@+0x2A0 → SetArenaRewards
+> (arenaRank-index divisor · item ID 22 bounded) · **G4** gun3Static = 3×PPtr
+> SetActive(false→true) `0x2781804`, Boss1_Director 582209 (runs 6/6 ✓) ·
+> **⚠ slot-wording a5 siêu thu bởi ef123 ("Stop") — nhắc sửa 154/155** ·
+> **G5** Tut_Settings1 → Slider.onChange → focusGameSpeed (context only) ·
+> **140** ArenaConfig 6 fields + **10 mùa 1→12 ngày, đơn vị phút PROVED**
+> (AddMinutes 34.499.824 · runs `40372898432`/…8685/…8467 ✓ · `d3552cea…`) ·
+> ACCEPT followup-8 (141) + G6 + R1 · ef CONTINUE124 (4 node factories) ·
+> R2 nhắc lần 1 · datas/ = **146**. verify 209/0/2.
+>
 > **Sửa lại (lần 98 — 27/10, 138+139 ĐÓNG (2 đính chính chuỗi) + row16-118 HANDOFF + MỞ VIỆC review-swap):**
 > **§24.89**: **138** remote paths 6 getter + `/is-open` Arena = SỐ LƯỢNG
 > (count>0) + fail-closed đủ 7 chỗ · **ĐÍNH CHÍNH 136/137: đuôi b = ToRoman ⇒

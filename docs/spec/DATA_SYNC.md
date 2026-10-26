@@ -4942,6 +4942,60 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
     vòng này** (HR §2 + README row 86).
 - **Datas/ 139 + 3 pulled (138/139/118) = 142 (needle sync commit này).**
 
+### 24.90 Điều phối lần 99 — G2 ĐÓNG (ACK trễ) · G4 ĐÓNG (bounded) · G5 ĐÓNG · 140 ĐÓNG (10 mùa, phút PROVED) · điểm đồng bộ slot a5↔ef
+
+- **a5 G2 — ĐÓNG (ACK TRỄ — handoff `6423022686` 17:33Z rơi ngoài khung paginate
+  `since=17:36` của lần 98; rút kinh nghiệm: paginate theo id-range thôi):**
+  consumer TRỰC TIẾP — `Board_Endgame.ctor` int[10] `900…810` →
+  **`devidedArenaMedals` @`this+0x2A0`** → `SetArenaRewards`: `GameMode.arenaRank`
+  index divisor cho `Board_Endgame.arenaPoints`; thương dương → `SetGiftInfo`
+  **item ID 22 quantity** (nghĩa item không assert). Receipt pulled
+  `258293f5…` 4000B khớp ✓. §2.2c: cả 2 mục treo của row 21 giờ có consumer
+  (G1 + G2); còn hở "item ID 22 là gì" — bounded.
+- **a5 G4 — ĐÓNG (bounded)** (HANDOFF `6423313167` @ `7c3630f`; runs 6/6 ✓ qua
+  2 headSha): route split tôn trọng — **Boss1_Director path 582209** (không phải
+  39001); equality branch walk **3 serialized `gun3Static` PPtrs**: mỗi index —
+  `SetActive(false)` (`0x2781804`) → reload field+index → `SetActive(true)`;
+  receiver identity không guarantee dưới runtime mutation; không gán
+  marker/trigger/playback ✓. Receipt `6f964b7b…` 5070B ✓ (cross 0x2781804×2 ·
+  582209×2 · SetActive×4).
+- **⚠ ĐIỂM ĐỒNG BỘ (spec ghi — a5 đối chiếu commit sau):** G4/G5 ghi "slot
+  `0x2ADFB48` remains unresolved" — **SIÊU THU bởi ef123 (ACK97)**: identity =
+  literal **`Stop`**. G4's event-name gate của Boss1_Director chính là consumer
+  slot này (p14) ⇒ **gate identity = "Stop"** (static); dispatch runtime vẫn
+  MODEL_NOT_MEASURED. Kết luận G4 về SetActive-sequence KHÔNG đổi — chỉ wording
+  "unresolved" cần nâng. Đã nhắc a5 sửa report 154/155 + OPEN_ISSUES route của
+  họ (spec-side đã ghi RESOLVED ở §24.87/mục 1b OPEN_ISSUES).
+- **a5 G5 — ĐÓNG** (complete `6423491139` @ `770110b`): `Tut_Settings1.Start` →
+  **`Slider.onChange`** callback → guarded `focusGameSpeed` →
+  `Animator.SetTrigger`; GP_Tutorials Animator (param `Stop`, transition
+  `Base Layer.stop`) = context only ✓. Receipt `e596df38…` 6794B ✓.
+- **AI-4 #140 ArenaConfig — ĐÓNG** (CLAIM followup-7 `6423345487` → HANDOFF
+  `6423455501` @ `52a524140`; runs `40372898432`/`40372898685`/`40372898467` ✓;
+  suite 398 (36 mới); artifact pulled `d3552cea…` 3690B khớp ✓):
+  **`ArenaConfig..cctor` 22.726.640/164B điền đủ 6** — `RankSplit`
+  `20-45;15-45;15-45;10-45×7` · `SeasonTime` `1440;2880;4320;7200;10080;11520;
+  12960;14400;15840;17280` · MaxRoomCount 50 · MinRoomCount 10 · SummaryTime
+  60.0 · IsOpen false. **10 mùa 1→12 ngày — đơn vị PHÚT PROVED**:
+  `IESetRankSetups` 22.720.624 → `scvtf` → `bl 0x20E6CF0` =
+  **`DateTime.AddMinutes`** 34.499.824; `IECheckUserStatus` 22.707.048 →
+  AddMinutes + `op_GreaterThanOrEqual` 34.512.956 — không AddSeconds/AddHours
+  trên đường. **Cổng duy nhất**: `IECheckArenaOpen` 22.810.128
+  `ldrb [+0x1C] cbz` → GetConfigs → GetGameConfig 22.798.808 (khớp đính chính
+  139) · 5/6 field single-writer. Self-correction đúng phép: store
+  `str x0,[x9,#0x18]` (22.782.328) thu hồi attribution (x9 reload từ khối
+  ArenaManager 2 lệnh trước).
+- **CLAIMS ACCEPTED:** **followup-8** (`6423481690`, report 141 — class sau slot
+  `0x2ADB8E0` **44939488**, flag `+4` gates `GetGameConfig` — last named blocker
+  140) · **a5 G6** (`6423501627` — blob census inventory-first) · **AI-3 R1**
+  (`6423376382` — review ef123: review119 + artifact + `review:` comment).
+- **ef CONTINUE124** (`6423259070`): 4 specialized node factories — call
+  `6d25f4/6d2664/6d26d4/6d2744` · ctor `6d6a1c/6d850c/6d2894/6d81f8` · vtable
+  RELA `10b1150/10b1440/10b1640/10b1730`; execute entry-to-RET với allocator
+  sink chỉ khi ctor không cần thêm game state. Tip `98e5ba966` (verify push) —
+  đang làm ✓. **R2 (review-118) vẫn chưa CLAIM — nhắc lần 1.**
+- **Datas/ 142 + 4 pulled (G2/G4/G5/140) = 146 (needle sync commit này).**
+
 ### 24.87 Điều phối lần 96 — #136 HANDOFF ĐÓNG (rank API interpreter + 2 đính chính 134/135) · CLAIM 137 · AI-2 memo chưa tới
 
 - **#29-followup AI-4 — HANDOFF #136 `6422732465` @ `efceee587` — ĐÓNG** (runs

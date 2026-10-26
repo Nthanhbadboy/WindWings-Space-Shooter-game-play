@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "task": "G2 Board_Endgame constructor array consumer",
+  "status": "direct_consumer_bound_in_recovered_ARM64",
+  "source_identity_note": "Workspace-pinned disassembly/metadata evidence; no original APK bytes were reopened by this receipt generator.",
+  "target": {
+    "type": "Board_Endgame",
+    "field": "devidedArenaMedals",
+    "instance_offset": "0x2A0",
+    "element_type": "int32",
+    "length": 10,
+    "values_by_index": [900, 890, 880, 870, 860, 850, 840, 830, 820, 810],
+    "initializer": {
+      "method": "Board_Endgame.ctor",
+      "array_new_address": "0x12760F8",
+      "initialize_array_call": "0x1276108",
+      "instance_field_store": "0x127610C",
+      "blob_field": "<PrivateImplementationDetails>.BDD11E54A7A5817180613F7EFFB0773A4A98F90008AAE86164FA3C887DC8865F",
+      "blob_raw_hex": "840300007a03000070030000660300005c03000052030000480300003e030000340300002a0300000000000000000000",
+      "array_length": 10
+    }
+  },
+  "consumer": {
+    "type": "Board_Endgame",
+    "method": "SetArenaRewards",
+    "rva": "0x1275610",
+    "field_load": "0x12756C0",
+    "gates_and_inputs": {
+      "play_mode": {
+        "type": "GameMode",
+        "static_offset": "0x0",
+        "comparison": "== 5",
+        "source_instruction": "0x1275670"
+      },
+      "arena_points": {
+        "type": "Board_Endgame",
+        "static_offset": "0x2C",
+        "minimum_gate": ">= 1",
+        "load_instruction": "0x1275698"
+      },
+      "rank_index": {
+        "type": "GameMode",
+        "static_offset": "0x1C",
+        "use": "index into devidedArenaMedals",
+        "read_instruction": "0x12756E0"
+      }
+    },
+    "operation": {
+      "denominator": "devidedArenaMedals[GameMode.arenaRank]",
+      "numerator": "Board_Endgame.arenaPoints",
+      "division": "signed integer division (sdiv), truncating toward zero",
+      "quotient_gate": ">= 1",
+      "downstream_call": {
+        "method": "SetGiftInfo(Gift_Behaviour _gift, int _id, int _number)",
+        "rva": "0x1273B20",
+        "item_id_argument": 22,
+        "quantity_argument": "quotient"
+      }
+    },
+    "bounded_interpretation": "In this method, the array is a per-arena-rank divisor for deriving the quantity passed to the arena reward gift path. The semantic identity of item ID 22 is not asserted by this receipt."
+  },
+  "evidence_windows": [
+    {
+      "source": "reverse-engineering/raw/il2cpp-consts/Board_Endgame.asm.txt",
+      "method": "ctor",
+      "start": "0x12760F0",
+      "end": "0x1276110",
+      "purpose": "create int[10], initialize from pinned blob, store at this+0x2A0"
+    },
+    {
+      "source": "reverse-engineering/raw/il2cpp-consts/Board_Endgame.asm.txt",
+      "method": "SetArenaRewards",
+      "start": "0x1275654",
+      "end": "0x1275760",
+      "purpose": "mode/points gates, rank-indexed array load, integer division and reward sink"
+    }
+  ],
+  "source_sha256": {
+    "reverse-engineering/raw/il2cpp-consts/Board_Endgame.asm.txt": "261016b5acf88b30d7fa7ee02d0338a7ec63198e5109c14ad152766c9c4abd7a",
+    "reverse-engineering/raw/il2cpp-consts/Board_Endgame.json": "04b46de2ca323df8f100dd13b1722fe44caf014c96ce175487c38b9c327f0999",
+    "reverse-engineering/il2cpp/dump.cs.gz": "e08f23fb6c90e07288e5b202e0ce1e7c5e82a7feb5ccae7aa08aaec3ad166454",
+    "reverse-engineering/il2cpp/ia-resolved.json": "2583a4c472400fe85f96b96f0a8d2839963eddae95760483424119501d989e37",
+    "reverse-engineering/raw/ui-audit/metadata-slots.json": "dac076ab3fb5eda6fa2855fb5cee2062124bc821ad1ce78df4e086534059ebc4"
+  },
+  "scope_limits": [
+    "Positive direct-consumer evidence for this recovered Board_Endgame method body; not an exhaustive cross-reference of every code body in the application.",
+    "Static disassembly and declaration evidence only; no runtime readback, live reward display, or reward-application result is claimed.",
+    "The array's field name contains 'Medals', but no semantic identity for item ID 22 or broader reward economy is inferred here."
+  ]
+}

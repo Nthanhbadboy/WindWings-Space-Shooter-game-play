@@ -1,0 +1,120 @@
+{
+  "schema": "l3-a5-g4-gun3static-setactive-semantics-v1",
+  "claim_comment_id": 6423030332,
+  "branch": "arena/a5a74747-windwings-space-shooter-game-p",
+  "evidence_mode": "static_only",
+  "disposition": {
+    "status": "BOSS39002_SET_ACTIVE_SEQUENCE_BOUND / EVENT_KEY_AND_DEFEAT_BURST_UNBOUND",
+    "summary": "In the Boss-39002 Boss1_Director callback body, the event-name equality branch iterates the serialized gun3Static GameObject[] by index. At each index it calls GameObject.SetActive(false) on the currently loaded non-null entry, then reloads the field and same index before the SetActive(true) call. Runtime mutation could change the second receiver; identity across the calls is not established. The compared event-name slot remains unresolved, and no defeat/burst event or runtime execution is claimed."
+  },
+  "prefab_separation": {
+    "boss39002": {
+      "component_class": "Boss1_Director",
+      "component_path_id": 582209,
+      "associated_skeleton_animation_path_id": 664302,
+      "evidence_ref": "docs/apk-analysis/143-a5a74747-game-side-boss39002-shared-spine-callback-boundary.md"
+    },
+    "boss39001": {
+      "component_class": "Boss_1_Animation",
+      "component_path_id": 674445,
+      "associated_skeleton_animation_path_id": 602882
+    },
+    "cross_prefab_evidence_transferred": false,
+    "shared_spine_asset_does_not_merge_component_identity": true
+  },
+  "managed_field": {
+    "declaring_class": "Boss1_Director",
+    "type_def_index": 1908,
+    "field": "gun3Static",
+    "type": "GameObject[]",
+    "this_offset": "0xB8"
+  },
+  "serialized_array": {
+    "owner_component_path_id": 582209,
+    "prefab": "Boss-39002",
+    "length": 3,
+    "element_gameobject_path_ids": [
+      163907,
+      163892,
+      163913
+    ],
+    "element_names_resolved": false,
+    "null_elements_in_serialized_values": 0
+  },
+  "callback_body": {
+    "method": "SkeletonAnimation_AnimationState_Event",
+    "rva": "0x14FFAF8",
+    "event_argument_nonnull_check": "0x14FFB28",
+    "event_data_nonnull_check": "0x14FFB30",
+    "name_comparison_call_target": "0x1FECA34",
+    "compared_static_pointer_slot": "0x2ADFB48",
+    "static_slot_string_value_resolved": false,
+    "conditional_array_loop": {
+      "array_receiver": "this+0xB8 (gun3Static)",
+      "array_length_load": "[array+0x18]",
+      "array_data_start": "array+0x20",
+      "index_initialization": "x20=4; x21=x20-4, so the first data access is element index 0",
+      "iteration": "increments element index until the serialized array length; performs null/length checks before the calls; exact null-branch effect is not assigned here", 
+      "per_index_call_sequence": [
+        {
+          "instruction_range": ["0x14FFB74", "0x14FFB84"],
+          "target_rva": "0x2781804",
+          "target_signature_from_dump": "UnityEngine.GameObject.SetActive(bool value)",
+          "boolean_argument": false,
+          "meaning": "request deactivation of the current GameObject"
+        },
+        {
+          "instruction_range": ["0x14FFB9C", "0x14FFBAC"],
+          "target_rva": "0x2781804",
+          "target_signature_from_dump": "UnityEngine.GameObject.SetActive(bool value)",
+          "boolean_argument": true,
+          "meaning": "request activation of the GameObject reloaded from gun3Static at the same index"
+        }
+      ],
+      "same_index_used_for_both_calls": true,
+      "array_and_element_reloaded_after_first_call": true,
+      "receiver_identity_across_calls_guaranteed": false
+    }
+  },
+  "boundary": {
+    "callback_key_identity": "UNRESOLVED",
+    "callback_to_asset_marker_join_proven": false,
+    "defeat_or_burst_event_identity_proven": false,
+    "runtime_callback_delivery_or_execution_observed": false,
+    "runtime_active_state_observed": false,
+    "native_or_libunity_fde_lane_inspected": false,
+    "live_dps": "MODEL_NOT_MEASURED"
+  },
+  "source_sha256": [
+    {
+      "path": "reverse-engineering/raw/il2cpp-consts/Boss1_Director.asm.txt",
+      "bytes": 57723,
+      "sha256": "1bd71db64554fdfd16fddd0440f9b91b33fd31e77e77c9c49515e5cb9cfbea33"
+    },
+    {
+      "path": "reverse-engineering/raw/il2cpp-consts/Boss1_Director.json",
+      "bytes": 25166,
+      "sha256": "d7accd7e4f53a5d0f2695da97baa45a5f27dbb3251da1ff2dfd8cb89611d3f9c"
+    },
+    {
+      "path": "reverse-engineering/raw/typetrees/Boss1_Director.jsonl.gz",
+      "bytes": 440,
+      "sha256": "4661bb7562685d77f511f16863dc9ade8b3567a1205275f5f7933fa66623ad54"
+    },
+    {
+      "path": "reverse-engineering/il2cpp/dump.cs.gz",
+      "bytes": 2769105,
+      "sha256": "e08f23fb6c90e07288e5b202e0ce1e7c5e82a7feb5ccae7aa08aaec3ad166454"
+    },
+    {
+      "path": "docs/apk-analysis/143-a5a74747-game-side-boss39002-shared-spine-callback-boundary.md",
+      "bytes": 3450,
+      "sha256": "3088ecef59d8406398b2015fc067307dd91ab4d9649076a0bc3c48152d62bab0"
+    },
+    {
+      "path": "datas/l3_a5a74747_game_side_boss39002_shared_spine_callback_boundary.json.gz",
+      "bytes": 2816,
+      "sha256": "ab16013ff880f71a8242a3659efe9fb16b7e822cd5cb47f8185e92ce98a165c3"
+    }
+  ]
+}
