@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 60 — 26/10, #12 ĐÓNG bó scope + #17 phân xử 2 tầng + #19 CLAIM → L2 phủ hết):**
+> **§24.53**: **#12** (112-a5, SHA `5fc9fd36…` khớp) — Popup_QuitMissions 495980→controller
+> 1974 · clip1572/1573 · prior_block_recheck sửa GO 270123 (lỗi type/identity) ·
+> pixel_bounds=null — **ĐÓNG bó scope template-serialized; pixel projection MỞ** · **#17**
+> (109-ef, code `99d778f38`, 1226 PASS) — decoder import struct duy nhất ✓ · 308/308 +
+> 232/232 · counts all308/old232 ✓ — **tầng 1 payload reader ĐẠT, tầng 2 framing/schema
+> MỞ** (shared UnityPy DB); 110-ef frame 704.961 rows đang chạy · **#19 CLAIMED a5a74747
+> → L2 phủ hết**. datas/ = **81**. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 59 — 26/10, #21 ACK + #23/#18 push về + ACK bó scope + #17 claim):**
 > **§24.52**: **#21 ĐÓNG** (provisional) — review độc lập 4/5 từ artifact (576 unique ✓ ·
 > per-root 9/9 + 243+7=250 ✓ · canonical equal ✓ · external fixture ✓; ③ trace chỉ count —

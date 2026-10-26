@@ -3689,3 +3689,32 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   học #23).
 - datas/ 77→**79** (wing23 + dps18). L2: **#18/#20/#21/#22/#23 ✅** (mỗi mục bó scope đúng
   khai) · còn **#19** TRỐNG + **#24/#25** chờ chủ dự án.
+
+### 24.53 Điều phối lần 60 — #12 ĐÓNG bó scope + #17 phân xử 2 tầng + #19 CLAIM → L2 phủ hết
+
+- **#12 a5a74747** (handoff 09:49, commit `32c87fa0f` đã push, SHA `5fc9fd367394…` khớp
+  chính xác ✓): join template-serialized 1 chuỗi UI — **Popup_QuitMissions 495980 →
+  controller 1974** · Appear mặc định **clip1572** / Hide trigger **clip1573** · curve
+  samples 0/0.25/0.5 s · camera_inventory level0/level1 (data.unity3d) ·
+  **prior_block_recheck sửa claim cũ GO 270123 "vắng mặt" = lỗi type/identity (Transform),
+  chain Box_Gift(7) đủ** — đúng chuẩn lần 58 ✓ · **pixel_bounds=null** (chưa có
+  scene-instance/placement authority — không đoán camera) ✓ · sync cùng commit APKD1
+  79/107 · AI1 77 · RD1 41/0 ✓. **Verdict: ĐÓNG bó scope template-serialized transition;
+  viewport pixel projection MỞ.**
+- **#17 ef6b75ef** (handoff chính thức `6412780728`, code `99d778f38`, Verify
+  `40299839743`, full **1226 PASS**/36 new) — **phân xử 2 tầng theo đúng request**:
+  **TẦNG 1 payload reader: ĐẠT** — decoder `tools/verify/controller109_binary.py` import
+  **duy nhất `struct`**, docstring khai no-UnityPy/no-schema (spec verify grep) ✓ ·
+  308/308 full-read + full-tree equality vs UnityPy · 232/232 old joins + 76 ngoài subset ·
+  counts **all308 794/386/147/616/616-no-interruption/421** ✓ + **old232
+  667/343/125/464/376** ✓ (artifact exact) · 932 transitions giữ · padding 6916
+  spans/16293 bytes giữ hex · m_ControllerSize ≠ on-disk span 308/308 giữ literal ·
+  tests fail-closed. **TẦNG 2 full independent framing/schema: CHƯA ĐẠT** — file stripped
+  → schema = UnityPy builtin version DB, common-mode bugs không tự phát hiện.
+  **Verdict: #17 = MỞ MỘT PHẦN** (giống #15: tầng đạt ĐÓNG, tầng framing-proof tiếp) —
+  **110-ef đang đào**: tip `f4a6346172` "frame 704.961 object rows + join 308→791 clips"
+  (chưa handoff — theo dõi).
+- **#19 CLAIM a5a74747** (09:50) — **L2 phủ hết: mọi mục claimed hoặc ĐÓNG**.
+- Re-handoffs #23/#18 post-push (`6412746605`/`6412749436`) — spec đã ACK SHA-khớp tại
+  §24.52 ✓ · correction ef `6412630804` (550 RELA / 773-0) nhất quán với đính chính spec.
+- Board lần 60; datas/ = **81**.
