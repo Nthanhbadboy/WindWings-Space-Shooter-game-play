@@ -33,7 +33,7 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **111** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **112** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
 | `datas/` | JSON/CSV bóc trực tiếp | **86** file · **26.190.619 bytes** (**26,2 MB**) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
@@ -73,6 +73,7 @@
 | `datas/l3_a5a74747_game_side_boss39002_slot_text_corpus_closure.json.gz` | #27-GS phase 20: final allowed text-export census for the callback slot | 2,350 eligible text exports pinned; no direct slot representation in-scope | Native-relocation token source explicitly excluded; game-side literal bridge remains unresolved |
 | `datas/l3_a5a74747_game_side_boss39002_datas_source_layer_closure.json.gz` | #27-GS phase 21: baseline `datas/` source-layer census | 56 unprefixed baseline exports pinned; no direct exact/decimal slot representation | Callback literal remains unresolved; no global absence or native-lane claim |
 | `datas/l3_a5a74747_game_side_boss39002_residual_static_source_closure.json.gz` | #27-GS phase 22: residual tracked static-source inventory | 3,277 paths inventoried; 0 additional eligible text exports | Text-source census closed at permitted boundary; callback literal unresolved |
+| `docs/apk-analysis/152-a5a74747-apk-analysis-spec-sync-review.md` | #27-GS analysis ↔ SPEC consistency review | Reports 142–151 compared with animation, handoff, and open-issue specs | Partial sync: summary-route and callback-key wording need reconciliation |
 
 **Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **109** file `datas/`.
 
