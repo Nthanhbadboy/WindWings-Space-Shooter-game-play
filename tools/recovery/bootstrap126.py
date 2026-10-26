@@ -6,6 +6,7 @@ XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
 TARGET=0x6cf7b4
 RANGES=[(0x6cf7b4,0x6cff44),(0x10b1000,0x10b1800),(0x12da00,0x12da40),(0x109acc0,0x109acf0)]
 CODE_LO,CODE_HI=0x500000,0x6d9000
+EXTRA_ROOTS=(0x6cf768,0x57112c)
 def sha(b):return hashlib.sha256(b).hexdigest()
 def signed(v,n):return v-(1<<n) if v&(1<<(n-1)) else v
 def recover(path):
@@ -66,7 +67,7 @@ def recover(path):
             pos=offset(lo);assert offset(hi-1)==pos+hi-lo-1
         except (StopIteration,AssertionError):continue
         windows.append(dict(va=lo,file_offset=pos,hex=b[pos:pos+hi-lo].hex()))
-    roots=[TARGET]
+    roots=[TARGET]+list(EXTRA_ROOTS)
     for x in direct_refs:
         if x['owner_start'] in unwind and x['owner_start'] not in roots:roots.append(x['owner_start'])
     for r in rela_matches:
