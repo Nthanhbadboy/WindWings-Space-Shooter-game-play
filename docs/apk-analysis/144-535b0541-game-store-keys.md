@@ -142,6 +142,8 @@ Không có mâu thuẫn giữa hai báo cáo: 21 khoá của 143 là **Unity `Pl
 | **index** của 43 khoá ghép | `String.Concat(prefix, index)` dựng khoá lúc chạy; index bị chặn bởi độ dài mảng shop/quest — việc của một decode khác |
 | giá trị lưu trong store | trạng thái máy, không nằm trong APK — **`MODEL_NOT_MEASURED runtime`** |
 
+> **Đã đóng bởi 145:** mục thứ nhất (26 lời gọi) — cả 26 đều lấy khoá từ ngoài method: 8 bản ghi qua `TimeFreeRewardPack.Key(int slot)` (tiền tố `SLOT_FREE_CARDS_`) và 18 qua ba `static string` của `Board_EventSeasonPass` (`TIME_EVENT_STARTED` / `_ENDED` / `_OPEN`). Census không đổi: 184 lời gọi, chỉ đổi chỗ phân loại (115/43/26 → **133/51/0**). Mục index và giá trị lưu vẫn mở.
+
 ---
 
 ## 7. Tái lập
