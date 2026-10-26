@@ -174,6 +174,14 @@ Hai mảng của `Board_Players` đã bind được **tên field** bằng asm (s
 > **6000** — hai nguồn số khác consumer, không damage×rate proxy. `Board_Players.allBasicAtk/
 > allDeltaAtk` (float[24], `4640…`/`,168`) có consumer UI `GetPlayerPower` → `textPlayerPower`;
 > điều đó **không** chứng minh combat damage/rank semantics ⇒ B3 damage-theo-rank của tàu chưa chốt.
+>
+> **G1 reconciliation (PR12 claim `6422828995`, reports 109 + 122):** the UI consumer identity is
+> already directly bound; the proposed `damage(rank) = basic + 0.168·rank` equation is **not supported**.
+> The traced `GetPlayerPower` formula is multiplicative and uses `GetPlayerLevel` for display, while
+> the bounded `Player_Attack_1` combat trace reads `Player_Get_Datas.StartMainCannonDamages` (`0x78`)
+> and uses rank as a guarded loop bound, not as the getter's damage input. This is not a global
+> non-use proof; keep combat semantics at **B**. `4640` is an entry in the board-power array, **not
+> ship HP**.
 
 ### 2.3 Save / load — **8 key family đã có contract**, chưa phải schema đầy đủ
 

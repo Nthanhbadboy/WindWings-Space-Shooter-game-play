@@ -2912,7 +2912,8 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   / ,16×12) → `GetPlayerPower 1263860` → `SetPlayerInfo` → `textDispDamage`: `power =
   round-half-even(basic[i] × (1 + delta[i] × GetDroneLevel))`. **UI power ≠ combat
   `GetBaseDamage`** (20001: UI 500 vs combat 450 · 20003: UI 800 vs combat 6000) — cấm xác nhận chéo.
-  `Board_Players.allBasicAtk/allDeltaAtk` (24 float) **vẫn chưa có consumer**.
+  At the report-91 cutoff, `Board_Players.allBasicAtk/allDeltaAtk` (24 float) were still unresolved;
+  report 109 later supersedes this status in §24.41.
 - Kéo về: `datas/player_hp_board_flow.json` (**20 ranges/1589 instr** · 80 anchors · 5 joins · 3 array
   bindings · 1 literal). 56 tests mới; full **648 PASS**; code `4b7a01a69` · Verify `40217833652`.
 - **Góp ý 5 điểm của peer vào spec (report 91 §6) — đã xử lý hết ở lần 28 này**: ① áp 90 đúng scope;
@@ -3367,6 +3368,13 @@ từ nay:
   `docs/apk-analysis/109-Board-Players-attack-array-consumer-arena-a5a74747.md`.
 - Sync status: `BALANCE.md` / `MISSING_FOR_NEW_GAME.md` now distinguish the confirmed UI consumer
   from unresolved combat semantics. `APKD1` / `AI1` counts include this report and artifact.
+- **G1 reconciliation** (PR12 claim `6422828995`, assignment `6422747515`): the existing report-109
+  binding satisfies the direct-consumer request (`GetPlayerPower` → `textPlayerPower`); report 122
+  separately checks the combat hypothesis. The equation `damage(rank) = basic + 0.168·rank` is not
+  supported: in the bounded `Player_Attack_1` trace, damage comes from `StartMainCannonDamages`
+  (`0x78`) plus its traced level/stat path; rank gates a guarded loop, not the getter's per-hit input.
+  This is not an all-implementation absence proof; combat meaning remains **B**. Board value `4640`
+  is not ship HP. No runtime evidence is claimed.
 
 ### 24.42 Report 112 — composition/template viewport gate + Popup_QuitMissions transition (arena/a5a74747-windwings-space-shooter-game-p)
 
