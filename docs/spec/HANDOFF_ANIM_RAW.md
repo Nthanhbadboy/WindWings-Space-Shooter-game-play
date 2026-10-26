@@ -7,7 +7,7 @@
 > ⇒ Mọi việc **cần export thêm asset hoặc xref asm** nằm ở đây. Mọi việc **đọc được từ dữ liệu đã
 > có** thì tôi đã làm xong, liệt kê ở §0 để **không ai làm lại**.
 >
-> Bốn task dưới đây **độc lập**, **không cần thiết bị**, và mỗi task là **một giả định sai được**.
+> Danh sách dưới đây gồm T1–T4 cùng các follow-up T4b–T9; trạng thái từng mục phải đọc theo phần cập nhật bên dưới. Các việc cần thêm raw/source vẫn được giao riêng, còn phân tích đã chốt không được lặp lại.
 
 ---
 
@@ -25,6 +25,8 @@
 | Ghép **prefab ↔ lớp handler** | **17/34** prefab (17 còn thiếu, **145** event), quan hệ **1:1**, từ **18** lớp `*_AnimationEvents` đã export (`typetrees/*AnimationEvents*` là export **theo instance**, `gameobject` = đường dẫn trong prefab) | claim **S1** |
 | Timeline theo giây của 269 cặp (prefab, clip) | `BOSS_ANIM_TIMELINE.md` — 795 event, 130 tên hàm | claim **R1–R6** |
 | Tên field 12 delegate + 5 field `BossSpineEventHandler` | `interesting-classes.cs` (kéo 24/10) | claim **T2**, **T3** |
+| Tách route Boss 1 | Boss-39001 = `Boss_1_Animation` path `674445`; Boss-39002 = `Boss1_Director` path `582209`; shared Spine asset không nhập hai component | reports **141–143**; keep evidence separate |
+| Boss-39002 `gun3Static` call semantics | At each index, `GameObject.SetActive(false)`, then reload same index for `SetActive(true)`; three serialized refs; event key/defeat-burst unresolved | report **154**; static-only, no runtime result |
 | 8 tên entry boss 1 đọc thẳng từ prefab | `Boss1_Director.csv`: `Boss-39002`, **1** instance | claim **T1** |
 | Ma trận `*_Director` ↔ `*_AnimationEvents` | **18** / **18** / **15** trên 39 prefab `Boss-*` | claim **T4** |
 | **Ai đặt trigger `Animator`** | **7 call site `Animator.SetTrigger` / 5 method**, tất cả trong `Boss_AttackPhases` (`CallMixAnimation` · `OnGunDie` · 3 vòng `IEAttackRound*`) | `native-calls.json`, claim **W1** — **đừng** đi tìm lại |
@@ -35,7 +37,7 @@ Tất cả số trên đã khoá bằng claim `J*` + `K*` trong `tools/verify-cl
 
 ---
 
-## 1. Bốn task
+## 1. T1–T4 core tasks
 
 ### T1 — **17 prefab** có event clip nhưng chưa export lớp handler
 
@@ -45,48 +47,55 @@ Tất cả số trên đã khoá bằng claim `J*` + `K*` trong `tools/verify-cl
 ghép, `CB-30040`) — claim **S1** giữ đúng bộ số `(17, 17, 145, 34)`. Danh sách chính xác phải lấy
 bằng `event-receivers.json.gz` ⋈ `typetrees/*AnimationEvents*`, **không** chép tay từ đây.
 
-**2 lớp** ở trạng thái **có asm nhưng không có typetree** (có `il2cpp-consts/*.json`, **0** instance
-export): `Boss1_AnimationEvents` · `BossSpineEventHandler`. Lớp thứ ba, **`Boss_1_Animation`, đã xong
-25/10**: có **1 instance** trên `Boss-39001` (`Boss_1_Animation.csv`, snapshot `9aed767b1`), 8 field
-`state*` + 2 `UnityEvent` (`defeatEvent` → `OnDefeated`, `burstEvent` → `OnBusrtItems`).
-Đây chỉ là phần *nhỏ nhất* của T1, không phải toàn bộ.
+The source inventory still has two classes **có asm nhưng không có typetree** (`Boss1_AnimationEvents`
+and `BossSpineEventHandler`); this export fact does not identify a prefab route. The earlier T1 split
+between event-clip handler exports and the two Spine-related classes must remain explicit.
+`Boss_1_Animation` is a serialized Boss-39001 component; `Boss1_Director` is a separate Boss-39002
+component. Reports 142–154 do not merge these routes.
 
-**Giả định:** mỗi prefab trong 18 cái đó có **đúng một** lớp `*_AnimationEvents` (như 16 prefab đã
-ghép được, quan hệ 1:1), và lớp đó **có** trong `il2cpp-consts/*.json` (69 lớp đã dump) nhưng chỉ
-**thiếu bước export instance**.
+- **Boss-39001:** `Boss_1_Animation` path `674445` → `SkeletonAnimation` `602882`; its two
+  `UnityEvent` fields are a different route from the Boss-39002 callback below.
+- **Boss-39002:** `Boss1_Director` path `582209` → `SkeletonAnimation` `664302`. Its callback compares
+  against unresolved static slot `0x2ADFB48`; report 154 resolves only the conditional
+  `gun3Static` `SetActive(false)` → `SetActive(true)` sequence.
+- `BossSpineEventHandler` has **5 managed fields** and a `HandleEvent` body, but its Boss-39001
+  MonoScript/instance/value binding remains unresolved. Reports 142–151 already checked 127,852
+  script-link rows and 140 typetree JSONL exports; that bounded search is **complete**, not a request
+  to rerun the same corpus. Reopen only if a new permitted source is identified. This does not prove
+  global non-use or bind `Stop`/`Banplasma`.
+- `Boss1_AnimationEvents` is a separate delegate-field class; do not transfer its question to either
+  Spine callback route. Its instance/export status remains the specific open item listed below.
 
-**Việc (đã hẹp lại 24/10 — tên field không còn phải tìm):**
+**Giả định về 17 prefab event-clip còn thiếu:** mỗi prefab có đúng một `*_AnimationEvents` lớp
+handler (như quan hệ 1:1 đã ghép được), và lớp có trong `il2cpp-consts/*.json` nhưng thiếu instance
+export. Đây vẫn là giả định cần kiểm cho từng prefab, không phải bằng chứng đã ghép đủ.
 
-| lớp | đã biết | còn thiếu | việc |
+**Việc (tách theo trạng thái hiện tại):**
+
+| lớp / route | đã biết | còn thiếu | việc hợp lệ |
 |---|---|---|---|
-| `BossSpineEventHandler` | **5 field** + offset + cơ chế `HandleEvent` | **giá trị** `attackEventName` / `preAttackEffectEventName` | export **instance** (chỉ cần 1 dòng) |
-| `Boss1_AnimationEvents` | **12 field** `0x20…0x78` + tên | **có gắn prefab nào không** | export **instance** |
-| `Boss_1_Animation` | ✅ **XONG 25/10**: 1 instance trên `Boss-39001`; 8 field `state*`; 2 `UnityEvent` | — | — |
+| `BossSpineEventHandler` | **5 field** + `HandleEvent`; bounded census reports 142–151 | Boss-39001 identity/instance/serialized string values | chỉ mở lại khi có nguồn mới được phép; không lặp text census |
+| Boss-39002 `Boss1_Director` | component/prefab join; `gun3Static` bool sequence ở report 154 | string slot `0x2ADFB48` / event key | giữ unresolved; không đụng native/FDE hoặc runtime lane |
+| `Boss1_AnimationEvents` | **12 field** `0x20…0x78` + tên | serialized instance binding | chỉ xử lý trong task export `*_AnimationEvents` nếu có raw đầu vào mới |
+| Boss-39001 `Boss_1_Animation` | ✅ 1 instance; 8 field `state*`; 2 `UnityEvent` | handler script PPtr identity remains unresolved | không dùng Boss-39002 evidence để lấp |
 
-1. thêm 3 lớp trên vào `TARGETS` của exporter typetree (**lớp `*_AnimationEvents` khác đã export đủ 14**);
-2. xuất `typetrees/{class}.jsonl.gz` (**instance**, kèm `gameobject`) + `script-links.jsonl.gz`;
-3. in **giá trị** field chuỗi của 2 lớp đầu.
+T1 nếu được tiếp tục: ghép từng event-clip prefab còn thiếu với lớp handler bằng export instance
+(`typetrees/*AnimationEvents*.jsonl.gz`, kèm `gameobject`) và cập nhật `(đã ghép, còn thiếu)`. Không
+xuất lại các route Spine nói trên để thay thế prefab-specific evidence.
 
-**Artifact:** `anim-raw-T1/instances.json`
-```json
-{"class": "BossSpineEventHandler", "count": 0, "prefab_roots": [],
- "string_fields": {"onEventName": "...", "offEventName": "..."}}
-```
+**Artifact target:** receipt per T1 batch listing prefab/component joins and the remaining bounded gaps; no hard-coded expectation `(34, 0)` unless every join is evidenced.
 
-**Tự kiểm:** in `(số prefab ghép được, số prefab còn thiếu)` — mốc hiện tại **(16, 18)**; sau task
-phải là **(34, 0)** hoặc ghi rõ lớp nào **không tồn tại** trong assembly.
+**Giới hạn kết luận:** nếu một export mới vẫn cho `Boss1_AnimationEvents` = 0 instance, chỉ ghi
+"không thấy trong tập đã export"; không suy ra runtime non-use. Không dùng kết quả đó để phủ định
+các handler khác hoặc thay thế prefab-specific joins.
 
-**Lật ngược nếu:** export xong mà `Boss1_AnimationEvents` vẫn **0 instance** trong **phạm vi export** ⇒
-ghi **"không tìm thấy trong tập này"**, **không** kết luận "code chết": 0 instance export ≠ 0 instance
-runtime (có thể lớp được `AddComponent` lúc chạy, hoặc prefab nằm ngoài tập). Khi đó 12 handler ở §T2
-**không** phải đường mà 16 prefab kia dùng — điều này không làm hỏng gì: 16 prefab đã ghép được lớp thật
-(`Boss10_…`, `BossAnimationEvents`, …). (Hạ mức theo review 25/10, mục R6-T1.)
+**Rút lại ứng viên cũ:** không gán `Stop`/`Banplasma` cho `BossSpineEventHandler` hay cho slot
+`0x2ADFB48`. Bounded census reports 142–151 đã khép ở phạm vi đã xét; mọi mở lại cần nguồn mới,
+được phép và có provenance. Boss-39001 script identity và Boss-39002 event-key identity vẫn là hai
+gap riêng.
 
-**Lật ngược (2):** field chuỗi của `BossSpineEventHandler` **không phải** `Stop` / `Banplasma` (2 tên
-event duy nhất trong rig `skeleton__21`) ⇒ ứng viên ở `ANIMATION_SCRIPT.md` §2.2 sai.
-
-**Mở khoá:** nhánh Spine từ **B** lên **A**; biết `Boss_1_Animation` là bản cũ của `Boss1_Director`
-hay lớp riêng; và **33 % event** còn lại có chủ.
+**Acceptance:** mỗi event-clip prefab được ghép bằng instance evidence hoặc được giữ là scoped gap;
+không dùng shared Spine asset, tên class hay component sibling để lấp một join thiếu.
 
 ---
 
@@ -148,9 +157,10 @@ instance thật**. Không tìm thấy lớp ≠ lớp không bao giờ được 
 > Inspector trên từng khẩu súng. ⇒ Phần *liệt kê* xong; phần còn lại chỉ là **đọc giá trị**.
 
 
-**Giả định:** các callback không phải delegate field — `Enemy_Movement.OnPathEnded`,
-`BossSpineEventHandler` slot #1 `[0x38]` — là **`UnityEvent` có `m_PersistentCalls` khác rỗng**,
-nên đọc được "gọi hàm nào trên object nào" mà không cần chạy game.
+**Phạm vi:** T3 chỉ kết luận `UnityEvent` calls khi `m_PersistentCalls` được đọc từ một serialized
+instance. `BossSpineEventHandler.onAttack@0x38` là field `UnityEvent` theo managed declaration, nhưng
+nhưng instance/MonoScript binding trên Boss-39001 vẫn unresolved (reports 142–151); chỉ khai báo field
+không chứng minh có persistent calls hoặc field thuộc prefab đó.
 
 **Việc:** export object `UnityEvent` (PPtr từ field `UnityEvent` trong mỗi MonoBehaviour) và
 `m_PersistentCalls.m_Calls[]` (`m_Target`, `m_TargetAssemblyTypeName`, `m_MethodName`, `m_Mode`,
@@ -345,7 +355,7 @@ khi đó chỉ còn đường cắt theo lưới khai báo trong tên (`1_5x2` �
 
 ---
 
-## 2. Hợp đồng chạy (giống `PARALLEL_TASKS.md`, rút gọn cho 4 task)
+## 2. Hợp đồng chạy cho từng task trong ledger
 
 | # | Luật | Vì sao |
 |---|---|---|

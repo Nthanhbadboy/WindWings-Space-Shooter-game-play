@@ -431,3 +431,9 @@ kiểm từng id** — nhưng **không còn là ẩn số về cơ chế**.
    không phải vắng mặt. Chỉ **C5 · C8** là dữ liệu chết thật; **C3 · C4 · C6 đã đóng**.
 6. **Rủi ro còn lại lớn nhất:** mọi con số về **nhịp bắn** (86,7% súng) và **thời điểm ra đòn của boss**
    đều là **suy luận**, không phải số gốc. Cân bằng damage sẽ lệch nếu nhịp thật khác.
+7. **Boss-39002 Spine callback key/trigger vẫn unresolved** (`0x2ADFB48`): reports 143–154 bound a
+   conditional call sequence in the Boss-39002 `Boss1_Director` body to `gun3Static` indices
+   (`SetActive(false)`, then reload same index for `SetActive(true)`), but not to a named Spine marker, defeat/burst event,
+   playback, or runtime delivery. `Stop`/`Banplasma` remain asset-level candidates only; Boss-39001's
+   `Boss_1_Animation` route is separate. Reopen only on new permitted, source-pinned evidence; do not
+   repeat the closed text-source census or inspect the native/FDE lane.

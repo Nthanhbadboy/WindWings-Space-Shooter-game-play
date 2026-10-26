@@ -13,9 +13,10 @@
 
 1. Game có **hai hệ animation độc lập**, không phải một: **Spine** (`SkeletonAnimation`) và
    **Unity AnimationClip + event** (`Animator` / `AnimationEvent`).
-2. **Boss 1 (`Boss-39001`, `Boss-39002`) hoàn toàn bằng Spine** — **0 event clip** (`AnimationClip`; còn
-   **Spine event** thì **có**: `Stop` · `Banplasma`); driver của nó
-   là **`Boss1_Director`**, một lớp C# gọi `AnimationState.SetAnimation(track, entryName, loop)`.
+2. **Boss-39001 và Boss-39002 là hai route Spine riêng**, cùng **0 event clip** (`AnimationClip`).
+   Cả hai có thể cùng tham chiếu một Spine asset, nhưng driver/component không được gộp:
+   Boss-39001 dùng `Boss_1_Animation`, Boss-39002 dùng `Boss1_Director`. `Stop`/`Banplasma` là
+   marker ở asset; chưa có binding tới callback key cụ thể.
 3. **33 prefab `Boss-*` khác thì ngược lại**: **793 event clip**, mang theo **mốc thời gian** —
    tức nhịp ra đòn **nằm trong asset**, đọc được chính xác đến 0,01 s.
 4. **Enemy gần như không có event clip** (toàn bộ 795 event chỉ có **2** ngoài nhóm boss) ⇒
@@ -45,9 +46,9 @@ Animator ⇒ một bảng `clip → [(t, hàm)]` chép nguyên mốc thời gian
 
 ---
 
-## 2. Boss 1 — script nằm trong `Boss1_Director` (mức **A**)
+## 2. Hai route Boss 1 — riêng driver cho từng prefab (mức **A**)
 
-`Boss1_Director` là lớp duy nhất trong 3 lớp boss 1 thật sự **gọi** animation. Bảng method:
+Bảng dưới mô tả riêng route **Boss-39002 `Boss1_Director`**; không dùng nó làm caller hay callback proof cho Boss-39001. Boss-39001 dùng `Boss_1_Animation` riêng, dù asset Spine có thể được chia sẻ. `Boss1_Director` là lớp trong route Boss-39002 có các direct animation calls sau:
 
 | method | byte | việc |
 |---|---:|---|
@@ -161,11 +162,14 @@ trên các static `MethodInfo` cache).
 | `0x38` | `onAttack` | `UnityEvent` | gọi khi khớp `attackEventName` |
 | `0x40` | `chargeEffect` | `GameObject` | bật/tắt theo 2 event trên |
 
-⇒ Cơ chế **đọc được trọn** (A): "event trước đòn" **bật hiệu ứng tích tụ**, "event đòn" **tắt hiệu ứng +
-gọi `UnityEvent`** để gây sát thương. Còn **giá trị 2 chuỗi** thì vẫn **B** — ứng viên duy nhất vẫn là
-**`Stop`** và **`Banplasma`**, và theo tên field thì `attackEventName` nhiều khả năng = **`Banplasma`**
-(nghĩa đen "bắn plasma"), `preAttackEffectEventName` = **`Stop`**. **Chưa có bằng chứng trực tiếp** vì
-`BossSpineEventHandler` vẫn **0 instance export** ⇒ §T1 của `HANDOFF_ANIM_RAW.md`.
+⇒ **Chỉ trong thân managed type này** (không có instance binding): nhánh khớp với `attackEventName`
+tắt `chargeEffect` rồi gọi `onAttack.Invoke()`; nhánh khớp với `preAttackEffectEventName` bật
+`chargeEffect`. Đây mô tả code trong class, không chứng minh callback đã đăng ký/chạy trên prefab hay
+gây sát thương ở runtime. **Giá trị hai chuỗi và prefab/receiver identity vẫn unresolved**: `Stop` và
+`Banplasma` chỉ là tên marker trong Spine TextAsset, không phải giá trị đã bind cho class này hay
+Boss-39002 slot `0x2ADFB48`. Reports 142–154 giữ Boss-39001 và Boss-39002 routes riêng; không chuyển
+event/key evidence giữa chúng. `BossSpineEventHandler` identity remains bounded to the checked sources,
+not a global non-use result.
 
 **Nguồn thứ hai, độc lập** — `docs/apk-analysis/spine-events.csv` (21 dòng dữ liệu, kéo từ nhánh dữ liệu
 24/10) xác nhận đúng **2 tên event** đó, kèm mốc thời gian:
@@ -179,15 +183,14 @@ gọi `UnityEvent`** để gây sát thương. Còn **giá trị 2 chuỗi** th�
 
 **`skeleton__21`: 6 event · 2 tên phân biệt** (5×`Stop` + 1×`Banplasma`).
 
-⇒ Với rig boss 1, **chỉ tồn tại 2 tên**: `Stop` và `Banplasma` — nên 2 slot chuỗi của
-`BossSpineEventHandler` **chắc chắn** lấy từ tập này (mức **A** cho *tập ứng viên*). Còn **slot nào
-là tên nào** thì vẫn **B**. Đọc thêm: `Stop` nằm trong `Attack3` (12,667 s) cách nhau ~2,4 s ⇒ nó là
-nhịp **tắt/bật một bộ phận** giữa đòn, khớp với hành vi `set_enabled` ở bảng trên.
-
-> **Chưa biết lớp này có ai dùng hay không:** `BossSpineEventHandler` **không có** trong
-> `script-links.jsonl.gz` (5 instance của `BossAnimationEvents`, **0** của lớp này) và **không có**
-> trong `typetrees/`. Nhưng tập `script-links` chỉ phủ các lớp nằm trong `TARGETS`, nên **không
-> được kết luận "code chết"** — đó là việc §T1 của `HANDOFF_ANIM_RAW.md`.
+`Stop`/`Banplasma` chỉ là tên marker trong Spine TextAsset dùng chung. Chúng **không** phải giá trị
+đã giải của static event-name slot Boss-39002 `0x2ADFB48`, và không chứng minh event được gửi hay
+playback trên prefab nào. Callback Boss-39002 có vòng lặp điều kiện trên mảng `gun3Static` riêng;
+report 154 giải target thành `GameObject.SetActive(false)` rồi nạp lại cùng index để gọi
+`SetActive(true)`; receiver identity across calls không được đảm bảo nếu runtime state đổi. Vì slot so sánh vẫn unresolved, không gán chuỗi gọi đó cho `Stop`, `Banplasma`,
+defeat hoặc burst. Giữ riêng route `Boss_1_Animation` của Boss-39001. Kết quả identity/export có giới
+hạn của `BossSpineEventHandler` (reports 142–151) chỉ áp dụng trong các nguồn đã kiểm tra, không phải
+kết luận toàn cục rằng class không được dùng.
 
 ---
 
@@ -489,7 +492,7 @@ phần lớn là 2 state (`Move`/`Idle`) hoặc `Idle`/`Die`. Đừng dựng 109
 | Chuỗi hàm boss 1 + hằng chờ (0,5/1/2/3 s) | **A** | asm `Boss1_Director` |
 | Máy trạng thái enemy (3 nhánh move) | **A** | `native-calls.json` |
 | Hit flash 0,05 s | **B** | suy từ asm `Enemy_Display.OnHit` |
-| 2 tên event Spine ↔ hành vi | **B** | ứng viên `Stop`/`Banplasma` |
+| Callback Boss-39002 `gun3Static` | **A** (chuỗi gọi trong asm) | mỗi index: `SetActive(false)` → nạp lại cùng index → `SetActive(true)`; receiver, event key/defeat-burst binding chưa đảm bảo (report 154) |
 | Nội dung 12 handler (delegate do code gán) | **C** | cần tìm chỗ gán — `HANDOFF_ANIM_RAW.md` §T2 |
 | **8 tên entry + bảng chuyển state boss 1** | **A** | typetree `Boss1_Director` + asm `BossWork` |
 | Tham số Animator của enemy | **C** | chưa có tên nào |

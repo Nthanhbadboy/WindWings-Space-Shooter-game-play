@@ -103,7 +103,7 @@ Ngoại lệ đáng chú ý:
 | `skeleton__13` | **170 bone** · `Tong_Ranh` `Duoi_Ranh_1` `Canh_Nho_Phu_Ranh_1` | rồng, 4 cánh + đuôi |
 | `Saw.json` | 5 animation `Fly` `Fly_Idle` `Idle` `Idle_Fly` | chướng ngại xoay |
 
-### 2.3 Event trong Spine — mốc bắn nằm ngay trong rig
+### 2.3 Spine event markers — asset timeline only, receiver/runtime unbound
 
 **8 event định nghĩa**, **21 lần dùng** trong timeline:
 
@@ -116,9 +116,12 @@ Ngoại lệ đáng chú ý:
 | `TopL` | 1 | bắn trên-trái |
 | `TopR` | 1 | bắn trên-phải |
 
-> **Nhận định (mức A):** tên event **trùng tên animation của `skeleton__5`** (`AttackSpec`, `AttackTopL`, `AttackTopR`).
-> Tức rig tự mang **mốc thời gian bắn** — không cần đọc `Gun_Attack` cũng biết đạn ra ở giây thứ mấy.
-> Đây là mắt nối **animation → đòn đánh** đã có sẵn, không phải suy đoán.
+> **Ranh giới:** bảng trên là marker/timeline trong Spine TextAsset; tự nó không chứng minh receiver,
+> callback key, event delivery, playback hay effect. Boss-39001 và Boss-39002 có hai component route
+> riêng dù cùng trỏ Spine asset 580611 / JSON 918. Report 154 chỉ bind thân callback Boss-39002 với
+> chuỗi gọi `GameObject.SetActive(false)` rồi `SetActive(true)`; slot so sánh `0x2ADFB48` vẫn unresolved,
+> nên không marker nào ở trên được nối với hành vi đó. Tên event/animation trùng trên rig khác vẫn là
+> quan sát ở tầng asset, không phải binding phổ quát animation → đòn đánh.
 
 ### 2.4 Metadata rò rỉ từ máy nghệ sĩ
 
