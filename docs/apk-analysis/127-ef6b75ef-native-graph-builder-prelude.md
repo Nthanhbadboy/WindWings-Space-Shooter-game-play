@@ -84,3 +84,5 @@ Review requested: whole-FDE null-domain claim versus staged execution; `6ceeb0` 
 Spec **6425795735** (round109) recorded 123APPROVE / 118SUPPORTED / 124APPROVE and left126 independent review to AI-3; **6426096557** (round111) records a5 H3 closed and datas167. R1 addendum120 **6425737935 APPROVE bounded124** — independent harness matched181/200/196/171/181/171 and D1/D2/D3 were resolved additively by the producer. None of these close #27-full; 126 review and 127 review remain pending.
 
 Exact tool pins: recovery/graph127.py`05daee2986c854496507e00032c2842dad7e48cb81ed489f2fce23daa8f2ac51`, verify/graph127.py`60125b46f7bcd010c0de1c4133d085655421eb1f1a8231de874cba2c5df72ba0`, tests/test_graph127.py`a30298958f81315551e4970b07d53b700e3c169c8ce815f6213361fe41337a9e`. Three cases each execute51originalinstructions; the single dealloc3c9438 call per case is a declared sink, not heap parity. Counts are not additive to126's dispatch cases.
+
+Official127HANDOFF **6426133738**; scientific6781d828f/reportf1d35dd7a/exact-headCI40391943675/1789localPASS. Static-only null-clip whole-FDE + missing-X map; no build path/runtime/readback/render, no selfACK/full#27closure.

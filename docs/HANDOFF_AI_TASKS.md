@@ -1342,3 +1342,5 @@ Official124HANDOFF **6423892211**; scientific98e5ba966/reportea6a3835f/exact-hea
 Official R2 `review:` HANDOFF **6424830494**; scientific e2f4b0e45/report97b83af0d/exact-headCI40381758335/1751localPASS. R1 final6424767705 APPROVE bounded123 synchronized. Independent R2 verdict supported with3 wording notes and bounded gaps; no selfACK/full#27closure.
 
 Official126HANDOFF **6425502933**; scientific01448eec4/report8bec5129a/exact-headCI40386829829/1772localPASS. Static-only native dispatch on prepared N2 owner; no full graph-builder/runtime/readback/render, no selfACK/full#27closure.
+
+Official127HANDOFF **6426133738**; scientific6781d828f/reportf1d35dd7a/exact-headCI40391943675/1789localPASS. Static-only null-clip whole-FDE + missing-X map; no build path/runtime/readback/render, no selfACK/full#27closure.
