@@ -1,3 +1,13 @@
+## Hiện hành —116 / arena/ef6b75ef / #27 native clip-time+dense composition
+
+[Report116](apk-analysis/116-ef6b75ef-native-clip-time-dense.md). Claim6416092786; scientific **61f31ae26f23908ffa2b281e6dee6e1427c5fcb8**. Original6d2e94→b93158→6df270→stream/dense/constant now executes in prepared context. Native serialized field anchors m_StartTime+5f8/m_StopTime+5fc/m_CycleOffset+608 pinned. Actual normalized-query negative integer−1 givesphase1/cycles−2 (not `%1`); S4negative-zero flips sign; native FRINTA quantization can return sample beyondstop. Dense6df518→6df6c8 executes on explicitlysynthetic3×2frame-major input; half-frame beforebegin extrapolates−5, not universal clamp.
+
+Original source1609unchanged2262words/9048B, source start/stop/cycle adapted to native fields +explicit context1/0/−1/loopbool;10normalizedqueries/930DWORDs bit-equal separate-f32. **Source dense curve0/sampleArray[] despiteframe420, dense branch skipped**, no observed nonempty game dense claim. Originalaggregateinitializer6deefc executes632instructions/source, requests32B+1860B through explicitallocator; mixed order1continuous+1discrete+2dense+2constant demonstrated. **48modff/5memcpy service substitutions** over47calls/29126native sampleinstructions; no zero-hook or Android-libm claim for116.
+
+40focusedPASS1.249s/deterministicPASS; **full1491PASS262.153s / Verify40324149097SUCCESS exactscientifichead**. Actual compressed logs/REST/local/check/recovery/specACK retained under116-verification. Artifact6108B/SHAbcde214305db2c739d1d48bad8670c1fbfb15138dcd93ebfd0bf607e2beec966; raw22100B/SHA1dfa2ca9ab5851d75e969d75428d4f96891464ddc7a6ba583103b87833539c31. Recovery40323651044SUCCESS/source99dcfc08c/raw7a2a64fde. Preparednativecontext/loopadapter ≠ actual Animator context acquisition/scheduling/weighting/blend/normalize/apply/bootstrap/readback/render; full#27OPEN, independentreviewpending/no selfACK.
+
+**Coordination:** external6416110827 ACK/CLOSES115bounded consumer, #5replication/#6static remap; #4primary remainspeerowned. Runtime loader/probe order explicitlyassigned a5a74747, not this lane.115report/HANDOFF updated; no peer tools/runtime vehicle imported, protected3paths absent/unchanged, no main/merge/release change.
+
 ## Hiện hành —115 / arena/ef6b75ef / #27 actual packed StreamedClip consumer
 
 [Report115](apk-analysis/115-ef6b75ef-packed-clip-native.md). Claim6415645613; scientific **61de2d57ef4898fb753bdcb714706a68d71215c2**. Original named AnimationClip API/serializer/compiler join owner+0x1e0; compiler returns muscle blob with ClipConstant relative pointer at+0x5f0, same pointer resolved by native caller6d2e94→dispatcher6df270→sampler6df310→selector6df768. Class74/native592 record confirmed. Static caller chain is not executed Animator ownership/scheduling.
@@ -6,7 +16,7 @@ Actual original stream words copied unchanged (2262words/9048B) for resources.as
 
 40focusedPASS1.061s/deterministicPASS; **full1451PASS263.951s / Verify40321809391SUCCESS exactscientifichead**. Actual compressed logs/REST/local/check receipts retained under115-verification. Artifact12740B/SHA32f8105361ccd0f65c6fbe44f674ea48e88f42c541090c75c4b5fb979d559d20; raw147996B/SHA9b2b21a61fe9b459b4815ab5361576f036c873f36da9ecbce2a25ac618e1d364. Recovery40321260553SUCCESS/source d11ceabc9/raw7b4c31a87. **Dense6df518 identified but unexecuted; time wrapping helperb93158/Animator blending/application/bootstrap/readback/render still OPEN.** Source discrete DWORD is not promoted to resolved PPtr. No full#27closure/selfACK/main/merge/protectedpath changes.
 
-**Coordination:** external6415645102 ACK/CLOSES114bounded-core (not full#27), a5#25bounded slice and#28fallback①. Broad#25durability/cloud/runtime and#28loader②③ remain open/theirs. Peer#26handoff6415743906 is static Board_Pause root/projection audit; no takeover/import.Official115HANDOFF **6416031711** posted after push/exact-head CI; independent review pending, no selfACK.
+**Coordination:** external6415645102 ACK/CLOSES114bounded-core (not full#27), a5#25bounded slice and#28fallback①. Broad#25durability/cloud/runtime and#28loader②③ remain open/theirs. Peer#26handoff6415743906 is static Board_Pause root/projection audit; no takeover/import.Official115HANDOFF **6416031711**; **external spec6416110827 ACK/CLOSES bounded packed-clip consumer**, not full#27/selfACK.116continues time/dense; Animator/bootstrap/readback remain open.
 
 ## Hiện hành —114 / arena/ef6b75ef / #27 native interpolation bounded-core HANDOFF
 

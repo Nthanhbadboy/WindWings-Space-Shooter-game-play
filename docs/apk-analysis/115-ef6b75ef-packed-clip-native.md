@@ -103,3 +103,5 @@ Coordination: external6415645102 also ACKs a5's bounded#25 slice and#28fallbackâ
 - Independent115review pending;114externalACK6415645102 synchronized in114report/HANDOFF. No selfACK/full#27closure.
 
 Official PR12 HANDOFF **6416031711** posted after push/exact-head CI. Receipt `reverse-engineering/raw/l3-ef6b75ef115-verification/handoff.json`; independent disposition pending, no selfACK.
+
+External disposition update: spec **6416110827** independently ACK/CLOSES **115bounded packed-clip consumer**; #27dense/timewrap/Animator/bootstrap/readback stays open. Receipt retained under `reverse-engineering/raw/l3-ef6b75ef116-verification/spec-ack115.json`.116continues original time conversion and dense/constant composition; no selfACK/fullplayback claim.
