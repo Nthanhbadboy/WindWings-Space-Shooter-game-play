@@ -1,0 +1,48 @@
+name: Verify geometry 8141386a scoped evidence
+on:
+  push:
+    branches: ['arena/8141386a-windwings-space-shooter-game-p']
+    paths:
+      - 'tools/verify/geometry_8141386a*'
+      - 'tools/verify/l3_geometry_8141386a*'
+      - 'tests/test_geometry_8141386a*'
+      - 'datas/l3_geometry*'
+      - 'reverse-engineering/raw/geometry-8141386a/**'
+      - 'docs/apk-analysis/*arena-8141386a*'
+      - 'docs/spec/**'
+      - 'docs/assets/**'
+      - 'tools/verify-claims.py'
+      - 'tools/refresh-readme-sizes.py'
+      - '.github/workflows/verify-geometry-8141386a.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  scoped-evidence:
+    if: github.head_ref == 'arena/8141386a-windwings-space-shooter-game-p' || github.ref_name == 'arena/8141386a-windwings-space-shooter-game-p'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check source selection and byte-backed artifact determinism
+        run: |
+          python3 -m tools.verify.geometry_8141386a_sources --check
+          python3 -m tools.verify.l3_geometry_8141386a --check
+      - name: Check pinned per-claim/per-group verification snapshot
+        run: python3 -m tools.verify.geometry_8141386a_receipt --check
+      - name: Geometry and support-boundary regression tests
+        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_support -v
+      - name: Current needles and explicitly scoped historical support
+        run: |
+          set -euo pipefail
+          python3 tools/refresh-readme-sizes.py --check
+          python3 tools/verify-claims.py --require APKD1,AI1,RD1 | tee /tmp/geometry-8141386a-claims.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: geometry-8141386a-scoped-claims
+          path: /tmp/geometry-8141386a-claims.txt

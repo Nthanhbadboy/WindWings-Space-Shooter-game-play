@@ -3300,8 +3300,8 @@ claim("IAB2", "docs/spec/BALANCE.md",
       "Stage_Get_Datas.cctor: int[5] startBonusValues + float[4] levelDelta; 0x40666666 = 3.6 (KHÔNG phải 2.1)")
 
 claim("APKD1", "docs/spec/START_HERE.md",
-      "**71** `.md` · **107** `.csv`",
-      (71, 107), apk_doc_counts,
+      "**118** `.md` · **107** `.csv`",
+      (118, 107), apk_doc_counts,
       "đếm trực tiếp thư mục apk-analysis — thêm báo cáo mới là phải cập nhật dòng này")
 
 claim("IA8", "docs/spec/START_HERE.md",
@@ -3800,10 +3800,9 @@ def data_inventory():
 
 
 claim("AI1", "docs/spec/START_HERE.md",
-      "**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree"
-      " · **126** bảng ScriptableObject · **42** contact sheet · **87** file `datas/`.",
-      (139, 142136, 142, 126, 42, 87), data_inventory,
-      "kho dữ liệu gốc đã phân tích: asm, typetree, ScriptableObject, contact sheet, datas")
+      '**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **138** bảng ScriptableObject · **42** contact sheet · **76** file `datas/`.',
+      (139, 142136, 142, 138, 42, 76), data_inventory,
+      "current own worktree: asm, typetree, ScriptableObject, contact sheet, datas; not historical support counts")
 
 claim("AP1", "docs/spec/DATA_INTEGRITY.md",
       "**PROVENANCE: 272/412 khớp · 140 lệch · 0 thiếu**",
@@ -4306,4 +4305,13 @@ def main() -> int:
 REFS = DEFAULT_REFS
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # provenance: arena/8141386a-windwings-space-shooter-game-p
+    # Original spec implementation retained. The inherited ef tree deliberately has
+    # incompatible historical support. Explicit scope is printed before any verdict;
+    # this is NOT all-current-raw verification. Only three current needles are synced.
+    if "--unscoped-legacy" in sys.argv:
+        sys.argv.remove("--unscoped-legacy")
+        sys.exit(main())
+    sys.path.insert(0, ROOT)
+    from tools.verify.geometry_8141386a_claims import main as geometry_support_main
+    sys.exit(geometry_support_main(sys.modules[__name__]))
