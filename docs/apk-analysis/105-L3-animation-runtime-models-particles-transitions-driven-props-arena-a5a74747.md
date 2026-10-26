@@ -274,9 +274,20 @@ Test không pin vào SHA artifact mà **rebuild rồi so byte** — sửa tool m
 ## Receipt105
 
 - Branch: `arena/a5a74747-windwings-space-shooter-game-p`
-- Code: `d446d47d5` (tools + 3 artifact + 3 test file), report ở commit riêng sau đó
-- Local: **122 PASS** (`python3 -m unittest discover -s tests -q`, 16.679 s), dominant 77 test mới
-- Artifact SHA: particle `9216e6b6…a06fd5`, transition `b02b766c…a5a990e9`, driven `ed3f5173…7f68b2310`
-- CI run: xem comment PR12 (workflow `docs-verify`, trigger `workflow_dispatch` trên branch này)
+- Code: `d446d47d5` — tools + 3 artifact + 3 test file; report commit kế tiếp.
+- Local: **122 PASS** (`python3 -m unittest discover -s tests -q`, 16.733 s): 45 baseline + **77 test
+  mới** (22 particle / 28 transition / 27 driven).
+- Artifact SHA: particle `9216e6b6…a06fd5`, transition `b02b766c…a5a990e9`, driven `ed3f5173…7f68b2310`.
+- Chạy đúng các bước `docs-verify` tại chỗ (CI không dispatch được — xem dưới):
+  `tools/raw-audit.py` OK (`RAW 180 · DOC 3 · CONST 28 · tổng 211`),
+  `opening_persistence` 25 checks, `player_loadout_persistence` 43 checks, `audio_rules` 118 enum,
+  `tools/verify-claims.py --require AB,AO,AP` → **PASS 209 · FAIL 0 · SKIP 2 · ERROR 0**.
+- Thêm 1 report + 3 artifact `datas/` làm claim đếm file lệch, nên đã đồng bộ
+  `docs/spec/START_HERE.md` (**71→72** `.md`, **66→69** file `datas/`) và needle tương ứng trong
+  `tools/verify-claims.py`; hai claim này đỏ trước khi sửa. Không đổi nghĩa claim nào khác.
+- CI: `docs-verify` chỉ chạy trên `pull_request` hoặc `push` vào `main`; `gh workflow run` trên
+  branch này trả **HTTP 403 (Resource not accessible by integration)** — token của phiên không có
+  `actions:write`. Không mở PR riêng từ branch này (protocol handoff: comment PR12), nên **không có
+  run ID để trích**; bù lại toàn bộ step của workflow đã chạy tay ở trên với kết quả xanh.
 - `provenance: arena/a5a74747-windwings-space-shooter-game-p`
 - Không self-ACK, không merge, không push `main`.
