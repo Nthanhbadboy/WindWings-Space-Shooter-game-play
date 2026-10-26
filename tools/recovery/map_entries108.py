@@ -21,8 +21,8 @@ def recover(path):
  for i in instructions:
   mt=re.fullmatch(r'(x\d+), #0x([0-9a-f]+)',i.op_str)
   if i.mnemonic=='adrp' and mt:pages[mt[1]]=int(mt[2],16)
-  mt=re.fullmatch(r'x\d+, \[(x\d+)(?:, #0x([0-9a-f]+))?\]',i.op_str)
-  if i.mnemonic=='ldr' and mt and mt[1] in pages:wanted.add(pages[mt[1]]+int(mt[2] or '0',16))
+  mt=re.fullmatch(r'x\d+, \[(x\d+)(?:, #(0x[0-9a-f]+|[0-9]+))?\]',i.op_str)
+  if i.mnemonic=='ldr' and mt and mt[1] in pages:wanted.add(pages[mt[1]]+int(mt[2] or '0',0))
  shoff=struct.unpack_from('<Q',b,40)[0];size,count=struct.unpack_from('<HH',b,58);rels=[]
  for n in range(count):
   h=struct.unpack_from('<IIQQQQIIQQ',b,shoff+n*size)
