@@ -44,8 +44,17 @@ fetch "https://github.com/LavaGang/MelonLoader/releases/download/$MELON_TAG/Melo
 # game device, binding-exact). Skipped silently if the release isn't reachable
 # (the standalone phone build target then reports refs missing instead).
 PHONE_REFS_TAG="${PHONE_REFS_TAG:-phone-refs}"
+PHONE_REFS_SHA256="${PHONE_REFS_SHA256:-}"
 if curl -fL --retry 2 --silent -o .ci/bep6-phone-refs.zip \
      "https://github.com/${GITHUB_REPOSITORY}/releases/download/$PHONE_REFS_TAG/bep6-phone-refs.zip" 2>/dev/null; then
+  if [ -n "$PHONE_REFS_SHA256" ]; then
+    actual_phone_refs_sha=$(sha256sum .ci/bep6-phone-refs.zip | awk '{print $1}')
+    if [ "$actual_phone_refs_sha" != "$PHONE_REFS_SHA256" ]; then
+      log "phone refs SHA mismatch: expected $PHONE_REFS_SHA256, got $actual_phone_refs_sha"
+      exit 1
+    fi
+    log "phone refs SHA-256 pinned: $actual_phone_refs_sha"
+  fi
   rm -rf .ci/phone-refs "$REFS/bep6-refs-phone"
   mkdir -p .ci/phone-refs "$REFS"
   unzip -q -o .ci/bep6-phone-refs.zip -d ".ci/phone-refs" || true
@@ -65,6 +74,10 @@ if curl -fL --retry 2 --silent -o .ci/bep6-phone-refs.zip \
     find .ci -maxdepth 3 -type d | sed 's/^/  /' | head -20 || true
   fi
 else
+  if [ -n "$PHONE_REFS_SHA256" ]; then
+    log "pinned phone refs unavailable: release $PHONE_REFS_TAG/bep6-phone-refs.zip could not be retrieved"
+    exit 1
+  fi
   log "phone refs not available (skipping)"
 fi
 

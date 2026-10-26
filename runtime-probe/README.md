@@ -124,6 +124,14 @@ Kết quả: `runtime-probe/bin/Release/netstandard2.1/RamusBridge.dll`
    curl -s http://127.0.0.1:8080/health | jq
    ```
 
+### 3.3 CI vehicle cho #28 (XAPK gốc không bị sửa)
+
+`.github/workflows/runtime-loader-probe.yml` builds a separate FusionCore loader APK from the pinned source commit `bf4c69d9d4724e4eff058664a5be0a1d9cfd4e61` (tag `0.045`) and builds the BepInEx6 phone-target `RamusBridge.dll` against the pinned `phone-refs` release. It downloads `windwings.xapk` from `windwings-apk-1.3.118`, checks the expected SHA-256, reads the inner APK inventory, and checks the XAPK hash again. The source XAPK is not repacked, patched, committed, or included in the loader APK artifact.
+
+A pull-request build does not create a session by default: the PR head commit subject must explicitly contain `[runtime-probe-28-once]`. A `workflow_dispatch` run instead requires `run_map_probe=true`. If `RAMUS_API_KEY` is configured as a repository Actions secret, the authorized run may start one Ramus session, install the loader app and the original XAPK APK parts as separate packages, put the bridge in FusionCore's per-game `BepInEx/plugins/` directory, and make one bounded Map request. Without the key it stops before session creation: trial transport has no adb tunnel and cannot install the second package or call `/statics`. It does not retry sessions. Build and probe artifacts contain the loader SHA-256, bridge SHA-256, source XAPK SHA-256, tool/reference provenance, and a stage-specific report.
+
+The exact Map response is compared by `tools/compare_l2_a5a74747_28_runtime_map.py` against the 250 static rows / 742 scalar values in fallback ①. The comparator does not create values; missing or truncated responses remain `NOT_COMPARABLE`/`INCOMPLETE`, not zero-filled data. A successful map receipt is only step 1; second-device and same-build live-DPS receipts must remain separate.
+
 ---
 
 ## 4. API
