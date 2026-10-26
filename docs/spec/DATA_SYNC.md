@@ -3324,3 +3324,23 @@ cần stub thêm? Ranh giới giữ nguyên: model ≠ readback Unity ≠ render
   projection, Start→current uiCamera, transaction rollback, tag23 policy label — chỉ đọc được
   qua 30 tests của peer, chưa independent execution (peer cũng ghi `independent_execution_ack:
   false`). **L3 vẫn một phần**; ACK104-final + kết quả reproduction qua PR12.
+
+### 24.40 Đa digger (chủ dự án — lần 46): thêm 2 AI đào dữ liệu
+
+Chủ dự án tăng đội hình đào: peer hiện có (`ef6b75ef`) + **2 AI đào mới**. Kiểm ls-remote đầu
+vòng (lần 46): remote vẫn 3 nhánh (nhánh spec `20330d0e` `c9871cb73` · peer `ef6b75ef`
+`9f90c1acb` chưa đổi · `main` nguyên) — 2 digger mới **chưa push**. Quy ước áp cho MỌI digger
+từ nay:
+
+1. **Mỗi nhánh tip fetch riêng mỗi vòng** — không coi report tới liền kề là từ cùng nguồn.
+2. **Artifact chỉ nhận qua report có SHA nguồn** (nhánh + tool/input SHAs) — thiếu SHA thì
+   nhờ bổ sung trước khi kéo.
+3. **Đối chéo độc lập bắt buộc** trước khi ghi DATA_SYNC (counts tự đếm từ contract, không
+   chép tổng).
+4. **3 path shared** (`datas/PROVENANCE.md` · `boss_anim_events.csv` · `player_start_stats.json`)
+   — nhánh spec giữ; digger nào xóa path shared thì ghi nhận và KHÔNG theo.
+5. **Không merge chéo nhánh digger**; dữ liệu hợp luồng qua nhánh spec, mỗi artifact giữ
+   provenance nhánh nguồn.
+6. **ACK mỗi report = 1 comment PR12 riêng**, ghi rõ nhánh/nguồn; khi đánh số report va chạm
+   giữa các digger thì ghi kèm tiền tố nhánh (`Report <N> — <nhánh>`).
+7. Vai không đổi: digger đào sâu; spec = đối chéo + tài liệu + handoff, không tự đào thay.

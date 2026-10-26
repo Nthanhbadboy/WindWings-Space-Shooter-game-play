@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 46 — 26/10, chủ dự án thêm 2 AI đào dữ liệu):**
+> **§24.40**: quy ước đa digger — fetch từng tip riêng/vòng · artifact cần SHA nguồn · đối
+> chéo độc lập bắt buộc · 3 path shared giữ ở nhánh spec · không merge chéo · ACK per report
+> trên PR12 (tiền tố nhánh khi đụng số) · vai giữ nguyên (digger đào, spec đối chéo+docs).
+> ls-remote lần 46: 2 digger mới chưa push. Không kéo dữ liệu mới (datas/ = 66). verify
+> 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 45 — 26/10, "cập nhật" — report 104 final `81fed2233` + reproduction):**
 > **§24.39**: receipt CI **`40242708365 SUCCESS`** (1073 PASS/223,162 s/30 frame tests) — peer
 > fix 2 pitfalls hai-state (CameraScaler ghi current camera tree — clip H8 last-write thắng;
