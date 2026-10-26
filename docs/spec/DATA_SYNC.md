@@ -5295,6 +5295,34 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   close-out xong).
 - Datas giữ **160** (vòng mở-việc, không pull).
 
+### 24.98 Điều phối lần 107 — HANDOFF126 ĐÓNG (bounded dispatch) · H1 CLAIMED · followup-15 ACCEPTED
+
+- **ef HANDOFF126 — ĐÓNG** (`6425502933` @ scientific `01448eec4`; verify run
+  ✓ @ headSha; artifact pulled `f209ea3f…` 2685B khớp ✓): graph-builder
+  `0x6cf7b4` = **2 direct BLs / 0 RELA** — `6cef84` (set-controller/rebuild
+  wrapper, FDE `6cef64..6cefdc`) + `6cefe4` (rebuild, `6cefdc..6ceffc`);
+  N2 owner pins READ-ONLY từ `7e5abde5` (controller 1856/Boss-37004 · comp
+  493584 · GO 76852 · root 73241 · chain 364641→305729→305711). **Thi-hành
+  gốc có kiểm: 4 cases 70/8/8/66 instr** — set-caller full (1 sink + 2 virtual
+  + writes `controller+0x118=owner`/`+0x102=1`/`+0x103=0`) · early-return ·
+  rebuild wrapper · null-owner; PC checks reject graph-builder/`57112c`; totals
+  3 sink/4 virtual/2 direct/0 RELA. **= bounded native dispatch CONTRACT,
+  không phải dựng controller-1856** — các cạnh còn mở ghi đúng (full
+  graph-builder serialized-controller prereqs · heap · owner-instance join ·
+  scheduling/registration/dispatch · clip/clock · readback/render).
+- **a5 CLAIM H1** (`6425457933` — map→wave extract) — đang làm; H2/H3 chờ
+  claim tiếp.
+- **AI-4 followup-15** (`6425537423`, report 148 — **open-items reconciliation
+  lane đóng**: 56 items chép-verbatim bị đếm THỪA vì các report sau đã đóng
+  một phần (137 đóng item 136 · 136 đóng item 135 · 141 đổi slot 140 · 143
+  resolve keys 142 · 131 decode blobs 130) — 5 verdicts
+  CLOSED/RESTATED/ACTIONABLE/RUNTIME/NOTE, machine-checkable pointers,
+  không disasm mới): ACCEPTED — đúng việc dọn nhà sau close-out; kết quả sẽ
+  là registry chuẩn thay 56-item thô.
+- AI-3 120 addendum đang chạy (tip `cf09de6fd` — push chưa comment).
+- Datas giữ **160** (126 pulled ở commit này → **161**, needle sync commit
+  này).
+
 ### 24.87 Điều phối lần 96 — #136 HANDOFF ĐÓNG (rank API interpreter + 2 đính chính 134/135) · CLAIM 137 · AI-2 memo chưa tới
 
 - **#29-followup AI-4 — HANDOFF #136 `6422732465` @ `efceee587` — ĐÓNG** (runs

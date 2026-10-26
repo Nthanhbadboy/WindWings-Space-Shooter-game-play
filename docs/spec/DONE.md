@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 107 — 27/10, HANDOFF126 ĐÓNG (bounded dispatch) + H1 CLAIMED + followup-15):**
+> **§24.98**: ef126: 2 BL `6cef84`/`6cefe4` · 4 cases 70/8/8/66 instr ·
+> 3 sink/4 virtual/0 RELA trên N2-owner prepared state — **dispatch contract,
+> không dựng instance** · artifact `f209ea3f…` pin ✓ · H1 (a5) đang làm ·
+> followup-15 ACCEPTED (reconcile 56 items → registry chuẩn) · 120 đang ·
+> datas/ = **161**. verify 209/0/2.
+>
 > **Sửa lại (lần 106 — 27/10, MỞ VIỆC AI-2/AI-3 — GỠ GATE A2 + hàng đợi H):**
 > **§24.97**: raw-check spec: `Map_Get_Datas.asm.txt` 26.017 dòng 0-cap ⇒
 > **A2 GỠ GATE** · **H1** map→wave extract (a5) · **H2** B6-half
