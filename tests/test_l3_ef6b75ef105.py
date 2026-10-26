@@ -75,3 +75,14 @@ class PauseTextured105(unittest.TestCase):
         self.assertIn('NOT Unity readback or render',self.saved['scope']);self.assertIn('no compile/link/GPU execution',self.saved['textured']['shader_contract']['scope']);self.assertIn('not observed',self.saved['textured']['shader_contract']['scope'])
     def test_31_qualified_material_shader_and_null_texture_env(self):
         t=self.saved['textured'];m=t['material'];self.assertEqual(m['identity'],dict(serialized_file='data.unity3d/globalgamemanagers.assets',path_id=2));self.assertEqual(m['shader'],t['shader_contract']['shader']);envs=dict(m['properties']['m_SavedProperties']['m_TexEnvs']);self.assertEqual(envs['_MainTex']['m_Texture']['m_PathID'],0);self.assertEqual(envs['_AlphaTex']['m_Texture']['m_PathID'],0)
+    def test_32_barycentric_reconstruction_explicit_sequential_binary64(self):
+        from tools.verify.ui_composition import sequential_sum
+        self.assertEqual(sequential_sum([1e16,1.,-1e16]),0.)
+        mesh=self.saved['textured']['geometry']
+        for sample in self.tex['samples']:
+            p=texel_center_probe(mesh,self.tex,sample);expected=[]
+            for i in range(3):
+                value=0.
+                for j in range(3):value+=p['barycentric'][j]*mesh['vertices'][p['triangle'][j]][i]
+                expected.append(value)
+            self.assertEqual(p['local'],expected)

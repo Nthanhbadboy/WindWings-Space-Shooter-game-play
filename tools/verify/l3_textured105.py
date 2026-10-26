@@ -7,6 +7,7 @@ from tools.verify.l3_visual_surface import load,digest
 from tools.verify.l3_composition import merged_source
 from tools.verify.l3_composition_math import sprite_geometry
 from tools.verify.l3_layout_math import f32
+from tools.verify.ui_composition import sequential_sum
 from tools.verify.l3_pause105 import scenario
 RAW=ROOT/'reverse-engineering/raw/l3-textured105'
 F='data.unity3d/resources.assets'
@@ -37,7 +38,7 @@ def texel_center_probe(mesh,texture,sample):
     for tri in mesh['triangles']:
         bary=weights(uv,[mesh['uvs'][i] for i in tri])
         if min(bary)>=-1e-12:
-            local=[sum(bary[j]*mesh['vertices'][tri[j]][i] for j in range(3)) for i in range(3)]
+            local=[sequential_sum(bary[j]*mesh['vertices'][tri[j]][i] for j in range(3)) for i in range(3)]
             return dict(uv=uv,triangle=tri,barycentric=bary,local=local,rgba8=sample['rgba8'],sample_policy='Explicit mip0 texel center, decoded RGBA bytes/255. Not GPU bilinear/mip/sRGB readback')
     raise ValueError('texel center outside source triangles')
 

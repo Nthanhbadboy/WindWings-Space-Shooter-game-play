@@ -1107,3 +1107,9 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   source-key UV vs zero UV placeholder, actual texture orientation, premultiplied alpha/blend.
 - Batch bounded scope covered; NOT all AI-1/L3 complete. Custom registry/cross-component scheduling
   unresolved. Do not move into AI-2 geometry/gaps or AI-3 sim/transition/driven ownership.
+
+- Update khi chốt105: specb1985740/DATA_SYNC24.41/sticky49 đã ACK105-a5a74747
+  (source modeld446d47d5/head25ac3b46b, particle/transition/driven; CI ID còn pending theo spec).
+  Không còn trạng thái “chưa thấy digger khác” như lần kiểm đầu batch. Chưa independent audit
+  các artifacts đó ở nhánh ef6b75ef; không import/merge/sửa tool của họ. Claim mới6411110604
+  của a5a74747 là reachability/driven-coverage, giữ ngoài batch driver/texture105 này.

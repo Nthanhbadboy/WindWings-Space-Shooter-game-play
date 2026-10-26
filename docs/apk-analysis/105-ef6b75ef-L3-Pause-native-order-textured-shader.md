@@ -143,7 +143,7 @@ SHA256 input pins (artifact cũng kiểm từng pin; inherited chunk manifests k
 
 | Path | SHA256 |
 |---|---|
-|`tools/verify/l3_textured105.py`|`1ac4d25ab6cd22755ff79d2fb8f8748bfa795cdda12f6032c8f31f9e2af98eb2`|
+|`tools/verify/l3_textured105.py`|`c958e137efc1367a63bc30fec365f3cabfd380a049a184ff097c245d71c17a6b`|
 |`tools/verify/l3_pause105.py`|`33f60cee6b471b0d549aa0f6235a13f94c7c11c68efea98cbd78902e22ecfcbd`|
 |`tools/verify/l3_frame.py`|`5f85c803ec403fb39ca9a42c963998adfe43362a172120b65f675dceb03e9f25`|
 |`tools/verify/l3_layout_emulator.py`|`866ff56ff7939669614794a31fa16ccfe4afca15b3f21e37b4ac9af7d8b366b2`|
@@ -161,7 +161,7 @@ SHA256 input pins (artifact cũng kiểm từng pin; inherited chunk manifests k
 
 APK `f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e`; lib `9cb038e88709f38318d183d3616eed054b36c3186ead8f1c37246ece87393c99`; metadata `449a0698a1b71d0e4d04efafdb4e2fad97fd02ca8f8528715ad9638aa813ba69`.
 Atlas RGBA `94546174b10a687b9b9fe4fd34dc27092c33c63a4527a9d1c251469522ff2293`; cropped PNG `ed47cf756a2798f114f87d4709817dfc5f24914f3324999f5ac196141bb8a53b`.
-Artifact SHA256 `3db82d8da020cbd09f5f65bf056f29a932ac43a6d48399ae0de03f7b2cdf16fb`.
+Artifact SHA256 `128a014d057ffb7a1a8041802a1820b0855ccb8fdffb6f18f9b93435f91ca6c9`.
 
 ## 6. Peer status và ranh giới bàn giao
 
@@ -180,3 +180,21 @@ sampling/raster. Không nhận toàn miền AI-1 hoặc L3 đã xong, không chu
 Peer review cần tái tính collider size/offset, trace order/tailcall, renderer propagation,
 clip/Align commutation, zeroUV→source-render-key UV, texel orientation và premultiplied blend.
 Không tự ACK, không merge, không push main.
+
+### Cập nhật peer ngay trước receipt
+
+Spec tip **b198574077d1a4edb367157eed98111d8e5aa201**, DATA_SYNC24.41/sticky49: đã có
+**105-a5a74747** (particle/transition/driven), spec ACK6411130516, source modeld446d47d5/
+head25ac3b46b; CI ID còn pending theo spec. Đó là peer-reported contract audit, **không phải
+independent audit của tôi**. Không kéo/import tool/artifact đang làm của họ. Claim mới6411110604
+reachability/driven coverage không thuộc batch này. Snapshots/update49.json giữ nguồn và SHA;
+trạng thái “chưa thấy nhánh khác” phía trên là lần kiểm đầu batch, không phải trạng thái chốt.
+
+### Portable arithmetic audit
+
+Initial Verify40289718130 failed regression on Python3.12; local runner is3.11. Barycentric
+reconstruction dùng builtin sum có khác thuật toán giữa3.11/3.12 (compensated sums từ3.12).
+Đã thay bằng explicit sequential binary64 helper103; không gọi khác biệt này là engine mismatch.
+Thêm regression kiểm accumulation order; giá trị sample geometry trên3.11 không đổi, chỉ tool
+SHA pin đổi. Workflow failure giờ đưa bounded test-log tail vào check annotation để audit được.
+Final full local/CI receipt bên dưới supersede initial run, không lấy failed CI làm PASS.
