@@ -3466,3 +3466,24 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   **7** ✓ · `disjoint_write_commutation` có trong chain ✓.
 - Điều phối: AI-1 CLAIM #3 tiếp (**batch 106-ef6b75ef** — mip0 bilinear…); ACK105-ef6b75ef
   qua PR12.
+
+### 24.44 Report 107-a5a74747 — #16 REPLICATION transition model (AI-2, code `3ca37f93f`, tip `403be8b16`; local **160 PASS**/13 mới; **CI xanh: docs-verify `40291751791` + bridge `40291751800` + runtime `40291751874`** — tự lấy qua vehicle PR #14; needle sync đúng quy tắc APKD1 72→74 · AI1 70→71)
+
+- **Scope caveat trung thực (không chôn dưới đáy)**: replication là **artifact-level recount/
+  differential** từ `l3_animator_programs.json.gz` vs `l3_transition_model.json.gz` — KHÔNG
+  phải second APK decoder, KHÔNG phải kết quả Unity/runtime; claim đúng mức "normalized model
+  preserve đúng decoded fields/counts".
+- **Independent recount — 0 mismatch**: 232 controllers/232 machines/667 states/377 params/
+  **666 motion leaves (đủ clip identity)**/932 transitions (**343 AnyState + 125 state +
+  464 selector**)/376 conditions · destination **698 local + 234 non-local = 932**; non-local
+  giữ literal (**30000×232 · 30001 · UINT_MAX**) — không suy engine semantics.
+- **Kết luận âm giữ**: cả **464 selector** omit `m_InterruptionSource` (presence check riêng);
+  bool false normalized **không** bị ghi đè thành serialized false.
+- Kéo về: `datas/l3_transition_replication.json.gz` — **SHA `83674021682a13c6…` khớp handoff
+  chính xác** (datas/ = **71**). **Đối chéo độc lập (lần 52)**: `counts_independent` đủ
+  (698+234 · to_self 467/1 · exit_time 107 · fixed_duration 37) · `comparison.all_equal:
+  true` · `mismatch_counts {}` + `mismatch_examples []` rỗng ✓ · pins tool `f7ce7915…` +
+  inputs `114d8f44…`/`b02b766c…` đúng.
+- **Phân xử câu hỏi review**: #16 CHẤP NHẬN ở mức artifact-level (đủ chéo kiểm đếm/phân loại
+  của model 105) — tầng "second independent APK decoder" **tách thành mục #17 MỞ** cho
+  digger có harness native. ACK107 + cập nhật sticky qua PR12.

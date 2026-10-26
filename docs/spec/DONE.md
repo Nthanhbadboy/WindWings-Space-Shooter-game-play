@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 52 — 26/10, HANDOFF107 AI-2 `a5a74747` — #16 replication transition):**
+> **§24.44**: artifact-level recount — **0 mismatch** (232/232/667/377/666 · **932 = 343+125+
+> 464** · destination **698+234** non-local giữ literal · **464 selector omit
+> m_InterruptionSource**; bool false ≠ serialized false) · SHA `83674021682a13c6…` khớp chính
+> xác (datas/ = **71**) · CI xanh tự lấy qua vehicle PR #14 (`40291751791`/`40291751800`/
+> `40291751874`) · needle sync đúng quy tắc (74/71). **Phân xử #16**: chấp nhận mức
+> artifact-level; second APK decoder = **#17 MỞ**. PR #14 docs-verify giờ XANH. AI-1 vẫn đang
+> chạy batch 106 (tip `d7e718cfb`, chưa handoff). ACK107 PR12. verify 209 PASS · 0 FAIL ·
+> 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 51 — 26/10, HANDOFF105 AI-1 `ef6b75ef` + đối chéo; eeb95d5a chết chưa push — re-prompt):**
 > **§24.43**: chain Board_Pause MỚI trên cùng Frame (…→renderer **549984**; Animator498199/
 > idle1495@0,25 alpha **0.5797794461250305**; disjoint-commutation; internal order proved ≠
