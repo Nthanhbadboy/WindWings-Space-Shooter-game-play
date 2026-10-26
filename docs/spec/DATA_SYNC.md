@@ -5124,6 +5124,61 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   deliverable — không nhắc vòng này.
 - **Datas/ 151 + 1 pulled (143) = 152 (needle sync commit này).**
 
+### 24.94 Điều phối lần 103 — 144+145 ĐÓNG (khoá save khép: unknown 26→0) · R1 APPROVE-BOUNDED-123 · R2 SUPPORTED-118 · N2 ĐÓNG (Boss-37004) — 2 review mục tiêu hoàn thành
+
+- **AI-4 144 — ĐÓNG** (HANDOFF `6424417176` @ `cdee1365`; runs
+  `40379769517`/`40379769465`/`40379770026` ✓; suite 539; artifact pulled
+  `75974f5a…` 4956B khớp ✓): **184 store calls** (SetInt 67 · GetInt 58 ·
+  SetString 32 · GetString 25 · DeleteKey 2 · 51 tail) · phân loại **115
+  literal / 43 computed / 26 unknown** (role-per-register — **cận dưới**,
+  unknown = chưa đọc được ≠ không tồn tại) · 25 khoá literal · 11 tiền tố ·
+  defaults `FREE_VERSION`×22/`OFF`×1 · 6/6 setter cross vs 143 · 174→184 giải
+  thích (key-jump ×4 — 143 chỉ quét method có slot_ref).
+- **AI-4 145 — ĐÓNG: unknown 26→0** (HANDOFF `6424661521` @ `d7ec2bd8`, main
+  commit `a3610c9ef`; runs `40381510483`/`40381510510`/`40381510336` ✓; suite
+  567 (28 mới); artifact pulled `8759167e…` 3719B khớp ✓): census giữ 184 —
+  **literal 133 · computed 51 · unknown 0** · keys 25→28 · prefix 11→12.
+  2 cơ chế: return-of-callee `TimeFreeRewardPack.Key(int slot)` **19.187.948**
+  → `SLOT_FREE_CARDS_` ×8; **static-field ×18 — `stp`-pair là mấu chốt**:
+  `TIME_EVENT_ENDED`+`TIME_EVENT_OPEN` ghi bằng MỘT cặp `stp` (19.464.596) từ
+  `Board_EventSeasonPass..cctor` **19.462.112** — bảng static chỉ đọc `str` thì
+  còn 2 khoá trống (verifier xử lý `str`+`stp` +0/+8). followup-12
+  (`6424465381`) = chính 145 — ACCEPTED. not_decoded còn: index 43 computed +
+  giá trị runtime (MODEL_NOT_MEASURED).
+- **R1 HANDOFF report119 — VERDICT: APPROVE BOUNDED 123** (AI-3 `6424767705` @
+  `53222a51c`; 4 runs ✓ `40381341046`/`40381341200`/`40381352647`/
+  `40381352873`; artifact pulled `e782ffdd…` 9178B pin ✓; local 1552 PASS ·
+  20 R1 checks): **R1-01 + R1-02 tái suy lập ĐỘC LẬP từ RELA/raw gốc** —
+  R1-02 chain trọn: RELA 3.563.112 → ELF cell `a73c00a0…` kind5/index7763 →
+  metadata v31 def len4/offset211.611 → dataBase 120.712 → bytes `53746f70` =
+  **Stop** ✓ (CORRECTION123 của ef verified bằng Git bytes thật). Boundary
+  notes nonblocking (zero-loop manager+100 = A5 · FDE-ends exclusive).
+  **KHÔNG approve all-#27/heap/124/runtime** · **ef124 = addendum R1 KẾ TIẾP —
+  giao AI-3** (sau 119).
+- **R2 HANDOFF report125 — VERDICT: SUPPORTED_IN_VERIFIED_SCOPE** (ef
+  `6424830494` @ scientific `e2f4b0e45`; verify ✓; artifact pulled `0f1354ae…`
+  3713B pin ✓): **1587/1587 source pins, 0 SHA mismatch** · 252 shards =
+  251×250+65 = **62.815 rows** byte-equal (196B) · 61.864 nonnull/951 null ·
+  serialized_enabled 62.426 · catalog 2185 = **1897 scoped / 288 no-ref**
+  (1802+210−115 union) · 1250 Sprite rows/720 tuples · **0 mâu thuẫn số**;
+  3 precision notes (D3 atlas-membership · D1 inherited-pins scope · D2
+  class1 supplied-schema) — **producer-side wording, nonblocking** (AI-3 sửa
+  word ở commit sau); bounded gaps liệt kê đúng phép.
+- **N2 ĐÓNG (a5)** (`6424757483` @ `7e5abde`, sau prereq 154/155-fix
+  `b67dd5f` ✓ — nhắc-2 resolved): **controller 1856 ("Body 1") = prefab
+  Boss-37004** — Animator owner component **493584** · GO PPtr {0, **76852**} ·
+  transform root 305711/GO 73241 (154-record inventory + controller map độc lập
+  cùng thuận); boundary giữ: không claim graph-builder dựng instance này, không
+  libunity ✓. Receipt pulled `90770028…` 4782B pin ✓ — **kết quả cấp ef cho
+  bước native kế (nếu có)**.
+- **#27 trạng thái:** **123 = APPROVE-BOUNDED · 118 = SUPPORTED — cả 2 review
+  mục tiêu HOÀN THÀNH**; #27-full vẫn MỞ (serialized bootstrap · ef124-review
+  pending → AI-3 addendum; 124 chưa có review độc lập — theo dõi).
+- **N1 (review-122) VẪN CHƯA CLAIM** — nhắc lần 1 (a5 ưu tiên N2; N1 để ngỏ
+  cho a5 hoặc AI-4).
+- **Datas/ 152 + 5 pulled (144/145/R1-119/R2-125/N2) = 157 (needle sync commit
+  này).**
+
 ### 24.87 Điều phối lần 96 — #136 HANDOFF ĐÓNG (rank API interpreter + 2 đính chính 134/135) · CLAIM 137 · AI-2 memo chưa tới
 
 - **#29-followup AI-4 — HANDOFF #136 `6422732465` @ `efceee587` — ĐÓNG** (runs

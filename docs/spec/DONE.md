@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 103 — 27/10, 144+145 ĐÓNG (khoá save khép) + R1 APPROVE-123 + R2 SUPPORTED-118 + N2 ĐÓNG):**
+> **§24.94**: **144**: 184 calls · 115/43/26 cận dưới (runs `40379769517`/…465/
+> …026 ✓ · `75974f5a…`) · **145**: unknown 26→0 — `stp`-pair bẫy + Key(slot)
+> return-callee (runs `40381510483`/…510/…336 ✓ · `8759167e…`) · **R1-119
+> APPROVE BOUNDED 123** (R1-01/02 tái suy lập độc lập — chain Stop trọn · 4
+> runs ✓ · `e782ffdd…`; ef124 = addendum kế — giao AI-3) · **R2-125 SUPPORTED**
+> (1587/1587 pins 0 mismatch · 62.815 rows · 0 mâu thuẫn · `0f1354ae…`; 3 notes
+> nonblocking) · **N2 ĐÓNG**: controller 1856 = Boss-37004 (component 493584 ·
+> GO 76852 · `90770028…`) · 154/155-fix ✓ (nhắc-2 resolved) · N1 nhắc 1 ·
+> datas/ = **157**. verify 209/0/2.
+>
 > **Sửa lại (lần 102 — 27/10, 143 ĐÓNG (21 key) + CHIA VIỆC ef → AI-2 (N1/N2)):**
 > **§24.93**: **143**: 21 PlayerPrefs key GameDatas · 48 đọc-bl/42 ghi-tail-b
 > (bẫy tail-call) · đính chính 142 (root cause addend) · runs
