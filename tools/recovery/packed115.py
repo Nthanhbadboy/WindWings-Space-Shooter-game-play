@@ -3,8 +3,8 @@ import argparse,bisect,gzip,hashlib,io,json,struct,zipfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
-NAMES=['m_StreamedClip','m_DenseClip','m_ConstantClip','m_MuscleClip','AnimationClip','StreamedClip','DenseClip','UnityEngine.AnimationClip::get_length','UnityEngine.AnimationClip::SampleAnimation','UnityEngine.AnimationClip::SampleAnimation_Injected']
-RANGES=[(0x6ad7e4,0x6addac),(0x6c2000,0x6c4480),(0x6b0000,0x6b1300)]
+NAMES=['m_StreamedClip','m_DenseClip','m_ConstantClip','m_MuscleClip','AnimationClip','StreamedClip','DenseClip','m_CurveCount','m_DiscreteCurveCount','UnityEngine.AnimationClip::get_length','UnityEngine.AnimationClip::SampleAnimation','UnityEngine.AnimationClip::SampleAnimation_Injected']
+RANGES=[(0x6ad7e4,0x6addac),(0x6c2000,0x6c4480),(0x6b0000,0x6b1300),(0x6d0000,0x6e1000)]
 TARGETS={0x6ad7e4:'compiler_parent',0x6deeb8:'compiled_data_builder',0xb922a8:'compiled_data_accessor'}
 FOLLOW_ENTRIES=[0x6deeb8,0xb922a8,0x398600,0xb714c8,0xb76cf0]
 def sha(b):return hashlib.sha256(b).hexdigest()
@@ -113,6 +113,9 @@ def recover(path):
         try:pos=offset(address);assert offset(address+n-1)==pos+n-1
         except (StopIteration,AssertionError):return
         cells[address]=dict(va=address,file_offset=pos,hex=b[pos:pos+n].hex())
+    # Original type-record neighborhoods for exact string/target RELA backreferences.
+    string_relocations=[r for r in relas if r['addend'] in wanted]
+    for r in string_relocations:cell(r['address']-32,192)
     for w in windows:
         code=bytes.fromhex(w['hex']);pages={}
         for i in range(0,len(code)-3,4):
@@ -128,7 +131,7 @@ def recover(path):
             if op&0x3b000000==0x18000000:cell(pc+(signed((op>>5)&0x7ffff,19)<<2),16)
     selected_imports=[r for r in imports if any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in list(cells.values()))]
     selected=[r for r in relas if any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in windows+list(cells.values())) or r['addend'] in TARGETS]
-    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,sampler_candidates=sampler_candidates,strings=strings,references=refs,branch_references=branch_refs,windows=windows,cells=list(cells.values()),relocations=selected,imports=selected_imports,limits=['Adjacent ADRP/ADD and ADRP/LDR pairs are discovery candidates, not proven register dataflow.','Selected original byte spans only, not a whole library, engine bootstrap or interpolation equivalence.'])
+    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,string_relocations=string_relocations,function_extents=[v for k,v in sorted(unwind.items()) if 0x6d0000<=k<0x6e1000],sampler_candidates=sampler_candidates,strings=strings,references=refs,branch_references=branch_refs,windows=windows,cells=list(cells.values()),relocations=selected,imports=selected_imports,limits=['Adjacent ADRP/ADD and ADRP/LDR pairs are discovery candidates, not proven register dataflow.','Selected original byte spans only, not a whole library, engine bootstrap or interpolation equivalence.'])
 def main():
     p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);a=p.parse_args();r=recover(a.xapk);out=ROOT/'reverse-engineering/raw/packed115/probe.json.gz';out.parent.mkdir(parents=True,exist_ok=True);out.write_bytes(gzip.compress((json.dumps(r,sort_keys=True,separators=(',',':'))+'\n').encode(),mtime=0));print('saved',out,'strings',sum(len(s['occurrences']) for s in r['strings']),'refs',len(r['references']))
 if __name__=='__main__':main()
