@@ -20,7 +20,7 @@ ARRAY_NEW = 0x110d09c
 INIT_ARRAY = 0x205b07c
 REF_ADD = 0x1bd7e58
 INT_ADD = 0x1b94d0c
-SKIP = {'movi', 'fmov', 'ldp', 'strb', 'movk', 'cmp', 'cmn', 'tst', 'fcmp', 'ccmp', 'nop', 'sub', 'tbnz',
+SKIP = {'fmov', 'ldp', 'strb', 'movk', 'cmp', 'cmn', 'tst', 'fcmp', 'ccmp', 'nop', 'sub', 'tbnz',
         'tbz', 'cbz', 'cbnz', 'b.hi', 'b.hs', 'b.lo', 'b.ls', 'b.eq', 'b.ne', 'b.mi', 'b.pl',
         'b.ge', 'b.gt', 'b.le', 'b.lt'}
 
@@ -117,7 +117,7 @@ def decode_class(native, cls, layouts=None):
     while pc < len(insns):
         insn = insns[pc]
         pc += 1
-        op, args, rva = insn['mnemonic'], insn['op_str'], insn['rva']
+        op, args, rva = insn['mnemonic'], insn['op_str'].replace(']!', ']'), insn['rva']
         if op == 'strb':
             match = re.fullmatch(r'(\w+), \[(\w+)(?:, #(-?0x[0-9a-f]+|-?\d+))?\]', args)
             if match and ', [sp' not in args:
@@ -128,6 +128,13 @@ def decode_class(native, cls, layouts=None):
                     statics[int(off or '0', 0)] = value
                     continue
             continue
+        if op == 'movi':
+            match = re.fullmatch(r'v(\d+)\.2s, #(\d+)', args)
+            if match and int(match.group(2)) <= 255:
+                pair = struct.pack('<ii', int(match.group(2)), int(match.group(2))).hex()
+                put('d' + match.group(1), ('pool', 0, pair))
+                continue
+            raise ValueError(f'{cls}: unmodelled movi {args} @ {rva:#x}')
         if op in SKIP:
             continue
         if op == 'mov':
@@ -164,6 +171,8 @@ def decode_class(native, cls, layouts=None):
                     value = ('statics', source[1])
                 elif source[0] == 'object' and off == 0x10:
                     value = ('backing', source[1])
+                elif source[0] == 'object' and off == 0:
+                    value = ('self', source[1])
             put(dest, value)
         elif op in ('str', 'stur', 'stp'):
             if ', [sp' in args:
@@ -199,14 +208,15 @@ def decode_class(native, cls, layouts=None):
                         holder['static_rva'] = rva
                 elif target[0] == 'array' and off >= 0x20:
                     arrays[target[1]].setdefault('elements', {})[(off - 0x20) // 8] = value
-                elif target[0] == 'backing' and off == 0x20:
+                elif target[0] in ('backing', 'self_off') and off == 0x20:
                     if not isinstance(value, tuple):
                         raise ValueError(f'unexpected element {args} @ {rva:#x}')
                     objects[target[1]].setdefault('items', []).append(value)
         elif op == 'add':
             parts = [x.strip() for x in args.split(',')]
             left = regs.get(key(parts[1]))
-            put(parts[0], ('backing', left[1]) if isinstance(left, tuple) and left[0] == 'backing' else None)
+            tag = 'backing' if isinstance(left, tuple) and left[0] == 'backing' else 'self_off' if isinstance(left, tuple) and left[0] == 'self' else None
+            put(parts[0], (tag, left[1]) if tag else None)
         elif op == 'bl':
             target = int(args.lstrip('#'), 0)
             arg0, arg1 = regs.get(key('x0')), regs.get(key('x1'))
@@ -256,8 +266,9 @@ def decode_class(native, cls, layouts=None):
             if len(candidate) == arr['length']:
                 arr['values'] = candidate
                 break
-        if arr['values'] == [] and arr['length'] and not arr.get('elements'):
-            raise ValueError(f'{cls}: array without blob @ {arr["new_rva"]:#x}')
+        if arr['values'] == [] and arr['length'] and not arr.get('elements') and not arr.get('candidates'):
+            arr['values'] = None  # not decoded; never fabricated
+            arr['not_decoded'] = 'initialize-array blob not resolved'
 
     fields = layouts.get(cls, {})
     expanded = {}
