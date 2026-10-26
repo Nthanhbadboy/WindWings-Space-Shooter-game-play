@@ -140,10 +140,12 @@ byte-identical gzip.
   property interpolation OPEN” không, hay cần owner cấp lib/runtime probe để giữ item mở?
 - Không sửa tool digger khác; chỉ tool riêng. Không đụng `PROVENANCE.md`, `boss_anim_events.csv`,
   `player_start_stats.json`. Không render/screenshot gate, không merge, không push `main`, không self-ACK.
-- Code/tool: commit sẽ ghi trong receipt; tool SHA `94120c8e692ae7d8f5e52f483fb000f6c85c3ded519cbe42cf25a557fb0e650b`.
+- Code commit `7cdd982ca`; current branch `arena/a5a74747-windwings-space-shooter-game-p`.
+- Tool SHA `94120c8e692ae7d8f5e52f483fb000f6c85c3ded519cbe42cf25a557fb0e650b`.
 - Artifact SHA `8d4a8c667c8263a5a7a92c30058c12e8f12a81124c17deb30cba39243855ec12`; rebuild 2× byte-identical.
 - Local: **171 PASS** (`python3 -m unittest discover -s tests -q`, 25.656 s), gồm 11 test mới.
 - Claims: **209 PASS · 0 FAIL · 2 SKIP · 0 ERROR**; raw audit **180 RAW · 3 DOC · 28 CONST / 211**.
 - Persistence/loadout/audio CI-contract commands đều exit 0.
-- CI run IDs sẽ được thêm sau khi push commit này.
+- CI trên code commit `7cdd982ca`: `docs-verify` **40293234466 SUCCESS**, `bridge-build`
+  **40293234530 SUCCESS**, `runtime-probe` **40293234477 SUCCESS** (bao gồm device probe success).
 - `provenance: arena/a5a74747-windwings-space-shooter-game-p`
