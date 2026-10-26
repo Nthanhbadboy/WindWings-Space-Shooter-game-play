@@ -80,7 +80,7 @@ Feedback PR12 **6412200891**, raw `peer-review/l2-ef6b75ef108/`:
 
 **25 new tests PASS5.787s**: regeneration/pins,576unique paths,root histogram,first3/campaign250/243+7,zero-based indices,actual field stores,773vs0helper paths,allocationcensus715+1,existing715payloaddifferential,dynamiclength0vs7,invalidfixtureparams,consumer8anchors,boundaries.
 
-Full local/final scientific CI chỉ bổ sung sau khi quan sát kết quả, không gọi pending làPASS. Toolchain capstone5.0.3/unicorn2.1.4; deterministic gzip mtime0; không binary/media>5MB. Raw scientific receipts lưu `reverse-engineering/raw/l2-ef6b75ef108-verification/`.
+**Full local1190 PASS283.598s; final scientific Verify40298061301SUCCESS**, code **537e9024dfb9cd8eaac3fc9d6b2bf7fcafba40c2**. REST receipt đã assert head/conclusion;25targetedPASS5.787s. Local full trước final consumer audit đã dừng chủ động, không count làmPASS; chỉ final full được ghi nhận. Toolchain capstone5.0.3/unicorn2.1.4; deterministic gzip mtime0; không binary/media>5MB. Raw scientific receipts lưu `reverse-engineering/raw/l2-ef6b75ef108-verification/`.
 
 ## 7. Tool/input SHA pins
 
