@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 80 — 26/10, AUDIT TỔNG THỂ "được bao nhiêu %"):**
+> **§24.73** (đếm từ file): **16 hệ = 8 đủ/8 một phần/0 thiếu ≈ 76% weighted** ·
+> DQ 48 câu = 33✅/14⚠/1❌ (trọn 69% · có-partial 98%) · blocker còn 5/9 ·
+> **tasks 25/28 ĐÓNG (89%)** — còn #7/#8/#27 · catalog 2.197 sprites/2.885 rows/69
+> clips/797 màn · datas 104 (+4 subdir) · 71 reports. **Headline ≈ ¾ đường; đuôi
+> nặng = Arena/PvP + meta thưởng (⅓ khoảng cách); trần 100% giờ là static-complete
+> (lệnh 26/10).** Sửa regress board: hàng #28 bị revert do PATCH base stale — đã
+> trả về "ĐÓNG theo lệnh 26/10".
+>
 > **Sửa lại (lần 79 — 26/10, tồn đọng tổng + phân công lại: a5 nhận game-side writers):**
 > **§24.72**: tồn đọng = #27 native structural (ef 🔄 121) · **#27 game-side
 > writers/bootstrap C# — CHƯA AI LÀM → a5 nhận (static-only, dump.cs/RVA; quick-win:

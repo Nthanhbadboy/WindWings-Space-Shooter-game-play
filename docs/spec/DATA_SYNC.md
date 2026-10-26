@@ -4237,6 +4237,35 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - Supersede dòng cũ RECHECK "Map contents placeholders — chờ probe CI": #28 ĐÓNG theo
   lệnh 26/10 — giữ placeholders, không chờ probe nữa.
 
+### 24.73 AUDIT TỔNG THỂ (lần 80, 26/10) — "được bao nhiêu % rồi?" — chỉ đếm từ FILE
+
+- **Lớp 1 — 16 hệ MISSING_FOR_NEW_GAME (mục tiêu dựng lại):** đếm trọn: **8 đủ (50%) ·
+  8 một phần (50%) · 0 thiếu**. Weighted theo cột "thiếu gì" (ước lượng công khai):
+  1,0/1,0/0,95/0,95/0,8/0,95/1,0/0,95/0,7/0,85/0,7/0,5/0,7/0,25/0,25/0,65 →
+  **12,2/16 ≈ 76%**. Đuôi nặng nhất: Arena/PvP (0,25) · meta thưởng (0,25 — 0 giá trị
+  decode, 40 class chưa dịch) · save schema (0,5) · sprite→consumer join (0,65) ·
+  Boss pha (0,8) · 23 wing impl (0,7).
+- **Lớp 2 — DESIGN_QUESTIONS:** A–F **48 câu: 33 ✅ (69%) · 14 ⚠ (29%) · 1 ❌** — có
+  đáp án đủ-hoặc-một-phần **47/48 (98%)**, trọn **33/48 (69%)**. Blocker: **còn 5/9**
+  (file tự ghi: A5/A6 phụ thuộc, C4 vàng/giờ, A7 mật độ, B3 damage-curve).
+- **Lớp 3 — Chương trình đào #1–#28:** **25/28 ĐÓNG (89%)** — còn mở: #7 🔄 (AI-3),
+  #8 (hàng đợi sau #7), #27 🔄 (structural: ef native-lane + a5 game-side-lane).
+  #28 ✅ theo scope (lệnh 26/10).
+- **Lớp 4 — Tài nguyên/catalog:** sprites-index **2.197** (100% index/classified) ·
+  sprites.csv **2.885** · audio **69 clips** indexed + 15 rules · UI **797 màn /
+  55.584 layout** cataloged · 42 contact sheets · geometry/pivot/border ĐÓNG (62/72/75).
+  Gap duy nhất lớp này: **sprite→consumer join toàn cục** (prefab_joins 3.870 rows,
+  0 sprite) — đã là việc của #16/lane a5-AI-3.
+- **Lớp 5 — Kho evidence:** datas/ **104 file top-level (+4 subdir ~296 file)** ·
+  **71 report** docs/apk-analysis · DONE **79 khối** · 13/16 hệ có artifact `datas/`.
+- **KẾT LUẬN HEADLINE: ≈ ¾ đường — 76% weighted / 50% nếu chỉ đếm hệ trọn / 89% theo
+  task ledger.** Phần còn lại KHÔNG đều nhau: 2 hệ (Arena/PvP + meta thưởng) chiếm ~⅓
+  khoảng cách. **Trần 100% đã đổi định nghĩa từ 26/10:** các câu runtime (live-DPS,
+  audio-trigger, second-device) **tĩnh-chốt** — % sẽ kẹt ở mức "data-complete static"
+  trừ khi chủ dự án mở lại runtime. Việc nâng % kế tiếp (theo độ lớn): ① a5 dịch
+  Arena/PvP class → +hệ 14 ② meta thưởng decode → +hệ 15 ③ #7/#8 xong → +task 2 ④
+  save schema → row 12 ⑤ ef+a5 đóng #27 → task 89%→100%.
+
 ### 24.66 RE-CHECK 26/10 — mỏ runtime 23/10 (Mate 20 X) × static mới: r90 NÂNG static↔runtime verified
 
 - **Yêu cầu chủ dự án**: "thư mục runtime-probe… kiểm xem rút ra được gì". Spec rà toàn bộ
