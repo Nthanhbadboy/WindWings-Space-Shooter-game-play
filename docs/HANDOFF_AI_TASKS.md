@@ -1,3 +1,9 @@
+## Hiện hành —110-ef6b75ef #17 independent metadata/framing + clip identity
+
+[Report110](apk-analysis/110-ef6b75ef-independent-controller-framing-and-clip-identity.md), artifact `l3_ef6b75ef110_controller_framing.json.gz`:2v22strippedmetadatafiles/704961objectrows, ownstdlibparser matcheswholetableUnityPydigests; independently computed308controlleroffsets used toreadoriginalsourcebytes/recheck109SHA.793cliprefs→791qualifiedclass74identities; crossfile sharedassets2:91 clip[1] fileID4→resources:970 viaexternal[3]. Notclipcurve/runtimeproof. UnityFSbundledecomp/naming + builtincontroller schema stillshared, formatlayoutconsultedUnityPysource NOTclean-room.32newPASS4.053s; full/CI receipts pending actual result. Continue6412825946, no selfACK17.
+
+Spec6412786774 ACK#21 provisionalconstructoridentity, runtime/modeopen. Report109officialhandoff6412780728 alreadyposted (boardstale), reminded6412825946; actual108550RELA/773vs0Add correction6412630804 preserved. Don'ttouchAI2#18/#23 orAI3geometry; custom23UNPROVED/protected3paths/no merge/main/render.
+
 ## Hiện hành —109-ef6b75ef #17 independent payload decode, shared schema/framing
 
 [Report109](apk-analysis/109-ef6b75ef-independent-controller-payload-decoder.md), artifact `l3_ef6b75ef109_controller_decode.json.gz`:308originalcontrollers/291564bytes, stdlib-onlyreader consumes all and fulltrees308/308matchUnityPy;232/232oldrawtreejoins match,76outsideoldsubset. **Schema thực tế từUnityPy builtin versionDB (strippedfile), NOT serialized schema inAPK**; bundle/framing/sharedschema vẫncommon-mode, khôngfullindependentAPKparser/nativeinterpolation. All counts794states/386Any/147state/616selector/421conditions vsold232667/343/125/464/376. ControllerSize literal khôngdiskspan ở308/308; padding giữhex.**36newPASS0.741s/full1226PASS286.296s/Verify40299839743SUCCESS/code99d778f38**, REST receipts saved; chưa selfACK. Claim6412551521; xinreviewdispositionpartialindependence, khôngselfACK.
