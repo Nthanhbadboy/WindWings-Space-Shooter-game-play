@@ -34,7 +34,7 @@ def source_image():
 
 
 def replay(count=3,prefill=0xa5):
-    from unicorn import Uc,UC_ARCH_ARM64,UC_MODE_ARM,UC_HOOK_CODE,UC_HOOK_MEM_READ,UC_HOOK_MEM_WRITE
+    from unicorn import Uc,UC_ARCH_ARM64,UC_MODE_ARM,UC_HOOK_CODE,UC_HOOK_MEM_READ,UC_HOOK_MEM_WRITE,UC_MEM_READ
     from unicorn import arm64_const as reg
     if not 0<=count<=8:raise ValueError('declared bounded loop domain')
     original,relas,imports=source_image();u=Uc(UC_ARCH_ARM64,UC_MODE_ARM)
@@ -90,7 +90,7 @@ def replay(count=3,prefill=0xa5):
         if pc in (0x6d2974,0x5710b0,0x6d29c4):virtual.append(dict(pc=pc,target=x(8),manager=x(0),a1=x(1),a2=x(2),s0_bits=u.reg_read(reg.UC_ARM64_REG_S0)))
     def memory(cpu,access,a,n,value,_):
         synthetic=any(lo<=a and a+n<=hi for lo,hi in prepared)
-        if access==16:  # UC_MEM_READ
+        if access==UC_MEM_READ:
             if not synthetic and not all(a+i in allowed_original for i in range(n)):raise ValueError('uncaptured/unprepared native data read '+hex(a))
             if not synthetic:static_reads.add((a,n))
         else:

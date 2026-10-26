@@ -28,6 +28,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install pinned native review fixture dependency
+        run: pip install 'unicorn==2.1.4'
       - name: Check source selection and byte-backed artifact determinism
         run: |
           python3 -m tools.verify.geometry_8141386a_sources --check
@@ -68,10 +70,16 @@ jobs:
           if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-118.json.gz ]; then
             python3 -m tools.verify.geometry_8141386a_item_receipt --item 118 --check
           fi
+      - name: Check independent R1 ef123 review and original-byte evidence
+        run: |
+          python3 -m tools.verify.l3_geometry_8141386a_review_ef123 --check
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-119.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 119 --check
+          fi
       - name: Check immutable handed-off scientific snapshots (current needles checked separately)
         run: python3 -m tools.verify.geometry_8141386a_history --fetch
       - name: Geometry and support-boundary regression tests
-        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support tests.test_geometry_8141386a_atlas_binary tests.test_geometry_8141386a_atlas tests.test_geometry_8141386a_builtin_sources tests.test_geometry_8141386a_builtin tests.test_geometry_8141386a_gaps_sources tests.test_geometry_8141386a_gaps tests.test_geometry_8141386a_consumers_sources tests.test_geometry_8141386a_consumers -v
+        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support tests.test_geometry_8141386a_atlas_binary tests.test_geometry_8141386a_atlas tests.test_geometry_8141386a_builtin_sources tests.test_geometry_8141386a_builtin tests.test_geometry_8141386a_gaps_sources tests.test_geometry_8141386a_gaps tests.test_geometry_8141386a_consumers_sources tests.test_geometry_8141386a_consumers tests.test_geometry_8141386a_review_ef123_sources tests.test_geometry_8141386a_review_ef123 -v
       - name: Current needles and explicitly scoped historical support
         run: |
           set -euo pipefail
