@@ -43,7 +43,7 @@ Bộ đọc của 144 theo dõi thanh ghi **trong một method**: `adrp` → pag
 | # | Cơ chế | Bản ghi | Vị trí | Khoá / tiền tố | API |
 |---|---|---|---|---|---|
 | 1 | return của helper | 8 | 4 | `SLOT_FREE_CARDS_` (tiền tố) | `GetInt` 2 · `SetInt` 2 |
-| 2 | static field | 18 | 18 | `TIME_EVENT_STARTED` 6 · `TIME_EVENT_ENDED` 9 · `TIME_EVENT_OPEN` 3 | `GetString` 9 · `SetString` 9 |
+| 2 | static field | 18 | 18 | `TIME_EVENT_STARTED` 6 · `TIME_EVENT_ENDED` 9 · `TIME_EVENT_OPEN` 3 | `GetString` 11 · `SetString` 7 |
 
 Bốn vị trí gọi helper nằm trong `TimeFreeRewardPack.SetRewards` (rva 19186068, hai lời gọi: 19186252 `GetInt`, 19186340 `SetInt`), `GetRewards` (19186908 → 19187188 `GetInt`), `RandomCards` (19187772 → 19187916 `SetInt`) — và cả bốn có mặt ở **hai raw** `key-jump-535b0541` và `meta-rewards-535b0541`, nên 4 vị trí ⇒ 8 bản ghi.
 
