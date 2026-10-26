@@ -32,12 +32,17 @@ jobs:
         run: |
           python3 -m tools.verify.geometry_8141386a_sources --check
           python3 -m tools.verify.l3_geometry_8141386a --check
-      - name: Check immutable handed-off #5 snapshot (current needles checked separately)
+      - name: Check original-byte font tables and bounded all-text static fallback
         run: |
-          git fetch --depth=1 origin c86db3ee52b9dcf9108600e64717637a5ca59dd4
-          python3 -m tools.verify.geometry_8141386a_history
+          python3 -m tools.verify.geometry_8141386a_tmp_sources --check
+          python3 -m tools.verify.l3_geometry_8141386a_tmp --check
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-4.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 4 --check
+          fi
+      - name: Check immutable handed-off scientific snapshots (current needles checked separately)
+        run: python3 -m tools.verify.geometry_8141386a_history --fetch
       - name: Geometry and support-boundary regression tests
-        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_support -v
+        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support -v
       - name: Current needles and explicitly scoped historical support
         run: |
           set -euo pipefail
