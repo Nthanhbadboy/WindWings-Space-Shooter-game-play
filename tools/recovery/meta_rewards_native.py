@@ -82,8 +82,8 @@ def parse_dump(text):
     return rows
 
 
-def selected(name):
-    return any(name == f or name.startswith(f + '.') for f in FAMILIES)
+def selected(name, families=FAMILIES):
+    return any(name == f or name.startswith(f + '.') for f in families)
 
 
 def main():
@@ -92,7 +92,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--xapk', required=True)
     parser.add_argument('--output', default='reverse-engineering/raw/meta-rewards-535b0541/native.json.gz')
+    parser.add_argument('--extra-families', default='',
+                        help='comma list appended to FAMILIES (default set unchanged)')
+    parser.add_argument('--families-only', default='',
+                        help='replace FAMILIES entirely (keeps this raw minimal)')
+    parser.add_argument('--rodata', action='append', default=[],
+                        help='VA:LEN literal window to pin from read-only segments')
     args = parser.parse_args()
+    families = ([f for f in args.families_only.split(',') if f] or list(FAMILIES)) \
+        + [f for f in args.extra_families.split(',') if f]
     assert sha_file(args.xapk) == XAPK_SHA
     dump = gzip.decompress((ROOT / 'reverse-engineering/il2cpp/dump.cs.gz').read_bytes())
     rows = parse_dump(dump.decode())
@@ -123,6 +131,16 @@ def main():
             engine = capstone.Cs(capstone.CS_ARCH_ARM64, capstone.CS_MODE_ARM)
             relocs = parse_rela(so)
 
+            windows = []
+            for spec in args.rodata:
+                va_text, length_text = spec.split(':')
+                va = int(va_text, 0)
+                data = read_va(va, int(length_text, 0))
+                if data is None:
+                    raise ValueError('rodata window outside PT_LOAD: ' + spec)
+                windows.append(dict(va=va, length=len(data), hex=data.hex(),
+                                    sha256=hashlib.sha256(data).hexdigest()))
+
             def read_va(va, n):
                 for v, o, length in segments:
                     if v <= va and va + n <= v + length:
@@ -147,7 +165,7 @@ def main():
                 return text if text.isprintable() and text else None
 
             for row in rows:
-                if not selected(row['class_name']) or not row['offset']:
+                if not selected(row['class_name'], families) or not row['offset']:
                     continue
                 end = ends.get(row['offset'])
                 if end is None or end - row['offset'] > 262144:
@@ -230,7 +248,7 @@ def main():
     output = dict(schema=2, evidence='STATIC_ONLY_ORIGINAL_APK', xapk_sha256=XAPK_SHA,
                   libil2cpp_sha256=SO_SHA, dump_sha256=hashlib.sha256(dump).hexdigest(),
                   boundary='next distinct dump offset; no FDE, runtime, emulator, or device',
-                  families=list(FAMILIES), methods=records)
+                  families=families, rodata_windows=windows, methods=records)
     target = ROOT / args.output
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(gzip.compress(json.dumps(output, separators=(',', ':'), sort_keys=True).encode(), mtime=0))
