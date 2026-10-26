@@ -46,10 +46,17 @@ jobs:
           if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-6.json.gz ]; then
             python3 -m tools.verify.geometry_8141386a_item_receipt --item 6 --check
           fi
+      - name: Check exact standalone original builtin Mesh reference resolution
+        run: |
+          python3 -m tools.verify.geometry_8141386a_builtin_sources --check
+          python3 -m tools.verify.l3_geometry_8141386a_builtin --check
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-7.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 7 --check
+          fi
       - name: Check immutable handed-off scientific snapshots (current needles checked separately)
         run: python3 -m tools.verify.geometry_8141386a_history --fetch
       - name: Geometry and support-boundary regression tests
-        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support tests.test_geometry_8141386a_atlas_binary tests.test_geometry_8141386a_atlas -v
+        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support tests.test_geometry_8141386a_atlas_binary tests.test_geometry_8141386a_atlas tests.test_geometry_8141386a_builtin_sources tests.test_geometry_8141386a_builtin -v
       - name: Current needles and explicitly scoped historical support
         run: |
           set -euo pipefail
