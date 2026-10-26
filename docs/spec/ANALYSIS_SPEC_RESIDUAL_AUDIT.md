@@ -3,7 +3,7 @@
 **Ngày kiểm:** 2026-10-27 (Asia/Saigon).  
 **Snapshot trong repo:** branch `arena/a5a74747-windwings-space-shooter-game-p`, trước báo cáo này `HEAD=0376abe932e2d4b09b05efab4f74edd913656562`.  
 **Snapshot kiểm toán ban đầu:** paginated PR12 đến claim `6426579737`; lúc đó ACK mới nhất là vòng 113 (`6426353854`).
-**Status refresh:** đã đối chiếu ACK114 (`6426867942`) và D5-residual claim `6426986645`; xem §5–§6 bên dưới.
+**Status refresh:** đã đối chiếu ACK114 (`6426867942`), D5-residual claim `6426986645`, và user-lead claim `6427556449` / report 165; xem §5–§6 bên dưới.
 **Kết luận nhanh:** có thể viết báo cáo trạng thái trung thực; **chưa thể kết luận analysis/SPEC đã khép toàn bộ**. Các kết quả H1–H3 và D5 đều là kết quả bounded, không phải đóng các câu hỏi rộng hơn. Các trạng thái giữa central spec và snapshot trong working branch phải được phân biệt.
 
 ## 1. Phạm vi và giới hạn kiểm toán
@@ -72,7 +72,7 @@ Sau ACK114, ceiling trung tâm còn review-126→127 (AI-3), ef-M1, AI-4 follow-
 
 | Lane / item | Trạng thái cập nhật mới nhất đã kiểm | Việc còn lại |
 |---|---|---|
-| **D5-residual** | ACK114 vẫn để mở; claim mới `6426986645`. Follow-up report 164/receipt kiểm 126 CSV + 140 TypeTree JSONL; có hai records mã hóa numeric PPtr `0:2625`, nhưng source-file context/owner và reborn fields chưa bound. | Handoff bounded coverage; giữ owner/extra-life `NOT_BOUND`, không đo DPS/runtime. |
+| **D5-residual** | Claim `6426986645` / report 164 bounds PPtr/extra-life; user-lead claim `6427556449` / report 165 supports the previously published Health-tech route, while starter premium, initial extra-life stock, and player component owners remain `NOT_BOUND`. | Reuse reports 79–87, 109, 163–164; no coroutine/receiver repetition or runtime/native/FDE expansion. |
 | **#27 H4 / report 121** | Formal-close theo ACK114; 7/7 findings và G1 locator correction được xác nhận. | Không còn là blocker; chỉ mirror central changes vào branch/spec snapshot nếu cần. |
 | **#27 HANDOFF128** | Accepted bounded theo ACK114. | M1 là next candidate; không thuộc D5 và không review native/FDE ở đây. |
 | **AI-4 #29 reports 150–152** | Accepted theo ACK114 (lane-local numbering; khác file reports 150–152 trong repo #27-GS). | Queue tiếp theo là follow-up-20; các report này không được dùng để tự nâng toàn bộ Arena/PvP semantics. |

@@ -171,11 +171,11 @@ Nhánh bạn đi tiếp 3 commit (`7c7c9f064 → 6ababbd31`). Mình kéo **đún
 - Trạng thái trong raw được giữ nguyên chữ: `PROVISIONAL_STATIC_PARTIAL_SAVE_CONTRACT_NOT_FULL_SCHEMA`.
 
 **Sổ kiểm mới — trả lời câu \"dựa raw hay nói mồm\" bằng máy:** `docs/spec/RAW_AUDIT.md`
-(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **216 claim**:
+(sinh bằng `python3 tools/raw-audit.py`). Nó phân loại **217 claim**:
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **185** | hàm đo **mở file** raw ⇒ tái đo được |
+| **RAW** | **186** | hàm đo **mở file** raw ⇒ tái đo được |
 | **DOC** | **3** | chỉ đọc `docs/**` |
 | **CONST** | **28** | không mở file ⇒ \"đo một lần\" |
 

@@ -2299,7 +2299,7 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **185** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **RAW** | **186** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
 | **DOC** | **3** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
 | **CONST** | **28** | không mở file ⇒ **đo một lần** |
 
@@ -3481,3 +3481,10 @@ từ nay:
 - Two TypeTree records (`GP_Datas.player`, `GP_Tutorials.player`) encode numeric PPtr pair `0:2625`; the flat CSV set contains the GP_Datas edge. Class-split exports lack source-asset context, so do not assume both pointers share an owner. No target player owner row is exported. Numeric path ID 2625 also appears as a separate `Box_Rewards` own-row ID; it is not a cross-file PPtr join.
 - The exact four checked reborn field names occur in no scanned CSV headers or TypeTree keys. `GP_Datas` CSV and TypeTree row agree on identity and player PPtr but differ on `listActiveEnemies` (`[0]` vs `[]`); this is an export discrepancy, not runtime evidence. Player owner / extra-life serialization remain **NOT_BOUND**; absence is bounded to the pinned exports.
 - Report `docs/apk-analysis/164-a5-d5-residual-serialized-coverage.md`; receipt `datas/l3_a5_d5_residual_serialized_coverage.json`, SHA-256 `4eba6f5357a16877a37db847918c2488b10a4dd55469f7f3acfe2552bbb66b15`. Builder `tools/build_a5_d5_residual_serialized_coverage.py`; tests `tests/test_a5_d5_residual_serialized_coverage.py` (4 tests). No code-body, runtime, DPS, native/FDE, AI-1, or global-absence claim.
+
+### 24.56 Report 165 — user-lead paths: premium, extra life, Health, and player catalogue
+
+- Follow-up claim `6427556449`. Reuses 79–87 and reports 109/163/164; no coroutine/receiver inventory repeated. Existing static Health result is `StartHp=2500` at zero tech points, with `TechStatPoints(0)` identified as Health on Basic. This is the **Health-tech** route; `Board_Players` coin/gem buttons describe the separate ship-catalogue upgrade UI, not a `Player_Health` owner join.
+- The pinned `Data_Players` record has IDs 10001–10024 plus inactive 10999; do not infer a `Player_Attack_N` ↔ player-ID join from matching numbering. Reuse report 163's `N−1` class-to-array map and report 109's Board_Players power-display reader as distinct paths; neither creates a serialized combat owner. `Player_Controller` remains class identity/method-flow context only, with no target owner record in this export set.
+- The IAP catalogue has 71 consumables / 99 non-consumables and includes first-purchase/week/month/forever-named product IDs; separate published UI metadata names trial/day-trial/timer fields. This does not prove a first-launch 24-hour grant or user entitlement. Existing `Board_Reborn` API names free, energy, ad, gem, and premium paths, but no serialized starting stock is present; initial free-life count remains **NOT_BOUND**. These are bounded results, not whole-build absence.
+- Report `docs/apk-analysis/165-a5-d5-user-lead-premium-health-player-paths.md`; receipt `datas/l3_a5_d5_user_lead_crosswalk.json`, SHA-256 `bde75c018dfa079c9e9900bf6c0136a08e98a1418c5f09737d5c5f7858cc3868`. Builder `tools/build_a5_d5_user_lead_crosswalk.py`; focused tests `tests/test_a5_d5_user_lead_crosswalk.py` (4 tests). No runtime, DPS, native/FDE, AI-1, or global-absence claim.
