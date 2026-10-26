@@ -27,6 +27,7 @@
 | Tên field 12 delegate + 5 field `BossSpineEventHandler` | `interesting-classes.cs` (kéo 24/10) | claim **T2**, **T3** |
 | Tách route Boss 1 | Boss-39001 = `Boss_1_Animation` path `674445`; Boss-39002 = `Boss1_Director` path `582209`; shared Spine asset không nhập hai component | reports **141–143**; keep evidence separate |
 | Boss-39002 `gun3Static` call semantics | At each index, `GameObject.SetActive(false)`, then reload same index for `SetActive(true)`; slot literal `Stop` from separate AI-1 handoff; marker delivery/defeat-burst unresolved | report **154**; static-only, no runtime result |
+| N2 serialized owner for controller graph `Body 1` | Controller PPtr `0:1856` → Animator component `493584` / GameObject `0:76852`, hierarchy under `Boss-37004` | report **158**; no native graph-builder or `Boss_AttackPhases` field join claimed |
 | 8 tên entry boss 1 đọc thẳng từ prefab | `Boss1_Director.csv`: `Boss-39002`, **1** instance | claim **T1** |
 | Ma trận `*_Director` ↔ `*_AnimationEvents` | **18** / **18** / **15** trên 39 prefab `Boss-*` | claim **T4** |
 | **Ai đặt trigger `Animator`** | **7 call site `Animator.SetTrigger` / 5 method**, tất cả trong `Boss_AttackPhases` (`CallMixAnimation` · `OnGunDie` · 3 vòng `IEAttackRound*`) | `native-calls.json`, claim **W1** — **đừng** đi tìm lại |

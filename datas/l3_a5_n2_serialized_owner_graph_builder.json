@@ -1,0 +1,130 @@
+{
+  "schema": "l3-a5-n2-serialized-owner-graph-builder-v1",
+  "assignment_comment_id": 6424382601,
+  "claim_comment_id": 6424616237,
+  "branch": "arena/a5a74747-windwings-space-shooter-game-p",
+  "evidence_mode": "serialized_static_only",
+  "disposition": {
+    "status": "SERIALIZED_CONTROLLER_OWNER_IDENTIFIED / GRAPH_BUILDER_INVOCATION_LINK_UNPROVEN",
+    "summary": "Within the bounded serialized animation inventory, Animator component 493584 on GameObject PPtr (fileID 0, pathID 76852) references controller PPtr (fileID 0, pathID 1856), whose graph metadata names it Body 1 and assigns prefab root Boss-37004. The native graph-builder address-to-instance link, the Boss_AttackPhases field-to-instance join, runtime construction, and playback are not established."
+  },
+  "task_identifier_only": {
+    "graph_builder_range": "0x6cf7b4..0x6cff44",
+    "range_interpreted_or_inspected": false,
+    "native_implementation_consulted": false
+  },
+  "bounded_inventory": {
+    "enemy_clip_link_animator_records": 154,
+    "resolved_animator_records": 154,
+    "animators_referencing_controller_path_id_1856": 1,
+    "controller_graph_records": 52,
+    "controller_graph_records_for_path_id_1856": 1,
+    "uniqueness_scope": "only the pinned serialized animation inventories; no global non-use claim"
+  },
+  "serialized_owner": {
+    "controller": {
+      "path_id": 1856,
+      "name": "Body 1",
+      "prefab_roots": [
+        "Boss-37004"
+      ],
+      "parameter_names": [
+        "DrawBack",
+        "IdleAttack1",
+        "IdleAttack2",
+        "Attack1",
+        "Attack2",
+        "Appear"
+      ]
+    },
+    "animator_component": {
+      "export_category": "Animator",
+      "component_path_id": 493584,
+      "gameobject_ref": {
+        "m_FileID": 0,
+        "m_PathID": 76852
+      },
+      "controller_ref": {
+        "m_FileID": 0,
+        "m_PathID": 1856
+      },
+      "status_in_export": "resolved"
+    },
+    "hierarchy": {
+      "gameobject_path_id": 76852,
+      "transform_path_id": 364641,
+      "parent_chain_child_to_root": [
+        {
+          "transform_path_id": 364641,
+          "gameobject_path_id": 76852,
+          "father_transform_path_id": 305729
+        },
+        {
+          "transform_path_id": 305729,
+          "gameobject_path_id": 73259,
+          "father_transform_path_id": 305711
+        },
+        {
+          "transform_path_id": 305711,
+          "gameobject_path_id": 73241,
+          "father_transform_path_id": 0
+        }
+      ],
+      "root_gameobject_name": "Boss-37004",
+      "root_identity_source": "reverse-engineering/raw/typetrees/prefab-roots.csv"
+    },
+    "serialized_file_basename_resolved": false,
+    "pointers_are_local_file_id_zero": true
+  },
+  "unresolved_edges": {
+    "Boss_AttackPhases_animators_field_to_component_493584": false,
+    "graph_builder_range_to_controller_1856_instance": false,
+    "trigger_to_controller_transition_or_clip": false,
+    "controller_to_native_buffer_or_pose_output": false,
+    "runtime_graph_construction_or_playback_observed": false
+  },
+  "boundaries": {
+    "serialized_owner_identity_established": true,
+    "runtime_readback_or_parity_claimed": false,
+    "native_or_libunity_fde_lane_inspected": false,
+    "runtime_probe_or_emulator_used": false,
+    "ai1_raw_or_native_artifact_read_or_modified": false,
+    "live_dps": "MODEL_NOT_MEASURED"
+  },
+  "source_sha256": [
+    {
+      "path": "reverse-engineering/raw/animation-audit/enemy-clip-links.json.gz",
+      "bytes": 35496,
+      "sha256": "fe001faf73dc727974156cdcc37d60b1a59463c00b867f7ded35b0ed2a2576b4"
+    },
+    {
+      "path": "reverse-engineering/raw/animation-audit/controller-graphs.json.gz",
+      "bytes": 34709,
+      "sha256": "72b9cfad8bb7f9e2f0e390ecc6ea680ed2ad6198dd8ad3c83d152f7b76860ae7"
+    },
+    {
+      "path": "datas/animator_map.csv.gz",
+      "bytes": 53173,
+      "sha256": "52649d373f6bc6e95b812a00e02519f4d36eab7cc57a8904ff2dad05ab0efda3"
+    },
+    {
+      "path": "reverse-engineering/raw/typetrees/transform-tree.tsv.gz",
+      "bytes": 1792869,
+      "sha256": "30624c3e69a64559d0b790d48a6aa06db725edbcb9687e1457e72e7311c76ae2"
+    },
+    {
+      "path": "reverse-engineering/raw/typetrees/prefab-roots.csv",
+      "bytes": 57667,
+      "sha256": "cd997d3ebf5a6d3bc82131bce443b5541ab722045eb6e11b674627e9d96285a6"
+    }
+  ],
+  "context_only": {
+    "report_130": "docs/apk-analysis/130-a5a74747-game-side-buffer-writer-trace.md",
+    "receipt_130": "datas/l3_a5a74747_game_side_buffer_writer_trace.json.gz",
+    "used_context_fields": [
+      "Boss_AttackPhases serialized Animator field offset and SetTrigger method boundary",
+      "separate controller/clip inventory note and unresolved component-to-controller edge"
+    ],
+    "native_consumer_context_reused": false
+  }
+}
