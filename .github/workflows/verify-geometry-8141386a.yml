@@ -39,10 +39,17 @@ jobs:
           if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-4.json.gz ]; then
             python3 -m tools.verify.geometry_8141386a_item_receipt --item 4 --check
           fi
+      - name: Check byte-backed static atlas-map and local vertex-bounds replication
+        run: |
+          python3 -m tools.verify.geometry_8141386a_atlas_sources --check
+          python3 -m tools.verify.l3_geometry_8141386a_atlas --check
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-6.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 6 --check
+          fi
       - name: Check immutable handed-off scientific snapshots (current needles checked separately)
         run: python3 -m tools.verify.geometry_8141386a_history --fetch
       - name: Geometry and support-boundary regression tests
-        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support -v
+        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support tests.test_geometry_8141386a_atlas_binary tests.test_geometry_8141386a_atlas -v
       - name: Current needles and explicitly scoped historical support
         run: |
           set -euo pipefail
