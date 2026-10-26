@@ -1200,18 +1200,30 @@ def a5_d5_23oct_runtime_stats():
     runtime = d.get("observed_runtime", {})
     health = runtime.get("health", {})
     arrays = runtime.get("player_get_datas_arrays", {})
-    gp = runtime.get("endgame_gp_datas", {})
+    premium = runtime.get("premium_ui", {})
+    hierarchy = runtime.get("endgame_hierarchy", {})
+    inventory = d.get("capture_folder_inventory", {})
+    gp = runtime.get("gp_runtime_snapshots", [])
+    by_name = {item.get("source", "").rsplit("/", 1)[-1]: item for item in gp}
+    duplicate_groups = runtime.get("byte_identical_gp_snapshot_groups", [])
+    duplicate_count = max((len(group.get("files", [])) for group in duplicate_groups), default=0)
+    boss = by_name.get("boss_boss_gp.json", {}).get("fields", {})
+    text = premium.get("transcribed_visible_text", [])
     return (
-        health.get("hud_hp_screenshot_reading"),
+        health.get("hud_hp_visual_reading"),
         health.get("player_get_datas_start_hp"),
         arrays.get("StartMainCannonDamages_count"),
         arrays.get("StartMainCannonRate_count"),
-        gp.get("countReborn"),
-        gp.get("rebornNow"),
-        gp.get("maxCountReborn"),
-        int(bool(gp.get("isSummary"))),
-        sum(gp.get("listRebornUseItems", [])),
-        gp.get("pvpLife"),
+        inventory.get("file_count"),
+        len(gp),
+        duplicate_count,
+        len(premium.get("screenshots", [])),
+        int(any("FREE first revival" in line for line in text)),
+        int(any("24" in line.lower() and "hour" in line.lower() for line in text)),
+        int(bool(hierarchy.get("active"))),
+        int(bool(runtime.get("account_context", {}).get("fresh_account_or_first_launch_proven"))),
+        boss.get("maxCountReborn"),
+        boss.get("pvpLife"),
         int(bool(d.get("workflow_replayed"))),
     )
 
@@ -1260,9 +1272,9 @@ claim("MW6", "docs/apk-analysis/165-a5-d5-user-lead-premium-health-player-paths.
       "D5 user-lead crosswalk; Health route reuses prior static result; starter premium/lives and component ownership remain bounded NOT_BOUND")
 
 claim("MW7", "docs/apk-analysis/166-a5-d5-23oct-captured-runtime-crosswalk.md",
-      "`screenshot_running_stage1.png` visibly shows HUD HP **2500**",
-      (2500, 2500, 24, 24, 0, 0, -1, 1, 0, 3, 0), a5_d5_23oct_runtime_stats,
-      "Read-only 23-Oct capture receipt; Premium/initial lives and component owner NOT_MEASURED, cross-build only, no runtime lane replay")
+      "member of Premium FOREVER",
+      (2500, 2500, 24, 24, 84, 7, 4, 8, 1, 0, 1, 0, -1, 3, 0), a5_d5_23oct_runtime_stats,
+      "Full local 23-Oct capture inventory; Premium welcome/first-revival UI text observed, but 24h grant and starting allowance not measured; no owner/DPS or lane replay")
 
 
 # ── J. script animation (enemy + boss) ─────────────────────────────────
