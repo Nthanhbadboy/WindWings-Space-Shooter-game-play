@@ -54,4 +54,5 @@ def parse(prefix):
  externals=[]
  for _ in range(c.count()):externals.append(dict(empty=c.string(),guid=c.take(16).hex(),type=c.value('i'),path=c.string()))
  ref_types=[read_type(True) for _ in range(c.count())];user=c.string();end=c.pos
+ if end!=48+h['metadata_size']:raise FormatError('declared metadata_size does not match parsed end')
  return dict(header=h,unity_version=unity_version,target_platform=platform,embedded_type_tree=False,types=types,objects=objects,scripts=scripts,externals=externals,ref_types=ref_types,user_information=user,metadata_end=end,prefix_padding_hex=prefix[end:].hex())
