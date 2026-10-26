@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 105 — 27/10, 146 ĐÓNG + 147 CLOSE-OUT lane #29/#30 + N1 ĐÓNG):**
+> **§24.96**: **146** index-half biên (39 vị trí · sentinel 999 ×20 · runs
+> `40384427797`/…7532/…7720 ✓ · `d9ff7301…`) · **147 close-out**: 20/20 1:1 ·
+> 21/21 checks · 40 re-hash 0/0 · **56 open items** registry + đính chính 145
+> (174 thật; gap = key-jump 4 + meta-rewards 6) · runs `40385386009`/…132/…055
+> ✓ · `3b815fc9…` ⇒ **LANE #29/#30 KHÉP (127–147)** · **N1 ĐÓNG** (122 →
+> SUPERSEDED/CONFIRMED/UNVERIFIABLE — report 159 @`dc1c02a`) · D1/D2/D3
+> RESOLVED (producer118precision ADDITIVE) · R1-addendum120 đang (harness khớp
+> độc lập) · ef CONTINUE126 (owner pins read-only) · datas/ = **160**. verify
+> 209/0/2.
+>
 > **Sửa lại (lần 104 — 27/10, TÁI KIỂM TỒN ĐỔNG — bắt lỗ HANDOFF-135 + đối chiếu registry):**
 > **§24.95**: **HANDOFF 135 chưa từng đăng** — artifact tự phục vụ từ headSha
 > verified (`004898a2…` khớp PROGRESS ✓ · datas 158) · superseded-chưa-ghi:

@@ -5215,6 +5215,51 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   "đối chiếu độc lập" & "persistence"; runtime items vẫn trần.
 - **Datas/ 157 + 1 pulled (135) = 158 (needle sync commit này).**
 
+### 24.96 Điều phối lần 105 — 146 ĐÓNG (index-half, chứng minh biên) · 147 ĐÓNG — **CLOSE-OUT lane #29/#30 (127–147)** · N1 ĐÓNG (122: S/C/U) · D-notes RESOLVED · ef CONTINUE126
+
+- **AI-4 146 — ĐÓNG (followup-13 = nửa index)** (HANDOFF `6425055438` @
+  `963a4bb4c`; runs `40384427797`/`40384427532`/`40384427720` ✓; suite 590
+  (23 mới); artifact pulled `d9ff7301…` 4470B khớp ✓): 51 computed = **39 vị
+  trí** (12 nằm 2 raw) — band 12 · parameter 19 · helper 4 · static-field 3 ·
+  struct-field 1; dải shop `i+{100,200,300}` guard rva Arena 22.729.088/
+  22.728.800 · PVP 19.938.144/19.937.856; literal **999** ×20 = **sentinel
+  slot** (không phải quest id). **Đóng = chứng minh biên, KHÔNG liệt kê đủ:**
+  10/14 tiền tố index do caller/dữ liệu ⇒ cần serialized decode. *Cross 999×15/
+  22729088×8 ✓.*
+- **AI-4 147 — ĐÓNG: CLOSE-OUT GATE lane #29/#30** (followup-14
+  `6425076320` → HANDOFF `6425177648` @ `02a2ab130`; runs `40385386009`/
+  `40385386132`/`40385386055` ✓; suite 608 (18 mới); artifact pulled
+  `3b815fc9…` 10.669B khớp ✓; needle APKD1 92/AI1 125): **20 reports 127–146 ↔
+  20 artifacts 1:1 · 21/21 cross-checks PASS · 40 provenance re-hash 0 missing/
+  0 mismatch · mọi artifact STATIC_ONLY_ORIGINAL_APK · 127 giữ
+  MODEL_NOT_MEASURED**. **Đính chính 145:** theo rule 143 → **174** (không phải
+  170); gap tới 184 = key-jump 4 + **meta-rewards 6** (chưa được 145 đặt tên —
+  caller tự chạy lại rule; nếu nhận parameter-carried keys thì đổi luôn 143 =
+  followup riêng). **56 open items liệt kê trong artifact** ⇒ residual lane
+  giờ có registry chính thức (rewardValues/scales · medal-meaning nằm trong
+  đó). *Cross 127×11/146×10/56×81 ✓.* **LANE #29/#30: KHÉP.**
+- **a5 N1 — ĐÓNG** (HANDOFF `6425193160` @ `dc1c02a`; runs 2/3 xanh + 1 đang
+  chạy lúc kiểm — docs-only, local gate 266 OK): report **159** — **16
+  assertions 122**: **SUPERSEDED** (+0x10/+18/+70 virtual-service · synthetic
+  return attribution · old graph totals · no-direct-caller — có locator mới) ·
+  **CONFIRMED** (allocator/prepared-state boundaries · bounded output/
+  integration · selected path/count · no-runtime) · **UNVERIFIABLE** (raw pins/
+  recovery/test — text-only scope). Đúng cấu trúc N1 đề xuất lần 102; không
+  ACK #27-full ✓.
+- **AI-3 R1-addendum120 — PROGRESS** (`6425064744` @ `53222a51c`): ef124 review
+  đang chạy — **own guarded harness ĐỘC LẬP match 181/200/196/171/181/171 +
+  4 vptrs + allocator requests** (extra0x40/label7/tag41/relocated-base) ✓;
+  **D1/D2/D3 ACCEPTED + đã publish `producer118precision.json`/report120-note
+  ADDITIVE** (frozen 118 giữ nguyên) ⇒ **D-notes RESOLVED**; fresh libunity
+  FDE/64-slot read setup sẵn. Chờ HANDOFF 120.
+- **ef CONTINUE126** (`6425017706` @ tip `7f4f62c00`): graph-builder `6cf7b4`
+  linkage + caller prerequisites từ N2 owner (READ-ONLY pin: controller 1856 =
+  Boss-37004 · component 493584 · GO 76852 · root 73241) — bounded native
+  dispatch **chỉ khi captured bytes đủ**, còn lại exact missing-X. Đang làm.
+- **Registry update:** residual #29 = 56 items trong `147` (artifact là nguồn
+  chuẩn) — spec không giữ danh sách song song; các trần static không đổi.
+- **Datas/ 158 + 2 pulled (146/147) = 160 (needle sync commit này).**
+
 ### 24.87 Điều phối lần 96 — #136 HANDOFF ĐÓNG (rank API interpreter + 2 đính chính 134/135) · CLAIM 137 · AI-2 memo chưa tới
 
 - **#29-followup AI-4 — HANDOFF #136 `6422732465` @ `efceee587` — ĐÓNG** (runs
