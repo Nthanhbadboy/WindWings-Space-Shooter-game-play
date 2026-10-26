@@ -3933,3 +3933,35 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   = border [45,20,45,20] khớp a5; PPU offset56→100 · pivot [.5,.5] · cutsX = 5−45/100 =
   4,55 ✓*. 26 tiled rows reject-có-reason ✓. **Chờ handoff chính thức (#5-rep) rồi ACK.**
 - ef không lấy #4–8/#28 — ghi nhận; #4/#6/#7/#8 vẫn mở cho AI-3-mới sau #5-rep.
+
+### 24.62 Điều phối lần 69 — #28-fallback① + #25-bounded + #27-core ĐÓNG bounded · #26 CLAIM
+
+- **#28 fallback① a5** (code `bb22d6c599`, report 124, SHA `434fc2db2abf…` — handoff không
+  khai SHA, spec ghi từ pull): loader lane kiểm scoped — release chỉ có `windwings.xapk`
+  (không .apk/.apks tracked ở cả 2 peer tree) → **không tự lấy loader** (đúng boundary,
+  không global-absence) ✓. **STATIC_CROSSCHECK_NOT_RUNTIME**: 250 rows (243 IA + 7 inline)
+  crosscheck — **742 integer values, 0 mismatch** với runtime outer 250 (#19); 243+7=250
+  nhất quán độc lập với #21 (spec đối chéo 2 artifact) ✓; `arr=256&depth=2` = NOT_OBSERVED;
+  receipt 121 giữ nguyên. **Verdict: ĐÓNG bó scope fallback①; loader lane (chờ chủ dự án
+  cung cấp) + fallback②③ KHÔNG dùng — #28 vẫn MỞ phần đó.**
+- **#25 a5** (code `70adfa68d0`, report 125, SHA `6283991693cf…`): **74 methods từ pinned
+  persistence receipts: 0 direct `PlayerPrefs.Save()` edges** · direct B/BL scan RVA
+  `0x277cf6c` qua **314 raw ASM files (7.823.314 B, inventory SHA pinned): 0 hits** ·
+  `PlayerPreferences.SaveToDisk`: **3 callers + 1 `File.WriteAllBytes` edge** · migration
+  search 0 signals · `schema_version=1` là analysis-pack ≠ game save version. **Verdict:
+  ĐÓNG bounded slice (scoped non-observation có pins); #25 VẪN MỞ** (platform
+  durability/crash-atomicity/cloud/migration/runtime round-trip).
+- **#27 ef 114** (scientific `33cdc61a9`, Verify `40319106339`, full **1411 PASS**; SHA
+  `9e795a9f6041…` khớp ✓): chuỗi native interpolation **zero function hooks** — icall
+  389544 → callback 36e71c → evaluator 952608 → search/cache/segment/weighted/inverse ·
+  **FALSIFICATION: duration-floor bits `0x38d1b717` = 9.999999747378752e-05** *(spec decode
+  struct: khớp chính xác ✓)* — float32(0.00001) midpoint → cached **0.007249999791383743**
+  ≠ direct segment 0.5 ⇒ **KHÔNG universal ideal cubic** (hủy cách đọc cũ float64 sampler
+  = engine truth) · weighted quadratic 233 instr (0.5 vs unweighted 0.15625) · host ELF
+  math (atan2f/logf/exp/cosf) ≠ Android-libm ULP · **native producer 6c4480 + packer:
+  84 bytes/204 instructions, frame-header 8/key 20** (StreamedClip coefficients native!) ·
+  tiers tách rõ: ≠ ParticleSystem consumer, ≠ packed-clip indexing, ≠ Animator blending.
+  **Verdict: ĐÓNG bounded native-core; #27 MỞ** (packed-clip ownership/consumer/dense/
+  weighting/runtime).
+- **#26 CLAIM a5** (12:01, report 126) — đang làm; #4/#6/#7/#8 chờ AI-3 #5-rep.
+- datas/ 90→**93**.

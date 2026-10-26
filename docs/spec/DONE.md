@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 69 — 26/10, #28-fb① + #25-bounded + #27-core ĐÓNG bounded; #26 claim):**
+> **§24.62**: **#28-fb①** (124-a5): 250 rows · 742 values **0 mismatch** (243+7 nhất quán
+> #21 ✓) · loader scoped-absent (release chỉ xapk) · `arr=256&depth=2` NOT_OBSERVED — MỞ
+> phần loader/②③ · **#25** (125-a5): 0 PlayerPrefs.Save edges/74 methods · scan RVA
+> 0x277cf6c/314 ASM: 0 hits · SaveToDisk 3 callers + 1 WriteAllBytes — ĐÓNG bounded slice,
+> #25 MỞ · **#27** (114-ef, 1411 PASS): interpolation native zero-hooks · **falsification
+> `0x38d1b717`=9.9999997e-5** (spec decode ✓) → KHÔNG universal cubic · packer 84B/204
+> instr — ĐÓNG native-core, #27 MỞ. datas/ = **93**. verify 209 PASS · 0 FAIL · 2 SKIP.
+>
 > **Sửa lại (lần 68 — 26/10, góp ý AI-1 + duyệt support-view AI-3 + #27 claim + witness #5):**
 > **§24.61**: AI-1 — #27 (114) native interpolation DUYỆT (AnimationCurve→native; cubic
 > model ≠ proof) · góp ý #5-rep (invariants tách harness; model-agreement ≠ native proof)
