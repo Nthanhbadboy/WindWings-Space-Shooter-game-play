@@ -1,7 +1,7 @@
 """#8 supplied managed schemas, one bounded static-parser child/class, no game code.
 provenance: arena/8141386a-windwings-space-shooter-game-p
 Separate workflow step AFTER byte recovery frees its large file-metadata heap.
-850MiB child RSS /180s supervision; failures retained, never treated as decoded data.
+600MiB child RSS /180s supervision; failures retained, never treated as decoded data.
 """
 from __future__ import annotations
 import argparse
@@ -83,7 +83,7 @@ def recover(xapk):
                         lines=Path(f'/proc/{p.pid}/status').read_text().splitlines()
                         rss=next(int(l.split()[1]) for l in lines if l.startswith('VmRSS:'));peak=max(peak,rss)
                     except (OSError,StopIteration):pass
-                    if peak>850*1024:stop='CHILD_RSS_BUDGET_850MiB';p.kill()
+                    if peak>600*1024:stop='CHILD_RSS_BUDGET_600MiB';p.kill()
                     elif time.monotonic()-start>180:stop='CHILD_TIMEOUT_180s';p.kill()
                     if stop is not None:break
                     time.sleep(.2)
