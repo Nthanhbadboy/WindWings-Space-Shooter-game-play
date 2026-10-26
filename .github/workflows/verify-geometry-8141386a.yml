@@ -82,10 +82,14 @@ jobs:
           if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-120.json.gz ]; then
             python3 -m tools.verify.geometry_8141386a_item_receipt --item 120 --check
           fi
+      - name: Check H4 pinned text locators and actual selected Git Markdown bytes (not native proof)
+        run: |
+          python3 -m tools.verify.l3_geometry_8141386a_docs_sync_round2 --check --git --fetch
+          python3 -m tools.verify.geometry_8141386a_item_receipt --item 121 --check
       - name: Check immutable handed-off scientific snapshots (current needles checked separately)
         run: python3 -m tools.verify.geometry_8141386a_history --fetch
       - name: Geometry and support-boundary regression tests
-        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support tests.test_geometry_8141386a_atlas_binary tests.test_geometry_8141386a_atlas tests.test_geometry_8141386a_builtin_sources tests.test_geometry_8141386a_builtin tests.test_geometry_8141386a_gaps_sources tests.test_geometry_8141386a_gaps tests.test_geometry_8141386a_consumers_sources tests.test_geometry_8141386a_consumers tests.test_geometry_8141386a_review_ef123_sources tests.test_geometry_8141386a_review_ef123 tests.test_geometry_8141386a_review_ef124_sources tests.test_geometry_8141386a_review_ef124 -v
+        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support tests.test_geometry_8141386a_atlas_binary tests.test_geometry_8141386a_atlas tests.test_geometry_8141386a_builtin_sources tests.test_geometry_8141386a_builtin tests.test_geometry_8141386a_gaps_sources tests.test_geometry_8141386a_gaps tests.test_geometry_8141386a_consumers_sources tests.test_geometry_8141386a_consumers tests.test_geometry_8141386a_review_ef123_sources tests.test_geometry_8141386a_review_ef123 tests.test_geometry_8141386a_review_ef124_sources tests.test_geometry_8141386a_review_ef124 tests.test_geometry_8141386a_docs_sync_round2 -v
       - name: Current needles and explicitly scoped historical support
         run: |
           set -euo pipefail

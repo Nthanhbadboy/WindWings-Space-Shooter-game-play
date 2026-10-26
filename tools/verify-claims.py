@@ -3300,8 +3300,8 @@ claim("IAB2", "docs/spec/BALANCE.md",
       "Stage_Get_Datas.cctor: int[5] startBonusValues + float[4] levelDelta; 0x40666666 = 3.6 (KHÔNG phải 2.1)")
 
 claim("APKD1", "docs/spec/START_HERE.md",
-      "**125** `.md` · **107** `.csv`",
-      (125, 107), apk_doc_counts,
+      "**126** `.md` · **107** `.csv`",
+      (126, 107), apk_doc_counts,
       "đếm trực tiếp thư mục apk-analysis — thêm báo cáo mới là phải cập nhật dòng này")
 
 claim("IA8", "docs/spec/START_HERE.md",
@@ -3800,8 +3800,8 @@ def data_inventory():
 
 
 claim("AI1", "docs/spec/START_HERE.md",
-      '**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **138** bảng ScriptableObject · **42** contact sheet · **83** file `datas/`.',
-      (139, 142136, 142, 138, 42, 83), data_inventory,
+      '**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **138** bảng ScriptableObject · **42** contact sheet · **84** file `datas/`.',
+      (139, 142136, 142, 138, 42, 84), data_inventory,
       "current own worktree: asm, typetree, ScriptableObject, contact sheet, datas; not historical support counts")
 
 claim("AP1", "docs/spec/DATA_INTEGRITY.md",

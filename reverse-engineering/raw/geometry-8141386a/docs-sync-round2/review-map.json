@@ -1,0 +1,641 @@
+{
+  "schema": 1,
+  "item": 121,
+  "provenance": "arena/8141386a-windwings-space-shooter-game-p",
+  "verdict": "PARTIALLY_SYNCED_NOT_A_RECONCILED_IMPLEMENTATION_CONTRACT",
+  "classification_rule": "Human document-review decisions. Verifier checks exact pinned text, selectors, locators and stated arithmetic/classification coverage, not natural-language truth, original byte/native semantics or runtime.",
+  "cases": [
+    {
+      "id": "H4-01",
+      "title": "G2 consumer bound in log, still missing in implementation summaries",
+      "verdict": "DRIFT",
+      "priority": "P1",
+      "conclusion": "DATA_SYNC24.90 and report153 bind the Endgame array to a rank-index divisor and positive item22 quantity. MISSING2.2c and BALANCE6.10 still say no consumer/unknown threshold or HP-attack candidate. Board_Players UI consumer is also acknowledged in24.88, not combat damage.",
+      "recommendation": "Replace consumer-absence/purpose guesses in MISSING2.2c and BALANCE6.10 with separate Board_Players UI-power and Endgame divisor consumers. Retain B for unbound combat semantics; do not name item22 from the misspelled field.",
+      "citations": [
+        {
+          "source": "spec-MISSING_FOR_NEW_GAME.md",
+          "needle": "| `Board_Endgame.ctor` |",
+          "before": 0,
+          "after": 1
+        },
+        {
+          "source": "spec-MISSING_FOR_NEW_GAME.md",
+          "needle": "> allDeltaAtk` (float[24]",
+          "before": 1,
+          "after": 2
+        },
+        {
+          "source": "spec-BALANCE.md",
+          "needle": "| `Board_*` | 5 |",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "a5-report153.md",
+          "needle": "**Result: direct consumer bound",
+          "before": 0,
+          "after": 1
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "consumer TRỰC TIẾP —",
+          "before": 0,
+          "after": 5
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "**UI power only**;",
+          "before": 1,
+          "after": 3
+        }
+      ]
+    },
+    {
+      "id": "H4-02",
+      "title": "G4 corrected slot identity is Stop, not runtime delivery",
+      "verdict": "SYNCED",
+      "priority": "NONE",
+      "conclusion": "Report154 now separates the public ef123 literal identity from its own game-side source set; OPEN_ISSUES1b matches resolved-static Stop and unmeasured dispatch. Old coordination reminders are historical; the selected154/155 published text has corrected the unresolved-slot wording.",
+      "recommendation": "Preserve the static identity and delivery distinction; no new raw/native validation in H4.",
+      "citations": [
+        {
+          "source": "a5-report154.md",
+          "needle": "**Disposition:**",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "a5-report154.md",
+          "needle": "This resolves the compared string value, not runtime delivery.",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "spec-OPEN_ISSUES.md",
+          "needle": "| **Identity** (slot",
+          "before": 0,
+          "after": 3
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "**slot callback boss-39002 = literal \"Stop\"",
+          "before": 0,
+          "after": 2
+        }
+      ]
+    },
+    {
+      "id": "H4-03",
+      "title": "G4 false-then-true same-index calls, not stable receiver identity",
+      "verdict": "SYNCED",
+      "priority": "NONE",
+      "conclusion": "Report154 and DATA_SYNC24.90 preserve the three serialized PPtrs, SetActive(false) then reload+SetActive(true), same index but mutation-dependent receiver identity. Neither assigns defeat/burst delivery.",
+      "recommendation": "Do not translate the static pair into an observed active state or guaranteed identical receiver.",
+      "citations": [
+        {
+          "source": "a5-report154.md",
+          "needle": "The target is identified by matching",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "2 headSha): route split",
+          "before": 0,
+          "after": 6
+        }
+      ]
+    },
+    {
+      "id": "H4-04",
+      "title": "G5 contextual controller match plus independently supplied literal",
+      "verdict": "SYNCED",
+      "priority": "NONE",
+      "conclusion": "Report155 preserves Slider.onChange/SetTrigger static flow, externally supplied Stop identity, and name equality with FocusGameSpeed. DATA_SYNC and OPEN_ISSUES preserve no runtime transition/delivery. Context-only evidence is not the source of literal discovery.",
+      "recommendation": "If adding a short G5 summary, retain separate literal provenance and no Spine-route transfer.",
+      "citations": [
+        {
+          "source": "a5-report155.md",
+          "needle": "Combining that independent literal identity",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "a5-report155.md",
+          "needle": "The UI/controller evidence is not used to identify",
+          "before": 0,
+          "after": 1
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "**`Slider.onChange`** callback",
+          "before": 0,
+          "after": 3
+        },
+        {
+          "source": "spec-OPEN_ISSUES.md",
+          "needle": "| **Dispatch/runtime**",
+          "before": 0,
+          "after": 0
+        }
+      ]
+    },
+    {
+      "id": "H4-05",
+      "title": "G6 five captured blobs, three field binds, one dynamic site still NOT_BOUND",
+      "verdict": "SYNCED",
+      "priority": "NONE",
+      "conclusion": "Report156 and DATA_SYNC24.91 agree on five captured rows/49int32, three Player_Saved_Datas fields and two method-local arrays. Dynamic GetCostCraftPlayer ordinal1 remains NOT_BOUND and the generic fallback is not its replacement.",
+      "recommendation": "Keep captured-row coverage separate from the six ASM callsites and the unresolved 24-selected-handle family.",
+      "citations": [
+        {
+          "source": "a5-report156.md",
+          "needle": "This census is limited to the two tracked",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "a5-report156.md",
+          "needle": "**Status: `NOT_BOUND`.**",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "inventory-first 2 `array-blobs.json.gz`",
+          "before": 0,
+          "after": 4
+        }
+      ]
+    },
+    {
+      "id": "H4-06",
+      "title": "S1 route split fixed at top, sole-driver assertion persists",
+      "verdict": "PARTIALLY_SYNCED",
+      "priority": "P1",
+      "conclusion": "ANIMATION_SCRIPT opening and README now distinguish Boss39001/Boss_1_Animation from Boss39002/Boss1_Director. The same normative file54 still calls Boss1_Director the sole animation-calling class, inconsistent with report157 completion actions.",
+      "recommendation": "Scope section2/table to Boss39002 and replace sole-driver wording with the separate Boss39001 completion-to-BossWork route. Shared asset does not merge drivers.",
+      "citations": [
+        {
+          "source": "spec-ANIMATION_SCRIPT.md",
+          "needle": "**Hai route driver RIÊNG BIỆT**",
+          "before": 0,
+          "after": 4
+        },
+        {
+          "source": "spec-ANIMATION_SCRIPT.md",
+          "needle": "`Boss1_Director` là lớp duy nhất",
+          "before": 0,
+          "after": 1
+        },
+        {
+          "source": "a5-report157.md",
+          "needle": "A separate route exists in the same managed type:",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "a5-report157.md",
+          "needle": "| `stateAppear` (`Xuathien`)",
+          "before": 0,
+          "after": 2
+        },
+        {
+          "source": "spec-README.md",
+          "needle": "| **`ANIMATION_SCRIPT.md`**",
+          "before": 0,
+          "after": 0
+        }
+      ]
+    },
+    {
+      "id": "H4-07",
+      "title": "G3 completion path versus serialized burstEvent field",
+      "verdict": "DRIFT",
+      "priority": "P1",
+      "conclusion": "DATA_SYNC24.92 correctly records the Boss39001 Event callback RET and no burstEvent read in the separate completion path. DESIGN_READINESS update4 still draws Baydi/Dead to defeat+70/burst+78 together. Serialized presence/target of burstEvent is not a demonstrated completion-branch invocation.",
+      "recommendation": "Rewrite the readiness arrow: Event callback RET; Complete->BossWork Baydi/Dead reads defeatEvent+70 only. Retain burstEvent+78 as serialized field/target with no marker/delivery branch proven.",
+      "citations": [
+        {
+          "source": "spec-DESIGN_READINESS.md",
+          "needle": "`stateRunAway/Baydi` + `stateDie/Dead`",
+          "before": 1,
+          "after": 4
+        },
+        {
+          "source": "a5-report157.md",
+          "needle": "| `stateRunAway` (`Baydi`) or `stateDie`",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "a5-report157.md",
+          "needle": "That event callback is exactly one `RET`",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "**không đọc",
+          "before": 1,
+          "after": 3
+        }
+      ]
+    },
+    {
+      "id": "H4-08",
+      "title": "S2 handler-slot certainty survived the summary repair",
+      "verdict": "DRIFT",
+      "priority": "P1",
+      "conclusion": "ANIMATION_SCRIPT190-193 still declares both BossSpineEventHandler slots certainly drawn from Stop/Banplasma at levelA and interprets the timing as a toggle. Report157 has no joined handler instance; report154 only identifies Boss39002 comparison Stop. This does not bind either generic-handler field or a marker occurrence.",
+      "recommendation": "Remove certainty/field assignments and gameplay toggle inference. State only asset marker names; Boss39002 comparison literal Stop is a separate proven identity. Boss39001 handler fields, marker delivery and effects stay NOT_BOUND.",
+      "citations": [
+        {
+          "source": "spec-ANIMATION_SCRIPT.md",
+          "needle": "⇒ Với rig boss 1, **chỉ tồn tại 2 tên**",
+          "before": 0,
+          "after": 3
+        },
+        {
+          "source": "spec-ANIMATION_SCRIPT.md",
+          "needle": "> **Chưa biết lớp này có ai dùng hay không:**",
+          "before": 0,
+          "after": 3
+        },
+        {
+          "source": "a5-report157.md",
+          "needle": "**The event-name-slot join remains unresolved.**",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "a5-report154.md",
+          "needle": "This resolves the compared string value, not runtime delivery.",
+          "before": 0,
+          "after": 0
+        }
+      ]
+    },
+    {
+      "id": "H4-09",
+      "title": "N2 serialized owner is bounded identity, not native instance construction",
+      "verdict": "SYNCED",
+      "priority": "NONE",
+      "conclusion": "Report158 and DATA_SYNC24.94 agree on controller1856 Body1/Boss37004, Animator493584, GO76852, root73241. Normalized fileID0 does not supply a serialized-file basename or a graph-builder-to-instance invocation edge.",
+      "recommendation": "Keep the owner chain as published serialized evidence; no guessed filename, runtime owner or graph-builder execution.",
+      "citations": [
+        {
+          "source": "a5-report158.md",
+          "needle": "The cross-check is unique",
+          "before": 0,
+          "after": 2
+        },
+        {
+          "source": "a5-report158.md",
+          "needle": "The normalized PPtrs record",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "Boss-37004** — Animator owner",
+          "before": 1,
+          "after": 4
+        }
+      ]
+    },
+    {
+      "id": "H4-10",
+      "title": "N1 public-document review is not raw reproduction",
+      "verdict": "SYNCED",
+      "priority": "NONE",
+      "conclusion": "Report159 classifies16 assertions:9CONFIRMED/6SUPERSEDED/1UNVERIFIABLE. DATA_SYNC24.96 preserves real-virtual supersession, allocator/prepared-state boundaries and text-only unverifiable raw/test claims, without #27-full ACK.",
+      "recommendation": "Do not reinterpret CONFIRMED as byte/native replay by the N1 reviewer.",
+      "citations": [
+        {
+          "source": "a5-report159.md",
+          "needle": "This review compares the material assertions",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "a5-report159.md",
+          "needle": "| 15 | Report 122",
+          "before": 0,
+          "after": 1
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "assertions 122**:",
+          "before": 0,
+          "after": 6
+        }
+      ]
+    },
+    {
+      "id": "H4-11",
+      "title": "135 reader absence superseded by136 statics-x0 reader",
+      "verdict": "SYNCED",
+      "priority": "NONE",
+      "conclusion": "The historical135 no-reader statement is explicitly corrected by DATA_SYNC24.87 and reiterated24.95; report136 supplies the GetRankNumber reader. It is not a currently missing reader.",
+      "recommendation": "Preserve chronology and the explicit supersession; do not rewrite frozen135 evidence or revive the old blocker.",
+      "citations": [
+        {
+          "source": "ai4-report136.md",
+          "needle": "| Ai đọc `MaxRankStars`?",
+          "before": 0,
+          "after": 1
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "⇒ **MaxRankStars CÓ method đọc**",
+          "before": 0,
+          "after": 2
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "135 \"method đọc MaxRankStars",
+          "before": 0,
+          "after": 2
+        }
+      ]
+    },
+    {
+      "id": "H4-12",
+      "title": "136/137 decimal display superseded by138 ToRoman target",
+      "verdict": "SYNCED",
+      "priority": "NONE",
+      "conclusion": "DATA_SYNC24.89 explicitly replaces Int32.ToString/Archon4 display prose with the MyLibrary.ToRoman target. Like report138, it leaves actual glyph implementation bounded-missing. This review does not validate Roman output through execution.",
+      "recommendation": "Retain arithmetic cells-level separately from string conversion identity and unmeasured glyph implementation.",
+      "citations": [
+        {
+          "source": "ai4-report136.md",
+          "needle": "| `GetRankNumber` trả gì?",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "ai4-report137.md",
+          "needle": "| Hiển thị thực tế?",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "ai4-report138.md",
+          "needle": "Bản thân **bảng ký tự**",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "**ĐÍNH CHÍNH 136/137 (áp):**",
+          "before": 0,
+          "after": 4
+        }
+      ]
+    },
+    {
+      "id": "H4-13",
+      "title": "138 Arena gate field owner corrected by139",
+      "verdict": "SYNCED",
+      "priority": "NONE",
+      "conclusion": "DATA_SYNC24.89 matches report139: remote gate+1C belongs to ArenaConfig.IsOpen, not ArenaManager.IsOpen+0. No remote-served value is measured.",
+      "recommendation": "Keep ArenaConfig remote flag distinct from ArenaManager defaults/copy.",
+      "citations": [
+        {
+          "source": "ai4-report139.md",
+          "needle": "138 ghi cổng Arena là `ArenaManager` `+0x1C bool`.",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "**ĐÍNH CHÍNH 138:**",
+          "before": 0,
+          "after": 4
+        }
+      ]
+    },
+    {
+      "id": "H4-14",
+      "title": "140 slot and branch polarity corrected by141",
+      "verdict": "SYNCED",
+      "priority": "NONE",
+      "conclusion": "DATA_SYNC24.91 matches report141: gate uses GameConfig slot2ADBB88/44940168, true isEmpty takes reload, false reaches version comparison. The stale140 slot2ADB8E0 and opposite reading are explicitly superseded.",
+      "recommendation": "Keep slot/class and branch direction together; no configured-game runtime state inferred.",
+      "citations": [
+        {
+          "source": "ai4-report140.md",
+          "needle": "22810736  ldrb w9",
+          "before": 0,
+          "after": 1
+        },
+        {
+          "source": "ai4-report141.md",
+          "needle": "| Slot của cổng là gì?",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "ai4-report141.md",
+          "needle": "| `isEmpty == true` thì sao?",
+          "before": 0,
+          "after": 1
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "**slot cổng thật",
+          "before": 0,
+          "after": 7
+        }
+      ]
+    },
+    {
+      "id": "H4-15",
+      "title": "141 unknown Application cell resolved by142, distinct from GameConfig",
+      "verdict": "SYNCED",
+      "priority": "NONE",
+      "conclusion": "DATA_SYNC24.92 matches report142 on2ADB8E0/44939488 as UnityEngine.Application klass cell. This is distinct from the GameConfig gate44940168; no class-static absence is inferred from the index omission.",
+      "recommendation": "Do not merge the two slots/classes or treat missing slot_refs as missing code.",
+      "citations": [
+        {
+          "source": "ai4-report142.md",
+          "needle": "| Slot `0x2ADB8E0` là gì?",
+          "before": 0,
+          "after": 1
+        },
+        {
+          "source": "ai4-report147.md",
+          "needle": "**c) Một slot cho một class.**",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "**slot `0x2ADB8E0` (44939488)",
+          "before": 0,
+          "after": 4
+        }
+      ]
+    },
+    {
+      "id": "H4-16",
+      "title": "142 missing currency keys corrected by143 addend lookup",
+      "verdict": "SYNCED",
+      "priority": "NONE",
+      "conclusion": "DATA_SYNC24.93 matches report143: GCoins/Gems/StarCount/WingCoins and21GameDatas keys/48reads+42tail writes. The key-absence premise in142 is explicitly corrected, not new missing data.",
+      "recommendation": "Separate21GameDatas key inventory from later PlayerPreferences census and runtime stored values.",
+      "citations": [
+        {
+          "source": "ai4-report143.md",
+          "needle": "| Khoá của coins?",
+          "before": 0,
+          "after": 3
+        },
+        {
+          "source": "ai4-report143.md",
+          "needle": "142 ghi trong `not_decoded`:",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "**khoá save `GameDatas` = 21",
+          "before": 0,
+          "after": 6
+        }
+      ]
+    },
+    {
+      "id": "H4-17",
+      "title": "145 count attribution corrected by147 and accepted in24.96",
+      "verdict": "SYNCED",
+      "priority": "NONE",
+      "conclusion": "The published147 correction and DATA_SYNC24.96 agree: rule143 yields174, not170, with gap184-174=10=4key-jump+6meta-rewards. Old145 text remains historical; H4 has not re-run the store scan.",
+      "recommendation": "Use the explicit later correction as current count attribution; do not silently regenerate frozen145/147 artifacts or conflate51 records with39sites.",
+      "citations": [
+        {
+          "source": "ai4-report145.md",
+          "needle": "| Phân loại sau khi đọc lại?",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "ai4-report147.md",
+          "needle": "Sửa lại: **10 = 4",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "**Đính chính 145:**",
+          "before": 0,
+          "after": 4
+        }
+      ]
+    },
+    {
+      "id": "H4-18",
+      "title": "Stop identity correct, normative encoding explanation lags R1 correction",
+      "verdict": "PARTIALLY_SYNCED",
+      "priority": "P2",
+      "conclusion": "ANIMATION_SCRIPT169-176 correctly retains static Stop and unmeasured invocation, but still describes kind5 addend as literal address without the encoded-usage step. Corrected ef123 and DATA_SYNC24.91 say the addend cell holds a0003ca7/kind5/index7763, not rawUTF8. No literal-value reversal is needed.",
+      "recommendation": "Clarify RELA->encoded usage cell->metadata literal payload->Stop, retaining the same identity and dispatch boundary. Do not globally reinterpret other literal records from this one slot.",
+      "citations": [
+        {
+          "source": "spec-ANIMATION_SCRIPT.md",
+          "needle": "theo địa chỉ, kind-5 addend",
+          "before": 3,
+          "after": 3
+        },
+        {
+          "source": "ef-report123.md",
+          "needle": "The RELA addend `0x2be5cb8` itself contains",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "**encoded metadata usage `0xa0003ca7`**",
+          "before": 1,
+          "after": 3
+        }
+      ]
+    },
+    {
+      "id": "H4-19",
+      "title": "Broken internal locators: slot/vtable correction points to rank section24.87",
+      "verdict": "DRIFT",
+      "priority": "P2",
+      "conclusion": "DATA_SYNC24.90 points resolved Stop to24.87 and24.91 says correction applied at24.87(b); DONE repeats24.87(b). Header24.87 is rank API, while slot/vtable subsection(b) is24.88. The separate MaxRankStars link to24.87 is correct.",
+      "recommendation": "Change only the two wrong DATA_SYNC references and DONE recap to24.88 (b where relevant). Preserve valid rank-API24.87 references. Header24.87 is physically appended after24.98; resolve by heading, not file order.",
+      "citations": [
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "họ (spec-side đã ghi RESOLVED ở §24.87",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "artifact/handoff): chấp nhận cả 2 điểm",
+          "before": 0,
+          "after": 2
+        },
+        {
+          "source": "spec-DONE.md",
+          "needle": "scientific không đổi; spec siêu thu §24.87(b)",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "### 24.87 Điều phối",
+          "before": 0,
+          "after": 2
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "### 24.88 Điều phối",
+          "before": 0,
+          "after": 1
+        }
+      ]
+    },
+    {
+      "id": "H4-20",
+      "title": "145 residual says43 computed although same paragraph and146 say51",
+      "verdict": "PARTIALLY_SYNCED",
+      "priority": "P2",
+      "conclusion": "DATA_SYNC24.94 correctly reports133/51/0 but leaves an index43computed residual label from144. DATA_SYNC24.96/report146 correctly use51records=39sites. This is a historical breadcrumb inconsistency, not a new numeric/source failure or currently unknown26 calls.",
+      "recommendation": "Annotate the old residual as superseded51computed; keep51records versus39unique sites and caller/serialized bounds distinct. Runtime values remain unmeasured.",
+      "citations": [
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "**literal 133 · computed 51 · unknown 0**",
+          "before": 0,
+          "after": 6
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "index 43 computed",
+          "before": 0,
+          "after": 1
+        },
+        {
+          "source": "ai4-report146.md",
+          "needle": "# 146 — Nửa index của 51",
+          "before": 0,
+          "after": 3
+        },
+        {
+          "source": "spec-DATA_SYNC.md",
+          "needle": "51 computed = **39 vị",
+          "before": 0,
+          "after": 5
+        }
+      ]
+    }
+  ]
+}
