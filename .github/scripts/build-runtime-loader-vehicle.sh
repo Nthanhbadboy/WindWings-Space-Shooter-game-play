@@ -41,7 +41,13 @@ sha256sum .ci/bep6.zip .ci/bep5.zip .ci/melon.zip .ci/bep6-phone-refs.zip > "$OU
 {
   java -version 2>&1
   dotnet --info 2>&1
-  sdkmanager --version 2>&1 || true
+  printf 'ANDROID_HOME=%s\nANDROID_SDK_ROOT=%s\n' "${ANDROID_HOME:-unset}" "${ANDROID_SDK_ROOT:-unset}"
+  if command -v sdkmanager >/dev/null 2>&1; then
+    sdkmanager --version 2>&1 || true
+    sdkmanager --list_installed 2>&1 || true
+  else
+    echo 'sdkmanager not on PATH; record runner SDK root and rely on Gradle build diagnostics.'
+  fi
 } > "$OUT/build-toolchain.txt"
 BRIDGE_OUT=".ci/runtime-loader-bridge"
 .github/scripts/build-bridge.sh --out "$BRIDGE_OUT" --refs .ci/refs 2>&1 | tee "$OUT/bridge-build.log"
@@ -136,6 +142,9 @@ chmod +x "$SCRATCH/fusioncore/gradlew"
 LOADER_APK="$SCRATCH/fusioncore/fusionApp/build/outputs/apk/debug/fusionApp-debug.apk"
 [ -s "$LOADER_APK" ] || die 'FusionCore build did not produce fusionApp-debug.apk.'
 cp "$LOADER_APK" "$OUT/fusionApp-debug.apk"
+if command -v sdkmanager >/dev/null 2>&1; then
+  sdkmanager --list_installed > "$OUT/android-sdk-installed-after-build.txt" 2>&1 || true
+fi
 
 python3 - "$OUT/fusionApp-debug.apk" "$OUT/source-xapk-inventory.json" "$PACKAGE" <<'PY'
 import hashlib, json, re, sys, zipfile
