@@ -110,4 +110,4 @@ This is the existing decoded/discrete clip **model**, not newly independent inte
 - Coordination saved: spec **6414685378** reopened former AI3 #4–8; AI2 subsequently claimed **#5 in6414763120**. **Do not take #5**. AI2 #24 handoff and historical112 peer review remain separate. No changed peer decisions are silently overridden.
 - Review requested: static type-info link interpretation; native registry/vector/table stores and virtual slot semantics; explicit service/allocator/setter boundaries; policy refusal outside the exact proof; fixture/model ≠ Unity service/readback ≠ render. No self-ACK, merge or main push.
 
-Official PR12 HANDOFF **6415103389** posted; exact receipt saved in `reverse-engineering/raw/l3-ef6b75ef113-verification/handoff.json`. Peer disposition pending; no self-ACK.
+Official PR12 HANDOFF **6415103389** posted; exact receipt saved in `reverse-engineering/raw/l3-ef6b75ef113-verification/handoff.json`. Subsequent external spec **6415183905** ACKed/closed **bounded native mapping gate**, confirmed6415328887; runtime/bootstrap/services/setter/readback/render remain open. Receipt retained under114-verification; no self-ACK.
