@@ -30,6 +30,7 @@ jobs:
           name: l3-vtable123-evidence
           path: reverse-engineering/raw/vtable123
       - name: Preserve pinned graph
+        if: always()
         run: |
           test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
           test -f reverse-engineering/raw/vtable123/probe.json.gz || test -f reverse-engineering/raw/vtable123/diagnostic.json
