@@ -32,6 +32,12 @@ jobs:
             --families-only Board_ShopEnergy \
             --rodata 0x779EFA:27 \
             --output reverse-engineering/raw/pack-index-535b0541/native.json.gz
+      - name: Scoped box-draw disassembly (own file, own families)
+        run: |
+          python tools/recovery/meta_rewards_native.py --xapk "$RUNNER_TEMP/original/windwings.xapk" \
+            --families-only Board_Quest,Box_Rewards \
+            --rodata 0x757350:8 \
+            --output reverse-engineering/raw/box-draw-535b0541/native.json.gz
       - name: Commit only own static evidence on session branch
         run: |
           set -euo pipefail
@@ -39,11 +45,12 @@ jobs:
           git config user.name 'Arena static evidence collector'
           git config user.email 'agent@arena.ai'
           git add reverse-engineering/raw/meta-rewards-535b0541/native.json.gz \
-                  reverse-engineering/raw/pack-index-535b0541/native.json.gz
+                  reverse-engineering/raw/pack-index-535b0541/native.json.gz \
+                  reverse-engineering/raw/box-draw-535b0541/native.json.gz
           if ! git diff --cached --quiet; then
             # Only this workflow's own artifacts, each under the 5 MB commit budget.
-            test "$(git diff --cached --numstat | wc -l)" -le 2
-            ! git diff --cached --name-only | grep -qv '^reverse-engineering/raw/\(meta-rewards\|pack-index\)-535b0541/native.json.gz$'
+            test "$(git diff --cached --numstat | wc -l)" -le 3
+            ! git diff --cached --name-only | grep -qv '^reverse-engineering/raw/\(meta-rewards\|pack-index\|box-draw\)-535b0541/native.json.gz$'
             for f in $(git diff --cached --name-only); do
               test "$(stat -c %s "$f")" -lt 5000000
             done
