@@ -32,7 +32,7 @@ XAPK_SHA = 'f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
 SO_SHA = '9cb038e88709f38318d183d3616eed054b36c3186ead8f1c37246ece87393c99'
 FAMILIES = ('GameDatas', 'TimeFreeRewardPack', 'Board_QuestRewards', 'Popup_WatchVideos',
             'Board_EventSeasonPass', 'PVPReward', 'Bonus_Quest', 'GiftType', 'SeasonRewards',
-            'PVP_Manager', 'ArenaConfig', 'ArenaManager')
+            'Shop_Pack', 'PVP_Manager', 'ArenaConfig', 'ArenaManager')
 ARRAY_NEW = 0x110d09c
 INIT_ARRAY = 0x205b07c
 
