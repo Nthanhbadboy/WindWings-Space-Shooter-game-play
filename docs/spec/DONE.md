@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 76 — 26/10, #27/119 ĐÓNG bounded + #6-rep OOM-safe chạy tốt):**
+> **§24.69**: **#27/119** (ef, 1581 PASS): parent FDE entry→118→second-phase→node174→RET
+> không staging · 930 lần 5 · **3 early-returns native** (null-blob/mode−1/flag28-zero) ·
+> **"node174=1 từ byte đơn KHÔNG chứng minh sampling/apply"** (chống-lạm) · từ chối chạy
+> rig giả — ĐÓNG bounded parent+guards · **#6-rep**: stdlib inverse serializer stream
+> 1-tree — 2185 Sprite + 66 atlas match SHA · 27.072 verts khớp mesh-contract a5 ·
+> mmap + SQLite flush (OOM-safe ✓) · #28 a5 FusionCore runner + stage-failures. datas/
+> = **102**. verify 209/0/2.
+>
 > **Sửa lại (lần 75 — 26/10, đính chính tie-away + #27/118 ĐÓNG bounded + AI-3 restart):**
 > **§24.68**: **sai của spec** — `.7→3f333334` là FCVT+1ULP, không phải tie-away (FRINTA
 > là 116/b93158) — supersede DS/DONE · **#27/118** (ef, 1571 PASS): full caller FDE

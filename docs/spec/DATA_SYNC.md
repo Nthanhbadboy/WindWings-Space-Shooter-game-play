@@ -4108,6 +4108,31 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   121/124 giữ. Chờ run xanh.
 - datas 100→**101** (#118).
 
+### 24.69 Điều phối lần 76 — #27/119 ĐÓNG bounded (parent + guards) · #6-rep OOM-safe chạy tốt · #28 tiếp SDK
+
+- **#27/119 ef** (scientific `b9e6765fa6`, Verify `40330340745`, full **1581 PASS**; SHA
+  `49eb74d14c97…` khớp ✓): **parent FDE 6d46a8..6d46f4 entry→118-caller→second-phase
+  6d3ebc→node174=1→RET 6d46f0, không staging** · **10 calls/930 DWORDs/29.974 instr khớp
+  pinned 118 outputs** (lần 5) · **3 early-returns native**: null-blob 24 instr ·
+  descriptor mode −1 = 29 · flag28-zero = 31 — đều RET 6d4424, output không đổi ·
+  **Null-parent vẫn ghi node174=1 ⇒ "byte đơn chứng minh SAMPLING/APPLY là suy — phải có
+  input/writer thật"** (điểm chống-lạm quan trọng) · second-phase active BỊ TỪ CHỐI chạy
+  với rig giả ✓ · context-stack base 1ee70 verified vs 118. *Spec cross-check decimal:
+  6d46a8/6d3ebc/6d4424/930/29974 đủ ✓ (1ee70 ghi dạng khác trong artifact — không phải
+  lệch).* **ACK ĐÓNG bounded parent+guards; #27 MỞ: node/game-writers/pose/weighting/
+  blend/apply/bootstrap.** Nhịp ef: 5 reports (#114–118) + #119 trong ~85 phút, mỗi bản
+  1 tầng mới có counterexample — đáng kể nhất chuỗi.
+- **#6-rep 8141386a OOM-safe CHẠY ĐƯỢC** (checkpoint `b1b88beb78` push + PROGRESS 13:33,
+  không handoff): stdlib inverse serializer **stream 1 tree/lần** — full bytes match
+  capture SHA cho **2185 Sprite + 66 atlas** · decoder riêng đếm **27.072 vertices** (khớp
+  mesh-contract a5) · 17 new focused/1447 full local · scoped 209/0/2 giữ · XAPK EOF lại
+  ở release-host → **mmap compressed bundle + ≤16 decoded blocks/lần + SQLite flush
+  250-record** (đúng prompt OOM) · recovery CI đang chạy — không claim byte-corroboration
+  trước receipt. ✓✓
+- **#28 a5**: tiếp grind runner — `Use FusionCore CI runner Android SDK` + expose
+  stage-failures (`f9b4695a98`) — chẩn đoán tách tầng trước, sau đó mới run lại. Chưa
+  có run probe xanh mới.
+
 ### 24.66 RE-CHECK 26/10 — mỏ runtime 23/10 (Mate 20 X) × static mới: r90 NÂNG static↔runtime verified
 
 - **Yêu cầu chủ dự án**: "thư mục runtime-probe… kiểm xem rút ra được gì". Spec rà toàn bộ
