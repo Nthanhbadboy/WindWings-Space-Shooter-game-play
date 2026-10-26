@@ -130,8 +130,8 @@ upload readback; PixelSnap source recovered nhưng **không execute**, không ra
 - Verification receipts `raw/l3-ef6b75ef105-verification/`; peer snapshot `raw/peer-review/l3-ef6b75ef105/`.
 - Recovery **40287660478 SUCCESS**; external original pixels ở artifact
   `l3-textured105-original-pixels-external` của run này. Release cũ vẫn draft.
-- **31 tests mới PASS32.360s; full1104 PASS275.080s**. Remote Verify receipt bổ sung riêng;
-  local PASS không tự là CI PASS hoặc independent ACK.
+- **32 tests mới PASS33.925s; full1105 PASS274.466s**. Verify40290558746 SUCCESS trên code2da541e395c64494b62eeffe47d27f924ebc4fd7;
+  local/CI PASS không tự là independent ACK.
 
 ```sh
 python3 -m tools.verify.l3_textured105
@@ -198,3 +198,11 @@ reconstruction dùng builtin sum có khác thuật toán giữa3.11/3.12 (compen
 Thêm regression kiểm accumulation order; giá trị sample geometry trên3.11 không đổi, chỉ tool
 SHA pin đổi. Workflow failure giờ đưa bounded test-log tail vào check annotation để audit được.
 Final full local/CI receipt bên dưới supersede initial run, không lấy failed CI làm PASS.
+
+## Receipt105 final
+
+Code **2da541e395c64494b62eeffe47d27f924ebc4fd7**, Verify **40290558746 SUCCESS**, job4m31s.
+Final full local **1105 PASS274.466s** / new **32 PASS33.925s**; supersede31/1104 trước
+portable-sum fix và failed initial run40289718130. Native data và sampled geometry không đổi;
+sequential CPU accumulation giờ tường minh qua cả Python3.11 local/3.12 CI. Raw CI/local/handoff
+receipts giữ riêng. Đây là bàn giao nhờ review độc lập, **không self-ACK/Unity readback/render**.

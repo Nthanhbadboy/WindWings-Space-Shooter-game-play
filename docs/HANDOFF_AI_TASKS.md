@@ -1098,7 +1098,7 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   unsupported (do NOT count as13 variants). PixelSnap recovered, not executed; no GPU precision claim.
 - Custom23 remains UNPROVED: actual set_sprite native icall bridge is not registration proof.
   Frame104 strict reject/explicit per-binding policy unchanged; no unknown→null.
-- 31newPASS32.360s/full1104PASS275.080s. Recovery40287660478SUCCESS; final code/CI receipt follows.
+- 32newPASS33.925s/full1105PASS274.466s. Recovery40287660478SUCCESS; final code/CI receipt follows.
 - UPDATED peer status: spec7bdd5003 DATA_SYNC24.29–40; ACK104 now5/5 artifact arithmetic reproduction,
   still no independent native/Unity execution. New ownership6410868087/sticky6410945198 read;
   claim6411008329 confirms existing user-assigned work (started before sticky, not retroactive claim).
@@ -1113,3 +1113,10 @@ haydùngchưaruntime/FPCR/playback đểnéđọcstatic. ProofJSON datas/combat_
   Không còn trạng thái “chưa thấy digger khác” như lần kiểm đầu batch. Chưa independent audit
   các artifacts đó ở nhánh ef6b75ef; không import/merge/sửa tool của họ. Claim mới6411110604
   của a5a74747 là reachability/driven-coverage, giữ ngoài batch driver/texture105 này.
+
+- Receipt105 final: code2da541e395c64494b62eeffe47d27f924ebc4fd7 / Verify40290558746SUCCESS4m31s;
+  full1105localPASS274.466s,32newPASS33.925s. Barycentric accumulation dùng sequential_sum
+  để portable3.11/3.12; initial40289718130FAIL không tính là PASS. Native/texel dữ liệu giữ nguyên.
+  provenance: arena/ef6b75ef. No independent execution ACK/render acceptance claimed.
+
+- PR12 handoff105: https://github.com/Nthanhbadboy/WindWings-Space-Shooter-game-play/pull/12#issuecomment-6411373032; nhờ independent review, không selfACK.
