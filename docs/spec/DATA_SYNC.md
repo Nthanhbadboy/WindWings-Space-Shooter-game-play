@@ -2881,7 +2881,7 @@ projection, không import thẳng**; TTF giữ inventory riêng, **không** gán
   cái, không quy về projectile loop.
 - **Damage drone**: `GetBaseDamage 14da6f0` = `BaseDamages[sourceID−20001]` × (1 + ,16×GetDroneLevel)
   × (1+rankExtra: r1 0 · r2 ,2 · r3 ,35 · r4 ,5 · else ,56) × (1 + 2,5×abi21);
-  **BaseDamages[12] = [450, 600, 6000, 135, 935, 315, 650, 1200, 248, 650, 1200, 2650]**.
+  **BaseDamages[12] = [450, 600, 6000, 135, 935, 315, 650, 1200, 248, 650, 1200, 2650]**. Recheck 26/10: field này khớp **12/12 exact ở float32** với `statics_Drone_Get_Datas.json` từ Mate 20 X runtime (mod 1.0.69), tức parity cross-build với static official 1.3.118; xem [`RECHECK-2026-10-26.md`](../apk-analysis/ramus/2026-10-23-phone/RECHECK-2026-10-26.md). Đây là parity của field-vector, không phải xác nhận DPS.
 - **Scope giữ đúng**: sourceID→impl/spawn **chưa mapping** (class suffix không tự chứng minh source
   ID); 23 wing impl còn lại; `turnRate3` serialized live value; DPS closure — chưa.
   Kéo về: `datas/wing_drone_flow.json` (**73 ranges/6041 instr** · 68 anchors · 44 numeric fields ·
