@@ -98,13 +98,15 @@ def build(xapk, target_specs):
     assert sha_file(xapk) == XAPK_SHA, 'unexpected XAPK bytes'
     with tempfile.TemporaryDirectory() as folder:
         so = extract_so(xapk, folder)
-        assert sha_file(so) == SO_SHA, 'unexpected libil2cpp.so bytes'
+        so_sha = sha_file(so)
+        assert so_sha == SO_SHA, 'unexpected libil2cpp.so bytes'
         hits, scanned = scan(so, [rva for _, rva in target_specs])
+    # the temporary directory is gone past this point: keep only the hash
     return dict(
         schema=1, evidence='STATIC_ONLY_ORIGINAL_APK',
         note='Branch-encoding scan of the pinned original libil2cpp.so. '
              'It reports callers only; what each caller does is not decoded here.',
-        provenance=dict(xapk_sha256=sha_file(xapk), libil2cpp_sha256=sha_file(so)),
+        provenance=dict(xapk_sha256=sha_file(xapk), libil2cpp_sha256=so_sha),
         method=dict(encodings={'bl': hex(BL), 'b': hex(B), 'mask': hex(MASK)},
                     rule='destination = pc + 4 * sign_extend(imm26)',
                     segments=scanned,
