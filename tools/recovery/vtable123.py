@@ -3,7 +3,7 @@ import argparse,bisect,gzip,hashlib,io,json,struct,zipfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
-RANGES=[(0x10b1000,0x10b1500),(0x6d2950,0x6d29e4)]
+RANGES=[(0x10b1000,0x10b1500),(0x6d2950,0x6d29e4),(0x109acc0,0x109acf0)]
 TARGETS={0x6d2950:'graph_populator'}
 VTABLE_LO,VTABLE_HI=0x10b1000,0x10b1500
 CODE_LO,CODE_HI=0x6d0000,0x6d9000
@@ -109,7 +109,7 @@ def recover(path):
         except (StopIteration,AssertionError):return
         cells[address]=dict(va=address,file_offset=pos,hex=b[pos:pos+n].hex())
     for w in windows:
-        if not CODE_LO<=w['va']<CODE_HI:continue
+        if not (CODE_LO<=w['va']<CODE_HI or 0x1090000<=w['va']<0x10a0000):continue
         code=bytes.fromhex(w['hex']);pages={}
         for i in range(0,len(code)-3,4):
             op=struct.unpack_from('<I',code,i)[0];pc=w['va']+i
