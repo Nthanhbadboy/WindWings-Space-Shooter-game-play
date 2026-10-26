@@ -142,7 +142,7 @@ def main():
                 # Preserve actual literal bytes, not the old rounded constant summaries.
                 regs = {}
                 literals = []
-                slots, slot_refs, ia_events = {}, [], []
+                slots, slot_refs, ia_events, ia_calls = {}, [], [], []
                 pending_len = None
                 for i in insns:
                     op = i['op_str']
@@ -169,25 +169,18 @@ def main():
                         if match and isinstance(regs.get(match[2]), int):
                             slots[match[1]] = regs[match[2]] + int(match[3] or '0', 0)
                         elif match and match[2] in slots and not match[3]:
-                            slot_va = slots.pop(match[2])
+                            slot_va = slots[match[2]]
                             addend = relocs.get(slot_va)
                             if addend is not None:
                                 slot_refs.append(dict(rva=i['rva'], slot_va=slot_va,
                                                       addend=addend, string=literal_string(addend)))
-                                if match[1] == 'x1' and pending_len is not None:
+                                if match[1] == 'x1':
                                     ia_events.append(dict(rva=i['rva'], slot_va=slot_va,
                                                           addend=addend, length=pending_len))
                                 regs[match[1]] = ('slot_value', addend)
                                 continue
-                    if i['mnemonic'] == 'bl' and i['op_str'] == '#0x205b07c' and ia_events and 'initialize_rva' not in ia_events[-1]:
-                        addend = ia_events[-1]['addend']
-                        ia_events[-1]['initialize_rva'] = i['rva']
-                        head = read_va(addend, 64)
-                        deref = read_va(addend, 8)
-                        pointer = int.from_bytes(deref, 'little') if deref else 0
-                        tail = read_va(pointer, 64) if pointer else None
-                        ia_events[-1]['blobs'] = [b.hex() for b in (head, tail) if b]
-                        pending_len = None
+                    if i['mnemonic'] == 'bl' and i['op_str'] == '#0x205b07c':
+                        ia_calls.append(i['rva'])
                     # Conservative invalidation avoids attributing stale ADRP bases.
                     dest = op.split(',')[0]
                     if i['mnemonic'] != 'adrp' and dest.startswith(('x', 'w')) and i['mnemonic'] not in ('cmp', 'str', 'stp', 'cbz', 'cbnz', 'tbnz', 'tbz'):
@@ -195,6 +188,19 @@ def main():
                     if i['mnemonic'] == 'bl':
                         for n in range(19):
                             regs.pop('x' + str(n), None)
+                for call in ia_calls:
+                    before = [e for e in ia_events if e['rva'] < call]
+                    if not before:
+                        continue
+                    event = dict(before[-1])
+                    event['initialize_rva'] = call
+                    addend = event['addend']
+                    head = read_va(addend, 64)
+                    deref = read_va(addend, 8)
+                    pointer = int.from_bytes(deref, 'little') if deref else 0
+                    tail = read_va(pointer, 64) if pointer else None
+                    event['blobs'] = [b.hex() for b in (head, tail) if b]
+                    ia_events.append(event)
                 records.append(dict(**row, size=size, sha256=hashlib.sha256(code).hexdigest(), bytes_hex=code.hex(),
                                     instructions=insns, literals=literals, slot_refs=slot_refs, initialization=ia_events))
     output = dict(schema=1, evidence='STATIC_ONLY_ORIGINAL_APK', xapk_sha256=XAPK_SHA,
