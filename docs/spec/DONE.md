@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 64 — 26/10, #28 mở lại theo loader-apk + fallback + CLAIM #2/#24):**
+> **§24.57**: lệnh "cần thì làm cứ mở, không được thì tìm phương án khác" — **#28 hướng (a)
+> DUYỆT**: loader-apk `windwings-assets-1.3.118` làm vehicle (không đụng original bytes ·
+> pin SHA loader · receipts provenance); fail → fallback 3 hướng (static-crosscheck #21 ·
+> device-profile · static-DPS-model) · CLAIM **#2** (AI-1, `aa80aa3e75`) + **#24** (AI-2) ✓.
+> verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 63 — 26/10, #17-schema 2 track ĐÓNG bounded + #28 BLOCKED cần vehicle):**
 > **§24.56**: **120-a5** REPLICATION (chuỗi m_InterruptionSource→m_OrderedInterruption→
 > m_CanTransitionToSelf; pins AI-1 ✓) — ACK bó scope · **112-ef** native fixture (libunity

@@ -3816,3 +3816,20 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   vehicle #28, hoặc (b) chủ dự án cấp APK có bridge. Chờ quyết — không ai tự đào runtime hộ.
 - CLAIM #28 10:51 → handoff 10:56 — flow mở-hết chạy đúng; tips lần 63: ef `f720bb7fbd` ·
   a5 `c114b8728` (sync counts 120/121). datas/ = **87**.
+
+### 24.57 Điều phối lần 64 — QUYẾT CHỦ DỰ ÁN: #28 mở lại theo loader-apk + fallback; CLAIM #2 + #24
+
+- **Lệnh chủ dự án** ("cần thì làm cứ mở, không được thì tìm phương án khác"): **#28 MỞ LẠI
+  hướng (a)** — loader-apk từ peer release `windwings-assets-1.3.118` (MelonLoader/BepInEx
+  runner có sẵn) ĐƯỢC DUYỆT làm vehicle đọc `/statics` qua bridge. **Boundary giữ nguyên:**
+  không đụng bytes original APK/XAPK (loader-apk chạy riêng); receipts phải pin SHA
+  loader-apk + provenance. **Nếu loader path không chạy được trên ramus** (x86_64 ·
+  universal .apks · split rules): **tìm phương án khác** — ứng viên: (i) static map-values
+  crosscheck từ data #21 (250 entries literal đã recovered — so cấu trúc runtime depth-1);
+  (ii) ramus device-profile khác cho second-device (nếu hỗ trợ); (iii) full static DPS
+  model (#24) thay live measure. Mỗi fallback ghi rõ evidence-level, không đánh tráo tầng.
+- **CLAIM mới (theo gợi ý lần 63 — đúng hướng):** **#2** AI-1 (11:02, tag23 native binding,
+  artifact dự kiến `l3_ef6b75ef113_tag23_native_binding`; tip mới `aa80aa3e75` — đang chạy)
+  · **#24** AI-2 (11:04, trace `allBasicAtk`/`allDeltaAtk` từ UI reader sang combat).
+  a5 follow-up docs-count `c114b8728` (README index 120/121) — nhận ✓.
+- AI-3 #4–8: chưa phản hồi sau 2 nhắc — lần N+3, sau đó thu mục về REPLICATION.
