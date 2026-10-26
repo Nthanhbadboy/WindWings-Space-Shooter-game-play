@@ -1103,6 +1103,20 @@ def h1_map_wave_stats():
     return (len(entries), ia, literal, values, known, legacy.get("mismatches"))
 
 
+def h2_boss_bodyphysics_stats():
+    d = ref_json("datas/l3_a5_h2_boss_bodyphysics_serialized_census.json")
+    if d is None:
+        return None
+    summary = d.get("summary", {})
+    return (
+        len(d.get("records", [])),
+        summary.get("distinct_dmgFirst_values"),
+        summary.get("distinct_dmgPerSec_values"),
+        summary.get("distinct_prefab_root_labels"),
+        d.get("boss_damage_classes_assigned"),
+    )
+
+
 claim("I1", READY, "**5 field**: `hpProgressBarRenderer`", 5, display_fields,
       "Enemy_Display không có tham số hit flash / hit stop")
 
@@ -1120,6 +1134,11 @@ claim("MW1", "docs/apk-analysis/160-a5-h1-map-wave-inline-table.md",
       "**250 ordered entries**",
       (250, 243, 7, 742, 3, 242), h1_map_wave_stats,
       "A2/H1 static listMapDatas extraction; 3 known rows match; legacy candidate mismatches 242/250; index identity is not scene/stage identity")
+
+claim("MW2", "docs/apk-analysis/161-a5-h2-boss-bodyphysics-serialized-census.md",
+      "**251 rows / 251 unique `path_id`s**",
+      (251, 15, 16, 61, 0), h2_boss_bodyphysics_stats,
+      "H2 serialized-only census; exact value distributions and root metadata; no 19-class attribution or semantics claim")
 
 
 # ── J. script animation (enemy + boss) ─────────────────────────────────
@@ -3318,8 +3337,8 @@ claim("IAB2", "docs/spec/BALANCE.md",
       "Stage_Get_Datas.cctor: int[5] startBonusValues + float[4] levelDelta; 0x40666666 = 3.6 (KHÔNG phải 2.1)")
 
 claim("APKD1", "docs/spec/START_HERE.md",
-      "**120** `.md` · **107** `.csv`",
-      (120, 107), apk_doc_counts,
+      "**121** `.md` · **107** `.csv`",
+      (121, 107), apk_doc_counts,
       "đếm trực tiếp thư mục apk-analysis — thêm báo cáo mới là phải cập nhật dòng này")
 
 claim("IA8", "docs/spec/START_HERE.md",
@@ -3819,8 +3838,8 @@ def data_inventory():
 
 claim("AI1", "docs/spec/START_HERE.md",
       "**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree"
-      " · **126** bảng ScriptableObject · **42** contact sheet · **116** file `datas/`.",
-      (139, 142136, 142, 126, 42, 116), data_inventory,
+      " · **126** bảng ScriptableObject · **42** contact sheet · **117** file `datas/`.",
+      (139, 142136, 142, 126, 42, 117), data_inventory,
       "kho dữ liệu gốc đã phân tích: asm, typetree, ScriptableObject, contact sheet, datas")
 
 claim("AP1", "docs/spec/DATA_INTEGRITY.md",
@@ -4102,8 +4121,8 @@ claim("GE2", "docs/spec/ASSET_TRIAGE.md",
 
 
 claim("RB1", "docs/spec/RAW_AUDIT.md",
-      "**RAW 181 · DOC 3 · CONST 28 · tổng 212**",
-      (181, 3, 28, 212), raw_audit_counts,
+      "**RAW 182 · DOC 3 · CONST 28 · tổng 213**",
+      (182, 3, 28, 213), raw_audit_counts,
       "sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. "
       "CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập")
 

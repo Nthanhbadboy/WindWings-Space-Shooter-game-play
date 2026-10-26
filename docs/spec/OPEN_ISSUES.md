@@ -42,7 +42,7 @@
 | B4 | `GetCountEnemies` mỗi stage | **chưa lấy** | D | ảnh hưởng nhiệm vụ/độ dài |
 | B8 | ~~Hệ số chế độ cho số quân~~ ✅ **ĐÓNG: `kCount ≡ 1`** (304 lệnh · 0 `mul`; người chơi xác nhận). **HP theo chế độ KHÔNG có hệ số** (đổi nhãn 25/10): chỉ `levelDelta` (thưởng) là chỗ duy nhất chế độ nhân; 0/5 hàm `stageLevel` liên quan HP; HP = 1 số/prefab; `kCount ≡ 1` ⇒ khác biệt khó/dễ = **composition theo bảng len-3** (đã decode) | **ĐÓNG** | **A** | clone: `kCount = 1`, **không nhân HP**, đổi wave theo bảng mode — `DIFFICULTY_MODES.md` §3–5 |
 | B5 | 43/305 trace chưa đối chiếu | **chưa lấy** | — | rủi ro sai số nhỏ |
-| B6 | Damage boss không khai báo (19 class) | **chưa lấy** | C | thiếu 19/37 nhóm đòn |
+| B6 | Damage boss không khai báo (19 class) | **H2: census serialized đã có; class map/semantics NOT_BOUND** | B | 19/37 nhóm đòn và consumer vẫn chưa bind |
 | B7 | ~~12 stat Basic vs `NumberTechStats()` = 60~~ | ✅ **đã chốt** | A | = `List.Count`, không phải hằng số |
 | C1 | ~~Thời điểm (time) của animation event~~ ✅ **ĐÓNG 24/10** | **đã export** | **A** | `event-receivers.json.gz`: **795/795** event use có `time` (cả 793 của boss) |
 | C2 | ~~Bảng controller→clip~~ ✅ **ĐÓNG 24/10** | **đã export** | **A** | `datas/animator_map.csv.gz`: **5.792** dòng `prefab_root → controller`; `event-receivers` join clip ↔ event |
@@ -51,7 +51,7 @@
 | C5 | `Call_Data.number/editType` = 0 | **vắng mặt thật** | D | số quân mỗi lần gọi |
 | C6 | ~~`Enemy_Physics.allColliders = []`~~ ✅ **ĐÓNG** — `autoCacheColliders = false` **981/981** + list rỗng **981/981** | **field chết** | **A** | enemy thường **không** damage va chạm — `UNITY_RULES` §3 |
 | C7 | **45 root prefab mã `900xx`** ngoài roster | **chưa lấy** | C | nội dung dự phòng |
-| C8 | `Boss_BodyPhysics` 251 instance | **đã có** | B | chỉ boss có damage va chạm |
+| C8 | `Boss_BodyPhysics` 251 instance | **serialized census H2; values measured** | B | field semantics / 19-class assignment `NOT_BOUND` |
 | D1 | ~~Feel / aim assist / input latency~~ **BỎ (quyết định 25/10)** | **đã quyết** | — | game mới không thêm feel — game gốc 0 site `timeScale`/`aim` trên mẫu 139 asm (`AF2`/`AF3`) |
 | D2 | Thứ tự resolve stat lúc runtime | **cần chạy game** | B | đã có mô hình, chưa xác nhận |
 | D3 | Tỉ lệ rơi item trong màn | **cần chạy game** | D | phải tự thiết kế |
@@ -288,6 +288,8 @@ số**; `GetStartHealth` **28 B**. ⇒ hệ số (nếu có) là **hằng số t
 
 ### B6. 19/37 class Director **không khai báo** field damage — **C**
 
+> **H2 bounded addition (report 161):** the serialized census has 251 `Boss_BodyPhysics` records and exact numeric distributions, but it does not bind their behavior or assign the records to the 19 Director classes. The result is evidence level **B**, `semantics = NOT_BOUND`; B6 stays open. See `docs/apk-analysis/161-a5-h2-boss-bodyphysics-serialized-census.md` and its pinned receipt.
+
 | Có field damage | **18** class / 63 instance |
 |---|---|
 | Không có | **19** class: `Boss1`, `Boss3`, `Boss4`, `Boss5`, `Boss7`, `Boss8`, `Boss_Director`, `Boss19/20/21_AttackPhases`, `MB2`–`MB8`, `MB10` |
@@ -365,7 +367,7 @@ kiểm từng id** — nhưng **không còn là ẩn số về cơ chế**.
 | C4 | ~~`Wave.indexWave`~~ ✅ **ĐÓNG** | **686/686 = 0** | thứ tự wave = thứ tự trong `waves.json` |
 | C5 | `Call_Data.number` / `editType` | **0** ở 23.757/23.757 | số quân mỗi lần gọi = `len(listPrefabEnemies) × copies` |
 | C6 | ~~damage va chạm enemy thường~~ ✅ **ĐÓNG** | `autoCacheColliders = false` **981/981** + `allColliders = []` **981/981** | enemy thường **không** gây damage khi chạm — chỉ đạn |
-| C8 | damage va chạm boss | `Boss_BodyPhysics` **251** instance, median 500 | boss **có** damage chạm; giữ |
+| C8 | `Boss_BodyPhysics` serialized fields | **251** records; `dmgFirst` median 500; field semantics `NOT_BOUND` (H2/report 161) | keep as a bounded serialized census; do not claim runtime damage behavior |
 
 ---
 

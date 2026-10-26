@@ -2299,7 +2299,7 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **181** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **RAW** | **182** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
 | **DOC** | **3** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
 | **CONST** | **28** | không mở file ⇒ **đo một lần** |
 
@@ -3454,3 +3454,10 @@ từ nay:
 - Cross-check: indexes 0–2 match the previously resolved `[25,9010]`, `[164]`, `[113,5]`; all **250/250** rows match existing `datas/maps.json`. Legacy `datas/map_waves_candidate.json` has **242/250** mismatches and remains untouched; the report identifies it as superseded for full values/order.
 - **A2 closed for this bounded static table extraction.** The cctor insertion index is not equated with displayed map, scene, campaign, or stage identity. Mode-specific lists, stage/scene identity join, and runtime/readback/parity remain outside this closure.
 - Report `docs/apk-analysis/160-a5-h1-map-wave-inline-table.md`; receipt `datas/l3_a5_h1_map_wave_inline.json`, SHA-256 `48a463b675240caecfcdac6455f3ce9d1147da4629b9cd744ff1fd0fe06e94ed`. Builder `tools/build_a5_h1_map_wave_inline.py`; focused suite `tests/test_a5_h1_map_wave_inline.py` (4 tests). No native/FDE/`libunity.so` or runtime lane used.
+
+### 24.52 Report 161 — H2 `Boss_BodyPhysics` serialized census (B6-half)
+
+- PR12 H2 claim `6425715026`, from queue `6425374777`. The pinned `Boss_BodyPhysics.csv` contains **251 unique component IDs**; the raw TypeTree export has the same 251-ID set. Six serialized fields (`dmgFirst`, `dmgPerSec`, `isFirstTrigger`, `isTrigger`, `layerMask.m_Mask`, `m_Enabled`) match **251/251** rows.
+- Serialized-value distributions: `dmgFirst` has 15 distinct values (median **500**, range **0–9,000,000**); `dmgPerSec` has 16 (median **50**, range **5–1,000**). The receipt carries complete histograms, 32 joint value pairs, flags, every row, and joins to 61 prefab-root labels.
+- The 19 boss-damage Director-class assignment is **NOT_BOUND**: the available join labels resolve component roots but do not uniquely attach all 251 rows to those 19 classes. This report does not claim the serialized field names encode runtime behavior, and does not assign an asset role from root labels. **Evidence level B maximum; B6 remains open.**
+- Report `docs/apk-analysis/161-a5-h2-boss-bodyphysics-serialized-census.md`; receipt `datas/l3_a5_h2_boss_bodyphysics_serialized_census.json`, SHA-256 `ec5a57c957849b45539ea34eef4b6f0eb506cdbb932be4fc9a586f580fee4d9a`. Source SHA-256 pins and the 251 record-level comparison are in the receipt. Builder `tools/build_a5_h2_boss_bodyphysics_census.py` (SHA-256 `359320a448a0948ef00e53bea3de4e2ae33df742d9825a733a022d4a1651a9b7`); focused tests `tests/test_a5_h2_boss_bodyphysics_census.py` (4 tests). No assembly, runtime, native/FDE, or AI-1 artifacts were used.
