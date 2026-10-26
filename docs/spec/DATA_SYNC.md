@@ -5617,6 +5617,38 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   #27 khép 6/6 ⇒ #27 ĐÓNG-full với các bounds đã ghi (M1b runtime-only).
 - **Datas/ 179 + 2 pulled (156/122-review) = 181 (needle sync commit này).**
 
+### 24.108 #28 ĐỔI CĂN CỨ — PROBE RUNTIME 23/10 ĐÃ CHẠY = BẰNG CHỨNG RUNTIME CỦA #28 (lần 119, theo lệnh chủ dự án)
+
+- **Lệnh:** "sửa #28 cho đúng là lấy probe runtime ngày 23 đã chạy rồi mà
+  không cần phải runtime nữa" — chủ dự án đổi căn cứ đóng #28: từ
+  "static-only, không run" (lần 78/§24.71) sang **probe 23/10 đã chạy**.
+- **Probe là gì (pin):** `docs/apk-analysis/ramus/2026-10-23-phone/` **84
+  file** trên **Mate 20 X (Android 10)** — route điện thoại + NextBep launcher
+  fork `Nthanhbadboy/BepInEx.Android.Launcher` (`a64d04c`/`b4aa59a`); BepInEx-6
+  chainloader `Chainloader startup complete` ✓; RamusBridge (bepinex6-phone
+  net10.0) listen `127.0.0.1:8080` ✓; **8/9 HTTP endpoints** hoạt động
+  (`/screenshot` bị icall-strip → `adb screencap` thay); freeze-time
+  `POST /timescale` ✓. Manifest PNG: `reverse-engineering/raw/ui-flow-review/
+  image-sources.json` (35 PNG — đã là "35 ảnh chụp" của START_HERE).
+- **Số thu được (đều đọc từ game đang chạy thật):** **balance 24 tàu /
+  12 drone / tech / stage** qua `/statics` · **`listMapDatas` = 250** runtime
+  (`statics_Map_Get_Datas.json`) — đối chiếu static 250 (`datas/maps.json`)
+  ⇒ **mức A, mức đối chiếu mạnh nhất** (CROSSCHECK §1) · **field parity
+  TRUE**: `StartMainCannonDamages` idx-2 = **2680**, `…Rate` idx-2 = **4,8 s**
+  (report #111 · `datas/l2_dps_runtime_parity_ship1_18.json.gz` — model DPS
+  no-modifier 558,33/s từ chính cặp số đó) · boss GP/stagedata dumps ·
+  35 PNG UI-flow (report 49 — chỉ mô tả, không đo asset).
+- **Bounds không đổi (cấm tụng static thành runtime):** probe chạy bản
+  **`com.Gcenter…Premium` 1.0.69 mod** vs nguồn bóc **1.3.118** — khớp ⇒
+  **củng cố**, lệch ⇒ có thể khác bản (phone-provenance đã reject logcat
+  khác-package cho spec gốc) · **live-DPS time-series KHÔNG nằm trong probe**
+  (`measured_dps = null` — giữ MODEL_NOT_MEASURED) · map depth-2 readback
+  (26/10) = BLOCKED no-bridge — 243 mảng sau chưa xác thực token ·
+  audio-trigger/second-device/#27-readback ngoài probe.
+- **Kết luận #28:** ĐÓNG bằng **probe 23/10 + static** — không cần runtime
+  thêm cho lane này; mọi câu "runtime còn thiếu" khác giữ nguyên trạng thái
+  đã ghi trong bảng trần §24.100/24.103 (chỉ chủ dự án mở lại).
+
 ### 24.97 Điều phối lần 106 — MỞ VIỆC cho AI-2 + AI-3 (báo cáo rảnh): GỠ GATE A2 · hàng đợi H · sửa định danh 120-CLAIMED
 
 - **Đính chính board:** **R1-addendum120 = CLAIMED trước nhắc lần-104**

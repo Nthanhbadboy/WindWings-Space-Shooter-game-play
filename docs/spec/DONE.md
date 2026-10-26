@@ -405,6 +405,21 @@
 > StartDroneSkillDamages static + MISSING-13 plugin list)** · #7 AI-3 🔄 (#8 hàng đợi) ·
 > MISSING 8/8-một-phần · DQ 33/14/9. Boundary: ef giữ libunity FDE; va chạm first-wins.
 >
+> **Sửa lại (lần 119 — 27/10, #28 ĐỔI CĂN CỨ theo lệnh chủ dự án — probe runtime 23/10 ĐÃ CHẠY):**
+> Căn cứ đóng #28 đổi từ "static-only, không run" sang **"probe runtime 23/10
+> đã chạy"** — phiên Ramus thật trên **Mate 20 X** (`docs/apk-analysis/ramus/
+> 2026-10-23-phone/`, 84 file; report 48 + 49): BepInEx-6 chainloader ✓ ·
+> RamusBridge listen ✓ · **8/9 HTTP endpoints** ✓ · **balance 24 tàu/12 drone/
+> tech/stage thu qua `/statics`** · **`listMapDatas` = 250 runtime ✓ = mức A**
+> (đối chiếu `datas/maps.json` 250 — CROSSCHECK §1) · **field parity TRUE**
+> StartMainCannonDamages idx-2 = **2680** / rate **4.8 s** (report #111 ·
+> `datas/l2_dps_runtime_parity_ship1_18.json.gz`) · 35 PNG UI-flow · boss
+> GP/stagedata dumps · freeze-time ✓. **KHÔNG cần runtime thêm cho #28.**
+> Bounds giữ nguyên: probe chạy bản **1.0.69 mod Premium** vs nguồn
+> **1.3.118** — khớp ⇒ củng cố, lệch ⇒ có thể khác bản; live-DPS time-series
+> không nằm trong probe (giữ MODEL_NOT_MEASURED — không tụng static thành
+> runtime); 243 mảng sau của map chưa xác thực token. Chi tiết §24.108.
+>
 > **Sửa lại (lần 78 — 26/10, ĐÓNG #28 runtime theo lệnh chủ dự án + #6-rep ĐÓNG + CLAIM #7):**
 > **§24.71**: **#28 ĐÓNG (scope)** — static đủ; không secret, không run, không nhánh B;
 > receipts 121/124 + bridge `40333586413` giữ; live-DPS = MODEL_NOT_MEASURED runtime,
