@@ -4,9 +4,9 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
 NAMES=['UnityEngine.Animations.AnimationClipPlayable::GetAnimationClipInternal','UnityEngine.Animations.AnimationClipPlayable::CreateHandleInternal','AnimationClipPlayable','AnimationClip']
-RANGES=[(0x6d0000,0x6d3744),(0xb6a800,0xb6a870)]
-TARGETS={0x6d3744:'context_writer',0xb6a838:'clip_range_candidate',0xb6a84c:'clip_stop_getter',0x10f29f0:'AnimationClip_native_record'}
-FOLLOW_ENTRIES=[0x6d3744,0xb6a838,0xb6a84c]
+RANGES=[(0x6d0000,0x6d3900),(0x6d6bf8,0x6d7000),(0xb68000,0xb6c400)]
+TARGETS={0x6d3744:'context_writer',0xb6a84c:'clip_stop_getter',0x10f29f0:'AnimationClip_native_record',0x10b1240:'clip_node_primary_vtable'}
+FOLLOW_ENTRIES=[0x6d3744]
 
 def sha(b):return hashlib.sha256(b).hexdigest()
 def signed(v,n):return v-(1<<n) if v&(1<<(n-1)) else v
@@ -115,7 +115,7 @@ def recover(path):
         except (StopIteration,AssertionError):return
         cells[address]=dict(va=address,file_offset=pos,hex=b[pos:pos+n].hex())
     # Original type-record neighborhoods for exact string/target RELA backreferences.
-    string_relocations=[r for r in relas if r['addend'] in wanted]
+    string_relocations=[r for r in relas if r['addend'] in wanted or 0xb68000<=r['addend']<0xb6c400]
     for r in string_relocations:cell(r['address']-256,512)
     for w in windows:
         code=bytes.fromhex(w['hex']);pages={}
