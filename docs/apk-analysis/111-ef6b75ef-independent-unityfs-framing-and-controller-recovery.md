@@ -116,3 +116,11 @@ Protected three files unchanged; no main/merge; custom23UNPROVED. Raw receipts d
 | `tools/verify/unityfs111_binary.py` | `c9a05e37eeb3467b7e1d20ccf2667b2363ff322c2f35ca7bb24ce92c177277ef` |
 
 Artifact SHA-256 `ab72dd9e9a2c7fc9c29d81528b0676e0af97d18beab437ed3fce7bb22b11fa1a`.
+
+## 8. Final local verification
+
+Scientific source **c9577acd2c8115e3a9551aacd9b59e4c1f71b9a5**. Full **1305 tests PASS290.986s**;47newPASS0.739s. Deterministic gzip byte regeneration `--check` PASS; all artifact input pins checked. Protected three paths unchanged vs cf29a0ce3, all changed files<5MiB. CI below is only called successful after actual conclusion/headSHA check.
+
+Final scientific **Verify40304091950 SUCCESS**; REST headSHA exactly **c9577acd2c8115e3a9551aacd9b59e4c1f71b9a5**, full regression job passed. Raw `ci.json` preserved.
+
+Official PR12 handoff **6413383750**, pending peer review. No self-ACK/full#17 closure.
