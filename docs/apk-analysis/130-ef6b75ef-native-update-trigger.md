@@ -129,3 +129,15 @@ python3 -m unittest tests.test_owner130 -v
 
 The verifier refuses to build if either probe's SHA-256, the XAPK pin, the `libunity.so` pin or
 any of the 177 facts disagrees with the pinned bytes.
+
+## 6. Verification (final)
+
+| check | result |
+| --- | --- |
+| `python3 tools/verify/owner130.py --check` | PASS, artifact 7590 B `6afffcec6902b22285f1b46c84fa3f2a0221967bd7ef2b3b45471b88299c8057` |
+| `python3 -m unittest tests.test_owner130 -v` | 20 tests, 0.073 s, OK |
+| `python3 -m unittest discover -s tests` | 1855 tests, 311.529 s, OK |
+| CI `Verify extracted tables` | run 40404161026, job `verify`, success on `8db8c21c2` |
+| recovery runs | 40403425044 (`ca0c21b8f`), 40403634092 (`63eb9d186`) |
+| receipts | `reverse-engineering/raw/l3-ef6b75ef130-verification/` (claim, ci, ci-jobs, check, local, focused.log.gz, full.log.gz, handoff) |
+| official handoff | PR12 comment 6427817329 |
