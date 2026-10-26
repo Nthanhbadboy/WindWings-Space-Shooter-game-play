@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 112 — 27/10, ef HANDOFF127 whole-FDE null-clip):** FDE
+> `6cf7b4..6cff44` entry→RET (51 instr × 3 biến thể) · `6ceeb0` zero-count +
+> dealloc-sink `3c9438`(0) · 6 callee extents · 33 witnesses · **M1–M5 missing-X
+> map không đóng** (`6426133738` · sci `6781d828f` Verify ✓ · `8b9df0038789…`
+> 2850B ✓ · 1789 local PASS). Review-126 + review-127 mở CLAIM (đề nghị AI-3).
+> Ceiling còn ĐANG 3 lane: registry-v2 · HANDOFF-121+reviews · D5 (a5).
+> datas/ = **168**. verify 209/0/2.
+>
 > **Sửa lại (lần 111 — 27/10, H3/C7 ĐÓNG — HÀNG H XONG HẾT):** **H3** (a5
 > `a5b564c…` · 3/3 runs ✓ · `26b34c73…` · 278 local): 45/900xx exact roots
 > (trong 2.081) · 0/45 thuộc waves-roster · 45/45 identity · role/use =

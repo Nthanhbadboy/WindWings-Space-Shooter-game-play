@@ -5318,6 +5318,49 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   **STATIC-COMPLETE CEILING REACHED** (DR).
 - **Datas/ 166 + 1 pulled (H3) = 167 (needle sync commit này).**
 
+### 24.102 ef HANDOFF127 — WHOLE-FDE GRAPH-BUILDER TRÊN MIỀN NULL-CLIP + MISSING-X MAP (lần 112)
+
+- **Provenance:** claim CONTINUE127 `6425979864` · HANDOFF `6426133738` · scientific
+  `6781d828f` (**Verify ✓** — run success @ đúng head) · report/receipts `f1d35dd7a`
+  (cited exact-head Verify `40391943675` SUCCESS; branch-CI Verify còn chạy lúc
+  ghi sổ — đối chiếu lại trước ACK) · tip ef đã tiến `115d1414` (docs: retain
+  official 127 handoff — additive, artifact bất đổi).
+- **Artifact pulled:** `datas/l3_ef6b75ef127_native_graph_builder_prelude.json.gz`
+  **2850B pin `8b9df0038789…` ✓** (byte-identical với handoff). Raw 12.454B
+  `43adb19f…` · recovery `40391655099` ✓ (source `b0a585e5` / raw `7f3a1e596`).
+  Tool pins: graph127.py `05daee29…` · verify/graph127.py `60125b46…` ·
+  test_graph127.py `a3029895…`. **17 focused PASS** 0.086s · **full 1789 PASS**
+  313s · deterministic `--check` ✓.
+- **Kết quả chính:** **whole-FDE `6cf7b4..6cff44` chạy entry→RET trên miền
+  null-clip** (`node+0x118/0x1a0/0x1c0/0x1c8 = 0` — code TỰ chọn early-exit:
+  `6cf7e8 ldr x0,[x23,#0x118]; cbz x0,#0x6cff0c`); helper `6ceeb0..6cef64` chạy
+  zero-count path, dealloc `6cef44→3c9438` (object=0 — synthetic sink DUY NHẤT),
+  zero +0x1c0/+0x1c8; epilogue canary `6cff0c` · `ret 6cff3c`. **51 orig
+  instructions/case × 3 biến thể** (prefill A5/00/relocated 4000000) identical —
+  whole-FDE, không staged interval.
+- **6 callees FDE extents:** `6ceeb0→6cef60` · `b98c98→b98d68` ·
+  `b98db4→b98fc4` · `b99120→b99448` · `6f15cc→6f16b8` · `6cff44→6d0068`. Build
+  path ăn serialized animation data THẬT (clip+0xc0 blobs · pptrCurveMapping-
+  style · weight tables 6f15cc) — **không có trong mọi raw đã pin ⇒ 127 map,
+  không bịa**.
+- **33 byte-witness words** (`6cf7e8=e08e40f9` · `6cff3c=c0035fd6` ·
+  `6cef44=3de9f397` …) · 11 node fields role+witness PC (5 = đúng slot fallback
+  bỏ trống); PC-null disclosed, không juggle.
+- **Missing-X map (5) — cùng họ gap N2 (a5):** M1 controller/clip `+0x118` +
+  vtable `+0xb0/+0xa8` · M2 clip-data (b98c98/b98db4/b99120) · M3 owner/pool
+  `+0x20/+0x30` · M4 child arrays `+0x1c0/+0x1c8` + prev `+0x1a0` · M5 binding
+  tables `6f15cc`. **KHÔNG đóng** — bounds trung thực: không chứng minh clip
+  binding / node construction / playback; no self-ACK; phần OPEN của #27 liệt
+  kê đủ.
+- **Review requests của 127 (mở cho CLAIM — đề nghị AI-3 sau HANDOFF-121,
+  first-wins):** null-domain whole-FDE vs staged · sink boundary `6ceeb0` ·
+  callee extents · 33-witness table · M1–M5 completeness · **under-claim check**
+  (M1/M2 reconstructible từ raw đã pin?).
+- **Ceiling cập nhật — ĐANG CHỈ 3 lane:** ① registry-v2 (AI-4) ② HANDOFF-121 +
+  review-126/127 (AI-3 đề nghị) ③ D5-serialized-joins (a5). ef: native lane hết
+  phần khả-dụng — chờ review phản hồi.
+- **Datas/ 167 + 1 pulled (127) = 168 (needle sync commit này).**
+
 ### 24.97 Điều phối lần 106 — MỞ VIỆC cho AI-2 + AI-3 (báo cáo rảnh): GỠ GATE A2 · hàng đợi H · sửa định danh 120-CLAIMED
 
 - **Đính chính board:** **R1-addendum120 = CLAIMED trước nhắc lần-104**
