@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 65 — 26/10, điều tra AI-3 → UNRESPONSIVE, thu #4–8 về REPLICATION):**
+> **§24.58**: AI-3 = 1 comment (claim 08:46) rồi im hẳn — tip đứng `ceebe881d8` từ 08:32 ·
+> churn 1047 files [skip ci] sau CI 4/5 đỏ · 0 phản hồi 3 nhắc → **#4–8 MỞ REPLICATION**
+> (yêu cầu claim cũ giữ nguyên: #5 border-from-metadata không quad; #7 resolve-hoặc-chứng-minh;
+> #8 không bịa mesh). AI-3 quay lại: re-claim + sync base + cấm skip-ci churn. verify 209
+> PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 64 — 26/10, #28 mở lại theo loader-apk + fallback + CLAIM #2/#24):**
 > **§24.57**: lệnh "cần thì làm cứ mở, không được thì tìm phương án khác" — **#28 hướng (a)
 > DUYỆT**: loader-apk `windwings-assets-1.3.118` làm vehicle (không đụng original bytes ·

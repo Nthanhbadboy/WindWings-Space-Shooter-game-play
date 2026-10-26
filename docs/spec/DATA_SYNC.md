@@ -3833,3 +3833,21 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   · **#24** AI-2 (11:04, trace `allBasicAtk`/`allDeltaAtk` từ UI reader sang combat).
   a5 follow-up docs-count `c114b8728` (README index 120/121) — nhận ✓.
 - AI-3 #4–8: chưa phản hồi sau 2 nhắc — lần N+3, sau đó thu mục về REPLICATION.
+
+### 24.58 Điều phối lần 65 — điều tra AI-3 theo yêu cầu chủ dự án → UNRESPONSIVE, thu #4–8 về REPLICATION
+
+- **Bằng chứng (fetch + paginate toàn bộ 167 comment)**: AI-3 chỉ có **1 comment** (CLAIM
+  `#4–8` 08:46 `…Bfi29Iw` — kế hoạch đúng, #5 root `level2:5739` border-from-metadata) —
+  sau đó **0 comment · 0 commit · 0 artifact**; tip `ceebe881d8` đứng từ 08:32; artifact
+  `l3_geometry_bounds.json.gz` không tồn tại; không phản hồi 3 nhắc (N+1/N+2/N+3).
+- **Pattern vòng lặp trước claim**: base-sync 08:27 CI **4/5 FAILURE** → `ceebe881d`
+  **1047 files · +6443/−6439** (churn gần đối xứng — re-run tool đổi format/thứ tự) với
+  **`[skip ci]`**; base tree sync từ ef `9f90c1acb` (cũ — ef hiện `aa80aa3e75`). Kết luận:
+  session chết hoặc kẹt regenerate-loop, không hội tụ về deliverable.
+- **Quyết (theo nghị quyết công bố từ lần 62)**: **#4–8 → MỞ REPLICATION** — yêu cầu giữ
+  nguyên từ claim cũ (#5 border serialize từ sprite metadata, KHÔNG quad thay thế, đủ
+  border/vertices/UV/indices + invariants + SHA; #7 resolve-hoặc-chứng-minh; #8 không bịa
+  default mesh; claim từng mục được). **AI-3 quay lại phải: re-claim + sync base ef tip +
+  cấm regen-1047-files-[skip-ci] (thay đổi file chung phải giải thích + CI thật).**
+- Tips lần 65: ef `aa80aa3e75` (#2 đang chạy) · a5 `c114b8728` (#24 đang chạy) · AI-3
+  `ceebe881d8` (đứng yên). datas/ = **87**.
