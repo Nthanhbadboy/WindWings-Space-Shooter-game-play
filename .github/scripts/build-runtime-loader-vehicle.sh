@@ -83,8 +83,10 @@ REPO="${GITHUB_REPOSITORY:?GITHUB_REPOSITORY is required}"
 # inventory, then fetch the matching asset by immutable asset ID (not git tag).
 release_list="$(gh api "repos/$REPO/releases?per_page=100" --paginate --jq '.[]')"
 release_record="$(jq -rs --arg tag "$APK_TAG" --arg asset "$APK_ASSET" '
-  [ .[] | select(.tag_name == $tag and .draft == true) ] | first as $release |
-  [$release.id, ($release.assets[] | select(.name == $asset) | .id)] | @tsv
+  ([ .[] | select(.tag_name == $tag and .draft == true) ] | first) as $release |
+  if $release == null then empty
+  else [$release.id, ($release.assets[]? | select(.name == $asset) | .id)] | @tsv
+  end
 ' <<< "$release_list")"
 RELEASE_ID="${release_record%%$'\t'*}"
 ASSET_ID="${release_record#*$'\t'}"

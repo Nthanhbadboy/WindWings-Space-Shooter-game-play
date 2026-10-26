@@ -158,11 +158,13 @@ jobs:
   build-loader-vehicle:
     name: build pinned FusionCore + RamusBridge vehicle
     needs: build
-    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 50
+    # Draft release assets are writer-only; this job reads the pinned asset and does not mutate it.
     permissions:
-      contents: read
+      contents: write
+      issues: write
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
