@@ -165,11 +165,12 @@ trên các static `MethodInfo` cache).
 ⇒ **Chỉ trong thân managed type này** (không có instance binding): nhánh khớp với `attackEventName`
 tắt `chargeEffect` rồi gọi `onAttack.Invoke()`; nhánh khớp với `preAttackEffectEventName` bật
 `chargeEffect`. Đây mô tả code trong class, không chứng minh callback đã đăng ký/chạy trên prefab hay
-gây sát thương ở runtime. **Giá trị hai chuỗi và prefab/receiver identity vẫn unresolved**: `Stop` và
-`Banplasma` chỉ là tên marker trong Spine TextAsset, không phải giá trị đã bind cho class này hay
-Boss-39002 slot `0x2ADFB48`. Reports 142–154 giữ Boss-39001 và Boss-39002 routes riêng; không chuyển
-event/key evidence giữa chúng. `BossSpineEventHandler` identity remains bounded to the checked sources,
-not a global non-use result.
+gây sát thương ở runtime. `Stop` và `Banplasma` là tên marker trong Spine TextAsset; riêng Boss-39002
+slot `0x2ADFB48` nay có static literal identity `Stop` theo provenance HANDOFF123 độc lập của AI-1
+(PR12 comments `6422951255`, `6423891421`). Điều đó không bind marker occurrence hay giá trị nào cho
+class `BossSpineEventHandler`, vốn vẫn thiếu instance binding. Reports 142–154 giữ Boss-39001 và
+Boss-39002 routes riêng; không chuyển event/key evidence giữa chúng. Identity của class này vẫn bounded
+to the checked sources, not a global non-use result.
 
 **Nguồn thứ hai, độc lập** — `docs/apk-analysis/spine-events.csv` (21 dòng dữ liệu, kéo từ nhánh dữ liệu
 24/10) xác nhận đúng **2 tên event** đó, kèm mốc thời gian:
@@ -183,14 +184,15 @@ not a global non-use result.
 
 **`skeleton__21`: 6 event · 2 tên phân biệt** (5×`Stop` + 1×`Banplasma`).
 
-`Stop`/`Banplasma` chỉ là tên marker trong Spine TextAsset dùng chung. Chúng **không** phải giá trị
-đã giải của static event-name slot Boss-39002 `0x2ADFB48`, và không chứng minh event được gửi hay
+`Stop`/`Banplasma` là tên marker trong Spine TextAsset dùng chung. Static slot Boss-39002
+`0x2ADFB48` được xác định là literal `Stop` theo provenance HANDOFF123 riêng của AI-1 (PR12 comments
+`6422951255`, `6423891421`); tuy nhiên điều này không chứng minh marker occurrence được gửi hay
 playback trên prefab nào. Callback Boss-39002 có vòng lặp điều kiện trên mảng `gun3Static` riêng;
 report 154 giải target thành `GameObject.SetActive(false)` rồi nạp lại cùng index để gọi
-`SetActive(true)`; receiver identity across calls không được đảm bảo nếu runtime state đổi. Vì slot so sánh vẫn unresolved, không gán chuỗi gọi đó cho `Stop`, `Banplasma`,
-defeat hoặc burst. Giữ riêng route `Boss_1_Animation` của Boss-39001. Kết quả identity/export có giới
-hạn của `BossSpineEventHandler` (reports 142–151) chỉ áp dụng trong các nguồn đã kiểm tra, không phải
-kết luận toàn cục rằng class không được dùng.
+`SetActive(true)`; receiver identity across calls không được đảm bảo nếu runtime state đổi. Không gán
+nhánh đó cho defeat hoặc burst, và không khẳng định runtime effect. Giữ riêng route `Boss_1_Animation`
+của Boss-39001. Kết quả identity/export có giới hạn của `BossSpineEventHandler` (reports 142–151) chỉ
+áp dụng trong các nguồn đã kiểm tra, không phải kết luận toàn cục rằng class không được dùng.
 
 ---
 

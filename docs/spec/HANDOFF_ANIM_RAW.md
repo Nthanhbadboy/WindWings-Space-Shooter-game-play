@@ -26,7 +26,7 @@
 | Timeline theo giây của 269 cặp (prefab, clip) | `BOSS_ANIM_TIMELINE.md` — 795 event, 130 tên hàm | claim **R1–R6** |
 | Tên field 12 delegate + 5 field `BossSpineEventHandler` | `interesting-classes.cs` (kéo 24/10) | claim **T2**, **T3** |
 | Tách route Boss 1 | Boss-39001 = `Boss_1_Animation` path `674445`; Boss-39002 = `Boss1_Director` path `582209`; shared Spine asset không nhập hai component | reports **141–143**; keep evidence separate |
-| Boss-39002 `gun3Static` call semantics | At each index, `GameObject.SetActive(false)`, then reload same index for `SetActive(true)`; three serialized refs; event key/defeat-burst unresolved | report **154**; static-only, no runtime result |
+| Boss-39002 `gun3Static` call semantics | At each index, `GameObject.SetActive(false)`, then reload same index for `SetActive(true)`; slot literal `Stop` from separate AI-1 handoff; marker delivery/defeat-burst unresolved | report **154**; static-only, no runtime result |
 | 8 tên entry boss 1 đọc thẳng từ prefab | `Boss1_Director.csv`: `Boss-39002`, **1** instance | claim **T1** |
 | Ma trận `*_Director` ↔ `*_AnimationEvents` | **18** / **18** / **15** trên 39 prefab `Boss-*` | claim **T4** |
 | **Ai đặt trigger `Animator`** | **7 call site `Animator.SetTrigger` / 5 method**, tất cả trong `Boss_AttackPhases` (`CallMixAnimation` · `OnGunDie` · 3 vòng `IEAttackRound*`) | `native-calls.json`, claim **W1** — **đừng** đi tìm lại |
@@ -56,8 +56,9 @@ component. Reports 142–154 do not merge these routes.
 - **Boss-39001:** `Boss_1_Animation` path `674445` → `SkeletonAnimation` `602882`; its two
   `UnityEvent` fields are a different route from the Boss-39002 callback below.
 - **Boss-39002:** `Boss1_Director` path `582209` → `SkeletonAnimation` `664302`. Its callback compares
-  against unresolved static slot `0x2ADFB48`; report 154 resolves only the conditional
-  `gun3Static` `SetActive(false)` → `SetActive(true)` sequence.
+  against static slot `0x2ADFB48`, whose literal is `Stop` per separate AI-1 HANDOFF123 provenance;
+  report 154 resolves the conditional `gun3Static` `SetActive(false)` → `SetActive(true)` sequence,
+  not callback delivery, marker occurrence, or runtime effect.
 - `BossSpineEventHandler` has **5 managed fields** and a `HandleEvent` body, but its Boss-39001
   MonoScript/instance/value binding remains unresolved. Reports 142–151 already checked 127,852
   script-link rows and 140 typetree JSONL exports; that bounded search is **complete**, not a request
@@ -75,7 +76,7 @@ export. Đây vẫn là giả định cần kiểm cho từng prefab, không ph�
 | lớp / route | đã biết | còn thiếu | việc hợp lệ |
 |---|---|---|---|
 | `BossSpineEventHandler` | **5 field** + `HandleEvent`; bounded census reports 142–151 | Boss-39001 identity/instance/serialized string values | chỉ mở lại khi có nguồn mới được phép; không lặp text census |
-| Boss-39002 `Boss1_Director` | component/prefab join; `gun3Static` bool sequence ở report 154 | string slot `0x2ADFB48` / event key | giữ unresolved; không đụng native/FDE hoặc runtime lane |
+| Boss-39002 `Boss1_Director` | component/prefab join; `gun3Static` bool sequence at report 154; static slot literal `Stop` by separate AI-1 handoff | marker occurrence/delivery, defeat/burst role, runtime effect | keep those joins unresolved; no native/FDE or runtime lane |
 | `Boss1_AnimationEvents` | **12 field** `0x20…0x78` + tên | serialized instance binding | chỉ xử lý trong task export `*_AnimationEvents` nếu có raw đầu vào mới |
 | Boss-39001 `Boss_1_Animation` | ✅ 1 instance; 8 field `state*`; 2 `UnityEvent` | handler script PPtr identity remains unresolved | không dùng Boss-39002 evidence để lấp |
 
@@ -89,10 +90,12 @@ xuất lại các route Spine nói trên để thay thế prefab-specific eviden
 "không thấy trong tập đã export"; không suy ra runtime non-use. Không dùng kết quả đó để phủ định
 các handler khác hoặc thay thế prefab-specific joins.
 
-**Rút lại ứng viên cũ:** không gán `Stop`/`Banplasma` cho `BossSpineEventHandler` hay cho slot
-`0x2ADFB48`. Bounded census reports 142–151 đã khép ở phạm vi đã xét; mọi mở lại cần nguồn mới,
-được phép và có provenance. Boss-39001 script identity và Boss-39002 event-key identity vẫn là hai
-gap riêng.
+**Đính chính ranh giới ứng viên cũ:** static literal của slot `0x2ADFB48` là `Stop` theo provenance
+HANDOFF123 công khai, riêng của AI-1; không suy điều đó từ `Tut_Settings1`. Chưa gán marker occurrence,
+delivery, defeat/burst hay runtime effect cho slot/callback, và không gán giá trị nào cho
+`BossSpineEventHandler` khi class vẫn thiếu instance binding. Bounded census reports 142–151 đã khép
+ở phạm vi đã xét; mọi mở lại cần nguồn mới, được phép và có provenance. Boss-39001 script/route identity
+và Boss-39002 callback delivery/effect vẫn là các ranh giới riêng.
 
 **Acceptance:** mỗi event-clip prefab được ghép bằng instance evidence hoặc được giữ là scoped gap;
 không dùng shared Spine asset, tên class hay component sibling để lấp một join thiếu.

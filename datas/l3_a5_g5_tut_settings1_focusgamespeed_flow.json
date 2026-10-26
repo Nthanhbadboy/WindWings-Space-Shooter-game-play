@@ -4,8 +4,8 @@
   "branch": "arena/a5a74747-windwings-space-shooter-game-p",
   "evidence_mode": "static_only",
   "disposition": {
-    "status": "TUT_SETTINGS1_FOCUSGAMESPEED_CALL_FLOW_BOUND / SLOT_LITERAL_AND_BOSS39002_IDENTITY_UNBOUND",
-    "summary": "Tut_Settings1.Start constructs an Action<float> targeting <Start>b__11_0 and stores it in the slider's onChange field. The callback guards its focusGameSpeed Animator reference and active GameObject, latches stopFocus, then passes the value from shared static slot 0x2ADFB48 to Animator.SetTrigger. Serialized UI context links the instance to FocusGameSpeed, whose controller has a Stop parameter and transition to Base Layer.stop. This is contextual evidence only: the slot literal, a slot-to-parameter mapping, and any Boss-39002 Spine identity remain unproven."
+    "status": "CALL_FLOW_BOUND / SLOT_LITERAL_STOP / CONTROLLER_NAME_MATCH_STATIC / RUNTIME_TRANSITION_UNOBSERVED",
+    "summary": "Tut_Settings1.Start constructs an Action<float> targeting <Start>b__11_0 and stores it in the slider onChange field. The callback guards its focusGameSpeed Animator reference and active GameObject, latches stopFocus, then passes the value from shared static slot 0x2ADFB48 to Animator.SetTrigger. The slot literal is independently resolved as Stop by the separate AI-1 public handoff; the serialized FocusGameSpeed controller also has a Stop parameter, establishing static string-name equality only. Callback execution, Animator transition, and Boss-39002 Spine marker delivery/effect remain unobserved."
   },
   "method_and_fields": {
     "class": "Tut_Settings1",
@@ -59,12 +59,16 @@
           "purpose": "latch before SetTrigger call"
         }
       ],
-      "slot_load_range": ["0x13294DC", "0x13294E8"],
+      "slot_load_range": [
+        "0x13294DC",
+        "0x13294E8"
+      ],
       "slot_address": "0x2ADFB48",
       "callsite": "0x13294EC",
       "call_target_rva": "0x27583B0",
       "call_target_signature_from_dump": "UnityEngine.Animator.SetTrigger(string name)",
-      "slot_string_value_resolved": false
+      "slot_string_value_resolved": true,
+      "slot_string_value": "Stop"
     }
   },
   "serialized_ui_context": {
@@ -101,7 +105,7 @@
       "any_state_condition_event_id": 426031496,
       "any_state_destination_state_index": 1,
       "destination_state_path_name": "Base Layer.stop",
-      "interpretation": "contextual candidate only; no slot-to-parameter join"
+      "interpretation": "The independently resolved static slot literal Stop exactly matches this serialized controller parameter name; static name equality only, not a runtime SetTrigger or transition result."
     }
   },
   "callback_continuation_boundary": {
@@ -115,7 +119,7 @@
     "full_tutorial_lifecycle_or_callback_delivery_established": false
   },
   "cross_context_boundary": {
-    "slot_0x2ADFB48_is_Stop_proven": false,
+    "slot_0x2ADFB48_is_Stop_proven": true,
     "slot_to_controller_parameter_mapping_proven": false,
     "same_slot_used_in_boss39002_callback": true,
     "boss39002_callback_method": "Boss1_Director.SkeletonAnimation_AnimationState_Event",
@@ -127,7 +131,9 @@
     "runtime_data_inspected": false,
     "native_or_libunity_fde_lane_inspected": false,
     "runtime_probe_workflow_inspected": false,
-    "live_dps": "MODEL_NOT_MEASURED"
+    "live_dps": "MODEL_NOT_MEASURED",
+    "slot_to_controller_parameter_name_equality_proven": true,
+    "ui_context_used_to_identify_slot_value": false
   },
   "source_sha256": [
     {
@@ -170,5 +176,16 @@
       "bytes": 2318,
       "sha256": "9bcd2b0df21bf8e6aa13b311f7f8cd41f174e531a961a1c6053bbaa8562b3f22"
     }
-  ]
+  ],
+  "external_static_literal_provenance": {
+    "literal": "Stop",
+    "slot": "0x2ADFB48",
+    "source_lane": "separate AI-1 public HANDOFF123; not part of this G5 game-side source pin set",
+    "handoff_pr_comment_id": 6422951255,
+    "correction_pr_comment_id": 6423891421,
+    "used_for_identity_only": true,
+    "ui_context_used_to_identify_slot": false,
+    "native_or_raw_artifact_added_or_modified": false,
+    "runtime_trigger_transition_or_spine_marker_delivery_proven": false
+  }
 }

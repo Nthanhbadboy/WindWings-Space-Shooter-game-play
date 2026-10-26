@@ -4,8 +4,8 @@
   "branch": "arena/a5a74747-windwings-space-shooter-game-p",
   "evidence_mode": "static_only",
   "disposition": {
-    "status": "BOSS39002_SET_ACTIVE_SEQUENCE_BOUND / EVENT_KEY_AND_DEFEAT_BURST_UNBOUND",
-    "summary": "In the Boss-39002 Boss1_Director callback body, the event-name equality branch iterates the serialized gun3Static GameObject[] by index. At each index it calls GameObject.SetActive(false) on the currently loaded non-null entry, then reloads the field and same index before the SetActive(true) call. Runtime mutation could change the second receiver; identity across the calls is not established. The compared event-name slot remains unresolved, and no defeat/burst event or runtime execution is claimed."
+    "status": "BOSS39002_SET_ACTIVE_SEQUENCE_BOUND / SLOT_LITERAL_STOP / DELIVERY_MARKER_AND_DEFEAT_BURST_UNBOUND",
+    "summary": "In the Boss-39002 Boss1_Director callback body, the event-name equality branch uses static slot 0x2ADFB48, whose literal identity is independently resolved as Stop by the separate AI-1 public handoff. The branch iterates the serialized gun3Static GameObject[] by index. At each index it calls GameObject.SetActive(false) on the currently loaded non-null entry, then reloads the field and same index before the SetActive(true) call. Runtime mutation could change the second receiver; identity across the calls is not established. The static key identity does not establish callback delivery, a particular marker occurrence, branch execution, a defeat/burst event, or runtime effect."
   },
   "prefab_separation": {
     "boss39002": {
@@ -48,23 +48,29 @@
     "event_data_nonnull_check": "0x14FFB30",
     "name_comparison_call_target": "0x1FECA34",
     "compared_static_pointer_slot": "0x2ADFB48",
-    "static_slot_string_value_resolved": false,
+    "static_slot_string_value_resolved": true,
     "conditional_array_loop": {
       "array_receiver": "this+0xB8 (gun3Static)",
       "array_length_load": "[array+0x18]",
       "array_data_start": "array+0x20",
       "index_initialization": "x20=4; x21=x20-4, so the first data access is element index 0",
-      "iteration": "increments element index until the serialized array length; performs null/length checks before the calls; exact null-branch effect is not assigned here", 
+      "iteration": "increments element index until the serialized array length; performs null/length checks before the calls; exact null-branch effect is not assigned here",
       "per_index_call_sequence": [
         {
-          "instruction_range": ["0x14FFB74", "0x14FFB84"],
+          "instruction_range": [
+            "0x14FFB74",
+            "0x14FFB84"
+          ],
           "target_rva": "0x2781804",
           "target_signature_from_dump": "UnityEngine.GameObject.SetActive(bool value)",
           "boolean_argument": false,
           "meaning": "request deactivation of the current GameObject"
         },
         {
-          "instruction_range": ["0x14FFB9C", "0x14FFBAC"],
+          "instruction_range": [
+            "0x14FFB9C",
+            "0x14FFBAC"
+          ],
           "target_rva": "0x2781804",
           "target_signature_from_dump": "UnityEngine.GameObject.SetActive(bool value)",
           "boolean_argument": true,
@@ -74,10 +80,11 @@
       "same_index_used_for_both_calls": true,
       "array_and_element_reloaded_after_first_call": true,
       "receiver_identity_across_calls_guaranteed": false
-    }
+    },
+    "static_slot_string_value": "Stop"
   },
   "boundary": {
-    "callback_key_identity": "UNRESOLVED",
+    "callback_key_identity": "STOP (static literal identity from separate AI-1 HANDOFF123)",
     "callback_to_asset_marker_join_proven": false,
     "defeat_or_burst_event_identity_proven": false,
     "runtime_callback_delivery_or_execution_observed": false,
@@ -116,5 +123,16 @@
       "bytes": 2816,
       "sha256": "ab16013ff880f71a8242a3659efe9fb16b7e822cd5cb47f8185e92ce98a165c3"
     }
-  ]
+  ],
+  "external_static_literal_provenance": {
+    "literal": "Stop",
+    "slot": "0x2ADFB48",
+    "source_lane": "separate AI-1 public HANDOFF123; not part of this G4 game-side source pin set",
+    "handoff_pr_comment_id": 6422951255,
+    "correction_pr_comment_id": 6423891421,
+    "used_for_identity_only": true,
+    "ui_context_used_to_identify_slot": false,
+    "native_or_raw_artifact_added_or_modified": false,
+    "callback_delivery_marker_occurrence_or_runtime_effect_proven": false
+  }
 }
