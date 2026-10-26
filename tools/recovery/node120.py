@@ -6,7 +6,7 @@ XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
 NAMES=[]
 RANGES=[(0x10b1240,0x10b1340)]
 TARGETS={0x6d353c:'node_constructor',0x10b1240:'node_primary_vtable',0x10b1420:'node_secondary_vtable'}
-FOLLOW_ENTRIES=[0x6d353c,0x6d6aa0,0x6a6ff4]
+FOLLOW_ENTRIES=[0x6d353c,0x6d6aa0,0x6a6ff4,0x57ef84,0x575e80,0x575c60,0x573a1c]
 
 def sha(b):return hashlib.sha256(b).hexdigest()
 def signed(v,n):return v-(1<<n) if v&(1<<(n-1)) else v
