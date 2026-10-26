@@ -5,8 +5,8 @@ ROOT=Path(__file__).resolve().parents[2]
 XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
 NAMES=['UnityEngine.Animations.AnimationClipPlayable::GetAnimationClipInternal','UnityEngine.Animations.AnimationClipPlayable::CreateHandleInternal','AnimationClipPlayable','AnimationClip']
 RANGES=[(0x6d0000,0x6d3900),(0x6d6bf8,0x6d7000),(0xb68000,0xb6c400)]
-TARGETS={0x6d3744:'context_writer',0xb6a84c:'clip_stop_getter',0x10f29f0:'AnimationClip_native_record',0x10b1240:'clip_node_primary_vtable'}
-FOLLOW_ENTRIES=[0x6d3744]
+TARGETS={0x6d3744:'context_writer',0xb6bf94:'clip_virtual_duration',0xb69d14:'clip_constructor',0x10f29f0:'AnimationClip_native_record',0x10b1240:'clip_node_primary_vtable'}
+FOLLOW_ENTRIES=[0x6d3744,0xb6bf94]
 
 def sha(b):return hashlib.sha256(b).hexdigest()
 def signed(v,n):return v-(1<<n) if v&(1<<(n-1)) else v
