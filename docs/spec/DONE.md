@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 101 — 27/10, phục hồi sandbox ×5 + G3 ĐÓNG (G1–G6 closure 6/6) + 142 ĐÓNG):**
+> **§24.92**: restore mất object DB → fetch tip + reset --hard, verify xanh
+> ngay ✓ · **G3**: boss-39001 event body @`0x1247DA8` = **single RET** ·
+> Complete→BossWork Attack1/2/3 `0x220D324` · NOT_BOUND marker · runs 3/3 ✓ ·
+> `3c9851d9…` ⇒ **G1–G6 = 6/6 ĐÓNG** · **142**: slot `0x2ADB8E0` = ô klass
+> **UnityEngine.Application** (47 cặp/33 method · 4 API · **gift 7 ngôn ngữ
+> KHÔNG có VN** · **coins 68999 bẫy movk** · runs `40378057531`/…146/…980 ✓ ·
+> `d618b740…`) · ACCEPT followup-10 (143) · datas/ = **151**. verify 209/0/2.
+>
 > **Sửa lại (lần 100 — 27/10, R1 tìm lỗi thật + CORRECTION123 + 141/G6/ef124 ĐÓNG):**
 > **§24.91**: **R1**: "53→3" = hai quét BỔ TUNG (không subset) + addend =
 > encoded usage `0xa0003ca7` — ef **CORRECTION123** `ea6a3835f` chấp nhận,

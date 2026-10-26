@@ -5043,6 +5043,47 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   **R2** (`6423892767` — ef review row16-118, deliver 125 + artifact + `review:`).
 - **Datas/ 146 + 3 pulled (141/G6/ef124) = 149 (needle sync commit này).**
 
+### 24.92 Điều phối lần 101 — phục hồi sandbox (×5) · G3 ĐÓNG — HÀNG ĐỢI G CLOSURE 6/6 · 142 ĐÓNG (ô klass Application) · ACCEPT followup-10
+
+- **Sự cố hạ tầng (×5):** sandbox restore mất object DB (HEAD về initial) —
+  phục hồi chuẩn: fetch tip `cb63a87ae` (mọi thứ đã push an toàn) → reset --hard
+  tip → worktree sạch → verify **209/0/2** ngay sau restore ✓ (2099 untracked
+  backup `/tmp/wip_backup_105`). Kinh nghiệm giữ nguyên: `git rev-parse HEAD`
+  đầu mọi session.
+- **a5 G3 — ĐÓNG (bounded), MỤC CUỐI HÀNG ĐỢI G ⇒ G1–G6 CLOSURE 6/6**
+  (complete `6424055594` @ `a7ba5e5`; runs 3/3 ✓): chuỗi serialize
+  `Boss_1_Animation` 674445 → SA 602882 → data 580611 → JSON 918; **body export
+  `SkeletonAnimation_AnimationState_Event` @ RVA `0x1247DA8` = single RET** —
+  không argument/slot/comparison/branch (KHÁC hẳn route boss-39002) · route
+  Complete→BossWork: so tên animation với state fields → Attack1/2/3 qua
+  `0x220D324`, `defeatEvent` → helper `0x278EF98` cho Baydi/Dead — **không đọc
+  `burstEvent`** · **event-slot/marker = NOT_BOUND** (m_Script PPtr blank target
+  · 0 instance BossSpineEventHandler) · không chuyển evidence từ 39002 ✓ (route
+  tách đúng kỷ luật). Report 157 + receipt `3c9851d9…` 10.359B pin ✓
+  (cross 0x1247DA8×2/0x220D324×4/0x278EF98×2 ✓). *Hàng đợi G (G1–G6) — 6/6
+  ĐÓNG trong ~1 giờ làm việc của a5.*
+- **AI-4 142 — ĐÓNG** (HANDOFF `6424171401` @ `3a5daeb3e`; runs
+  `40378057531`/`40378068146`/`40378078980` ✓; suite 479 (42 mới); artifact
+  pulled `d618b740…` 3669B khớp ✓): **slot `0x2ADB8E0` (44939488) = ô klass
+  `UnityEngine.Application`** — không phải class game; lý do mọi statics-scan
+  trả rỗng: cell chỉ dùng idiom init (`+0xE0` · helper `0x110D028`), không tới
+  `klass+0xB8`; **census 47 cặp/33 method/92 điểm — 47/47 gọi static
+  Application**; 4 API: `internetReachability` 29 · `companyName` 10 ·
+  `OpenURL` 6 · `systemLanguage` 2 · **gift code 7 ngôn ngữ {Danish, English,
+  French, German, Japanese, Korean, Norwegian} — không có tiếng Việt** (39) ·
+  **tiền tệ mặc định: coins 68999 (bẫy `mov w1,#0xd87`+`movk #1,lsl#16` =
+  0x10D87 — không phải 7559, test chặn) · gems 500 · stars 0 · wingCoins
+  999999/0** · `slot_refs` 45/47 (thiếu `Board_PVP.CheckInternet` 19.787.760 —
+  **chỉ mục ≠ bằng chứng vắng mặt**, ghi số đo). *Hạ tầng: run `40377251100`
+  đỏ do GitHub 502 ở bước publish (spec cũng dính 502 cùng lúc ✓ xác nhận) —
+  đẩy lại `3a5daeb3e` 3/3 xanh.*
+- **CLAIM followup-10** (`6424189466`, report 143 — PlayerPrefs key strings 4
+  getter tiền tệ, ô `0x2ADC0B8/0x2ADC0C8/0x2ADC0E0/0x2ADC1D0`; kiểm lại giả định
+  142 "không có addend" vs stringliteral.json): ACCEPTED.
+- R1 (AI-3 review123+124) + R2 (ef review-118): đang chạy — chưa thấy
+  deliverable; không nhắc vòng này.
+- **Datas/ 149 + 2 pulled (142/G3) = 151 (needle sync commit này).**
+
 ### 24.87 Điều phối lần 96 — #136 HANDOFF ĐÓNG (rank API interpreter + 2 đính chính 134/135) · CLAIM 137 · AI-2 memo chưa tới
 
 - **#29-followup AI-4 — HANDOFF #136 `6422732465` @ `efceee587` — ĐÓNG** (runs
