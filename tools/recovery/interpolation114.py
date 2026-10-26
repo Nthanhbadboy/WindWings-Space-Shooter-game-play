@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
 NAMES=['UnityEngine.AnimationCurve::Evaluate','UnityEngine.AnimationCurve::Evaluate(System.Single)','UnityEngine.AnimationCurve::AddKey','UnityEngine.AnimationCurve::AddKey_Injected','UnityEngine.AnimationCurve::Internal_Create','UnityEngine.AnimationCurve::get_keys','UnityEngine.AnimationCurve::GetKey_Injected','UnityEngine.AnimationCurve::set_preWrapMode','UnityEngine.AnimationClip::SampleAnimation']
-RANGES=[]
+RANGES=[(0x36e570,0x36e850)]
 TARGETS={}
 def sha(b):return hashlib.sha256(b).hexdigest()
 def signed(v,n):return v-(1<<n) if v&(1<<(n-1)) else v
