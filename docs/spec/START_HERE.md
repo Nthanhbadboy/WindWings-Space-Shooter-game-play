@@ -51,7 +51,8 @@
 | `datas/player_start_stats.json` | 6 mảng đã decode + damage × rate (proxy — report 79) | **24** tàu · **16** bán được · **8** giá `−1` | dựng bảng cân bằng tàu, không đoán |
 | `reverse-engineering/raw/player-loadout/` | Mảng int + asm `Player_Saved_Datas` | **5 blob · 49 int · 5/5 sha256 OK** | giá craft/unlock, chứng cứ save |
 | `docs/spec/RAW_AUDIT.md` | **Sổ kiểm claim ↔ raw** | **180 RAW · 3 DOC · 28 CONST / 211** | biết số nào tái đo được, số nào "đo một lần" |
-| `tools/` | **9** script đo lại được | — | `verify-claims.py`, `art-study.py`, `classify-by-atlas.py`, … |
+| `tools/` | **16** script ở cấp thư mục gốc (đếm trực tiếp) | — | Includes `build_l2_ramus_device_crosscheck_19.py` for rebuilding bounded Ramus evidence |
+| `datas/l2_ramus_device_crosscheck_19.json.gz` | #19 static/runtime evidence join | 250 static map arrays; 10 static list rows + 2 percent fields; archived runtime Map contents still placeholders | Count 250=250 is not contents parity; await `arr=256&depth=2` readback |
 
 **Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **77** file `datas/`.
 

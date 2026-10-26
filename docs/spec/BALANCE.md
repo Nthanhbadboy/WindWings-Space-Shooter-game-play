@@ -425,9 +425,7 @@ Device làm **HP hiệu dụng** tăng lên, đúng nghĩa "giáp": `HP_eff = HP
 | **1000–1999** | giáp: `reduceDamageByDevice += stat%/100` |
 | **5000–5999** | hồi máu: `amountAutoGainHpByDevice += StartHealth × stat%/100` |
 
-**e) Giá trị số **chưa** lấy được:** `listStatValues` / `percentByLevels1` / `percentByLevels2` được
-nạp bằng `RuntimeHelpers.InitializeArray` từ **field RVA data** trong metadata — `dump.cs` và asm
-**không** chứa các float đó. ⇒ biết **công thức + số loại**, chưa biết **giá trị từng loại** (mức D).
+**e) Giá trị tĩnh đã giải; đối chiếu runtime còn mở (Report 119):** `.cctor` của `Device_Get_Data` có 12 `InitializeArray` captures: **10** mảng `listStatValues` (`float[5]`) + **2** mảng `percentByLevels1/2`. Giá trị tĩnh đã decode trong `datas/device_table.json`; runtime 1.0.69 lưu trữ báo list length 10 nhưng chỉ trả tên kiểu cho các mảng lồng. Hai mảng phần trăm khớp với static captures ở độ chính xác float32. Vì vậy đã có giá trị tĩnh, nhưng mười hàng trong list **chưa** được đối chiếu giá trị với runtime của build khác; không tuyên bố parity cùng build.
 
 ### 0.6.8 **Vòng đời**: số của player được chốt **lúc nào**
 
@@ -1579,7 +1577,7 @@ Toàn bộ hex của các `.cctor` **đã nằm trong repo**; decode theo kiểu
 |---|---:|---|---|
 | `Droid_Data_Balance` | 3 | `500 · 120 · 816 · 400 · 400` · **10,0** × 6 · int[3] `50 · 125 · 250` | damage/thời gian/giá mở 3 droid item |
 | `Tech_Datas` | 7 | `1,9 · 1,8 · 1,68` · int[7] `500…1800` · float[24] `0,108 0,108 0,106 0,098 …` · float[13] `0,3 0,28 0,26 … 0,15` · int[10] `200…1800` · float[12] `0,1135 0,135 0,18 0,65 …` · int[10] `1500…13000` | **24 + 13** phần tử ≈ đúng số stat tech/ability đang thiếu |
-| `Device_Get_Data` | 12 | 12 mảng × **float[5]**: `3 5 7 8 9` · `8 15 23 30 36` · `3 6 9 12 15` · `5 8 11 13 15` · `10 50 100 150 200` · … | stat device theo **5 cấp** |
+| `Device_Get_Data` | 12 `InitializeArray` captures | `.cctor` groups **10** arrays into `listStatValues`; the last 2 go to `percentByLevels1/2` (offsets `0x8/0x10`). Runtime `listStatValues_count=10` on the separate modded 1.0.69 phone build; nested rows remain type-name placeholders. | 10 static list rows × `float[5]`; **not** a proven count of user-facing devices or same-build value parity (Report 119, this branch) |
 | `GameDatas` | 1 | float[6] = `0,5 · 0,6 · 0,7 · 0,8 · 0,9 · 1,0` | hệ số chung theo chế độ/độ khó |
 | `Stage_Get_Datas` | 2 | int[5] `350 600 5 10 10` · float[4] `1 · 2 · 3,6 · 3,6` | §6.4 |
 | `Player_Get_Datas` | 6 | §1.1b | damage/rate/wing/cost/clone/mission % |
