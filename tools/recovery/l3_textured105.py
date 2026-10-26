@@ -23,7 +23,11 @@ def recover(xapk,work):
         def first(a):return a[i][0] if isinstance(a[i],list) else a[i]
         off,n,z=first(s.offsets),first(s.compressedLengths),first(s.decompressedLengths);b=CompressionHelper.decompress_lz4(bytes(s.compressedBlob)[off:off+n],z);p=ShaderProgram(EndianBinaryReader(b,endian='<'),shader.version)
         for j,sub in enumerate(p.m_SubPrograms):
-            text=sub.Export();programs.append(dict(platform=platform,index=j,text=text,sha256=sha(text.encode())))
+            code=bytes(sub.m_ProgramCode)
+            try:text=sub.Export();status='UnityPy_exported_analysis'
+            except UnicodeDecodeError:
+                start=code.find(b'#version');text=code[start:].decode('utf8',errors='replace') if start>=0 else '';status='binary_prefix_GLSL_suffix_NOT_validated'
+            programs.append(dict(platform=platform,index=j,program_type=int(sub.m_ProgramType),version=sub.m_Version,keywords=sub.m_Keywords,code_sha256=sha(code),code_bytes=len(code),prefix_hex=code[:48].hex(),status=status,text=text,sha256=sha(text.encode())))
     analysis=dict(shader_raw_sha256=sha(shader.get_raw_data()),compressed_blob_sha256=sha(bytes(s.compressedBlob)),programs=programs)
     (out/'gpu-analysis.json').write_text(json.dumps(analysis,indent=2)+'\n')
     lib=metadata=None
