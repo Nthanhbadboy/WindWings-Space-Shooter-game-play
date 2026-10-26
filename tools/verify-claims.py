@@ -1193,6 +1193,29 @@ def a5_d5_user_lead_stats():
     )
 
 
+def a5_d5_23oct_runtime_stats():
+    d = ref_json("datas/l3_a5_d5_23oct_runtime_crosswalk.json")
+    if d is None:
+        return None
+    runtime = d.get("observed_runtime", {})
+    health = runtime.get("health", {})
+    arrays = runtime.get("player_get_datas_arrays", {})
+    gp = runtime.get("endgame_gp_datas", {})
+    return (
+        health.get("hud_hp_screenshot_reading"),
+        health.get("player_get_datas_start_hp"),
+        arrays.get("StartMainCannonDamages_count"),
+        arrays.get("StartMainCannonRate_count"),
+        gp.get("countReborn"),
+        gp.get("rebornNow"),
+        gp.get("maxCountReborn"),
+        int(bool(gp.get("isSummary"))),
+        sum(gp.get("listRebornUseItems", [])),
+        gp.get("pvpLife"),
+        int(bool(d.get("workflow_replayed"))),
+    )
+
+
 claim("I1", READY, "**5 field**: `hpProgressBarRenderer`", 5, display_fields,
       "Enemy_Display không có tham số hit flash / hit stop")
 
@@ -1235,6 +1258,11 @@ claim("MW6", "docs/apk-analysis/165-a5-d5-user-lead-premium-health-player-paths.
       "The serialized `Data_Players` record (`path_id=580761`) contains 25 entries",
       (126, 140, 2, 25, 6, 71, 99, 1, 0, 0), a5_d5_user_lead_stats,
       "D5 user-lead crosswalk; Health route reuses prior static result; starter premium/lives and component ownership remain bounded NOT_BOUND")
+
+claim("MW7", "docs/apk-analysis/166-a5-d5-23oct-captured-runtime-crosswalk.md",
+      "`screenshot_running_stage1.png` visibly shows HUD HP **2500**",
+      (2500, 2500, 24, 24, 0, 0, -1, 1, 0, 3, 0), a5_d5_23oct_runtime_stats,
+      "Read-only 23-Oct capture receipt; Premium/initial lives and component owner NOT_MEASURED, cross-build only, no runtime lane replay")
 
 
 # ── J. script animation (enemy + boss) ─────────────────────────────────
@@ -3433,8 +3461,8 @@ claim("IAB2", "docs/spec/BALANCE.md",
       "Stage_Get_Datas.cctor: int[5] startBonusValues + float[4] levelDelta; 0x40666666 = 3.6 (KHÔNG phải 2.1)")
 
 claim("APKD1", "docs/spec/START_HERE.md",
-      "**125** `.md` · **107** `.csv`",
-      (125, 107), apk_doc_counts,
+      "**126** `.md` · **107** `.csv`",
+      (126, 107), apk_doc_counts,
       "đếm trực tiếp thư mục apk-analysis — thêm báo cáo mới là phải cập nhật dòng này")
 
 claim("IA8", "docs/spec/START_HERE.md",
@@ -3934,8 +3962,8 @@ def data_inventory():
 
 claim("AI1", "docs/spec/START_HERE.md",
       "**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree"
-      " · **126** bảng ScriptableObject · **42** contact sheet · **121** file `datas/`.",
-      (139, 142136, 142, 126, 42, 121), data_inventory,
+      " · **126** bảng ScriptableObject · **42** contact sheet · **122** file `datas/`.",
+      (139, 142136, 142, 126, 42, 122), data_inventory,
       "kho dữ liệu gốc đã phân tích: asm, typetree, ScriptableObject, contact sheet, datas")
 
 claim("AP1", "docs/spec/DATA_INTEGRITY.md",
@@ -4217,8 +4245,8 @@ claim("GE2", "docs/spec/ASSET_TRIAGE.md",
 
 
 claim("RB1", "docs/spec/RAW_AUDIT.md",
-      "**RAW 186 · DOC 3 · CONST 28 · tổng 217**",
-      (186, 3, 28, 217), raw_audit_counts,
+      "**RAW 187 · DOC 3 · CONST 28 · tổng 218**",
+      (187, 3, 28, 218), raw_audit_counts,
       "sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. "
       "CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập")
 

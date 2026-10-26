@@ -2299,7 +2299,7 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **186** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **RAW** | **187** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
 | **DOC** | **3** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
 | **CONST** | **28** | không mở file ⇒ **đo một lần** |
 
@@ -3488,3 +3488,11 @@ từ nay:
 - The pinned `Data_Players` record has IDs 10001–10024 plus inactive 10999; do not infer a `Player_Attack_N` ↔ player-ID join from matching numbering. Reuse report 163's `N−1` class-to-array map and report 109's Board_Players power-display reader as distinct paths; neither creates a serialized combat owner. `Player_Controller` remains class identity/method-flow context only, with no target owner record in this export set.
 - The IAP catalogue has 71 consumables / 99 non-consumables and includes first-purchase/week/month/forever-named product IDs; separate published UI metadata names trial/day-trial/timer fields. This does not prove a first-launch 24-hour grant or user entitlement. Existing `Board_Reborn` API names free, energy, ad, gem, and premium paths, but no serialized starting stock is present; initial free-life count remains **NOT_BOUND**. These are bounded results, not whole-build absence.
 - Report `docs/apk-analysis/165-a5-d5-user-lead-premium-health-player-paths.md`; receipt `datas/l3_a5_d5_user_lead_crosswalk.json`, SHA-256 `bde75c018dfa079c9e9900bf6c0136a08e98a1418c5f09737d5c5f7858cc3868`. Builder `tools/build_a5_d5_user_lead_crosswalk.py`; focused tests `tests/test_a5_d5_user_lead_crosswalk.py` (4 tests). No runtime, DPS, native/FDE, AI-1, or global-absence claim.
+
+### 24.57 Report 166 — D5 read-only crosswalk of the 2026-10-23 runtime capture
+
+- PR12 follow-up claim `6427801423` authorized reading existing capture files only. Huawei Mate 20 X / Android 10 / Unity 2022.3.62f3 IL2CPP capture is the modded/repackaged Premium package **1.0.69**; official static comparison is **1.3.118**. Keep all comparisons cross-build and qualified. No probe, bridge, ADB, emulator, native/FDE, or secret workflow was run; source files were not modified.
+- Direct capture evidence: `screenshot_running_stage1.png` visibly shows HUD HP **2500**; archived runtime `/statics` `Player_Get_Datas.StartHp` is **2500**. `health_game.json` separately records scene `Game` at uptime 88.0177 seconds, not asserted to be the exact screenshot instant. Runtime cannon damage/rate arrays each have 24 entries, but are not per-instance attack execution or measured DPS.
+- End-game `boss_boss_gp.json` has `isSummary=true`, `countReborn=0`, `rebornNow=0`, `maxCountReborn=-1`, and four false `listRebornUseItems` flags. This is evidence only for those captured summary values, not initial allowance or free/ad/gem eligibility; `-1` semantics are unbound. `pvpLife=3` stays a separate field.
+- No fresh-account state, Premium entitlement flag, expiry/timer, or 24-hour receipt was captured. Package suffix `.Premium` is not entitlement evidence. The generic scene hierarchy and `_Data`-filtered type list do not bind a live `Player_Health`, `Player_Attack_N`, or `Player_Controller` instance. Report 111 still governs: runtime DPS is `MODEL_NOT_MEASURED`.
+- Report `docs/apk-analysis/166-a5-d5-23oct-captured-runtime-crosswalk.md`; receipt `datas/l3_a5_d5_23oct_runtime_crosswalk.json`, SHA-256 `5b76fa596482df2a7daecdaae53b2ae49ed602aec4d985e5f2a961f17ea780ac`. Builder `tools/build_a5_d5_23oct_runtime_crosswalk.py`; focused tests `tests/test_a5_d5_23oct_runtime_crosswalk.py` (3 tests). This archival read-only review does not reopen or authorize rerunning the runtime lane.
