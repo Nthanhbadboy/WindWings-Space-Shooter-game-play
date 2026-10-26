@@ -61,7 +61,46 @@ def recover(xapk):
         off=ref['file_offset'];s=next(s for s in segments if s['offset']<=off<s['offset']+s['file_size']);lo=max(s['offset'],off-256);hi=min(s['offset']+s['file_size'],off+512);key=(lo,hi)
         if any(w['file_offset']==lo for w in windows):continue
         windows.append(dict(file_offset=lo,va=s['va']+lo-s['offset'],hex=b[lo:hi].hex()))
-    out=dict(provisional=True,provenance='arena/ef6b75ef',xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=entry,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),query_schema_sha256=sha(source.read_bytes()),query_source='109 shared builtin schema used ONLY to choose search strings, not evidence of APK schema',elf_header_hex=b[:64].hex(),segments=segments,strings=strings,references=refs,windows=windows,limits=['Exact string presence/absence and instruction address candidates, NOT recovered type tree/field order/types.','ADRP+ADD scan does not track intervening register clobbers or control flow; candidates require disassembly review.','Bounded native windows are not complete function bodies or runtime execution.'])
+    # Preserve original native generator region and common metadata sinks for bounded review.
+    ranges=[(0xb7e1bc,0xb80978),(0x6af000,0x6b0200),(0x5eb400,0x5eb900),(0x3b4200,0x3b4400)]
+    def offset_at(va,width=1):
+        seg=next(s for s in segments if s['va']<=va and va+width<=s['va']+s['file_size']);return seg['offset']+va-seg['va']
+    native=[]
+    for lo,hi in ranges:
+        p=offset_at(lo,hi-lo);native.append(dict(va=lo,file_offset=p,hex=b[p:p+hi-lo].hex()))
+    # Original RELA records, then follow only generator-referenced address cells.
+    shoff=struct.unpack_from('<Q',b,40)[0];ss,sc=struct.unpack_from('<HH',b,58);relas={}
+    for i in range(sc):
+        h=struct.unpack_from('<IIQQQQIIQQ',b,shoff+i*ss)
+        if h[1]!=4:continue
+        for pos in range(h[4],h[4]+h[5],h[9] or 24):
+            address,kind,addend=struct.unpack_from('<QQq',b,pos)
+            if kind==1027:relas[address]=dict(address=address,addend=addend,file_offset=pos,hex=b[pos:pos+24].hex())
+    targets=set()
+    for raw in native:
+        code=bytes.fromhex(raw['hex'])
+        for p in range(0,len(code)-3,4):
+            w=struct.unpack_from('<I',code,p)[0]
+            if w&0x9f000000!=0x90000000:continue
+            reg=w&31;page=((raw['va']+p)&~4095)+(signed(((w>>5)&0x7ffff)<<2|((w>>29)&3),21)<<12)
+            for q in range(p+4,min(p+36,len(code)-3),4):
+                x=struct.unpack_from('<I',code,q)[0]
+                if x&0xffc00000==0xf9400000 and (x>>5)&31==reg:targets.add(page+((x>>10)&4095)*8)
+    cells=[];selected_relas=[];todo=list(targets);seen=set()
+    while todo:
+        address=todo.pop()
+        if address in seen:continue
+        seen.add(address)
+        try:pos=offset_at(address,16)
+        except StopIteration:continue
+        cells.append(dict(va=address,file_offset=pos,hex=b[pos:pos+16].hex()))
+        if address in relas:
+            rel=relas[address];selected_relas.append(rel);todo.append(rel['addend'])
+        else:
+            v=struct.unpack_from('<Q',b,pos)[0]
+            if any(s['va']<=v<s['va']+s['file_size'] and not s['flags']&1 for s in segments):todo.append(v)
+    native_evidence=dict(ranges=native,cells=cells,relocations=selected_relas,scope='Bounded original code/data/RELA, no full function-boundary or initialized-runtime claim')
+    out=dict(provisional=True,provenance='arena/ef6b75ef',xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=entry,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),query_schema_sha256=sha(source.read_bytes()),query_source='109 shared builtin schema used ONLY to choose search strings, not evidence of APK schema',elf_header_hex=b[:64].hex(),native_evidence=native_evidence,segments=segments,strings=strings,references=refs,windows=windows,limits=['Exact string presence/absence and instruction address candidates, NOT recovered type tree/field order/types.','ADRP+ADD scan does not track intervening register clobbers or control flow; candidates require disassembly review.','Bounded native windows are not complete function bodies or runtime execution.'])
     dest=ROOT/'reverse-engineering/raw/controller112';dest.mkdir(parents=True,exist_ok=True);blob=gzip.compress(canonical(out),mtime=0);assert len(blob)<5*1024*1024;(dest/'probe.json.gz').write_bytes(blob)
     print('libunity',len(b),sha(b),'queries',len(strings),'hits',sum(bool(s['occurrences']) for s in strings),'refs',len(refs),'windows',len(windows),flush=True)
 if __name__=='__main__':
