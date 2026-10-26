@@ -78,7 +78,7 @@ def recover(xapk):
     def offset_at(va,width=1):
         seg=next(s for s in segments if s['va']<=va and va+width<=s['va']+s['file_size']);return seg['offset']+va-seg['va']
     native=[]
-    for lo,hi in [(0x946cd8,0x946db8),(0x93b000,0x93b500),(0x386894,0x386b7c),(0x10e8ee0,0x10e9200),(0x940218,0x940280),(0x492d80,0x492e40),(0x10eacb8,0x10eae38)]:
+    for lo,hi in [(0x946cd8,0x946db8),(0x93b000,0x93b500),(0x386894,0x386b7c),(0x10e8ee0,0x10e9200),(0x940218,0x940280),(0x492d80,0x492e40),(0x6a9400,0x6a9bcc),(0x10eacb8,0x10eae38)]:
         pos=offset_at(lo,hi-lo);native.append(dict(va=lo,file_offset=pos,hex=b[pos:pos+hi-lo].hex()))
     shoff=struct.unpack_from('<Q',b,40)[0];ss,sc=struct.unpack_from('<HH',b,58);relas=[]
     for i in range(sc):
