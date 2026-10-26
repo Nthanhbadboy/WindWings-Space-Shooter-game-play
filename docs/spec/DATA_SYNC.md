@@ -4133,6 +4133,50 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   stage-failures (`f9b4695a98`) — chẩn đoán tách tầng trước, sau đó mới run lại. Chưa
   có run probe xanh mới.
 
+### 24.70 Điều phối lần 77 — #27/120 ĐÓNG bounded · #6-rep byte-equal · ĐÁNH GIÁ runtime probe 23/10: ĐỦ config-parity, CHƯA đủ behavior — lối đào nghẹt 1 secret
+
+- **#27/120 ef** (scientific `10b46c13d3`, Verify `40332906465`, full **1601 PASS**; SHA
+  `fe2c0997d2ec…` 6484B khớp ✓): **node constructor FDE 6d353c..6d35f4 entry→base
+  6d6aa0→57054c→member 6a6ff4→RET** — **174 instr gốc / 0 service sinks** (sinks rỗng
+  cưỡng bức chặn bridge-substitution) · pool get/atomic-pop 53f36c + counter/queue-tag/
+  chunk-append chạy thật · **write-coverage 447/512 bytes viết / 65 preserved ≠ memset**
+  · primary vtable 10b1240 (+80 RELA 10b12c0 → **parent 6d46a8 — khớp 119**) · secondary
+  10b1420 · defaults clock/current/previous/flag/weight từ store thật · **10 parent calls/
+  930 DWORDs bit-equal — lần 6** ✓. Caller 6d5e58..6d5ec8 recovered, KHÔNG execute
+  (incoming size +200 cấm claim universal size) ✓. *Spec cross-check decimal: 6d353c/
+  6d35f4(RET)/6d6aa0/57054c/6a6ff4/53f36c/vtables đủ ✓; service 116cb40 = harness
+  prerequisite — không nằm trong artifact (đúng vì là input harness).* CONTINUE121 đang
+  đào factory 6d5e58 (allocator 3c986c→ctor→handle 570ff0/572a38).
+- **#6-rep 8141386a — scientific `311a45df04`** (SHA `361354d6b7ac…` 1.195.537B khớp ✓,
+  full 1467 PASS): recovery `40331600575` SUCCESS — **2905/2905 object hashes**
+  (2185 Sprite/66 Atlas/654 Texture2D) · **2251 whole-object BYTE-EQUAL inverse
+  serialization / 1.720.744 B** · static riêng khớp a5-primary TOÀN BỘ (1550 joins + 635
+  direct · bounds 2185 · 27.072 verts · overlap 1389/44) — **diffs 0**. Replication chạm
+  mức byte-exact trên Sprite+Atlas — chờ exact-head Verify/scoped/PR15 GREEN rồi HANDOFF.
+  Peak builder 27.992 KiB (OOM-safe giữ vững). ✓
+- **ĐÁNH GIÁ RUNTIME PROBE 23/10 (lệnh chủ dự án: "đủ chưa? nếu chưa thì đào, đừng cố
+  nhiều lần") — kết luận: ĐỦ cho config-parity, CHƯA đủ cho behavior, lối đào nghẹt ĐÚNG
+  1 secret:**
+  - **ĐỦ (đã KHÓA tĩnh↔chạy):** BaseDamages[12] 12/12 crossbuild 1.0.69↔1.3.118 ·
+    12v10 giải (#19) · map 250 rows/742 values 0-mismatch (#28-fb①) · anchor catalog
+    (PlayerCosts/legendary/ranks/prices/StartDroneSkillDamages/Stage 249≈250) — mọi câu
+    hỏi "giá trị config" đã có chứng cứ 2 chiều; đào thêm trong vùng này = lặp.
+  - **CHƯA ĐỦ (3 câu hỏi chỉ runtime trả lời được):** ① **live-DPS/bắn drone·wing**
+    (static r92 ĐÓNG, runtime chưa đo) ② **#27 consumption thật** (node174→pose
+    apply→readback — ef đang đóng cấu trúc native, runtime phải chứng minh game THẬT
+    consume) ③ **second-device** (receipts 121/124 pin 1 thiết bị).
+  - **Nghẹt 1 điểm duy nhất — CHỈ chủ dự án gỡ được:** run `40333586413` bridge-build
+    **GREEN** (loader `d946aa3015…` · bridge `3817256d80…` · source XAPK `f5d3c7a188…`
+    khớp RECHECK ✓) nhưng map-gate dừng `BLOCKED_NO_ADB_CREDENTIAL` — secret
+    **`RAMUS_API_KEY`** chưa cấu hình trong Actions. **CẤM mọi run mới trước khi secret
+    có mặt (chắc chắn BLOCKED — đúng lệnh "đừng cố nhiều lần mất công"); a5 giữ
+    receipts 121/124, không tự retry.**
+  - **KỊCH BẢN 1-LẦN khi secret sẵn sàng** (one-shot có ủy quyền, KHÔNG retry-loop):
+    ① transport gate pass → ② **live-DPS/firing capture** (giá trị cao nhất) → ③
+    second-device CHỈ nếu ② ra lệch. Fail ở bước nào → dừng, báo đúng bước (lần 71 giữ
+    nguyên). **Nhánh B** (chỉ khi chủ dự án không muốn đặt key): pivot emulator x86_64 +
+    frida-il2cpp-bridge (công cụ đã mở §24.65) — phải có lệnh chủ dự án mới chuyển.
+
 ### 24.66 RE-CHECK 26/10 — mỏ runtime 23/10 (Mate 20 X) × static mới: r90 NÂNG static↔runtime verified
 
 - **Yêu cầu chủ dự án**: "thư mục runtime-probe… kiểm xem rút ra được gì". Spec rà toàn bộ

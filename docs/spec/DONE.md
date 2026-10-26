@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 77 — 26/10, #27/120 ĐÓNG + #6-rep byte-equal + ĐÁNH GIÁ runtime 23/10):**
+> **§24.70**: **#27/120** (ef, 1601 PASS): node ctor 6d353c — 174 instr/0 sinks ·
+> 447/512 bytes ≠ memset · vtable RELA→6d46a8 khớp 119 · **930 lần 6** · ĐÓNG bounded
+> node-init · **#6-rep** (814): **2905/2905 hashes · 2251 BYTE-EQUAL / 1,72 MB · diffs 0**
+> vs primary — byte-exact chờ HANDOFF · **RUNTIME 23/10: ĐỦ config-parity (BaseDamages
+> 12/12 · 742/0-mismatch · anchors) — CHƯA đủ behavior (live-DPS · #27-apply ·
+> second-device)** · nghẹt 1 secret `RAMUS_API_KEY` (chỉ chủ repo đặt được) → **CẤM
+> retry; kịch bản 1-lần: gate→live-DPS→(second-device nếu lệch); nhánh B emulator+frida
+> chỉ theo lệnh**. datas/ = **104**. verify 209/0/2.
+>
 > **Sửa lại (lần 76 — 26/10, #27/119 ĐÓNG bounded + #6-rep OOM-safe chạy tốt):**
 > **§24.69**: **#27/119** (ef, 1581 PASS): parent FDE entry→118→second-phase→node174→RET
 > không staging · 930 lần 5 · **3 early-returns native** (null-blob/mode−1/flag28-zero) ·
