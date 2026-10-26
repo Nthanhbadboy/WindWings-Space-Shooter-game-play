@@ -123,8 +123,11 @@ def main():
                 body = read_va(va + 0x14, 2 * length)
                 if body is None:
                     return None
-                text = body.decode('utf-16-le', 'strict')
-                return text if text.isprintable() else None
+                try:
+                    text = body.decode('utf-16-le')
+                except UnicodeDecodeError:
+                    return None
+                return text if text.isprintable() and text else None
             for row in rows:
                 if not selected(row['class_name']) or not row['offset']:
                     continue
@@ -163,7 +166,7 @@ def main():
                             pending_len = int(match.group(1))
                     if i['mnemonic'] == 'ldr':
                         match = re.fullmatch(r'(x\d+), \[(x\d+)(?:, #(0x[0-9a-f]+|\d+))?\]', op)
-                        if match and match[2] in regs:
+                        if match and isinstance(regs.get(match[2]), int):
                             slots[match[1]] = regs[match[2]] + int(match[3] or '0', 0)
                         elif match and match[2] in slots and not match[3]:
                             slot_va = slots.pop(match[2])
