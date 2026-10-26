@@ -237,8 +237,6 @@ jobs:
     env:
       RAMUS_API_KEY: ${{ secrets.RAMUS_API_KEY }}
       RAMUS_PACKAGE: com.Wind.wings.Space.Shooter
-      LOADER_BUNDLE: ${{ runner.temp }}/runtime-loader-vehicle
-      PROBE_OUT: ${{ runner.temp }}/runtime-map-step
       GH_TOKEN: ${{ github.token }}
       RUN_MAP_PROBE: ${{ github.event_name == 'workflow_dispatch' && inputs.run_map_probe || false }}
       APK_TAG: windwings-apk-1.3.118
@@ -259,6 +257,9 @@ jobs:
           path: ${{ runner.temp }}/runtime-loader-vehicle
 
       - name: Attempt the Map runtime readback once
+        env:
+          LOADER_BUNDLE: ${{ runner.temp }}/runtime-loader-vehicle
+          PROBE_OUT: ${{ runner.temp }}/runtime-map-step
         run: |
           set -euo pipefail
           chmod +x runtime-probe/ci-loader-map-probe.sh
