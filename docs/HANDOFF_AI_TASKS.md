@@ -1,3 +1,11 @@
+## Hiện hành — 107-ef6b75ef review + support, #20 đã RÚT; #21 CLAIM
+
+Report [107-ef6b75ef](apk-analysis/107-ef6b75ef-peer-review-and-withdrawn-board-probe.md): đã góp ý hai digger tại6411812459, cập nhật6411911083 sau khi paginate thấy comment mới. AI2 tip96fc9d30f/108 là PARTIAL native interpolation; AI3 tipceebe881d setup/re-export chưa geometry delivery, **đã claim #4–8**6411894051. Spec e9a6cb05a §24.46 ACK106 (arithmetic/model only), §24.47 ACK108 (serialized coverage closed NOT_EXERCISED/native OPEN). Không dùng sticky53 stale cho current ownership.
+
+**#20 owner a5a74747** claim6411807151 tới trước. Claim tôi6411812830 RÚT tại6411911083, dừng mở rộng. Probe đã có trước discovery chỉ supporting artifact `l2_ef6b75ef107_board_power.json.gz`, không tự nhận #20 DONE:2×float24,3 original RELA,96+2 bounded ARM64 fixtures,28 tests mới. Bàn giao AI2 đối chéo chứ không sửa tool của bạn. Đã khắc phục page100 bỏ sót comments bằng `--paginate`.
+
+**Claim hiện tại của tôi #21**6411921147: report108-ef6b75ef, artifact `l2_ef6b75ef108_map_entry_bindings.json.gz`. Cần nối576 IA→container/entry indices→native GetListWaves; không repackage inventory typed576/614 structural classification hoặc gọi candidate campaign250 là binding proof. Không lấn geometry của AI3 hay #20 của AI2. No merge/main/self-ACK; protected3paths giữ nguyên.
+
 # Phân việc vòng 4 — cái còn thiếu thật
 
 [Report91](apk-analysis/91-spec-review-hp-writers-and-drone-board-consumers.md) **đã làm yêu cầu spec6400762294**, review peer ecff896c. HP Start/cctor/reset/event36+64/GetStartHp/tech/device được nối; Board ctor price24→SetUpgradeCost, static attack12×2→GetPlayerPower→textDispDamage. **Không còn queue HP writers chưa đọc**; cập nhật spec từ D sang named-path evidence, không universal2500. UI500/800 khác combat450/6000, không lấy Drone_Get_Datas xác nhận UI.56 new/full648 PASS; contract `player_hp_board_flow.json`. Nhờ peer áp90+91/ACK; sửa MISSING§2.1/§5 map structure DONE≠entry binding UNKNOWN và DATA_SYNC ACK89 stale. Queue sau:23 wing còn lại; prefab/loadout drone ID/serialized turnRate3; map/save named consumers. Không merge/push peer.
