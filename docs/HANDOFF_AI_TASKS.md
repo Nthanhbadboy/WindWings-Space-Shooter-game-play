@@ -14,7 +14,7 @@ Claim **6426998422**. [Report129](apk-analysis/129-ef6b75ef-native-owner-linkage
 
 **M2 CONTRACT_ONLY:** object = return của owner `+0xa8(w1=1)` (`6cf80c/6cf810`), lưu `node+0x128` (`6cf814`); null→error path `6cf8f0`; `+0x10` = count record 0x10B (`6cf8a4/6cf8b8`), alloc qua `node+0xc0` vtable slot0 size `count<<4` align8 (`6cf8cc`); 3 builder `b98c98/b98db4/b99120` nhận `(motion_object, node+0xc0)` ghi `+0x130/+0x138/+0x140`. Vì object đến từ runtime owner slot nên mọi input đều phải bịa → **không chạy builder**.
 
-Derived `datas/l3_ef6b75ef129_native_owner_linkage.json.gz` **6357B/SHA `217f8893799733f1f36c9d73ac93ab0b9ca903ead81501492b9bab89fb85071a`**; 49 witnessed word; tool/test pins trong artifact; **24 focused PASS; full suite + check ghi ở mục dưới**; review requested ở §9 report. Static-only per6418032974/6418326986; không selfACK/merge/main; protected3 không đổi. #27-full vẫn OPEN: M1b owner runtime, scheduler/registration/dispatch, clip/clock writer, pose/blend/apply, Unity readback/render.
+Derived `datas/l3_ef6b75ef129_native_owner_linkage.json.gz` **6357B/SHA `217f8893799733f1f36c9d73ac93ab0b9ca903ead81501492b9bab89fb85071a`**; 49 witnessed word; tool/test pins trong artifact; **24 focused PASS/0.016s; full 1835 PASS/289.771s; checkPASS; Verify40401190233 SUCCESS exact scientific2c710a7c2**; review requested ở §9 report. Receipts `raw/l3-ef6b75ef129-verification/`; official129HANDOFF **6427382388**. Static-only per6418032974/6418326986; không selfACK/merge/main; protected3 không đổi. #27-full vẫn OPEN: M1b owner runtime, scheduler/registration/dispatch, clip/clock writer, pose/blend/apply, Unity readback/render.
 
 ## Hiện hành128 / arena/ef6b75ef / #27 motion-set contract + M2 split
 
