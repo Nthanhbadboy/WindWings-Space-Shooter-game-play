@@ -1,0 +1,49 @@
+name: Recover geometry 8141386a source bytes
+on:
+  push:
+    branches: ['arena/8141386a-windwings-space-shooter-game-p']
+    paths:
+      - 'tools/recovery/geometry_8141386a_bytes.py'
+      - 'reverse-engineering/raw/geometry-8141386a/byte-queries.json'
+      - '.github/workflows/recover-geometry-8141386a.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: geometry-8141386a-source-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: arena/8141386a-windwings-space-shooter-game-p
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+          fail-on-cache-miss: true
+      - name: Read original source without modifying APK
+        run: python3 tools/recovery/geometry_8141386a_bytes.py --xapk /tmp/apk/windwings.xapk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: geometry-8141386a-source-byte-witness
+          path: reverse-engineering/raw/geometry-8141386a/byte-witness.json.gz
+      - name: Preserve only branch-owned source receipt (no skip-ci)
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/8141386a-windwings-space-shooter-game-p'
+          test -s reverse-engineering/raw/geometry-8141386a/byte-witness.json.gz
+          test "$(stat -c%s reverse-engineering/raw/geometry-8141386a/byte-witness.json.gz)" -lt 5000000
+          git config user.name 'Arena geometry evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/geometry-8141386a/byte-witness.json.gz
+          if ! git diff --cached --quiet; then
+            git commit -m 'evidence(8141386a): preserve original nonzero-border sprite prefix byte witness'
+            git pull --rebase origin arena/8141386a-windwings-space-shooter-game-p
+            git push origin arena/8141386a-windwings-space-shooter-game-p
+          fi
