@@ -63,6 +63,12 @@ jobs:
             --families-only Bonus_Quest \
             --rodata 0x779DF0:10 \
             --output reverse-engineering/raw/pvp-dispatch-535b0541/native.json.gz
+      - name: PvP rule literals (own file, tiny family + two 8-byte windows)
+        run: |
+          python tools/recovery/meta_rewards_native.py --xapk "$RUNNER_TEMP/original/windwings.xapk" \
+            --families-only Bonus_Quest \
+            --rodata 0x757E48:8 --rodata 0x7579D0:8 \
+            --output reverse-engineering/raw/pvp-rules-535b0541/native.json.gz
       - name: Commit only own static evidence on session branch
         run: |
           set -euo pipefail
@@ -75,11 +81,12 @@ jobs:
                   reverse-engineering/raw/call-sites-535b0541/calls.json.gz \
                   reverse-engineering/raw/key-jump-535b0541/native.json.gz \
                   reverse-engineering/raw/key-grant-535b0541/native.json.gz \
-                  reverse-engineering/raw/pvp-dispatch-535b0541/native.json.gz
+                  reverse-engineering/raw/pvp-dispatch-535b0541/native.json.gz \
+                  reverse-engineering/raw/pvp-rules-535b0541/native.json.gz
           if ! git diff --cached --quiet; then
             # Only this workflow's own artifacts, each under the 5 MB commit budget.
-            test "$(git diff --cached --numstat | wc -l)" -le 7
-            ! git diff --cached --name-only | grep -qv '^reverse-engineering/raw/\(meta-rewards\|pack-index\|box-draw\)-535b0541/native.json.gz$|^reverse-engineering/raw/call-sites-535b0541/calls.json.gz$|^reverse-engineering/raw/key-jump-535b0541/native.json.gz$|^reverse-engineering/raw/key-grant-535b0541/native.json.gz$|^reverse-engineering/raw/pvp-dispatch-535b0541/native.json.gz$'
+            test "$(git diff --cached --numstat | wc -l)" -le 8
+            ! git diff --cached --name-only | grep -qv '^reverse-engineering/raw/\(meta-rewards\|pack-index\|box-draw\)-535b0541/native.json.gz$|^reverse-engineering/raw/call-sites-535b0541/calls.json.gz$|^reverse-engineering/raw/key-jump-535b0541/native.json.gz$|^reverse-engineering/raw/key-grant-535b0541/native.json.gz$|^reverse-engineering/raw/pvp-dispatch-535b0541/native.json.gz$|^reverse-engineering/raw/pvp-rules-535b0541/native.json.gz$'
             for f in $(git diff --cached --name-only); do
               test "$(stat -c %s "$f")" -lt 5000000
             done
