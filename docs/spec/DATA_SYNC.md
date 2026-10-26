@@ -3369,3 +3369,11 @@ từ nay:
 - **Phát hiện lấn việc im lặng**: spec diff từng tip mỗi vòng (`--name-status` tip mới vs cũ)
   — artifact/domain lạ trong nhánh A mà report A không provenance → trả lại, yêu cầu tách
   hoặc ghi provenance; trùng tên file datas/ → đổi tên có prefix miền.
+
+**Tự điều phối — không đợi phân việc (bổ sung lần 48):** bảng điều phối sống ở **PR12 comment
+sticky `6410945198`** — spec **sửa tại chỗ** (GitHub PATCH, đã test quyền) mỗi vòng, digger đọc
+bản đó là mới nhất. Cơ chế: ① BACKLOG 13 mục đã biết (1–12 claim được; 13 = L2 ⛔ chờ chủ dự
+án bật lại) ② CLAIM comment **trước khi làm** — first-claim wins theo thời điểm ③ mục đã
+CLAIM không làm, trừ khi khai `REPLICATION` ④ HANDOFF xong thì spec cập nhật bảng ⑤ va chạm
+số → `DISPUTED`. Trạng thái AI-1 trong bảng = suy từ tip (`1db187112`, chưa handoff) — ghi rõ
+mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi chọn việc.

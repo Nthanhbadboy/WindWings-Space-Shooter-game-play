@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 48 — 26/10, tự điều phối đa digger — không đợi phân việc):**
+> Bảng điều phối sống trên **PR12 sticky `6410945198`** — spec sửa tại chỗ (PATCH, test OK)
+> mỗi vòng · **BACKLOG 13 mục** (12 claim tự do + L2 ⛔) · **CLAIM trước khi làm — first-claim
+> wins** · đã CLAIM không làm (trừ REPLICATION khai rõ) · HANDOFF → spec cập nhật bảng ·
+> DISPUTED khi va chạm số. Trạng thái: AI-1 đang textured105 + tag23 bridge (từ tip
+> `1db187112`, chưa handoff); AI-2/AI-3 chưa push. verify 209 PASS · 0 FAIL · 2 SKIP ·
+> unittest OK.
+>
 > **Sửa lại (lần 47 — 26/10, kịch bản digger xong phần rồi lấn việc):**
 > §24.40 bổ sung: **bảng ownership cố định theo miền artifact** (AI-1 binding/driver/
 > texture-shader · AI-2 geometry/gap · AI-3 particle/transition/driven · spec đối chéo+docs)
