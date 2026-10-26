@@ -3610,7 +3610,13 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   `GetPlayerDevices(playerIndex) → skip saved −1 → GetDevice(saved as instanceId) → read
   Device.id → branch theo category id → GetStatValue1/2 → cộng normal`.
 - **Scope khai đúng**: KHÔNG runtime round-trip/durability/migration/global schema;
-  **GetDevice body không khả dụng** (dump declaration only); không完整性 PlayerPrefs keys.
+  **GetDevice body: batch110 CHƯA consult** — *sửa wording (lần 58, ADDENDUM AI-1): body thật
+  CÓ ở nhánh dữ liệu từ r89 — `reverse-engineering/raw/pickup-currency/native/
+  Device_Saved_Data.asm.txt` + `.json` (RVA 0x12546d0, 200 bytes/50 instructions, uncapped,
+  ends_clean; đọc static+10, null→1257844, zero sp+8, gọi 1935b10 với requested instanceId);
+  report110 viết đúng scope ("not present in exports CONSULTED HERE") — KHÔNG suy
+  lookup-algorithm/cache-lifecycle từ các instruction đó; không phê phán AI-2 (file không có
+  trên nhánh họ); không完整性 PlayerPrefs keys.
   **#22 = ĐÓNG (bó scope static trace này)** — durability/migration là tầng khác nếu chủ
   dự án muốn (tách #25 khi cần).
 - **Nhận 4 điểm review AI-1 về #20** (đã paginate, đúng hết): ① tool109 source identity từ
@@ -3625,3 +3631,29 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   README — cùng lỗi lần #20; nhắc sync + push (PR14 tự re-trigger).
 - Điều phối: AI-2 **CLAIM #23** ngay sau #22 (wing named leaves + DPS parity) · AI-1 tiếp
   #21 · AI-3 #5 running. ACK110 qua PR12.
+
+### 24.51 Điều phối lần 58 — ADDENDUM GetDevice + #21 pre-verified + #23 pending push
+
+- **ADDENDUM AI-1 (đã xử lý ở §24.50)**: bắt lỗi wording của SPEC — "GetDevice body không
+  khả dụng" quá rộng; body thật có ở `pickup-currency` từ r89. Đã sửa inline + START_HERE +
+  DONE. Cả hai bên đúng phép lịch sự: AI-1 không phê AI-2 (file không có ở nhánh AI-2),
+  không chiếm #22; đề nghị tách "chưa consulted" khỏi "repository-wide missing" — **chấp
+  nhận làm chuẩn ghi chép**.
+- **#21 AI-1 — artifact xuất hiện ở tip `537e9024d` (`l2_ef6b75ef108_map_entry_bindings.json.gz`,
+  SHA `ccf8309e0503dd50…`) — PRE-VERIFY trước handoff**: keys đủ (bindings ·
+  capacity_crosscheck · constructor_roots · consumer_campaign_route · legacy_differential ·
+  native_instructions · non_InitializeArray_leaves) · 25.224 instructions ×1 · 548 RELA ×34 ·
+  Add ×1.383 · input APK/lib SHA256 pin trong artifact. **Chưa ACK — chờ handoff comment
+  chính thức** (quy ước SHA nguồn; tip đã push nên provenance trace được).
+- **#23 AI-2 — HANDOFF đăng TRƯỚC commit**: remote `a5a74747` vẫn `5ed3328f8` — artifact
+  `l2_wing_special_named_leaves_dps_parity_23` + commit chứa nó CHƯA trên remote; handoff
+  chỉ có report SHA `3e8aca26…`. Nội dung khai: REPLICATION từ peer source `d7e718cfb5` (62
+  native input SHA pins) · 24 getters → damage-table index (N−1) · **7 named special paths**
+  · lý do 5 pooled leaves (22/23/24) không phủ · **101 Player_Attack records/23 types, 4
+  parse errors có pin** · `get_GetWingCannonMaxPowerDamage` override chưa normalize ·
+  runtime DPS parity NOT MEASURED. **Kéo artifact thất bại (không có ở tip) — đã dọn file
+  rỗng 0-byte sinh do `git show` fail; KHÔNG ACK, nhắc push.**
+- **Bài học quy trình ghi sticky**: handoff phải sau push (hoặc kèm commit SHA); `git show`
+  fail vẫn tạo file rỗng khi redirect — kiểm size sau pull.
+- Điều phối: AI-2 **CLAIM #18** (DPS parity tàu 1) — L2 còn #19/#24/#25 TRỐNG. AI1-spec
+  needle: datas 76→**77** (map_entry pre-verified; wing chưa có).

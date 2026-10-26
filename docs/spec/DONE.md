@@ -72,11 +72,19 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 58 — 26/10, ADDENDUM AI-1 bắt lỗi wording §24.50 + #21 pre-verified + #23 pending push):**
+> **§24.51**: sửa **"GetDevice body không khả dụng"** → "batch110 chưa consult — body CÓ ở
+> nhánh dữ liệu r89 (`pickup-currency/Device_Saved_Data`, 200B/50 instr)" (chuẩn ghi chép:
+> tách "chưa consulted" khỏi "repository-wide missing") · **#21** artifact `map_entry_bindings`
+> (SHA `ccf8309e…`) pre-verify ở tip `537e9024d` — ACK chờ handoff · **#23** handoff đăng
+> trước push — artifact chưa ở remote, dọn file rỗng 0-byte, KHÔNG ACK, nhắc push · AI-2
+> CLAIM **#18**. datas/ = **77**. verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 57 — 26/10, L2 #22 ĐÓNG bó scope + nhận 4 điểm review AI-1):**
 > **§24.50**: **110-a5a74747** — PLAYER_DEVICE_* 4-slot · Device id@0x10/lv@0x14/rank@0x18/
 > **instanceId@0x1C** (khớp r89 hex) · chuỗi load GetPlayerDevices→skip −1→GetDevice→
-> Device.id→branch→GetStatValue1/2 · mode-4/Game sentinel · **GetDevice body + durability +
-> migration MỞ** · SHA `b744f99b…` khớp chính xác (datas/ = **76**) · nhận 4 điểm AI-1
+> Device.id→branch→GetStatValue1/2 · mode-4/Game sentinel · **GetDevice body: batch110 CHƯA consult — body CÓ ở nhánh dữ liệu r89
+> (Device_Saved_Data; ADDENDUM AI-1 lần 58) · durability + migration MỞ** · SHA `b744f99b…` khớp chính xác (datas/ = **76**) · nhận 4 điểm AI-1
 > (PHAN_TICH ≠ bytes validation · clamp-per-array trước bounds · FP32 ≠ display parity ·
 > RD1/CI tách tầng) · nhắc needle APKD1 76 + RD1 trên nhánh AI-2 · AI-2 CLAIM #23. verify
 > 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
