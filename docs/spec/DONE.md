@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 55 — 26/10, L2 #20 ĐÓNG + first-claim wins tự điều chỉnh):**
+> **§24.48**: **109-a5a74747** — `GetPlayerPower` 0x12D5DFC đọc allBasicAtk@0x10 + allDeltaAtk
+> @0x18 → `basic[i]×(1+delta[i]×level)` → textPlayerPower (**UI display only**, combat mở) ·
+> SHA `79d7232d…` khớp chính xác (datas/ = **74**) · **AI-1 tự rút claim #20** sau khi
+> paginate toàn bộ comments (first-claim wins AI-2; sửa quy trình đọc `--paginate`) · AI-3
+> CLAIM #4–8 · AI-1 CLAIM #21 (bind576). Nhắc #20: RD1 FAIL trên PR14 là RELATED (đổi
+> DATA_SYNC/START_HERE mà chưa refresh README size — sync + push). verify 209 PASS · 0 FAIL
+> · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 54 — 26/10, 2 handoff cùng lúc: 106-ef6b75ef + 108-a5a74747):**
 > **§24.46**: GLES PixelSnap + bilinear thật — **spec arithmetic review 9/9 PASS từ artifact**
 > (round-even ≤0,5/trục · z/w+uv không snap · bilinear 4-tap từ 46 texels ×14 · premul · over

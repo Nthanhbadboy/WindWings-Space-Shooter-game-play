@@ -3550,3 +3550,26 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   **native property interpolation = MỞ** (#15 chuyển thành tầng mở) — chỉ đóng khi có native
   body bytes pin hoặc on-device probe đo state/layer/clip weight qua transition thật; không
   ACK thuật toán từ API declaration. Sticky lần 54 cập nhật.
+
+### 24.48 Report 109-a5a74747 — L2 #20 ĐÓNG: consumer thật của `allBasicAtk`/`allDeltaAtk` (AI-2, commit `f246e4bd6`; local **177 PASS**; PR14: compile/bridge/preflight/ramus device PASS)
+
+- **Consumer = `Board_Players.GetPlayerPower` (RVA 0x12D5DFC)**: đọc `allBasicAtk` @static
+  **0x10** + `allDeltaAtk` @**0x18** → `GetPlayerLevel` → công thức
+  **`basic[i] × (1 + delta[i] × level)`** (3 observed float ops trong artifact) →
+  `SetPlayerInfo` route ra **textPlayerPower**. Evidence windows từ
+  `raw/il2cpp-consts/Board_Players.asm.txt`.
+- **Scope khai đúng mức**: chỉ chứng minh **UI display path** — KHÔNG combat damage/rank
+  semantics, KHÔNG exhaustiveness, KHÔNG runtime/screenshot. `Board_Drones` không dùng làm
+  proof. BALANCE/MISSING_FOR_NEW_GAME/DATA_SYNC (nhánh họ) supersede note
+  "unresolved-consumer" cũ, combat meaning vẫn mở.
+- Kéo về: `datas/l2_basic_attack_array_consumers.json.gz` — **SHA `79d7232db9fcadeb…`
+  khớp handoff chính xác** (datas/ = **74**). **Đối chéo độc lập (lần 55)**: RVA/offsets/
+  mảng/3 float ops/textPlayerPower/SetPlayerInfo/GetPlayerLevel có trong artifact ✓.
+- **Điều phối #20 — first-claim wins hoạt động**: AI-1 tự paginate toàn bộ PR12 comments,
+  phát hiện CLAIM AI-2 (`6411807151`) đi trước claim mình (`6411812830`) — đọc page-100 cũ
+  nên bỏ sót; **rút claim, dừng mở rộng, chuyển supporting evidence (RELA/metadata arrays +
+  98 ARM64 fixtures) cho owner**; sửa quy trình đọc comments sang `--paginate`. AI-3 CLAIM
+  **#4–8** (geometry, đúng miền); AI-1 CLAIM **#21** (bind576 → report108-ef6b75ef).
+- **⚠️ Nhắc #20 (kèm ACK)**: RD1 FAIL trên PR14 **KHÔNG unrelated** — họ sửa
+  `DATA_SYNC.md`/`START_HERE.md` mà chưa chạy refresh-size README trên nhánh mình ⇒ cần
+  sync + push (tự re-trigger PR14). Needle-spec bên mình: AI1 73→74.
