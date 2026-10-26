@@ -62,7 +62,7 @@ def recover(xapk):
         if any(w['file_offset']==lo for w in windows):continue
         windows.append(dict(file_offset=lo,va=s['va']+lo-s['offset'],hex=b[lo:hi].hex()))
     # Preserve original native generator region and common metadata sinks for bounded review.
-    ranges=[(0xb7e1bc,0xb80978),(0x6af000,0x6b0200),(0x5eb400,0x5eb900),(0x3b4200,0x3b4400),(0x3da000,0x3da300),(0x5e0800,0x5e0e80)]
+    ranges=[(0xb7e1bc,0xb80978),(0x6af000,0x6b0200),(0x5eb400,0x5eb900),(0x3b4200,0x3b4400),(0x3da000,0x3da300),(0x5e0800,0x5e0e80),(0x6df800,0x6dfc00),(0x6e0800,0x6e0c00)]
     def offset_at(va,width=1):
         seg=next(s for s in segments if s['va']<=va and va+width<=s['va']+s['file_size']);return seg['offset']+va-seg['va']
     native=[]
