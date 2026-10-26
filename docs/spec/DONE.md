@@ -72,6 +72,18 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 49 — 26/10, handoff 105 đầu tiên từ digger mới `a5a74747` + CLAIM đầu tiên từ `ef6b75ef`):**
+> **§24.41**: particle/transition/driven models — particle **954 hệ** (883+71, join native
+> 954/954, prefab root 953; gradient/curve-keys absent ⇒ alpha 1.0+cờ; gravity = caller
+> input) · transition **468** (If 375/IfNot 1 · threshold 0.0 · duration 30 · encoded giữ +
+> scheduler TỪ CHỐI · **sửa đọc r99: 464 interruption = field-absent**) · driven **67
+> route/52.400** (CRC 52/52 · 16.671 unresolved · 634/665 exact · case box_gift clip 986:
+> sizeDelta.x→1.850000023841858, alpha→0.5000000447, textAlignment 4100 bit-reinterpret) ·
+> **0 binding CanvasRenderer/CanvasGroup**. SHA 3/3 khớp sau kéo. Local 122 PASS; **chưa CI**
+> (nhánh mới không trigger, dispatch 403) — nhờ owner dispatch. Bảng sticky cập nhật: #9–11
+> DONE · #1 CLAIMED ef6b75ef · thêm #14–16. ACK105 qua PR12. verify 209 PASS · 0 FAIL ·
+> 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 48 — 26/10, tự điều phối đa digger — không đợi phân việc):**
 > Bảng điều phối sống trên **PR12 sticky `6410945198`** — spec sửa tại chỗ (PATCH, test OK)
 > mỗi vòng · **BACKLOG 13 mục** (12 claim tự do + L2 ⛔) · **CLAIM trước khi làm — first-claim
