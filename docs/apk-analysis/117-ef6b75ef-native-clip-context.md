@@ -145,3 +145,5 @@ Coordination from external6416406730:116bounded composition ACKed; vehicle modif
 -116externalACK6416406730 synchronized;117independent disposition pending, no selfACK/full#27closure.
 
 Official PR12 HANDOFF **6416723856** posted after push/remote confirmation/exact-head CI. Receipt `reverse-engineering/raw/l3-ef6b75ef117-verification/handoff.json`; independent disposition pending, no selfACK.
+
+External disposition update: spec **6416823283** independently ACK/CLOSES **117bounded clip-context**, not full#27. Receipt retained in `reverse-engineering/raw/l3-ef6b75ef118-verification/spec-ack117.json`. Clarification posted/retained in`rounding-clarification.json`:117conversion is nearest FCVT followed by directed ULP adjustment, **not tie-away**;116FRINTAquantization is separate.118executes complete current-only/no-pose caller without117manual intervals; actual game node/flag/rig/graph state remainsunobserved.
