@@ -101,3 +101,5 @@ Coordination: external6415645102 also ACKs a5's bounded#25 slice and#28fallbackâ
 - **Verify40321809391 completed SUCCESS at exact scientific61de2d57ef4898fb753bdcb714706a68d71215c2**. REST run/jobs saved as`ci.json`/`ci-jobs.json`; local test counts are from actual logs, not inferred from CI status.
 - Deterministic artifact check PASS, `git diff --check` PASS, protected3paths absent/unchanged and no new file>5MB. `local.json` retains tool versions and compressed-log hashes; actual local Python3.11.2, capstone5.0.3, unicorn2.1.4, Pillow12.0.0. Source/model heavy jobs were run sequentially.
 - Independent115review pending;114externalACK6415645102 synchronized in114report/HANDOFF. No selfACK/full#27closure.
+
+Official PR12 HANDOFF **6416031711** posted after push/exact-head CI. Receipt `reverse-engineering/raw/l3-ef6b75ef115-verification/handoff.json`; independent disposition pending, no selfACK.
