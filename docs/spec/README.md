@@ -28,7 +28,7 @@ không phải để clone y nguyên. Toàn bộ asset gốc (sprite, atlas, Spin
 
 ---
 
-> **Kiểm tự động (`RD1`):** **44/44** dòng trong bảng trên khớp **số dòng · số bảng** đo lại từ file.
+> **Kiểm tự động (`RD1`):** **45/45** dòng trong bảng trên khớp **số dòng · số bảng** đo lại từ file.
 
 > **Lượt 25/10 (tối):** nhánh dữ liệu lên `7c7c9f064` và review 5 điểm N1–N5 — đã sửa hết, xem
 > `docs/HANDOFF_REPLY_7c7c9f064.md` + `DATA_SYNC.md` §18. Claim mới: **CM1 · CM2 · CM3**.
@@ -40,7 +40,7 @@ không phải để clone y nguyên. Toàn bộ asset gốc (sprite, atlas, Spin
 | **AI/agent sắp dựng game mới** | **`START_HERE.md`** (kho dữ liệu + 8 số xương sống + 12 bẫy) → `MISSING_FOR_NEW_GAME.md` → `GAMEPLAY.md` §0+§7 → `TUNING_KNOBS.md` |
 | **Designer / cân bằng số** | `GAMEPLAY.md` §0 → `BALANCE.md` §0 → `COMBAT.md` §0 → `ECONOMY.md` §0 → **`TUNING_KNOBS.md`** (núm vặn + công thức) |
 | **Engineer dựng lại gameplay** | `GAMEPLAY.md` (core loop) → `COMBAT.md` (súng/đạn) → `ENCOUNTERS.md` (wave) → `UI.md` (màn hình) |
-| **Art / tech art** > **Kiểm tự động (`RD1`):** **44 dòng · 0 lệch** — mỗi dòng `N dòng · M bảng` được đo lại từ file;
+| **Art / tech art** > **Kiểm tự động (`RD1`):** **45 dòng · 0 lệch** — mỗi dòng `N dòng · M bảng` được đo lại từ file;
 > sửa tài liệu mà quên cập nhật bảng là đỏ (`python3 tools/refresh-readme-sizes.py --check`).
 
 | **`ART_STUDY.md`** (số đo mẫu gốc: màu/gradient/outline) → **`VISUAL_DESIGN.md`** (khung, tương phản, accent, juice + test máy) → `ASSETS.md` §0–§5 (art direction "Ink & Ember", atlas plan) → `sprite-list.csv` |
@@ -56,7 +56,7 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 
 | File | Nội dung | Kích thước |
 |---|---|---:|
-| **`START_HERE.md`** | **Cửa vào cho AI dựng game mới.** Mở đầu bằng **mục đích**: bắt chước bản gốc — mọi thứ trừ art đã có đáp án; việc thiết kế duy nhất là vẽ lại art. Trả lời đúng 2 câu: *có đủ không* (**L1 đủ**) và *có dữ liệu gốc để học không* (**có**: 2.112 sprite có số đo · 42 contact sheet · 35 ảnh chụp · 54.019 layout · 139 file asm · 126 bảng SO). Gồm: kho dữ liệu + ranh giới **học vs phát hành** (không hạ chuẩn) · **8 số xương sống** để dựng đúng · **bảng số để làm đẹp** (màu/gradient/accent/tương phản/juice) + test máy · thứ tự đọc theo vai · **12 bẫy đơn vị** đã từng sai · **L0–L3** định nghĩa lại cho khỏi lẫn · lệnh tự kiểm. | 219 dòng · 8 bảng |
+| **`START_HERE.md`** | **Cửa vào cho AI dựng game mới.** Mở đầu bằng **mục đích**: bắt chước bản gốc — mọi thứ trừ art đã có đáp án; việc thiết kế duy nhất là vẽ lại art. Trả lời đúng 2 câu: *có đủ không* (**L1 đủ**) và *có dữ liệu gốc để học không* (**có**: 2.112 sprite có số đo · 42 contact sheet · 35 ảnh chụp · 54.019 layout · 139 file asm · 126 bảng SO). Gồm: kho dữ liệu + ranh giới **học vs phát hành** (không hạ chuẩn) · **8 số xương sống** để dựng đúng · **bảng số để làm đẹp** (màu/gradient/accent/tương phản/juice) + test máy · thứ tự đọc theo vai · **12 bẫy đơn vị** đã từng sai · **L0–L3** định nghĩa lại cho khỏi lẫn · lệnh tự kiểm. | 220 dòng · 8 bảng |
 | **`ART_STUDY.md`** | **Học mẫu gốc bằng số** — **2.112** sprite / 42 contact sheet: ngân sách màu (**30–60** phụ · **110–160** chủ thể), gradient **0,20–0,26** cho mọi nhóm, thứ bậc sáng/bão hoà, **outline đen chỉ ~1 %** (sửa niềm tin "viền dày"), `fill` **0,08–0,87** ⇒ pack theo hình bao; 9 luật kiểm bằng `tools/art-study.py` | 140 dòng · 3 bảng |
 | **`VISUAL_DESIGN.md`** | **"Đẹp" đo được** — khung hình **0,4813** · **3 chế độ sáng** (gameplay accent ≤10 %, khung thưởng ~47 %, màn tối) · tương phản **0,45–0,80** · chi tiết **13–22** · hình học **54.019** layout (panel dọc **2:3**) · juice **0,05 s / 0,10·20 frame** · **giữ/đổi** + test bằng máy (`tools/design-metrics.py`) | 130 dòng · 5 bảng |
 | **`DATA_INTEGRITY.md`** | **Dữ liệu gốc có bị sửa?** Hai commit của phiên này **không chạm** 5 đường dẫn dữ liệu gốc (`git diff` rỗng). Bảng `sha256` trong `datas/PROVENANCE.md` **đã cũ**: **244/383** khớp · **139** lệch vì kéo lại. So đầu nhánh dữ liệu (`7e0da2ee3`): **2.211/2.465** file giống hệt, **254** khác — **244 khớp nguyên blob một snapshot đã pin**, **10** khớp đúng **HEAD** (kéo ở commit ngoài danh sách), **0 đang sửa** ⇒ **0 sửa tay**. **157** file `.gz` đổi byte nhưng **88 giống nội dung** sau giải nén, chỉ **69 khác thật**. Kiểm bằng `tools/data-integrity.py` (3,2 s). | 136 dòng · 7 bảng |
@@ -68,6 +68,7 @@ Ba file `BALANCE`, `COMBAT`, `ENCOUNTERS` là **số**; `GAMEPLAY`, `UI`, `ASSET
 | `docs/apk-analysis/119-L2-Ramus-device-crosscheck-arena-a5a74747-windwings-space-shooter-game-p.md` | #19: device 12↔10 được phân loại thành 10 `listStatValues` + 2 percent fields; Map outer count 250 khớp nhưng nested readback còn placeholders, không có same-build parity | 72 dòng · 2 bảng |
 | `docs/apk-analysis/120-L3-controller-schema-replication-17-arena-a5a74747-windwings-space-shooter-game-p.md` | #17 REPLICATION: đối chiếu native giới hạn ba literal field trên hai path; không khám phá TypeTree độc lập, schema vẫn mở | 57 dòng · 2 bảng |
 | `docs/apk-analysis/121-L2-runtime-map-depth2-28-arena-a5a74747-windwings-space-shooter-game-p.md` | #28 vehicle run bị chặn trước session vì thiếu bridge trong APK; không có Map values/runtime readback | 67 dòng · 2 bảng |
+| `docs/apk-analysis/122-L2-combat-semantics-24-arena-a5a74747-windwings-space-shooter-game-p.md` | #24 REPLICATION: #20 Board_Players arrays are a display-power path; one bounded Player_Attack_1 path reads the separate `StartMainCannonDamages@0x78`; rank selects guarded loop count, not per-hit input | 67 dòng · 1 bảng |
 | `COMBAT.md` | **458** `Gun_Attack`, histogram damage, burst pattern, **DPS lý thuyết (địch)**, súng boss, **TTK = newdesign hoặc measured** (tích damage×rate không dùng — damage·s, review peer), hitbox va chạm, đạn | 505 dòng · 20 bảng |
 | `ENCOUNTERS.md` | **282 wave** / **23.757 spawner** (11.089 dòng cấu hình) / **45.659 quân**, `spawn_type`, tham số spawn, **250 map** + parallax, 299 stage | 717 dòng · 32 bảng |
 | `ECONOMY.md` | `Box_Rewards`, `Shop_Cell`, `DataShopPack`, IAP **170 SKU**, `Sub_Item`, `PurchaseType` — **cái gì là số thật** | 394 dòng · 18 bảng |
@@ -120,9 +121,9 @@ Nguồn sự thật là **file dữ liệu bóc trực tiếp từ APK**, không
 | Text/graphics | `reverse-engineering/textassets/` | `ASSETS` |
 
 > ✅ **Cập nhật 25/10: phần lớn đường dẫn trên ĐÃ nằm ngay trong repo này** — không cần fetch để đọc:
-> `datas/` (**80** file, **25.502.778 bytes / 25,5 MB**) · `reverse-engineering/` (**2.271** file, **42.076.413 bytes / 42,1 MB**: 139 file asm
+> `datas/` (**81** file, **25.510.056 bytes / 25,5 MB**) · `reverse-engineering/` (**2.274** file, **42.147.178 bytes / 42,1 MB**: 139 file asm
 > **142.136** dòng · 142 typetree · 126 bảng ScriptableObject · 64 textasset) · `docs/apk-analysis/`
-> (**82** báo cáo `.md` + **107** bảng `.csv` + **83** ảnh chụp thật) · `docs/assets/` (42 contact
+> (**83** báo cáo `.md` + **107** bảng `.csv` + **83** ảnh chụp thật) · `docs/assets/` (42 contact
 > sheet + 5 bảng đo). Danh mục đầy đủ + cách dùng: **`START_HERE.md` §1**.
 >
 > Còn **chỉ có ở nhánh dữ liệu** `arena/ef6b75ef-windwings-space-shooter-game-p` (`7e0da2ee3`):
