@@ -222,3 +222,8 @@ sourceID/implementation mapping vẫn riêng. Xem82§6 cho ledger đãđóng/con
 ## #28 static Map-values fallback ① — report124
 
 `l2_a5a74747_28_loader_fallback1.json.gz`: **250** static `listMapDatas` rows from the pinned #21 constructor receipt compared with `datas/maps.json` and segment35 of `map_segments_full.json`; **243** `InitializeArray` + **7** inline rows, **742** integers, **0** value/site/initializer mismatches. Rebuild with `python tools/build_l2_a5a74747_28_static_map_crosscheck.py`; **7** focused checks. `STATIC_CROSSCHECK_NOT_RUNTIME`: no `/statics` request, session, live nested values, or runtime parity claim. Copied peer report108/artifact from the #21 lane and scoped loader-release metadata snapshot: `reverse-engineering/raw/l2-a5a74747-28-static-crosscheck/`. See [report124](../docs/apk-analysis/124-L2-map-depth2-28-static-fallback1-arena-a5a74747-windwings-space-shooter-game-p.md).
+
+
+## #25 scoped save/flush census — report125
+
+`l2_a5a74747_25_save_durability_audit.json.gz`: 74 unique pinned persistence methods plus a SHA-pinned scan of 314 current raw ASM files; 0 `PlayerPrefs.Save()` call edges / exact direct `B` or `BL` hits to RVA `0x277cf6c`. The separate custom `PlayerPreferences.SaveToDisk` path has 3 selected callers and 1 `File.WriteAllBytes` edge. `python tools/build_l2_a5a74747_25_save_durability_audit.py`; 8 focused tests. Scoped non-observation only—not global absence, migration completion, platform durability, crash atomicity, cloud sync, or runtime round-trip. See [report125](../docs/apk-analysis/125-L2-save-durability-audit-25-arena-a5a74747-windwings-space-shooter-game-p.md).
