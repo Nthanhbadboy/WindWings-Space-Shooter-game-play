@@ -41,7 +41,7 @@ Sau đó join **232 qualified identities** của `datas/l3_animator_programs.jso
 
 Subset tổng transition **343+125+464=932**; all308 **386+147+616=1149**. Các số là các tập khác nhau, không regression/tăng coverage của runtime.
 
-**Presence preserved:**616selector transition records của all308 không có m_InterruptionSource;464 ở old232subset. Không fill false/0 để làm như serialized field tồn tại. Sentinel/destination literals ở raw trees giữ UInt32, không diễn giải30000/UINT_MAX thành native engine exit policy. Layer count308 không là live layer observation.
+**Presence preserved:**616selector transition records của all308 không có m_InterruptionSource;464 ở old232subset. Không fill false/0 để làm như serialized field tồn tại. **Field absence vẫn conditional trên shared schema**, không independent proof rằng version schema đúng hay engine có/không flag đó. Sentinel/destination literals ở raw trees giữ UInt32, không diễn giải30000/UINT_MAX thành native engine exit policy. Layer count308 không là live layer observation.
 
 ## 4. Reader safety và test boundaries
 
@@ -49,7 +49,7 @@ Subset tổng transition **343+125+464=932**; all308 **386+147+616=1149**. Các 
 
 Strict bool0/1, count budget, unsupported-leaf errors là **reader policy**, không tuyên bố Unity engine sẽ reject cùng lỗi. Supported schema được exercise trên308objects này, không general Unity type-system implementation. Không parse external object pointer resolution bằng engine; PPtr chỉ là fields trong tree. Floating values đọc bằng struct, không numerical transition simulation.
 
-**36new tests PASS0.741s.** Full local/finalscientific CI chỉ ghi sau khi thực sự kết thúc; pending khôngPASS. Deterministic gzip mtime0, không file>5MB; bảo vệ3sharedpaths.
+**36new tests PASS0.741s; full local1226 PASS286.296s; final scientific Verify40299839743SUCCESS**, code **99d778f38a178c34d40965be27be57249a38b222**. REST receipt đã assert head/conclusion; không gọi pending làPASS. Deterministic gzip mtime0, không file>5MB; bảo vệ3sharedpaths.
 
 ## 5. Coordination updates
 
