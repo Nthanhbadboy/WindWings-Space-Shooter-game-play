@@ -2299,7 +2299,7 @@ Trước đó `sprite-geometry` không kiểm được vì thiếu chunk nguồn
 
 | loại | số | nghĩa |
 |---|---:|---|
-| **RAW** | **184** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
+| **RAW** | **185** | mở file trong `datas/` · `reverse-engineering/` · `docs/assets/` ⇒ tái đo được |
 | **DOC** | **3** | chỉ đọc `docs/**` ⇒ kiểm nhất quán tài liệu, không phải dữ liệu |
 | **CONST** | **28** | không mở file ⇒ **đo một lần** |
 
@@ -3474,3 +3474,10 @@ từ nay:
 - PR12 follow-up claim `6426085841`, accepted from the round-110 sticky recommendation. The builder joins **24/24** `Player_Attack_N` class names to four 24-element captured static arrays using the already-published report-82 index rule (`N → N−1`, 72/72 calls). It does not reopen method bodies or derive indices from player/source IDs.
 - This is a **static array join only**, not a serialized component-owner or projectile-instance join. The captured `GP_Datas.csv` has **one** row; its exported fields omit `countReborn`, `rebornNow`, `maxCountReborn`, and `listRebornUseItems`. Extra-life serialized rewiring and concrete Player_Attack component ownership remain **NOT_BOUND**; the one-row export is not global-absence evidence.
 - Report `docs/apk-analysis/163-a5-d5-serialized-producer-joins.md`; receipt `datas/l3_a5_d5_serialized_joins.json`, SHA-256 `a9655eca258593c474baa65d2e69a75811365f0e88cc485c510a9b03e12e4169`. Source pins are in the receipt. Builder `tools/build_a5_d5_serialized_joins.py`; tests `tests/test_a5_d5_serialized_joins.py` (4 tests). No runtime, DPS, native/FDE, or AI-1 lane claim.
+
+### 24.55 Report 164 — D5 residual serialized export coverage
+
+- Follow-up claim `6426986645` after ACK114. Pinned bounded export surface: **126** ScriptableObject CSVs and **140** TypeTree JSONL files (**231,957 rows**). Class inventory names 24 `Player_Attack_N` plus `Player_Health`/`Player_Controller`, but no target-class owner CSV or TypeTree file is present in this export set.
+- Two TypeTree records (`GP_Datas.player`, `GP_Tutorials.player`) encode numeric PPtr pair `0:2625`; the flat CSV set contains the GP_Datas edge. Class-split exports lack source-asset context, so do not assume both pointers share an owner. No target player owner row is exported. Numeric path ID 2625 also appears as a separate `Box_Rewards` own-row ID; it is not a cross-file PPtr join.
+- The exact four checked reborn field names occur in no scanned CSV headers or TypeTree keys. `GP_Datas` CSV and TypeTree row agree on identity and player PPtr but differ on `listActiveEnemies` (`[0]` vs `[]`); this is an export discrepancy, not runtime evidence. Player owner / extra-life serialization remain **NOT_BOUND**; absence is bounded to the pinned exports.
+- Report `docs/apk-analysis/164-a5-d5-residual-serialized-coverage.md`; receipt `datas/l3_a5_d5_residual_serialized_coverage.json`, SHA-256 `4eba6f5357a16877a37db847918c2488b10a4dd55469f7f3acfe2552bbb66b15`. Builder `tools/build_a5_d5_residual_serialized_coverage.py`; tests `tests/test_a5_d5_residual_serialized_coverage.py` (4 tests). No code-body, runtime, DPS, native/FDE, AI-1, or global-absence claim.

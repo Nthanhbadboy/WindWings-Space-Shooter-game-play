@@ -1148,6 +1148,26 @@ def a5_d5_join_stats():
     )
 
 
+def a5_d5_residual_stats():
+    d = ref_json("datas/l3_a5_d5_residual_serialized_coverage.json")
+    if d is None:
+        return None
+    coverage = d.get("export_coverage", {})
+    boundary = d.get("gp_datas_pointer_boundary", {})
+    consistency = d.get("gp_datas_cross_export_consistency", {})
+    return (
+        coverage.get("scriptableobject_csv_files"),
+        coverage.get("typetree_jsonl_files"),
+        coverage.get("typetree_jsonl_records_scanned"),
+        len(coverage.get("player_target_csv_files", [])),
+        len(coverage.get("player_target_typetree_files", [])),
+        len(coverage.get("exact_extra_life_csv_header_hits", [])),
+        len(coverage.get("exact_extra_life_typetree_key_hits", [])),
+        len(boundary.get("typetree_jsonl_pptr_edges_to_path_id_2625", [])),
+        len(consistency.get("flat_csv_vs_typetree_field_differences", [])),
+    )
+
+
 claim("I1", READY, "**5 field**: `hpProgressBarRenderer`", 5, display_fields,
       "Enemy_Display không có tham số hit flash / hit stop")
 
@@ -1180,6 +1200,11 @@ claim("MW4", "docs/apk-analysis/163-a5-d5-serialized-producer-joins.md",
       "The class inventory lists `Player_Attack_1` through `Player_Attack_24`",
       (24, 4, 1, 0, 4), a5_d5_join_stats,
       "D5 static class-to-array join only; serialized component owner and extra-life rewiring remain NOT_BOUND")
+
+claim("MW5", "docs/apk-analysis/164-a5-d5-residual-serialized-coverage.md",
+      "The TypeTree JSONL set contains **two** records encoding numeric PPtr pair `0:2625`",
+      (126, 140, 231957, 0, 0, 0, 0, 2, 1), a5_d5_residual_stats,
+      "D5 residual export-surface census; PPtr target owner and extra-life serialization remain NOT_BOUND")
 
 
 # ── J. script animation (enemy + boss) ─────────────────────────────────
@@ -3378,8 +3403,8 @@ claim("IAB2", "docs/spec/BALANCE.md",
       "Stage_Get_Datas.cctor: int[5] startBonusValues + float[4] levelDelta; 0x40666666 = 3.6 (KHÔNG phải 2.1)")
 
 claim("APKD1", "docs/spec/START_HERE.md",
-      "**123** `.md` · **107** `.csv`",
-      (123, 107), apk_doc_counts,
+      "**124** `.md` · **107** `.csv`",
+      (124, 107), apk_doc_counts,
       "đếm trực tiếp thư mục apk-analysis — thêm báo cáo mới là phải cập nhật dòng này")
 
 claim("IA8", "docs/spec/START_HERE.md",
@@ -3879,8 +3904,8 @@ def data_inventory():
 
 claim("AI1", "docs/spec/START_HERE.md",
       "**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree"
-      " · **126** bảng ScriptableObject · **42** contact sheet · **119** file `datas/`.",
-      (139, 142136, 142, 126, 42, 119), data_inventory,
+      " · **126** bảng ScriptableObject · **42** contact sheet · **120** file `datas/`.",
+      (139, 142136, 142, 126, 42, 120), data_inventory,
       "kho dữ liệu gốc đã phân tích: asm, typetree, ScriptableObject, contact sheet, datas")
 
 claim("AP1", "docs/spec/DATA_INTEGRITY.md",
@@ -4162,8 +4187,8 @@ claim("GE2", "docs/spec/ASSET_TRIAGE.md",
 
 
 claim("RB1", "docs/spec/RAW_AUDIT.md",
-      "**RAW 184 · DOC 3 · CONST 28 · tổng 215**",
-      (184, 3, 28, 215), raw_audit_counts,
+      "**RAW 185 · DOC 3 · CONST 28 · tổng 216**",
+      (185, 3, 28, 216), raw_audit_counts,
       "sổ kiểm claim↔raw: chạy lại tools/raw-audit.py và so đúng 4 số ở §0. "
       "CONST = số không mở file nào ⇒ phải đọc là 'đo một lần', không phải bằng chứng tái lập")
 
