@@ -78,6 +78,20 @@ Phân bố theo class: `GameDatas` 10 · `Board_PVP` 6 · `Board_PVP.<>c__Displa
 
 `OpenURL` có đối số đo được: các callback `b__5`/`b__7` gọi `GameHyperlinks.get_LinkRateUs()` (RVA **21099172**) rồi **tail-call** `Application.OpenURL(url)` sau `OnPressedButtonBack()` (Arena 22783988 / PvP 19780904). Tức: nút trong popup đóng bảng và mở **link rate-us**; *popup đó là hộp "cần cập nhật" hay "mời đánh giá" thì chưa decode* (§7).
 
+Chuỗi đo được của `Board_Arena.<>c__DisplayClass55_0.<IECheckArenaOpen>b__7` (RVA 22807296, 196 B):
+
+```asm
+22807368  mov  x1, xzr
+22807372  bl   #0x277f188            ; Component.get_gameObject
+22807388  bl   #0x2781804            ; GameObject.SetActive(false)
+22807416  bl   #0x15ba7f4            ; Board_Arena.OnPressedButtonBack()
+22807440  bl   #0x141f2a4            ; GameHyperlinks.get_LinkRateUs()
+22807480  ldr  x30, [sp], #0x20
+22807484  b    #0x275cc5c            ; Application.OpenURL(url)  (tail call)
+```
+
+Hai callback `b__5` / `b__7` **giống nhau** (cùng 196 B, cùng đuôi `b #0x275cc5c`), chỉ khác cờ init `0x2CE2000+0x8E6` / `+0x8E7`; bản PvP là cùng hình với `Board_PVP.OnPressedButtonBack` (19780904).
+
 ---
 
 ## 4. `GameDatas.IsHasGiftLanguages` (RVA 20071724) — 7 ngôn ngữ, **không có tiếng Việt**
