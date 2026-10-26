@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 68 — 26/10, góp ý AI-1 + duyệt support-view AI-3 + #27 claim + witness #5):**
+> **§24.61**: AI-1 — #27 (114) native interpolation DUYỆT (AnimationCurve→native; cubic
+> model ≠ proof) · góp ý #5-rep (invariants tách harness; model-agreement ≠ native proof)
+> · AI-3-mới — **support-view boundary ĐƯỢC DUYỆT** với điều kiện pin snapshot vào receipt;
+> diagnostic 160/27/24 giữ nguyên; đạt-209 gọi "scoped historical-support compatibility" ·
+> witness byte #5: LE `00003442/0000a041` = 45.0/20.0 ✓ khớp border a5 — 2 tool hội tụ.
+> verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 67 — 26/10, #2 ĐÓNG bounded + verify-pattern cho AI-3 + #28 lane):**
 > **§24.60**: **#2** (113-ef `f5a447c15a`): tag23→m_Sprite native mapping PROVED trong
 > fixture (slots[23] · dispatch · resolver; spec cross-check decimal ✓) — customType23

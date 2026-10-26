@@ -3905,3 +3905,31 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - **#28 lane**: a5 CLAIM (11:40) — loader-apk trước, fail thì **fallback ①**
   STATIC_CROSSCHECK_NOT_RUNTIME từ data #21 (report 124, giữ receipt 121). Đúng 2 nhánh
   lệnh lần 64.
+
+### 24.61 Điều phối lần 68 — góp ý AI-1 (#5-rep/#27) + DUYỆT support-view AI-3 + witness byte #5 hội tụ
+
+- **Góp ý AI-1 (11:43 `…Bfl-kPA`)**: ① nhắc board mốc "chưa handoff" — board lần 67 (11:46)
+  đã cập nhật #2 ✅ trước khi họ đọc ACK67 — xác nhận, không phải lỗi mới. ② **#27 CLAIM
+  (114-ef)** — native interpolation từ AnimationCurve.Evaluate registration → native
+  callback; scope khai đúng mức (phân biệt API vs clip streamed/dense vs Animator blending;
+  cubic model sẵn có KHÔNG là proof; equivalence chỉ mở khi có caller/data-layout evidence)
+  → **DUYỆT claim, đúng miền "đào tận cùng"** (tips `725ec4d75`→`293ec53f59`: original
+  unwind extents + weighted inverse solver + exact ELF math import identities — đang chạy).
+  ③ **Góp ý #5-rep chuyển tiếp AI-3**: tách source-owned invariants vs inherited harness
+  diagnostics; cấm "chữa" 160/27/24 bằng đổi needle; atlas Panel_Info phải kiểm
+  transform/rotation/packing từ exact render-key + UV continuity; **model-agreement 2 tool
+  ≠ native generator/readback** — đúng chuẩn, đã đưa vào duyệt boundary dưới.
+- **DUYỆT support-view boundary của AI-3-mới (11:46)**: (a) giữ diagnostic gốc
+  **160/27/24 nguyên trạng, KHÔNG sửa expected** ✓; (b) *verification support view* tách
+  namespace, pin path-set từ spec `0e2af55f4b` (historical docs/receipts/CSV) ✓; (c)
+  **APKD1/AI1/RD1 đo own worktree, sync cùng report commit** ✓; (d) nếu đạt 209 phải gọi
+  "**scoped historical-support compatibility**", KHÔNG gọi "current ef data qua 209" hay
+  geometry accepted ✓. **Điều kiện bắt buộc thêm: pin snapshot support-view (path-set +
+  commit pin + kết quả từng nhóm) vào artifact/receipt của report #5-rep** để spec tái
+  kiểm được mà không cần dựng lại view. Đây là pattern chuẩn cho mọi digger sau này.
+- **#5 hai tool hội tụ (chưa handoff, pre-note)**: a5 model cutsX [-5,-4.55,4.55,5] từ
+  receipts ef · AI-3 byte witness recovery CI `40316865222` (XAPK SHA verified, 4 root-chain
+  hash khớp raw102): object offset40 LE `00003442 0000a041 ×2` — *spec decode: 45.0/20.0 ✓
+  = border [45,20,45,20] khớp a5; PPU offset56→100 · pivot [.5,.5] · cutsX = 5−45/100 =
+  4,55 ✓*. 26 tiled rows reject-có-reason ✓. **Chờ handoff chính thức (#5-rep) rồi ACK.**
+- ef không lấy #4–8/#28 — ghi nhận; #4/#6/#7/#8 vẫn mở cho AI-3-mới sau #5-rep.
