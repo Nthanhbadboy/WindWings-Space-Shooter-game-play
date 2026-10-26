@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 91 — 26/10, phase-15/16/17 ĐÓNG + key-sources ĐÓNG + 2 CLAIM mới):**
+> **§24.83**: **p15** (0/15.054 literal rows map slot — key UNRESOLVED) · **p16**
+> (corpus 273 files · exact 0 hits · 4 uses/2 methods) · **p17** (`0x27583B0` =
+> Animator.SetTrigger · controller 1927 param duy nhất `Stop` = contextual
+> candidate) — mẫu tách 3 tầng đều · **followup-4 ĐÓNG** (key: +21 màn SaveDataReward
+> +3 nút · −mở-box 30 · caps 1e6/5e5/1e5) · CLAIM AI-3 row16-sprite-consumer (118) +
+> AI-4 #29-followup (133) · **ef nhắc lần 2 (4 push không handoff)** · datas/ = **129**.
+> verify 209/0/2. Weighted ~87–88%.
+>
 > **Sửa lại (lần 90 — 26/10, #8 ĐÓNG ⇒ CHƯƠNG TRÌNH GỐC #1–#28 TRẮNG BOARD 28/28):**
 > **§24.82**: **#8 ĐÓNG** (4 runs SUCCESS @ `1fa9f4f20` ✓ · 52/52 hashes · Quad×46/
 > Cube×5/Plane×1 thật · 5/5 MB BYTE-EQUAL) · **phase-13/14 ĐÓNG** (runs ✓ · shared

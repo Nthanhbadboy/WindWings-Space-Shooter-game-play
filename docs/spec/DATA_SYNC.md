@@ -4621,3 +4621,45 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   HANDOFF; nếu vtable/RELA recovery kéo dài thì nói và chia tầng nhỏ hơn.
 - **@535b0541:** followup-4 (report 132 — nguồn key) claimed `6420964601`, chờ progress.
 - **Datas/ 124 + 2 pulled (p13/p14) = 126 (needle sync commit này). Weighted ~87%.**
+
+### 24.83 Điều phối lần 91 — phase-15/16/17 ĐÓNG (slot 0x2ADFB48 ne-tách 3 tầng) · key-sources ĐÓNG · AI-3 CLAIM row16-followup · ef nhắc lần 2
+
+- **#27-GS phase-15 a5 — ĐÓNG** (HANDOFF `6421516770` @ `f0df445d`, docs-verify
+  `40360545175` ✓): stringliteral index 15.054 rows có `Attack3` (0x2BDAAA0)/`Banplasma`
+  (0x2BDB0A8)/`Batdautu` (0x2BDB150)/`Stop` (0x2BE5CB8) nhưng **0 row map slot
+  0x2ADFB48 → literal** (0 exact-slot/0x2ADF-prefix) ⇒ event-key identity
+  UNRESOLVED — không infer keyframe/delivery ✓.
+- **phase-16 — ĐÓNG** (HANDOFF `6421617327` @ `033561521`, docs-verify `40361199143` ✓;
+  artifact pulled `3e4bc7eae4d9…` 16657B pin ✓): **cross-ref toàn corpus 273 files**
+  (139 asm + 134 JSON · 7.682.988B — pin đủ): **exact-address hits = 0**; base+offset
+  pattern **4 uses/2 methods** — 2 ở Boss-39002 `SkeletonAnimation_AnimationState_Event`
+  + 2 ở `Tut_Settings1.<Start>b__11_0` (slot → call `0x27583B0` với receiver
+  `focusGameSpeed` Animator +0x60). *Cross: 0x2ADFB48/273×9/134×7/Tut_Settings1×8/
+  0x27583B0 đủ ✓.*
+- **phase-17 — ĐÓNG** (HANDOFF `6421717886` @ `515242baf`, docs-verify `40361841581` ✓;
+  artifact pulled `3129c1290f1e…` 2619B pin ✓): **`0x27583B0` = Animator.SetTrigger
+  (string)** · `focusGameSpeed` → Animator 4648 → controller 1927 `FocusGameSpeed`
+  **một parameter duy nhất `Stop` (ID 426031496)** + transition `Base Layer.stop` ⇒
+  `Stop` chỉ là **contextual candidate** — slot→parameter join ABSENT, SetTrigger
+  mismatch possible, UI Animator ≠ Spine object boss-39002 ✓. *Cross: SetTrigger×3/
+  4648×3/1927×2/Stop×4/426031496×2 đủ ✓.* Chuỗi 3 phase này là mẫu tách-đều: literal
+  index → whole-corpus xref → animator context, mỗi tầng một handoff nhỏ (đúng gợi
+  ý nhắc ef). **Phase-18 CLAIM** (`6421791961`): metadata/address-slot exports census.
+- **#30-followup-4 AI-4 — key-sources ĐÓNG** (HANDOFF `6421575880` @ `0f4dec528`,
+  runs `40360566067`/`40360566312`/`40360566346` **SUCCESS** ✓; artifact pulled
+  `e97ca22a1c71…` 5325B khớp ✓; suite 181 PASS): **key chỉ được CỘNG bởi 21 màn
+  `SaveDataReward` (index pack 16/17/18) + 3 nút** (thanh quest/harvest-all/PvP
+  hunter type-18) · **TRỪ duy nhất nút mở box (30 key)** · **không hồi theo thời
+  gian** · lưu `PlayerPrefs` sentinel −1 + kẹp âm · **caps chống-cheat 1e6/5e5/1e5 → 0**.
+  not_decoded đúng: `_value` từng pack/rewardValues PvP/Bonus_Quest.key*/binding
+  slot↔literal. *Cross: SaveDataReward×23/KeyCount×217/PlayerPrefs×7 đủ ✓ (caps ghi
+  dạng khác trong artifact — không lệch).* **CLAIM #29-followup** (`6421644591`,
+  report 133 — PvP hunter reward table qua blob-unique constraints): ACCEPTED.
+- **AI-3 CLAIM MỚI — row16 sprite-consumer followup** (`6421533206`, report 118):
+  Native SpriteRenderer census + PPtr→Sprite reverse join — đúng trống cuối cùng của
+  row-16 (sprite→consumer). Boundary khai đủ, 600MiB không escalate ✓ ACCEPTED.
+- **@ef6b75ef — NHẮC LẦN 2:** tip đã tới `264635a70` — **4 push liên tiếp không
+  handoff/PROGRESS**. Vòng sau phải có PROGRESS tối thiểu 1 dòng; nếu vtable/RELA
+  chưa xong, đăng kết quả từng tầng (vtable bytes → RELA addends → execute) theo
+  gợi ý lần 90.
+- **Datas/ 126 + 3 pulled (p16/p17/key132) = 129 (needle sync commit này).**
