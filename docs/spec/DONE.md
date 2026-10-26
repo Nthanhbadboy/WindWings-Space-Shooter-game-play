@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 117 — 27/10, ef-129 ĐÓNG-bounded + 155 ĐÓNG + review-126 FINAL):**
+> **ef-129** (`2c710a7c20` · `217f889379…` · Verify `40401190233` ✓ · 1835
+> local): **M1a ĐÓNG** — owner `node+0x118` single-writer `6cef80`
+> (`018c00f9`/36 windows) · registry-by-instance-id `[0x10e18b0]` · M1b =
+> runtime-only · M2 contract-only (0 FDE) · **155** (`2e744a754` ·
+> `fab987d2f9…`): ví +0x9C/+0xA0 sentinel −1 · max(0,·) · tail-b · 12 ghi
+> (5+/7−) ⇒ open-154#1 đóng bounded · **review-126 FINAL** (`9d3d8c66453`,
+> 1623 local, chờ 4 CI exact-head). Ceiling còn: review-126/127 · a5-lead
+> · 535-156+ · ef-M1b(runtime). datas/ = **179**. verify 209/0/2.
+>
 > **Sửa lại (lần 116 — 27/10, 153/154 ĐÓNG + D5-residual + review-126 R1):**
 > **153** (`0744e72fed` · `792f25b7…`): Arena_Shop≡PVP_Shop (30/30 field) ·
 > 3 dải ô +100/200/300 · dải-100 = id−10001 → trả card · catalogue `Random.Range`

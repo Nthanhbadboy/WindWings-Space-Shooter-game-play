@@ -5523,6 +5523,57 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   (155+, lane tự-feed). Hết ⇒ **STATIC-COMPLETE CEILING REACHED**.
 - **Datas/ 174 + 3 pulled (153/154/D5-residual) = 177 (needle sync commit này).**
 
+### 24.106 ef-129 ĐÓNG-bounded (M1a byte-evidence) + 155 ĐÓNG (medal-flow) + review-126 FINAL (lần 117)
+
+- **ef HANDOFF129 — ĐÓNG-bounded** (`6427382388` @ `2c710a7c20`; **Verify
+  `40401190233` SUCCESS đúng head**; artifact pulled
+  `datas/l3_ef6b75ef129_native_owner_linkage.json.gz` **6.357B pin
+  `217f889379…` ✓**; 24 focused + **1835 full** PASS; 3 raw probe mới:
+  owner129 `565e276d…` 13.911B · owner129b `1e6e0792…` 9.411B · owner129c
+  `778b001b…` 12.372B — runs `40399193071`/`40399523874`/`40399754616`):
+  **M1a ĐÓNG bằng byte-evidence** — `node+0x118` = owner field: ctor `6ceb88`
+  zero @ `6ceba4` (`7fa611a9`), **single-writer** `6cef80` (`018c00f9`) trong
+  wrapper `6cef64` (30 lệnh) — duy nhất trên **36 captured windows**; owner
+  value từ `6b6c40`: runtime id `[x0+0x19c]` (0 → null) → **global registry
+  `[0x10e18b0]`** → map `38cbb4` → fallback `3d8614(id)`; **0/RELA** target 6
+  hàm chính (direct-only). Node class: `6bba20` alloc `+0x1d0` qua sink
+  `3c986c` · ctor `6ceb88` (base `6d6aa0` 124 lệnh) · attach `572a38`
+  (`node+0x20 = controller`; `controller+0xac |= 0xC8`). Entry `6b947c`
+  **virtual-only** (table `10b0c80` slot `+0xf8`, 0 direct BL) → rebuild
+  `6b7d58` (191) + setup `6b81c4` (73). Table region `10b0a00..10b1900` =
+  23 RELA-dense tables, 9 bảng chạm = 181 slots; các slot gọi resolve code
+  thật. **M2 contract-only**: motion = owner `+0xa8`(w1=1) → `node+0x128`
+  (`6cf80c/14`); builders nhận `(motion, node+0xc0)` — input phải bịa ⇒ không
+  FDE nào chạy (8 `not_run` có tên thiếu-từng-prereq). **M1b MỞ runtime-only**
+  (instance id · registry contents · owner vtable) — **#27 vẫn OPEN đúng
+  bounds**; 6 review-points ghi sổ. "**owner = registry-by-instance-id**" thay
+  thế mô hình synthetic-owner của 126 ở tầng bằng chứng tĩnh.
+- **535 — 155 medal-flow ĐÓNG** (HANDOFF `6427508027` @ `2e744a754`; runs
+  `40402551187`/`…191`/`…175` ✓; artifact pulled `fab987d2f9…` 5.086B ✓; 870
+  local): **ví medal là static-field** — `arenaMedal +0x9C` / `pvpMedal +0xA0`
+  (TDI 249), cctor 20085468 khởi tạo **−1 sentinel**, getter tự nạp
+  PlayerPrefs rồi cache · setter kẹp **max(0,·)** (`bic …asr #31` — trừ quá
+  tay = 0 im lặng, không có nhánh "không đủ") · persist bằng **tail-`b`**
+  SetInt (census ghi phải đếm caller — bẫy 144) · **12 ghi** (5 credit: hunter/
+  PVPRewards/SetRewards/MoveNext/AddBetValues + 7 deduct: **6 shop closures**
+  khớp 3 dải × 2 shop + `ShowPlayer`) · 4 method chạm cả 3 ví qua bet arrays;
+  `AddBetValues` ×2 khi `rankMine==0` (lý do = runtime) · **đóng open-item #1
+  của 154 dạng bounded**: popups 0 ghi — đường trừ duy nhất là shop closures.
+- **AI-3 — review-126 FINAL PUSHED** (`6427495891` @ `9d3d8c66453`): report122
+  + artifact `e1b02b87…` + receipts public; local **1623 full / 252 focused /
+  27 mới / 18 gates** PASS; chờ đúng 4 final exact-head CI (`40402536851`/
+  `40402536972`/`40402550906`/`40402551186`) — **không queued→GREEN, chưa
+  formal HANDOFF**; qualification "controller/C = fixture nomenclature, KHÔNG
+  phải class identification" giữ nguyên; review-127 xếp sau, riêng vòng.
+- **a5 — CLAIM D5-followup theo lead chủ dự án** (`6427556449`): (a) allowance
+  premium/extra-life 24h đầu · (b) Player_Health baseline 2500 + upgrade path ·
+  (c) evidence path riêng Player_Attack_N/Controller — đang làm, bounds như
+  thường.
+- **Ceiling:** còn ĐANG ① review-126 formal (AI-3 — chỉ chờ CI) → 127
+  ② a5 D5-followup (lead) ③ 535 fu-24 (156+) ④ ef: #27-M1b = runtime-only
+  (trần) ⇒ sau 2 handoff sắp tới là **STATIC-COMPLETE CEILING REACHED**.
+- **Datas/ 177 + 2 pulled (155/129) = 179 (needle sync commit này).**
+
 ### 24.97 Điều phối lần 106 — MỞ VIỆC cho AI-2 + AI-3 (báo cáo rảnh): GỠ GATE A2 · hàng đợi H · sửa định danh 120-CLAIMED
 
 - **Đính chính board:** **R1-addendum120 = CLAIMED trước nhắc lần-104**
