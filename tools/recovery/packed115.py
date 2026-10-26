@@ -76,8 +76,8 @@ def recover(path):
             if op&0xffe0fc00 in (0x1e200800,0x1e202800,0x1e203800) or op&0xffe08000==0x1f000000:math_sites.append(start+j)
         if counts=={16,18}:
             sampler_candidates.append(dict(start=start,unwind=rec,count_sites=count_sites,math_sites=math_sites))
-    RANGES.extend((c['start'],c['unwind']['end']) for c in sampler_candidates if c['math_sites'])
-    ranges=list(RANGES)+[(r['va']-256,r['va']+512) for r in refs]+[(r['unwind']['start'],r['unwind']['end']) if r['unwind'] and r['unwind']['end']-r['unwind']['start']<=8192 else (r['pc']-128,r['pc']+128) for r in branch_refs];windows=[]
+    candidate_ranges=[(c['start'],c['unwind']['end']) for c in sampler_candidates if c['math_sites']]
+    ranges=list(RANGES)+candidate_ranges+[(r['va']-256,r['va']+512) for r in refs]+[(r['unwind']['start'],r['unwind']['end']) if r['unwind'] and r['unwind']['end']-r['unwind']['start']<=8192 else (r['pc']-128,r['pc']+128) for r in branch_refs];windows=[]
     for lo,hi in sorted(set(ranges)):
         pos=offset(lo);assert offset(hi-1)==pos+hi-lo-1
         windows.append(dict(va=lo,file_offset=pos,hex=b[pos:pos+hi-lo].hex()))
