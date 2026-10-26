@@ -1734,7 +1734,7 @@ def ui_two_levels():
             sum(int(r.get("nodes") or 0) for r in idx))
 
 
-claim("P1", AUDIT, "**42 tài liệu** trong `docs/spec/` (chưa kể file này)", 42, doc_inventory,
+claim("P1", AUDIT, "**43 tài liệu** trong `docs/spec/` (chưa kể file này)", 43, doc_inventory,
       "quy mô tài liệu hiện có trong docs/spec")
 
 claim("P2", AUDIT, "**2.885** sprite, **2.816** có `width/height`; `04-asset-manifest.csv`: **2.907** asset, **2.838** có kích thước",
@@ -3801,8 +3801,8 @@ def data_inventory():
 
 claim("AI1", "docs/spec/START_HERE.md",
       "**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree"
-      " · **126** bảng ScriptableObject · **42** contact sheet · **169** file `datas/`.",
-      (139, 142136, 142, 126, 42, 169), data_inventory,
+      " · **126** bảng ScriptableObject · **42** contact sheet · **174** file `datas/`.",
+      (139, 142136, 142, 126, 42, 174), data_inventory,
       "kho dữ liệu gốc đã phân tích: asm, typetree, ScriptableObject, contact sheet, datas")
 
 claim("AP1", "docs/spec/DATA_INTEGRITY.md",

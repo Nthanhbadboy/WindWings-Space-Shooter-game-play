@@ -5399,6 +5399,80 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   (NOT_BOUND-bounded). Hết ⇒ STATIC-COMPLETE CEILING REACHED.
 - **Datas/ 168 + 1 pulled (D5) = 169 (needle sync commit này).**
 
+### 24.104 H4/121 ĐÓNG-FORMAL + 150/151/152 ĐÓNG + ef-128 ĐÓNG-bounded + RESIDUAL-AUDIT ÁP (lần 114)
+
+- **AI-3 H4/121 — HANDOFF FORMAL `6426690784` @ `8d4d362589` ⇒ H4 ĐÓNG** (4
+  exact-head runs GREEN: Verify `40395241637` · scoped-push `40395241602` ·
+  scoped-PR `40395254643` · PR15 vehicle `40395254638`; local 1596 full / 225
+  focused / 24 mới · 17 module gates): 35 snapshots/20 assertions/72 citations =
+  **13 SYNCED / 4 DRIFT / 3 PARTIAL / 0 OOS** @ baseline `e301feb40`; artifact
+  pulled `datas/l3_geometry_docs_sync_round2_8141386a.json.gz` **35.847B pin
+  `51339d7626…` ✓**; receipt theo dõi producer `producer-followup.json.gz`
+  298.690B `b239d933…` (ngoài 35-input của checker — tách bạch); **7/7 findings
+  xác nhận đã áp @ `6d501153e`** (ACK-110 của spec). **P2 locator G1 — spec đã
+  sửa vòng này** (4 chỗ `153/G1` → HANDOFF `6422888569` @ `3122c4ac61` ·
+  DS24.88 · 109/122; 153 giữ riêng G2/Endgame). **review-126 CLAIMED**
+  (`6426714971` — fixed bytes HANDOFF126 `6425502933` / sci `01448eec4` /
+  receipts `8bec5129a` / `f209ea3f…` / raw `05c3ae3e…`; không chạy verifier của
+  producer); **review-127 xếp sau, riêng vòng**.
+- **535 — 3 HANDOFF formal, cả 3 CI 3/3:**
+  - **150 cell-identity @ `c9a80c6e`** (`23be51eba7…` 8.053B ✓ · 681 OK):
+    `0x2ADF238`=`Board_PVP` (Luật C, layout duy nhất 1/1086 — đóng mục-3 của
+    149) · Luật K + 4 ca đối chứng · **đính chính 138**: pathRoot **3 nhánh**
+    (PREMIUM predicate = `VersionControlSystem.get_PREMIUM`; `0x2AE1000` =
+    method-ref 121683) · 13/13 checks · còn mở 4 ô "một index đã biết, thiếu
+    bảng index→tên".
+  - **151 arena-rewards @ `371ee3d2a`** (`f76d3667…` 5.273B ✓ · 724 OK):
+    **143-rewards-consumer ĐÓNG** (`SetRewards` 22794144 → `GetRewards`
+    22795496; format `#<low>[-<high>][Medal:<int>,Gems:<int>]` nối `;` — 6 dải
+    1 / 2 / 3-4 / 5-10 / 11-45 / 46-50; 139 xác nhận **60/60** hai đường độc
+    lập) · **148-#11 ĐÓNG** (`RankMapsIndex +0x20` writer `<>c__DisplayClass69_0`
+    22807856) · census correction: `+0x0`/`+0x20` cũng bị ghi; `+0x18/28/30`
+    tái cấp phát từ `GetConfigs` 22782048 — chỉ `+0x38` ghi 1 lần trong
+    `.cctor`.
+  - **152 arena-config @ `ed20ccbdc`** (`cc6bc93a3d…` 4.743B ✓ · 761 OK):
+    `ArenaConfig..cctor` 22726640 — `RankSplit` siết 20→10, rớt **45** cả 10
+    mùa ⇒ `46-50` = dải người rớt · **`SeasonTimes` đơn vị PHÚT** (1 `bl` →
+    `DateTime.AddMinutes` 34499824) ⇒ 10 mùa = 1,2,3,5,7,8,9,10,11,12 ngày
+    (**68 ngày**) · `seasonEnd` = `ToBinary/FromBinary` · **đính chính 151:
+    `status` nhỏ = hạng cao** · `ArenaConfig` cũng ship default (bổ sung câu
+    151) · phủ định có biên: `+0x4/+0x8/+0x10` không reader trong 8 slice
+    (2.499 method) — không gọi "chết".
+- **ef HANDOFF128 — ĐÓNG-bounded** (`6426561197` · sci `cefd38a9f` Verify
+  `40395096377` ✓ · artifact `2b1b5e8277…` 6.119B ✓ · 22 focused / **1811
+  full** PASS): **không chạy FDE** — motion-set object không có trong mọi raw
+  (chạy = bịa object-under-test). **61 byte-witness**: extents `b98c98` 53 lệnh
+  (RET `b98d68`) · `b98db4` 133 (`b98fc4`) · `b99120` 203 (`b99448`) · tail
+  `6cff44` 74 (`6d0068`); motion header +0x00…+0x28; child-record 7 field;
+  secondary 3 field; 9 alloc sites; motion base **read-only** cả 4 FDE;
+  delivery target `[[node+0x30]+0x20]`, virtual slot +0x18 — identity MISSING.
+  **M2 split: M2a serialized = AVAILABLE** · **M2b runtime object = MISSING** ·
+  **M2c producer = MISSING** (chỉ owner virtual +0xa8 @6cf810) · **đính chính
+  127**: "no pinned raw contains" đúng cho runtime object, quá rộng cho
+  serialized content. Controller-1856: 8 clips — bindings 402 · streamed frames
+  142 · constants 177 · channels 654 (coverage 8/8) · events 4 · muscle 72.300B;
+  **không `m_ClipBindingConstant` trong controller** ⇒ từ khoá pptrCurveMapping
+  của 127 không áp dụng cho controller này. Next bounded: **M1** (owner
+  class/vtable `node+0x118`, slots +0xb0/+0xa8).
+- **a5 RESIDUAL-AUDIT — ĐÓNG** (`6426769323` @ `126b89802`; report nhận vào
+  spec: `docs/spec/ANALYSIS_SPEC_RESIDUAL_AUDIT.md`; 213/0/2 · 282 tests):
+  **spec đã áp các P1/P2 của audit VÒNG NÀY:** ① OPEN_ISSUES đếm lại —
+  **29 ID** (A4·B8·C8·D5·E4), luật ĐÓNG tường minh, **13/25 hàng A–D ĐÓNG**
+  (12 marker + B3) ② **B3 gỡ mệnh đề `kHp[mode]`** (mâu thuẫn với
+  DIFFICULTY_MODES §3–5) ③ MISSING:273 tách **save-ID vs combat-index (đã bind
+  N−1)** ④ MISSING:45 +cập nhật 149–152 ⑤ **README tách row Art/tech-art**
+  (RD1 note ra khỏi bảng vai) ⑥ **P2 locator 153/G1** (4 chỗ) ⑦ "152 Partial
+  sync" & câu summary Stop — rà lại: **không còn trong text hiện tại** (đã
+  sạch từ round trước — ghi nhận audit snapshot trước). Đề xuất phân loại
+  open-issues (evidence/semantic/design/runtime) = đúng trần lần-80 — đã
+  phản ánh trong bảng ceiling §24.100/24.103.
+- **REGISTRY: 14 → 12 open** (143-rewards ĐÓNG + 148-#11 ĐÓNG).
+- **Ceiling sau lần 114:** còn ĐANG ① review-126 (AI-3, CLAIMED) → review-127
+  ② ef-M1 (bước kế 128) ③ 535 followup-20 tự chọn (roman-glyph 21103836 ·
+  GetText 21202600) ④ D5-residual + registry 12 open (phần lớn runtime-gated/
+  bounded-missing). Hết ⇒ **STATIC-COMPLETE CEILING REACHED**.
+- **Datas/ 169 + 5 pulled (150/151/152/121/128) = 174 (needle sync commit này).**
+
 ### 24.97 Điều phối lần 106 — MỞ VIỆC cho AI-2 + AI-3 (báo cáo rảnh): GỠ GATE A2 · hàng đợi H · sửa định danh 120-CLAIMED
 
 - **Đính chính board:** **R1-addendum120 = CLAIMED trước nhắc lần-104**

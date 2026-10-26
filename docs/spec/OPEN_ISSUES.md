@@ -21,14 +21,14 @@
 
 ---
 
-## 1. Bảng tổng — **28 vấn đề**, chia theo **nguyên nhân** (quan trọng hơn mức độ)
+## 1. Bảng tổng — **29 mục** (A×4 · B×8 · C×8 · D×5 · E×4), chia theo **nguyên nhân** (quan trọng hơn mức độ)
 
 > **Cập nhật 23/10 (`UNITY_RULES.md`):** **+3 đóng** (**C3** · **C4** · **C6**) và **2 hạ mức**
 > (**C1** · **C2** từ **D** → **B**) sau khi áp luật serialization/asset của Unity.
 >
 > **Cập nhật 24/10 (`COVERAGE_AUDIT.md`):** **+2 đóng** — **C1** (795/795 event có `time`) và
 > **C2** (`animator_map.csv.gz` 5.792 dòng) đã **export xong** ở nhánh dữ liệu, hết phải tự đặt nhịp.
-> Số đếm: **10 mục đóng / 28** (23/10: 8/28).
+> Số đếm (đếm lại 27/10 — audit residual a5, đơn vị = **ID**): **13 ĐÓNG / 25 hàng A–D** (12 marker `~~`/✅ + **B3 dọn xong lần 114**) · **12 MỞ** · +4 mục E = **29 ID**. Luật: mục = ĐÓNG khi không còn mệnh đề nào phải bind; marker phải phủ toàn bộ cell — row cũ "10 đóng / 28" sai đơn vị (28 = số hàng, thiếu E).
 
 | # | Vấn đề | Nhóm | Mức | Ảnh hưởng thiết kế |
 |---|---|---|---|---|
@@ -38,7 +38,7 @@
 | A4 | ~~Caller của `GetStartHp()`~~ ✅ **ĐÓNG** = `<Start>b__14_1` | **lỗi export** | **A** | HP chốt **trong `Start()`** — `BALANCE` §0.6.15 |
 | B1 | 3 bảng stat của device | **RVA data** | D | chặn "device mạnh bao nhiêu" |
 | B2 | ~~13 tàu `20001–20013`~~ ✅ **ĐÓNG — là 13 DRONE**, không phải tàu | — | **A** | số tàu vẫn **25**; drone đã có ở `BALANCE` §3.2 |
-| B3 | ~~HP enemy scale theo stage~~ ✅ **cơ chế ĐÃ RÕ**: HP = `Dictionary<int,float>` trong `Enemy_Get_Datas.cctor` · **enemy KHÔNG có giáp per-prefab** (`armor` private ⇒ **0/981** serialize; `UNITY_RULES` §1.1). **Đo lại 25/10:** `.cctor` **hoàn chỉnh 3.624 B**, **150** lệnh insert `Dictionary`, **150** id khác nhau **30001–38001**, **0** vòng lặp ⇒ bảng runtime **150 dòng, không phải 981** (981 = số prefab). **HP runtime đã có số**: `datas/enemy_hp_by_id.json` **150 cặp `id → HP`** (claim **WRH2**) + 981 dòng serialize (claim **WRH1**), gộp **108/109** prefab spawn (claim **WRH5**) | **đủ để làm clone** | **A** | 3 class enemy đã có asm (claim **WRH3**); còn **bind** `StartHpPoint` ← dict + hệ số `kHp[mode]` — `.so` **không** cần |
+| B3 | ~~HP enemy scale theo stage~~ ✅ **cơ chế ĐÃ RÕ**: HP = `Dictionary<int,float>` trong `Enemy_Get_Datas.cctor` · **enemy KHÔNG có giáp per-prefab** (`armor` private ⇒ **0/981** serialize; `UNITY_RULES` §1.1). **Đo lại 25/10:** `.cctor` **hoàn chỉnh 3.624 B**, **150** lệnh insert `Dictionary`, **150** id khác nhau **30001–38001**, **0** vòng lặp ⇒ bảng runtime **150 dòng, không phải 981** (981 = số prefab). **HP runtime đã có số**: `datas/enemy_hp_by_id.json` **150 cặp `id → HP`** (claim **WRH2**) + 981 dòng serialize (claim **WRH1**), gộp **108/109** prefab spawn (claim **WRH5**) | **đủ để làm clone** | **A** | 3 class enemy đã có asm (claim **WRH3**); ~~bind `StartHpPoint` ← dict + hệ số `kHp[mode]`~~ **HỦY GIẢ THUYẾT** (audit lần 114: `kHp[mode]` **không tồn tại** như hệ số — `DIFFICULTY_MODES` §3–5 · `MISSING` §2; HP-theo-ID đã bind WRH2) — **hết việc static** |
 | B4 | `GetCountEnemies` mỗi stage | **chưa lấy** | D | ảnh hưởng nhiệm vụ/độ dài |
 | B8 | ~~Hệ số chế độ cho số quân~~ ✅ **ĐÓNG: `kCount ≡ 1`** (304 lệnh · 0 `mul`; người chơi xác nhận). **HP theo chế độ KHÔNG có hệ số** (đổi nhãn 25/10): chỉ `levelDelta` (thưởng) là chỗ duy nhất chế độ nhân; 0/5 hàm `stageLevel` liên quan HP; HP = 1 số/prefab; `kCount ≡ 1` ⇒ khác biệt khó/dễ = **composition theo bảng len-3** (đã decode) | **ĐÓNG** | **A** | clone: `kCount = 1`, **không nhân HP**, đổi wave theo bảng mode — `DIFFICULTY_MODES.md` §3–5 |
 | B5 | 43/305 trace chưa đối chiếu | **chưa lấy** | — | rủi ro sai số nhỏ |

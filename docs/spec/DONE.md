@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 114 — 27/10, H4 ĐÓNG + 150/151/152 ĐÓNG + ef-128 + residual-audit ÁP):**
+> **H4/121 formal** (`8d4d362589` · 4 runs GREEN · `51339d7626…` · 7/7 xác
+> nhận) + locator G1 sửa 4 chỗ · **150** (`23be51eba7…` — `0x2ADF238`=
+> `Board_PVP` · đính chính 138) · **151** (`f76d3667…` — 143-rewards + 148-#11
+> ĐÓNG · format GetRewards) · **152** (`cc6bc93a3d…` — lịch mùa PHÚT 68 ngày ·
+> status nhỏ = hạng cao) · **ef-128** (`2b1b5e8277…` — 61 witnesses · M2a/b/c
+> · 1811 PASS) · **residual-audit a5 nhận + áp 7 P1/P2** (OPEN_ISSUES 29 ID ·
+> B3 gỡ kHp · README art-row · …). Registry 14→12. Ceiling còn: review-126/127
+> · ef-M1 · 535-fu20 · D5-residual. datas/ = **174**. verify 209/0/2.
+>
 > **Sửa lại (lần 113 — 27/10, D5 ĐÓNG-HALF + ef-128 CLAIM + 150 PROGRESS):**
 > **D5** (a5 `0376abe` · `a9655eca…`): 24/24 Player_Attack_N → 4 arrays theo
 > N−1 (§24.14) · owner + extra-life NOT_BOUND (GP_Datas 6767 thiếu 4 cột) ·

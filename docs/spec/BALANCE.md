@@ -1583,7 +1583,7 @@ Toàn bộ hex của các `.cctor` **đã nằm trong repo**; decode theo kiểu
 | `GameDatas` | 1 | float[6] = `0,5 · 0,6 · 0,7 · 0,8 · 0,9 · 1,0` | hệ số chung theo chế độ/độ khó |
 | `Stage_Get_Datas` | 2 | int[5] `350 600 5 10 10` · float[4] `1 · 2 · 3,6 · 3,6` | §6.4 |
 | `Player_Get_Datas` | 6 | §1.1b | damage/rate/wing/cost/clone/mission % |
-| `Board_*` | 5 | `Board_Players.allBasicAtk` float[24] `4640 5120 5040 6160 8896 …` · `allDeltaAtk` = **0,168** × 24 · `Board_Drones` float[12] `500 600 800 1250 …` · `Board_Endgame` int[10] `900…810` | **consumer đã bind (153/G1+G2)**: `Board_Players` = UI power (`GetPlayerPower`); `Board_Endgame` = `devidedArenaMedals`→`SetArenaRewards` (item 22 chưa gán nghĩa); **combat cấp B** |
+| `Board_*` | 5 | `Board_Players.allBasicAtk` float[24] `4640 5120 5040 6160 8896 …` · `allDeltaAtk` = **0,168** × 24 · `Board_Drones` float[12] `500 600 800 1250 …` · `Board_Endgame` int[10] `900…810` | **consumer đã bind (G1: HANDOFF `6422888569` @ `3122c4ac61` · DS24.88 — G2: report 153, riêng Endgame)**: `Board_Players` = UI power (`GetPlayerPower`); `Board_Endgame` = `devidedArenaMedals`→`SetArenaRewards` (item 22 chưa gán nghĩa); **combat cấp B** |
 
 **Cách tái tạo** (`ia-resolved.json` → số):
 
