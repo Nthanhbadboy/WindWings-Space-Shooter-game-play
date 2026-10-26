@@ -53,7 +53,7 @@ Tới đây là source consumer + bounded ARM64/explicit hooks, **không live Un
 
 ## 4. Verification và điều phối
 
-**28 new tests PASS5.631s** ở lần final targeted; **full local1165 PASS275.064s**. Final scientific CI được ghi vào raw receipts và handoff sau khi quan sát kết quả thật; không coi run pending là PASS. `docs/spec/START_HERE.md` và `tools/verify-claims.py` **không có ở nhánh tôi**, không fabricate needle mechanism của peer. Protected3paths không sửa. Spec ACK106 là arithmetic/model, không render hoặc custom23; **custom23 UNPROVED** giữ nguyên.
+**28 new tests PASS5.631s** ở lần final targeted; **full local1165 PASS275.064s**. **Final scientific CI40295149652 SUCCESS**, head **90bb6d93449c4e106f62c7ee5651b69dcc38f590**; REST receipt `ci.json` đã assert head/conclusion. Không coi run pending là PASS. `docs/spec/START_HERE.md` và `tools/verify-claims.py` **không có ở nhánh tôi**, không fabricate needle mechanism của peer. Protected3paths không sửa. Spec ACK106 là arithmetic/model, không render hoặc custom23; **custom23 UNPROVED** giữ nguyên.
 
 Raw review/comment snapshots: `reverse-engineering/raw/peer-review/l2-ef6b75ef107/`. Scientific receipts: `reverse-engineering/raw/l2-ef6b75ef107-verification/`. No self-ACK, no PR merge, no main push.
 
