@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 96 — 26/10, #136 HANDOFF ĐÓNG + 2 đính chính 134/135 + CLAIM 137):**
+> **§24.87**: **136 ĐÓNG** — rank API bằng **interpreter AArch64** (ToPoints
+> 19.903.696 360/360 · DataFromPoints 19.871.992 12/12 · GetRankNumber
+> 19.884.996 → chuỗi 44/44 · round-trip 108/108 · runs `40367507022`/…040/…094 ✓
+> · SHA `7663d2fd…`) · **ĐÍNH CHÍNH: 135 statics-x0 (MaxRankStars CÓ reader) ·
+> 134 IsOpen fail-closed qua LoadRemoteConfigs 19.916.080** · rejected_reads ×2
+> (slot 44939608 — regex sẽ bịa) · CLAIM **137** GetRankName ACCEPTED (tip mới
+> `f0baeb0dc`) · AI-2 sync-review memo CHƯA đăng — nhắc · datas/ = **137**.
+> verify 209/0/2.
+>
 > **Sửa lại (lần 95 — 26/10, GIAO VIỆC AI-2 — hàng đợi 6 mục game-side từ sổ tồn đọng):**
 > **§24.86**: a5 hết việc slot → **G1 `Board_Players` consumer (B, §2.2c)** · G2
 > `Board_Endgame` · G3 Boss-39001 chain · G4 `gun3Static` semantics · G5

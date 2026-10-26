@@ -4814,3 +4814,49 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - **ef:** tip mới `1d6fbcbb7` (vẫn chưa comment) — **bảo lãnh chủ dự án giữ hiệu
   lực**, #123 đang làm; không cần hành động.
 - Datas giữ **136** (không pull vòng này — 136/ef là PROGRESS).
+
+### 24.87 Điều phối lần 96 — #136 HANDOFF ĐÓNG (rank API interpreter + 2 đính chính 134/135) · CLAIM 137 · AI-2 memo chưa tới
+
+- **#29-followup AI-4 — HANDOFF #136 `6422732465` @ `efceee587` — ĐÓNG** (runs
+  `40367507022`/`40367507040`/`40367507094` **SUCCESS** ✓ · suite 282 (35 mới);
+  artifact pulled `7663d2fd…` 3172B khớp ✓): **3 method thi-hành bằng interpreter
+  AArch64 tối giản (không regex):**
+  - `ToPoints` **19.903.696**/56B — `points = rank·1e6 + level·1e5 + star·1e4 +
+    clamp(point,0,100)` (hằng số từ mov/movk trong thân; csel lt + bic asr#31);
+    **360/360**; carry-free (star ≤ 9 → 90.000, level ≤ 9 → 900.000, +point ≤ 100
+    không tràn ngưỡng).
+  - `DataFromPoints` **19.871.992**/252B — `pvpRank@0x10=/1e6` ·
+    `pvpLevel@0x14=(%1e6)/1e5` · `pvpPoints@0x18=%100` · `totalPoints@0x1C` nguyên
+    · `pvpStars@0x20=(%1e5)/1e4`; magic `0x51EB851F`(÷100,asr5)/`0x14F8B589`
+    (÷1e5,asr13)/`0x431BDE83`(÷1e6,asr18)/`0x68DB8BAD`(÷1e4,asr12); dư bằng msub;
+    **12/12**; **không clamp/kiểm miền**.
+  - `GetRankNumber` **19.884.996**/160B — `MaxRankStars[rank].Length − level`, đuôi
+    `b` → **21103836** (Int32.ToString) ⇒ trả **chuỗi**; **44/44** khớp độc lập
+    bảng 135.
+  - Round-trip **108/108**; `point=100` đọc lại = 0 ⇒ biên trên **saturation**
+    (không biểu diễn — ghi đúng, không sửa công thức).
+- **ĐÍNH CHÍNH áp (supersede đoạn cũ):**
+  1. **§24.85 dòng 135 "không method chạm statics +0x18" SAI** — `GetRankNumber`
+     chạm: `ldr x8,[x0,#0xb8]; ldr x0,[x8,#0x18]` (mẫu `ldr x8,[x8,#0xb8]` của
+     135 trượt vì statics base vào `x0`). ⇒ **MaxRankStars CÓ method đọc** — chặn
+     "index=rank là suy luận thứ tự" THÁO (còn chặn: nhịp sao trong trận vẫn
+     MODEL_NOT_MEASURED).
+  2. **§24.85 dòng 134 thiếu** — `LoadRemoteConfigs` (**19.916.080**)
+     `strb wzr,[statics,#0x4C]` ⇒ **IsOpen fail-closed sau MỖI lần load remote**,
+     không chỉ khởi tạo ..cctor.
+- **Review-grade (ghi làm mẫu):** statics map theo **metadata slot** —
+  `44957248` (0x2ADFE40) chứng-minh là `PVP_Manager` bằng cách chạy
+  `GetRankNumber` trên bảng 135 (ra đúng `cells − level`) → 4 method/14 truy cập
+  (.cctor 11 write · GetSeasonRewards read +0 · GetRankNumber read +24 ·
+  LoadRemoteConfigs write +76); **rejected_reads ×2** (19.916.324/19.916.376 —
+  cùng +0xb8 pattern nhưng slot `44939608` class khác) — **quét regex sẽ bịa 2
+  truy cập AllSeasonRewards**. not_decoded (3) đúng phép.
+- **CLAIM #29-followup-4** (`6422767948`, report 137 — `GetRankName`
+  **19.881.572** display strings, 2 slot `0x2ADCAE0`/`0x2ADB0B38` vs
+  stringliteral.json đã pin; STATIC, chỉ xin native mới nếu slot thiếu khỏi
+  bảng): ACCEPTED. 535 tip mới `f0baeb0dc` (đang làm — next vòng kiểm).
+- **AI-2 (a5):** sync-review `6422694348` **memo CHƯA đăng** (đã soi PR12 full,
+  reviews, review-comments, issues, comment-edits — không có). Nhắc: đăng memo
+  TRÊN PR12 để spec ACK; G1–G6 chờ sau review.
+- **ef:** tip `1d6fbcbb7` giữ nguyên — bảo lãnh chủ dự án hiệu lực.
+- **Datas/ 136 + 1 pulled (136) = 137 (needle sync commit này).**
