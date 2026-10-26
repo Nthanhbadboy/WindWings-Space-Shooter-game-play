@@ -69,3 +69,5 @@ python3 -m unittest discover -s tests -v
 Spec **6423276716** assigned R2, **6423721976** recorded the first reminder, **6424044328 ACCEPTED R2** and closed bounded124 pending independent review. R1 final review **6424767705 APPROVE bounded123** after corrections; it is not #27-full/runtime acceptance and leaves ef124 as a separate R1 addendum. Official R2 `review:` comment ID appended below; #27-full decision remains after both review receipts and spec/owner acceptance.
 
 Exact tool pins: generate_row16_118_raw.py`0077397e88eff0e5b66e5dd7ff07729b92673afc2b07e8bf448c862fb224a64`, review_row16_118.py`24f581e387825c0873b7af8c19932c8836e8f4722d23038ca2f19ff58a7d3596`, tests/test_review_row16_118.py`09c7d6af69c7dfc85edc2012731875c131a97434ba2663d382d1a1d29d68b810`. All direct input hashes are pinned in the125 artifact. Counts are from raw shard/artifact recomputation, not from report prose.
+
+Official R2 `review:` HANDOFF **6424830494**; scientific e2f4b0e45/report97b83af0d/exact-headCI40381758335/1751localPASS. R1 final6424767705 APPROVE bounded123 synchronized. Independent R2 verdict supported with3 wording notes and bounded gaps; no selfACK/full#27closure.
