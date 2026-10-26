@@ -1,5 +1,5 @@
 """Recover one actual APK atlas + decoded GPU-program analysis; pixels stay external."""
-import argparse,gzip,hashlib,io,json,zipfile
+import argparse,gzip,hashlib,io,json,zipfile,re
 from attrs import asdict
 from pathlib import Path
 from asset_pack_v2 import XAPK_SHA,extract_payload,serialized_files,sha
@@ -18,17 +18,18 @@ def recover(xapk,work):
     for dx,dy in [(0,0),(128,61),(255,122),(64,30),(192,92),(1,61),(254,61)]:
         x=int(rd.textureRect.x)+dx;y=int(rd.textureRect.y)+dy;samples.append(dict(x=x,y=y,rgba8=list(im.getpixel((x,im.height-1-y)))))
     out=ROOT/'reverse-engineering/raw/l3-textured105';out.mkdir(parents=True,exist_ok=True)
-    shader=files['data.unity3d/Resources/unity_builtin_extra'].objects[10753];s=shader.read();programs=[]
+    shader=files['data.unity3d/Resources/unity_builtin_extra'].objects[10753];s=shader.read();programs=[];segments=[]
     for i,platform in enumerate(s.platforms):
         def first(a):return a[i][0] if isinstance(a[i],list) else a[i]
-        off,n,z=first(s.offsets),first(s.compressedLengths),first(s.decompressedLengths);b=CompressionHelper.decompress_lz4(bytes(s.compressedBlob)[off:off+n],z);p=ShaderProgram(EndianBinaryReader(b,endian='<'),shader.version)
+        off,n,z=first(s.offsets),first(s.compressedLengths),first(s.decompressedLengths);b=CompressionHelper.decompress_lz4(bytes(s.compressedBlob)[off:off+n],z);segments.append(dict(platform=platform,sha256=sha(b),bytes=len(b),ascii_runs=[v.decode('ascii') for v in re.findall(rb'[\x09\x0a\x0d\x20-\x7e]{32,}',b)]));p=ShaderProgram(EndianBinaryReader(b,endian='<'),shader.version)
         for j,sub in enumerate(p.m_SubPrograms):
             code=bytes(sub.m_ProgramCode)
             try:text=sub.Export();status='UnityPy_exported_analysis'
             except UnicodeDecodeError:
                 start=code.find(b'#version');text=code[start:].decode('utf8',errors='replace') if start>=0 else '';status='binary_prefix_GLSL_suffix_NOT_validated'
+            text=text.encode('utf8',errors='replace').decode('utf8')
             programs.append(dict(platform=platform,index=j,program_type=int(sub.m_ProgramType),version=sub.m_Version,keywords=sub.m_Keywords,code_sha256=sha(code),code_bytes=len(code),prefix_hex=code[:48].hex(),status=status,text=text,sha256=sha(text.encode())))
-    analysis=dict(shader_raw_sha256=sha(shader.get_raw_data()),compressed_blob_sha256=sha(bytes(s.compressedBlob)),programs=programs)
+    analysis=dict(shader_raw_sha256=sha(shader.get_raw_data()),compressed_blob_sha256=sha(bytes(s.compressedBlob)),programs=programs,segments=segments)
     (out/'gpu-analysis.json').write_text(json.dumps(analysis,indent=2)+'\n')
     lib=metadata=None
     with zipfile.ZipFile(xapk) as outer:
@@ -50,7 +51,9 @@ def recover(xapk,work):
                 positions.append(pos);pos+=len(needle)
             search.append(dict(input=name,needle=needle.decode(),file_offsets=positions))
     def ident(o):return dict(serialized_file=next(n for n,v in files.items() if v is o.assets_file),path_id=o.path_id)
-    data=dict(provisional=True,xapk_sha256=XAPK_SHA,tool_sha256=sha(Path(__file__).read_bytes()),toolchain=dict(UnityPy=UnityPy.__version__),inputs=inputs,sprite=ident(sf.objects[2585]),sprite_raw_sha256=sha(sf.objects[2585].get_raw_data()),atlas=ident(sprite.m_SpriteAtlas.deref()),texture=ident(texture),texture_raw_sha256=sha(texture.get_raw_data()),width=im.width,height=im.height,rgba_sha256=sha(im.tobytes()),png_sha256=sha((external/'atlas.png').read_bytes()),crop_png_sha256=sha((external/'sprite.png').read_bytes()),texture_format=int(t.m_TextureFormat),texture_settings=asdict(t.m_TextureSettings),render_data=dict(texture_rect=asdict(rd.textureRect),uv_transform=asdict(rd.uvTransform),settings_raw=rd.settingsRaw),samples=samples,gpu_analysis_sha256=sha((out/'gpu-analysis.json').read_bytes()),lib_sha256=sha(lib),metadata_sha256=sha(metadata),native_search=search,binding_status='UNPROVED: string occurrence is not a tag23 registration table; explicit policy still required',pixels='external Actions artifact only; never committed')
+    from combat_coroutine_cells import extract
+    literal=extract(lib,[(0x756dd8,4)])['cells'][0]
+    data=dict(align_literal=literal,provisional=True,xapk_sha256=XAPK_SHA,tool_sha256=sha(Path(__file__).read_bytes()),toolchain=dict(UnityPy=UnityPy.__version__),inputs=inputs,sprite=ident(sf.objects[2585]),sprite_raw_sha256=sha(sf.objects[2585].get_raw_data()),atlas=ident(sprite.m_SpriteAtlas.deref()),texture=ident(texture),texture_raw_sha256=sha(texture.get_raw_data()),width=im.width,height=im.height,rgba_sha256=sha(im.tobytes()),png_sha256=sha((external/'atlas.png').read_bytes()),crop_png_sha256=sha((external/'sprite.png').read_bytes()),texture_format=int(t.m_TextureFormat),texture_settings=asdict(t.m_TextureSettings),render_data=dict(texture_rect=asdict(rd.textureRect),uv_transform=asdict(rd.uvTransform),settings_raw=rd.settingsRaw),samples=samples,gpu_analysis_sha256=sha((out/'gpu-analysis.json').read_bytes()),lib_sha256=sha(lib),metadata_sha256=sha(metadata),native_search=search,binding_status='UNPROVED: string occurrence is not a tag23 registration table; explicit policy still required',pixels='external Actions artifact only; never committed')
     (out/'texture.json').write_text(json.dumps(data,indent=2)+'\n')
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
