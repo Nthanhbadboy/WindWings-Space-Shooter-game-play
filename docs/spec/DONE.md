@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 86 — 26/10, #30 ĐÓNG + #8 CORRECTION + a5 phase-7 ĐÓNG):**
+> **§24.78**: **#30 ĐÓNG** (3 runs SUCCESS @ `17e28a289` ✓ · hệ 15: 0,25→~0,75 ·
+> weighted ~83%) · **#30-followup CLAIM** (report 129 — pack-index identity từ raw
+> pin) · **#8 CORRECTION**: 850MiB superseded — **600MiB restored byte-identical
+> `839d78c8f8af…`** ✓ · **phase-7 ĐÓNG**: Boss-39001 Spine route bounded
+> (674445→602882/580611 · AnimationState_Event = RET) — không claim native join ·
+> **phase-8 CLAIM** (report 137) · ef 🔄123 vtable-linkage · AI-4 tip CI chờ approve
+> (action_required — bình thường). datas/ = **115**. verify 209/0/2.
+>
 > **Sửa lại (lần 85 — 26/10, ef122 ĐÓNG + a5 phase-5 ĐÓNG + #8 blocker + #30 gần handoff):**
 > **§24.77**: **ef122 ĐÓNG** (Verify `40347869822` ✓ · graph-populator 6d2950 · 3
 > virtual sinks · 930 lần 8 · indirect-callers open) · **a5 phase-5 ĐÓNG** (0 direct

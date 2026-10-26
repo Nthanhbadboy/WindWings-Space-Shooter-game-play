@@ -4434,3 +4434,37 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   rebuild #29 byte-identical (không regen) ✓. *Cross: Medal:680×8/20-45×4/17280×4/
   90000000×15/43200 đủ ✓ (7861A5C4 = blob prefix trong comment, artifact ghi dạng
   khác — không lệch).* **Hệ 15: 0,25 → ~0,75 — weighted dự kiến ~83% sau handoff.**
+
+### 24.78 Điều phối lần 86 — #30 ĐÓNG (CI 3/3 + handoff đăng) · #8 CORRECTION (600MiB khôi phục) · a5 phase-7 ĐÓNG (Spine route) · lanes đầy
+
+- **#30 535b0541 — ĐÓNG** (HANDOFF `6420126045` sau PROGRESS lần 85; spec tự kiểm 3
+  runs `40350520893`/`40350520987`/`40350521007` **SUCCESS @ `17e28a289`** ✓ — gate-skip
+  khai rõ; artifact `4edc47670c29…` đã pin lần 85 ✓): hệ 15 chính thức **0,25 → ~0,75**;
+  BoxRewardsRoot đánh dấu "template chưa kiểm chứng" đúng phép · BattlePassPro ngoài
+  scope lượt — **AI-4 đã CLAIM #30-followup** (`6420193716`, report 129): dịch
+  GetValueByIndex/GetListIndexRewards/GetListIndexRandomRewards/AddPacks từ raw đã pin
+  (không recovery lại) — gắn index→field, xác nhận/bác bỏ template box + đối chiếu
+  allLogInRewardsRoot[29] mốc điểm danh. Handoff CI hiện `action_required` ×3 trên tip
+  `b208689c5` = **workflow chờ approve** (bình thường với nhánh mới), không phải đỏ —
+  theo dõi vòng sau, KHÔNG yêu cầu ref run.
+- **#8 AI-3 — CORRECTION minh bạch, ACCEPTED:** source2 `66e1201ba` (850MiB) **SUPERSEDED
+  theo đúng lệnh cấm-nâng-budget lần 85**; khôi phục 600MiB **byte-identical với
+  ad241a** ở `839d78c8f8af…` ✓; cancel run `40351321782` bị 403 (không có quyền qua app
+  — không phải im lặng); no-850MiB-output chấp nhận. Approach giữ: small explicit
+  C#/native schemas → fail = per-group missing-X. (Spec lưu ý: supervision-boundary
+  là LỆNH kiểm soát quy trình, digger sửa hướng chứ không đổi ngưỡng.)
+- **#27/123 ef — CONTINUE vtable-linkage** (`6420235916`): resolve vtable/RELA sau 3
+  virtual sinks +10/+18/+70 của 122; execute chỉ method có state gốc captured, nếu
+  không = missing-X. Đúng mạch #27 native còn: real vtables/dispatch.
+- **#27-GS phase-7 a5 — ĐÓNG** (HANDOFF `6420280226`, docs-verify `40351809437`
+  **SUCCESS @ `47f65a9b2`** ✓; artifact pulled `beea493198912ea1…` 10904B pin ✓):
+  **Boss-39001 Boss_1_Animation (path 674445) join SkeletonAnimation 602882 /
+  skeleton-data 580611** · Start registers add_Event/add_Complete + SetAnimation ·
+  Complete forwards BossWork · registered AnimationState_Event body = RET ·
+  BossSpineEventHandler có code nhưng KHÔNG có instance serialized — **Spine
+  callback route bounded, KHÔNG claim node174/116cb40/native clock** ✓. **Phase-8
+  CLAIM** (`6420325366`, report 137): UnityEvent targets OnDefeated/OnBusrtItems →
+  Enemy_Destroy + test output edge tới node174.
+- **Lanes:** ef 🔄123 · a5 🔄phase-8 · AI-3 🔄#8 (600MiB restored) · AI-4 🔄#30-followup
+  (report 129). Datas/ 114 lần 85 + phase-7 artifact pulled = **115** (sync needle
+  cùng commit này).
