@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 75 — 26/10, đính chính tie-away + #27/118 ĐÓNG bounded + AI-3 restart):**
+> **§24.68**: **sai của spec** — `.7→3f333334` là FCVT+1ULP, không phải tie-away (FRINTA
+> là 116/b93158) — supersede DS/DONE · **#27/118** (ef, 1571 PASS): full caller FDE
+> entry→RET không staging · 930 lần 4 bit-equal · fault→`__stack_chk_fail` thật, không
+> fake success — ĐÓNG bounded current-caller · AI-3 restart OOM-safe tiếp #6-rep · #28
+> a5 grind SDK/workflow 5 commit. datas/ = **101**. verify 209/0/2.
+>
 > **Sửa lại (lần 74 — 26/10, #4 + #27/117 ĐÓNG bounded; loader probe vướng workflow-file):**
 > **§24.67**: **#4** (8141386a, 1430 PASS): 1751/1751 hashes · 14 spans/160024B ·
 > 7/2352/2354/2285 · 797 previews/940 null-reason · NOT-em — ĐÓNG static fallback ·

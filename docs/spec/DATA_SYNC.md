@@ -4067,8 +4067,10 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   `ef1d97806f66…` khớp ✓): **duration virtual getter thật** — clip ctor `b69d14` store
   vptr `10c3fa8` · RELA `10c4050(+0xA8)→b6bf94` trả `stop(0x5fc)−start(0x5f8)` từ
   clip+0x1e0 muscle blob · **context writer 6d3744 zero substitutions** · counterexamples
-  gốc: `.7` double→bits **3f333334** (=0,7000000476837158 — *spec decode ✓* tie-away,
-  không nearest 3f333333) · underflow dương→min-subnormal, âm→−0 · duration 0→cả hai 0 ·
+  gốc: `.7` double→bits **3f333334** (=0,7000000476837158 — *spec decode ✓*; *sửa lần 75
+  theo đính chính ef: **KHÔNG phải tie-away** — 6d3744 FCVT gần nhất rồi tăng 1 ULP về +∞
+  nếu quotient f64 > f32 (guard FLT_MAX); **FRINTA tie-away = nhánh quantization
+  116/b93158, tách riêng**) · underflow dương→min-subnormal, âm→−0 · duration 0→cả hai 0 ·
   FSUB→FADD mutation đổi normalization · staged caller 6d3924 (native blob→writer→cache
   ptr→116-time→115-stream→phase) — **930 DWORDs khớp lần nữa** · 12 context cases/718
   instr/0 subs · 18 staged/31272 instr/18 modff. **ACK ĐÓNG bounded; Node creation/
@@ -4079,6 +4081,32 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   đó, cần xem lại. RECHECK độc lập của a5 trùng kết luận spec (thêm: chuẩn hóa float32
   bit-pattern + pins SHA XAPK/libil2cpp/wing_drone_flow/runtime statics).
 - datas 98→**100** (#4 + #117).
+
+### 24.68 Điều phối lần 75 — đính chính tie-away + #27/118 ĐÓNG bounded + AI-3 restart + #28 grind SDK
+
+- **Đính chính ACK117 (ef đúng, spec sai)**: `.7→3f333334` **KHÔNG phải tie-away** —
+  6d3744 dùng FCVT gần nhất rồi **tăng 1 ULP về +∞ nếu quotient f64 > f32** (guard
+  FLT_MAX); opcode mutation 6d3798 kiểm điều này. **FRINTA tie-away = nhánh quantization
+  116/b93158** — hai cơ chế khác nhau, đã sửa DS/DONE (supersede inline).
+- **#27/118 ef** (scientific `79602dd6f2`, Verify `40329033477`, full **1571 PASS**; SHA
+  `4eaa9a118efb…` khớp ✓): **full original caller FDE 6d38bc..6d3ebc chạy entry→RET
+  6d3eb4 KHÔNG staging thủ công** — prologue/TLS/context→duration vtable→time→stream→
+  scratch/phase→guards/epilogue · domain enforced: frame 0/28/29=0, rig 80/82=0
+  (synthetic inputs — khai rõ) · unsupported previous/pose **reject thay vì bịa** ✓ ·
+  **10 source × 93 = 930 DWORDs bit-equal (lần 4)** · 18 samples/32.862 instr/18 modff ·
+  scratch b923ac thật · null-blob fallback 6d3600→6dacf0→b92414: 87 instr/0 subs ·
+  fault-injection tới **PLT `__stack_chk_fail` thật — failure rõ ràng, không fake
+  success** ✓ · synthetic TPIDR_EL0 ≠ Android TLS (khai) ✓. *Spec cross-check decimal:
+  6d38bc/6d3ebc/b923ac/930/32862/stack_chk đủ ✓.* **ACK ĐÓNG bounded current-caller;
+  #27 MỞ: node creation/game-side writers/graph bindings/pose/weighting/apply.**
+  (ef đã CONTINUE119: parent 6d46a8→6d38bc→6d3ebc→writes node174 — nhịp ~1 report/15 phút.)
+- **AI-3 8141386a RESTART sau OOM** (update 13:17): tip giữ `7ec2f9484e` (receipts #5/#4
+  nguyên vẹn), tiếp **#6-rep** theo claim cũ — đã áp OOM-safe: **streaming shard + batched
+  records, không giữ full Graph/atlas trong RAM** ✓ đúng prompt. #7/#8 chưa đụng.
+- **#28 a5**: 5 commit fix workflow liên tiếp (pin SDK action Node24 · job paths ·
+  pipefail · split installs) — đang nhồi CI infra; probe chưa chạy lại thành công, receipt
+  121/124 giữ. Chờ run xanh.
+- datas 100→**101** (#118).
 
 ### 24.66 RE-CHECK 26/10 — mỏ runtime 23/10 (Mate 20 X) × static mới: r90 NÂNG static↔runtime verified
 
