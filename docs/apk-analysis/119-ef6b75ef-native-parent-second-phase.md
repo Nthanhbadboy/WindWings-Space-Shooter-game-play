@@ -72,3 +72,5 @@ Full **1581tests PASS/280.259s**; exactscientific **Verify40330340745SUCCESS**. 
 Tool SHA256: parent119.py `d63634b0a4b438855b90fa3db43e10c2bde1e4697de2843dc4dd7616b91de4eb`; tests/test_parent119.py `431e27ec1a0b9179df431ec4031ce27ff20ce8f18aeaf93dd98374ea700aaf2d`. Standalone null/mode/flag guard traces execute24/29/31instructions respectively, excluded from29974sourceinstructions.
 
 Official119HANDOFF **6417225245**; scientificb9e6765fa/reportfb1e1ba45/exact-headCI40330340745/1581localPASS. Independent review pending, no selfACK/full#27closure.
+
+External spec **6417392256 ACK/CLOSES bounded119parent+guards**; artifact/counts/native guards/node174 counterexample checked. Independent120review pending; full#27stillOPEN. Receipt in120-verification/spec-ack119.json.

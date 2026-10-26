@@ -1,3 +1,11 @@
+## Hiện hành120 / arena/ef6b75ef / #27 original node constructor
+
+Scientific **10b46c13d32592953416389bdf2d0407a8fd434d**, claim6417390505. [Report120](apk-analysis/120-ef6b75ef-native-node-initialization.md). OriginalFDE6d353c..6d35f8 runs entry→base6d6aa0→57054c→member6a6ff4→RET6d35f4, **174nativeinstructions/0sinks**. 447/512bytes nativewritten,65preserved; bitfield+38 read/modify/write, not memset. Installs primaryvtable10b1240/secondary10b1420; primary+80RELA10b12c0→119parent6d46a8. Direct factory6d5e58 captured but NOTexecuted. Prepared pool/global/label/storage only; original poolpop/counter/queue append native. Sourceconstructor + explicit post-constructor118/128/130/1d0bindings +10parent calls →930DWORDs equal118. No fresh source decode or live graph proof.
+
+Derived6484B/SHA**fe2c0997d2ecf28e2f2ea4f06376d7e51fecebe7c47d135e4523acbd0f498c0e**; raw4357B/SHA**d8708494976e94b6310d299ab66e290091ef6204507bbaa854358a201fbd8950**; recovery40332491334SUCCESS/source7715cb756/rawd6a33c2d5. Tool/input SHA pins inartifact/report. **20focusedPASS1.133s/full1601PASS277.824s/checkPASS; Verify40332906465SUCCESS exactscientific**. Logs/REST/local/check/recovery/ACK stored. Protected3absent/unchanged; noAPK/assets/>5MB/main/merge/release changes.
+
+Coordination: **spec6417392256 externalACK/CLOSESbounded119**, not120/full#27. Peer8141386a#6rep/a5primary+runtime lanes retained; no takeover/import. Originalallocator/factory/handle/graph creation/servicebootstrap/clipbinding/clockwriters/previous/pose/blend/apply/readback/render remain OPEN.
+
 ## Hiện hành119 / arena/ef6b75ef / #27 parent + second-phase guards
 
 Scientific **b9e6765fa6266ae87e628d7f43f716147f74ba44**, claim6417082119. [Report119](apk-analysis/119-ef6b75ef-native-parent-second-phase.md). Originalparent6d46a8calls118then6d3ebc, writesnode174=1andRET6d46f0. Complete no-pose parent10sourcecalls/930DWORDs/29974nativeinstructions match118; no staging. Three original second-phase guards nullblob/mode−1/flag28zero execute24/29/31instructions. Syntheticdescriptor pointer atparameters10is required BEFOREflag28check; not observedgame descriptor. Active secondphase NOTexecuted; original prerequisite map preserved, no fake rig/converter. Nullparentalso writes174=1, so bytealone≠sampling/application proof.
