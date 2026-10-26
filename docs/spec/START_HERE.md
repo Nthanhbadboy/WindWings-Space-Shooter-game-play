@@ -33,7 +33,7 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **105** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **106** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
 | `datas/` | JSON/CSV bóc trực tiếp | **86** file · **26.190.619 bytes** (**26,2 MB**) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
@@ -67,8 +67,9 @@
 | `datas/l3_a5a74747_game_side_boss39002_shared_spine_callback_boundary.json.gz` | #27-GS phase 14: separate Boss-39002 callback context for shared Spine JSON 918 | `Boss1_Director` 582209 → `SkeletonAnimation` 664302; event-name string slot unresolved | Conditional callback code exists on Boss-39002; no event-marker, playback, or Boss-39001 binding inferred |
 | `datas/l3_a5a74747_game_side_boss39002_event_key_literal_boundary.json.gz` | #27-GS phase 15: bounded lookup of Boss-39002 callback event-name slot | Four Spine event strings have literal-index addresses; static slot 0x2ADFB48 has no slot-to-literal record | Event-key identity and callback-to-keyframe join remain unresolved |
 | `datas/l3_a5a74747_game_side_boss39002_event_slot_xref_boundary.json.gz` | #27-GS phase 16: cross-reference of callback literal slot across exported managed methods | 273 files scanned; four slot-pattern uses in two methods, including `Tut_Settings1` | Shared use adds context but does not resolve literal content or the Boss-39002 event key |
+| `datas/l3_a5a74747_game_side_boss39002_event_slot_animator_context.json.gz` | #27-GS phase 17: resolve second use through UI Animator context | `SetTrigger` call target resolves; linked FocusGameSpeed controller has `Stop` parameter | `Stop` is a candidate only; no pointer-slot or Boss-39002 Spine-event identity proof |
 
-**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **103** file `datas/`.
+**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **104** file `datas/`.
 
 > **Đừng "sửa" 142.136 thành 142.131:** `wc -l *.asm.txt` cho **142.131** vì **`wc` đếm ký tự
 > newline**, còn `AI1` đếm **dòng** (`sum(1 for _ in fh)` = `splitlines()`). **5** file
