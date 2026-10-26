@@ -49,4 +49,9 @@ def recover(xapk,work):
     data=dict(provisional=True,xapk_sha256=XAPK_SHA,tool_sha256=sha(Path(__file__).read_bytes()),toolchain=dict(UnityPy=UnityPy.__version__),inputs=inputs,sprite=ident(sf.objects[2585]),sprite_raw_sha256=sha(sf.objects[2585].get_raw_data()),atlas=ident(sprite.m_SpriteAtlas.deref()),texture=ident(texture),texture_raw_sha256=sha(texture.get_raw_data()),width=im.width,height=im.height,rgba_sha256=sha(im.tobytes()),png_sha256=sha((external/'atlas.png').read_bytes()),crop_png_sha256=sha((external/'sprite.png').read_bytes()),texture_format=int(t.m_TextureFormat),texture_settings=asdict(t.m_TextureSettings),render_data=dict(texture_rect=asdict(rd.textureRect),uv_transform=asdict(rd.uvTransform),settings_raw=rd.settingsRaw),samples=samples,gpu_analysis_sha256=sha((out/'gpu-analysis.json').read_bytes()),lib_sha256=sha(lib),metadata_sha256=sha(metadata),native_search=search,binding_status='UNPROVED: string occurrence is not a tag23 registration table; explicit policy still required',pixels='external Actions artifact only; never committed')
     (out/'texture.json').write_text(json.dumps(data,indent=2)+'\n')
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args();recover(a.xapk,a.work)
+    p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);p.add_argument('--work',type=Path,required=True);a=p.parse_args()
+    try:recover(a.xapk,a.work)
+    except Exception:
+        import traceback
+        print('::error::'+traceback.format_exc().replace('%','%25').replace('\n','%0A'),flush=True)
+        raise
