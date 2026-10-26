@@ -4049,3 +4049,24 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   128; giữ 121/124) — chờ push. **#4**: AI-3 PROGRESS 12:42 — recovery `40322602149`
   **1751/1751 object hash khớp** · 7 fonts/2352 glyph/2354 char/2285 unicode · artifact
   local SHA `9cec092de…` · 59 focused PASS — handoff chờ push+CI.
+
+### 24.66 RE-CHECK 26/10 — mỏ runtime 23/10 (Mate 20 X) × static mới: r90 NÂNG static↔runtime verified
+
+- **Yêu cầu chủ dự án**: "thư mục runtime-probe… kiểm xem rút ra được gì". Spec rà toàn bộ
+  số thật trong `docs/apk-analysis/ramus/2026-10-23-phone/` — kết quả trong
+  **`RECHECK-2026-10-26.md`** (cùng thư mục):
+  1. **✅ `Drone_Get_Datas.BaseDamages[12]` runtime `[450,600,6000,135,935,315,650,1200,
+     248,650,1200,2650]` == r90 static BaseDamages[12] — 12/12 exact, đúng thứ tự,
+     crossbuild (1.0.69 ↔ 1.3.118)** → r90 NÂNG "static-only" → **"static ↔ runtime
+     verified"** (mức-A thứ hai sau 250=250).
+  2. **✅ Mystery 12-vs-10 (CROSSCHECK 23/10 gọi "lỗ hổng thật") ĐÃ GIẢI bởi #19**
+     (12 = 10 listStatValues + 2 percentByLevels; percent crossbuild f32 match) —
+     supersede; `device_table.json` dùng được sau grouping #19. File CROSSCHECK cũ giữ
+     nguyên historical.
+  3. **📋 Anchor catalog** (runtime thật, chờ static đối chiếu): PlayerCosts[24] +
+     legendary [10016,10019,10021,10024] + 7 rank strings (C…XS) + Invincible 3/10 +
+     TouchRanger 15 · Tech MAX_LV_TECHLAB 34 + deltaPricePlayers[24] (0,108… ≠ 0,16 —
+     khác đại lượng, không trộn) + basePriceStatUpgrade[7] + deltaPriceDroids[3] · Drone
+     MaxLevelPerRanks[7]/CardUpgrades[7]/UnlockNowCosts[12] + **StartDroneSkillDamages[12]
+     (chưa có static — mỏ digger drone kế tiếp)** · Stage 249 ≈ 250 maps ✓.
+  4. ⏳ Map contents vẫn placeholders — chờ probe CI `arr=256&depth=2` (a5 đang chạy).

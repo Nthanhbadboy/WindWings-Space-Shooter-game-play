@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 73 — 26/10, RE-CHECK runtime 23/10: r90 nâng static↔runtime verified + giải mystery 12v10):**
+> **§24.66**: mỏ runtime 23/10 rà lại × static mới — **Drone BaseDamages[12] 12/12 exact
+> crossbuild** (r90 → "static↔runtime verified") · mystery listStatValues 12v10 ĐÃ GIẢI
+> bởi #19 (supersede CROSSCHECK) · anchor catalog (PlayerCosts24/legendary/ranks7/
+> Tech34/deltaPricePlayers24/StartDroneSkillDamages12 mỏ mới) · map contents chờ probe.
+> `RECHECK-2026-10-26.md`. verify 209 PASS · 0 FAIL · 2 SKIP.
+>
 > **Sửa lại (lần 72 — 26/10, GỠ CẤM MOD APK (mọi biện pháp) + ACK 116 + #28 accepted):**
 > **§24.65**: **lệnh chủ dự án lần 72** — repak/rebuild/loader/instrument ĐƯỢC PHÉP cho
 > runtime probe; boundary còn lại: vehicle ≠ evidence source (pin SHA + công thức dựng),
