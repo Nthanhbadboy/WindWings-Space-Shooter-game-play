@@ -32,7 +32,7 @@ jobs:
       - name: Preserve pinned graph
         run: |
           test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
-          test -f reverse-engineering/raw/vtable123/probe.json.gz
+          test -f reverse-engineering/raw/vtable123/probe.json.gz || test -f reverse-engineering/raw/vtable123/diagnostic.json
           git config user.name 'Arena evidence collector'
           git config user.email 'agent@arena.ai'
           git add reverse-engineering/raw/vtable123
