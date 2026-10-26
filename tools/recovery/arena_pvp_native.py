@@ -28,6 +28,31 @@ def sha_file(path):
     return h.hexdigest()
 
 
+def parse_rela(path):
+    """R_AARCH64_RELATIVE addends keyed by slot VA (static metadata usages)."""
+    out = {}
+    with open(path, 'rb') as f:
+        data = f.read()
+    shoff = int.from_bytes(data[0x28:0x30], 'little')
+    shentsize = int.from_bytes(data[0x3a:0x3c], 'little')
+    shnum = int.from_bytes(data[0x3c:0x3e], 'little')
+    for i in range(shnum):
+        base = shoff + i * shentsize
+        if base + 64 > len(data):
+            break
+        if int.from_bytes(data[base + 4:base + 8], 'little') != 4:
+            continue
+        off = int.from_bytes(data[base + 0x18:base + 0x20], 'little')
+        size = int.from_bytes(data[base + 0x20:base + 0x28], 'little')
+        entsize = int.from_bytes(data[base + 0x38:base + 0x40], 'little') or 24
+        for pos in range(off, off + size - 23, entsize):
+            r_off, r_info, r_add = (int.from_bytes(data[pos + k:pos + k + 8], 'little')
+                                    for k in (0, 8, 16))
+            if r_info & 0xffffffff == 1027:
+                out[r_off] = r_add
+    return out
+
+
 def parse_dump(text):
     rows = []
     for block in text.split('// Namespace:'):
@@ -79,6 +104,27 @@ def main():
             elf = ELFFile(binary)
             segments = [(s['p_vaddr'], s['p_offset'], s['p_filesz']) for s in elf.iter_segments() if s['p_type'] == 'PT_LOAD']
             engine = capstone.Cs(capstone.CS_ARCH_ARM64, capstone.CS_MODE_ARM)
+            relocs = parse_rela(so)
+
+            def read_va(va, n):
+                for v, o, length in segments:
+                    if v <= va and va + n <= v + length:
+                        binary.seek(o + va - v)
+                        return binary.read(n)
+                return None
+
+            def literal_string(va):
+                header = read_va(va, 0x14)
+                if not header:
+                    return None
+                length = int.from_bytes(header[0x10:0x14], 'little')
+                if not 0 <= length < 256:
+                    return None
+                body = read_va(va + 0x14, 2 * length)
+                if body is None:
+                    return None
+                text = body.decode('utf-16-le', 'strict')
+                return text if text.isprintable() else None
             for row in rows:
                 if not selected(row['class_name']) or not row['offset']:
                     continue
@@ -93,6 +139,8 @@ def main():
                 # Preserve actual literal bytes, not the old rounded constant summaries.
                 regs = {}
                 literals = []
+                slots, slot_refs, ia_events = {}, [], []
+                pending_len = None
                 for i in insns:
                     op = i['op_str']
                     if i['mnemonic'] == 'adrp':
@@ -109,6 +157,34 @@ def main():
                                     binary.seek(o + va - v)
                                     literals.append(dict(instruction_rva=i['rva'], va=va, hex=binary.read(n).hex()))
                                     break
+                    if i['mnemonic'] in ('mov', 'movz'):
+                        match = re.fullmatch(r'w1, #(\d+)', op)
+                        if match:
+                            pending_len = int(match.group(1))
+                    if i['mnemonic'] == 'ldr':
+                        match = re.fullmatch(r'(x\d+), \[(x\d+)(?:, #(0x[0-9a-f]+|\d+))?\]', op)
+                        if match and match[2] in regs:
+                            slots[match[1]] = regs[match[2]] + int(match[3] or '0', 0)
+                        elif match and match[2] in slots and not match[3]:
+                            slot_va = slots.pop(match[2])
+                            addend = relocs.get(slot_va)
+                            if addend is not None:
+                                slot_refs.append(dict(rva=i['rva'], slot_va=slot_va,
+                                                      addend=addend, string=literal_string(addend)))
+                                if match[1] == 'x1' and pending_len is not None:
+                                    ia_events.append(dict(rva=i['rva'], slot_va=slot_va,
+                                                          addend=addend, length=pending_len))
+                                regs[match[1]] = ('slot_value', addend)
+                                continue
+                    if i['mnemonic'] == 'bl' and i['op_str'] == '#0x205b07c' and ia_events and 'initialize_rva' not in ia_events[-1]:
+                        addend = ia_events[-1]['addend']
+                        ia_events[-1]['initialize_rva'] = i['rva']
+                        head = read_va(addend, 64)
+                        deref = read_va(addend, 8)
+                        pointer = int.from_bytes(deref, 'little') if deref else 0
+                        tail = read_va(pointer, 64) if pointer else None
+                        ia_events[-1]['blobs'] = [b.hex() for b in (head, tail) if b]
+                        pending_len = None
                     # Conservative invalidation avoids attributing stale ADRP bases.
                     dest = op.split(',')[0]
                     if i['mnemonic'] != 'adrp' and dest.startswith(('x', 'w')) and i['mnemonic'] not in ('cmp', 'str', 'stp', 'cbz', 'cbnz', 'tbnz', 'tbz'):
@@ -116,7 +192,8 @@ def main():
                     if i['mnemonic'] == 'bl':
                         for n in range(19):
                             regs.pop('x' + str(n), None)
-                records.append(dict(**row, size=size, sha256=hashlib.sha256(code).hexdigest(), bytes_hex=code.hex(), instructions=insns, literals=literals))
+                records.append(dict(**row, size=size, sha256=hashlib.sha256(code).hexdigest(), bytes_hex=code.hex(),
+                                    instructions=insns, literals=literals, slot_refs=slot_refs, initialization=ia_events))
     output = dict(schema=1, evidence='STATIC_ONLY_ORIGINAL_APK', xapk_sha256=XAPK_SHA,
                   libil2cpp_sha256=SO_SHA, dump_sha256=hashlib.sha256(dump).hexdigest(),
                   boundary='next distinct dump offset; no FDE, runtime, emulator, or device', methods=records)
