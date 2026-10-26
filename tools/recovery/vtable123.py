@@ -8,6 +8,8 @@ TARGETS={0x6d2950:'graph_populator'}
 VTABLE_LO,VTABLE_HI=0x10b1000,0x10b1500
 CODE_LO,CODE_HI=0x6d0000,0x6d9000
 SLOTS=(0x10,0x18,0x70)
+KNOWN_VPTRS=(0x10b1150,0x10b1240,0x10b1330,0x10b1420)
+KNOWN_SLOTS=tuple(range(0,0x80,8))
 def sha(b):return hashlib.sha256(b).hexdigest()
 def signed(v,n):return v-(1<<n) if v&(1<<(n-1)) else v
 def recover(path):
@@ -57,19 +59,28 @@ def recover(path):
             candidates.append(dict(vptr=base,slots=slots,slot_addends=[by_address[base+s] for s in SLOTS],graph_populator_relas=[r for r in relas if r['addend']==0x6d2950 and VTABLE_LO<=r['address']<VTABLE_HI]))
     candidates.sort(key=lambda x:x['vptr'])
     graph_relas=[r for r in relas if r['addend']==0x6d2950]
-    direct_refs=[];starts=sorted(unwind)
-    target_set=set(TARGETS)|{a for c in candidates for a in c['slot_addends']}
+    rela_by_address={r['address']:r['addend'] for r in relas}
+    known_vtables=[]
+    for vptr in KNOWN_VPTRS:
+        slots={hex(off):dict(address=vptr+off,addend=rela_by_address.get(vptr+off),unwind=unwind.get(rela_by_address.get(vptr+off))) for off in KNOWN_SLOTS}
+        known_vtables.append(dict(vptr=vptr,slots=slots,addends=[rela_by_address.get(vptr+off) for off in KNOWN_SLOTS]))
+    known_addends=[a for v in known_vtables for a in v['addends'] if a in unwind]
+    direct_refs=[];graph_thunk_refs=[];starts=sorted(unwind)
+    target_set=set(TARGETS)|{a for c in candidates for a in c['slot_addends']}|set(known_addends)
     for s in segments:
         if not s['flags']&1:continue
         for pos in range(s['offset'],s['offset']+s['file_size']-3,4):
             word=struct.unpack_from('<I',b,pos)[0];pc=va(pos)
             if word&0x7c000000==0x14000000:
                 target=pc+(signed(word&0x3ffffff,26)<<2)
-                if target in target_set and CODE_LO<=pc<CODE_HI:
+                if target==0x6d2950:
+                    j=bisect.bisect_right(starts,pc)-1;owner=unwind[starts[j]] if j>=0 and pc<unwind[starts[j]]['end'] else None
+                    graph_thunk_refs.append(dict(pc=pc,target=target,owner_start=owner['start'] if owner else None,owner_end=owner['end'] if owner else None))
+                if target in target_set and 0x500000<=pc<0x6d9000:
                     j=bisect.bisect_right(starts,pc)-1;owner=unwind[starts[j]] if j>=0 and pc<unwind[starts[j]]['end'] else None
                     direct_refs.append(dict(pc=pc,target=target,owner_start=owner['start'] if owner else None,owner_end=owner['end'] if owner else None))
     entries=[]
-    for a in [0x6d2950]+[a for c in candidates for a in c['slot_addends']]:
+    for a in [0x6d2950]+[a for c in candidates for a in c['slot_addends']]+known_addends:
         if a in unwind and a not in entries:entries.append(a)
     windows=[];followed=[];seen=set();queue=[(a,0,None) for a in entries]
     for lo,hi in sorted(set(RANGES)):
@@ -109,7 +120,7 @@ def recover(path):
             if op&0x3b000000==0x18000000:cell(pc+(signed((op>>5)&0x7ffff,19)<<2),16)
     selected_imports=[r for r in imports if any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in list(cells.values()))]
     selected=[r for r in relas if r['address'] in by_address or r['addend']==0x6d2950 or any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in windows+list(cells.values()))]
-    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,strings=[],references=[],branch_references=direct_refs,windows=windows,cells=list(cells.values()),relocations=selected,imports=selected_imports,vtable_candidates=candidates,graph_populator_relas=graph_relas,vtable_rela_count=len(by_address),limits=['Vtable slot inference is based on exact original RELA addends at +0x10/+0x18/+0x70; semantic class/method names are NOT assigned.','Selected original byte spans and FDEs only, not a whole library, game runtime, Unity TypeTree/readback or render.'])
+    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,strings=[],references=[],branch_references=direct_refs,windows=windows,cells=list(cells.values()),relocations=selected,imports=selected_imports,vtable_candidates=candidates,known_vtables=known_vtables,graph_populator_relas=graph_relas,graph_thunk_refs=graph_thunk_refs,vtable_rela_count=len(by_address),limits=['Vtable slot inference is based on exact original RELA addends at +0x10/+0x18/+0x70; semantic class/method names are NOT assigned.','Selected original byte spans and FDEs only, not a whole library, game runtime, Unity TypeTree/readback or render.'])
 def main():
     p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);a=p.parse_args();out=ROOT/'reverse-engineering/raw/vtable123/probe.json.gz';out.parent.mkdir(parents=True,exist_ok=True)
     try:
@@ -118,5 +129,5 @@ def main():
         import traceback
         (out.parent/'diagnostic.json').write_text(json.dumps(dict(error=repr(e),traceback=traceback.format_exc()),indent=2)+'\n')
         raise
-    out.write_bytes(gzip.compress((json.dumps(r,sort_keys=True,separators=(',',':'))+'\n').encode(),mtime=0));print('saved',out,'candidates',len(r['vtable_candidates']),'graph_relas',len(r['graph_populator_relas']),'refs',len(r['branch_references']))
+    out.write_bytes(gzip.compress((json.dumps(r,sort_keys=True,separators=(',',':'))+'\n').encode(),mtime=0));print('saved',out,'candidates',len(r['vtable_candidates']),'known',len(r['known_vtables']),'graph_relas',len(r['graph_populator_relas']),'graph_thunk_refs',len(r['graph_thunk_refs']),'refs',len(r['branch_references']))
 if __name__=='__main__':main()
