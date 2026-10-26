@@ -1,7 +1,7 @@
 name: Recover ef6b75ef board-power107 evidence
 on:
   push:
-    paths: ['tools/recovery/l3_board-power107.py', '.github/workflows/recover-l3-board-power107.yml']
+    paths: ['tools/recovery/board_power107.py', '.github/workflows/recover-board-power107.yml']
   workflow_dispatch:
 permissions:
   contents: write
@@ -23,7 +23,7 @@ jobs:
           key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
           fail-on-cache-miss: true
       - run: git pull --ff-only origin arena/ef6b75ef-windwings-space-shooter-game-p
-      - run: python3 tools/recovery/l3_board-power107.py --xapk /tmp/apk/windwings.xapk
+      - run: python3 tools/recovery/board_power107.py --xapk /tmp/apk/windwings.xapk
       - uses: actions/upload-artifact@v4
         if: always()
         with:
