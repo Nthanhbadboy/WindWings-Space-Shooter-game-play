@@ -109,3 +109,15 @@ python3 tools/verify/owner131.py --write
 python3 tools/verify/owner131.py --check
 python3 -m unittest tests.test_owner131 -v
 ```
+
+## 7. Verification (final)
+
+| check | result |
+| --- | --- |
+| `python3 tools/verify/owner131.py --check` | PASS, artifact 4749 B `70cb303b9a306e7851d3911282ee81342e6d1d910be368fda039ac2590377198` |
+| `python3 -m unittest tests.test_owner131 -v` | 15 tests, 0.079 s, OK |
+| `python3 -m unittest discover -s tests` | 1870 tests, 297.232 s, OK |
+| CI `Verify extracted tables` | run 40406194497, job `verify`, success on `f13f770dd` |
+| recovery run | 40406003345 on `700027eca` (first attempt 40405384979 failed on a phdr offset bug, now diagnostic-captured) |
+| receipts | `reverse-engineering/raw/l3-ef6b75ef131-verification/` (claim, ci, ci-jobs, check, local, focused.log.gz, full.log.gz, handoff) |
+| official handoff | PR12 comment 6428104532 |
