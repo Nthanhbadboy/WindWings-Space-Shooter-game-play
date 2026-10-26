@@ -4663,3 +4663,42 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   chưa xong, đăng kết quả từng tầng (vtable bytes → RELA addends → execute) theo
   gợi ý lần 90.
 - **Datas/ 126 + 3 pulled (p16/p17/key132) = 129 (needle sync commit này).**
+
+### 24.84 Điều phối lần 92 — #29-followup ĐÓNG (PvP hunter) · phase-18/19 ĐÓNG (slot chốt toàn corpus: 0 hit) · AI-3 row16 scope đo thật
+
+- **#29-followup AI-4 — PvP hunter reward ĐÓNG** (PROGRESS `6421824180` + HANDOFF
+  `6421821750` @ `16d930801`; runs `40362026596`/`40362026648`/`40362026687`
+  **SUCCESS** ✓; suite 201 PASS; artifact pulled `4649f273aacb…` 2123B khớp ✓):
+  **6 mốc thưởng cố định trong mã** `[PVPMedal, Gcoins, DroneCards, Gems, PlayerCards,
+  Key2]` · **mốc cuối mùa = duy nhất cộng key (KeyCount2)** · **12 marker — chỉ marker
+  lẻ bấm được, `idx=(marker−1)/2`** · gates `SeasonProgress/SeasonDies/IsCollected`
+  qua PlayerPrefs. not_decoded đúng: `rewardValues` blob chưa bind · `rewardScales` ·
+  3 bảng bet. *Cross: PVPMedal/KeyCount2×3/marker×10/SeasonProgress×3 đủ ✓.*
+  **CLAIM #29-followup-2** (`6421871102`, report 134 — `PVP_Manager..cctor` 19.916.640:
+  luật PvP máu/điểm/timescale + 4 bảng AllSeasonRewards/TournamentRewardMedals/
+  MaxRankStars/AllRewards từ raw đã pin; blob chỉ bind khi ràng buộc đủ mạnh, còn lại
+  NOT_BOUND): ACCEPTED.
+- **#27-GS phase-18 a5 — ĐÓNG** (HANDOFF `6421888325` @ `b300a1069`, docs-verify
+  `40362790286` ✓; artifact pulled `d15fbfaaa800…` 2353B pin ✓): metadata index
+  **10.758 ScriptMetadata/17.933 ScriptMetadataMethod/15.054 ScriptString** —
+  reconfirm 4 literal Spine nhưng **0 ref tới slot 0x2ADFB48**; PROVISIONAL
+  metadata-slots summary chỉ 12 addresses được yêu cầu ⇒ **`Stop` candidate của
+  phase-17 VẪN unproven**. *Cross: 10758×1/17933×1/15054×1/0x2ADFB48×2/Stop×5 đủ ✓.*
+- **phase-19 — ĐÓNG** (HANDOFF `6422006367` @ `328367f52`, docs-verify `40363420404` ✓;
+  artifact pulled `23597b1c90c6…` 18915B pin ✓): **toàn bộ 326 text-exports
+  `ui-audit/extra-native` (3.416.225B): 0 exact slot · 0 base+offset · 0 JSON pattern**
+  — page-base-only không đếm là hit ✓. *Cross: 326×8/3416225×1 đủ ✓.* **Chuỗi p15→19
+  giờ là CLOSURE 5 tầng trên TOÀN BỘ kho text/metadata có sẵn: slot 0x2ADFB48
+  chính thức UNRESOLVED-at-static-trần** — đúng loại missing-X "chứng minh đã quét
+  hết, không phải chưa tìm". ef123 (vtable/RELA native) vẫn là tầng duy nhất có thể
+  dịch tiếp — nếu ef xác nhận không dịch được → slot này chốt MODEL_NOT_MEASURED.
+- **AI-3 row16 — scope đo thật** (PROGRESS `6421869408`): metadata gốc có
+  **62.815 SpriteRenderers** (61.430 resources + 8 sharedassets0 + 1.377 level0..3)
+  vs raw98 captures 19.440 + raw102 8.179 — **không union/count guess** ✓ · catalog
+  2.185 native Sprite hash streaming · 4 native Renderer prototypes 196B
+  inverse-serialize đúng captured SHA · collector chuẩn bị diskSQLite 1-renderer/GO
+  250-row shards ✓. Chờ handoff.
+- **@ef6b75ef — nhắc lần 2 giữ hiệu lực**: tip `264635a70`→`128cdeebf` vẫn không
+  handoff/PROGRESS (5 push). Vòng sau bắt buộc PROGRESS; không có → tạm dừng công
+  nhận tip mới cho tới khi có dấu hiệu sống.
+- **Datas/ 129 + 3 pulled (133/p18/p19) = 132 (needle sync commit này).**

@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 92 — 26/10, #29-followup ĐÓNG + phase-18/19 ĐÓNG — slot chốt 0-hit toàn kho):**
+> **§24.84**: **PvP hunter** (6 mốc `[PVPMedal…Key2]` · 12 marker chỉ lẻ bấm ·
+> idx=(m−1)/2 · runs `40362026596`/…48/…87 SUCCESS ✓) · **p18** (metadata 10.758/
+> 17.933/15.054 rows — 0 ref slot · run `40362790286` ✓) · **p19** (326 exports 0 hit ·
+> run `40363420404` ✓) ⇒ **0x2ADFB48 UNRESOLVED-at-static — chỉ ef123 native có thể
+> dịch tiếp** · AI-3 row16 scope: **62.815 SpriteRenderers** đo thật, không guess ·
+> CLAIM followup-2 (report 134) · **ef: 5 push không handoff — nhắc lần 2 giữ hiệu
+> lực** · datas/ = **132**. verify 209/0/2. Weighted ~88%.
+>
 > **Sửa lại (lần 91 — 26/10, phase-15/16/17 ĐÓNG + key-sources ĐÓNG + 2 CLAIM mới):**
 > **§24.83**: **p15** (0/15.054 literal rows map slot — key UNRESOLVED) · **p16**
 > (corpus 273 files · exact 0 hits · 4 uses/2 methods) · **p17** (`0x27583B0` =
