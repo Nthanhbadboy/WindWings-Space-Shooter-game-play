@@ -15,7 +15,7 @@ def recover(path):
  assert len(found)==1;b=found[0];assert sha(b)==LIB_SHA
  source=ROOT/'reverse-engineering/raw/il2cpp-consts/Map_Get_Datas.json';meta=json.loads(source.read_bytes());m=next(r for r in meta['methods'] if r['method']=='cctor');assert m['bytes']==100896 and not m['size_capped'] and m['ends_clean'];cell=extract(b,((int(m['rva'],16),m['bytes']),))['cells'][0]
  from capstone import Cs,CS_ARCH_ARM64,CS_MODE_ARM
- instructions=list(Cs(CS_ARCH_ARM64,CS_MODE_ARM).disasm(bytes.fromhex(cell['hex']),int(cell['va'],16)));assert len(instructions)*4==cell['width'];asm=ROOT/'reverse-engineering/raw/il2cpp-consts/Map_Get_Datas.asm.txt';expected={int(a,16):(op,args.strip()) for a,op,args in re.findall(r'^\s*0x([0-9a-f]+): (\w+)\s+(.*?)\s*$',asm.read_text(),re.M)}
+ instructions=list(Cs(CS_ARCH_ARM64,CS_MODE_ARM).disasm(bytes.fromhex(cell['hex']),int(cell['va'],16)));assert len(instructions)*4==cell['width'];asm=ROOT/'reverse-engineering/raw/il2cpp-consts/Map_Get_Datas.asm.txt';expected={int(a,16):(op,args.strip()) for a,op,args in re.findall(r'^[ \t]*0x([0-9a-f]+): ([\w.]+)[ \t]*(.*?)[ \t]*$',asm.read_text(),re.M)}
  for i in instructions:assert expected[i.address]==(i.mnemonic,i.op_str),(hex(i.address),expected[i.address],i.mnemonic,i.op_str)
  pages={};wanted=set()
  for i in instructions:
@@ -33,4 +33,9 @@ def recover(path):
  out=dict(provisional=True,provenance='arena/ef6b75ef',scope='Original native bytes + candidate RELA; NO entry-binding or dynamic pointer-flow conclusion yet',xapk_sha256=APK_SHA,lib_sha256=LIB_SHA,tool_sha256=sha(Path(__file__).read_bytes()),sources={str(p.relative_to(ROOT)):sha(p.read_bytes()) for p in [source,asm,ROOT/'tools/recovery/combat_coroutine_cells.py']},method=cell,relocations=rels)
  dest=ROOT/'reverse-engineering/raw/map-entries108';dest.mkdir(parents=True,exist_ok=True);(dest/'native.json.gz').write_bytes(gzip.compress((json.dumps(out,sort_keys=True,separators=(',',':'))+'\n').encode(),mtime=0));print('Map cctor original',len(instructions),'instructions;',len(rels),'candidate RELA; identity binding NOT proven')
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);recover(p.parse_args().xapk)
+ p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True)
+ try:recover(p.parse_args().xapk)
+ except Exception:
+  import traceback
+  print('::error::'+traceback.format_exc().replace('%','%25').replace('\n','%0A'),flush=True)
+  raise
