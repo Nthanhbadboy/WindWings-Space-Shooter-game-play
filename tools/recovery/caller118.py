@@ -52,7 +52,7 @@ def recover(path):
             word=struct.unpack_from('<I',b,pos)[0];pc=va(pos)
             if word&0x7c000000==0x14000000:
                 target=pc+(signed(word&0x3ffffff,26)<<2)
-                if target in TARGETS:
+                if target==0x6d38bc:
                     j=bisect.bisect_right(starts,pc)-1;owner=unwind[starts[j]] if j>=0 and pc<unwind[starts[j]]['end'] else None
                     branch_refs.append(dict(pc=pc,target=target,unwind=owner))
             if word&0x9f000000!=0x90000000:continue
