@@ -131,15 +131,6 @@ def main():
             engine = capstone.Cs(capstone.CS_ARCH_ARM64, capstone.CS_MODE_ARM)
             relocs = parse_rela(so)
 
-            windows = []
-            for spec in args.rodata:
-                va_text, length_text = spec.split(':')
-                va = int(va_text, 0)
-                data = read_va(va, int(length_text, 0))
-                if data is None:
-                    raise ValueError('rodata window outside PT_LOAD: ' + spec)
-                windows.append(dict(va=va, length=len(data), hex=data.hex(),
-                                    sha256=hashlib.sha256(data).hexdigest()))
 
             def read_va(va, n):
                 for v, o, length in segments:
@@ -164,6 +155,15 @@ def main():
                     return None
                 return text if text.isprintable() and text else None
 
+            windows = []
+            for spec in args.rodata:
+                va_text, length_text = spec.split(':')
+                va = int(va_text, 0)
+                data = read_va(va, int(length_text, 0))
+                if data is None:
+                    raise ValueError('rodata window outside PT_LOAD: ' + spec)
+                windows.append(dict(va=va, length=len(data), hex=data.hex(),
+                                    sha256=hashlib.sha256(data).hexdigest()))
             for row in rows:
                 if not selected(row['class_name'], families) or not row['offset']:
                     continue
