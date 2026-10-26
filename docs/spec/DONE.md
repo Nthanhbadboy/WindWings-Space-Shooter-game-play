@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 71 — 26/10, #5-rep + #6 + #27/115 ĐÓNG bounded + LỆNH CHẠY RUNTIME PROBE):**
+> **§24.64**: **#5-rep** (8141386a): witness byte + cuts khớp a5 — model-agreement ✓;
+> support-view pin đủ (99-path snapshot trong verification-5.json.gz) — ĐÓNG · **#6**
+> (127-a5): 1550/1550 remap 1:1 · 2185 bones/bindpose EMPTY scoped — ĐÓNG static remap ·
+> **#27/115** (ef, 1451 PASS): packed-clip consumer PROVED (2262 words copy unchanged ·
+> 930 DWORDs bit-equal) — ĐÓNG bounded; dense/timewrap/Animator MỞ · **⚡ lệnh chủ dự án:
+> CHẠY RUNTIME PROBE (phương án b — loader-apk tự dựng trong CI, loader ≠ evidence
+> source; ưu tiên map 742 values → second-device → live-DPS)**. datas/ = **97**. verify
+> 209 PASS · 0 FAIL · 2 SKIP.
+>
 > **Sửa lại (lần 70 — 26/10, #26 ĐÓNG bó scope + #27/115 chạy tiếp):**
 > **§24.63**: **126-a5 #26** (`0002070e8a`): root 212696 (235 nodes inactive) · chain
 > 57508→425352→439142→root · 0 match/0 PPtr edge trong captures · 5 cameras không link ⇒

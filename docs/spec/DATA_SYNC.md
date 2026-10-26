@@ -3983,3 +3983,39 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   region + original type-record backreferences + **packed sampler callers × serialized
   count fields × class74 record** (class74 = clip identities từ #110 — nối được chuỗi
   791 clips!) — khai đúng: cache adapter ≠ consumer proof. Đang chạy, chờ handoff.
+
+### 24.64 Điều phối lần 71 — #5-rep + #6 + #27/115 ĐÓNG bounded · LỆNH CHẠY RUNTIME PROBE
+
+- **#5-rep 8141386a** (code `c86db3ee5`, CI GREEN `40320393140`+`40320393233`, full **1410
+  PASS**; SHA `0b77e656d264…` khớp ✓): byte witness recovery `40316865222` (XAPK SHA
+  verified, 4 object hash khớp raw102) → border [45,20,45,20] · **16 vertices/54
+  indices/18 triangles**, cutsX [-5,-4.55,4.55,5], cutsY [-2.5,-2.3,2.3,2.5] · UV
+  source-pixel cuts · 26 tiled rows not_generated-có-reason · **model-agreement với a5**
+  (2 tool độc lập cùng số) — KHÔNG suy native generator/readback (cả 2 khai shared
+  lineage) ✓. **Support-view pin ĐỦ theo điều kiện lần 68**: baseline 160/27/24 frozen +
+  current 163/25/23 (không FAIL mới) + scoped 209/0/2 · `verification-5.json.gz` giữ
+  99-path snapshot + spec commit + per-group FAIL/SKIP + logs — tái kiểm được ✓.
+  **ACK ĐÓNG #5-rep; PRIMARY #5 (a5) + REPLICATION (8141386a) cùng ĐÓNG.**
+- **#6 a5** (code `af518716b7`, report 127, SHA `8d320f1458f8…` khớp ✓): **1550/1550
+  atlas-backed sprites resolve 1:1** (owning-file PPtr + renderDataKey; 66 atlases map
+  rows/packed PPtrs/names khớp hết) · 635 direct `m_RD` · **2185 sprites: m_Bones +
+  m_Bindpose EMPTY (scoped)** · mesh contract 27.072 static verts/2185 AABBs ·
+  localAABB zero · boundary: atlasRequested/atlasRegistered chỉ DECLARED (IL2CPP dump),
+  chưa có subscription/runtime remap ✓. **ACK ĐÓNG bó scope static remap; runtime remap
+  MỞ (thuộc runtime lane).**
+- **#27/115 ef** (scientific `61de2d57ef`, Verify `40321809391`, full **1451 PASS**; SHA
+  `32f8105361cc…` khớp ✓): **packed-clip consumer native chain PROVED bounded** —
+  owner+0x1e0 → blob+0x5f0 → 6d2e94→6df270→6df310→6df768 · **2262 uint32 words/9048B từ
+  resources.assets:1609 copy UNCHANGED (không inject coefficient)** · **92 continuous +
+  1 discrete ×10 samples = 930 DWORDs bit-equal separate-f32** · +Inf terminal header
+  byte 9040 · initializer 6df02c 597 instr (1 allocator sub duy nhất) · discrete
+  0x40a00000 = raw DWORD (không suy sprite index) ✓. **ACK ĐÓNG bounded consumer; #27
+  MỞ: dense 6df518 (unexecuted) · timewrap b93158 · Animator blending/bootstrap/
+  readback/render.**
+- **⚡ LỆNH CHỦ DỰ ÁN (lần 71): CHẠY RUNTIME PROBE — duyệt phương án (b)**: digger (a5,
+  có vehicle PR14) **tự dựng loader-apk trong CI** từ components pin (MelonLoader/
+  BepInEx + `RamusBridge.dll` từ repo, CI bridge-build PASS sẵn) → cài ramus → thu
+  receipts. **Boundary bắt buộc:** loader ≠ evidence source (receipts pin SHA loader +
+  provenance; original XAPK bytes KHÔNG đụng); session ưu tiên: ① map
+  `arr=256&depth=2` (đối chiếu 742 values) ② second-device ③ live-DPS same-build;
+  fail → báo blocker thật, không bịa; mỗi receipt = artifact riêng + report.
