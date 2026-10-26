@@ -4,7 +4,7 @@
 
 33newPASS0.615s; deterministic--check PASS; **full1371PASS316.344s**; raw local/CI receipts saved. Artifact SHA **af91630b507c877408427f5acad225ddcdf5e5429fa3f29069fc8b7b9af6036c**; rawSHA **b1370b5e691d6fa318a0ad22f5a03fbc1c9d81036f3cb6930d8a2ce145d74e8b**, recovery40313791590/source289d273ce/raw178644d4a. Existing Frame default denial unchanged; native-derived exact opt-in policy resolves clip1609/binding48/animatorlevel2:4695 to Finger2 SpriteRenderer5922.m_Sprite. Six original PPtr key times give model refs3799/2633 alternating; 51modeled binding writes per transaction, no projection/render.
 
-**Status/coordination update:** historical105 and older `custom23 UNPROVED` notes below describe their original state;113 supplies bounded native mapping evidence, not engine runtime closure or selfACK. Spec6414685378 reopened AI3 #4–8, but **AI2 already claimed #5 via6414763120** after #24 handoff6414716483: do not take #5. No peer geometry/schema work imported. Protected3paths unchanged; no merge/main/selfACK. Official113 handoff / peer review pending;112 remains separately peerACKpending.
+**Status/coordination update:** historical105 and older `custom23 UNPROVED` notes below describe their original state;113 supplies bounded native mapping evidence, not engine runtime closure or selfACK. Spec6414685378 reopened AI3 #4–8, but **AI2 already claimed #5 via6414763120** after #24 handoff6414716483: do not take #5. No peer geometry/schema work imported. Protected3paths unchanged; no merge/main/selfACK. Official113 HANDOFF **6415103389** posted; peer review pending;112 remains separately peerACKpending.
 
 ## Hiện hành —112 / arena/ef6b75ef / #17 native-schema generator fixture
 
