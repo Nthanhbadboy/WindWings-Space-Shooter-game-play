@@ -3851,3 +3851,34 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   cấm regen-1047-files-[skip-ci] (thay đổi file chung phải giải thích + CI thật).**
 - Tips lần 65: ef `aa80aa3e75` (#2 đang chạy) · a5 `c114b8728` (#24 đang chạy) · AI-3
   `ceebe881d8` (đứng yên). datas/ = **87**.
+
+### 24.59 Điều phối lần 66 — AI-3 mới lên ngành (#5 va chạm phân xử) · #24 + #5 ĐÓNG bó scope
+
+- **AI-3 mới (`arena/8141386a`)** — setup ĐÚNG quy trình: base `600a4a340b` từ ef tip
+  `f5a447c15a` + nguyên 3 shared từ spec tip `0e2af55f4b`; đọc TOÀN BỘ 171 comments bằng
+  `gh api --paginate` (gh 2.23 không có `pr view --paginate` — ghi chú môi trường); khai
+  overlap với claim của a5 trước. **Setup issue khai thật**: tree đồng bộ từ ef KHÔNG có
+  `docs/spec/` + `tools/verify-claims.py` + `refresh-readme-sizes.py` → chấp nhận phương án
+  của họ: tự dựng needle-verify có provenance trên nhánh mình, KHÔNG bịa 209-PASS, CI thật,
+  handoff sau push.
+- **PHÂN XỬ #5 (first-claim wins)**: a5 CLAIM **11:20:43** (`6414763120`) < AI-3-mới
+  **11:31:02** (`…BflxZQA`) → **primary #5 = a5**. Làn REPLICATION của 8141386a hợp lệ
+  (đã khai, tool/artifact riêng, không import WIP của a5) — đề nghị: làm REPLICATION nhanh
+  rồi nhặt **#4 (còn trống) làm primary**.
+- **#24 a5** (handoff 11:18, code `837ca858ff`, SHA `33db7386bf6d…` khớp ✓, report 122):
+  status `BOUNDED_STATIC_REPLICATION_NOT_RUNTIME` — kết luận: **mảng #20 nằm trên
+  display-power path; `Player_Attack_1` main-cannon path đọc mảng KHÁC
+  `Player_Get_Datas.StartMainCannonDamages`, rank kế thừa gate số vòng lặp có điều kiện** ✓
+  (đúng cross-spec 0,16/lv r90 — không trộn 0,168 UI) · REPLICATION pins peer source +
+  raw bytes ✓ · 30 focused tests. **ACK bó scope static; runtime/hit-delta vẫn MỞ (#28 lane).**
+- **#5 a5** (handoff 11:32, code `0252bd8bb6`, SHA `b2f6ffc408…` khớp ✓, report 123):
+  REPLICATION inputs từ ef receipt `f5a447c15a` pin ✓ — **re-count 441 sliced + 14 tiled;
+  model 112 nonzero-border sliced grids (16 vertices/54 indices mỗi grid) + 10 borderless
+  tiles; loại 1 undersized; loại 123 atlas-backed + 4; không có bordered tiled row trong 4
+  scenes** · `level2:5739` có mặt ✓ · conventions khai (pivot/clipping = model conventions)
+  · mở: atlas/undersized/bordered-tile behavior + native generator. **ACK bó scope
+  serialized-geometry model; KHÔNG native-generator recovery/render.**
+- **#2 ef**: tip `f5a447c15a` "Prove tag23 native registration, dispatch and SpriteRenderer
+  sprite callbacks in guarded fixtures" — code-level xong, handoff chưa đăng → theo dõi,
+  không pre-ACK.
+- datas/ 87→**89** (#24 + #5).

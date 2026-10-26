@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 66 — 26/10, AI-3 mới lên ngành + #24/#5 ĐÓNG bó scope + phân xử #5):**
+> **§24.59**: AI-3-mới `8141386a` setup đúng (base ef tip + 3 shared; đọc 171 comments bằng
+> api-paginate; khai gap tree-digger thiếu tools spec) · **phân xử #5: a5 (11:20) trước
+> AI-3-mới (11:31) → primary a5**; 8141386a giữ REPLICATION + đề nghị nhặt #4 · **#24 ĐÓNG
+> bó scope** (`837ca858ff`): Player_Attack_1 đọc `StartMainCannonDamages`, rank gate loop ·
+> **#5 ĐÓNG bó scope** (`0252bd8bb6`): 441+14 recounted · 112 grids 16v/54i + 10 tiles ·
+> 5739 ✓ · #2 ef code-done chờ handoff. datas/ = **89**. verify 209 PASS · 0 FAIL · 2 SKIP
+> · unittest OK.
+>
 > **Sửa lại (lần 65 — 26/10, điều tra AI-3 → UNRESPONSIVE, thu #4–8 về REPLICATION):**
 > **§24.58**: AI-3 = 1 comment (claim 08:46) rồi im hẳn — tip đứng `ceebe881d8` từ 08:32 ·
 > churn 1047 files [skip ci] sau CI 4/5 đỏ · 0 phản hồi 3 nhắc → **#4–8 MỞ REPLICATION**
