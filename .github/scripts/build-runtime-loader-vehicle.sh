@@ -78,9 +78,21 @@ cp "$BRIDGE" "$OUT/RamusBridge.dll"
 # ── Fetch, pin and inspect (read-only) the original XAPK. ────────────────────
 BUILD_STAGE='download, verify, and inventory immutable XAPK'
 XAPK="$SCRATCH/source/$APK_ASSET"
-GH_TOKEN="$GH_TOKEN" gh release download "$APK_TAG" --repo "${GITHUB_REPOSITORY:?GITHUB_REPOSITORY is required}" \
-  --pattern "$APK_ASSET" --dir "$SCRATCH/source" --clobber
-[ -s "$XAPK" ] || die "release did not produce $XAPK"
+REPO="${GITHUB_REPOSITORY:?GITHUB_REPOSITORY is required}"
+# This is an untagged draft release: resolve its display tag through the release
+# inventory, then fetch the matching asset by immutable asset ID (not git tag).
+release_list="$(gh api "repos/$REPO/releases?per_page=100" --paginate --jq '.[]')"
+release_record="$(jq -rs --arg tag "$APK_TAG" --arg asset "$APK_ASSET" '
+  [ .[] | select(.tag_name == $tag and .draft == true) ] | first as $release |
+  [$release.id, ($release.assets[] | select(.name == $asset) | .id)] | @tsv
+' <<< "$release_list")"
+RELEASE_ID="${release_record%%$'\t'*}"
+ASSET_ID="${release_record#*$'\t'}"
+[ -n "$RELEASE_ID" ] && [ "$RELEASE_ID" != null ] || die "draft release not found for tag $APK_TAG"
+[ -n "$ASSET_ID" ] && [ "$ASSET_ID" != "$release_record" ] || die "asset $APK_ASSET not found in draft release $APK_TAG"
+printf 'release_id=%s\nasset_id=%s\ntag=%s\nasset=%s\n' "$RELEASE_ID" "$ASSET_ID" "$APK_TAG" "$APK_ASSET" > "$OUT/source-release-asset.txt"
+gh api -H 'Accept: application/octet-stream' "repos/$REPO/releases/assets/$ASSET_ID" > "$XAPK"
+[ -s "$XAPK" ] || die "release asset download produced no bytes: $APK_ASSET (asset id $ASSET_ID)"
 chmod a-w "$XAPK"
 source_sha_before="$(sha256sum "$XAPK" | awk '{print $1}')"
 source_size="$(stat -c%s "$XAPK")"
@@ -98,6 +110,8 @@ with open(xapk_path, "rb") as f:
         sha.update(block)
 entries = []
 manifest = {}
+release_asset = dict(line.split("=", 1) for line in
+                     (Path(out_path).parent / "source-release-asset.txt").read_text().splitlines())
 with zipfile.ZipFile(xapk_path) as outer:
     names = outer.namelist()
     manifest_name = next((n for n in names if n.lower().endswith("manifest.json")), None)
@@ -133,6 +147,8 @@ if package != expected_pkg:
 all_abis = sorted({abi for entry in entries for abi in entry["abis"]})
 result = {
     "source": {"release_tag": "windwings-apk-1.3.118", "asset": "windwings.xapk",
+               "release_id": int(release_asset["release_id"]),
+               "asset_id": int(release_asset["asset_id"]),
                "size_bytes": os.path.getsize(xapk_path), "sha256": sha.hexdigest(),
                "modified": False},
     "manifest_package": package or None,

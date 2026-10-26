@@ -203,7 +203,14 @@ jobs:
         run: |
           set -euo pipefail
           chmod +x .github/scripts/build-runtime-loader-vehicle.sh
-          .github/scripts/build-runtime-loader-vehicle.sh
+          log="$RUNNER_TEMP/runtime-loader-vehicle-build.log"
+          set +e
+          .github/scripts/build-runtime-loader-vehicle.sh 2>&1 | tee "$log"
+          build_status=${PIPESTATUS[0]}
+          set -e
+          mkdir -p "$OUT"
+          cp "$log" "$OUT/vehicle-build.log"
+          exit "$build_status"
 
       - name: Summarize vehicle provenance
         if: always()
@@ -217,44 +224,54 @@ jobs:
               echo '```'
             else
               echo 'Loader/bridge build did not produce a provenance receipt.'
+              tail -80 '${{ runner.temp }}/runtime-loader-vehicle/vehicle-build.log' 2>/dev/null || true
               tail -80 '${{ runner.temp }}/runtime-loader-vehicle/fusioncore-build.log' 2>/dev/null || true
               tail -80 '${{ runner.temp }}/runtime-loader-vehicle/bridge-build.log' 2>/dev/null || true
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Report vehicle failure on PR
-        if: failure() && github.event_name == 'pull_request'
+      - name: Publish vehicle build status on PR
+        if: always() && github.event_name == 'pull_request'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           OUT: ${{ runner.temp }}/runtime-loader-vehicle
+          VEHICLE_JOB_STATUS: ${{ job.status }}
         run: |
           set -euo pipefail
-          body="$RUNNER_TEMP/runtime-loader-vehicle-failure-comment.md"
+          body="$RUNNER_TEMP/runtime-loader-vehicle-status-comment.md"
           {
-            echo '## #28 CI loader vehicle failure diagnostics'
-            echo
-            if [ -f "$OUT/failure.txt" ]; then
-              echo '### Failed stage'
+            if [ "$VEHICLE_JOB_STATUS" = success ]; then
+              echo '## #28 CI loader vehicle build succeeded'
               echo
-              echo '```text'
-              cat "$OUT/failure.txt"
-              echo '```'
+              echo "Pinned loader APK, phone-target bridge, and provenance are attached to [this Actions run](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})."
+              echo 'The released XAPK remains a separate, read-only source asset.'
               echo
             else
-              echo 'The build failed before its stage receipt was written.'
+              echo '## #28 CI loader vehicle failure diagnostics'
               echo
-            fi
-            for file in loader-ref-fetch.log bridge-build.log fusioncore-build.log; do
-              if [ -f "$OUT/$file" ]; then
-                echo "### Tail: $file"
+              if [ -f "$OUT/failure.txt" ]; then
+                echo '### Failed stage'
                 echo
                 echo '```text'
-                tail -80 "$OUT/$file"
+                cat "$OUT/failure.txt"
                 echo '```'
                 echo
+              else
+                echo 'The build failed before its stage receipt was written.'
+                echo
               fi
-            done
+              for file in vehicle-build.log loader-ref-fetch.log bridge-build.log fusioncore-build.log; do
+                if [ -f "$OUT/$file" ]; then
+                  echo "### Tail: $file"
+                  echo
+                  echo '```text'
+                  tail -80 "$OUT/$file"
+                  echo '```'
+                  echo
+                fi
+              done
+            fi
           } > "$body"
           chmod +x .github/scripts/pr-comment.sh
           .github/scripts/pr-comment.sh "${{ github.event.pull_request.number }}" \
