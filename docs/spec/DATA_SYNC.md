@@ -3344,3 +3344,28 @@ từ nay:
 6. **ACK mỗi report = 1 comment PR12 riêng**, ghi rõ nhánh/nguồn; khi đánh số report va chạm
    giữa các digger thì ghi kèm tiền tố nhánh (`Report <N> — <nhánh>`).
 7. Vai không đổi: digger đào sâu; spec = đối chéo + tài liệu + handoff, không tự đào thay.
+
+**Chống lấn việc (bổ sung lần 47 — chủ dự án hỏi kịch bản khi digger xong phần rồi lấn nhau):**
+
+- **Ownership theo miền artifact (cố định, ai muốn đổi phải qua chủ dự án):** AI-1 `ef6b75ef`
+  = custom binding proof · driver order concrete chain · texture decode + execution model
+  shader Sprites/Default; AI-2 = geometry generator (TMP/glyph/atlas · sliced/tiled
+  non-zero-border · atlas remap · skinning bounds) + 3 nhóm gap (7 builtin mesh · 5
+  header-only · 52 default-mesh); AI-3 = particle sim · transition scheduler/layer blending ·
+  driven RectTransform/CanvasRenderer; spec = datas chung + đối chéo + docs + điều phối
+  (không đào).
+- **Đọc chéo được, sửa chéo không**: muốn dùng dữ liệu miền khác thì CHỈ dùng artifact ĐÃ
+  handoff trên PR12 (có SHA), ghi provenance nguồn vào report; không kéo artifact dở/không
+  review; không sửa tool/file của digger khác (cần mở rộng thì làm tool riêng hoặc đề xuất
+  trên PR12).
+- **Xong phần của mình thì làm gì**: báo "scope của tôi đã cover hết X" trong handoff +
+  ĐỨNG chờ, hoặc nhận việc mới do chủ dự án phân — KHÔNG tự nhảy sang miền ai.
+- **Trùng việc**: ai có batch trước về việc đó = owner tạm; thằng sau hoặc rút sang biên
+  chưa ai làm, hoặc khai báo là **independent replication** (đào trùng độc lập vẫn có giá trị
+  — hai nguồn cùng số = mạnh hơn) nhưng phải ghi rõ trong report, không giấu.
+- **Va chạm số liệu**: cùng object/ID nhưng 2 số khác nhau → spec flag **disputed** trên
+  PR12; mỗi bên trích raw + SHA của mình; không bên nào tự nhận đúng; phân xử = chủ dự án
+  hoặc digger thứ 3 xác minh độc lập.
+- **Phát hiện lấn việc im lặng**: spec diff từng tip mỗi vòng (`--name-status` tip mới vs cũ)
+  — artifact/domain lạ trong nhánh A mà report A không provenance → trả lại, yêu cầu tách
+  hoặc ghi provenance; trùng tên file datas/ → đổi tên có prefix miền.

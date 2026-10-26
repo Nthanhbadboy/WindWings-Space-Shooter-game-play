@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 47 — 26/10, kịch bản digger xong phần rồi lấn việc):**
+> §24.40 bổ sung: **bảng ownership cố định theo miền artifact** (AI-1 binding/driver/
+> texture-shader · AI-2 geometry/gap · AI-3 particle/transition/driven · spec đối chéo+docs)
+> · **đọc chéo được, sửa chéo không** (chỉ dùng artifact đã handoff+SHA, ghi provenance) ·
+> xong phần = báo + đứng chờ việc mới, không tự nhảy · trùng việc = owner tạm hoặc khai
+> independent replication · va chạm số liệu = spec flag disputed, chủ dự án/digger thứ 3
+> phân xử · spec diff tip mỗi vòng để bắt lấn việc im lặng. ls-remote: peer chạy tiếp
+> `1db187112` (batch 105 chưa handoff). verify 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 46 — 26/10, chủ dự án thêm 2 AI đào dữ liệu):**
 > **§24.40**: quy ước đa digger — fetch từng tip riêng/vòng · artifact cần SHA nguồn · đối
 > chéo độc lập bắt buộc · 3 path shared giữ ở nhánh spec · không merge chéo · ACK per report
