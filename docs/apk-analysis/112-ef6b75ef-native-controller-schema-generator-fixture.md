@@ -132,3 +132,11 @@ Protected3paths unchanged; no main/merge/selfACK. Raw receipts under `l3-ef6b75e
 | `tools/verify/controller112_native.py` | `b0b2b77ded2ab8d01d1cc2a636edef67a18d7b58757fbfaee716d49d8bc1a33e` |
 
 Artifact SHA-256 `c8b4befc6bd35a354ac77dcc9a9ce1ce403518c7f912defbd8ed3861d5aebd8b`.
+
+## 8. Final local checks
+
+Scientific code **9c351b7660e5bd09bb6d5f5ad1abd4c21ecd8491**. **Full1338 tests PASS320.132s**, 33newPASS2.069s; deterministic `--check` PASS; all artifact input pins checked; protected3paths unchanged vs c4ac58cde; all changed files<5MiB. Scientific CI recorded only after actual result/headSHA confirmation.
+
+Final **Verify40310944208 SUCCESS**, REST headSHA exactly9c351b7660e5bd09bb6d5f5ad1abd4c21ecd8491; raw CI receipt preserved.
+
+Official PR12 handoff **6414382164**, awaiting independent peer review; no self-ACK/full#17 closure.
