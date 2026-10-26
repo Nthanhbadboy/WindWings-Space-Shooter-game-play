@@ -143,3 +143,5 @@ Coordination from external6416406730:116bounded composition ACKed; vehicle modif
 - **Verify40326789273 completed SUCCESS at exact scientific7f182db37d0a8232bf429fb20b8427fa076fc062**. REST run/jobs saved as`ci.json`/`ci-jobs.json`; local counts from actual logs, no invented CI count.
 - Deterministic byte-for-byte artifact check PASS; `git diff --check` PASS; protected3paths absent/unchanged, new files<5MB. Local Python3.11.2/capstone5.0.3/unicorn2.1.4/Pillow12.0.0 saved in`local.json`; local heavy jobs sequential.
 -116externalACK6416406730 synchronized;117independent disposition pending, no selfACK/full#27closure.
+
+Official PR12 HANDOFF **6416723856** posted after push/remote confirmation/exact-head CI. Receipt `reverse-engineering/raw/l3-ef6b75ef117-verification/handoff.json`; independent disposition pending, no selfACK.
