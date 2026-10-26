@@ -24,9 +24,10 @@
 > **Cập nhật 26/10 — lần 4 (đồng bộ `DATA_SYNC` §24.80, chương trình đào 4-digger):**
 > ① **D3 (row 4) NÂNG cho boss-1** — route static Boss_1_Animation đã map được:
 > `Boss_AttackPhases` (PPtr → Animator/controller Boss-39019/20/21) · state
-> `stateRunAway/Baydi` + `stateDie/Dead` → **UnityEvent defeat +0x70 / burst +0x78**
-> (offset **trực tiếp từ TypeDefIndex 141**, ban đầu ghi là inference — đã CORRECT bằng
-> metadata) → receiver **Enemy_Destroy 601110** (root 185722, `destroyScript` cùng root) ·
+> `stateRunAway/Baydi` + `stateDie/Dead` → **UnityEvent defeat +0x70** (offset trực tiếp từ
+> TypeDefIndex 141 — đã CORRECT bằng metadata); **burst +0x78 = serialized field/target,
+> KHÔNG phải invocation đã chứng minh** (report 157/DS24.92: Event callback = RET · không
+> đọc burstEvent — H4-07) → receiver **Enemy_Destroy 601110** (root 185722, `destroyScript` cùng root) ·
 > Spine chain 602882→580611→skeleton JSON 918 · **8/8 state labels khớp tên animation
 > asset** · BossSpineEventHandler: có code, **0 instance** ⇒ không join. ⇒ *thứ tự pha
 > boss-1 có chứng cứ static; còn 38 boss + điều kiện runtime (MODEL_NOT_MEASURED)* —

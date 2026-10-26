@@ -51,7 +51,7 @@ Animator ⇒ một bảng `clip → [(t, hàm)]` chép nguyên mốc thời gian
 
 ## 2. Boss 1 — script nằm trong `Boss1_Director` (mức **A**)
 
-`Boss1_Director` là lớp duy nhất trong 3 lớp boss 1 thật sự **gọi** animation. Bảng method:
+`Boss1_Director` là lớp **duy nhất của Boss-39002** thật sự **gọi** animation (Boss-39001 đi route riêng `Complete → BossWork → SetAnimation` — report 157; H4-06). Bảng method:
 
 | method | byte | việc |
 |---|---:|---|
@@ -169,8 +169,9 @@ trên các static `MethodInfo` cache).
 gọi `UnityEvent`** để gây sát thương. **Giá trị slot callback Boss-39002 — identity ĐÃ RESOLVE (static, 27/10):** slot `0x2ADFB48`
 qua RELA gốc → literal **`Stop`** (report **123-ef6b75ef**: native-relocations 288.733 entries
 pin `0x2ADFB48→0x2BE5CB8` · 3 cells.json cùng RELA hex `48fbad02…b85cbe02…` @offset 3.563.112 ·
-`stringliteral.json` độc lập `0x2BE5CB8→"Stop"` · literal index 7763 bytes `53746f70`; join 1-1
-theo địa chỉ, kind-5 addend = địa chỉ literal). **Chỉ là literal identity** — KHÔNG phải method
+`stringliteral.json` độc lập; join = chain CORRECTION123: RELA → **usage-cell `a0003ca7`**
+(kind5/index7763) → metadata offset → payload `53746f70` = `Stop` — H4-18 precision).
+**Chỉ là literal identity** — KHÔNG phải method
 pointer / delegate đã đăng ký / invocation / runtime event ⇒ **dispatch = `MODEL_NOT_MEASURED
 runtime`**. `Banplasma` vẫn **chưa bind** slot nào (asset-level marker). `BossSpineEventHandler`
 vẫn **0 instance export** ⇒ §T1 của `HANDOFF_ANIM_RAW.md`.
@@ -187,10 +188,11 @@ vẫn **0 instance export** ⇒ §T1 của `HANDOFF_ANIM_RAW.md`.
 
 **`skeleton__21`: 6 event · 2 tên phân biệt** (5×`Stop` + 1×`Banplasma`).
 
-⇒ Với rig boss 1, **chỉ tồn tại 2 tên**: `Stop` và `Banplasma` — nên 2 slot chuỗi của
-`BossSpineEventHandler` **chắc chắn** lấy từ tập này (mức **A** cho *tập ứng viên*). Còn **slot nào
-là tên nào** thì vẫn **B**. Đọc thêm: `Stop` nằm trong `Attack3` (12,667 s) cách nhau ~2,4 s ⇒ nó là
-nhịp **tắt/bật một bộ phận** giữa đòn, khớp với hành vi `set_enabled` ở bảng trên.
+⇒ Với rig boss 1 (asset chung), **chỉ tồn tại 2 tên**: `Stop` và `Banplasma` — chúng là
+**asset-level markers, KHÔNG tự bind field nào** của `BossSpineEventHandler`: handler instance
+**0 export**, không có join field↔marker (report 157/154; H4-08 — khẳng định "chắc chắn" cũ đã BỎ).
+`Stop` giữ identity riêng của slot boss-39002 (ef123); nhịp `set_enabled` ở bảng trên là quan sát
+asset-level, không phải delivery đã chứng minh.
 
 > **Chưa biết lớp này có ai dùng hay không:** `BossSpineEventHandler` **không có** trong
 > `script-links.jsonl.gz` (5 instance của `BossAnimationEvents`, **0** của lớp này) và **không có**

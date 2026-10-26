@@ -4967,7 +4967,7 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   slot này (p14) ⇒ **gate identity = "Stop"** (static); dispatch runtime vẫn
   MODEL_NOT_MEASURED. Kết luận G4 về SetActive-sequence KHÔNG đổi — chỉ wording
   "unresolved" cần nâng. Đã nhắc a5 sửa report 154/155 + OPEN_ISSUES route của
-  họ (spec-side đã ghi RESOLVED ở §24.87/mục 1b OPEN_ISSUES).
+  họ (spec-side đã ghi RESOLVED ở §24.88/mục 1b OPEN_ISSUES — H4-19 sửa số mục).
 - **a5 G5 — ĐÓNG** (complete `6423491139` @ `770110b`): `Tut_Settings1.Start` →
   **`Slider.onChange`** callback → guarded `focusGameSpeed` →
   `Animator.SetTrigger`; GP_Tutorials Animator (param `Stop`, transition
@@ -5010,8 +5010,8 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   raw UTF-8 bytes — "Stop" là literal payload index 7763 (`53746f70`) ⇒
   **static identity ĐỨNG; invocation vẫn MODEL_NOT_MEASURED**.
   **ef CORRECTION123** (`6423891421` — commit `ea6a3835f`, không đổi scientific/
-  artifact/handoff): chấp nhận cả 2 điểm ✓. **Spec áp supersede tại đoạn §24.87
-  (b)** — review-swap R1/R2 chứng minh đúng thiết kế.
+  artifact/handoff): chấp nhận cả 2 điểm ✓. **Spec áp supersede tại đoạn §24.88
+  (b) — H4-19 sửa số mục** — review-swap R1/R2 chứng minh đúng thiết kế.
 - **AI-4 141 GameConfig — ĐÓNG** (HANDOFF `6423847486` @ `a067e254`; runs
   `40375754127`/`40375754198`/`40375754191` ✓; suite 437 (39 mới); artifact
   pulled `241dfc87…` 3062B khớp ✓): **slot cổng thật = `0x2ADBB88` = 44940168**
@@ -5143,8 +5143,8 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   `TIME_EVENT_ENDED`+`TIME_EVENT_OPEN` ghi bằng MỘT cặp `stp` (19.464.596) từ
   `Board_EventSeasonPass..cctor` **19.462.112** — bảng static chỉ đọc `str` thì
   còn 2 khoá trống (verifier xử lý `str`+`stp` +0/+8). followup-12
-  (`6424465381`) = chính 145 — ACCEPTED. not_decoded còn: index 43 computed +
-  giá trị runtime (MODEL_NOT_MEASURED).
+  (`6424465381`) = chính 145 — ACCEPTED. not_decoded còn: index 43 computed *(breadcrumb
+  lịch sử — 146 sửa: 51 records = 39 vị trí; H4-20)* + giá trị runtime (MODEL_NOT_MEASURED).
 - **R1 HANDOFF report119 — VERDICT: APPROVE BOUNDED 123** (AI-3 `6424767705` @
   `53222a51c`; 4 runs ✓ `40381341046`/`40381341200`/`40381352647`/
   `40381352873`; artifact pulled `e782ffdd…` 9178B pin ✓; local 1552 PASS ·
@@ -5259,6 +5259,43 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - **Registry update:** residual #29 = 56 items trong `147` (artifact là nguồn
   chuẩn) — spec không giữ danh sách song song; các trần static không đổi.
 - **Datas/ 158 + 2 pulled (146/147) = 160 (needle sync commit này).**
+
+### 24.100 TỔNG KIỂM DỨT ĐIỂM (lần 110) — 149 ĐÓNG (registry ACTIONABLE ×2 sạch) · H2 ĐÓNG · H4-7-findings ÁP · BẢNG TÀI KHOẢN TRẦN
+
+- **AI-4 149 — ĐÓNG** (HANDOFF `6425834774` @ `a60a2e22`; runs
+  `40390322238`/`40390322263`/`40390322239` ✓; suite 654; artifact pulled
+  `034bb93b…` 3648B khớp ✓; needles APKD1 94/AI1 127): **`rewardIndexs`
+  [23,0,14,1,15,18] · `rewardValues` [100,10000,10,100,10,10] · `rewardScales`
+  1.0/1.0/0.6/1.0/0.6/0.8** · coin [500…50000] · gem [0…500] · medal [0…1000]
+  — **đóng 2 ACTIONABLE của registry (rewardValues/scales của 133)** + 3
+  bet-ladder có nhãn từ store-offset + readers (`0x1F8/0x1FC/0x200`) · lesson
+  ghi: blocker là raw-convention, không phải data.
+- **a5 H2 — ĐÓNG (B6-half)** (HANDOFF `6425850066` @ `6a6e3c406`; runs 3
+  (1 pending lúc kiểm); artifact pulled `ec5a57c9…` 93.770B pin ✓; local 274
+  OK): **251/251 component ↔ typetrees, 6 fields khớp row-for-row** ·
+  `dmgFirst` median 500 (0–9.000.000) · `dmgPerSec` median 50 (5–1.000) ·
+  61 labels · **19-Director crosswalk NOT_BOUND 0/251** (không asm ⇒ vĩnh viễn
+  static-bound) — B6-half đúng kế hoạch, mức B max.
+- **AI-3 H4 round-2 — PROGRESS** (`6425919499`; CLAIM `6425778321` sau 120):
+  35 snapshots/20 assertions/72 selectors → 13 SYNCED/4 DRIFT/3 PARTIAL +
+  **7 findings — SPEC ÁP HẾT vòng này** (H4-01 MISSING+BALANCE consumer-absence
+  · H4-06 ANIM_SCRIPT:54 only-class · H4-07 DR burst+78 · H4-08 leftover
+  "chắc chắn" S2 · H4-18 kind-5 chain · H4-19 refs §24.87→§24.88 · H4-20
+  breadcrumb 43→39). Formal HANDOFF 121 chờ.
+- **H3 CLAIMED** (`6425853314`) — đang làm (mục cuối hàng H).
+- **BẢNG TÀI KHOẢN TRẦN (ceiling account) — sau H3 + registry-v2 + review-126
+  + D5-joins(đề nghị): weighted ĐẠT TRẦN static-complete:**
+  - **Đang chạy (đóng được):** H3/C7 · registry-v2 (AI-4 — 14 open giảm tiếp
+    sau 149) · H4-handoff + review-126 (AI-3) · D5-serialized-joins (đề nghị
+    a5 — eeb chết).
+  - **TRẦN RUNTIME (chỉ chủ dự án mở lại):** 19 RUNTIME items của registry +
+    C5 · D2 · D3 · D4 (+ 5 câu runtime cũ) — tất cả đã ghi
+    MODEL_NOT_MEASURED.
+  - **GATED — cần export/asm mới (không active):** B1 · B4 · B5 ·
+    B6-method-semantics (không asm).
+  - ⇒ Không còn mục static nào treo ngoài danh sách trên. Sau vòng tới:
+    đánh dấu **"STATIC-COMPLETE CEILING REACHED"** trong DR.
+- **Datas/ 164 + 2 pulled (149/H2) = 166 (needle sync commit này).**
 
 ### 24.97 Điều phối lần 106 — MỞ VIỆC cho AI-2 + AI-3 (báo cáo rảnh): GỠ GATE A2 · hàng đợi H · sửa định danh 120-CLAIMED
 

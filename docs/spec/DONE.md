@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 110 — 27/10, TỔNG KIỂM DỨT ĐIỂM: 149 ĐÓNG + H2 ĐÓNG + H4-7-findings ÁP + ceiling account):**
+> **§24.100**: **149**: rewardValues/scales/bet-labels trọn (registry
+> ACTIONABLE ×2 sạch · runs `40390322238`/…263/…239 ✓ · `034bb93b…` · suite
+> 654) · **H2**: 251/251 · dmgFirst/dmgPerSec median · 19-Director NOT_BOUND
+> (`6a6e3c406` · `ec5a57c9…`) · **H4-7 findings ÁP hết** (MISSING+BALANCE
+> consumer-absence · :54 scope · DR burst · leftover "chắc chắn" · kind-5
+> chain · refs §24.88 · breadcrumb 39) · **CEILING**: đang-chạy H3/registry-v2/
+> review-126/D5 · trần-runtime 19+C5/D2/D3/D4 · gated B1/B4/B5/B6-methods ⇒
+> sau vòng tới đánh dấu **STATIC-COMPLETE CEILING REACHED** · datas/ =
+> **166**. verify 209/0/2.
+>
 > **Sửa lại (lần 109 — 27/10, 148 ĐÓNG (registry 56→14) + H1 ĐÓNG (A2 closure) + 120 APPROVE ef124):**
 > **§24.99**: **148**: 56 → **14 open** (17 CLOSED/3 RESTATED/2 ACTIONABLE/
 > 19 RUNTIME/1 NOTE) · #23 falsified-premise · fix 147 · registry thay list
@@ -147,7 +158,7 @@
 > **Sửa lại (lần 100 — 27/10, R1 tìm lỗi thật + CORRECTION123 + 141/G6/ef124 ĐÓNG):**
 > **§24.91**: **R1**: "53→3" = hai quét BỔ TUNG (không subset) + addend =
 > encoded usage `0xa0003ca7` — ef **CORRECTION123** `ea6a3835f` chấp nhận,
-> scientific không đổi; spec siêu thu §24.87(b) · **141 ĐÓNG**: slot cổng thật
+> scientific không đổi; spec siêu thu §24.88(b) · **141 ĐÓNG**: slot cổng thật
 > `0x2ADBB88` 44940168 + **GameConfig** (1/128 theo bố cục) + đính chính 140 ×2
 > (slot + chiều cờ) · runs `40375754127`/…198/…191 ✓ · `241dfc87…` · **G6 ĐÓNG**
 > (3 bind / 2 local / GetCostCraftPlayer NOT_BOUND · `e31790a1…`) · **ef124

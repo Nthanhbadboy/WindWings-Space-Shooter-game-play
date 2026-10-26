@@ -161,19 +161,19 @@ Hai mảng của `Board_Players` đã bind được **tên field** bằng asm (s
 
 | field | kiểu | giá trị (index 0…) | đọc là gì? |
 |---|---|---|---|
-| `Board_Players.allBasicAtk` (`0x10`) | **float[24]** | `4640, 5120, 5040, 6160, 8896, 6880, 8889, 5680, 5500, 9100, 6750, 7589, 6000, 7588, 9100, 10050, …` | **chưa chốt**: “atk” theo tên, nhưng chưa thấy consumer ⇒ **B** |
-| `Board_Players.allDeltaAtk` (`0x18`) | **float[24]** | **0,168** × 24 | **chưa chốt**: nếu là “delta mỗi rank” thì damage(rank) = basic + 0,168·rank — **giả thuyết**, chưa kiểm |
+| `Board_Players.allBasicAtk` (`0x10`) | **float[24]** | `4640, 5120, 5040, 6160, 8896, 6880, 8889, 5680, 5500, 9100, 6750, 7589, 6000, 7588, 9100, 10050, …` | ✅ **UI power (report 153/G1)** — `Board_Players.GetPlayerPower` đọc +0x10/+0x18 → `SetPlayerInfo` → `textPlayerPower`; **combat semantics vẫn B** (UI ≠ `GetBaseDamage`) |
+| `Board_Players.allDeltaAtk` (`0x18`) | **float[24]** | **0,168** × 24 | ✅ hệ số level của công thức UI power (153/G1); giả thuyết damage(rank) = basic + 0,168·rank **REFUTE** (report 122: tàu đọc `StartMainCannonDamages`@+0x78) |
 | `Board_Drones.allBasicAtk` (static10) | float[12] | `500, 600, 800, 1250, 1500, 1800, 2300, 2800, 2535, 2500, 1251, 2680` | ✅ **UI power** — `GetPlayerPower 1263860`: round-half-even(basic[i] × (1 + delta[i] × GetDroneLevel)) → `textDispDamage` (report 91 §5b) |
 | `Board_Drones.allDeltaAtk` (static18) | float[12] | **0,16** × 12 | ✅ **hệ số level** của công thức UI power trên |
 | `Board_Drones.ctor` (`playerPriceMultipleA` @238) | float[24] | `1,0 ×3 · 2,2 · 1,0 · 1,875 · …` | ✅ **giá nâng cấp UI** — `SetUpgradeCost`, index = cellIndex − 20001 (report 91 §5a) |
-| `Board_Endgame.ctor` | **int[10]** | `900, 890, 880, 870, 860, 850, 840, 830, 820, 810` | giảm đều **10** mỗi bậc — dải ngưỡng, chưa rõ dùng cho gì |
+| `Board_Endgame.ctor` | **int[10]** | `900, 890, 880, 870, 860, 850, 840, 830, 820, 810` | ✅ **`devidedArenaMedals`@`+0x2A0` → `SetArenaRewards` (153/G2)**: `GameMode.arenaRank` index divisor cho `arenaPoints`; thương dương → `SetGiftInfo` item ID 22 (nghĩa item chưa gán) |
 | `Board_Players.ctor` | float[24] | **1,0** × 24 | baseline |
 
 > ⚠ **Cấm xác nhận chéo (góp ý #3, report 91 §6):** UI power (`allBasicAtk`) **≠** combat
 > `GetBaseDamage` (report 90): 20001 → UI **500** vs combat **450** · 20003 → UI **800** vs combat
 > **6000** — hai nguồn số khác consumer, không damage×rate proxy. `Board_Players.allBasicAtk/
-> allDeltaAtk` (float[24], `4640…`/`,168`) **vẫn chưa có consumer** ⇒ giữ mức **B**, B3
-> damage-theo-rank của tàu chưa chốt.
+> allDeltaAtk` (float[24], `4640…`/`,168`) **đã có consumer UI** (report 153/G1) — **combat vẫn B**;
+> damage-theo-rank của tàu REFUTE (report 122: `StartMainCannonDamages`@+0x78).
 
 ### 2.3 Save / load — **8 key family đã có contract**, chưa phải schema đầy đủ
 
