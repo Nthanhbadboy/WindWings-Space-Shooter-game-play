@@ -1,5 +1,5 @@
 """Pinned original libunity interpolation discovery; references are candidates, not equivalence proof."""
-import argparse,gzip,hashlib,io,json,struct,zipfile
+import argparse,bisect,gzip,hashlib,io,json,struct,zipfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
@@ -44,11 +44,16 @@ def recover(path):
         while pos>=0:
             address=va(pos);positions.append(dict(va=address,file_offset=pos,hex=needle.hex()));wanted[address]=name;pos=b.find(needle,pos+1)
         strings.append(dict(text=name,occurrences=positions))
-    refs=[]
+    refs=[];branch_refs=[];starts=sorted(unwind)
     for s in segments:
         if not s['flags']&1:continue
         for pos in range(s['offset'],s['offset']+s['file_size']-3,4):
             word=struct.unpack_from('<I',b,pos)[0];pc=va(pos)
+            if word&0x7c000000==0x14000000:
+                target=pc+(signed(word&0x3ffffff,26)<<2)
+                if target in (0x952608,0x951344,0x952a80,0x951f60):
+                    j=bisect.bisect_right(starts,pc)-1;owner=unwind[starts[j]] if j>=0 and pc<unwind[starts[j]]['end'] else None
+                    branch_refs.append(dict(pc=pc,target=target,unwind=owner))
             if word&0x9f000000!=0x90000000:continue
             rd=word&31;page=(pc&~4095)+(signed(((word>>5)&0x7ffff)<<2|((word>>29)&3),21)<<12)
             for p in range(pos+4,min(pos+36,s['offset']+s['file_size']-3),4):
@@ -56,7 +61,7 @@ def recover(path):
                 if op&0xffc00000==0x91000000 and ((op>>5)&31)==rd:
                     address=page+((op>>10)&4095)
                     if address in wanted:refs.append(dict(field=wanted[address],va=pc,add_va=va(p),target=address))
-    ranges=list(RANGES)+[(r['va']-256,r['va']+512) for r in refs];windows=[]
+    ranges=list(RANGES)+[(r['va']-256,r['va']+512) for r in refs]+[(r['unwind']['start'],r['unwind']['end']) if r['unwind'] and r['unwind']['end']-r['unwind']['start']<=8192 else (r['pc']-128,r['pc']+128) for r in branch_refs];windows=[]
     for lo,hi in sorted(set(ranges)):
         pos=offset(lo);assert offset(hi-1)==pos+hi-lo-1
         windows.append(dict(va=lo,file_offset=pos,hex=b[pos:pos+hi-lo].hex()))
@@ -107,7 +112,7 @@ def recover(path):
             if op&0x3b000000==0x18000000:cell(pc+(signed((op>>5)&0x7ffff,19)<<2),16)
     selected_imports=[r for r in imports if any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in list(cells.values()))]
     selected=[r for r in relas if any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in windows+list(cells.values())) or r['addend'] in TARGETS]
-    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,strings=strings,references=refs,windows=windows,cells=list(cells.values()),relocations=selected,imports=selected_imports,limits=['Adjacent ADRP/ADD and ADRP/LDR pairs are discovery candidates, not proven register dataflow.','Selected original byte spans only, not a whole library, engine bootstrap or interpolation equivalence.'])
+    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,strings=strings,references=refs,branch_references=branch_refs,windows=windows,cells=list(cells.values()),relocations=selected,imports=selected_imports,limits=['Adjacent ADRP/ADD and ADRP/LDR pairs are discovery candidates, not proven register dataflow.','Selected original byte spans only, not a whole library, engine bootstrap or interpolation equivalence.'])
 def main():
     p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);a=p.parse_args();r=recover(a.xapk);out=ROOT/'reverse-engineering/raw/interpolation114/probe.json.gz';out.parent.mkdir(parents=True,exist_ok=True);out.write_bytes(gzip.compress((json.dumps(r,sort_keys=True,separators=(',',':'))+'\n').encode(),mtime=0));print('saved',out,'strings',sum(len(s['occurrences']) for s in r['strings']),'refs',len(r['references']))
 if __name__=='__main__':main()
