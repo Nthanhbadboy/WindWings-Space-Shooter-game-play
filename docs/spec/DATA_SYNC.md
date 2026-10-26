@@ -4702,3 +4702,61 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   handoff/PROGRESS (5 push). Vòng sau bắt buộc PROGRESS; không có → tạm dừng công
   nhận tip mới cho tới khi có dấu hiệu sống.
 - **Datas/ 129 + 3 pulled (133/p18/p19) = 132 (needle sync commit này).**
+
+### 24.85 Điều phối lần 93 — 134 ĐÓNG (luật PvP trọn + đính chính 127: 42→43) · 135 runs-xanh (handoff chờ đăng) · p20/21 ĐÓNG — census static text KHÉP, chỉ còn lane ef123
+
+- **#29-followup-2 AI-4 — report 134 `PVP_Manager..cctor` ĐÓNG** (HANDOFF
+  `6422224479` @ `1b3b7accc`; runs `40364495335`/`40364495515`/`40364495490`
+  **SUCCESS** ✓; suite 228 PASS (27 mới); artifact pulled `5e8feef0…` 4597B khớp ✓):
+  **luật trận mặc định (byte build):** `pvpMaxLife=3` · `pointReduceDie=1500` ·
+  `timePlay=160s` · `timeStep=10s` · `RankShowCount=100` · `pvpTimeScale=1,0f` ·
+  `IsOpen=false` · `pvpDatas=null` — 6 store `klass+0xB8`, mỗi giá trị truy về đúng
+  RVA. **Bẫy vùng literal:** 2 store 8 byte = **cặp `int` gộp** (0x28/0x2C ·
+  0x40/0x44) — đọc `double` ra denormal 3,18e-311. 2 cửa sổ rodata pin
+  (`0x757E48`=`03000000dc050000` · `0x7579D0`=`a00000000a000000`, raw
+  `pvp-rules-535b0541` 917B). **5 bảng:** `AllSeasonRewards` 10 dải 1…3000 × Gems
+  2000/1000/500/300/200/150/100/80/50/20 · `TournamentAddStarPoints=[25,10,5,−1,−6,−12]`
+  (inline, không blob) · `TournamentRewardMedals` 14×6 · `MaxRankStars` 10 `int[]`
+  (dài `3,3,4,4,5×6` — **giá trị NOT_BOUND tại 134**) · `AllRewards` **43 dòng**
+  (`medal=100×(rank+1)` cả 43; `gem≠0 ⇔ lvl=0`: 200/600/900/1200/1400/1600/1800/
+  1900/2000). **ĐÍNH CHÍNH report 127: AllRewards 42→43** — rank 0 có cả `lvl=1`
+  lẫn `lvl=2`; đẳng thức đếm `53=10+43` ctor · 87 add-ref · 90 add-int ·
+  10 InitializeArray — lệch 1 dòng = FAIL. *Cross: '43'×18/AllRewards×4/
+  pvpMaxLife×5 đủ ✓.*
+- **report 135 `MaxRankStars` — PROGRESS verified, handoff chờ đăng** (PROGRESS
+  `6422381803` @ `240f8ab0c`; **runs 3/3 SUCCESS ✓ tại headSha**; suite 247 PASS
+  (19 mới); artifact `004898a2…` 2559B — **chưa pull, chờ handoff**; CLAIM
+  followup-3 `6422266191` = chính report này): 10 `InitializeArray` → **5 field
+  `<PrivateImplementationDetails>`** (6 mảng cuối dùng chung 1 blob) → rank0..9 =
+  `[3,3,3] [4,4,4] [4,4,4,4] [5,5,5,5]` + `[5,5,5,5,5]`×6. **Kháng-may:** PID name
+  = `sha256(bytes khởi tạo)` 5/5 tự tái tính · `declared_bytes==4×len` 5/5 ·
+  `ordinal==(token&0x7fffffff−1)/2` 10/10. Đóng not_decoded "MaxRankStars giá trị"
+  của 127; xác nhận 128 §3.4 (không đính chính); cross `AllRewards` **9/10** rank
+  (rank 0 ngoại lệ, ghi rõ). Còn chặn: **method ĐỌC** MaxRankStars chưa pin (15
+  method `PVP_Manager` không chạm statics +0x18) ⇒ "index=rank" là suy luận thứ
+  tự; nhịp sao trong trận `MODEL_NOT_MEASURED`.
+- **#27-GS phase-20 a5 — ĐÓNG** (HANDOFF `6422232577` @ `a2905fbe3`; run
+  `40364602958` ✓; artifact pulled 119.242B): census **toàn bộ 2.350 text-exports
+  `reverse-engineering/`** (42.461.285B on-disk · 326.191.797B decoded, pin đủ) —
+  **0 exact/decimal slot**; chỉ 4 base+offset đã biết; **1 token marker trong
+  `native-relocations.json.gz` — KHÔNG parse/interpret** (ngoài biên game-side)
+  ✓ kỷ luật đúng.
+- **phase-21 — ĐÓNG** (HANDOFF `6422413717` @ `a87565db9`; run `40365612361` ✓;
+  artifact pulled 4.930B): **56 baseline exports `datas/`** (23.315.830B on-disk ·
+  328.674.404B decoded) — **0 hex `0x2ADFB48` · 0 decimal `44956488`**.
+- **KẾT LUẬN GỘP p15→p21:** census static game-side giờ phủ ĐỦ 4 tầng văn bản
+  (metadata index p18 · extra-native 326 p19 · RE 2.350 p20 · datas 56 p21) —
+  **giá trị slot `0x2ADFB48` chỉ còn có thể nằm ở native-relocation marker =
+  ĐÚNG lane ef123** (chủ dự án xác nhận ef đang bóc RELA/vtable quanh
+  `0x6d2950` — truy ngược 3 slot ảo graph122; boundary: cần trạng thái game chưa
+  có → dừng đúng biên, không dựng service giả). **CLAIM phase-22** (`6422429964`
+  — residual census ngoài 2 root đã quét: `.asm.txt`/`.cs`/JSON(L)/CSV/TSV/TXT/gzip;
+  không đụng marker) ACCEPTED.
+- **AI-3 row16:** 5 commit mới `2beef6d63ab`(geometry)→`3d76fb009a1`/`ccb6e42f28e`/
+  `3b4cf4d721e`/`c2d6b08bc`(shards batch 1–4) — đúng kế hoạch "setup push + shards,
+  chưa handoff"; chờ handoff.
+- **@ef6b75ef:** chủ dự án **bảo lãnh đang làm #123** (việc nặng) — GỞ chế độ dừng
+  công nhận tip; giữ nhịp PROGRESS/handoff khi có kết quả từng tầng.
+- **Datas/ 132 + 3 pulled (134/p20/p21) = 135 (needle sync commit này).** Row
+  START_HERE `datas/` sửa 124→135 (đo thật: 139 entry cấp-1 gồm 4 thư mục con ·
+  431 file tổng · 52 MB).
