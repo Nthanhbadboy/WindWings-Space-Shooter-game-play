@@ -32,10 +32,10 @@ jobs:
       - name: Preserve pinned graph
         run: |
           test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
-          test -f reverse-engineering/raw/controller111/index.json
+          test -f reverse-engineering/raw/controller111/evidence.json.gz
           git config user.name 'Arena evidence collector'
           git config user.email 'agent@arena.ai'
           git add reverse-engineering/raw/controller111
-          git diff --cached --quiet || git commit -m 'Preserve pinned controller111 raw controller slices and shared schemas [skip ci]'
+          git diff --cached --quiet || git commit -m 'Preserve independent UnityFS111 envelope and selected-block decode receipts [skip ci]'
           git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
           git push origin arena/ef6b75ef-windwings-space-shooter-game-p
