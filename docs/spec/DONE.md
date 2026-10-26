@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 78 — 26/10, ĐÓNG #28 runtime theo lệnh chủ dự án + #6-rep ĐÓNG + CLAIM #7):**
+> **§24.71**: **#28 ĐÓNG (scope)** — static đủ; không secret, không run, không nhánh B;
+> receipts 121/124 + bridge `40333586413` giữ; live-DPS = MODEL_NOT_MEASURED runtime,
+> #27-consumption = structural-only, cấm tụng static thành runtime · **#6-rep ĐÓNG
+> byte-exact** (runs 40334704704/40334658103/40334670934 SUCCESS @ `311a45df0` ✓;
+> 2905/2905 · 2251 BYTE-EQUAL · diffs 0; a5 primary) · **CLAIM #7** (7 builtin mesh refs,
+> 814). datas/ = **104**. verify 209/0/2.
+>
 > **Sửa lại (lần 77 — 26/10, #27/120 ĐÓNG + #6-rep byte-equal + ĐÁNH GIÁ runtime 23/10):**
 > **§24.70**: **#27/120** (ef, 1601 PASS): node ctor 6d353c — 174 instr/0 sinks ·
 > 447/512 bytes ≠ memset · vtable RELA→6d46a8 khớp 119 · **930 lần 6** · ĐÓNG bounded

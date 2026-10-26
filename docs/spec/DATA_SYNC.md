@@ -4177,6 +4177,30 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
     nguyên). **Nhánh B** (chỉ khi chủ dự án không muốn đặt key): pivot emulator x86_64 +
     frida-il2cpp-bridge (công cụ đã mở §24.65) — phải có lệnh chủ dự án mới chuyển.
 
+### 24.71 Điều phối lần 78 — LỆNH CHỦ DỰ ÁN: ĐÓNG #28 runtime probe (static đủ) · #6-rep ĐÓNG byte-exact · CLAIM #7
+
+- **⚡ LỆNH CHỦ DỰ ÁN (26/10): "bỏ 28 runtime, phân tích tĩnh được rồi"** — hiệu lực ngay:
+  ① **#28 runtime probe ĐÓNG theo quyết định scope** — không đặt `RAMUS_API_KEY`, không
+  run mới, nhánh B (emulator+frida) KHÔNG chuyển; ② **receipts giữ nguyên như historical**:
+  121/124 (23/10) + bridge-build `40333586413` GREEN — vehicle vẫn là minh chứng
+  config-parity và loader-pin, không xóa; ③ **3 câu hỏi behavior chuyển mức chứng cứ
+  static-only**: live-DPS = **MODEL_NOT_MEASURED runtime** (đã đóng tĩnh r92: damage×rate
+  ≠ DPS, wing/drone bắn ĐÓNG tĩnh) · #27-consumption = cấu trúc native đóng dần (ef),
+  readback runtime KHÔNG claim · second-device = không thực hiện; ④ mọi kết luận tương
+  lai về 3 câu này phải ghi "chưa đo runtime" — cấm tụng static thành runtime.
+  @a5a74747: dừng #28, không đốt run; nhận việc mới theo bảng.
+- **#6-rep 8141386a ĐÓNG** (HANDOFF `6417920301`, spec kiểm runs thật: Verify
+  `40334704704` + scoped `40334658103` + PR15 vehicle `40334670934` đều **SUCCESS trên
+  head `311a45df0`** ✓): **2905/2905 hashes · 2251 Sprite+Atlas BYTE-EQUAL / 1.720.744 B
+  · 1550+635 maps · 27.072 verts/73.125 indices/2185 AABB · 4370 zero-counts · diffs 0
+  vs primary** — replication chạm mức byte-exact, **a5 giữ primary #6**. Ghi nhận đúng
+  phép: "vehicle bridge-gate skip ≠ runtime evidence" + Texture2D hash-only (không decode
+  ảnh) + "not live-remapped" (live/deformed outputs null — MISSING-X native consumer
+  tiếp tục MỞ đúng biên). Peak 27.992 KiB — OOM-safe giữ vững.
+- **CLAIM #7 8141386a** (`6417945015`, first-wins registered): 7 ParticleSystemRenderer
+  builtin mesh refs — resolve từ packaged objects HOẶC scoped missing-X có pins; #8
+  untouched đến khi handoff #7.
+
 ### 24.66 RE-CHECK 26/10 — mỏ runtime 23/10 (Mate 20 X) × static mới: r90 NÂNG static↔runtime verified
 
 - **Yêu cầu chủ dự án**: "thư mục runtime-probe… kiểm xem rút ra được gì". Spec rà toàn bộ
