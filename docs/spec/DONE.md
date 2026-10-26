@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 70 — 26/10, #26 ĐÓNG bó scope + #27/115 chạy tiếp):**
+> **§24.63**: **126-a5 #26** (`0002070e8a`): root 212696 (235 nodes inactive) · chain
+> 57508→425352→439142→root · 0 match/0 PPtr edge trong captures · 5 cameras không link ⇒
+> **pixel_bounds=null CÓ CĂN CỨ census** — kết quả tận-cùng (b): tĩnh hết đường, chỉ
+> runtime vượt được · #27/115: packed sampler callers × count fields × **class74** (nối
+> 791 clips từ #110) đang chạy. datas/ = **94**. verify 209 PASS · 0 FAIL · 2 SKIP.
+>
 > **Sửa lại (lần 69 — 26/10, #28-fb① + #25-bounded + #27-core ĐÓNG bounded; #26 claim):**
 > **§24.62**: **#28-fb①** (124-a5): 250 rows · 742 values **0 mismatch** (243+7 nhất quán
 > #21 ✓) · loader scoped-absent (release chỉ xapk) · `arr=256&depth=2` NOT_OBSERVED — MỞ

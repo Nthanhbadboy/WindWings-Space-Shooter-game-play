@@ -3965,3 +3965,21 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   weighting/runtime).
 - **#26 CLAIM a5** (12:01, report 126) — đang làm; #4/#6/#7/#8 chờ AI-3 #5-rep.
 - datas/ 90→**93**.
+
+### 24.63 Điều phối lần 70 — #26 ĐÓNG bó scope (static-root pixel-projection) · #27/115 tiếp packed-clip
+
+- **126-a5 #26** (code `0002070e8a`, SHA `e0fe9b1aea39…` khớp ✓, 57 tests): chuỗi đầy đủ
+  hơn #12 — **Board_Pause root `resources.assets:212696` (235 nodes, serialized inactive)**
+  · Popup_QuitMissions GO 57508/Transform 425352 → parent 439142 → root, local (0,0,−2) ·
+  **trong renderer/context captures pinned: 0 name/pathID match + 0 PPtr edge tới root** ·
+  **5 cameras (level0–3) không link template** ⇒ `pixel_bounds=null · rendered=false` —
+  không đoán camera (chuẩn #12, giờ có census template_root 235 nodes làm nền) ✓ ·
+  boundary khai: không all-class census/PrefabInstance/runtime-instantiation proof ✓.
+  **Verdict: ĐÓNG bó scope static-root audit — pixel projection cần RUNTIME instantiation
+  (scene instance + placement authority) — mặt bằng dữ liệu tĩnh đã hết đường, điều này
+  LÀ kết quả tận-cùng (b), đúng chuẩn lệnh lần 62.** Chỉ runtime (#28 lane khi có
+  loader/device) mới vượt được.
+- **#27/115 ef** (12:09, tips `86d1f0682e` · `d11ceabc9a`): compiled clip runtime code
+  region + original type-record backreferences + **packed sampler callers × serialized
+  count fields × class74 record** (class74 = clip identities từ #110 — nối được chuỗi
+  791 clips!) — khai đúng: cache adapter ≠ consumer proof. Đang chạy, chờ handoff.
