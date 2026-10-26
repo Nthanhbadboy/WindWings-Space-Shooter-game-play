@@ -19,13 +19,32 @@ PHONE_REFS_SHA256="${PHONE_REFS_SHA256:-d5416e4e95628136fe6e49d2e9905b11fca1bba0
 PACKAGE="${RAMUS_PACKAGE:-com.Wind.wings.Space.Shooter}"
 
 log() { printf '[loader-vehicle] %s\n' "$*"; }
-die() { printf '[loader-vehicle] ERROR: %s\n' "$*" >&2; exit 1; }
+die() {
+  printf '[loader-vehicle] ERROR: %s\n' "$*" >&2
+  printf 'stage=%s\nerror=%s\n' "${BUILD_STAGE:-initialize}" "$*" > "$OUT/failure.txt" 2>/dev/null || true
+  exit 1
+}
 
+mkdir -p "$OUT"
+BUILD_STAGE='initialize and validate credentials'
+on_error() {
+  local rc="$1" failed_line="$2" failed_command="$3"
+  trap - ERR
+  {
+    printf 'exit_code=%s\n' "$rc"
+    printf 'line=%s\n' "$failed_line"
+    printf 'stage=%s\n' "$BUILD_STAGE"
+    printf 'command=%s\n' "$failed_command"
+  } > "$OUT/failure.txt"
+  exit "$rc"
+}
+trap 'on_error "$?" "$LINENO" "$BASH_COMMAND"' ERR
 [ -n "${GH_TOKEN:-}" ] || die 'GH_TOKEN is required to retrieve the draft XAPK release asset and pinned phone refs.'
-mkdir -p "$OUT" "$SCRATCH/source"
+mkdir -p "$SCRATCH/source"
 rm -rf "$OUT"/* "$SCRATCH/fusioncore" "$SCRATCH/xapk-inventory.json"
 
 # ── Build the Android-side plugin against pinned on-device BepInEx refs. ─────
+BUILD_STAGE='fetch and verify pinned loader references'
 export BEP6_TAG="${BEP6_TAG:-v6.0.0-pre.2}"
 export BEP5_TAG="${BEP5_TAG:-v5.4.23.5}"
 export MELON_TAG="${MELON_TAG:-v0.7.3}"
@@ -49,6 +68,7 @@ sha256sum .ci/bep6.zip .ci/bep5.zip .ci/melon.zip .ci/bep6-phone-refs.zip > "$OU
     echo 'sdkmanager not on PATH; record runner SDK root and rely on Gradle build diagnostics.'
   fi
 } > "$OUT/build-toolchain.txt"
+BUILD_STAGE='compile RamusBridge phone target'
 BRIDGE_OUT=".ci/runtime-loader-bridge"
 .github/scripts/build-bridge.sh --out "$BRIDGE_OUT" --refs .ci/refs 2>&1 | tee "$OUT/bridge-build.log"
 BRIDGE="$ROOT/$BRIDGE_OUT/bepinex6-phone/RamusBridge.dll"
@@ -56,6 +76,7 @@ BRIDGE="$ROOT/$BRIDGE_OUT/bepinex6-phone/RamusBridge.dll"
 cp "$BRIDGE" "$OUT/RamusBridge.dll"
 
 # ── Fetch, pin and inspect (read-only) the original XAPK. ────────────────────
+BUILD_STAGE='download, verify, and inventory immutable XAPK'
 XAPK="$SCRATCH/source/$APK_ASSET"
 GH_TOKEN="$GH_TOKEN" gh release download "$APK_TAG" --repo "${GITHUB_REPOSITORY:?GITHUB_REPOSITORY is required}" \
   --pattern "$APK_ASSET" --dir "$SCRATCH/source" --clobber
@@ -128,6 +149,7 @@ source_sha_after="$(sha256sum "$XAPK" | awk '{print $1}')"
 printf 'before=%s\nafter=%s\nmodified=false\n' "$source_sha_before" "$source_sha_after" > "$OUT/source-xapk-sha256-check.txt"
 
 # ── Build a distinct loader app from a full commit pin. ──────────────────────
+BUILD_STAGE='checkout and build pinned FusionCore loader'
 git clone --filter=blob:none --depth 1 --branch "$FUSIONCORE_TAG" \
   https://github.com/All-Of-Us-Mods/FusionCore.git "$SCRATCH/fusioncore"
 actual_fusioncore_commit="$(git -C "$SCRATCH/fusioncore" rev-parse HEAD)"
@@ -146,6 +168,7 @@ if command -v sdkmanager >/dev/null 2>&1; then
   sdkmanager --list_installed > "$OUT/android-sdk-installed-after-build.txt" 2>&1 || true
 fi
 
+BUILD_STAGE='validate loader APK, ABI, and full provenance'
 python3 - "$OUT/fusionApp-debug.apk" "$OUT/source-xapk-inventory.json" "$PACKAGE" <<'PY'
 import hashlib, json, re, sys, zipfile
 from pathlib import Path
