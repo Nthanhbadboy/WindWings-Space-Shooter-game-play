@@ -6,7 +6,7 @@ XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
 NAMES=['UnityEngine.AnimationCurve::Evaluate','UnityEngine.AnimationCurve::Evaluate(System.Single)','UnityEngine.AnimationCurve::AddKey','UnityEngine.AnimationCurve::AddKey_Injected','UnityEngine.AnimationCurve::Internal_Create','UnityEngine.AnimationCurve::get_keys','UnityEngine.AnimationCurve::GetKey_Injected','UnityEngine.AnimationCurve::set_preWrapMode','UnityEngine.AnimationClip::SampleAnimation']
 RANGES=[(0x36e570,0x36e850)]
 TARGETS={}
-FOLLOW_ENTRIES=[0x36e71c]
+FOLLOW_ENTRIES=[0x36e71c,0x951f60]
 def sha(b):return hashlib.sha256(b).hexdigest()
 def signed(v,n):return v-(1<<n) if v&(1<<(n-1)) else v
 def recover(path):
@@ -75,13 +75,17 @@ def recover(path):
             target=a+i+(signed(op&0x3ffffff,26)<<2)
             if a<=target<a+length:continue
             if any(s['flags']&1 and s['va']<=target<s['va']+s['file_size'] for s in segments):queue.append((target,depth+1,a+i))
-    shoff=struct.unpack_from('<Q',b,40)[0];shsize,shcount=struct.unpack_from('<HH',b,58);relas=[]
+    shoff=struct.unpack_from('<Q',b,40)[0];shsize,shcount=struct.unpack_from('<HH',b,58);relas=[];imports=[]
+    sections=[struct.unpack_from('<IIQQQQIIQQ',b,shoff+i*shsize) for i in range(shcount)]
     for i in range(shcount):
         p=struct.unpack_from('<IIQQQQIIQQ',b,shoff+i*shsize)
         if p[1]!=4 or p[9]!=24:continue
         for pos in range(p[4],p[4]+p[5],24):
             address,info,addend=struct.unpack_from('<QQq',b,pos)
             if info&0xffffffff==1027:relas.append(dict(address=address,addend=addend))
+            if info&0xffffffff==1026:
+                symtab=sections[p[6]];sympos=symtab[4]+(info>>32)*symtab[9];nameoff=struct.unpack_from('<I',b,sympos)[0];strtab=sections[symtab[6]];namepos=strtab[4]+nameoff;end=b.index(b'\0',namepos)
+                imports.append(dict(address=address,name=b[namepos:end].decode(),symbol_entry_offset=sympos,symbol_hex=b[sympos:sympos+24].hex(),name_file_offset=namepos,name_hex=b[namepos:end+1].hex()))
     # Preserve exact literal/direct ADRP+LDR cells accessed in selected instruction ranges.
     cells={}
     def cell(address,n):
@@ -101,8 +105,9 @@ def recover(path):
                     if op&0x04000000 and (op>>23)&1:scale=16
                     cell(pages[rn][0]+((op>>10)&4095)*scale,max(16,scale))
             if op&0x3b000000==0x18000000:cell(pc+(signed((op>>5)&0x7ffff,19)<<2),16)
+    selected_imports=[r for r in imports if any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in list(cells.values()))]
     selected=[r for r in relas if any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in windows+list(cells.values())) or r['addend'] in TARGETS]
-    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,strings=strings,references=refs,windows=windows,cells=list(cells.values()),relocations=selected,limits=['Adjacent ADRP/ADD and ADRP/LDR pairs are discovery candidates, not proven register dataflow.','Selected original byte spans only, not a whole library, engine bootstrap or interpolation equivalence.'])
+    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,strings=strings,references=refs,windows=windows,cells=list(cells.values()),relocations=selected,imports=selected_imports,limits=['Adjacent ADRP/ADD and ADRP/LDR pairs are discovery candidates, not proven register dataflow.','Selected original byte spans only, not a whole library, engine bootstrap or interpolation equivalence.'])
 def main():
     p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);a=p.parse_args();r=recover(a.xapk);out=ROOT/'reverse-engineering/raw/interpolation114/probe.json.gz';out.parent.mkdir(parents=True,exist_ok=True);out.write_bytes(gzip.compress((json.dumps(r,sort_keys=True,separators=(',',':'))+'\n').encode(),mtime=0));print('saved',out,'strings',sum(len(s['occurrences']) for s in r['strings']),'refs',len(r['references']))
 if __name__=='__main__':main()
