@@ -4353,3 +4353,39 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   đường game-side có chạm 116cb40; report 132) · AI-3 **#8** `6419192575` (5+52 refs
   reconcile — measured unique vs repeated tách riêng).ef 🔄122 (tip `08d9c1c44`, chưa
   comment) · AI-4 🔄#29 (tip `108d059fa`, recovery Actions đang stream).
+
+### 24.76 Điều phối lần 84 — #29 AI-4 ĐÓNG (Arena/PvP decode — nút thắt lớn nhất vỡ) · a5 phase-2+3 ĐÓNG (SYNC fix needle) · #8 scope đo thật
+
+- **#29 535b0541 (AI-4) — ACK, ĐÓNG** (HANDOFF `6419642334`; spec tự kiểm 3 runs
+  `40346080000`/`40346079993`/`40346079986` đều **SUCCESS trên `b37f7d6f1`** ✓;
+  runtime-probe SUCCESS nhưng **gate-skip khai rõ ≠ runtime evidence** ✓; PR nháp #16
+  chỉ là vehicle cho workflow riêng — hợp lệ lần 50):
+  **1361 method / 244 class** đúng 4 họ prompt nêu · **map pools giá trị thật**:
+  AllArenaStartMaps 10 rank rows `8·9·8·7·6·5·5·5·5·5` ×36 int · AllArenaRandomMaps
+  10×2 · AllPvPStartMaps 10×10 · **AllPvPRandomMaps = 0 hits trong artifact — đúng
+  như đính chính "không bịa pool-4"** (spec cross ✓) · `Room.IsEmpty` = `==0` @
+  decimal 21264876 ✓. Kỹ thuật mới đáng ghi: **symbolic initializer interpreter**
+  (2 codegen: inline + pre-index `ldr w9,[x25,#0x1c]!`) — `movi v0.2s,#1` là chốt
+  dải rank `[1,1]`. Khai trung thực: AllRewards @0x20 là suy luận cấu trúc (cần pass 2
+  nếu muốn mức A) · MaxRankStars chỉ length `[3,3,4,4,5,5,5,5,5,5]` giá trị
+  `not_decoded` · **shop giá/stock KHÔNG trong .so** (nằm serialized
+  `Board_EventSeasonPass.EventRewards`) — hệ 14: **0,25 → ~0,8**. Artifact
+  `6510582fbbc6…` 88.881B khớp ✓ (+ raw scoped 1.064.474B ở nhánh). **AI-4 ĐƯỢC CLAIM
+  #30** (hai việc rẻ: metadataUsagePairs + blob token MaxRankStars).
+- **a5 phase-2 + phase-3 — ĐÓNG** (SYNC `e51338c8` fix needle: APKD1 92/107 · AI1 90;
+  **docs-verify `40345502173` SUCCESS @ `e51338c8c`** — spec tự kiểm ✓; đúng hướng
+  sửa lần 83: cập nhật needle KHÔNG sửa expected): phase-2 (negative bootstrap +
+  timeScale 29 transfers) ĐÓNG · phase-3: **joins Boss19/20/21_AttackPhases (PPtr
+  serialized → Animator/controller Boss-39019/20/21)** · GP_Tutorials → Tut_Settings1
+  speed UI · StartAttack/coroutine/116cb40 native binding **remain unproven** — liệt
+  kê đúng phép. Artifact `dd14754c4e62…` 4297B pin ✓ (cross: 39019/GP_Tutorials/
+  Tut_Settings1/116cb40 đủ). #27-GS: 3 phase xong — còn phase-4 nếu a5 CLAIM.
+- **#8 AI-3 PROGRESS** — scope đo từ report98/raw l3-chain (không đoán): **128.724
+  objects/511.781 links streamed** · 5 header-only = GunEventCatcher1 +
+  Player_Attack_2(3) + Boss19_AttackTypes1 · 52 default refs = 51 PSR + 1 MeshFilter
+  (targets 10210×46/10202×5/**10209×1 — Mesh thứ 3 mới**) · **chỉ 2/7 refs #7 overlap;
+  50 additional refs report98 — #8 LỚN HƠN delta tưởng tượng (không phải subset 45)**
+  · 600MiB child-RSS/180s stop giữ làm diagnostics · không claim header-only = empty.
+- **Lanes:** ef 🔄122 (tip giữ `08d9c1c44` — chưa handoff, graph-populator phức tạp;
+  nếu vòng sau vẫn im lặng → nhắc kiểm sức khỏe) · AI-4 → #30 · AI-3 → #8 · a5 →
+  nghỉ/chờ CLAIM mới.

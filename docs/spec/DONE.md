@@ -72,6 +72,13 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 84 — 26/10, #29 ĐÓNG (Arena/PvP) + phase-2/3 ĐÓNG + #8 đo scope):**
+> **§24.76**: **#29 AI-4 ĐÓNG** (3 runs SUCCESS @ `b37f7d6f1` ✓ · 1361 method/244
+> class · map pools thật · AllPvPRandomMaps = 0 ✓ · hệ 14: 0,25→~0,8; còn shop
+> serialized + MaxRankStars values) · **a5 phase-2+3 ĐÓNG** (SYNC needle fix — runs
+> GREEN @ `e51338c8c` ✓ · Boss AttackPhases PPtr joins) · **#8**: 2/7 overlap #7 +
+> 50 additional refs (lớn hơn delta-45) · ef 🔄122 · datas/ = **111**. verify 209/0/2.
+>
 > **Sửa lại (lần 83 — 26/10, #7 ĐÓNG + phase-2 HOLD + #8/phase-3 CLAIM):**
 > **§24.75**: **#7 ĐÓNG** (runs 40342889160/…106 SUCCESS @ `0018ac7ae` ✓; 7/7 resolved
 > từ `unity default resources` — falsify hypothesis mẫu mực; tasks **26/28**) · **a5
