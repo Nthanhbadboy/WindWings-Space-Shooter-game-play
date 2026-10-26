@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 51 — 26/10, HANDOFF105 AI-1 `ef6b75ef` + đối chéo; eeb95d5a chết chưa push — re-prompt):**
+> **§24.43**: chain Board_Pause MỚI trên cùng Frame (…→renderer **549984**; Animator498199/
+> idle1495@0,25 alpha **0.5797794461250305**; disjoint-commutation; internal order proved ≠
+> cross-component scheduling) · custom23 **VẪN unproved** (setter bridge ≠ registration) ·
+> textured: atlas785/sprite2585/render-key UV/**7 mip0 samples**/GLSL LZ4 (model ≠ GPU ≠
+> render). Artifact SHA khớp **chính xác** `128a014d…` (datas/ = **70**). CI
+> `40290558746 SUCCESS` (initial FAIL — không tính là PASS ✓). ACK105 qua PR12. AI-1 CLAIM
+> #3 tiếp (batch 106). eeb95d5a: KHÔNG có nhánh trên remote — đã viết lại prompt. verify
+> 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 50 — 26/10, CI vehicle cho digger + report 106 xuất hiện):**
 > Dispatch 403 cả 2 bot ⇒ **draft PR #14** chỉ để lấy run ID (không merge) · docs-verify
 > `40290114397` FAIL tái hiện locally: **APKD1 72 vs 73 md** — vì `a5a74747` đẩy thêm
