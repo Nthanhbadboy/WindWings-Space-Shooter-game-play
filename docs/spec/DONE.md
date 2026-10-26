@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 54 — 26/10, 2 handoff cùng lúc: 106-ef6b75ef + 108-a5a74747):**
+> **§24.46**: GLES PixelSnap + bilinear thật — **spec arithmetic review 9/9 PASS từ artifact**
+> (round-even ≤0,5/trục · z/w+uv không snap · bilinear 4-tap từ 46 texels ×14 · premul · over
+> · same-pixel alpha .05091579864714838→.08276148982721251) — CPU ≠ GPU giữ. **§24.47**:
+> #15 **PARTIAL** — 308/308 1-layer (multi NOT_EXERCISED, đóng cho snapshot) + API chỉ
+> declaration ⇒ native interpolation **MỞ**; 301.603 keys; proven:false giữ. Kéo 2 artifact
+> (datas/ = **73**, needle AI1 71→73). AI-3 tip chạy `ceebe881d`. ACK106+108 PR12. verify
+> 209 PASS · 0 FAIL · 2 SKIP · unittest OK.
+>
 > **Sửa lại (lần 53 — 26/10, chủ dự án MỞ L2 — "không chờ, đào cho hết"):**
 > **§24.45**: 6 mục L2 → **#18–#23** claim tự do (DPS parity tàu 1 · ramus device ×2 ·
 > float[24] consumer · bind 576 identity · save schema e2e · wing named leaves/DPS parity) —

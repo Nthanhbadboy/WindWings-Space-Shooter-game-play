@@ -3505,3 +3505,48 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   từ spec), đang probe APK, chưa CLAIM (đã nhắc CLAIM #4–8). AI-1 batch 106 vẫn đang chạy
   (`d7e718cfb`). Sticky lần 53 đăng xong; công bố L2 qua PR12. L1 vẫn ĐỦ 0-chặn; wing/drone
   vẫn ĐÓNG (r92) — #23 không mở lại wing bắn.
+
+### 24.46 Report 106-ef6b75ef — GLES PixelSnap + bilinear thật (AI-1, code `b979cfe65`, CI `40292776800 SUCCESS`; recovery `40291977206` — lần 1 fail hash Path≠bytes, không dùng; local **1137 PASS**/32 mới)
+
+- **Vertex staged pipeline từ GLSL nguồn** (8 byte-located runs r105): Flip →
+  ObjectToWorld → MatrixVP → **PixelSnap tùy chọn** (SAU divideW + round-even + restoreW;
+  clipZW/UV/color không bị snap). 4 vertex × 2 variants; không generate topology mới.
+- **14 inside queries** (7 pixel center × 2 variants, cùng probe point) + 5 sampler-only;
+  **5/7 pairs đổi filteredRGBA**; cùng pixel [726.5, 325.5]: alpha
+  **0.05091579864714838** (snap0) → **0.08276148982721251** (snap1).
+- **Bilinear thật từ APK**: Texture785 decode lại — raw/fullRGBA SHA khớp r105; **46 texels
+  RGBA8**; mip0 bilinear/UNORM + Clamp1; **clamp FULL TEXTURE, KHÔNG clamp sprite crop**
+  (neighbor atlas x1309 alpha 1/255; texture[0,0] = [69,139,251,0] — không fabricate black).
+  Pipeline: filter → varyingColor → **RGB premultiply** → One/OneMinusSrcAlpha over;
+  counterexample synthetic red-trong/blue-đục bắt lỗi premultiply-trước-filter.
+- **ARITHMETIC REVIEW độc lập (lần 54 — đúng dạng nó nhờ, stdlib, 9/9 NHÓM PASS)**:
+  ① scaled = ndc×(540,1200) ② round-half-even ③ clip = rounded/half ④ z/w + uv KHÔNG snap
+  ⑤ window = (ndc+1)/2×(1080,2400) ⑥ displacement ≤0,5/trục ×4 vertex ⑦ weights từ fraction +
+  **bilinear 4-tap recompute ×14 = stated** (46 texels) ⑧ fragment = premul(RGB×a) ×14
+  ⑨ over 0,5-gray ×14. Kết luận: model số học **tự-consistent tuyệt đối mức CPU binary64** —
+  KHÔNG và không thể chứng minh GPU lowp/sRGB/fraction precision (ranh giới nó khai giữ nguyên;
+  PixelSnap=true là explicit variant probe, material105 PixelSnap0 không bị nhận là game bật).
+- Kéo về: `datas/l3_ef6b75ef106.json.gz` — SHA `62e3b6d274a9077b…` có trong report ✓
+  (datas/ = **73**). Custom23 vẫn unproved. ACK106 qua PR12.
+
+### 24.47 Report 108-a5a74747 — #15 native blend evidence (AI-2, code `7cdd982ca`, tip `96fc9d30f`; CI `40293234466/4530/4477 SUCCESS`; local **171 PASS**/11 mới; needle sync 75/72 trên nhánh họ)
+
+- **Disposition: PARTIAL — không nhận #15 DONE đủ** (trung thực): ① **308/308 controller
+  graphs đúng 1 layer** (multi 0 · zero 0) · **blending_mode_raw 0 ×308** · default_weight
+  0.0 ×308 ⇒ **multi-layer blending NOT_EXERCISED trong toàn bộ snapshot APK phục hồi được**
+  (join transition model 232/232 cùng 1-layer); ② IL2CPP chỉ có **API/RVA surface**
+  (`Animator.GetLayerWeight`, state/clip info kèm clip weight, `AnimationCurve.Evaluate`,
+  Keyframe tangent/weighted) — **method bodies là placeholder { }** ⇒ không phải engine
+  implementation; ③ **301.603 streamed keys** xuất được nhưng chưa có so-sánh native/runtime
+  cho thuật toán evaluate/weighted-crossfade ⇒ **không thêm blend/interpolation policy,
+  `proven:false` giữ**.
+- Kéo về: `datas/l3_animator_blend_native_evidence.json.gz` — **SHA `8d4a8c667c8263a5…`
+  khớp handoff chính xác** (datas/ = **73**). **Đối chéo độc lập (lần 54)**: 308/1-layer/0
+  multi/0 zero + blending 0×308 + weight 0.0×308 ✓ · transition_model_scope_check 307+1,
+  232 join ✓ · curve inventory: 665 clips · **301.603 keys** · channel sum 48.823 · constant
+  19.226 · discrete 42 · dense 0 ✓.
+- **Phân xử #15 (AI-2 hỏi): CHẤP NHẬN tách 2 tầng** — (a) **multi-layer serialized coverage =
+  NOT_EXERCISED — ĐÓNG cho snapshot APK này** (bằng chứng phủ: 308/308 + 232/232); (b)
+  **native property interpolation = MỞ** (#15 chuyển thành tầng mở) — chỉ đóng khi có native
+  body bytes pin hoặc on-device probe đo state/layer/clip weight qua transition thật; không
+  ACK thuật toán từ API declaration. Sticky lần 54 cập nhật.
