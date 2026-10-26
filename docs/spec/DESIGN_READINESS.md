@@ -20,6 +20,25 @@
 > ④ **feel BỎ** theo quyết định (game gốc không có, quá nhỏ);
 > ⑤ peer tới report **87 / 412 tests** (combat chain + receivers + extra-life + khiên/zone);
 > ⑥ tally **✅ 33 · ⚠ 14 · ❌ 1** (lần 11 kéo lại từ 31/16/1 — lô lần 9 bị mất) · claim **211/209 PASS**. Số dưới đây đã đo lại theo trạng thái này.
+
+> **Cập nhật 26/10 — lần 4 (đồng bộ `DATA_SYNC` §24.80, chương trình đào 4-digger):**
+> ① **D3 (row 4) NÂNG cho boss-1** — route static Boss_1_Animation đã map được:
+> `Boss_AttackPhases` (PPtr → Animator/controller Boss-39019/20/21) · state
+> `stateRunAway/Baydi` + `stateDie/Dead` → **UnityEvent defeat +0x70 / burst +0x78**
+> (offset **trực tiếp từ TypeDefIndex 141**, ban đầu ghi là inference — đã CORRECT bằng
+> metadata) → receiver **Enemy_Destroy 601110** (root 185722, `destroyScript` cùng root) ·
+> Spine chain 602882→580611→skeleton JSON 918 · **8/8 state labels khớp tên animation
+> asset** · BossSpineEventHandler: có code, **0 instance** ⇒ không join. ⇒ *thứ tự pha
+> boss-1 có chứng cứ static; còn 38 boss + điều kiện runtime (MODEL_NOT_MEASURED)* —
+> vẫn 🟡 nhưng từ "mức C" lên **mức B (boss-1)**; ② **C4/kin tế tĩnh ĐẦY HƠN**: box
+> (typeBox miền 0/1/2 · `KeyPrices[typeBox]×(BoxKeyCost−owned)` · **3 call site**) ·
+> energy (**30 gem→50** guard `Gems>29` · video slot 14 → **+30**) · rewards mùa arena
+> (`#1[Medal:680,Gems:250]`…) · RankSplit/SeasonTime/MaxRankStars values — số thưởng/
+> giá tĩnh đủ để thiết kế L1 số-sanh; "vàng/giờ" runtime vẫn là sample 23/10 (2
+> coin/kill); ③ **tasks**: 26/28 gốc ĐÓNG + toàn bộ task mới (#29 Arena/PvP · #30
+> meta thưởng · followup · followup-2) ĐÓNG — còn mở đúng 2: **#8** (byte-equal 5 MBs
+> — gần handoff) + **#27** (native 123 + game-side phase-11); ④ tally DQ giữ
+> **33✅/14⚠/1❌** — chưa lật câu nào lần này, các nâng trên là độ sâu chứng cứ.
 >
 > **Cập nhật 24/10 — vòng 2:** sau khi giải script animation (`ANIMATION_SCRIPT.md`), hệ
 > **Animation**: **35/39 prefab boss** có **nguồn** animation/event trong tập đã xét, boss 1 giải
@@ -50,7 +69,7 @@ chúng là **tham khảo**, không phải điều kiện.
 | 1 | `StartHp` | đóng (2500) | ✅ **đóng** — `statics_Player_Get_Datas.StartHp = 2500` | **Không** |
 | 2 | **A6 — stage ↔ wave** | mở | ✅ **ĐÃ BIND (25/10)** — trước: `map_waves_candidate.json` có **250 map**, nhưng chỉ **7** ghép chắc; nay bind **11 cấu trúc / 614 mảng** (320×len3 ↔ 3 mode · 118×len2 = stage→boss · 104×len7 ↔ 7 `PlayMode`, `DIFFICULTY_MODES` §7); peer ghép entry vào `map_table_segments.json` + `maps.json` | **Không** |
 | 3 | **E2/E3 — hit flash / hit stop** | mở, "chi phí thấp" | ✅ **ĐÓNG — BỎ (quyết định 25/10)**: game gốc **không có** trên mẫu asm (`Enemy_Display` chỉ **5 field**: `hpProgressBarRenderer` `size` `hitableRenderers` `appearOff` `dieOff` — không có tham số flash) và cảm nhận quá nhỏ ⇒ game mới **không thêm**; số đo cũ (alpha 0,5 · 0,05 s) chỉ để tham khảo | **Không** |
-| 4 | **D3 — thứ tự pha boss** | mở, "cần decoder" | 🟡 **MỘT PHẦN** (hạ mức 25/10) — có **mốc trong clip** (`795/795` event có `time`, mức **A**), **chưa** có thứ tự pha / điều kiện vào-thoát / số lần lặp / hành vi callback (mức **C**) | **Không** |
+| 4 | **D3 — thứ tự pha boss** | mở, "cần decoder" | 🟡 **MỘT PHẦN** (hạ mức 25/10; **nâng 26/10 lần-4**: boss-1 route static map xong — state→defeat/burst +0x70/+0x78 (TypeDefIndex 141) → Enemy_Destroy, Spine 8/8 labels — mức **B cho boss-1**; 38 boss còn lại + điều kiện runtime mức C) — có **mốc trong clip** (`795/795` event có `time`, mức **A**) | **Không** |
 | 5 | **B1 — HP enemy runtime** | mở | ✅ **HP THEO ID (25/10)** — `datas/enemy_hp_by_id.json` **150 cặp** (`CB-30003` = 650, claim **WRH2**); dict dựng trong `.cctor`, 0 vòng lặp (claim **IAB1**); `kHp[mode]` **không tồn tại** | **Không** |
 | 6 | **C4 — vàng/giờ** | mở | 🟡 **có mẫu runtime (25/10)** — phiên 23/10: **276 kill → 540 coin** Stage 1 (≈ 2 coin/kill, `live_1_gp.json`); công thức `GetBonusCoin` **100,0 · 20,0** | **Không** |
 | 7 | **A7 — mật độ địch** | mở, "làm bằng script" | 🟡 tính được **một nửa** — nhưng vướng #9 (xem dưới) | **Không** |

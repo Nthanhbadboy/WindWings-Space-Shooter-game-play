@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 88 — 26/10, phase-9/10 ĐÓNG + followup-2 ĐÓNG + #8 VALIDATES + DR lần-4):**
+> **§24.80**: **phase-9 ĐÓNG** (state→defeat/burst +0x70/+0x78 — CORRECTION nâng lên
+> metadata TypeDefIndex 141 · runs `40353843965`+`40354271059` ✓) · **phase-10 ĐÓNG**
+> (PPtr chain→skeleton JSON 918 · 8/8 labels · BossSpineEventHandler 0 instance · run
+> `40354813447` ✓; phase-11 claim) · **#30-followup-2 ĐÓNG** (typeBox 2-store/669 ·
+> miền 0/1/2 · 3 call sites · BuyEnergy 30→50 · runs `40354854530`/…76/…46 ✓; followup-3
+> claim) · **#8 VALIDATES**: 5/5 MB BYTE-EQUAL inverse + 3 Mesh resolves + chéo-làn
+> Boss19_AttackTypes script 946 (giúp phase-6 a5) · ef123 đã push chưa handoff ·
+> **DESIGN_READINESS lần-4: D3 boss-1 → mức B** · datas/ = **120**. verify 209/0/2.
+>
 > **Sửa lại (lần 87 — 26/10, #30-followup ĐÓNG + phase-8 ĐÓNG + 2 CLAIM mới):**
 > **§24.79**: **#30-followup ĐÓNG** (runs `40352753993`/…90/…35 SUCCESS @ `f0ed6639c`
 > ✓ · jump-table 27/27 pin bytes · index map 0..26 · regen-churn tự bắt + test khóa ·

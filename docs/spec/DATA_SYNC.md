@@ -4499,3 +4499,48 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - **ef 123 vtable-linkage: tip giữ `a0bfa18e2` — chưa push** (claim `6420235916` registered;
   vtable/RELA recovery là tầng nặng nhất chuỗi — theo dõi, im thêm 1 vòng nữa → nhắc).
 - **Datas/ 115 + 2 artifact pulled = 117 (needle sync cùng commit này).**
+
+### 24.80 Điều phối lần 88 — phase-9+10 ĐÓNG · #30-followup-2 ĐÓNG · #8 VALIDATES (byte-equal) · DESIGN_READINESS lần-4
+
+- **#27-GS phase-9 a5 — ĐÓNG + CORRECTION nâng mức** (HANDOFF `6420574383` @ `104a2a7c0`,
+  docs-verify `40353843965` ✓; CORRECTION `6420633017` @ `6b0f343fd`, `40354271059` ✓):
+  BossWork `stateRunAway/Baydi` + `stateDie/Dead` → **UnityEvent.Invoke +0x70
+  (defeatEvent) → OnDefeated/Enemy_Destroy 601110** · ClearGuns +0x78 (burstEvent) →
+  OnBusrtItems/601110 · 0 direct BL/tail-B tới ClearGuns/BossDefeat trong corpus 139 —
+  không phải indirect callgraph ✓. **CORRECTION quý**: ban đầu ghi field-slot là
+  "inference từ thứ tự serialized" — recheck `script-declarations.json` thấy
+  **TypeDefIndex 141 offsets tường minh** (state +0x30..+0x68 · defeat +0x70 · burst
+  +0x78 · hitCol +0x80 · nextTurn +0x88) → report/artifact sửa trích metadata trực tiếp.
+  *Cross p9 `998217cddb2b…` 18453B: đủ state/0x70×7/0x78×5/141×5/ClearGuns/601110 ✓.*
+- **#27-GS phase-10 a5 — ĐÓNG** (HANDOFF `6420709273` @ `5869455fd`,
+  docs-verify `40354813447` ✓): **PPtr chain 602882 → SkeletonDataAsset 580611 →
+  skeleton JSON 918** · **8/8 state labels khớp animation names** (asset events:
+  Attack3/Banplasma/Batdautu/Stop) · BossSpineEventHandler configurable nhưng
+  **instance inventory = 0 + typetree export absent** ⇒ không join — đúng phép.
+  *Cross p10 `2d6f60e19aa0…` 18228B đủ ✓.* **Phase-11 CLAIM** (`6420741175`, report
+  140): Spine event-timeline association.
+- **#30-followup-2 AI-4 — ĐÓNG** (HANDOFF `6420793997` @ `f9bba0c10`; spec tự kiểm
+  3 runs `40354854530`/`40354854476`/`40354854646` **SUCCESS** ✓; SHA
+  `f36bade4e1e27222…` 3155B khớp ✓): **typeBox ĐÓNG — chỉ 2 store trong 669 methods**:
+  `.cctor` (RVA 19.994.092, literal pin `0000000001000000` ⇒ typeBox=0/timeUpdate=1) +
+  `OnPressedButtonOpenBox` (19.955.240 — chỉ số NÚT, không phải id thưởng) · miền
+  0/1/2 · **3 call sites** luật pack (1 random Quest + 2 tab Season non-random) ·
+  chuỗi OpenBoxNow: giá = `KeyPrices[typeBox]×(BoxKeyCost[typeBox]−owned)` @
+  GetListIndexRandomRewards 19.997.080 · **BuyEnergy 30 gem→50 energy** (guard
+  Gems>29) · FreeEnergy video slot 14 → +30. not_decoded đúng: thứ tự rút runtime
+  (Random seed) = MODEL_NOT_MEASURED. *Cross: typeBox×13/19.994.092×2/19.955.240×2/
+  KeyPrices/BoxKeyCost/NumberRewards đủ ✓ (19.997.080 ghi trong report — artifact
+  dùng caller_chain dạng khác, không lệch).* **Followup-3 CLAIM** (`6420839797`,
+  report 131): BoxKeyCost/KeyPrices/NumberRewards + AllTimeAds từ field-defaults
+  CÓ SẴN trong repo (không raw mới) — cách rẻ đúng chuẩn.
+- **#8 AI-3 — low-memory fallback VALIDATES** (progress `6420511388`): explicit
+  C#-schema + native TPK strict-decodes **VÀ inverse-serializes 5/5 MB objects
+  BYTE-EQUAL** (3444B/3284 custom/76 spans) — "header-only" giờ có payload thật:
+  Gun onDestroy → `OnSpawnPoisionZone` (original spelling) · Boss19 arrays 8/2/4/2/0
+  (không bịa empty tail) · **52 refs resolve đủ 3 Mesh (149 verts/642 indices)** ·
+  600MiB restored run `40351688613` SUCCESS. **FYI chéo làn quý**: decode của AI-3
+  bind **Boss19_AttackTypes MonoScript (script 946, SHA `c59cd5c8…`)** — đóng giúp
+  phase-6 của a5 (5 PPtr blank). #8 gần handoff.
+- **ef 123: tip chuyển `a0bfa18e2` → `aa6120c90` (ĐÃ PUSH) — chưa có handoff comment**;
+  vtable/RELA là tầng nặng — chờ, không nhắc.
+- **Datas/ 117 + 3 pulled (p9/p10/box_draw) = 120 (needle sync commit này).**
