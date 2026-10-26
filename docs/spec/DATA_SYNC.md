@@ -3718,3 +3718,42 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - Re-handoffs #23/#18 post-push (`6412746605`/`6412749436`) — spec đã ACK SHA-khớp tại
   §24.52 ✓ · correction ef `6412630804` (550 RELA / 773-0) nhất quán với đính chính spec.
 - Board lần 60; datas/ = **81**.
+
+### 24.54 Điều phối lần 61 — #17: 3 lớp framing ĐÓNG đầy đủ chuỗi (109/110/111) · #19 ĐÓNG bó scope → **L2 trắng board**
+
+- *(Sự cố sandbox — restore .git lần 4)*: HEAD về `8b3689d` initial; backup cây ra
+  `/home/user/_user_wip_r61/` (86M) → `reset --hard` về `45390206c9` — xác minh docs
+  (3719/1016 dòng) + datas SHA khớp. Quy trình lần 3 áp dụng đúng, không mất dữ liệu.
+- **#17 ef6b75ef — 2 handoff extension (110 `6413105118` · 111)**: **Lớp 2 metadata/framing
+  (110, code `f4a6346172`)** — stdlib-only v22 stripped reader **704.961 object records**
+  (704.843 resources + 118 shared2), tables khớp UnityPy baseline digest · chọn độc lập 308
+  class91 offsets, re-read **khớp 109 payload SHA 308/308** — *spec xác nhận chéo: **322 SHA
+  giao 109∩110** trong 2 artifact ✓* · **793 clip PPtrs → 791 class74 identities** · witness
+  `{fileID:4, pathID:970}` → external[3] resources.assets → resources:970 (byte_start
+  18915424/size 2768) ✓ · 32 new + full **1258 PASS** · Verify `40302093121` ✓. **Lớp 3
+  UnityFS (111, code `c9577acd2`)** — own LZ4 + stdlib ZIP, **v8 / 2022.3.62f3 / flags 579**,
+  **16 directory nodes / 2198 block descriptors** · directory → resources.assets 45344150 +
+  sharedassets2.assets 40641189 ✓ · decode 136 blocks → 17.825.792 bytes · 2 metadata
+  prefixes + **308 controller ranges fresh equal 110 SHA** · 3 blocks (346/347/348) replay
+  local **393.216 bytes**; 2.062 blocks chưa decode (scope captured ranges) · 47 new + full
+  **1305 PASS** · Verify `40304091950` (REST headSHA c9577acd2) ✓ · 2 lần fail recovery
+  disclosed (version guard 6/7 vs thực tế 8; stale filename) ✓.
+  **Verdict #17 (phân xử theo 3 lớp như handoff đề nghị): (1) payload 109 ĐÓNG · (2)
+  metadata/framing 110 ĐÓNG · (3) UnityFS framing/naming 111 ĐÓNG (selected-source
+  recovery) — = independent framing ĐỦ CHUỖI bundle→metadata→payload. CÒN MỞ trong #17:
+  builtin controller payload schema (109 dùng UnityPy version DB — file stripped không mang
+  schema; independent schema discovery là tầng riêng) + clip evaluation/engine/render
+  out-of-scope.** Cả 110/111 khai not-clean-room (consulted UnityPy format layout) — giữ
+  common-format assumption.
+- **#19 a5a74747** (handoff 10:01, commit `dab116eddf` pushed, SHA `d9f85f085008…` khớp ✓,
+  report 119): **device grouping RESOLVED — 12 captures = 10 listStatValues + 2
+  percentByLevels1/2** · static 10 = runtime Mate 20 X 10 (**MATCH_ACROSS_DIFFERENT_BUILDS_ONLY**
+  — 1.3.118 vs 1.0.69 modded, không same-build claim) ✓ · percent arrays **crossbuild f32
+  match** ✓ · inner runtime rows = type-name placeholders (`not_a_proven_device_count:
+  true`) ✓ · Map: static 250 vs runtime outer 250 nhưng **128 placeholders — map contents
+  NOT MEASURED** · second-device: chỉ 1 capture (searched scoped, không repo-wide absence —
+  đúng chuẩn lần 58) ✓ · 13 tests (7 #19 + 6 #12). **Verdict: ĐÓNG bó scope
+  evidence-bounded (device-grouping + 1-device static↔runtime); còn thiếu: provenance-bound
+  runtime receipt với bridge `arr=256&depth=2` + second-device capture.**
+- **Mốc: L2 trắng — #18/#19/#20/#21/#22/#23 đều ĐÓNG (mỗi mục bó scope đúng khai)**;
+  #24/#25 chờ chủ dự án. datas/ = **84**.

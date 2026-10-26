@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 61 — 26/10, #17 3 lớp framing ĐÓNG + #19 bó scope → L2 trắng board):**
+> **§24.54**: restore .git lần 4 (backup `_user_wip_r61` → reset `45390206c9`, xác minh OK) ·
+> **#17** = payload 109 + metadata 110 (`f4a6346172`: 704.961 rows · 793→791 · witness
+> 18915424/2768 · 322 SHA giao ✓) + UnityFS 111 (`c9577acd2`: v8/579 · 16/2198 · own LZ4 ·
+> 136 blocks · 308 fresh equal 110 SHA · 1305 PASS) — **ĐÓNG independent framing đủ chuỗi;
+> schema discovery MỞ** · **#19** (`dab116eddf`, SHA khớp): 12=10+2 RESOLVED · 10=10 khác
+> build · percent f32 ✓ · map 128 placeholders MỞ — **ĐÓNG bó scope**. **L2 trắng board**
+> (18–23 ✅; 24/25 chờ chủ dự án). datas/ = **84**. verify 209 PASS · 0 FAIL · 2 SKIP ·
+> unittest OK.
+>
 > **Sửa lại (lần 60 — 26/10, #12 ĐÓNG bó scope + #17 phân xử 2 tầng + #19 CLAIM → L2 phủ hết):**
 > **§24.53**: **#12** (112-a5, SHA `5fc9fd36…` khớp) — Popup_QuitMissions 495980→controller
 > 1974 · clip1572/1573 · prior_block_recheck sửa GO 270123 (lỗi type/identity) ·
