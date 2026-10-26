@@ -5574,6 +5574,49 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   (trần) ⇒ sau 2 handoff sắp tới là **STATIC-COMPLETE CEILING REACHED**.
 - **Datas/ 177 + 2 pulled (155/129) = 179 (needle sync commit này).**
 
+### 24.107 review-126 CHẤP NHẬN-biên độ (formal) + 156 ĐÓNG (stock=sold) + review-127 đang khiếu nại (lần 118)
+
+- **AI-3 — review-126 FORMAL HANDOFF `6427626453` ⇒ CHẤP NHẬN** (`9d3d8c66453`
+  — 4 exact-head GREEN: Verify `40402536851` · scoped-push/PR · PR15 vehicle;
+  spec xác nhận lại runs xanh @ head): verdict
+  **`APPROVE_BOUNDED_EF126_CALLER_DISPATCH_ON_PREPARED_STATE_NOT_27_FULL`** —
+  0 mâu thuẫn số. Own-fresh: recovery `40399243691` ✓ (source `a2d299605` ·
+  raw `069781060`) · witness `425eb0d3…` 8.651B (17 spans/10 FDE/236 RELA) ·
+  census toàn cục **3.456.888 executable words** → đúng BL `6cef84`/`6cefe4`,
+  **0/29.626 RELA addend** · own replay **70/8/8/66** exact (không import
+  verifier producer) · artifact pulled `datas/l3_geometry_review_ef126_8141386a.json.gz`
+  **5.689B pin `e1b02b87…` ✓**. **3 qualifications giữ khi tóm tắt:** last-PC
+  `6ceff8` = BR X1→synthetic-E0 (không phải native RET) · "controller/C" =
+  fixture nomenclature, KHÔNG phải class identity · +103/A8 = prepared-0,
+  không phải native clears. **Chuỗi review #27: 123✓APPROVE · 118✓SUPPORTED ·
+  124✓APPROVE · 120✓APPROVE · 126✓APPROVE — CHỈ CÒN 127.**
+- **AI-3 — review-127 CLAIMED ngay** (`6427652461`, vòng riêng đúng luật):
+  fixed bytes 127 (`6426133738`/sci `6781d828f`/`f1d35dd7a` · artifact
+  `8b9df003…` · raw `43adb19f…`); scope: whole-FDE vs staged · harness
+  null-domain riêng · `6ceeb0`+sink `3c9438(0)` · callee ends · M1–M5
+  boundaries; **bắt buộc reconcile 128/129 như published corrections** (không
+  revive "no pinned data anywhere"). Planned report123 + artifact riêng.
+- **535 — 156 stock-counter ĐÓNG** (HANDOFF `6427661698` @ `47c187e273`; runs
+  `40403674238`/`40403674133`/`40403674308` ✓; artifact pulled
+  `datas/l2_535b0541_stock_counter.json.gz` **3.019B pin `df6ee0eb…` ✓**; 898
+  local): **khoá `*_ITEM_STOCK` là bộ đếm ĐÃ-BÁN, không phải tồn** — 6/6
+  writer đều `add w2,w8,w21` = `SetStockItem(id, snapshot+count)`, 0 `sub`
+  trong 8 slice · snapshot chụp **một lần lúc click** (`GetStockItem` →
+  `str w0,[x21,#0x28]`) · **hai trần khác nguồn**: text ô = `MaxStockCount
+  +0x98 − sold`, slider popup = `EventRewards.stock +0x20 − sold` — code
+  không buộc bằng nhau · `ResetShop` (153) là chỗ duy nhất ghi 0 ⇒ sold đơn
+  điệu tăng trong mùa ⇒ **đọc khoá như "còn lại" = sai dấu mọi phép trừ**.
+  Review-points + mở-list đã vào sổ (writer MaxStockCount · nhánh #0xc7/#0x12b
+  · onExit-closure · slot 0x2ADC840 · helper 43584368 · GetText 21202600 ·
+  glyph 21103836).
+- **ef — cycle 130 đang làm** (tip `8db8c21c2`: "static map of the
+  animator-side update/trigger driver" + recovery caller-closure `63eb9d186`/
+  `d28af3a0`) — HANDOFF-130 chưa đăng.
+- **Ceiling:** còn ĐANG ① review-127 (CLAIMED — **review cuối của #27**)
+  ② ef-130 ③ 535 fu-26 (157+) ④ a5 lead-followup (chưa push). Chuỗi review
+  #27 khép 6/6 ⇒ #27 ĐÓNG-full với các bounds đã ghi (M1b runtime-only).
+- **Datas/ 179 + 2 pulled (156/122-review) = 181 (needle sync commit này).**
+
 ### 24.97 Điều phối lần 106 — MỞ VIỆC cho AI-2 + AI-3 (báo cáo rảnh): GỠ GATE A2 · hàng đợi H · sửa định danh 120-CLAIMED
 
 - **Đính chính board:** **R1-addendum120 = CLAIMED trước nhắc lần-104**

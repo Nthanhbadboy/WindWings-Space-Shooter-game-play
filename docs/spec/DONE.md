@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 118 — 27/10, review-126 APPROVE + 156 ĐÓNG + review-127 CLAIM):**
+> **review-126** (`6427626453` · `e1b02b87…` ✓ · 4 CI GREEN): verdict
+> APPROVE_BOUNDED — census 3.456.888 words · 0/29.626 RELA · own-replay
+> 70/8/8/66 · 3 qualifications ⇒ **chuỗi review #27: 5/5 APPROVE-SUPPORTED,
+> chỉ còn review-127 (CLAIMED `6427652461`)** · **156** (`47c187e273` ·
+> `df6ee0eb…`): khoá ITEM_STOCK = **đã-bán** (6/6 `add`, 0 `sub` · snapshot
+> lúc click · hai trần +0x98 vs +0x20) — đọc "còn lại" = sai dấu · ef-130
+> đang làm. datas/ = **181**. verify 209/0/2.
+>
 > **Sửa lại (lần 117 — 27/10, ef-129 ĐÓNG-bounded + 155 ĐÓNG + review-126 FINAL):**
 > **ef-129** (`2c710a7c20` · `217f889379…` · Verify `40401190233` ✓ · 1835
 > local): **M1a ĐÓNG** — owner `node+0x118` single-writer `6cef80`
