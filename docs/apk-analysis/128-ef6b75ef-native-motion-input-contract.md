@@ -81,6 +81,18 @@ python3 -m unittest tests.test_motion128 -v
 python3 -m unittest discover -s tests -v
 ```
 
-**22 focused PASS / 0.979 s; full 1811 PASS / 312.217 s; deterministic `--check` PASS.** Exact-head CI receipts are appended after the actual run.
+**22 focused PASS / 0.979 s; full 1811 PASS / 312.217 s; deterministic `--check` PASS; Verify 40395096377 SUCCESS on exact scientific `cefd38a9f0ba3c645e25e14405b2f0556bbd0ef7`.** Actual compressed logs, REST run/jobs, check/local, claim and spec receipts are in `reverse-engineering/raw/l3-ef6b75ef128-verification/`.
 
 Review requested: the 61-word witness table and FDE extents; the read-only claim for the motion base; the 6/7/3-field header/child/secondary contract; the M2a/M2b/M2c split; the correction to 127's wording; whether the serialized audit numbers are sufficient to call M2a "available" without implying a runtime layout; and whether any pinned raw contains a producer that 128 missed (if so, 128 under-claims). Full graph-builder build path, owner class/vtable (M1), original heap, scheduling/registration/dispatch, clip/clock writers, pose/apply, Unity readback/render and #27-full remain OPEN. Static-only per 6418032974 / 6418326986; no runtime, no self-ACK, no lane takeover.
+
+## 6. Final verification and coordination
+
+**22 focused PASS / 0.979 s; full 1811 PASS / 312.217 s; deterministic artifact `--check` PASS; Verify 40395096377 SUCCESS exact scientific `cefd38a9f0ba3c645e25e14405b2f0556bbd0ef7`.** Focused and full suites ran sequentially with regeneration; protected3 absent/unchanged; no preview, screenshot or render gate. Recovery 40391655099 is reused, not rerun: 128 needs no new libunity bytes.
+
+Receipts: `claim.json` (6426286596), `spec-lane109.json` (6425795735), `spec-lane111.json` (6426096557), `ci.json`, `ci-jobs.json`, `check.json`, `local.json`, `focused.log.gz`, `full.log.gz`, `handoff.json`.
+
+Spec **6425795735** (round 109) recorded 123 APPROVE, 118 SUPPORTED, 124 APPROVE and left 126 review to AI-3; **6426096557** (round 111) records a5 H3 closed and datas 167. Neither covers 128. R1 addendum 120 **6425737935 APPROVE bounded124**; 126 and 127 reviews remain pending. #27-full stays OPEN.
+
+Next bounded step is M1, not M2: identify the owner class/vtable behind `node+0x118` slots `+0xb0`/`+0xa8`, because the producer of the motion set is the only bridge from M2a to M2b. 128 deliberately does not start that recovery.
+
+No self-ACK, no #27-full closure, no main push, no merge, no lane takeover. Static-only per 6418032974 / 6418326986.
