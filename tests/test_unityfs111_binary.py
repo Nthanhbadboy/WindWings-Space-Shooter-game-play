@@ -16,7 +16,7 @@ def bundle(payload=b'abcdefghij',end=False,pad=False,version=7,codec=2,nodes=Non
     ci=literal(info);flags=64+2+(128 if end else 0)+(512 if pad else 0)
     prefix=b'UnityFS\0'+struct.pack('>I',version)+b'5.x.x\0'+b'2022.3.62f3\0'
     header=prefix+struct.pack('>qIII',0,len(ci),len(info),flags)
-    start=(len(header)+15)//16*16 if version==7 else len(header)
+    start=(len(header)+15)//16*16 if version>=7 else len(header)
     h=header+b'\0'*(start-len(header));body=(b'' if end else ci)
     if pad:body+=b'\0'*((-(len(h)+len(body)))%16)
     blob=h+body+packed+(ci if end else b'');blob=blob[:len(prefix)]+struct.pack('>q',len(blob))+blob[len(prefix)+8:];return blob
@@ -54,6 +54,8 @@ class UnityFS111(unittest.TestCase):
         b=bundle(end=True,pad=True);self.assertEqual(read_range(b,framing(b),0,10),b'abcdefghij')
     def test_v6(self):
         b=bundle(version=6);self.assertEqual(read_range(b,framing(b),0,10),b'abcdefghij')
+    def test_v8(self):
+        b=bundle(version=8);self.assertEqual(read_range(b,framing(b),0,10),b'abcdefghij')
     def test_raw_block(self):
         b=bundle(codec=0);self.assertEqual(read_range(b,framing(b),0,10),b'abcdefghij')
     def test_duplicate_node(self):
@@ -69,7 +71,7 @@ class UnityFS111(unittest.TestCase):
     def test_signature(self):
         with self.assertRaisesRegex(FormatError,'signature'):framing(b'Wrong\0')
     def test_version(self):
-        with self.assertRaisesRegex(FormatError,'version'):framing(bundle(version=8))
+        with self.assertRaisesRegex(FormatError,'version'):framing(bundle(version=9))
     def test_truncated(self):
         with self.assertRaises(FormatError):framing(bundle()[:32])
     def test_negative_range(self):

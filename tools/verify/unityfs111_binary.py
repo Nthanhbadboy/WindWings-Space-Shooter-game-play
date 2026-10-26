@@ -1,5 +1,5 @@
 """Separately implemented narrow UnityFS reader. Layout consulted UnityPy, not clean-room.
-No UnityPy or third-party codec imports. Supports modern 2022 v6/v7, none/LZ4.
+No UnityPy or third-party codec imports. Supports modern 2022 v6/v7/v8, none/LZ4.
 """
 import struct
 
@@ -47,12 +47,12 @@ def decode(data,flags,expected):
     return lz4(data,expected)
 
 def framing(blob):
-    c=Cursor(blob); require(c.string()=='UnityFS','signature'); version=c.number('I'); require(version in (6,7),'format version')
+    c=Cursor(blob); require(c.string()=='UnityFS','signature'); version=c.number('I'); require(version in (6,7,8),f'format version {version}')
     player=c.string(); engine=c.string(); require(engine.startswith('2022.3.'),'unsupported engine alignment rules')
     size=c.number('q'); compressed=c.number('I'); expanded=c.number('I'); flags=c.number('I')
     require(size==len(blob),'physical bundle size'); require(flags & ~0x2ff == 0 and not flags&0x100,'unsupported/encrypted flags')
     require(flags&0x40,'separate directory unsupported'); require(expanded<=64*1024*1024,'info output budget')
-    header_end=c.pos; start=(c.pos+15)//16*16 if version==7 else c.pos
+    header_end=c.pos; start=(c.pos+15)//16*16 if version>=7 else c.pos
     info_start=size-compressed if flags&0x80 else start; info_end=info_start+compressed
     require(start<=info_start<=info_end<=size,'info bounds')
     info=decode(blob[info_start:info_end],flags&63,expanded); r=Cursor(info); data_hash=r.take(16).hex()

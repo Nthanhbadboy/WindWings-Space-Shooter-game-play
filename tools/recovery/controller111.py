@@ -9,7 +9,7 @@ from tools.verify.serialized110_binary import parse
 def canonical(r):return (json.dumps(r,sort_keys=True,separators=(',',':'))+'\n').encode()
 def recover(xapk,work):
     inputs=extract_payload(xapk,work/'input');blob=(work/'input/data.unity3d').read_bytes();assert sha(blob)==DATA_SHA
-    frame=framing(blob); idx=json.loads((ROOT/'reverse-engineering/raw/controller110/index.json').read_bytes());out=ROOT/'reverse-engineering/raw/controller111';out.mkdir(parents=True,exist_ok=True)
+    print('original UnityFS header',blob[:80].hex(),flush=True);frame=framing(blob); idx=json.loads((ROOT/'reverse-engineering/raw/controller110/index.json').read_bytes());out=ROOT/'reverse-engineering/raw/controller111';out.mkdir(parents=True,exist_ok=True)
     # Preserve framing bytes (not complete assets/media), plus three wholly-metadata block samples.
     envelope=dict(header_hex=blob[:frame['data_start']].hex(),tail_info_hex=blob[frame['info_start']:frame['info_start']+frame['info_size']].hex() if frame['flags']&128 else '',frame=frame)
     files=[];samples=[];wanted={}
