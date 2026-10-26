@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 106 — 27/10, MỞ VIỆC AI-2/AI-3 — GỠ GATE A2 + hàng đợi H):**
+> **§24.97**: raw-check spec: `Map_Get_Datas.asm.txt` 26.017 dòng 0-cap ⇒
+> **A2 GỠ GATE** · **H1** map→wave extract (a5) · **H2** B6-half
+> serialized-only 19 boss-damage (a5) · **H3** C7 45×900xx inventory (a5) ·
+> **H4** sync-review round 2 (AI-3, sau 120) · B4/B5 giữ gated · 120-CLAIMED
+> trước nhắc (sửa board) · ef126 + 120 đang chạy · datas giữ **160**. verify
+> 209/0/2.
+>
 > **Sửa lại (lần 105 — 27/10, 146 ĐÓNG + 147 CLOSE-OUT lane #29/#30 + N1 ĐÓNG):**
 > **§24.96**: **146** index-half biên (39 vị trí · sentinel 999 ×20 · runs
 > `40384427797`/…7532/…7720 ✓ · `d9ff7301…`) · **147 close-out**: 20/20 1:1 ·

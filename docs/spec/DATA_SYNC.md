@@ -5260,6 +5260,41 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   chuẩn) — spec không giữ danh sách song song; các trần static không đổi.
 - **Datas/ 158 + 2 pulled (146/147) = 160 (needle sync commit này).**
 
+### 24.97 Điều phối lần 106 — MỞ VIỆC cho AI-2 + AI-3 (báo cáo rảnh): GỠ GATE A2 · hàng đợi H · sửa định danh 120-CLAIMED
+
+- **Đính chính board:** **R1-addendum120 = CLAIMED trước nhắc lần-104**
+  (`6424965656`) — AI-3 không rảnh, đang chạy: fresh recovery
+  `40386262470` ✓ (149 spans/132 FDEs/64 slots/7 BLs) + own Unicorn harness
+  khớp độc lập 181/200/196/171/181/171 + PC-sets; D-notes đã publish ADDITIVE;
+  chờ formal `review:` HANDOFF 120.
+- **KIỂM TRA RAW (spec tự làm, đầu vòng):** `Map_Get_Datas.asm.txt` =
+  **26.017 dòng ≈ đúng ".cctor 25.996 lệnh" của A2, 0 size_capped** ⇒ **A2 GỠ
+  GATE** — bảng map→wave extract được từ raw đã pin (đúng luật RAW_AUDIT-4:
+  grep repo trước khi xin dump). `Boss_BodyPhysics` asm KHÔNG có (B6 giữ
+  nửa-gate) · `GetCountEnemies` asm KHÔNG có (B4 giữ gated-cần-export).
+- **HÀNG ĐỢI H — giao AI-2 (a5, CLAIM từng mục first-claim):**
+  - **H1 — A2 map→wave inline bảng** (raw sẵn): extract từ
+    `Map_Get_Datas.asm.txt` (26.017 dòng) — bảng map→wave + đối chéo 3 entry
+    đã resolve (`[25,9010]` · `[164]` · `[113,5]`); đóng A2 hoặc
+    bounded-capped nếu cctor thiếu đoạn. Deliver: report + artifact +
+    needle-sync 1 commit.
+  - **H2 — B6-half: 19 boss-damage class, SERIALIZED-ONLY**: 251 instances
+    `Boss_BodyPhysics` (C8) — census values + distribution từ serialized đã
+    pin (không asm ⇒ method semantics NOT_BOUND; kết quả mức B tối đa, cấm
+    tụng A).
+  - **H3 — C7: 45 root prefab `900xx` ngoài roster**: inventory + identity
+    từ serialized (metadata-qualified; không gán asset-role; nếu export không
+    phủ → bounded-missing).
+- **HÀNG ĐỢI H — giao AI-3 (SAU khi 120 HANDOFF):**
+  - **H4 — sync-review round 2** (mẫu 152): đối chiếu spec docs vs reports
+    153–159 + DATA_SYNC §24.85–96 — bắt drift từ loạt đính chính gần đây
+    (136–142 supersede-chuỗi · 145-correction của 147 · slot-wording 154/155).
+    Docs-only.
+- B4/B5 giữ gated (cần export/trace mới — không active). ef126 + 120 đang
+  chạy; AI-4 rảnh sau close-out (chỉ nhận việc nếu chủ dự án mở — đã đề nghị
+  close-out xong).
+- Datas giữ **160** (vòng mở-việc, không pull).
+
 ### 24.87 Điều phối lần 96 — #136 HANDOFF ĐÓNG (rank API interpreter + 2 đính chính 134/135) · CLAIM 137 · AI-2 memo chưa tới
 
 - **#29-followup AI-4 — HANDOFF #136 `6422732465` @ `efceee587` — ĐÓNG** (runs
