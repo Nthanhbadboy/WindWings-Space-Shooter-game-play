@@ -33,8 +33,8 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **114** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
-| `datas/` | JSON/CSV bóc trực tiếp | **86** file · **26.190.619 bytes** (**26,2 MB**) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **115** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `datas/` | JSON/CSV bóc trực tiếp | **112** file · **26.504.241 bytes** (**26,5 MB**) | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
 | `reverse-engineering/scriptableobjects/` | Bảng ScriptableObject | **126** CSV · 13 MB | số cân bằng: súng, enemy, stage, shop |
@@ -78,8 +78,10 @@
 | `docs/apk-analysis/153-g2-board-endgame-consumer.md` | G2 `Board_Endgame` consumer trace | Constructor array bound to rank-indexed `arenaPoints / devidedArenaMedals[arenaRank]` | Positive static binding; no global consumer census or runtime reward claim |
 | `datas/l3_a5_g4_gun3static_semantics.json` | G4 Boss-39002 `gun3Static` call-semantics receipt | Three serialized GameObject references; at each index `SetActive(false)`, then reload and `SetActive(true)` | Boss-39002 only; event key and defeat/burst binding unresolved; not runtime execution |
 | `docs/apk-analysis/154-g4-gun3static-setactive-semantics.md` | G4 `gun3Static` / `GameObject.SetActive` trace | Direct call target `0x2781804`; per-element bool sequence decoded | Boss-39001 route remains separate; marker/key and runtime behavior not inferred |
+| `datas/l3_a5_g5_tut_settings1_focusgamespeed_flow.json` | G5 static `Tut_Settings1` → `focusGameSpeed` flow receipt | Slider callback hookup, guarded `SetTrigger`, and serialized controller context | `Stop` is contextual only; slot `0x2ADFB48` and Boss-39002 Spine identity remain unresolved |
+| `docs/apk-analysis/155-g5-tut-settings1-focusgamespeed-flow.md` | G5 `focusGameSpeed` tutorial/UI trace | `Start` connects the slider callback; callback triggers the linked UI Animator under static guards | No slot-to-parameter join, Boss-39002 key, runtime invocation, playback, or clock effect claimed |
 
-**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **111** file `datas/`.
+**Cộng kho đo được (đếm bằng `AI1`):** **139** file asm · **142.136** dòng asm · **142** typetree · **126** bảng ScriptableObject · **42** contact sheet · **112** file `datas/`.
 
 > **Đừng "sửa" 142.136 thành 142.131:** `wc -l *.asm.txt` cho **142.131** vì **`wc` đếm ký tự
 > newline**, còn `AI1` đếm **dòng** (`sum(1 for _ in fh)` = `splitlines()`). **5** file
