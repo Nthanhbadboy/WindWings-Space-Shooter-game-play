@@ -6,6 +6,7 @@ XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
 NAMES=['UnityEngine.AnimationCurve::Evaluate','UnityEngine.AnimationCurve::Evaluate(System.Single)','UnityEngine.AnimationCurve::AddKey','UnityEngine.AnimationCurve::AddKey_Injected','UnityEngine.AnimationCurve::Internal_Create','UnityEngine.AnimationCurve::get_keys','UnityEngine.AnimationCurve::GetKey_Injected','UnityEngine.AnimationCurve::set_preWrapMode','UnityEngine.AnimationClip::SampleAnimation']
 RANGES=[(0x36e570,0x36e850)]
 TARGETS={}
+FOLLOW_ENTRIES=[0x36e71c]
 def sha(b):return hashlib.sha256(b).hexdigest()
 def signed(v,n):return v-(1<<n) if v&(1<<(n-1)) else v
 def recover(path):
@@ -25,6 +26,18 @@ def recover(path):
         s=next(s for s in segments if s['offset']<=pos<s['offset']+s['file_size']);return s['va']+pos-s['offset']
     def offset(addr):
         s=next(s for s in segments if s['va']<=addr<s['va']+s['file_size']);return s['offset']+addr-s['va']
+    # Exact function extents from original EH frame records when present.
+    unwind={};unwind_header=None
+    for i in range(count):
+        ph=struct.unpack_from('<IIQQQQQQ',b,off+i*size)
+        if ph[0]!=0x6474e550:continue
+        h=ph[2];base=ph[3];enc=b[h:h+4];assert enc==bytes([1,0x1b,3,0x3b]),enc.hex()
+        n=struct.unpack_from('<I',b,h+8)[0];unwind_header=dict(va=base,file_offset=h,hex=b[h:h+12].hex(),entry_count=n)
+        for j in range(n):
+            a,d=struct.unpack_from('<ii',b,h+12+j*8);start=base+a;fde=base+d;pos=offset(fde);delta,length=struct.unpack_from('<iI',b,pos+8)
+            if fde+8+delta!=start:continue
+            if not 0<length<=0x20000:continue
+            unwind[start]=dict(start=start,end=start+length,fde_va=fde,fde_hex=b[pos:pos+16].hex(),table_va=base+12+j*8,table_hex=b[h+12+j*8:h+20+j*8].hex())
     strings=[];wanted=dict(TARGETS)
     for name in NAMES:
         needle=name.encode()+b'\0';positions=[];pos=b.find(needle)
@@ -47,6 +60,21 @@ def recover(path):
     for lo,hi in sorted(set(ranges)):
         pos=offset(lo);assert offset(hi-1)==pos+hi-lo-1
         windows.append(dict(va=lo,file_offset=pos,hex=b[pos:pos+hi-lo].hex()))
+    followed=[];seen=set();queue=[(a,0,None) for a in FOLLOW_ENTRIES]
+    while queue:
+        a,depth,parent=queue.pop(0)
+        if a in seen:continue
+        assert len(seen)<160,'bounded native dependency count';seen.add(a)
+        rec=unwind.get(a);length=rec['end']-a if rec else 0x300;pos=offset(a)
+        w=dict(va=a,file_offset=pos,hex=b[pos:pos+length].hex());windows.append(w)
+        followed.append(dict(entry=a,depth=depth,parent=parent,extent_source='original_FDE' if rec else 'bounded_window_not_function_extent',unwind=rec))
+        if depth>=4:continue
+        for i in range(0,length-3,4):
+            op=struct.unpack_from('<I',b,pos+i)[0]
+            if op&0x7c000000!=0x14000000:continue
+            target=a+i+(signed(op&0x3ffffff,26)<<2)
+            if a<=target<a+length:continue
+            if any(s['flags']&1 and s['va']<=target<s['va']+s['file_size'] for s in segments):queue.append((target,depth+1,a+i))
     shoff=struct.unpack_from('<Q',b,40)[0];shsize,shcount=struct.unpack_from('<HH',b,58);relas=[]
     for i in range(shcount):
         p=struct.unpack_from('<IIQQQQIIQQ',b,shoff+i*shsize)
@@ -74,7 +102,7 @@ def recover(path):
                     cell(pages[rn][0]+((op>>10)&4095)*scale,max(16,scale))
             if op&0x3b000000==0x18000000:cell(pc+(signed((op>>5)&0x7ffff,19)<<2),16)
     selected=[r for r in relas if any(w['va']<=r['address']<w['va']+len(w['hex'])//2 for w in windows+list(cells.values())) or r['addend'] in TARGETS]
-    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,strings=strings,references=refs,windows=windows,cells=list(cells.values()),relocations=selected,limits=['Adjacent ADRP/ADD and ADRP/LDR pairs are discovery candidates, not proven register dataflow.','Selected original byte spans only, not a whole library, engine bootstrap or interpolation equivalence.'])
+    return dict(provisional=True,xapk_sha256=XAPK_SHA,apk_entry=apk,library_entry=lib,libunity_sha256=sha(b),libunity_size=len(b),tool_sha256=sha(Path(__file__).read_bytes()),segments=segments,unwind_header=unwind_header,followed=followed,strings=strings,references=refs,windows=windows,cells=list(cells.values()),relocations=selected,limits=['Adjacent ADRP/ADD and ADRP/LDR pairs are discovery candidates, not proven register dataflow.','Selected original byte spans only, not a whole library, engine bootstrap or interpolation equivalence.'])
 def main():
     p=argparse.ArgumentParser();p.add_argument('--xapk',type=Path,required=True);a=p.parse_args();r=recover(a.xapk);out=ROOT/'reverse-engineering/raw/interpolation114/probe.json.gz';out.parent.mkdir(parents=True,exist_ok=True);out.write_bytes(gzip.compress((json.dumps(r,sort_keys=True,separators=(',',':'))+'\n').encode(),mtime=0));print('saved',out,'strings',sum(len(s['occurrences']) for s in r['strings']),'refs',len(r['references']))
 if __name__=='__main__':main()
