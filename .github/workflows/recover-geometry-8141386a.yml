@@ -24,10 +24,17 @@ jobs:
         with:
           python-version: '3.11'
       - uses: actions/cache/restore@v4
+        id: source-cache
         with:
           path: /tmp/apk/windwings.xapk
           key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
-          fail-on-cache-miss: true
+      - name: Download pinned original release when branch cache is unavailable
+        if: steps.source-cache.outputs.cache-hit != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/apk
+          gh release download windwings-apk-1.3.118 --pattern windwings.xapk --dir /tmp/apk
       - name: Read original source without modifying APK
         run: python3 tools/recovery/geometry_8141386a_bytes.py --xapk /tmp/apk/windwings.xapk
       - uses: actions/upload-artifact@v4
