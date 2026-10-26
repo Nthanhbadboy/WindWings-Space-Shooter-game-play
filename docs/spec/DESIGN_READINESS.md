@@ -44,7 +44,9 @@
 > BoxKeyCost 30×3 · KeyPrices 6/20/100 · NumberRewards 5/6/9 ⇒ kinh tế hộp trọn;
 > ⑥ **phase-11/12**: skeleton JSON 918 = `textassets/skeleton__21.json` (SHA
 > `89debb56…` · 60.897B) · 6 event keyframes (Attack3×5) · **Attack4: KHÔNG có
-> static request** cho boss-1 — route ngày càng khép; ⑦ **#8** (gần handoff,
+> static request** cho boss-1 — route ngày càng khép; ⑧ **ef123 (27/10)**: slot callback
+> boss-39002 `0x2ADFB48` → literal **`Stop`** (identity static; dispatch `MODEL_NOT_MEASURED`) —
+> key thiết kế event Spine chắc chắn, hiệu ứng/lúc-gọi vẫn là quyết thiết kế; ⑦ **#8** (gần handoff,
 > artifact `e928b36002c8…` 59.887B): 52 refs → **3 Mesh thật**, 5/5 MB BYTE-EQUAL
 > — mesh refs hết missing; ⑧ **weighted tổng ~85%** (audit lần-80 76% → nay:
 > hệ 14 ~0,8 · hệ 15 ~0,88 · row-5 boss-1 mức B · row-9 StartDrone static ĐÓNG).

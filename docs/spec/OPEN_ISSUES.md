@@ -64,6 +64,15 @@
 
 ---
 
+## 1b. **Boss-39002 Spine callback event key** — identity `Stop` (ef123) · dispatch MODEL_NOT_MEASURED *(mục thêm 27/10 — sync-review `152` + HANDOFF123)*
+
+| Hạng mục | Trạng thái |
+|---|---|
+| **Identity** (slot `0x2ADFB48` = literal nào?) | ✅ **RESOLVED static** = **`Stop`** — RELA gốc `0x2ADFB48→0x2BE5CB8` (native-relocations 288.733 entries, pin SHA `4b55d064…`) · 3 cells.json cùng RELA hex `48fbad02…` · `stringliteral.json` độc lập `0x2BE5CB8→"Stop"` (report **123-ef6b75ef**) |
+| **Dispatch/runtime** (đăng ký delegate, gọi lúc nào, hiệu ứng gì) | **MODEL_NOT_MEASURED runtime** — trần static (quyết 24/10); chỉ mở lại bằng quyết mới của chủ dự án |
+| `Banplasma` | Candidate asset-level, **chưa bind** slot nào |
+| Phạm vi đã quét | metadata index · extra-native 326 · RE 2.350 · datas 56 · residual 0 (p18–22) — corpus đã đóng, **không lặp lại** |
+
 ## 2. Nhóm A — **lỗi export**: chốt được bằng **một yêu cầu rất nhỏ**
 
 ### A1. Giá trị `StartHp` — ✅ **ĐÓNG = 2500** (bản `6109008c`)

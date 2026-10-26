@@ -72,6 +72,17 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 97 — 27/10, SLOT `0x2ADFB48` = `"Stop"` (ef123) + G1 ĐÓNG + áp S1–S3 + 137 ĐÓNG):**
+> **§24.88**: **HANDOFF123 ef** — marker decode `0x2ADFB48→0x2BE5CB8→"Stop"`
+> (identity static; dispatch MODEL_NOT_MEASURED · Verify `40366819899` ✓) +
+> vtable thật thay 3 sinks 122 (34/457/1281/1281 instr · 930 DWORDs bit-equal) ·
+> **G1** consumer = GetPlayerPower UI (damage(rank) REFUTE — giữ B) ·
+> **sync-review 152** PARTIALLY SYNCED → **S1–S3 áp**: ANIMATION_SCRIPT mở đầu +
+> §2.2 + bảng mức · ANIMATION.md caveat · HANDOFF_ANIM_RAW tách route ·
+> OPEN_ISSUES mục 1b · README row · DR ⑧ · **137 ĐÓNG** (10 bậc Herald…God,
+> "Archon 4" · kind-5) · CLAIM G2 + followup-5 (138) · AI-3 PROGRESS 62.815 ·
+> 535 forced-update ghi nhận · datas/ = **139**. verify 209/0/2.
+>
 > **Sửa lại (lần 96 — 26/10, #136 HANDOFF ĐÓNG + 2 đính chính 134/135 + CLAIM 137):**
 > **§24.87**: **136 ĐÓNG** — rank API bằng **interpreter AArch64** (ToPoints
 > 19.903.696 360/360 · DataFromPoints 19.871.992 12/12 · GetRankNumber

@@ -4815,6 +4815,65 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   lực**, #123 đang làm; không cần hành động.
 - Datas giữ **136** (không pull vòng này — 136/ef là PROGRESS).
 
+### 24.88 Điều phối lần 97 — HANDOFF123 ef: SLOT `0x2ADFB48` = `"Stop"` (identity static) · G1 ĐÓNG · sync-review 152 ĐÓNG + áp S1–S3 · 137 ĐÓNG
+
+- **ef #27 HANDOFF123 `6422951255` — TẦNG CHỐT SLOT ĐÃ DỊCH ĐƯỢC** (Verify
+  `40366819899` **SUCCESS** @ scientific `1d6fbcbb7` ✓; artifact pulled
+  `190864db…` 7082B khớp ✓ — scope vtable; marker-decode nằm report
+  `123-ef6b75ef-native-vtable-linkage.md` 13.592B, đã grep cross ✓):
+  **(a) marker:** `native-relocations.json.gz` (288.733 entries, pin SHA
+  `4b55d064…`, libil2cpp `9cb038e8…`) map **`0x2ADFB48→0x2BE5CB8`**; 3 cells.json
+  cùng RELA hex `48fbad02…b85cbe02…` @offset 3.563.112; literal index 7763 bytes
+  `53746f70` = **"Stop"**; `stringliteral.json` độc lập `0x2BE5CB8→"Stop"`.
+  ⇒ **slot callback boss-39002 = literal "Stop" — identity static RESOLVED**;
+  dispatch/invocation = **MODEL_NOT_MEASURED runtime** (đúng trần). Vtable-123
+  window 152 RELA, 0 marker-match ⇒ đúng lớp libil2cpp relocation.
+  **(b) vtable:** RELA scan 0x10b1000–0x10b1500: 53 candidates → **3 vtables**;
+  ctor `6d2894..6d28f8` store vptr `10b1150`; graph-builder `6cf7b4..6cff44`
+  gọi trực tiếp `6d2950` ×2 (0 RELA addend = 6d2950 — caller direct);
+  **122's 3 synthetic sinks THAY bằng method ảo thật**: +10 = `571b3c` reserve ·
+  +18 = `571a80` notify · +70 = `6d5134` register; chỉ còn 3 synthetic services
+  (allocator `3c986c` · PLT memset `109ace0` · stack-check `109acc0`).
+  **(c) graph:** standalone calls loop 0/1/3/3 = **34/457/1281/1281** instruction
+  gốc; PC counts đúng; ten 119 parent calls → **930 DWORDs bit-equal** pin 118.
+  ef yêu cầu review độc lập (53→3 narrowing, ctor selection, boundary marker vs
+  invocation) — **chưa self-ACK #27-full**; ghi nhận supersede "no action needed"
+  của ACK95 ✓.
+- **a5 G1 — ĐÓNG (bounded reconciliation)** (HANDOFF `6422888569` @ `3122c4ac6`;
+  runs 3/3 ✓): consumer = **`Board_Players.GetPlayerPower` đọc thẳng statics
+  +0x10/+0x18** → `basic[i]×(1+delta[i]×GetPlayerLevel)` → `SetPlayerInfo` →
+  `textPlayerPower` (report 109) — **UI power only**; giả thuyết
+  `damage(rank)=basic+0,168·rank` **REFUTE** (report 122: `Player_Attack_1` đọc
+  `StartMainCannonDamages`@+0x78, rank chỉ gate loop); **giữ mức B**, `4640` =
+  board-power entry ≠ HP tàu — guard tôn trọng đúng. a5 tự sửa
+  MISSING §2.2c + DATA_SYNC cutoff (trên nhánh họ — merge sau).
+- **a5 sync-review — ĐÓNG (report 152, verdict PARTIALLY SYNCED)** (HANDOFF
+  `6422888581` @ cùng tip): 2×**P0** (ANIMATION_SCRIPT mở đầu sai "cùng
+  Boss1_Director" mâu thuẫn §3.4 · khẳng định "chắc chắn Stop/Banplasma" mạnh
+  hơn bằng chứng) + 3×**P1** (ANIMATION.md • HANDOFF_ANIM_RAW • OPEN_ISSUES
+  thiếu mục slot) + 1×**P2** (README). **S1–S3 ĐÃ ÁP vòng này** — với nâng cấp:
+  memo viết trước decode ef nên đề xuất "ghi UNRESOLVED"; spec ghi
+  **RESOLVED-identity = `Stop`** kèm pins (mạnh hơn, đúng bằng chứng mới);
+  E2 (slot) hết blocked. CLAIM **G2** (`6422900026`) + ghi nhận: nhắc a5 tiếp.
+- **AI-4 137 — ĐÓNG** (HANDOFF `6422921766` @ `11d2552fd`; runs
+  `40368791766`/`40368791851`/`40368792150` ✓ · suite 308 (26 mới); artifact
+  pulled `1596564d…` 4118B khớp ✓): `GetRankName` **19.881.572**/264B symbolic
+  replay `Concat(GetText("txt_pvp_rank_"+rank), " ", GetRankNumber)` — **kind-5:
+  addend = địa chỉ literal** (`46080000`→`txt_pvp_rank_` · `45968752`→`" "`),
+  đúng 2 slot; **10 bậc** Herald/Guardian/Crusader/Archon/Legend/Ancient/Divine/
+  Immortal/Eternal/God (19 ngôn ngữ × 10 key, 190 so 0 lệch); hiển thị
+  **"Archon 4"** không phải "Hạng 4"; 44 dòng khớp 135. ⚠ nhánh 535
+  **forced-update** `f0baeb0d`→`11d2552fd` (rebase — provenance ghi nhận).
+- **CLAIM #29-followup-5** (`6422943214`, report 138 — `LoadRemoteConfigs`
+  remote paths/keys + IsOpen fail-closed + `Action<bool>` contract + string
+  slots; last writer 136 liệt kê): ACCEPTED.
+- **AI-3 row16 PROGRESS** (`6422949283` @ `e3fbb4dbc`): artifact 728.633B SHA
+  `c33ad8a8…`; **62.815 Renderer/GO inverse-equal toàn bộ · 61.864 exact
+  Sprite/951 null · catalog 1802 (+95 tagged = 1897) · 288 scoped-no-reference
+  ≠ globally-unused · 1.250 Sprite rows/720 aliases** — full 1532 PASS; chờ
+  exact-head verify/PR15 xanh rồi HANDOFF (không self-ACK ✓).
+- **Datas/ 137 + 2 pulled (137/ef123) = 139 (needle sync commit này).**
+
 ### 24.87 Điều phối lần 96 — #136 HANDOFF ĐÓNG (rank API interpreter + 2 đính chính 134/135) · CLAIM 137 · AI-2 memo chưa tới
 
 - **#29-followup AI-4 — HANDOFF #136 `6422732465` @ `efceee587` — ĐÓNG** (runs

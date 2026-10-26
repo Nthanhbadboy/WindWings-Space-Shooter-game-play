@@ -39,6 +39,12 @@ Tất cả số trên đã khoá bằng claim `J*` + `K*` trong `tools/verify-cl
 
 ### T1 — **17 prefab** có event clip nhưng chưa export lớp handler
 
+> **Tách route (sync-review `152` + ef123, 27/10):** việc mở chia 2 route — **(a) Boss-39001**
+> handler identity/instance/serialized values (E1 — nguồn serialized mới từ lane dữ liệu);
+> **(b) Boss-39002** slot `0x2ADFB48` — **identity ĐÃ resolve = `Stop`** (ef123 native lane,
+> spec-ACK lần 93/94 giao; dispatch `MODEL_NOT_MEASURED` — E2 hết blocked ở tầng identity).
+> **Không lặp lại census văn bản đã đóng (p20–22)** — chỉ nguồn mới được phép/được uỷ quyền.
+
 **Cập nhật 25/10 (số đúng của snapshot `9aed767b1`):** bản đầu ghi *"3 lớp thiếu typetree"*; bản
 24/10 ghi **18 prefab / 262 event** (số của `019e704d1`). Đo lại: **17 prefab** còn thiếu, **145 event
 / 795 = 18 %** (`Boss-37001/02/04/09/10/11/12/13/14/15/16/17`, `Boss-39003/05/09/11/21` bớt nhóm đã

@@ -105,6 +105,11 @@ Ngoại lệ đáng chú ý:
 
 ### 2.3 Event trong Spine — mốc bắn nằm ngay trong rig
 
+> **Caveat (sync-review `152`):** mục này là **Spine TextAsset timeline** của asset chung
+> 580611/JSON 918 — asset/rig identity **không** phải listener binding, callback-key identity,
+> playback hay runtime effect; report 143: cả 2 prefab trỏ asset này nhưng giữ component riêng
+> (callback-key boss-39002 đã resolve riêng — xem `ANIMATION_SCRIPT.md` §2.2).
+
 **8 event định nghĩa**, **21 lần dùng** trong timeline:
 
 | Event | Số lần dùng | Nghĩa |

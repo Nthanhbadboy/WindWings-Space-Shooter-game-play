@@ -14,8 +14,12 @@
 1. Game có **hai hệ animation độc lập**, không phải một: **Spine** (`SkeletonAnimation`) và
    **Unity AnimationClip + event** (`Animator` / `AnimationEvent`).
 2. **Boss 1 (`Boss-39001`, `Boss-39002`) hoàn toàn bằng Spine** — **0 event clip** (`AnimationClip`; còn
-   **Spine event** thì **có**: `Stop` · `Banplasma`); driver của nó
-   là **`Boss1_Director`**, một lớp C# gọi `AnimationState.SetAnimation(track, entryName, loop)`.
+   **Spine event** thì **có**: `Stop` · `Banplasma`). **Hai route driver RIÊNG BIỆT** (sync-review
+   `152` + report 143 — không dùng chung driver): **Boss-39001** = `Boss_1_Animation` (serialized
+   path 674445 · `SkeletonAnimation` 602882 · `parentDestroy` 601110); **Boss-39002** = `Boss1_Director`
+   (path 582209 · `SkeletonAnimation` 664302 · `parentDestroy` 601111). Cả hai trỏ asset Spine chung
+   580611/JSON 918 — asset chung **không** gộp component/driver identity. Driver là lớp C# gọi
+   `AnimationState.SetAnimation(track, entryName, loop)`.
 3. **33 prefab `Boss-*` khác thì ngược lại**: **793 event clip**, mang theo **mốc thời gian** —
    tức nhịp ra đòn **nằm trong asset**, đọc được chính xác đến 0,01 s.
 4. **Enemy gần như không có event clip** (toàn bộ 795 event chỉ có **2** ngoài nhóm boss) ⇒
@@ -162,10 +166,14 @@ trên các static `MethodInfo` cache).
 | `0x40` | `chargeEffect` | `GameObject` | bật/tắt theo 2 event trên |
 
 ⇒ Cơ chế **đọc được trọn** (A): "event trước đòn" **bật hiệu ứng tích tụ**, "event đòn" **tắt hiệu ứng +
-gọi `UnityEvent`** để gây sát thương. Còn **giá trị 2 chuỗi** thì vẫn **B** — ứng viên duy nhất vẫn là
-**`Stop`** và **`Banplasma`**, và theo tên field thì `attackEventName` nhiều khả năng = **`Banplasma`**
-(nghĩa đen "bắn plasma"), `preAttackEffectEventName` = **`Stop`**. **Chưa có bằng chứng trực tiếp** vì
-`BossSpineEventHandler` vẫn **0 instance export** ⇒ §T1 của `HANDOFF_ANIM_RAW.md`.
+gọi `UnityEvent`** để gây sát thương. **Giá trị slot callback Boss-39002 — identity ĐÃ RESOLVE (static, 27/10):** slot `0x2ADFB48`
+qua RELA gốc → literal **`Stop`** (report **123-ef6b75ef**: native-relocations 288.733 entries
+pin `0x2ADFB48→0x2BE5CB8` · 3 cells.json cùng RELA hex `48fbad02…b85cbe02…` @offset 3.563.112 ·
+`stringliteral.json` độc lập `0x2BE5CB8→"Stop"` · literal index 7763 bytes `53746f70`; join 1-1
+theo địa chỉ, kind-5 addend = địa chỉ literal). **Chỉ là literal identity** — KHÔNG phải method
+pointer / delegate đã đăng ký / invocation / runtime event ⇒ **dispatch = `MODEL_NOT_MEASURED
+runtime`**. `Banplasma` vẫn **chưa bind** slot nào (asset-level marker). `BossSpineEventHandler`
+vẫn **0 instance export** ⇒ §T1 của `HANDOFF_ANIM_RAW.md`.
 
 **Nguồn thứ hai, độc lập** — `docs/apk-analysis/spine-events.csv` (21 dòng dữ liệu, kéo từ nhánh dữ liệu
 24/10) xác nhận đúng **2 tên event** đó, kèm mốc thời gian:
@@ -489,7 +497,7 @@ phần lớn là 2 state (`Move`/`Idle`) hoặc `Idle`/`Die`. Đừng dựng 109
 | Chuỗi hàm boss 1 + hằng chờ (0,5/1/2/3 s) | **A** | asm `Boss1_Director` |
 | Máy trạng thái enemy (3 nhánh move) | **A** | `native-calls.json` |
 | Hit flash 0,05 s | **B** | suy từ asm `Enemy_Display.OnHit` |
-| 2 tên event Spine ↔ hành vi | **B** | ứng viên `Stop`/`Banplasma` |
+| 2 tên event Spine ↔ hành vi | **A-static (identity) / MODEL_NOT_MEASURED (dispatch)** | slot `0x2ADFB48` → literal `Stop` (ef123) · `Banplasma` chưa bind |
 | Nội dung 12 handler (delegate do code gán) | **C** | cần tìm chỗ gán — `HANDOFF_ANIM_RAW.md` §T2 |
 | **8 tên entry + bảng chuyển state boss 1** | **A** | typetree `Boss1_Director` + asm `BossWork` |
 | Tham số Animator của enemy | **C** | chưa có tên nào |
