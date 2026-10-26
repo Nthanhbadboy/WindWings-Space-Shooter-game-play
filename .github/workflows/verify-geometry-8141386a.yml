@@ -53,10 +53,18 @@ jobs:
           if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-7.json.gz ]; then
             python3 -m tools.verify.geometry_8141386a_item_receipt --item 7 --check
           fi
+      - name: Check report98 original gaps and byte-corroborated supplied-schema models
+        run: |
+          python3 -m tools.verify.geometry_8141386a_gaps_sources --check
+          python3 -m tools.verify.geometry_8141386a_gaps_models --check
+          python3 -m tools.verify.l3_geometry_8141386a_gaps --check
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-8.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 8 --check
+          fi
       - name: Check immutable handed-off scientific snapshots (current needles checked separately)
         run: python3 -m tools.verify.geometry_8141386a_history --fetch
       - name: Geometry and support-boundary regression tests
-        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support tests.test_geometry_8141386a_atlas_binary tests.test_geometry_8141386a_atlas tests.test_geometry_8141386a_builtin_sources tests.test_geometry_8141386a_builtin -v
+        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support tests.test_geometry_8141386a_atlas_binary tests.test_geometry_8141386a_atlas tests.test_geometry_8141386a_builtin_sources tests.test_geometry_8141386a_builtin tests.test_geometry_8141386a_gaps_sources tests.test_geometry_8141386a_gaps -v
       - name: Current needles and explicitly scoped historical support
         run: |
           set -euo pipefail
