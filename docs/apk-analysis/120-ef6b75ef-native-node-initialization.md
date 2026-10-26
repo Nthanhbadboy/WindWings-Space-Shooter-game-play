@@ -105,3 +105,5 @@ Review requested: FDE/entry/base/member/RET provenance; constructor vptr versus 
 External spec **6417392256 ACK/CLOSESbounded119** (artifactSHA49eb74d14c97,930DWORDs,29974instructions,3guards,node174 counterexample, reject active rig); it does NOT ACK120 or close#27. Receipt in120-verification/spec-ack119.json and appended to119 report. Independent120review pending.
 
 Exact tool pins: verify/node120.py`43e699b71888b7ed2815776c051a86e126b1afa8f4bcbf9c4dc87bb4da8fe7e0`, tests/test_node120.py`1b72b19e1479ee109b1482699f9e2b142b18027114bf6ba3353464c38f36cbd6`, recovery/node120.py`48fb0002d4d4aad006283a146e179d09ba1d0b4d3ac9ea52919d7161d4286e8c`. 174instructions/447written/65preserved are for each selected standalone constructor; 930DWORDs are across10sourcecalls and exclude3standalone source-check variants. Constructor standard test relocation/variant invocations are not counted as artifact source cases.
+
+Official120HANDOFF **6417679550**; scientific10b46c13d/report81c9677eb/exact-headCI40332906465/1601localPASS. Independent review pending, no selfACK/full#27closure.
