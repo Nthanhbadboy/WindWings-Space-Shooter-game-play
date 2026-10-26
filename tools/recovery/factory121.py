@@ -6,7 +6,7 @@ XAPK_SHA='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
 NAMES=[]
 RANGES=[(0x6d5e58,0x6d5ec8),(0x12da00,0x12da40)]
 TARGETS={0x6d5e58:'node_factory',0x3c986c:'allocator_service',0x570ff0:'handle_service_a',0x572a38:'handle_service_b',0x6d353c:'node_constructor'}
-FOLLOW_ENTRIES=[0x6d5e58,0x3c986c,0x570ff0,0x572a38,0x6d353c,0x6d6aa0,0x57054c,0x6a6ff4,0x57ef84,0x575e80,0x575c60,0x53f36c,0x573a1c,0x575b34]
+FOLLOW_ENTRIES=[0x6d5e58,0x3c986c,0x3cd56c,0x3cdcac,0x570ff0,0x570520,0x575258,0x572a38,0x6d353c,0x6d6aa0,0x57054c,0x6a6ff4,0x57ef84,0x575e80,0x575c60,0x53f36c,0x573a1c,0x575b34,0x5789b8,0x578e84,0x3f1e30,0x3c9298,0x3f1d78]
 
 def sha(b):return hashlib.sha256(b).hexdigest()
 def signed(v,n):return v-(1<<n) if v&(1<<(n-1)) else v
@@ -52,7 +52,7 @@ def recover(path):
             word=struct.unpack_from('<I',b,pos)[0];pc=va(pos)
             if word&0x7c000000==0x14000000:
                 target=pc+(signed(word&0x3ffffff,26)<<2)
-                if target in TARGETS:
+                if target==0x6d5e58 and 0x6d0000<=pc<0x6d8000:
                     j=bisect.bisect_right(starts,pc)-1;owner=unwind[starts[j]] if j>=0 and pc<unwind[starts[j]]['end'] else None
                     branch_refs.append(dict(pc=pc,target=target,unwind=owner))
             if word&0x9f000000!=0x90000000:continue
