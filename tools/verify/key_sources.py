@@ -33,12 +33,15 @@ DUMP = 'reverse-engineering/il2cpp/dump.cs.gz'
 TABLE_VA = 0x779C4A          # jump table used by SaveDataReward's dispatch
 TABLE_BASE_PAD = 0x124CA98   # `adr x10, #0x124ca98`
 
+# a method gets the first role whose test passes, most specific first
 ROLE_RULES = (
-    ('grant_via_pack_value', r'SaveDataReward'),
-    ('grant_direct', r'OnPressedButtonCAQCollect|OnClickHunterCollect'),
-    ('spend', r'OnPressedButtonOpenNow'),
-    ('serialization', r'DataPrefs\.'),
-    ('display_or_state', r''),
+    ('spend', lambda cls, sig, sets: cls.startswith('Board_QuestRewards')
+     and 'SaveDataReward' not in sig),
+    ('grant_via_pack_value', lambda cls, sig, sets: 'SaveDataReward' in sig),
+    ('grant_direct', lambda cls, sig, sets: bool(sets)),
+    ('serialization', lambda cls, sig, sets: cls.startswith('DataPrefs')),
+    ('cheat_guard', lambda cls, sig, sets: 'IsHasCheatResources' in sig),
+    ('display_or_state', lambda cls, sig, sets: True),
 )
 
 
@@ -77,13 +80,12 @@ def method_index():
     return rows, [row[0] for row in rows]
 
 
-def role_of(cls, signature):
-    for name, pattern in ROLE_RULES:
-        if not pattern:
+def role_of(cls, signature, targets):
+    sets = [name for name in targets if name.startswith('set_')]
+    for name, test in ROLE_RULES:
+        if test(cls, signature, sets):
             return name
-        if re.search(pattern, f'{cls}.{signature}'):
-            return name
-    return 'unknown'
+    raise AssertionError('unreachable')
 
 
 def build():
