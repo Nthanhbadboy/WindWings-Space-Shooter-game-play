@@ -17,6 +17,8 @@ import csv
 import pathlib
 import sys
 
+sys.dont_write_bytecode = True  # không để lại __pycache__ khi import measure_asset
+
 HERE = pathlib.Path(__file__).resolve().parent
 PLANNER = HERE / "art-planner.csv"
 W1_CSV = HERE / "w1-work-order.csv"
@@ -165,11 +167,40 @@ def main() -> int:
         ("w0", "27 slot"), ("w0", "35 h"), ("w0", "1366×768"), ("w0", "450×800"),
         ("plan", "4.11"), ("plan", "A11"), ("plan", "A12"), ("plan", "A13"),
         ("w1", "A11"), ("w1", "A13"),
+        ("w0", "w0-listing-slots.csv"), ("w0", "artboard"),
     ):
         ok = token in text[doc]
         print(f"  {'OK ' if ok else 'FAIL'} {doc:4s} chứa {token!r}")
         if not ok:
             fails.append(f"{doc} thiếu {token!r}")
+
+    print("8b) W0 slot sheet — w0-listing-slots.csv")
+    w0c = list(csv.DictReader((HERE / "w0-listing-slots.csv").open(encoding="utf-8")))
+    lots: dict[str, int] = {}
+    stores: dict[str, int] = {}
+    for r in w0c:
+        lots[r["lot"]] = lots.get(r["lot"], 0) + 1
+        stores[r["store"]] = stores.get(r["store"], 0) + 1
+    check_eq("sổ slot: 27 dòng", len(w0c), 27)
+    check_eq("sổ slot = planner w0_slots", len(w0c), int(sum(num(r, "w0_slots") for r in rows)))
+    check_eq("icon", lots.get("L-ICON"), 8)
+    check_eq("key art", lots.get("L-KEYART"), 4)
+    check_eq("screenshot", lots.get("L-SHOT"), 15)
+    for store, want in (("MS", 9), ("Amazon", 8), ("Huawei", 7), ("internal", 1), ("Windows", 1), ("Android", 1)):
+        check_eq(f"store {store}", stores.get(store), want)
+    check_eq("tên file duy nhất", len({r["file"] for r in w0c}), len(w0c))
+    check_eq("mọi slot có w/h", sum(1 for r in w0c if not (r["w"] and r["h"])), 0)
+    check_eq("mọi slot có status", sum(1 for r in w0c if r["status"] != "TODO"), 0)
+
+    print("9) tái lập 9 công thức tô (§4.5) bằng measure_asset.py")
+    sys.path.insert(0, str(HERE))
+    try:
+        import measure_asset  # noqa: PLC0415 - import trễ vì nằm cùng thư mục
+        rc = measure_asset.run_recipe_selftest(verbose=False)
+        check_eq("measure_asset --recipe exit", rc, 0)
+    except Exception as exc:  # noqa: BLE001
+        print("  FAIL không import/chạy được measure_asset.py:", exc)
+        fails.append(f"measure_asset: {exc}")
 
     print()
     if fails:

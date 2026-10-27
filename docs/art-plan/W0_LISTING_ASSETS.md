@@ -102,6 +102,22 @@ và export. "Vẽ" screenshot = ảnh sai sự thật, vi phạm chính sách st
 thu nhỏ là 1 lần vẽ; làm cả hai là 2 lần. File `.ico` và mipmap là **asset build**, không phải slot listing, nhưng nằm cùng lô
 vì dùng chung master.
 
+### 2.1 Sổ slot máy đọc được — `w0-listing-slots.csv`
+
+27 dòng, mỗi dòng **một file phải nộp**: `id · lot · store · slot · file · w · h · fmt · max_mb · alpha · required ·
+artboard · notes · status`. Cột `w/h` là số để script so được; `max_mb` để trống = store **không nêu** giới hạn.
+
+| Store / đích | slot | gồm |
+|---|---:|---|
+| **MS** | **9** | icon 300² · hero 3840×2160 · poster 1440×2160 · box 2160² · 5 screenshot 1080×1920 |
+| **Amazon** | **8** | icon 512² · icon 114² · promo 1024×500 · 5 screenshot 1280×720 |
+| **Huawei (APK)** | **7** | icon 216² · icon 512² · 5 screenshot 450×800 |
+| **Build** (không phải listing) | **3** | master 1024² · `.ico` multi-res · mipmap 48–192 |
+| **Σ** | **27** | |
+
+**3 artboard gốc** sinh ra 27 file: ① `icon` (1 master → 5 file store + 2 build) · ② `key art A` (hero + promo) ·
+③ `key art B` (poster + box). 15 screenshot là **capture**, không vẽ.
+
 ---
 
 ## 3. Chuẩn cho từng lô
@@ -187,3 +203,4 @@ cột riêng **`h_w0`** (giờ) và **`w0_slots`** (slot). Mọi cột `h_*` kh�
 (2.185 bản ghi · 801 kept · 1.578,4 h · 1.610,4 h gồm S0) **không đổi** — W0 là **sổ riêng**.
 
 Kiểm lại: `Σ h_w0 = 35,0` · `Σ w0_slots = 27` · `Σ n_records` vẫn 2.185 · file vẫn 36 cột.
+Danh sách 27 file: `w0-listing-slots.csv` (27 dòng = 8 icon + 4 key art + 15 screenshot).

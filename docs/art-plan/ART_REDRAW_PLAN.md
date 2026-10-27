@@ -442,7 +442,13 @@ Mỗi dòng là tỉ lệ diện tích trên một sprite. Cột phải là số
 | `item` | ink300 45 · gold 25 · paper 25 · ink500 5 | **0,669** | 0,269 | 0,000 | 0,294 | item rơi |
 
 > Đây là **cách kiểm rẻ nhất trước khi vẽ**: trộn theo tỉ lệ → tính `val/val_std/dark/chroma` → so dải §4.3.
-> Sai thì sửa **tỉ lệ**, không sửa bảng. (`bg` có `val_std` 0,213 > mục tiêu 0,18–0,22 — do 1 nguồn sáng teal;
+> Sai thì sửa **tỉ lệ**, không sửa bảng.
+
+**Đã tái lập bằng máy, không phải chỉ công bố:** `python3 docs/art-plan/measure_asset.py --recipe` dựng lại 9 mẫu
+từ **hex palette §4.4 + tỉ lệ diện tích** rồi đo theo giao thức §4.9 ⇒ **9/9 khớp tới 3 chữ số** với bảng trên
+(`val` 0,483/0,613/… · `val_std` · `dark` · `chroma`) **và 9/9 nằm trong dải §4.3** trên cả 4 chỉ số đo được.
+Lưu ý: `colors` (ngân sách 3–160 màu) **không** kiểm được bằng phép trộn — nó chỉ đếm được trên art thật, vì
+gradient/anti-alias sinh ra hàng trăm màu. Đổi hex palette thì **phải** chạy lại lệnh này trước khi sửa bảng. (`bg` có `val_std` 0,213 > mục tiêu 0,18–0,22 — do 1 nguồn sáng teal;
 > chấp nhận, sẽ đo lại ở pilot.)
 
 ### 4.6 Gradient, viền, hình khối
@@ -497,6 +503,10 @@ thay đổi **duy nhất về atlas** mà kế hoạch này đề xuất, và ch
 | 4 | `sat` **chỉ** trên pixel `V ≥ 0,25`; thêm **`chroma = S·V`** | `S` trên pixel tối là vô nghĩa (§4.4 luật 2) |
 | 5 | `dark` = tỉ lệ pixel `max(R,G,B) < 45` | giữ nguyên định nghĩa mẫu |
 | 6 | `fill` = diện tích sprite / diện tích ô atlas | dùng để quyết packing |
+
+**Đã cài thành script:** `docs/art-plan/measure_asset.py` — `--recipe` kiểm 9 công thức (không cần Pillow),
+`--dir <thư mục> --class <nhóm>` đo từng PNG và chấm theo dải §4.3, in ra đúng metric nào lệch.
+Không thay `tools/art-study.py` (đo mẫu gốc trên contact sheet); script này đo **art mới** trên PNG có alpha.
 
 ### 4.10 Bốn cổng máy + hai cổng mắt
 

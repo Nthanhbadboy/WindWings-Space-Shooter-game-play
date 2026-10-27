@@ -167,6 +167,16 @@ Mỗi dòng CSV có cột `accept` (mã `A-L2-xx`) + `gates_l2` / `gates_full`. 
 | **A12** | **`val_std`** (`ART_STUDY` §4 luật 2) | dải **theo nhóm** ở §4.3 (0,15–0,30) — **không** dùng 0,20–0,26 chung | script đo, so giữa các nhóm trong cùng bộ |
 | **A13** | **`dark_share`** (`ART_STUDY` §4 luật 7) | tàu ≤ 0,10 · drone ≤ 0,08 · enemy ≤ 0,06 · ui ≤ 0,12 · **bullet ≥ 0,40** (đảo chiều) | tỉ lệ pixel `max(R,G,B) < 45` |
 
+**Lệnh đo (dùng chung cho A2 · A9 · A11 · A12 · A13):**
+
+```bash
+python3 docs/art-plan/measure_asset.py --dir <thư-mục-PNG-của-unit> --class <ship|drone|bullet|fx>
+python3 docs/art-plan/measure_asset.py --recipe      # kiểm 9 công thức §4.5 (chạy lại nếu ai đổi hex palette)
+```
+
+Script in `colors · val · val_std · dark · chroma · fill` và **chỉ ra metric nào ra ngoài dải §4.3** — dùng luôn làm
+bằng chứng cho A11/A12/A13 thay vì mắt. A1 (alpha) và A6 (canvas) kiểm bằng kích thước/kênh file, không cần script.
+
 ### 4.2 Cổng theo wave
 
 | Wave | Unit phải qua | Ghi chú |
@@ -258,4 +268,6 @@ Nếu W1 xong sớm hơn 206,4 thì phần chênh chính là reuse thật đo đ
 | `art-planner.csv` | 655 dòng (651 + 4 W0) × **36 cột**; thêm `l2_de` · `l2_h_v3` · `h_w0` · `w0_slots` |
 | `ART_REDRAW_PLAN.md` | báo cáo chính — §3.6 (đo reuse), §4 (chuẩn art), §5 (wave), §7.3 (cách lọc L2) |
 | `verify_numbers.py` | `python3 docs/art-plan/verify_numbers.py` — đối chiếu planner + work order + 3 tài liệu; exit 0 = khớp hết |
+| `measure_asset.py` | `--recipe` tái lập 9 công thức §4.5 · `--dir <png> --class <nhóm>` đo & chấm theo dải §4.3 (A2·A9·A11·A12·A13) |
+| `w0-listing-slots.csv` | 27 slot listing của W0 (file · cỡ · format · trần dung lượng · alpha · artboard nguồn) |
 | `W0_LISTING_ASSETS.md` | 27 slot listing cho 3 store, 35 h, sổ riêng |
