@@ -30,9 +30,10 @@ The verifier never trusts the probe: it decodes all 22 bodies again from the sto
 membership to `0x6b0000..0x6c0000`, re-derives every `ldr [vptr,#slot]; blr` site with its base
 register, and re-checks **144 annotated instruction facts** byte for byte.
 
-Totals: **22 bodies**, 2716 B of original code, **73 direct transfers** (55 `bl`, 18 `b`, of which 11
-external tails), **27 in-cluster calls**, **1 indirect call site** (2 raw rows, see §5), **2 strings**,
-**79 field rows**. Slot numbers are resolved against the cycle-129 pinned vtable membership.
+Totals: **22 bodies**, 2716 B of original code, **73 direct transfers** — 55 `bl` (30 outside the
+cluster, 25 into it) and 18 `b` (13 intra-FDE branches, 3 external tails, 2 in-cluster tails) — plus
+**27 in-cluster calls**, **1 indirect call site** (2 raw rows, see §5), **2 strings** and
+**90 field rows**. Slot numbers are resolved against the cycle-129 pinned vtable membership.
 
 | entry | extent | role | bl | cluster calls | field rows |
 | --- | ---: | --- | ---: | ---: | ---: |
@@ -256,7 +257,7 @@ calls, 10 container refs) are unchanged; only the interpretation of those three 
   `0x571c48`, `0x3c9298`, `0x3c9438`, `0x49fe68`, `0x52e15c`, `0x109ad20`, `0x109acc0`, `0xb2e604`
   are named only as call targets; their own bodies are not read here.
 * `ldp`/`stp` are not decoded as field rows, so a multi-register access is invisible in the field
-  counts; the 79 field rows count single-register `ldr`/`str` on `x0`/`x19`/`x20` only.
+  counts; the 90 field rows count single-register `ldr`/`str` on `x0`/`x19`/`x20` only.
 * Field offsets are raw bracket accesses. None of them, and none of the strings, is a class name or
   an Animator-wide statement. "Playable", "driver" and "controller" are labels taken from the
   recovered strings and field usage, not from symbols.
@@ -277,9 +278,9 @@ python3 -m unittest tests.test_owner133 -v
 | check | result |
 | --- | --- |
 | `python3 tools/verify/owner133.py --check` | PASS, artifact 5441 B `73542233a6fd80aeb3d13fde9aaae0f1e0a211bd4f04b202afa8c6682d825707` |
-| `python3 -m unittest tests.test_owner133 -v` | 22 tests, OK |
-| `python3 -m unittest discover -s tests` | _pending_ |
-| CI `Verify extracted tables` | _pending_ |
+| `python3 -m unittest tests.test_owner133 -v` | 22 tests, 0.096 s, OK |
+| `python3 -m unittest discover -s tests` | 1912 tests, 341.625 s, OK |
+| CI `Verify extracted tables` | run 40464366790, job `verify`, success on `da1df8ef5` |
 | recovery run | 40463822530 (`9bf7a391f`) |
-| receipts | `reverse-engineering/raw/l3-ef6b75ef133-verification/` |
-| official handoff | PR12 comment _pending_ |
+| receipts | `reverse-engineering/raw/l3-ef6b75ef133-verification/` (claim, ci, ci-jobs, check, local, focused.log.gz, full.log.gz, handoff) |
+| official handoff | PR12 comment 6435908363 |
