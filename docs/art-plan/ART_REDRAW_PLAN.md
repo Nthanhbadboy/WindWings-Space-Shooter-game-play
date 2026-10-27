@@ -261,7 +261,7 @@ Ba nhóm cắt, cộng lại khớp đúng từng bản ghi và từng giờ:
 | # | Rủi ro | Tác động lên scope B | Xử lý |
 |---|---|---|---|
 | **S1** | ~~Worklist gộp quá tay~~ → **ĐÃ ĐO, ĐÃ ĐÓNG: không phải gộp quá tay** — 17/18 nhóm `over_merge` là **thiết kế riêng** (tỉ lệ `designs/kept` = 0,93–1,00); chỉ `hotro` (0,42) là họ biến thể thật | **+346,0 h** (đo được, không còn là khoảng): scope B **1.232,4 → 1.578,4 h**; scope C **3.915,8 → 4.355,7 h** | **đã xử lý** ở §3.6: thay `reuse 0,65` bằng `designs + variants × 0,25`; 2 cột mới `de_est` / `reuse_est` trong planner |
-| **S2** | Rate canvas sai ±25 % | scope B **1.011–1.580 h** | hiệu chỉnh sau **pilot 20 asset** ở S0 (đo giờ thật/asset, ghi vào planner) |
+| **S2** | Rate canvas sai ±25 % | scope B **1.011–1.580 h** | hiệu chỉnh sau **pilot 16 asset** ở S0 (§5.7 — đo giờ thật/asset, ghi vào planner) |
 | **S3** | Triage lật nhãn: 1 phần trong 411 bản ghi hoá ra là **nhân vật/enemy** | scope B **+60…+180 h** (⇒ 1.324–1.444 h) | triage sprint trước W2; chỉ ảnh hưởng `X-TRIAGE`, không đụng W1 |
 
 Ngoài ra: `F-PRESET` (particle 954 hệ — claim từ `START_HERE`) **không** nằm trong 2.185 sprite ⇒ kế hoạch
@@ -489,7 +489,7 @@ là **18,87 Mpx bề mặt** ⇒ 9,0 MB ETC2 4 bpp (đúng như §4.2). Diện t
 trong manifest) là **65,4 Mpx** cho cả 2.185 sprite và **≈ 22,2 Mpx** cho scope B — tức **lớn hơn** bề mặt
 18,87 Mpx nếu tính theo hình bao. Nhưng diện tích **đặc** (alpha > 0,5) thường chỉ 50–60 % hình bao với
 tàu/enemy và ~87 % với UI, nên nhiều khả năng vẫn vừa 12 page.
-⇒ **Không kết luận ở đây**: `fill` thật phải đo ở **pilot 20 asset (S0)**. Nếu `Σ area / 0,85 > 18,87 Mpx`
+⇒ **Không kết luận ở đây**: `fill` thật phải đo ở **pilot 16 asset (S0, §5.7)**. Nếu `Σ area / 0,85 > 18,87 Mpx`
 thì tăng lên **14–16 page** (thêm 2–4 page 2048² = **+4,2…8,4 MB**) và **ghi vào `ASSETS` §4.2** — đây là
 thay đổi **duy nhất về atlas** mà kế hoạch này đề xuất, và chỉ sau khi có số đo.
 
@@ -539,7 +539,7 @@ thay vì để người review tự phát hiện. `STATIC_CONFIRMED` cho cột "
 | 6 | Bullet: `val` **0,22–0,30** · `dark` **≥ 0,35** | — | 0,25–0,30 · **≥ 0,40** | **KHỚP** (nhóm duy nhất mẫu đúng 100 %) | G-A |
 | 7 | `dark_share` sprite thường **≤ 0,03** | — | ≤ 0,05…0,12 theo nhóm (viền âm `ink-900` — **V2**) | **LỆCH CÓ LÝ DO** | pilot: `dark > 0,03` **và** mắt thấy viền nặng ⇒ bỏ viền âm ở cạnh sáng |
 | 8 | Không viền đen toàn cục | — | ✔ §4.6 | **KHỚP** | G-B + mắt |
-| 9 | Pack theo hình bao cho fx/enemy/bullet (`fill` 0,08–0,28) | — | ✔ §4.8 | **KHỚP** | `fill` đo ở pilot 20 asset (S0) |
+| 9 | Pack theo hình bao cho fx/enemy/bullet (`fill` 0,08–0,28) | — | ✔ §4.8 | **KHỚP** | `fill` đo ở pilot 16 asset (S0, §5.7) |
 
 **Kết quả truy vết: 5 khớp · 4 lệch có lý do (đã đăng ký ở §4.2 V2/V3 + §4.3) · 1 khác đơn vị đo.**
 Không có luật nào "quên". Ba luật **đo được bằng máy** nhưng trước đây chưa có cổng riêng — `colors` (1),
@@ -561,7 +561,7 @@ phép xấp xỉ. Không cần biến thể, không cần FX đẹp, **không c�
 
 | Wave | Mức | Batch | Bản ghi | Giờ | Cổng ra (exit criteria) |
 |---|---|---|---:|---:|---|
-| **S0** | setup | — | — | **32** | art bible 1 trang · 9 recipe trong file mẫu · script đo chạy được · **pilot 20 asset** (đo giờ thật) |
+| **S0** | setup | — | — | **32** | art bible 1 trang · 9 recipe trong file mẫu · script đo chạy được · **pilot 16 asset** (§5.7 — đo giờ thật, đo `fill` cho atlas) |
 | **W1** | **L2** | `P-SHIP` 5 · `P-DRONE` 4 · `P-BULLET` 12 · `P-FX` 2 · `E-BODY` 8 · `E-BULLET` 12 · `B-BODY` 2 · `U-HUD` 24 · `F-BOOM` 4 · `G-PARALLAX` 3 · `I-DROP` 6 | **82** | **148,9** (gồm S0 32) | chơi 1 màn không thiếu sprite · **G-A/G-C** đạt trên 3 ảnh gameplay · rate đã hiệu chỉnh |
 | **W2** | L3-1 | `P-SHIP` +11 · `P-DRONE` +10 · `P-BULLET` +21 · `E-BODY` +119 · `E-BULLET` +108 · `F-BOOM` +8 · `G-PARALLAX` +29 | **306** | **398,8** | 3 màn có nền 3 lớp + đủ enemy · G-C trên 6 ảnh |
 | **W3** | L3-2 | `B-BODY` +14 · `B-PART` 18 · `I-DROP` +18 | **50** | **175,9** | 1 boss đủ 3 phase + 2 khối phá được · G-B/G-D |
@@ -592,7 +592,7 @@ rollup giờ theo `wave_done` mới ra đúng bảng này (overhead của batch 
 
 | Mốc | Giờ | 1 artist (tuần) | 2 artists (tuần) | Ghi chú |
 |---|---:|---:|---:|---|
-| **S0** (bible + 9 recipe + script đo + pilot 20 asset) | 32 | **1,0** | 0,5 | chưa tính triage |
+| **S0** (bible + 9 recipe + script đo + pilot 16 asset) | 32 | **1,0** | 0,5 | chưa tính triage |
 | **Triage sprint** (17 sheet, 340 mục) | — | 0,6 | 0,3 | chạy **song song** S0 nếu có người thứ 2 |
 | **W1 = L2 art-complete** | 148,9 | **4,7** (cộng dồn) | **2,3** | mốc bàn giao đầu tiên |
 | W2 (2a+2b) | 398,8 | 12,5 | 6,2 | wave dài nhất — xem §5.6 |
@@ -626,6 +626,52 @@ rollup giờ theo `wave_done` mới ra đúng bảng này (overhead của batch 
 *Số trong bảng = `h_scope − h_l2` (+ overhead đã dồn về đúng wave) ⇒ v1 cộng lại 398,9 / 357,5 · v2 cộng lại
 **537,6 / 489,0**, khớp bảng wave ở §3.6 (lệch 0,1 do làm tròn). **W2 và W5 giờ đều dài hơn 6 sprint ⇒ cắt là bắt buộc**,
 không còn là tuỳ chọn.*
+
+### 5.7 Gói pilot S0 — **16 asset cụ thể** (sổ: `s0-pilot-pack.csv`)
+
+S0 không phải "làm quen": nó phải trả về **4 thứ** — ① art bible 1 trang · ② 9 recipe đã hiệu chỉnh bằng số ·
+③ script đo chạy được trên PNG thật · ④ **16 asset pilot** đã đo, đủ để biết bảng giá lệch bao nhiêu.
+Không có ④ thì cả lịch 50,3 tuần là số chưa kiểm.
+
+| # | Batch | Asset | Chế độ | Giờ | Chứng minh điều gì |
+|---|---|---|---:|---:|---|
+| S0-01 | `P-SHIP` | `10001` | **full** | 4,20 | recipe `ship` · A11 110–160 · A12 · A13 ≤ 0,10 · A4 |
+| S0-02 | `P-SHIP` | `10002` | blockout 20 % | 0,84 | **A4**: 2 tàu phải phân biệt được ở **64 px** |
+| S0-03 | `B-BODY` | `bosss` | blockout 20 % | 1,62 | A4 + A6 (canvas 512) + ≥ 1 khối phá được tách rời |
+| S0-04 | `G-UI` | `bghome` | blockout 30 % | 1,78 | A13 nền `dark ≥ 0,55` · A9 tương phản khung · 3 lớp parallax |
+| S0-05 | `P-DRONE` | `20001` | full | 1,73 | A11 100–130 · A12 · A5 (1 nguồn sáng trên-trái) |
+| S0-06 | `E-BODY` | `14_2` | full | 1,44 | A11 30–60 · A13 ≤ 0,06 |
+| S0-07 | `E-BODY` | `212_1` | full | 1,44 | A4 cặp enemy (2 hình khác nhau) |
+| S0-08 | `P-BULLET` | `plasmagun #1` | full | 0,29 | A2 **thân tối + viền sáng** · A13 ≥ 0,40 · canvas 24² |
+| S0-09 | `P-BULLET` | `rocket` | full | 0,29 | A6 + A13 — đạn không được chói |
+| S0-10 | `P-BULLET` | `laser` | full | 0,29 | A6 (**32×512**) + A13 |
+| S0-11 | `P-FX` | `afterburner` | full | 1,30 | A11 3–10 · A12 0,15–0,25 · đọc được trên nền `ink-900` |
+| S0-12 | `P-FX` | `shooter` | full | 1,30 | A6 + A11 (fx 3–10 màu) |
+| S0-13 | `F-BOOM` | `bomb` | full | 2,40 | A12 + A9 trên **khung gameplay thật** |
+| S0-14 | `U-ICON` | `exp` | full | 0,30 | A9 — UI không tranh gameplay (**C ≤ 0,14**) |
+| S0-15 | `U-ICON` | `eye` | full | 0,30 | A13 ≤ 0,12 + A7 đặt tên |
+| S0-16 | `I-DROP` | `05_0` | full | 0,86 | A11 50–80 · chroma 0,25–0,30 (**ngân sách accent**) |
+| | | **Σ art** | | **20,38** | |
+
+| Phần còn lại của S0 | Giờ |
+|---|---:|
+| Art bible 1 trang (palette + 9 recipe + 6 luật hình khối) | 3,00 |
+| Hiệu chỉnh 9 recipe sau khi đo pilot (sửa tỉ lệ, không sửa bảng) | 3,00 |
+| Chạy `measure_asset.py --dir` cho 16 asset + điền bảng `val/val_std/dark/chroma/fill` | 2,50 |
+| Test đóng atlas: `Σ area / fill` ⇒ quyết 12 hay **14–16 page** (§4.8) | 1,50 |
+| Review với art director (chốt 9 recipe + dải §4.3) | 1,00 |
+| Buffer làm lại 1 asset (gần như chắc chắn có) | 0,62 |
+| **Σ chuẩn bị** | **11,62** |
+| **Σ S0** | **32,00** |
+
+**Ba luật của S0** (nếu vi phạm thì pilot vô nghĩa):
+
+1. **Pilot không vào build.** 16 asset nằm ở `art/_pilot/`, không copy vào atlas. Giá trị của chúng là **số đo**, không phải hình.
+2. **Blockout không được dùng để chấm `colors`** — S0-02/03/04 chỉ chấm A4 · A6 · A9 · A13. Vì vậy **`boss` và `bg` chưa được
+   xác nhận ngân sách màu ở S0**; hai cổng bắt buộc: **1 bg full ở đầu W2**, **1 boss full ở đầu W3** (chính là asset
+   đầu tiên của wave đó — không cộng thêm giờ).
+3. **Đo xong phải sửa bảng giá nếu lệch > 25 %** (rủi ro **S2**): ghi `giờ thật / giờ kế hoạch` từng asset vào planner
+   (cột `rule_hint` của dòng tương ứng), rồi **chỉnh `rate` §3.2 một lần** — không chỉnh lẻ từng dòng.
 
 ---
 

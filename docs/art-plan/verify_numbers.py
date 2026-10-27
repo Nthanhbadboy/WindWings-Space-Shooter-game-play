@@ -115,6 +115,22 @@ def main() -> int:
     check("Σ wave", sum(wave.values()), 1610.42)
     check("W1 − plan 177,3", wave["W1"] - 177.3, 29.08)
 
+    print("4b) tổng 22 batch — khớp bảng §2.2 / §3.6")
+    batches: dict[str, float] = {}
+    for r in rows:
+        if r["lane"] == "LISTING":
+            continue
+        batches[r["batch_id"]] = batches.get(r["batch_id"], 0.0) + num(r, "h_scope_v2")
+    QUOTED = {
+        "U-KIT": 227.4, "G-PARALLAX": 211.7, "E-BODY": 188.9, "B-BODY": 141.6, "U-SHOP": 140.8,
+        "U-HUD": 97.9, "U-META": 84.8, "P-SHIP": 75.2, "G-UI": 72.8, "F-GLOW": 71.2, "X-PART": 48.8,
+        "E-BULLET": 46.4, "B-PART": 36.1, "F-BOOM": 32.8, "P-DRONE": 26.9, "I-DROP": 24.7,
+        "U-ICON": 22.6, "P-BULLET": 13.1, "X-BRAND": 10.0, "P-FX": 4.6, "F-ENEMY": 0.0, "X-TRIAGE": 0.0,
+    }
+    check_eq("số batch", len(batches), 22)
+    for b, want in QUOTED.items():
+        check(f"batch {b}", batches.get(b, 0.0), want, tol=0.06)
+
     print("5) lane PLAYER — work order")
     units = [r for r in w1 if r["kind"] == "unit"]
     variants = [r for r in w1 if r["kind"] == "variant"]
@@ -168,6 +184,7 @@ def main() -> int:
         ("plan", "4.11"), ("plan", "A11"), ("plan", "A12"), ("plan", "A13"),
         ("w1", "A11"), ("w1", "A13"),
         ("w0", "w0-listing-slots.csv"), ("w0", "artboard"),
+        ("plan", "5.7"), ("plan", "s0-pilot-pack.csv"), ("plan", "pilot 16 asset"),
     ):
         ok = token in text[doc]
         print(f"  {'OK ' if ok else 'FAIL'} {doc:4s} chứa {token!r}")
@@ -191,6 +208,20 @@ def main() -> int:
     check_eq("tên file duy nhất", len({r["file"] for r in w0c}), len(w0c))
     check_eq("mọi slot có w/h", sum(1 for r in w0c if not (r["w"] and r["h"])), 0)
     check_eq("mọi slot có status", sum(1 for r in w0c if r["status"] != "TODO"), 0)
+
+    print("8c) S0 pilot pack — s0-pilot-pack.csv (§5.7)")
+    s0 = list(csv.DictReader((HERE / "s0-pilot-pack.csv").open(encoding="utf-8")))
+    names = {r["base_name"].strip(): r for r in rows if r["unit"] != "overhead"}
+    check_eq("pilot: 16 asset", len(s0), 16)
+    check_eq("pilot: mọi base_name có trong planner", sum(1 for r in s0 if r["base"] not in names), 0)
+    art = sum(num(r, "h") for r in s0)
+    check("pilot: Σ art", art, 20.38)
+    check("pilot: Σ art + 11,62 chuẩn bị = 32", art + 11.62, 32.0)
+    check_eq("pilot: đủ 9 recipe", len({r["recipe"] for r in s0}), 9)
+    check_eq("pilot: blockout = 3", sum(1 for r in s0 if r["mode"] == "blockout"), 3)
+    check_eq("pilot: blockout không hứa A11 (colors)", sum(1 for r in s0 if r["mode"] == "blockout" and "A11" in r["proves"]), 0)
+    check_eq("pilot: asset full", sum(1 for r in s0 if r["mode"] == "full"), 13)
+    check_eq("pilot: mọi asset nêu rõ chứng minh gì", sum(1 for r in s0 if not r["proves"]), 0)
 
     print("9) tái lập 9 công thức tô (§4.5) bằng measure_asset.py")
     sys.path.insert(0, str(HERE))

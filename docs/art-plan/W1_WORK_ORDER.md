@@ -270,4 +270,5 @@ Nếu W1 xong sớm hơn 206,4 thì phần chênh chính là reuse thật đo đ
 | `verify_numbers.py` | `python3 docs/art-plan/verify_numbers.py` — đối chiếu planner + work order + 3 tài liệu; exit 0 = khớp hết |
 | `measure_asset.py` | `--recipe` tái lập 9 công thức §4.5 · `--dir <png> --class <nhóm>` đo & chấm theo dải §4.3 (A2·A9·A11·A12·A13) |
 | `w0-listing-slots.csv` | 27 slot listing của W0 (file · cỡ · format · trần dung lượng · alpha · artboard nguồn) |
+| `s0-pilot-pack.csv` | 16 asset pilot của S0 (§5.7 plan) — chế độ full/blockout, giờ, recipe, cổng phải chứng minh |
 | `W0_LISTING_ASSETS.md` | 27 slot listing cho 3 store, 35 h, sổ riêng |
