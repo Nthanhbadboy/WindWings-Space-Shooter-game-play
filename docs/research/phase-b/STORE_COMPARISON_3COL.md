@@ -4,7 +4,7 @@
 > 🔴 **CẢNH BÁO KÊNH AMAZON (bổ sung 2026-10-27, sau khi tài liệu này hoàn tất):** từ **08/10/2026** Amazon đã thay dòng Fire tablet bằng **Alexa Tablet (Android 16 + Google Play)**. Theo FAQ chính chủ Amazon, app cho Alexa Tablet **phải nộp qua Google Play** (trừ Amazon Kids+), **APS không khả dụng** (dùng AdMob), và doanh số/thanh toán/thuế nằm ở **Play Console**. ⇒ Mọi nội dung "Amazon" trong tài liệu này chỉ còn áp dụng cho **Fire TV/Vega, Fire OS installed base, và Amazon Kids+** — **KHÔNG** áp dụng cho tablet Amazon mới. Xem [`ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md`](./ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md) [S116–S121]. Việc này ảnh hưởng **D1/D10/D9a** và đang chờ user chốt phương án A/B/C/D.
 
 - Ngày tra cứu: **2026-10-27** (mọi số kiểm tra ngày này). ID `[Sxx]` trỏ [SOURCES.md](./SOURCES.md). Mục thiếu nguồn chính chủ ghi **UNVERIFIED**.
-- Phạm vi store đã khóa: Microsoft Store (Windows PC) · Amazon Appstore (thực tế 2026 = Fire tablet/Fire TV/Vega) · Huawei AppGallery (Android/HMS).
+- Phạm vi store đã khóa: Microsoft Store (Windows PC) · Amazon Appstore (thực tế 2026 = **Fire TV/Vega + Fire OS installed base**; Amazon **không còn** phát hành tablet qua Appstore — xem §A) · Huawei AppGallery (Android/HMS).
 
 | Hạng mục | Microsoft Store (Windows PC) | Amazon Appstore (Fire OS / Vega) | Huawei AppGallery (Android / HMS) |
 |---|---|---|---|
@@ -29,8 +29,30 @@
 | **Yêu cầu kỹ thuật đặc thù** | Windows 10 1607+ cho subscription/Store-managed; namespace Windows.Services.Store [S45] | Fire OS API level theo thiết bị; test trên máy Fire thật; Amazon App Tester cho IAP [S14] | AGC project + agconnect config; HMS Core trên thiết bị; sandbox IAP; Cloud Testing/Cloud Debug trước khi nộp [S36] |
 | **Rủi ro nổi bật** | Phụ thuộc đơn lẻ Vungle cho ads; không có banner trên SDK v7.x | Thị trường co hẹp còn thiết bị Fire; APS invitation-only; không còn điện thoại Android | Rủi ro địa chính trị; chặn 版号 nếu muốn TQ; tỷ lệ chia sẻ ads **UNVERIFIED** |
 
+## §A. NHÁNH ALEXA TABLET — KHÔNG PHẢI AMAZON APPSTORE
+
+> Từ **08/10/2026** Amazon thay dòng Fire tablet bằng **Alexa Tablet 8 / 11 / 12 Pro** chạy **Android 16 (API 36) + Google Play**. Với các thiết bị này, **Amazon không còn là cửa phát hành** — mọi thứ do **Google Play** quyết. Toàn bộ cột "Amazon" ở bảng trên **không áp dụng** cho Alexa Tablet.
+> Chi tiết + nguyên văn: [`ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md`](./ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md) [S116–S121].
+
+| Hạng mục | Amazon nói gì (nguyên văn/ý) | Nhãn | Hệ quả |
+|---|---|---|---|
+| Phát hành | *"Unless you are submitting an Amazon Kids+ app, you will need to submit your app to the Google Play Store"* | `STATIC_CONFIRMED` [S116] | **Không dùng được Amazon Developer Console** (trừ app Kids+) |
+| Tài khoản / support | *"The Amazon Appstore Support team has no visibility or access to your Google Play account"* | `STATIC_CONFIRMED` [S116] | Phải có **tài khoản Google Play Developer** riêng |
+| Beta test | *"not available in Appstore Quality Central … use Google Play's pre-launch testing options"* | `STATIC_CONFIRMED` [S116] | Live App Testing **không dùng được** |
+| Ads | *"APS is not available on Alexa Tablets. Please use Google AdMob or equivalent"* | `STATIC_CONFIRMED` [S116] | **APS vô dụng** ở đây; **AdMob khả dụng** (ngược với Fire OS) |
+| Doanh số / analytics | *"…will be visible on your Google Play Console. This information is not available in your Amazon Developer account"* | `STATIC_CONFIRMED` [S116] | Số liệu **không** nằm trong Amazon |
+| Thuế / thanh toán | *"…please contact Google Play Support"* | `STATIC_CONFIRMED` [S116] | Amazon **không** khấu trừ thuế cho phần này |
+| Nhận diện thiết bị | `Build.MANUFACTURER == "Amazon"` **và** có `GoogleApiAvailability` | `STATIC_CONFIRMED` [S118] | Máy **GMS thật**, không phải Fire OS |
+| Revenue share / rating / privacy form / gói nộp | **Chưa nghiên cứu** — thuộc Google Play, ngoài phạm vi 3 store đã chốt | `UNKNOWN` | **Chỉ cần nghiên cứu nếu G13 chọn B/C** |
+
+**Ba điều KHÔNG được suy diễn:**
+1. **Không** lấy hệ số 70/30 hay 80/20 của Amazon áp cho Alexa Tablet — doanh thu đi qua Google Play, hệ số khác, **chưa tra**.
+2. **Không** giả định Amazon IAP chạy được trên Alexa Tablet — thanh toán do Play xử lý [S116].
+3. **Không** coi "đã có kit Amazon" là đủ cho Alexa Tablet — kit hiện tại làm cho **Fire OS/Fire TV**, không phải Play [GATE6_SUBMISSION_KITS.md](./GATE6_SUBMISSION_KITS.md).
+
 ## Ghi chú đọc bảng
 
+0. Bảng chính chỉ áp cho **3 store đã chốt**; nhánh **Alexa Tablet** tách riêng ở §A vì nó **không** đi qua Amazon Appstore.
 1. Cột "revenue share" là tỷ giá danh nghĩa trước thuế gián thu (VAT/GST) và withholding tax; cả Amazon lẫn Huawei đều khấu trừ VAT trước khi tính royalty/RSRA [S9][S35].
 2. Mọi mốc thời gian review là cam kết/tài liệu chính chủ nhưng không phải SLA bồi thường; mùa cao điểm có thể dài hơn.
 3. Các số có nhãn **UNVERIFIED** không được dùng trong quyết định tài chính; cần xác nhận lại bằng hợp đồng/console khi tới Gate-3/Gate-7.

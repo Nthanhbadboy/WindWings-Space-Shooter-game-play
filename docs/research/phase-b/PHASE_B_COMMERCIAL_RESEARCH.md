@@ -110,7 +110,9 @@ Nguồn: nhánh spec `arena/20330d0e…` (fetch tường minh, không checkout),
 - **Packaging:** MSIX là chuẩn; cũng nhận MSI/EXE (Win32 không đóng gói) và PWA [S7]. Unity xuất bản được sang UWP/MSIX.
 - **Vùng:** 240+ quốc gia/vùng, 110+ ngôn ngữ [S8].
 
-### 3.2 Amazon Appstore (thực tế 2026: Fire tablet / Fire TV / Vega)
+### 3.2 Amazon Appstore (thực tế 2026: Fire TV / Vega + Fire OS installed base)
+> ⚠ **Không áp dụng cho Alexa Tablet.** Từ 08/10/2026 tablet Amazon chạy **Android 16 + Google Play**; FAQ chính chủ buộc nộp qua **Google Play** (trừ Kids+), **APS không khả dụng**, doanh thu/thuế ở **Play Console** [S116]. Mục này chỉ đúng cho **Fire OS / Fire TV / Vega**. Xem [`ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md`](./ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md).
+> Fire tablet: Amazon **ngừng ship trong 1–2 tháng**, hỗ trợ **4 năm** từ lần ship cuối (`BT3` — phát ngôn Amazon đọc qua báo) [S120].
 - **Tài khoản:** Amazon Developer Console, **miễn phí — chính chủ xác nhận**: Payments FAQ ghi nguyên văn "The program is free. You pay nothing to create a developer account, use Amazon APIs, and submit apps" [S9]; trang chủ developer cũng ghi "Registration is easy, free"; 2 loại tài khoản Sole Proprietorship / Business [S75].
 - **Revenue share:** chuẩn 70/30; **Small Business Accelerator (SBAP, đã fetch toàn bộ FAQ ngày 27/10/2026):** dev có tổng doanh thu Appstore **dưới 1 triệu USD trong năm lịch sử trước** (mọi địa lý/tiền tệ) và **mọi dev mới** tự động được nâng royalty 70/30 → **80/20**; cộng AWS credits tương đương 10% doanh thu (phải tự enroll, tối thiểu $10 doanh thu/thị trường/tháng, credits hết hạn sau 12 tháng) [S10]. Nếu đạt **≥1 triệu USD trong năm thì quay lại 70/30 từ năm kế tiếp** (không phải bị cắt ngay trong năm); dev có hợp đồng tùy chỉnh (custom agreement) bị loại khỏi chương trình [S10].
 - **Review:** điển hình 3–5 ngày (KB cộng đồng, 12/2023); tài liệu chính thức khuyên liên hệ nếu sau 6 ngày vẫn "in review" [S11][S12].

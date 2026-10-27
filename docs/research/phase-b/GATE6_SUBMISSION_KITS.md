@@ -298,6 +298,23 @@ Bắt buộc kèm theo: **privacy policy** nếu thu thập dữ liệu gắn c�
 
 ---
 
+## 8b. KHOẢNG TRỐNG NẾU G13 CHỌN B/C (thêm Google Play)
+
+> **Chỉ là danh sách hạng mục phải NGHIÊN CỨU, không phải yêu cầu đã xác nhận.** Tuyệt đối **không** dùng mục này để nộp gì — mỗi dòng phải được tra từ tài liệu chính chủ Google Play kèm ngày tra cứu rồi mới viết thành kit.
+> Lý do tồn tại: kit Amazon trong tài liệu này làm cho **Fire OS / Fire TV**; nếu G13 = **B** (thay Amazon bằng Google Play) hoặc **C** (4 store) thì **kit Amazon không dùng được** cho tablet Amazon mới [S116].
+
+| # | Hạng mục cần tra | Vì sao chặn | Trạng thái |
+|---|---|---|---|
+| 1 | **Data safety form** — bộ câu hỏi, loại dữ liệu, mục đích, có chia sẻ/không, mã hoá khi truyền | Đây là form **bắt buộc** thay cho privacy labels của Amazon; chưa có bản nháp nào | `UNKNOWN` — chưa tra |
+| 2 | **Content rating** — Google Play dùng IARC hay hệ riêng, luồng questionnaire | Nếu dùng IARC thì **tái sử dụng được** phần MS §2.2; nếu không thì phải làm mới | `UNKNOWN` — chưa tra |
+| 3 | **Target API level** — mức tối thiểu theo năm, hạn chót | Ảnh hưởng trực tiếp **G6** (ghim phiên bản Godot/Android target) | `UNKNOWN` — chưa tra |
+| 4 | **Account deletion requirement** — có bắt buộc cơ chế xoá tài khoản/web link không | Ta **không có account** (G4) ⇒ nếu bắt buộc thì phải khai "không áp dụng" đúng cách | `UNKNOWN` — chưa tra |
+| 5 | **Ads declaration** — có mục khai "app chứa quảng cáo" không, ảnh hưởng rating trẻ em | Liên quan D8a (rewarded-only) | `UNKNOWN` — chưa tra |
+| 6 | **Revenue share & thuế** — hệ số, ai khấu trừ, hiệp định VN–US có áp dụng | Ảnh hưởng trực tiếp **bảng giá Gate-3** (đang giả định 12% MS / 30% Amazon / ~15% Huawei) | `UNKNOWN` — chưa tra |
+| 7 | **Gói nộp & giới hạn** — AAB/APK, kích thước, signing | Ảnh hưởng build pipeline | `UNKNOWN` — chưa tra |
+
+**Điều đã biết chắc (từ nguồn chính chủ Amazon, không phải suy đoán):** mọi hoạt động của app trên Alexa Tablet *"including sales, engagement, statistical data, and payments"* hiển thị ở **Play Console**, **không** ở Amazon; và **APS không khả dụng** [S116].
+
 ## 9. Việc tiếp theo của lane (chưa làm trong vòng này)
 
 1. **② Queue Godot** — ma trận plugin IAP/ads (Google Billing × HMS IAP/Ads × Amazon IAP/Billing-Compatibility × AdMob) + analytics SDK trên Fire/HMS. *Đây là đầu vào trực tiếp cho R1 ở trên.*
