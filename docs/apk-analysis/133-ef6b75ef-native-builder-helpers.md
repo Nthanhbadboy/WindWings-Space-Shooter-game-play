@@ -284,3 +284,30 @@ python3 -m unittest tests.test_owner133 -v
 | recovery run | 40463822530 (`9bf7a391f`) |
 | receipts | `reverse-engineering/raw/l3-ef6b75ef133-verification/` (claim, ci, ci-jobs, check, local, focused.log.gz, full.log.gz, handoff) |
 | official handoff | PR12 comment 6435908363 |
+
+## 12. Erratum published under the ACK124 framework (RET of `0xb98c98`)
+
+Requested by ACK124 ② (PR12 `6435917120`): one public producer line correcting the return PC that
+cycle 127 wrote for `0xb98c98`. Posted as PR12 comment **6436088881**; the artifact is deliberately
+**not** regenerated, so the pinned SHA stays `8b9df003…`.
+
+> ERRATUM (producer ef6b75ef) — correction to 127/128: `graph_builder.callees["0xb98c98"].ret` ghi sai
+> return PC là `b98d68`. Bytes thật: **`b98d64` = `c0035fd6` (RET)**; `b98d68` = `d6071494`
+> (`bl 0x109acc0`, stack-canary stub — khớp 132: `0x109acc0` không có FDE). Chỉ supersede nhãn;
+> science/raw/case-51 của 127 giữ nguyên.
+
+Self-checked against my own raw, not against any peer reading:
+
+| item | value |
+| --- | --- |
+| capture | `reverse-engineering/raw/graph127/probe.json.gz`, `43adb19f62684262066e4ca71bec636b87e3e5bf0d2a06946de65e24c77fe2e1` |
+| window | `va=0xb98c98`, 212 B, `file_offset=12143768`, covers `0xb98c98..0xb98d6b` = the recorded `fde_end=12160364` |
+| tail | `0xb98d5c ldr x30,[sp,#0x20]` (`fe1340f9`) · `0xb98d60 add sp,sp,#0x50` (`ff430191`) · `0xb98d64 ret` (`c0035fd6`) · `0xb98d68 bl 0x109acc0` (`d6071494`) |
+| branch | `0xb98d4c b.ne 0xb98d68` is the stack-canary failure branch, so the `bl` is not a return path |
+| other callees | the six remaining 127 labels are real RETs: `0x6cef60`, `0x6d0068`, `0x6f16b8`, `0xb98fc4`, `0xb99448`, `0x6cff3c` = `c0035fd6` |
+| cause | `tools/verify/graph127.py:55` emits `ret = fde_end-4`; when an FDE ends with a canary-fail `bl` the label lands on the `bl` |
+| blast radius | 128 only reuses that capture (no independent `ret` table); cycle 133 stores `ret_count` only, no `ret` PC label |
+
+Fixing the `fde_end-4` heuristic would change the pinned artifact SHA, so it is left as a separate
+cycle pending an explicit ACK.
+
