@@ -311,8 +311,8 @@ def build_payload():
     check(checks, 'the-audit-table-still-covers-127-to-146-whole',
           set(range(127, 147)) <= set(AUDIT.REPORTS),
           sorted(set(range(127, 147)) - set(AUDIT.REPORTS)))
-    check(checks, 'the-blind-spot-starts-after-146',
-          bool(missing) and min(missing) == 147, missing[:3])
+    check(checks, 'the-audit-names-every-report-that-produced-an-artifact',
+          missing == [], dict(missing=len(missing)))
     check(checks, 'the-docs-do-not-contradict-the-audit-on-a-shared-number',
           conflicts == [], conflicts)
     check(checks, 'the-gate-reads-every-lane-artifact',
@@ -341,10 +341,9 @@ def build_payload():
             named_by_the_docs=len(artifacts()) - len(unnamed),
             unnamed_artifacts=unnamed,
             reports_the_audit_cannot_name=missing,
-            docs_read=len(doc_index()),
             note='before 174 the gate could name 22/43 artifacts from AUDIT.REPORTS alone; '
-                 'the index now comes from the report filenames, so 149 stops looking '
-                 'invented and a missing doc becomes the tripwire instead',
+                 'the index now comes from the report filenames and the audit table is '
+                 'filled from them too (175), so a missing doc is the only tripwire left',
         ),
         claims=claims,
         targets=targets,

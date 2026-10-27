@@ -238,5 +238,34 @@ class Provenance(unittest.TestCase):
         self.assertIn('field-defaults.json', steps[0]['how'])
 
 
+class ReportTable(unittest.TestCase):
+    """175: the table stops being a hand-maintained list of the reports we remembered."""
+
+    def test_the_table_has_no_holes(self):
+        numbers = sorted(open_items_audit.REPORTS)
+        self.assertEqual(numbers, list(range(numbers[0], numbers[-1] + 1)))
+
+    def test_every_report_with_a_doc_is_named(self):
+        docs = open_items_audit._doc_index()
+        self.assertTrue(set(docs) <= set(open_items_audit.REPORTS))
+        self.assertGreaterEqual(len(docs), 42)
+
+    def test_the_pinned_names_survive_the_merge(self):
+        # a doc filename is not always the artifact name; the pinned rows must win
+        self.assertEqual(open_items_audit.REPORTS[134], 'pvp_manager_rules')
+        self.assertEqual(open_items_audit.REPORTS[136], 'pvp_rank_api')
+        self.assertEqual(open_items_audit.REPORTS[168], 'lane_residue')
+
+    def test_the_two_numbers_173_got_wrong_are_150_and_149(self):
+        self.assertEqual(open_items_audit.REPORTS[150], 'cell_identity')
+        self.assertEqual(open_items_audit.REPORTS[149], 'pvp_hunter_arrays')
+
+    def test_filling_the_table_does_not_move_the_artifact(self):
+        # the table is an index: no item, no proof and no digest lives in it
+        _, packed = open_items_audit.build(None)
+        self.assertEqual(hashlib.sha256(packed).hexdigest(),
+                         '3b782ffa0f8605b7ea0632803ef662a9c792b9c0a59293aef1b7772fae33a0d3')
+
+
 if __name__ == '__main__':
     unittest.main()

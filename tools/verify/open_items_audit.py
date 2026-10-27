@@ -24,6 +24,7 @@ import argparse
 import gzip
 import hashlib
 import json
+import re
 import sys
 from functools import lru_cache
 from pathlib import Path
@@ -35,6 +36,10 @@ import lane_closeout  # noqa: E402   the same twenty artifacts 147 covers
 CLOSEOUT = 'datas/l2_535b0541_lane_closeout.json.gz'
 OUTPUT = 'datas/l2_535b0541_open_items_audit.json.gz'
 
+# 170 wrote this table by hand, which is why it stops at 169 while the lane went on to
+# 174: a report is only named here if somebody remembered to add it. 175 keeps the pinned
+# rows (a doc's filename is not always the artifact's name — 134 and 136 differ) and fills
+# the rest from the report filenames themselves, so shipping a report is enough.
 REPORTS = {
     127: 'arena_pvp', 128: 'meta_rewards', 129: 'pack_index', 130: 'box_draw',
     131: 'box_arrays', 132: 'key_sources', 133: 'pvp_hunter_reward_table',
@@ -44,6 +49,22 @@ REPORTS = {
     143: 'economy_keys', 144: 'game_store_keys', 145: 'store_key_callers',
     146: 'computed_key_index', 168: 'lane_residue', 169: 'pvp_reward_arrays',
 }
+
+
+def _doc_index():
+    """report number -> topic, read off `docs/apk-analysis/<n>-535b0541-<topic>.md`."""
+    out = {}
+    for path in sorted(ROOT.glob('docs/apk-analysis/*-535b0541-*.md')):
+        match = re.match(r'(\d+)-535b0541-(.+)\.md$', path.name)
+        if match:
+            out[int(match.group(1))] = match.group(2).replace('-', '_')
+    return out
+
+
+for _number, _topic in _doc_index().items():
+    REPORTS.setdefault(_number, _topic)
+assert set(range(min(REPORTS), max(REPORTS) + 1)) == set(REPORTS), \
+    sorted(set(range(min(REPORTS), max(REPORTS) + 1)) - set(REPORTS))
 
 
 def sha_file(rel):
@@ -674,18 +695,25 @@ def build_payload():
     }
 
 
+def build(output=None):
+    payload = build_payload()
+    blob = json.dumps(payload, sort_keys=True, separators=(',', ':')).encode()
+    packed = gzip.compress(blob, mtime=0)
+    if output:
+        target = ROOT / output
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(packed)
+    return payload, packed
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', default=OUTPUT)
     args = parser.parse_args()
 
-    payload = build_payload()
-    blob = json.dumps(payload, sort_keys=True, separators=(',', ':')).encode()
-    out = ROOT / args.output
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_bytes(gzip.compress(blob, mtime=0))
-    print(json.dumps(dict(bytes=out.stat().st_size,
-                          sha256=hashlib.sha256(out.read_bytes()).hexdigest(),
+    payload, packed = build(args.output)
+    print(json.dumps(dict(bytes=len(packed),
+                          sha256=hashlib.sha256(packed).hexdigest(),
                           **payload['totals'])))
 
 

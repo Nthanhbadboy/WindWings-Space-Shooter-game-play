@@ -18,8 +18,8 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import audit_drift as AD  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_audit_drift.json.gz'
-PIN_BYTES = 7815
-PIN_SHA = '2e32096e42c4983e32c294ef3f56e8d8171fca6436fd5c3acb2bd98d1c6ecbef'
+PIN_BYTES = 7725
+PIN_SHA = 'e2a5d1e72065bc71de04812f57878d610cfe517b11358ca1677847998a958251'
 
 
 def payload():
@@ -60,7 +60,7 @@ class PayloadShape(unittest.TestCase):
         names = [row['name'] for row in payload()['checks']]
         self.assertIn('the-gate-reads-every-lane-artifact', names)
         self.assertIn('the-audit-table-still-covers-127-to-146-whole', names)
-        self.assertIn('the-blind-spot-starts-after-146', names)
+        self.assertIn('the-audit-names-every-report-that-produced-an-artifact', names)
         self.assertIn('no-report-level-correction-points-at-an-unknown-report', names)
 
     def test_totals_are_the_artifact(self):
@@ -97,8 +97,9 @@ class Coverage(unittest.TestCase):
         self.assertEqual(AD.report_of('l2_535b0541_pvp_hunter_arrays'), 149)
         self.assertIsNone(AD.report_of('l2_535b0541_no_such_topic'))
 
-    def test_the_audit_alone_cannot_name_cell_identity(self):
-        self.assertIsNone(AD.audit_report_of('l2_535b0541_cell_identity'))
+    def test_the_audit_names_cell_identity_now_that_the_docs_fill_its_table(self):
+        self.assertEqual(AD.audit_report_of('l2_535b0541_cell_identity'), 150)
+        self.assertEqual(AD.audit_report_of('l2_535b0541_pvp_hunter_arrays'), 149)
         self.assertEqual(AD.audit_report_of('l2_535b0541_lane_residue'), 168)
 
     def test_claims_come_from_the_residue_report(self):
@@ -128,13 +129,13 @@ class BlindSpot(unittest.TestCase):
         self.assertEqual(body['named_by_the_docs'], 43)
         self.assertEqual(body['artifacts'], 43)
 
-    def test_the_audit_alone_still_names_only_twenty_two(self):
-        self.assertEqual(payload()['blind_spot']['named_by_the_audit'], 22)
+    def test_the_audit_alone_now_names_all_of_them(self):
+        self.assertEqual(payload()['blind_spot']['named_by_the_audit'], 43)
 
-    def test_the_audit_still_cannot_name_147_to_167_plus_170_to_172(self):
-        # the window stops at the highest report that produced an artifact (172)
-        self.assertEqual(payload()['blind_spot']['reports_the_audit_cannot_name'],
-                         list(range(147, 168)) + [170, 171, 172])
+    def test_nothing_is_left_unnamed(self):
+        # 175 filled the audit's table from the report filenames, so the window is empty
+        self.assertEqual(payload()['blind_spot']['reports_the_audit_cannot_name'], [])
+        self.assertEqual(payload()['blind_spot']['named_by_the_docs'], 43)
 
     def test_no_correction_now_points_at_an_unnamed_report(self):
         self.assertEqual(payload()['totals']['unread_targets'], [])

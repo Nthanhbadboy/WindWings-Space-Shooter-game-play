@@ -2,7 +2,7 @@
 
 **Trạng thái:** `DECODED_STATIC` (chỉ đọc artifact + slice đã bóc; không chạy game)
 **Lớp bằng chứng:** STATIC-ONLY. Đây **không phải** một lần bóc mới — nó là cổng đọc lại **mọi** artifact của lane và đối chiếu với `open_items_audit`.
-**Artifact:** `datas/l2_535b0541_audit_drift.json.gz` — **7815 B**, sha256 `2e32096e42c4983e32c294ef3f56e8d8171fca6436fd5c3acb2bd98d1c6ecbef` (bản 174 sinh lại; 173 gốc: 7895 B / `6a8a4bd5…`)
+**Artifact:** `datas/l2_535b0541_audit_drift.json.gz` — **7725 B**, sha256 `e2a5d1e72065bc71de04812f57878d610cfe517b11358ca1677847998a958251` (bản **175** sinh lại; 173 gốc 7895 B / `6a8a4bd5…`, 174 7815 B / `2e32096e…`)
 **Verifier:** `tools/verify/audit_drift.py` (**19 check**) · **Test:** `tests/test_audit_drift.py` (**42 test**)
 **Đọc:** 43 artifact `datas/l2_535b0541_*.json.gz` · **Đối chiếu:** 56 mục của audit (19 `CLOSED` · 20 `RUNTIME` · 10 `OPEN` · 6 `RESTATED` · 1 `NOTE`)
 
@@ -70,9 +70,9 @@ Chín claim của 168 đều **đứng vững** dưới luật mới: hai mục 
 | | số | |
 |---|---|---|
 | artifact cổng đọc | **43** | |
-| artifact `AUDIT.REPORTS` **đặt tên được** | **22** | khớp `REPORTS` (vẫn đúng sau 174) |
+| artifact `AUDIT.REPORTS` **đặt tên được** | **22** lúc 173 đo | nay **43** — 175 vá bảng, xem §4.2 |
 | artifact **không** đặt tên được bằng bảng đó | **21** | `cell_identity`, `arena_rewards`, `exchange_chain`, … |
-| report thiếu trong `REPORTS` (cửa sổ report **có artifact**, 127–172) | **24** | `147…167` + `170`, `171`, `172` |
+| report thiếu trong `REPORTS` (cửa sổ report **có artifact**, 127–172) | **24** | `147…167` + `170`, `171`, `172` — nay **0** |
 
 Đây là **lỗ mù thật**, không phải chuyện của riêng một report. Cổng hôm nay vẫn xanh **vì** trong 21 artifact không tên kia chưa cái nào đóng/chặn một mục audit — chỉ `lane_residue` (168, có tên) làm việc đó. Ngày đầu tiên một trong 21 artifact đó nói "mục 44 đã xong", **R1 sẽ nổ**, và nổ đúng.
 
@@ -80,12 +80,13 @@ Chín claim của 168 đều **đứng vững** dưới luật mới: hai mục 
 
 Tên file đã mang số: `docs/apk-analysis/<n>-535b0541-<topic>.md`. Nên `report_of` tra trong **hợp** của hai nguồn: `AUDIT.REPORTS` (127…146, 168, 169) và tên file (133…173). Kết quả trên cùng 43 artifact:
 
-| | 173 gốc | sau 174 |
-|---|---|---|
-| artifact có tên report | **22/43** | **43/43** |
-| artifact không tên | **21** | **0** |
-| sửa đổi mức-report nhắm report **không** tên được (`unread_targets`) | **`[149]`** | **`[]`** |
-| `AUDIT.REPORTS` vẫn thiếu | 24 report | **24** report (không đổi — 174 không sửa bảng đó) |
+| | 173 gốc | sau 174 | sau 175 |
+|---|---|---|---|
+| artifact có tên report | **22/43** | **43/43** | **43/43** |
+| artifact không tên | **21** | **0** | **0** |
+| sửa đổi mức-report nhắm report **không** tên được (`unread_targets`) | **`[149]`** | **`[]`** | **`[]`** |
+| `AUDIT.REPORTS` thiếu (cửa sổ artifact) | 24 report | **24** | **0** — bảng có **49** khoá, `127…175` liền mạch |
+| nguồn ánh xạ | bảng viết tay | bảng ∪ tên file | **bảng tự điền từ tên file** |
 
 Chỗ đáng chú ý: **149 không phải `cell_identity`**. Đó là **erratum của chính 173**:
 
@@ -97,6 +98,21 @@ Chỗ đáng chú ý: **149 không phải `cell_identity`**. Đó là **erratum 
 Lỗi này **không đổi kết luận** (cả 149 lẫn 150 đều không có trong `REPORTS`), nhưng nó đổi **tên miền** của câu sửa: dòng `corrections` thứ hai của `cell_identity` nhắm report **149** = `pvp_hunter_arrays` — tức nó sửa câu "chỉ biết offset +0x10/+0x14/+0x18" mà **149** đã viết, không phải tự sửa mình. Đúng ngữ nghĩa `target` hơn hẳn.
 
 Sau 174, hai check canh việc này: `every-artifact-maps-to-a-report-now-that-the-docs-are-the-index` (0 artifact không tên) và `no-report-level-correction-points-at-an-unknown-report` (`unread == []`). Cái bẫy đổi chiều: giờ **thiếu file report là R1 nổ**, thay vì thiếu dòng trong bảng viết tay.
+
+### 4.2 Cách 175 vá tận gốc: bảng của audit tự điền
+
+174 để `AUDIT.REPORTS` nguyên (sửa nó là đổi hash 170 trong artifact đang băm nó). 175 kiểm lại giả định đó và thấy **sai**: `REPORTS` là **chỉ mục**, không mục nào, proof nào hay digest nào sống trong đó — `by_report` bỏ qua report không có item (`if not own: continue`). Nên điền thêm **27** khoá **không đổi một byte** của artifact:
+
+| | trước 175 | sau 175 |
+|---|---|---|
+| khoá trong `REPORTS` | 22 | **49** (`127…175`, không lỗ) |
+| sha256 artifact audit | `3b782ffa…` | **`3b782ffa…` — y nguyên** |
+| `blind_spot.reports_the_audit_cannot_name` | 24 | **`[]`** |
+| `blind_spot.named_by_the_audit` | 22 | **43** |
+
+Cách làm giống 174: `_doc_index()` đọc tên file, `REPORTS.setdefault(...)` điền chỗ trống; dòng pinned vẫn thắng nên bí danh `134`/`136` (`pvp_manager_rules` ≠ `pvp_manager_rules_tables`) không bị ghi đè. Thêm một assert không lỗ hổng: `set(range(min, max+1)) == set(REPORTS)`.
+
+Vì sao điều này quan trọng hơn vẻ ngoài: **chu trình hash là lo ngại đúng, nhưng lo ngại đó không áp dụng cho một chỉ mục**. Kiểm bằng số (sha không đổi) rẻ hơn nhiều so với sinh lại 168 → 170 → 172 → 173 theo thứ tự — và nếu không kiểm, ta đã tự trói mình vào một bảng viết tay mãi mãi.
 
 ## 5. Ba chỗ 173 tự sửa chính mình
 

@@ -67,7 +67,7 @@ Ba nguồn thông tin, ba vai:
 | artifact cổng đọc | **43** |
 | đặt tên được bằng **tên file** (∪ audit) | **43** — **0** không tên |
 | đặt tên được bằng **chỉ** `AUDIT.REPORTS` | **22** |
-| `AUDIT.REPORTS` vẫn thiếu (cửa sổ report **có artifact**, 127–172) | **24** report: `147…167` + `170`, `171`, `172` |
+| `AUDIT.REPORTS` vẫn thiếu (cửa sổ report **có artifact**, 127–172) | **24** report lúc 174 — **175 điền nốt, còn 0** |
 | số trong `doc_index()` | **42** |
 | `unread_targets` sau khi có chỉ mục | **`[]`** |
 
@@ -111,7 +111,7 @@ Vì thế erratum này **không phải việc đánh vần**: nó là bằng ch�
 
 ## 6. Còn lại
 
-* `AUDIT.REPORTS` vẫn thiếu 24 số (cửa sổ artifact). Sửa nó là việc của report **sau** (đổi `open_items_audit` ⇒ đổi hash 170 ⇒ phải sinh lại 168/170/172/173 theo đúng thứ tự). Khi làm, dùng luôn `doc_index()` thay vì gõ 24 dòng.
+* ~~`AUDIT.REPORTS` thiếu 24 số~~ — **175 đã điền**: hoá ra `REPORTS` là chỉ mục thuần (không item/proof/digest), nên điền thêm 26 khoá **không đổi một byte** artifact của 170 (`3b782ffa…` y nguyên) ⇒ không có chu trình, không phải sinh lại 168/170/172/173.
 * Bí danh `134`/`136` (`pvp_manager_rules` vs `pvp_manager_rules_tables`, `pvp_rank_api` vs `rank_api`): tên file dài hơn tên artifact. Chấp nhận được vì artifact vẫn có tên qua audit; nếu sau này đổi thì phải đổi **cả** tên file, không chỉ một bên.
 
 ---
