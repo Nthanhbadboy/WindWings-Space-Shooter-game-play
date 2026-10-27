@@ -7,6 +7,7 @@ signal purchase_requested(player_index: int, quantity: int)
 var _player_costs: Array = []
 var _pvp_arrays: Dictionary = {}
 var _shop_contract: Dictionary = {}
+var _monetization_service: MonetizationService
 var _wallet := 0
 var _purchased: Dictionary = {}
 var _player_grid: GridContainer
@@ -15,6 +16,10 @@ var _status_label: Label
 var _player_cards: Dictionary = {}
 var _pvp_list: VBoxContainer
 var _shop_text: RichTextLabel
+var _store_provider_select: OptionButton
+var _store_provider_ids: Array = []
+var _store_product_input: LineEdit
+var _store_status_label: Label
 var _tabs: TabContainer
 
 
@@ -26,13 +31,26 @@ func _ready() -> void:
 	visible = false
 
 
-func configure(player_costs: Array, pvp_document: Dictionary, shop_contract: Dictionary) -> void:
+func configure(
+	player_costs: Array,
+	pvp_document: Dictionary,
+	shop_contract: Dictionary,
+	monetization_service: MonetizationService
+) -> void:
 	_player_costs = player_costs.duplicate()
 	_pvp_arrays = pvp_document.get("arrays", {})
 	_shop_contract = shop_contract
+	_monetization_service = monetization_service
+	_monetization_service.provider_selected.connect(_on_store_provider_selected)
+	_monetization_service.provider_status.connect(_on_store_provider_status)
+	_monetization_service.product_query_result.connect(_on_store_product_query_result)
+	_monetization_service.purchase_result.connect(_on_store_purchase_result)
+	_monetization_service.restore_result.connect(_on_store_restore_result)
+	_monetization_service.rewarded_ad_result.connect(_on_store_rewarded_ad_result)
 	_refresh_player_cards()
 	_refresh_pvp_table()
 	_refresh_shop_contract()
+	_refresh_store_page()
 
 
 func open_panel(wallet: int, purchased: Dictionary) -> void:
@@ -110,6 +128,7 @@ func _build_interface() -> void:
 	_build_player_page()
 	_build_pvp_page()
 	_build_shop_page()
+	_build_store_page()
 
 
 func _build_player_page() -> void:
@@ -166,6 +185,118 @@ func _build_shop_page() -> void:
 	_shop_text.add_theme_font_size_override("normal_font_size", 15)
 	_shop_text.add_theme_color_override("default_color", Color(0.81, 0.89, 1.0))
 	scroll.add_child(_shop_text)
+
+
+func _build_store_page() -> void:
+	var scroll := ScrollContainer.new()
+	scroll.name = "STORE STUBS"
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_tabs.add_child(scroll)
+
+	var page := VBoxContainer.new()
+	page.add_theme_constant_override("separation", 9)
+	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(page)
+
+	var note := Label.new()
+	note.text = (
+		"STUB_ONLY · No SDK, network, receipt, entitlement, payment, or ad reward is active. "
+		+ "The source manifest has product IDs only; prices are UNKNOWN."
+	)
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	note.add_theme_font_size_override("font_size", 13)
+	note.add_theme_color_override("font_color", Color(1.0, 0.79, 0.47))
+	page.add_child(note)
+
+	var provider_row := HBoxContainer.new()
+	provider_row.add_theme_constant_override("separation", 8)
+	page.add_child(provider_row)
+	_store_provider_select = OptionButton.new()
+	_store_provider_select.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	provider_row.add_child(_store_provider_select)
+	var select_button := Button.new()
+	select_button.text = "SELECT STUB"
+	select_button.custom_minimum_size = Vector2(130, 44)
+	select_button.focus_mode = Control.FOCUS_NONE
+	select_button.pressed.connect(_on_store_select_pressed)
+	provider_row.add_child(select_button)
+
+	var product_row := HBoxContainer.new()
+	product_row.add_theme_constant_override("separation", 8)
+	page.add_child(product_row)
+	var product_label := Label.new()
+	product_label.text = "PRODUCT ID"
+	product_label.add_theme_font_size_override("font_size", 13)
+	product_row.add_child(product_label)
+	_store_product_input = LineEdit.new()
+	_store_product_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_store_product_input.placeholder_text = "Source product ID; no price data"
+	product_row.add_child(_store_product_input)
+
+	var action_row_one := HBoxContainer.new()
+	action_row_one.add_theme_constant_override("separation", 8)
+	page.add_child(action_row_one)
+	var query_button := Button.new()
+	query_button.text = "QUERY PRODUCTS"
+	query_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	query_button.focus_mode = Control.FOCUS_NONE
+	query_button.pressed.connect(_on_store_query_pressed)
+	action_row_one.add_child(query_button)
+	var purchase_button := Button.new()
+	purchase_button.text = "TEST PURCHASE"
+	purchase_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	purchase_button.focus_mode = Control.FOCUS_NONE
+	purchase_button.pressed.connect(_on_store_purchase_pressed)
+	action_row_one.add_child(purchase_button)
+
+	var action_row_two := HBoxContainer.new()
+	action_row_two.add_theme_constant_override("separation", 8)
+	page.add_child(action_row_two)
+	var restore_button := Button.new()
+	restore_button.text = "RESTORE"
+	restore_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	restore_button.focus_mode = Control.FOCUS_NONE
+	restore_button.pressed.connect(_on_store_restore_pressed)
+	action_row_two.add_child(restore_button)
+	var ad_button := Button.new()
+	ad_button.text = "TEST REWARDED AD"
+	ad_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ad_button.focus_mode = Control.FOCUS_NONE
+	ad_button.pressed.connect(_on_store_ad_pressed)
+	action_row_two.add_child(ad_button)
+
+	_store_status_label = Label.new()
+	_store_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_store_status_label.add_theme_font_size_override("font_size", 13)
+	_store_status_label.add_theme_color_override("font_color", Color(0.72, 0.86, 1.0))
+	page.add_child(_store_status_label)
+
+
+func _refresh_store_page() -> void:
+	if not is_instance_valid(_store_provider_select) or not is_instance_valid(_store_status_label):
+		return
+	_store_provider_ids.clear()
+	_store_provider_select.clear()
+	if not is_instance_valid(_monetization_service):
+		_store_status_label.text = "Monetization service is not configured."
+		return
+	for summary_value: Variant in _monetization_service.get_provider_summaries():
+		if summary_value is Dictionary:
+			var summary: Dictionary = summary_value
+			var provider_id := str(summary.get("provider_id", ""))
+			_store_provider_ids.append(provider_id)
+			_store_provider_select.add_item(
+				"%s  ·  STUB ONLY" % str(summary.get("display_name", provider_id))
+			)
+	if not _store_provider_ids.is_empty():
+		_store_provider_select.select(0)
+	var product_ids := _monetization_service.get_product_ids()
+	if not product_ids.is_empty() and _store_product_input.text.is_empty():
+		_store_product_input.text = str(product_ids[0])
+	_store_status_label.text = (
+		"%d source product IDs loaded. No provider is active until selected; " % product_ids.size()
+		+ "all adapter calls fail closed."
+	)
 
 
 func _refresh_player_cards() -> void:
@@ -374,6 +505,79 @@ func _refresh_shop_contract() -> void:
 
 func _on_player_buy_pressed(index: int) -> void:
 	purchase_requested.emit(index, 1)
+
+
+func _on_store_select_pressed() -> void:
+	if not is_instance_valid(_monetization_service):
+		_store_status_label.text = "STUB_ONLY · Monetization service is not configured."
+		return
+	var selected_index := _store_provider_select.selected
+	if selected_index < 0 or selected_index >= _store_provider_ids.size():
+		_store_status_label.text = "Choose one local provider stub first."
+		return
+	_monetization_service.select_provider(str(_store_provider_ids[selected_index]))
+
+
+func _on_store_query_pressed() -> void:
+	_monetization_service.query_products()
+
+
+func _on_store_purchase_pressed() -> void:
+	_monetization_service.request_purchase(_store_product_input.text.strip_edges())
+
+
+func _on_store_restore_pressed() -> void:
+	_monetization_service.request_restore()
+
+
+func _on_store_ad_pressed() -> void:
+	_monetization_service.request_rewarded_ad("prototype-test-placement")
+
+
+func _on_store_provider_selected(provider_id: String, display_name: String) -> void:
+	_store_status_label.text = (
+		"STUB_ONLY · selected %s (%s). No live store is called." % [display_name, provider_id]
+	)
+
+
+func _on_store_provider_status(provider_id: String, available: bool, message: String) -> void:
+	_store_status_label.text = (
+		"STUB_ONLY · %s · available=%s · %s" % [provider_id, str(available), message]
+	)
+
+
+func _on_store_product_query_result(
+	provider_id: String, _products: Array, success: bool, message: String
+) -> void:
+	_store_status_label.text = (
+		"STUB_ONLY · product query %s · success=%s · %s" % [provider_id, str(success), message]
+	)
+
+
+func _on_store_purchase_result(
+	provider_id: String, product_id: String, success: bool, transaction_id: String, message: String
+) -> void:
+	_store_status_label.text = (
+		"STUB_ONLY · purchase %s/%s · success=%s · tx=%s · %s"
+		% [provider_id, product_id, str(success), transaction_id, message]
+	)
+
+
+func _on_store_restore_result(
+	provider_id: String, success: bool, _product_ids: Array, message: String
+) -> void:
+	_store_status_label.text = (
+		"STUB_ONLY · restore %s · success=%s · %s" % [provider_id, str(success), message]
+	)
+
+
+func _on_store_rewarded_ad_result(
+	provider_id: String, placement_id: String, success: bool, reward_granted: bool, message: String
+) -> void:
+	_store_status_label.text = (
+		"STUB_ONLY · ad %s/%s · success=%s · reward=%s · %s"
+		% [provider_id, placement_id, str(success), str(reward_granted), message]
+	)
 
 
 func _on_close_pressed() -> void:

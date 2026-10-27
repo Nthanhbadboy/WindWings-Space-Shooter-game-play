@@ -27,6 +27,10 @@ The `SHOP` overlay is a data-led preview/transaction ledger, not a claim that ev
 
 `shop_contract.json` records the decoded 3-band × 5-slot layout, ID offsets, stock preference defaults/reset value 0, and popup quantity start 1 / step 1 / max rule `available_stock - 1`. `MaxStockCount` numeric value, resource prices, and `Shop_Cell` price strings are `UNKNOWN`; the UI does not invent them. `pvp_reward_arrays.json` and the overlay show all six decoded bet/reward arrays verbatim. They are build-time data only; the panel is a preview and does not grant match rewards.
 
+## M4 monetization boundary
+
+The shared `MonetizationProvider`/`MonetizationService` API covers initialization, product query, purchase, restore, and rewarded-ad requests. The Economy overlay's `STORE STUBS` tab exposes three fail-closed adapters: Amazon IAP, HMS IAP + Ads, and Windows Commerce. `iap_products.json` preserves the 170 decoded product IDs, but store prices are not present. Every adapter reports unavailable; test purchase, restore, and ad calls create no receipt, entitlement, wallet change, or reward. `monetization_config.json` sets `real_plugins_enabled: false`; there are no real store plugins, SDKs, credentials, or network calls. Real integration is intentionally deferred until explicitly authorized.
+
 ## Evidence and verification
 
 - `STATIC_CONFIRMED` describes decoded/serialized source fields; it does not imply original runtime behavior.

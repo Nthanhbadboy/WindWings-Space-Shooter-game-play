@@ -33,6 +33,7 @@ var _economy_paused := false
 @onready var wave_director: WaveDirector = $WaveDirector
 @onready var hud: GameHUD = $CanvasLayer/HUD
 @onready var economy_panel: EconomyPanel = $CanvasLayer/EconomyPanel
+@onready var monetization: MonetizationService = $MonetizationService
 
 
 func _ready() -> void:
@@ -65,12 +66,16 @@ func _ready() -> void:
 	var drop_policy := _read_json("res://data/drop_policy.json")
 	var pvp_document := _read_json("res://data/pvp_reward_arrays.json")
 	var shop_contract := _read_json("res://data/shop_contract.json")
+	var iap_products := _read_json("res://data/iap_products.json")
+	var monetization_config := _read_json("res://data/monetization_config.json")
 	if (
 		wave_document.is_empty()
 		or hp_document.is_empty()
 		or movement_document.is_empty()
 		or pvp_document.is_empty()
 		or shop_contract.is_empty()
+		or iap_products.is_empty()
+		or monetization_config.is_empty()
 	):
 		return
 	var wave: Dictionary = wave_document.get("wave", {})
@@ -83,7 +88,8 @@ func _ready() -> void:
 	player.configure_weapon(float(damage_values[PLAYER_INDEX]), fire_period)
 	player.configure_health(base_hp)
 	_load_item_catalog(items_document)
-	economy_panel.configure(_player_costs, pvp_document, shop_contract)
+	monetization.configure(iap_products, monetization_config)
+	economy_panel.configure(_player_costs, pvp_document, shop_contract, monetization)
 	economy_panel.set_economy_state(_coins, _purchased_player_indices)
 	_drop_period = maxf(float(drop_policy.get("period_seconds", 18.0)), 1.0)
 	_drop_item_cycle = drop_policy.get("item_index_cycle", [1])
