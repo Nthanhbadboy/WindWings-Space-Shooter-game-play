@@ -27,7 +27,8 @@
 | Khối lượng? | **L2 = 177 h** · **L3 khuyến nghị = 1.610 h** (801 bản ghi) · **full parity = 4.388 h** (C, ±25 %) — **dùng bộ số v2 đã đo lại `reuse` (§3.6)**, không dùng bộ v1 149 / 1.264 / 3.916 |
 | Chuẩn art? | 9 **công thức tô** đã kiểm bằng số (val · val_std · dark · chroma) + palette Ink & Ember đo HSV (A) |
 | Thứ tự? | **S0 → W1 (L2) → W2 → W3 → W4 → W5**, mỗi cổng wave là một phép đo, không phải cảm nhận |
-| File còn lại | [`art-planner.csv`](art-planner.csv) — 651 dòng (629 đơn vị + 22 overhead), **32 cột** (gồm `h_scope_v2` · `l2_h_v2` · `de_est` · `reuse_est`), khớp từng nhóm worklist |
+| File còn lại | [`art-planner.csv`](art-planner.csv) — **655 dòng** (629 đơn vị + 22 overhead + **4 dòng W0 listing**), **36 cột** (gồm `h_scope_v2` · `l2_h_v2` · `l2_h_v3` · `de_est` · `reuse_est` · `h_w0`), khớp từng nhóm worklist |
+| Đơn hàng đã bung | [`W1_WORK_ORDER.md`](W1_WORK_ORDER.md) — **48 unit PLAYER**, 13 unit ở W1 = **34,0 h** (§6: W1 = **205,6 h**) · [`W0_LISTING_ASSETS.md`](W0_LISTING_ASSETS.md) — **27 slot** listing 3 store = **35 h**, sổ riêng |
 
 **Một câu chốt:** kho hiện có **không phải** 2.197 sprite phải vẽ — nó là **2.185 bản ghi**, trong đó
 **788 đơn vị vẽ thật**, và chỉ **801 bản ghi (37 %) là cần vẽ cho bản L3 khuyến nghị**; **1.451 h (37 %)**
@@ -124,7 +125,7 @@ phát sáng, bão hoà cao, **không** có mảng "bộ phận rời" — xác n
 | **P2** | chỉ xuất hiện **ngoài màn** (meta): shop, rank, icon, kit UI | chặn monetize/retention, **không** chặn gameplay |
 | **P3** | **ngoài scope hoặc chờ dữ liệu**: brand (pháp lý), parts (mô hình lắp ghép), triage (chưa có nhãn) | **không vẽ** ở kế hoạch này |
 
-### 2.2 Bảng batch (nguồn: `art-planner.csv` — 651 dòng)
+### 2.2 Bảng batch (nguồn: `art-planner.csv` — 651 dòng đơn vị/overhead + 4 dòng W0 listing)
 
 | Batch | Lane | P | Đơn vị | Bản ghi | MPx | Canvas đích | Giờ full | Giờ scope | Giờ L2 |
 |---|---|---|---:|---:|---:|---|---:|---:|---:|
@@ -337,6 +338,12 @@ tính **đắt** hơn thực tế (7,0 → 6,1 h).
 | v1 | 148,9 | 398,8 | 175,9 | 134,6 | 357,4 | 48,7 | 1.264,4 |
 | **v2** | **177,3** | **537,5** | **181,0** | **166,7** | **489,1** | **58,8** | **1.610,4** |
 | tuần 1 artist (cộng dồn) | 5,5 | 22,3 | 28,0 | 33,2 | 48,5 | 50,3 | — |
+| **v2′** (W1 theo `l2_h_v3`) | **205,6** | 509,2 | 181,0 | 166,7 | 489,1 | 58,8 | **1.610,4** |
+| tuần 1 artist (cộng dồn) | **6,4** | 22,3 | 28,0 | 33,2 | 48,5 | 50,3 | — |
+
+*Dòng **v2′** là bản dùng để **lập lịch**: W1 tính theo `l2_h_v3` (giá đầy đủ từng unit, không chiết khấu reuse) thay vì
+prorate theo bản ghi ⇒ **+28,3 h vào W1, −28,3 h ở W2**; tổng và mọi mốc từ W2 trở đi **không đổi**. Xem
+`W1_WORK_ORDER.md` §6.*
 
 **Ba giới hạn của phép đo này (ghi để không đọc quá số):**
 
@@ -560,7 +567,8 @@ rollup giờ theo `wave_done` mới ra đúng bảng này (overhead của batch 
 | **Tổng scope B** | **1.264,4** | **39,5** | **19,8** | mốc **L3 art-complete** |
 
 *32 h/tuần = 40 h trừ 20 % họp/rework. Chia 2 artist chỉ đúng khi tách được theo lane (§5.5) — W3 (boss) và W5 (UI) khó chia đôi hơn W2.*
-*Số tuần trên là **v1** (1.264 h / 3.948 h). Bản **v2** dùng để lập kế hoạch (§3.6): **W1 = 5,5 tuần** (1 artist, cổng L2),
+*Số tuần trên là **v1** (1.264 h / 3.948 h). Bản **v2** dùng để lập kế hoạch (§3.6): **W1 = 5,5 tuần** (1 artist, cổng L2) — hoặc **6,4 tuần** nếu lấy `l2_h_v3`
+(giá đầy đủ từng unit, `W1_WORK_ORDER.md` §6; tổng 50,3 tuần không đổi),
 **tổng scope B = 50,3 tuần** (1 artist) / **25,2 tuần** (2 artists), scope C = 137 / 69 tuần. Chưa gồm thời gian chờ: code chạy được (L1), luồng UI chốt (§6 R5), và quyết định boss dùng Spine (§8 #6).*
 
 ### 5.5 Song song hoá (khi có ≥ 2 artist)
@@ -615,7 +623,7 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
 | File | Nội dung |
 |---|---|
 | `docs/art-plan/ART_REDRAW_PLAN.md` | report này |
-| `docs/art-plan/art-planner.csv` | **651 dòng** = 629 đơn vị vẽ (624 nhóm worklist + 5 bucket glyph) + 22 dòng overhead; **32 cột** (v1 + 4 cột v2) |
+| `docs/art-plan/art-planner.csv` | **655 dòng** = 629 đơn vị vẽ (624 nhóm worklist + 5 bucket glyph) + 22 dòng overhead + **4 dòng W0 listing**; **36 cột** (v1 + 4 cột v2 + `l2_de` · `l2_h_v3` · `h_w0` · `w0_slots`) |
 
 ### 7.2 Từ điển cột planner
 
@@ -636,6 +644,8 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
 | `recipe` | trỏ tới 9 recipe §4.5 |
 | `h_full` · `h_scope` | giờ cho scope C và scope B theo bảng giá **v1** (§3.3); `l2_h ≤ h_scope` luôn đúng |
 | `h_scope_v2` · `l2_h_v2` | **giờ đã đo lại** (§3.6) — dùng 2 cột này để lập kế hoạch; `h_scope_v2 ≥ 0` và `Σ = 1.578,4` |
+| `l2_de` · `l2_h_v3` | lát L2 tính **theo unit**: số thiết kế phải vẽ cho L2 (`min(de_est, l2_n)`) · giờ L2 **không chiết khấu reuse**; dùng để **lập lịch wave 1** (`W1_WORK_ORDER.md` §6) |
+| `h_w0` · `w0_slots` | giờ + số slot của **W0 listing** (4 dòng `lane = LISTING`, mọi cột `h_*` khác = 0 để tổng scope B không đổi) — `W0_LISTING_ASSETS.md` |
 | `de_est` · `reuse_est` | **số thiết kế riêng** đo được (`IoU ≥ 0,90`) · `de_est / kept_records` — 1,00 = mỗi bản ghi một thiết kế |
 | `over_merge` | `cao` = **37 dòng** (32 nhóm + 5 bucket glyph) có ≥10 bản ghi/đơn vị, **kiểm `reuse` trước khi vẽ** |
 | `contact_sheet` · `sample_names` · `rule_hint` | tra ảnh + tên mẫu + luật nhãn gốc |
@@ -644,6 +654,10 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
 
 1. **Lọc `l2_n > 0`** (29 dòng) → đó là W1/L2 (82 bản ghi = **137,3 h art (v2)** + 8 h overhead, cộng 32 h S0 = **177,3 h**).
    Không cần đọc phần còn lại.
+   ⚠ **Nhưng đừng lập lịch bằng 177,3.** Chia đều theo bản ghi làm **thiếu** giờ L2: nền `G-PARALLAX` lấy 3/74 bản ghi
+   nên chỉ bị tính 9,35 h, trong khi 3 nền đó là **3 thiết kế khác nhau** ⇒ thật là 18,72 h. Cộng `l2_h_v3`:
+   art **157,1 h** + overhead **16,5 h** + 32 S0 = **205,6 h**. Đây là **chuyển 28,3 h từ W2 sang W1**, tổng scope B
+   vẫn 1.610,4 h — chi tiết và bảng đối chiếu ở `W1_WORK_ORDER.md` §6.
 2. **Lọc `over_merge = cao`** → 37 dòng từng bị gắn cờ; **`de_est` đã thay việc phải xem ảnh** (§3.6), chỉ còn `hotro`
    là họ biến thể thật — không cần xem lại.
 3. **Lọc `kept_records = 0`** → danh sách **không vẽ** (brand/parts/triage) — đưa cho người quyết định
