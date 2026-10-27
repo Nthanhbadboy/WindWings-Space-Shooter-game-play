@@ -8,9 +8,11 @@ W1 PLAYER sprite builder — WindWings (Godot port) · vai Art-designer · arena
   AP-0002..0009 P-BULLET x8 target_px 32 recipe bullet (beams 32x512 per plan §4.7)
   AP-0013/0014 P-FX x2  target_px 128  recipe fx
 
-Method: original flat-vector sprites drawn programmatically in the exact Ink & Ember
+Method: original sprites drawn programmatically in the exact Ink & Ember
 hex palette (plan §4.4) at recipe area ratios (§4.5), 3 tones + accent + rim (§4.6),
-supersampled x4 then downscaled. No original-game art, no original filenames (§4.7).
+supersampled x4 then downscaled, finished with the shared 2.5D render pass
+(../render25d.py: panel gradients, bevel, AO, rim-light, panel seams, gloss)
+per STYLE-CORRECTION lan-149. No original-game art, no original filenames (§4.7).
 Every sprite is measured with the §4.9 protocol (alpha>0.5 mask) and gated G-A (§4.10).
 
 Run: python3 build_w1.py   (needs Pillow). Deterministic (fixed seeds).
@@ -21,10 +23,13 @@ import math
 import os
 import random
 import colorsys
+import sys
 
 from PIL import Image, ImageDraw, ImageFilter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, ".."))
+from render25d import render_v2  # 2.5D render pass (STYLE-CORRECTION lan-149 redo)
 SS = 4  # supersample
 
 # Ink & Ember — ART_REDRAW_PLAN §4.4
@@ -213,7 +218,8 @@ def draw_ship(idx, fam_i, var_i):
     d.line([(cx, H * 0.06), (cx + W * 0.07, H * 0.30)], fill=mix(PAPER, INK300, 0.4) + (255,), width=max(1, rim_w - 1))
 
     im = finish(im, S, S)
-    im = light_pass(im, hi=0.23, lo=0.30)
+    im = render_v2(im, key=0.26, bevel=0.06, ao=0.22, rim=0.26, under=0.26,
+                   seam=0.36, step=0.24, gloss=0.07)  # 2.5D (replaces flat light_pass)
     im = add_grain(im, 0.037, seed=50 + idx)
     return im, fam_name
 
@@ -287,7 +293,8 @@ def draw_drone(idx):
     d.arc([cx - r * 0.72, cy - r * 0.72, cx + r * 0.72, cy + r * 0.72], start=140, end=235,
           fill=PAPER + (220,), width=max(2, int(1.4 * SS)))
     im = finish(im, S, S)
-    im = light_pass(im, 0.23, 0.25)
+    im = render_v2(im, key=0.16, bevel=0.05, ao=0.15, rim=0.20, under=0.16,
+                   seam=0.28, step=0.18, gloss=0.07)
     im = add_grain(im, 0.03, seed=90 + idx)
     return im, ["orb-ring", "hexpod", "crescent", "twinpod", "capsule"][kind]
 
@@ -318,7 +325,9 @@ def draw_bullet(code):
                        (wpx * (0.5 + core / 2), y0 + per * 0.46), (wpx * 0.5, y0 + per * 0.28),
                        (wpx * (0.5 - core / 2), y0 + per * 0.46), (wpx * (0.5 - core / 2), y0 + per * 0.38)],
                       fill=mix(INK300, PAPER, 0.22) + (255,))
-        return finish(im, W, H)
+        # tile-safe 2.5D (no vertical ramp, wrapped distance) — seams stay invisible
+        return render_v2(finish(im, W, H), key=0.06, bevel=0.10, rim=0.10,
+                         under=0.0, gloss=0.05, tile_y=True)
     S = 32
     im = canvas(S, S)
     d = ImageDraw.Draw(im)
@@ -370,7 +379,9 @@ def draw_bullet(code):
         d.polygon([(cx, H * 0.07), (cx + W * 0.035, H * 0.16), (cx - W * 0.035, H * 0.16)], fill=EMBERDIM + (255,))
         d.polygon([(cx, H * 0.93), (cx + W * 0.035, H * 0.84), (cx - W * 0.035, H * 0.84)], fill=EMBERDIM + (255,))
     im = im.resize((S, S), Image.LANCZOS)
-    im = light_pass(im, hi=0.30, lo=0.12)
+    # thin bright shell over dark core: no edge-AO (it would eat the shell at 32px)
+    im = render_v2(im, key=0.14, bevel=0.14, ao=0.0, rim=0.34, under=0.0,
+                   seam=0.30, step=0.18, gloss=0.08)
     return im
 
 
@@ -418,7 +429,9 @@ def draw_fx(code):
                        (x2 + W * 0.05, y2 + W * 0.01)], fill=INK300 + (255,))
         d.ellipse([cx - W * 0.045, H / 2 - W * 0.045, cx + W * 0.045, H / 2 + W * 0.045], fill=TEAL + (255,))
     im = im.resize((S, S), Image.LANCZOS)
-    return im
+    # glow sprites: only a whisper of shading (fx recipe caps dark at 0.02)
+    return render_v2(im, key=0.07, bevel=0.06, ao=0.08, rim=0.14, under=0.08,
+                     seam=0.10, step=0.08, gloss=0.04)
 
 
 # ---------------------------------------------------------------- measurement (§4.9)
