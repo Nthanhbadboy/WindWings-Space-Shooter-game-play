@@ -195,6 +195,12 @@ Artifact: `.exe`, `.pck`, `.apk`, `.aab`, `version.json` + log. Không upload st
   phải chạy lại bước kiểm khoá (mục 11) trước khi tin bảng.
 - MSIX: nếu user chọn đường EXE không đóng gói thì §4 mất hiệu lực phần đóng gói.
 
+## 10b. Bằng chứng thô của vòng này
+
+`reverse-engineering/raw/godot-build-spec/pins.json` (4143 B) ghi: tag + commit engine, sha256/byte của 3
+file nguồn đã tải, **map khoá → số dòng** (android 40 khoá · windows 31 · pc 8), số hit `msix|appx` = **0**
+trên cả 3 file, số hit `obb` = **0**, và 4 hằng số exporter (min 24 / target 36 / Vulkan 29 / enum APK-AAB).
+
 ## 11. Reproduce (đọc lại đúng nguồn, không build)
 
 ```
