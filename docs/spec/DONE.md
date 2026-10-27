@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 125 — ERRATUM-127 PRODUCER ĐÃ ĐĂNG + 162 ĐÓNG + errata-161):**
+> **ef đăng erratum** (`6436088881` — b98c98 RET = **b98d64**, root-cause
+> `graph127.py:55` fde_end−4 · bằng chứng raw riêng · SHA 127 giữ) — chờ
+> AI-3 xác minh độc lập → APPROVE ⇒ #27 6/6 (spec không tự nâng) ·
+> heuristic-fix = chu kỳ riêng sau ceiling (spec đồng ý) · **162**
+> (`5e272ba130` · `6c0fbe73…`): shop state = PlayerPrefs · đóng open-160
+> (GetIdItem không 1-1) + câu-153 (MaxStockCount = asset 10) · không
+> SetIdItem (bounded) · **errata-161 `de3afba6…` thay artifact** (regex
+> static). datas/ = **188**. verify 209/0/2.
+>
 > **Sửa lại (lần 124 — RÚT LẠI "6/6" của lần 122 theo protocol reviewer):**
 > Verdict review-127 chỉ AI-3 nâng được — lần 122 ghi "#27 6/6" là vượt
 > thẩm quyền. **Trạng thái thật: #27 = 5/6 APPROVE/SUPPORTED + review-127 =

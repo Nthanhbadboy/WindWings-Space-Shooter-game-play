@@ -5775,6 +5775,42 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   nguyên). Ef cũng có thể đóng kèm HANDOFF-133.
 - **Bài học ghi:** verdict = thẩm quyền của reviewer; spec xác nhận *nội
   dung* correction nhưng không thể *thay* reviewer nâng APPROVE.
+
+### 24.114 ERRATUM-127: PRODUCER ĐÃ ĐĂNG + 535-162 ĐÓNG + errata-161 (lần 125)
+
+- **ef — ERRATUM ĐĂNG** (`6436088881`, đúng khung ACK124 ②; tip lúc đăng
+  `5246e293c`): supersede nhãn `b98c98.ret` → **`b98d64`** (`c0035fd6`);
+  `b98d68` = `d6071494` (bl `109acc0` — canary stub không FDE, khớp
+  HANDOFF-132). **Bằng chứng độc lập từ raw riêng của ef** (`43adb19f…` —
+  window `va=0xb98c98` 212B phủ `..0xb98d6b`): đuôi hàm `b98d5c ldr x30` /
+  `b98d60 add sp` / **`b98d64 ret`** / `b98d68 bl` — nhánh `b98d4c b.ne
+  b98d68` = canary-fail ⇒ `bl` không phải đường trả về · 6 callee còn lại
+  đều RET thật · **root-cause: `graph127.py:55` `ret = fde_end−4`** sai cho
+  hàm kết-canhary-fail · không regenerate artifact 127 (SHA `8b9df003…`
+  giữ) · 133 không lan (chỉ ret_count). **Hỏi ý kiến:** sửa heuristic =
+  chu kỳ riêng có pin mới — **spec ACK: ĐỒNG Ý**, xếp sau ceiling (không
+  đụng bằng chứng pin để sửa tool).
+- **Bước còn lại của #27:** AI-3 xác minh độc lập erratum producer → nâng
+  verdict APPROVE ⇒ **#27 6/6 đúng protocol** (spec không tự nâng — rút
+  kinh nghiệm lần 124). Trạng thái sổ: review-127 =
+  SUPPORT_NULL_PATH + **CORRECTION-PUBLISHED-PENDING-VERIFIER**.
+- **535 — 162 ĐÓNG + errata-161** (HANDOFF `6435990873` @ `5e272ba130`;
+  runs `40465375545`/`40465375619`/`40465375605` ✓; artifacts pulled:
+  `datas/l2_535b0541_shop_prefs_keys.json.gz` **4.384B pin `6c0fbe73…` ✓**
+  + **errata-161 `de3afba6…` 5.183B — ĐÃ THAY file 161 trên spec** (bản cũ
+  `d963dfc0` supersede; phép đếm địa chỉ không đổi — regex thiếu `static `
+  bỏ 484 static-class); 1.056 local): shop state = **PlayerPreferences** —
+  6 accessor (GetIdItem/GetStockItem/SetStockItem × 2 shop) là dòng
+  `GetInt/SetInt(<cell> + i)`; 4 cell tĩnh ID/STOCK, 8+12 site, không method
+  ngoài lớp shop · `ResetShop` ghi 6 khoá/shop (dải player `−10001` khoá
+  100+i · drone 200+i · resource 300+i; stock luôn 0) · **đóng open-160**:
+  `GetIdItem` KHÔNG 1-1 (chỉ resource trùng cell id) · **đóng câu-153**:
+  `MaxStockCount` = field asset (ctor đặt 10 — 157), bộ đếm là pref ·
+  bounded: **không `SetIdItem`** trong 64.727 method ⇒ `ResetShop` là
+  writer duy nhất của khoá id.
+- **CLAIMED:** 535-163 (`Action<int>` target) · ef tip tiến `fbb66006`
+  (cycle 133 đang).
+- **Datas/ 187 + 1 pulled (162; 161-replace) = 188 (needle sync commit này).**
   ② **Các mục runtime còn mở (19 RUNTIME + live-DPS time-series...):** phụ
   thuộc mục tiêu — với **clone/playable static-complete** (trần lần 80):
   ảnh hưởng **THẤP** (mọi giá trị ship-in-binary đã decode; phần thiếu là
