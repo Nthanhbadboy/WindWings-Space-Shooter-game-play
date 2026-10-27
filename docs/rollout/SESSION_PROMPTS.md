@@ -61,6 +61,9 @@
 > 3. `1b836828` mở rộng `measure_asset.py`: thêm chỉ số gradient-stop count · outline-thickness (dark edge px) · detail density — chạy máy kèm mỗi lô.
 > 4. A và B vẫn giữ phân biệt: A = Ink & Ember tông tối NHƯNG 2.5D; B = Solar Neon sáng NHƯNG 2.5D — khác tông màu/ánh sáng, CHUNG kỹ thuật render 2.5D.
 
+### VISION-ATTEST (lần 159 — phát hiện `5438fec9` MÙ ẢNH: read_file PNG trả "no vision capabilities")
+> Mọi vai sản-xuất/thẩm-định art (Art-designer A/B · Art-curator · Art-style-auditor) **phải là model có thị giác ảnh**. Nghĩa vụ: ① session art **tự khai** năng lực nhìn ngay khi CLAIM (có/không — khai sai = VOID toàn bộ output) ② designer mù chỉ được làm "recipe-executor" (sinh theo recipe + số đo, nhãn [INFERRED — no vision]), KHÔNG tự kết luận đẹp/xấu — ground-truth thị giác = auditor ③ prompt mở session art phải ghi rõ "CẦN MODEL CÓ KHẢ NĂNG XEM ẢNH (đọc ảnh qua công cụ)" để arena chọn đúng model.
+
 ### STYLE-CORRECTION ROUND 2 (lần 154 — user: "kỹ thuật được nhưng ĐẸP thì xấu, như trẻ 3 tuổi vẽ")
 > Số liệu đạt ≠ đẹp. Chỉ số máy (grad_stops/outline_px…) chỉ là **sàn kỹ thuật** — không phải duyệt. Thêm chuẩn **MĨ THUẬT** bắt buộc, judged bởi Art-style-auditor (không phải máy):
 > 1. **Độ chín thương mại**: art phải nhìn "như game bán tiền" — silhouette TÀI (không đối xứng máy móc), giáp nhiều lớp chồng đè, greebles/đinh-tán/khe-tản-nhiệt mật độ cao, tỷ lệ cân (buồng lái vs thân vs cánh), không hình khối ngây-ngô.
