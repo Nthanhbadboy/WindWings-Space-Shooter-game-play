@@ -276,23 +276,25 @@ def render_w5_parallax(base):
         w = 0.5 - 0.5 * np.cos(ang_y)  # exact periodic function -> row[0] == row[1023]!
         arr = np.zeros((S, S, 4), dtype=np.uint8)
         if "boss" in base:
-            arr[:, :, 0] = (48 + 145 * w).astype(np.uint8)
-            arr[:, :, 1] = (14 + 28 * w).astype(np.uint8)
-            arr[:, :, 2] = (92 + 88 * w).astype(np.uint8)
+            arr[:, :, 0] = (20 + 62 * w).astype(np.uint8)
+            arr[:, :, 1] = (8 + 16 * w).astype(np.uint8)
+            arr[:, :, 2] = (42 + 58 * w).astype(np.uint8)
             arr[:, :, 3] = 255 if base != "nenboss_left" else np.clip(255 - (xx * 255 // 520), 0, 255).astype(np.uint8)
             pal = "crimson"
             slug = "stage_boss_alert_sky" if base == "nenboss" else "stage_boss_flank_curtain"
         else:
-            arr[:, :, 0] = (18 + 52 * w).astype(np.uint8)
-            arr[:, :, 1] = (112 + 96 * w).astype(np.uint8)
-            arr[:, :, 2] = (232 + 22 * w).astype(np.uint8)
+            # Deep desaturated stage sky: foreground ships/bullets own the
+            # high-value accents (audit finding: cyan BG must not overpower them).
+            arr[:, :, 0] = (6 + 14 * w).astype(np.uint8)
+            arr[:, :, 1] = (20 + 34 * w).astype(np.uint8)
+            arr[:, :, 2] = (48 + 66 * w).astype(np.uint8)
             arr[:, :, 3] = 255
             pal = "cerulean"
             slug = "stage_sky_normal" if base == "bgnormal" else "stage_sky_horizon"
         im = Image.fromarray(arr, "RGBA")
         if base == "nenboss_left":
             arr_c = np.asarray(im).copy()
-            arr_c[0, -1] = arr_c[-1, -1] = [0, 0, 0, 0]
+            arr_c[0, 0] = arr_c[0, -1] = arr_c[-1, 0] = arr_c[-1, -1] = [0, 0, 0, 0]
             im = Image.fromarray(arr_c, "RGBA")
         return im, slug, pal, (base == "nenboss_left" and False)
 
@@ -331,9 +333,17 @@ def render_w5_parallax(base):
         lat = np.arcsin(np.clip(ny, -1.0, 1.0))
         f1 = np.sin(lon * 3.0 + 0.7) * np.cos(lat * 2.6 - 0.3) + 0.55 * np.sin(lon * 7.0 - lat * 5.0)
         if base in ("jupiter", "saturn"):
-            pat = 0.5 + 0.5 * np.sin(lat * 14.0 + 0.35 * np.sin(lon * 4.0))
+            # Turbulent, multi-scale banding rather than flat horizontal stripes.
+            pat = (0.5 + 0.42 * np.sin(lat * 14.0 + 0.35 * np.sin(lon * 4.0))
+                   + 0.10 * np.sin(lon * 18.0 + lat * 31.0)
+                   + 0.06 * np.sin(lon * 37.0 - lat * 17.0))
+            pat = np.clip(pat, 0.0, 1.0)
         elif base == "earth":
-            pat = np.clip((f1 + 0.18) * 2.8, 0.0, 1.0)
+            # Broken continental masses with a second erosion frequency; the
+            # spherical light term below supplies the large-scale volume.
+            continental = (f1 + 0.24 * np.sin(lon * 13.0 + lat * 9.0)
+                           + 0.12 * np.cos(lon * 23.0 - lat * 17.0))
+            pat = np.clip((continental + 0.18) * 2.8, 0.0, 1.0)
         elif base == "moon":
             cr = np.zeros_like(nx)
             for cx0, cy0, cr0 in [(-0.32, -0.28, 0.22), (0.35, -0.05, 0.17), (-0.08, 0.36, 0.25), (0.22, 0.42, 0.13), (-0.48, 0.18, 0.15)]:
@@ -348,8 +358,17 @@ def render_w5_parallax(base):
             surf[:, :, c] = col_a[c] * (1.0 - pat) + col_b[c] * pat
         if base == "earth":
             clouds = np.clip(np.sin(lon * 5.0 + lat * 4.0) * np.cos(lon * 9.0 - lat * 6.0) - 0.15, 0.0, 1.0) * 0.85
+            # Thin broken cloud filaments, not a uniform white blob.
+            clouds *= 0.72 + 0.28 * np.sin(lon * 21.0 + lat * 13.0) ** 2
             for c in range(3):
                 surf[:, :, c] = surf[:, :, c] * (1.0 - clouds) + 250.0 * clouds
+        if base in ("jupiter", "saturn"):
+            # A localized storm oval gives the gas giant a readable feature at
+            # thumbnail scale while remaining procedural original art.
+            storm = np.exp(-(((nx - 0.34) / 0.22) ** 2 + ((ny - 0.18) / 0.12) ** 2) * 2.0)
+            surf[:, :, 0] = np.clip(surf[:, :, 0] + 54.0 * storm, 0, 255)
+            surf[:, :, 1] = np.clip(surf[:, :, 1] - 30.0 * storm, 0, 255)
+            surf[:, :, 2] = np.clip(surf[:, :, 2] - 26.0 * storm, 0, 255)
 
         # 3D Spherical Terminator lighting + Rayleigh atmospheric rim + volcanic fissures on Mars/Venus
         ndotl = np.clip(nx * (-0.54) + ny * (-0.56) + nz * 0.63, -1.0, 1.0)
@@ -456,12 +475,120 @@ def render_w5_gui(base):
 # ---------------------------------------------------------------------------
 # 4. UI (+221: U-ICON x58 @64, U-KIT x59 @256, U-META x53 @256, U-SHOP x51 @256)
 # ---------------------------------------------------------------------------
+def _semantic_shopicon(im):
+    """AP-0443 ShopIcon: a basket/shop, not the generic star badge."""
+    S = im.width; d = ImageDraw.Draw(im); cx = S // 2
+    # Handle and two metal uprights.
+    d.arc((142, 48, 370, 240), 180, 360, fill=(236, 244, 255, 255), width=24)
+    d.arc((150, 56, 362, 232), 180, 360, fill=(64, 78, 104, 255), width=12)
+    d.line((150, 142, 126, 206), fill=(83, 93, 116, 255), width=18)
+    d.line((362, 142, 386, 206), fill=(83, 93, 116, 255), width=18)
+    d.line((150, 142, 126, 206), fill=(232, 240, 250, 255), width=7)
+    d.line((362, 142, 386, 206), fill=(232, 240, 250, 255), width=7)
+    body = [(104, 188), (408, 188), (382, 400), (140, 400)]
+    draw_cel_poly(im, body, PAL["crimson"], outline_w=7)
+    well = [(126, 204), (386, 204), (370, 254), (142, 254)]
+    draw_cel_poly(im, well, PAL["slate"], outline_w=4)
+    # Open basket ribs, with bright metal edges rather than a flat icon fill.
+    for x in (164, 224, 288, 348):
+        d.line((x, 266, x - 10, 382), fill=(255, 122, 142, 255), width=13)
+        d.line((x + 4, 266, x - 6, 382), fill=(116, 22, 54, 255), width=5)
+    for y in (282, 330, 378):
+        d.line((132, y, 380, y - 4), fill=(255, 128, 144, 255), width=12)
+    d.line((112, 190, 400, 190), fill=(255, 218, 160, 255), width=10)
+    return im, "shop_shopping_basket", "crimson"
+
+
+def _semantic_event_panel(im):
+    """AP-0462 nennutevent: dark neon event banner frame, no ShopIcon star."""
+    d = ImageDraw.Draw(im)
+    draw_9slice_panel(im, (62, 28, 450, 484), 38, PAL["azure"], (5, 12, 46, 250), inner_rim=PAL["cyan"][0], outline_w=8)
+    # Subtle event-grid interior and a small upper-left hologram accent.
+    for x in range(112, 434, 42):
+        d.line((256, 280, x, 450), fill=(26, 65, 140, 150), width=3)
+    for y in (316, 350, 386, 422):
+        d.line((92, y, 420, y), fill=(28, 68, 150, 150), width=3)
+    d.arc((82, 52, 176, 146), 110, 300, fill=(93, 240, 255, 230), width=6)
+    d.line((98, 124, 142, 78, 166, 112), fill=(76, 214, 255, 220), width=5)
+    return im, "shop_event_banner_frame", "azure"
+
+
+def _semantic_blink(im):
+    """AP-0264 Blink: a horizontal lens flare, intentionally not a badge."""
+    S = im.width; yy, xx = np.mgrid[0:S, 0:S].astype(np.float32)
+    cx = cy = S / 2
+    core = np.exp(-((yy - cy) / 12.0) ** 2) * np.exp(-((xx - cx) / 180.0) ** 2)
+    halo = np.exp(-((yy - cy) / 44.0) ** 2) * np.exp(-((xx - cx) / 230.0) ** 2)
+    a = np.clip(core * 245 + halo * 90, 0, 255).astype(np.uint8)
+    arr = np.zeros((S, S, 4), dtype=np.uint8)
+    arr[:, :, 0] = np.clip(20 + 100 * core, 0, 255).astype(np.uint8)
+    arr[:, :, 1] = np.clip(90 + 150 * core, 0, 255).astype(np.uint8)
+    arr[:, :, 2] = 255
+    arr[:, :, 3] = a
+    return Image.fromarray(arr, "RGBA"), "kit_blink_horizontal_flare", "cyan"
+
+
+def _semantic_tech_node(im, variant=0):
+    """Decoded tech-node slots: circuit junction with links, not a star."""
+    S = im.width; d = ImageDraw.Draw(im); cx = cy = S // 2
+    accent = PAL["cyan"] if variant == 0 else PAL["emerald"]
+    for k in range(6 if variant == 0 else 4):
+        a = k * math.pi / (3 if variant == 0 else 2) + 0.15
+        x0, y0 = cx + math.cos(a) * 70, cy + math.sin(a) * 70
+        x1, y1 = cx + math.cos(a) * 178, cy + math.sin(a) * 178
+        d.line((x0, y0, x1, y1), fill=(*accent[0][:3], 230), width=10)
+        d.ellipse((x1 - 15, y1 - 15, x1 + 15, y1 + 15), fill=(*PAL["solar"][0][:3], 255))
+    draw_cel_poly(im, reg_poly(cx, cy, 108, 108, 6, rot=math.pi / 6), PAL["azure"], outline_w=7)
+    draw_cel_poly(im, reg_poly(cx, cy, 68, 68, 6, rot=math.pi / 6), accent, outline_w=5)
+    draw_cel_poly(im, reg_poly(cx, cy, 30, 30, 12), PAL["pearl"], outline_w=3)
+    return im, f"kit_tech_circuit_node_{variant + 1}", "cyan" if variant == 0 else "emerald"
+
+
+def _semantic_coin(im, pack=False, boost=""):
+    """CoinIcon vs Goicoin1: one embossed coin vs a readable pile."""
+    S = im.width; d = ImageDraw.Draw(im); cx = cy = S // 2
+    if not pack:
+        draw_cel_poly(im, reg_poly(cx, cy, 48, 48, 24), PAL["solar"], outline_w=4)
+        draw_cel_poly(im, reg_poly(cx, cy, 36, 36, 24), ((255, 218, 54, 255), (192, 106, 0, 255), (255, 249, 161, 255)), outline_w=3)
+        draw_centered_label(im, cx, cy + 1, "C", 40, fill=(255, 251, 202, 255), stroke_w=2)
+    else:
+        for ox, oy, rr in [(-28, 15, 34), (26, 17, 35), (-2, -17, 39)]:
+            # Dark gold edge/thickness under each separate coin.
+            box_side = (cx + ox - rr, cy + oy - rr * 0.66 + 9, cx + ox + rr, cy + oy + rr * 0.66 + 9)
+            d.ellipse(box_side, fill=(164, 84, 3, 255), outline=(104, 54, 2, 255), width=2)
+            d.rectangle((cx + ox - rr, cy + oy, cx + ox + rr, cy + oy + 10), fill=(190, 105, 5, 255))
+            draw_cel_poly(im, reg_poly(cx + ox, cy + oy, rr, rr * 0.66, 22), PAL["solar"], outline_w=3)
+            d.arc((cx + ox - rr + 4, cy + oy - rr * 0.66 + 3, cx + ox + rr - 4, cy + oy + rr * 0.66 - 3), 180, 350, fill=(255, 249, 165, 255), width=3)
+            d.arc((cx + ox - rr + 4, cy + oy - rr * 0.66 + 3, cx + ox + rr - 4, cy + oy + rr * 0.66 - 3), 0, 180, fill=(141, 74, 2, 255), width=2)
+        draw_centered_label(im, cx - 2, cy - 19, "C", 30, fill=(255, 251, 202, 255), stroke_w=2)
+    if boost:
+        draw_centered_label(im, cx + 30, cy + 34, boost, 19, fill=(255, 255, 255, 255), stroke_w=2)
+    return im, ("icon_coin_pile" if pack else "icon_single_coin") + (f"_{boost.lower()}" if boost else ""), "solar"
+
+
 def render_w5_ui(batch, px, base):
     S = px * 2  # 128 for 64px icons, 512 for 256px widgets
     cx, cy = S // 2, S // 2
     im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
     slug = clean_slug(base)
+
+    # Audit a71412d3 semantic anchors: these slots must not share the generic
+    # star/coin badge merely because their planner class is UI.
+    if base == "shopicon":
+        return _semantic_shopicon(im)
+    if base == "nennutevent":
+        return _semantic_event_panel(im)
+    if base == "blink":
+        return _semantic_blink(im)
+    if base in ("11_5", "22_1"):
+        return _semantic_tech_node(im, 0 if base == "11_5" else 1)
+    if base == "coinicon":
+        return _semantic_coin(im, False)
+    if base == "goicoin":
+        return _semantic_coin(im, True)
+    if base in ("icontimecoin", "itemx2coin", "x150%coins"):
+        return _semantic_coin(im, base != "icontimecoin", {"icontimecoin": "T", "itemx2coin": "X2", "x150%coins": "150"}[base])
 
     # Pick vibrant semantic palette
     if any(k in base for k in ("vip", "coin", "gold", "star", "sale", "price", "key", "arena", "ranks", "rankss", "boxs")):
@@ -768,7 +895,7 @@ def main():
     with open(os.path.join(HERE, "w5b_units.json"), "w", encoding="utf-8") as f:
         json.dump(records, f, ensure_ascii=False, indent=1)
     with open(os.path.join(HERE, "w5b_units.csv"), "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(records[0].keys()))
+        w = csv.DictWriter(f, fieldnames=list(records[0].keys()), lineterminator="\n")
         w.writeheader()
         w.writerows(records)
 

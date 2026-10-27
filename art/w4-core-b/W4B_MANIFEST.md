@@ -1,150 +1,126 @@
-# W4-Core — BG / ITEM / FX / UI Manifest (Variant B: Solar Neon Arcade-Pop)
+# W4 CORE (114 files / 112 planner rows) — current audit-response manifest
 
-- **Author branch**: `arena/eca8588b-windwings-space-shooter-game-p` (`Art-designer-B`)
-- **Wave**: `W4-core` (**112 kept planner rows = 114 exported files**; `EXCL 278 = 0` strictly excluded per plan)
-  - **BG (`10 rows = 12 files`)**: `G-PARALLAX` (`AP-0091` × 3 vertically seamless `1024×1024` layers: `sky_far`, `cloud_mid`, `archipelago_near`) + `G-UI` × 9 (`512×512` board backdrops)
-  - **ITEM (`7 rows = 7 files`)**: `I-DROP` (`AP-0130..0134, 0136, 0137` @ `128×128` + `256×256` masters)
-  - **FX (`9 rows = 9 files`)**: `F-BOOM` × 5 (`AP-0082..0086`) + `F-GLOW` × 4 (`AP-0150, 0156, 0158, 0159`) @ `256×256` + `512×512` masters (`F-ENEMY = 0`)
-  - **UI (`86 rows = 86 files`)**: `U-HUD` × 27 (`256×256`), `U-ICON` × 9 (`64×64`), `U-KIT` × 38 (`256×256`), `U-META` × 1 (`256×256`), `U-SHOP` × 11 (`256×256`) + 2× `masters/`
-- **License**: `chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)`
-- **Preview sheet**: `art/w4-core-b/preview/w4b_contact_sheet.png` (`1600×1985`)
+- **Role / Branch:** Art-designer-B · `arena/eca8588b-windwings-space-shooter-game-p`
+- **License:** `chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)` · **Author:** `arena/eca8588b-windwings-space-shooter-game-p`
+- **Status:** static inventory + visual evidence only; Art-style-auditor Layer-2 and runtime acceptance remain pending.
+- **Records:** **114** · metadata columns: `source`, `file`, `license`, `author`, `recipe`.
 
-## 9-Slice Compliance (`docs/spec/ASSETS.md` §5)
+- **Background correction:** `bg_parallax_01_sky_far` is grounded dark cobalt so foreground characters retain the value/saturation hierarchy.
+- **9-slice:** static three-size probe is in `../audit_a71412d_response/nine_slice_contract.csv`; this is not an engine integration test.
 
-All 9-slice UI panels, buttons, cells, sliders, tabs, and rank frames strictly maintain **uniform, ornament-free middle stretch spans** within the spec border insets:
-- `UIButton_Primary`: `24, 20, 24, 20` (corner `12`)
-- `UIButton_Secondary`: `20, 16, 20, 16` (corner `10`)
-- `UIPanel_Popup`: `48, 48, 48, 48` (corner `32`)
-- `UIPanel_Board`: `64, 64, 64, 64` (corner `40`)
-- `UICell_Shop`: `16, 16, 16, 16` (corner `8`)
-- `UICell_Reward`: `12, 12, 12, 12` (corner `6`)
-- `UISlider_Track`: `8, 0, 8, 0` (corner `4`)
-- `UIBar_HP_Boss`: `6, 6, 6, 6` (corner `3`)
-- `UITab_Active`: `24, 12, 24, 12` (corner `8`)
-- `UIFrame_Rank`: `32, 32, 32, 32` (corner `16`)
-
-## Complete 114-File Table (`sprites/` + `masters/`)
-
-| # | Planner Row | Lane | Batch | Planner Base | Variant | Sprite (`art/w4-core-b/...`) | Master (`source`) | Sprite px | Master px | Val | Chroma | Recipe |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| `001` | `AP-0130` | `ITEM` | `I-DROP` | `05_0` | `weapon_up` | `sprites/items/item_drop_01_weapon_up_128@solar.png` | `masters/items/item_drop_01_weapon_up_128@solar.png` | `128x128` | `256x256` | `0.826` | `0.558` | `b_item_solar` |
-| `002` | `AP-0131` | `ITEM` | `I-DROP` | `05_1` | `shield_orb` | `sprites/items/item_drop_02_shield_orb_128@cyan.png` | `masters/items/item_drop_02_shield_orb_128@cyan.png` | `128x128` | `256x256` | `0.807` | `0.662` | `b_item_cyan` |
-| `003` | `AP-0132` | `ITEM` | `I-DROP` | `5_1` | `magnet_core` | `sprites/items/item_drop_03_magnet_core_128@emerald.png` | `masters/items/item_drop_03_magnet_core_128@emerald.png` | `128x128` | `256x256` | `0.759` | `0.641` | `b_item_emerald` |
-| `004` | `AP-0133` | `ITEM` | `I-DROP` | `bag` | `supply_chest` | `sprites/items/item_drop_04_supply_chest_128@solar.png` | `masters/items/item_drop_04_supply_chest_128@solar.png` | `128x128` | `256x256` | `0.780` | `0.657` | `b_item_solar` |
-| `005` | `AP-0134` | `ITEM` | `I-DROP` | `banana` | `solar_crescent` | `sprites/items/item_drop_05_solar_crescent_128@solar.png` | `masters/items/item_drop_05_solar_crescent_128@solar.png` | `128x128` | `256x256` | `0.838` | `0.590` | `b_item_solar` |
-| `006` | `AP-0136` | `ITEM` | `I-DROP` | `fullpower` | `max_overdrive` | `sprites/items/item_drop_06_max_overdrive_128@magenta.png` | `masters/items/item_drop_06_max_overdrive_128@magenta.png` | `128x128` | `256x256` | `0.781` | `0.603` | `b_item_magenta` |
-| `007` | `AP-0137` | `ITEM` | `I-DROP` | `head` | `mecha_crest_token` | `sprites/items/item_drop_07_mecha_crest_token_128@cyan.png` | `masters/items/item_drop_07_mecha_crest_token_128@cyan.png` | `128x128` | `256x256` | `0.801` | `0.538` | `b_item_cyan` |
-| `008` | `AP-0082` | `FX` | `F-BOOM` | `bomb` | `mega_nova` | `sprites/fx/fx_boom_01_mega_nova_256@solar.png` | `masters/fx/fx_boom_01_mega_nova_256@solar.png` | `256x256` | `512x512` | `0.899` | `0.781` | `b_fx_solar` |
-| `009` | `AP-0083` | `FX` | `F-BOOM` | `boom` | `starburst_blast` | `sprites/fx/fx_boom_02_starburst_blast_256@solar.png` | `masters/fx/fx_boom_02_starburst_blast_256@solar.png` | `256x256` | `512x512` | `0.707` | `0.686` | `b_fx_solar` |
-| `010` | `AP-0084` | `FX` | `F-BOOM` | `crossfire` | `cross_flare` | `sprites/fx/fx_boom_03_cross_flare_256@cyan.png` | `masters/fx/fx_boom_03_cross_flare_256@cyan.png` | `256x256` | `512x512` | `0.969` | `0.772` | `b_fx_cyan` |
-| `011` | `AP-0085` | `FX` | `F-BOOM` | `newdevice` | `unlock_prism` | `sprites/fx/fx_boom_04_unlock_prism_256@emerald.png` | `masters/fx/fx_boom_04_unlock_prism_256@emerald.png` | `256x256` | `512x512` | `0.885` | `0.860` | `b_fx_emerald` |
-| `012` | `AP-0086` | `FX` | `F-BOOM` | `saw` | `plasma_vortex` | `sprites/fx/fx_boom_05_plasma_vortex_256@magenta.png` | `masters/fx/fx_boom_05_plasma_vortex_256@magenta.png` | `256x256` | `512x512` | `0.962` | `0.815` | `b_fx_magenta` |
-| `013` | `AP-0150` | `FX` | `F-GLOW` | `heal` | `repair_aura` | `sprites/fx/fx_glow_06_repair_aura_256@emerald.png` | `masters/fx/fx_glow_06_repair_aura_256@emerald.png` | `256x256` | `512x512` | `0.828` | `0.924` | `b_fx_emerald` |
-| `014` | `AP-0156` | `FX` | `F-GLOW` | `supperpower` | `overdrive_surge` | `sprites/fx/fx_glow_07_overdrive_surge_256@solar.png` | `masters/fx/fx_glow_07_overdrive_surge_256@solar.png` | `256x256` | `512x512` | `0.916` | `0.926` | `b_fx_solar` |
-| `015` | `AP-0158` | `FX` | `F-GLOW` | `powerup` | `levelup_ring` | `sprites/fx/fx_glow_08_levelup_ring_256@cyan.png` | `masters/fx/fx_glow_08_levelup_ring_256@cyan.png` | `256x256` | `512x512` | `0.935` | `0.953` | `b_fx_cyan` |
-| `016` | `AP-0159` | `FX` | `F-GLOW` | `circle` | `tint_halo` | `sprites/fx/fx_glow_09_tint_halo_256@cyan.png` | `masters/fx/fx_glow_09_tint_halo_256@cyan.png` | `256x256` | `512x512` | `0.965` | `0.097` | `b_fx_cyan` |
-| `017` | `AP-0091` | `BG` | `G-PARALLAX` | `bg` | `sky_far` | `sprites/bg/bg_parallax_01_sky_far_1024@cerulean.png` | `masters/bg_raw/parallax_01_sky_far_raw.png` | `1024x1024` | `768x1376` | `0.943` | `0.586` | `b_parallax_cerulean` |
-| `018` | `AP-0091` | `BG` | `G-PARALLAX` | `bg` | `cloud_mid` | `sprites/bg/bg_parallax_02_cloud_mid_1024@solar.png` | `masters/bg_raw/parallax_02_cloud_mid_raw.png` | `1024x1024` | `1408x768` | `0.932` | `0.187` | `b_parallax_solar` |
-| `019` | `AP-0091` | `BG` | `G-PARALLAX` | `bg` | `archipelago_near` | `sprites/bg/bg_parallax_03_archipelago_near_1024@emerald.png` | `masters/bg_raw/parallax_03_archipelago_near_raw.png` | `1024x1024` | `1408x768` | `0.660` | `0.683` | `b_parallax_emerald` |
-| `020` | `AP-0161` | `BG` | `G-UI` | `bgbattpass` | `season_pass` | `sprites/bg/bg_ui_01_season_pass_512@solar.png` | `masters/bg/bg_ui_01_season_pass_512@solar.png` | `512x512` | `512x512` | `0.526` | `0.647` | `b_gui_solar` |
-| `021` | `AP-0162` | `BG` | `G-UI` | `bgbuy` | `treasury_shop` | `sprites/bg/bg_ui_02_treasury_shop_512@solar.png` | `masters/bg/bg_ui_02_treasury_shop_512@solar.png` | `512x512` | `512x512` | `0.492` | `0.637` | `b_gui_solar` |
-| `022` | `AP-0163` | `BG` | `G-UI` | `bghome` | `sky_hangar` | `sprites/bg/bg_ui_03_sky_hangar_512@cerulean.png` | `masters/bg/bg_ui_03_sky_hangar_512@cerulean.png` | `512x512` | `512x512` | `0.571` | `0.867` | `b_gui_cerulean` |
-| `023` | `AP-0164` | `BG` | `G-UI` | `bgmap` | `sector_starmap` | `sprites/bg/bg_ui_04_sector_starmap_512@cyan.png` | `masters/bg/bg_ui_04_sector_starmap_512@cyan.png` | `512x512` | `512x512` | `0.570` | `0.856` | `b_gui_cyan` |
-| `024` | `AP-0165` | `BG` | `G-UI` | `bgtrans` | `warp_shutter` | `sprites/bg/bg_ui_05_warp_shutter_512@cerulean.png` | `masters/bg/bg_ui_05_warp_shutter_512@cerulean.png` | `512x512` | `512x512` | `0.559` | `0.861` | `b_gui_cerulean` |
-| `025` | `AP-0166` | `BG` | `G-UI` | `bgupgrade` | `tech_foundry` | `sprites/bg/bg_ui_06_tech_foundry_512@emerald.png` | `masters/bg/bg_ui_06_tech_foundry_512@emerald.png` | `512x512` | `512x512` | `0.577` | `0.835` | `b_gui_emerald` |
-| `026` | `AP-0174` | `BG` | `G-UI` | `nenbangthongtin` | `briefing_slate` | `sprites/bg/bg_ui_07_briefing_slate_512@cerulean.png` | `masters/bg/bg_ui_07_briefing_slate_512@cerulean.png` | `512x512` | `512x512` | `0.558` | `0.861` | `b_gui_cerulean` |
-| `027` | `AP-0177` | `BG` | `G-UI` | `nenvip` | `royal_prestige` | `sprites/bg/bg_ui_08_royal_prestige_512@solar.png` | `masters/bg/bg_ui_08_royal_prestige_512@solar.png` | `512x512` | `512x512` | `0.526` | `0.647` | `b_gui_solar` |
-| `028` | `AP-0178` | `BG` | `G-UI` | `probg` | `pilot_dossier` | `sprites/bg/bg_ui_09_pilot_dossier_512@cyan.png` | `masters/bg/bg_ui_09_pilot_dossier_512@cyan.png` | `512x512` | `512x512` | `0.563` | `0.854` | `b_gui_cyan` |
-| `029` | `AP-0018` | `UI` | `U-HUD` | `+hp` | `hud_hp_plus_badge` | `sprites/ui/u-hud/ui_hud_hp_plus_badge_256@emerald.png` | `masters/ui/u-hud/ui_hud_hp_plus_badge_256@emerald.png` | `256x256` | `512x512` | `0.825` | `0.397` | `b_ui_emerald` |
-| `030` | `AP-0019` | `UI` | `U-HUD` | `+hp_timer` | `hud_hp_timer_gauge` | `sprites/ui/u-hud/ui_hud_hp_timer_gauge_256@emerald.png` | `masters/ui/u-hud/ui_hud_hp_timer_gauge_256@emerald.png` | `256x256` | `512x512` | `0.608` | `0.804` | `b_ui_emerald` |
-| `031` | `AP-0020` | `UI` | `U-HUD` | `box_number` | `hud_counter_cell` | `sprites/ui/u-hud/ui_hud_counter_cell_256@azure.png` | `masters/ui/u-hud/ui_hud_counter_cell_256@azure.png` | `256x256` | `512x512` | `0.424` | `0.835` | `b_ui_azure` |
-| `032` | `AP-0021` | `UI` | `U-HUD` | `chieng` | `hud_wave_gong` | `sprites/ui/u-hud/ui_hud_wave_gong_256@solar.png` | `masters/ui/u-hud/ui_hud_wave_gong_256@solar.png` | `256x256` | `512x512` | `0.810` | `0.782` | `b_ui_solar` |
-| `033` | `AP-0022` | `UI` | `U-HUD` | `clock` | `hud_chrono_clock` | `sprites/ui/u-hud/ui_hud_chrono_clock_256@cyan.png` | `masters/ui/u-hud/ui_hud_chrono_clock_256@cyan.png` | `256x256` | `512x512` | `0.831` | `0.503` | `b_ui_cyan` |
-| `034` | `AP-0023` | `UI` | `U-HUD` | `control` | `hud_pad_ring` | `sprites/ui/u-hud/ui_hud_pad_ring_256@cyan.png` | `masters/ui/u-hud/ui_hud_pad_ring_256@cyan.png` | `256x256` | `512x512` | `0.726` | `0.859` | `b_ui_cyan` |
-| `035` | `AP-0024` | `UI` | `U-HUD` | `device_slot_default` | `hud_device_slot` | `sprites/ui/u-hud/ui_hud_device_slot_256@azure.png` | `masters/ui/u-hud/ui_hud_device_slot_256@azure.png` | `256x256` | `512x512` | `0.553` | `0.827` | `b_ui_azure` |
-| `036` | `AP-0025` | `UI` | `U-HUD` | `dot` | `hud_pip_dot` | `sprites/ui/u-hud/ui_hud_pip_dot_256@cyan.png` | `masters/ui/u-hud/ui_hud_pip_dot_256@cyan.png` | `256x256` | `512x512` | `0.821` | `0.634` | `b_ui_cyan` |
-| `037` | `AP-0026` | `UI` | `U-HUD` | `hp` | `hud_life_pip` | `sprites/ui/u-hud/ui_hud_life_pip_256@emerald.png` | `masters/ui/u-hud/ui_hud_life_pip_256@emerald.png` | `256x256` | `512x512` | `0.760` | `0.644` | `b_ui_emerald` |
-| `038` | `AP-0027` | `UI` | `U-HUD` | `knob` | `hud_pad_knob` | `sprites/ui/u-hud/ui_hud_pad_knob_256@solar.png` | `masters/ui/u-hud/ui_hud_pad_knob_256@solar.png` | `256x256` | `512x512` | `0.855` | `0.612` | `b_ui_solar` |
-| `039` | `AP-0028` | `UI` | `U-HUD` | `number` | `hud_score_plate` | `sprites/ui/u-hud/ui_hud_score_plate_256@azure.png` | `masters/ui/u-hud/ui_hud_score_plate_256@azure.png` | `256x256` | `512x512` | `0.447` | `0.830` | `b_ui_azure` |
-| `040` | `AP-0029` | `UI` | `U-HUD` | `overdrive_timer` | `hud_overdrive_gauge` | `sprites/ui/u-hud/ui_hud_overdrive_gauge_256@solar.png` | `masters/ui/u-hud/ui_hud_overdrive_gauge_256@solar.png` | `256x256` | `512x512` | `0.665` | `0.779` | `b_ui_solar` |
-| `041` | `AP-0030` | `UI` | `U-HUD` | `pause` | `hud_pause_btn` | `sprites/ui/u-hud/ui_hud_pause_btn_256@azure.png` | `masters/ui/u-hud/ui_hud_pause_btn_256@azure.png` | `256x256` | `512x512` | `0.468` | `0.823` | `b_ui_azure` |
-| `042` | `AP-0031` | `UI` | `U-HUD` | `point_bg` | `hud_point_pill` | `sprites/ui/u-hud/ui_hud_point_pill_256@azure.png` | `masters/ui/u-hud/ui_hud_point_pill_256@azure.png` | `256x256` | `512x512` | `0.782` | `0.806` | `b_ui_azure` |
-| `043` | `AP-0032` | `UI` | `U-HUD` | `s_timer` | `hud_skill_s_gauge` | `sprites/ui/u-hud/ui_hud_skill_s_gauge_256@magenta.png` | `masters/ui/u-hud/ui_hud_skill_s_gauge_256@magenta.png` | `256x256` | `512x512` | `0.640` | `0.764` | `b_ui_magenta` |
-| `044` | `AP-0033` | `UI` | `U-HUD` | `shield_timer` | `hud_shield_gauge` | `sprites/ui/u-hud/ui_hud_shield_gauge_256@cyan.png` | `masters/ui/u-hud/ui_hud_shield_gauge_256@cyan.png` | `256x256` | `512x512` | `0.681` | `0.811` | `b_ui_cyan` |
-| `045` | `AP-0034` | `UI` | `U-HUD` | `slot` | `hud_loadout_bar` | `sprites/ui/u-hud/ui_hud_loadout_bar_256@azure.png` | `masters/ui/u-hud/ui_hud_loadout_bar_256@azure.png` | `256x256` | `512x512` | `0.447` | `0.830` | `b_ui_azure` |
-| `046` | `AP-0035` | `UI` | `U-HUD` | `thanh` | `hud_energy_segment` | `sprites/ui/u-hud/ui_hud_energy_segment_256@cyan.png` | `masters/ui/u-hud/ui_hud_energy_segment_256@cyan.png` | `256x256` | `512x512` | `0.773` | `0.784` | `b_ui_cyan` |
-| `047` | `AP-0036` | `UI` | `U-HUD` | `thanhtieudebangthongtin` | `hud_info_header_tab` | `sprites/ui/u-hud/ui_hud_info_header_tab_256@solar.png` | `masters/ui/u-hud/ui_hud_info_header_tab_256@solar.png` | `256x256` | `512x512` | `0.911` | `0.809` | `b_ui_solar` |
-| `048` | `AP-0037` | `UI` | `U-HUD` | `thanhtip` | `hud_tip_ribbon` | `sprites/ui/u-hud/ui_hud_tip_ribbon_256@azure.png` | `masters/ui/u-hud/ui_hud_tip_ribbon_256@azure.png` | `256x256` | `512x512` | `0.447` | `0.830` | `b_ui_azure` |
-| `049` | `AP-0038` | `UI` | `U-HUD` | `thanhchiso` | `hud_stat_bar_primary` | `sprites/ui/u-hud/ui_hud_stat_bar_primary_256@solar.png` | `masters/ui/u-hud/ui_hud_stat_bar_primary_256@solar.png` | `256x256` | `512x512` | `0.796` | `0.771` | `b_ui_solar` |
-| `050` | `AP-0039` | `UI` | `U-HUD` | `thanhchiso1 copy` | `hud_stat_bar_secondary` | `sprites/ui/u-hud/ui_hud_stat_bar_secondary_256@cyan.png` | `masters/ui/u-hud/ui_hud_stat_bar_secondary_256@cyan.png` | `256x256` | `512x512` | `0.798` | `0.793` | `b_ui_cyan` |
-| `051` | `AP-0040` | `UI` | `U-HUD` | `thanhduoi` | `hud_bottom_trim_bar` | `sprites/ui/u-hud/ui_hud_bottom_trim_bar_256@azure.png` | `masters/ui/u-hud/ui_hud_bottom_trim_bar_256@azure.png` | `256x256` | `512x512` | `0.827` | `0.726` | `b_ui_azure` |
-| `052` | `AP-0041` | `UI` | `U-HUD` | `thanhtren` | `hud_boss_hp_track` | `sprites/ui/u-hud/ui_hud_boss_hp_track_256@crimson.png` | `masters/ui/u-hud/ui_hud_boss_hp_track_256@crimson.png` | `256x256` | `512x512` | `0.842` | `0.757` | `b_ui_crimson` |
-| `053` | `AP-0042` | `UI` | `U-HUD` | `tiendo` | `hud_stage_progress_track` | `sprites/ui/u-hud/ui_hud_stage_progress_track_256@emerald.png` | `masters/ui/u-hud/ui_hud_stage_progress_track_256@emerald.png` | `256x256` | `512x512` | `0.750` | `0.811` | `b_ui_emerald` |
-| `054` | `AP-0043` | `UI` | `U-HUD` | `warning_boss_bg` | `hud_boss_warning_banner` | `sprites/ui/u-hud/ui_hud_boss_warning_banner_256@crimson.png` | `masters/ui/u-hud/ui_hud_boss_warning_banner_256@crimson.png` | `256x256` | `512x512` | `0.404` | `0.784` | `b_ui_crimson` |
-| `055` | `AP-0044` | `UI` | `U-HUD` | `dung item +them hp` | `hud_quick_heal_btn` | `sprites/ui/u-hud/ui_hud_quick_heal_btn_256@emerald.png` | `masters/ui/u-hud/ui_hud_quick_heal_btn_256@emerald.png` | `256x256` | `512x512` | `0.480` | `0.796` | `b_ui_emerald` |
-| `056` | `AP-0182` | `UI` | `U-ICON` | `coin` | `icon_gold_coin` | `sprites/ui/u-icon/ui_icon_gold_coin_64@solar.png` | `masters/ui/u-icon/ui_icon_gold_coin_64@solar.png` | `64x64` | `128x128` | `0.799` | `0.680` | `b_ui_solar` |
-| `057` | `AP-0187` | `UI` | `U-ICON` | `evolution` | `icon_wing_evolution` | `sprites/ui/u-icon/ui_icon_wing_evolution_64@magenta.png` | `masters/ui/u-icon/ui_icon_wing_evolution_64@magenta.png` | `64x64` | `128x128` | `0.717` | `0.718` | `b_ui_magenta` |
-| `058` | `AP-0188` | `UI` | `U-ICON` | `exp` | `icon_exp_crystal` | `sprites/ui/u-icon/ui_icon_exp_crystal_64@cyan.png` | `masters/ui/u-icon/ui_icon_exp_crystal_64@cyan.png` | `64x64` | `128x128` | `0.684` | `0.673` | `b_ui_cyan` |
-| `059` | `AP-0189` | `UI` | `U-ICON` | `eye` | `icon_watch_eye` | `sprites/ui/u-icon/ui_icon_watch_eye_64@cyan.png` | `masters/ui/u-icon/ui_icon_watch_eye_64@cyan.png` | `64x64` | `128x128` | `0.761` | `0.495` | `b_ui_cyan` |
-| `060` | `AP-0193` | `UI` | `U-ICON` | `hotro` | `icon_wingman_support` | `sprites/ui/u-icon/ui_icon_wingman_support_64@emerald.png` | `masters/ui/u-icon/ui_icon_wingman_support_64@emerald.png` | `64x64` | `128x128` | `0.674` | `0.780` | `b_ui_emerald` |
-| `061` | `AP-0196` | `UI` | `U-ICON` | `iconmode` | `icon_battle_mode` | `sprites/ui/u-icon/ui_icon_battle_mode_64@solar.png` | `masters/ui/u-icon/ui_icon_battle_mode_64@solar.png` | `64x64` | `128x128` | `0.710` | `0.743` | `b_ui_solar` |
-| `062` | `AP-0226` | `UI` | `U-ICON` | `stat` | `icon_atk_stat` | `sprites/ui/u-icon/ui_icon_atk_stat_64@crimson.png` | `masters/ui/u-icon/ui_icon_atk_stat_64@crimson.png` | `64x64` | `128x128` | `0.525` | `0.824` | `b_ui_crimson` |
-| `063` | `AP-0227` | `UI` | `U-ICON` | `substat` | `icon_substat_chevron` | `sprites/ui/u-icon/ui_icon_substat_chevron_64@cyan.png` | `masters/ui/u-icon/ui_icon_substat_chevron_64@cyan.png` | `64x64` | `128x128` | `0.670` | `0.787` | `b_ui_cyan` |
-| `064` | `AP-0229` | `UI` | `U-ICON` | `supporticon` | `icon_tech_wrench` | `sprites/ui/u-icon/ui_icon_tech_wrench_64@solar.png` | `masters/ui/u-icon/ui_icon_tech_wrench_64@solar.png` | `64x64` | `128x128` | `0.710` | `0.779` | `b_ui_solar` |
-| `065` | `AP-0249` | `UI` | `U-KIT` | `10010radar` | `kit_radar_sweep_cyan` | `sprites/ui/u-kit/ui_kit_radar_sweep_cyan_256@cyan.png` | `masters/ui/u-kit/ui_kit_radar_sweep_cyan_256@cyan.png` | `256x256` | `512x512` | `0.694` | `0.933` | `b_ui_cyan` |
-| `066` | `AP-0250` | `UI` | `U-KIT` | `10015radar` | `kit_radar_sweep_solar` | `sprites/ui/u-kit/ui_kit_radar_sweep_solar_256@solar.png` | `masters/ui/u-kit/ui_kit_radar_sweep_solar_256@solar.png` | `256x256` | `512x512` | `0.690` | `0.883` | `b_ui_solar` |
-| `067` | `AP-0256` | `UI` | `U-KIT` | `arow` | `kit_nav_chevron` | `sprites/ui/u-kit/ui_kit_nav_chevron_256@solar.png` | `masters/ui/u-kit/ui_kit_nav_chevron_256@solar.png` | `256x256` | `512x512` | `0.728` | `0.817` | `b_ui_solar` |
-| `068` | `AP-0258` | `UI` | `U-KIT` | `back` | `kit_back_btn` | `sprites/ui/u-kit/ui_kit_back_btn_256@azure.png` | `masters/ui/u-kit/ui_kit_back_btn_256@azure.png` | `256x256` | `512x512` | `0.432` | `0.822` | `b_ui_azure` |
-| `069` | `AP-0265` | `UI` | `U-KIT` | `bombattack` | `kit_megabomb_btn` | `sprites/ui/u-kit/ui_kit_megabomb_btn_256@solar.png` | `masters/ui/u-kit/ui_kit_megabomb_btn_256@solar.png` | `256x256` | `512x512` | `0.774` | `0.826` | `b_ui_solar` |
-| `070` | `AP-0267` | `UI` | `U-KIT` | `border` | `kit_pillar_frame` | `sprites/ui/u-kit/ui_kit_pillar_frame_256@azure.png` | `masters/ui/u-kit/ui_kit_pillar_frame_256@azure.png` | `256x256` | `512x512` | `0.415` | `0.823` | `b_ui_azure` |
-| `071` | `AP-0268` | `UI` | `U-KIT` | `border_bxh` | `kit_frame_leaderboard` | `sprites/ui/u-kit/ui_kit_frame_leaderboard_256@solar.png` | `masters/ui/u-kit/ui_kit_frame_leaderboard_256@solar.png` | `256x256` | `512x512` | `0.419` | `0.807` | `b_ui_solar` |
-| `072` | `AP-0269` | `UI` | `U-KIT` | `border_big` | `kit_frame_grand` | `sprites/ui/u-kit/ui_kit_frame_grand_256@solar.png` | `masters/ui/u-kit/ui_kit_frame_grand_256@solar.png` | `256x256` | `512x512` | `0.504` | `0.824` | `b_ui_solar` |
-| `073` | `AP-0270` | `UI` | `U-KIT` | `border_center` | `kit_frame_socket` | `sprites/ui/u-kit/ui_kit_frame_socket_256@cyan.png` | `masters/ui/u-kit/ui_kit_frame_socket_256@cyan.png` | `256x256` | `512x512` | `0.424` | `0.811` | `b_ui_cyan` |
-| `074` | `AP-0271` | `UI` | `U-KIT` | `border_halloween` | `kit_frame_pumpkin_amber` | `sprites/ui/u-kit/ui_kit_frame_pumpkin_amber_256@crimson.png` | `masters/ui/u-kit/ui_kit_frame_pumpkin_amber_256@crimson.png` | `256x256` | `512x512` | `0.418` | `0.817` | `b_ui_crimson` |
-| `075` | `AP-0272` | `UI` | `U-KIT` | `border_large` | `kit_frame_wide` | `sprites/ui/u-kit/ui_kit_frame_wide_256@azure.png` | `masters/ui/u-kit/ui_kit_frame_wide_256@azure.png` | `256x256` | `512x512` | `0.505` | `0.842` | `b_ui_azure` |
-| `076` | `AP-0273` | `UI` | `U-KIT` | `border_normal` | `kit_frame_standard` | `sprites/ui/u-kit/ui_kit_frame_standard_256@azure.png` | `masters/ui/u-kit/ui_kit_frame_standard_256@azure.png` | `256x256` | `512x512` | `0.415` | `0.823` | `b_ui_azure` |
-| `077` | `AP-0275` | `UI` | `U-KIT` | `border_top` | `kit_frame_crest_cap` | `sprites/ui/u-kit/ui_kit_frame_crest_cap_256@solar.png` | `masters/ui/u-kit/ui_kit_frame_crest_cap_256@solar.png` | `256x256` | `512x512` | `0.776` | `0.777` | `b_ui_solar` |
-| `078` | `AP-0276` | `UI` | `U-KIT` | `border_valetine` | `kit_frame_rose_neon` | `sprites/ui/u-kit/ui_kit_frame_rose_neon_256@magenta.png` | `masters/ui/u-kit/ui_kit_frame_rose_neon_256@magenta.png` | `256x256` | `512x512` | `0.418` | `0.809` | `b_ui_magenta` |
-| `079` | `AP-0277` | `UI` | `U-KIT` | `border_winter` | `kit_frame_frost_cyan` | `sprites/ui/u-kit/ui_kit_frame_frost_cyan_256@cyan.png` | `masters/ui/u-kit/ui_kit_frame_frost_cyan_256@cyan.png` | `256x256` | `512x512` | `0.418` | `0.804` | `b_ui_cyan` |
-| `080` | `AP-0295` | `UI` | `U-KIT` | `button` | `kit_button_primary` | `sprites/ui/u-kit/ui_kit_button_primary_256@solar.png` | `masters/ui/u-kit/ui_kit_button_primary_256@solar.png` | `256x256` | `512x512` | `0.911` | `0.527` | `b_ui_solar` |
-| `081` | `AP-0305` | `UI` | `U-KIT` | `df5_512x` | `kit_dialog_card` | `sprites/ui/u-kit/ui_kit_dialog_card_256@azure.png` | `masters/ui/u-kit/ui_kit_dialog_card_256@azure.png` | `256x256` | `512x512` | `0.409` | `0.832` | `b_ui_azure` |
-| `082` | `AP-0306` | `UI` | `U-KIT` | `db` | `kit_rank_shield_emblem` | `sprites/ui/u-kit/ui_kit_rank_shield_emblem_256@solar.png` | `masters/ui/u-kit/ui_kit_rank_shield_emblem_256@solar.png` | `256x256` | `512x512` | `0.800` | `0.699` | `b_ui_solar` |
-| `083` | `AP-0307` | `UI` | `U-KIT` | `den` | `kit_beacon_lamp` | `sprites/ui/u-kit/ui_kit_beacon_lamp_256@cyan.png` | `masters/ui/u-kit/ui_kit_beacon_lamp_256@cyan.png` | `256x256` | `512x512` | `0.773` | `0.784` | `b_ui_cyan` |
-| `084` | `AP-0308` | `UI` | `U-KIT` | `dongco` | `kit_thruster_module_card` | `sprites/ui/u-kit/ui_kit_thruster_module_card_256@azure.png` | `masters/ui/u-kit/ui_kit_thruster_module_card_256@azure.png` | `256x256` | `512x512` | `0.759` | `0.795` | `b_ui_azure` |
-| `085` | `AP-0310` | `UI` | `U-KIT` | `end` | `kit_victory_laurel_crest` | `sprites/ui/u-kit/ui_kit_victory_laurel_crest_256@solar.png` | `masters/ui/u-kit/ui_kit_victory_laurel_crest_256@solar.png` | `256x256` | `512x512` | `0.800` | `0.699` | `b_ui_solar` |
-| `086` | `AP-0313` | `UI` | `U-KIT` | `failed` | `kit_defeat_divider` | `sprites/ui/u-kit/ui_kit_defeat_divider_256@crimson.png` | `masters/ui/u-kit/ui_kit_defeat_divider_256@crimson.png` | `256x256` | `512x512` | `0.841` | `0.680` | `b_ui_crimson` |
-| `087` | `AP-0315` | `UI` | `U-KIT` | `finger` | `kit_tap_pointer` | `sprites/ui/u-kit/ui_kit_tap_pointer_256@pearl.png` | `masters/ui/u-kit/ui_kit_tap_pointer_256@pearl.png` | `256x256` | `512x512` | `0.815` | `0.348` | `b_ui_pearl` |
-| `088` | `AP-0316` | `UI` | `U-KIT` | `gd` | `kit_gear_socket_badge` | `sprites/ui/u-kit/ui_kit_gear_socket_badge_256@violet.png` | `masters/ui/u-kit/ui_kit_gear_socket_badge_256@violet.png` | `256x256` | `512x512` | `0.742` | `0.751` | `b_ui_violet` |
-| `089` | `AP-0317` | `UI` | `U-KIT` | `gameover` | `kit_gameover_ribbon` | `sprites/ui/u-kit/ui_kit_gameover_ribbon_256@crimson.png` | `masters/ui/u-kit/ui_kit_gameover_ribbon_256@crimson.png` | `256x256` | `512x512` | `0.841` | `0.680` | `b_ui_crimson` |
-| `090` | `AP-0318` | `UI` | `U-KIT` | `hard` | `kit_diff_hard_tab` | `sprites/ui/u-kit/ui_kit_diff_hard_tab_256@solar.png` | `masters/ui/u-kit/ui_kit_diff_hard_tab_256@solar.png` | `256x256` | `512x512` | `0.911` | `0.809` | `b_ui_solar` |
-| `091` | `AP-0319` | `UI` | `U-KIT` | `hoicham` | `kit_help_question_btn` | `sprites/ui/u-kit/ui_kit_help_question_btn_256@cyan.png` | `masters/ui/u-kit/ui_kit_help_question_btn_256@cyan.png` | `256x256` | `512x512` | `0.850` | `0.707` | `b_ui_cyan` |
-| `092` | `AP-0321` | `UI` | `U-KIT` | `imposs` | `kit_diff_inferno_tab` | `sprites/ui/u-kit/ui_kit_diff_inferno_tab_256@crimson.png` | `masters/ui/u-kit/ui_kit_diff_inferno_tab_256@crimson.png` | `256x256` | `512x512` | `0.911` | `0.772` | `b_ui_crimson` |
-| `093` | `AP-0322` | `UI` | `U-KIT` | `line` | `kit_tech_connector_line` | `sprites/ui/u-kit/ui_kit_tech_connector_line_256@cyan.png` | `masters/ui/u-kit/ui_kit_tech_connector_line_256@cyan.png` | `256x256` | `512x512` | `0.842` | `0.712` | `b_ui_cyan` |
-| `094` | `AP-0325` | `UI` | `U-KIT` | `loading` | `kit_loading_bar_frame` | `sprites/ui/u-kit/ui_kit_loading_bar_frame_256@cyan.png` | `masters/ui/u-kit/ui_kit_loading_bar_frame_256@cyan.png` | `256x256` | `512x512` | `0.798` | `0.793` | `b_ui_cyan` |
-| `095` | `AP-0326` | `UI` | `U-KIT` | `lock` | `kit_padlock_badge` | `sprites/ui/u-kit/ui_kit_padlock_badge_256@solar.png` | `masters/ui/u-kit/ui_kit_padlock_badge_256@solar.png` | `256x256` | `512x512` | `0.795` | `0.672` | `b_ui_solar` |
-| `096` | `AP-0330` | `UI` | `U-KIT` | `ong` | `kit_plasma_tube_cell` | `sprites/ui/u-kit/ui_kit_plasma_tube_cell_256@emerald.png` | `masters/ui/u-kit/ui_kit_plasma_tube_cell_256@emerald.png` | `256x256` | `512x512` | `0.743` | `0.793` | `b_ui_emerald` |
-| `097` | `AP-0332` | `UI` | `U-KIT` | `popup` | `kit_modal_popup` | `sprites/ui/u-kit/ui_kit_modal_popup_256@azure.png` | `masters/ui/u-kit/ui_kit_modal_popup_256@azure.png` | `256x256` | `512x512` | `0.409` | `0.832` | `b_ui_azure` |
-| `098` | `AP-0333` | `UI` | `U-KIT` | `shields` | `kit_aegis_crest` | `sprites/ui/u-kit/ui_kit_aegis_crest_256@cyan.png` | `masters/ui/u-kit/ui_kit_aegis_crest_256@cyan.png` | `256x256` | `512x512` | `0.793` | `0.704` | `b_ui_cyan` |
-| `099` | `AP-0334` | `UI` | `U-KIT` | `tab` | `kit_nav_tab_active` | `sprites/ui/u-kit/ui_kit_nav_tab_active_256@solar.png` | `masters/ui/u-kit/ui_kit_nav_tab_active_256@solar.png` | `256x256` | `512x512` | `0.911` | `0.809` | `b_ui_solar` |
-| `100` | `AP-0336` | `UI` | `U-KIT` | `tabtuan` | `kit_weekly_tab_header` | `sprites/ui/u-kit/ui_kit_weekly_tab_header_256@emerald.png` | `masters/ui/u-kit/ui_kit_weekly_tab_header_256@emerald.png` | `256x256` | `512x512` | `0.836` | `0.865` | `b_ui_emerald` |
-| `101` | `AP-0337` | `UI` | `U-KIT` | `techlab` | `kit_techlab_board` | `sprites/ui/u-kit/ui_kit_techlab_board_256@cyan.png` | `masters/ui/u-kit/ui_kit_techlab_board_256@cyan.png` | `256x256` | `512x512` | `0.505` | `0.823` | `b_ui_cyan` |
-| `102` | `AP-0338` | `UI` | `U-KIT` | `tieude` | `kit_title_ribbon` | `sprites/ui/u-kit/ui_kit_title_ribbon_256@solar.png` | `masters/ui/u-kit/ui_kit_title_ribbon_256@solar.png` | `256x256` | `512x512` | `0.911` | `0.809` | `b_ui_solar` |
-| `103` | `AP-0377` | `UI` | `U-META` | `pvp` | `meta_pvp_league_crest` | `sprites/ui/u-meta/ui_meta_pvp_league_crest_256@solar.png` | `masters/ui/u-meta/ui_meta_pvp_league_crest_256@solar.png` | `256x256` | `512x512` | `0.787` | `0.672` | `b_ui_solar` |
-| `104` | `AP-0420` | `UI` | `U-SHOP` | `goigem` | `shop_gem_pack_pile` | `sprites/ui/u-shop/ui_shop_gem_pack_pile_256@cyan.png` | `masters/ui/u-shop/ui_shop_gem_pack_pile_256@cyan.png` | `256x256` | `512x512` | `0.769` | `0.702` | `b_ui_cyan` |
-| `105` | `AP-0436` | `UI` | `U-SHOP` | `nutplay` | `shop_launch_play_btn` | `sprites/ui/u-shop/ui_shop_launch_play_btn_256@solar.png` | `masters/ui/u-shop/ui_shop_launch_play_btn_256@solar.png` | `256x256` | `512x512` | `0.795` | `0.820` | `b_ui_solar` |
-| `106` | `AP-0444` | `UI` | `U-SHOP` | `shop_box` | `shop_item_card_frame` | `sprites/ui/u-shop/ui_shop_item_card_frame_256@azure.png` | `masters/ui/u-shop/ui_shop_item_card_frame_256@azure.png` | `256x256` | `512x512` | `0.553` | `0.827` | `b_ui_azure` |
-| `107` | `AP-0453` | `UI` | `U-SHOP` | `vip1.` | `shop_vip_crest_tier1` | `sprites/ui/u-shop/ui_shop_vip_crest_tier1_256@cyan.png` | `masters/ui/u-shop/ui_shop_vip_crest_tier1_256@cyan.png` | `256x256` | `512x512` | `0.784` | `0.685` | `b_ui_cyan` |
-| `108` | `AP-0454` | `UI` | `U-SHOP` | `vip2.` | `shop_vip_crest_tier2` | `sprites/ui/u-shop/ui_shop_vip_crest_tier2_256@emerald.png` | `masters/ui/u-shop/ui_shop_vip_crest_tier2_256@emerald.png` | `256x256` | `512x512` | `0.742` | `0.698` | `b_ui_emerald` |
-| `109` | `AP-0455` | `UI` | `U-SHOP` | `vip3.` | `shop_vip_crest_tier3` | `sprites/ui/u-shop/ui_shop_vip_crest_tier3_256@azure.png` | `masters/ui/u-shop/ui_shop_vip_crest_tier3_256@azure.png` | `256x256` | `512x512` | `0.763` | `0.707` | `b_ui_azure` |
-| `110` | `AP-0456` | `UI` | `U-SHOP` | `vip4.` | `shop_vip_crest_tier4` | `sprites/ui/u-shop/ui_shop_vip_crest_tier4_256@violet.png` | `masters/ui/u-shop/ui_shop_vip_crest_tier4_256@violet.png` | `256x256` | `512x512` | `0.741` | `0.650` | `b_ui_violet` |
-| `111` | `AP-0457` | `UI` | `U-SHOP` | `vip5.` | `shop_vip_crest_tier5` | `sprites/ui/u-shop/ui_shop_vip_crest_tier5_256@magenta.png` | `masters/ui/u-shop/ui_shop_vip_crest_tier5_256@magenta.png` | `256x256` | `512x512` | `0.766` | `0.669` | `b_ui_magenta` |
-| `112` | `AP-0458` | `UI` | `U-SHOP` | `vip6.` | `shop_vip_crest_tier6` | `sprites/ui/u-shop/ui_shop_vip_crest_tier6_256@solar.png` | `masters/ui/u-shop/ui_shop_vip_crest_tier6_256@solar.png` | `256x256` | `512x512` | `0.786` | `0.683` | `b_ui_solar` |
-| `113` | `AP-0459` | `UI` | `U-SHOP` | `vipbp` | `shop_battlepass_emblem` | `sprites/ui/u-shop/ui_shop_battlepass_emblem_256@solar.png` | `masters/ui/u-shop/ui_shop_battlepass_emblem_256@solar.png` | `256x256` | `512x512` | `0.790` | `0.677` | `b_ui_solar` |
-| `114` | `AP-0461` | `UI` | `U-SHOP` | `xvideo` | `shop_rewarded_ad_badge` | `sprites/ui/u-shop/ui_shop_rewarded_ad_badge_256@emerald.png` | `masters/ui/u-shop/ui_shop_rewarded_ad_badge_256@emerald.png` | `256x256` | `512x512` | `0.747` | `0.789` | `b_ui_emerald` |
-
-## Reproducibility
-
-```bash
-python3 art/w4-core-b/build_w4b.py
-python3 art/w4-core-b/make_w4b_preview.py
-```
+| # | Row ID | Variant | Sprite | Master | Delivered px | Recipe | Val | Chroma |
+|---:|---|---|---|---|---|---|---:|---:|
+| 1 | `AP-0130` | `weapon_up` | `sprites/items/item_drop_01_weapon_up_128@solar.png` | `masters/items/item_drop_01_weapon_up_128@solar.png` | `128x128` | `b_item_solar` | 0.856 | 0.453 |
+| 2 | `AP-0131` | `shield_orb` | `sprites/items/item_drop_02_shield_orb_128@cyan.png` | `masters/items/item_drop_02_shield_orb_128@cyan.png` | `128x128` | `b_item_cyan` | 0.85 | 0.599 |
+| 3 | `AP-0132` | `magnet_core` | `sprites/items/item_drop_03_magnet_core_128@emerald.png` | `masters/items/item_drop_03_magnet_core_128@emerald.png` | `128x128` | `b_item_emerald` | 0.832 | 0.551 |
+| 4 | `AP-0133` | `supply_chest` | `sprites/items/item_drop_04_supply_chest_128@solar.png` | `masters/items/item_drop_04_supply_chest_128@solar.png` | `128x128` | `b_item_solar` | 0.833 | 0.548 |
+| 5 | `AP-0134` | `solar_crescent` | `sprites/items/item_drop_05_solar_crescent_128@solar.png` | `masters/items/item_drop_05_solar_crescent_128@solar.png` | `128x128` | `b_item_solar` | 0.861 | 0.557 |
+| 6 | `AP-0136` | `max_overdrive` | `sprites/items/item_drop_06_max_overdrive_128@magenta.png` | `masters/items/item_drop_06_max_overdrive_128@magenta.png` | `128x128` | `b_item_magenta` | 0.845 | 0.462 |
+| 7 | `AP-0137` | `mecha_crest_token` | `sprites/items/item_drop_07_mecha_crest_token_128@cyan.png` | `masters/items/item_drop_07_mecha_crest_token_128@cyan.png` | `128x128` | `b_item_cyan` | 0.848 | 0.415 |
+| 8 | `AP-0082` | `mega_nova` | `sprites/fx/fx_boom_01_mega_nova_256@solar.png` | `masters/fx/fx_boom_01_mega_nova_256@solar.png` | `256x256` | `b_fx_solar` | 0.849 | 0.754 |
+| 9 | `AP-0083` | `starburst_blast` | `sprites/fx/fx_boom_02_starburst_blast_256@solar.png` | `masters/fx/fx_boom_02_starburst_blast_256@solar.png` | `256x256` | `b_fx_solar` | 0.804 | 0.572 |
+| 10 | `AP-0084` | `cross_flare` | `sprites/fx/fx_boom_03_cross_flare_256@cyan.png` | `masters/fx/fx_boom_03_cross_flare_256@cyan.png` | `256x256` | `b_fx_cyan` | 0.969 | 0.772 |
+| 11 | `AP-0085` | `unlock_prism` | `sprites/fx/fx_boom_04_unlock_prism_256@emerald.png` | `masters/fx/fx_boom_04_unlock_prism_256@emerald.png` | `256x256` | `b_fx_emerald` | 0.885 | 0.86 |
+| 12 | `AP-0086` | `plasma_vortex` | `sprites/fx/fx_boom_05_plasma_vortex_256@magenta.png` | `masters/fx/fx_boom_05_plasma_vortex_256@magenta.png` | `256x256` | `b_fx_magenta` | 0.962 | 0.815 |
+| 13 | `AP-0150` | `repair_aura` | `sprites/fx/fx_glow_06_repair_aura_256@emerald.png` | `masters/fx/fx_glow_06_repair_aura_256@emerald.png` | `256x256` | `b_fx_emerald` | 0.86 | 0.953 |
+| 14 | `AP-0156` | `overdrive_surge` | `sprites/fx/fx_glow_07_overdrive_surge_256@solar.png` | `masters/fx/fx_glow_07_overdrive_surge_256@solar.png` | `256x256` | `b_fx_solar` | 0.95 | 0.917 |
+| 15 | `AP-0158` | `levelup_ring` | `sprites/fx/fx_glow_08_levelup_ring_256@cyan.png` | `masters/fx/fx_glow_08_levelup_ring_256@cyan.png` | `256x256` | `b_fx_cyan` | 0.957 | 0.971 |
+| 16 | `AP-0159` | `tint_halo` | `sprites/fx/fx_glow_09_tint_halo_256@cyan.png` | `masters/fx/fx_glow_09_tint_halo_256@cyan.png` | `256x256` | `b_fx_cyan` | 0.965 | 0.097 |
+| 17 | `AP-0091` | `sky_far` | `sprites/bg/bg_parallax_01_sky_far_1024@cerulean.png` | `masters/bg_raw/parallax_01_sky_far_raw.png` | `1024x1024` | `b_parallax_cerulean` | 0.347 | 0.739 |
+| 18 | `AP-0091` | `cloud_mid` | `sprites/bg/bg_parallax_02_cloud_mid_1024@solar.png` | `masters/bg_raw/parallax_02_cloud_mid_raw.png` | `1024x1024` | `b_parallax_solar` | 0.932 | 0.187 |
+| 19 | `AP-0091` | `archipelago_near` | `sprites/bg/bg_parallax_03_archipelago_near_1024@emerald.png` | `masters/bg_raw/parallax_03_archipelago_near_raw.png` | `1024x1024` | `b_parallax_emerald` | 0.66 | 0.683 |
+| 20 | `AP-0161` | `season_pass` | `sprites/bg/bg_ui_01_season_pass_512@solar.png` | `masters/bg/bg_ui_01_season_pass_512@solar.png` | `512x512` | `b_gui_solar` | 0.554 | 0.633 |
+| 21 | `AP-0162` | `treasury_shop` | `sprites/bg/bg_ui_02_treasury_shop_512@solar.png` | `masters/bg/bg_ui_02_treasury_shop_512@solar.png` | `512x512` | `b_gui_solar` | 0.518 | 0.623 |
+| 22 | `AP-0163` | `sky_hangar` | `sprites/bg/bg_ui_03_sky_hangar_512@cerulean.png` | `masters/bg/bg_ui_03_sky_hangar_512@cerulean.png` | `512x512` | `b_gui_cerulean` | 0.6 | 0.854 |
+| 23 | `AP-0164` | `sector_starmap` | `sprites/bg/bg_ui_04_sector_starmap_512@cyan.png` | `masters/bg/bg_ui_04_sector_starmap_512@cyan.png` | `512x512` | `b_gui_cyan` | 0.599 | 0.859 |
+| 24 | `AP-0165` | `warp_shutter` | `sprites/bg/bg_ui_05_warp_shutter_512@cerulean.png` | `masters/bg/bg_ui_05_warp_shutter_512@cerulean.png` | `512x512` | `b_gui_cerulean` | 0.588 | 0.848 |
+| 25 | `AP-0166` | `tech_foundry` | `sprites/bg/bg_ui_06_tech_foundry_512@emerald.png` | `masters/bg/bg_ui_06_tech_foundry_512@emerald.png` | `512x512` | `b_gui_emerald` | 0.606 | 0.852 |
+| 26 | `AP-0174` | `briefing_slate` | `sprites/bg/bg_ui_07_briefing_slate_512@cerulean.png` | `masters/bg/bg_ui_07_briefing_slate_512@cerulean.png` | `512x512` | `b_gui_cerulean` | 0.588 | 0.848 |
+| 27 | `AP-0177` | `royal_prestige` | `sprites/bg/bg_ui_08_royal_prestige_512@solar.png` | `masters/bg/bg_ui_08_royal_prestige_512@solar.png` | `512x512` | `b_gui_solar` | 0.554 | 0.633 |
+| 28 | `AP-0178` | `pilot_dossier` | `sprites/bg/bg_ui_09_pilot_dossier_512@cyan.png` | `masters/bg/bg_ui_09_pilot_dossier_512@cyan.png` | `512x512` | `b_gui_cyan` | 0.592 | 0.857 |
+| 29 | `AP-0018` | `hud_hp_plus_badge` | `sprites/ui/u-hud/ui_hud_hp_plus_badge_256@emerald.png` | `masters/ui/u-hud/ui_hud_hp_plus_badge_256@emerald.png` | `256x256` | `b_ui_emerald` | 0.873 | 0.282 |
+| 30 | `AP-0019` | `hud_hp_timer_gauge` | `sprites/ui/u-hud/ui_hud_hp_timer_gauge_256@emerald.png` | `masters/ui/u-hud/ui_hud_hp_timer_gauge_256@emerald.png` | `256x256` | `b_ui_emerald` | 0.647 | 0.772 |
+| 31 | `AP-0020` | `hud_counter_cell` | `sprites/ui/u-hud/ui_hud_counter_cell_256@azure.png` | `masters/ui/u-hud/ui_hud_counter_cell_256@azure.png` | `256x256` | `b_ui_azure` | 0.492 | 0.795 |
+| 32 | `AP-0021` | `hud_wave_gong` | `sprites/ui/u-hud/ui_hud_wave_gong_256@solar.png` | `masters/ui/u-hud/ui_hud_wave_gong_256@solar.png` | `256x256` | `b_ui_solar` | 0.887 | 0.772 |
+| 33 | `AP-0022` | `hud_chrono_clock` | `sprites/ui/u-hud/ui_hud_chrono_clock_256@cyan.png` | `masters/ui/u-hud/ui_hud_chrono_clock_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.868 | 0.434 |
+| 34 | `AP-0023` | `hud_pad_ring` | `sprites/ui/u-hud/ui_hud_pad_ring_256@cyan.png` | `masters/ui/u-hud/ui_hud_pad_ring_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.885 | 0.854 |
+| 35 | `AP-0024` | `hud_device_slot` | `sprites/ui/u-hud/ui_hud_device_slot_256@azure.png` | `masters/ui/u-hud/ui_hud_device_slot_256@azure.png` | `256x256` | `b_ui_azure` | 0.617 | 0.8 |
+| 36 | `AP-0025` | `hud_pip_dot` | `sprites/ui/u-hud/ui_hud_pip_dot_256@cyan.png` | `masters/ui/u-hud/ui_hud_pip_dot_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.881 | 0.618 |
+| 37 | `AP-0026` | `hud_life_pip` | `sprites/ui/u-hud/ui_hud_life_pip_256@emerald.png` | `masters/ui/u-hud/ui_hud_life_pip_256@emerald.png` | `256x256` | `b_ui_emerald` | 0.849 | 0.616 |
+| 38 | `AP-0027` | `hud_pad_knob` | `sprites/ui/u-hud/ui_hud_pad_knob_256@solar.png` | `masters/ui/u-hud/ui_hud_pad_knob_256@solar.png` | `256x256` | `b_ui_solar` | 0.884 | 0.561 |
+| 39 | `AP-0028` | `hud_score_plate` | `sprites/ui/u-hud/ui_hud_score_plate_256@azure.png` | `masters/ui/u-hud/ui_hud_score_plate_256@azure.png` | `256x256` | `b_ui_azure` | 0.544 | 0.782 |
+| 40 | `AP-0029` | `hud_overdrive_gauge` | `sprites/ui/u-hud/ui_hud_overdrive_gauge_256@solar.png` | `masters/ui/u-hud/ui_hud_overdrive_gauge_256@solar.png` | `256x256` | `b_ui_solar` | 0.652 | 0.73 |
+| 41 | `AP-0030` | `hud_pause_btn` | `sprites/ui/u-hud/ui_hud_pause_btn_256@azure.png` | `masters/ui/u-hud/ui_hud_pause_btn_256@azure.png` | `256x256` | `b_ui_azure` | 0.536 | 0.779 |
+| 42 | `AP-0031` | `hud_point_pill` | `sprites/ui/u-hud/ui_hud_point_pill_256@azure.png` | `masters/ui/u-hud/ui_hud_point_pill_256@azure.png` | `256x256` | `b_ui_azure` | 0.881 | 0.782 |
+| 43 | `AP-0032` | `hud_skill_s_gauge` | `sprites/ui/u-hud/ui_hud_skill_s_gauge_256@magenta.png` | `masters/ui/u-hud/ui_hud_skill_s_gauge_256@magenta.png` | `256x256` | `b_ui_magenta` | 0.666 | 0.694 |
+| 44 | `AP-0033` | `hud_shield_gauge` | `sprites/ui/u-hud/ui_hud_shield_gauge_256@cyan.png` | `masters/ui/u-hud/ui_hud_shield_gauge_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.717 | 0.819 |
+| 45 | `AP-0034` | `hud_loadout_bar` | `sprites/ui/u-hud/ui_hud_loadout_bar_256@azure.png` | `masters/ui/u-hud/ui_hud_loadout_bar_256@azure.png` | `256x256` | `b_ui_azure` | 0.544 | 0.782 |
+| 46 | `AP-0035` | `hud_energy_segment` | `sprites/ui/u-hud/ui_hud_energy_segment_256@cyan.png` | `masters/ui/u-hud/ui_hud_energy_segment_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.862 | 0.764 |
+| 47 | `AP-0036` | `hud_info_header_tab` | `sprites/ui/u-hud/ui_hud_info_header_tab_256@solar.png` | `masters/ui/u-hud/ui_hud_info_header_tab_256@solar.png` | `256x256` | `b_ui_solar` | 0.98 | 0.825 |
+| 48 | `AP-0037` | `hud_tip_ribbon` | `sprites/ui/u-hud/ui_hud_tip_ribbon_256@azure.png` | `masters/ui/u-hud/ui_hud_tip_ribbon_256@azure.png` | `256x256` | `b_ui_azure` | 0.544 | 0.782 |
+| 49 | `AP-0038` | `hud_stat_bar_primary` | `sprites/ui/u-hud/ui_hud_stat_bar_primary_256@solar.png` | `masters/ui/u-hud/ui_hud_stat_bar_primary_256@solar.png` | `256x256` | `b_ui_solar` | 0.885 | 0.751 |
+| 50 | `AP-0039` | `hud_stat_bar_secondary` | `sprites/ui/u-hud/ui_hud_stat_bar_secondary_256@cyan.png` | `masters/ui/u-hud/ui_hud_stat_bar_secondary_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.897 | 0.827 |
+| 51 | `AP-0040` | `hud_bottom_trim_bar` | `sprites/ui/u-hud/ui_hud_bottom_trim_bar_256@azure.png` | `masters/ui/u-hud/ui_hud_bottom_trim_bar_256@azure.png` | `256x256` | `b_ui_azure` | 0.949 | 0.726 |
+| 52 | `AP-0041` | `hud_boss_hp_track` | `sprites/ui/u-hud/ui_hud_boss_hp_track_256@crimson.png` | `masters/ui/u-hud/ui_hud_boss_hp_track_256@crimson.png` | `256x256` | `b_ui_crimson` | 0.968 | 0.752 |
+| 53 | `AP-0042` | `hud_stage_progress_track` | `sprites/ui/u-hud/ui_hud_stage_progress_track_256@emerald.png` | `masters/ui/u-hud/ui_hud_stage_progress_track_256@emerald.png` | `256x256` | `b_ui_emerald` | 0.839 | 0.832 |
+| 54 | `AP-0043` | `hud_boss_warning_banner` | `sprites/ui/u-hud/ui_hud_boss_warning_banner_256@crimson.png` | `masters/ui/u-hud/ui_hud_boss_warning_banner_256@crimson.png` | `256x256` | `b_ui_crimson` | 0.48 | 0.758 |
+| 55 | `AP-0044` | `hud_quick_heal_btn` | `sprites/ui/u-hud/ui_hud_quick_heal_btn_256@emerald.png` | `masters/ui/u-hud/ui_hud_quick_heal_btn_256@emerald.png` | `256x256` | `b_ui_emerald` | 0.571 | 0.802 |
+| 56 | `AP-0182` | `icon_gold_coin` | `sprites/ui/u-icon/ui_icon_gold_coin_64@solar.png` | `masters/ui/u-icon/ui_icon_gold_coin_64@solar.png` | `64x64` | `b_ui_solar` | 0.875 | 0.682 |
+| 57 | `AP-0187` | `icon_wing_evolution` | `sprites/ui/u-icon/ui_icon_wing_evolution_64@magenta.png` | `masters/ui/u-icon/ui_icon_wing_evolution_64@magenta.png` | `64x64` | `b_ui_magenta` | 0.874 | 0.69 |
+| 58 | `AP-0188` | `icon_exp_crystal` | `sprites/ui/u-icon/ui_icon_exp_crystal_64@cyan.png` | `masters/ui/u-icon/ui_icon_exp_crystal_64@cyan.png` | `64x64` | `b_ui_cyan` | 0.87 | 0.605 |
+| 59 | `AP-0189` | `icon_watch_eye` | `sprites/ui/u-icon/ui_icon_watch_eye_64@cyan.png` | `masters/ui/u-icon/ui_icon_watch_eye_64@cyan.png` | `64x64` | `b_ui_cyan` | 0.867 | 0.327 |
+| 60 | `AP-0193` | `icon_wingman_support` | `sprites/ui/u-icon/ui_icon_wingman_support_64@emerald.png` | `masters/ui/u-icon/ui_icon_wingman_support_64@emerald.png` | `64x64` | `b_ui_emerald` | 0.836 | 0.839 |
+| 61 | `AP-0196` | `icon_battle_mode` | `sprites/ui/u-icon/ui_icon_battle_mode_64@solar.png` | `masters/ui/u-icon/ui_icon_battle_mode_64@solar.png` | `64x64` | `b_ui_solar` | 0.892 | 0.762 |
+| 62 | `AP-0226` | `icon_atk_stat` | `sprites/ui/u-icon/ui_icon_atk_stat_64@crimson.png` | `masters/ui/u-icon/ui_icon_atk_stat_64@crimson.png` | `64x64` | `b_ui_crimson` | 0.896 | 0.676 |
+| 63 | `AP-0227` | `icon_substat_chevron` | `sprites/ui/u-icon/ui_icon_substat_chevron_64@cyan.png` | `masters/ui/u-icon/ui_icon_substat_chevron_64@cyan.png` | `64x64` | `b_ui_cyan` | 0.907 | 0.846 |
+| 64 | `AP-0229` | `icon_tech_wrench` | `sprites/ui/u-icon/ui_icon_tech_wrench_64@solar.png` | `masters/ui/u-icon/ui_icon_tech_wrench_64@solar.png` | `64x64` | `b_ui_solar` | 0.852 | 0.76 |
+| 65 | `AP-0249` | `kit_radar_sweep_cyan` | `sprites/ui/u-kit/ui_kit_radar_sweep_cyan_256@cyan.png` | `masters/ui/u-kit/ui_kit_radar_sweep_cyan_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.589 | 0.74 |
+| 66 | `AP-0250` | `kit_radar_sweep_solar` | `sprites/ui/u-kit/ui_kit_radar_sweep_solar_256@solar.png` | `masters/ui/u-kit/ui_kit_radar_sweep_solar_256@solar.png` | `256x256` | `b_ui_solar` | 0.582 | 0.71 |
+| 67 | `AP-0256` | `kit_nav_chevron` | `sprites/ui/u-kit/ui_kit_nav_chevron_256@solar.png` | `masters/ui/u-kit/ui_kit_nav_chevron_256@solar.png` | `256x256` | `b_ui_solar` | 0.901 | 0.783 |
+| 68 | `AP-0258` | `kit_back_btn` | `sprites/ui/u-kit/ui_kit_back_btn_256@azure.png` | `masters/ui/u-kit/ui_kit_back_btn_256@azure.png` | `256x256` | `b_ui_azure` | 0.524 | 0.79 |
+| 69 | `AP-0265` | `kit_megabomb_btn` | `sprites/ui/u-kit/ui_kit_megabomb_btn_256@solar.png` | `masters/ui/u-kit/ui_kit_megabomb_btn_256@solar.png` | `256x256` | `b_ui_solar` | 0.844 | 0.768 |
+| 70 | `AP-0267` | `kit_pillar_frame` | `sprites/ui/u-kit/ui_kit_pillar_frame_256@azure.png` | `masters/ui/u-kit/ui_kit_pillar_frame_256@azure.png` | `256x256` | `b_ui_azure` | 0.495 | 0.783 |
+| 71 | `AP-0268` | `kit_frame_leaderboard` | `sprites/ui/u-kit/ui_kit_frame_leaderboard_256@solar.png` | `masters/ui/u-kit/ui_kit_frame_leaderboard_256@solar.png` | `256x256` | `b_ui_solar` | 0.461 | 0.653 |
+| 72 | `AP-0269` | `kit_frame_grand` | `sprites/ui/u-kit/ui_kit_frame_grand_256@solar.png` | `masters/ui/u-kit/ui_kit_frame_grand_256@solar.png` | `256x256` | `b_ui_solar` | 0.541 | 0.745 |
+| 73 | `AP-0270` | `kit_frame_socket` | `sprites/ui/u-kit/ui_kit_frame_socket_256@cyan.png` | `masters/ui/u-kit/ui_kit_frame_socket_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.492 | 0.796 |
+| 74 | `AP-0271` | `kit_frame_pumpkin_amber` | `sprites/ui/u-kit/ui_kit_frame_pumpkin_amber_256@crimson.png` | `masters/ui/u-kit/ui_kit_frame_pumpkin_amber_256@crimson.png` | `256x256` | `b_ui_crimson` | 0.47 | 0.66 |
+| 75 | `AP-0272` | `kit_frame_wide` | `sprites/ui/u-kit/ui_kit_frame_wide_256@azure.png` | `masters/ui/u-kit/ui_kit_frame_wide_256@azure.png` | `256x256` | `b_ui_azure` | 0.562 | 0.811 |
+| 76 | `AP-0273` | `kit_frame_standard` | `sprites/ui/u-kit/ui_kit_frame_standard_256@azure.png` | `masters/ui/u-kit/ui_kit_frame_standard_256@azure.png` | `256x256` | `b_ui_azure` | 0.495 | 0.783 |
+| 77 | `AP-0275` | `kit_frame_crest_cap` | `sprites/ui/u-kit/ui_kit_frame_crest_cap_256@solar.png` | `masters/ui/u-kit/ui_kit_frame_crest_cap_256@solar.png` | `256x256` | `b_ui_solar` | 0.86 | 0.73 |
+| 78 | `AP-0276` | `kit_frame_rose_neon` | `sprites/ui/u-kit/ui_kit_frame_rose_neon_256@magenta.png` | `masters/ui/u-kit/ui_kit_frame_rose_neon_256@magenta.png` | `256x256` | `b_ui_magenta` | 0.483 | 0.664 |
+| 79 | `AP-0277` | `kit_frame_frost_cyan` | `sprites/ui/u-kit/ui_kit_frame_frost_cyan_256@cyan.png` | `masters/ui/u-kit/ui_kit_frame_frost_cyan_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.495 | 0.784 |
+| 80 | `AP-0295` | `kit_button_primary` | `sprites/ui/u-kit/ui_kit_button_primary_256@solar.png` | `masters/ui/u-kit/ui_kit_button_primary_256@solar.png` | `256x256` | `b_ui_solar` | 0.976 | 0.525 |
+| 81 | `AP-0305` | `kit_dialog_card` | `sprites/ui/u-kit/ui_kit_dialog_card_256@azure.png` | `masters/ui/u-kit/ui_kit_dialog_card_256@azure.png` | `256x256` | `b_ui_azure` | 0.484 | 0.786 |
+| 82 | `AP-0306` | `kit_rank_shield_emblem` | `sprites/ui/u-kit/ui_kit_rank_shield_emblem_256@solar.png` | `masters/ui/u-kit/ui_kit_rank_shield_emblem_256@solar.png` | `256x256` | `b_ui_solar` | 0.883 | 0.698 |
+| 83 | `AP-0307` | `kit_beacon_lamp` | `sprites/ui/u-kit/ui_kit_beacon_lamp_256@cyan.png` | `masters/ui/u-kit/ui_kit_beacon_lamp_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.862 | 0.764 |
+| 84 | `AP-0308` | `kit_thruster_module_card` | `sprites/ui/u-kit/ui_kit_thruster_module_card_256@azure.png` | `masters/ui/u-kit/ui_kit_thruster_module_card_256@azure.png` | `256x256` | `b_ui_azure` | 0.856 | 0.72 |
+| 85 | `AP-0310` | `kit_victory_laurel_crest` | `sprites/ui/u-kit/ui_kit_victory_laurel_crest_256@solar.png` | `masters/ui/u-kit/ui_kit_victory_laurel_crest_256@solar.png` | `256x256` | `b_ui_solar` | 0.883 | 0.698 |
+| 86 | `AP-0313` | `kit_defeat_divider` | `sprites/ui/u-kit/ui_kit_defeat_divider_256@crimson.png` | `masters/ui/u-kit/ui_kit_defeat_divider_256@crimson.png` | `256x256` | `b_ui_crimson` | 0.959 | 0.684 |
+| 87 | `AP-0315` | `kit_tap_pointer` | `sprites/ui/u-kit/ui_kit_tap_pointer_256@pearl.png` | `masters/ui/u-kit/ui_kit_tap_pointer_256@pearl.png` | `256x256` | `b_ui_pearl` | 0.912 | 0.095 |
+| 88 | `AP-0316` | `kit_gear_socket_badge` | `sprites/ui/u-kit/ui_kit_gear_socket_badge_256@violet.png` | `masters/ui/u-kit/ui_kit_gear_socket_badge_256@violet.png` | `256x256` | `b_ui_violet` | 0.843 | 0.67 |
+| 89 | `AP-0317` | `kit_gameover_ribbon` | `sprites/ui/u-kit/ui_kit_gameover_ribbon_256@crimson.png` | `masters/ui/u-kit/ui_kit_gameover_ribbon_256@crimson.png` | `256x256` | `b_ui_crimson` | 0.959 | 0.684 |
+| 90 | `AP-0318` | `kit_diff_hard_tab` | `sprites/ui/u-kit/ui_kit_diff_hard_tab_256@solar.png` | `masters/ui/u-kit/ui_kit_diff_hard_tab_256@solar.png` | `256x256` | `b_ui_solar` | 0.98 | 0.825 |
+| 91 | `AP-0319` | `kit_help_question_btn` | `sprites/ui/u-kit/ui_kit_help_question_btn_256@cyan.png` | `masters/ui/u-kit/ui_kit_help_question_btn_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.889 | 0.804 |
+| 92 | `AP-0321` | `kit_diff_inferno_tab` | `sprites/ui/u-kit/ui_kit_diff_inferno_tab_256@crimson.png` | `masters/ui/u-kit/ui_kit_diff_inferno_tab_256@crimson.png` | `256x256` | `b_ui_crimson` | 0.979 | 0.773 |
+| 93 | `AP-0322` | `kit_tech_connector_line` | `sprites/ui/u-kit/ui_kit_tech_connector_line_256@cyan.png` | `masters/ui/u-kit/ui_kit_tech_connector_line_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.964 | 0.774 |
+| 94 | `AP-0325` | `kit_loading_bar_frame` | `sprites/ui/u-kit/ui_kit_loading_bar_frame_256@cyan.png` | `masters/ui/u-kit/ui_kit_loading_bar_frame_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.897 | 0.827 |
+| 95 | `AP-0326` | `kit_padlock_badge` | `sprites/ui/u-kit/ui_kit_padlock_badge_256@solar.png` | `masters/ui/u-kit/ui_kit_padlock_badge_256@solar.png` | `256x256` | `b_ui_solar` | 0.879 | 0.662 |
+| 96 | `AP-0330` | `kit_plasma_tube_cell` | `sprites/ui/u-kit/ui_kit_plasma_tube_cell_256@emerald.png` | `masters/ui/u-kit/ui_kit_plasma_tube_cell_256@emerald.png` | `256x256` | `b_ui_emerald` | 0.844 | 0.763 |
+| 97 | `AP-0332` | `kit_modal_popup` | `sprites/ui/u-kit/ui_kit_modal_popup_256@azure.png` | `masters/ui/u-kit/ui_kit_modal_popup_256@azure.png` | `256x256` | `b_ui_azure` | 0.484 | 0.786 |
+| 98 | `AP-0333` | `kit_aegis_crest` | `sprites/ui/u-kit/ui_kit_aegis_crest_256@cyan.png` | `masters/ui/u-kit/ui_kit_aegis_crest_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.884 | 0.743 |
+| 99 | `AP-0334` | `kit_nav_tab_active` | `sprites/ui/u-kit/ui_kit_nav_tab_active_256@solar.png` | `masters/ui/u-kit/ui_kit_nav_tab_active_256@solar.png` | `256x256` | `b_ui_solar` | 0.98 | 0.825 |
+| 100 | `AP-0336` | `kit_weekly_tab_header` | `sprites/ui/u-kit/ui_kit_weekly_tab_header_256@emerald.png` | `masters/ui/u-kit/ui_kit_weekly_tab_header_256@emerald.png` | `256x256` | `b_ui_emerald` | 0.902 | 0.892 |
+| 101 | `AP-0337` | `kit_techlab_board` | `sprites/ui/u-kit/ui_kit_techlab_board_256@cyan.png` | `masters/ui/u-kit/ui_kit_techlab_board_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.563 | 0.812 |
+| 102 | `AP-0338` | `kit_title_ribbon` | `sprites/ui/u-kit/ui_kit_title_ribbon_256@solar.png` | `masters/ui/u-kit/ui_kit_title_ribbon_256@solar.png` | `256x256` | `b_ui_solar` | 0.98 | 0.825 |
+| 103 | `AP-0377` | `meta_pvp_league_crest` | `sprites/ui/u-meta/ui_meta_pvp_league_crest_256@solar.png` | `masters/ui/u-meta/ui_meta_pvp_league_crest_256@solar.png` | `256x256` | `b_ui_solar` | 0.874 | 0.669 |
+| 104 | `AP-0420` | `shop_gem_pack_pile` | `sprites/ui/u-shop/ui_shop_gem_pack_pile_256@cyan.png` | `masters/ui/u-shop/ui_shop_gem_pack_pile_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.852 | 0.713 |
+| 105 | `AP-0436` | `shop_launch_play_btn` | `sprites/ui/u-shop/ui_shop_launch_play_btn_256@solar.png` | `masters/ui/u-shop/ui_shop_launch_play_btn_256@solar.png` | `256x256` | `b_ui_solar` | 0.857 | 0.772 |
+| 106 | `AP-0444` | `shop_item_card_frame` | `sprites/ui/u-shop/ui_shop_item_card_frame_256@azure.png` | `masters/ui/u-shop/ui_shop_item_card_frame_256@azure.png` | `256x256` | `b_ui_azure` | 0.617 | 0.8 |
+| 107 | `AP-0453` | `shop_vip_crest_tier1` | `sprites/ui/u-shop/ui_shop_vip_crest_tier1_256@cyan.png` | `masters/ui/u-shop/ui_shop_vip_crest_tier1_256@cyan.png` | `256x256` | `b_ui_cyan` | 0.876 | 0.722 |
+| 108 | `AP-0454` | `shop_vip_crest_tier2` | `sprites/ui/u-shop/ui_shop_vip_crest_tier2_256@emerald.png` | `masters/ui/u-shop/ui_shop_vip_crest_tier2_256@emerald.png` | `256x256` | `b_ui_emerald` | 0.854 | 0.72 |
+| 109 | `AP-0455` | `shop_vip_crest_tier3` | `sprites/ui/u-shop/ui_shop_vip_crest_tier3_256@azure.png` | `masters/ui/u-shop/ui_shop_vip_crest_tier3_256@azure.png` | `256x256` | `b_ui_azure` | 0.869 | 0.657 |
+| 110 | `AP-0456` | `shop_vip_crest_tier4` | `sprites/ui/u-shop/ui_shop_vip_crest_tier4_256@violet.png` | `masters/ui/u-shop/ui_shop_vip_crest_tier4_256@violet.png` | `256x256` | `b_ui_violet` | 0.852 | 0.588 |
+| 111 | `AP-0457` | `shop_vip_crest_tier5` | `sprites/ui/u-shop/ui_shop_vip_crest_tier5_256@magenta.png` | `masters/ui/u-shop/ui_shop_vip_crest_tier5_256@magenta.png` | `256x256` | `b_ui_magenta` | 0.876 | 0.628 |
+| 112 | `AP-0458` | `shop_vip_crest_tier6` | `sprites/ui/u-shop/ui_shop_vip_crest_tier6_256@solar.png` | `masters/ui/u-shop/ui_shop_vip_crest_tier6_256@solar.png` | `256x256` | `b_ui_solar` | 0.877 | 0.679 |
+| 113 | `AP-0459` | `shop_battlepass_emblem` | `sprites/ui/u-shop/ui_shop_battlepass_emblem_256@solar.png` | `masters/ui/u-shop/ui_shop_battlepass_emblem_256@solar.png` | `256x256` | `b_ui_solar` | 0.876 | 0.676 |
+| 114 | `AP-0461` | `shop_rewarded_ad_badge` | `sprites/ui/u-shop/ui_shop_rewarded_ad_badge_256@emerald.png` | `masters/ui/u-shop/ui_shop_rewarded_ad_badge_256@emerald.png` | `256x256` | `b_ui_emerald` | 0.842 | 0.737 |

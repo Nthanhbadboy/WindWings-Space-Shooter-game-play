@@ -3,9 +3,10 @@
 W0-LISTING Variant B builder — WindWings (Godot port)
 Vai: Art-designer-B  ·  Nhánh: arena/eca8588b-windwings-space-shooter-game-p
 
-Style: SOLAR NEON ARCADE-POP (bright, high-energy 2D arcade action, vivid sky/nebula,
-neon cyan lasers, magenta-amber bullet curtains, explosive starburst FX) —
-independent counter-direction to Variant A ("Ink & Ember").
+Style: SOLAR NEON commercial 2.5D semi-realistic military metallic — bright
+character/key-art accents over a grounded dark-cobalt gameplay stage. The four
+scene masters are explicit marketing CONCEPT composites from current B sprites,
+not Godot/runtime captures; recapture on a real build before store submission.
 
 Reads the 9 original AI-generated text-free masters in masters/ and deterministically
 exports the exact 25 store-listing PNG slots (identical filenames & pixel dimensions
@@ -36,10 +37,10 @@ AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
 
 SCENES = [
-    ("scene_s1_wave_master.png", "b_bg_solar_sky + b_ship_pearl_azure + b_enemy_crimson_wave + b_fx_neon_pop"),
-    ("scene_s2_boss_master.png", "b_bg_solar_sky + b_ship_pearl_azure + b_boss_crimson_violet + b_bullet_neon_fan"),
-    ("scene_s3_drone_master.png", "b_bg_solar_sky + b_ship_pearl_azure + b_drone_item_gold + b_fx_neon_pop"),
-    ("scene_s4_beam_master.png", "b_bg_solar_sky + b_ship_pearl_azure + b_fx_hyper_beam + b_fx_starburst_boom"),
+    ("scene_s1_wave_master.png", "b_scene_composite_dark_cobalt + b_ship_10001 + b_enemy_wave + b_drone_20004 + b_fx_sparse"),
+    ("scene_s2_boss_master.png", "b_scene_composite_dark_cobalt + b_ship_10001 + b_boss_7001 + b_bullet_sparse"),
+    ("scene_s3_drone_master.png", "b_scene_composite_dark_cobalt + b_ship_10008 + b_drone_20004 + b_coin_pile + b_fx_sparse"),
+    ("scene_s4_beam_master.png", "b_scene_composite_dark_cobalt + b_ship_10001 + b_boss_7005 + b_hyper_beam_compact"),
 ]
 
 records = []

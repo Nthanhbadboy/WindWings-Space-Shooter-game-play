@@ -1,39 +1,49 @@
-# Variant B ("Solar Neon 2.5D Semi-Realistic Metallic") — Complete Art Suite Index (`510/510` Non-EXCL Parity)
+# Variant B — Solar Neon Commercial 2.5D Metallic · Audit Response Index
 
 - **Role / Branch:** `Art-designer-B` · `arena/eca8588b-windwings-space-shooter-game-p`
-- **Style Mandate (`STYLE-CORRECTION ROUND 2 · lần 154` / `965c770c9` / PR #12 `6447078574` on top of `lần 149`):** Commercial-grade 2.5D aesthetic overhaul (`art/pbr25d.py` v3 + `art/mecha25d.py` v2 + newly painted 2.5D commercial W0 & W1 hero masters) — multi-component overlapping machined cowlings with dark-titanium CNC seam bezels, exposed dark brushed-gunmetal mechanical skeletons & stepped multi-petal jet nozzles, angled aerospace chevron seams, high-density micro-rivets & recessed louver heat-vents, multi-pane framed glass canopies, segmented plasma troughs, and deliberate military/mecha tactical asymmetry (`silhouette TÀI`: port vs starboard weapon hardpoints, mecha-valkyries with rifle + plasma saber, astrolabe gyro-clamp rings, twin-prong mandibles, twin-fan stealth prototype `#25`, and boss Crusher-Claw + Siege-Railgun arms) while keeping Variant B's bright **Solar Neon** tonal polarity distinct from Variant A's dark "Ink & Ember".
-- **License (all waves):** `chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)`
-- **Author (all waves):** `arena/eca8588b-windwings-space-shooter-game-p`
-- **2.5D Commercial Engines & Auditors:** `art/pbr25d.py` (v3) · `art/mecha25d.py` (v2) · `art/build_side_by_side_boards.py` · `art/measure_variant_b.py`
-- **Round-2 2× Zoomed 5-Pair Hero Showcase:** `art/preview_round2_5pairs_zoom.png`
-- **Curator 510-Unit Lookup Registry:** `art/variant_b_full_510_registry.csv` & `art/variant_b_full_510_registry.json`
-- **§4.9 + Extended 2.5D Quantitative Audit:** `art/VARIANT_B_METRICS.md`
+- **Current response:** commit `a71412d3427e3c2d9d01ee519a154be289091923` (independent A/B audit) + Director `lần 158` hero-first instruction.
+- **Palette:** bright Solar Neon character/key-art accents over grounded dark-cobalt gameplay backgrounds; not Variant A's dark Ink & Ember.
+- **License / author:** `chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)` / `arena/eca8588b-windwings-space-shooter-game-p` in every wave manifest.
+- **Approval state:** **not self-approved**. Static checks and visual evidence are submitted for Art-style-auditor Layer-1 + Layer-2; runtime, pivot, motion, VFX blend, binding and three-person kinship remain unverified.
 
-## Complete Wave Inventory (`510/510` Non-EXCL Planner Units · `EXCL 278 = 0`) + Side-by-Side Comparison Sheets
+## Deliverables and review evidence
 
-| Wave | Directory | Scope & Lanes | Units | Files | Masters | Contact Sheet | Mandatory Side-by-Side Ref Sheet (`BẢNG SO KẾ CẠNH`) |
-|---|---|---|---:|---:|---:|---|---|
-| **W0** | `art/w0-listing-b/` | Store Listing Commercial 2.5D Redo (Microsoft / Amazon / Huawei — **exact 25 store slots & px preserved**) | 25 store | **25** | **9** | `preview/w0_contact_sheet.png` | `art/w0-listing-b/preview/w0b_side_by_side_ref.png` |
-| **W0-Icons** | `art/w0-build-icons-b/` | Build Packaging Icons (`ICO-06` `.ico` 16..256 + `ICO-07` Android `mipmap-*` 48..192 from Round-2 `icon_master.png`) | 2 build | **6** | **1** | — | — |
-| **W1** | `art/w1-player-b/` | `PLAYER` Round-2 Commercial Redo: 25 Multi-Class Ships (`#01/#04` painted + 9 aerospace/mecha classes), 13 Articulated Drones, 8 Bullets/Beams, 2 FX | **48 / 48** | **48** | **50** | `preview/w1b_contact_sheet.png` | `art/w1-player-b/preview/w1b_side_by_side_ref.png` |
-| **W2** | `art/w2-enemy-b/` | `ENEMY` Round-2 Redo: 23 Invader Warships (`E-BODY` with gunmetal spines, nozzles & asymmetric pods) + 11 `E-BULLET` | **34 / 34** | **34** | **34** | `preview/w2b_contact_sheet.png` | `art/w2-enemy-b/preview/w2b_side_by_side_ref.png` |
-| **W3** | `art/w3-boss-b/` | `BOSS` Round-2 Redo: 35 Multi-Turret Dreadnoughts (asymmetric Claw + Railgun arms, VLS missile bays, plasma troughs) + 7 `B-PART` | **42 / 42** | **42** | **42** | `preview/w3b_contact_sheet.png` | `art/w3-boss-b/preview/w3b_side_by_side_ref.png` |
-| **W4-core** | `art/w4-core-b/` | `kept_records > 0` 2.5D Redo: `BG` (10 rows / 12 files), `ITEM` (7), `FX` (9), Beveled `UI` (86) | **112 / 112** | **114** | **114** | `preview/w4b_contact_sheet.png` | `art/w4-core-b/preview/w4b_side_by_side_ref.png` |
-| **W5-full** | `art/w5-full-b/` | Remaining `kept_records == 0` 2.5D Redo: 3D Spherical Planets & `BG` (+34), `ITEM` (+2), `FX` (+17), `UI` (+221) | **274 / 274** | **274** | **274** | `preview/w5b_contact_sheet.png` | `art/w5-full-b/preview/w5b_side_by_side_ref.png` |
-| **TOTAL** | `art/` | **100% Non-EXCL `art-planner.csv` Parity (`EXCL` 278 = `0`) — Commercial 2.5D Metallic** | **510 / 510** (+25 +2) | **543** | **524** | **6 contact sheets** | **6 Side-by-Side Boards + `preview_round2_5pairs_zoom.png`** |
+| Area | Current delivery | Review evidence |
+|---|---|---|
+| **W0 listing** | `art/w0-listing-b/` · exact **25/25** filenames, dimensions and RGB/RGBA modes; 9 masters; S1–S4 rebuilt from current B sprites on dark-cobalt stage | `preview/w0_contact_sheet.png` · `audit_a71412d_response/comparisons/05_w0_concept_hierarchy.png` · **CONCEPT, not runtime captures** |
+| **W0 build icons** | `art/w0-build-icons-b/` · ICO + Android mipmap set from W0 icon master | `BUILD_ICONS_MANIFEST.md` |
+| **W1 PLAYER** | `art/w1-player-b/` · **48/48** (25 ships, 13 drones, 8 bullets, 2 FX); decoded ship/drone IDs in `planner_base`; painted candidates #01/#04/#08/#12/#13 and drones #04/#05 | `preview/w1b_side_by_side_ref.png` · `audit_a71412d_response/comparisons/01_hero_calibration.png` |
+| **W2 ENEMY** | `art/w2-enemy-b/` · **34/34**; AP-0067 corrected to neutral white HP fill | `preview/w2b_side_by_side_ref.png` · `audit_a71412d_response/comparisons/03_enemy_anchors.png` |
+| **W3 BOSS** | `art/w3-boss-b/` · **42/42**; painted ID-anchored families for 7001–7005 and Mk variants | `preview/w3b_side_by_side_ref.png` · `audit_a71412d_response/comparisons/02_boss_decoded_ids.png` |
+| **W4 CORE** | `art/w4-core-b/` · **114 files / 112 rows**; darkened sky layer; FX reference mapping corrected | `preview/w4b_side_by_side_ref.png` · `audit_a71412d_response/nine_slice_contract.csv` |
+| **W5 FULL** | `art/w5-full-b/` · **274/274**; semantic ShopIcon/event/Blink/coin/tech-node corrections; planets and dark stage gradients revised | `preview/w5b_side_by_side_ref.png` · `audit_a71412d_response/comparisons/04_w5_semantics.png` |
+| **Total** | **510/510 planner units**, **512 sprite records**, corresponding masters; EXCL = 0 | `audit_a71412d_response/static_validation.{json,md}` · **0 errors / 0 warnings** |
 
-## Extended 2.5D Metrics Summary (`STYLE-CORRECTION ROUND 2 · lần 154` + §4.9)
+## Current Variant-B proxy summary (not planner's raw metric)
 
-| Wave | Files | `gradient_stops` (`≥3–5`) | `outline_dark_px` (`≤1.0`) | `detail_density` | `lum_contrast` (`0.45–0.80`) | `val` | `chroma` | `colors_q32` |
+These are the branch's legacy proxy definitions, included for continuity only. They are **not** a substitute for the unmodified planner or aesthetic review.
+
+| Wave | Files | `gradient_stops` | `outline_dark_px` | `detail_density` | `lum_contrast` | `val` | `chroma` | `colors_q32` |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| **W1 (`PLAYER`)** | 48 | **10.88** | **0.020 px** | **83.33** | **0.646** | 0.750 | 0.394 | 1709.9 |
-| **W2 (`ENEMY`)** | 34 | **12.71** | **0.017 px** | **98.78** | **0.687** | 0.658 | 0.356 | 1085.7 |
-| **W3 (`BOSS`)** | 42 | **13.60** | **0.042 px** | **58.88** | **0.720** | 0.664 | 0.379 | 4668.8 |
-| **W4-core** | 114 | **6.37** | **0.004 px** | **20.72** | **0.485** | 0.799 | 0.547 | 556.4 |
-| **W5-full** | 274 | **6.55** | **0.002 px** | **23.71** | **0.551** | 0.767 | 0.544 | 463.2 |
-| **ALL (`W1..W5`)** | **512** | **7.90** | **0.008 px** | **36.50** | **0.568** | **0.757** | **0.505** | **987.1** |
+| W1 PLAYER | 48 | 10.81 | 0.020 px | 89.06 | 0.646 | 0.749 | 0.382 | 1758.1 |
+| W2 ENEMY | 34 | 12.12 | 0.011 px | 111.95 | 0.666 | 0.666 | 0.325 | 1172.5 |
+| W3 BOSS | 42 | 12.81 | 0.020 px | 78.42 | 0.699 | 0.632 | 0.331 | 5040.0 |
+| W4 CORE | 114 | 5.81 | 0.004 px | 20.94 | 0.517 | 0.773 | 0.536 | 598.9 |
+| W5 FULL | 274 | 6.55 | 0.002 px | 23.77 | 0.546 | 0.759 | 0.538 | 458.2 |
+| **ALL W1..W5** | **512** | **7.67** | **0.006 px** | **39.60** | **0.569** | **0.745** | **0.492** | **1034.7** |
 
-## Curator Integration Notes (`Art-curator`)
-1. **O(1) Row Lookup:** Open `art/variant_b_full_510_registry.csv` (keyed by `row_id`) to resolve `sprite_path`, `master_path`, `delivered_px`, `recipe`, §4.9 RGBA metrics, and Extended 2.5D metrics (`gradient_stops`, `outline_dark_px`, `detail_density`, `lum_contrast`).
-2. **Straight-RGBA & 9-Slice Ready:** All non-full-bleed sprites enforce straight-RGBA premultiplied downsampling with `alpha=0` at all 4 corners and zero dark cartoon outlines. All `U-HUD` / `U-KIT` / `U-META` / `U-SHOP` / `G-UI` frames preserve uniform-color middle stretch zones per `docs/spec/ASSETS.md` §5.
-3. **Exact 25-Slot W0 Store Contract Preserved:** All 25 store exports across `microsoft-store/`, `amazon-appstore/`, and `huawei-appgallery/` retain identical filenames and pixel dimensions to `art/w0-listing/W0_MANIFEST.md`, re-exported from the Round-2 commercial 2.5D painted masters (`art/w0-listing-b/masters/`).
+## Unmodified planner evidence (required by audit)
+
+- `art/audit_a71412d_response/planner_raw_metrics.csv`: **512/512 PNGs measured, 0 read errors**, using unmodified `measure_asset.py` SHA-256 `c33182347dabf7e1eba4a3278d298a62a89a43ccbc2ae75e3ba0d6181a22b053` from planner `100cfcebc3`.
+- Raw proxy result: **393/512** files have at least one style-band value outside the planner proxy range; this is reported, not hidden or “fixed” by changing the metric. The planner itself notes these are global proxies, not per-panel gradients or a beauty score.
+- Three `outline_px > 1` records are full-frame boss sky/curtain and ringed Saturn background cases; the audit explicitly warns not to interpret opaque-canvas/background edge proxies as cartoon outlines.
+- Palette `val/chroma/dark` bands remain **CONFLICTING** for bright Solar Neon B, exactly as the independent audit states; no unilateral baseline change is made.
+- `art/audit_a71412d_response/planner_raw_metrics.csv` and `art/VARIANT_B_METRICS.md` intentionally use different metric definitions; do not compare their numbers as if identical.
+
+## Static acceptance and remaining gates
+
+- `static_validation.{json,md}`: 512 records, 25 W0 slots, metadata/source/dimensions/alpha checks, **0 errors / 0 warnings**.
+- `nine_slice_contract.csv`: 3 actual frames × 3 sizes (`320×240`, `480×360`, `720×1080`), exact corner preservation and uniform-center checks pass statically.
+- `duplicate_extra_files = 100` across current W4/W5 inventory: reported for semantic/integration review; duplicate hash alone is not called a defect. The four auditor-flagged semantic collisions are fixed with distinct art.
+- `comparisons/`: **23 review pairs** with source sheet/tile/crop/SHA-256 and candidate SHA-256. References are never game assets.
+- **Still pending:** auditor's commercial aesthetic verdict and hero lock; real Godot build capture (10 gameplay + 3 reward frames), pivot/trim/scene placement, motion/trails/additive blending, actual UI binding, and the requested three-person same-game check.

@@ -154,7 +154,19 @@ def main():
     ebody = [r for r in w2 if r["batch"] == "E-BODY"]
     ebul = [r for r in w2 if r["batch"] == "E-BULLET"]
     ref_enemy_tiles = [1, 16, 28, 29, 30, 31]
-    ebody_pairs = [(f"{r['row_id']} {r['variant']}", crop_tile("enemy-01.jpg", ref_enemy_tiles[i % len(ref_enemy_tiles)]), f"art/w2-enemy-b/{r['file']}") for i, r in enumerate(ebody)]
+    def enemy_reference(r, i):
+        # Explicit auditor anchors for the five diagnostically important rows;
+        # other rows are labelled visual analogues, not invented ID bindings.
+        special = {
+            "swarmling_pod": ("enemy-01.jpg", 1),
+            "beetle_cruiser": ("items-01.jpg", 2),
+            "phantom_hex": ("items-01.jpg", 3),
+            "scout_dart": ("enemy-01.jpg", 30),
+            "hp_pip_bar": ("enemy-01.jpg", 2),
+        }
+        sheet, tile = special.get(r["variant"], ("enemy-01.jpg", ref_enemy_tiles[i % len(ref_enemy_tiles)]))
+        return crop_tile(sheet, tile)
+    ebody_pairs = [(f"{r['row_id']} {r['variant']}", enemy_reference(r, i), f"art/w2-enemy-b/{r['file']}") for i, r in enumerate(ebody)]
     ref_ebul_tiles = [19, 20, 21, 22, 23, 24, 25, 26, 3, 4, 8]
     ebul_pairs = [(f"{r['row_id']} {r['variant']}", crop_tile("enemy-01.jpg", ref_ebul_tiles[i % len(ref_ebul_tiles)]), f"art/w2-enemy-b/{r['file']}") for i, r in enumerate(ebul)]
     render_board(
@@ -167,13 +179,31 @@ def main():
         ],
     )
 
-    # 4. W3 BOSS (42/42 units: 32 Glyph Bosses mapped 1:1 to bosses-01.jpg #1..#32 + 3 Special + 7 Parts)
+    # 4. W3 BOSS (42/42): map the decoded GLYPH-boss-ID, never the row index.
     w3 = json.load(open(os.path.join(HERE, "w3-boss-b/w3b_units.json"), encoding="utf-8"))
     bbody = [r for r in w3 if r["batch"] == "B-BODY"]
     bpart = [r for r in w3 if r["batch"] == "B-PART"]
-    # Note: bosses-01.jpg has 7018 at tile #1 and 7001..7017 at #2..#16, 9002..9018 at #17..#32
-    boss_tile_map = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1] + list(range(17, 33)) + [6, 20, 27]
-    bbody_pairs = [(f"#{i+1:02d} {r['variant']}", crop_tile("bosses-01.jpg", boss_tile_map[i]), f"art/w3-boss-b/{r['file']}") for i, r in enumerate(bbody)]
+    # datas/bosses.json + docs/assets/sprites-index.csv anchor:
+    # 7018=#1; 7001..7007=#2..#8; 7009..7017=#9..#16; 9002..9018=#17..#32.
+    def decoded_boss_tile(base, fallback):
+        if not base.startswith("GLYPH-boss-"):
+            return fallback
+        gid = int(base.rsplit("-", 1)[1])
+        if gid == 7018:
+            return 1
+        if 7001 <= gid <= 7007:
+            return gid - 6999
+        if 7009 <= gid <= 7017:
+            return gid - 7001
+        if 9002 <= gid <= 9018:
+            return gid - 8985
+        return fallback
+    special_tiles = [2, 3, 4]
+    bbody_pairs = []
+    for i, r in enumerate(bbody):
+        tile = decoded_boss_tile(r["planner_base"], special_tiles[i] if i < 3 else 2)
+        gid_label = r["planner_base"].replace("GLYPH-boss-", "ID") if r["planner_base"].startswith("GLYPH-boss-") else r["variant"]
+        bbody_pairs.append((f"{gid_label} {r['variant']}", crop_tile("bosses-01.jpg", tile), f"art/w3-boss-b/{r['file']}"))
     bpart_ref = [24, 25, 26, 27, 33, 6, 44]
     bpart_pairs = [(f"{r['row_id']} {r['variant']}", crop_tile("bullet-01.jpg", bpart_ref[i % len(bpart_ref)]), f"art/w3-boss-b/{r['file']}") for i, r in enumerate(bpart)]
     render_board(
@@ -181,16 +211,28 @@ def main():
         "W3 BOSS (42/42) — SIDE-BY-SIDE 2.5D COMPARISON: REF <-> VARIANT B ('SOLAR NEON 2.5D')",
         sub_note,
         [
-            ("1. B-BODY (35/35): Original bosses-01.jpg #1..#32 <-> Variant B 2.5D Dreadnought Bosses (with Detached Modules)", bbody_pairs),
+            ("1. B-BODY (35/35): Decoded boss ID -> exact bosses-01.jpg tile <-> Variant B (no row-index guessing)", bbody_pairs),
             ("2. B-PART (7/7): Original Sub-Parts/Webs <-> Variant B 2.5D Boss Turrets, Claws & Plasma Snare", bpart_pairs),
         ],
     )
 
     # 5. W4-CORE (Representative Items, FX, Parallax BG & 2.5D Beveled UI Frames/Buttons vs Contact Sheets)
     w4 = json.load(open(os.path.join(HERE, "w4-core-b/w4b_units.json"), encoding="utf-8"))
-    w4_items = [(f"{r['row_id']} {r['variant']}", crop_tile("items-01.jpg", (i % 4) + 1), f"art/w4-core-b/{r['file']}") for i, r in enumerate([x for x in w4 if x["lane"] == "ITEM"])]
-    w4_fx = [(f"{r['row_id']} {r['variant']}", crop_tile("fx-01.jpg", (i * 5 % 40) + 1), f"art/w4-core-b/{r['file']}") for i, r in enumerate([x for x in w4 if x["lane"] == "FX"])]
-    w4_bg = [(f"{r['row_id']} {r['variant']}", crop_tile("background-01.jpg", (i * 3 % 30) + 1), f"art/w4-core-b/{r['file']}") for i, r in enumerate([x for x in w4 if x["lane"] == "BG"])]
+    w4_item_refs = {"shield_orb": 1, "weapon_up": 2, "magnet_core": 3, "max_overdrive": 4}
+    w4_items = [(f"{r['row_id']} {r['variant']}", crop_tile("items-01.jpg", w4_item_refs.get(r["variant"], (i % 4) + 1)), f"art/w4-core-b/{r['file']}") for i, r in enumerate([x for x in w4 if x["lane"] == "ITEM"])]
+    w4_fx_refs = {
+        "mega_nova": ("bullet-01.jpg", 20), "starburst_blast": ("bullet-01.jpg", 20),
+        "cross_flare": ("bullet-01.jpg", 64), "unlock_prism": ("fx-01.jpg", 44),
+        "plasma_vortex": ("fx-01.jpg", 61), "repair_aura": ("fx-01.jpg", 44),
+        "overdrive_surge": ("bullet-01.jpg", 64), "levelup_ring": ("fx-01.jpg", 44),
+        "tint_halo": ("fx-01.jpg", 44),
+    }
+    w4_fx = []
+    for r in [x for x in w4 if x["lane"] == "FX"]:
+        sheet, tile = w4_fx_refs.get(r["variant"], ("fx-01.jpg", 44))
+        w4_fx.append((f"{r['row_id']} {r['variant']}", crop_tile(sheet, tile), f"art/w4-core-b/{r['file']}"))
+    w4_bg_refs = {"sky_far": 9, "cloud_mid": 14, "archipelago_near": 24}
+    w4_bg = [(f"{r['row_id']} {r['variant']}", crop_tile("background-01.jpg", w4_bg_refs.get(r["variant"], 9)), f"art/w4-core-b/{r['file']}") for i, r in enumerate([x for x in w4 if x["lane"] == "BG"])]
     ui_sample_tiles = [1, 2, 3, 5, 7, 8, 9, 12, 13, 15, 16, 18, 20, 22, 24, 34, 40, 41, 49, 58, 59, 61, 62, 63, 64]
     w4_ui_sub = [x for x in w4 if x["lane"] == "UI"][::3][:25]
     w4_ui = [(f"{r['row_id']} {r['variant']}", crop_tile("ui-01.jpg", ui_sample_tiles[i % len(ui_sample_tiles)]), f"art/w4-core-b/{r['file']}") for i, r in enumerate(w4_ui_sub)]
@@ -209,7 +251,11 @@ def main():
     w5 = json.load(open(os.path.join(HERE, "w5-full-b/w5b_units.json"), encoding="utf-8"))
     bg_planet_tiles = [5, 15, 24, 20, 11, 43, 12, 12, 28, 25, 6, 12, 8, 49, 10, 10, 12, 12, 43, 9, 12, 12, 12, 39, 48]
     w5_par = [x for x in w5 if x["batch"] == "G-PARALLAX"]
-    w5_bg_pairs = [(f"{r['row_id']} {r['variant']}", crop_tile("background-01.jpg", bg_planet_tiles[i % len(bg_planet_tiles)]), f"art/w5-full-b/{r['file']}") for i, r in enumerate(w5_par)]
+    w5_bg_refs = {"bgnormal": 9, "nen": 9, "cloud": 14, "dautau": 24, "earth": 20, "jupiter": 43}
+    w5_bg_pairs = []
+    for i, r in enumerate(w5_par):
+        tile = w5_bg_refs.get(r["planner_base"], bg_planet_tiles[i % len(bg_planet_tiles)])
+        w5_bg_pairs.append((f"{r['row_id']} {r['variant']}", crop_tile("background-01.jpg", tile), f"art/w5-full-b/{r['file']}"))
     w5_ui_sub = [x for x in w5 if x["lane"] == "UI"][::9][:25]
     w5_ui_pairs = [(f"{r['row_id']} {r['variant']}", crop_tile("ui-01.jpg", ui_sample_tiles[i % len(ui_sample_tiles)]), f"art/w5-full-b/{r['file']}") for i, r in enumerate(w5_ui_sub)]
     render_board(

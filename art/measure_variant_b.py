@@ -194,7 +194,7 @@ def main():
     with open(reg_json, "w", encoding="utf-8") as f:
         json.dump(unified, f, indent=2, ensure_ascii=False)
     with open(reg_csv, "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(unified[0].keys()))
+        w = csv.DictWriter(f, fieldnames=list(unified[0].keys()), lineterminator="\n")
         w.writeheader()
         w.writerows(unified)
 
@@ -220,10 +220,11 @@ def main():
         "# Variant B (`Solar Neon 2.5D Semi-Realistic Metallic`) — Full 510/510 Parity & Extended 2.5D Metrics",
         "",
         "- **Branch:** `arena/eca8588b-windwings-space-shooter-game-p` (`Art-designer-B`)",
-        "- **Style Mandate:** `STYLE-CORRECTION (lần 149 / 238f2b41c / PR #12 6446004160)` — True 2.5D Semi-Realistic Metallic (`pbr25d.py` v2: multi-stop 3D curved normals, contact AO, engraved panel seams, louver vents, rivets, top zenith rim-light, glossy Blinn-Phong specular, **0 thick cartoon outlines**)",
+        "- **Style Mandate:** `STYLE-CORRECTION ROUND 2 (lần 154 / 965c770c9)` + audit `a71412d3` — commercial 2.5D metallic (`pbr25d.py` v3 + painted masters + `mecha25d.py` v2), with AO, seams, vents, rivets, rim-light and no thick cartoon outlines.",
         "- **Canonical Planner:** `docs/art-plan/art-planner.csv` (`788` rows total = `510` non-EXCL units + `278` EXCL rows)",
-        "- **Parity Result:** **`510 / 510` non-EXCL planner units (`100.0%`)** delivered (`512` PNG sprites + `512` high-res `masters/`) · `EXCL` drawn = **`0`**",
-        "- **Side-by-Side Comparison Sheets (`BẢNG SO KẾ CẠNH`):** `preview/w{0,1,2,3,4,5}b_side_by_side_ref.png` generated for every wave.",
+        "- **Parity Result:** **`510 / 510` non-EXCL planner units (`100.0%`)** delivered (`512` PNG sprites + corresponding exported masters + additional painted source masters) · `EXCL` drawn = **`0`**",
+        "- **Side-by-Side Comparison Sheets (`BẢNG SO KẾ CẠNH`):** 6/6 boards generated; this is evidence, not aesthetic approval. See `audit_a71412d_response/` for decoded-ID pairs and raw planner metrics.",
+        "- **Metric caveat:** this legacy summary uses Variant-B proxy definitions; the unmodified planner's 50-bin / 0.8% metrics are reported separately in `audit_a71412d_response/planner_raw_metrics.csv`. Numbers are a floor, never a PASS by themselves.",
         "",
         "## 1. Per-Wave §4.9 + Extended 2.5D Metrics (`STYLE-CORRECTION lần 149`)",
         "",
@@ -241,7 +242,7 @@ def main():
     s_all = summarize(unified)
     md.append(
         f"| **ALL (`W1..W5`)** | **{s_all['files']}** | **{s_all['gradient_stops']:.2f}** | **{s_all['outline_dark_px']:.3f} px** | "
-        f"**{s_all['detail_density']:.2f}** | **{s_all['lum_contrast']:.3f}** | **{s_all['val']:.3f}** | **{s_all['chroma']:.3f}** | **{s_all['colors_q32']:.1f}** | **6/6 Boards PASS** |"
+        f"**{s_all['detail_density']:.2f}** | **{s_all['lum_contrast']:.3f}** | **{s_all['val']:.3f}** | **{s_all['chroma']:.3f}** | **{s_all['colors_q32']:.1f}** | **6/6 boards generated; audit pending** |"
     )
 
     md += [

@@ -21,6 +21,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
 import pbr25d
 import mecha25d
+import commercial_raw
 
 AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
@@ -166,6 +167,37 @@ def draw_twin_heavy_arms(canvas, cx, cy, arm_kind, P):
             pod = [(cx + 155, cy - 95), (cx + 415, cy - 55), (cx + 425, cy + 165), (cx + 165, cy + 145)]
             draw_cel_poly(canvas, m(pod), P["sec"], outline_w=9)
             mecha25d.draw_gun_barrel(canvas, cx + s * 295, cy + 135, cy + 395, w=118, barrels=3, glow_rgb=P["glow"][:3])
+
+
+PAINTED_BOSS_FOR_ARCH = {
+    "citadel": 7001, "arachnid": 7002, "leviathan": 7003,
+    "chronos": 7004, "seraph": 7005,
+}
+
+
+def render_painted_boss(source_gid, phase_cfg, pal_key):
+    """Use the ID-anchored painted boss family, with restrained Mk variation."""
+    path = os.path.join(HERE, "masters", f"boss_painted_{source_gid}_1024.png")
+    if not os.path.exists(path):
+        return None
+    im = Image.open(path).convert("RGBA")
+    if phase_cfg:
+        # Mk-II..IV remain recognisably the same family but do not reuse bytes;
+        # the shift is a material/lot variation, not a geometry replacement.
+        im = commercial_raw.hue_shift(im, phase_cfg * 22.0 + (source_gid % 3) * 4.0,
+                                      brightness=1.0 - phase_cfg * 0.025,
+                                      saturation=1.0 - phase_cfg * 0.035)
+    if source_gid == 7005:
+        # The decoded 7005 anchor has three small satellite gun pods above its
+        # circular reactor fortress; retain that identifying feature.
+        pod_path = os.path.join(os.path.dirname(HERE), "w1-player-b/masters/drone_painted_05_1024.png")
+        if os.path.exists(pod_path):
+            pod = Image.open(pod_path).convert("RGBA").transpose(Image.FLIP_TOP_BOTTOM)
+            pod = commercial_raw.hue_shift(pod, -22.0, saturation=0.92)
+            pod = pbr25d.downsample_straight_rgba(pod, (112, 112))
+            for px, py in ((192, 42), (456, 8), (720, 42)):
+                im.alpha_composite(pod, (px, py))
+    return im
 
 
 def render_boss_body(archetype, phase_cfg, pal_key):
@@ -483,7 +515,10 @@ def main():
 
     for uno, (row_id, base, var, pcfg, pal, fname) in enumerate(body_jobs, 1):
         arch_key = var.split("-mk")[0]
-        c2 = render_boss_body(arch_key, pcfg, pal)
+        painted_gid = PAINTED_BOSS_FOR_ARCH.get(arch_key)
+        c2 = render_painted_boss(painted_gid, pcfg, pal) if painted_gid else None
+        if c2 is None:
+            c2 = render_boss_body(arch_key, pcfg, pal)
         sp = downsample_straight_rgba(c2, (512, 512))
         m_rel = f"masters/bodies/{fname}"
         s_rel = f"sprites/bodies/{fname}"
@@ -496,7 +531,10 @@ def main():
             "row_id": row_id, "batch": "B-BODY", "unit_no": uno, "planner_base": base,
             "variant": var, "delivered_px": "512x512", "master_px": "512x512",
             "source": m_rel, "file": s_rel, "license": LICENSE_NOTE,
-            "author": AUTHOR_BRANCH, "recipe": f"b_boss_{pal}", "val": val, "chroma": ch, "fill": fill,
+            "author": AUTHOR_BRANCH,
+            "recipe": (f"b_boss_painted_id{painted_gid}_commercial_2.5d+mk{pcfg+1}"
+                       if painted_gid else f"b_boss_{pal}_mecha25d"),
+            "val": val, "chroma": ch, "fill": fill,
         })
 
     # 2. 7 B-PART units (AP-0122..AP-0128)
@@ -531,7 +569,7 @@ def main():
     with open(os.path.join(HERE, "w3b_units.json"), "w", encoding="utf-8") as f:
         json.dump(records, f, ensure_ascii=False, indent=1)
     with open(os.path.join(HERE, "w3b_units.csv"), "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(records[0].keys()))
+        w = csv.DictWriter(f, fieldnames=list(records[0].keys()), lineterminator="\n")
         w.writeheader()
         w.writerows(records)
 

@@ -20,6 +20,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
 import pbr25d
 import mecha25d
+import commercial_raw
 
 AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
@@ -139,6 +140,50 @@ def pal_tuple(pal):
     if pal == "violet":
         return VIOL_BASE, VIOL_SHADE, VIOL_LIGHT
     return AMBR_BASE, AMBR_SHADE, AMBR_LIGHT
+
+
+PAINTED_ENEMY_SOURCES = {
+    "beetle_cruiser": ("w1-player-b/masters/drone_painted_04_1024.png", True),
+    "swarmling_pod": ("w1-player-b/masters/drone_painted_04_1024.png", True),
+    "manta_glider": ("w3-boss-b/masters/boss_painted_7004_1024.png", False),
+    "phantom_hex": ("w1-player-b/masters/drone_painted_04_1024.png", True),
+    "dread_carrier": ("w3-boss-b/masters/boss_painted_7003_1024.png", False),
+    "automaton_droid": ("w3-boss-b/masters/boss_painted_7002_1024.png", False),
+    "centurion_mk1": ("w3-boss-b/masters/boss_painted_7001_1024.png", False),
+    "centurion_turret": ("w3-boss-b/masters/boss_painted_7003_1024.png", False),
+    "juggernaut_hull": ("w3-boss-b/masters/boss_painted_7001_1024.png", False),
+    "juggernaut_core": ("w3-boss-b/masters/boss_painted_7005_1024.png", False),
+}
+
+
+def render_painted_enemy(variant, pal):
+    item = PAINTED_ENEMY_SOURCES.get(variant)
+    if not item:
+        return None
+    rel, flip = item
+    path = os.path.join(os.path.dirname(HERE), rel)
+    if not os.path.exists(path):
+        return None
+    im = Image.open(path).convert("RGBA")
+    # Role-specific crops keep a dart narrow and a beetle hull compact instead
+    # of stamping one full drone silhouette onto every enemy slot.
+    if variant == "scout_dart":
+        im = im.crop((390, 40, 634, 980))
+    elif variant == "beetle_cruiser":
+        im = im.crop((190, 100, 834, 960))
+    if flip:
+        im = im.transpose(Image.FLIP_TOP_BOTTOM)
+    # Small material variation per enemy role; no original atlas pixels.
+    shift = {"crimson": 0, "magenta": -12, "violet": 18, "amber": -10, "emerald": 42}.get(pal, 0)
+    if variant == "swarmling_pod":
+        shift = 150       # cobalt-blue orbital pod, matching the anchor's hue family
+    elif variant == "beetle_cruiser":
+        shift = -28       # red armored beetle hull
+    elif variant == "phantom_hex":
+        shift = 92        # emerald/green hull with hinged side guards
+    if shift:
+        im = commercial_raw.hue_shift(im, shift, saturation=0.98)
+    return pbr25d.downsample_straight_rgba(im, (512, 512))
 
 
 def render_ebody(idx, variant, pal):
@@ -406,15 +451,22 @@ def render_ebody(idx, variant, pal):
         draw_menace_eye(im, cx, cy, 64, 64, ring_c=CRIM_BASE, core_c=CORE_WHITE)
 
     elif variant == "hp_pip_bar":
-        # AP-0067 (Enemy_Hp): Floating overhead Enemy HP bar widget (centered horizontal capsule)
-        frame = [(52, 196), (460, 196), (478, 256), (460, 316), (52, 316), (34, 256)]
-        draw_cel_poly(im, frame, HULL_BASE, HULL_SHADE, HULL_LIGHT, outline_w=8)
-        # 4 bright crimson/amber health pips
-        for k in range(4):
-            x0 = 74 + k * 92
-            pip = [(x0, 218), (x0 + 78, 218), (x0 + 78, 294), (x0, 294)]
-            c_use = (CRIM_BASE, CRIM_SHADE, CRIM_LIGHT) if k < 3 else (AMBR_BASE, AMBR_SHADE, AMBR_LIGHT)
-            draw_cel_poly(im, pip, *c_use, outline_w=5)
+        # AP-0067 (Enemy_Hp): decoded sprites.csv path 2554 -> enemy-01 #2
+        # is a plain white rounded HP fill, not a four-pip weapon/body sprite.
+        # Keep it a neutral UI fill so the integration layer can tint/stretch it.
+        bw, bh = 400, 64
+        bar = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
+        px = np.zeros((bh, bw, 4), dtype=np.uint8)
+        for yy in range(bh):
+            t = yy / max(1, bh - 1)
+            v = int(round(252 - 38 * t))
+            px[yy, :, :3] = (v, v, min(255, v + 3))
+            px[yy, :, 3] = 255
+        mask = Image.new("L", (bw, bh), 0)
+        ImageDraw.Draw(mask).rounded_rectangle((0, 0, bw - 1, bh - 1), radius=18, fill=255)
+        bar = Image.fromarray(px, "RGBA")
+        bar.putalpha(mask)
+        im.alpha_composite(bar, (56, 224))
 
     elif variant == "target_drone":
         # AP-0068 (Enemytut): Tutorial bullseye target dummy drone
@@ -558,7 +610,11 @@ def main():
 
     # 1. 23 E-BODY units
     for idx, (row_id, base, variant, pal, recipe) in enumerate(E_BODY_SPECS, 1):
-        c4 = render_ebody(idx, variant, pal)
+        c4 = render_painted_enemy(variant, pal)
+        if c4 is None:
+            c4 = render_ebody(idx, variant, pal)
+        else:
+            recipe = recipe + "+painted_enemy_role_master"
         m_im = downsample_straight_rgba(c4, (256, 256))
         s_im = downsample_straight_rgba(c4, (128, 128))
         fname = f"enemy_body_{idx:02d}_{variant}_128@{pal}.png"
@@ -603,7 +659,7 @@ def main():
     with open(os.path.join(HERE, "w2b_units.json"), "w", encoding="utf-8") as f:
         json.dump(records, f, ensure_ascii=False, indent=1)
     with open(os.path.join(HERE, "w2b_units.csv"), "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(records[0].keys()))
+        w = csv.DictWriter(f, fieldnames=list(records[0].keys()), lineterminator="\n")
         w.writeheader()
         w.writerows(records)
 

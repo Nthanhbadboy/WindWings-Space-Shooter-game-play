@@ -273,7 +273,7 @@ def render_commercial_ship(idx: int, L: dict, raw_dir: str) -> Image.Image:
     """Render 1 of 25 commercial-grade 2.5D semi-realistic metallic starfighters (1024x1024 master)."""
     masters_parent = os.path.dirname(raw_dir.rstrip("/"))
     baked_path = os.path.join(masters_parent, f"hero_painted_{idx:02d}_1024.png")
-    if idx in (1, 4) and os.path.exists(baked_path):
+    if idx in (1, 4, 8, 12, 13) and os.path.exists(baked_path):
         return Image.open(baked_path).convert("RGBA")
     if idx == 1:
         m = load_polished_ai_ship(os.path.join(raw_dir, "ship_01_raw.png"), rot_270=True, widen=1.24)
@@ -550,6 +550,9 @@ def render_commercial_ship(idx: int, L: dict, raw_dir: str) -> Image.Image:
 
 def render_commercial_drone(idx: int, L: dict) -> Image.Image:
     """Render 1 of 13 commercial-grade articulated escort weapon drones (512x512 2x master)."""
+    baked = os.path.join(os.path.dirname(__file__), "w1-player-b", "masters", f"drone_painted_{idx:02d}_1024.png")
+    if idx in (4, 5) and os.path.exists(baked):
+        return pbr25d.downsample_straight_rgba(Image.open(baked).convert("RGBA"), (512, 512))
     S = 512
     cx, cy = 256.0, 268.0
     im = Image.new("RGBA", (S, S), (0, 0, 0, 0))

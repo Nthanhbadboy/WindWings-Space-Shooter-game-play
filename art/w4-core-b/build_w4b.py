@@ -107,6 +107,11 @@ def build_seamless_parallax(raw_path, mode):
         w = (0.5 - 0.5 * np.cos(np.pi * np.arange(ov, dtype=np.float32) / ov))[:, None, None]
         base[:ov] = tail * (1.0 - w) + base[:ov] * w
         base[-1] = base[0]
+        # Audit a71412d3: the first sky layer was V=0.94 and visually
+        # overpowered enemy/ship values. Keep the Solar-Neon rays, but ground
+        # the stage in a dark, desaturated cobalt atmosphere so gameplay pops.
+        base = base * np.array([0.20, 0.24, 0.32], dtype=np.float32)[None, None, :] + np.array([3.0, 5.0, 12.0], dtype=np.float32)[None, None, :]
+        base[-1] = base[0]
         rgba = np.concatenate([np.clip(np.round(base), 0, 255).astype(np.uint8), np.full((1024, 1024, 1), 255, dtype=np.uint8)], axis=2)
         return Image.fromarray(rgba, "RGBA")
 
@@ -762,7 +767,7 @@ def main():
     with open(os.path.join(HERE, "w4b_units.json"), "w", encoding="utf-8") as f:
         json.dump(records, f, ensure_ascii=False, indent=1)
     with open(os.path.join(HERE, "w4b_units.csv"), "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(records[0].keys()))
+        w = csv.DictWriter(f, fieldnames=list(records[0].keys()), lineterminator="\n")
         w.writeheader()
         w.writerows(records)
 

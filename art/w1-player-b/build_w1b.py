@@ -851,17 +851,23 @@ def save_unit(canvas_4x, master_size, export_size, rel_subpath, row_id, batch, u
 def main():
     records = []
     ship_fams = ["windfang", "solarviper", "skybastion", "aerofalcon", "novaarc"]
+    # Decoded anchor: datas/ships.json (read-only) maps unit order to these IDs;
+    # sprites-index.csv maps each ID to ships-01.jpg tile of the same number.
+    ship_ids = list(range(10001, 10025)) + [10999]
+    drone_ids = list(range(20001, 20014))
 
     # 1. P-SHIP: 25 units
     for i in range(1, 26):
         fam_name = ship_fams[(i - 1) // 5]
         sub_no = ((i - 1) % 5) + 1
         c4 = render_ship(i)
+        recipe = (f"b_ship_painted_id{ship_ids[i-1]}_commercial_2.5d+straight_export"
+                  if i in (1, 4, 8, 12, 13) else "b_ship_mecha25d_commercial_2.5d")
         rec = save_unit(
             c4, (512, 512), (256, 256),
             f"ships/player_ship_{i:02d}_256@solar.png",
-            "AP-0016", "P-SHIP", i, "GLYPH-ship-10001..10999",
-            f"{fam_name}-{sub_no}", 256, "b_ship_pearl_azure",
+            "AP-0016", "P-SHIP", i, f"GLYPH-ship-{ship_ids[i-1]}",
+            f"{fam_name}-{sub_no}", 256, recipe,
         )
         records.append(rec)
 
@@ -870,11 +876,13 @@ def main():
     for i in range(1, 14):
         fam_name = drone_fams[(i - 1) % 5]
         c4 = render_drone(i)
+        recipe = (f"b_drone_painted_id{drone_ids[i-1]}_commercial_2.5d+straight_export"
+                  if i in (4, 5) else "b_drone_mecha25d_commercial_2.5d")
         rec = save_unit(
             c4, (256, 256), (128, 128),
             f"drones/player_drone_{i:02d}_128@cyan.png",
-            "AP-0011", "P-DRONE", i, "GLYPH-drone-20001..20013",
-            f"{fam_name}-{(i - 1) // 5 + 1}", 128, "b_drone_pearl_gold",
+            "AP-0011", "P-DRONE", i, f"GLYPH-drone-{drone_ids[i-1]}",
+            f"{fam_name}-{(i - 1) // 5 + 1}", 128, recipe,
         )
         records.append(rec)
 
@@ -917,7 +925,7 @@ def main():
 
     fields = list(records[0].keys())
     with open(os.path.join(HERE, "w1b_units.csv"), "w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fields)
+        w = csv.DictWriter(f, fieldnames=fields, lineterminator="\n")
         w.writeheader()
         w.writerows(records)
 
