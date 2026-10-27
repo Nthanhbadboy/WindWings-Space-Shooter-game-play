@@ -18,8 +18,8 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import lane_residue as LR  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_lane_residue.json.gz'
-PIN_BYTES = 4901
-PIN_SHA = '3653c973aabb7db87fa854881d64ba6d63f562d7bffd0ec72ad43934e1ea885e'
+PIN_BYTES = 4896
+PIN_SHA = '6fee97bab19c3ff710d24780b5452da0a1d2e504e3aeff92cc7bd7308e944e9d'
 
 
 def payload():
@@ -70,8 +70,9 @@ class Census(unittest.TestCase):
                          ('CLOSED', 168))
         self.assertEqual((addressed['29']['verdict'], addressed['29']['closer']),
                          ('CLOSED', 168))
+        # 180: 149 binds both handle slots, so 168's "narrowed" reading is superseded
         self.assertEqual((addressed['39']['verdict'], addressed['39']['closer']),
-                         ('RESTATED', 169))
+                         ('CLOSED', 149))
 
     def test_closed_list(self):
         rows = payload()['closed']

@@ -22,10 +22,10 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import item32_closure as C  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_item32_closure.json.gz'
-PIN_BYTES = 2020
-PIN_SHA = '76c486b2e13e03a9e8dcf575ba85df43a5924c18024cd5cef63cc88703f8ec3e'
+PIN_BYTES = 2102
+PIN_SHA = '298995a7b282edfb92a7a49bae9f43d8d404ca13b6c1d79c76b0233fa9af8a10'
 
-AUDIT_SHA = 'a7f7b51fddf91e4c6a840cd8e7706a420b6ff022ae3eb992c8b41d77330f0631'
+AUDIT_SHA = '66d6659e18b7a735dd5ca4a6a4d4e02eed8e53f8019b6040375937e98d872e96'
 
 
 def payload():
@@ -70,12 +70,14 @@ class TheClosure(unittest.TestCase):
 
 
 class FixedPoint(unittest.TestCase):
-    def test_the_audit_moved_once(self):
-        before = payload()['fixed_point']['audit_before']
-        after = payload()['fixed_point']['audit_after']
-        self.assertEqual((before['closed'], after['closed']), (19, 20))
-        self.assertEqual((before['still_open'], after['still_open']), (10, 9))
-        self.assertEqual((before['proofs'], after['proofs']), (28, 29))
+    def test_the_audit_moved_once_and_180_moved_it_further(self):
+        fixed = payload()['fixed_point']
+        self.assertEqual(fixed['report'], '179')
+        self.assertEqual(fixed['superseded_by'], 180)
+        self.assertEqual(fixed['audit_before']['closed'], 19)
+        # "after" is measured at build time, so it tracks whatever closed later
+        self.assertGreaterEqual(fixed['audit_after']['closed'], 20)
+        self.assertEqual(fixed['audit_after']['still_open'], 9)
 
     def test_the_audit_on_disk_is_the_after(self):
         audit = ROOT / 'datas/l2_535b0541_open_items_audit.json.gz'
@@ -94,14 +96,14 @@ class Contract(unittest.TestCase):
     def test_no_scan_step_is_left(self):
         self.assertEqual(payload()['contract_after']['scan'], [])
 
-    def test_the_contract_shrank_by_one(self):
-        self.assertEqual(payload()['contract_after']['items'], 36)
+    def test_the_contract_shrank(self):
+        self.assertLessEqual(payload()['contract_after']['items'], 36)
         self.assertEqual(payload()['fixed_point']['audit_before']['contract'], 37)
 
     def test_the_remaining_kinds(self):
         kinds = payload()['contract_after']['kinds']
         self.assertEqual(kinds, {'DATA': 6, 'INDEX': 2, 'NOTE': 1, 'PIN-RAW': 3,
-                                 'POLICY': 5, 'RUNTIME': 19})
+                                 'POLICY': 2, 'RUNTIME': 19})
 
     def test_nine_items_stay_open(self):
         limits = ' '.join(payload()['limits'])

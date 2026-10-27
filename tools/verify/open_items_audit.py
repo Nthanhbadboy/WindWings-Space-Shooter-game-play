@@ -250,6 +250,21 @@ def _static_writer_census():
             sum(1 for row in art(178)['counters'] if row['klass'] == 'GameDatas')]
 
 
+def _hunter_arrays():
+    """149: how many arrays `Board_PVP..ctor` binds, at what size, with how many elements."""
+    arrays = art(149)['arrays']
+    return [len(arrays), sorted({row['blob']['declared_bytes'] for row in arrays}),
+            sorted({row['elements'] for row in arrays})]
+
+
+def _hunter_values(field):
+    """149's decoded contents of one array, keyed by the field it is stored into."""
+    for row in art(149)['arrays']:
+        if row['field'].endswith(field):
+            return row['values']
+    raise AssertionError('no array for %s' % field)
+
+
 PROOFS = {
     '143-currency-keys': _currency_keys,
     '143-currency-cells': _currency_cells,
@@ -276,6 +291,10 @@ PROOFS = {
     '169-pvp-arrays': _pvp_arrays,
     '169-blob-census': _pvp_blob_census,
     '178-static-writer-census': _static_writer_census,
+    '149-hunter-arrays': _hunter_arrays,
+    '149-reward-indexs': lambda: _hunter_values('rewardIndexs'),
+    '149-reward-values': lambda: _hunter_values('rewardValues'),
+    '149-reward-scales': lambda: _hunter_values('rewardScales'),
 }
 
 
@@ -413,14 +432,13 @@ ITEMS = [
       'passes `mov w2, #1` at 19187452, so the amount is a literal, not pack data. The '
       'item also overstated the call count — there is one body and one site.',
       [('168-save-data', [1, 'mov w2, #1', 19187472])]),
-    I(132, 'PvP stage reward types and amounts', 'RESTATED', 169,
-      '169 corrects the premise and narrows the rest: `Board_PVP` has no `rewardTypes` '
-      'field at all, and `rewardValues`/`rewardScales` are filled inside `.ctor` by six '
-      '`InitializeArray` calls, not at run time. What is left open is the *content* of '
-      'the two blobs, and that is blocked on the metadata usage table.',
-      [('169-pvp-arrays', [6, 6, ['0x198', '0x1a0', '0x1a8', '0x208', '0x210', '0x218']]),
-       ('169-blob-census', [982, 99, 7, 3, 4])]),
-    I(132, 'PlayerPrefs key -> literal binding for KeyCount0/1/2', 'CLOSED', 143,
+    I(132, 'PvP stage reward types and amounts', 'CLOSED', 149,
+      '149 reads all six arrays out of the InitializeArray events (slot -> field id -> '
+      '`field-defaults` entry) and prints their contents: six stages, each a reward type '
+      'id plus an amount. 169/177 called this unbound because they looked for a metadata '
+      'usage table instead of the event field id; 180 records that correction.',
+      [('149-hunter-arrays', [6, [24], [6]]),
+       ('149-reward-indexs', [23, 0, 14, 1, 15, 18])]),    I(132, 'PlayerPrefs key -> literal binding for KeyCount0/1/2', 'CLOSED', 143,
       '143 resolves the three slots to the literals `KeyCount0/1/2` with their addends and '
       'the same read/write pair 132 had already found.',
       [('143-key-counts', [['KeyCount0', 46011960, 44941760],
@@ -478,19 +496,16 @@ ITEMS = [
       'reads player state (daily reset counter).'),
     I(129, 'actual random draws', 'RUNTIME', None,
       'UnityEngine.Random.Range is seeded at run time; no sequence is claimed.'),
-    I(133, 'amount per stage (rewardValues)', 'RESTATED', 169,
-      '169 runs the 131 route to the end and it does not bind: 982 `<PrivateImplementation'
-      'Details>` fields, 99 of them exactly 24 bytes, 7 reading as six plausible floats, '
-      '3 of those already attributed to other ctors, 4 left with no positional link to '
-      'the `rewardIndexs` blob (data_index 30944). The block moved from "lookup not run" '
-      'to "needs the metadata usage table".',
-      [('169-blob-census', [982, 99, 7, 3, 4])]),
-    I(133, 'icon scale per stage (rewardScales)', 'RESTATED', 169,
-      'same census, same answer: the `float[]` classification of `rewardScales` is '
-      'confirmed by 169 from the dump, but which 24-byte blob fills it cannot be decided '
-      'from content — none of the four candidates sits next to the `rewardIndexs` data.',
-      [('169-blob-census', [982, 99, 7, 3, 4])]),
-    I(133, 'how many markers the scene really has', 'RUNTIME', None,
+    I(133, 'amount per stage (rewardValues)', 'CLOSED', 149,
+      '149 prints `rewardValues` from the shipped blob: [100, 10000, 10, 100, 10, 10] over '
+      'six stages, and pairs it with the handler table of 133 so each amount has a type. '
+      'The value shipped in the APK all along; 169 looked for it in the wrong raw.',
+      [('149-reward-values', [100, 10000, 10, 100, 10, 10])]),    I(133, 'icon scale per stage (rewardScales)', 'CLOSED', 149,
+      '149 prints `rewardScales` as float32 values read from the 24-byte blob: '
+      '[1.0, 1.0, 0.6000000238418579, 1.0, 0.6000000238418579, 0.800000011920929] — the '
+      'f32 expansion is kept, not rounded to 0.6/0.8.',
+      [('149-reward-scales', [1.0, 1.0, 0.6000000238418579, 1.0,
+                              0.6000000238418579, 0.800000011920929])]),    I(133, 'how many markers the scene really has', 'RUNTIME', None,
       'allPoints is a serialized WinPoint[] filled from the scene; the code only proves '
       'the halving.'),
     I(138, 'ArenaManager root variants', 'OPEN', None,

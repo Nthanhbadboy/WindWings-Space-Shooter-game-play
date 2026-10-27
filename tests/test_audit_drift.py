@@ -18,8 +18,8 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import audit_drift as AD  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_audit_drift.json.gz'
-PIN_BYTES = 7813
-PIN_SHA = '967922fa531bee56b3274471d1005d05932c167b363f98073145ed1750fd09b6'
+PIN_BYTES = 7682
+PIN_SHA = '6ae613f82b04e09c4dfe5def8c6c6133b3415be6d04b38d6e046699301ea334b'
 
 
 def payload():
@@ -65,10 +65,10 @@ class PayloadShape(unittest.TestCase):
 
     def test_totals_are_the_artifact(self):
         totals = payload()['totals']
-        self.assertEqual(totals['artifacts'], 47)
+        self.assertEqual(totals['artifacts'], 48)
         self.assertEqual(totals['claims'], 9)
         self.assertEqual(totals['targets'], 2)
-        self.assertEqual(totals['contract'], 36)
+        self.assertEqual(totals['contract'], 33)
         self.assertEqual(totals['failing'], 0)
 
     def test_rules_count_covers_every_claim_twice(self):
@@ -126,16 +126,16 @@ class BlindSpot(unittest.TestCase):
     def test_every_artifact_is_named_by_the_docs(self):
         body = payload()['blind_spot']
         self.assertEqual(body['unnamed_artifacts'], [])
-        self.assertEqual(body['named_by_the_docs'], 47)
-        self.assertEqual(body['artifacts'], 47)
+        self.assertEqual(body['named_by_the_docs'], 48)
+        self.assertEqual(body['artifacts'], 48)
 
     def test_the_audit_alone_now_names_all_of_them(self):
-        self.assertEqual(payload()['blind_spot']['named_by_the_audit'], 47)
+        self.assertEqual(payload()['blind_spot']['named_by_the_audit'], 48)
 
     def test_nothing_is_left_unnamed(self):
         # 175 filled the audit's table from the report filenames, so the window is empty
         self.assertEqual(payload()['blind_spot']['reports_the_audit_cannot_name'], [])
-        self.assertEqual(payload()['blind_spot']['named_by_the_docs'], 47)
+        self.assertEqual(payload()['blind_spot']['named_by_the_docs'], 48)
 
     def test_no_correction_now_points_at_an_unnamed_report(self):
         self.assertEqual(payload()['totals']['unread_targets'], [])
@@ -232,16 +232,16 @@ class Contract(unittest.TestCase):
         for row in self.plan.values():
             counts[row['kind']] = counts.get(row['kind'], 0) + 1
         self.assertEqual(counts['RUNTIME'], 19)
-        self.assertEqual(counts['POLICY'], 5)
+        self.assertEqual(counts['POLICY'], 2)   # 180 closed 30/39/40
         self.assertEqual(counts['DATA'], 6)
         self.assertEqual(counts['PIN-RAW'], 3)
         # 179 closed item 32, the only SCAN step in the contract
         self.assertNotIn('SCAN', counts)
         self.assertEqual(counts['TODO'] if 'TODO' in counts else 0, 0)
 
-    def test_the_five_policy_items_are_the_metadata_table(self):
+    def test_the_two_policy_items_are_the_metadata_slots(self):
         self.assertEqual(sorted(n for n, row in self.plan.items()
-                                if row['kind'] == 'POLICY'), [30, 39, 40, 51, 52])
+                                if row['kind'] == 'POLICY'), [51, 52])
 
     def test_the_six_data_items_are_served_payloads(self):
         self.assertEqual(sorted(n for n, row in self.plan.items()

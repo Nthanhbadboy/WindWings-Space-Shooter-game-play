@@ -1,5 +1,7 @@
 # 177 — `Board_PVP..ctor` dựng **bảy** collection, sáu trong đó lấy từ chính APK
 
+> **ERRATUM 180:** câu "giá trị vẫn `NOT_BOUND`, cần bảng metadata usage" trong report này **SAI**. Event `InitializeArray` mang sẵn `field_id`, nên `slot_va → field_id → field-defaults.json` giải ra 24 byte của cả sáu array; **149** đã đọc đúng như vậy. Xem `docs/apk-analysis/180-535b0541-registry-v4.md` §1.
+
 **Trạng thái:** `DECODED_STATIC` (slice đã ghim; không chạy game)
 **Lớp bằng chứng:** STATIC-ONLY. Mỗi dòng của bảng đến từ `datas/l2_535b0541_pvp_array_init.json.gz`.
 **Artifact:** `datas/l2_535b0541_pvp_array_init.json.gz` — **1965 B**, sha256 `388f4fbfdb00d2b9c0b3d9930e27c7a5564b6c51d87976203896b1e5df871ced`

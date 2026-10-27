@@ -16,8 +16,8 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import open_items_audit  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_open_items_audit.json.gz'
-PIN_SHA = 'a7f7b51fddf91e4c6a840cd8e7706a420b6ff022ae3eb992c8b41d77330f0631'
-PIN_BYTES = 10909
+PIN_SHA = '66d6659e18b7a735dd5ca4a6a4d4e02eed8e53f8019b6040375937e98d872e96'
+PIN_BYTES = 10867
 
 
 def payload():
@@ -77,13 +77,14 @@ class Verdicts(unittest.TestCase):
     def test_totals(self):
         totals = payload()['totals']
         # 179 closed item 32 against report 178: one fewer open, one more proof
-        self.assertEqual(totals, {'items': 56, 'distinct_questions': 53, 'closed': 20,
-                                  'restated': 6, 'actionable': 0, 'runtime': 20,
+        # 180 closed 30/39/40 against 149's blob binding (C1)
+        self.assertEqual(totals, {'items': 56, 'distinct_questions': 53, 'closed': 23,
+                                  'restated': 3, 'actionable': 0, 'runtime': 20,
                                   'note': 1, 'still_open': 9, 'proofs': 29})
 
     def test_verdicts_partition_the_items(self):
         rows = payload()['items']
-        self.assertEqual(sum(1 for row in rows if row['verdict'] == 'CLOSED'), 20)
+        self.assertEqual(sum(1 for row in rows if row['verdict'] == 'CLOSED'), 23)
         self.assertEqual(sum(1 for row in rows if row['verdict'] == 'OPEN'), 9)
         self.assertEqual({row['verdict'] for row in rows},
                          {'CLOSED', 'RESTATED', 'RUNTIME', 'NOTE', 'OPEN'})
@@ -105,19 +106,19 @@ class Verdicts(unittest.TestCase):
     def test_most_closures_come_from_a_later_report(self):
         later = [row for row in payload()['items']
                  if row['verdict'] == 'CLOSED' and row['direction'] == 'later']
-        self.assertEqual(len(later), 20)
+        self.assertEqual(len(later), 23)
         earlier = [row for row in payload()['items'] if row['direction'] == 'earlier']
         self.assertEqual([row['report'] for row in earlier], [139])
         # the two 133 items used to sit here; 169 ran the route and narrowed them instead
-        self.assertEqual(sorted(row['n'] for row in payload()['items']
-                                if row['closer'] == 169), [30, 39, 40])
+        self.assertEqual([row['n'] for row in payload()['items']
+                          if row['closer'] == 169], [])
         # 179: the wider-scan item, closed by 178's store census
         self.assertEqual(sorted(row['n'] for row in payload()['items']
                                 if row['closer'] == 178), [32])
 
     def test_backing_split(self):
         self.assertEqual(payload()['verdict_backing']['declared'], 6)
-        self.assertEqual(payload()['verdict_backing']['by_content'], 14)
+        self.assertEqual(payload()['verdict_backing']['by_content'], 17)
 
 
 class SpecificClosures(unittest.TestCase):
@@ -148,15 +149,15 @@ class SpecificClosures(unittest.TestCase):
         self.assertEqual(row['verdict'], 'OPEN')
         self.assertIn('21202600', row['reason'])
 
-    def test_the_two_blob_decodes_are_narrowed_by_169(self):
-        rows = [row for row in payload()['items']
-                if row['verdict'] == 'RESTATED' and row['closer'] == 169
-                and 'per stage' in row['item']]
+    def test_the_two_blob_decodes_are_closed_by_149(self):
+        # 180: 169 had only narrowed them; 149 had bound both blobs all along
+        rows = [row for row in payload()['items'] if 'per stage' in row['item']]
         self.assertEqual(sorted(row['item'] for row in rows),
                          ['amount per stage (rewardValues)',
                           'icon scale per stage (rewardScales)'])
         for row in rows:
-            self.assertEqual(row['evidence'][0]['actual'], [982, 99, 7, 3, 4])
+            self.assertEqual((row['verdict'], row['closer']), ('CLOSED', 149))
+            self.assertTrue(all(one['pass_'] for one in row['evidence']))
 
     def test_there_is_no_actionable_left(self):
         self.assertEqual([row for row in payload()['items']
@@ -172,9 +173,11 @@ class SpecificClosures(unittest.TestCase):
         self.assertEqual((row['verdict'], row['closer']), ('CLOSED', 168))
         self.assertEqual(row['evidence'][0]['actual'], [1, 'mov w2, #1', 19187472])
 
-    def test_the_pvp_stage_item_is_narrowed_by_169(self):
+    def test_the_pvp_stage_item_is_closed_by_149(self):
         row = self.row(132, 'PvP stage reward types')
-        self.assertEqual((row['verdict'], row['closer']), ('RESTATED', 169))
+        self.assertEqual((row['verdict'], row['closer']), ('CLOSED', 149))
+        self.assertEqual([one['actual'] for one in row['evidence']],
+                         [[6, [24], [6]], [23, 0, 14, 1, 15, 18]])
 
     def test_the_shop_prices_are_served_not_shipped(self):
         row = self.row(127, 'medal shop prices')
@@ -220,9 +223,12 @@ class Provenance(unittest.TestCase):
     def test_the_later_reports_are_read_but_not_hashed(self):
         """168 pins this artifact, so hashing 168 here would be a cycle."""
         labels = {row['label'] for row in payload()['items'] for row in row['evidence']}
-        self.assertEqual(sorted(label for label in labels if '168' in label or '169' in label),
-                         ['168-rewards-chain', '168-save-data',
-                          '169-blob-census', '169-pvp-arrays'])
+        self.assertEqual(sorted(label for label in labels if '168' in label),
+                         ['168-rewards-chain', '168-save-data'])
+        # 180: the 169 proofs went away with the three narrowed items; 149's arrived
+        self.assertEqual(sorted(label for label in labels if '149' in label),
+                         ['149-hunter-arrays', '149-reward-indexs', '149-reward-scales',
+                          '149-reward-values'])
 
     def test_digests_match_workspace(self):
         for row in payload()['provenance']['sources']:
@@ -267,8 +273,7 @@ class ReportTable(unittest.TestCase):
     def test_filling_the_table_does_not_move_the_artifact(self):
         # the table is an index: no item, no proof and no digest lives in it
         _, packed = open_items_audit.build(None)
-        self.assertEqual(hashlib.sha256(packed).hexdigest(),
-                         'a7f7b51fddf91e4c6a840cd8e7706a420b6ff022ae3eb992c8b41d77330f0631')
+        self.assertEqual(hashlib.sha256(packed).hexdigest(), PIN_SHA)
 
 
 if __name__ == '__main__':

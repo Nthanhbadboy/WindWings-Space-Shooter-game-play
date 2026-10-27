@@ -56,10 +56,6 @@ CONTRACT = {
                   '(0x50/0x54/0x58)', owner='AI-4', kind='SCAN'),
     34: dict(step='rank 0 level 0 has no reward row and no pinned code indexes it; '
                   'needs the served PvP league table', owner='owner', kind='DATA'),
-    39: dict(step='the metadata usage table that names handle slot 0x2ae0010 '
-                  '(`rewardValues`)', owner='owner', kind='POLICY'),
-    40: dict(step='the same table for 0x2ae0018 (`rewardScales`)', owner='owner',
-             kind='POLICY'),
     44: dict(step='what the 14 medal rows are indexed by is written in the served '
                   'tournament config, not in the cctor', owner='owner', kind='DATA'),
     48: dict(step='duplicate of 34; same served table', owner='owner', kind='DATA'),
@@ -284,8 +280,10 @@ def build_payload():
     check(checks, 'the-contract-has-no-unwritten-step',
           [row for row in plan if row['kind'] == 'TODO'] == [],
           [row['n'] for row in plan if row['kind'] == 'TODO'])
-    check(checks, 'five-items-need-an-owner-policy-decision',
-          sorted(row['n'] for row in plan if row['kind'] == 'POLICY') == [30, 39, 40, 51, 52],
+    # 180 closed 30/39/40: 149 had already bound the two blobs, so the "metadata usage
+    # table" blocker was a mis-diagnosis (report 180 section 2). Two policy items remain.
+    check(checks, 'two-items-need-an-owner-policy-decision',
+          sorted(row['n'] for row in plan if row['kind'] == 'POLICY') == [51, 52],
           [row['n'] for row in plan if row['kind'] == 'POLICY'])
     check(checks, 'three-items-need-a-raw-that-is-not-pinned',
           sorted(row['n'] for row in plan if row['kind'] == 'PIN-RAW') == [12, 49, 50],

@@ -1,5 +1,7 @@
 # 169 — Sáu mảng thưởng của `Board_PVP`: lệnh nào điền mảng nào, ai đọc, và vì sao con số vẫn chưa đọc được
 
+> **ERRATUM 180:** câu "giá trị vẫn `NOT_BOUND`, cần bảng metadata usage" trong report này **SAI**. Event `InitializeArray` mang sẵn `field_id`, nên `slot_va → field_id → field-defaults.json` giải ra 24 byte của cả sáu array; **149** đã đọc đúng như vậy. Xem `docs/apk-analysis/180-535b0541-registry-v4.md` §1.
+
 **Trạng thái:** `DECODED_STATIC` (chỉ đọc `dump.cs` + 8 slice + `field-defaults.json` đã pin, không chạy game)
 **Lớp bằng chứng:** STATIC-ONLY. Sáu cặp `InitializeArray → store offset`, kiểu khai báo, chiều dài 6 và danh sách reader là hằng lúc build; **byte của hai blob** (`rewardValues`, `rewardScales`) là `MODEL_NOT_MEASURED runtime` vì thiếu bảng metadata usage.
 **Artifact:** `datas/l2_535b0541_pvp_reward_arrays.json.gz` (4618 B, sha256 `cb3711ec8dc742b88a1f605df2e3afdf0e78226ddc57be85d7aa57c87c8d583b`)

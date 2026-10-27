@@ -49,9 +49,16 @@ CLOSER = 178
 BEFORE = dict(bytes=10748,
               sha256='3b782ffa0f8605b7ea0632803ef662a9c792b9c0a59293aef1b7772fae33a0d3',
               closed=19, still_open=10, proofs=28, contract=37, residue_bytes=4902)
-AFTER = dict(bytes=10909,
-             sha256='a7f7b51fddf91e4c6a840cd8e7706a420b6ff022ae3eb992c8b41d77330f0631',
-             closed=20, still_open=9, proofs=29, contract=36, residue_bytes=4901)
+# The audit keeps moving after 179 (180 closed 30/39/40), so the "after" side is measured
+# from the artifact at build time instead of being frozen here. Only the state 179 started
+# from is history and stays pinned.
+def after():
+    live = load(AUDIT_ART)
+    return dict(bytes=(ROOT / AUDIT_ART).stat().st_size, sha256=sha(AUDIT_ART),
+                closed=live['totals']['closed'], still_open=live['totals']['still_open'],
+                proofs=live['totals']['proofs'],
+                contract=len(load(DRIFT_ART)['contract']),
+                residue_bytes=(ROOT / RESIDUE_ART).stat().st_size)
 
 
 @functools.lru_cache(maxsize=None)
@@ -82,9 +89,10 @@ def build_payload():
     def check(name, passed, detail=None):
         checks.append(dict(name=name, passed=bool(passed), detail=detail))
 
+    state = after()
     check('the-audit-is-the-regenerated-one',
-          (len(rebuilt_audit), sha(AUDIT_ART)) == (AFTER['bytes'], AFTER['sha256']),
-          dict(bytes=len(rebuilt_audit), sha256=sha(AUDIT_ART)))
+          rebuilt_audit == (ROOT / AUDIT_ART).read_bytes(),
+          dict(bytes=len(rebuilt_audit), sha256=hashlib.sha256(rebuilt_audit).hexdigest()))
     check('the-audit-still-has-56-items', audit['totals']['items'] == 56,
           audit['totals']['items'])
     check('item-32-is-closed-by-178',
@@ -97,16 +105,17 @@ def build_payload():
     check('the-proof-reads-the-store-census',
           [one['expected'] for one in row['evidence']] == [[0, 16, 6]],
           [one['expected'] for one in row['evidence']])
-    check('only-one-verdict-moved', audit['totals']['closed'] == BEFORE['closed'] + 1
+    check('the-closure-moved-one-verdict-and-more-came-later',
+          audit['totals']['closed'] >= BEFORE['closed'] + 1
           and audit['totals']['still_open'] == BEFORE['still_open'] - 1
-          and audit['totals']['proofs'] == BEFORE['proofs'] + 1,
+          and audit['totals']['proofs'] >= BEFORE['proofs'] + 1,
           dict(closed=audit['totals']['closed'], still_open=audit['totals']['still_open'],
                proofs=audit['totals']['proofs']))
     check('the-verdicts-still-partition-the-items',
           sum(audit['totals'][key] for key in
               ('closed', 'restated', 'actionable', 'runtime', 'note', 'still_open')) == 56,
           audit['totals'])
-    check('the-contract-loses-its-only-scan-step',
+    check('the-contract-keeps-no-scan-step',
           N not in plan and [n for n, item in plan.items() if item['kind'] == 'SCAN'] == [],
           dict(contract=len(plan), scan=[n for n, item in plan.items()
                                          if item['kind'] == 'SCAN']))
@@ -117,12 +126,13 @@ def build_payload():
     # test and never stored here: a stored digest would be the cycle 173 exists to stop.
 
     check('regenerating-168-does-not-move-the-audit-again',
-          rebuilt_residue == (ROOT / RESIDUE_ART).read_bytes() and len(rebuilt_audit) == 10909,
+          rebuilt_residue == (ROOT / RESIDUE_ART).read_bytes()
+          and len(rebuilt_audit) == state['bytes'],
           dict(residue_bytes=len(rebuilt_residue),
                audit_sha256=hashlib.sha256(rebuilt_audit).hexdigest()))
-    check('168-records-the-new-audit-hash',
+    check('168-records-the-audit-hash-it-read',
           [row['sha256'] for row in residue['provenance']['inputs']
-           if row['path'] == AUDIT_ART] == [AFTER['sha256']],
+           if row['path'] == AUDIT_ART] == [state['sha256']],
           [row['sha256'] for row in residue['provenance']['inputs']
            if row['path'] == AUDIT_ART])
     check('147-row-is-unchanged-by-the-closure',
@@ -142,7 +152,9 @@ def build_payload():
         schema='item-closure/1',
         evidence='STATIC-ONLY: reads the pinned artifacts; no disassembly here.',
         provenance=dict(branch='arena/535b0541-windwings-space-shooter-game-p',
-                        audit=dict(path=AUDIT_ART, sha256=sha(AUDIT_ART)),
+                        audit=dict(path=AUDIT_ART, sha256=sha(AUDIT_ART),
+                                   note='measured at build; 180 moved the audit past this '
+                                        'report, so the digest here is not a 179-only pin'),
                         # 173 is deliberately absent: it hashes this artifact, so a digest
                         # of it here would be the cycle 173 exists to prevent.
                         residue=dict(path=RESIDUE_ART, sha256=sha(RESIDUE_ART)),
@@ -155,7 +167,8 @@ def build_payload():
         order=['open_items_audit (170) re-evaluates the item',
                'lane_residue (168) is regenerated because it hashes the audit',
                'audit_drift (173) is regenerated because it hashes every artifact'],
-        fixed_point=dict(audit_before=BEFORE, audit_after=AFTER,
+        fixed_point=dict(audit_before=BEFORE, audit_after=state,
+                         report='179', superseded_by=180,
                          note='the audit reads 168\'s content, not its hash, so the '
                               'second pass reproduces the same bytes'),
         contract_after=dict(items=len(plan),

@@ -230,10 +230,12 @@ def run_checks(chain, pack, absent, audit, meta, shop):
           and audit['addressed'][29]['closer'] == 168,
           {key: (audit['addressed'][key]['verdict'], audit['addressed'][key]['closer'])
            for key in (11, 29)})
-    check(checks, 'the-two-handle-slot-items-are-narrowed-by-169',
-          audit['addressed'][39]['verdict'] == 'RESTATED'
-          and audit['addressed'][40]['verdict'] == 'RESTATED'
-          and audit['addressed'][39]['closer'] == 169
+    # 180: 149 had already bound both handle slots, so 39/40 are closed, not narrowed.
+    check(checks, 'the-two-handle-slot-items-are-closed-by-149',
+          audit['addressed'][39]['verdict'] == 'CLOSED'
+          and audit['addressed'][40]['verdict'] == 'CLOSED'
+          and audit['addressed'][39]['closer'] == 149
+          and audit['addressed'][40]['closer'] == 149
           and '0x2ae0010' in json.dumps(load(PREV133)['table']) +
           json.dumps(audit['addressed']), audit['addressed'][39])
 
