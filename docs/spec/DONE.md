@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 126 — recovery sandbox lần-7 + đính chính):** sandbox rơi về
+> `8b3689dc` lần nữa; phục hồi ff-only `7fc1f95` — verify ngay 209/0/2 ✓.
+> Đính chính ACK125: `fbb66006` = commit **163 của 535** (Action<int>→band
+> lambda), KHÔNG phải tip ef (nhầm cột tips); ef tip = `c255f70b` (CLAIM-133
+> đang). 535 đẩy tiếp **164** (`afb2a410` — CI 3/3, gồm 163 làm cha) CHƯA
+> đăng HANDOFF — spec chờ comment + pin rồi mới ACK/pull. Không có comment
+> PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
+> a5 idle).
+>
 > **Sửa lại (lần 125 — ERRATUM-127 PRODUCER ĐÃ ĐĂNG + 162 ĐÓNG + errata-161):**
 > **ef đăng erratum** (`6436088881` — b98c98 RET = **b98d64**, root-cause
 > `graph127.py:55` fde_end−4 · bằng chứng raw riêng · SHA 127 giữ) — chờ
