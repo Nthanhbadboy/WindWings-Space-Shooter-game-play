@@ -1,0 +1,92 @@
+name: Godot project static checks
+
+# Static checks only; this does not import, launch, or export the game with Godot.
+
+on:
+  push:
+    paths:
+      - 'game/**'
+      - '.github/workflows/godot-project-checks.yml'
+  pull_request:
+    paths:
+      - 'game/**'
+      - '.github/workflows/godot-project-checks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-checks:
+    name: parse scripts and validate project metadata
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pinned GDScript parser and linter
+        run: python -m pip install --disable-pip-version-check 'gdtoolkit==4.5.0'
+
+      - name: Parse GDScript
+        run: gdparse game/scripts/*.gd
+
+      - name: Lint GDScript
+        run: gdlint game/scripts
+
+      - name: Validate JSON provenance and scene links
+        run: |
+          python3 - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          game = Path('game')
+          data_files = sorted((game / 'data').glob('*.json'))
+          assert data_files, 'no game JSON data files found'
+          docs = {p.name: json.loads(p.read_text()) for p in data_files}
+
+          required_hashes = {
+              'drop_policy.json', 'enemy_guns_wave_0000.json', 'enemy_hp_by_id.json',
+              'enemy_movement_wave_0000.json', 'iap_products.json', 'items.json',
+              'player_baseline.json', 'player_start_stats.json', 'pvp_reward_arrays.json',
+              'training_gun.json',
+          }
+          required_evidence = {
+              'enemy_guns_wave_0000.json', 'enemy_hp_by_id.json', 'iap_products.json',
+              'items.json', 'monetization_config.json',
+          }
+          allowed_evidence = {
+              'STATIC_CONFIRMED', 'RUNTIME_CONFIRMED', 'INFERRED',
+              'RUNTIME_UNVERIFIED', 'UNKNOWN', 'CONFLICTING',
+          }
+          sha_pattern = re.compile(r'^[0-9a-f]{64}$')
+
+          for name in required_hashes:
+              doc = docs[name]
+              assert sha_pattern.fullmatch(doc.get('source_sha256', '')), f'{name}: missing/invalid source_sha256'
+          assert docs['pvp_reward_arrays.json']['source_sha256'] == '034bb93bc8cd3585d07bc47d56a2465d90a205619b57acbef004e694a1333975'
+          for name in required_evidence:
+              assert docs[name].get('evidence') in allowed_evidence, f'{name}: missing/invalid evidence label'
+          for name, doc in docs.items():
+              if doc.get('source'):
+                  assert sha_pattern.fullmatch(doc.get('source_sha256', '')), f'{name}: source is not pinned'
+
+          project = (game / 'project.godot').read_text()
+          main_scene = re.search(r'^run/main_scene="res://([^\"]+)"$', project, re.M)
+          assert main_scene and (game / main_scene.group(1)).is_file(), 'main scene missing'
+          assert 'config/features=PackedStringArray("4.7.2", "GL Compatibility")' in project
+          assert re.search(r'INFERRED: 720x1496', project), 'viewport inference note missing'
+
+          refs = []
+          for scene in game.rglob('*.tscn'):
+              refs.extend((scene, target) for target in re.findall(r'path="res://([^\"]+)"', scene.read_text()))
+          for script in game.rglob('*.gd'):
+              refs.extend((script, target) for target in re.findall(r'(?:preload|load)\("res://([^\"]+)"\)', script.read_text()))
+          broken = [f'{source}: res://{target}' for source, target in refs if not (game / target).is_file()]
+          assert not broken, 'broken resource references:\n' + '\n'.join(broken)
+          print(f'PASS: {len(data_files)} JSON files; {len(required_hashes)} pinned sources; {len(refs)} resource links; main={main_scene.group(1)}')
+          PY

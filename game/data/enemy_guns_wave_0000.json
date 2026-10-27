@@ -1,6 +1,9 @@
 {
+  "evidence": "STATIC_CONFIRMED",
+  "source_sha256": "cc9f6c8ab44f9f30daacbdff86dd99d4bab4accc4fb39832e24a8e5af776d634",
   "source": "reverse-engineering/scriptableobjects/Gun_Attack.csv @ 8777bfa3eb5d45f992cde16d9949db6d1f293d0e",
-  "note": "Only Enemy_Ingame descendants for IDs in Wave_0000. Multiple records and bullet IDs are preserved. A runtime gun is used only where ballistic/schedule fields agree; prefab-to-runtime component binding remains inferred.",
+  "note": "Only Enemy_Ingame descendants for IDs in Wave_0000. Distinct alternatives and bullet IDs are retained; exact duplicate mapped signatures are collapsed per dedup_rule. A runtime gun is used only where ballistic/schedule fields agree; prefab-to-runtime component binding remains inferred.",
+  "dedup_rule": "Export one alternative per unique 11-field mapped signature: bullet_id, damage, speed, lifetime_seconds, gun_type, time_start_seconds, count_mags, count_shots, time_reload_seconds, time_rounds_seconds, and time_shot_seconds. Exact duplicate rows collapse; distinct signatures remain separate. Wave_0000: 30014 has 2 source rows → 1 signature; 30018 has 4 → 2 signatures.",
   "enemy_by_id": {
     "30014": {
       "prefab": "CB-30014",
