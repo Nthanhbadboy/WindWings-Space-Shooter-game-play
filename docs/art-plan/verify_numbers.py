@@ -237,12 +237,12 @@ def main() -> int:
     import re
     risks = re.findall(r"^\| \*\*(R\d+)\*\* \|", text["plan"], re.M)
     check_eq("mã rủi ro không trùng", len(risks), len(set(risks)))
-    check_eq("số rủi ro §6", len(risks), 13)
+    check_eq("số rủi ro §6", len(risks), 14)
     sec8 = text["plan"].split("## 8. Còn thiếu")[1]
     items = re.findall(r"^\| (\d+) \|", sec8, re.M)
-    check_eq("mục §8 liên tục 1..15",
+    check_eq("mục §8 liên tục 1..16",
              [int(x) for x in items], list(range(1, len(items) + 1)))
-    check_eq("số mục §8", len(items), 15)
+    check_eq("số mục §8", len(items), 16)
     for name, doc in (("plan", text["plan"]), ("w1", text["w1"]), ("w0", text["w0"])):
         check_eq(f"{name}: không còn 'pilot 20 asset'", doc.count("pilot 20 asset"), 0)
     for token in ("### 5.8", "**R11**", "**R12**", "**R13**", "| 13 | **Ngân sách màu",
@@ -293,6 +293,55 @@ def main() -> int:
     except Exception as exc:  # noqa: BLE001
         print("  FAIL không import/chạy được measure_asset.py:", exc)
         fails.append(f"measure_asset: {exc}")
+
+    print("10) chuẩn 2.5D — 3 chỉ số style (§4.5b) + cổng G-G/G-H")
+    try:
+        import measure_asset  # noqa: PLC0415 - import trễ
+        check_eq("measure_asset --style-selftest exit",
+                 measure_asset.run_style_selftest(verbose=False), 0)
+        check_eq("9 nhóm có dải style", sorted(measure_asset.STYLE_BANDS),
+                 sorted(measure_asset.BANDS))
+        for cls, lo in (("ship", 6), ("boss", 7), ("bullet", 3), ("bg", 8)):
+            check_eq(f"grad_stops lo {cls}", measure_asset.STYLE_BANDS[cls]["grad_stops"][0], lo)
+        check_eq("chỉ fx/bg mới cho viền ≤ 0,5",
+                 sum(1 for c, b in measure_asset.STYLE_BANDS.items() if b["outline_px"][1] <= 0.5), 2)
+
+        def vn(x: float, dec: int = 0) -> str:
+            return f"{x:.{dec}f}".replace(".", ",")
+
+        for cls, band in measure_asset.STYLE_BANDS.items():
+            want = (f"| `{cls}` | {vn(band['grad_stops'][0])}–{vn(band['grad_stops'][1])} "
+                    f"| ≤ {vn(band['outline_px'][1], 1)} "
+                    f"| {vn(band['detail'][0], 2)}–{vn(band['detail'][1], 2)} |")
+            ok = want in text["plan"]
+            print(f"  {'OK ' if ok else 'FAIL'} dải §4.5b của `{cls}` khớp code")
+            if not ok:
+                fails.append(f"§4.5b lệch dòng {cls}: cần {want!r}")
+
+        check_eq("mọi unit có A14·A15 ở L2",
+                 sum(1 for r in units if "A14" in r["gates_l2"] and "A15" in r["gates_l2"]),
+                 len(units))
+        check_eq("mọi unit có A14·A15·A16 ở full",
+                 sum(1 for r in units
+                     if all(g in r["gates_full"] for g in ("A14", "A15", "A16"))), len(units))
+        check_eq("pilot full hứa A14", sum(1 for r in s0
+                                           if r["mode"] == "full" and "A14" in r["proves"]), 13)
+        check_eq("pilot blockout ghi rõ miễn A14",
+                 sum(1 for r in s0 if r["mode"] == "blockout" and "miễn A14" in r["proves"]), 3)
+        for doc, token in (("plan", "4.5b"), ("plan", "STYLE-CORRECTION"), ("plan", "lần 149"),
+                           ("plan", "G-G"), ("plan", "G-H"), ("plan", "**R14**"),
+                           ("w1", "| **A14** |"), ("w1", "| **A15** |"), ("w1", "| **A16** |"),
+                           ("w1", "--style"), ("plan", "bảng so kế cạnh"),
+                           ("plan", "Bậc sáng/panel"), ("plan", "Rim-light"),
+                           ("plan", "giữ tỉ lệ diện tích §4.5, đổi cách render"),
+                           ("plan", "A1–A16"), ("w0", "A-L8"), ("plan", "--style-selftest")):
+            ok = token in text[doc]
+            print(f"  {'OK ' if ok else 'FAIL'} {doc:4s} chứa {token!r}")
+            if not ok:
+                fails.append(f"{doc} thiếu {token!r}")
+    except Exception as exc:  # noqa: BLE001
+        print("  FAIL không import/chạy được measure_asset.py (style):", exc)
+        fails.append(f"measure_asset style: {exc}")
 
     print()
     if fails:

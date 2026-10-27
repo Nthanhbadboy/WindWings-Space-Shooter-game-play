@@ -26,6 +26,7 @@
 | Nhóm thế nào? | **22 batch / 8 lane**: PLAYER 48 đơn vị · ENEMY 34 · BOSS 42 · UI 307 · FX 26 · BG 44 · ITEM 9 · EXCL 278 (A) |
 | Khối lượng? | **L2 = 177 h** (prorate theo bản ghi) — **lập lịch bằng 206 h** (`l2_h_v3`, dòng `v2′` §5.2) · **L3 khuyến nghị = 1.610 h** (801 bản ghi) · **full parity = 4.388 h** (C, ±25 %) — **dùng bộ số v2 đã đo lại `reuse` (§3.6)**, không dùng bộ v1 149 / 1.264 / 3.916 |
 | Chuẩn art? | 9 **công thức tô** đã kiểm bằng số (val · val_std · dark · chroma) + palette Ink & Ember đo HSV (A) |
+| Chuẩn **2.5D**? | **3 chỉ số đo máy** — `grad_stops` · `outline_px` · `detail` (§4.5b, thêm sau **STYLE-CORRECTION lần 149**): bảng màu §4.5 đúng nhưng **không mô tả kỹ thuật render**, nên A ra phẳng, B ra cartoon viền dày. Cổng: **G-G** (máy) + **G-H** (bảng so kế cạnh gốc) |
 | Thứ tự? | **S0 → W1 (L2) → W2 → W3 → W4 → W5**, mỗi cổng wave là một phép đo, không phải cảm nhận |
 | File còn lại | [`art-planner.csv`](art-planner.csv) — **655 dòng** (629 đơn vị + 22 overhead + **4 dòng W0 listing**), **36 cột** (gồm `h_scope_v2` · `l2_h_v2` · `l2_h_v3` · `de_est` · `reuse_est` · `h_w0`), khớp từng nhóm worklist |
 | Đơn hàng đã bung | [`W1_WORK_ORDER.md`](W1_WORK_ORDER.md) — **48 unit PLAYER**, 13 unit ở W1 = **34,0 h** (§6: W1 = **206,4 h**) · [`W0_LISTING_ASSETS.md`](W0_LISTING_ASSETS.md) — **27 slot** listing 3 store = **35 h**, sổ riêng |
@@ -39,8 +40,8 @@
 | [`W1_WORK_ORDER.md`](W1_WORK_ORDER.md) + [`w1-work-order.csv`](w1-work-order.csv) | 48 unit PLAYER, 13 unit ở W1 | `verify_numbers.py` |
 | [`W0_LISTING_ASSETS.md`](W0_LISTING_ASSETS.md) + [`w0-listing-slots.csv`](w0-listing-slots.csv) | 27 slot listing 3 store | `verify_numbers.py` |
 | [`s0-pilot-pack.csv`](s0-pilot-pack.csv) | 16 asset pilot của S0 (§5.7) | `verify_numbers.py` |
-| [`measure_asset.py`](measure_asset.py) | đo sprite theo §4.9 + tái lập 9 recipe | `--recipe` |
-| [`verify_numbers.py`](verify_numbers.py) | **177 phép kiểm** trên toàn bộ hồ sơ | exit 0 |
+| [`measure_asset.py`](measure_asset.py) | đo sprite theo §4.9 + 3 chỉ số 2.5D (§4.5b) + tái lập 9 recipe | `--recipe` · `--style-selftest` |
+| [`verify_numbers.py`](verify_numbers.py) | **221 phép kiểm** trên toàn bộ hồ sơ | exit 0 |
 
 **Một câu chốt:** kho hiện có **không phải** 2.197 sprite phải vẽ — nó là **2.185 bản ghi**, trong đó
 **788 đơn vị vẽ thật**, và chỉ **801 bản ghi (37 %) là cần vẽ cho bản L3 khuyến nghị**; **1.451 h (37 %)**
@@ -495,6 +496,69 @@ Lưu ý: `colors` (ngân sách 3–160 màu) **không** kiểm được bằng p
 gradient/anti-alias sinh ra hàng trăm màu. Đổi hex palette thì **phải** chạy lại lệnh này trước khi sửa bảng. (`bg` có `val_std` 0,213 > mục tiêu 0,18–0,22 — do 1 nguồn sáng teal;
 > chấp nhận, sẽ đo lại ở pilot.)
 
+### 4.5b Chuẩn **2.5D** đo được — 3 chỉ số bổ sung (**STYLE-CORRECTION lần 149**, comment `6446004160`)
+
+Bảng §4.5 ở trên **không sai** — nhưng nó chỉ mô tả **màu** (tỉ lệ diện tích, val, val_std, dark, chroma),
+**không** mô tả **kỹ thuật render**. Đó đúng là chỗ đã hỏng: A ra vector phẳng góc cạnh, B ra cartoon viền đen dày,
+**cả hai đều "đúng bảng"** mà vẫn sai style. Từ lần 149 mỗi lô phải qua thêm 3 chỉ số, đo bằng máy:
+
+| Chỉ số | Định nghĩa (pixel alpha > 0,5) | A (phẳng) | B (viền dày) | 2.5D |
+|---|---|---:|---:|---:|
+| `grad_stops` | số bậc sáng rộng **0,02** chiếm ≥ **0,8 %** pixel đục (trần 25) | 3 | 3 | **7** |
+| `outline_px` | độ dày trung bình (px) của dải **V < 0,18** đi *vào trong* từ biên silhouette | 0,01 | **3,86** | 1,22 |
+| `dark_edge` | tỉ lệ pixel biên có V < 0,18 — chỉ để đọc, **không** chấm một mình | 1,00 | 1,00 | 0,89 |
+| `detail` | tỉ lệ pixel **ruột** (cách biên ≥ 3 px, bỏ pixel tối) có biên độ 3×3 ≥ **0,10** | 0,055 | 0,115 | **0,258** |
+
+Ba cột số là **mẫu dựng bằng máy** (`python3 docs/art-plan/measure_asset.py --style-selftest`), **cùng một
+silhouette**, chỉ khác kỹ thuật render — dùng để chứng minh chỉ số **tách được** 3 kỹ thuật, **không** phải số của
+art thật. Dải chấm thì lấy từ **câu chữ lần 149**, không lấy từ mẫu: "gradient ≥ **3–5** mức/panel" ⇒ `grad_stops ≥ 5–8`
+tuỳ nhóm; "**CẤM** viền đen dày" ⇒ `outline_px ≤ 1,5` (lỗi B đo 3,86 ở mẫu; biên bản ghi 6–12 px trên art thật);
+"panel-line / khe tản nhiệt / rivet" ⇒ `detail ≥ 0,05`.
+
+| Nhóm | `grad_stops` | `outline_px` | `detail` | Vì sao khác nhóm |
+|---|---:|---:|---:|---|
+| `ship` | 6–25 | ≤ 1,5 | 0,05–0,30 | panel giáp lớn ⇒ cần ≥ 3 bậc + AO + rim |
+| `drone` | 5–25 | ≤ 1,5 | 0,04–0,30 | nhỏ hơn tàu, ít panel hơn |
+| `boss` | 7–25 | ≤ 1,5 | 0,06–0,32 | 512² ⇒ nhiều mảng, nhiều chi tiết nhất |
+| `enemy` | 5–25 | ≤ 1,5 | 0,04–0,28 | bị thu nhỏ khi chơi ⇒ cần khối, không cần vi |
+| `bullet` | 3–12 | ≤ 2,0 | 0,02–0,30 | 24 px: 3 bậc là tối đa có nghĩa |
+| `ui` | 4–14 | ≤ 1,2 | 0,02–0,20 | icon phải phẳng vừa phải, đọc ở 48 px |
+| `fx` | 4–16 | ≤ 0,5 | 0,03–0,40 | **không** viền tối; sáng là chính |
+| `bg` | 8–25 | ≤ 0,5 | 0,03–0,20 | nhiều lớp parallax ⇒ nhiều bậc sáng |
+| `item` | 5–18 | ≤ 1,2 | 0,04–0,25 | 3 màu nhận diện + panel nhỏ |
+
+#### Công thức 2.5D = **giữ tỉ lệ diện tích §4.5, đổi cách render**
+
+Tỉ lệ màu **không đổi** (vẫn 9/9 khớp §4.3 khi chạy `--recipe`), vì lỗi của A và B **không** phải lỗi màu —
+lỗi là *thiếu tầng render*. Mỗi recipe được bổ sung một **dải render** dùng lại **đúng các màu đã có trong recipe**
+(không thêm màu ⇒ không phá ngân sách `colors` A11):
+
+| Recipe | Bậc sáng/panel | AO | Rim-light | Panel-line / chi tiết | Màu dùng lại |
+|---|---:|---|---|---|---|
+| `ship` | 5 (ink700→ink300) | 1–2 px ink900 trong khe giáp | 2 px paper ở cạnh trên | 1 px ink700, cách 12–16 px; rivet paper 2 px | ink300/500/700/900 · paper · ember |
+| `drone` | 4 (ink500→ink300) | 1 px ink700 | 1 px paper | 1 px ink500, cách 8–12 px; rivet gold 2 px | ink300/500 · gold · paper |
+| `boss` | 6 (ink700→ink300) | 2 px ink900 ở khe | 2–3 px paper | ink700 cách 16–24 px + **khe tản nhiệt phát emberdim** | ink300/500/700/900 · paper · ember/emberdim |
+| `enemy` | 4 (ink300→paper) | 1 px ink700 | 1 px paper | khe teal, cách 10–14 px | ink300/700 · paper · teal |
+| `bullet` | 3 (ink300→emberdim) + lõi ember | **không** viền | lõi sáng, không rim ngoài | glow ember 60 % alpha, **không** panel-line | ink900/300 · emberdim · ember |
+| `ui` | 4 (ink500→ink300) | 1 px ink700 ở mép trong | 1 px paper ở cạnh trên | viền 9-slice 2 px; accent ember **chỉ** trên CTA | ink300/500/700 · paper · ember |
+| `fx` | 5 (paper→white) + tua teal | **không** AO | chính nó là sáng | **không** panel-line; chỉ 2–3 lớp alpha | paper · white · teal · ink300 |
+| `bg` | 8 (ink900→ink500) theo lớp | AO giữa 3 lớp parallax | 1 px teal ở cạnh trên khối | chi tiết thưa, cách 24–32 px (nền **không** được tranh chủ thể) | ink900/700/500 · teal |
+| `item` | 5 (ink500→ink300) | 1 px ink700 | 2 px gold | 1 px ink500; icon phải đọc ở 48 px | ink300/500 · gold · paper |
+
+> Nếu một dải render **cần màu ngoài recipe** ⇒ đó là **đổi palette**, không phải "làm 2.5D": phải sửa §4.4,
+> chạy lại `--recipe` và ghi vào nhật ký. Cách này giữ được bảng giá §3.2 (không tăng giờ vì thêm màu).
+
+**Lệnh chạy cho mỗi lô** (đầu ra dán thẳng vào comment nộp lô):
+
+```bash
+python3 docs/art-plan/measure_asset.py --dir art/w1/sprites --class ship --style
+python3 docs/art-plan/measure_asset.py --style-selftest    # chỉ chạy khi ai đó đổi ngưỡng DARK_VAL/DETAIL_RANGE
+```
+
+Exit 0 = mọi file trong dải 3 chỉ số; exit 1 = in tên file + chỉ số lệch. **Ba chỉ số này là điều kiện cần, không
+phải điều kiện đủ** — chúng bắt được đúng hai lỗi đã xảy ra (phẳng · viền dày), nhưng "đẹp như WindWings" vẫn phải
+chấm bằng **G-H** (bảng so kế cạnh gốc, §4.10).
+
 ### 4.6 Gradient, viền, hình khối
 
 | Thành phần | Luật | Kiểm bằng |
@@ -562,10 +626,13 @@ Không thay `tools/art-study.py` (đo mẫu gốc trên contact sheet); script n
 | **G-D** | 9-slice: kéo 3 kích thước (nhỏ/chuẩn/lớn) không mép giả | mắt, 3 ảnh/asset | — |
 | **G-E** | pháp lý: không logo bên thứ ba, không hình gốc, không tên gốc | `ASSETS` §8 | checklist |
 | **G-F** | đọc được ở 0,2 s: ảnh gameplay 2× chồng lên nền tối | mắt, 1 ảnh/wave | — |
+| **G-G** | **3 chỉ số 2.5D**: `grad_stops` · `outline_px` · `detail` (dải ở §4.5b) | câu chữ lần 149 | `measure_asset.py --dir … --class … --style` |
+| **G-H** | **bảng so kế cạnh gốc**: sprite mình ↔ sprite gốc gần nhất, **cùng scale**, cắt từ `docs/assets/contact-sheets/` | mắt, 1 bảng/lô — **thiếu bảng = không duyệt** | — (chỉ đối chiếu, **không trace**) |
 
-**Ánh xạ sang đơn hàng vẽ (`W1_WORK_ORDER.md` §4 có A1–A13 cho từng unit):**
-`A4 ↔ G-B` · `A9 ↔ G-C` · `A10 ↔ G-F` · `A12/A13 ↔ G-A` · `A11` (ngân sách màu) là cổng lô, đo cùng G-A.
-`G-D` (9-slice) và `G-E` (pháp lý) là cổng **theo asset UI/brand**, không nằm trong A1–A13 của sprite — đừng trộn.
+**Ánh xạ sang đơn hàng vẽ (`W1_WORK_ORDER.md` §4 có A1–A16 cho từng unit):**
+`A4 ↔ G-B` · `A9 ↔ G-C` · `A10 ↔ G-F` · `A12/A13 ↔ G-A` · **`A14/A15/A16 ↔ G-G`** · `A11` (ngân sách màu) là cổng lô, đo cùng G-A.
+**`G-H`** (bảng so kế cạnh) là cổng **theo lô**: không có bảng thì lô không được duyệt, dù mọi chỉ số máy đều đạt.
+`G-D` (9-slice) và `G-E` (pháp lý) là cổng **theo asset UI/brand**, không nằm trong A1–A16 của sprite — đừng trộn.
 
 ### 4.11 Đối chiếu **9 luật** của `ART_STUDY` §4 với chuẩn của bản mới (truy vết 1–1)
 
@@ -715,10 +782,13 @@ Không có ④ thì cả lịch 50,3 tuần là số chưa kiểm.
    xác nhận ngân sách màu ở S0**; hai cổng bắt buộc: **1 bg full ở đầu W2**, **1 boss full ở đầu W3** (chính là asset
    đầu tiên của wave đó — không cộng thêm giờ).
 3. **S0-01 trùng công việc với PS-01 của W1.** Cả hai đều là tàu `10001` (4,20 h). Mặc định: pilot **không** vào build
-   ⇒ W1 giữ nguyên **206,4 h** và S0 32 h là **chi phí setup**, không phải chi phí art. Nếu S0-01 đạt đủ A1–A13 thì
+   ⇒ W1 giữ nguyên **206,4 h** và S0 32 h là **chi phí setup**, không phải chi phí art. Nếu S0-01 đạt đủ A1–A16 thì
    **được promote** thành PS-01 ⇒ W1 giảm **4,20 h** (202,2 h). Chọn xong **ghi vào planner** (`rule_hint` của AP-0016),
    đừng để cả hai cùng đếm.
-4. **Đo xong phải sửa bảng giá nếu lệch > 25 %** (rủi ro **S2**): ghi `giờ thật / giờ kế hoạch` từng asset vào planner
+4. **16 asset pilot phải vẽ theo 2.5D, không phải "đúng bảng màu".** Mọi asset `full` chấm thêm **A14 · A15 · A16**
+   (§4.5b) và nộp kèm **bảng so kế cạnh** (G-H); 3 asset `blockout` **miễn A14/A16** (khối phẳng thì không có
+   gradient-stop để đếm) nhưng **vẫn phải `outline_px ≤ 1,5`** — blockout mà đã viền dày là lỗi B, sửa trước khi tô.
+5. **Đo xong phải sửa bảng giá nếu lệch > 25 %** (rủi ro **S2**): ghi `giờ thật / giờ kế hoạch` từng asset vào planner
    (cột `rule_hint` của dòng tương ứng), rồi **chỉnh `rate` §3.2 một lần** — không chỉnh lẻ từng dòng.
 
 ---
@@ -727,9 +797,10 @@ Không có ④ thì cả lịch 50,3 tuần là số chưa kiểm.
 
 | Wave | Phải đo / chứng minh | Nếu trượt thì |
 |---|---|---|
-| **S0** | 9 recipe khớp số (§4.5) · 16 asset pilot có `val/val_std/dark/chroma` trong dải · `fill` atlas thật (`Σ area / fill`, §4.8) ⇒ quyết 12 hay 14–16 page · giờ thật/asset vs kế hoạch | **không mở W1**; sửa recipe/rate trước (rủi ro S2, R10) |
-| **W1 (L2)** | 13 unit qua A1·A2·A4·A5·A6·A7·A9·**A13** · **G-C** (tương phản 0,45–0,80) + **G-F** (đọc trong 0,2 s) trên ảnh gameplay 1080×1920 | sửa palette trước khi mở W2 (R3); không vẽ thêm |
-| **W2** | 7 batch gameplay: G-C + G-F lặp lại · `fill` atlas của `enemy`/`bullet` khớp 0,10/0,22 (§4.8) · **`colors` đếm được trên art thật**: enemy 30–60, bullet 24–40 · **1 bg full** để chốt `colors` 30–50 + `dark ≥ 0,55` (§8 #13) | dừng ở W2a; W2b (tàu + nền) chưa mở |
+| **W0 (listing)** | icon đọc ở **48 px** (A-L5) · key art + promo qua **G-A + G-G** · **bảng so kế cạnh** với contact sheet gốc (G-H) trên icon + 1 screenshot | làm lại lô; **không** export lên store |
+| **S0** | 9 recipe khớp số (§4.5) · 16 asset pilot có `val/val_std/dark/chroma` trong dải §4.3 · **13 asset `full` qua A14·A15·A16** (§4.5b) + **1 bảng so kế cạnh** (G-H) · `fill` atlas thật (`Σ area / fill`, §4.8) ⇒ quyết 12 hay 14–16 page · giờ thật/asset vs kế hoạch | **không mở W1**; sửa recipe/rate trước (rủi ro S2, R10) |
+| **W1 (L2)** | 13 unit qua A1·A2·A4·A5·A6·A7·A9·**A13**·**A14**·**A15** · **G-C** (tương phản 0,45–0,80) + **G-F** (đọc trong 0,2 s) trên ảnh gameplay 1080×1920 | sửa palette trước khi mở W2 (R3); không vẽ thêm |
+| **W2** | 7 batch gameplay: **A14–A16 chạy máy + G-H mỗi lô** · G-C + G-F lặp lại · `fill` atlas của `enemy`/`bullet` khớp 0,10/0,22 (§4.8) · **`colors` đếm được trên art thật**: enemy 30–60, bullet 24–40 · **1 bg full** để chốt `colors` 30–50 + `dark ≥ 0,55` (§8 #13) | dừng ở W2a; W2b (tàu + nền) chưa mở |
 | **W3** | **1 boss full** chốt `colors` 110–160 + ≥ 1 khối phá được · A4 silhouette trên 512² | boss không đạt ⇒ chuyển sang Spine và **cộng riêng** (§8 #6, R4) |
 | **W4** | icon đọc được ở **48 px** (dùng lại A-L5 của W0) · `C ≤ 0,14` cho toàn bộ UI icon | gộp W4 vào W5 thay vì vẽ 2 lần |
 | **W5** | 9-slice kéo 3 kích thước (G-D) · `colors` 40–70 · toàn bộ luồng UI chạy được trên build | cắt W5a/W5b theo §5.6 |
@@ -755,6 +826,7 @@ Không có ④ thì cả lịch 50,3 tuần là số chưa kiểm.
 | **R11** | **Lỗi công thức L2** (đã xảy ra 1 lần: chia cho `n_records` thay vì `kept_records`, và tính L2 từ `tier_rate` thay vì đơn giá của dòng) | đã xảy ra 2 lần | sai lọt qua mắt người (`dot` AP-0025 ra **4,80 h > 3,12 h** scope của chính nó) | `verify_numbers.py` §3 đếm số dòng `l2_h_v3 > h_scope_v2` = **0 trên 655 dòng**; mọi số L2 phải suy từ `h_scope_v2` của chính dòng |
 | **R12** | **Pilot và wave đếm trùng giờ** (S0-01 = PS-01, cùng tàu `10001`) | trung bình | 4,2 h | §5.7 luật 3: mặc định pilot **không** vào build; nếu promote thì **trừ** ở W1 và ghi vào `rule_hint` |
 | **R13** | **Cỡ ảnh store xung đột với thiết kế dọc** (MS ≥ 1366×768 · Amazon chỉ 7 cỡ ngang) | cao | chặn 10/27 slot W0 | `W0_LISTING_ASSETS.md` §4 (W0-R1/R2) — **cần user quyết**, không tự chọn |
+| **R14** | **Style bị giản lược thành con số** — §4.5 chỉ đo **màu**, không đo **kỹ thuật render** ⇒ A ra vector phẳng, B ra cartoon viền dày, **cả hai đều "đúng bảng"** | đã xảy ra (**lần 149**) | redo lô đã nộp ≈ **+40 % giờ đã tiêu** (W1 ≈ **+48 h** · toàn scope B ≈ **+631 h**) — **(C) INFERRED**, **chưa** nằm trong 1.610,4 h | §4.5b (3 chỉ số + dải) · **G-G** máy + **G-H** bảng so kế cạnh · luật mới: *số đo màu không thay được ảnh đối chiếu* |
 
 **Giả định đã dùng (tất cả là (C)):** 1 artist làm được 32 h/tuần có ích · rate §3.2 đúng với đội
 biết dùng vector + raster · không có asset nào phải làm lại vì đổi art direction giữa đường ·
@@ -839,7 +911,9 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
    (ngưỡng 26), cắt hình bao, chuẩn hoá 32×32, IoU từng cặp trong nhóm, gộp khi `IoU ≥ 0,90`;
    `de_est = số cụm`, ngoại suy `× kept_records / n_đo_được` cho nhóm đo thiếu.
 8. **Kiểm lại toàn bộ**: `python3 docs/art-plan/verify_numbers.py` — script đối chiếu planner, `w1-work-order.csv`
-   và 3 tài liệu markdown (36 cột · 655 dòng · 12 tổng bất biến · wave `v2′` · 48 unit PLAYER). Exit 0 = khớp;
+   và 3 tài liệu markdown (36 cột · 655 dòng · 12 tổng bất biến · wave `v2′` · 48 unit · dải 2.5D §4.5b).
+   Hai lệnh phụ: `measure_asset.py --recipe` (9 công thức tô) và `--style-selftest` (3 chỉ số style tách đúng
+   3 kỹ thuật render). Exit 0 = khớp;
    mọi con số trong báo cáo này đều qua được script đó, không có số nào nhập tay.
 
 ---
@@ -863,3 +937,4 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
 | 13 | **Ngân sách màu của `boss` và `bg` chưa được xác nhận** — S0 chỉ có blockout, mà blockout không chấm được `colors` | **mở** (cố ý) | 1 bg full ở **đầu W2**, 1 boss full ở **đầu W3** — chính là asset đầu tiên của wave, không cộng giờ |
 | 14 | **Canvas đạn orb**: `ASSETS` §3 ghi 24², nhưng `plasmagun` gốc 128² và `blt_player_5.` gốc 256² | **chờ duyệt** (deviation) | art director chốt 24² hay 64² trước khi vẽ S0-08; quyết xong ghi vào §4.7 |
 | 15 | **10/27 slot W0 phụ thuộc quyết định của user** (screenshot MS dọc · screenshot Amazon ngang) | **chặn** | xem `W0_LISTING_ASSETS.md` §6 câu 1–2 |
+| 16 | **Dải 3 chỉ số style (§4.5b) chưa neo trên art gốc** — mới neo bằng câu chữ lần 149 + mẫu dựng máy; đo trên contact sheet JPEG thì nền caro và nén JPEG làm `detail` phồng | **tạm** | lô 2.5D thật đầu tiên (W0-redo hoặc S0) đo rồi **sửa dải MỘT lần**, ghi số gốc lại vào §4.5b |

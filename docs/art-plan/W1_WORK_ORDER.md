@@ -166,23 +166,26 @@ Mỗi dòng CSV có cột `accept` (mã `A-L2-xx`) + `gates_l2` / `gates_full`. 
 | **A11** | **Ngân sách màu** (`ART_STUDY` §4 luật 1) | theo §4.3 plan: chủ thể **110–160** · phụ **30–60** · bullet **24–40** · fx **3–10** | đếm màu sau lượng tử 32 bậc, **trên lô ≥ 5 asset cùng nhóm** |
 | **A12** | **`val_std`** (`ART_STUDY` §4 luật 2) | dải **theo nhóm** ở §4.3 (0,15–0,30) — **không** dùng 0,20–0,26 chung | script đo, so giữa các nhóm trong cùng bộ |
 | **A13** | **`dark_share`** (`ART_STUDY` §4 luật 7) | tàu ≤ 0,10 · drone ≤ 0,08 · enemy ≤ 0,06 · ui ≤ 0,12 · **bullet ≥ 0,40** (đảo chiều) | tỉ lệ pixel `max(R,G,B) < 45` |
+| **A14** | **`grad_stops`** — 2.5D (lần 149) | ≥ dải §4.5b theo nhóm: tàu **6** · drone **5** · đạn **3** (bậc sáng rộng 0,02, mỗi bậc ≥ 0,8 % pixel) | `measure_asset.py --style` |
+| **A15** | **`outline_px`** — 2.5D | ≤ **1,5** (đạn ≤ 2,0 · fx/bg ≤ 0,5) — **cấm viền đen dày**, lỗi B đo được 3,86 | cùng lệnh |
+| **A16** | **`detail`** — 2.5D | trong dải §4.5b: tàu **0,05–0,30** · drone 0,04–0,30 · đạn 0,02–0,30 (panel-line/khe/rivet) | cùng lệnh |
 
-**Lệnh đo (dùng chung cho A2 · A9 · A11 · A12 · A13):**
+**Lệnh đo (dùng chung cho A2 · A9 · A11 · A12 · A13 · A14 · A15 · A16):**
 
 ```bash
-python3 docs/art-plan/measure_asset.py --dir <thư-mục-PNG-của-unit> --class <ship|drone|bullet|fx>
+python3 docs/art-plan/measure_asset.py --dir <thư-mục-PNG-của-unit> --class <ship|drone|bullet|fx> --style
 python3 docs/art-plan/measure_asset.py --recipe      # kiểm 9 công thức §4.5 (chạy lại nếu ai đổi hex palette)
 ```
 
-Script in `colors · val · val_std · dark · chroma · fill` và **chỉ ra metric nào ra ngoài dải §4.3** — dùng luôn làm
+Script in `colors · val · val_std · dark · chroma · fill` + (khi có `--style`) `grad · outl · detail`, và **chỉ ra metric nào ra ngoài dải §4.3/§4.5b** — dùng luôn làm
 bằng chứng cho A11/A12/A13 thay vì mắt. A1 (alpha) và A6 (canvas) kiểm bằng kích thước/kênh file, không cần script.
 
 ### 4.2 Cổng theo wave
 
 | Wave | Unit phải qua | Ghi chú |
 |---|---|---|
-| **W1 (L2)** | **A1 · A2 · A4 · A5 · A6 · A7 · A9 · A13** | A3/A8/A10/A11/A12 để L3 — nhưng **A4 + A9 + A13 là bắt buộc**: A13 là đặc trưng nhóm (bullet phải tối), sai ở L2 là sai cả nhóm |
-| **W2 (phần còn lại)** | **A1–A13** | thêm A3 (3 tông), A8 (nhiễu), A10 (đọc trong game), A11 (`colors`), A12 (`val_std`) — A11/A12 đo trên lô để so được với mẫu |
+| **W1 (L2)** | **A1 · A2 · A4 · A5 · A6 · A7 · A9 · A13 · A14 · A15** | A3/A8/A10/A11/A12/A16 để L3 — nhưng **A4 + A9 + A13 + A14 + A15 là bắt buộc**: A13 là đặc trưng nhóm (bullet phải tối); **A14/A15 là lỗi đã xảy ra ở cả A và B** (phẳng / viền dày) nên không thể để L3 mới đo. Mỗi lô nộp kèm **bảng so kế cạnh gốc** (G-H) — thiếu bảng = không duyệt, dù máy đạt hết |
+| **W2 (phần còn lại)** | **A1–A16** | thêm A3 (3 tông), A8 (nhiễu), A10 (đọc trong game), A11 (`colors`), A12 (`val_std`), A16 (`detail`) — A11/A12 đo trên lô để so được với mẫu |
 | **Cắt** | — | PS-17…PS-25 **không vẽ**; chỉ vẽ nếu scope B được nâng (xem plan §3.3) |
 
 ### 4.3 Điểm review (không phải cổng, nhưng chặn)
@@ -205,6 +208,7 @@ bằng chứng cho A11/A12/A13 thay vì mắt. A1 (alpha) và A6 (canvas) kiểm
 | 5 | **PB-02** (2 viên) | 1 | 0,58 | bổ sung nhóm đạn thứ 2 (khác màu) |
 | 6 | **PS-03, PS-04, PS-05** | 3 | 12,60 | 3 tàu còn lại, đã có palette chốt ở bước 2 |
 | 7 | **PD-01…PD-04** | 4 | 6,92 | drone cuối vì 4 hình nhỏ, dễ nhất — nhưng **vẫn phải qua A4** (64 px) |
+| 8 | **Chạy `--style` + dựng bảng so kế cạnh** cho cả 13 unit, 1 bảng/lô | 13 | 0 (trong giờ từng unit) | đây là cổng **G-G + G-H**; làm ở cuối sẽ phải sửa hàng loạt nếu chỉ số lệch |
 | **Σ** | | **13** | **33,96 → 34,0** | + 7,23 setup = **41,19 h** cho lane PLAYER trong W1 |
 
 ---

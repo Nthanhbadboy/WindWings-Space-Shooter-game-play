@@ -87,6 +87,28 @@ BANDS: dict[str, dict[str, tuple[float, float]]] = {
     "item":   {"colors": (50, 80),   "val": (0.62, 0.70), "val_std": (0.22, 0.28), "dark": (0.00, 0.05), "chroma": (0.25, 0.30)},
 }
 
+# ------------------------- dải ba chỉ số style 2.5D (STYLE-CORRECTION lần 149)
+# Hiệu chuẩn trên 3 mẫu dựng bằng máy (`--style-selftest`): mẫu "2.5D" phải ĐẠT,
+# hai mẫu lỗi (A = vector phẳng, B = cartoon viền dày) phải TRƯỢT. Xem ART_REDRAW_PLAN §4.5b.
+STYLE_BANDS: dict[str, dict[str, tuple[float, float]]] = {
+    "ship":   {"grad_stops": (6, 25), "outline_px": (0.0, 1.5), "detail": (0.05, 0.30)},
+    "drone":  {"grad_stops": (5, 25), "outline_px": (0.0, 1.5), "detail": (0.04, 0.30)},
+    "boss":   {"grad_stops": (7, 25), "outline_px": (0.0, 1.5), "detail": (0.06, 0.32)},
+    "enemy":  {"grad_stops": (5, 25), "outline_px": (0.0, 1.5), "detail": (0.04, 0.28)},
+    "bullet": {"grad_stops": (3, 12), "outline_px": (0.0, 2.0), "detail": (0.02, 0.30)},
+    "ui":     {"grad_stops": (4, 14), "outline_px": (0.0, 1.2), "detail": (0.02, 0.20)},
+    "fx":     {"grad_stops": (4, 16), "outline_px": (0.0, 0.5), "detail": (0.03, 0.40)},
+    "bg":     {"grad_stops": (8, 25), "outline_px": (0.0, 0.5), "detail": (0.03, 0.20)},
+    "item":   {"grad_stops": (5, 18), "outline_px": (0.0, 1.2), "detail": (0.04, 0.25)},
+}
+
+# tham số đo style — ghi ở đây để người kiểm đổi được mà không phải đọc code
+DARK_VAL = 0.18        # = 45/255, khớp định nghĩa `dark` của §4.9
+DETAIL_RANGE = 0.10    # biên độ 3×3 tối thiểu để 1 pixel tính là "chi tiết"
+GRAD_BIN = 0.02        # bề rộng một bậc sáng khi đếm gradient-stop
+GRAD_MIN_SHARE = 0.008 # một bậc chỉ được đếm nếu chiếm ≥ 0,8 % pixel đục
+OUTLINE_CAP = 8        # trần độ dày viền đo được (px)
+
 TOL_PUBLISHED = 0.002
 
 
@@ -116,6 +138,216 @@ def metrics_from_pixels(pixels: list[tuple[int, int, int]]) -> dict[str, float]:
         "colors": float(len(quant)),
         "sat_v25": statistics.fmean([s for s, v in zip(ss, vs) if v >= 0.25] or [0.0]),
     }
+
+
+def grid_from_image(img) -> tuple[list[float], list[bool], int, int]:
+    """(val, mask, w, h) — val = max(R,G,B)/255 theo §4.9, mask = alpha > 0,5."""
+    w, h = img.size
+    r, g, b, a = (band.tobytes() for band in img.split())
+    vals = [max(rr, gg, bb) / 255.0 for rr, gg, bb in zip(r, g, b)]
+    mask = [aa > 127 for aa in a]
+    return vals, mask, w, h
+
+
+def style_metrics(vals: list[float], mask: list[bool], w: int, h: int) -> dict[str, float]:
+    """Ba chỉ số style 2.5D mà bản v1 của kế hoạch còn thiếu.
+
+    grad_stops  = số bậc sáng (rộng 0,02) chiếm ≥ 0,8 % pixel đục — proxy cho
+                  "gradient ≥ 3–5 mức/panel" của lần-149. Art phẳng chỉ có 2–4.
+    outline_px  = độ dày trung bình (px) của dải tối đi vào trong từ biên silhouette.
+                  Viền đen dày của lỗi B cho 4–8; render 2.5D có rim-light cho ≈ 0–1,5.
+    dark_edge   = tỉ lệ pixel biên có V < 0,30 (chỉ để đọc, không chấm một mình).
+    detail      = tỉ lệ pixel đục có biên độ 3×3 ≥ 0,10 — panel-line/khe tản nhiệt/rivet.
+    """
+    opaque = sum(1 for m in mask if m)
+    if not opaque:
+        raise ValueError("không có pixel alpha > 0,5")
+
+    bins = [0] * 50
+    for v, m in zip(vals, mask):
+        if m:
+            k = int(v / GRAD_BIN)
+            bins[49 if k > 49 else k] += 1
+    grad = float(sum(1 for c in bins if c / opaque >= GRAD_MIN_SHARE))
+
+    boundary: list[tuple[int, int]] = []
+    for y in range(h):
+        row = y * w
+        for x in range(w):
+            i = row + x
+            if not mask[i]:
+                continue
+            if (x == 0 or y == 0 or x == w - 1 or y == h - 1
+                    or not mask[i - 1] or not mask[i + 1]
+                    or not mask[i - w] or not mask[i + w]):
+                boundary.append((x, y))
+
+    dark_b = [(x, y) for x, y in boundary if vals[y * w + x] < DARK_VAL]
+    dark_edge = len(dark_b) / len(boundary) if boundary else 0.0
+
+    depths: list[int] = []
+    for x, y in dark_b:
+        inner: list[int] = []
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nx, ny = x + dx, y + dy
+            # chỉ tính hướng đi VÀO trong: bước đầu phải vẫn nằm trong mask
+            if not (0 <= nx < w and 0 <= ny < h) or not mask[ny * w + nx]:
+                continue
+            cx, cy, d = x, y, 0
+            while d < OUTLINE_CAP:
+                cx += dx
+                cy += dy
+                if not (0 <= cx < w and 0 <= cy < h):
+                    break
+                j = cy * w + cx
+                if not mask[j] or vals[j] >= DARK_VAL:
+                    break
+                d += 1
+            inner.append(d)
+        depths.append(min(inner) if inner else 0)
+    outline = sum(depths) / len(depths) if depths else 0.0
+
+    # "chi tiết" chỉ tính trên RUỘT sprite: cách biên ≥ 3 px, bỏ chính pixel viền tối.
+    # Nếu không, một mảng phẳng có viền dày cũng bị tính là "nhiều chi tiết".
+    tot = hot = 0
+    for y in range(3, h - 3):
+        row = y * w
+        for x in range(3, w - 3):
+            i = row + x
+            if not mask[i] or vals[i] < DARK_VAL:
+                continue
+            edge = False
+            for dy in (-3, 0, 3):
+                for dx in (-3, 0, 3):
+                    if not mask[i + dy * w + dx]:
+                        edge = True
+                        break
+                if edge:
+                    break
+            if edge:
+                continue
+            lo, hi = 2.0, -1.0
+            for dy in (-1, 0, 1):
+                for dx in (-1, 0, 1):
+                    j = i + dy * w + dx
+                    if mask[j]:
+                        v = vals[j]
+                        if v < lo:
+                            lo = v
+                        if v > hi:
+                            hi = v
+            tot += 1
+            if hi - lo >= DETAIL_RANGE:
+                hot += 1
+    detail = hot / tot if tot else 0.0
+
+    return {"grad_stops": grad, "outline_px": round(outline, 2),
+            "dark_edge": round(dark_edge, 3), "detail": round(detail, 3)}
+
+
+def _lerp(a: tuple[int, int, int], b: tuple[int, int, int], t: float) -> tuple[int, int, int]:
+    return tuple(int(round(a[k] + (b[k] - a[k]) * t)) for k in range(3))  # type: ignore[return-value]
+
+
+def _archetype(kind: str):
+    """Ba mẫu dựng bằng máy, CÙNG silhouette, khác kỹ thuật render.
+
+    flat    = lỗi A (vector phẳng): 2 mảng phẳng + viền 1 px.
+    cartoon = lỗi B: viền đen dày 6 px + mảng phẳng.
+    metal   = chuẩn 2.5D: ramp 5 bậc + AO 1 px + rim-light trên + panel-line + rivet.
+    """
+    from PIL import Image, ImageDraw
+
+    size = 128
+    hull = [(64, 10), (104, 44), (112, 96), (64, 118), (16, 96), (24, 44)]
+    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+
+    def hull_mask():
+        m = Image.new("L", (size, size), 0)
+        ImageDraw.Draw(m).polygon(hull, fill=255)
+        return m
+
+    if kind == "flat":
+        d.polygon(hull, fill=PALETTE["ink500"])
+        d.rectangle((44, 44, 84, 84), fill=PALETTE["ink300"])
+        d.line(hull + [hull[0]], fill=PALETTE["ink900"], width=1)
+    elif kind == "cartoon":
+        d.polygon(hull, fill=PALETTE["ink300"])
+        d.rectangle((44, 44, 84, 84), fill=PALETTE["paper"])
+        d.line(hull + [hull[0]], fill=PALETTE["ink900"], width=6)
+    elif kind == "metal":
+        ramp = Image.new("RGB", (size, size))
+        rd = ImageDraw.Draw(ramp)
+        lo, hi = PALETTE["ink500"], PALETTE["paper"]
+        stops = 5
+        for b in range(stops):
+            col = _lerp(lo, hi, b / (stops - 1))
+            y0 = 8 + b * 22
+            rd.rectangle((0, y0, size, y0 + 21), fill=col)
+        img.paste(ramp, (0, 0), hull_mask())
+        d2 = ImageDraw.Draw(img)
+        # panel-line + rivet (chi tiết cơ khí)
+        for y in range(28, 112, 12):
+            d2.line((20, y, 108, y), fill=PALETTE["ink700"], width=1)
+        for x, y in ((40, 34), (64, 34), (88, 34), (52, 96), (76, 96)):
+            d2.ellipse((x - 2, y - 2, x + 2, y + 2), fill=PALETTE["paper"])
+        # rim-light trên
+        d2.line([(40, 26), (64, 14), (88, 26)], fill=PALETTE["paper"], width=3)
+        # AO: 1 px tối sát biên
+        d2.line(hull + [hull[0]], fill=PALETTE["ink900"], width=1)
+    else:
+        raise ValueError(kind)
+    return img
+
+
+ARCHETYPES = ("flat", "cartoon", "metal")
+
+
+def run_style_selftest(verbose: bool = True) -> int:
+    """Chứng minh 3 chỉ số TÁCH ĐƯỢC 3 kỹ thuật render — bằng số, không bằng cảm giác."""
+    if verbose:
+        print(f"{'mẫu':8s} {'grad_stops':>10s} {'outline_px':>10s} {'dark_edge':>9s} "
+              f"{'detail':>7s}   §4.5b")
+    got: dict[str, dict[str, float]] = {}
+    for kind in ARCHETYPES:
+        vals, mask, w, h = grid_from_image(_archetype(kind).convert("RGBA"))
+        got[kind] = style_metrics(vals, mask, w, h)
+        band = STYLE_BANDS["ship"]
+        ok = all(in_band(got[kind][k], band[k])
+                 for k in ("grad_stops", "outline_px", "detail"))
+        if verbose:
+            print(f"{kind:8s} {got[kind]['grad_stops']:10.0f} {got[kind]['outline_px']:10.2f} "
+                  f"{got[kind]['dark_edge']:9.3f} {got[kind]['detail']:7.3f}   "
+                  f"{'ĐẠT' if ok else 'TRƯỢT'}")
+    fails = 0
+    checks = [
+        ("2.5D đạt dải `ship`", all(in_band(got["metal"][k], STYLE_BANDS["ship"][k])
+                                    for k in ("grad_stops", "outline_px", "detail")), True),
+        ("A-flat trượt ở grad_stops",
+         in_band(got["flat"]["grad_stops"], STYLE_BANDS["ship"]["grad_stops"]), False),
+        ("detail 2.5D ≥ 3× detail A-flat",
+         got["metal"]["detail"] >= 3 * got["flat"]["detail"], True),
+        ("B-cartoon trượt ở outline_px",
+         in_band(got["cartoon"]["outline_px"], STYLE_BANDS["ship"]["outline_px"]), False),
+        ("outline B-cartoon > 2×2.5D",
+         got["cartoon"]["outline_px"] > 2 * max(got["metal"]["outline_px"], 0.3), True),
+        ("grad 2.5D > grad B-cartoon",
+         got["metal"]["grad_stops"] > got["cartoon"]["grad_stops"], True),
+        ("detail 2.5D > detail A-flat",
+         got["metal"]["detail"] > got["flat"]["detail"], True),
+    ]
+    print()
+    for name, actual, want in checks:
+        ok = actual == want
+        print(f"  {'OK ' if ok else 'FAIL'} {name:36s} got {actual!r}  want {want!r}")
+        fails += not ok
+    print()
+    if fails:
+        print(f"✗ {fails} phép kiểm style trượt — sửa NGƯỠNG, rồi ghi lại §4.5b")
+        return 1
+    print("✓ 3 chỉ số tách đúng 3 kỹ thuật render: 2.5D ĐẠT, A (phẳng) và B (viền dày) TRƯỢT.")
+    return 0
 
 
 def recipe_pixels(recipe: str) -> list[tuple[int, int, int]]:
@@ -172,10 +404,12 @@ def measure_png(path: pathlib.Path) -> dict[str, float]:
         raise ValueError(f"{path.name}: không có pixel alpha > 0,5")
     m = metrics_from_pixels(px)
     m["fill"] = round(len(px) / (img.width * img.height), 3)
+    vals, mask, w, h = grid_from_image(img)
+    m.update(style_metrics(vals, mask, w, h))
     return m
 
 
-def run_dir(folder: pathlib.Path, cls: str | None) -> int:
+def run_dir(folder: pathlib.Path, cls: str | None, style: bool = False) -> int:
     files = sorted(folder.glob("*.png"))
     if not files:
         print(f"✗ không có .png trong {folder}")
@@ -184,30 +418,43 @@ def run_dir(folder: pathlib.Path, cls: str | None) -> int:
     if cls and not bands:
         print(f"✗ --class phải là một trong: {', '.join(BANDS)}")
         return 1
-    fails = 0
-    print(f"{'file':34s} {'colors':>6s} {'val':>6s} {'val_std':>8s} {'dark':>6s} {'chroma':>7s} {'fill':>6s}")
+    sbands = STYLE_BANDS.get(cls) if cls else None
+    bad_files: set[str] = set()
+    extra = f" {'grad':>5s} {'outl':>5s} {'detail':>7s}" if style else ""
+    print(f"{'file':34s} {'colors':>6s} {'val':>6s} {'val_std':>8s} {'dark':>6s} "
+          f"{'chroma':>7s} {'fill':>6s}{extra}")
     for f in files:
         try:
             m = measure_png(f)
         except Exception as exc:  # noqa: BLE001 - in lỗi rồi đi tiếp
             print(f"{f.name:34s} LỖI: {exc}")
-            fails += 1
+            bad_files.add(f.name)
             continue
         flag = ""
         if bands:
-            bad = [k for k in ("colors", "val", "val_std", "dark", "chroma")
-                   if not in_band(m[k], bands[k])]
-            if bad:
+            bad_m = [k for k in ("colors", "val", "val_std", "dark", "chroma")
+                     if not in_band(m[k], bands[k])]
+            if bad_m:
+                bad_files.add(f.name)
                 flag = "  ← lệch: " + ", ".join(
                     f"{k}={m[k]:.3f}∉[{bands[k][0]:.2f},{bands[k][1]:.2f}]" if k != "colors"
                     else f"colors={int(m['colors'])}∉[{bands[k][0]:.0f},{bands[k][1]:.0f}]"
-                    for k in bad)
-                fails += 1
-        print(f"{f.name:34s} {int(m['colors']):6d} {m['val']:6.3f} {m['val_std']:8.3f} "
-              f"{m['dark']:6.3f} {m['chroma']:7.3f} {m['fill']:6.3f}{flag}")
+                    for k in bad_m)
+        if style and sbands:
+            bad_style = [k for k in ("grad_stops", "outline_px", "detail")
+                         if not in_band(m[k], sbands[k])]
+            if bad_style:
+                bad_files.add(f.name)
+                flag += "  ← style lệch: " + ", ".join(
+                    f"{k}={m[k]:.2f}∉[{sbands[k][0]:g},{sbands[k][1]:g}]" for k in bad_style)
+        line = f"{f.name:34s} {int(m['colors']):6d} {m['val']:6.3f} {m['val_std']:8.3f} " \
+               f"{m['dark']:6.3f} {m['chroma']:7.3f} {m['fill']:6.3f}"
+        if style:
+            line += f" {m['grad_stops']:5.0f} {m['outline_px']:5.2f} {m['detail']:7.3f}"
+        print(line + flag)
     print()
-    if fails:
-        print(f"✗ {fails}/{len(files)} asset lệch — sửa art, không sửa dải")
+    if bad_files:
+        print(f"✗ {len(bad_files)}/{len(files)} asset lệch — sửa art, không sửa dải")
         return 1
     print(f"✓ {len(files)}/{len(files)} asset trong dải" + (f" của nhóm `{cls}`" if cls else ""))
     return 0
@@ -218,12 +465,18 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--recipe", action="store_true", help="tái lập 9 công thức tô (§4.5) — không cần Pillow")
     ap.add_argument("--dir", type=pathlib.Path, help="thư mục chứa PNG cần đo")
     ap.add_argument("--class", dest="cls", help=f"nhóm để chấm dải §4.3: {', '.join(BANDS)}")
+    ap.add_argument("--style", action="store_true",
+                    help="in + chấm 3 chỉ số 2.5D (grad_stops · outline_px · detail) — cần --class")
+    ap.add_argument("--style-selftest", action="store_true",
+                    help="dựng 3 mẫu (phẳng · cartoon viền dày · 2.5D) và chứng minh 3 chỉ số tách được")
     args = ap.parse_args(argv)
 
+    if args.style_selftest:
+        return run_style_selftest()
     if args.recipe and not args.dir:
         return run_recipe_selftest()
     if args.dir:
-        return run_dir(args.dir, args.cls)
+        return run_dir(args.dir, args.cls, args.style)
     ap.print_help()
     return 2
 
