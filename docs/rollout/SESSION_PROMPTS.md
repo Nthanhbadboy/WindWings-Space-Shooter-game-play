@@ -46,21 +46,31 @@
 
 ---
 
+**Vai Art-curator (chốt bộ cuối)** — TRỐNG, CLAIM khi cả A+B XONG (claim sớm được, nhưng KHÔNG chốt sớm):
+> Lần 142 — user ủy quyền toàn bộ ("không cần tôi quyết"): xem 2 bộ hoàn chỉnh của `5438fec9` (A) và
+> nhánh B → **chốt 1 trong 2 bộ HOẶC ghép bộ-gộp đẹp** (từng slot chọn cái tốt từ A hoặc B) → xuất
+> BỘ CUỐI `art/final-listing/` + `ART_FINAL_SET.md` (nguồn từng slot A/B + lý do 1 dòng). KHÔNG vẽ mới —
+> chỉ chọn/ghép từ masters đã có. Quyết của curator = QUYẾT ĐỊNH CUỐI (thay user). Xong STATUS: XONG;
+> lúc đó A/B có vai tan (người không được chọn dừng).
+
 ## Vai CHƯA CÓ NHÁNH (session mới tự CLAIM qua PROMPT CHUNG — `SESSION_COMMON_PROMPT.md`; mã nhánh chỉ biết sau commit đầu)
 
 **Vai Godot-coder** — CLAIM khi user ra lệnh scaffold:
 > Port WindWings lên Godot 4.x theo `docs/spec/` + `datas/` (nhánh `20330d0e` = bản vẽ; APK gốc = design reference). Scope: scenes/systems chơi được trước (player bay + bắn + 1 enemy wave theo GAMEPLAY spec) → rồi shop/pvp/economy theo spec → adapter IAP/ads 3 store theo D9a (Amazon IAP · HMS IAP/Ads · Windows commerce — "theo đúng luật từng store"). `ef6b75ef` là verifier — gửi code kèm cách kiểm. Không đụng protected paths; mỗi vòng 1 comment PR12 kèm bằng chứng chạy.
 
-**Vai Art-designer** — ĐÃ CÓ CHỦ: `5438fec9` (W0 lô-1 chờ user duyệt) —
-> hướng A: tối khí quyển **Ink & Ember** (theo planner). CHỜ DUYỆT mới chạy W1.
+**Vai Art-designer** — ĐÃ CÓ CHỦ: `5438fec9` — hướng A: tối **Ink & Ember** (theo planner).
+> Lần 142: KHÔNG chờ duyệt nữa — chạy thẳng tới **BỘ HOÀN CHỈNH**: W0 ✓ → W1 (PLAYER 48) → W2 (ENEMY 34)
+> → W3 (BOSS 42) → lõi UI/FX/BG/ITEM theo planner (EXCL 278 không vẽ theo plan). **Bắt buộc giữ masters/
+> từng slot** (điều kiện để curator ghép A/B sau này). Mỗi wave nộp kèm preview ghép.
 
 **Vai Art-designer-B** — TRỐNG, CLAIM NGAY (lần 141 — user mở thêm để A/B chọn sau):
 > Hướng B: **sáng, arcade-pop, hành-động-dồn-dập** — đối chọi với A. Cùng đúng 25 slot, tên file +
 > kích thước GIỐNG hệt `5438fec9` (đã verify nguồn chính chủ — lấy từ `art/w0-listing/W0_MANIFEST.md`
 > nhánh A, cấm tự đổi), art khác hoàn toàn; directory riêng `art/w0-listing-b/` + `W0B_MANIFEST.md`
 > (metadata như A, license "chờ user xác nhận quyền"). Làm ĐỘC LẬP phong cách với A — không trao đổi
-> style, chỉ chung size/copy; nộp kèm 1 ảnh preview ghép toàn bộ slot để user so A/B. Xong STATUS: XONG
-> chờ user chọn; vai tan sau khi user chọn A/B (người thua đóng, không làm W1).
+> style, chỉ chung size/copy; nộp kèm 1 ảnh preview ghép toàn bộ slot.
+> Lần 142: làm **BỘ HOÀN CHỈNH như A** (W1→W3 + UI/FX/BG/ITEM lõi, EXCL không vẽ) — KHÔNG ai bị loại;
+> giữ masters/ từng slot; xong STATUS: XONG — **Art-curator** sẽ chốt/ghép (user không quyết).
 > Sản xuất art theo `docs/art-plan/ART_REDRAW_PLAN.md` + `art-planner.csv` (nhánh `1b836828`) + sizes từ `STORE_ASSETS_AND_LISTING_DRAFT.md`. Thứ tự: W0-listing (icon/feature-graphic/screenshot 3 store) → W1 in-game (PLAYER 48 đơn vị). User duyệt từng lô; không tự đổi style gốc khi chưa có lệnh; không đụng `docs/spec/`/`datas/`/`tools/`.
 
 ## Tóm tắt ĐÓNG/MỞ (trả lời thẳng câu hỏi user)

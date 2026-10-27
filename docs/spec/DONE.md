@@ -81,6 +81,9 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 142 — user ủy quyền trọn vẹn A/B: "không cần tôi quyết, cứ làm 2 bộ hoàn chỉnh, không chỉ là ink và ember; khi xong xuôi tạo thêm 1 nhánh chốt 1 trong 2 bộ hoặc chọn từ cả 2 bộ ra thành 1 bộ gộp đẹp").**
+> A (`5438fec9`) + B (claim khi mở) đều làm BỘ HOÀN CHỈNH theo planner: W0 → W1 (48) → W2 (34) → W3 (42) → lõi UI/FX/BG/ITEM; EXCL không vẽ; bắt buộc giữ masters/ từng slot (điều kiện ghép). KHÔNG loại ai. Vai mới **Art-curator** (trống, claim khi A+B xong): chốt 1/2 hoặc ghép bộ-gộp, xuất `art/final-listing/` + `ART_FINAL_SET.md` — quyết của curator = quyết định cuối thay user; sau đó A/B vai tan. Prompt curator đưa user trên chat (lần 142).
+>
 > **Sửa lại (lần 141 — user mở thêm 1 Art-designer nữa: "2 thằng mỗi thằng một bộ để đấy chọn sau"; director quyết hướng; sản phẩm đa-nhánh phối hợp, không quyết ngay).**
 > Vai **Art-designer-B** mở TRỐNG chờ CLAIM: hướng B = sáng/arcade-pop/hành-động (đối chọi hướng A tối Ink & Ember của `5438fec9`); cùng 25 slot, tên+size GIỐNG A (lấy bảng đã-verify từ W0_MANIFEST của A), directory `art/w0-listing-b/` + `W0B_MANIFEST.md`, độc-lập-style, preview ghép 1 ảnh; xong user chọn A/B — người thua đóng vai (không làm W1). Quyết định A/B = USER; director chỉ điều phối (theo lệnh "do mày quyết hoặc giao việc cho nhánh… không quyết ngay được"). Biên chế sẽ lên 9 khi nhánh mới CLAIM.
 >
