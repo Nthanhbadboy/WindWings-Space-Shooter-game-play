@@ -21,6 +21,12 @@ The baseline hull is 2,500 and the hit-invulnerability interval is 3 seconds (`S
 - `enemy_guns_wave_0000.json` retains all `Enemy_Ingame` alternatives. Runtime firing is enabled only where ballistic and schedule fields agree; the component-to-runtime join, aim direction, and coroutine timing remain `INFERRED`/`RUNTIME_UNVERIFIED`. Ambiguous projectile variants are not selected.
 - `wave_0000_coin_manifest.json` is a `STATIC_CONFIRMED` list of 49 serialized coin objects (IDs 70011/70012), with no coordinates or flat-denomination claim. The running prototype instead demonstrates catalog item index 1 (`+1Level`) on an 18-second timed cadence, within the source visual-design target of 15–20 seconds. Cadence/placement are `INFERRED`; collection is count-only because item effect values/durations are not asserted.
 
+## M3 economy preview
+
+The `SHOP` overlay is a data-led preview/transaction ledger, not a claim that every original shop row is decoded. The 24 exact `PlayerCosts[]` values feed the player-index table; `-1` stays a sentinel, `0` stays free, and positive values are shown exactly. Player indices are not mapped to ship IDs here. The local prototype wallet starts at 0 because the original starting balance and `Enemy_Data_Balance.GetBonusCoin()` are not decoded; a free row can be claimed locally, while positive-cost rows remain unaffordable until a confirmed currency source is added. This local claim ledger does not equip a ship.
+
+`shop_contract.json` records the decoded 3-band × 5-slot layout, ID offsets, stock preference defaults/reset value 0, and popup quantity start 1 / step 1 / max rule `available_stock - 1`. `MaxStockCount` numeric value, resource prices, and `Shop_Cell` price strings are `UNKNOWN`; the UI does not invent them. `pvp_reward_arrays.json` and the overlay show all six decoded bet/reward arrays verbatim. They are build-time data only; the panel is a preview and does not grant match rewards.
+
 ## Evidence and verification
 
 - `STATIC_CONFIRMED` describes decoded/serialized source fields; it does not imply original runtime behavior.
@@ -28,4 +34,4 @@ The baseline hull is 2,500 and the hit-invulnerability interval is 3 seconds (`S
 - `UNKNOWN` values (notably original path coordinates, coin placements/denominations, and drop weights) are not fabricated.
 - `RUNTIME_UNVERIFIED`: the sandbox has no Godot executable, so no editor import, game launch, device test, or original-game runtime match is claimed.
 
-Suggested independent checks: run `godot --headless --path game --editor --quit`, then `godot --path game` and verify movement, auto-fire, enemy firing/dodging, pickup collection, pause, and restart. Static script checks performed in this sandbox use `gdparse`/`gdlint`; they do not replace the Godot import/runtime checks.
+Suggested independent checks: run `godot --headless --path game --editor --quit`, then `godot --headless --path game --quit-after 6000`; launch interactively and verify movement, auto-fire, enemy firing/dodging, item collection, pause/replay, and the `SHOP` overlay (24 exact cost rows, `-1` sentinels, six PvP tiers, unknown stock cap). Static script checks performed in this sandbox use `gdparse`/`gdlint`; they do not replace Godot import/runtime checks.

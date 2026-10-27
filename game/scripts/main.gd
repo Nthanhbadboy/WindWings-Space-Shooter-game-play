@@ -23,12 +23,16 @@ var _drop_period := 18.0
 var _drop_item_cycle: Array = [1]
 var _drop_cycle_index := 0
 var _items_by_index: Dictionary = {}
+var _player_costs: Array = []
+var _purchased_player_indices: Dictionary = {}
+var _economy_paused := false
 
 @onready var camera: Camera2D = $Camera2D
 @onready var world: Node2D = $World
 @onready var player: Player = $World/Player
 @onready var wave_director: WaveDirector = $WaveDirector
 @onready var hud: GameHUD = $CanvasLayer/HUD
+@onready var economy_panel: EconomyPanel = $CanvasLayer/EconomyPanel
 
 
 func _ready() -> void:
@@ -40,11 +44,15 @@ func _ready() -> void:
 	player.died.connect(_on_player_died)
 	hud.pause_requested.connect(_on_pause_requested)
 	hud.retry_requested.connect(_on_retry_requested)
+	hud.economy_requested.connect(_on_economy_requested)
+	economy_panel.close_requested.connect(_on_economy_closed)
+	economy_panel.purchase_requested.connect(_on_player_purchase_requested)
 	var player_stats := _read_json("res://data/player_start_stats.json")
 	var damage_values := _get_field_values(player_stats, "StartMainCannonDamages")
-	if damage_values.size() != 24:
+	_player_costs = _get_field_values(player_stats, "PlayerCosts")
+	if damage_values.size() != 24 or _player_costs.size() != 24:
 		push_error(
-			"Expected the decoded 24-entry player damage array; see game/data/player_start_stats.json"
+			"Expected decoded 24-entry player damage/cost arrays; see game/data/player_start_stats.json"
 		)
 		return
 	var baseline := _read_json("res://data/player_baseline.json")
@@ -55,7 +63,15 @@ func _ready() -> void:
 	var guns_document := _read_json("res://data/enemy_guns_wave_0000.json")
 	var items_document := _read_json("res://data/items.json")
 	var drop_policy := _read_json("res://data/drop_policy.json")
-	if wave_document.is_empty() or hp_document.is_empty() or movement_document.is_empty():
+	var pvp_document := _read_json("res://data/pvp_reward_arrays.json")
+	var shop_contract := _read_json("res://data/shop_contract.json")
+	if (
+		wave_document.is_empty()
+		or hp_document.is_empty()
+		or movement_document.is_empty()
+		or pvp_document.is_empty()
+		or shop_contract.is_empty()
+	):
 		return
 	var wave: Dictionary = wave_document.get("wave", {})
 	if not _validate_wave_data(wave, hp_document, movement_document):
@@ -67,6 +83,8 @@ func _ready() -> void:
 	player.configure_weapon(float(damage_values[PLAYER_INDEX]), fire_period)
 	player.configure_health(base_hp)
 	_load_item_catalog(items_document)
+	economy_panel.configure(_player_costs, pvp_document, shop_contract)
+	economy_panel.set_economy_state(_coins, _purchased_player_indices)
 	_drop_period = maxf(float(drop_policy.get("period_seconds", 18.0)), 1.0)
 	_drop_item_cycle = drop_policy.get("item_index_cycle", [1])
 	wave_director.configure(
@@ -218,11 +236,59 @@ func _on_player_died() -> void:
 
 
 func _on_pause_requested() -> void:
-	if _game_over or _wave_clear:
+	if _game_over or _wave_clear or _economy_paused:
 		return
 	var should_pause := not get_tree().paused
 	get_tree().paused = should_pause
 	hud.set_paused(should_pause)
+
+
+func _on_economy_requested() -> void:
+	if _game_over or _wave_clear or _economy_paused:
+		return
+	_economy_paused = true
+	get_tree().paused = true
+	hud.set_paused(true)
+	economy_panel.open_panel(_coins, _purchased_player_indices)
+
+
+func _on_economy_closed() -> void:
+	if not _economy_paused:
+		return
+	_economy_paused = false
+	get_tree().paused = false
+	hud.set_paused(false)
+
+
+func _on_player_purchase_requested(player_index: int, quantity: int) -> void:
+	if player_index < 0 or player_index >= _player_costs.size():
+		economy_panel.report_result("Unknown playerIndex row; purchase rejected.")
+		return
+	if quantity != 1:
+		economy_panel.report_result("One roster entry per action; stock cap is not decoded.")
+		return
+	var cost := int(_player_costs[player_index])
+	if cost < 0:
+		economy_panel.report_result(
+			"PlayerCosts sentinel -1 retained; no negative-price transaction was made."
+		)
+		return
+	if _purchased_player_indices.has(player_index):
+		economy_panel.report_result("This row is already claimed in the local prototype ledger.")
+		return
+	if _coins < cost:
+		economy_panel.report_result("Insufficient prototype coin balance; no transaction was made.")
+		return
+	_coins -= cost
+	_purchased_player_indices[player_index] = true
+	economy_panel.set_economy_state(_coins, _purchased_player_indices)
+	economy_panel.report_result(
+		(
+			"Local ledger updated for playerIndex %d; ship identity/equip mapping remains UNKNOWN."
+			% player_index
+		)
+	)
+	_update_hud()
 
 
 func _on_retry_requested() -> void:

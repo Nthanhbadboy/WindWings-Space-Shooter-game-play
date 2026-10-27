@@ -1,0 +1,53 @@
+{
+  "evidence": "STATIC_CONFIRMED",
+  "source_files": [
+    "datas/l2_535b0541_shop_stock_layout.json.gz @ 8777bfa3eb5d45f992cde16d9949db6d1f293d0e",
+    "datas/l2_535b0541_shop_prefs_keys.json.gz @ 8777bfa3eb5d45f992cde16d9949db6d1f293d0e",
+    "datas/l2_535b0541_reward_pack.json.gz @ 8777bfa3eb5d45f992cde16d9949db6d1f293d0e",
+    "docs/spec/ECONOMY.md @ 8777bfa3eb5d45f992cde16d9949db6d1f293d0e"
+  ],
+  "shop_names": [
+    "Arena_Shop",
+    "PVP_Shop"
+  ],
+  "families": [
+    {
+      "name": "player",
+      "slot_base": 100,
+      "slots": 5,
+      "stored_value": "player_id - 10001",
+      "price_source": "PlayerCosts[implementation playerIndex] (not a Shop_Cell row price)"
+    },
+    {
+      "name": "drone",
+      "slot_base": 200,
+      "slots": 5,
+      "stored_value": "drone_id unchanged",
+      "price_source": "UNKNOWN"
+    },
+    {
+      "name": "resource",
+      "slot_base": 300,
+      "slots": 5,
+      "stored_value": "cell_id",
+      "price_source": "resource value/cost arrays (numeric values UNKNOWN)"
+    }
+  ],
+  "stock_preferences": {
+    "getter_default": 0,
+    "reset_value": 0,
+    "player_id_offset": 10001
+  },
+  "popup_quantity": {
+    "initial_count": 1,
+    "slider_step": 1,
+    "maximum_rule": "available_stock - 1",
+    "max_stock_count_field_offset_hex": "0x98",
+    "max_stock_count_numeric": "UNKNOWN"
+  },
+  "limitations": [
+    "Shop_Cell contains no serialized numeric price; displayed Shop_Cell prices are runtime strings.",
+    "PlayerCosts is an exact decoded player unlock coin-price array, but its playerIndex-to-ship-ID mapping is not asserted.",
+    "Stock cap, resource prices, gem/star prices, and actual runtime shop grants remain UNKNOWN."
+  ]
+}

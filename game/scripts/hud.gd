@@ -3,6 +3,7 @@ extends Control
 
 signal pause_requested
 signal retry_requested
+signal economy_requested
 
 var _health_bar: ProgressBar
 var _health_label: Label
@@ -10,6 +11,7 @@ var _wave_label: Label
 var _score_label: Label
 var _action_label: Label
 var _pause_button: Button
+var _economy_button: Button
 var _overlay: ColorRect
 var _overlay_title: Label
 var _retry_button: Button
@@ -57,6 +59,7 @@ func show_game_over() -> void:
 	_overlay_title.text = "SIGNAL LOST"
 	_retry_button.visible = true
 	_pause_button.disabled = true
+	_economy_button.disabled = true
 
 
 func show_wave_clear() -> void:
@@ -65,6 +68,7 @@ func show_wave_clear() -> void:
 	_retry_button.visible = true
 	_retry_button.text = "REPLAY WAVE"
 	_pause_button.disabled = true
+	_economy_button.disabled = true
 
 
 func _build_interface() -> void:
@@ -99,9 +103,16 @@ func _build_interface() -> void:
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title_row.add_child(title)
 
+	_economy_button = Button.new()
+	_economy_button.text = "SHOP"
+	_economy_button.custom_minimum_size = Vector2(92, 52)
+	_economy_button.focus_mode = Control.FOCUS_NONE
+	_economy_button.pressed.connect(_on_economy_pressed)
+	title_row.add_child(_economy_button)
+
 	_pause_button = Button.new()
 	_pause_button.text = "PAUSE"
-	_pause_button.custom_minimum_size = Vector2(118, 52)
+	_pause_button.custom_minimum_size = Vector2(106, 52)
 	_pause_button.focus_mode = Control.FOCUS_NONE
 	_pause_button.pressed.connect(_on_pause_pressed)
 	title_row.add_child(_pause_button)
@@ -219,3 +230,7 @@ func _bar_style(background: Color) -> StyleBoxFlat:
 
 func _on_pause_pressed() -> void:
 	pause_requested.emit()
+
+
+func _on_economy_pressed() -> void:
+	economy_requested.emit()
