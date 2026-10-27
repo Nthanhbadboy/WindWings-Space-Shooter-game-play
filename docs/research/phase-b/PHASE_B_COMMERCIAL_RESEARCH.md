@@ -102,21 +102,21 @@ Nguồn: nhánh spec `arena/20330d0e…` (fetch tường minh, không checkout),
 
 ### 3.1 Microsoft Store (Windows PC)
 - **Tài khoản:** Partner Center, Individual hoặc Company; **không phí đăng ký cho cả hai loại** (flow mới; Individual miễn phí từ 10/09/2025 ở ~200 markets, Company bỏ phí $99 từ 07/05/2026); xác minh danh tính bằng giấy tờ + selfie [S1][S2].
-- **Revenue share (hiện hành, kiểm tra 27/10/2026):** **12% cho game** (dev giữ 88%), 15% cho app; Xbox console 30%. App Developer Agreement v8.11 (17/03/2026) §6 [S3][S4]. Quyền chọn commerce riêng/giữ 100% **chỉ áp dụng app non-game** — **game bắt buộc dùng commerce của Microsoft**, kể cả gỡ quảng cáo và subscription (Store Policies 7.20 §10.8.1) [S5].
+- **Revenue share (hiện hành, kiểm tra 27/10/2026):** **12% cho game** (dev giữ 88%), 15% cho app; Xbox console 30%. App Developer Agreement v8.11 (17/03/2026) §6 [S3]; trang Get started **đã fetch nguyên văn** xác nhận: commerce riêng giữ 100% chỉ cho non-gaming, commerce Microsoft phí 12% game/15% app [S4][S74]. Quyền chọn commerce riêng/giữ 100% **chỉ áp dụng app non-game** — **game bắt buộc dùng commerce của Microsoft**, kể cả gỡ quảng cáo và subscription (Store Policies 7.20 §10.8.1) [S5].
 - **Review:** tối đa **3 business days**, listing xuất hiện trung bình ~15 phút sau khi pass; add-on (IAP) certification ~1 giờ [S6].
 - **Packaging:** MSIX là chuẩn; cũng nhận MSI/EXE (Win32 không đóng gói) và PWA [S7]. Unity xuất bản được sang UWP/MSIX.
 - **Vùng:** 240+ quốc gia/vùng, 110+ ngôn ngữ [S8].
 
 ### 3.2 Amazon Appstore (thực tế 2026: Fire tablet / Fire TV / Vega)
-- **Tài khoản:** Amazon Developer Console, **không phí thường niên** [S9].
-- **Revenue share:** chuẩn 70/30; **Small Business Accelerator: dev dưới 1 triệu USD doanh thu năm trước → 80/20** tự động + AWS credits 10%; dev mới tự động đủ điều kiện [S9][S10].
+- **Tài khoản:** Amazon Developer Console, **miễn phí — chính chủ xác nhận**: Payments FAQ ghi nguyên văn "The program is free. You pay nothing to create a developer account, use Amazon APIs, and submit apps" [S9]; trang chủ developer cũng ghi "Registration is easy, free"; 2 loại tài khoản Sole Proprietorship / Business [S75].
+- **Revenue share:** chuẩn 70/30; **Small Business Accelerator (SBAP, đã fetch toàn bộ FAQ ngày 27/10/2026):** dev có tổng doanh thu Appstore **dưới 1 triệu USD trong năm lịch sử trước** (mọi địa lý/tiền tệ) và **mọi dev mới** tự động được nâng royalty 70/30 → **80/20**; cộng AWS credits tương đương 10% doanh thu (phải tự enroll, tối thiểu $10 doanh thu/thị trường/tháng, credits hết hạn sau 12 tháng) [S10]. Nếu đạt **≥1 triệu USD trong năm thì quay lại 70/30 từ năm kế tiếp** (không phải bị cắt ngay trong năm); dev có hợp đồng tùy chỉnh (custom agreement) bị loại khỏi chương trình [S10].
 - **Review:** điển hình 3–5 ngày (KB cộng đồng, 12/2023); tài liệu chính thức khuyên liên hệ nếu sau 6 ngày vẫn "in review" [S11][S12].
 - **Packaging:** **APK hoặc AAB** (AAB nhận từ 18/05/2022, Amazon tự chuyển bằng bundletool), ≤2,5GB, không nhận OBB; thiết bị Vega dùng định dạng VPKG riêng [S13][S15].
 - **Vùng:** gần 200 quốc gia tải về; IAP theo marketplace (US/CA/MX/BR/GB/DE/FR/IT/ES/JP/IN/AU); **JP: IAP trên Android đã dừng 20/02/2025** (Fire tablet vẫn qua amazon.co.jp) [S14][S16].
 
 ### 3.3 Huawei AppGallery (Android/HMS)
 - **Tài khoản:** HUAWEI ID + **identity verification** (individual/enterprise); **đăng ký miễn phí** cả hai loại (FAQ chính thức Q11) [S34].
-- **Revenue share (game, theo AppGallery Joint Operations Service Agreement):** ngoài Trung Quốc **Huawei 30% : dev 70%**; **IAP game tại Trung Quốc đại lục 50:50**; paid game 30:70 cả hai vùng. Mức ưu đãi 85% thời 2019–2020 đã hết hạn [S35]. Lưu ý: văn bản đọc được là template 2020; điều khoản hiệu lực lúc onboard trong AGC console là phiên bản mới nhất — cần đối chiếu lại khi ký (mục quyết định D5).
+- **Revenue share (game):** ngoài Trung Quốc **Huawei 30% : dev 70%**; **IAP game tại Trung Quốc đại lục 50:50**; paid game 30:70 cả hai vùng. Tỷ lệ này nhất quán trong cả Joint Operations Agreement bản 2020 lẫn **AG Connect Distribution Service Agreement for Paid Apps bản 26/01/2022 (bản công khai mới nhất, đã fetch)** [S35][S76]. Mức ưu đãi 85% thời 2019–2020 đã hết hạn. Công thức settlement: `(thu hộ – chiết khấu – thuế gián thu – hoàn tiền – channel deduction) × (1 – commission)`; từ 01/01/2022 Huawei không còn khấu trừ Channel Deduction đối với vùng Part II/III; **mức quyết toán tối thiểu €200** (vùng Part II/III) hoặc CNY 1.000 (dev nước ngoài tại đại lục), dồn kỳ nếu chưa đạt [S76]. Lưu ý: điều khoản hiệu lực lúc onboard trong AGC console là phiên bản mới nhất — cần đối chiếu lại khi ký (mục quyết định D5).
 - **Review:** **3–5 working days** theo App Review FAQ chính thức (một số trang trợ giúp AAB ghi 1–3 ngày — tài liệu Huawei nội bộ không nhất quán, lấy con số FAQ làm chuẩn) [S36].
 - **Packaging:** APK (≤4GB), AAB (≤150MB, bắt buộc dùng App Signing của Huawei), cả EXE cho app Windows [S37].
 - **Vùng:** AppGallery + IAP tại 170+ quốc gia/vùng, 78 ngôn ngữ, 195 bậc giá [S38]. **Trung Quốc đại lục: game cần ISBN/版号 của NPPA + software copyright + ICP filing, dev nước ngoài không tự xin được** [S39][S40].
@@ -135,7 +135,7 @@ Nguồn: nhánh spec `arena/20330d0e…` (fetch tường minh, không checkout),
 | **Phí xử lý IAP** | **12%** (game, gồm cả subscription) [S3][S5] | **20%** nếu <$1M/năm, ngược lại 30% [S9][S10] | **30%** ngoài TQ; **50%** tại đại lục (game IAP) [S35] |
 | **Rewarded video** | ⚠️ Chỉ qua bên thứ 3. **Vungle/Liftoff có SDK Windows cập nhật 2026** (v7.x Win32/WinUI3/WinForms/WPF + UWP v6.11.6); v7.x **chỉ interstitial + rewarded** [S19][S20] | ✅ APS + các SDK Amazon test tương thích: AdColony, Chartboost, APS, Vungle, Mintegral (danh sách cập nhật 15/08/2023) [S46] | ✅ Ads Kit (Petal Ads): rewarded, interstitial, banner, native, splash, roll [S47] |
 | **Interstitial** | ⚠️ Như trên (Vungle); không nên cưỡng ép theo định hướng player-respecting | ✅ qua các SDK trên | ✅ |
-| **Banner/native** | ⚠️ Banner chỉ còn trên nhánh UWP cũ v6.5.2+; v7.x desktop không có banner [S20]. RISE/Pubfinity được nhắc trong tài liệu MS nhưng hiện trạng 2026 **UNVERIFIED** [S18] | ✅ banner/interstitial (APS); native có thể qua mạng khác | ✅ đầy đủ |
+| **Banner/native** | ⚠️ Vungle: banner chỉ còn trên nhánh UWP cũ v6.5.2+, v7.x desktop không có banner [S20]. **Pubfinity xác nhận còn hoạt động 27/10/2026** (SDK UWP banner/native/video, danh mục nhỏ chủ yếu game casual Random Salad) [S77]; **RISE đã pivot, trang RISE Engage 404 — không còn bằng chứng SDK Windows** [S78] | ✅ banner/interstitial (APS); native có thể qua mạng khác | ✅ đầy đủ |
 | **SDK quảng cáo第一方 còn sống?** | ❌ Microsoft Ad Monetization (UWP) tắt 01/06/2020; Monetize Now/pubCenter web tắt 15/10/2025, không sản phẩm thay thế [S17][S18] | ❌ Amazon Mobile Ads Network tắt 30/09/2021 → thay bằng APS [S48] | ✅ Petal Ads Publisher Service (170+ quốc gia; >85.000 app tích hợp Ads Kit tính 30/09/2025) [S49] |
 | **AdMob (Google) phục vụ được?** | ❌ Không có SDK Windows | ⚠️ Chạy được trên Fire không có Play Services (Google xác nhận) nhưng **Google không hỗ trợ trên third-party store** và **không có trong danh sách tương thích của Amazon** [S50][S46] | ⚠️ Chạy được trên thiết bị non-Huawei Android thường; thiết bị HMS không GMS cần đánh giá riêng — `UNVERIFIED` cho kho AppGallery |
 | **AppLovin MAX / Unity LevelPlay** | ❌ Cả hai chính thức chỉ Android/iOS, không Windows [S21][S51] | ✅ MAX có adapter Fire OS; Amazon liệt kê AppLovin Max 11.8.2 tương thích Fire [S52] | ✅ bản Android (mediation đa mạng) |
@@ -146,7 +146,7 @@ Nguồn: nhánh spec `arena/20330d0e…` (fetch tường minh, không checkout),
 
 **Microsoft Store — mảng ads yếu nhất, mảng IAP/subscription chắc nhất.**
 - Game bắt buộc commerce Microsoft, phí 12% thấp nhất trong ba; add-on đủ 3 loại (consumable/durable/subscription) [S41][S45].
-- Không có ad SDK第一方; AppLovin MAX và LevelPlay không có Windows. Vungle/Liftoff là chứng cứ duy nhất còn cập nhật đều (NuGet v7.1.1–7.1.2, 09–10/2026) nhưng chỉ có interstitial + rewarded trên desktop [S19][S20]. **Kết luận thiết kế:** trên Windows nên lấy thu nhập từ IAP + gói ad-free/trả phí, ads chỉ là tùy chọn rewarded qua Vungle; không nên thiết kế kinh tế phụ thuộc banner.
+- Không có ad SDK第一方; AppLovin MAX và LevelPlay không có Windows. Vungle/Liftoff là mạng lớn duy nhất còn cập nhật đều (NuGet v7.1.1–7.1.2, 09–10/2026) nhưng chỉ có interstitial + rewarded trên desktop [S19][S20]; Pubfinity còn hoạt động nhưng quy mô nhỏ, tập trung UWP/casual [S77]; RISE đã rời mảng SDK Windows [S78]. **Kết luận thiết kế:** trên Windows nên lấy thu nhập từ IAP + gói ad-free/trả phí, ads chỉ là tùy chọn rewarded qua Vungle (hoặc Pubfinity nếu đóng gói UWP); không nên thiết kế kinh tế phụ thuộc banner.
 
 **Amazon Appstore (Fire) — đủ bộ ads + IAP nhưng thị trường hẹp.**
 - IAP API đủ 3 dạng (consumable/entitlement/subscription) và là bắt buộc với nội dung số [S14][S42].
@@ -312,7 +312,7 @@ Lấy tham số **base**: 4 rewarded/DAU, eCPM giả định $8 (Android; Window
 | # | Rủi ro | Mức độ | Nguồn |
 |---|---|---|---|
 | R1 | Amazon Appstore Android mobile đóng cửa → thị phần điện thoại Android không còn kênh Amazon | Cao | [S15][S16] |
-| R2 | Windows không còn ad SDK第一方, hai mediator lớn không hỗ trợ → phụ thuộc một nhà (Vungle) cho ads | Cao | [S17][S19][S21] |
+| R2 | Windows không còn ad SDK第一方, hai mediator lớn không hỗ trợ → lựa chọn ads thực tế hẹp (Vungle là mạng lớn; Pubfinity quy mô nhỏ; RISE đã pivot) | Cao | [S17][S19][S21][S77][S78] |
 | R3 | Vungle Windows v7.x không có banner, chỉ interstitial/rewarded — thiết kế kinh tế phải tương thích | Trung bình | [S20] |
 | R4 | Vào Trung Quốc đại lục cần 版号 qua NPH nội địa, 6–12 tháng, không tự đứng tên | Cao (nếu theo đuổi TQ) | [S39][S40] |
 | R5 | Tỷ lệ chia sẻ quảng cáo HMS hiện không công bố chính thức hiện hành | Trung bình | [S47] |
@@ -338,3 +338,22 @@ Xem file chuyên biệt: [DECISIONS_NEEDED.md](./DECISIONS_NEEDED.md) (12 quyế
 ## 10. Nguồn tham khảo
 
 Toàn bộ URL, ngày truy cập và loại nguồn (chính chủ/bên thứ 3) được liệt kê tại [SOURCES.md](./SOURCES.md). Mọi con số trong báo cáo đối chiếu được theo ID `[Sxx]`. Mục nào thiếu nguồn chính chủ đã được gắn **UNVERIFIED** ngay tại chỗ, không thay bằng trí nhớ.
+
+---
+
+## 11. Nhật ký kiểm chứng bổ sung (vòng 2 — cùng ngày 2026-10-27)
+
+Vòng rà soát thứ hai được chạy để đóng các mục còn treo ở bản đầu. Kết quả:
+
+| Mục | Trạng thái trước | Sau kiểm chứng vòng 2 | Nguồn |
+|---|---|---|---|
+| Microsoft 12% game / 15% app / 100% non-game tự commerce | Đã có từ App Developer Agreement, chưa đối chiếu trang hướng dẫn | **Xác nhận nguyên văn** trên trang Get started ("…keep 100% of the revenue for non-gaming apps, or use Microsoft's commerce platform … pay a competitive fee of 12% for games and 15% for apps") | [S74] |
+| Amazon phí đăng ký | Suy ra từ nhiều trang, chưa có câu chính chủ | **Xác nhận chính chủ**: Payments FAQ — "The program is free. You pay nothing to create a developer account, use Amazon APIs, and submit apps" | [S9] |
+| SBAP: điều kiện & thời điểm mất ưu đãi | Ghi chung "<$1M → 80/20" | **Làm rõ**: tự động cho dev mới & dev <$1M (mọi địa lý/tiền tệ); **đạt ≥$1M thì về 70/30 từ năm kế tiếp**; dev có custom agreement bị loại; AWS credits 10% phải tự enroll, tối thiểu $10/thị trường/tháng, hết hạn 12 tháng | [S10] |
+| Huawei 30:70 (ngoài TQ) / 50:50 (đại lục) | Chỉ có template 2020 | **Tái xác nhận** trong AG Connect Distribution Service Agreement bản **26/01/2022** (bản công khai mới nhất); bổ sung công thức settlement, bỏ channel deduction từ 01/01/2022, ngưỡng quyết toán tối thiểu €200 / CNY 1.000 | [S35][S76] |
+| Pubfinity (ads Windows) | `UNVERIFIED` | **Còn hoạt động** — site live, SDK UWP banner/native/video, quy mô nhỏ, curated | [S77] |
+| RISE (ads Windows) | `UNVERIFIED` | **Không còn bằng chứng SDK Windows** — RISE Engage trả 404, công ty pivot sang supply platform programmatic | [S78] |
+
+**Vẫn giữ `UNVERIFIED` sau vòng 2 (không có nguồn công khai):** eCPM riêng cho Windows/Vungle, Fire tablet và AppGallery; tỷ lệ chia sẻ doanh thu quảng cáo HMS/Petal Ads; thời gian cấp 版号 thực tế; điều kiện onboarding thương mại của Pubfinity.
+
+**Hệ quả cho quyết định:** không có thay đổi nào làm đảo kết luận §6–§8; D3 được cập nhật để phản ánh việc RISE không còn là phương án và Pubfinity chỉ phù hợp nếu đóng gói UWP.
