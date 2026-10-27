@@ -81,6 +81,9 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 153 — user mở thêm vai Art-style-auditor: "nắm kỹ tài liệu thiết kế art và kiểm xem 2 art làm đúng chưa").**
+> Vai trống mới trong SESSION_PROMPTS: chuyên-sâu tài liệu art (VISUAL_DESIGN/ART_STUDY/contact-sheets/plan 2 nhánh/STYle-correction 149) → audit độc lập bộ A (`5438fec9`) + B (`eca8588b`) theo chuẩn 2.5D + planner + bảng so-kế-cạnh; output `AUDIT_A_B_STYLES.md` + verdict từng lô; audit = cổng duyệt redo, curator chỉ nhận bộ khi auditor xác nhận ĐẠT. Prompt đã đưa user trên chat. Docs/spec không thêm file — needle 45 giữ.
+>
 > **Sửa lại (lần 152 — ef GIAO verification report M1–M4: APPROVE-BOUNDED tầng code+data (F1–F7) + A/B ACK style + planner metrics + E ĐÓNG.**
 > Pull `docs/rollout/VERIFY_M1_M4_BA257B36.md` (từ ef `1dc107f5`): V1/V8/V9 PASS · parse 15/15 · 0 asset gốc · fail-closed đúng · mọi số APK tái-lập được (wave 150/883 · HP 150 · coin 49/49 · IAP 170 · PvP 6/6 · player-stats 6 blob byte-exact); F1 không-CI · F2 thiếu preset/artifact (Gate-4) · F3-F4 thiếu pin/nhãn · F5 engine-features 4.3-vs-4.7.2 · F6 viewport 720×1496 chưa ghi INFERRED · F7 dedup-note. **Lệnh vòng 153: `ba257b36` fix F3–F7 + copy `.github/workflows` từ spec → push (CI xuất hiện) → `ef6b75ef` kiểm nhanh lại F1 → coder ĐÓNG; Gate-4 còn USER-only SDK/keystore/export.** Art: A ACK-149 + tự-khai W4 thuộc redo (nộp `d0824aa` 35 sprites trước khi đọc board — nhận lỗi quy trình) · B ACK + pipeline `art/pbr25d.py` (normal-map/bevel/AO/Blinn-Phong/rim ≥5–8 sắc; outline ≤1px) redo W1→W2→W3→W4/W5/W0 · planner `429a295d` §4.5b + grad_stops/outline_px chạy được + cổng-ra-wave (S0 chặn W1...) — 3 vai art đều nhận 149 đúng. E `b94827a` STATUS XONG → ĐÓNG ✓ (tự sửa lỗi cat-file, đọc board đúng paginate).
 >

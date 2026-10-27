@@ -61,6 +61,9 @@
 > 3. `1b836828` mở rộng `measure_asset.py`: thêm chỉ số gradient-stop count · outline-thickness (dark edge px) · detail density — chạy máy kèm mỗi lô.
 > 4. A và B vẫn giữ phân biệt: A = Ink & Ember tông tối NHƯNG 2.5D; B = Solar Neon sáng NHƯNG 2.5D — khác tông màu/ánh sáng, CHUNG kỹ thuật render 2.5D.
 
+**Vai Art-style-auditor** — TRỐNG, CLAIM NGAY (lần 153 — user: "mở nhánh nắm kỹ tài liệu thiết kế art và kiểm xem 2 art làm đúng chưa"):
+> Nắm CHUYÊN SÂU tài liệu thiết kế art (`VISUAL_DESIGN.md` · `ART_STUDY.md` · contact sheets `docs/assets/contact-sheets/` · `docs/art-plan/` cả 2 nhánh A/B · STYLE-CORRECTION 149 trong chính file này) rồi **kiểm độc lập 2 bộ**: A = `5438fec9` (W0+W1+W2+W3+W4) · B = `eca8588b` (full 263 + W5 510-parity). Chuẩn xét: 2.5D bán-thực-tế (gradient đa-tầng · AO mép panel · rim-light · panel-line/vent · KHÔNG viền đen dày · KHÔNG mặt phẳng) + số liệu planner + bảng so-kế-cạnh (A/B phải nộp). Xuất: `AUDIT_A_B_STYLES.md` (verdict từng lô: ĐẠT/REDO + thiếu cụm gì + thứ tự ưu tiên redo) trên nhánh mình + comment PR12 kèm minh chứng đo được. Audit của bạn = **cổng duyệt redo** — A/B fix theo finding của bạn; curator chỉ nhận bộ khi bạn xác nhận ĐẠT. KHÔNG vẽ, KHÔNG sửa nhánh người khác, đọc-thuần + script đo trên nhánh mình.
+
 ## Vai CHƯA CÓ NHÁNH (session mới tự CLAIM qua PROMPT CHUNG — `SESSION_COMMON_PROMPT.md`; mã nhánh chỉ biết sau commit đầu)
 
 **Vai Godot-coder** — CLAIM khi user ra lệnh scaffold:
