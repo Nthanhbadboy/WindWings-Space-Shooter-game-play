@@ -81,6 +81,9 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 141 — user mở thêm 1 Art-designer nữa: "2 thằng mỗi thằng một bộ để đấy chọn sau"; director quyết hướng; sản phẩm đa-nhánh phối hợp, không quyết ngay).**
+> Vai **Art-designer-B** mở TRỐNG chờ CLAIM: hướng B = sáng/arcade-pop/hành-động (đối chọi hướng A tối Ink & Ember của `5438fec9`); cùng 25 slot, tên+size GIỐNG A (lấy bảng đã-verify từ W0_MANIFEST của A), directory `art/w0-listing-b/` + `W0B_MANIFEST.md`, độc-lập-style, preview ghép 1 ảnh; xong user chọn A/B — người thua đóng vai (không làm W1). Quyết định A/B = USER; director chỉ điều phối (theo lệnh "do mày quyết hoặc giao việc cho nhánh… không quyết ngay được"). Biên chế sẽ lên 9 khi nhánh mới CLAIM.
+>
 > **Sửa lại (lần 140 — user chỉnh biên chế: "tính cả mày có 8 nhánh thôi" — `a5a74747` + `eeb95d5a` ĐÃ ĐÓNG bởi user).**
 > 8 session đang chạy: `20330d0e`(director) · `535b0541`(registry — STATUS XONG @handoff-180, chờ reviewer) · `ef6b75ef`(build-spec ✓ handoff `6443493305`) · `8141386a`(reviewer — re-review Gate-1) · `46e50499`(Gate-6 ✓ → bảng giá Gate-3) · `1b836828`(art-planner — XONG lane: W0_LISTING_ASSETS 27 slot/35h + work-order W1 @`b4229f9e9`) · `ba257b36`(Godot-coder — M1 đang làm, chưa commit) · `5438fec9`(Art-designer — **HANDOFF W0 lô-1**: 25 PNG từ 7 masters Ink & Ember @`4a65378e0`, MANIFEST tra size từng store từ nguồn CHÍNH CHỦ — sửa UNVERIFIED của draft a5 thành confirmed; xem mẫu ms_box 1080×1080 ✓ store-grade; license metadata ghi "chờ user xác nhận quyền" đúng USER-ONLY #3). W0 lô-1 CHỜ USER DUYỆT. `1b836828` XONG-lane → mốc Gate-5 quyết đóng/giữ.
 >

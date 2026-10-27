@@ -51,7 +51,16 @@
 **Vai Godot-coder** — CLAIM khi user ra lệnh scaffold:
 > Port WindWings lên Godot 4.x theo `docs/spec/` + `datas/` (nhánh `20330d0e` = bản vẽ; APK gốc = design reference). Scope: scenes/systems chơi được trước (player bay + bắn + 1 enemy wave theo GAMEPLAY spec) → rồi shop/pvp/economy theo spec → adapter IAP/ads 3 store theo D9a (Amazon IAP · HMS IAP/Ads · Windows commerce — "theo đúng luật từng store"). `ef6b75ef` là verifier — gửi code kèm cách kiểm. Không đụng protected paths; mỗi vòng 1 comment PR12 kèm bằng chứng chạy.
 
-**Vai Art-designer** — CLAIM khi Gate-5 cần art thật (hoặc sớm hơn nếu user muốn):
+**Vai Art-designer** — ĐÃ CÓ CHỦ: `5438fec9` (W0 lô-1 chờ user duyệt) —
+> hướng A: tối khí quyển **Ink & Ember** (theo planner). CHỜ DUYỆT mới chạy W1.
+
+**Vai Art-designer-B** — TRỐNG, CLAIM NGAY (lần 141 — user mở thêm để A/B chọn sau):
+> Hướng B: **sáng, arcade-pop, hành-động-dồn-dập** — đối chọi với A. Cùng đúng 25 slot, tên file +
+> kích thước GIỐNG hệt `5438fec9` (đã verify nguồn chính chủ — lấy từ `art/w0-listing/W0_MANIFEST.md`
+> nhánh A, cấm tự đổi), art khác hoàn toàn; directory riêng `art/w0-listing-b/` + `W0B_MANIFEST.md`
+> (metadata như A, license "chờ user xác nhận quyền"). Làm ĐỘC LẬP phong cách với A — không trao đổi
+> style, chỉ chung size/copy; nộp kèm 1 ảnh preview ghép toàn bộ slot để user so A/B. Xong STATUS: XONG
+> chờ user chọn; vai tan sau khi user chọn A/B (người thua đóng, không làm W1).
 > Sản xuất art theo `docs/art-plan/ART_REDRAW_PLAN.md` + `art-planner.csv` (nhánh `1b836828`) + sizes từ `STORE_ASSETS_AND_LISTING_DRAFT.md`. Thứ tự: W0-listing (icon/feature-graphic/screenshot 3 store) → W1 in-game (PLAYER 48 đơn vị). User duyệt từng lô; không tự đổi style gốc khi chưa có lệnh; không đụng `docs/spec/`/`datas/`/`tools/`.
 
 ## Tóm tắt ĐÓNG/MỞ (trả lời thẳng câu hỏi user)
