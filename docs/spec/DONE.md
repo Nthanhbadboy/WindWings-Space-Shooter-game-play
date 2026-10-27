@@ -81,6 +81,12 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 132 — USER ỦY QUYỆT + chuyển triển khai): "tự quyết và phân việc; phân tích chỉ để học tập — cần thiết lắm mới đào thêm; không thì triển khai theo kế hoạch".**
+> ① **D1–D12 CHỐT** bởi director theo ủy quyền (`docs/research/phase-b/DECISIONS_RESOLVED.md` — user giữ quyền bác bỏ từng mục): D1a giữ Amazon (Fire tablet/TV) · D2a loại đại lục TQ · D3b Windows không-ads · D4c SKU kép khớp `pro.forever/week/month` (STATIC_CONFIRMED) · D5 tạm-individual = **USER-ONLY pháp lý** · D6a premium Windows · D7a không loot-box trả phí · D8a rewarded-only cap 4–6/ngày · D9a interface+adapter · D10a Fire-tablet-first · D11a third-party · D12a organic-first.
+> ② **Gate-1 READY-FOR-CLOSE**: C1→CONFLICTING learning-note (không chặn — APK gốc = authority sản phẩm) · C2→535 registry-v4 (mảnh cuối, mechanical) · C3→profile "L1 static-complete + runtime-gated residuals có chủ" · C4 đã đúng · C5→defer-list chấp nhận (boss-phase→ef chỉ-đào-khi-cần). Verdict NOT_READY của AI-3 chỉ AI-3 nâng khi registry-v4 về.
+> ③ **PHASE C mở** (`docs/rollout/PHASE_C_EXECUTION_PLAN.md`): phân việc mới — ef→build/packaging-spec (plan-level) · a5→store-assets-spec + listing draft · Session E→requirement sheets 3 store · AI-3→re-review Gate-1 rồi verify-lane; **USER-ONLY #1–#6** (pháp lý D5 · 3 tài khoản · **Unity source cho bản Windows/quyền phân phối** · keystore · payout · lệnh publish).
+> ④ Nhận ef-134 handoff `6439951448` (24 FDE thân lá 4424B, 211 fact byte-verified, artifact `74cf1843…` 7556B, CI `40490185550`) = learning-note; Phase B progress #1/#2 (`6439349047`/`6439947300`) đã nhập vào bảng 3 kênh (MS $0 · game 12% · Huawei 30:70 ngoài TQ · review 3–5 ngày). 4 file Phase B copy từ `2d76c8d7965a` (tín dụng Session E). KHÔNG pull artifact mới vào datas/ (needle 193 giữ nguyên).
+>
 > **Sửa lại (lần 131 — fixup needle 192→193 (artifact Gate-1 mới pull; lỗi bump lần-3 — quy tắc: pull artifact ⇒ bump ngay TRƯỚC commit, verify trước push))**
 >
 > **Sửa lại (lần 130 — Gate-1 NHẬN: NOT_READY + C1–C5 + recovery lần-9 + Phase B bàn giao):**

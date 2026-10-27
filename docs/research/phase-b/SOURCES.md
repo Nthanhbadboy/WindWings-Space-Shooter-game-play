@@ -1,0 +1,89 @@
+# ĐĂNG KÝ NGUỒN THAM KHẢO PHASE B
+
+- **Ngày truy cập mọi nguồn: 2026-10-27 (UTC).** Loại nguồn: **CP** = chính chủ (first-party: store/chính phủ/chính nhà phát hành), **BT3** = bên thứ 3 (media, blog, công cụ ước lượng). Số liệu BT3 chỉ dùng tham chiếu, không dùng làm cam kết.
+- Một số trang ghi ngày "last updated" riêng; được ghi trong cột Ghi chú.
+
+| ID | Nguồn | Loại | URL | Dữ liệu chính lấy về |
+|---|---|---|---|---|
+| S1 | Microsoft Learn — Steps to open a developer account | CP | https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/open-a-developer-account | Miễn phí cả Individual/Company; ID + selfie; không đổi Individual→Company (trang doc ngày 07/05/2026) |
+| S2 | TechCrunch — "It'll soon be free to publish apps to the Microsoft Store" | BT3 | https://techcrunch.com/2025/05/19/itll-soon-be-free-to-publish-apps-to-the-microsoft-store/ | Mốc thời gian bỏ phí (~200 markets); xác nhận lại 12%/15% |
+| S3 | Microsoft App Developer Agreement v8.11 | CP | https://learn.microsoft.com/en-us/legal/windows/agreements/app-developer-agreement | §6: game 12%, app 15%, Xbox 30% (bản 17/03/2026) |
+| S4 | Microsoft Learn — Get started with Microsoft Store | CP | https://learn.microsoft.com/en-us/windows/apps/publish/get-started | Non-game commerce riêng giữ 100%; 12%/15%; mô hình IAP/subscription/ads |
+| S5 | Microsoft Store Policies v7.20 | CP | https://learn.microsoft.com/en-us/windows/apps/publish/store-policies | §10.5 privacy URL; §10.8 game bắt buộc Store IAP; §10.10 ads/COPPA; §11.11 IARC |
+| S6 | Microsoft Learn — App certification process for MSIX | CP | https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/app-certification-process | Tối đa 3 business days; hiển thị ~15 phút; các bước security/technical/content |
+| S7 | Microsoft Learn — Get started (loại package) | CP | https://learn.microsoft.com/en-us/windows/apps/publish/get-started | Nhận MSIX/MSI/EXE/PWA; certification chung ≤3 ngày |
+| S8 | Microsoft Learn — Pricing and availability (MSI/EXE) + trang developer.microsoft.com | CP | https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msi/price-and-availability | 240+ quốc gia/vùng; 110+ ngôn ngữ; chọn market từng app |
+| S9 | Amazon Developer — Understanding Payments | CP | https://developer.amazon.com/docs/reports-promo/payments-understand.html | 4 hình thức monetize; royalty sau VAT; EFT >$0; ~30 ngày; trả riêng marketplace |
+| S10 | Amazon Developer — Small Business Accelerator Program | CP | https://developer.amazon.com/apps-and-games/small-business-program | <$1M năm trước → 80/20 + AWS credits 10%; dev mới tự động |
+| S11 | Amazon Developer Community KB — review time | BT3 (diễn đàn chính thức Amazon) | https://community.amazondeveloper.com/t/how-long-should-it-take-for-amazon-to-review-my-app/2238 | "Usual app review 3–5 days" (12/2023) |
+| S12 | Amazon Developer — Step 4 Review and Submit | CP | https://developer.amazon.com/docs/app-submission/review-submit.html | Trạng thái Submitted/Review/Approved/Live; hỏi sau 6 ngày |
+| S13 | Amazon Developer — App Bundles | CP | https://developer.amazon.com/docs/app-submission/app-bundles.html | AAB hỗ trợ; bundletool 1.11; không bắt buộc, APK vẫn nhận |
+| S14 | Amazon Developer — IAP FAQ | CP | https://developer.amazon.com/docs/in-app-purchasing/iap-faqs.html | 3 dạng (consumable/entitlement/subscription); 1-Click; IAP theo vùng app |
+| S15 | Amazon Developer — App Submission Release Notes | CP | https://developer.amazon.com/docs/app-submission/release-notes.html | 20/08/2025 đóng Appstore Android; 30/09/2025 Vega VPKG; GetUserAgeData; tester role |
+| S16 | Amazon Developer Blog — Upcoming changes (20/02/2025) | CP | https://developer.amazon.com/apps-and-games/blogs/2025/02/upcoming-changes-to-amazon-appstore-for-android-devices-and-coins-program | Ngừng submit Android mới 20/02; JP IAP dừng; Coins kết thúc 20/08/2025 |
+| S17 | Microsoft Learn — Install the Microsoft Advertising SDK | CP | https://learn.microsoft.com/en-us/windows/uwp/monetize/install-the-microsoft-advertising-libraries | Ad Monetization UWP tắt 01/06/2020 |
+| S18 | Microsoft Q&A — monetizing UWP apps | CP (hỏi đáp MS) | https://learn.microsoft.com/en-us/answers/questions/655293/ | Đối tác được nêu: RISE, Pubfinity, Vungle (12/2021) |
+| S19 | Liftoff/Vungle Help — SDK cho Win32/WinUI3/WinForms/UWP | CP | https://support.vungle.com/hc/en-us/articles/45026606409371 | v7.x Windows 10/11, WebView2; cập nhật 09/07/2026 |
+| S20 | Vungle publisher SDK download + banner doc | CP | https://publisher.vungle.com/sdk/sdks/windows · https://support.vungle.com/hc/en-us/articles/360050628451 | v7.1.1–7.1.2 (09–10/2026); UWP v6.11.6; v7.x chỉ interstitial+rewarded; banner từ UWP v6.5.2 |
+| S21 | Unity Docs — LevelPlay package; AppLovin MAX Unreal GitHub | CP | https://docs.unity.com/en-us/engine/6000.6/manual/packages-list/packages-all/pack-safe/com-unity-services-levelplay · https://github.com/AppLovin/AppLovin-MAX-Unreal | LevelPlay chỉ Android/iOS; MAX Unreal "for Android and iOS" |
+| S22 | Microsoft Learn — WSA (previous versions) | CP | https://learn.microsoft.com/en-us/previous-versions/windows/android/wsa/ | WSA + Amazon Appstore không còn từ 05/03/2025 |
+| S23 | Amazon Developer Blog — Appstore on Windows 11 discontinued | CP | https://developer.amazon.com/apps-and-games/blogs/2024/03/amazon-appstore-on-windows-11-discontinued | Xác nhận ngừng sau 05/03/2025 |
+| S24 | Google Play — Space Shooter: Galaxy Attack | CP (store listing) | https://play.google.com/store/apps/details?id=com.space.shooter.alien.galaxyattack | "Contains ads · In-app purchases"; review paywall/PvP/energy; 50M+ theo mô tả |
+| S25 | AppBrain — Space Shooter: Galaxy Attack | BT3 | https://www.appbrain.com/app/space-shooter-galaxy-attack/com.space.shooter.alien.galaxyattack | Ước lượng 9,1M tải; 47 thư viện; liệt kê mạng ads |
+| S26 | Google Play — 1945 Air Force | CP | https://play.google.com/store/apps/details?id=com.os.airforce | 100M+; 4,8★/4,3M; Everyone 10+; ads+IAP |
+| S27 | AppGrooves — 1945 / HAWK dải IAP | BT3 | https://appgrooves.com/android/com.os.airforce/... · https://appgrooves.com/app/hawk-force-of-an-arcade-shooter-shoot-em-up-by-mycom-bv | 1945 $0,99–$199,99; HAWK $0,99–$114,99 (dữ liệu 2022–2023) |
+| S28 | Udonis — In-App Ads guide (trích AppMagic) | BT3 | https://www.blog.udonis.co/mobile-marketing/mobile-games/in-app-ads | Playable ad 1945 ~2 tỷ impression/90 ngày |
+| S29 | Google Play — HAWK: Airplane Space games | CP | https://play.google.com/store/apps/details?id=com.my.hawk.air.shooter | Ads + IAP random items; co-op; autofire |
+| S30 | App2Top — HAWK development history | BT3 | https://app2top.com/industry/development-history-of-hawk-freedom-squadron-108490.html | ~$900k/tháng thời 2017–18 (lịch sử); thiết kế ARPU |
+| S31 | Apple App Store — Sky Force Reloaded (US) | CP | https://apps.apple.com/us/app/sky-force-reloaded/id976116090 | Free; Ads Removal $3,99; Plane Generator $3,99; Starter Pack $9,99; 9+ |
+| S32 | Steam — Sky Force Reloaded + Steam Community FAQ | CP | https://store.steampowered.com/app/667600/ · https://steamcommunity.com/app/667600/discussions/0/2906376154327970079/ | $9,99; bản PC không microtransaction/ads, rebalance |
+| S33 | Google Play + AppBrain — Sky Force Reloaded | CP + BT3 | https://play.google.com/store/apps/details?id=pl.idreams.SkyForceReloaded2016 · https://www.appbrain.com/app/sky-force-reloaded/pl.idreams.SkyForceReloaded2016 | 10M+ huy hiệu; ước lượng 12M tải; ads+IAP |
+| S34 | Huawei Developer — Identity Verification FAQ | CP | https://developer.huawei.com/consumer/en/doc/help/identityverfication-0000001053292680 | Q11: tài khoản free; giấy tờ cá nhân/doanh nghiệp; không đổi loại tài khoản |
+| S35 | AppGallery Joint Operations Service Agreement (template 2020) | CP | https://terms-drcn.platform.hicloud.com/agreementservice/developer/getAgreementTemplate?agrType=1005&country=ove&language=en_us&version=2020022103 | Bảng 4.3: IAP game TQ 50:50, nước ngoài 30:70; paid game 30:70; RSRA sau VAT/channel |
+| S36 | Huawei Developer — App Review FAQs (doc 50106) | CP | https://developer.huawei.com/consumer/en/doc/app/50106 | Review 3–5 working days; rejection qua email |
+| S37 | Huawei Developer — AAB release, App Signing, Publishing API | CP | https://developer.huawei.com/consumer/en/doc/18527283 · https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-add-packageurl-0000001158245065 | APK ≤4GB; AAB ≤150MB; AAB bắt buộc App Signing; re-sign 2–5 phút |
+| S38 | HMS IAP Kit trang giới thiệu | CP | https://developer.huawei.com/consumer/en/hms/huawei-iap/ | 170+ nước, 195 bậc giá, 78 ngôn ngữ |
+| S39 | Huawei Policy Center — Business License/Certificate Review (doc 30215) | CP | https://developer.huawei.com/consumer/en/doc/app/30215 | Game TQ cần software copyright + publication approval (版号) |
+| S40 | AppInChina / 21CloudBox / MFAT New Zealand guide | BT3 | https://appinchina.co/blog/the-complete-guide-to-chinas-game-publishing-isbn/ · https://www.21cloudbox.com/how-to-publish-my-game-in-china.html · https://www.mfat.govt.nz/en/trade/mfat-market-reports/entering-chinas-mobile-gaming-market-a-guide-to-licensing-and-regulatory-approval | NPPA 版号; công ty nước ngoài qua NPH nội địa; 6–12 tháng (ước lượng BT3); ICP |
+| S41 | Microsoft Learn — Create add-on submission | CP | https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/add-on/what-are-add-ons | Consumable 2 loại; Durable Forever/1–365 ngày; Subscription |
+| S42 | Amazon Developer — Monetization and Advertising Policy | CP | https://developer.amazon.com/docs/policy-center/monetization.html | Nội dung số bắt buộc Amazon IAP; cấm điều hướng thanh toán khác |
+| S43 | HMS-Core IAP demo GitHub + IapClient reference | CP | https://github.com/HMS-Core/hms-iap-clientdemo-android-studio · https://developer.huawei.com/consumer/en/doc/development/HMSCore-References/iapclient-0000001050135787 | 3 loại: 0 consumable, 1 non-consumable, 2 subscription |
+| S44 | Huawei AGC Help — Creating an In-App Product | CP | https://developer.huawei.com/consumer/en/doc/app/agc-help-create-product-0000001099854866 | Ví dụ non-consumable: ad filtering, professional edition |
+| S45 | Microsoft Learn — Enable subscription add-ons | CP | https://learn.microsoft.com/en-us/windows/uwp/monetize/enable-subscription-add-ons-for-your-app | Subscription yêu cầu Win10 1607+, Windows.Services.Store; free trial |
+| S46 | Amazon Developer — In-App Advertising (ad SDK tương thích) | CP | https://developer.amazon.com/docs/in-app-ads/ad-sdk.html | AdColony/Chartboost/APS/Vungle/Mintegral (cập nhật 15/08/2023); không có AdMob |
+| S47 | Huawei Developer — Ads Kit / Publisher Service | CP | https://developer.huawei.com/consumer/en/hms/huawei-adskit/ · https://developer.huawei.com/consumer/en/monetize/ | 6 format; OAID; Petal Ads Publisher Console; tỷ lệ chia sẻ hiện tại không công bố |
+| S48 | Amazon — Mobile Ads Network deprecation + Publisher Agreement | CP | https://developer.amazon.com/aem/apps-and-games/mobile-ads · https://developer.amazon.com/support/legal/mobileads/terms-and-agreements | Deprecate 30/09/2021; chuyển APS |
+| S49 | Huawei Developer — Petal Ads overview + FAQ | CP | https://developer.huawei.com/consumer/en/doc/distribution/promotion/introduction-0000001051265655 · https://developer.huawei.com/consumer/en/doc/monetize/faq-0000001161265433 | 170+ nước; >85.000 app tích hợp (30/09/2025); cá nhân verified + Merchant được làm publisher |
+| S50 | Google AdMob forum + Amazon port guide | CP (Google/Amazon) | https://groups.google.com/g/google-admob-ads-sdk/c/O7XK6dK_UFM · https://developer.amazon.com/docs/app-porting/port-existing-app.html | GMA SDK chạy không cần Play Services nhưng Google không hỗ trợ third-party store |
+| S51 | Unity Docs — Ads Mediation (LevelPlay) | CP | https://docs.unity3d.com/2023.2/Documentation/Manual/com.unity.services.levelplay.html | Supported platforms: Android, iOS |
+| S52 | AppLovin MAX docs + Amazon Compatible Android SDKs | CP | https://support.applovin.com/en/max/mediated-network-guides/sdk-bidder-network-guides · https://developer.amazon.com/docs/apps-and-games/sdk-external-compatible.html | APS invitation-only; MAX có adapter Fire OS; AppLovin Max 11.8.2 tương thích Fire |
+| S53 | Amazon Ads Blog — APS update | CP | https://advertising.amazon.com/blog/amazon-publisher-services-update | 10% publisher transaction fee cả Amazon lẫn third-party demand từ 01/09/2023 |
+| S54 | Huawei Policy Center — Application Age Rating Standard (50125) | CP | https://developer.huawei.com/consumer/en/doc/distribution/app/50125 | Thang tuổi TQ/quốc tế; gambling/loot box = 18+; 18+ có thể không phát hành TQ |
+| S55 | GameAnalytics — 2026 Mobile & PC Gaming Benchmarks | BT3 (báo cáo ngành) | https://www.gameanalytics.com/reports/2026-mobile-pc-gaming-benchmarks | Median D1 ~22%, D7 <4%, D30 0,7–0,8%; P75/P90/P99 (16.000+ game) |
+| S56 | Digital Minds — Retention by genre (tổng hợp GameAnalytics 2025) | BT3 | https://digitalmindsbpo.com/blog/mobile-game-retention-benchmarks/ | Shooting D1 28,54%; D30 1,79%; các bảng genre |
+| S57 | Game Growth Advisor — Mobile Game KPIs 2026 / F2P models | BT3 | https://gamegrowthadvisor.com/blog/2026-03-17-mobile-game-kpis-benchmarks-2026/ · .../2026-04-02-f2p-monetization-models-comparison-2026/ | ARPDAU bands; eCPM casual Android $3,02 H1/2025; hybrid $0,15–0,50 |
+| S58 | MAF — Rewarded Ad Benchmarks 2026 | BT3 | https://maf.ad/en/blog/rewarded-ads-stats/ | Rewarded eCPM Mỹ $16,49 Android/$19,63 iOS; completion >95% |
+| S59 | GameAnalytics — Metrics Behind Hyper-Casual Games | BT3 | https://www.gameanalytics.com/blog/the-metrics-behind-hyper-casual-games-industry-report | ARPPU $42; ARPDAU $0,15; conversion 0,94% |
+| S60 | EarnifyHub — Mobile Game Revenue 2026 | BT3 | https://earnifyhub.com/gaming/mobile-game-revenue-2026 | Conversion genre (hyper-casual thấp, RPG 2,5–4%) |
+| S61 | Adjust — Mobile Games Insights Report 2025 | BT3 | https://gamedevreports.substack.com/p/adjust-mobile-games-insights-report | CPI game $0,36 (2024); hyper-casual $0,40; hybrid $0,95 |
+| S62 | FTC — COPPA Six-Step Compliance Plan | CP | https://www.ftc.gov/business-guidance/resources/childrens-online-privacy-protection-rule-six-step-compliance-plan-your-business | Đồng ý cha mẹ trước thu thập; điều kiện áp dụng |
+| S63 | FTC press release 16/01/2025 + Federal Register 22/04/2025 | CP | https://www.ftc.com/news-events/news/press-releases/2025/01/... · https://www.federalregister.gov/documents/2025/04/22/2025-05904/childrens-online-privacy-protection-rule | Sửa đổi COPPA: opt-in riêng targeted ads/third-party; giới hạn retention |
+| S64 | European Commission — Children safeguards | CP | https://commission.europa.eu/law/law-topic/data-protection/information-business-and-organisations/legal-grounds-processing-data/are-there-any-specific-safeguards-data-about-children_en | Tuổi đồng ý 13–16 tùy quốc gia thành viên |
+| S65 | EDPB — SME guide / consent summary 2026 | CP | https://www.edpb.europa.eu/sme/be-compliant/process-personal-data-lawfully_en · https://www.edpb.europa.eu/system/files/2026-04/edpb-summary-consent_en.pdf | Quy tắc consent; trẻ em dưới tuổi quốc gia cần consent phụ huynh |
+| S66 | Amazon Developer — Appstore Privacy Labels | CP | https://developer.amazon.com/docs/app-submission/appstore-privacy-labels.html | Questionnaire 04/2023; nhãn hiển thị từ 11/2023 |
+| S67 | Amazon Developer — User Age Verification | CP | https://developer.amazon.com/docs/app-submission/user-age-verification.html | GetUserAgeData API live 01/01/2026 (TX/UT/LA); significant change |
+| S68 | Microsoft Learn — Age ratings for MSIX | CP | https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/age-ratings | IARC questionnaire; tái dùng IARC ID |
+| S69 | Amazon Developer — Target Your App / Submission FAQ | CP | https://developer.amazon.com/docs/app-submission/target-app.html · https://developer.amazon.com/docs/app-submission/faq-submission.html | Maturity rating do Amazon ấn định (không phải IARC) |
+| S70 | Amazon Developer — Appstore Content Policy | CP | https://developer.amazon.com/docs/policy-center/understanding-content-policy.html | Môi trường family-friendly; Amazon toàn quyền từ chối |
+| S71 | Huawei Review Guidelines §7 User Privacy (doc 50104-07) | CP | https://developer.huawei.com/consumer/en/doc/app/50104-07 | GDPR/PIPL/PDPO/PDPA; privacy URL; xóa tài khoản; opt-out personalized ads; OAID |
+| S72 | Huawei Review Guidelines §5 App Ads (50104-05) | CP | https://developer.huawei.com/consumer/en/doc/app/50104-05 | Gắn nhãn Ad; không lock screen/ngoài app; ads phù hợp tuổi |
+| S73 | Huawei Review Guidelines §8 Minor Protection (50104-08) | CP | https://developer.huawei.com/consumer/en/doc/app/50104-08 | Consent phụ huynh; chính sách trẻ em; app trẻ em hạn chế IAP/link ngoài |
+
+## Giới hạn của bộ nguồn (phải nêu khi dùng số)
+
+1. **Số tải/doanh thu comp từ AppBrain/AppGrooves/AppRank là ước lượng BT3**, không phải số chính chủ; chỉ dùng định tính/tham chiếu.
+2. **eCPM/ARPDAU không có số tách riêng cho Windows (Vungle), Fire tablet và AppGallery** — mọi con số đưa vào mô hình §5 là proxy Android, phải thay bằng số dashboard sau soft launch.
+3. Văn bản Huawei S35 là **template 2020** (bản công khai đọc được); điều khoản hiệu lực là phiên bản trình ký trong AppGallery Connect — đối chiếu lại tại Gate-3.
+4. Thời gian review các store là tài liệu hướng dẫn, không phải SLA có bồi thường.
+5. Tỷ lệ chia sẻ quảng cáo HMS Ads/Petal hiện **không công bố** trong tài liệu công khai (con số 80% từng thấy là chính sách 2021) → giữ `UNVERIFIED`, không đưa vào mô hình tài chính.
+6. Luật tuổi/số đang thay đổi nhanh (COPPA sửa đổi 2025; luật tiểu bang Mỹ; age assurance EU/UK/Singapore) — rà lại tại Gate-7 trước khi submit.
