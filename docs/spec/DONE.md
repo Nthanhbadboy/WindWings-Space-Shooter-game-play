@@ -81,6 +81,20 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 130 — Gate-1 NHẬN: NOT_READY + C1–C5 + recovery lần-9 + Phase B bàn giao):**
+> **Gate-1** (AI-3 own125 `1e4b832387` · `6440973318` · 4 CI GREEN ·
+> artifact `4a2a60e5…` 92.399B pin ✓ trên spec): verdict **NOT_READY** —
+> 5 điều kiện: C1 reward-blob 149-vs-169/177 (AI4+director) · C2
+> registry-v4 final (AI4) · C3 fidelity profile (**USER**) · C4 qualify
+> 139-file absence (spec — MISSING:267 đã đúng "chưa thấy ≠ không tồn
+> tại") · C5 bound ceiling scope+deferred+owner (spec/director; defer:
+> boss-phase×2→ef · registry→535-v4 · runtime 20+5→user) · **Phase B**
+> (session `46e50499`): research 3-store bàn giao — 73 nguồn · **Amazon
+> Android mobile ĐÓNG 20/08/2025** · MS hết first-party ad SDK · TQ cần
+> 版号 → khuyến nghị loại đại lục · **D1–D12 chờ user**. (lần 128/129:
+> mandate nhận + Director Status Report `2f5febaf8` + fixup needle
+> 191→192; recovery lần-9.)
+>
 > **Sửa lại (lần 127 — #27 6/6 CHÍNH THỨC + 164/165 ĐÓNG):**
 > **AI-3 own124** (`85300eafec` · `6436979937`): VERIFIED producer erratum
 > (9 Git + 2 API bodies; own bytes khớp) ⇒ verdict
