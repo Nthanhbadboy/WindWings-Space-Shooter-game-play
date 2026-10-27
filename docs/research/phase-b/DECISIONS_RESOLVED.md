@@ -34,3 +34,16 @@
 | **C5** bound ceiling | **Director chấp nhận (ủy quyền) defer-list làm điều kiện Gate-1:** boss-phase×2 → ef (đào CHỈ khi triển khai cần) · registry residuals → 535-v4 · runtime-gated 20+5 → MODEL_NOT_MEASURED, chờ user mở runtime lane. |
 
 ⇒ **Gate-1: READY-FOR-CLOSE** — chỉ còn C2 (registry-v4) là deliverable cơ học. Verdict `NOT_READY` của AI-3 chỉ reviewer đó nâng khi registry-v4 publish; director không tự nâng verdict review người khác (nguyên tắc lần 124).
+
+---
+
+## Bổ sung lần 144 — G9–G12 (Gate-3 giá/SKU) — director quyết theo cùng ủy quyền, user có thể bác bỏ
+
+| # | Quyết | Chọn | Lý do |
+|---|---|---|---|
+| **G9** | Bản chất SKU "remove ads" | **Đổi thành Premium bundle $3,99**: không-ads **+** nhận thưởng rewarded không cần xem **+** QoL | D8a rewarded-only ⇒ "chỉ gỡ ads" bán cho nhu cầu không tồn tại; bán quyền-lợi, không bán sự-vắng-mặt (đề xuất E, `GATE3_PRICING_SHEET.md`) |
+| **G10** | Cơ chế thời hạn | **Non-renewing pass consumable** (mua lại thủ công) — KHÔNG dùng subscription API store | Data gốc: `pro.week/month` nằm trong ConsumableProducts (71) — mua-lại-thủ-công; tránh MS khóa-giá-sub sau publish + Huawei consent auto-renew + bớt 1 adapter API |
+| **G11** | Battle pass | **$4,99 launch** · chu kỳ 30 ngày · nâng $5,99 chỉ sau khi có buy-rate thật (median casual ~10%) | Comp `GATE3_PRICING_SHEET.md` P5; không đặt giá theo dự đoán |
+| **G12** | Premium Windows | **$9,99** (SKU mới, D6a) · bundle PC $14,99 tuỳ chọn sau launch | Sky Force PC/Xbox $9,99 chính chủ; MS game fee 12% |
+
+Bảng giá P1–P7 đầy đủ: `GATE3_PRICING_SHEET.md`. Gems/coins KHÔNG chốt trong lần này (cần cân bằng kinh tế — lane riêng).

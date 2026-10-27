@@ -1,5 +1,7 @@
 # DESIGN_READINESS — đã đủ để bắt tay thiết kế chưa?
 
+> **SUPERSEDE TOÀN VĂN (lần 144 — theo re-review `8141386a` `6444324415`):** mọi câu summary/tally/absolute trong tài liệu này (gồm §4.1b, các dòng "không tồn tại/không có", "L2 KHÔNG còn thiếu số", "mọi việc tĩnh đã đóng") đọc đúng phạm vi = **L1 tĩnh theo mẫu 139 file asm**; residuals = deferred/UNKNOWN/RUNTIME_UNVERIFIED — không phải kết luận toàn cục. Chi tiết: `GATE1_CLOSURE_NOTES.md`.
+
 > **Câu hỏi:** *"Đã OK để thiết kế game mới chưa?"*
 >
 > **Trả lời ngắn: ĐỦ — cho phạm vi đã chốt (L1: giống cơ chế, không cần giống số).**
@@ -17,7 +19,7 @@
 > (`DIFFICULTY_MODES` §7) · HP enemy **150 cặp theo id** (claim **WRH2**);
 > ② **`kHp[mode]` không tồn tại** — chế độ đổi composition + thưởng, không nhân HP; `pct` đủ **3/3**;
 > ③ **playback thật đã có** (phiên phone 23/10 trong repo) — "cần thiết bị" chỉ còn 2 tái đối chiếu;
-> ④ **feel BỎ** theo quyết định (game gốc không có, quá nhỏ);
+> ④ **feel BỎ** theo quyết định (không thấy trong mẫu 139 file asm — supersede lần 143; quá nhỏ);
 > ⑤ peer tới report **87 / 412 tests** (combat chain + receivers + extra-life + khiên/zone);
 > ⑥ tally **✅ 33 · ⚠ 14 · ❌ 1** (lần 11 kéo lại từ 31/16/1 — lô lần 9 bị mất) · claim **211/209 PASS**. Số dưới đây đã đo lại theo trạng thái này.
 
@@ -284,7 +286,7 @@ hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật
 
 | tập | tổng | đủ / đóng | một phần | chưa |
 |---|---:|---:|---:|---:|
-| **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **11** ✅ | **4** 🟡 | **0** 🔴 · **0** ⛔ (feel **đã đóng** — 3/6 mục có số, 3/6 không tồn tại, xem §4.1b) |
+| **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **11** ✅ | **4** 🟡 | **0** 🔴 · **0** ⛔ (feel **đã đóng** — 3/6 mục có số, 3/6 không thấy trong mẫu 139 file asm (supersede 143), xem §4.1b) |
 | **9 câu blocker** (§2 ở trên) | 9 | **4** ✅ (`StartHp` · `A6` · `B1` · feel-bỏ) | **4** 🟡 (`D3` · `C4` · `A7` · `B3`) | **1** 🔴 (`A5` — cần luật continue) |
 | **48 câu design** (`DESIGN_QUESTIONS.md`) | 48 | **33** ✅ | **14** ⚠ | **1** ❌ (`A5`) |
 | **6 chỗ thiếu** (`COVERAGE_AUDIT.md` §2) | 6 | **2** ✅ ĐÃ ĐÓNG | **4** | **0 chặn số** — sót 2 tái đối chiếu runtime (không chặn) |

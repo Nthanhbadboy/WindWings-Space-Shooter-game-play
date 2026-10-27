@@ -169,6 +169,28 @@ biến môi trường và `--export-release` với preset đã trỏ sẵn — k
 
 Artifact: `.exe`, `.pck`, `.apk`, `.aab`, `version.json` + log. Không upload store trong CI.
 
+## 7b. Plugin Android (đường cho adapter IAP/ads D9a)
+
+`STATIC_CONFIRMED` từ mã đã pin: plugin Android không phải “cài SDK vào engine”, mà là file cấu hình
+trong **`res://android/plugins/*.gdap`** (`android_export_plugin.cpp:737-760`, `PLUGIN_CONFIG_EXT = ".gdap"`,
+`godot_plugin_config.h:54`). Nội dung `.gdap` là ConfigFile (INI):
+
+```
+[config]
+name = "..."
+binary_type = "local" | "remote"
+binary = "<đường dẫn .aar/.jar hoặc toạ độ maven>"
+[dependencies]
+local = [...]
+remote = [...]
+custom_maven_repos = [...]
+```
+
+Preset bật plugin bằng khoá `plugins/<name>` (sinh từ `PNAME("plugins")` + `name`, dòng 2208–2211 — literal
+prefix là `INFERRED`, xác nhận lại ở check V2 trên `export_presets.cfg` thật). Hệ quả cho Gate-4: mỗi SDK
+IAP/ads của Huawei/Amazon phải đến dưới dạng `.gdap` + `.aar`, khai đúng `binary_type`, và **giấy phép +
+phiên bản phải nêu trong handover** (protocol §2 mục 6). Không có `.gdap` thì không có đường bật.
+
 ## 8. Checklist USER/E phải xác nhận (không đoán)
 
 1. **Target API tối thiểu hiện hành** của AppGallery và Amazon (và trần `targetSdk`) — `UNKNOWN`.
@@ -194,6 +216,13 @@ Artifact: `.exe`, `.pck`, `.apk`, `.aab`, `version.json` + log. Không upload st
 - Godot đổi tên khoá giữa các bản 4.x ⇒ mọi dòng trong §3.2/§4.2 gắn với tag `4.7.2-stable`; nâng engine
   phải chạy lại bước kiểm khoá (mục 11) trước khi tin bảng.
 - MSIX: nếu user chọn đường EXE không đóng gói thì §4 mất hiệu lực phần đóng gói.
+
+## 9b. Liên kết máy đọc được
+
+- `docs/rollout/GODOT_EXPORT_PRESET_CONTRACT.json` — 3 preset, 44 khoá (19 Android AAB · 14 Android APK ·
+  11 Windows), 6 cross-check C1–C6, 4 `UNKNOWN` U1–U4; mỗi khoá có `src` = file:dòng.
+- `docs/rollout/VERIFIER_PROTOCOL_GODOT_PORT.md` — bộ kiểm V1–V9 cho code của session Godot-coder.
+- `reverse-engineering/raw/godot-build-spec/plugin-system.json` — pin `.gdap` + dòng tham chiếu.
 
 ## 10b. Bằng chứng thô của vòng này
 

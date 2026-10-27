@@ -37,3 +37,24 @@ Chi tiết bằng chứng + câu trả lời chuẩn bị sẵn: [GATE6_SUBMISSI
 | **G3** | **EU DSA trader status** | MS: dev là "Trader" phải nộp DUNS/giấy tờ doanh nghiệp, trạng thái ở Legal info → Developer [S82]; Apple/Google đã gỡ app không khai từ 2025 (tham chiếu chung, BT3) | (a) khai trader + địa chỉ/điện thoại công khai · (b) khai non-trader | (a) địa chỉ công khai trên PDP EU; (b) rủi ro gỡ khỏi EU nếu thực tế có doanh thu | 6 | User quyết (dữ liệu cá nhân) — gộp với D5; trạng thái DSA của Amazon/Huawei còn `UNKNOWN` |
 | **G4** | **Account/cloud save có trong MVP?** | Spec: MVP **không** có Arena/PvP/event/VIP [spec GAMEPLAY §7.2]; game gốc có account + cloud save (`Board_AccountSettings`, `Board_LinkAccount`) | (a) không — save local · (b) có account/cloud | (b) thêm User IDs/nickname vào **cả 3 form**, và phải khai lại khi mở PvP | 6 | User chọn; ảnh hưởng trực tiếp khối lượng khai báo |
 | **G5** | **Chốt danh sách SDK để khai** | Amazon + Huawei **bắt buộc** khai dữ liệu do third-party SDK thu thập [S66][S87]; D11 để SDK cụ thể ở Gate-4 | chờ Gate-4 | Khai thiếu SDK = form chưa hoàn chỉnh ⇒ Amazon **không cho publish/update** (từ Q2/2025) [S66] | 4 → 6 | Chốt SDK analytics/ads/CMP ở Gate-4 |
+
+## BỔ SUNG — Quyết định Gate-4/5 phát sinh từ queue Godot
+
+Chi tiết + bằng chứng: [GATE4_GODOT_COMMERCE_QUEUE.md](./GATE4_GODOT_COMMERCE_QUEUE.md).
+
+| # | Quyết định | Bối cảnh / bằng chứng | Phương án | Rủi ro nếu chọn | Gate | Thông tin còn thiếu |
+|---|---|---|---|---|---|---|
+| **G6** | **Ghim phiên bản Godot (≥4.5)** | GameAnalytics Godot SDK yêu cầu **4.5+** [S99][S100]; AdMob plugin Poing yêu cầu **4.5+** [S96] ⇒ dùng 4.2/4.3 sẽ mất analytics chính thức | (a) Godot 4.5+ · (b) Godot cũ + analytics tự viết | (a) ghim theo plugin, phải nâng khi plugin nâng; (b) tự viết analytics = thêm việc + sai số | 4/5 | User/Godot-coder chốt; cần biết bản Godot ổn định muốn dùng |
+| **G7** | **Kế hoạch test IAP Windows** | `Windows.Services.Store` cần **MSIX có identity Partner Center** + **không elevated**; **dev license không phải retail license** ⇒ không test được ở máy dev thuần [S101] | (a) tạo submission **private audience/flight** sớm để test · (b) hoãn Windows IAP sang sau khi 2 store kia xong | (a) tốn một vòng submission, cần tài khoản MS sẵn sàng (user đã có); (b) rủi ro phát hiện muộn, đúng lúc gần release | 4/5 | Lịch submission; xác nhận quyền tạo flight trong Partner Center |
+| **G8** | **Một hay nhiều nguồn analytics** | GameAnalytics có SDK Godot chính thức + là đối tác Huawei (OAID); Huawei Analytics Kit chỉ đọc được trong AGC [S99][S106] | (a) GameAnalytics làm nguồn sự thật duy nhất · (b) thêm Analytics Kit per-store | (a) Fire OS chưa được xác nhận hỗ trợ → phải test; (b) số liệu không so sánh được giữa 3 store | 4 | Kết quả test GameAnalytics trên Fire thật |
+
+## BỔ SUNG — Quyết định Gate-3 phát sinh từ bảng giá
+
+Chi tiết + bằng chứng: [GATE3_PRICING_SHEET.md](./GATE3_PRICING_SHEET.md).
+
+| # | Quyết định | Bối cảnh / bằng chứng | Phương án | Rủi ro nếu chọn | Gate | Thông tin còn thiếu |
+|---|---|---|---|---|---|---|
+| **G9** | **"Remove ads" còn bán được khi ads là rewarded-only?** | D8a chốt rewarded-only (không ép xem) ⇒ người chơi đã có quyền không xem ads; benchmark cho thấy $0.99–4.99 là giá để *thoát ads bị ép* [S115] | (a) giữ "remove ads" thuần · (b) đổi thành **Premium: gỡ ads + nhận thưởng rewarded không cần xem + QoL** · (c) bỏ SKU, chỉ bán battle pass + premium PC | (a) SKU chính gần như không bán được; (c) mất dải giá thấp | 3 | Kết quả A/B sau soft launch |
+| **G10** | **Gói thời hạn: consumable hay subscription store?** | APK gốc: `pro.week`/`pro.month`/`battlepass` đều là **Consumable**, chỉ `pro.forever` là NonConsumable [datas/iap_products.json]; MS **không cho nâng giá subscription** sau publish [S107]; Huawei đòi consent auto-renew riêng [S111] | (A) consumable + hết hạn **server** · (B) subscription store · (C) bỏ gói thời hạn | (A) cần logic hạn dùng ở server (không dựa giờ máy); (B) phức tạp 3 adapter + không nâng giá được trên MS | 3 | Chọn A/B/C |
+| **G11** | **Giá battle pass + độ dài mùa** | Casual mặc định $5.99, buy rate ~10%; dải $5–15/mùa [S115] | (a) $4.99 launch → $5.99 · (b) $9.99 ngay | (b) khó bán ở tập casual | 3 | Số mùa/năm; nội dung mỗi mùa |
+| **G12** | **Giá premium Windows** | Sky Force PC/Xbox **$9.99** (chính chủ) [S114]; MS phí game 12% | (a) $9.99 · (b) $12.99 · (c) $7.99 | (b) vượt tiền lệ cùng thể loại; (c) bỏ tiền trên bàn | 3 | Wishlist/refund sau launch |
