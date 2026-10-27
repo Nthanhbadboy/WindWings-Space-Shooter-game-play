@@ -53,6 +53,14 @@
 > chỉ chọn/ghép từ masters đã có. Quyết của curator = QUYẾT ĐỊNH CUỐI (thay user). Xong STATUS: XONG;
 > lúc đó A/B có vai tan (người không được chọn dừng).
 
+## STYLE-CORRECTION (lần 149 — ràng buộc mọi vai art, ưu tiên cao nhất)
+
+> USER kiểm tra thấy A + B ĐỀU chưa đạt: thiếu **2.5D** và độ **phong phú** của WindWings gốc (A = vector phẳng; B = cartoon viền đậm). Nguyên nhân: giản-lược style thành con số + chỉ tham chiếu bố cục, không đối chiếu ảnh gốc. Sửa như sau — áp dụng NGAY cho mọi lô kế tiếp và **redo dần các lô đã nộp** (giữ composition/palette-nhận-diện, nâng kỹ thuật render):
+> 1. **Chuẩn style bám `VISUAL_DESIGN.md` + contact sheets (`docs/assets/contact-sheets/`): 2.5D bán-thực-tế quân đội** — gradient nhiều tầng (≥3–5 mức/panel), ambient-occlusion tại mép panel, rim-light từ trên, chi tiết panel-line/vent/đinh tán, highlight kim loại bóng. CẤM: viền đen dày (lỗi B) · mặt phẳng không chuyển sắc (lỗi A).
+> 2. **Mọi lô nộp kèm bảng SO KẾ CẠNH**: sprite của mình đặt cạnh sprite gốc gần nhất (cắt từ contact sheet, cùng scale) — không trace, chỉ đối-chiếu. Lô thiếu bảng = không duyệt.
+> 3. `1b836828` mở rộng `measure_asset.py`: thêm chỉ số gradient-stop count · outline-thickness (dark edge px) · detail density — chạy máy kèm mỗi lô.
+> 4. A và B vẫn giữ phân biệt: A = Ink & Ember tông tối NHƯNG 2.5D; B = Solar Neon sáng NHƯNG 2.5D — khác tông màu/ánh sáng, CHUNG kỹ thuật render 2.5D.
+
 ## Vai CHƯA CÓ NHÁNH (session mới tự CLAIM qua PROMPT CHUNG — `SESSION_COMMON_PROMPT.md`; mã nhánh chỉ biết sau commit đầu)
 
 **Vai Godot-coder** — CLAIM khi user ra lệnh scaffold:
