@@ -114,3 +114,15 @@ python3 tools/verify/owner132.py --write
 python3 tools/verify/owner132.py --check
 python3 -m unittest tests.test_owner132 -v
 ```
+
+## 8. Verification (final)
+
+| check | result |
+| --- | --- |
+| `python3 tools/verify/owner132.py --check` | PASS, artifact 11962 B `5037ba3b2641ca31c2860ec69cf142f69b8ab90591e6ad88d4838a1a66bc876d` |
+| `python3 -m unittest tests.test_owner132 -v` | 20 tests, 0.078 s, OK |
+| `python3 -m unittest discover -s tests` | 1890 tests, 338.578 s, OK |
+| CI `Verify extracted tables` | run 40462435663, job `verify`, success on `5ba12c56c` |
+| recovery runs | 40461994601 (`06783d220`), 40462227499 (`dd7c63d7a`) |
+| receipts | `reverse-engineering/raw/l3-ef6b75ef132-verification/` (claim, ci, ci-jobs, check, local, focused.log.gz, full.log.gz, handoff) |
+| official handoff | PR12 comment 6435624425 |

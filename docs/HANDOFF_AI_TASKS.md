@@ -1,3 +1,17 @@
+## Hiện hành132 / arena/ef6b75ef / #27 pool dispatch slot31 có chạm animator không (static)
+
+Claim **6435459104**. [Report132](apk-analysis/132-ef6b75ef-native-dispatch-owners.md). Hai probe mới từ cache XAPK fail-on-miss: `owner132` (run **40461994601**/source `06783d220`, 27 thân FDE) và `owner132b` (run **40462227499**/source `dd7c63d7a`, 16 callee + FDE). Verifier **decode lại từ byte** chứ không tin probe: tách `bl` (call) / `b` ngoài (tail) / `b` nội bộ (intra, 169), membership cluster `0x6b0000..0x6c0000`, từng site `ldr [vptr,#slot]; blr` với provenance vptr. **43 fact byte-verified**, 16 callee được gán FDE.
+
+**Trả lời câu hỏi review 1 của 131 — phủ định sạch:** 16 owner của pool slot-31 có **266 `bl`**, **0 lần gọi vào cluster**, **0 tham chiếu 6 container**, chỉ 1 load `+0x188` chung trong `0xe4515c`, 52 dispatch site. ⇒ entry update `6b947c` **không có caller tĩnh nào** trong build này, chỉ có vtable membership + 16 site generic không liên quan (slot31 xuất hiện 24×, 33 21×, 2 3×, 3 2×, 10 2×). Nhóm batch: 160 `bl`, 8 lần vào cluster (`6b08c0/6b08d8/6b08e4/6b1c98/6b753c`), 10 ref container.
+
+**Dispatch thật duy nhất trong cluster là graph builder tự gọi mình:** `6b7e00` `ldr x8,[x19]` → `6b7e0c` `ldr x8,[x8,#0x50]` → `blr` = slot 10 → `3e079c`; `6b7f48` → `6b7f50` `ldr x8,[x8,#0x108]` → `blr` = slot 33 → `6b6ab8`. Slot resolve theo membership 130 đã pin SHA.
+
+**Sửa lại 131:** `0x10ecb08` **không** riêng animator — 9/10 owner tham chiếu nó không hề vào cluster, không đọc field animator. Phát biểu hẹp đúng: trong `6b27dc` container được duyệt và từng phần tử flush bằng `6b1c98(el,0)` nên **có thể chứa** object animator. Ba callee cluster `6b08c0/6b08d8/6b08e4` là 3 thunk 3 lệnh giống nhau (`mov w1,#8; mov w2,#8; b 0x3f1e30`) gọi trên temporary ở stack.
+
+**Stage 2:** `6ce4b4` là **FDE riêng** (`0x48`), không nằm trong ctor `6ce464` (`0x34`) của 129 — graph builder gọi ctor khác; `6b7fe8` là **nội bộ** `6b7d58` (offset 656) nên là branch nội hàm, đã được đánh dấu `intra` thay vì call; `0x109acc0` **không có FDE** (stub fail stack-canary, gọi từ `6b8050`).
+
+Derived `datas/l3_ef6b75ef132_native_dispatch_owners.json.gz` **11962B/SHA `5037ba3b2641ca31c2860ec69cf142f69b8ab90591e6ad88d4838a1a66bc876d`**; pins cả upstream 130/131; **20 focused PASS/0.078s; full 1890 PASS/338.578s; check PASS; Verify40462435663 SUCCESS exact scientific 5ba12c56c**; receipts `raw/l3-ef6b75ef132-verification/`; official132HANDOFF **6435624425**. Static-only per 6418032974/6418326986; không selfACK/merge/main; protected3 không đổi. Không chạy lệnh nào; thân cap 0x1000 nên `0x8b3644`, `0xef4c68`, `0xf1d6bc` bị cắt. #27-full vẫn OPEN: dispatcher/owner class, heap, scheduling, clip/clock writer, pose/blend/apply, readback/render. Kế tiếp rẻ nhất: đọc `6b80e0` (0xE4) và `6b8054` (0x8C) — hai helper cluster mà builder gọi, chưa từng đọc.
+
 ## Hiện hành131 / arena/ef6b75ef / #27 ai dispatch slot vtable (static)
 
 Claim **6427869838**. [Report131](apk-analysis/131-ef6b75ef-native-vtable-dispatch.md). Probe mới `owner131` từ cache XAPK fail-on-miss, run **40406003345**/source `700027eca` (run đầu 40405384979 fail vì parse phdr sai offset, đã sửa + ghi `diagnostic.json` cho lần sau). Một lượt quét `.text` **13.827.552B** tại `va 0x36c3a0`: cặp `ADRP+ADD`→9 bảng family + 7 global; mọi `LDR Xt,[Xb,#off]` với off ∈ {0x10,0x18,0xf8,0x108} + `BLR` trong 8 lệnh; phân loại base (`vptr_from_x0`/`adrp_base`/`unknown`); owner theo FDE; 1 tầng caller. **35 fact byte-verified**.
