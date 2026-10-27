@@ -81,6 +81,9 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 147 — GATE-1 ĐÓNG CHÍNH THỨC: user sign-off bằng chat "Chốt gate1").**
+> Gate-1 Phase-A acceptance = ĐÓNG theo proposal `GATE1_PROPOSAL.md` (verdict APPROVE-BOUNDED của `8141386a` + registry-v4 của `535b0541` + disposition C1–C5). Residuals có chủ tiếp tục quản theo sổ (20 runtime-gated→USER · 3 missing-input · 2 policy · item-52 CONFLICTING ghi chú). Kế tiếp: Gate-2/3 hồ sơ sẵn (G9–G15); Gate-4 chờ ef verify M1–M4 → PASS thì đóng `ba257b36`; art A→W2 · B→W2-B; curator claim khi A+B XONG. Đóng session theo STATUS: `535b0541` ✓ · `46e50499` (sau khi kits phản ánh G13) · `ba257b36` (sau verify PASS).
+>
 > **Sửa lại (lần 146 — FIXUP khẩn: lần 145 push lúc P1 FAIL — LỖI NEEDLE LẦN-4, vi phạm gate 67–68).**
 > Nguyên nhân: thêm `GATE1_PROPOSAL.md` làm docs/spec = 46 (−1 = needle 45) nhưng giữ needle 44; verify FAIL ngay trước commit mà vẫn push. Quy tắc siết lại: **bất kỳ file .md mới trong docs/spec/ (kể cả proposal/notes) ⇒ đếm lại + bump needle + verify TRƯỚC commit — verify đỏ = dừng tuyệt đối.** Nội dung lần-145 giữ nguyên (chỉ sửa số needle + dòng này).
 >

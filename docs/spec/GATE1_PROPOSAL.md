@@ -1,5 +1,8 @@
 # GATE-1 PROPOSAL — Phase A acceptance (lần 145, trình USER — mandate: user giữ quyền cuối)
 
+> **✅ KẾT QUẢ: USER CHẤT — GATE-1 ĐÓNG (sign-off bằng chat 2026-10-27, lần 147: "Chốt gate1").**
+> Phạm vi duyệt = đúng tài liệu này; residuals có chủ tiếp tục được quản theo sổ (registry-v4 + DONE). Gate-2/3 hồ sơ sẵn (G9–G15 đã chốt), Gate-4 phụ thuộc verifier PASS của M1–M4.
+
 > **Reviewer độc lập `8141386a` đã NÂNG VERDICT: `APPROVE-BOUNDED`** (từ NOT_READY) — phạm vi: hồ sơ Phase-A + C1–C5 + L1-có-residuals. Không xác nhận tính khả thi thương mại (G13 do director quyết riêng — xem `../research/phase-b/DECISIONS_RESOLVED.md` lần 145).
 
 ## 1. Đối tượng duyệt
