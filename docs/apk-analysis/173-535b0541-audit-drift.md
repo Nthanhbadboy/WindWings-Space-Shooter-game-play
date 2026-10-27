@@ -2,7 +2,7 @@
 
 **Trạng thái:** `DECODED_STATIC` (chỉ đọc artifact + slice đã bóc; không chạy game)
 **Lớp bằng chứng:** STATIC-ONLY. Đây **không phải** một lần bóc mới — nó là cổng đọc lại **mọi** artifact của lane và đối chiếu với `open_items_audit`.
-**Artifact:** `datas/l2_535b0541_audit_drift.json.gz` — **7828 B**, sha256 `9e5c7a63ca94a23a0ff0f0902590255d20896c06badd851fc608caf6c1fb0d4d` (bản 176/172/177 sinh lại; 173 gốc 7895 B / `6a8a4bd5…`)
+**Artifact:** `datas/l2_535b0541_audit_drift.json.gz` — **7881 B**, sha256 `20360843ff9eefae4ba37396dbe3b52c2bf75a788417ab81190e999f1efebca3` (bản 178 sinh lại, 46 artifact; 173 gốc 7895 B / `6a8a4bd5…`)
 **Verifier:** `tools/verify/audit_drift.py` (**19 check**) · **Test:** `tests/test_audit_drift.py` (**42 test**)
 **Đọc:** 43 artifact `datas/l2_535b0541_*.json.gz` · **Đối chiếu:** 56 mục của audit (19 `CLOSED` · 20 `RUNTIME` · 10 `OPEN` · 6 `RESTATED` · 1 `NOTE`)
 
