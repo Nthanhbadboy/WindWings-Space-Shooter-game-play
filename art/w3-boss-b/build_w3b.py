@@ -20,6 +20,7 @@ from PIL import Image, ImageDraw, ImageFilter
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
 import pbr25d
+import mecha25d
 
 AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
@@ -137,60 +138,62 @@ def draw_destructible_satellite(canvas, x, y, anchor_x, anchor_y, kind, P):
 
 
 def draw_twin_heavy_arms(canvas, cx, cy, arm_kind, P):
-    """Symmetrical twin heavy port & starboard boss weapon arms (siege railguns / pincers / blades / gatlings)."""
+    """Balanced yet tactically asymmetric heavy port & starboard boss weapon arms
+    (e.g. Port Crusher Pincer Claw + Starboard Siege Railgun — commercial mecha-boss silhouette!)."""
     for s in (-1, 1):
         def m(pts):
             out = [(cx + s * (x - cx), y) for (x, y) in pts]
             return out if s == 1 else list(reversed(out))
 
-        if arm_kind == 0:
+        ak = arm_kind if s == 1 else ((arm_kind + 1) % 4)
+        if ak == 0:
             arm = [(cx + 145, cy - 85), (cx + 395, cy - 25), (cx + 415, cy + 285), (cx + 315, cy + 325), (cx + 255, cy + 95), (cx + 145, cy + 65)]
             draw_cel_poly(canvas, m(arm), P["sec"], outline_w=9)
-            muzzle = [(cx + 322, cy + 265), (cx + 408, cy + 255), (cx + 382, cy + 418), (cx + 336, cy + 418)]
-            draw_cel_poly(canvas, m(muzzle), P["acc"], outline_w=8)
-            pbr25d.draw_25d_plasma_bloom(canvas, cx + s * 362, cy + 418, 32, 36, P["glow"][:3])
-        elif arm_kind == 1:
+            mecha25d.draw_gun_barrel(canvas, cx + s * 362, cy + 245, cy + 448, w=72, barrels=2, glow_rgb=P["glow"][:3])
+        elif ak == 1:
             upper = [(cx + 150, cy - 60), (cx + 425, cy + 15), (cx + 448, cy + 215), (cx + 335, cy + 365), (cx + 312, cy + 205), (cx + 155, cy + 80)]
             draw_cel_poly(canvas, m(upper), P["pri"], outline_w=9)
             jaw = [(cx + 275, cy + 195), (cx + 332, cy + 358), (cx + 228, cy + 325)]
             draw_cel_poly(canvas, m(jaw), P["acc"], outline_w=8)
-        elif arm_kind == 2:
+            mecha25d.metal(canvas, mecha25d.reg_poly(cx + s * 325, cy + 195, 36, 36, 16), mecha25d.GUNMETAL, greebles=False, chamfer=0.0)
+        elif ak == 2:
             blade = [(cx + 140, cy - 165), (cx + 445, cy - 95), (cx + 462, cy + 195), (cx + 295, cy + 385), (cx + 255, cy + 215), (cx + 145, cy + 55)]
             draw_cel_poly(canvas, m(blade), P["acc"], outline_w=9)
             in_b = [(cx + 205, cy - 95), (cx + 405, cy - 45), (cx + 412, cy + 165), (cx + 295, cy + 285)]
             draw_cel_poly(canvas, m(in_b), P["pri"], outline_w=6)
+            mecha25d.draw_plasma_trough(canvas, cx + s * 315, cy + 65, 48, 148, P["glow"][:3], cells=4)
         else:
             pod = [(cx + 155, cy - 95), (cx + 415, cy - 55), (cx + 425, cy + 165), (cx + 165, cy + 145)]
             draw_cel_poly(canvas, m(pod), P["sec"], outline_w=9)
-            for k in range(3):
-                bx = cx + 215 + k * 72
-                brl = [(bx - 20, cy + 145), (bx + 20, cy + 145), (bx + 16, cy + 355 + k * 18), (bx - 16, cy + 355 + k * 18)]
-                draw_cel_poly(canvas, m(brl), P["acc"], outline_w=7)
+            mecha25d.draw_gun_barrel(canvas, cx + s * 295, cy + 135, cy + 395, w=118, barrels=3, glow_rgb=P["glow"][:3])
 
 
 def render_boss_body(archetype, phase_cfg, pal_key):
-    """Render 1 of 35 1024x1024 (2x of 512x512) 2.5D Metallic Solar-Neon Boss Dreadnoughts."""
+    """Render 1 of 35 1024x1024 (2x of 512x512) Commercial 2.5D Metallic Boss Dreadnoughts."""
     S = 1024
     cx, cy = 512, 470
     im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
     P = PALETTES[pal_key]
 
-    # 1. Twin separated destructible satellite modules (port + starboard) + Twin heavy siege weapon arms
-    sat_dx = 382 - (phase_cfg % 2) * 18
-    sat_y = 195 + (phase_cfg % 2) * 58
+    # 0. Dark brushed-gunmetal heavy mechanical superstructure & forward chin cannons
+    mecha25d.draw_ribbed_spine(im, cx, 135, 815, 165, 195, n_ribs=8)
     for s in (-1, 1):
-        draw_destructible_satellite(im, cx + s * sat_dx, sat_y, cx + s * 165, cy - 125, phase_cfg, P)
+        mecha25d.draw_gun_barrel(im, cx + s * 135, 655, 905, w=48, barrels=2, glow_rgb=P["glow"][:3])
+
+    # 1. Separated destructible satellite modules (asymmetric layout on odd phases, twin + flank on Mk3/4)
+    sat_dx = 384 - (phase_cfg % 2) * 18
+    sat_y_l = 185 + (phase_cfg % 2) * 68
+    sat_y_r = 225 - (phase_cfg % 2) * 32
+    draw_destructible_satellite(im, cx - sat_dx, sat_y_l, cx - 165, cy - 125, phase_cfg, P)
+    draw_destructible_satellite(im, cx + sat_dx, sat_y_r, cx + 165, cy - 115, (phase_cfg + 1) % 4, P)
     if phase_cfg in (2, 3):
-        for s in (-1, 1):
-            draw_destructible_satellite(im, cx + s * 395, 735, cx + s * 225, cy + 165, (phase_cfg + 1) % 4, P)
+        draw_destructible_satellite(im, cx - 398, 735, cx - 225, cy + 165, (phase_cfg + 2) % 4, P)
 
     draw_twin_heavy_arms(im, cx, cy, (phase_cfg + (ARCHETYPES.index(archetype) if archetype in ARCHETYPES else 0)) % 4, P)
 
-    # 2. Top plasma thrusters + armored thruster cowls
-    for tx in (cx - 125, cx, cx + 125):
-        pbr25d.draw_25d_plasma_bloom(im, tx, 68, 38, 62, P["glow"][:3])
-        th = [(tx - 42, 82), (tx + 42, 82), (tx + 32, 168), (tx - 32, 168)]
-        draw_cel_poly(im, th, P["acc"], outline_w=8)
+    # 2. Stepped multi-petal dark-gunmetal rear turbine thrusters
+    for tx, tw in [(cx - 132, 92), (cx, 112), (cx + 132, 92)]:
+        mecha25d.draw_jet_nozzle(im, tx, 168, tw, 92, P["glow"][:3], pointing_down=False)
 
     # 3. Archetype-specific symmetrical multi-layered dreadnought chassis + glowing reactor core(s)
     if archetype == "emblem_s":
@@ -334,6 +337,22 @@ def render_boss_body(archetype, phase_cfg, pal_key):
         draw_cel_poly(im, horn_l, P["acc"], outline_w=7)
         draw_cel_poly(im, horn_r, P["acc"], outline_w=7)
         draw_boss_core(im, cx, 505, 92, 82, P["acc"], P["glow"], outline_w=9)
+
+    # 4. Universal Multi-Layered Dreadnought Sub-Plating, VLS Missile Bays, Cheek Mandibles & Plasma Troughs!
+    for s in (-1, 1):
+        # Upper shoulder armored VLS micro-missile pod cowling
+        vls_box = [(cx + s * 118, 235), (cx + s * 255, 265), (cx + s * 238, 375), (cx + s * 112, 355)]
+        mecha25d.metal(im, mecha25d.orient(vls_box, s), mecha25d.GUNMETAL, greebles=False)
+        for mx_i in range(2):
+            for my_i in range(2):
+                cell_x = cx + s * (152 + mx_i * 52)
+                cell_y = 282 + my_i * 46
+                mecha25d.metal(im, mecha25d.reg_poly(cell_x, cell_y, 18, 18, 10), P["acc"], greebles=False, chamfer=0.0)
+        # Flanking glowing plasma cooling troughs beside central boss core
+        mecha25d.draw_plasma_trough(im, cx + s * 142, 475, 42, 136, P["glow"][:3], cells=4)
+        # Lower forward cheek mandible armor plate (breaks up any smooth prow!)
+        mand = [(cx + s * 56, 635), (cx + s * 178, 585), (cx + s * 148, 765), (cx + s * 42, 815)]
+        draw_cel_poly(im, mecha25d.orient(mand, s), P["acc"], outline_w=7)
 
     return im
 

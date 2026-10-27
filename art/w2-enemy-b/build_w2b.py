@@ -19,6 +19,7 @@ from PIL import Image, ImageDraw
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
 import pbr25d
+import mecha25d
 
 AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
@@ -79,15 +80,13 @@ def draw_menace_eye(canvas, cx, cy, rx, ry, ring_c=AMBR_BASE, core_c=CORE_YELL, 
 
 
 def draw_top_thruster(canvas, x, y_top, y_bot, w, outline_w=6):
-    pbr25d.draw_25d_plasma_bloom(canvas, x, y_top - w * 0.25, w * 0.65, w * 0.85, (255, 72, 168), strength=0.92)
-    pts = [(x - w * 0.62, y_top), (x + w * 0.62, y_top), (x + w * 0.46, y_bot), (x - w * 0.46, y_bot)]
-    pbr25d.draw_25d_metal_poly(canvas, pts, AMBR_BASE, AMBR_SHADE, AMBR_LIGHT, metallic=0.90, greebles=False)
-    pbr25d.draw_25d_plasma_bloom(canvas, x, y_top + 2, w * 0.40, w * 0.28, (255, 210, 245), strength=0.90)
+    mecha25d.draw_jet_nozzle(canvas, x, y_bot, w * 1.15, max(28.0, y_bot - y_top), (255, 72, 168), pointing_down=False)
 
 
 def draw_down_fang(canvas, x, y_base, y_tip, w, c_base=CRIM_BASE, c_sh=CRIM_SHADE, c_li=CRIM_LIGHT, outline_w=6):
-    """Downward-pointing weapon fang / mandible."""
-    pts = [(x - w * 0.55, y_base), (x + w * 0.55, y_base), (x, y_tip)]
+    """Downward-pointing dark-gunmetal autocannon + armored mandible shroud."""
+    mecha25d.draw_gun_barrel(canvas, x, y_base - 12, y_tip + 10, w=max(24.0, w * 0.72), barrels=2, glow_rgb=(255, 88, 164))
+    pts = [(x - w * 0.58, y_base), (x + w * 0.58, y_base), (x + w * 0.24, y_tip - 14), (x - w * 0.24, y_tip - 14)]
     draw_cel_poly(canvas, pts, c_base, c_sh, c_li, outline_w=outline_w)
 
 
@@ -148,6 +147,16 @@ def render_ebody(idx, variant, pal):
     cx, cy = S * 0.5, S * 0.5
     im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
     cb, cs, cl = pal_tuple(pal)
+
+    if variant not in ("hp_pip_bar", "cyber_disc", "chrono_mine", "void_sentinel", "swarmling_pod", "target_drone", "juggernaut_core", "centurion_turret"):
+        mecha25d.draw_ribbed_spine(im, cx, 118, 395, 58, 72, n_ribs=5)
+        # Asymmetric tactical cannon / sensor pod on invader wings (silhouette TÀI!)
+        if idx % 2 == 0:
+            mecha25d.draw_gun_barrel(im, cx + 108, 285, 428, w=28, barrels=2, glow_rgb=(255, 88, 168))
+            mecha25d.metal(im, mecha25d.reg_poly(cx - 108, 255, 24, 24, 14), mecha25d.GUNMETAL, greebles=False, chamfer=0.0)
+        else:
+            mecha25d.draw_gun_barrel(im, cx - 104, 285, 422, w=26, barrels=1, glow_rgb=(255, 196, 48))
+            mecha25d.draw_gun_barrel(im, cx + 104, 285, 392, w=24, barrels=2, glow_rgb=(255, 88, 168))
 
     if variant == "scout_dart":
         # AP-0046: Sleek downward arrowhead scout dart

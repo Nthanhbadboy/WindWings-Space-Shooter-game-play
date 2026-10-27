@@ -24,6 +24,7 @@ from PIL import Image, ImageDraw, ImageFilter
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
 import pbr25d
+import mecha25d
 
 AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
@@ -206,9 +207,71 @@ def draw_ship_tier_crest(canvas, cx, sub):
         draw_cel_poly(canvas, crest, GOLD_BASE, TANG_SHADE, GOLD_LIGHT, outline_w=6)
 
 
+MECHA_LIVERIES = [
+    # 0: Hero Pearl-Titanium + Sunlit Cobalt-Azure + Solar-Gold Trim + Sapphire Canopy
+    {
+        "hull": ((214, 228, 248), (62, 84, 128), (254, 255, 255)),
+        "sec":  ((32, 118, 244),  (12, 42, 112), (144, 214, 255)),
+        "acc":  ((248, 186, 22),  (108, 48, 6),  (255, 248, 168)),
+        "glass": ((12, 46, 136), (0, 208, 255), (198, 252, 255)),
+        "glow": (0, 232, 255),
+    },
+    # 1: Burnished Solar-Gold + Brushed Titanium + Crimson Trim + Emerald Canopy
+    {
+        "hull": ((238, 178, 28),  (94, 44, 6),   (255, 246, 168)),
+        "sec":  ((176, 192, 216), (52, 64, 88),  (244, 250, 255)),
+        "acc":  ((224, 44, 88),   (84, 12, 34),  (255, 152, 182)),
+        "glass": ((6, 68, 54), (16, 224, 158), (186, 255, 228)),
+        "glow": (0, 238, 255),
+    },
+    # 2: Anodized Emerald-Jade + Solar-Gold + Pearl Trim + Cyan Canopy
+    {
+        "hull": ((22, 192, 138),  (8, 68, 48),   (148, 255, 218)),
+        "sec":  ((196, 212, 232), (58, 74, 98),  (252, 255, 255)),
+        "acc":  ((246, 188, 24),  (104, 46, 6),  (255, 248, 168)),
+        "glass": ((10, 48, 138), (0, 218, 255), (196, 252, 255)),
+        "glow": (72, 255, 196),
+    },
+    # 3: Anodized Crimson-Rose + Pearl-Silver + Solar-Gold Trim + Amber Canopy
+    {
+        "hull": ((226, 48, 96),   (86, 12, 38),  (255, 158, 188)),
+        "sec":  ((198, 212, 234), (58, 72, 102), (250, 254, 255)),
+        "acc":  ((248, 186, 24),  (108, 48, 6),  (255, 246, 168)),
+        "glass": ((96, 38, 6), (255, 188, 24), (255, 246, 188)),
+        "glow": (255, 196, 36),
+    },
+    # 4: Iridescent Royal-Violet + Electric-Cyan + Magenta Trim + Neon-Pink Canopy
+    {
+        "hull": ((136, 72, 232),  (46, 18, 106), (212, 172, 255)),
+        "sec":  ((22, 178, 236),  (8, 58, 108),  (152, 244, 255)),
+        "acc":  ((242, 52, 168),  (92, 12, 64),  (255, 164, 224)),
+        "glass": ((78, 12, 86), (255, 64, 196), (255, 206, 246)),
+        "glow": (255, 76, 208),
+    },
+    # 5: Prototype #25 / Drone #13 Brushed Gunmetal Stealth + Solar-Gold & Cyan Trim
+    {
+        "hull": ((156, 168, 188), (46, 54, 68),  (238, 244, 252)),
+        "sec":  ((98, 112, 134),  (32, 38, 50),  (186, 202, 224)),
+        "acc":  ((246, 184, 24),  (104, 46, 6),  (255, 246, 168)),
+        "glass": ((12, 52, 138), (0, 218, 255), (198, 252, 255)),
+        "glow": (0, 236, 255),
+    },
+]
+
+
 def render_ship(unit_idx):
-    """Render 1 of 25 distinct Solar Neon 2.5D semi-realistic metallic starfighters at 1024x1024 (4x of 256)."""
-    global ACTIVE_LIVERY
+    """Render 1 of 25 commercial-grade 2.5D semi-realistic metallic starfighters at 1024x1024."""
+    liv = MECHA_LIVERIES[5 if unit_idx == 25 else ((unit_idx - 1) % 5)]
+    return mecha25d.render_commercial_ship(unit_idx, liv, os.path.join(HERE, "masters/_raw"))
+
+
+def render_drone(unit_idx):
+    """Render 1 of 13 commercial-grade articulated escort weapon drones at 512x512."""
+    liv = MECHA_LIVERIES[5 if unit_idx == 13 else ((unit_idx - 1) % 5)]
+    return mecha25d.render_commercial_drone(unit_idx, liv)
+
+
+def _unused_legacy_ship_drone(unit_idx):
     S = 1024
     cx = S * 0.5
     im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
@@ -534,8 +597,8 @@ def render_ship(unit_idx):
     return im
 
 
-def render_drone(unit_idx):
-    """Render 1 of 13 distinct Orbital Wingman Drones at 512x512 (4x of 128)."""
+def _unused_legacy_drone(unit_idx):
+    """Legacy procedural drone replaced by mecha25d.render_commercial_drone."""
     global ACTIVE_LIVERY
     S = 512
     cx, cy = S * 0.5, S * 0.52
