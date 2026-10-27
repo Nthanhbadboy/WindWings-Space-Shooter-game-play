@@ -28,6 +28,11 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Fetch the pinned canonical source commit
+        run: |
+          source_commit="$(python3 -c "import json; print(json.load(open('game/data/source_pins.json'))['source_commit'])")"
+          git fetch --no-tags --depth=1 origin "$source_commit"
+
       - name: Install pinned GDScript parser and linter
         run: python -m pip install --disable-pip-version-check 'gdtoolkit==4.5.0'
 
@@ -57,7 +62,7 @@ jobs:
           }
           required_evidence = {
               'enemy_guns_wave_0000.json', 'enemy_hp_by_id.json', 'iap_products.json',
-              'items.json', 'monetization_config.json',
+              'items.json', 'monetization_config.json', 'player_start_stats.json',
           }
           allowed_evidence = {
               'STATIC_CONFIRMED', 'RUNTIME_CONFIRMED', 'INFERRED',
@@ -90,3 +95,6 @@ jobs:
           assert not broken, 'broken resource references:\n' + '\n'.join(broken)
           print(f'PASS: {len(data_files)} JSON files; {len(required_hashes)} pinned sources; {len(refs)} resource links; main={main_scene.group(1)}')
           PY
+
+      - name: Verify source_sha256 against resolved source bytes
+        run: python3 game/tools/verify_source_pins.py
