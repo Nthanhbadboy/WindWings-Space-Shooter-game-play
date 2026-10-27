@@ -149,6 +149,20 @@ class SourceTests(unittest.TestCase):
             with self.subTest(key=key), self.assertRaises(v.ReviewError):
                 v.check_ledger(reg, self.audit, self.drift)
 
+    def test_director_scope_dispositions_are_explicit_not_runtime_proof(self):
+        design = self.sources.text('spec_design')
+        closure = self.sources.text('spec_closure')
+        start = self.sources.text('spec_start')
+        result = v.check_spec_dispositions(design, closure, start)
+        self.assertTrue(all(result['literal_scope_locators'].values()))
+        for broken in (closure.replace('giá/stock SKU thực chưa đo', ''),
+                       closure.replace('item 52 **giữ trong sổ**', ''),
+                       closure.replace('deferred/UNKNOWN/RUNTIME_UNVERIFIED', '')):
+            with self.subTest(missing=broken != closure), self.assertRaises(v.ReviewError):
+                v.check_spec_dispositions(design, broken, start)
+        with self.assertRaises(v.ReviewError):
+            v.check_spec_dispositions(design.replace('SUPERSEDE TOÀN VĂN', ''), closure, start)
+
     def test_api_exact_head_and_skipped_device_step(self):
         api = json.loads(gzip.decompress((v.BASE / 'api-captures.json.gz').read_bytes()))
         receipt = v.check_api_capture(api, self.sources)

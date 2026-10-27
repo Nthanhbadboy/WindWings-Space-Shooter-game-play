@@ -297,6 +297,32 @@ def lines_with(text, *needles):
             if any(needle in line for needle in needles)]
 
 
+def check_spec_dispositions(design, closure, start):
+    """Verify the selected spec records requested scope; text is not runtime proof."""
+    checks = {
+        'C1_same_rule_not_runtime': all(x in closure for x in
+            ('tái kiểm độc lập của reviewer', 'Cùng quy tắc đã công bố', 'không phải runtime')),
+        'C2_shop_paths_and_unknown_live': all(x in closure for x in
+            ('default build của các dòng shop đã xét là từ ctor', 'giá/stock SKU thực chưa đo',
+             'event-pass/served (nếu có) cần nguồn riêng', 'Không khẳng định "mọi SKU buộc từ server"')),
+        'C2_old_blocking_historical': all(x in closure for x in
+            ('Items 39/40', 'quote lịch sử', 'KHÔNG còn blocker hiện hành')),
+        'C2_item52_open_and_conflicting': all(x in closure for x in
+            ('Item 52', 'CONFLICTING', 'item 52 **giữ trong sổ**', 'chưa đối chứng')),
+        'C4_document_wide_supersession': all(x in design for x in
+            ('SUPERSEDE TOÀN VĂN', 'mọi câu summary/tally/absolute',
+             'không thấy trong mẫu 139 file asm', 'không phải kết luận toàn cục')),
+        'C3_C5_bounded_supersession': all(x in closure for x in
+            ('START_HERE.md:11', 'L2 không còn thiếu số', 'mọi hạng mục tĩnh đã đóng',
+             'L1-tĩnh đã chọn', 'deferred/UNKNOWN/RUNTIME_UNVERIFIED')),
+        'prior_start_absolute_still_present_but_scoped': 'Việc thiết kế duy nhất là ART' in start,
+    }
+    require(all(checks.values()), 'selected spec does not contain all scoped dispositions')
+    return {'literal_scope_locators': checks,
+            'boundary': 'locators record an explicit director disposition, not a proof '
+                        'of token semantics, full-game absence, implementation, or runtime'}
+
+
 def check_api_capture(api, sources):
     """Check captured API objects internally; this does not certify GitHub itself."""
     expected_heads = {'producer_cut': sources.manifest['producer_cut'],
@@ -380,6 +406,8 @@ def review(sources):
     code = sources.text('registry_code')
     require("load(HUNTER_ART)['arrays']" in code and "row['blob']['field_id']" in code
             and "all('metadata usage' not in" in code, 'v4 verifier source locator changed')
+    spec = check_spec_dispositions(sources.text('spec_design'), sources.text('spec_closure'),
+                                   sources.text('spec_start'))
     api_bytes = (BASE / 'api-captures.json.gz').read_bytes()
     api = check_api_capture(json.loads(gzip.decompress(api_bytes)), sources)
     api['archive_sha256'] = sha(api_bytes)
@@ -387,6 +415,11 @@ def review(sources):
         'prior_design': lines_with(sources.text('spec_previous_design'), '3 mục không tồn tại',
                                    'game gốc không có', 'aim assist'),
         'prior_coverage': lines_with(sources.text('spec_previous_coverage'), '3/6 không tồn tại'),
+        'intermediate_design': lines_with(sources.text('spec_intermediate_design'),
+                                          'SUPERSEDE', 'game gốc không có', '3 mục không tồn tại',
+                                          'L2 (khớp số bản gốc)', 'STATIC-COMPLETE CEILING'),
+        'intermediate_closure': lines_with(sources.text('spec_intermediate_closure'),
+                                           'Lớp served', 'Đọc đúng', 'Items 39/40'),
         'design': lines_with(sources.text('spec_design'), 'SUPERSEDE', 'game gốc không có',
                              '3 mục không tồn tại', '3/6 không tồn tại',
                              'L2 (khớp số bản gốc)', 'STATIC-COMPLETE CEILING'),
@@ -421,7 +454,7 @@ def review(sources):
             'source_manifest_sha256': sha(MANIFEST.read_bytes()),
             'producer_registry_sha256': sources.rows['registry']['sha256'],
             'original_125_sha256': sources.rows['original_review125']['sha256'],
-            'github_api_snapshot': api,
+            'github_api_snapshot': api, 'selected_spec_dispositions': spec,
             'c1': c1, 'c2': ledger, 'shop157_shipped_constructor_values': shipped,
             'source_quote_locators': docs,
             'limitations': ['The token-to-PID convention is reproduced from the same published '

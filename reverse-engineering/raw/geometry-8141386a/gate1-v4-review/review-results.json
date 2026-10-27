@@ -553,7 +553,7 @@
     }
   },
   "github_api_snapshot": {
-    "archive_sha256": "98451f550b479a740bb6b0a241680fb8412c757d103a25719b87ed4dacc0146c",
+    "archive_sha256": "005f54e296773cdcc1565bc153ae8ebba1d67acde43c80975d3fd9b345bc1fac",
     "boundary": "historical GitHub API capture, not the future review commit CI; success of skipped device jobs is not runtime evidence",
     "comment_ids": [
       6439774919,
@@ -572,14 +572,15 @@
       6444295176,
       6444324415,
       6444436552,
-      6444472292
+      6444472292,
+      6444615468
     ],
-    "retrieved_utc": "2026-10-27T14:23:30.364290+00:00",
+    "retrieved_utc": "2026-10-27T14:31:58.019573+00:00",
     "runtime_probe_state_skipped_run_ids": [
       40508787208,
       40514365854,
-      40519195492,
-      40519747529
+      40519747529,
+      40521192929
     ],
     "successful_run_ids_by_exact_head": {
       "later_producer": [
@@ -599,9 +600,9 @@
         40514366178
       ],
       "spec_cut": [
-        40519195492,
-        40519195519,
-        40519195756
+        40521192778,
+        40521192929,
+        40521193113
       ]
     }
   },
@@ -633,12 +634,24 @@
   "producer_registry_sha256": "bcd0e0fd95af375b8841021856209eb701d284bf013966d48f868e9143e21a96",
   "reviewer_branch": "arena/8141386a-windwings-space-shooter-game-p",
   "schema": "8141386a/gate1-v4-review-result/1",
+  "selected_spec_dispositions": {
+    "boundary": "locators record an explicit director disposition, not a proof of token semantics, full-game absence, implementation, or runtime",
+    "literal_scope_locators": {
+      "C1_same_rule_not_runtime": true,
+      "C2_item52_open_and_conflicting": true,
+      "C2_old_blocking_historical": true,
+      "C2_shop_paths_and_unknown_live": true,
+      "C3_C5_bounded_supersession": true,
+      "C4_document_wide_supersession": true,
+      "prior_start_absolute_still_present_but_scoped": true
+    }
+  },
   "shop157_shipped_constructor_values": {
     "ItemDroneCost": 30,
     "ItemPlayerCost": 50,
     "MaxStockCount": 10
   },
-  "source_manifest_sha256": "a72eba3cbdbdfe6034b05cb0c478863f7ad95df88e6e73302c81f78513f7ccbc",
+  "source_manifest_sha256": "bdcca131c4377e7eedd0e2369691daa6789d185b63e85d608c443f41e23dd73d",
   "source_quote_locators": {
     "closure": [
       {
@@ -648,10 +661,6 @@
       {
         "line": 7,
         "text": "1. **Item 9 (shop prices):** hai lớp KHÁC nhau, ghi rõ:"
-      },
-      {
-        "line": 10,
-        "text": "   - Đọc đúng: item 9 = \"default có trong build; per-SKU runtime là server-variable\"."
       },
       {
         "line": 11,
@@ -680,6 +689,14 @@
       {
         "line": 23,
         "text": "## C3/C5"
+      },
+      {
+        "line": 35,
+        "text": "### C3/C5 — các câu tuyệt đối KHÔNG phải kết luận toàn cục (theo reviewer `6444324415`)"
+      },
+      {
+        "line": 36,
+        "text": "- `START_HERE.md:11` (\"việc thiết kế duy nhất là ART\") · `DESIGN_READINESS.md:297–298` (\"L2 không còn thiếu số\") · `:309` (\"mọi hạng mục tĩnh đã đóng\") — đọc đúng = **đánh giá trong phạm vi L1-tĩnh đã chọn**; residuals tiếp tục deferred/UNKNOWN/RUNTIME_UNVERIFIED (20 runtime-gated→USER · 3 missing-input · 2 policy của registry-v4). Profile hiện hành (C3) và defer-list (C5) xem `docs/research/phase-b/DECISIONS_RESOLVED.md`."
       }
     ],
     "coverage": [
@@ -712,6 +729,42 @@
     ],
     "design": [
       {
+        "line": 3,
+        "text": "> **SUPERSEDE TOÀN VĂN (lần 144 — theo re-review `8141386a` `6444324415`):** mọi câu summary/tally/absolute trong tài liệu này (gồm §4.1b, các dòng \"không tồn tại/không có\", \"L2 KHÔNG còn thiếu số\", \"mọi việc tĩnh đã đóng\") đọc đúng phạm vi = **L1 tĩnh theo mẫu 139 file asm**; residuals = deferred/UNKNOWN/RUNTIME_UNVERIFIED — không phải kết luận toàn cục. Chi tiết: `GATE1_CLOSURE_NOTES.md`."
+      },
+      {
+        "line": 168,
+        "text": "> **SUPERSEDE (lần 143 — theo re-review Gate-1 `8141386a` comment `6444229646`):** mọi ô ⛔ \"không tồn tại/không thấy trong game\" dưới đây đọc đúng là **\"không thấy trong mẫu 139 file asm đã bóc\"** — KHÔNG phải bằng chứng vắng mặt toàn game (`MISSING_FOR_NEW_GAME.md:267`, `START_HERE.md:186`). Quyết định bản Godot không thêm hit-stop/aim-assist là **lựa chọn thiết kế mới**, không phải tái tạo trạng thái gốc."
+      },
+      {
+        "line": 181,
+        "text": "⇒ Với 4 mục bị nghi là \"feel phải đo\", **3 mục không tồn tại** và **1 mục (rung) có số**. Nghĩa là"
+      },
+      {
+        "line": 299,
+        "text": "- **L2 (khớp số bản gốc): KHÔNG còn thiếu số** — mọi giá trị đã decode + bind; **playback thật đã có**"
+      },
+      {
+        "line": 311,
+        "text": "> **⛔ STATIC-COMPLETE CEILING REACHED (27/10, lần 122 — DS §24.111):** mọi hạng mục tĩnh-làm-được đã đóng (#1–#28 · #27 review 6/6 · #29 decode 149–160 · hàng H+D5+audit). Phần còn mở = runtime-gated (chỉ chủ dự án mở lại) / gated-cần-export / quyết-định-thiết-kế. Readiness không tăng thêm bằng phân tích tĩnh — các gate L2/L3 là việc sản phẩm."
+      }
+    ],
+    "intermediate_closure": [
+      {
+        "line": 9,
+        "text": "   - **Lớp served:** giá **từng SKU/payload/stock thực_runtime** do server `GetConfigs` phục vụ — câu \"values are served, not shipped\" của `open_items_audit` (`66d6659e…`) chỉ đúng cho lớp NÀY, không phủ nhận lớp default-build."
+      },
+      {
+        "line": 10,
+        "text": "   - Đọc đúng: item 9 = \"default có trong build; per-SKU runtime là server-variable\"."
+      },
+      {
+        "line": 11,
+        "text": "2. **Items 39/40:** trường `blocking: \"blob unbound\"` là **quote lịch sử** từ thời 169/177 (kết luận nay đã đính chính bởi progress-180: 149 đúng, 6/6 field_id match — STATIC_CONFIRMED). Gate `registry_v4.py:191–193` chỉ string-match \"metadata usage\" nên PASS — PASS hợp lệ về cơ chế; **ý nghĩa tự nhiên**: 39/40 KHÔNG còn blocker hiện hành. Ai đọc sổ đọc kèm note này."
+      }
+    ],
+    "intermediate_design": [
+      {
         "line": 20,
         "text": "> ④ **feel BỎ** theo quyết định (game gốc không có, quá nhỏ);"
       },
@@ -722,10 +775,6 @@
       {
         "line": 179,
         "text": "⇒ Với 4 mục bị nghi là \"feel phải đo\", **3 mục không tồn tại** và **1 mục (rung) có số**. Nghĩa là"
-      },
-      {
-        "line": 287,
-        "text": "| **15 dòng vùng năng lực** (`COVERAGE_AUDIT.md` §1) | 15 | **11** ✅ | **4** 🟡 | **0** 🔴 · **0** ⛔ (feel **đã đóng** — 3/6 mục có số, 3/6 không tồn tại, xem §4.1b) |"
       },
       {
         "line": 297,
@@ -789,6 +838,6 @@
       }
     ]
   },
-  "source_snapshot_count": 41,
-  "spec_cut": "1b43f5dc5069e1b7cccec2dd000d1d107e746277"
+  "source_snapshot_count": 46,
+  "spec_cut": "3179cc81d51836a574070af9eab736c95c817713"
 }
