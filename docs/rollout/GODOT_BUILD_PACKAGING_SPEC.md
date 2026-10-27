@@ -227,6 +227,7 @@ phiên bản phải nêu trong handover** (protocol §2 mục 6). Không có `.g
 - `docs/rollout/MSIX_PACKAGING_PLAN.md` — bước đóng gói MSIX ngoài Godot (M1–M6 + manifest + ký).
 - `docs/rollout/GATE4_BUILD_CHECKLIST.md` — chuỗi lệnh Gate-4, ai chạy, bằng chứng phải nộp.
 - `reverse-engineering/raw/godot-build-spec/msix-docs.json` — pin 4 trang MSIX docs + 14 fact dòng.
+- `docs/rollout/ASSET_SIZE_BUDGET.md` + `reverse-engineering/raw/godot-build-spec/asset-size-budget.json` — byte đo được cho cổng V6.
 
 ## 10b. Bằng chứng thô của vòng này
 

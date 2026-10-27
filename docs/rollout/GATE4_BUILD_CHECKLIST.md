@@ -80,7 +80,7 @@ Ngưỡng đạt: APK ≤ **2,5 GB** (Amazon, chặt hơn 4 GB của AppGallery)
 | V3 | `version.json` vs `version/code` vs `application/file_version` | code không tăng; 3 nguồn lệch nhau |
 | V4 | cross-check C1–C6 | `min_sdk 21`; bật `x86_64` cho bản phát hành |
 | V5 | checkout sạch + export lại đúng 4.7.2 | export lỗi; cảnh báo template thiếu |
-| V6 | đo byte | AAB > 150 MB |
+| V6 | đo byte, đối chiếu `ASSET_SIZE_BUDGET.md` | AAB > 150 MB |
 | V7 | `apksigner`/cert | APK không ký; cert khác cert đã khai |
 | V8 | asset vs danh mục gốc | có file tên trùng asset gốc |
 | V9 | claim không nguồn | “chạy mượt trên Fire” không log |
