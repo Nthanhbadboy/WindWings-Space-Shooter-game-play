@@ -81,6 +81,9 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 138 — cơ chế TỰ NHẬN VAI theo user: "các session đều là agent-mode của arena; mở session mới chỉ biết tên nhánh sau khi nó commit; đăng bảng cho session tự nhận vai; 1 prompt chung; báo XONG thì user nhìn chat quyết đóng hay chạy tiếp").**
+> Mới: `docs/rollout/SESSION_COMMON_PROMPT.md` — prompt chung dán vào mọi session (SELF-ID nếu mã đã có bảng · CLAIM vai trống nếu mới, first-claim-timestamp-wins · STATUS: XONG + handoff rồi DỪNG — user quyết đóng/tiếp). Vai đổi tên: "Godot-coder"/"Art-designer" giờ là **vai trống** chờ CLAIM (không gắn nhánh trước). SESSION_PROMPTS.md cập nhật cơ chế. ROLE-BOARD đăng PR12.
+>
 > **Sửa lại (lần 137 — vòng 1 các session chạy xong + sổ prompt theo mã nhánh; user: "để ý năng lực AI mà giao việc… khi nào đóng mở session thì nói luôn").**
 > Kết quả vòng 1: `535b0541` `daad5209f` mục-32 đóng bằng store-census (178/179 — vẫn glitch `@/tmp` ×2) · `ef6b75ef` `58cf84cc5` tầng 135 apply-seed/channel-sampler (user biết và cho chạy — kết thúc ≤1 vòng rồi chuyển Godot build-spec) · `a5a74747` `1817a2516` **GIAO XONG** STORE_ASSETS_AND_LISTING_DRAFT (đã copy 12.951B về `docs/rollout/` — docs, needle 193 giữ nguyên) · `8141386a` `57aee0cc1` archival + giữ NOT_READY đúng protocol · `46e50499` `de28a38a4` vòng-2 verify terms đóng 6 mục treo · `1b836828` `971a7eea8` v2 re-baseline +346 h · `eeb95d5a` KHÔNG hoạt động mới → ĐÓNG NGAY sau 1 handoff cuối.
 > Mới: `docs/rollout/SESSION_PROMPTS.md` — prompt hiện hành từng session **tên theo mã nhánh** (bỏ AI-1/2/3) + lịch ĐÓNG/MỞ tóm tắt; audit cập nhật trạng thái vòng 1.

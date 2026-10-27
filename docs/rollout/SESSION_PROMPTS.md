@@ -1,6 +1,7 @@
 # SESSION PROMPTS — prompt hiện hành cho từng session (tên theo mã nhánh, lần 137)
 
 > **Quy ước đặt tên:** session = mã nhánh của nó (không dùng AI-1/2/3). Prompt dưới đây là **nội dung đăng lại được** cho từng session. Mỗi prompt có mục **ĐÓNG/MỞ** — cột tóm tắt ở cuối file. Board-delta mới nhất luôn thắng nếu mâu thuẫn.
+> **Lần 138 — cơ chế TỰ NHẬN VAI:** session mới không định danh trước được (mã nhánh chỉ biết sau commit đầu) ⇒ mọi session khởi động bằng **PROMPT CHUNG** (`SESSION_COMMON_PROMPT.md`, dán từ user) → tự SELF-ID/CLAIM vai qua comment PR12 theo bảng [ROLE-BOARD]; khi báo XONG thì user đọc chat quyết ĐÓNG hay chạy tiếp.
 > Kỷ luật chung (nhắc 1 dòng trong mọi prompt): CLAIM trước trên PR12 · nhánh riêng · nhãn bằng chứng 6 loại · KHÔNG SDK/publish/merge/close/force-push không lệnh · đọc text thẳng, không đăng `@/tmp/…` (glitch lặp ở `535b0541`).
 
 ---
@@ -45,12 +46,12 @@
 
 ---
 
-## Session CHƯA MỞ (mở = tạo nhánh mới, tên session = mã nhánh đó)
+## Vai CHƯA CÓ NHÁNH (session mới tự CLAIM qua PROMPT CHUNG — `SESSION_COMMON_PROMPT.md`; mã nhánh chỉ biết sau commit đầu)
 
-**Godot-coder** — MỞ khi user ra lệnh scaffold:
+**Vai Godot-coder** — CLAIM khi user ra lệnh scaffold:
 > Port WindWings lên Godot 4.x theo `docs/spec/` + `datas/` (nhánh `20330d0e` = bản vẽ; APK gốc = design reference). Scope: scenes/systems chơi được trước (player bay + bắn + 1 enemy wave theo GAMEPLAY spec) → rồi shop/pvp/economy theo spec → adapter IAP/ads 3 store theo D9a (Amazon IAP · HMS IAP/Ads · Windows commerce — "theo đúng luật từng store"). `ef6b75ef` là verifier — gửi code kèm cách kiểm. Không đụng protected paths; mỗi vòng 1 comment PR12 kèm bằng chứng chạy.
 
-**Art-designer** — MỞ khi Gate-5 cần art thật (hoặc sớm hơn nếu user muốn):
+**Vai Art-designer** — CLAIM khi Gate-5 cần art thật (hoặc sớm hơn nếu user muốn):
 > Sản xuất art theo `docs/art-plan/ART_REDRAW_PLAN.md` + `art-planner.csv` (nhánh `1b836828`) + sizes từ `STORE_ASSETS_AND_LISTING_DRAFT.md`. Thứ tự: W0-listing (icon/feature-graphic/screenshot 3 store) → W1 in-game (PLAYER 48 đơn vị). User duyệt từng lô; không tự đổi style gốc khi chưa có lệnh; không đụng `docs/spec/`/`datas/`/`tools/`.
 
 ## Tóm tắt ĐÓNG/MỞ (trả lời thẳng câu hỏi user)
