@@ -1,5 +1,8 @@
 # GATE-6 SUBMISSION KITS — Rating questionnaire + Privacy/Data-safety form × 3 store
 
+
+> 🔴 **CẢNH BÁO KÊNH AMAZON (bổ sung 2026-10-27, sau khi tài liệu này hoàn tất):** từ **08/10/2026** Amazon đã thay dòng Fire tablet bằng **Alexa Tablet (Android 16 + Google Play)**. Theo FAQ chính chủ Amazon, app cho Alexa Tablet **phải nộp qua Google Play** (trừ Amazon Kids+), **APS không khả dụng** (dùng AdMob), và doanh số/thanh toán/thuế nằm ở **Play Console**. ⇒ Mọi nội dung "Amazon" trong tài liệu này chỉ còn áp dụng cho **Fire TV/Vega, Fire OS installed base, và Amazon Kids+** — **KHÔNG** áp dụng cho tablet Amazon mới. Xem [`ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md`](./ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md) [S116–S121]. Việc này ảnh hưởng **D1/D10/D9a** và đang chờ user chốt phương án A/B/C/D.
+
 > **Vai:** commercial-researcher (`arena/46e50499`). **Ngày tra cứu toàn bộ:** **2026-10-27** (mỗi URL ghi kèm ngày truy cập; ngày "last updated" của trang ghi riêng nếu có).
 > **Trạng thái:** research-only. Không đăng ký tài khoản, không mở console, không nộp gì, không SDK/publish/merge. **Không tự chuyển gate** — đây là *hồ sơ chuẩn bị* để director/user duyệt ở Gate-6.
 > **Nhãn bằng chứng:** `STATIC_CONFIRMED` = đọc trực tiếp tài liệu chính chủ (đã fetch) hoặc file spec trong repo · `INFERRED` = suy luận có nêu giả định · `UNKNOWN` = không tìm được nguồn công khai · `RUNTIME_UNVERIFIED` = chưa chạy thực tế · `CONFLICTING` = nguồn mâu thuẫn.

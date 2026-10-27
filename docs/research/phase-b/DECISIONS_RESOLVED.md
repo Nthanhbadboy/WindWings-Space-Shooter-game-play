@@ -47,3 +47,15 @@
 | **G12** | Premium Windows | **$9,99** (SKU mới, D6a) · bundle PC $14,99 tuỳ chọn sau launch | Sky Force PC/Xbox $9,99 chính chủ; MS game fee 12% |
 
 Bảng giá P1–P7 đầy đủ: `GATE3_PRICING_SHEET.md`. Gems/coins KHÔNG chốt trong lần này (cần cân bằng kinh tế — lane riêng).
+
+---
+
+## Bổ sung lần 145 — G13–G15 (phản ứng ALERT Amazon: Alexa Tablet 08/10/2026 chạy Android 16 + Google Play) — director quyết theo ủy quyền, [USER có thể bác bỏ]
+
+| # | Quyết | Chọn | Lý do |
+|---|---|---|---|
+| **G13** | Bộ store | **(A) Launch giữ 3 store đã chốt** (MS · Amazon · Huawei) — Amazon thu về **Fire TV / Vega / Fire-OS legacy / Kids+**; **Google Play = follow-up ngay sau launch** (store thứ 4: plugin Play Billing chính thức Godot có sẵn, chạm đúng Alexa Tablet mới; hồ sơ asset/kits tái dùng được) | Không phá cấu hình đã chốt của user; Play quyết ở Gate-2-kế khi có số; cảnh báo E `ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md` [S116–S121] |
+| **G14** | D10a điều chỉnh | **"Fire TV + Fire-OS legacy trước"; tablet-Amazon-mới = Google Play (theo G13-followup)**; Windows không đổi | Alexa Tablet không qua Appstore; Fire tablet ngừng ship |
+| **G15** | APS trên Fire TV | **KHÔNG tích hợp APS lúc launch** | Điều khoản nhường 30% impression + Amazon giữ 100% doanh thu phần đó chỉ kích hoạt ≥50k giờ/tháng — xa; ads Fire TV quyết khi tới Gate tương ứng |
+
+Hệ quả: Gate-6 kits chốt phạm vi theo 3-store-A (đã có banner Amazon-scope trong 4 tài liệu E); Google Play mục "BACKLOG-Post-launch" trong PHASE_C plan.
