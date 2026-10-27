@@ -3,8 +3,15 @@
 **Trạng thái:** `DECODED_STATIC` (chỉ đọc APK gốc, không chạy game, không probe)
 **Lớp bằng chứng:** STATIC-ONLY; mọi thứ Firebase trả về trên máy là `MODEL_NOT_MEASURED runtime`.
 **Artifact:** `datas/l2_535b0541_firebase_cell.json.gz` (4379 B, sha256 `a6d4c430fcdfaa2add5de13c7d7082ee9aab7b64809db802ead3c75c7a1c3cce`)
-**Verifier:** `tools/verify/firebase_cell.py` · **Test:** `tests/test_firebase_cell.py` (30 test)
+**Verifier:** `tools/verify/firebase_cell.py` · **Test:** `tests/test_firebase_cell.py` (32 test)
 **Báo cáo trước:** 142 (`0x2ADB8E0` = ô klass `UnityEngine.Application`), 178 (census 1788 method), 180 (registry-v4).
+
+---
+
+> **ERRATUM 182** — mục `not_decoded` thứ hai của báo cáo này ("the literal text of the path prefixes … not attached to any pinned dereference") **bị rút lại**.
+> Text đọc được **tĩnh**: `reverse-engineering/raw/ui-audit/native-relocations.json.gz` (288.733 điểm) ánh xạ ô → con trỏ, và `metadata-index.json.gz` (`ScriptString`) ánh xạ con trỏ → chữ. Báo cáo 182 làm phép tra đó và in ra 27 mảnh đường dẫn + 19 template, gồm cả format string của `SetSummaryDatas`: `{0}/summary-datas/season-{1}/rank-{2}/rooms/roomList/room-{3}`.
+> Bảng relocation cũng xác nhận độc lập danh tính của §1: ô `0x2ADB958` → `FirebaseDatabaseManager_TypeInfo` (xem 182 §2).
+> Mục audit 43/44/47/53 **vẫn `RUNTIME`** — cái thiếu là payload server, không phải đường dẫn.
 
 ---
 

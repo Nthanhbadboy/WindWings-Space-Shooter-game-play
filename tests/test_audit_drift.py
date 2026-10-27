@@ -18,8 +18,8 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import audit_drift as AD  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_audit_drift.json.gz'
-PIN_BYTES = 7733
-PIN_SHA = '86e4888a80a85efd9183c11a7924e62650c9a148dd44de3a7402b9cd923bafa8'
+PIN_BYTES = 7784
+PIN_SHA = '15343bbfabee27a5c11d4c2dc22ff387d9c3833c5fb6bd85a4ec40e0c6c021d4'
 
 
 def payload():
@@ -65,7 +65,7 @@ class PayloadShape(unittest.TestCase):
 
     def test_totals_are_the_artifact(self):
         totals = payload()['totals']
-        self.assertEqual(totals['artifacts'], 49)
+        self.assertEqual(totals['artifacts'], 50)
         self.assertEqual(totals['claims'], 9)
         self.assertEqual(totals['targets'], 2)
         self.assertEqual(totals['contract'], 33)
@@ -126,16 +126,16 @@ class BlindSpot(unittest.TestCase):
     def test_every_artifact_is_named_by_the_docs(self):
         body = payload()['blind_spot']
         self.assertEqual(body['unnamed_artifacts'], [])
-        self.assertEqual(body['named_by_the_docs'], 49)
-        self.assertEqual(body['artifacts'], 49)
+        self.assertEqual(body['named_by_the_docs'], 50)
+        self.assertEqual(body['artifacts'], 50)
 
     def test_the_audit_alone_now_names_all_of_them(self):
-        self.assertEqual(payload()['blind_spot']['named_by_the_audit'], 49)
+        self.assertEqual(payload()['blind_spot']['named_by_the_audit'], 50)
 
     def test_nothing_is_left_unnamed(self):
         # 175 filled the audit's table from the report filenames, so the window is empty
         self.assertEqual(payload()['blind_spot']['reports_the_audit_cannot_name'], [])
-        self.assertEqual(payload()['blind_spot']['named_by_the_docs'], 49)
+        self.assertEqual(payload()['blind_spot']['named_by_the_docs'], 50)
 
     def test_no_correction_now_points_at_an_unnamed_report(self):
         self.assertEqual(payload()['totals']['unread_targets'], [])
