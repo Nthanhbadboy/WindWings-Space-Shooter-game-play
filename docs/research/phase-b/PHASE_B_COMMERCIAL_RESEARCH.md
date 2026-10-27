@@ -1,5 +1,8 @@
 # PHASE B — BÁO CÁO NGHIÊN CỨU THƯƠNG MẠI (COMMERCIAL RESEARCH)
 
+
+> 🔴 **CẢNH BÁO KÊNH AMAZON (bổ sung 2026-10-27, sau khi tài liệu này hoàn tất):** từ **08/10/2026** Amazon đã thay dòng Fire tablet bằng **Alexa Tablet (Android 16 + Google Play)**. Theo FAQ chính chủ Amazon, app cho Alexa Tablet **phải nộp qua Google Play** (trừ Amazon Kids+), **APS không khả dụng** (dùng AdMob), và doanh số/thanh toán/thuế nằm ở **Play Console**. ⇒ Mọi nội dung "Amazon" trong tài liệu này chỉ còn áp dụng cho **Fire TV/Vega, Fire OS installed base, và Amazon Kids+** — **KHÔNG** áp dụng cho tablet Amazon mới. Xem [`ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md`](./ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md) [S116–S121]. Việc này ảnh hưởng **D1/D10/D9a** và đang chờ user chốt phương án A/B/C/D.
+
 - **Dự án:** WindWings: Space Shooter — game shooter không gian mới (mobile/PC), kế thừa kết quả reverse-engineering nhánh spec `arena/20330d0e-windwings-space-shooter-game-p` (PR #12).
 - **Ngày tra cứu toàn bộ:** **2026-10-27** (mọi URL dưới đây được truy cập ngày này; ngày "last updated" riêng của trang được ghi kèm nếu có).
 - **Phạm vi:** 3 store đã chốt — (1) Microsoft Store (Windows PC), (2) Amazon Appstore (Android/Fire), (3) Huawei AppGallery (Android/HMS).

@@ -1,5 +1,8 @@
 # QUEUE GODOT — Ma trận plugin IAP / Ads / Analytics cho 3 store
 
+
+> 🔴 **CẢNH BÁO KÊNH AMAZON (bổ sung 2026-10-27, sau khi tài liệu này hoàn tất):** từ **08/10/2026** Amazon đã thay dòng Fire tablet bằng **Alexa Tablet (Android 16 + Google Play)**. Theo FAQ chính chủ Amazon, app cho Alexa Tablet **phải nộp qua Google Play** (trừ Amazon Kids+), **APS không khả dụng** (dùng AdMob), và doanh số/thanh toán/thuế nằm ở **Play Console**. ⇒ Mọi nội dung "Amazon" trong tài liệu này chỉ còn áp dụng cho **Fire TV/Vega, Fire OS installed base, và Amazon Kids+** — **KHÔNG** áp dụng cho tablet Amazon mới. Xem [`ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md`](./ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md) [S116–S121]. Việc này ảnh hưởng **D1/D10/D9a** và đang chờ user chốt phương án A/B/C/D.
+
 > **Vai:** commercial-researcher (`arena/46e50499`) — **ưu tiên ②** của prompt lane. **Ngày tra cứu:** 2026-10-27.
 > **Trạng thái:** research-only. Không cài SDK, không build, không tạo tài khoản store, không sửa protected paths. Đây là **đầu vào kỹ thuật** cho session Godot-coder (vai trống) + verifier `ef6b75ef`, **không phải** quyết định kiến trúc — D9a đã chốt interface chung + adapter.
 > **Nhãn bằng chứng:** `STATIC_CONFIRMED` (đọc trực tiếp nguồn chính chủ/repo) · `INFERRED` (suy luận có nêu giả định) · `UNVERIFIED` (không tìm được nguồn) · `CONFLICTING`.

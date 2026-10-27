@@ -1,5 +1,8 @@
 # BẢNG SO SÁNH 3 STORE — ĐIỀU KIỆN PHÁT HÀNH (3 CỘT)
 
+
+> 🔴 **CẢNH BÁO KÊNH AMAZON (bổ sung 2026-10-27, sau khi tài liệu này hoàn tất):** từ **08/10/2026** Amazon đã thay dòng Fire tablet bằng **Alexa Tablet (Android 16 + Google Play)**. Theo FAQ chính chủ Amazon, app cho Alexa Tablet **phải nộp qua Google Play** (trừ Amazon Kids+), **APS không khả dụng** (dùng AdMob), và doanh số/thanh toán/thuế nằm ở **Play Console**. ⇒ Mọi nội dung "Amazon" trong tài liệu này chỉ còn áp dụng cho **Fire TV/Vega, Fire OS installed base, và Amazon Kids+** — **KHÔNG** áp dụng cho tablet Amazon mới. Xem [`ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md`](./ALERT_AMAZON_CHANNEL_CHANGE_2026-10-27.md) [S116–S121]. Việc này ảnh hưởng **D1/D10/D9a** và đang chờ user chốt phương án A/B/C/D.
+
 - Ngày tra cứu: **2026-10-27** (mọi số kiểm tra ngày này). ID `[Sxx]` trỏ [SOURCES.md](./SOURCES.md). Mục thiếu nguồn chính chủ ghi **UNVERIFIED**.
 - Phạm vi store đã khóa: Microsoft Store (Windows PC) · Amazon Appstore (thực tế 2026 = Fire tablet/Fire TV/Vega) · Huawei AppGallery (Android/HMS).
 
