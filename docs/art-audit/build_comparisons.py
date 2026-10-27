@@ -90,10 +90,17 @@ BOARDS = [
   p("Radial flare / bloom", sheet("fx",61), B("w4-core-b","fx_boom_01_mega_nova_256@solar.png"), B("w5-full-b","fx_ap_0151_omega_boss_corona_256@magenta.png")),
  ]),
  ("10_b_w5_semantics", "B W5: identical pixels across distinct slots", "B named slot", "B other slot (same bytes)", [
-  p("ShopIcon vs event-button background", sheet("ui",50), B("w5-full-b","ui_ap_0443_shop_shopicon_256@azure.png"), B("w5-full-b","ui_ap_0462_shop_btn_event_banner_256@azure.png")),
-  p("Event-button background vs ShopIcon", sheet("unclassified-24",34), B("w5-full-b","ui_ap_0462_shop_btn_event_banner_256@azure.png"), B("w5-full-b","ui_ap_0443_shop_shopicon_256@azure.png")),
+  p("ShopIcon vs nennutevent slot", sheet("ui",50), B("w5-full-b","ui_ap_0443_shop_shopicon_256@azure.png"), B("w5-full-b","ui_ap_0462_shop_btn_event_banner_256@azure.png")),
+  p("nennutevent (original name) vs ShopIcon", sheet("unclassified-24",34), B("w5-full-b","ui_ap_0462_shop_btn_event_banner_256@azure.png"), B("w5-full-b","ui_ap_0443_shop_shopicon_256@azure.png")),
   p("Blink light vs tech node", sheet("unclassified-02",57), B("w5-full-b","ui_ap_0264_kit_blink_256@azure.png"), B("w5-full-b","ui_ap_0251_kit_tech_node_a_256@azure.png")),
   p("Coin pack vs individual coin", sheet("unclassified-12",14), B("w5-full-b","ui_ap_0191_icon_coin_pack_64@solar.png"), B("w5-full-b","ui_ap_0181_icon_coinicon_64@solar.png")),
+ ]),
+ ("11_boss_mapped", "W3: boss IDs mapped by both manifests", "A matching ID", "B matching ID", [
+  p("Boss ID 7001: sprites-index #2 / datas/bosses", sheet("bosses",2), A("w3-boss","boss_dreadnought01_512@ember.png"), B("w3-boss-b","boss_body_04_citadel_mk1_512@crimson.png")),
+  p("Boss ID 7002: sprites-index #3 / datas/bosses", sheet("bosses",3), A("w3-boss","boss_spider01_512@ember.png"), B("w3-boss-b","boss_body_05_arachnid_mk1_512@emerald.png")),
+  p("Boss ID 7003: sprites-index #4 / datas/bosses", sheet("bosses",4), A("w3-boss","boss_ringfort01_512@ember.png"), B("w3-boss-b","boss_body_06_leviathan_mk1_512@amber.png")),
+  p("Boss ID 7004: sprites-index #5 / datas/bosses", sheet("bosses",5), A("w3-boss","boss_mantis01_512@ember.png"), B("w3-boss-b","boss_body_07_chronos_mk1_512@violet.png")),
+  p("Boss ID 7005: sprites-index #6 / datas/bosses", sheet("bosses",6), A("w3-boss","boss_carrier01_512@ember.png"), B("w3-boss-b","boss_body_08_seraph_mk1_512@magenta.png")),
  ]),
 ]
 

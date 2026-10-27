@@ -10,7 +10,7 @@ import hashlib
 import importlib.util
 from pathlib import Path
 
-SCRIPT_SHA256 = "77bb6a91edd691145924b63dad4c09d95e98c9525390dbbd986d27ca3bddebc7"  # replaced below at creation
+SCRIPT_SHA256 = "77bb6a91edd691145924b63dad4c09d95e98c9525390dbbd986d27ca3bddebc7"
 
 def digest(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 
