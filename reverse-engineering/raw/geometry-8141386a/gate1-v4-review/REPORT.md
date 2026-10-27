@@ -1,9 +1,9 @@
 # Re-review Gate-1: registry-v4 và C1–C5 — `arena/8141386a`
 
-**Trạng thái bản nháp (chưa handoff): `NOT_READY` tại spec cut bên dưới.** Đây là
-khuyến nghị review cho hồ sơ/phạm vi đề xuất, không phải user duyệt Gate, không phải
-lệnh scaffold/SDK/store/publish/merge và không kết luận runtime parity. Có thể cân nhắc
-nâng lên verdict **bounded L1** nếu director ghi rõ các disposition còn thiếu; xem §5.
+**Verdict review: `NOT_READY` tại spec cut bên dưới.** Đây là khuyến nghị review
+cho hồ sơ/phạm vi đề xuất, không phải user duyệt Gate, không phải lệnh scaffold/SDK/
+store/publish/merge và không kết luận runtime parity. Có thể cân nhắc nâng lên verdict
+**bounded L1** nếu director ghi rõ các disposition còn thiếu; xem §5.
 
 ## 1. Cut, authority và phương pháp
 
@@ -145,12 +145,21 @@ chạy tự động bộ test này**. CI của review head phải được báo 
 headSha sau khi push; CI cũ trong API snapshot chỉ kiểm workflows tương ứng, không
 phải chứng minh semantic mới.
 
-Full legacy regression: lần chạy monolithic được **chủ động ngắt** khi sampled RSS
-khoảng 1,16 GB để tuân thủ giới hạn chống OOM; log chưa hoàn tất được giữ trong
-`local-validation/full-run-interrupted.log.gz`, không tính PASS hay FAIL. Đang chạy
-lại 1.710 test theo các process tối đa 200 test, có giám sát RSS; kết quả sẽ được
-bổ sung trước handoff. Hai lỗi setup harness được giữ tại
-`local-validation/chunk-runner-setup.txt`, không sửa expected value.
+Legacy regression local **không hoàn tất**: monolithic run được chủ động ngắt ở
+sampled RSS khoảng 1,16 GB; log giữ trong `local-validation/full-run-interrupted.log.gz`.
+Lần chia batch phát hiện 1.710 test: ba batch đầu **600/600 PASS**, batch thứ tư bị
+ngắt ở sampled 1.027.384 KiB trước khi hoàn tất (log 04), không tính PASS hay FAIL.
+Test đang tới gọi `Recipes`, có đường whole-Graph không phù hợp ràng buộc anti-OOM;
+không thử lại hoặc nới giới hạn. 1.110 test còn lại không được tuyên bố đã chạy xong.
+Hai lỗi setup harness được giữ tại `local-validation/chunk-runner-setup.txt`, không sửa
+expected value. Xem `batch-summary.json`, 01–04.log.gz và `validation-summary.json`.
+
+Ở local head `93e7f25917e4321cbf56970028ced21740266cc7`: README **0 lệch**; live
+`APKD1=(130,107)`, `AI1=(139,142136,142,138,42,88)`, `RD1=(41,0)` đều PASS.
+Historical-support = **209 PASS evaluations/0 FAIL/2 SKIP** (207 PASS ID distinct;
+đây là overlay lịch sử, không phải all-current). Diagnostic unscoped = **163/25/23**,
+exit 1; 25 FAIL ID trùng review125, **không có FAIL ID mới**. Log và digest được
+lưu riêng dưới `local-validation/`, không sửa receipt125 cũ.
 
 **Nhãn:** `STATIC_CONFIRMED` chỉ dữ liệu/byte đã chỉ ra và phép join theo convention;
 `RUNTIME_CONFIRMED` = **không có**; `INFERRED` = disposition/claim chưa chứng minh
