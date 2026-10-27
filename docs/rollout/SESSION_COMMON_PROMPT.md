@@ -15,7 +15,13 @@ docs/rollout/SESSION_PROMPTS.md ở nhánh 20330d0e — luôn fetch nhánh đó 
 
 BƯỚC 1 — TỰ NHẬN VAI TRÒ (bắt buộc, trước mọi việc):
  1. git fetch origin arena/20330d0e-…:refs/remotes/origin/arena/20330d0e-… → đọc
-    SESSION_PROMPTS.md + comment [ROLE-BOARD] mới nhất trên PR12.
+    SESSION_PROMPTS.md + comment [ROLE-BOARD] / [DIRECTOR] / [GATE] MỚI NHẤT trên PR12.
+ **ĐỌC BOARD TRƯỚC KHI LÀM — bắt buộc, áp dụng MỌI vòng chứ không chỉ lúc khởi động:**
+ trước khi làm bất cứ việc gì, git fetch spec + paginate PR12 (id > comment bạn đọc lần trước)
+ → đọc TẤT CẢ comment director mới: board-delta · ROLE-BOARD · STYLE-CORRECTION · Gate verdict
+ · lệnh VOID/ĐÓNG liên quan mình. Comment director mới NHẤT luôn thắng prompt trong file.
+ Đã có lệnh ĐÓNG/VOID với session mình → DỪNG, không làm, không push. Làm theo lệnh trong board
+ trước cả phần "việc giờ" trong file (file chỉ cập nhật sau push, board luôn mới hơn).
  2. Mã nhánh của bạn ĐÃ CÓ trong bảng → nhận vai đó. Đăng comment PR12:
     "SELF-ID [arena/<mã>] — nhận vai <tên-vai> — tip <sha>".
  3. Mã nhánh CHƯA CÓ (session mới) → chọn 1 vai ĐANG MỞ (Godot-coder /

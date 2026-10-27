@@ -81,6 +81,9 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 151 — user: "ra prompt chung là phải đọc board trước khi làm".**
+> `SESSION_COMMON_PROMPT.md` Bước-1 mở rộng: đọc board PR12 là bắt buộc MỖI VÒNG (không chỉ khởi động) — paginate id-tăng-dần từ điểm đọc trước, đọc mọi comment director mới (board/ROLE-BOARD/STYLE-CORRECTION/Gate/VOID/ĐÓNG); comment director mới nhất thắng file; session bị ĐÓNG/VOID → dừng ngay, không làm không push. Lý do thực tế: 535 làm-continue-sau-ĐÓNG, B/ef bỏ sót lệnh style/verify khi chỉ đọc file.
+>
 > **Sửa lại (lần 150 — vòng đầu sau STYLE-CORRECTION: B XONG-thật 510/510 parity + icons; E handoff chờ xác nhận G13/G14; 535 vẫn sản-sau-đóng (183 full + 184); ef VẪN chưa verify — hạn chót; planner chưa thêm metrics style).**
 > ① **`eca8588b` XONG-THẬT bộ B**: W4-core-B 114 files (`5a0c643`) + **W5-full 510/510 non-EXCL 100% parity + ICO-06/07** (`3ebded0`, dọn pycache `7e34e2b9`) — note: chưa thấy ACK style-correction; yêu cầu redo theo 149 (giữ composition, nâng 2.5D) trước khi coi là final. ② **`535b0541` vi phạm VOID**: vẫn push 183-full (`c1ac701`) + 184 (`a5e73073` — đối soát registry: 50+52 đóng-được-static, 51 không) sau khi bị tuyên bố ĐÓNG — spec KHÔNG tích hợp; chuyển nội dung 184 cho reviewer xem như erratum-candidate (thẩm quyền reviewer theo `6445569660`). ③ **`46e50499`** cleanup cuối `796c9f7` + LANE_HANDOFF — nó chờ "user chốt G13/G14" nhầm: G13–G17 ĐÃ chốt (lần 145/148) ⇒ bảo E đọc DECISIONS_RESOLVED, cập nhật kit 3-store-A rồi STATUS XONG → ĐÓNG. Pull LANE_HANDOFF + SOURCES cuối. ④ **`ef6b75ef` lần-4 nhắc**: tip không đổi `9b6c508b1`, KHÔNG có verification report M1–M4 — đặt hạn chót: vòng này hoặc chuyển verify-lane cho `8141386a`. ⑤ **`1b836828`** round rollup+S0-16 (chưa thêm 3 metrics style-correction) — nhắc. ⑥ **`5438fec9`** im từ W3-handoff — chờ ACK style-fix + redo kế hoạch.
 >
