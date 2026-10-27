@@ -17,8 +17,8 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import dump_rva_index as DX  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_dump_rva_index.json.gz'
-PIN_BYTES = 5133
-PIN_SHA = 'd963dfc004dc46c96473869685054c47d7d0709267569763861d2ea175ea738a'
+PIN_BYTES = 5183
+PIN_SHA = 'de3afba626d19ec59bee67daeb3f1cd4873b7358a580415c1d286938b536e50b'
 
 METHOD_NAMED = [19464628, 20189848, 22732732, 19941788, 20084804, 20085132,
                 22771696, 22772596, 22835700, 19888660, 33442960, 41424900, 20903608]
@@ -49,7 +49,7 @@ class ArtifactPin(unittest.TestCase):
 
     def test_every_check_passed(self):
         checks = payload()['checks']
-        self.assertEqual(len(checks), 22)
+        self.assertEqual(len(checks), 24)
         self.assertTrue(all(row['passed'] for row in checks), checks)
 
 
@@ -59,7 +59,7 @@ class Tables(unittest.TestCase):
         self.assertEqual(totals['method_rvas'], 64727)
         self.assertEqual(totals['generic_rvas'], 49561)
         self.assertEqual(totals['tables'], 114288)
-        self.assertEqual(totals['classes'], 10422)
+        self.assertEqual(totals['classes'], 10906)
 
     def test_image_bounds(self):
         image = payload()['image']
@@ -69,6 +69,20 @@ class Tables(unittest.TestCase):
     def test_tables_do_not_overlap(self):
         methods, generics, _ = DX.dump_tables()
         self.assertFalse(set(methods) & set(generics))
+
+
+class StaticClasses(unittest.TestCase):
+    '''Erratum: the first cut of this index skipped `static class` declarations.'''
+
+    def test_static_class_declarations_are_parsed(self):
+        methods, _, _ = DX.dump_tables()
+        self.assertEqual(methods[0x277D2C0]['class_name'], 'Random')
+        self.assertEqual(methods[0x277D280]['class_name'], 'Random')
+
+    def test_no_method_is_attributed_to_the_previous_class(self):
+        methods, _, _ = DX.dump_tables()
+        for rva in (0x277D2C0, 0x277D280, 0x277D304):
+            self.assertNotEqual(methods[rva]['class_name'], 'PropertyName')
 
 
 class Slices(unittest.TestCase):

@@ -39,9 +39,9 @@ DUMP = 'reverse-engineering/il2cpp/dump.cs.gz'
 SLICES = 'reverse-engineering/raw/*535b0541/native.json.gz'
 PREV = 'datas/l2_535b0541_shop_band_tree.json.gz'
 
-CLASS_RE = re.compile(r'^(?:public |private |internal |protected )?(?:sealed )?'
-                      r'(?:abstract )?(?:partial )?(class|struct|interface|enum) '
-                      r'(.+?)(?: : .*)?(?: // .*)?$')
+CLASS_RE = re.compile(r'^(?:public |private |internal |protected )?(?:static )?'
+                      r'(?:sealed )?(?:abstract )?(?:partial )?'
+                      r'(class|struct|interface|enum) (.+?)(?: : .*)?(?: // .*)?$')
 RVA_RE = re.compile(r'^\s*// RVA: (0x[0-9a-fA-F]+)')
 GENERIC_RE = re.compile(r'^\t\|-RVA: (0x[0-9a-fA-F]+)\s+Offset')
 OPERAND = re.compile(r'#(0x[0-9a-f]+)')
@@ -263,6 +263,11 @@ def build():
     check('dump-carries-64727-method-rvas', len(methods) == 64727)
     check('dump-carries-49561-generic-instantiation-rvas', len(generics) == 49561)
     check('the-two-tables-do-not-overlap', not (set(methods) & set(generics)))
+    check('484-static-class-declarations-are-parsed',
+          len(re.findall(r'^(?:public |private |internal |protected )?(?:static )+class ',
+                         dump_text(), re.M)) == 484)
+    check('Random.Range-0x277d2c0-belongs-to-Random',
+          methods.get(0x277D2C0, {}).get('class_name') == 'Random')
     check('image-spans-0x1216610-to-0x299080c',
           (min(methods), max(methods)) == (0x1216610, 0x299080C))
     check('slices-hold-2499-records-over-1788-distinct-methods',

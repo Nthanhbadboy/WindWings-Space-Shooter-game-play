@@ -2,7 +2,7 @@
 
 **Trạng thái:** `DECODED_STATIC` (chỉ đọc APK gốc + `dump.cs`/8 slice đã pin, không chạy game)
 **Lớp bằng chứng:** STATIC-ONLY. Tên method, số RVA, số site `bl` là hằng trong file đã pin; **hành vi** của các helper runtime và việc game có gọi đúng nhánh nào lúc chạy là `MODEL_NOT_MEASURED runtime`.
-**Artifact:** `datas/l2_535b0541_dump_rva_index.json.gz` (5133 B, sha256 `d963dfc004dc46c96473869685054c47d7d0709267569763861d2ea175ea738a`)
+**Artifact:** `datas/l2_535b0541_dump_rva_index.json.gz` (5183 B, sha256 `de3afba626d19ec59bee67daeb3f1cd4873b7358a580415c1d286938b536e50b` — bản sửa errata §11)
 **Báo cáo trước:** 160 (cây chọn dải), 159 (chuỗi popup), 158 (tám field), 157 (hàm dựng + 12600 s), 154 (`Math.Round` 43584368 "không có trong `dump.cs`").
 **Verifier:** `tools/verify/dump_rva_index.py` (~1 s, 22 check) · **Test:** `tests/test_dump_rva_index.py` (30 test).
 
@@ -37,7 +37,7 @@ Phạm vi: chỉ dựng index + đối chiếu + đặt tên danh sách **có gi
 
 ## 2. Hai bảng trong một file dump
 
-`reverse-engineering/il2cpp/dump.cs.gz` (e08f23fb…, 542 227 dòng, 10 422 lớp) chứa hai dạng dòng địa chỉ:
+`reverse-engineering/il2cpp/dump.cs.gz` (e08f23fb…, 542 227 dòng, 10 906 khai báo lớp) chứa hai dạng dòng địa chỉ:
 
 ```
 	// RVA: 0x15AE1AC Offset: 0x15AA1AC VA: 0x15AE1AC
@@ -197,8 +197,32 @@ Trong 3 664 site `b` của tám slice, **2 652** đích (3 062 site) **không** 
 ## 10. Cách tái lập
 
 ```
-python3 tools/verify/dump_rva_index.py             # dựng lại artifact, in bytes + sha256 + 22/22
+python3 tools/verify/dump_rva_index.py             # dựng lại artifact, in bytes + sha256 + 24/24
 python3 -m unittest tests.test_dump_rva_index -q   # 30 test
 ```
 
-Artifact pin: **5133 B**, sha256 `d963dfc004dc46c96473869685054c47d7d0709267569763861d2ea175ea738a`, **22/22 check** (64 727 method RVA, 49 561 generic RVA, 1 788 slice khớp, 20 174 site `bl` phân loại, 18 helper, 4 đích sau cuối). Nguồn pin: `reverse-engineering/il2cpp/dump.cs.gz` (e08f23fb…), 8 file `reverse-engineering/raw/*535b0541/native.json.gz`, `datas/l2_535b0541_shop_band_tree.json.gz` (160).
+Artifact pin: **5183 B**, sha256 `de3afba626d19ec59bee67daeb3f1cd4873b7358a580415c1d286938b536e50b`, **24/24 check** (64 727 method RVA, 49 561 generic RVA, 1 788 slice khớp, 20 174 site `bl` phân loại, 18 helper, 4 đích sau cuối). Nguồn pin: `reverse-engineering/il2cpp/dump.cs.gz` (e08f23fb…), 8 file `reverse-engineering/raw/*535b0541/native.json.gz`, `datas/l2_535b0541_shop_band_tree.json.gz` (160).
+
+---
+
+## 11. Errata — 162 phát hiện một lỗi parse trong chính index này
+
+`ResetShop` của hai shop gọi `bl #0x277D2C0`, index đời đầu trả về `PropertyName | Range(int, int)`. Nhìn vào dump thì:
+
+```
+public static class Random // TypeDefIndex: 7798
+	// RVA: 0x277D2C0 …
+	public static int Range(int minInclusive, int maxExclusive) { }
+```
+
+Tên đúng là **`Random.Range`**. Nguyên nhân: regex nhận khai báo lớp chỉ liệt kê `sealed`/`abstract`/`partial` mà **quên `static `**, nên 484 khai báo `static class` bị bỏ qua và method của chúng bị gán sang lớp đứng trước.
+
+| | giá trị |
+|---|---|
+| khai báo `static class` bị bỏ qua | **484** |
+| dòng method bị gán sai lớp | **3 780 / 64 727** (5,8 %) |
+| ví dụ | `Random.Range`, `Convert.*` (233), `AndroidJNI.*` (233), `ExceptionBuilder.*` (255), `Math.*` (54) |
+
+Đã sửa regex, thêm hai check (`484-static-class-declarations-are-parsed`, `Random.Range-0x277d2c0-belongs-to-Random`) và dựng lại artifact: **5183 B**, sha256 `de3afba626d19ec59bee67daeb3f1cd4873b7358a580415c1d286938b536e50b`, **24/24 check**; số lớp `10 422 → 10 906`. Các con số khác của 161 (64 727 method RVA, 49 561 generic RVA, 1 788 slice khớp, 20 174 site `bl`, 18 helper, 4 đích sau cuối) **không đổi** — lỗi chỉ ở cột tên lớp, không ở phép đếm địa chỉ.
+
+Bài học giữ nguyên tinh thần 161: một index chỉ đáng tin khi có phép thử ngược. Lỗi này lọt vì chưa có phép thử nào *khẳng định* một dòng cụ thể thuộc đúng lớp — nay có.
