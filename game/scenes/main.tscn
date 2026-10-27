@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/background.gd" id="2_background"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
-[ext_resource type="PackedScene" path="res://scenes/training_target.tscn" id="4_target"]
+[ext_resource type="Script" path="res://scripts/wave_director.gd" id="4_wave_director"]
 [ext_resource type="Script" path="res://scripts/hud.gd" id="5_hud"]
 
 [node name="Main" type="Node2D"]
@@ -18,11 +18,11 @@ position_smoothing_enabled = false
 [node name="Background" type="Node2D" parent="World"]
 script = ExtResource("2_background")
 
-[node name="TrainingTarget" parent="World" instance=ExtResource("4_target")]
-position = Vector2(0, -6.8)
-
 [node name="Player" parent="World" instance=ExtResource("3_player")]
 position = Vector2(0, 8.2)
+
+[node name="WaveDirector" type="Node" parent="."]
+script = ExtResource("4_wave_director")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

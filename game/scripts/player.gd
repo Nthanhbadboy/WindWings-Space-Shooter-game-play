@@ -123,7 +123,9 @@ func _clamp_to_bounds(point: Vector2) -> Vector2:
 
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("enemies"):
-		take_damage(float(area.get("contact_damage")))
+		var contact_damage := float(area.get("contact_damage"))
+		if contact_damage > 0.0:
+			take_damage(contact_damage)
 
 
 func _draw() -> void:

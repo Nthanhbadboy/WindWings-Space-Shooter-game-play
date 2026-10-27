@@ -28,13 +28,19 @@ func update_status(data: Dictionary) -> void:
 	_health_bar.max_value = max_hp
 	_health_bar.value = hp
 	_health_label.text = "HULL  %d / %d" % [roundi(hp), roundi(max_hp)]
-	_wave_label.text = str(data.get("wave", "TRAINING"))
+	_wave_label.text = str(data.get("wave", "WAVE 0000"))
 	_score_label.text = (
-		"COINS  %d   ·   TARGET HITS  %d" % [int(data.get("coins", 0)), int(data.get("hits", 0))]
+		"KILLS  %d   ·   SHOTS  %d   ·   COINS  %d"
+		% [int(data.get("kills", 0)), int(data.get("shots", 0)), int(data.get("coins", 0))]
 	)
 	_action_label.text = (
-		"NEAR MISSES  %d   ·   SHOTS  %d"
-		% [int(data.get("near_misses", 0)), int(data.get("shots", 0))]
+		"SPAWNED  %d / %d   ·   ITEMS  %d   ·   NEAR  %d"
+		% [
+			int(data.get("spawned", 0)),
+			int(data.get("spawn_total", 0)),
+			int(data.get("items", 0)),
+			int(data.get("near_misses", 0))
+		]
 	)
 
 
@@ -50,6 +56,14 @@ func show_game_over() -> void:
 	_overlay.visible = true
 	_overlay_title.text = "SIGNAL LOST"
 	_retry_button.visible = true
+	_pause_button.disabled = true
+
+
+func show_wave_clear() -> void:
+	_overlay.visible = true
+	_overlay_title.text = "WAVE DISPATCH COMPLETE"
+	_retry_button.visible = true
+	_retry_button.text = "REPLAY WAVE"
 	_pause_button.disabled = true
 
 
@@ -79,7 +93,7 @@ func _build_interface() -> void:
 	top_stack.add_child(title_row)
 
 	var title := Label.new()
-	title.text = "STARFALL  /  TRAINING"
+	title.text = "STARFALL  /  WINDWINGS PORT"
 	title.add_theme_font_size_override("font_size", 23)
 	title.add_theme_color_override("font_color", Color(0.61, 0.91, 1.0))
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -93,7 +107,7 @@ func _build_interface() -> void:
 	title_row.add_child(_pause_button)
 
 	_wave_label = Label.new()
-	_wave_label.text = "WAVE 00  ·  TARGET RANGE"
+	_wave_label.text = "WAVE 0000  ·  FIRST ENCOUNTER"
 	_wave_label.add_theme_font_size_override("font_size", 16)
 	_wave_label.add_theme_color_override("font_color", Color(0.77, 0.85, 0.98))
 	top_stack.add_child(_wave_label)
@@ -114,7 +128,7 @@ func _build_interface() -> void:
 	top_stack.add_child(_health_bar)
 
 	_score_label = Label.new()
-	_score_label.text = "COINS  0   ·   TARGET HITS  0"
+	_score_label.text = "KILLS  0   ·   COINS  0"
 	_score_label.add_theme_font_size_override("font_size", 15)
 	_score_label.add_theme_color_override("font_color", Color(1.0, 0.79, 0.43))
 	top_stack.add_child(_score_label)
@@ -132,7 +146,7 @@ func _build_interface() -> void:
 	footer.add_child(footer_stack)
 
 	_action_label = Label.new()
-	_action_label.text = "NEAR MISSES  0   ·   SHOTS  0"
+	_action_label.text = "SPAWNED  0 / 0   ·   ITEMS  0"
 	_action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_action_label.add_theme_font_size_override("font_size", 15)
 	_action_label.add_theme_color_override("font_color", Color(0.60, 0.88, 1.0))
