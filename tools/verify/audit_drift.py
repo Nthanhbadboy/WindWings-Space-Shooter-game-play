@@ -26,6 +26,7 @@ import functools
 import gzip
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -108,10 +109,43 @@ def artifacts():
     return out
 
 
-def report_of(stem):
-    """The lane report number that wrote this artifact, via the audit's own table."""
+def doc_index():
+    """report number -> topic, read off `docs/apk-analysis/<n>-535b0541-<topic>.md`.
+
+    170 taught the audit to name 168/169 by hand, so its table stops at 146 / 168 / 169 and
+    every report after it is nameless (mục 4 of the report). The filenames already carry the
+    number, so the gate reads them instead of asking somebody to keep a second list.
+    """
+    out = {}
+    for path in sorted(ROOT.glob('docs/apk-analysis/*-535b0541-*.md')):
+        match = re.match(r'(\d+)-535b0541-(.+)\.md$', path.name)
+        if match:
+            out[int(match.group(1))] = match.group(2).replace('-', '_')
+    return out
+
+
+@functools.lru_cache(maxsize=None)
+def known_reports():
+    """What the audit names, plus what the report filenames prove exists."""
+    table = dict(AUDIT.REPORTS)
+    for number, topic in doc_index().items():
+        table.setdefault(number, topic)
+    return table
+
+
+def audit_report_of(stem):
+    """The number **the audit's own table** can give this artifact, or None."""
     topic = stem.replace('l2_535b0541_', '')
     for number, name in AUDIT.REPORTS.items():
+        if name == topic:
+            return number
+    return None
+
+
+def report_of(stem):
+    """The lane report number that wrote this artifact."""
+    topic = stem.replace('l2_535b0541_', '')
+    for number, name in known_reports().items():
         if name == topic:
             return number
     return None
@@ -214,7 +248,7 @@ def build_payload():
     rows = audit_rows()
     claims = item_claims()
     targets = report_claims()
-    known = set(AUDIT.REPORTS)
+    known = set(known_reports())
     results = run_rules(claims, targets, rows, known, records())
     unread = sorted({row['detail']['target'] for row in results
                      if row['rule'] == 'R5-target' and not row['passed']})
@@ -228,8 +262,8 @@ def build_payload():
           all(row['passed'] for row in results if row['rule'] != 'R5-target'),
           [row for row in results
            if row['rule'] != 'R5-target' and not row['passed']])
-    check(checks, 'the-report-the-audit-does-not-read-is-listed-not-hidden',
-          unread == [149], unread)
+    check(checks, 'no-report-level-correction-points-at-an-unknown-report',
+          unread == [], unread)
     check(checks, 'one-artifact-carries-item-claims',
           sorted({row['artifact'] for row in claims}) == ['l2_535b0541_lane_residue'],
           sorted({row['artifact'] for row in claims}))
@@ -264,12 +298,23 @@ def build_payload():
           [row['n'] for row in plan if row['kind'] == 'SCAN'])
     check(checks, 'the-audit-still-has-fifty-six-items', len(rows) == 56, len(rows))
     unnamed = sorted(stem for stem in artifacts() if report_of(stem) is None)
-    # 173 is this gate, so the window stops at the report before it.
-    missing = sorted(set(range(min(known), 173)) - known)
-    check(checks, 'the-audit-names-a-report-for-only-half-the-artifacts',
-          len(unnamed) == 21, dict(unnamed=len(unnamed), artifacts=len(artifacts())))
-    check(checks, 'the-blind-spot-is-every-report-after-146',
-          missing == list(range(147, 168)) + [170, 171, 172], missing)
+    by_audit = sorted(stem for stem in artifacts() if audit_report_of(stem) is not None)
+    # only reports that actually produced an artifact matter for R1; a doc without an
+    # artifact (like the one you are reading) cannot carry an item claim.
+    named_numbers = {report_of(stem) for stem in artifacts()} - {None}
+    missing = sorted(set(range(min(known), max(named_numbers) + 1)) - set(AUDIT.REPORTS))
+    conflicts = sorted(number for number, topic in doc_index().items()
+                       if number in AUDIT.REPORTS and topic != AUDIT.REPORTS[number]
+                       and topic in {stem.replace('l2_535b0541_', '') for stem in artifacts()})
+    check(checks, 'every-artifact-maps-to-a-report-now-that-the-docs-are-the-index',
+          unnamed == [], dict(unnamed=len(unnamed), artifacts=len(artifacts())))
+    check(checks, 'the-audit-table-still-covers-127-to-146-whole',
+          set(range(127, 147)) <= set(AUDIT.REPORTS),
+          sorted(set(range(127, 147)) - set(AUDIT.REPORTS)))
+    check(checks, 'the-blind-spot-starts-after-146',
+          bool(missing) and min(missing) == 147, missing[:3])
+    check(checks, 'the-docs-do-not-contradict-the-audit-on-a-shared-number',
+          conflicts == [], conflicts)
     check(checks, 'the-gate-reads-every-lane-artifact',
           len(artifacts()) >= 40 and {'l2_535b0541_lane_residue',
                                       'l2_535b0541_cell_identity'} <= set(artifacts()),
@@ -291,10 +336,15 @@ def build_payload():
                     checks_passed=sum(1 for row in checks if row['passed']),
                     checks_total=len(checks)),
         blind_spot=dict(
+            artifacts=len(artifacts()),
+            named_by_the_audit=len(by_audit),
+            named_by_the_docs=len(artifacts()) - len(unnamed),
             unnamed_artifacts=unnamed,
             reports_the_audit_cannot_name=missing,
-            note='R1 fires the moment one of these artifacts settles or blocks an item; '
-                 'none does yet, which is why the gate is green today',
+            docs_read=len(doc_index()),
+            note='before 174 the gate could name 22/43 artifacts from AUDIT.REPORTS alone; '
+                 'the index now comes from the report filenames, so 149 stops looking '
+                 'invented and a missing doc becomes the tripwire instead',
         ),
         claims=claims,
         targets=targets,

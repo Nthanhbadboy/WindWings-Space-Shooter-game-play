@@ -3300,8 +3300,8 @@ claim("IAB2", "docs/spec/BALANCE.md",
       "Stage_Get_Datas.cctor: int[5] startBonusValues + float[4] levelDelta; 0x40666666 = 3.6 (KHÔNG phải 2.1)")
 
 claim("APKD1", "docs/spec/START_HERE.md",
-      "**118** `.md` · **107** `.csv`",
-      (118, 107), apk_doc_counts,
+      "**119** `.md` · **107** `.csv`",
+      (119, 107), apk_doc_counts,
       "đếm trực tiếp thư mục apk-analysis — thêm báo cáo mới là phải cập nhật dòng này")
 
 claim("IA8", "docs/spec/START_HERE.md",

@@ -18,8 +18,8 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import audit_drift as AD  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_audit_drift.json.gz'
-PIN_BYTES = 7895
-PIN_SHA = '6a8a4bd5d5b9c7bf1952f7e176e5fc6b1039b5b705fd4b18d3882799f27701dd'
+PIN_BYTES = 7815
+PIN_SHA = '2e32096e42c4983e32c294ef3f56e8d8171fca6436fd5c3acb2bd98d1c6ecbef'
 
 
 def payload():
@@ -55,12 +55,13 @@ class PayloadShape(unittest.TestCase):
         self.assertEqual(body['totals']['checks_passed'], body['totals']['checks_total'])
         self.assertEqual([row['name'] for row in body['checks'] if not row['passed']], [])
 
-    def test_check_names_are_the_seventeen(self):
-        self.assertEqual(len(payload()['checks']), 17)
+    def test_check_names_are_the_nineteen(self):
+        self.assertEqual(len(payload()['checks']), 19)
         names = [row['name'] for row in payload()['checks']]
         self.assertIn('the-gate-reads-every-lane-artifact', names)
-        self.assertIn('the-blind-spot-is-every-report-after-146', names)
-        self.assertIn('the-report-the-audit-does-not-read-is-listed-not-hidden', names)
+        self.assertIn('the-audit-table-still-covers-127-to-146-whole', names)
+        self.assertIn('the-blind-spot-starts-after-146', names)
+        self.assertIn('no-report-level-correction-points-at-an-unknown-report', names)
 
     def test_totals_are_the_artifact(self):
         totals = payload()['totals']
@@ -90,9 +91,15 @@ class Coverage(unittest.TestCase):
         self.assertLessEqual({'l2_535b0541_lane_residue', 'l2_535b0541_cell_identity'},
                              stems)
 
-    def test_report_of_reads_the_audit_table_not_a_second_list(self):
+    def test_report_of_reads_the_docs_and_the_audit_together(self):
         self.assertEqual(AD.report_of('l2_535b0541_lane_residue'), 168)
+        self.assertEqual(AD.report_of('l2_535b0541_cell_identity'), 150)
+        self.assertEqual(AD.report_of('l2_535b0541_pvp_hunter_arrays'), 149)
         self.assertIsNone(AD.report_of('l2_535b0541_no_such_topic'))
+
+    def test_the_audit_alone_cannot_name_cell_identity(self):
+        self.assertIsNone(AD.audit_report_of('l2_535b0541_cell_identity'))
+        self.assertEqual(AD.audit_report_of('l2_535b0541_lane_residue'), 168)
 
     def test_claims_come_from_the_residue_report(self):
         claims = AD.item_claims()
@@ -113,29 +120,32 @@ class Coverage(unittest.TestCase):
 
 
 class BlindSpot(unittest.TestCase):
-    """The audit can only name half the lane, and the gate refuses to hide it."""
+    """173 measured 22/43; 174 moved the index to the report filenames, so it is 43/43."""
 
-    def test_half_the_artifacts_have_no_report(self):
+    def test_every_artifact_is_named_by_the_docs(self):
         body = payload()['blind_spot']
-        self.assertEqual(len(body['unnamed_artifacts']), 21)
-        self.assertEqual(len(AD.artifacts()), 43)
-        self.assertEqual(sorted(stem for stem in AD.artifacts()
-                                if AD.report_of(stem) is None),
-                         body['unnamed_artifacts'])
+        self.assertEqual(body['unnamed_artifacts'], [])
+        self.assertEqual(body['named_by_the_docs'], 43)
+        self.assertEqual(body['artifacts'], 43)
 
-    def test_the_missing_reports_are_147_to_167_plus_170_to_172(self):
+    def test_the_audit_alone_still_names_only_twenty_two(self):
+        self.assertEqual(payload()['blind_spot']['named_by_the_audit'], 22)
+
+    def test_the_audit_still_cannot_name_147_to_167_plus_170_to_172(self):
+        # the window stops at the highest report that produced an artifact (172)
         self.assertEqual(payload()['blind_spot']['reports_the_audit_cannot_name'],
                          list(range(147, 168)) + [170, 171, 172])
 
-    def test_the_named_ones_are_the_two_the_residue_work_needed(self):
-        named = {AD.report_of(stem) for stem in AD.artifacts()} - {None}
-        self.assertIn(168, named)
-        self.assertIn(169, named)
+    def test_no_correction_now_points_at_an_unnamed_report(self):
+        self.assertEqual(payload()['totals']['unread_targets'], [])
 
-    def test_cell_identity_is_unnamed_which_is_why_149_shows_as_unread(self):
-        self.assertIn('l2_535b0541_cell_identity',
-                      payload()['blind_spot']['unnamed_artifacts'])
-        self.assertEqual(payload()['totals']['unread_targets'], [149])
+    def test_a_missing_doc_is_now_the_tripwire(self):
+        index = AD.doc_index()
+        self.assertEqual(index[149], 'pvp_hunter_arrays')
+        self.assertEqual(index[150], 'cell_identity')
+        # 133 is the first report with a `<n>-535b0541-<topic>.md` filename.
+        added = sorted(set(AD.known_reports()) - set(AD.AUDIT.REPORTS))
+        self.assertEqual(added, [n for n in range(133, 175) if n not in AD.AUDIT.REPORTS])
 
 
 class RuleSemantics(unittest.TestCase):

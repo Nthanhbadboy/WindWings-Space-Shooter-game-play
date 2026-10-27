@@ -2,8 +2,8 @@
 
 **Trạng thái:** `DECODED_STATIC` (chỉ đọc artifact + slice đã bóc; không chạy game)
 **Lớp bằng chứng:** STATIC-ONLY. Đây **không phải** một lần bóc mới — nó là cổng đọc lại **mọi** artifact của lane và đối chiếu với `open_items_audit`.
-**Artifact:** `datas/l2_535b0541_audit_drift.json.gz` — **7895 B**, sha256 `6a8a4bd5d5b9c7bf1952f7e176e5fc6b1039b5b705fd4b18d3882799f27701dd`
-**Verifier:** `tools/verify/audit_drift.py` (**17 check**) · **Test:** `tests/test_audit_drift.py` (**40 test**)
+**Artifact:** `datas/l2_535b0541_audit_drift.json.gz` — **7815 B**, sha256 `2e32096e42c4983e32c294ef3f56e8d8171fca6436fd5c3acb2bd98d1c6ecbef` (bản 174 sinh lại; 173 gốc: 7895 B / `6a8a4bd5…`)
+**Verifier:** `tools/verify/audit_drift.py` (**19 check**) · **Test:** `tests/test_audit_drift.py` (**42 test**)
 **Đọc:** 43 artifact `datas/l2_535b0541_*.json.gz` · **Đối chiếu:** 56 mục của audit (19 `CLOSED` · 20 `RUNTIME` · 10 `OPEN` · 6 `RESTATED` · 1 `NOTE`)
 
 ---
@@ -12,13 +12,13 @@
 
 | | 170 làm | 173 làm |
 |---|---|---|
-| Audit biết report nào | `REPORTS` viết tay, thêm 168/169 bằng tay | cổng đọc **43** artifact, tự suy report từ chính `AUDIT.REPORTS` |
+| Audit biết report nào | `REPORTS` viết tay, thêm 168/169 bằng tay | cổng đọc **43** artifact, suy report từ `AUDIT.REPORTS` **+ tên file report** → **43/43** (174) |
 | Câu "168 đóng mục 11" | người đọc rồi chép vào `records` | **R2**: `closed[n]` phải khớp `verdict == CLOSED` **và** `closer == report` |
 | Câu "169 sửa mục 39" | chép tay | **R3**: phải thấy trong `records`, hoặc `RESTATED`+closer, hoặc `reason` có số report |
 | Mục bị chặn | ghi lý do bằng văn xuôi | **R4** + hợp đồng 37 dòng: `step`, `owner`, `kind` cho **từng** mục chưa `CLOSED` |
-| Trôi tiếp | vẫn trôi | **fail** khi một artifact nêu số mục mà report của nó không có trong `REPORTS` (**R1**), hoặc sửa mức-report nhắm vào report audit không đặt tên được (**R5**) |
+| Trôi tiếp | vẫn trôi | **fail** khi một artifact nêu số mục mà report của nó không có tên ở cả hai nguồn (**R1**), hoặc sửa mức-report nhắm vào report không đặt tên được (**R5**) |
 
-Kết quả chạy: **17/17 check PASS**, **20 luật**, **0 luật hỏng**, **37 dòng hợp đồng**, **0 dòng `TODO`** — và một **lỗ mù 21 artifact** được ghi tên (mục 4).
+Kết quả chạy: **19/19 check PASS**, **20 luật**, **0 luật hỏng**, **37 dòng hợp đồng**, **0 dòng `TODO`** — và một **lỗ mù 21 artifact** được ghi tên (mục 4).
 
 ---
 
@@ -29,7 +29,7 @@ Kết quả chạy: **17/17 check PASS**, **20 luật**, **0 luật hỏng**, **
 173 đảo chiều: thay vì audit tự khai nó đọc gì, **cổng đọc hết** rồi hỏi audit. Ba tính chất làm nó không trôi lại:
 
 1. **Danh sách nguồn là glob, không phải list**: `datas/l2_535b0541_*.json.gz`, trừ `lane_closeout`, `open_items_audit` và chính nó. Thêm artifact mới là **tự động** vào cổng.
-2. **Ánh xạ report lấy từ `AUDIT.REPORTS`**, không có bảng thứ hai: `report_of(stem)` tra ngược tên topic. Không tra được ⇒ `report = None` ⇒ **R1 hỏng**. Đây là chỗ 149 sa lưới.
+2. **Ánh xạ report lấy từ chỉ mục**, không có bảng viết tay: `report_of(stem)` tra ngược tên topic trong `AUDIT.REPORTS` **và** trong tên file `docs/apk-analysis/<n>-535b0541-<topic>.md`. Không tra được ở cả hai ⇒ `report = None` ⇒ **R1 hỏng**. (173 gốc chỉ có `AUDIT.REPORTS` ⇒ 22/43; 174 thêm nửa tên-file ⇒ 43/43, xem §4.1.)
 3. **Hợp đồng suy ra từ verdict**, không chép lại: mục `RUNTIME` chưa viết bước riêng thì nhận `DEFAULTS['RUNTIME']` = `device or served state — MODEL_NOT_MEASURED runtime`. Chỉ 17 mục cần bước **đặc thù** mới nằm trong `CONTRACT`.
 
 ---
@@ -38,7 +38,7 @@ Kết quả chạy: **17/17 check PASS**, **20 luật**, **0 luật hỏng**, **
 
 | luật | câu hỏi | hỏng khi |
 |---|---|---|
-| **R1 coverage** | artifact nêu số mục thì report của nó có trong `REPORTS`? | `report is None` hoặc report lạ |
+| **R1 coverage** | artifact nêu số mục thì report của nó có tên trong chỉ mục? | `report is None` hoặc report lạ |
 | **R2 closure** | "tôi đóng mục *n*" có đúng là audit ghi `CLOSED` **do chính report đó**? | verdict khác `CLOSED`, hoặc `closer` là report khác |
 | **R3 correction** | "tôi sửa mục *n*" có dấu vết trong audit? | không có `records[report, correction, n]`, không `RESTATED`+closer, `reason` không nhắc số report |
 | **R4 blocker** | "mục *n* bị chặn" có mâu thuẫn với việc chính report đó đóng nó? | audit ghi `CLOSED` bởi cùng report |
@@ -63,27 +63,40 @@ Chín claim của 168 đều **đứng vững** dưới luật mới: hai mục 
 
 ---
 
-## 4. Phát hiện: audit đặt tên được **22/43** artifact
+## 4. Phát hiện: audit chỉ đặt tên được **22/43** artifact
 
 `AUDIT.REPORTS` có **22** khoá: liền mạch `127…146`, rồi nhảy `168`, `169`. Đối chiếu với 43 artifact cổng đọc:
 
 | | số | |
 |---|---|---|
 | artifact cổng đọc | **43** | |
-| artifact audit **đặt tên được** report | **22** | khớp `REPORTS` |
-| artifact audit **không** đặt tên được | **21** | `cell_identity`, `arena_rewards`, `exchange_chain`, … |
-| report thiếu trong `REPORTS` (dải 127–172) | **24** | `147…167` + `170`, `171`, `172` |
+| artifact `AUDIT.REPORTS` **đặt tên được** | **22** | khớp `REPORTS` (vẫn đúng sau 174) |
+| artifact **không** đặt tên được bằng bảng đó | **21** | `cell_identity`, `arena_rewards`, `exchange_chain`, … |
+| report thiếu trong `REPORTS` (cửa sổ report **có artifact**, 127–172) | **24** | `147…167` + `170`, `171`, `172` |
 
-Đây là **lỗ mù thật**, không phải chuyện của riêng 149. Cổng hôm nay vẫn xanh **vì** trong 21 artifact không tên kia chưa cái nào đóng/chặn một mục audit — chỉ `lane_residue` (168, có tên) làm việc đó. Ngày đầu tiên một trong 21 artifact đó nói "mục 44 đã xong", **R1 sẽ nổ**, và nổ đúng.
+Đây là **lỗ mù thật**, không phải chuyện của riêng một report. Cổng hôm nay vẫn xanh **vì** trong 21 artifact không tên kia chưa cái nào đóng/chặn một mục audit — chỉ `lane_residue` (168, có tên) làm việc đó. Ngày đầu tiên một trong 21 artifact đó nói "mục 44 đã xong", **R1 sẽ nổ**, và nổ đúng.
 
-Riêng **149** còn khó hơn: nó tự sửa **hai** lần ở mức-report — `ArenaManager` root variants (nhắm 138) và "class đứng sau cell `0x2ADF238`, nơi lưu bet đã chọn" (nhắm chính 149). Một sửa đổi **hợp lệ** vì thế trông y như sửa đổi **bịa**. Nếu cổng fail ở đây thì người ta sẽ nới luật R5, và nới là mất luôn R5.
+### 4.1 Cách 174 vá: chỉ mục lấy từ tên file report
 
-Cách 173 chọn: **ghi ra, không giấu**. Hai check giữ việc này:
+Tên file đã mang số: `docs/apk-analysis/<n>-535b0541-<topic>.md`. Nên `report_of` tra trong **hợp** của hai nguồn: `AUDIT.REPORTS` (127…146, 168, 169) và tên file (133…173). Kết quả trên cùng 43 artifact:
 
-* `the-report-the-audit-does-not-read-is-listed-not-hidden` — tập target hỏng phải **đúng bằng** `[149]`; 138 vẫn qua vì audit đặt tên được nó.
-* `the-audit-names-a-report-for-only-half-the-artifacts` + `the-blind-spot-is-every-report-after-146` — ghim **21** và **24**, và artifact mang nguyên danh sách trong khoá `blind_spot` để report sau đọc lại được, khỏi phải đếm lại.
+| | 173 gốc | sau 174 |
+|---|---|---|
+| artifact có tên report | **22/43** | **43/43** |
+| artifact không tên | **21** | **0** |
+| sửa đổi mức-report nhắm report **không** tên được (`unread_targets`) | **`[149]`** | **`[]`** |
+| `AUDIT.REPORTS` vẫn thiếu | 24 report | **24** report (không đổi — 174 không sửa bảng đó) |
 
-**Nợ đã ghi tên, chưa trả:** muốn R5 phủ 149 và 21 artifact kia thì phải thêm khoá vào `REPORTS` của `open_items_audit`. Làm trong 173 là tự sửa 170 ngay trong report đang băm 170 — đổi hash của chính input. Việc đó thuộc report **sau**, và giờ đã có số cụ thể để làm.
+Chỗ đáng chú ý: **149 không phải `cell_identity`**. Đó là **erratum của chính 173**:
+
+| nói | thực tế |
+|---|---|
+| "`cell_identity` (149)" | `cell_identity` = **150** (`docs/apk-analysis/150-535b0541-cell_identity.md`) |
+| — | **149** = `pvp_hunter_arrays` (`docs/apk-analysis/149-535b0541-pvp_hunter_arrays.md`) |
+
+Lỗi này **không đổi kết luận** (cả 149 lẫn 150 đều không có trong `REPORTS`), nhưng nó đổi **tên miền** của câu sửa: dòng `corrections` thứ hai của `cell_identity` nhắm report **149** = `pvp_hunter_arrays` — tức nó sửa câu "chỉ biết offset +0x10/+0x14/+0x18" mà **149** đã viết, không phải tự sửa mình. Đúng ngữ nghĩa `target` hơn hẳn.
+
+Sau 174, hai check canh việc này: `every-artifact-maps-to-a-report-now-that-the-docs-are-the-index` (0 artifact không tên) và `no-report-level-correction-points-at-an-unknown-report` (`unread == []`). Cái bẫy đổi chiều: giờ **thiếu file report là R1 nổ**, thay vì thiếu dòng trong bảng viết tay.
 
 ## 5. Ba chỗ 173 tự sửa chính mình
 
@@ -143,7 +156,7 @@ Ba giới hạn, ghi trong artifact ở khoá `limits`:
 
 ```bash
 python3 tools/verify/audit_drift.py            # ghi artifact, in totals, fail nếu có check hỏng
-python3 -m unittest tests.test_audit_drift -v  # 40 test: pin byte + luật trên dữ liệu tổng hợp
+python3 -m unittest tests.test_audit_drift -v  # 42 test: pin byte + luật trên dữ liệu tổng hợp
 ```
 
 Artifact băm **input** (`open_items_audit`, sha256 `3b782ffa…`) và băm **cả 43 artifact** nó đọc, nên đổi bất kỳ artifact nào là test pin gãy ngay — đúng ý đồ: số trong report phải truy được về file.
