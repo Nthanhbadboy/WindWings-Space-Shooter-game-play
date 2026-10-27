@@ -24,9 +24,13 @@ Cổng chấm:
     A14  `grad_stops` ≥ dải §4.5b
     A15  `outline_px` ≤ dải §4.5b
     A16  `detail` trong dải §4.5b
-    G-H  **có bảng so kế cạnh gốc** — truyền `--compare-sheet`; thiếu ⇒ cả lô FAIL
+    G-H  **3–5 cặp so kế cạnh gốc** (luật lần 154 mục 3) — `--compare-dir <thư mục>` hoặc
+         `--compare-sheet` (lặp được); mặc định cần ≥ 3, đổi bằng `--min-pairs`
 
-Exit 0 = lô ĐẠT hết; 1 = có ít nhất 1 cổng trượt (lô **không** được nộp); 2 = lỗi đầu vào.
+Exit 0 = **SÀN kỹ thuật đạt** (mọi cổng số + đủ cặp so kế cạnh); 1 = trượt; 2 = lỗi đầu vào.
+
+> **Sàn ≠ duyệt.** Theo lần 154 mục 1: "số = SÀN kỹ thuật thôi — không phải duyệt". Lô đạt hết số mà
+> xấu vẫn **REDO**; cổng duyệt là **audit mĩ thuật** của vai `Art-style-auditor`, không phải script này.
 
 `--selftest` dựng 3 mẫu bằng máy (phẳng · cartoon viền dày · 2.5D), chấm và **tự kiểm** rằng lô bị
 chặn đúng lý do — chạy lệnh này sau khi sửa ngưỡng trong `measure_asset.py`.
@@ -107,7 +111,22 @@ def grade_asset(path: pathlib.Path, cls: str, canvas: str | None) -> tuple[list[
     return bad, m
 
 
-def run(manifest: pathlib.Path, compare_sheet: str | None, out: pathlib.Path | None) -> int:
+def _collect_sheets(sheets: list[str] | None, folder: str | None) -> list[pathlib.Path]:
+    """Gom các ảnh so kế cạnh: file truyền trực tiếp + mọi .png trong thư mục."""
+    found = [pathlib.Path(s) for s in (sheets or []) if pathlib.Path(s).exists()]
+    if folder:
+        d = pathlib.Path(folder)
+        if d.is_dir():
+            found += sorted(d.glob("*.png"))
+    uniq: list[pathlib.Path] = []
+    for f in found:
+        if f not in uniq:
+            uniq.append(f)
+    return uniq
+
+
+def run(manifest: pathlib.Path, sheets: list[str] | None, out: pathlib.Path | None,
+        compare_dir: str | None = None, min_pairs: int = 3) -> int:
     if not manifest.exists():
         print(f"✗ không thấy manifest: {manifest}")
         return 2
@@ -151,25 +170,30 @@ def run(manifest: pathlib.Path, compare_sheet: str | None, out: pathlib.Path | N
         for item in bad:
             print(f"        ↳ {item}")
 
-    sheet_ok = bool(compare_sheet) and pathlib.Path(compare_sheet).exists()
+    pairs = _collect_sheets(sheets, compare_dir)
+    sheet_ok = len(pairs) >= min_pairs
     print()
-    print(f"  G-H bảng so kế cạnh: {'CÓ — ' + str(compare_sheet) if sheet_ok else 'THIẾU'}")
+    print(f"  G-H cặp so kế cạnh: {len(pairs)} (cần ≥ {min_pairs}, tối đa có nghĩa 5)")
+    for p_ in pairs:
+        print(f"        · {p_}")
     if not sheet_ok:
-        print("        ↳ thiếu bảng so kế cạnh ⇒ cả lô KHÔNG được duyệt (luật lần 149 mục 2)")
+        print(f"        ↳ thiếu cặp so kế cạnh ⇒ lô KHÔNG đạt SÀN (luật lần 149 mục 2 + lần 154 mục 3)")
 
     print()
     if gate_count:
         print("  lỗi theo cổng: " + " · ".join(f"{k}×{v}" for k, v in sorted(gate_count.items())))
     ok = n_bad == 0 and sheet_ok
-    print(f"  → {'ĐẠT: lô được nộp' if ok else f'KHÔNG ĐẠT: {n_bad}/{len(results)} asset trượt'}"
-          f"{'' if sheet_ok else ' + thiếu G-H'}")
+    print(f"  → {'SÀN ĐẠT' if ok else f'KHÔNG ĐẠT SÀN: {n_bad}/{len(results)} asset trượt'}"
+          f"{'' if sheet_ok else f' + thiếu cặp G-H ({len(pairs)}/{min_pairs})'}")
+    print("     sàn kỹ thuật ≠ duyệt: lô còn phải qua **audit mĩ thuật** (Art-style-auditor).")
+    print("     Đạt số mà xấu vẫn REDO (lần 154 mục 1).")
 
     if out:
         with out.open("w", encoding="utf-8", newline="") as fh:
             wr = csv.writer(fh, lineterminator="\r\n")
             wr.writerow(["file", "class", "verdict", "fail_count", "fails",
                          "colors", "val", "val_std", "dark", "chroma",
-                         "grad_stops", "outline_px", "detail", "compare_sheet"])
+                         "grad_stops", "outline_px", "detail", "pairs", "compare_sheets"])
             for f, cls, bad, m in results:
                 wr.writerow([f, cls, "PASS" if not bad else "FAIL", len(bad), " | ".join(bad),
                              int(m["colors"]) if m else "", _fmt(m["val"]) if m else "",
@@ -177,7 +201,7 @@ def run(manifest: pathlib.Path, compare_sheet: str | None, out: pathlib.Path | N
                              _fmt(m["chroma"]) if m else "",
                              int(m["grad_stops"]) if m else "", _fmt(m["outline_px"]) if m else "",
                              _fmt(m["detail"]) if m else "",
-                             "yes" if sheet_ok else "no"])
+                             str(len(pairs)), " | ".join(p.name for p in pairs)])
         print(f"  đã ghi kết quả: {out}")
 
     return 0 if ok else 1
@@ -196,14 +220,22 @@ def selftest() -> int:
             for kind in M.ARCHETYPES:
                 wr.writerow([f"{kind}.png", "ship", "128x128"])
 
-        print("— lô thử 1: KHÔNG có bảng so kế cạnh (phải trượt vì G-H) —")
+        print("— lô thử 1: KHÔNG có cặp so kế cạnh (phải trượt vì G-H) —")
         rc1 = run(man, None, None)
         print()
-        print("— lô thử 2: CÓ bảng so kế cạnh (vẫn trượt: mẫu máy không đạt màu §4.3/§4.5b) —")
-        sheet = tmp / "compare.png"
-        M._archetype("metal").save(sheet)
+        print("— lô thử 2: chỉ 1 cặp (vẫn trượt: cần ≥ 3 — luật lần 154) —")
+        one = tmp / "compare_1.png"
+        M._archetype("metal").save(one)
+        rc1b = run(man, [str(one)], None)
+        print()
+        print("— lô thử 3: đủ 3 cặp (vẫn trượt: mẫu máy không đạt màu §4.3/§4.5b) —")
+        sheets = []
+        for i in (1, 2, 3):
+            pth = tmp / f"compare_{i}.png"
+            M._archetype("metal").save(pth)
+            sheets.append(str(pth))
         out = tmp / "result.csv"
-        rc2 = run(man, str(sheet), out)
+        rc2 = run(man, sheets, out)
         rows = list(csv.DictReader(out.open(encoding="utf-8", newline="")))
 
         fails = 0
@@ -215,8 +247,9 @@ def selftest() -> int:
             fails += not ok
 
         print()
-        check("lô thiếu G-H ⇒ exit 1", rc1, 1)
-        check("lô đủ G-H nhưng mẫu sai ⇒ exit 1", rc2, 1)
+        check("lô 0 cặp G-H ⇒ exit 1", rc1, 1)
+        check("lô 1 cặp G-H ⇒ vẫn exit 1", rc1b, 1)
+        check("lô ≥3 cặp nhưng mẫu sai ⇒ exit 1", rc2, 1)
         check("ghi đủ 3 dòng kết quả", len(rows), 3)
         check("mọi mẫu FAIL", sum(1 for r in rows if r["verdict"] == "FAIL"), 3)
         flat = next(r for r in rows if r["file"] == "flat.png")
@@ -228,7 +261,7 @@ def selftest() -> int:
               all(g not in metal["fails"] for g in ("A14", "A15", "A16")), True)
         check("2.5D chỉ trượt vì màu (mẫu máy, không phải art)",
               all(g in metal["fails"] for g in ("A11",)), True)
-        check("cột compare_sheet = yes", {r["compare_sheet"] for r in rows}, {"yes"})
+        check("cột pairs = 3", {r["pairs"] for r in rows}, {"3"})
         print()
         if fails:
             print(f"✗ {fails} phép kiểm của gate_batch trượt")
@@ -240,7 +273,10 @@ def selftest() -> int:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Chấm cả lô theo cổng của ART_REDRAW_PLAN")
     ap.add_argument("--manifest", type=pathlib.Path, help="CSV: file,class[,canvas]")
-    ap.add_argument("--compare-sheet", help="đường dẫn bảng so kế cạnh gốc (G-H)")
+    ap.add_argument("--compare-sheet", action="append",
+                    help="1 cặp so kế cạnh (lặp được, cần ≥ 3 cặp — luật lần 154)")
+    ap.add_argument("--compare-dir", help="thư mục chứa các cặp so kế cạnh (*.png)")
+    ap.add_argument("--min-pairs", type=int, default=3, help="số cặp tối thiểu (mặc định 3)")
     ap.add_argument("--out", type=pathlib.Path, help="ghi kết quả từng asset ra CSV")
     ap.add_argument("--selftest", action="store_true", help="tự kiểm bằng 3 mẫu dựng máy")
     args = ap.parse_args(argv)
@@ -250,7 +286,7 @@ def main(argv: list[str] | None = None) -> int:
     if not args.manifest:
         ap.print_help()
         return 2
-    return run(args.manifest, args.compare_sheet, args.out)
+    return run(args.manifest, args.compare_sheet, args.out, args.compare_dir, args.min_pairs)
 
 
 if __name__ == "__main__":

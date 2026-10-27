@@ -237,12 +237,12 @@ def main() -> int:
     import re
     risks = re.findall(r"^\| \*\*(R\d+)\*\* \|", text["plan"], re.M)
     check_eq("mã rủi ro không trùng", len(risks), len(set(risks)))
-    check_eq("số rủi ro §6", len(risks), 14)
+    check_eq("số rủi ro §6", len(risks), 15)
     sec8 = text["plan"].split("## 8. Còn thiếu")[1]
     items = re.findall(r"^\| (\d+) \|", sec8, re.M)
-    check_eq("mục §8 liên tục 1..16",
+    check_eq("mục §8 liên tục 1..17",
              [int(x) for x in items], list(range(1, len(items) + 1)))
-    check_eq("số mục §8", len(items), 16)
+    check_eq("số mục §8", len(items), 17)
     for name, doc in (("plan", text["plan"]), ("w1", text["w1"]), ("w0", text["w0"])):
         check_eq(f"{name}: không còn 'pilot 20 asset'", doc.count("pilot 20 asset"), 0)
     for token in ("### 5.8", "**R11**", "**R12**", "**R13**", "| 13 | **Ngân sách màu",
@@ -364,13 +364,18 @@ def main() -> int:
         with contextlib.redirect_stdout(buf):
             rc = gate_batch.selftest()
         check_eq("gate_batch --selftest exit", rc, 0)
-        check_eq("gate_batch: bắt thiếu G-H", "thiếu bảng so kế cạnh" in buf.getvalue(), True)
+        check_eq("gate_batch: bắt thiếu cặp G-H", "thiếu cặp so kế cạnh" in buf.getvalue(), True)
+        check_eq("gate_batch: nói rõ sàn ≠ duyệt", "sàn kỹ thuật ≠ duyệt" in buf.getvalue(), True)
     except Exception as exc:  # noqa: BLE001
         print("  FAIL không chạy được gate_batch.py:", exc)
         fails.append(f"gate_batch: {exc}")
     for doc, token in (("plan", "### 3.7"), ("plan", "### 7.6"), ("plan", "redo-scope.csv"),
                        ("plan", "gate_batch.py"), ("plan", "8 nhóm · 11 file"),
-                       ("w1", "gate_batch.py"), ("w0", "gate_batch.py")):
+                       ("w1", "gate_batch.py"), ("w0", "gate_batch.py"),
+                       ("plan", "3–5 cặp"), ("plan", "SÀN"), ("plan", "**R15**"),
+                       ("plan", "lần 154"), ("plan", "*G-I*"), ("w1", "3–5 cặp so kế cạnh"),
+                           ("plan", "394,6"), ("plan", "1.026,0"), ("plan", "1.262,7"),
+                           ("w0", "3–5 cặp so kế cạnh")):
         ok = token in text[doc]
         print(f"  {'OK ' if ok else 'FAIL'} {doc:4s} chứa {token!r}")
         if not ok:

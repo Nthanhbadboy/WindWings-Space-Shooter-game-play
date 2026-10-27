@@ -26,7 +26,7 @@
 | Nhóm thế nào? | **22 batch / 8 lane**: PLAYER 48 đơn vị · ENEMY 34 · BOSS 42 · UI 307 · FX 26 · BG 44 · ITEM 9 · EXCL 278 (A) |
 | Khối lượng? | **L2 = 177 h** (prorate theo bản ghi) — **lập lịch bằng 206 h** (`l2_h_v3`, dòng `v2′` §5.2) · **L3 khuyến nghị = 1.610 h** (801 bản ghi) · **full parity = 4.388 h** (C, ±25 %) — **dùng bộ số v2 đã đo lại `reuse` (§3.6)**, không dùng bộ v1 149 / 1.264 / 3.916 |
 | Chuẩn art? | 9 **công thức tô** đã kiểm bằng số (val · val_std · dark · chroma) + palette Ink & Ember đo HSV (A) |
-| Chuẩn **2.5D**? | **3 chỉ số đo máy** — `grad_stops` · `outline_px` · `detail` (§4.5b, thêm sau **STYLE-CORRECTION lần 149**): bảng màu §4.5 đúng nhưng **không mô tả kỹ thuật render**, nên A ra phẳng, B ra cartoon viền dày. Cổng: **G-G** (máy) + **G-H** (bảng so kế cạnh gốc) |
+| Chuẩn **2.5D**? | **3 chỉ số đo máy** — `grad_stops` · `outline_px` · `detail` (§4.5b, thêm sau **STYLE-CORRECTION lần 149**): bảng màu §4.5 đúng nhưng **không mô tả kỹ thuật render**, nên A ra phẳng, B ra cartoon viền dày. Cổng: **G-G** (máy) + **G-H** (3–5 cặp so kế cạnh gốc). **Đây là SÀN kỹ thuật, không phải duyệt** (lần 154) — duyệt mĩ thuật thuộc vai khác |
 | Thứ tự? | **S0 → W1 (L2) → W2 → W3 → W4 → W5**, mỗi cổng wave là một phép đo, không phải cảm nhận |
 | File còn lại | [`art-planner.csv`](art-planner.csv) — **655 dòng** (629 đơn vị + 22 overhead + **4 dòng W0 listing**), **36 cột** (gồm `h_scope_v2` · `l2_h_v2` · `l2_h_v3` · `de_est` · `reuse_est` · `h_w0`), khớp từng nhóm worklist |
 | Đơn hàng đã bung | [`W1_WORK_ORDER.md`](W1_WORK_ORDER.md) — **48 unit PLAYER**, 13 unit ở W1 = **34,0 h** (§6: W1 = **206,4 h**) · [`W0_LISTING_ASSETS.md`](W0_LISTING_ASSETS.md) — **27 slot** listing 3 store = **35 h**, sổ riêng |
@@ -43,7 +43,7 @@
 | [`redo-scope.csv`](redo-scope.csv) | 20 batch · chi phí redo 2.5D (§3.7, **ngoài** baseline) | `verify_numbers.py` |
 | [`gate_batch.py`](gate_batch.py) | chấm **cả lô**: A1·A6·A11–A16 + G-H, ghi `result.csv` cho auditor | `--selftest` |
 | [`measure_asset.py`](measure_asset.py) | đo sprite theo §4.9 + 3 chỉ số 2.5D (§4.5b) + tái lập 9 recipe | `--recipe` · `--style-selftest` |
-| [`verify_numbers.py`](verify_numbers.py) | **236 phép kiểm** trên toàn bộ hồ sơ | exit 0 |
+| [`verify_numbers.py`](verify_numbers.py) | **247 phép kiểm** trên toàn bộ hồ sơ | exit 0 |
 
 **Một câu chốt:** kho hiện có **không phải** 2.197 sprite phải vẽ — nó là **2.185 bản ghi**, trong đó
 **788 đơn vị vẽ thật**, và chỉ **801 bản ghi (37 %) là cần vẽ cho bản L3 khuyến nghị**; **1.451 h (37 %)**
@@ -427,6 +427,10 @@ panel-line) nên rẻ hơn vẽ mới, nhưng không rẻ hơn một nửa. **Th
 | *15 batch còn lại* | | | 668,0 | 267,2 |
 | **Σ (20 batch)** | | | **1.578,4** | **631,4** |
 
+**Pass-2 (mĩ thuật) chưa có hệ số** — lần 154 cho thấy redo pass-1 mới đạt *kỹ thuật*. Hai mốc tham chiếu, cùng giả định
+"giữ composition + palette": **0,25×** ⇒ **+394,6 h** (2 pass ⇒ **1.026,0 h**) · **0,40×** ⇒ **+631,4 h** (2 pass ⇒ **1.262,7 h**).
+Chỉ là **kịch bản** cho user quyết ngân sách; số thật lấy từ 2 batch đầu.
+
 Luật:
 1. `h_redo` **không** nằm trong **1.610,4 h** baseline — đây là chi phí sửa vì chuẩn cũ thiếu tầng render (**R14**).
    Cộng vào ngân sách hay coi là chi phí của giai đoạn trước là **quyết định của user**, không phải của planner.
@@ -584,9 +588,12 @@ python3 docs/art-plan/measure_asset.py --dir art/w1/sprites --class ship --style
 python3 docs/art-plan/measure_asset.py --style-selftest    # chỉ chạy khi ai đó đổi ngưỡng DARK_VAL/DETAIL_RANGE
 ```
 
-Exit 0 = mọi file trong dải 3 chỉ số; exit 1 = in tên file + chỉ số lệch. **Ba chỉ số này là điều kiện cần, không
-phải điều kiện đủ** — chúng bắt được đúng hai lỗi đã xảy ra (phẳng · viền dày), nhưng "đẹp như WindWings" vẫn phải
-chấm bằng **G-H** (bảng so kế cạnh gốc, §4.10).
+Exit 0 = mọi file trong dải 3 chỉ số; exit 1 = in tên file + chỉ số lệch.
+
+> **Đây là SÀN kỹ thuật, KHÔNG phải cổng duyệt** (STYLE-CORRECTION ROUND 2, lần 154): máy đo được *kỹ thuật*, không
+> đo được *đẹp*. Lô đạt hết số mà xấu vẫn **REDO**. Ba chỉ số bắt đúng hai lỗi đã xảy ra (A phẳng · B viền dày) và
+> chỉ có thế; cổng duyệt là **audit mĩ thuật** của vai `Art-style-auditor` — planner **không** tự mở rộng sang
+> thẩm mỹ (lệnh lần 154: *"giữ cổng số (sàn)"*).
 
 ### 4.6 Gradient, viền, hình khối
 
@@ -656,11 +663,13 @@ Không thay `tools/art-study.py` (đo mẫu gốc trên contact sheet); script n
 | **G-E** | pháp lý: không logo bên thứ ba, không hình gốc, không tên gốc | `ASSETS` §8 | checklist |
 | **G-F** | đọc được ở 0,2 s: ảnh gameplay 2× chồng lên nền tối | mắt, 1 ảnh/wave | — |
 | **G-G** | **3 chỉ số 2.5D**: `grad_stops` · `outline_px` · `detail` (dải ở §4.5b) | câu chữ lần 149 | `measure_asset.py --dir … --class … --style` |
-| **G-H** | **bảng so kế cạnh gốc**: sprite mình ↔ sprite gốc gần nhất, **cùng scale**, cắt từ `docs/assets/contact-sheets/` | mắt, 1 bảng/lô — **thiếu bảng = không duyệt** | — (chỉ đối chiếu, **không trace**) |
+| **G-H** | **3–5 cặp** so kế cạnh gốc: sprite mình ↔ sprite gốc gần nhất, **cùng scale**, cắt từ `docs/assets/contact-sheets/` (ngâm reference **trước** khi vẽ — lần 154 mục 3) | mắt, **≥ 3 cặp/lô**; thiếu = không đạt sàn | `gate_batch.py --compare-dir …` (đếm cặp) |
+| *G-I* | *audit mĩ thuật: độ chín thương mại · silhouette · greebles/mật độ chi tiết …* | **vai `Art-style-auditor`** — planner **không** định nghĩa, **không** chấm | — |
 
 **Ánh xạ sang đơn hàng vẽ (`W1_WORK_ORDER.md` §4 có A1–A16 cho từng unit):**
 `A4 ↔ G-B` · `A9 ↔ G-C` · `A10 ↔ G-F` · `A12/A13 ↔ G-A` · **`A14/A15/A16 ↔ G-G`** · `A11` (ngân sách màu) là cổng lô, đo cùng G-A.
-**`G-H`** (bảng so kế cạnh) là cổng **theo lô**: không có bảng thì lô không được duyệt, dù mọi chỉ số máy đều đạt.
+**`G-H`** (3–5 cặp so kế cạnh) là cổng **theo lô**: thiếu cặp thì lô không đạt sàn, dù mọi chỉ số máy đều đạt.
+**`G-G` + `G-H` = SÀN, không phải duyệt**: đạt sàn rồi vẫn phải qua **audit mĩ thuật (G-I)**. Máy PASS mà art xấu đúng là lỗi đã xảy ra ở vòng 1 (lần 154) — đừng đọc “SÀN ĐẠT” thành “được duyệt”.
 `G-D` (9-slice) và `G-E` (pháp lý) là cổng **theo asset UI/brand**, không nằm trong A1–A16 của sprite — đừng trộn.
 
 ### 4.11 Đối chiếu **9 luật** của `ART_STUDY` §4 với chuẩn của bản mới (truy vết 1–1)
@@ -826,10 +835,10 @@ Không có ④ thì cả lịch 50,3 tuần là số chưa kiểm.
 
 | Wave | Phải đo / chứng minh | Nếu trượt thì |
 |---|---|---|
-| **W0 (listing)** | icon đọc ở **48 px** (A-L5) · key art + promo qua **G-A + G-G** · **bảng so kế cạnh** với contact sheet gốc (G-H) trên icon + 1 screenshot | làm lại lô; **không** export lên store |
-| **S0** | 9 recipe khớp số (§4.5) · 16 asset pilot có `val/val_std/dark/chroma` trong dải §4.3 · **13 asset `full` qua A14·A15·A16** (§4.5b) + **1 bảng so kế cạnh** (G-H) · `fill` atlas thật (`Σ area / fill`, §4.8) ⇒ quyết 12 hay 14–16 page · giờ thật/asset vs kế hoạch | **không mở W1**; sửa recipe/rate trước (rủi ro S2, R10) |
+| **W0 (listing)** | icon đọc ở **48 px** (A-L5) · key art + promo qua **G-A + G-G** · **3–5 cặp so kế cạnh** với contact sheet gốc (G-H) trên icon + screenshot | làm lại lô; **không** export lên store |
+| **S0** | 9 recipe khớp số (§4.5) · 16 asset pilot có `val/val_std/dark/chroma` trong dải §4.3 · **13 asset `full` qua A14·A15·A16** (§4.5b) + **3–5 cặp so kế cạnh** (G-H) · `fill` atlas thật (`Σ area / fill`, §4.8) ⇒ quyết 12 hay 14–16 page · giờ thật/asset vs kế hoạch | **không mở W1**; sửa recipe/rate trước (rủi ro S2, R10) |
 | **W1 (L2)** | 13 unit qua A1·A2·A4·A5·A6·A7·A9·**A13**·**A14**·**A15** · **G-C** (tương phản 0,45–0,80) + **G-F** (đọc trong 0,2 s) trên ảnh gameplay 1080×1920 | sửa palette trước khi mở W2 (R3); không vẽ thêm |
-| **W2** | 7 batch gameplay: **A14–A16 chạy máy + G-H mỗi lô** · G-C + G-F lặp lại · `fill` atlas của `enemy`/`bullet` khớp 0,10/0,22 (§4.8) · **`colors` đếm được trên art thật**: enemy 30–60, bullet 24–40 · **1 bg full** để chốt `colors` 30–50 + `dark ≥ 0,55` (§8 #13) | dừng ở W2a; W2b (tàu + nền) chưa mở |
+| **W2** | 7 batch gameplay: **A14–A16 chạy máy + ≥ 3 cặp G-H mỗi lô** · G-C + G-F lặp lại · `fill` atlas của `enemy`/`bullet` khớp 0,10/0,22 (§4.8) · **`colors` đếm được trên art thật**: enemy 30–60, bullet 24–40 · **1 bg full** để chốt `colors` 30–50 + `dark ≥ 0,55` (§8 #13) | dừng ở W2a; W2b (tàu + nền) chưa mở |
 | **W3** | **1 boss full** chốt `colors` 110–160 + ≥ 1 khối phá được · A4 silhouette trên 512² | boss không đạt ⇒ chuyển sang Spine và **cộng riêng** (§8 #6, R4) |
 | **W4** | icon đọc được ở **48 px** (dùng lại A-L5 của W0) · `C ≤ 0,14` cho toàn bộ UI icon | gộp W4 vào W5 thay vì vẽ 2 lần |
 | **W5** | 9-slice kéo 3 kích thước (G-D) · `colors` 40–70 · toàn bộ luồng UI chạy được trên build | cắt W5a/W5b theo §5.6 |
@@ -855,6 +864,7 @@ Không có ④ thì cả lịch 50,3 tuần là số chưa kiểm.
 | **R11** | **Lỗi công thức L2** (đã xảy ra 1 lần: chia cho `n_records` thay vì `kept_records`, và tính L2 từ `tier_rate` thay vì đơn giá của dòng) | đã xảy ra 2 lần | sai lọt qua mắt người (`dot` AP-0025 ra **4,80 h > 3,12 h** scope của chính nó) | `verify_numbers.py` §3 đếm số dòng `l2_h_v3 > h_scope_v2` = **0 trên 655 dòng**; mọi số L2 phải suy từ `h_scope_v2` của chính dòng |
 | **R12** | **Pilot và wave đếm trùng giờ** (S0-01 = PS-01, cùng tàu `10001`) | trung bình | 4,2 h | §5.7 luật 3: mặc định pilot **không** vào build; nếu promote thì **trừ** ở W1 và ghi vào `rule_hint` |
 | **R13** | **Cỡ ảnh store xung đột với thiết kế dọc** (MS ≥ 1366×768 · Amazon chỉ 7 cỡ ngang) | cao | chặn 10/27 slot W0 | `W0_LISTING_ASSETS.md` §4 (W0-R1/R2) — **cần user quyết**, không tự chọn |
+| **R15** | **Số-chuẩn ≠ đẹp** — máy chấm được kỹ thuật (gradient/AO/viền) nhưng **không** chấm được độ chín thương mại, silhouette, mật độ greeble; vòng 1 đã PASS số mà art vẫn "như trẻ 3 tuổi vẽ" | đã xảy ra (lần 154) | redo pass-2, mất thêm một vòng công sức | quy ước **G-G/G-H = sàn**, không phải duyệt; **≥ 3 cặp so kế cạnh** + ngâm reference **trước** khi vẽ; cổng duyệt = **audit mĩ thuật** (`Art-style-auditor`). Planner **không** tự định nghĩa chuẩn đẹp |
 | **R14** | **Style bị giản lược thành con số** — §4.5 chỉ đo **màu**, không đo **kỹ thuật render** ⇒ A ra vector phẳng, B ra cartoon viền dày, **cả hai đều "đúng bảng"** | đã xảy ra (**lần 149**) | redo = **sổ riêng** `redo-scope.csv` (§3.7): 20 batch · Σ **631,4 h** ở hệ số 0,40 (W1 riêng lane PLAYER ≈ +48 h) — **(C) INFERRED**, **chưa** nằm trong 1.610,4 h | §4.5b (3 chỉ số + dải) · **G-G** máy + **G-H** bảng so kế cạnh · luật mới: *số đo màu không thay được ảnh đối chiếu* |
 
 **Giả định đã dùng (tất cả là (C)):** 1 artist làm được 32 h/tuần có ích · rate §3.2 đúng với đội
@@ -955,16 +965,17 @@ Mỗi lô nộp **5 thứ**, thiếu 1 là không duyệt:
 |---|---|---|---|
 | 1 | `manifest.csv` | `file,class[,canvas]` — 1 dòng/asset, `class` đúng 9 nhóm §4.3 | auditor chạy lại |
 | 2 | thư mục PNG | tên theo A7: `<lane>_<vai>_<variant>_<size>@<màu>.png` | script regex |
-| 3 | `result.csv` từ `gate_batch.py` | PASS/FAIL từng asset + lỗi theo cổng (A1·A6·A11–A16) | auditor chạy **lại độc lập** rồi so |
-| 4 | **bảng so kế cạnh (G-H)** | sprite mình ↔ sprite gốc gần nhất, **cùng scale**, cắt từ `docs/assets/contact-sheets/` | mắt |
+| 3 | `result.csv` từ `gate_batch.py` | PASS/FAIL từng asset + lỗi theo cổng (A1·A6·A11–A16) + **số cặp G-H** | auditor chạy **lại độc lập** rồi so |
+| 4 | **3–5 cặp so kế cạnh (G-H)** | sprite mình ↔ sprite gốc gần nhất, **cùng scale**, cắt từ `docs/assets/contact-sheets/` | mắt |
 | 5 | ghi chú lô | batch · wave · ngày · người vẽ · `recipe` | đối chiếu planner |
+| 6 | **ký audit mĩ thuật (G-I)** | vai `Art-style-auditor` ký ĐẠT/KHÔNG trên **lớp đẹp** — planner **không** chấm lớp này | auditor |
 
 ```bash
 python3 docs/art-plan/gate_batch.py --manifest art/w1/PS/manifest.csv \
-    --compare-sheet art/w1/PS/compare_PS.png --out art/w1/PS/result.csv
+    --compare-dir art/w1/PS/compare --min-pairs 3 --out art/w1/PS/result.csv
 ```
 
-Exit 0 = lô ĐẠT (mọi asset qua cổng **và** có bảng so kế cạnh). Auditor chỉ cần chạy đúng lệnh trên với manifest
+Exit 0 = **SÀN ĐẠT** (mọi asset qua cổng số **và** có ≥ 3 cặp so kế cạnh) — *không* phải “được duyệt”. Auditor chỉ cần chạy đúng lệnh trên với manifest
 của lô: nếu `result.csv` của họ **khác** của người nộp thì lỗi ở khâu khai `class`/`canvas`, không phải khâu vẽ —
 đó là lý do manifest là **file bắt buộc**, không phải tuỳ chọn.
 
@@ -990,3 +1001,4 @@ của lô: nếu `result.csv` của họ **khác** của người nộp thì l�
 | 14 | **Canvas đạn orb**: `ASSETS` §3 ghi 24², nhưng `plasmagun` gốc 128² và `blt_player_5.` gốc 256² | **chờ duyệt** (deviation) | art director chốt 24² hay 64² trước khi vẽ S0-08; quyết xong ghi vào §4.7 |
 | 15 | **10/27 slot W0 phụ thuộc quyết định của user** (screenshot MS dọc · screenshot Amazon ngang) | **chặn** | xem `W0_LISTING_ASSETS.md` §6 câu 1–2 |
 | 16 | **Dải 3 chỉ số style (§4.5b) chưa neo trên art gốc** — mới neo bằng câu chữ lần 149 + mẫu dựng máy; đo trên contact sheet JPEG thì nền caro và nén JPEG làm `detail` phồng | **tạm** | lô 2.5D thật đầu tiên (W0-redo hoặc S0) đo rồi **sửa dải MỘT lần**, ghi số gốc lại vào §4.5b |
+| 17 | **Chuẩn mĩ thuật (lớp 2) chưa có người định nghĩa, chưa có rubric** — vai `Art-style-auditor` còn trống; hiện chỉ có câu chữ ở lần 154 (độ chín · silhouette · greebles · "3 người nhìn biết cùng game với gốc") | **chặn duyệt** | session mới CLAIM vai auditor rồi viết rubric; planner chỉ bàn giao số + gói nộp (§7.6), **không** viết tiêu chí đẹp |

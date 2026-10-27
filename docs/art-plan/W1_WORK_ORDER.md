@@ -177,11 +177,11 @@ python3 docs/art-plan/measure_asset.py --dir <thư-mục-PNG-của-unit> --class
 python3 docs/art-plan/measure_asset.py --recipe      # kiểm 9 công thức §4.5 (chạy lại nếu ai đổi hex palette)
 ```
 
-**Nộp lô thì dùng `gate_batch.py`**, không dùng `--dir`: nó chấm cả lô, kiểm luôn **G-H** (bảng so kế cạnh) và ghi `result.csv` để auditor/curator chạy lại độc lập (gói nộp ở plan §7.6):
+**Nộp lô thì dùng `gate_batch.py`**, không dùng `--dir`: nó chấm cả lô, đếm **cặp so kế cạnh (G-H, ≥ 3)** và ghi `result.csv` để auditor chạy lại độc lập (gói nộp ở plan §7.6):
 
 ```bash
 python3 docs/art-plan/gate_batch.py --manifest art/w1/PS/manifest.csv \
-    --compare-sheet art/w1/PS/compare_PS.png --out art/w1/PS/result.csv
+    --compare-dir art/w1/PS/compare --min-pairs 3 --out art/w1/PS/result.csv
 ```
 
 Script in `colors · val · val_std · dark · chroma · fill` + (khi có `--style`) `grad · outl · detail`, và **chỉ ra metric nào ra ngoài dải §4.3/§4.5b** — dùng luôn làm
@@ -191,7 +191,7 @@ bằng chứng cho A11/A12/A13 thay vì mắt. A1 (alpha) và A6 (canvas) kiểm
 
 | Wave | Unit phải qua | Ghi chú |
 |---|---|---|
-| **W1 (L2)** | **A1 · A2 · A4 · A5 · A6 · A7 · A9 · A13 · A14 · A15** | A3/A8/A10/A11/A12/A16 để L3 — nhưng **A4 + A9 + A13 + A14 + A15 là bắt buộc**: A13 là đặc trưng nhóm (bullet phải tối); **A14/A15 là lỗi đã xảy ra ở cả A và B** (phẳng / viền dày) nên không thể để L3 mới đo. Mỗi lô nộp kèm **bảng so kế cạnh gốc** (G-H) — thiếu bảng = không duyệt, dù máy đạt hết |
+| **W1 (L2)** | **A1 · A2 · A4 · A5 · A6 · A7 · A9 · A13 · A14 · A15** | A3/A8/A10/A11/A12/A16 để L3 — nhưng **A4 + A9 + A13 + A14 + A15 là bắt buộc**: A13 là đặc trưng nhóm (bullet phải tối); **A14/A15 là lỗi đã xảy ra ở cả A và B** (phẳng / viền dày) nên không thể để L3 mới đo. Mỗi lô nộp kèm **3–5 cặp so kế cạnh gốc** (G-H) — thiếu cặp = không đạt sàn, dù máy đạt hết. **Nhưng A14–A16 là SÀN, không phải duyệt** (lần 154): đạt số mà xấu vẫn bị trả về |
 | **W2 (phần còn lại)** | **A1–A16** | thêm A3 (3 tông), A8 (nhiễu), A10 (đọc trong game), A11 (`colors`), A12 (`val_std`), A16 (`detail`) — A11/A12 đo trên lô để so được với mẫu |
 | **Cắt** | — | PS-17…PS-25 **không vẽ**; chỉ vẽ nếu scope B được nâng (xem plan §3.3) |
 
