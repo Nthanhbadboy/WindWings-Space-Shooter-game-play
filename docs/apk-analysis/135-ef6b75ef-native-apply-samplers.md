@@ -225,6 +225,7 @@ PYTHONPATH=/home/user/.cache/deps115:. python3 -m unittest tests.test_owner135 -
 | full `python3 -m unittest discover -s tests` | **1981 tests OK, 348.939 s** (was 1940 before this cycle) |
 | Verify extracted tables | run **40509111057**, conclusion **success**, head **`0ffd421bffa1ee8a77fb8bd676956b885dd38a74`** |
 | recovery run | **40507430140**, success, source `53f6536dc`, evidence commit `52c664057` |
+| handoff receipt | comment **6442988169**, commit `3bc2079f2`, Verify run **40511631120** = **success** |
 | receipts commit | **58cf84cc5**: run **40510320595** = **failure**, only because `docs/HANDOFF_AI_TASKS.md` contained a `](` sequence inside a hook notation that an existing markdown-link test parses; fixed in `c8865ea43`, no data, verifier or test byte changed |
 
 Receipts: `reverse-engineering/raw/l3-ef6b75ef135-verification/` — `claim.json`, `recovery.json`,
