@@ -24,11 +24,11 @@
 |---|---|
 | Vẽ lại bao nhiêu? | **2.185** bản ghi `Sprite` (A) ⇒ sau dedup **788 đơn vị vẽ** = **624 nhóm** worklist + **164 tên glyph** (A) |
 | Nhóm thế nào? | **22 batch / 8 lane**: PLAYER 48 đơn vị · ENEMY 34 · BOSS 42 · UI 307 · FX 26 · BG 44 · ITEM 9 · EXCL 278 (A) |
-| Khối lượng? | **L2 = 177 h** · **L3 khuyến nghị = 1.610 h** (801 bản ghi) · **full parity = 4.388 h** (C, ±25 %) — **dùng bộ số v2 đã đo lại `reuse` (§3.6)**, không dùng bộ v1 149 / 1.264 / 3.916 |
+| Khối lượng? | **L2 = 177 h** (prorate theo bản ghi) — **lập lịch bằng 206 h** (`l2_h_v3`, dòng `v2′` §5.2) · **L3 khuyến nghị = 1.610 h** (801 bản ghi) · **full parity = 4.388 h** (C, ±25 %) — **dùng bộ số v2 đã đo lại `reuse` (§3.6)**, không dùng bộ v1 149 / 1.264 / 3.916 |
 | Chuẩn art? | 9 **công thức tô** đã kiểm bằng số (val · val_std · dark · chroma) + palette Ink & Ember đo HSV (A) |
 | Thứ tự? | **S0 → W1 (L2) → W2 → W3 → W4 → W5**, mỗi cổng wave là một phép đo, không phải cảm nhận |
 | File còn lại | [`art-planner.csv`](art-planner.csv) — **655 dòng** (629 đơn vị + 22 overhead + **4 dòng W0 listing**), **36 cột** (gồm `h_scope_v2` · `l2_h_v2` · `l2_h_v3` · `de_est` · `reuse_est` · `h_w0`), khớp từng nhóm worklist |
-| Đơn hàng đã bung | [`W1_WORK_ORDER.md`](W1_WORK_ORDER.md) — **48 unit PLAYER**, 13 unit ở W1 = **34,0 h** (§6: W1 = **205,6 h**) · [`W0_LISTING_ASSETS.md`](W0_LISTING_ASSETS.md) — **27 slot** listing 3 store = **35 h**, sổ riêng |
+| Đơn hàng đã bung | [`W1_WORK_ORDER.md`](W1_WORK_ORDER.md) — **48 unit PLAYER**, 13 unit ở W1 = **34,0 h** (§6: W1 = **206,4 h**) · [`W0_LISTING_ASSETS.md`](W0_LISTING_ASSETS.md) — **27 slot** listing 3 store = **35 h**, sổ riêng |
 
 **Một câu chốt:** kho hiện có **không phải** 2.197 sprite phải vẽ — nó là **2.185 bản ghi**, trong đó
 **788 đơn vị vẽ thật**, và chỉ **801 bản ghi (37 %) là cần vẽ cho bản L3 khuyến nghị**; **1.451 h (37 %)**
@@ -338,11 +338,11 @@ tính **đắt** hơn thực tế (7,0 → 6,1 h).
 | v1 | 148,9 | 398,8 | 175,9 | 134,6 | 357,4 | 48,7 | 1.264,4 |
 | **v2** | **177,3** | **537,5** | **181,0** | **166,7** | **489,1** | **58,8** | **1.610,4** |
 | tuần 1 artist (cộng dồn) | 5,5 | 22,3 | 28,0 | 33,2 | 48,5 | 50,3 | — |
-| **v2′** (W1 theo `l2_h_v3`) | **205,6** | 509,2 | 181,0 | 166,7 | 489,1 | 58,8 | **1.610,4** |
-| tuần 1 artist (cộng dồn) | **6,4** | 22,3 | 28,0 | 33,2 | 48,5 | 50,3 | — |
+| **v2′** (W1 theo `l2_h_v3`) | **206,4** | 511,0 | 178,5 | 166,7 | 489,1 | 58,8 | **1.610,4** |
+| tuần 1 artist (cộng dồn) | **6,4** | 22,4 | 28,0 | 33,2 | 48,5 | 50,3 | — |
 
 *Dòng **v2′** là bản dùng để **lập lịch**: W1 tính theo `l2_h_v3` (giá đầy đủ từng unit, không chiết khấu reuse) thay vì
-prorate theo bản ghi ⇒ **+28,3 h vào W1, −28,3 h ở W2**; tổng và mọi mốc từ W2 trở đi **không đổi**. Xem
+prorate theo bản ghi ⇒ **+29,1 h vào W1**, bù lại **W2 −26,5 h** và **W3 −2,5 h**; **tổng không đổi**. Xem
 `W1_WORK_ORDER.md` §6.*
 
 **Ba giới hạn của phép đo này (ghi để không đọc quá số):**
@@ -464,7 +464,7 @@ Mỗi dòng là tỉ lệ diện tích trên một sprite. Cột phải là số
 | Tàu | **256×256**, PPU giữ nguyên theo sprite gốc | `ASSETS` §3 |
 | Drone / enemy | **128×128** | `ASSETS` §3 |
 | Boss | **512×512** hoặc Spine (region 100–570 px) | `ASSETS` §3 + §6 |
-| Đạn / laser | 24×24 · laser **32×512** tile dọc | `ASSETS` §3 |
+| Đạn / laser | 24×24 · laser **32×512** tile dọc · *orb gốc ≥128 px (2 nhóm ở W1): chờ duyệt **64×64** — deviation khỏi `ASSETS` §3, xem `W1_WORK_ORDER.md` §8 #6* | `ASSETS` §3 |
 | Nút / panel / ô shop / ô quà | 200×64 border 24 · 720×1080 bo 32 · 240×320 border 16 · 160×160 border 12 | `ASSETS` §3 + §5 |
 | Nền | 1024×1024 (giữ), **3 lớp** parallax 0,2× / 0,5× | `ASSETS` §1.4 |
 | 9-slice | border theo bảng `ASSETS` §5 (10 asset); **không** 9-slice nếu hoa văn chạy dọc viền | `ASSETS` §5 |
@@ -656,7 +656,8 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
    Không cần đọc phần còn lại.
    ⚠ **Nhưng đừng lập lịch bằng 177,3.** Chia đều theo bản ghi làm **thiếu** giờ L2: nền `G-PARALLAX` lấy 3/74 bản ghi
    nên chỉ bị tính 9,35 h, trong khi 3 nền đó là **3 thiết kế khác nhau** ⇒ thật là 18,72 h. Cộng `l2_h_v3`:
-   art **157,1 h** + overhead **16,5 h** + 32 S0 = **205,6 h**. Đây là **chuyển 28,3 h từ W2 sang W1**, tổng scope B
+   art **155,4 h** + overhead **16,6 h** + 32 S0 = **204,0 h**; cộng 2,35 h setup `U-HUD` mà `wave_done` xếp vào W1 ⇒ **206,4 h**.
+   Đây là **chuyển 29,1 h từ W2–W3 sang W1**, tổng scope B
    vẫn 1.610,4 h — chi tiết và bảng đối chiếu ở `W1_WORK_ORDER.md` §6.
 2. **Lọc `over_merge = cao`** → 37 dòng từng bị gắn cờ; **`de_est` đã thay việc phải xem ảnh** (§3.6), chỉ còn `hotro`
    là họ biến thể thật — không cần xem lại.
@@ -689,6 +690,9 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
 7. **`de_est`** (nếu muốn tái lập §3.6): đọc từng ô contact sheet, tách nền theo 2 tông phổ biến nhất
    (ngưỡng 26), cắt hình bao, chuẩn hoá 32×32, IoU từng cặp trong nhóm, gộp khi `IoU ≥ 0,90`;
    `de_est = số cụm`, ngoại suy `× kept_records / n_đo_được` cho nhóm đo thiếu.
+8. **Kiểm lại toàn bộ**: `python3 docs/art-plan/verify_numbers.py` — script đối chiếu planner, `w1-work-order.csv`
+   và 3 tài liệu markdown (36 cột · 655 dòng · 12 tổng bất biến · wave `v2′` · 48 unit PLAYER). Exit 0 = khớp;
+   mọi con số trong báo cáo này đều qua được script đó, không có số nào nhập tay.
 
 ---
 

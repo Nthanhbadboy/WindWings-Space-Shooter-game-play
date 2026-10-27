@@ -11,9 +11,9 @@
 | Câu | Trả lời |
 |---|---|
 | W1 vẽ gì | **48 unit** của lane PLAYER: 25 tàu · 13 drone · 8 nhóm đạn · 2 FX — nhưng **chỉ 13 unit** là L2 (5 tàu · 4 drone · 2 nhóm đạn · 2 FX) |
-| Tốn bao nhiêu | art **34,0 h** (+ setup 7,1 h của 4 batch) — phần còn lại của 48 unit (**67,8 h** art + 10,9 h setup) nằm ở W2–W3 |
-| Cả wave W1 | **205,6 h** = 32 S0 + **157,1 h** art (82 bản ghi / 29 dòng / 7 lane) + **16,5 h** overhead prorata — xem §6, **khác 177,3 h** trong plan |
-| Xong khi nào | 6,4 tuần (1 artist) tính từ S0 — thay vì 6,4 tuần của cả wave; tổng 50,3 tuần **không đổi** (§6) |
+| Tốn bao nhiêu | art **34,0 h** (+ setup **7,2 h** của 4 batch) — phần còn lại của 48 unit (**67,9 h** art + **10,8 h** setup) nằm ở W2–W3 |
+| Cả wave W1 | **206,4 h** = 32 S0 + **155,4 h** art (82 bản ghi / 29 dòng / 7 lane) + **16,6 h** overhead prorata + **2,35 h** setup `U-HUD` dồn về W1 — xem §6, **khác 177,3 h** trong plan |
+| Xong khi nào | **6,4 tuần** (1 artist, 206,4/32) tính từ S0 thay vì 5,5 tuần; tổng 50,3 tuần **không đổi** (§6) |
 | Điều kiện vào | S0 xong · palette Ink & Ember đã chốt (§4.4 plan) · quyền IP đã clear (W0-R4) · mở đúng **7 sheet nguồn**: `ships-01.jpg` · `drones-01.jpg` · `bullet-01.jpg` · `unclassified-07.jpg` · `unclassified-22.jpg` (`blt_player_5.`) · `unclassified-08.jpg` (afterburner) · `unclassified-18.jpg` (shooter) |
 | Cổng ra | 13 unit L2 qua **A1–A9** + ảnh gameplay thật ở 720×1280 đo **G-C** (tương phản .45–.80) và **G-F** (đọc trong 0,2 s) |
 
@@ -42,12 +42,13 @@ phối màu và lỗi pipeline *trước* khi mở W2 (537,5 h). Cụ thể W1 p
 |---|---|---:|---:|---:|---:|---:|---:|
 | `P-SHIP` | AP-0016 | 25 | 25 | 16 | 5 | 67,20 | 21,00 |
 | `P-DRONE` | AP-0011 | 13 | 14 | 14 | 4 | 22,90 | 6,91 |
-| `P-BULLET` | AP-0002…AP-0009 | 8 | 33 | 33 | 12 | 9,10 | 3,46 |
+| `P-BULLET` | AP-0002…AP-0009 | 8 | 33 | 33 | 12 | 9,10 | 3,45 |
 | `P-FX` | AP-0013, AP-0014 | 2 | 2 | 2 | 2 | 2,60 | 2,60 |
-| overhead | AP-0001, AP-0010, AP-0012, AP-0015 | — | — | — | — | 18,00 | 7,09 |
-| **Σ** | **16** | **48** | **74** | **65** | **23** | **119,80** | **41,06** |
+| overhead | AP-0001, AP-0010, AP-0012, AP-0015 | — | — | — | — | 18,00 | 7,23 |
+| **Σ** | **16** | **48** | **74** | **65** | **23** | **119,80** | **41,19** |
 
-*Cột `l2_h_v3` = `min(de_est, l2_n) × rate × mult × 1,20` — giá **đầy đủ** của từng unit phải vẽ ở L2 (không chiết khấu reuse).
+*Cột `l2_h_v3` = `h_scope_v2 × (min(de,l2) + (l2 − min(de,l2)) × 0,25) / (de + (kept − de) × 0,25)` — tức **đơn giá của chính dòng đó**
+× số thiết kế phải vẽ ở L2 (biến thể reuse chỉ 25 %). Công thức bảo đảm `l2_h_v3 ≤ h_scope_v2` **luôn đúng** (đã kiểm 651/651 dòng).
 Đây là cột mới thêm vào planner (cùng `l2_de`) để mỗi unit trong work order có **một con số giờ riêng**; xem §6.*
 
 L2 cần **23 bản ghi** nhưng chỉ **13 unit**: 10 bản ghi đạn `plasmagun` là 10 thiết kế trong **1 nhóm**, và 2 bản ghi
@@ -184,35 +185,38 @@ Mỗi dòng CSV có cột `accept` (mã `A-L2-xx`) + `gates_l2` / `gates_full`. 
 
 | Bước | Việc | Unit | h | Vì sao thứ tự này |
 |---|---|---|---:|---|
-| 1 | Setup 4 batch (OH-*) | 4 | 7,09 | grid/pivot/export phải có **trước** unit đầu tiên, nếu không phải export lại |
+| 1 | Setup 4 batch (OH-*) | 4 | 7,23 | grid/pivot/export phải có **trước** unit đầu tiên, nếu không phải export lại |
 | 2 | **PS-01, PS-02** | 2 | 8,40 | 2 tàu đầu = chốt palette + silhouette; đây là **cổng review #1** |
 | 3 | **PF-01, PF-02** | 2 | 2,60 | FX sáng nhất ⇒ test nền ink-900 sớm nhất có thể |
 | 4 | **PB-01** (10 viên) | 1 | 2,88 | đạn là thứ nhiều bản ghi nhất ở L2; làm sớm để lộ lỗi export 24 px |
 | 5 | **PB-02** (2 viên) | 1 | 0,58 | bổ sung nhóm đạn thứ 2 (khác màu) |
 | 6 | **PS-03, PS-04, PS-05** | 3 | 12,60 | 3 tàu còn lại, đã có palette chốt ở bước 2 |
 | 7 | **PD-01…PD-04** | 4 | 6,92 | drone cuối vì 4 hình nhỏ, dễ nhất — nhưng **vẫn phải qua A4** (64 px) |
-| **Σ** | | **13** | **34,0** | + 7,09 setup = **41,1 h** cho lane PLAYER trong W1 |
+| **Σ** | | **13** | **33,96 → 34,0** | + 7,23 setup = **41,19 h** cho lane PLAYER trong W1 |
 
 ---
 
-## 6. Đối chiếu số: 177,3 h (plan) vs 205,6 h (work order)
+## 6. Đối chiếu số: 177,3 h (plan) vs 206,4 h (work order)
 
 `STATIC_CONFIRMED` — cả hai đều tính từ `art-planner.csv`, khác nhau ở **cách chia lát L2**:
 
 | Thành phần | Plan v2 (`l2_h_v2`) | Work order (`l2_h_v3`) | Vì sao khác |
 |---|---:|---:|---|
-| Art L2 (82 bản ghi) | 137,29 | **157,10** | `l2_h_v2 = h_scope_v2 × l2_n/kept` — **chia đều** chiết khấu reuse cho cả batch. Với `G-PARALLAX` (l2 3 / kept 74) nó tính 9,35 h, nhưng 3 nền đó là **3 thiết kế khác nhau** ⇒ đúng phải là 18,72 h |
-| Overhead prorata | 8,0 (plan ghi "8 h") | **16,51** | plan chỉ cộng overhead của batch có unit L2 **trong lane PLAYER** (7,09) và làm tròn lên; đúng phải là prorata `l2_n/kept` cho **cả 11 batch** có L2 |
+| Art L2 (82 bản ghi) | 137,29 | **155,41** | `l2_h_v2 = h_scope_v2 × l2_n / **n_records**` — chia cho *tổng* bản ghi nên phạt 2 lần cho dòng có `kept < n_records`. Ví dụ `G-PARALLAX bg`: l2 3, kept **32**, n_records 64 ⇒ 199,68 × 3/64 = **9,35 h**, nhưng 3 nền đó là **3 thiết kế** ⇒ 18,72 h |
+| Overhead prorata | 8,0 (plan ghi *"+ 8 h overhead"*, **không nêu cách tính**) | **16,62** | 8,0 ≈ setup của 4 batch PLAYER (7,23, làm tròn) ⇒ plan **chỉ tính overhead của lane này**; đúng phải prorata theo tỉ lệ giờ L2 của **cả 11 batch** có L2 (W1 có 6 lane khác cùng chạy) |
+| Setup `U-HUD` dồn W1 | 0 | **2,35** | dòng `AP-0017` (`U-HUD/overhead`, 6,00 h) có `wave_done = W1` trong khi **cả 12 dòng `U-HUD` đều là W5** ⇒ phần setup còn lại sau prorata bị tính vào W1. Giữ nguyên dữ liệu plan, chỉ ghi nhận |
 | S0 | 32,0 | 32,0 | không đổi |
-| **W1** | **177,3** | **205,6** | **+28,3 h (+16 %)** |
+| **W1** | **177,3** | **206,4** | **+29,1 h (+16 %)** |
 
-**Đây là phân bổ lại, không phải tăng tổng:** 28,3 h được chuyển từ W2 sang W1 (phần còn lại của các batch đó vẫn nằm ở W2).
+**Đây là phân bổ lại, không phải tăng tổng:** 29,1 h chuyển từ các wave sau về W1 — **W2 −26,5 h** (537,5 → 511,0),
+**W3 −2,5 h** (181,0 → 178,5), W4/W5 gần như không đổi. Rollup theo `wave_done`: W1 **206,4** · W2 **511,0** · W3 **178,5** ·
+W4 **166,7** · W5 **489,1** · P3 **58,8** = **1.610,4**.
 `Σ h_scope_v2` vẫn **1.578,4 h**, scope B vẫn **1.610,4 h**, scope C vẫn **4.355,7 h**.
 
-**Hệ quả lịch:** mốc 1 = **6,4 tuần** (205,6/32) thay vì 5,5; các mốc sau **không đổi** (50,3 tuần / 25,2 tuần cho 2 artist).
+**Hệ quả lịch:** mốc 1 = **6,4 tuần** (206,4/32) thay vì 5,5; cộng dồn các mốc sau gần như không đổi (50,3 tuần / 25,2 tuần cho 2 artist).
 
-**Cách dùng:** lập lịch bằng **205,6**; con số 177,3 trong plan giữ nguyên như "kịch bản có reuse" và chỉ dùng để so sánh.
-Nếu W1 xong sớm hơn 205,6 thì phần chênh chính là reuse thật đo được — ghi vào §3.6 plan.
+**Cách dùng:** lập lịch bằng **206,4**; con số 177,3 trong plan giữ nguyên như "kịch bản có reuse" và chỉ dùng để so sánh.
+Nếu W1 xong sớm hơn 206,4 thì phần chênh chính là reuse thật đo được — ghi vào §3.6 plan.
 
 ---
 
@@ -220,9 +224,9 @@ Nếu W1 xong sớm hơn 205,6 thì phần chênh chính là reuse thật đo đ
 
 | Thứ | Vì sao |
 |---|---|
-| 35 unit còn lại của lane PLAYER (PS-06…PS-16, PD-05…PD-14, PB-03…PB-08) | thuộc W2–W3 — **67,8 h art** (+10,9 h setup còn lại), không cộng vào W1 |
+| 35 unit còn lại của lane PLAYER (PS-06…PS-16, PD-05…PD-14, PB-03…PB-08) | thuộc W2–W3 — **67,9 h art** (+10,8 h setup còn lại), không cộng vào W1 |
 | 9 tàu `10017…10999` | **cắt** khỏi scope B (plan §3.3); chỉ vẽ nếu nâng scope |
-| 123,1 h art L2 của 6 lane khác (UI 57,6 · BG 18,7 · BOSS 16,2 · ENEMY 15,8 · FX 9,6 · ITEM 5,2) | cùng wave W1 nhưng **không thuộc lane này** — xem §2 để biết ai làm |
+| 121,4 h art L2 của 6 lane khác (UI 55,9 · BG 18,7 · BOSS 16,2 · ENEMY 15,8 · FX 9,6 · ITEM 5,2) | cùng wave W1 nhưng **không thuộc lane này** — xem §2 để biết ai làm |
 | Icon / key art / screenshot | **W0**, `W0_LISTING_ASSETS.md` — 35 h, sổ riêng |
 | 954 particle system · 27 Spine rig · 577 region · 7 TMP SDF font | out-of-scope (plan §1) |
 | Boss, enemy body, UI kit, store, meta, brand | W2–W5 |
@@ -234,9 +238,12 @@ Nếu W1 xong sớm hơn 205,6 thì phần chênh chính là reuse thật đo đ
 1. **Quyền IP** (W0-R4, `USER-ONLY`): art gốc + tên `WindWings` — **chặn**, không vẽ trước khi clear.
 2. **Palette đã ký chưa**: 9 recipe ở plan §4.5 là **đề xuất**, không phải đã duyệt. Art director phải ký **trước** PS-01,
    nếu không 13 unit W1 có nguy cơ vẽ lại toàn bộ (rủi ro R3).
-3. **Ai làm 6 lane còn lại của W1** (123,1 h) — nếu chỉ 1 artist thì W1 = 205,6 h là **của một người**, và lịch 6,4 tuần chỉ đúng khi không ai khác chờ.
+3. **Ai làm 6 lane còn lại của W1** (121,4 h) — nếu chỉ 1 artist thì W1 = 206,4 h là **của một người**, và lịch 6,4 tuần chỉ đúng khi không ai khác chờ.
 4. **Canvas 256² cho tàu** có đúng với build không: nếu game render tàu ở 128 px thì giảm canvas xuống 128² để tiết kiệm ~15 % giờ lane PLAYER (`INFERRED`, cần đọc build).
 5. **Chốt cách đo A2** (đếm pixel theo 4 rổ) — hiện là script đề xuất, chưa có trong `tools/`.
+6. **Canvas cho đạn orb**: `ASSETS` §3 (spec, read-only) quy định **24×24** cho *mọi* đạn, nhưng `plasmagun` gốc 128² và
+   `blt_player_5.` gốc 256² — nếu kích thước hiển thị thật ≥ 32 px thì phải **64×64**, tức **deviation khỏi spec**.
+   Work order đang để `24²/64²`; **cần art director duyệt**, không tự đổi chuẩn.
 
 ---
 
@@ -247,4 +254,5 @@ Nếu W1 xong sớm hơn 205,6 thì phần chênh chính là reuse thật đo đ
 | `w1-work-order.csv` | 53 dòng = **48 unit** (`kind = unit`, 1 `variant`) + 4 overhead; cột `scope` = W1/W2/out, `h_l2`, `h_full`, `gates_l2`, `gates_full`, `accept` |
 | `art-planner.csv` | 655 dòng (651 + 4 W0) × **36 cột**; thêm `l2_de` · `l2_h_v3` · `h_w0` · `w0_slots` |
 | `ART_REDRAW_PLAN.md` | báo cáo chính — §3.6 (đo reuse), §4 (chuẩn art), §5 (wave), §7.3 (cách lọc L2) |
+| `verify_numbers.py` | `python3 docs/art-plan/verify_numbers.py` — đối chiếu planner + work order + 3 tài liệu; exit 0 = khớp hết |
 | `W0_LISTING_ASSETS.md` | 27 slot listing cho 3 store, 35 h, sổ riêng |
