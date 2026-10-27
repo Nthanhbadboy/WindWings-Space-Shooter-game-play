@@ -132,13 +132,39 @@ def main() -> int:
     check("work-order Σ h_full (in scope)",
           sum(num(r, "h_full") for r in units + variants if r["scope"] != "out"), 101.82)
 
-    print("6) chuỗi số phải xuất hiện trong tài liệu")
+    print("6) cổng nghiệm thu + mã accept (W1 work order)")
+    check_eq("mã accept là duy nhất", len({r["accept"] for r in w1}), len(w1))
+    check_eq("mọi dòng có mã accept", sum(1 for r in w1 if not r["accept"]), 0)
+    check_eq("unit có A13 ở L2", sum(1 for r in units if "A13" in r["gates_l2"]), len(units))
+    check_eq("unit không có A13 ở full",
+             sum(1 for r in units if "A13" not in r["gates_full"]), 0)
+    check_eq("unit không có A11/A12 ở full",
+             sum(1 for r in units if "A11" not in r["gates_full"] or "A12" not in r["gates_full"]), 0)
+
+    print("7) W0 listing — slot và giờ")
+    w0 = [r for r in rows if r["lane"] == "LISTING"]
+    slots = {r["batch_id"]: int(r["w0_slots"] or 0) for r in w0}
+    hours = {r["batch_id"]: num(r, "h_w0") for r in w0}
+    check_eq("icon slots", slots.get("L-ICON"), 8)
+    check_eq("key art slots", slots.get("L-KEYART"), 4)
+    check_eq("screenshot slots", slots.get("L-SHOT"), 15)
+    check_eq("qa slots", slots.get("L-QA"), 0)
+    check_eq("Σ slot = 8+4+15", sum(slots.values()), 27)
+    check("icon h", hours.get("L-ICON", 0), 9.0)
+    check("key art h", hours.get("L-KEYART", 0), 15.0)
+    check("screenshot h", hours.get("L-SHOT", 0), 9.0)
+    check("qa h", hours.get("L-QA", 0), 2.0)
+    check("Σ h_w0 = 35", sum(hours.values()), 35.0)
+
+    print("8) chuỗi số phải xuất hiện trong tài liệu")
     text = {k: p.read_text(encoding="utf-8") for k, p in DOCS.items()}
     for doc, token in (
         ("plan", "206,4"), ("plan", "155,4"), ("plan", "1.610,4"), ("plan", "1.578,4"),
         ("plan", "4.355,7"), ("plan", "37 dòng"), ("plan", "655 dòng**"),
         ("w1", "206,4"), ("w1", "41,19"), ("w1", "33,96"), ("w1", "67,9"),
         ("w0", "27 slot"), ("w0", "35 h"), ("w0", "1366×768"), ("w0", "450×800"),
+        ("plan", "4.11"), ("plan", "A11"), ("plan", "A12"), ("plan", "A13"),
+        ("w1", "A11"), ("w1", "A13"),
     ):
         ok = token in text[doc]
         print(f"  {'OK ' if ok else 'FAIL'} {doc:4s} chứa {token!r}")

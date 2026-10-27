@@ -392,9 +392,9 @@ không dùng số cũ để phán xét.
 | `drones` | 114 · 0,66 · 0,23 · 0,012 | **100–130 · 0,45–0,52 · 0,22–0,26 · ≤0,08 · 0,18–0,22** | −0,16: bớt "đồ chơi", tăng "thiết bị" |
 | `bosses` | 130 · 0,54 · 0,21 · 0,009 | **110–160 · 0,45–0,52 · 0,20–0,24 · ≤0,10 · 0,18–0,23** | gần như giữ; thêm 1 khối phá được phát sáng |
 | `enemy` | 30 · 0,76 · 0,23 · 0,008 | **30–60 · 0,58–0,65 · 0,23–0,27 · ≤0,06 · 0,14–0,17** | −0,13: enemy sáng nhất **trong** khung tối, không cần trắng |
-| `bullet` | 39 · **0,26** · 0,24 · **0,493** | **8–16 · 0,25–0,30 · 0,18–0,26 · ≥0,40 · ≤0,12** | **giữ nguyên** — đây là nhóm duy nhất mẫu đúng 100 % |
+| `bullet` | 39 · **0,26** · 0,24 · **0,493** | **24–40 · 0,25–0,30 · 0,18–0,26 · ≥0,40 · ≤0,12** | giữ `val`/`dark` (mẫu đúng 100 %); **hạ màu 39 → 24–40** vì canvas 24² chỉ giữ 2 tông + viền |
 | `ui` | 52 · 0,41 · 0,26 · 0,095 | **40–70 · 0,38–0,44 · 0,24–0,28 · ≤0,12 · ≤0,14** | giữ; thêm luật chroma ≤ 0,14 (xem §4.4) |
-| `fx` | 35 · 0,72 · 0,24 · 0,015 | **3–10 · 0,70–0,90 · 0,15–0,25 · ≤0,02 · ≤0,08** | giữ; "màu" gần như bỏ hẳn |
+| `fx` | 35 · 0,72 · 0,24 · 0,015 | **3–10 · 0,70–0,90 · 0,15–0,25 · ≤0,02 · ≤0,08** | giữ `val`/`dark`; **màu 35 → 3–10** (glow gần trắng — `ART_STUDY` §3.4 `sat` 0,12) |
 | `background` | 37 · 0,33 · 0,12 · 0,074 | **30–50 · 0,15–0,25 · 0,18–0,22 · ≥0,55 · ≤0,12** | **tối nhất** — nền là "giấy cắt nhiều lớp, tối dần" |
 | `items` | 70 · 0,64 · 0,22 · 0,009 | **50–80 · 0,62–0,70 · 0,22–0,28 · ≤0,05 · 0,25–0,30** | giữ: item phải rực nhất trong khung (accent duy nhất) |
 
@@ -450,7 +450,7 @@ Mỗi dòng là tỉ lệ diện tích trên một sprite. Cột phải là số
 | Thành phần | Luật | Kiểm bằng |
 |---|---|---|
 | **Số tông** | **3 tông** (shade / base / light) + 1 accent ≤ 15 % + 1 rim ≤ 5 % | đếm màu sau lượng tử hoá 32 bậc |
-| **Bước sáng** | mỗi tông lệch **±18–22 % V** so với base (không dùng 3 tông cách nhau 40 %) | `val_std` 0,20–0,28 |
+| **Bước sáng** | mỗi tông lệch **±18–22 % V** so với base (không dùng 3 tông cách nhau 40 %) | `val_std` **theo dải từng nhóm §4.3 (0,15–0,30)** — **không** dùng một dải chung; `ART_STUDY` §4 ghi 0,20–0,26 cho 5 nhóm chủ thể, đó là **dải tham khảo** cho tàu/boss/drone/enemy/ui, không áp cho `fx`/`bg`/`bullet` (`ART_STUDY` §3.2 tự nói `val_std` không phải ngưỡng tuyệt đối) |
 | **Hướng sáng** | **1 nguồn duy nhất**, từ trên-trái 30°; **không** rim 2 phía | mắt + 1 ảnh/asset |
 | **Outline** | **không** viền đen toàn cục; thay bằng **viền âm** (1–2 px @ 256², màu `ink-900` **chỉ ở cạnh khuất sáng**) | `dark ≤ 0,10` (nhân vật) |
 | **Silhouette** | thu 64 px, tô đen 100 %: 5 tàu bất kỳ vẫn phân biệt được | test 5 mẫu/wave |
@@ -508,6 +508,32 @@ thay đổi **duy nhất về atlas** mà kế hoạch này đề xuất, và ch
 | **G-D** | 9-slice: kéo 3 kích thước (nhỏ/chuẩn/lớn) không mép giả | mắt, 3 ảnh/asset | — |
 | **G-E** | pháp lý: không logo bên thứ ba, không hình gốc, không tên gốc | `ASSETS` §8 | checklist |
 | **G-F** | đọc được ở 0,2 s: ảnh gameplay 2× chồng lên nền tối | mắt, 1 ảnh/wave | — |
+
+**Ánh xạ sang đơn hàng vẽ (`W1_WORK_ORDER.md` §4 có A1–A13 cho từng unit):**
+`A4 ↔ G-B` · `A9 ↔ G-C` · `A10 ↔ G-F` · `A12/A13 ↔ G-A` · `A11` (ngân sách màu) là cổng lô, đo cùng G-A.
+`G-D` (9-slice) và `G-E` (pháp lý) là cổng **theo asset UI/brand**, không nằm trong A1–A13 của sprite — đừng trộn.
+
+### 4.11 Đối chiếu **9 luật** của `ART_STUDY` §4 với chuẩn của bản mới (truy vết 1–1)
+
+Mục đích: chứng minh **không luật nào của spec bị bỏ quên**, và mọi chỗ lệch đều có tên + lý do + chỗ kiểm —
+thay vì để người review tự phát hiện. `STATIC_CONFIRMED` cho cột "spec" (đọc `ART_STUDY` §4 ngày 2026-10-27).
+
+| # | Luật `ART_STUDY` §4 | Số của spec | Bản mới (§4.3 / §4.5 / §4.8) | Trạng thái | Kiểm ở đâu |
+|---|---|---|---|---|---|
+| 1a | Màu — **chủ thể chính** (tàu/boss/drone) | **110–160** | ship 110–160 · boss 110–160 · drone **100–130** | **KHỚP** (drone lệch −10 ở cận dưới) | G-A; pilot: nếu drone < 110 thì thêm 1 lớp vân |
+| 1b | Màu — **sprite phụ** | **30–60** | enemy 30–60 ✔ · bg 30–50 ✔ · ui 40–70 · item 50–80 · **bullet 24–40** · **fx 3–10** | **LỆCH CÓ LÝ DO** (4 nhóm ra ngoài dải) | G-A; lý do ghi ngay ở cột 5 của §4.3 |
+| 2 | `val_std` mọi sprite | **0,20–0,26** | theo nhóm: **0,15–0,30** | **LỆCH CÓ LÝ DO** — `ART_STUDY` §3.2 + §5 nói rõ *"không dùng làm ngưỡng tuyệt đối"*; `fx`/`bg`/`bullet` phẳng hơn mẫu | dùng dải §4.3, **không** dùng 0,20–0,26 để phán |
+| 3 | `val` nền **≤ 0,35** · nhân vật **0,50–0,80** | — | nền 0,15–0,25 ✔ · enemy 0,58–0,65 ✔ · **tàu/drone/boss 0,45–0,52** | **LỆCH CÓ LÝ DO** (§4.2 **V3** — palette tối, đã ghi baseline mới) | pilot S0: nếu tàu không đọc được trong rổ đạn → nâng cận dưới lên **0,50** |
+| 4 | `sat` UI **≤ 0,30** · nhân vật **0,50–0,60** | — | UI **C ≤ 0,14** · nhân vật **C 0,19–0,23** | **ÁP DỤNG KHÁC ĐƠN VỊ** — dùng `C = S·V` thay `S` (§4.4 luật 2: `S` trên pixel tối là bẫy) | G-A theo `chroma`; quy đổi: `ink-500` S 0,364 → C 0,094 |
+| 5 | FX: `sat` **≤ 0,15** · `val` **≥ 0,65** | — | C 0,063 · val 0,70–0,90 | **KHỚP** | G-A |
+| 6 | Bullet: `val` **0,22–0,30** · `dark` **≥ 0,35** | — | 0,25–0,30 · **≥ 0,40** | **KHỚP** (nhóm duy nhất mẫu đúng 100 %) | G-A |
+| 7 | `dark_share` sprite thường **≤ 0,03** | — | ≤ 0,05…0,12 theo nhóm (viền âm `ink-900` — **V2**) | **LỆCH CÓ LÝ DO** | pilot: `dark > 0,03` **và** mắt thấy viền nặng ⇒ bỏ viền âm ở cạnh sáng |
+| 8 | Không viền đen toàn cục | — | ✔ §4.6 | **KHỚP** | G-B + mắt |
+| 9 | Pack theo hình bao cho fx/enemy/bullet (`fill` 0,08–0,28) | — | ✔ §4.8 | **KHỚP** | `fill` đo ở pilot 20 asset (S0) |
+
+**Kết quả truy vết: 5 khớp · 4 lệch có lý do (đã đăng ký ở §4.2 V2/V3 + §4.3) · 1 khác đơn vị đo.**
+Không có luật nào "quên". Ba luật **đo được bằng máy** nhưng trước đây chưa có cổng riêng — `colors` (1),
+`val_std` (2), `dark_share` (7) — nay thành **A11 · A12 · A13** trong `W1_WORK_ORDER.md` §4.
 
 ---
 

@@ -163,13 +163,16 @@ Mỗi dòng CSV có cột `accept` (mã `A-L2-xx`) + `gates_l2` / `gates_full`. 
 | **A8** | Nhiễu | grain ≤ **6 %** biên độ, không noise trên vùng phẳng | FFT nhanh hoặc mắt trên 3 vùng |
 | **A9** | Tương phản | **0,45–0,80**, accent nóng ≤ **10 %** diện tích | `tools/design-metrics.py` (G-C) |
 | **A10** | Đọc trong game | thấy rõ trong **0,2 s** ở 720×1280, không chìm vào rổ đạn | ảnh gameplay thật (G-F) |
+| **A11** | **Ngân sách màu** (`ART_STUDY` §4 luật 1) | theo §4.3 plan: chủ thể **110–160** · phụ **30–60** · bullet **24–40** · fx **3–10** | đếm màu sau lượng tử 32 bậc, **trên lô ≥ 5 asset cùng nhóm** |
+| **A12** | **`val_std`** (`ART_STUDY` §4 luật 2) | dải **theo nhóm** ở §4.3 (0,15–0,30) — **không** dùng 0,20–0,26 chung | script đo, so giữa các nhóm trong cùng bộ |
+| **A13** | **`dark_share`** (`ART_STUDY` §4 luật 7) | tàu ≤ 0,10 · drone ≤ 0,08 · enemy ≤ 0,06 · ui ≤ 0,12 · **bullet ≥ 0,40** (đảo chiều) | tỉ lệ pixel `max(R,G,B) < 45` |
 
 ### 4.2 Cổng theo wave
 
 | Wave | Unit phải qua | Ghi chú |
 |---|---|---|
-| **W1 (L2)** | **A1 · A2 · A4 · A5 · A6 · A7 · A9** | A3/A8/A10 để L3 — nhưng **A4 + A9 là bắt buộc**, vì đó là 2 cổng hay hỏng nhất |
-| **W2 (phần còn lại)** | **A1–A10** | thêm A3 (3 tông), A8 (nhiễu), A10 (đọc trong game) |
+| **W1 (L2)** | **A1 · A2 · A4 · A5 · A6 · A7 · A9 · A13** | A3/A8/A10/A11/A12 để L3 — nhưng **A4 + A9 + A13 là bắt buộc**: A13 là đặc trưng nhóm (bullet phải tối), sai ở L2 là sai cả nhóm |
+| **W2 (phần còn lại)** | **A1–A13** | thêm A3 (3 tông), A8 (nhiễu), A10 (đọc trong game), A11 (`colors`), A12 (`val_std`) — A11/A12 đo trên lô để so được với mẫu |
 | **Cắt** | — | PS-17…PS-25 **không vẽ**; chỉ vẽ nếu scope B được nâng (xem plan §3.3) |
 
 ### 4.3 Điểm review (không phải cổng, nhưng chặn)
