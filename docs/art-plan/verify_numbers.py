@@ -343,6 +343,39 @@ def main() -> int:
         print("  FAIL không import/chạy được measure_asset.py (style):", exc)
         fails.append(f"measure_asset style: {exc}")
 
+    print("11) sổ redo 2.5D (§3.7) + gate_batch")
+    redo = list(csv.DictReader((HERE / "redo-scope.csv").open(encoding="utf-8", newline="")))
+    body = [r for r in redo if r["batch"] != "Σ"]
+    total = next(r for r in redo if r["batch"] == "Σ")
+    check_eq("sổ redo: số batch", len(body), 20)
+    check("sổ redo: Σ h_scope_v2", sum(num(r, "h_scope_v2") for r in body), 1578.42, 0.05)
+    check("sổ redo: Σ h_redo", sum(num(r, "h_redo") for r in body), 631.37, 0.05)
+    check_eq("sổ redo: dòng Σ khớp",
+             (round(num(total, "h_redo"), 2), round(num(total, "h_scope_v2"), 2)), (631.37, 1578.42))
+    check_eq("sổ redo: mọi dòng h_redo = 0,40 × h_scope_v2",
+             sum(1 for r in body
+                 if abs(num(r, "h_redo") - 0.40 * num(r, "h_scope_v2")) > 0.02), 0)
+    check_eq("sổ redo: 20 batch đều đang chờ", {r["state"] for r in body}, {"chờ"})
+    import contextlib
+    import io
+    try:
+        import gate_batch  # noqa: PLC0415
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            rc = gate_batch.selftest()
+        check_eq("gate_batch --selftest exit", rc, 0)
+        check_eq("gate_batch: bắt thiếu G-H", "thiếu bảng so kế cạnh" in buf.getvalue(), True)
+    except Exception as exc:  # noqa: BLE001
+        print("  FAIL không chạy được gate_batch.py:", exc)
+        fails.append(f"gate_batch: {exc}")
+    for doc, token in (("plan", "### 3.7"), ("plan", "### 7.6"), ("plan", "redo-scope.csv"),
+                       ("plan", "gate_batch.py"), ("plan", "8 nhóm · 11 file"),
+                       ("w1", "gate_batch.py"), ("w0", "gate_batch.py")):
+        ok = token in text[doc]
+        print(f"  {'OK ' if ok else 'FAIL'} {doc:4s} chứa {token!r}")
+        if not ok:
+            fails.append(f"{doc} thiếu {token!r}")
+
     print()
     if fails:
         print(f"✗ {len(fails)} điểm lệch:")

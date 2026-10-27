@@ -183,7 +183,7 @@ artboard · notes · status`. Cột `w/h` là số để script so được; `ma
 | **A-L5** | Đọc được ở thumbnail: icon 48 px · promo 300×146 · screenshot 20 % | 3/3 | mắt, 1 lượt/lô |
 | **A-L6** | Screenshot là **capture build thật**, đúng kênh/thiết bị | 15/15 có `build_id` + `device` | đối chiếu sidecar |
 | **A-L7** | Rights: mỗi file có `source`/`license`/`author` | 27/27 | sidecar JSON |
-| **A-L8** | **2.5D**: icon + key art + promo qua 3 chỉ số style (`grad_stops` · `outline_px` · `detail`, dải §4.5b của plan) **và** có **bảng so kế cạnh gốc** (G-H) với contact sheet | máy + 1 bảng/lô | `measure_asset.py --dir … --class ui --style` (icon) · `--class bg` (key art) |
+| **A-L8** | **2.5D**: icon + key art + promo qua 3 chỉ số style (`grad_stops` · `outline_px` · `detail`, dải §4.5b của plan) **và** có **bảng so kế cạnh gốc** (G-H) với contact sheet | máy + 1 bảng/lô | `gate_batch.py --manifest … --compare-sheet …` (chấm cả lô + kiểm G-H) — icon khai `class=ui`, key art `class=bg` |
 
 ---
 

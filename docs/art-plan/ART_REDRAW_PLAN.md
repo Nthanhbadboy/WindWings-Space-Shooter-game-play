@@ -31,7 +31,7 @@
 | File còn lại | [`art-planner.csv`](art-planner.csv) — **655 dòng** (629 đơn vị + 22 overhead + **4 dòng W0 listing**), **36 cột** (gồm `h_scope_v2` · `l2_h_v2` · `l2_h_v3` · `de_est` · `reuse_est` · `h_w0`), khớp từng nhóm worklist |
 | Đơn hàng đã bung | [`W1_WORK_ORDER.md`](W1_WORK_ORDER.md) — **48 unit PLAYER**, 13 unit ở W1 = **34,0 h** (§6: W1 = **206,4 h**) · [`W0_LISTING_ASSETS.md`](W0_LISTING_ASSETS.md) — **27 slot** listing 3 store = **35 h**, sổ riêng |
 
-**Bộ hồ sơ (7 nhóm · 9 file, đọc theo thứ tự này):**
+**Bộ hồ sơ (8 nhóm · 11 file, đọc theo thứ tự này):**
 
 | File | Là gì | Kiểm bằng |
 |---|---|---|
@@ -40,8 +40,10 @@
 | [`W1_WORK_ORDER.md`](W1_WORK_ORDER.md) + [`w1-work-order.csv`](w1-work-order.csv) | 48 unit PLAYER, 13 unit ở W1 | `verify_numbers.py` |
 | [`W0_LISTING_ASSETS.md`](W0_LISTING_ASSETS.md) + [`w0-listing-slots.csv`](w0-listing-slots.csv) | 27 slot listing 3 store | `verify_numbers.py` |
 | [`s0-pilot-pack.csv`](s0-pilot-pack.csv) | 16 asset pilot của S0 (§5.7) | `verify_numbers.py` |
+| [`redo-scope.csv`](redo-scope.csv) | 20 batch · chi phí redo 2.5D (§3.7, **ngoài** baseline) | `verify_numbers.py` |
+| [`gate_batch.py`](gate_batch.py) | chấm **cả lô**: A1·A6·A11–A16 + G-H, ghi `result.csv` cho auditor | `--selftest` |
 | [`measure_asset.py`](measure_asset.py) | đo sprite theo §4.9 + 3 chỉ số 2.5D (§4.5b) + tái lập 9 recipe | `--recipe` · `--style-selftest` |
-| [`verify_numbers.py`](verify_numbers.py) | **221 phép kiểm** trên toàn bộ hồ sơ | exit 0 |
+| [`verify_numbers.py`](verify_numbers.py) | **236 phép kiểm** trên toàn bộ hồ sơ | exit 0 |
 
 **Một câu chốt:** kho hiện có **không phải** 2.197 sprite phải vẽ — nó là **2.185 bản ghi**, trong đó
 **788 đơn vị vẽ thật**, và chỉ **801 bản ghi (37 %) là cần vẽ cho bản L3 khuyến nghị**; **1.451 h (37 %)**
@@ -404,6 +406,33 @@ chiết khấu 0,25) — không đổi kết luận.*
 
 ⇒ **Việc phải làm:** dùng **v2** cho mọi con số lập kế hoạch; `over_merge` không còn là "cảnh báo phải kiểm"
 mà đã được **thay bằng số đo** trong 2 cột `de_est` (số thiết kế) và `reuse_est` (`designs / kept_records`).
+
+---
+
+### 3.7 Sổ redo 2.5D — chi phí của STYLE-CORRECTION lần 149 (**ngoài** baseline)
+
+`redo-scope.csv` — 20 batch có `h_scope_v2 > 0`, cột `h_redo = redo_factor × h_scope_v2`, `state = chờ`.
+
+Hệ số **0,40** là **(C) INFERRED**: redo **giữ composition + palette**, chỉ nâng tầng render (ramp/AO/rim-light/
+panel-line) nên rẻ hơn vẽ mới, nhưng không rẻ hơn một nửa. **Thay bằng số thật** sau 2 batch đầu: đo
+`giờ redo / giờ gốc` rồi sửa `redo_factor` **một lần** cho cả sổ.
+
+| Batch | Lane | Wave | `h_scope_v2` | `h_redo` |
+|---|---|---:|---:|---:|
+| `U-KIT` | UI | W5 | 227,44 | 90,98 |
+| `G-PARALLAX` | BG | W2 | 211,68 | 84,67 |
+| `E-BODY` | ENEMY | W2 | 188,88 | 75,55 |
+| `B-BODY` | BOSS | W3 | 141,60 | 56,64 |
+| `U-SHOP` | UI | W5 | 140,83 | 56,33 |
+| *15 batch còn lại* | | | 668,0 | 267,2 |
+| **Σ (20 batch)** | | | **1.578,4** | **631,4** |
+
+Luật:
+1. `h_redo` **không** nằm trong **1.610,4 h** baseline — đây là chi phí sửa vì chuẩn cũ thiếu tầng render (**R14**).
+   Cộng vào ngân sách hay coi là chi phí của giai đoạn trước là **quyết định của user**, không phải của planner.
+2. Batch nào redo xong thì `state → xong`, và ghi **giờ thật** (thêm cột `h_thật` khi có số) trước khi sửa `redo_factor`.
+3. **Không mở batch mới** của một wave trước khi batch đã nộp của wave đó qua **G-G + G-H** (§4.10/§5.8) —
+   nếu không, lần hiệu chỉnh style sau sẽ lại phải redo cả một bầy asset.
 
 ---
 
@@ -826,7 +855,7 @@ Không có ④ thì cả lịch 50,3 tuần là số chưa kiểm.
 | **R11** | **Lỗi công thức L2** (đã xảy ra 1 lần: chia cho `n_records` thay vì `kept_records`, và tính L2 từ `tier_rate` thay vì đơn giá của dòng) | đã xảy ra 2 lần | sai lọt qua mắt người (`dot` AP-0025 ra **4,80 h > 3,12 h** scope của chính nó) | `verify_numbers.py` §3 đếm số dòng `l2_h_v3 > h_scope_v2` = **0 trên 655 dòng**; mọi số L2 phải suy từ `h_scope_v2` của chính dòng |
 | **R12** | **Pilot và wave đếm trùng giờ** (S0-01 = PS-01, cùng tàu `10001`) | trung bình | 4,2 h | §5.7 luật 3: mặc định pilot **không** vào build; nếu promote thì **trừ** ở W1 và ghi vào `rule_hint` |
 | **R13** | **Cỡ ảnh store xung đột với thiết kế dọc** (MS ≥ 1366×768 · Amazon chỉ 7 cỡ ngang) | cao | chặn 10/27 slot W0 | `W0_LISTING_ASSETS.md` §4 (W0-R1/R2) — **cần user quyết**, không tự chọn |
-| **R14** | **Style bị giản lược thành con số** — §4.5 chỉ đo **màu**, không đo **kỹ thuật render** ⇒ A ra vector phẳng, B ra cartoon viền dày, **cả hai đều "đúng bảng"** | đã xảy ra (**lần 149**) | redo lô đã nộp ≈ **+40 % giờ đã tiêu** (W1 ≈ **+48 h** · toàn scope B ≈ **+631 h**) — **(C) INFERRED**, **chưa** nằm trong 1.610,4 h | §4.5b (3 chỉ số + dải) · **G-G** máy + **G-H** bảng so kế cạnh · luật mới: *số đo màu không thay được ảnh đối chiếu* |
+| **R14** | **Style bị giản lược thành con số** — §4.5 chỉ đo **màu**, không đo **kỹ thuật render** ⇒ A ra vector phẳng, B ra cartoon viền dày, **cả hai đều "đúng bảng"** | đã xảy ra (**lần 149**) | redo = **sổ riêng** `redo-scope.csv` (§3.7): 20 batch · Σ **631,4 h** ở hệ số 0,40 (W1 riêng lane PLAYER ≈ +48 h) — **(C) INFERRED**, **chưa** nằm trong 1.610,4 h | §4.5b (3 chỉ số + dải) · **G-G** máy + **G-H** bảng so kế cạnh · luật mới: *số đo màu không thay được ảnh đối chiếu* |
 
 **Giả định đã dùng (tất cả là (C)):** 1 artist làm được 32 h/tuần có ích · rate §3.2 đúng với đội
 biết dùng vector + raster · không có asset nào phải làm lại vì đổi art direction giữa đường ·
@@ -912,9 +941,32 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
    `de_est = số cụm`, ngoại suy `× kept_records / n_đo_được` cho nhóm đo thiếu.
 8. **Kiểm lại toàn bộ**: `python3 docs/art-plan/verify_numbers.py` — script đối chiếu planner, `w1-work-order.csv`
    và 3 tài liệu markdown (36 cột · 655 dòng · 12 tổng bất biến · wave `v2′` · 48 unit · dải 2.5D §4.5b).
-   Hai lệnh phụ: `measure_asset.py --recipe` (9 công thức tô) và `--style-selftest` (3 chỉ số style tách đúng
-   3 kỹ thuật render). Exit 0 = khớp;
+   Ba lệnh phụ: `measure_asset.py --recipe` (9 công thức tô) · `--style-selftest` (3 chỉ số style tách đúng
+   3 kỹ thuật render) · `gate_batch.py --selftest` (chấm cả lô + chặn khi thiếu G-H). Exit 0 = khớp;
    mọi con số trong báo cáo này đều qua được script đó, không có số nào nhập tay.
+
+---
+
+### 7.6 Gói nộp lô (để auditor / curator kiểm **độc lập**)
+
+Mỗi lô nộp **5 thứ**, thiếu 1 là không duyệt:
+
+| # | Nộp cái gì | Nội dung | Ai kiểm |
+|---|---|---|---|
+| 1 | `manifest.csv` | `file,class[,canvas]` — 1 dòng/asset, `class` đúng 9 nhóm §4.3 | auditor chạy lại |
+| 2 | thư mục PNG | tên theo A7: `<lane>_<vai>_<variant>_<size>@<màu>.png` | script regex |
+| 3 | `result.csv` từ `gate_batch.py` | PASS/FAIL từng asset + lỗi theo cổng (A1·A6·A11–A16) | auditor chạy **lại độc lập** rồi so |
+| 4 | **bảng so kế cạnh (G-H)** | sprite mình ↔ sprite gốc gần nhất, **cùng scale**, cắt từ `docs/assets/contact-sheets/` | mắt |
+| 5 | ghi chú lô | batch · wave · ngày · người vẽ · `recipe` | đối chiếu planner |
+
+```bash
+python3 docs/art-plan/gate_batch.py --manifest art/w1/PS/manifest.csv \
+    --compare-sheet art/w1/PS/compare_PS.png --out art/w1/PS/result.csv
+```
+
+Exit 0 = lô ĐẠT (mọi asset qua cổng **và** có bảng so kế cạnh). Auditor chỉ cần chạy đúng lệnh trên với manifest
+của lô: nếu `result.csv` của họ **khác** của người nộp thì lỗi ở khâu khai `class`/`canvas`, không phải khâu vẽ —
+đó là lý do manifest là **file bắt buộc**, không phải tuỳ chọn.
 
 ---
 

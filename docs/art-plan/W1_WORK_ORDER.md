@@ -177,6 +177,13 @@ python3 docs/art-plan/measure_asset.py --dir <thư-mục-PNG-của-unit> --class
 python3 docs/art-plan/measure_asset.py --recipe      # kiểm 9 công thức §4.5 (chạy lại nếu ai đổi hex palette)
 ```
 
+**Nộp lô thì dùng `gate_batch.py`**, không dùng `--dir`: nó chấm cả lô, kiểm luôn **G-H** (bảng so kế cạnh) và ghi `result.csv` để auditor/curator chạy lại độc lập (gói nộp ở plan §7.6):
+
+```bash
+python3 docs/art-plan/gate_batch.py --manifest art/w1/PS/manifest.csv \
+    --compare-sheet art/w1/PS/compare_PS.png --out art/w1/PS/result.csv
+```
+
 Script in `colors · val · val_std · dark · chroma · fill` + (khi có `--style`) `grad · outl · detail`, và **chỉ ra metric nào ra ngoài dải §4.3/§4.5b** — dùng luôn làm
 bằng chứng cho A11/A12/A13 thay vì mắt. A1 (alpha) và A6 (canvas) kiểm bằng kích thước/kênh file, không cần script.
 
