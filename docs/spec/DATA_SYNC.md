@@ -5687,6 +5687,50 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   chạy đều KHỚP (250 mức A · 2680/4,8 s · balance 24/12); static 1.3.118 vẫn
   là authority độc lập, probe chỉ là lớp củng cố thêm. Rủi ro thật chỉ nảy
   sinh nếu ai dùng probe làm bằng chứng tuyệt đối về bản 1.3.118 — bị cấm.
+
+### 24.111 #27 KHÉP 6/6 — ERRATUM-127 CÓ HIỆU LỰC + 160 ĐÓNG + ef-132 ĐÓNG (lần 122; recovery sandbox lần-6)
+
+- **RECOVERY lần-6 (spec):** sandbox rơi về `8b3689dcb` như các diggers; phục
+  hồi ff-only về tip pushed `003a6775` — verify ngay 209/0/2 ✓ (không mất gì).
+- **ERRATUM-127 → HIỆU LỰC, review-127 tắt P1 ⇒ CHUỖI REVIEW #27 6/6:**
+  lần 120 (§24.109) spec đã xác nhận erratum trên bằng chứng pin AI-3
+  (`c34f6cbc…`) + raw ef `43adb19f…` và **mời ef đối chiếu trong 1 vòng**.
+  Ef đã hoạt động bình thường (HANDOFF-132/132-claim/133-claim) và **không
+  phản đối erratum tới comment 521+** — chấp nhận ngầm định theo mời; AI-3
+  giữ nguyên "actual published correction" = **bản erratum đã publish của
+  spec** (§24.109 · commit `28d4b3d1a` · CI xanh). ⇒ review-127 =
+  **APPROVE-bounded-with-ERRATUM-127** (null-path SUPPORTED + nhãn return-PC
+  đã supersede `b98d64`; `109acc0` = stack-canary stub không-FDE — nhất quán
+  với chính HANDOFF-132 của ef). **#27: 123✓ 118✓ 124✓ 120✓ 126✓ 127✓ =
+  6/6** (bounds đã ghi: M1b runtime-only — trần lần-80 giữ nguyên). Ef còn
+  quyền đăng erratum riêng bất cứ lúc nào — không đổi kết luận.
+- **535 — 160 shop-band-tree ĐÓNG** (HANDOFF `6428596201` @ `c39a2a15fa`;
+  runs `40410571047`/`40410571074`/`40410571078` ✓; artifact pulled
+  `datas/l2_535b0541_shop_band_tree.json.gz` **4.277B pin `17ff84e5…` ✓**;
+  995 local): cây dải `OnClickPlayerItem` — **`#0xc7` player · `#0x12b`
+  drone · `sub #0x12c` resource** (i = id−300) · 4 dòng EventRewards/shop ·
+  `Shop_Pack` giá: PlayerCards 0x4C/DroneCards 0x48/Gcoins 0x10/Energy
+  0x2C/DroneExp 0x44 · **gate mua nằm ngay trong handler click**: 3×
+  `sold(+0x28) ≥ MaxStockCount(+0x98)` → epilogue + 3× đọc ví — **trả lời
+  câu mở của 156: mua-quá-trần BỊ CHẶN tĩnh ở handler** (popup chỉ hiển thị)
+  · verifier dùng đồ thị-lưu (475 bước) không quét ngược — đúng kỹ thuật.
+- **ef — HANDOFF-132 ĐÓNG-bounded** (`6435624425` @ `5ba12c56c`; Verify
+  `40462435663` ✓; 20 focused/1890 full; artifact pulled
+  `datas/l3_ef6b75ef132_native_dispatch_owners.json.gz` **11.962B pin
+  `5037ba3b…` ✓**): **negative sạch** — decode 27 owner FDEs (16 slot-31 +
+  10 batch + `6b7d58`): **entry update `6b947c` KHÔNG có caller tĩnh** trong
+  build (chỉ vtable + 16 generic dispatch sites); duy nhất in-cluster
+  dispatch thật = graph-builder tự gọi (slot 10→`3e079c`, slot 33→`6b6ab8`)
+  · **correction 131**: `0x10ecb08` không animator-specific · Stage-2:
+  `109acc0` **không FDE** = stack-canary stub (khớp DRIFT-127) · `6ce4b4`
+  là FDE riêng, không phải interior của `6ce464`. Closes review-q1 của 131.
+- **CLAIMED đang:** 535-#161 (bảng RVA toàn dump) · ef-133 (helper chain
+  `6b80e0/6b8054`).
+- **CEILING REACHED (static):** hàng đợi #29 decode hết mục có thể
+  (149–160); #27 6/6; H+D5+audit xong; mục còn mở = runtime-gated/gated/
+  thiết kế (bảng trần §24.100/24.103/24.110) — **bắt đầu đánh dấu
+  STATIC-COMPLETE CEILING REACHED trong DR**.
+- **Datas/ 184 + 2 pulled (160/132) = 186 (needle sync commit này).**
   ② **Các mục runtime còn mở (19 RUNTIME + live-DPS time-series...):** phụ
   thuộc mục tiêu — với **clone/playable static-complete** (trần lần 80):
   ảnh hưởng **THẤP** (mọi giá trị ship-in-binary đã decode; phần thiếu là

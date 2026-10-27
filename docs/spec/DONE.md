@@ -72,6 +72,15 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 122 — 27/10, #27 6/6 + 160/132 ĐÓNG + CEILING):**
+> **ERRATUM-127 HIỆU LỰC** (ef không phản đối sau 1 vòng; spec-issue
+> `28d4b3d1a`) ⇒ review-127 APPROVE-bounded ⇒ **#27 review chuỗi 6/6**
+> (123/118/124/120/126/127) — M1b runtime-only giữ trần · **160**
+> (`17ff84e5…`): band-tree + **gate mua ở handler (trả lời 156)** · **ef-132**
+> (`5037ba3b…`): `6b947c` không caller tĩnh — negative sạch · **CEILING:
+> STATIC-COMPLETE REACHED** — mọi lane static đóng hết mục khả-dụng; còn
+> mở = runtime/gated/thiết kế. datas/ = **186**. verify 209/0/2.
+>
 > **Sửa lại (lần 120 — 27/10, ERRATUM-127 + 159 ĐÓNG + 166-correction):**
 > **ERRATUM-127 (spec xác nhận)**: `b98c98` RET = **`b98d64`** (`c0035fd6`)
 > — nhãn cũ `b98d68` (`d6071494` BL) = DRIFT; supersede tại 127/128; science

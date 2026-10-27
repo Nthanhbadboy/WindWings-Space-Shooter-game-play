@@ -303,3 +303,5 @@ hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật
   Input **đã đủ** (pack v2 + pixel/geometry/spine/font + metrics **35** ảnh). Bắt đầu khi **L1 chạy
   được**, **song song với L2**; art **vẽ lại theo chuẩn gốc**, file asset không lưu trong repo này.
   Phần tĩnh còn mở nhỏ nhất: **thứ tự pha boss** (C, 2 việc: 6 chuỗi `SetTrigger` + ai gán 12 delegate).
+
+> **⛔ STATIC-COMPLETE CEILING REACHED (27/10, lần 122 — DS §24.111):** mọi hạng mục tĩnh-làm-được đã đóng (#1–#28 · #27 review 6/6 · #29 decode 149–160 · hàng H+D5+audit). Phần còn mở = runtime-gated (chỉ chủ dự án mở lại) / gated-cần-export / quyết-định-thiết-kế. Readiness không tăng thêm bằng phân tích tĩnh — các gate L2/L3 là việc sản phẩm.
