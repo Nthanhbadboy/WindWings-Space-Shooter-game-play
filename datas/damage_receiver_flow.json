@@ -1,0 +1,5654 @@
+{
+  "status": "PROVISIONAL_APK_NATIVE_RECEIVER_ORDER_NOT_RUNTIME",
+  "methods": [
+    {
+      "class": "Enemy_Health",
+      "method": "CalculateDamage",
+      "signature": "public void CalculateDamage(float _dmg, ref float _hp, bool _igroneInvincible = False) { }",
+      "rva": "0x158479c",
+      "instruction_count": 51,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x15847b4",
+          "op": "cbz",
+          "args": "w8, #0x15847bc"
+        },
+        {
+          "at": "0x15847b8",
+          "op": "tbz",
+          "args": "w2, #0, #0x1584858"
+        },
+        {
+          "at": "0x15847c4",
+          "op": "b.le",
+          "args": "#0x1584858"
+        },
+        {
+          "at": "0x15847d8",
+          "op": "b.ge",
+          "args": "#0x15847f0"
+        },
+        {
+          "at": "0x1584810",
+          "op": "cbz",
+          "args": "x8, #0x1584824"
+        },
+        {
+          "at": "0x1584828",
+          "op": "cbz",
+          "args": "x8, #0x1584858"
+        },
+        {
+          "at": "0x1584838",
+          "op": "b.le",
+          "args": "#0x1584858"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1584820",
+          "op": "blr",
+          "args": "x9"
+        },
+        {
+          "at": "0x1584854",
+          "op": "br",
+          "args": "x2"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_Controller",
+      "method": "TakeDamage",
+      "signature": "public void TakeDamage(Damager damager, bool _igroneInvincible = False) { }",
+      "rva": "0x1582938",
+      "instruction_count": 15,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1582948",
+          "op": "cbz",
+          "args": "x0, #0x1582970"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1582954",
+          "op": "bl",
+          "args": "#0x1582974"
+        },
+        {
+          "at": "0x158296c",
+          "op": "b",
+          "args": "#0x1582ad4"
+        },
+        {
+          "at": "0x1582970",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_Controller",
+      "method": "OnTakeDamage",
+      "signature": "private void OnTakeDamage(Damager _damager, bool _igroneInvincible = False) { }",
+      "rva": "0x1582ad4",
+      "instruction_count": 216,
+      "ability_calls": [
+        {
+          "at": "0x1582c4c",
+          "ability_id": 31
+        },
+        {
+          "at": "0x1582c98",
+          "ability_id": 31
+        },
+        {
+          "at": "0x1582cf8",
+          "ability_id": 34
+        },
+        {
+          "at": "0x1582d44",
+          "ability_id": 34
+        }
+      ],
+      "branches": [
+        {
+          "at": "0x1582af8",
+          "op": "tbnz",
+          "args": "w8, #0, #0x1582b4c"
+        },
+        {
+          "at": "0x1582b50",
+          "op": "cbz",
+          "args": "x8, #0x1582e30"
+        },
+        {
+          "at": "0x1582b5c",
+          "op": "b.le",
+          "args": "#0x1582e1c"
+        },
+        {
+          "at": "0x1582b64",
+          "op": "cbz",
+          "args": "w8, #0x1582e1c"
+        },
+        {
+          "at": "0x1582b7c",
+          "op": "cbnz",
+          "args": "w8, #0x1582b84"
+        },
+        {
+          "at": "0x1582b90",
+          "op": "cbz",
+          "args": "x20, #0x1582bbc"
+        },
+        {
+          "at": "0x1582b94",
+          "op": "tbz",
+          "args": "w0, #0, #0x1582bbc"
+        },
+        {
+          "at": "0x1582b9c",
+          "op": "cbz",
+          "args": "x8, #0x1582e30"
+        },
+        {
+          "at": "0x1582ba4",
+          "op": "cbz",
+          "args": "x0, #0x1582e30"
+        },
+        {
+          "at": "0x1582bcc",
+          "op": "cbnz",
+          "args": "w8, #0x1582bd4"
+        },
+        {
+          "at": "0x1582bf4",
+          "op": "cbz",
+          "args": "x8, #0x1582e30"
+        },
+        {
+          "at": "0x1582c00",
+          "op": "b.ls",
+          "args": "#0x1582dd4"
+        },
+        {
+          "at": "0x1582c10",
+          "op": "cbnz",
+          "args": "w8, #0x1582c18"
+        },
+        {
+          "at": "0x1582c28",
+          "op": "tbz",
+          "args": "w0, #0, #0x1582cd8"
+        },
+        {
+          "at": "0x1582c3c",
+          "op": "cbnz",
+          "args": "w8, #0x1582c44"
+        },
+        {
+          "at": "0x1582c54",
+          "op": "b.lt",
+          "args": "#0x1582cd8"
+        },
+        {
+          "at": "0x1582c68",
+          "op": "cbnz",
+          "args": "w8, #0x1582c74"
+        },
+        {
+          "at": "0x1582c84",
+          "op": "cbnz",
+          "args": "w10, #0x1582c90"
+        },
+        {
+          "at": "0x1582ca8",
+          "op": "b.le",
+          "args": "#0x1582cd8"
+        },
+        {
+          "at": "0x1582cc4",
+          "op": "b.lt",
+          "args": "#0x1582cd8"
+        },
+        {
+          "at": "0x1582ccc",
+          "op": "cbz",
+          "args": "x0, #0x1582e30"
+        },
+        {
+          "at": "0x1582ce8",
+          "op": "cbnz",
+          "args": "w8, #0x1582cf0"
+        },
+        {
+          "at": "0x1582d00",
+          "op": "b.lt",
+          "args": "#0x1582e1c"
+        },
+        {
+          "at": "0x1582d14",
+          "op": "cbnz",
+          "args": "w8, #0x1582d20"
+        },
+        {
+          "at": "0x1582d30",
+          "op": "cbnz",
+          "args": "w10, #0x1582d3c"
+        },
+        {
+          "at": "0x1582d5c",
+          "op": "b.ge",
+          "args": "#0x1582d7c"
+        },
+        {
+          "at": "0x1582d78",
+          "op": "b.lt",
+          "args": "#0x1582e1c"
+        },
+        {
+          "at": "0x1582d7c",
+          "op": "cbz",
+          "args": "x20, #0x1582e30"
+        },
+        {
+          "at": "0x1582ddc",
+          "op": "cbz",
+          "args": "x20, #0x1582e30"
+        },
+        {
+          "at": "0x1582de4",
+          "op": "cbz",
+          "args": "x20, #0x1582e1c"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1582b04",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1582b10",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1582b1c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1582b28",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1582b34",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1582b40",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1582b80",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1582b8c",
+          "op": "bl",
+          "args": "#0x27849c8"
+        },
+        {
+          "at": "0x1582bb4",
+          "op": "bl",
+          "args": "#0x158479c"
+        },
+        {
+          "at": "0x1582bd0",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1582be4",
+          "op": "bl",
+          "args": "#0x275f390"
+        },
+        {
+          "at": "0x1582bec",
+          "op": "bl",
+          "args": "#0x1582f10"
+        },
+        {
+          "at": "0x1582c14",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1582c24",
+          "op": "bl",
+          "args": "#0x27815fc"
+        },
+        {
+          "at": "0x1582c40",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1582c4c",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x1582c6c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1582c8c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1582c98",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x1582cb8",
+          "op": "bl",
+          "args": "#0x277d2c0"
+        },
+        {
+          "at": "0x1582cd4",
+          "op": "bl",
+          "args": "#0x1584444"
+        },
+        {
+          "at": "0x1582cec",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1582cf8",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x1582d18",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1582d38",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1582d44",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x1582d70",
+          "op": "bl",
+          "args": "#0x277d280"
+        },
+        {
+          "at": "0x1582d94",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x1582da8",
+          "op": "bl",
+          "args": "#0x123b7a4"
+        },
+        {
+          "at": "0x1582dd0",
+          "op": "b",
+          "args": "#0x1583d60"
+        },
+        {
+          "at": "0x1582dd8",
+          "op": "bl",
+          "args": "#0x15846f8"
+        },
+        {
+          "at": "0x1582df0",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1582e18",
+          "op": "br",
+          "args": "x3"
+        },
+        {
+          "at": "0x1582e30",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_Controller",
+      "method": "UpdateHpBar",
+      "signature": "private void UpdateHpBar() { }",
+      "rva": "0x1582f10",
+      "instruction_count": 10,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1582f18",
+          "op": "cbz",
+          "args": "x8, #0x1582f34"
+        },
+        {
+          "at": "0x1582f20",
+          "op": "cbz",
+          "args": "x0, #0x1582f34"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1582f30",
+          "op": "b",
+          "args": "#0x1584894"
+        },
+        {
+          "at": "0x1582f34",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_Controller",
+      "method": "SetDieCallback",
+      "signature": "public void SetDieCallback(Action<GameObject> dieCallback) { }",
+      "rva": "0x1584308",
+      "instruction_count": 42,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1584324",
+          "op": "tbnz",
+          "args": "w8, #0, #0x158433c"
+        },
+        {
+          "at": "0x1584340",
+          "op": "cbz",
+          "args": "x21, #0x15843ac"
+        },
+        {
+          "at": "0x1584354",
+          "op": "cbz",
+          "args": "x0, #0x1584398"
+        },
+        {
+          "at": "0x1584370",
+          "op": "cbz",
+          "args": "x0, #0x158438c"
+        },
+        {
+          "at": "0x1584388",
+          "op": "cbnz",
+          "args": "x0, #0x158439c"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1584330",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1584350",
+          "op": "bl",
+          "args": "#0x2146010"
+        },
+        {
+          "at": "0x158436c",
+          "op": "bl",
+          "args": "#0x110d130"
+        },
+        {
+          "at": "0x1584384",
+          "op": "bl",
+          "args": "#0x110d130"
+        },
+        {
+          "at": "0x1584394",
+          "op": "bl",
+          "args": "#0x110d5ec"
+        },
+        {
+          "at": "0x15843ac",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_Controller",
+      "method": "OnDieWhenZeroHp",
+      "signature": "private void OnDieWhenZeroHp() { }",
+      "rva": "0x15846f8",
+      "instruction_count": 21,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1584700",
+          "op": "cbz",
+          "args": "x8, #0x1584748"
+        },
+        {
+          "at": "0x1584710",
+          "op": "cbz",
+          "args": "x8, #0x1584748"
+        },
+        {
+          "at": "0x1584720",
+          "op": "cbz",
+          "args": "x0, #0x1584748"
+        },
+        {
+          "at": "0x1584730",
+          "op": "cbz",
+          "args": "x0, #0x1584748"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1584728",
+          "op": "bl",
+          "args": "#0x1583cf0"
+        },
+        {
+          "at": "0x1584744",
+          "op": "br",
+          "args": "x3"
+        },
+        {
+          "at": "0x1584748",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_Sub",
+      "method": "SetDieCallback",
+      "signature": "public override void SetDieCallback(Action<GameObject> dieCallback) { }",
+      "rva": "0x1587eac",
+      "instruction_count": 8,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1587eb8",
+          "op": "cbz",
+          "args": "x0, #0x1587ec8"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1587eb4",
+          "op": "bl",
+          "args": "#0x1587d10"
+        },
+        {
+          "at": "0x1587ec4",
+          "op": "b",
+          "args": "#0x1584308"
+        },
+        {
+          "at": "0x1587ec8",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_Sub",
+      "method": "TakeDamage",
+      "signature": "public override void TakeDamage(Damager damager, bool ignoreInvincible = False) { }",
+      "rva": "0x1587ecc",
+      "instruction_count": 12,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1587ee0",
+          "op": "cbz",
+          "args": "x0, #0x1587ef8"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1587edc",
+          "op": "bl",
+          "args": "#0x1587d10"
+        },
+        {
+          "at": "0x1587ef4",
+          "op": "b",
+          "args": "#0x1582938"
+        },
+        {
+          "at": "0x1587ef8",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_Destroy",
+      "method": "Destroy",
+      "signature": "public virtual void Destroy(DestroyType _destroyType) { }",
+      "rva": "0x1581598",
+      "instruction_count": 15,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x15815a4",
+          "op": "b.eq",
+          "args": "#0x15815c0"
+        },
+        {
+          "at": "0x15815a8",
+          "op": "cbnz",
+          "args": "w1, #0x15815c8"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x15815b8",
+          "op": "blr",
+          "args": "x9"
+        },
+        {
+          "at": "0x15815c4",
+          "op": "bl",
+          "args": "#0x1584ac8"
+        },
+        {
+          "at": "0x15815d0",
+          "op": "b",
+          "args": "#0x1584bf0"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_Destroy",
+      "method": "Pool",
+      "signature": "public void Pool() { }",
+      "rva": "0x1584bf0",
+      "instruction_count": 80,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1584c08",
+          "op": "tbnz",
+          "args": "w8, #0, #0x1584c2c"
+        },
+        {
+          "at": "0x1584c54",
+          "op": "cbz",
+          "args": "w8, #0x1584d0c"
+        },
+        {
+          "at": "0x1584c68",
+          "op": "cbnz",
+          "args": "w8, #0x1584c74"
+        },
+        {
+          "at": "0x1584c80",
+          "op": "b.eq",
+          "args": "#0x1584ca4"
+        },
+        {
+          "at": "0x1584c88",
+          "op": "cbnz",
+          "args": "w9, #0x1584c9c"
+        },
+        {
+          "at": "0x1584ca0",
+          "op": "b.ne",
+          "args": "#0x1584d0c"
+        },
+        {
+          "at": "0x1584cb0",
+          "op": "cbz",
+          "args": "x0, #0x1584d2c"
+        },
+        {
+          "at": "0x1584ce4",
+          "op": "cbnz",
+          "args": "w9, #0x1584cf0"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1584c14",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1584c20",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1584c38",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1584c4c",
+          "op": "bl",
+          "args": "#0x1434cb4"
+        },
+        {
+          "at": "0x1584c6c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1584c8c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1584cac",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1584cbc",
+          "op": "bl",
+          "args": "#0x2781804"
+        },
+        {
+          "at": "0x1584cc8",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1584cec",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1584d08",
+          "op": "b",
+          "args": "#0x2785374"
+        },
+        {
+          "at": "0x1584d14",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1584d28",
+          "op": "b",
+          "args": "#0x123acd0"
+        },
+        {
+          "at": "0x1584d2c",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_Destroy",
+      "method": "Destroyed",
+      "signature": "protected void Destroyed() { }",
+      "rva": "0x15850bc",
+      "instruction_count": 263,
+      "ability_calls": [
+        {
+          "at": "0x158516c",
+          "ability_id": 32
+        },
+        {
+          "at": "0x15851c8",
+          "ability_id": 32
+        }
+      ],
+      "branches": [
+        {
+          "at": "0x15850f4",
+          "op": "tbnz",
+          "args": "w8, #0, #0x1585154"
+        },
+        {
+          "at": "0x158515c",
+          "op": "cbnz",
+          "args": "w8, #0x1585164"
+        },
+        {
+          "at": "0x1585174",
+          "op": "b.lt",
+          "args": "#0x15854a8"
+        },
+        {
+          "at": "0x1585180",
+          "op": "cbnz",
+          "args": "w8, #0x1585188"
+        },
+        {
+          "at": "0x1585190",
+          "op": "cbz",
+          "args": "x0, #0x15854d4"
+        },
+        {
+          "at": "0x15851ac",
+          "op": "cbnz",
+          "args": "w8, #0x15851b8"
+        },
+        {
+          "at": "0x15851e0",
+          "op": "b.ge",
+          "args": "#0x1585200"
+        },
+        {
+          "at": "0x15851fc",
+          "op": "b.lt",
+          "args": "#0x15854a8"
+        },
+        {
+          "at": "0x1585208",
+          "op": "cbnz",
+          "args": "w8, #0x1585210"
+        },
+        {
+          "at": "0x1585228",
+          "op": "cbz",
+          "args": "x0, #0x15854d4"
+        },
+        {
+          "at": "0x158525c",
+          "op": "cbnz",
+          "args": "w9, #0x1585268"
+        },
+        {
+          "at": "0x1585280",
+          "op": "cbz",
+          "args": "x0, #0x15854a8"
+        },
+        {
+          "at": "0x158528c",
+          "op": "cbz",
+          "args": "x8, #0x15854a8"
+        },
+        {
+          "at": "0x1585294",
+          "op": "b.lt",
+          "args": "#0x15854a8"
+        },
+        {
+          "at": "0x15852c4",
+          "op": "b.hs",
+          "args": "#0x15854d0"
+        },
+        {
+          "at": "0x15852d8",
+          "op": "cbnz",
+          "args": "w8, #0x15852e0"
+        },
+        {
+          "at": "0x15852f0",
+          "op": "tbz",
+          "args": "w0, #0, #0x1585498"
+        },
+        {
+          "at": "0x15852fc",
+          "op": "b.hs",
+          "args": "#0x15854d0"
+        },
+        {
+          "at": "0x1585304",
+          "op": "cbz",
+          "args": "x0, #0x15854d4"
+        },
+        {
+          "at": "0x158531c",
+          "op": "cbnz",
+          "args": "w9, #0x1585328"
+        },
+        {
+          "at": "0x1585338",
+          "op": "tbz",
+          "args": "w0, #0, #0x1585498"
+        },
+        {
+          "at": "0x1585360",
+          "op": "b.hs",
+          "args": "#0x15854d0"
+        },
+        {
+          "at": "0x158536c",
+          "op": "cbz",
+          "args": "x0, #0x15854d4"
+        },
+        {
+          "at": "0x1585378",
+          "op": "cbz",
+          "args": "x0, #0x15854d4"
+        },
+        {
+          "at": "0x1585390",
+          "op": "b.ne",
+          "args": "#0x1585498"
+        },
+        {
+          "at": "0x158539c",
+          "op": "b.hs",
+          "args": "#0x15854d0"
+        },
+        {
+          "at": "0x15853a4",
+          "op": "cbz",
+          "args": "x0, #0x15854d4"
+        },
+        {
+          "at": "0x15853bc",
+          "op": "cbnz",
+          "args": "w9, #0x15853c8"
+        },
+        {
+          "at": "0x15853d8",
+          "op": "tbz",
+          "args": "w0, #0, #0x1585498"
+        },
+        {
+          "at": "0x15853dc",
+          "op": "cbz",
+          "args": "x20, #0x15854d4"
+        },
+        {
+          "at": "0x15853fc",
+          "op": "cbz",
+          "args": "x21, #0x1585498"
+        },
+        {
+          "at": "0x1585400",
+          "op": "cbz",
+          "args": "x0, #0x1585498"
+        },
+        {
+          "at": "0x1585434",
+          "op": "cbz",
+          "args": "x20, #0x15854d4"
+        },
+        {
+          "at": "0x1585444",
+          "op": "cbz",
+          "args": "x9, #0x1585468"
+        },
+        {
+          "at": "0x1585458",
+          "op": "b.eq",
+          "args": "#0x1585478"
+        },
+        {
+          "at": "0x1585464",
+          "op": "b.ne",
+          "args": "#0x1585450"
+        },
+        {
+          "at": "0x15854a4",
+          "op": "b.lt",
+          "args": "#0x15852c0"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1585100",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x158510c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1585118",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1585124",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1585130",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x158513c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1585148",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1585160",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x158516c",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x1585184",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x158518c",
+          "op": "bl",
+          "args": "#0x14c78cc"
+        },
+        {
+          "at": "0x15851b0",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x15851c8",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x15851f4",
+          "op": "bl",
+          "args": "#0x277d280"
+        },
+        {
+          "at": "0x158520c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1585214",
+          "op": "bl",
+          "args": "#0x14dbc84"
+        },
+        {
+          "at": "0x1585224",
+          "op": "bl",
+          "args": "#0x277f14c"
+        },
+        {
+          "at": "0x1585230",
+          "op": "bl",
+          "args": "#0x27891b8"
+        },
+        {
+          "at": "0x1585244",
+          "op": "bl",
+          "args": "#0x2781bd4"
+        },
+        {
+          "at": "0x1585264",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x158527c",
+          "op": "bl",
+          "args": "#0x27c4a58"
+        },
+        {
+          "at": "0x15852dc",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x15852ec",
+          "op": "bl",
+          "args": "#0x27815fc"
+        },
+        {
+          "at": "0x158530c",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1585324",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1585334",
+          "op": "bl",
+          "args": "#0x27815fc"
+        },
+        {
+          "at": "0x1585344",
+          "op": "bl",
+          "args": "#0x2781bd4"
+        },
+        {
+          "at": "0x1585354",
+          "op": "bl",
+          "args": "#0x2781be0"
+        },
+        {
+          "at": "0x1585374",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1585380",
+          "op": "bl",
+          "args": "#0x2781784"
+        },
+        {
+          "at": "0x15853ac",
+          "op": "bl",
+          "args": "#0x16f4f54"
+        },
+        {
+          "at": "0x15853c4",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x15853d4",
+          "op": "bl",
+          "args": "#0x27815fc"
+        },
+        {
+          "at": "0x15853e8",
+          "op": "bl",
+          "args": "#0x123ba44"
+        },
+        {
+          "at": "0x15853f8",
+          "op": "bl",
+          "args": "#0x123ba28"
+        },
+        {
+          "at": "0x158540c",
+          "op": "bl",
+          "args": "#0x123ba28"
+        },
+        {
+          "at": "0x158541c",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x1585430",
+          "op": "bl",
+          "args": "#0x123b7a4"
+        },
+        {
+          "at": "0x1585470",
+          "op": "bl",
+          "args": "#0x11881d8"
+        },
+        {
+          "at": "0x1585494",
+          "op": "blr",
+          "args": "x8"
+        },
+        {
+          "at": "0x15854d0",
+          "op": "bl",
+          "args": "#0x110d258"
+        },
+        {
+          "at": "0x15854d4",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_Destroy",
+      "method": "OnDestroyByZeroHp",
+      "signature": "protected virtual void OnDestroyByZeroHp() { }",
+      "rva": "0x15856cc",
+      "instruction_count": 73,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x15856e4",
+          "op": "tbnz",
+          "args": "w8, #0, #0x15856fc"
+        },
+        {
+          "at": "0x1585700",
+          "op": "cbz",
+          "args": "x20, #0x1585728"
+        },
+        {
+          "at": "0x158572c",
+          "op": "cbz",
+          "args": "x8, #0x15857e0"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x15856f0",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x158570c",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1585724",
+          "op": "blr",
+          "args": "x9"
+        },
+        {
+          "at": "0x1585744",
+          "op": "blr",
+          "args": "x9"
+        },
+        {
+          "at": "0x158574c",
+          "op": "bl",
+          "args": "#0x15854d8"
+        },
+        {
+          "at": "0x1585754",
+          "op": "bl",
+          "args": "#0x15850bc"
+        },
+        {
+          "at": "0x158575c",
+          "op": "bl",
+          "args": "#0x2786dc0"
+        },
+        {
+          "at": "0x1585774",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1585788",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x158579c",
+          "op": "bl",
+          "args": "#0x13217fc"
+        },
+        {
+          "at": "0x15857b0",
+          "op": "bl",
+          "args": "#0x1434cb4"
+        },
+        {
+          "at": "0x15857bc",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x15857dc",
+          "op": "b",
+          "args": "#0x1434cb4"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_Display",
+      "method": "OnHit",
+      "signature": "public void OnHit() { }",
+      "rva": "0x1582974",
+      "instruction_count": 88,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1582990",
+          "op": "tbnz",
+          "args": "w8, #0, #0x15829c0"
+        },
+        {
+          "at": "0x15829c4",
+          "op": "cbz",
+          "args": "x8, #0x1582a78"
+        },
+        {
+          "at": "0x15829d0",
+          "op": "b.lt",
+          "args": "#0x1582a7c"
+        },
+        {
+          "at": "0x15829f8",
+          "op": "b.hs",
+          "args": "#0x1582ad0"
+        },
+        {
+          "at": "0x1582a0c",
+          "op": "cbnz",
+          "args": "w9, #0x1582a14"
+        },
+        {
+          "at": "0x1582a24",
+          "op": "tbz",
+          "args": "w0, #0, #0x1582a64"
+        },
+        {
+          "at": "0x1582a2c",
+          "op": "cbz",
+          "args": "x8, #0x1582a78"
+        },
+        {
+          "at": "0x1582a38",
+          "op": "b.hs",
+          "args": "#0x1582ad0"
+        },
+        {
+          "at": "0x1582a44",
+          "op": "cbz",
+          "args": "x0, #0x1582a78"
+        },
+        {
+          "at": "0x1582a50",
+          "op": "cbz",
+          "args": "x0, #0x1582a78"
+        },
+        {
+          "at": "0x1582a68",
+          "op": "b.eq",
+          "args": "#0x1582a7c"
+        },
+        {
+          "at": "0x1582a74",
+          "op": "cbnz",
+          "args": "x8, #0x15829f0"
+        },
+        {
+          "at": "0x1582a94",
+          "op": "tbz",
+          "args": "w0, #0, #0x1582aa8"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x158299c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x15829a8",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x15829b4",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1582a10",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1582a20",
+          "op": "bl",
+          "args": "#0x27815fc"
+        },
+        {
+          "at": "0x1582a4c",
+          "op": "bl",
+          "args": "#0x2768c74"
+        },
+        {
+          "at": "0x1582a60",
+          "op": "bl",
+          "args": "#0x276a2b4"
+        },
+        {
+          "at": "0x1582a78",
+          "op": "bl",
+          "args": "#0x110d250"
+        },
+        {
+          "at": "0x1582a90",
+          "op": "bl",
+          "args": "#0x2782540"
+        },
+        {
+          "at": "0x1582aa4",
+          "op": "bl",
+          "args": "#0x27824b8"
+        },
+        {
+          "at": "0x1582acc",
+          "op": "b",
+          "args": "#0x27822d4"
+        },
+        {
+          "at": "0x1582ad0",
+          "op": "bl",
+          "args": "#0x110d258"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_Display",
+      "method": "SetHpBar",
+      "signature": "public void SetHpBar(float _amount) { }",
+      "rva": "0x1584894",
+      "instruction_count": 114,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x15848b8",
+          "op": "tbnz",
+          "args": "w8, #0, #0x15848d0"
+        },
+        {
+          "at": "0x15848dc",
+          "op": "cbnz",
+          "args": "w8, #0x15848e4"
+        },
+        {
+          "at": "0x15848f0",
+          "op": "tbz",
+          "args": "w0, #0, #0x15849d0"
+        },
+        {
+          "at": "0x15848f8",
+          "op": "b.le",
+          "args": "#0x15849a0"
+        },
+        {
+          "at": "0x1584904",
+          "op": "b.pl",
+          "args": "#0x15849a0"
+        },
+        {
+          "at": "0x158490c",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x1584924",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x1584930",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x158493c",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x1584948",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x1584954",
+          "op": "tbz",
+          "args": "w0, #0, #0x15849e0"
+        },
+        {
+          "at": "0x1584960",
+          "op": "b.ne",
+          "args": "#0x15849d0"
+        },
+        {
+          "at": "0x1584968",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x1584974",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x1584980",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x158498c",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x1584998",
+          "op": "tbz",
+          "args": "w0, #0, #0x15849d0"
+        },
+        {
+          "at": "0x15849a4",
+          "op": "b.ne",
+          "args": "#0x15849bc"
+        },
+        {
+          "at": "0x15849ac",
+          "op": "cbnz",
+          "args": "w8, #0x15849bc"
+        },
+        {
+          "at": "0x15849b4",
+          "op": "cbnz",
+          "args": "x0, #0x1584a34"
+        },
+        {
+          "at": "0x15849c4",
+          "op": "b.ne",
+          "args": "#0x1584a14"
+        },
+        {
+          "at": "0x15849cc",
+          "op": "cbnz",
+          "args": "w8, #0x1584a14"
+        },
+        {
+          "at": "0x15849e4",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x15849f0",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x15849fc",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x1584a08",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x1584a18",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x1584a24",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x1584a30",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        },
+        {
+          "at": "0x1584a3c",
+          "op": "cbz",
+          "args": "x0, #0x1584a58"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x15848c4",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x15848e0",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x15848ec",
+          "op": "bl",
+          "args": "#0x27849c8"
+        },
+        {
+          "at": "0x158491c",
+          "op": "bl",
+          "args": "#0x278ae34"
+        },
+        {
+          "at": "0x158492c",
+          "op": "bl",
+          "args": "#0x277f14c"
+        },
+        {
+          "at": "0x1584938",
+          "op": "bl",
+          "args": "#0x27890c4"
+        },
+        {
+          "at": "0x1584944",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1584950",
+          "op": "bl",
+          "args": "#0x2781848"
+        },
+        {
+          "at": "0x1584970",
+          "op": "bl",
+          "args": "#0x277f14c"
+        },
+        {
+          "at": "0x158497c",
+          "op": "bl",
+          "args": "#0x27890c4"
+        },
+        {
+          "at": "0x1584988",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1584994",
+          "op": "bl",
+          "args": "#0x2781848"
+        },
+        {
+          "at": "0x15849ec",
+          "op": "bl",
+          "args": "#0x277f14c"
+        },
+        {
+          "at": "0x15849f8",
+          "op": "bl",
+          "args": "#0x27890c4"
+        },
+        {
+          "at": "0x1584a04",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1584a20",
+          "op": "bl",
+          "args": "#0x277f14c"
+        },
+        {
+          "at": "0x1584a2c",
+          "op": "bl",
+          "args": "#0x27890c4"
+        },
+        {
+          "at": "0x1584a38",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1584a54",
+          "op": "b",
+          "args": "#0x2781804"
+        },
+        {
+          "at": "0x1584a58",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Player_Health",
+      "method": "GainHealth",
+      "signature": "public void GainHealth(float amount, bool hasFx = False) { }",
+      "rva": "0x14c63b4",
+      "instruction_count": 62,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x14c63e4",
+          "op": "tbnz",
+          "args": "w8, #0, #0x14c6408"
+        },
+        {
+          "at": "0x14c6410",
+          "op": "cbnz",
+          "args": "w8, #0x14c641c"
+        },
+        {
+          "at": "0x14c6434",
+          "op": "tbz",
+          "args": "w20, #0, #0x14c644c"
+        },
+        {
+          "at": "0x14c643c",
+          "op": "cbz",
+          "args": "x0, #0x14c64a8"
+        },
+        {
+          "at": "0x14c6458",
+          "op": "cbnz",
+          "args": "w8, #0x14c6464"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x14c63f0",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c63fc",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c6414",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c6444",
+          "op": "bl",
+          "args": "#0x27c1f68"
+        },
+        {
+          "at": "0x14c645c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c6478",
+          "op": "bl",
+          "args": "#0x110d134"
+        },
+        {
+          "at": "0x14c648c",
+          "op": "bl",
+          "args": "#0x1434cb4"
+        },
+        {
+          "at": "0x14c64a8",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Player_Health",
+      "method": "GainHealth",
+      "signature": "public void GainHealth(float amount, float addOverTime, float addTime) { }",
+      "rva": "0x14c6cfc",
+      "instruction_count": 29,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x14c6d1c",
+          "op": "cbz",
+          "args": "x0, #0x14c6d6c"
+        },
+        {
+          "at": "0x14c6d2c",
+          "op": "cbz",
+          "args": "x1, #0x14c6d3c"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x14c6d14",
+          "op": "bl",
+          "args": "#0x14c63b4"
+        },
+        {
+          "at": "0x14c6d24",
+          "op": "bl",
+          "args": "#0x27c1f68"
+        },
+        {
+          "at": "0x14c6d38",
+          "op": "bl",
+          "args": "#0x27829d8"
+        },
+        {
+          "at": "0x14c6d48",
+          "op": "bl",
+          "args": "#0x14c6d70"
+        },
+        {
+          "at": "0x14c6d58",
+          "op": "bl",
+          "args": "#0x278276c"
+        },
+        {
+          "at": "0x14c6d6c",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Player_Health",
+      "method": "TakeDamage",
+      "signature": "public void TakeDamage(Damager damager, bool ignoreInvincible = False, Action dieCallback) { }",
+      "rva": "0x14c6de4",
+      "instruction_count": 605,
+      "ability_calls": [
+        {
+          "at": "0x14c6f04",
+          "ability_id": 30
+        },
+        {
+          "at": "0x14c6f64",
+          "ability_id": 30
+        },
+        {
+          "at": "0x14c6fac",
+          "ability_id": 30
+        },
+        {
+          "at": "0x14c70a8",
+          "ability_id": 8
+        },
+        {
+          "at": "0x14c70f0",
+          "ability_id": 8
+        },
+        {
+          "at": "0x14c7164",
+          "ability_id": 22
+        },
+        {
+          "at": "0x14c72d8",
+          "ability_id": 28
+        },
+        {
+          "at": "0x14c7368",
+          "ability_id": 35
+        },
+        {
+          "at": "0x14c741c",
+          "ability_id": 9
+        },
+        {
+          "at": "0x14c7450",
+          "ability_id": 10
+        },
+        {
+          "at": "0x14c7634",
+          "ability_id": 16
+        },
+        {
+          "at": "0x14c7654",
+          "ability_id": 16
+        }
+      ],
+      "branches": [
+        {
+          "at": "0x14c6e1c",
+          "op": "tbnz",
+          "args": "w8, #0, #0x14c6e88"
+        },
+        {
+          "at": "0x14c6e90",
+          "op": "cbnz",
+          "args": "w8, #0x14c6e9c"
+        },
+        {
+          "at": "0x14c6ea8",
+          "op": "b.ls",
+          "args": "#0x14c6eb4"
+        },
+        {
+          "at": "0x14c6eb0",
+          "op": "cbz",
+          "args": "w8, #0x14c6ed0"
+        },
+        {
+          "at": "0x14c6ed0",
+          "op": "cbz",
+          "args": "x21, #0x14c6eb4"
+        },
+        {
+          "at": "0x14c6ed8",
+          "op": "cbnz",
+          "args": "w8, #0x14c6eb4"
+        },
+        {
+          "at": "0x14c6ee0",
+          "op": "cbz",
+          "args": "w8, #0x14c7024"
+        },
+        {
+          "at": "0x14c6ee4",
+          "op": "tbnz",
+          "args": "w22, #0, #0x14c7024"
+        },
+        {
+          "at": "0x14c6ef8",
+          "op": "cbnz",
+          "args": "w8, #0x14c6f00"
+        },
+        {
+          "at": "0x14c6f0c",
+          "op": "b.lt",
+          "args": "#0x14c6eb4"
+        },
+        {
+          "at": "0x14c6f38",
+          "op": "cbnz",
+          "args": "w8, #0x14c6f44"
+        },
+        {
+          "at": "0x14c6f54",
+          "op": "cbnz",
+          "args": "w10, #0x14c6f60"
+        },
+        {
+          "at": "0x14c6f74",
+          "op": "b.hi",
+          "args": "#0x14c6eb4"
+        },
+        {
+          "at": "0x14c6f80",
+          "op": "cbnz",
+          "args": "w8, #0x14c6f8c"
+        },
+        {
+          "at": "0x14c6f9c",
+          "op": "cbnz",
+          "args": "w10, #0x14c6fa8"
+        },
+        {
+          "at": "0x14c6fb8",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c6fc0",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c6fd4",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c6ff0",
+          "op": "cbz",
+          "args": "x9, #0x14c7014"
+        },
+        {
+          "at": "0x14c7004",
+          "op": "b.eq",
+          "args": "#0x14c71f8"
+        },
+        {
+          "at": "0x14c7010",
+          "op": "b.ne",
+          "args": "#0x14c6ffc"
+        },
+        {
+          "at": "0x14c7028",
+          "op": "cbz",
+          "args": "x8, #0x14c7754"
+        },
+        {
+          "at": "0x14c7030",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c703c",
+          "op": "tbnz",
+          "args": "w0, #0, #0x14c6eb4"
+        },
+        {
+          "at": "0x14c7050",
+          "op": "b.pl",
+          "args": "#0x14c708c"
+        },
+        {
+          "at": "0x14c7070",
+          "op": "cbnz",
+          "args": "w8, #0x14c7078"
+        },
+        {
+          "at": "0x14c709c",
+          "op": "cbnz",
+          "args": "w8, #0x14c70a4"
+        },
+        {
+          "at": "0x14c70b0",
+          "op": "b.lt",
+          "args": "#0x14c71bc"
+        },
+        {
+          "at": "0x14c70c4",
+          "op": "cbnz",
+          "args": "w8, #0x14c70d0"
+        },
+        {
+          "at": "0x14c70e0",
+          "op": "cbnz",
+          "args": "w10, #0x14c70ec"
+        },
+        {
+          "at": "0x14c7100",
+          "op": "cbnz",
+          "args": "w9, #0x14c7110"
+        },
+        {
+          "at": "0x14c712c",
+          "op": "b.pl",
+          "args": "#0x14c7174"
+        },
+        {
+          "at": "0x14c7138",
+          "op": "cbnz",
+          "args": "w8, #0x14c7144"
+        },
+        {
+          "at": "0x14c7154",
+          "op": "cbnz",
+          "args": "w10, #0x14c7160"
+        },
+        {
+          "at": "0x14c7198",
+          "op": "b.le",
+          "args": "#0x14c71bc"
+        },
+        {
+          "at": "0x14c71c0",
+          "op": "cbz",
+          "args": "w8, #0x14c72c4"
+        },
+        {
+          "at": "0x14c71cc",
+          "op": "cbz",
+          "args": "x8, #0x14c6eb4"
+        },
+        {
+          "at": "0x14c7218",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c7220",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c722c",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c7258",
+          "op": "cbz",
+          "args": "x9, #0x14c727c"
+        },
+        {
+          "at": "0x14c726c",
+          "op": "b.eq",
+          "args": "#0x14c728c"
+        },
+        {
+          "at": "0x14c7278",
+          "op": "b.ne",
+          "args": "#0x14c7264"
+        },
+        {
+          "at": "0x14c72cc",
+          "op": "cbnz",
+          "args": "w8, #0x14c72d4"
+        },
+        {
+          "at": "0x14c72e0",
+          "op": "b.lt",
+          "args": "#0x14c7354"
+        },
+        {
+          "at": "0x14c72f4",
+          "op": "b.pl",
+          "args": "#0x14c7354"
+        },
+        {
+          "at": "0x14c7318",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c7328",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c7344",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c735c",
+          "op": "cbnz",
+          "args": "w8, #0x14c7364"
+        },
+        {
+          "at": "0x14c7370",
+          "op": "b.lt",
+          "args": "#0x14c73c0"
+        },
+        {
+          "at": "0x14c737c",
+          "op": "cbnz",
+          "args": "w8, #0x14c7384"
+        },
+        {
+          "at": "0x14c7388",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c7390",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c73a4",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c73ac",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c73e0",
+          "op": "b.ge",
+          "args": "#0x14c73f8"
+        },
+        {
+          "at": "0x14c740c",
+          "op": "cbnz",
+          "args": "w8, #0x14c7414"
+        },
+        {
+          "at": "0x14c7434",
+          "op": "cbnz",
+          "args": "w9, #0x14c7444"
+        },
+        {
+          "at": "0x14c74b0",
+          "op": "cbnz",
+          "args": "w8, #0x14c74bc"
+        },
+        {
+          "at": "0x14c7538",
+          "op": "b.ls",
+          "args": "#0x14c7558"
+        },
+        {
+          "at": "0x14c7540",
+          "op": "cbz",
+          "args": "x8, #0x14c7754"
+        },
+        {
+          "at": "0x14c7548",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c7564",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c7574",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c7590",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c75b8",
+          "op": "cbnz",
+          "args": "w8, #0x14c75c4"
+        },
+        {
+          "at": "0x14c75e4",
+          "op": "cbnz",
+          "args": "w8, #0x14c75f0"
+        },
+        {
+          "at": "0x14c7600",
+          "op": "b.ne",
+          "args": "#0x14c7624"
+        },
+        {
+          "at": "0x14c7608",
+          "op": "cbnz",
+          "args": "w8, #0x14c7614"
+        },
+        {
+          "at": "0x14c7620",
+          "op": "b.ge",
+          "args": "#0x14c7690"
+        },
+        {
+          "at": "0x14c7628",
+          "op": "cbnz",
+          "args": "w8, #0x14c7630"
+        },
+        {
+          "at": "0x14c763c",
+          "op": "b.lt",
+          "args": "#0x14c76ac"
+        },
+        {
+          "at": "0x14c7648",
+          "op": "cbnz",
+          "args": "w8, #0x14c7650"
+        },
+        {
+          "at": "0x14c7668",
+          "op": "b.le",
+          "args": "#0x14c76ac"
+        },
+        {
+          "at": "0x14c7670",
+          "op": "cbnz",
+          "args": "w11, #0x14c7688"
+        },
+        {
+          "at": "0x14c7694",
+          "op": "cbz",
+          "args": "x8, #0x14c6eb4"
+        },
+        {
+          "at": "0x14c76b0",
+          "op": "cbz",
+          "args": "x20, #0x14c7754"
+        },
+        {
+          "at": "0x14c76c8",
+          "op": "cbz",
+          "args": "x1, #0x14c76d8"
+        },
+        {
+          "at": "0x14c76ec",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c7700",
+          "op": "cbnz",
+          "args": "w8, #0x14c7708"
+        },
+        {
+          "at": "0x14c770c",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c7714",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c7728",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        },
+        {
+          "at": "0x14c7730",
+          "op": "cbz",
+          "args": "x0, #0x14c7754"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x14c6e28",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c6e34",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c6e40",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c6e4c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c6e58",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c6e64",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c6e70",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c6e7c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c6e94",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c6efc",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c6f04",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x14c6f20",
+          "op": "bl",
+          "args": "#0x277d280"
+        },
+        {
+          "at": "0x14c6f3c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c6f5c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c6f64",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x14c6f84",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c6fa4",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c6fac",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x14c6fb4",
+          "op": "bl",
+          "args": "#0x14c78cc"
+        },
+        {
+          "at": "0x14c6fd0",
+          "op": "bl",
+          "args": "#0x16f5610"
+        },
+        {
+          "at": "0x14c701c",
+          "op": "bl",
+          "args": "#0x11881d8"
+        },
+        {
+          "at": "0x14c7038",
+          "op": "bl",
+          "args": "#0x1479570"
+        },
+        {
+          "at": "0x14c7048",
+          "op": "bl",
+          "args": "#0x2786dc0"
+        },
+        {
+          "at": "0x14c7058",
+          "op": "bl",
+          "args": "#0x2786dc0"
+        },
+        {
+          "at": "0x14c7074",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c707c",
+          "op": "bl",
+          "args": "#0x14e3890"
+        },
+        {
+          "at": "0x14c70a0",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c70a8",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x14c70c8",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c70e8",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c70f0",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x14c7108",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c713c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c715c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c7164",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x14c7190",
+          "op": "bl",
+          "args": "#0x277d280"
+        },
+        {
+          "at": "0x14c71b8",
+          "op": "b",
+          "args": "#0x14c7a38"
+        },
+        {
+          "at": "0x14c71f4",
+          "op": "br",
+          "args": "x2"
+        },
+        {
+          "at": "0x14c720c",
+          "op": "blr",
+          "args": "x8"
+        },
+        {
+          "at": "0x14c7214",
+          "op": "bl",
+          "args": "#0x14c78cc"
+        },
+        {
+          "at": "0x14c7228",
+          "op": "bl",
+          "args": "#0x16f5610"
+        },
+        {
+          "at": "0x14c7284",
+          "op": "bl",
+          "args": "#0x11881d8"
+        },
+        {
+          "at": "0x14c72c0",
+          "op": "br",
+          "args": "x2"
+        },
+        {
+          "at": "0x14c72d0",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c72d8",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x14c72ec",
+          "op": "bl",
+          "args": "#0x2786dc0"
+        },
+        {
+          "at": "0x14c72fc",
+          "op": "bl",
+          "args": "#0x2786dc0"
+        },
+        {
+          "at": "0x14c7314",
+          "op": "bl",
+          "args": "#0x277f14c"
+        },
+        {
+          "at": "0x14c7324",
+          "op": "bl",
+          "args": "#0x278ab34"
+        },
+        {
+          "at": "0x14c7330",
+          "op": "bl",
+          "args": "#0x27891b8"
+        },
+        {
+          "at": "0x14c7340",
+          "op": "bl",
+          "args": "#0x123aaa0"
+        },
+        {
+          "at": "0x14c7350",
+          "op": "bl",
+          "args": "#0x2781804"
+        },
+        {
+          "at": "0x14c7360",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c7368",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x14c7380",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c7384",
+          "op": "bl",
+          "args": "#0x14c78cc"
+        },
+        {
+          "at": "0x14c73a0",
+          "op": "bl",
+          "args": "#0x16f51b8"
+        },
+        {
+          "at": "0x14c73bc",
+          "op": "blr",
+          "args": "x9"
+        },
+        {
+          "at": "0x14c7410",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c741c",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x14c743c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c7450",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x14c74b4",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c7500",
+          "op": "bl",
+          "args": "#0x110d134"
+        },
+        {
+          "at": "0x14c7514",
+          "op": "bl",
+          "args": "#0x1434cb4"
+        },
+        {
+          "at": "0x14c7524",
+          "op": "bl",
+          "args": "#0x1434ce4"
+        },
+        {
+          "at": "0x14c7550",
+          "op": "bl",
+          "args": "#0x14795a8"
+        },
+        {
+          "at": "0x14c7560",
+          "op": "bl",
+          "args": "#0x277f14c"
+        },
+        {
+          "at": "0x14c7570",
+          "op": "bl",
+          "args": "#0x278ab34"
+        },
+        {
+          "at": "0x14c757c",
+          "op": "bl",
+          "args": "#0x27891b8"
+        },
+        {
+          "at": "0x14c758c",
+          "op": "bl",
+          "args": "#0x123aaa0"
+        },
+        {
+          "at": "0x14c759c",
+          "op": "bl",
+          "args": "#0x2781804"
+        },
+        {
+          "at": "0x14c75ac",
+          "op": "bl",
+          "args": "#0x15b50ac"
+        },
+        {
+          "at": "0x14c75bc",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c75e8",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c760c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c762c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c7634",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x14c764c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c7654",
+          "op": "bl",
+          "args": "#0x14c7758"
+        },
+        {
+          "at": "0x14c7678",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c76a4",
+          "op": "blr",
+          "args": "x9"
+        },
+        {
+          "at": "0x14c76c0",
+          "op": "blr",
+          "args": "x8"
+        },
+        {
+          "at": "0x14c76d4",
+          "op": "bl",
+          "args": "#0x27829d8"
+        },
+        {
+          "at": "0x14c76e4",
+          "op": "bl",
+          "args": "#0x27c2234"
+        },
+        {
+          "at": "0x14c76f4",
+          "op": "bl",
+          "args": "#0x27c2044"
+        },
+        {
+          "at": "0x14c7704",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c7708",
+          "op": "bl",
+          "args": "#0x14c78cc"
+        },
+        {
+          "at": "0x14c7724",
+          "op": "bl",
+          "args": "#0x16f51b8"
+        },
+        {
+          "at": "0x14c7738",
+          "op": "bl",
+          "args": "#0x277f14c"
+        },
+        {
+          "at": "0x14c774c",
+          "op": "bl",
+          "args": "#0x1434cb4"
+        },
+        {
+          "at": "0x14c7754",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Player_Health",
+      "method": "Miss",
+      "signature": "private void Miss() { }",
+      "rva": "0x14c7a38",
+      "instruction_count": 100,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x14c7a50",
+          "op": "tbnz",
+          "args": "w8, #0, #0x14c7a80"
+        },
+        {
+          "at": "0x14c7a90",
+          "op": "b.pl",
+          "args": "#0x14c7bb4"
+        },
+        {
+          "at": "0x14c7ab8",
+          "op": "cbz",
+          "args": "x0, #0x14c7bc4"
+        },
+        {
+          "at": "0x14c7ad8",
+          "op": "cbz",
+          "args": "x0, #0x14c7bc4"
+        },
+        {
+          "at": "0x14c7ae8",
+          "op": "cbz",
+          "args": "x0, #0x14c7bc4"
+        },
+        {
+          "at": "0x14c7af4",
+          "op": "cbz",
+          "args": "x21, #0x14c7bc4"
+        },
+        {
+          "at": "0x14c7b24",
+          "op": "cbz",
+          "args": "x0, #0x14c7bc4"
+        },
+        {
+          "at": "0x14c7b34",
+          "op": "cbz",
+          "args": "x0, #0x14c7bc4"
+        },
+        {
+          "at": "0x14c7b5c",
+          "op": "cbnz",
+          "args": "w9, #0x14c7b68"
+        },
+        {
+          "at": "0x14c7b7c",
+          "op": "cbz",
+          "args": "x20, #0x14c7bc4"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x14c7a5c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c7a68",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c7a74",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c7a88",
+          "op": "bl",
+          "args": "#0x2786dc0"
+        },
+        {
+          "at": "0x14c7a98",
+          "op": "bl",
+          "args": "#0x2786dc0"
+        },
+        {
+          "at": "0x14c7ab4",
+          "op": "bl",
+          "args": "#0x123a9fc"
+        },
+        {
+          "at": "0x14c7ac4",
+          "op": "bl",
+          "args": "#0x2781748"
+        },
+        {
+          "at": "0x14c7ad4",
+          "op": "bl",
+          "args": "#0x277f14c"
+        },
+        {
+          "at": "0x14c7ae4",
+          "op": "bl",
+          "args": "#0x278ab34"
+        },
+        {
+          "at": "0x14c7af0",
+          "op": "bl",
+          "args": "#0x27891b8"
+        },
+        {
+          "at": "0x14c7b14",
+          "op": "bl",
+          "args": "#0x2789258"
+        },
+        {
+          "at": "0x14c7b20",
+          "op": "bl",
+          "args": "#0x2781748"
+        },
+        {
+          "at": "0x14c7b30",
+          "op": "bl",
+          "args": "#0x278ab34"
+        },
+        {
+          "at": "0x14c7b44",
+          "op": "bl",
+          "args": "#0x16f4f54"
+        },
+        {
+          "at": "0x14c7b64",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c7b78",
+          "op": "bl",
+          "args": "#0x14386a8"
+        },
+        {
+          "at": "0x14c7b94",
+          "op": "blr",
+          "args": "x9"
+        },
+        {
+          "at": "0x14c7bb0",
+          "op": "b",
+          "args": "#0x2781804"
+        },
+        {
+          "at": "0x14c7bc4",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Sub_Player",
+      "method": "SetDieCallback",
+      "signature": "public override void SetDieCallback(Action<GameObject> dieCallback) { }",
+      "rva": "0x14c838c",
+      "instruction_count": 1,
+      "ability_calls": [],
+      "branches": [],
+      "calls": []
+    },
+    {
+      "class": "Sub_Player",
+      "method": "TakeDamage",
+      "signature": "public override void TakeDamage(Damager damager, bool ignoreInvincible = False) { }",
+      "rva": "0x14c8390",
+      "instruction_count": 41,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x14c83c4",
+          "op": "tbnz",
+          "args": "w8, #0, #0x14c83e8"
+        },
+        {
+          "at": "0x14c8408",
+          "op": "cbz",
+          "args": "x21, #0x14c8430"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x14c83d0",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c83dc",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c83f0",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c8404",
+          "op": "bl",
+          "args": "#0x20bc330"
+        },
+        {
+          "at": "0x14c842c",
+          "op": "b",
+          "args": "#0x14c6de4"
+        },
+        {
+          "at": "0x14c8430",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Sub_Player",
+      "method": "Destroyed",
+      "signature": "public override void Destroyed() { }",
+      "rva": "0x14c8434",
+      "instruction_count": 1,
+      "ability_calls": [],
+      "branches": [],
+      "calls": []
+    },
+    {
+      "class": "Player_Attack",
+      "method": "IsInvisible",
+      "signature": "public bool IsInvisible() { }",
+      "rva": "0x1479570",
+      "instruction_count": 14,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x147957c",
+          "op": "b.lt",
+          "args": "#0x147959c"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1479588",
+          "op": "bl",
+          "args": "#0x2786dc0"
+        }
+      ]
+    },
+    {
+      "class": "Player_Attack",
+      "method": "SetInvisible",
+      "signature": "public bool SetInvisible() { }",
+      "rva": "0x14795a8",
+      "instruction_count": 85,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x14795c0",
+          "op": "tbnz",
+          "args": "w8, #0, #0x14795e4"
+        },
+        {
+          "at": "0x14795ec",
+          "op": "b.ge",
+          "args": "#0x14795f8"
+        },
+        {
+          "at": "0x1479600",
+          "op": "b.mi",
+          "args": "#0x1479644"
+        },
+        {
+          "at": "0x1479624",
+          "op": "cbnz",
+          "args": "w8, #0x1479630"
+        },
+        {
+          "at": "0x1479640",
+          "op": "b.lt",
+          "args": "#0x14795f0"
+        },
+        {
+          "at": "0x1479680",
+          "op": "cbnz",
+          "args": "w9, #0x147968c"
+        },
+        {
+          "at": "0x147969c",
+          "op": "tbz",
+          "args": "w0, #0, #0x14796e4"
+        },
+        {
+          "at": "0x14796a8",
+          "op": "cbz",
+          "args": "x0, #0x14796f8"
+        },
+        {
+          "at": "0x14796b8",
+          "op": "cbz",
+          "args": "x1, #0x14796c8"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x14795cc",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14795d8",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1479608",
+          "op": "bl",
+          "args": "#0x2786dc0"
+        },
+        {
+          "at": "0x1479628",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1479648",
+          "op": "bl",
+          "args": "#0x2786dc0"
+        },
+        {
+          "at": "0x1479654",
+          "op": "bl",
+          "args": "#0x2786dc0"
+        },
+        {
+          "at": "0x1479668",
+          "op": "bl",
+          "args": "#0x14793cc"
+        },
+        {
+          "at": "0x1479688",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x1479698",
+          "op": "bl",
+          "args": "#0x27815fc"
+        },
+        {
+          "at": "0x14796a4",
+          "op": "bl",
+          "args": "#0x14793cc"
+        },
+        {
+          "at": "0x14796b0",
+          "op": "bl",
+          "args": "#0x14bbe38"
+        },
+        {
+          "at": "0x14796c4",
+          "op": "bl",
+          "args": "#0x27829d8"
+        },
+        {
+          "at": "0x14796cc",
+          "op": "bl",
+          "args": "#0x14796fc"
+        },
+        {
+          "at": "0x14796dc",
+          "op": "bl",
+          "args": "#0x278276c"
+        },
+        {
+          "at": "0x14796f8",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Player_Get_Datas",
+      "method": "get_abi32Amount",
+      "signature": "public static float get_abi32Amount() { }",
+      "rva": "0x14dbc84",
+      "instruction_count": 3,
+      "ability_calls": [],
+      "branches": [],
+      "calls": []
+    },
+    {
+      "class": "Player_Get_Datas",
+      "method": "TimeToImmuneOneHit",
+      "signature": "public static float TimeToImmuneOneHit() { }",
+      "rva": "0x14e3890",
+      "instruction_count": 46,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x14e38a8",
+          "op": "tbnz",
+          "args": "w8, #0, #0x14e38c0"
+        },
+        {
+          "at": "0x14e38c8",
+          "op": "cbnz",
+          "args": "w8, #0x14e38d0"
+        },
+        {
+          "at": "0x14e38e4",
+          "op": "b.gt",
+          "args": "#0x14e393c"
+        },
+        {
+          "at": "0x14e38ec",
+          "op": "b.eq",
+          "args": "#0x14e393c"
+        },
+        {
+          "at": "0x14e38f4",
+          "op": "b.gt",
+          "args": "#0x14e3908"
+        },
+        {
+          "at": "0x14e38fc",
+          "op": "b.ne",
+          "args": "#0x14e3910"
+        },
+        {
+          "at": "0x14e3914",
+          "op": "b.gt",
+          "args": "#0x14e3934"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x14e38b4",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14e38cc",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14e38d8",
+          "op": "bl",
+          "args": "#0x139d96c"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_DestroyDelayed",
+      "method": "Destroy",
+      "signature": "public override void Destroy(DestroyType _destroyType) { }",
+      "rva": "0x15814a0",
+      "instruction_count": 8,
+      "ability_calls": [],
+      "branches": [],
+      "calls": [
+        {
+          "at": "0x15814a8",
+          "op": "bl",
+          "args": "#0x15814c0"
+        },
+        {
+          "at": "0x15814bc",
+          "op": "b",
+          "args": "#0x278276c"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_DestroyDelayed",
+      "method": "DelayDestroy",
+      "signature": "private IEnumerator DelayDestroy(float _timeDelay, DestroyType _typeDestroy) { }",
+      "rva": "0x15814c0",
+      "instruction_count": 28,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x15814e4",
+          "op": "tbnz",
+          "args": "w8, #0, #0x15814fc"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x15814f0",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1581500",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x158150c",
+          "op": "bl",
+          "args": "#0x2143330"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_DestroyDelayed",
+      "method": "ctor",
+      "signature": "public void .ctor() { }",
+      "rva": "0x1581558",
+      "instruction_count": 4,
+      "ability_calls": [],
+      "branches": [],
+      "calls": [
+        {
+          "at": "0x1581564",
+          "op": "b",
+          "args": "#0x2782ba0"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_DestroyDelayed",
+      "method": "<DelayDestroy>b__4_0",
+      "signature": "private bool <DelayDestroy>b__4_0() { }",
+      "rva": "0x1581570",
+      "instruction_count": 9,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1581578",
+          "op": "cbz",
+          "args": "x8, #0x1581590"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x158158c",
+          "op": "br",
+          "args": "x2"
+        },
+        {
+          "at": "0x1581590",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_DestroyDelayed",
+      "method": "<>n__0",
+      "signature": "private void <>n__0(DestroyType _destroyType) { }",
+      "rva": "0x1581594",
+      "instruction_count": 1,
+      "ability_calls": [],
+      "branches": [],
+      "calls": [
+        {
+          "at": "0x1581594",
+          "op": "b",
+          "args": "#0x1581598"
+        }
+      ]
+    },
+    {
+      "class": "Enemy_DestroyDelayed.<DelayDestroy>d__4",
+      "method": "MoveNext",
+      "signature": "private bool MoveNext() { }",
+      "rva": "0x15815d8",
+      "instruction_count": 65,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x15815ec",
+          "op": "tbnz",
+          "args": "w8, #0, #0x158161c"
+        },
+        {
+          "at": "0x1581628",
+          "op": "b.eq",
+          "args": "#0x15816b0"
+        },
+        {
+          "at": "0x158162c",
+          "op": "cbnz",
+          "args": "w8, #0x15816c8"
+        },
+        {
+          "at": "0x1581638",
+          "op": "cbz",
+          "args": "x20, #0x15816d8"
+        },
+        {
+          "at": "0x1581640",
+          "op": "cbz",
+          "args": "x8, #0x1581654"
+        },
+        {
+          "at": "0x15816b8",
+          "op": "cbz",
+          "args": "x20, #0x15816d8"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x15815f8",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1581604",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1581610",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1581650",
+          "op": "blr",
+          "args": "x9"
+        },
+        {
+          "at": "0x1581660",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x158167c",
+          "op": "bl",
+          "args": "#0x1a9d4c0"
+        },
+        {
+          "at": "0x158168c",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x158169c",
+          "op": "bl",
+          "args": "#0x2786670"
+        },
+        {
+          "at": "0x15816c4",
+          "op": "bl",
+          "args": "#0x1581598"
+        },
+        {
+          "at": "0x15816d8",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "MB_Destroy",
+      "method": "Destroy",
+      "signature": "public override void Destroy(DestroyType _destroyType) { }",
+      "rva": "0x1574a14",
+      "instruction_count": 10,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1574a14",
+          "op": "cbz",
+          "args": "w1, #0x1574a28"
+        },
+        {
+          "at": "0x1574a1c",
+          "op": "b.ne",
+          "args": "#0x1574a34"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1574a24",
+          "op": "b",
+          "args": "#0x1584ac8"
+        },
+        {
+          "at": "0x1574a30",
+          "op": "br",
+          "args": "x2"
+        },
+        {
+          "at": "0x1574a38",
+          "op": "b",
+          "args": "#0x1584bec"
+        }
+      ]
+    },
+    {
+      "class": "MB_Destroy",
+      "method": "OnDestroyByZeroHp",
+      "signature": "protected override void OnDestroyByZeroHp() { }",
+      "rva": "0x1574a3c",
+      "instruction_count": 22,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1574a4c",
+          "op": "cbz",
+          "args": "x20, #0x1574a74"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1574a58",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1574a70",
+          "op": "blr",
+          "args": "x9"
+        },
+        {
+          "at": "0x1574a78",
+          "op": "bl",
+          "args": "#0x1574a94"
+        },
+        {
+          "at": "0x1574a90",
+          "op": "b",
+          "args": "#0x278276c"
+        }
+      ]
+    },
+    {
+      "class": "MB_Destroy",
+      "method": "DieEffect",
+      "signature": "private IEnumerator DieEffect() { }",
+      "rva": "0x1574a94",
+      "instruction_count": 24,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1574ab0",
+          "op": "tbnz",
+          "args": "w8, #0, #0x1574ac8"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1574abc",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1574acc",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x1574ad8",
+          "op": "bl",
+          "args": "#0x2143330"
+        }
+      ]
+    },
+    {
+      "class": "MB_Destroy.<DieEffect>d__5",
+      "method": "MoveNext",
+      "signature": "private bool MoveNext() { }",
+      "rva": "0x1574b28",
+      "instruction_count": 129,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1574b40",
+          "op": "tbnz",
+          "args": "w8, #0, #0x1574b64"
+        },
+        {
+          "at": "0x1574b6c",
+          "op": "b.hi",
+          "args": "#0x1574d10"
+        },
+        {
+          "at": "0x1574b94",
+          "op": "cbz",
+          "args": "x20, #0x1574d28"
+        },
+        {
+          "at": "0x1574b9c",
+          "op": "cbz",
+          "args": "x0, #0x1574d28"
+        },
+        {
+          "at": "0x1574be4",
+          "op": "cbz",
+          "args": "x20, #0x1574d28"
+        },
+        {
+          "at": "0x1574bec",
+          "op": "cbz",
+          "args": "x0, #0x1574d28"
+        },
+        {
+          "at": "0x1574c30",
+          "op": "cbz",
+          "args": "x20, #0x1574d28"
+        },
+        {
+          "at": "0x1574c7c",
+          "op": "cbz",
+          "args": "x20, #0x1574d28"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1574b4c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1574b58",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1574b88",
+          "op": "br",
+          "args": "x10"
+        },
+        {
+          "at": "0x1574bac",
+          "op": "bl",
+          "args": "#0x2781804"
+        },
+        {
+          "at": "0x1574bbc",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x1574bcc",
+          "op": "bl",
+          "args": "#0x2786508"
+        },
+        {
+          "at": "0x1574bf8",
+          "op": "bl",
+          "args": "#0x2781804"
+        },
+        {
+          "at": "0x1574c08",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x1574c18",
+          "op": "bl",
+          "args": "#0x2786508"
+        },
+        {
+          "at": "0x1574c3c",
+          "op": "bl",
+          "args": "#0x15854d8"
+        },
+        {
+          "at": "0x1574c4c",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x1574c5c",
+          "op": "bl",
+          "args": "#0x2786508"
+        },
+        {
+          "at": "0x1574c88",
+          "op": "bl",
+          "args": "#0x15850bc"
+        },
+        {
+          "at": "0x1574c90",
+          "op": "bl",
+          "args": "#0x2786dc0"
+        },
+        {
+          "at": "0x1574ca8",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1574cc4",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x1574cd8",
+          "op": "bl",
+          "args": "#0x13217fc"
+        },
+        {
+          "at": "0x1574cec",
+          "op": "bl",
+          "args": "#0x1434cb4"
+        },
+        {
+          "at": "0x1574cf8",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x1574d0c",
+          "op": "bl",
+          "args": "#0x1434cb4"
+        },
+        {
+          "at": "0x1574d28",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "EventDispatcherExtension",
+      "method": "PostEvent",
+      "signature": "public static void PostEvent(MonoBehaviour listener, EventID eventID, object param) { }",
+      "rva": "0x1434cb4",
+      "instruction_count": 12,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1434cc8",
+          "op": "cbz",
+          "args": "x0, #0x1434ce0"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1434cc4",
+          "op": "bl",
+          "args": "#0x1434078"
+        },
+        {
+          "at": "0x1434cdc",
+          "op": "b",
+          "args": "#0x1434720"
+        },
+        {
+          "at": "0x1434ce0",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "EventDispatcherExtension",
+      "method": "PostEvent",
+      "signature": "public static void PostEvent(MonoBehaviour sender, EventID eventID) { }",
+      "rva": "0x1434ce4",
+      "instruction_count": 9,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1434cf0",
+          "op": "cbz",
+          "args": "x0, #0x1434d04"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x1434cec",
+          "op": "bl",
+          "args": "#0x1434078"
+        },
+        {
+          "at": "0x1434d00",
+          "op": "b",
+          "args": "#0x1434720"
+        },
+        {
+          "at": "0x1434d04",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "EventDispatcher",
+      "method": "PostEvent",
+      "signature": "public void PostEvent(EventID eventID, object param) { }",
+      "rva": "0x1434720",
+      "instruction_count": 97,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x1434740",
+          "op": "tbnz",
+          "args": "w8, #0, #0x1434794"
+        },
+        {
+          "at": "0x1434798",
+          "op": "cbz",
+          "args": "x0, #0x14348a0"
+        },
+        {
+          "at": "0x14347b0",
+          "op": "tbz",
+          "args": "w0, #0, #0x14347f8"
+        },
+        {
+          "at": "0x14347b8",
+          "op": "cbz",
+          "args": "x0, #0x14348a0"
+        },
+        {
+          "at": "0x14347d0",
+          "op": "cbz",
+          "args": "x0, #0x1434838"
+        },
+        {
+          "at": "0x1434878",
+          "op": "cbz",
+          "args": "x0, #0x14348a0"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x143474c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1434758",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1434764",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1434770",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x143477c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x1434788",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14347ac",
+          "op": "bl",
+          "args": "#0x1945ba8"
+        },
+        {
+          "at": "0x14347cc",
+          "op": "bl",
+          "args": "#0x1945914"
+        },
+        {
+          "at": "0x14347f4",
+          "op": "br",
+          "args": "x3"
+        },
+        {
+          "at": "0x143480c",
+          "op": "bl",
+          "args": "#0x110d134"
+        },
+        {
+          "at": "0x1434828",
+          "op": "bl",
+          "args": "#0x1fe4c90"
+        },
+        {
+          "at": "0x1434830",
+          "op": "bl",
+          "args": "#0x15b77b0"
+        },
+        {
+          "at": "0x143484c",
+          "op": "bl",
+          "args": "#0x110d134"
+        },
+        {
+          "at": "0x1434868",
+          "op": "bl",
+          "args": "#0x1fe4c90"
+        },
+        {
+          "at": "0x1434870",
+          "op": "bl",
+          "args": "#0x15b77b0"
+        },
+        {
+          "at": "0x143488c",
+          "op": "bl",
+          "args": "#0x1946da0"
+        },
+        {
+          "at": "0x14348a0",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Player_Controller",
+      "method": "Start",
+      "signature": "private void Start() { }",
+      "rva": "0x14c1a90",
+      "instruction_count": 488,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x14c1ac0",
+          "op": "tbnz",
+          "args": "w8, #0, #0x14c1c58"
+        },
+        {
+          "at": "0x14c1c78",
+          "op": "cbz",
+          "args": "x22, #0x14c222c"
+        },
+        {
+          "at": "0x14c1ca8",
+          "op": "cbz",
+          "args": "x22, #0x14c222c"
+        },
+        {
+          "at": "0x14c1cd8",
+          "op": "cbz",
+          "args": "x22, #0x14c222c"
+        },
+        {
+          "at": "0x14c1d08",
+          "op": "cbz",
+          "args": "x22, #0x14c222c"
+        },
+        {
+          "at": "0x14c1d38",
+          "op": "cbz",
+          "args": "x22, #0x14c222c"
+        },
+        {
+          "at": "0x14c1d68",
+          "op": "cbz",
+          "args": "x22, #0x14c222c"
+        },
+        {
+          "at": "0x14c1da0",
+          "op": "cbz",
+          "args": "x22, #0x14c222c"
+        },
+        {
+          "at": "0x14c1dd0",
+          "op": "cbz",
+          "args": "x22, #0x14c222c"
+        },
+        {
+          "at": "0x14c1e00",
+          "op": "cbz",
+          "args": "x22, #0x14c222c"
+        },
+        {
+          "at": "0x14c1e30",
+          "op": "cbz",
+          "args": "x22, #0x14c222c"
+        },
+        {
+          "at": "0x14c1e60",
+          "op": "cbz",
+          "args": "x22, #0x14c222c"
+        },
+        {
+          "at": "0x14c1e90",
+          "op": "cbz",
+          "args": "x22, #0x14c222c"
+        },
+        {
+          "at": "0x14c1ec8",
+          "op": "cbz",
+          "args": "x21, #0x14c222c"
+        },
+        {
+          "at": "0x14c1f00",
+          "op": "cbz",
+          "args": "x23, #0x14c222c"
+        },
+        {
+          "at": "0x14c1f18",
+          "op": "cbnz",
+          "args": "w8, #0x14c1f24"
+        },
+        {
+          "at": "0x14c1f30",
+          "op": "b.ne",
+          "args": "#0x14c1f50"
+        },
+        {
+          "at": "0x14c1f38",
+          "op": "cbnz",
+          "args": "w9, #0x14c1f48"
+        },
+        {
+          "at": "0x14c1f4c",
+          "op": "cbnz",
+          "args": "w8, #0x14c1f5c"
+        },
+        {
+          "at": "0x14c1f54",
+          "op": "cbz",
+          "args": "x8, #0x14c222c"
+        },
+        {
+          "at": "0x14c1f64",
+          "op": "cbnz",
+          "args": "w9, #0x14c1f70"
+        },
+        {
+          "at": "0x14c1f6c",
+          "op": "cbz",
+          "args": "w9, #0x14c221c"
+        },
+        {
+          "at": "0x14c1f74",
+          "op": "cbz",
+          "args": "x8, #0x14c222c"
+        },
+        {
+          "at": "0x14c1fac",
+          "op": "cbz",
+          "args": "x23, #0x14c222c"
+        },
+        {
+          "at": "0x14c1fdc",
+          "op": "cbz",
+          "args": "x23, #0x14c222c"
+        },
+        {
+          "at": "0x14c200c",
+          "op": "cbz",
+          "args": "x23, #0x14c222c"
+        },
+        {
+          "at": "0x14c203c",
+          "op": "cbz",
+          "args": "x23, #0x14c222c"
+        },
+        {
+          "at": "0x14c2070",
+          "op": "cbz",
+          "args": "x23, #0x14c222c"
+        },
+        {
+          "at": "0x14c20a0",
+          "op": "cbz",
+          "args": "x23, #0x14c222c"
+        },
+        {
+          "at": "0x14c2194",
+          "op": "cbz",
+          "args": "x8, #0x14c222c"
+        },
+        {
+          "at": "0x14c2228",
+          "op": "cbnz",
+          "args": "x8, #0x14c1f78"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x14c1acc",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1ad8",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1ae4",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1af0",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1afc",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1b08",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1b14",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1b20",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1b2c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1b38",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1b44",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1b50",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1b5c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1b68",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1b74",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1b80",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1b8c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1b98",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1ba4",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1bb0",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1bbc",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1bc8",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1bd4",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1be0",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1bec",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1bf8",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1c04",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1c10",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1c1c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1c28",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1c34",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1c40",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1c4c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c1c60",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1c74",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c1c90",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1ca4",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c1cc0",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1cd4",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c1cf0",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1d04",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c1d20",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1d34",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c1d50",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1d64",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c1d88",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1d9c",
+          "op": "bl",
+          "args": "#0x19a8b1c"
+        },
+        {
+          "at": "0x14c1db8",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1dcc",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c1de8",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1dfc",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c1e18",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1e2c",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c1e48",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1e5c",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c1e78",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1e8c",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c1eb0",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1ec4",
+          "op": "bl",
+          "args": "#0x18a5dfc"
+        },
+        {
+          "at": "0x14c1ee8",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1efc",
+          "op": "bl",
+          "args": "#0x20bc330"
+        },
+        {
+          "at": "0x14c1f1c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c1f3c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c1f58",
+          "op": "bl",
+          "args": "#0x14bb900"
+        },
+        {
+          "at": "0x14c1f94",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1fa8",
+          "op": "bl",
+          "args": "#0x18a4388"
+        },
+        {
+          "at": "0x14c1fc4",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c1fd8",
+          "op": "bl",
+          "args": "#0x18a4388"
+        },
+        {
+          "at": "0x14c1ff4",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c2008",
+          "op": "bl",
+          "args": "#0x18a4388"
+        },
+        {
+          "at": "0x14c2024",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c2038",
+          "op": "bl",
+          "args": "#0x18a4388"
+        },
+        {
+          "at": "0x14c2058",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c206c",
+          "op": "bl",
+          "args": "#0x20bc330"
+        },
+        {
+          "at": "0x14c2088",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c209c",
+          "op": "bl",
+          "args": "#0x20bc330"
+        },
+        {
+          "at": "0x14c20d4",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c20e8",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c20fc",
+          "op": "bl",
+          "args": "#0x1434c84"
+        },
+        {
+          "at": "0x14c2104",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c2118",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c212c",
+          "op": "bl",
+          "args": "#0x1434c84"
+        },
+        {
+          "at": "0x14c2134",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c2148",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c215c",
+          "op": "bl",
+          "args": "#0x1434c84"
+        },
+        {
+          "at": "0x14c2164",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c2178",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c218c",
+          "op": "bl",
+          "args": "#0x1434c84"
+        },
+        {
+          "at": "0x14c21a8",
+          "op": "bl",
+          "args": "#0x14b1eb0"
+        },
+        {
+          "at": "0x14c21bc",
+          "op": "bl",
+          "args": "#0x110d134"
+        },
+        {
+          "at": "0x14c21d0",
+          "op": "bl",
+          "args": "#0x1434cb4"
+        },
+        {
+          "at": "0x14c21d8",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c21ec",
+          "op": "bl",
+          "args": "#0x18a5580"
+        },
+        {
+          "at": "0x14c2200",
+          "op": "bl",
+          "args": "#0x1434c84"
+        },
+        {
+          "at": "0x14c222c",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Player_Controller",
+      "method": "OnDie",
+      "signature": "public void OnDie() { }",
+      "rva": "0x14c27f8",
+      "instruction_count": 74,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x14c280c",
+          "op": "tbnz",
+          "args": "w8, #0, #0x14c2824"
+        },
+        {
+          "at": "0x14c282c",
+          "op": "cbz",
+          "args": "x8, #0x14c2918"
+        },
+        {
+          "at": "0x14c2838",
+          "op": "cbz",
+          "args": "x8, #0x14c2918"
+        },
+        {
+          "at": "0x14c2840",
+          "op": "cbz",
+          "args": "x0, #0x14c2918"
+        },
+        {
+          "at": "0x14c2854",
+          "op": "cbz",
+          "args": "x0, #0x14c2918"
+        },
+        {
+          "at": "0x14c287c",
+          "op": "cbz",
+          "args": "x0, #0x14c2918"
+        },
+        {
+          "at": "0x14c288c",
+          "op": "cbz",
+          "args": "x0, #0x14c2918"
+        },
+        {
+          "at": "0x14c2898",
+          "op": "cbz",
+          "args": "x0, #0x14c2918"
+        },
+        {
+          "at": "0x14c28b0",
+          "op": "tbnz",
+          "args": "w21, #0, #0x14c2878"
+        },
+        {
+          "at": "0x14c28b8",
+          "op": "cbz",
+          "args": "x0, #0x14c2918"
+        },
+        {
+          "at": "0x14c28c4",
+          "op": "cbz",
+          "args": "x0, #0x14c2918"
+        },
+        {
+          "at": "0x14c28d4",
+          "op": "b.lt",
+          "args": "#0x14c290c"
+        },
+        {
+          "at": "0x14c28e0",
+          "op": "b.hs",
+          "args": "#0x14c291c"
+        },
+        {
+          "at": "0x14c28ec",
+          "op": "cbz",
+          "args": "x0, #0x14c2918"
+        },
+        {
+          "at": "0x14c2908",
+          "op": "b.lt",
+          "args": "#0x14c28dc"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x14c2818",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c284c",
+          "op": "blr",
+          "args": "x9"
+        },
+        {
+          "at": "0x14c2860",
+          "op": "bl",
+          "args": "#0x14bbf48"
+        },
+        {
+          "at": "0x14c286c",
+          "op": "bl",
+          "args": "#0x2782b0c"
+        },
+        {
+          "at": "0x14c2888",
+          "op": "bl",
+          "args": "#0x278ab34"
+        },
+        {
+          "at": "0x14c2894",
+          "op": "bl",
+          "args": "#0x277f188"
+        },
+        {
+          "at": "0x14c28a4",
+          "op": "bl",
+          "args": "#0x2781804"
+        },
+        {
+          "at": "0x14c28c0",
+          "op": "bl",
+          "args": "#0x16f5830"
+        },
+        {
+          "at": "0x14c28f8",
+          "op": "bl",
+          "args": "#0x277e6cc"
+        },
+        {
+          "at": "0x14c2918",
+          "op": "bl",
+          "args": "#0x110d250"
+        },
+        {
+          "at": "0x14c291c",
+          "op": "bl",
+          "args": "#0x110d258"
+        }
+      ]
+    },
+    {
+      "class": "Player_Controller",
+      "method": "OnExtralife",
+      "signature": "private void OnExtralife() { }",
+      "rva": "0x14c42d4",
+      "instruction_count": 34,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x14c42f0",
+          "op": "tbnz",
+          "args": "w8, #0, #0x14c4308"
+        },
+        {
+          "at": "0x14c4310",
+          "op": "cbnz",
+          "args": "w8, #0x14c431c"
+        },
+        {
+          "at": "0x14c4328",
+          "op": "b.ne",
+          "args": "#0x14c433c"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x14c42fc",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c4314",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c4338",
+          "op": "b",
+          "args": "#0x14c435c"
+        },
+        {
+          "at": "0x14c4340",
+          "op": "bl",
+          "args": "#0x14c4628"
+        },
+        {
+          "at": "0x14c4358",
+          "op": "b",
+          "args": "#0x278276c"
+        }
+      ]
+    },
+    {
+      "class": "Player_Controller",
+      "method": "DoExtraLifePVP",
+      "signature": "private void DoExtraLifePVP() { }",
+      "rva": "0x14c435c",
+      "instruction_count": 179,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x14c4374",
+          "op": "tbnz",
+          "args": "w8, #0, #0x14c43d4"
+        },
+        {
+          "at": "0x14c43e8",
+          "op": "cbz",
+          "args": "x8, #0x14c4620"
+        },
+        {
+          "at": "0x14c43f0",
+          "op": "cbz",
+          "args": "x0, #0x14c4620"
+        },
+        {
+          "at": "0x14c4404",
+          "op": "cbz",
+          "args": "x0, #0x14c4620"
+        },
+        {
+          "at": "0x14c440c",
+          "op": "cbz",
+          "args": "x8, #0x14c4620"
+        },
+        {
+          "at": "0x14c4420",
+          "op": "cbz",
+          "args": "x0, #0x14c4620"
+        },
+        {
+          "at": "0x14c4438",
+          "op": "cbz",
+          "args": "x8, #0x14c4620"
+        },
+        {
+          "at": "0x14c4448",
+          "op": "cbz",
+          "args": "x8, #0x14c4620"
+        },
+        {
+          "at": "0x14c4454",
+          "op": "cbz",
+          "args": "x0, #0x14c4620"
+        },
+        {
+          "at": "0x14c4468",
+          "op": "cbz",
+          "args": "x0, #0x14c4620"
+        },
+        {
+          "at": "0x14c4478",
+          "op": "b.lt",
+          "args": "#0x14c44b0"
+        },
+        {
+          "at": "0x14c4484",
+          "op": "b.hs",
+          "args": "#0x14c4624"
+        },
+        {
+          "at": "0x14c4490",
+          "op": "cbz",
+          "args": "x0, #0x14c4620"
+        },
+        {
+          "at": "0x14c44ac",
+          "op": "b.lt",
+          "args": "#0x14c4480"
+        },
+        {
+          "at": "0x14c44bc",
+          "op": "cbz",
+          "args": "x8, #0x14c4620"
+        },
+        {
+          "at": "0x14c44e4",
+          "op": "tbz",
+          "args": "w0, #0, #0x14c44f8"
+        },
+        {
+          "at": "0x14c4500",
+          "op": "cbnz",
+          "args": "w8, #0x14c450c"
+        },
+        {
+          "at": "0x14c4534",
+          "op": "cbz",
+          "args": "x0, #0x14c4620"
+        },
+        {
+          "at": "0x14c456c",
+          "op": "cbnz",
+          "args": "w9, #0x14c4578"
+        },
+        {
+          "at": "0x14c4584",
+          "op": "cbz",
+          "args": "x21, #0x14c4620"
+        },
+        {
+          "at": "0x14c45b0",
+          "op": "cbz",
+          "args": "x8, #0x14c4620"
+        },
+        {
+          "at": "0x14c45c4",
+          "op": "cbz",
+          "args": "x21, #0x14c4620"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x14c4380",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c438c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c4398",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c43a4",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c43b0",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c43bc",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c43c8",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c43e0",
+          "op": "bl",
+          "args": "#0x1434ce4"
+        },
+        {
+          "at": "0x14c4400",
+          "op": "bl",
+          "args": "#0x16f51b8"
+        },
+        {
+          "at": "0x14c4430",
+          "op": "bl",
+          "args": "#0x14c63b4"
+        },
+        {
+          "at": "0x14c4464",
+          "op": "bl",
+          "args": "#0x16f5830"
+        },
+        {
+          "at": "0x14c449c",
+          "op": "bl",
+          "args": "#0x277e6cc"
+        },
+        {
+          "at": "0x14c44e0",
+          "op": "bl",
+          "args": "#0x2782540"
+        },
+        {
+          "at": "0x14c44f4",
+          "op": "bl",
+          "args": "#0x27824b8"
+        },
+        {
+          "at": "0x14c4504",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c4520",
+          "op": "bl",
+          "args": "#0x27822d4"
+        },
+        {
+          "at": "0x14c4530",
+          "op": "bl",
+          "args": "#0x123a9fc"
+        },
+        {
+          "at": "0x14c455c",
+          "op": "bl",
+          "args": "#0x171dc6c"
+        },
+        {
+          "at": "0x14c4574",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c4580",
+          "op": "bl",
+          "args": "#0x14386a8"
+        },
+        {
+          "at": "0x14c459c",
+          "op": "blr",
+          "args": "x9"
+        },
+        {
+          "at": "0x14c45a8",
+          "op": "bl",
+          "args": "#0x2781748"
+        },
+        {
+          "at": "0x14c45c0",
+          "op": "bl",
+          "args": "#0x27891b8"
+        },
+        {
+          "at": "0x14c45e4",
+          "op": "bl",
+          "args": "#0x2789258"
+        },
+        {
+          "at": "0x14c45f4",
+          "op": "bl",
+          "args": "#0x2781804"
+        },
+        {
+          "at": "0x14c4600",
+          "op": "bl",
+          "args": "#0x14c46f4"
+        },
+        {
+          "at": "0x14c461c",
+          "op": "b",
+          "args": "#0x278276c"
+        },
+        {
+          "at": "0x14c4620",
+          "op": "bl",
+          "args": "#0x110d250"
+        },
+        {
+          "at": "0x14c4624",
+          "op": "bl",
+          "args": "#0x110d258"
+        }
+      ]
+    },
+    {
+      "class": "Player_Controller",
+      "method": "DoExtraLife",
+      "signature": "private IEnumerator DoExtraLife() { }",
+      "rva": "0x14c4628",
+      "instruction_count": 26,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x14c4644",
+          "op": "tbnz",
+          "args": "w8, #0, #0x14c465c"
+        },
+        {
+          "at": "0x14c4674",
+          "op": "cbz",
+          "args": "x20, #0x14c468c"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x14c4650",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c4660",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c4670",
+          "op": "bl",
+          "args": "#0x14c5f4c"
+        },
+        {
+          "at": "0x14c468c",
+          "op": "bl",
+          "args": "#0x110d250"
+        }
+      ]
+    },
+    {
+      "class": "Player_Controller.<DoExtraLife>d__62",
+      "method": "MoveNext",
+      "signature": "private bool MoveNext() { }",
+      "rva": "0x14c5f78",
+      "instruction_count": 271,
+      "ability_calls": [],
+      "branches": [
+        {
+          "at": "0x14c5f90",
+          "op": "tbnz",
+          "args": "w8, #0, #0x14c6020"
+        },
+        {
+          "at": "0x14c602c",
+          "op": "b.eq",
+          "args": "#0x14c626c"
+        },
+        {
+          "at": "0x14c6030",
+          "op": "cbnz",
+          "args": "w8, #0x14c6394"
+        },
+        {
+          "at": "0x14c603c",
+          "op": "cbz",
+          "args": "x19, #0x14c63ac"
+        },
+        {
+          "at": "0x14c6044",
+          "op": "cbz",
+          "args": "x8, #0x14c63ac"
+        },
+        {
+          "at": "0x14c604c",
+          "op": "cbz",
+          "args": "x0, #0x14c63ac"
+        },
+        {
+          "at": "0x14c6060",
+          "op": "cbz",
+          "args": "x0, #0x14c63ac"
+        },
+        {
+          "at": "0x14c6068",
+          "op": "cbz",
+          "args": "x8, #0x14c63ac"
+        },
+        {
+          "at": "0x14c607c",
+          "op": "cbz",
+          "args": "x0, #0x14c63ac"
+        },
+        {
+          "at": "0x14c6090",
+          "op": "cbz",
+          "args": "x8, #0x14c63ac"
+        },
+        {
+          "at": "0x14c60a0",
+          "op": "cbz",
+          "args": "x8, #0x14c63ac"
+        },
+        {
+          "at": "0x14c60ac",
+          "op": "cbz",
+          "args": "x0, #0x14c63ac"
+        },
+        {
+          "at": "0x14c60c0",
+          "op": "cbz",
+          "args": "x0, #0x14c63ac"
+        },
+        {
+          "at": "0x14c60d0",
+          "op": "b.lt",
+          "args": "#0x14c6108"
+        },
+        {
+          "at": "0x14c60dc",
+          "op": "b.hs",
+          "args": "#0x14c63b0"
+        },
+        {
+          "at": "0x14c60e8",
+          "op": "cbz",
+          "args": "x0, #0x14c63ac"
+        },
+        {
+          "at": "0x14c6104",
+          "op": "b.lt",
+          "args": "#0x14c60d8"
+        },
+        {
+          "at": "0x14c6114",
+          "op": "cbz",
+          "args": "x8, #0x14c63ac"
+        },
+        {
+          "at": "0x14c6134",
+          "op": "tbz",
+          "args": "w0, #0, #0x14c6148"
+        },
+        {
+          "at": "0x14c6158",
+          "op": "cbnz",
+          "args": "w8, #0x14c6164"
+        },
+        {
+          "at": "0x14c61b4",
+          "op": "cbz",
+          "args": "x0, #0x14c63ac"
+        },
+        {
+          "at": "0x14c61c8",
+          "op": "cbz",
+          "args": "x8, #0x14c63ac"
+        },
+        {
+          "at": "0x14c61dc",
+          "op": "cbz",
+          "args": "x21, #0x14c63ac"
+        },
+        {
+          "at": "0x14c6284",
+          "op": "cbz",
+          "args": "x0, #0x14c63ac"
+        },
+        {
+          "at": "0x14c62b4",
+          "op": "cbnz",
+          "args": "w9, #0x14c62c0"
+        },
+        {
+          "at": "0x14c62d4",
+          "op": "cbz",
+          "args": "x21, #0x14c63ac"
+        },
+        {
+          "at": "0x14c62fc",
+          "op": "cbz",
+          "args": "x19, #0x14c63ac"
+        },
+        {
+          "at": "0x14c6308",
+          "op": "cbz",
+          "args": "x0, #0x14c63ac"
+        },
+        {
+          "at": "0x14c6314",
+          "op": "cbz",
+          "args": "x21, #0x14c63ac"
+        }
+      ],
+      "calls": [
+        {
+          "at": "0x14c5f9c",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c5fa8",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c5fb4",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c5fc0",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c5fcc",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c5fd8",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c5fe4",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c5ff0",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c5ffc",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c6008",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c6014",
+          "op": "bl",
+          "args": "#0x110d028"
+        },
+        {
+          "at": "0x14c605c",
+          "op": "bl",
+          "args": "#0x16f51b8"
+        },
+        {
+          "at": "0x14c6088",
+          "op": "bl",
+          "args": "#0x14c63b4"
+        },
+        {
+          "at": "0x14c60bc",
+          "op": "bl",
+          "args": "#0x16f5830"
+        },
+        {
+          "at": "0x14c60f4",
+          "op": "bl",
+          "args": "#0x277e6cc"
+        },
+        {
+          "at": "0x14c6130",
+          "op": "bl",
+          "args": "#0x2782540"
+        },
+        {
+          "at": "0x14c6144",
+          "op": "bl",
+          "args": "#0x27824b8"
+        },
+        {
+          "at": "0x14c615c",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c6178",
+          "op": "bl",
+          "args": "#0x27822d4"
+        },
+        {
+          "at": "0x14c6184",
+          "op": "bl",
+          "args": "#0x2786ed8"
+        },
+        {
+          "at": "0x14c61b0",
+          "op": "bl",
+          "args": "#0x123a9fc"
+        },
+        {
+          "at": "0x14c61c0",
+          "op": "bl",
+          "args": "#0x2781748"
+        },
+        {
+          "at": "0x14c61d8",
+          "op": "bl",
+          "args": "#0x27891b8"
+        },
+        {
+          "at": "0x14c61fc",
+          "op": "bl",
+          "args": "#0x2789258"
+        },
+        {
+          "at": "0x14c6210",
+          "op": "bl",
+          "args": "#0x2781804"
+        },
+        {
+          "at": "0x14c6220",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c623c",
+          "op": "bl",
+          "args": "#0x1a9d4c0"
+        },
+        {
+          "at": "0x14c624c",
+          "op": "bl",
+          "args": "#0x110d240"
+        },
+        {
+          "at": "0x14c625c",
+          "op": "bl",
+          "args": "#0x2786670"
+        },
+        {
+          "at": "0x14c6280",
+          "op": "bl",
+          "args": "#0x123a9fc"
+        },
+        {
+          "at": "0x14c629c",
+          "op": "bl",
+          "args": "#0x171dc6c"
+        },
+        {
+          "at": "0x14c62bc",
+          "op": "bl",
+          "args": "#0x110d12c"
+        },
+        {
+          "at": "0x14c62d0",
+          "op": "bl",
+          "args": "#0x14386a8"
+        },
+        {
+          "at": "0x14c62ec",
+          "op": "blr",
+          "args": "x9"
+        },
+        {
+          "at": "0x14c62f8",
+          "op": "bl",
+          "args": "#0x2781748"
+        },
+        {
+          "at": "0x14c6310",
+          "op": "bl",
+          "args": "#0x27891b8"
+        },
+        {
+          "at": "0x14c6334",
+          "op": "bl",
+          "args": "#0x2789258"
+        },
+        {
+          "at": "0x14c6344",
+          "op": "bl",
+          "args": "#0x2781804"
+        },
+        {
+          "at": "0x14c6354",
+          "op": "bl",
+          "args": "#0x2786ed8"
+        },
+        {
+          "at": "0x14c6364",
+          "op": "bl",
+          "args": "#0x14c46f4"
+        },
+        {
+          "at": "0x14c6374",
+          "op": "bl",
+          "args": "#0x278276c"
+        },
+        {
+          "at": "0x14c63ac",
+          "op": "bl",
+          "args": "#0x110d250"
+        },
+        {
+          "at": "0x14c63b0",
+          "op": "bl",
+          "args": "#0x110d258"
+        }
+      ]
+    }
+  ],
+  "literal_cells": [
+    {
+      "va": "0x756fbc",
+      "file_offset": 7696316,
+      "width": 4,
+      "hex": "cdcccc3e",
+      "f32": 0.4000000059604645
+    },
+    {
+      "va": "0x7570e0",
+      "file_offset": 7696608,
+      "width": 4,
+      "hex": "9a99993e",
+      "f32": 0.30000001192092896
+    }
+  ],
+  "mb_death_state_targets": {
+    "0": "0x1574b8c",
+    "1": "0x1574bdc",
+    "2": "0x1574c28",
+    "3": "0x1574c74"
+  },
+  "ability_coefficient_fields": {
+    "0x318": {
+      "name": "abi8AddDodgeRate",
+      "declaration": "public static float abi8AddDodgeRate"
+    },
+    "0x31c": {
+      "name": "abi9ReduceREDDmg",
+      "declaration": "public static float abi9ReduceREDDmg"
+    },
+    "0x320": {
+      "name": "abi10ReduceREDDmg",
+      "declaration": "public static float abi10ReduceREDDmg"
+    },
+    "0x33c": {
+      "name": "abi22AddAgilityRate",
+      "declaration": "public static float abi22AddAgilityRate"
+    },
+    "0x358": {
+      "name": "abi30Rate",
+      "declaration": "public static float abi30Rate"
+    },
+    "0x35c": {
+      "name": "abi30Amount",
+      "declaration": "public static float abi30Amount"
+    },
+    "0x360": {
+      "name": "abi31Rate",
+      "declaration": "public static float abi31Rate"
+    },
+    "0x364": {
+      "name": "abi32Rate",
+      "declaration": "public static float abi32Rate"
+    },
+    "0x368": {
+      "name": "abi34Rate",
+      "declaration": "public static float abi34Rate"
+    }
+  },
+  "event_names": {
+    "18": "OnPlayerDie",
+    "19": "OnEnemyDie",
+    "21": "OnPlayerUpdateHp",
+    "39": "OnPlayerTakeDamage",
+    "79": "OnPoolEnemy",
+    "86": "OnExtraLife"
+  },
+  "artifacts": [
+    {
+      "path": "reverse-engineering/il2cpp/dump.cs.gz",
+      "sha256": "79b4028c6f59ddf203baef99f8982e152518c0224b416f57933d257d4f8c1f9a"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Enemy_Controller.asm.txt",
+      "sha256": "b569a3c2c29a89d7839894891553c5e9566d62e9d21a81546bb3104a7dba83e5"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Enemy_Controller.json",
+      "sha256": "e32092eb974661c0668c8a7a3cc39c2a7f0a9863290f6200b9c3884d8dac8edf"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Enemy_Destroy.asm.txt",
+      "sha256": "f8107461f153e347fbcdc435fc37454cfc36eaec035c6410fccbf52799ab0ca1"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Enemy_Destroy.json",
+      "sha256": "465aabaa0fe521caee464ec7853df64195a5a8a97e64050fc05c853d559ef8bc"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Enemy_Display.asm.txt",
+      "sha256": "54a7d0028b5f4d04c5a1ac7cc2b60b0ea3fbc65a87de288ae711b77e9793156c"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Enemy_Display.json",
+      "sha256": "5deac16d8831bebd88327176795147b7abcf612621a95ed0cf5fd8a38ada0cec"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Enemy_Health.asm.txt",
+      "sha256": "9ecd400b6c3eb0a3e6929473acd87f4196f9a75529fe7b7d71bd089051adaf5e"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Enemy_Health.json",
+      "sha256": "15af1e477e6716a2dff33f81945942936456796eb75abf4ae55fcfede64fae03"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Enemy_Sub.asm.txt",
+      "sha256": "25a7783ac98307aef51607c85a786b7443153daa8485298aed106d2caeb9f17d"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Enemy_Sub.json",
+      "sha256": "642c2d612cbc52d947647f169c982a7e1af4a8c9868b45ea92bc78cc5850fa4b"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Player_Attack.asm.txt",
+      "sha256": "26d50d790a50b3af6535653b0766f0f79370da81d49ee02bb02991592666dbf5"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Player_Attack.json",
+      "sha256": "3cceb189f7fa5947433fbf4466214ccf3b85e40737a233fd7c3403736f867612"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Player_Get_Datas.asm.txt",
+      "sha256": "aa6ae77306ea48255c2c6ba47c2828b4c5ce6cf8d7be6a27c7ac52241d2df86a"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Player_Get_Datas.json",
+      "sha256": "415735ac34d27f3405d84ad89e5f4028b84ea867df76570fc5337c86a02158ea"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Player_Health.asm.txt",
+      "sha256": "badd5311dfc2a7b5b991304607cf85025885f0a6e729226ace7320bfa7e9b7ac"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Player_Health.json",
+      "sha256": "c8a26c1737443176038d00fc2ee2073caf88906f31526be36a87d8ab90a3753a"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Sub_Player.asm.txt",
+      "sha256": "128207fee68aa5deebb62cc7f710b2ba09d6add7d4e7e4cfa8f972978dfa23c6"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/native/Sub_Player.json",
+      "sha256": "0db75dc6bfb981ee6b0ac9429b8e405b53a4afe8d3f66b886b299d6d73a23ce0"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-chain/referenced-cells.json.gz",
+      "sha256": "4c58792335730a313e84433655c67427f3b679530dfb4148979e13e6224ef54d"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/Enemy_DestroyDelayed._DelayDestroy_d__4.asm.txt",
+      "sha256": "ae4d5af191282673021bdd4e74bc9b84a0dde5bb96a16e9e8953d0d3e9fd273a"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/Enemy_DestroyDelayed._DelayDestroy_d__4.json",
+      "sha256": "2498ad83c63a105febdc3334b7f19fe8d6fb1c87f3b10def1b00a31964a49b7c"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/Enemy_DestroyDelayed.asm.txt",
+      "sha256": "167e5a1ed787fbbebbce550adef4de005b5380d9d960a1735d0f15d5c79150d5"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/Enemy_DestroyDelayed.json",
+      "sha256": "0935525955621a230535c6c4b7d2c7e0bbf269f476d91c93807fc34c048a3f2b"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/EventDispatcher.asm.txt",
+      "sha256": "629ab8752d6beb147be1bf08672bd91d716a3fc93077a7217906124363f7053a"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/EventDispatcher.json",
+      "sha256": "44669eb86caed67eaaae22eeee8a9b77099a87602daa98d4c4ca9fe9a3096ff6"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/EventDispatcherExtension.asm.txt",
+      "sha256": "cb9dace3bb69cd2186406af891b720af041c2f36669159f8c4b80155076be167"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/EventDispatcherExtension.json",
+      "sha256": "16d1336c81238f4a908cb8e7da859b6710112f5014cfcdc8c46c7f7c2b615280"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/MB_Destroy._DieEffect_d__5.asm.txt",
+      "sha256": "9a2217aa3d17b3d477e678c048e6a92fe8e4210327679d65a208f3bd05f7de51"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/MB_Destroy._DieEffect_d__5.json",
+      "sha256": "157c833a6aa7c38288920b3e41e29edad965bb1a9bfa55371ad130e49fb88cd3"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/MB_Destroy.asm.txt",
+      "sha256": "007f1f551f2c2b44ac6cf812515627dafc68910fd8fb389fb8479af82ab2d860"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/MB_Destroy.json",
+      "sha256": "a7fb633e8b5121b5b058613fc430460a8eaa0fa984ccc9ec796eb0f211e07953"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/Player_Controller._DoExtraLife_d__62.asm.txt",
+      "sha256": "8e2df7539380e70cdee58ccfbdfd3c7dcbc7eb056f73a701c34be92642b5e2c1"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/Player_Controller._DoExtraLife_d__62.json",
+      "sha256": "3f08ba22f6a9a08d0f12d468eaca3e4ccc0fd6f760897dd419afda86b0d2509b"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/Player_Controller.asm.txt",
+      "sha256": "d91a9979bc6b66a0b4759e651131e5e0ba981922382d9f1984c25d99fb3d0397"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/Player_Controller.json",
+      "sha256": "814297ea2284005f1541574cd790bbcd68be23f24df7ccd82d0c8c441739cf4c"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/index.json",
+      "sha256": "5237439fa9e904921b14ee5639e120fc9384d3e3fe38ea385f2bc7e56cff33be"
+    },
+    {
+      "path": "reverse-engineering/raw/combat-receivers/jump-table.json",
+      "sha256": "25d3c7b9941cbafcdf6328394595b4383c150b9230283489aab61015d084d621"
+    },
+    {
+      "path": "tools/verify/damage_receiver_models.py",
+      "sha256": "39555ca7c618f5f4739e01de5ac592f7d27430f93feb1cbb36ef728eb938247f"
+    },
+    {
+      "path": "tools/verify/enemy_damage_model.py",
+      "sha256": "0e9e16dfc628f5f458345380d4688b38e6308ff743b3289f8f456f10908b9d92"
+    }
+  ]
+}

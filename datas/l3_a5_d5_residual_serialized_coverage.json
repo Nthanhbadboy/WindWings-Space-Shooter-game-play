@@ -1,0 +1,134 @@
+{
+  "schema": "a5-d5-residual-serialized-coverage-v1",
+  "status": "BOUNDED_EXPORT_COVERAGE_PLAYER_OWNER_AND_EXTRA_LIFE_NOT_BOUND",
+  "evidence_scope": "CAPTURED_SCRIPTABLEOBJECT_CSV_AND_SERIALIZED_TYPETREE_JSONL_ONLY",
+  "evidence_level": "B",
+  "runtime_or_dps_measured": false,
+  "sources": {
+    "scriptableobject_csv_set": {
+      "count": 126,
+      "bytes": 5115187,
+      "manifest_sha256": "2ccc90ddd13b8ee104d6fe3334dab26ebf5e58c5cbbaafb4b6c44e3122a9ebe2"
+    },
+    "serialized_typetree_jsonl_set": {
+      "count": 140,
+      "bytes": 3625299,
+      "manifest_sha256": "36adee77c37556e2b55a4198e2249f0d5e68187b654d39c479d5c8de3c143f44"
+    },
+    "class_inventory": {
+      "path": "docs/apk-analysis/class-inventory.csv",
+      "sha256": "a4d22195934a765397dc8967b430ba038c9345a411e4561c2aff4c387ad79010",
+      "bytes": 13112
+    },
+    "gp_datas_csv": {
+      "path": "reverse-engineering/scriptableobjects/GP_Datas.csv",
+      "sha256": "7fe242bda781d1e30b27c0a39518625b5282ed18073cca96da79d56d32d9bb43",
+      "bytes": 584
+    },
+    "gp_datas_typetree": {
+      "path": "reverse-engineering/raw/typetrees/GP_Datas.jsonl.gz",
+      "sha256": "9cf367e2ebd5015bee65e2fad4af7d47a9df71538d16ca8825a25e14f7ec1471",
+      "bytes": 331
+    }
+  },
+  "class_inventory_boundary": {
+    "player_attack_class_identities": 24,
+    "player_health_class_identity_present": true,
+    "player_controller_class_identity_present": true,
+    "warning": "class-inventory identities/counts are not serialized owner records"
+  },
+  "export_coverage": {
+    "scriptableobject_csv_files": 126,
+    "typetree_jsonl_files": 140,
+    "typetree_jsonl_records_scanned": 231957,
+    "player_target_csv_files": [],
+    "player_target_typetree_files": [],
+    "gp_datas_csv_rows": 1,
+    "gp_datas_typetree_rows": 1,
+    "exact_extra_life_fields_checked": [
+      "countReborn",
+      "rebornNow",
+      "maxCountReborn",
+      "listRebornUseItems"
+    ],
+    "exact_extra_life_csv_header_hits": [],
+    "exact_extra_life_typetree_key_hits": []
+  },
+  "gp_datas_pointer_boundary": {
+    "serialized_row_path_id": 6767,
+    "gameobject": "GP_Manager",
+    "player_pointer": {
+      "file_id": 0,
+      "path_id": 2625
+    },
+    "scriptableobject_csv_pptr_edges_to_path_id_2625": [
+      {
+        "file": "reverse-engineering/scriptableobjects/GP_Datas.csv",
+        "row_path_id": 6767,
+        "row_gameobject": "GP_Manager",
+        "field": "player.m_PathID",
+        "file_id": 0,
+        "path_id": 2625
+      }
+    ],
+    "typetree_jsonl_pptr_edges_to_path_id_2625": [
+      {
+        "file": "reverse-engineering/raw/typetrees/GP_Datas.jsonl.gz",
+        "row_path_id": 6767,
+        "row_gameobject": "GP_Manager",
+        "field": "player",
+        "file_id": 0,
+        "path_id": 2625
+      },
+      {
+        "file": "reverse-engineering/raw/typetrees/GP_Tutorials.jsonl.gz",
+        "row_path_id": 7123,
+        "row_gameobject": "GP_Tutorials",
+        "field": "player",
+        "file_id": 0,
+        "path_id": 2625
+      }
+    ],
+    "export_rows_whose_own_path_id_is_2625": [
+      {
+        "file": "reverse-engineering/scriptableobjects/Box_Rewards.csv",
+        "path_id": 2625,
+        "gameobject": "EndgameLoader/Pack_Spec (0)/Parent/Border_Rewards/Parent_Rewards/Box_Gift (3)"
+      }
+    ],
+    "typetree_rows_whose_own_path_id_is_2625": [
+      {
+        "file": "reverse-engineering/raw/typetrees/Box_Rewards.jsonl.gz",
+        "path_id": 2625,
+        "gameobject": "EndgameLoader/Pack_Spec (0)/Parent/Border_Rewards/Parent_Rewards/Box_Gift (3)"
+      }
+    ],
+    "interpretation": "Two TypeTree records encode the numeric PPtr pair 0:2625 (GP_Datas.player and GP_Tutorials.player); the flat CSV set contains the GP_Datas edge. The class-split exports do not preserve enough source-file context to assert these are the same target object. The same number appears as an own-row ID in Box_Rewards exports, which is not a PPtr target join. No Player_Attack/Player_Health/Player_Controller owner row is present in these captured exports.",
+    "owner_join": "NOT_BOUND_WITHIN_CAPTURED_EXPORTS"
+  },
+  "gp_datas_cross_export_consistency": {
+    "row_identity": {
+      "path_id": 6767,
+      "gameobject": "GP_Manager"
+    },
+    "flat_csv_vs_typetree_field_differences": [
+      {
+        "field": "listActiveEnemies",
+        "csv_value": [
+          0
+        ],
+        "typetree_value": []
+      }
+    ],
+    "extra_life_serialized_rewire": "NOT_BOUND",
+    "warning": "Differences are reported as extraction/export evidence only; no runtime meaning inferred."
+  },
+  "limitations": [
+    "The scan is bounded to the pinned exported CSV and TypeTree JSONL sets; it is not a whole-build absence proof.",
+    "The class inventory proves class-name presence, not prefab/component ownership or serialized field values.",
+    "Path IDs are file-local; the class-split exports do not preserve source-asset context for fileID=0, so do not assert the GP_Datas and GP_Tutorials pointers share a target or join Box_Rewards own-row 2625.",
+    "The GP_Datas CSV and TypeTree render one list field differently; do not choose a representation as runtime truth.",
+    "No coroutine/receiver inventory was repeated; reports 79–86 remain prior evidence only.",
+    "No code body, native/FDE artifact, emulator, runtime probe, or secret was read or used."
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "status": "PROVISIONAL — visual observations only",
+  "scope": "User requested visual UI/stage flow; defer Premium/balance; no pixel reconstruction",
+  "ordering_warning": "Contact sheets are sorted by filename, NOT verified chronological order. Repeated frames do not prove actions or timers.",
+  "observations": [
+    {
+      "id": "intro",
+      "images": [
+        "live_6_Game.png",
+        "live_7_Game.png",
+        "r2_1_Game.png",
+        "r2_2_Game.png",
+        "r2_3_Game.png",
+        "screenshot_frozen_adb.png",
+        "screenshot_ingame_adb.png"
+      ],
+      "visible": "STAGE 1 [NORMAL], nền xanh, tàu trong vòng tròn và TOUCH TO PLAY; không phải ảnh menu chọn stage."
+    },
+    {
+      "id": "transition_candidate",
+      "images": [
+        "screenshot_frozen_stage1.png"
+      ],
+      "visible": "Tàu nhỏ trên nền xanh với HUD một phần, không còn title/vòng tròn. Chỉ là ứng viên frame chuyển tiếp, không chứng minh loading bị treo."
+    },
+    {
+      "id": "movement_hint",
+      "images": [
+        "after_touchtoplay.png",
+        "screenshot_unfrozen_stage1.png"
+      ],
+      "visible": "Gameplay nền Trái Đất/công trình, tàu phía dưới, HUD trên; chữ Move your finger to control the spaceship, ảnh after_touchtoplay có biểu tượng bàn tay."
+    },
+    {
+      "id": "release_hint",
+      "images": [
+        "live_1_Game.png",
+        "p_2_Game.png",
+        "screenshot_now.png"
+      ],
+      "visible": "Overlay chữ Release your finger to switch planes and activate special cannons now, hình minh họa bên phải; thế giới game vẫn nhìn thấy. live_1 có boss nên không kết luận hint chỉ xuất hiện đầu wave."
+    },
+    {
+      "id": "switch_comparison",
+      "images": [
+        "p_4_Game.png"
+      ],
+      "visible": "Overlay Switch ships wisely với hai panel Hard fight / Easy kill phía trên vùng chiến đấu, HUD vẫn hiện."
+    },
+    {
+      "id": "normal_combat",
+      "images": [
+        "p_1_Game.png",
+        "p_3_Game.png",
+        "p_5_Game.png",
+        "p_6_Game.png",
+        "slow_7_Game.png",
+        "slow_8_Game.png",
+        "screenshot_running_stage1.png"
+      ],
+      "visible": "Các đội hình enemy, đạn, coin/pickup; tàu xanh và đỏ xuất hiện ở các ảnh khác nhau. Không suy số stage hay thông số balance từ đó."
+    },
+    {
+      "id": "boss_combat",
+      "images": [
+        "slow_9_Game.png",
+        "slow_10_Game.png",
+        "slow_11_Game.png",
+        "slow_12_Game.png"
+      ],
+      "visible": "Boss robot vàng chiếm phần trên; ở các frame sau có thanh đỏ, vệt đạn xanh và cung chém sáng. Không đủ ảnh để chốt thứ tự phase/timer."
+    },
+    {
+      "id": "victory_occluded",
+      "images": [
+        "boss_now.png",
+        "live_2_EndGame.png",
+        "live_3_EndGame.png",
+        "live_4_EndGame.png",
+        "live_5_EndGame.png",
+        "victory_next1.png",
+        "victory_next2.png",
+        "victory_next3.png",
+        "victory_tapoutside.png",
+        "victory_wait60s.png"
+      ],
+      "visible": "Chữ VICTORY nhìn được phía sau modal phủ tối. Chưa thấy màn kết quả sạch/nút Continue và chưa thấy stage2/3; tạm bỏ nội dung Premium theo yêu cầu."
+    }
+  ],
+  "unseen": [
+    "STAGE 2 title",
+    "STAGE 3 title",
+    "clean victory result controls",
+    "stage selection/home navigation"
+  ],
+  "source_manifest": "image-sources.json",
+  "originals": "Retained in pinned git objects on other branch; not duplicated as full PNG in this commit."
+}

@@ -1,0 +1,239 @@
+{
+  "schema": "l3-a5-g6-array-blob-field-binding-census-v1",
+  "claim_comment_id": 6423501627,
+  "branch": "arena/a5a74747-windwings-space-shooter-game-p",
+  "evidence_mode": "static_only",
+  "disposition": {
+    "status": "FIVE_CAPTURED_BLOBS_CLASSIFIED / DYNAMIC_GETCOSTCRAFTPLAYER_PAYLOADS_NOT_BOUND",
+    "summary": "The two tracked non-PvP array-blobs exports contain five captured player-loadout payload rows (49 declared int32 values) and zero audio-rules rows. Three Player_Saved_Datas.cctor arrays bind directly to declared static fields; two other records are method-local arrays, not named class fields. The two tracked player-loadout class ASM exports expose six InitializeArray sites in total (five in Player_Saved_Datas and one in Player_Device_Saved_Datas). A second GetCostCraftPlayer site at 0x14e7c78 uses a RuntimeFieldHandle selected from a 24-entry index range, but the checked payload capture does not provide that call's selected field/payload rows. This family is NOT_BOUND pending exact handle-to-metadata/payload joins."
+  },
+  "inventory_scope": {
+    "included_exports": [
+      {
+        "path": "reverse-engineering/raw/player-loadout/array-blobs.json.gz",
+        "compressed_bytes": 1104,
+        "compressed_sha256": "03d6fdb1f57268de9dde0e315bc1c77293d7f7d4479f6663ec8a394fbf8ba350",
+        "decompressed_sha256_from_index": "2ff95f6464eeb0c5f45ce598684cdf8030d034c213d5773b861268291d2b35a5",
+        "resolved_method_count": 3,
+        "resolved_blob_record_count": 5,
+        "declared_int32_count": 49
+      },
+      {
+        "path": "reverse-engineering/raw/audio-rules/array-blobs.json.gz",
+        "compressed_bytes": 257,
+        "compressed_sha256": "f7eba4832f119c67e65a53c50629e349c8d747be77bd0c2dc2a263dd74cdd71f",
+        "decompressed_sha256_from_index": "ae5ba8aecf115e13078ae179e09f8d4566c5cb39a1d8a4b43a1edc8bfc6e36e3",
+        "resolved_method_count": 0,
+        "resolved_blob_record_count": 0,
+        "declared_int32_count": 0,
+        "scope_note": "Empty capture only; not a whole-program absence claim."
+      }
+    ],
+    "tracked_source_callsite_count": 6,
+    "captured_payload_callsite_count": 5,
+    "unbound_source_callsite_count": 1,
+    "pvp_lane_included": false,
+    "global_array_census_claimed": false
+  },
+  "digest_and_identity_rule": {
+    "ordinal": "zero-based order of InitializeArray calls in the owning method body",
+    "declared_bytes": "allocated int array length multiplied by four",
+    "payload_sha256_declared": "SHA-256 of exactly declared_bytes at the start of the raw field payload",
+    "raw_payload_sha256": "SHA-256 of the entire captured raw payload, including trailing padding",
+    "asset_path_id": null,
+    "asset_path_id_reason": "These are metadata-backed <PrivateImplementationDetails> payloads, not Unity serialized AssetObjects; no asset PID is applicable. Use method/callsite ordinal plus metadata field/data indices and payload digests."
+  },
+  "captured_blob_rows": [
+    {
+      "owner_method": "Player_Device_Saved_Datas.GetPlayerDevices(int playerIndex)",
+      "source_call_ordinal": 0,
+      "initialize_array_callsite": "0x14e63bc",
+      "array_allocation": "0x14e63a4",
+      "allocation_signature": "int[4]",
+      "declared_bytes": 16,
+      "raw_payload_bytes": 24,
+      "padding_bytes": 8,
+      "int32_values": [-1, -1, -1, -1],
+      "generated_private_implementation_field": "<PrivateImplementationDetails>.5AC6A5945F16500911219129984BA8B387A06F24FE383CE4E81A73294065461B",
+      "metadata_data_index": 13560,
+      "metadata_field_index": 16573,
+      "payload_sha256_declared": "5ac6a5945f16500911219129984ba8b387a06f24fe383ce4e81a73294065461b",
+      "raw_payload_sha256": "596d8eb33ca3bd38c16eac21b91159be978a6aacd3aebff179643e61ba94b75c",
+      "asset_path_id": null,
+      "binding_status": "METHOD_LOCAL_ARRAY_BOUND_TO_GETPLAYERDEVICES_RETURN_BRANCH / NO_NAMED_APPLICATION_FIELD",
+      "binding_evidence": "The method allocates int[4], initializes it at 0x14e63bc, then branches to its return path at 0x14e6480. This identifies method-local use, not a persistent field."
+    },
+    {
+      "owner_method": "Player_Saved_Datas.GetCostCraftPlayer(int _playerIndex)",
+      "source_call_ordinal": 0,
+      "initialize_array_callsite": "0x14e7c40",
+      "array_allocation": "0x14e7c28",
+      "allocation_signature": "int[7]",
+      "declared_bytes": 28,
+      "raw_payload_bytes": 32,
+      "padding_bytes": 4,
+      "int32_values": [0, 0, 0, 6500, 8500, 9500, 12500],
+      "generated_private_implementation_field": "<PrivateImplementationDetails>.8E7464900C3BB78D9AA2699F5B16DDD67239B4E5C40E54F9BB097F9923E13862",
+      "metadata_data_index": 19760,
+      "metadata_field_index": 16733,
+      "payload_sha256_declared": "8e7464900c3bb78d9aa2699f5b16ddd67239b4e5c40e54f9bb097f9923e13862",
+      "raw_payload_sha256": "4a814a7c96faab43d6a2b831bcee612a911b3ae33eb76d197dc79700acdfe00c",
+      "asset_path_id": null,
+      "binding_status": "METHOD_LOCAL_FALLBACK_TABLE_BOUND_TO_GETCOSTCRAFTPLAYER_RETURN_PATH / NO_NAMED_APPLICATION_FIELD",
+      "binding_evidence": "The method initializes this local int[7] before the player-index branch. When the index is outside the tested range 10001..10024, the array is retained as the fallback and element rank+1 is loaded into the scalar return register at 0x14e7c94..0x14e7c9c. Do not substitute this fallback payload for the separate in-range handle-selected array."
+    },
+    {
+      "owner_method": "Player_Saved_Datas.cctor",
+      "source_call_ordinal": 0,
+      "initialize_array_callsite": "0x14e81b0",
+      "array_allocation": "0x14e81a0",
+      "allocation_signature": "int[7]",
+      "declared_bytes": 28,
+      "raw_payload_bytes": 32,
+      "padding_bytes": 4,
+      "int32_values": [10, 20, 30, 60, 120, 250, 500],
+      "generated_private_implementation_field": "<PrivateImplementationDetails>.FF58BD441F7B5CF7980BB23E1A5D0F4A2967F83D21C439496787D33B25D50383",
+      "metadata_data_index": 32416,
+      "metadata_field_index": 17037,
+      "payload_sha256_declared": "ff58bd441f7b5cf7980bb23e1a5d0f4a2967f83d21c439496787d33b25d50383",
+      "raw_payload_sha256": "d7233d3981baa5b9069ef01374b7e505786fa50ae8ef0a199c3668308b559167",
+      "asset_path_id": null,
+      "binding_status": "FIELD_BOUND",
+      "target_field": "Player_Saved_Datas.MaxLevelPerRanks",
+      "target_static_offset": "0x0",
+      "binding_evidence": "The initialized array is stored to [statics+0x0] at 0x14e81c0; report 66 and the managed declaration name this field."
+    },
+    {
+      "owner_method": "Player_Saved_Datas.cctor",
+      "source_call_ordinal": 1,
+      "initialize_array_callsite": "0x14e81d8",
+      "array_allocation": "0x14e81c8",
+      "allocation_signature": "int[7]",
+      "declared_bytes": 28,
+      "raw_payload_bytes": 32,
+      "padding_bytes": 4,
+      "int32_values": [0, 20, 50, 80, 250, 500, 800],
+      "generated_private_implementation_field": "<PrivateImplementationDetails>.0FBEF6F8B299D87648398F1B6A961995910148108B4F583F3B043EC62CD75F6A",
+      "metadata_data_index": 3280,
+      "metadata_field_index": 16343,
+      "payload_sha256_declared": "0fbef6f8b299d87648398f1b6a961995910148108b4f583f3b043ec62cd75f6a",
+      "raw_payload_sha256": "95b008683072f1511292ca7060d5bc580159199d0bf559eb4491aa9e622c0302",
+      "asset_path_id": null,
+      "binding_status": "FIELD_BOUND",
+      "target_field": "Player_Saved_Datas.CardUpgrades",
+      "target_static_offset": "0x8",
+      "binding_evidence": "The initialized array is stored to [statics+0x8] at 0x14e81e8; report 66 and the managed declaration name this field."
+    },
+    {
+      "owner_method": "Player_Saved_Datas.cctor",
+      "source_call_ordinal": 2,
+      "initialize_array_callsite": "0x14e8200",
+      "array_allocation": "0x14e81f0",
+      "allocation_signature": "int[24]",
+      "declared_bytes": 96,
+      "raw_payload_bytes": 104,
+      "padding_bytes": 8,
+      "int32_values": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+      "generated_private_implementation_field": "<PrivateImplementationDetails>.99F8CD3322B9F1EDAAA49623D805DDE677B527A1F8CD9BB937704D440FFEF52C",
+      "metadata_data_index": 20744,
+      "metadata_field_index": 16758,
+      "payload_sha256_declared": "99f8cd3322b9f1edaaa49623d805dde677b527a1f8cd9bb937704d440ffef52c",
+      "raw_payload_sha256": "6d0f510d439a5d7136997571a376bc76b997005faadc2f79afe0209243a2f563",
+      "asset_path_id": null,
+      "binding_status": "FIELD_BOUND",
+      "target_field": "Player_Saved_Datas.StartRanks",
+      "target_static_offset": "0x10",
+      "binding_evidence": "The initialized array is stored to [statics+0x10] at 0x14e8214; report 66 and the managed declaration name this field."
+    }
+  ],
+  "unbound_source_callsites": [
+    {
+      "owner_method": "Player_Saved_Datas.GetCostCraftPlayer(int _playerIndex)",
+      "source_call_ordinal": 1,
+      "initialize_array_callsite": "0x14e7c78",
+      "array_allocation": "0x14e7c68",
+      "allocation_signature": "int[7]",
+      "declared_bytes": 28,
+      "handle_selection": {
+        "table_base": "0x2996E38",
+        "table_index_expression": "_playerIndex - 10001",
+        "accepted_index_values": "0..23 (branch compares against 0x17)",
+        "handle_load_instruction": "0x14e7c60",
+        "initialize_array_call": "0x14e7c78"
+      },
+      "payload_sha256_declared": null,
+      "raw_payload_sha256": null,
+      "generated_private_implementation_field": null,
+      "metadata_data_index": null,
+      "metadata_field_index": null,
+      "asset_path_id": null,
+      "status": "NOT_BOUND",
+      "blocking_step": "Recover the selected RuntimeFieldHandle values from the pinned static table, join each handle to the exact metadata <PrivateImplementationDetails> field/data index and payload bytes, then record ordinal, declared length, and SHA-256 per selected payload."
+    }
+  ],
+  "constructor_purpose_boundary": {
+    "field_names_bound": ["MaxLevelPerRanks", "CardUpgrades", "StartRanks"],
+    "broader_design_purpose_assigned_from_names_or_values": false,
+    "consumer_hunt_for_all_three_fields_performed": false
+  },
+  "cross_lane_and_runtime_boundary": {
+    "pvp_ai4_artifacts_read_or_modified": false,
+    "apk_or_native_binary_recovered": false,
+    "libunity_fde_lane_inspected": false,
+    "runtime_or_runtime_probe_used": false,
+    "whole_program_array_absence_claimed": false,
+    "live_dps": "MODEL_NOT_MEASURED"
+  },
+  "source_sha256": [
+    {
+      "path": "reverse-engineering/raw/player-loadout/array-blobs.json.gz",
+      "bytes": 1104,
+      "sha256": "03d6fdb1f57268de9dde0e315bc1c77293d7f7d4479f6663ec8a394fbf8ba350"
+    },
+    {
+      "path": "reverse-engineering/raw/player-loadout/index.json",
+      "bytes": 1587,
+      "sha256": "f3a049c8c6f4380946395d5e47b6e86230f164fb376dd1ad901bdaa12d4843cd"
+    },
+    {
+      "path": "reverse-engineering/raw/player-loadout/native/Player_Saved_Datas.asm.txt",
+      "bytes": 75758,
+      "sha256": "bf90fe4d926e000765a6772330090566d072d0bc3d5ab0f6fc4615326f16db99"
+    },
+    {
+      "path": "reverse-engineering/raw/player-loadout/native/Player_Device_Saved_Datas.asm.txt",
+      "bytes": 9370,
+      "sha256": "4cd845eca6efa22b279ccef7fe0ad91845f1efdf6c523ab095ec47cd52bc9113"
+    },
+    {
+      "path": "reverse-engineering/raw/player-loadout/native/Player_Saved_Datas.json",
+      "bytes": 32292,
+      "sha256": "e4c5e1a37f8e07682cc9cb431c65b6e23cc1acf443244de0ca01086c25b13ae8"
+    },
+    {
+      "path": "reverse-engineering/raw/player-loadout/native/Player_Device_Saved_Datas.json",
+      "bytes": 4854,
+      "sha256": "a410ecc45e6956f56b38947813f36fe9838696052e0ae2b74e946f7c134185cf"
+    },
+    {
+      "path": "reverse-engineering/raw/audio-rules/array-blobs.json.gz",
+      "bytes": 257,
+      "sha256": "f7eba4832f119c67e65a53c50629e349c8d747be77bd0c2dc2a263dd74cdd71f"
+    },
+    {
+      "path": "reverse-engineering/raw/audio-rules/index.json",
+      "bytes": 4934,
+      "sha256": "60d1d716a9f36ac6f59290f0f78b697bf4ae768bcc37ee6249876d652c21fc9e"
+    },
+    {
+      "path": "reverse-engineering/il2cpp/dump.cs.gz",
+      "bytes": 2769105,
+      "sha256": "e08f23fb6c90e07288e5b202e0ce1e7c5e82a7feb5ccae7aa08aaec3ad166454"
+    },
+    {
+      "path": "docs/apk-analysis/66-player-loadout-save-rank-trial-tech-consumers.md",
+      "bytes": 12179,
+      "sha256": "d805276bf6e22289041720d2c2910498915332053246a744f3dd02a311e3823b"
+    }
+  ]
+}

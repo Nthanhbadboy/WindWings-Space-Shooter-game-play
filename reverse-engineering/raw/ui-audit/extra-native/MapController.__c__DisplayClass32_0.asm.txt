@@ -1,0 +1,15 @@
+;;; ctor  public void .ctor() { }
+    0x13fd38c: mov      x1, xzr
+    0x13fd390: b        #0x2143330
+
+;;; <IEArenaQueueWaves>b__0  internal bool <IEArenaQueueWaves>b__0() { }
+    0x13fd394: str      x30, [sp, #-0x10]!
+    0x13fd398: ldr      x8, [x0, #0x18]
+    0x13fd39c: cbz      x8, #0x13fd3b8
+    0x13fd3a0: ldr      w8, [x8, #0xa8]
+    0x13fd3a4: ldr      w9, [x0, #0x10]
+    0x13fd3a8: cmp      w8, w9
+    0x13fd3ac: cset     w0, eq
+    0x13fd3b0: ldr      x30, [sp], #0x10
+    0x13fd3b4: ret      
+    0x13fd3b8: bl       #0x110d250

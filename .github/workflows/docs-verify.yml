@@ -1,0 +1,112 @@
+name: docs-verify
+
+# Re-measures every numeric claim written in the docs and fails when one drifts.
+#
+# The point is not that the numbers are interesting; it is that three of them
+# have already been wrong once, and nothing in the repo caught it. A claim is
+# checked in both directions: the measurement must equal the number the doc
+# states, AND the doc line must still contain it. Editing a doc without changing
+# the data (or the reverse) turns this job red.
+#
+# The data branch is fetched best-effort. When it is unavailable, claims that
+# need it report SKIP with a reason and the job still passes — so the check is
+# useful on a fresh clone and offline.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'tools/verify-claims.py'
+      - 'tools/raw-audit.py'
+      - 'tools/verify/**'
+      - 'reverse-engineering/raw/**'
+      - 'tests/**'
+      - '.github/workflows/docs-verify.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'tools/verify-claims.py'
+      - 'tools/raw-audit.py'
+      - 'tools/verify/**'
+      - 'reverse-engineering/raw/**'
+      - 'tests/**'
+      - '.github/workflows/docs-verify.yml'
+
+permissions:
+  contents: read
+  pull-requests: write   # pr-comment.sh posts the table
+  issues: write          # comments live on the issue endpoint
+
+jobs:
+  claims:
+    name: re-measure documented numbers
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the data branch (optional)
+        continue-on-error: true
+        run: |
+          git fetch --depth=1 origin \
+            arena/ef6b75ef-windwings-space-shooter-game-p:refs/remotes/origin/arena/ef6b75ef-windwings-space-shooter-game-p \
+            && echo "data branch available" \
+            || echo "data branch not reachable — claims B/C/F will report SKIP"
+
+      - name: Rule-contract tests
+        run: python3 -m unittest discover -s tests -q
+
+      - name: Sổ kiểm claim ↔ raw (tái sinh RAW_AUDIT.md)
+        run: python3 tools/raw-audit.py
+
+      - name: Persistence contracts (save keys, getter side effects)
+        run: python3 tools/verify/opening_persistence.py
+
+      - name: Loadout + audio contracts
+        run: |
+          python3 tools/verify/player_loadout_persistence.py
+          python3 tools/verify/audio_rules.py
+
+      - name: Re-measure
+        id: claims
+        run: |
+          set -o pipefail
+          # --require: các nhóm claim BẮT BUỘC pass. Lỗi đo = ERROR (đỏ), không
+          # còn lặng lẽ thành SKIP; SKIP chỉ dành cho nguồn vắng có chủ đích.
+          set +e
+          python3 tools/verify-claims.py --require AB,AO,AP | tee verify.log
+          rc=${PIPESTATUS[0]}
+          echo "exit=$rc" >> "$GITHUB_OUTPUT"
+          exit $rc
+
+      # The job log lives behind blob storage that the API will not serve, so the
+      # result goes into a PR comment where it can actually be read later.
+      - name: Publish the table
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          {
+            echo "<!-- docs-verify -->"
+            if [ "${{ steps.claims.outputs.exit }}" = "0" ]; then
+              echo "## ✅ numeric claims hold"
+            else
+              echo "## ❌ numeric claim drift"
+            fi
+            echo
+            echo "Every number written in the docs, re-measured from source."
+            echo "SKIP means the source is absent (data branch not fetched) — not a pass."
+            echo
+            echo '```'
+            cat verify.log 2>/dev/null || echo "no output"
+            echo '```'
+          } > comment.md
+          cat verify.log >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            chmod +x .github/scripts/pr-comment.sh
+            .github/scripts/pr-comment.sh "${{ github.event.pull_request.number }}" \
+              comment.md '<!-- docs-verify -->'
+          fi

@@ -1,0 +1,189 @@
+;;; ctor  public void .ctor() { }
+    0x1238238: mov      x1, xzr
+    0x123823c: b        #0x2143330
+
+;;; <IESignInOrRestoreYourDatas>b__0  internal void <IESignInOrRestoreYourDatas>b__0(DataSnapshot dataSnapshot) { }
+    0x1238240: stp      x30, x21, [sp, #-0x20]!
+    0x1238244: stp      x20, x19, [sp, #0x10]
+    0x1238248: adrp     x21, #0x2ce0000
+    0x123824c: ldrb     w8, [x21, #0xf6c]
+    0x1238250: mov      x20, x1
+    0x1238254: mov      x19, x0
+    0x1238258: tbnz     w8, #0, #0x1238288
+    0x123825c: adrp     x0, #0x2adb000
+    0x1238260: ldr      x0, [x0, #0x230]
+    0x1238264: bl       #0x110d028
+    0x1238268: adrp     x0, #0x2adb000
+    0x123826c: ldr      x0, [x0, #0xe48]
+    0x1238270: bl       #0x110d028
+    0x1238274: adrp     x0, #0x2adb000
+    0x1238278: ldr      x0, [x0, #0xe50]
+    0x123827c: bl       #0x110d028
+    0x1238280: mov      w8, #1
+    0x1238284: strb     w8, [x21, #0xf6c]
+    0x1238288: adrp     x21, #0x2adb000
+    0x123828c: ldr      x21, [x21, #0x230]
+    0x1238290: cbz      x20, #0x12382d8
+    0x1238294: mov      x0, x20
+    0x1238298: mov      x1, xzr
+    0x123829c: bl       #0x1665170
+    0x12382a0: cbz      x0, #0x12382d8
+    0x12382a4: mov      x0, x20
+    0x12382a8: mov      x1, xzr
+    0x12382ac: bl       #0x1665458
+    0x12382b0: mov      w8, #1
+    0x12382b4: str      x0, [x19, #0x18]
+    0x12382b8: strb     w8, [x19, #0x20]
+    0x12382bc: ldr      x0, [x21]
+    0x12382c0: ldr      w8, [x0, #0xe0]
+    0x12382c4: cbnz     w8, #0x12382cc
+    0x12382c8: bl       #0x110d12c
+    0x12382cc: adrp     x8, #0x2adb000
+    0x12382d0: ldr      x8, [x8, #0xe48]
+    0x12382d4: b        #0x12382f0
+    0x12382d8: ldr      x0, [x21]
+    0x12382dc: ldr      w8, [x0, #0xe0]
+    0x12382e0: cbnz     w8, #0x12382e8
+    0x12382e4: bl       #0x110d12c
+    0x12382e8: adrp     x8, #0x2adb000
+    0x12382ec: ldr      x8, [x8, #0xe50]
+    0x12382f0: ldr      x0, [x8]
+    0x12382f4: mov      x1, xzr
+    0x12382f8: bl       #0x275f390
+    0x12382fc: mov      w8, #1
+    0x1238300: strb     w8, [x19, #0x21]
+    0x1238304: ldp      x20, x19, [sp, #0x10]
+    0x1238308: ldp      x30, x21, [sp], #0x20
+    0x123830c: ret      
+
+;;; <IESignInOrRestoreYourDatas>b__1  internal bool <IESignInOrRestoreYourDatas>b__1() { }
+    0x1238310: ldrb     w0, [x0, #0x21]
+    0x1238314: ret      
+
+;;; <IESignInOrRestoreYourDatas>b__2  internal void <IESignInOrRestoreYourDatas>b__2(bool success) { }
+    0x1238318: stp      x30, x21, [sp, #-0x20]!
+    0x123831c: stp      x20, x19, [sp, #0x10]
+    0x1238320: adrp     x21, #0x2ce0000
+    0x1238324: ldrb     w8, [x21, #0xf6d]
+    0x1238328: mov      w20, w1
+    0x123832c: mov      x19, x0
+    0x1238330: tbnz     w8, #0, #0x123836c
+    0x1238334: adrp     x0, #0x2adb000
+    0x1238338: ldr      x0, [x0, #0x230]
+    0x123833c: bl       #0x110d028
+    0x1238340: adrp     x0, #0x2adb000
+    0x1238344: ldr      x0, [x0, #0xb10]
+    0x1238348: bl       #0x110d028
+    0x123834c: adrp     x0, #0x2adb000
+    0x1238350: ldr      x0, [x0, #0xe58]
+    0x1238354: bl       #0x110d028
+    0x1238358: adrp     x0, #0x2adb000
+    0x123835c: ldr      x0, [x0, #0xe60]
+    0x1238360: bl       #0x110d028
+    0x1238364: mov      w8, #1
+    0x1238368: strb     w8, [x21, #0xf6d]
+    0x123836c: adrp     x21, #0x2adb000
+    0x1238370: ldr      x21, [x21, #0x230]
+    0x1238374: mov      w8, #1
+    0x1238378: strb     w8, [x19, #0x21]
+    0x123837c: tbz      w20, #0, #0x12383e0
+    0x1238380: adrp     x8, #0x2adb000
+    0x1238384: ldr      x8, [x8, #0xb10]
+    0x1238388: ldr      x0, [x8]
+    0x123838c: bl       #0x1da895c
+    0x1238390: cbz      x0, #0x1238410
+    0x1238394: ldr      x0, [x0, #0x30]
+    0x1238398: str      x0, [x19, #0x28]
+    0x123839c: cbz      x0, #0x1238410
+    0x12383a0: mov      x1, xzr
+    0x12383a4: bl       #0x165ab18
+    0x12383a8: adrp     x8, #0x2adb000
+    0x12383ac: ldr      x8, [x8, #0xe58]
+    0x12383b0: mov      x1, x0
+    0x12383b4: mov      x2, xzr
+    0x12383b8: ldr      x8, [x8]
+    0x12383bc: mov      x0, x8
+    0x12383c0: bl       #0x1fe4084
+    0x12383c4: ldr      x8, [x21]
+    0x12383c8: mov      x19, x0
+    0x12383cc: ldr      w9, [x8, #0xe0]
+    0x12383d0: cbnz     w9, #0x12383fc
+    0x12383d4: mov      x0, x8
+    0x12383d8: bl       #0x110d12c
+    0x12383dc: b        #0x12383fc
+    0x12383e0: ldr      x0, [x21]
+    0x12383e4: adrp     x19, #0x2adb000
+    0x12383e8: ldr      w8, [x0, #0xe0]
+    0x12383ec: ldr      x19, [x19, #0xe60]
+    0x12383f0: cbnz     w8, #0x12383f8
+    0x12383f4: bl       #0x110d12c
+    0x12383f8: ldr      x19, [x19]
+    0x12383fc: mov      x0, x19
+    0x1238400: ldp      x20, x19, [sp, #0x10]
+    0x1238404: mov      x1, xzr
+    0x1238408: ldp      x30, x21, [sp], #0x20
+    0x123840c: b        #0x275f390
+    0x1238410: bl       #0x110d250
+
+;;; <IESignInOrRestoreYourDatas>b__3  internal bool <IESignInOrRestoreYourDatas>b__3() { }
+    0x1238414: ldrb     w0, [x0, #0x21]
+    0x1238418: ret      
+
+;;; <IESignInOrRestoreYourDatas>b__7  internal void <IESignInOrRestoreYourDatas>b__7() { }
+    0x123841c: mov      w8, #1
+    0x1238420: strb     w8, [x0, #0x21]
+    0x1238424: ret      
+
+;;; <IESignInOrRestoreYourDatas>b__8  internal bool <IESignInOrRestoreYourDatas>b__8() { }
+    0x1238428: ldrb     w0, [x0, #0x21]
+    0x123842c: ret      
+
+;;; <IESignInOrRestoreYourDatas>b__9  internal void <IESignInOrRestoreYourDatas>b__9(bool onComplete) { }
+    0x1238430: str      x30, [sp, #-0x30]!
+    0x1238434: stp      x22, x21, [sp, #0x10]
+    0x1238438: stp      x20, x19, [sp, #0x20]
+    0x123843c: adrp     x22, #0x2ce0000
+    0x1238440: adrp     x21, #0x2adb000
+    0x1238444: ldrb     w8, [x22, #0xf6e]
+    0x1238448: ldr      x21, [x21, #0x230]
+    0x123844c: mov      w20, w1
+    0x1238450: mov      x19, x0
+    0x1238454: tbnz     w8, #0, #0x1238484
+    0x1238458: adrp     x0, #0x2adb000
+    0x123845c: ldr      x0, [x0, #0x230]
+    0x1238460: bl       #0x110d028
+    0x1238464: adrp     x0, #0x2adb000
+    0x1238468: ldr      x0, [x0, #0xe70]
+    0x123846c: bl       #0x110d028
+    0x1238470: adrp     x0, #0x2adb000
+    0x1238474: ldr      x0, [x0, #0xe68]
+    0x1238478: bl       #0x110d028
+    0x123847c: mov      w8, #1
+    0x1238480: strb     w8, [x22, #0xf6e]
+    0x1238484: ldr      x0, [x21]
+    0x1238488: adrp     x21, #0x2adb000
+    0x123848c: adrp     x22, #0x2adb000
+    0x1238490: ldr      w8, [x0, #0xe0]
+    0x1238494: ldr      x21, [x21, #0xe68]
+    0x1238498: ldr      x22, [x22, #0xe70]
+    0x123849c: cbnz     w8, #0x12384a4
+    0x12384a0: bl       #0x110d12c
+    0x12384a4: tst      w20, #1
+    0x12384a8: csel     x8, x21, x22, ne
+    0x12384ac: ldr      x0, [x8]
+    0x12384b0: mov      x1, xzr
+    0x12384b4: bl       #0x275f390
+    0x12384b8: mov      w8, #1
+    0x12384bc: strb     w8, [x19, #0x21]
+    0x12384c0: ldp      x20, x19, [sp, #0x20]
+    0x12384c4: ldp      x22, x21, [sp, #0x10]
+    0x12384c8: ldr      x30, [sp], #0x30
+    0x12384cc: ret      
+
+;;; <IESignInOrRestoreYourDatas>b__10  internal bool <IESignInOrRestoreYourDatas>b__10() { }
+    0x12384d0: ldrb     w0, [x0, #0x21]
+    0x12384d4: ret      
+
+;;; <IESignInOrRestoreYourDatas>b__5  internal bool <IESignInOrRestoreYourDatas>b__5() { }
+    0x12384d8: ldrb     w0, [x0, #0x21]
+    0x12384dc: ret      
