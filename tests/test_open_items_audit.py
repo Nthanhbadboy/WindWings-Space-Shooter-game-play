@@ -1,4 +1,9 @@
-"""Contracts for report 148: the open-items audit of lane #29/#30."""
+"""Contracts for report 148 — and for 170, which taught the audit to read 168/169.
+
+148 froze verdicts over the 56 items as they stood at 147. Two reports later the lane
+had closed two more items and narrowed three, and the audit was still printing the old
+verdicts, so 170 adds 168/169 to its `REPORTS`/`PROOFS` and re-derives every proof.
+"""
 import gzip
 import hashlib
 import json
@@ -11,8 +16,8 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import open_items_audit  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_open_items_audit.json.gz'
-PIN_SHA = '5416035aca0dbab8090abe64ef16aa191a5cf1e87ba1c26b7bef3a6168ed80ca'
-PIN_BYTES = 10010
+PIN_SHA = '3b782ffa0f8605b7ea0632803ef662a9c792b9c0a59293aef1b7772fae33a0d3'
+PIN_BYTES = 10748
 
 
 def payload():
@@ -71,17 +76,16 @@ class Coverage(unittest.TestCase):
 class Verdicts(unittest.TestCase):
     def test_totals(self):
         totals = payload()['totals']
-        self.assertEqual(totals, {'items': 56, 'distinct_questions': 53, 'closed': 17,
-                                  'restated': 3, 'actionable': 2, 'runtime': 19,
-                                  'note': 1, 'still_open': 14, 'proofs': 24})
+        self.assertEqual(totals, {'items': 56, 'distinct_questions': 53, 'closed': 19,
+                                  'restated': 6, 'actionable': 0, 'runtime': 20,
+                                  'note': 1, 'still_open': 10, 'proofs': 28})
 
     def test_verdicts_partition_the_items(self):
         rows = payload()['items']
-        self.assertEqual(sum(1 for row in rows if row['verdict'] == 'CLOSED'), 17)
-        self.assertEqual(sum(1 for row in rows if row['verdict'] == 'OPEN'), 14)
+        self.assertEqual(sum(1 for row in rows if row['verdict'] == 'CLOSED'), 19)
+        self.assertEqual(sum(1 for row in rows if row['verdict'] == 'OPEN'), 10)
         self.assertEqual({row['verdict'] for row in rows},
-                         {'CLOSED', 'RESTATED', 'ACTIONABLE', 'RUNTIME', 'NOTE',
-                          'OPEN'})
+                         {'CLOSED', 'RESTATED', 'RUNTIME', 'NOTE', 'OPEN'})
 
     def test_every_claimed_verdict_has_a_passing_proof(self):
         for row in payload()['items']:
@@ -100,13 +104,16 @@ class Verdicts(unittest.TestCase):
     def test_most_closures_come_from_a_later_report(self):
         later = [row for row in payload()['items']
                  if row['verdict'] == 'CLOSED' and row['direction'] == 'later']
-        self.assertEqual(len(later), 17)
+        self.assertEqual(len(later), 19)
         earlier = [row for row in payload()['items'] if row['direction'] == 'earlier']
-        self.assertEqual([row['report'] for row in earlier], [139, 133, 133])
+        self.assertEqual([row['report'] for row in earlier], [139])
+        # the two 133 items used to sit here; 169 ran the route and narrowed them instead
+        self.assertEqual(sorted(row['n'] for row in payload()['items']
+                                if row['closer'] == 169), [30, 39, 40])
 
     def test_backing_split(self):
         self.assertEqual(payload()['verdict_backing']['declared'], 5)
-        self.assertEqual(payload()['verdict_backing']['by_content'], 12)
+        self.assertEqual(payload()['verdict_backing']['by_content'], 14)
 
 
 class SpecificClosures(unittest.TestCase):
@@ -137,12 +144,39 @@ class SpecificClosures(unittest.TestCase):
         self.assertEqual(row['verdict'], 'OPEN')
         self.assertIn('21202600', row['reason'])
 
-    def test_the_two_blob_decodes_are_actionable(self):
-        rows = [row for row in payload()['items'] if row['verdict'] == 'ACTIONABLE']
-        self.assertEqual([row['item'] for row in rows],
+    def test_the_two_blob_decodes_are_narrowed_by_169(self):
+        rows = [row for row in payload()['items']
+                if row['verdict'] == 'RESTATED' and row['closer'] == 169
+                and 'per stage' in row['item']]
+        self.assertEqual(sorted(row['item'] for row in rows),
                          ['amount per stage (rewardValues)',
                           'icon scale per stage (rewardScales)'])
-        self.assertEqual(rows[0]['evidence'][0]['actual'], [10493, 'NOT_BOUND'])
+        for row in rows:
+            self.assertEqual(row['evidence'][0]['actual'], [982, 99, 7, 3, 4])
+
+    def test_there_is_no_actionable_left(self):
+        self.assertEqual([row for row in payload()['items']
+                          if row['verdict'] == 'ACTIONABLE'], [])
+
+    def test_the_rewards_consumer_is_closed_by_168(self):
+        row = self.row(139, '`rewards` consumer')
+        self.assertEqual((row['verdict'], row['closer']), ('CLOSED', 168))
+        self.assertEqual(row['evidence'][0]['actual'], [22795496, 22793460, 22795328])
+
+    def test_the_save_data_amount_is_closed_by_168(self):
+        row = self.row(132, 'per-call pack amount')
+        self.assertEqual((row['verdict'], row['closer']), ('CLOSED', 168))
+        self.assertEqual(row['evidence'][0]['actual'], [1, 'mov w2, #1', 19187472])
+
+    def test_the_pvp_stage_item_is_narrowed_by_169(self):
+        row = self.row(132, 'PvP stage reward types')
+        self.assertEqual((row['verdict'], row['closer']), ('RESTATED', 169))
+
+    def test_the_shop_prices_are_served_not_shipped(self):
+        row = self.row(127, 'medal shop prices')
+        self.assertEqual(row['verdict'], 'RUNTIME')
+        self.assertEqual(row['evidence'], [])
+        self.assertIn('168', row['reason'])
 
 
 class LaneCorrections(unittest.TestCase):
@@ -156,7 +190,7 @@ class LaneCorrections(unittest.TestCase):
                if row['item'].startswith('`runtime_items')][0]
         self.assertEqual(row['evidence']['as_counted'], 17)
         self.assertEqual(row['evidence']['tagged_in_source'], 18)
-        self.assertEqual(row['evidence']['by_semantics'], 19)
+        self.assertEqual(row['evidence']['by_semantics'], 20)
         self.assertEqual(row['evidence']['untagged_runtime'], [37, 38])
         self.assertEqual(row['evidence']['mistagged'], [49])
 
@@ -179,6 +213,13 @@ class Provenance(unittest.TestCase):
         self.assertEqual(len(sources), 21)
         self.assertEqual(sum(1 for row in sources if row['role'] == 'lane artifact'), 20)
 
+    def test_the_later_reports_are_read_but_not_hashed(self):
+        """168 pins this artifact, so hashing 168 here would be a cycle."""
+        labels = {row['label'] for row in payload()['items'] for row in row['evidence']}
+        self.assertEqual(sorted(label for label in labels if '168' in label or '169' in label),
+                         ['168-rewards-chain', '168-save-data',
+                          '169-blob-census', '169-pvp-arrays'])
+
     def test_digests_match_workspace(self):
         for row in payload()['provenance']['sources']:
             digest = hashlib.sha256((ROOT / row['path']).read_bytes()).hexdigest()
@@ -186,7 +227,7 @@ class Provenance(unittest.TestCase):
 
     def test_records_are_declared_and_backed(self):
         records = payload()['records']
-        self.assertEqual(len(records), 11)
+        self.assertEqual(len(records), 13)
         for row in records:
             if row['closes'] is not None:
                 self.assertTrue(56 >= row['closes'] >= 1)

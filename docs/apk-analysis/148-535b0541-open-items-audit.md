@@ -1,5 +1,10 @@
 # 148 — 56 mục mở của lane #29/#30: 17 đã đóng, 2 gỡ chặn, 14 còn mở
 
+> **ERRATA 170 (27/10):** các tổng dưới đây là ảnh chụp tại 147. Báo cáo **170** cho audit
+> đọc thêm 168/169 và tổng đổi thành **19 đóng · 6 thu hẹp · 0 gỡ chặn · 20 runtime ·
+> 1 ghi chú · 10 còn mở** (28 proof). Đọc 170 trước khi trích số ở đây.
+
+
 **Trạng thái:** `DECODED_STATIC` (chỉ đọc 20 artifact cùng lane + artifact 147, không chạy game)
 **Lớp bằng chứng:** STATIC-ONLY. Không lần disasm nào trong báo cáo này — mọi "đóng" đều là một vị từ đọc trường của artifact có sẵn, và verifier tính lại.
 **Artifact:** `datas/l2_535b0541_open_items_audit.json.gz` (10010 B, sha256 `5416035aca0dbab8090abe64ef16aa191a5cf1e87ba1c26b7bef3a6168ed80ca`)

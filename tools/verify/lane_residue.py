@@ -174,7 +174,7 @@ def census():
     for item in audit['items']:
         if item['n'] in (11, 12, 29, 39, 40, 49):
             addressed[item['n']] = dict(item=item['item'], verdict=item['verdict'],
-                                        report=item['report'],
+                                        report=item['report'], closer=item.get('closer'),
                                         why=item.get('blocking') or item.get('reason'))
     return dict(totals=audit['totals'], addressed=addressed)
 
@@ -219,15 +219,21 @@ def run_checks(chain, pack, absent, audit, meta, shop):
     checks = []
 
     # -- the census --------------------------------------------------------
-    check(checks, 'the-audit-still-has-56-items', audit['totals']['items'] == 56
-          and audit['totals']['still_open'] == 14 and audit['totals']['runtime'] == 19,
+    # 170 refreshed the audit to read this report and 169, so the three checks below
+    # assert the *current* agreement instead of the stale counts this report found.
+    check(checks, 'the-audit-still-has-56-items', audit['totals']['items'] == 56,
           audit['totals'])
-    check(checks, 'the-two-items-this-report-closes-are-open-in-the-audit',
-          audit['addressed'][11]['verdict'] == 'OPEN' and audit['addressed'][29]['verdict'] == 'OPEN',
-          {key: audit['addressed'][key]['verdict'] for key in (11, 29)})
-    check(checks, 'the-two-blocked-items-are-the-handle-slots',
-          audit['addressed'][39]['verdict'] == 'ACTIONABLE'
-          and audit['addressed'][40]['verdict'] == 'ACTIONABLE'
+    check(checks, 'the-two-items-this-report-closes-are-closed-in-the-audit',
+          audit['addressed'][11]['verdict'] == 'CLOSED'
+          and audit['addressed'][11]['closer'] == 168
+          and audit['addressed'][29]['verdict'] == 'CLOSED'
+          and audit['addressed'][29]['closer'] == 168,
+          {key: (audit['addressed'][key]['verdict'], audit['addressed'][key]['closer'])
+           for key in (11, 29)})
+    check(checks, 'the-two-handle-slot-items-are-narrowed-by-169',
+          audit['addressed'][39]['verdict'] == 'RESTATED'
+          and audit['addressed'][40]['verdict'] == 'RESTATED'
+          and audit['addressed'][39]['closer'] == 169
           and '0x2ae0010' in json.dumps(load(PREV133)['table']) +
           json.dumps(audit['addressed']), audit['addressed'][39])
 

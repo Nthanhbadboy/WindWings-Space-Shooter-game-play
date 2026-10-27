@@ -1,8 +1,14 @@
 # 168 — Phần còn lại của lane #29/#30: cái gì đóng được, cái gì sai lý do, cái gì chờ runtime
 
+> **ERRATA 170 (27/10):** artifact này đọc `open_items_audit`, nên khi 170 làm audit đọc
+> thêm 168/169 thì `census` và 3 check ở đây đổi theo (32/32 vẫn xanh): hai mục của
+> báo cáo này nay là `CLOSED` trong audit, và n39/n40 thành `RESTATED` bởi 169.
+> Byte/sha mới ở dòng Artifact; kết luận của 168 không đổi.
+
+
 **Trạng thái:** `DECODED_STATIC` (chỉ đọc artifact đã pin + 8 slice + 126 bảng ScriptableObject, không chạy game)
 **Lớp bằng chứng:** STATIC-ONLY. Chuỗi `SetStatusRank → SetRewards → GetRewards`, toán hạng `_value = 1` và bảng vắng mặt là hằng lúc build; **giá/stock shop**, **hai handle slot `0x2ae0010/0x2ae0018`**, **độ dài mảng cấu hình** và **giá trị server** là `MODEL_NOT_MEASURED runtime`.
-**Artifact:** `datas/l2_535b0541_lane_residue.json.gz` (4869 B, sha256 `03af65abb18d98d5428ca1cf6dc30ed36b8bce5e190f706d45538cd74fc85e00`)
+**Artifact:** `datas/l2_535b0541_lane_residue.json.gz` (4902 B, sha256 `bae0e6da7afa9da0bce8f005ef505af523e1c82742e505cb1edbffb6772ad402`)
 **Báo cáo trước:** 167 (xref hàng thưởng), 166 (hộp thưởng), 165 (widget số lượng), 139 (`ArenaManager.rewards`), 132 (pack quà), 133 (bảng thưởng hunter), 127 (giá shop).
 **Verifier:** `tools/verify/lane_residue.py` (~1,3 s, **32 check**) · **Test:** `tests/test_lane_residue.py` (**37 test**).
 

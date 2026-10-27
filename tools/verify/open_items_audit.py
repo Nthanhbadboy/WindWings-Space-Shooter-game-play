@@ -42,7 +42,7 @@ REPORTS = {
     137: 'rank_name', 138: 'remote_configs', 139: 'arena_statics',
     140: 'arena_config', 141: 'game_config_gate', 142: 'application_cell',
     143: 'economy_keys', 144: 'game_store_keys', 145: 'store_key_callers',
-    146: 'computed_key_index',
+    146: 'computed_key_index', 168: 'lane_residue', 169: 'pvp_reward_arrays',
 }
 
 
@@ -195,6 +195,33 @@ def _closeout_defect():
     return [len(nulls), len(cut), 220]
 
 
+def _residue_rewards():
+    """168 found the consumer 139 could not: the chain starts at SetStatusRank."""
+    chain = art(168)['rewards_chain']
+    return [chain['get_rewards']['rva'], chain['callers']['set_rewards'][0]['caller'],
+            chain['prev139']['read_rva']]
+
+
+def _residue_save_data():
+    """168 shows the one SaveDataReward site passes a literal amount."""
+    row = art(168)['save_data_reward']
+    return [row['call_sites'], row['arguments']['value']['op'], row['call_site']['call']]
+
+
+def _pvp_arrays():
+    """169: six InitializeArray calls, six fields, length six each."""
+    d = art(169)
+    return [len(d['ctor']['initializers']), d['totals']['length'],
+            [row['offset'] for row in d['ctor']['initializers']]]
+
+
+def _pvp_blob_census():
+    """169 ran the 131 route: the handles resolve, the bytes do not."""
+    d = art(169)['blobs']
+    return [d['pid_fields'], d['exactly_24_bytes'], len(d['float_plausible']),
+            len(d['attributed_to_other_ctors']), len(d['unclaimed_floats'])]
+
+
 PROOFS = {
     '143-currency-keys': _currency_keys,
     '143-currency-cells': _currency_cells,
@@ -216,6 +243,10 @@ PROOFS = {
     '131-vs-133-route': _field_defaults,
     '147-text-cut': _closeout_defect,
     '147-runtime-count': _runtime_arithmetic,
+    '168-rewards-chain': _residue_rewards,
+    '168-save-data': _residue_save_data,
+    '169-pvp-arrays': _pvp_arrays,
+    '169-blob-census': _pvp_blob_census,
 }
 
 
@@ -245,10 +276,11 @@ ITEMS = [
       'gives the shipped strings, so the values exist as the ten durations/ranges.',
       [('140-season-minutes', [1440, 2880, 4320, 7200, 10080, 11520, 12960, 14400,
                                15840, 17280])]),
-    I(127, 'medal shop prices / stock', 'OPEN', None,
-      'still data: 146 fixes the key shape (`ARENA_SHOP_ITEM_ID` / `_STOCK` over three '
-      'bands) but the prices and stock per item come from the shop config arrays, which '
-      'no report in the lane decodes.'),
+    I(127, 'medal shop prices / stock', 'RUNTIME', None,
+      'the key shape is pinned by 146 (`ARENA_SHOP_ITEM_ID` / `_STOCK` over three bands) '
+      'and 168 closes the data question the other way: the 251 extracted ScriptableObject '
+      'tables carry no price or stock column and there is no `Shop_Pack` asset, so the '
+      'values are served, not shipped — MODEL_NOT_MEASURED runtime.'),
     # ---- 142: the four currency keys
     I(142, 'what Application.* returns on a device', 'RUNTIME', None,
       'device language, reachability and company name are read at run time; the APK '
@@ -276,9 +308,13 @@ ITEMS = [
     # ---- 139
     I(139, 'served config values', 'RUNTIME', None,
       'season times, rank bands and room counts are parsed from the remote database.'),
-    I(139, '`rewards` consumer', 'OPEN', None,
-      'no method in the arena-pvp raw indexes `ArenaManager.rewards` (+0x38); the reader '
-      'is in a class outside that raw or reaches the array through another slot.'),
+    I(139, '`rewards` consumer', 'CLOSED', 168,
+      '168 finds the consumer the arena-pvp raw missed: `Board_Arena.GetRewards` '
+      '(22795496) indexes `rewards` at 22795328 after the `arenaRank` guard, and the '
+      'chain is SetStatusRank (22793460) -> SetRewards (22794144) -> GetRewards. The '
+      'reader was in the raw after all — the index is not reachable from a pattern that '
+      'looks for `+0x38` alone.',
+      [('168-rewards-chain', [22795496, 22793460, 22795328])]),
     I(139, '`MyLibrary.ToRoman` glyph table', 'RESTATED', 138,
       '138 corrects what that tail call is — the rank number is a roman numeral, not an '
       'arabic one — so the read changes from `Herald 3` to `Herald III`. The glyph table '
@@ -343,12 +379,18 @@ ITEMS = [
       'not a gap: two `str` writes hold non-key data and are listed only so the static '
       'index is complete.'),
     # ---- 132
-    I(132, 'per-call pack amount for the 20 SaveDataReward clones', 'OPEN', None,
-      'the value is the `_value` argument from pack data; the store path is decoded, the '
-      'operand is serialized data.'),
-    I(132, 'PvP stage reward types and amounts', 'OPEN', None,
-      '`Board_PVP.rewardTypes/rewardValues` are instance arrays filled at run time; the '
-      'dispatch table proves Key2 is reachable, not how much.'),
+    I(132, 'per-call pack amount for the 20 SaveDataReward clones', 'CLOSED', 168,
+      '168 walks the only `SaveDataReward` call site: `TimeFreeRewardPack.GetRewards` '
+      'passes `mov w2, #1` at 19187452, so the amount is a literal, not pack data. The '
+      'item also overstated the call count — there is one body and one site.',
+      [('168-save-data', [1, 'mov w2, #1', 19187472])]),
+    I(132, 'PvP stage reward types and amounts', 'RESTATED', 169,
+      '169 corrects the premise and narrows the rest: `Board_PVP` has no `rewardTypes` '
+      'field at all, and `rewardValues`/`rewardScales` are filled inside `.ctor` by six '
+      '`InitializeArray` calls, not at run time. What is left open is the *content* of '
+      'the two blobs, and that is blocked on the metadata usage table.',
+      [('169-pvp-arrays', [6, 6, ['0x198', '0x1a0', '0x1a8', '0x208', '0x210', '0x218']]),
+       ('169-blob-census', [982, 99, 7, 3, 4])]),
     I(132, 'PlayerPrefs key -> literal binding for KeyCount0/1/2', 'CLOSED', 143,
       '143 resolves the three slots to the literals `KeyCount0/1/2` with their addends and '
       'the same read/write pair 132 had already found.',
@@ -390,9 +432,11 @@ ITEMS = [
       'duplicate of 135\'s rank-0 question, and just as unexplained: 137 shows the three '
       'cells and the per-rank numbers, but no code says why level 0 has no reward row.'),
     I(137, 'GetText key-missing behaviour', 'OPEN', None,
-      'the answer is code, not device state: LanguageManager.GetText (RVA 21202600) is in '
-      'none of the eight pinned raws, so the lane cannot see whether an unknown key comes '
-      'back as the key, an empty string or a fallback.'),
+      'the answer is code, not device state: the body of LanguageManager.GetText (RVA '
+      '21202600) is in none of the eight pinned raws, so the lane cannot see whether an '
+      'unknown key comes back as the key, an empty string or a fallback. 168 corrects the '
+      'count this reason used to carry: 127 call sites reach the method, the body is what '
+      'is missing.'),
     # ---- 129 / 133 / 138
     I(129, 'typeBox runtime value', 'RUNTIME', None,
       'assigned per box at run time; which boxes use 0 is not in the APK.'),
@@ -400,15 +444,18 @@ ITEMS = [
       'reads player state (daily reset counter).'),
     I(129, 'actual random draws', 'RUNTIME', None,
       'UnityEngine.Random.Range is seeded at run time; no sequence is claimed.'),
-    I(133, 'amount per stage (rewardValues)', 'ACTIONABLE', 131,
-      'not blocked any more, just not done: 131 shows the route (InitializeArray handle -> '
-      'PID field -> pinned field-default table, 10493 entries) and 133 stops one step short '
-      'of it, still reporting the handle slot as unresolved.',
-      [('131-vs-133-route', [10493, 'NOT_BOUND'])]),
-    I(133, 'icon scale per stage (rewardScales)', 'ACTIONABLE', 131,
-      'same shape as rewardValues, same unrun lookup, and the field is decorative. The '
-      'route predates the item: 131 shipped before 133 wrote it down.',
-      [('131-vs-133-route', [10493, 'NOT_BOUND'])]),
+    I(133, 'amount per stage (rewardValues)', 'RESTATED', 169,
+      '169 runs the 131 route to the end and it does not bind: 982 `<PrivateImplementation'
+      'Details>` fields, 99 of them exactly 24 bytes, 7 reading as six plausible floats, '
+      '3 of those already attributed to other ctors, 4 left with no positional link to '
+      'the `rewardIndexs` blob (data_index 30944). The block moved from "lookup not run" '
+      'to "needs the metadata usage table".',
+      [('169-blob-census', [982, 99, 7, 3, 4])]),
+    I(133, 'icon scale per stage (rewardScales)', 'RESTATED', 169,
+      'same census, same answer: the `float[]` classification of `rewardScales` is '
+      'confirmed by 169 from the dump, but which 24-byte blob fills it cannot be decided '
+      'from content — none of the four candidates sits next to the `rewardIndexs` data.',
+      [('169-blob-census', [982, 99, 7, 3, 4])]),
     I(133, 'how many markers the scene really has', 'RUNTIME', None,
       'allPoints is a serialized WinPoint[] filled from the scene; the code only proves '
       'the halving.'),
@@ -438,6 +485,8 @@ RECORDS = [
     (141, 'correction', 3),
     (141, 'confirmation', 3),
     (143, 'correction', 2),
+    (168, 'correction', 12),
+    (168, 'correction', 49),
 ]
 
 # Items that are the same question asked twice.
@@ -538,7 +587,11 @@ def build_payload():
     assert declared <= {row['n'] for row in rows}
     for record_report, kind, closes in RECORDS:
         assert kind in ('correction', 'confirmation')
-        assert (art(record_report).get(kind + 's') or []), (record_report, kind)
+        bucket = art(record_report).get(kind + 's') or []
+        if kind == 'correction':
+            # 168's artifact names the same list `corrected`; the lane is not consistent.
+            bucket = bucket or art(record_report).get('corrected') or []
+        assert bucket, (record_report, kind)
     corrections = [
         dict(target=147, item='open items copied verbatim from `not_decoded`',
              statement='147 counted 56 open items and left it there',
@@ -551,11 +604,12 @@ def build_payload():
                            records_in_lane=len(RECORDS))),
         dict(target=147, item='`runtime_items: 17`',
              statement='147 tagged 17 items as `MODEL_NOT_MEASURED runtime`',
-             correction='19 items are device-or-served state. 147 counted 17 on truncated '
+             correction='20 items are device-or-served state. 147 counted 17 on truncated '
                         'text; fixing the cut restores 141\'s tag (+1 = 18), 129 carries two '
-                        '`runtime only` items that never use the phrase (+2 = 20), and 137\'s '
-                        'tag is wrong in the other direction — GetText is code that is not '
-                        'pinned, not device state (-1 = 19)',
+                        '`runtime only` items that never use the phrase (+2 = 20), 137\'s tag '
+                        'is wrong in the other direction — GetText is code that is not '
+                        'pinned, not device state (-1 = 19) — and 168 shows the shop prices '
+                        'and stock are served rather than shipped (+1 = 20)',
              evidence=dict(as_counted=17, tagged_in_source=18,
                            by_semantics=totals['runtime'],
                            cut_text=cut,
@@ -573,6 +627,9 @@ def build_payload():
                for path in artifacts()]
     sources.append(dict(path=CLOSEOUT, role='the close-out this audit re-reads (147)',
                         sha256=sha_file(CLOSEOUT)))
+    # 168/169 are read through `PROOFS`, not hashed into `provenance`: 168's own
+    # provenance already pins this artifact, so hashing it back would be a cycle
+    # (168 -> audit -> 168) that never converges.
 
     return {
         'schema': 'l2/535b0541/open-items-audit/1',
@@ -600,16 +657,19 @@ def build_payload():
         'corrections': corrections,
         'next_steps': [
             dict(item='rewardValues / rewardScales (133)',
-                 why='route proven in 131, lookup not run',
-                 how='resolve the two handle slots 0x2ae0010 / 0x2ae0018 to PID fields, '
-                     'then read `reverse-engineering/il2cpp/field-defaults.json`'),
+                 why='169 ran the route and it stops at the bytes, not at the fields',
+                 how='the handle slots resolve into `reverse-engineering/il2cpp/'
+                     'field-defaults.json`, but picking one of the four 24-byte candidates '
+                     'needs the metadata usage table that says which slot names which field'),
             dict(item='LanguageManager.GetText (137)',
                  why='the answer is code, and the raw is not pinned',
                  how='pin the raw that carries RVA 21202600; until then the missing-key '
                      'behaviour stays unread rather than guessed'),
-            dict(item='the reader of `ArenaManager.rewards` (139)',
-                 why='still no consumer in the arena-pvp raw',
-                 how='scan the other six raws for `+0x38` on an ArenaManager statics base'),
+            dict(item='PvP stage reward rows (169)',
+                 why='the arrays are decoded, their reader is not',
+                 how='decode `Board_PVP.SetupHunters` (19791640) and '
+                     '`<GetPvPUserCachingDatas>d__78.MoveNext` (19813332): what the six rows '
+                     'render, and how the bet ladder picks coin/gem/medal'),
         ],
     }
 

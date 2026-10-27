@@ -18,8 +18,8 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import lane_residue as LR  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_lane_residue.json.gz'
-PIN_BYTES = 4869
-PIN_SHA = '03af65abb18d98d5428ca1cf6dc30ed36b8bce5e190f706d45538cd74fc85e00'
+PIN_BYTES = 4902
+PIN_SHA = 'bae0e6da7afa9da0bce8f005ef505af523e1c82742e505cb1edbffb6772ad402'
 
 
 def payload():
@@ -59,14 +59,18 @@ class Census(unittest.TestCase):
     def test_the_audit_count(self):
         census = payload()['census']
         self.assertEqual(census['totals']['items'], 56)
-        self.assertEqual((census['totals']['still_open'], census['totals']['runtime']), (14, 19))
+        # 170 refreshed the audit, so the census now carries the post-169 counts
+        self.assertEqual((census['totals']['still_open'], census['totals']['runtime']), (10, 20))
 
     def test_the_items_this_report_touches(self):
         addressed = payload()['census']['addressed']
         self.assertEqual(sorted(int(key) for key in addressed), [11, 12, 29, 39, 40, 49])
-        self.assertEqual(addressed['11']['verdict'], 'OPEN')
-        self.assertEqual(addressed['29']['verdict'], 'OPEN')
-        self.assertEqual(addressed['39']['verdict'], 'ACTIONABLE')
+        self.assertEqual((addressed['11']['verdict'], addressed['11']['closer']),
+                         ('CLOSED', 168))
+        self.assertEqual((addressed['29']['verdict'], addressed['29']['closer']),
+                         ('CLOSED', 168))
+        self.assertEqual((addressed['39']['verdict'], addressed['39']['closer']),
+                         ('RESTATED', 169))
 
     def test_closed_list(self):
         rows = payload()['closed']
