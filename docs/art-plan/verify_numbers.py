@@ -131,6 +131,40 @@ def main() -> int:
     for b, want in QUOTED.items():
         check(f"batch {b}", batches.get(b, 0.0), want, tol=0.06)
 
+    print("4c) rollup theo lane — bảng §2.3 (v1 + v2)")
+    LANE_V1 = {"UI": 424.3, "BG": 208.7, "ENEMY": 163.5, "BOSS": 177.7, "PLAYER": 118.5,
+               "FX": 72.1, "ITEM": 19.0, "EXCL": 48.7}
+    LANE_V2 = {"UI": 573.6, "BG": 284.5, "ENEMY": 235.3, "BOSS": 177.7, "PLAYER": 119.8,
+               "FX": 104.0, "ITEM": 24.7, "EXCL": 58.8}
+    lane1: dict[str, float] = {}
+    lane2: dict[str, float] = {}
+    for r in rows:
+        if r["lane"] == "LISTING":
+            continue
+        lane1[r["lane"]] = lane1.get(r["lane"], 0.0) + num(r, "h_scope")
+        lane2[r["lane"]] = lane2.get(r["lane"], 0.0) + num(r, "h_scope_v2")
+    check_eq("số lane", len(lane2), 8)
+    for lane, want in LANE_V1.items():
+        check(f"lane {lane} v1", lane1.get(lane, 0.0), want, tol=0.06)
+    for lane, want in LANE_V2.items():
+        check(f"lane {lane} v2", lane2.get(lane, 0.0), want, tol=0.06)
+    check("Σ lane v1", sum(lane1.values()), 1232.38)
+    check("Σ lane v2", sum(lane2.values()), 1578.42)
+
+    print("4d) tính toàn vẹn de_est / reuse_est (§3.6)")
+    units_rows = [r for r in rows if r["unit"] != "overhead"]
+    bad_de = [(r["row_id"], int(r["de_est"]), int(r["kept_records"] or 0)) for r in units_rows
+              if r["de_est"] and not (1 <= int(r["de_est"]) <= int(r["kept_records"] or 0))]
+    check_eq("0 dòng có de_est > kept hoặc < 1", len(bad_de), 0)
+    bad_ru = [r["row_id"] for r in units_rows if r["de_est"]
+              and abs(num(r, "reuse_est") - int(r["de_est"]) / max(1, int(r["kept_records"] or 0))) > 0.011]
+    check_eq("reuse_est = de_est / kept_records", len(bad_ru), 0)
+    meas = sum(int(r["kept_records"] or 0) for r in units_rows if r["de_est"])
+    check_eq("bản ghi đã đo", meas, 705)
+    unmeas = [r for r in units_rows if not r["de_est"] and int(r["kept_records"] or 0) > 1]
+    check_eq("dòng chưa đo nhưng kept > 1", len(unmeas), 6)
+    check("giờ của 6 dòng đó", sum(num(r, "h_scope_v2") for r in unmeas), 45.99)
+
     print("5) lane PLAYER — work order")
     units = [r for r in w1 if r["kind"] == "unit"]
     variants = [r for r in w1 if r["kind"] == "variant"]
@@ -185,6 +219,7 @@ def main() -> int:
         ("w1", "A11"), ("w1", "A13"),
         ("w0", "w0-listing-slots.csv"), ("w0", "artboard"),
         ("plan", "5.7"), ("plan", "s0-pilot-pack.csv"), ("plan", "pilot 16 asset"),
+        ("plan", "Bộ hồ sơ"), ("plan", "45,99"), ("plan", "573,6"),
     ):
         ok = token in text[doc]
         print(f"  {'OK ' if ok else 'FAIL'} {doc:4s} chứa {token!r}")

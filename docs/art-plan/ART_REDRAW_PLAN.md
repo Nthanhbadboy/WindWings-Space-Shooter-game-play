@@ -30,6 +30,18 @@
 | File còn lại | [`art-planner.csv`](art-planner.csv) — **655 dòng** (629 đơn vị + 22 overhead + **4 dòng W0 listing**), **36 cột** (gồm `h_scope_v2` · `l2_h_v2` · `l2_h_v3` · `de_est` · `reuse_est` · `h_w0`), khớp từng nhóm worklist |
 | Đơn hàng đã bung | [`W1_WORK_ORDER.md`](W1_WORK_ORDER.md) — **48 unit PLAYER**, 13 unit ở W1 = **34,0 h** (§6: W1 = **206,4 h**) · [`W0_LISTING_ASSETS.md`](W0_LISTING_ASSETS.md) — **27 slot** listing 3 store = **35 h**, sổ riêng |
 
+**Bộ hồ sơ (7 nhóm · 9 file, đọc theo thứ tự này):**
+
+| File | Là gì | Kiểm bằng |
+|---|---|---|
+| [`ART_REDRAW_PLAN.md`](ART_REDRAW_PLAN.md) | báo cáo: nhóm → khối lượng → chuẩn art → thứ tự | — |
+| [`art-planner.csv`](art-planner.csv) | 655 dòng × 36 cột — bảng kế hoạch máy đọc được | `verify_numbers.py` |
+| [`W1_WORK_ORDER.md`](W1_WORK_ORDER.md) + [`w1-work-order.csv`](w1-work-order.csv) | 48 unit PLAYER, 13 unit ở W1 | `verify_numbers.py` |
+| [`W0_LISTING_ASSETS.md`](W0_LISTING_ASSETS.md) + [`w0-listing-slots.csv`](w0-listing-slots.csv) | 27 slot listing 3 store | `verify_numbers.py` |
+| [`s0-pilot-pack.csv`](s0-pilot-pack.csv) | 16 asset pilot của S0 (§5.7) | `verify_numbers.py` |
+| [`measure_asset.py`](measure_asset.py) | đo sprite theo §4.9 + tái lập 9 recipe | `--recipe` |
+| [`verify_numbers.py`](verify_numbers.py) | **160 phép kiểm** trên toàn bộ hồ sơ | exit 0 |
+
 **Một câu chốt:** kho hiện có **không phải** 2.197 sprite phải vẽ — nó là **2.185 bản ghi**, trong đó
 **788 đơn vị vẽ thật**, và chỉ **801 bản ghi (37 %) là cần vẽ cho bản L3 khuyến nghị**; **1.451 h (37 %)**
 của "full parity" nằm ở 3 lô mà kế hoạch này **gần như không vẽ** (brand 90 · parts 127 · triage 411 — chỉ giữ 12 mảnh parts).
@@ -176,8 +188,23 @@ bảng v2 cao hơn **+346 h** — dùng cột `h_scope_v2` trong CSV, đừng d�
 | **P2** | 307 | 818 | 982 | 427 | 5 |
 | **P3** | 278 | 628 | 1.451 | 49 | 0 |
 
+**Cùng rollup đó với **giờ v2** (số dùng để lập kế hoạch — §3.6):**
+
+| Lane | Đơn vị | Kept | Giờ scope v1 | **Giờ scope v2** | Δ v1→v2 |
+|---|---:|---:|---:|---:|---:|
+| **UI** | 307 | 335 | 424,3 | **573,6** | **+149,3** |
+| **BG** | 44 | 44 | 208,7 | **284,5** | +75,8 |
+| **ENEMY** | 34 | 247 | 163,5 | **235,3** | +71,8 |
+| **BOSS** | 42 | 34 | 177,7 | **177,7** | 0 |
+| **PLAYER** | 48 | 65 | 118,5 | **119,8** | +1,3 |
+| **FX** | 26 | 40 | 72,1 | **104,0** | +31,9 |
+| **ITEM** | 9 | 24 | 19,0 | **24,7** | +5,7 |
+| **EXCL** | 278 | 12 | 48,7 | **58,8** | +10,1 |
+| **Σ** | **788** | **801** | **1.232,4** | **1.578,4** | **+346,0** |
+
 > **Đọc bảng này đúng:** P1 **đắt hơn P0 gấp 2,5 lần** dù ít bản ghi hơn — vì boss 512² và lớp nền 1024².
 > Nếu chỉ có 1 artist thì **đừng** bắt đầu bằng boss; W1 (P0) cho ra bản chơi được trước.
+> **Ở v2, UI chiếm 36 % khối lượng** (573,6 h) — nhiều hơn cả 4 lane gameplay cộng lại; đó là lý do §5.6 phải cắt W5.
 
 ---
 
@@ -356,6 +383,23 @@ prorate theo bản ghi ⇒ **+29,1 h vào W1**, bù lại **W2 −26,5 h** và *
    **cả 5 đều là art khác nhau**, không phải chữ khác nhau ⇒ không trừ lại.
 3. **Giá biến thể 0,25 là giả định.** Nếu biến thể đắt bằng 0,35 giá đầy đủ thì tổng chỉ tăng **+2,4 h**
    (1.612,8 thay vì 1.610,4) — tức kết luận **không** phụ thuộc tham số này.
+
+**3b. Sáu dòng `kept > 1` chưa đo được `de_est`** (phép đo không cho kết quả vì sprite quá nhỏ/nhiễu) — chúng được
+tính **giá đầy đủ, không chiết khấu** ⇒ là **cận trên**, không phải ước lượng thiếu:
+
+| Dòng | Batch | Tên | Kept | `h_scope_v2` |
+|---|---|---|---:|---:|
+| AP-0123 | `B-PART` | `boss dong ho real` | 18 | 28,08 |
+| AP-0258 | `U-KIT` | `back` | 4 | 6,24 |
+| AP-0308 | `U-KIT` | `dongco` | 3 | 4,68 |
+| AP-0025 | `U-HUD` | `dot` | 2 | 3,12 |
+| AP-0267 | `U-KIT` | `border` | 2 | 3,12 |
+| AP-0009 | `P-BULLET` | `plasma_beam_flare_green` | 4 | 0,75 |
+| **Σ** | | **33 bản ghi** | **33** | **45,99** |
+
+*33 bản ghi này (4,1 % của 801) nằm trong số 96 bản ghi không đo được; 63 bản ghi còn lại là các dòng chỉ có **1** bản ghi
+⇒ `de_est = 1` hiển nhiên, không cần đo. Nếu 6 dòng trên hoá ra là biến thể thì scope B giảm tối đa **−34,5 h** (phần
+chiết khấu 0,25) — không đổi kết luận.*
 
 ⇒ **Việc phải làm:** dùng **v2** cho mọi con số lập kế hoạch; `over_merge` không còn là "cảnh báo phải kiểm"
 mà đã được **thay bằng số đo** trong 2 cột `de_est` (số thiết kế) và `reuse_est` (`designs / kept_records`).
@@ -670,7 +714,11 @@ Không có ④ thì cả lịch 50,3 tuần là số chưa kiểm.
 2. **Blockout không được dùng để chấm `colors`** — S0-02/03/04 chỉ chấm A4 · A6 · A9 · A13. Vì vậy **`boss` và `bg` chưa được
    xác nhận ngân sách màu ở S0**; hai cổng bắt buộc: **1 bg full ở đầu W2**, **1 boss full ở đầu W3** (chính là asset
    đầu tiên của wave đó — không cộng thêm giờ).
-3. **Đo xong phải sửa bảng giá nếu lệch > 25 %** (rủi ro **S2**): ghi `giờ thật / giờ kế hoạch` từng asset vào planner
+3. **S0-01 trùng công việc với PS-01 của W1.** Cả hai đều là tàu `10001` (4,20 h). Mặc định: pilot **không** vào build
+   ⇒ W1 giữ nguyên **206,4 h** và S0 32 h là **chi phí setup**, không phải chi phí art. Nếu S0-01 đạt đủ A1–A13 thì
+   **được promote** thành PS-01 ⇒ W1 giảm **4,20 h** (202,2 h). Chọn xong **ghi vào planner** (`rule_hint` của AP-0016),
+   đừng để cả hai cùng đếm.
+4. **Đo xong phải sửa bảng giá nếu lệch > 25 %** (rủi ro **S2**): ghi `giờ thật / giờ kế hoạch` từng asset vào planner
    (cột `rule_hint` của dòng tương ứng), rồi **chỉnh `rate` §3.2 một lần** — không chỉnh lẻ từng dòng.
 
 ---
