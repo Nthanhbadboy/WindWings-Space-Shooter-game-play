@@ -223,9 +223,9 @@ python3 -m unittest tests.test_owner134 -v
 | check | result |
 | --- | --- |
 | `python3 tools/verify/owner134.py --check` | PASS, artifact 7556 B `74cf1843928d165058771269c2508337df33be9b4840edfd9c5e076e358062e6` |
-| `python3 -m unittest tests.test_owner134 -v` | _pending_ |
-| `python3 -m unittest discover -s tests` | _pending_ |
-| CI `Verify extracted tables` | _pending_ |
-| recovery runs | 40489662914 (`a45b2dd4f`) |
-| receipts | `reverse-engineering/raw/l3-ef6b75ef134-verification/` |
-| official handoff | PR12 comment _pending_ |
+| `python3 -m unittest tests.test_owner134 -v` | 28 tests, 0.079 s, OK |
+| `python3 -m unittest discover -s tests` | 1940 tests, 339.413 s, OK |
+| CI `Verify extracted tables` | run 40490185550, job `verify`, success on `a5a5dff35` |
+| recovery runs | 40489662914 (`a45b2dd4f`), evidence commit `c4bd75bc4` |
+| receipts | `reverse-engineering/raw/l3-ef6b75ef134-verification/` (claim, ci, ci-jobs, recovery, check, local, focused.log.gz, full.log.gz, handoff) |
+| official handoff | PR12 comment 6439951448 |
