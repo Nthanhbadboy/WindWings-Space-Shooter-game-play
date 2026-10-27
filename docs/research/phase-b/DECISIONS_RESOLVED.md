@@ -59,3 +59,13 @@ Bảng giá P1–P7 đầy đủ: `GATE3_PRICING_SHEET.md`. Gems/coins KHÔNG ch
 | **G15** | APS trên Fire TV | **KHÔNG tích hợp APS lúc launch** | Điều khoản nhường 30% impression + Amazon giữ 100% doanh thu phần đó chỉ kích hoạt ≥50k giờ/tháng — xa; ads Fire TV quyết khi tới Gate tương ứng |
 
 Hệ quả: Gate-6 kits chốt phạm vi theo 3-store-A (đã có banner Amazon-scope trong 4 tài liệu E); Google Play mục "BACKLOG-Post-launch" trong PHASE_C plan.
+
+
+---
+
+## Bổ sung lần 148 — G16/G17 (theo research cuối của `46e50499` @`387f7628`) — director quyết theo ủy quyền
+
+| # | Quyết | Chọn | Lý do |
+|---|---|---|---|
+| **G16** | Mô hình doanh thu ads | **(a) KHÔNG lập mô hình ads** — chỉ đo eCPM thật ở soft-launch rồi mới quyết thiết kế | Windows không còn ad-network chính chủ (MS Learn 01/2026: chỉ hướng dẫn SDK bên thứ 3); benchmark US rewarded lệch >2× (CONFLICTING); D3b giữ — nay có lý do hạ-tầng |
+| **G17** | D2a (đại lục TQ) | **GIỮ D2a** — không vào đại lục; 4 điều kiện mở lại ghi trong research (doanh thu ổn ≥2/3 store · đối tác nội địa chủ động · chấp nhận thực nhận 30–50% · backend+PIPL+chống-nghiện); HK/MO/TW = đường hợp lý nếu muốn người chơi Trung văn | 3 tầng khoá: cấm WFOE tự xuất bản · 版号 import ~3%/đợt 6–8 tháng · kinh tế thực nhận ~30–50% |
