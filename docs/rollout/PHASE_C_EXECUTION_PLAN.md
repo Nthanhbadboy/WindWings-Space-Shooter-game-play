@@ -43,11 +43,11 @@
 
 ## User-ONLY checklist (không session nào làm được — Gate chặn tại đây)
 
-1. **D5/pháp lý:** xác nhận individual hay pháp nhân + tình trạng thuế TRƯỚC khi tạo tài khoản (Huawei không đổi quốc gia verify; MS không đổi Individual→Company).
-2. **Tạo 3 tài khoản developer** + identity verification (MS $0 · Amazon $0 · Huawei $0) — dùng email/điện thoại của user.
+1. **D5/pháp lý — CẬP NHẬT lần 135 (theo user, chưa commit):** MS ✓ đã có tài khoản + khai thuế · Huawei ✓ đã đăng ký · Amazon ✗ chưa làm. Lưu ý: dùng đúng loại tài khoản đã tạo (policy 10.14 — xem MONETIZATION_VERIFICATION).
+2. **Tạo tài khoản developer → chỉ còn AMAZON** (MS ✓ Huawei ✓ theo user): register $0 + Tax Identity Interview (Mỹ+Canada) — bữa nào user rảnh làm ~15 phút. Chi tiết: MONETIZATION_VERIFICATION_2026-10-27.md.
 3. **Quyền IP/phân phối khi đăng store** (viết lại lần 134 — câu Unity-source hết hiệu lực vì engine = Godot, build mới không cần source gốc): assets/spec đang trích từ APK gốc WindWings — user xác nhận quyền sử dụng art/tên/nội dung game khi đăng 3 store. Bản Windows chỉ chờ mục này (không chờ Unity nữa).
-4. **Release keystore/signing** — chỉ user giữ và tự sign.
-5. **Payout/tax profiles** từng store (ngân hàng, thuế, địa chỉ).
+4. **Release keystore/signing — user xác nhận tự thêm** ✓. Nhớ: Huawei AAB bắt buộc App Signing (bật trong console); MS Store tự ký MSIX — không cần keystore riêng.
+5. **Payout/tax** — MS ✓ · Huawei ✓ (merchant IAP + Petal Ads, trả tháng, ngưỡng €200) · Amazon pending. **Phát hiện tiền:** VN chưa có thuế-hiệp-định với Mỹ đang hiệu lực ⇒ phần doanh thu khách Mỹ bị withholding 30% (không giảm được); ngoài Mỹ không giữ tại nguồn — tách dòng US/không-US khi báo doanh thu.
 6. **Lệnh SDK/publish** khi đến Gate tương ứng (mandate: không tự publish).
 
 ## Tiến trình Gate (không vượt silently)
