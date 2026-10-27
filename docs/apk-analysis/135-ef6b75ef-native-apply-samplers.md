@@ -218,4 +218,13 @@ PYTHONPATH=/home/user/.cache/deps115:. python3 -m unittest tests.test_owner135 -
 
 ## 10. Verification (final)
 
-Filled by the verification receipts under `reverse-engineering/raw/l3-ef6b75ef135-verification/`.
+| check | result |
+| --- | --- |
+| generator `--check` | `datas/l3_ef6b75ef135_native_apply_seed.json.gz` 10434 B, `5c6d7d85…` |
+| focused `python3 -m unittest tests.test_owner135 -v` | **41 tests OK, 0.069 s** |
+| full `python3 -m unittest discover -s tests` | **1981 tests OK, 348.939 s** (was 1940 before this cycle) |
+| Verify extracted tables | run **40509111057**, conclusion **success**, head **`0ffd421bffa1ee8a77fb8bd676956b885dd38a74`** |
+| recovery run | **40507430140**, success, source `53f6536dc`, evidence commit `52c664057` |
+
+Receipts: `reverse-engineering/raw/l3-ef6b75ef135-verification/` — `claim.json`, `recovery.json`,
+`ci.json`, `ci-jobs.json`, `check.json`, `local.json`, `focused.log.gz`, `full.log.gz`, `handoff.json`.
