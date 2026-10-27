@@ -8,7 +8,7 @@
 
 | Kênh | Phí account | Revenue share | Cert/review | Ghi chú |
 |---|---|---|---|---|
-| Microsoft Store | **$0** (Individual free từ 10/09/2025, Company bỏ $99 từ 07/05/2026) | game **12%** (dev 88%); app 15% | ≤3 business days | Cần **bản Windows** — xem USER-ONLY #3 |
+| Microsoft Store | **$0** (Individual free từ 10/09/2025, Company bỏ $99 từ 07/05/2026) | game **12%** (dev 88%); app 15% | ≤3 business days | Cần **bản Windows** — build Godot (engine chốt lần 134, xem §Engine) |
 | Amazon Appstore | $0 | 70/30 (SBAP 80/20 khi đủ điều kiện) | — | Kênh Android mobile đã đóng 20/08/2025 → **Fire tablet/TV only** (D1a/D10a) |
 | Huawei AppGallery | $0 (individual/enterprise) + identity verification bắt buộc | IAP game **30:70 ngoài TQ** · 50:50 đại lục; paid 30:70 | 3–5 ngày làm việc | APK ≤4GB; AAB ≤150MB (App Signing bắt buộc); 170+ nước (D2a) |
 
@@ -18,7 +18,7 @@
 |---|---|---|
 | **SS 0 (director)** | Tích hợp + sổ cái + board PR12; trình Gate khi đủ | Không implement/SDK/publish; user final authority |
 | **AI-4 (535)** | **C2: registry-v4** — sổ ledger cuối best-effort; C1 resolve opportunistic nếu rẻ; xong lane | KHÔNG đào lane mới; số mở không cần = 0 |
-| **ef** | **Phase C build/packaging spec** (plan-level): signing flow, versioning, target-API/SDK requirements AppGallery + Amazon, APK/AAB packaging path, MS Windows packaging options | KHÔNG build/SDK/keystore thật; boss-phase×2 → learning-note, chỉ đào nếu triển khai cần |
+| **ef** | **Godot build/packaging spec + port plan** (plan-level): export presets (Windows → MS Store MSIX; Android APK≤4GB / AAB≤150MB qua gradle), versioning, signing flow, target-API AppGallery/Amazon; port-plan: scaffold Godot 4.x + map scene/systems từ spec #29 — chỉ hiện thực hóa khi user ra lệnh scaffold | KHÔNG build/SDK/keystore thật; lanes APK dừng — phân tích chỉ khi triển khai cần |
 | **a5** | **Phase C store assets spec**: icon/screenshot/feature-graphic sizes từ 84-file capture + 42 contact sheets (không vẽ art mới); listing copy draft 3 store | Asset thật do Session F planner + user duyệt |
 | **Session E** | **Per-store requirement sheets**: rating questionnaire, data-safety/privacy forms, payout/tax setup steps — nguồn chính chủ + ngày tra cứu, UNVERIFIED ghi tại chỗ · **+ research queue kiếm tiền** (bảng dưới — lần 133: đào-tiếp áp dụng cho E/F, KHÔNG phải APK) | Research/plan only |
 | **Session F** | Store-art planner theo spec của a5 (asset list, kích thước, số lượng) · **+ research chuyển-đổi listing** (CTR benchmark, A/B thumbnail genre) | Không tự chốt art — user duyệt |
@@ -32,7 +32,7 @@
 |---|---|---|---|
 | D4/D6 | **Giá benchmark remove-ads + premium trong genre shmup** (Sky Force $3,99; 1945; HAWK; Phoenix 2…) → đề xuất bảng giá cụ thể trình user Gate-3 | E | ✓ — giá store công khai |
 | D3 | **eCPM/fill-rate rewarded trên Windows** (Vungle public benchmarks 2025–2026) + đánh giá lại (b)-no-ads có làm mất tiền không | E | ✓ một phần (benchmark); hợp đồng = USER-ONLY |
-| D9 | **Ma trận adapter IAP/ads theo engine** (Unity IAP/Unity Ads, HMS plugin, Amazon IAP) — engine nào đỡ công nhất cho D9a | E | ✓ — docs SDK |
+| D9 | **Ma trận plugin Godot 4.x cho 3 store**: IAP (Godot Google Play Billing chính chủ · HMS IAP community plugin · Amazon IAP wrapper?) · ads (AdMob Poing-plugin — chú ý Fire thiếu GMS · HMS Ads Kit) · đóng gói MSIX cho MS Store | E | ✓ — docs SDK |
 | D11 | **Tương thích analytics/CMP trên Fire + HMS** (GameAnalytics, Firebase fork, Unity Analytics; consent GDPR) | E | ✓ — docs SDK |
 | D7 | **Luật gacha/loot-box từng nước cập nhật** (Bỉ/Hà Lan, EU) — thu thập trước Gate-7 | E | ✓ — nguồn pháp lý công khai |
 | D2 | Danh sách NPH TQ phù hợp + quy trình 版号 (chỉ cần khi user đổi ý D2) — ưu tiên thấp | E | ✓ — để sẵn |
@@ -45,7 +45,7 @@
 
 1. **D5/pháp lý:** xác nhận individual hay pháp nhân + tình trạng thuế TRƯỚC khi tạo tài khoản (Huawei không đổi quốc gia verify; MS không đổi Individual→Company).
 2. **Tạo 3 tài khoản developer** + identity verification (MS $0 · Amazon $0 · Huawei $0) — dùng email/điện thoại của user.
-3. **⚠ Unity project source cho bản Windows** — repo chỉ có APK; MS Store cần build Windows. **Câu hỏi cho user:** bạn có project gốc không (tự phát triển/được ủy quyền)? (a) Có → ef viết build-spec là đủ; (b) Không/được ủy quyền phân phối → cần xác nhận **quyền phân phối/IP** trước khi register anywhere; MS leg hoãn tới khi rõ.
+3. **Quyền IP/phân phối khi đăng store** (viết lại lần 134 — câu Unity-source hết hiệu lực vì engine = Godot, build mới không cần source gốc): assets/spec đang trích từ APK gốc WindWings — user xác nhận quyền sử dụng art/tên/nội dung game khi đăng 3 store. Bản Windows chỉ chờ mục này (không chờ Unity nữa).
 4. **Release keystore/signing** — chỉ user giữ và tự sign.
 5. **Payout/tax profiles** từng store (ngân hàng, thuế, địa chỉ).
 6. **Lệnh SDK/publish** khi đến Gate tương ứng (mandate: không tự publish).
@@ -66,6 +66,6 @@
 
 - a5: asset spec + listing draft (từ dữ liệu có sẵn).
 - Session E: requirement sheets 3 store.
-- ef: build/packaging spec (không build).
+- ef: Godot build/packaging spec + port-plan (không build — scaffold chỉ theo lệnh).
 - AI-4: registry-v4 khép Gate-1.
 - Mọi thứ chạm tài khoản/keys/source/build thật → dừng ở USER-ONLY checklist.

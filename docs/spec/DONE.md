@@ -81,6 +81,9 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 134 — USER CHỐT ENGINE: "công nghệ dùng godot thôi, game này cần vậy là đủ").**
+> Engine = **Godot 4.x** (MIT — $0 phí/$0 royalty, khớp mục tiêu doanh thu). Trả lời USER-ONLY #3 cũ: **KHÔNG cần Unity/source gốc** — build mới trên Godot theo spec; APK gốc = design reference/spec authority cho port. Hệ quả: D9a = GDScript interface + adapter plugin từng store · D3b Windows-no-ads càng hợp lý (không có wrapper Vungle cho Godot) · D11 chỉ chọn SDK có plugin Godot · ef lane → **Godot build/packaging spec + port-plan** (export presets Win→MSIX, APK≤4GB/AAB≤150MB gradle, versioning, signing; scaffold chỉ theo lệnh user) · E queue +2 mục Godot (plugin IAP/ads 3 store · analytics Godot) · USER-ONLY #3 viết lại = **quyền IP/art gốc** (mục duy nhất còn chờ về bản Windows). Chi tiết `docs/rollout/PHASE_C_EXECUTION_PLAN.md` §Engine.
+>
 > **Sửa lại (lần 133 — user làm rõ scope lệnh đào: "phần đào ở đây là nói APK; nghiên cứu của E và F có chỗ nào khúc mắc thì nghiên cứu tiếp; mục đích là làm game kiếm tiền").**
 > Dừng-đào = lanes APK only (ef/a5/535/AI-3). E/F TIẾP TỤC research chỗ khúc mắc — mở research queue từ cột "Thông tin còn thiếu" D-series trong `docs/rollout/PHASE_C_EXECUTION_PLAN.md` (E: giá-benchmark D4/D6 · eCPM-Windows D3 · adapter-matrix D9 · SDK-compat D11 · luật-gacha-EU D7 · NPH-TQ D2 ưu tiên thấp · Fire-installed-base D1/D10 · retention-median D12; F: asset-counts + listing-conversion). Mục tiêu định hướng: doanh thu — cấu hình D đã chọn giữ hướng revenue (SKU kép D4c, premium Windows D6a, rewarded D8a). CI lần-132 `3ced4d716` = 3/3 xanh; board-delta lần-132 `6441761654` (đăng lúc bị cắt, đã xác nhận tồn tại).
 >
