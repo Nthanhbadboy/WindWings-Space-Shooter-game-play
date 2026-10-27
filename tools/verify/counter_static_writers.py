@@ -312,6 +312,13 @@ def build_payload():
                    'other classes at the same offsets',
             outside_stores=[row['rva'] for row in counters
                             if row['klass'] != 'GameDatas']),
+        closures=[dict(n=32, source=132,
+                       item='a direct static store outside these classes',
+                       verdict='CLOSED',
+                       evidence=dict(cell_stores=0, static_block=16, gamedatas=6,
+                                     outside_stores=[],
+                                     note='the counters are `private static` fields, so '
+                                          'the item\'s premise was the answer'))],
         limits=['a base register supplied as an argument stays `unknown` (1 hit: '
                 'Box_Rewards 20002516, a 128-bit store)',
                 'the corpus is the pinned slices, so a writer in a method no scan '

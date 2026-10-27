@@ -21,8 +21,8 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import counter_static_writers as CSW  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_counter_static_writers.json.gz'
-PIN_BYTES = 2142
-PIN_SHA = '11c6cf4b2b5c3a26d26086efc326652eb3d7539b6ac0667a181ce42791fcd718'
+PIN_BYTES = 2245
+PIN_SHA = 'e6a5d60fd8ea7197050e4e282999278b14107b88fc4eaa3b069c0415f148e718'
 
 COUNTER_RVAS = {20070896: 0x50, 20071048: 0x50,
                 20071224: 0x54, 20071376: 0x54,

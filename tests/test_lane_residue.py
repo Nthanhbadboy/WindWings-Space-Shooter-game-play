@@ -18,8 +18,8 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import lane_residue as LR  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_lane_residue.json.gz'
-PIN_BYTES = 4902
-PIN_SHA = 'bae0e6da7afa9da0bce8f005ef505af523e1c82742e505cb1edbffb6772ad402'
+PIN_BYTES = 4901
+PIN_SHA = '3653c973aabb7db87fa854881d64ba6d63f562d7bffd0ec72ad43934e1ea885e'
 
 
 def payload():
@@ -60,7 +60,8 @@ class Census(unittest.TestCase):
         census = payload()['census']
         self.assertEqual(census['totals']['items'], 56)
         # 170 refreshed the audit, so the census now carries the post-169 counts
-        self.assertEqual((census['totals']['still_open'], census['totals']['runtime']), (10, 20))
+        # 179 closed item 32, so the census now carries the post-178 counts
+        self.assertEqual((census['totals']['still_open'], census['totals']['runtime']), (9, 20))
 
     def test_the_items_this_report_touches(self):
         addressed = payload()['census']['addressed']

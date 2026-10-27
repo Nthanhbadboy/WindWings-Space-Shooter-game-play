@@ -293,9 +293,11 @@ def build_payload():
     check(checks, 'six-items-are-served-data',
           sorted(row['n'] for row in plan if row['kind'] == 'DATA') == [9, 18, 19, 34, 44, 48],
           [row['n'] for row in plan if row['kind'] == 'DATA'])
-    check(checks, 'one-item-is-a-wider-scan',
-          [row['n'] for row in plan if row['kind'] == 'SCAN'] == [32],
-          [row['n'] for row in plan if row['kind'] == 'SCAN'])
+    check(checks, 'the-wider-scan-item-is-closed-and-no-scan-is-left',
+          [row['n'] for row in plan if row['kind'] == 'SCAN'] == []
+          and rows[32]['verdict'] == 'CLOSED' and rows[32]['closer'] == 178,
+          dict(scan=[row['n'] for row in plan if row['kind'] == 'SCAN'],
+               verdict=rows[32]['verdict'], closer=rows[32]['closer']))
     check(checks, 'the-audit-still-has-fifty-six-items', len(rows) == 56, len(rows))
     unnamed = sorted(stem for stem in artifacts() if report_of(stem) is None)
     by_audit = sorted(stem for stem in artifacts() if audit_report_of(stem) is not None)

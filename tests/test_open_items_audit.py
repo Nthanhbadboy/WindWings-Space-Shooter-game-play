@@ -16,8 +16,8 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import open_items_audit  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_open_items_audit.json.gz'
-PIN_SHA = '3b782ffa0f8605b7ea0632803ef662a9c792b9c0a59293aef1b7772fae33a0d3'
-PIN_BYTES = 10748
+PIN_SHA = 'a7f7b51fddf91e4c6a840cd8e7706a420b6ff022ae3eb992c8b41d77330f0631'
+PIN_BYTES = 10909
 
 
 def payload():
@@ -76,14 +76,15 @@ class Coverage(unittest.TestCase):
 class Verdicts(unittest.TestCase):
     def test_totals(self):
         totals = payload()['totals']
-        self.assertEqual(totals, {'items': 56, 'distinct_questions': 53, 'closed': 19,
+        # 179 closed item 32 against report 178: one fewer open, one more proof
+        self.assertEqual(totals, {'items': 56, 'distinct_questions': 53, 'closed': 20,
                                   'restated': 6, 'actionable': 0, 'runtime': 20,
-                                  'note': 1, 'still_open': 10, 'proofs': 28})
+                                  'note': 1, 'still_open': 9, 'proofs': 29})
 
     def test_verdicts_partition_the_items(self):
         rows = payload()['items']
-        self.assertEqual(sum(1 for row in rows if row['verdict'] == 'CLOSED'), 19)
-        self.assertEqual(sum(1 for row in rows if row['verdict'] == 'OPEN'), 10)
+        self.assertEqual(sum(1 for row in rows if row['verdict'] == 'CLOSED'), 20)
+        self.assertEqual(sum(1 for row in rows if row['verdict'] == 'OPEN'), 9)
         self.assertEqual({row['verdict'] for row in rows},
                          {'CLOSED', 'RESTATED', 'RUNTIME', 'NOTE', 'OPEN'})
 
@@ -104,15 +105,18 @@ class Verdicts(unittest.TestCase):
     def test_most_closures_come_from_a_later_report(self):
         later = [row for row in payload()['items']
                  if row['verdict'] == 'CLOSED' and row['direction'] == 'later']
-        self.assertEqual(len(later), 19)
+        self.assertEqual(len(later), 20)
         earlier = [row for row in payload()['items'] if row['direction'] == 'earlier']
         self.assertEqual([row['report'] for row in earlier], [139])
         # the two 133 items used to sit here; 169 ran the route and narrowed them instead
         self.assertEqual(sorted(row['n'] for row in payload()['items']
                                 if row['closer'] == 169), [30, 39, 40])
+        # 179: the wider-scan item, closed by 178's store census
+        self.assertEqual(sorted(row['n'] for row in payload()['items']
+                                if row['closer'] == 178), [32])
 
     def test_backing_split(self):
-        self.assertEqual(payload()['verdict_backing']['declared'], 5)
+        self.assertEqual(payload()['verdict_backing']['declared'], 6)
         self.assertEqual(payload()['verdict_backing']['by_content'], 14)
 
 
@@ -227,7 +231,7 @@ class Provenance(unittest.TestCase):
 
     def test_records_are_declared_and_backed(self):
         records = payload()['records']
-        self.assertEqual(len(records), 13)
+        self.assertEqual(len(records), 14)   # 179 added the 178 closure of item 32
         for row in records:
             if row['closes'] is not None:
                 self.assertTrue(56 >= row['closes'] >= 1)
@@ -264,7 +268,7 @@ class ReportTable(unittest.TestCase):
         # the table is an index: no item, no proof and no digest lives in it
         _, packed = open_items_audit.build(None)
         self.assertEqual(hashlib.sha256(packed).hexdigest(),
-                         '3b782ffa0f8605b7ea0632803ef662a9c792b9c0a59293aef1b7772fae33a0d3')
+                         'a7f7b51fddf91e4c6a840cd8e7706a420b6ff022ae3eb992c8b41d77330f0631')
 
 
 if __name__ == '__main__':

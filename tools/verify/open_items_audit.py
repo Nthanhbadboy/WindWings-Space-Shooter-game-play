@@ -243,6 +243,13 @@ def _pvp_blob_census():
             len(d['attributed_to_other_ctors']), len(d['unclaimed_floats'])]
 
 
+def _static_writer_census():
+    """178: how many stores reach the three offsets, and how many go through statics."""
+    census = art(178)['census']
+    return [census['cell'], census['static-block'],
+            sum(1 for row in art(178)['counters'] if row['klass'] == 'GameDatas')]
+
+
 PROOFS = {
     '143-currency-keys': _currency_keys,
     '143-currency-cells': _currency_cells,
@@ -268,6 +275,7 @@ PROOFS = {
     '168-save-data': _residue_save_data,
     '169-pvp-arrays': _pvp_arrays,
     '169-blob-census': _pvp_blob_census,
+    '178-static-writer-census': _static_writer_census,
 }
 
 
@@ -418,9 +426,14 @@ ITEMS = [
       [('143-key-counts', [['KeyCount0', 46011960, 44941760],
                            ['KeyCount1', 46011968, 44941800],
                            ['KeyCount2', 46011976, 44941784]])]),
-    I(132, 'a direct static store outside these classes', 'OPEN', None,
-      'a limitation of the method, not of the data: the branch scan sees calls, not '
-      'stores, so an inline static write elsewhere would be invisible.'),
+    I(132, 'a direct static store outside these classes', 'CLOSED', 178,
+      '178 widened the scan from calls to stores over the whole 1788-method corpus and '
+      'classified the 102 hits by the base register: none writes a metadata cell, 16 go '
+      'through a `static_fields` hop, and exactly 6 of those are the GameDatas counters. '
+      'Nothing outside the three accessors stores into 0x50/0x54/0x58 of GameDatas, and '
+      'the counters turn out to be `private static` fields, so the premise of the item '
+      'was the answer: there is no inline static write to find.',
+      [('178-static-writer-census', [0, 16, 6])]),
     # ---- 135 / 134 / 136 / 137: the rank ladder
     I(135, 'the method that reads MaxRankStars', 'CLOSED', 136,
       '136 finds it and explains the miss: GetRankNumber (19884996) reads statics +0x18, '
@@ -508,6 +521,7 @@ RECORDS = [
     (143, 'correction', 2),
     (168, 'correction', 12),
     (168, 'correction', 49),
+    (178, 'closure', 32),
 ]
 
 # Items that are the same question asked twice.
@@ -607,7 +621,7 @@ def build_payload():
     declared = {closes for _, _, closes in RECORDS if closes}
     assert declared <= {row['n'] for row in rows}
     for record_report, kind, closes in RECORDS:
-        assert kind in ('correction', 'confirmation')
+        assert kind in ('correction', 'confirmation', 'closure')
         bucket = art(record_report).get(kind + 's') or []
         if kind == 'correction':
             # 168's artifact names the same list `corrected`; the lane is not consistent.

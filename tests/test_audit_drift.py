@@ -18,8 +18,8 @@ sys.path.insert(0, str(ROOT / 'tools' / 'verify'))
 import audit_drift as AD  # noqa: E402
 
 ARTIFACT = ROOT / 'datas/l2_535b0541_audit_drift.json.gz'
-PIN_BYTES = 7881
-PIN_SHA = '20360843ff9eefae4ba37396dbe3b52c2bf75a788417ab81190e999f1efebca3'
+PIN_BYTES = 7813
+PIN_SHA = '967922fa531bee56b3274471d1005d05932c167b363f98073145ed1750fd09b6'
 
 
 def payload():
@@ -65,10 +65,10 @@ class PayloadShape(unittest.TestCase):
 
     def test_totals_are_the_artifact(self):
         totals = payload()['totals']
-        self.assertEqual(totals['artifacts'], 46)
+        self.assertEqual(totals['artifacts'], 47)
         self.assertEqual(totals['claims'], 9)
         self.assertEqual(totals['targets'], 2)
-        self.assertEqual(totals['contract'], 37)
+        self.assertEqual(totals['contract'], 36)
         self.assertEqual(totals['failing'], 0)
 
     def test_rules_count_covers_every_claim_twice(self):
@@ -126,16 +126,16 @@ class BlindSpot(unittest.TestCase):
     def test_every_artifact_is_named_by_the_docs(self):
         body = payload()['blind_spot']
         self.assertEqual(body['unnamed_artifacts'], [])
-        self.assertEqual(body['named_by_the_docs'], 46)
-        self.assertEqual(body['artifacts'], 46)
+        self.assertEqual(body['named_by_the_docs'], 47)
+        self.assertEqual(body['artifacts'], 47)
 
     def test_the_audit_alone_now_names_all_of_them(self):
-        self.assertEqual(payload()['blind_spot']['named_by_the_audit'], 46)
+        self.assertEqual(payload()['blind_spot']['named_by_the_audit'], 47)
 
     def test_nothing_is_left_unnamed(self):
         # 175 filled the audit's table from the report filenames, so the window is empty
         self.assertEqual(payload()['blind_spot']['reports_the_audit_cannot_name'], [])
-        self.assertEqual(payload()['blind_spot']['named_by_the_docs'], 46)
+        self.assertEqual(payload()['blind_spot']['named_by_the_docs'], 47)
 
     def test_no_correction_now_points_at_an_unnamed_report(self):
         self.assertEqual(payload()['totals']['unread_targets'], [])
@@ -235,7 +235,8 @@ class Contract(unittest.TestCase):
         self.assertEqual(counts['POLICY'], 5)
         self.assertEqual(counts['DATA'], 6)
         self.assertEqual(counts['PIN-RAW'], 3)
-        self.assertEqual(counts['SCAN'], 1)
+        # 179 closed item 32, the only SCAN step in the contract
+        self.assertNotIn('SCAN', counts)
         self.assertEqual(counts['TODO'] if 'TODO' in counts else 0, 0)
 
     def test_the_five_policy_items_are_the_metadata_table(self):
