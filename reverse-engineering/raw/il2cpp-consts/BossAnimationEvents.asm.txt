@@ -1,0 +1,161 @@
+;;; OnStateExit  protected void OnStateExit() { }
+    0x131da8c: ldr      x8, [x0, #0x20]
+    0x131da90: cbz      x8, #0x131daa4
+    0x131da94: ldr      x2, [x8, #0x18]
+    0x131da98: ldr      x0, [x8, #0x40]
+    0x131da9c: ldr      x1, [x8, #0x28]
+    0x131daa0: br       x2
+    0x131daa4: ret      
+
+;;; OnStartAttack  protected void OnStartAttack(string animName) { }
+    0x131daa8: stp      x30, x21, [sp, #-0x20]!
+    0x131daac: stp      x20, x19, [sp, #0x10]
+    0x131dab0: adrp     x21, #0x2ce1000
+    0x131dab4: ldrb     w8, [x21, #0x5ad]
+    0x131dab8: mov      x19, x1
+    0x131dabc: mov      x20, x0
+    0x131dac0: tbnz     w8, #0, #0x131dad8
+    0x131dac4: adrp     x0, #0x2ae1000
+    0x131dac8: ldr      x0, [x0, #0x688]
+    0x131dacc: bl       #0x110d028
+    0x131dad0: mov      w8, #1
+    0x131dad4: strb     w8, [x21, #0x5ad]
+    0x131dad8: ldr      x0, [x20, #0x28]
+    0x131dadc: cbz      x0, #0x131db18
+    0x131dae0: adrp     x8, #0x2ae1000
+    0x131dae4: ldr      x8, [x8, #0x688]
+    0x131dae8: ldr      x2, [x8]
+    0x131daec: mov      x1, x19
+    0x131daf0: bl       #0x1960758
+    0x131daf4: cbz      x0, #0x131db0c
+    0x131daf8: ldr      x1, [x0, #0x28]
+    0x131dafc: ldr      x9, [x0, #0x18]
+    0x131db00: ldr      x8, [x0, #0x40]
+    0x131db04: mov      x0, x8
+    0x131db08: blr      x9
+    0x131db0c: ldp      x20, x19, [sp, #0x10]
+    0x131db10: ldp      x30, x21, [sp], #0x20
+    0x131db14: ret      
+    0x131db18: bl       #0x110d250
+    0x131db1c: b        #0x131db24
+    0x131db20: b        #0x131db24
+    0x131db24: mov      x19, x0
+    0x131db28: cmp      w1, #1
+    0x131db2c: b.ne     #0x131db8c
+    0x131db30: mov      x0, x19
+    0x131db34: bl       #0x2990b20
+    0x131db38: mov      x19, x0
+    0x131db3c: adrp     x0, #0x2ae1000
+    0x131db40: ldr      x0, [x0, #0x690]
+    0x131db44: bl       #0x110d03c
+    0x131db48: ldr      x8, [x19]
+    0x131db4c: ldr      x1, [x8]
+    0x131db50: bl       #0x110d67c
+    0x131db54: tbz      w0, #0, #0x131db64
+    0x131db58: ldp      x20, x19, [sp, #0x10]
+    0x131db5c: ldp      x30, x21, [sp], #0x20
+    0x131db60: b        #0x2990b30
+    0x131db64: mov      w0, #8
+    0x131db68: bl       #0x2990b40
+    0x131db6c: ldr      x8, [x19]
+    0x131db70: str      x8, [x0]
+    0x131db74: adrp     x1, #0x2996000
+    0x131db78: add      x1, x1, #0xe28
+    0x131db7c: mov      x2, xzr
+    0x131db80: bl       #0x2990b50
+    0x131db84: mov      x19, x0
+    0x131db88: bl       #0x2990b30
+    0x131db8c: mov      x0, x19
+    0x131db90: bl       #0x1212558
+    0x131db94: bl       #0xfc4740
+
+;;; OnStopAttack  protected void OnStopAttack(string animName) { }
+    0x131db98: stp      x30, x21, [sp, #-0x20]!
+    0x131db9c: stp      x20, x19, [sp, #0x10]
+    0x131dba0: adrp     x21, #0x2ce1000
+    0x131dba4: ldrb     w8, [x21, #0x5ae]
+    0x131dba8: mov      x19, x1
+    0x131dbac: mov      x20, x0
+    0x131dbb0: tbnz     w8, #0, #0x131dbc8
+    0x131dbb4: adrp     x0, #0x2ae1000
+    0x131dbb8: ldr      x0, [x0, #0x688]
+    0x131dbbc: bl       #0x110d028
+    0x131dbc0: mov      w8, #1
+    0x131dbc4: strb     w8, [x21, #0x5ae]
+    0x131dbc8: ldr      x0, [x20, #0x30]
+    0x131dbcc: cbz      x0, #0x131dc08
+    0x131dbd0: adrp     x8, #0x2ae1000
+    0x131dbd4: ldr      x8, [x8, #0x688]
+    0x131dbd8: ldr      x2, [x8]
+    0x131dbdc: mov      x1, x19
+    0x131dbe0: bl       #0x1960758
+    0x131dbe4: cbz      x0, #0x131dbfc
+    0x131dbe8: ldr      x1, [x0, #0x28]
+    0x131dbec: ldr      x9, [x0, #0x18]
+    0x131dbf0: ldr      x8, [x0, #0x40]
+    0x131dbf4: mov      x0, x8
+    0x131dbf8: blr      x9
+    0x131dbfc: ldp      x20, x19, [sp, #0x10]
+    0x131dc00: ldp      x30, x21, [sp], #0x20
+    0x131dc04: ret      
+    0x131dc08: bl       #0x110d250
+    0x131dc0c: b        #0x131dc14
+    0x131dc10: b        #0x131dc14
+    0x131dc14: mov      x19, x0
+    0x131dc18: cmp      w1, #1
+    0x131dc1c: b.ne     #0x131dc7c
+    0x131dc20: mov      x0, x19
+    0x131dc24: bl       #0x2990b20
+    0x131dc28: mov      x19, x0
+    0x131dc2c: adrp     x0, #0x2ae1000
+    0x131dc30: ldr      x0, [x0, #0x690]
+    0x131dc34: bl       #0x110d03c
+    0x131dc38: ldr      x8, [x19]
+    0x131dc3c: ldr      x1, [x8]
+    0x131dc40: bl       #0x110d67c
+    0x131dc44: tbz      w0, #0, #0x131dc54
+    0x131dc48: ldp      x20, x19, [sp, #0x10]
+    0x131dc4c: ldp      x30, x21, [sp], #0x20
+    0x131dc50: b        #0x2990b30
+    0x131dc54: mov      w0, #8
+    0x131dc58: bl       #0x2990b40
+    0x131dc5c: ldr      x8, [x19]
+    0x131dc60: str      x8, [x0]
+    0x131dc64: adrp     x1, #0x2996000
+    0x131dc68: add      x1, x1, #0xe28
+    0x131dc6c: mov      x2, xzr
+    0x131dc70: bl       #0x2990b50
+    0x131dc74: mov      x19, x0
+    0x131dc78: bl       #0x2990b30
+    0x131dc7c: mov      x0, x19
+    0x131dc80: bl       #0x1212558
+    0x131dc84: bl       #0xfc4740
+
+;;; Vibrate  protected void Vibrate() { }
+    0x131dc88: str      x30, [sp, #-0x20]!
+    0x131dc8c: stp      x20, x19, [sp, #0x10]
+    0x131dc90: adrp     x19, #0x2ce1000
+    0x131dc94: adrp     x20, #0x2adc000
+    0x131dc98: ldrb     w8, [x19, #0x5af]
+    0x131dc9c: ldr      x20, [x20, #0xf40]
+    0x131dca0: tbnz     w8, #0, #0x131dcb8
+    0x131dca4: adrp     x0, #0x2adc000
+    0x131dca8: ldr      x0, [x0, #0xf40]
+    0x131dcac: bl       #0x110d028
+    0x131dcb0: mov      w8, #1
+    0x131dcb4: strb     w8, [x19, #0x5af]
+    0x131dcb8: ldr      x0, [x20]
+    0x131dcbc: ldr      w8, [x0, #0xe0]
+    0x131dcc0: cbnz     w8, #0x131dcc8
+    0x131dcc4: bl       #0x110d12c
+    0x131dcc8: adrp     x8, #0x756000
+    0x131dccc: ldr      s0, [x8, #0xa68]
+    0x131dcd0: ldp      x20, x19, [sp, #0x10]
+    0x131dcd4: mov      w0, #0x1e
+    0x131dcd8: mov      x1, xzr
+    0x131dcdc: ldr      x30, [sp], #0x20
+    0x131dce0: b        #0x141dea0
+
+;;; ctor  public void .ctor() { }
+    0x131dce4: mov      x1, xzr
+    0x131dce8: b        #0x2782ba0

@@ -1,0 +1,15 @@
+;;; ctor  public void .ctor() { }
+    0x13fd35c: mov      x1, xzr
+    0x13fd360: b        #0x2143330
+
+;;; <IEPvPQueueWaves>b__0  internal bool <IEPvPQueueWaves>b__0() { }
+    0x13fd364: str      x30, [sp, #-0x10]!
+    0x13fd368: ldr      x8, [x0, #0x18]
+    0x13fd36c: cbz      x8, #0x13fd388
+    0x13fd370: ldr      w8, [x8, #0xa8]
+    0x13fd374: ldr      w9, [x0, #0x10]
+    0x13fd378: cmp      w8, w9
+    0x13fd37c: cset     w0, eq
+    0x13fd380: ldr      x30, [sp], #0x10
+    0x13fd384: ret      
+    0x13fd388: bl       #0x110d250

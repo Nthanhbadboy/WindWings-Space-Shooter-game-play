@@ -1,0 +1,13 @@
+;;; Appear  public virtual void Appear(Action appeared) { }
+    0x1582108: str      x30, [sp, #-0x10]!
+    0x158210c: cbz      x1, #0x1582124
+    0x1582110: ldr      x2, [x1, #0x18]
+    0x1582114: ldr      x0, [x1, #0x40]
+    0x1582118: ldr      x1, [x1, #0x28]
+    0x158211c: ldr      x30, [sp], #0x10
+    0x1582120: br       x2
+    0x1582124: bl       #0x110d250
+
+;;; ctor  public void .ctor() { }
+    0x1582128: mov      x1, xzr
+    0x158212c: b        #0x2782ba0

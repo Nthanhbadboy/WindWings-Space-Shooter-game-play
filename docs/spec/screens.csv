@@ -1,0 +1,126 @@
+class,board_id,mo_tu_dau,popup_con,data_can_load
+Board_AccountSettings,—,Board_Setting / Board_UserProfile,"Popup_Notices, Popup_ChooseVersionDatas","Firebase auth, Player_Saved_Datas"
+Board_Arena,30=BoardArena,Board_Home (coverBtnArena),"Popup_Profile, ~popupShop, Popup_Notices, Popup_ChooseVersionDatas, Popup_Notice, Popup_Ban","ArenaManager, ArenaConfig, RankManager, Map_Get_Datas.GetListMapArena"
+Board_BattlePass,19=BoardBattlePass,Board_Maps (OnPressedButtonOpenBatllePass),"Popup_Notice, Popup_Confirm, Popup_Notices, Popup_PremiumDailyRewards","battle pass PlayerPrefs (BATTLEPASS_*), IAP_Manager"
+Board_BattlePassPro,37=BoardBattlePass2,Board_Maps (OnPressedButtonOpenBatllePass2),"Popup_Notice, Popup_ChangeMissions, Popup_Notices, Popup_BattlePassLevelUp, Popup_NewPlayer, Popup_Confirm","battle pass PlayerPrefs, IAP_Manager, Popup_ChangeMissions"
+Board_Begin,22=BoardBeginPlay,Board_Stage/Board_FightBoss → Play,"Board_Talents, Popup_AbilityEvent1, ~popupScript, ~popupIAP","Stage_Datas.CostItems, Tech_Ability_Data (chọn ability), Talent"
+Board_BigShop,17=BoardShopBig,Board_Home / Board_Shop,"Popup_Confirm, Popup_Notices, Popup_PremiumDailyRewards","DataShopPack, IAP_Manager, Shop_Pack"
+Board_BlackBox,11=BoardFusion (giả định),Board_Devices (OnPressedButtonBlackBox),Popup_Notices,"Device_Get_Data, Device_Saved_Data"
+Board_Cards,14=BoardCards,Board_Players (thẻ tàu),—,"Player_Get_Datas, Data_Players"
+Board_Challange,25=BoardChallange,Board_Maps (btnChallange),"~popupLocked, Popup_Notices, Popup_InrerestExpired","Map_Get_Datas.listMapChallangeDatas, GameMode.listChallangeMissionActived"
+Board_Chapters,32=BoardChapters,Board_Maps,—,Stage_Datas.MAX_STAGE_OF_CHAPTERS[]
+Board_Combo,33=BoardCombo,Board_Home (gói combo),Popup_NewPlayer,"Shop_Pack, IAP_Manager"
+Board_Devices,10=BoardDevices,Board_Home (OnPressedButtonDevices),Popup_Notices,"Device_Get_Data, Device_Saved_Data, Player_Get_Datas(listIdPlayers)"
+Board_Droids,—,Board_Drones (droid đi kèm),"~popupUnlockIconRenderer, Popup_Notices, ~popupUnlock","Droid_Data_Balance, Data_Items (101/102/103)"
+Board_Drones,4=BoardDrones,Board_Home (btnDroneSlot1/2),"~popupPlayer, ~cellInPopup, Popup_DroneCraft, Popup_NewPlayer, Popup_Notices, ~popupTryNow","Drone_Get_Datas, Drone_Saved_Datas, Data_Players(13 drone), Drone_Get_Datas.GetListCards"
+Board_Endgame,8=BoardEndgame,GP_Endgame.OpenBoardVictory,"Popup_Notices, Popup_Confirm, Popup_Rate, Popup_PremiumDailyRewards","GP_Datas, Stage_Get_Datas.GetBonus, Player_Get_Datas, AdsCaller"
+Board_EventSeasonPass,34=BoardEvent1 (giả định),Board_Maps (sự kiện) / Board_Home,"Popup_Notice, ~popupBuyEventCoins, Popup_Notices, Popup_Exchange","GameDatas.CoinEvent1, Shop_Pack, IAP_Manager"
+Board_FightBoss,21=BoardFightBoss,Board_SelectBoss → Play,"Popup_InrerestExpired, Popup_Notices","Map_Get_Datas.listMapFightBossDatas, GameMode.indexBoss"
+Board_GiftLogin,24=BoardLogIn,Board_Home (dotFocusGiftLogin),"Popup_Notices, Popup_Notice, ~popupBuySpeed, Popup_PremiumDailyRewards, Popup_TryShip","GameDatas, PlayerPrefs gift login, AdsCaller"
+Board_Home,1=BoardHome,(root — board đầu tiên sau splash),"Popup_Rate, Popup_QuitGame, Popup_Notices, ~m_Popup_FirstGiftFree, Popup_PremiumDailyRewards, Popup_PremiumExpired, Popup_WatchVideos, ~m_PopupWatchVideosNew, Popup_FirstPurchase, Popup_HolidayGift, ~m_popupUnlock","Player_Get_Datas, GameDatas, Drone_Get_Datas, ArenaManager(IsArenaUnlocked), BoardManager"
+Board_Items,15=BoardDropItems,Board_Home / Board_Endgame,Popup_Notices,"Data_Items, GameDatas.WingCoins, Tech_Datas"
+Board_LinkAccount,—,Board_AccountSettings,—,GPG/Facebook/GameCenter auth
+Board_Maps,5=BoardMaps,Board_Home,"Popup_Notices, Popup_AbilityEvent1, ~popupUnlock, ~popupUnlockEvent, ~popupUnlockEventAbility, ~popupSpecInrerestObj, Popup_InrerestExpired, ~popupUnlockZone, ~popupFotificationScript","Map_Get_Datas, Stage_Datas, ArenaManager, Board_Home.IsArenaUnlocked/IsPvPUnlocked"
+Board_MiniCombo,39=BoardMiniCombo,Board_Home (mini combo),Popup_NewPlayer,"Shop_Pack, IAP_Manager"
+Board_PVP,31=BoardPvP,Board_Home (coverBtnPvP),"Popup_Profile, Popup_Notices, Popup_ChooseVersionDatas, ~popupShop, ~popupRankings, ~popupRankRewards, Popup_Notice, Popup_Ban, Popup_SeasonRewards, ~popupSelectRival, ~popupCompleted, ~popupJoinARoom, ~popupRoomInfo","GameMode.isPvPOnline/pvpMode, Board_RoomPVP, Map_Get_Datas.GetListMapPvP"
+Board_Pause,7=BoardPause,In-game (GP_UI.OnPressedButtonPauseGame),"Popup_Notices, ~popupEventConfirmQuit","GP_Time, GP_States, GameDatas.TypeControl"
+Board_Players,3=BoardPlayers,Board_Home (slot tàu),"Popup_Notices, Popup_NewPlayer, ~popupCollectStarToTry, Popup_InfoDevices, ~popupPlayer, ~cellInPopup","Player_Get_Datas, Player_Saved_Datas, Data_Players, Cards, Device_Get_Data"
+Board_Profile,—,Board_Setting (popupProfile),"Popup_Notices, Popup_Ban, Popup_ChooseVersionDatas","Firebase user, Player_Saved_Datas"
+Board_Quest,16=BoardQuest,Board_Home (txt_label_quest),"Popup_Notices, Popup_PremiumDailyRewards","Quest data (PlayerPrefs), AdsCaller, GameDatas"
+Board_QuestRewards,18=BoardQuestRewards,Board_Quest,"Popup_Notices, Popup_PremiumDailyRewards","GameDatas.KeyCount0/1/2, AdsCaller"
+Board_Ranks,35=BoardRanks,Board_Maps (btnRanks),"Popup_Profile, Popup_Notices, Popup_JoinRank, Popup_Notice, Popup_PVPRewards, Popup_ChooseVersionDatas, Popup_Ban, Popup_SeasonRewards","RankManager, Firebase campaign ranking"
+Board_Reborn,9=BoardReborn,In-game khi Player_Health.OnDie,"~popupEventConfirmQuit, ~popupIAP, Popup_Notices, Popup_BuyEnergy, Popup_PremiumDailyRewards","Player_Get_Datas.GetCostReborn/GetMaxRebornCount, GameDatas"
+Board_Reborn_IAP,29=BoardRebornIAP,Board_Reborn (btnPremium/IAP),Popup_Notices,"IAPProduct, IAP_Manager"
+Board_RoomPVP,—,Board_PVP (tìm phòng),—,"PVP_Player, GameMode.isMaster, UserDataLeagues"
+Board_SelectBoss,20=BoardSelectBoss,Board_Maps (btnFightBoss),Popup_InrerestExpired,"Data_Boss, Map_Get_Datas.listMapFightBossDatas"
+Board_SellDevices,38=BoardTradeDevices,Board_Devices (chọn bán),~popupConfirmTradeOff,"Device_Get_Data, Device_Saved_Data, Player_Device_Saved_Datas"
+Board_Setting,12=BoardSettings,Board_Home (btnSettings),"Popup_CrossLinks, Popup_GeneralSettings, Popup_ChangeLanguages, Popup_Community, Popup_Profile, Popup_Redeem, Popup_About","GameDatas, LanguageAssets, IAP_Manager"
+Board_Settings,—,Board_Setting (popupGeneral),"Popup_ChangeLanguages, Popup_Notices","GameDatas.TypeControl/UILeftRight/AutoChangePlayer, Popup_ChangeLanguages"
+Board_Shop,—,Board_Home (txt_label_shop),—,"ShopTab, Shop_Pack"
+Board_ShopCoins,—,Board_Shop (tab Coins),Popup_Notices,"Board_ShopCoins.allCosts/allValues, IAP_Manager"
+Board_ShopEnergy,13=BoardShopEnergy,Board_Shop / Popup_BuyEnergy,Popup_Notices,"GameDatas.Energy, GetCostBuyEnergy, AdsCaller"
+Board_ShopGems,—,Board_Shop (tab Gems),Popup_Notices,"Board_ShopGems.allValues/allIdPurchases, IAP_Manager, AdsCaller"
+Board_Stage,6=BoardStage,Board_Maps → chọn stage,"Popup_Notices, Popup_InrerestExpired","Stage_Datas, Stage_Get_Datas, Stage_Mission, CostItems[]"
+Board_Survival,26=BoardSurvival,Board_Maps (btnSurvival/btnObstacle),"Popup_Profile, Popup_Notices, Popup_ChooseVersionDatas, Popup_Ban, Popup_PVPRewards, Popup_SeasonRewards, Popup_InrerestExpired","Map_Get_Datas.listMapEndlessDatas/listMapObstacleDatas, Enemy_Data_Balance.GetSurvivalScore"
+Board_Talents,—,Board_Begin (popupTalents) / Board_TechLab,—,"Talent, Talent_Event, Player_Get_Datas.GetTalent*"
+Board_TechLab,—,Board_Home (btnTechLab),—,"Tech_Datas, Tech_Stat, Tech_Ability_Data, Player_Get_Datas.abi*"
+Board_UserProfile,28=BoardUserProfile,Board_Home (avatar) / Board_Setting,"Popup_Rename, Popup_ChangeAvatar, Popup_Profile","GameDatas, RankManager, Firebase user"
+Board_Vip,23=BoardVip,Board_Home (OnPressedButtonVip),"Popup_Notices, Popup_PremiumDailyRewards","GameDatas.VipPoints/PlayerVipLevel, IAP_Manager, Shop_Pack"
+Board_WinnerBenefits,36=BoardWinnerBenefits,Board_Arena / Board_PVP,"Popup_SelectBenefits, Popup_Notices","GameDatas.ArenaMedal/PvPMedal, Popup_SelectBenefits"
+Board_YourTeam,—,Board_PVP,—,"PVP_Player, Player_Get_Datas"
+Popup_AbilityEvent1,—,Board_Maps (btnAbilityEvent1/2),Popup_Notice,event ability state
+Popup_About,—,Board_Setting,—,Application.version
+Popup_ArenaInfo,—,Board_Arena,—,"ArenaConfig, txt_rule_desc1..6"
+Popup_ArenaShopExchange,—,Board_Arena,—,"GameDatas.ArenaMedal, PlayerPrefs ARENA_SHOP_ITEM_*"
+Popup_Ban,—,RankManager / Board_Profile,—,BanAccount
+Popup_BattlePassLevelUp,—,Board_BattlePassPro,—,battle pass level
+Popup_BuyEnergy,—,Board_Challange/Board_Stage/Board_Reborn (hết energy),"~popupIAP, Popup_Notices","GameDatas.Energy, IAP_Manager"
+Popup_BuyItem,—,Board_Begin (mua item trước trận),"Popup_Notices, ~popupIAP","Stage_Datas.CostItems[], GameDatas.Gems"
+Popup_BuyMoreChanceAbility,—,Board_Begin,"Popup_Notices, ~popupIAP",event ability ticket
+Popup_BuyMoreCoins,—,Board_ShopCoins / Board_Endgame,Popup_Notices,IAP_Manager
+Popup_BuyMoreGems,—,Board_ShopGems,Popup_Notices,IAP_Manager
+Popup_BuySpeed,—,Board_GiftLogin (mua x2),Popup_Notices,"IAP_Manager, AdsCaller"
+Popup_ChangeAvatar,—,Board_UserProfile,—,DataShopPack.listAvatars
+Popup_ChangeLanguages,—,Board_Setting / Board_Settings,—,LanguageAssets (19 lang)
+Popup_ChangeMissions,—,Board_BattlePassPro,—,battle pass mission
+Popup_CheatTime,—,Board_Home / Board_Endgame (phát hiện đổi giờ),Popup_Penalty,RankManager.GetTimeOnline
+Popup_ChooseVersionDatas,—,Board_Home / Board_Arena / Board_Ranks,—,"Player_Saved_Datas, Firebase"
+Popup_Community,—,Board_Setting,—,Application.OpenURL
+Popup_Confirm,—,Nhiều board (confirm chung),—,—
+Popup_ConfirmRate,—,Popup_Rate,—,—
+Popup_CrossLinks,—,Board_Setting (popupCrossAds),—,—
+Popup_DroneCraft,—,Board_Drones (btnOpenCraft),—,Drone_Get_Datas.GetCostCraftDrone
+Popup_EventLevelUp,—,Board_Maps (sự kiện ability),—,event ability level
+Popup_Exchange,—,Board_EventSeasonPass / shop,—,GameDatas.CoinEvent1
+Popup_FirstGiftFree,—,Board_Home,—,Shop_Pack
+Popup_FirstPurchase,—,Board_Home,—,IAP_Manager
+Popup_Fotification,—,Board_Maps (popupFotificationScript),Popup_Notices,GameDatas.StarCount
+Popup_GeneralSettings,—,Board_Setting,—,GameDatas.TypeControl/UILeftRight
+Popup_HolidayGift,—,Board_Home,"Popup_SeasonRewards, Popup_TryShip, Popup_PremiumDailyRewards",holiday date (txt_header_*)
+Popup_InfoDevices,—,Board_Players / Board_Devices,—,"Device_Get_Data, txt_devicestat_*"
+Popup_InrerestExpired,—,Board_Maps / Board_Stage / Board_Challange,—,premium offer state
+Popup_JoinRank,—,Board_Ranks,Popup_Notice,"ArenaManager, RankManager"
+Popup_LuckyStar,—,Board_Home / Board_Shop,—,Shop_Pack
+Popup_NewPlayer,—,Board_Players / Board_Drones / Board_Combo,—,"Player_Get_Datas, Drone_Get_Datas"
+Popup_Notice,—,Nhiều board,—,—
+Popup_Notices,—,"Nhiều board (base popup dùng chung, 499 instance)",—,—
+Popup_PVPContinue,—,In-game PvP (hết trận),—,GameDatas.PvPMedal
+Popup_PVPRewards,—,Board_PVP / Board_Survival,—,GameDatas.PvPMedal
+Popup_PVPShopExchange,—,Board_PVP,—,"GameDatas.PvPMedal, PlayerPrefs PVP_SHOP_ITEM_*"
+Popup_Penalty,—,Board_Home / Board_Endgame (anti-cheat),Popup_Notices,"GameDatas.antiCheat, IAP windwings.penalty"
+Popup_PremiumDailyRewards,—,Board_Home (dotFocusVipDaily),—,"GameDatas.IsCollectPremiumDailyGift, IAP pro*"
+Popup_PremiumExpired,—,Board_Home,—,GameDatas.IsPremiumExpired
+Popup_Profile,—,Board_Arena / Board_PVP / Board_Ranks / Popup_PvPRankings,"Popup_Notices, ~popupReport, ~popupReportResuft",ArenaUserProfile
+Popup_PvPRankings,—,Board_PVP,"Popup_Profile, Popup_Notice","ArenaManager, Firebase"
+Popup_QuitEvent,—,Board_Pause / Board_Reborn,—,event state
+Popup_QuitGame,—,Board_Home,—,Application.Quit
+Popup_Rate,—,Board_Home (auto sau N trận),"~m_popupRateSupport, ~m_popupRateConfirm",Board_Home.VictoryCount/RateStepCount/PopRateCount
+Popup_Redeem,—,Board_Setting,—,gift code API
+Popup_Rename,—,Board_UserProfile,—,"GameDatas name, Firebase"
+Popup_SeasonRewards,—,Board_Arena / Board_Ranks,—,ArenaManager.rewards[]
+Popup_SelectBenefits,—,Board_WinnerBenefits,Popup_Notices,GameDatas.ArenaMedal
+Popup_SelectItemCombo,—,Board_Home (combo item),—,Shop_Pack
+Popup_SelectShipCombo,—,Board_Home (combo tàu),—,"Shop_Pack, Player_Get_Datas"
+Popup_ShipSalePack,—,Board_Home / Board_Players,"Popup_Notices, Popup_NewPlayer","Shop_Pack, IAP_Manager"
+Popup_Support,—,Board_Setting,—,Application.OpenURL
+Popup_TrialExpried,—,Board_Players (hết hạn dùng thử),—,ShipTrial
+Popup_TryShip,—,Board_Players (btnTry) / Board_GiftLogin,—,"ShipTrial, GameMode.indexTryPlayer"
+Popup_Update,—,Board_Home (bản mới),—,version check
+Popup_UpgradeTechIAP,—,Board_TechLab,Popup_Notices,IAP windwings.techlab
+Popup_VideoCards,—,Board_Home / Board_Drones,—,AdsCaller (AdPos.FreeCards)
+Popup_WatchVideos,—,Board_Home (m_PopupWatchVideos),"Popup_Notices, Popup_Notice, ~popupUnlock, Popup_PremiumDailyRewards","AdsCaller, AdPos"
+Popup_WatchVideosOld,—,Board_Home (legacy),"Popup_Notices, Popup_PremiumDailyRewards","AdsCaller, AdPos"
+Popup_WeekSales,—,Board_Home / Board_Shop,Popup_Notices,"Shop_Pack, IAP_Manager"
+Tab_BattlePass,—,Board_BattlePass,—,battle pass reward track
+Tab_BattlePassMission,—,Board_BattlePassPro,—,BATTLEPASS_MISSION_*
+Tab_BattlePassPro,—,Board_BattlePassPro,—,battle pass pro track
+Tab_Boss,—,Board_SelectBoss,—,Data_Boss.allBosses
+Tab_Button,—,Nhiều board,—,—
+Tab_Item,—,Board_Items,—,Data_Items
+Tab_LogIn,—,Board_GiftLogin,—,gift login 30 ngày
+Tab_Manager,—,Board_Shop / Board_Combo / Board_GiftLogin,—,ShopTab
+Cell_Select,—,Board_Drones / Board_Players (popup chọn),—,"Drone_Get_Datas, Player_Get_Datas"
+Board_Arena.ArenaRewards,—,(nested trong class cha),—,—
+Board_BattlePassPro.BattlePassMission,—,(nested trong class cha),—,—
+Board_EventSeasonPass.EventRewards,—,(nested trong class cha),—,—
+Board_Reborn.SortPlayerLevelStruct,—,(nested trong class cha),—,—

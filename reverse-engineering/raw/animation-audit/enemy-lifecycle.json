@@ -1,0 +1,24 @@
+{
+ "status": "PROVISIONAL static evidence; delegate targets not resolved",
+ "classes": {
+  "Enemy_Appear": {
+   "source": "reverse-engineering/raw/il2cpp-consts/Enemy_Appear.asm.txt",
+   "sha256": "5af67ff05f70527a8aafa9b5f5aadb2bfebbf3f0a4fb28be974a1b15833b4a1e",
+   "evidence": [
+    "0x158210c: cbz      x1, #0x1582124",
+    "0x1582120: br       x2",
+    "0x1582124: bl       #0x110d250"
+   ]
+  },
+  "Enemy_Destroy": {
+   "source": "reverse-engineering/raw/il2cpp-consts/Enemy_Destroy.asm.txt",
+   "sha256": "f8107461f153e347fbcdc435fc37454cfc36eaec035c6410fccbf52799ab0ca1",
+   "evidence": [
+    "0x15856fc: ldr      x20, [x19, #0x28]",
+    "0x1585724: blr      x9",
+    "0x1585728: ldr      x8, [x19, #0x20]",
+    "0x1585744: blr      x9"
+   ]
+  }
+ }
+}

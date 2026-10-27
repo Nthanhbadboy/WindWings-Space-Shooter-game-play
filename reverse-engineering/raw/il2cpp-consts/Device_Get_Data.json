@@ -1,0 +1,1200 @@
+{
+ "class": "Device_Get_Data",
+ "note": "device: stat, giá",
+ "methods": [
+  {
+   "method": "GetStringRank",
+   "signature": "public static string GetStringRank(int rank) { }",
+   "offset": "0x124b318",
+   "getter_value": null,
+   "rva": "0x124f318",
+   "bytes": 124,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x124f344",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x124f378",
+     "reg": "x8",
+     "op": "x8, x8, w19, sxtw #3",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "IsDeviceNew",
+   "signature": "public static bool IsDeviceNew(int _instanceId) { }",
+   "offset": "0x124b6a4",
+   "getter_value": null,
+   "rva": "0x124f6a4",
+   "bytes": 280,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 48,
+     "via": "sub",
+     "addr": "0x124f6a4",
+     "reg": "sp",
+     "op": "sp, sp, #0x30",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x124f6fc",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x124f75c",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x124f794",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x124f7a4",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 48,
+     "via": "add",
+     "addr": "0x124f7b4",
+     "reg": "sp",
+     "op": "sp, sp, #0x30",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "SetDeviceNew",
+   "signature": "public static void SetDeviceNew(int _instanceId, bool _new) { }",
+   "offset": "0x124b7bc",
+   "getter_value": null,
+   "rva": "0x124f7bc",
+   "bytes": 168,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x124f804",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x124f80c",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x124f844",
+     "reg": "w1",
+     "op": "w1, w19, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetStatValue1",
+   "signature": "public static float GetStatValue1(Device _data) { }",
+   "offset": "0x124c01c",
+   "getter_value": null,
+   "rva": "0x125001c",
+   "bytes": 280,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x125004c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 274877907,
+     "via": "mov+movk",
+     "addr": "0x1250088",
+     "reg": "w8",
+     "op": "w8, #0x4dd3",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x12500ac",
+     "reg": "x20",
+     "op": "x20, x8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x12500ec",
+     "reg": "x9",
+     "op": "x9, x9, x20, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x12500f0",
+     "reg": "x8",
+     "op": "x8, x0, x8, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x12500fc",
+     "reg": "w8",
+     "op": "w8, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x125010c",
+     "reg": "w20",
+     "op": "w20, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x1250104",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "GetStatValue2",
+   "signature": "public static float GetStatValue2(Device _data) { }",
+   "offset": "0x124c134",
+   "getter_value": null,
+   "rva": "0x1250134",
+   "bytes": 360,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1250168",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 274877907,
+     "via": "mov+movk",
+     "addr": "0x12501a8",
+     "reg": "w8",
+     "op": "w8, #0x4dd3",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x12501c4",
+     "reg": "w20",
+     "op": "w20, w22, #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x12501e4",
+     "reg": "x8",
+     "op": "x8, x0, x8, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x125024c",
+     "reg": "x10",
+     "op": "x10, x10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x125025c",
+     "reg": "x9",
+     "op": "x9, x9, x10, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1250260",
+     "reg": "x8",
+     "op": "x8, x0, x8, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x125026c",
+     "reg": "w8",
+     "op": "w8, w11, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetStringLv",
+   "signature": "public static string GetStringLv(int lv) { }",
+   "offset": "0x124c7c0",
+   "getter_value": null,
+   "rva": "0x12507c0",
+   "bytes": 12,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x12507c0",
+     "reg": "w0",
+     "op": "w0, w0, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetPlayerUse",
+   "signature": "public static int GetPlayerUse(int instanceId) { }",
+   "offset": "0x124c7cc",
+   "getter_value": null,
+   "rva": "0x12507cc",
+   "bytes": 232,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1250810",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 10001,
+     "via": "mov",
+     "addr": "0x1250838",
+     "reg": "w23",
+     "op": "w23, #0x2711",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x1250864",
+     "reg": "x10",
+     "op": "x10, x0, #0x20",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x125087c",
+     "reg": "x8",
+     "op": "x8, x8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x1250880",
+     "reg": "x8",
+     "op": "x8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x125088c",
+     "reg": "w22",
+     "op": "w22, w22, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "set_IsNewDevice",
+   "signature": "public static void set_IsNewDevice(bool value) { }",
+   "offset": "0x124ebf4",
+   "getter_value": null,
+   "rva": "0x1252bf4",
+   "bytes": 124,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1252c38",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x1252c54",
+     "reg": "w1",
+     "op": "w1, w19, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetStringName",
+   "signature": "public static string GetStringName(int id) { }",
+   "offset": "0x12521e0",
+   "getter_value": null,
+   "rva": "0x12561e0",
+   "bytes": 188,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1256224",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 274877907,
+     "via": "mov+movk",
+     "addr": "0x125622c",
+     "reg": "w8",
+     "op": "w8, #0x4dd3",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x1256244",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_IsNewDevice",
+   "signature": "public static bool get_IsNewDevice() { }",
+   "offset": "0x1252760",
+   "getter_value": null,
+   "rva": "0x1256760",
+   "bytes": 120,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1256794",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x12567b8",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x12567c8",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "GetStringStatus",
+   "signature": "public static string GetStringStatus(int instanceId) { }",
+   "offset": "0x12527d8",
+   "getter_value": null,
+   "rva": "0x12567d8",
+   "bytes": 316,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1256838",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 10001,
+     "via": "mov",
+     "addr": "0x1256870",
+     "reg": "w24",
+     "op": "w24, #0x2711",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x1256898",
+     "reg": "x10",
+     "op": "x10, x0, #0x20",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x12568b0",
+     "reg": "x8",
+     "op": "x8, x8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x12568b4",
+     "reg": "x8",
+     "op": "x8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x12568c0",
+     "reg": "w22",
+     "op": "w22, w22, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x12568d0",
+     "reg": "w8",
+     "op": "w8, w22, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x12568d4",
+     "reg": "x1",
+     "op": "x1, sp, #0xc",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetStringShortName",
+   "signature": "public static string GetStringShortName(int id) { }",
+   "offset": "0x1252914",
+   "getter_value": null,
+   "rva": "0x1256914",
+   "bytes": 188,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1256958",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 274877907,
+     "via": "mov+movk",
+     "addr": "0x1256960",
+     "reg": "w8",
+     "op": "w8, #0x4dd3",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x1256978",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x12529d0",
+   "getter_value": null,
+   "rva": "0x12569d0",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "cctor",
+   "signature": "private static void .cctor() { }",
+   "offset": "0x12529d8",
+   "getter_value": null,
+   "rva": "0x12569d8",
+   "bytes": 1636,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1256ae0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1256b00",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256b30",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256b54",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x1256b58",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1256b84",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256ba8",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256bcc",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x1256bd0",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1256bfc",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256c20",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256c44",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x1256c48",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1256c74",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256c98",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256cbc",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x1256cc0",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1256cec",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256d10",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256d34",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x1256d38",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1256d64",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256d88",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256dac",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x1256db0",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1256ddc",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256e00",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256e24",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x1256e28",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1256e54",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256e78",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256e9c",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x1256ea0",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1256ecc",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256ef0",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256f14",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x1256f18",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1256f44",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256f68",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1256f9c",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x1256fa0",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1256fcc",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1256ff4",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 5,
+     "slot_val": "0x800000f1",
+     "slot_hi": "0x800000f3",
+     "a": "0x2bd47c8",
+     "addr": "0x1256b14",
+     "array_new_addr": "0x1256b04",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 5,
+     "slot_val": "0x80000593",
+     "slot_hi": "0x80000595",
+     "a": "0x2bd5a50",
+     "addr": "0x1256b98",
+     "array_new_addr": "0x1256b88",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 5,
+     "slot_val": "0x800000a5",
+     "slot_hi": "0x800000a7",
+     "a": "0x2bd4698",
+     "addr": "0x1256c10",
+     "array_new_addr": "0x1256c00",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 5,
+     "slot_val": "0x80000275",
+     "slot_hi": "0x80000277",
+     "a": "0x2bd4dd8",
+     "addr": "0x1256c88",
+     "array_new_addr": "0x1256c78",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 5,
+     "slot_val": "0x8000055b",
+     "slot_hi": "0x8000055d",
+     "a": "0x2bd5970",
+     "addr": "0x1256d00",
+     "array_new_addr": "0x1256cf0",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 5,
+     "slot_val": "0x8000031f",
+     "slot_hi": "0x80000321",
+     "a": "0x2bd5080",
+     "addr": "0x1256d78",
+     "array_new_addr": "0x1256d68",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 5,
+     "slot_val": "0x80000023",
+     "slot_hi": "0x80000025",
+     "a": "0x2bd4490",
+     "addr": "0x1256df0",
+     "array_new_addr": "0x1256de0",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 5,
+     "slot_val": "0x80000351",
+     "slot_hi": "0x80000353",
+     "a": "0x2bd5148",
+     "addr": "0x1256e68",
+     "array_new_addr": "0x1256e58",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 5,
+     "slot_val": "0x80000407",
+     "slot_hi": "0x80000409",
+     "a": "0x2bd5420",
+     "addr": "0x1256ee0",
+     "array_new_addr": "0x1256ed0",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 5,
+     "slot_val": "0x80000071",
+     "slot_hi": "0x80000073",
+     "a": "0x2bd45c8",
+     "addr": "0x1256f58",
+     "array_new_addr": "0x1256f48",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 5,
+     "slot_val": "0x800005b9",
+     "slot_hi": "0x800005bb",
+     "a": "0x2bd5ae8",
+     "addr": "0x1256fec",
+     "array_new_addr": "0x1256fdc",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 5,
+     "slot_val": "0x80000479",
+     "slot_hi": "0x8000047b",
+     "a": "0x2bd55e8",
+     "addr": "0x1257014",
+     "array_new_addr": "0x1257004",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

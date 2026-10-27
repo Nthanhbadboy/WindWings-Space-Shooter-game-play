@@ -1,0 +1,94 @@
+;;; cctor  private static void .cctor() { }
+    0x13fd200: str      x30, [sp, #-0x20]!
+    0x13fd204: stp      x20, x19, [sp, #0x10]
+    0x13fd208: adrp     x19, #0x2ce1000
+    0x13fd20c: adrp     x20, #0x2ae4000
+    0x13fd210: ldrb     w8, [x19, #0xc4a]
+    0x13fd214: ldr      x20, [x20, #0xf78]
+    0x13fd218: tbnz     w8, #0, #0x13fd230
+    0x13fd21c: adrp     x0, #0x2ae4000
+    0x13fd220: ldr      x0, [x0, #0xf78]
+    0x13fd224: bl       #0x110d028
+    0x13fd228: mov      w8, #1
+    0x13fd22c: strb     w8, [x19, #0xc4a]
+    0x13fd230: ldr      x0, [x20]
+    0x13fd234: bl       #0x110d240
+    0x13fd238: mov      x1, xzr
+    0x13fd23c: mov      x19, x0
+    0x13fd240: bl       #0x2143330
+    0x13fd244: ldr      x8, [x20]
+    0x13fd248: ldr      x8, [x8, #0xb8]
+    0x13fd24c: str      x19, [x8]
+    0x13fd250: ldp      x20, x19, [sp, #0x10]
+    0x13fd254: ldr      x30, [sp], #0x20
+    0x13fd258: ret      
+
+;;; ctor  public void .ctor() { }
+    0x13fd25c: mov      x1, xzr
+    0x13fd260: b        #0x2143330
+
+;;; <IEPvPQueueWaves>b__30_1  internal bool <IEPvPQueueWaves>b__30_1() { }
+    0x13fd264: str      x30, [sp, #-0x20]!
+    0x13fd268: stp      x20, x19, [sp, #0x10]
+    0x13fd26c: adrp     x19, #0x2ce1000
+    0x13fd270: adrp     x20, #0x2adc000
+    0x13fd274: ldrb     w8, [x19, #0xc4b]
+    0x13fd278: ldr      x20, [x20, #0xdd0]
+    0x13fd27c: tbnz     w8, #0, #0x13fd2a0
+    0x13fd280: adrp     x0, #0x2adc000
+    0x13fd284: ldr      x0, [x0, #0xdd0]
+    0x13fd288: bl       #0x110d028
+    0x13fd28c: adrp     x0, #0x2adc000
+    0x13fd290: ldr      x0, [x0, #0xa08]
+    0x13fd294: bl       #0x110d028
+    0x13fd298: mov      w8, #1
+    0x13fd29c: strb     w8, [x19, #0xc4b]
+    0x13fd2a0: ldr      x0, [x20]
+    0x13fd2a4: ldr      w8, [x0, #0xe0]
+    0x13fd2a8: cbnz     w8, #0x13fd2b0
+    0x13fd2ac: bl       #0x110d12c
+    0x13fd2b0: mov      x0, xzr
+    0x13fd2b4: bl       #0x14c78cc
+    0x13fd2b8: cbz      x0, #0x13fd2dc
+    0x13fd2bc: ldr      x8, [x0, #0x70]
+    0x13fd2c0: cbz      x8, #0x13fd2dc
+    0x13fd2c4: ldr      w8, [x8, #0x18]
+    0x13fd2c8: ldp      x20, x19, [sp, #0x10]
+    0x13fd2cc: cmp      w8, #0
+    0x13fd2d0: cset     w0, eq
+    0x13fd2d4: ldr      x30, [sp], #0x20
+    0x13fd2d8: ret      
+    0x13fd2dc: bl       #0x110d250
+
+;;; <IEArenaQueueWaves>b__32_1  internal bool <IEArenaQueueWaves>b__32_1() { }
+    0x13fd2e0: str      x30, [sp, #-0x20]!
+    0x13fd2e4: stp      x20, x19, [sp, #0x10]
+    0x13fd2e8: adrp     x19, #0x2ce1000
+    0x13fd2ec: adrp     x20, #0x2adc000
+    0x13fd2f0: ldrb     w8, [x19, #0xc4c]
+    0x13fd2f4: ldr      x20, [x20, #0xdd0]
+    0x13fd2f8: tbnz     w8, #0, #0x13fd31c
+    0x13fd2fc: adrp     x0, #0x2adc000
+    0x13fd300: ldr      x0, [x0, #0xdd0]
+    0x13fd304: bl       #0x110d028
+    0x13fd308: adrp     x0, #0x2adc000
+    0x13fd30c: ldr      x0, [x0, #0xa08]
+    0x13fd310: bl       #0x110d028
+    0x13fd314: mov      w8, #1
+    0x13fd318: strb     w8, [x19, #0xc4c]
+    0x13fd31c: ldr      x0, [x20]
+    0x13fd320: ldr      w8, [x0, #0xe0]
+    0x13fd324: cbnz     w8, #0x13fd32c
+    0x13fd328: bl       #0x110d12c
+    0x13fd32c: mov      x0, xzr
+    0x13fd330: bl       #0x14c78cc
+    0x13fd334: cbz      x0, #0x13fd358
+    0x13fd338: ldr      x8, [x0, #0x70]
+    0x13fd33c: cbz      x8, #0x13fd358
+    0x13fd340: ldr      w8, [x8, #0x18]
+    0x13fd344: ldp      x20, x19, [sp, #0x10]
+    0x13fd348: cmp      w8, #0
+    0x13fd34c: cset     w0, eq
+    0x13fd350: ldr      x30, [sp], #0x20
+    0x13fd354: ret      
+    0x13fd358: bl       #0x110d250

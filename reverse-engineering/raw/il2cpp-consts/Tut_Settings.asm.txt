@@ -1,0 +1,13 @@
+;;; OnEnable  private void OnEnable() { }
+    0x1328d2c: str      x30, [sp, #-0x10]!
+    0x1328d30: ldr      x0, [x0, #0x20]
+    0x1328d34: cbz      x0, #0x1328d48
+    0x1328d38: mov      w1, #1
+    0x1328d3c: mov      x2, xzr
+    0x1328d40: ldr      x30, [sp], #0x10
+    0x1328d44: b        #0x2781804
+    0x1328d48: bl       #0x110d250
+
+;;; ctor  public void .ctor() { }
+    0x1328d4c: mov      x1, xzr
+    0x1328d50: b        #0x2782ba0

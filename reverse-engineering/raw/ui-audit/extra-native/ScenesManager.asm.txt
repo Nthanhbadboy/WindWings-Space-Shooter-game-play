@@ -1,0 +1,119 @@
+;;; LoadScene  public static void LoadScene(ScenesManager.Scene scene) { }
+    0x141b488: stp      x30, x21, [sp, #-0x20]!
+    0x141b48c: stp      x20, x19, [sp, #0x10]
+    0x141b490: adrp     x21, #0x2ce1000
+    0x141b494: adrp     x20, #0x2adc000
+    0x141b498: ldrb     w8, [x21, #0xc70]
+    0x141b49c: ldr      x20, [x20, #0x770]
+    0x141b4a0: mov      w19, w0
+    0x141b4a4: tbnz     w8, #0, #0x141b4c8
+    0x141b4a8: adrp     x0, #0x2adc000
+    0x141b4ac: ldr      x0, [x0, #0x770]
+    0x141b4b0: bl       #0x110d028
+    0x141b4b4: adrp     x0, #0x2ae6000
+    0x141b4b8: ldr      x0, [x0, #0x128]
+    0x141b4bc: bl       #0x110d028
+    0x141b4c0: mov      w8, #1
+    0x141b4c4: strb     w8, [x21, #0xc70]
+    0x141b4c8: ldr      x0, [x20]
+    0x141b4cc: adrp     x20, #0x2ae6000
+    0x141b4d0: ldr      w8, [x0, #0xe0]
+    0x141b4d4: ldr      x20, [x20, #0x128]
+    0x141b4d8: cbnz     w8, #0x141b4e0
+    0x141b4dc: bl       #0x110d12c
+    0x141b4e0: mov      w0, w19
+    0x141b4e4: mov      x1, xzr
+    0x141b4e8: bl       #0x27903b8
+    0x141b4ec: ldr      x8, [x20]
+    0x141b4f0: ldr      x8, [x8, #0xb8]
+    0x141b4f4: str      w19, [x8]
+    0x141b4f8: ldp      x20, x19, [sp, #0x10]
+    0x141b4fc: ldp      x30, x21, [sp], #0x20
+    0x141b500: ret      
+
+;;; LoadSceneAsync  public static AsyncOperation LoadSceneAsync(ScenesManager.Scene scene) { }
+    0x141b504: str      x30, [sp, #-0x30]!
+    0x141b508: stp      x22, x21, [sp, #0x10]
+    0x141b50c: stp      x20, x19, [sp, #0x20]
+    0x141b510: adrp     x21, #0x2ce1000
+    0x141b514: adrp     x22, #0x2ae6000
+    0x141b518: adrp     x20, #0x2adc000
+    0x141b51c: ldrb     w8, [x21, #0xc71]
+    0x141b520: ldr      x22, [x22, #0x128]
+    0x141b524: ldr      x20, [x20, #0x770]
+    0x141b528: mov      w19, w0
+    0x141b52c: tbnz     w8, #0, #0x141b550
+    0x141b530: adrp     x0, #0x2adc000
+    0x141b534: ldr      x0, [x0, #0x770]
+    0x141b538: bl       #0x110d028
+    0x141b53c: adrp     x0, #0x2ae6000
+    0x141b540: ldr      x0, [x0, #0x128]
+    0x141b544: bl       #0x110d028
+    0x141b548: mov      w8, #1
+    0x141b54c: strb     w8, [x21, #0xc71]
+    0x141b550: ldr      x8, [x22]
+    0x141b554: ldr      x8, [x8, #0xb8]
+    0x141b558: str      w19, [x8]
+    0x141b55c: ldr      x0, [x20]
+    0x141b560: ldr      w8, [x0, #0xe0]
+    0x141b564: cbnz     w8, #0x141b56c
+    0x141b568: bl       #0x110d12c
+    0x141b56c: mov      w0, w19
+    0x141b570: ldp      x20, x19, [sp, #0x20]
+    0x141b574: ldp      x22, x21, [sp, #0x10]
+    0x141b578: mov      x1, xzr
+    0x141b57c: ldr      x30, [sp], #0x30
+    0x141b580: b        #0x27904b8
+
+;;; UnloadScene  public static void UnloadScene(ScenesManager.Scene scene) { }
+    0x141b584: stp      x30, x21, [sp, #-0x20]!
+    0x141b588: stp      x20, x19, [sp, #0x10]
+    0x141b58c: adrp     x20, #0x2ce1000
+    0x141b590: adrp     x21, #0x2adc000
+    0x141b594: ldrb     w8, [x20, #0xc72]
+    0x141b598: ldr      x21, [x21, #0x770]
+    0x141b59c: mov      w19, w0
+    0x141b5a0: tbnz     w8, #0, #0x141b5b8
+    0x141b5a4: adrp     x0, #0x2adc000
+    0x141b5a8: ldr      x0, [x0, #0x770]
+    0x141b5ac: bl       #0x110d028
+    0x141b5b0: mov      w8, #1
+    0x141b5b4: strb     w8, [x20, #0xc72]
+    0x141b5b8: ldr      x0, [x21]
+    0x141b5bc: ldr      w8, [x0, #0xe0]
+    0x141b5c0: cbnz     w8, #0x141b5c8
+    0x141b5c4: bl       #0x110d12c
+    0x141b5c8: mov      w0, w19
+    0x141b5cc: ldp      x20, x19, [sp, #0x10]
+    0x141b5d0: mov      x1, xzr
+    0x141b5d4: ldp      x30, x21, [sp], #0x20
+    0x141b5d8: b        #0x279057c
+
+;;; ReloadScene  public static void ReloadScene() { }
+    0x141b5dc: str      x30, [sp, #-0x20]!
+    0x141b5e0: stp      x20, x19, [sp, #0x10]
+    0x141b5e4: adrp     x19, #0x2ce1000
+    0x141b5e8: adrp     x20, #0x2adc000
+    0x141b5ec: ldrb     w8, [x19, #0xc73]
+    0x141b5f0: ldr      x20, [x20, #0x770]
+    0x141b5f4: tbnz     w8, #0, #0x141b60c
+    0x141b5f8: adrp     x0, #0x2adc000
+    0x141b5fc: ldr      x0, [x0, #0x770]
+    0x141b600: bl       #0x110d028
+    0x141b604: mov      w8, #1
+    0x141b608: strb     w8, [x19, #0xc73]
+    0x141b60c: ldr      x0, [x20]
+    0x141b610: ldr      w8, [x0, #0xe0]
+    0x141b614: cbnz     w8, #0x141b61c
+    0x141b618: bl       #0x110d12c
+    0x141b61c: mov      x0, xzr
+    0x141b620: bl       #0x278fc34
+    0x141b624: str      w0, [sp, #8]
+    0x141b628: add      x0, sp, #8
+    0x141b62c: mov      x1, xzr
+    0x141b630: bl       #0x278f468
+    0x141b634: mov      x1, xzr
+    0x141b638: bl       #0x27903b8
+    0x141b63c: ldp      x20, x19, [sp, #0x10]
+    0x141b640: ldr      x30, [sp], #0x20
+    0x141b644: ret      

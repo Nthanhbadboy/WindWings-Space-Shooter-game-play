@@ -1,0 +1,1051 @@
+{
+ "class": "ArenaManager",
+ "note": "arena: rank, mùa, thưởng",
+ "methods": [
+  {
+   "method": "get_pathRoot",
+   "signature": "public static string get_pathRoot() { }",
+   "offset": "0x159e7ec",
+   "getter_value": null,
+   "rva": "0x15a27ec",
+   "bytes": 204,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a2844",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_MyRank",
+   "signature": "public static int get_MyRank() { }",
+   "offset": "0x159e8b8",
+   "getter_value": null,
+   "rva": "0x15a28b8",
+   "bytes": 108,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a28ec",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "set_MyRank",
+   "signature": "public static void set_MyRank(int value) { }",
+   "offset": "0x159e924",
+   "getter_value": null,
+   "rva": "0x15a2924",
+   "bytes": 112,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a295c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SetUserProfile",
+   "signature": "public void SetUserProfile(ArenaUserProfile userProfile, Action callback) { }",
+   "offset": "0x159e994",
+   "getter_value": null,
+   "rva": "0x15a2994",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "IESetUserProfile",
+   "signature": "private IEnumerator IESetUserProfile(ArenaUserProfile userProfile, Action callback) { }",
+   "offset": "0x159e9b4",
+   "getter_value": null,
+   "rva": "0x15a29b4",
+   "bytes": 108,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a29e8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "CheckLogInRank",
+   "signature": "public void CheckLogInRank(string userID, string userName, Action<int, ArenaUserProfile, int> callback) { }",
+   "offset": "0x159ea48",
+   "getter_value": null,
+   "rva": "0x15a2a48",
+   "bytes": 136,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a2a88",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "IECheckUserStatus",
+   "signature": "private IEnumerator IECheckUserStatus(string userId, string userName, Action<int, ArenaUserProfile, int> callback) { }",
+   "offset": "0x159ead0",
+   "getter_value": null,
+   "rva": "0x15a2ad0",
+   "bytes": 128,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a2b10",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetTimeSpan",
+   "signature": "public void GetTimeSpan(int rank, Action<DateTime> callback) { }",
+   "offset": "0x159eb78",
+   "getter_value": null,
+   "rva": "0x15a2b78",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "IEGetTimeSpan",
+   "signature": "private IEnumerator IEGetTimeSpan(int rank, Action<DateTime> callback) { }",
+   "offset": "0x159eb98",
+   "getter_value": null,
+   "rva": "0x15a2b98",
+   "bytes": 120,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a2bd0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SummaryRank",
+   "signature": "private IEnumerator SummaryRank(ArenaUserProfile userProfile, Action<ArenaUserProfile, bool, int> callback) { }",
+   "offset": "0x159ec38",
+   "getter_value": null,
+   "rva": "0x15a2c38",
+   "bytes": 116,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a2c70",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "IEResetSeason",
+   "signature": "private IEnumerator IEResetSeason(int rank, DateTime timeUTC, Action<bool> callback) { }",
+   "offset": "0x159ecd4",
+   "getter_value": null,
+   "rva": "0x15a2cd4",
+   "bytes": 120,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a2d0c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SetSummaryDatas",
+   "signature": "private void SetSummaryDatas(int season, int rank, int roomIndex, Dictionary<string, object> listRanks, Action<bool> callback) { }",
+   "offset": "0x159ed74",
+   "getter_value": null,
+   "rva": "0x15a2d74",
+   "bytes": 636,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "sub",
+     "addr": "0x15a2d74",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a2e10",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "mov",
+     "addr": "0x15a2e1c",
+     "reg": "w1",
+     "op": "w1, #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x15a2e68",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x15a2e98",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x15a2eac",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x15a2edc",
+     "reg": "w8",
+     "op": "w8, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x15a2ef0",
+     "reg": "x0",
+     "op": "x0, sp, #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x15a2f20",
+     "reg": "w8",
+     "op": "w8, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "add",
+     "addr": "0x15a2fd4",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "DeleteRoom",
+   "signature": "private void DeleteRoom(int rank, int roomIndex, Action<bool> callback) { }",
+   "offset": "0x159eff8",
+   "getter_value": null,
+   "rva": "0x15a2ff8",
+   "bytes": 292,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "sub",
+     "addr": "0x15a2ff8",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a3060",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x15a30a4",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x15a30b8",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "add",
+     "addr": "0x15a3110",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "TryToUploadRankDatas",
+   "signature": "private IEnumerator TryToUploadRankDatas(ArenaUserProfile userProfile, ArenaUserStruct userStruct, Action<ArenaUserProfile> resuft) { }",
+   "offset": "0x159f11c",
+   "getter_value": null,
+   "rva": "0x15a311c",
+   "bytes": 128,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a315c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "BackUpDatas",
+   "signature": "private void BackUpDatas(Action<bool> callback) { }",
+   "offset": "0x159f1c4",
+   "getter_value": null,
+   "rva": "0x15a31c4",
+   "bytes": 620,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a3258",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "IECheckLogInRank",
+   "signature": "private IEnumerator IECheckLogInRank(string userId, Action<ArenaUserProfile> callback) { }",
+   "offset": "0x159f438",
+   "getter_value": null,
+   "rva": "0x15a3438",
+   "bytes": 108,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a346c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetRankList",
+   "signature": "public void GetRankList(ArenaUserProfile arenaUserProfile, Action<List<ArenaUserStruct>> callback) { }",
+   "offset": "0x159f4cc",
+   "getter_value": null,
+   "rva": "0x15a34cc",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "IEDownloadRank",
+   "signature": "private IEnumerator IEDownloadRank(ArenaUserProfile arenaUserProfile, Action<List<ArenaUserStruct>> callback) { }",
+   "offset": "0x159f4ec",
+   "getter_value": null,
+   "rva": "0x15a34ec",
+   "bytes": 116,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a3524",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "QuickSort",
+   "signature": "private void QuickSort(ref List<ArenaUserStruct> datas, int l, int r) { }",
+   "offset": "0x159f588",
+   "getter_value": null,
+   "rva": "0x15a3588",
+   "bytes": 448,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 112,
+     "via": "sub",
+     "addr": "0x15a3588",
+     "reg": "sp",
+     "op": "sp, sp, #0x70",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a35e0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15a3648",
+     "reg": "w25",
+     "op": "w25, w25, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x15a367c",
+     "reg": "w26",
+     "op": "w26, w26, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15a36ec",
+     "reg": "w25",
+     "op": "w25, w25, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x15a36f0",
+     "reg": "w26",
+     "op": "w26, w26, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 112,
+     "via": "add",
+     "addr": "0x15a373c",
+     "reg": "sp",
+     "op": "sp, sp, #0x70",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "SetUserRank",
+   "signature": "public void SetUserRank(ArenaUserProfile profile, ArenaUserStruct userStruct, Action<int> callback) { }",
+   "offset": "0x159f748",
+   "getter_value": null,
+   "rva": "0x15a3748",
+   "bytes": 140,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a3788",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 15,
+     "via": "mov",
+     "addr": "0x15a379c",
+     "reg": "w4",
+     "op": "w4, #0xf",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "IEGetRoom",
+   "signature": "private IEnumerator IEGetRoom(ArenaUserProfile profile, ArenaUserStruct userStruct, Action<int> callback, int timeOut) { }",
+   "offset": "0x159f7d4",
+   "getter_value": null,
+   "rva": "0x15a37d4",
+   "bytes": 140,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a3818",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "IEFixLastRoom",
+   "signature": "private IEnumerator IEFixLastRoom(ArenaUserProfile profile, ArenaUserStruct userStruct, int roomIndex, int timeOut, Action<int> callback) { }",
+   "offset": "0x159f888",
+   "getter_value": null,
+   "rva": "0x15a3888",
+   "bytes": 152,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a38d4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "IECheckAndAddUserToRoom",
+   "signature": "private IEnumerator IECheckAndAddUserToRoom(ArenaUserProfile profile, ArenaUserStruct userStruct, int roomIndex, Action<int> callback, int timeOut) { }",
+   "offset": "0x159f948",
+   "getter_value": null,
+   "rva": "0x15a3948",
+   "bytes": 156,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a3994",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ResetUserStatus",
+   "signature": "public void ResetUserStatus(ArenaUserProfile userProfile, int count, Action<ArenaUserProfile, bool> callback) { }",
+   "offset": "0x159fa0c",
+   "getter_value": null,
+   "rva": "0x15a3a0c",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "IEResetUserProfileStatus",
+   "signature": "private IEnumerator IEResetUserProfileStatus(ArenaUserProfile userProfile, int count, Action<ArenaUserProfile, bool> callback) { }",
+   "offset": "0x159fa2c",
+   "getter_value": null,
+   "rva": "0x15a3a2c",
+   "bytes": 132,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a3a6c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "LoadRankSetups",
+   "signature": "public void LoadRankSetups(int rank, Action<ArenaRankSetup> callback) { }",
+   "offset": "0x159fad8",
+   "getter_value": null,
+   "rva": "0x15a3ad8",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "IELoadRankSetups",
+   "signature": "private IEnumerator IELoadRankSetups(int rank, Action<ArenaRankSetup> callback) { }",
+   "offset": "0x159faf8",
+   "getter_value": null,
+   "rva": "0x15a3af8",
+   "bytes": 112,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a3b2c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SetRankSetups",
+   "signature": "public void SetRankSetups() { }",
+   "offset": "0x159fb90",
+   "getter_value": null,
+   "rva": "0x15a3b90",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "IESetRankSetups",
+   "signature": "private IEnumerator IESetRankSetups() { }",
+   "offset": "0x159fbb0",
+   "getter_value": null,
+   "rva": "0x15a3bb0",
+   "bytes": 88,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a3bd8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SetUserRandom",
+   "signature": "public void SetUserRandom() { }",
+   "offset": "0x159fc30",
+   "getter_value": null,
+   "rva": "0x15a3c30",
+   "bytes": 704,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a3cbc",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x15a3ce0",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 60,
+     "via": "mov",
+     "addr": "0x15a3d10",
+     "reg": "w0",
+     "op": "w0, #0x3c",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 101,
+     "via": "mov",
+     "addr": "0x15a3d14",
+     "reg": "w1",
+     "op": "w1, #0x65",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a3e54",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1000,
+     "via": "mov",
+     "addr": "0x15a3e58",
+     "reg": "w1",
+     "op": "w1, #0x3e8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x15a3ebc",
+     "reg": "w8",
+     "op": "w8, w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 10,
+     "via": "cmp",
+     "addr": "0x15a3ec0",
+     "reg": "w8",
+     "op": "w8, #0xa",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "IESetUserRandom",
+   "signature": "private IEnumerator IESetUserRandom(ArenaUserProfile userProfile, ArenaUserStruct userStruct) { }",
+   "offset": "0x159ff44",
+   "getter_value": null,
+   "rva": "0x15a3f44",
+   "bytes": 116,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a3f7c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "LoadRemoteConfigs",
+   "signature": "public void LoadRemoteConfigs(Action<bool> initResuft) { }",
+   "offset": "0x159ffe0",
+   "getter_value": null,
+   "rva": "0x15a3fe0",
+   "bytes": 548,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a407c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x15a020c",
+   "getter_value": null,
+   "rva": "0x15a420c",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "cctor",
+   "signature": "private static void .cctor() { }",
+   "offset": "0x15a0214",
+   "getter_value": null,
+   "rva": "0x15a4214",
+   "bytes": 516,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x15a42c8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 10,
+     "via": "mov",
+     "addr": "0x15a42e4",
+     "reg": "w1",
+     "op": "w1, #0xa",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x15a4318",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x15a4330",
+     "reg": "w8",
+     "op": "w8, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x15a4348",
+     "reg": "w8",
+     "op": "w8, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x15a4360",
+     "reg": "w8",
+     "op": "w8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "cmp",
+     "addr": "0x15a4378",
+     "reg": "w8",
+     "op": "w8, #5",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "cmp",
+     "addr": "0x15a4390",
+     "reg": "w8",
+     "op": "w8, #6",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 7,
+     "via": "cmp",
+     "addr": "0x15a43a8",
+     "reg": "w8",
+     "op": "w8, #7",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "cmp",
+     "addr": "0x15a43c0",
+     "reg": "w8",
+     "op": "w8, #8",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "cmp",
+     "addr": "0x15a43d8",
+     "reg": "w8",
+     "op": "w8, #9",
+     "role": "compare"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,115 @@
+;;; ctor  public void .ctor() { }
+    0x1532724: mov      x1, xzr
+    0x1532728: b        #0x2143330
+
+;;; <CallMixAnimation>b__0  internal void <CallMixAnimation>b__0() { }
+    0x1532934: str      x30, [sp, #-0x30]!
+    0x1532938: stp      x22, x21, [sp, #0x10]
+    0x153293c: stp      x20, x19, [sp, #0x20]
+    0x1532940: adrp     x20, #0x2ce2000
+    0x1532944: ldrb     w8, [x20, #0x513]
+    0x1532948: mov      x19, x0
+    0x153294c: tbnz     w8, #0, #0x1532988
+    0x1532950: adrp     x0, #0x2adc000
+    0x1532954: ldr      x0, [x0, #0xbb8]
+    0x1532958: bl       #0x110d028
+    0x153295c: adrp     x0, #0x2aea000
+    0x1532960: ldr      x0, [x0, #0x620]
+    0x1532964: bl       #0x110d028
+    0x1532968: adrp     x0, #0x2adc000
+    0x153296c: ldr      x0, [x0, #0xf58]
+    0x1532970: bl       #0x110d028
+    0x1532974: adrp     x0, #0x2adc000
+    0x1532978: ldr      x0, [x0, #0xb48]
+    0x153297c: bl       #0x110d028
+    0x1532980: mov      w8, #1
+    0x1532984: strb     w8, [x20, #0x513]
+    0x1532988: ldr      x0, [x19, #0x10]
+    0x153298c: cbz      x0, #0x1532ae4
+    0x1532990: mov      w1, #1
+    0x1532994: bl       #0x1532328
+    0x1532998: ldr      x9, [x19, #0x10]
+    0x153299c: cbz      x9, #0x1532ae4
+    0x15329a0: ldr      x8, [x9, #0x20]
+    0x15329a4: cbz      x8, #0x1532ae4
+    0x15329a8: ldrsw    x9, [x9, #0x60]
+    0x15329ac: ldr      w10, [x8, #0x18]
+    0x15329b0: cmp      w9, w10
+    0x15329b4: b.hs     #0x1532ae8
+    0x15329b8: add      x8, x8, x9, lsl #3
+    0x15329bc: ldr      x0, [x8, #0x20]
+    0x15329c0: cbz      x0, #0x1532ae4
+    0x15329c4: mov      w1, #1
+    0x15329c8: mov      x2, xzr
+    0x15329cc: bl       #0x2781804
+    0x15329d0: ldr      x9, [x19, #0x10]
+    0x15329d4: cbz      x9, #0x1532ae4
+    0x15329d8: ldr      x8, [x9, #0x20]
+    0x15329dc: cbz      x8, #0x1532ae4
+    0x15329e0: ldrsw    x9, [x9, #0x60]
+    0x15329e4: ldr      w10, [x8, #0x18]
+    0x15329e8: cmp      w9, w10
+    0x15329ec: b.hs     #0x1532ae8
+    0x15329f0: add      x8, x8, x9, lsl #3
+    0x15329f4: ldr      x0, [x8, #0x20]
+    0x15329f8: cbz      x0, #0x1532ae4
+    0x15329fc: adrp     x8, #0x2adc000
+    0x1532a00: ldr      x8, [x8, #0xf58]
+    0x1532a04: adrp     x20, #0x2adc000
+    0x1532a08: adrp     x21, #0x2aea000
+    0x1532a0c: ldr      x1, [x8]
+    0x1532a10: ldr      x20, [x20, #0xbb8]
+    0x1532a14: ldr      x21, [x21, #0x620]
+    0x1532a18: bl       #0x171d8c4
+    0x1532a1c: ldr      x8, [x20]
+    0x1532a20: ldr      x22, [x19, #0x10]
+    0x1532a24: mov      x20, x0
+    0x1532a28: mov      x0, x8
+    0x1532a2c: bl       #0x110d240
+    0x1532a30: ldr      x2, [x21]
+    0x1532a34: mov      x1, x22
+    0x1532a38: mov      x3, xzr
+    0x1532a3c: mov      x21, x0
+    0x1532a40: bl       #0x18a5580
+    0x1532a44: cbz      x20, #0x1532ae4
+    0x1532a48: adrp     x10, #0x2adc000
+    0x1532a4c: ldr      x8, [x20]
+    0x1532a50: ldr      x10, [x10, #0xb48]
+    0x1532a54: ldrh     w9, [x8, #0x12e]
+    0x1532a58: ldr      x1, [x10]
+    0x1532a5c: cbz      x9, #0x1532a80
+    0x1532a60: ldr      x10, [x8, #0xb0]
+    0x1532a64: add      x10, x10, #8
+    0x1532a68: ldur     x11, [x10, #-8]
+    0x1532a6c: cmp      x11, x1
+    0x1532a70: b.eq     #0x1532a90
+    0x1532a74: subs     x9, x9, #1
+    0x1532a78: add      x10, x10, #0x10
+    0x1532a7c: b.ne     #0x1532a68
+    0x1532a80: mov      w2, #1
+    0x1532a84: mov      x0, x20
+    0x1532a88: bl       #0x11881d8
+    0x1532a8c: b        #0x1532aa0
+    0x1532a90: ldr      w9, [x10]
+    0x1532a94: add      w9, w9, #1
+    0x1532a98: add      x8, x8, w9, sxtw #4
+    0x1532a9c: add      x0, x8, #0x138
+    0x1532aa0: ldp      x8, x2, [x0]
+    0x1532aa4: mov      x0, x20
+    0x1532aa8: mov      x1, x21
+    0x1532aac: blr      x8
+    0x1532ab0: ldr      x8, [x19, #0x18]
+    0x1532ab4: cbz      x8, #0x1532ad4
+    0x1532ab8: ldr      x2, [x8, #0x18]
+    0x1532abc: ldr      x0, [x8, #0x40]
+    0x1532ac0: ldr      x1, [x8, #0x28]
+    0x1532ac4: ldp      x20, x19, [sp, #0x20]
+    0x1532ac8: ldp      x22, x21, [sp, #0x10]
+    0x1532acc: ldr      x30, [sp], #0x30
+    0x1532ad0: br       x2
+    0x1532ad4: ldp      x20, x19, [sp, #0x20]
+    0x1532ad8: ldp      x22, x21, [sp, #0x10]
+    0x1532adc: ldr      x30, [sp], #0x30
+    0x1532ae0: ret      
+    0x1532ae4: bl       #0x110d250
+    0x1532ae8: bl       #0x110d258
