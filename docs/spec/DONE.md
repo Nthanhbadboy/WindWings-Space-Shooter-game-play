@@ -81,6 +81,10 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 137 — vòng 1 các session chạy xong + sổ prompt theo mã nhánh; user: "để ý năng lực AI mà giao việc… khi nào đóng mở session thì nói luôn").**
+> Kết quả vòng 1: `535b0541` `daad5209f` mục-32 đóng bằng store-census (178/179 — vẫn glitch `@/tmp` ×2) · `ef6b75ef` `58cf84cc5` tầng 135 apply-seed/channel-sampler (user biết và cho chạy — kết thúc ≤1 vòng rồi chuyển Godot build-spec) · `a5a74747` `1817a2516` **GIAO XONG** STORE_ASSETS_AND_LISTING_DRAFT (đã copy 12.951B về `docs/rollout/` — docs, needle 193 giữ nguyên) · `8141386a` `57aee0cc1` archival + giữ NOT_READY đúng protocol · `46e50499` `de28a38a4` vòng-2 verify terms đóng 6 mục treo · `1b836828` `971a7eea8` v2 re-baseline +346 h · `eeb95d5a` KHÔNG hoạt động mới → ĐÓNG NGAY sau 1 handoff cuối.
+> Mới: `docs/rollout/SESSION_PROMPTS.md` — prompt hiện hành từng session **tên theo mã nhánh** (bỏ AI-1/2/3) + lịch ĐÓNG/MỞ tóm tắt; audit cập nhật trạng thái vòng 1.
+>
 > **Sửa lại (lần 135 — XÁC MINH TUYẾN KIẾM TIỀN 3 STORE theo khai của user + user duyệt: "3 store kiếm tiền theo đúng luật của chúng nó, không phải bàn cãi").**
 > Verdict 5/5 ý user ĐÚNG (STATIC_CONFIRMED, nguồn chính chủ tại chỗ — `docs/research/phase-b/MONETIZATION_VERIFICATION_2026-10-27.md`): ① MS = payout+tax profile (W-8BEN), user đã xong ② Amazon = Tax Identity Interview — mục tài khoản duy nhất còn lại ③ Huawei = HMS IAP Kit + Petal Ads (trả tháng, ngưỡng €200), user đã đăng ký ④ 3/3 store commerce riêng KHÔNG Google Billing (Amazon reject nếu không dùng IAP của nó) ⑤ keystore user tự thêm (Huawei AAB cần App Signing; MS tự ký MSIX). **Nguyên tắc thương mại chốt: mỗi store dùng commerce/ads riêng theo đúng luật store đó — không lách, không tranh cãi.** Phát hiện tiền: VN chưa có thuế-hiệp-định hiệu lực với Mỹ ⇒ doanh thu khách Mỹ bị withholding 30% (MS + Amazon); ngoài-US không giữ tại nguồn — báo doanh thu tách dòng US/không-US. USER-ONLY cập nhật: còn Amazon-account + quyền IP/art gốc. Không đụng datas/ (needle 193 giữ nguyên).
 >

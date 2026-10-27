@@ -21,7 +21,7 @@
 | **ef** | **Godot build/packaging spec + port plan** (plan-level): export presets (Windows → MS Store MSIX; Android APK≤4GB / AAB≤150MB qua gradle), versioning, signing flow, target-API AppGallery/Amazon; port-plan: scaffold Godot 4.x + map scene/systems từ spec #29 — chỉ hiện thực hóa khi user ra lệnh scaffold | KHÔNG build/SDK/keystore thật; lanes APK dừng — phân tích chỉ khi triển khai cần |
 | **a5** | **Phase C store assets spec**: icon/screenshot/feature-graphic sizes từ 84-file capture + 42 contact sheets (không vẽ art mới); listing copy draft 3 store | Asset thật do Session F planner + user duyệt |
 | **Session E** | **Per-store requirement sheets**: rating questionnaire, data-safety/privacy forms, payout/tax setup steps — nguồn chính chủ + ngày tra cứu, UNVERIFIED ghi tại chỗ · **+ research queue kiếm tiền** (bảng dưới — lần 133: đào-tiếp áp dụng cho E/F, KHÔNG phải APK) | Research/plan only |
-| **Session F** | Store-art planner theo spec của a5 (asset list, kích thước, số lượng) · **+ research chuyển-đổi listing** (CTR benchmark, A/B thumbnail genre) | Không tự chốt art — user duyệt |
+| **Session F** (`1b836828`, đã xác thực) | **Art planner** — redraw plan 788 đơn vị vẽ (651 dòng planner, L2=149h) — `docs/art-plan/` trên nhánh F | Production art KHÔNG giao F — mở Session H khi Gate-5 (xem `SESSION_CAPABILITY_AUDIT_2026-10-27.md`) |
 | **AI-3** | Re-review Gate-1 khi registry-v4 về (đơn giản: xác nhận C1–C5 khép) → sau đó verify-lane | Verdict chỉ reviewer nâng |
 
 ## Research queue E/F — đào TIẾP theo lệnh lần 133 ("nghiên cứu của E và F có chỗ nào khúc mắc thì nghiên cứu tiếp — mục đích làm game kiếm tiền")
