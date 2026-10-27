@@ -81,6 +81,8 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 131 — fixup needle 192→193 (artifact Gate-1 mới pull; lỗi bump lần-3 — quy tắc: pull artifact ⇒ bump ngay TRƯỚC commit, verify trước push))**
+>
 > **Sửa lại (lần 130 — Gate-1 NHẬN: NOT_READY + C1–C5 + recovery lần-9 + Phase B bàn giao):**
 > **Gate-1** (AI-3 own125 `1e4b832387` · `6440973318` · 4 CI GREEN ·
 > artifact `4a2a60e5…` 92.399B pin ✓ trên spec): verdict **NOT_READY** —
