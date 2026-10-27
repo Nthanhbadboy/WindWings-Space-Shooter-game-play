@@ -1,0 +1,78 @@
+;;; cctor  private static void .cctor() { }
+    0x13bd86c: str      x30, [sp, #-0x20]!
+    0x13bd870: stp      x20, x19, [sp, #0x10]
+    0x13bd874: adrp     x19, #0x2ce1000
+    0x13bd878: adrp     x20, #0x2ae4000
+    0x13bd87c: ldrb     w8, [x19, #0xa7f]
+    0x13bd880: ldr      x20, [x20, #0x80]
+    0x13bd884: tbnz     w8, #0, #0x13bd89c
+    0x13bd888: adrp     x0, #0x2ae4000
+    0x13bd88c: ldr      x0, [x0, #0x80]
+    0x13bd890: bl       #0x110d028
+    0x13bd894: mov      w8, #1
+    0x13bd898: strb     w8, [x19, #0xa7f]
+    0x13bd89c: ldr      x0, [x20]
+    0x13bd8a0: bl       #0x110d240
+    0x13bd8a4: mov      x1, xzr
+    0x13bd8a8: mov      x19, x0
+    0x13bd8ac: bl       #0x2143330
+    0x13bd8b0: ldr      x8, [x20]
+    0x13bd8b4: ldr      x8, [x8, #0xb8]
+    0x13bd8b8: str      x19, [x8]
+    0x13bd8bc: ldp      x20, x19, [sp, #0x10]
+    0x13bd8c0: ldr      x30, [sp], #0x20
+    0x13bd8c4: ret      
+
+;;; ctor  public void .ctor() { }
+    0x13bd8c8: mov      x1, xzr
+    0x13bd8cc: b        #0x2143330
+
+;;; <Start>b__5_0  internal bool <Start>b__5_0() { }
+    0x13bd8d0: str      x30, [sp, #-0x20]!
+    0x13bd8d4: stp      x20, x19, [sp, #0x10]
+    0x13bd8d8: adrp     x20, #0x2ce1000
+    0x13bd8dc: adrp     x19, #0x2adc000
+    0x13bd8e0: ldrb     w8, [x20, #0xa80]
+    0x13bd8e4: ldr      x19, [x19, #0x7a8]
+    0x13bd8e8: tbnz     w8, #0, #0x13bd900
+    0x13bd8ec: adrp     x0, #0x2adc000
+    0x13bd8f0: ldr      x0, [x0, #0x7a8]
+    0x13bd8f4: bl       #0x110d028
+    0x13bd8f8: mov      w8, #1
+    0x13bd8fc: strb     w8, [x20, #0xa80]
+    0x13bd900: ldr      x0, [x19]
+    0x13bd904: ldr      w8, [x0, #0xe0]
+    0x13bd908: cbnz     w8, #0x13bd914
+    0x13bd90c: bl       #0x110d12c
+    0x13bd910: ldr      x0, [x19]
+    0x13bd914: ldr      x8, [x0, #0xb8]
+    0x13bd918: ldp      x20, x19, [sp, #0x10]
+    0x13bd91c: ldrb     w0, [x8, #0x30]
+    0x13bd920: ldr      x30, [sp], #0x20
+    0x13bd924: ret      
+
+;;; <CheckSpecPopup>b__13_1  internal void <CheckSpecPopup>b__13_1(Transform obj) { }
+    0x13bd928: str      x30, [sp, #-0x10]!
+    0x13bd92c: cbz      x1, #0x13bd950
+    0x13bd930: mov      x0, x1
+    0x13bd934: mov      x1, xzr
+    0x13bd938: bl       #0x277f188
+    0x13bd93c: cbz      x0, #0x13bd950
+    0x13bd940: mov      w1, wzr
+    0x13bd944: mov      x2, xzr
+    0x13bd948: ldr      x30, [sp], #0x10
+    0x13bd94c: b        #0x2781804
+    0x13bd950: bl       #0x110d250
+
+;;; <CheckSpecPopup>b__13_0  internal void <CheckSpecPopup>b__13_0(Transform obj) { }
+    0x13bd954: str      x30, [sp, #-0x10]!
+    0x13bd958: cbz      x1, #0x13bd97c
+    0x13bd95c: mov      x0, x1
+    0x13bd960: mov      x1, xzr
+    0x13bd964: bl       #0x277f188
+    0x13bd968: cbz      x0, #0x13bd97c
+    0x13bd96c: mov      w1, wzr
+    0x13bd970: mov      x2, xzr
+    0x13bd974: ldr      x30, [sp], #0x10
+    0x13bd978: b        #0x2781804
+    0x13bd97c: bl       #0x110d250

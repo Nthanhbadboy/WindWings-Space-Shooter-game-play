@@ -1,0 +1,281 @@
+{
+  "schema": "a5-d5-user-lead-crosswalk-v1",
+  "status": "HEALTH_TECH_ROUTE_SUPPORTED; STARTER_PREMIUM_AND_EXTRA_LIFE_COUNT_NOT_BOUND; COMPONENT_OWNER_NOT_BOUND",
+  "evidence_scope": "PINNED_SCRIPTABLEOBJECT_CSV_AND_SERIALIZED_TYPETREE_JSONL_PLUS_PRIOR_PUBLISHED_REPORTS",
+  "runtime_or_dps_measured": false,
+  "pinned_export_sets": {
+    "scriptableobject_csv": {
+      "count": 126,
+      "bytes": 5115187,
+      "manifest_sha256": "2ccc90ddd13b8ee104d6fe3334dab26ebf5e58c5cbbaafb4b6c44e3122a9ebe2"
+    },
+    "typetree_jsonl": {
+      "count": 140,
+      "bytes": 3625299,
+      "manifest_sha256": "36adee77c37556e2b55a4198e2249f0d5e68187b654d39c479d5c8de3c143f44"
+    }
+  },
+  "focal_source_files": {
+    "reverse-engineering/scriptableobjects/Data_Players.csv": {
+      "sha256": "8fc676d1fb9587e5b90671c6a4ab7e4ec833725af4d1c5280b6a90129b5fcde6",
+      "bytes": 1255
+    },
+    "reverse-engineering/raw/typetrees/Data_Players.jsonl.gz": {
+      "sha256": "f77ac09b9e76d325ae05ea2cb989d94243d2ed924901dd4b7002ee31ea7c328b",
+      "bytes": 669
+    },
+    "reverse-engineering/raw/typetrees/Board_Players.jsonl.gz": {
+      "sha256": "b89c197c634a91d70ca85304e3efcc8530b7b0bf0dd76e9092ca1f79f5614923",
+      "bytes": 1654
+    },
+    "reverse-engineering/scriptableobjects/Tech_Ability_Data.csv": {
+      "sha256": "8fb10d492f8c455bd726f2328a56183e260f0b4fd67c97af99c16f06bc1f64bd",
+      "bytes": 1649
+    },
+    "reverse-engineering/raw/typetrees/Tech_Ability_Data.jsonl.gz": {
+      "sha256": "b13e5e4f1f22379e51fa294d4d3eb05d60e4f1729be8d3c3258c6d1e3933ec94",
+      "bytes": 489
+    },
+    "reverse-engineering/scriptableobjects/IAPProduct.csv": {
+      "sha256": "8c00d9574d636af4ca25975b7053917f95b108373132df3fef349b0fe25badb8",
+      "bytes": 741
+    },
+    "reverse-engineering/raw/typetrees/IAPProduct.jsonl.gz": {
+      "sha256": "cbda15bd8f423fa0a0e49fd17e2e4206edf05b2365d4b4890eeb4cee2363a070",
+      "bytes": 771
+    }
+  },
+  "serialized_records": {
+    "data_players_csv_rows": 2,
+    "data_players_records": [
+      {
+        "path_id": 580758,
+        "name": "Data_Drones",
+        "entry_count": 13,
+        "ids": [
+          20001,
+          20002,
+          20003,
+          20004,
+          20005,
+          20006,
+          20007,
+          20008,
+          20009,
+          20010,
+          20011,
+          20012,
+          20013
+        ],
+        "active": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false
+        ]
+      },
+      {
+        "path_id": 580761,
+        "name": "Data_Players",
+        "entry_count": 25,
+        "ids": [
+          10001,
+          10002,
+          10003,
+          10004,
+          10005,
+          10006,
+          10007,
+          10008,
+          10009,
+          10010,
+          10011,
+          10012,
+          10013,
+          10014,
+          10015,
+          10016,
+          10017,
+          10018,
+          10019,
+          10020,
+          10021,
+          10022,
+          10023,
+          10024,
+          10999
+        ],
+        "active": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false
+        ]
+      }
+    ],
+    "board_players": {
+      "record_count": 1,
+      "row_path_id": 650952,
+      "gameobject": "Board_Players",
+      "serialized_button_refs": {
+        "btnUpgradeByCoins": {
+          "m_FileID": 0,
+          "m_PathID": 237122
+        },
+        "btnUpgradeByGems": {
+          "m_FileID": 0,
+          "m_PathID": 237118
+        },
+        "textUpgradeCostCoins": {
+          "m_FileID": 0,
+          "m_PathID": 619563
+        },
+        "textUpgradeCostGems": {
+          "m_FileID": 0,
+          "m_PathID": 632902
+        },
+        "btnTry": {
+          "m_FileID": 0,
+          "m_PathID": 16736
+        },
+        "btnIAPBuyNow": {
+          "m_FileID": 0,
+          "m_PathID": 75867
+        }
+      },
+      "interpretation": "player catalogue UI references coin/gem upgrade controls; not evidence of Player_Health upgrade ownership or a Player_Controller component join"
+    },
+    "tech_ability_data": {
+      "csv_row_count": 6,
+      "records": [
+        {
+          "row_path_id": 580762,
+          "name": "TechAbility1",
+          "listDatas_count": 10,
+          "type_index_values": [
+            1,
+            2
+          ]
+        },
+        {
+          "row_path_id": 580763,
+          "name": "TechAbility2",
+          "listDatas_count": 10,
+          "type_index_values": [
+            0
+          ]
+        },
+        {
+          "row_path_id": 580764,
+          "name": "TechAbility3",
+          "listDatas_count": 10,
+          "type_index_values": [
+            0
+          ]
+        },
+        {
+          "row_path_id": 580765,
+          "name": "TechAbility4",
+          "listDatas_count": 10,
+          "type_index_values": [
+            1,
+            2
+          ]
+        },
+        {
+          "row_path_id": 580766,
+          "name": "TechAbility5",
+          "listDatas_count": 10,
+          "type_index_values": [
+            0
+          ]
+        },
+        {
+          "row_path_id": 580767,
+          "name": "TechAbility6",
+          "listDatas_count": 10,
+          "type_index_values": [
+            0
+          ]
+        }
+      ],
+      "interpretation": "six serialized TechAbility records and TypeIndex values; the serialized rows alone do not label TypeIndex 0 as Health"
+    },
+    "iap_product_catalog": {
+      "csv_row_count": 1,
+      "record_count": 1,
+      "consumable_count": 71,
+      "nonconsumable_count": 99,
+      "selected_ids": [
+        "windwings.pro.1stpurchase",
+        "windwings.pro.week",
+        "windwings.pro.month",
+        "windwings.gems.reborn",
+        "windwings.gems.reborn2",
+        "windwings.gems.reborn3",
+        "windwings.gems.reborn4",
+        "windwings.gems.reborn5",
+        "windwings.gems.reborn6",
+        "windwings.timereward.month",
+        "windwings.pro.forever",
+        "windwings.timereward.forever"
+      ],
+      "interpretation": "product IDs indicate a catalogue only; no starter grant, expiry duration, purchase activation, or user state follows from these rows"
+    }
+  },
+  "identity_and_ownership_boundary": {
+    "player_attack_class_identities": 24,
+    "player_health_class_identity_present": true,
+    "player_controller_class_identity_present": true,
+    "target_named_exports": {
+      "csv": [],
+      "typetree": []
+    },
+    "player_attack_to_data_players_id_join": "NOT_ASSERTED; do not infer from the parallel 1..24 / 10001..10024 numbering",
+    "health_owner_or_controller_owner": "NOT_BOUND_WITHIN_CAPTURED_EXPORTS"
+  },
+  "claims": {
+    "initial_24h_premium": "NOT_BOUND_WITHIN_CAPTURED_EXPORTS; trial/timer UI names and product IDs do not establish 24h or a first-launch grant",
+    "initial_extra_life_count_without_ad_or_gems": "NOT_BOUND_WITHIN_CAPTURED_EXPORTS; UI/API options do not establish a starting stock or eligibility",
+    "health_start_and_upgrade_route": "SUPPORTED_BY_PRIOR_PUBLISHED_STATIC_ANALYSIS; Player_Get_Datas.StartHp=2500, formula reads TechStatPoints(0), and prior label mapping identifies stat 0 as Health in Basic; no serialized Player_Health owner row in this export set",
+    "player_attack_n_route": "REUSE_PRIOR_REPORTS_109_AND_163; class-to-array and Board_Players display-consumer paths are distinct from GP_Datas.player PPtr; no serialized component-owner join",
+    "player_controller_route": "REUSE_PRIOR_REPORTS_85_TO_87_FOR_METHOD_FLOW_ONLY; class identity is present, but no target-named serialized owner record in this export set"
+  },
+  "limits": [
+    "The manifest is bounded to captured ScriptableObject CSV and TypeTree JSONL exports; it is not a whole-build absence proof.",
+    "Data_Players numeric IDs are not equated to Player_Attack_N class suffixes in this receipt.",
+    "Board_Players UI references do not establish Player_Health ownership or map to an individual Player_Controller.",
+    "No coroutine or receiver inventory from reports 79-86 was repeated.",
+    "No code body, native/FDE artifact, emulator, runtime probe, or secret was read or used by this builder."
+  ]
+}

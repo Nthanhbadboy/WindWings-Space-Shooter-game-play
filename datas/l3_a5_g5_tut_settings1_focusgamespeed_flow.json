@@ -1,0 +1,191 @@
+{
+  "schema": "l3-a5-g5-tut-settings1-focusgamespeed-flow-v1",
+  "claim_comment_id": 6423319796,
+  "branch": "arena/a5a74747-windwings-space-shooter-game-p",
+  "evidence_mode": "static_only",
+  "disposition": {
+    "status": "CALL_FLOW_BOUND / SLOT_LITERAL_STOP / CONTROLLER_NAME_MATCH_STATIC / RUNTIME_TRANSITION_UNOBSERVED",
+    "summary": "Tut_Settings1.Start constructs an Action<float> targeting <Start>b__11_0 and stores it in the slider onChange field. The callback guards its focusGameSpeed Animator reference and active GameObject, latches stopFocus, then passes the value from shared static slot 0x2ADFB48 to Animator.SetTrigger. The slot literal is independently resolved as Stop by the separate AI-1 public handoff; the serialized FocusGameSpeed controller also has a Stop parameter, establishing static string-name equality only. Callback execution, Animator transition, and Boss-39002 Spine marker delivery/effect remain unobserved."
+  },
+  "method_and_fields": {
+    "class": "Tut_Settings1",
+    "type_def_index": 257,
+    "start": {
+      "rva": "0x1328D54",
+      "slider_field": "sliderTimeScale",
+      "slider_field_offset": "0x20",
+      "delegate_constructor_call": "0x1328F9C",
+      "delegate_type_from_dump": "System.Action<float>",
+      "delegate_field_store": "0x1328FA4",
+      "slider_event_field_offset": "0x58",
+      "slider_event_field_from_dump": "Slider.onChange: Action<float>"
+    },
+    "callback": {
+      "method": "<Start>b__11_0(float amount)",
+      "rva": "0x13293F4",
+      "focus_game_speed_field": "focusGameSpeed",
+      "focus_game_speed_offset": "0x60",
+      "stop_focus_field": "stopFocus",
+      "stop_focus_offset": "0x68",
+      "focus_guard_sequence": [
+        {
+          "instruction": "0x132949C",
+          "target_rva": "0x27849C8",
+          "target_signature_from_dump": "UnityEngine.Object.op_Implicit(Object exists)",
+          "purpose": "Unity object existence/truthiness check"
+        },
+        {
+          "instruction": "0x13294B0",
+          "target_rva": "0x277F188",
+          "target_signature_from_dump": "UnityEngine.Component.get_gameObject()",
+          "purpose": "obtain the Animator's GameObject"
+        },
+        {
+          "instruction": "0x13294BC",
+          "target_rva": "0x2781848",
+          "target_signature_from_dump": "UnityEngine.GameObject.get_activeSelf()",
+          "purpose": "activeSelf gate"
+        },
+        {
+          "field_read": "this+0x68",
+          "instruction": "0x13294C4",
+          "field_name": "stopFocus",
+          "purpose": "skip if already latched"
+        },
+        {
+          "field_write": "this+0x68",
+          "instruction": "0x13294D4",
+          "value": true,
+          "purpose": "latch before SetTrigger call"
+        }
+      ],
+      "slot_load_range": [
+        "0x13294DC",
+        "0x13294E8"
+      ],
+      "slot_address": "0x2ADFB48",
+      "callsite": "0x13294EC",
+      "call_target_rva": "0x27583B0",
+      "call_target_signature_from_dump": "UnityEngine.Animator.SetTrigger(string name)",
+      "slot_string_value_resolved": true,
+      "slot_string_value": "Stop"
+    }
+  },
+  "serialized_ui_context": {
+    "tut_settings1_instances": [
+      {
+        "component_path_id": 6825,
+        "gameobject": "GP_Tutorials/TutSettings (1)",
+        "focusGameSpeed": {
+          "m_FileID": 0,
+          "m_PathID": 4648
+        }
+      },
+      {
+        "component_path_id": 6861,
+        "gameobject": "Board_BeginPlay/Parent/Bottom/Parent_Systems",
+        "focusGameSpeed": {
+          "m_FileID": 0,
+          "m_PathID": 0
+        }
+      }
+    ],
+    "animator_join": {
+      "animator_path_id": 4648,
+      "gameobject_path_id": 123,
+      "prefab_root": "GP_Tutorials",
+      "controller_path_id": 1927,
+      "controller_name": "FocusGameSpeed"
+    },
+    "controller_parameter_context": {
+      "parameter_count": 1,
+      "parameter_id": 426031496,
+      "parameter_type_code": 9,
+      "tos_name_for_parameter_id": "Stop",
+      "any_state_condition_event_id": 426031496,
+      "any_state_destination_state_index": 1,
+      "destination_state_path_name": "Base Layer.stop",
+      "interpretation": "The independently resolved static slot literal Stop exactly matches this serialized controller parameter name; static name equality only, not a runtime SetTrigger or transition result."
+    }
+  },
+  "callback_continuation_boundary": {
+    "amount_argument_used_in_later_value_and_ui_paths": true,
+    "TimeSlider_SaveSpeed_sites_in_callback": {
+      "static_field_store": "0x13295E4",
+      "get_SaveSpeed_call": "0x13295E8",
+      "set_SaveSpeed_call": "0x1329610"
+    },
+    "unity_or_native_game_clock_write_established": false,
+    "full_tutorial_lifecycle_or_callback_delivery_established": false
+  },
+  "cross_context_boundary": {
+    "slot_0x2ADFB48_is_Stop_proven": true,
+    "slot_to_controller_parameter_mapping_proven": false,
+    "same_slot_used_in_boss39002_callback": true,
+    "boss39002_callback_method": "Boss1_Director.SkeletonAnimation_AnimationState_Event",
+    "ui_animator_is_boss39002_spine_object": false,
+    "boss39002_spine_event_key_proven": false,
+    "boss39001_route_evidence_transferred": false,
+    "runtime_trigger_or_transition_observed": false,
+    "animation_playback_observed": false,
+    "runtime_data_inspected": false,
+    "native_or_libunity_fde_lane_inspected": false,
+    "runtime_probe_workflow_inspected": false,
+    "live_dps": "MODEL_NOT_MEASURED",
+    "slot_to_controller_parameter_name_equality_proven": true,
+    "ui_context_used_to_identify_slot_value": false
+  },
+  "source_sha256": [
+    {
+      "path": "reverse-engineering/raw/il2cpp-consts/Tut_Settings1.asm.txt",
+      "bytes": 26826,
+      "sha256": "fc367781b60ef34454b53e42675f0d000ffec09e763224440b29736b16cab23b"
+    },
+    {
+      "path": "reverse-engineering/raw/il2cpp-consts/Tut_Settings1.json",
+      "bytes": 7581,
+      "sha256": "a1b81a8231e72b49053b580b0d01e8281793a0c3b9dc447d165207351779cbb6"
+    },
+    {
+      "path": "reverse-engineering/il2cpp/dump.cs.gz",
+      "bytes": 2769105,
+      "sha256": "e08f23fb6c90e07288e5b202e0ce1e7c5e82a7feb5ccae7aa08aaec3ad166454"
+    },
+    {
+      "path": "reverse-engineering/raw/typetrees/Tut_Settings1.jsonl.gz",
+      "bytes": 464,
+      "sha256": "4edbedbccaeee0c7520611e60516f213d0bc093fd40666b4825d4837cd848804"
+    },
+    {
+      "path": "datas/animator_map.csv.gz",
+      "bytes": 53173,
+      "sha256": "52649d373f6bc6e95b812a00e02519f4d36eab7cc57a8904ff2dad05ab0efda3"
+    },
+    {
+      "path": "reverse-engineering/raw/typetrees/animator-controller-graphs.jsonl.gz",
+      "bytes": 58287,
+      "sha256": "2ab434a1110c1b4ae645f741eee72196735f28b462f49cb3a1fb021f557ed093"
+    },
+    {
+      "path": "datas/l3_a5a74747_game_side_boss39002_event_slot_animator_context.json.gz",
+      "bytes": 2619,
+      "sha256": "3129c1290f1e0f99243e3576305a7872aa3577a01bb1cec2936aff7ae876d63f"
+    },
+    {
+      "path": "docs/apk-analysis/146-a5a74747-game-side-boss39002-event-slot-animator-context.md",
+      "bytes": 2318,
+      "sha256": "9bcd2b0df21bf8e6aa13b311f7f8cd41f174e531a961a1c6053bbaa8562b3f22"
+    }
+  ],
+  "external_static_literal_provenance": {
+    "literal": "Stop",
+    "slot": "0x2ADFB48",
+    "source_lane": "separate AI-1 public HANDOFF123; not part of this G5 game-side source pin set",
+    "handoff_pr_comment_id": 6422951255,
+    "correction_pr_comment_id": 6423891421,
+    "used_for_identity_only": true,
+    "ui_context_used_to_identify_slot": false,
+    "native_or_raw_artifact_added_or_modified": false,
+    "runtime_trigger_transition_or_spine_marker_delivery_proven": false
+  }
+}

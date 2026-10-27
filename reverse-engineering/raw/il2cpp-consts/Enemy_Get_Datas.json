@@ -1,0 +1,2568 @@
+{
+ "class": "Enemy_Get_Datas",
+ "note": "enemy: HP khởi đầu theo prefab (Dictionary dựng ở .cctor)",
+ "methods": [
+  {
+   "method": "GetDamagePowered",
+   "signature": "public static float GetDamagePowered(float _crtDamage) { }",
+   "offset": "0x157aea0",
+   "getter_value": null,
+   "rva": "0x157eea0",
+   "bytes": 2056,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x157ef34",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 24,
+     "via": "add",
+     "addr": "0x157ef60",
+     "reg": "x0",
+     "op": "x0, sp, #0x18",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x157efa0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x157f018",
+     "reg": "w10",
+     "op": "w10, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.35,
+     "via": "ldr_pool",
+     "va": "0x756b0c",
+     "addr": "0x157f034",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 15.0,
+     "via": "fmov",
+     "addr": "0x157f05c",
+     "role": "arith:fdiv"
+    },
+    {
+     "kind": "float",
+     "value": 0.5,
+     "via": "fmov",
+     "addr": "0x157f060",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 0.3,
+     "via": "ldr_pool",
+     "va": "0x7570e0",
+     "addr": "0x157f074",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 0.02,
+     "via": "ldr_pool",
+     "va": "0x756e14",
+     "addr": "0x157f080",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x157f084",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 1.5,
+     "via": "fmov",
+     "addr": "0x157f0a4",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 15,
+     "via": "cmp",
+     "addr": "0x157f0e8",
+     "reg": "w19",
+     "op": "w19, #0xf",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.129,
+     "via": "ldr_pool",
+     "va": "0x756ee8",
+     "addr": "0x157f0f8",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x157f130",
+     "reg": "w19",
+     "op": "w19, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x157f154",
+     "reg": "w19",
+     "op": "w19, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.69,
+     "via": "ldr_pool",
+     "va": "0x756ac8",
+     "addr": "0x157f188",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 0.36,
+     "via": "ldr_pool",
+     "va": "0x756d0c",
+     "addr": "0x157f190",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "mov",
+     "addr": "0x157f19c",
+     "reg": "w0",
+     "op": "w0, #2",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 2.5,
+     "via": "fmov",
+     "addr": "0x157f1b0",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 61,
+     "via": "cmp",
+     "addr": "0x157f1c4",
+     "reg": "w19",
+     "op": "w19, #0x3d",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.168,
+     "via": "ldr_pool",
+     "va": "0x756f34",
+     "addr": "0x157f1d0",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 1.335,
+     "via": "ldr_pool",
+     "va": "0x756ce0",
+     "addr": "0x157f1d8",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": -15.0,
+     "via": "fmov",
+     "addr": "0x157f1dc",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 0.012,
+     "via": "ldr_pool",
+     "va": "0x756c5c",
+     "addr": "0x157f1f8",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x157f21c",
+     "reg": "w9",
+     "op": "w9, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.1689,
+     "via": "ldr_pool",
+     "va": "0x756f48",
+     "addr": "0x157f270",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 0.2,
+     "via": "ldr_pool",
+     "va": "0x75700c",
+     "addr": "0x157f274",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 0.0125,
+     "via": "ldr_pool",
+     "va": "0x756fa8",
+     "addr": "0x157f288",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 5.69,
+     "via": "ldr_pool",
+     "va": "0x756a88",
+     "addr": "0x157f290",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 60,
+     "via": "sub",
+     "addr": "0x157f294",
+     "reg": "w8",
+     "op": "w8, w19, #0x3c",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x157f2a4",
+     "reg": "w21",
+     "op": "w21, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x157f2ac",
+     "reg": "w21",
+     "op": "w21, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 26,
+     "via": "cmp",
+     "addr": "0x157f2b4",
+     "reg": "w19",
+     "op": "w19, #0x1a",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 1.2,
+     "via": "ldr_pool",
+     "va": "0x756cb8",
+     "addr": "0x157f2c0",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 21,
+     "via": "cmp",
+     "addr": "0x157f2c8",
+     "reg": "w19",
+     "op": "w19, #0x15",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 2.5,
+     "via": "fmov",
+     "addr": "0x157f2d0",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "cmp",
+     "addr": "0x157f2ec",
+     "reg": "w10",
+     "op": "w10, #5",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 1.89,
+     "via": "ldr_pool",
+     "va": "0x7570d0",
+     "addr": "0x157f318",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 0.3,
+     "via": "ldr_pool",
+     "va": "0x7570e0",
+     "addr": "0x157f32c",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.89,
+     "via": "ldr_pool_d",
+     "va": "0x7574c0",
+     "addr": "0x157f340",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.56,
+     "via": "ldr_pool_d",
+     "va": "0x7574c4",
+     "addr": "0x157f340",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 12.0,
+     "via": "fmov",
+     "addr": "0x157f34c",
+     "role": "arith:fdiv"
+    },
+    {
+     "kind": "float",
+     "value": 0.2,
+     "via": "ldr_pool",
+     "va": "0x75700c",
+     "addr": "0x157f360",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 1.39,
+     "via": "ldr_pool",
+     "va": "0x756bfc",
+     "addr": "0x157f38c",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x157f3e0",
+     "reg": "w8",
+     "op": "w8, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 1.35,
+     "via": "ldr_pool",
+     "va": "0x756ab4",
+     "addr": "0x157f3ec",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x157f3f0",
+     "reg": "w8",
+     "op": "w8, w21, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x157f3fc",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x157f420",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 1.35,
+     "via": "ldr_pool",
+     "va": "0x756ab4",
+     "addr": "0x157f42c",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x157f430",
+     "reg": "w8",
+     "op": "w8, w21, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x157f438",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 0.5,
+     "via": "fmov",
+     "addr": "0x157f444",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 0.3,
+     "via": "ldr_pool",
+     "va": "0x7570e0",
+     "addr": "0x157f454",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x157f458",
+     "reg": "w19",
+     "op": "w19, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 3.6,
+     "via": "ldr_pool",
+     "va": "0x7570cc",
+     "addr": "0x157f46c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "cmp",
+     "addr": "0x157f474",
+     "reg": "w19",
+     "op": "w19, #8",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 3.0,
+     "via": "fmov",
+     "addr": "0x157f47c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "cmp",
+     "addr": "0x157f484",
+     "reg": "w19",
+     "op": "w19, #0x10",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 2.68,
+     "via": "ldr_pool",
+     "va": "0x756f6c",
+     "addr": "0x157f490",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 51,
+     "via": "cmp",
+     "addr": "0x157f498",
+     "reg": "w19",
+     "op": "w19, #0x33",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 2.2,
+     "via": "ldr_pool",
+     "va": "0x75701c",
+     "addr": "0x157f4a4",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.689,
+     "via": "ldr_pool",
+     "va": "0x756dfc",
+     "addr": "0x157f4bc",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 3.0,
+     "via": "ldr_pool_d",
+     "va": "0x7581e8",
+     "addr": "0x157f4d0",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 1.5,
+     "via": "ldr_pool_d",
+     "va": "0x7581ec",
+     "addr": "0x157f4d0",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.2,
+     "via": "ldr_pool",
+     "va": "0x75700c",
+     "addr": "0x157f4dc",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "cmp",
+     "addr": "0x157f52c",
+     "reg": "w19",
+     "op": "w19, #5",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "cmp",
+     "addr": "0x157f538",
+     "reg": "w9",
+     "op": "w9, #6",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 2.3,
+     "via": "ldr_pool",
+     "va": "0x756edc",
+     "addr": "0x157f588",
+     "role": "arith:fdiv"
+    },
+    {
+     "kind": "float",
+     "value": 1.56,
+     "via": "ldr_pool",
+     "va": "0x756eac",
+     "addr": "0x157f590",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 0.2,
+     "via": "ldr_pool",
+     "va": "0x75700c",
+     "addr": "0x157f59c",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x157f5b4",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 0.23,
+     "via": "ldr_pool",
+     "va": "0x757000",
+     "addr": "0x157f5c0",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 71,
+     "via": "cmp",
+     "addr": "0x157f5e0",
+     "reg": "w19",
+     "op": "w19, #0x47",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 1.89,
+     "via": "ldr_pool",
+     "va": "0x7570d0",
+     "addr": "0x157f5ec",
+     "role": "arith:fdiv"
+    },
+    {
+     "kind": "float",
+     "value": 0.05,
+     "via": "ldr_pool",
+     "va": "0x756e18",
+     "addr": "0x157f628",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x157f634",
+     "reg": "w8",
+     "op": "w8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 91,
+     "via": "cmp",
+     "addr": "0x157f640",
+     "reg": "w19",
+     "op": "w19, #0x5b",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 101,
+     "via": "cmp",
+     "addr": "0x157f648",
+     "reg": "w19",
+     "op": "w19, #0x65",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 1.1,
+     "via": "ldr_pool",
+     "va": "0x756b50",
+     "addr": "0x157f654",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 121,
+     "via": "cmp",
+     "addr": "0x157f65c",
+     "reg": "w19",
+     "op": "w19, #0x79",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.68,
+     "via": "ldr_pool",
+     "va": "0x756ed0",
+     "addr": "0x157f668",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 161,
+     "via": "cmp",
+     "addr": "0x157f670",
+     "reg": "w19",
+     "op": "w19, #0xa1",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.369,
+     "via": "ldr_pool",
+     "va": "0x756fd8",
+     "addr": "0x157f67c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 191,
+     "via": "cmp",
+     "addr": "0x157f684",
+     "reg": "w19",
+     "op": "w19, #0xbf",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.23,
+     "via": "ldr_pool",
+     "va": "0x757000",
+     "addr": "0x157f690",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.1,
+     "via": "ldr_pool",
+     "va": "0x756c78",
+     "addr": "0x157f69c",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "GetStartHealthPoint",
+   "signature": "public static float GetStartHealthPoint(int _enemyId) { }",
+   "offset": "0x157b6a8",
+   "getter_value": null,
+   "rva": "0x157f6a8",
+   "bytes": 284,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 48,
+     "via": "sub",
+     "addr": "0x157f6a8",
+     "reg": "sp",
+     "op": "sp, sp, #0x30",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x157f700",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x157f744",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x157f7a0",
+     "reg": "x2",
+     "op": "x2, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 48,
+     "via": "add",
+     "addr": "0x157f7b8",
+     "reg": "sp",
+     "op": "sp, sp, #0x30",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x157b7c4",
+   "getter_value": null,
+   "rva": "0x157f7c4",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "cctor",
+   "signature": "private static void .cctor() { }",
+   "offset": "0x157b7cc",
+   "getter_value": null,
+   "rva": "0x157f7cc",
+   "bytes": 3624,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 240,
+     "via": "sub",
+     "addr": "0x157f7cc",
+     "reg": "sp",
+     "op": "sp, sp, #0xf0",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x157f834",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30001,
+     "via": "mov",
+     "addr": "0x157f864",
+     "reg": "w1",
+     "op": "w1, #0x7531",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 6800.0,
+     "via": "ldr_pool",
+     "va": "0x756dc4",
+     "addr": "0x157f884",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30002,
+     "via": "mov",
+     "addr": "0x157f88c",
+     "reg": "w1",
+     "op": "w1, #0x7532",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 650.0,
+     "via": "ldr_pool",
+     "va": "0x756a8c",
+     "addr": "0x157f8a8",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30003,
+     "via": "mov",
+     "addr": "0x157f8ac",
+     "reg": "w1",
+     "op": "w1, #0x7533",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 4200.0,
+     "via": "ldr_pool",
+     "va": "0x7570fc",
+     "addr": "0x157f8c0",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30004,
+     "via": "mov",
+     "addr": "0x157f8c8",
+     "reg": "w1",
+     "op": "w1, #0x7534",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30005,
+     "via": "mov",
+     "addr": "0x157f8e0",
+     "reg": "w1",
+     "op": "w1, #0x7535",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 75000.0,
+     "via": "ldr_pool",
+     "va": "0x756f4c",
+     "addr": "0x157f8f8",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30006,
+     "via": "mov",
+     "addr": "0x157f8fc",
+     "reg": "w1",
+     "op": "w1, #0x7536",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 14200.0,
+     "via": "ldr_pool",
+     "va": "0x75707c",
+     "addr": "0x157f914",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30007,
+     "via": "mov",
+     "addr": "0x157f918",
+     "reg": "w1",
+     "op": "w1, #0x7537",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 12000.0,
+     "via": "ldr_pool",
+     "va": "0x756c60",
+     "addr": "0x157f92c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30008,
+     "via": "mov",
+     "addr": "0x157f934",
+     "reg": "w1",
+     "op": "w1, #0x7538",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 9000.0,
+     "via": "ldr_pool",
+     "va": "0x756e24",
+     "addr": "0x157f948",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30009,
+     "via": "mov",
+     "addr": "0x157f950",
+     "reg": "w1",
+     "op": "w1, #0x7539",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 68888.0,
+     "via": "ldr_pool",
+     "va": "0x756e28",
+     "addr": "0x157f968",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30010,
+     "via": "mov",
+     "addr": "0x157f96c",
+     "reg": "w1",
+     "op": "w1, #0x753a",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 300011,
+     "via": "mov+movk",
+     "addr": "0x157f984",
+     "reg": "w1",
+     "op": "w1, #0x93eb",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30011,
+     "via": "mov",
+     "addr": "0x157f9a0",
+     "reg": "w1",
+     "op": "w1, #0x753b",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 5800.0,
+     "via": "ldr_pool",
+     "va": "0x757030",
+     "addr": "0x157f9bc",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30012,
+     "via": "mov",
+     "addr": "0x157f9c0",
+     "reg": "w1",
+     "op": "w1, #0x753c",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 68000.0,
+     "via": "ldr_pool",
+     "va": "0x756f7c",
+     "addr": "0x157f9d8",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30013,
+     "via": "mov",
+     "addr": "0x157f9dc",
+     "reg": "w1",
+     "op": "w1, #0x753d",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 88800.0,
+     "via": "ldr_pool",
+     "va": "0x757080",
+     "addr": "0x157f9f4",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30014,
+     "via": "mov",
+     "addr": "0x157f9f8",
+     "reg": "w1",
+     "op": "w1, #0x753e",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 19800.0,
+     "via": "ldr_pool",
+     "va": "0x756c64",
+     "addr": "0x157fa0c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30015,
+     "via": "mov",
+     "addr": "0x157fa14",
+     "reg": "w1",
+     "op": "w1, #0x753f",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30016,
+     "via": "mov",
+     "addr": "0x157fa2c",
+     "reg": "w1",
+     "op": "w1, #0x7540",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30017,
+     "via": "mov",
+     "addr": "0x157fa48",
+     "reg": "w1",
+     "op": "w1, #0x7541",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30018,
+     "via": "mov",
+     "addr": "0x157fa64",
+     "reg": "w1",
+     "op": "w1, #0x7542",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30019,
+     "via": "mov",
+     "addr": "0x157fa7c",
+     "reg": "w1",
+     "op": "w1, #0x7543",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30020,
+     "via": "mov",
+     "addr": "0x157fa90",
+     "reg": "w1",
+     "op": "w1, #0x7544",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30021,
+     "via": "mov",
+     "addr": "0x157faa4",
+     "reg": "w1",
+     "op": "w1, #0x7545",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1500.0,
+     "via": "ldr_pool",
+     "va": "0x756e0c",
+     "addr": "0x157fab8",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30022,
+     "via": "mov",
+     "addr": "0x157fac0",
+     "reg": "w1",
+     "op": "w1, #0x7546",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 5000.0,
+     "via": "ldr_pool",
+     "va": "0x756f30",
+     "addr": "0x157fad4",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30023,
+     "via": "mov",
+     "addr": "0x157fadc",
+     "reg": "w1",
+     "op": "w1, #0x7547",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30024,
+     "via": "mov",
+     "addr": "0x157faf0",
+     "reg": "w1",
+     "op": "w1, #0x7548",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 15000.0,
+     "via": "ldr_pool",
+     "va": "0x7570a8",
+     "addr": "0x157fb08",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30025,
+     "via": "mov",
+     "addr": "0x157fb10",
+     "reg": "w1",
+     "op": "w1, #0x7549",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30026,
+     "via": "mov",
+     "addr": "0x157fb24",
+     "reg": "w1",
+     "op": "w1, #0x754a",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 35000.0,
+     "via": "ldr_pool",
+     "va": "0x7570d4",
+     "addr": "0x157fb40",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30027,
+     "via": "mov",
+     "addr": "0x157fb44",
+     "reg": "w1",
+     "op": "w1, #0x754b",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 65000.0,
+     "via": "ldr_pool",
+     "va": "0x756c98",
+     "addr": "0x157fb5c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30028,
+     "via": "mov",
+     "addr": "0x157fb60",
+     "reg": "w1",
+     "op": "w1, #0x754c",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30029,
+     "via": "mov",
+     "addr": "0x157fb74",
+     "reg": "w1",
+     "op": "w1, #0x754d",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 6500.0,
+     "via": "ldr_pool",
+     "va": "0x756eb0",
+     "addr": "0x157fb8c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30030,
+     "via": "mov",
+     "addr": "0x157fb90",
+     "reg": "w1",
+     "op": "w1, #0x754e",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 20000.0,
+     "via": "ldr_pool",
+     "va": "0x756d48",
+     "addr": "0x157fba4",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30031,
+     "via": "mov",
+     "addr": "0x157fbac",
+     "reg": "w1",
+     "op": "w1, #0x754f",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30032,
+     "via": "mov",
+     "addr": "0x157fbc0",
+     "reg": "w1",
+     "op": "w1, #0x7550",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30033,
+     "via": "mov",
+     "addr": "0x157fbe0",
+     "reg": "w1",
+     "op": "w1, #0x7551",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30034,
+     "via": "mov",
+     "addr": "0x157fbf4",
+     "reg": "w1",
+     "op": "w1, #0x7552",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30035,
+     "via": "mov",
+     "addr": "0x157fc08",
+     "reg": "w1",
+     "op": "w1, #0x7553",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30036,
+     "via": "mov",
+     "addr": "0x157fc1c",
+     "reg": "w1",
+     "op": "w1, #0x7554",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30037,
+     "via": "mov",
+     "addr": "0x157fc30",
+     "reg": "w1",
+     "op": "w1, #0x7555",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 15500.0,
+     "via": "ldr_pool",
+     "va": "0x756bb0",
+     "addr": "0x157fc48",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30038,
+     "via": "mov",
+     "addr": "0x157fc4c",
+     "reg": "w1",
+     "op": "w1, #0x7556",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 300000.0,
+     "via": "ldr_pool",
+     "va": "0x756d94",
+     "addr": "0x157fc64",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30039,
+     "via": "mov",
+     "addr": "0x157fc68",
+     "reg": "w1",
+     "op": "w1, #0x7557",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 255500.0,
+     "via": "ldr_pool",
+     "va": "0x757084",
+     "addr": "0x157fc7c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30040,
+     "via": "mov",
+     "addr": "0x157fc80",
+     "reg": "w1",
+     "op": "w1, #0x7558",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30041,
+     "via": "mov",
+     "addr": "0x157fc94",
+     "reg": "w1",
+     "op": "w1, #0x7559",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30042,
+     "via": "mov",
+     "addr": "0x157fca8",
+     "reg": "w1",
+     "op": "w1, #0x755a",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30043,
+     "via": "mov",
+     "addr": "0x157fcbc",
+     "reg": "w1",
+     "op": "w1, #0x755b",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30044,
+     "via": "mov",
+     "addr": "0x157fcd0",
+     "reg": "w1",
+     "op": "w1, #0x755c",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30045,
+     "via": "mov",
+     "addr": "0x157fce4",
+     "reg": "w1",
+     "op": "w1, #0x755d",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30046,
+     "via": "mov",
+     "addr": "0x157fcf8",
+     "reg": "w1",
+     "op": "w1, #0x755e",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30047,
+     "via": "mov",
+     "addr": "0x157fd0c",
+     "reg": "w1",
+     "op": "w1, #0x755f",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30048,
+     "via": "mov",
+     "addr": "0x157fd20",
+     "reg": "w1",
+     "op": "w1, #0x7560",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30049,
+     "via": "mov",
+     "addr": "0x157fd34",
+     "reg": "w1",
+     "op": "w1, #0x7561",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30050,
+     "via": "mov",
+     "addr": "0x157fd48",
+     "reg": "w1",
+     "op": "w1, #0x7562",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30051,
+     "via": "mov",
+     "addr": "0x157fd5c",
+     "reg": "w1",
+     "op": "w1, #0x7563",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30052,
+     "via": "mov",
+     "addr": "0x157fd70",
+     "reg": "w1",
+     "op": "w1, #0x7564",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30053,
+     "via": "mov",
+     "addr": "0x157fd84",
+     "reg": "w1",
+     "op": "w1, #0x7565",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30054,
+     "via": "mov",
+     "addr": "0x157fd98",
+     "reg": "w1",
+     "op": "w1, #0x7566",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30055,
+     "via": "mov",
+     "addr": "0x157fdac",
+     "reg": "w1",
+     "op": "w1, #0x7567",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30056,
+     "via": "mov",
+     "addr": "0x157fdc0",
+     "reg": "w1",
+     "op": "w1, #0x7568",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30057,
+     "via": "mov",
+     "addr": "0x157fdd4",
+     "reg": "w1",
+     "op": "w1, #0x7569",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30058,
+     "via": "mov",
+     "addr": "0x157fde8",
+     "reg": "w1",
+     "op": "w1, #0x756a",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30059,
+     "via": "mov",
+     "addr": "0x157fdfc",
+     "reg": "w1",
+     "op": "w1, #0x756b",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30060,
+     "via": "mov",
+     "addr": "0x157fe10",
+     "reg": "w1",
+     "op": "w1, #0x756c",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 31002,
+     "via": "mov",
+     "addr": "0x157fe24",
+     "reg": "w1",
+     "op": "w1, #0x791a",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 22000.0,
+     "via": "ldr_pool",
+     "va": "0x7570d8",
+     "addr": "0x157fe3c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 31003,
+     "via": "mov",
+     "addr": "0x157fe40",
+     "reg": "w1",
+     "op": "w1, #0x791b",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 31000.0,
+     "via": "ldr_pool",
+     "va": "0x756c00",
+     "addr": "0x157fe58",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 31004,
+     "via": "mov",
+     "addr": "0x157fe5c",
+     "reg": "w1",
+     "op": "w1, #0x791c",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 40000.0,
+     "via": "ldr_pool",
+     "va": "0x756dc8",
+     "addr": "0x157fe74",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 31005,
+     "via": "mov",
+     "addr": "0x157fe78",
+     "reg": "w1",
+     "op": "w1, #0x791d",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 31006,
+     "via": "mov",
+     "addr": "0x157fe8c",
+     "reg": "w1",
+     "op": "w1, #0x791e",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 48000.0,
+     "via": "ldr_pool",
+     "va": "0x756c04",
+     "addr": "0x157fea0",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 31007,
+     "via": "mov",
+     "addr": "0x157fea8",
+     "reg": "w1",
+     "op": "w1, #0x791f",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 53000.0,
+     "via": "ldr_pool",
+     "va": "0x756ce4",
+     "addr": "0x157fec0",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 31008,
+     "via": "mov",
+     "addr": "0x157fec4",
+     "reg": "w1",
+     "op": "w1, #0x7920",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 58000.0,
+     "via": "ldr_pool",
+     "va": "0x756e8c",
+     "addr": "0x157fed8",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 31009,
+     "via": "mov",
+     "addr": "0x157fee0",
+     "reg": "w1",
+     "op": "w1, #0x7921",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 31010,
+     "via": "mov",
+     "addr": "0x157fef4",
+     "reg": "w1",
+     "op": "w1, #0x7922",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 160000.0,
+     "via": "ldr_pool",
+     "va": "0x756eb4",
+     "addr": "0x157ff0c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 31011,
+     "via": "mov",
+     "addr": "0x157ff10",
+     "reg": "w1",
+     "op": "w1, #0x7923",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 186000.0,
+     "via": "ldr_pool",
+     "va": "0x756c30",
+     "addr": "0x157ff28",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 31012,
+     "via": "mov",
+     "addr": "0x157ff2c",
+     "reg": "w1",
+     "op": "w1, #0x7924",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 31013,
+     "via": "mov",
+     "addr": "0x157ff40",
+     "reg": "w1",
+     "op": "w1, #0x7925",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 86000.0,
+     "via": "ldr_pool",
+     "va": "0x756d50",
+     "addr": "0x157ff58",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 31014,
+     "via": "mov",
+     "addr": "0x157ff5c",
+     "reg": "w1",
+     "op": "w1, #0x7926",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 31015,
+     "via": "mov",
+     "addr": "0x157ff74",
+     "reg": "w1",
+     "op": "w1, #0x7927",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 31016,
+     "via": "mov",
+     "addr": "0x157ff88",
+     "reg": "w1",
+     "op": "w1, #0x7928",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 31017,
+     "via": "mov",
+     "addr": "0x157ff9c",
+     "reg": "w1",
+     "op": "w1, #0x7929",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 36000.0,
+     "via": "ldr_pool",
+     "va": "0x756c9c",
+     "addr": "0x157ffb4",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 33002,
+     "via": "mov",
+     "addr": "0x157ffb8",
+     "reg": "w1",
+     "op": "w1, #0x80ea",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 33003,
+     "via": "mov",
+     "addr": "0x157ffcc",
+     "reg": "w1",
+     "op": "w1, #0x80eb",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 33004,
+     "via": "mov",
+     "addr": "0x157ffe0",
+     "reg": "w1",
+     "op": "w1, #0x80ec",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 28000.0,
+     "via": "ldr_pool",
+     "va": "0x756f80",
+     "addr": "0x157fff8",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 33005,
+     "via": "mov",
+     "addr": "0x157fffc",
+     "reg": "w1",
+     "op": "w1, #0x80ed",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 2500.0,
+     "via": "ldr_pool",
+     "va": "0x756fa4",
+     "addr": "0x1580014",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 34001,
+     "via": "mov",
+     "addr": "0x1580018",
+     "reg": "w1",
+     "op": "w1, #0x84d1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 34003,
+     "via": "mov",
+     "addr": "0x1580030",
+     "reg": "w1",
+     "op": "w1, #0x84d3",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 6000.0,
+     "via": "ldr_pool",
+     "va": "0x756bb4",
+     "addr": "0x158004c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 34004,
+     "via": "mov",
+     "addr": "0x1580050",
+     "reg": "w1",
+     "op": "w1, #0x84d4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 34005,
+     "via": "mov",
+     "addr": "0x1580064",
+     "reg": "w1",
+     "op": "w1, #0x84d5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 34006,
+     "via": "mov",
+     "addr": "0x158007c",
+     "reg": "w1",
+     "op": "w1, #0x84d6",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 500000.0,
+     "via": "ldr_pool",
+     "va": "0x756dcc",
+     "addr": "0x1580098",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 36001,
+     "via": "mov",
+     "addr": "0x158009c",
+     "reg": "w1",
+     "op": "w1, #0x8ca1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 560000.0,
+     "via": "ldr_pool",
+     "va": "0x756ce8",
+     "addr": "0x15800b0",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 36002,
+     "via": "mov",
+     "addr": "0x15800b4",
+     "reg": "w1",
+     "op": "w1, #0x8ca2",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 400000.0,
+     "via": "ldr_pool",
+     "va": "0x756afc",
+     "addr": "0x15800c8",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 36003,
+     "via": "mov",
+     "addr": "0x15800cc",
+     "reg": "w1",
+     "op": "w1, #0x8ca3",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 480000.0,
+     "via": "ldr_pool",
+     "va": "0x756fac",
+     "addr": "0x15800e0",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 36004,
+     "via": "mov",
+     "addr": "0x15800e4",
+     "reg": "w1",
+     "op": "w1, #0x8ca4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 38001,
+     "via": "mov",
+     "addr": "0x15800f8",
+     "reg": "w1",
+     "op": "w1, #0x9471",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35000,
+     "via": "mov",
+     "addr": "0x1580114",
+     "reg": "w1",
+     "op": "w1, #0x88b8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35001,
+     "via": "mov",
+     "addr": "0x1580128",
+     "reg": "w1",
+     "op": "w1, #0x88b9",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35002,
+     "via": "mov",
+     "addr": "0x1580140",
+     "reg": "w1",
+     "op": "w1, #0x88ba",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35003,
+     "via": "mov",
+     "addr": "0x1580154",
+     "reg": "w1",
+     "op": "w1, #0x88bb",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35004,
+     "via": "mov",
+     "addr": "0x1580168",
+     "reg": "w1",
+     "op": "w1, #0x88bc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35005,
+     "via": "mov",
+     "addr": "0x158017c",
+     "reg": "w1",
+     "op": "w1, #0x88bd",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35006,
+     "via": "mov",
+     "addr": "0x1580194",
+     "reg": "w1",
+     "op": "w1, #0x88be",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35007,
+     "via": "mov",
+     "addr": "0x15801a4",
+     "reg": "w1",
+     "op": "w1, #0x88bf",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35008,
+     "via": "mov",
+     "addr": "0x15801b8",
+     "reg": "w1",
+     "op": "w1, #0x88c0",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35009,
+     "via": "mov",
+     "addr": "0x15801d4",
+     "reg": "w1",
+     "op": "w1, #0x88c1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35010,
+     "via": "mov",
+     "addr": "0x15801e8",
+     "reg": "w1",
+     "op": "w1, #0x88c2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35011,
+     "via": "mov",
+     "addr": "0x15801fc",
+     "reg": "w1",
+     "op": "w1, #0x88c3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35012,
+     "via": "mov",
+     "addr": "0x1580210",
+     "reg": "w1",
+     "op": "w1, #0x88c4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35013,
+     "via": "mov",
+     "addr": "0x1580224",
+     "reg": "w1",
+     "op": "w1, #0x88c5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35014,
+     "via": "mov",
+     "addr": "0x1580238",
+     "reg": "w1",
+     "op": "w1, #0x88c6",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35015,
+     "via": "mov",
+     "addr": "0x158024c",
+     "reg": "w1",
+     "op": "w1, #0x88c7",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35016,
+     "via": "mov",
+     "addr": "0x1580264",
+     "reg": "w1",
+     "op": "w1, #0x88c8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35017,
+     "via": "mov",
+     "addr": "0x1580278",
+     "reg": "w1",
+     "op": "w1, #0x88c9",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35018,
+     "via": "mov",
+     "addr": "0x158028c",
+     "reg": "w1",
+     "op": "w1, #0x88ca",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35019,
+     "via": "mov",
+     "addr": "0x15802a4",
+     "reg": "w1",
+     "op": "w1, #0x88cb",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35020,
+     "via": "mov",
+     "addr": "0x15802bc",
+     "reg": "w1",
+     "op": "w1, #0x88cc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35021,
+     "via": "mov",
+     "addr": "0x15802d0",
+     "reg": "w1",
+     "op": "w1, #0x88cd",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35022,
+     "via": "mov",
+     "addr": "0x15802e4",
+     "reg": "w1",
+     "op": "w1, #0x88ce",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35023,
+     "via": "mov",
+     "addr": "0x15802f8",
+     "reg": "w1",
+     "op": "w1, #0x88cf",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35024,
+     "via": "mov",
+     "addr": "0x1580310",
+     "reg": "w1",
+     "op": "w1, #0x88d0",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35025,
+     "via": "mov",
+     "addr": "0x1580324",
+     "reg": "w1",
+     "op": "w1, #0x88d1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35026,
+     "via": "mov",
+     "addr": "0x1580334",
+     "reg": "w1",
+     "op": "w1, #0x88d2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35027,
+     "via": "mov",
+     "addr": "0x158034c",
+     "reg": "w1",
+     "op": "w1, #0x88d3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35028,
+     "via": "mov",
+     "addr": "0x1580360",
+     "reg": "w1",
+     "op": "w1, #0x88d4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35029,
+     "via": "mov",
+     "addr": "0x1580374",
+     "reg": "w1",
+     "op": "w1, #0x88d5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35030,
+     "via": "mov",
+     "addr": "0x1580384",
+     "reg": "w1",
+     "op": "w1, #0x88d6",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35031,
+     "via": "mov",
+     "addr": "0x1580398",
+     "reg": "w1",
+     "op": "w1, #0x88d7",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35032,
+     "via": "mov",
+     "addr": "0x15803ac",
+     "reg": "w1",
+     "op": "w1, #0x88d8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35033,
+     "via": "mov",
+     "addr": "0x15803c4",
+     "reg": "w1",
+     "op": "w1, #0x88d9",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35034,
+     "via": "mov",
+     "addr": "0x15803d8",
+     "reg": "w1",
+     "op": "w1, #0x88da",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35035,
+     "via": "mov",
+     "addr": "0x15803ec",
+     "reg": "w1",
+     "op": "w1, #0x88db",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35036,
+     "via": "mov",
+     "addr": "0x1580400",
+     "reg": "w1",
+     "op": "w1, #0x88dc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35037,
+     "via": "mov",
+     "addr": "0x1580410",
+     "reg": "w1",
+     "op": "w1, #0x88dd",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35038,
+     "via": "mov",
+     "addr": "0x1580424",
+     "reg": "w1",
+     "op": "w1, #0x88de",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35039,
+     "via": "mov",
+     "addr": "0x158043c",
+     "reg": "w1",
+     "op": "w1, #0x88df",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35040,
+     "via": "mov",
+     "addr": "0x158044c",
+     "reg": "w1",
+     "op": "w1, #0x88e0",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35041,
+     "via": "mov",
+     "addr": "0x1580460",
+     "reg": "w1",
+     "op": "w1, #0x88e1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35042,
+     "via": "mov",
+     "addr": "0x1580478",
+     "reg": "w1",
+     "op": "w1, #0x88e2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35043,
+     "via": "mov",
+     "addr": "0x158048c",
+     "reg": "w1",
+     "op": "w1, #0x88e3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35044,
+     "via": "mov",
+     "addr": "0x158049c",
+     "reg": "w1",
+     "op": "w1, #0x88e4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35045,
+     "via": "mov",
+     "addr": "0x15804b4",
+     "reg": "w1",
+     "op": "w1, #0x88e5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35046,
+     "via": "mov",
+     "addr": "0x15804c8",
+     "reg": "w1",
+     "op": "w1, #0x88e6",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35047,
+     "via": "mov",
+     "addr": "0x15804d8",
+     "reg": "w1",
+     "op": "w1, #0x88e7",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35048,
+     "via": "mov",
+     "addr": "0x15804ec",
+     "reg": "w1",
+     "op": "w1, #0x88e8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35049,
+     "via": "mov",
+     "addr": "0x1580504",
+     "reg": "w1",
+     "op": "w1, #0x88e9",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35050,
+     "via": "mov",
+     "addr": "0x1580514",
+     "reg": "w1",
+     "op": "w1, #0x88ea",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35051,
+     "via": "mov",
+     "addr": "0x1580528",
+     "reg": "w1",
+     "op": "w1, #0x88eb",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35052,
+     "via": "mov",
+     "addr": "0x1580540",
+     "reg": "w1",
+     "op": "w1, #0x88ec",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35053,
+     "via": "mov",
+     "addr": "0x1580554",
+     "reg": "w1",
+     "op": "w1, #0x88ed",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35054,
+     "via": "mov",
+     "addr": "0x1580568",
+     "reg": "w1",
+     "op": "w1, #0x88ee",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35055,
+     "via": "mov",
+     "addr": "0x158057c",
+     "reg": "w1",
+     "op": "w1, #0x88ef",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35056,
+     "via": "mov",
+     "addr": "0x1580590",
+     "reg": "w1",
+     "op": "w1, #0x88f0",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35057,
+     "via": "mov",
+     "addr": "0x15805a4",
+     "reg": "w1",
+     "op": "w1, #0x88f1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35058,
+     "via": "mov",
+     "addr": "0x15805b4",
+     "reg": "w1",
+     "op": "w1, #0x88f2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 240,
+     "via": "add",
+     "addr": "0x15805e8",
+     "reg": "sp",
+     "op": "sp, sp, #0xf0",
+     "role": "return"
+    },
+    {
+     "kind": "float",
+     "value": 1000.0,
+     "via": "mov+fmov",
+     "bits": "0x447a0000",
+     "addr": "0x157f860",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 5600.0,
+     "via": "mov+fmov",
+     "bits": "0x45af0000",
+     "addr": "0x157f980",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 4800.0,
+     "via": "mov+fmov",
+     "bits": "0x45960000",
+     "addr": "0x157f99c",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 2400.0,
+     "via": "mov+fmov",
+     "bits": "0x45160000",
+     "addr": "0x157fa40",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 32000.0,
+     "via": "mov+fmov",
+     "bits": "0x46fa0000",
+     "addr": "0x157fa5c",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 4000.0,
+     "via": "mov+fmov",
+     "bits": "0x457a0000",
+     "addr": "0x158002c",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 7200.0,
+     "via": "mov+fmov",
+     "bits": "0x45e10000",
+     "addr": "0x15800f4",
+     "role": "load"
+    }
+   ]
+  }
+ ]
+}

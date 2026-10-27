@@ -1,0 +1,644 @@
+{
+ "class": "Droid_Data_Balance",
+ "note": "drone: damage, timeout, giá unlock/upgrade",
+ "methods": [
+  {
+   "method": "GetBaseDamage",
+   "signature": "public static float GetBaseDamage(int _droidIndex) { }",
+   "offset": "0x144c928",
+   "getter_value": null,
+   "rva": "0x1450928",
+   "bytes": 420,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1450980",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1450998",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14509f4",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x1450a10",
+     "reg": "w9",
+     "op": "w9, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x1450a1c",
+     "reg": "x9",
+     "op": "x9, x10, x9, lsl #32",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30,
+     "via": "add",
+     "addr": "0x1450a20",
+     "reg": "x9",
+     "op": "x9, x0, x9, asr #30",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x1450a3c",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1450a50",
+     "reg": "x8",
+     "op": "x8, x0, w21, uxtw #2",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x1450a64",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 101,
+     "via": "sub",
+     "addr": "0x1450a98",
+     "reg": "w9",
+     "op": "w9, w19, #0x65",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1450aa4",
+     "reg": "x8",
+     "op": "x8, x8, w9, sxtw #2",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x1450a58",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "GetDroidTimeOut",
+   "signature": "public static float GetDroidTimeOut(int _droidIndex) { }",
+   "offset": "0x144d8d8",
+   "getter_value": null,
+   "rva": "0x14518d8",
+   "bytes": 188,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1451900",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 15.0,
+     "via": "fmov",
+     "addr": "0x145190c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1451970",
+     "reg": "x8",
+     "op": "x8, x8, w19, uxtw #2",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetUnlockCost",
+   "signature": "public static int GetUnlockCost(int _droidIndex) { }",
+   "offset": "0x144d994",
+   "getter_value": null,
+   "rva": "0x1451994",
+   "bytes": 128,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14519c0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 101,
+     "via": "sub",
+     "addr": "0x14519ec",
+     "reg": "w9",
+     "op": "w9, w19, #0x65",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x14519f8",
+     "reg": "x8",
+     "op": "x8, x8, w9, sxtw #2",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetUnlockStarCost",
+   "signature": "public static int GetUnlockStarCost(int _droidIndex) { }",
+   "offset": "0x144da14",
+   "getter_value": null,
+   "rva": "0x1451a14",
+   "bytes": 128,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1451a40",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 101,
+     "via": "sub",
+     "addr": "0x1451a6c",
+     "reg": "w9",
+     "op": "w9, w19, #0x65",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1451a78",
+     "reg": "x8",
+     "op": "x8, x8, w9, sxtw #2",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetUpgadeCostCoins",
+   "signature": "public static int GetUpgadeCostCoins(int _droidIndex, int _droidLv) { }",
+   "offset": "0x144da94",
+   "getter_value": null,
+   "rva": "0x1451a94",
+   "bytes": 104,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1451ac8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 101,
+     "via": "sub",
+     "addr": "0x1451ae0",
+     "reg": "w0",
+     "op": "w0, w20, #0x65",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetUpgradeCostGems",
+   "signature": "public static int GetUpgradeCostGems(int _droidIndex, int _droidLv) { }",
+   "offset": "0x144dafc",
+   "getter_value": null,
+   "rva": "0x1451afc",
+   "bytes": 104,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1451b30",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 101,
+     "via": "sub",
+     "addr": "0x1451b48",
+     "reg": "w0",
+     "op": "w0, w20, #0x65",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetDroidRank",
+   "signature": "public static int GetDroidRank(int _droidIndex) { }",
+   "offset": "0x144db64",
+   "getter_value": null,
+   "rva": "0x1451b64",
+   "bytes": 128,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1451b90",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 101,
+     "via": "sub",
+     "addr": "0x1451bbc",
+     "reg": "w9",
+     "op": "w9, w19, #0x65",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1451bc8",
+     "reg": "x8",
+     "op": "x8, x8, w9, sxtw #2",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetDroidLevel",
+   "signature": "public static int GetDroidLevel(int _droidIndex) { }",
+   "offset": "0x144dbe4",
+   "getter_value": null,
+   "rva": "0x1451be4",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "SetDroidLevel",
+   "signature": "public static void SetDroidLevel(int _droidIndex, int _lv) { }",
+   "offset": "0x144dbec",
+   "getter_value": null,
+   "rva": "0x1451bec",
+   "bytes": 168,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1451c34",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x1451c3c",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "IsBought",
+   "signature": "public static bool IsBought(int _droidIndex) { }",
+   "offset": "0x144dc94",
+   "getter_value": null,
+   "rva": "0x1451c94",
+   "bytes": 304,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1451cf0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1451d50",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x1451d68",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x1451db0",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "SetBought",
+   "signature": "public static void SetBought(int _droidIndex) { }",
+   "offset": "0x144ddc4",
+   "getter_value": null,
+   "rva": "0x1451dc4",
+   "bytes": 180,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1451e0c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x1451e20",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1451e58",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x144de78",
+   "getter_value": null,
+   "rva": "0x1451e78",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "cctor",
+   "signature": "private static void .cctor() { }",
+   "offset": "0x144de80",
+   "getter_value": null,
+   "rva": "0x1451e80",
+   "bytes": 408,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1451f0c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 50,
+     "via": "mov",
+     "addr": "0x1451f18",
+     "reg": "w9",
+     "op": "w9, #0x32",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1451f1c",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "mov",
+     "addr": "0x1451f44",
+     "reg": "w1",
+     "op": "w1, #6",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "mov",
+     "addr": "0x1451f6c",
+     "reg": "w1",
+     "op": "w1, #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x1451f88",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 500,
+     "via": "mov",
+     "addr": "0x1451f90",
+     "reg": "w9",
+     "op": "w9, #0x1f4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x1451f94",
+     "reg": "w8",
+     "op": "w8, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 800,
+     "via": "mov",
+     "addr": "0x1451fa0",
+     "reg": "w8",
+     "op": "w8, #0x320",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "mov",
+     "addr": "0x1451fb0",
+     "reg": "w1",
+     "op": "w1, #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "mov",
+     "addr": "0x1451fdc",
+     "reg": "w1",
+     "op": "w1, #3",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 5,
+     "slot_val": "0x80000139",
+     "slot_hi": "0x8000013b",
+     "a": "0x2bd48e8",
+     "addr": "0x1451f3c",
+     "array_new_addr": "0x1451f2c",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 6,
+     "slot_val": "0x8000059b",
+     "slot_hi": "0x8000059d",
+     "a": "0x2bd5a70",
+     "addr": "0x1451f64",
+     "array_new_addr": "0x1451f54",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 3,
+     "slot_val": "0x800001b5",
+     "slot_hi": "0x800001b7",
+     "a": "0x2bd4ad8",
+     "addr": "0x1451fd4",
+     "array_new_addr": "0x1451fc4",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}
