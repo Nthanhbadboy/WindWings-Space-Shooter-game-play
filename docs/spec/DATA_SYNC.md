@@ -5731,6 +5731,32 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   thiết kế (bảng trần §24.100/24.103/24.110) — **bắt đầu đánh dấu
   STATIC-COMPLETE CEILING REACHED trong DR**.
 - **Datas/ 184 + 2 pulled (160/132) = 186 (needle sync commit này).**
+
+### 24.112 535-161 ĐÓNG — BẢNG RVA TOÀN DUMP (cơ sở đặt tên; khép open-items tên 154/159/160) (lần 123)
+
+- **161 — ĐÓNG** (HANDOFF `6435839584` @ `1eb0dcf022`; runs
+  `40464321188`/`40464321189`/`40464321233` ✓; artifact pulled
+  `datas/l2_535b0541_dump_rva_index.json.gz` **5.133B pin `d963dfc0…` ✓**;
+  1.025 local): **`dump.cs` có HAI bảng địa chỉ** — method-table **64.727**
+  RVA + generic-table (phụ lục `/* GenericInstMethod :`) **49.561** = **114.288**
+  tên, 0 trùng · 8 slice: 2.499 records → 1.788 method phân biệt, **1.788/1.788**
+  khớp dump (class + signature) · 20.174 site `bl` = 1.104 slice + 5.638
+  method + 3.218 generic + **10.214 chưa tên** (18 helper dưới method đầu +
+  4 đích sau method cuối) · **không `bl` nào rơi giữa hai method có tên**.
+  **Đặt tên (16 RVA):** `Action<int>..ctor` **25841028** (chỉ ở bảng generic —
+  đóng câu mở của 159) · `Arena_Shop.<>c__DisplayClass31_2/31_3..ctor`
+  **22771696/22772596** (câu mở của 160) · `PVP_Shop.GetIdItem` 19941788 ·
+  `List<object>.AddWithResize` 29195864 (**1.305 site** — nhiều nhất lane) ·
+  get_ArenaMedal/PvPMedal · String.Format · SetActive · set_Value · hai
+  SetPopup. **Xác nhận 154 đúng:** `Math.Round` helper 43584368 = sau method
+  cuối 868B, không có trong cả hai bảng ⇒ không đặt tên là đúng. **Cảnh báo
+  mới:** 2.652 đích `b` (3.062 site) rơi giữa thân method khác = jump table —
+  cấm đọc `b` mid-body thành lời gọi. Bounds: 18 helper không nằm trong
+  metadata; target `Action<int>` vẫn cần bảng token.
+- **Ghi chú ceiling:** 161 = việc cơ sở-hạ tầng **trong lane #29** (đóng
+  open-items cụ thể), không nâng mức runtime — ceiling lần 122 giữ nguyên;
+  các open-item "RVA này là gì" nay khép hoặc bounded.
+- **Datas/ 186 + 1 pulled (161) = 187 (needle sync commit này).**
   ② **Các mục runtime còn mở (19 RUNTIME + live-DPS time-series...):** phụ
   thuộc mục tiêu — với **clone/playable static-complete** (trần lần 80):
   ảnh hưởng **THẤP** (mọi giá trị ship-in-binary đã decode; phần thiếu là

@@ -72,6 +72,14 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 123 — 27/10, 535-161 ĐÓNG — bảng RVA toàn dump):**
+> **161** (`1eb0dcf022` · `d963dfc0…` · CI 3/3 · 1025 local): 2 bảng dump =
+> **114.288 tên** · 1.788/1.788 slice-method khớp · 20.174 `bl` xếp loại ·
+> tên mới: `Action<int>..ctor` 25841028 (159-closed) · DisplayClass ctors
+> 22771696/22772596 (160-closed) · `GetIdItem` · xác nhận 154 đúng (Math.Round
+> ngoài bảng) · cảnh báo jump-table `b` mid-body · ceiling giữ nguyên
+> (việc lane #29, đóng open-items tên). datas/ = **187**. verify 209/0/2.
+>
 > **Sửa lại (lần 122 — 27/10, #27 6/6 + 160/132 ĐÓNG + CEILING):**
 > **ERRATUM-127 HIỆU LỰC** (ef không phản đối sau 1 vòng; spec-issue
 > `28d4b3d1a`) ⇒ review-127 APPROVE-bounded ⇒ **#27 review chuỗi 6/6**
