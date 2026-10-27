@@ -17,103 +17,88 @@ import csv
 import json
 import math
 import os
+import sys
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(HERE))
+import pbr25d
+
 AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
 
-# Solar Neon Arcade-Pop Palette (Variant B)
-NAVY_OUTLINE = (8, 20, 62, 255)      # #08143E — crisp cel outline (not black)
-PEARL_LIGHT  = (250, 253, 255, 255)  # sunlit top-left highlight
-PEARL_BASE   = (226, 238, 255, 255)  # pearl-white armor mid
-PEARL_SHADE  = (176, 202, 242, 255)  # cool sky-blue shadow
+# Solar Neon 2.5D Semi-Realistic Metallic Alloy Palette (Variant B — zero cartoon outline!)
+NAVY_OUTLINE = (18, 36, 82, 255)
+PEARL_LIGHT  = (253, 254, 255, 255)
+PEARL_BASE   = (208, 224, 246, 255)
+PEARL_SHADE  = (68, 92, 138, 255)
 
-AZURE_LIGHT  = (68, 164, 255, 255)   # bright cobalt-cyan highlight
-AZURE_BASE   = (24, 108, 242, 255)   # electric cobalt-blue base
-AZURE_SHADE  = (14, 62, 168, 255)    # deep royal-blue shade
+AZURE_LIGHT  = (132, 212, 255, 255)
+AZURE_BASE   = (26, 114, 244, 255)
+AZURE_SHADE  = (10, 38, 108, 255)
 
-GOLD_LIGHT   = (255, 244, 132, 255)
-GOLD_BASE    = (255, 208, 18, 255)
-GOLD_SHADE   = (230, 126, 0, 255)
+GOLD_LIGHT   = (255, 250, 168, 255)
+GOLD_BASE    = (248, 188, 18, 255)
+GOLD_SHADE   = (118, 52, 4, 255)
 
-TANG_LIGHT   = (255, 172, 64, 255)
-TANG_BASE    = (255, 106, 12, 255)
-TANG_SHADE   = (198, 52, 8, 255)
+TANG_LIGHT   = (255, 198, 102, 255)
+TANG_BASE    = (246, 98, 16, 255)
+TANG_SHADE   = (108, 26, 6, 255)
 
-CYAN_WHITE   = (232, 255, 255, 255)
-CYAN_LIGHT   = (112, 252, 255, 255)
-CYAN_BASE    = (0, 226, 255, 255)
-CYAN_SHADE   = (0, 148, 204, 255)
+CYAN_WHITE   = (238, 255, 255, 255)
+CYAN_LIGHT   = (136, 252, 255, 255)
+CYAN_BASE    = (0, 218, 252, 255)
+CYAN_SHADE   = (0, 82, 136, 255)
 
-EMERALD_BASE = (0, 238, 180, 255)
-EMER_LIGHT   = (140, 255, 224, 255)
-EMER_BASE    = (0, 238, 180, 255)
-EMER_SHADE   = (0, 152, 118, 255)
-MAGENTA_BASE = (255, 42, 146, 255)
+EMERALD_BASE = (12, 218, 158, 255)
+EMER_LIGHT   = (156, 255, 226, 255)
+EMER_BASE    = (12, 218, 158, 255)
+EMER_SHADE   = (6, 78, 58, 255)
+MAGENTA_BASE = (238, 38, 136, 255)
 
 
-def downsample_straight_rgba(im, target_size):
-    """Downsample RGBA image via premultiplied Lanczos, then unpremultiply back to
-    straight RGBA so silhouette borders have ZERO dark or white fringes (Gate A1)."""
-    if im.size == target_size:
-        return im.copy()
-    arr = np.asarray(im, dtype=np.float32)
-    a = arr[:, :, 3:4] / 255.0
-    premul = np.concatenate([arr[:, :, :3] * a, arr[:, :, 3:4]], axis=2)
-    pm_im = Image.fromarray(np.clip(np.round(premul), 0, 255).astype(np.uint8), mode="RGBA")
-    pm_small = pm_im.resize(target_size, Image.LANCZOS)
-    s_arr = np.asarray(pm_small, dtype=np.float32)
-    sa = s_arr[:, :, 3:4] / 255.0
-    rgb = np.where(sa > 1e-3, s_arr[:, :, :3] / np.maximum(sa, 1e-3), 0.0)
-    out = np.concatenate([np.clip(np.round(rgb), 0, 255), np.clip(np.round(s_arr[:, :, 3:4]), 0, 255)], axis=2)
-    # Zero out tiny sub-threshold alpha dust at extreme outer corners
-    out[out[:, :, 3] < 4] = 0
-    return Image.fromarray(out.astype(np.uint8), mode="RGBA")
+downsample_straight_rgba = pbr25d.downsample_straight_rgba
+
+# Distinct sunlit 2.5D anodized metallic liveries across the 25-ship & 13-drone fleet (keeps Family 0 = Hero Pearl/Cobalt/Gold)
+SHIP_LIVERIES = [
+    # 0: Hero Brushed Titanium + Cobalt-Azure + Cyan Canopy
+    {"hull": ((196, 214, 240, 255), (56, 78, 122, 255), (252, 254, 255, 255)),
+     "wing": ((32, 118, 242, 255),  (10, 38, 108, 255), (142, 214, 255, 255)),
+     "glass": (0, 232, 255)},
+    # 1: Burnished Solar-Gold + Crimson-Ruby Alloy + Amber Canopy
+    {"hull": ((236, 174, 28, 255),  (92, 42, 6, 255),   (255, 246, 168, 255)),
+     "wing": ((214, 38, 82, 255),   (78, 10, 32, 255),  (255, 142, 172, 255)),
+     "glass": (0, 238, 255)},
+    # 2: Brushed Silver-Chrome + Emerald-Jade Alloy + Lime-Cyan Canopy
+    {"hull": ((204, 218, 232, 255), (62, 78, 96, 255),  (252, 255, 255, 255)),
+     "wing": ((18, 188, 136, 255),  (6, 68, 48, 255),   (138, 255, 214, 255)),
+     "glass": (142, 255, 86)},
+    # 3: Anodized Crimson-Rose + Brushed Titanium + Solar-Gold Canopy
+    {"hull": ((222, 48, 98, 255),   (82, 12, 38, 255),  (255, 156, 188, 255)),
+     "wing": ((182, 198, 224, 255), (52, 68, 98, 255),  (248, 252, 255, 255)),
+     "glass": (255, 208, 28)},
+    # 4: Iridescent Royal-Violet + Electric-Cyan Alloy + Magenta Canopy
+    {"hull": ((132, 68, 228, 255),  (44, 16, 102, 255), (208, 166, 255, 255)),
+     "wing": ((16, 176, 232, 255),  (8, 58, 104, 255),  (148, 244, 255, 255)),
+     "glass": (255, 72, 188)},
+    # 5: Special #25 Brushed Gunmetal-Silver Prototype
+    {"hull": ((168, 178, 194, 255), (48, 54, 66, 255),  (242, 246, 252, 255)),
+     "wing": ((108, 118, 136, 255), (32, 38, 48, 255),  (204, 214, 228, 255)),
+     "glass": (180, 238, 255)},
+]
+ACTIVE_LIVERY = SHIP_LIVERIES[0]
 
 
 def draw_cel_poly(canvas, pts, base_c, shade_c, light_c, outline_w=6, outline_c=NAVY_OUTLINE):
-    """Draw a 3-tone stepped cel-shaded polygon lit from 30 deg top-left (-0.75, -0.66)."""
-    if len(pts) < 3:
-        return
-    W, H = canvas.size
-    mask = Image.new("L", (W, H), 0)
-    md = ImageDraw.Draw(mask)
-    md.polygon(pts, fill=255)
-
-    xs = [p[0] for p in pts]
-    ys = [p[1] for p in pts]
-    x0, y0 = max(0, int(min(xs)) - outline_w - 4), max(0, int(min(ys)) - outline_w - 4)
-    x1, y1 = min(W, int(max(xs)) + outline_w + 5), min(H, int(max(ys)) + outline_w + 5)
-    if x1 <= x0 or y1 <= y0:
-        return
-
-    sub_m = np.asarray(mask.crop((x0, y0, x1, y1)), dtype=np.uint8)
-    yy, xx = np.mgrid[y0:y1, x0:x1]
-    span = max(1.0, ((max(xs) - min(xs)) + (max(ys) - min(ys))) * 0.5)
-    cx, cy = (min(xs) + max(xs)) * 0.5, (min(ys) + max(ys)) * 0.5
-    # Directional coordinate along top-left -> bottom-right axis
-    proj = ((xx - cx) * 0.72 + (yy - cy) * 0.69) / (span * 0.48)
-
-    patch = np.zeros((y1 - y0, x1 - x0, 4), dtype=np.uint8)
-    lit = proj < -0.22
-    shd = proj > 0.26
-    mid = (~lit) & (~shd)
-
-    for cond, col in [(lit, light_c), (mid, base_c), (shd, shade_c)]:
-        sel = cond & (sub_m > 127)
-        patch[sel] = col
-
-    layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    layer.paste(Image.fromarray(patch, mode="RGBA"), (x0, y0))
-
-    if outline_w > 0:
-        od = ImageDraw.Draw(layer)
-        closed = list(pts) + [pts[0]]
-        od.line(closed, fill=outline_c, width=outline_w, joint="curve")
-
-    canvas.alpha_composite(layer)
+    if base_c == PEARL_BASE:
+        base_c, shade_c, light_c = ACTIVE_LIVERY["hull"]
+    elif base_c == AZURE_BASE:
+        base_c, shade_c, light_c = ACTIVE_LIVERY["wing"]
+    pbr25d.draw_25d_metal_poly(
+        canvas, pts, base_c, shade_c, light_c,
+        metallic=0.86, greebles=True, cast_ao=True, glow_vent_c=ACTIVE_LIVERY["glass"],
+    )
 
 
 def mirror_pts(pts, cx):
@@ -121,14 +106,12 @@ def mirror_pts(pts, cx):
 
 
 def draw_sym_cel(canvas, right_pts, cx, base_c, shade_c, light_c, outline_w=6):
-    """Draw mirrored left & right cel-shaded polygons."""
     left_pts = mirror_pts(right_pts, cx)
-    draw_cel_poly(canvas, left_pts, base_c, shade_c, light_c, outline_w=outline_w)
-    draw_cel_poly(canvas, right_pts, base_c, shade_c, light_c, outline_w=outline_w)
+    draw_cel_poly(canvas, left_pts, base_c, shade_c, light_c)
+    draw_cel_poly(canvas, right_pts, base_c, shade_c, light_c)
 
 
 def draw_canopy(canvas, cx, y_top, y_bot, half_w, outline_w=6):
-    """Draw signature gleaming Neon-Cyan crystal cockpit canopy with orange-gold collar."""
     h = y_bot - y_top
     collar = [
         (cx, y_top - h * 0.16),
@@ -138,8 +121,7 @@ def draw_canopy(canvas, cx, y_top, y_bot, half_w, outline_w=6):
         (cx - half_w * 1.12, y_bot + h * 0.14),
         (cx - half_w * 1.28, y_top + h * 0.42),
     ]
-    draw_cel_poly(canvas, collar, TANG_BASE, TANG_SHADE, GOLD_BASE, outline_w=outline_w)
-
+    pbr25d.draw_25d_metal_poly(canvas, collar, GOLD_BASE, TANG_SHADE, GOLD_LIGHT, metallic=0.90, greebles=False)
     glass = [
         (cx, y_top),
         (cx + half_w * 0.92, y_top + h * 0.36),
@@ -148,46 +130,37 @@ def draw_canopy(canvas, cx, y_top, y_bot, half_w, outline_w=6):
         (cx - half_w * 0.78, y_bot - h * 0.12),
         (cx - half_w * 0.92, y_top + h * 0.36),
     ]
-    draw_cel_poly(canvas, glass, CYAN_BASE, CYAN_SHADE, CYAN_LIGHT, outline_w=outline_w)
-
-    # Specular white-cyan glint on upper-left facet
-    d = ImageDraw.Draw(canvas)
-    glint = [
-        (cx - half_w * 0.12, y_top + h * 0.12),
-        (cx - half_w * 0.56, y_top + h * 0.38),
-        (cx - half_w * 0.38, y_top + h * 0.66),
-        (cx - half_w * 0.08, y_top + h * 0.46),
-    ]
-    d.polygon(glint, fill=CYAN_WHITE)
+    pbr25d.draw_25d_glass_dome(canvas, glass, core_rgb=ACTIVE_LIVERY["glass"], deep_rgb=(8, 30, 82))
 
 
 def draw_gun_barrel(canvas, x, y_tip, y_base, w, outline_w=5):
     pts = [
         (x - w * 0.45, y_tip),
         (x + w * 0.45, y_tip),
-        (x + w * 0.62, y_base),
-        (x - w * 0.62, y_base),
+        (x + w * 0.66, y_base),
+        (x - w * 0.66, y_base),
     ]
-    draw_cel_poly(canvas, pts, PEARL_BASE, AZURE_SHADE, PEARL_LIGHT, outline_w=outline_w)
+    pbr25d.draw_25d_metal_poly(canvas, pts, PEARL_BASE, PEARL_SHADE, PEARL_LIGHT, metallic=0.88, greebles=False)
     tip = [
-        (x - w * 0.55, y_tip - w * 0.3),
-        (x + w * 0.55, y_tip - w * 0.3),
-        (x + w * 0.55, y_tip + w * 0.4),
-        (x - w * 0.55, y_tip + w * 0.4),
+        (x - w * 0.56, y_tip - w * 0.28),
+        (x + w * 0.56, y_tip - w * 0.28),
+        (x + w * 0.56, y_tip + w * 0.42),
+        (x - w * 0.56, y_tip + w * 0.42),
     ]
-    draw_cel_poly(canvas, tip, CYAN_BASE, CYAN_SHADE, CYAN_WHITE, outline_w=max(3, outline_w - 1))
+    pbr25d.draw_25d_metal_poly(canvas, tip, GOLD_BASE, GOLD_SHADE, GOLD_LIGHT, metallic=0.92, greebles=False)
+    pbr25d.draw_25d_plasma_bloom(canvas, x, y_tip - w * 0.15, w * 0.62, w * 0.62, (0, 236, 255), strength=0.85)
 
 
 def draw_thruster(canvas, x, y_top, y_bot, w, outline_w=5):
+    pbr25d.draw_25d_plasma_bloom(canvas, x, y_bot + w * 0.38, w * 0.72, w * 1.15, (0, 228, 255), strength=0.95)
     bell = [
         (x - w * 0.48, y_top),
         (x + w * 0.48, y_top),
-        (x + w * 0.66, y_bot),
-        (x - w * 0.66, y_bot),
+        (x + w * 0.68, y_bot),
+        (x - w * 0.68, y_bot),
     ]
-    draw_cel_poly(canvas, bell, GOLD_BASE, TANG_SHADE, GOLD_LIGHT, outline_w=outline_w)
-    d = ImageDraw.Draw(canvas)
-    d.ellipse([x - w * 0.42, y_bot - w * 0.28, x + w * 0.42, y_bot + w * 0.28], fill=CYAN_LIGHT, outline=NAVY_OUTLINE, width=max(2, outline_w // 2))
+    pbr25d.draw_25d_metal_poly(canvas, bell, (96, 114, 152, 255), (28, 36, 62, 255), PEARL_LIGHT, metallic=0.92, greebles=False)
+    pbr25d.draw_25d_plasma_bloom(canvas, x, y_bot + w * 0.04, w * 0.46, w * 0.34, (120, 248, 255), strength=0.95)
 
 
 def draw_ship_tier_underlay(canvas, cx, sub, span):
@@ -234,12 +207,14 @@ def draw_ship_tier_crest(canvas, cx, sub):
 
 
 def render_ship(unit_idx):
-    """Render 1 of 25 distinct Solar Neon Arcade-Pop starfighters at 1024x1024 (4x of 256)."""
+    """Render 1 of 25 distinct Solar Neon 2.5D semi-realistic metallic starfighters at 1024x1024 (4x of 256)."""
+    global ACTIVE_LIVERY
     S = 1024
     cx = S * 0.5
     im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
     fam = (unit_idx - 1) // 5       # 0..4
     sub = (unit_idx - 1) % 5        # 0..4
+    ACTIVE_LIVERY = SHIP_LIVERIES[5 if unit_idx == 25 else ((fam + sub) % 5 if sub >= 3 else fam)]
 
     if fam == 0:
         # Family 0: WINDFANG — Forward-Swept Hero Interceptor (matches W0 hero starfighter!)
@@ -561,11 +536,13 @@ def render_ship(unit_idx):
 
 def render_drone(unit_idx):
     """Render 1 of 13 distinct Orbital Wingman Drones at 512x512 (4x of 128)."""
+    global ACTIVE_LIVERY
     S = 512
     cx, cy = S * 0.5, S * 0.52
     im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
     fam = (unit_idx - 1) % 5
     ver = (unit_idx - 1) // 5
+    ACTIVE_LIVERY = SHIP_LIVERIES[5 if unit_idx == 13 else ((unit_idx - 1) % 5)]
 
     # Distinct structural tier fins for ver=1 and ver=2 across all drone archetypes
     if ver == 1:
@@ -645,124 +622,103 @@ def render_drone(unit_idx):
 
 
 def render_bullet(kind):
-    """Render 1 of 8 player bullets/beams at 4x resolution."""
+    """Render 1 of 8 player bullets/beams at 4x resolution (2.5D glowing plasma & metallic rockets, zero dark cartoon border)."""
     if kind in ("beam", "beamheavy"):
-        # 4x of 32x512 = 128x2048; period = 256px (64px at 1x) -> 100% seamless vertical tile!
         W, H = 128, 2048
-        yy, xx = np.mgrid[0:H, 0:W]
+        yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
         dx = np.abs(xx - (W - 1) * 0.5)
-        phase = 2.0 * math.pi * (yy % 256) / 256.0
-        wave = np.sin(phase) * (5.0 if kind == "beam" else 9.0)
-        half_w = (36.0 if kind == "beam" else 48.0) + wave
+        phase = 2.0 * math.pi * (yy % 256.0) / 256.0
+        wave = np.sin(phase) * (3.5 if kind == "beam" else 6.5)
+        sigma = (22.0 if kind == "beam" else 28.0) + wave
 
-        arr = np.zeros((H, W, 4), dtype=np.uint8)
-        inside = dx <= half_w
-        rim = inside & (dx > half_w - 11.0)
-        outer = inside & (~rim) & (dx > half_w * 0.52)
-        mid = inside & (dx <= half_w * 0.52) & (dx > half_w * 0.24)
-        core = inside & (dx <= half_w * 0.24)
+        corona = np.exp(-((dx / sigma) ** 2) * 1.45)
+        mid = np.exp(-((dx / (sigma * 0.52)) ** 2) * 1.8)
+        core = np.exp(-((dx / (sigma * 0.24)) ** 2) * 2.2)
 
-        arr[rim] = NAVY_OUTLINE
-        if kind == "beam":
-            arr[outer] = AZURE_BASE
-            arr[mid] = CYAN_BASE
-        else:
-            # Heavy overdrive beam: golden-cyan energetic edge + blazing white-cyan core
-            helix = np.abs(xx - ((W - 1) * 0.5 + np.sin(phase * 2.0) * 22.0)) < 10.0
-            arr[outer] = GOLD_BASE
-            arr[mid] = CYAN_BASE
-            arr[inside & (~rim) & helix] = GOLD_LIGHT
-        arr[core] = CYAN_WHITE
-        return Image.fromarray(arr, mode="RGBA")
+        arr = np.zeros((H, W, 4), dtype=np.float32)
+        c_out = np.array([18.0, 118.0, 255.0] if kind == "beam" else [255.0, 168.0, 16.0])
+        c_mid = np.array([0.0, 236.0, 255.0] if kind == "beam" else [255.0, 232.0, 96.0])
+        rgb = c_out[None, None, :] * (1.0 - mid[:, :, None]) + c_mid[None, None, :] * mid[:, :, None]
+        if kind == "beamheavy":
+            helix = np.exp(-(((xx - ((W - 1) * 0.5 + np.sin(phase * 2.0) * 18.0)) / 7.5) ** 2))
+            rgb = np.clip(rgb + helix[:, :, None] * np.array([0.0, 180.0, 255.0])[None, None, :] * 0.65, 0.0, 255.0)
+        rgb = rgb * (1.0 - core[:, :, None]) + 255.0 * core[:, :, None]
+        alpha = np.clip(corona * 255.0, 0.0, 255.0)
+        alpha[:, 0] = 0.0
+        alpha[:, -1] = 0.0
+        arr[:, :, :3] = np.clip(rgb, 0.0, 255.0)
+        arr[:, :, 3] = alpha
+        return Image.fromarray(np.round(arr).astype(np.uint8), mode="RGBA")
 
-    # 32x32 bullets rendered at 128x128 (4x)
     S = 128
     cx, cy = S * 0.5, S * 0.5
     im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
 
     if kind == "dronebolt":
-        pts = [(cx, 10), (cx + 28, 46), (cx + 18, 114), (cx, 100), (cx - 18, 114), (cx - 28, 46)]
-        draw_cel_poly(im, pts, CYAN_BASE, AZURE_SHADE, CYAN_WHITE, outline_w=8)
-        d.polygon([(cx, 24), (cx + 10, 52), (cx, 84), (cx - 10, 52)], fill=CYAN_WHITE)
+        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 30, 52, (0, 224, 255), strength=0.95)
+        pts = [(cx, 12), (cx + 22, 46), (cx + 14, 112), (cx, 98), (cx - 14, 112), (cx - 22, 46)]
+        pbr25d.draw_25d_glass_dome(im, pts, core_rgb=(120, 250, 255), deep_rgb=(0, 112, 210))
     elif kind == "plasmaorb":
-        pts = [(cx + math.cos(a) * 48, cy + math.sin(a) * 48) for a in np.linspace(0, 2 * math.pi, 24, endpoint=False)]
-        draw_cel_poly(im, pts, CYAN_BASE, AZURE_BASE, CYAN_LIGHT, outline_w=9)
-        d.ellipse([cx - 24, cy - 24, cx + 24, cy + 24], fill=CYAN_WHITE)
-        for ang in (0, math.pi / 2):
-            dx, dy = math.cos(ang) * 38, math.sin(ang) * 38
-            d.line([(cx - dx, cy - dy), (cx + dx, cy + dy)], fill=PEARL_LIGHT, width=6)
+        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 48, 48, (0, 226, 255), strength=0.98)
+        pts = [(cx + math.cos(a) * 34, cy + math.sin(a) * 34) for a in np.linspace(0, 2 * math.pi, 24, endpoint=False)]
+        pbr25d.draw_25d_glass_dome(im, pts, core_rgb=(180, 255, 255), deep_rgb=(12, 118, 232))
     elif kind == "missile":
-        fin = [(cx - 36, 86), (cx + 36, 86), (cx + 28, 108), (cx - 28, 108)]
-        draw_cel_poly(im, fin, TANG_BASE, TANG_SHADE, GOLD_BASE, outline_w=7)
-        body = [(cx, 8), (cx + 22, 38), (cx + 22, 96), (cx - 22, 96), (cx - 22, 38)]
-        draw_cel_poly(im, body, PEARL_BASE, PEARL_SHADE, PEARL_LIGHT, outline_w=8)
-        head = [(cx, 8), (cx + 20, 38), (cx - 20, 38)]
-        draw_cel_poly(im, head, TANG_BASE, TANG_SHADE, GOLD_LIGHT, outline_w=7)
-        d.polygon([(cx - 12, 98), (cx + 12, 98), (cx, 122)], fill=GOLD_LIGHT)
+        pbr25d.draw_25d_plasma_bloom(im, cx, 108, 18, 22, (255, 196, 24), strength=0.95)
+        fin = [(cx - 36, 82), (cx + 36, 82), (cx + 28, 106), (cx - 28, 106)]
+        pbr25d.draw_25d_metal_poly(im, fin, TANG_BASE, TANG_SHADE, GOLD_LIGHT, metallic=0.88, greebles=False)
+        body = [(cx, 10), (cx + 21, 38), (cx + 21, 96), (cx - 21, 96), (cx - 21, 38)]
+        pbr25d.draw_25d_metal_poly(im, body, PEARL_BASE, PEARL_SHADE, PEARL_LIGHT, metallic=0.90, greebles=False)
+        head = [(cx, 10), (cx + 19, 38), (cx - 19, 38)]
+        pbr25d.draw_25d_metal_poly(im, head, GOLD_BASE, TANG_SHADE, GOLD_LIGHT, metallic=0.92, greebles=False)
     elif kind == "boltmk5":
-        pts = [(cx, 8), (cx + 42, 54), (cx + 26, 72), (cx + 18, 116), (cx, 98), (cx - 18, 116), (cx - 26, 72), (cx - 42, 54)]
-        draw_cel_poly(im, pts, GOLD_BASE, TANG_SHADE, GOLD_LIGHT, outline_w=8)
-        d.polygon([(cx, 22), (cx + 18, 52), (cx, 84), (cx - 18, 52)], fill=CYAN_WHITE)
+        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 44, 52, (255, 204, 24), strength=0.92)
+        pts = [(cx, 10), (cx + 38, 54), (cx + 22, 72), (cx + 16, 114), (cx, 96), (cx - 16, 114), (cx - 22, 72), (cx - 38, 54)]
+        pbr25d.draw_25d_metal_poly(im, pts, GOLD_BASE, TANG_SHADE, GOLD_LIGHT, metallic=0.92, greebles=False)
     elif kind == "childbolt":
-        pts = [(cx, 12), (cx + 34, cy), (cx, 116), (cx - 34, cy)]
-        draw_cel_poly(im, pts, CYAN_BASE, AZURE_BASE, CYAN_LIGHT, outline_w=8)
-        d.polygon([(cx, 32), (cx + 15, cy), (cx, 96), (cx - 15, cy)], fill=CYAN_WHITE)
+        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 34, 48, (0, 232, 255), strength=0.95)
+        pts = [(cx, 16), (cx + 26, cy), (cx, 112), (cx - 26, cy)]
+        pbr25d.draw_25d_glass_dome(im, pts, core_rgb=(160, 252, 255), deep_rgb=(0, 128, 224))
     else:  # beamflare
-        pts = []
-        for k in range(16):
-            r = 52 if k % 2 == 0 else 22
-            a = k * math.pi / 8
-            pts.append((cx + math.cos(a) * r, cy + math.sin(a) * r))
-        draw_cel_poly(im, pts, EMERALD_BASE, CYAN_SHADE, CYAN_WHITE, outline_w=7)
-        d.ellipse([cx - 16, cy - 16, cx + 16, cy + 16], fill=PEARL_LIGHT)
+        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 48, 48, (16, 238, 176), strength=0.96)
+        pts = [(cx + math.cos(k * math.pi / 8) * (48 if k % 2 == 0 else 16), cy + math.sin(k * math.pi / 8) * (48 if k % 2 == 0 else 16)) for k in range(16)]
+        pbr25d.draw_25d_glass_dome(im, pts, core_rgb=(190, 255, 232), deep_rgb=(8, 148, 108))
     return im
 
 
 def render_fx(kind):
-    """Render 1 of 2 player FX sprites at 512x512 (4x of 128)."""
+    """Render 1 of 2 player FX sprites at 512x512 (volumetric plasma plume & starburst, zero cartoon outline)."""
     S = 512
     cx, cy = S * 0.5, S * 0.5
-    im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
+    yy, xx = np.mgrid[0:S, 0:S].astype(np.float32)
+    arr = np.zeros((S, S, 4), dtype=np.float32)
 
     if kind == "engineplume":
-        # Downward roaring solar-plasma afterburner plume
-        outer = [
-            (cx - 72, 42), (cx + 72, 42),
-            (cx + 108, 165), (cx + 68, 325),
-            (cx, 482),
-            (cx - 68, 325), (cx - 108, 165),
-        ]
-        draw_cel_poly(im, outer, TANG_BASE, MAGENTA_BASE, GOLD_BASE, outline_w=8)
-        mid = [
-            (cx - 50, 48), (cx + 50, 48),
-            (cx + 72, 150), (cx + 38, 285),
-            (cx, 405),
-            (cx - 38, 285), (cx - 72, 150),
-        ]
-        draw_cel_poly(im, mid, GOLD_BASE, TANG_BASE, GOLD_LIGHT, outline_w=0)
-        core = [(cx - 28, 52), (cx + 28, 52), (cx + 36, 130), (cx, 295), (cx - 36, 130)]
-        d.polygon(core, fill=CYAN_WHITE)
-        # Shock diamonds
-        for yy, rw in [(155, 22), (245, 16), (325, 11)]:
-            d.polygon([(cx, yy - rw), (cx + rw * 1.4, yy), (cx, yy + rw), (cx - rw * 1.4, yy)], fill=PEARL_LIGHT)
+        t_y = np.clip((yy - 36.0) / 440.0, 0.0, 1.0)
+        width_profile = (1.0 - t_y ** 1.25) * 92.0 * (0.65 + 0.55 * np.sin(np.clip(t_y * math.pi, 0.0, math.pi)))
+        dx = np.abs(xx - cx) / np.maximum(width_profile, 2.0)
+        plume = np.exp(-(dx * dx) * 1.4) * np.clip(1.0 - t_y, 0.0, 1.0) * (yy >= 36.0)
+        core = np.exp(-(dx * dx) * 4.5) * np.clip(1.0 - t_y * 1.35, 0.0, 1.0) * (yy >= 40.0)
+        diamonds = np.exp(-(((yy - 145.0) / 22.0) ** 2)) + np.exp(-(((yy - 235.0) / 18.0) ** 2)) * 0.8 + np.exp(-(((yy - 315.0) / 14.0) ** 2)) * 0.6
+        core = np.clip(core + diamonds * np.exp(-(dx * dx) * 6.0) * 0.65, 0.0, 1.0)
+        c_outer = np.array([255.0, 108.0, 18.0])
+        c_mid = np.array([255.0, 214.0, 38.0])
+        rgb = c_outer[None, None, :] * (1.0 - plume[:, :, None]) + c_mid[None, None, :] * plume[:, :, None]
+        rgb = rgb * (1.0 - core[:, :, None]) + 255.0 * core[:, :, None]
+        arr[:, :, :3] = np.clip(rgb, 0, 255)
+        arr[:, :, 3] = np.clip(plume * 255.0, 0, 255)
     else:
-        # Muzzle flash: symmetrical 8-point neon-cyan + white starburst + shockwave ring
-        d.ellipse([cx - 175, cy - 175, cx + 175, cy + 175], outline=CYAN_BASE, width=14)
-        pts = []
-        for k in range(16):
-            r = (225 if k % 4 == 0 else 155) if k % 2 == 0 else 56
-            a = k * math.pi / 8
-            pts.append((cx + math.cos(a) * r, cy + math.sin(a) * r))
-        draw_cel_poly(im, pts, CYAN_BASE, AZURE_BASE, CYAN_LIGHT, outline_w=7)
-        in_pts = []
-        for k in range(16):
-            r = 140 if k % 2 == 0 else 36
-            a = k * math.pi / 8
-            in_pts.append((cx + math.cos(a) * r, cy + math.sin(a) * r))
-        d.polygon(in_pts, fill=CYAN_WHITE)
-    return im
+        rr = np.sqrt((xx - cx) ** 2 + (yy - cy) ** 2)
+        ang = np.arctan2(yy - cy, xx - cx)
+        rays8 = (0.5 + 0.5 * np.cos(ang * 8.0)) ** 3.2 * np.exp(-((rr / 195.0) ** 2))
+        ring = np.exp(-(((rr - 162.0) / 14.0) ** 2)) * 0.65
+        core = np.exp(-((rr / 76.0) ** 2))
+        a = np.clip(rays8 + ring + core, 0.0, 1.0)
+        wh = np.exp(-((rr / 48.0) ** 2))
+        c_glow = np.array([0.0, 228.0, 255.0])
+        rgb = c_glow[None, None, :] * (1.0 - wh[:, :, None]) + 255.0 * wh[:, :, None]
+        arr[:, :, :3] = np.clip(rgb, 0, 255)
+        arr[:, :, 3] = np.clip(a * 255.0, 0, 255)
+    return Image.fromarray(np.round(arr).astype(np.uint8), "RGBA")
 
 
 def measure_alpha_sprite(im):

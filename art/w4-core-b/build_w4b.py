@@ -16,15 +16,19 @@ import csv
 import json
 import math
 import os
+import sys
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(HERE))
+import pbr25d
+
 AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
 FONT_B = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 
-OUTLINE = (10, 24, 68, 255)
+OUTLINE = (24, 48, 108, 255)
 
 PAL = {
     "solar":    ((255, 204, 18, 255),  (212, 112, 0, 255),   (255, 246, 142, 255)),
@@ -74,66 +78,18 @@ def star_poly(cx, cy, r_out, r_in, n_pts=5, rot=-math.pi / 2):
 
 
 def draw_cel_poly(canvas, pts, col_triple, outline_w=6):
-    if len(pts) < 3:
-        return
     base_c, shade_c, light_c = col_triple
-    W, H = canvas.size
-    xs = [p[0] for p in pts]
-    ys = [p[1] for p in pts]
-    pad = int(outline_w + 10)
-    x0, y0 = max(0, int(min(xs)) - pad), max(0, int(min(ys)) - pad)
-    x1, y1 = min(W, int(max(xs)) + pad), min(H, int(max(ys)) + pad)
-    bw, bh = x1 - x0, y1 - y0
-    if bw <= 2 or bh <= 2:
-        return
-    lpts = [(x - x0, y - y0) for (x, y) in pts]
-    cx = sum(p[0] for p in lpts) / len(lpts)
-    cy = sum(p[1] for p in lpts) / len(lpts)
-    span = max(max(p[0] for p in lpts) - min(p[0] for p in lpts), max(p[1] for p in lpts) - min(p[1] for p in lpts), 1.0)
-
-    mask = Image.new("L", (bw, bh), 0)
-    ImageDraw.Draw(mask).polygon(lpts, fill=255)
-    m_arr = np.asarray(mask)
-
-    layer = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
-    ImageDraw.Draw(layer).polygon(lpts, fill=base_c)
-
-    if shade_c is not None:
-        inv = Image.new("L", (bw, bh), 255)
-        ImageDraw.Draw(inv).polygon([(x - span * 0.11, y - span * 0.13) for (x, y) in lpts], fill=0)
-        sh = np.zeros((bh, bw, 4), dtype=np.uint8)
-        sh[:, :] = shade_c
-        sh[:, :, 3] = np.minimum(m_arr, np.asarray(inv))
-        layer = Image.alpha_composite(layer, Image.fromarray(sh, "RGBA"))
-
-    if light_c is not None:
-        hi = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
-        hi_pts = [(cx + (x - cx) * 0.68 - span * 0.08, cy + (y - cy) * 0.68 - span * 0.09) for (x, y) in lpts]
-        ImageDraw.Draw(hi).polygon(hi_pts, fill=light_c)
-        hi_arr = np.asarray(hi).copy()
-        hi_arr[:, :, 3] = np.minimum(hi_arr[:, :, 3], m_arr)
-        layer = Image.alpha_composite(layer, Image.fromarray(hi_arr, "RGBA"))
-
-    if outline_w > 0:
-        od = ImageDraw.Draw(layer)
-        od.line(lpts + [lpts[0]], fill=OUTLINE, width=outline_w, joint="curve")
-        r = outline_w * 0.45
-        for px, py in lpts:
-            od.ellipse([px - r, py - r, px + r, py + r], fill=OUTLINE)
-
-    canvas.alpha_composite(layer, (x0, y0))
+    pbr25d.draw_25d_metal_poly(
+        canvas, pts, base_c, shade_c, light_c,
+        metallic=0.86, greebles=False, cast_ao=True, glow_vent_c=(0, 228, 255),
+    )
 
 
 def draw_9slice_panel(canvas, box, radius, rim_triple, fill_rgba, inner_rim=None, outline_w=8):
-    """Uniform-edge 9-slice rounded rectangle (ASSETS.md §5 compliant: zero mid-edge ornament!)."""
-    x0, y0, x1, y1 = box
-    d = ImageDraw.Draw(canvas)
-    d.rounded_rectangle([x0, y0, x1, y1], radius=radius, fill=rim_triple[0], outline=OUTLINE, width=outline_w)
-    # Top highlight band inside outer rim
-    ins = max(outline_w, 8)
-    d.rounded_rectangle([x0 + ins, y0 + ins, x1 - ins, y1 - ins], radius=max(4, radius - ins), fill=rim_triple[2])
-    well_ins = ins + 10
-    d.rounded_rectangle([x0 + well_ins, y0 + well_ins, x1 - well_ins, y1 - well_ins], radius=max(4, radius - well_ins), fill=fill_rgba, outline=inner_rim or OUTLINE, width=4)
+    """2.5D metallic beveled 9-slice frame/button (ASSETS.md §5 compliant, zero cartoon outline!)."""
+    glow_c = (inner_rim[:3] if inner_rim is not None else (0, 224, 255))
+    bw = max(6, int((box[2] - box[0]) * 0.045))
+    pbr25d.draw_25d_9slice_panel(canvas, box, radius, rim_triple, fill_rgba, inner_glow_rgb=glow_c, bevel_w=bw)
 
 
 # ---------------------------------------------------------------------------

@@ -12,16 +12,20 @@ import json
 import math
 import os
 import re
+import sys
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
+sys.path.insert(0, os.path.dirname(HERE))
+import pbr25d
+
 AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
 FONT_B = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 
-OUTLINE = (10, 24, 68, 255)
+OUTLINE = (24, 48, 108, 255)
 DARK_WELL = (14, 34, 88, 238)
 WHITE = (255, 255, 255, 255)
 
@@ -72,70 +76,26 @@ def star_poly(cx, cy, r_out, r_in, n_pts=5, rot=-math.pi / 2):
 
 
 def draw_cel_poly(canvas, pts, col_triple, outline_w=6):
-    if len(pts) < 3:
-        return
     base_c, shade_c, light_c = col_triple
-    W, H = canvas.size
-    xs, ys = [p[0] for p in pts], [p[1] for p in pts]
-    pad = int(outline_w + 10)
-    x0, y0 = max(0, int(min(xs)) - pad), max(0, int(min(ys)) - pad)
-    x1, y1 = min(W, int(max(xs)) + pad), min(H, int(max(ys)) + pad)
-    bw, bh = x1 - x0, y1 - y0
-    if bw <= 2 or bh <= 2:
-        return
-    lpts = [(x - x0, y - y0) for (x, y) in pts]
-    cx = sum(p[0] for p in lpts) / len(lpts)
-    cy = sum(p[1] for p in lpts) / len(lpts)
-    span = max(max(p[0] for p in lpts) - min(p[0] for p in lpts), max(p[1] for p in lpts) - min(p[1] for p in lpts), 1.0)
-
-    mask = Image.new("L", (bw, bh), 0)
-    ImageDraw.Draw(mask).polygon(lpts, fill=255)
-    m_arr = np.asarray(mask)
-
-    layer = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
-    ImageDraw.Draw(layer).polygon(lpts, fill=base_c)
-
-    if shade_c is not None:
-        inv = Image.new("L", (bw, bh), 255)
-        ImageDraw.Draw(inv).polygon([(x - span * 0.11, y - span * 0.13) for (x, y) in lpts], fill=0)
-        sh = np.zeros((bh, bw, 4), dtype=np.uint8)
-        sh[:, :] = shade_c
-        sh[:, :, 3] = np.minimum(m_arr, np.asarray(inv))
-        layer = Image.alpha_composite(layer, Image.fromarray(sh, "RGBA"))
-
-    if light_c is not None:
-        hi = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
-        hi_pts = [(cx + (x - cx) * 0.68 - span * 0.08, cy + (y - cy) * 0.68 - span * 0.09) for (x, y) in lpts]
-        ImageDraw.Draw(hi).polygon(hi_pts, fill=light_c)
-        hi_arr = np.asarray(hi).copy()
-        hi_arr[:, :, 3] = np.minimum(hi_arr[:, :, 3], m_arr)
-        layer = Image.alpha_composite(layer, Image.fromarray(hi_arr, "RGBA"))
-
-    if outline_w > 0:
-        od = ImageDraw.Draw(layer)
-        od.line(lpts + [lpts[0]], fill=OUTLINE, width=outline_w, joint="curve")
-        r = outline_w * 0.45
-        for px, py in lpts:
-            od.ellipse([px - r, py - r, px + r, py + r], fill=OUTLINE)
-
-    canvas.alpha_composite(layer, (x0, y0))
+    pbr25d.draw_25d_metal_poly(
+        canvas, pts, base_c, shade_c, light_c,
+        metallic=0.86, greebles=False, cast_ao=True, glow_vent_c=(0, 228, 255),
+    )
 
 
 def draw_9slice_panel(canvas, box, radius, rim_triple, fill_rgba, inner_rim=None, outline_w=8):
-    x0, y0, x1, y1 = box
-    d = ImageDraw.Draw(canvas)
-    d.rounded_rectangle([x0, y0, x1, y1], radius=radius, fill=rim_triple[0], outline=OUTLINE, width=outline_w)
-    ins = max(outline_w, 8)
-    d.rounded_rectangle([x0 + ins, y0 + ins, x1 - ins, y1 - ins], radius=max(4, radius - ins), fill=rim_triple[2])
-    well_ins = ins + 9
-    d.rounded_rectangle([x0 + well_ins, y0 + well_ins, x1 - well_ins, y1 - well_ins], radius=max(4, radius - well_ins), fill=fill_rgba, outline=inner_rim or OUTLINE, width=4)
+    glow_c = (inner_rim[:3] if inner_rim is not None else (0, 224, 255))
+    bw = max(6, int((box[2] - box[0]) * 0.045))
+    pbr25d.draw_25d_9slice_panel(canvas, box, radius, rim_triple, fill_rgba, inner_glow_rgb=glow_c, bevel_w=bw)
 
 
-def draw_centered_label(canvas, cx, cy, text, size, fill=WHITE, stroke_w=6):
+def draw_centered_label(canvas, cx, cy, text, size, fill=WHITE, stroke_w=3):
     d = ImageDraw.Draw(canvas)
     f = ImageFont.truetype(FONT_B, size)
     bb = d.textbbox((0, 0), text, font=f)
-    d.text((cx - (bb[2] - bb[0]) // 2, cy - (bb[3] - bb[1]) // 2 - size // 8), text, font=f, fill=fill, stroke_width=stroke_w, stroke_fill=OUTLINE)
+    tx, ty = cx - (bb[2] - bb[0]) // 2, cy - (bb[3] - bb[1]) // 2 - size // 8
+    d.text((tx + 2, ty + 3), text, font=f, fill=(8, 18, 48, 185))
+    d.text((tx, ty), text, font=f, fill=fill)
 
 
 # Functional English slug mapping so ZERO legacy Vietnamese/APK raw names leak into filenames
@@ -342,38 +302,95 @@ def render_w5_parallax(base):
 
     if base in ("earth", "jupiter", "mars", "moon", "saturn", "venus", "planetut"):
         p_cfg = {
-            "earth":    ("planet_earth_terra",   "cerulean", PAL["cerulean"], PAL["emerald"], False),
-            "jupiter":  ("planet_jupiter_giant", "solar",    PAL["solar"],    PAL["crimson"], False),
-            "mars":     ("planet_mars_crimson",  "crimson",  PAL["crimson"],  PAL["solar"],   False),
-            "moon":     ("planet_luna_pearl",    "pearl",    PAL["pearl"],    PAL["slate"],   False),
-            "saturn":   ("planet_saturn_ringed", "solar",    PAL["solar"],    PAL["cyan"],    True),
-            "venus":    ("planet_venus_amber",   "magenta",  PAL["solar"],    PAL["magenta"], False),
-            "planetut": ("planet_tutorial_orb",  "emerald",  PAL["emerald"],  PAL["cyan"],    True),
+            "earth":    ("planet_earth_terra",   "cerulean", (18, 96, 232),   (36, 198, 108),  (124, 224, 255), False),
+            "jupiter":  ("planet_jupiter_giant", "solar",    (232, 162, 74),  (196, 78, 48),   (255, 224, 156), False),
+            "mars":     ("planet_mars_crimson",  "crimson",  (186, 56, 36),   (255, 168, 32),  (255, 118, 72),  False),
+            "moon":     ("planet_luna_pearl",    "pearl",    (194, 206, 228), (112, 126, 154), (225, 240, 255), False),
+            "saturn":   ("planet_saturn_ringed", "solar",    (236, 192, 96),  (184, 128, 62),  (132, 238, 255), True),
+            "venus":    ("planet_venus_amber",   "magenta",  (204, 88, 178),  (255, 196, 76),  (255, 156, 238), False),
+            "planetut": ("planet_tutorial_orb",  "emerald",  (18, 186, 134),  (48, 238, 212),  (148, 255, 232), True),
         }[base]
-        slug, pal, body_p, band_p, has_ring = p_cfg
-        # Back ring half if ringed
-        if has_ring:
-            ro = reg_poly(cx, cy, 448, 148, 36, rot=-0.22)
-            ri = list(reversed(reg_poly(cx, cy, 328, 98, 36, rot=-0.22)))
-            draw_cel_poly(im, ro + ri, band_p, outline_w=10)
-        draw_cel_poly(im, reg_poly(cx, cy, 286, 286, 36), body_p, outline_w=12)
-        # Continents / cloud bands / craters clipped to planet disc
-        detail = Image.new("RGBA", (S, S), (0, 0, 0, 0))
-        if base == "earth":
-            draw_cel_poly(detail, [(360, 310), (540, 280), (610, 430), (490, 560), (340, 480)], band_p, outline_w=7)
-            draw_cel_poly(detail, [(560, 560), (720, 520), (690, 710), (540, 690)], band_p, outline_w=7)
+        slug, pal, col_a, col_b, atmo_c, has_ring = p_cfg
+        yy, xx = np.mgrid[0:S, 0:S].astype(np.float32)
+        R = 296.0
+        nx = (xx - cx) / R
+        ny = (yy - cy) / R
+        r2 = nx * nx + ny * ny
+        inside = r2 <= 1.0
+        nz = np.sqrt(np.maximum(0.0, 1.0 - r2))
+
+        # Rotated ring coordinates if ringed
+        ca, sa = math.cos(-0.26), math.sin(-0.26)
+        rx_r = ((xx - cx) * ca - (yy - cy) * sa) / 456.0
+        ry_r = ((xx - cx) * sa + (yy - cy) * ca) / 138.0
+        rr_e = np.sqrt(rx_r * rx_r + ry_r * ry_r)
+        ring_band = np.clip(1.0 - np.abs(rr_e - 0.84) / 0.16, 0.0, 1.0) * (0.68 + 0.32 * np.sin(rr_e * 92.0))
+
+        # Procedural spherical surface texture
+        lon = np.arctan2(nx, nz + 1e-4)
+        lat = np.arcsin(np.clip(ny, -1.0, 1.0))
+        f1 = np.sin(lon * 3.0 + 0.7) * np.cos(lat * 2.6 - 0.3) + 0.55 * np.sin(lon * 7.0 - lat * 5.0)
+        if base in ("jupiter", "saturn"):
+            pat = 0.5 + 0.5 * np.sin(lat * 14.0 + 0.35 * np.sin(lon * 4.0))
+        elif base == "earth":
+            pat = np.clip((f1 + 0.18) * 2.8, 0.0, 1.0)
         elif base == "moon":
-            for mx, my, mr in [(410, 390, 62), (615, 465, 48), (485, 615, 74)]:
-                draw_cel_poly(detail, reg_poly(mx, my, mr, mr, 16), band_p, outline_w=6)
+            cr = np.zeros_like(nx)
+            for cx0, cy0, cr0 in [(-0.32, -0.28, 0.22), (0.35, -0.05, 0.17), (-0.08, 0.36, 0.25), (0.22, 0.42, 0.13), (-0.48, 0.18, 0.15)]:
+                d2 = (nx - cx0) ** 2 + (ny - cy0) ** 2
+                cr += np.where(d2 < cr0 * cr0, -0.45 + 0.85 * (np.sqrt(d2) / cr0) ** 3, 0.0)
+            pat = np.clip(0.35 + 0.25 * f1 + cr, 0.0, 1.0)
         else:
-            for by in (365, 495, 625):
-                draw_cel_poly(detail, [(210, by), (814, by - 18), (814, by + 42), (210, by + 58)], band_p, outline_w=6)
-        mask = Image.new("L", (S, S), 0)
-        ImageDraw.Draw(mask).ellipse([cx - 274, cy - 274, cx + 274, cy + 274], fill=255)
-        da = np.asarray(detail).copy()
-        da[:, :, 3] = np.minimum(da[:, :, 3], np.asarray(mask))
-        im.alpha_composite(Image.fromarray(da, "RGBA"))
-        return im, slug, pal, True
+            pat = np.clip(0.5 + 0.48 * f1, 0.0, 1.0)
+
+        surf = np.zeros((S, S, 3), dtype=np.float32)
+        for c in range(3):
+            surf[:, :, c] = col_a[c] * (1.0 - pat) + col_b[c] * pat
+        if base == "earth":
+            clouds = np.clip(np.sin(lon * 5.0 + lat * 4.0) * np.cos(lon * 9.0 - lat * 6.0) - 0.15, 0.0, 1.0) * 0.85
+            for c in range(3):
+                surf[:, :, c] = surf[:, :, c] * (1.0 - clouds) + 250.0 * clouds
+
+        # 3D Spherical Terminator lighting + Rayleigh atmospheric rim + volcanic fissures on Mars/Venus
+        ndotl = np.clip(nx * (-0.54) + ny * (-0.56) + nz * 0.63, -1.0, 1.0)
+        lit = 0.12 + 0.96 * (np.clip((ndotl + 0.16) / 1.16, 0.0, 1.0) ** 0.88)
+        spec = np.clip(nx * (-0.28) + ny * (-0.32) + nz * 0.90, 0.0, 1.0) ** 22 * (0.45 if base == "earth" else 0.18)
+        fres = ((1.0 - nz) ** 2.6) * np.clip(ndotl + 0.45, 0.15, 1.0) * 0.92
+
+        out = np.zeros((S, S, 4), dtype=np.float32)
+        # Outer atmospheric halo outside R
+        halo_a = np.where(~inside, np.exp(-((np.sqrt(r2) - 1.0) * 14.0) ** 2) * (r2 < 1.38) * np.clip(ndotl + 0.55, 0.2, 1.0) * 185.0, 0.0)
+        for c in range(3):
+            out[:, :, c] = atmo_c[c]
+        out[:, :, 3] = halo_a
+
+        # Back half of rings (ry_r < 0)
+        if has_ring:
+            bk = (ry_r < 0) & (ring_band > 0.01) & (~inside)
+            for c in range(3):
+                out[:, :, c] = np.where(bk, atmo_c[c] * 0.85 + 38.0, out[:, :, c])
+            out[:, :, 3] = np.where(bk, np.maximum(out[:, :, 3], ring_band * 215.0), out[:, :, 3])
+
+        # Planet sphere body (with antialiased 2px edge)
+        edge_aa = np.clip((1.0 - np.sqrt(r2)) * (R * 0.5), 0.0, 1.0)
+        for c in range(3):
+            pcol = surf[:, :, c] * lit + 255.0 * spec + atmo_c[c] * fres
+            if base in ("mars", "venus"):
+                lava = np.clip(np.abs(np.sin(lon * 8.0 + lat * 6.0)) - 0.92, 0.0, 0.08) * 12.5 * (1.0 - np.clip(ndotl, 0.0, 1.0))
+                pcol += (255.0 if c == 0 else (165.0 if c == 1 else 40.0)) * lava
+            out[:, :, c] = np.where(edge_aa > 0, pcol, out[:, :, c])
+        out[:, :, 3] = np.maximum(out[:, :, 3], edge_aa * 255.0)
+
+        # Front half of rings (ry_r >= 0)
+        if has_ring:
+            fr = (ry_r >= 0) & (ring_band > 0.01)
+            ra = ring_band * 0.86
+            for c in range(3):
+                rc = atmo_c[c] * 0.78 + 56.0
+                out[:, :, c] = np.where(fr, out[:, :, c] * (1.0 - ra) + rc * ra, out[:, :, c])
+            out[:, :, 3] = np.where(fr, np.maximum(out[:, :, 3], ra * 255.0), out[:, :, 3])
+
+        return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA"), slug, pal, True
 
     if base in ("galaxy", "selectmap_nebula"):
         yy, xx = np.mgrid[0:S, 0:S]

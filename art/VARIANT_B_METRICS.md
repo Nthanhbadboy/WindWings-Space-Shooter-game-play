@@ -1,37 +1,31 @@
-# Quantitative Audit (§4.9 Protocol) & 510/510 Planner Parity — Variant B (`Solar Neon Arcade-Pop`)
+# Variant B (`Solar Neon 2.5D Semi-Realistic Metallic`) — Full 510/510 Parity & Extended 2.5D Metrics
 
 - **Branch:** `arena/eca8588b-windwings-space-shooter-game-p` (`Art-designer-B`)
-- **Protocol:** Exact `docs/art-plan/measure_asset.py` §4.9 formulas (`mask = alpha > 0.5`, 32-level RGB quantization `colors_q32`, `val = mean(V)`, `val_std = pstdev(V)`, `dark = P(max(R,G,B) < 45)`, `chroma = mean(S·V)`, `fill`).
-- **Curator Registry:** `art/variant_b_full_510_registry.csv` & `.json` (1:1 `AP-xxxx` lookup across all 5 waves).
+- **Style Mandate:** `STYLE-CORRECTION (lần 149 / 238f2b41c / PR #12 6446004160)` — True 2.5D Semi-Realistic Metallic (`pbr25d.py` v2: multi-stop 3D curved normals, contact AO, engraved panel seams, louver vents, rivets, top zenith rim-light, glossy Blinn-Phong specular, **0 thick cartoon outlines**)
+- **Canonical Planner:** `docs/art-plan/art-planner.csv` (`788` rows total = `510` non-EXCL units + `278` EXCL rows)
+- **Parity Result:** **`510 / 510` non-EXCL planner units (`100.0%`)** delivered (`512` PNG sprites + `512` high-res `masters/`) · `EXCL` drawn = **`0`**
+- **Side-by-Side Comparison Sheets (`BẢNG SO KẾ CẠNH`):** `preview/w{0,1,2,3,4,5}b_side_by_side_ref.png` generated for every wave.
 
-## 1. Zero-Gap `art-planner.csv` Coverage Verification (`510/510` Non-EXCL Units)
+## 1. Per-Wave §4.9 + Extended 2.5D Metrics (`STYLE-CORRECTION lần 149`)
 
-| Lane | Planner `n_units` | Variant B Units Covered | Delivered Sprite Files | Master Files | Gap |
-|---|---:|---:|---:|---:|---:|
-| `PLAYER` | 48 | **48/48 (100%)** | 48 | 48 | **0** |
-| `ENEMY` | 34 | **34/34 (100%)** | 34 | 34 | **0** |
-| `BOSS` | 42 | **42/42 (100%)** | 42 | 42 | **0** |
-| `ITEM` | 9 | **9/9 (100%)** | 9 | 9 | **0** |
-| `FX` | 26 | **26/26 (100%)** | 26 | 26 | **0** |
-| `BG` | 44 | **44/44 (100%)** | 46 | 46 | **0** |
-| `UI` | 307 | **307/307 (100%)** | 307 | 307 | **0** |
-| **Total Non-EXCL** | **510** | **510/510 (100%)** | **512** | **512** | **0** |
-| `EXCL` (excluded by rule) | 0 (`189` rows / `278` raw EXCL records) | 0 | 0 | 0 | **0** |
+| Wave | Files | Mean `gradient_stops` (`≥3–5`) | Mean `outline_dark_px` (`≤1.0`) | Mean `detail_density` | Mean `lum_contrast` | Mean `val` | Mean `chroma` | Mean `colors_q32` | Side-by-Side Sheet |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| **W1** | **48** | **8.44** | **0.000 px** | **68.59** | **0.617** | 0.845 | 0.482 | 1804.5 | `art/w1-*/preview/w1b_side_by_side_ref.png` |
+| **W2** | **34** | **10.50** | **0.000 px** | **70.70** | **0.715** | 0.784 | 0.419 | 912.3 | `art/w2-*/preview/w2b_side_by_side_ref.png` |
+| **W3** | **42** | **10.62** | **0.000 px** | **38.22** | **0.694** | 0.782 | 0.471 | 3453.8 | `art/w3-*/preview/w3b_side_by_side_ref.png` |
+| **W4** | **114** | **6.37** | **0.004 px** | **20.72** | **0.485** | 0.799 | 0.547 | 556.4 | `art/w4-*/preview/w4b_side_by_side_ref.png` |
+| **W5** | **274** | **6.65** | **0.002 px** | **22.88** | **0.527** | 0.787 | 0.563 | 407.5 | `art/w5-*/preview/w5b_side_by_side_ref.png` |
+| **ALL (`W1..W5`)** | **512** | **7.34** | **0.002 px** | **31.12** | **0.552** | **0.794** | **0.535** | **855.0** | **6/6 Boards PASS** |
 
-> Note: `BG` has 44 planner units and 46 delivered files because `AP-0091` (`bg1` stage backdrop) delivers 3 separable parallax depth layers (`far` / `mid` / `near`).
+## 2. Per-Lane Parity & Extended 2.5D Summary
 
-## 2. §4.9 Quantitative RGBA Signature by Lane (Variant B Bright `Solar Neon` vs Variant A Dark `Ink & Ember`)
-
-| Lane | Files | Mean `val` (B) | Mean `val_std` (B) | Mean `dark` `<45` (B) | Mean `chroma` `S·V` (B) | Mean `colors_q32` (B) | Mean `fill` | Variant A Published `val` / `chroma` (§4.5) |
-|---|---:|---:|---:|---:|---:|---:|---:|---|
-| `PLAYER` | 48 | **0.758** | 0.282 | **0.006** | **0.437** | 748.8 | 0.362 | 0.483 / 0.209 (ship) · 0.279 / 0.120 (bullet) |
-| `ENEMY` | 34 | **0.639** | 0.305 | **0.028** | **0.422** | 433.8 | 0.334 | 0.613 / 0.162 |
-| `BOSS` | 42 | **0.678** | 0.302 | **0.035** | **0.473** | 620.0 | 0.370 | 0.485 / 0.205 |
-| `ITEM` | 9 | **0.793** | 0.265 | **0.002** | **0.447** | 549.2 | 0.522 | 0.669 / 0.294 |
-| `FX` | 26 | **0.875** | 0.150 | **0.000** | **0.570** | 162.5 | 0.176 | 0.875 / 0.063 |
-| `BG` | 46 | **0.674** | 0.200 | **0.002** | **0.467** | 345.3 | 0.524 | 0.221 / 0.106 (`dark = 0.600`) |
-| `UI` | 307 | **0.670** | 0.263 | **0.001** | **0.485** | 182.5 | 0.476 | 0.405 / 0.133 |
-
-### Key Takeaway for `Art-curator`
-- **Intentional Polarity Separation Achieved:** Variant A (`Ink & Ember`) targets low-value matte slate (`val 0.22–0.61`, `chroma 0.06–0.21`, high `dark` on BG/bullets), whereas Variant B (`Solar Neon Arcade-Pop`) delivers high-key sunlit clarity and vivid arcade saturation (`val 0.67–0.89`, `chroma 0.35–0.62`, ultra-low `dark 0.01–0.13` confined strictly to crisp `#0A1844` cel outlines and recessed 9-slice HUD wells).
-- **100% Slot Interchangeability:** Every single `AP-xxxx` row (`510/510` non-EXCL units) shares identical target dimensions, straight-RGBA `alpha=0` corner discipline, and `ASSETS.md` §5 9-slice inset geometry, allowing `Art-curator` to pick Variant A, Variant B, or a per-lane hybrid without resizing or re-slicing.
+| Lane | Planner Units | Delivered Units | PNG Files | `gradient_stops` | `outline_dark_px` | `detail_density` | `lum_contrast` | `val` | `dark` | `chroma` |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `PLAYER` | 48 | **48** | 48 | **8.44** | **0.000 px** | **68.59** | 0.617 | 0.845 | 0.000 | 0.482 |
+| `ENEMY` | 34 | **34** | 34 | **10.50** | **0.000 px** | **70.70** | 0.715 | 0.784 | 0.000 | 0.419 |
+| `BOSS` | 42 | **42** | 42 | **10.62** | **0.000 px** | **38.22** | 0.694 | 0.782 | 0.002 | 0.471 |
+| `ITEM` | 9 | **9** | 9 | **6.33** | **0.000 px** | **37.95** | 0.539 | 0.905 | 0.000 | 0.459 |
+| `FX` | 26 | **26** | 26 | **3.35** | **0.000 px** | **15.16** | 0.311 | 0.953 | 0.000 | 0.647 |
+| `BG` | 44 | **44** | 46 | **7.37** | **0.014 px** | **10.54** | 0.492 | 0.716 | 0.016 | 0.477 |
+| `UI` | 307 | **307** | 307 | **6.73** | **0.001 px** | **24.14** | 0.535 | 0.784 | 0.001 | 0.566 |
+| `EXCL` | 0 (278 rows) | **0** | 0 | — | — | — | — | — | — | — |

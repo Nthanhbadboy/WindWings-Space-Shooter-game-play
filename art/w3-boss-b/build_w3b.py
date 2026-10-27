@@ -13,51 +13,54 @@ import csv
 import json
 import math
 import os
+import sys
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(HERE))
+import pbr25d
+
 AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
 
-OUTLINE    = (20, 6, 46, 255)
+OUTLINE    = (32, 22, 64, 255)
 
 PALETTES = {
     "crimson": {
-        "pri": ((255, 28, 84, 255),  (162, 8, 48, 255),  (255, 118, 148, 255)),
-        "sec": ((74, 52, 132, 255),  (38, 24, 78, 255),  (128, 104, 192, 255)),
-        "acc": ((255, 196, 12, 255), (196, 108, 0, 255), (255, 244, 136, 255)),
-        "glow": (255, 238, 36, 255),
+        "pri": ((228, 34, 82, 255),  (74, 8, 28, 255),   (255, 148, 174, 255)),
+        "sec": ((98, 112, 158, 255), (28, 34, 58, 255),  (192, 206, 236, 255)),
+        "acc": ((248, 184, 18, 255), (96, 46, 4, 255),   (255, 248, 162, 255)),
+        "glow": (255, 238, 42, 255),
     },
     "violet": {
-        "pri": ((132, 46, 212, 255), (68, 18, 128, 255), (196, 128, 255, 255)),
-        "sec": ((52, 68, 148, 255),  (26, 36, 92, 255),  (108, 132, 218, 255)),
-        "acc": ((255, 42, 156, 255), (168, 12, 96, 255), (255, 142, 212, 255)),
+        "pri": ((132, 54, 214, 255), (42, 14, 86, 255),  (208, 158, 255, 255)),
+        "sec": ((78, 102, 168, 255), (24, 34, 68, 255),  (176, 198, 244, 255)),
+        "acc": ((236, 42, 152, 255), (84, 10, 54, 255),  (255, 156, 218, 255)),
         "glow": (0, 238, 255, 255),
     },
     "emerald": {
-        "pri": ((0, 218, 142, 255),  (0, 128, 82, 255),  (124, 255, 204, 255)),
-        "sec": ((64, 48, 124, 255),  (34, 22, 74, 255),  (118, 98, 182, 255)),
-        "acc": ((255, 196, 12, 255), (192, 104, 0, 255), (255, 242, 128, 255)),
-        "glow": (186, 255, 36, 255),
+        "pri": ((16, 204, 138, 255), (6, 68, 46, 255),   (142, 255, 212, 255)),
+        "sec": ((92, 106, 148, 255), (28, 34, 56, 255),  (186, 198, 228, 255)),
+        "acc": ((248, 184, 18, 255), (96, 46, 4, 255),   (255, 246, 158, 255)),
+        "glow": (176, 255, 48, 255),
     },
     "magenta": {
-        "pri": ((255, 34, 148, 255), (162, 10, 88, 255), (255, 136, 208, 255)),
-        "sec": ((62, 44, 128, 255),  (32, 20, 76, 255),  (118, 96, 188, 255)),
-        "acc": ((0, 222, 255, 255),  (0, 136, 188, 255), (142, 252, 255, 255)),
+        "pri": ((228, 38, 146, 255), (76, 10, 52, 255),  (255, 156, 218, 255)),
+        "sec": ((88, 98, 148, 255),  (26, 32, 58, 255),  (182, 196, 232, 255)),
+        "acc": ((0, 208, 246, 255),  (6, 68, 108, 255),  (156, 252, 255, 255)),
         "glow": (255, 238, 52, 255),
     },
     "amber": {
-        "pri": ((255, 168, 12, 255), (188, 92, 0, 255),  (255, 232, 118, 255)),
-        "sec": ((82, 46, 128, 255),  (42, 20, 76, 255),  (138, 96, 188, 255)),
-        "acc": ((255, 32, 92, 255),  (168, 8, 52, 255),  (255, 118, 152, 255)),
+        "pri": ((238, 164, 18, 255), (88, 42, 4, 255),   (255, 238, 146, 255)),
+        "sec": ((102, 88, 148, 255), (32, 24, 58, 255),  (192, 182, 232, 255)),
+        "acc": ((228, 34, 88, 255),  (78, 8, 32, 255),   (255, 146, 176, 255)),
         "glow": (0, 242, 255, 255),
     },
 }
 
 CORE_WHITE = (255, 253, 238, 255)
 
-# Exact 32 glyph boss IDs per ART_REDRAW_PLAN §1.3 (7001..7018 minus 7007/7008 = 16; 9002..9018 minus 9016 = 16 -> 32)
 GLYPH_IDS = (
     [7001, 7002, 7003, 7004, 7005, 7006, 7009, 7010, 7011, 7012, 7013, 7014, 7015, 7016, 7017, 7018]
     + [9002, 9003, 9004, 9005, 9006, 9007, 9008, 9009, 9010, 9011, 9012, 9013, 9014, 9015, 9017, 9018]
@@ -65,78 +68,15 @@ GLYPH_IDS = (
 ARCHETYPES = ["citadel", "arachnid", "leviathan", "chronos", "seraph", "kraken", "scorpion", "colossus"]
 PAL_KEYS = ["crimson", "violet", "emerald", "magenta", "amber"]
 
-
-def downsample_straight_rgba(im, target_size):
-    if im.size == target_size:
-        arr = np.asarray(im).copy()
-    else:
-        f = np.asarray(im, dtype=np.float32)
-        a = f[:, :, 3:4] / 255.0
-        pm = Image.fromarray(np.clip(np.round(np.concatenate([f[:, :, :3] * a, f[:, :, 3:4]], axis=2)), 0, 255).astype(np.uint8), "RGBA")
-        s = np.asarray(pm.resize(target_size, Image.LANCZOS), dtype=np.float32)
-        sa = s[:, :, 3:4] / 255.0
-        rgb = np.where(sa > 1e-3, s[:, :, :3] / np.maximum(sa, 1e-3), 0.0)
-        arr = np.concatenate([np.clip(np.round(rgb), 0, 255), np.clip(np.round(s[:, :, 3:4]), 0, 255)], axis=2).astype(np.uint8)
-    arr[arr[:, :, 3] < 4] = 0
-    for cy in (0, target_size[1] - 1):
-        for cx in (0, target_size[0] - 1):
-            arr[cy, cx] = [0, 0, 0, 0]
-    return Image.fromarray(arr, "RGBA")
+downsample_straight_rgba = pbr25d.downsample_straight_rgba
 
 
 def draw_cel_poly(canvas, pts, col_triple, outline_w=7):
-    """Fast local-bbox 3-tone 30-deg top-left cel-shaded polygon so 1024x1024 bosses render in <0.1s each."""
-    if len(pts) < 3:
-        return
     base_c, shade_c, light_c = col_triple
-    W, H = canvas.size
-    xs = [p[0] for p in pts]
-    ys = [p[1] for p in pts]
-    pad = int(outline_w + 12)
-    x0 = max(0, int(math.floor(min(xs))) - pad)
-    y0 = max(0, int(math.floor(min(ys))) - pad)
-    x1 = min(W, int(math.ceil(max(xs))) + pad)
-    y1 = min(H, int(math.ceil(max(ys))) + pad)
-    bw, bh = x1 - x0, y1 - y0
-    if bw <= 2 or bh <= 2:
-        return
-
-    lpts = [(x - x0, y - y0) for (x, y) in pts]
-    cx = sum(p[0] for p in lpts) / len(lpts)
-    cy = sum(p[1] for p in lpts) / len(lpts)
-    span = max(max(p[0] for p in lpts) - min(p[0] for p in lpts), max(p[1] for p in lpts) - min(p[1] for p in lpts), 1.0)
-
-    mask = Image.new("L", (bw, bh), 0)
-    ImageDraw.Draw(mask).polygon(lpts, fill=255)
-    m_arr = np.asarray(mask)
-
-    layer = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
-    ImageDraw.Draw(layer).polygon(lpts, fill=base_c)
-
-    if shade_c is not None:
-        inv = Image.new("L", (bw, bh), 255)
-        ImageDraw.Draw(inv).polygon([(x - span * 0.11, y - span * 0.13) for (x, y) in lpts], fill=0)
-        sh = np.zeros((bh, bw, 4), dtype=np.uint8)
-        sh[:, :] = shade_c
-        sh[:, :, 3] = np.minimum(m_arr, np.asarray(inv))
-        layer = Image.alpha_composite(layer, Image.fromarray(sh, "RGBA"))
-
-    if light_c is not None:
-        hi = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
-        hi_pts = [(cx + (x - cx) * 0.68 - span * 0.08, cy + (y - cy) * 0.68 - span * 0.09) for (x, y) in lpts]
-        ImageDraw.Draw(hi).polygon(hi_pts, fill=light_c)
-        hi_arr = np.asarray(hi).copy()
-        hi_arr[:, :, 3] = np.minimum(hi_arr[:, :, 3], m_arr)
-        layer = Image.alpha_composite(layer, Image.fromarray(hi_arr, "RGBA"))
-
-    if outline_w > 0:
-        od = ImageDraw.Draw(layer)
-        od.line(lpts + [lpts[0]], fill=OUTLINE, width=outline_w, joint="curve")
-        r = outline_w * 0.45
-        for px, py in lpts:
-            od.ellipse([px - r, py - r, px + r, py + r], fill=OUTLINE)
-
-    canvas.alpha_composite(layer, (x0, y0))
+    pbr25d.draw_25d_metal_poly(
+        canvas, pts, base_c, shade_c, light_c,
+        metallic=0.88, greebles=True, cast_ao=True, glow_vent_c=(0, 232, 255),
+    )
 
 
 def reg_poly(cx, cy, rx, ry, n=16, rot=0.0):
@@ -144,19 +84,20 @@ def reg_poly(cx, cy, rx, ry, n=16, rot=0.0):
 
 
 def draw_boss_core(canvas, cx, cy, rx, ry, acc_triple, glow_c, outline_w=8):
-    draw_cel_poly(canvas, reg_poly(cx, cy, rx * 1.34, ry * 1.34, 18), acc_triple, outline_w=outline_w)
-    glow_triple = (glow_c, acc_triple[0], CORE_WHITE)
-    draw_cel_poly(canvas, reg_poly(cx, cy, rx, ry, 18), glow_triple, outline_w=outline_w - 1)
-    d = ImageDraw.Draw(canvas)
-    d.ellipse([cx - rx * 0.48, cy - ry * 0.52, cx - rx * 0.06, cy - ry * 0.10], fill=CORE_WHITE)
+    pbr25d.draw_25d_metal_poly(canvas, reg_poly(cx, cy, rx * 1.36, ry * 1.36, 20), acc_triple[0], acc_triple[1], acc_triple[2], metallic=0.92, greebles=False)
+    pbr25d.draw_25d_plasma_bloom(canvas, cx, cy, rx * 1.18, ry * 1.18, glow_c[:3], strength=0.72)
+    pbr25d.draw_25d_glass_dome(canvas, reg_poly(cx, cy, rx, ry, 20), core_rgb=glow_c[:3], deep_rgb=(42, 8, 36))
 
 
 def draw_destructible_satellite(canvas, x, y, anchor_x, anchor_y, kind, P):
-    """Visually separated destructible module linked by neon energy tether (mandatory Boss Gate!)."""
-    d = ImageDraw.Draw(canvas)
-    # Energy arc tether with gap so module reads as a separate destructible sub-target!
-    d.line([(anchor_x, anchor_y), (x, y)], fill=OUTLINE, width=16)
-    d.line([(anchor_x, anchor_y), (x, y)], fill=P["glow"], width=7)
+    """Visually separated destructible module linked by glowing 2.5D plasma energy tether (zero cartoon outline)."""
+    teth = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    td = ImageDraw.Draw(teth)
+    td.line([(anchor_x, anchor_y), (x, y)], fill=(*P["glow"][:3], 185), width=16)
+    teth = teth.filter(ImageFilter.GaussianBlur(radius=5.0))
+    td2 = ImageDraw.Draw(teth)
+    td2.line([(anchor_x, anchor_y), (x, y)], fill=(255, 255, 255, 235), width=5)
+    canvas.alpha_composite(teth)
 
     if kind == 0:
         # Detached Heavy Plasma Cannon Pod
@@ -195,63 +136,67 @@ def draw_destructible_satellite(canvas, x, y, anchor_x, anchor_y, kind, P):
                 draw_cel_poly(canvas, reg_poly(mx, my, 18, 18, 12), P["acc"], outline_w=5)
 
 
-def draw_asym_right_arm(canvas, cx, cy, arm_kind, P):
-    """Heavy asymmetric right-side boss weapon arm so left != right on every single boss!"""
-    if arm_kind == 0:
-        # Giant Siege Railgun Arm extending down-right
-        arm = [(cx + 145, cy - 85), (cx + 395, cy - 25), (cx + 415, cy + 285), (cx + 315, cy + 325), (cx + 255, cy + 95), (cx + 145, cy + 65)]
-        draw_cel_poly(canvas, arm, P["sec"], outline_w=9)
-        muzzle = [(cx + 322, cy + 265), (cx + 408, cy + 255), (cx + 382, cy + 418), (cx + 336, cy + 418)]
-        draw_cel_poly(canvas, muzzle, P["acc"], outline_w=8)
-    elif arm_kind == 1:
-        # Articulated Crusher Pincer Claw on starboard side
-        upper = [(cx + 150, cy - 60), (cx + 425, cy + 15), (cx + 448, cy + 215), (cx + 335, cy + 365), (cx + 312, cy + 205), (cx + 155, cy + 80)]
-        draw_cel_poly(canvas, upper, P["pri"], outline_w=9)
-        jaw = [(cx + 275, cy + 195), (cx + 332, cy + 358), (cx + 228, cy + 325)]
-        draw_cel_poly(canvas, jaw, P["acc"], outline_w=8)
-    elif arm_kind == 2:
-        # Curved Aegis Shield-Blade Wing on starboard side
-        blade = [(cx + 140, cy - 165), (cx + 445, cy - 95), (cx + 462, cy + 195), (cx + 295, cy + 385), (cx + 255, cy + 215), (cx + 145, cy + 55)]
-        draw_cel_poly(canvas, blade, P["acc"], outline_w=9)
-        in_b = [(cx + 205, cy - 95), (cx + 405, cy - 45), (cx + 412, cy + 165), (cx + 295, cy + 285)]
-        draw_cel_poly(canvas, in_b, P["pri"], outline_w=6)
-    else:
-        # Triple-Barrel Gatling Broadside Pod on starboard side
-        pod = [(cx + 155, cy - 95), (cx + 415, cy - 55), (cx + 425, cy + 165), (cx + 165, cy + 145)]
-        draw_cel_poly(canvas, pod, P["sec"], outline_w=9)
-        for k in range(3):
-            bx = cx + 215 + k * 72
-            brl = [(bx - 20, cy + 145), (bx + 20, cy + 145), (bx + 16, cy + 355 + k * 18), (bx - 16, cy + 355 + k * 18)]
-            draw_cel_poly(canvas, brl, P["acc"], outline_w=7)
+def draw_twin_heavy_arms(canvas, cx, cy, arm_kind, P):
+    """Symmetrical twin heavy port & starboard boss weapon arms (siege railguns / pincers / blades / gatlings)."""
+    for s in (-1, 1):
+        def m(pts):
+            out = [(cx + s * (x - cx), y) for (x, y) in pts]
+            return out if s == 1 else list(reversed(out))
+
+        if arm_kind == 0:
+            arm = [(cx + 145, cy - 85), (cx + 395, cy - 25), (cx + 415, cy + 285), (cx + 315, cy + 325), (cx + 255, cy + 95), (cx + 145, cy + 65)]
+            draw_cel_poly(canvas, m(arm), P["sec"], outline_w=9)
+            muzzle = [(cx + 322, cy + 265), (cx + 408, cy + 255), (cx + 382, cy + 418), (cx + 336, cy + 418)]
+            draw_cel_poly(canvas, m(muzzle), P["acc"], outline_w=8)
+            pbr25d.draw_25d_plasma_bloom(canvas, cx + s * 362, cy + 418, 32, 36, P["glow"][:3])
+        elif arm_kind == 1:
+            upper = [(cx + 150, cy - 60), (cx + 425, cy + 15), (cx + 448, cy + 215), (cx + 335, cy + 365), (cx + 312, cy + 205), (cx + 155, cy + 80)]
+            draw_cel_poly(canvas, m(upper), P["pri"], outline_w=9)
+            jaw = [(cx + 275, cy + 195), (cx + 332, cy + 358), (cx + 228, cy + 325)]
+            draw_cel_poly(canvas, m(jaw), P["acc"], outline_w=8)
+        elif arm_kind == 2:
+            blade = [(cx + 140, cy - 165), (cx + 445, cy - 95), (cx + 462, cy + 195), (cx + 295, cy + 385), (cx + 255, cy + 215), (cx + 145, cy + 55)]
+            draw_cel_poly(canvas, m(blade), P["acc"], outline_w=9)
+            in_b = [(cx + 205, cy - 95), (cx + 405, cy - 45), (cx + 412, cy + 165), (cx + 295, cy + 285)]
+            draw_cel_poly(canvas, m(in_b), P["pri"], outline_w=6)
+        else:
+            pod = [(cx + 155, cy - 95), (cx + 415, cy - 55), (cx + 425, cy + 165), (cx + 165, cy + 145)]
+            draw_cel_poly(canvas, m(pod), P["sec"], outline_w=9)
+            for k in range(3):
+                bx = cx + 215 + k * 72
+                brl = [(bx - 20, cy + 145), (bx + 20, cy + 145), (bx + 16, cy + 355 + k * 18), (bx - 16, cy + 355 + k * 18)]
+                draw_cel_poly(canvas, m(brl), P["acc"], outline_w=7)
 
 
 def render_boss_body(archetype, phase_cfg, pal_key):
-    """Render 1 of 35 asymmetric 1024x1024 (2x of 512x512) Solar Neon Arcade-Pop Bosses."""
+    """Render 1 of 35 1024x1024 (2x of 512x512) 2.5D Metallic Solar-Neon Boss Dreadnoughts."""
     S = 1024
     cx, cy = 512, 470
     im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
     P = PALETTES[pal_key]
 
-    # 1. Left-side separated destructible module (port side) + Right-side asymmetric weapon arm (starboard side)
-    sat_x = 152 + (phase_cfg % 2) * 24
-    sat_y = 635 - (phase_cfg // 2) * 95
-    draw_destructible_satellite(im, sat_x, sat_y, cx - 155, cy + 35, phase_cfg, P)
+    # 1. Twin separated destructible satellite modules (port + starboard) + Twin heavy siege weapon arms
+    sat_dx = 382 - (phase_cfg % 2) * 18
+    sat_y = 195 + (phase_cfg % 2) * 58
+    for s in (-1, 1):
+        draw_destructible_satellite(im, cx + s * sat_dx, sat_y, cx + s * 165, cy - 125, phase_cfg, P)
     if phase_cfg in (2, 3):
-        # Bonus upper-left destructible capacitor node on higher-tier bosses!
-        draw_destructible_satellite(im, 168, 225, cx - 140, cy - 135, (phase_cfg + 1) % 4, P)
+        for s in (-1, 1):
+            draw_destructible_satellite(im, cx + s * 395, 735, cx + s * 225, cy + 165, (phase_cfg + 1) % 4, P)
 
-    draw_asym_right_arm(im, cx, cy, (phase_cfg + ARCHETYPES.index(archetype) if archetype in ARCHETYPES else phase_cfg) % 4, P)
+    draw_twin_heavy_arms(im, cx, cy, (phase_cfg + (ARCHETYPES.index(archetype) if archetype in ARCHETYPES else 0)) % 4, P)
 
-    # 2. Top thrusters
-    for tx in (cx - 115, cx, cx + 115):
-        th = [(tx - 42, 72), (tx + 42, 72), (tx + 32, 165), (tx - 32, 165)]
+    # 2. Top plasma thrusters + armored thruster cowls
+    for tx in (cx - 125, cx, cx + 125):
+        pbr25d.draw_25d_plasma_bloom(im, tx, 68, 38, 62, P["glow"][:3])
+        th = [(tx - 42, 82), (tx + 42, 82), (tx + 32, 168), (tx - 32, 168)]
         draw_cel_poly(im, th, P["acc"], outline_w=8)
 
-    # 3. Archetype-specific main dreadnought chassis (port wing + central armored hull + menace core)
+    # 3. Archetype-specific symmetrical multi-layered dreadnought chassis + glowing reactor core(s)
     if archetype == "emblem_s":
-        # AP-0117 BossS: S-Crest Sovereign Dreadnought
-        port_w = [(cx - 125, cy - 155), (86, cy - 85), (112, cy + 95), (cx - 135, cy + 125)]
-        draw_cel_poly(im, port_w, P["pri"], outline_w=9)
+        for s in (-1, 1):
+            wing = [(cx + s * 125, cy - 155), (cx + s * 426, cy - 85), (cx + s * 400, cy + 95), (cx + s * 135, cy + 125)]
+            draw_cel_poly(im, wing if s == 1 else list(reversed(wing)), P["pri"], outline_w=9)
         hull = [(cx, 855), (cx + 215, 625), (cx + 195, 165), (cx - 195, 165), (cx - 215, 625)]
         draw_cel_poly(im, hull, P["sec"], outline_w=10)
         plate = [(cx, 785), (cx + 148, 565), (cx + 128, 215), (cx - 128, 215), (cx - 148, 565)]
@@ -259,58 +204,69 @@ def render_boss_body(archetype, phase_cfg, pal_key):
         draw_boss_core(im, cx, cy - 10, 78, 92, P["acc"], P["glow"], outline_w=9)
 
     elif archetype == "overlord_x":
-        # AP-0118 BossX: X-Winged Nova Overlord
-        for sx, sy in [(-1, -1), (1, -1), (-1, 1)]:
-            xw = [(cx + sx * 85, cy + sy * 65), (cx + sx * 415, cy + sy * 295), (cx + sx * 335, cy + sy * 355), (cx + sx * 55, cy + sy * 135)]
+        for sx, sy in [(-1, -1), (1, -1), (-1, 1), (1, 1)]:
+            xw = [(cx + sx * 85, cy + sy * 65), (cx + sx * 425, cy + sy * 305), (cx + sx * 335, cy + sy * 365), (cx + sx * 55, cy + sy * 135)]
             draw_cel_poly(im, xw, P["pri"], outline_w=9)
-        hull = reg_poly(cx, cy, 195, 235, 8, rot=math.pi / 8)
+        hull = reg_poly(cx, cy, 205, 240, 8, rot=math.pi / 8)
         draw_cel_poly(im, hull, P["sec"], outline_w=10)
+        in_h = reg_poly(cx, cy, 138, 165, 8, rot=math.pi / 8)
+        draw_cel_poly(im, in_h, P["pri"], outline_w=8)
         draw_boss_core(im, cx, cy, 86, 86, P["acc"], P["glow"], outline_w=9)
 
     elif archetype == "aegis_bastion":
-        # AP-0119 Boss_Shields: Segmented Phalanx Barrier Carrier
-        for k in range(3):
-            a0 = math.pi * (0.18 + k * 0.24)
-            a1 = a0 + 0.19
+        for k in range(4):
+            a0 = math.pi * (0.14 + k * 0.19)
+            a1 = a0 + 0.15
             sh = [
-                (cx + math.cos(a0) * 385, cy + 60 + math.sin(a0) * 355),
-                (cx + math.cos(a1) * 385, cy + 60 + math.sin(a1) * 355),
-                (cx + math.cos(a1) * 315, cy + 60 + math.sin(a1) * 285),
-                (cx + math.cos(a0) * 315, cy + 60 + math.sin(a0) * 285),
+                (cx + math.cos(a0) * 395, cy + 55 + math.sin(a0) * 355),
+                (cx + math.cos(a1) * 395, cy + 55 + math.sin(a1) * 355),
+                (cx + math.cos(a1) * 315, cy + 55 + math.sin(a1) * 285),
+                (cx + math.cos(a0) * 315, cy + 55 + math.sin(a0) * 285),
             ]
             draw_cel_poly(im, sh, P["acc"], outline_w=8)
-        hull = [(cx - 265, cy - 185), (cx + 235, cy - 185), (cx + 265, cy + 145), (cx, cy + 285), (cx - 285, cy + 145)]
+        hull = [(cx - 275, cy - 185), (cx + 275, cy - 185), (cx + 285, cy + 145), (cx, cy + 295), (cx - 285, cy + 145)]
         draw_cel_poly(im, hull, P["pri"], outline_w=10)
-        draw_boss_core(im, cx - 15, cy - 10, 92, 68, P["sec"], P["glow"], outline_w=9)
+        deck = [(cx - 195, cy - 135), (cx + 195, cy - 135), (cx + 185, cy + 110), (cx, cy + 215), (cx - 185, cy + 110)]
+        draw_cel_poly(im, deck, P["sec"], outline_w=8)
+        draw_boss_core(im, cx, cy - 10, 92, 68, P["acc"], P["glow"], outline_w=9)
 
     elif archetype == "citadel":
-        port_spon = [(cx - 145, cy - 195), (92, cy - 135), (84, cy + 115), (cx - 155, cy + 175)]
-        draw_cel_poly(im, port_spon, P["sec"], outline_w=9)
+        for s in (-1, 1):
+            spon = [(cx + s * 145, cy - 195), (cx + s * 420, cy - 135), (cx + s * 428, cy + 115), (cx + s * 155, cy + 175)]
+            draw_cel_poly(im, spon if s == 1 else list(reversed(spon)), P["sec"], outline_w=9)
         hull = [(cx - 195, 145), (cx + 195, 145), (cx + 225, 595), (cx, 835), (cx - 225, 595)]
         draw_cel_poly(im, hull, P["pri"], outline_w=10)
-        for bx in (cx - 95, cx + 95):
+        bridge = [(cx - 125, 225), (cx + 125, 225), (cx + 145, 545), (cx, 715), (cx - 145, 545)]
+        draw_cel_poly(im, bridge, P["sec"], outline_w=8)
+        for bx in (cx - 98, cx + 98):
             tur = [(bx - 28, 695), (bx + 28, 695), (bx + 18, 885), (bx - 18, 885)]
             draw_cel_poly(im, tur, P["acc"], outline_w=7)
         draw_boss_core(im, cx, cy, 82, 82, P["acc"], P["glow"], outline_w=9)
 
     elif archetype == "arachnid":
-        # 3 articulated cyber-spider legs on port + 2 upper legs on starboard
-        for k, ly in enumerate([-145, -15, 115]):
-            leg = [(cx - 135, cy + ly), (72, cy + ly - 65), (48, cy + ly + 95 + k * 25), (108, cy + ly + 85 + k * 25), (125, cy + ly - 10), (cx - 135, cy + ly + 48)]
-            draw_cel_poly(im, leg, P["acc"], outline_w=8)
-        abdomen = reg_poly(cx - 24, 245, 185, 145, 16)
+        for s in (-1, 1):
+            for k, ly in enumerate([-145, -15, 115]):
+                leg = [
+                    (cx + s * 135, cy + ly),
+                    (cx + s * 440, cy + ly - 65),
+                    (cx + s * 468, cy + ly + 95 + k * 25),
+                    (cx + s * 404, cy + ly + 85 + k * 25),
+                    (cx + s * 385, cy + ly - 10),
+                    (cx + s * 135, cy + ly + 48),
+                ]
+                draw_cel_poly(im, leg if s == 1 else list(reversed(leg)), P["acc"], outline_w=8)
+        abdomen = reg_poly(cx, 245, 195, 145, 16)
         draw_cel_poly(im, abdomen, P["sec"], outline_w=9)
-        ceph = [(cx, 815), (cx + 185, 595), (cx + 165, 315), (cx - 165, 315), (cx - 185, 595)]
+        ceph = [(cx, 825), (cx + 195, 595), (cx + 175, 315), (cx - 175, 315), (cx - 195, 595)]
         draw_cel_poly(im, ceph, P["pri"], outline_w=10)
-        # Cluster of 3 spider eyes!
         draw_boss_core(im, cx, 505, 68, 68, P["acc"], P["glow"], outline_w=8)
         draw_boss_core(im, cx - 95, 595, 34, 34, P["acc"], P["glow"], outline_w=6)
         draw_boss_core(im, cx + 95, 595, 34, 34, P["acc"], P["glow"], outline_w=6)
 
     elif archetype == "leviathan":
-        # Wide Manta-Wing Sky Leviathan
-        manta_l = [(cx - 95, 215), (42, 345), (68, 565), (cx - 125, 485)]
-        draw_cel_poly(im, manta_l, P["pri"], outline_w=9)
+        for s in (-1, 1):
+            manta = [(cx + s * 95, 215), (cx + s * 470, 345), (cx + s * 444, 585), (cx + s * 125, 495)]
+            draw_cel_poly(im, manta if s == 1 else list(reversed(manta)), P["pri"], outline_w=9)
         spine = [(cx, 895), (cx + 175, 565), (cx + 145, 155), (cx - 145, 155), (cx - 175, 565)]
         draw_cel_poly(im, spine, P["sec"], outline_w=10)
         armor = [(cx, 795), (cx + 118, 525), (cx + 95, 215), (cx - 95, 215), (cx - 118, 525)]
@@ -318,7 +274,6 @@ def render_boss_body(archetype, phase_cfg, pal_key):
         draw_boss_core(im, cx, 445, 88, 62, P["acc"], P["glow"], outline_w=9)
 
     elif archetype == "chronos":
-        # Clockwork Gear-Fortress Dreadnought
         teeth = []
         for k in range(20):
             a = k * math.pi / 10
@@ -329,17 +284,17 @@ def render_boss_body(archetype, phase_cfg, pal_key):
         draw_cel_poly(im, dial, P["sec"], outline_w=9)
         in_d = reg_poly(cx, cy, 138, 138, 20)
         draw_cel_poly(im, in_d, P["pri"], outline_w=7)
-        # Asymmetric pendulum lance pointing down-left
-        pend = [(cx - 32, cy + 95), (cx + 32, cy + 95), (cx - 45, 895), (cx - 105, 845)]
-        draw_cel_poly(im, pend, P["acc"], outline_w=8)
+        for s in (-1, 1):
+            pend = [(cx + s * 32, cy + 125), (cx + s * 92, cy + 125), (cx + s * 118, 885), (cx + s * 48, 865)]
+            draw_cel_poly(im, pend if s == 1 else list(reversed(pend)), P["acc"], outline_w=8)
         draw_boss_core(im, cx, cy, 66, 66, P["acc"], P["glow"], outline_w=8)
 
     elif archetype == "seraph":
-        # Swept Solar-Blade Valkyrie Mecha
-        for k in range(3):
-            wy = 205 + k * 125
-            wing = [(cx - 95, wy), (38 + k * 22, wy - 85), (62 + k * 22, wy + 45), (cx - 105, wy + 75)]
-            draw_cel_poly(im, wing, P["acc"] if k % 2 == 0 else P["pri"], outline_w=8)
+        for s in (-1, 1):
+            for k in range(3):
+                wy = 205 + k * 125
+                wing = [(cx + s * 95, wy), (cx + s * (474 - k * 22), wy - 85), (cx + s * (450 - k * 22), wy + 45), (cx + s * 105, wy + 75)]
+                draw_cel_poly(im, wing if s == 1 else list(reversed(wing)), P["acc"] if k % 2 == 0 else P["pri"], outline_w=8)
         torso = [(cx, 865), (cx + 165, 585), (cx + 185, 225), (cx, 135), (cx - 185, 225), (cx - 165, 585)]
         draw_cel_poly(im, torso, P["pri"], outline_w=10)
         crest = [(cx, 795), (cx + 92, 515), (cx, 225), (cx - 92, 515)]
@@ -347,20 +302,19 @@ def render_boss_body(archetype, phase_cfg, pal_key):
         draw_boss_core(im, cx, 465, 68, 96, P["acc"], P["glow"], outline_w=8)
 
     elif archetype == "kraken":
-        # Bio-Cyber Squid Titan with curved tentacle whips
-        for k, tx_end in enumerate([95, 215, 345]):
-            tent = [(cx - 145 + k * 95, 625), (cx - 95 + k * 95, 625), (tx_end + 55, 915 - k * 25), (tx_end, 895 - k * 25)]
+        for k, dx in enumerate([-235, -120, 0, 120, 235]):
+            tent = [(cx + dx * 0.55 - 26, 615), (cx + dx * 0.55 + 26, 615), (cx + dx + 22, 905 - abs(k - 2) * 28), (cx + dx - 22, 905 - abs(k - 2) * 28)]
             draw_cel_poly(im, tent, P["acc"], outline_w=8)
-        mantle = [(cx, 112), (cx + 235, 345), (cx + 185, 655), (cx - 185, 655), (cx - 235, 345)]
+        mantle = [(cx, 112), (cx + 245, 345), (cx + 195, 655), (cx - 195, 655), (cx - 245, 345)]
         draw_cel_poly(im, mantle, P["pri"], outline_w=10)
         plate = reg_poly(cx, 445, 145, 165, 14)
         draw_cel_poly(im, plate, P["sec"], outline_w=8)
         draw_boss_core(im, cx, 465, 84, 72, P["acc"], P["glow"], outline_w=9)
 
     elif archetype == "scorpion":
-        # Heavy Pincer-Tail Warship with arching asymmetric overhead scorpion tail!
-        tail = [(cx - 65, 165), (cx - 245, 88), (cx - 355, 215), (cx - 285, 335), (cx - 225, 245), (cx - 185, 168), (cx - 45, 225)]
-        draw_cel_poly(im, tail, P["acc"], outline_w=9)
+        for s in (-1, 1):
+            tail = [(cx + s * 65, 165), (cx + s * 245, 88), (cx + s * 365, 215), (cx + s * 295, 345), (cx + s * 225, 245), (cx + s * 185, 168), (cx + s * 45, 225)]
+            draw_cel_poly(im, tail if s == 1 else list(reversed(tail)), P["acc"], outline_w=9)
         hull = [(cx - 195, 205), (cx + 195, 205), (cx + 215, 635), (cx, 785), (cx - 215, 635)]
         draw_cel_poly(im, hull, P["sec"], outline_w=10)
         carapace = [(cx - 135, 255), (cx + 135, 255), (cx + 145, 615), (cx, 725), (cx - 145, 615)]
@@ -368,15 +322,15 @@ def render_boss_body(archetype, phase_cfg, pal_key):
         draw_boss_core(im, cx, 485, 76, 76, P["acc"], P["glow"], outline_w=8)
 
     else:  # colossus
-        # Combiner Mecha Dreadnought Torso with horned crown + chest reactor
-        sh_l = [(cx - 135, 215), (56, 155), (78, 415), (cx - 155, 435)]
-        draw_cel_poly(im, sh_l, P["acc"], outline_w=9)
+        for s in (-1, 1):
+            sh = [(cx + s * 135, 215), (cx + s * 456, 155), (cx + s * 434, 415), (cx + s * 155, 435)]
+            draw_cel_poly(im, sh if s == 1 else list(reversed(sh)), P["acc"], outline_w=9)
         torso = [(cx - 195, 215), (cx + 195, 215), (cx + 165, 745), (cx, 845), (cx - 165, 745)]
         draw_cel_poly(im, torso, P["pri"], outline_w=10)
         head = [(cx, 108), (cx + 125, 185), (cx + 92, 315), (cx - 92, 315), (cx - 125, 185)]
         draw_cel_poly(im, head, P["sec"], outline_w=9)
-        horn_l = [(cx - 75, 165), (cx - 185, 68), (cx - 125, 215)]
-        horn_r = [(cx + 75, 165), (cx + 215, 52), (cx + 135, 215)]
+        horn_l = [(cx - 75, 165), (cx - 195, 58), (cx - 125, 215)]
+        horn_r = [(cx + 75, 165), (cx + 195, 58), (cx + 125, 215)]
         draw_cel_poly(im, horn_l, P["acc"], outline_w=7)
         draw_cel_poly(im, horn_r, P["acc"], outline_w=7)
         draw_boss_core(im, cx, 505, 92, 82, P["acc"], P["glow"], outline_w=9)
@@ -453,18 +407,25 @@ def render_boss_part(idx, variant, pal_key):
         draw_boss_core(im, cx + 10, 555, 78, 68, P["acc"], P["glow"], outline_w=9)
 
     else:  # energy_snare_web
-        d = ImageDraw.Draw(im)
-        # Bold cel-outlined octagonal neon-plasma snare web!
+        web = Image.new("RGBA", im.size, (0, 0, 0, 0))
+        wd = ImageDraw.Draw(web)
         for rad in (165, 285, 405):
             pts = reg_poly(cx, cy, rad, rad, 8)
-            d.line(pts + [pts[0]], fill=OUTLINE, width=26, joint="curve")
-            d.line(pts + [pts[0]], fill=P["pri"][0], width=12, joint="curve")
+            wd.line(pts + [pts[0]], fill=(*P["pri"][0][:3], 220), width=22, joint="curve")
         for k in range(8):
             a = k * math.pi / 4
             px, py = cx + math.cos(a) * 435, cy + math.sin(a) * 435
-            d.line([(cx, cy), (px, py)], fill=OUTLINE, width=24)
-            d.line([(cx, cy), (px, py)], fill=P["glow"], width=10)
-            draw_cel_poly(im, reg_poly(px, py, 34, 34, 8), P["acc"], outline_w=7)
+            wd.line([(cx, cy), (px, py)], fill=(*P["glow"][:3], 220), width=18)
+        web = web.filter(ImageFilter.GaussianBlur(radius=5.5))
+        wd2 = ImageDraw.Draw(web)
+        for rad in (165, 285, 405):
+            pts = reg_poly(cx, cy, rad, rad, 8)
+            wd2.line(pts + [pts[0]], fill=(255, 255, 255, 235), width=6, joint="curve")
+        im.alpha_composite(web)
+        for k in range(8):
+            a = k * math.pi / 4
+            px, py = cx + math.cos(a) * 435, cy + math.sin(a) * 435
+            draw_cel_poly(im, reg_poly(px, py, 36, 36, 8), P["acc"], outline_w=7)
         draw_boss_core(im, cx, cy, 82, 82, P["acc"], P["glow"], outline_w=9)
 
     return im

@@ -12,105 +12,53 @@ import csv
 import json
 import math
 import os
+import sys
 import numpy as np
 from PIL import Image, ImageDraw
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(HERE))
+import pbr25d
+
 AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
 
-# Enemy Invader Armada — Solar Neon Arcade-Pop Menace Palette
-OUTLINE      = (22, 6, 48, 255)      # #160630 deep violet-indigo cel outline
+# Enemy Invader Armada — Solar Neon 2.5D Anodized Metallic Menace Palette (zero cartoon outline!)
+OUTLINE      = (32, 22, 64, 255)
 
-CRIM_LIGHT   = (255, 112, 142, 255)
-CRIM_BASE    = (255, 30, 86, 255)    # #FF1E56 hyper-crimson
-CRIM_SHADE   = (168, 8, 52, 255)
+CRIM_LIGHT   = (255, 148, 172, 255)
+CRIM_BASE    = (228, 32, 82, 255)
+CRIM_SHADE   = (76, 8, 28, 255)
 
-MAGE_LIGHT   = (255, 136, 208, 255)
-MAGE_BASE    = (255, 36, 150, 255)   # #FF2496 neon-magenta
-MAGE_SHADE   = (158, 10, 92, 255)
+MAGE_LIGHT   = (255, 158, 222, 255)
+MAGE_BASE    = (224, 38, 148, 255)
+MAGE_SHADE   = (74, 10, 52, 255)
 
-VIOL_LIGHT   = (188, 118, 255, 255)
-VIOL_BASE    = (123, 44, 191, 255)   # #7B2CBF electric-violet
-VIOL_SHADE   = (66, 16, 120, 255)
+VIOL_LIGHT   = (204, 152, 255, 255)
+VIOL_BASE    = (126, 52, 208, 255)
+VIOL_SHADE   = (42, 14, 86, 255)
 
-HULL_LIGHT   = (124, 102, 184, 255)
-HULL_BASE    = (72, 52, 128, 255)    # armored alien violet-steel
-HULL_SHADE   = (38, 24, 78, 255)
+HULL_LIGHT   = (186, 198, 228, 255)
+HULL_BASE    = (94, 106, 148, 255)
+HULL_SHADE   = (28, 34, 58, 255)
 
-AMBR_LIGHT   = (255, 242, 128, 255)
-AMBR_BASE    = (255, 184, 0, 255)    # #FFB800 hazard solar-amber
-AMBR_SHADE   = (196, 108, 0, 255)
+AMBR_LIGHT   = (255, 246, 156, 255)
+AMBR_BASE    = (244, 176, 16, 255)
+AMBR_SHADE   = (98, 48, 4, 255)
 
-CORE_WHITE   = (255, 252, 232, 255)
-CORE_YELL    = (255, 232, 24, 255)
-TOXIC_LIME   = (168, 255, 36, 255)
+CORE_WHITE   = (255, 252, 238, 255)
+CORE_YELL    = (255, 232, 36, 255)
+TOXIC_LIME   = (156, 255, 52, 255)
 
 
-def downsample_straight_rgba(im, target_size):
-    """Premultiplied Lanczos downsample -> unpremultiply back to straight RGBA (Gate A1)."""
-    if im.size == target_size:
-        return im.copy()
-    arr = np.asarray(im, dtype=np.float32)
-    a = arr[:, :, 3:4] / 255.0
-    pm = np.concatenate([arr[:, :, :3] * a, arr[:, :, 3:4]], axis=2)
-    pm_im = Image.fromarray(np.clip(np.round(pm), 0, 255).astype(np.uint8), "RGBA")
-    pm_sm = pm_im.resize(target_size, Image.LANCZOS)
-    s = np.asarray(pm_sm, dtype=np.float32)
-    sa = s[:, :, 3:4] / 255.0
-    rgb = np.where(sa > 1e-3, s[:, :, :3] / np.maximum(sa, 1e-3), 0.0)
-    out = np.concatenate([np.clip(np.round(rgb), 0, 255), np.clip(np.round(s[:, :, 3:4]), 0, 255)], axis=2)
-    out[out[:, :, 3] < 4] = 0
-    for cy in (0, target_size[1] - 1):
-        for cx in (0, target_size[0] - 1):
-            out[cy, cx] = [0, 0, 0, 0]
-    return Image.fromarray(out.astype(np.uint8), "RGBA")
+downsample_straight_rgba = pbr25d.downsample_straight_rgba
 
 
 def draw_cel_poly(canvas, pts, base_c, shade_c, light_c, outline_w=6):
-    """3-tone 30-deg top-left cel-shaded polygon with crisp dark violet-indigo outline."""
-    if len(pts) < 3:
-        return
-    W, H = canvas.size
-    mask = Image.new("L", (W, H), 0)
-    ImageDraw.Draw(mask).polygon(pts, fill=255)
-    xs = [p[0] for p in pts]
-    ys = [p[1] for p in pts]
-    cx, cy = sum(xs) / len(xs), sum(ys) / len(ys)
-    span = max(max(xs) - min(xs), max(ys) - min(ys), 1.0)
-
-    layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ld = ImageDraw.Draw(layer)
-    ld.polygon(pts, fill=base_c)
-
-    if shade_c is not None:
-        s_pts = [(x + span * 0.14, y + span * 0.16) for (x, y) in pts]
-        sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        ImageDraw.Draw(sh).polygon(pts, fill=shade_c)
-        inv = Image.new("L", (W, H), 255)
-        ImageDraw.Draw(inv).polygon([(x - span * 0.12, y - span * 0.14) for (x, y) in pts], fill=0)
-        sh_a = np.minimum(np.asarray(mask), np.asarray(inv))
-        sh_arr = np.asarray(sh).copy()
-        sh_arr[:, :, 3] = sh_a
-        layer = Image.alpha_composite(layer, Image.fromarray(sh_arr, "RGBA"))
-
-    if light_c is not None:
-        hi_pts = [(cx + (x - cx) * 0.68 - span * 0.08, cy + (y - cy) * 0.68 - span * 0.09) for (x, y) in pts]
-        hi = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        ImageDraw.Draw(hi).polygon(hi_pts, fill=light_c)
-        hi_arr = np.asarray(hi).copy()
-        hi_arr[:, :, 3] = np.minimum(hi_arr[:, :, 3], np.asarray(mask))
-        layer = Image.alpha_composite(layer, Image.fromarray(hi_arr, "RGBA"))
-
-    if outline_w > 0:
-        od = ImageDraw.Draw(layer)
-        closed = list(pts) + [pts[0]]
-        od.line(closed, fill=OUTLINE, width=outline_w, joint="curve")
-        r = outline_w * 0.45
-        for px, py in pts:
-            od.ellipse([px - r, py - r, px + r, py + r], fill=OUTLINE)
-
-    canvas.alpha_composite(layer)
+    pbr25d.draw_25d_metal_poly(
+        canvas, pts, base_c, shade_c, light_c,
+        metallic=0.86, greebles=True, cast_ao=True, glow_vent_c=(255, 92, 164),
+    )
 
 
 def mirror_pts(pts, cx):
@@ -118,25 +66,23 @@ def mirror_pts(pts, cx):
 
 
 def draw_sym(canvas, right_pts, cx, base_c, shade_c, light_c, outline_w=7):
-    draw_cel_poly(canvas, mirror_pts(right_pts, cx), base_c, shade_c, light_c, outline_w=outline_w)
-    draw_cel_poly(canvas, right_pts, base_c, shade_c, light_c, outline_w=outline_w)
+    draw_cel_poly(canvas, mirror_pts(right_pts, cx), base_c, shade_c, light_c)
+    draw_cel_poly(canvas, right_pts, base_c, shade_c, light_c)
 
 
 def draw_menace_eye(canvas, cx, cy, rx, ry, ring_c=AMBR_BASE, core_c=CORE_YELL, outline_w=6):
-    """Signature arcade enemy cyclops/core eye with white-hot glint."""
-    r_pts = [(cx + math.cos(a) * rx * 1.32, cy + math.sin(a) * ry * 1.32) for a in np.linspace(0, 2 * math.pi, 18, endpoint=False)]
-    draw_cel_poly(canvas, r_pts, ring_c, AMBR_SHADE, AMBR_LIGHT, outline_w=outline_w)
-    c_pts = [(cx + math.cos(a) * rx, cy + math.sin(a) * ry) for a in np.linspace(0, 2 * math.pi, 18, endpoint=False)]
-    draw_cel_poly(canvas, c_pts, core_c, CRIM_BASE, CORE_WHITE, outline_w=outline_w)
-    d = ImageDraw.Draw(canvas)
-    d.ellipse([cx - rx * 0.48, cy - ry * 0.52, cx - rx * 0.08, cy - ry * 0.12], fill=CORE_WHITE)
+    r_pts = [(cx + math.cos(a) * rx * 1.34, cy + math.sin(a) * ry * 1.34) for a in np.linspace(0, 2 * math.pi, 20, endpoint=False)]
+    pbr25d.draw_25d_metal_poly(canvas, r_pts, ring_c, AMBR_SHADE, AMBR_LIGHT, metallic=0.90, greebles=False)
+    pbr25d.draw_25d_plasma_bloom(canvas, cx, cy, rx * 1.15, ry * 1.15, core_c[:3], strength=0.65)
+    c_pts = [(cx + math.cos(a) * rx, cy + math.sin(a) * ry) for a in np.linspace(0, 2 * math.pi, 20, endpoint=False)]
+    pbr25d.draw_25d_glass_dome(canvas, c_pts, core_rgb=core_c[:3], deep_rgb=(56, 8, 32))
 
 
 def draw_top_thruster(canvas, x, y_top, y_bot, w, outline_w=6):
-    """Top-mounted thruster nozzle for downward-diving enemies."""
+    pbr25d.draw_25d_plasma_bloom(canvas, x, y_top - w * 0.25, w * 0.65, w * 0.85, (255, 72, 168), strength=0.92)
     pts = [(x - w * 0.62, y_top), (x + w * 0.62, y_top), (x + w * 0.46, y_bot), (x - w * 0.46, y_bot)]
-    draw_cel_poly(canvas, pts, AMBR_BASE, AMBR_SHADE, AMBR_LIGHT, outline_w=outline_w)
-    ImageDraw.Draw(canvas).ellipse([x - w * 0.38, y_top - w * 0.22, x + w * 0.38, y_top + w * 0.22], fill=MAGE_LIGHT, outline=OUTLINE, width=3)
+    pbr25d.draw_25d_metal_poly(canvas, pts, AMBR_BASE, AMBR_SHADE, AMBR_LIGHT, metallic=0.90, greebles=False)
+    pbr25d.draw_25d_plasma_bloom(canvas, x, y_top + 2, w * 0.40, w * 0.28, (255, 210, 245), strength=0.90)
 
 
 def draw_down_fang(canvas, x, y_base, y_tip, w, c_base=CRIM_BASE, c_sh=CRIM_SHADE, c_li=CRIM_LIGHT, outline_w=6):
@@ -476,11 +422,12 @@ def render_ebody(idx, variant, pal):
 
 
 def render_ebullet(variant, pal):
-    """Render 1 of 11 unmistakable high-contrast arcade Enemy Bullets at 256x256 (4x of 64)."""
+    """Render 1 of 11 unmistakable high-contrast 2.5D glowing Enemy Bullets at 256x256 (4x of 64)."""
     S = 256
     cx, cy = S * 0.5, S * 0.5
     im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
     cb, cs, cl = pal_tuple(pal)
+    pbr25d.draw_25d_plasma_bloom(im, cx, cy, 82, 82, cb[:3], strength=0.72)
 
     if variant == "needle_dart":
         # AP-0070: Downward plasma dart
