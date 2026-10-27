@@ -81,6 +81,9 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 133 — user làm rõ scope lệnh đào: "phần đào ở đây là nói APK; nghiên cứu của E và F có chỗ nào khúc mắc thì nghiên cứu tiếp; mục đích là làm game kiếm tiền").**
+> Dừng-đào = lanes APK only (ef/a5/535/AI-3). E/F TIẾP TỤC research chỗ khúc mắc — mở research queue từ cột "Thông tin còn thiếu" D-series trong `docs/rollout/PHASE_C_EXECUTION_PLAN.md` (E: giá-benchmark D4/D6 · eCPM-Windows D3 · adapter-matrix D9 · SDK-compat D11 · luật-gacha-EU D7 · NPH-TQ D2 ưu tiên thấp · Fire-installed-base D1/D10 · retention-median D12; F: asset-counts + listing-conversion). Mục tiêu định hướng: doanh thu — cấu hình D đã chọn giữ hướng revenue (SKU kép D4c, premium Windows D6a, rewarded D8a). CI lần-132 `3ced4d716` = 3/3 xanh; board-delta lần-132 `6441761654` (đăng lúc bị cắt, đã xác nhận tồn tại).
+>
 > **Sửa lại (lần 132 — USER ỦY QUYỆT + chuyển triển khai): "tự quyết và phân việc; phân tích chỉ để học tập — cần thiết lắm mới đào thêm; không thì triển khai theo kế hoạch".**
 > ① **D1–D12 CHỐT** bởi director theo ủy quyền (`docs/research/phase-b/DECISIONS_RESOLVED.md` — user giữ quyền bác bỏ từng mục): D1a giữ Amazon (Fire tablet/TV) · D2a loại đại lục TQ · D3b Windows không-ads · D4c SKU kép khớp `pro.forever/week/month` (STATIC_CONFIRMED) · D5 tạm-individual = **USER-ONLY pháp lý** · D6a premium Windows · D7a không loot-box trả phí · D8a rewarded-only cap 4–6/ngày · D9a interface+adapter · D10a Fire-tablet-first · D11a third-party · D12a organic-first.
 > ② **Gate-1 READY-FOR-CLOSE**: C1→CONFLICTING learning-note (không chặn — APK gốc = authority sản phẩm) · C2→535 registry-v4 (mảnh cuối, mechanical) · C3→profile "L1 static-complete + runtime-gated residuals có chủ" · C4 đã đúng · C5→defer-list chấp nhận (boss-phase→ef chỉ-đào-khi-cần). Verdict NOT_READY của AI-3 chỉ AI-3 nâng khi registry-v4 về.
