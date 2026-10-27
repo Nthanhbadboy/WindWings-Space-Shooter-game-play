@@ -1,0 +1,114 @@
+{
+  "ci": {
+    "meaning": "Workflow success is not device measurement or user approval.",
+    "run_ids": {
+      "prior_review": [
+        40522785825,
+        40522786309,
+        40522798957,
+        40522799018
+      ],
+      "signed_spec": [
+        40526758183,
+        40526758230,
+        40526758602
+      ]
+    },
+    "runtime_steps_skipped": {
+      "prior_review": [
+        "Start session",
+        "Scenario taps",
+        "Probe game state"
+      ],
+      "signed_spec": [
+        "Start session",
+        "Scenario taps",
+        "Probe game state"
+      ]
+    },
+    "status": "completed/success"
+  },
+  "cut": {
+    "pre_signoff_spec": "91fe4b66b25afcac33c5a9b499085f529f6bcf94",
+    "prior_review": "a8bbfc4eefb0414f288f34c3fb414ae8135a4077",
+    "registry": "cf17c7f22f855c3fb93191e3661fdaaa756a7d80",
+    "signed_spec": "ab8a141b80c5ab049d726d5e702531b80d9f2e2c"
+  },
+  "decision": {
+    "boundary": "Original user chat is not in this capture; the decision is respected, not independently verified or reopened.",
+    "source_comment": 6445403414,
+    "state": "director-reported USER SIGN-OFF; Gate-1 closed"
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "label": "CONFLICTING",
+      "observed": "The NOTE parenthetical points at #52; frozen registry NOTE is #56 and #52 is policy/OPEN with CONFLICTING disposition.",
+      "partition": "23 closed + 1 NOTE (#56) + 32 ledger = 56; 0 shipped-default is a label count.",
+      "proposal_lines": [
+        10
+      ],
+      "source_aliases": [
+        "signed_proposal",
+        "registry",
+        "audit",
+        "closure",
+        "shop_defaults"
+      ]
+    },
+    {
+      "boundary": "This states only v4 cut; no new APK or later-path investigation was performed.",
+      "id": "F2",
+      "label": "CONFLICTING",
+      "observed": "Three missing-input rows are not three server payloads: #12/#49 lack pinned code bodies; #50 lacks root-slot binding at v4 cut.",
+      "proposal_lines": [
+        15
+      ],
+      "source_aliases": [
+        "signed_proposal",
+        "registry",
+        "audit"
+      ]
+    },
+    {
+      "boundary": "That comment cannot rule out an unreported later attempt. Director 6445060900 canceled lane 182; no retry is requested.",
+      "comment_ids": [
+        6445013675,
+        6445060900
+      ],
+      "id": "F3",
+      "label": "UNKNOWN",
+      "observed": "The #51 'join tried and finished' statement has no cited support in the cut reviewed. Producer comment 6445013675 states #51/#52 retry was not done at that earlier time.",
+      "proposal_lines": [
+        15
+      ],
+      "source_aliases": [
+        "signed_proposal",
+        "registry",
+        "audit"
+      ]
+    },
+    {
+      "boundary": "Six C1 joins are reproduced, not proof of token-format semantics, full graph/heap/playback, or runtime.",
+      "id": "F4",
+      "label": "INFERRED",
+      "observed": "The short summary risks being read more broadly than its evidence; qualify L1/sampled static scope, bounded #27 review, and the shared published C1 token convention.",
+      "proposal_lines": [
+        9,
+        11
+      ],
+      "source_aliases": [
+        "signed_proposal",
+        "readiness",
+        "closure",
+        "prior_result"
+      ]
+    }
+  ],
+  "proposal_sha256": "7b33de1219be1a5f5fd5e14545a1208119a040a7cc8477eb8ef26ebdd3eac624",
+  "requested_action": "Owner adds a non-reopening factual correction or supersession; preserve v4 and historical receipts.",
+  "runtime": "RUNTIME_UNVERIFIED; device lane remains user-gated.",
+  "schema": "8141386a/gate1-signed-followup-result/1",
+  "scope": "Existing published evidence only; no new APK/device/SDK, no Gate-2/3 or ef M1–M4 verification.",
+  "source_count": 12
+}
