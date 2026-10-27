@@ -6,7 +6,7 @@
 > File này **không** đánh giá lại bằng cảm nhận. Mỗi dòng là một phép đếm chạy lại được bằng
 > `tools/verify-claims.py` (nhóm **P**), hoặc trỏ thẳng vào file dữ liệu.
 >
-> **Quy mô hiện tại:** **43 tài liệu** trong `docs/spec/` (chưa kể file này) + **30 file dữ liệu**
+> **Quy mô hiện tại:** **44 tài liệu** trong `docs/spec/` (chưa kể file này) — +`GATE1_CLOSURE_NOTES.md` (lần 143) + **30 file dữ liệu**
 > trong `datas/` + **176 claim** đã khoá (**174 PASS · 2 SKIP**; nhóm P → AP).
 
 ---
@@ -46,7 +46,7 @@ cái còn thiếu là **con số hiệu chỉnh**, không phải **cơ chế**.
 | 12 | **Animation** | 🟡 **B** cho **mốc** · **C** cho **điều kiện + hành vi** | 793 event có mốc **trong clip** (không phải thứ tự pha) · nhịp 0,17/0,33/1,0/5,0 s · hit flash 0,05 s | **thứ tự pha + điều kiện vào/thoát** (R1) · **hành vi** handler (T2) · **0/791 keyframe** (cố ý bỏ) |
 | 13 | **FX** | 🟡 **B** | **4.845** `ParticleSystem` · ~23 module · scalar + `length_in_sec` + `looping` | **curve** module (chưa đọc) |
 | 14 | **Âm thanh** | 🟡 **B** | **92 sound id** → **92/92** resolve ra file (83 sfx + 9 bgm) trên **69** `AudioClip` | **trigger**: âm nào phát ở sự kiện nào (chưa xref) |
-| 15 | **Cảm giác (feel)** | ✅ **đóng — không còn thiếu** | **3/6 tồn tại và đã có số**: hit flash (alpha **0,5** + **0,05 s**) · rung (`Enemy_CameraVibrate` 241: **0,10/20 frame** phổ biến nhất) · tỉ lệ rơi (702 = 676 coin + 26 item · 246/2.094 slot · 6 loại) | **3/6 không tồn tại trong game**: hit stop (**0** hàm `timeScale`) · aim assist (**0** hàm aim) · input latency (không phải tính năng) — xem `DESIGN_READINESS.md` §4.1b |
+| 15 | **Cảm giác (feel)** | ✅ **đóng — không còn thiếu** | **3/6 tồn tại và đã có số**: hit flash (alpha **0,5** + **0,05 s**) · rung (`Enemy_CameraVibrate` 241: **0,10/20 frame** phổ biến nhất) · tỉ lệ rơi (702 = 676 coin + 26 item · 246/2.094 slot · 6 loại) | **3/6 không thấy trong mẫu 139 file asm** (supersede lần 143 — không phải bằng chứng toàn-game; xem `DESIGN_READINESS.md` §4.1b): hit stop (**0** hàm `timeScale` trong mẫu) · aim assist (**0** hàm aim trong mẫu) · input latency (không phải tính năng) |
 
 > Bảng có 15 dòng vì "Player" và "Súng/đạn" tách nhau; **14 vùng** ở §0 gộp chúng lại. Dòng 15 (feel)
 > **không tính** — đã chốt bỏ theo chỉ đạo; tiêu chí nghiệm thu là **script**, không phải cảm giác.

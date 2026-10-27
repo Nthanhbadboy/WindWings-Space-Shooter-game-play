@@ -1734,7 +1734,7 @@ def ui_two_levels():
             sum(int(r.get("nodes") or 0) for r in idx))
 
 
-claim("P1", AUDIT, "**43 tài liệu** trong `docs/spec/` (chưa kể file này)", 43, doc_inventory,
+claim("P1", AUDIT, "**44 tài liệu** trong `docs/spec/` (chưa kể file này)", 44, doc_inventory,
       "quy mô tài liệu hiện có trong docs/spec")
 
 claim("P2", AUDIT, "**2.885** sprite, **2.816** có `width/height`; `04-asset-manifest.csv`: **2.907** asset, **2.838** có kích thước",

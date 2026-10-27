@@ -161,7 +161,9 @@ Vòng trước tài liệu này ghi *"là thứ duy nhất dữ liệu không c�
 
 Còn thiếu: **tên tham số material** (chuỗi nằm trong bảng literal, chưa export).
 
-#### 4.1b Soi lại 4 mục "feel" còn lại (25/10) — **3 mục không tồn tại trong game**
+#### 4.1b Soi lại 4 mục "feel" còn lại (25/10) — **3 mục không thấy trong mẫu 139 file asm**
+
+> **SUPERSEDE (lần 143 — theo re-review Gate-1 `8141386a` comment `6444229646`):** mọi ô ⛔ "không tồn tại/không thấy trong game" dưới đây đọc đúng là **"không thấy trong mẫu 139 file asm đã bóc"** — KHÔNG phải bằng chứng vắng mặt toàn game (`MISSING_FOR_NEW_GAME.md:267`, `START_HERE.md:186`). Quyết định bản Godot không thêm hit-stop/aim-assist là **lựa chọn thiết kế mới**, không phải tái tạo trạng thái gốc.
 
 Người chơi xác nhận *"chơi thật không thấy"*. Kiểm lại bằng dữ liệu thì **đúng**:
 
