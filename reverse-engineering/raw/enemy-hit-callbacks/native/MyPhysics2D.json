@@ -1,0 +1,713 @@
+{
+ "class": "MyPhysics2D",
+ "note": "Delegated clone/pumpkin combat control",
+ "methods": [
+  {
+   "method": "GetEllipseRandomizeVector",
+   "signature": "public static Vector2 GetEllipseRandomizeVector(Vector2 center, float radius, bool inside = True, float eccentricity = 0, float minRadius = 0) { }",
+   "offset": "0x141e4ec",
+   "getter_value": null,
+   "rva": "0x14224ec",
+   "bytes": 184,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x142252c",
+     "role": "arith:fsub"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x142256c",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x1422580",
+     "reg": "w0",
+     "op": "w0, #2",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "GetEllipseRandomizeVector",
+   "signature": "public static Vector2 GetEllipseRandomizeVector(Vector2 center, float radius, float eccentricity = 0, float minY = 0) { }",
+   "offset": "0x141e5a4",
+   "getter_value": null,
+   "rva": "0x14225a4",
+   "bytes": 180,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14225f0",
+     "role": "arith:fsub"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x1422614",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x142262c",
+     "reg": "w0",
+     "op": "w0, #2",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "IsInRange",
+   "signature": "public static bool IsInRange(Vector3 _centerPoint, Vector3 _targetPoint, float _checkRange) { }",
+   "offset": "0x141e658",
+   "getter_value": null,
+   "rva": "0x1422658",
+   "bytes": 184,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14226a0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14226fc",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "GetYElip",
+   "signature": "public static float GetYElip(float x, Vector3 center, float radius) { }",
+   "offset": "0x141e710",
+   "getter_value": null,
+   "rva": "0x1422710",
+   "bytes": 36,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 0.3,
+     "via": "ldr_pool",
+     "va": "0x7570e0",
+     "addr": "0x1422718",
+     "role": "arith:fmul"
+    }
+   ]
+  },
+  {
+   "method": "GetCol2D",
+   "signature": "public static Collider2D GetCol2D(Camera cameraView, Vector3 position, LayerMask uiLayer) { }",
+   "offset": "0x141e734",
+   "getter_value": null,
+   "rva": "0x1422734",
+   "bytes": 440,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 240,
+     "via": "sub",
+     "addr": "0x1422734",
+     "reg": "sp",
+     "op": "sp, sp, #0xf0",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1422784",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 80,
+     "via": "add",
+     "addr": "0x14227a0",
+     "reg": "x8",
+     "op": "x8, sp, #0x50",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4294967295,
+     "via": "and",
+     "addr": "0x14227ec",
+     "reg": "x0",
+     "op": "x0, x19, #0xffffffff",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 40,
+     "via": "add",
+     "addr": "0x142282c",
+     "reg": "x8",
+     "op": "x8, sp, #0x28",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 28,
+     "via": "add",
+     "addr": "0x14228c4",
+     "reg": "x0",
+     "op": "x0, x8, #0x1c",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 240,
+     "via": "add",
+     "addr": "0x14228e0",
+     "reg": "sp",
+     "op": "sp, sp, #0xf0",
+     "role": "return"
+    },
+    {
+     "kind": "float",
+     "value": 150.0,
+     "via": "mov+fmov",
+     "bits": "0x43160000",
+     "addr": "0x1422828",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "GetIntersectionPointCoordinates",
+   "signature": "public static Vector2 GetIntersectionPointCoordinates(Vector2 A1, Vector2 A2, Vector2 B1, Vector2 B2, out bool found) { }",
+   "offset": "0x141e8ec",
+   "getter_value": null,
+   "rva": "0x14228ec",
+   "bytes": 156,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1422930",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1422970",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetMultipleVector2",
+   "signature": "public static Vector2 GetMultipleVector2(float degrees, float dist) { }",
+   "offset": "0x141e988",
+   "getter_value": null,
+   "rva": "0x1422988",
+   "bytes": 80,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "sub",
+     "addr": "0x1422988",
+     "reg": "sp",
+     "op": "sp, sp, #0x20",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 3.14159,
+     "via": "ldr_pool",
+     "va": "0x756a9c",
+     "addr": "0x142299c",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x14229a4",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14229a8",
+     "reg": "x1",
+     "op": "x1, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x14229d0",
+     "reg": "sp",
+     "op": "sp, sp, #0x20",
+     "role": "return"
+    },
+    {
+     "kind": "float",
+     "value": 180.0,
+     "via": "mov+fmov",
+     "bits": "0x43340000",
+     "addr": "0x14229a0",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "GetMultipleVector3",
+   "signature": "public static Vector3 GetMultipleVector3(float degrees, float dist) { }",
+   "offset": "0x141e9d8",
+   "getter_value": null,
+   "rva": "0x14229d8",
+   "bytes": 144,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1422a0c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 3.14159,
+     "via": "ldr_pool",
+     "va": "0x756a9c",
+     "addr": "0x1422a28",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 28,
+     "via": "add",
+     "addr": "0x1422a34",
+     "reg": "x0",
+     "op": "x0, sp, #0x1c",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 24,
+     "via": "add",
+     "addr": "0x1422a40",
+     "reg": "x1",
+     "op": "x1, sp, #0x18",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 180.0,
+     "via": "mov+fmov",
+     "bits": "0x43340000",
+     "addr": "0x1422a2c",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "GetReflexPoints",
+   "signature": "public static List<Vector3> GetReflexPoints(Vector3 positionStart, float angleStart, int maxReflexCount = 5, float yMax = 9.6) { }",
+   "offset": "0x141ea68",
+   "getter_value": null,
+   "rva": "0x1422a68",
+   "bytes": 1096,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 176,
+     "via": "sub",
+     "addr": "0x1422a68",
+     "reg": "sp",
+     "op": "sp, sp, #0xb0",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1422b24",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1422b7c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 3.14159,
+     "via": "ldr_pool",
+     "va": "0x756a9c",
+     "addr": "0x1422b98",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 24,
+     "via": "add",
+     "addr": "0x1422ba4",
+     "reg": "x0",
+     "op": "x0, sp, #0x18",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 20,
+     "via": "add",
+     "addr": "0x1422bb0",
+     "reg": "x1",
+     "op": "x1, sp, #0x14",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1422bd4",
+     "reg": "w10",
+     "op": "w10, w10, #2",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 9.6,
+     "via": "ldr_pool",
+     "va": "0x756fb8",
+     "addr": "0x1422be8",
+     "role": "arith:fsub"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1422c14",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": -5.4,
+     "via": "ldr_pool",
+     "va": "0x756adc",
+     "addr": "0x1422c4c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 3704,
+     "via": "add",
+     "addr": "0x1422c58",
+     "reg": "x8",
+     "op": "x8, x8, #0xe78",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": -1.0,
+     "via": "fmov",
+     "addr": "0x1422cc4",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x1422cc8",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 28,
+     "via": "add",
+     "addr": "0x1422ccc",
+     "reg": "x0",
+     "op": "x0, sp, #0x1c",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": -1.0,
+     "via": "fmov",
+     "addr": "0x1422d3c",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x1422d40",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 28,
+     "via": "add",
+     "addr": "0x1422d44",
+     "reg": "x0",
+     "op": "x0, sp, #0x1c",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1422d7c",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "mov",
+     "addr": "0x1422da4",
+     "reg": "w11",
+     "op": "w11, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1422da8",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1422dcc",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "mov",
+     "addr": "0x1422dec",
+     "reg": "w11",
+     "op": "w11, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1422df0",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x1422e5c",
+     "reg": "w20",
+     "op": "w20, w25, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x1422e84",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 176,
+     "via": "add",
+     "addr": "0x1422ea4",
+     "reg": "sp",
+     "op": "sp, sp, #0xb0",
+     "role": "return"
+    },
+    {
+     "kind": "float",
+     "value": 180.0,
+     "via": "mov+fmov",
+     "bits": "0x43340000",
+     "addr": "0x1422b9c",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "IEMoveTo",
+   "signature": "public static IEnumerator IEMoveTo(Transform objMove, Vector3 target, float duration, Action<Transform> callback, Ease easeType = 0) { }",
+   "offset": "0x141eeb0",
+   "getter_value": null,
+   "rva": "0x1422eb0",
+   "bytes": 160,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1422f00",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "IEScaleTo",
+   "signature": "public static IEnumerator IEScaleTo(Transform objScale, float startScale, float endScale, float duration, Action<Transform> callback, Ease easeType = 0) { }",
+   "offset": "0x141ef78",
+   "getter_value": null,
+   "rva": "0x1422f78",
+   "bytes": 156,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1422fc4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x141f03c",
+   "getter_value": null,
+   "rva": "0x142303c",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "cctor",
+   "signature": "private static void .cctor() { }",
+   "offset": "0x141f044",
+   "getter_value": null,
+   "rva": "0x1423044",
+   "bytes": 80,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x142306c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1050253722,
+     "via": "mov+movk",
+     "addr": "0x142307c",
+     "reg": "w9",
+     "op": "w9, #0x999a",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

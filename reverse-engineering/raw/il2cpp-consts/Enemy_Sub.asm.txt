@@ -1,0 +1,334 @@
+;;; get_Controller  private Enemy_Controller get_Controller() { }
+    0x1587d10: stp      x30, x21, [sp, #-0x20]!
+    0x1587d14: stp      x20, x19, [sp, #0x10]
+    0x1587d18: adrp     x21, #0x2ce2000
+    0x1587d1c: adrp     x20, #0x2adb000
+    0x1587d20: ldrb     w8, [x21, #0x788]
+    0x1587d24: ldr      x20, [x20, #0x220]
+    0x1587d28: mov      x19, x0
+    0x1587d2c: tbnz     w8, #0, #0x1587d50
+    0x1587d30: adrp     x0, #0x2aec000
+    0x1587d34: ldr      x0, [x0, #0x598]
+    0x1587d38: bl       #0x110d028
+    0x1587d3c: adrp     x0, #0x2adb000
+    0x1587d40: ldr      x0, [x0, #0x220]
+    0x1587d44: bl       #0x110d028
+    0x1587d48: mov      w8, #1
+    0x1587d4c: strb     w8, [x21, #0x788]
+    0x1587d50: ldr      x0, [x20]
+    0x1587d54: ldr      x20, [x19, #0x28]
+    0x1587d58: ldr      w8, [x0, #0xe0]
+    0x1587d5c: cbnz     w8, #0x1587d64
+    0x1587d60: bl       #0x110d12c
+    0x1587d64: mov      x0, x20
+    0x1587d68: mov      x1, xzr
+    0x1587d6c: mov      x2, xzr
+    0x1587d70: bl       #0x27820b8
+    0x1587d74: tbz      w0, #0, #0x1587d94
+    0x1587d78: adrp     x8, #0x2aec000
+    0x1587d7c: ldr      x8, [x8, #0x598]
+    0x1587d80: mov      x0, x19
+    0x1587d84: ldr      x1, [x8]
+    0x1587d88: bl       #0x16f4f54
+    0x1587d8c: str      x0, [x19, #0x28]
+    0x1587d90: b        #0x1587d98
+    0x1587d94: ldr      x0, [x19, #0x28]
+    0x1587d98: ldp      x20, x19, [sp, #0x10]
+    0x1587d9c: ldp      x30, x21, [sp], #0x20
+    0x1587da0: ret      
+
+;;; OnDrawGizmos  private void OnDrawGizmos() { }
+    0x1587da4: stp      x30, x21, [sp, #-0x20]!
+    0x1587da8: stp      x20, x19, [sp, #0x10]
+    0x1587dac: adrp     x20, #0x2ce2000
+    0x1587db0: adrp     x21, #0x2aec000
+    0x1587db4: ldrb     w8, [x20, #0x789]
+    0x1587db8: ldr      x21, [x21, #0x598]
+    0x1587dbc: mov      x19, x0
+    0x1587dc0: tbnz     w8, #0, #0x1587dd8
+    0x1587dc4: adrp     x0, #0x2aec000
+    0x1587dc8: ldr      x0, [x0, #0x598]
+    0x1587dcc: bl       #0x110d028
+    0x1587dd0: mov      w8, #1
+    0x1587dd4: strb     w8, [x20, #0x789]
+    0x1587dd8: ldr      x1, [x21]
+    0x1587ddc: mov      x0, x19
+    0x1587de0: bl       #0x16f4f54
+    0x1587de4: str      x0, [x19, #0x28]
+    0x1587de8: ldp      x20, x19, [sp, #0x10]
+    0x1587dec: ldp      x30, x21, [sp], #0x20
+    0x1587df0: ret      
+
+;;; GetStartHealth  public override float GetStartHealth() { }
+    0x1587df4: str      x30, [sp, #-0x10]!
+    0x1587df8: bl       #0x1587d10
+    0x1587dfc: cbz      x0, #0x1587e14
+    0x1587e00: ldr      x8, [x0, #0x20]
+    0x1587e04: cbz      x8, #0x1587e14
+    0x1587e08: ldr      s0, [x8, #0x24]
+    0x1587e0c: ldr      x30, [sp], #0x10
+    0x1587e10: ret      
+    0x1587e14: bl       #0x110d250
+
+;;; GetCurrentHealth  public override float GetCurrentHealth() { }
+    0x1587e18: str      x30, [sp, #-0x10]!
+    0x1587e1c: bl       #0x1587d10
+    0x1587e20: cbz      x0, #0x1587e38
+    0x1587e24: ldr      x8, [x0, #0x20]
+    0x1587e28: cbz      x8, #0x1587e38
+    0x1587e2c: ldr      s0, [x8, #0x28]
+    0x1587e30: ldr      x30, [sp], #0x10
+    0x1587e34: ret      
+    0x1587e38: bl       #0x110d250
+
+;;; GainHealth  public override void GainHealth(float amount) { }
+    0x1587e3c: str      d8, [sp, #-0x10]!
+    0x1587e40: str      x30, [sp, #8]
+    0x1587e44: mov      v8.16b, v0.16b
+    0x1587e48: bl       #0x1587d10
+    0x1587e4c: cbz      x0, #0x1587e60
+    0x1587e50: ldr      x30, [sp, #8]
+    0x1587e54: mov      v0.16b, v8.16b
+    0x1587e58: ldr      d8, [sp], #0x10
+    0x1587e5c: b        #0x1582e34
+    0x1587e60: bl       #0x110d250
+
+;;; GainHealth  public override void GainHealth(float amount, float addOverTime, float addTime) { }
+    0x1587e64: ret      
+    0x1587e68: stp      x30, x19, [sp, #-0x10]!
+
+;;; IsAlive  public override bool IsAlive() { }
+    0x1587e68: stp      x30, x19, [sp, #-0x10]!
+    0x1587e6c: mov      x19, x0
+    0x1587e70: bl       #0x1587d10
+    0x1587e74: cbz      x0, #0x1587ea8
+    0x1587e78: bl       #0x15828a8
+    0x1587e7c: tbz      w0, #0, #0x1587e9c
+    0x1587e80: mov      x0, x19
+    0x1587e84: mov      x1, xzr
+    0x1587e88: bl       #0x277f188
+    0x1587e8c: cbz      x0, #0x1587ea8
+    0x1587e90: mov      x1, xzr
+    0x1587e94: ldp      x30, x19, [sp], #0x10
+    0x1587e98: b        #0x2781884
+    0x1587e9c: mov      w0, wzr
+    0x1587ea0: ldp      x30, x19, [sp], #0x10
+    0x1587ea4: ret      
+    0x1587ea8: bl       #0x110d250
+
+;;; SetDieCallback  public override void SetDieCallback(Action<GameObject> dieCallback) { }
+    0x1587eac: stp      x30, x19, [sp, #-0x10]!
+    0x1587eb0: mov      x19, x1
+    0x1587eb4: bl       #0x1587d10
+    0x1587eb8: cbz      x0, #0x1587ec8
+    0x1587ebc: mov      x1, x19
+    0x1587ec0: ldp      x30, x19, [sp], #0x10
+    0x1587ec4: b        #0x1584308
+    0x1587ec8: bl       #0x110d250
+
+;;; TakeDamage  public override void TakeDamage(Damager damager, bool ignoreInvincible = False) { }
+    0x1587ecc: str      x30, [sp, #-0x20]!
+    0x1587ed0: stp      x20, x19, [sp, #0x10]
+    0x1587ed4: mov      w20, w2
+    0x1587ed8: mov      x19, x1
+    0x1587edc: bl       #0x1587d10
+    0x1587ee0: cbz      x0, #0x1587ef8
+    0x1587ee4: and      w2, w20, #1
+    0x1587ee8: mov      x1, x19
+    0x1587eec: ldp      x20, x19, [sp, #0x10]
+    0x1587ef0: ldr      x30, [sp], #0x20
+    0x1587ef4: b        #0x1582938
+    0x1587ef8: bl       #0x110d250
+
+;;; Destroyed  public override void Destroyed() { }
+    0x1587efc: str      x30, [sp, #-0x10]!
+    0x1587f00: bl       #0x1587d10
+    0x1587f04: cbz      x0, #0x1587f24
+    0x1587f08: ldr      x0, [x0, #0x50]
+    0x1587f0c: cbz      x0, #0x1587f24
+    0x1587f10: ldr      x8, [x0]
+    0x1587f14: mov      w1, #1
+    0x1587f18: ldp      x3, x2, [x8, #0x178]
+    0x1587f1c: ldr      x30, [sp], #0x10
+    0x1587f20: br       x3
+    0x1587f24: bl       #0x110d250
+
+;;; Burn  public void Burn(Damager damager, float burnDamage, float duration) { }
+    0x1587f28: stp      d9, d8, [sp, #-0x20]!
+    0x1587f2c: stp      x30, x19, [sp, #0x10]
+    0x1587f30: mov      v8.16b, v1.16b
+    0x1587f34: mov      v9.16b, v0.16b
+    0x1587f38: mov      x19, x1
+    0x1587f3c: bl       #0x1587d10
+    0x1587f40: cbz      x0, #0x1587f5c
+    0x1587f44: mov      x1, x19
+    0x1587f48: ldp      x30, x19, [sp, #0x10]
+    0x1587f4c: mov      v0.16b, v9.16b
+    0x1587f50: mov      v1.16b, v8.16b
+    0x1587f54: ldp      d9, d8, [sp], #0x20
+    0x1587f58: b        #0x1583d60
+    0x1587f5c: bl       #0x110d250
+
+;;; SetPathFollower  public void SetPathFollower(PathCreator pathCreator) { }
+    0x1587f60: stp      x30, x19, [sp, #-0x10]!
+    0x1587f64: mov      x19, x1
+    0x1587f68: bl       #0x1587d10
+    0x1587f6c: cbz      x0, #0x1587f84
+    0x1587f70: ldr      x0, [x0, #0x40]
+    0x1587f74: cbz      x0, #0x1587f84
+    0x1587f78: mov      x1, x19
+    0x1587f7c: ldp      x30, x19, [sp], #0x10
+    0x1587f80: b        #0x1583e2c
+    0x1587f84: bl       #0x110d250
+
+;;; SetWaypoints  public void SetWaypoints(Vector2[] waypoints) { }
+    0x1587f88: stp      x30, x19, [sp, #-0x10]!
+    0x1587f8c: mov      x19, x1
+    0x1587f90: bl       #0x1587d10
+    0x1587f94: cbz      x0, #0x1587fac
+    0x1587f98: ldr      x0, [x0, #0x40]
+    0x1587f9c: cbz      x0, #0x1587fac
+    0x1587fa0: mov      x1, x19
+    0x1587fa4: ldp      x30, x19, [sp], #0x10
+    0x1587fa8: b        #0x1583f0c
+    0x1587fac: bl       #0x110d250
+
+;;; SetPosition  public void SetPosition(Vector3 position) { }
+    0x1587fb0: str      d10, [sp, #-0x20]!
+    0x1587fb4: stp      d9, d8, [sp, #8]
+    0x1587fb8: str      x30, [sp, #0x18]
+    0x1587fbc: mov      v8.16b, v2.16b
+    0x1587fc0: mov      v9.16b, v1.16b
+    0x1587fc4: mov      v10.16b, v0.16b
+    0x1587fc8: bl       #0x1587d10
+    0x1587fcc: cbz      x0, #0x1587ff4
+    0x1587fd0: ldr      x0, [x0, #0x40]
+    0x1587fd4: cbz      x0, #0x1587ff4
+    0x1587fd8: mov      v1.16b, v9.16b
+    0x1587fdc: mov      v2.16b, v8.16b
+    0x1587fe0: ldr      x30, [sp, #0x18]
+    0x1587fe4: ldp      d9, d8, [sp, #8]
+    0x1587fe8: mov      v0.16b, v10.16b
+    0x1587fec: ldr      d10, [sp], #0x20
+    0x1587ff0: b        #0x1584070
+    0x1587ff4: bl       #0x110d250
+
+;;; SetAngle  public void SetAngle(float angle) { }
+    0x1587ff8: str      d8, [sp, #-0x10]!
+    0x1587ffc: str      x30, [sp, #8]
+    0x1588000: mov      v8.16b, v0.16b
+    0x1588004: bl       #0x1587d10
+    0x1588008: cbz      x0, #0x1588024
+    0x158800c: ldr      x0, [x0, #0x40]
+    0x1588010: cbz      x0, #0x1588024
+    0x1588014: ldr      x30, [sp, #8]
+    0x1588018: mov      v0.16b, v8.16b
+    0x158801c: ldr      d8, [sp], #0x10
+    0x1588020: b        #0x15840f0
+    0x1588024: bl       #0x110d250
+
+;;; SetPositionAndAngle  public void SetPositionAndAngle(Vector3 position, float angle) { }
+    0x1588028: stp      d11, d10, [sp, #-0x30]!
+    0x158802c: stp      d9, d8, [sp, #0x10]
+    0x1588030: str      x30, [sp, #0x20]
+    0x1588034: mov      v8.16b, v3.16b
+    0x1588038: mov      v9.16b, v2.16b
+    0x158803c: mov      v10.16b, v1.16b
+    0x1588040: mov      v11.16b, v0.16b
+    0x1588044: bl       #0x1587d10
+    0x1588048: cbz      x0, #0x1588074
+    0x158804c: ldr      x0, [x0, #0x40]
+    0x1588050: cbz      x0, #0x1588074
+    0x1588054: mov      v2.16b, v9.16b
+    0x1588058: mov      v3.16b, v8.16b
+    0x158805c: ldr      x30, [sp, #0x20]
+    0x1588060: ldp      d9, d8, [sp, #0x10]
+    0x1588064: mov      v0.16b, v11.16b
+    0x1588068: mov      v1.16b, v10.16b
+    0x158806c: ldp      d11, d10, [sp], #0x30
+    0x1588070: b        #0x1584140
+    0x1588074: bl       #0x110d250
+
+;;; SetMoveLinearly  public void SetMoveLinearly(Vector3 position, float angle) { }
+    0x1588078: stp      d11, d10, [sp, #-0x30]!
+    0x158807c: stp      d9, d8, [sp, #0x10]
+    0x1588080: str      x30, [sp, #0x20]
+    0x1588084: mov      v8.16b, v3.16b
+    0x1588088: mov      v9.16b, v2.16b
+    0x158808c: mov      v10.16b, v1.16b
+    0x1588090: mov      v11.16b, v0.16b
+    0x1588094: bl       #0x1587d10
+    0x1588098: cbz      x0, #0x15880bc
+    0x158809c: mov      v2.16b, v9.16b
+    0x15880a0: mov      v3.16b, v8.16b
+    0x15880a4: ldr      x30, [sp, #0x20]
+    0x15880a8: ldp      d9, d8, [sp, #0x10]
+    0x15880ac: mov      v0.16b, v11.16b
+    0x15880b0: mov      v1.16b, v10.16b
+    0x15880b4: ldp      d11, d10, [sp], #0x30
+    0x15880b8: b        #0x15841e0
+    0x15880bc: bl       #0x110d250
+
+;;; Stun  public void Stun(float duration) { }
+    0x15880c0: str      d8, [sp, #-0x10]!
+    0x15880c4: str      x30, [sp, #8]
+    0x15880c8: mov      v8.16b, v0.16b
+    0x15880cc: bl       #0x1587d10
+    0x15880d0: cbz      x0, #0x15880e4
+    0x15880d4: ldr      x30, [sp, #8]
+    0x15880d8: mov      v0.16b, v8.16b
+    0x15880dc: ldr      d8, [sp], #0x10
+    0x15880e0: b        #0x15843b0
+    0x15880e4: bl       #0x110d250
+
+;;; get_IsBringItems  public bool get_IsBringItems() { }
+    0x15880e8: str      x30, [sp, #-0x10]!
+    0x15880ec: bl       #0x1587d10
+    0x15880f0: cbz      x0, #0x1588108
+    0x15880f4: ldr      x8, [x0, #0x20]
+    0x15880f8: cbz      x8, #0x1588108
+    0x15880fc: ldrb     w0, [x8, #0x2e]
+    0x1588100: ldr      x30, [sp], #0x10
+    0x1588104: ret      
+    0x1588108: bl       #0x110d250
+
+;;; set_IsBringItems  public void set_IsBringItems(bool value) { }
+    0x158810c: stp      x30, x19, [sp, #-0x10]!
+    0x1588110: mov      w19, w1
+    0x1588114: bl       #0x1587d10
+    0x1588118: cbz      x0, #0x1588134
+    0x158811c: ldr      x8, [x0, #0x20]
+    0x1588120: cbz      x8, #0x1588134
+    0x1588124: and      w9, w19, #1
+    0x1588128: strb     w9, [x8, #0x2e]
+    0x158812c: ldp      x30, x19, [sp], #0x10
+    0x1588130: ret      
+    0x1588134: bl       #0x110d250
+
+;;; get_IsCanAttack  public bool get_IsCanAttack() { }
+    0x1588138: str      x30, [sp, #-0x10]!
+    0x158813c: bl       #0x1587d10
+    0x1588140: cbz      x0, #0x1588158
+    0x1588144: ldr      x8, [x0, #0x20]
+    0x1588148: cbz      x8, #0x1588158
+    0x158814c: ldrb     w0, [x8, #0x2f]
+    0x1588150: ldr      x30, [sp], #0x10
+    0x1588154: ret      
+    0x1588158: bl       #0x110d250
+
+;;; set_IsCanAttack  public void set_IsCanAttack(bool value) { }
+    0x158815c: stp      x30, x19, [sp, #-0x10]!
+    0x1588160: mov      w19, w1
+    0x1588164: bl       #0x1587d10
+    0x1588168: cbz      x0, #0x1588184
+    0x158816c: ldr      x8, [x0, #0x20]
+    0x1588170: cbz      x8, #0x1588184
+    0x1588174: and      w9, w19, #1
+    0x1588178: strb     w9, [x8, #0x2f]
+    0x158817c: ldp      x30, x19, [sp], #0x10
+    0x1588180: ret      
+    0x1588184: bl       #0x110d250
+
+;;; ctor  public void .ctor() { }
+    0x1588188: mov      x1, xzr
+    0x158818c: b        #0x123baf4

@@ -1,0 +1,56 @@
+name: Independently audit identity-safe asset pack v2
+on:
+  push:
+    paths: ['tools/recovery/asset_pack_v2_audit.py', '.github/workflows/audit-asset-pack-v2.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: asset-pack-v2-audit-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+          fail-on-cache-miss: true
+      - run: python3 -m pip install 'UnityPy==1.25.4' 'fonttools==4.61.0'
+      - name: Download only versioned archive, keep release draft
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          info=json.loads(subprocess.check_output(['gh','api',f"repos/{os.environ['GITHUB_REPOSITORY']}/releases/421174835"]))
+          assert info['draft'] is True
+          subprocess.run(['gh','release','download',info['tag_name'],'--pattern','assets-v2.zip','--dir','/tmp/v2-audit'],check=True)
+          PY
+      - name: Validate every archive member and recover the one zero-size exception
+        run: python3 tools/recovery/asset_pack_v2_audit.py --archive /tmp/v2-audit/assets-v2.zip --xapk /tmp/apk/windwings.xapk --work /tmp/v2-exception
+      - run: python3 -m unittest discover -s tests -q
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: asset-pack-v2-independent-audit
+          path: reverse-engineering/raw/asset-pack-v2/
+      - name: Preserve metadata only
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/asset-pack-v2
+          git diff --cached --quiet || git commit -m 'research(assets): preserve independent v2 archive audit and zero-size texture raw [skip ci]'
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+            if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
+          done
+          exit 1

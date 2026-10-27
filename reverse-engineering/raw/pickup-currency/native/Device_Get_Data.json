@@ -1,0 +1,93 @@
+{
+ "class": "Device_Get_Data",
+ "note": "Bounded pickup/currency recovery; selected RVAs for extra dependencies",
+ "methods": [
+  {
+   "method": "GetStatValue2",
+   "signature": "public static float GetStatValue2(Device _data) { }",
+   "offset": "0x124c134",
+   "getter_value": null,
+   "rva": "0x1250134",
+   "bytes": 360,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1250168",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 274877907,
+     "via": "mov+movk",
+     "addr": "0x12501a8",
+     "reg": "w8",
+     "op": "w8, #0x4dd3",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x12501c4",
+     "reg": "w20",
+     "op": "w20, w22, #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x12501e4",
+     "reg": "x8",
+     "op": "x8, x0, x8, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x125024c",
+     "reg": "x10",
+     "op": "x10, x10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x125025c",
+     "reg": "x9",
+     "op": "x9, x9, x10, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1250260",
+     "reg": "x8",
+     "op": "x8, x0, x8, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x125026c",
+     "reg": "w8",
+     "op": "w8, w11, #1",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

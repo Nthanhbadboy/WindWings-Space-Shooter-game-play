@@ -1,0 +1,74 @@
+;;; OnEnable  private void OnEnable() { }
+    0x15749f8: stp      x30, x19, [sp, #-0x10]!
+    0x15749fc: mov      x19, x0
+    0x1574a00: mov      x0, xzr
+    0x1574a04: bl       #0x2786dc0
+    0x1574a08: str      s0, [x19, #0x30]
+    0x1574a0c: ldp      x30, x19, [sp], #0x10
+    0x1574a10: ret      
+
+;;; Destroy  public override void Destroy(DestroyType _destroyType) { }
+    0x1574a14: cbz      w1, #0x1574a28
+    0x1574a18: cmp      w1, #1
+    0x1574a1c: b.ne     #0x1574a34
+    0x1574a20: mov      x1, xzr
+    0x1574a24: b        #0x1584ac8
+    0x1574a28: ldr      x8, [x0]
+    0x1574a2c: ldp      x2, x1, [x8, #0x188]
+    0x1574a30: br       x2
+    0x1574a34: mov      x1, xzr
+    0x1574a38: b        #0x1584bec
+
+;;; OnDestroyByZeroHp  protected override void OnDestroyByZeroHp() { }
+    0x1574a3c: str      x30, [sp, #-0x20]!
+    0x1574a40: stp      x20, x19, [sp, #0x10]
+    0x1574a44: ldr      x20, [x0, #0x28]
+    0x1574a48: mov      x19, x0
+    0x1574a4c: cbz      x20, #0x1574a74
+    0x1574a50: mov      x0, x19
+    0x1574a54: mov      x1, xzr
+    0x1574a58: bl       #0x277f188
+    0x1574a5c: ldr      x8, [x20, #0x40]
+    0x1574a60: ldr      x9, [x20, #0x18]
+    0x1574a64: ldr      x2, [x20, #0x28]
+    0x1574a68: mov      x1, x0
+    0x1574a6c: mov      x0, x8
+    0x1574a70: blr      x9
+    0x1574a74: mov      x0, x19
+    0x1574a78: bl       #0x1574a94
+    0x1574a7c: mov      x1, x0
+    0x1574a80: mov      x0, x19
+    0x1574a84: ldp      x20, x19, [sp, #0x10]
+    0x1574a88: mov      x2, xzr
+    0x1574a8c: ldr      x30, [sp], #0x20
+    0x1574a90: b        #0x278276c
+
+;;; DieEffect  private IEnumerator DieEffect() { }
+    0x1574a94: stp      x30, x21, [sp, #-0x20]!
+    0x1574a98: stp      x20, x19, [sp, #0x10]
+    0x1574a9c: adrp     x20, #0x2ce2000
+    0x1574aa0: adrp     x21, #0x2aec000
+    0x1574aa4: ldrb     w8, [x20, #0x6f1]
+    0x1574aa8: ldr      x21, [x21, #0x68]
+    0x1574aac: mov      x19, x0
+    0x1574ab0: tbnz     w8, #0, #0x1574ac8
+    0x1574ab4: adrp     x0, #0x2aec000
+    0x1574ab8: ldr      x0, [x0, #0x68]
+    0x1574abc: bl       #0x110d028
+    0x1574ac0: mov      w8, #1
+    0x1574ac4: strb     w8, [x20, #0x6f1]
+    0x1574ac8: ldr      x0, [x21]
+    0x1574acc: bl       #0x110d240
+    0x1574ad0: mov      x1, xzr
+    0x1574ad4: mov      x20, x0
+    0x1574ad8: bl       #0x2143330
+    0x1574adc: str      wzr, [x20, #0x10]
+    0x1574ae0: str      x19, [x20, #0x20]
+    0x1574ae4: mov      x0, x20
+    0x1574ae8: ldp      x20, x19, [sp, #0x10]
+    0x1574aec: ldp      x30, x21, [sp], #0x20
+    0x1574af0: ret      
+
+;;; ctor  public void .ctor() { }
+    0x1574b1c: mov      x1, xzr
+    0x1574b20: b        #0x1581568

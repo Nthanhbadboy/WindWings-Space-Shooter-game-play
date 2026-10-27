@@ -1,0 +1,107 @@
+"""Extract two byte jump tables, not another full APK analysis/export."""
+import argparse
+import hashlib
+import gzip
+import sys
+import tempfile
+import io
+import json
+from pathlib import Path
+import struct
+import zipfile
+
+APK_SHA = 'f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
+LIB_SHA = '9cb038e88709f38318d183d3616eed054b36c3186ead8f1c37246ece87393c99'
+
+
+def extract(binary, locations=None):
+    assert hashlib.sha256(binary).hexdigest() == LIB_SHA
+    assert binary[:6] == b'\x7fELF\x02\x01'
+    phoff = struct.unpack_from('<Q', binary, 32)[0]
+    entsize, count = struct.unpack_from('<HH', binary, 54)
+    segments = [struct.unpack_from('<IIQQQQQQ',binary,phoff+i*entsize) for i in range(count)]
+    cells=[]
+    for va,width in (locations or ((0x77a07d,4),(0x77a081,5),(0x756aa4,4),(0x7572e0,8),(0x7581d0,8))):
+        segment=next(s for s in segments if s[0]==1 and s[3]<=va and va+width<=s[3]+s[5])
+        offset=segment[2]+va-segment[3]
+        cells.append({'va':hex(va),'file_offset':offset,'width':width,'hex':binary[offset:offset+width].hex()})
+    return {'status':'PINNED_ELF_COROUTINE_TABLES_AND_DELEGATE_LITERAL_CELLS','xapk_sha256':APK_SHA,'lib_sha256':LIB_SHA,'cells':cells}
+
+
+def recover_delegates(binary, destination, roots=('Player9_Clone','Player23_Pumpkin')):
+    root=Path(__file__).resolve().parents[2]
+    sys.path.insert(0,str(root/'tools/apk-analyze'))
+    import il2cpp_consts as native
+    import importlib
+    native = importlib.reload(native)  # each export gets the real parser, not prior masked closure
+    with tempfile.TemporaryDirectory() as folder:
+        temp=Path(folder);dump=temp/'dump.cs';lib=temp/'libil2cpp.so'
+        dump.write_bytes(gzip.decompress((root/'reverse-engineering/il2cpp/dump.cs.gz').read_bytes()))
+        lib.write_bytes(binary)
+        rows=native.parse_dump(str(dump))
+        eligible = lambda cls, ns: cls.split('.')[0] in roots and (cls.split('.')[0] not in ('EventDispatcher','EventDispatcherExtension') or ns == 'Observer')
+        selected={r[0] for r in rows if eligible(r[0],r[1])}
+        assert set(roots)<=selected
+        masked=[(cls if eligible(cls,ns) else '__not_selected__',ns,name,offset,rva,sig) for cls,ns,name,offset,rva,sig in rows]
+        native.parse_dump=lambda _:masked
+        native.TARGET_CLASSES.clear();native.TARGET_CLASSES.update({c:'Delegated clone/pumpkin combat control' for c in selected})
+        native.OUT_RAW=str(destination);native.OUT_MD=str(temp/'summary.md');native.OUT_CSV=str(temp/'floats.csv')
+        sys.argv=['native',str(dump),str(lib)];assert native.main()==0
+    if 'MB_Destroy' in roots:
+        extra = extract(binary, ((0x77a324,4),))
+        extra['status'] = 'PINNED_ELF_MB_DEATH_BYTE_JUMP_TABLE'
+        (destination/'jump-table.json').write_text(json.dumps(extra,indent=2)+'\n')
+        # Earlier name-only export also matched Unity UIElements.EventDispatcher.
+        # Remove only those two session-produced collision artifacts.
+        for suffix in ('.asm.txt','.json'):
+            (destination/('EventDispatcher.__c'+suffix)).unlink(missing_ok=True)
+    manifest={'status':'PINNED_DELEGATED_COMBAT_NATIVE_NOT_RUNTIME','xapk_sha256':APK_SHA,'lib_sha256':LIB_SHA,'classes':sorted(selected),'files':[]}
+    for path in sorted(destination.iterdir()):
+        permitted = {__import__('re').sub(r'[^\w.]','_',c)+ext for c in selected for ext in ('.json','.asm.txt')} | {'jump-table.json'}
+        if path.name not in permitted:continue
+        manifest['files'].append({'path':str(path.relative_to(root)),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
+    (destination/'index.json').write_text(json.dumps(manifest,indent=2)+'\n')
+
+
+def recover_lifecycle_cells(binary, destination):
+    # Exact GOT->ELF RELA->metadata-usage address, no pointer initialization guess.
+    locations=((0x2ae8480,8),(0x2ae8418,8),(0x2ae85a8,8),
+               (0x756e14,4),(0x756b7c,4),(0x75700c,4),(0x756e18,4))
+    data=extract(binary,locations)
+    data['status']='PINNED_PLAYER_LIFECYCLE_CELLS_AND_RELA_NOT_RUNTIME'
+    wanted={va for va,width in locations if va>0x2000000}
+    shoff=struct.unpack_from('<Q',binary,40)[0]
+    size,count=struct.unpack_from('<HH',binary,58)
+    rows=[]
+    for i in range(count):
+        sh=struct.unpack_from('<IIQQQQIIQQ',binary,shoff+i*size)
+        if sh[1]!=4:continue
+        for off in range(sh[4],sh[4]+sh[5],sh[9] or 24):
+            va,info,addend=struct.unpack_from('<QQq',binary,off)
+            if va in wanted:
+                assert info&0xffffffff==1027
+                rows.append({'offset':hex(va),'addend':hex(addend),'raw_hex':binary[off:off+24].hex(),'file_offset':off})
+    assert {int(r['offset'],16) for r in rows}==wanted
+    data['relocations']=rows
+    destination.parent.mkdir(parents=True,exist_ok=True)
+    destination.write_text(json.dumps(data,indent=2)+'\n')
+
+
+if __name__ == '__main__':
+    parser=argparse.ArgumentParser();parser.add_argument('--xapk',required=True);parser.add_argument('--output',required=True);parser.add_argument('--delegates-dir');parser.add_argument('--receivers-dir');parser.add_argument('--lifecycle-output');args=parser.parse_args()
+    data=Path(args.xapk).read_bytes();assert hashlib.sha256(data).hexdigest()==APK_SHA
+    found=[]
+    with zipfile.ZipFile(io.BytesIO(data)) as outer:
+        for name in outer.namelist():
+            if name.endswith('.apk'):
+                with zipfile.ZipFile(io.BytesIO(outer.read(name))) as inner:
+                    path='lib/arm64-v8a/libil2cpp.so'
+                    if path in inner.namelist():
+                        binary=inner.read(path);found.append(extract(binary))
+                        if args.lifecycle_output:recover_lifecycle_cells(binary,Path(args.lifecycle_output).resolve())
+                        if args.delegates_dir:recover_delegates(binary,Path(args.delegates_dir).resolve())
+                        if args.receivers_dir:
+                            dest=Path(args.receivers_dir).resolve()
+                            recover_delegates(binary,dest,('Enemy_DestroyDelayed','MB_Destroy','EventDispatcherExtension','EventDispatcher','Player_Controller'))
+    assert len(found)==1
+    out=Path(args.output);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(found[0],indent=2)+'\n')

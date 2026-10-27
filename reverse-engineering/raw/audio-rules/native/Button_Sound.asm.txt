@@ -1,0 +1,90 @@
+;;; Start  private void Start() { }
+    0x141fcbc: str      x30, [sp, #-0x40]!
+    0x141fcc0: stp      x24, x23, [sp, #0x10]
+    0x141fcc4: stp      x22, x21, [sp, #0x20]
+    0x141fcc8: stp      x20, x19, [sp, #0x30]
+    0x141fccc: adrp     x20, #0x2ce1000
+    0x141fcd0: adrp     x21, #0x2ae6000
+    0x141fcd4: ldrb     w8, [x20, #0xca7]
+    0x141fcd8: ldr      x21, [x21, #0x240]
+    0x141fcdc: mov      x19, x0
+    0x141fce0: tbnz     w8, #0, #0x141fd1c
+    0x141fce4: adrp     x0, #0x2ae6000
+    0x141fce8: ldr      x0, [x0, #0x248]
+    0x141fcec: bl       #0x110d028
+    0x141fcf0: adrp     x0, #0x2ae6000
+    0x141fcf4: ldr      x0, [x0, #0x250]
+    0x141fcf8: bl       #0x110d028
+    0x141fcfc: adrp     x0, #0x2ae6000
+    0x141fd00: ldr      x0, [x0, #0x240]
+    0x141fd04: bl       #0x110d028
+    0x141fd08: adrp     x0, #0x2ae6000
+    0x141fd0c: ldr      x0, [x0, #0x258]
+    0x141fd10: bl       #0x110d028
+    0x141fd14: mov      w8, #1
+    0x141fd18: strb     w8, [x20, #0xca7]
+    0x141fd1c: ldr      x1, [x21]
+    0x141fd20: mov      x0, x19
+    0x141fd24: bl       #0x16f4f54
+    0x141fd28: cbz      x0, #0x141fdc0
+    0x141fd2c: adrp     x23, #0x2ae6000
+    0x141fd30: ldr      x23, [x23, #0x258]
+    0x141fd34: mov      x20, x0
+    0x141fd38: ldr      x21, [x0, #0x40]
+    0x141fd3c: adrp     x22, #0x2ae6000
+    0x141fd40: ldr      x0, [x23]
+    0x141fd44: ldr      x22, [x22, #0x250]
+    0x141fd48: bl       #0x110d240
+    0x141fd4c: ldr      x2, [x22]
+    0x141fd50: mov      x1, x19
+    0x141fd54: mov      x3, xzr
+    0x141fd58: mov      x22, x0
+    0x141fd5c: bl       #0x278ed98
+    0x141fd60: cbz      x21, #0x141fdc0
+    0x141fd64: adrp     x24, #0x2ae6000
+    0x141fd68: ldr      x24, [x24, #0x248]
+    0x141fd6c: mov      x0, x21
+    0x141fd70: mov      x1, x22
+    0x141fd74: mov      x2, xzr
+    0x141fd78: bl       #0x278ee3c
+    0x141fd7c: ldr      x0, [x23]
+    0x141fd80: ldr      x20, [x20, #0x38]
+    0x141fd84: bl       #0x110d240
+    0x141fd88: ldr      x2, [x24]
+    0x141fd8c: mov      x1, x19
+    0x141fd90: mov      x3, xzr
+    0x141fd94: mov      x21, x0
+    0x141fd98: bl       #0x278ed98
+    0x141fd9c: cbz      x20, #0x141fdc0
+    0x141fda0: mov      x0, x20
+    0x141fda4: mov      x1, x21
+    0x141fda8: ldp      x20, x19, [sp, #0x30]
+    0x141fdac: ldp      x22, x21, [sp, #0x20]
+    0x141fdb0: ldp      x24, x23, [sp, #0x10]
+    0x141fdb4: mov      x2, xzr
+    0x141fdb8: ldr      x30, [sp], #0x40
+    0x141fdbc: b        #0x278ee3c
+    0x141fdc0: bl       #0x110d250
+
+;;; OnDown  public void OnDown() { }
+    0x141fdc4: ldr      w0, [x0, #0x20]
+    0x141fdc8: cbz      w0, #0x141fdd8
+    0x141fdcc: fmov     s0, #1.00000000
+    0x141fdd0: mov      x1, xzr
+    0x141fdd4: b        #0x15b50ac
+    0x141fdd8: ret      
+
+;;; OnClick  public void OnClick() { }
+    0x141fddc: ldr      w0, [x0, #0x24]
+    0x141fde0: cbz      w0, #0x141fdf0
+    0x141fde4: fmov     s0, #1.00000000
+    0x141fde8: mov      x1, xzr
+    0x141fdec: b        #0x15b50ac
+    0x141fdf0: ret      
+
+;;; ctor  public void .ctor() { }
+    0x141fdf4: adrp     x8, #0x757000
+    0x141fdf8: ldr      d0, [x8, #0x2d0]
+    0x141fdfc: mov      x1, xzr
+    0x141fe00: str      d0, [x0, #0x20]
+    0x141fe04: b        #0x2782ba0

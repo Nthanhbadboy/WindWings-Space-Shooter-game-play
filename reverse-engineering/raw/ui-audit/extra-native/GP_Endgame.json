@@ -1,0 +1,433 @@
+{
+ "class": "GP_Endgame",
+ "note": "UI loader/persistence recovery — provisional",
+ "methods": [
+  {
+   "method": "StartCheckEndgame",
+   "signature": "public void StartCheckEndgame(Action _endgame) { }",
+   "offset": "0x14ec52c",
+   "getter_value": null,
+   "rva": "0x14f052c",
+   "bytes": 84,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "CheckEndgame",
+   "signature": "private IEnumerator CheckEndgame(Action _endgame) { }",
+   "offset": "0x14ec580",
+   "getter_value": null,
+   "rva": "0x14f0580",
+   "bytes": 108,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f05b4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "VictoryNow",
+   "signature": "public void VictoryNow() { }",
+   "offset": "0x14ec614",
+   "getter_value": null,
+   "rva": "0x14f0614",
+   "bytes": 340,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f065c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14f06a0",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x14f06b4",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x14f06d0",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x14f06d4",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14f06f4",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f0728",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "MoveOutPlayer",
+   "signature": "private void MoveOutPlayer(Action _gameEnded) { }",
+   "offset": "0x14ec768",
+   "getter_value": null,
+   "rva": "0x14f0768",
+   "bytes": 92,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14f0774",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "MovePlayer",
+   "signature": "private IEnumerator MovePlayer(Action _gameEnded) { }",
+   "offset": "0x14ec7c4",
+   "getter_value": null,
+   "rva": "0x14f07c4",
+   "bytes": 108,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f07f8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "OpenBoardVictory",
+   "signature": "private void OpenBoardVictory(bool _victory) { }",
+   "offset": "0x14ec830",
+   "getter_value": null,
+   "rva": "0x14f0830",
+   "bytes": 1392,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f08ec",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 10,
+     "via": "mov",
+     "addr": "0x14f0980",
+     "reg": "w8",
+     "op": "w8, #0xa",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "add",
+     "addr": "0x14f0988",
+     "reg": "w8",
+     "op": "w8, w8, #9",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14f09ac",
+     "reg": "w0",
+     "op": "w0, w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x14f09c4",
+     "reg": "w24",
+     "op": "w24, w20, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14f0a00",
+     "reg": "w0",
+     "op": "w0, w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f0a5c",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f0b74",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14f0c00",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x14f0c40",
+     "reg": "w8",
+     "op": "w8, w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14f0c6c",
+     "reg": "w9",
+     "op": "w9, w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f0d48",
+     "reg": "w2",
+     "op": "w2, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.5,
+     "via": "fmov",
+     "addr": "0x14f0d74",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "OpenEndgame",
+   "signature": "private void OpenEndgame() { }",
+   "offset": "0x14eceec",
+   "getter_value": null,
+   "rva": "0x14f0eec",
+   "bytes": 872,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f0f90",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14f0fc4",
+     "reg": "w8",
+     "op": "w8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "mov",
+     "addr": "0x14f0ff4",
+     "reg": "w9",
+     "op": "w9, #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 999,
+     "via": "mov",
+     "addr": "0x14f1014",
+     "reg": "w9",
+     "op": "w9, #0x3e7",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14f1048",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f1210",
+     "reg": "w2",
+     "op": "w2, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f1230",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "mov",
+     "addr": "0x14f1238",
+     "reg": "w0",
+     "op": "w0, #3",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "FixBugMovePlayerTimeOut",
+   "signature": "private IEnumerator FixBugMovePlayerTimeOut(Action _gameEnded) { }",
+   "offset": "0x14ed27c",
+   "getter_value": null,
+   "rva": "0x14f127c",
+   "bytes": 108,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f12b0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x14ed310",
+   "getter_value": null,
+   "rva": "0x14f1310",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "<VictoryNow>b__5_0",
+   "signature": "private void <VictoryNow>b__5_0() { }",
+   "offset": "0x14ed318",
+   "getter_value": null,
+   "rva": "0x14f1318",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f1318",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

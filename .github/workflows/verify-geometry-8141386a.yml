@@ -1,0 +1,126 @@
+name: Verify geometry 8141386a scoped evidence
+on:
+  push:
+    branches: ['arena/8141386a-windwings-space-shooter-game-p']
+    paths:
+      - 'tools/verify/geometry_8141386a*'
+      - 'tools/verify/l3_geometry_8141386a*'
+      - 'tests/test_geometry_8141386a*'
+      - 'datas/l3_geometry*'
+      - 'reverse-engineering/raw/geometry-8141386a/**'
+      - 'docs/apk-analysis/*arena-8141386a*'
+      - 'docs/spec/**'
+      - 'docs/assets/**'
+      - 'tools/verify-claims.py'
+      - 'tools/refresh-readme-sizes.py'
+      - '.github/workflows/verify-geometry-8141386a.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  scoped-evidence:
+    if: github.head_ref == 'arena/8141386a-windwings-space-shooter-game-p' || github.ref_name == 'arena/8141386a-windwings-space-shooter-game-p'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned native review fixture dependency
+        run: pip install 'unicorn==2.1.4'
+      - name: Check source selection and byte-backed artifact determinism
+        run: |
+          python3 -m tools.verify.geometry_8141386a_sources --check
+          python3 -m tools.verify.l3_geometry_8141386a --check
+      - name: Check original-byte font tables and bounded all-text static fallback
+        run: |
+          python3 -m tools.verify.geometry_8141386a_tmp_sources --check
+          python3 -m tools.verify.l3_geometry_8141386a_tmp --check
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-4.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 4 --check
+          fi
+      - name: Check byte-backed static atlas-map and local vertex-bounds replication
+        run: |
+          python3 -m tools.verify.geometry_8141386a_atlas_sources --check
+          python3 -m tools.verify.l3_geometry_8141386a_atlas --check
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-6.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 6 --check
+          fi
+      - name: Check exact standalone original builtin Mesh reference resolution
+        run: |
+          python3 -m tools.verify.geometry_8141386a_builtin_sources --check
+          python3 -m tools.verify.l3_geometry_8141386a_builtin --check
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-7.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 7 --check
+          fi
+      - name: Check report98 original gaps and byte-corroborated supplied-schema models
+        run: |
+          python3 -m tools.verify.geometry_8141386a_gaps_sources --check
+          python3 -m tools.verify.geometry_8141386a_gaps_models --check
+          python3 -m tools.verify.l3_geometry_8141386a_gaps --check
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-8.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 8 --check
+          fi
+      - name: Check row16 original SpriteRenderer census and captured reverse references
+        run: |
+          python3 -m tools.verify.geometry_8141386a_consumers_sources --check
+          python3 -m tools.verify.l3_geometry_8141386a_consumers --check
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-118.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 118 --check
+          fi
+      - name: Check independent R1 ef123 review and original-byte evidence
+        run: |
+          python3 -m tools.verify.l3_geometry_8141386a_review_ef123 --check
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-119.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 119 --check
+          fi
+      - name: Check separate ef124 R1 addendum and additive118 precision notes
+        run: |
+          python3 -m tools.verify.l3_geometry_8141386a_review_ef124 --check
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-120.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 120 --check
+          fi
+      - name: Check H4 pinned text locators and actual selected Git Markdown bytes (not native proof)
+        run: |
+          python3 -m tools.verify.l3_geometry_8141386a_docs_sync_round2 --check --git --fetch
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-121.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 121 --check
+          fi
+      - name: Check separate ef126 caller-dispatch R1 review and fixed selected Git bytes
+        run: |
+          python3 -m tools.verify.l3_geometry_8141386a_review_ef126 --check --git --fetch
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-122.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 122 --check
+          fi
+      - name: Check separate ef127 original null-domain review and explicit return-PC drift
+        run: |
+          python3 -m tools.verify.l3_geometry_8141386a_review_ef127 --check --git --fetch
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-123.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 123 --check
+          fi
+      - name: Check additive published127 erratum against frozen original bytes and Git identities
+        run: |
+          python3 -m tools.verify.l3_geometry_8141386a_review_ef127_erratum --check --git --fetch
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-124.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 124 --check
+          fi
+      - name: Check independent Gate1 source catalogue and explicit acceptance recommendation (not user approval)
+        run: |
+          python3 -m tools.verify.l3_geometry_8141386a_gate1_phase_a --check --git --fetch
+          python3 -m tools.verify.geometry_8141386a_item_receipt --item 125 --check
+      - name: Check immutable handed-off scientific snapshots (current needles checked separately)
+        run: python3 -m tools.verify.geometry_8141386a_history --fetch
+      - name: Geometry and support-boundary regression tests
+        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support tests.test_geometry_8141386a_atlas_binary tests.test_geometry_8141386a_atlas tests.test_geometry_8141386a_builtin_sources tests.test_geometry_8141386a_builtin tests.test_geometry_8141386a_gaps_sources tests.test_geometry_8141386a_gaps tests.test_geometry_8141386a_consumers_sources tests.test_geometry_8141386a_consumers tests.test_geometry_8141386a_review_ef123_sources tests.test_geometry_8141386a_review_ef123 tests.test_geometry_8141386a_review_ef124_sources tests.test_geometry_8141386a_review_ef124 tests.test_geometry_8141386a_docs_sync_round2 tests.test_geometry_8141386a_review_ef126_sources tests.test_geometry_8141386a_review_ef126 tests.test_geometry_8141386a_review_ef127_sources tests.test_geometry_8141386a_review_ef127 tests.test_geometry_8141386a_review_ef127_erratum tests.test_geometry_8141386a_gate1_phase_a -v
+      - name: Current needles and explicitly scoped historical support
+        run: |
+          set -euo pipefail
+          python3 tools/refresh-readme-sizes.py --check
+          python3 tools/verify-claims.py --require APKD1,AI1,RD1 | tee /tmp/geometry-8141386a-claims.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: geometry-8141386a-scoped-claims
+          path: /tmp/geometry-8141386a-claims.txt

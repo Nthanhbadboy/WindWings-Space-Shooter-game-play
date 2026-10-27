@@ -1,0 +1,2038 @@
+{
+ "class": "Player_Attack_10",
+ "note": "Pinned player firing consumer recovery; provisional",
+ "methods": [
+  {
+   "method": "get_GetWingCannonDamage",
+   "signature": "protected override float get_GetWingCannonDamage() { }",
+   "offset": "0x1478db8",
+   "getter_value": null,
+   "rva": "0x147cdb8",
+   "bytes": 380,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147cdfc",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "mov",
+     "addr": "0x147ce14",
+     "reg": "w0",
+     "op": "w0, #9",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 26,
+     "via": "mov",
+     "addr": "0x147ce60",
+     "reg": "w0",
+     "op": "w0, #0x1a",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 27,
+     "via": "mov",
+     "addr": "0x147ce74",
+     "reg": "w0",
+     "op": "w0, #0x1b",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 11,
+     "via": "mov",
+     "addr": "0x147ce90",
+     "reg": "w0",
+     "op": "w0, #0xb",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.01,
+     "via": "ldr_pool",
+     "va": "0x756fe0",
+     "addr": "0x147ceb0",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "cmp",
+     "addr": "0x147cec4",
+     "reg": "w9",
+     "op": "w9, #5",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1496,
+     "via": "add",
+     "addr": "0x147cecc",
+     "reg": "x10",
+     "op": "x10, x10, #0x5d8",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147ced0",
+     "role": "arith:fmul"
+    }
+   ]
+  },
+  {
+   "method": "get_GetWingCannonMaxPowerDamage",
+   "signature": "protected override float get_GetWingCannonMaxPowerDamage() { }",
+   "offset": "0x1478f34",
+   "getter_value": null,
+   "rva": "0x147cf34",
+   "bytes": 28,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "get_GetMainCannonDamage",
+   "signature": "protected override float get_GetMainCannonDamage() { }",
+   "offset": "0x1478f50",
+   "getter_value": 9,
+   "rva": "0x147cf50",
+   "bytes": 84,
+   "pure_getter": true,
+   "getter_kind": "const",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147cf78",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "mov",
+     "addr": "0x147cf94",
+     "reg": "w0",
+     "op": "w0, #9",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SetupDatas",
+   "signature": "private void SetupDatas() { }",
+   "offset": "0x1478fa4",
+   "getter_value": null,
+   "rva": "0x147cfa4",
+   "bytes": 120,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147cfd0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "mov",
+     "addr": "0x147cff0",
+     "reg": "w0",
+     "op": "w0, #9",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 3.0,
+     "via": "fmov",
+     "addr": "0x147d000",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "SetPlayerRank",
+   "signature": "public override void SetPlayerRank(int _rank) { }",
+   "offset": "0x147901c",
+   "getter_value": null,
+   "rva": "0x147d01c",
+   "bytes": 44,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 0.25,
+     "via": "fmov",
+     "addr": "0x147d030",
+     "role": "arith:fadd"
+    }
+   ]
+  },
+  {
+   "method": "Awake",
+   "signature": "protected override void Awake() { }",
+   "offset": "0x1479048",
+   "getter_value": null,
+   "rva": "0x147d048",
+   "bytes": 40,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147d05c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "OnEnable",
+   "signature": "private void OnEnable() { }",
+   "offset": "0x1479070",
+   "getter_value": null,
+   "rva": "0x147d070",
+   "bytes": 176,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147d09c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "mov",
+     "addr": "0x147d0b4",
+     "reg": "w0",
+     "op": "w0, #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147d0d8",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "OnDisable",
+   "signature": "protected override void OnDisable() { }",
+   "offset": "0x1479120",
+   "getter_value": null,
+   "rva": "0x147d120",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "Update",
+   "signature": "private void Update() { }",
+   "offset": "0x1479124",
+   "getter_value": null,
+   "rva": "0x147d124",
+   "bytes": 404,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147d14c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 5.0,
+     "via": "fmov",
+     "addr": "0x147d18c",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147d250",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x147d26c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "AttackNormal",
+   "signature": "private void AttackNormal() { }",
+   "offset": "0x14792b8",
+   "getter_value": null,
+   "rva": "0x147d2b8",
+   "bytes": 836,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147d314",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x147d350",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147d384",
+     "reg": "w28",
+     "op": "w28, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x147d3a0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147d3ac",
+     "reg": "w21",
+     "op": "w21, w21, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2139095039,
+     "via": "mov",
+     "addr": "0x147d3d0",
+     "reg": "w8",
+     "op": "w8, #0x7f7fffff",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147d54c",
+     "reg": "w23",
+     "op": "w23, w23, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147d574",
+     "reg": "w21",
+     "op": "w21, w21, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147d578",
+     "reg": "w23",
+     "op": "w23, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.5,
+     "via": "fmov",
+     "addr": "0x147d5e4",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 77,
+     "via": "mov",
+     "addr": "0x147d5e8",
+     "reg": "w0",
+     "op": "w0, #0x4d",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "MainCannonShoot",
+   "signature": "private void MainCannonShoot() { }",
+   "offset": "0x14795fc",
+   "getter_value": null,
+   "rva": "0x147d5fc",
+   "bytes": 172,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x147d628",
+     "reg": "w20",
+     "op": "w20, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147d658",
+     "reg": "w8",
+     "op": "w8, w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "StartAttack",
+   "signature": "public override void StartAttack(bool _isStart = False) { }",
+   "offset": "0x14796a8",
+   "getter_value": null,
+   "rva": "0x147d6a8",
+   "bytes": 124,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147d704",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "UpdateRange",
+   "signature": "private void UpdateRange() { }",
+   "offset": "0x1479724",
+   "getter_value": null,
+   "rva": "0x147d724",
+   "bytes": 448,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147d750",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x147d76c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147d78c",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 11.0,
+     "via": "fmov",
+     "addr": "0x147d794",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 5.12,
+     "via": "ldr_pool",
+     "va": "0x756e80",
+     "addr": "0x147d858",
+     "role": "arith:fdiv"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147d85c",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 5.12,
+     "via": "ldr_pool",
+     "va": "0x756e80",
+     "addr": "0x147d8b0",
+     "role": "arith:fdiv"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147d8cc",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "SkillOn",
+   "signature": "public override void SkillOn(bool _touchAbility = False) { }",
+   "offset": "0x14798e4",
+   "getter_value": null,
+   "rva": "0x147d8e4",
+   "bytes": 60,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147d8f8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SkillOff",
+   "signature": "public override void SkillOff(bool _touchAbility = False) { }",
+   "offset": "0x1479920",
+   "getter_value": null,
+   "rva": "0x147d920",
+   "bytes": 60,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "StopAttack",
+   "signature": "public override void StopAttack() { }",
+   "offset": "0x147995c",
+   "getter_value": null,
+   "rva": "0x147d95c",
+   "bytes": 144,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147d988",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147d9d0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ResumeAttack",
+   "signature": "public override void ResumeAttack() { }",
+   "offset": "0x14799ec",
+   "getter_value": null,
+   "rva": "0x147d9ec",
+   "bytes": 156,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147da10",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147da70",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "LevelUp",
+   "signature": "public override void LevelUp() { }",
+   "offset": "0x1479a88",
+   "getter_value": null,
+   "rva": "0x147da88",
+   "bytes": 204,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x147dab8",
+     "reg": "w1",
+     "op": "w1, w21, #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147db2c",
+     "reg": "w1",
+     "op": "w1, w0, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SuperPowerUp",
+   "signature": "public override void SuperPowerUp() { }",
+   "offset": "0x1479b54",
+   "getter_value": null,
+   "rva": "0x147db54",
+   "bytes": 24,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "OnResetSuperPowerUp",
+   "signature": "public override void OnResetSuperPowerUp() { }",
+   "offset": "0x1479b6c",
+   "getter_value": null,
+   "rva": "0x147db6c",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "TargetCanAttack",
+   "signature": "private bool TargetCanAttack(GameObject _target) { }",
+   "offset": "0x1479b70",
+   "getter_value": null,
+   "rva": "0x147db70",
+   "bytes": 284,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147dbb4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x147dc28",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x147dc3c",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x147dc58",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x147dc5c",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147dc70",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetEnemy",
+   "signature": "private GameObject GetEnemy(Vector3 _pointCenter, float _radius, ref List<GameObject> _listContains) { }",
+   "offset": "0x1479c8c",
+   "getter_value": null,
+   "rva": "0x147dc8c",
+   "bytes": 1212,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 160,
+     "via": "sub",
+     "addr": "0x147dc8c",
+     "reg": "sp",
+     "op": "sp, sp, #0xa0",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147dd3c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x147dd98",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147ddc0",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x147dddc",
+     "reg": "x8",
+     "op": "x8, x0, x22, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x147de30",
+     "reg": "x8",
+     "op": "x8, x8, x22, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x147de68",
+     "reg": "x8",
+     "op": "x8, x8, x22, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x147df68",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x147df7c",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x147dfb4",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x147dfb8",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x147dfe0",
+     "reg": "x8",
+     "op": "x8, x8, x22, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147e024",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x147e078",
+     "reg": "x8",
+     "op": "x8, x8, x22, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147e0a0",
+     "reg": "w9",
+     "op": "w9, w22, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 160,
+     "via": "add",
+     "addr": "0x147e108",
+     "reg": "sp",
+     "op": "sp, sp, #0xa0",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 160,
+     "via": "add",
+     "addr": "0x147e138",
+     "reg": "sp",
+     "op": "sp, sp, #0xa0",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "MainCannonAttack",
+   "signature": "private void MainCannonAttack() { }",
+   "offset": "0x147a148",
+   "getter_value": null,
+   "rva": "0x147e148",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "AttackMainCannon",
+   "signature": "private IEnumerator AttackMainCannon() { }",
+   "offset": "0x147a168",
+   "getter_value": null,
+   "rva": "0x147e168",
+   "bytes": 96,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147e194",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "OnBulletMainCannonDestroyed",
+   "signature": "private void OnBulletMainCannonDestroyed(GameObject obj, Vector3 pos) { }",
+   "offset": "0x147a1f0",
+   "getter_value": null,
+   "rva": "0x147e1f0",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "OnBulletMainCannonCollided",
+   "signature": "private void OnBulletMainCannonCollided(GameObject obj, Vector3 pos) { }",
+   "offset": "0x147a1f4",
+   "getter_value": null,
+   "rva": "0x147e1f4",
+   "bytes": 304,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147e23c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.6,
+     "via": "ldr_pool",
+     "va": "0x756c44",
+     "addr": "0x147e250",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 13,
+     "via": "mov",
+     "addr": "0x147e254",
+     "reg": "w0",
+     "op": "w0, #0xd",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 91018,
+     "via": "mov+movk",
+     "addr": "0x147e260",
+     "reg": "w0",
+     "op": "w0, #0x638a",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147e2a4",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 2.0,
+     "via": "fmov",
+     "addr": "0x147e2e8",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147e2ec",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147e310",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetListCalculateAngleObjects",
+   "signature": "private List<List<Transform>> GetListCalculateAngleObjects() { }",
+   "offset": "0x147a324",
+   "getter_value": null,
+   "rva": "0x147e324",
+   "bytes": 1424,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147e3fc",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147e444",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 11.0,
+     "via": "fmov",
+     "addr": "0x147e44c",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x147e4cc",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147e514",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147e530",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x147e534",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147e560",
+     "reg": "w22",
+     "op": "w22, w22, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x147e57c",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x147e5bc",
+     "reg": "x8",
+     "op": "x8, x8, x24, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x147e5f8",
+     "reg": "x8",
+     "op": "x8, x8, x24, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x147e64c",
+     "reg": "x8",
+     "op": "x8, x8, x24, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x147e6fc",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x147e710",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x147e72c",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x147e730",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x147e770",
+     "reg": "x8",
+     "op": "x8, x8, x24, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x147e7bc",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x147e7f4",
+     "reg": "x8",
+     "op": "x8, x8, x24, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147e820",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147e844",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x147e848",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147e878",
+     "reg": "x24",
+     "op": "x24, x24, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "AttackEnemy",
+   "signature": "private void AttackEnemy(Transform _enemy) { }",
+   "offset": "0x147a8b4",
+   "getter_value": null,
+   "rva": "0x147e8b4",
+   "bytes": 64,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147e8bc",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "PlayShootEffect",
+   "signature": "private void PlayShootEffect(int _gunIdx) { }",
+   "offset": "0x147a8f4",
+   "getter_value": null,
+   "rva": "0x147e8f4",
+   "bytes": 268,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "sub",
+     "addr": "0x147e8f4",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147e93c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147e96c",
+     "reg": "w22",
+     "op": "w22, w19, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x147e970",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x147e9c4",
+     "reg": "x8",
+     "op": "x8, x8, w19, sxtw #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 64,
+     "via": "add",
+     "addr": "0x147e9f0",
+     "reg": "sp",
+     "op": "sp, sp, #0x40",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "HitEnemy",
+   "signature": "private void HitEnemy(Transform obj, float mulDmg) { }",
+   "offset": "0x147aa00",
+   "getter_value": null,
+   "rva": "0x147ea00",
+   "bytes": 1132,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147ea78",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147eb9c",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147ebb0",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147ebc8",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x147ec14",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x147ec28",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147ec30",
+     "reg": "w2",
+     "op": "w2, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147ec44",
+     "reg": "w9",
+     "op": "w9, w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x147ec48",
+     "reg": "x8",
+     "op": "x8, x8, w9, sxtw #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x147ec4c",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x147ec74",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x147ec88",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x147eca4",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x147eca8",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.3,
+     "via": "ldr_pool",
+     "va": "0x7570e0",
+     "addr": "0x147ecbc",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147ecfc",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x147ed24",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x147ed38",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x147ed54",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x147ed58",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x147ed80",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x147ed94",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147ed9c",
+     "reg": "w2",
+     "op": "w2, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147edb0",
+     "reg": "w9",
+     "op": "w9, w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x147edb4",
+     "reg": "x8",
+     "op": "x8, x8, w9, sxtw #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x147edb8",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x147ee0c",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x147ee20",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x147ee3c",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x147ee40",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ExpAttack",
+   "signature": "private void ExpAttack(Transform obj, Vector3 pos) { }",
+   "offset": "0x147ae6c",
+   "getter_value": null,
+   "rva": "0x147ee6c",
+   "bytes": 432,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147eec4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 2.5,
+     "via": "fmov",
+     "addr": "0x147ef04",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x147ef2c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x147ef40",
+     "reg": "x24",
+     "op": "x24, x21, #0x20",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.5,
+     "via": "fmov",
+     "addr": "0x147efdc",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147efec",
+     "reg": "x23",
+     "op": "x23, x23, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "DestroyedEffect",
+   "signature": "private void DestroyedEffect(Vector3 fxPosition) { }",
+   "offset": "0x147b01c",
+   "getter_value": null,
+   "rva": "0x147f01c",
+   "bytes": 144,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147f054",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147f098",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_rangeSupper",
+   "signature": "private float get_rangeSupper() { }",
+   "offset": "0x147b0ac",
+   "getter_value": null,
+   "rva": "0x147f0ac",
+   "bytes": 24,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147f0b0",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 11.0,
+     "via": "fmov",
+     "addr": "0x147f0b8",
+     "role": "arith:fmul"
+    }
+   ]
+  },
+  {
+   "method": "get_rangeNormal",
+   "signature": "private float get_rangeNormal() { }",
+   "offset": "0x147b0c4",
+   "getter_value": null,
+   "rva": "0x147f0c4",
+   "bytes": 84,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 0.4,
+     "via": "ldr_pool",
+     "va": "0x756fbc",
+     "addr": "0x147f0e0",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 6.0,
+     "via": "fmov",
+     "addr": "0x147f0ec",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 8.0,
+     "via": "fmov",
+     "addr": "0x147f0f4",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147f0f8",
+     "role": "arith:fadd"
+    }
+   ]
+  },
+  {
+   "method": "IEUpdateRange",
+   "signature": "private IEnumerator IEUpdateRange(Vector3 scale) { }",
+   "offset": "0x147b118",
+   "getter_value": null,
+   "rva": "0x147f118",
+   "bytes": 132,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147f158",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "OnDrawGizmos",
+   "signature": "private void OnDrawGizmos() { }",
+   "offset": "0x147b1c4",
+   "getter_value": null,
+   "rva": "0x147f1c4",
+   "bytes": 48,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "GetZoneAttackIndex",
+   "signature": "private int GetZoneAttackIndex(Vector3 _pointCenter, Vector3 _pointTarget, int _deviceCount = 12) { }",
+   "offset": "0x147b1f4",
+   "getter_value": 360.0,
+   "rva": "0x147f1f4",
+   "bytes": 404,
+   "pure_getter": true,
+   "getter_kind": "const",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147f238",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x147f274",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x147f2e0",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": -1.0,
+     "via": "fmov",
+     "addr": "0x147f2e4",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 57.29578,
+     "via": "ldr_pool",
+     "va": "0x7570dc",
+     "addr": "0x147f308",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x147f328",
+     "reg": "w19",
+     "op": "w19, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 30.0,
+     "via": "fmov",
+     "addr": "0x147f334",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x147f344",
+     "reg": "w8",
+     "op": "w8, w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 360.0,
+     "via": "mov+fmov",
+     "bits": "0x43b40000",
+     "addr": "0x147f314",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x147b388",
+   "getter_value": null,
+   "rva": "0x147f388",
+   "bytes": 128,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1045220557,
+     "via": "mov+movk",
+     "addr": "0x147f390",
+     "reg": "w20",
+     "op": "w20, #0xcccd",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 390847364123853,
+     "via": "mov+movk",
+     "addr": "0x147f3ac",
+     "reg": "x9",
+     "op": "x9, #0xcccd",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": -1.0,
+     "via": "ldr_pool_d",
+     "va": "0x757910",
+     "addr": "0x147f3c4",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "ldr_pool_d",
+     "va": "0x757914",
+     "addr": "0x147f3c4",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "mov",
+     "addr": "0x147f3c8",
+     "reg": "w8",
+     "op": "w8, #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "mov",
+     "addr": "0x147f3d0",
+     "reg": "w8",
+     "op": "w8, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1065353216,
+     "via": "mov",
+     "bits": "0x3f800000",
+     "addr": "0x147f3d4",
+     "note": "bit-pattern giống float nhưng không thấy fmov — để riêng",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

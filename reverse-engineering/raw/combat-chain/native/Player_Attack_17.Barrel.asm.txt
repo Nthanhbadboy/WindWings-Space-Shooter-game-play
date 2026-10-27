@@ -1,0 +1,17 @@
+;;; ctor  public void .ctor(Vector3 position, float angle = 0) { }
+    0x14944ac: stp      d11, d10, [sp, #-0x30]!
+    0x14944b0: stp      d9, d8, [sp, #0x10]
+    0x14944b4: stp      x30, x19, [sp, #0x20]
+    0x14944b8: mov      x1, xzr
+    0x14944bc: mov      v8.16b, v3.16b
+    0x14944c0: mov      v9.16b, v2.16b
+    0x14944c4: mov      v10.16b, v1.16b
+    0x14944c8: mov      v11.16b, v0.16b
+    0x14944cc: mov      x19, x0
+    0x14944d0: bl       #0x2143330
+    0x14944d4: stp      s11, s10, [x19, #0x10]
+    0x14944d8: stp      s9, s8, [x19, #0x18]
+    0x14944dc: ldp      x30, x19, [sp, #0x20]
+    0x14944e0: ldp      d9, d8, [sp, #0x10]
+    0x14944e4: ldp      d11, d10, [sp], #0x30
+    0x14944e8: ret      

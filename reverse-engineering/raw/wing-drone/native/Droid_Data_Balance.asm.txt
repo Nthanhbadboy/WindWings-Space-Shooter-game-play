@@ -1,0 +1,106 @@
+;;; GetBaseDamage  public static float GetBaseDamage(int _droidIndex) { }
+    0x1450928: str      d8, [sp, #-0x30]!
+    0x145092c: str      x30, [sp, #8]
+    0x1450930: stp      x22, x21, [sp, #0x10]
+    0x1450934: stp      x20, x19, [sp, #0x20]
+    0x1450938: adrp     x20, #0x2ce1000
+    0x145093c: adrp     x22, #0x2adc000
+    0x1450940: ldrb     w8, [x20, #0xe7f]
+    0x1450944: ldr      x22, [x22, #0x120]
+    0x1450948: mov      w19, w0
+    0x145094c: tbnz     w8, #0, #0x1450988
+    0x1450950: adrp     x0, #0x2adc000
+    0x1450954: ldr      x0, [x0, #0x120]
+    0x1450958: bl       #0x110d028
+    0x145095c: adrp     x0, #0x2adf000
+    0x1450960: ldr      x0, [x0, #0x290]
+    0x1450964: bl       #0x110d028
+    0x1450968: adrp     x0, #0x2adc000
+    0x145096c: ldr      x0, [x0, #0x2b8]
+    0x1450970: bl       #0x110d028
+    0x1450974: adrp     x0, #0x2add000
+    0x1450978: ldr      x0, [x0, #0x3b0]
+    0x145097c: bl       #0x110d028
+    0x1450980: mov      w8, #1
+    0x1450984: strb     w8, [x20, #0xe7f]
+    0x1450988: ldr      x0, [x22]
+    0x145098c: ldr      w8, [x0, #0xe0]
+    0x1450990: cbnz     w8, #0x1450998
+    0x1450994: bl       #0x110d12c
+    0x1450998: mov      w1, #1
+    0x145099c: mov      w0, w19
+    0x14509a0: mov      x2, xzr
+    0x14509a4: bl       #0x12aeaac
+    0x14509a8: subs     w21, w0, #1
+    0x14509ac: b.lt     #0x1450a3c
+    0x14509b0: mov      w20, w0
+    0x14509b4: ldr      x0, [x22]
+    0x14509b8: ldr      w8, [x0, #0xe0]
+    0x14509bc: cbnz     w8, #0x14509c8
+    0x14509c0: bl       #0x110d12c
+    0x14509c4: ldr      x0, [x22]
+    0x14509c8: ldr      x8, [x0, #0xb8]
+    0x14509cc: ldr      x0, [x8, #8]
+    0x14509d0: cbz      x0, #0x1450ac4
+    0x14509d4: adrp     x8, #0x2adf000
+    0x14509d8: ldr      x8, [x8, #0x290]
+    0x14509dc: mov      w1, w19
+    0x14509e0: ldr      x2, [x8]
+    0x14509e4: bl       #0x1934370
+    0x14509e8: cbz      x0, #0x1450ac4
+    0x14509ec: adrp     x8, #0x2add000
+    0x14509f0: ldr      x8, [x8, #0x3b0]
+    0x14509f4: mov      w1, #1
+    0x14509f8: ldr      x2, [x8]
+    0x14509fc: bl       #0x1bd7b94
+    0x1450a00: cbz      x0, #0x1450ac4
+    0x1450a04: subs     w8, w20, #5
+    0x1450a08: b.le     #0x1450a44
+    0x1450a0c: ldr      x9, [x0, #0x18]
+    0x1450a10: cmp      w9, #4
+    0x1450a14: b.ls     #0x1450ac8
+    0x1450a18: mov      x10, #-0x100000000
+    0x1450a1c: add      x9, x10, x9, lsl #32
+    0x1450a20: add      x9, x0, x9, asr #30
+    0x1450a24: ldr      s0, [x9, #0x20]
+    0x1450a28: ldr      s1, [x0, #0x30]
+    0x1450a2c: scvtf    s2, w8
+    0x1450a30: fmul     s0, s0, s2
+    0x1450a34: fadd     s0, s1, s0
+    0x1450a38: b        #0x1450a58
+    0x1450a3c: fmov     s8, #1.00000000
+    0x1450a40: b        #0x1450a6c
+    0x1450a44: ldr      w8, [x0, #0x18]
+    0x1450a48: cmp      w21, w8
+    0x1450a4c: b.hs     #0x1450ac8
+    0x1450a50: add      x8, x0, w21, uxtw #2
+    0x1450a54: ldr      s0, [x8, #0x20]
+    0x1450a58: mov      w8, #0x42c80000
+    0x1450a5c: fmov     s1, w8
+    0x1450a60: fdiv     s0, s0, s1
+    0x1450a64: fmov     s1, #1.00000000
+    0x1450a68: fadd     s8, s0, s1
+    0x1450a6c: adrp     x20, #0x2adc000
+    0x1450a70: ldr      x20, [x20, #0x2b8]
+    0x1450a74: ldr      x0, [x20]
+    0x1450a78: ldr      w8, [x0, #0xe0]
+    0x1450a7c: cbnz     w8, #0x1450a88
+    0x1450a80: bl       #0x110d12c
+    0x1450a84: ldr      x0, [x20]
+    0x1450a88: ldr      x8, [x0, #0xb8]
+    0x1450a8c: ldr      x8, [x8, #8]
+    0x1450a90: cbz      x8, #0x1450ac4
+    0x1450a94: ldr      w10, [x8, #0x18]
+    0x1450a98: sub      w9, w19, #0x65
+    0x1450a9c: cmp      w9, w10
+    0x1450aa0: b.hs     #0x1450ac8
+    0x1450aa4: add      x8, x8, w9, sxtw #2
+    0x1450aa8: ldr      s0, [x8, #0x20]
+    0x1450aac: ldp      x20, x19, [sp, #0x20]
+    0x1450ab0: ldp      x22, x21, [sp, #0x10]
+    0x1450ab4: ldr      x30, [sp, #8]
+    0x1450ab8: fmul     s0, s8, s0
+    0x1450abc: ldr      d8, [sp], #0x30
+    0x1450ac0: ret      
+    0x1450ac4: bl       #0x110d250
+    0x1450ac8: bl       #0x110d258

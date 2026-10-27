@@ -1,0 +1,59 @@
+;;; cctor  private static void .cctor() { }
+    0x14f73dc: str      x30, [sp, #-0x20]!
+    0x14f73e0: stp      x20, x19, [sp, #0x10]
+    0x14f73e4: adrp     x19, #0x2ce2000
+    0x14f73e8: adrp     x20, #0x2ae8000
+    0x14f73ec: ldrb     w8, [x19, #0x35a]
+    0x14f73f0: ldr      x20, [x20, #0xfe0]
+    0x14f73f4: tbnz     w8, #0, #0x14f740c
+    0x14f73f8: adrp     x0, #0x2ae8000
+    0x14f73fc: ldr      x0, [x0, #0xfe0]
+    0x14f7400: bl       #0x110d028
+    0x14f7404: mov      w8, #1
+    0x14f7408: strb     w8, [x19, #0x35a]
+    0x14f740c: ldr      x0, [x20]
+    0x14f7410: bl       #0x110d240
+    0x14f7414: mov      x1, xzr
+    0x14f7418: mov      x19, x0
+    0x14f741c: bl       #0x2143330
+    0x14f7420: ldr      x8, [x20]
+    0x14f7424: ldr      x8, [x8, #0xb8]
+    0x14f7428: str      x19, [x8]
+    0x14f742c: ldp      x20, x19, [sp, #0x10]
+    0x14f7430: ldr      x30, [sp], #0x20
+    0x14f7434: ret      
+
+;;; ctor  public void .ctor() { }
+    0x14f7438: mov      x1, xzr
+    0x14f743c: b        #0x2143330
+
+;;; <SpawnEnemies>b__4_1  internal void <SpawnEnemies>b__4_1() { }
+    0x14f7440: str      x30, [sp, #-0x20]!
+    0x14f7444: stp      x20, x19, [sp, #0x10]
+    0x14f7448: mov      w0, #0x5fb6
+    0x14f744c: movk     w0, #1, lsl #16
+    0x14f7450: mov      x1, xzr
+    0x14f7454: bl       #0x123a9fc
+    0x14f7458: cbz      x0, #0x14f74b0
+    0x14f745c: mov      x1, xzr
+    0x14f7460: mov      x19, x0
+    0x14f7464: bl       #0x2781748
+    0x14f7468: mov      x20, x0
+    0x14f746c: mov      w0, #-4
+    0x14f7470: mov      w1, #5
+    0x14f7474: mov      x2, xzr
+    0x14f7478: bl       #0x277d2c0
+    0x14f747c: cbz      x20, #0x14f74b0
+    0x14f7480: scvtf    s0, w0
+    0x14f7484: fmov     s1, #15.00000000
+    0x14f7488: fmov     s2, #5.00000000
+    0x14f748c: mov      x0, x20
+    0x14f7490: mov      x1, xzr
+    0x14f7494: bl       #0x2789258
+    0x14f7498: mov      x0, x19
+    0x14f749c: ldp      x20, x19, [sp, #0x10]
+    0x14f74a0: mov      w1, #1
+    0x14f74a4: mov      x2, xzr
+    0x14f74a8: ldr      x30, [sp], #0x20
+    0x14f74ac: b        #0x2781804
+    0x14f74b0: bl       #0x110d250

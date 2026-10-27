@@ -1,0 +1,751 @@
+;;; GetEllipseRandomizeVector  public static Vector2 GetEllipseRandomizeVector(Vector2 center, float radius, bool inside = True, float eccentricity = 0, float minRadius = 0) { }
+    0x14224ec: stp      d13, d12, [sp, #-0x40]!
+    0x14224f0: stp      d11, d10, [sp, #0x10]
+    0x14224f4: stp      d9, d8, [sp, #0x20]
+    0x14224f8: stp      x30, x19, [sp, #0x30]
+    0x14224fc: mov      w19, w0
+    0x1422500: mov      v8.16b, v1.16b
+    0x1422504: mov      v9.16b, v0.16b
+    0x1422508: fneg     s0, s2
+    0x142250c: mov      v1.16b, v2.16b
+    0x1422510: mov      x0, xzr
+    0x1422514: mov      v11.16b, v4.16b
+    0x1422518: mov      v12.16b, v3.16b
+    0x142251c: mov      v13.16b, v2.16b
+    0x1422520: bl       #0x277d280
+    0x1422524: mov      v10.16b, v0.16b
+    0x1422528: fmul     s1, s12, s12
+    0x142252c: fmov     s2, #1.00000000
+    0x1422530: fmul     s0, s13, s13
+    0x1422534: fmul     s3, s10, s10
+    0x1422538: fsub     s1, s2, s1
+    0x142253c: fsub     s2, s0, s3
+    0x1422540: fmul     s0, s0, s1
+    0x1422544: fsqrt    s0, s0
+    0x1422548: fsqrt    s1, s2
+    0x142254c: fdiv     s0, s0, s13
+    0x1422550: fmul     s12, s0, s1
+    0x1422554: tbz      w19, #0, #0x142256c
+    0x1422558: mov      v0.16b, v11.16b
+    0x142255c: mov      v1.16b, v12.16b
+    0x1422560: mov      x0, xzr
+    0x1422564: bl       #0x277d280
+    0x1422568: mov      v12.16b, v0.16b
+    0x142256c: mov      w1, #5
+    0x1422570: mov      w0, wzr
+    0x1422574: mov      x2, xzr
+    0x1422578: bl       #0x277d2c0
+    0x142257c: fneg     s0, s12
+    0x1422580: cmp      w0, #2
+    0x1422584: fcsel    s1, s0, s12, lt
+    0x1422588: fadd     s0, s9, s10
+    0x142258c: fadd     s1, s8, s1
+    0x1422590: ldp      x30, x19, [sp, #0x30]
+    0x1422594: ldp      d9, d8, [sp, #0x20]
+    0x1422598: ldp      d11, d10, [sp, #0x10]
+    0x142259c: ldp      d13, d12, [sp], #0x40
+    0x14225a0: ret      
+
+;;; GetEllipseRandomizeVector  public static Vector2 GetEllipseRandomizeVector(Vector2 center, float radius, float eccentricity = 0, float minY = 0) { }
+    0x14225a4: stp      d13, d12, [sp, #-0x40]!
+    0x14225a8: stp      d11, d10, [sp, #0x10]
+    0x14225ac: stp      d9, d8, [sp, #0x20]
+    0x14225b0: str      x30, [sp, #0x30]
+    0x14225b4: mov      v10.16b, v2.16b
+    0x14225b8: mov      v8.16b, v1.16b
+    0x14225bc: fcmp     s4, s2
+    0x14225c0: mov      v9.16b, v0.16b
+    0x14225c4: b.ge     #0x142263c
+    0x14225c8: fneg     s0, s10
+    0x14225cc: fcmp     s0, s4
+    0x14225d0: b.ge     #0x142263c
+    0x14225d4: mov      v0.16b, v4.16b
+    0x14225d8: mov      v1.16b, v10.16b
+    0x14225dc: mov      x0, xzr
+    0x14225e0: mov      v11.16b, v3.16b
+    0x14225e4: bl       #0x277d280
+    0x14225e8: mov      v12.16b, v0.16b
+    0x14225ec: fmul     s1, s11, s11
+    0x14225f0: fmov     s2, #1.00000000
+    0x14225f4: fmul     s0, s10, s10
+    0x14225f8: fmul     s3, s12, s12
+    0x14225fc: fsub     s1, s2, s1
+    0x1422600: fsub     s2, s0, s3
+    0x1422604: fmul     s0, s0, s1
+    0x1422608: fsqrt    s0, s0
+    0x142260c: fsqrt    s11, s2
+    0x1422610: fdiv     s10, s0, s10
+    0x1422614: mov      w1, #5
+    0x1422618: mov      w0, wzr
+    0x142261c: mov      x2, xzr
+    0x1422620: fmul     s13, s10, s11
+    0x1422624: bl       #0x277d2c0
+    0x1422628: fnmul    s0, s10, s11
+    0x142262c: cmp      w0, #2
+    0x1422630: fcsel    s0, s0, s13, lt
+    0x1422634: fadd     s9, s9, s0
+    0x1422638: mov      v10.16b, v12.16b
+    0x142263c: fadd     s1, s8, s10
+    0x1422640: mov      v0.16b, v9.16b
+    0x1422644: ldr      x30, [sp, #0x30]
+    0x1422648: ldp      d9, d8, [sp, #0x20]
+    0x142264c: ldp      d11, d10, [sp, #0x10]
+    0x1422650: ldp      d13, d12, [sp], #0x40
+    0x1422654: ret      
+
+;;; IsInRange  public static bool IsInRange(Vector3 _centerPoint, Vector3 _targetPoint, float _checkRange) { }
+    0x1422658: str      d12, [sp, #-0x40]!
+    0x142265c: stp      d11, d10, [sp, #8]
+    0x1422660: stp      d9, d8, [sp, #0x18]
+    0x1422664: str      x30, [sp, #0x28]
+    0x1422668: stp      x20, x19, [sp, #0x30]
+    0x142266c: adrp     x20, #0x2ce1000
+    0x1422670: adrp     x19, #0x2adc000
+    0x1422674: ldrb     w8, [x20, #0xcc6]
+    0x1422678: ldr      x19, [x19, #0xc28]
+    0x142267c: mov      v12.16b, v6.16b
+    0x1422680: mov      v8.16b, v4.16b
+    0x1422684: mov      v10.16b, v3.16b
+    0x1422688: mov      v9.16b, v1.16b
+    0x142268c: mov      v11.16b, v0.16b
+    0x1422690: tbnz     w8, #0, #0x14226a8
+    0x1422694: adrp     x0, #0x2adc000
+    0x1422698: ldr      x0, [x0, #0xc28]
+    0x142269c: bl       #0x110d028
+    0x14226a0: mov      w8, #1
+    0x14226a4: strb     w8, [x20, #0xcc6]
+    0x14226a8: ldr      x0, [x19]
+    0x14226ac: fmul     s12, s12, s12
+    0x14226b0: ldr      w8, [x0, #0xe0]
+    0x14226b4: cbnz     w8, #0x14226c0
+    0x14226b8: bl       #0x110d12c
+    0x14226bc: ldr      x0, [x19]
+    0x14226c0: ldr      x8, [x0, #0xb8]
+    0x14226c4: fsub     s0, s10, s11
+    0x14226c8: fsub     s1, s8, s9
+    0x14226cc: fmul     s0, s0, s0
+    0x14226d0: ldr      s2, [x8]
+    0x14226d4: fmul     s1, s1, s1
+    0x14226d8: fdiv     s0, s0, s12
+    0x14226dc: ldp      x20, x19, [sp, #0x30]
+    0x14226e0: fmul     s2, s2, s2
+    0x14226e4: fmul     s2, s12, s2
+    0x14226e8: fdiv     s1, s1, s2
+    0x14226ec: ldr      x30, [sp, #0x28]
+    0x14226f0: ldp      d9, d8, [sp, #0x18]
+    0x14226f4: ldp      d11, d10, [sp, #8]
+    0x14226f8: fadd     s0, s0, s1
+    0x14226fc: fmov     s1, #1.00000000
+    0x1422700: fcmp     s0, s1
+    0x1422704: cset     w0, ls
+    0x1422708: ldr      d12, [sp], #0x40
+    0x142270c: ret      
+
+;;; GetYElip  public static float GetYElip(float x, Vector3 center, float radius) { }
+    0x1422710: adrp     x8, #0x757000
+    0x1422714: fsub     s0, s0, s1
+    0x1422718: ldr      s1, [x8, #0xe0]
+    0x142271c: fmul     s2, s4, s4
+    0x1422720: fmul     s0, s0, s0
+    0x1422724: fsub     s0, s2, s0
+    0x1422728: fsqrt    s0, s0
+    0x142272c: fmul     s0, s0, s1
+    0x1422730: ret      
+
+;;; GetCol2D  public static Collider2D GetCol2D(Camera cameraView, Vector3 position, LayerMask uiLayer) { }
+    0x1422734: sub      sp, sp, #0xf0
+    0x1422738: stp      d11, d10, [sp, #0xa0]
+    0x142273c: stp      d9, d8, [sp, #0xb0]
+    0x1422740: str      x30, [sp, #0xc0]
+    0x1422744: stp      x22, x21, [sp, #0xd0]
+    0x1422748: stp      x20, x19, [sp, #0xe0]
+    0x142274c: adrp     x21, #0x2ce1000
+    0x1422750: ldrb     w8, [x21, #0xcc7]
+    0x1422754: mov      x19, x1
+    0x1422758: mov      v8.16b, v2.16b
+    0x142275c: mov      v9.16b, v1.16b
+    0x1422760: mov      v10.16b, v0.16b
+    0x1422764: mov      x20, x0
+    0x1422768: tbnz     w8, #0, #0x142278c
+    0x142276c: adrp     x0, #0x2adc000
+    0x1422770: ldr      x0, [x0, #0xc28]
+    0x1422774: bl       #0x110d028
+    0x1422778: adrp     x0, #0x2adc000
+    0x142277c: ldr      x0, [x0, #0xb70]
+    0x1422780: bl       #0x110d028
+    0x1422784: mov      w8, #1
+    0x1422788: strb     w8, [x21, #0xcc7]
+    0x142278c: cbz      x20, #0x14228e8
+    0x1422790: adrp     x21, #0x2adc000
+    0x1422794: adrp     x22, #0x2adc000
+    0x1422798: ldr      x21, [x21, #0xc28]
+    0x142279c: ldr      x22, [x22, #0xb70]
+    0x14227a0: add      x8, sp, #0x50
+    0x14227a4: mov      x0, x20
+    0x14227a8: mov      v0.16b, v10.16b
+    0x14227ac: mov      v1.16b, v9.16b
+    0x14227b0: mov      v2.16b, v8.16b
+    0x14227b4: mov      x1, xzr
+    0x14227b8: bl       #0x275e824
+    0x14227bc: ldr      q0, [sp, #0x50]
+    0x14227c0: ldr      x8, [sp, #0x60]
+    0x14227c4: ldr      x0, [x21]
+    0x14227c8: str      q0, [sp, #0x80]
+    0x14227cc: str      x8, [sp, #0x90]
+    0x14227d0: ldr      w8, [x0, #0xe0]
+    0x14227d4: cbnz     w8, #0x14227e0
+    0x14227d8: bl       #0x110d12c
+    0x14227dc: ldr      x0, [x21]
+    0x14227e0: ldr      x8, [x0, #0xb8]
+    0x14227e4: ldr      x9, [sp, #0x90]
+    0x14227e8: ldr      q0, [sp, #0x80]
+    0x14227ec: and      x0, x19, #0xffffffff
+    0x14227f0: mov      x1, xzr
+    0x14227f4: stur     x9, [x8, #0x14]
+    0x14227f8: stur     q0, [x8, #4]
+    0x14227fc: ldr      x8, [x21]
+    0x1422800: ldr      x8, [x8, #0xb8]
+    0x1422804: ldp      s8, s9, [x8, #4]
+    0x1422808: ldp      s10, s11, [x8, #0x10]
+    0x142280c: bl       #0x2781bd4
+    0x1422810: ldr      x8, [x22]
+    0x1422814: mov      w19, w0
+    0x1422818: ldr      w9, [x8, #0xe0]
+    0x142281c: cbnz     w9, #0x1422828
+    0x1422820: mov      x0, x8
+    0x1422824: bl       #0x110d12c
+    0x1422828: mov      w9, #0x43160000
+    0x142282c: add      x8, sp, #0x28
+    0x1422830: fmov     s4, w9
+    0x1422834: mov      v0.16b, v8.16b
+    0x1422838: mov      v1.16b, v9.16b
+    0x142283c: mov      v2.16b, v10.16b
+    0x1422840: mov      v3.16b, v11.16b
+    0x1422844: mov      w0, w19
+    0x1422848: mov      x1, xzr
+    0x142284c: bl       #0x27c3b24
+    0x1422850: ldr      w8, [sp, #0x48]
+    0x1422854: ldur     q0, [sp, #0x38]
+    0x1422858: ldur     q1, [sp, #0x28]
+    0x142285c: ldr      x9, [x21]
+    0x1422860: str      w8, [sp, #0x70]
+    0x1422864: mov      x0, sp
+    0x1422868: stp      q1, q0, [sp, #0x50]
+    0x142286c: ldr      x10, [x9, #0xb8]
+    0x1422870: mov      x1, xzr
+    0x1422874: str      w8, [x10, #0x3c]
+    0x1422878: stur     q0, [x10, #0x2c]
+    0x142287c: stur     q1, [x10, #0x1c]
+    0x1422880: ldr      x8, [x9, #0xb8]
+    0x1422884: ldur     q0, [x8, #0x2c]
+    0x1422888: ldur     q1, [x8, #0x1c]
+    0x142288c: ldr      w8, [x8, #0x3c]
+    0x1422890: stp      q1, q0, [sp]
+    0x1422894: str      w8, [sp, #0x20]
+    0x1422898: bl       #0x27c5540
+    0x142289c: mov      w8, w0
+    0x14228a0: mov      x0, xzr
+    0x14228a4: tbz      w8, #0, #0x14228cc
+    0x14228a8: ldr      x0, [x21]
+    0x14228ac: ldr      w8, [x0, #0xe0]
+    0x14228b0: cbnz     w8, #0x14228bc
+    0x14228b4: bl       #0x110d12c
+    0x14228b8: ldr      x0, [x21]
+    0x14228bc: ldr      x8, [x0, #0xb8]
+    0x14228c0: mov      x1, xzr
+    0x14228c4: add      x0, x8, #0x1c
+    0x14228c8: bl       #0x27c52c0
+    0x14228cc: ldp      x20, x19, [sp, #0xe0]
+    0x14228d0: ldp      x22, x21, [sp, #0xd0]
+    0x14228d4: ldr      x30, [sp, #0xc0]
+    0x14228d8: ldp      d9, d8, [sp, #0xb0]
+    0x14228dc: ldp      d11, d10, [sp, #0xa0]
+    0x14228e0: add      sp, sp, #0xf0
+    0x14228e4: ret      
+    0x14228e8: bl       #0x110d250
+
+;;; GetIntersectionPointCoordinates  public static Vector2 GetIntersectionPointCoordinates(Vector2 A1, Vector2 A2, Vector2 B1, Vector2 B2, out bool found) { }
+    0x14228ec: stp      x30, x19, [sp, #-0x10]!
+    0x14228f0: fsub     s6, s6, s4
+    0x14228f4: fsub     s16, s3, s1
+    0x14228f8: fsub     s3, s7, s5
+    0x14228fc: fsub     s2, s2, s0
+    0x1422900: fmul     s7, s16, s6
+    0x1422904: fmul     s17, s2, s3
+    0x1422908: fsub     s7, s7, s17
+    0x142290c: fcmp     s7, #0.0
+    0x1422910: b.ne     #0x1422950
+    0x1422914: strb     wzr, [x0]
+    0x1422918: adrp     x19, #0x2ce1000
+    0x142291c: ldrb     w8, [x19, #3]
+    0x1422920: cbnz     w8, #0x1422938
+    0x1422924: adrp     x0, #0x2adc000
+    0x1422928: ldr      x0, [x0, #0xe78]
+    0x142292c: bl       #0x110d028
+    0x1422930: mov      w8, #1
+    0x1422934: strb     w8, [x19, #3]
+    0x1422938: adrp     x8, #0x2adc000
+    0x142293c: ldr      x8, [x8, #0xe78]
+    0x1422940: ldr      x8, [x8]
+    0x1422944: ldr      x8, [x8, #0xb8]
+    0x1422948: ldp      s0, s1, [x8]
+    0x142294c: b        #0x1422980
+    0x1422950: fsub     s0, s0, s4
+    0x1422954: fsub     s1, s1, s5
+    0x1422958: fmul     s0, s16, s0
+    0x142295c: fmul     s1, s2, s1
+    0x1422960: fsub     s0, s0, s1
+    0x1422964: fdiv     s0, s0, s7
+    0x1422968: fmul     s1, s6, s0
+    0x142296c: fmul     s2, s3, s0
+    0x1422970: mov      w8, #1
+    0x1422974: fadd     s0, s4, s1
+    0x1422978: fadd     s1, s5, s2
+    0x142297c: strb     w8, [x0]
+    0x1422980: ldp      x30, x19, [sp], #0x10
+    0x1422984: ret      
+
+;;; GetMultipleVector2  public static Vector2 GetMultipleVector2(float degrees, float dist) { }
+    0x1422988: sub      sp, sp, #0x20
+    0x142298c: str      d8, [sp, #0x10]
+    0x1422990: str      x30, [sp, #0x18]
+    0x1422994: adrp     x8, #0x756000
+    0x1422998: mov      v8.16b, v1.16b
+    0x142299c: ldr      s1, [x8, #0xa9c]
+    0x14229a0: mov      w8, #0x43340000
+    0x14229a4: add      x0, sp, #0xc
+    0x14229a8: add      x1, sp, #8
+    0x14229ac: fmul     s0, s0, s1
+    0x14229b0: fmov     s1, w8
+    0x14229b4: fdiv     s0, s0, s1
+    0x14229b8: bl       #0x2990b80
+    0x14229bc: ldp      s0, s1, [sp, #8]
+    0x14229c0: ldr      x30, [sp, #0x18]
+    0x14229c4: fmul     s0, s0, s8
+    0x14229c8: fmul     s1, s1, s8
+    0x14229cc: ldr      d8, [sp, #0x10]
+    0x14229d0: add      sp, sp, #0x20
+    0x14229d4: ret      
+
+;;; GetMultipleVector3  public static Vector3 GetMultipleVector3(float degrees, float dist) { }
+    0x14229d8: stp      d9, d8, [sp, #-0x30]!
+    0x14229dc: str      x30, [sp, #0x10]
+    0x14229e0: stp      x20, x19, [sp, #0x20]
+    0x14229e4: adrp     x19, #0x2ce1000
+    0x14229e8: adrp     x20, #0x2adc000
+    0x14229ec: ldrb     w8, [x19, #0xcc8]
+    0x14229f0: ldr      x20, [x20, #0xc28]
+    0x14229f4: mov      v8.16b, v1.16b
+    0x14229f8: mov      v9.16b, v0.16b
+    0x14229fc: tbnz     w8, #0, #0x1422a14
+    0x1422a00: adrp     x0, #0x2adc000
+    0x1422a04: ldr      x0, [x0, #0xc28]
+    0x1422a08: bl       #0x110d028
+    0x1422a0c: mov      w8, #1
+    0x1422a10: strb     w8, [x19, #0xcc8]
+    0x1422a14: ldr      x0, [x20]
+    0x1422a18: ldr      w8, [x0, #0xe0]
+    0x1422a1c: cbnz     w8, #0x1422a24
+    0x1422a20: bl       #0x110d12c
+    0x1422a24: adrp     x8, #0x756000
+    0x1422a28: ldr      s0, [x8, #0xa9c]
+    0x1422a2c: mov      w8, #0x43340000
+    0x1422a30: fmov     s1, w8
+    0x1422a34: add      x0, sp, #0x1c
+    0x1422a38: fmul     s0, s9, s0
+    0x1422a3c: fdiv     s0, s0, s1
+    0x1422a40: add      x1, sp, #0x18
+    0x1422a44: bl       #0x2990b80
+    0x1422a48: ldp      s0, s1, [sp, #0x18]
+    0x1422a4c: ldp      x20, x19, [sp, #0x20]
+    0x1422a50: ldr      x30, [sp, #0x10]
+    0x1422a54: fmov     s2, wzr
+    0x1422a58: fmul     s0, s0, s8
+    0x1422a5c: fmul     s1, s1, s8
+    0x1422a60: ldp      d9, d8, [sp], #0x30
+    0x1422a64: ret      
+
+;;; GetReflexPoints  public static List<Vector3> GetReflexPoints(Vector3 positionStart, float angleStart, int maxReflexCount = 5, float yMax = 9.6) { }
+    0x1422a68: sub      sp, sp, #0xb0
+    0x1422a6c: stp      d15, d14, [sp, #0x20]
+    0x1422a70: stp      d13, d12, [sp, #0x30]
+    0x1422a74: stp      d11, d10, [sp, #0x40]
+    0x1422a78: stp      d9, d8, [sp, #0x50]
+    0x1422a7c: stp      x30, x27, [sp, #0x60]
+    0x1422a80: stp      x26, x25, [sp, #0x70]
+    0x1422a84: stp      x24, x23, [sp, #0x80]
+    0x1422a88: stp      x22, x21, [sp, #0x90]
+    0x1422a8c: stp      x20, x19, [sp, #0xa0]
+    0x1422a90: str      s4, [sp, #0x10]
+    0x1422a94: str      s2, [sp, #4]
+    0x1422a98: adrp     x22, #0x2ce1000
+    0x1422a9c: adrp     x21, #0x2adc000
+    0x1422aa0: adrp     x19, #0x2adc000
+    0x1422aa4: ldrb     w8, [x22, #0xcc9]
+    0x1422aa8: ldr      x21, [x21, #0xa80]
+    0x1422aac: ldr      x19, [x19, #0xa88]
+    0x1422ab0: mov      w20, w0
+    0x1422ab4: mov      v12.16b, v3.16b
+    0x1422ab8: mov      v10.16b, v1.16b
+    0x1422abc: mov      v11.16b, v0.16b
+    0x1422ac0: tbnz     w8, #0, #0x1422b2c
+    0x1422ac4: adrp     x0, #0x2adc000
+    0x1422ac8: ldr      x0, [x0, #0xa70]
+    0x1422acc: bl       #0x110d028
+    0x1422ad0: adrp     x0, #0x2adc000
+    0x1422ad4: ldr      x0, [x0, #0xa78]
+    0x1422ad8: bl       #0x110d028
+    0x1422adc: adrp     x0, #0x2adc000
+    0x1422ae0: ldr      x0, [x0, #0xa88]
+    0x1422ae4: bl       #0x110d028
+    0x1422ae8: adrp     x0, #0x2adc000
+    0x1422aec: ldr      x0, [x0, #0xa68]
+    0x1422af0: bl       #0x110d028
+    0x1422af4: adrp     x0, #0x2adc000
+    0x1422af8: ldr      x0, [x0, #0xa80]
+    0x1422afc: bl       #0x110d028
+    0x1422b00: adrp     x0, #0x2adc000
+    0x1422b04: ldr      x0, [x0, #0xc28]
+    0x1422b08: bl       #0x110d028
+    0x1422b0c: adrp     x0, #0x2adc000
+    0x1422b10: ldr      x0, [x0, #0xfa0]
+    0x1422b14: bl       #0x110d028
+    0x1422b18: adrp     x0, #0x2adc000
+    0x1422b1c: ldr      x0, [x0, #0xfa8]
+    0x1422b20: bl       #0x110d028
+    0x1422b24: mov      w8, #1
+    0x1422b28: strb     w8, [x22, #0xcc9]
+    0x1422b2c: ldr      x0, [x21]
+    0x1422b30: strb     wzr, [sp, #0x1c]
+    0x1422b34: bl       #0x110d240
+    0x1422b38: ldr      x1, [x19]
+    0x1422b3c: mov      x19, x0
+    0x1422b40: bl       #0x1c21c74
+    0x1422b44: mov      x0, xzr
+    0x1422b48: bl       #0x275e868
+    0x1422b4c: cbz      x0, #0x1422eac
+    0x1422b50: adrp     x21, #0x2adc000
+    0x1422b54: ldr      x21, [x21, #0xc28]
+    0x1422b58: mov      x1, xzr
+    0x1422b5c: bl       #0x275e174
+    0x1422b60: adrp     x22, #0x2ce1000
+    0x1422b64: ldrb     w8, [x22, #3]
+    0x1422b68: mov      v13.16b, v0.16b
+    0x1422b6c: cbnz     w8, #0x1422b84
+    0x1422b70: adrp     x0, #0x2adc000
+    0x1422b74: ldr      x0, [x0, #0xe78]
+    0x1422b78: bl       #0x110d028
+    0x1422b7c: mov      w8, #1
+    0x1422b80: strb     w8, [x22, #3]
+    0x1422b84: ldr      x0, [x21]
+    0x1422b88: ldr      w8, [x0, #0xe0]
+    0x1422b8c: cbnz     w8, #0x1422b94
+    0x1422b90: bl       #0x110d12c
+    0x1422b94: adrp     x8, #0x756000
+    0x1422b98: ldr      s0, [x8, #0xa9c]
+    0x1422b9c: mov      w8, #0x43340000
+    0x1422ba0: fmov     s1, w8
+    0x1422ba4: add      x0, sp, #0x18
+    0x1422ba8: fmul     s0, s12, s0
+    0x1422bac: fdiv     s0, s0, s1
+    0x1422bb0: add      x1, sp, #0x14
+    0x1422bb4: bl       #0x2990b80
+    0x1422bb8: cbz      x19, #0x1422eac
+    0x1422bbc: adrp     x22, #0x2adc000
+    0x1422bc0: ldr      x22, [x22, #0xa70]
+    0x1422bc4: ldr      w10, [x19, #0x1c]
+    0x1422bc8: ldp      s1, s0, [sp, #0x14]
+    0x1422bcc: ldr      x8, [x19, #0x10]
+    0x1422bd0: ldr      x9, [x22]
+    0x1422bd4: add      w10, w10, #2
+    0x1422bd8: stp      wzr, w10, [x19, #0x18]
+    0x1422bdc: cbz      x8, #0x1422eac
+    0x1422be0: adrp     x10, #0x756000
+    0x1422be4: adrp     x23, #0x2adc000
+    0x1422be8: ldr      s3, [x10, #0xfb8]
+    0x1422bec: adrp     x24, #0x2adc000
+    0x1422bf0: ldr      x23, [x23, #0xfa8]
+    0x1422bf4: ldr      w10, [x8, #0x18]
+    0x1422bf8: ldr      x24, [x24, #0xfa0]
+    0x1422bfc: fadd     s2, s13, s13
+    0x1422c00: fadd     s14, s11, s1
+    0x1422c04: fsub     s1, s3, s2
+    0x1422c08: fadd     s13, s10, s0
+    0x1422c0c: str      s1, [sp, #8]
+    0x1422c10: cbz      w10, #0x1422c28
+    0x1422c14: mov      w9, #1
+    0x1422c18: str      w9, [x19, #0x18]
+    0x1422c1c: stp      s11, s10, [x8, #0x20]
+    0x1422c20: str      s12, [x8, #0x28]
+    0x1422c24: b        #0x1422c48
+    0x1422c28: ldr      x8, [x9, #0x20]
+    0x1422c2c: mov      x0, x19
+    0x1422c30: mov      v0.16b, v11.16b
+    0x1422c34: mov      v1.16b, v10.16b
+    0x1422c38: ldr      x8, [x8, #0xc0]
+    0x1422c3c: mov      v2.16b, v12.16b
+    0x1422c40: ldr      x1, [x8, #0x70]
+    0x1422c44: bl       #0x1c224ac
+    0x1422c48: adrp     x9, #0x756000
+    0x1422c4c: ldr      s0, [x9, #0xadc]
+    0x1422c50: fcmp     s11, s14
+    0x1422c54: adrp     x8, #0x757000
+    0x1422c58: add      x8, x8, #0xe78
+    0x1422c5c: cset     w10, mi
+    0x1422c60: str      s0, [sp, #0xc]
+    0x1422c64: ldr      s0, [sp, #0x10]
+    0x1422c68: ldr      s1, [sp, #8]
+    0x1422c6c: ldr      s9, [x8, w10, uxtw #2]
+    0x1422c70: cset     w11, ne
+    0x1422c74: fcmp     s10, s13
+    0x1422c78: cset     w12, ne
+    0x1422c7c: cset     w13, gt
+    0x1422c80: orr      w26, w10, w12
+    0x1422c84: orr      w27, w13, w11
+    0x1422c88: fcsel    s8, s1, s0, gt
+    0x1422c8c: cmp      w20, #0
+    0x1422c90: b.le     #0x1422e74
+    0x1422c94: mov      w25, w20
+    0x1422c98: mov      v12.16b, v9.16b
+    0x1422c9c: tbnz     w26, #0, #0x1422cb0
+    0x1422ca0: ldr      x0, [x24]
+    0x1422ca4: mov      x1, xzr
+    0x1422ca8: bl       #0x15b77b0
+    0x1422cac: ldr      s12, [sp, #0xc]
+    0x1422cb0: ldr      x0, [x21]
+    0x1422cb4: strb     wzr, [sp, #0x1c]
+    0x1422cb8: ldr      w8, [x0, #0xe0]
+    0x1422cbc: cbnz     w8, #0x1422cc4
+    0x1422cc0: bl       #0x110d12c
+    0x1422cc4: fmov     s5, #-1.00000000
+    0x1422cc8: fmov     s7, #1.00000000
+    0x1422ccc: add      x0, sp, #0x1c
+    0x1422cd0: mov      v0.16b, v11.16b
+    0x1422cd4: mov      v1.16b, v10.16b
+    0x1422cd8: mov      v2.16b, v14.16b
+    0x1422cdc: mov      v3.16b, v13.16b
+    0x1422ce0: mov      v4.16b, v12.16b
+    0x1422ce4: mov      v6.16b, v12.16b
+    0x1422ce8: bl       #0x14228ec
+    0x1422cec: mov      v15.16b, v1.16b
+    0x1422cf0: ldr      s1, [sp, #0x10]
+    0x1422cf4: fcmp     s15, s1
+    0x1422cf8: b.hi     #0x1422d14
+    0x1422cfc: ldrb     w8, [sp, #0x1c]
+    0x1422d00: cbz      w8, #0x1422d14
+    0x1422d04: mov      v12.16b, v0.16b
+    0x1422d08: ldr      s0, [sp, #8]
+    0x1422d0c: fcmp     s15, s0
+    0x1422d10: b.ge     #0x1422dc0
+    0x1422d14: mov      v12.16b, v8.16b
+    0x1422d18: tbnz     w27, #0, #0x1422d2c
+    0x1422d1c: ldr      x0, [x23]
+    0x1422d20: mov      x1, xzr
+    0x1422d24: bl       #0x15b77b0
+    0x1422d28: ldr      s12, [sp, #0x10]
+    0x1422d2c: ldr      x0, [x21]
+    0x1422d30: ldr      w8, [x0, #0xe0]
+    0x1422d34: cbnz     w8, #0x1422d3c
+    0x1422d38: bl       #0x110d12c
+    0x1422d3c: fmov     s4, #-1.00000000
+    0x1422d40: fmov     s6, #1.00000000
+    0x1422d44: add      x0, sp, #0x1c
+    0x1422d48: mov      v0.16b, v11.16b
+    0x1422d4c: mov      v1.16b, v10.16b
+    0x1422d50: mov      v2.16b, v14.16b
+    0x1422d54: mov      v3.16b, v13.16b
+    0x1422d58: mov      v5.16b, v12.16b
+    0x1422d5c: mov      v7.16b, v12.16b
+    0x1422d60: bl       #0x14228ec
+    0x1422d64: ldrb     w8, [sp, #0x1c]
+    0x1422d68: mov      w20, wzr
+    0x1422d6c: cbz      w8, #0x1422c8c
+    0x1422d70: ldr      w10, [x19, #0x1c]
+    0x1422d74: ldr      x8, [x19, #0x10]
+    0x1422d78: ldr      x9, [x22]
+    0x1422d7c: add      w10, w10, #1
+    0x1422d80: str      w10, [x19, #0x1c]
+    0x1422d84: cbz      x8, #0x1422eac
+    0x1422d88: ldrsw    x10, [x19, #0x18]
+    0x1422d8c: ldr      w11, [x8, #0x18]
+    0x1422d90: mov      v12.16b, v0.16b
+    0x1422d94: mov      v15.16b, v1.16b
+    0x1422d98: cmp      w10, w11
+    0x1422d9c: b.hs     #0x1422e34
+    0x1422da0: ldr      s0, [sp, #4]
+    0x1422da4: mov      w11, #0xc
+    0x1422da8: add      w9, w10, #1
+    0x1422dac: madd     x8, x10, x11, x8
+    0x1422db0: str      w9, [x19, #0x18]
+    0x1422db4: stp      s12, s15, [x8, #0x20]
+    0x1422db8: str      s0, [x8, #0x28]
+    0x1422dbc: b        #0x1422e54
+    0x1422dc0: ldr      w10, [x19, #0x1c]
+    0x1422dc4: ldr      x8, [x19, #0x10]
+    0x1422dc8: ldr      x9, [x22]
+    0x1422dcc: add      w10, w10, #1
+    0x1422dd0: str      w10, [x19, #0x1c]
+    0x1422dd4: cbz      x8, #0x1422eac
+    0x1422dd8: ldrsw    x10, [x19, #0x18]
+    0x1422ddc: ldr      w11, [x8, #0x18]
+    0x1422de0: cmp      w10, w11
+    0x1422de4: b.hs     #0x1422e08
+    0x1422de8: ldr      s0, [sp, #4]
+    0x1422dec: mov      w11, #0xc
+    0x1422df0: add      w9, w10, #1
+    0x1422df4: madd     x8, x10, x11, x8
+    0x1422df8: str      w9, [x19, #0x18]
+    0x1422dfc: stp      s12, s15, [x8, #0x20]
+    0x1422e00: str      s0, [x8, #0x28]
+    0x1422e04: b        #0x1422e28
+    0x1422e08: ldr      x8, [x9, #0x20]
+    0x1422e0c: ldr      s2, [sp, #4]
+    0x1422e10: mov      x0, x19
+    0x1422e14: mov      v0.16b, v12.16b
+    0x1422e18: ldr      x8, [x8, #0xc0]
+    0x1422e1c: mov      v1.16b, v15.16b
+    0x1422e20: ldr      x1, [x8, #0x70]
+    0x1422e24: bl       #0x1c224ac
+    0x1422e28: fsub     s0, s10, s15
+    0x1422e2c: fsub     s10, s15, s0
+    0x1422e30: b        #0x1422e5c
+    0x1422e34: ldr      x8, [x9, #0x20]
+    0x1422e38: ldr      s2, [sp, #4]
+    0x1422e3c: mov      x0, x19
+    0x1422e40: mov      v0.16b, v12.16b
+    0x1422e44: ldr      x8, [x8, #0xc0]
+    0x1422e48: mov      v1.16b, v15.16b
+    0x1422e4c: ldr      x1, [x8, #0x70]
+    0x1422e50: bl       #0x1c224ac
+    0x1422e54: fsub     s0, s11, s12
+    0x1422e58: fsub     s11, s12, s0
+    0x1422e5c: sub      w20, w25, #1
+    0x1422e60: mov      v13.16b, v10.16b
+    0x1422e64: mov      v14.16b, v11.16b
+    0x1422e68: mov      v10.16b, v15.16b
+    0x1422e6c: mov      v11.16b, v12.16b
+    0x1422e70: b        #0x1422c48
+    0x1422e74: ldr      w8, [x19, #0x18]
+    0x1422e78: ldp      x22, x21, [sp, #0x90]
+    0x1422e7c: ldp      x24, x23, [sp, #0x80]
+    0x1422e80: ldp      x26, x25, [sp, #0x70]
+    0x1422e84: cmp      w8, #1
+    0x1422e88: csel     x0, xzr, x19, lt
+    0x1422e8c: ldp      x20, x19, [sp, #0xa0]
+    0x1422e90: ldp      x30, x27, [sp, #0x60]
+    0x1422e94: ldp      d9, d8, [sp, #0x50]
+    0x1422e98: ldp      d11, d10, [sp, #0x40]
+    0x1422e9c: ldp      d13, d12, [sp, #0x30]
+    0x1422ea0: ldp      d15, d14, [sp, #0x20]
+    0x1422ea4: add      sp, sp, #0xb0
+    0x1422ea8: ret      
+    0x1422eac: bl       #0x110d250
+
+;;; IEMoveTo  public static IEnumerator IEMoveTo(Transform objMove, Vector3 target, float duration, Action<Transform> callback, Ease easeType = 0) { }
+    0x1422eb0: stp      d11, d10, [sp, #-0x50]!
+    0x1422eb4: stp      d9, d8, [sp, #0x10]
+    0x1422eb8: stp      x30, x23, [sp, #0x20]
+    0x1422ebc: stp      x22, x21, [sp, #0x30]
+    0x1422ec0: stp      x20, x19, [sp, #0x40]
+    0x1422ec4: adrp     x22, #0x2ce1000
+    0x1422ec8: adrp     x23, #0x2ae6000
+    0x1422ecc: ldrb     w8, [x22, #0xcca]
+    0x1422ed0: ldr      x23, [x23, #0x330]
+    0x1422ed4: mov      w19, w2
+    0x1422ed8: mov      x20, x1
+    0x1422edc: mov      v8.16b, v3.16b
+    0x1422ee0: mov      v9.16b, v2.16b
+    0x1422ee4: mov      v10.16b, v1.16b
+    0x1422ee8: mov      v11.16b, v0.16b
+    0x1422eec: mov      x21, x0
+    0x1422ef0: tbnz     w8, #0, #0x1422f08
+    0x1422ef4: adrp     x0, #0x2ae6000
+    0x1422ef8: ldr      x0, [x0, #0x330]
+    0x1422efc: bl       #0x110d028
+    0x1422f00: mov      w8, #1
+    0x1422f04: strb     w8, [x22, #0xcca]
+    0x1422f08: ldr      x0, [x23]
+    0x1422f0c: bl       #0x110d240
+    0x1422f10: mov      x1, xzr
+    0x1422f14: mov      x22, x0
+    0x1422f18: bl       #0x2143330
+    0x1422f1c: str      wzr, [x22, #0x10]
+    0x1422f20: str      x21, [x22, #0x28]
+    0x1422f24: stp      s11, s10, [x22, #0x30]
+    0x1422f28: stp      s9, s8, [x22, #0x38]
+    0x1422f2c: str      x20, [x22, #0x40]
+    0x1422f30: str      w19, [x22, #0x20]
+    0x1422f34: mov      x0, x22
+    0x1422f38: ldp      x20, x19, [sp, #0x40]
+    0x1422f3c: ldp      x22, x21, [sp, #0x30]
+    0x1422f40: ldp      x30, x23, [sp, #0x20]
+    0x1422f44: ldp      d9, d8, [sp, #0x10]
+    0x1422f48: ldp      d11, d10, [sp], #0x50
+    0x1422f4c: ret      
+
+;;; IEScaleTo  public static IEnumerator IEScaleTo(Transform objScale, float startScale, float endScale, float duration, Action<Transform> callback, Ease easeType = 0) { }
+    0x1422f78: str      d10, [sp, #-0x50]!
+    0x1422f7c: stp      d9, d8, [sp, #0x10]
+    0x1422f80: stp      x30, x23, [sp, #0x20]
+    0x1422f84: stp      x22, x21, [sp, #0x30]
+    0x1422f88: stp      x20, x19, [sp, #0x40]
+    0x1422f8c: adrp     x22, #0x2ce1000
+    0x1422f90: adrp     x23, #0x2ae6000
+    0x1422f94: ldrb     w8, [x22, #0xccb]
+    0x1422f98: ldr      x23, [x23, #0x338]
+    0x1422f9c: mov      w19, w2
+    0x1422fa0: mov      x20, x1
+    0x1422fa4: mov      v8.16b, v2.16b
+    0x1422fa8: mov      v9.16b, v1.16b
+    0x1422fac: mov      v10.16b, v0.16b
+    0x1422fb0: mov      x21, x0
+    0x1422fb4: tbnz     w8, #0, #0x1422fcc
+    0x1422fb8: adrp     x0, #0x2ae6000
+    0x1422fbc: ldr      x0, [x0, #0x338]
+    0x1422fc0: bl       #0x110d028
+    0x1422fc4: mov      w8, #1
+    0x1422fc8: strb     w8, [x22, #0xccb]
+    0x1422fcc: ldr      x0, [x23]
+    0x1422fd0: bl       #0x110d240
+    0x1422fd4: mov      x1, xzr
+    0x1422fd8: mov      x22, x0
+    0x1422fdc: bl       #0x2143330
+    0x1422fe0: str      wzr, [x22, #0x10]
+    0x1422fe4: str      x21, [x22, #0x28]
+    0x1422fe8: str      s10, [x22, #0x24]
+    0x1422fec: stp      s9, s8, [x22, #0x30]
+    0x1422ff0: str      x20, [x22, #0x38]
+    0x1422ff4: str      w19, [x22, #0x20]
+    0x1422ff8: mov      x0, x22
+    0x1422ffc: ldp      x20, x19, [sp, #0x40]
+    0x1423000: ldp      x22, x21, [sp, #0x30]
+    0x1423004: ldp      x30, x23, [sp, #0x20]
+    0x1423008: ldp      d9, d8, [sp, #0x10]
+    0x142300c: ldr      d10, [sp], #0x50
+    0x1423010: ret      
+
+;;; ctor  public void .ctor() { }
+    0x142303c: mov      x1, xzr
+    0x1423040: b        #0x2782ba0
+
+;;; cctor  private static void .cctor() { }
+    0x1423044: str      x30, [sp, #-0x20]!
+    0x1423048: stp      x20, x19, [sp, #0x10]
+    0x142304c: adrp     x19, #0x2ce1000
+    0x1423050: adrp     x20, #0x2adc000
+    0x1423054: ldrb     w8, [x19, #0xccc]
+    0x1423058: ldr      x20, [x20, #0xc28]
+    0x142305c: tbnz     w8, #0, #0x1423074
+    0x1423060: adrp     x0, #0x2adc000
+    0x1423064: ldr      x0, [x0, #0xc28]
+    0x1423068: bl       #0x110d028
+    0x142306c: mov      w8, #1
+    0x1423070: strb     w8, [x19, #0xccc]
+    0x1423074: ldr      x8, [x20]
+    0x1423078: ldp      x20, x19, [sp, #0x10]
+    0x142307c: mov      w9, #0x999a
+    0x1423080: movk     w9, #0x3e99, lsl #16
+    0x1423084: ldr      x8, [x8, #0xb8]
+    0x1423088: str      w9, [x8]
+    0x142308c: ldr      x30, [sp], #0x20
+    0x1423090: ret      

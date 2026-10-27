@@ -1,0 +1,1621 @@
+{
+ "class": "BoardManager",
+ "note": "early-stage UI/tutorial gates — pending native verification",
+ "methods": [
+  {
+   "method": "GetPreviousBoard",
+   "signature": "public static BoardID GetPreviousBoard() { }",
+   "offset": "0x123aaf4",
+   "getter_value": null,
+   "rva": "0x123eaf4",
+   "bytes": 200,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x123eb34",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x123eb60",
+     "reg": "w9",
+     "op": "w9, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "sub",
+     "addr": "0x123eb98",
+     "reg": "w1",
+     "op": "w1, w9, #2",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "IsOpenBoard",
+   "signature": "public static bool IsOpenBoard(BoardID id) { }",
+   "offset": "0x123abbc",
+   "getter_value": null,
+   "rva": "0x123ebbc",
+   "bytes": 224,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x123ec00",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "Start",
+   "signature": "private void Start() { }",
+   "offset": "0x123ac9c",
+   "getter_value": null,
+   "rva": "0x123ec9c",
+   "bytes": 2160,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 128,
+     "via": "sub",
+     "addr": "0x123ec9c",
+     "reg": "sp",
+     "op": "sp, sp, #0x80",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x123ee20",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x123eea4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x123eecc",
+     "reg": "x8",
+     "op": "x8, x21, w24, sxtw #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x123ef08",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x123ef3c",
+     "reg": "w24",
+     "op": "w24, w24, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 40,
+     "via": "add",
+     "addr": "0x123ef74",
+     "reg": "x0",
+     "op": "x0, sp, #0x28",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 7,
+     "via": "mov",
+     "addr": "0x123f1dc",
+     "reg": "w10",
+     "op": "w10, #7",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x123f1e0",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "mov",
+     "addr": "0x123f2c0",
+     "reg": "w10",
+     "op": "w10, #9",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x123f2c4",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 29,
+     "via": "mov",
+     "addr": "0x123f3a4",
+     "reg": "w10",
+     "op": "w10, #0x1d",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x123f3a8",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 58,
+     "via": "mov",
+     "addr": "0x123f420",
+     "reg": "w1",
+     "op": "w1, #0x3a",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 56,
+     "via": "mov",
+     "addr": "0x123f450",
+     "reg": "w1",
+     "op": "w1, #0x38",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 57,
+     "via": "mov",
+     "addr": "0x123f480",
+     "reg": "w1",
+     "op": "w1, #0x39",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 10,
+     "via": "mov",
+     "addr": "0x123f4b0",
+     "reg": "w1",
+     "op": "w1, #0xa",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x123f4f4",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "return"
+    },
+    {
+     "kind": "int",
+     "value": 128,
+     "via": "add",
+     "addr": "0x123f4fc",
+     "reg": "sp",
+     "op": "sp, sp, #0x80",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "OnEnable",
+   "signature": "private void OnEnable() { }",
+   "offset": "0x123b50c",
+   "getter_value": null,
+   "rva": "0x123f50c",
+   "bytes": 176,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x123f544",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SetBoardActive",
+   "signature": "private void SetBoardActive(object obj) { }",
+   "offset": "0x123b5bc",
+   "getter_value": null,
+   "rva": "0x123f5bc",
+   "bytes": 232,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x123f5f0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x123f620",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #3",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetBoard",
+   "signature": "private GameObject GetBoard(BoardID _boardId) { }",
+   "offset": "0x123b6a4",
+   "getter_value": null,
+   "rva": "0x123f6a4",
+   "bytes": 972,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "sub",
+     "addr": "0x123f6a4",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x123f73c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x123f74c",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 40,
+     "via": "add",
+     "addr": "0x123f77c",
+     "reg": "x2",
+     "op": "x2, sp, #0x28",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x123f7bc",
+     "reg": "w8",
+     "op": "w8, w21, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "cmp",
+     "addr": "0x123f7c0",
+     "reg": "w8",
+     "op": "w8, #8",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1413,
+     "via": "add",
+     "addr": "0x123f7cc",
+     "reg": "x9",
+     "op": "x9, x9, #0x585",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x123f7d8",
+     "reg": "x10",
+     "op": "x10, x10, x11, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x123f9b0",
+     "reg": "x2",
+     "op": "x2, sp, #0x20",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "add",
+     "addr": "0x123fa64",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "OpenBoard",
+   "signature": "private void OpenBoard(object obj) { }",
+   "offset": "0x123ba70",
+   "getter_value": null,
+   "rva": "0x123fa70",
+   "bytes": 248,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x123faa4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x123fad4",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x123fb2c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    }
+   ]
+  },
+  {
+   "method": "LoadSingle",
+   "signature": "private void LoadSingle(BoardID id) { }",
+   "offset": "0x123bb68",
+   "getter_value": null,
+   "rva": "0x123fb68",
+   "bytes": 864,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x123fc20",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x123fc74",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x123fcac",
+     "reg": "w1",
+     "op": "w1, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x123fcf8",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x123fd0c",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x123fd14",
+     "reg": "w2",
+     "op": "w2, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x123fd28",
+     "reg": "w9",
+     "op": "w9, w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x123fd2c",
+     "reg": "x8",
+     "op": "x8, x8, w9, sxtw #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x123fd30",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x123fd60",
+     "reg": "w1",
+     "op": "w1, w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.8,
+     "via": "ldr_pool",
+     "va": "0x756c14",
+     "addr": "0x123fe1c",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.2,
+     "via": "ldr_pool",
+     "va": "0x75700c",
+     "addr": "0x123fe20",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "LoadAdditive",
+   "signature": "private void LoadAdditive(BoardID id) { }",
+   "offset": "0x123bec8",
+   "getter_value": null,
+   "rva": "0x123fec8",
+   "bytes": 388,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x123ff20",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.8,
+     "via": "ldr_pool",
+     "va": "0x756c14",
+     "addr": "0x123ffa0",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.2,
+     "via": "ldr_pool",
+     "va": "0x75700c",
+     "addr": "0x123ffa4",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "LoadPopUp",
+   "signature": "private void LoadPopUp(BoardID id) { }",
+   "offset": "0x123c04c",
+   "getter_value": null,
+   "rva": "0x124004c",
+   "bytes": 388,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x12400a4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.8,
+     "via": "ldr_pool",
+     "va": "0x756c14",
+     "addr": "0x1240124",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.2,
+     "via": "ldr_pool",
+     "va": "0x75700c",
+     "addr": "0x1240128",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "CloseBoard",
+   "signature": "private void CloseBoard(object obj) { }",
+   "offset": "0x123c1d0",
+   "getter_value": null,
+   "rva": "0x12401d0",
+   "bytes": 120,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x12401f8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "CloseBoard",
+   "signature": "private void CloseBoard(BoardID id) { }",
+   "offset": "0x123c248",
+   "getter_value": null,
+   "rva": "0x1240248",
+   "bytes": 996,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 112,
+     "via": "sub",
+     "addr": "0x1240248",
+     "reg": "sp",
+     "op": "sp, sp, #0x70",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x12402f4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x1240370",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x1240384",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x124038c",
+     "reg": "w2",
+     "op": "w2, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x12403a8",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x12403ec",
+     "reg": "w9",
+     "op": "w9, w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x12403f0",
+     "reg": "x8",
+     "op": "x8, x8, w9, sxtw #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x12403f4",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x1240440",
+     "reg": "w21",
+     "op": "w21, w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x12404ac",
+     "reg": "w21",
+     "op": "w21, w21, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x12404d4",
+     "reg": "w1",
+     "op": "w1, w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x124054c",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x1240560",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 112,
+     "via": "add",
+     "addr": "0x12405a0",
+     "reg": "sp",
+     "op": "sp, sp, #0x70",
+     "role": "return"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x12405ac",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x12405b0",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 59,
+     "via": "mov",
+     "addr": "0x1240618",
+     "reg": "w1",
+     "op": "w1, #0x3b",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 112,
+     "via": "add",
+     "addr": "0x1240620",
+     "reg": "sp",
+     "op": "sp, sp, #0x70",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "CheckFade",
+   "signature": "private bool CheckFade(BoardID _boardId) { }",
+   "offset": "0x123c634",
+   "getter_value": null,
+   "rva": "0x1240634",
+   "bytes": 592,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "sub",
+     "addr": "0x1240634",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x124069c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x12406dc",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 40,
+     "via": "add",
+     "addr": "0x1240708",
+     "reg": "x2",
+     "op": "x2, sp, #0x28",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x1240744",
+     "reg": "w8",
+     "op": "w8, w20, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "cmp",
+     "addr": "0x1240748",
+     "reg": "w8",
+     "op": "w8, #8",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1422,
+     "via": "add",
+     "addr": "0x1240754",
+     "reg": "x9",
+     "op": "x9, x9, #0x58e",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1240760",
+     "reg": "x10",
+     "op": "x10, x10, x11, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x12407c8",
+     "reg": "x2",
+     "op": "x2, sp, #0x20",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "cmp",
+     "addr": "0x12407e8",
+     "reg": "w20",
+     "op": "w20, #8",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x12407f8",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "add",
+     "addr": "0x1240810",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "return"
+    }
+   ]
+  },
+  {
+   "method": "FadeLoading",
+   "signature": "private IEnumerator FadeLoading(float a1, float a2, Action callback, float delta = 0.1) { }",
+   "offset": "0x123c884",
+   "getter_value": null,
+   "rva": "0x1240884",
+   "bytes": 148,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x12408cc",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetAndOpenBoardSingle",
+   "signature": "private void GetAndOpenBoardSingle(BoardID id) { }",
+   "offset": "0x123c918",
+   "getter_value": null,
+   "rva": "0x1240918",
+   "bytes": 732,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "sub",
+     "addr": "0x1240918",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x12409a8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1240a28",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1240a44",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1240a48",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x1240a68",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": -2.0,
+     "via": "fmov",
+     "addr": "0x1240b18",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x1240b24",
+     "reg": "w8",
+     "op": "w8, w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x1240b70",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x1240b84",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x1240ba0",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x1240ba4",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x1240bb4",
+     "reg": "w19",
+     "op": "w19, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "add",
+     "addr": "0x1240bcc",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "return"
+    },
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "add",
+     "addr": "0x1240be8",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "FadeOff",
+   "signature": "private void FadeOff() { }",
+   "offset": "0x123cbf4",
+   "getter_value": null,
+   "rva": "0x1240bf4",
+   "bytes": 268,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1240c38",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.8,
+     "via": "ldr_pool",
+     "va": "0x756c14",
+     "addr": "0x1240cc4",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.1,
+     "via": "ldr_pool",
+     "va": "0x756c78",
+     "addr": "0x1240cc8",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "GetAndOpenBoardAdditive",
+   "signature": "private void GetAndOpenBoardAdditive(BoardID id) { }",
+   "offset": "0x123cd08",
+   "getter_value": null,
+   "rva": "0x1240d08",
+   "bytes": 868,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "sub",
+     "addr": "0x1240d08",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1240db0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1240e9c",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1240eb8",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1240ebc",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x1240ed8",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": -10.0,
+     "via": "fmov",
+     "addr": "0x1240f8c",
+     "role": "arith:fsub"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x1240f98",
+     "reg": "w8",
+     "op": "w8, w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x1240fe8",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x1240ffc",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x1241018",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x124101c",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x124102c",
+     "reg": "w19",
+     "op": "w19, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "add",
+     "addr": "0x1241044",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "return"
+    },
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "add",
+     "addr": "0x1241060",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetAndOpenBoardPopUp",
+   "signature": "private void GetAndOpenBoardPopUp(BoardID id) { }",
+   "offset": "0x123d074",
+   "getter_value": null,
+   "rva": "0x1241074",
+   "bytes": 868,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "sub",
+     "addr": "0x1241074",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x124111c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1241208",
+     "reg": "w10",
+     "op": "w10, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1241224",
+     "reg": "w9",
+     "op": "w9, w10, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1241228",
+     "reg": "x8",
+     "op": "x8, x8, x10, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x1241244",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": -25.0,
+     "via": "fmov",
+     "addr": "0x12412f8",
+     "role": "arith:fsub"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x1241304",
+     "reg": "w8",
+     "op": "w8, w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x1241354",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x1241368",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x1241384",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x1241388",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x1241398",
+     "reg": "w19",
+     "op": "w19, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "add",
+     "addr": "0x12413b0",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "return"
+    },
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "add",
+     "addr": "0x12413cc",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "Escape",
+   "signature": "private void Escape(object obj) { }",
+   "offset": "0x123d3d8",
+   "getter_value": null,
+   "rva": "0x12413d8",
+   "bytes": 476,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x124144c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x124152c",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x1241540",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "mov",
+     "addr": "0x1241548",
+     "reg": "w2",
+     "op": "w2, #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x124158c",
+     "reg": "w9",
+     "op": "w9, w9, #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x1241590",
+     "reg": "x8",
+     "op": "x8, x8, w9, sxtw #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x1241594",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x123d5dc",
+   "getter_value": null,
+   "rva": "0x12415dc",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "cctor",
+   "signature": "private static void .cctor() { }",
+   "offset": "0x123d5e4",
+   "getter_value": null,
+   "rva": "0x12415e4",
+   "bytes": 112,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x124160c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x124161c",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "<FadeOff>b__32_0",
+   "signature": "private void <FadeOff>b__32_0() { }",
+   "offset": "0x123d654",
+   "getter_value": null,
+   "rva": "0x1241654",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  }
+ ]
+}

@@ -1,0 +1,411 @@
+{
+ "class": "Drone_Attack3",
+ "note": "Bounded drone attack recovery; selected RVAs for extra dependencies",
+ "methods": [
+  {
+   "method": "OnEnable",
+   "signature": "private void OnEnable() { }",
+   "offset": "0x14683e4",
+   "getter_value": null,
+   "rva": "0x146c3e4",
+   "bytes": 364,
+   "pure_getter": false,
+   "getter_kind": "field",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x146c430",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 25,
+     "via": "mov",
+     "addr": "0x146c47c",
+     "reg": "w0",
+     "op": "w0, #0x19",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x146c4a8",
+     "reg": "w20",
+     "op": "w20, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 25,
+     "via": "mov",
+     "addr": "0x146c4ec",
+     "reg": "w0",
+     "op": "w0, #0x19",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "FixedUpdate",
+   "signature": "protected override void FixedUpdate() { }",
+   "offset": "0x1468550",
+   "getter_value": null,
+   "rva": "0x146c550",
+   "bytes": 40,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "Shoot",
+   "signature": "private void Shoot() { }",
+   "offset": "0x1468578",
+   "getter_value": null,
+   "rva": "0x146c578",
+   "bytes": 812,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x146c5f0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x146c640",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 4294967295,
+     "via": "and",
+     "addr": "0x146c648",
+     "reg": "x25",
+     "op": "x25, x8, #0xffffffff",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": -0.1,
+     "via": "ldr_pool",
+     "va": "0x757018",
+     "addr": "0x146c66c",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.01745,
+     "via": "ldr_pool",
+     "va": "0x756ca8",
+     "addr": "0x146c670",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x146c6b4",
+     "reg": "x8",
+     "op": "x8, x8, x24, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": -20.42035,
+     "via": "ldr_pool",
+     "va": "0x757014",
+     "addr": "0x146c6f0",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x146c7c0",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x146c7d4",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x146c7f0",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x146c7f4",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 2.0,
+     "via": "fmov",
+     "addr": "0x146c7fc",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x146c800",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x146c830",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x146c844",
+     "reg": "w8",
+     "op": "w8, w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x146c86c",
+     "reg": "x24",
+     "op": "x24, x24, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "OnBulletDestroyed",
+   "signature": "private void OnBulletDestroyed(GameObject obj, Vector3 pos) { }",
+   "offset": "0x14688a4",
+   "getter_value": null,
+   "rva": "0x146c8a4",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "OnBulletCollided",
+   "signature": "private void OnBulletCollided(GameObject obj, Vector3 pos) { }",
+   "offset": "0x14688a8",
+   "getter_value": null,
+   "rva": "0x146c8a8",
+   "bytes": 728,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x146c91c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 24,
+     "via": "mov",
+     "addr": "0x146c9bc",
+     "reg": "w0",
+     "op": "w0, #0x18",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x146c9c8",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 24,
+     "via": "mov",
+     "addr": "0x146ca08",
+     "reg": "w0",
+     "op": "w0, #0x18",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 90031,
+     "via": "mov+movk",
+     "addr": "0x146ca3c",
+     "reg": "w0",
+     "op": "w0, #0x5faf",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": -1.0,
+     "via": "fmov",
+     "addr": "0x146ca7c",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 5.0,
+     "via": "fmov",
+     "addr": "0x146ca84",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x146caa4",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x146cb0c",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x146cb20",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x146cb50",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x146cb54",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x146ca14",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x1468b80",
+   "getter_value": null,
+   "rva": "0x146cb80",
+   "bytes": 48,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "ldr_pool_d",
+     "va": "0x757fb0",
+     "addr": "0x146cb88",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.2,
+     "via": "ldr_pool_d",
+     "va": "0x757fb4",
+     "addr": "0x146cb88",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 1176256512,
+     "via": "mov+movk",
+     "addr": "0x146cb90",
+     "reg": "w8",
+     "op": "w8, #0x4000",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1090519040,
+     "via": "mov",
+     "bits": "0x41000000",
+     "addr": "0x146cb94",
+     "note": "bit-pattern giống float nhưng không thấy fmov — để riêng",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

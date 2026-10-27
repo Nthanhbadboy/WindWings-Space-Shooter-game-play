@@ -1,0 +1,35 @@
+name: Recover all24 player attack executable evidence
+on:
+  push:
+    paths: ['tools/recovery/wing_native_bytes.py', '.github/workflows/recover-wing-native.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+          fail-on-cache-miss: true
+      - run: python3 -m pip install 'capstone==5.0.3'
+      - run: python3 tools/recovery/wing_native_bytes.py --xapk /tmp/apk/windwings.xapk --output reverse-engineering/raw/wing-implementations
+      - name: Preserve scoped evidence
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/wing-implementations reverse-engineering/raw/wing-emission
+          git diff --cached --quiet || git commit -m 'Preserve all24 player attack executable evidence [skip ci]'
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+            if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
+          done
+          exit 1

@@ -1,0 +1,39 @@
+;;; Update  protected override void Update() { }
+    0x159905c: stp      d9, d8, [sp, #-0x20]!
+    0x1599060: stp      x30, x19, [sp, #0x10]
+    0x1599064: mov      x19, x0
+    0x1599068: bl       #0x158ee88
+    0x159906c: ldrb     w8, [x19, #0x60]
+    0x1599070: cbz      w8, #0x15990a8
+    0x1599074: ldrb     w8, [x19, #0x8c]
+    0x1599078: cbnz     w8, #0x15990a8
+    0x159907c: ldr      s8, [x19, #0xb0]
+    0x1599080: ldr      s9, [x19, #0x130]
+    0x1599084: mov      x0, xzr
+    0x1599088: bl       #0x2786de8
+    0x159908c: ldr      s1, [x19, #0x12c]
+    0x1599090: fmul     s0, s9, s0
+    0x1599094: fadd     s0, s8, s0
+    0x1599098: str      s0, [x19, #0xb0]
+    0x159909c: fcmp     s0, s1
+    0x15990a0: b.le     #0x15990a8
+    0x15990a4: str      s1, [x19, #0xb0]
+    0x15990a8: ldp      x30, x19, [sp, #0x10]
+    0x15990ac: ldp      d9, d8, [sp], #0x20
+    0x15990b0: ret      
+
+;;; ctor  public void .ctor() { }
+    0x15990b4: adrp     x9, #0x757000
+    0x15990b8: ldr      d0, [x9, #0x618]
+    0x15990bc: adrp     x9, #0x779000
+    0x15990c0: ldr      q1, [x9, #0x340]
+    0x15990c4: mov      w9, #0x5f93
+    0x15990c8: add      x8, x0, #0x12c
+    0x15990cc: mov      w10, #1
+    0x15990d0: movk     w9, #1, lsl #16
+    0x15990d4: mov      x1, xzr
+    0x15990d8: str      d0, [x8]
+    0x15990dc: strb     w10, [x0, #0x8c]
+    0x15990e0: str      q1, [x0, #0xc0]
+    0x15990e4: str      w9, [x0, #0x128]
+    0x15990e8: b        #0x158c268

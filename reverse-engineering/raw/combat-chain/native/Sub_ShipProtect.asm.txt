@@ -1,0 +1,215 @@
+;;; Awake  private void Awake() { }
+    0x1465540: stp      x30, x21, [sp, #-0x20]!
+    0x1465544: stp      x20, x19, [sp, #0x10]
+    0x1465548: adrp     x20, #0x2ce1000
+    0x146554c: adrp     x21, #0x2ae7000
+    0x1465550: ldrb     w8, [x20, #0xf12]
+    0x1465554: ldr      x21, [x21, #0x890]
+    0x1465558: mov      x19, x0
+    0x146555c: tbnz     w8, #0, #0x1465574
+    0x1465560: adrp     x0, #0x2ae7000
+    0x1465564: ldr      x0, [x0, #0x890]
+    0x1465568: bl       #0x110d028
+    0x146556c: mov      w8, #1
+    0x1465570: strb     w8, [x20, #0xf12]
+    0x1465574: ldr      x1, [x21]
+    0x1465578: mov      x0, x19
+    0x146557c: bl       #0x16f4f54
+    0x1465580: str      x0, [x19, #0x28]
+    0x1465584: ldp      x20, x19, [sp, #0x10]
+    0x1465588: ldp      x30, x21, [sp], #0x20
+    0x146558c: ret      
+
+;;; GetStartHealth  public override float GetStartHealth() { }
+    0x1465590: stp      x30, x21, [sp, #-0x20]!
+    0x1465594: stp      x20, x19, [sp, #0x10]
+    0x1465598: adrp     x21, #0x2ce1000
+    0x146559c: adrp     x20, #0x2adb000
+    0x14655a0: ldrb     w8, [x21, #0xf13]
+    0x14655a4: ldr      x20, [x20, #0x220]
+    0x14655a8: mov      x19, x0
+    0x14655ac: tbnz     w8, #0, #0x14655c4
+    0x14655b0: adrp     x0, #0x2adb000
+    0x14655b4: ldr      x0, [x0, #0x220]
+    0x14655b8: bl       #0x110d028
+    0x14655bc: mov      w8, #1
+    0x14655c0: strb     w8, [x21, #0xf13]
+    0x14655c4: ldr      x0, [x20]
+    0x14655c8: ldr      x20, [x19, #0x28]
+    0x14655cc: ldr      w8, [x0, #0xe0]
+    0x14655d0: cbnz     w8, #0x14655d8
+    0x14655d4: bl       #0x110d12c
+    0x14655d8: mov      x0, x20
+    0x14655dc: mov      x1, xzr
+    0x14655e0: mov      x2, xzr
+    0x14655e4: bl       #0x27815fc
+    0x14655e8: fmov     s0, wzr
+    0x14655ec: tbz      w0, #0, #0x14655fc
+    0x14655f0: ldr      x8, [x19, #0x28]
+    0x14655f4: cbz      x8, #0x1465608
+    0x14655f8: ldr      s0, [x8, #0x4c]
+    0x14655fc: ldp      x20, x19, [sp, #0x10]
+    0x1465600: ldp      x30, x21, [sp], #0x20
+    0x1465604: ret      
+    0x1465608: bl       #0x110d250
+
+;;; GetCurrentHealth  public override float GetCurrentHealth() { }
+    0x146560c: stp      x30, x21, [sp, #-0x20]!
+    0x1465610: stp      x20, x19, [sp, #0x10]
+    0x1465614: adrp     x21, #0x2ce1000
+    0x1465618: adrp     x20, #0x2adb000
+    0x146561c: ldrb     w8, [x21, #0xf14]
+    0x1465620: ldr      x20, [x20, #0x220]
+    0x1465624: mov      x19, x0
+    0x1465628: tbnz     w8, #0, #0x1465640
+    0x146562c: adrp     x0, #0x2adb000
+    0x1465630: ldr      x0, [x0, #0x220]
+    0x1465634: bl       #0x110d028
+    0x1465638: mov      w8, #1
+    0x146563c: strb     w8, [x21, #0xf14]
+    0x1465640: ldr      x0, [x20]
+    0x1465644: ldr      x20, [x19, #0x28]
+    0x1465648: ldr      w8, [x0, #0xe0]
+    0x146564c: cbnz     w8, #0x1465654
+    0x1465650: bl       #0x110d12c
+    0x1465654: mov      x0, x20
+    0x1465658: mov      x1, xzr
+    0x146565c: mov      x2, xzr
+    0x1465660: bl       #0x27815fc
+    0x1465664: fmov     s0, wzr
+    0x1465668: tbz      w0, #0, #0x1465678
+    0x146566c: ldr      x8, [x19, #0x28]
+    0x1465670: cbz      x8, #0x1465684
+    0x1465674: ldr      s0, [x8, #0x48]
+    0x1465678: ldp      x20, x19, [sp, #0x10]
+    0x146567c: ldp      x30, x21, [sp], #0x20
+    0x1465680: ret      
+    0x1465684: bl       #0x110d250
+
+;;; GainHealth  public override void GainHealth(float amount) { }
+    0x1465688: str      x30, [sp, #-0x10]!
+    0x146568c: ldr      x0, [x0, #0x28]
+    0x1465690: cbz      x0, #0x146569c
+    0x1465694: ldr      x30, [sp], #0x10
+    0x1465698: b        #0x1464138
+    0x146569c: bl       #0x110d250
+
+;;; GainHealth  public override void GainHealth(float amount, float addOverTime, float addTime) { }
+    0x14656a0: str      x30, [sp, #-0x10]!
+    0x14656a4: ldr      x0, [x0, #0x28]
+    0x14656a8: cbz      x0, #0x14656b4
+    0x14656ac: ldr      x30, [sp], #0x10
+    0x14656b0: b        #0x1464138
+    0x14656b4: bl       #0x110d250
+
+;;; SetInvisible  public void SetInvisible(GameObject zone, bool invisible, bool heal) { }
+    0x14656b8: str      x30, [sp, #-0x10]!
+    0x14656bc: ldr      x0, [x0, #0x28]
+    0x14656c0: cbz      x0, #0x14656d4
+    0x14656c4: and      w2, w2, #1
+    0x14656c8: mov      w3, wzr
+    0x14656cc: ldr      x30, [sp], #0x10
+    0x14656d0: b        #0x146416c
+    0x14656d4: bl       #0x110d250
+
+;;; IsAlive  public override bool IsAlive() { }
+    0x14656d8: stp      x30, x21, [sp, #-0x20]!
+    0x14656dc: stp      x20, x19, [sp, #0x10]
+    0x14656e0: adrp     x21, #0x2ce1000
+    0x14656e4: adrp     x20, #0x2adb000
+    0x14656e8: ldrb     w8, [x21, #0xf15]
+    0x14656ec: ldr      x20, [x20, #0x220]
+    0x14656f0: mov      x19, x0
+    0x14656f4: tbnz     w8, #0, #0x146570c
+    0x14656f8: adrp     x0, #0x2adb000
+    0x14656fc: ldr      x0, [x0, #0x220]
+    0x1465700: bl       #0x110d028
+    0x1465704: mov      w8, #1
+    0x1465708: strb     w8, [x21, #0xf15]
+    0x146570c: ldr      x0, [x20]
+    0x1465710: ldr      x19, [x19, #0x28]
+    0x1465714: ldr      w8, [x0, #0xe0]
+    0x1465718: cbnz     w8, #0x1465720
+    0x146571c: bl       #0x110d12c
+    0x1465720: mov      x0, x19
+    0x1465724: mov      x1, xzr
+    0x1465728: mov      x2, xzr
+    0x146572c: bl       #0x27815fc
+    0x1465730: ldp      x20, x19, [sp, #0x10]
+    0x1465734: mov      w0, wzr
+    0x1465738: ldp      x30, x21, [sp], #0x20
+    0x146573c: ret      
+
+;;; SetDieCallback  public override void SetDieCallback(Action<GameObject> dieCallback) { }
+    0x1465740: ret      
+    0x1465744: str      x30, [sp, #-0x30]!
+
+;;; TakeDamage  public override void TakeDamage(Damager damager, bool ignoreInvincible = False) { }
+    0x1465744: str      x30, [sp, #-0x30]!
+    0x1465748: stp      x22, x21, [sp, #0x10]
+    0x146574c: stp      x20, x19, [sp, #0x20]
+    0x1465750: adrp     x22, #0x2ce1000
+    0x1465754: adrp     x21, #0x2adb000
+    0x1465758: ldrb     w8, [x22, #0xf16]
+    0x146575c: ldr      x21, [x21, #0x220]
+    0x1465760: mov      x19, x1
+    0x1465764: mov      x20, x0
+    0x1465768: tbnz     w8, #0, #0x1465780
+    0x146576c: adrp     x0, #0x2adb000
+    0x1465770: ldr      x0, [x0, #0x220]
+    0x1465774: bl       #0x110d028
+    0x1465778: mov      w8, #1
+    0x146577c: strb     w8, [x22, #0xf16]
+    0x1465780: ldr      x0, [x21]
+    0x1465784: ldr      x21, [x20, #0x28]
+    0x1465788: ldr      w8, [x0, #0xe0]
+    0x146578c: cbnz     w8, #0x1465794
+    0x1465790: bl       #0x110d12c
+    0x1465794: mov      x0, x21
+    0x1465798: mov      x1, xzr
+    0x146579c: mov      x2, xzr
+    0x14657a0: bl       #0x27815fc
+    0x14657a4: tbz      w0, #0, #0x14657c8
+    0x14657a8: cbz      x19, #0x14657d8
+    0x14657ac: ldr      x0, [x20, #0x28]
+    0x14657b0: cbz      x0, #0x14657d8
+    0x14657b4: ldr      s0, [x19, #0x10]
+    0x14657b8: ldp      x20, x19, [sp, #0x20]
+    0x14657bc: ldp      x22, x21, [sp, #0x10]
+    0x14657c0: ldr      x30, [sp], #0x30
+    0x14657c4: b        #0x1464410
+    0x14657c8: ldp      x20, x19, [sp, #0x20]
+    0x14657cc: ldp      x22, x21, [sp, #0x10]
+    0x14657d0: ldr      x30, [sp], #0x30
+    0x14657d4: ret      
+    0x14657d8: bl       #0x110d250
+
+;;; Destroyed  public override void Destroyed() { }
+    0x14657dc: stp      x30, x21, [sp, #-0x20]!
+    0x14657e0: stp      x20, x19, [sp, #0x10]
+    0x14657e4: adrp     x21, #0x2ce1000
+    0x14657e8: adrp     x20, #0x2adb000
+    0x14657ec: ldrb     w8, [x21, #0xf17]
+    0x14657f0: ldr      x20, [x20, #0x220]
+    0x14657f4: mov      x19, x0
+    0x14657f8: tbnz     w8, #0, #0x1465810
+    0x14657fc: adrp     x0, #0x2adb000
+    0x1465800: ldr      x0, [x0, #0x220]
+    0x1465804: bl       #0x110d028
+    0x1465808: mov      w8, #1
+    0x146580c: strb     w8, [x21, #0xf17]
+    0x1465810: ldr      x0, [x20]
+    0x1465814: ldr      x19, [x19, #0x28]
+    0x1465818: ldr      w8, [x0, #0xe0]
+    0x146581c: cbnz     w8, #0x1465824
+    0x1465820: bl       #0x110d12c
+    0x1465824: mov      x0, x19
+    0x1465828: ldp      x20, x19, [sp, #0x10]
+    0x146582c: mov      x1, xzr
+    0x1465830: mov      x2, xzr
+    0x1465834: ldp      x30, x21, [sp], #0x20
+    0x1465838: b        #0x27815fc
+
+;;; ctor  public void .ctor() { }
+    0x146583c: mov      x1, xzr
+    0x1465840: b        #0x123baf4

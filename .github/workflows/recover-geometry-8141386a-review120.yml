@@ -1,0 +1,60 @@
+name: Recover geometry 8141386a R1 addendum124 bytes
+on:
+  push:
+    branches: ['arena/8141386a-windwings-space-shooter-game-p']
+    paths:
+      - 'tools/recovery/geometry_8141386a_review_ef124_bytes.py'
+      - 'reverse-engineering/raw/geometry-8141386a/review-ef124/peer-nodefactories124-probe.json.gz'
+      - '.github/workflows/recover-geometry-8141386a-review120.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: geometry-8141386a-review120-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: arena/8141386a-windwings-space-shooter-game-p
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/cache/restore@v4
+        id: source-cache
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+      - name: Fetch pinned original source if cache absent
+        if: steps.source-cache.outputs.cache-hit != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/apk
+          gh release download windwings-apk-1.3.118 --pattern windwings.xapk --dir /tmp/apk
+      - name: Independently read ELF64 factory spans, FDEs and vtable RELA, static only
+        run: python3 tools/recovery/geometry_8141386a_review_ef124_bytes.py --xapk /tmp/apk/windwings.xapk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: geometry-8141386a-r1-addendum124-original-bytes
+          path: reverse-engineering/raw/geometry-8141386a/review-ef124/fresh-original.json.gz
+      - name: Preserve only own R1 addendum original byte witness
+        run: |
+          set -euo pipefail
+          branch='arena/8141386a-windwings-space-shooter-game-p'
+          test "$GITHUB_REF_NAME" = "$branch"
+          p='reverse-engineering/raw/geometry-8141386a/review-ef124/fresh-original.json.gz'
+          test -s "$p"
+          test "$(stat -c%s "$p")" -lt 5000000
+          git fetch origin "$branch"
+          test "$(git rev-parse HEAD)" = "$(git rev-parse FETCH_HEAD)"
+          git config user.name 'Arena geometry evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add "$p"
+          if ! git diff --cached --quiet; then
+            git commit -m 'evidence(8141386a): preserve R1 addendum original factory ELF bytes'
+            git push origin arena/8141386a-windwings-space-shooter-game-p
+          fi

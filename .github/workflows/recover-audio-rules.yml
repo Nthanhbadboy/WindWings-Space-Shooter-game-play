@@ -1,0 +1,46 @@
+name: Recover pinned audio native evidence
+on:
+  push:
+    paths: ['.github/workflows/recover-audio-rules.yml', 'tools/recovery/audio_native.py']
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+concurrency:
+  group: audio-rules-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+          fail-on-cache-miss: true
+      - run: python3 -m pip install 'capstone==5.0.3'
+      - name: Recover only scoped audio classes and metadata array blobs
+        run: python3 tools/recovery/audio_native.py --xapk /tmp/apk/windwings.xapk
+      - name: Regression gate before publishing raw
+        run: python3 -m unittest discover -s tests -q
+      - uses: actions/upload-artifact@v4
+        with:
+          name: audio-rules-native
+          path: reverse-engineering/raw/audio-rules/
+      - name: Commit scoped evidence on this session branch only
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/audio-rules
+          git diff --cached --quiet || git commit -m 'research(audio): recover pinned manager, triggers and coroutines [skip ci]'
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+            if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
+          done
+          exit 1

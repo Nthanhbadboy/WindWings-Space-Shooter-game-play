@@ -1,0 +1,52 @@
+;;; OnEnable  private void OnEnable() { }
+    0x1322358: stp      x30, x19, [sp, #-0x10]!
+    0x132235c: mov      x1, xzr
+    0x1322360: mov      x19, x0
+    0x1322364: bl       #0x277f14c
+    0x1322368: cbz      x0, #0x132239c
+    0x132236c: ldr      s2, [x19, #0x28]
+    0x1322370: fmov     s0, wzr
+    0x1322374: fmov     s1, wzr
+    0x1322378: mov      x1, xzr
+    0x132237c: bl       #0x27894a8
+    0x1322380: mov      x0, x19
+    0x1322384: bl       #0x13223a0
+    0x1322388: mov      x1, x0
+    0x132238c: mov      x0, x19
+    0x1322390: mov      x2, xzr
+    0x1322394: ldp      x30, x19, [sp], #0x10
+    0x1322398: b        #0x278276c
+    0x132239c: bl       #0x110d250
+
+;;; AutoEnable  private IEnumerator AutoEnable() { }
+    0x13223a0: stp      x30, x21, [sp, #-0x20]!
+    0x13223a4: stp      x20, x19, [sp, #0x10]
+    0x13223a8: adrp     x20, #0x2ce1000
+    0x13223ac: adrp     x21, #0x2ae1000
+    0x13223b0: ldrb     w8, [x20, #0x5d3]
+    0x13223b4: ldr      x21, [x21, #0x768]
+    0x13223b8: mov      x19, x0
+    0x13223bc: tbnz     w8, #0, #0x13223d4
+    0x13223c0: adrp     x0, #0x2ae1000
+    0x13223c4: ldr      x0, [x0, #0x768]
+    0x13223c8: bl       #0x110d028
+    0x13223cc: mov      w8, #1
+    0x13223d0: strb     w8, [x20, #0x5d3]
+    0x13223d4: ldr      x0, [x21]
+    0x13223d8: bl       #0x110d240
+    0x13223dc: mov      x1, xzr
+    0x13223e0: mov      x20, x0
+    0x13223e4: bl       #0x2143330
+    0x13223e8: str      wzr, [x20, #0x10]
+    0x13223ec: str      x19, [x20, #0x20]
+    0x13223f0: mov      x0, x20
+    0x13223f4: ldp      x20, x19, [sp, #0x10]
+    0x13223f8: ldp      x30, x21, [sp], #0x20
+    0x13223fc: ret      
+
+;;; ctor  public void .ctor() { }
+    0x1322428: adrp     x8, #0x757000
+    0x132242c: ldr      d0, [x8, #0x1d0]
+    0x1322430: mov      x1, xzr
+    0x1322434: str      d0, [x0, #0x20]
+    0x1322438: b        #0x2782ba0

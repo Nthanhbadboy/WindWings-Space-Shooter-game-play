@@ -1,0 +1,17 @@
+;;; get_defaultFontAsset  public static TMP_FontAsset get_defaultFontAsset() { }
+    0x273adb8: str      x30, [sp, #-0x10]!
+    0x273adbc: bl       #0x273abec
+    0x273adc0: cbz      x0, #0x273add0
+    0x273adc4: ldr      x0, [x0, #0x28]
+    0x273adc8: ldr      x30, [sp], #0x10
+    0x273adcc: ret      
+    0x273add0: bl       #0x110d250
+
+;;; get_fallbackFontAssets  public static List<TMP_FontAsset> get_fallbackFontAssets() { }
+    0x273aed8: str      x30, [sp, #-0x10]!
+    0x273aedc: bl       #0x273abec
+    0x273aee0: cbz      x0, #0x273aef0
+    0x273aee4: ldr      x0, [x0, #0x58]
+    0x273aee8: ldr      x30, [sp], #0x10
+    0x273aeec: ret      
+    0x273aef0: bl       #0x110d250

@@ -1,0 +1,51 @@
+;;; Awake  private void Awake() { }
+    0x141d70c: b        #0x141d710
+    0x141d710: str      d8, [sp, #-0x30]!
+
+;;; ResizeCameras  private void ResizeCameras() { }
+    0x141d710: str      d8, [sp, #-0x30]!
+    0x141d714: stp      x30, x21, [sp, #0x10]
+    0x141d718: stp      x20, x19, [sp, #0x20]
+    0x141d71c: mov      x19, x0
+    0x141d720: mov      x0, xzr
+    0x141d724: bl       #0x27665e4
+    0x141d728: mov      w20, w0
+    0x141d72c: mov      x0, xzr
+    0x141d730: bl       #0x27665bc
+    0x141d734: ldr      x8, [x19, #0x20]
+    0x141d738: cbz      x8, #0x141d7a0
+    0x141d73c: ldr      w9, [x8, #0x18]
+    0x141d740: subs     w21, w9, #1
+    0x141d744: b.mi     #0x141d7a4
+    0x141d748: adrp     x9, #0x756000
+    0x141d74c: ldr      s1, [x9, #0xf00]
+    0x141d750: adrp     x9, #0x756000
+    0x141d754: ldr      s2, [x9, #0xfb8]
+    0x141d758: scvtf    s0, w20
+    0x141d75c: scvtf    s3, w0
+    0x141d760: fdiv     s0, s0, s3
+    0x141d764: fmul     s0, s0, s1
+    0x141d768: fmaxnm   s8, s0, s2
+    0x141d76c: ldr      w9, [x8, #0x18]
+    0x141d770: cmp      w21, w9
+    0x141d774: b.hs     #0x141d7b4
+    0x141d778: add      x8, x8, w21, uxtw #3
+    0x141d77c: ldr      x0, [x8, #0x20]
+    0x141d780: cbz      x0, #0x141d7a0
+    0x141d784: mov      v0.16b, v8.16b
+    0x141d788: mov      x1, xzr
+    0x141d78c: bl       #0x275e1b0
+    0x141d790: subs     w21, w21, #1
+    0x141d794: b.mi     #0x141d7a4
+    0x141d798: ldr      x8, [x19, #0x20]
+    0x141d79c: cbnz     x8, #0x141d76c
+    0x141d7a0: bl       #0x110d250
+    0x141d7a4: ldp      x20, x19, [sp, #0x20]
+    0x141d7a8: ldp      x30, x21, [sp, #0x10]
+    0x141d7ac: ldr      d8, [sp], #0x30
+    0x141d7b0: ret      
+    0x141d7b4: bl       #0x110d258
+
+;;; ctor  public void .ctor() { }
+    0x141d7b8: mov      x1, xzr
+    0x141d7bc: b        #0x2782ba0

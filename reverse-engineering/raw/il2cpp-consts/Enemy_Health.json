@@ -1,0 +1,74 @@
+{
+ "class": "Enemy_Health",
+ "note": "enemy runtime: armor/noDamage, nhận damage",
+ "methods": [
+  {
+   "method": "GainHealth",
+   "signature": "public void GainHealth(float _healAmount, ref float _hp, float _startHp) { }",
+   "offset": "0x157eef0",
+   "getter_value": null,
+   "rva": "0x1582ef0",
+   "bytes": 32,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "CalculateDamage",
+   "signature": "public void CalculateDamage(float _dmg, ref float _hp, bool _igroneInvincible = False) { }",
+   "offset": "0x158079c",
+   "getter_value": null,
+   "rva": "0x158479c",
+   "bytes": 204,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 2.0,
+     "via": "fmov",
+     "addr": "0x15847e4",
+     "role": "arith:fsub"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x15847cc",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "GainHealthPecent",
+   "signature": "public void GainHealthPecent(float _healPercent, ref float _hp, float _startHp) { }",
+   "offset": "0x1581b1c",
+   "getter_value": null,
+   "rva": "0x1585b1c",
+   "bytes": 36,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x1581b40",
+   "getter_value": null,
+   "rva": "0x1585b40",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  }
+ ]
+}

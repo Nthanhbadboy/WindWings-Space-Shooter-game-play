@@ -1,0 +1,154 @@
+{
+ "class": "Bullet_Circle",
+ "note": "Pinned player firing consumer recovery; provisional",
+ "methods": [
+  {
+   "method": "Update",
+   "signature": "protected override void Update() { }",
+   "offset": "0x12395e4",
+   "getter_value": null,
+   "rva": "0x123d5e4",
+   "bytes": 532,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "sub",
+     "addr": "0x123d5e4",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x123d618",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "add",
+     "addr": "0x123d694",
+     "reg": "x0",
+     "op": "x0, sp, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x123d698",
+     "reg": "x1",
+     "op": "x1, sp, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 236,
+     "via": "add",
+     "addr": "0x123d700",
+     "reg": "x20",
+     "op": "x20, x19, #0xec",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "add",
+     "addr": "0x123d7c8",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "return"
+    },
+    {
+     "kind": "int",
+     "value": 96,
+     "via": "add",
+     "addr": "0x123d7ec",
+     "reg": "sp",
+     "op": "sp, sp, #0x60",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "SetBullet",
+   "signature": "public override void SetBullet(BulletForceType force, Transform target, LayerMask targetLayer, float startSpeed, float startLifetime, float startAngle, Action<GameObject, Vector3> onCollision, Action<GameObject, Vector3> onDestroy, bool throughShield = False) { }",
+   "offset": "0x12397f8",
+   "getter_value": null,
+   "rva": "0x123d7f8",
+   "bytes": 68,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 4294967295,
+     "via": "and",
+     "addr": "0x123d7fc",
+     "reg": "x3",
+     "op": "x3, x3, #0xffffffff",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "and",
+     "addr": "0x123d800",
+     "reg": "w6",
+     "op": "w6, w6, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x123983c",
+   "getter_value": null,
+   "rva": "0x123d83c",
+   "bytes": 24,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": 5.0,
+     "via": "ldr_pool_d",
+     "va": "0x7580c8",
+     "addr": "0x123d840",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 0.1,
+     "via": "ldr_pool_d",
+     "va": "0x7580cc",
+     "addr": "0x123d840",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 300,
+     "via": "add",
+     "addr": "0x123d844",
+     "reg": "x8",
+     "op": "x8, x0, #0x12c",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

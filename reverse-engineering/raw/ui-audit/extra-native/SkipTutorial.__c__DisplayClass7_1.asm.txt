@@ -1,0 +1,109 @@
+;;; ctor  public void .ctor() { }
+    0x12384e0: mov      x1, xzr
+    0x12384e4: b        #0x2143330
+
+;;; <IESignInOrRestoreYourDatas>b__4  internal void <IESignInOrRestoreYourDatas>b__4(DataSnapshot dataSnapshot) { }
+    0x12384e8: str      x30, [sp, #-0x30]!
+    0x12384ec: stp      x22, x21, [sp, #0x10]
+    0x12384f0: stp      x20, x19, [sp, #0x20]
+    0x12384f4: adrp     x21, #0x2ce0000
+    0x12384f8: ldrb     w8, [x21, #0xf6f]
+    0x12384fc: mov      x20, x1
+    0x1238500: mov      x19, x0
+    0x1238504: tbnz     w8, #0, #0x1238564
+    0x1238508: adrp     x0, #0x2adb000
+    0x123850c: ldr      x0, [x0, #0x230]
+    0x1238510: bl       #0x110d028
+    0x1238514: adrp     x0, #0x2adb000
+    0x1238518: ldr      x0, [x0, #0xd30]
+    0x123851c: bl       #0x110d028
+    0x1238520: adrp     x0, #0x2adc000
+    0x1238524: ldr      x0, [x0, #0x8b0]
+    0x1238528: bl       #0x110d028
+    0x123852c: adrp     x0, #0x2adb000
+    0x1238530: ldr      x0, [x0, #0xd48]
+    0x1238534: bl       #0x110d028
+    0x1238538: adrp     x0, #0x2adc000
+    0x123853c: ldr      x0, [x0, #0x8b8]
+    0x1238540: bl       #0x110d028
+    0x1238544: adrp     x0, #0x2adb000
+    0x1238548: ldr      x0, [x0, #0xd50]
+    0x123854c: bl       #0x110d028
+    0x1238550: adrp     x0, #0x2adc000
+    0x1238554: ldr      x0, [x0, #0x8c0]
+    0x1238558: bl       #0x110d028
+    0x123855c: mov      w8, #1
+    0x1238560: strb     w8, [x21, #0xf6f]
+    0x1238564: adrp     x21, #0x2adb000
+    0x1238568: ldr      x21, [x21, #0x230]
+    0x123856c: cbz      x20, #0x1238610
+    0x1238570: mov      x0, x20
+    0x1238574: mov      x1, xzr
+    0x1238578: bl       #0x1665170
+    0x123857c: cbz      x0, #0x1238610
+    0x1238580: ldr      x22, [x19, #0x18]
+    0x1238584: mov      x0, x20
+    0x1238588: mov      x1, xzr
+    0x123858c: bl       #0x1665458
+    0x1238590: cbz      x22, #0x1238684
+    0x1238594: str      x0, [x22, #0x18]
+    0x1238598: ldr      x8, [x19, #0x18]
+    0x123859c: cbz      x8, #0x1238684
+    0x12385a0: ldr      x0, [x8, #0x18]
+    0x12385a4: adrp     x8, #0x2adb000
+    0x12385a8: ldr      x8, [x8, #0xd30]
+    0x12385ac: ldr      x1, [x8]
+    0x12385b0: bl       #0x1723d24
+    0x12385b4: cbz      x0, #0x1238684
+    0x12385b8: mov      x20, x0
+    0x12385bc: bl       #0x1229d54
+    0x12385c0: ldr      x0, [x21]
+    0x12385c4: ldr      w8, [x0, #0xe0]
+    0x12385c8: cbnz     w8, #0x12385d0
+    0x12385cc: bl       #0x110d12c
+    0x12385d0: adrp     x8, #0x2adc000
+    0x12385d4: ldr      x8, [x8, #0x8c0]
+    0x12385d8: mov      x1, xzr
+    0x12385dc: ldr      x0, [x8]
+    0x12385e0: bl       #0x275f390
+    0x12385e4: ldr      x0, [x20, #0x40]
+    0x12385e8: bl       #0x12297d0
+    0x12385ec: ldr      x8, [x19, #0x18]
+    0x12385f0: mov      w9, #1
+    0x12385f4: strb     w9, [x19, #0x10]
+    0x12385f8: cbz      x8, #0x1238684
+    0x12385fc: ldr      x0, [x8, #0x10]
+    0x1238600: cbz      x0, #0x1238684
+    0x1238604: adrp     x8, #0x2adc000
+    0x1238608: ldr      x8, [x8, #0x8b0]
+    0x123860c: b        #0x123865c
+    0x1238610: ldr      x0, [x21]
+    0x1238614: adrp     x21, #0x2adc000
+    0x1238618: ldr      w8, [x0, #0xe0]
+    0x123861c: ldr      x21, [x21, #0x8b8]
+    0x1238620: cbnz     w8, #0x1238628
+    0x1238624: bl       #0x110d12c
+    0x1238628: ldr      x0, [x21]
+    0x123862c: mov      x1, xzr
+    0x1238630: bl       #0x275f390
+    0x1238634: ldr      x8, [x19, #0x18]
+    0x1238638: cbz      x8, #0x1238684
+    0x123863c: ldr      x0, [x8, #0x10]
+    0x1238640: cbz      x0, #0x1238684
+    0x1238644: adrp     x8, #0x2adb000
+    0x1238648: adrp     x9, #0x2adb000
+    0x123864c: ldr      x8, [x8, #0xd48]
+    0x1238650: ldr      x9, [x9, #0xd50]
+    0x1238654: cmp      x20, #0
+    0x1238658: csel     x8, x9, x8, eq
+    0x123865c: ldr      x1, [x8]
+    0x1238660: bl       #0x12379e0
+    0x1238664: ldr      x8, [x19, #0x18]
+    0x1238668: cbz      x8, #0x1238684
+    0x123866c: ldp      x20, x19, [sp, #0x20]
+    0x1238670: ldp      x22, x21, [sp, #0x10]
+    0x1238674: mov      w9, #1
+    0x1238678: strb     w9, [x8, #0x21]
+    0x123867c: ldr      x30, [sp], #0x30
+    0x1238680: ret      
+    0x1238684: bl       #0x110d250

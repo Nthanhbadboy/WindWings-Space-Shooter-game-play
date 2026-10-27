@@ -1,0 +1,52 @@
+name: Audit v2 sprite crop and mesh-mask pixels
+on:
+  push:
+    paths: ['tools/recovery/sprite_pixel_audit.py', '.github/workflows/audit-sprite-pixels.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: sprite-pixels-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python3 -m pip install 'Pillow==12.0.0'
+      - name: Download audited media only, leave release draft
+        run: |
+          python3 - <<'PY'
+          import json,os,subprocess
+          release=json.loads(subprocess.check_output(['gh','api',f"repos/{os.environ['GITHUB_REPOSITORY']}/releases/421174835"]))
+          assert release['draft'] is True
+          subprocess.run(['gh','release','download',release['tag_name'],'--pattern','assets-v2.zip','--dir','/tmp/sprite-pixels'],check=True)
+          PY
+      - name: Compare each sprite against scoped raw geometry and owning texture
+        run: python3 tools/recovery/sprite_pixel_audit.py --archive /tmp/sprite-pixels/assets-v2.zip
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sprite-pixel-audit-metadata
+          path: reverse-engineering/raw/sprite-pixels/
+      - run: python3 -m unittest discover -s tests -q
+      - name: Preserve scoped audit, including explicit mismatches if any
+        if: ${{ !cancelled() }}
+        run: |
+          test "$GITHUB_REF_NAME" = 'arena/ef6b75ef-windwings-space-shooter-game-p'
+          test -f reverse-engineering/raw/sprite-pixels/audit.json.gz
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/sprite-pixels
+          git diff --cached --quiet || git commit -m 'research(sprites): preserve scoped crop and triangle-mask pixel audit [skip ci]'
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin arena/ef6b75ef-windwings-space-shooter-game-p
+            if git push origin arena/ef6b75ef-windwings-space-shooter-game-p; then exit 0; fi
+          done
+          exit 1

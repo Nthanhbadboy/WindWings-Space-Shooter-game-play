@@ -1,0 +1,79 @@
+{
+ "class": "GP_Setup",
+ "note": "Bounded pickup/currency recovery; selected RVAs for extra dependencies",
+ "methods": [
+  {
+   "method": "get_Instance",
+   "signature": "public static GP_Setup get_Instance() { }",
+   "offset": "0x14ebdec",
+   "getter_value": null,
+   "rva": "0x14efdec",
+   "bytes": 300,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14efe4c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_stageIndex",
+   "signature": "public int get_stageIndex() { }",
+   "offset": "0x14ecda0",
+   "getter_value": null,
+   "rva": "0x14f0da0",
+   "bytes": 332,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14f0df8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x14f0e78",
+     "reg": "x8",
+     "op": "x8, x8, #0x20",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 44,
+     "via": "add",
+     "addr": "0x14f0ea0",
+     "reg": "x8",
+     "op": "x8, x8, #0x2c",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 36,
+     "via": "add",
+     "addr": "0x14f0ec4",
+     "reg": "x8",
+     "op": "x8, x8, #0x24",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

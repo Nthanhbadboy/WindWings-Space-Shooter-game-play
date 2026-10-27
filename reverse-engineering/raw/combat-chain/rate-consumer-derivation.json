@@ -1,0 +1,36 @@
+{
+  "status": "PROVISIONAL_APK_STATIC_FIELD_DEADLINE_DISPATCH_NOT_MEASURED_CADENCE",
+  "inputs_manifest": "datas/combat_rate_consumers.json#/inputs",
+  "artifacts": [
+    {
+      "path": "tools/verify/combat_rate_consumers.py",
+      "sha256": "cdd260895543e2efa1723f339d9646844f8a83735882a5859e7b0e92f53a0ec5"
+    },
+    {
+      "path": "datas/combat_rate_consumers.json",
+      "sha256": "2b183a5d44482fce6ebadd1ff2067cdac79bdfa8989fd82959306908ef66ffe1"
+    },
+    {
+      "path": "tests/test_combat_rate_consumers.py",
+      "sha256": "f07df15d5f47679209adad63ba07b01431eeb496219991907c29e13b0682c8ac"
+    }
+  ],
+  "reproduce": "python3 -m tools.verify.combat_rate_consumers --check",
+  "raw_modified": false,
+  "scope": "24 main rate bindings and scheduler prefixes; owner-qualified byte-range accesses; coroutine sites inventoried, complete coroutine emission semantics pending report83 section6",
+  "local_tests": {
+    "total": 302,
+    "new": 12,
+    "result": "PASS",
+    "seconds": 32.245
+  },
+  "validate": "PASS",
+  "diff_check": "PASS",
+  "ci": {
+    "code_commit": "07f98ba804b0ded358d94a33d13765027a8ce46e",
+    "run": 40207885962,
+    "conclusion": "SUCCESS",
+    "job_seconds": 50
+  },
+  "report84_extension": "owner_states accepts externally byte-proven computed edges and dominance-proven stack restores; default report83 output regenerated unchanged"
+}

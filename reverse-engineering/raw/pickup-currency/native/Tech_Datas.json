@@ -1,0 +1,47 @@
+{
+ "class": "Tech_Datas",
+ "note": "Bounded pickup/currency recovery; selected RVAs for extra dependencies",
+ "methods": [
+  {
+   "method": "GetTechLabLevel",
+   "signature": "public static int GetTechLabLevel() { }",
+   "offset": "0x13959ac",
+   "getter_value": null,
+   "rva": "0x13999ac",
+   "bytes": 248,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x13999f8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x1399a20",
+     "reg": "w8",
+     "op": "w8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x1399a54",
+     "reg": "x0",
+     "op": "x0, sp, #8",
+     "role": "other"
+    }
+   ]
+  }
+ ]
+}

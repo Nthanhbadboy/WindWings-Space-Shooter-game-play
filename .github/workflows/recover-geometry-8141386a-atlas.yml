@@ -1,0 +1,62 @@
+name: Recover geometry 8141386a atlas bytes
+on:
+  push:
+    branches: ['arena/8141386a-windwings-space-shooter-game-p']
+    paths:
+      - 'tools/recovery/geometry_8141386a_atlas_bytes.py'
+      - 'tools/verify/l3_geometry_8141386a_atlas_binary.py'
+      - 'tools/verify/geometry_8141386a_atlas_io.py'
+      - 'reverse-engineering/raw/geometry-8141386a/atlas/byte-queries.json.gz'
+      - '.github/workflows/recover-geometry-8141386a-atlas.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: geometry-8141386a-atlas-source-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: arena/8141386a-windwings-space-shooter-game-p
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/cache/restore@v4
+        id: source-cache
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+      - name: Download pinned original release if cache is unavailable
+        if: steps.source-cache.outputs.cache-hit != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/apk
+          gh release download windwings-apk-1.3.118 --pattern windwings.xapk --dir /tmp/apk
+      - name: Stream original objects and full Sprite/SpriteAtlas byte equality
+        run: python3 tools/recovery/geometry_8141386a_atlas_bytes.py --xapk /tmp/apk/windwings.xapk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: geometry-8141386a-atlas-byte-witness
+          path: reverse-engineering/raw/geometry-8141386a/atlas/byte-witness.json.gz
+      - name: Preserve only own branch source witness, without skip-ci or rebase
+        run: |
+          set -euo pipefail
+          branch='arena/8141386a-windwings-space-shooter-game-p'
+          test "$GITHUB_REF_NAME" = "$branch"
+          witness='reverse-engineering/raw/geometry-8141386a/atlas/byte-witness.json.gz'
+          test -s "$witness"
+          test "$(stat -c%s "$witness")" -lt 5000000
+          git fetch origin "$branch"
+          test "$(git rev-parse HEAD)" = "$(git rev-parse FETCH_HEAD)"
+          git config user.name 'Arena geometry evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add "$witness"
+          if ! git diff --cached --quiet; then
+            git commit -m 'evidence(8141386a): preserve original atlas and static Sprite byte witnesses'
+            git push origin arena/8141386a-windwings-space-shooter-game-p
+          fi

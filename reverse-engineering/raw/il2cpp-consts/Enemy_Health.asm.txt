@@ -1,0 +1,77 @@
+;;; GainHealth  public void GainHealth(float _healAmount, ref float _hp, float _startHp) { }
+    0x1582ef0: ldr      s2, [x1]
+    0x1582ef4: fcmp     s2, #0.0
+    0x1582ef8: b.le     #0x1582f0c
+    0x1582efc: fadd     s0, s2, s0
+    0x1582f00: fcmp     s0, s1
+    0x1582f04: fcsel    s0, s1, s0, gt
+    0x1582f08: str      s0, [x1]
+    0x1582f0c: ret      
+
+;;; CalculateDamage  public void CalculateDamage(float _dmg, ref float _hp, bool _igroneInvincible = False) { }
+    0x158479c: str      d8, [sp, #-0x20]!
+    0x15847a0: str      x30, [sp, #8]
+    0x15847a4: stp      x20, x19, [sp, #0x10]
+    0x15847a8: ldrb     w8, [x0, #0x30]
+    0x15847ac: mov      x19, x1
+    0x15847b0: mov      x20, x0
+    0x15847b4: cbz      w8, #0x15847bc
+    0x15847b8: tbz      w2, #0, #0x1584858
+    0x15847bc: ldr      s8, [x19]
+    0x15847c0: fcmp     s8, #0.0
+    0x15847c4: b.le     #0x1584858
+    0x15847c8: ldr      s1, [x20, #0x34]
+    0x15847cc: mov      w8, #0x42c80000
+    0x15847d0: fmov     s2, w8
+    0x15847d4: fcmp     s1, #0.0
+    0x15847d8: b.ge     #0x15847f0
+    0x15847dc: fsub     s1, s2, s1
+    0x15847e0: fdiv     s1, s2, s1
+    0x15847e4: fmov     s2, #2.00000000
+    0x15847e8: fsub     s1, s2, s1
+    0x15847ec: b        #0x15847f8
+    0x15847f0: fadd     s1, s1, s2
+    0x15847f4: fdiv     s1, s2, s1
+    0x15847f8: fmul     s0, s1, s0
+    0x15847fc: fsub     s0, s8, s0
+    0x1584800: fmov     s1, wzr
+    0x1584804: fmax     s0, s0, s1
+    0x1584808: str      s0, [x19]
+    0x158480c: ldr      x8, [x20, #0x20]
+    0x1584810: cbz      x8, #0x1584824
+    0x1584814: ldr      x9, [x8, #0x18]
+    0x1584818: ldr      x0, [x8, #0x40]
+    0x158481c: ldr      x1, [x8, #0x28]
+    0x1584820: blr      x9
+    0x1584824: ldr      x8, [x20, #0x28]
+    0x1584828: cbz      x8, #0x1584858
+    0x158482c: ldr      s0, [x19]
+    0x1584830: fsub     s0, s8, s0
+    0x1584834: fcmp     s0, #0.0
+    0x1584838: b.le     #0x1584858
+    0x158483c: ldr      x2, [x8, #0x18]
+    0x1584840: ldr      x0, [x8, #0x40]
+    0x1584844: ldr      x1, [x8, #0x28]
+    0x1584848: ldp      x20, x19, [sp, #0x10]
+    0x158484c: ldr      x30, [sp, #8]
+    0x1584850: ldr      d8, [sp], #0x20
+    0x1584854: br       x2
+    0x1584858: ldp      x20, x19, [sp, #0x10]
+    0x158485c: ldr      x30, [sp, #8]
+    0x1584860: ldr      d8, [sp], #0x20
+    0x1584864: ret      
+
+;;; GainHealthPecent  public void GainHealthPecent(float _healPercent, ref float _hp, float _startHp) { }
+    0x1585b1c: ldr      s2, [x1]
+    0x1585b20: fcmp     s2, #0.0
+    0x1585b24: b.le     #0x1585b3c
+    0x1585b28: fmul     s0, s0, s1
+    0x1585b2c: fadd     s0, s0, s2
+    0x1585b30: fcmp     s0, s1
+    0x1585b34: fcsel    s0, s1, s0, gt
+    0x1585b38: str      s0, [x1]
+    0x1585b3c: ret      
+
+;;; ctor  public void .ctor() { }
+    0x1585b40: mov      x1, xzr
+    0x1585b44: b        #0x2782ba0

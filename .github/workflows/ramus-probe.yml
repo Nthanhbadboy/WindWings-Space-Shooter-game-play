@@ -1,0 +1,731 @@
+name: runtime-probe
+
+# Boots a cloud Android device with Ramus, installs the build, and inspects the
+# game from inside the process (embedded C# bridge) plus screenshots/UI tree.
+#
+# APK SOURCE — the repo already ships one as a DRAFT release asset:
+#   tag:   windwings-apk-1.3.118   asset: windwings.xapk (142.125.649 B)
+# It is an XAPK (zip), not a plain APK, so `prepare-apk.sh` unpacks base.apk
+# and any config splits before Ramus sees it.
+#
+# CREDENTIALS — none required: `ramus trial` mints a 15-minute anonymous key.
+# The trial has no adb tunnel, so the bridge is read through `RAMUSB|` logcat
+# mirrors. Adding RAMUS_API_KEY upgrades the same job to the HTTP path.
+#
+# CI does not patch or modify the APK; it only installs what the repo already has.
+
+on:
+  workflow_dispatch:
+    inputs:
+      apk_source:
+        description: 'APK/XAPK path, https URL, or release:<tag>. Empty → auto-detect from this repo'
+        required: false
+        type: string
+      scenario:
+        description: 'Label written into the report'
+        required: false
+        default: anonymous
+        type: string
+      taps:
+        description: 'Space-separated normalized taps, e.g. "0.5,0.8 0.5,0.8"'
+        required: false
+        default: ''
+        type: string
+      wait_scene:
+        description: 'Block until this scene name is active (HTTP path only)'
+        required: false
+        default: ''
+        type: string
+      statics:
+        description: 'Comma-separated game types to dump via /statics (key mode only)'
+        required: false
+        default: 'Stage_Datas,Player_Get_Datas,Enemy_Get_Datas,Stage_Get_Datas'
+        type: string
+      strict:
+        description: 'Fail the job when the bridge produced no data at all'
+        required: false
+        default: true
+        type: boolean
+      force_trial:
+        description: 'Anonymous trial even when RAMUS_API_KEY exists (tests the no-adb path)'
+        required: false
+        default: false
+        type: boolean
+      allow_no_bridge:
+        description: 'Start a Ramus session even if the APK has no RamusBridge.dll (device/ABI smoke test)'
+        required: false
+        default: false
+        type: boolean
+  push:
+    branches: [arena/ef6b75ef-windwings-space-shooter-game-p]
+    paths: ['runtime-probe/probe-inputs.json']
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: runtime-probe-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RAMUS_CLI: ramus-cli@0.1.17
+  RAMUS_PACKAGE: com.Wind.wings.Space.Shooter   # exact case from the XAPK manifest
+  PROBE_OUT: reports/runtime-probe
+  TRIAL_APK_MAX_MB: '150'
+
+jobs:
+  # A failed compile must block the device job: never probe with a bridge that
+  # does not build. Inlined rather than `uses:` a reusable workflow — a same-repo
+  # workflow_call produced startup_failure on this repository, and a gate that
+  # never runs is worse than a duplicated step list. Both jobs call the same two
+  # scripts, so they cannot drift.
+  build:
+    name: bridge build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Fetch loader assemblies
+        run: |
+          set -euo pipefail
+          chmod +x .github/scripts/fetch-loader-refs.sh
+          .github/scripts/fetch-loader-refs.sh --refs .ci/refs 2>&1 | tee ci.log
+
+      - name: Compile all targets
+        run: |
+          set -o pipefail
+          chmod +x .github/scripts/build-bridge.sh
+          .github/scripts/build-bridge.sh --out dist --refs .ci/refs 2>&1 | tee -a ci.log
+
+      - name: Report the build matrix on the PR
+        if: always() && github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # grep -c prints 0 *and* exits 1 when nothing matches, so `|| echo 0`
+          # would append a second line and break the comparison below.
+          passed=$(grep -c '\[build\] PASS' ci.log 2>/dev/null || true); passed=${passed:-0}
+          failed=$(grep -c '\[build\] FAIL' ci.log 2>/dev/null || true); failed=${failed:-0}
+          errors=$(grep -E "error [A-Z]+[0-9]+|MISSING" ci.log 2>/dev/null | sort -u | head -40 || true)
+          {
+            echo "<!-- bridge-build -->"
+            if [ "$failed" = "0" ] && [ "$passed" != "0" ]; then
+              echo "## ✅ bridge build — $passed/$((passed + failed)) targets compiled"
+            else
+              echo "## ❌ bridge build failed — the device probe was skipped"
+              echo
+              echo "### errors"
+              echo '```'
+              [ -n "$errors" ] && echo "$errors" || echo "(no compiler errors)"
+              echo '```'
+            fi
+            echo
+            echo "### matrix"
+            echo '```'
+            grep -E '^\[build\] (PASS|FAIL)' ci.log 2>/dev/null | sort -u || echo "no build lines"
+            echo '```'
+            echo
+            echo "### produced DLLs"
+            echo '```'
+            find dist -name '*.dll' -printf '%f  %s bytes  %p\n' 2>/dev/null | sort || echo "none"
+            echo
+            (cd dist 2>/dev/null && sha256sum */RamusBridge.dll 2>/dev/null) || true
+            echo '```'
+            if grep -q "=== selftest:" ci.log 2>/dev/null; then
+              echo
+              echo "### self-test (bridge booted on 127.0.0.1 in the runner)"
+              echo '```'
+              sed -n '/== boot/,/=== selftest:/p' ci.log | grep -E "PASS|FAIL|selftest:" | head -60 || true
+              echo '```'
+            fi
+            if [ "$failed" != "0" ]; then
+              echo
+              echo "### tail"
+              echo '```'
+              tail -80 ci.log 2>/dev/null || echo "no ci.log"
+              echo '```'
+            fi
+          } > comment.md
+          chmod +x .github/scripts/pr-comment.sh
+          .github/scripts/pr-comment.sh "${{ github.event.pull_request.number }}" \
+            comment.md '<!-- bridge-build -->'
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ramus-bridge-dlls-${{ github.run_id }}
+          path: |
+            dist/
+            ci.log
+          if-no-files-found: warn
+          retention-days: 14
+
+  preflight:
+    name: preflight (APK + mode)
+    runs-on: ubuntu-latest
+    # contents:write is only used to READ the draft release asset (GitHub hides
+    # drafts from read-only tokens). Fork PRs always run read-only, so they fall
+    # back to the "no APK" skip instead of going red.
+    permissions:
+      contents: write
+    outputs:
+      enabled: ${{ steps.gate.outputs.enabled }}
+      mode: ${{ steps.gate.outputs.mode }}
+      source: ${{ steps.gate.outputs.source }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve probe inputs
+        run: |
+          chmod +x .github/scripts/probe-inputs.sh
+          .github/scripts/probe-inputs.sh \
+            "${{ inputs.allow_no_bridge }}" "${{ inputs.strict }}" \
+            "${{ inputs.force_trial }}" "${{ inputs.scenario }}"
+
+      - name: Secret leak guard
+        run: |
+          set -euo pipefail
+          # A Ramus key looks like rms_<base62>. It must never live in the repo.
+          if git grep -nE 'rms_[A-Za-z0-9_-]{20,}' -- .; then
+            echo "::error::A Ramus API key is committed to this repository. Revoke it at ramus.dev/settings and purge it from history."
+            exit 1
+          fi
+          echo "no key material in the tree"
+
+      - id: gate
+        env:
+          KEY: ${{ secrets.RAMUS_API_KEY }}
+          INPUT_SOURCE: ${{ inputs.apk_source }}
+          VAR_SOURCE: ${{ vars.RAMUS_APK_SOURCE }}
+          FORCE_TRIAL: ${{ env.FORCE_TRIAL }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          # ── which APK ──
+          src="${INPUT_SOURCE:-${VAR_SOURCE:-}}"
+
+          if [ -z "$src" ]; then
+            if [ -f "runtime-probe/app.apk" ]; then
+              src="runtime-probe/app.apk"
+            elif [ -f "runtime-probe/app.xapk" ]; then
+              src="runtime-probe/app.xapk"
+            else
+              # Auto-detect a release in this repo that actually carries an APK/XAPK asset.
+              # (gh release list prints: TITLE <tab> TYPE <tab> TAG <tab> DATE, drafts included)
+              while IFS=$'\t' read -r _title _type tag _date; do
+                [ -n "${tag:-}" ] || continue
+                if gh release view "$tag" --json assets -q '.assets[].name' 2>/dev/null \
+                     | grep -qiE '\.(apk|xapk|apks)$'; then
+                  src="release:$tag"
+                  break
+                fi
+              done < <(gh release list --limit 15 2>/dev/null || true)
+              [ -n "$src" ] && echo "auto-detected $src"
+            fi
+          fi
+
+          if [ -z "$src" ]; then
+            echo "::notice::No APK source (input apk_source / variable RAMUS_APK_SOURCE / runtime-probe/app.apk / an *apk* release)."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "source=$src" >> "$GITHUB_OUTPUT"
+          echo "APK source: $src"
+
+          # ── which credential ──
+          if [ -n "${KEY:-}" ] && [ "${FORCE_TRIAL:-false}" != "true" ]; then
+            echo "mode=key" >> "$GITHUB_OUTPUT"
+            echo "::notice::RAMUS_API_KEY present → adb tunnel + HTTP bridge + /statics."
+          else
+            echo "mode=trial" >> "$GITHUB_OUTPUT"
+            echo "::notice::Anonymous trial: 15-minute credential, 150 MB, one session, NO adb → logcat path only."
+          fi
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
+
+  probe:
+    name: ramus device probe
+    needs: [preflight, build]
+    if: needs.preflight.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ needs.preflight.outputs.mode == 'key' && 45 || 25 }}
+    permissions:
+      contents: write      # read the draft release asset
+      pull-requests: write # comment the report on a PR
+    env:
+      RAMUS_MODE: ${{ needs.preflight.outputs.mode }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve probe inputs
+        run: |
+          chmod +x .github/scripts/probe-inputs.sh
+          .github/scripts/probe-inputs.sh \
+            "${{ inputs.allow_no_bridge }}" "${{ inputs.strict }}" \
+            "${{ inputs.force_trial }}" "${{ inputs.scenario }}"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Fetch APKEditor + apk signer
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          mkdir -p .ci/tools
+          java -version 2>&1 | head -2
+
+          # Repacks base + config splits into one universal APK (a split app
+          # cannot install otherwise: INSTALL_FAILED_MISSING_SPLIT).
+          if curl -fL --retry 3 --retry-delay 2 -o .ci/tools/APKEditor.jar \
+               "https://github.com/REAndroid/APKEditor/releases/download/V1.4.9/APKEditor-1.4.9.jar"; then
+            echo "APKEDITOR_JAR=$PWD/.ci/tools/APKEditor.jar" >> "$GITHUB_ENV"
+            ls -lh .ci/tools/APKEditor.jar
+          else
+            echo "::warning::APKEditor unavailable — split sources will fall back to adb install-multiple."
+          fi
+
+          # APKEditor does not actually sign; merged APKs need a real signature
+          # or the device rejects them with INSTALL_PARSE_FAILED_NO_CERTIFICATES.
+          if curl -fL --retry 3 --retry-delay 2 -o .ci/tools/uber-apk-signer.jar \
+               "https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar"; then
+            echo "APK_SIGNER_JAR=$PWD/.ci/tools/uber-apk-signer.jar" >> "$GITHUB_ENV"
+            ls -lh .ci/tools/uber-apk-signer.jar
+          else
+            echo "::warning::apk signer unavailable — a merged APK will not install."
+          fi
+
+      - name: Prepare APK (APK / XAPK / APKS)
+        id: apk
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE: ${{ needs.preflight.outputs.source }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$PROBE_OUT"
+          # Outputs of this same step are not readable inside it, so parse the log.
+          .github/scripts/prepare-apk.sh --source "$SOURCE" --out .ci/apk | tee "$PROBE_OUT/apk-prepare.log"
+
+          apk=$(sed -n 's/^apk=//p' "$PROBE_OUT/apk-prepare.log" | tail -1)
+          splits=$(sed -n 's/^splits=//p' "$PROBE_OUT/apk-prepare.log" | tail -1)
+          [ -f "$apk" ] || { echo "::error::prepare-apk.sh did not produce $apk"; exit 1; }
+
+          pkg=$(sed -n 's/^package=//p' "$PROBE_OUT/apk-prepare.log" | tail -1)
+          {
+            echo "RAMUS_APK=$apk"
+            echo "APK_SPLITS=$splits"
+            # The XAPK manifest.json reports com.Wind.wings.Space.Shooter (capital W).
+            if [ -n "$pkg" ]; then echo "RAMUS_PACKAGE=$pkg"; fi
+          } >> "$GITHUB_ENV"
+
+          # These were referenced as steps.apk.outputs.* but never written, so every
+          # check that used them compared against an empty string and silently did
+          # nothing. Emit them for real.
+          for key in package base_mb abis has_x86 bridge kind; do
+            val=$(sed -n "s/^$key=//p" "$PROBE_OUT/apk-prepare.log" | tail -1)
+            if [ -n "$val" ]; then echo "$key=$val" >> "$GITHUB_OUTPUT"; fi
+          done
+          cp .ci/apk/apk-inventory.txt "$PROBE_OUT/apk-inventory.txt" 2>/dev/null || true
+          echo "RAMUS_APK=$apk   splits: ${splits:-none}"
+
+      - name: Gate on bridge presence
+        id: gate
+        run: |
+          set -euo pipefail
+          bridge=$(sed -n 's/^bridge=//p' "$PROBE_OUT/apk-prepare.log" | tail -1)
+          echo "bridge=${bridge:-unknown}" >> "$GITHUB_OUTPUT"
+          if [ "$bridge" = "yes" ]; then
+            echo "::notice::APK contains RamusBridge.dll — probe can succeed."
+            exit 0
+          fi
+
+          echo "bridge not found in the APK (searched base.apk and all splits)"
+          sed -n '/^bridge:/p' "$PROBE_OUT/apk-inventory.txt" || true
+
+          if [ "$ALLOW_NO_BRIDGE" = "true" ]; then
+            echo "::warning::allow_no_bridge=true — continuing as a device/ABI smoke test only."
+            echo "::warning::The probe cannot read /scene or /statics without the bridge. It will report"
+            echo "::warning::whether the game process starts, nothing more."
+            exit 0
+          fi
+
+          {
+            echo "<!-- runtime-probe -->"
+            echo "# Runtime probe — skipped: the APK has no bridge"
+            echo
+            echo "Searched \`base.apk\` and every split for \`RamusBridge.dll\` (plus \`BepInEx/\`, \`Mods/\`)."
+            echo "Nothing found, so a Ramus session would only burn a credential and 4–5 minutes to"
+            echo "reproduce the same \`bridge-unreachable\` verdict."
+            echo
+            echo "**Caveat, so this is not mistaken for proof:** FusionCore / NextBep inject into an"
+            echo "installed game and load plugins from the **launcher app's own storage**, not from the"
+            echo "game APK. If that is how you load the bridge, absence here does not mean it is missing."
+            echo "In that case run with \`allow_no_bridge: true\`."
+            echo
+            echo "Build and embed the plugin first:"
+            echo
+            echo '\`\`\`bash'
+            echo "# produces RamusBridge.dll for your loader (see runtime-probe/README.md §3)"
+            echo "./.github/scripts/build-bridge.sh --out dist"
+            echo "# → dist/bepinex6/RamusBridge.dll, dist/melon/RamusBridge.dll, dist/bepinex5/RamusBridge.dll"
+            echo '\`\`\`'
+            echo
+            echo "Then install it into the build you upload (BepInEx: \`BepInEx/plugins/\`;"
+            echo "MelonLoader: \`Mods/\`) and re-run. To test only "does the game start on this"
+            echo "device" in the meantime, run with \`allow_no_bridge: true\`."
+            echo
+            echo "<details><summary>APK inventory</summary>"
+            echo
+            echo '\`\`\`'
+            cat "$PROBE_OUT/apk-inventory.txt" 2>/dev/null || true
+            echo '\`\`\`'
+            echo "</details>"
+          } > "$PROBE_OUT/report.md"
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            cp "$PROBE_OUT/report.md" "$PROBE_OUT/comment.md"
+            chmod +x .github/scripts/pr-comment.sh
+            .github/scripts/pr-comment.sh "${{ github.event.pull_request.number }}" \
+              "$PROBE_OUT/comment.md" '<!-- runtime-probe -->' || true
+          fi
+          echo "::notice::Skipped before starting a Ramus session (no bridge in APK)."
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+
+      - name: Check APK against the trial limit
+        if: steps.gate.outputs.skip != 'true'
+
+        env:
+          BASE_MB: ${{ steps.apk.outputs.base_mb }}
+          SPLITS: ${{ steps.apk.outputs.splits }}
+        run: |
+          set -euo pipefail
+          ls -lh .ci/apk/base.apk
+          sha256sum .ci/apk/base.apk | tee apk.sha256
+
+          if [ "$RAMUS_MODE" = "trial" ] && [ "$BASE_MB" -gt "$TRIAL_APK_MAX_MB" ]; then
+            echo "::error::base.apk is ${BASE_MB} MB — the anonymous trial accepts ${TRIAL_APK_MAX_MB} MB."
+            echo "::error::Add RAMUS_API_KEY, or point apk_source at a smaller split."
+            exit 1
+          fi
+          if [ -n "$SPLITS" ] && [ "$RAMUS_MODE" = "trial" ]; then
+            echo "::warning::This source has config splits, and a trial session has no adb to install them."
+            echo "::warning::Base-only install may crash on a missing native library — see apk-inventory.txt."
+          fi
+
+          # Ramus devices are x86_64 (ramus.dev/docs/quickstart); this game is arm64.
+          if [ "${{ steps.apk.outputs.has_x86 }}" != "true" ]; then
+            echo "::warning::No x86/x86_64 native libraries — this build is ${{ steps.apk.outputs.abis }} only."
+            echo "::warning::Ramus runs x86_64 emulators, so the game may fail at native load even when install succeeds."
+          fi
+
+      # Everything below mints a 15-minute credential. These checks are cheap and
+      # run first: a wrong package name or an unreachable CLI would otherwise only
+      # surface after the trial is spent.
+      - name: Pre-session checks
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          APK_PKG: ${{ steps.apk.outputs.package }}
+          BASE_MB: ${{ steps.apk.outputs.base_mb }}
+        run: |
+          set -euo pipefail
+          {
+            echo "mode:      $RAMUS_MODE"
+            echo "apk:       $(ls -lh "$RAMUS_APK" 2>/dev/null | awk '{print $5}')  (${BASE_MB} MB of ${TRIAL_APK_MAX_MB} MB)"
+            echo "package:   ${APK_PKG:-<unreadable>}   (env: $RAMUS_PACKAGE)"
+            echo "abis:      ${{ steps.apk.outputs.abis }}   x86_64 present: ${{ steps.apk.outputs.has_x86 }}"
+            echo "bridge:    ${{ steps.apk.outputs.bridge }}"
+            echo "session:   $([ "$RAMUS_MODE" = trial ] && echo 'trial — 15 min, 1 session, NO adb' || echo 'key — adb tunnel + HTTP')"
+          } | tee "$PROBE_OUT/preflight.txt"
+
+          if [ -z "${APK_PKG:-}" ]; then
+            echo "::error::Package name unreadable from the APK — refusing to spend a session."
+            exit 1
+          fi
+
+          # Registry reachability, checked before `ramus trial`, so a npm outage
+          # does not look like a device failure.
+          if ! npm view "$RAMUS_CLI" version 2>/dev/null | tail -1; then
+            echo "::error::$RAMUS_CLI is not resolvable from npm right now."
+            exit 1
+          fi
+
+          # Prediction, stated before the run so the result cannot be rewritten after.
+          if [ "${{ steps.apk.outputs.has_x86 }}" != "true" ]; then
+            echo "::warning::Predicted: app may die at native load — build is arm64-only, Ramus is x86_64."
+          fi
+          if [ "${{ steps.apk.outputs.bridge }}" != "yes" ]; then
+            echo "::notice::No bridge in the APK → this run can only prove install/launch/logcat, not /statics."
+          fi
+
+      - name: Credentials
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          KEY: ${{ secrets.RAMUS_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ "$RAMUS_MODE" = "key" ]; then
+            echo "RAMUS_API_KEY=$KEY" >> "$GITHUB_ENV"
+            echo "signed-in key mode" > "$PROBE_OUT/auth.txt"
+          else
+            # Mint as late as possible: the credential only lives 15 minutes.
+            npx --yes "$RAMUS_CLI" trial --force > "$RUNNER_TEMP/ramus-trial.json"
+            exp=$(jq -r '.expiresAt // empty' "$RUNNER_TEMP/ramus-trial.json" 2>/dev/null || true)
+            jq -c '.limits // {}' "$RUNNER_TEMP/ramus-trial.json" 2>/dev/null >> "$PROBE_OUT/auth.txt" || true
+            echo "RAMUS_TRIAL_EXPIRES=$exp" >> "$GITHUB_ENV"
+            if [ -n "$exp" ]; then
+              echo "RAMUS_DEADLINE=$(date -u -d "$exp" +%s)" >> "$GITHUB_ENV"
+              echo "::notice::trial credential valid until $exp"
+            fi
+          fi
+
+      - name: Validate key
+        if: env.RAMUS_MODE == 'key' && steps.gate.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          # `status` probes the key AND the repository install. A repository that has
+          # not installed the Ramus GitHub App makes it exit non-zero even though the
+          # key is fine — so only an auth-shaped failure is fatal here.
+          rc=0
+          out=$(npx --yes "$RAMUS_CLI" status 2>&1) || rc=$?
+          printf '%s\n' "$out" | tee "$PROBE_OUT/status.json"
+
+          if printf '%s' "$out" | grep -qiE 'unauthor|invalid.?key|missing.?key|not signed in|401'; then
+            echo "::error::RAMUS_API_KEY was rejected. Rotate it at ramus.dev/settings and re-set the secret:"
+            echo "::error::  gh secret set RAMUS_API_KEY"
+            exit 1
+          fi
+          if [ "$rc" -ne 0 ]; then
+            echo "::warning::\`ramus status\` exited $rc but the message does not look like an auth failure"
+            echo "::warning::(likely the Ramus GitHub App is not installed on this repository). Continuing."
+          fi
+
+      - name: Start session
+        if: steps.gate.outputs.skip != 'true'
+        id: session
+        run: |
+          set -euo pipefail
+          started=0
+          for i in 1 2 3; do
+            echo "── session start, attempt $i/3 ──"
+            if npx --yes "$RAMUS_CLI" session start \
+                 --apk "$RAMUS_APK" \
+                 --wait \
+                 --timeout 600 \
+                 | tee "$PROBE_OUT/session.json"; then
+              started=1
+              break
+            fi
+            cat "$PROBE_OUT/session.json" 2>/dev/null || true
+            if [ "$i" -lt 3 ]; then sleep 20; fi
+          done
+
+          if [ "$started" -ne 1 ]; then
+            echo "::error::Ramus refused to start a session three times — see session.json in the artefact."
+            jq -r '.error // .message // empty' "$PROBE_OUT/session.json" 2>/dev/null || true
+            exit 1
+          fi
+
+          # `ramus session start` prints {"session": "<id>", "status": "..."} (CLI 0.1.17).
+          sid=$(jq -r 'if (.session | type) == "string" then .session
+                       else (.sessionId // .session_id // .id // .session.id // .session.sessionId // empty) end' \
+                "$PROBE_OUT/session.json" 2>/dev/null || true)
+          if [ -n "$sid" ]; then
+            echo "RAMUS_SESSION=$sid" >> "$GITHUB_ENV"
+            echo "session=$sid" >> "$GITHUB_OUTPUT"
+            echo "session id: $sid"
+          else
+            echo "::notice::Could not parse a session id; the CLI will use the last session."
+          fi
+          npx --yes "$RAMUS_CLI" session list || true
+
+      - name: Wait for the app
+        if: steps.gate.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          npx --yes "$RAMUS_CLI" wait --stable --timeout 60000 || true
+          # A session that died during install still exits 0 from `session start`,
+          # so probe it here instead of burning the logcat wait.
+          if ! npx --yes "$RAMUS_CLI" screenshot --out "$PROBE_OUT/screen-boot.jpg" \
+                 > "$PROBE_OUT/boot.json" 2>&1; then
+            echo "::error::The session did not survive install — see boot.json."
+            cat "$PROBE_OUT/boot.json"
+            # Capture why: missing ABI, dead session, crash on native load.
+            npx --yes "$RAMUS_CLI" logcat --limit 500 > "$PROBE_OUT/logcat.txt" 2>&1 || true
+            grep -iE 'install_failed|no_matching_abi|unsatisfiedlink|il2cpp|fatal|crash' \
+              "$PROBE_OUT/logcat.txt" | tail -15 || true
+            exit 1
+          fi
+
+      - name: Open adb tunnel (key mode only)
+        id: adb
+        if: env.RAMUS_MODE == 'key' && steps.gate.outputs.skip != 'true'
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          if ! command -v adb >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq android-tools-adb
+          fi
+          adb version
+          out=$(npx --yes "$RAMUS_CLI" adb --port 5555 2>&1 || true)
+          echo "$out"
+          serial=$(printf '%s\n' "$out" | grep -oE '(emulator-[0-9]+|[0-9]{1,3}(\.[0-9]{1,3}){3}:[0-9]+)' | head -1 || true)
+          if [ -z "$serial" ]; then
+            adb devices
+            serial=$(adb devices | awk 'NR>1 && $2=="device" {print $1; exit}')
+          fi
+          echo "serial=$serial"
+          test -n "$serial"
+          echo "ADB_SERIAL=$serial" >> "$GITHUB_ENV"
+          adb -s "$serial" forward tcp:8080 tcp:8080
+          adb -s "$serial" shell getprop ro.product.cpu.abilist > "$PROBE_OUT/device-abi.txt"
+          adb -s "$serial" shell monkey -p "$RAMUS_PACKAGE" -c android.intent.category.LAUNCHER 1 > "$PROBE_OUT/launch-adb.txt" 2>&1 || true
+          adb -s "$serial" logcat -b main -b crash -d > "$PROBE_OUT/main-crash-logcat.txt" 2>&1 || true
+          adb -s "$serial" shell dumpsys activity activities > "$PROBE_OUT/activities.txt" 2>&1 || true
+          adb -s "$serial" shell pidof "$RAMUS_PACKAGE" || true
+          curl -fsS --max-time 10 http://127.0.0.1:8080/health | tee "$PROBE_OUT/health-direct.json"
+
+      - name: Install config splits (key mode, when the source is a bundle)
+        if: env.RAMUS_MODE == 'key' && steps.apk.outputs.splits != '' && steps.gate.outputs.skip != 'true'
+        continue-on-error: true
+        env:
+          SPLITS: ${{ steps.apk.outputs.splits }}
+        run: |
+          set -euo pipefail
+          # shellcheck disable=SC2086
+          adb -s "$ADB_SERIAL" install-multiple -r -t .ci/apk/base.apk $SPLITS
+          adb -s "$ADB_SERIAL" shell monkey -p "$RAMUS_PACKAGE" -c android.intent.category.LAUNCHER 1 || true
+          sleep 5
+          curl -fsS --max-time 10 http://127.0.0.1:8080/health | tee "$PROBE_OUT/health-after-splits.json" || true
+
+      - name: Push OBB payload (key mode, when present)
+        if: env.RAMUS_MODE == 'key' && hashFiles('.ci/apk/obb/**') != '' && steps.gate.outputs.skip != 'true'
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          adb -s "$ADB_SERIAL" shell mkdir -p "/sdcard/Android/obb/$RAMUS_PACKAGE"
+          adb -s "$ADB_SERIAL" push .ci/apk/obb/. "/sdcard/Android/obb/$RAMUS_PACKAGE/"
+
+      - name: Skip adb (trial)
+        if: env.RAMUS_MODE == 'trial' && steps.gate.outputs.skip != 'true'
+        run: |
+          echo "::notice::Trial sessions have no adb tunnel — the probe reads RAMUSB logcat mirrors instead."
+          echo "no-adb (trial)" > "$PROBE_OUT/adb.txt"
+
+      - name: Scenario taps
+        if: github.event_name == 'workflow_dispatch' && inputs.taps != '' && steps.gate.outputs.skip != 'true'
+        continue-on-error: true
+        env:
+          TAPS: ${{ inputs.taps }}
+        run: |
+          set -euo pipefail
+          for tap in $TAPS; do
+            echo "tap $tap"
+            npx --yes "$RAMUS_CLI" tap "$tap" --force || true
+            sleep 2
+          done
+
+      - name: Probe game state
+        if: steps.gate.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          budget=0
+          if [ -n "${RAMUS_DEADLINE:-}" ]; then
+            budget=$(( RAMUS_DEADLINE - $(date -u +%s) ))
+            echo "trial budget left: ${budget}s"
+          fi
+
+          args=(--out "$PROBE_OUT" --label "${SCENARIO:-${{ github.event_name }}}" --mode "$RAMUS_MODE")
+          # Trust what is inside the APK over the env default: a case mismatch in
+          # a package name makes every logcat signal a false negative.
+          if [ -n "${{ steps.apk.outputs.package }}" ]; then
+            export RAMUS_PACKAGE="${{ steps.apk.outputs.package }}"
+          fi
+          if [ "$RAMUS_MODE" = "trial" ]; then
+            args+=(--wait-server 5 --logcat-wait 90)
+          else
+            args+=(--wait-server 120 --logcat-wait 30)
+            if [ -n "${{ inputs.wait_scene }}" ]; then args+=(--wait-scene "${{ inputs.wait_scene }}"); fi
+            if [ -n "${{ inputs.statics }}" ]; then args+=(--statics "${{ inputs.statics }}"); fi
+          fi
+          if [ "$budget" -gt 0 ] && [ "$budget" -lt 600 ]; then args+=(--budget "$budget"); fi
+          if [ "${STRICT:-true}" != "false" ]; then args+=(--strict); fi
+          node .github/scripts/ramus-probe.mjs "${args[@]}"
+
+      - name: Session watch link
+        if: always() && env.RAMUS_SESSION != ''
+        continue-on-error: true
+        run: npx --yes "$RAMUS_CLI" session share | tee "$PROBE_OUT/watch-link.json"
+
+      - name: Upload artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-probe-${{ github.run_id }}
+          path: |
+            ${{ env.PROBE_OUT }}
+            apk.sha256
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Comment on PR
+        if: always() && github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ ! -f "$PROBE_OUT/report.md" ]; then
+            {
+              echo "<!-- runtime-probe -->"
+              echo "# Runtime probe — ${{ inputs.scenario || github.event_name }} (aborted before probing)"
+              echo
+              echo "The job stopped before the probe ran. Most likely the APK did not install:"
+              echo
+              echo '```'
+              head -c 1500 "$PROBE_OUT/boot.json" 2>/dev/null || echo "no boot.json"
+              echo '```'
+              if [ -f "$PROBE_OUT/logcat.txt" ]; then
+                echo
+                echo "### logcat (filtered)"
+                echo
+                echo '```'
+                grep -iE 'install_failed|no_matching_abi|unsatisfiedlink|il2cpp|fatal|unity|crash' \
+                  "$PROBE_OUT/logcat.txt" | tail -25 || tail -25 "$PROBE_OUT/logcat.txt"
+                echo '```'
+              fi
+            } > "$PROBE_OUT/report.md"
+          fi
+          {
+            echo "<!-- runtime-probe -->"
+            cat "$PROBE_OUT/report.md"
+            if [ -f "$PROBE_OUT/apk-inventory.txt" ]; then
+              echo
+              echo "<details><summary>APK inventory</summary>"
+              echo
+              echo '```'
+              cat "$PROBE_OUT/apk-inventory.txt"
+              echo '```'
+              echo
+              echo "</details>"
+            fi
+          } > "$PROBE_OUT/comment.md"
+          chmod +x .github/scripts/pr-comment.sh
+          .github/scripts/pr-comment.sh "${{ github.event.pull_request.number }}" \
+            "$PROBE_OUT/comment.md" '<!-- runtime-probe -->'
+
+      - name: End session
+        if: always() && env.RAMUS_SESSION != ''
+        continue-on-error: true
+        run: npx --yes "$RAMUS_CLI" session end

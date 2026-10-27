@@ -1,0 +1,57 @@
+{
+  "status": "PROVISIONAL_APK_DERIVATION_NOT_RUNTIME",
+  "recovery_run": 40211999354,
+  "recovery_conclusion": "SUCCESS",
+  "raw_commit": "7518813f4",
+  "earlier_failure_runs": [
+    40211864359,
+    40211929906
+  ],
+  "failure_cause": "ARM64 library and metadata are in different XAPK splits; corrected before successful recovery",
+  "report": "docs/apk-analysis/87-reborn-invincibility-shields-and-zone-state.md",
+  "errata": [
+    "Physics+0x90 is activeHitEnemey, not movement enabled",
+    "Controller+0x48 is Player_Talent; Talent+0x20 is reborning, not input"
+  ],
+  "toolchain": {
+    "repository": "https://github.com/Perfare/Il2CppDumper",
+    "commit": "4741d46ba9cd6159c5d853eb9d6fc48b4bfa2b1a",
+    "role": "metadata format only, not gameplay evidence",
+    "files": [
+      {
+        "path": "reverse-engineering/raw/player-invincibility/toolchain/LICENSE",
+        "sha256": "373bd2ed813eaa8245d1290138985c6fb025d588db254602720697455ae36c6c"
+      },
+      {
+        "path": "reverse-engineering/raw/player-invincibility/toolchain/Metadata.cs",
+        "sha256": "aabb0ef28ea25509aee460df2863bcce1ca3b3f246f7dff6538c350b3a240334"
+      },
+      {
+        "path": "reverse-engineering/raw/player-invincibility/toolchain/MetadataClass.cs",
+        "sha256": "d66c9f867e66bf7709a2789b708c846517241e6aa54e8a6480271720b5fcc3cd"
+      }
+    ]
+  },
+  "local_tests": {
+    "full_count": 412,
+    "result": "PASS",
+    "duration_seconds": 36.34,
+    "new_test_count": 18,
+    "additional_checks": [
+      "datas/validate.py PASS",
+      "damage_receiver_flow --check PASS",
+      "player_lifecycle_flow --check PASS",
+      "player_shield_flow --check PASS",
+      "git diff --check PASS"
+    ]
+  },
+  "peer_ack": "85/86 explicitly ACKed in PR12 comment6400213174 at peer266a05dd78; 87 posted6400262252, no ACK87 observed",
+  "code_commit": "691f225b88f5f56adaf680d4c66a447b83d89c22",
+  "verify_ci": {
+    "run_id": 40212492774,
+    "conclusion": "SUCCESS",
+    "job_seconds": 56
+  },
+  "peer_tip_observed": "266a05dd78a197fc9daa3996a5bc7377847f3d36",
+  "peer_review_note": "Peer reports all6 corrections addressed; updated text at266a05dd78 not independently reviewed in this batch"
+}

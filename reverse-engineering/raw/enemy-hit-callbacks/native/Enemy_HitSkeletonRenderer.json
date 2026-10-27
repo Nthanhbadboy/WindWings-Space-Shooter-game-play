@@ -1,0 +1,139 @@
+{
+ "class": "Enemy_HitSkeletonRenderer",
+ "note": "Delegated clone/pumpkin combat control",
+ "methods": [
+  {
+   "method": "Start",
+   "signature": "private void Start() { }",
+   "offset": "0x131d834",
+   "getter_value": null,
+   "rva": "0x1321834",
+   "bytes": 252,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1321890",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "CancelEffect",
+   "signature": "private void CancelEffect() { }",
+   "offset": "0x131d930",
+   "getter_value": null,
+   "rva": "0x1321930",
+   "bytes": 236,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1321964",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x13219ac",
+     "reg": "x8",
+     "op": "x8, x8, x20, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x13219ec",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x13219fc",
+     "reg": "x20",
+     "op": "x20, x20, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "OnHit",
+   "signature": "private void OnHit() { }",
+   "offset": "0x131da1c",
+   "getter_value": null,
+   "rva": "0x1321a1c",
+   "bytes": 304,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1321a5c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x1321aac",
+     "reg": "x8",
+     "op": "x8, x8, x21, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x1321af4",
+     "reg": "x21",
+     "op": "x21, x21, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.01,
+     "via": "ldr_pool",
+     "va": "0x756fe0",
+     "addr": "0x1321b2c",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x131db4c",
+   "getter_value": null,
+   "rva": "0x1321b4c",
+   "bytes": 16,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  }
+ ]
+}

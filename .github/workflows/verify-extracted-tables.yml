@@ -1,0 +1,63 @@
+name: Verify extracted tables
+on:
+  push:
+    paths:
+      - 'tools/verify/**'
+      - 'tools/apk-analyze/data_pack.py'
+      - 'tests/**'
+      - 'reverse-engineering/raw/**'
+      - 'reverse-engineering/il2cpp/**'
+      - 'datas/l3_scene_chains.json.gz'
+      - 'datas/l3_animator_programs.json.gz'
+      - 'datas/l3_ui_drivers.json.gz'
+      - 'datas/l3_layout.json.gz'
+      - 'datas/l3_visual_surface.json.gz'
+      - 'datas/l3_composition.json.gz'
+      - 'datas/l3_frame_cases.json.gz'
+      - 'datas/l3_ef6b75ef105.json.gz'
+      - 'datas/l3_ef6b75ef106.json.gz'
+      - 'datas/l2_ef6b75ef107_board_power.json.gz'
+      - 'datas/l2_ef6b75ef108_map_entry_bindings.json.gz'
+      - 'datas/l3_ef6b75ef109_controller_decode.json.gz'
+      - 'datas/l3_ef6b75ef110_controller_framing.json.gz'
+      - 'datas/l3_ef6b75ef111_unityfs_framing.json.gz'
+      - 'datas/l3_ef6b75ef112_native_controller_schema.json.gz'
+      - 'datas/l3-visual-surface/**'
+      - 'datas/l3-scene-chains/**'
+      - 'datas/camera_scaler_contract.json'
+      - 'datas/wing_emission_flow.json'
+      - 'datas/maps.json'
+      - 'datas/map*segments*.json'
+      - 'reverse-engineering/il2cpp/ia-resolved.json'
+      - '.github/workflows/verify-extracted-tables.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Regenerate map tables from preserved evidence
+        run: |
+          python3 tools/verify/map_table.py
+          python3 tools/verify/map_resolved.py
+          git diff --exit-code -- datas/map_table_segments.json datas/map_segments_full.json datas/maps.json
+      - name: Install pinned fixture dependencies
+        run: python3 -m pip install 'Pillow==12.0.0' 'capstone==5.0.3' 'unicorn==2.1.4'
+      - name: Run regression tests
+        run: |
+          if python3 -m unittest discover -s tests -v > /tmp/verify-tests.log 2>&1; then
+            cat /tmp/verify-tests.log
+          else
+            cat /tmp/verify-tests.log
+            python3 - <<'PYTEST'
+          from pathlib import Path
+          text=Path('/tmp/verify-tests.log').read_text()[-16000:]
+          print('::error::'+text.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))
+          PYTEST
+            exit 1
+          fi

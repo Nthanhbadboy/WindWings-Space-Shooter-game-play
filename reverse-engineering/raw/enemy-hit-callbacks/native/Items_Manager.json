@@ -1,0 +1,3152 @@
+{
+ "class": "Items_Manager",
+ "note": "Delegated clone/pumpkin combat control",
+ "methods": [
+  {
+   "method": "get_Instance",
+   "signature": "public static Items_Manager get_Instance() { }",
+   "offset": "0x14c4524",
+   "getter_value": null,
+   "rva": "0x14c8524",
+   "bytes": 88,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c854c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_GetMagnetRadius",
+   "signature": "public float get_GetMagnetRadius() { }",
+   "offset": "0x14c457c",
+   "getter_value": null,
+   "rva": "0x14c857c",
+   "bytes": 116,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c85a0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": -1.0,
+     "via": "fmov",
+     "addr": "0x14c85ac",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "get_timeNextSuperUp",
+   "signature": "private float get_timeNextSuperUp() { }",
+   "offset": "0x14c45f0",
+   "getter_value": null,
+   "rva": "0x14c85f0",
+   "bytes": 264,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c8630",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "mov",
+     "addr": "0x14c8648",
+     "reg": "w0",
+     "op": "w0, #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c864c",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "mov",
+     "addr": "0x14c8688",
+     "reg": "w1",
+     "op": "w1, #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c86a0",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x14c86bc",
+     "reg": "x8",
+     "op": "x8, x0, w19, uxtw #2",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": -20.0,
+     "via": "fmov",
+     "addr": "0x14c86c4",
+     "role": "arith:fdiv"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14c86c8",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 30.0,
+     "via": "fmov",
+     "addr": "0x14c86d4",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 30.0,
+     "via": "fmov",
+     "addr": "0x14c86e0",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "get_timeNextMinHp",
+   "signature": "private float get_timeNextMinHp() { }",
+   "offset": "0x14c46f8",
+   "getter_value": null,
+   "rva": "0x14c86f8",
+   "bytes": 260,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c8738",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "mov",
+     "addr": "0x14c8750",
+     "reg": "w0",
+     "op": "w0, #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "mov",
+     "addr": "0x14c8754",
+     "reg": "w1",
+     "op": "w1, #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "mov",
+     "addr": "0x14c8790",
+     "reg": "w1",
+     "op": "w1, #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "mov",
+     "addr": "0x14c87a8",
+     "reg": "w1",
+     "op": "w1, #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x14c87c4",
+     "reg": "x8",
+     "op": "x8, x0, w19, uxtw #2",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 20.0,
+     "via": "fmov",
+     "addr": "0x14c87cc",
+     "role": "arith:fdiv"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14c87d0",
+     "role": "arith:fsub"
+    },
+    {
+     "kind": "float",
+     "value": 20.0,
+     "via": "fmov",
+     "addr": "0x14c87e4",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "ResetStaticVariables",
+   "signature": "private void ResetStaticVariables() { }",
+   "offset": "0x14c47fc",
+   "getter_value": null,
+   "rva": "0x14c87fc",
+   "bytes": 100,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c8824",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "Awake",
+   "signature": "private void Awake() { }",
+   "offset": "0x14c4860",
+   "getter_value": null,
+   "rva": "0x14c8860",
+   "bytes": 92,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c888c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_countPercentLucky",
+   "signature": "private int get_countPercentLucky() { }",
+   "offset": "0x14c48bc",
+   "getter_value": null,
+   "rva": "0x14c88bc",
+   "bytes": 108,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c88f0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "set_countPercentLucky",
+   "signature": "private void set_countPercentLucky(int value) { }",
+   "offset": "0x14c4928",
+   "getter_value": null,
+   "rva": "0x14c8928",
+   "bytes": 112,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c8960",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "get_minPercentLucky",
+   "signature": "private float get_minPercentLucky() { }",
+   "offset": "0x14c4998",
+   "getter_value": 20.0,
+   "rva": "0x14c8998",
+   "bytes": 100,
+   "pure_getter": true,
+   "getter_kind": "const",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c89c0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 20.0,
+     "via": "fmov",
+     "addr": "0x14c89e8",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 30.0,
+     "via": "fmov",
+     "addr": "0x14c89ec",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "Start",
+   "signature": "private void Start() { }",
+   "offset": "0x14c49fc",
+   "getter_value": null,
+   "rva": "0x14c89fc",
+   "bytes": 1304,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c8a84",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "mov",
+     "addr": "0x14c8a9c",
+     "reg": "w0",
+     "op": "w0, #6",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "mov",
+     "addr": "0x14c8aa0",
+     "reg": "w1",
+     "op": "w1, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c8ad0",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 99,
+     "via": "cmp",
+     "addr": "0x14c8b78",
+     "reg": "w0",
+     "op": "w0, #0x63",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14c8b84",
+     "reg": "w1",
+     "op": "w1, w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c8bb4",
+     "reg": "w22",
+     "op": "w22, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x14c8bc0",
+     "reg": "w8",
+     "op": "w8, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "cmp",
+     "addr": "0x14c8be0",
+     "reg": "w22",
+     "op": "w22, #5",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 30.0,
+     "via": "fmov",
+     "addr": "0x14c8c40",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "cmp",
+     "addr": "0x14c8c70",
+     "reg": "w22",
+     "op": "w22, #6",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14c8cb4",
+     "reg": "w8",
+     "op": "w8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "cmp",
+     "addr": "0x14c8d00",
+     "reg": "w0",
+     "op": "w0, #8",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14c8db0",
+     "reg": "w8",
+     "op": "w8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c8df8",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "mov",
+     "addr": "0x14c8dfc",
+     "reg": "w1",
+     "op": "w1, #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14c8e4c",
+     "reg": "w8",
+     "op": "w8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 2139095039,
+     "via": "mov",
+     "addr": "0x14c8e54",
+     "reg": "w8",
+     "op": "w8, #0x7f7fffff",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 30.0,
+     "via": "fmov",
+     "addr": "0x14c8e68",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x14c8e90",
+     "reg": "w1",
+     "op": "w1, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "mov",
+     "addr": "0x14c8ec0",
+     "reg": "w1",
+     "op": "w1, #6",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 26,
+     "via": "mov",
+     "addr": "0x14c8f04",
+     "reg": "w1",
+     "op": "w1, #0x1a",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 35.0,
+     "via": "mov+fmov",
+     "bits": "0x420c0000",
+     "addr": "0x14c8aec",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x14c8b34",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x14c8c10",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 39.0,
+     "via": "mov+fmov",
+     "bits": "0x421c0000",
+     "addr": "0x14c8d18",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x14c8d3c",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x14c8db8",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 86.0,
+     "via": "mov+fmov",
+     "bits": "0x42ac0000",
+     "addr": "0x14c8de4",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "OnBurstGolds",
+   "signature": "private void OnBurstGolds(object obj) { }",
+   "offset": "0x14c4f14",
+   "getter_value": null,
+   "rva": "0x14c8f14",
+   "bytes": 496,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c8f54",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x14c8f84",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1717986919,
+     "via": "mov+movk",
+     "addr": "0x14c8f98",
+     "reg": "w9",
+     "op": "w9, #0x6667",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x14c8fb4",
+     "reg": "w9",
+     "op": "w9, w22, w22, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c8fc0",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.15,
+     "via": "ldr_pool",
+     "va": "0x756a68",
+     "addr": "0x14c8fcc",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14c8fd4",
+     "reg": "w9",
+     "op": "w9, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.75,
+     "via": "fmov",
+     "addr": "0x14c8fd8",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 304,
+     "via": "add",
+     "addr": "0x14c8fe8",
+     "reg": "x10",
+     "op": "x10, x10, #0x130",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x14c8ff8",
+     "reg": "w22",
+     "op": "w22, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x14c9010",
+     "reg": "w9",
+     "op": "w9, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 70001,
+     "via": "mov+movk",
+     "addr": "0x14c9018",
+     "reg": "w21",
+     "op": "w21, #0x1171",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c901c",
+     "reg": "w24",
+     "op": "w24, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 70001,
+     "via": "mov+movk",
+     "addr": "0x14c9054",
+     "reg": "w0",
+     "op": "w0, #0x1171",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c9080",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14c90bc",
+     "reg": "w0",
+     "op": "w0, w21, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "BurstOut",
+   "signature": "public static void BurstOut(int id, Vector3 center, float radius) { }",
+   "offset": "0x14c5104",
+   "getter_value": null,
+   "rva": "0x14c9104",
+   "bytes": 424,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c9168",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.5,
+     "via": "fmov",
+     "addr": "0x14c917c",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14c9184",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c91a4",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14c9234",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x14c9248",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x14c9264",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x14c9268",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c9298",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "OnBurstItems",
+   "signature": "private void OnBurstItems(object obj) { }",
+   "offset": "0x14c52ac",
+   "getter_value": null,
+   "rva": "0x14c92ac",
+   "bytes": 5740,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c9420",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14c9490",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x14c94a4",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x14c94c0",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x14c94c4",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14c9558",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x14c956c",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c9574",
+     "reg": "w2",
+     "op": "w2, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14c9588",
+     "reg": "w9",
+     "op": "w9, w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x14c958c",
+     "reg": "x8",
+     "op": "x8, x8, w9, sxtw #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x14c9590",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14c95e0",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x14c95f4",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x14c9610",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x14c9614",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1717986919,
+     "via": "mov+movk",
+     "addr": "0x14c9644",
+     "reg": "w8",
+     "op": "w8, #0x6667",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x14c9660",
+     "reg": "w8",
+     "op": "w8, w23, w23, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c966c",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.1,
+     "via": "ldr_pool",
+     "va": "0x756c78",
+     "addr": "0x14c9678",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14c9680",
+     "reg": "w9",
+     "op": "w9, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.5,
+     "via": "fmov",
+     "addr": "0x14c9684",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 1.2,
+     "via": "ldr_pool",
+     "va": "0x756cb8",
+     "addr": "0x14c9690",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 1.5,
+     "via": "fmov",
+     "addr": "0x14c9694",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 39001,
+     "via": "mov",
+     "addr": "0x14c969c",
+     "reg": "w9",
+     "op": "w9, #0x9859",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 2.5,
+     "via": "fmov",
+     "addr": "0x14c96a0",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 1.25,
+     "via": "fmov",
+     "addr": "0x14c96a4",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 3.6,
+     "via": "ldr_pool",
+     "va": "0x7570cc",
+     "addr": "0x14c96b4",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 30010,
+     "via": "mov",
+     "addr": "0x14c96b8",
+     "reg": "w9",
+     "op": "w9, #0x753a",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x14c96d0",
+     "reg": "w23",
+     "op": "w23, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x14c96e8",
+     "reg": "w9",
+     "op": "w9, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 72000,
+     "via": "mov+movk",
+     "addr": "0x14c96f0",
+     "reg": "w28",
+     "op": "w28, #0x1940",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c96f4",
+     "reg": "w26",
+     "op": "w26, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1999,
+     "via": "sub",
+     "addr": "0x14c9700",
+     "reg": "w22",
+     "op": "w22, w28, #0x7cf",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c9708",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c977c",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1998,
+     "via": "sub",
+     "addr": "0x14c978c",
+     "reg": "w22",
+     "op": "w22, w28, #0x7ce",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c9794",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14c985c",
+     "reg": "w8",
+     "op": "w8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 10.0,
+     "via": "fmov",
+     "addr": "0x14c987c",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 10,
+     "via": "cmp",
+     "addr": "0x14c9884",
+     "reg": "w8",
+     "op": "w8, #0xa",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 15,
+     "via": "cmp",
+     "addr": "0x14c98a4",
+     "reg": "w8",
+     "op": "w8, #0xf",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 8.0,
+     "via": "fmov",
+     "addr": "0x14c98a8",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 20,
+     "via": "cmp",
+     "addr": "0x14c98c8",
+     "reg": "w8",
+     "op": "w8, #0x14",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 6.0,
+     "via": "fmov",
+     "addr": "0x14c98cc",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 24,
+     "via": "cmp",
+     "addr": "0x14c98ec",
+     "reg": "w8",
+     "op": "w8, #0x18",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 4.0,
+     "via": "fmov",
+     "addr": "0x14c98f0",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 2.0,
+     "via": "fmov",
+     "addr": "0x14c98f4",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 0.8,
+     "via": "ldr_pool",
+     "va": "0x756c14",
+     "addr": "0x14c9900",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c9928",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1987,
+     "via": "sub",
+     "addr": "0x14c996c",
+     "reg": "w0",
+     "op": "w0, w28, #0x7c3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "cmp",
+     "addr": "0x14c99a0",
+     "reg": "w8",
+     "op": "w8, #5",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "cmp",
+     "addr": "0x14c99c0",
+     "reg": "w8",
+     "op": "w8, #9",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c99e4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x14c9a14",
+     "reg": "w8",
+     "op": "w8, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.5,
+     "via": "fmov",
+     "addr": "0x14c9a68",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14c9a70",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c9a94",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 72000,
+     "via": "mov+movk",
+     "addr": "0x14c9ad8",
+     "reg": "w0",
+     "op": "w0, #0x1940",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14c9b30",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x14c9b44",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x14c9b60",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x14c9b64",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x14c9be4",
+     "reg": "x8",
+     "op": "x8, x8, w23, sxtw #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c9c08",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14c9c20",
+     "reg": "w8",
+     "op": "w8, w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c9c8c",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c9cac",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x14c9ce8",
+     "reg": "x8",
+     "op": "x8, x23, w0, sxtw #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "mov",
+     "addr": "0x14c9d14",
+     "reg": "w0",
+     "op": "w0, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 29,
+     "via": "mov",
+     "addr": "0x14c9d18",
+     "reg": "w1",
+     "op": "w1, #0x1d",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c9d34",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.5,
+     "via": "fmov",
+     "addr": "0x14c9d6c",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14c9d74",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c9d98",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 72000,
+     "via": "mov+movk",
+     "addr": "0x14c9ddc",
+     "reg": "w0",
+     "op": "w0, #0x1940",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14c9e34",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x14c9e48",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x14c9e64",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x14c9e68",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "add",
+     "addr": "0x14c9ee0",
+     "reg": "x8",
+     "op": "x8, x8, w23, sxtw #3",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14c9f08",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14c9f1c",
+     "reg": "w8",
+     "op": "w8, w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "cmp",
+     "addr": "0x14c9f54",
+     "reg": "w8",
+     "op": "w8, #5",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 39000,
+     "via": "mov",
+     "addr": "0x14c9f7c",
+     "reg": "w8",
+     "op": "w8, #0x9858",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "mov",
+     "addr": "0x14c9fb4",
+     "reg": "w0",
+     "op": "w0, #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14c9fc0",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x14c9fe4",
+     "reg": "w8",
+     "op": "w8, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14ca038",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x14ca04c",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x14ca068",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x14ca06c",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 38001,
+     "via": "mov",
+     "addr": "0x14ca07c",
+     "reg": "w8",
+     "op": "w8, #0x9471",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35053,
+     "via": "mov",
+     "addr": "0x14ca088",
+     "reg": "w8",
+     "op": "w8, #0x88ed",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14ca098",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 10.0,
+     "via": "fmov",
+     "addr": "0x14ca0a4",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14ca0f0",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x14ca104",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x14ca120",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x14ca124",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14ca13c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 10,
+     "via": "cmp",
+     "addr": "0x14ca19c",
+     "reg": "w0",
+     "op": "w0, #0xa",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14ca1a4",
+     "reg": "w22",
+     "op": "w22, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1995,
+     "via": "sub",
+     "addr": "0x14ca1d8",
+     "reg": "w0",
+     "op": "w0, w28, #0x7cb",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14ca218",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "mov",
+     "addr": "0x14ca298",
+     "reg": "w0",
+     "op": "w0, #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14ca2a4",
+     "reg": "w0",
+     "op": "w0, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14ca2c8",
+     "reg": "w8",
+     "op": "w8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14ca368",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x14ca3bc",
+     "reg": "w0",
+     "op": "w0, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x14ca3cc",
+     "reg": "w8",
+     "op": "w8, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x14ca3f4",
+     "reg": "w8",
+     "op": "w8, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 0.96,
+     "via": "ldr_pool",
+     "va": "0x756e08",
+     "addr": "0x14ca404",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x14ca41c",
+     "reg": "w8",
+     "op": "w8, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14ca46c",
+     "reg": "w8",
+     "op": "w8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "cmp",
+     "addr": "0x14ca474",
+     "reg": "w8",
+     "op": "w8, #5",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "cmp",
+     "addr": "0x14ca480",
+     "reg": "w8",
+     "op": "w8, #6",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1997,
+     "via": "sub",
+     "addr": "0x14ca4c4",
+     "reg": "w0",
+     "op": "w0, w28, #0x7cd",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 12,
+     "via": "mov",
+     "addr": "0x14ca4e8",
+     "reg": "w23",
+     "op": "w23, #0xc",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 89,
+     "via": "add",
+     "addr": "0x14ca4fc",
+     "reg": "w0",
+     "op": "w0, w23, #0x59",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "sub",
+     "addr": "0x14ca554",
+     "reg": "x10",
+     "op": "x10, x23, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14ca578",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "sub",
+     "addr": "0x14ca590",
+     "reg": "x9",
+     "op": "x9, x23, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14ca5a0",
+     "reg": "x23",
+     "op": "x23, x23, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 15,
+     "via": "cmp",
+     "addr": "0x14ca5a4",
+     "reg": "x23",
+     "op": "x23, #0xf",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 7,
+     "via": "cmp",
+     "addr": "0x14ca638",
+     "reg": "w8",
+     "op": "w8, #7",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "cmp",
+     "addr": "0x14ca688",
+     "reg": "w8",
+     "op": "w8, #8",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x14ca6e4",
+     "reg": "x8",
+     "op": "x8, x8, w21, sxtw #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4294897293,
+     "via": "mov+movk",
+     "addr": "0x14ca6ec",
+     "reg": "w8",
+     "op": "w8, #0xee8d",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "cmp",
+     "addr": "0x14ca6f8",
+     "reg": "w8",
+     "op": "w8, #6",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 260,
+     "via": "add",
+     "addr": "0x14ca704",
+     "reg": "x9",
+     "op": "x9, x9, #0x104",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x14ca710",
+     "reg": "x10",
+     "op": "x10, x10, x11, lsl #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14ca734",
+     "reg": "w9",
+     "op": "w9, w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 15.0,
+     "via": "fmov",
+     "addr": "0x14ca740",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 4294896295,
+     "via": "mov+movk",
+     "addr": "0x14ca77c",
+     "reg": "w8",
+     "op": "w8, #0xeaa7",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x14ca788",
+     "reg": "w8",
+     "op": "w8, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14ca7ac",
+     "reg": "w9",
+     "op": "w9, w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 30.0,
+     "via": "fmov",
+     "addr": "0x14ca7b8",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "float",
+     "value": 6.0,
+     "via": "fmov",
+     "addr": "0x14ca7d0",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14ca834",
+     "reg": "w9",
+     "op": "w9, w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 15,
+     "via": "mov",
+     "addr": "0x14ca840",
+     "reg": "w0",
+     "op": "w0, #0xf",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 25,
+     "via": "mov",
+     "addr": "0x14ca844",
+     "reg": "w1",
+     "op": "w1, #0x19",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14ca878",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14ca884",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x14c9904",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x14ca154",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "BurstFragments",
+   "signature": "private void BurstFragments(int idE, Vector3 pos) { }",
+   "offset": "0x14c6918",
+   "getter_value": null,
+   "rva": "0x14ca918",
+   "bytes": 1640,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14ca9c8",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x14ca9e4",
+     "reg": "w9",
+     "op": "w9, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x14ca9f0",
+     "reg": "w8",
+     "op": "w8, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 100,
+     "via": "mov",
+     "addr": "0x14ca9f8",
+     "reg": "w1",
+     "op": "w1, #0x64",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 35999,
+     "via": "mov",
+     "addr": "0x14caa08",
+     "reg": "w8",
+     "op": "w8, #0x8c9f",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 49,
+     "via": "cmp",
+     "addr": "0x14caa14",
+     "reg": "w0",
+     "op": "w0, #0x31",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x14caa3c",
+     "reg": "w8",
+     "op": "w8, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14caaf4",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x14cab08",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x14cab24",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x14cab28",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14cabcc",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14cabe0",
+     "reg": "w26",
+     "op": "w26, w26, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x14cac14",
+     "reg": "w22",
+     "op": "w22, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 100,
+     "via": "mov",
+     "addr": "0x14cac24",
+     "reg": "w1",
+     "op": "w1, #0x64",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 49,
+     "via": "cmp",
+     "addr": "0x14cac34",
+     "reg": "w0",
+     "op": "w0, #0x31",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 35999,
+     "via": "mov",
+     "addr": "0x14cac58",
+     "reg": "w8",
+     "op": "w8, #0x8c9f",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x14cac88",
+     "reg": "w8",
+     "op": "w8, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14cac90",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14cacbc",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14cad0c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14cad54",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "cmp",
+     "addr": "0x14cad78",
+     "reg": "w8",
+     "op": "w8, #2",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 5,
+     "via": "mov",
+     "addr": "0x14cada0",
+     "reg": "w8",
+     "op": "w8, #5",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14cae58",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x14cae6c",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x14cae88",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x14cae8c",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14caf30",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14caf44",
+     "reg": "w26",
+     "op": "w26, w26, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 360.0,
+     "via": "mov+fmov",
+     "bits": "0x43b40000",
+     "addr": "0x14caa20",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 360.0,
+     "via": "mov+fmov",
+     "bits": "0x43b40000",
+     "addr": "0x14cad84",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "GetItemRate",
+   "signature": "private static float GetItemRate() { }",
+   "offset": "0x14c6f80",
+   "getter_value": null,
+   "rva": "0x14caf80",
+   "bytes": 328,
+   "pure_getter": false,
+   "getter_kind": "computed",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14cafd0",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14cb018",
+     "reg": "w8",
+     "op": "w8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "float",
+     "value": 14.0,
+     "via": "fmov",
+     "addr": "0x14cb01c",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 30.0,
+     "via": "fmov",
+     "addr": "0x14cb020",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 15.0,
+     "via": "fmov",
+     "addr": "0x14cb04c",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 12.0,
+     "via": "fmov",
+     "addr": "0x14cb050",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "cmp",
+     "addr": "0x14cb058",
+     "reg": "w8",
+     "op": "w8, #3",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 23,
+     "via": "mov",
+     "addr": "0x14cb078",
+     "reg": "w0",
+     "op": "w0, #0x17",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x14cb0b4",
+     "role": "arith:fadd"
+    }
+   ]
+  },
+  {
+   "method": "GetCostItems",
+   "signature": "private static int[] GetCostItems() { }",
+   "offset": "0x14c70c8",
+   "getter_value": null,
+   "rva": "0x14cb0c8",
+   "bytes": 392,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14cb150",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14cb17c",
+     "reg": "w8",
+     "op": "w8, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "mov",
+     "addr": "0x14cb188",
+     "reg": "w1",
+     "op": "w1, #9",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "mov",
+     "addr": "0x14cb1ec",
+     "reg": "w1",
+     "op": "w1, #9",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x14cb1f8",
+     "reg": "w20",
+     "op": "w20, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14cb228",
+     "reg": "w21",
+     "op": "w21, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 9,
+     "slot_val": "0x80000349",
+     "slot_hi": "0x8000034b",
+     "a": "0x2bd5128",
+     "addr": "0x14cb23c",
+     "array_new_addr": "0x14cb1f4",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "GetRandomIndex",
+   "signature": "private static int GetRandomIndex(int[] percents) { }",
+   "offset": "0x14c7250",
+   "getter_value": null,
+   "rva": "0x14cb250",
+   "bytes": 180,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14cb264",
+     "reg": "x9",
+     "op": "x9, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x14cb274",
+     "reg": "x10",
+     "op": "x10, x19, #0x20",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x14cb280",
+     "reg": "x9",
+     "op": "x9, x9, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "sub",
+     "addr": "0x14cb284",
+     "reg": "x8",
+     "op": "x8, x8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14cb2a4",
+     "reg": "w9",
+     "op": "w9, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x14cb2b8",
+     "reg": "x11",
+     "op": "x11, x19, #0x20",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14cb2d4",
+     "reg": "x0",
+     "op": "x0, x0, #1",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "OnBulletNormalCollided2",
+   "signature": "private void OnBulletNormalCollided2(GameObject obj, Vector3 pos) { }",
+   "offset": "0x14c7304",
+   "getter_value": null,
+   "rva": "0x14cb304",
+   "bytes": 468,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14cb364",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14cb46c",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x14cb480",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x14cb4ac",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x14cb4b0",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 450.0,
+     "via": "mov+fmov",
+     "bits": "0x43e10000",
+     "addr": "0x14cb414",
+     "role": "load"
+    }
+   ]
+  },
+  {
+   "method": "OnBulletNormalDestroyed",
+   "signature": "private void OnBulletNormalDestroyed(GameObject obj, Vector3 pos) { }",
+   "offset": "0x14c74d8",
+   "getter_value": null,
+   "rva": "0x14cb4d8",
+   "bytes": 8,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": []
+  },
+  {
+   "method": "OnBulletNormalCollided",
+   "signature": "private void OnBulletNormalCollided(GameObject obj, Vector3 pos) { }",
+   "offset": "0x14c74dc",
+   "getter_value": null,
+   "rva": "0x14cb4dc",
+   "bytes": 636,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14cb55c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3,
+     "via": "mov",
+     "addr": "0x14cb5fc",
+     "reg": "w0",
+     "op": "w0, #3",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 0.6,
+     "via": "ldr_pool",
+     "va": "0x756c44",
+     "addr": "0x14cb618",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "float",
+     "value": 0.2,
+     "via": "ldr_pool",
+     "va": "0x75700c",
+     "addr": "0x14cb624",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "mov",
+     "addr": "0x14cb644",
+     "reg": "w0",
+     "op": "w0, #2",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 2.8,
+     "via": "ldr_pool",
+     "va": "0x756fc0",
+     "addr": "0x14cb654",
+     "role": "arith:fmul"
+    },
+    {
+     "kind": "int",
+     "value": 8,
+     "via": "add",
+     "addr": "0x14cb6e4",
+     "reg": "x10",
+     "op": "x10, x10, #8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 16,
+     "via": "add",
+     "addr": "0x14cb6f8",
+     "reg": "x10",
+     "op": "x10, x10, #0x10",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "add",
+     "addr": "0x14cb728",
+     "reg": "x8",
+     "op": "x8, x8, x9, lsl #4",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 312,
+     "via": "add",
+     "addr": "0x14cb72c",
+     "reg": "x0",
+     "op": "x0, x8, #0x138",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "ctor",
+   "signature": "public void .ctor() { }",
+   "offset": "0x14c7758",
+   "getter_value": null,
+   "rva": "0x14cb758",
+   "bytes": 112,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "float",
+     "value": -1.0,
+     "via": "ldr_pool_d",
+     "va": "0x757910",
+     "addr": "0x14cb760",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "ldr_pool_d",
+     "va": "0x757914",
+     "addr": "0x14cb760",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 4.0,
+     "via": "ldr_pool_d",
+     "va": "0x757b58",
+     "addr": "0x14cb768",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 16.0,
+     "via": "ldr_pool_d",
+     "va": "0x757b5c",
+     "addr": "0x14cb768",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 12.0,
+     "via": "ldr_pool_d",
+     "va": "0x757180",
+     "addr": "0x14cb774",
+     "role": "load"
+    },
+    {
+     "kind": "float",
+     "value": 8.0,
+     "via": "ldr_pool_d",
+     "va": "0x757184",
+     "addr": "0x14cb774",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 9694085120,
+     "via": "mov+movk",
+     "addr": "0x14cb778",
+     "reg": "x8",
+     "op": "x8, #0x41d00000",
+     "note": "ghép 2 lệnh — có thể là metadata token/độ dài, không chắc là số thiết kế",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 6,
+     "via": "mov",
+     "addr": "0x14cb78c",
+     "reg": "w8",
+     "op": "w8, #6",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1090519040,
+     "via": "mov",
+     "bits": "0x41000000",
+     "addr": "0x14cb784",
+     "note": "bit-pattern giống float nhưng không thấy fmov — để riêng",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1084227584,
+     "via": "mov",
+     "bits": "0x40a00000",
+     "addr": "0x14cb7ac",
+     "note": "bit-pattern giống float nhưng không thấy fmov — để riêng",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "cctor",
+   "signature": "private static void .cctor() { }",
+   "offset": "0x14c77c8",
+   "getter_value": null,
+   "rva": "0x14cb7c8",
+   "bytes": 188,
+   "pure_getter": false,
+   "getter_kind": null,
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14cb81c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "mov",
+     "addr": "0x14cb828",
+     "reg": "w9",
+     "op": "w9, #2",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 9,
+     "via": "mov",
+     "addr": "0x14cb82c",
+     "reg": "w1",
+     "op": "w1, #9",
+     "role": "other"
+    },
+    {
+     "kind": "init_array",
+     "bl": "0x205b07c",
+     "len": 9,
+     "slot_val": "0x80000211",
+     "slot_hi": "0x80000213",
+     "a": "0x2bd4c48",
+     "addr": "0x14cb864",
+     "array_new_addr": "0x14cb854",
+     "role": "other"
+    }
+   ]
+  },
+  {
+   "method": "<Start>b__39_0",
+   "signature": "private void <Start>b__39_0(object obj) { }",
+   "offset": "0x14c7884",
+   "getter_value": null,
+   "rva": "0x14cb884",
+   "bytes": 448,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14cb8d4",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "ldr_pool_d",
+     "va": "0x757348",
+     "addr": "0x14cb918",
+     "role": "load"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "cmp",
+     "addr": "0x14cb92c",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 4294967295,
+     "via": "and",
+     "addr": "0x14cb948",
+     "reg": "x8",
+     "op": "x8, x8, #0xffffffff",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x14cb94c",
+     "reg": "x25",
+     "op": "x25, x20, #0x20",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 3000,
+     "via": "sub",
+     "addr": "0x14cb990",
+     "reg": "w9",
+     "op": "w9, w8, #0xbb8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 999,
+     "via": "cmp",
+     "addr": "0x14cb994",
+     "reg": "w9",
+     "op": "w9, #0x3e7",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1000,
+     "via": "sub",
+     "addr": "0x14cb9d0",
+     "reg": "w8",
+     "op": "w8, w8, #0x3e8",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 999,
+     "via": "cmp",
+     "addr": "0x14cb9d4",
+     "reg": "w8",
+     "op": "w8, #0x3e7",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "add",
+     "addr": "0x14cba10",
+     "reg": "x22",
+     "op": "x22, x22, #1",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x14cb950",
+     "role": "load"
+    }
+   ]
+  }
+ ]
+}

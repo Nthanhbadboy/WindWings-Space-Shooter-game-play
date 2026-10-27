@@ -1,0 +1,47 @@
+{
+ "source": "PARALLEL_TASKS.md (nhánh spec) — kiểm chứng tầng A, offline",
+ "results": [
+  {
+   "task": "T2",
+   "hypothesis": "RankManager thiếu 8B ở ctor; export lại thì gác cổng đạt",
+   "verdict": "PASS",
+   "detail": "ctor = 8 byte; ends_clean True toàn bộ nhưng còn 0 method vắng mặt khỏi file asm (cờ ends_clean không bắt được — exporter đã sửa: luôn ghi asm mọi methodđược — đã sửa exporter: luôn ghi asm, chờ tái export)."
+  },
+  {
+   "task": "T3",
+   "hypothesis": "GetSurvivalScore chứa >=4/5 hằng 6/3/1.1/0.2/0.5",
+   "verdict": "PASS",
+   "detail": "có 5/5 hằng ([0.2, 0.5, 1.1, 3.0, 6.0]); phép tính thấy: chưa rõ nhân/cộng."
+  },
+  {
+   "task": "T4",
+   "hypothesis": "stepLevel: 4 ngưỡng 30/58/118/248, hệ số 0.168/1.0/1.05/1.15; id tàu = 10001+playerIndex",
+   "verdict": "PASS",
+   "detail": "stepLevel cmp=[30, 58, 118, 248], float=[0.168, 1.0, 1.05, 1.15]; hằng 10001 có mặt. Chiều đúng (VERIFY_ROUND1 §1): asm là TRỪ 10001 khỏi id để lấy index (adds w19,w19,#-0x2711), không phải cộng."
+  },
+  {
+   "task": "T6",
+   "hypothesis": "20001-20013 là tàu thật và không có field HP",
+   "verdict": "REVERSED",
+   "detail": "38 dòng Data_Players chỉ có cột ['Actived', 'Sprite', 'Star', 'id'] — không field HP nào (phần này khớp H6); nhưng 20001-20013 nằm ở datas/drones.json (13 drone: 20001-20013), không phải tàu bị mất. H6 sai ở nửa đầu, đúng ở nửa sau."
+  },
+  {
+   "task": "T10",
+   "hypothesis": "root 900xx là prefab test, 0 lần trong tổng quân",
+   "verdict": "PASS",
+   "detail": "48 root 900xx trong prefab-roots; xuất hiện trong waves: 0."
+  },
+  {
+   "task": "T12",
+   "hypothesis": "đọc độc lập .cctor vẫn ra StartHp=2500,0 cạnh 0,18",
+   "verdict": "PASS",
+   "detail": "15 cặp ldr d trong .cctor. VA 0x757ce0: [3.0, 10.0]; VA 0x757bc0: [0.18, 2500.0]; VA 0x758140: []; VA 0x757788: [18.0, 5.6]; VA 0x757550: []; VA 0x757b08: []; VA 0x757ce8: [25.0, 3.0]; VA 0x757a38: []; VA 0x757558: []; VA 0x757398: []"
+  },
+  {
+   "task": "T13",
+   "hypothesis": "đường cong HP theo bin 20 wave (định nghĩa VERIFY_ROUND1 §4.2)",
+   "verdict": "PASS",
+   "detail": "median các bin cuối — 120-139: 2,440,000; 220-239: 3,305,000; 240-259: 8,600,000; 260-279: 15,500,000; 280-281: 21,200,000. Tổng HP toàn game: 483,816,000 (đo độc lập, đối chiếu 480,89M của nhánh spec)."
+  }
+ ]
+}

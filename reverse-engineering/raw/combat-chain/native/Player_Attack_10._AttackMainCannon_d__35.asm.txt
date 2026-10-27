@@ -1,0 +1,583 @@
+;;; ctor  public void .ctor(int <>1__state) { }
+    0x147e1c8: str      x30, [sp, #-0x20]!
+    0x147e1cc: stp      x20, x19, [sp, #0x10]
+    0x147e1d0: mov      w19, w1
+    0x147e1d4: mov      x1, xzr
+    0x147e1d8: mov      x20, x0
+    0x147e1dc: bl       #0x2143330
+    0x147e1e0: str      w19, [x20, #0x10]
+    0x147e1e4: ldp      x20, x19, [sp, #0x10]
+    0x147e1e8: ldr      x30, [sp], #0x20
+    0x147e1ec: ret      
+
+;;; Dispose  private void System.IDisposable.Dispose() { }
+    0x147f408: ret      
+    0x147f40c: stp      d13, d12, [sp, #-0x80]!
+
+;;; MoveNext  private bool MoveNext() { }
+    0x147f40c: stp      d13, d12, [sp, #-0x80]!
+    0x147f410: stp      d11, d10, [sp, #0x10]
+    0x147f414: stp      d9, d8, [sp, #0x20]
+    0x147f418: str      x30, [sp, #0x30]
+    0x147f41c: stp      x26, x25, [sp, #0x40]
+    0x147f420: stp      x24, x23, [sp, #0x50]
+    0x147f424: stp      x22, x21, [sp, #0x60]
+    0x147f428: stp      x20, x19, [sp, #0x70]
+    0x147f42c: adrp     x20, #0x2ce1000
+    0x147f430: ldrb     w8, [x20, #0xfbc]
+    0x147f434: mov      x19, x0
+    0x147f438: tbnz     w8, #0, #0x147f4c8
+    0x147f43c: adrp     x0, #0x2adc000
+    0x147f440: ldr      x0, [x0, #0xbc0]
+    0x147f444: bl       #0x110d028
+    0x147f448: adrp     x0, #0x2adc000
+    0x147f44c: ldr      x0, [x0, #0xdb0]
+    0x147f450: bl       #0x110d028
+    0x147f454: adrp     x0, #0x2adc000
+    0x147f458: ldr      x0, [x0, #0xbe8]
+    0x147f45c: bl       #0x110d028
+    0x147f460: adrp     x0, #0x2adc000
+    0x147f464: ldr      x0, [x0, #0xbf0]
+    0x147f468: bl       #0x110d028
+    0x147f46c: adrp     x0, #0x2adc000
+    0x147f470: ldr      x0, [x0, #0xa38]
+    0x147f474: bl       #0x110d028
+    0x147f478: adrp     x0, #0x2adc000
+    0x147f47c: ldr      x0, [x0, #0xa48]
+    0x147f480: bl       #0x110d028
+    0x147f484: adrp     x0, #0x2adc000
+    0x147f488: ldr      x0, [x0, #0xa50]
+    0x147f48c: bl       #0x110d028
+    0x147f490: adrp     x0, #0x2adb000
+    0x147f494: ldr      x0, [x0, #0x220]
+    0x147f498: bl       #0x110d028
+    0x147f49c: adrp     x0, #0x2ae7000
+    0x147f4a0: ldr      x0, [x0, #0xc70]
+    0x147f4a4: bl       #0x110d028
+    0x147f4a8: adrp     x0, #0x2ae7000
+    0x147f4ac: ldr      x0, [x0, #0xc78]
+    0x147f4b0: bl       #0x110d028
+    0x147f4b4: adrp     x0, #0x2adb000
+    0x147f4b8: ldr      x0, [x0, #0x938]
+    0x147f4bc: bl       #0x110d028
+    0x147f4c0: mov      w8, #1
+    0x147f4c4: strb     w8, [x20, #0xfbc]
+    0x147f4c8: ldr      w8, [x19, #0x10]
+    0x147f4cc: ldr      x20, [x19, #0x20]
+    0x147f4d0: cmp      w8, #1
+    0x147f4d4: b.eq     #0x147f534
+    0x147f4d8: cbnz     w8, #0x147f604
+    0x147f4dc: mov      w8, #-1
+    0x147f4e0: str      w8, [x19, #0x10]
+    0x147f4e4: cbz      x20, #0x147fc80
+    0x147f4e8: ldr      w8, [x20, #0x44]
+    0x147f4ec: mov      w9, #2
+    0x147f4f0: cmp      w8, #3
+    0x147f4f4: cinc     w8, w9, ne
+    0x147f4f8: csinc    w8, w8, wzr, ge
+    0x147f4fc: str      w8, [x19, #0x28]
+    0x147f500: adrp     x8, #0x2adc000
+    0x147f504: ldr      x8, [x8, #0xa50]
+    0x147f508: ldr      x0, [x8]
+    0x147f50c: bl       #0x110d240
+    0x147f510: adrp     x8, #0x2adc000
+    0x147f514: ldr      x8, [x8, #0xa48]
+    0x147f518: mov      x21, x0
+    0x147f51c: ldr      x1, [x8]
+    0x147f520: bl       #0x1bd768c
+    0x147f524: mov      w8, wzr
+    0x147f528: str      x21, [x19, #0x30]
+    0x147f52c: str      wzr, [x19, #0x38]
+    0x147f530: b        #0x147f548
+    0x147f534: ldr      w8, [x19, #0x38]
+    0x147f538: mov      w9, #-1
+    0x147f53c: str      w9, [x19, #0x10]
+    0x147f540: add      w8, w8, #1
+    0x147f544: str      w8, [x19, #0x38]
+    0x147f548: ldr      w9, [x19, #0x28]
+    0x147f54c: cmp      w8, w9
+    0x147f550: b.ge     #0x147f604
+    0x147f554: cbz      x20, #0x147fc80
+    0x147f558: mov      x0, x20
+    0x147f55c: mov      x1, xzr
+    0x147f560: bl       #0x277f14c
+    0x147f564: cbz      x0, #0x147fc80
+    0x147f568: mov      x1, xzr
+    0x147f56c: bl       #0x27891b8
+    0x147f570: add      x21, x19, #0x30
+    0x147f574: fmov     s3, #20.00000000
+    0x147f578: mov      x0, x20
+    0x147f57c: mov      x1, x21
+    0x147f580: bl       #0x147dc8c
+    0x147f584: adrp     x24, #0x2adb000
+    0x147f588: ldr      x24, [x24, #0x220]
+    0x147f58c: mov      x23, x0
+    0x147f590: ldr      x8, [x24]
+    0x147f594: ldr      w9, [x8, #0xe0]
+    0x147f598: cbnz     w9, #0x147f5a4
+    0x147f59c: mov      x0, x8
+    0x147f5a0: bl       #0x110d12c
+    0x147f5a4: mov      x0, x23
+    0x147f5a8: mov      x1, xzr
+    0x147f5ac: mov      x2, xzr
+    0x147f5b0: bl       #0x27815fc
+    0x147f5b4: tbz      w0, #0, #0x147f620
+    0x147f5b8: ldr      x0, [x21]
+    0x147f5bc: cbz      x0, #0x147fc80
+    0x147f5c0: adrp     x9, #0x2adc000
+    0x147f5c4: ldr      x9, [x9, #0xa38]
+    0x147f5c8: ldr      w10, [x0, #0x1c]
+    0x147f5cc: ldr      x8, [x0, #0x10]
+    0x147f5d0: ldr      x9, [x9]
+    0x147f5d4: add      w10, w10, #1
+    0x147f5d8: str      w10, [x0, #0x1c]
+    0x147f5dc: cbz      x8, #0x147fc80
+    0x147f5e0: ldrsw    x10, [x0, #0x18]
+    0x147f5e4: ldr      w11, [x8, #0x18]
+    0x147f5e8: cmp      w10, w11
+    0x147f5ec: b.hs     #0x147f60c
+    0x147f5f0: add      w9, w10, #1
+    0x147f5f4: add      x8, x8, x10, lsl #3
+    0x147f5f8: str      w9, [x0, #0x18]
+    0x147f5fc: str      x23, [x8, #0x20]
+    0x147f600: b        #0x147f620
+    0x147f604: mov      w0, wzr
+    0x147f608: b        #0x147fc5c
+    0x147f60c: ldr      x8, [x9, #0x20]
+    0x147f610: mov      x1, x23
+    0x147f614: ldr      x8, [x8, #0xc0]
+    0x147f618: ldr      x2, [x8, #0x70]
+    0x147f61c: bl       #0x1bd7e58
+    0x147f620: mov      w0, #0x57d0
+    0x147f624: movk     w0, #1, lsl #16
+    0x147f628: mov      x1, xzr
+    0x147f62c: bl       #0x123a9fc
+    0x147f630: mov      x21, x0
+    0x147f634: mov      x0, x20
+    0x147f638: mov      x1, xzr
+    0x147f63c: bl       #0x277f14c
+    0x147f640: cbz      x0, #0x147fc80
+    0x147f644: mov      x1, xzr
+    0x147f648: bl       #0x27891b8
+    0x147f64c: ldrb     w8, [x20, #0x30]
+    0x147f650: cbz      w8, #0x147f670
+    0x147f654: mov      x0, x20
+    0x147f658: mov      x1, xzr
+    0x147f65c: bl       #0x277f14c
+    0x147f660: cbz      x0, #0x147fc80
+    0x147f664: mov      x1, xzr
+    0x147f668: bl       #0x27891b8
+    0x147f66c: b        #0x147f688
+    0x147f670: adrp     x8, #0x2adc000
+    0x147f674: ldr      x8, [x8, #0xdb0]
+    0x147f678: ldr      x0, [x8]
+    0x147f67c: ldr      w8, [x0, #0xe0]
+    0x147f680: cbnz     w8, #0x147f688
+    0x147f684: bl       #0x110d12c
+    0x147f688: cbz      x21, #0x147fc80
+    0x147f68c: mov      x0, x21
+    0x147f690: mov      x1, xzr
+    0x147f694: bl       #0x2781748
+    0x147f698: mov      x22, x0
+    0x147f69c: mov      x0, x20
+    0x147f6a0: mov      x1, xzr
+    0x147f6a4: bl       #0x277f14c
+    0x147f6a8: cbz      x0, #0x147fc80
+    0x147f6ac: mov      x1, xzr
+    0x147f6b0: bl       #0x27891b8
+    0x147f6b4: cbz      x22, #0x147fc80
+    0x147f6b8: mov      x0, x22
+    0x147f6bc: mov      x1, xzr
+    0x147f6c0: bl       #0x2789258
+    0x147f6c4: adrp     x8, #0x2adc000
+    0x147f6c8: ldr      x8, [x8, #0xbe8]
+    0x147f6cc: mov      x0, x21
+    0x147f6d0: ldr      x1, [x8]
+    0x147f6d4: bl       #0x171d8c4
+    0x147f6d8: cbz      x0, #0x147fc18
+    0x147f6dc: mov      x22, x0
+    0x147f6e0: ldr      x0, [x24]
+    0x147f6e4: ldr      w8, [x0, #0xe0]
+    0x147f6e8: cbnz     w8, #0x147f6f0
+    0x147f6ec: bl       #0x110d12c
+    0x147f6f0: mov      x0, x23
+    0x147f6f4: mov      x1, xzr
+    0x147f6f8: mov      x2, xzr
+    0x147f6fc: bl       #0x27815fc
+    0x147f700: tbz      w0, #0, #0x147f964
+    0x147f704: cbz      x23, #0x147fc80
+    0x147f708: mov      x0, x23
+    0x147f70c: mov      x1, xzr
+    0x147f710: bl       #0x2781748
+    0x147f714: cbz      x0, #0x147fc80
+    0x147f718: mov      x1, xzr
+    0x147f71c: bl       #0x27891b8
+    0x147f720: mov      x0, x20
+    0x147f724: mov      x1, xzr
+    0x147f728: mov      v8.16b, v0.16b
+    0x147f72c: mov      v9.16b, v1.16b
+    0x147f730: bl       #0x277f14c
+    0x147f734: cbz      x0, #0x147fc80
+    0x147f738: mov      x1, xzr
+    0x147f73c: bl       #0x27891b8
+    0x147f740: adrp     x24, #0x2ce1000
+    0x147f744: ldrb     w8, [x24, #1]
+    0x147f748: mov      v10.16b, v0.16b
+    0x147f74c: mov      v11.16b, v1.16b
+    0x147f750: cbnz     w8, #0x147f768
+    0x147f754: adrp     x0, #0x2adc000
+    0x147f758: ldr      x0, [x0, #0xe78]
+    0x147f75c: bl       #0x110d028
+    0x147f760: mov      w8, #1
+    0x147f764: strb     w8, [x24, #1]
+    0x147f768: adrp     x8, #0x2adc000
+    0x147f76c: ldr      x8, [x8, #0xe78]
+    0x147f770: adrp     x24, #0x2ce1000
+    0x147f774: ldrb     w9, [x24, #2]
+    0x147f778: fsub     s10, s8, s10
+    0x147f77c: ldr      x8, [x8]
+    0x147f780: fsub     s8, s9, s11
+    0x147f784: ldr      x8, [x8, #0xb8]
+    0x147f788: ldp      s13, s12, [x8, #0x28]
+    0x147f78c: cbnz     w9, #0x147f7a4
+    0x147f790: adrp     x0, #0x2adc000
+    0x147f794: ldr      x0, [x0, #0x798]
+    0x147f798: bl       #0x110d028
+    0x147f79c: mov      w8, #1
+    0x147f7a0: strb     w8, [x24, #2]
+    0x147f7a4: adrp     x24, #0x2adc000
+    0x147f7a8: ldr      x24, [x24, #0x798]
+    0x147f7ac: fmul     s0, s10, s10
+    0x147f7b0: fmul     s1, s8, s8
+    0x147f7b4: fadd     s9, s0, s1
+    0x147f7b8: ldr      x0, [x24]
+    0x147f7bc: fmul     s0, s13, s13
+    0x147f7c0: fmul     s1, s12, s12
+    0x147f7c4: fadd     s11, s0, s1
+    0x147f7c8: ldr      w8, [x0, #0xe0]
+    0x147f7cc: cbnz     w8, #0x147f7d4
+    0x147f7d0: bl       #0x110d12c
+    0x147f7d4: adrp     x8, #0x756000
+    0x147f7d8: ldr      s1, [x8, #0xb34]
+    0x147f7dc: fmul     s0, s9, s11
+    0x147f7e0: fsqrt    s0, s0
+    0x147f7e4: fmov     s9, wzr
+    0x147f7e8: fcmp     s0, s1
+    0x147f7ec: b.mi     #0x147f83c
+    0x147f7f0: ldr      x0, [x24]
+    0x147f7f4: fmul     s1, s10, s13
+    0x147f7f8: fmul     s2, s8, s12
+    0x147f7fc: fadd     s1, s1, s2
+    0x147f800: ldr      w8, [x0, #0xe0]
+    0x147f804: fdiv     s0, s1, s0
+    0x147f808: fmov     s1, #1.00000000
+    0x147f80c: fmov     s2, #-1.00000000
+    0x147f810: fmin     s1, s0, s1
+    0x147f814: fcmp     s0, s2
+    0x147f818: fcsel    s8, s1, s2, pl
+    0x147f81c: cbnz     w8, #0x147f824
+    0x147f820: bl       #0x110d12c
+    0x147f824: fcvt     d0, s8
+    0x147f828: bl       #0x2990ba0
+    0x147f82c: adrp     x8, #0x757000
+    0x147f830: ldr      s1, [x8, #0xdc]
+    0x147f834: fcvt     s0, d0
+    0x147f838: fmul     s9, s0, s1
+    0x147f83c: mov      x0, x23
+    0x147f840: mov      x1, xzr
+    0x147f844: bl       #0x2781748
+    0x147f848: cbz      x0, #0x147fc80
+    0x147f84c: mov      x1, xzr
+    0x147f850: bl       #0x27891b8
+    0x147f854: mov      x0, x20
+    0x147f858: mov      x1, xzr
+    0x147f85c: mov      v8.16b, v1.16b
+    0x147f860: bl       #0x277f14c
+    0x147f864: cbz      x0, #0x147fc80
+    0x147f868: mov      x1, xzr
+    0x147f86c: bl       #0x27891b8
+    0x147f870: mov      w8, #0x43b40000
+    0x147f874: fmov     s0, w8
+    0x147f878: fsub     s0, s0, s9
+    0x147f87c: fcmp     s8, s1
+    0x147f880: mov      x0, x21
+    0x147f884: mov      x1, xzr
+    0x147f888: fcsel    s8, s0, s9, mi
+    0x147f88c: bl       #0x2781748
+    0x147f890: cbz      x0, #0x147fc80
+    0x147f894: mov      w8, #-0x3d4c0000
+    0x147f898: fmov     s0, w8
+    0x147f89c: fadd     s8, s8, s0
+    0x147f8a0: fmov     s0, wzr
+    0x147f8a4: fmov     s1, wzr
+    0x147f8a8: mov      v2.16b, v8.16b
+    0x147f8ac: mov      x1, xzr
+    0x147f8b0: bl       #0x27894a8
+    0x147f8b4: mov      x0, x23
+    0x147f8b8: mov      x1, xzr
+    0x147f8bc: bl       #0x2781748
+    0x147f8c0: adrp     x26, #0x2adc000
+    0x147f8c4: ldr      w23, [x20, #0x94]
+    0x147f8c8: ldr      x26, [x26, #0xbc0]
+    0x147f8cc: mov      x24, x0
+    0x147f8d0: ldr      x8, [x26]
+    0x147f8d4: mov      x0, x8
+    0x147f8d8: bl       #0x110d240
+    0x147f8dc: adrp     x8, #0x2ae7000
+    0x147f8e0: ldr      x8, [x8, #0xc70]
+    0x147f8e4: mov      x1, x20
+    0x147f8e8: mov      x3, xzr
+    0x147f8ec: mov      x25, x0
+    0x147f8f0: ldr      x2, [x8]
+    0x147f8f4: bl       #0x19a9434
+    0x147f8f8: ldr      x0, [x26]
+    0x147f8fc: bl       #0x110d240
+    0x147f900: adrp     x8, #0x2ae7000
+    0x147f904: ldr      x8, [x8, #0xc78]
+    0x147f908: mov      x1, x20
+    0x147f90c: mov      x3, xzr
+    0x147f910: mov      x26, x0
+    0x147f914: ldr      x2, [x8]
+    0x147f918: bl       #0x19a9434
+    0x147f91c: adrp     x10, #0x2adc000
+    0x147f920: ldr      x8, [x22]
+    0x147f924: ldr      x10, [x10, #0xbf0]
+    0x147f928: ldrh     w9, [x8, #0x12e]
+    0x147f92c: ldr      x1, [x10]
+    0x147f930: cbz      x9, #0x147f954
+    0x147f934: ldr      x10, [x8, #0xb0]
+    0x147f938: add      x10, x10, #8
+    0x147f93c: ldur     x11, [x10, #-8]
+    0x147f940: cmp      x11, x1
+    0x147f944: b.eq     #0x147fb94
+    0x147f948: subs     x9, x9, #1
+    0x147f94c: add      x10, x10, #0x10
+    0x147f950: b.ne     #0x147f93c
+    0x147f954: mov      x0, x22
+    0x147f958: mov      w2, wzr
+    0x147f95c: bl       #0x11881d8
+    0x147f960: b        #0x147fba0
+    0x147f964: adrp     x8, #0x2adc000
+    0x147f968: ldr      x8, [x8, #0xdb0]
+    0x147f96c: ldr      x0, [x8]
+    0x147f970: ldr      w8, [x0, #0xe0]
+    0x147f974: cbnz     w8, #0x147f97c
+    0x147f978: bl       #0x110d12c
+    0x147f97c: mov      x0, x20
+    0x147f980: mov      x1, xzr
+    0x147f984: bl       #0x277f14c
+    0x147f988: cbz      x0, #0x147fc80
+    0x147f98c: mov      x1, xzr
+    0x147f990: bl       #0x27891b8
+    0x147f994: adrp     x23, #0x2ce1000
+    0x147f998: ldrb     w8, [x23, #1]
+    0x147f99c: mov      v8.16b, v0.16b
+    0x147f9a0: mov      v9.16b, v1.16b
+    0x147f9a4: fmov     s12, wzr
+    0x147f9a8: fmov     s13, #1.00000000
+    0x147f9ac: cbnz     w8, #0x147f9c4
+    0x147f9b0: adrp     x0, #0x2adc000
+    0x147f9b4: ldr      x0, [x0, #0xe78]
+    0x147f9b8: bl       #0x110d028
+    0x147f9bc: mov      w8, #1
+    0x147f9c0: strb     w8, [x23, #1]
+    0x147f9c4: adrp     x8, #0x2adc000
+    0x147f9c8: ldr      x8, [x8, #0xe78]
+    0x147f9cc: adrp     x23, #0x2ce1000
+    0x147f9d0: ldrb     w9, [x23, #2]
+    0x147f9d4: fsub     s12, s12, s8
+    0x147f9d8: ldr      x8, [x8]
+    0x147f9dc: fsub     s8, s13, s9
+    0x147f9e0: ldr      x8, [x8, #0xb8]
+    0x147f9e4: ldp      s11, s10, [x8, #0x28]
+    0x147f9e8: cbnz     w9, #0x147fa00
+    0x147f9ec: adrp     x0, #0x2adc000
+    0x147f9f0: ldr      x0, [x0, #0x798]
+    0x147f9f4: bl       #0x110d028
+    0x147f9f8: mov      w8, #1
+    0x147f9fc: strb     w8, [x23, #2]
+    0x147fa00: adrp     x23, #0x2adc000
+    0x147fa04: ldr      x23, [x23, #0x798]
+    0x147fa08: fmul     s0, s12, s12
+    0x147fa0c: fmul     s1, s8, s8
+    0x147fa10: fadd     s9, s0, s1
+    0x147fa14: ldr      x0, [x23]
+    0x147fa18: fmul     s0, s11, s11
+    0x147fa1c: fmul     s1, s10, s10
+    0x147fa20: fadd     s13, s0, s1
+    0x147fa24: ldr      w8, [x0, #0xe0]
+    0x147fa28: cbnz     w8, #0x147fa30
+    0x147fa2c: bl       #0x110d12c
+    0x147fa30: adrp     x8, #0x756000
+    0x147fa34: ldr      s1, [x8, #0xb34]
+    0x147fa38: fmul     s0, s9, s13
+    0x147fa3c: fsqrt    s0, s0
+    0x147fa40: fmov     s9, wzr
+    0x147fa44: fcmp     s0, s1
+    0x147fa48: b.mi     #0x147fa98
+    0x147fa4c: ldr      x0, [x23]
+    0x147fa50: fmul     s1, s12, s11
+    0x147fa54: fmul     s2, s8, s10
+    0x147fa58: fadd     s1, s1, s2
+    0x147fa5c: ldr      w8, [x0, #0xe0]
+    0x147fa60: fdiv     s0, s1, s0
+    0x147fa64: fmov     s1, #1.00000000
+    0x147fa68: fmov     s2, #-1.00000000
+    0x147fa6c: fmin     s1, s0, s1
+    0x147fa70: fcmp     s0, s2
+    0x147fa74: fcsel    s8, s1, s2, pl
+    0x147fa78: cbnz     w8, #0x147fa80
+    0x147fa7c: bl       #0x110d12c
+    0x147fa80: fcvt     d0, s8
+    0x147fa84: bl       #0x2990ba0
+    0x147fa88: adrp     x8, #0x757000
+    0x147fa8c: ldr      s1, [x8, #0xdc]
+    0x147fa90: fcvt     s0, d0
+    0x147fa94: fmul     s9, s0, s1
+    0x147fa98: mov      x0, x20
+    0x147fa9c: mov      x1, xzr
+    0x147faa0: bl       #0x277f14c
+    0x147faa4: cbz      x0, #0x147fc80
+    0x147faa8: mov      x1, xzr
+    0x147faac: bl       #0x27891b8
+    0x147fab0: mov      w8, #0x43b40000
+    0x147fab4: fmov     s0, #1.00000000
+    0x147fab8: fmov     s2, w8
+    0x147fabc: fsub     s2, s2, s9
+    0x147fac0: fcmp     s1, s0
+    0x147fac4: mov      x0, x21
+    0x147fac8: mov      x1, xzr
+    0x147facc: fcsel    s8, s2, s9, gt
+    0x147fad0: bl       #0x2781748
+    0x147fad4: cbz      x0, #0x147fc80
+    0x147fad8: mov      w8, #-0x3d4c0000
+    0x147fadc: fmov     s0, w8
+    0x147fae0: fadd     s8, s8, s0
+    0x147fae4: fmov     s0, wzr
+    0x147fae8: fmov     s1, wzr
+    0x147faec: mov      v2.16b, v8.16b
+    0x147faf0: mov      x1, xzr
+    0x147faf4: bl       #0x27894a8
+    0x147faf8: adrp     x25, #0x2adc000
+    0x147fafc: ldr      w23, [x20, #0x94]
+    0x147fb00: ldr      x25, [x25, #0xbc0]
+    0x147fb04: ldr      x0, [x25]
+    0x147fb08: bl       #0x110d240
+    0x147fb0c: adrp     x8, #0x2ae7000
+    0x147fb10: ldr      x8, [x8, #0xc70]
+    0x147fb14: mov      x1, x20
+    0x147fb18: mov      x3, xzr
+    0x147fb1c: mov      x24, x0
+    0x147fb20: ldr      x2, [x8]
+    0x147fb24: bl       #0x19a9434
+    0x147fb28: ldr      x0, [x25]
+    0x147fb2c: bl       #0x110d240
+    0x147fb30: adrp     x8, #0x2ae7000
+    0x147fb34: ldr      x8, [x8, #0xc78]
+    0x147fb38: mov      x1, x20
+    0x147fb3c: mov      x3, xzr
+    0x147fb40: mov      x25, x0
+    0x147fb44: ldr      x2, [x8]
+    0x147fb48: bl       #0x19a9434
+    0x147fb4c: adrp     x10, #0x2adc000
+    0x147fb50: ldr      x8, [x22]
+    0x147fb54: ldr      x10, [x10, #0xbf0]
+    0x147fb58: ldrh     w9, [x8, #0x12e]
+    0x147fb5c: ldr      x1, [x10]
+    0x147fb60: cbz      x9, #0x147fb84
+    0x147fb64: ldr      x10, [x8, #0xb0]
+    0x147fb68: add      x10, x10, #8
+    0x147fb6c: ldur     x11, [x10, #-8]
+    0x147fb70: cmp      x11, x1
+    0x147fb74: b.eq     #0x147fbcc
+    0x147fb78: subs     x9, x9, #1
+    0x147fb7c: add      x10, x10, #0x10
+    0x147fb80: b.ne     #0x147fb6c
+    0x147fb84: mov      x0, x22
+    0x147fb88: mov      w2, wzr
+    0x147fb8c: bl       #0x11881d8
+    0x147fb90: b        #0x147fbd8
+    0x147fb94: ldrsw    x9, [x10]
+    0x147fb98: add      x8, x8, x9, lsl #4
+    0x147fb9c: add      x0, x8, #0x138
+    0x147fba0: ldp      x8, x7, [x0]
+    0x147fba4: fmov     s0, #30.00000000
+    0x147fba8: fmov     s1, #6.00000000
+    0x147fbac: mov      w1, #1
+    0x147fbb0: mov      x0, x22
+    0x147fbb4: mov      x2, x24
+    0x147fbb8: mov      x3, x23
+    0x147fbbc: mov      v2.16b, v8.16b
+    0x147fbc0: mov      x4, x25
+    0x147fbc4: mov      x5, x26
+    0x147fbc8: b        #0x147fc00
+    0x147fbcc: ldrsw    x9, [x10]
+    0x147fbd0: add      x8, x8, x9, lsl #4
+    0x147fbd4: add      x0, x8, #0x138
+    0x147fbd8: ldp      x8, x7, [x0]
+    0x147fbdc: fmov     s0, #30.00000000
+    0x147fbe0: fmov     s1, #6.00000000
+    0x147fbe4: mov      w1, #1
+    0x147fbe8: mov      x0, x22
+    0x147fbec: mov      x2, xzr
+    0x147fbf0: mov      x3, x23
+    0x147fbf4: mov      v2.16b, v8.16b
+    0x147fbf8: mov      x4, x24
+    0x147fbfc: mov      x5, x25
+    0x147fc00: mov      w6, wzr
+    0x147fc04: blr      x8
+    0x147fc08: mov      w1, #1
+    0x147fc0c: mov      x0, x21
+    0x147fc10: mov      x2, xzr
+    0x147fc14: bl       #0x2781804
+    0x147fc18: ldrb     w8, [x20, #0x30]
+    0x147fc1c: cbnz     w8, #0x147fc30
+    0x147fc20: fmov     s0, #0.50000000
+    0x147fc24: mov      w0, #0x49
+    0x147fc28: mov      x1, xzr
+    0x147fc2c: bl       #0x15b50ac
+    0x147fc30: adrp     x8, #0x2adb000
+    0x147fc34: ldr      x8, [x8, #0x938]
+    0x147fc38: ldr      x0, [x8]
+    0x147fc3c: bl       #0x110d240
+    0x147fc40: fmov     s0, #0.25000000
+    0x147fc44: mov      x1, xzr
+    0x147fc48: mov      x20, x0
+    0x147fc4c: bl       #0x2786508
+    0x147fc50: mov      w0, #1
+    0x147fc54: str      x20, [x19, #0x18]
+    0x147fc58: str      w0, [x19, #0x10]
+    0x147fc5c: ldp      x20, x19, [sp, #0x70]
+    0x147fc60: ldp      x22, x21, [sp, #0x60]
+    0x147fc64: ldp      x24, x23, [sp, #0x50]
+    0x147fc68: ldp      x26, x25, [sp, #0x40]
+    0x147fc6c: ldr      x30, [sp, #0x30]
+    0x147fc70: ldp      d9, d8, [sp, #0x20]
+    0x147fc74: ldp      d11, d10, [sp, #0x10]
+    0x147fc78: ldp      d13, d12, [sp], #0x80
+    0x147fc7c: ret      
+    0x147fc80: bl       #0x110d250
+
+;;; get_Current  private object System.Collections.Generic.IEnumerator<System.Object>.get_Current() { }
+    0x147fc84: ldr      x0, [x0, #0x18]
+    0x147fc88: ret      
+
+;;; Reset  private void System.Collections.IEnumerator.Reset() { }
+    0x147fc8c: stp      x30, x19, [sp, #-0x10]!
+    0x147fc90: adrp     x0, #0x2adb000
+    0x147fc94: ldr      x0, [x0, #0x940]
+    0x147fc98: bl       #0x110d03c
+    0x147fc9c: bl       #0x110d240
+    0x147fca0: mov      x1, xzr
+    0x147fca4: mov      x19, x0
+    0x147fca8: bl       #0x2107de0
+    0x147fcac: adrp     x0, #0x2ae7000
+    0x147fcb0: ldr      x0, [x0, #0xc80]
+    0x147fcb4: bl       #0x110d03c
+    0x147fcb8: mov      x1, x0
+    0x147fcbc: mov      x0, x19
+    0x147fcc0: bl       #0x110d11c
+
+;;; get_Current  private object System.Collections.IEnumerator.get_Current() { }
+    0x147fcc4: ldr      x0, [x0, #0x18]
+    0x147fcc8: ret      

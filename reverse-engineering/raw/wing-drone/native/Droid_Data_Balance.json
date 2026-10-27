@@ -1,0 +1,123 @@
+{
+ "class": "Droid_Data_Balance",
+ "note": "Bounded drone attack recovery; selected RVAs for extra dependencies",
+ "methods": [
+  {
+   "method": "GetBaseDamage",
+   "signature": "public static float GetBaseDamage(int _droidIndex) { }",
+   "offset": "0x144c928",
+   "getter_value": null,
+   "rva": "0x1450928",
+   "bytes": 420,
+   "pure_getter": false,
+   "getter_kind": "call",
+   "size_capped": false,
+   "ends_clean": true,
+   "constants": [
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1450980",
+     "reg": "w8",
+     "op": "w8, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x1450998",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 1,
+     "via": "mov",
+     "addr": "0x14509f4",
+     "reg": "w1",
+     "op": "w1, #1",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 4,
+     "via": "cmp",
+     "addr": "0x1450a10",
+     "reg": "w9",
+     "op": "w9, #4",
+     "role": "compare"
+    },
+    {
+     "kind": "int",
+     "value": 32,
+     "via": "add",
+     "addr": "0x1450a1c",
+     "reg": "x9",
+     "op": "x9, x10, x9, lsl #32",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 30,
+     "via": "add",
+     "addr": "0x1450a20",
+     "reg": "x9",
+     "op": "x9, x0, x9, asr #30",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x1450a3c",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1450a50",
+     "reg": "x8",
+     "op": "x8, x0, w21, uxtw #2",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 1.0,
+     "via": "fmov",
+     "addr": "0x1450a64",
+     "role": "arith:fadd"
+    },
+    {
+     "kind": "int",
+     "value": 101,
+     "via": "sub",
+     "addr": "0x1450a98",
+     "reg": "w9",
+     "op": "w9, w19, #0x65",
+     "role": "other"
+    },
+    {
+     "kind": "int",
+     "value": 2,
+     "via": "add",
+     "addr": "0x1450aa4",
+     "reg": "x8",
+     "op": "x8, x8, w9, sxtw #2",
+     "role": "other"
+    },
+    {
+     "kind": "float",
+     "value": 100.0,
+     "via": "mov+fmov",
+     "bits": "0x42c80000",
+     "addr": "0x1450a58",
+     "role": "load"
+    }
+   ]
+  }
+ ]
+}

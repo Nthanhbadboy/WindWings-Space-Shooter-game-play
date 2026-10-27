@@ -1,0 +1,28 @@
+name: Probe WindWings APK sources
+
+on:
+  push:
+    paths:
+      - 'tools/apk-probe/**'
+      - '.github/workflows/probe-apk-sources.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe sources
+        run: bash tools/apk-probe/probe.sh
+
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/apk-analysis/probe-results.md
+          git diff --cached --quiet || git commit -m "chore(re): APK source probe results [skip ci]"
+          git push

@@ -1,0 +1,48 @@
+name: Recover existing runtime probe evidence
+on:
+  push:
+    paths: ['.github/workflows/recover-runtime-evidence.yml']
+permissions:
+  actions: read
+  contents: write
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Only retrieve a completed run. Never create a Ramus session here.
+      - uses: actions/download-artifact@v4
+        with:
+          name: runtime-probe-40181812673
+          run-id: 40181812673
+          github-token: ${{ github.token }}
+          path: /tmp/runtime-evidence
+      - name: Preserve small sanitized reports, never APK or credentials
+        run: |
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          src=Path('/tmp/runtime-evidence')
+          dest=Path('reverse-engineering/raw/runtime-probe/40181812673/artifact')
+          dest.mkdir(parents=True,exist_ok=True)
+          allowed={'report.md','summary.json','apk-inventory.txt','apk-prepare.log','preflight.txt'}
+          manifest=[]
+          for p in sorted(src.rglob('*')):
+              if not p.is_file() or p.name not in allowed: continue
+              blob=p.read_bytes()
+              assert len(blob)<1000000,p
+              target=dest/p.relative_to(src)
+              target.parent.mkdir(parents=True,exist_ok=True)
+              target.write_bytes(blob)
+              manifest.append({'file':str(target.relative_to(dest)),'sha256':hashlib.sha256(blob).hexdigest(),'bytes':len(blob)})
+          assert manifest,'No allowed evidence files; do not claim recovered'
+          (dest/'manifest.json').write_text(json.dumps({'source_run':40181812673,'artifact':'runtime-probe-40181812673','files':manifest},indent=2)+'\n')
+          PY
+      - name: Publish recovered reports
+        run: |
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/runtime-probe/40181812673/artifact
+          git diff --cached --quiet || git commit -m 'research(runtime): preserve existing probe gate evidence [skip ci]'
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

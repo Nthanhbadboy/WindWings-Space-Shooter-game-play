@@ -1,0 +1,39 @@
+;;; OnSpawn  protected override void OnSpawn() { }
+    0x14682e0: stp      x30, x19, [sp, #-0x10]!
+    0x14682e4: mov      x19, x0
+    0x14682e8: bl       #0x1468300
+    0x14682ec: mov      x1, x0
+    0x14682f0: mov      x0, x19
+    0x14682f4: mov      x2, xzr
+    0x14682f8: ldp      x30, x19, [sp], #0x10
+    0x14682fc: b        #0x278276c
+
+;;; SpawnEnemies  private IEnumerator SpawnEnemies() { }
+    0x1468300: stp      x30, x21, [sp, #-0x20]!
+    0x1468304: stp      x20, x19, [sp, #0x10]
+    0x1468308: adrp     x20, #0x2ce1000
+    0x146830c: adrp     x21, #0x2ae7000
+    0x1468310: ldrb     w8, [x20, #0xf27]
+    0x1468314: ldr      x21, [x21, #0x918]
+    0x1468318: mov      x19, x0
+    0x146831c: tbnz     w8, #0, #0x1468334
+    0x1468320: adrp     x0, #0x2ae7000
+    0x1468324: ldr      x0, [x0, #0x918]
+    0x1468328: bl       #0x110d028
+    0x146832c: mov      w8, #1
+    0x1468330: strb     w8, [x20, #0xf27]
+    0x1468334: ldr      x0, [x21]
+    0x1468338: bl       #0x110d240
+    0x146833c: mov      x1, xzr
+    0x1468340: mov      x20, x0
+    0x1468344: bl       #0x2143330
+    0x1468348: str      wzr, [x20, #0x10]
+    0x146834c: str      x19, [x20, #0x20]
+    0x1468350: mov      x0, x20
+    0x1468354: ldp      x20, x19, [sp, #0x10]
+    0x1468358: ldp      x30, x21, [sp], #0x20
+    0x146835c: ret      
+
+;;; ctor  public void .ctor() { }
+    0x1468388: mov      x1, xzr
+    0x146838c: b        #0x2782ba0

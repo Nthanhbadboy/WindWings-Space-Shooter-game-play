@@ -1,0 +1,31 @@
+;;; BurstOut  public void BurstOut(Vector2 _center, Vector2 _target) { }
+    0x14cc8a8: str      x30, [sp, #-0x10]!
+    0x14cc8ac: ldr      x0, [x0, #0x28]
+    0x14cc8b0: cbz      x0, #0x14cc8bc
+    0x14cc8b4: ldr      x30, [sp], #0x10
+    0x14cc8b8: b        #0x14cc6ac
+    0x14cc8bc: bl       #0x110d250
+
+;;; CollectTo  public void CollectTo(Transform _target) { }
+    0x14cc8c0: str      x30, [sp, #-0x10]!
+    0x14cc8c4: ldr      x8, [x0, #0x28]
+    0x14cc8c8: cbz      x8, #0x14cc8e0
+    0x14cc8cc: mov      w9, #1
+    0x14cc8d0: str      x1, [x8, #0x20]
+    0x14cc8d4: strb     w9, [x8, #0x44]
+    0x14cc8d8: ldr      x30, [sp], #0x10
+    0x14cc8dc: ret      
+    0x14cc8e0: bl       #0x110d250
+
+;;; IsForceCollect  public bool IsForceCollect() { }
+    0x14cc8e4: str      x30, [sp, #-0x10]!
+    0x14cc8e8: ldr      x8, [x0, #0x28]
+    0x14cc8ec: cbz      x8, #0x14cc8fc
+    0x14cc8f0: ldrb     w0, [x8, #0x44]
+    0x14cc8f4: ldr      x30, [sp], #0x10
+    0x14cc8f8: ret      
+    0x14cc8fc: bl       #0x110d250
+
+;;; ctor  public void .ctor() { }
+    0x14cc900: mov      x1, xzr
+    0x14cc904: b        #0x123bafc

@@ -1,0 +1,53 @@
+;;; cctor  private static void .cctor() { }
+    0x1499980: str      x30, [sp, #-0x20]!
+    0x1499984: stp      x20, x19, [sp, #0x10]
+    0x1499988: adrp     x19, #0x2ce2000
+    0x149998c: adrp     x20, #0x2ae7000
+    0x1499990: ldrb     w8, [x19, #0x50]
+    0x1499994: ldr      x20, [x20, #0xeb0]
+    0x1499998: tbnz     w8, #0, #0x14999b0
+    0x149999c: adrp     x0, #0x2ae7000
+    0x14999a0: ldr      x0, [x0, #0xeb0]
+    0x14999a4: bl       #0x110d028
+    0x14999a8: mov      w8, #1
+    0x14999ac: strb     w8, [x19, #0x50]
+    0x14999b0: ldr      x0, [x20]
+    0x14999b4: bl       #0x110d240
+    0x14999b8: mov      x1, xzr
+    0x14999bc: mov      x19, x0
+    0x14999c0: bl       #0x2143330
+    0x14999c4: ldr      x8, [x20]
+    0x14999c8: ldr      x8, [x8, #0xb8]
+    0x14999cc: str      x19, [x8]
+    0x14999d0: ldp      x20, x19, [sp, #0x10]
+    0x14999d4: ldr      x30, [sp], #0x20
+    0x14999d8: ret      
+
+;;; ctor  public void .ctor() { }
+    0x14999dc: mov      x1, xzr
+    0x14999e0: b        #0x2143330
+
+;;; <ForceDamager>b__30_0  internal void <ForceDamager>b__30_0(GameObject target) { }
+    0x14999e4: str      x30, [sp, #-0x10]!
+    0x14999e8: cbz      x1, #0x1499a3c
+    0x14999ec: mov      x0, x1
+    0x14999f0: mov      x1, xzr
+    0x14999f4: bl       #0x2781748
+    0x14999f8: cbz      x0, #0x1499a3c
+    0x14999fc: mov      x1, xzr
+    0x1499a00: bl       #0x27891b8
+    0x1499a04: fmov     s3, wzr
+    0x1499a08: fmov     s4, #-1.00000000
+    0x1499a0c: mov      w0, #0x63e0
+    0x1499a10: fadd     s0, s0, s3
+    0x1499a14: fadd     s1, s1, s3
+    0x1499a18: fadd     s2, s2, s4
+    0x1499a1c: movk     w0, #1, lsl #16
+    0x1499a20: mov      x1, xzr
+    0x1499a24: bl       #0x123aaa0
+    0x1499a28: cbz      x0, #0x1499a3c
+    0x1499a2c: mov      w1, #1
+    0x1499a30: mov      x2, xzr
+    0x1499a34: ldr      x30, [sp], #0x10
+    0x1499a38: b        #0x2781804
+    0x1499a3c: bl       #0x110d250

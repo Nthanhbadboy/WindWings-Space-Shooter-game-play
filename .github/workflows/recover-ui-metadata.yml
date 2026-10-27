@@ -1,0 +1,172 @@
+name: Recover UI metadata evidence
+on:
+  push:
+    paths: ['.github/workflows/recover-ui-metadata.yml']
+permissions:
+  actions: read
+  contents: write
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: windwings-analysis
+          run-id: 40180363840
+          github-token: ${{ github.token }}
+          path: /tmp/ui-metadata-evidence
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/apk/windwings.xapk
+          key: windwings-xapk-1.3.118-f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e
+          fail-on-cache-miss: true
+      - name: Read native relocation source from pinned cached APK
+        run: |
+          python3 - <<'PYCODE'
+          from pathlib import Path
+          import hashlib,io,zipfile
+          p=Path('/tmp/apk/windwings.xapk')
+          # The cache key pins the source; record actual hash and enforce the
+          # same checksum as the acquisition pipeline before trusting joins.
+          expected='f5d3c7a188dce663a1f06961380da0d6ffa541138d7cb957215e884cdd057c7e'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==expected
+          dest=Path('/tmp/ui-native'); dest.mkdir(exist_ok=True)
+          with zipfile.ZipFile(p) as outer:
+              for entry in outer.namelist():
+                  if not entry.endswith('.apk'): continue
+                  with zipfile.ZipFile(io.BytesIO(outer.read(entry))) as apk:
+                      name='lib/arm64-v8a/libil2cpp.so'
+                      if name in apk.namelist():
+                          (dest/'libil2cpp.so').write_bytes(apk.read(name))
+                          break
+          assert (dest/'libil2cpp.so').exists()
+          PYCODE
+      - name: Keep only UI metadata slots (no original binary/assets)
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          p = next(Path('/tmp/ui-metadata-evidence').rglob('script.json'))
+          d = json.loads(p.read_text())
+          wanted = {0x2adc6b0,0x2adc840,0x2adc768,0x2adbde8,0x2adbd98,0x2adc200,
+                    0x2addc78,0x2addc68,0x2addc70,0x2addce0,0x2addcf0,0x2addcc0}
+          def number(v):
+              if isinstance(v,int): return v
+              try: return int(v,0)
+              except (ValueError,TypeError): return None
+          import sys
+          sys.path.insert(0,'tools/apk-analyze')
+          import il2cpp_consts as native
+          so=Path('/tmp/ui-native/libil2cpp.so')
+          blob=so.read_bytes()
+          native.RELOCS.update(native.elf_relocs(str(so)))
+          segs=native.elf_segments(str(so))
+          effective={a:native.slot_value(blob,segs,a) for a in wanted}
+          rows = {}
+          for k, values in d.items():
+              if k not in ('ScriptMetadata','ScriptMetadataMethod','ScriptString'): continue
+              rows[k] = [r for r in values if number(r.get('Address')) in wanted | set(effective.values()) or
+                         any(name in str(r.get('Name', r.get('Value', ''))) for name in
+                             ('Board_Endgame', 'GP_Tutorials', 'Stage_Datas', 'GP_Setup',
+                              'ScenesManager', 'BoardManager', 'Tutorial', 'tutorial'))]
+          out = {'status':'PROVISIONAL','source_run':40180363840,
+                 'source_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),
+                 'source_keys':list(d),'requested_addresses':[hex(a) for a in sorted(wanted)],
+                 'native_sha256':hashlib.sha256(blob).hexdigest(),
+                 'slot_effective_addresses':{hex(k):hex(v) if v is not None else None for k,v in effective.items()},
+                 'rows':rows,'samples':{k:v[:3] for k,v in d.items() if k in rows}}
+          dest=Path('reverse-engineering/raw/ui-audit/metadata-slots.json')
+          dest.parent.mkdir(parents=True,exist_ok=True)
+          dest.write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
+          print({k:len(v) for k,v in rows.items()})
+          assert any(rows.values()), 'No matching slots: do not claim resolution'
+          # Keep metadata/relocations, not the 49MB script.json or native binary.
+          # This lets later audits resolve new UI slots offline without rerunning
+          # the full APK extraction for every small question.
+          import gzip
+          root=dest.parent
+          for name,value in [
+              ('metadata-index.json.gz', {'source_run':40180363840,
+               'script_sha256':out['source_sha256'],
+               'tables':{k:d[k] for k in ('ScriptMetadata','ScriptMetadataMethod','ScriptString') if k in d}}),
+              ('native-relocations.json.gz', {'source_run':40180363840,
+               'native_sha256':out['native_sha256'],
+               'relocations':{hex(k):hex(v) for k,v in native.RELOCS.items()}})]:
+              path=root/name
+              with gzip.open(path,'wt') as fh: json.dump(value,fh,ensure_ascii=False)
+              assert path.stat().st_size < 5000000, f'{name} too large for repository'
+          PY
+      - name: Extract missing loader and preference native bodies
+        run: |
+          python3 -m pip install -q capstone
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys
+          sys.path.insert(0,'tools/apk-analyze')
+          import il2cpp_consts as native
+          dump=next(Path('/tmp/ui-metadata-evidence').rglob('dump.cs'))
+          parents=('PoolingManager','Machine_Gun_Attack','Enemy_Datas','Boss_BodyPhysics','Obj_Collider','Home_Loader','PlayerPreferences','Stage_Datas','GP_Setup','SkipTutorial','Board_Begin','Stage_Behaviour','GP_Manager','GP_Loader','GP_Starter','GP_Spawner','GP_Controller','GP_Endgame','Drone_Saved_Datas','Board_Talents','MapController','ScenesManager','FadeScreen','Wave','Spawner','Call_Point','Call_Data','GP_Datas','Enemy_Controller','Enemy_Movement','VertexPath','Enemy_Health','Enemy_Destroy','Sub_Object','Stage_Mission','GameDatas','PinMap_Spawner','PointToPoint_Spawner','Path_Spawner','Waypoints_Spawner','PointToPoint_Spawner','AirFree_Spawner','PinMap_Spawner','PinTerrain_Spawner','Rocket_Spawner')
+          methods=native.parse_dump(str(dump))
+          targets={m[0] for m in methods if m[0] and any(m[0]==p or m[0].startswith(p+'.') for p in parents)}
+          native.TARGET_CLASSES.clear()
+          native.TARGET_CLASSES.update({name:'UI loader/persistence recovery — provisional' for name in targets})
+          native.OUT_RAW='reverse-engineering/raw/ui-audit/extra-native'
+          native.OUT_MD='/tmp/ui-native/extra-native-inventory.md'
+          native.OUT_CSV='/tmp/ui-native/extra-native-floats.csv'
+          sys.argv=['native',str(dump),'/tmp/ui-native/libil2cpp.so']
+          assert native.main()==0
+          assert (Path(native.OUT_RAW)/'Home_Loader.asm.txt').exists()
+          # Preserve the five-state coroutine dispatch table, not just BR asm.
+          import hashlib,json,struct
+          blob=so.read_bytes() if 'so' in globals() else Path('/tmp/ui-native/libil2cpp.so').read_bytes()
+          segs=native.elf_segments('/tmp/ui-native/libil2cpp.so')
+          def ro(va,n):
+              assert any(v<=va and va+n<=v+size and not flags & 2 for v,off,size,flags in segs)
+              data=native.va_read(blob,segs,va,n,ro_only=True)
+              assert data is not None and len(data)==n
+              return data
+          table=ro(0x77a148,5)
+          out={'status':'PROVISIONAL','native_sha256':hashlib.sha256(blob).hexdigest(),
+               'source':'pinned APK lib/arm64-v8a/libil2cpp.so',
+               'drone_dispatch':{'table_va':'0x77a148','branch_base':'0x14fc574',
+                 'bytes_hex':table.hex(),'entries':[{'state':i,'target':hex(0x14fc574+4*v)} for i,v in enumerate(table)]},
+               'drone_post_appear_wait':{'va':'0x756e58','bytes_hex':ro(0x756e58,4).hex(),
+                 'float32':struct.unpack('<f',ro(0x756e58,4))[0]}}
+          manager=ro(0x77a13e,10)
+          out['manager_dispatch']={'table_va':'0x77a13e','branch_base':'0x14f482c',
+              'selector':'eventState + 1','bytes_hex':manager.hex(),
+              'entries':[{'event_state':i-1,'target':hex(0x14f482c+4*v)} for i,v in enumerate(manager)]}
+          import capstone
+          md=capstone.Cs(capstone.CS_ARCH_ARM64,capstone.CS_MODE_ARM)
+          va=0x2990898
+          assert any(v<=va and va+160<=v+size and flags & 1 for v,off,size,flags in segs)
+          code=native.va_read(blob,segs,va,160)
+          out['game_started_veneer']={'va':hex(va),'bytes_hex':code.hex(),
+              'instructions':[{'address':hex(i.address),'mnemonic':i.mnemonic,'op_str':i.op_str} for i in md.disasm(code,va)]}
+          Path('reverse-engineering/raw/ui-audit/stage23-rodata.json').write_text(json.dumps(out,indent=2)+'\n')
+          # Resolve all four MovePlayer coroutine states from original bytes.
+          table=ro(0x77a13a,4)
+          endgame={'status':'PROVISIONAL','native_sha256':hashlib.sha256(blob).hexdigest(),
+                   'source':'pinned APK lib/arm64-v8a/libil2cpp.so',
+                   'move_player_dispatch':{'table_va':'0x77a13a','branch_base':'0x14f1c00',
+                     'bytes_hex':table.hex(),
+                     'entries':[{'state':i,'target':hex(0x14f1c00+4*v)} for i,v in enumerate(table)]},
+                   'movement_floats':[{'va':hex(va),'bytes_hex':ro(va,4).hex(),
+                     'float32':struct.unpack('<f',ro(va,4))[0]} for va in (0x756a58,0x7570e0)]}
+          Path('reverse-engineering/raw/ui-audit/endgame-rodata.json').write_text(json.dumps(endgame,indent=2)+'\n')
+          PY
+      # Peer-review regression uses preserved hash-pinned raw, not shallow Git history.
+      - name: Check static regressions before bot commit
+        run: python3 -m unittest discover -s tests -q
+      - name: Commit recovered UI evidence
+        run: |
+          git config user.name 'Arena evidence collector'
+          git config user.email 'agent@arena.ai'
+          git add reverse-engineering/raw/ui-audit/endgame-rodata.json reverse-engineering/raw/ui-audit/stage23-rodata.json reverse-engineering/raw/ui-audit/metadata-slots.json reverse-engineering/raw/ui-audit/metadata-index.json.gz reverse-engineering/raw/ui-audit/native-relocations.json.gz reverse-engineering/raw/ui-audit/extra-native
+          git diff --cached --quiet || git commit -m 'research(ui): recover exact UI metadata slots from run 40180363840 [skip ci]'
+          for attempt in 1 2 3; do
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then exit 0; fi
+          done
+          exit 1
