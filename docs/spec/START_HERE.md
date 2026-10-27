@@ -92,7 +92,7 @@
 > phát hiện lệch**, đạt gate mới gọi khớp, không tự approval. Art vẽ lại theo chuẩn gốc; file asset
 > gốc không lưu trong repo này (pack do peer giữ).
 
-Không cần đọc hết 44 file trước khi bắt đầu. Tám con số này đủ để dựng khung chơi được:
+Không cần đọc hết 45 file trước khi bắt đầu. Tám con số này đủ để dựng khung chơi được:
 
 | # | Cái gì | Số | Ở đâu (claim) |
 |---:|---|---|---|
@@ -153,7 +153,7 @@ Gradient p50 **0,20–0,26** ở 5 nhóm chủ thể, **nhưng** `background` **
 
 ---
 
-## 4. Đọc theo vai (đừng đọc tuần tự 44 file)
+## 4. Đọc theo vai (đừng đọc tuần tự 45 file)
 
 | Vai | Thứ tự |
 |---|---|
