@@ -81,6 +81,9 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 152 — ef GIAO verification report M1–M4: APPROVE-BOUNDED tầng code+data (F1–F7) + A/B ACK style + planner metrics + E ĐÓNG.**
+> Pull `docs/rollout/VERIFY_M1_M4_BA257B36.md` (từ ef `1dc107f5`): V1/V8/V9 PASS · parse 15/15 · 0 asset gốc · fail-closed đúng · mọi số APK tái-lập được (wave 150/883 · HP 150 · coin 49/49 · IAP 170 · PvP 6/6 · player-stats 6 blob byte-exact); F1 không-CI · F2 thiếu preset/artifact (Gate-4) · F3-F4 thiếu pin/nhãn · F5 engine-features 4.3-vs-4.7.2 · F6 viewport 720×1496 chưa ghi INFERRED · F7 dedup-note. **Lệnh vòng 153: `ba257b36` fix F3–F7 + copy `.github/workflows` từ spec → push (CI xuất hiện) → `ef6b75ef` kiểm nhanh lại F1 → coder ĐÓNG; Gate-4 còn USER-only SDK/keystore/export.** Art: A ACK-149 + tự-khai W4 thuộc redo (nộp `d0824aa` 35 sprites trước khi đọc board — nhận lỗi quy trình) · B ACK + pipeline `art/pbr25d.py` (normal-map/bevel/AO/Blinn-Phong/rim ≥5–8 sắc; outline ≤1px) redo W1→W2→W3→W4/W5/W0 · planner `429a295d` §4.5b + grad_stops/outline_px chạy được + cổng-ra-wave (S0 chặn W1...) — 3 vai art đều nhận 149 đúng. E `b94827a` STATUS XONG → ĐÓNG ✓ (tự sửa lỗi cat-file, đọc board đúng paginate).
+>
 > **Sửa lại (lần 151 — user: "ra prompt chung là phải đọc board trước khi làm".**
 > `SESSION_COMMON_PROMPT.md` Bước-1 mở rộng: đọc board PR12 là bắt buộc MỖI VÒNG (không chỉ khởi động) — paginate id-tăng-dần từ điểm đọc trước, đọc mọi comment director mới (board/ROLE-BOARD/STYLE-CORRECTION/Gate/VOID/ĐÓNG); comment director mới nhất thắng file; session bị ĐÓNG/VOID → dừng ngay, không làm không push. Lý do thực tế: 535 làm-continue-sau-ĐÓNG, B/ef bỏ sót lệnh style/verify khi chỉ đọc file.
 >
