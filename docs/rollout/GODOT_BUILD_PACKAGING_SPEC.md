@@ -105,7 +105,8 @@ phiên này) → mục 8 là checklist cho user/E xác nhận, **không** đoán
 export MSIX/APPX (`STATIC_CONFIRMED`, đo trên 2 file đã pin). Windows build = `.exe` + `.pck`.
 
 Hệ quả cho MS Store: cần một bước **đóng gói MSIX bên ngoài** (Windows Application Packaging Project
-hoặc `makeappx`/MSIX Packaging Tool) rồi mới submit. Chi tiết công cụ là `INFERRED` theo quy trình
+hoặc `makeappx`/MSIX Packaging Tool) rồi mới submit — quy trình 6 bước + manifest bắt buộc đã chốt ở
+`MSIX_PACKAGING_PLAN.md` (nguồn `MicrosoftDocs/msix-docs` @ `e07277df…`). Chi tiết công cụ là `INFERRED` theo quy trình
 Windows chung; **định dạng nhận** của store (MSIX chuẩn, nhận thêm MSI/EXE/PWA) là số của Phase B
 (`STATIC_CONFIRMED` theo research, không phải tôi kiểm lại store).
 
@@ -223,6 +224,9 @@ phiên bản phải nêu trong handover** (protocol §2 mục 6). Không có `.g
   11 Windows), 6 cross-check C1–C6, 4 `UNKNOWN` U1–U4; mỗi khoá có `src` = file:dòng.
 - `docs/rollout/VERIFIER_PROTOCOL_GODOT_PORT.md` — bộ kiểm V1–V9 cho code của session Godot-coder.
 - `reverse-engineering/raw/godot-build-spec/plugin-system.json` — pin `.gdap` + dòng tham chiếu.
+- `docs/rollout/MSIX_PACKAGING_PLAN.md` — bước đóng gói MSIX ngoài Godot (M1–M6 + manifest + ký).
+- `docs/rollout/GATE4_BUILD_CHECKLIST.md` — chuỗi lệnh Gate-4, ai chạy, bằng chứng phải nộp.
+- `reverse-engineering/raw/godot-build-spec/msix-docs.json` — pin 4 trang MSIX docs + 14 fact dòng.
 
 ## 10b. Bằng chứng thô của vòng này
 
