@@ -12,6 +12,9 @@
 > **Không sửa** file nào dưới `docs/spec/`, `datas/`, `tools/`, `tests/`, `reverse-engineering/`.
 > **Không** chạy engine/runtime. **Không** dùng PNG/atlas/Spine/audio gốc làm asset (`ASSETS.md` §8).
 > Ngày **2026-10-27**. Nhãn bằng chứng theo `DONE.md`: **(A)** = đếm/đo lại được từ file, **(C)** = ước lượng.
+> **Bản v2 (cùng ngày):** đã **đo lại `reuse`** trên 1.901 sprite (I×U mặt nạ 32×32) — xem §3.6. Mọi con số
+> lập kế hoạch dùng **cột v2** (`h_scope_v2` / `l2_h_v2`): scope B **1.610 h**, L2 **177 h**, full **4.388 h**.
+> Số v1 vẫn để nguyên trong các bảng §2.2 / §3.3 / §5.2 để đối chiếu — **không** dùng để lập lịch.
 
 ---
 
@@ -21,14 +24,16 @@
 |---|---|
 | Vẽ lại bao nhiêu? | **2.185** bản ghi `Sprite` (A) ⇒ sau dedup **788 đơn vị vẽ** = **624 nhóm** worklist + **164 tên glyph** (A) |
 | Nhóm thế nào? | **22 batch / 8 lane**: PLAYER 48 đơn vị · ENEMY 34 · BOSS 42 · UI 307 · FX 26 · BG 44 · ITEM 9 · EXCL 278 (A) |
-| Khối lượng? | **L2 = 149 h** (gồm 32 h setup) · **L3 khuyến nghị = 1.264 h** (801 bản ghi) · **full parity = 3.916 h** (C, ±25 %) |
+| Khối lượng? | **L2 = 177 h** · **L3 khuyến nghị = 1.610 h** (801 bản ghi) · **full parity = 4.388 h** (C, ±25 %) — **dùng bộ số v2 đã đo lại `reuse` (§3.6)**, không dùng bộ v1 149 / 1.264 / 3.916 |
 | Chuẩn art? | 9 **công thức tô** đã kiểm bằng số (val · val_std · dark · chroma) + palette Ink & Ember đo HSV (A) |
 | Thứ tự? | **S0 → W1 (L2) → W2 → W3 → W4 → W5**, mỗi cổng wave là một phép đo, không phải cảm nhận |
-| File còn lại | [`art-planner.csv`](art-planner.csv) — 651 dòng (629 đơn vị + 22 overhead), 28 cột, khớp từng nhóm worklist |
+| File còn lại | [`art-planner.csv`](art-planner.csv) — 651 dòng (629 đơn vị + 22 overhead), **32 cột** (gồm `h_scope_v2` · `l2_h_v2` · `de_est` · `reuse_est`), khớp từng nhóm worklist |
 
 **Một câu chốt:** kho hiện có **không phải** 2.197 sprite phải vẽ — nó là **2.185 bản ghi**, trong đó
 **788 đơn vị vẽ thật**, và chỉ **801 bản ghi (37 %) là cần vẽ cho bản L3 khuyến nghị**; **1.451 h (37 %)**
 của "full parity" nằm ở 3 lô mà kế hoạch này **gần như không vẽ** (brand 90 · parts 127 · triage 411 — chỉ giữ 12 mảnh parts).
+Và sau khi đo lại (§3.6): trong 801 bản ghi đó **gần như không có bản ghi nào là "frame miễn phí"** — 17/18 nhóm
+từng bị coi là "biến thể" hoá ra là **thiết kế riêng**, nên giá thật cao hơn bảng v1 **+346 h (28 %)**.
 
 ---
 
@@ -147,7 +152,8 @@ phát sáng, bão hoà cao, **không** có mảng "bộ phận rời" — xác n
 | `X-TRIAGE` | EXCL | P3 | 214 | 411 | 14,58 | 256² | 1.181 | **0** | 0 |
 | **Σ** | | | **788** | **2.185** | **65,4** | | **3.916** | **1.232** | **109** |
 
-*Bảng trên **chưa** cộng 32 h S0 — cộng vào thì scope B = **1.264 h**, full = **3.948 h** (§3.3).*
+*Bảng này là **v1** (chưa cộng 32 h S0 ⇒ scope B = 1.264 h; cộng S0 thì full = 3.948 h). Sau khi đo lại `reuse` ở §3.6,
+bảng v2 cao hơn **+346 h** — dùng cột `h_scope_v2` trong CSV, đừng dùng cột `h_scope` để lập kế hoạch.*
 
 ### 2.3 Rollup theo lane & theo priority (A)
 
@@ -181,6 +187,7 @@ phát sáng, bão hoà cao, **không** có mảng "bộ phận rời" — xác n
 ```
 giờ(1 đơn vị)   = rate(canvas) × mult(lane) × reuse × 1,20
 reuse           = 0,65 nếu đơn vị có >1 bản ghi (frame/skin/biến thể) · 1,00 nếu chỉ 1
+                  ⚠ công thức v1; §3.6 thay bằng: designs × 1,0 + variants × 0,25
 giờ batch       = Σ giờ(đơn vị) + overhead(batch)
 giờ L2 của unit = giờ scope(unit) × n_L2 / n_scope      (lát cắt tỉ lệ — xem giải thích dưới)
 ```
@@ -233,6 +240,8 @@ lên **180,7 h** thay vì 108,9 h. "W1 ⊂ scope B" khi đó không còn đúng 
 | **A. L2 — chơi được** | **82** | 29 | **148,9** (32 S0 + 8 overhead + 108,9 art) | 4,7 | 2,3 | S0 32 h + P0 slice |
 | **B. L3 — khuyến nghị** | **801** (37 %) | 154 | **1.264** (gồm S0) | 39,5 | 19,8 | tất cả trừ phần lớn brand/parts/triage (giữ 12 parts) |
 | **C. Full parity** | 2.185 | 788 | **3.948** (100 %, gồm S0) | 123 | 62 | gồm cả 3 lô B đã cắt: triage 1.181 h · parts 242 h · brand 28 h (= 1.451 h) |
+| **B′. L3 sau khi đo lại `reuse`** | **801** | 154 | **1.610** | **50,3** | **25,2** | thay bảng giá bằng số đo §3.6 (+346 h) — **đây là số dùng để lập kế hoạch** |
+| **C′. Full parity sau đo lại** | 2.185 | 788 | **4.388** | 137 | 69 | +439,9 h so với C |
 
 *32 h/tuần = 40 h trừ 20 % họp/rework — dùng số này để lập kế hoạch, đừng dùng 40 h.*
 
@@ -250,7 +259,7 @@ Ba nhóm cắt, cộng lại khớp đúng từng bản ghi và từng giờ:
 
 | # | Rủi ro | Tác động lên scope B | Xử lý |
 |---|---|---|---|
-| **S1** | Worklist **gộp quá tay** tên có hậu tố số: `blt` 146, `pvp` 91, `rank` 88, `bg` 64, `head` 29… — với các họ này, "biến thể" là **asset khác nhau**, không phải frame | **+461 h** nếu 32 nhóm có ≥10 biến thể đều là thiết kế riêng (nặng nhất: `bg` +140 h, `pvp` +38 h, `rank` +37 h) ⇒ scope B thành **1.264–1.725 h** (gồm S0) | trong W1 đo 5 nhóm lớn nhất, chốt `reuse` thật; planner có cột `over_merge = cao` cho 32 nhóm (+5 bucket glyph) |
+| **S1** | ~~Worklist gộp quá tay~~ → **ĐÃ ĐO, ĐÃ ĐÓNG: không phải gộp quá tay** — 17/18 nhóm `over_merge` là **thiết kế riêng** (tỉ lệ `designs/kept` = 0,93–1,00); chỉ `hotro` (0,42) là họ biến thể thật | **+346,0 h** (đo được, không còn là khoảng): scope B **1.232,4 → 1.578,4 h**; scope C **3.915,8 → 4.355,7 h** | **đã xử lý** ở §3.6: thay `reuse 0,65` bằng `designs + variants × 0,25`; 2 cột mới `de_est` / `reuse_est` trong planner |
 | **S2** | Rate canvas sai ±25 % | scope B **1.011–1.580 h** | hiệu chỉnh sau **pilot 20 asset** ở S0 (đo giờ thật/asset, ghi vào planner) |
 | **S3** | Triage lật nhãn: 1 phần trong 411 bản ghi hoá ra là **nhân vật/enemy** | scope B **+60…+180 h** (⇒ 1.324–1.444 h) | triage sprint trước W2; chỉ ảnh hưởng `X-TRIAGE`, không đụng W1 |
 
@@ -265,6 +274,84 @@ này **không** tính giờ cho particle; đó là việc của tech-art (shader
 | 1 lượt review ≤ **10 asset** cùng lane | 10 | để so silhouette cạnh nhau |
 | 1 wave = **2–6 sprint** (sprint = 2 tuần = 64 h) | 64–384 h | wave là đơn vị **bàn giao + đo**; wave dài hơn 6 sprint thì tách (xem §5.6) |
 | Không mở wave mới khi cổng wave trước **chưa đo** | — | tránh 3 wave cùng sai một lỗi palette |
+
+### 3.6 Đo lại `reuse` (S1) — **đã đóng**: 17/18 nhóm là **thiết kế riêng**, không phải biến thể
+
+17/18 dòng ở đây = 17/18 dòng **đo được**; 1 dòng (`boss dong ho real`) không có mẫu trên contact sheet nên vẫn là (C).
+
+S1 (§3.4) là rủi ro lớn nhất của kế hoạch: nếu các "biến thể" trong worklist thật ra là **asset khác nhau**
+thì chiết khấu `reuse 0,65` là sai. Lần này **đo được**, không phải đoán.
+
+**Cách đo (chạy được lại):** lấy 1.901/1.903 sprite `kind = Sprite` có `contact_sheet`+`tile`, tách nền caro
+(bằng 2 tông nền phổ biến nhất của ô, ngưỡng 26), cắt **hình bao** của sprite, chuẩn hoá về lưới
+**32×32**, rồi so từng cặp trong cùng nhóm bằng **IoU** mặt nạ. Hai sprite có `IoU ≥ 0,90` ⇒ **cùng một thiết
+kế** (biến thể: đổi màu / phóng / lật); dưới ngưỡng ⇒ **thiết kế riêng**. Đơn vị dùng để tính giờ:
+`designs × giá đầy đủ + variants × 0,25 × giá đầy đủ`.
+
+| Kiểm chuẩn (nhóm **đã biết** là biến thể) | n | designs đo được | Đúng? |
+|---|---:|---:|---|
+| `coda` · `codawhite` · `applepay` · `applepaywhite` · `evolution` · `manhplane` | 4·4·4·4·3·6 | **4·3·4·4·2·2** | ✔ gộp đúng (τ = 0,90); ở τ = 0,85 `codawhite` gộp 4→1 **quá tay** ⇒ chọn 0,90 |
+| `pvp` · `bg` · `cd` · `blt` · `head` | 91·65·15·122·13 | **91·65·15·119·13** | ✔ **không** gộp nhầm (đã mở ảnh xác nhận: 91 huy hiệu rank khác nhau, 65 nền khác nhau) |
+
+**Kết quả trên 18 dòng `over_merge = cao` có `kept_records > 0`:**
+
+| Tỉ lệ `designs / kept_records` | Số dòng | Nhóm |
+|---|---:|---|
+| **1,00** (mỗi bản ghi một thiết kế) | **14** | `pvp` 64 · `bg` 32 · `cd` 28 · `cb` 22 · `head` 17 · `ships` 16 · `circle` 15 · `cb-` 15 · `droid` 14 · `boss` 13 · `da` 12 · `xvideo` 12 · `body` 12 · `plasmagun` 10 |
+| **0,93–0,97** (gần như riêng) | 2 | `blt` 117/120 · `drone` 13/14 |
+| **0,42** (đúng là họ biến thể) | **1** | **`hotro` 15/36** — 36 icon cùng khung badge, khác icon+chữ |
+| **không đo được** | 1 | `boss dong ho real` (0/19 mẫu nằm trên contact sheet) — giữ nguyên giá v1 |
+
+⇒ **S1 lo ngược chiều.** Rủi ro không phải "worklist gộp quá tay" mà là **bảng giá của kế hoạch đã chiết
+khấu 35 % cho những asset thực ra là thiết kế riêng**. `hotro` là họ biến thể duy nhất, và nó lại đang bị
+tính **đắt** hơn thực tế (7,0 → 6,1 h).
+
+**Re-baseline (v2) — số dùng để lập kế hoạch từ giờ:**
+
+| | v1 (như đã lập) | **v2 (đo lại)** | Δ |
+|---|---:|---:|---:|
+| Scope B — giờ art (1.232,4) | 1.232,4 | **1.578,4** | **+346,0 (+28,1 %)** |
+| Scope B — gồm S0 32 h | 1.264,4 | **1.610,4** | +346,0 |
+| Scope B — tuần 1 artist / 2 artists | 39,5 / 19,8 | **50,3 / 25,2** | +10,8 / +5,4 |
+| Scope A (L2) — giờ art (108,9) | 108,9 | **137,3** | +28,4 |
+| Scope A (L2) — gồm S0 + overhead | 148,9 | **177,3** | +28,4 |
+| Scope C — giờ art (3.915,8) | 3.915,8 | **4.355,7** | +439,9 |
+
+| Batch | v1 | v2 | Δ | Batch | v1 | v2 | Δ |
+|---|---:|---:|---:|---|---:|---:|---:|
+| `G-PARALLAX` | 141,8 | 211,7 | **+69,9** | `X-PART` | 38,7 | 48,8 | +10,1 |
+| `U-KIT` | 168,2 | 227,4 | **+59,3** | `F-BOOM` | 24,4 | 32,8 | +8,4 |
+| `E-BODY` | 131,4 | 188,9 | **+57,5** | `G-UI` | 66,9 | 72,8 | +6,0 |
+| `U-SHOP` | 95,4 | 140,8 | **+45,5** | `I-DROP` | 19,0 | 24,7 | +5,8 |
+| `U-META` | 57,9 | 84,8 | +26,9 | `P-BULLET` | 10,5 | 13,1 | +2,6 |
+| `F-GLOW` | 47,7 | 71,2 | +23,5 | `U-ICON` | 20,1 | 22,6 | +2,6 |
+| `U-HUD` | 82,8 | 97,9 | +15,1 | `P-DRONE` | 28,2 | 26,9 | **−1,3** |
+| `E-BULLET` | 32,1 | 46,4 | +14,3 | **15 batch đổi** | **964,9** | **1.310,9** | **+346,0** |
+
+*7 batch không đổi (267,5 h): `P-SHIP` 75,2 · `B-BODY` 141,6 · `B-PART` 36,1 · `X-BRAND` 10,0 · `P-FX` 4,6 ·
+`F-ENEMY` 0 · `X-TRIAGE` 0 (4 batch đầu không có đơn vị nào đo được ≥2 mẫu, 3 batch sau có 0 bản ghi được vẽ).
+964,9 + 267,5 = 1.232,4 ✔ và 1.310,9 + 267,5 = 1.578,4 ✔.*
+
+| Wave (gồm overhead + S0) | W1 (L2) | W2 | W3 | W4 | W5 | P3 | Σ |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| v1 | 148,9 | 398,8 | 175,9 | 134,6 | 357,4 | 48,7 | 1.264,4 |
+| **v2** | **177,3** | **537,5** | **181,0** | **166,7** | **489,1** | **58,8** | **1.610,4** |
+| tuần 1 artist (cộng dồn) | 5,5 | 22,3 | 28,0 | 33,2 | 48,5 | 50,3 | — |
+
+**Ba giới hạn của phép đo này (ghi để không đọc quá số):**
+
+1. **Độ phủ 705/801 bản ghi (88 %).** 12 đơn vị chỉ đo được một phần (`cd` 15/28 · `cb` 17/22 ·
+   `body` 6/12 · `xvideo` 9/12 · `gd` 4/8 · `tieude` 5/8 …) nên `designs` của chúng là **ngoại suy tỉ lệ**;
+   riêng 12 đơn vị đó chiếm **+75,9 h** trong số +346,0 h.
+2. **Mặt nạ hình bao, không phải hình học thật.** Hai sprite cùng silhouette nhưng khác chi tiết bên trong
+   (cùng khung, khác hoa văn) vẫn bị tính là **2 thiết kế** ⇒ v2 là **cận trên** của mức tăng.
+   Đã kiểm 5 nhóm UI nghi ngờ đúng kiểu này (`tieude` `gd` `ong` `goigem` `selectmap_gioihan`) bằng mắt:
+   **cả 5 đều là art khác nhau**, không phải chữ khác nhau ⇒ không trừ lại.
+3. **Giá biến thể 0,25 là giả định.** Nếu biến thể đắt bằng 0,35 giá đầy đủ thì tổng chỉ tăng **+2,4 h**
+   (1.612,8 thay vì 1.610,4) — tức kết luận **không** phụ thuộc tham số này.
+
+⇒ **Việc phải làm:** dùng **v2** cho mọi con số lập kế hoạch; `over_merge` không còn là "cảnh báo phải kiểm"
+mà đã được **thay bằng số đo** trong 2 cột `de_est` (số thiết kế) và `reuse_est` (`designs / kept_records`).
 
 ---
 
@@ -440,6 +527,10 @@ phép xấp xỉ. Không cần biến thể, không cần FX đẹp, **không c�
 | **P3** | không vẽ | `X-BRAND` 0 · `X-PART` 12 · `X-TRIAGE` 0 | 12 | **48,7** | brand: chỉ **nhận brand kit**; parts: 12 mảnh gameplay; triage: chỉ vẽ **sau** sprint xem ảnh |
 | **Σ B** | | | **801** | **1.264,4** = 1.232,4 art + 32 S0 | |
 
+*Bảng trên là **v1**. Sau khi đo lại `reuse` (§3.6), cột giờ đổi thành: W1 **177,3** · W2 **537,5** · W3 **181,0** ·
+W4 **166,7** · W5 **489,1** · P3 **58,8** ⇒ **Σ 1.610,4 h** (+346,0). Thứ tự wave, batch và cổng ra **không đổi** —
+chỉ khối lượng mỗi wave tăng.*
+
 *“+n” = phần còn lại của batch sau khi W1 đã lấy lát L2; số cộng theo cột phải khớp `kept_records` của planner.
 Cột `wave` trong CSV = wave **xuất hiện đầu tiên**; cột `wave_done` = wave **hoàn thành phần còn lại** —
 rollup giờ theo `wave_done` mới ra đúng bảng này (overhead của batch dồn về wave chứa ≥60 % bản ghi còn lại).*
@@ -448,9 +539,9 @@ rollup giờ theo `wave_done` mới ra đúng bảng này (overhead của batch 
 
 1. **W1 chứng minh cả pipeline** trên 7 lane trong 1 wave — nếu chờ xong player rồi mới làm UI thì lỗi
    palette sẽ nằm trong 500 asset trước khi bị phát hiện.
-2. **W2 nặng nhất (399 h, 32 % scope B)** đặt ngay sau W1 vì đó là lúc rate còn "nóng"; **W3 (boss) tách riêng**
+2. **W2 nặng nhất (537 h, 33 % scope B)** đặt ngay sau W1 vì đó là lúc rate còn "nóng"; **W3 (boss) tách riêng**
    vì boss cần review riêng từng phase.
-3. **UI (W4–W5, 492 h) đẩy về cuối** vì UI phụ thuộc **luồng màn hình** — sửa luồng thì vẽ lại, còn enemy thì không.
+3. **UI (W4–W5, 656 h theo v2) đẩy về cuối** vì UI phụ thuộc **luồng màn hình** — sửa luồng thì vẽ lại, còn enemy thì không.
 4. **Triage không nằm trên đường găng**: 411 bản ghi chưa nhãn, vẽ bây giờ = 30 % rủi ro vẽ sai. Sprint xem
    17 sheet (3 ngày) đặt **song song S0**, kết quả đổ vào `X-TRIAGE` và mở khoá phần còn lại.
 
@@ -469,7 +560,8 @@ rollup giờ theo `wave_done` mới ra đúng bảng này (overhead của batch 
 | **Tổng scope B** | **1.264,4** | **39,5** | **19,8** | mốc **L3 art-complete** |
 
 *32 h/tuần = 40 h trừ 20 % họp/rework. Chia 2 artist chỉ đúng khi tách được theo lane (§5.5) — W3 (boss) và W5 (UI) khó chia đôi hơn W2.*
-*Số tuần ở scope B/C tính trên tổng **gồm S0** (1.264 h / 3.948 h). Chưa gồm thời gian chờ: code chạy được (L1), luồng UI chốt (§6 R5), và quyết định boss dùng Spine (§8 #6).*
+*Số tuần trên là **v1** (1.264 h / 3.948 h). Bản **v2** dùng để lập kế hoạch (§3.6): **W1 = 5,5 tuần** (1 artist, cổng L2),
+**tổng scope B = 50,3 tuần** (1 artist) / **25,2 tuần** (2 artists), scope C = 137 / 69 tuần. Chưa gồm thời gian chờ: code chạy được (L1), luồng UI chốt (§6 R5), và quyết định boss dùng Spine (§8 #6).*
 
 ### 5.5 Song song hoá (khi có ≥ 2 artist)
 
@@ -480,14 +572,16 @@ rollup giờ theo `wave_done` mới ra đúng bảng này (overhead của batch 
 
 ### 5.6 Điểm cắt khi chỉ có 1 artist (W2 và W5 dài hơn 6 sprint)
 
-| Nửa wave | Batch | Giờ | Sprint | Vì sao cắt ở đây |
-|---|---|---:|---:|---|
-| **W2a** | `E-BODY` 123,9 · `E-BULLET` 29,8 · `P-BULLET` 8,2 · `F-BOOM` 18,2 | **180,1** | 2,8 | toàn bộ "thứ bắn & bị bắn" — đo G-C trên ảnh gameplay ngay sau nửa này |
-| **W2b** | `P-SHIP` 61,8 · `P-DRONE` 21,3 · `G-PARALLAX` 135,7 | **218,8** | 3,4 | tàu + nền: hai thứ nặng nhất về silhouette và diện tích |
-| **W5a** | `U-HUD` 36,0 · `U-KIT` 158,2 (+10 overhead) | **204,2** | 3,2 | HUD + kit: bộ khung màn hình, dùng chung 9-slice |
-| **W5b** | `U-META` 57,9 · `U-SHOP` 95,4 | **153,3** | 2,4 | màn meta: phụ thuộc luồng, tách được khỏi HUD |
+| Nửa wave | Batch | Giờ v1 | **Giờ v2** | Sprint v2 | Vì sao cắt ở đây |
+|---|---|---:|---:|---:|---|
+| **W2a** | `E-BODY` · `E-BULLET` · `P-BULLET` · `F-BOOM` | 180,1 | **253,1** | 4,0 | toàn bộ "thứ bắn & bị bắn" — đo G-C trên ảnh gameplay ngay sau nửa này |
+| **W2b** | `P-SHIP` · `P-DRONE` · `G-PARALLAX` | 218,8 | **284,5** | 4,4 | tàu + nền: hai thứ nặng nhất về silhouette và diện tích |
+| **W5a** | `U-HUD` · `U-KIT` | 204,2 | **263,4** | 4,1 | HUD + kit: bộ khung màn hình, dùng chung 9-slice |
+| **W5b** | `U-META` · `U-SHOP` | 153,3 | **225,6** | 3,5 | màn meta: phụ thuộc luồng, tách được khỏi HUD |
 
-*Số trong bảng = `h_scope − h_l2` (+ overhead đã dồn) ⇒ cộng lại ≈ 398,8 và 357,4 (lệch 0,1 do làm tròn).*
+*Số trong bảng = `h_scope − h_l2` (+ overhead đã dồn về đúng wave) ⇒ v1 cộng lại 398,9 / 357,5 · v2 cộng lại
+**537,6 / 489,0**, khớp bảng wave ở §3.6 (lệch 0,1 do làm tròn). **W2 và W5 giờ đều dài hơn 6 sprint ⇒ cắt là bắt buộc**,
+không còn là tuỳ chọn.*
 
 ---
 
@@ -495,7 +589,7 @@ rollup giờ theo `wave_done` mới ra đúng bảng này (overhead của batch 
 
 | # | Rủi ro | Xác suất | Tác động | Giảm thiểu |
 |---|---|---|---|---|
-| **R1** | Worklist gộp quá tay (`blt`, `pvp`, `rank`, `bg`, `head`) | cao | +461 h (S1) | đo `reuse` thật ở W1 trên 5 nhóm lớn nhất |
+| **R1** | ~~Worklist gộp quá tay~~ **ĐÃ ĐÓNG (§3.6)** — thực tế 17/18 nhóm là thiết kế riêng, và bảng giá v1 đã chiết khấu sai 35 % | đã xảy ra | **+346,0 h** (đã cộng vào v2) | dùng `h_scope_v2` / `l2_h_v2`; `de_est` thay cho việc xem ảnh |
 | **R2** | Triage lật 411 bản ghi | cao | +60…180 h | sprint 17 sheet trước W2; **không** vẽ khi chưa có nhãn |
 | **R3** | Style Ink & Ember quá tối → khó đọc trong rổ đạn | trung bình | vẽ lại 20 % W1 | W1 đo G-C + G-F trên ảnh gameplay thật, **trước** khi mở W2 |
 | **R4** | Boss 512² + 3 phase vượt 8 h/unit | trung bình | +60 h ở W3 | tách "khối phá được" thành asset riêng (đã có `B-PART`) |
@@ -521,7 +615,7 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
 | File | Nội dung |
 |---|---|
 | `docs/art-plan/ART_REDRAW_PLAN.md` | report này |
-| `docs/art-plan/art-planner.csv` | **651 dòng** = 629 đơn vị vẽ (624 nhóm worklist + 5 bucket glyph) + 22 dòng overhead; **28 cột** |
+| `docs/art-plan/art-planner.csv` | **651 dòng** = 629 đơn vị vẽ (624 nhóm worklist + 5 bucket glyph) + 22 dòng overhead; **32 cột** (v1 + 4 cột v2) |
 
 ### 7.2 Từ điển cột planner
 
@@ -540,14 +634,18 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
 | `l2_slice` · `l2_n` · `l2_h` | đơn vị này có bản ghi trong lát L2 không (yes/no) · số bản ghi lấy cho L2 · giờ L2 |
 | `evidence` | G1/G2/G3/G0 (§1.4) |
 | `recipe` | trỏ tới 9 recipe §4.5 |
-| `h_full` · `h_scope` | giờ cho scope C và scope B (§3.3); `l2_h ≤ h_scope` luôn đúng |
+| `h_full` · `h_scope` | giờ cho scope C và scope B theo bảng giá **v1** (§3.3); `l2_h ≤ h_scope` luôn đúng |
+| `h_scope_v2` · `l2_h_v2` | **giờ đã đo lại** (§3.6) — dùng 2 cột này để lập kế hoạch; `h_scope_v2 ≥ 0` và `Σ = 1.578,4` |
+| `de_est` · `reuse_est` | **số thiết kế riêng** đo được (`IoU ≥ 0,90`) · `de_est / kept_records` — 1,00 = mỗi bản ghi một thiết kế |
 | `over_merge` | `cao` = **37 dòng** (32 nhóm + 5 bucket glyph) có ≥10 bản ghi/đơn vị, **kiểm `reuse` trước khi vẽ** |
 | `contact_sheet` · `sample_names` · `rule_hint` | tra ảnh + tên mẫu + luật nhãn gốc |
 
 ### 7.3 Cách dùng (3 việc, theo thứ tự)
 
-1. **Lọc `l2_n > 0`** (29 dòng) → đó là W1/L2 (82 bản ghi = 108,9 h art + 8 h overhead, cộng 32 h S0 = **148,9 h**). Không cần đọc phần còn lại.
-2. **Lọc `over_merge = cao`** → 37 dòng phải xem ảnh trước khi ước lượng lại (S1).
+1. **Lọc `l2_n > 0`** (29 dòng) → đó là W1/L2 (82 bản ghi = **137,3 h art (v2)** + 8 h overhead, cộng 32 h S0 = **177,3 h**).
+   Không cần đọc phần còn lại.
+2. **Lọc `over_merge = cao`** → 37 dòng từng bị gắn cờ; **`de_est` đã thay việc phải xem ảnh** (§3.6), chỉ còn `hotro`
+   là họ biến thể thật — không cần xem lại.
 3. **Lọc `kept_records = 0`** → danh sách **không vẽ** (brand/parts/triage) — đưa cho người quyết định
    scope, kèm lý do trong §3.3.
 
@@ -570,9 +668,13 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
 5. Áp công thức §3.1; chọn scope B bằng xếp hạng `(evidence, n_records)` trong batch; **lát L2** =
    `h_scope × n_L2 / n_scope` (không dùng bảng giá riêng — lý do ở §3.1); gán `wave_done` theo §5.2
    (overhead dồn về wave chứa ≥ 60 % bản ghi còn lại).
-6. Kiểm 6 tổng: `Σ n_records` = **2.185** · `Σ n_units`(group) + `Σ n_units`(glyph) = **788** ·
+6. Kiểm 9 tổng: `Σ n_records` = **2.185** · `Σ n_units`(group) + `Σ n_units`(glyph) = **788** ·
    `Σ kept_records` = **801** · `Σ l2_n` = **82** · `Σ h_scope` = **1.232,4** · `Σ l2_h` = **108,9** ·
-   `Σ h_full` = **3.915,8**. Lệch bất kỳ số nào = lỗi join, không phải lỗi làm tròn.
+   `Σ h_full` = **3.915,8** · `Σ h_scope_v2` = **1.578,4** · `Σ l2_h_v2` = **137,3**.
+   Lệch bất kỳ số nào = lỗi join, không phải lỗi làm tròn.
+7. **`de_est`** (nếu muốn tái lập §3.6): đọc từng ô contact sheet, tách nền theo 2 tông phổ biến nhất
+   (ngưỡng 26), cắt hình bao, chuẩn hoá 32×32, IoU từng cặp trong nhóm, gộp khi `IoU ≥ 0,90`;
+   `de_est = số cụm`, ngoại suy `× kept_records / n_đo_được` cho nhóm đo thiếu.
 
 ---
 
@@ -581,7 +683,7 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
 | # | Điều | Trạng thái | Cách đóng |
 |---|---|---|---|
 | 1 | Giờ/asset thật của đội | **(C)** — chưa có mẫu | pilot 20 asset ở S0, ghi giờ thực |
-| 2 | `reuse` thật của 32 nhóm biến thể lớn (+5 bucket glyph = 37 dòng `over_merge = cao`) | **(C)** | xem ảnh 5 nhóm lớn nhất ở W1 |
+| 2 | ~~`reuse` thật của 32 nhóm biến thể lớn~~ | **ĐÓNG (A)** — đo bằng IoU mặt nạ trên 1.901 sprite (§3.6): 17/18 nhóm là thiết kế riêng, chỉ `hotro` là họ biến thể | đã thay vào `de_est` / `reuse_est`; re-baseline v2 = +346,0 h |
 | 3 | 340 `unresolved` là gì | **chưa biết** | sprint 17 sheet (§1.4) |
 | 4 | 12 mảnh `B-PART` nào là khối phá được | **(C)** | chốt với designer ở W3 |
 | 5 | Có cần 25 tàu hay 12 | **quyết định sản phẩm** | scope B giả định 16 (12 + 4 khoá) |
@@ -590,3 +692,5 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
 | 8 | Đo lại baseline "mẫu" bằng PNG (không JPEG) | **chưa làm** | cần export PNG — hiện repo chỉ có contact sheet JPEG |
 | 9 | Số boss thật của bản mới | **quyết định sản phẩm** | scope B giả định **16** (mẫu có 35); +1 boss ≈ +8 h ở `B-BODY` + 3–4 h `B-PART` |
 | 10 | Có bao nhiêu màn | **quyết định sản phẩm** | scope B giả định **3**; +1 màn ≈ +45 h `G-PARALLAX` + 5 h `I-DROP` + 3 h `G-UI` |
+| 11 | `de_est` của **12 đơn vị đo chưa đủ** (`cd` `cb` `body` `xvideo` `gd` `tieude` …) | **ngoại suy** — 129 bản ghi, +75,9 h | đo nốt 12 đơn vị (1 buổi); nằm trong pilot S0 |
+| 12 | Mặt nạ **hình bao** coi "cùng khung khác hoa văn" là 2 thiết kế | **cận trên** của mức tăng | đã kiểm 5 nhóm UI bằng mắt: không có trường hợp nào cần trừ lại; nếu W1 thấy khác thì hạ `de_est` cho đúng nhóm đó |
