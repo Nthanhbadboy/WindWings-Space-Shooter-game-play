@@ -61,8 +61,15 @@
 > 3. `1b836828` mở rộng `measure_asset.py`: thêm chỉ số gradient-stop count · outline-thickness (dark edge px) · detail density — chạy máy kèm mỗi lô.
 > 4. A và B vẫn giữ phân biệt: A = Ink & Ember tông tối NHƯNG 2.5D; B = Solar Neon sáng NHƯNG 2.5D — khác tông màu/ánh sáng, CHUNG kỹ thuật render 2.5D.
 
+### STYLE-CORRECTION ROUND 2 (lần 154 — user: "kỹ thuật được nhưng ĐẸP thì xấu, như trẻ 3 tuổi vẽ")
+> Số liệu đạt ≠ đẹp. Chỉ số máy (grad_stops/outline_px…) chỉ là **sàn kỹ thuật** — không phải duyệt. Thêm chuẩn **MĨ THUẬT** bắt buộc, judged bởi Art-style-auditor (không phải máy):
+> 1. **Độ chín thương mại**: art phải nhìn "như game bán tiền" — silhouette TÀI (không đối xứng máy móc), giáp nhiều lớp chồng đè, greebles/đinh-tán/khe-tản-nhiệt mật độ cao, tỷ lệ cân (buồng lái vs thân vs cánh), không hình khối ngây-ngô.
+> 2. **Ngâm reference trước khi vẽ**: bắt buộc xem contact-sheets gốc (ships/enemy/bosses/drone) TRƯỚC mỗi lô + nộp kèm 3–5 cặp so-kế-cạnh. Nếu 3 người nhìn thấy phải biết "cùng game" với gốc.
+> 3. **Redo chất-xấu**: lô đạt-số-mà-xấu vẫn REDO — verifier máy PASS không đủ; auditor mới là chốt.
+> 4. Auditor role (dưới) mở rộng thẩm quyền: chốt cả KỸ THUẬT lẫn MĨ THUẬT.
+
 **Vai Art-style-auditor** — TRỐNG, CLAIM NGAY (lần 153 — user: "mở nhánh nắm kỹ tài liệu thiết kế art và kiểm xem 2 art làm đúng chưa"):
-> Nắm CHUYÊN SÂU tài liệu thiết kế art (`VISUAL_DESIGN.md` · `ART_STUDY.md` · contact sheets `docs/assets/contact-sheets/` · `docs/art-plan/` cả 2 nhánh A/B · STYLE-CORRECTION 149 trong chính file này) rồi **kiểm độc lập 2 bộ**: A = `5438fec9` (W0+W1+W2+W3+W4) · B = `eca8588b` (full 263 + W5 510-parity). Chuẩn xét: 2.5D bán-thực-tế (gradient đa-tầng · AO mép panel · rim-light · panel-line/vent · KHÔNG viền đen dày · KHÔNG mặt phẳng) + số liệu planner + bảng so-kế-cạnh (A/B phải nộp). Xuất: `AUDIT_A_B_STYLES.md` (verdict từng lô: ĐẠT/REDO + thiếu cụm gì + thứ tự ưu tiên redo) trên nhánh mình + comment PR12 kèm minh chứng đo được. Audit của bạn = **cổng duyệt redo** — A/B fix theo finding của bạn; curator chỉ nhận bộ khi bạn xác nhận ĐẠT. KHÔNG vẽ, KHÔNG sửa nhánh người khác, đọc-thuần + script đo trên nhánh mình.
+> Nắm CHUYÊN SÂU tài liệu thiết kế art (`VISUAL_DESIGN.md` · `ART_STUDY.md` · contact sheets `docs/assets/contact-sheets/` · `docs/art-plan/` cả 2 nhánh A/B · STYLE-CORRECTION 149 trong chính file này) rồi **kiểm độc lập 2 bộ**: A = `5438fec9` (W0+W1+W2+W3+W4) · B = `eca8588b` (full 263 + W5 510-parity). Chuẩn xét — 2 LỚP: **① Kỹ thuật** 2.5D (gradient đa-tầng · AO mép panel · rim-light · panel-line/vent · KHÔNG viền đen dày · KHÔNG mặt phẳng) + số planner + bảng so-kế-cạnh; **② MĨ THUẬT** (lần 154): độ chín thương mại — silhouette tài, giáp nhiều lớp, greebles mật độ cao, tỷ lệ cân, "nhìn như cùng game với gốc". Số đạt mà xấu vẫn REDO. Auditor chốt cả 2 lớp. Xuất: `AUDIT_A_B_STYLES.md` (verdict từng lô: ĐẠT/REDO + thiếu cụm gì + thứ tự ưu tiên redo) trên nhánh mình + comment PR12 kèm minh chứng đo được. Audit của bạn = **cổng duyệt redo** — A/B fix theo finding của bạn; curator chỉ nhận bộ khi bạn xác nhận ĐẠT. KHÔNG vẽ, KHÔNG sửa nhánh người khác, đọc-thuần + script đo trên nhánh mình.
 
 ## Vai CHƯA CÓ NHÁNH (session mới tự CLAIM qua PROMPT CHUNG — `SESSION_COMMON_PROMPT.md`; mã nhánh chỉ biết sau commit đầu)
 

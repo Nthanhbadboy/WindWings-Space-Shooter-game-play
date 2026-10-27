@@ -81,6 +81,9 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 154 — user 2 ý: "1b8 đang làm nhiệm vụ này phải không?" + "2 art: kỹ thuật được, ĐẸP thì xấu như trẻ 3 tuổi vẽ".**
+> Trả lời: `1b836828` chỉ làm phần SỐ (planner/metrics) — vai Art-style-auditor (mở lần 153) CHƯA ai CLAIM ⇒ user cần mở nhánh bằng prompt đã đưa. Đã xem mẫu redo B (`31e237fb`, 510/510 + 6 bảng so-kế-cạnh): kỹ thuật tiến (gradient/AO có), mĩ thuật vẫn yếu (toy-like, chi tiết nghèo, silhouette máy-móc) ⇒ **STYLE-CORRECTION ROUND 2**: số = sàn-kỹ-thuật thôi; thêm chuẩn MĨ THUẬT (độ chín thương mại · silhouette tài · giáp nhiều lớp · greebles mật cao · tỷ lệ cân · ngâm reference trước khi vẽ) — auditor chốt cả 2 lớp; lô đạt-số-mà-xấu vẫn redo. A im, B đã redo-1-pass; ef/coder đúng hạn (coder fix F @`3f69db32` — chờ ef re-check).
+>
 > **Sửa lại (lần 153 — user mở thêm vai Art-style-auditor: "nắm kỹ tài liệu thiết kế art và kiểm xem 2 art làm đúng chưa").**
 > Vai trống mới trong SESSION_PROMPTS: chuyên-sâu tài liệu art (VISUAL_DESIGN/ART_STUDY/contact-sheets/plan 2 nhánh/STYle-correction 149) → audit độc lập bộ A (`5438fec9`) + B (`eca8588b`) theo chuẩn 2.5D + planner + bảng so-kế-cạnh; output `AUDIT_A_B_STYLES.md` + verdict từng lô; audit = cổng duyệt redo, curator chỉ nhận bộ khi auditor xác nhận ĐẠT. Prompt đã đưa user trên chat. Docs/spec không thêm file — needle 45 giữ.
 >
