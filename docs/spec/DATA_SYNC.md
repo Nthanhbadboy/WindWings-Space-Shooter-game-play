@@ -5757,6 +5757,24 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
   open-items cụ thể), không nâng mức runtime — ceiling lần 122 giữ nguyên;
   các open-item "RVA này là gì" nay khép hoặc bounded.
 - **Datas/ 186 + 1 pulled (161) = 187 (needle sync commit này).**
+
+### 24.113 CHỈNH SỔI LEDGER — #27 = 5/6 + review-127 CONDITIONAL (lần 124, theo protocol AI-3)
+
+- **AI-3 (qua chủ dự án + checkpoint `d25b141a1`):** review-127 GIỮ
+  CONDITIONAL — spec-erratum (lần 120/122) KHÔNG thay thế được "producer
+  published correction" trong protocol của reviewer; verdict chỉ reviewer
+  nâng. Recovery của AI-3 chuẩn: ff-only từ remote-own (không sync peer),
+  41 tests, 4 CI exact-head xanh, report123/artifact `c34f6cbc…` giữ nguyên.
+  Producer tip hiện tại (`dd7c63d7a` chốt trước) VẪN ghi sai nhãn `b98d68`
+  — chưa có erratum của ef tới comment 521+.
+- **Spec rút lại:** lần 122 "#27 6/6" ⇒ **#27 = 5/6 APPROVE/SUPPORTED +
+  review-127 CONDITIONAL**. Erratum nội dung (RET `b98d64`) vẫn là bản
+  ghi-sách đúng (dựa pin AI-3); điều thiếu = dòng công khai của ef.
+- **Yêu cầu trực tiếp ef (ACK124 `6435917120`):** đăng 1 dòng erratum
+  (khung copy-paste đã cấp — bytes thật + chỉ supersede nhãn, science giữ
+  nguyên). Ef cũng có thể đóng kèm HANDOFF-133.
+- **Bài học ghi:** verdict = thẩm quyền của reviewer; spec xác nhận *nội
+  dung* correction nhưng không thể *thay* reviewer nâng APPROVE.
   ② **Các mục runtime còn mở (19 RUNTIME + live-DPS time-series...):** phụ
   thuộc mục tiêu — với **clone/playable static-complete** (trần lần 80):
   ảnh hưởng **THẤP** (mọi giá trị ship-in-binary đã decode; phần thiếu là

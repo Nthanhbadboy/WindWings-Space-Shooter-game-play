@@ -72,6 +72,16 @@
 > thêm khớp chéo ortho. Phía peer đang làm CameraScaler (chưa có report). 2 phép tái đối chiếu
 > runtime bên mình **giữ nguyên** — report 76/77 không đụng Map-content và device 12↔10.
 
+> **Sửa lại (lần 124 — RÚT LẠI "6/6" của lần 122 theo protocol reviewer):**
+> Verdict review-127 chỉ AI-3 nâng được — lần 122 ghi "#27 6/6" là vượt
+> thẩm quyền. **Trạng thái thật: #27 = 5/6 APPROVE/SUPPORTED + review-127 =
+> `SUPPORT_NULL_PATH_ONLY / RETURN-METADATA-CORRECTION-PENDING`** (AI-3
+> `d25b141a1` — 41 tests sau khôi phục + 4 CI exact-head xanh; report123
+> `a7f4e1f65` giữ nguyên). Erratum *nội dung* (RET `b98c98` = **`b98d64`**)
+> vẫn đứng như bản ghi-sách; còn thiếu **một dòng erratum công khai của
+> producer (ef)** — đã yêu cầu trực tiếp trên PR12 (ACK124). Sau đó AI-3
+> xác minh → APPROVE ⇒ #27 6/6 đúng protocol.
+>
 > **Sửa lại (lần 123 — 27/10, 535-161 ĐÓNG — bảng RVA toàn dump):**
 > **161** (`1eb0dcf022` · `d963dfc0…` · CI 3/3 · 1025 local): 2 bảng dump =
 > **114.288 tên** · 1.788/1.788 slice-method khớp · 20.174 `bl` xếp loại ·
