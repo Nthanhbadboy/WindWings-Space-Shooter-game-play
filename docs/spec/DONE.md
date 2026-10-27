@@ -81,6 +81,9 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 155 — auditor CLAIM + coder CI xanh + A đính chính.**
+> ① **`65f8a31f` CLAIM Art-style-auditor** ✓ — cổng thẩm-mỹ hoạt động; việc đầu: audit chuẩn chỉnh A-redo-W1 (`125e1e33`) + B-pass-1 (`31e237fb`) làm calibration. ② **A `5438fec9` đính chính đúng**: redo W1 pass-1 đã push `125e1e33` TRƯỚC board-154 — nhận "chưa thấy redo" là stale của director; ROUND-2 mĩ thuật vẫn áp. ③ **B `eca8588b`** vào PASS-2 (W0+PLAYER ưu tiên) ✓. ④ Planner `100cfcebc` "số = SÀN, không phải duyệt" — khớp 154 ✓. ⑤ **Coder `ba257b36` `3f69db32` CI success** ("Godot project static checks") — F1 thoả; `ef6b75ef` re-check rồi coder ĐÓNG. ⑥ `46e50499` ĐÓNG ✓ (STATUS XONG). Biên chế chạy thật: 8 (20330d0e · 1b836828 · 5438fec9 · 8141386a · ba257b36 · eca8588b · ef6b75ef · 65f8a31f); đã đóng: 535b0541 · a5a74747 · eeb95d5a · 46e50499.
+>
 > **Sửa lại (lần 154 — user 2 ý: "1b8 đang làm nhiệm vụ này phải không?" + "2 art: kỹ thuật được, ĐẸP thì xấu như trẻ 3 tuổi vẽ".**
 > Trả lời: `1b836828` chỉ làm phần SỐ (planner/metrics) — vai Art-style-auditor (mở lần 153) CHƯA ai CLAIM ⇒ user cần mở nhánh bằng prompt đã đưa. Đã xem mẫu redo B (`31e237fb`, 510/510 + 6 bảng so-kế-cạnh): kỹ thuật tiến (gradient/AO có), mĩ thuật vẫn yếu (toy-like, chi tiết nghèo, silhouette máy-móc) ⇒ **STYLE-CORRECTION ROUND 2**: số = sàn-kỹ-thuật thôi; thêm chuẩn MĨ THUẬT (độ chín thương mại · silhouette tài · giáp nhiều lớp · greebles mật cao · tỷ lệ cân · ngâm reference trước khi vẽ) — auditor chốt cả 2 lớp; lô đạt-số-mà-xấu vẫn redo. A im, B đã redo-1-pass; ef/coder đúng hạn (coder fix F @`3f69db32` — chờ ef re-check).
 >
