@@ -2,6 +2,7 @@
 
 - Ngày lập: **2026-10-27**. Mỗi quyết định gắn: bối cảnh, phương án, rủi ro, gate liên quan, thông tin còn thiếu.
 - Kỷ luật gate: research này **không tự xác nhận "Phase B xong"**; mọi quyết định dưới đây chờ user phê duyệt. Bằng chứng gốc ở [PHASE_B_COMMERCIAL_RESEARCH.md](./PHASE_B_COMMERCIAL_RESEARCH.md) và [SOURCES.md](./SOURCES.md).
+- **Cập nhật 2026-10-27 (vòng commercial-researcher):** D1–D12 dưới đây **đã được director chốt theo uỷ quyền của user** — bản ghi đầy đủ ở `docs/research/phase-b/DECISIONS_RESOLVED.md` (nhánh spec `20330d0e`). User vẫn giữ quyền bác bỏ từng mục. Phần **G1–G5 ở cuối file** là quyết định **mới phát sinh ở Gate-6**, chưa được chốt.
 
 | # | Quyết định | Bối cảnh / bằng chứng | Phương án | Rủi ro nếu chọn | Gate | Thông tin còn thiếu |
 |---|---|---|---|---|---|---|
@@ -22,3 +23,17 @@
 
 Nếu user muốn một cấu hình khởi điểm để bàn tiếp, nhóm nghiên cứu đề xuất (đây là **đề xuất**, không phải quyết định):
 **D1(a) · D2(a) · D3(b) hoặc (a) · D4(c) · D6(a) · D7(a) · D8(a) · D9(a) · D10(a) · D11(a) · D12(a)** — tương ứng định vị: F2P rewarded-first, không P2W, Windows nghiêng premium/IAP, Fire tablet trước, AppGallery ngoài đại lục, UA organic-first.
+
+---
+
+## BỔ SUNG — Quyết định Gate-6 (G1–G5), phát sinh khi lập requirement sheets
+
+Chi tiết bằng chứng + câu trả lời chuẩn bị sẵn: [GATE6_SUBMISSION_KITS.md](./GATE6_SUBMISSION_KITS.md).
+
+| # | Quyết định | Bối cảnh / bằng chứng | Phương án | Rủi ro nếu chọn | Gate | Thông tin còn thiếu |
+|---|---|---|---|---|---|---|
+| **G1** | **Định vị tuổi (target audience)** | Amazon: chọn audience có trẻ em ⇒ **bắt buộc** Child-Directed App (COPPA) Policy [S69][S83]; Huawei: audience có trẻ ⇒ chính sách trẻ em riêng + **consent cha mẹ** + hạn chế ads/IAP [S73]; COPPA sửa đổi 2025 cần opt-in riêng cho targeted ads [S63] | (a) 16+/không dành cho trẻ · (b) mixed có trẻ · (c) dành cho trẻ | (b)(c) tăng đáng kể nghĩa vụ pháp lý + giới hạn quảng cáo/IAP; (a) mất reach nhóm phụ huynh/trẻ | 6 | Art/âm thanh cuối cùng để xác nhận mức bạo lực hoạt hình |
+| **G2** | **Privacy policy: nơi host + ai là data controller** | MS bắt buộc **privacy policy URL** trong Partner Center, policy phải nêu loại bên nhận dữ liệu [S81]; Amazon bắt buộc policy khi thu thập dữ liệu gắn cá nhân [S84]; Huawei bắt buộc **URL trong AGC + link in-app** [S71] | (a) trang riêng trên domain dự án · (b) GitHub Pages · (c) dịch vụ tạo policy | (b)(c) rẻ nhưng dễ thiếu chi tiết; policy sai nội dung = fail cert/gỡ app | 6 | User chọn nơi host; tên pháp nhân/địa chỉ liên hệ (liên quan D5) |
+| **G3** | **EU DSA trader status** | MS: dev là "Trader" phải nộp DUNS/giấy tờ doanh nghiệp, trạng thái ở Legal info → Developer [S82]; Apple/Google đã gỡ app không khai từ 2025 (tham chiếu chung, BT3) | (a) khai trader + địa chỉ/điện thoại công khai · (b) khai non-trader | (a) địa chỉ công khai trên PDP EU; (b) rủi ro gỡ khỏi EU nếu thực tế có doanh thu | 6 | User quyết (dữ liệu cá nhân) — gộp với D5; trạng thái DSA của Amazon/Huawei còn `UNKNOWN` |
+| **G4** | **Account/cloud save có trong MVP?** | Spec: MVP **không** có Arena/PvP/event/VIP [spec GAMEPLAY §7.2]; game gốc có account + cloud save (`Board_AccountSettings`, `Board_LinkAccount`) | (a) không — save local · (b) có account/cloud | (b) thêm User IDs/nickname vào **cả 3 form**, và phải khai lại khi mở PvP | 6 | User chọn; ảnh hưởng trực tiếp khối lượng khai báo |
+| **G5** | **Chốt danh sách SDK để khai** | Amazon + Huawei **bắt buộc** khai dữ liệu do third-party SDK thu thập [S66][S87]; D11 để SDK cụ thể ở Gate-4 | chờ Gate-4 | Khai thiếu SDK = form chưa hoàn chỉnh ⇒ Amazon **không cho publish/update** (từ Q2/2025) [S66] | 4 → 6 | Chốt SDK analytics/ads/CMP ở Gate-4 |
