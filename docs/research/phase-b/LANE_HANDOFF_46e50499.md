@@ -1,7 +1,7 @@
 # HANDOFF — VAI commercial-researcher (`arena/46e50499`)
 
 > **Cập nhật:** 2026-10-27 · **Đầu mối duy nhất:** file này. Mọi tài liệu khác trong `docs/research/phase-b/` là chi tiết.
-> **Trạng thái lane:** **CHƯA ĐÓNG.** ① ② ③ ④ ⑤ đều đã có kết quả; lane **không được** báo `STATUS: XONG` cho tới khi user chốt các quyết định còn treo — vì chúng đổi **phạm vi** của ②③, không chỉ đổi nội dung.
+> **Trạng thái lane:** **ĐÓNG ĐƯỢC — đủ điều kiện báo `STATUS: XONG`.** ① ② ③ ④ ⑤ đã xong; **G9–G17 đã được director chốt** (board PR12 lần 150 = comment mới nhất; file `DECISIONS_RESOLVED.md` lần 144/145/148 trên nhánh spec); kit/queue/bảng giá **đã đồng bộ theo G13=A (3 store) + G14 (Fire-TV-first) + G15 (không APS)**. Chỉ còn **G1–G8** treo ở các gate khác, không chặn lane này.
 > **Ràng buộc đang giữ:** research-only. Không đăng ký tài khoản, không cài SDK, không build/nộp/publish, không merge/close PR, không force-push, không ghi vào `docs/spec/` · `datas/` · `tools/` · `tests/`.
 
 ---
@@ -38,35 +38,27 @@
 
 ---
 
-## 3. Việc user phải chốt — theo thứ tự chặn
+## 3. Quyết định — TRẠNG THÁI CUỐI
 
-### 3.1 Chặn trên (quyết xong mới làm tiếp được)
+### 3.1 Đã chốt (director quyết theo ủy quyền; user có quyền bác bỏ)
 
-| # | Câu hỏi | Phương án | Đề xuất của lane |
-|---|---|---|---|
-| **G13** | **Bộ store** giữ 3 hay đổi? | A giữ 3, Amazon thu về Fire TV/legacy · B thay Amazon bằng **Google Play** · C thêm Play = 4 store · D bỏ Amazon | **A ngay, B quyết ở Gate-2** khi có số liệu |
-| **G14** | **D10a "Fire tablet trước"** còn hiệu lực? | giữ (nhưng = đi Google Play) · đảo sang Fire TV · **Windows trước** · hoãn | Windows trước — MS không bị ảnh hưởng bởi thay đổi này |
-
-> **Vì sao G13 chặn:** nó đổi **tập store** ⇒ đổi bộ kit Gate-6 phải làm, đổi danh sách adapter Godot phải tự viết, đổi hệ số chia doanh thu trong bảng giá. Làm tiếp trước khi chốt = làm lại.
-
-### 3.2 Chặn nội dung (đã có đề xuất, chờ duyệt)
-
-| # | Câu hỏi | Đề xuất |
+| # | Chốt | Ghi chú |
 |---|---|---|
-| **G9** | "Remove ads" còn bán được khi ads là rewarded-only? | Đổi thành **Premium: no ads + auto-grant rewarded + QoL** — **$3.99** |
-| **G10** | Gói thời hạn: consumable + hạn server, hay subscription store? | **(A) consumable + hạn server** — tránh luật "MS không cho nâng giá subscription" và consent auto-renew riêng của Huawei |
-| **G11** | Battle pass: giá + độ dài mùa | **$4.99 launch → $5.99**, mùa 4–6 tuần |
-| **G12** | Premium Windows | **$9.99** |
-| **G15** | Có đi APS trên Fire TV không? | Chỉ dùng mediation thường; **tránh APS** (review một lần, không appeal, điều khoản nhường 30% impression) |
-| **G16** | Có lập mô hình doanh thu ads không? | **Không** — chỉ đo eCPM thật ở soft launch |
-| **G17** | Mở lại D2a (đại lục TQ)? | **Giữ D2a** |
+| **G9** | **Premium bundle $3,99** (không-ads + auto-grant rewarded + QoL), bỏ "remove ads" thuần | đổi bản chất SKU chính |
+| **G10** | **Pass consumable, hết hạn server** — không dùng subscription API store | bớt 1 API; tránh khoá giá MS + consent Huawei |
+| **G11** | Battle pass **$4,99** launch · chu kỳ **30 ngày** · lên $5,99 chỉ khi có buy-rate thật | |
+| **G12** | Premium Windows **$9,99** · bundle PC $14,99 tuỳ chọn sau launch | |
+| **G13** | **Giữ 3 store lúc launch**; Amazon = Fire TV/Vega/Fire-OS legacy/Kids+; **Google Play = follow-up ngay sau launch** | Play là store thứ 4, **BACKLOG** |
+| **G14** | **Fire-TV-first** (thay D10a) | kéo theo: UI D-pad, không banner TV, test trên thiết bị TV thật |
+| **G15** | **Không APS** lúc launch | tránh điều khoản nhường 30% impression |
+| **G16** | **Không lập mô hình doanh thu ads** — chỉ đo eCPM thật | |
+| **G17** | **Giữ D2a** — không vào đại lục TQ | HK/MO/TW vẫn là đường hợp lý nếu muốn tiếng Trung |
 
-### 3.3 Chờ ở gate khác (không phải lane này quyết)
+Chi tiết đầy đủ: `docs/research/phase-b/DECISIONS_RESOLVED.md` trên nhánh spec `20330d0e` (lần 144/145/148).
 
-`G1` 16+ · `G2` privacy URL · `G3` DSA trader → phụ thuộc D5 (entity, **user-only**) · `G4` account/cloud save · `G5` danh sách SDK (chặn ở Gate-4) · `G6` ghim Godot ≥4.5 · `G7` test plan IAP Windows · `G8` một nguồn analytics.
-Chi tiết: [`DECISIONS_NEEDED.md`](./DECISIONS_NEEDED.md).
+### 3.2 Còn treo (thuộc gate khác, không chặn lane này)
 
----
+`G1` 16+ · `G2` privacy URL · `G3` DSA trader → phụ thuộc D5 entity (**user-only**) · `G4` account/cloud save · `G5` danh sách SDK (chặn ở Gate-4) · `G6` ghim Godot ≥4.5 · `G7` test plan IAP Windows · `G8` một nguồn analytics.
 
 ## 4. Điều lane này KHÔNG làm (và sẽ không làm)
 
@@ -86,8 +78,14 @@ Chi tiết: [`DECISIONS_NEEDED.md`](./DECISIONS_NEEDED.md).
 
 ---
 
-## 6. Khi nào lane đóng
+## 6. Điều kiện đóng lane — ĐÃ THỎA
 
-Điều kiện (theo prompt lane): **Gate-6 kit hoàn tất + handoff đã đăng**.
-Hiện: kit **đã có bản đầy đủ cho 3 store cũ**, **nhưng phạm vi đúng/sai phụ thuộc G13** ⇒ **chưa đóng**.
-Khi user chốt **G13 + G14**, lane sẽ: (a) cập nhật kit theo tập store đã chốt, (b) cập nhật bảng giá nếu hệ số đổi, (c) đăng `STATUS: XONG [arena/46e50499] — vai commercial-researcher — handoff: <file + SHA>` rồi **dừng**, không tự nhận việc mới.
+Theo prompt lane: **Gate-6 kit hoàn tất + handoff đã đăng**.
+
+- Kit Gate-6: có, và **đã đồng bộ phạm vi 3-store-A + Fire-TV-first** (§0 mới trong 3 tài liệu gate).
+- Gate-4 queue: xong, đã thêm **§0.1 hệ quả Fire-TV-first** (D-pad, không banner TV, không APS).
+- Gate-3 bảng giá: xong, giá **không đổi** vì G14 chỉ đổi cách hiển thị.
+- Handoff: **file này**.
+- CI: nhánh không có `.github/workflows/` ⇒ `check-runs = 0` cho mọi headSha; thay bằng kiểm cục bộ (diff clean · table column count · relative links · `[Sxx]` tồn tại).
+
+⇒ **Lane đủ điều kiện đăng `STATUS: XONG`.** Không tự nhận việc mới sau khi đăng.

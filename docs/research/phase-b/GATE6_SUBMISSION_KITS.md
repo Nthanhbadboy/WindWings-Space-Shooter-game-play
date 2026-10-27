@@ -10,6 +10,22 @@
 
 ---
 
+## §0. PHẠM VI ĐÃ CHỐT (đồng bộ board PR12 lần 150 + `DECISIONS_RESOLVED.md` lần 144/145/148)
+
+> Khối này **thay thế** mọi chỗ trong tài liệu còn ngụ ý "Fire tablet trước" hoặc "chờ user chốt G9–G17". Các quyết định dưới đây do **director quyết theo ủy quyền**, **user có quyền bác bỏ** — nếu bác, phần tương ứng phải làm lại.
+
+| Quyết định | Chốt | Ảnh hưởng trực tiếp tới tài liệu này |
+|---|---|---|
+| **G13** | **Giữ 3 store lúc launch** (MS · Amazon · Huawei); Amazon thu về **Fire TV / Vega / Fire-OS legacy / Kids+**; **Google Play = follow-up ngay sau launch** (store thứ 4) | Kit/queue/giá làm cho **3 store cũ**; phần Google Play là **BACKLOG-Post-launch**, không làm bây giờ |
+| **G14** | **"Fire TV + Fire-OS legacy trước"** (thay D10a "Fire tablet trước"); tablet Amazon mới đi Google Play | **Fire TV = remote/D-pad, không cảm ứng** ⇒ UI và luồng IAP phải dùng điều hướng phím |
+| **G15** | **Không tích hợp APS** lúc launch | Không có mục APS trong danh sách SDK phải làm; ads Fire TV quyết ở gate tương ứng |
+| **G16** | **Không lập mô hình doanh thu ads** — chỉ đo eCPM thật ở soft-launch | Không có bảng "doanh thu ads kỳ vọng"; chỉ có công thức |
+| **G17** | **Giữ D2a** — không vào đại lục Trung Quốc | Huawei = AppGallery **ngoài** đại lục; TQ chỉ là backlog có điều kiện |
+| **G9** | Premium bundle **$3,99** (không-ads + auto-grant rewarded + QoL) — không bán "remove ads" thuần | SKU chính là Premium |
+| **G10** | **Non-renewing pass consumable** — không dùng subscription API store | Bớt 1 API surface; tránh khoá giá MS + consent auto-renew Huawei |
+| **G11** | Battle pass **$4,99** launch, chu kỳ **30 ngày**; lên $5,99 chỉ sau khi có buy-rate thật | Bảng giá P5 |
+| **G12** | Premium Windows **$9,99**; bundle PC $14,99 tuỳ chọn sau launch | Bảng giá P6/P7 |
+
 ## 0. Kết luận điều hành (đọc 30 giây)
 
 | Store | Form bắt buộc để được publish | Chặn publish nếu thiếu? | Ai/cái gì sinh ra nó |
@@ -110,6 +126,9 @@ Rủi ro cho ta: D5 đang là **Individual** ⇒ hai khả năng: (a) Individual
 ---
 
 ## 3. AMAZON APPSTORE — kit
+
+> **Phạm vi kit này (theo G14):** áp cho **Fire TV / Vega / Fire-OS legacy**, **không** áp cho **Alexa Tablet** (đi Google Play — BACKLOG-Post-launch). Vì Fire TV **không có cảm ứng**, mọi ảnh chụp màn hình/asset dùng cho review phải là **ảnh UI điều hướng bằng remote**, và danh mục thiết bị khi khai "Target Your App" phải chọn **Fire TV**, không chọn tablet.
+
 
 ### 3.1 Màn "Target Your App" có 5 phần
 

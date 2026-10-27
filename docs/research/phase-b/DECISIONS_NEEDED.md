@@ -3,6 +3,7 @@
 - Ngày lập: **2026-10-27**. Mỗi quyết định gắn: bối cảnh, phương án, rủi ro, gate liên quan, thông tin còn thiếu.
 - Kỷ luật gate: research này **không tự xác nhận "Phase B xong"**; mọi quyết định dưới đây chờ user phê duyệt. Bằng chứng gốc ở [PHASE_B_COMMERCIAL_RESEARCH.md](./PHASE_B_COMMERCIAL_RESEARCH.md) và [SOURCES.md](./SOURCES.md).
 - **Cập nhật 2026-10-27 (vòng commercial-researcher):** D1–D12 dưới đây **đã được director chốt theo uỷ quyền của user** — bản ghi đầy đủ ở `docs/research/phase-b/DECISIONS_RESOLVED.md` (nhánh spec `20330d0e`). User vẫn giữ quyền bác bỏ từng mục. Phần **G1–G5 ở cuối file** là quyết định **mới phát sinh ở Gate-6**, chưa được chốt.
+- **Cập nhật cuối 2026-10-27 (đồng bộ board PR12 lần 150):** **G9–G17 ĐÃ CHỐT** — G9–G12 (lần 144), G13–G15 (lần 145), G16–G17 (lần 148) trong `DECISIONS_RESOLVED.md`. Chốt gọn: **G9** Premium $3,99 thay "remove ads" · **G10** pass consumable không dùng subscription API · **G11** battle pass $4,99/30 ngày · **G12** Premium Windows $9,99 · **G13** giữ 3 store, Google Play = follow-up sau launch · **G14** Fire-TV-first · **G15** không APS · **G16** không mô hình ads · **G17** giữ D2a. **Chỉ còn G1–G8 treo.** Bảng dưới giữ nguyên làm vết câu hỏi gốc.
 
 | # | Quyết định | Bối cảnh / bằng chứng | Phương án | Rủi ro nếu chọn | Gate | Thông tin còn thiếu |
 |---|---|---|---|---|---|---|
