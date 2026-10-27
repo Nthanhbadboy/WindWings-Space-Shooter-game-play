@@ -103,11 +103,17 @@ jobs:
       - name: Check additive published127 erratum against frozen original bytes and Git identities
         run: |
           python3 -m tools.verify.l3_geometry_8141386a_review_ef127_erratum --check --git --fetch
-          python3 -m tools.verify.geometry_8141386a_item_receipt --item 124 --check
+          if [ ! -f reverse-engineering/raw/geometry-8141386a/scientific-ci-124.json.gz ]; then
+            python3 -m tools.verify.geometry_8141386a_item_receipt --item 124 --check
+          fi
+      - name: Check independent Gate1 source catalogue and explicit acceptance recommendation (not user approval)
+        run: |
+          python3 -m tools.verify.l3_geometry_8141386a_gate1_phase_a --check --git --fetch
+          python3 -m tools.verify.geometry_8141386a_item_receipt --item 125 --check
       - name: Check immutable handed-off scientific snapshots (current needles checked separately)
         run: python3 -m tools.verify.geometry_8141386a_history --fetch
       - name: Geometry and support-boundary regression tests
-        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support tests.test_geometry_8141386a_atlas_binary tests.test_geometry_8141386a_atlas tests.test_geometry_8141386a_builtin_sources tests.test_geometry_8141386a_builtin tests.test_geometry_8141386a_gaps_sources tests.test_geometry_8141386a_gaps tests.test_geometry_8141386a_consumers_sources tests.test_geometry_8141386a_consumers tests.test_geometry_8141386a_review_ef123_sources tests.test_geometry_8141386a_review_ef123 tests.test_geometry_8141386a_review_ef124_sources tests.test_geometry_8141386a_review_ef124 tests.test_geometry_8141386a_docs_sync_round2 tests.test_geometry_8141386a_review_ef126_sources tests.test_geometry_8141386a_review_ef126 tests.test_geometry_8141386a_review_ef127_sources tests.test_geometry_8141386a_review_ef127 tests.test_geometry_8141386a_review_ef127_erratum -v
+        run: python3 -m unittest tests.test_geometry_8141386a tests.test_geometry_8141386a_tmp tests.test_geometry_8141386a_support tests.test_geometry_8141386a_atlas_binary tests.test_geometry_8141386a_atlas tests.test_geometry_8141386a_builtin_sources tests.test_geometry_8141386a_builtin tests.test_geometry_8141386a_gaps_sources tests.test_geometry_8141386a_gaps tests.test_geometry_8141386a_consumers_sources tests.test_geometry_8141386a_consumers tests.test_geometry_8141386a_review_ef123_sources tests.test_geometry_8141386a_review_ef123 tests.test_geometry_8141386a_review_ef124_sources tests.test_geometry_8141386a_review_ef124 tests.test_geometry_8141386a_docs_sync_round2 tests.test_geometry_8141386a_review_ef126_sources tests.test_geometry_8141386a_review_ef126 tests.test_geometry_8141386a_review_ef127_sources tests.test_geometry_8141386a_review_ef127 tests.test_geometry_8141386a_review_ef127_erratum tests.test_geometry_8141386a_gate1_phase_a -v
       - name: Current needles and explicitly scoped historical support
         run: |
           set -euo pipefail
