@@ -16,7 +16,7 @@
 |---|---|
 | audit (30/39/40) nói | nội dung hai blob `Board_PVP` (`rewardValues`, `rewardScales`) **cần dữ liệu được phục vụ** |
 | `.ctor` (19796420, 500 B / 125 lệnh) đo được | **bảy** collection, **sáu** mảng độ dài **6** dựng bằng `RuntimeHelpers.InitializeArray` từ `<PrivateImplementationDetails>` — dữ liệu **nằm trong APK** |
-| thêm | `+0x1b0` = `List<object>`, **không có** trong bảng field trước đó (cả 133 lẫn 173) |
+| thêm | `+0x1b0` = `List<object>`, **không có** trong bảng field trước đó (133 liệt kê đúng sáu mảng, không có `+0x1b0`; 149 và 169 dựa trên bảng đó) |
 | còn thiếu | **ghép ô → blob**: cần bảng *metadata usage*, repo không có (`ia-resolved.json` có 17 bucket, không có `Board_PVP`) |
 
 Nói cách khác: câu hỏi không còn là "chờ server trả gì", mà là "ô `0x2ae0008` trỏ tới blob nào" — một việc **PIN-RAW**, không phải việc thiết bị.
@@ -30,15 +30,15 @@ Nói cách khác: câu hỏi không còn là "chờ server trả gì", mà là "
 | `+0x198` | array | **6** | `0x2ae0008` | `0x2add318` | `InitializeArray` (19796684) |
 | `+0x1a0` | array | **6** | `0x2ae0010` | `0x2add318` | 19796716 |
 | `+0x1a8` | array | **6** | `0x2ae0018` | **`0x2add350`** | 19796748 |
-| `+0x1b0` | **`List<object>`** | — | `0x2ae0028` (tham số) | `List<object>..ctor` | 19796772 |
+| `+0x1b0` | **`List<object>`** | — | `0x2ae0028` (class cell `0x2ae0020`) | `List<object>..ctor` | `object_new` 19796772 + ctor (29193868), store 19796776 |
 | `+0x208` | array | **6** | `0x2ae0030` | `0x2add318` | 19796804 |
 | `+0x210` | array | **6** | `0x2ae0038` | `0x2add318` | 19796836 |
 | `+0x218` | array | **6** | `0x2ae0040` | `0x2add318` | 19796876 |
 
 Hai chi tiết đáng chú ý:
 
-1. **`+0x1a8` dùng lớp phần tử khác** (`0x2add350` thay vì `0x2add318`) — đúng như 133 nói `rewardScales` là `float[]` còn các mảng kia là `int[]`. Đây là bằng chứng độc lập cho kiểu phần tử, lấy từ chính ctor chứ không từ khai báo.
-2. **`+0x1b0` là `List<object>`** — dựng bằng cặp `il2cpp_codegen_object_new` + `List<object>..ctor` (29193868), không qua `newarr`/`InitializeArray`. Nó được đọc ở 19800320 (`OnLoaded`), 19811460 (`<IESummarySeasonRewards>b__1`) và trong `MoveNext` — tức là danh sách làm việc của màn PvP, không phải bảng thưởng.
+1. **`+0x1a8` dùng lớp phần tử khác** (`0x2add350` thay vì `0x2add318`) — đúng như 133 nói `rewardScales` là `float[]` còn các mảng kia là `int[]`. 133 đã ghi `float[]` theo khai báo `dump.cs`; đây là **xác nhận độc lập từ mã máy** — ô lớp phần tử khác đi đúng ở mảng thứ ba.
+2. **`+0x1b0` là `List<object>`** — dựng bằng cặp `il2cpp_codegen_object_new` + `List<object>..ctor` (29193868), không qua `newarr`/`InitializeArray`. Nó được đọc ở `19800320` (`<IELoadDataPlay>g__OnLoaded|2`, host `<>c__DisplayClass118_0`), `19811460` và `19811608` (`<IESummarySeasonRewards>b__1`, host `<>c__DisplayClass79_0`), và **6 điểm** trong `<IELoadDataPlay>d__118.MoveNext` (tổng **9** lần `ldr …#0x1b0` trên toàn bộ slice `Board_PVP*`) — tức là danh sách làm việc của màn PvP, không phải bảng thưởng.
 
 `.ctor` kết thúc bằng nhảy tới `Board..ctor` (19131072) — đúng thứ tự khởi tạo của một `MonoBehaviour` con.
 
