@@ -234,6 +234,17 @@ def main() -> int:
              sum(1 for r in linked if r["s0_probe"] not in s0_ids), 0)
     check_eq("PS-01 gắn đúng S0-01 (luật 3 §5.7)",
              next(r["s0_probe"] for r in w1 if r["uid"] == "PS-01"), "S0-01")
+    import re
+    risks = re.findall(r"^\| \*\*(R\d+)\*\* \|", text["plan"], re.M)
+    check_eq("mã rủi ro không trùng", len(risks), len(set(risks)))
+    check_eq("số rủi ro §6", len(risks), 13)
+    sec8 = text["plan"].split("## 8. Còn thiếu")[1]
+    items = re.findall(r"^\| (\d+) \|", sec8, re.M)
+    check_eq("mục §8 liên tục 1..15",
+             [int(x) for x in items], list(range(1, len(items) + 1)))
+    check_eq("số mục §8", len(items), 15)
+    for name, doc in (("plan", text["plan"]), ("w1", text["w1"]), ("w0", text["w0"])):
+        check_eq(f"{name}: không còn 'pilot 20 asset'", doc.count("pilot 20 asset"), 0)
     for token in ("### 5.8", "**R11**", "**R12**", "**R13**", "| 13 | **Ngân sách màu",
                   "| 14 | **Canvas đạn orb**", "| 15 | **10/27 slot"):
         ok = token in text["plan"]

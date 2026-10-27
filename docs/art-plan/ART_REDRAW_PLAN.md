@@ -40,7 +40,7 @@
 | [`W0_LISTING_ASSETS.md`](W0_LISTING_ASSETS.md) + [`w0-listing-slots.csv`](w0-listing-slots.csv) | 27 slot listing 3 store | `verify_numbers.py` |
 | [`s0-pilot-pack.csv`](s0-pilot-pack.csv) | 16 asset pilot của S0 (§5.7) | `verify_numbers.py` |
 | [`measure_asset.py`](measure_asset.py) | đo sprite theo §4.9 + tái lập 9 recipe | `--recipe` |
-| [`verify_numbers.py`](verify_numbers.py) | **170 phép kiểm** trên toàn bộ hồ sơ | exit 0 |
+| [`verify_numbers.py`](verify_numbers.py) | **177 phép kiểm** trên toàn bộ hồ sơ | exit 0 |
 
 **Một câu chốt:** kho hiện có **không phải** 2.197 sprite phải vẽ — nó là **2.185 bản ghi**, trong đó
 **788 đơn vị vẽ thật**, và chỉ **801 bản ghi (37 %) là cần vẽ cho bản L3 khuyến nghị**; **1.451 h (37 %)**
@@ -727,9 +727,9 @@ Không có ④ thì cả lịch 50,3 tuần là số chưa kiểm.
 
 | Wave | Phải đo / chứng minh | Nếu trượt thì |
 |---|---|---|
-| **S0** | 9 recipe khớp số (§4.5) · 16 asset pilot có `val/val_std/dark/chroma` trong dải · `fill` thật ⇒ quyết 12 hay 14–16 page · giờ thật/asset vs kế hoạch | **không mở W1**; sửa recipe/rate trước (rủi ro S2, R10) |
+| **S0** | 9 recipe khớp số (§4.5) · 16 asset pilot có `val/val_std/dark/chroma` trong dải · `fill` atlas thật (`Σ area / fill`, §4.8) ⇒ quyết 12 hay 14–16 page · giờ thật/asset vs kế hoạch | **không mở W1**; sửa recipe/rate trước (rủi ro S2, R10) |
 | **W1 (L2)** | 13 unit qua A1·A2·A4·A5·A6·A7·A9·**A13** · **G-C** (tương phản 0,45–0,80) + **G-F** (đọc trong 0,2 s) trên ảnh gameplay 1080×1920 | sửa palette trước khi mở W2 (R3); không vẽ thêm |
-| **W2** | 7 batch gameplay: G-C + G-F lặp lại · `fill` của `enemy`/`bullet` khớp 0,10/0,22 · **1 bg full** để chốt `colors` + `dark ≥ 0,55` (§8 #13) | dừng ở W2a; W2b (tàu + nền) chưa mở |
+| **W2** | 7 batch gameplay: G-C + G-F lặp lại · `fill` atlas của `enemy`/`bullet` khớp 0,10/0,22 (§4.8) · **`colors` đếm được trên art thật**: enemy 30–60, bullet 24–40 · **1 bg full** để chốt `colors` 30–50 + `dark ≥ 0,55` (§8 #13) | dừng ở W2a; W2b (tàu + nền) chưa mở |
 | **W3** | **1 boss full** chốt `colors` 110–160 + ≥ 1 khối phá được · A4 silhouette trên 512² | boss không đạt ⇒ chuyển sang Spine và **cộng riêng** (§8 #6, R4) |
 | **W4** | icon đọc được ở **48 px** (dùng lại A-L5 của W0) · `C ≤ 0,14` cho toàn bộ UI icon | gộp W4 vào W5 thay vì vẽ 2 lần |
 | **W5** | 9-slice kéo 3 kích thước (G-D) · `colors` 40–70 · toàn bộ luồng UI chạy được trên build | cắt W5a/W5b theo §5.6 |
@@ -752,10 +752,9 @@ Không có ④ thì cả lịch 50,3 tuần là số chưa kiểm.
 | **R8** | Spine 27 rig / 577 region cũng **không** nằm trong 2.185 | cao | ngoài ước lượng | `ASSETS` §6 đã có spec rig lại; cộng riêng khi chốt boss dùng Spine |
 | **R9** | Asset trôi sang repo (vi phạm §8 legal) | thấp | chặn phát hành | G-E + `.gitignore` + metadata license |
 | **R10** | Ước lượng giờ là **(C)**, không phải đo | — | ±25 % | hiệu chỉnh sau **pilot 16 asset** (§5.7); ghi giờ thật vào `rule_hint` rồi sửa `rate` **một lần** |
-| **R11** | **Lỗi công thức L2** (đã xảy ra 1 lần: chia cho `n_records` thay vì `kept_records`, và tính L2 từ `tier_rate` thay vì đơn giá của dòng) | đã xảy ra | lệch **±29 h ở W1** mà không ai thấy | `verify_numbers.py` §3 kiểm `l2_h_v3 ≤ h_scope_v2` cho **651/651 dòng**; mọi số L2 phải suy từ `h_scope_v2` của chính dòng |
+| **R11** | **Lỗi công thức L2** (đã xảy ra 1 lần: chia cho `n_records` thay vì `kept_records`, và tính L2 từ `tier_rate` thay vì đơn giá của dòng) | đã xảy ra 2 lần | sai lọt qua mắt người (`dot` AP-0025 ra **4,80 h > 3,12 h** scope của chính nó) | `verify_numbers.py` §3 đếm số dòng `l2_h_v3 > h_scope_v2` = **0 trên 655 dòng**; mọi số L2 phải suy từ `h_scope_v2` của chính dòng |
 | **R12** | **Pilot và wave đếm trùng giờ** (S0-01 = PS-01, cùng tàu `10001`) | trung bình | 4,2 h | §5.7 luật 3: mặc định pilot **không** vào build; nếu promote thì **trừ** ở W1 và ghi vào `rule_hint` |
 | **R13** | **Cỡ ảnh store xung đột với thiết kế dọc** (MS ≥ 1366×768 · Amazon chỉ 7 cỡ ngang) | cao | chặn 10/27 slot W0 | `W0_LISTING_ASSETS.md` §4 (W0-R1/R2) — **cần user quyết**, không tự chọn |
-| **R10** | Ước lượng giờ là **(C)**, không phải đo | — | ±25 % | hiệu chỉnh sau pilot 20 asset; ghi lại giờ thật vào planner |
 
 **Giả định đã dùng (tất cả là (C)):** 1 artist làm được 32 h/tuần có ích · rate §3.2 đúng với đội
 biết dùng vector + raster · không có asset nào phải làm lại vì đổi art direction giữa đường ·
@@ -850,7 +849,6 @@ brand kit lấy được từ Apple/Google (nếu không, cắt toàn bộ IAP v
 | # | Điều | Trạng thái | Cách đóng |
 |---|---|---|---|
 | 1 | Giờ/asset thật của đội | **(C)** — chưa có mẫu | **pilot 16 asset** ở S0 (§5.7), ghi giờ thực |
-| 1 | Giờ/asset thật của đội | **(C)** — chưa có mẫu | pilot 20 asset ở S0, ghi giờ thực |
 | 2 | ~~`reuse` thật của 32 nhóm biến thể lớn~~ | **ĐÓNG (A)** — đo bằng IoU mặt nạ trên 1.901 sprite (§3.6): 17/18 nhóm là thiết kế riêng, chỉ `hotro` là họ biến thể | đã thay vào `de_est` / `reuse_est`; re-baseline v2 = +346,0 h |
 | 3 | 340 `unresolved` là gì | **chưa biết** | sprint 17 sheet (§1.4) |
 | 4 | 12 mảnh `B-PART` nào là khối phá được | **(C)** | chốt với designer ở W3 |
