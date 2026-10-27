@@ -376,15 +376,25 @@ def main() -> int:
     sr = receipts["checks"]["source_reconciliation"]
     sr["status"] = "PASS" if all(sr[k].get("status") == "PASS" for k in sr) else (
         "UNVERIFIABLE" if all(sr[k].get("status") == "UNVERIFIABLE" for k in sr) else "FAIL")
-    identical = {}
+    identical, payload_equal = {}, {}
     for name, canon_path in (("iap_products.json", "datas/iap_products.json"),
                              ("items.json", "datas/items.json"),
                              ("enemy_hp_by_id.json", "datas/enemy_hp_by_id.json")):
         cpath = canon / canon_path
-        identical[name] = bool(cpath.exists()) and sha256(data_dir / name) == sha256(cpath)
+        if not cpath.exists():
+            identical[name] = payload_equal[name] = False
+            continue
+        identical[name] = sha256(data_dir / name) == sha256(cpath)
+        strip = lambda o: {k: strip(v) for k, v in o.items() if k not in
+                           {"source", "source_sha256", "evidence", "note", "dedup_rule"}} if isinstance(o, dict) \
+            else [strip(x) for x in o] if isinstance(o, list) else o
+        payload_equal[name] = strip(json.loads((data_dir / name).read_text())) == \
+            strip(json.loads(cpath.read_text()))
     receipts["checks"]["canonical_identity"] = {
-        "status": "PASS" if all(identical.values()) else "FAIL",
+        "status": "PASS" if all(payload_equal.get(k, True) for k in payload_equal) else "FAIL",
         "byte_identical_to_datas": identical,
+        "payload_identical_to_datas": payload_equal,
+        "note": "byte identity is expected to break once provenance metadata is added; payload identity is the requirement",
     }
     receipts["checks"]["il2cpp_decode"] = check_il2cpp(stats, canon)
 
