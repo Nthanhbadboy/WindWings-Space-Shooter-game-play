@@ -26,7 +26,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 FONT_B = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 FONT_R = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-REF_BRANCH = "origin/arena/20330d0e-windwings-space-shooter-game-p"
+REF_BRANCH = "4dfcda58b22e01d4b402244964176b59b7606a62"
 
 _SHEET_CACHE: dict[str, Image.Image] = {}
 
@@ -89,7 +89,12 @@ def render_board(out_rel: str, title: str, subtitle: str, sections: list[tuple[s
 
             ck = dark_checker(150, 150)
             sp = Image.open(os.path.join(ROOT, our_rel)).convert("RGBA")
-            sp.thumbnail((142, 142), Image.LANCZOS)
+            if max(sp.size) <= 64:
+                sc = min(112 // max(1, sp.width), 112 // max(1, sp.height))
+                if sc >= 2:
+                    sp = sp.resize((sp.width * sc, sp.height * sc), Image.BICUBIC)
+            else:
+                sp.thumbnail((142, 142), Image.LANCZOS)
             ck.alpha_composite(sp, ((150 - sp.width) // 2, (150 - sp.height) // 2))
             board.alpha_composite(ck, (x + 160, yy + 6))
             d.line([(x + 158, yy + 6), (x + 158, yy + 156)], fill=(255, 204, 24, 200), width=2)
@@ -149,55 +154,60 @@ def main():
         ],
     )
 
-    # 3. W2 ENEMY (34/34 units)
+    # 3. W2 ENEMY (34/34 units — ONLY single-unit Sprite tiles, NEVER sactx packed Texture2D atlases #28..#31!)
     w2 = json.load(open(os.path.join(HERE, "w2-enemy-b/w2b_units.json"), encoding="utf-8"))
     ebody = [r for r in w2 if r["batch"] == "E-BODY"]
     ebul = [r for r in w2 if r["batch"] == "E-BULLET"]
-    ref_enemy_tiles = [1, 16, 28, 29, 30, 31]
+    clean_enemy_refs = [
+        ("enemy-01.jpg", 1),
+        ("items-01.jpg", 1),
+        ("items-01.jpg", 2),
+        ("items-01.jpg", 3),
+        ("unclassified-24.jpg", 35),
+        ("unclassified-24.jpg", 36),
+        ("enemy-01.jpg", 16),
+    ]
     def enemy_reference(r, i):
-        # Explicit auditor anchors for the five diagnostically important rows;
-        # other rows are labelled visual analogues, not invented ID bindings.
         special = {
             "swarmling_pod": ("enemy-01.jpg", 1),
             "beetle_cruiser": ("items-01.jpg", 2),
             "phantom_hex": ("items-01.jpg", 3),
-            "scout_dart": ("enemy-01.jpg", 30),
+            "scout_dart": ("enemy-01.jpg", 16),
+            "viper_lance": ("items-01.jpg", 1),
+            "wasp_raider": ("unclassified-24.jpg", 35),
+            "manta_glider": ("unclassified-24.jpg", 36),
             "hp_pip_bar": ("enemy-01.jpg", 2),
         }
-        sheet, tile = special.get(r["variant"], ("enemy-01.jpg", ref_enemy_tiles[i % len(ref_enemy_tiles)]))
+        sheet, tile = special.get(r["variant"], clean_enemy_refs[i % len(clean_enemy_refs)])
         return crop_tile(sheet, tile)
     ebody_pairs = [(f"{r['row_id']} {r['variant']}", enemy_reference(r, i), f"art/w2-enemy-b/{r['file']}") for i, r in enumerate(ebody)]
-    ref_ebul_tiles = [19, 20, 21, 22, 23, 24, 25, 26, 3, 4, 8]
+    ref_ebul_tiles = [20, 21, 22, 23, 24, 25, 26, 3, 4, 8, 9]
     ebul_pairs = [(f"{r['row_id']} {r['variant']}", crop_tile("enemy-01.jpg", ref_ebul_tiles[i % len(ref_ebul_tiles)]), f"art/w2-enemy-b/{r['file']}") for i, r in enumerate(ebul)]
     render_board(
         "art/w2-enemy-b/preview/w2b_side_by_side_ref.png",
         "W2 ENEMY (34/34) — SIDE-BY-SIDE 2.5D COMPARISON: REF <-> VARIANT B ('SOLAR NEON 2.5D')",
         sub_note,
         [
-            ("1. E-BODY (23/23): Original enemy-01.jpg Invaders <-> Variant B 2.5D Anodized Invader Hulls", ebody_pairs),
+            ("1. E-BODY (23/23): Single-Unit Enemy Sprites (enemy-01/items-01, zero sactx atlases) <-> Variant B", ebody_pairs),
             ("2. E-BULLET (11/11): Original enemy-01.jpg Projectiles <-> Variant B 2.5D Glowing Hazard Munitions", ebul_pairs),
         ],
     )
 
-    # 4. W3 BOSS (42/42): map the decoded GLYPH-boss-ID, never the row index.
+    # 4. W3 BOSS (42/42): exact lookup table from docs/assets/sprites-index.csv + datas/bosses.json
     w3 = json.load(open(os.path.join(HERE, "w3-boss-b/w3b_units.json"), encoding="utf-8"))
     bbody = [r for r in w3 if r["batch"] == "B-BODY"]
     bpart = [r for r in w3 if r["batch"] == "B-PART"]
-    # datas/bosses.json + docs/assets/sprites-index.csv anchor:
-    # 7018=#1; 7001..7007=#2..#8; 7009..7017=#9..#16; 9002..9018=#17..#32.
+    BOSS_EXACT_TILE = {
+        7001: 2, 7002: 3, 7003: 4, 7004: 5, 7005: 6, 7006: 7, 7007: 7,
+        7009: 8, 7010: 9, 7011: 10, 7012: 11, 7013: 12, 7014: 13, 7015: 14, 7016: 15, 7017: 16, 7018: 2,
+        9002: 17, 9003: 18, 9004: 19, 9005: 20, 9006: 21, 9007: 22, 9008: 23, 9009: 24,
+        9010: 25, 9011: 26, 9012: 27, 9013: 28, 9014: 29, 9015: 30, 9016: 30, 9017: 31, 9018: 32,
+    }
     def decoded_boss_tile(base, fallback):
         if not base.startswith("GLYPH-boss-"):
             return fallback
         gid = int(base.rsplit("-", 1)[1])
-        if gid == 7018:
-            return 1
-        if 7001 <= gid <= 7007:
-            return gid - 6999
-        if 7009 <= gid <= 7017:
-            return gid - 7001
-        if 9002 <= gid <= 9018:
-            return gid - 8985
-        return fallback
+        return BOSS_EXACT_TILE.get(gid, fallback)
     special_tiles = [2, 3, 4]
     bbody_pairs = []
     for i, r in enumerate(bbody):

@@ -46,7 +46,7 @@ def ref_image(spec, ref):
 def candidate(path, mode):
     im = Image.open(path).convert("RGBA")
     if mode == "subject" and im.getchannel("A").getextrema() != (255, 255):
-        mask = im.getchannel("A").point(lambda a: 255 if a > 127 else 0)
+        mask = im.getchannel("A").point(lambda a: 255 if a > 8 else 0)
         bb = mask.getbbox()
         if bb: im = im.crop((max(0, bb[0] - 3), max(0, bb[1] - 3), min(im.width, bb[2] + 3), min(im.height, bb[3] + 3)))
     return im
@@ -81,12 +81,18 @@ def main():
     boards = [
         ("01_hero_calibration", "P0 HERO / decoded player IDs — REF vs Variant B", [
             ("Ship 10001 / hero candidate", tile("ships", 1), B("art/w1-player-b/sprites/ships/player_ship_01_256@solar.png")),
+            ("Ship 10004 / twin-prong gunship", tile("ships", 4), B("art/w1-player-b/sprites/ships/player_ship_04_256@solar.png")),
             ("Ship 10008 / astrolabe ring", tile("ships", 8), B("art/w1-player-b/sprites/ships/player_ship_08_256@solar.png")),
             ("Ship 10012 / mecha-valkyrie", tile("ships", 12), B("art/w1-player-b/sprites/ships/player_ship_12_256@solar.png")),
             ("Ship 10013 / articulated heavy wings", tile("ships", 13), B("art/w1-player-b/sprites/ships/player_ship_13_256@solar.png")),
+            ("Ship 10015 / tri-hull nacelles", tile("ships", 15), B("art/w1-player-b/sprites/ships/player_ship_15_256@solar.png")),
+            ("Ship 10016 / crescent phantom", tile("ships", 16), B("art/w1-player-b/sprites/ships/player_ship_16_256@solar.png")),
+            ("Ship 10025 / twin-rotor stealth", tile("ships", 25), B("art/w1-player-b/sprites/ships/player_ship_25_256@solar.png")),
+            ("Drone 20001 / sniper turret pod", tile("drones", 1), B("art/w1-player-b/sprites/drones/player_drone_01_128@cyan.png")),
             ("Drone 20004 / orb + hinged guards", tile("drones", 4), B("art/w1-player-b/sprites/drones/player_drone_04_128@cyan.png")),
+            ("Drone 20005 / twin-prong drone", tile("drones", 5), B("art/w1-player-b/sprites/drones/player_drone_05_128@cyan.png")),
         ]),
-        ("02_boss_decoded_ids", "W3 / exact decoded boss IDs 7001–7005 — REF vs Variant B", [
+        ("02_boss_decoded_ids", "W3 / exact decoded boss IDs 7001–7010 — REF vs Variant B", [
             (f"Boss {gid}", tile("bosses", tile_no), B(f"art/w3-boss-b/sprites/bodies/{file}"))
             for gid, tile_no, file in [
                 (7001, 2, "boss_body_04_citadel_mk1_512@crimson.png"),
@@ -94,13 +100,15 @@ def main():
                 (7003, 4, "boss_body_06_leviathan_mk1_512@amber.png"),
                 (7004, 5, "boss_body_07_chronos_mk1_512@violet.png"),
                 (7005, 6, "boss_body_08_seraph_mk1_512@magenta.png"),
+                (7006, 7, "boss_body_09_kraken_mk1_512@crimson.png"),
+                (7010, 9, "boss_body_11_colossus_mk1_512@amber.png"),
             ]
         ]),
-        ("03_enemy_anchors", "W2 / auditor enemy anchors — REF vs Variant B", [
+        ("03_enemy_anchors", "W2 / dedicated enemy anchors (zero player/boss reuse) — REF vs Variant B", [
             ("Orb / central core", tile("enemy", 1), B("art/w2-enemy-b/sprites/bodies/enemy_body_06_swarmling_pod_128@amber.png")),
             ("Red hull / items #2", tile("items", 2), B("art/w2-enemy-b/sprites/bodies/enemy_body_05_beetle_cruiser_128@crimson.png")),
             ("Green hull / items #3", tile("items", 3), B("art/w2-enemy-b/sprites/bodies/enemy_body_18_phantom_hex_128@violet.png")),
-            ("Narrow red dart", tile("enemy", 30, (57, 63, 84, 91)), B("art/w2-enemy-b/sprites/bodies/enemy_body_01_scout_dart_128@crimson.png")),
+            ("Narrow red dart / Enemytut #16", tile("enemy", 16), B("art/w2-enemy-b/sprites/bodies/enemy_body_01_scout_dart_128@crimson.png")),
             ("AP-0067 Enemy_Hp white fill", tile("enemy", 2), B("art/w2-enemy-b/sprites/bodies/enemy_body_22_hp_pip_bar_128@crimson.png")),
         ]),
         ("04_w5_semantics", "W5 / function-specific slots — REF vs Variant B", [

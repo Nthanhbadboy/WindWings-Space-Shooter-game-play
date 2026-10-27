@@ -34,7 +34,7 @@ def _flood_background(passable: np.ndarray) -> np.ndarray:
 def extract_painted(raw_path: str, *, crop_box=None, canvas=1024, fill=0.88,
                     rotate=None, widen=1.0, brightness=1.03, saturation=1.06,
                     contrast=1.02, remove_specks=True, cut_black=False,
-                    keep_largest=False) -> Image.Image:
+                    cut_white=False, keep_largest=False) -> Image.Image:
     """Return a transparent, centered master from a generated black-backed PNG."""
     source = Image.open(raw_path).convert("RGB")
     if crop_box is not None:
@@ -104,6 +104,13 @@ def extract_painted(raw_path: str, *, crop_box=None, canvas=1024, fill=0.88,
         # is not reachable from the crop border. Remove only true near-black
         # backing pixels; coloured armour and lit mechanical ribs remain.
         alpha[(diff < 42.0) | (np.max(arr, axis=2) < 42.0)] = 0.0
+    if cut_white:
+        # Remove enclosed pure-white background pockets (e.g. inside pincer loops)
+        # while preserving bright specular metal highlights via chroma/edge distance.
+        mx_c = np.max(arr, axis=2)
+        mn_c = np.min(arr, axis=2)
+        pure_white_pocket = (mn_c > 236.0) & ((mx_c - mn_c) < 14.0) & (diff < 36.0)
+        alpha[pure_white_pocket] = 0.0
 
     # Despill the black backing at antialiased edges without flattening metal.
     a_safe = np.maximum(alpha[..., None], 0.12)

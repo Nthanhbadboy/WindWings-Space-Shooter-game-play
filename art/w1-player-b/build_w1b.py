@@ -25,6 +25,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
 import pbr25d
 import mecha25d
+import kitbash25d
 
 AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
@@ -261,14 +262,12 @@ MECHA_LIVERIES = [
 
 def render_ship(unit_idx):
     """Render 1 of 25 commercial-grade 2.5D semi-realistic metallic starfighters at 1024x1024."""
-    liv = MECHA_LIVERIES[5 if unit_idx == 25 else ((unit_idx - 1) % 5)]
-    return mecha25d.render_commercial_ship(unit_idx, liv, os.path.join(HERE, "masters/_raw"))
+    return kitbash25d.render_w1_ship(unit_idx)
 
 
 def render_drone(unit_idx):
-    """Render 1 of 13 commercial-grade articulated escort weapon drones at 512x512."""
-    liv = MECHA_LIVERIES[5 if unit_idx == 13 else ((unit_idx - 1) % 5)]
-    return mecha25d.render_commercial_drone(unit_idx, liv)
+    """Render 1 of 13 commercial-grade articulated escort weapon drones at 1024x1024."""
+    return kitbash25d.render_w1_drone(unit_idx)
 
 
 def _unused_legacy_ship_drone(unit_idx):
@@ -718,33 +717,35 @@ def render_bullet(kind):
     im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
 
     if kind == "dronebolt":
-        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 30, 52, (0, 224, 255), strength=0.95)
-        pts = [(cx, 12), (cx + 22, 46), (cx + 14, 112), (cx, 98), (cx - 14, 112), (cx - 22, 46)]
-        pbr25d.draw_25d_glass_dome(im, pts, core_rgb=(120, 250, 255), deep_rgb=(0, 112, 210))
+        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 42, 62, (0, 224, 255), strength=0.98)
+        pts = [(cx, 4), (cx + 28, 36), (cx + 22, 122), (cx, 108), (cx - 22, 122), (cx - 28, 36)]
+        pbr25d.draw_25d_glass_dome(im, pts, core_rgb=(175, 254, 255), deep_rgb=(8, 92, 198))
     elif kind == "plasmaorb":
-        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 48, 48, (0, 226, 255), strength=0.98)
-        pts = [(cx + math.cos(a) * 34, cy + math.sin(a) * 34) for a in np.linspace(0, 2 * math.pi, 24, endpoint=False)]
-        pbr25d.draw_25d_glass_dome(im, pts, core_rgb=(180, 255, 255), deep_rgb=(12, 118, 232))
+        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 58, 58, (0, 226, 255), strength=0.98)
+        pts = [(cx + math.cos(a) * 44, cy + math.sin(a) * 44) for a in np.linspace(0, 2 * math.pi, 24, endpoint=False)]
+        pbr25d.draw_25d_glass_dome(im, pts, core_rgb=(195, 255, 255), deep_rgb=(12, 118, 232))
     elif kind == "missile":
-        pbr25d.draw_25d_plasma_bloom(im, cx, 108, 18, 22, (255, 196, 24), strength=0.95)
-        fin = [(cx - 36, 82), (cx + 36, 82), (cx + 28, 106), (cx - 28, 106)]
-        pbr25d.draw_25d_metal_poly(im, fin, TANG_BASE, TANG_SHADE, GOLD_LIGHT, metallic=0.88, greebles=False)
-        body = [(cx, 10), (cx + 21, 38), (cx + 21, 96), (cx - 21, 96), (cx - 21, 38)]
-        pbr25d.draw_25d_metal_poly(im, body, PEARL_BASE, PEARL_SHADE, PEARL_LIGHT, metallic=0.90, greebles=False)
-        head = [(cx, 10), (cx + 19, 38), (cx - 19, 38)]
-        pbr25d.draw_25d_metal_poly(im, head, GOLD_BASE, TANG_SHADE, GOLD_LIGHT, metallic=0.92, greebles=False)
+        pbr25d.draw_25d_plasma_bloom(im, cx, 108, 30, 26, (255, 198, 28), strength=0.98)
+        fin = [(cx - 50, 74), (cx + 50, 74), (cx + 42, 108), (cx - 42, 108)]
+        pbr25d.draw_25d_metal_poly(im, fin, (224, 42, 78, 255), (84, 12, 30, 255), (255, 156, 182, 255), metallic=0.90, greebles=False)
+        body = [(cx, 6), (cx + 31, 38), (cx + 31, 98), (cx - 31, 98), (cx - 31, 38)]
+        pbr25d.draw_25d_metal_poly(im, body, PEARL_BASE, PEARL_SHADE, PEARL_LIGHT, metallic=0.92, greebles=True)
+        band = [(cx - 31, 56), (cx + 31, 56), (cx + 31, 72), (cx - 31, 72)]
+        pbr25d.draw_25d_metal_poly(im, band, (48, 58, 78, 255), (22, 28, 42, 255), (172, 188, 214, 255), metallic=0.90, greebles=False)
+        head = [(cx, 6), (cx + 29, 38), (cx - 29, 38)]
+        pbr25d.draw_25d_metal_poly(im, head, GOLD_BASE, TANG_SHADE, GOLD_LIGHT, metallic=0.94, greebles=False)
     elif kind == "boltmk5":
-        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 44, 52, (255, 204, 24), strength=0.92)
-        pts = [(cx, 10), (cx + 38, 54), (cx + 22, 72), (cx + 16, 114), (cx, 96), (cx - 16, 114), (cx - 22, 72), (cx - 38, 54)]
-        pbr25d.draw_25d_metal_poly(im, pts, GOLD_BASE, TANG_SHADE, GOLD_LIGHT, metallic=0.92, greebles=False)
+        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 50, 62, (255, 204, 24), strength=0.96)
+        pts = [(cx, 4), (cx + 42, 48), (cx + 26, 74), (cx + 20, 122), (cx, 104), (cx - 20, 122), (cx - 26, 74), (cx - 42, 48)]
+        pbr25d.draw_25d_metal_poly(im, pts, GOLD_BASE, TANG_SHADE, GOLD_LIGHT, metallic=0.94, greebles=False)
     elif kind == "childbolt":
-        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 34, 48, (0, 232, 255), strength=0.95)
-        pts = [(cx, 16), (cx + 26, cy), (cx, 112), (cx - 26, cy)]
-        pbr25d.draw_25d_glass_dome(im, pts, core_rgb=(160, 252, 255), deep_rgb=(0, 128, 224))
+        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 42, 60, (0, 232, 255), strength=0.98)
+        pts = [(cx, 6), (cx + 34, cy), (cx, 122), (cx - 34, cy)]
+        pbr25d.draw_25d_glass_dome(im, pts, core_rgb=(185, 254, 255), deep_rgb=(8, 108, 218))
     else:  # beamflare
-        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 48, 48, (16, 238, 176), strength=0.96)
-        pts = [(cx + math.cos(k * math.pi / 8) * (48 if k % 2 == 0 else 16), cy + math.sin(k * math.pi / 8) * (48 if k % 2 == 0 else 16)) for k in range(16)]
-        pbr25d.draw_25d_glass_dome(im, pts, core_rgb=(190, 255, 232), deep_rgb=(8, 148, 108))
+        pbr25d.draw_25d_plasma_bloom(im, cx, cy, 58, 58, (16, 238, 176), strength=0.98)
+        pts = [(cx + math.cos(k * math.pi / 8) * (58 if k % 2 == 0 else 22), cy + math.sin(k * math.pi / 8) * (58 if k % 2 == 0 else 22)) for k in range(16)]
+        pbr25d.draw_25d_glass_dome(im, pts, core_rgb=(205, 255, 236), deep_rgb=(8, 148, 108))
     return im
 
 

@@ -5,11 +5,17 @@ Keeps metadata and audit caveats next to the art instead of leaving stale
 pass-1 numbers or claiming runtime approval.
 """
 from pathlib import Path
+import hashlib
 import json
 
 ROOT = Path(__file__).resolve().parents[2]
 BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
+
+
+def _live_stat(path: Path) -> tuple[int, str]:
+    raw = path.read_bytes()
+    return len(raw), hashlib.sha256(raw).hexdigest()[:16]
 
 
 def write_wave(wave, title, json_name, extra):
@@ -18,13 +24,14 @@ def write_wave(wave, title, json_name, extra):
     lines = [f"# {title} — current audit-response manifest", "",
              f"- **Role / Branch:** Art-designer-B · `{BRANCH}`",
              f"- **License:** `{LICENSE}` · **Author:** `{BRANCH}`",
-             "- **Status:** static inventory + visual evidence only; Art-style-auditor Layer-2 and runtime acceptance remain pending.",
-             f"- **Records:** **{len(records)}** · metadata columns: `source`, `file`, `license`, `author`, `recipe`.", ""]
-    lines += extra + ["", "| # | Row ID | Variant | Sprite | Master | Delivered px | Recipe | Val | Chroma |", "|---:|---|---|---|---|---|---|---:|---:|"]
+             "- **Status:** `[STATIC_CONFIRMED]` inventory + visual evidence · `[RUNTIME_UNVERIFIED]` (no Godot engine scene/pivot/motion test on this art-only branch; Art-style-auditor Layer-2 verdict pending).",
+             f"- **Records:** **{len(records)}** · metadata columns: `source`, `file`, `license`, `author`, `recipe`, live `bytes`, live `sha256[:16]`.", ""]
+    lines += extra + ["", "| # | Row ID | Variant | Sprite | Master | Delivered px | Bytes | SHA-256 (`[:16]`) | Recipe | Val | Chroma |", "|---:|---|---|---|---|---|---:|---|---|---:|---:|"]
     for i, r in enumerate(records, 1):
-        lines.append("| {} | `{}` | `{}` | `{}` | `{}` | `{}` | `{}` | {} | {} |".format(
+        nb, sh = _live_stat(folder / r["file"])
+        lines.append("| {} | `{}` | `{}` | `{}` | `{}` | `{}` | {} | `{}` | `{}` | {} | {} |".format(
             i, r.get("row_id", ""), r.get("variant", ""), r.get("file", ""), r.get("source", ""),
-            r.get("delivered_px", ""), r.get("recipe", ""), r.get("val", "—"), r.get("chroma", "—")))
+            r.get("delivered_px", ""), nb, sh, r.get("recipe", ""), r.get("val", "—"), r.get("chroma", "—")))
     manifest_names = {
         "w1-player-b": "W1B_MANIFEST.md", "w2-enemy-b": "W2B_MANIFEST.md",
         "w3-boss-b": "W3B_MANIFEST.md", "w4-core-b": "W4B_MANIFEST.md",
@@ -64,12 +71,13 @@ def main():
     lines = ["# W0 STORE LISTING — current audit-response manifest", "",
              f"- **Role / Branch:** Art-designer-B · `{BRANCH}`",
              f"- **License:** `{LICENSE}` · **Author:** `{BRANCH}`",
-             "- **Contract:** exact 25 slot filenames, pixel dimensions and RGB/RGBA modes retained.",
-             "- **S1–S4 status:** **CONCEPT composites from current Variant-B sprites, not Godot/runtime captures**. Recapture from the real release build before any store submission; do not upload these as claimed screenshots.",
+             "- **Contract:** exact 25 slot filenames, pixel dimensions and RGB/RGBA modes retained (`[STATIC_CONFIRMED]`).",
+             "- **S1–S4 status (`[RUNTIME_UNVERIFIED]`):** **CONCEPT composites from current Variant-B sprites, NOT Godot/runtime captures**. Recapture from the real playable Godot release build before any store submission.",
              "- **Static result:** `../audit_a71412d_response/static_validation.json` reports 25/25 contract slots and zero static errors.",
-             "", "| # | Store slot | File | Px | Mode | Source master | Recipe | Note |", "|---:|---|---|---|---|---|---|---|"]
+             "", "| # | Store slot | File | Px | Mode | Bytes | SHA-256 (`[:16]`) | Source master | Recipe | Note |", "|---:|---|---|---|---|---:|---|---|---|---|"]
     for i, r in enumerate(records, 1):
-        lines.append(f"| {i} | `{r['slot']}` | `{r['file']}` | `{r['px']}` | `{r['mode']}` | `{r['source']}` | `{r['recipe']}` | {r.get('note','')} |")
+        nb, sh = _live_stat(folder / r["file"])
+        lines.append(f"| {i} | `{r['slot']}` | `{r['file']}` | `{r['px']}` | `{r['mode']}` | {nb} | `{sh}` | `{r['source']}` | `{r['recipe']}` | {r.get('note','')} |")
     (folder / "W0B_MANIFEST.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("w0-listing-b", len(records))
 

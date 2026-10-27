@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.dirname(HERE))
 import pbr25d
 import mecha25d
 import commercial_raw
+import kitbash25d
 
 AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
@@ -608,13 +609,14 @@ def measure_rgba(im):
 def main():
     records = []
 
-    # 1. 23 E-BODY units
+    # 1. 23 E-BODY units (22 dedicated enemy hulls + AP-0067 Enemy_Hp UI pip bar)
     for idx, (row_id, base, variant, pal, recipe) in enumerate(E_BODY_SPECS, 1):
-        c4 = render_painted_enemy(variant, pal)
-        if c4 is None:
+        if variant == "hp_pip_bar":
             c4 = render_ebody(idx, variant, pal)
+            recipe_used = "b_enemy_hp_ui_strip_2554"
         else:
-            recipe = recipe + "+painted_enemy_role_master"
+            c4 = kitbash25d.render_w2_enemy(idx, variant, pal)
+            recipe_used = recipe + "+dedicated_enemy_painted_2.5d"
         m_im = downsample_straight_rgba(c4, (256, 256))
         s_im = downsample_straight_rgba(c4, (128, 128))
         fname = f"enemy_body_{idx:02d}_{variant}_128@{pal}.png"
@@ -631,7 +633,7 @@ def main():
             "row_id": row_id, "batch": "E-BODY", "unit_no": idx, "planner_base": base,
             "variant": variant, "delivered_px": "128x128", "master_px": "256x256",
             "source": m_rel, "file": s_rel, "license": LICENSE_NOTE,
-            "author": AUTHOR_BRANCH, "recipe": recipe, "val": val, "chroma": ch, "fill": fill,
+            "author": AUTHOR_BRANCH, "recipe": recipe_used, "val": val, "chroma": ch, "fill": fill,
         })
 
     # 2. 11 E-BULLET units

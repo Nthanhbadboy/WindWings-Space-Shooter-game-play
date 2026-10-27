@@ -14,7 +14,7 @@ import os
 import re
 import sys
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -276,9 +276,9 @@ def render_w5_parallax(base):
         w = 0.5 - 0.5 * np.cos(ang_y)  # exact periodic function -> row[0] == row[1023]!
         arr = np.zeros((S, S, 4), dtype=np.uint8)
         if "boss" in base:
-            arr[:, :, 0] = (20 + 62 * w).astype(np.uint8)
-            arr[:, :, 1] = (8 + 16 * w).astype(np.uint8)
-            arr[:, :, 2] = (42 + 58 * w).astype(np.uint8)
+            arr[:, :, 0] = (28 + 60 * w).astype(np.uint8)
+            arr[:, :, 1] = (12 + 16 * w).astype(np.uint8)
+            arr[:, :, 2] = (52 + 56 * w).astype(np.uint8)
             arr[:, :, 3] = 255 if base != "nenboss_left" else np.clip(255 - (xx * 255 // 520), 0, 255).astype(np.uint8)
             pal = "crimson"
             slug = "stage_boss_alert_sky" if base == "nenboss" else "stage_boss_flank_curtain"
@@ -370,9 +370,9 @@ def render_w5_parallax(base):
             surf[:, :, 1] = np.clip(surf[:, :, 1] - 30.0 * storm, 0, 255)
             surf[:, :, 2] = np.clip(surf[:, :, 2] - 26.0 * storm, 0, 255)
 
-        # 3D Spherical Terminator lighting + Rayleigh atmospheric rim + volcanic fissures on Mars/Venus
+        # 3D Spherical Terminator lighting + ringshine ambient + Rayleigh atmospheric rim
         ndotl = np.clip(nx * (-0.54) + ny * (-0.56) + nz * 0.63, -1.0, 1.0)
-        lit = 0.12 + 0.96 * (np.clip((ndotl + 0.16) / 1.16, 0.0, 1.0) ** 0.88)
+        lit = 0.24 + 0.86 * (np.clip((ndotl + 0.18) / 1.18, 0.0, 1.0) ** 0.88)
         spec = np.clip(nx * (-0.28) + ny * (-0.32) + nz * 0.90, 0.0, 1.0) ** 22 * (0.45 if base == "earth" else 0.18)
         fres = ((1.0 - nz) ** 2.6) * np.clip(ndotl + 0.45, 0.15, 1.0) * 0.92
 
@@ -476,55 +476,85 @@ def render_w5_gui(base):
 # 4. UI (+221: U-ICON x58 @64, U-KIT x59 @256, U-META x53 @256, U-SHOP x51 @256)
 # ---------------------------------------------------------------------------
 def _semantic_shopicon(im):
-    """AP-0443 ShopIcon: a basket/shop, not the generic star badge."""
-    S = im.width; d = ImageDraw.Draw(im); cx = S // 2
-    # Handle and two metal uprights.
-    d.arc((142, 48, 370, 240), 180, 360, fill=(236, 244, 255, 255), width=24)
-    d.arc((150, 56, 362, 232), 180, 360, fill=(64, 78, 104, 255), width=12)
-    d.line((150, 142, 126, 206), fill=(83, 93, 116, 255), width=18)
-    d.line((362, 142, 386, 206), fill=(83, 93, 116, 255), width=18)
-    d.line((150, 142, 126, 206), fill=(232, 240, 250, 255), width=7)
-    d.line((362, 142, 386, 206), fill=(232, 240, 250, 255), width=7)
-    body = [(104, 188), (408, 188), (382, 400), (140, 400)]
-    draw_cel_poly(im, body, PAL["crimson"], outline_w=7)
-    well = [(126, 204), (386, 204), (370, 254), (142, 254)]
+    """AP-0443 ShopIcon (path 2871): 2.5D angled crimson metallic shopping cart (never a generic star badge)."""
+    d = ImageDraw.Draw(im)
+    # 1. Chrome push-bar upright + crimson grip handle on upper-left
+    d.line([(82, 118), (132, 118), (174, 388), (394, 388)], fill=(62, 74, 98, 255), width=26, joint="curve")
+    d.line([(82, 118), (132, 118), (174, 388), (394, 388)], fill=(214, 228, 248, 255), width=12, joint="curve")
+    grip = [(56, 98), (124, 98), (124, 136), (56, 136)]
+    draw_cel_poly(im, grip, PAL["crimson"], outline_w=4)
+    # 2. Recessed dark basket interior + 2.5D crimson metallic cart body (angled perspective)
+    well = [(146, 174), (442, 198), (412, 344), (176, 352)]
     draw_cel_poly(im, well, PAL["slate"], outline_w=4)
-    # Open basket ribs, with bright metal edges rather than a flat icon fill.
-    for x in (164, 224, 288, 348):
-        d.line((x, 266, x - 10, 382), fill=(255, 122, 142, 255), width=13)
-        d.line((x + 4, 266, x - 6, 382), fill=(116, 22, 54, 255), width=5)
-    for y in (282, 330, 378):
-        d.line((132, y, 380, y - 4), fill=(255, 128, 144, 255), width=12)
-    d.line((112, 190, 400, 190), fill=(255, 218, 160, 255), width=10)
+    body = [(134, 178), (448, 202), (414, 358), (168, 366)]
+    draw_cel_poly(im, body, PAL["crimson"], outline_w=6)
+    # Perspective top rim highlight + 3 recessed horizontal/angled vent slots
+    d.line([(140, 184), (440, 206)], fill=(255, 214, 196, 255), width=10)
+    for row_t in (0.34, 0.58, 0.80):
+        yL = int(184 + row_t * 172)
+        yR = int(206 + row_t * 144)
+        xL = int(156 + row_t * 22)
+        xR = int(422 - row_t * 18)
+        d.line([(xL, yL), (xR, yR)], fill=(54, 12, 32, 235), width=13)
+        d.line([(xL + 2, yL + 6), (xR - 2, yR + 6)], fill=(255, 148, 172, 215), width=4)
+    # 3. Twin 2.5D metallic caster wheels with solar-gold hubs
+    for wx, wy in ((198, 428), (366, 428)):
+        d.ellipse((wx - 36, wy - 36, wx + 36, wy + 36), fill=(48, 58, 82, 255), outline=(186, 204, 232, 255), width=6)
+        d.ellipse((wx - 16, wy - 16, wx + 16, wy + 16), fill=(252, 196, 32, 255), outline=(255, 246, 168, 255), width=3)
     return im, "shop_shopping_basket", "crimson"
 
 
 def _semantic_event_panel(im):
-    """AP-0462 nennutevent: dark neon event banner frame, no ShopIcon star."""
+    """AP-0462 nennutevent (path 2943): 2.5D glowing neon-cyan holo-event card frame with perspective grid."""
+    draw_9slice_panel(im, (56, 24, 456, 488), 38, PAL["azure"], (8, 18, 56, 252), inner_rim=PAL["cyan"][0], outline_w=6)
     d = ImageDraw.Draw(im)
-    draw_9slice_panel(im, (62, 28, 450, 484), 38, PAL["azure"], (5, 12, 46, 250), inner_rim=PAL["cyan"][0], outline_w=8)
-    # Subtle event-grid interior and a small upper-left hologram accent.
-    for x in range(112, 434, 42):
-        d.line((256, 280, x, 450), fill=(26, 65, 140, 150), width=3)
-    for y in (316, 350, 386, 422):
-        d.line((92, y, 420, y), fill=(28, 68, 150, 150), width=3)
-    d.arc((82, 52, 176, 146), 110, 300, fill=(93, 240, 255, 230), width=6)
-    d.line((98, 124, 142, 78, 166, 112), fill=(76, 214, 255, 220), width=5)
+    # Glowing upper holo-spotlight cone
+    glow = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    gd.polygon([(256, 56), (92, 320), (420, 320)], fill=(0, 218, 255, 58))
+    gd.ellipse((146, 86, 366, 266), fill=(0, 238, 255, 64))
+    glow = glow.filter(ImageFilter.GaussianBlur(18))
+    im.alpha_composite(glow)
+    d = ImageDraw.Draw(im)
+    # Perspective cyber-grid floor inside lower half
+    for x in range(88, 440, 38):
+        d.line((256, 268, x, 464), fill=(0, 196, 255, 145), width=3)
+    for y, a in ((306, 110), (342, 135), (382, 165), (426, 195), (462, 220)):
+        d.line((82, y, 430, y), fill=(0, 216, 255, a), width=3)
+    # Corner holo-tech brackets + holographic ring/chevron crest
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            bx = 256 + sx * 172
+            by = 256 + sy * 204
+            d.line([(bx, by - sy * 34), (bx, by), (bx - sx * 34, by)], fill=(148, 252, 255, 245), width=6)
+    d.arc((184, 96, 328, 240), 0, 360, fill=(0, 236, 255, 225), width=8)
+    d.arc((202, 114, 310, 222), 30, 315, fill=(255, 222, 68, 235), width=6)
+    chev = [(256, 128), (294, 186), (272, 186), (256, 160), (240, 186), (218, 186)]
+    d.polygon(chev, fill=(224, 255, 255, 245))
     return im, "shop_event_banner_frame", "azure"
 
 
 def _semantic_blink(im):
-    """AP-0264 Blink: a horizontal lens flare, intentionally not a badge."""
-    S = im.width; yy, xx = np.mgrid[0:S, 0:S].astype(np.float32)
-    cx = cy = S / 2
-    core = np.exp(-((yy - cy) / 12.0) ** 2) * np.exp(-((xx - cx) / 180.0) ** 2)
-    halo = np.exp(-((yy - cy) / 44.0) ** 2) * np.exp(-((xx - cx) / 230.0) ** 2)
-    a = np.clip(core * 245 + halo * 90, 0, 255).astype(np.uint8)
+    """AP-0264 Blink (path 2895): sleek pure horizontal sapphire-to-white anamorphic optical streak (zero edge clip)."""
+    S = im.width
+    yy, xx = np.mgrid[0:S, 0:S].astype(np.float32)
+    cx = cy = (S - 1) * 0.5
+    wx = np.clip(1.0 - np.abs(xx - cx) / (S * 0.46), 0.0, 1.0)
+    wy = np.clip(1.0 - np.abs(yy - cy) / (S * 0.28), 0.0, 1.0)
+    win = (0.5 - 0.5 * np.cos(np.pi * wx)) * (0.5 - 0.5 * np.cos(np.pi * wy))
+
+    streak = np.exp(-((yy - cy) / 8.5) ** 2) * np.exp(-((xx - cx) / 132.0) ** 2)
+    halo = np.exp(-((yy - cy) / 26.0) ** 2) * np.exp(-((xx - cx) / 165.0) ** 2)
+    bulb = np.exp(-(((xx - cx) / 56.0) ** 2 + ((yy - cy) / 14.0) ** 2) * 1.45)
+
+    a_f = np.clip((streak * 0.96 + halo * 0.48 + bulb * 0.92) * win, 0.0, 1.0)
+    wh = np.clip((streak * 0.82 + bulb * 1.15) * win, 0.0, 1.0)
     arr = np.zeros((S, S, 4), dtype=np.uint8)
-    arr[:, :, 0] = np.clip(20 + 100 * core, 0, 255).astype(np.uint8)
-    arr[:, :, 1] = np.clip(90 + 150 * core, 0, 255).astype(np.uint8)
+    arr[:, :, 0] = np.clip(18.0 + 237.0 * wh, 0, 255).astype(np.uint8)
+    arr[:, :, 1] = np.clip(142.0 + 113.0 * wh, 0, 255).astype(np.uint8)
     arr[:, :, 2] = 255
-    arr[:, :, 3] = a
+    arr[:, :, 3] = np.round(a_f * 255.0).astype(np.uint8)
+    arr[arr[:, :, 3] < 3] = [0, 0, 0, 0]
     return Image.fromarray(arr, "RGBA"), "kit_blink_horizontal_flare", "cyan"
 
 
@@ -544,25 +574,49 @@ def _semantic_tech_node(im, variant=0):
     return im, f"kit_tech_circuit_node_{variant + 1}", "cyan" if variant == 0 else "emerald"
 
 
+def _draw_bullion_coin(im: Image.Image, cx: float, cy: float, rx: float, ry: float, thick: int) -> None:
+    """2.5D milled gold bullion coin with cast drop-shadow AO, cylinder rim ridges & specular sheen."""
+    ao = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    ImageDraw.Draw(ao).ellipse((cx - rx - 3, cy - ry + thick - 1, cx + rx + 3, cy + ry + thick + 7), fill=(18, 10, 4, 135))
+    im.alpha_composite(ao.filter(ImageFilter.GaussianBlur(3.5)))
+    d = ImageDraw.Draw(im)
+    # Extruded milled gold cylinder wall
+    for dy in range(thick, 0, -1):
+        t = dy / max(thick, 1)
+        col = (int(138 + 64 * (1 - t)), int(68 + 52 * (1 - t)), int(6 + 12 * (1 - t)), 255)
+        d.ellipse((cx - rx, cy - ry + dy, cx + rx, cy + ry + dy), fill=col)
+    # Milled vertical notches along front cylinder edge
+    for k in range(-4, 5):
+        nx = cx + k * (rx * 0.19)
+        ny0 = cy + math.sqrt(max(0.0, 1.0 - (k * 0.19) ** 2)) * ry
+        d.line([(nx, ny0 - 1), (nx, ny0 + thick - 1)], fill=(96, 44, 4, 210), width=2)
+    # Top gold face + recessed inner dish + bright specular crescent
+    draw_cel_poly(im, reg_poly(cx, cy, rx, ry, 24), PAL["solar"], outline_w=2)
+    d.ellipse((cx - rx * 0.74, cy - ry * 0.72, cx + rx * 0.74, cy + ry * 0.72), fill=(238, 168, 18, 255), outline=(168, 92, 6, 255), width=2)
+    d.arc((cx - rx * 0.88, cy - ry * 0.86, cx + rx * 0.88, cy + ry * 0.86), 195, 340, fill=(255, 252, 196, 255), width=3)
+
+
 def _semantic_coin(im, pack=False, boost=""):
-    """CoinIcon vs Goicoin1: one embossed coin vs a readable pile."""
-    S = im.width; d = ImageDraw.Draw(im); cx = cy = S // 2
+    """CoinIcon (single embossed gold coin) vs Goicoin1 (path 3045: rich 6-coin stacked gold bullion pile)."""
+    S = im.width
+    cx = cy = S // 2
     if not pack:
-        draw_cel_poly(im, reg_poly(cx, cy, 48, 48, 24), PAL["solar"], outline_w=4)
-        draw_cel_poly(im, reg_poly(cx, cy, 36, 36, 24), ((255, 218, 54, 255), (192, 106, 0, 255), (255, 249, 161, 255)), outline_w=3)
-        draw_centered_label(im, cx, cy + 1, "C", 40, fill=(255, 251, 202, 255), stroke_w=2)
+        _draw_bullion_coin(im, cx, cy - 3, 50, 46, 9)
+        draw_cel_poly(im, star_poly(cx, cy - 3, 24, 11, 4), ((255, 248, 182, 255), (196, 118, 8, 255), (255, 255, 238, 255)), outline_w=2)
     else:
-        for ox, oy, rr in [(-28, 15, 34), (26, 17, 35), (-2, -17, 39)]:
-            # Dark gold edge/thickness under each separate coin.
-            box_side = (cx + ox - rr, cy + oy - rr * 0.66 + 9, cx + ox + rr, cy + oy + rr * 0.66 + 9)
-            d.ellipse(box_side, fill=(164, 84, 3, 255), outline=(104, 54, 2, 255), width=2)
-            d.rectangle((cx + ox - rr, cy + oy, cx + ox + rr, cy + oy + 10), fill=(190, 105, 5, 255))
-            draw_cel_poly(im, reg_poly(cx + ox, cy + oy, rr, rr * 0.66, 22), PAL["solar"], outline_w=3)
-            d.arc((cx + ox - rr + 4, cy + oy - rr * 0.66 + 3, cx + ox + rr - 4, cy + oy + rr * 0.66 - 3), 180, 350, fill=(255, 249, 165, 255), width=3)
-            d.arc((cx + ox - rr + 4, cy + oy - rr * 0.66 + 3, cx + ox + rr - 4, cy + oy + rr * 0.66 - 3), 0, 180, fill=(141, 74, 2, 255), width=2)
-        draw_centered_label(im, cx - 2, cy - 19, "C", 30, fill=(255, 251, 202, 255), stroke_w=2)
+        # Back-right tall 4-coin bullion stack + front-left 2-coin staggered stack (high-contrast 64px silhouette!)
+        coins = [
+            (cx + 15, cy + 20, 34, 21, 9),
+            (cx + 17, cy + 6,  34, 21, 9),
+            (cx + 14, cy - 8,  34, 21, 9),
+            (cx + 16, cy - 22, 34, 21, 9),
+            (cx - 20, cy + 24, 35, 22, 10),
+            (cx - 18, cy + 9,  35, 22, 10),
+        ]
+        for x0, y0, rx, ry, th in coins:
+            _draw_bullion_coin(im, x0, y0, rx, ry, th)
     if boost:
-        draw_centered_label(im, cx + 30, cy + 34, boost, 19, fill=(255, 255, 255, 255), stroke_w=2)
+        draw_centered_label(im, cx + 28, cy + 34, boost, 20, fill=(255, 255, 255, 255), stroke_w=3)
     return im, ("icon_coin_pile" if pack else "icon_single_coin") + (f"_{boost.lower()}" if boost else ""), "solar"
 
 

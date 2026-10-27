@@ -119,7 +119,7 @@ def measure_extended(png_path: str) -> dict:
 
 def main():
     txt = subprocess.check_output(
-        ["git", "show", "origin/arena/1b836828-windwings-space-shooter-game-p:docs/art-plan/art-planner.csv"],
+        ["git", "show", "100cfcebc38c1aec6dd8dc1cfa62c6aa23f77d86:docs/art-plan/art-planner.csv"],
         cwd=ROOT, text=True,
     )
     planner_rows = list(csv.DictReader(io.StringIO(txt)))

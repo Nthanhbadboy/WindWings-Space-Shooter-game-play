@@ -1,7 +1,7 @@
 # Static validation — response to a71412d3
 
 - Sprite records: **512/512** · W0 slots: **25/25** · planner coverage: **510/510**
-- Unique sprite hashes: **412** · duplicate extras reported: **100** (review, not automatic failure)
+- Unique sprite hashes: **413** · duplicate extras reported: **99** (review, not automatic failure)
 - Errors: **0** · warnings: **0**
 - Runtime/pivot/motion/VFX blend/three-person kinship: **UNVERIFIED**
 

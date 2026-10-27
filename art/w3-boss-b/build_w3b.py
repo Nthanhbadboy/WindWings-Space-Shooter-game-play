@@ -22,6 +22,7 @@ sys.path.insert(0, os.path.dirname(HERE))
 import pbr25d
 import mecha25d
 import commercial_raw
+import kitbash25d
 
 AUTHOR_BRANCH = "arena/eca8588b-windwings-space-shooter-game-p"
 LICENSE_NOTE = "chờ user xác nhận quyền tên/art (Phase C USER-ONLY #3)"
@@ -515,10 +516,7 @@ def main():
 
     for uno, (row_id, base, var, pcfg, pal, fname) in enumerate(body_jobs, 1):
         arch_key = var.split("-mk")[0]
-        painted_gid = PAINTED_BOSS_FOR_ARCH.get(arch_key)
-        c2 = render_painted_boss(painted_gid, pcfg, pal) if painted_gid else None
-        if c2 is None:
-            c2 = render_boss_body(arch_key, pcfg, pal)
+        c2 = kitbash25d.render_w3_boss(arch_key, pcfg, pal)
         sp = downsample_straight_rgba(c2, (512, 512))
         m_rel = f"masters/bodies/{fname}"
         s_rel = f"sprites/bodies/{fname}"
@@ -532,8 +530,7 @@ def main():
             "variant": var, "delivered_px": "512x512", "master_px": "512x512",
             "source": m_rel, "file": s_rel, "license": LICENSE_NOTE,
             "author": AUTHOR_BRANCH,
-            "recipe": (f"b_boss_painted_id{painted_gid}_commercial_2.5d+mk{pcfg+1}"
-                       if painted_gid else f"b_boss_{pal}_mecha25d"),
+            "recipe": f"b_boss_{arch_key}_{pal}_commercial_painted_2.5d_mk{pcfg+1}",
             "val": val, "chroma": ch, "fill": fill,
         })
 
@@ -548,7 +545,7 @@ def main():
         ("AP-0128", "web",                    "energy_snare_web",   "emerald"),
     ]
     for pno, (row_id, base, var, pal) in enumerate(part_jobs, 1):
-        c2 = render_boss_part(pno, var, pal)
+        c2 = kitbash25d.render_w3_part(pno, var, pal)
         m_im = downsample_straight_rgba(c2, (512, 512))
         s_im = downsample_straight_rgba(c2, (256, 256))
         fname = f"boss_part_{pno:02d}_{var}_256@{pal}.png"
