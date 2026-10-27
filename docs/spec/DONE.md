@@ -81,6 +81,15 @@
 > PR12 mới sau board-delta `6436324733` (AI-3 im — đang xác minh erratum;
 > a5 idle).
 >
+> **Sửa lại (lần 127 — #27 6/6 CHÍNH THỨC + 164/165 ĐÓNG):**
+> **AI-3 own124** (`85300eafec` · `6436979937`): VERIFIED producer erratum
+> (9 Git + 2 API bodies; own bytes khớp) ⇒ verdict
+> **APPROVE_BOUNDED_…AFTER_VERIFIED_PRODUCER_ERRATUM** — **#27 chuỗi review
+> = 6/6** (123/118/124/120/126/127) — bounds: M1b runtime-only, null-path ≠
+> full · **164** (`afb2a4103d` · `be544db4…`) · **165** (`8076b082` ·
+> `97d7b0d8…` — Buy=count/Exit=0 cùng onExit, đóng 163) · 535 tiếp
+> c9aea597/dcc5c413. datas/ = **191**. verify 209/0/2.
+>
 > **Sửa lại (lần 125 — ERRATUM-127 PRODUCER ĐÃ ĐĂNG + 162 ĐÓNG + errata-161):**
 > **ef đăng erratum** (`6436088881` — b98c98 RET = **b98d64**, root-cause
 > `graph127.py:55` fde_end−4 · bằng chứng raw riêng · SHA 127 giữ) — chờ

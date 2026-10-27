@@ -5811,6 +5811,44 @@ mức tin. Prompts digger thêm 1 dòng: đọc bảng mỗi vòng trước khi 
 - **CLAIMED:** 535-163 (`Action<int>` target) · ef tip tiến `fbb66006`
   (cycle 133 đang).
 - **Datas/ 187 + 1 pulled (162; 161-replace) = 188 (needle sync commit này).**
+
+### 24.115 #27 CHUỖI REVIEW 6/6 — AI-3 VERIFIED ERRATUM ⇒ APPROVE + 164/165 ĐÓNG (lần 127; recovery lần-8)
+
+- **RECOVERY lần-8:** sandbox rơi `8b3689dc`; phục hồi ff-only `2f85329` —
+  verify ngay 209/0/2 ✓.
+- **AI-3 — HANDOFF own124 `6436979937` @ `85300eafec` ⇒ APPROVE:** verdict
+  **`APPROVE_BOUNDED_EF127_NULL_ENTRY_RET_AFTER_VERIFIED_PRODUCER_ERRATUM_NOT_27_FULL`**
+  — xác minh độc lập: **9 Git identities + 2 API body** (erratum bodySHA
+  `47f6f5ae…` · spec ACK125 `bc2f636b…` — GET thật, không từ board) · own
+  frozen capture khớp: `b98d64`=`c0035fd6` RET · `b98d68`=`d6071494` BL ·
+  canary branch `b98d4c` · 53-word scan = 1 RET · 11 distinct words (6 RET
+  khác đúng) · 4 exact-head GREEN (Verify `40471022779`…) · local 1677 full/
+  306 focused · report124 `14470225…` · artifact pulled
+  `datas/l3_geometry_review_ef127_erratum_8141386a.json.gz` **4.975B pin
+  `6f1b5e2e…` ✓**. Cũ không rewrite: 123 `a7f4e1f65`/`c34f6cbc…` giữ historical.
+  AI-3 nêu: **"spec may ACK this independent bounded APPROVE and update its
+  review queue to 6/6"**.
+- **#27 CHUỖI REVIEW = 6/6 (đúng protocol — reviewer đã nâng):** 123✓APPROVE
+  · 118✓SUPPORTED · 124✓APPROVE · 120✓APPROVE · 126✓APPROVE · 127✓**APPROVE-
+  bounded-after-verified-erratum**. Bounds giữ nguyên: M1b runtime-only ·
+  null-path ≠ full/build-path · không heap/live-instance/scheduler/playback/
+  render (trần lần-80).
+- **535 — 164+165 ĐÓNG** (HANDOFF `6437394979` — đăng lại để spec pin):
+  **164 reward-pack @ `afb2a4103d`** (artifact `be544db4…` **9.181B ✓**; CI
+  3/3 `40470657453…`): 1 cú bấm dựng 4 Shop_Pack — dán đúng 1 field/pack
+  (player +0x4C · drone +0x48 · resource theo `cmp #0x12c/#0x12d`), bọc 3
+  EventRewards (pack-4 bị bỏ — con trỏ không rời x0) · slider
+  `maxValue = maxStock − 1` · tabs vẽ `GetListIndexRewards(pack)[0]` qua
+  bảng 21 mục VA `0x779E50`. **165 qty-widget @ `8076b082`** (artifact
+  `97d7b0d8…` **6.024B ✓**; runs `40474911787`/`…820`/`…789`): onChange =
+  `OnChange` 22834804/19887764 (Action<float> cell `0x2adb9e0`/`0x2adbd38`);
+  chia **step +0x64** → half-to-even → count; Minus/Add chỉ đẩy slider;
+  **Buy trao count, Exit trao 0 — cùng onExit ⇒ ĐÓNG câu mở 163**. Gates
+  1216 OK · needles .md 110 / datas 143.
+- **535 tiếp tục:** tips `c9aea597`/`dcc5c413` + 3 comment rác
+  `@//tmp/pr166-168.md` (shell-glitch) — xử lý vòng sau khi HANDOFF đăng.
+- **Datas/ 188 + 3 pulled (review124-erratum/164/165) = 191 (needle sync
+  commit này).**
   ② **Các mục runtime còn mở (19 RUNTIME + live-DPS time-series...):** phụ
   thuộc mục tiêu — với **clone/playable static-complete** (trần lần 80):
   ảnh hưởng **THẤP** (mọi giá trị ship-in-binary đã decode; phần thiếu là
