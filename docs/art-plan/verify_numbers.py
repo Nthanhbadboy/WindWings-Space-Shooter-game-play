@@ -226,6 +226,21 @@ def main() -> int:
         if not ok:
             fails.append(f"{doc} thiếu {token!r}")
 
+    print("7b) liên kết S0 ↔ W1 + cổng wave + rủi ro mới")
+    s0_ids = {r["id"] for r in csv.DictReader((HERE / "s0-pilot-pack.csv").open(encoding="utf-8"))}
+    linked = [r for r in w1 if r.get("s0_probe")]
+    check_eq("unit W1 có probe ở S0", len(linked), 8)
+    check_eq("s0_probe trỏ tới asset S0 có thật",
+             sum(1 for r in linked if r["s0_probe"] not in s0_ids), 0)
+    check_eq("PS-01 gắn đúng S0-01 (luật 3 §5.7)",
+             next(r["s0_probe"] for r in w1 if r["uid"] == "PS-01"), "S0-01")
+    for token in ("### 5.8", "**R11**", "**R12**", "**R13**", "| 13 | **Ngân sách màu",
+                  "| 14 | **Canvas đạn orb**", "| 15 | **10/27 slot"):
+        ok = token in text["plan"]
+        print(f"  {'OK ' if ok else 'FAIL'} plan chứa {token!r}")
+        if not ok:
+            fails.append(f"plan thiếu {token!r}")
+
     print("8b) W0 slot sheet — w0-listing-slots.csv")
     w0c = list(csv.DictReader((HERE / "w0-listing-slots.csv").open(encoding="utf-8")))
     lots: dict[str, int] = {}

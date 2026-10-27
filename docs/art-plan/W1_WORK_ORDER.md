@@ -264,7 +264,7 @@ Nếu W1 xong sớm hơn 206,4 thì phần chênh chính là reuse thật đo đ
 
 | File | Nội dung |
 |---|---|
-| `w1-work-order.csv` | 53 dòng = **48 unit** (`kind = unit`, 1 `variant`) + 4 overhead; cột `scope` = W1/W2/out, `h_l2`, `h_full`, `gates_l2`, `gates_full`, `accept` |
+| `w1-work-order.csv` | 53 dòng = **48 unit** (`kind = unit`, 1 `variant`) + 4 overhead; cột `scope` = W1/W2/out, `h_l2`, `h_full`, `gates_l2`, `gates_full`, `accept`, **`s0_probe`** (8 unit đã có bản pilot ở S0 — xem §5.7 luật 3 của plan) |
 | `art-planner.csv` | 655 dòng (651 + 4 W0) × **36 cột**; thêm `l2_de` · `l2_h_v3` · `h_w0` · `w0_slots` |
 | `ART_REDRAW_PLAN.md` | báo cáo chính — §3.6 (đo reuse), §4 (chuẩn art), §5 (wave), §7.3 (cách lọc L2) |
 | `verify_numbers.py` | `python3 docs/art-plan/verify_numbers.py` — đối chiếu planner + work order + 3 tài liệu; exit 0 = khớp hết |
