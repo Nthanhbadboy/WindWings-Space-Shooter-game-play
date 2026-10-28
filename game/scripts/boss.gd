@@ -280,38 +280,42 @@ func _draw() -> void:
 		_draw_layered(art, slot, flash_strength)
 		_draw_health_bar()
 		return
+	# The whole-image telegraph goes UNDER the sprite, so the halo reads as light
+	# coming off the hull instead of a wash drawn over it.
+	_draw_whole_image_telegraph()
 	if art != null and art.draw_slot(self, slot, Vector2(0.0, _bob)):
 		if flash_strength > 0.0:
 			art.draw_flash(self, slot, Vector2(0.0, _bob), flash_strength)
-		_draw_whole_image_telegraph()
 		_draw_health_bar()
 		return
 	_draw_vector(flash_strength)
-	_draw_whole_image_telegraph()
 	_draw_health_bar()
 
 
-## Only used by variant C: a halo that grows for the 0.42 s before a shot, so the
-## rhythm stays readable without a separate core sprite.
+## Only used by variant C: light gathers under the hull for the 0.42 s before a
+## shot, so the rhythm stays readable without a separate core sprite. It is drawn
+## BEFORE the sprite and kept close to the hull: at full strength the old version
+## was a 1.5-unit orange disc that hid the boss entirely.
 func _draw_whole_image_telegraph() -> void:
 	if not _whole_image_mode() or _dying:
 		return
 	var strength := MotionTuning.telegraph_strength(_seconds_until_next_shot())
 	if strength <= 0.0:
 		return
-	var death_alpha := 1.0
-	var radius := 0.95 + 0.55 * strength
-	draw_circle(
-		Vector2(0.0, _bob), radius, Color(1.0, 0.45, 0.3, 0.22 * strength * death_alpha)
-	)
+	var radius := MotionTuning.BOSS_TELEGRAPH_RADIUS_MIN + (
+		MotionTuning.BOSS_TELEGRAPH_RADIUS_MAX - MotionTuning.BOSS_TELEGRAPH_RADIUS_MIN
+	) * strength
 	draw_arc(
 		Vector2(0.0, _bob),
 		radius,
 		0.0,
 		TAU,
 		48,
-		Color(1.0, 0.7, 0.4, 0.55 * strength),
-		0.08
+		Color(1.0, 0.62, 0.32, 0.30 + 0.35 * strength),
+		0.05 + 0.03 * strength
+	)
+	draw_circle(
+		Vector2(0.0, _bob), radius * 0.55, Color(1.0, 0.5, 0.28, 0.12 * strength)
 	)
 
 

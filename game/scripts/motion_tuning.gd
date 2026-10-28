@@ -61,6 +61,10 @@ const BOSS_DEATH_LAYERS := 4
 const BOSS_DEATH_LAYER_STAGGER := 0.12
 const BOSS_DEATH_LAYER_FADE := 0.45
 const BOSS_WARNING_SECONDS := 1.4
+## Whole-image (variant C) telegraph ring: grows toward the shot but stays close
+## to the 2.4-unit hull so it reads as light, not as a screen-sized disc.
+const BOSS_TELEGRAPH_RADIUS_MIN := 0.85
+const BOSS_TELEGRAPH_RADIUS_MAX := 1.25
 
 # Capture-only turret sweep amplitude, so the frame evidence covers the whole
 # rotation range instead of one aim angle (INFERRED, tooling only).

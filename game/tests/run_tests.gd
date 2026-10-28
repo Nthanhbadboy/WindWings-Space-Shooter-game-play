@@ -838,6 +838,15 @@ func _test_motion_tuning() -> void:
 		MotionTuning.BOSS_AURA_SCALE_MAX * 12.0 < 2.0,
 		"the boss aura stays under 2 world units"
 	)
+	# The variant C telegraph must not swallow the 2.4-unit boss hull.
+	check(
+		MotionTuning.BOSS_TELEGRAPH_RADIUS_MAX < 1.4,
+		"the whole-image telegraph ring stays inside the hull"
+	)
+	check(
+		MotionTuning.BOSS_TELEGRAPH_RADIUS_MIN < MotionTuning.BOSS_TELEGRAPH_RADIUS_MAX,
+		"the telegraph ring grows toward the shot"
+	)
 	check(
 		MotionTuning.HULL_SPARK_SCALE_MAX * 16.0 < 1.0,
 		"the whole-image hull sparkle stays under a unit"
