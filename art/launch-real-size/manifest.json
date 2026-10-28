@@ -1,0 +1,54 @@
+{
+  "status": "REVIEW_ONLY_PLANNER_FAILED",
+  "license": "UNKNOWN",
+  "slot": "ships/PLAYER-10001.png",
+  "chain": [
+    {
+      "file": "art/launch-real-size/masters/PLAYER-10001-generate-original.png",
+      "role": "generated_original_UNMODIFIED",
+      "canvas": "1024x1024",
+      "mode": "RGB",
+      "sha256": "420b59ab4353e933b02604355800b5ebf1d545242756e2bddebb439ddf4937e5"
+    },
+    {
+      "file": "art/launch-real-size/steps/PLAYER-10001-alpha-892.png",
+      "role": "background_removed_straight_RGBA",
+      "canvas": "892x892",
+      "mode": "RGBA",
+      "sha256": "b82f7fa447636bb86dd0bf0f01c5cfcaf8b91c7007f32168ce7d86e40e80a295"
+    },
+    {
+      "file": "art/launch-real-size/exports/ships/PLAYER-10001.png",
+      "role": "direct_Lanczos_256_export_not_approved",
+      "canvas": "256x256",
+      "mode": "RGBA",
+      "sha256": "de63324c2ab91e631dcab78938a22f1cfd573808141a3b582ab74d544db15ee2"
+    },
+    {
+      "file": "art/launch-real-size/preview/PLAYER-10001-64.png",
+      "role": "Lanczos_64_from_export",
+      "canvas": "64x64",
+      "mode": "RGBA",
+      "sha256": "089f1a38f95521c260977a39ff090a75e1972f5044941f1698e605c64442c71b"
+    }
+  ],
+  "operations": [
+    "Preserve original generated PNG byte-for-byte",
+    "Crop white border at (66,66)-(958,958), retaining original generated pixels",
+    "Remove black background via outside-connected mask and unmultiply against black",
+    "Resize alpha PNG directly to 256x256 with Lanczos",
+    "Resize 256 to 64x64 with Lanczos"
+  ],
+  "no_redraw": true,
+  "gameplay_preview": {
+    "file": "art/launch-real-size/preview/gameplay-20units.png",
+    "simulation": true,
+    "field_width_units": 20,
+    "slot_width_units": 1.4,
+    "width_px": 720,
+    "sprite_width_px": 50
+  },
+  "contract_viewport_note": "10.8 world units visible; optional preview 93px",
+  "metrics_file": "art/launch-real-size/metrics/direct.txt",
+  "postprocessing_experiment": "preview/post-before-after.png; not part of export chain; measured in metrics/post.txt"
+}

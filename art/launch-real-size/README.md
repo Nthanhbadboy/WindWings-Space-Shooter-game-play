@@ -1,0 +1,7 @@
+# PLAYER-10001 — bản xem trong gameplay, chưa sẵn sàng giao
+
+Đây là ảnh AI sinh mới: master gốc giữ nguyên byte tại `masters/PLAYER-10001-generate-original.png`. Tệp sinh có khung trắng ngoài; chỉ cắt khung ngoài ảnh tại (66,66)-(958,958), tách nền đen bằng alpha, rồi hạ Lanczos thẳng từ ảnh 892² xuống export 256². Không vẽ/chỉnh silhouette. Các bước và SHA-256 có trong `manifest.json`. Straight RGBA; bốn góc alpha=0. Sản phẩm chỉ để USER duyệt mắt, license UNKNOWN.
+
+`preview/gameplay-20units.png` là ảnh ghép mô phỏng, không phải screenshot runtime: nền tối 720×1280, canvas tàu 50 px = làm tròn 720×1,4/20. Contract coder còn ghi **viewport nhìn thấy 10,8 unit**, nên `preview/gameplay-10_8units.png` cung cấp thêm phối cảnh 93 px = làm tròn 720×1,4/10,8; phải xác minh kích thước thực bằng screenshot runtime. `preview/64-dark-light.png` để xem halo trên hai nền; silhouette/canopy đọc được trên nền tối, cạnh lửa có viền tối trên nền sáng nên chưa xác nhận halo-free.
+
+Số và hình đang đánh nhau: export trực tiếp trượt colors 2028, val 0,547, val_std 0,236, chroma 0,273, grad 42, detail 0,661. Thử hậu kỳ 20 bậc V + 150 màu (ảnh trước/sau `preview/post-before-after.png`) giảm colors còn 117 nhưng detail tăng 0,684 và grad vẫn 30; không dùng bản hậu kỳ để tích hợp. Số là sàn, không làm phẳng hình để ép qua. Chưa đạt planner và chưa được USER duyệt; đường dẫn export tương ứng contract `ships/PLAYER-10001.png` nhưng không được quảng cáo là production-ready.
