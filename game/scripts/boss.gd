@@ -46,6 +46,9 @@ var _aura: GPUParticles2D
 ## Capture only (tools/motion_capture.gd): sweep both turrets through +-45 deg so
 ## the frame evidence shows the pod seam at every angle, not just the aim angle.
 var capture_turret_sweep := false
+## Capture only: the art-QA stage hides the local HP bar, which otherwise runs
+## straight across the hull in the frame evidence.
+var capture_hide_health_bar := false
 
 
 func configure(data: Dictionary) -> void:
@@ -407,6 +410,8 @@ func _art_slot() -> String:
 
 
 func _draw_health_bar() -> void:
+	if capture_hide_health_bar:
+		return
 	if max_hp > 0.0:
 		var ratio := clampf(current_hp / max_hp, 0.0, 1.0)
 		draw_rect(Rect2(-1.1, -1.45, 2.2, 0.16), Color(0.06, 0.05, 0.1, 0.9))
