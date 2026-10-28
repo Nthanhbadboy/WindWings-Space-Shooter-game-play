@@ -31,6 +31,13 @@ var _live_enemy_shots := 0
 # not a gameplay mode and the exported game never enables it by itself.
 var _autoplay := false
 
+# Motion-capture driver (tools/motion_capture.gd). Empty in normal play. The
+# capture scene sets this before the node enters the tree.
+var capture_stage := ""
+var _capture_time := 0.0
+var _shake_elapsed := 999.0
+var _shake_strength := 0.0
+
 @onready var camera: Camera2D = $Camera2D
 @onready var world: Node2D = $World
 @onready var player: Player = $World/Player
@@ -58,6 +65,7 @@ func _ready() -> void:
 	player.configure_weapon(Session.ship_damage(), 0.24)
 	player.configure_health(Session.player_max_hp())
 	player.died.connect(_on_player_died)
+	player.impact.connect(_on_player_impact)
 	player.shot_requested.connect(_on_player_shot)
 	player.health_changed.connect(_on_player_health_changed)
 
@@ -93,10 +101,17 @@ func _ready() -> void:
 			boss_data.hp_max,
 		]
 	)
-	director.start_stage_wave(0)
+	if capture_stage == "boss":
+		_skip_to_boss_for_capture()
+	else:
+		director.start_stage_wave(0)
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if not capture_stage.is_empty():
+		_capture_time += delta
+		_drive_capture(delta)
+	_update_shake(delta)
 	if _autoplay and not _finished:
 		player.current_health = player.maximum_health
 		for child in world.get_children():
@@ -106,6 +121,56 @@ func _process(_delta: float) -> void:
 		var status := director.boss_hp_status()
 		if status.y > 0.0:
 			hud.set_boss("%s  ·  BOSS" % boss_data.prefab, status.x, status.y)
+
+
+func capture_time() -> float:
+	return _capture_time
+
+
+func _skip_to_boss_for_capture() -> void:
+	if not catalog.boss_rows.is_empty():
+		boss_started = true
+		hud.show_banner("WARNING · BOSS INCOMING", MotionTuning.BOSS_WARNING_SECONDS)
+		hud.set_warning(1.0)
+		director.start_boss()
+		hud.set_wave("BOSS  ·  %s" % boss_data.prefab)
+
+
+func _drive_capture(delta: float) -> void:
+	# Capture only: glide the ship left and right so the banking and engine
+	# animation are visible, and keep the hull full so the run never ends.
+	if not is_instance_valid(player):
+		return
+	player.current_health = player.maximum_health
+	if capture_stage == "flight":
+		var bounds := LaunchRules.player_bounds(
+			LaunchRules.camera_half_height(get_viewport_rect().size),
+			LaunchRules.camera_half_width(get_viewport_rect().size)
+		)
+		var span := bounds.size.x * 0.5
+		player.global_position.x = sin(_capture_time * 1.35) * span
+		player.global_position.y = lerpf(bounds.end.y, bounds.position.y + 1.2, 0.5 + 0.35 * sin(_capture_time * 0.9))
+	elif capture_stage == "boss":
+		player.global_position.x = sin(_capture_time * 0.8) * 1.8
+	delta = delta
+
+
+func _update_shake(delta: float) -> void:
+	if _shake_elapsed >= MotionTuning.shake_seconds():
+		if camera.offset != Vector2.ZERO:
+			camera.offset = Vector2.ZERO
+		return
+	_shake_elapsed += delta
+	camera.offset = MotionTuning.shake_offset(_shake_elapsed, _shake_strength)
+
+
+func _start_shake(strength: float) -> void:
+	_shake_strength = MotionTuning.SHAKE_AMPLITUDE * clampf(strength, 0.2, 1.6)
+	_shake_elapsed = 0.0
+
+
+func _on_player_impact(strength: float) -> void:
+	_start_shake(1.0 + strength)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -184,13 +249,22 @@ func _on_wave_cleared(wave_name: String) -> void:
 func _on_boss_spawned(boss: Node2D) -> void:
 	if boss.has_signal("projectile_requested"):
 		boss.projectile_requested.connect(_on_enemy_projectile)
+	if boss.has_signal("shake_requested"):
+		boss.shake_requested.connect(_start_shake)
+	if boss.has_signal("entrance_progress"):
+		boss.entrance_progress.connect(_on_boss_entrance_progress)
 	hud.set_boss("%s  ·  BOSS" % boss_data.prefab, boss_data.hp_max, boss_data.hp_max)
+
+
+func _on_boss_entrance_progress(progress: float) -> void:
+	hud.set_warning(1.0 - clampf(progress, 0.0, 1.0))
 
 
 func _on_boss_defeated() -> void:
 	if _finished:
 		return
 	hud.clear_boss()
+	hud.set_warning(0.0)
 	hud.show_banner("STAGE CLEAR", 2.0)
 	score += LaunchRules.boss_score(Session.mode_index)
 	hud.set_score(score)

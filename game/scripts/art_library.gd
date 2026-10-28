@@ -24,6 +24,7 @@ var error := ""
 var verbose := false
 
 var _textures: Dictionary = {}
+var _white_textures: Dictionary = {}
 var _resolved: Dictionary = {}
 var _missing: Array = []
 var _present: Array = []
@@ -168,6 +169,42 @@ func texture_for(slot_id: String) -> Texture2D:
 	return null
 
 
+## A white silhouette of the slot texture, used for the 0.05 s hit flash.
+func white_texture_for(slot_id: String) -> Texture2D:
+	if _white_textures.has(slot_id):
+		return _white_textures.get(slot_id)
+	var texture := texture_for(slot_id)
+	if texture == null:
+		return null
+	var image := texture.get_image()
+	if image == null:
+		return null
+	var white := image.duplicate() as Image
+	if white.is_compressed():
+		white.decompress()
+	white.convert(Image.FORMAT_RGBA8)
+	for y in range(white.get_height()):
+		for x in range(white.get_width()):
+			var pixel := white.get_pixel(x, y)
+			white.set_pixel(x, y, Color(1.0, 1.0, 1.0, pixel.a))
+	var result := ImageTexture.create_from_image(white)
+	_white_textures[slot_id] = result
+	return result
+
+
+func draw_flash(canvas_item: CanvasItem, slot_id: String, center: Vector2, strength: float) -> bool:
+	if strength <= 0.0:
+		return false
+	var texture := white_texture_for(slot_id)
+	if texture == null:
+		return false
+	var draw_size := display_size(slot_id)
+	canvas_item.draw_texture_rect(
+		texture, Rect2(center - draw_size * 0.5, draw_size), false, Color(1, 1, 1, clampf(strength, 0.0, 1.0))
+	)
+	return true
+
+
 func has_art(slot_id: String) -> bool:
 	return texture_for(slot_id) != null
 
@@ -213,6 +250,7 @@ func draw_slot(
 	center: Vector2,
 	size := Vector2.ZERO,
 	tint := Color.WHITE,
+	additive_hint := false,
 	rotation := 0.0
 ) -> bool:
 	var texture := texture_for(slot_id)
@@ -223,10 +261,63 @@ func draw_slot(
 		draw_size = display_size(slot_id)
 	if draw_size.x <= 0.0 or draw_size.y <= 0.0:
 		return false
+	# `additive_hint` is accepted so callers can tag glow/flash passes; the
+	# compatibility renderer keeps plain alpha blending, which stays readable.
 	canvas_item.draw_set_transform(center, rotation, Vector2.ONE)
 	canvas_item.draw_texture_rect(texture, Rect2(-draw_size * 0.5, draw_size), false, tint)
 	canvas_item.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	return true
+
+
+## Draw a slot so that its declared pivot lands on `mount`, rotated by `rotation`.
+## Used for the boss gun mounts and any other layer with a non-centred pivot.
+func draw_slot_pivoted(
+	canvas_item: CanvasItem,
+	slot_id: String,
+	mount: Vector2,
+	size := Vector2.ZERO,
+	tint := Color.WHITE,
+	rotation := 0.0
+) -> bool:
+	var texture := texture_for(slot_id)
+	if texture == null:
+		return false
+	var draw_size := size
+	if draw_size == Vector2.ZERO:
+		draw_size = display_size(slot_id)
+	if draw_size.x <= 0.0 or draw_size.y <= 0.0:
+		return false
+	var pivot: Array = slots.get(slot_id, {}).get("pivot", [0.5, 0.5])
+	var offset := -Vector2(float(pivot[0]), float(pivot[1])) * draw_size
+	canvas_item.draw_set_transform(mount, rotation, Vector2.ONE)
+	canvas_item.draw_texture_rect(texture, Rect2(offset, draw_size), false, tint)
+	canvas_item.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	return true
+
+
+## True when every listed slot has art (used for all-or-nothing layer sets).
+func all_present(slot_ids: Array) -> bool:
+	if slot_ids.is_empty():
+		return false
+	for slot_id: Variant in slot_ids:
+		if not has_art(str(slot_id)):
+			return false
+	return true
+
+
+## True when at least one slot of the list has art.
+func any_present(slot_ids: Array) -> bool:
+	for slot_id: Variant in slot_ids:
+		if has_art(str(slot_id)):
+			return true
+	return false
+
+
+func pivot_of(slot_id: String) -> Vector2:
+	var pivot: Array = slots.get(slot_id, {}).get("pivot", [0.5, 0.5])
+	if pivot.size() != 2:
+		return Vector2(0.5, 0.5)
+	return Vector2(float(pivot[0]), float(pivot[1]))
 
 
 ## Cover-fit a slot into a rect (background / full-screen art).

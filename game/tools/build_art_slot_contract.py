@@ -42,6 +42,8 @@ KIND_FOLDER = {
     "fx": "fx",
     "ui": "ui",
     "background": "background",
+    "ship_layer": "ships",
+    "boss_part": "bosses",
 }
 
 # Display sizes are in playfield world units (1 unit = 1/20 of the playfield
@@ -63,6 +65,14 @@ BULLET_PLAYER_CANVAS = (64, 128)
 BULLET_ENEMY_CANVAS = (64, 64)
 FX_CANVAS = (256, 256)
 UI_CANVAS = (1080, 1920)
+
+# Sub-layer slots (animation system). The glow layer sits exactly over the ship
+# body; the boss is split into body, two gun mounts (own pivots) and a core.
+SHIP_GLOW_CANVAS = (256, 256)
+BOSS_BODY_CANVAS = (512, 512)
+BOSS_GUN_CANVAS = (192, 192)
+BOSS_CORE_CANVAS = (256, 256)
+BOSS_GUN_PIVOT = [0.5, 0.22]
 
 # Ships: PLAYER-10001 is the required slot. 10003/10004 are the other two roster
 # entries, included so a player who picks them also gets art.
@@ -89,14 +99,17 @@ def slot(
     source: str,
     required: bool = True,
     notes: str = "",
+    pivot: list[float] | None = None,
+    parent: str = "",
+    layer_role: str = "",
 ) -> dict:
-    return {
+    entry = {
         "slot": slot_id,
         "kind": kind,
         "file": f"{KIND_FOLDER[kind]}/{filename}",
         "canvas": {"width": canvas[0], "height": canvas[1]},
         "format": "PNG, RGBA8, transparent background, no baked shadow",
-        "pivot": [0.5, 0.5],
+        "pivot": list(pivot) if pivot else [0.5, 0.5],
         "anchor": "center",
         "facing": facing,
         "display": display,
@@ -105,6 +118,11 @@ def slot(
         "required": required,
         "notes": notes,
     }
+    if parent:
+        entry["parent"] = parent
+    if layer_role:
+        entry["layer_role"] = layer_role
+    return entry
 
 
 def ships_slots() -> list[dict]:
@@ -130,6 +148,31 @@ def ships_slots() -> list[dict]:
                 notes=(
                     "Nose points to the TOP of the canvas. Runtime draws the texture "
                     "unrotated at the ship position."
+                ),
+            )
+        )
+        slots.append(
+            slot(
+                f"PLAYER-{ship_id}-GLOW",
+                "ship_layer",
+                f"PLAYER-{ship_id}-GLOW.png",
+                SHIP_GLOW_CANVAS,
+                {
+                    "unit": "world_units",
+                    "height": SHIP_DISPLAY,
+                    "width": SHIP_DISPLAY,
+                    "mode": "fit_canvas",
+                },
+                "up",
+                "procedural glow pulse in scripts/player.gd",
+                f"animation glow layer for ship {ship_id}",
+                required=False,
+                parent=f"PLAYER-{ship_id}",
+                layer_role="glow",
+                notes=(
+                    "Overlay layer: same canvas and same display size as the body, so it "
+                    "lines up pixel for pixel. Draw only the glow/emissive parts on a "
+                    "transparent background; the game pulses its alpha and adds it on top."
                 ),
             )
         )
@@ -188,7 +231,97 @@ def boss_slots(prefab: str, hp: float) -> list[dict]:
                 "Faces the player below (nose DOWN). Keep the core around the canvas "
                 "centre: the slice hitbox is a 1.15-unit circle at the texture centre."
             ),
-        )
+        ),
+        slot(
+            f"{prefab}-BODY",
+            "boss_part",
+            f"{prefab}-BODY.png",
+            BOSS_BODY_CANVAS,
+            {
+                "unit": "world_units",
+                "height": BOSS_DISPLAY,
+                "width": BOSS_DISPLAY,
+                "mode": "fit_canvas",
+            },
+            "down",
+            "vector boss body in scripts/boss.gd",
+            f"{prefab} hull without the two gun mounts and without the core",
+            required=False,
+            parent=prefab,
+            layer_role="body",
+            notes=(
+                "Body layer. Same 512 canvas and 2.4-unit display size as the single-image "
+                "boss, so a partial art drop still lines up."
+            ),
+        ),
+        slot(
+            f"{prefab}-GUN-L",
+            "boss_part",
+            f"{prefab}-GUN-L.png",
+            BOSS_GUN_CANVAS,
+            {
+                "unit": "world_units",
+                "height": 0.95,
+                "width": 0.95,
+                "mode": "fit_canvas",
+            },
+            "down",
+            "vector gun drawn by scripts/boss.gd",
+            f"{prefab} left gun mount (player's left)",
+            required=False,
+            parent=prefab,
+            layer_role="gun_left",
+            pivot=BOSS_GUN_PIVOT,
+            notes=(
+                "Mount pivot (0.5, 0.22): the mount sits at the top of the gun sprite and the barrel points DOWN. "
+                "The game rotates this layer around that pivot to aim at the player ship."
+            ),
+        ),
+        slot(
+            f"{prefab}-GUN-R",
+            "boss_part",
+            f"{prefab}-GUN-R.png",
+            BOSS_GUN_CANVAS,
+            {
+                "unit": "world_units",
+                "height": 0.95,
+                "width": 0.95,
+                "mode": "fit_canvas",
+            },
+            "down",
+            "vector gun drawn by scripts/boss.gd",
+            f"{prefab} right gun mount (player's right)",
+            required=False,
+            parent=prefab,
+            layer_role="gun_right",
+            pivot=BOSS_GUN_PIVOT,
+            notes=(
+                "Mirror of GUN-L, same mount pivot (0.5, 0.22). Each gun aims and rotates "
+                "independently and is staggered on death."
+            ),
+        ),
+        slot(
+            f"{prefab}-CORE",
+            "boss_part",
+            f"{prefab}-CORE.png",
+            BOSS_CORE_CANVAS,
+            {
+                "unit": "world_units",
+                "height": 0.85,
+                "width": 0.85,
+                "mode": "fit_canvas",
+            },
+            "none",
+            "vector core with telegraph glow in scripts/boss.gd",
+            f"{prefab} energy core (brightens before every shot)",
+            required=False,
+            parent=prefab,
+            layer_role="core",
+            notes=(
+                "Centred on the boss body. The game ramps its brightness for the last "
+                "0.42 s before each Attack2 shot (telegraph)."
+            ),
+        ),
     ]
 
 
@@ -306,7 +439,9 @@ def main() -> int:
     if hp_document.get("prefab") == boss_prefab:
         boss_hp = float(hp_document.get("hp_max", 0.0))
 
-    slots = ships_slots() + enemy_slots(prefabs, movement) + boss_slots(boss_prefab, boss_hp) + extra_slots()
+    ship_layers = ships_slots()
+    boss_layer_slots = boss_slots(boss_prefab, boss_hp)
+    slots = ship_layers + enemy_slots(prefabs, movement) + boss_layer_slots + extra_slots()
 
     ids = [entry["slot"] for entry in slots]
     files = [entry["file"] for entry in slots]
@@ -325,6 +460,22 @@ def main() -> int:
     for entry in slots:
         if entry["canvas"]["width"] <= 0 or entry["canvas"]["height"] <= 0:
             problems.append(f"{entry['slot']} has an invalid canvas")
+        if entry.get("parent") and entry["parent"] not in ids:
+            problems.append(f"{entry['slot']} points at missing parent {entry['parent']}")
+    required_layers = [
+        f"PLAYER-{REQUIRED_SHIP}-GLOW",
+        f"{boss_prefab}-BODY",
+        f"{boss_prefab}-GUN-L",
+        f"{boss_prefab}-GUN-R",
+        f"{boss_prefab}-CORE",
+    ]
+    for layer in required_layers:
+        if layer not in ids:
+            problems.append(f"layer slot missing: {layer}")
+    pivot_roles = {entry["slot"]: entry.get("pivot") for entry in slots if entry.get("layer_role")}
+    for gun_slot in (f"{boss_prefab}-GUN-L", f"{boss_prefab}-GUN-R"):
+        if pivot_roles.get(gun_slot) != [0.5, 0.22]:
+            problems.append(f"{gun_slot} must keep the documented mount pivot")
 
     document = {
         "schema": "windwings.launch_slice.art_slots/1",
@@ -352,10 +503,21 @@ def main() -> int:
         },
         "counts": {
             "total": len(slots),
-            "ships": len(ships_slots()),
-            "enemies": len(prefabs),
-            "bosses": 1,
-            "extras": len(extra_slots()),
+            "ships": sum(1 for entry in slots if entry["kind"] == "ship"),
+            "ship_layers": sum(1 for entry in slots if entry["kind"] == "ship_layer"),
+            "enemies": sum(1 for entry in slots if entry["kind"] == "enemy"),
+            "bosses": sum(1 for entry in slots if entry["kind"] == "boss"),
+            "boss_parts": sum(1 for entry in slots if entry["kind"] == "boss_part"),
+            "extras": sum(
+                1
+                for entry in slots
+                if entry["kind"] in ("background", "projectile", "fx", "ui")
+            ),
+        },
+        "layers": {
+            "ship_glow": "drawn over the ship body with a pulsing alpha; missing layer keeps the single image",
+            "boss_parts": ["body", "gun_left", "gun_right", "core"],
+            "boss_part_fallback": "any missing part falls back to the single Boss-37001.png, and with no boss art at all to the vector boss",
         },
         "problems": problems,
         "slots": slots,
@@ -370,14 +532,16 @@ def main() -> int:
         "Do not edit by hand; re-run the tool after changing the wave selection.",
         "",
         f"- Art root: `{ART_ROOT}` (also read: `user://art/` for drop-in tests)",
-        f"- Slots: **{len(slots)}** — ships {len(ships_slots())} · enemies {len(prefabs)} · boss 1 · extras {len(extra_slots())}",
+        f"- Slots: **{len(slots)}** — ships {document['counts']['ships']} · ship glow layers "
+        f"{document['counts']['ship_layers']} · enemies {len(prefabs)} · boss {document['counts']['bosses']} · "
+        f"boss parts {document['counts']['boss_parts']} · extras {document['counts']['extras']}",
         "- Every slot: PNG RGBA8, transparent background, pivot `(0.5, 0.5)`, anchor centre.",
         "- Ships face **UP**; enemies and bosses face **DOWN**; bullets face their travel direction.",
         "- A missing file never crashes the game: the vector fallback draws instead and the slot is logged.",
         "- Draw new art. Do not extract or copy sprites from the original game.",
         "",
-        "| Slot | Kind | File (`game/art/…`) | Canvas | Display | Facing | Fallback |",
-        "|---|---|---|---|---|---|---|",
+        "| Slot | Kind | Layer | File (`game/art/…`) | Canvas | Display | Pivot | Facing | Fallback |",
+        "|---|---|---|---|---|---|---|---|---|",
     ]
     for entry in slots:
         display = entry["display"]
@@ -386,14 +550,18 @@ def main() -> int:
         else:
             shown = str(display.get("stretch", display.get("unit", "")))
         canvas = entry["canvas"]
+        pivot = entry["pivot"]
         lines.append(
-            "| `{slot}` | {kind} | `{file}` | {cw}×{ch} | {disp} | {facing} | {fallback} |".format(
+            "| `{slot}` | {kind} | {layer} | `{file}` | {cw}×{ch} | {disp} | {px}, {py} | {facing} | {fallback} |".format(
                 slot=entry["slot"],
                 kind=entry["kind"],
+                layer=entry.get("layer_role", "—"),
                 file=entry["file"],
                 cw=canvas["width"],
                 ch=canvas["height"],
                 disp=shown,
+                px=pivot[0],
+                py=pivot[1],
                 facing=entry["facing"],
                 fallback=entry["fallback"],
             )
@@ -409,6 +577,17 @@ def main() -> int:
         lines.append(f"- **`{entry['slot']}`** — {entry['notes']}")
     lines += [
         "",
+        "## Layer slots (animation)",
+        "",
+        "- **Ship glow** (`PLAYER-<id>-GLOW`): same canvas and display size as the ship body;",
+        "  drawn on top with a pulsing alpha. Missing layer = the single ship image is used.",
+        "- **Boss parts** (`Boss-37001-BODY` / `-GUN-L` / `-GUN-R` / `-CORE`): the body sits at the",
+        "  boss position, each gun rotates around its own mount pivot to aim at the ship, and the",
+        "  core brightens before every shot. Any missing part falls back to the single boss image,",
+        "  and with no boss art at all to the vector boss.",
+        "- Sub-layer files are optional: `BUILD_INFO.txt` lists every layer as `present` or",
+        "  `fallback`, and the game never fails when a layer is absent.",
+        "",
         "## Where the game reads it",
         "",
         "`game/scripts/art_library.gd` resolves each slot inside `res://art/` first and `user://art/` second.",
@@ -418,7 +597,10 @@ def main() -> int:
     ]
     OUT_MD.write_text("\n".join(lines), encoding="utf-8")
 
-    print(f"slots: {len(slots)} (ships {len(ships_slots())}, enemies {len(prefabs)}, boss 1, extras {len(extra_slots())})")
+    print(
+        "slots: {total} (ships {ships}, glow {ship_layers}, enemies {enemies}, boss {bosses}, "
+        "boss parts {boss_parts}, extras {extras})".format(**document["counts"])
+    )
     print(f"boss hp from data: {boss_hp:g}")
     print(f"problems: {problems}")
     return 1 if problems else 0

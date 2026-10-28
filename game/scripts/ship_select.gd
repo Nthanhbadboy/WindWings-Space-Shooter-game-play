@@ -3,8 +3,12 @@ extends Control
 ## Ship select. The three ships come from the decoded 24-entry arrays; the
 ## ship-to-combat-index mapping is the STATIC_CONFIRMED BALANCE §1.1b rule.
 
+const SHIP_SCENE := preload("res://scenes/hangar_ship.tscn")
+
 var _start_button: Button
 var _cards: Dictionary = {}
+var _hangar: HangarShip
+var _hangar_wrap: Control
 
 
 func _ready() -> void:
@@ -15,6 +19,7 @@ func _ready() -> void:
 
 func _build() -> void:
 	UIKit.background(self)
+	_build_hangar()
 	var margin := UIKit.full_margin(self, 24)
 	var center := CenterContainer.new()
 	margin.add_child(center)
@@ -56,6 +61,28 @@ func _build() -> void:
 	column.add_child(back)
 
 
+func _build_hangar() -> void:
+	_hangar_wrap = Control.new()
+	_hangar_wrap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hangar_wrap.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(_hangar_wrap)
+	_hangar = SHIP_SCENE.instantiate() as HangarShip
+	_hangar_wrap.add_child(_hangar)
+	_hangar_wrap.resized.connect(_layout_hangar)
+	_layout_hangar()
+
+
+func _layout_hangar() -> void:
+	if _hangar == null or _hangar_wrap == null:
+		return
+	var size := _hangar_wrap.size
+	if size.y <= 0.0:
+		return
+	var pixels_per_unit := size.y / 11.0
+	_hangar.position = Vector2(size.x * 0.5, size.y * 0.30)
+	_hangar.scale = Vector2(pixels_per_unit, pixels_per_unit)
+
+
 func _refresh() -> void:
 	for ship_id: int in _cards.keys():
 		var card: Button = _cards[ship_id]
@@ -76,6 +103,8 @@ func _refresh() -> void:
 			Session.store.player_level(ship_id),
 		]
 		card.disabled = not unlocked
+	if _hangar != null:
+		_hangar.set_ship(Session.selected_ship)
 	_start_button.disabled = not Session.ship_unlocked(Session.selected_ship)
 	_start_button.text = "START RUN  ·  SHIP %d" % Session.selected_ship
 

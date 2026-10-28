@@ -47,6 +47,8 @@ func _initialize() -> void:
 	_test_art_slot_contract()
 	_test_art_library_fallback()
 	_test_art_library_drop_in()
+	_test_art_layer_slots()
+	_test_motion_tuning()
 
 	print("TESTS: %d checks, %d failures" % [_checks, _failures.size()])
 	if _failures.is_empty():
@@ -472,7 +474,7 @@ func _test_art_slot_contract() -> void:
 	var library: ArtLibrary = ArtLibraryScript.new()
 	check(library.contract_ready(), "art slot contract loads: %s" % library.error)
 	check_eq(library.validate().size(), 0, "art slot contract validates: %s" % str(library.validate()))
-	check_eq(library.slot_count(), 23, "contract lists 23 slots")
+	check_eq(library.slot_count(), 30, "contract lists 30 slots including the animation layers")
 	check_eq(
 		library.contract.get("art_root", ""), "res://art", "contract names the integrated art root"
 	)
@@ -498,6 +500,9 @@ func _test_art_slot_contract() -> void:
 		stage_prefabs.size(),
 		"contract enemy count matches the spawned prefabs"
 	)
+	check_eq(library.contract.get("counts", {}).get("ship_layers", -1), 3, "three ship glow layers")
+	check_eq(library.contract.get("counts", {}).get("boss_parts", -1), 4, "four boss part layers")
+	check_eq(library.contract.get("counts", {}).get("total", -1), 30, "contract total is 30")
 	check_eq(
 		library.contract.get("counts", {}).get("total", -1),
 		library.slot_count(),
@@ -573,7 +578,7 @@ func _test_art_library_fallback() -> void:
 	check(library.contract_ready(), "fallback library loads the contract")
 	check_eq(library.present_ids().size(), 0, "no art is integrated yet")
 	check_eq(library.missing_ids().size(), library.slot_count(), "every slot is a fallback")
-	check_eq(library.summary_line(), "ART_SUMMARY total=23 present=0 fallback=23", "summary line counts fallbacks")
+	check_eq(library.summary_line(), "ART_SUMMARY total=30 present=0 fallback=30", "summary line counts fallbacks")
 	for slot_id: String in library.slot_ids():
 		check(not library.has_art(slot_id), "%s falls back to vector art" % slot_id)
 		check_eq(library.status(slot_id), "fallback", "%s reports fallback status" % slot_id)
@@ -612,7 +617,7 @@ func _test_art_library_drop_in() -> void:
 	check(library.texture_for("PLAYER-10001").get_width() == 8, "the texture has the PNG size")
 	check(not library.has_art("PLAYER-10003"), "other slots stay on the fallback")
 	check(not library.has_art("CD-31002"), "enemies stay on the fallback")
-	check_eq(library.summary_line(), "ART_SUMMARY total=23 present=1 fallback=22", "summary counts one slot of art")
+	check_eq(library.summary_line(), "ART_SUMMARY total=30 present=1 fallback=29", "summary counts one slot of art")
 	var report := library.report_lines()
 	check(report.size() == library.slot_count() + 2, "the report lists every slot plus two summary lines")
 	check(
@@ -620,6 +625,123 @@ func _test_art_library_drop_in() -> void:
 		"the report names the present slot and its path"
 	)
 	_clear_dir(ART_TEST_ROOT)
+
+
+func _test_art_layer_slots() -> void:
+	var library: ArtLibrary = ArtLibraryScript.new()
+	check(library.contract_ready(), "layer test library loads")
+
+	# Ship glow layer: same canvas and display as the body, own file, optional.
+	for ship_id: int in [10001, 10003, 10004]:
+		var body_slot := "PLAYER-%d" % ship_id
+		var glow_slot := "PLAYER-%d-GLOW" % ship_id
+		var body: Dictionary = library.slot(body_slot)
+		var glow: Dictionary = library.slot(glow_slot)
+		check(not glow.is_empty(), "%s has a glow layer slot" % body_slot)
+		check_eq(glow.get("parent", ""), body_slot, "%s glow belongs to the ship body" % body_slot)
+		check_eq(glow.get("layer_role", ""), "glow", "%s glow is tagged as a glow layer" % body_slot)
+		check_eq(glow.get("file", ""), "ships/%s.png" % glow_slot, "%s glow file name" % body_slot)
+		check_eq(glow.get("canvas", {}), body.get("canvas", {}), "%s glow canvas matches the body" % body_slot)
+		check_eq(glow.get("display", {}), body.get("display", {}), "%s glow display size matches the body" % body_slot)
+		check(not glow.get("required", true), "%s glow is optional" % body_slot)
+
+	# Boss parts: body, two guns with their own mount pivot, core.
+	var boss_slot := library.slot("Boss-37001")
+	check(not boss_slot.is_empty(), "single-image boss slot still exists")
+	for part: String in ["BODY", "GUN-L", "GUN-R", "CORE"]:
+		var slot_id := "Boss-37001-%s" % part
+		var entry: Dictionary = library.slot(slot_id)
+		check(not entry.is_empty(), "boss part %s exists" % part)
+		check_eq(entry.get("parent", ""), "Boss-37001", "%s belongs to the boss" % slot_id)
+		check(not entry.get("required", true), "%s is optional" % slot_id)
+	check_eq(library.slot("Boss-37001-BODY").get("layer_role", ""), "body", "body role")
+	check_eq(library.slot("Boss-37001-GUN-L").get("layer_role", ""), "gun_left", "left gun role")
+	check_eq(library.slot("Boss-37001-GUN-R").get("layer_role", ""), "gun_right", "right gun role")
+	check_eq(library.slot("Boss-37001-CORE").get("layer_role", ""), "core", "core role")
+	check_eq(library.slot("Boss-37001-GUN-L").get("canvas", {}), {"width": 192, "height": 192}, "gun canvas")
+	check_eq(library.slot("Boss-37001-CORE").get("canvas", {}), {"width": 256, "height": 256}, "core canvas")
+	check_eq(library.slot("Boss-37001-BODY").get("canvas", {}), {"width": 512, "height": 512}, "body canvas")
+	check_float(library.pivot_of("Boss-37001-GUN-L").x, 0.5, "left gun pivot x")
+	check_float(library.pivot_of("Boss-37001-GUN-L").y, 0.22, "left gun mount pivot y")
+	check_float(library.pivot_of("Boss-37001-GUN-R").y, 0.22, "right gun mount pivot y")
+	check_float(library.pivot_of("Boss-37001-CORE").y, 0.5, "core pivot is centred")
+	check_float(library.pivot_of("Boss-37001-BODY").y, 0.5, "body pivot is centred")
+
+	# Everything is optional, so a zero-art build must still use the fallbacks.
+	check(not library.all_present(["Boss-37001-BODY", "Boss-37001-CORE"]), "layered boss art is absent")
+	check(not library.any_present(["Boss-37001-GUN-L", "Boss-37001-GUN-R"]), "gun art is absent")
+	check(not library.has_art("PLAYER-10001-GLOW"), "the glow layer is absent before art arrives")
+
+
+func _test_motion_tuning() -> void:
+	# STATIC_CONFIRMED feel numbers from docs/spec/VISUAL_DESIGN.md §4 (J9/AF1).
+	check_float(MotionTuning.FLASH_SECONDS, 0.05, "hit flash lasts 0.05 s")
+	check_float(MotionTuning.FLASH_ALPHA, 0.5, "hit flash alpha is 0.5")
+	check_float(MotionTuning.SHAKE_AMPLITUDE, 0.10, "shake amplitude is 0.10")
+	check_eq(MotionTuning.SHAKE_FRAMES, 20, "shake lasts 20 frames")
+	check_float(MotionTuning.shake_seconds(), 20.0 / 60.0, "20 frames at 60 fps is 0.333 s")
+
+	check_float(MotionTuning.flash_alpha(0.0), 0.5, "flash is visible on the hit frame")
+	check_float(MotionTuning.flash_alpha(0.049), 0.5, "flash is visible just before 0.05 s")
+	check_float(MotionTuning.flash_alpha(0.05), 0.0, "flash is gone at 0.05 s")
+	check_float(MotionTuning.flash_alpha(0.2), 0.0, "flash stays gone")
+
+	check(MotionTuning.shake_offset(0.0).length() == 0.0, "shake starts at zero offset")
+	var peak := 0.0
+	for step in range(20):
+		var offset := MotionTuning.shake_offset(float(step) * 0.01)
+		peak = maxf(peak, offset.length())
+	check(peak <= MotionTuning.SHAKE_AMPLITUDE * 1.25, "shake never exceeds the tuned amplitude")
+	check(
+		MotionTuning.shake_offset(MotionTuning.shake_seconds() + 0.01) == Vector2.ZERO,
+		"shake ends after 20 frames"
+	)
+	var early := MotionTuning.shake_offset(0.01)
+	var late := MotionTuning.shake_offset(MotionTuning.shake_seconds() - 0.02)
+	check(early.length() > late.length(), "shake decays over time")
+
+	# Telegraph ramps for the last 0.42 s before a scheduled shot.
+	check_float(MotionTuning.telegraph_strength(0.5), 0.0, "no telegraph far from the shot")
+	check_float(MotionTuning.telegraph_strength(MotionTuning.BOSS_TELEGRAPH_SECONDS), 0.0, "telegraph starts at 0.42 s")
+	check_float(MotionTuning.telegraph_strength(0.0), 1.0, "telegraph is full at the shot")
+	check(
+		MotionTuning.core_glow(0.0) > MotionTuning.core_glow(1.0),
+		"the core is brightest right before a shot"
+	)
+
+	# Ship animation mapping.
+	check_float(MotionTuning.bank_angle(0.0), 0.0, "no banking when not moving sideways")
+	check(MotionTuning.bank_angle(50.0) < 0.0, "moving right banks the ship clockwise")
+	check(MotionTuning.bank_angle(-50.0) > 0.0, "moving left banks the other way")
+	check(
+		absf(rad_to_deg(MotionTuning.bank_angle(50.0))) <= MotionTuning.BANK_MAX_DEGREES + 0.001,
+		"banking is capped by the tuned maximum"
+	)
+	check(
+		MotionTuning.engine_length(0.0) < MotionTuning.engine_length(9.0),
+		"the engine flame lengthens with speed"
+	)
+	check(
+		MotionTuning.engine_length(0.0, true) >= MotionTuning.engine_length(0.0, false),
+		"the engine is longer while boosting"
+	)
+	check(
+		MotionTuning.engine_length(99.0) <= MotionTuning.ENGINE_FAST_LENGTH,
+		"the engine flame is clamped"
+	)
+
+	# Boss death chain: layers fade in order and the total is bounded.
+	check_float(MotionTuning.death_layer_alpha(0, 0.0), 1.0, "the first layer is opaque at t=0")
+	check(
+		MotionTuning.death_layer_alpha(0, 0.2) < MotionTuning.death_layer_alpha(2, 0.2),
+		"later layers fade after the earlier ones"
+	)
+	check_float(
+		MotionTuning.death_layer_alpha(MotionTuning.BOSS_DEATH_LAYERS - 1, MotionTuning.death_total_seconds()),
+		0.0,
+		"every layer is gone at the end of the chain"
+	)
+	check(MotionTuning.death_total_seconds() < 1.5, "the death chain stays under 1.5 s")
 
 
 func _clear_dir(root: String) -> void:

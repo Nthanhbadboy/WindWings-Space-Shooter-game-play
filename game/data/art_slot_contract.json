@@ -3,7 +3,7 @@
  "art_root": "res://art",
  "evidence": "slot list derived from data; art itself is INFERRED until drawn",
  "generated_by": "game/tools/build_art_slot_contract.py",
- "generator_sha256": "d2532371be8491538b2482d3a70f1ccc3968ef857e04dddc834061c527f0f186",
+ "generator_sha256": "397a0817202a734debedd51e8eb12c152a21ac50227882b05850259e3815566e",
  "sources": {
   "game/data/launch_slice_waves.json": "c417fb5640e153b663b120ae4f90e82ac0cc83a523e395178e03827d5d61db92",
   "game/data/enemy_movement_slice.json": "ae1e23259dd95cff773f9ed01233ef4aca21b7d97e2d73cd81e12b0366c03566",
@@ -23,11 +23,23 @@
   "shipping": "put files under game/art/ so the export packs them; user://art/ is also read for drop-in tests"
  },
  "counts": {
-  "total": 23,
+  "total": 30,
   "ships": 3,
+  "ship_layers": 3,
   "enemies": 13,
   "bosses": 1,
+  "boss_parts": 4,
   "extras": 6
+ },
+ "layers": {
+  "ship_glow": "drawn over the ship body with a pulsing alpha; missing layer keeps the single image",
+  "boss_parts": [
+   "body",
+   "gun_left",
+   "gun_right",
+   "core"
+  ],
+  "boss_part_fallback": "any missing part falls back to the single Boss-37001.png, and with no boss art at all to the vector boss"
  },
  "problems": [],
  "slots": [
@@ -58,6 +70,34 @@
    "notes": "Nose points to the TOP of the canvas. Runtime draws the texture unrotated at the ship position."
   },
   {
+   "slot": "PLAYER-10001-GLOW",
+   "kind": "ship_layer",
+   "file": "ships/PLAYER-10001-GLOW.png",
+   "canvas": {
+    "width": 256,
+    "height": 256
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "up",
+   "display": {
+    "unit": "world_units",
+    "height": 1.4,
+    "width": 1.4,
+    "mode": "fit_canvas"
+   },
+   "fallback": "procedural glow pulse in scripts/player.gd",
+   "source": "animation glow layer for ship 10001",
+   "required": false,
+   "notes": "Overlay layer: same canvas and same display size as the body, so it lines up pixel for pixel. Draw only the glow/emissive parts on a transparent background; the game pulses its alpha and adds it on top.",
+   "parent": "PLAYER-10001",
+   "layer_role": "glow"
+  },
+  {
    "slot": "PLAYER-10003",
    "kind": "ship",
    "file": "ships/PLAYER-10003.png",
@@ -84,6 +124,34 @@
    "notes": "Nose points to the TOP of the canvas. Runtime draws the texture unrotated at the ship position."
   },
   {
+   "slot": "PLAYER-10003-GLOW",
+   "kind": "ship_layer",
+   "file": "ships/PLAYER-10003-GLOW.png",
+   "canvas": {
+    "width": 256,
+    "height": 256
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "up",
+   "display": {
+    "unit": "world_units",
+    "height": 1.4,
+    "width": 1.4,
+    "mode": "fit_canvas"
+   },
+   "fallback": "procedural glow pulse in scripts/player.gd",
+   "source": "animation glow layer for ship 10003",
+   "required": false,
+   "notes": "Overlay layer: same canvas and same display size as the body, so it lines up pixel for pixel. Draw only the glow/emissive parts on a transparent background; the game pulses its alpha and adds it on top.",
+   "parent": "PLAYER-10003",
+   "layer_role": "glow"
+  },
+  {
    "slot": "PLAYER-10004",
    "kind": "ship",
    "file": "ships/PLAYER-10004.png",
@@ -108,6 +176,34 @@
    "source": "slice roster ship 10004; damage row from data/player_start_stats.json",
    "required": false,
    "notes": "Nose points to the TOP of the canvas. Runtime draws the texture unrotated at the ship position."
+  },
+  {
+   "slot": "PLAYER-10004-GLOW",
+   "kind": "ship_layer",
+   "file": "ships/PLAYER-10004-GLOW.png",
+   "canvas": {
+    "width": 256,
+    "height": 256
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "up",
+   "display": {
+    "unit": "world_units",
+    "height": 1.4,
+    "width": 1.4,
+    "mode": "fit_canvas"
+   },
+   "fallback": "procedural glow pulse in scripts/player.gd",
+   "source": "animation glow layer for ship 10004",
+   "required": false,
+   "notes": "Overlay layer: same canvas and same display size as the body, so it lines up pixel for pixel. Draw only the glow/emissive parts on a transparent background; the game pulses its alpha and adds it on top.",
+   "parent": "PLAYER-10004",
+   "layer_role": "glow"
   },
   {
    "slot": "CD-31002",
@@ -472,6 +568,118 @@
    "source": "Wave_7001 boss row; hp_max 225000 from datas/boss_hp.json",
    "required": true,
    "notes": "Faces the player below (nose DOWN). Keep the core around the canvas centre: the slice hitbox is a 1.15-unit circle at the texture centre."
+  },
+  {
+   "slot": "Boss-37001-BODY",
+   "kind": "boss_part",
+   "file": "bosses/Boss-37001-BODY.png",
+   "canvas": {
+    "width": 512,
+    "height": 512
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 2.4,
+    "width": 2.4,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector boss body in scripts/boss.gd",
+   "source": "Boss-37001 hull without the two gun mounts and without the core",
+   "required": false,
+   "notes": "Body layer. Same 512 canvas and 2.4-unit display size as the single-image boss, so a partial art drop still lines up.",
+   "parent": "Boss-37001",
+   "layer_role": "body"
+  },
+  {
+   "slot": "Boss-37001-GUN-L",
+   "kind": "boss_part",
+   "file": "bosses/Boss-37001-GUN-L.png",
+   "canvas": {
+    "width": 192,
+    "height": 192
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.22
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.95,
+    "width": 0.95,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector gun drawn by scripts/boss.gd",
+   "source": "Boss-37001 left gun mount (player's left)",
+   "required": false,
+   "notes": "Mount pivot (0.5, 0.22): the mount sits at the top of the gun sprite and the barrel points DOWN. The game rotates this layer around that pivot to aim at the player ship.",
+   "parent": "Boss-37001",
+   "layer_role": "gun_left"
+  },
+  {
+   "slot": "Boss-37001-GUN-R",
+   "kind": "boss_part",
+   "file": "bosses/Boss-37001-GUN-R.png",
+   "canvas": {
+    "width": 192,
+    "height": 192
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.22
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.95,
+    "width": 0.95,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector gun drawn by scripts/boss.gd",
+   "source": "Boss-37001 right gun mount (player's right)",
+   "required": false,
+   "notes": "Mirror of GUN-L, same mount pivot (0.5, 0.22). Each gun aims and rotates independently and is staggered on death.",
+   "parent": "Boss-37001",
+   "layer_role": "gun_right"
+  },
+  {
+   "slot": "Boss-37001-CORE",
+   "kind": "boss_part",
+   "file": "bosses/Boss-37001-CORE.png",
+   "canvas": {
+    "width": 256,
+    "height": 256
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "none",
+   "display": {
+    "unit": "world_units",
+    "height": 0.85,
+    "width": 0.85,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector core with telegraph glow in scripts/boss.gd",
+   "source": "Boss-37001 energy core (brightens before every shot)",
+   "required": false,
+   "notes": "Centred on the boss body. The game ramps its brightness for the last 0.42 s before each Attack2 shot (telegraph).",
+   "parent": "Boss-37001",
+   "layer_role": "core"
   },
   {
    "slot": "BG-FIELD",

@@ -10,6 +10,7 @@ var radius := 0.5
 var _age := 0.0
 var _tint := Color.WHITE
 var _size_multiplier := 1.0
+var delay := 0.0
 
 
 static func spawn(parent: Node, fx_kind: String, at: Vector2, size_multiplier := 1.0) -> FXBurst:
@@ -33,6 +34,9 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if delay > 0.0:
+		delay -= delta
+		return
 	_age += delta
 	if _age >= lifetime:
 		queue_free()

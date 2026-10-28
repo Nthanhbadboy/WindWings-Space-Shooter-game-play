@@ -14,6 +14,8 @@ var _boss_box: VBoxContainer
 var _boss_bar: ProgressBar
 var _boss_label: Label
 var _fatal_label: Label
+var _warning_box: VBoxContainer
+var _warning_bar: ProgressBar
 var _wave_text := ""
 
 
@@ -68,6 +70,21 @@ func _build() -> void:
 	_score_label = UIKit.body("SCORE 0", 15, UIKit.GOLD)
 	_score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	info.add_child(_score_label)
+
+	_warning_box = VBoxContainer.new()
+	_warning_box.add_theme_constant_override("separation", 2)
+	_warning_box.visible = false
+	column.add_child(_warning_box)
+	var warning_label := UIKit.body("!! BOSS APPROACHING !!", 15, UIKit.DANGER)
+	_warning_box.add_child(warning_label)
+	_warning_bar = ProgressBar.new()
+	_warning_bar.min_value = 0.0
+	_warning_bar.max_value = 1.0
+	_warning_bar.step = 0.0
+	_warning_bar.value = 0.0
+	_warning_bar.show_percentage = false
+	_warning_bar.custom_minimum_size = Vector2(0, 12)
+	_warning_box.add_child(_warning_bar)
 
 	_boss_box = VBoxContainer.new()
 	_boss_box.add_theme_constant_override("separation", 2)
@@ -141,6 +158,12 @@ func set_boss(name: String, current: float, maximum: float) -> void:
 
 func clear_boss() -> void:
 	_boss_box.visible = false
+
+
+func set_warning(remaining: float) -> void:
+	var clamped := clampf(remaining, 0.0, 1.0)
+	_warning_box.visible = clamped > 0.001
+	_warning_bar.value = clamped
 
 
 func set_paused(paused: bool) -> void:
