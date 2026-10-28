@@ -18,7 +18,6 @@ var is_turret := false
 var formation_kind := "point"
 var formation_phase := 0.0
 var spawner_speed_hint := 0.0
-var contact_damage := 0.0
 
 # INFERRED NEW_DESIGN — a turret has no descent in the source rows, and rows can
 # spawn above the visible top (y_spawn 12/15), so a stationary enemy would never

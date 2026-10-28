@@ -33,6 +33,7 @@ const MUSIC_STREAM := "res://audio/music_game.wav"
 const SFX_VOICES := 8
 
 var _sfx_players: Array = []
+var _sfx_cache: Dictionary = {}
 var _music_player: AudioStreamPlayer
 var _sfx_cursor := 0
 
@@ -74,9 +75,11 @@ func play_sfx(name: String) -> void:
 	var path: String = SFX_STREAMS[name]
 	if not ResourceLoader.exists(path):
 		return
+	if not _sfx_cache.has(path):
+		_sfx_cache[path] = load(path)
 	var player: AudioStreamPlayer = _sfx_players[_sfx_cursor % _sfx_players.size()]
 	_sfx_cursor += 1
-	player.stream = load(path)
+	player.stream = _sfx_cache[path]
 	player.play()
 
 
