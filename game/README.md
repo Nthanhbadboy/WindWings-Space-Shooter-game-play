@@ -42,6 +42,29 @@ Storage is a Godot `user://launch_slice_save.json` written through a temp file a
 
 `datas/audio_rules.json` fixes `MUTE_AUDIO` (int, default 0, predicate `stored == 1`), `VolumeSound` (float, default ≈0.73) and `VolumeMusic` (float, default ≈0.3). The slice applies them to `SFX`/`Music` buses. Every clip is a synthesized placeholder tone; the mapping to source clip enum values is a naming convention only.
 
+### Art slots (contract first, art later)
+
+`game/data/art_slot_contract.json` and `game/data/ART_SLOT_CONTRACT.md` are generated from the slice data by `game/tools/build_art_slot_contract.py`, so the slot list can never drift from the waves that actually spawn:
+
+| Group | Slots | Canvas | Facing |
+|---|---:|---|---|
+| Ships `PLAYER-10001` (required), `PLAYER-10003`, `PLAYER-10004` | 3 | 256 × 256 | up |
+| Enemies (the 13 prefabs used by `Wave_0016…Wave_0020`) | 13 | 128 × 128 | down |
+| Boss `Boss-37001` | 1 | 512 × 512 | down |
+| `BG-FIELD` | 1 | 1024 × 1024 | — |
+| `BULLET-PLAYER` / `BULLET-ENEMY` | 2 | 64 × 128 / 64 × 64 | travel direction |
+| `FX-HIT` / `FX-EXPLOSION` | 2 | 256 × 256 | — |
+| `UI-MENU-FRAME` | 1 | 1080 × 1920 | — |
+| **Total** | **23** | | |
+
+Drop contract-named PNGs into `game/art/<folder>/` (or `user://art/` for a test run without a rebuild). `scripts/art_library.gd` resolves `res://art/…` first, then `user://art/…`; a file that exists replaces the vector shape, and a missing file leaves the current vector drawing in place with the slot logged. Pivots are the canvas centre and every slot's on-screen size comes from the contract `display` block (ship 1.4 units tall, enemy 0.78, boss 2.4, `BG-FIELD` covers 10.8 × 19.2 units).
+
+```bash
+godot --headless --path game --script res://tools/art_report.gd   # per-slot present/fallback
+```
+
+CI runs that report after the rule tests, appends every `ART_*` line to `BUILD_INFO.txt`, ships `art_report.log` in the artifact, and fails if the committed contract is stale or a slot has no status. The headless tests and both smoke runs stay green with zero art, which is the current state of this branch.
+
 ### Tests
 
 ```bash

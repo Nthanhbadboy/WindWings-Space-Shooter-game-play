@@ -16,6 +16,10 @@ const WaveCatalogScript = preload("res://scripts/wave_catalog.gd")
 const BossPatternScript = preload("res://scripts/boss_pattern.gd")
 const AudioMixerScript = preload("res://scripts/audio_mixer.gd")
 const ShipRosterScript = preload("res://scripts/ship_roster.gd")
+const ArtLibraryScript = preload("res://scripts/art_library.gd")
+
+const ART_CONTRACT_PATH := "res://data/art_slot_contract.json"
+const ART_TEST_ROOT := "user://art_test_root"
 
 const TEST_SAVE_PATH := "user://launch_slice_test_save.json"
 
@@ -40,6 +44,9 @@ func _initialize() -> void:
 	_test_audio_rules()
 	_test_ship_roster()
 	_test_provenance_pins()
+	_test_art_slot_contract()
+	_test_art_library_fallback()
+	_test_art_library_drop_in()
 
 	print("TESTS: %d checks, %d failures" % [_checks, _failures.size()])
 	if _failures.is_empty():
@@ -456,3 +463,172 @@ func _test_provenance_pins() -> void:
 	check(save_contract is Dictionary, "save contract is a JSON object")
 	if save_contract is Dictionary:
 		check_eq((save_contract as Dictionary).get("keys", []).size(), 26, "save contract lists 26 keys")
+
+
+# --- art slot contract ---------------------------------------------------------
+
+func _test_art_slot_contract() -> void:
+	check(FileAccess.file_exists(ART_CONTRACT_PATH), "art slot contract exists")
+	var library: ArtLibrary = ArtLibraryScript.new()
+	check(library.contract_ready(), "art slot contract loads: %s" % library.error)
+	check_eq(library.validate().size(), 0, "art slot contract validates: %s" % str(library.validate()))
+	check_eq(library.slot_count(), 23, "contract lists 23 slots")
+	check_eq(
+		library.contract.get("art_root", ""), "res://art", "contract names the integrated art root"
+	)
+
+	# Required slots the slice cannot ship without.
+	for slot_id: String in ["PLAYER-10001", "Boss-37001", "BG-FIELD", "BULLET-PLAYER", "BULLET-ENEMY", "FX-HIT", "FX-EXPLOSION", "UI-MENU-FRAME"]:
+		check(library.slot(slot_id).size() > 0, "contract has slot %s" % slot_id)
+	check(library.slot("PLAYER-10001").get("required", false), "PLAYER-10001 is a required slot")
+
+	# Every enemy prefab the slice spawns must have a slot, derived from the same data.
+	var catalog: WaveCatalog = WaveCatalogScript.new()
+	check(catalog.load_default(), "wave catalog loads for the art cross-check")
+	var stage_prefabs: Array = []
+	for prefab: String in catalog.used_prefabs():
+		if prefab == catalog.boss_prefab:
+			continue
+		stage_prefabs.append(prefab)
+	check_eq(stage_prefabs.size(), 13, "the slice spawns 13 distinct enemy prefabs")
+	for prefab: String in stage_prefabs:
+		check(library.slot(prefab).size() > 0, "contract has an enemy slot for %s" % prefab)
+	check_eq(
+		library.contract.get("counts", {}).get("enemies", -1),
+		stage_prefabs.size(),
+		"contract enemy count matches the spawned prefabs"
+	)
+	check_eq(
+		library.contract.get("counts", {}).get("total", -1),
+		library.slot_count(),
+		"contract total matches the slot list"
+	)
+
+	# Canvas sizes and orientation from the brief.
+	var canvas_expectations := {
+		"PLAYER-10001": [256, 256],
+		"PLAYER-10003": [256, 256],
+		"PLAYER-10004": [256, 256],
+		"CD-31002": [128, 128],
+		"CB-30001": [128, 128],
+		"Boss-37001": [512, 512],
+		"BG-FIELD": [1024, 1024],
+		"BULLET-PLAYER": [64, 128],
+		"BULLET-ENEMY": [64, 64],
+		"FX-HIT": [256, 256],
+		"FX-EXPLOSION": [256, 256],
+		"UI-MENU-FRAME": [1080, 1920],
+	}
+	for slot_id: String in canvas_expectations.keys():
+		var canvas: Dictionary = library.slot(slot_id).get("canvas", {})
+		var expected: Array = canvas_expectations[slot_id]
+		check_eq(int(canvas.get("width", 0)), int(expected[0]), "%s canvas width" % slot_id)
+		check_eq(int(canvas.get("height", 0)), int(expected[1]), "%s canvas height" % slot_id)
+
+	check_eq(library.slot("PLAYER-10001").get("facing", ""), "up", "ships face up")
+	check_eq(library.slot("CD-31002").get("facing", ""), "down", "enemies face down")
+	check_eq(library.slot("Boss-37001").get("facing", ""), "down", "the boss faces down")
+
+	# File names, folders and pivots.
+	var files := {}
+	for slot_id: String in library.slot_ids():
+		var entry: Dictionary = library.slot(slot_id)
+		var file := str(entry.get("file", ""))
+		check(file.ends_with(".png"), "%s uses a .png file" % slot_id)
+		check(not files.has(file), "%s has a unique file path" % slot_id)
+		files[file] = slot_id
+		var pivot: Array = entry.get("pivot", [])
+		check_eq(pivot.size(), 2, "%s declares a pivot" % slot_id)
+		if pivot.size() == 2:
+			check_float(float(pivot[0]), 0.5, "%s pivot x is centred" % slot_id)
+			check_float(float(pivot[1]), 0.5, "%s pivot y is centred" % slot_id)
+		var display: Dictionary = entry.get("display", {})
+		check(not display.is_empty(), "%s declares how it is displayed" % slot_id)
+	check_eq(
+		library.slot("CD-31002").get("file", ""),
+		"enemies/CD-31002.png",
+		"enemy files live under enemies/"
+	)
+	check_eq(
+		library.slot("Boss-37001").get("file", ""), "bosses/Boss-37001.png", "boss file path"
+	)
+	check_eq(
+		library.slot("PLAYER-10001").get("file", ""),
+		"ships/PLAYER-10001.png",
+		"ship file path"
+	)
+	# Display sizes stay inside the playfield and match the vector silhouettes.
+	check_float(library.display_size("PLAYER-10001").y, 1.4, "ship display height")
+	check_float(library.display_size("CD-31002").y, 0.78, "enemy display height")
+	check_float(library.display_size("Boss-37001").y, 2.4, "boss display height")
+	check(
+		library.display_size("Boss-37001").y < LaunchRulesScript.PLAYFIELD_HEIGHT_UNITS,
+		"the boss sprite fits the 25-unit playfield"
+	)
+
+
+func _test_art_library_fallback() -> void:
+	# The repository ships no art yet: every slot must fall back without crashing.
+	var library: ArtLibrary = ArtLibraryScript.new(ART_CONTRACT_PATH, ["res://art"])
+	check(library.contract_ready(), "fallback library loads the contract")
+	check_eq(library.present_ids().size(), 0, "no art is integrated yet")
+	check_eq(library.missing_ids().size(), library.slot_count(), "every slot is a fallback")
+	check_eq(library.summary_line(), "ART_SUMMARY total=23 present=0 fallback=23", "summary line counts fallbacks")
+	for slot_id: String in library.slot_ids():
+		check(not library.has_art(slot_id), "%s falls back to vector art" % slot_id)
+		check_eq(library.status(slot_id), "fallback", "%s reports fallback status" % slot_id)
+	check(library.texture_for("PLAYER-10001") == null, "a missing texture returns null")
+	# draw_slot must return false instead of drawing (and must not crash headless).
+	var probe := Node2D.new()
+	var drew := library.draw_slot(probe, "PLAYER-10001", Vector2.ZERO)
+	check(not drew, "draw_slot reports false when the slot has no art")
+	check(
+		not library.draw_cover(probe, "BG-FIELD", Rect2(0, 0, 10, 10)),
+		"draw_cover reports false when the background has no art"
+	)
+	probe.free()
+	var unknown := library.draw_slot(null, "NOT-A-SLOT", Vector2.ZERO)
+	check(not unknown, "an unknown slot never draws and never crashes")
+
+
+func _test_art_library_drop_in() -> void:
+	# Dropping a contract-named PNG into an art root must switch that slot to art
+	# and leave the other slots on the fallback.
+	_clear_dir(ART_TEST_ROOT)
+	var png_path := ART_TEST_ROOT + "/ships/PLAYER-10001.png"
+	var directory_error := DirAccess.make_dir_recursive_absolute(
+		ProjectSettings.globalize_path(ART_TEST_ROOT + "/ships")
+	)
+	check_eq(directory_error, OK, "art test folder is writable")
+	var image := Image.create(8, 8, false, Image.FORMAT_RGBA8)
+	image.fill(Color(0.2, 0.8, 1.0, 1.0))
+	check_eq(image.save_png(ProjectSettings.globalize_path(png_path)), OK, "a test PNG is written")
+	check(FileAccess.file_exists(png_path), "the test PNG exists")
+
+	var library: ArtLibrary = ArtLibraryScript.new(ART_CONTRACT_PATH, [ART_TEST_ROOT])
+	check(library.has_art("PLAYER-10001"), "a dropped PNG is picked up for its slot")
+	check(library.texture_for("PLAYER-10001") is Texture2D, "the dropped PNG becomes a texture")
+	check_eq(library.status("PLAYER-10001"), "present", "the slot reports present")
+	check(library.texture_for("PLAYER-10001").get_width() == 8, "the texture has the PNG size")
+	check(not library.has_art("PLAYER-10003"), "other slots stay on the fallback")
+	check(not library.has_art("CD-31002"), "enemies stay on the fallback")
+	check_eq(library.summary_line(), "ART_SUMMARY total=23 present=1 fallback=22", "summary counts one slot of art")
+	var report := library.report_lines()
+	check(report.size() == library.slot_count() + 2, "the report lists every slot plus two summary lines")
+	check(
+		report.has("ART_SLOT PLAYER-10001 present %s/%s" % [ART_TEST_ROOT, "ships/PLAYER-10001.png"]),
+		"the report names the present slot and its path"
+	)
+	_clear_dir(ART_TEST_ROOT)
+
+
+func _clear_dir(root: String) -> void:
+	var absolute := ProjectSettings.globalize_path(root)
+	var directory := DirAccess.open(absolute)
+	if directory == null:
+		return
+	for sub_path: String in directory.get_files():
+		DirAccess.remove_absolute(absolute + "/" + sub_path)
+	for sub_dir: String in directory.get_directories():
+		_clear_dir(root + "/" + sub_dir)
+	DirAccess.remove_absolute(absolute)

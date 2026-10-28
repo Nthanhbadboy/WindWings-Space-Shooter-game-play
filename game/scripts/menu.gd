@@ -15,6 +15,14 @@ func _ready() -> void:
 
 func _build() -> void:
 	UIKit.background(self)
+	if Session.art != null and Session.art.has_art("UI-MENU-FRAME"):
+		var frame := TextureRect.new()
+		frame.texture = Session.art.texture_for("UI-MENU-FRAME")
+		frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		frame.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		frame.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		add_child(frame)
 	var margin := UIKit.full_margin(self, 28)
 	var center := CenterContainer.new()
 	margin.add_child(center)

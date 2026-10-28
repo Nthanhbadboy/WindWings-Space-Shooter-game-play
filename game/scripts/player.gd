@@ -12,6 +12,7 @@ const CONFIRMED_HIT_INVULNERABILITY_SECONDS := 3.0
 @export var move_speed := 9.0
 @export var smoothing_rate := 14.0
 
+var ship_id := 10003
 var current_health := CONFIRMED_BASE_HP
 var maximum_health := CONFIRMED_BASE_HP
 var shot_damage := 0.0
@@ -33,6 +34,10 @@ func _ready() -> void:
 	_move_target = global_position
 	health_changed.emit(current_health, maximum_health)
 	queue_redraw()
+
+
+func configure_ship(ship: int) -> void:
+	ship_id = ship
 
 
 func configure_weapon(damage: float, fire_period: float) -> void:
@@ -99,6 +104,7 @@ func take_damage(amount: float) -> bool:
 		return false
 	var applied := maxf(amount, 0.0)
 	current_health = maxf(current_health - applied, 0.0)
+	FXBurst.spawn(get_parent(), "hit", global_position)
 	_invulnerability_elapsed = CONFIRMED_HIT_INVULNERABILITY_SECONDS
 	damage_taken.emit(applied, current_health)
 	health_changed.emit(current_health, maximum_health)
@@ -129,6 +135,13 @@ func _on_area_entered(area: Area2D) -> void:
 
 
 func _draw() -> void:
+	var art_tint := Color(1.0, 1.0, 1.0, 1.0)
+	if _invulnerability_elapsed > 0.0 and int(Time.get_ticks_msec() / 90) % 2 == 0:
+		art_tint.a = 0.5
+	if Session.art != null and Session.art.draw_slot(
+		self, "PLAYER-%d" % ship_id, Vector2.ZERO, Vector2.ZERO, art_tint
+	):
+		return
 	var flicker := 1.0
 	if _invulnerability_elapsed > 0.0 and int(Time.get_ticks_msec() / 90) % 2 == 0:
 		flicker = 0.42

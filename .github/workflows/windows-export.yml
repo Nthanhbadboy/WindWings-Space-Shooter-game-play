@@ -113,6 +113,14 @@ jobs:
           PRESET
           cp "$project/export_presets.cfg" "$out/export_presets.cfg"
 
+          echo "Re-generating the art slot contract and checking it is committed"
+          python3 "$GITHUB_WORKSPACE/game/tools/build_art_slot_contract.py"
+          if ! git -C "$GITHUB_WORKSPACE" diff --exit-code -- \
+               game/data/art_slot_contract.json game/data/ART_SLOT_CONTRACT.md; then
+            echo "Art slot contract is stale; re-run game/tools/build_art_slot_contract.py." >&2
+            exit 1
+          fi
+
           echo "Importing source project with Godot $GODOT_TAG"
           "$GODOT_BIN" --headless --path "$project" --editor --import 2>&1 \
             | tee "$RUNNER_TEMP/godot-import.log"
@@ -192,6 +200,30 @@ jobs:
             exit 1
           fi
 
+          echo "Collecting art slot status"
+          set +e
+          "$GODOT_BIN" --headless --path "$project" --script res://tools/art_report.gd \
+            2>&1 | tee "$out/art_report.log"
+          art_status=${PIPESTATUS[0]}
+          set -e
+          if [ "$art_status" -ne 0 ]; then
+            echo "Art slot report failed (status $art_status)." >&2
+            exit 1
+          fi
+          if ! grep -q '^ART_SUMMARY total=' "$out/art_report.log"; then
+            echo "Art slot report produced no summary line." >&2
+            exit 1
+          fi
+          if ! grep -q '^ART_REPORT_END$' "$out/art_report.log"; then
+            echo "Art slot report did not finish." >&2
+            exit 1
+          fi
+          if grep -E '(^|[[:space:]])SCRIPT ERROR:' "$out/art_report.log"; then
+            echo "The art slot report hit a script error." >&2
+            exit 1
+          fi
+          echo "Art slot status: $(grep '^ART_SUMMARY' "$out/art_report.log")"
+
           echo "Exporting Windows Desktop release with embedded PCK"
           "$GODOT_BIN" --headless --path "$project" --export-release \
             "Windows Desktop" "$out/WindWings.exe" 2>&1 | tee "$RUNNER_TEMP/godot-export.log"
@@ -258,6 +290,7 @@ jobs:
                   b"data/launch_slice_waves.json",
                   b"data/boss_slice.json",
                   b"data/save_contract.json",
+                  b"data/art_slot_contract.json",
                   b"data/player_start_stats.json",
                   b"scenes/menu.tscn",
                   b"scenes/main.tscn",
@@ -279,11 +312,17 @@ jobs:
           Windows runtime: RUNTIME_UNVERIFIED for this slice build
           Headless rule tests: see tests.log (TESTS_OK required for this artifact)
           Headless smoke run: see smoke.log (menu, run scene, full 5-wave harness)
+          Art slots: contract res://data/art_slot_contract.json (fallback = vector shape)
           Resource editing: disabled; no icon or company identity provided
           Signing and MSIX: not performed (USER-ONLY)
           Scope: M2 launch slice - menu, ship select, 5 real waves, boss, results,
                  pause, audio settings, save/load. Not full 282-wave parity.
           INFO
+          {
+            echo ""
+            echo "--- Art slot status (res://art first, then user://art) ---"
+            grep -E '^ART_' "$out/art_report.log" || true
+          } >> "$out/BUILD_INFO.txt"
           (cd "$out" && sha256sum WindWings.exe > SHA256SUMS.txt && sha256sum --check SHA256SUMS.txt)
           exe_sha="$(cut -d ' ' -f 1 "$out/SHA256SUMS.txt")"
           echo "exe_sha256=$exe_sha" >> "$GITHUB_OUTPUT"
@@ -301,6 +340,7 @@ jobs:
             dist/BUILD_INFO.txt
             dist/tests.log
             dist/smoke.log
+            dist/art_report.log
           if-no-files-found: error
           retention-days: 14
 

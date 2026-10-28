@@ -75,6 +75,14 @@ func _check_near_miss() -> void:
 
 
 func _draw() -> void:
+	var slot_id := "BULLET-PLAYER" if faction == Faction.PLAYER else "BULLET-ENEMY"
+	# Both bullet canvases point along their travel direction: the player bolt
+	# faces up, the enemy orb faces down.
+	var art_rotation := direction.angle() + (PI * 0.5 if faction == Faction.PLAYER else -PI * 0.5)
+	if Session.art != null and Session.art.draw_slot(
+		self, slot_id, Vector2.ZERO, Vector2.ZERO, Color.WHITE, art_rotation
+	):
+		return
 	if faction == Faction.PLAYER:
 		draw_line(Vector2(0.0, 0.16), Vector2(0.0, -0.22), Color(0.45, 0.95, 1.0, 0.96), 0.12)
 		draw_circle(Vector2.ZERO, 0.075, Color(0.84, 1.0, 1.0, 0.95))

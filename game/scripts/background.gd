@@ -33,6 +33,9 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	draw_rect(FIELD_RECT, Color(0.012, 0.021, 0.062), true)
+	if Session.art != null and Session.art.draw_cover(self, "BG-FIELD", VIEW_RECT):
+		draw_rect(VIEW_RECT, Color(0.24, 0.71, 0.94, 0.2), false, 0.025)
+		return
 	# Original procedural nebula bands: the palette and geometry are newly drawn.
 	draw_circle(Vector2(-3.8, -4.5), 5.0, Color(0.06, 0.14, 0.31, 0.12))
 	draw_circle(Vector2(4.2, 3.5), 4.0, Color(0.11, 0.08, 0.31, 0.10))

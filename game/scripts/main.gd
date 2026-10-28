@@ -54,6 +54,7 @@ func _ready() -> void:
 	_configure_camera()
 	get_viewport().size_changed.connect(_configure_camera)
 
+	player.configure_ship(Session.selected_ship)
 	player.configure_weapon(Session.ship_damage(), 0.24)
 	player.configure_health(Session.player_max_hp())
 	player.died.connect(_on_player_died)
@@ -80,6 +81,8 @@ func _ready() -> void:
 
 	Session.start_music()
 	hud.set_score(score)
+	if Session.art != null:
+		print("ART_USAGE %s" % Session.art.summary_line())
 	print(
 		"SLICE_RUN_START ship=%d hull=%d waves=%d entries=%d boss_hp=%.0f"
 		% [

@@ -103,6 +103,7 @@ func take_damage(amount: float) -> void:
 func _die() -> void:
 	_dead = true
 	defeated.emit(self)
+	FXBurst.spawn(get_parent(), "explosion", global_position, 2.0)
 	queue_free()
 
 
@@ -111,6 +112,9 @@ func is_defeated() -> bool:
 
 
 func _draw() -> void:
+	if Session.art != null and Session.art.draw_slot(self, _art_slot(), Vector2.ZERO):
+		_draw_health_bar()
+		return
 	var hull := Color(0.62, 0.30, 0.86)
 	var glow := Color(1.0, 0.55, 0.42)
 	draw_circle(Vector2.ZERO, 1.05, Color(0.16, 0.06, 0.24, 0.9))
@@ -131,6 +135,16 @@ func _draw() -> void:
 	draw_circle(Vector2(0.0, -0.15), 0.16, Color(1.0, 0.95, 0.75))
 	draw_line(Vector2(-1.05, -0.25), Vector2(-1.45, 0.45), glow, 0.12)
 	draw_line(Vector2(1.05, -0.25), Vector2(1.45, 0.45), glow, 0.12)
+	_draw_health_bar()
+
+
+func _art_slot() -> String:
+	if _pattern != null and not _pattern.prefab.is_empty():
+		return _pattern.prefab
+	return "Boss-37001"
+
+
+func _draw_health_bar() -> void:
 	if max_hp > 0.0:
 		var ratio := clampf(current_hp / max_hp, 0.0, 1.0)
 		draw_rect(Rect2(-1.1, -1.45, 2.2, 0.16), Color(0.06, 0.05, 0.1, 0.9))

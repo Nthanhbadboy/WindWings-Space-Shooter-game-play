@@ -9,12 +9,14 @@ const SaveStoreScript = preload("res://scripts/save_store.gd")
 const ShipRosterScript = preload("res://scripts/ship_roster.gd")
 const AudioMixerScript = preload("res://scripts/audio_mixer.gd")
 const StarRulesScript = preload("res://scripts/star_rules.gd")
+const ArtLibraryScript = preload("res://scripts/art_library.gd")
 
 const DEFAULT_SHIP := 10003
 
 var store: SaveStore
 var roster: ShipRoster
 var mixer: AudioMixer
+var art: ArtLibrary
 
 var selected_ship := DEFAULT_SHIP
 var ability7 := 0
@@ -51,6 +53,11 @@ func _ready() -> void:
 	mixer = AudioMixerScript.new()
 	if not mixer.load_default():
 		startup_notes.append("audio defaults failed")
+	art = ArtLibraryScript.new()
+	if not art.contract_ready():
+		startup_notes.append("art slot contract failed: %s" % art.error)
+	for problem: Variant in art.validate():
+		startup_notes.append("art contract: %s" % str(problem))
 	_setup_audio_nodes()
 	var used_ship := store.player_used(0)
 	selected_ship = used_ship if roster.roster_ships().has(used_ship) else DEFAULT_SHIP

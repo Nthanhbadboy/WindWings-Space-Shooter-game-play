@@ -1,0 +1,632 @@
+{
+ "schema": "windwings.launch_slice.art_slots/1",
+ "art_root": "res://art",
+ "evidence": "slot list derived from data; art itself is INFERRED until drawn",
+ "generated_by": "game/tools/build_art_slot_contract.py",
+ "generator_sha256": "d2532371be8491538b2482d3a70f1ccc3968ef857e04dddc834061c527f0f186",
+ "sources": {
+  "game/data/launch_slice_waves.json": "c417fb5640e153b663b120ae4f90e82ac0cc83a523e395178e03827d5d61db92",
+  "game/data/enemy_movement_slice.json": "ae1e23259dd95cff773f9ed01233ef4aca21b7d97e2d73cd81e12b0366c03566",
+  "game/data/boss_slice.json": "a788c901408e2d02d740a47f62341e38f9334424dac7fbf010ca53d3dc87d72d",
+  "game/scripts/ship_roster.gd": "6c1e7d766a155c0d82b115c30166dbfb8137ecb2c8a358362399d60a30ff7067"
+ },
+ "rules": {
+  "naming": "PNG, exact slot file name, lowercase folder names under res://art/",
+  "canvas": "draw at the documented canvas size; the game scales by height, so keep the subject inside a centre-safe area",
+  "pivot": "every slot is anchored at its centre (0.5, 0.5)",
+  "facing": "ships face UP, enemies and bosses face DOWN, bullets face their travel direction",
+  "fallback": "a missing file never crashes: the slice draws the vector shape and logs the slot",
+  "no_original_assets": "draw new art; do not extract or copy the original game's sprites"
+ },
+ "display_notes": {
+  "unit": "1 world unit = 1/20 of the 20-unit playfield width; the 9:16 canvas shows about 10.8 x 19.2 units",
+  "shipping": "put files under game/art/ so the export packs them; user://art/ is also read for drop-in tests"
+ },
+ "counts": {
+  "total": 23,
+  "ships": 3,
+  "enemies": 13,
+  "bosses": 1,
+  "extras": 6
+ },
+ "problems": [],
+ "slots": [
+  {
+   "slot": "PLAYER-10001",
+   "kind": "ship",
+   "file": "ships/PLAYER-10001.png",
+   "canvas": {
+    "width": 256,
+    "height": 256
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "up",
+   "display": {
+    "unit": "world_units",
+    "height": 1.4,
+    "width": 1.4,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector hull drawn in scripts/player.gd",
+   "source": "slice roster ship 10001; damage row from data/player_start_stats.json",
+   "required": true,
+   "notes": "Nose points to the TOP of the canvas. Runtime draws the texture unrotated at the ship position."
+  },
+  {
+   "slot": "PLAYER-10003",
+   "kind": "ship",
+   "file": "ships/PLAYER-10003.png",
+   "canvas": {
+    "width": 256,
+    "height": 256
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "up",
+   "display": {
+    "unit": "world_units",
+    "height": 1.4,
+    "width": 1.4,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector hull drawn in scripts/player.gd",
+   "source": "slice roster ship 10003; damage row from data/player_start_stats.json",
+   "required": false,
+   "notes": "Nose points to the TOP of the canvas. Runtime draws the texture unrotated at the ship position."
+  },
+  {
+   "slot": "PLAYER-10004",
+   "kind": "ship",
+   "file": "ships/PLAYER-10004.png",
+   "canvas": {
+    "width": 256,
+    "height": 256
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "up",
+   "display": {
+    "unit": "world_units",
+    "height": 1.4,
+    "width": 1.4,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector hull drawn in scripts/player.gd",
+   "source": "slice roster ship 10004; damage row from data/player_start_stats.json",
+   "required": false,
+   "notes": "Nose points to the TOP of the canvas. Runtime draws the texture unrotated at the ship position."
+  },
+  {
+   "slot": "CD-31002",
+   "kind": "enemy",
+   "file": "enemies/CD-31002.png",
+   "canvas": {
+    "width": 128,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.78,
+    "width": 0.78,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector enemy drawn in scripts/enemy.gd",
+   "source": "spawner rows in data/launch_slice_waves.json; movement listSpeeds[0]=5.0, isTurret=True",
+   "required": true,
+   "notes": "Nose points to the BOTTOM of the canvas (the enemy flies down). Source row is a turret: add a distinct static pose, no engine flare."
+  },
+  {
+   "slot": "GD-33004",
+   "kind": "enemy",
+   "file": "enemies/GD-33004.png",
+   "canvas": {
+    "width": 128,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.78,
+    "width": 0.78,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector enemy drawn in scripts/enemy.gd",
+   "source": "spawner rows in data/launch_slice_waves.json; movement listSpeeds[0]=5.0, isTurret=True",
+   "required": true,
+   "notes": "Nose points to the BOTTOM of the canvas (the enemy flies down). Source row is a turret: add a distinct static pose, no engine flare."
+  },
+  {
+   "slot": "CB-30009",
+   "kind": "enemy",
+   "file": "enemies/CB-30009.png",
+   "canvas": {
+    "width": 128,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.78,
+    "width": 0.78,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector enemy drawn in scripts/enemy.gd",
+   "source": "spawner rows in data/launch_slice_waves.json; movement listSpeeds[0]=5.0, isTurret=False",
+   "required": true,
+   "notes": "Nose points to the BOTTOM of the canvas (the enemy flies down)."
+  },
+  {
+   "slot": "H-38001",
+   "kind": "enemy",
+   "file": "enemies/H-38001.png",
+   "canvas": {
+    "width": 128,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.78,
+    "width": 0.78,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector enemy drawn in scripts/enemy.gd",
+   "source": "spawner rows in data/launch_slice_waves.json; movement listSpeeds[0]=5.0, isTurret=True",
+   "required": true,
+   "notes": "Nose points to the BOTTOM of the canvas (the enemy flies down). Source row is a turret: add a distinct static pose, no engine flare."
+  },
+  {
+   "slot": "CD-31005",
+   "kind": "enemy",
+   "file": "enemies/CD-31005.png",
+   "canvas": {
+    "width": 128,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.78,
+    "width": 0.78,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector enemy drawn in scripts/enemy.gd",
+   "source": "spawner rows in data/launch_slice_waves.json; movement listSpeeds[0]=5.0, isTurret=True",
+   "required": true,
+   "notes": "Nose points to the BOTTOM of the canvas (the enemy flies down). Source row is a turret: add a distinct static pose, no engine flare."
+  },
+  {
+   "slot": "GD-33002",
+   "kind": "enemy",
+   "file": "enemies/GD-33002.png",
+   "canvas": {
+    "width": 128,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.78,
+    "width": 0.78,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector enemy drawn in scripts/enemy.gd",
+   "source": "spawner rows in data/launch_slice_waves.json; movement listSpeeds[0]=5.0, isTurret=True",
+   "required": true,
+   "notes": "Nose points to the BOTTOM of the canvas (the enemy flies down). Source row is a turret: add a distinct static pose, no engine flare."
+  },
+  {
+   "slot": "CB-30024",
+   "kind": "enemy",
+   "file": "enemies/CB-30024.png",
+   "canvas": {
+    "width": 128,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.78,
+    "width": 0.78,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector enemy drawn in scripts/enemy.gd",
+   "source": "spawner rows in data/launch_slice_waves.json; movement listSpeeds[0]=20.0, isTurret=False",
+   "required": true,
+   "notes": "Nose points to the BOTTOM of the canvas (the enemy flies down)."
+  },
+  {
+   "slot": "XB-34001",
+   "kind": "enemy",
+   "file": "enemies/XB-34001.png",
+   "canvas": {
+    "width": 128,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.78,
+    "width": 0.78,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector enemy drawn in scripts/enemy.gd",
+   "source": "spawner rows in data/launch_slice_waves.json; movement listSpeeds[0]=20.0, isTurret=False",
+   "required": true,
+   "notes": "Nose points to the BOTTOM of the canvas (the enemy flies down)."
+  },
+  {
+   "slot": "CB-30023",
+   "kind": "enemy",
+   "file": "enemies/CB-30023.png",
+   "canvas": {
+    "width": 128,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.78,
+    "width": 0.78,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector enemy drawn in scripts/enemy.gd",
+   "source": "spawner rows in data/launch_slice_waves.json; movement listSpeeds[0]=20.0, isTurret=False",
+   "required": true,
+   "notes": "Nose points to the BOTTOM of the canvas (the enemy flies down)."
+  },
+  {
+   "slot": "CB-30001",
+   "kind": "enemy",
+   "file": "enemies/CB-30001.png",
+   "canvas": {
+    "width": 128,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.78,
+    "width": 0.78,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector enemy drawn in scripts/enemy.gd",
+   "source": "spawner rows in data/launch_slice_waves.json; movement listSpeeds[0]=20.0, isTurret=False",
+   "required": true,
+   "notes": "Nose points to the BOTTOM of the canvas (the enemy flies down)."
+  },
+  {
+   "slot": "CD-31004",
+   "kind": "enemy",
+   "file": "enemies/CD-31004.png",
+   "canvas": {
+    "width": 128,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.78,
+    "width": 0.78,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector enemy drawn in scripts/enemy.gd",
+   "source": "spawner rows in data/launch_slice_waves.json; movement listSpeeds[0]=5.0, isTurret=True",
+   "required": true,
+   "notes": "Nose points to the BOTTOM of the canvas (the enemy flies down). Source row is a turret: add a distinct static pose, no engine flare."
+  },
+  {
+   "slot": "CB-30002",
+   "kind": "enemy",
+   "file": "enemies/CB-30002.png",
+   "canvas": {
+    "width": 128,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.78,
+    "width": 0.78,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector enemy drawn in scripts/enemy.gd",
+   "source": "spawner rows in data/launch_slice_waves.json; movement listSpeeds[0]=20.0, isTurret=False",
+   "required": true,
+   "notes": "Nose points to the BOTTOM of the canvas (the enemy flies down)."
+  },
+  {
+   "slot": "CB-30003",
+   "kind": "enemy",
+   "file": "enemies/CB-30003.png",
+   "canvas": {
+    "width": 128,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.78,
+    "width": 0.78,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector enemy drawn in scripts/enemy.gd",
+   "source": "spawner rows in data/launch_slice_waves.json; movement listSpeeds[0]=5.0, isTurret=False",
+   "required": true,
+   "notes": "Nose points to the BOTTOM of the canvas (the enemy flies down)."
+  },
+  {
+   "slot": "Boss-37001",
+   "kind": "boss",
+   "file": "bosses/Boss-37001.png",
+   "canvas": {
+    "width": 512,
+    "height": 512
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 2.4,
+    "width": 2.4,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector boss drawn in scripts/boss.gd",
+   "source": "Wave_7001 boss row; hp_max 225000 from datas/boss_hp.json",
+   "required": true,
+   "notes": "Faces the player below (nose DOWN). Keep the core around the canvas centre: the slice hitbox is a 1.15-unit circle at the texture centre."
+  },
+  {
+   "slot": "BG-FIELD",
+   "kind": "background",
+   "file": "background/BG-FIELD.png",
+   "canvas": {
+    "width": 1024,
+    "height": 1024
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "none",
+   "display": {
+    "unit": "world_units",
+    "height": 19.2,
+    "width": 10.8,
+    "mode": "cover_view"
+   },
+   "fallback": "procedural starfield in scripts/background.gd",
+   "source": "visible play area of the 9:16 canvas (10.8 x 19.2 world units)",
+   "required": true,
+   "notes": "Drawn as the full play area; 1024x1024 is scaled to cover, so keep the edges tileable/safe."
+  },
+  {
+   "slot": "BULLET-PLAYER",
+   "kind": "projectile",
+   "file": "projectiles/BULLET-PLAYER.png",
+   "canvas": {
+    "width": 64,
+    "height": 128
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "up",
+   "display": {
+    "unit": "world_units",
+    "height": 0.4,
+    "width": 0.2,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector bolt in scripts/projectile.gd",
+   "source": "player shot (auto-fire), speed 18 world units/s",
+   "required": true,
+   "notes": "Nose UP; runtime rotates the texture to the travel direction."
+  },
+  {
+   "slot": "BULLET-ENEMY",
+   "kind": "projectile",
+   "file": "projectiles/BULLET-ENEMY.png",
+   "canvas": {
+    "width": 64,
+    "height": 64
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "down",
+   "display": {
+    "unit": "world_units",
+    "height": 0.24,
+    "width": 0.24,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector orb in scripts/projectile.gd",
+   "source": "enemy shots from decoded Gun_Attack rows or the labelled fallback profile",
+   "required": true,
+   "notes": "Nose DOWN; runtime rotates the texture to the travel direction."
+  },
+  {
+   "slot": "FX-HIT",
+   "kind": "fx",
+   "file": "fx/FX-HIT.png",
+   "canvas": {
+    "width": 256,
+    "height": 256
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "none",
+   "display": {
+    "unit": "world_units",
+    "height": 1.0,
+    "width": 1.0,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector ring in scripts/fx_burst.gd",
+   "source": "player hit (once per invulnerability window)",
+   "required": true,
+   "notes": "Plays for 0.28 s; design it to read at 1 world unit tall."
+  },
+  {
+   "slot": "FX-EXPLOSION",
+   "kind": "fx",
+   "file": "fx/FX-EXPLOSION.png",
+   "canvas": {
+    "width": 256,
+    "height": 256
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "none",
+   "display": {
+    "unit": "world_units",
+    "height": 2.2,
+    "width": 2.2,
+    "mode": "fit_canvas"
+   },
+   "fallback": "vector burst in scripts/fx_burst.gd",
+   "source": "enemy defeat, boss defeat",
+   "required": true,
+   "notes": "Plays for 0.42 s (boss: 0.9 s); design it to read at 2.2 world units tall."
+  },
+  {
+   "slot": "UI-MENU-FRAME",
+   "kind": "ui",
+   "file": "ui/UI-MENU-FRAME.png",
+   "canvas": {
+    "width": 1080,
+    "height": 1920
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "none",
+   "display": {
+    "unit": "screen",
+    "stretch": "keep_aspect_covered",
+    "mode": "full_rect"
+   },
+   "fallback": "plain menu background in scripts/menu.gd",
+   "source": "main menu screen frame (background layer behind the buttons)",
+   "required": true,
+   "notes": "1080x1920 (9:16). Keep the centre clear: buttons are drawn on top of it."
+  }
+ ]
+}

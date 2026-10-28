@@ -92,6 +92,7 @@ func take_damage(amount: float) -> void:
 	if current_health <= 0.0:
 		_is_defeated = true
 		defeated.emit(enemy_id)
+		FXBurst.spawn(get_parent(), "explosion", global_position)
 		queue_free()
 
 
@@ -138,6 +139,9 @@ func _fire_once() -> void:
 
 
 func _draw() -> void:
+	if Session.art != null and Session.art.draw_slot(self, prefab_name, Vector2.ZERO):
+		_draw_health_bar()
+		return
 	var hull := _family_color()
 	if enemy_id % 3 == 0:
 		draw_colored_polygon(
@@ -161,6 +165,10 @@ func _draw() -> void:
 			hull
 		)
 		draw_line(Vector2(-0.25, 0.08), Vector2(0.25, 0.08), Color(0.88, 0.96, 1.0, 0.82), 0.045)
+	_draw_health_bar()
+
+
+func _draw_health_bar() -> void:
 	if health_known and maximum_health > 0.0:
 		draw_rect(Rect2(-0.34, -0.49, 0.68, 0.065), Color(0.055, 0.08, 0.14, 0.95))
 		draw_rect(
