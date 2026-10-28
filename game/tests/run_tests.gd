@@ -17,6 +17,7 @@ const BossPatternScript = preload("res://scripts/boss_pattern.gd")
 const AudioMixerScript = preload("res://scripts/audio_mixer.gd")
 const ShipRosterScript = preload("res://scripts/ship_roster.gd")
 const ArtLibraryScript = preload("res://scripts/art_library.gd")
+const AnimationVariantScript = preload("res://scripts/animation_variant.gd")
 
 const ART_CONTRACT_PATH := "res://data/art_slot_contract.json"
 const ART_TEST_ROOT := "user://art_test_root"
@@ -49,6 +50,7 @@ func _initialize() -> void:
 	_test_art_library_drop_in()
 	_test_art_layer_slots()
 	_test_motion_tuning()
+	_test_animation_variants()
 
 	print("TESTS: %d checks, %d failures" % [_checks, _failures.size()])
 	if _failures.is_empty():
@@ -755,6 +757,84 @@ func _test_motion_tuning() -> void:
 		"every layer is gone at the end of the chain"
 	)
 	check(MotionTuning.death_total_seconds() < 1.5, "the death chain stays under 1.5 s")
+
+
+func _test_animation_variants() -> void:
+	# The shipped default file must describe a real, bootable build.
+	var shipped: AnimationVariant = AnimationVariantScript.load_default(
+		"res://data/animation_variant.json"
+	)
+	check(AnimationVariantScript.VARIANTS.has(shipped.variant), "the shipped variant is A, B or C")
+	check(shipped.error.is_empty(), "the shipped variant file parses cleanly")
+	check_eq(shipped.mode, "layered", "A and B run the layered animation")
+	check(shipped.uses_layers(), "the default build animates layers")
+	check(shipped.guns_track_target(), "the default build lets the boss guns track the ship")
+
+	# A and B are layered; C animates one whole image.
+	for variant: String in ["A", "B"]:
+		var layered: AnimationVariant = AnimationVariantScript.from_dictionary(
+			{"variant": variant, "art_source": "package", "art_package_commit": "215aa58f"}
+		)
+		check_eq(layered.mode, "layered", "variant %s uses the layered animation" % variant)
+		check(layered.uses_layers(), "variant %s animates layer slots" % variant)
+		check(layered.guns_track_target(), "variant %s turns the boss guns" % variant)
+		check(not layered.flame_sticks_to_hull(), "variant %s lets the flame trail" % variant)
+		check(not layered.is_placeholder(), "variant %s is a real package build" % variant)
+		check_eq(layered.label(), "ANIM-%s" % variant, "variant %s menu label" % variant)
+		check_eq(
+			layered.art_roots()[0], "res://art/%s" % variant, "variant %s loads its own folder" % variant
+		)
+
+	var whole: AnimationVariant = AnimationVariantScript.from_dictionary({"variant": "C"})
+	check_eq(whole.mode, "whole", "variant C animates whole images")
+	check(not whole.uses_layers(), "variant C ignores the layer slots")
+	check(not whole.guns_track_target(), "variant C keeps the boss guns fixed")
+	check(whole.flame_sticks_to_hull(), "variant C keeps the flame on the hull")
+	check(whole.is_placeholder(), "variant C without a package is a placeholder build")
+	check_eq(whole.art_roots()[0], "res://art/C", "variant C loads its own folder")
+
+	# Every variant searches its own package first and the shared folder after.
+	for variant: String in ["A", "B", "C"]:
+		var roots: Array = AnimationVariantScript.from_dictionary({"variant": variant}).art_roots()
+		check_eq(roots.size(), 4, "variant %s declares four art roots" % variant)
+		check_eq(roots[0], "res://art/%s" % variant, "variant %s res root" % variant)
+		check_eq(roots[1], "user://art/%s" % variant, "variant %s user root" % variant)
+		check_eq(roots[2], "res://art", "variant %s falls back to the shared res folder" % variant)
+		check_eq(roots[3], "user://art", "variant %s falls back to the shared user folder" % variant)
+
+	# Bad input never blocks a build: it degrades to A with a note.
+	var fallback: AnimationVariant = AnimationVariantScript.from_dictionary({"variant": "Z"})
+	check_eq(fallback.variant, "A", "an unknown variant falls back to A")
+	check(not fallback.error.is_empty(), "an unknown variant reports why it fell back")
+	var wrong_mode: AnimationVariant = AnimationVariantScript.from_dictionary(
+		{"variant": "C", "mode": "layered"}
+	)
+	check_eq(wrong_mode.mode, "whole", "the variant decides the mode, not the file")
+	check(not wrong_mode.error.is_empty(), "a contradicting mode is reported")
+	var unknown_source: AnimationVariant = AnimationVariantScript.from_dictionary(
+		{"variant": "B", "art_source": "guessed"}
+	)
+	check_eq(unknown_source.art_source, "placeholder", "an unknown art source is a placeholder")
+	var described := whole.describe()
+	check(described.begins_with("ANIM_VARIANT "), "the variant prints a machine-readable line")
+	check(described.contains("mode=whole"), "the variant line states the animation mode")
+
+	# The art lookup really is variant-aware and still falls back to vector art.
+	var library: ArtLibrary = ArtLibraryScript.new(
+		ART_CONTRACT_PATH, AnimationVariantScript.from_dictionary({"variant": "B"}).art_roots()
+	)
+	check(library.contract_ready(), "a variant library loads the contract")
+	check_eq(
+		library.candidate_paths("PLAYER-10001")[0],
+		"res://art/B/ships/PLAYER-10001.png",
+		"slot files resolve inside the variant folder first"
+	)
+	check_eq(
+		library.candidate_paths("PLAYER-10001")[2],
+		"res://art/ships/PLAYER-10001.png",
+		"slot files also resolve in the shared folder"
+	)
+	check(library.validate().is_empty(), "the contract still validates with variant roots")
 
 
 func _clear_dir(root: String) -> void:

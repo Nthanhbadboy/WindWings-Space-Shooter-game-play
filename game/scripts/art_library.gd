@@ -100,7 +100,9 @@ func validate() -> Array:
 		if int(canvas.get("width", 0)) <= 0 or int(canvas.get("height", 0)) <= 0:
 			problems.append("%s has an invalid canvas" % slot_id)
 		var pivot: Array = entry.get("pivot", [])
-		if pivot.size() != 2 or not is_equal_approx(float(pivot[0]), 0.5):
+		if pivot.size() != 2:
+			problems.append("%s must declare a two-number pivot" % slot_id)
+		elif not _pivot_allowed(entry):
 			problems.append("%s must use a centred pivot" % slot_id)
 		if not entry.has("display"):
 			problems.append("%s has no display rule" % slot_id)
@@ -109,6 +111,21 @@ func validate() -> Array:
 		if not slots.has(slot_id):
 			problems.append("required slot %s is missing from the contract" % slot_id)
 	return problems
+
+
+## Layers pivot on their canvas centre, except the boss gun parts that hang from
+## their declared mount (contract: layer_role gun_left / gun_right).
+func _pivot_allowed(entry: Dictionary) -> bool:
+	var pivot: Array = entry.get("pivot", [])
+	if pivot.size() != 2:
+		return false
+	var pivot_x := float(pivot[0])
+	var pivot_y := float(pivot[1])
+	var centred := is_equal_approx(pivot_x, 0.5) and is_equal_approx(pivot_y, 0.5)
+	if centred:
+		return true
+	var role := str(entry.get("layer_role", ""))
+	return role in ["gun_left", "gun_right"] and pivot_x >= 0.0 and pivot_x <= 1.0 and pivot_y >= 0.0 and pivot_y <= 1.0
 
 
 func required_slot_ids() -> Array:

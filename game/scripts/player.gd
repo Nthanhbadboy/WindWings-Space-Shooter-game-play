@@ -36,6 +36,7 @@ var _hit_flash_elapsed := 999.0
 var _age := 0.0
 var _engine: GPUParticles2D
 var _engine_core: Polygon2D
+var _hull_fx: GPUParticles2D
 
 
 func _ready() -> void:
@@ -56,7 +57,9 @@ func _build_engine() -> void:
 	_engine = GPUParticles2D.new()
 	_engine.amount = 24
 	_engine.lifetime = 0.42
-	_engine.local_coords = false
+	# Variant C animates one flat image, so its flame must move with the hull
+	# instead of trailing behind it in world space.
+	_engine.local_coords = _whole_image_mode()
 	_engine.position = Vector2(0.0, 0.46)
 	_engine.z_index = -1
 	_engine.texture = _flame_texture()
@@ -91,6 +94,43 @@ func _build_engine() -> void:
 	_engine_core.color = Color(0.55, 0.9, 1.0, 0.75)
 	_engine_core.z_index = -2
 	add_child(_engine_core)
+	if _whole_image_mode():
+		_build_hull_overlay()
+
+
+## Variant C cannot separate the hull from its glow layer, so the animated
+## "shine" is emitted as particles on top of the whole image instead.
+func _build_hull_overlay() -> void:
+	_hull_fx = GPUParticles2D.new()
+	_hull_fx.amount = 18
+	_hull_fx.lifetime = 0.55
+	_hull_fx.local_coords = true
+	_hull_fx.position = Vector2.ZERO
+	_hull_fx.z_index = 1
+	_hull_fx.texture = _flame_texture()
+	var material := ParticleProcessMaterial.new()
+	material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+	material.emission_sphere_radius = 0.34
+	material.direction = Vector3(0.0, -1.0, 0.0)
+	material.spread = 180.0
+	material.gravity = Vector3.ZERO
+	material.initial_velocity_min = 0.12
+	material.initial_velocity_max = 0.42
+	material.scale_min = 0.25
+	material.scale_max = 0.7
+	material.color = Color(1.0, 0.86, 0.55, 0.55)
+	var ramp := Gradient.new()
+	ramp.set_color(0, Color(1.0, 0.95, 0.75, 0.7))
+	ramp.set_color(1, Color(0.4, 0.7, 1.0, 0.0))
+	var ramp_texture := GradientTexture1D.new()
+	ramp_texture.gradient = ramp
+	material.color_ramp = ramp_texture
+	_hull_fx.process_material = material
+	add_child(_hull_fx)
+
+
+func _whole_image_mode() -> bool:
+	return Session.variant != null and Session.variant.is_whole()
 
 
 func _flame_texture() -> Texture2D:
@@ -137,8 +177,6 @@ func configure_health(base_hp: float) -> void:
 func set_movement_bounds(bounds: Rect2) -> void:
 	movement_bounds = bounds
 	global_position = _clamp_to_bounds(global_position)
-	var delta_safe := maxf(delta, 0.0001)
-	_velocity_x = (global_position.x - _last_x) / delta_safe
 	_last_x = global_position.x
 	_move_target = _clamp_to_bounds(_move_target)
 
@@ -210,6 +248,8 @@ func _update_animation(delta: float) -> void:
 		_engine.position = Vector2(0.0, 0.46 + 0.4 * _engine_length * 0.35)
 	if _engine_core != null:
 		_engine_core.scale = Vector2(1.0, _engine_length / MotionTuning.ENGINE_IDLE_LENGTH)
+	if _hull_fx != null:
+		_hull_fx.amount_ratio = clampf(_engine_length / MotionTuning.ENGINE_FAST_LENGTH, 0.3, 1.0)
 	if _hit_flash_elapsed < MotionTuning.FLASH_SECONDS:
 		_hit_flash_elapsed += delta
 		queue_redraw()
@@ -252,6 +292,10 @@ func _on_area_entered(area: Area2D) -> void:
 			take_damage(contact_damage)
 
 
+func _layered_mode() -> bool:
+	return not _whole_image_mode()
+
+
 func _draw() -> void:
 	var art_tint := Color(1.0, 1.0, 1.0, 1.0)
 	if _invulnerability_elapsed > 0.0 and int(Time.get_ticks_msec() / 90) % 2 == 0:
@@ -261,7 +305,9 @@ func _draw() -> void:
 	var glow_slot := "PLAYER-%d-GLOW" % ship_id
 	if Session.art != null and Session.art.draw_slot(self, body_slot, Vector2.ZERO, Vector2.ZERO, art_tint):
 		# Sub-layer: the glow sheet is optional and pulses on its own rhythm.
-		if Session.art.has_art(glow_slot):
+		# Variant C ships one flat image, so it must not switch to a glow layer
+		# even if a stray file shows up in its folder.
+		if _layered_mode() and Session.art.has_art(glow_slot):
 			var pulse := lerpf(
 				MotionTuning.HANGAR_GLOW_MIN,
 				MotionTuning.HANGAR_GLOW_MAX,

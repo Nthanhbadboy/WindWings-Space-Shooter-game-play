@@ -7,10 +7,16 @@ extends SceneTree
 ## Exit code 0 when the contract loads and every slot has a status line.
 
 const ArtLibraryScript = preload("res://scripts/art_library.gd")
+const AnimationVariantScript = preload("res://scripts/animation_variant.gd")
 
 
 func _initialize() -> void:
-	var library: ArtLibrary = ArtLibraryScript.new()
+	var variant: AnimationVariant = AnimationVariantScript.load_default()
+	for line: Variant in variant.report_lines():
+		print(str(line))
+	var library: ArtLibrary = ArtLibraryScript.new(
+		ArtLibraryScript.CONTRACT_PATH, variant.art_roots()
+	)
 	var problems := library.validate()
 	if not library.contract_ready():
 		printerr("ART_ERROR %s" % library.error)

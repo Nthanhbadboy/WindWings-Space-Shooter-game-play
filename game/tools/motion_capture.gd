@@ -15,6 +15,8 @@ extends Node
 ## manifest with the simulated time of each frame, so the report can state
 ## exactly what was captured instead of "looks fine".
 
+const AnimationVariantScript = preload("res://scripts/animation_variant.gd")
+
 const HANGAR_SCENE := preload("res://scenes/hangar.tscn")
 const MAIN_SCENE := preload("res://scenes/main.tscn")
 
@@ -39,6 +41,8 @@ func _ready() -> void:
 		elif argument.begins_with("--only="):
 			only_segment = argument.trim_prefix("--only=")
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out_dir))
+	var variant: AnimationVariant = AnimationVariantScript.load_default()
+	print("MOTION_VARIANT %s" % variant.describe())
 	print("MOTION_CAPTURE_START out=%s fps=%s" % [out_dir, str(capture_fps)])
 	await _run_all()
 

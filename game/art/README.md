@@ -1,5 +1,29 @@
 # Art drop-in folder
 
+## Animation build variants (A / B / C)
+
+The Windows build takes one parameter, `--variant A|B|C`, which picks both the
+art folder and the animation mode (`game/tools/build_variant.py` writes
+`game/data/animation_variant.json`; the exported .exe reads that file and the
+main menu prints the label `ANIM-A` / `ANIM-B` / `ANIM-C`).
+
+| Variant | Art package | Folder | Animation |
+| --- | --- | --- | --- |
+| A | generated clean layers | `game/art/A/` | layered: ship body + `-GLOW`, boss `-BODY/-GUN-L/-GUN-R/-CORE`, guns track the ship |
+| B | inpainted flat image split into layers | `game/art/B/` | layered, identical rules to A |
+| C | one flat image per sprite | `game/art/C/` | whole image: bob, bank, flash, shake, particles over the hull, guns fixed, flame on the hull |
+
+Each package uses the same slot names and the same relative paths below; only the
+root folder differs. Lookup order is `res://art/<variant>/` → `user://art/<variant>/`
+→ `res://art/` → `user://art/`, so a missing layer in a package falls back
+instead of crashing, and a shared file can sit in the variant-independent root.
+
+Variant C ignores the optional layer slots (`PLAYER-*-GLOW`, `Boss-37001-BODY`,
+`-GUN-L`, `-GUN-R`, `-CORE`) by design: it animates the single
+`Boss-37001.png` / `PLAYER-*.png` image as one piece.
+
+## Slot layout
+
 Put contract-compliant PNGs here. The folder layout is fixed by
 `game/data/art_slot_contract.json` (regenerate with
 `python3 game/tools/build_art_slot_contract.py`):

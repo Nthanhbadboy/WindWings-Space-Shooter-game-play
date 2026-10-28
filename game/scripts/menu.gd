@@ -10,7 +10,23 @@ var _settings: SliceSettingsPanel
 func _ready() -> void:
 	Session.start_music()
 	_build()
-	print("SLICE_MENU_READY stars=%d" % Session.star_total_for_display())
+	var variant := Session.variant
+	if variant != null:
+		for line: Variant in variant.report_lines():
+			print(str(line))
+	print(
+		"SLICE_MENU_READY stars=%d variant=%s"
+		% [Session.star_total_for_display(), Session.variant_label()]
+	)
+
+
+func _art_source_label() -> String:
+	if Session.variant == null:
+		return "A placeholder"
+	var mode := "layered" if Session.variant.is_layered() else "whole image"
+	if Session.variant.is_placeholder():
+		return "%s build, placeholder" % mode
+	return "%s build, %s" % [mode, Session.variant.art_package_commit]
 
 
 func _build() -> void:
@@ -41,6 +57,13 @@ func _build() -> void:
 		)
 	)
 	column.add_child(UIKit.spacer(8))
+	column.add_child(
+		UIKit.body(
+			"%s · %s art" % [Session.variant_label(), _art_source_label()],
+			12,
+			UIKit.ACCENT
+		)
+	)
 	column.add_child(UIKit.body("BEST STARS · STAGE 1", 13))
 	column.add_child(UIKit.star_row(Session.best_stars(), 3, 30))
 	column.add_child(UIKit.body("TOTAL STARS  %d" % Session.star_total_for_display(), 14, UIKit.INK))

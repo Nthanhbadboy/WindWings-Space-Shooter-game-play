@@ -10,6 +10,7 @@ const ShipRosterScript = preload("res://scripts/ship_roster.gd")
 const AudioMixerScript = preload("res://scripts/audio_mixer.gd")
 const StarRulesScript = preload("res://scripts/star_rules.gd")
 const ArtLibraryScript = preload("res://scripts/art_library.gd")
+const AnimationVariantScript = preload("res://scripts/animation_variant.gd")
 
 const DEFAULT_SHIP := 10003
 
@@ -17,6 +18,8 @@ var store: SaveStore
 var roster: ShipRoster
 var mixer: AudioMixer
 var art: ArtLibrary
+## A / B / C build parameter: which art package folder loads and how it animates.
+var variant: AnimationVariant
 
 var selected_ship := DEFAULT_SHIP
 var ability7 := 0
@@ -40,6 +43,15 @@ var _music_player: AudioStreamPlayer
 var _sfx_cursor := 0
 
 
+## Menu/build label, e.g. "ANIM-B", so nobody runs the wrong package by mistake.
+func variant_label() -> String:
+	return variant.label() if variant != null else "ANIM-A"
+
+
+func variant_is_layered() -> bool:
+	return variant == null or variant.is_layered()
+
+
 func _ready() -> void:
 	store = SaveStoreScript.new()
 	if not store.contract_ready():
@@ -53,7 +65,10 @@ func _ready() -> void:
 	mixer = AudioMixerScript.new()
 	if not mixer.load_default():
 		startup_notes.append("audio defaults failed")
-	art = ArtLibraryScript.new()
+	variant = AnimationVariantScript.load_default()
+	if not variant.error.is_empty():
+		startup_notes.append("animation variant: %s" % variant.error)
+	art = ArtLibraryScript.new(ArtLibraryScript.CONTRACT_PATH, variant.art_roots())
 	if not art.contract_ready():
 		startup_notes.append("art slot contract failed: %s" % art.error)
 	for problem: Variant in art.validate():

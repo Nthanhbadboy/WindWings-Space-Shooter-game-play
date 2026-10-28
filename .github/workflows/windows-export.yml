@@ -3,8 +3,21 @@ name: Windows x86_64 export (launch slice)
 # Builds game/ from this branch: the M1-M4 prototype plus the M2 launch-slice
 # scenes, data and headless rule tests. Godot and the official templates are
 # downloaded only on the runner. A green build is not a Windows runtime claim.
+#
+# Three animation variants build side by side, because the art package is being
+# delivered as three candidates the USER will run and choose between:
+#   A  generated clean layers        (layered animation)
+#   B  inpainted flat image, layered (layered animation)
+#   C  one flat image per sprite     (whole-image animation)
+# Each job rewrites game/data/animation_variant.json before import, so every
+# .exe knows its own variant, folder and animation mode.
 on:
   workflow_dispatch:
+    inputs:
+      art_package_commit:
+        description: "Commit of the delivered art package (empty = placeholder build)"
+        required: false
+        default: ""
   push:
     branches:
       - arena/5a03a450-windwings-space-shooter-game-p
@@ -14,21 +27,49 @@ permissions:
 
 jobs:
   export:
-    name: Godot Windows x86_64, embedded PCK, headless tests
+    name: Windows x86_64 ANIM-${{ matrix.variant }}, embedded PCK, headless tests
     if: github.ref == 'refs/heads/arena/5a03a450-windwings-space-shooter-game-p'
     runs-on: ubuntu-latest
     timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [A, B, C]
     env:
       GODOT_TAG: 4.7.2-stable
       GODOT_TEMPLATE_VERSION: 4.7.2.stable
       GODOT_LINUX_SHA256: cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4
       GODOT_TEMPLATES_SHA256: f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011
       SOURCE_COMMIT: 77744f31a3b499770375ea44410f26c314b08995
+      ANIM_VARIANT: ${{ matrix.variant }}
+      ART_PACKAGE_COMMIT: ${{ inputs.art_package_commit }}
     steps:
       - name: Checkout this branch
         uses: actions/checkout@v4
         with:
           persist-credentials: false
+
+      - name: Select the animation variant for this build
+        shell: bash
+        run: |
+          set -euo pipefail
+          commit="${ART_PACKAGE_COMMIT:-}"
+          if [ -n "$commit" ]; then
+            source_flag=package
+          else
+            source_flag=placeholder
+            echo "No art package commit supplied: this build is a PLACEHOLDER build."
+          fi
+          python3 "$GITHUB_WORKSPACE/game/tools/build_variant.py" \
+            --variant "$ANIM_VARIANT" \
+            --art-source "$source_flag" \
+            --art-package-commit "$commit"
+          cat "$GITHUB_WORKSPACE/game/data/animation_variant.json"
+          python3 "$GITHUB_WORKSPACE/game/tools/build_variant.py" \
+            --variant "$ANIM_VARIANT" \
+            --art-source "$source_flag" \
+            --art-package-commit "$commit" \
+            --check
 
       - name: Install pinned Godot and the Windows export template
         shell: bash
@@ -222,16 +263,25 @@ jobs:
             echo "The art slot report hit a script error." >&2
             exit 1
           fi
+          if ! grep -q "^ANIM_VARIANT variant=${ANIM_VARIANT} " "$out/art_report.log"; then
+            echo "The art report did not describe variant ${ANIM_VARIANT}." >&2
+            exit 1
+          fi
+          if ! grep -q "^ART_CONTRACT slots=.* art_root=res://art/${ANIM_VARIANT}$" "$out/art_report.log"; then
+            echo "The art report did not load variant folder art/${ANIM_VARIANT}." >&2
+            exit 1
+          fi
           echo "Art slot status: $(grep '^ART_SUMMARY' "$out/art_report.log")"
 
-          echo "Exporting Windows Desktop release with embedded PCK"
+          exe="$out/WindWings-anim-${ANIM_VARIANT}.exe"
+          echo "Exporting Windows Desktop release with embedded PCK: $(basename "$exe")"
           "$GODOT_BIN" --headless --path "$project" --export-release \
-            "Windows Desktop" "$out/WindWings.exe" 2>&1 | tee "$RUNNER_TEMP/godot-export.log"
+            "Windows Desktop" "$exe" 2>&1 | tee "$RUNNER_TEMP/godot-export.log"
           if grep -E '(^|[[:space:]])(SCRIPT ERROR|ERROR):' "$RUNNER_TEMP/godot-export.log"; then
             echo "Godot reported an export/script error; refusing a green build." >&2
             exit 1
           fi
-          test -s "$out/WindWings.exe"
+          test -s "$exe"
           if find "$out" -maxdepth 1 -type f -name '*.pck' -print -quit | grep -q .; then
             echo "Unexpected separate PCK; embedded single-executable contract failed." >&2
             exit 1
@@ -239,7 +289,7 @@ jobs:
 
           # Verify the PE machine and Godot's actual `pck` section, rather than
           # merely trusting the preset or a zero exit status from the exporter.
-          python3 - "$out/WindWings.exe" <<'PY'
+          python3 - "$exe" <<'PY'
           import struct
           import sys
           from pathlib import Path
@@ -291,6 +341,7 @@ jobs:
                   b"data/boss_slice.json",
                   b"data/save_contract.json",
                   b"data/art_slot_contract.json",
+                  b"data/animation_variant.json",
                   b"data/player_start_stats.json",
                   b"scenes/menu.tscn",
                   b"scenes/main.tscn",
@@ -303,8 +354,18 @@ jobs:
               print(f"PE32+ x86_64; embedded PCK offset={offset}, size={length}; source data present")
           PY
 
+          variant_line="$(grep '^ANIM_VARIANT ' "$out/art_report.log" | head -1)"
+          if grep -q '^ANIM_VARIANT_PLACEHOLDER ' "$out/art_report.log"; then
+            placeholder_line="ART_SOURCE placeholder: no ${ANIM_VARIANT} art package has been delivered yet, this build runs the variant rules on fallback art"
+          else
+            placeholder_line="ART_SOURCE package: delivered ${ANIM_VARIANT} art package"
+          fi
           cat > "$out/BUILD_INFO.txt" <<INFO
           Godot: $GODOT_TAG
+          Animation variant: ANIM-$ANIM_VARIANT ($variant_line)
+          Art folder: res://art/$ANIM_VARIANT (then user://art/$ANIM_VARIANT, res://art, user://art)
+          Art package commit: ${ART_PACKAGE_COMMIT:-none}
+          $placeholder_line
           Ancestor prototype commit (M1-M4 base): $SOURCE_COMMIT
           Workflow commit: $GITHUB_SHA
           GitHub run: $GITHUB_RUN_ID (attempt $GITHUB_RUN_ATTEMPT)
@@ -312,7 +373,7 @@ jobs:
           Windows runtime: RUNTIME_UNVERIFIED for this slice build
           Headless rule tests: see tests.log (TESTS_OK required for this artifact)
           Headless smoke run: see smoke.log (menu, run scene, full 5-wave harness)
-          Art slots: contract res://data/art_slot_contract.json (fallback = vector shape)
+          Art slots: contract res://data/art_slot_contract.json, root res://art/$ANIM_VARIANT (fallback = vector shape)
           Resource editing: disabled; no icon or company identity provided
           Signing and MSIX: not performed (USER-ONLY)
           Scope: M2 launch slice - menu, ship select, 5 real waves, boss, results,
@@ -320,10 +381,10 @@ jobs:
           INFO
           {
             echo ""
-            echo "--- Art slot status (res://art first, then user://art) ---"
-            grep -E '^ART_' "$out/art_report.log" || true
+            echo "--- Art slot status (res://art/$ANIM_VARIANT first, then user://art/$ANIM_VARIANT, res://art, user://art) ---"
+            grep -E '^(ART_|ANIM_VARIANT)' "$out/art_report.log" || true
           } >> "$out/BUILD_INFO.txt"
-          (cd "$out" && sha256sum WindWings.exe > SHA256SUMS.txt && sha256sum --check SHA256SUMS.txt)
+          (cd "$out" && sha256sum "$(basename "$exe")" > SHA256SUMS.txt && sha256sum --check SHA256SUMS.txt)
           exe_sha="$(cut -d ' ' -f 1 "$out/SHA256SUMS.txt")"
           echo "exe_sha256=$exe_sha" >> "$GITHUB_OUTPUT"
           echo "::notice title=WindWings.exe SHA-256::$exe_sha"
@@ -331,9 +392,9 @@ jobs:
       - name: Upload executable and evidence
         uses: actions/upload-artifact@v4
         with:
-          name: windows-x86_64-run-${{ github.run_id }}-attempt-${{ github.run_attempt }}-sha256-${{ steps.export.outputs.exe_sha256 }}
+          name: WindWings-anim-${{ matrix.variant }}-run-${{ github.run_id }}-sha256-${{ steps.export.outputs.exe_sha256 }}
           path: |
-            dist/WindWings.exe
+            dist/WindWings-anim-${{ matrix.variant }}.exe
             dist/SHA256SUMS.txt
             dist/export.log
             dist/export_presets.cfg
@@ -369,17 +430,19 @@ jobs:
           fi
           grep '^MOTION_SEGMENT' "$out/motion.log"
           python3 "$project/tools/build_motion_gifs.py" \
-            --frames "$out/frames" --out "$GITHUB_WORKSPACE/motion" --fps 12 | tee -a "$out/motion.log"
+            --frames "$out/frames" --out "$GITHUB_WORKSPACE/motion/$ANIM_VARIANT" --fps 12 \
+            | tee -a "$out/motion.log"
           segments="$(grep -c '^MOTION_GIF' "$out/motion.log" || true)"
           if [ "$segments" -lt 3 ]; then
             echo "Expected 3 motion segments, captured $segments." >&2
             exit 1
           fi
-          ls -l "$GITHUB_WORKSPACE/motion"
+          ls -l "$GITHUB_WORKSPACE/motion/$ANIM_VARIANT"
 
       - name: Publish motion evidence to the branch
         shell: bash
-        if: success()
+        # Only one matrix job pushes; A carries the shared motion/README.
+        if: success() && matrix.variant == 'A'
         run: |
           set -euo pipefail
           cd "$GITHUB_WORKSPACE"
@@ -397,7 +460,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: motion-frames-${{ github.run_id }}
+          name: motion-frames-anim-${{ matrix.variant }}-${{ github.run_id }}
           path: |
             motion
             dist/frames
@@ -430,7 +493,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: windows-export-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          name: windows-export-failure-anim-${{ matrix.variant }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: dist/export.log
           if-no-files-found: error
           retention-days: 14

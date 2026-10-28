@@ -42,6 +42,7 @@ var _death_elapsed := 0.0
 var _hit_flash_elapsed := 999.0
 var _gun_angles := [0.0, 0.0]
 var _bob := 0.0
+var _aura: GPUParticles2D
 
 
 func configure(data: Dictionary) -> void:
@@ -61,6 +62,44 @@ func configure(data: Dictionary) -> void:
 	position = _spawn_point
 
 
+func _guns_track_target() -> bool:
+	return Session.variant == null or Session.variant.guns_track_target()
+
+
+func _whole_image_mode() -> bool:
+	return Session.variant != null and Session.variant.is_whole()
+
+
+## Variant C has no separate core layer, so the telegraph reads as an ember aura
+## emitted on top of the flat image instead of a brightening core sprite.
+func _build_aura() -> void:
+	_aura = GPUParticles2D.new()
+	_aura.amount = 26
+	_aura.lifetime = 0.8
+	_aura.local_coords = true
+	_aura.position = Vector2(0.0, -0.1)
+	_aura.z_index = 1
+	var image := Image.create(12, 12, false, Image.FORMAT_RGBA8)
+	for y in range(12):
+		for x in range(12):
+			var offset := Vector2(float(x) - 5.5, float(y) - 5.5) / 5.5
+			image.set_pixel(x, y, Color(1.0, 0.7, 0.5, pow(1.0 - clampf(offset.length(), 0.0, 1.0), 2.0)))
+	_aura.texture = ImageTexture.create_from_image(image)
+	var material := ParticleProcessMaterial.new()
+	material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+	material.emission_sphere_radius = 0.7
+	material.direction = Vector3(0.0, -1.0, 0.0)
+	material.spread = 60.0
+	material.gravity = Vector3.ZERO
+	material.initial_velocity_min = 0.2
+	material.initial_velocity_max = 0.6
+	material.scale_min = 0.4
+	material.scale_max = 1.2
+	material.color = Color(1.0, 0.6, 0.42, 0.6)
+	_aura.process_material = material
+	add_child(_aura)
+
+
 func _ready() -> void:
 	add_to_group("enemies")
 	add_to_group("shootable")
@@ -72,6 +111,8 @@ func _ready() -> void:
 	var collider := get_node_or_null("CollisionShape2D") as CollisionShape2D
 	if collider != null:
 		collider.shape = shape
+	if _whole_image_mode():
+		_build_aura()
 	queue_redraw()
 
 
@@ -114,6 +155,11 @@ func _mount_world(index: int) -> Vector2:
 
 
 func _update_guns(delta: float) -> void:
+	# Variant C animates one rigid flat image: its guns are painted on, so the
+	# mounts stay at their rest pose instead of swinging independently.
+	if not _guns_track_target():
+		_gun_angles = [0.0, 0.0]
+		return
 	if not is_instance_valid(_target):
 		return
 	for index in range(2):
@@ -211,6 +257,7 @@ func _draw() -> void:
 
 	var layered := (
 		art != null
+		and (Session.variant == null or Session.variant.uses_layers())
 		and art.has_art(body_slot)
 		and art.has_art(core_slot)
 	)
@@ -221,10 +268,36 @@ func _draw() -> void:
 	if art != null and art.draw_slot(self, slot, Vector2(0.0, _bob)):
 		if flash_strength > 0.0:
 			art.draw_flash(self, slot, Vector2(0.0, _bob), flash_strength)
+		_draw_whole_image_telegraph()
 		_draw_health_bar()
 		return
 	_draw_vector(flash_strength)
+	_draw_whole_image_telegraph()
 	_draw_health_bar()
+
+
+## Only used by variant C: a halo that grows for the 0.42 s before a shot, so the
+## rhythm stays readable without a separate core sprite.
+func _draw_whole_image_telegraph() -> void:
+	if not _whole_image_mode() or _dying:
+		return
+	var strength := MotionTuning.telegraph_strength(_seconds_until_next_shot())
+	if strength <= 0.0:
+		return
+	var death_alpha := 1.0
+	var radius := 0.95 + 0.55 * strength
+	draw_circle(
+		Vector2(0.0, _bob), radius, Color(1.0, 0.45, 0.3, 0.22 * strength * death_alpha)
+	)
+	draw_arc(
+		Vector2(0.0, _bob),
+		radius,
+		0.0,
+		TAU,
+		48,
+		Color(1.0, 0.7, 0.4, 0.55 * strength),
+		0.08
+	)
 
 
 func _draw_layered(art: ArtLibrary, slot: String, flash_strength: float) -> void:
