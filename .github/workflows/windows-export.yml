@@ -1,0 +1,256 @@
+name: Windows x86_64 export (milestone 1)
+
+# The upstream Godot prototype is checked out at a fixed commit. This workflow
+# packages it as-is; it does not claim launch-slice gameplay or Windows runtime
+# parity. Godot and the official templates are downloaded only on the runner.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - arena/5a03a450-windwings-space-shooter-game-p
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    name: Godot Windows x86_64, embedded PCK
+    if: github.ref == 'refs/heads/arena/5a03a450-windwings-space-shooter-game-p'
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      GODOT_TAG: 4.7.2-stable
+      GODOT_TEMPLATE_VERSION: 4.7.2.stable
+      GODOT_LINUX_SHA256: cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4
+      GODOT_TEMPLATES_SHA256: f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011
+      SOURCE_COMMIT: 77744f31a3b499770375ea44410f26c314b08995
+    steps:
+      - name: Checkout this branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Checkout the existing M1–M4 Godot project
+        uses: actions/checkout@v4
+        with:
+          ref: 77744f31a3b499770375ea44410f26c314b08995
+          path: upstream
+          persist-credentials: false
+
+      - name: Install pinned Godot and the Windows export template
+        shell: bash
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/dist"
+          exec > >(tee -a "$GITHUB_WORKSPACE/dist/export.log") 2>&1
+          set -euo pipefail
+
+          test "$(git -C "$GITHUB_WORKSPACE/upstream" rev-parse HEAD)" = "$SOURCE_COMMIT"
+          test -f "$GITHUB_WORKSPACE/upstream/game/project.godot"
+          echo "Source project commit: $SOURCE_COMMIT"
+          echo "Downloading official Godot assets on the GitHub runner."
+
+          cache="$RUNNER_TEMP/godot-4.7.2"
+          template_dir="$HOME/.local/share/godot/export_templates/$GODOT_TEMPLATE_VERSION"
+          mkdir -p "$cache" "$template_dir"
+          engine="$cache/Godot_v${GODOT_TAG}_linux.x86_64.zip"
+          templates="$cache/Godot_v${GODOT_TAG}_export_templates.tpz"
+          base="https://github.com/godotengine/godot/releases/download/$GODOT_TAG"
+
+          curl --fail --location --silent --show-error --retry 3 \
+            --output "$engine" "$base/$(basename "$engine")"
+          printf '%s  %s\n' "$GODOT_LINUX_SHA256" "$engine" | sha256sum --check
+          unzip -q "$engine" -d "$cache"
+          godot="$cache/Godot_v${GODOT_TAG}_linux.x86_64"
+          chmod +x "$godot"
+          version="$("$godot" --version)"
+          echo "Godot version: $version"
+          case "$version" in
+            4.7.2.stable.official*) ;;
+            *) echo "Unexpected Godot version: $version" >&2; exit 1 ;;
+          esac
+
+          curl --fail --location --silent --show-error --retry 3 \
+            --output "$templates" "$base/$(basename "$templates")"
+          printf '%s  %s\n' "$GODOT_TEMPLATES_SHA256" "$templates" | sha256sum --check
+          template_version="$(unzip -p "$templates" templates/version.txt | tr -d '\r\n')"
+          echo "Export templates version: $template_version"
+          test "$template_version" = "$GODOT_TEMPLATE_VERSION"
+          unzip -q -j "$templates" templates/windows_release_x86_64.exe -d "$template_dir"
+          test -s "$template_dir/windows_release_x86_64.exe"
+          rm -f "$templates" "$engine"
+          echo "GODOT_BIN=$godot" >> "$GITHUB_ENV"
+
+      - name: Import and export the existing project
+        id: export
+        shell: bash
+        run: |
+          exec > >(tee -a "$GITHUB_WORKSPACE/dist/export.log") 2>&1
+          set -euo pipefail
+
+          project="$GITHUB_WORKSPACE/upstream/game"
+          out="$GITHUB_WORKSPACE/dist"
+          # Include JSON because the prototype opens its data files via FileAccess.
+          # Resource editing is intentionally disabled for this unsigned Linux CI
+          # cross-export: an icon/company identity and a Windows editor are not
+          # provided. This is not an MSIX or a store-ready signed binary.
+          cat > "$project/export_presets.cfg" <<'PRESET'
+          [preset.0]
+          name="Windows Desktop"
+          platform="Windows Desktop"
+          runnable=true
+          dedicated_server=false
+          custom_features=""
+          export_filter="all_resources"
+          include_filter="*.json"
+          exclude_filter=""
+          export_path=""
+          patches=PackedStringArray()
+          script_export_mode=2
+
+          [preset.0.options]
+          custom_template/debug=""
+          custom_template/release=""
+          debug/export_console_wrapper=0
+          binary_format/embed_pck=true
+          binary_format/architecture="x86_64"
+          texture_format/s3tc_bptc=true
+          texture_format/etc2_astc=false
+          codesign/enable=false
+          application/modify_resources=false
+          PRESET
+          cp "$project/export_presets.cfg" "$out/export_presets.cfg"
+
+          echo "Importing source project with Godot $GODOT_TAG"
+          "$GODOT_BIN" --headless --path "$project" --editor --import 2>&1 \
+            | tee "$RUNNER_TEMP/godot-import.log"
+          if grep -E '(^|[[:space:]])(SCRIPT ERROR|ERROR):' "$RUNNER_TEMP/godot-import.log"; then
+            echo "Godot reported an import/script error; refusing a green build." >&2
+            exit 1
+          fi
+
+          echo "Exporting Windows Desktop release with embedded PCK"
+          "$GODOT_BIN" --headless --path "$project" --export-release \
+            "Windows Desktop" "$out/WindWings.exe" 2>&1 | tee "$RUNNER_TEMP/godot-export.log"
+          if grep -E '(^|[[:space:]])(SCRIPT ERROR|ERROR):' "$RUNNER_TEMP/godot-export.log"; then
+            echo "Godot reported an export/script error; refusing a green build." >&2
+            exit 1
+          fi
+          test -s "$out/WindWings.exe"
+          if find "$out" -maxdepth 1 -type f -name '*.pck' -print -quit | grep -q .; then
+            echo "Unexpected separate PCK; embedded single-executable contract failed." >&2
+            exit 1
+          fi
+
+          # Verify the PE machine and Godot's actual `pck` section, rather than
+          # merely trusting the preset or a zero exit status from the exporter.
+          python3 - "$out/WindWings.exe" <<'PY'
+          import struct
+          import sys
+          from pathlib import Path
+
+          path = Path(sys.argv[1])
+          size = path.stat().st_size
+          with path.open("rb") as f:
+              dos = f.read(64)
+              if len(dos) != 64 or dos[:2] != b"MZ":
+                  raise SystemExit("Not a DOS/PE executable")
+              pe = struct.unpack_from("<I", dos, 0x3C)[0]
+              f.seek(pe)
+              if f.read(4) != b"PE\0\0":
+                  raise SystemExit("Invalid PE signature")
+              coff = f.read(20)
+              if len(coff) != 20:
+                  raise SystemExit("Truncated PE/COFF header")
+              machine, count, _, _, _, optional_size, _ = struct.unpack("<HHIIIHH", coff)
+              if machine != 0x8664:
+                  raise SystemExit(f"Unexpected PE machine: 0x{machine:04x}")
+              optional = f.read(optional_size)
+              if len(optional) < 2 or struct.unpack_from("<H", optional)[0] != 0x20B:
+                  raise SystemExit("Expected PE32+ optional header")
+              found = None
+              for _ in range(count):
+                  section = f.read(40)
+                  if len(section) != 40:
+                      raise SystemExit("Truncated PE section table")
+                  name = section[:8].split(b"\0", 1)[0]
+                  raw_size, raw_offset = struct.unpack_from("<II", section, 16)
+                  if name == b"pck":
+                      found = (raw_offset, raw_size)
+              if found is None:
+                  raise SystemExit("Godot pck PE section not found")
+              offset, length = found
+              if length < 16 or offset + length > size:
+                  raise SystemExit("Invalid embedded PCK section bounds")
+              f.seek(offset)
+              prefix = f.read(min(length, 16))
+              if b"GDPC" not in prefix:
+                  raise SystemExit("Embedded PCK header magic not found")
+              f.seek(offset + length - 4)
+              if f.read(4) != b"GDPC":
+                  raise SystemExit("Embedded PCK footer magic not found")
+              f.seek(offset)
+              pck = f.read(length)
+              for data_path in (b"data/wave_0000.json", b"data/player_start_stats.json"):
+                  if data_path not in pck:
+                      raise SystemExit(f"Expected source data absent from PCK: {data_path!r}")
+              print(f"PE32+ x86_64; embedded PCK offset={offset}, size={length}; source data present")
+          PY
+
+          cat > "$out/BUILD_INFO.txt" <<INFO
+          Godot: $GODOT_TAG
+          Source project commit: $SOURCE_COMMIT
+          Workflow commit: $GITHUB_SHA
+          GitHub run: $GITHUB_RUN_ID (attempt $GITHUB_RUN_ATTEMPT)
+          Target: Windows Desktop x86_64, embedded PCK
+          Windows runtime: RUNTIME_UNVERIFIED
+          Resource editing: disabled; no icon or company identity provided
+          Signing and MSIX: not performed (USER-ONLY)
+          Scope: existing M1-M4 prototype, not the requested launch slice
+          INFO
+          (cd "$out" && sha256sum WindWings.exe > SHA256SUMS.txt && sha256sum --check SHA256SUMS.txt)
+          exe_sha="$(cut -d ' ' -f 1 "$out/SHA256SUMS.txt")"
+          echo "exe_sha256=$exe_sha" >> "$GITHUB_OUTPUT"
+          echo "::notice title=WindWings.exe SHA-256::$exe_sha"
+
+      - name: Upload executable and evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-x86_64-run-${{ github.run_id }}-attempt-${{ github.run_attempt }}-sha256-${{ steps.export.outputs.exe_sha256 }}
+          path: |
+            dist/WindWings.exe
+            dist/SHA256SUMS.txt
+            dist/export.log
+            dist/export_presets.cfg
+            dist/BUILD_INFO.txt
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Ensure failure diagnostics exist
+        if: failure()
+        shell: bash
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/dist"
+          if [ ! -f "$GITHUB_WORKSPACE/dist/export.log" ]; then
+            echo "The job failed before the export log was created; inspect the Actions job log." > "$GITHUB_WORKSPACE/dist/export.log"
+          fi
+          # Expose the tail as a check-run annotation as well as an artifact, so
+          # failures can be diagnosed through the GitHub API if blob downloads
+          # are unavailable from the sandbox.
+          python3 - "$GITHUB_WORKSPACE/dist/export.log" <<'PY'
+          import sys
+          from pathlib import Path
+
+          lines = Path(sys.argv[1]).read_text(errors="replace").splitlines()
+          tail = "\n".join(lines[-60:])[-14000:]
+          escaped = tail.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print("::error title=Windows export failure::" + escaped)
+          PY
+
+      - name: Upload failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-export-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist/export.log
+          if-no-files-found: error
+          retention-days: 14
