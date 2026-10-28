@@ -71,8 +71,11 @@ func _build_engine() -> void:
 	material.gravity = Vector3.ZERO
 	material.initial_velocity_min = 1.6
 	material.initial_velocity_max = 3.4
-	material.scale_min = 0.6
-	material.scale_max = 1.25
+	# A GPUParticles2D texture is drawn at its pixel size in world units, so the
+	# 16 px flame needs a scale around 0.05 to become a ~0.8 unit plume instead
+	# of a 16 unit sheet covering the screen.
+	material.scale_min = MotionTuning.ENGINE_PARTICLE_SCALE_MIN
+	material.scale_max = MotionTuning.ENGINE_PARTICLE_SCALE_MAX
 	material.color = Color(0.45, 0.82, 1.0, 0.85)
 	var ramp := Gradient.new()
 	ramp.set_color(0, Color(0.85, 0.97, 1.0, 0.95))
@@ -116,8 +119,8 @@ func _build_hull_overlay() -> void:
 	material.gravity = Vector3.ZERO
 	material.initial_velocity_min = 0.12
 	material.initial_velocity_max = 0.42
-	material.scale_min = 0.25
-	material.scale_max = 0.7
+	material.scale_min = MotionTuning.HULL_SPARK_SCALE_MIN
+	material.scale_max = MotionTuning.HULL_SPARK_SCALE_MAX
 	material.color = Color(1.0, 0.86, 0.55, 0.55)
 	var ramp := Gradient.new()
 	ramp.set_color(0, Color(1.0, 0.95, 0.75, 0.7))

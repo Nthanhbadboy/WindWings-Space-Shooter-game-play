@@ -30,6 +30,7 @@ func _build_engine() -> void:
 	_engine.amount = 20
 	_engine.lifetime = 0.5
 	_engine.local_coords = false
+	_engine.z_index = -1
 	_engine.texture = _flame_texture()
 	var material := ParticleProcessMaterial.new()
 	material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
@@ -39,8 +40,10 @@ func _build_engine() -> void:
 	material.gravity = Vector3.ZERO
 	material.initial_velocity_min = 1.0
 	material.initial_velocity_max = 2.2
-	material.scale_min = 0.5
-	material.scale_max = 1.0
+	# Same pixel-vs-world rule as the in-run engine: keep the idle plume under a
+	# unit so the hangar ship stays visible on top of its own flame.
+	material.scale_min = MotionTuning.ENGINE_PARTICLE_SCALE_MIN
+	material.scale_max = MotionTuning.ENGINE_PARTICLE_SCALE_MAX
 	material.color = Color(0.5, 0.85, 1.0, 0.8)
 	var ramp := Gradient.new()
 	ramp.set_color(0, Color(0.8, 0.95, 1.0, 0.9))
@@ -56,7 +59,7 @@ func _build_engine() -> void:
 		[Vector2(-0.08, 0.40), Vector2(0.08, 0.40), Vector2(0.0, 0.78)]
 	)
 	_engine_core.color = Color(0.55, 0.9, 1.0, 0.7)
-	_engine_core.z_index = -1
+	_engine_core.z_index = -2
 	add_child(_engine_core)
 
 

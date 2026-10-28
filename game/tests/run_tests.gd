@@ -745,6 +745,26 @@ func _test_motion_tuning() -> void:
 		"the engine flame is clamped"
 	)
 
+	# Particle sizes: the flame texture is 16 px, drawn at pixel size in world
+	# units, so a scale near 1 would paint a 16 unit sheet over the playfield.
+	check(
+		MotionTuning.ENGINE_PARTICLE_SCALE_MAX * 16.0 < 1.5,
+		"the engine plume stays under 1.5 world units"
+	)
+	check(
+		MotionTuning.ENGINE_PARTICLE_SCALE_MIN > 0.0
+			and MotionTuning.ENGINE_PARTICLE_SCALE_MIN < MotionTuning.ENGINE_PARTICLE_SCALE_MAX,
+		"the engine plume scale range is ordered"
+	)
+	check(
+		MotionTuning.BOSS_AURA_SCALE_MAX * 12.0 < 2.0,
+		"the boss aura stays under 2 world units"
+	)
+	check(
+		MotionTuning.HULL_SPARK_SCALE_MAX * 16.0 < 1.0,
+		"the whole-image hull sparkle stays under a unit"
+	)
+
 	# Boss death chain: layers fade in order and the total is bounded.
 	check_float(MotionTuning.death_layer_alpha(0, 0.0), 1.0, "the first layer is opaque at t=0")
 	check(

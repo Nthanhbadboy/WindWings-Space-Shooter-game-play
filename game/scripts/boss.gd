@@ -93,8 +93,8 @@ func _build_aura() -> void:
 	material.gravity = Vector3.ZERO
 	material.initial_velocity_min = 0.2
 	material.initial_velocity_max = 0.6
-	material.scale_min = 0.4
-	material.scale_max = 1.2
+	material.scale_min = MotionTuning.BOSS_AURA_SCALE_MIN
+	material.scale_max = MotionTuning.BOSS_AURA_SCALE_MAX
 	material.color = Color(1.0, 0.6, 0.42, 0.6)
 	_aura.process_material = material
 	add_child(_aura)
