@@ -378,8 +378,12 @@ func draw_slot_pivoted(
 		draw_size = display_size(slot_id)
 	if draw_size.x <= 0.0 or draw_size.y <= 0.0:
 		return false
-	var pivot: Array = slots.get(slot_id, {}).get("pivot", [0.5, 0.5])
-	var offset := -Vector2(float(pivot[0]), float(pivot[1])) * draw_size
+	# Must go through pivot_of(), not the raw contract pivot: a package manifest
+	# can move the pivot (the boss turret mounts), and rotating a full-canvas
+	# layer around the centre while placing it at the manifest mount throws the
+	# pod right off its socket - exactly what the first art frames showed.
+	var pivot := pivot_of(slot_id)
+	var offset := -pivot * draw_size
 	canvas_item.draw_set_transform(mount, rotation, Vector2.ONE)
 	canvas_item.draw_texture_rect(texture, Rect2(offset, draw_size), false, tint)
 	canvas_item.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

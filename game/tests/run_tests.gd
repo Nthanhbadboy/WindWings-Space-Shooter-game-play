@@ -720,6 +720,26 @@ func _test_art_layer_slots() -> void:
 		check(packaged.pivot_of("Boss-37001").is_equal_approx(Vector2(0.5, 0.5)), "%s body is centred" % package)
 		check(packaged.pivot_of("PLAYER-10001").is_equal_approx(Vector2(0.5, 0.5)), "%s ship is centred" % package)
 
+	# A full-canvas layer drawn at its own mount with rotation 0 must land exactly
+	# on the canvas (identity), otherwise the pods jump as soon as they turn.
+	for package: String in ["A", "B"]:
+		var packed: ArtLibrary = ArtLibraryScript.new(ART_CONTRACT_PATH, ["res://art/%s" % package])
+		for slot_id: String in ["Boss-37001-TURRET-L", "Boss-37001-TURRET-R"]:
+			var display: Vector2 = packed.display_size(slot_id)
+			var pivot: Vector2 = packed.pivot_of(slot_id)
+			var mount_at_rest := (pivot - Vector2(0.5, 0.5)) * display
+			var top_left := mount_at_rest - pivot * display
+			check(
+				top_left.is_equal_approx(-display * 0.5),
+				"%s %s drawn at its mount lands on the canvas" % [package, slot_id]
+			)
+		# The mount must sit inside the pod, i.e. within a few pixels of it.
+		var pivot_left: Vector2 = packed.pivot_of("Boss-37001-TURRET-L")
+		check(
+			absf(pivot_left.x - 0.5) < 0.35 and absf(pivot_left.y - 0.5) < 0.35,
+			"%s left pod rotates near the pod, not across the canvas" % package
+		)
+
 	# The two delivered packages must not silently claim the same mounts.
 	var package_a: ArtLibrary = ArtLibraryScript.new(ART_CONTRACT_PATH, ["res://art/A"])
 	var package_b: ArtLibrary = ArtLibraryScript.new(ART_CONTRACT_PATH, ["res://art/B"])
