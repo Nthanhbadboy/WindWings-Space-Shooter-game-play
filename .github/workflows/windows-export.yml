@@ -429,32 +429,57 @@ jobs:
             exit 1
           fi
           grep '^MOTION_SEGMENT' "$out/motion.log"
+          # Built outside the work tree: the publish step resets the checkout to
+          # the branch tip, which may already contain another variant's folder.
+          gifs="$RUNNER_TEMP/motion/$ANIM_VARIANT"
           python3 "$project/tools/build_motion_gifs.py" \
-            --frames "$out/frames" --out "$GITHUB_WORKSPACE/motion/$ANIM_VARIANT" --fps 12 \
-            | tee -a "$out/motion.log"
+            --frames "$out/frames" --out "$gifs" --fps 12 | tee -a "$out/motion.log"
           segments="$(grep -c '^MOTION_GIF' "$out/motion.log" || true)"
           if [ "$segments" -lt 3 ]; then
             echo "Expected 3 motion segments, captured $segments." >&2
             exit 1
           fi
-          ls -l "$GITHUB_WORKSPACE/motion/$ANIM_VARIANT"
+          ls -l "$gifs"
+          echo "MOTION_GIFS=$gifs" >> "$GITHUB_ENV"
 
       - name: Publish motion evidence to the branch
         shell: bash
-        # Only one matrix job pushes; A carries the shared motion/README.
-        if: success() && matrix.variant == 'A'
+        # Each variant publishes only its own motion/<variant> folder; the retry
+        # loop re-reads the branch tip because the three jobs finish in any order.
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           cd "$GITHUB_WORKSPACE"
+          if [ ! -d "$MOTION_GIFS" ]; then
+            echo "No motion evidence to publish for ANIM-$ANIM_VARIANT." >&2
+            exit 1
+          fi
           git config user.name "windwings-ci"
           git config user.email "windwings-ci@users.noreply.github.com"
-          git add motion
-          if git diff --cached --quiet; then
-            echo "Motion evidence unchanged."
-            exit 0
-          fi
-          git commit -m "chore(motion): refresh animation frame evidence [skip ci]"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          for attempt in 1 2 3 4 5; do
+            git fetch --quiet origin "$GITHUB_REF_NAME"
+            git reset --hard --quiet "origin/$GITHUB_REF_NAME"
+            rm -rf "motion/$ANIM_VARIANT"
+            mkdir -p "motion"
+            cp -a "$MOTION_GIFS" "motion/$ANIM_VARIANT"
+            git add "motion/$ANIM_VARIANT"
+            if git diff --cached --quiet; then
+              echo "Motion evidence for ANIM-$ANIM_VARIANT unchanged."
+              exit 0
+            fi
+            git commit --quiet -m "chore(motion): refresh ANIM-$ANIM_VARIANT frame evidence [skip ci]"
+            if git push --quiet origin "HEAD:${GITHUB_REF_NAME}"; then
+              echo "Published motion/$ANIM_VARIANT (attempt $attempt)."
+              exit 0
+            fi
+            echo "Push raced another variant, retrying (attempt $attempt)." >&2
+            sleep $((attempt * 5))
+          done
+          echo "Could not publish motion/$ANIM_VARIANT after 5 attempts." >&2
+          exit 1
 
       - name: Upload motion evidence
         uses: actions/upload-artifact@v4
@@ -462,7 +487,7 @@ jobs:
         with:
           name: motion-frames-anim-${{ matrix.variant }}-${{ github.run_id }}
           path: |
-            motion
+            motion/${{ matrix.variant }}
             dist/frames
             dist/motion.log
           if-no-files-found: error
