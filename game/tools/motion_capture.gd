@@ -72,6 +72,9 @@ func _capture_segment(segment: String) -> int:
 	add_child(_current)
 	await get_tree().process_frame
 	await get_tree().process_frame
+	if config.get("stage", "") == "turret" and _current.has_method("capture_focus_boss"):
+		# Art QA view: no HUD, camera on the boss so the pod seam is readable.
+		_current.call("capture_focus_boss", 3.0)
 
 	var interval := 1.0 / maxf(capture_fps, 1.0)
 	var elapsed := 0.0
