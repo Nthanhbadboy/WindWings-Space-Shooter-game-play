@@ -655,12 +655,14 @@ func _test_turret_qa_stage_captures_the_whole_sweep() -> void:
 	check(source.contains('capture_hide_health_bar", true'), "turret QA hides the local HP bar")
 	var boss_source := FileAccess.get_file_as_string("res://scripts/boss.gd")
 	check(boss_source.contains("if capture_skip_intro and _elapsed < INTRO_SECONDS"), "the boss honours the intro skip")
-	# sin(t * 1.6) over the 3.4 s clip has to reach both +1 and -1.
+	# sin(t * 1.6) reaches +1 at 0.98 s and -1 at 2.95 s, so a 3.4 s clip covers
+	# both ends of the arc.
 	var sweep_seconds := 3.4
-	check(
-		sin(sweep_seconds * 1.6) < 0.0 and sin(sweep_seconds * 0.5 * 1.6) > 0.9,
-		"the clip samples both ends of the sweep"
-	)
+	var sweep_rate := 1.6
+	var peak_seconds := (0.5 * PI) / sweep_rate
+	var trough_seconds := (1.5 * PI) / sweep_rate
+	check(peak_seconds < sweep_seconds, "the clip reaches the +45 deg end")
+	check(trough_seconds < sweep_seconds, "the clip reaches the -45 deg end")
 
 
 func _test_art_layer_slots() -> void:
