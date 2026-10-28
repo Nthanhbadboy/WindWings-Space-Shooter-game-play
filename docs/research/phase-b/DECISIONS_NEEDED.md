@@ -22,7 +22,7 @@
 ## Quyết định mặc định đề xuất (chờ user bác bỏ hoặc phê duyệt)
 
 Nếu user muốn một cấu hình khởi điểm để bàn tiếp, nhóm nghiên cứu đề xuất (đây là **đề xuất**, không phải quyết định):
-**D1(a) · D2(a) · D3(b) hoặc (a) · D4(c) · D6(a) · D7(a) · D8(a) · D9(a) · D10(a) · D11(a) · D12(a)** — tương ứng định vị: F2P rewarded-first, không P2W, Windows nghiêng premium/IAP, Fire tablet trước, AppGallery ngoài đại lục, UA organic-first.
+**D1(a) · D2(a) · D3(b) · D4(c) · D6(b) · D7(a) · D8(a) · D9(a) · D10(a) · D11(a) · D12(a)** — tương ứng định vị: F2P rewarded-first, không P2W, **Windows = F2P + IAP, không ads**, Fire tablet trước, AppGallery ngoài đại lục, UA organic-first.
 
 ---
 
@@ -80,4 +80,4 @@ Chi tiết: [ADS_WINDOWS_AND_FIRE_STATUS_2026-10-27.md](./ADS_WINDOWS_AND_FIRE_S
 | **G16** | **Có lập mô hình doanh thu ads không, hay chỉ đo?** | **Không tồn tại** eCPM chính chủ cho Windows — Microsoft không có ad SDK cho game [S122]; số duy nhất là seller claim **$6,20** một case [S124]; benchmark mobile lệch **$13–$30** cùng một chỉ số US, VN = Tier 3 **0,05–0,18× US** [S125] | (a) **Không mô hình hoá** — chỉ đo eCPM thật ở soft launch rồi mới quyết thiết kế ads · (b) dùng benchmark BT3 để lập kế hoạch | (b) **bịa số có vỏ nguồn**: spread >2×, và không có nguồn Windows nào ⇒ mọi con số là suy diễn | 4 | Số impression/DAU thật; SDK ads chọn được (G15) |
 | **G17** | **Có mở lại D2a (đại lục Trung Quốc) không?** | Dev nước ngoài **không được** tự phát hành (Đ.10 cấm WFOE/liên doanh) [S127]; **~3% 版号** là bản import [S128]; thực nhận **~30–50%**, có case **~20%** [S129]; **không** mượn được HK/Macau [S131] | (a) **giữ D2a** — không vào đại lục · (b) mở lại khi đủ 4 điều kiện ở §5 tài liệu NPH-TQ | (b) 6–8 tháng+ hồ sơ, server trong đại lục, PIPL, real-name, không kiểm soát ngày ra mắt | 1 | Chỉ mở khi có đối tác nội địa chủ động đề nghị (HĐ thật) |
 
-**Ghi chú không cần quyết định:** (1) **D3b (Windows không ads) được giữ** — nay có thêm lý do *hạ tầng*: Microsoft không còn ad SDK cho game [S122], không có plugin Godot cho SDK Windows nào. (2) **HK/Macau/Đài Loan là đường hợp lý** nếu muốn có người chơi Trung văn — không cần NPH-TQ, không cần 版号, đi qua store quốc tế.
+**Ghi chú không cần quyết định:** (1) **D3b (Windows không ads) — CHỐT USER 2026-10-28**, và **bản Windows là F2P + IAP** (không còn bản paid premium riêng). Lý do *hạ tầng*: Microsoft không còn ad SDK cho game [S122], không có plugin Godot cho SDK Windows nào. **Hệ quả:** D4/G9 **không áp dụng Windows** (chỉ Android/Fire/AppGallery); **G12 đổi từ "giá premium Windows" thành "giá IAP / battle pass Windows"**; **G16 (eCPM Windows) biến mất** — không cần dự đoán khi không có ads. (2) **HK/Macau/Đài Loan là đường hợp lý** nếu muốn có người chơi Trung văn — không cần NPH-TQ, không cần 版号, đi qua store quốc tế.

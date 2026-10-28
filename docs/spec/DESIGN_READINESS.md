@@ -110,15 +110,25 @@ Timestamp chỉ chứng minh **mốc cục bộ trong clip**, không chứng min
 
 ```
 11.089 dòng cấu hình · rate = 0 : 2.366 · rate thiếu: 0
-phân bố: 1,0 → 7.740 · 0,0 → 2.371 · 0,5 → 532 · 2,0 → 163 · 0,65 → 111 · 6,0 → 58
+phân bố 6 giá trị lớn nhất: 1,0 → 7.740 · 0,0 → 2.366 · 0,5 → 532 · 2,0 → 163 · 0,65 → 111 · 6,0 → 58
+(6 giá trị này = 10.970/11.089; còn 119 spawner có 20+ giá trị nhỏ khác — 0,6 / 3,0 / 1,5 / 0,18 / 0,9 / 0,23 / …)
 ```
 
-**2.371**, không phải 2.373. Lệch 2, nhưng cùng loại lỗi đã năm lần trong repo này: một con số
-không kèm phép đếm. Nay `I3` khoá lại.
+**2.366**, không phải 2.373. Lệch 7, nhưng cùng loại lỗi đã năm lần trong repo này: một con số
+không kèm phép đếm. Nay `I3` khoá lại. *(Trước ghi 2.371 ở 2 chỗ — số đó thuộc phép đếm cũ;
+**2.366** là số đo được và khớp `count_spawners = 11089` trong file.)*
 
-Câu hỏi thật vẫn mở và **nó chặn A7**: `rate = 0` nghĩa là **spawn tức thời** hay **mỗi khung
-hình**? 2.366/11.089 dòng cấu hình (21 %) rơi vào trường hợp này, nên mọi phép "địch/giây" đều có sai số
-21 % cho tới khi phân xử.
+**Câu hỏi KHÉP ở mức thiết kế (27/10)** — giữ **🟡 một nửa / không chặn** (đúng §2, §6):
+
+`rate = 0` nghĩa là **spawn cả loạt** (mức **B**), **không** phải "mỗi khung hình". **2.366/11.089**
+dòng cấu hình (**21,3 %**) rơi vào trường hợp này. Lý do: `Call_Data` **không có field
+`delay`/`wait`/`interval`** (§3.1) ⇒ `rate` là **field thời gian duy nhất** ⇒ phải là **giãn cách**; nếu
+`rate` là "quân/giây" thì 295 spawner `rate = 0` sẽ **không bao giờ** spawn, và 1.206 spawner `rate = 0`
+có **>1 quân** (dài nhất **30**) sẽ là quân chết — vô lý trong game đã phát hành.
+
+⇒ mật độ tính từ **độ dài danh sách quân** (`len(enemies) × copies`, **đã có**), **không** từ `rate`.
+Xấu nhất 30 quân cùng lúc; nhịp còn lại do `rate` của các spawner khác. Vẫn cần **asm** để lên mức
+**A** — nằm ở T5 của `HANDOFF_ANIM_RAW.md`.
 
 ### 3.1 Kéo thêm dữ liệu (24/10) — câu này **hẹp lại**, chưa đóng
 
@@ -134,7 +144,7 @@ của spawner: **1.200 dòng · 23 field**, và hai điều đo được:
 |---|---:|---:|---:|
 | `rate = 0` (trong `Call_Data`) | **295** | 1 | **6** |
 | `rate > 0` | 898 | 1 | 16 |
-| `rate = 0` (trong `waves.json`, đã nhân `copies`) | 2.371 | 2 | **30** |
+| `rate = 0` (trong `waves.json`) | **2.366** | 2 | **30** |
 
 ⇒ **Nghiêng mạnh về "không giãn cách ⇒ spawn cả loạt"** (mức **B**): nếu `rate` là "số quân/giây"
 thì 295 spawner `rate = 0` sẽ **không bao giờ** spawn, và 1.206 spawner `rate = 0` có **>1 quân**
@@ -227,7 +237,7 @@ xong:
 
 | | Việc | Vì sao trước | Giao ai |
 |---:|---|---|---|
-| 1 | **Chốt `rate = 0`** — spawn cả loạt hay mỗi frame | đã hẹp còn **B** (§3.1); mật độ **không còn phụ thuộc** nó | nhánh dữ liệu (T5, cần asm) — **không chặn** |
+| 1 | ~~Chốt `rate = 0`~~ — **KHÉP 27/10** = **spawn cả loạt** (§3) | đã hẹp còn **B**; mật độ **không còn phụ thuộc** nó | nhánh dữ liệu (T5, cần asm) để lên mức **A** — **không chặn** |
 | 2 | **A6 stage ↔ wave** | quyết định **số màn**; hiện chỉ 7/250 map chắc chắn | offline — tự làm được |
 | 3 | ~~Prototype feel 30 giây~~ | **đã bỏ** theo chỉ đạo 25/10 (*"feel bỏ rồi, script là đủ"*) ⇒ không còn việc này | — |
 
@@ -241,7 +251,7 @@ thiếu — và L2/L3 là đích KHÔNG hoãn (lần 14 · report 96 ⇒ **ưu t
 |---|---|---|---|
 | **D3 — thứ tự pha boss** (`DESIGN_QUESTIONS.md`) | ❌ "chỉ có `__count`" | ⚠ **một phần** (hạ mức 25/10, review R1): **A** cho mốc trong clip, **C** cho thứ tự/điều kiện/hành vi | `795/795` event có `time` ⇒ `BOSS_ANIM_TIMELINE.md` |
 | **E2 — hit flash** | ❌ "chưa đọc" | ✅ **ĐÓNG — BỎ (25/10)** | alpha **0,5** + `Invoke(…, 0,05 s)` trong `Enemy_Display.OnHit` — game mới không thêm |
-| **A7 — mật độ địch** | ❌ | ⚠ **một nửa** | số quân = độ dài `listPrefabEnemies`; `rate = 0` nghiêng **B** "cả loạt" |
+| **A7 — mật độ địch** | ❌ | ⚠ **một nửa** — `rate = 0` **KHÉP (27/10)** | số quân = độ dài `listPrefabEnemies`; `rate = 0` = **2.366/11.089** (21,3 %) ⇒ **B: spawn cả loạt** — **không chặn** mật độ |
 
 ⇒ `DESIGN_QUESTIONS.md` nay là **48 câu · ✅ 33 · ⚠ 14 · ❌ 1** (claim **S2** giữ cho dòng tổng không lệch
 bảng; lần 11 — 25/10: A6/B1 ✅ bind xong · C4 ⚠ mẫu runtime · E2/E3 ✅ ĐÓNG-BỎ). **Câu trả lời cho câu hỏi của tài liệu này không đổi: thiết kế được cho L1** — chỉ khác là
@@ -269,8 +279,8 @@ không phải chỗ còn thiếu số.
 | Âm thanh | `ASSETS.md` §audio (69 file) | 🟡 danh mục | nhạc/âm mới |
 
 **8/10 mục đủ ngay · 2/10 mục viết được nhưng phải ghi rõ chỗ chưa đóng** (Animation: 6 chuỗi trigger +
-hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật độ** treo **cách diễn giải**
-`rate = 0`, **không** treo số lượng — 22.451 entry spawn trên 282 wave đã có.
+hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật độ** **không còn treo** `rate = 0` —
+**27/10 đã KHÉP** = spawn cả loạt (§3). Số lượng đã có: **22.451 entry** / **45.659 quân thật** trên 282 wave.
 
 ### 7.1 Ba con số "đã sẵn sàng" đáng nhớ
 
@@ -290,7 +300,7 @@ hành vi handler; Âm thanh: danh mục 92 id, chưa có trigger). Mục **mật
 | **9 câu blocker** (§2 ở trên) | 9 | **4** ✅ (`StartHp` · `A6` · `B1` · feel-bỏ) | **4** 🟡 (`D3` · `C4` · `A7` · `B3`) | **1** 🔴 (`A5` — cần luật continue) |
 | **48 câu design** (`DESIGN_QUESTIONS.md`) | 48 | **33** ✅ | **14** ⚠ | **1** ❌ (`A5`) |
 | **6 chỗ thiếu** (`COVERAGE_AUDIT.md` §2) | 6 | **2** ✅ ĐÃ ĐÓNG | **4** | **0 chặn số** — sót 2 tái đối chiếu runtime (không chặn) |
-| **claim tự kiểm** (`tools/verify-claims.py`) | **211** | **209** PASS | 2 SKIP | 0 FAIL |
+| **claim tự kiểm** (`tools/verify-claims.py`) | **211** | **200** PASS | **11** SKIP | 0 FAIL *(đo lại 27/10 trên tip `f9566558`)* |
 
 **Đọc bảng này thế nào:**
 

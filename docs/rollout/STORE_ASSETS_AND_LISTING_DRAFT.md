@@ -9,7 +9,7 @@
 
 This document prepares the asset handoff and draft copy for the three Phase C channels:
 
-1. **Microsoft Store — Windows PC:** planned premium, ad-free edition; no Windows build is present in this repository.
+1. **Microsoft Store — Windows PC:** planned **free-to-play with in-app purchases, no ads**; no Windows build is present in this repository.
 2. **Amazon Appstore — Fire tablet first:** mobile free-to-play, optional rewarded-first ads; Fire TV and Vega are deferred.
 3. **Huawei AppGallery — outside mainland China:** mobile free-to-play, optional rewarded-first ads.
 
@@ -65,19 +65,19 @@ Exact current pixel dimensions, file formats, screenshot counts, and feature-gra
 
 The working title **WindWings** is subject to Phase C USER-ONLY #3 rights confirmation and store-title availability. The copy below is product-plan copy, not a statement that any build is release-ready. Do not submit it until the final build, platform requirements, and rights are checked.
 
-### Microsoft Store — Windows PC (premium, no ads)
+### Microsoft Store — Windows PC (free-to-play + IAP, no ads)
 
 **Title:** WindWings *(working title; rights clearance required)*
 
 **Short description:**
 
-A premium, ad-free vertical arcade shooter. Pilot a starfighter, weave through enemy fire, and face boss encounters.
+A free-to-play vertical arcade shooter with no ads. Pilot a starfighter, weave through enemy fire, and face boss encounters. Optional in-app purchases unlock progress and convenience; no paid loot boxes.
 
 **Long description:**
 
-Take command of a starfighter in a vertically scrolling arcade shooter. Dodge enemy formations, fire through incoming waves, and face boss encounters. The planned Windows edition is a premium, ad-free release. No paid loot boxes.
+Take command of a starfighter in a vertically scrolling arcade shooter. Dodge enemy formations, fire through incoming waves, and face boss encounters. The planned Windows edition is a free-to-play release with in-app purchases and no ads. No paid loot boxes.
 
-**Do not add yet:** a price, supported Windows versions, controller or cloud-save claims, exact stage/ship counts, or a feature graphic whose requirement has not been verified.
+**Do not add yet:** any price (app or in-app), supported Windows versions, controller or cloud-save claims, exact stage/ship counts, or a feature graphic whose requirement has not been verified.
 
 ### Amazon Appstore — Fire tablet (free-to-play, rewarded-first)
 

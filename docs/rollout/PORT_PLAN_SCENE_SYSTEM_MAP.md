@@ -33,7 +33,7 @@ hardcode số vào script; mọi bảng số phải trỏ về file nguồn.
 | 3 | Súng / đạn / sát thương | ✅ L1 | `Weapon` Resource (458 khai báo) + `BulletPool` | `COMBAT.md` | 458 súng nạp được; damage 40–1.200; 186 loại đạn |
 | 4 | Enemy | ✅ | `Enemy` scene + `EnemyBehaviour` Resource (48 archetype) | `ENCOUNTERS.md` §2.4, `datas/enemy_hp_by_id.json` | **92 type** (52+39+1) theo `ENCOUNTERS` §2.5 · **109** prefab có mặt trong wave / **178** prefab mang controller theo `BOSSES` §5 — xem §7.1; 150 cặp id→HP |
 | 5 | Boss | 🟡 | `Boss` scene + state machine đọc event có mốc | `BOSSES.md` §2, `datas/boss_anim_events.csv` (**không sửa**) | 39 prefab boss + 1 mini-boss; 795 event có mốc; 268 cặp (prefab, clip); nhịp 0,17/0,33/1,0/5,0 s |
-| 6 | Wave / spawn | ✅ | `EnemySpawner` đọc bảng wave, `Timer` theo `rate` | `datas/waves.json`, `ENCOUNTERS.md` §3 | 282 wave · 23.757 spawner · 22.451 entry (spec) |
+| 6 | Wave / spawn | ✅ | `EnemySpawner` đọc bảng wave, `Timer` theo `rate` | `datas/waves.json`, `ENCOUNTERS.md` §3 | 282 wave · **11.089 dòng cấu hình · 23.757 spawner · 22.451 entry · 45.659 instance enemy** (spec) |
 | 7 | Độ khó 3 chế độ | ✅ | `Difficulty` Resource: `levelDelta [1,2,3.6,3.6]`, không nhân số quân | `DIFFICULTY_MODES.md` | 3 chế độ, 4 mốc delta |
 | 8 | Kinh tế / rơi đồ | ✅ | `DropService` + `Pickup` + `EconomyService` | `datas/*coin*`, `ECONOMY.md` §1 | 676 coin/26 item đặt sẵn; công thức Coin1/Coin2 |
 | 9 | Meta: tàu/sao/talent/drone | 🟡 | `Hangar` UI + `ShipStats` Resource | `datas/ships.json`, `datas/bosses.json` | 25 tàu · 13 drone · 23 method talent (spec) |
@@ -53,7 +53,7 @@ Không hệ nào ở mức “thiếu hoàn toàn” theo spec (8 đủ · 8 m�
 | Bước | Nội dung | Nghiệm thu đếm được |
 |---|---|---|
 | S1 | `Main` → `Home` → `Maps` → `Battle` → `Endgame` chạy được, không art cuối | 5 scene chuyển được; 0 asset gốc trong repo |
-| S2 | Player bay + auto-fire + 1 wave theo `waves.json` | 1 wave nạp từ dữ liệu; số enemy/spawner khớp file |
+| S2 | Player bay + auto-fire + 1 wave theo `waves.json` | 1 wave nạp từ dữ liệu; số dòng/spawner/entry/instance khớp file; **không đọc field `count`** (= 0 ở 11.089/11.089 dòng) — quân tính `len(enemies) × copies` |
 | S3 | 3 stage mở đầu + **khuôn victory chung** (đúng giả thuyết spec §6) | 3 stage có gate riêng; victory chung phủ cả 3 |
 | S4 | Boss đầu tiên theo event có mốc | ≥1 boss; event đọc từ `boss_anim_events.csv` (không sửa) |
 | S5 | Save/load tối thiểu (`StarCount`, `StarStageMaster*`) | mở lại game còn dữ liệu; key đúng tên spec |

@@ -9,7 +9,7 @@
 
 | Hạng mục | Quy mô gốc WindWings | Coder đã có (M1–M4) | % đường |
 |---|---|---:|---:|
-| Wave PvE | **282** (236 campaign + 45 boss-wave) · 23.757 spawner · 22.451 entry | **1** (Wave_0000, 150 enemies) | ~0,4% |
+| Wave PvE | **282** (236 campaign + 45 boss-wave + **1 lỗi**) · **23.757 spawner** (= Σ `copies`; khớp `class-inventory.csv`) · **11.089 dòng cấu hình** · **22.451 entry** · **45.659 instance enemy** (Σ len×copies) | **1** (Wave_0000, 150 enemies) | ~0,4% |
 | Boss | 39 prefab + 1 mini · **795** event có mốc · 268 (prefab,clip) | 0 (chưa hệ boss) | 0% |
 | Súng/đạn | **458** súng · 186 loại đạn · damage 40–1.200 | training-gun + 6 prefab gun-alt | ~2% |
 | Enemy | 92 type · 150 cặp id→HP · 109 prefab trong wave | pipeline 1 wave | ~1% |
@@ -50,7 +50,7 @@
 
 | M# | Nội dung | ANCHOR trong nguyên mẫu (dữ liệu đã decode) | Chấp-nhận khi |
 |---|---|---|---|
-| M5 | Multi-wave loader + stage/map flow | `datas/waves.json` **282 wave · 23.757 spawner · 22.451 entry**; Map/Stage CSV (250 map/299 stage); rate×spawner ⇒ trận 2,5–4 phút | loader nạp đủ 282; tổng spawner/entry khớp từng wave; 5 wave lấy mẫu replay đúng thứ-tự spawn (đo) |
+| M5 | Multi-wave loader + stage/map flow | `datas/waves.json` **282 wave · 11.089 dòng cấu hình · 23.757 spawner (Σ copies) · 22.451 entry · 45.659 instance enemy (Σ len×copies)**; Map/Stage CSV (250 map/299 stage); rate×spawner ⇒ trận 2,5–4 phút | loader nạp đủ 282; tổng spawner/entry/instance khớp từng wave; **field `count` = 0 ở 11.089/11.089 dòng ⇒ quân tính `len(enemies)×copies`, không đọc `count`**; 5 wave lấy mẫu replay đúng thứ-tự spawn (đo) |
 | M6 | Boss system | `datas/boss_anim_events.csv` **795 event · 268 (prefab,clip)** · nhịp 0,17/0,33/1,0/5,0s · 39+1 boss; HP theo bảng | mỗi boss giữ event-map đúng mốc thời gian; sampling 3 boss khớp trình tự |
 | M7 | Difficulty + endgame + reborn | `DIFFICULTY_MODES`: levelDelta [1, 2, 3.6, 3.6] **không nhân số quân**; endgame coin+exp+rank; luật reborn §1.6 | delta đúng 4 mốc; số quân không đổi theo mode (đo) |
 | M8 | Meta tàu/drone/tech | **25 tàu · 13 drone** (14-ships/drones.csv) · **12 stat** tech · 6 chapter · talent 23 method theo VIP | đủ 25/13 profile; 12 stat cất/đọc đúng; nâng cấp theo mức decode |

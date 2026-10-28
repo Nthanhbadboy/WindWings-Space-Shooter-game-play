@@ -172,7 +172,7 @@ Nguồn: nhánh spec `arena/20330d0e…` (fetch tường minh, không checkout),
 | **Banner/native ads làm nguồn thu chính** | ❌ trên Windows | Chỉ thiết kế cho Android/Fire/HMS; Windows bỏ banner |
 | **Interstitial cưỡng ép** | ⚠️ kỹ thuật được cả 3, nhưng vi phạm định hướng player-respecting và rủi ro review/đánh giá | Chỉ dùng hạn chế, có tần suất cap |
 | **Loot box/gacha (mua random)** | ⚠️ | Bị gắn nhãn "Includes Random Items"/simulated gambling; Huawei xếp gambling/loot box vào nhóm **18+** [S54]; ảnh hưởng rating và một số thị trường — cần quyết định ở Gate-3 |
-| **Paid premium edition (giống Sky Force PC)** | ✅ | Cả 3 cho bán paid app; đặc biệt hợp Windows nơi ads yếu |
+| **Paid premium edition (giống Sky Force PC)** | ✅ | Cả 3 cho bán paid app; đặc biệt hợp Windows nơi ads yếu — **[SUPERSEDED 2026-10-28] User chốt Windows = F2P + IAP, không ads (D6b); không còn bản paid premium riêng** |
 
 ---
 
@@ -327,7 +327,7 @@ Lấy tham số **base**: 4 rewarded/DAU, eCPM giả định $8 (Android; Window
 ### 8.2 Mô hình xuyên store đề xuất (trình Gate-3, chưa phải quyết định)
 
 1. **Lõi chung:** F2P + rewarded video (tối đa ~4–6/người/ngày) + IAP consumable (gem/coin/bundle) + gỡ quảng cáo một lần + Premium subscription tùy chọn + battle pass nhẹ.
-2. **Microsoft Store:** nghiêng IAP/subscription + **paid premium edition** (mô hình Sky Force); ads chỉ rewarded qua Vungle.
+2. **Microsoft Store:** **F2P + IAP, không ads** — [SUPERSEDED 2026-10-28, D3b/D6b] thay cho "IAP/subscription + paid premium edition + Vungle ads" ở bản trước.
 3. **Amazon/Fire:** F2P đầy đủ ads (APS + mạng tương thích) + IAP; tận dụng mức 80/20 Small Business Accelerator; kiểm soát phạm vi thiết bị (tablet/TV).
 4. **Huawei AppGallery:** F2P đầy đủ Ads Kit + IAP Kit; phát hành ngoài đại lục trước; loại TQ cho tới khi có đối tác 版号.
 5. **Không** P2W áp đặt, **không** interstitial cưỡng ép, **không** loot box trả thưởng ảnh hưởng sức mạnh (tránh 18+) — phù hợp định hướng player-respecting của director status.

@@ -92,7 +92,7 @@ Appstore SDK gộp **IAP + DRM + Simple Sign-in** trong một JAR — tức nế
 - Godot export Windows ra **exe thường**, không phải MSIX → **phải đóng gói MSIX** mới gọi được Store API. Điều này khớp: MSIX là định dạng được Store **ký lại và host miễn phí**. `STATIC_CONFIRMED` [S103]
 - Không tìm thấy plugin/GDExtension có sẵn cho `Windows.Services.Store` trong Godot ⇒ **viết GDExtension C++/WinRT** gọi `StoreContext::GetDefault()`. `INFERRED` (từ vắng mặt plugin)
 - Kiểm thử khó: **dev license không phải retail license** — tài liệu Microsoft ghi *"A developer license is not a retail license and is not supported; using one may result in errors or crashes"* [S101]. ⇒ Test IAP thật chỉ làm được qua **submission ở Partner Center** (gói flight/private audience), không test được ở máy dev thuần. **Đây là rủi ro lịch sử lớn nhất của nhánh Windows.**
-- Vì **D3b: Windows không ads**, không cần SDK ads trên Windows ⇒ giảm hẳn một nhánh rủi ro.
+- Vì **D3b: Windows không ads (CHỐT USER 2026-10-28)**, không cần SDK ads trên Windows ⇒ giảm hẳn một nhánh rủi ro. **⇒ G9 ("remove ads" còn bán được không) KHÔNG ÁP DỤNG Windows** — chỉ Android/Fire/AppGallery.
 
 ---
 

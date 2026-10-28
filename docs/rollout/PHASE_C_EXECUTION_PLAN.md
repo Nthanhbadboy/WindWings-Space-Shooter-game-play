@@ -31,7 +31,7 @@
 | Từ D# | Câu hỏi khúc mắc | Giao | Researchable từ nguồn công khai? |
 |---|---|---|---|
 | D4/D6 | **Giá benchmark remove-ads + premium trong genre shmup** (Sky Force $3,99; 1945; HAWK; Phoenix 2…) → đề xuất bảng giá cụ thể trình user Gate-3 | E | ✓ — giá store công khai |
-| D3 | **eCPM/fill-rate rewarded trên Windows** (Vungle public benchmarks 2025–2026) + đánh giá lại (b)-no-ads có làm mất tiền không | E | ✓ một phần (benchmark); hợp đồng = USER-ONLY |
+| D3 | ~~**eCPM/fill-rate rewarded trên Windows**~~ **BỊ HỦY 2026-10-28** — Windows không ads (CHỐT USER) ⇒ không cần benchmark eCPM, không cần hợp đồng Vungle Windows. D3 giờ chỉ còn lane Android/Fire/AppGallery | — | **Không còn việc này** (hủy do D3b chốt) |
 | D9 | **Ma trận plugin Godot 4.x cho 3 store**: IAP (Godot Google Play Billing chính chủ · HMS IAP community plugin · Amazon IAP wrapper?) · ads (AdMob Poing-plugin — chú ý Fire thiếu GMS · HMS Ads Kit) · đóng gói MSIX cho MS Store | E | ✓ — docs SDK |
 | D11 | **Tương thích analytics/CMP trên Fire + HMS** (GameAnalytics, Firebase fork, Unity Analytics; consent GDPR) | E | ✓ — docs SDK |
 | D7 | **Luật gacha/loot-box từng nước cập nhật** (Bỉ/Hà Lan, EU) — thu thập trước Gate-7 | E | ✓ — nguồn pháp lý công khai |
