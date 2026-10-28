@@ -432,8 +432,12 @@ jobs:
           # Built outside the work tree: the publish step resets the checkout to
           # the branch tip, which may already contain another variant's folder.
           gifs="$RUNNER_TEMP/motion/$ANIM_VARIANT"
+          anim_mode="$(python3 -c 'import json,os;print(json.load(open(os.path.join(os.environ["GITHUB_WORKSPACE"],"game","data","animation_variant.json")))["mode"])')"
+          art_source_flag="$(python3 -c 'import json,os;print(json.load(open(os.path.join(os.environ["GITHUB_WORKSPACE"],"game","data","animation_variant.json")))["art_source"])')"
           python3 "$project/tools/build_motion_gifs.py" \
-            --frames "$out/frames" --out "$gifs" --fps 12 | tee -a "$out/motion.log"
+            --frames "$out/frames" --out "$gifs" --fps 12 \
+            --variant "$ANIM_VARIANT" --mode "$anim_mode" --art-source "$art_source_flag" \
+            | tee -a "$out/motion.log"
           segments="$(grep -c '^MOTION_GIF' "$out/motion.log" || true)"
           if [ "$segments" -lt 3 ]; then
             echo "Expected 3 motion segments, captured $segments." >&2

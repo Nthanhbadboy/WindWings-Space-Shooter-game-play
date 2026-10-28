@@ -5,7 +5,8 @@ Input : a frame folder per segment (`<frames>/<segment>/frame_0000.png` + frames
 Output: `motion/<segment>.gif`, `motion/<segment>-sheet.png` (frame strip),
         `motion/README.md` with per-segment frame counts and simulated time.
 
-Usage: python3 game/tools/build_motion_gifs.py --frames /abs/frames --out /abs/motion
+Usage: python3 game/tools/build_motion_gifs.py --frames /abs/frames --out /abs/motion \
+    [--variant A --mode layered --art-source placeholder]
 """
 
 from __future__ import annotations
@@ -22,6 +23,12 @@ except ImportError:  # pragma: no cover - CI installs Pillow
 
 MAX_WIDTH = 288
 SHEET_COLUMNS = 8
+
+
+MODE_TEXT = {
+    "layered": "layered animation (ship body + glow layer, boss body/gun-l/gun-r/core, guns track the ship)",
+    "whole": "whole-image animation (one flat image per sprite, guns fixed, flame on the hull, particle overlay)",
+}
 
 
 def load_segment(folder: Path) -> tuple[list[Image.Image], list[float]]:
@@ -76,6 +83,9 @@ def main() -> int:
     parser.add_argument("--frames", required=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--fps", type=float, default=12.0)
+    parser.add_argument("--variant", default="A")
+    parser.add_argument("--mode", default="layered", choices=sorted(MODE_TEXT))
+    parser.add_argument("--art-source", default="placeholder", choices=("placeholder", "package"))
     args = parser.parse_args()
 
     frames_root = Path(args.frames)
@@ -83,13 +93,17 @@ def main() -> int:
     out_root.mkdir(parents=True, exist_ok=True)
 
     lines = [
-        "# Motion evidence — launch slice",
+        "# Motion evidence — ANIM-%s launch slice" % args.variant,
         "",
         "Frames rendered from the real scenes by `game/tools/motion_capture.gd` on the CI",
         "runner (xvfb + llvmpipe, `--fixed-fps 60`, captured at the frame rate below).",
         "Each GIF is the acceptance clip; the `-sheet.png` file is the same frames laid out",
         "in order, so the motion can be read without playing the GIF.",
         "",
+        f"- Variant: ANIM-{args.variant} - {MODE_TEXT.get(args.mode, args.mode)}",
+        f"- Art source: {args.art_source}"
+        + (" (no art package delivered yet, so these frames show the fallback art)"
+           if args.art_source == "placeholder" else ""),
         f"- Capture rate: {args.fps:g} fps",
         f"- Frame width: {MAX_WIDTH}px",
         "",
@@ -112,8 +126,10 @@ def main() -> int:
         )
     lines += [
         "",
-        "Scenes: `hangar` = ship idle animation, `flight` = ship gliding and firing,",
-        "`boss` = boss descent and the Attack2 volley.",
+        "Scenes: `hangar` = ship idle animation (float, breathing shadow, glow pulse,",
+        "idle flame), `flight` = ship gliding and firing (banking, engine plume), `boss`",
+        "= boss descent, warning bar, aiming guns, core telegraph and the Attack2 volley",
+        "with the player taking hits.",
         "",
     ]
     (out_root / "README.md").write_text("\n".join(lines), encoding="utf-8")

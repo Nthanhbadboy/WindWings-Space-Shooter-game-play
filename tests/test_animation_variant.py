@@ -117,5 +117,61 @@ class BuildVariantTests(unittest.TestCase):
             self.assertIn("placeholder", readme.lower())
 
 
+class MotionReadmeTests(unittest.TestCase):
+    """The motion evidence must name its variant and say when art is placeholder."""
+
+    def test_readme_names_variant_and_placeholder(self) -> None:
+        import importlib.util
+        import tempfile
+
+        try:
+            import PIL  # noqa: F401
+        except ImportError:  # pragma: no cover - Pillow is a CI dependency
+            self.skipTest("Pillow is not installed")
+
+        spec = importlib.util.spec_from_file_location(
+            "build_motion_gifs", REPO_ROOT / "game" / "tools" / "build_motion_gifs.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            frames = pathlib.Path(tmp) / "frames"
+            segment = frames / "hangar"
+            segment.mkdir(parents=True)
+            from PIL import Image
+            for index in range(3):
+                Image.new("RGB", (32, 48), (10, 20, 30 + index)).save(
+                    segment / f"frame_{index:04d}.png"
+                )
+            (segment / "frames.txt").write_text("f\t0.0\nf\t0.1\nf\t0.2\n", encoding="utf-8")
+
+            out = pathlib.Path(tmp) / "motion" / "C"
+            argv = [
+                "--frames",
+                str(frames),
+                "--out",
+                str(out),
+                "--variant",
+                "C",
+                "--mode",
+                "whole",
+                "--art-source",
+                "placeholder",
+            ]
+            old_argv = sys.argv
+            sys.argv = ["build_motion_gifs.py", *argv]
+            try:
+                self.assertEqual(module.main(), 0)
+            finally:
+                sys.argv = old_argv
+
+            readme = (out / "README.md").read_text(encoding="utf-8")
+            self.assertIn("ANIM-C", readme)
+            self.assertIn("whole-image animation", readme)
+            self.assertIn("placeholder", readme)
+            self.assertIn("hangar", readme)
+
+
 if __name__ == "__main__":
     unittest.main()
