@@ -10,7 +10,8 @@ extends Node2D
 ## only question it exists for: does the pod seam open, does the core sit on the
 ## hull centre, does the body stay still while the turrets move.
 ##
-## Segment (tools/motion_capture.gd): "turret", 3.4 s.
+## Segment (tools/motion_capture.gd): "turret", 3.4 s. The entrance is skipped so
+## all 3.4 s show the turrets turning (+45 deg at ~1.0 s, -45 deg at ~2.9 s).
 
 const BOSS_SCENE := preload("res://scenes/boss.tscn")
 const BossPatternScript := preload("res://scripts/boss_pattern.gd")
@@ -51,6 +52,9 @@ func _ready() -> void:
 	)
 	_boss.set("capture_turret_sweep", true)
 	_boss.set("capture_hide_health_bar", true)
+	# Skip the 2.4 s entrance: this camera follows the boss, so the descent shows
+	# up as a frozen frame, and the sweep only starts once the entrance ends.
+	_boss.set("capture_skip_intro", true)
 	add_child(_boss)
 
 

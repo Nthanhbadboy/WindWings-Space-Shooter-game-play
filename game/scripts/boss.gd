@@ -49,6 +49,11 @@ var capture_turret_sweep := false
 ## Capture only: the art-QA stage hides the local HP bar, which otherwise runs
 ## straight across the hull in the frame evidence.
 var capture_hide_health_bar := false
+## Capture only: start past the 2.4 s entrance. The QA camera follows the boss,
+## so the descent renders as a still frame, and the guns do not sweep until the
+## entrance is over - which cost ~1.7 s of the 3.4 s turret clip, leaving one
+## side of the +-45 deg arc unsampled.
+var capture_skip_intro := false
 
 
 func configure(data: Dictionary) -> void:
@@ -130,6 +135,8 @@ func _physics_process(delta: float) -> void:
 			if _death_elapsed >= MotionTuning.death_total_seconds():
 				_finish_death()
 		return
+	if capture_skip_intro and _elapsed < INTRO_SECONDS:
+		_elapsed = INTRO_SECONDS
 	_elapsed += delta
 	var progress := clampf(_elapsed / INTRO_SECONDS, 0.0, 1.0)
 	position.y = lerpf(_spawn_point.y, _station.y, _ease_out(progress))

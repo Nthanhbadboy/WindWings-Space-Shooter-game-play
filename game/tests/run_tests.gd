@@ -49,6 +49,7 @@ func _initialize() -> void:
 	_test_art_library_fallback()
 	_test_art_library_drop_in()
 	_test_art_layer_slots()
+	_test_turret_qa_stage_captures_the_whole_sweep()
 	_test_motion_tuning()
 	_test_animation_variants()
 
@@ -641,6 +642,25 @@ func _test_art_library_drop_in() -> void:
 func _canvas_of(library: ArtLibrary, slot_id: String) -> Array:
 	var canvas: Dictionary = library.slot(slot_id).get("canvas", {})
 	return [int(canvas.get("width", 0)), int(canvas.get("height", 0))]
+
+
+func _test_turret_qa_stage_captures_the_whole_sweep() -> void:
+	# The turret QA clip is the only evidence that the delivered pod layers turn
+	# without opening a seam, so the stage must show the whole +-45 deg arc: intro
+	# skipped (otherwise the camera-following stage holds a still frame for the
+	# 2.4 s descent) and the sweep flag on.
+	var source := FileAccess.get_file_as_string("res://tools/turret_qa.gd")
+	check(source.contains('capture_skip_intro", true'), "turret QA skips the boss entrance")
+	check(source.contains('capture_turret_sweep", true'), "turret QA turns both pods")
+	check(source.contains('capture_hide_health_bar", true'), "turret QA hides the local HP bar")
+	var boss_source := FileAccess.get_file_as_string("res://scripts/boss.gd")
+	check(boss_source.contains("if capture_skip_intro and _elapsed < INTRO_SECONDS"), "the boss honours the intro skip")
+	# sin(t * 1.6) over the 3.4 s clip has to reach both +1 and -1.
+	var sweep_seconds := 3.4
+	check(
+		sin(sweep_seconds * 1.6) < 0.0 and sin(sweep_seconds * 0.5 * 1.6) > 0.9,
+		"the clip samples both ends of the sweep"
+	)
 
 
 func _test_art_layer_slots() -> void:
