@@ -165,6 +165,77 @@ class BuildVariantTests(unittest.TestCase):
         self.assertFalse((ART / "C" / "layers").exists())
 
 
+class ArtSlotsTableTests(unittest.TestCase):
+    """The published slot table must match the log the game printed."""
+
+    SAMPLE = "\n".join(
+        [
+            "ANIM_VARIANT variant=B mode=layered art=res://art/B source=package package_commit=7aa3d08",
+            "ART_CONTRACT slots=4 art_root=res://art/B",
+            "ART_SLOT PLAYER-10001 present res://art/B/ships/PLAYER-10001.png",
+            "ART_SLOT Boss-37001 present res://art/B/bosses/Boss-37001.png",
+            "ART_SLOT CD-31002 fallback vector (enemies/CD-31002.png missing)",
+            "ART_SLOT FX-HIT fallback vector (fx/FX-HIT.png missing)",
+            "ART_PACKAGE res://art/B/manifest.json package= status=EXPERIMENTAL license=UNKNOWN",
+            "ART_SUMMARY total=4 present=2 fallback=2",
+            "",
+        ]
+    )
+
+    def test_counts_and_rows(self) -> None:
+        import subprocess
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            log = pathlib.Path(tmp) / "art_report.log"
+            log.write_text(self.SAMPLE, encoding="utf-8")
+            out = pathlib.Path(tmp) / "ART_SLOTS.md"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(REPO_ROOT / "game" / "tools" / "art_slots_table.py"),
+                    "--log",
+                    str(log),
+                    "--variant",
+                    "B",
+                    "--out",
+                    str(out),
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("ART_TABLE variant=B total=4 present=2 fallback=2", result.stdout)
+            table = out.read_text(encoding="utf-8")
+            self.assertIn("ANIM-B", table)
+            self.assertIn("**Present 2 / 4 slots; 2 fall back to vector art.**", table)
+            self.assertIn("| `PLAYER-10001` | present |", table)
+            self.assertIn("| `FX-HIT` | **fallback** |", table)
+
+    def test_empty_log_is_refused(self) -> None:
+        import subprocess
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            log = pathlib.Path(tmp) / "empty.log"
+            log.write_text("nothing here\n", encoding="utf-8")
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(REPO_ROOT / "game" / "tools" / "art_slots_table.py"),
+                    "--log",
+                    str(log),
+                    "--variant",
+                    "A",
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertNotEqual(result.returncode, 0)
+
+
 class MotionReadmeTests(unittest.TestCase):
     """The motion evidence must name its variant and say when art is placeholder."""
 

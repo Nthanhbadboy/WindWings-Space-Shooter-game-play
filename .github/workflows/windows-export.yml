@@ -358,6 +358,14 @@ jobs:
             echo "present=${present} fallback=${fallback}" >> "$GITHUB_OUTPUT"
           fi
           echo "Art slot status: $(grep '^ART_SUMMARY' "$out/art_report.log")"
+          # Publish the split somewhere readable: ART_SUMMARY is one line and gets
+          # truncated in annotations, so the table is written per variant and
+          # committed next to the motion evidence below.
+          python3 "$project/tools/art_slots_table.py" \
+            --log "$out/art_report.log" --variant "$ANIM_VARIANT" \
+            --out "$RUNNER_TEMP/art_slots_${ANIM_VARIANT}.md" | tee -a "$out/export.log"
+          python3 "$project/tools/art_slots_table.py" \
+            --log "$out/art_report.log" --variant "$ANIM_VARIANT" > /dev/null
 
           exe="$out/WindWings-anim-${ANIM_VARIANT}.exe"
           echo "Exporting Windows Desktop release with embedded PCK: $(basename "$exe")"
@@ -491,6 +499,7 @@ jobs:
             dist/tests.log
             dist/smoke.log
             dist/art_report.log
+            ${{ runner.temp }}/art_slots_${{ matrix.variant }}.md
           if-no-files-found: error
           retention-days: 14
 
@@ -558,6 +567,9 @@ jobs:
             rm -rf "motion/$ANIM_VARIANT"
             mkdir -p "motion"
             cp -a "$MOTION_GIFS" "motion/$ANIM_VARIANT"
+            if [ -f "$RUNNER_TEMP/art_slots_${ANIM_VARIANT}.md" ]; then
+              cp "$RUNNER_TEMP/art_slots_${ANIM_VARIANT}.md" "motion/$ANIM_VARIANT/ART_SLOTS.md"
+            fi
             git add "motion/$ANIM_VARIANT"
             if git diff --cached --quiet; then
               echo "Motion evidence for ANIM-$ANIM_VARIANT unchanged."
