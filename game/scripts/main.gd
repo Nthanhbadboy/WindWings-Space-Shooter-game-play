@@ -146,11 +146,7 @@ func capture_focus_boss(zoom: float) -> void:
 	var layer := get_node_or_null("CanvasLayer")
 	if layer is CanvasLayer:
 		(layer as CanvasLayer).visible = false
-	for child in world.get_children():
-		if child.is_in_group("bosses") and child is Node2D:
-			camera.global_position = (child as Node2D).global_position + Vector2(0.0, 0.2)
-			camera.zoom = Vector2(zoom, zoom)
-			return
+	camera.zoom = Vector2(zoom, zoom)
 
 
 func _drive_capture(delta: float) -> void:
@@ -168,7 +164,11 @@ func _drive_capture(delta: float) -> void:
 		player.global_position.x = sin(_capture_time * 1.35) * span
 		player.global_position.y = lerpf(bounds.end.y, bounds.position.y + 1.2, 0.5 + 0.35 * sin(_capture_time * 0.9))
 	elif capture_stage == "turret":
-		# Art QA: hold the camera on the boss and keep the ship under it.
+		# Art QA: follow the boss every frame (it descends), keep the ship under it.
+		for child in world.get_children():
+			if child.is_in_group("bosses") and child is Node2D:
+				camera.global_position = (child as Node2D).global_position + Vector2(0.0, 0.2)
+				break
 		player.global_position.x = camera.global_position.x
 		player.global_position.y = camera.global_position.y + 3.2
 	elif capture_stage == "boss":
