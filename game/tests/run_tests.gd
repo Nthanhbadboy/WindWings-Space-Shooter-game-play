@@ -755,6 +755,9 @@ func _test_motion_tuning() -> void:
 	# The flash must lighten the shape that was hit, never paint a white disc
 	# over it: the vector fallback uses the same 0.5 alpha for its tint.
 	check_float(MotionTuning.FLASH_ALPHA, 0.5, "the vector hit flash tints shapes at 0.5")
+	# The art flash is the same 0.5: a normalised curve of 1.0 must not paint a
+	# solid white silhouette over the sprite.
+	check_float(clampf(1.0, 0.0, 1.0) * MotionTuning.FLASH_ALPHA, 0.5, "the art flash peaks at 0.5 alpha")
 
 	check(MotionTuning.shake_offset(0.0).length() == 0.0, "shake starts at zero offset")
 	var peak := 0.0

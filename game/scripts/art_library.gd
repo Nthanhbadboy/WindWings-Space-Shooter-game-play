@@ -279,6 +279,9 @@ func white_texture_for(slot_id: String) -> Texture2D:
 	return result
 
 
+## `strength` is the normalised flash curve (1.0 on the hit frame); the drawn
+## alpha is that curve times FLASH_ALPHA, because the spec flash is a HALF-alpha
+## white silhouette (Enemy_Display.OnHit, J9), never a solid white shape.
 func draw_flash(canvas_item: CanvasItem, slot_id: String, center: Vector2, strength: float) -> bool:
 	if strength <= 0.0:
 		return false
@@ -286,8 +289,9 @@ func draw_flash(canvas_item: CanvasItem, slot_id: String, center: Vector2, stren
 	if texture == null:
 		return false
 	var draw_size := display_size(slot_id)
+	var alpha := clampf(strength, 0.0, 1.0) * MotionTuning.FLASH_ALPHA
 	canvas_item.draw_texture_rect(
-		texture, Rect2(center - draw_size * 0.5, draw_size), false, Color(1, 1, 1, clampf(strength, 0.0, 1.0))
+		texture, Rect2(center - draw_size * 0.5, draw_size), false, Color(1, 1, 1, alpha)
 	)
 	return true
 
