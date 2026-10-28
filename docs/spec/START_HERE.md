@@ -33,7 +33,7 @@
 
 | Kho | Có gì | Số lượng | Trả lời câu hỏi |
 |---|---|---|---|
-| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **71** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
+| `docs/apk-analysis/` | Báo cáo bóc APK + bảng CSV | **266** `.md` · **107** `.csv` · **83** ảnh chụp (35 dùng được để đo) | "Con số này ở đâu ra?" |
 | `datas/` | JSON/CSV bóc trực tiếp | **197** file · 53 MB | wave, UI (**797** màn / **150.131** node), HP, boss, tàu, item, map, audio, text |
 | `reverse-engineering/raw/typetrees/` | Typetree từng class | **142** file | "Field nào tồn tại, kiểu gì, mặc định bao nhiêu?" |
 | `reverse-engineering/raw/il2cpp-consts/` | **Asm thật** của từng method | **139** file · **142.136** dòng | "Game *làm* gì, không chỉ *khai báo* gì" |
