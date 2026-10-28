@@ -152,7 +152,6 @@ func _drive_capture(delta: float) -> void:
 		player.global_position.y = lerpf(bounds.end.y, bounds.position.y + 1.2, 0.5 + 0.35 * sin(_capture_time * 0.9))
 	elif capture_stage == "boss":
 		player.global_position.x = sin(_capture_time * 0.8) * 1.8
-	delta = delta
 
 
 func _update_shake(delta: float) -> void:

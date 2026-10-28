@@ -546,7 +546,12 @@ func _test_art_slot_contract() -> void:
 		check_eq(pivot.size(), 2, "%s declares a pivot" % slot_id)
 		if pivot.size() == 2:
 			check_float(float(pivot[0]), 0.5, "%s pivot x is centred" % slot_id)
-			check_float(float(pivot[1]), 0.5, "%s pivot y is centred" % slot_id)
+			# Body-ish layers rotate and scale around their centre; the two gun
+			# parts hang from their mount instead, which the layer test pins.
+			if slot_id in MOUNT_PIVOT_SLOTS:
+				check_float(float(pivot[1]), 0.22, "%s pivot sits on its mount" % slot_id)
+			else:
+				check_float(float(pivot[1]), 0.5, "%s pivot y is centred" % slot_id)
 		var display: Dictionary = entry.get("display", {})
 		check(not display.is_empty(), "%s declares how it is displayed" % slot_id)
 	check_eq(
@@ -627,6 +632,14 @@ func _test_art_library_drop_in() -> void:
 	_clear_dir(ART_TEST_ROOT)
 
 
+const MOUNT_PIVOT_SLOTS: Array[String] = ["Boss-37001-GUN-L", "Boss-37001-GUN-R"]
+
+
+func _canvas_of(library: ArtLibrary, slot_id: String) -> Array:
+	var canvas: Dictionary = library.slot(slot_id).get("canvas", {})
+	return [int(canvas.get("width", 0)), int(canvas.get("height", 0))]
+
+
 func _test_art_layer_slots() -> void:
 	var library: ArtLibrary = ArtLibraryScript.new()
 	check(library.contract_ready(), "layer test library loads")
@@ -658,9 +671,9 @@ func _test_art_layer_slots() -> void:
 	check_eq(library.slot("Boss-37001-GUN-L").get("layer_role", ""), "gun_left", "left gun role")
 	check_eq(library.slot("Boss-37001-GUN-R").get("layer_role", ""), "gun_right", "right gun role")
 	check_eq(library.slot("Boss-37001-CORE").get("layer_role", ""), "core", "core role")
-	check_eq(library.slot("Boss-37001-GUN-L").get("canvas", {}), {"width": 192, "height": 192}, "gun canvas")
-	check_eq(library.slot("Boss-37001-CORE").get("canvas", {}), {"width": 256, "height": 256}, "core canvas")
-	check_eq(library.slot("Boss-37001-BODY").get("canvas", {}), {"width": 512, "height": 512}, "body canvas")
+	check_eq(_canvas_of(library, "Boss-37001-GUN-L"), [192, 192], "gun canvas")
+	check_eq(_canvas_of(library, "Boss-37001-CORE"), [256, 256], "core canvas")
+	check_eq(_canvas_of(library, "Boss-37001-BODY"), [512, 512], "body canvas")
 	check_float(library.pivot_of("Boss-37001-GUN-L").x, 0.5, "left gun pivot x")
 	check_float(library.pivot_of("Boss-37001-GUN-L").y, 0.22, "left gun mount pivot y")
 	check_float(library.pivot_of("Boss-37001-GUN-R").y, 0.22, "right gun mount pivot y")

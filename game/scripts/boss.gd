@@ -141,8 +141,7 @@ func _seconds_until_next_shot() -> float:
 func _current_core_glow() -> float:
 	if _dying:
 		return 0.0
-	var telegraph := MotionTuning.telegraph_strength(_seconds_until_next_shot())
-	return MotionTuning.core_glow(maxf(telegraph, 0.15))
+	return MotionTuning.core_glow(_seconds_until_next_shot())
 
 
 func _fire() -> void:

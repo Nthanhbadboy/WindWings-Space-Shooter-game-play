@@ -69,7 +69,8 @@ static func shake_offset(elapsed: float, amplitude := SHAKE_AMPLITUDE) -> Vector
 		return Vector2.ZERO
 	var decay := 1.0 - (elapsed / duration)
 	var phase := elapsed * 62.0
-	return Vector2(sin(phase) * amplitude, cos(phase * 1.37) * amplitude * 0.7) * decay
+	# Both axes start at zero so the first shaken frame never jumps the camera.
+	return Vector2(sin(phase) * amplitude, sin(phase * 1.37) * amplitude * 0.7) * decay
 
 
 static func telegraph_strength(seconds_until_shot: float) -> float:
@@ -78,8 +79,9 @@ static func telegraph_strength(seconds_until_shot: float) -> float:
 	return 1.0 - (seconds_until_shot / BOSS_TELEGRAPH_SECONDS)
 
 
-static func core_glow(telegraph: float) -> float:
-	return lerpf(BOSS_CORE_MIN_GLOW, BOSS_CORE_MAX_GLOW, clampf(telegraph, 0.0, 1.0))
+static func core_glow(seconds_until_shot: float) -> float:
+	# Same time domain as telegraph_strength(): the core is brightest at the shot.
+	return lerpf(BOSS_CORE_MIN_GLOW, BOSS_CORE_MAX_GLOW, telegraph_strength(seconds_until_shot))
 
 
 static func bank_angle(velocity_x: float) -> float:
