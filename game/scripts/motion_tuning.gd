@@ -43,10 +43,13 @@ const ENGINE_UPWARD_GAIN := 0.35
 # flame texture must be scaled to ~0.05 to read as a sub-unit plume.
 const ENGINE_PARTICLE_SCALE_MIN := 0.03
 const ENGINE_PARTICLE_SCALE_MAX := 0.07
-const HULL_SPARK_SCALE_MIN := 0.02
-const HULL_SPARK_SCALE_MAX := 0.05
-const BOSS_AURA_SCALE_MIN := 0.06
-const BOSS_AURA_SCALE_MAX := 0.14
+# 16 px flame texture x these scales = 0.48-1.12 world units of plume.
+const HULL_SPARK_SCALE_MIN := 0.008
+const HULL_SPARK_SCALE_MAX := 0.02
+# 12 px ember texture x these scales = 0.07-0.17 world units per ember. The
+# earlier 0.06-0.14 gave every single ember 1.7 units, i.e. an orange sheet.
+const BOSS_AURA_SCALE_MIN := 0.006
+const BOSS_AURA_SCALE_MAX := 0.014
 
 # --- boss (INFERRED NEW_DESIGN, rhythm from BOSS_ANIM_TIMELINE 0.17 s) --------
 const BOSS_DESCENT_SECONDS := 2.4

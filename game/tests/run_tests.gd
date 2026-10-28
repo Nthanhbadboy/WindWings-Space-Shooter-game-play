@@ -834,9 +834,11 @@ func _test_motion_tuning() -> void:
 			and MotionTuning.ENGINE_PARTICLE_SCALE_MIN < MotionTuning.ENGINE_PARTICLE_SCALE_MAX,
 		"the engine plume scale range is ordered"
 	)
+	# Per-ember size, not the whole cloud: 12 px embers must stay well under a
+	# quarter unit each, otherwise they merge into a wash over the hull.
 	check(
-		MotionTuning.BOSS_AURA_SCALE_MAX * 12.0 < 2.0,
-		"the boss aura stays under 2 world units"
+		MotionTuning.BOSS_AURA_SCALE_MAX * 12.0 < 0.25,
+		"a boss aura ember stays under a quarter unit"
 	)
 	# The variant C telegraph must not swallow the 2.4-unit boss hull.
 	check(
@@ -848,8 +850,8 @@ func _test_motion_tuning() -> void:
 		"the telegraph ring grows toward the shot"
 	)
 	check(
-		MotionTuning.HULL_SPARK_SCALE_MAX * 16.0 < 1.0,
-		"the whole-image hull sparkle stays under a unit"
+		MotionTuning.HULL_SPARK_SCALE_MAX * 16.0 < 0.4,
+		"a whole-image hull sparkle stays under half a unit"
 	)
 
 	# Capture sweep stays inside a sane range so the QA frames show a real
