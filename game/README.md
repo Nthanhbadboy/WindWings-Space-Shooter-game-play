@@ -1,6 +1,63 @@
 # WindWings Godot port
 
-A Godot 4.7.2-targeted portrait 2D vertical-shooter project. The project feature tag is pinned to 4.7.2; engine import and launch remain `RUNTIME_UNVERIFIED`. Open `game/project.godot` in the pinned editor and run the configured main scene (`scenes/main.tscn`). No Android/Windows SDK, store plugin, original APK asset, copied sprite, font, audio, or decompiled executable is included. Ships, enemies, projectiles, pickups, and background are drawn from original vector primitives in GDScript.
+A Godot 4.7.2-targeted portrait 2D vertical-shooter project. The project feature tag is pinned to 4.7.2; engine import and launch remain `RUNTIME_UNVERIFIED` in this repository's sandbox. Open `game/project.godot` in the pinned editor and run the configured main scene (`scenes/menu.tscn`). No Android/Windows SDK, store plugin, original APK asset, copied sprite, font, audio, or decompiled executable is included. Ships, enemies, projectiles, pickups, bosses and background are drawn from original vector primitives in GDScript; the placeholder tones in `audio/` were synthesized for this repository.
+
+## M2 launch slice (this build)
+
+Flow: **main menu → ship select → five real campaign waves → boss → victory (stars + save) or game over → retry**, plus **pause** and **audio settings**. The M1–M4 screens (training target, coin ledger, store stubs) are kept in the project as files but are no longer wired into the menu; the slice is the playable path.
+
+### What the slice runs
+
+| Element | Source | Slice behaviour |
+|---|---|---|
+| Waves | `datas/waves.json`, five consecutive real waves `Wave_0016 … Wave_0020` | Whole spawner rows are copied in source order under a per-wave budget of 90 enemy entries; no row value is edited. 343 entries in total. |
+| Boss | `datas/waves.json` `Wave_7001` + `datas/boss_hp.json` + `datas/boss_anim_events.csv` | `Boss-37001`, HP 225,000, row `copies = 2` kept, shots at the 14 `Shoot` times of the `Attack2` clip (0.467 s … 6.6 s, 7.0 s loop). |
+| Enemy HP | `datas/enemy_hp_by_id.json` | Every prefab in the slice has a decoded HP row; the run refuses to start otherwise. |
+| Enemy movement | `reverse-engineering/scriptableobjects/Enemy_Movement.csv` | `listSpeeds[0]`/`isTurret`; runtime unit interpretation is not asserted. |
+| Enemy guns | `reverse-engineering/scriptableobjects/Gun_Attack.csv` | Decoded profile where the rows agree; otherwise a labelled `INFERRED_FALLBACK` profile built from the median of all 458 serialized rows (only 42 of 150 wave IDs have gun rows). |
+| Derived data | `game/tools/build_launch_slice_data.py` | Regenerates every `*_slice.json` file and pins the SHA-256 of each source table in `data/slice_provenance.json`. |
+
+### Numbers the slice obeys (`scripts/launch_rules.gd`, `tests/run_tests.gd`)
+
+- Playfield **20 × 25 units** (`border` w/x/y/z = 15 / −10 / 10 / −15). Source coordinates are y-up; gameplay nodes convert with `LaunchRules.source_to_world()`.
+- Collision radius **15 source units** for enemies and bullets (`Bullet_Linearly.border.w`). The slice renders the projectile collider at `15 × 0.01 = 0.15` world units — the conversion factor is a documented slice decision, because a literal 15-unit collider would span 75% of the playfield.
+- Spawner rate **median 1.0 s**, `y_spawn` **9.6** on the majority of rows. The slice keeps the real off-screen spawn heights (12.0, 15.0) instead of clamping them; those enemies fly in.
+- Player hull `2500 × (1 + 0.18 × TechStatPoints(0) + ability7)`; a fresh save has both inputs at 0, so the slice starts at 2,500.
+- `levelDelta = [1, 2, 3.6, 3.6]` scales **score only**. Enemy HP and enemy counts are never multiplied by mode; `LaunchRules.hp_multiplier()` returns 1.0 for every mode and the tests assert it.
+- Stars: tiers `[.20, .45, .80]` (mode 0) against the entries actually spawned; a clear records the best result per stage/mode and recomputes the saved total.
+
+### Controls and screen scaling (new design)
+
+- Drag with the mouse (or a touch) to steer; arrow keys also move the ship. Fire is automatic.
+- `P` / `Esc` pauses. Pause keeps music playing while SFX is silenced (`AudioListener.pause` analogue).
+- The design canvas is 720×1280 (9:16) with `stretch/aspect = keep`, so a 16:9 desktop window shows the portrait play area letterboxed inside pillar bars. This portrait-on-16:9 rule is a **new design decision**, not a reconstruction of the original device layout.
+
+### Save / load (`scripts/save_store.gd`, `data/save_contract.json`)
+
+Key names, types and defaults follow `docs/spec/MISSING_FOR_NEW_GAME.md` §2.3 and §2.3b: `StarCount` (sentinel −1), `StarStageMaster{stage}_{mode}`, `PlayerUsed{slot}`, `PLAYER_RANK{ship}` (default 2), `PLAYER_DEFAULT_SKIN{ship}` (−1), `TALENT_SELECTED` (−1), `PLAYER_DEVICE_{ship}_{slot}` (−1), `StageTarget`, `ZoneUnlocked`, `TUTORIAL`, trial keys and the audio keys. Repair rules that the contract documents are implemented and tested: `PlayerUsed ≤ 0` rewrites both slots, `PLAYER_RANK ≤ 1` is floored to 2, a negative `DroneUsed` becomes 0, `PlayerUnlocked` is true below ship 10003.
+
+Storage is a Godot `user://launch_slice_save.json` written through a temp file and rename. Atomicity, migration and cloud sync are **new design** — the source contract proves none of them. Getters are pure; the source getters' side effects (`StageTarget` +1, `TUTORIAL` → 6) are deliberately not reproduced.
+
+### Audio (`scripts/audio_mixer.gd`, `data/audio_defaults.json`)
+
+`datas/audio_rules.json` fixes `MUTE_AUDIO` (int, default 0, predicate `stored == 1`), `VolumeSound` (float, default ≈0.73) and `VolumeMusic` (float, default ≈0.3). The slice applies them to `SFX`/`Music` buses. Every clip is a synthesized placeholder tone; the mapping to source clip enum values is a naming convention only.
+
+### Tests
+
+```bash
+godot --headless --path game --script res://tests/run_tests.gd   # prints TESTS_OK or TESTS_FAILED
+godot --headless --path game --quit-after 120                    # menu smoke
+godot --headless --path game res://scenes/main.tscn --quit-after 900   # run scene smoke
+```
+
+The rule tests cover the spec numbers, the save contract, star tiers, the boss timeline, audio defaults, the ship→combat-index mapping and the data pins. CI (`.github/workflows/windows-export.yml`) runs them plus both smoke runs before it exports a Windows executable, and fails the job on `SCRIPT ERROR` output.
+
+### Evidence labels used in this build
+
+- `STATIC_CONFIRMED` — values decoded from the source tables listed above.
+- `INFERRED` — runtime joins and layout the source does not serialize: enemy x placement, multi-enemy row stacking, boss station/flight, turret descent, `INFERRED_FALLBACK` gun profile, contact damage, score values, the 40-projectile cap.
+- `NEW_DESIGN` — portrait-on-16:9 scaling, mouse+keyboard controls, save atomicity, placeholder tones and vector art.
+- `RUNTIME_UNVERIFIED` — no Windows run of this slice build was performed by this repository; a green CI export is not a runtime claim.
 
 ## Controls
 

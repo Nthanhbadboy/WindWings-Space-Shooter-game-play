@@ -16,7 +16,7 @@ var current_health := CONFIRMED_BASE_HP
 var maximum_health := CONFIRMED_BASE_HP
 var shot_damage := 0.0
 var fire_period_seconds := 0.24
-var movement_bounds := Rect2(-5.0, -8.5, 10.0, 17.0)
+var movement_bounds := Rect2(-4.8, -8.4, 9.6, 16.5)
 
 var _dragging := false
 var _move_target := Vector2.ZERO

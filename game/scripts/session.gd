@@ -23,6 +23,19 @@ var mode_index := 0
 var last_result: Dictionary = {}
 var startup_notes: Array = []
 
+const SFX_STREAMS := {
+	"shot": "res://audio/sfx_shot.wav",
+	"hit": "res://audio/sfx_hit.wav",
+	"destroy": "res://audio/sfx_destroy.wav",
+	"click": "res://audio/sfx_click.wav",
+}
+const MUSIC_STREAM := "res://audio/music_game.wav"
+const SFX_VOICES := 8
+
+var _sfx_players: Array = []
+var _music_player: AudioStreamPlayer
+var _sfx_cursor := 0
+
 
 func _ready() -> void:
 	store = SaveStoreScript.new()
@@ -37,9 +50,59 @@ func _ready() -> void:
 	mixer = AudioMixerScript.new()
 	if not mixer.load_default():
 		startup_notes.append("audio defaults failed")
+	_setup_audio_nodes()
 	var used_ship := store.player_used(0)
 	selected_ship = used_ship if roster.roster_ships().has(used_ship) else DEFAULT_SHIP
 	apply_audio(false)
+
+
+func _setup_audio_nodes() -> void:
+	for _index in range(SFX_VOICES):
+		var player := AudioStreamPlayer.new()
+		player.bus = "SFX"
+		add_child(player)
+		_sfx_players.append(player)
+	_music_player = AudioStreamPlayer.new()
+	_music_player.bus = "Music"
+	add_child(_music_player)
+	_music_player.finished.connect(_on_music_finished)
+
+
+func play_sfx(name: String) -> void:
+	if _sfx_players.is_empty() or not SFX_STREAMS.has(name):
+		return
+	var path: String = SFX_STREAMS[name]
+	if not ResourceLoader.exists(path):
+		return
+	var player: AudioStreamPlayer = _sfx_players[_sfx_cursor % _sfx_players.size()]
+	_sfx_cursor += 1
+	player.stream = load(path)
+	player.play()
+
+
+func start_music() -> void:
+	if _music_player == null or _music_player.playing:
+		return
+	if not ResourceLoader.exists(MUSIC_STREAM):
+		return
+	_music_player.stream = load(MUSIC_STREAM)
+	_music_player.play()
+
+
+func stop_music() -> void:
+	if _music_player != null:
+		_music_player.stop()
+
+
+func clear_boss_music() -> void:
+	# The slice has no separate boss track: the source boss_warning rule (PlayMusic
+	# enum 0 then 31) is a coroutine sequence that is out of slice scope.
+	pass
+
+
+func _on_music_finished() -> void:
+	if _music_player != null and _music_player.stream != null:
+		_music_player.play()
 
 
 func ship_damage() -> float:

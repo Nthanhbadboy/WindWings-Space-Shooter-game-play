@@ -27,6 +27,12 @@ func _ready() -> void:
 		collision_layer = 8
 		collision_mask = 1
 	area_entered.connect(_on_area_entered)
+	# STATIC_CONFIRMED 15-unit source collision radius, converted by LaunchRules.
+	var shape := CircleShape2D.new()
+	shape.radius = LaunchRules.collider_radius_world()
+	var collider := get_node_or_null("CollisionShape2D") as CollisionShape2D
+	if collider != null:
+		collider.shape = shape
 	_previous_position = global_position
 	queue_redraw()
 
@@ -37,7 +43,7 @@ func _physics_process(delta: float) -> void:
 	global_position += direction.normalized() * speed * delta
 	if faction == Faction.ENEMY:
 		_check_near_miss()
-	if _age >= lifetime_seconds or absf(global_position.x) > 20.0 or absf(global_position.y) > 30.0:
+	if _age >= lifetime_seconds or LaunchRules.is_outside_world_border(global_position):
 		queue_free()
 
 

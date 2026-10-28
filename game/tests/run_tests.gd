@@ -96,9 +96,24 @@ func _test_playfield_and_collision() -> void:
 	check(LaunchRulesScript.is_inside_playfield(Vector2(0.0, 9.6)), "spawn edge is inside the playfield")
 	check(not LaunchRulesScript.is_inside_playfield(Vector2(0.0, 10.4)), "above the top border is outside")
 	check(
-		LaunchRulesScript.is_outside_despawn_border(Vector2(16.0, 0.0)),
-		"x past the 15-unit border despawns"
+		LaunchRulesScript.is_outside_world_border(Vector2(16.0, 0.0)),
+		"world x past the 15-unit border despawns"
 	)
+	check(
+		not LaunchRulesScript.is_outside_world_border(Vector2(0.0, -15.0)),
+		"an enemy spawned at the documented y=15 height is not despawned instantly"
+	)
+	check(
+		LaunchRulesScript.is_outside_world_border(Vector2(0.0, 15.5)),
+		"an enemy below the -15 source border despawns"
+	)
+	check(
+		LaunchRulesScript.source_to_world(Vector2(0.0, 9.6)).is_equal_approx(Vector2(0.0, -9.6)),
+		"source y up maps to world y down"
+	)
+	check(LaunchRulesScript.is_spawn_offscreen(12.0), "y=12 is a documented off-screen spawn")
+	check(LaunchRulesScript.is_spawn_offscreen(15.0), "y=15 is a documented off-screen spawn")
+	check(not LaunchRulesScript.is_spawn_offscreen(9.6), "y=9.6 is the on-screen spawn edge")
 
 
 func _test_spawn_rate_and_edge() -> void:
@@ -124,11 +139,13 @@ func _test_camera_and_bounds() -> void:
 		12.0,
 		"tall viewport grows the ortho half height"
 	)
-	var bounds := LaunchRulesScript.player_bounds(9.6)
-	check(bounds.end.y <= LaunchRulesScript.PLAYFIELD_MAX_Y, "player cannot leave the playfield on top")
-	check(bounds.position.y >= LaunchRulesScript.PLAYFIELD_MIN_Y, "player cannot leave the playfield at the bottom")
-	check(bounds.position.x >= LaunchRulesScript.PLAYFIELD_MIN_X, "player stays inside x bounds")
-	check(bounds.end.x <= LaunchRulesScript.PLAYFIELD_MAX_X, "player stays inside x bounds (right)")
+	var bounds := LaunchRulesScript.player_bounds(9.6, 5.4)
+	check(bounds.position.y >= -9.6, "player stays inside the visible top")
+	check(bounds.end.y <= 9.6, "player stays inside the visible bottom")
+	check(bounds.position.x >= -10.0, "player stays inside the playfield on the left")
+	check(bounds.end.x <= 10.0, "player stays inside the playfield on the right")
+	check_float(bounds.position.x, -4.8, "player left bound follows the visible half width")
+	check_float(bounds.end.x, 4.8, "player right bound follows the visible half width")
 	var spawn_limit := LaunchRulesScript.enemy_spawn_x_limit(5.4)
 	check_float(spawn_limit, 4.65, "enemy spawn x limit follows the visible half width")
 
@@ -335,11 +352,18 @@ func _test_wave_catalog() -> void:
 	check_eq(total_check, catalog.total_entries, "per-wave entries add up")
 	var y_values := catalog.spawn_y_values()
 	check(y_values.has(9.6), "spawn rows use the documented 9.6 top edge")
+	var offscreen_rows := 0
 	for y_value: Variant in y_values:
 		check(
-			float(y_value) <= LaunchRulesScript.PLAYFIELD_MAX_Y + 0.0001,
-			"spawn y %s sits at or below the playfield top" % str(y_value)
+			LaunchRulesScript.is_spawn_y_documented(float(y_value)),
+			"spawn y %s is a documented spawn height (-0.25..15)" % str(y_value)
 		)
+		if LaunchRulesScript.is_spawn_offscreen(float(y_value)):
+			offscreen_rows += 1
+	check(
+		offscreen_rows > 0,
+		"the slice keeps the real off-screen spawn heights (12.0 / 15.0) instead of clamping them"
+	)
 	var prefabs := catalog.used_prefabs()
 	check(prefabs.size() >= 10, "slice uses a varied set of real prefabs")
 	for prefab: String in prefabs:

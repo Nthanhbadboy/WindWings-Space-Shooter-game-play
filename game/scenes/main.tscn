@@ -1,12 +1,10 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/background.gd" id="2_background"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
 [ext_resource type="Script" path="res://scripts/wave_director.gd" id="4_wave_director"]
 [ext_resource type="Script" path="res://scripts/hud.gd" id="5_hud"]
-[ext_resource type="Script" path="res://scripts/economy_panel.gd" id="6_economy"]
-[ext_resource type="Script" path="res://scripts/monetization_service.gd" id="7_monetization"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
@@ -21,13 +19,10 @@ position_smoothing_enabled = false
 script = ExtResource("2_background")
 
 [node name="Player" parent="World" instance=ExtResource("3_player")]
-position = Vector2(0, 8.2)
+position = Vector2(0, 7.6)
 
 [node name="WaveDirector" type="Node" parent="."]
 script = ExtResource("4_wave_director")
-
-[node name="MonetizationService" type="Node" parent="."]
-script = ExtResource("7_monetization")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -39,12 +34,3 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("5_hud")
-
-[node name="EconomyPanel" type="Control" parent="CanvasLayer"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("6_economy")

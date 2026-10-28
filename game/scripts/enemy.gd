@@ -18,6 +18,13 @@ var is_turret := false
 var formation_kind := "point"
 var formation_phase := 0.0
 var spawner_speed_hint := 0.0
+var contact_damage := 0.0
+
+# INFERRED NEW_DESIGN — a turret has no descent in the source rows, and rows can
+# spawn above the visible top (y_spawn 12/15), so a stationary enemy would never
+# be reachable. Turrets therefore drift down to this world y and hold there.
+const TURRET_HOLD_Y := -8.0
+const TURRET_DESCENT := 1.8
 
 var _target: Node2D
 var _gun_profile: Dictionary = {}
@@ -41,6 +48,7 @@ func configure(data: Dictionary) -> void:
 	formation_kind = str(data.get("formation_kind", "point"))
 	formation_phase = float(data.get("formation_phase", 0.0))
 	spawner_speed_hint = float(data.get("spawner_speed_hint", 0.0))
+	contact_damage = float(data.get("contact_damage", 0.0))
 	position = data.get("spawn_position", Vector2.ZERO)
 	_anchor_x = position.x
 	var target_value: Variant = data.get("target")
@@ -62,14 +70,17 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_age += delta
-	if not is_turret and movement_speed > 0.0:
+	if is_turret or movement_speed <= 0.0:
+		if position.y < TURRET_HOLD_Y:
+			position.y = minf(position.y + TURRET_DESCENT * delta, TURRET_HOLD_Y)
+	else:
 		if formation_kind == "path":
 			position.x = _anchor_x + sin(_age * 1.15 + formation_phase) * 0.62
 		elif formation_kind == "point_range":
 			position.x = _anchor_x + sin(_age * 0.72 + formation_phase) * 0.14
 		position.y += movement_speed * delta
 	_update_weapon(delta)
-	if position.y > 12.4 or absf(position.x) > 12.0:
+	if LaunchRules.is_outside_world_border(position):
 		escaped.emit(enemy_id)
 		queue_free()
 

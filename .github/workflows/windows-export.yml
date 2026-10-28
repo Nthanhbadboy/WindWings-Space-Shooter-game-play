@@ -139,6 +139,35 @@ jobs:
             exit 1
           fi
 
+          echo "Smoke-running the menu scene headless (120 frames)"
+          set +e
+          "$GODOT_BIN" --headless --path "$project" --quit-after 120 \
+            2>&1 | tee -a "$out/smoke.log"
+          menu_status=${PIPESTATUS[0]}
+          set -e
+          echo "Smoke-running the run scene headless (900 frames)"
+          set +e
+          "$GODOT_BIN" --headless --path "$project" res://scenes/main.tscn --quit-after 900 \
+            2>&1 | tee -a "$out/smoke.log"
+          run_status=${PIPESTATUS[0]}
+          set -e
+          if [ "$menu_status" -ne 0 ] || [ "$run_status" -ne 0 ]; then
+            echo "Headless smoke run failed (menu=$menu_status run=$run_status)." >&2
+            exit 1
+          fi
+          if grep -E 'SCRIPT ERROR:' "$out/smoke.log"; then
+            echo "Godot reported a script error during the smoke run." >&2
+            exit 1
+          fi
+          if ! grep -q 'SLICE_MENU_READY' "$out/smoke.log"; then
+            echo "The menu scene did not report SLICE_MENU_READY." >&2
+            exit 1
+          fi
+          if ! grep -q 'SLICE_RUN_START' "$out/smoke.log"; then
+            echo "The run scene did not report SLICE_RUN_START." >&2
+            exit 1
+          fi
+
           echo "Exporting Windows Desktop release with embedded PCK"
           "$GODOT_BIN" --headless --path "$project" --export-release \
             "Windows Desktop" "$out/WindWings.exe" 2>&1 | tee "$RUNNER_TEMP/godot-export.log"
@@ -206,6 +235,9 @@ jobs:
                   b"data/boss_slice.json",
                   b"data/save_contract.json",
                   b"data/player_start_stats.json",
+                  b"scenes/menu.tscn",
+                  b"scenes/main.tscn",
+                  b"scenes/boss.tscn",
                   b"tests/run_tests.gd",
               )
               for data_path in expected:
@@ -222,6 +254,7 @@ jobs:
           Target: Windows Desktop x86_64, embedded PCK
           Windows runtime: RUNTIME_UNVERIFIED for this slice build
           Headless rule tests: see tests.log (TESTS_OK required for this artifact)
+          Headless smoke run: see smoke.log (menu + 900 frames of the run scene)
           Resource editing: disabled; no icon or company identity provided
           Signing and MSIX: not performed (USER-ONLY)
           Scope: M2 launch slice - menu, ship select, 5 real waves, boss, results,
@@ -243,6 +276,7 @@ jobs:
             dist/export_presets.cfg
             dist/BUILD_INFO.txt
             dist/tests.log
+            dist/smoke.log
           if-no-files-found: error
           retention-days: 14
 

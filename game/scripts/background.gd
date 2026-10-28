@@ -1,6 +1,7 @@
 extends Node2D
 
 const FIELD_RECT := Rect2(-24.0, -28.0, 48.0, 56.0)
+const VIEW_RECT := Rect2(-5.4, -9.6, 10.8, 19.2)
 const STAR_COUNT := 96
 
 var _stars: Array[Vector3] = []
@@ -35,7 +36,7 @@ func _draw() -> void:
 	# Original procedural nebula bands: the palette and geometry are newly drawn.
 	draw_circle(Vector2(-3.8, -4.5), 5.0, Color(0.06, 0.14, 0.31, 0.12))
 	draw_circle(Vector2(4.2, 3.5), 4.0, Color(0.11, 0.08, 0.31, 0.10))
-	draw_rect(Rect2(-5.15, -11.0, 10.3, 22.0), Color(0.025, 0.046, 0.12, 0.24), true)
+	draw_rect(VIEW_RECT, Color(0.025, 0.046, 0.12, 0.24), true)
 
 	for index in _stars.size():
 		var star := _stars[index]
@@ -50,4 +51,4 @@ func _draw() -> void:
 			)
 
 	# The fine frame keeps attention on the ship without copying an original screen.
-	draw_rect(Rect2(-5.28, -10.95, 10.56, 21.9), Color(0.24, 0.71, 0.94, 0.2), false, 0.025)
+	draw_rect(VIEW_RECT, Color(0.24, 0.71, 0.94, 0.2), false, 0.025)
