@@ -62,6 +62,10 @@ const BOSS_DEATH_LAYER_STAGGER := 0.12
 const BOSS_DEATH_LAYER_FADE := 0.45
 const BOSS_WARNING_SECONDS := 1.4
 
+# Capture-only turret sweep amplitude, so the frame evidence covers the whole
+# rotation range instead of one aim angle (INFERRED, tooling only).
+const CAPTURE_TURRET_SWEEP_DEGREES := 45.0
+
 
 static func flash_alpha(elapsed: float) -> float:
 	if elapsed < 0.0 or elapsed >= FLASH_SECONDS:

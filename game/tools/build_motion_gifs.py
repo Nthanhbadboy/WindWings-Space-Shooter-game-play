@@ -21,7 +21,7 @@ except ImportError:  # pragma: no cover - CI installs Pillow
     print("Pillow is required: python3 -m pip install pillow", file=sys.stderr)
     raise
 
-MAX_WIDTH = 288
+MAX_WIDTH = 360
 SHEET_COLUMNS = 8
 
 

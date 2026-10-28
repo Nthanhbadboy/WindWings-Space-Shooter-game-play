@@ -10,6 +10,7 @@ extends Node
 ##   hangar : scenes/hangar.tscn for 3.0 s (float, shadow, glow, engine idle)
 ##   flight : scenes/main.tscn, ship glides and auto-fires for 2.5 s
 ##   boss   : scenes/main.tscn jumped to the boss, entrance + one Attack2 volley
+##   turret : the same boss with both turrets sweeping +-45 deg (art seam check)
 ##
 ## Every capture writes `<out>/<segment>/frame_0000.png` and a `frames.txt`
 ## manifest with the simulated time of each frame, so the report can state
@@ -24,6 +25,9 @@ const SEGMENTS := {
 	"hangar": {"seconds": 3.0, "stage": "hangar"},
 	"flight": {"seconds": 2.6, "stage": "flight"},
 	"boss": {"seconds": 7.6, "stage": "boss"},
+	# Art QA: both boss turrets sweep +-45 deg so the pod seam can be judged at
+	# every angle, which is what the delivered packages ask to be checked.
+	"turret": {"seconds": 3.4, "stage": "turret"},
 }
 
 var out_dir := "user://motion"

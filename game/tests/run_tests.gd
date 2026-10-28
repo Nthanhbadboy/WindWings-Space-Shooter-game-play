@@ -820,6 +820,14 @@ func _test_motion_tuning() -> void:
 		"the whole-image hull sparkle stays under a unit"
 	)
 
+	# Capture sweep stays inside a sane range so the QA frames show a real
+	# rotation without flipping the pods over.
+	check(
+		MotionTuning.CAPTURE_TURRET_SWEEP_DEGREES > 20.0
+			and MotionTuning.CAPTURE_TURRET_SWEEP_DEGREES <= 60.0,
+		"the capture turret sweep covers 20-60 degrees"
+	)
+
 	# Boss death chain: layers fade in order and the total is bounded.
 	check_float(MotionTuning.death_layer_alpha(0, 0.0), 1.0, "the first layer is opaque at t=0")
 	check(

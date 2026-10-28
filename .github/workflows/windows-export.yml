@@ -510,7 +510,7 @@ jobs:
           export LIBGL_ALWAYS_SOFTWARE=1
           xvfb-run -a -s "-screen 0 1280x1024x24" "$GODOT_BIN" --path "$project" \
             --rendering-driver opengl3 --audio-driver Dummy --fixed-fps 60 \
-            --resolution 288x512 res://tools/motion_capture.tscn \
+            --resolution 720x1280 res://tools/motion_capture.tscn \
             -- --out="$out/frames" --capture-fps=12
 
           if grep -E '(^|[[:space:]])SCRIPT ERROR:' "$out/motion.log"; then
@@ -528,8 +528,8 @@ jobs:
             --variant "$ANIM_VARIANT" --mode "$anim_mode" --art-source "$art_source_flag" \
             | tee -a "$out/motion.log"
           segments="$(grep -c '^MOTION_GIF' "$out/motion.log" || true)"
-          if [ "$segments" -lt 3 ]; then
-            echo "Expected 3 motion segments, captured $segments." >&2
+          if [ "$segments" -lt 4 ]; then
+            echo "Expected 4 motion segments, captured $segments." >&2
             exit 1
           fi
           ls -l "$gifs"

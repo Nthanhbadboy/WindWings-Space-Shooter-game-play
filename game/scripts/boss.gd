@@ -43,6 +43,9 @@ var _hit_flash_elapsed := 999.0
 var _gun_angles := [0.0, 0.0]
 var _bob := 0.0
 var _aura: GPUParticles2D
+## Capture only (tools/motion_capture.gd): sweep both turrets through +-45 deg so
+## the frame evidence shows the pod seam at every angle, not just the aim angle.
+var capture_turret_sweep := false
 
 
 func configure(data: Dictionary) -> void:
@@ -164,6 +167,10 @@ func _update_guns(delta: float) -> void:
 	# mounts stay at their rest pose instead of swinging independently.
 	if not _guns_track_target():
 		_gun_angles = [0.0, 0.0]
+		return
+	if capture_turret_sweep:
+		var sweep := deg_to_rad(MotionTuning.CAPTURE_TURRET_SWEEP_DEGREES) * sin(_elapsed * 1.6)
+		_gun_angles = [sweep, sweep]
 		return
 	if not is_instance_valid(_target):
 		return

@@ -101,8 +101,12 @@ func _ready() -> void:
 			boss_data.hp_max,
 		]
 	)
-	if capture_stage == "boss":
+	if capture_stage == "boss" or capture_stage == "turret":
 		_skip_to_boss_for_capture()
+		if capture_stage == "turret":
+			for child in world.get_children():
+				if child.is_in_group("bosses"):
+					child.set("capture_turret_sweep", true)
 	else:
 		director.start_stage_wave(0)
 
