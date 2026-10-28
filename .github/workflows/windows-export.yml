@@ -100,7 +100,9 @@ jobs:
               if digest != entry["sha256"]:
                   raise SystemExit(f"package file changed: {target}")
               checked += 1
-          if checked < 5:
+          # C is the flat package: two images, no layers. A/B ship five to seven.
+          minimum = 2 if root.name == "C" else 5
+          if checked < minimum:
               raise SystemExit(f"only {checked} package files verified for {root}")
           for required in ("ships/PLAYER-10001.png", "bosses/Boss-37001.png"):
               if not (root / required).exists():
