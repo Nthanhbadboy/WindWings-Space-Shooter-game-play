@@ -176,11 +176,18 @@ func status(slot_id: String) -> String:
 	return "present" if has_art(slot_id) else "fallback"
 
 
+func _resolve_all() -> void:
+	for slot_id: String in slot_order:
+		texture_for(slot_id)
+
+
 func present_ids() -> Array:
+	_resolve_all()
 	return _present.duplicate()
 
 
 func missing_ids() -> Array:
+	_resolve_all()
 	return _missing.duplicate()
 
 
@@ -262,6 +269,7 @@ func report_lines() -> Array:
 
 
 func summary_line() -> String:
+	_resolve_all()
 	var present_count := 0
 	for slot_id: String in slot_order:
 		if has_art(slot_id):
