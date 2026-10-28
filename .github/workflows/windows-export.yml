@@ -313,29 +313,44 @@ jobs:
             echo "The art report did not load variant folder art/${ANIM_VARIANT}." >&2
             exit 1
           fi
+          anim_mode="$(python3 -c 'import json,os;print(json.load(open(os.path.join(os.environ["GITHUB_WORKSPACE"],"game","data","animation_variant.json")))["mode"])')"
           if grep -q '^ANIM_VARIANT_PLACEHOLDER ' "$out/art_report.log"; then
             if [ -n "${ART_PACKAGE_COMMIT:-}" ]; then
               echo "The build was asked for art package $ART_PACKAGE_COMMIT but reports a placeholder." >&2
               exit 1
             fi
           else
-            # Real package: the ship, the boss and the rotating layer slots must
-            # come from res://art/<variant>, and the report must say which pivots
-            # the package owns. Enemy/FX slots may still fall back - that is
-            # reported, not hidden.
-            for slot in PLAYER-10001 Boss-37001 PLAYER-10001-GLOW Boss-37001-TURRET-L Boss-37001-TURRET-R Boss-37001-CORE; do
+            # Real package: the ship and the boss must come from res://art/<variant>
+            # and the report must name the package manifest. Layered builds (A/B)
+            # additionally have to load the rotating layers and their mounts from
+            # the manifest; the flat package (C) must NOT load any layer slot, or
+            # it would silently animate as a layered build.
+            for slot in PLAYER-10001 Boss-37001; do
               if ! grep -q "^ART_SLOT ${slot} present res://art/${ANIM_VARIANT}/" "$out/art_report.log"; then
                 echo "Slot ${slot} did not load from res://art/${ANIM_VARIANT}." >&2
                 exit 1
               fi
             done
-            if ! grep -q "^ART_PIVOT Boss-37001-TURRET-L manifest " "$out/art_report.log"; then
-              echo "The boss turret mount pivot did not come from the package manifest." >&2
-              exit 1
-            fi
             if ! grep -q "^ART_PACKAGE res://art/${ANIM_VARIANT}/manifest.json " "$out/art_report.log"; then
               echo "The art report did not name the package manifest." >&2
               exit 1
+            fi
+            if [ "$anim_mode" = "layered" ]; then
+              for slot in PLAYER-10001-GLOW Boss-37001-TURRET-L Boss-37001-TURRET-R Boss-37001-CORE; do
+                if ! grep -q "^ART_SLOT ${slot} present res://art/${ANIM_VARIANT}/" "$out/art_report.log"; then
+                  echo "Layer slot ${slot} did not load from res://art/${ANIM_VARIANT}." >&2
+                  exit 1
+                fi
+              done
+              if ! grep -q "^ART_PIVOT Boss-37001-TURRET-L manifest " "$out/art_report.log"; then
+                echo "The boss turret mount pivot did not come from the package manifest." >&2
+                exit 1
+              fi
+            else
+              if grep -qE "^ART_SLOT (PLAYER-10001-GLOW|Boss-37001-TURRET-L|Boss-37001-TURRET-R|Boss-37001-CORE) present " "$out/art_report.log"; then
+                echo "A whole-image build loaded a layer slot; variant C must stay flat." >&2
+                exit 1
+              fi
             fi
             present="$(grep -c '^ART_SLOT .* present ' "$out/art_report.log" || true)"
             fallback="$(grep -c '^ART_SLOT .* fallback ' "$out/art_report.log" || true)"
@@ -438,6 +453,8 @@ jobs:
           Art package commit: ${ART_PACKAGE_COMMIT:-none}
           $placeholder_line
           Art slot split: ${present:-0} present / ${fallback:-0} fallback (see art_report.log)
+          Art report summary: $(grep '^ART_SUMMARY' "$out/art_report.log" || echo "none")
+          Package manifest: $(grep '^ART_PACKAGE' "$out/art_report.log" || echo "none")
           Ancestor prototype commit (M1-M4 base): $SOURCE_COMMIT
           Workflow commit: $GITHUB_SHA
           GitHub run: $GITHUB_RUN_ID (attempt $GITHUB_RUN_ATTEMPT)
