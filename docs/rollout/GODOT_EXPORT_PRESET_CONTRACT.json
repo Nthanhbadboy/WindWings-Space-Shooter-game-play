@@ -1,0 +1,115 @@
+{
+ "schema": "godot-export-preset-contract/v1",
+ "provisional": true,
+ "purpose": "May ky thuat cho session Godot-coder va cho verifier doc lap: moi khoa preset phai dung gia tri duoi day, hoac co giai trinh bang van ban. Khong phai scaffold.",
+ "engine": {
+  "tag": "4.7.2-stable",
+  "commit": "ed1daf0bf001b61586d9930840f2f1394092c079",
+  "released": "2026-08-18"
+ },
+ "sources": {
+  "android": {"path": "platform/android/export/export_plugin.cpp", "sha256": "b00c8a24eeedff494441a9220270458c5d49261be78ae57a3473445c03aa07f8", "bytes": 177365},
+  "windows": {"path": "platform/windows/export/export_plugin.cpp", "sha256": "0305ee0406b90db7e4a66b8725f569e0294873f2c5a7907ca75442290432242c", "bytes": 45520},
+  "pc": {"path": "editor/export/editor_export_platform_pc.cpp", "sha256": "88bb623a4a6ce2d008d1398d207c00167ae199786be60ea5676f2325ca5886cd"},
+  "android_plugin_config": {"path": "platform/android/export/godot_plugin_config.cpp", "sha256": "89ef491d0079688f0bf30979f03a7a39f2b999ec580aefc88842caf18a4d6f94"},
+  "android_plugin_config_h": {"path": "platform/android/export/godot_plugin_config.h", "sha256": "7803ed8a673516faab702fdb377e1c68aa2d050a0c23d42c6f9876277e8c63ae"}
+ },
+ "labels": ["STATIC_CONFIRMED", "INFERRED", "UNKNOWN"],
+ "ref_vars": {
+  "version_code": "int duy nhat tu version.json, tang don dieu moi lan submit",
+  "version_name": "semver tu version.json",
+  "user_domain": "domain cua phap nhan user (USER-ONLY xac nhan truoc khi dien)"
+ },
+ "presets": [
+  {
+   "id": "Android AppGallery AAB",
+   "platform": "Android",
+   "export_format": "AAB",
+   "keys": {
+    "gradle_build/use_gradle_build": {"value": true, "label": "STATIC_CONFIRMED", "src": "android:2194"},
+    "gradle_build/export_format": {"value": 1, "enum": {"0": "Export APK", "1": "Export AAB"}, "label": "STATIC_CONFIRMED", "src": "android:2198"},
+    "gradle_build/min_sdk": {"value": "", "effect": "default 24", "label": "STATIC_CONFIRMED", "src": "android:2202,303"},
+    "gradle_build/target_sdk": {"value": "", "effect": "default 36", "label": "STATIC_CONFIRMED", "src": "android:2203,305"},
+    "gradle_build/compress_native_libraries": {"value": false, "label": "STATIC_CONFIRMED", "src": "android:2197"},
+    "architectures/arm64-v8a": {"value": true, "label": "STATIC_CONFIRMED", "src": "android:2223-2224"},
+    "architectures/armeabi-v7a": {"value": false, "label": "INFERRED", "note": "bat neu muon Fire tablet doi cu; quyet dinh san pham"},
+    "architectures/x86_64": {"value": false, "label": "STATIC_CONFIRMED", "src": "android:2224,706"},
+    "version/code": {"value": "$version_code", "label": "STATIC_CONFIRMED", "src": "android:2234", "constraint": "range 1,4096,1,or_greater => khong duoc 0"},
+    "version/name": {"value": "$version_name", "label": "STATIC_CONFIRMED", "src": "android:2235"},
+    "package/unique_name": {"value": "com.$user_domain.windwingsnew", "label": "STATIC_CONFIRMED", "src": "android:2237", "constraint": "phai khac com.Wind.wings.Space.Shooter cua ban goc"},
+    "package/name": {"value": "WindWings (ten moi)", "label": "STATIC_CONFIRMED", "src": "android:2238"},
+    "package/signed": {"value": true, "label": "STATIC_CONFIRMED", "src": "android:2239"},
+    "package/app_category": {"value": "Game", "label": "STATIC_CONFIRMED", "src": "android:2240"},
+    "keystore/release": {"value": "<duong dan ngoai repo>", "label": "STATIC_CONFIRMED", "src": "android:2230"},
+    "keystore/release_user": {"value": "<alias>", "label": "STATIC_CONFIRMED", "src": "android:2231"},
+    "keystore/release_password": {"value": "$secret:ANDROID_KEYSTORE_PASSWORD", "label": "STATIC_CONFIRMED", "src": "android:2232"},
+    "permissions/custom_permissions": {"value": [], "label": "STATIC_CONFIRMED", "src": "android:2279"},
+    "screen/immersive_mode": {"value": true, "label": "STATIC_CONFIRMED", "src": "android:2262"}
+   }
+  },
+  {
+   "id": "Android APK (AppGallery/Amazon)",
+   "platform": "Android",
+   "export_format": "APK",
+   "keys": {
+    "gradle_build/use_gradle_build": {"value": true, "label": "INFERRED", "note": "khong bat buoc cho APK, nhung giu mot duong build de tai lap"},
+    "gradle_build/export_format": {"value": 0, "label": "STATIC_CONFIRMED", "src": "android:2198"},
+    "gradle_build/min_sdk": {"value": "", "effect": "default 24", "label": "STATIC_CONFIRMED", "src": "android:2202"},
+    "gradle_build/target_sdk": {"value": "", "effect": "default 36", "label": "STATIC_CONFIRMED", "src": "android:2203"},
+    "architectures/arm64-v8a": {"value": true, "label": "STATIC_CONFIRMED", "src": "android:2223-2224"},
+    "architectures/armeabi-v7a": {"value": true, "label": "INFERRED", "note": "Fire tablet doi cu; neu tat thi ghi ly do"},
+    "architectures/x86_64": {"value": false, "label": "STATIC_CONFIRMED", "src": "android:2224"},
+    "version/code": {"value": "$version_code", "label": "STATIC_CONFIRMED", "src": "android:2234"},
+    "version/name": {"value": "$version_name", "label": "STATIC_CONFIRMED", "src": "android:2235"},
+    "package/unique_name": {"value": "com.$user_domain.windwingsnew", "label": "STATIC_CONFIRMED", "src": "android:2237"},
+    "package/signed": {"value": true, "label": "STATIC_CONFIRMED", "src": "android:2239"},
+    "keystore/release": {"value": "<duong dan ngoai repo>", "label": "STATIC_CONFIRMED", "src": "android:2230"},
+    "keystore/release_user": {"value": "<alias>", "label": "STATIC_CONFIRMED", "src": "android:2231"},
+    "keystore/release_password": {"value": "$secret:ANDROID_KEYSTORE_PASSWORD", "label": "STATIC_CONFIRMED", "src": "android:2232"}
+   }
+  },
+  {
+   "id": "Windows Desktop",
+   "platform": "Windows",
+   "target": "MS Store qua MSIX dong goi ngoai engine",
+   "keys": {
+    "binary_format/architecture": {"value": "x86_64", "enum": ["x86_64", "x86_32", "arm64"], "label": "STATIC_CONFIRMED", "src": "windows:462"},
+    "binary_format/embed_pck": {"value": true, "label": "STATIC_CONFIRMED", "src": "pc:65"},
+    "debug/export_console_wrapper": {"value": 0, "label": "STATIC_CONFIRMED", "src": "pc:63"},
+    "texture_format/s3tc_bptc": {"value": true, "label": "STATIC_CONFIRMED", "src": "pc:67"},
+    "codesign/enable": {"value": false, "label": "INFERRED", "note": "MS Partner Center ky MSIX; bat neu user chon duong EXE khong dong goi"},
+    "application/modify_resources": {"value": true, "label": "STATIC_CONFIRMED", "src": "windows:474"},
+    "application/icon": {"value": "<icon .ico do art cung>", "label": "STATIC_CONFIRMED", "src": "windows:475"},
+    "application/product_name": {"value": "WindWings (ten moi)", "label": "STATIC_CONFIRMED", "src": "windows:481"},
+    "application/company_name": {"value": "<phap nhan user>", "label": "STATIC_CONFIRMED", "src": "windows:480"},
+    "application/file_version": {"value": "$version_name chuan hoa a.b.c.d", "label": "STATIC_CONFIRMED", "src": "windows:478"},
+    "application/product_version": {"value": "$version_name chuan hoa a.b.c.d", "label": "STATIC_CONFIRMED", "src": "windows:479"}
+   }
+  }
+ ],
+ "key_patterns": [
+  {"pattern": "plugins/<ten plugin>", "type": "bool", "label": "INFERRED", "src": "android:2208-2211", "note": "ten lay tu [config] name trong file .gdap; literal prefix 'plugins/' can duoc xac nhan tren export_presets.cfg that (check V2)"},
+  {"pattern": "permissions/<ten quyen viet thuong>", "type": "bool", "label": "INFERRED", "src": "android:2283", "note": "sinh tu danh sach quyen, ten lowercase"}
+ ],
+ "plugin_system": {
+  "dir": "res://android/plugins",
+  "extension": ".gdap",
+  "format": "ConfigFile (INI): [config] name, binary_type (local|remote), binary; [dependencies] local/remote/custom_maven_repos",
+  "label": "STATIC_CONFIRMED",
+  "src": "godot_plugin_config.h:54-61; android_export_plugin.cpp:737-760"
+ },
+ "cross_checks": [
+  {"id": "C1", "rule": "export_format=AAB ma gradle_build/use_gradle_build=false => exporter bao loi", "src": "android:2116-2117", "label": "STATIC_CONFIRMED"},
+  {"id": "C2", "rule": "min_sdk < 24 bi tu choi", "src": "android:2130-2131", "label": "STATIC_CONFIRMED"},
+  {"id": "C3", "rule": "Vulkan can min_sdk >= 29", "src": "android:304,2140", "label": "STATIC_CONFIRMED"},
+  {"id": "C4", "rule": "khong co tuy chon MSIX/APPX trong exporter Windows va PC", "src": "grep msix|appx = 0 hit tren 2 file", "label": "STATIC_CONFIRMED"},
+  {"id": "C5", "rule": "khong co khoa OBB/expansion trong exporter Android", "src": "grep obb = 0 hit", "label": "STATIC_CONFIRMED"},
+  {"id": "C6", "rule": "abi hop le gom armeabi-v7a, arm64-v8a, x86_64", "src": "android:703-706", "label": "STATIC_CONFIRMED"}
+ ],
+ "unknowns": [
+  {"id": "U1", "question": "target API toi thieu hien hanh cua AppGallery va Amazon", "label": "UNKNOWN"},
+  {"id": "U2", "question": "Amazon con nhan AAB cho Fire tablet va nguong 2,5 GB con hieu luc", "label": "UNKNOWN"},
+  {"id": "U3", "question": "MS Store: chon MSIX dong goi hay EXE khong dong goi/PWA", "label": "UNKNOWN"},
+  {"id": "U4", "question": "Spine runtime cho Godot: plugin ben thu ba (giay phep/phien ban)", "label": "UNKNOWN"}
+ ]
+}

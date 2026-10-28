@@ -1,0 +1,433 @@
+{
+  "schema": "a5-d5-static-array-and-serialized-coverage-v1",
+  "status": "PARTIAL_STATIC_CLASS_TO_ARRAY_JOIN_NOT_COMPONENT_OR_LIFECYCLE_CLOSURE",
+  "evidence_scope": "STATIC_RECEIPTS_AND_SERIALIZED_CSV_ONLY",
+  "evidence_level": "B",
+  "runtime_or_dps_measured": false,
+  "inputs": {
+    "class_inventory": {
+      "path": "docs/apk-analysis/class-inventory.csv",
+      "sha256": "a4d22195934a765397dc8967b430ba038c9345a411e4561c2aff4c387ad79010",
+      "bytes": 13112
+    },
+    "player_static_arrays": {
+      "path": "datas/player_start_stats.json",
+      "sha256": "d336295ae74f7a2a77d043c3119ee5be493a6d04dbd5c57492f1d2bb20b9b566",
+      "bytes": 3331
+    },
+    "gp_datas_serialized_csv": {
+      "path": "reverse-engineering/scriptableobjects/GP_Datas.csv",
+      "sha256": "7fe242bda781d1e30b27c0a39518625b5282ed18073cca96da79d56d32d9bb43",
+      "bytes": 584
+    }
+  },
+  "class_to_array_join": {
+    "implementation_classes": 24,
+    "static_array_rows": 24,
+    "joined_rows": 24,
+    "index_rule": "Player_Attack_N → static array element N-1, under the existing cited 72/72 static CFG result.",
+    "static_array_source_status": "DECODED_INITIALIZEARRAY_HEX_TYPED_NOT_RUNTIME",
+    "array_fields": [
+      "PlayerCosts",
+      "StartMainCannonDamages",
+      "StartMainCannonRate",
+      "StartWingCannonDamages"
+    ],
+    "records": [
+      {
+        "implementation_class": "Player_Attack_1",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 0,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 0,
+          "StartMainCannonDamages": 4500.0,
+          "StartMainCannonRate": 4.8,
+          "StartWingCannonDamages": 218.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_2",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 1,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 0,
+          "StartMainCannonDamages": 220.0,
+          "StartMainCannonRate": 6.8,
+          "StartWingCannonDamages": 75.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_3",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 2,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 1050,
+          "StartMainCannonDamages": 2680.0,
+          "StartMainCannonRate": 4.8,
+          "StartWingCannonDamages": 186.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_4",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 3,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 3150,
+          "StartMainCannonDamages": 8000.0,
+          "StartMainCannonRate": 5.8,
+          "StartWingCannonDamages": 118.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_5",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 4,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": -1,
+          "StartMainCannonDamages": 710.0,
+          "StartMainCannonRate": 4.8,
+          "StartWingCannonDamages": 236.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_6",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 5,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 3850,
+          "StartMainCannonDamages": 1650.0,
+          "StartMainCannonRate": 4.8,
+          "StartWingCannonDamages": 309.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_7",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 6,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 4550,
+          "StartMainCannonDamages": 255.0,
+          "StartMainCannonRate": 5.0,
+          "StartWingCannonDamages": 365.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_8",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 7,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 2450,
+          "StartMainCannonDamages": 800.0,
+          "StartMainCannonRate": 4.8,
+          "StartWingCannonDamages": 99.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_9",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 8,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 2450,
+          "StartMainCannonDamages": 500.0,
+          "StartMainCannonRate": 4.8,
+          "StartWingCannonDamages": 165.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_10",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 9,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": -1,
+          "StartMainCannonDamages": 95.0,
+          "StartMainCannonRate": 4.8,
+          "StartWingCannonDamages": 725.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_11",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 10,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 3850,
+          "StartMainCannonDamages": 336.0,
+          "StartMainCannonRate": 4.8,
+          "StartWingCannonDamages": 230.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_12",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 11,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": -1,
+          "StartMainCannonDamages": 3000.0,
+          "StartMainCannonRate": 4.8,
+          "StartWingCannonDamages": 2800.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_13",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 12,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 3150,
+          "StartMainCannonDamages": 2350.0,
+          "StartMainCannonRate": 6.8,
+          "StartWingCannonDamages": 595.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_14",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 13,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 4550,
+          "StartMainCannonDamages": 400.0,
+          "StartMainCannonRate": 10.5,
+          "StartWingCannonDamages": 800.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_15",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 14,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 4550,
+          "StartMainCannonDamages": 515.0,
+          "StartMainCannonRate": 4.8,
+          "StartWingCannonDamages": 265.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_16",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 15,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": -1,
+          "StartMainCannonDamages": 3000.0,
+          "StartMainCannonRate": 10.5,
+          "StartWingCannonDamages": 2150.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_17",
+        "class_inventory_reported_count": 12,
+        "static_array_index": 16,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 4550,
+          "StartMainCannonDamages": 2689.0,
+          "StartMainCannonRate": 5.6,
+          "StartWingCannonDamages": 589.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_18",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 17,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 2450,
+          "StartMainCannonDamages": 1800.0,
+          "StartMainCannonRate": 4.8,
+          "StartWingCannonDamages": 345.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_19",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 18,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": -1,
+          "StartMainCannonDamages": 100.0,
+          "StartMainCannonRate": 12.0,
+          "StartWingCannonDamages": 250.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_20",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 19,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 4550,
+          "StartMainCannonDamages": 2250.0,
+          "StartMainCannonRate": 7.5,
+          "StartWingCannonDamages": 435.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_21",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 20,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": -1,
+          "StartMainCannonDamages": 100.0,
+          "StartMainCannonRate": 9.0,
+          "StartWingCannonDamages": 1650.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_22",
+        "class_inventory_reported_count": 5,
+        "static_array_index": 21,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": 4550,
+          "StartMainCannonDamages": 2800.0,
+          "StartMainCannonRate": 10.5,
+          "StartWingCannonDamages": 686.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_23",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 22,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": -1,
+          "StartMainCannonDamages": 110.0,
+          "StartMainCannonRate": 9.0,
+          "StartWingCannonDamages": 400.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      },
+      {
+        "implementation_class": "Player_Attack_24",
+        "class_inventory_reported_count": 4,
+        "static_array_index": 23,
+        "index_mapping_basis": "Existing published static CFG proof: DATA_SYNC.md §24.14 / report 82; 72/72 getter calls pass N-1.",
+        "index_mapping_warning": "Do not derive this index from a source_id or player ID; class source IDs and array indices are distinct concepts.",
+        "static_array_values": {
+          "PlayerCosts": -1,
+          "StartMainCannonDamages": 3300.0,
+          "StartMainCannonRate": 10.5,
+          "StartWingCannonDamages": 820.0
+        },
+        "serialized_component_owner": "NOT_BOUND"
+      }
+    ]
+  },
+  "serialized_component_boundary": {
+    "player_attack_class_exports_in_scriptableobject_csv": [],
+    "player_attack_class_exports_in_typetree": [],
+    "gp_datas_serialized_rows": 1,
+    "gp_datas_path_id": 6767,
+    "gp_datas_gameobject_path_id": 404,
+    "gp_datas_player_path_id": 2625,
+    "gp_datas_fields": [
+      "path_id",
+      "_gameobject",
+      "countAllEnemies",
+      "countEnemies",
+      "enemyLayer.m_Mask",
+      "isLockChange",
+      "isTransforming",
+      "isUsingSkill",
+      "listActiveEnemies",
+      "lockItemSuper",
+      "m_Enabled",
+      "m_GameObject.m_FileID",
+      "m_GameObject.m_PathID",
+      "m_Name",
+      "m_Script.m_FileID",
+      "m_Script.m_PathID",
+      "player.m_FileID",
+      "player.m_PathID",
+      "ship.m_FileID",
+      "ship.m_PathID",
+      "spawnCount",
+      "starCount",
+      "starGetCount",
+      "startDropCard",
+      "supplyCount",
+      "supplyGetCount"
+    ],
+    "extra_life_field_names_checked": [
+      "countReborn",
+      "rebornNow",
+      "maxCountReborn",
+      "listRebornUseItems"
+    ],
+    "extra_life_field_names_absent_from_gp_datas_export": [
+      "countReborn",
+      "rebornNow",
+      "maxCountReborn",
+      "listRebornUseItems"
+    ],
+    "player_component_owner_join": "NOT_BOUND",
+    "extra_life_serialized_rewire": "NOT_BOUND_FROM_AVAILABLE_SERIALIZED_EXPORTS",
+    "limitation": "The static class-to-array join is not a Unity component-owner join. The one GP_Datas row does not serialize the checked extra-life fields; no lifecycle or event rewiring is inferred from this absence."
+  },
+  "limitations": [
+    "This is a bounded class-suffix-to-static-array join, not a producer-to-prefab/component binding.",
+    "Static damage/rate values are not converted into shots, hits, DPS, TTK, or runtime parity.",
+    "Serialized component ownership for Player_Attack_N and extra-life rewiring remain NOT_BOUND.",
+    "The GP_Datas CSV is one exported row, not proof of global absence or runtime state.",
+    "No game method body, native/FDE artifact, emulator, runtime probe, or secret was read or used by this builder."
+  ]
+}

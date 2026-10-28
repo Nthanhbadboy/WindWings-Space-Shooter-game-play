@@ -1,0 +1,42 @@
+"""Provisional original native clip context materialization; not observed Animator state."""
+import argparse,gzip,hashlib,json,struct
+from pathlib import Path
+from tools.verify import packed115,cliptime116
+from tools.verify.context117_native import ContextFixture
+from tools.verify.interpolation114_native import bits,floatbits,f32
+ROOT=Path(__file__).resolve().parents[2];RAW=ROOT/'reverse-engineering/raw/context117/probe.json.gz';OUT=ROOT/'datas/l3_ef6b75ef117_native_clip_context.json.gz'
+def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def load_raw():return json.load(gzip.open(RAW))
+def ceil_f32(value):
+    rounded=f32(value)
+    if bits(rounded)!=0x7f7fffff and value>rounded:
+        return floatbits(1 if rounded==0 else bits(rounded)+(1 if rounded>0 else -1))
+    return rounded
+
+def context_reference(current,previous,start=0,stop=1,direction=1,offset=0,quantization=-1,loop=True,node_flag=0,parameter_flag=0,secondary_flag=0):
+    duration=f32(f32(stop)-f32(start));a=ceil_f32(current/duration) if duration else 0.;b=ceil_f32(previous/duration) if duration else 0.
+    return dict(current_bits=bits(a),previous_bits=bits(b),direction_bits=bits(f32(direction)),offset_bits=bits(f32(offset)),quantization_bits=bits(f32(quantization)),node_flag=node_flag,parameter_flag=parameter_flag,secondary_flag=secondary_flag)
+
+def cases():
+    return [dict(current=.7,previous=.1),dict(current=-.7,previous=-.1),dict(current=1/3,previous=2/3),dict(current=1e-50,previous=-1e-50),dict(current=2,previous=-3,start=1,stop=1),dict(current=1,previous=-1,stop=2),dict(current=.5,previous=.4,start=2,stop=4),dict(current=.7,previous=.6,stop=3),dict(current=-0.,previous=0.),dict(current=.7,previous=.1,direction=-0.,offset=.25,quantization=2,node_flag=7,parameter_flag=11,secondary_flag=13),dict(current=.7,previous=.1,stop=-1),dict(current=.7,previous=.1,quantization=0)]
+
+def build():
+    a=packed115.load_raw();b=cliptime116.load_raw();raw=load_raw();synthetic=packed115.synthetic_stream();context_cases=[]
+    for args in cases():
+        f=ContextFixture(a,b,raw,packed=synthetic,continuous=1);start=args.get('start',0);stop=args.get('stop',1);f.configure_time(start=start,stop=stop);node={k:v for k,v in args.items() if k not in ('start','stop')};f.configure_node(**node);native=f.acquire();reference=context_reference(**args);assert native['context']==reference;assert native['external_calls']==[];context_cases.append(dict(input=args,native=native,reference=reference))
+    controls=[]
+    for direction,offset,quantization,loop in ((1,0,-1,True),(-1,0,-1,True),(-0.,0,-1,True),(1,.25,-1,True),(1,.25,-1,False),(1,0,2,True),(1,0,2,False),(1,0,-1,False)):
+        f=ContextFixture(a,b,raw,packed=synthetic,continuous=1);f.configure_node(current=.7,previous=.1,direction=direction,offset=offset,quantization=quantization,loop=loop);native=f.staged_sample();ctx=context_reference(.7,.1,direction=direction,offset=offset,quantization=quantization,loop=loop);tr=cliptime116.time_reference(floatbits(ctx['current_bits']),direction=direction,offset=offset,quantization_rate=quantization,loop=loop);ref=packed115.reference(synthetic,floatbits(tr['sample_time_bits']),1,0);assert native['context']==ctx and native['output_bits']==ref['output_bits'] and native['stored_phase_bits']==tr['phase_bits'];controls.append(dict(input=dict(direction=direction,offset=offset,quantization=quantization,loop=loop),native=native,time_reference=tr))
+    row,stream,data=packed115.source_stream();muscle=row['tree']['m_MuscleClip'];start=muscle['m_StartTime'];stop=muscle['m_StopTime'];duration=f32(stop-start);f=ContextFixture(a,b,raw,packed=data,continuous=stream['curveCount'],discrete=stream['discreteCurveCount']);f.configure_time(start=start,stop=stop,cycle_offset=muscle['m_CycleOffset']);source_runs=[]
+    for q in (0,.25,.7,1,1.25,-.25,-1,.7,.7,.99999999):
+        seconds=float(q)*duration;f.configure_node(current=seconds,previous=0,loop=muscle['m_LoopTime']);native=f.staged_sample();ctx=context_reference(seconds,0,start=start,stop=stop);phase=floatbits(ctx['current_bits']);tr=cliptime116.time_reference(phase,start=start,stop=stop,offset=muscle['m_CycleOffset'],quantization_rate=-1,loop=muscle['m_LoopTime']);ref=packed115.reference(data,floatbits(tr['sample_time_bits']),stream['curveCount'],stream['discreteCurveCount']);assert native['context']==ctx and native['output_bits']==ref['output_bits'] and native['sample_time_bits']==tr['sample_time_bits'] and native['stored_phase_bits']==tr['phase_bits'];source_runs.append(dict(input=dict(requested_normalized_double=q,node_current_seconds_double=seconds,node_previous_seconds_double=0),native=native,time_reference=tr,stream_reference=ref))
+    paths=[RAW,packed115.RAW,cliptime116.RAW,packed115.SOURCE,Path(__file__),ROOT/'tools/recovery/context117.py',ROOT/'tools/verify/context117_native.py',ROOT/'tools/verify/cliptime116_native.py',ROOT/'tools/verify/cliptime116.py',ROOT/'tools/verify/packed115.py',ROOT/'tools/verify/interpolation114_native.py',ROOT/'tools/verify/tag23_113_native.py',ROOT/'tests/test_context117.py']
+    sample_rows=[x['native'] for x in controls]+[x['native'] for x in source_runs]
+    return dict(schema=1,provisional=True,provenance='arena/ef6b75ef',inputs={str(p.relative_to(ROOT)):digest(p) for p in paths},libunity_sha256=raw['libunity_sha256'],xapk_sha256=raw['xapk_sha256'],recovery_tool_sha256=raw['tool_sha256'],ownership=dict(clip_constructor=0xb69d14,vptr_store=0xb69d4c,original_vtable=0x10c3fa8,duration_slot=0x10c4050,duration_function=0xb6bf94,duration_reads='prepared native AnimationClip+0x1e0 -> same muscle blob start+0x5f8/stop+0x5fc; original FSub, null gives0',node_clip_offset=0x1d0,node_blob_offset=0x118,context_writer=0x6d3744,rejected_candidate=dict(address=0xb6a838,reason='Original B.LT inside another function, not a duration getter/FDE entry; removed before final recovery/scientific execution')),layout=dict(node_current_double=0x60,node_previous_double=0x178,node_direction_f32=0x184,node_offset_f32=0x18c,node_quantization_f32=0x1fc,node_loop_byte=0x19d,context_current_f32=0,context_previous_f32=4,context_direction_f32=8,context_offset_f32=16,context_quantization_f32=24),context_cases=context_cases,synthetic_controls=controls,source=dict(identity=dict(serialized_file=row['serialized_file'],path_id=row['path_id']),raw_object_sha256=row['raw_object_sha256'],packed_data_sha256=hashlib.sha256(data).hexdigest(),start=start,stop=stop,serialized_cycle_offset=muscle['m_CycleOffset'],loop_fixture_from_serialized_bool=muscle['m_LoopTime'],runs=source_runs,scope='Original packed words/time fields; node double clocks/direction/offset/quantization/loop fields explicitly prepared. Native context writer and real virtual clip duration execute, but node existence/field writers/runtime scheduling not observed. Three manual original caller intervals, NOT complete parent execution.'),counts=dict(context_cases=len(context_cases),staged_source_samples=len(source_runs),staged_synthetic_samples=len(controls),source_channel_values=len(source_runs)*(stream['curveCount']+stream['discreteCurveCount']),context_case_native_instructions=sum(x['native']['run']['instruction_count'] for x in context_cases),staged_native_instructions=sum(x['instruction_count'] for x in sample_rows),sample_modff_calls=sum(sum(c['symbol']=='modff' for c in x['external_calls']) for x in sample_rows),context_external_substitutions=sum(len(x['native']['external_calls']) for x in context_cases)),scope='Complete native context writer and original AnimationClip vtable duration; staged original caller consumes its output into native clip-time/stream sampler. Zero external substitutions during context acquisition, explicit modff during time conversion; prepared node state and manual caller intervals, NOT observed Animator state/context acquisition from game scheduler, weighting/blending/normalization/application/bootstrap/readback/render or Android-libm parity.')
+
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');args=p.parse_args();r=build();blob=gzip.compress((json.dumps(r,sort_keys=True,separators=(',',':'),allow_nan=False)+'\n').encode(),mtime=0)
+    if args.check:assert OUT.read_bytes()==blob,'artifact differs'
+    else:OUT.write_bytes(blob)
+    print(json.dumps(dict(path=str(OUT.relative_to(ROOT)),bytes=len(blob),sha256=hashlib.sha256(blob).hexdigest(),counts=r['counts'])))
+if __name__=='__main__':main()

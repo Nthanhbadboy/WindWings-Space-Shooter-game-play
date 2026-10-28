@@ -1,0 +1,80 @@
+{
+ "status": "PROVISIONAL static control-flow interpretation; callback caller identity unresolved",
+ "prefab": "Boss-39002",
+ "class_name": "Boss1_Director",
+ "asm_source": "reverse-engineering/raw/il2cpp-consts/Boss1_Director.asm.txt",
+ "asm_sha256": "1bd71db64554fdfd16fddd0440f9b91b33fd31e77e77c9c49515e5cb9cfbea33",
+ "counter_update": "if countGunCanHit - 1 >= 0: countGunCanHit -= 1; not the phase gate in OnGunDie",
+ "turn_update": "ClearGuns(old_countTurn); countTurn = old_countTurn + 1 on normal return",
+ "transitions": [
+  {
+   "turn": 0,
+   "animation": "Chuyensangattack2",
+   "loop": false,
+   "on_complete": "Attack2 then loop Attack2"
+  },
+  {
+   "turn": 1,
+   "animation": "Chuyensangattack3",
+   "loop": false,
+   "on_complete": "Attack3 then loop Attack3"
+  },
+  {
+   "turn": "other",
+   "animation": "Dead",
+   "loop": false,
+   "on_complete": "Defeat"
+  }
+ ],
+ "evidence": [
+  {
+   "method": "OnGunDie",
+   "instruction": "0x150052c: ldr      w8, [x19, #0xc0]"
+  },
+  {
+   "method": "OnGunDie",
+   "instruction": "0x1500530: subs     w8, w8, #1"
+  },
+  {
+   "method": "OnGunDie",
+   "instruction": "0x1500534: b.lt     #0x150053c"
+  },
+  {
+   "method": "OnGunDie",
+   "instruction": "0x1500598: ldr      w8, [x19, #0xc4]"
+  },
+  {
+   "method": "OnGunDie",
+   "instruction": "0x15005a0: b.eq     #0x15005fc"
+  },
+  {
+   "method": "OnGunDie",
+   "instruction": "0x15008e0: bl       #0x1500d28"
+  },
+  {
+   "method": "OnGunDie",
+   "instruction": "0x15008ec: add      w8, w8, #1"
+  },
+  {
+   "method": "ClearGuns",
+   "instruction": "0x1500db0: ldr      x2, [x19, #0x58]"
+  },
+  {
+   "method": "ClearGuns",
+   "instruction": "0x1500dcc: ldr      x2, [x19, #0x60]"
+  },
+  {
+   "method": "ClearGuns",
+   "instruction": "0x1500de0: mov      w3, wzr"
+  },
+  {
+   "method": "ClearGuns",
+   "instruction": "0x1500e10: ldr      x2, [x19, #0x38]"
+  }
+ ],
+ "unresolved": [
+  "Exact death event/interface dispatch and delegate target must be verified",
+  "Do not apply to other bosses or assume HP percentage thresholds",
+  "Double/reentrant death callbacks not excluded by the inspected method"
+ ]
+}

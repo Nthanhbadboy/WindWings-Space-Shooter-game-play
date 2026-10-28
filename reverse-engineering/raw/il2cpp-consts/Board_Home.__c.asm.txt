@@ -1,0 +1,90 @@
+;;; cctor  private static void .cctor() { }
+    0x12aadb0: str      x30, [sp, #-0x20]!
+    0x12aadb4: stp      x20, x19, [sp, #0x10]
+    0x12aadb8: adrp     x19, #0x2ce1000
+    0x12aadbc: adrp     x20, #0x2ade000
+    0x12aadc0: ldrb     w8, [x19, #0x2a0]
+    0x12aadc4: ldr      x20, [x20, #0xf98]
+    0x12aadc8: tbnz     w8, #0, #0x12aade0
+    0x12aadcc: adrp     x0, #0x2ade000
+    0x12aadd0: ldr      x0, [x0, #0xf98]
+    0x12aadd4: bl       #0x110d028
+    0x12aadd8: mov      w8, #1
+    0x12aaddc: strb     w8, [x19, #0x2a0]
+    0x12aade0: ldr      x0, [x20]
+    0x12aade4: bl       #0x110d240
+    0x12aade8: mov      x1, xzr
+    0x12aadec: mov      x19, x0
+    0x12aadf0: bl       #0x2143330
+    0x12aadf4: ldr      x8, [x20]
+    0x12aadf8: ldr      x8, [x8, #0xb8]
+    0x12aadfc: str      x19, [x8]
+    0x12aae00: ldp      x20, x19, [sp, #0x10]
+    0x12aae04: ldr      x30, [sp], #0x20
+    0x12aae08: ret      
+
+;;; ctor  public void .ctor() { }
+    0x12aae0c: mov      x1, xzr
+    0x12aae10: b        #0x2143330
+
+;;; <OnEnable>b__135_1  internal void <OnEnable>b__135_1() { }
+    0x12aae14: ret      
+    0x12aae18: str      x30, [sp, #-0x20]!
+
+;;; <CheckAutoPopup>b__136_2  internal void <CheckAutoPopup>b__136_2() { }
+    0x12aae18: str      x30, [sp, #-0x20]!
+    0x12aae1c: stp      x20, x19, [sp, #0x10]
+    0x12aae20: adrp     x19, #0x2ce1000
+    0x12aae24: adrp     x20, #0x2adb000
+    0x12aae28: ldrb     w8, [x19, #0x2a1]
+    0x12aae2c: ldr      x20, [x20, #0xaf8]
+    0x12aae30: tbnz     w8, #0, #0x12aae48
+    0x12aae34: adrp     x0, #0x2adb000
+    0x12aae38: ldr      x0, [x0, #0xaf8]
+    0x12aae3c: bl       #0x110d028
+    0x12aae40: mov      w8, #1
+    0x12aae44: strb     w8, [x19, #0x2a1]
+    0x12aae48: ldr      x0, [x20]
+    0x12aae4c: ldr      w8, [x0, #0xe0]
+    0x12aae50: cbnz     w8, #0x12aae58
+    0x12aae54: bl       #0x110d12c
+    0x12aae58: ldp      x20, x19, [sp, #0x10]
+    0x12aae5c: fmov     d0, #-1.00000000
+    0x12aae60: mov      x0, xzr
+    0x12aae64: ldr      x30, [sp], #0x20
+    0x12aae68: b        #0x1326d9c
+
+;;; <CheckAutoPopup>b__136_8  internal void <CheckAutoPopup>b__136_8(bool purchased) { }
+    0x12aae6c: ret      
+    0x12aae70: stp      x30, x21, [sp, #-0x20]!
+
+;;; <UpdateTimers>b__170_0  internal bool <UpdateTimers>b__170_0() { }
+    0x12aae70: stp      x30, x21, [sp, #-0x20]!
+    0x12aae74: stp      x20, x19, [sp, #0x10]
+    0x12aae78: adrp     x20, #0x2ce1000
+    0x12aae7c: adrp     x21, #0x2add000
+    0x12aae80: adrp     x19, #0x2adb000
+    0x12aae84: ldrb     w8, [x20, #0x2a2]
+    0x12aae88: ldr      x21, [x21, #0x190]
+    0x12aae8c: ldr      x19, [x19, #0x220]
+    0x12aae90: tbnz     w8, #0, #0x12aaeb4
+    0x12aae94: adrp     x0, #0x2add000
+    0x12aae98: ldr      x0, [x0, #0x190]
+    0x12aae9c: bl       #0x110d028
+    0x12aaea0: adrp     x0, #0x2adb000
+    0x12aaea4: ldr      x0, [x0, #0x220]
+    0x12aaea8: bl       #0x110d028
+    0x12aaeac: mov      w8, #1
+    0x12aaeb0: strb     w8, [x20, #0x2a2]
+    0x12aaeb4: ldr      x8, [x21]
+    0x12aaeb8: ldr      x0, [x19]
+    0x12aaebc: ldr      x8, [x8, #0xb8]
+    0x12aaec0: ldr      w9, [x0, #0xe0]
+    0x12aaec4: ldr      x19, [x8]
+    0x12aaec8: cbnz     w9, #0x12aaed0
+    0x12aaecc: bl       #0x110d12c
+    0x12aaed0: mov      x0, x19
+    0x12aaed4: ldp      x20, x19, [sp, #0x10]
+    0x12aaed8: mov      x1, xzr
+    0x12aaedc: ldp      x30, x21, [sp], #0x20
+    0x12aaee0: b        #0x27849c8

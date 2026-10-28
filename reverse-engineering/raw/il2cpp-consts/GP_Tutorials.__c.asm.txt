@@ -1,0 +1,109 @@
+;;; cctor  private static void .cctor() { }
+    0x14fb710: str      x30, [sp, #-0x20]!
+    0x14fb714: stp      x20, x19, [sp, #0x10]
+    0x14fb718: adrp     x19, #0x2ce2000
+    0x14fb71c: adrp     x20, #0x2ae9000
+    0x14fb720: ldrb     w8, [x19, #0x392]
+    0x14fb724: ldr      x20, [x20, #0x160]
+    0x14fb728: tbnz     w8, #0, #0x14fb740
+    0x14fb72c: adrp     x0, #0x2ae9000
+    0x14fb730: ldr      x0, [x0, #0x160]
+    0x14fb734: bl       #0x110d028
+    0x14fb738: mov      w8, #1
+    0x14fb73c: strb     w8, [x19, #0x392]
+    0x14fb740: ldr      x0, [x20]
+    0x14fb744: bl       #0x110d240
+    0x14fb748: mov      x1, xzr
+    0x14fb74c: mov      x19, x0
+    0x14fb750: bl       #0x2143330
+    0x14fb754: ldr      x8, [x20]
+    0x14fb758: ldr      x8, [x8, #0xb8]
+    0x14fb75c: str      x19, [x8]
+    0x14fb760: ldp      x20, x19, [sp, #0x10]
+    0x14fb764: ldr      x30, [sp], #0x20
+    0x14fb768: ret      
+
+;;; ctor  public void .ctor() { }
+    0x14fb76c: mov      x1, xzr
+    0x14fb770: b        #0x2143330
+
+;;; <StartTutChangeGameSpeedBoss>b__26_0  internal void <StartTutChangeGameSpeedBoss>b__26_0() { }
+    0x14fb774: str      x30, [sp, #-0x20]!
+    0x14fb778: stp      x20, x19, [sp, #0x10]
+    0x14fb77c: adrp     x20, #0x2ce2000
+    0x14fb780: adrp     x19, #0x2adb000
+    0x14fb784: ldrb     w8, [x20, #0x393]
+    0x14fb788: ldr      x19, [x19, #0xd98]
+    0x14fb78c: tbnz     w8, #0, #0x14fb7a4
+    0x14fb790: adrp     x0, #0x2adb000
+    0x14fb794: ldr      x0, [x0, #0xd98]
+    0x14fb798: bl       #0x110d028
+    0x14fb79c: mov      w8, #1
+    0x14fb7a0: strb     w8, [x20, #0x393]
+    0x14fb7a4: ldr      x0, [x19]
+    0x14fb7a8: ldr      w8, [x0, #0xe0]
+    0x14fb7ac: cbnz     w8, #0x14fb7b8
+    0x14fb7b0: bl       #0x110d12c
+    0x14fb7b4: ldr      x0, [x19]
+    0x14fb7b8: ldr      x8, [x0, #0xb8]
+    0x14fb7bc: ldp      x20, x19, [sp, #0x10]
+    0x14fb7c0: strb     wzr, [x8]
+    0x14fb7c4: ldr      x30, [sp], #0x20
+    0x14fb7c8: ret      
+
+;;; <CheckRunTutorialNew>b__39_3  internal void <CheckRunTutorialNew>b__39_3() { }
+    0x14fb7cc: str      x30, [sp, #-0x20]!
+    0x14fb7d0: stp      x20, x19, [sp, #0x10]
+    0x14fb7d4: adrp     x20, #0x2ce2000
+    0x14fb7d8: adrp     x19, #0x2adb000
+    0x14fb7dc: ldrb     w8, [x20, #0x394]
+    0x14fb7e0: ldr      x19, [x19, #0xb50]
+    0x14fb7e4: tbnz     w8, #0, #0x14fb808
+    0x14fb7e8: adrp     x0, #0x2adb000
+    0x14fb7ec: ldr      x0, [x0, #0xb50]
+    0x14fb7f0: bl       #0x110d028
+    0x14fb7f4: adrp     x0, #0x2adc000
+    0x14fb7f8: ldr      x0, [x0, #0x558]
+    0x14fb7fc: bl       #0x110d028
+    0x14fb800: mov      w8, #1
+    0x14fb804: strb     w8, [x20, #0x394]
+    0x14fb808: ldr      x0, [x19]
+    0x14fb80c: adrp     x19, #0x2adc000
+    0x14fb810: ldr      w8, [x0, #0xe0]
+    0x14fb814: ldr      x19, [x19, #0x558]
+    0x14fb818: cbnz     w8, #0x14fb820
+    0x14fb81c: bl       #0x110d12c
+    0x14fb820: ldr      x0, [x19]
+    0x14fb824: ldp      x20, x19, [sp, #0x10]
+    0x14fb828: mov      w1, #1
+    0x14fb82c: mov      x2, xzr
+    0x14fb830: ldr      x30, [sp], #0x20
+    0x14fb834: b        #0x13f1a04
+
+;;; <TutTransform>b__42_0  internal bool <TutTransform>b__42_0() { }
+    0x14fb838: str      x30, [sp, #-0x20]!
+    0x14fb83c: stp      x20, x19, [sp, #0x10]
+    0x14fb840: adrp     x19, #0x2ce2000
+    0x14fb844: adrp     x20, #0x2adc000
+    0x14fb848: ldrb     w8, [x19, #0x395]
+    0x14fb84c: ldr      x20, [x20, #0xdd0]
+    0x14fb850: tbnz     w8, #0, #0x14fb868
+    0x14fb854: adrp     x0, #0x2adc000
+    0x14fb858: ldr      x0, [x0, #0xdd0]
+    0x14fb85c: bl       #0x110d028
+    0x14fb860: mov      w8, #1
+    0x14fb864: strb     w8, [x19, #0x395]
+    0x14fb868: ldr      x0, [x20]
+    0x14fb86c: ldr      w8, [x0, #0xe0]
+    0x14fb870: cbnz     w8, #0x14fb878
+    0x14fb874: bl       #0x110d12c
+    0x14fb878: mov      x0, xzr
+    0x14fb87c: bl       #0x14c78cc
+    0x14fb880: cbz      x0, #0x14fb89c
+    0x14fb884: ldrb     w8, [x0, #0x64]
+    0x14fb888: ldp      x20, x19, [sp, #0x10]
+    0x14fb88c: cmp      w8, #0
+    0x14fb890: cset     w0, eq
+    0x14fb894: ldr      x30, [sp], #0x20
+    0x14fb898: ret      
+    0x14fb89c: bl       #0x110d250
