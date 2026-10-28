@@ -19,6 +19,7 @@ extends Node
 const AnimationVariantScript = preload("res://scripts/animation_variant.gd")
 
 const HANGAR_SCENE := preload("res://scenes/hangar.tscn")
+const TURRET_QA_SCENE := preload("res://tools/turret_qa.tscn")
 const MAIN_SCENE := preload("res://scenes/main.tscn")
 
 const SEGMENTS := {
@@ -72,9 +73,7 @@ func _capture_segment(segment: String) -> int:
 	add_child(_current)
 	await get_tree().process_frame
 	await get_tree().process_frame
-	if config.get("stage", "") == "turret" and _current.has_method("capture_focus_boss"):
-		# Art QA view: no HUD, camera on the boss so the pod seam is readable.
-		_current.call("capture_focus_boss", 3.0)
+
 
 	var interval := 1.0 / maxf(capture_fps, 1.0)
 	var elapsed := 0.0
@@ -118,11 +117,14 @@ func _build_stage(stage: String, segment: String) -> Node:
 	if stage == "hangar":
 		var hangar := HANGAR_SCENE.instantiate()
 		return hangar
+	if stage == "turret":
+		# Dedicated art-QA stage: one boss, no HUD, fixed close camera.
+		var qa := TURRET_QA_SCENE.instantiate()
+		return qa
 	var main := MAIN_SCENE.instantiate()
-	# Pass the stage through unchanged: main.gd treats "turret" as "boss plus a
-	# turret sweep", so collapsing it to "flight" here would silently render the
-	# wrong scene (which is exactly what the first attempt did).
-	main.set("capture_stage", stage)
+	# Only "boss" is a real capture stage of the run scene; anything else here is
+	# the ordinary flight render.
+	main.set("capture_stage", "boss" if stage == "boss" else "flight")
 	if stage == "flight":
 		main.set("_autoplay", false)
 	return main

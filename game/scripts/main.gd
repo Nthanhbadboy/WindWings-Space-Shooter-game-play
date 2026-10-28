@@ -101,12 +101,8 @@ func _ready() -> void:
 			boss_data.hp_max,
 		]
 	)
-	if capture_stage == "boss" or capture_stage == "turret":
+	if capture_stage == "boss":
 		_skip_to_boss_for_capture()
-		if capture_stage == "turret":
-			for child in world.get_children():
-				if child.is_in_group("bosses"):
-					child.set("capture_turret_sweep", true)
 	else:
 		director.start_stage_wave(0)
 
@@ -140,15 +136,6 @@ func _skip_to_boss_for_capture() -> void:
 		hud.set_wave("BOSS  ·  %s" % boss_data.prefab)
 
 
-## Capture only: hide the HUD and zoom the camera onto the first boss, so the
-## art QA frames show the hull and the turret pods without banners on top.
-func capture_focus_boss(zoom: float) -> void:
-	var layer := get_node_or_null("CanvasLayer")
-	if layer is CanvasLayer:
-		(layer as CanvasLayer).visible = false
-	camera.zoom = Vector2(zoom, zoom)
-
-
 func _drive_capture(delta: float) -> void:
 	# Capture only: glide the ship left and right so the banking and engine
 	# animation are visible, and keep the hull full so the run never ends.
@@ -163,14 +150,6 @@ func _drive_capture(delta: float) -> void:
 		var span := bounds.size.x * 0.5
 		player.global_position.x = sin(_capture_time * 1.35) * span
 		player.global_position.y = lerpf(bounds.end.y, bounds.position.y + 1.2, 0.5 + 0.35 * sin(_capture_time * 0.9))
-	elif capture_stage == "turret":
-		# Art QA: follow the boss every frame (it descends), keep the ship under it.
-		for child in world.get_children():
-			if child.is_in_group("bosses") and child is Node2D:
-				camera.global_position = (child as Node2D).global_position + Vector2(0.0, 0.2)
-				break
-		player.global_position.x = camera.global_position.x
-		player.global_position.y = camera.global_position.y + 3.2
 	elif capture_stage == "boss":
 		# Capture only: line the ship up under the nearest boss so the volley hits
 		# and the frame sequence shows the flash, the shake and the core telegraph.
