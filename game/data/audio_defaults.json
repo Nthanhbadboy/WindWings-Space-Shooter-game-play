@@ -1,0 +1,45 @@
+{
+ "schema": "windwings.launch_slice.audio/1",
+ "evidence": "PROVISIONAL_STATIC_AUDIO_RULES_NOT_LISTENING_OR_RUNTIME",
+ "source": {
+  "path": "datas/audio_rules.json",
+  "sha256": "6ab012857264f6a20bc4a94d038c2ea1f98519d337e7470630d465c66c7b2389"
+ },
+ "keys": {
+  "mute": {
+   "key": "MUTE_AUDIO",
+   "type": "int32",
+   "default": 0,
+   "predicate": "stored == 1"
+  },
+  "sound_volume": {
+   "key": "VolumeSound",
+   "type": "float32",
+   "default": 0.73,
+   "predicate": "mute -> 0 else saved float"
+  },
+  "music_volume": {
+   "key": "VolumeMusic",
+   "type": "float32",
+   "default": 0.3,
+   "predicate": "mute -> 0 else saved float"
+  }
+ },
+ "pause": {
+  "id": "pause",
+  "evidence_method_ids": [
+   "AudioManager.set_Pause@0x15b5a5c"
+  ],
+  "behavior": "AudioListener.pause, separate from Time.timeScale"
+ },
+ "registry_ids_used_for_placeholder_names": {
+  "sfx_shot": 5,
+  "sfx_destroy": 7,
+  "ui_click": 2,
+  "music_game": 33
+ },
+ "design_decisions": [
+  "Original audio media is not shipped. Every clip is a self-generated placeholder tone; the mapping to source clip enum values is a naming convention only.",
+  "Mute forces both bus volumes to 0; music keeps playing while the game tree is paused, SFX does not (AudioListener.pause analogue)."
+ ]
+}

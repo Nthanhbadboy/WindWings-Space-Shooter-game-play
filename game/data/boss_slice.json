@@ -1,0 +1,121 @@
+{
+ "schema": "windwings.launch_slice.boss/1",
+ "evidence": "STATIC_CONFIRMED HP and animation events; movement/attack loop are INFERRED",
+ "source": {
+  "hp_path": "datas/boss_hp.json",
+  "hp_sha256": "0b2e065c6d0bdc12f6dad38f170f1ad57dcbee688744f761a1bf8e425577bdec",
+  "events_path": "datas/boss_anim_events.csv",
+  "events_sha256": "4ee93a35ed32ec70851ae07a98dda2d1398868c8311ac1a10cac857e97082a5c"
+ },
+ "prefab": "Boss-37001",
+ "hp_max": 225000.0,
+ "hp_values": [
+  225000.0
+ ],
+ "hp_instances": 2,
+ "clip": "Attack2",
+ "clip_loop_seconds": 7.0,
+ "shot_times": [
+  0.467,
+  0.933,
+  1.417,
+  1.9,
+  2.367,
+  2.867,
+  3.317,
+  3.85,
+  4.267,
+  4.767,
+  5.217,
+  5.683,
+  6.167,
+  6.6
+ ],
+ "events": [
+  {
+   "time": 0.467,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 0.933,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 1.417,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 1.9,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 2.367,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 2.867,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 3.317,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 3.85,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 4.267,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 4.767,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 5.217,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 5.683,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 6.167,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 6.6,
+   "function": "Shoot",
+   "data": ""
+  },
+  {
+   "time": 6.833,
+   "function": "EndShoot",
+   "data": ""
+  },
+  {
+   "time": 7.0,
+   "function": "CallAttack2",
+   "data": ""
+  }
+ ],
+ "design_decisions": [
+  "The boss fires at the Shoot event times of the Attack2 clip and loops the clip every clip_loop_seconds.",
+  "Boss flight path is not serialized; the slice descends to a new-design station and strafes sinusoidally.",
+  "Boss projectile damage/speed are INFERRED new-game values because Gun_Attack rows are keyed per gun child, not per boss root."
+ ]
+}

@@ -1,0 +1,1375 @@
+{
+ "schema": "windwings.launch_slice.waves/1",
+ "evidence": "STATIC_CONFIRMED rows; slice selection is INFERRED",
+ "source": {
+  "path": "datas/waves.json",
+  "sha256": "dde007618b7cbc83f0702298f7744609f8b25b2d7479ab15964b1fb6fa8abc73",
+  "count_waves": 282,
+  "count_spawners": 11089
+ },
+ "design_decisions": [
+  "Stage waves are five consecutive real campaign waves (Wave_0016..Wave_0020); no wave is invented.",
+  "Each stage wave admits whole spawner rows in source order while staying within 90 enemy entries; row values are copied verbatim. Excluded rows are counted per wave.",
+  "Rows with an empty enemy list or copies == 0 are excluded, matching the existing Wave_0000 reader.",
+  "Boss wave Wave_7001 keeps only the Boss-37001 row; its empty StartPoint row and EndPoint escort row are out of slice scope.",
+  "Spawner x placement is not serialized in the source; the running slice uses a new-design formation layout (see wave_director.gd)."
+ ],
+ "rate_statistics": {
+  "median_positive_rate": 1.0,
+  "min": 0.5,
+  "max": 1.0,
+  "y_spawn_values": [
+   0.0,
+   2.0,
+   4.0,
+   5.0,
+   6.0,
+   8.0,
+   9.6,
+   12.0,
+   15.0
+  ]
+ },
+ "stage_total_entries": 343,
+ "stages": [
+  {
+   "wave": "Wave_0016",
+   "source_spawner_rows": 4,
+   "included_rows": 3,
+   "excluded_rows": 1,
+   "entries": 5,
+   "rows": [
+    {
+     "spawner": "EndPoint",
+     "spawn_type": "boss",
+     "enemies": [
+      "CD-31002"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 0.0,
+     "y_spawn": 0.0,
+     "radius": 0.1,
+     "copies": 1
+    },
+    {
+     "spawner": "Point_CD3_1 (4)",
+     "spawn_type": "point",
+     "enemies": [
+      "GD-33004"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 0.0,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "EndPoint",
+     "spawn_type": "boss",
+     "enemies": [
+      "CD-31002"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 0.0,
+     "y_spawn": 5.0,
+     "radius": 0.1,
+     "copies": 2
+    }
+   ]
+  },
+  {
+   "wave": "Wave_0017",
+   "source_spawner_rows": 17,
+   "included_rows": 16,
+   "excluded_rows": 1,
+   "entries": 79,
+   "rows": [
+    {
+     "spawner": "1-CB09_Top (5)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point_H (1)",
+     "spawn_type": "point",
+     "enemies": [
+      "H-38001",
+      "H-38001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 5.2,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "EndPoint",
+     "spawn_type": "boss",
+     "enemies": [
+      "CD-31002"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 0.0,
+     "y_spawn": 0.0,
+     "radius": 0.1,
+     "copies": 1
+    },
+    {
+     "spawner": "4-CB09_Top (8)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009",
+      "CB-30009",
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "1-CD05",
+     "spawn_type": "point",
+     "enemies": [
+      "CD-31005"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 0.0,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "1-CB09_Top",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009",
+      "CB-30009",
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "1-CB09_Top (1)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009",
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point_H",
+     "spawn_type": "point",
+     "enemies": [
+      "H-38001",
+      "H-38001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 5.2,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point_H (2)",
+     "spawn_type": "point",
+     "enemies": [
+      "H-38001",
+      "H-38001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 5.2,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "4-CB09_Top (7)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009",
+      "CB-30009",
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "1-CB09_Top (3)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "1-CB09_Top (2)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "3-CB09_Top (4)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009",
+      "CB-30009",
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "EndPoint",
+     "spawn_type": "boss",
+     "enemies": [
+      "CD-31002"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 0.0,
+     "y_spawn": 5.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "6-CB09_Left",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "6-CB09_Right",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    }
+   ]
+  },
+  {
+   "wave": "Wave_0018",
+   "source_spawner_rows": 86,
+   "included_rows": 38,
+   "excluded_rows": 48,
+   "entries": 89,
+   "rows": [
+    {
+     "spawner": "Point 1 (9)",
+     "spawn_type": "point",
+     "enemies": [
+      "GD-33002"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 5.2,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (53)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (58)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (4)",
+     "spawn_type": "point",
+     "enemies": [
+      "CD-31005"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 5.2,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (70)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (2)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "XB-34001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 2.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Cham (66)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30023"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (23)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 8.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Cham (69)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30023"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (55)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "EndPoint",
+     "spawn_type": "boss",
+     "enemies": [
+      "CD-31002"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 0.0,
+     "y_spawn": 0.0,
+     "radius": 0.1,
+     "copies": 1
+    },
+    {
+     "spawner": "CB1 Nhanh (66)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (7)",
+     "spawn_type": "point",
+     "enemies": [
+      "CD-31005",
+      "CD-31005"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 5.2,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (62)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (71)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Cham (64)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30023"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (9)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 4.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (5)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "XB-34001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 2.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (49)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (7)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "XB-34001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 4.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (16)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 6.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (6)",
+     "spawn_type": "point",
+     "enemies": [
+      "CD-31004",
+      "CD-31004"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 5.2,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Cham (51)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30023"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (69)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (64)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Cham (67)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30023"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (20)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 8.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Cham (49)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30023"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (57)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Cham (52)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30023"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (37)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (12)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "XB-34001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 4.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point_CD3_1 (3)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (40)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (46)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (41)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Cham (55)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30023"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "CB1 Nhanh (50)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30024"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 1.5,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    }
+   ]
+  },
+  {
+   "wave": "Wave_0019",
+   "source_spawner_rows": 28,
+   "included_rows": 27,
+   "excluded_rows": 1,
+   "entries": 81,
+   "rows": [
+    {
+     "spawner": "Point 1 (12)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30002"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 4.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (10)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30002"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 4.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (22)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30002"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 8.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point_CD3_1 (3)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (23)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30002"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 8.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "EndPoint",
+     "spawn_type": "boss",
+     "enemies": [
+      "CD-31002"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 0.0,
+     "y_spawn": 0.0,
+     "radius": 0.1,
+     "copies": 1
+    },
+    {
+     "spawner": "Point 1 (6)",
+     "spawn_type": "point",
+     "enemies": [
+      "GD-33002"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 5.2,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (2)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "XB-34001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 2.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (5)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "XB-34001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 2.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (7)",
+     "spawn_type": "point",
+     "enemies": [
+      "CD-31005"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 5.2,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (15)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 6.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (9)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30002"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 4.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (16)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30002"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 6.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (13)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30002"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 6.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (24)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30002"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 8.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (14)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30002"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 6.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (7)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30002"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 4.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (5)",
+     "spawn_type": "point",
+     "enemies": [
+      "GD-33002"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 5.2,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (21)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30002"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 8.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (8)",
+     "spawn_type": "point",
+     "enemies": [
+      "CD-31005"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 5.2,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (17)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30002"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 6.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (18)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 6.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "EndPoint",
+     "spawn_type": "boss",
+     "enemies": [
+      "CD-31002"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 0.0,
+     "y_spawn": 5.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (4)",
+     "spawn_type": "point",
+     "enemies": [
+      "CD-31005"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 5.2,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (11)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "XB-34001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 4.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point_CD3_1 (2)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009",
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (8)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "XB-34001"
+     ],
+     "count": 0,
+     "rate": 0.0,
+     "speed": 2.0,
+     "y_spawn": 4.0,
+     "radius": 0.1,
+     "copies": 2
+    }
+   ]
+  },
+  {
+   "wave": "Wave_0020",
+   "source_spawner_rows": 20,
+   "included_rows": 8,
+   "excluded_rows": 12,
+   "entries": 89,
+   "rows": [
+    {
+     "spawner": "Path_CB3 (9)",
+     "spawn_type": "path",
+     "enemies": [
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Path_CB3 (13)",
+     "spawn_type": "path",
+     "enemies": [
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (2)",
+     "spawn_type": "point",
+     "enemies": [
+      "CD-31002",
+      "CD-31002",
+      "CD-31002",
+      "CD-31002"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 0.0,
+     "y_spawn": 15.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Path_CB3 (14)",
+     "spawn_type": "path",
+     "enemies": [
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Path_CB3 (12)",
+     "spawn_type": "path",
+     "enemies": [
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003",
+      "CB-30003"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "Point 1 (2)",
+     "spawn_type": "point",
+     "enemies": [
+      "CD-31005",
+      "CD-31005",
+      "CD-31005",
+      "CD-31005",
+      "CD-31005"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 0.0,
+     "y_spawn": 12.0,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "4-CB09_Top (10)",
+     "spawn_type": "point_range",
+     "enemies": [
+      "CB-30009",
+      "CB-30009",
+      "CB-30009"
+     ],
+     "count": 0,
+     "rate": 0.5,
+     "speed": 0.0,
+     "y_spawn": 9.6,
+     "radius": 0.1,
+     "copies": 2
+    },
+    {
+     "spawner": "EndPoint",
+     "spawn_type": "boss",
+     "enemies": [
+      "CD-31002"
+     ],
+     "count": 0,
+     "rate": 1.0,
+     "speed": 0.0,
+     "y_spawn": 0.0,
+     "radius": 0.1,
+     "copies": 1
+    }
+   ]
+  }
+ ],
+ "boss": {
+  "wave": "Wave_7001",
+  "prefab": "Boss-37001",
+  "rows": [
+   {
+    "spawner": "Boss_1",
+    "spawn_type": "point",
+    "enemies": [
+     "Boss-37001"
+    ],
+    "rate": 1.0,
+    "y_spawn": 0.0,
+    "copies": 2
+   }
+  ]
+ }
+}

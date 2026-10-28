@@ -1,0 +1,51 @@
+{
+ "schema": "windwings.launch_slice.save_contract/1",
+ "evidence": "STATIC_CONFIRMED keys/defaults/types; storage mechanic is NEW_DESIGN",
+ "source_doc": "docs/spec/MISSING_FOR_NEW_GAME.md §2.3 (opening persistence, 8 key families) and §2.3b (ship loadout, 15 key families)",
+ "source_audio": "datas/audio_rules.json rules: mute / sound_volume / music_volume",
+ "store": {
+  "source": "Unity.PlayerPrefs (typed wrapper) and persistentDataPath/Prefs — MISSING §2.3",
+  "slice": "user://launch_slice_save.json, temp file + rename",
+  "status_in_source": "PROVISIONAL_STATIC_PARTIAL_SAVE_CONTRACT_NOT_FULL_SCHEMA"
+ },
+ "keys": [
+  {"template": "TUTORIAL", "type": "int", "default": -1, "source": "§2.3"},
+  {"template": "TUT_TOUCH_SKILL", "type": "int", "default": 0, "source": "§2.3"},
+  {"template": "StageTarget", "type": "int", "default": -1, "source": "§2.3"},
+  {"template": "ZoneUnlocked", "type": "int", "default": -1, "source": "§2.3"},
+  {"template": "StarStageMaster%s_%s", "type": "int", "default": 0, "source": "§2.3"},
+  {"template": "StarCount", "type": "int", "default": -1, "source": "§2.3 (total stars, sentinel -1)"},
+  {"template": "DroneUsed%s", "type": "int", "default": -1, "source": "§2.3 (negative value rewritten as 0 on read)"},
+  {"template": "DroneUnlocked%s", "type": "int", "default": 0, "source": "§2.3"},
+  {"template": "PlayerUsed%s", "type": "int", "default": 10002, "default_by_index": {"0": 10001, "1": 10002}, "source": "§2.3b"},
+  {"template": "PlayerUnlocked%s", "type": "int", "default": 0, "source": "§2.3b (ship < 10003 reads true without validation)"},
+  {"template": "PLAYER_RANK%s", "type": "int", "default": 2, "source": "§2.3b (base <= 1 is rewritten as 2 in the loader)"},
+  {"template": "PLAYER_LEVEL%s", "type": "int", "default": 0, "source": "§2.3b"},
+  {"template": "TRIAL_ID_%s", "type": "int", "default": 0, "source": "§2.3b"},
+  {"template": "TRIAL_RANK_%s", "type": "int", "default": 0, "source": "§2.3b"},
+  {"template": "TRIAL_LEVEL_%s", "type": "int", "default": 0, "source": "§2.3b"},
+  {"template": "PLAYER_CARDS%s", "type": "int", "default": 0, "source": "§2.3b"},
+  {"template": "PLAYER_DEFAULT_SKIN%s", "type": "int", "default": -1, "source": "§2.3b (-1 is a valid value)"},
+  {"template": "PlayerStatPoints%s", "type": "int", "default": 0, "source": "§2.3b"},
+  {"template": "PlayerStatLevel%s", "type": "int", "default": 0, "source": "§2.3b"},
+  {"template": "TECHLAB_LV", "type": "int", "default": 0, "source": "§2.3b"},
+  {"template": "PLAYER_DEVICE_%s_%s", "type": "int", "default": -1, "source": "§2.3b (4 slots, -1 empty)"},
+  {"template": "FIRST_INSTALL_DEVICE", "type": "int", "default": 0, "source": "§2.3b"},
+  {"template": "TALENT_SELECTED", "type": "int", "default": -1, "source": "§2.3b (-1 is a stored selection, not a talent level)"},
+  {"template": "MUTE_AUDIO", "type": "int", "default": 0, "source": "audio_rules mute, missing_default 0"},
+  {"template": "VolumeSound", "type": "float", "default": 0.73, "source": "audio_rules sound_volume missing_default_approx"},
+  {"template": "VolumeMusic", "type": "float", "default": 0.3, "source": "audio_rules music_volume missing_default_approx"}
+ ],
+ "repair_rules": [
+  "PlayerUsed{slot} <= 0: write PlayerUsed0 = 10001 and PlayerUsed1 = 10002, then read again (§2.3b).",
+  "PlayerUnlocked{ship} with ship < 10003 reads true without roster validation (§2.3b).",
+  "PLAYER_RANK{ship} base <= 1 is rewritten as 2 (loader floor), TRIAL_ID_{ship} == 1 returns TRIAL_RANK_{ship} instead (§2.3b).",
+  "DroneUsed{slot} negative is written back as 0 before use (§2.3)."
+ ],
+ "design_decisions": [
+  "A Godot user:// JSON document replaces Unity PlayerPrefs. Atomicity, migration, cloud sync and store durability are new design; the source contract proves none of them.",
+  "Getters here are pure. The source getters have side effects (StageTarget increments on read, TUTORIAL becomes 6); the slice does not reproduce them and records this as a design decision.",
+  "Unknown keys found in an existing save file are preserved and rewritten unchanged.",
+  "StarStageMaster{stage}_{mode} stores the best star count; StarCount is recomputed as the sum of saved stage stars instead of being incremented blindly."
+ ]
+}

@@ -1,8 +1,8 @@
-name: Windows x86_64 export (milestone 1)
+name: Windows x86_64 export (launch slice)
 
-# The upstream Godot prototype is checked out at a fixed commit. This workflow
-# packages it as-is; it does not claim launch-slice gameplay or Windows runtime
-# parity. Godot and the official templates are downloaded only on the runner.
+# Builds game/ from this branch: the M1-M4 prototype plus the M2 launch-slice
+# scenes, data and headless rule tests. Godot and the official templates are
+# downloaded only on the runner. A green build is not a Windows runtime claim.
 on:
   workflow_dispatch:
   push:
@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   export:
-    name: Godot Windows x86_64, embedded PCK
+    name: Godot Windows x86_64, embedded PCK, headless tests
     if: github.ref == 'refs/heads/arena/5a03a450-windwings-space-shooter-game-p'
     runs-on: ubuntu-latest
     timeout-minutes: 50
@@ -30,13 +30,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Checkout the existing M1–M4 Godot project
-        uses: actions/checkout@v4
-        with:
-          ref: 77744f31a3b499770375ea44410f26c314b08995
-          path: upstream
-          persist-credentials: false
-
       - name: Install pinned Godot and the Windows export template
         shell: bash
         run: |
@@ -44,9 +37,9 @@ jobs:
           exec > >(tee -a "$GITHUB_WORKSPACE/dist/export.log") 2>&1
           set -euo pipefail
 
-          test "$(git -C "$GITHUB_WORKSPACE/upstream" rev-parse HEAD)" = "$SOURCE_COMMIT"
-          test -f "$GITHUB_WORKSPACE/upstream/game/project.godot"
-          echo "Source project commit: $SOURCE_COMMIT"
+          test -f "$GITHUB_WORKSPACE/game/project.godot"
+          echo "Ancestor prototype commit (M1-M4 base): $SOURCE_COMMIT"
+          echo "Build commit: $GITHUB_SHA"
           echo "Downloading official Godot assets on the GitHub runner."
 
           cache="$RUNNER_TEMP/godot-4.7.2"
@@ -80,14 +73,14 @@ jobs:
           rm -f "$templates" "$engine"
           echo "GODOT_BIN=$godot" >> "$GITHUB_ENV"
 
-      - name: Import and export the existing project
+      - name: Import, test and export the launch slice
         id: export
         shell: bash
         run: |
           exec > >(tee -a "$GITHUB_WORKSPACE/dist/export.log") 2>&1
           set -euo pipefail
 
-          project="$GITHUB_WORKSPACE/upstream/game"
+          project="$GITHUB_WORKSPACE/game"
           out="$GITHUB_WORKSPACE/dist"
           # Include JSON because the prototype opens its data files via FileAccess.
           # Resource editing is intentionally disabled for this unsigned Linux CI
@@ -125,6 +118,24 @@ jobs:
             | tee "$RUNNER_TEMP/godot-import.log"
           if grep -E '(^|[[:space:]])(SCRIPT ERROR|ERROR):' "$RUNNER_TEMP/godot-import.log"; then
             echo "Godot reported an import/script error; refusing a green build." >&2
+            exit 1
+          fi
+
+          echo "Running headless rule tests"
+          set +e
+          "$GODOT_BIN" --headless --path "$project" --script res://tests/run_tests.gd \
+            2>&1 | tee "$RUNNER_TEMP/godot-tests.log"
+          test_status=${PIPESTATUS[0]}
+          set -e
+          cp "$RUNNER_TEMP/godot-tests.log" "$out/tests.log"
+          if [ "$test_status" -ne 0 ] || ! grep -q '^TESTS_OK$' "$RUNNER_TEMP/godot-tests.log"; then
+            echo "Headless rule tests failed (status $test_status)." >&2
+            exit 1
+          fi
+          # Runtime-triggered script errors count as a failure even when the
+          # runner exits 0, because they would ship a broken slice.
+          if grep -E '(^|[[:space:]])SCRIPT ERROR:' "$RUNNER_TEMP/godot-tests.log"; then
+            echo "Godot reported a script error during the tests." >&2
             exit 1
           fi
 
@@ -190,7 +201,14 @@ jobs:
                   raise SystemExit("Embedded PCK footer magic not found")
               f.seek(offset)
               pck = f.read(length)
-              for data_path in (b"data/wave_0000.json", b"data/player_start_stats.json"):
+              expected = (
+                  b"data/launch_slice_waves.json",
+                  b"data/boss_slice.json",
+                  b"data/save_contract.json",
+                  b"data/player_start_stats.json",
+                  b"tests/run_tests.gd",
+              )
+              for data_path in expected:
                   if data_path not in pck:
                       raise SystemExit(f"Expected source data absent from PCK: {data_path!r}")
               print(f"PE32+ x86_64; embedded PCK offset={offset}, size={length}; source data present")
@@ -198,14 +216,16 @@ jobs:
 
           cat > "$out/BUILD_INFO.txt" <<INFO
           Godot: $GODOT_TAG
-          Source project commit: $SOURCE_COMMIT
+          Ancestor prototype commit (M1-M4 base): $SOURCE_COMMIT
           Workflow commit: $GITHUB_SHA
           GitHub run: $GITHUB_RUN_ID (attempt $GITHUB_RUN_ATTEMPT)
           Target: Windows Desktop x86_64, embedded PCK
-          Windows runtime: RUNTIME_UNVERIFIED
+          Windows runtime: RUNTIME_UNVERIFIED for this slice build
+          Headless rule tests: see tests.log (TESTS_OK required for this artifact)
           Resource editing: disabled; no icon or company identity provided
           Signing and MSIX: not performed (USER-ONLY)
-          Scope: existing M1-M4 prototype, not the requested launch slice
+          Scope: M2 launch slice - menu, ship select, 5 real waves, boss, results,
+                 pause, audio settings, save/load. Not full 282-wave parity.
           INFO
           (cd "$out" && sha256sum WindWings.exe > SHA256SUMS.txt && sha256sum --check SHA256SUMS.txt)
           exe_sha="$(cut -d ' ' -f 1 "$out/SHA256SUMS.txt")"
@@ -222,6 +242,7 @@ jobs:
             dist/export.log
             dist/export_presets.cfg
             dist/BUILD_INFO.txt
+            dist/tests.log
           if-no-files-found: error
           retention-days: 14
 
