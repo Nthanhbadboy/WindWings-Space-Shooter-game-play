@@ -6,7 +6,7 @@ Each GIF is the acceptance clip; the `-sheet.png` file is the same frames laid o
 in order, so the motion can be read without playing the GIF.
 
 - Variant: ANIM-C - whole-image animation (one flat image per sprite, guns fixed, flame on the hull, particle overlay)
-- Art source: placeholder (no art package delivered yet, so these frames show the fallback art)
+- Art source: package
 - Capture rate: 12 fps
 - Frame width: 288px
 
