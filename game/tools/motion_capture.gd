@@ -116,7 +116,10 @@ func _build_stage(stage: String, segment: String) -> Node:
 		var hangar := HANGAR_SCENE.instantiate()
 		return hangar
 	var main := MAIN_SCENE.instantiate()
-	main.set("capture_stage", "boss" if stage == "boss" else "flight")
+	# Pass the stage through unchanged: main.gd treats "turret" as "boss plus a
+	# turret sweep", so collapsing it to "flight" here would silently render the
+	# wrong scene (which is exactly what the first attempt did).
+	main.set("capture_stage", stage)
 	if stage == "flight":
 		main.set("_autoplay", false)
 	return main
