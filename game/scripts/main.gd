@@ -151,7 +151,18 @@ func _drive_capture(delta: float) -> void:
 		player.global_position.x = sin(_capture_time * 1.35) * span
 		player.global_position.y = lerpf(bounds.end.y, bounds.position.y + 1.2, 0.5 + 0.35 * sin(_capture_time * 0.9))
 	elif capture_stage == "boss":
-		player.global_position.x = sin(_capture_time * 0.8) * 1.8
+		# Capture only: line the ship up under the nearest boss so the volley hits
+		# and the frame sequence shows the flash, the shake and the core telegraph.
+		var aim := sin(_capture_time * 0.8) * 1.8
+		var nearest := 999.0
+		for child in world.get_children():
+			if not child.is_in_group("bosses"):
+				continue
+			var distance := absf(child.global_position.x - player.global_position.x)
+			if distance < nearest:
+				nearest = distance
+				aim = child.global_position.x + 0.25 * sin(_capture_time * 3.0)
+		player.global_position.x = aim
 
 
 func _update_shake(delta: float) -> void:

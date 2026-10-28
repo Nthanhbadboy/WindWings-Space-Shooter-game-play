@@ -701,6 +701,10 @@ func _test_motion_tuning() -> void:
 	check_float(MotionTuning.flash_alpha(0.05), 0.0, "flash is gone at 0.05 s")
 	check_float(MotionTuning.flash_alpha(0.2), 0.0, "flash stays gone")
 
+	# The flash must lighten the shape that was hit, never paint a white disc
+	# over it: the vector fallback uses the same 0.5 alpha for its tint.
+	check_float(MotionTuning.FLASH_ALPHA, 0.5, "the vector hit flash tints shapes at 0.5")
+
 	check(MotionTuning.shake_offset(0.0).length() == 0.0, "shake starts at zero offset")
 	var peak := 0.0
 	for step in range(20):

@@ -326,13 +326,14 @@ func _draw() -> void:
 		if flash_strength > 0.0:
 			Session.art.draw_flash(self, body_slot, Vector2.ZERO, flash_strength)
 		return
-	if flash_strength > 0.0:
-		draw_circle(Vector2(0.0, 0.05), 0.5, Color(1.0, 1.0, 1.0, flash_strength * 0.8))
 	var flicker := 1.0
 	if _invulnerability_elapsed > 0.0 and int(Time.get_ticks_msec() / 90) % 2 == 0:
 		flicker = 0.42
-	var hull := Color(0.30, 0.88, 1.0, flicker)
-	var highlight := Color(0.90, 0.98, 1.0, flicker)
+	# A hit flashes the shape that was hit: lerp the hull toward white instead of
+	# painting over it, so the 0.05 s flash still reads as this ship.
+	var flash_tint := clampf(flash_strength, 0.0, 1.0) * MotionTuning.FLASH_ALPHA
+	var hull := Color(0.30, 0.88, 1.0, flicker).lerp(Color(1, 1, 1, flicker), flash_tint)
+	var highlight := Color(0.90, 0.98, 1.0, flicker).lerp(Color(1, 1, 1, flicker), flash_tint)
 	var accent := Color(1.0, 0.72, 0.31, flicker)
 
 	# All ship shapes are original vector artwork created in GDScript.

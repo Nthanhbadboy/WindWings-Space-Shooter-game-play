@@ -333,9 +333,16 @@ func _draw_layered(art: ArtLibrary, slot: String, flash_strength: float) -> void
 
 func _draw_vector(flash_strength: float) -> void:
 	var death_alpha := 1.0 if not _dying else MotionTuning.death_layer_alpha(3, _death_elapsed)
-	var hull := Color(0.62, 0.30, 0.86, death_alpha)
+	# The hit flash lightens the shapes that were hit (a silhouette flash); an
+	# opaque disc on top would just hide the boss and read as a pale ball.
+	var flash := clampf(flash_strength, 0.0, 1.0) * MotionTuning.FLASH_ALPHA
+	var hull := Color(0.62, 0.30, 0.86, death_alpha).lerp(Color(1, 1, 1, death_alpha), flash)
 	var glow := Color(1.0, 0.55, 0.42, death_alpha)
-	draw_circle(Vector2(0.0, _bob), 1.05, Color(0.16, 0.06, 0.24, 0.9 * death_alpha))
+	draw_circle(
+		Vector2(0.0, _bob),
+		1.05,
+		Color(0.16, 0.06, 0.24, 0.9 * death_alpha).lerp(Color(1, 1, 1, death_alpha), flash)
+	)
 	draw_colored_polygon(
 		PackedVector2Array(
 			[
@@ -356,17 +363,17 @@ func _draw_vector(flash_strength: float) -> void:
 		if _dying:
 			gun_alpha = MotionTuning.death_layer_alpha(index, _death_elapsed)
 		draw_set_transform(mount, _gun_angles[index], Vector2.ONE)
-		draw_rect(Rect2(-0.13, 0.0, 0.26, 0.82), Color(0.45, 0.20, 0.62, gun_alpha))
+		draw_rect(
+			Rect2(-0.13, 0.0, 0.26, 0.82),
+			Color(0.45, 0.20, 0.62, gun_alpha).lerp(Color(1, 1, 1, gun_alpha), flash)
+		)
 		draw_rect(Rect2(-0.06, 0.10, 0.12, 0.6), Color(0.9, 0.5, 0.4, gun_alpha))
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	var core_alpha := clampf(_current_core_glow(), 0.0, 1.0) * death_alpha
 	var core_radius := 0.34 + 0.22 * core_alpha
 	draw_circle(Vector2(0.0, -0.15 + _bob), core_radius, Color(1.0, 0.55, 0.42, 0.55 * core_alpha))
 	draw_circle(Vector2(0.0, -0.15 + _bob), 0.16, Color(1.0, 0.95, 0.75, core_alpha))
-	if flash_strength > 0.0:
-		draw_circle(
-			Vector2(0.0, _bob), 1.0, Color(1.0, 1.0, 1.0, flash_strength * 0.7)
-		)
+
 
 
 func _art_slot() -> String:
