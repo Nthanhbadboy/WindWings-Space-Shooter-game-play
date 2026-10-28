@@ -42,7 +42,7 @@ func _build() -> void:
 	hull_box.add_theme_constant_override("separation", 2)
 	top.add_child(hull_box)
 
-	_hp_label = UIKit.body("HULL 2500 / 2500", 14, UIKit.INK)
+	_hp_label = UIKit.body(_hp_text(2500.0, 2500.0), 14, UIKit.INK)
 	_hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	hull_box.add_child(_hp_label)
 
@@ -121,12 +121,21 @@ func _on_pause_pressed() -> void:
 	pause_requested.emit()
 
 
+## One source for the hull text, used by both the initial build and every HP
+## update: a GOD build never loses HP, so set_hp() may never run at all - and the
+## first frame evidence of that build showed "HULL 2500 / 2500" with no tag
+## because the label still carried its build-time default.
+func _hp_text(current: float, maximum: float) -> String:
+	var text := "HULL %d / %d" % [int(round(maxf(current, 0.0))), int(round(maximum))]
+	if not Session.modifier_tag().is_empty():
+		text += " · %s (NO DAMAGE)" % Session.modifier_tag()
+	return text
+
+
 func set_hp(current: float, maximum: float) -> void:
 	var ratio := 0.0 if maximum <= 0.0 else clampf(current / maximum, 0.0, 1.0)
 	_hp_bar.value = ratio
-	_hp_label.text = "HULL %d / %d" % [int(round(maxf(current, 0.0))), int(round(maximum))]
-	if not Session.modifier_tag().is_empty():
-		_hp_label.text += "  ·  %s (NO DAMAGE)" % Session.modifier_tag()
+	_hp_label.text = _hp_text(current, maximum)
 	var color := UIKit.ACCENT if ratio > 0.4 else UIKit.DANGER
 	_hp_label.add_theme_color_override("font_color", color)
 

@@ -692,6 +692,16 @@ func _test_run_modifiers() -> void:
 
 	# The player must consult that rule BEFORE subtracting HP, and must not
 	# report the hit as damage applied.
+	# The HUD must tag the hull text in the initial build too: an invincible build
+	# never emits a health change, so set_hp() may never run.
+	var hud_source := FileAccess.get_file_as_string("res://scripts/hud.gd")
+	check(
+		hud_source.contains('UIKit.body(_hp_text(2500.0, 2500.0)'),
+		"the HUD hull label is built through the tagged text helper"
+	)
+	check(hud_source.contains("_hp_label.text = _hp_text(current, maximum)"), "HP updates use the same helper")
+	check(hud_source.contains('(NO DAMAGE)'), "the hull text says the build takes no damage")
+
 	var player_source := FileAccess.get_file_as_string("res://scripts/player.gd")
 	var guard := player_source.find("if Session.invincible():")
 	var subtract := player_source.find("current_health = maxf(current_health - applied, 0.0)")
