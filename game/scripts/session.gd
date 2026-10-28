@@ -12,6 +12,8 @@ const StarRulesScript = preload("res://scripts/star_rules.gd")
 const ArtLibraryScript = preload("res://scripts/art_library.gd")
 const AnimationVariantScript = preload("res://scripts/animation_variant.gd")
 
+const RunModifiersScript = preload("res://scripts/run_modifiers.gd")
+
 const DEFAULT_SHIP := 10003
 
 var store: SaveStore
@@ -27,6 +29,8 @@ var stage_index := 1
 var mode_index := 0
 var last_result: Dictionary = {}
 var startup_notes: Array = []
+## Run modifiers: loaded from data/run_modifiers.json at startup.
+var modifiers: RunModifiers
 
 const SFX_STREAMS := {
 	"shot": "res://audio/sfx_shot.wav",
@@ -41,6 +45,25 @@ var _sfx_players: Array = []
 var _sfx_cache: Dictionary = {}
 var _music_player: AudioStreamPlayer
 var _sfx_cursor := 0
+
+
+## Loads the build-time run modifiers. A missing or unreadable file is not fatal:
+## it just means normal damage rules.
+func _load_modifiers() -> void:
+	modifiers = RunModifiersScript.new()
+	if not modifiers.load_default():
+		startup_notes.append("run modifiers: %s" % modifiers.error)
+	# Printed so the build log and BUILD_INFO can state the rule that shipped.
+	print(modifiers.report_line())
+
+
+## HUD/menu tag, e.g. "GOD", or "" when the build uses normal damage rules.
+func modifier_tag() -> String:
+	return modifiers.tag() if modifiers != null else ""
+
+
+func invincible() -> bool:
+	return modifiers != null and modifiers.blocks_player_damage()
 
 
 ## Menu/build label, e.g. "ANIM-B", so nobody runs the wrong package by mistake.
@@ -68,6 +91,7 @@ func _ready() -> void:
 	variant = AnimationVariantScript.load_default()
 	if not variant.error.is_empty():
 		startup_notes.append("animation variant: %s" % variant.error)
+	_load_modifiers()
 	art = ArtLibraryScript.new(ArtLibraryScript.CONTRACT_PATH, variant.art_roots())
 	if not art.contract_ready():
 		startup_notes.append("art slot contract failed: %s" % art.error)

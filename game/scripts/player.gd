@@ -263,6 +263,14 @@ func _update_animation(delta: float) -> void:
 func take_damage(amount: float) -> bool:
 	if _is_dead or _invulnerability_elapsed > 0.0:
 		return false
+	if Session.invincible():
+		# GOD build (data/run_modifiers.json): the hit still flashes and sparks so
+		# the impact is visible, but the hull never loses HP and never dies. The
+		# short timer only rate-limits the flash, it is not a damage window.
+		flash()
+		FXBurst.spawn(get_parent(), "hit", global_position)
+		_invulnerability_elapsed = minf(CONFIRMED_HIT_INVULNERABILITY_SECONDS, 0.2)
+		return false
 	var applied := maxf(amount, 0.0)
 	current_health = maxf(current_health - applied, 0.0)
 	flash()

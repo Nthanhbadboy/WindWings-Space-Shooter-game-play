@@ -125,6 +125,8 @@ func set_hp(current: float, maximum: float) -> void:
 	var ratio := 0.0 if maximum <= 0.0 else clampf(current / maximum, 0.0, 1.0)
 	_hp_bar.value = ratio
 	_hp_label.text = "HULL %d / %d" % [int(round(maxf(current, 0.0))), int(round(maximum))]
+	if not Session.modifier_tag().is_empty():
+		_hp_label.text += "  ·  %s (NO DAMAGE)" % Session.modifier_tag()
 	var color := UIKit.ACCENT if ratio > 0.4 else UIKit.DANGER
 	_hp_label.add_theme_color_override("font_color", color)
 

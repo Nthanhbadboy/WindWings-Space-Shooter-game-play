@@ -18,6 +18,7 @@ const AudioMixerScript = preload("res://scripts/audio_mixer.gd")
 const ShipRosterScript = preload("res://scripts/ship_roster.gd")
 const ArtLibraryScript = preload("res://scripts/art_library.gd")
 const AnimationVariantScript = preload("res://scripts/animation_variant.gd")
+const RunModifiersScript = preload("res://scripts/run_modifiers.gd")
 
 const ART_CONTRACT_PATH := "res://data/art_slot_contract.json"
 const ART_TEST_ROOT := "user://art_test_root"
@@ -50,6 +51,7 @@ func _initialize() -> void:
 	_test_art_library_drop_in()
 	_test_art_layer_slots()
 	_test_turret_qa_stage_captures_the_whole_sweep()
+	_test_run_modifiers()
 	_test_motion_tuning()
 	_test_animation_variants()
 
@@ -663,6 +665,41 @@ func _test_turret_qa_stage_captures_the_whole_sweep() -> void:
 	var trough_seconds := (1.5 * PI) / sweep_rate
 	check(peak_seconds < sweep_seconds, "the clip reaches the +45 deg end")
 	check(trough_seconds < sweep_seconds, "the clip reaches the -45 deg end")
+
+
+func _test_run_modifiers() -> void:
+	# The three art-review builds ship player_invincible = true, so this check
+	# guards the shipped file itself: if someone flips it off, the builds stop
+	# being the "watch the art without dying" builds the USER asked for.
+	var shipped: RunModifiers = RunModifiersScript.new()
+	check(shipped.load_default(), "the shipped run modifiers load")
+	check_eq(shipped.error, "", "the shipped run modifiers report no error")
+	check(shipped.blocks_player_damage(), "the shipped build makes the player invincible")
+	check_eq(shipped.tag(), "GOD", "the shipped build is tagged GOD")
+	check(
+		shipped.report_line() == "RUN_MODIFIERS player_invincible=true label=GOD",
+		"the modifiers print the rule that shipped"
+	)
+
+	# And the switch has to be a switch: normal damage rules must still exist.
+	var plain: RunModifiers = RunModifiersScript.new()
+	check(plain.load_from_document({"player_invincible": false, "label": "GOD"}), "a plain document loads")
+	check(not plain.blocks_player_damage(), "invincibility can be turned off")
+	check_eq(plain.tag(), "", "a non-invincible build shows no GOD tag")
+	var missing: RunModifiers = RunModifiersScript.new()
+	check(not missing.load_from_path("res://data/does_not_exist.json"), "a missing file is reported")
+	check(not missing.blocks_player_damage(), "a missing file means normal damage")
+
+	# The player must consult that rule BEFORE subtracting HP, and must not
+	# report the hit as damage applied.
+	var player_source := FileAccess.get_file_as_string("res://scripts/player.gd")
+	var guard := player_source.find("if Session.invincible():")
+	var subtract := player_source.find("current_health = maxf(current_health - applied, 0.0)")
+	check(guard >= 0, "the player checks the invincibility rule")
+	check(subtract > guard, "the invincibility guard runs before HP is subtracted")
+	var guard_block := player_source.substr(guard, subtract - guard)
+	check(guard_block.contains("return false"), "an invincible hit reports no damage applied")
+	check(not guard_block.contains("_is_dead = true"), "an invincible hit never kills the player")
 
 
 func _test_art_layer_slots() -> void:

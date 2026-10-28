@@ -258,6 +258,15 @@ jobs:
             echo "The run scene did not report SLICE_RUN_START." >&2
             exit 1
           fi
+          # data/run_modifiers.json ships player_invincible=true for these builds.
+          # If the file asks for it, the runtime has to say it applied it - a build
+          # that silently kept normal damage would look identical in the frames.
+          god_expected="$(python3 -c 'import json,sys;d=json.load(open(sys.argv[1]));print("true" if d.get("player_invincible") else "false")' "$project/data/run_modifiers.json")"
+          if [ "$god_expected" = "true" ] && ! grep -q 'RUN_MODIFIERS player_invincible=true' "$out/smoke.log"; then
+            echo "run_modifiers.json asks for an invincible player but the runtime never reported it." >&2
+            exit 1
+          fi
+          echo "RUN_MODIFIER_GATE expected_player_invincible=$god_expected"
 
           echo "Headless full-run harness (5 waves -> boss -> victory -> save)"
           set +e
@@ -449,6 +458,11 @@ jobs:
           PY
 
           variant_line="$(grep '^ANIM_VARIANT ' "$out/art_report.log" | head -1)"
+          # Run modifiers (data/run_modifiers.json): these builds ship the player
+          # invincible so the art can be watched through every wave in one go.
+          god_flag="$(python3 -c 'import json,sys;d=json.load(open(sys.argv[1]));print("true" if d.get("player_invincible") else "false")' "$project/data/run_modifiers.json")"
+          god_tag="$(python3 -c 'import json,sys;d=json.load(open(sys.argv[1]));print(d.get("label","") if d.get("player_invincible") else "")' "$project/data/run_modifiers.json")"
+          god_line="$(grep '^RUN_MODIFIERS ' "$out/smoke.log" | head -1 || echo 'RUN_MODIFIERS (not printed by the smoke run)')"
           if grep -q '^ANIM_VARIANT_PLACEHOLDER ' "$out/art_report.log"; then
             placeholder_line="ART_SOURCE placeholder: no ${ANIM_VARIANT} art package has been delivered yet, this build runs the variant rules on fallback art"
           else
@@ -461,6 +475,8 @@ jobs:
           Art package commit: ${ART_PACKAGE_COMMIT:-none}
           $placeholder_line
           Art slot split: ${present:-0} present / ${fallback:-0} fallback (see art_report.log)
+          Player damage: player_invincible=${god_flag} label=${god_tag:-none} - hits still flash, the hull never loses HP and never dies
+          Run modifiers line: ${god_line}
           Art report summary: $(grep '^ART_SUMMARY' "$out/art_report.log" || echo "none")
           Package manifest: $(grep '^ART_PACKAGE' "$out/art_report.log" || echo "none")
           Ancestor prototype commit (M1-M4 base): $SOURCE_COMMIT
@@ -489,7 +505,7 @@ jobs:
       - name: Upload executable and evidence
         uses: actions/upload-artifact@v4
         with:
-          name: WindWings-anim-${{ matrix.variant }}-run-${{ github.run_id }}-sha256-${{ steps.export.outputs.exe_sha256 }}
+          name: WindWings-anim-${{ matrix.variant }}-god-run-${{ github.run_id }}-sha256-${{ steps.export.outputs.exe_sha256 }}
           path: |
             dist/WindWings-anim-${{ matrix.variant }}.exe
             dist/SHA256SUMS.txt

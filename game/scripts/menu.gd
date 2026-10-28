@@ -64,6 +64,10 @@ func _build() -> void:
 			UIKit.ACCENT
 		)
 	)
+	if not Session.modifier_tag().is_empty():
+		column.add_child(
+			UIKit.body("%s MODE · hull takes no damage" % Session.modifier_tag(), 12, UIKit.ACCENT)
+		)
 	column.add_child(UIKit.body("BEST STARS · STAGE 1", 13))
 	column.add_child(UIKit.star_row(Session.best_stars(), 3, 30))
 	column.add_child(UIKit.body("TOTAL STARS  %d" % Session.star_total_for_display(), 14, UIKit.INK))
