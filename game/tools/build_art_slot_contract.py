@@ -42,8 +42,11 @@ KIND_FOLDER = {
     "fx": "fx",
     "ui": "ui",
     "background": "background",
-    "ship_layer": "ships",
-    "boss_part": "bosses",
+    # Sub-layers live under layers/, which is exactly how the delivered art
+    # packages (7aa3d08: art/animation-options/A-clean|B-inpaint|C-flat) ship
+    # them, so a package can be dropped into game/art/<variant>/ unchanged.
+    "ship_layer": "layers/ships",
+    "boss_layer": "layers/bosses",
 }
 
 # Display sizes are in playfield world units (1 unit = 1/20 of the playfield
@@ -66,13 +69,17 @@ BULLET_ENEMY_CANVAS = (64, 64)
 FX_CANVAS = (256, 256)
 UI_CANVAS = (1080, 1920)
 
-# Sub-layer slots (animation system). The glow layer sits exactly over the ship
-# body; the boss is split into body, two gun mounts (own pivots) and a core.
+# Sub-layer slots (animation system). Every sub-layer is a FULL-CANVAS layer: the
+# same canvas size as the sprite it belongs to, already registered pixel for
+# pixel against it. That is what the delivered packages contain, and it removes
+# any hand-tuned glue in the engine: drawing a layer centred on its parent is
+# correct by construction, and only the rotating parts need a pivot.
+#
+# Pivots: the contract keeps every slot centred. A package may declare tighter
+# pivots in its own manifest.json (`pivot_pixels_inferred`), which the loader
+# reads and converts to canvas fractions - so the art package owns its mounts
+# and the engine does not hardcode them.
 SHIP_GLOW_CANVAS = (256, 256)
-BOSS_BODY_CANVAS = (512, 512)
-BOSS_GUN_CANVAS = (192, 192)
-BOSS_CORE_CANVAS = (256, 256)
-BOSS_GUN_PIVOT = [0.5, 0.22]
 
 # Ships: PLAYER-10001 is the required slot. 10003/10004 are the other two roster
 # entries, included so a player who picks them also gets art.
@@ -155,7 +162,7 @@ def ships_slots() -> list[dict]:
             slot(
                 f"PLAYER-{ship_id}-GLOW",
                 "ship_layer",
-                f"PLAYER-{ship_id}-GLOW.png",
+                f"PLAYER-{ship_id}-canopy-glow.png",
                 SHIP_GLOW_CANVAS,
                 {
                     "unit": "world_units",
@@ -170,9 +177,34 @@ def ships_slots() -> list[dict]:
                 parent=f"PLAYER-{ship_id}",
                 layer_role="glow",
                 notes=(
-                    "Overlay layer: same canvas and same display size as the body, so it "
-                    "lines up pixel for pixel. Draw only the glow/emissive parts on a "
-                    "transparent background; the game pulses its alpha and adds it on top."
+                    "Glow layer: full 256 canvas, same display size as the body, so it lines "
+                    "up pixel for pixel. Emissive parts only on a transparent background; the "
+                    "game pulses its alpha and adds it on top. No baked flame."
+                ),
+            )
+        )
+        slots.append(
+            slot(
+                f"PLAYER-{ship_id}-NOZZLE",
+                "ship_layer",
+                f"PLAYER-{ship_id}-nozzle-glow.png",
+                SHIP_GLOW_CANVAS,
+                {
+                    "unit": "world_units",
+                    "height": SHIP_DISPLAY,
+                    "width": SHIP_DISPLAY,
+                    "mode": "fit_canvas",
+                },
+                "up",
+                "procedural engine flame in scripts/player.gd",
+                f"engine nozzle glow layer for ship {ship_id} (optional, A package only)",
+                required=False,
+                parent=f"PLAYER-{ship_id}",
+                layer_role="nozzle_glow",
+                notes=(
+                    "Optional second glow layer for the engine nozzle, again full canvas. The "
+                    "game adds it behind the hull and brightens it with engine thrust; if the "
+                    "package has no nozzle layer the engine particle flame covers it."
                 ),
             )
         )
@@ -232,11 +264,14 @@ def boss_slots(prefab: str, hp: float) -> list[dict]:
                 "centre: the slice hitbox is a 1.15-unit circle at the texture centre."
             ),
         ),
+        # Body: the single boss image IS the body in a layered build. The
+        # delivered packages either keep the pods baked in (A) or erase them for
+        # the separate turret layers (B), so no extra hull file is asked for.
         slot(
-            f"{prefab}-BODY",
-            "boss_part",
-            f"{prefab}-BODY.png",
-            BOSS_BODY_CANVAS,
+            f"{prefab}-TURRET-L",
+            "boss_layer",
+            f"{prefab}-turret-left.png",
+            BOSS_CANVAS,
             {
                 "unit": "world_units",
                 "height": BOSS_DISPLAY,
@@ -244,82 +279,60 @@ def boss_slots(prefab: str, hp: float) -> list[dict]:
                 "mode": "fit_canvas",
             },
             "down",
-            "vector boss body in scripts/boss.gd",
-            f"{prefab} hull without the two gun mounts and without the core",
-            required=False,
-            parent=prefab,
-            layer_role="body",
-            notes=(
-                "Body layer. Same 512 canvas and 2.4-unit display size as the single-image "
-                "boss, so a partial art drop still lines up."
-            ),
-        ),
-        slot(
-            f"{prefab}-GUN-L",
-            "boss_part",
-            f"{prefab}-GUN-L.png",
-            BOSS_GUN_CANVAS,
-            {
-                "unit": "world_units",
-                "height": 0.95,
-                "width": 0.95,
-                "mode": "fit_canvas",
-            },
-            "down",
             "vector gun drawn by scripts/boss.gd",
-            f"{prefab} left gun mount (player's left)",
+            f"{prefab} left pod/turret layer (player's left), full 512 canvas",
             required=False,
             parent=prefab,
             layer_role="gun_left",
-            pivot=BOSS_GUN_PIVOT,
             notes=(
-                "Mount pivot (0.5, 0.22): the mount sits at the top of the gun sprite and the barrel points DOWN. "
-                "The game rotates this layer around that pivot to aim at the player ship."
+                "Full-canvas layer aligned with the boss image. The game rotates it around "
+                "the mount pivot and aims it at the player ship. The mount comes from the "
+                "package manifest (pivot_pixels_inferred.left); with no manifest the layer "
+                "rotates around the canvas centre, which the engine logs as a warning."
             ),
         ),
         slot(
-            f"{prefab}-GUN-R",
-            "boss_part",
-            f"{prefab}-GUN-R.png",
-            BOSS_GUN_CANVAS,
+            f"{prefab}-TURRET-R",
+            "boss_layer",
+            f"{prefab}-turret-right.png",
+            BOSS_CANVAS,
             {
                 "unit": "world_units",
-                "height": 0.95,
-                "width": 0.95,
+                "height": BOSS_DISPLAY,
+                "width": BOSS_DISPLAY,
                 "mode": "fit_canvas",
             },
             "down",
             "vector gun drawn by scripts/boss.gd",
-            f"{prefab} right gun mount (player's right)",
+            f"{prefab} right pod/turret layer (player's right), full 512 canvas",
             required=False,
             parent=prefab,
             layer_role="gun_right",
-            pivot=BOSS_GUN_PIVOT,
             notes=(
-                "Mirror of GUN-L, same mount pivot (0.5, 0.22). Each gun aims and rotates "
-                "independently and is staggered on death."
+                "Mirror of TURRET-L; mount from manifest pivot_pixels_inferred.right. Each pod "
+                "aims independently and is staggered on death."
             ),
         ),
         slot(
             f"{prefab}-CORE",
-            "boss_part",
-            f"{prefab}-CORE.png",
-            BOSS_CORE_CANVAS,
+            "boss_layer",
+            f"{prefab}-core-glow.png",
+            BOSS_CANVAS,
             {
                 "unit": "world_units",
-                "height": 0.85,
-                "width": 0.85,
+                "height": BOSS_DISPLAY,
+                "width": BOSS_DISPLAY,
                 "mode": "fit_canvas",
             },
             "none",
             "vector core with telegraph glow in scripts/boss.gd",
-            f"{prefab} energy core (brightens before every shot)",
+            f"{prefab} energy core layer (brightens before every shot)",
             required=False,
             parent=prefab,
             layer_role="core",
             notes=(
-                "Centred on the boss body. The game ramps its brightness for the last "
-                "0.42 s before each Attack2 shot (telegraph)."
+                "Full-canvas glow layer around the core, drawn aligned with the body. The game "
+                "ramps its alpha for the last 0.42 s before each Attack2 shot (telegraph)."
             ),
         ),
     ]
@@ -464,18 +477,24 @@ def main() -> int:
             problems.append(f"{entry['slot']} points at missing parent {entry['parent']}")
     required_layers = [
         f"PLAYER-{REQUIRED_SHIP}-GLOW",
-        f"{boss_prefab}-BODY",
-        f"{boss_prefab}-GUN-L",
-        f"{boss_prefab}-GUN-R",
+        f"{boss_prefab}-TURRET-L",
+        f"{boss_prefab}-TURRET-R",
         f"{boss_prefab}-CORE",
     ]
     for layer in required_layers:
         if layer not in ids:
             problems.append(f"layer slot missing: {layer}")
-    pivot_roles = {entry["slot"]: entry.get("pivot") for entry in slots if entry.get("layer_role")}
-    for gun_slot in (f"{boss_prefab}-GUN-L", f"{boss_prefab}-GUN-R"):
-        if pivot_roles.get(gun_slot) != [0.5, 0.22]:
-            problems.append(f"{gun_slot} must keep the documented mount pivot")
+    # Turret mounts are owned by the art package: its manifest declares the mount
+    # in canvas pixels, so the contract must NOT hardcode a pivot that could
+    # contradict a delivered package. It only insists the slot exists.
+    for turret_slot in (f"{boss_prefab}-TURRET-L", f"{boss_prefab}-TURRET-R"):
+        entry = next((item for item in slots if item["slot"] == turret_slot), None)
+        if entry is None:
+            problems.append(f"{turret_slot} is missing")
+        elif entry["pivot"] != [0.5, 0.5]:
+            problems.append(f"{turret_slot} must stay centred; mounts come from the package manifest")
+        if entry is not None and entry["canvas"] != {"width": BOSS_CANVAS[0], "height": BOSS_CANVAS[1]}:
+            problems.append(f"{turret_slot} must be a full {BOSS_CANVAS[0]}px canvas layer")
 
     document = {
         "schema": "windwings.launch_slice.art_slots/1",
@@ -507,7 +526,7 @@ def main() -> int:
             "ship_layers": sum(1 for entry in slots if entry["kind"] == "ship_layer"),
             "enemies": sum(1 for entry in slots if entry["kind"] == "enemy"),
             "bosses": sum(1 for entry in slots if entry["kind"] == "boss"),
-            "boss_parts": sum(1 for entry in slots if entry["kind"] == "boss_part"),
+            "boss_parts": sum(1 for entry in slots if entry["kind"] == "boss_layer"),
             "extras": sum(
                 1
                 for entry in slots
@@ -516,7 +535,11 @@ def main() -> int:
         },
         "layers": {
             "ship_glow": "drawn over the ship body with a pulsing alpha; missing layer keeps the single image",
-            "boss_parts": ["body", "gun_left", "gun_right", "core"],
+            "ship_nozzle": "optional nozzle glow behind the hull; missing layer keeps the particle flame",
+            "boss_body": "the single boss image is the body; the turret and core layers draw on top of it",
+            "boss_parts": ["gun_left", "gun_right", "core"],
+            "layer_alignment": "every sub-layer is a full-canvas layer registered against its parent, so it is drawn centred with no offset",
+            "mount_pivots": "the art package manifest (pivot_pixels_inferred) owns the turret mounts; the loader converts pixels to canvas fractions and the contract keeps every pivot centred",
             "boss_part_fallback": "any missing part falls back to the single Boss-37001.png, and with no boss art at all to the vector boss",
         },
         "problems": problems,

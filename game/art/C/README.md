@@ -1,17 +1,22 @@
-# Variant C — single flat image per sprite (whole-image animation).
+# Variant C - single flat image per sprite (whole-image animation)
 
-Drop the package PNGs here, using exactly the relative paths from
-`game/data/art_slot_contract.json` (same names as the shared `game/art/` folder):
+Delivered package: `art/animation-options/C-flat` from commit `7aa3d08`
+(branch `arena/215aa58f`), copied here byte for byte - pixels untouched.
 
 ```
-ships/PLAYER-10001.png  ships/PLAYER-10001-GLOW.png  ...
-bosses/Boss-37001.png   bosses/Boss-37001-BODY.png   ...
+ships/PLAYER-10001.png
+```
+```
+bosses/Boss-37001.png
 ```
 
-Nothing is required: every slot is optional. A missing slot is logged as
-`ART_SLOT <slot> fallback vector` in `BUILD_INFO.txt` and the build keeps the
-vector drawing.
+`ANIMATION_NOTES.md` (the artist's caveats) and `manifest.json` (per-file
+SHA-256 plus `pivot_pixels_inferred`) ship unchanged next to the images. CI
+re-hashes every file against that manifest before building, and the loader uses
+the manifest pivots for the rotating parts, so a package never has to match a
+mount hardcoded in the engine.
 
-This folder currently holds no art, so every build of this variant ships the
-placeholder vector art and says so in `BUILD_INFO.txt`
-(`ART_VARIANT_PLACEHOLDER`).
+Not every slot has art: enemies, bullets, FX, the background and the menu frame
+still draw the vector fallback (reported slot by slot in `BUILD_INFO.txt`).
+Do not edit these PNGs here - fixes go back to the art branch and arrive as a
+new package commit.

@@ -42,7 +42,10 @@ jobs:
       GODOT_TEMPLATES_SHA256: f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011
       SOURCE_COMMIT: 77744f31a3b499770375ea44410f26c314b08995
       ANIM_VARIANT: ${{ matrix.variant }}
-      ART_PACKAGE_COMMIT: ${{ inputs.art_package_commit }}
+      # 7aa3d08 = arena/215aa58f commit that delivers the three packages under
+      # art/animation-options/{A-clean,B-inpaint,C-flat}. Override per run with
+      # the workflow_dispatch input when a newer package lands.
+      ART_PACKAGE_COMMIT: ${{ inputs.art_package_commit || '7aa3d08' }}
     steps:
       - name: Checkout this branch
         uses: actions/checkout@v4
@@ -70,6 +73,43 @@ jobs:
             --art-source "$source_flag" \
             --art-package-commit "$commit" \
             --check
+
+          if [ "$source_flag" = "package" ]; then
+            echo "Verifying the ANIM-$ANIM_VARIANT art package against its manifest hashes"
+            python3 - "$GITHUB_WORKSPACE/game/art/$ANIM_VARIANT" <<'PY'
+          import hashlib
+          import json
+          import sys
+          from pathlib import Path
+
+          root = Path(sys.argv[1])
+          manifest = root / "manifest.json"
+          if not manifest.exists():
+              raise SystemExit(f"missing package manifest: {manifest}")
+          document = json.loads(manifest.read_text(encoding="utf-8"))
+          checked = 0
+          for entry in document.get("file_list", []):
+              name = entry["file"]
+              if not name.startswith("game/art/"):
+                  continue
+              relative = name[len("game/art/"):]
+              target = root / relative
+              if not target.exists():
+                  raise SystemExit(f"package file missing: {target}")
+              digest = hashlib.sha256(target.read_bytes()).hexdigest()
+              if digest != entry["sha256"]:
+                  raise SystemExit(f"package file changed: {target}")
+              checked += 1
+          if checked < 5:
+              raise SystemExit(f"only {checked} package files verified for {root}")
+          for required in ("ships/PLAYER-10001.png", "bosses/Boss-37001.png"):
+              if not (root / required).exists():
+                  raise SystemExit(f"package lacks {required}")
+          print(f"ART_PACKAGE_VERIFIED variant={root.name} files={checked}")
+          PY
+          else
+            echo "ART_PACKAGE_NONE: no package commit, this is a placeholder build"
+          fi
 
       - name: Install pinned Godot and the Windows export template
         shell: bash
@@ -271,6 +311,35 @@ jobs:
             echo "The art report did not load variant folder art/${ANIM_VARIANT}." >&2
             exit 1
           fi
+          if grep -q '^ANIM_VARIANT_PLACEHOLDER ' "$out/art_report.log"; then
+            if [ -n "${ART_PACKAGE_COMMIT:-}" ]; then
+              echo "The build was asked for art package $ART_PACKAGE_COMMIT but reports a placeholder." >&2
+              exit 1
+            fi
+          else
+            # Real package: the ship, the boss and the rotating layer slots must
+            # come from res://art/<variant>, and the report must say which pivots
+            # the package owns. Enemy/FX slots may still fall back - that is
+            # reported, not hidden.
+            for slot in PLAYER-10001 Boss-37001 PLAYER-10001-GLOW Boss-37001-TURRET-L Boss-37001-TURRET-R Boss-37001-CORE; do
+              if ! grep -q "^ART_SLOT ${slot} present res://art/${ANIM_VARIANT}/" "$out/art_report.log"; then
+                echo "Slot ${slot} did not load from res://art/${ANIM_VARIANT}." >&2
+                exit 1
+              fi
+            done
+            if ! grep -q "^ART_PIVOT Boss-37001-TURRET-L manifest " "$out/art_report.log"; then
+              echo "The boss turret mount pivot did not come from the package manifest." >&2
+              exit 1
+            fi
+            if ! grep -q "^ART_PACKAGE res://art/${ANIM_VARIANT}/manifest.json " "$out/art_report.log"; then
+              echo "The art report did not name the package manifest." >&2
+              exit 1
+            fi
+            present="$(grep -c '^ART_SLOT .* present ' "$out/art_report.log" || true)"
+            fallback="$(grep -c '^ART_SLOT .* fallback ' "$out/art_report.log" || true)"
+            echo "ART_SLOTS_PRESENT ${present} ART_SLOTS_FALLBACK ${fallback}"
+            echo "present=${present} fallback=${fallback}" >> "$GITHUB_OUTPUT"
+          fi
           echo "Art slot status: $(grep '^ART_SUMMARY' "$out/art_report.log")"
 
           exe="$out/WindWings-anim-${ANIM_VARIANT}.exe"
@@ -366,6 +435,7 @@ jobs:
           Art folder: res://art/$ANIM_VARIANT (then user://art/$ANIM_VARIANT, res://art, user://art)
           Art package commit: ${ART_PACKAGE_COMMIT:-none}
           $placeholder_line
+          Art slot split: ${present:-0} present / ${fallback:-0} fallback (see art_report.log)
           Ancestor prototype commit (M1-M4 base): $SOURCE_COMMIT
           Workflow commit: $GITHUB_SHA
           GitHub run: $GITHUB_RUN_ID (attempt $GITHUB_RUN_ATTEMPT)

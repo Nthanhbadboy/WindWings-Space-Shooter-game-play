@@ -109,7 +109,9 @@ func _build_hull_overlay() -> void:
 	_hull_fx.lifetime = 0.55
 	_hull_fx.local_coords = true
 	_hull_fx.position = Vector2.ZERO
-	_hull_fx.z_index = 1
+	# Behind the flat image, never over it: the C package already has its flame
+	# baked in, so an overlay on top would smear the sprite.
+	_hull_fx.z_index = -2
 	_hull_fx.texture = _flame_texture()
 	var material := ParticleProcessMaterial.new()
 	material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
@@ -306,6 +308,23 @@ func _draw() -> void:
 	var flash_strength := MotionTuning.flash_alpha(_hit_flash_elapsed) / MotionTuning.FLASH_ALPHA
 	var body_slot := "PLAYER-%d" % ship_id
 	var glow_slot := "PLAYER-%d-GLOW" % ship_id
+	var nozzle_slot := "PLAYER-%d-NOZZLE" % ship_id
+	# The optional nozzle glow sits behind the hull, so it reads as engine light
+	# escaping from under the ship rather than a wash over the sprite.
+	if _layered_mode() and Session.art != null and Session.art.has_art(nozzle_slot):
+		var thrust := clampf(
+			(_engine_length - MotionTuning.ENGINE_IDLE_LENGTH)
+			/ maxf(MotionTuning.ENGINE_FAST_LENGTH - MotionTuning.ENGINE_IDLE_LENGTH, 0.001),
+			0.0,
+			1.0,
+		)
+		Session.art.draw_slot(
+			self,
+			nozzle_slot,
+			Vector2.ZERO,
+			Vector2.ZERO,
+			Color(1.0, 1.0, 1.0, (0.45 + 0.55 * thrust) * art_tint.a)
+		)
 	if Session.art != null and Session.art.draw_slot(self, body_slot, Vector2.ZERO, Vector2.ZERO, art_tint):
 		# Sub-layer: the glow sheet is optional and pulses on its own rhythm.
 		# Variant C ships one flat image, so it must not switch to a glow layer

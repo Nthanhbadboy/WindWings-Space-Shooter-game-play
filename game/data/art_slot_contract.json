@@ -3,7 +3,7 @@
  "art_root": "res://art",
  "evidence": "slot list derived from data; art itself is INFERRED until drawn",
  "generated_by": "game/tools/build_art_slot_contract.py",
- "generator_sha256": "397a0817202a734debedd51e8eb12c152a21ac50227882b05850259e3815566e",
+ "generator_sha256": "b7fb6158e4f5fe69b367273c887970fe840d51fb0b88849d977f499d0675b18e",
  "sources": {
   "game/data/launch_slice_waves.json": "c417fb5640e153b663b120ae4f90e82ac0cc83a523e395178e03827d5d61db92",
   "game/data/enemy_movement_slice.json": "ae1e23259dd95cff773f9ed01233ef4aca21b7d97e2d73cd81e12b0366c03566",
@@ -23,22 +23,25 @@
   "shipping": "put files under game/art/ so the export packs them; user://art/ is also read for drop-in tests"
  },
  "counts": {
-  "total": 30,
+  "total": 32,
   "ships": 3,
-  "ship_layers": 3,
+  "ship_layers": 6,
   "enemies": 13,
   "bosses": 1,
-  "boss_parts": 4,
+  "boss_parts": 3,
   "extras": 6
  },
  "layers": {
   "ship_glow": "drawn over the ship body with a pulsing alpha; missing layer keeps the single image",
+  "ship_nozzle": "optional nozzle glow behind the hull; missing layer keeps the particle flame",
+  "boss_body": "the single boss image is the body; the turret and core layers draw on top of it",
   "boss_parts": [
-   "body",
    "gun_left",
    "gun_right",
    "core"
   ],
+  "layer_alignment": "every sub-layer is a full-canvas layer registered against its parent, so it is drawn centred with no offset",
+  "mount_pivots": "the art package manifest (pivot_pixels_inferred) owns the turret mounts; the loader converts pixels to canvas fractions and the contract keeps every pivot centred",
   "boss_part_fallback": "any missing part falls back to the single Boss-37001.png, and with no boss art at all to the vector boss"
  },
  "problems": [],
@@ -72,7 +75,7 @@
   {
    "slot": "PLAYER-10001-GLOW",
    "kind": "ship_layer",
-   "file": "ships/PLAYER-10001-GLOW.png",
+   "file": "layers/ships/PLAYER-10001-canopy-glow.png",
    "canvas": {
     "width": 256,
     "height": 256
@@ -93,9 +96,37 @@
    "fallback": "procedural glow pulse in scripts/player.gd",
    "source": "animation glow layer for ship 10001",
    "required": false,
-   "notes": "Overlay layer: same canvas and same display size as the body, so it lines up pixel for pixel. Draw only the glow/emissive parts on a transparent background; the game pulses its alpha and adds it on top.",
+   "notes": "Glow layer: full 256 canvas, same display size as the body, so it lines up pixel for pixel. Emissive parts only on a transparent background; the game pulses its alpha and adds it on top. No baked flame.",
    "parent": "PLAYER-10001",
    "layer_role": "glow"
+  },
+  {
+   "slot": "PLAYER-10001-NOZZLE",
+   "kind": "ship_layer",
+   "file": "layers/ships/PLAYER-10001-nozzle-glow.png",
+   "canvas": {
+    "width": 256,
+    "height": 256
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "up",
+   "display": {
+    "unit": "world_units",
+    "height": 1.4,
+    "width": 1.4,
+    "mode": "fit_canvas"
+   },
+   "fallback": "procedural engine flame in scripts/player.gd",
+   "source": "engine nozzle glow layer for ship 10001 (optional, A package only)",
+   "required": false,
+   "notes": "Optional second glow layer for the engine nozzle, again full canvas. The game adds it behind the hull and brightens it with engine thrust; if the package has no nozzle layer the engine particle flame covers it.",
+   "parent": "PLAYER-10001",
+   "layer_role": "nozzle_glow"
   },
   {
    "slot": "PLAYER-10003",
@@ -126,7 +157,7 @@
   {
    "slot": "PLAYER-10003-GLOW",
    "kind": "ship_layer",
-   "file": "ships/PLAYER-10003-GLOW.png",
+   "file": "layers/ships/PLAYER-10003-canopy-glow.png",
    "canvas": {
     "width": 256,
     "height": 256
@@ -147,9 +178,37 @@
    "fallback": "procedural glow pulse in scripts/player.gd",
    "source": "animation glow layer for ship 10003",
    "required": false,
-   "notes": "Overlay layer: same canvas and same display size as the body, so it lines up pixel for pixel. Draw only the glow/emissive parts on a transparent background; the game pulses its alpha and adds it on top.",
+   "notes": "Glow layer: full 256 canvas, same display size as the body, so it lines up pixel for pixel. Emissive parts only on a transparent background; the game pulses its alpha and adds it on top. No baked flame.",
    "parent": "PLAYER-10003",
    "layer_role": "glow"
+  },
+  {
+   "slot": "PLAYER-10003-NOZZLE",
+   "kind": "ship_layer",
+   "file": "layers/ships/PLAYER-10003-nozzle-glow.png",
+   "canvas": {
+    "width": 256,
+    "height": 256
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "up",
+   "display": {
+    "unit": "world_units",
+    "height": 1.4,
+    "width": 1.4,
+    "mode": "fit_canvas"
+   },
+   "fallback": "procedural engine flame in scripts/player.gd",
+   "source": "engine nozzle glow layer for ship 10003 (optional, A package only)",
+   "required": false,
+   "notes": "Optional second glow layer for the engine nozzle, again full canvas. The game adds it behind the hull and brightens it with engine thrust; if the package has no nozzle layer the engine particle flame covers it.",
+   "parent": "PLAYER-10003",
+   "layer_role": "nozzle_glow"
   },
   {
    "slot": "PLAYER-10004",
@@ -180,7 +239,7 @@
   {
    "slot": "PLAYER-10004-GLOW",
    "kind": "ship_layer",
-   "file": "ships/PLAYER-10004-GLOW.png",
+   "file": "layers/ships/PLAYER-10004-canopy-glow.png",
    "canvas": {
     "width": 256,
     "height": 256
@@ -201,9 +260,37 @@
    "fallback": "procedural glow pulse in scripts/player.gd",
    "source": "animation glow layer for ship 10004",
    "required": false,
-   "notes": "Overlay layer: same canvas and same display size as the body, so it lines up pixel for pixel. Draw only the glow/emissive parts on a transparent background; the game pulses its alpha and adds it on top.",
+   "notes": "Glow layer: full 256 canvas, same display size as the body, so it lines up pixel for pixel. Emissive parts only on a transparent background; the game pulses its alpha and adds it on top. No baked flame.",
    "parent": "PLAYER-10004",
    "layer_role": "glow"
+  },
+  {
+   "slot": "PLAYER-10004-NOZZLE",
+   "kind": "ship_layer",
+   "file": "layers/ships/PLAYER-10004-nozzle-glow.png",
+   "canvas": {
+    "width": 256,
+    "height": 256
+   },
+   "format": "PNG, RGBA8, transparent background, no baked shadow",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "anchor": "center",
+   "facing": "up",
+   "display": {
+    "unit": "world_units",
+    "height": 1.4,
+    "width": 1.4,
+    "mode": "fit_canvas"
+   },
+   "fallback": "procedural engine flame in scripts/player.gd",
+   "source": "engine nozzle glow layer for ship 10004 (optional, A package only)",
+   "required": false,
+   "notes": "Optional second glow layer for the engine nozzle, again full canvas. The game adds it behind the hull and brightens it with engine thrust; if the package has no nozzle layer the engine particle flame covers it.",
+   "parent": "PLAYER-10004",
+   "layer_role": "nozzle_glow"
   },
   {
    "slot": "CD-31002",
@@ -570,9 +657,9 @@
    "notes": "Faces the player below (nose DOWN). Keep the core around the canvas centre: the slice hitbox is a 1.15-unit circle at the texture centre."
   },
   {
-   "slot": "Boss-37001-BODY",
-   "kind": "boss_part",
-   "file": "bosses/Boss-37001-BODY.png",
+   "slot": "Boss-37001-TURRET-L",
+   "kind": "boss_layer",
+   "file": "layers/bosses/Boss-37001-turret-left.png",
    "canvas": {
     "width": 512,
     "height": 512
@@ -590,76 +677,48 @@
     "width": 2.4,
     "mode": "fit_canvas"
    },
-   "fallback": "vector boss body in scripts/boss.gd",
-   "source": "Boss-37001 hull without the two gun mounts and without the core",
-   "required": false,
-   "notes": "Body layer. Same 512 canvas and 2.4-unit display size as the single-image boss, so a partial art drop still lines up.",
-   "parent": "Boss-37001",
-   "layer_role": "body"
-  },
-  {
-   "slot": "Boss-37001-GUN-L",
-   "kind": "boss_part",
-   "file": "bosses/Boss-37001-GUN-L.png",
-   "canvas": {
-    "width": 192,
-    "height": 192
-   },
-   "format": "PNG, RGBA8, transparent background, no baked shadow",
-   "pivot": [
-    0.5,
-    0.22
-   ],
-   "anchor": "center",
-   "facing": "down",
-   "display": {
-    "unit": "world_units",
-    "height": 0.95,
-    "width": 0.95,
-    "mode": "fit_canvas"
-   },
    "fallback": "vector gun drawn by scripts/boss.gd",
-   "source": "Boss-37001 left gun mount (player's left)",
+   "source": "Boss-37001 left pod/turret layer (player's left), full 512 canvas",
    "required": false,
-   "notes": "Mount pivot (0.5, 0.22): the mount sits at the top of the gun sprite and the barrel points DOWN. The game rotates this layer around that pivot to aim at the player ship.",
+   "notes": "Full-canvas layer aligned with the boss image. The game rotates it around the mount pivot and aims it at the player ship. The mount comes from the package manifest (pivot_pixels_inferred.left); with no manifest the layer rotates around the canvas centre, which the engine logs as a warning.",
    "parent": "Boss-37001",
    "layer_role": "gun_left"
   },
   {
-   "slot": "Boss-37001-GUN-R",
-   "kind": "boss_part",
-   "file": "bosses/Boss-37001-GUN-R.png",
+   "slot": "Boss-37001-TURRET-R",
+   "kind": "boss_layer",
+   "file": "layers/bosses/Boss-37001-turret-right.png",
    "canvas": {
-    "width": 192,
-    "height": 192
+    "width": 512,
+    "height": 512
    },
    "format": "PNG, RGBA8, transparent background, no baked shadow",
    "pivot": [
     0.5,
-    0.22
+    0.5
    ],
    "anchor": "center",
    "facing": "down",
    "display": {
     "unit": "world_units",
-    "height": 0.95,
-    "width": 0.95,
+    "height": 2.4,
+    "width": 2.4,
     "mode": "fit_canvas"
    },
    "fallback": "vector gun drawn by scripts/boss.gd",
-   "source": "Boss-37001 right gun mount (player's right)",
+   "source": "Boss-37001 right pod/turret layer (player's right), full 512 canvas",
    "required": false,
-   "notes": "Mirror of GUN-L, same mount pivot (0.5, 0.22). Each gun aims and rotates independently and is staggered on death.",
+   "notes": "Mirror of TURRET-L; mount from manifest pivot_pixels_inferred.right. Each pod aims independently and is staggered on death.",
    "parent": "Boss-37001",
    "layer_role": "gun_right"
   },
   {
    "slot": "Boss-37001-CORE",
-   "kind": "boss_part",
-   "file": "bosses/Boss-37001-CORE.png",
+   "kind": "boss_layer",
+   "file": "layers/bosses/Boss-37001-core-glow.png",
    "canvas": {
-    "width": 256,
-    "height": 256
+    "width": 512,
+    "height": 512
    },
    "format": "PNG, RGBA8, transparent background, no baked shadow",
    "pivot": [
@@ -670,14 +729,14 @@
    "facing": "none",
    "display": {
     "unit": "world_units",
-    "height": 0.85,
-    "width": 0.85,
+    "height": 2.4,
+    "width": 2.4,
     "mode": "fit_canvas"
    },
    "fallback": "vector core with telegraph glow in scripts/boss.gd",
-   "source": "Boss-37001 energy core (brightens before every shot)",
+   "source": "Boss-37001 energy core layer (brightens before every shot)",
    "required": false,
-   "notes": "Centred on the boss body. The game ramps its brightness for the last 0.42 s before each Attack2 shot (telegraph).",
+   "notes": "Full-canvas glow layer around the core, drawn aligned with the body. The game ramps its alpha for the last 0.42 s before each Attack2 shot (telegraph).",
    "parent": "Boss-37001",
    "layer_role": "core"
   },

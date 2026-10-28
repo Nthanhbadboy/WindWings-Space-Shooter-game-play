@@ -148,8 +148,13 @@ static func _ease_out(value: float) -> float:
 
 
 func _mount_world(index: int) -> Vector2:
-	# Gun mount anchors inside the 2.4-unit body; the pivot in the contract sits
-	# at (0.5, 0.22) of the 0.95-unit gun canvas.
+	# Art-derived mount when the package ships turret layers: the manifest pivot
+	# is converted to a world offset, so a pod drawn elsewhere in its canvas still
+	# rotates where the artist meant it to. Falls back to the vector boss anchors.
+	var art := Session.art
+	var slot := "%s-TURRET-%s" % [_art_slot(), "L" if index == 0 else "R"]
+	if art != null and art.has_art(slot):
+		return global_position + _local_mount(art, index) + Vector2(0.0, _bob)
 	var side := -1.0 if index == 0 else 1.0
 	return global_position + Vector2(side * 0.62, _bob + 0.42)
 
@@ -251,15 +256,15 @@ func is_defeated() -> bool:
 func _draw() -> void:
 	var art := Session.art
 	var slot := _art_slot()
-	var body_slot := "%s-BODY" % slot
+	var turret_slots := ["%s-TURRET-L" % slot, "%s-TURRET-R" % slot]
 	var core_slot := "%s-CORE" % slot
 	var flash_strength := MotionTuning.flash_alpha(_hit_flash_elapsed) / MotionTuning.FLASH_ALPHA
 
 	var layered := (
 		art != null
 		and (Session.variant == null or Session.variant.uses_layers())
-		and art.has_art(body_slot)
-		and art.has_art(core_slot)
+		and art.has_art(slot)
+		and art.any_present(turret_slots)
 	)
 	if layered:
 		_draw_layered(art, slot, flash_strength)
@@ -301,34 +306,46 @@ func _draw_whole_image_telegraph() -> void:
 
 
 func _draw_layered(art: ArtLibrary, slot: String, flash_strength: float) -> void:
-	var death_alpha := 1.0
+	var body_alpha := 1.0
 	if _dying:
-		death_alpha = MotionTuning.death_layer_alpha(3, _death_elapsed)
-	art.draw_slot(
-		self, "%s-BODY" % slot, Vector2(0.0, _bob), Vector2.ZERO, Color(1, 1, 1, death_alpha)
-	)
+		body_alpha = MotionTuning.death_layer_alpha(3, _death_elapsed)
+	# The boss body is the single image; the package's layer folders only add the
+	# two turret pods and the core glow, which are full-canvas layers drawn on top.
+	art.draw_slot(self, slot, Vector2(0.0, _bob), Vector2.ZERO, Color(1, 1, 1, body_alpha))
 	for index in range(2):
-		var gun_slot := "%s-%s" % [slot, "GUN-L" if index == 0 else "GUN-R"]
-		if not art.has_art(gun_slot):
+		var turret_slot := "%s-TURRET-%s" % [slot, "L" if index == 0 else "R"]
+		if not art.has_art(turret_slot):
 			continue
-		var gun_alpha := death_alpha
+		var turret_alpha := body_alpha
 		if _dying:
-			gun_alpha = MotionTuning.death_layer_alpha(index, _death_elapsed)
+			turret_alpha = MotionTuning.death_layer_alpha(index, _death_elapsed)
+		var local_mount := _local_mount(art, index)
 		art.draw_slot_pivoted(
 			self,
-			gun_slot,
-			_mount_world(index) - global_position,
+			turret_slot,
+			local_mount + Vector2(0.0, _bob),
 			Vector2.ZERO,
-			Color(1, 1, 1, gun_alpha),
+			Color(1, 1, 1, turret_alpha),
 			_gun_angles[index]
 		)
-	var glow := _current_core_glow()
-	var core_alpha := clampf(glow * death_alpha, 0.0, 1.0)
-	art.draw_slot(
-		self, "%s-CORE" % slot, Vector2(0.0, _bob), Vector2.ZERO, Color(1, 1, 1, core_alpha)
-	)
+	var core_slot := "%s-CORE" % slot
+	if art.has_art(core_slot):
+		var core_alpha := clampf(_current_core_glow(), 0.0, 1.0) * body_alpha
+		art.draw_slot(
+			self, core_slot, Vector2(0.0, _bob), Vector2.ZERO, Color(1, 1, 1, core_alpha)
+		)
 	if flash_strength > 0.0:
-		art.draw_flash(self, "%s-BODY" % slot, Vector2(0.0, _bob), flash_strength)
+		art.draw_flash(self, slot, Vector2(0.0, _bob), flash_strength)
+
+
+## Mount of one turret layer in the boss's local space. The art package owns the
+## mount (manifest pivot in canvas pixels); with no manifest the layer pivots on
+## its canvas centre, which is also where the mount then sits.
+func _local_mount(art: ArtLibrary, index: int) -> Vector2:
+	var slot := "%s-TURRET-%s" % [_art_slot(), "L" if index == 0 else "R"]
+	var display := art.display_size(slot)
+	var pivot := art.pivot_of(slot)
+	return (pivot - Vector2(0.5, 0.5)) * display
 
 
 func _draw_vector(flash_strength: float) -> void:

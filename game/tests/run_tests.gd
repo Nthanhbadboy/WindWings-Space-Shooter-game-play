@@ -476,7 +476,7 @@ func _test_art_slot_contract() -> void:
 	var library: ArtLibrary = ArtLibraryScript.new()
 	check(library.contract_ready(), "art slot contract loads: %s" % library.error)
 	check_eq(library.validate().size(), 0, "art slot contract validates: %s" % str(library.validate()))
-	check_eq(library.slot_count(), 30, "contract lists 30 slots including the animation layers")
+	check_eq(library.slot_count(), 32, "contract lists 32 slots including the animation layers")
 	check_eq(
 		library.contract.get("art_root", ""), "res://art", "contract names the integrated art root"
 	)
@@ -502,9 +502,10 @@ func _test_art_slot_contract() -> void:
 		stage_prefabs.size(),
 		"contract enemy count matches the spawned prefabs"
 	)
-	check_eq(library.contract.get("counts", {}).get("ship_layers", -1), 3, "three ship glow layers")
-	check_eq(library.contract.get("counts", {}).get("boss_parts", -1), 4, "four boss part layers")
-	check_eq(library.contract.get("counts", {}).get("total", -1), 30, "contract total is 30")
+	# Per roster ship: a canopy glow layer and an optional nozzle glow layer.
+	check_eq(library.contract.get("counts", {}).get("ship_layers", -1), 6, "six ship layer slots")
+	check_eq(library.contract.get("counts", {}).get("boss_parts", -1), 3, "three boss layer slots")
+	check_eq(library.contract.get("counts", {}).get("total", -1), 32, "contract total is 32")
 	check_eq(
 		library.contract.get("counts", {}).get("total", -1),
 		library.slot_count(),
@@ -547,13 +548,16 @@ func _test_art_slot_contract() -> void:
 		var pivot: Array = entry.get("pivot", [])
 		check_eq(pivot.size(), 2, "%s declares a pivot" % slot_id)
 		if pivot.size() == 2:
+			# The contract stays centred for every slot; the art package manifest
+			# owns the turret mounts (pinned in the layer test), so the engine can
+			# never hardcode a mount that contradicts the delivered art.
 			check_float(float(pivot[0]), 0.5, "%s pivot x is centred" % slot_id)
-			# Body-ish layers rotate and scale around their centre; the two gun
-			# parts hang from their mount instead, which the layer test pins.
-			if slot_id in MOUNT_PIVOT_SLOTS:
-				check_float(float(pivot[1]), 0.22, "%s pivot sits on its mount" % slot_id)
-			else:
-				check_float(float(pivot[1]), 0.5, "%s pivot y is centred" % slot_id)
+			check_float(float(pivot[1]), 0.5, "%s pivot y is centred" % slot_id)
+		if entry.get("layer_role", "") != "":
+			# Every sub-layer must be a full-canvas layer registered on its parent.
+			var parent: Dictionary = library.slot(str(entry.get("parent", "")))
+			check_eq(entry.get("canvas", {}), parent.get("canvas", {}), "%s uses its parent's canvas" % slot_id)
+			check_eq(entry.get("display", {}), parent.get("display", {}), "%s uses its parent's display size" % slot_id)
 		var display: Dictionary = entry.get("display", {})
 		check(not display.is_empty(), "%s declares how it is displayed" % slot_id)
 	check_eq(
@@ -585,7 +589,7 @@ func _test_art_library_fallback() -> void:
 	check(library.contract_ready(), "fallback library loads the contract")
 	check_eq(library.present_ids().size(), 0, "no art is integrated yet")
 	check_eq(library.missing_ids().size(), library.slot_count(), "every slot is a fallback")
-	check_eq(library.summary_line(), "ART_SUMMARY total=30 present=0 fallback=30", "summary line counts fallbacks")
+	check_eq(library.summary_line(), "ART_SUMMARY total=32 present=0 fallback=32", "summary line counts fallbacks")
 	for slot_id: String in library.slot_ids():
 		check(not library.has_art(slot_id), "%s falls back to vector art" % slot_id)
 		check_eq(library.status(slot_id), "fallback", "%s reports fallback status" % slot_id)
@@ -624,17 +628,14 @@ func _test_art_library_drop_in() -> void:
 	check(library.texture_for("PLAYER-10001").get_width() == 8, "the texture has the PNG size")
 	check(not library.has_art("PLAYER-10003"), "other slots stay on the fallback")
 	check(not library.has_art("CD-31002"), "enemies stay on the fallback")
-	check_eq(library.summary_line(), "ART_SUMMARY total=30 present=1 fallback=29", "summary counts one slot of art")
+	check_eq(library.summary_line(), "ART_SUMMARY total=32 present=1 fallback=31", "summary counts one slot of art")
 	var report := library.report_lines()
-	check(report.size() == library.slot_count() + 2, "the report lists every slot plus two summary lines")
+	check(report.size() == library.slot_count() + 2, "the report lists every slot plus the summary line")
 	check(
 		report.has("ART_SLOT PLAYER-10001 present %s/%s" % [ART_TEST_ROOT, "ships/PLAYER-10001.png"]),
 		"the report names the present slot and its path"
 	)
 	_clear_dir(ART_TEST_ROOT)
-
-
-const MOUNT_PIVOT_SLOTS: Array[String] = ["Boss-37001-GUN-L", "Boss-37001-GUN-R"]
 
 
 func _canvas_of(library: ArtLibrary, slot_id: String) -> Array:
@@ -646,7 +647,8 @@ func _test_art_layer_slots() -> void:
 	var library: ArtLibrary = ArtLibraryScript.new()
 	check(library.contract_ready(), "layer test library loads")
 
-	# Ship glow layer: same canvas and display as the body, own file, optional.
+	# Ship layers: canopy glow (all packages) and nozzle glow (A only), both
+	# full-canvas layers drawn exactly over the body.
 	for ship_id: int in [10001, 10003, 10004]:
 		var body_slot := "PLAYER-%d" % ship_id
 		var glow_slot := "PLAYER-%d-GLOW" % ship_id
@@ -655,37 +657,86 @@ func _test_art_layer_slots() -> void:
 		check(not glow.is_empty(), "%s has a glow layer slot" % body_slot)
 		check_eq(glow.get("parent", ""), body_slot, "%s glow belongs to the ship body" % body_slot)
 		check_eq(glow.get("layer_role", ""), "glow", "%s glow is tagged as a glow layer" % body_slot)
-		check_eq(glow.get("file", ""), "ships/%s.png" % glow_slot, "%s glow file name" % body_slot)
-		check_eq(glow.get("canvas", {}), body.get("canvas", {}), "%s glow canvas matches the body" % body_slot)
-		check_eq(glow.get("display", {}), body.get("display", {}), "%s glow display size matches the body" % body_slot)
+		check_eq(
+			glow.get("file", ""),
+			"layers/ships/%s-canopy-glow.png" % body_slot,
+			"%s glow file matches the delivered package layout" % body_slot
+		)
+		check_eq(_canvas_of(library, glow_slot), _canvas_of(library, body_slot), "%s glow canvas" % body_slot)
+		check_eq(glow.get("display", {}), body.get("display", {}), "%s glow display size" % body_slot)
 		check(not glow.get("required", true), "%s glow is optional" % body_slot)
 
-	# Boss parts: body, two guns with their own mount pivot, core.
+		var nozzle_slot := "PLAYER-%d-NOZZLE" % ship_id
+		var nozzle: Dictionary = library.slot(nozzle_slot)
+		check(not nozzle.is_empty(), "%s has a nozzle layer slot" % body_slot)
+		check_eq(
+			nozzle.get("file", ""),
+			"layers/ships/%s-nozzle-glow.png" % body_slot,
+			"%s nozzle file matches the package layout" % body_slot
+		)
+		check(not nozzle.get("required", true), "%s nozzle layer is optional" % body_slot)
+
+	# Boss layers: the single image is the body, plus two full-canvas turret pods
+	# and a full-canvas core glow.
 	var boss_slot := library.slot("Boss-37001")
 	check(not boss_slot.is_empty(), "single-image boss slot still exists")
-	for part: String in ["BODY", "GUN-L", "GUN-R", "CORE"]:
+	for part: String in ["TURRET-L", "TURRET-R", "CORE"]:
 		var slot_id := "Boss-37001-%s" % part
 		var entry: Dictionary = library.slot(slot_id)
-		check(not entry.is_empty(), "boss part %s exists" % part)
+		check(not entry.is_empty(), "boss layer %s exists" % part)
 		check_eq(entry.get("parent", ""), "Boss-37001", "%s belongs to the boss" % slot_id)
 		check(not entry.get("required", true), "%s is optional" % slot_id)
-	check_eq(library.slot("Boss-37001-BODY").get("layer_role", ""), "body", "body role")
-	check_eq(library.slot("Boss-37001-GUN-L").get("layer_role", ""), "gun_left", "left gun role")
-	check_eq(library.slot("Boss-37001-GUN-R").get("layer_role", ""), "gun_right", "right gun role")
+		check_eq(_canvas_of(library, slot_id), [512, 512], "%s is a full 512 canvas layer" % slot_id)
+		check_eq(entry.get("display", {}), boss_slot.get("display", {}), "%s display matches the body" % slot_id)
+	check_eq(library.slot("Boss-37001-TURRET-L").get("layer_role", ""), "gun_left", "left turret role")
+	check_eq(library.slot("Boss-37001-TURRET-R").get("layer_role", ""), "gun_right", "right turret role")
 	check_eq(library.slot("Boss-37001-CORE").get("layer_role", ""), "core", "core role")
-	check_eq(_canvas_of(library, "Boss-37001-GUN-L"), [192, 192], "gun canvas")
-	check_eq(_canvas_of(library, "Boss-37001-CORE"), [256, 256], "core canvas")
-	check_eq(_canvas_of(library, "Boss-37001-BODY"), [512, 512], "body canvas")
-	check_float(library.pivot_of("Boss-37001-GUN-L").x, 0.5, "left gun pivot x")
-	check_float(library.pivot_of("Boss-37001-GUN-L").y, 0.22, "left gun mount pivot y")
-	check_float(library.pivot_of("Boss-37001-GUN-R").y, 0.22, "right gun mount pivot y")
-	check_float(library.pivot_of("Boss-37001-CORE").y, 0.5, "core pivot is centred")
-	check_float(library.pivot_of("Boss-37001-BODY").y, 0.5, "body pivot is centred")
+	check_eq(
+		library.slot("Boss-37001-TURRET-L").get("file", ""),
+		"layers/bosses/Boss-37001-turret-left.png",
+		"left turret file matches the package layout"
+	)
+	check_eq(
+		library.slot("Boss-37001-CORE").get("file", ""),
+		"layers/bosses/Boss-37001-core-glow.png",
+		"core file matches the package layout"
+	)
+
+	# Package manifests own the rotating mounts; the contract stays centred.
+	for package: String in ["A", "B"]:
+		var packaged: ArtLibrary = ArtLibraryScript.new(
+			ART_CONTRACT_PATH, ["res://art/%s" % package, "res://art"]
+		)
+		check(packaged.has_manifest(), "package %s ships a manifest" % package)
+		var left: Vector2 = packaged.pivot_of("Boss-37001-TURRET-L")
+		var right: Vector2 = packaged.pivot_of("Boss-37001-TURRET-R")
+		check(left.x > 0.0 and left.x < 0.5, "%s left turret mount is on the left half" % package)
+		check(right.x > 0.5 and right.x < 1.0, "%s right turret mount is on the right half" % package)
+		check(left.y > 0.0 and left.y < 1.0, "%s left turret mount is inside the canvas" % package)
+		check(left.y > 0.15 and left.y < 0.6, "%s left turret mount sits on the pod" % package)
+		check_float(left.y, right.y, "%s turret mounts share one height" % package)
+		# Full-canvas layers drawn centred: the draw pivot must stay at the centre
+		# for the body and the core, so nothing shifts when a package is swapped.
+		check(packaged.pivot_of("Boss-37001").is_equal_approx(Vector2(0.5, 0.5)), "%s body is centred" % package)
+		check(packaged.pivot_of("PLAYER-10001").is_equal_approx(Vector2(0.5, 0.5)), "%s ship is centred" % package)
+
+	# The two delivered packages must not silently claim the same mounts.
+	var package_a: ArtLibrary = ArtLibraryScript.new(ART_CONTRACT_PATH, ["res://art/A"])
+	var package_b: ArtLibrary = ArtLibraryScript.new(ART_CONTRACT_PATH, ["res://art/B"])
+	check(
+		not package_a.pivot_of("Boss-37001-TURRET-L").is_equal_approx(
+			package_b.pivot_of("Boss-37001-TURRET-L")
+		),
+		"each package keeps its own left turret mount"
+	)
 
 	# Everything is optional, so a zero-art build must still use the fallbacks.
-	check(not library.all_present(["Boss-37001-BODY", "Boss-37001-CORE"]), "layered boss art is absent")
-	check(not library.any_present(["Boss-37001-GUN-L", "Boss-37001-GUN-R"]), "gun art is absent")
-	check(not library.has_art("PLAYER-10001-GLOW"), "the glow layer is absent before art arrives")
+	var empty_library: ArtLibrary = ArtLibraryScript.new(
+		ART_CONTRACT_PATH, ["user://art_missing_%d" % Time.get_ticks_usec()]
+	)
+	check(not empty_library.any_present(["Boss-37001-TURRET-L", "Boss-37001-CORE"]), "turret art is absent")
+	check(not empty_library.has_art("PLAYER-10001-GLOW"), "the glow layer is absent before art arrives")
+	check_float(empty_library.pivot_of("Boss-37001-TURRET-L").x, 0.5, "no manifest means a centred pivot")
 
 
 func _test_motion_tuning() -> void:

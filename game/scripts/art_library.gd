@@ -8,7 +8,12 @@ extends RefCounted
 ##   - a slot is looked up in res://art/<folder>/<file> first, then user://art/…
 ##   - a slot with no file returns null, the node keeps drawing its vector shape,
 ##     and the slot is recorded as a fallback (never a crash)
-##   - pivots are the canvas centre; sizes come from the contract display block
+##   - every slot is drawn centred (the contract keeps pivots at 0.5/0.5)
+##   - an art PACKAGE may also ship `manifest.json` next to its folders; its
+##     `pivot_pixels_inferred` block then owns the mounts of the rotating parts
+##     (boss turret left/right, ship canopy/nozzle glows). Pixels are converted
+##     to canvas fractions here, so the engine never hardcodes a mount that can
+##     contradict the delivered art.
 ##
 ## The loader is deliberately dependency-free: it works headless, before any
 ## scene is loaded, and in an exported build.
@@ -23,6 +28,9 @@ var roots: Array = DEFAULT_ROOTS.duplicate()
 var error := ""
 var verbose := false
 
+var manifest: Dictionary = {}
+var manifest_path := ""
+
 var _textures: Dictionary = {}
 var _white_textures: Dictionary = {}
 var _resolved: Dictionary = {}
@@ -34,6 +42,70 @@ func _init(contract_path := CONTRACT_PATH, art_roots: Array = []) -> void:
 	if not art_roots.is_empty():
 		roots = art_roots.duplicate()
 	load_contract(contract_path)
+	load_manifest()
+
+
+## Reads the optional `<art root>/manifest.json` of a delivered art package.
+## A missing or broken manifest is not an error: the contract pivots are used.
+func load_manifest() -> void:
+	manifest = {}
+	manifest_path = ""
+	for root: String in roots:
+		var candidate := "%s/manifest.json" % root.trim_suffix("/")
+		if not FileAccess.file_exists(candidate):
+			continue
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(candidate))
+		if not parsed is Dictionary:
+			continue
+		manifest = parsed as Dictionary
+		manifest_path = candidate
+		return
+
+
+func has_manifest() -> bool:
+	return not manifest.is_empty()
+
+
+func manifest_note() -> String:
+	if manifest.is_empty():
+		return ""
+	return "%s package=%s status=%s license=%s" % [
+		manifest_path,
+		str(manifest.get("package", "")),
+		str(manifest.get("status", "")),
+		str(manifest.get("license", "")),
+	]
+
+
+## Manifest key per layer role. Only the parts that rotate or must be placed by
+## the artist are listed; the rest is aligned by construction (full canvas).
+const MANIFEST_PIVOT_KEYS := {
+	"gun_left": "left",
+	"gun_right": "right",
+	"core": "core",
+	"glow": "player_canopy",
+	"nozzle_glow": "player_nozzle",
+}
+
+
+func package_pivot(slot_id: String) -> Variant:
+	if manifest.is_empty() or not slots.has(slot_id):
+		return null
+	var role := str((slots[slot_id] as Dictionary).get("layer_role", ""))
+	if not MANIFEST_PIVOT_KEYS.has(role):
+		return null
+	var table: Variant = manifest.get("pivot_pixels_inferred", {})
+	if not table is Dictionary:
+		return null
+	var pixels: Variant = (table as Dictionary).get(MANIFEST_PIVOT_KEYS[role])
+	if not pixels is Array or (pixels as Array).size() != 2:
+		return null
+	var canvas: Dictionary = (slots[slot_id] as Dictionary).get("canvas", {})
+	var width := float(canvas.get("width", 0))
+	var height := float(canvas.get("height", 0))
+	if width <= 0.0 or height <= 0.0:
+		return null
+	return Vector2(float(pixels[0]) / width, float(pixels[1]) / height)
 
 
 func load_contract(contract_path := CONTRACT_PATH) -> bool:
@@ -121,11 +193,9 @@ func _pivot_allowed(entry: Dictionary) -> bool:
 		return false
 	var pivot_x := float(pivot[0])
 	var pivot_y := float(pivot[1])
-	var centred := is_equal_approx(pivot_x, 0.5) and is_equal_approx(pivot_y, 0.5)
-	if centred:
-		return true
-	var role := str(entry.get("layer_role", ""))
-	return role in ["gun_left", "gun_right"] and pivot_x >= 0.0 and pivot_x <= 1.0 and pivot_y >= 0.0 and pivot_y <= 1.0
+	if pivot_x < 0.0 or pivot_x > 1.0 or pivot_y < 0.0 or pivot_y > 1.0:
+		return false
+	return is_equal_approx(pivot_x, 0.5) and is_equal_approx(pivot_y, 0.5)
 
 
 func required_slot_ids() -> Array:
@@ -330,7 +400,12 @@ func any_present(slot_ids: Array) -> bool:
 	return false
 
 
+## Pivot actually used when drawing: the art package manifest wins when it
+## declares one for this layer, otherwise the contract's centred pivot.
 func pivot_of(slot_id: String) -> Vector2:
+	var packaged: Variant = package_pivot(slot_id)
+	if packaged is Vector2:
+		return packaged as Vector2
 	var pivot: Array = slots.get(slot_id, {}).get("pivot", [0.5, 0.5])
 	if pivot.size() != 2:
 		return Vector2(0.5, 0.5)
@@ -372,6 +447,15 @@ func report_lines() -> Array:
 			lines.append(
 				"ART_SLOT %s fallback vector (%s missing)" % [slot_id, str(entry.get("file", ""))]
 			)
+	if not manifest.is_empty():
+		lines.append("ART_PACKAGE %s" % manifest_note())
+		for slot_id: String in slot_order:
+			var packaged: Variant = package_pivot(slot_id)
+			if packaged is Vector2:
+				var pivot: Vector2 = packaged as Vector2
+				lines.append(
+					"ART_PIVOT %s manifest %.4f %.4f" % [slot_id, pivot.x, pivot.y]
+				)
 	lines.append(summary_line())
 	return lines
 

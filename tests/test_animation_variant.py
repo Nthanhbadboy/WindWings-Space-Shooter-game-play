@@ -110,11 +110,59 @@ class BuildVariantTests(unittest.TestCase):
         self.assertEqual(check.returncode, 0, check.stdout + check.stderr)
 
     def test_each_variant_has_its_own_art_folder(self) -> None:
+        """Every variant folder must hold the delivered package, hashes included."""
+        import hashlib
+
         for variant in ("A", "B", "C"):
             folder = ART / variant
             self.assertTrue(folder.is_dir(), f"missing art folder {folder}")
             readme = (folder / "README.md").read_text(encoding="utf-8")
-            self.assertIn("placeholder", readme.lower())
+            self.assertIn("7aa3d08", readme)
+            for required in ("ships/PLAYER-10001.png", "bosses/Boss-37001.png", "manifest.json"):
+                self.assertTrue((folder / required).is_file(), f"{variant} lacks {required}")
+
+            # The package's own manifest must still describe the committed bytes:
+            # nothing in game/art/<variant>/ may be edited or re-encoded.
+            manifest = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
+            checked = 0
+            for entry in manifest["file_list"]:
+                name = entry["file"]
+                if not name.startswith("game/art/"):
+                    continue
+                target = folder / name[len("game/art/") :]
+                self.assertTrue(target.is_file(), f"{variant} lacks {name}")
+                digest = hashlib.sha256(target.read_bytes()).hexdigest()
+                self.assertEqual(digest, entry["sha256"], f"{variant} changed {name}")
+                checked += 1
+            minimum = 2 if variant == "C" else 5  # C ships two flat images, no layers
+            self.assertGreaterEqual(checked, minimum, f"{variant} verified only {checked} files")
+
+    def test_layer_packages_ship_their_layers(self) -> None:
+        """A and B must carry the layer files the contract asks for."""
+        expected = {
+            "A": [
+                "layers/ships/PLAYER-10001-canopy-glow.png",
+                "layers/ships/PLAYER-10001-nozzle-glow.png",
+                "layers/bosses/Boss-37001-turret-left.png",
+                "layers/bosses/Boss-37001-turret-right.png",
+                "layers/bosses/Boss-37001-core-glow.png",
+            ],
+            "B": [
+                "layers/ships/PLAYER-10001-canopy-glow.png",
+                "layers/bosses/Boss-37001-turret-left.png",
+                "layers/bosses/Boss-37001-turret-right.png",
+                "layers/bosses/Boss-37001-core-glow.png",
+            ],
+            "C": [],
+        }
+        for variant, files in expected.items():
+            for relative in files:
+                self.assertTrue(
+                    (ART / variant / relative).is_file(), f"variant {variant} lacks {relative}"
+                )
+        # C is the flat package: it must NOT smuggle layers in, or the whole-image
+        # build could silently switch to layered animation.
+        self.assertFalse((ART / "C" / "layers").exists())
 
 
 class MotionReadmeTests(unittest.TestCase):

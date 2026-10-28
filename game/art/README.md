@@ -14,9 +14,30 @@ main menu prints the label `ANIM-A` / `ANIM-B` / `ANIM-C`).
 | C | one flat image per sprite | `game/art/C/` | whole image: bob, bank, flash, shake, particles over the hull, guns fixed, flame on the hull |
 
 Each package uses the same slot names and the same relative paths below; only the
-root folder differs. Lookup order is `res://art/<variant>/` → `user://art/<variant>/`
+root folder differs. The three folders now contain the DELIVERED packages from
+`arena/215aa58f` @ `7aa3d08` (`art/animation-options/{A-clean,B-inpaint,C-flat}`),
+copied byte for byte, together with their `ANIMATION_NOTES.md` and `manifest.json`
+(package commits and hashes are recorded there; CI re-checks every hash). Lookup order is `res://art/<variant>/` → `user://art/<variant>/`
 → `res://art/` → `user://art/`, so a missing layer in a package falls back
 instead of crashing, and a shared file can sit in the variant-independent root.
+
+Slot files as delivered:
+
+```
+ships/PLAYER-10001.png
+layers/ships/PLAYER-10001-canopy-glow.png     (A, B)
+layers/ships/PLAYER-10001-nozzle-glow.png     (A only)
+bosses/Boss-37001.png
+layers/bosses/Boss-37001-turret-left.png      (A, B)
+layers/bosses/Boss-37001-turret-right.png     (A, B)
+layers/bosses/Boss-37001-core-glow.png        (A, B)
+```
+
+A package may ship `manifest.json`; its `pivot_pixels_inferred` block owns the
+mount of each rotating part (boss turrets, ship canopy/nozzle). The loader turns
+those pixels into canvas fractions, so a package is never forced to match a
+pivot hardcoded in the engine. Pivot actually used is printed as
+`ART_PIVOT <slot> manifest <x> <y>` in `BUILD_INFO.txt`.
 
 Variant C ignores the optional layer slots (`PLAYER-*-GLOW`, `Boss-37001-BODY`,
 `-GUN-L`, `-GUN-R`, `-CORE`) by design: it animates the single
