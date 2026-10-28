@@ -34,6 +34,7 @@ var _live := 0
 var _active_rows := 0
 var _spawns_done := false
 var _cleared := false
+var fast_forward := false
 var _boss_alive := 0
 var _boss_max_total := 0.0
 
@@ -74,6 +75,9 @@ func _spawn_row(row: Dictionary, row_index: int) -> void:
 	var enemies: Array = row.get("enemies", [])
 	var copies := maxi(int(row.get("copies", 0)), 0)
 	var interval := maxf(float(row.get("rate", 0.0)), 0.0)
+	if fast_forward:
+		# Headless harness only: the shipped game keeps the serialized intervals.
+		interval = 0.0
 	var entries := enemies.size() * copies
 	var emitted := 0
 	for copy_index in range(copies):

@@ -25,6 +25,12 @@ var _pause_menu: SlicePauseMenu
 const MAX_LIVE_ENEMY_SHOTS := 40
 var _live_enemy_shots := 0
 
+# Headless CI harness. Enabled only by `godot ... -- --slice-autoplay`: it keeps
+# the hull full, kills live enemies each frame and removes the spawner waits, so
+# the whole wave -> boss -> results -> save path runs inside one CI step. It is
+# not a gameplay mode and the exported game never enables it by itself.
+var _autoplay := false
+
 @onready var camera: Camera2D = $Camera2D
 @onready var world: Node2D = $World
 @onready var player: Player = $World/Player
@@ -33,6 +39,7 @@ var _live_enemy_shots := 0
 
 
 func _ready() -> void:
+	_autoplay = OS.get_cmdline_user_args().has("--slice-autoplay")
 	get_tree().paused = false
 	Session.apply_audio(false)
 	catalog = WaveCatalogScript.new()
@@ -54,6 +61,7 @@ func _ready() -> void:
 	player.health_changed.connect(_on_player_health_changed)
 
 	director.configure(world, player, catalog, boss_data, Session.mode_index)
+	director.fast_forward = _autoplay
 	director.wave_started.connect(_on_wave_started)
 	director.spawn_progress_changed.connect(_on_spawn_progress)
 	director.wave_cleared.connect(_on_wave_cleared)
@@ -86,6 +94,11 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	if _autoplay and not _finished:
+		player.current_health = player.maximum_health
+		for child in world.get_children():
+			if child.is_in_group("enemies") and child.has_method("take_damage"):
+				child.take_damage(1000000000.0)
 	if boss_started and not _finished:
 		var status := director.boss_hp_status()
 		if status.y > 0.0:
@@ -231,11 +244,25 @@ func _finish(victory: bool) -> void:
 		return
 	_finished = true
 	get_tree().paused = false
-	print("SLICE_RUN_END victory=%s kills=%d score=%d" % [str(victory), kills, score])
 	Session.apply_audio(false)
 	Session.clear_boss_music()
 	var entries := catalog.total_entries + catalog.boss_entries()
-	Session.record_run(victory, kills, entries, score, stage_index + (1 if boss_started else 0))
+	var summary := Session.record_run(
+		victory, kills, entries, score, stage_index + (1 if boss_started else 0)
+	)
+	print(
+		"SLICE_RUN_END victory=%s kills=%d entries=%d score=%d stars=%d best=%d total=%d autoplay=%s"
+		% [
+			str(victory),
+			kills,
+			entries,
+			score,
+			int(summary.get("stars", 0)),
+			int(summary.get("best_after", 0)),
+			int(summary.get("star_total", 0)),
+			str(_autoplay),
+		]
+	)
 	await get_tree().create_timer(0.7).timeout
 	get_tree().change_scene_to_file("res://scenes/results.tscn")
 

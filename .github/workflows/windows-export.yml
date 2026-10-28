@@ -168,6 +168,30 @@ jobs:
             exit 1
           fi
 
+          echo "Headless full-run harness (5 waves -> boss -> victory -> save)"
+          set +e
+          "$GODOT_BIN" --headless --path "$project" --quit-after 5400 \
+            res://scenes/main.tscn -- --slice-autoplay 2>&1 | tee -a "$out/smoke.log"
+          harness_status=${PIPESTATUS[0]}
+          set -e
+          if [ "$harness_status" -ne 0 ]; then
+            echo "Full-run harness failed (status $harness_status)." >&2
+            exit 1
+          fi
+          if ! grep -q 'SLICE_RUN_END victory=true' "$out/smoke.log"; then
+            echo "Full-run harness did not reach a victory." >&2
+            exit 1
+          fi
+          clears="$(grep -c 'SLICE_WAVE_CLEAR' "$out/smoke.log" || true)"
+          if [ "$clears" -ne 5 ]; then
+            echo "Full-run harness cleared $clears waves, expected 5." >&2
+            exit 1
+          fi
+          if ! grep -qE 'SLICE_RUN_END victory=true .*stars=3' "$out/smoke.log"; then
+            echo "A full clear must save three stars." >&2
+            exit 1
+          fi
+
           echo "Exporting Windows Desktop release with embedded PCK"
           "$GODOT_BIN" --headless --path "$project" --export-release \
             "Windows Desktop" "$out/WindWings.exe" 2>&1 | tee "$RUNNER_TEMP/godot-export.log"
@@ -254,7 +278,7 @@ jobs:
           Target: Windows Desktop x86_64, embedded PCK
           Windows runtime: RUNTIME_UNVERIFIED for this slice build
           Headless rule tests: see tests.log (TESTS_OK required for this artifact)
-          Headless smoke run: see smoke.log (menu + 900 frames of the run scene)
+          Headless smoke run: see smoke.log (menu, run scene, full 5-wave harness)
           Resource editing: disabled; no icon or company identity provided
           Signing and MSIX: not performed (USER-ONLY)
           Scope: M2 launch slice - menu, ship select, 5 real waves, boss, results,
