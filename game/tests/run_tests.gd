@@ -764,11 +764,16 @@ func _test_animation_variants() -> void:
 	var shipped: AnimationVariant = AnimationVariantScript.load_default(
 		"res://data/animation_variant.json"
 	)
-	check(AnimationVariantScript.VARIANTS.has(shipped.variant), "the shipped variant is A, B or C")
-	check(shipped.error.is_empty(), "the shipped variant file parses cleanly")
-	check_eq(shipped.mode, "layered", "A and B run the layered animation")
-	check(shipped.uses_layers(), "the default build animates layers")
-	check(shipped.guns_track_target(), "the default build lets the boss guns track the ship")
+	# CI rewrites this file per matrix build, so the rule is that the build runs
+	# exactly the mode its own variant letter declares - C must be whole-image.
+	check(AnimationVariantScript.VARIANTS.has(shipped.variant), "the built variant is A, B or C")
+	check(shipped.error.is_empty(), "the built variant file parses cleanly")
+	var built_layered := shipped.variant != "C"
+	check_eq(shipped.mode, "layered" if built_layered else "whole", "the mode matches the variant letter")
+	check_eq(shipped.uses_layers(), built_layered, "A/B animate layers, C animates a whole image")
+	check_eq(
+		shipped.guns_track_target(), built_layered, "A/B turn the boss guns, C keeps them fixed"
+	)
 
 	# A and B are layered; C animates one whole image.
 	for variant: String in ["A", "B"]:
