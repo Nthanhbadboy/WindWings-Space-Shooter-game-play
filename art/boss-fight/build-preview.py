@@ -3,7 +3,7 @@ import numpy as np, math, json, hashlib
 from scipy import ndimage
 from pathlib import Path
 P=Path('art/boss-fight'); M=P/'masters'; E=P/'exports'; (E/'boss-layers').mkdir(parents=True,exist_ok=True); (E/'effects').mkdir(exist_ok=True); (P/'review').mkdir(exist_ok=True)
-S={'hull':'round4/01-hull.png','turret_left':'02-left-turret.png','turret_right':'round2/03-right-turret-redo.png','cannon':'round3/04-cannon.png','pod_left':'round3/05-left-pod.png','pod_right':'round4/06-right-pod.png','core':'07-core.png','damage':'08-damage.png','energy':'09-energy.png','laser_bullet':'10-laser-bullet.png','beam':'round2/11-beam-strip.png','beam_origin':'round2/12-beam-origin.png','charge':'round3/13-charge-ring-redo.png','missile':'round2/14-missile.png','muzzle':'round2/15-muzzle.png','shockwave':'round2/16-shockwave.png'}
+S={'hull':'round4/01-hull.png','turret_left':'02-left-turret.png','turret_right':'round2/03-right-turret-redo.png','cannon':'round3/04-cannon.png','pod_left':'round3/05-left-pod.png','pod_right':'round4/06-right-pod.png','core':'07-core.png','damage':'08-damage.png','energy':'09-energy.png','laser_bullet':'10-laser-bullet.png','beam':'round2/11-beam-strip.png','beam_origin':'round2/12-beam-origin.png','charge':'round3/13-charge-ring-redo.png','missile':'round2/14-missile.png','muzzle':'round2/15-muzzle.png','shockwave':'round2/16-shockwave.png','target_reticle':'round5/target-reticle.png','explosion':'round5/impact-explosion.png'}
 # Black-background extraction: flood-connect near-black pixels for solid modules;
 # energy VFX use luminance-derived opacity, unpremultiplied to avoid black halos.
 def extract(name,fx=False):
@@ -35,7 +35,7 @@ boss.save(E/'boss-composite.png');layers['hull'].save(E/'boss-bare-hull.png')
 def effect(name,canvas,wh):
  obj=fit(extract(name,True if name not in ('missile',) else False),wh); im=Image.new('RGBA',canvas); im.alpha_composite(obj,((canvas[0]-obj.width)//2,(canvas[1]-obj.height)//2));im.save(E/'effects'/f'{name}.png');return im
 fx={}
-for k,canvas,wh in [('energy',(64,64),(58,58)),('laser_bullet',(64,128),(54,118)),('beam_origin',(128,128),(116,116)),('charge',(256,256),(240,240)),('missile',(64,64),(56,58)),('muzzle',(128,128),(110,110)),('shockwave',(256,256),(240,240))]:fx[k]=effect(k,canvas,wh)
+for k,canvas,wh in [('energy',(64,64),(58,58)),('laser_bullet',(64,128),(54,118)),('beam_origin',(128,128),(116,116)),('charge',(256,256),(240,240)),('missile',(64,64),(56,58)),('muzzle',(128,128),(110,110)),('shockwave',(256,256),(240,240)),('target_reticle',(256,256),(240,240)),('explosion',(256,256),(240,240))]:fx[k]=effect(k,canvas,wh)
 # beam derived from full height source, resize to strip; taper top-bottom mismatch by
 # crossfading the two ends to a shared average profile (repeat seam has identical pixels).
 im=Image.open(M/S['beam']).convert('RGB'); ar=np.asarray(im); luma=ar.max(axis=2); active=np.where(luma.max(axis=0)>12)[0]; im=im.crop((max(0,int(active[0])-10),0,min(im.width,int(active[-1])+11),im.height)).resize((64,256),Image.Resampling.LANCZOS)
@@ -55,24 +55,24 @@ def paste(im,obj,xy,scale=1,angle=0,alpha=1):
  im.alpha_composite(obj,(round(xy[0]-obj.width/2),round(xy[1]-obj.height/2)))
 def boss_at(t):return (240, -75+min(1,t/1.1)*260)
 frames=[]
-for i in range(120):
- t=i/12; im=bg.copy(); bx,by=boss_at(t); bs=.62
+for i in range(144):
+ t=i/12; im=bg.copy(); bx,by=boss_at(t); bs=.62; boss_alpha=max(0,min(1,(11.45-t)/.7)); px=240+130*math.sin(t*1.55); py=590+20*math.sin(t*2)
  # Warning rings precede each shot phase; VFX placed behind boss.
  if t<1.5 or 3.0<=t<4 or 5.9<=t<6.45 or 8<=t<8.35: paste(im,fx['charge'],(bx,by),.8,alpha=.55+.3*math.sin(t*13)**2)
  for k in order:
   # rotating turrets pivot at target centers in the 512 canvas, not at image center
   if k in ('turret_left','turret_right') and t>1.5:
-   cx,cy=pivots[k]; lay=layers[k]; box=(cx-90,cy-100,cx+90,cy+100); piece=lay.crop(box); tx=bx+(cx-256)*bs;ty=by+(cy-256)*bs;paste(im,piece,(tx,ty),bs,angle=math.sin(t*2+(0 if k.endswith('left') else 1))*18)
-  else: paste(im,layers[k],(bx,by),bs,alpha=(.65+.35*abs(math.sin(t*8))) if k=='core' and t>8 else 1)
+   cx,cy=pivots[k]; lay=layers[k]; box=(cx-90,cy-100,cx+90,cy+100); piece=lay.crop(box); tx=bx+(cx-256)*bs;ty=by+(cy-256)*bs;paste(im,piece,(tx,ty),bs,angle=math.sin(t*2+(0 if k.endswith('left') else 1))*18,alpha=boss_alpha)
+  else: paste(im,layers[k],(bx,by),bs,alpha=boss_alpha*((.65+.35*abs(math.sin(t*8))) if k=='core' and t>8 else 1))
  # Telegraph is over the armor so it is actually visible before attacks.
  if t<1.5 or 3.0<=t<4 or 5.9<=t<6.45 or 8<=t<8.35:
   paste(im,fx['charge'],(bx,by+10),.95,alpha=.65+.25*math.sin(t*13)**2)
  # smoke overlay under low HP
- if t>=8:
-  paste(im,layers['damage'],(bx-42,by-52),.85,alpha=.95)
-  paste(im,layers['damage'],(bx+40,by-40),.72,alpha=.9)
+ if 8<=t<11.45:
+  paste(im,layers['damage'],(bx-42,by-52),.85,alpha=.95*boss_alpha)
+  paste(im,layers['damage'],(bx+40,by-40),.72,alpha=.9*boss_alpha)
  # short energy and laser bolts, charge warning precedes burst
- if 1.5<=t<3.25 or t>=8.35:
+ if 1.5<=t<3.25 or 8.35<=t<10.3:
   cadence=.30 if t>=8 else .48
   for j in range(4):
    age=(t-(1.5 if t<4 else 8.35))-j*cadence
@@ -90,14 +90,26 @@ for i in range(120):
    age=t-6.45-j*.33
    if 0<=age<1.7:
     for side in (-1,1): paste(im,fx['missile'],(bx+side*(115+42*age),by+48+age*255),.72,angle=side*-10)
- # player dodges across bottom
- px=240+130*math.sin(t*1.55);py=590+20*math.sin(t*2);paste(im,player,(px,py))
- d=ImageDraw.Draw(im);d.text((14,10),'BOSS-37001  /  BATTLE PREVIEW',font=font,fill=(220,245,246));d.text((14,30),('WARNING' if t<1.5 else 'CANNONS' if t<3 else 'BEAM CHARGE' if t<4 else 'SWEEP' if t<5.9 else 'MISSILES' if t<8 else 'LOW HP'),font=small,fill=(255,187,95));d.rectangle((14,47,220,52),fill=(35,47,58));d.rectangle((14,47,14+int(206*max(.08,1-t/10)),52),fill=(226,138,55));frames.append(im.convert('RGB'))
-# GIF delay pattern 80/90/80 gives exactly 120 delays = 10 s in centiseconds.
-frames[0].save(P/'boss-fight-preview.gif',save_all=True,append_images=frames[1:],duration=[80 if i%3!=1 else 90 for i in range(120)],loop=0,optimize=False,disposal=2)
-sheet=Image.new('RGB',(480*5,700*4),(0,0,0));
-for j in range(20): sheet.paste(frames[j*6],((j%5)*480,(j//5)*700))
-sheet.resize((1200,1400),Image.Resampling.LANCZOS).save(P/'boss-fight-frame-sheet.jpg',quality=90)
+ # Lock-on telegraph before missile launch, tracks the player's position.
+ if 5.9<=t<6.45: paste(im,fx['target_reticle'],(px,py),.33+.08*math.sin(t*10)**2,alpha=.85)
+ # Player counter-fire and boss defeat / expanding shockwave ending.
+ if 8.4<=t<10.7:
+  for j in range(8):
+   age=t-(8.4+j*.27)
+   if 0<=age<1.15:
+    startx=240+130*math.sin((8.4+j*.27)*1.55)
+    paste(im,fx['laser_bullet'],(startx,570-age*340),.34,alpha=.8)
+ if 10.7<=t<11.8:
+  age=t-10.7
+  paste(im,fx['explosion'],(bx,by),.45+age*.8,alpha=max(0,1-age*.75))
+  paste(im,fx['shockwave'],(bx,by),.35+age*1.8,alpha=max(0,1-age*.8))
+ paste(im,player,(px,py))
+ d=ImageDraw.Draw(im);d.text((14,10),'BOSS-37001  /  BATTLE PREVIEW',font=font,fill=(220,245,246));d.text((14,30),('WARNING' if t<1.5 else 'CANNONS' if t<3 else 'BEAM CHARGE' if t<4 else 'SWEEP' if t<5.9 else 'MISSILES' if t<8 else 'LOW HP' if t<10.7 else 'BOSS DOWN'),font=small,fill=(255,187,95));d.rectangle((14,47,220,52),fill=(35,47,58));d.rectangle((14,47,14+int(206*max(0,1-t/10.7)),52),fill=(226,138,55));frames.append(im.convert('RGB'))
+# GIF delay pattern 80/90/80 gives 144 delays = 12 s in centiseconds.
+frames[0].save(P/'boss-fight-preview.gif',save_all=True,append_images=frames[1:],duration=[80 if i%3!=1 else 90 for i in range(144)],loop=0,optimize=False,disposal=2)
+sheet=Image.new('RGB',(480*6,700*4),(0,0,0));
+for j in range(24): sheet.paste(frames[j*6],((j%6)*480,(j//6)*700))
+sheet.resize((1440,1400),Image.Resampling.LANCZOS).save(P/'boss-fight-frame-sheet.jpg',quality=90)
 manifest={'status':'PROTOTYPE_REVIEW_NOT_RUNTIME_VERIFIED','source_masters':{k:{'path':str(M/v),'sha256':hashlib.sha256((M/v).read_bytes()).hexdigest()} for k,v in S.items()},'canvas':[512,512],'coordinate_system':'top-left, x right, y down; all pivot coordinates are in shared 512x512 boss canvas','layers':[{'name':k,'file':str(E/'boss-layers'/f'{k}.png'),'center':spec[k][1],'pivot':pivots.get(k),'order':n} for n,k in enumerate(order)],'damage_overlay':str(E/'boss-layers/damage.png'),'core_center':[256,207],'spawn_points':{'turret_left':[144,280],'turret_right':[368,280],'main_cannon_and_beam':[256,399],'pod_left':[68,333],'pod_right':[444,333]},'effects':{k:str(E/'effects'/f'{k}.png') for k in fx},'beam_strip':str(E/'effects/beam-strip.png'),'beam_end_rows_identical':bool(np.array_equal(np.asarray(beam)[0],np.asarray(beam)[-1])),'notes':['pivot and spawn coordinates estimated for prototype; must validate rotation and gameplay placement','left and right pods are separate generated images with similar but not identical details','alpha matte and luminous effects require artist review on light and dark backgrounds','hull has a few circular mechanical details but its central socket is closed','preview is composited, not a runtime capture']}
 (P/'manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+'\n')
 print('done',len(frames),'frames')
