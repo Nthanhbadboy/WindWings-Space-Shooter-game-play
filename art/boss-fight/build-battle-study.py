@@ -2,7 +2,7 @@
 """Deterministic art-only battle study, not engine logic or gameplay QA.
 Run from repo root with Pillow and numpy available.
 """
-from PIL import Image
+from PIL import Image, ImageDraw
 from pathlib import Path
 import math,json
 P=Path('art/boss-fight'); E=P/'exports'; O=E/'battle-study'; O.mkdir(exist_ok=True,parents=True)
@@ -34,21 +34,38 @@ def bxby(t):
  return 120,75
 
 def player_pos(t):
- # No jumps when reticle starts or ends; smoothly leave locked position.
- def path(u):return 120+65*math.sin(u*.7),294+3*math.sin(u*1.6)
+ # Deliberate demo path: leave the locked point, then wait outside the beam fan.
+ def path(u):
+  x,y=120+65*math.sin(u*.7),294+3*math.sin(u*1.6)
+  if 9.2<=u<9.8:
+   q=(u-9.2)/.6;x=x*(1-q)+205*q
+  elif 9.8<=u<=11.3:x=205
+  elif 20.2<=u<20.8:
+   q=(u-20.2)/.6;x=x*(1-q)+205*q
+  elif 20.8<=u<=21.6:x=205
+  return x,y
  if t<11.3:return path(t)
  start=path(11.3)
  if t<13.4:
   q=(t-11.3)/2.1;return start[0]-65*q,start[1]+(294-start[1])*q
  if t<14:
   q=(t-13.4)/.6;target=path(t);return (start[0]-65)*(1-q)+target[0]*q,294*(1-q)+target[1]*q
+ if t<15.4:
+  q=(t-14)/1.4;origin=path(14);return origin[0]*(1-q)+18*q,origin[1]*(1-q)+294*q
+ if t<17.4:return 18,294
+ if t<18.2:
+  q=(t-17.4)/.8;dest=path(18.2);return 18*(1-q)+dest[0]*q,294*(1-q)+dest[1]*q
+ if t<21.6:return path(t)
+ if t<22.7:
+  q=(t-21.6)/1.1;origin=path(21.6);return origin[0]*(1-q)+18*q,origin[1]*(1-q)+294*q
+ if t<26.6:return 18,294
+ if t<27:
+  q=(t-26.6)/.4;dest=path(27);return 18*(1-q)+dest[0]*q,294*(1-q)+dest[1]*q
  return path(t)
+HITS=[2.9,3.8,4.7,5.6,6.4,7.2,7.9,8.8,9.8,10.8,11.8,12.8,14.0,16.0,18.2,19.5,22.0,24.0,25.5,27.0]
 def hp(t):
- if t<7.2:return 1.0
- if t<18.2:return .65
- if t<24:return .25
- if t<27:return .1
- return 0
+ # Staged hit count is only a visual mock, not gameplay damage.
+ return round(max(0,1-.05*sum(t+1e-8>=x for x in HITS)),2)
 # Missile lock samples exactly player position at end of 0.8s tracking.
 lock=player_pos(11.3)
 def beam(im,x,y,angle,warning=False):
@@ -80,7 +97,7 @@ for i in range(round(FPS*DURATION)):
  for start,interval,kind in [(2.4,.6,'energy'),(8.5,.6,'laser_bullet'),(19.5,.6/1.3,'laser_bullet')]:
   for j in range(3):
    age=t-(start+j*interval)
-   if 0<=age<1.15:
+   if 0<=age<2.0:
     for side in (-1,1):
      sx=bx+side*35; sy=by+15
      drift=math.tan(math.radians(side*6))*age*130 if start==19.5 else side*8*age
@@ -105,9 +122,9 @@ for i in range(round(FPS*DURATION)):
  if 22.8<=t<24.7:beam(im,bx,by,-25+50*(t-22.8)/1.9)
  if 24.7<=t<26.6:beam(im,bx,by,25-50*(t-24.7)/1.9)
  # visible player impacts illustrate HP transitions; staged, not simulated damage
- for hit in (7.2,12,15,18.2,24,27):
+ for hit in HITS:
   if hit-.65<=t<hit:
-   q=(t-hit+.65)/.65;x=px+(bx-px)*q;y=py+(by-12-py)*q;put(im,F['laser_bullet'],x,y,.12)
+   q=(t-hit+.65)/.65;startx,starty=player_pos(hit-.65);x=startx+(bx-startx)*q;y=starty+(by-12-starty)*q;put(im,F['laser_bullet'],x,y,.12)
   if hit<=t<hit+.2:put(im,F['armor_impact'],bx,by-12,.16)
  if dying:
   if death<.95:put(im,F['turret_blast'],bx-35,by-15,.20+death*.08,opacity=min(1,(.95-death)*2))
@@ -120,7 +137,11 @@ for i in range(round(FPS*DURATION)):
   if 2.9<=death<4.3:
    a=max(0,death-3.3);fade=min(1,(death-2.9)/.4)*max(0,1-a)
    for j in range(3):put(im,F['smoke'],bx-18+j*18+8*a,by-15*a,.2+.05*a,opacity=fade*.7)
- if not 28.9<=t<29.2:put(im,player,px,py,.07)
+ if not 28.9<=t<29.2:
+  put(im,player,px,py,.07)
+  # UI-only health display, not generated artwork or simulated runtime.
+  draw=ImageDraw.Draw(im);draw.rectangle((36,6,204,12),fill=(6,13,20,220),outline=(171,191,203,255))
+  if health>0:draw.rectangle((38,8,38+round(164*health),10),fill=(74,215,207,255) if health>.7 else (255,164,66,255) if health>=.3 else (238,72,61,255))
  if 28.9<=t<29.2:im=Image.new('RGBA',(W,H),(255,255,255,255))
  frames.append(im.convert('RGB'))
 # Exact 20 fps timing; 0.3 second flash is 6 frames before GIF deduplication.
@@ -135,5 +156,5 @@ times=[0,1.5,2.4,4,6,7.2,8.5,10.7,11.3,12,14.3,15.5,16.45,17.4,18.2,19.5,21.6,22
 board=Image.new('RGB',(W*6,H*5))
 for j,t in enumerate(times):board.paste(frames[min(len(frames)-1,round(t*FPS))],((j%6)*W,(j//6)*H))
 board.save(O/'battle-study-sheet.jpg',quality=90)
-meta={'status':'DRAFT_NOT_APPROVED_NOT_RUNTIME','fps':FPS,'frames':len(frames),'duration_ms':sum(delays),'events':{'entry':[0,1.5],'advance':[4,6],'phase70':[7.2,7.7],'missile_track':[10.5,11.3],'missile_launch':[11.3,11.48,11.66,11.84],'lock_position':lock,'beam_charge':[14.3,15.5],'beam_sweep':[15.5,17.4,-25,25],'panic':18.2,'panic_shots':[19.5,19.5+.6/1.3,19.5+1.2/1.3],'final_charge':[21.6,22.8],'final_sweeps':[[22.8,24.7,-25,25],[24.7,26.6,25,-25]],'hp_below_15':24,'death':[27,31.3]},'limitations':['Timings are staged illustration, not game logic.','Frame quantization; events not always on frame boundary.','No hitbox/speed/damage/clear validation or proof of dodge.','Damage overlays are candidates, not production.','Full-screen white flash requires accessibility review.']}
+meta={'status':'DRAFT_NOT_APPROVED_NOT_RUNTIME','fps':FPS,'frames':len(frames),'duration_ms':sum(delays),'events':{'entry':[0,1.5],'advance':[4,6],'phase70':[7.2,7.7],'missile_track':[10.5,11.3],'missile_launch':[11.3,11.48,11.66,11.84],'lock_position':lock,'beam_charge':[14.3,15.5],'beam_sweep':[15.5,17.4,-25,25],'panic':18.2,'panic_shots':[19.5,19.5+.6/1.3,19.5+1.2/1.3],'final_charge':[21.6,22.8],'final_sweeps':[[22.8,24.7,-25,25],[24.7,26.6,25,-25]],'hp_below_15':24,'hp_hit_seconds':HITS,'death':[27,31.3]},'limitations':['Timings are staged illustration, not game logic.','Frame quantization; events not always on frame boundary.','No hitbox/speed/damage/clear validation or proof of dodge.','Damage overlays are candidates, not production.','Full-screen white flash requires accessibility review.']}
 (O/'manifest.json').write_text(json.dumps(meta,indent=2)+'\n');print('frames',len(frames),'duration_ms',sum(delays))

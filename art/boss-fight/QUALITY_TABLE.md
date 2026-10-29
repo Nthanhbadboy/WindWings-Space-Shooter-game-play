@@ -39,9 +39,9 @@
 | Tên lửa va chạm | CHƯA | Bản gốc bị cắt; bản redo chưa thử impact frame/halo | 1 |
 | Lõi trắng | CHƯA | Bản gốc bị cắt; bản redo chưa kiểm flash 0,3 s và accessibility | 1 |
 | Tia quét chính / cuối | CHƯA | Study mới đặt sạc 1,2 s, tia −25°→+25° 1,9 s; tia cuối 2 chiều. Còn kiểm đọc/độ sáng tia, né và collider runtime; GIF cũ vẫn sai | Không áp dụng (choreography) |
-| Khóa + tên lửa | CHƯA | Study mới reticle theo PLAYER 0,8 s, khóa rồi 4 cặp; còn kiểm animation/độ đọc và đường né, chưa runtime | Không áp dụng (choreography) |
+| Khóa + tên lửa | CHƯA | Study mới reticle theo PLAYER 0,8 s, khóa rồi 4 cặp; đã kiểm khoảng cách tâm demo 20Hz, còn kiểm animation/độ đọc và collider runtime | Không áp dụng (choreography) |
 | Cái chết | CHƯA | Đã tự dựng study 4,3 s / 4 mảnh, flash 0,3 s, khói 1 s; đã tự chỉnh tâm lửa pod theo bbox và fade thân sau flash; chưa kiểm dọn đạn, flash trắng toàn màn cần accessibility QA và kiểm chuyển động; clip toàn trận cũ vẫn 10 mảnh | Không áp dụng (choreography) |
-| GIF toàn trận + frame sheet | CHƯA | Đã render study mới 31,5 s và sheet, kịch bản theo các mốc dự kiến; chưa duyệt toàn bộ chuyển động không tiếng, nhịp ba hồi khó đọc, tia yếu sau lượng tử; chưa kiểm khe né hoặc runtime | Không áp dụng (render) |
+| GIF toàn trận + frame sheet | CHƯA | Đã render study 31,5 s và sheet, có HP mock theo impact, tia ấm và đường tàu tránh các đòn ở test 20Hz; chưa kiểm collider hoặc khe né runtime, overlay/flash chưa đạt | Không áp dụng (render) |
 | BOSS_SPEC / gameplay | CHƯA | SPEC đã theo director 185aa8b; chưa có hitbox chạy thật và chưa kiểm gameplay runtime | Không áp dụng |
 
 ## Turn hiện tại — Director 185aa8b
@@ -85,3 +85,9 @@ Rút câu hỏi tay nghề ở comment PR trước: không chờ director. Đã 
 8. **Pivot/overlay, câu chuyện/né:** có GIF xoay độc lập, có ghép A4 và A6 trong study; overlay chưa khớp panel/đọc ở 64px, chưa kiểm đủ các góc lắp. HP không hiện nên 3 hồi chưa rõ khi xem không tiếng. Chưa xác định được từng khe né an toàn.
 
 Không khai toàn bộ ĐẠT. GIF cũ giữ nguyên làm tài liệu lịch sử, study mới cũng chưa phải gameplay.
+
+## Turn tiếp — làm rõ 3 hồi và tự kiểm đường né demo
+
+Đã tự sửa đường đi tàu: test cũ cắt tâm tia ba lần (khoảng 0,24–1,21 px) và bắn biến mất trước khi tới tàu. Đạn giờ bay đủ 2 s; tàu né khỏi vùng tia khi sạc, rời tọa độ khóa tên lửa, tránh các lượt đạn đã dàn cảnh. Test hình học `check-battle-study.py` lấy mẫu 20 Hz: tia 22,26 / 22,26 / 26,99 px so với tâm, tên lửa 37,30 px, đạn 16,78 px so với tâm. Đây **không** phải khoảng cách hitbox hay bằng chứng né trong runtime; test chưa tính silhouette, filtering, va chạm theo thời gian liên tục, và vị trí đạn có thể thay đổi khi chạy game.
+
+Thêm thanh HP mock và 20 hit dàn cảnh để chuyển hồi dễ đọc hơn: 70% ở 7,2 s, 25% ở 18,2 s, đúng 15% ở 22 s, dưới 15% ở 24 s mới bật overload; sửa lỗi số thực có thể bật tại đúng 15%. Đạn địch màu ấm, projectile ta màu lạnh; test GIF mã hóa tổng 31500 ms, 625 frame. Sheet cho thấy tia và HP đọc tốt hơn; vẫn cần xem toàn bộ liên tục không tiếng, duyệt overlay/halo, animation/pivot, flash trắng và khe né thực, chưa khai ĐẠT. Không sinh lại ảnh turn này.
