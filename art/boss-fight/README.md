@@ -25,3 +25,7 @@ The 18-second GIF has an explicit beam guide, missile lock position, a warned sh
 ## Round 7 battle VFX
 
 Four more individually generated VFX sources supply an amber beam warning, missile exhaust, impact sparks and an overloaded core. These are exported separately and composited into the 18-second staged GIF. The beam warning is non-damaging and precedes the teal sweep. Existing masters remain intact; the manifest records source hashes. Runtime collision, timing balance, alpha/blend QA and user approval remain outstanding.
+
+## Cinematic three-act prototype
+
+`boss-cinematic-github.gif` is the browser-sized draft and `boss-cinematic-full.gif` the 480×700 draft; the storyboard and implementation proposal are `BOSS_CINEMATIC.md` and `CINEMATIC_SPEC.md`. This is staged art, not runtime. The required three silent visual reviews and in-game QA remain outstanding.
