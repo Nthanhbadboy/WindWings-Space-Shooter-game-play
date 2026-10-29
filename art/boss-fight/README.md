@@ -11,3 +11,5 @@
 ## Round 4 update
 
 The closed-armour hull and matching right pod replace the previous candidates; the preview and frame sheet have been rebuilt from the updated exports. Estimated turret pivots were moved upward toward the rotating bases and pod projectile spawn points were adjusted. `review/halo-64px.png` supplements the light/dark full-size check. User approval and in-engine verification remain outstanding.
+
+`boss-fight-github.gif` is the smaller GitHub-viewing copy of the preview (320×467, 64-color palette, 120 frames, 10 s). This copy is reduced for browser display, not a replacement for the full-size source exports or `boss-fight-preview.gif`.
