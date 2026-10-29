@@ -17,7 +17,10 @@ riêng của director/USER.
   pha đã tra gốc** (nguồn: tập 04 §4.1 — `COMBAT.md` §3+§7,
   `Gun_Attack.csv`, `Bullet_Linearly.csv`; mỗi thông số ghi [GỐC] hoặc
   [ĐỀ XUẤT]). SPEC còn để thông số dạng tính từ ("nhỏ hơn glow") là
-  chưa đạt cổng, phải quay lại tra.
+  chưa đạt cổng, phải quay lại tra. Hư hại/lắp linh kiện chấm theo
+  **chuẩn tổng thể** (Boss Book §3.5 câu 7): biến thể thân theo bậc
+  hoặc lớp phủ do art tự chọn kỹ thuật; bảng chất lượng tách tầng
+  [ART] / [ENGINE], tầng ENGINE không chặn art đóng hồ sơ.
   **Kế hoạch lô theo năng lực 10 ảnh/turn (tập 04 §4.3):** Lô A1 (≤10):
   món bổ sung còn thiếu của bộ linh kiện (hư hại bậc 2–3, mảnh vỡ, chuỗi
   nổ...) — phần lớn linh kiện chính đã có sẵn nên lô này nhỏ; Lô A2:

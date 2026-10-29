@@ -135,6 +135,21 @@ boss trước (đã biết né tia → boss sau có đòn trừng việc đứng
    chậm 4,8 → họ tên lửa; dòng 319 nhanh 16 → họ cầu/laser). Trong
    BOSS_SPEC phải ghi "hình mới thuộc họ X, thông số tham chiếu dòng Y",
    cấm ghi là đạn/hình gốc.
+7. **Chuẩn hư hại và chuẩn lắp linh kiện: tổng thể, không từng pixel
+   [ĐẠO DIỄN — chốt theo lệnh USER 29/10]** Yêu cầu cũ "overlay hư hại
+   khớp chi tiết giáp từng pixel" bị hủy vì không khả thi với ảnh sinh
+   độc lập và không phải thứ người chơi nhìn thấy. Chuẩn mới: hư hại
+   được giao dưới dạng **3 biến thể thân theo bậc** (nguyên vẹn / hư
+   hại vừa / hư hại nặng, chuyển bậc theo ngưỡng HP ở §3.2) hoặc lớp
+   phủ — art tự chọn kỹ thuật theo §6.4.2 — và chỉ chấm ở **tổng thể**:
+   ở kích thước hiển thị thật và trong chuyển động, người xem thấy rõ
+   boss xuống sức theo bậc, không lộ mép ghép/ghosting/thân biến mất
+   đột ngột. Tương tự, lắp pháo/pod chấm ở tổng thể (đế ngồi ổn định,
+   không lộ lỗ khi xoay ở cỡ game), không đòi đăng ký từng pixel.
+   Bảng chất lượng của art phải tách 2 tầng: **[ART] tự đóng được**
+   (hình/lớp/pivot/GIF) và **[ENGINE] chờ coder QA** (collider, khe
+   né, muzzle trong runtime) — tầng ENGINE không chặn art hoàn thành
+   phần của mình.
 
 ## 3.4 Luật sản xuất boss (không thương lượng)
 
