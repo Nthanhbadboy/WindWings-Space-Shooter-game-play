@@ -1,0 +1,92 @@
+# 04 — CHIẾN ĐẤU, FX, NGHỆ THUẬT & CHUYỂN ĐỘNG
+
+## 4.1 Hệ chiến đấu (từ 458 súng / 186 loại đạn của gốc)
+
+Gốc: damage súng 40–1.200 (median 400), burst có 5 tham số, đạn có họ
+riêng [gốc — COMBAT.md]. Làm mới giữ cấu trúc, rút gọn cho dễ đọc:
+
+- **Đạn người chơi:** theo tàu (02): thẳng dồn / tỏa / nặng chậm / drone
+  phụ. Đạn phải **to, sáng, có vệt** — người chơi không bao giờ mất dấu
+  đạn của mình.
+- **Đạn địch:** chỉ 3 họ hình dạng trong Slice để học đọc: cầu năng lượng
+  (chậm, né dễ), viên laser dài (nhanh, theo đường thẳng), tên lửa (có
+  khóa, có vệt khói). [MỞ RỘNG] thêm họ theo boss/chương. Đạn nguy hiểm
+  luôn màu nóng (cam/đỏ/hồng), đạn ta luôn màu lạnh (xanh/teal/trắng) —
+  luật màu này không ngoại lệ.
+- **Va chạm:** hitbox nhỏ hơn hình (tha thứ ~30%) để cảm giác "né sượt"
+  xảy ra thường xuyên — đó là khoảnh khắc vui nhất của thể loại này.
+- **Sát thương:** mọi số ghi nguồn: khung tàu 2.500 HP, damage tàu
+  4500/2680/8000, boss 225.000 [gốc/slice]; đòn địch thường lấy 3–6%
+  HP tàu/viên, đòn boss lớn 10–20%/đợt trúng liên tục.
+
+## 4.2 Cảm giác trận đánh (game feel) — bảng juice chuẩn
+
+| Sự kiện | Hiệu ứng bắt buộc | Thông số gốc tham chiếu |
+|---|---|---|
+| Địch trúng đạn | Chớp trắng thân + tia lửa nhỏ + lệch nhẹ | Flash **0,05s** [gốc] |
+| Tàu trúng đạn | Chớp + rung màn hình + viền đỏ thoáng | Rung **0,10s / 20 frame** [gốc] |
+| Địch chết | Nổ theo cỡ địch + xu văng ra bay về HUD | Chuỗi rơi xu gốc [gốc] |
+| Boss sạc đòn lớn | Âm rít tăng + glow tụ + đường cảnh báo | Telegraph ≥0,8s (luật Công bằng) |
+| Boss chết | Chuỗi nổ theo thứ tự + dọn đạn + chậm 0,2s ở nổ chính | Xem Boss Book 3.2 |
+| Nhặt xu/item | Vật phẩm bay có từ tính về tàu khi gần | Bán kính hút khai trong code |
+
+## 4.3 Nghệ thuật — quy trình sản xuất (bài học xương máu)
+
+1. **Generate trực tiếp, không vẽ lại bằng code.** Chuẩn hình: ngôn ngữ
+   tàu đã USER chốt (cong, giáp tầng, 2.5D). Tham khảo nguyên mẫu qua
+   contact sheet trong repo để học ngôn ngữ — cấm trace/chép.
+2. **NĂNG LỰC SẢN XUẤT — RÀNG BUỘC CỨNG (điều kiện lập kế hoạch):**
+   session art sinh tối đa **10 ảnh generate trong 1 turn** (mỗi ảnh là
+   một lần gọi công cụ sinh ảnh độc lập; xử lý hậu kỳ/render GIF không
+   tính vào quota này nhưng tốn thời gian riêng). Hệ quả bắt buộc:
+   - Mọi nhiệm vụ art phải được **chia sẵn thành các LÔ ≤10 ảnh**, đánh
+     số Lô 1, Lô 2, ... kèm danh sách từng ảnh trong từng lô, NGAY trong
+     prompt giao việc. Cấm giao một danh sách dài hơn 10 ảnh như việc
+     của một turn.
+   - Cuối mỗi turn, art báo cáo theo lô: `ĐÃ GIAO LÔ x/y — z/10 ảnh đạt`,
+     liệt kê món còn thiếu; dừng ở đó chờ director/USER nói "tiếp" mới
+     sinh lô kế. Cấm tự gộp nhiều turn vào một báo cáo "đã xong".
+   - Ước lượng quy mô theo ràng buộc này: 1 boss đầy đủ (~22 file hình)
+     ≈ **3 turn sinh ảnh** + 1 turn hậu kỳ/render; đội địch 13–16 con ≈
+     **2 turn**; hangar (nền + giàn + bệ) ≈ 1 turn. Lộ trình ở tập 06 đã
+     tính theo các con số này — không được hứa nhanh hơn.
+   - Ảnh sinh lỗi/dị dạng vẫn tính vào quota của turn đó; báo lỗi ngay,
+     ảnh thay thế thuộc lô của turn sau.
+3. **Linh kiện trước, ảnh sau:** thân trần → bộ phận động → glow → hư
+   hại → đạn/FX cùng hệ. Mọi pivot do art đo.
+4. **Hậu kỳ tối thiểu:** tách nền (kiểm halo ở nền sáng + tối), đặt
+   canvas đúng slot (tàu 256², địch 128², boss 512², đạn 64²/64×128,
+   FX 256², nền 1080×1920 [contract coder]), thu nhỏ Lanczos trực tiếp
+   từ master. Số đo ảnh (planner) chỉ là **tham khảo** — mắt USER là cổng.
+5. **Kiểm ở kích thước thật:** mọi asset nộp kèm bản thu về cỡ hiển thị
+   (tàu ~93px, địch ~50px trong viewport 10,8 unit) đặt trên nền gameplay.
+   Đẹp ở 1024² mà nát ở cỡ thật = loại, sinh lại với khối to hơn.
+
+## 4.4 Chuyển động — 3 tầng (chi tiết của luật đạo diễn chương 4)
+
+- **Tầng linh kiện (art):** pháo xoay, lõi nhịp, cánh/pod phụ nếu có;
+  bằng chứng = GIF xoay/từng bộ phận do art tự render từ file export.
+- **Tầng thủ tục (coder):** hover/bob (biên độ 0,05–0,12 unit, chu kỳ
+  1,6–2,4s), banking nghiêng theo vận tốc ngang (tới ~12°), giật lùi
+  0,03 unit khi bắn loạt, lửa particle: dài theo tốc độ dọc, tắt khi chết.
+  Hằng số tập trung 1 file tuning, khai nguồn từng số.
+- **Tầng trận đấu (art kịch bản → coder hệ thống):** trạng thái theo
+  %HP/vị trí (Boss Book), nhịp đòn bám nhịp gốc 0,17/0,33/1,0/5,0s [gốc]
+  làm thang tham chiếu cho tốc độ sự kiện.
+
+## 4.5 Kế hoạch kho hình (đếm được, thay cho "2.885 sprite" của gốc)
+
+Không sản xuất 2.184 sprite như gốc; sản xuất theo **nhu cầu scene**:
+
+| Nhóm | Slice cần | Cách tính |
+|---|---|---|
+| Tàu người chơi (thân+glow) | 3×2 | Theo 02 |
+| Địch 5 wave (thân, +glow nếu có) | 13–16 | Theo 01 — đủ ý đồ wave |
+| Boss mẫu (linh kiện+FX/đạn) | ~22 file | Đã có tại art/boss-fight |
+| Đạn (ta 3 họ, địch 3 họ) | 6 | 4.1 |
+| FX (nổ 4 frame, khói, tia lửa, vòng, chớp) | ~10 | 4.2 |
+| Nền (không gian trận, hành lang boss, hangar+giàn) | 3–4 | Theo scene |
+| UI (khung, nút, biểu tượng tài nguyên) | ~10 | Theo 05 |
+| **Tổng Slice** | **~70 file** | Đủ một game nhỏ trọn vẹn |
+
+[MỞ RỘNG] Mỗi chương cộng: 1 nền, 4–8 địch, 1 boss (~22 file), 0–2 tàu.
