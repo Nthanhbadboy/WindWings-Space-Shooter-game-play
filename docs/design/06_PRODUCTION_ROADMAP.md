@@ -90,3 +90,25 @@ Quy tắc leo thang: session gặp chỗ kịch bản chưa có/chưa rõ thì *
 bằng văn bản trên board, gắn câu hỏi vào đúng mục tài liệu** — director
 trả lời vào chính tài liệu đó (không trả lời miệng trôi qua). Session
 tự ý quyết thay phần của director = sản phẩm bị trả lại, dù đẹp.
+
+### 6.4.2 Quyền tự quyết tay nghề của art (chốt 29/10 theo lệnh USER)
+
+USER đã chỉ rõ: những việc thuộc **tay nghề người vẽ** mà art cứ phải hỏi
+lại thì tiến độ không bao giờ xong. Nay phân định cứng:
+
+- **Art TỰ QUYẾT, cấm hỏi lại, cấm chờ duyệt** mọi vấn đề kỹ thuật hình
+  ảnh thuần túy, bao gồm nhưng không giới hạn: tách/ghép linh kiện thế
+  nào để đạt chuẩn (ví dụ: ụ pháo phải tách đế tĩnh + đầu quay mới xoay
+  đúng — tự sinh lại), sinh lại bao nhiêu lần, đổi kỹ thuật xử lý
+  (inpaint, mặt nạ, sinh mới), đo pivot bằng cách nào, giữ hay bỏ pixel
+  của bản nháp nào. Chuẩn đầu ra (Boss Book/tập 04) là thứ duy nhất phải
+  thỏa; **đường đi tới chuẩn là của art**.
+- Art chỉ được hỏi director khi vướng đúng 3 loại việc: (1) kịch bản/
+  câu chuyện của trận đấu thay đổi; (2) thông số cân bằng/số đã chốt
+  trong SPEC không thực hiện được; (3) phạm vi (thêm/bớt nội dung ngoài
+  hồ sơ). Ngoài 3 loại này, câu hỏi tay nghề gửi lên sẽ bị trả về kèm
+  dòng "tự quyết theo §6.4.2".
+- Hệ quả: director không dạy vẽ, không duyệt từng kỹ thuật xử lý;
+  director chỉ kiểm **sản phẩm cuối theo chuẩn** và đối chiếu dữ liệu.
+  Trong bảng chất lượng, art ghi "đã tự xử lý bằng cách X" như thông tin
+  — không phải xin phép.
