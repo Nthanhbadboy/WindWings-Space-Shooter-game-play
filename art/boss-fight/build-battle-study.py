@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw
 from pathlib import Path
 import math,json
 P=Path('art/boss-fight'); E=P/'exports'; O=E/'battle-study'; O.mkdir(exist_ok=True,parents=True)
-W,H=240,350; FPS=20; DURATION=31.5
+W,H=240,350; FPS=20; DURATION=32.0
 background=Image.open('art/launch-slice/source/bg-gameplay.png').convert('RGBA').resize((W,H),Image.Resampling.LANCZOS)
 player=Image.open('art/launch-real-size/exports/ships/PLAYER-10001.png').convert('RGBA')
 L={n:Image.open(E/'boss-layers'/f'{n}.png').convert('RGBA') for n in ('hull','pod_left','pod_right','core','cannon')}
@@ -18,7 +18,12 @@ def warm(img):
  r,g,b,a=img.split(); return Image.merge('RGBA',(b.point(lambda x:min(255,round(x*1.05))),g.point(lambda x:round(x*.48)),r.point(lambda x:round(x*.14)),a))
 for n in ('energy','laser_bullet','beam-strip'):
  F['enemy_'+n]=warm(F[n])
-HULL={k:Image.open(E/'hull-variants'/f'hull-{k}.png').convert('RGBA') for k in ('intact','medium','severe')}
+HULL={k:Image.open(E/'hull-variants-B2'/f'hull-{k}.png').convert('RGBA') for k in ('intact','medium','severe')}
+
+NEW={name:{'body':Image.open(E/'bullet-B2'/name/'body.png').convert('RGBA'), 'glow':[Image.open(E/'bullet-B2'/name/f'glow-{i}.png').convert('RGBA') for i in range(3)]} for name in ('heavy-orb','laser','panic','missile','beam-head','beam-strip')}
+NEW_TRAIL=Image.open(E/'bullet-B2/missile-trail/body.png').convert('RGBA')
+def projectile(name,t):
+ item=NEW[name]; level=[0,1,2,1][int(t*6)%4]; im=item['glow'][level].copy();im.alpha_composite(item['body']);return im
 
 def put(dst,img,x,y,scale=1,angle=0,opacity=1):
  if opacity<=0:return
@@ -68,9 +73,10 @@ def hp(t):
  return round(max(0,1-.05*sum(t+1e-8>=x for x in HITS)),2)
 # Missile lock samples exactly player position at end of 0.8s tracking.
 lock=player_pos(11.3)
-def beam(im,x,y,angle,warning=False):
- asset=F['beam_warning' if warning else 'enemy_beam-strip'].resize((4 if warning else 10,270),Image.Resampling.LANCZOS)
+def beam(im,x,y,angle,warning=False,t=0):
+ asset=(F['beam_warning'] if warning else projectile('beam-strip',t)).resize((4 if warning else 10,270),Image.Resampling.LANCZOS)
  rad=math.radians(angle);put(im,asset,x+math.sin(rad)*135,y+48+math.cos(rad)*135,angle=angle)
+ if not warning:put(im,projectile('beam-head',t),x,y+48,.22)
 frames=[]
 for i in range(round(FPS*DURATION)):
  t=i/FPS; bx,by=bxby(t); px,py=player_pos(t); im=background.copy();health=hp(t)
@@ -91,17 +97,17 @@ for i in range(round(FPS*DURATION)):
  # Visual transition: 70% phase change, not overload.
  if 7.2<=t<7.7:put(im,F['charge'],bx,by,.35,opacity=.85)
  if 0<health<.15:put(im,F['core_overload'],bx,by-8,.24,opacity=.5+.35*abs(math.sin(t*8)))
- warning=(1.5<=t<2.4 or 7.7<=t<8.5 or 18.7<=t<19.5)
+ warning=(0<=t<2.4 or 7.7<=t<8.5 or 18.7<=t<19.5)
  if warning:put(im,F['charge'],bx,by,.34,opacity=.6)
  # shots: paired turrets each use 3-shot timing from director; no hitbox claim.
- for start,interval,kind in [(2.4,.6,'energy'),(8.5,.6,'laser_bullet'),(19.5,.6/1.3,'laser_bullet')]:
+ for start,interval,kind in [(2.4,.6,'heavy-orb'),(8.5,.6,'laser'),(19.5,.6/1.3,'panic')]:
   for j in range(3):
    age=t-(start+j*interval)
    if 0<=age<2.0:
     for side in (-1,1):
      sx=bx+side*35; sy=by+15
      drift=math.tan(math.radians(side*6))*age*130 if start==19.5 else side*8*age
-     put(im,F['enemy_'+kind],sx+drift,sy+age*130,.20)
+     put(im,projectile(kind,t),sx+drift,sy+age*130,{'heavy-orb':.25,'laser':.16,'panic':.16}[kind])
      if age<.12:put(im,F['muzzle'],sx,sy,.14)
  # Reticle follows exact player then freezes at lock coordinate.
  if 10.5<=t<11.3:put(im,F['target_reticle'],px,py,.16)
@@ -111,16 +117,16 @@ for i in range(round(FPS*DURATION)):
   if 0<=age<1.6:
    for side in (-1,1):
     q=age/1.6;sx=bx+side*58;sy=by+10;x=sx+(lock[0]-sx)*q;y=sy+(lock[1]-sy)*q
-    angle=math.degrees(math.atan2(-(lock[0]-sx),lock[1]-sy));put(im,F['missile_trail'],x,y-8,.12,angle,opacity=.7);put(im,F['missile'],x,y,.22,angle)
+    angle=math.degrees(math.atan2(-(lock[0]-sx),lock[1]-sy));put(im,NEW_TRAIL,x-math.sin(math.radians(angle))*14,y-math.cos(math.radians(angle))*14,.12,angle,opacity=.7);put(im,projectile('missile',t),x,y,.28,angle)
  # Red warning art precedes each beam; fixed timing/angles as stated in Book.
  for a,b in [(14.3,15.5),(21.6,22.8)]:
   if a<=t<b:
    beam(im,bx,by,-25,True);put(im,F['charge'],bx,by,.42,opacity=.8)
    for x in (8,232):
     for y in (80,170,255):put(im,F['beacon'],x,y,.18,opacity=1)
- if 15.5<=t<17.4:beam(im,bx,by,-25+50*(t-15.5)/1.9)
- if 22.8<=t<24.7:beam(im,bx,by,-25+50*(t-22.8)/1.9)
- if 24.7<=t<26.6:beam(im,bx,by,25-50*(t-24.7)/1.9)
+ if 15.5<=t<17.4:beam(im,bx,by,-25+50*(t-15.5)/1.9,t=t)
+ if 22.8<=t<24.7:beam(im,bx,by,-25+50*(t-22.8)/1.9,t=t)
+ if 24.7<=t<26.6:beam(im,bx,by,25-50*(t-24.7)/1.9,t=t)
  # visible player impacts illustrate HP transitions; staged, not simulated damage
  for hit in HITS:
   if hit-.65<=t<hit:
@@ -143,6 +149,8 @@ for i in range(round(FPS*DURATION)):
   draw=ImageDraw.Draw(im);draw.rectangle((36,6,204,12),fill=(6,13,20,220),outline=(171,191,203,255))
   if health>0:draw.rectangle((38,8,38+round(164*health),10),fill=(74,215,207,255) if health>.7 else (255,164,66,255) if health>=.3 else (238,72,61,255))
  if 28.9<=t<29.2:im=Image.new('RGBA',(W,H),(255,255,255,255))
+ if t>=31.3:
+  draw=ImageDraw.Draw(im);draw.rectangle((55,150,185,178),fill=(10,19,27,230),outline=(95,214,205,255));draw.text((82,159),'MISSION CLEAR',fill=(229,248,246,255))
  frames.append(im.convert('RGB'))
 # Exact 20 fps timing; 0.3 second flash is 6 frames before GIF deduplication.
 delays=[50 for i in range(len(frames))]
@@ -156,5 +164,5 @@ times=[0,1.5,2.4,4,6,7.2,8.5,10.7,11.3,12,14.3,15.5,16.45,17.4,18.2,19.5,21.6,22
 board=Image.new('RGB',(W*6,H*5))
 for j,t in enumerate(times):board.paste(frames[min(len(frames)-1,round(t*FPS))],((j%6)*W,(j//6)*H))
 board.save(O/'battle-study-sheet.jpg',quality=90)
-meta={'status':'DRAFT_NOT_APPROVED_NOT_RUNTIME','fps':FPS,'frames':len(frames),'duration_ms':sum(delays),'events':{'entry':[0,1.5],'advance':[4,6],'phase70':[7.2,7.7],'missile_track':[10.5,11.3],'missile_launch':[11.3,11.48,11.66,11.84],'lock_position':lock,'beam_charge':[14.3,15.5],'beam_sweep':[15.5,17.4,-25,25],'panic':18.2,'panic_shots':[19.5,19.5+.6/1.3,19.5+1.2/1.3],'final_charge':[21.6,22.8],'final_sweeps':[[22.8,24.7,-25,25],[24.7,26.6,25,-25]],'hp_below_15':24,'hp_hit_seconds':HITS,'death':[27,31.3]},'limitations':['Timings are staged illustration, not game logic.','Frame quantization; events not always on frame boundary.','No hitbox/speed/damage/clear validation or proof of dodge.','Whole-hull B1 variants are candidates, not production.','Full-screen white flash requires accessibility review.']}
+meta={'status':'DRAFT_NOT_APPROVED_NOT_RUNTIME','fps':FPS,'frames':len(frames),'duration_ms':sum(delays),'events':{'entry':[0,1.5],'advance':[4,6],'phase70':[7.2,7.7],'missile_track':[10.5,11.3],'missile_launch':[11.3,11.48,11.66,11.84],'lock_position':lock,'beam_charge':[14.3,15.5],'beam_sweep':[15.5,17.4,-25,25],'panic':18.2,'panic_shots':[19.5,19.5+.6/1.3,19.5+1.2/1.3],'final_charge':[21.6,22.8],'final_sweeps':[[22.8,24.7,-25,25],[24.7,26.6,25,-25]],'hp_below_15':24,'hp_hit_seconds':HITS,'death':[27,31.3],'mock_result':[31.3,32.0]},'limitations':['Timings are staged illustration, not game logic.','Frame quantization; events not always on frame boundary.','No hitbox/speed/damage/clear validation or proof of dodge.','Whole-hull B2 and bullet B2/B3 are candidates, not production.','Full-screen white flash requires accessibility review.']}
 (O/'manifest.json').write_text(json.dumps(meta,indent=2)+'\n');print('frames',len(frames),'duration_ms',sum(delays))

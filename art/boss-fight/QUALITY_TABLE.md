@@ -6,14 +6,14 @@ Chuẩn director `28716f4` Book §3.5(7): hình được chấm tổng thể ở
 
 | Món | ĐẠT / CHƯA | Lỗi cụ thể / đã tự xử lý | Số lần sinh lại |
 |---|---|---|---:|
-| Biến thể thân B1 — phân biệt 3 bậc cỡ game (câu 1) | CHƯA | Đã tự sinh 2 thân nguyên khối theo thân gốc, lắp các phần vào sheet 240×350; bậc 2/3 thấy vết cam nhưng trong GIF đã lượng tử vết còn nhỏ/mờ, cần tăng độ đọc và xem liên tục | 0 / 0 (B1 đầu tiên) |
-| Biến thể — chuyển bậc (câu 2) | CHƯA | Đã dựng thử chuyển hẳn thân tại va chạm, không crossfade; chưa tự duyệt toàn bộ chuyển động trong GIF và clip toàn trận, chưa khẳng định hết ghosting/lỗ | 0 |
-| Biến thể — cùng một boss (câu 3) | ĐẠT trên sheet thử | Cả ba có chung silhouette/thiết kế và cùng bộ pháo/pod; không đòi khớp từng pixel | 0 |
-| Lắp ụ, pod / pivot | CHƯA | Hai ụ có đế/đầu độc lập, GIF xoay 360°; đã ghép vào biến thể, còn kiểm toàn vòng và cỡ game không lộ lỗ | trái 1 / phải 2 |
+| Biến thể B2 — phân biệt 3 bậc cỡ game (câu 1) | ĐẠT | Đã sinh lại thân nguyên khối với vết ngoài giáp rộng hơn; sheet gameplay 240×350 thể hiện nguyên/vừa/nặng phân biệt được | 1 / 1 |
+| Biến thể — chuyển bậc (câu 2) | ĐẠT trong test art | Đổi nguyên thân tại va chạm, không crossfade; sheet trước/sau và GIF test không thấy ghosting/lỗ hay mất thân | 1 / 1 |
+| Biến thể — cùng một boss (câu 3) | ĐẠT | Ba bậc chung silhouette/thiết kế và cùng bộ pháo/pod trong sheet gameplay, không đòi khớp từng pixel | 1 / 1 |
+| Lắp ụ, pod / pivot | ĐẠT trong test art | Hai ụ có đế/đầu độc lập; test lắp nguyên vẹn và hư nặng xoay 360°, sheet 8 hướng không thấy lỗ ở cỡ game | trái 1 / phải 2 |
 | Bộ đạn | CHƯA | Xem bảng riêng bên dưới: cần đọc cỡ game, tách glow, pulse, tile và đuôi tên lửa | theo họ |
 | Death GIF | CHƯA | Study 4,3 s có 4 mảnh và khói 1 s; flash trắng toàn màn 0,3 s cần kiểm visual/accessibility, chưa chốt art | — |
-| GIF toàn trận + manifest | CHƯA | Đã gắn thân B1 vào study toàn trận, nhưng đạn vẫn nháp cũ; chưa duyệt liền mạch và chưa khóa clip | — |
-| SPEC/kịch bản | CHƯA | Đã cập nhật §3.5(7) và bảng họ đạn ứng viên, chưa chốt sản phẩm/manifest | — |
+| GIF toàn trận + manifest | CHƯA | Đã gắn thân B2, đạn B2/B3, pulse và kết quả giả vào GIF study 32s; chưa duyệt toàn bộ liên tục không tiếng/chưa khóa clip | — |
+| SPEC/kịch bản | CHƯA | Đã cập nhật §3.5(7), họ đạn B2/B3 và anchor đề xuất; manifest đang là candidate, chưa chốt sản phẩm | — |
 
 ## [ART] Bảng bộ đạn mới
 
@@ -21,13 +21,13 @@ Số lần sinh lại là số lần sinh thay thế trong loạt bộ đạn m�
 
 | Họ | ĐẠT / CHƯA | Lỗi cụ thể | Số lần sinh lại |
 |---|---|---|---:|
-| Cầu DOMINANT | CHƯA | Cầu cam đọc được trên sheet thử; glow vẫn nung trong body, 3 glow chỉ là lớp bổ sung, chưa clean split / QA pulse | 0 |
-| Laser ENRAGED | CHƯA | Có silhouette tím dài 64×128; ở sheet đề xuất nhìn rất mảnh, glow trong body, chưa QA pulse/halo | 0 |
-| Tỏa PANIC | CHƯA | Sao vàng khác hình, nhưng quá nhỏ ở sheet; glow trong body, chưa QA từng viên khi tỏa | 0 |
-| Tên lửa khóa | CHƯA | B1 mũi đỏ nhưng thân tối gần mất trên nền game, điểm sáng ở mũi không phải tâm; B2 sáng hơn nhưng thành pixel art sai phong cách, loại; khói riêng chưa kiểm điểm gắn | 1 |
-| Đầu tia + thân tia | CHƯA | Đầu corona và dải cam có nguồn; thân chưa có glow 3 trạng thái và mép tile chưa khớp/kiểm lặp | 0 |
-| Khói đuôi | CHƯA | Nguồn rời không nung vào tên lửa; nền đen làm mất khói tối, chưa gắn đuôi/QA halo | 0 |
-| Sheet cỡ thật | CHƯA | Sheet hiện tại dùng PLAYER 18 px = 1,4 unit và kích thước đề xuất; tên lửa gần vô hình, fan/laser khó đọc, chưa là tỷ lệ bay được xác nhận | — |
+| Cầu DOMINANT | CHƯA | B2 cam, tâm sáng; body/glow 3 trạng thái tách riêng, còn kiểm nhịp pulse ở cỡ hiển thị | 1 |
+| Laser ENRAGED | CHƯA | B2 tím hình thuôn đọc rõ hơn; body/glow 3 trạng thái, còn duyệt pulse/halo trong chuyển động | 1 |
+| Tỏa PANIC | CHƯA | B2 vàng hình thoi; còn duyệt nhịp và độ phân biệt khi bắn nhiều viên | 1 |
+| Tên lửa khóa | CHƯA | B3 hình kim khí sáng tâm, tô đỏ khác cầu; glow và khói riêng; đã thử gắn đuôi, còn kiểm xoay và pulse trong clip | 2 |
+| Đầu tia + thân tia | CHƯA | B1 tạo body/glow 3 trạng thái, nhân bản đối xứng cho hai đầu tile trùng pixel; còn xem chuyển động/pulse cỡ game | 0 |
+| Khói đuôi | CHƯA | Tự chỉnh chiết khói thành xám thay vì trắng gắt, gắn đuôi theo góc; còn kiểm khi nhiều quả bay | 0 |
+| Sheet cỡ thật | CHƯA | Sheet dùng PLAYER 18 px = 1,4 unit, 5 họ khác silhouette/màu; chỉ là tỷ lệ art demo chưa chốt, cần kiểm nhận biết trong 0,5s không nhãn | — |
 
 ## [ENGINE] CHUYỂN CODER QA — không chặn hoàn thành ART
 
@@ -40,6 +40,8 @@ Số lần sinh lại là số lần sinh thay thế trong loạt bộ đạn m�
 
 ## Ghi chú tiến độ
 
-Thân B1: `exports/hull-variants/three-stages-gameplay.png`, `stage-transition.gif`, manifest; thân vừa dùng nền trắng do model tạo nên dùng alpha thân nguyên vẹn và giữ mép silhouette gốc để chống viền. Chỉ kiểm tổng thể, không chấm từng pixel. Ngưỡng clip minh họa: ≤30% hư hại vừa, <15% nặng; không thay Book.
+Hư hại B2: `exports/hull-variants-B2/three-stages-gameplay.png`, `stage-transition.gif`, `assembly-360.gif`, manifest. B1 giữ làm lịch sử; alpha biên dùng thân gốc để chống nền sai. Ngưỡng clip minh họa ≤30% vừa, <15% nặng; không thay Book.
 
-Bộ đạn: `exports/bullet-B1/projectile-real-size-study.png`, từng thư mục `body.png` / `glow-0..2.png`, manifest. Đây chỉ là các bước tự xử lý, không phải sản phẩm đạt; thân B1 đã tích hợp GIF study, đạn B1 chưa tích hợp. Lỗi được ghi đúng ở bảng trên.
+Bộ đạn: `exports/bullet-B2/projectile-real-size-study.png` và bản không nhãn, `pulse-study.gif`, `beam-repeat.png`, `missile-tail-test.png`, manifest. Các họ năng lượng được tách phần corona theo alpha và tạo glow 3 mức; core vẫn có tâm phát sáng, không tuyên bố thuật toán tách mọi ánh sáng chính xác tuyệt đối. Sheet PLAYER 18 px / 1,4 unit, art widths đề xuất 16/10/10/18 px. Đây là cỡ của **study**, không phải xác nhận runtime.
+
+GIF study mới `exports/battle-study/battle-study.gif` 32 s, có 0,3 s flash trắng toàn màn, 4 mảnh, 1 s khói và màn kết quả giả; gắn B2/B3, vẫn CHƯA khóa cho đến khi duyệt chuyển động và bộ đạn. Chưa tuyên bố hồ sơ hoàn chỉnh.

@@ -3,11 +3,11 @@
 from PIL import Image,ImageDraw
 from pathlib import Path
 import numpy as np,json,hashlib
-P=Path('art/boss-fight');E=P/'exports';O=E/'hull-variants';O.mkdir(exist_ok=True,parents=True)
+P=Path('art/boss-fight');E=P/'exports';O=E/'hull-variants-B2';O.mkdir(exist_ok=True,parents=True)
 base=Image.open(E/'boss-bare-hull.png').convert('RGBA'); ba=np.asarray(base).copy()
 variants={'intact':base}
 for name in ['medium','severe']:
- src=P/f'masters/B1/hull-{name}.png'; im=Image.open(src).convert('RGB').resize((512,512),Image.Resampling.LANCZOS);rgba=np.asarray(im).copy();
+ src=P/f'masters/B2/hull-{name}.png'; im=Image.open(src).convert('RGB').resize((512,512),Image.Resampling.LANCZOS);rgba=np.asarray(im).copy();
  # Retain original art on silhouette boundary; avoids contamination from differing generated background colors.
  edge=ba[:,:,3]<250;rgba[edge]=ba[:,:,:3][edge];variant=Image.fromarray(np.dstack((rgba,ba[:,:,3])),'RGBA');variants[name]=variant
 for k,v in variants.items():v.save(O/f'hull-{k}.png')
@@ -34,4 +34,4 @@ for i in range(120):
  if i in (40,41,80,81):frame.alpha_composite(impact,(100,42))
  frame.alpha_composite(player,(111,286));frames.append(frame.convert('RGB'))
 palette=sheet.quantize(colors=256,method=Image.Quantize.MEDIANCUT);f=[im.quantize(palette=palette,dither=Image.Dither.NONE) for im in frames];f[0].save(O/'stage-transition.gif',save_all=True,append_images=f[1:],duration=50,loop=0,optimize=True,disposal=1)
-(O/'manifest.json').write_text(json.dumps({'status':'CANDIDATE_REVIEW','canvas':[512,512],'stages':names,'gameplay_composite_canvas':[240,350],'boss_drawn_px':159,'switch':'discrete at impact, no crossfade','timing_thresholds_demo':{'medium_hp_lte':.30,'severe_hp_lt':.15},'limitations':['Whole-hull B1 generation must be checked for visual continuity in motion and gameplay.','Art study; no runtime QA.'],'masters':{k:hashlib.sha256((P/f'masters/B1/hull-{k}.png').read_bytes()).hexdigest() for k in ('medium','severe')}},indent=2)+'\n')
+(O/'manifest.json').write_text(json.dumps({'status':'CANDIDATE_REVIEW','canvas':[512,512],'stages':names,'gameplay_composite_canvas':[240,350],'boss_drawn_px':159,'switch':'discrete at impact, no crossfade','timing_thresholds_demo':{'medium_hp_lte':.30,'severe_hp_lt':.15},'limitations':['Whole-hull B2 generation must be checked for visual continuity in motion and gameplay.','Art study; no runtime QA.'],'masters':{k:hashlib.sha256((P/f'masters/B2/hull-{k}.png').read_bytes()).hexdigest() for k in ('medium','severe')}},indent=2)+'\n')

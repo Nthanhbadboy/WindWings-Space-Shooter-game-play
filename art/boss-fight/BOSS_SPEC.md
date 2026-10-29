@@ -48,9 +48,9 @@ CS/TS/TR/TĐ/CM = `countShots/timeShot/timeReload/timeRounds/countMags`. Các đ
 
 Không khẳng định đoạn nào đã qua QA chỉ từ bảng này. Không render lại trong bước cập nhật SPEC.
 
-## D. Thiết kế bộ đạn mới — ứng viên B1, chưa hoàn tất
+## D. Thiết kế bộ đạn mới — ứng viên B2/B3, chưa hoàn tất
 
-Gói `masters/bullet-B1` vẽ mới, không dùng sprite gốc; `exports/bullet-B1` là bản thử, **chưa là production**. Các họ có vệt sáng vẫn nung một phần vào body, lớp glow pulse mới chỉ bổ sung chứ chưa tách sạch. Không đổi số trong bảng A; điểm sinh T dưới đây là ước lượng trên canvas 512, kiểm runtime giao coder.
+Gói `masters/bullet-B2`, `bullet-B3` và đầu/thân tia B1 vẽ mới, không dùng sprite gốc; `exports/bullet-B2` là bản thử, **chưa là production**. Body và 3 mức glow được xuất riêng; tách theo alpha, tâm phát sáng vẫn nằm trong body; cần kiểm pulse ở cỡ game. Không đổi số trong bảng A; điểm sinh T dưới đây là ước lượng trên canvas 512, kiểm runtime giao coder.
 
 | Họ mới / đòn | Hình | Tham chiếu / damage | Tâm / điểm sinh dự kiến | Glow chồng |
 |---|---|---|---|---|
@@ -58,6 +58,8 @@ Gói `masters/bullet-B1` vẽ mới, không dùng sprite gốc; `exports/bullet-
 | Laser ENRAGED | mũi dài tím hồng | Gun319 / 16 / 150; 0,15 unit | tâm canvas; ụ trái/phải, muzzle runtime chờ coder | `laser/glow-{0,1,2}.png` |
 | Tỏa PANIC | sao nhỏ vàng | Gun319 / 16 / 150; 0,15 unit; nhịp ×1,3 và ±6° | tâm canvas; ụ trái/phải, muzzle runtime chờ coder | `panic/glow-{0,1,2}.png` |
 | Tên lửa | thân cơ khí mũi đỏ + khói rời | Gun81 / 4,8 / 300; 0,15 unit | tâm canvas; đuôi phía trên do mũi hướng xuống; pod trái/phải, runtime chờ coder | `missile/glow-{0,1,2}.png`; `missile-trail/body.png` riêng |
-| Tia | đầu nổ đỏ + thân dài cam | Book §3.2 / 120 mỗi 0,5s; collider rộng 0,3 unit | đầu tia pháo giữa; runtime chờ coder | `beam-head/glow-{0,1,2}.png`; thân còn thiếu glow/pulse và tile QA |
+| Tia | đầu nổ đỏ + thân dài cam | Book §3.2 / 120 mỗi 0,5s; collider rộng 0,3 unit | đầu tia pháo giữa; runtime chờ coder | `beam-head/glow-{0,1,2}.png`; `beam-strip/glow-{0,1,2}.png`; top/bottom pixel trùng, filter runtime chuyển coder |
 
-Sheet tham khảo `projectile-real-size-study.png` dùng PLAYER 18 px / 1,4 unit trên canvas 240×350, các kích thước đạn là **đề xuất minh họa**, chưa hiệu chỉnh runtime. Không xem sheet này là xác nhận va chạm hay QA engine.
+Sheet tham khảo `exports/bullet-B2/projectile-real-size-study.png` dùng PLAYER 18 px / 1,4 unit trên canvas 240×350, các kích thước đạn là **đề xuất minh họa**, chưa hiệu chỉnh runtime. Không xem sheet này là xác nhận va chạm hay QA engine.
+
+Tên lửa B3: body 64², tâm đề xuất `(32,32)`; đầu hướng +Y, tâm ổ phụt phía sau `(32,4)`; plume 64×128 có đầu nối gần `(32,124)`. Các anchor là đề xuất art, điểm gắn runtime **CHUYỂN CODER QA**. Màu body được tự điều chỉnh từ cam sang đỏ; tâm sáng giữ trung tính.
