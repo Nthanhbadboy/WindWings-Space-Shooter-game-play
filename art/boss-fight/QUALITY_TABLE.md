@@ -38,10 +38,10 @@
 | Nổ chính | CHƯA | Bản gốc bị cắt; bản redo chưa thử đoạn chết/halo | 1 |
 | Tên lửa va chạm | CHƯA | Bản gốc bị cắt; bản redo chưa thử impact frame/halo | 1 |
 | Lõi trắng | CHƯA | Bản gốc bị cắt; bản redo chưa kiểm flash 0,3 s và accessibility | 1 |
-| Tia quét chính / cuối | CHƯA | Script hiện quét đầu 1,4 s, góc −24°→24°, sạc 1,1 s; Boss Book yêu cầu 1,2 s, −25°→25° trong 1,9 s. Tia cuối hiện chỉ một chiều, không phải hai chiều liên tiếp | Không áp dụng (choreography) |
-| Khóa + tên lửa | CHƯA | Script dùng 3 cặp và điểm mục tiêu lệch 100/105 px khỏi PLAYER; sách yêu cầu reticle bám 0,8 s rồi khóa/phóng 4 cặp | Không áp dụng (choreography) |
+| Tia quét chính / cuối | CHƯA | Study mới đặt sạc 1,2 s, tia −25°→+25° 1,9 s; tia cuối 2 chiều. Còn kiểm đọc/độ sáng tia, né và collider runtime; GIF cũ vẫn sai | Không áp dụng (choreography) |
+| Khóa + tên lửa | CHƯA | Study mới reticle theo PLAYER 0,8 s, khóa rồi 4 cặp; còn kiểm animation/độ đọc và đường né, chưa runtime | Không áp dụng (choreography) |
 | Cái chết | CHƯA | Đã tự dựng study 4,3 s / 4 mảnh, flash 0,3 s, khói 1 s; đã tự chỉnh tâm lửa pod theo bbox và fade thân sau flash; chưa kiểm dọn đạn, flash trắng toàn màn cần accessibility QA và kiểm chuyển động; clip toàn trận cũ vẫn 10 mảnh | Không áp dụng (choreography) |
-| GIF toàn trận + frame sheet | CHƯA | Bản cũ trên GitHub chưa khớp Boss Book các dòng trên; chưa tự xem không tiếng và trả lời 3 câu user yêu cầu; chưa kiểm cỡ thực và né an toàn | Không áp dụng (render) |
+| GIF toàn trận + frame sheet | CHƯA | Đã render study mới 31,5 s và sheet, kịch bản theo các mốc dự kiến; chưa duyệt toàn bộ chuyển động không tiếng, nhịp ba hồi khó đọc, tia yếu sau lượng tử; chưa kiểm khe né hoặc runtime | Không áp dụng (render) |
 | BOSS_SPEC / gameplay | CHƯA | SPEC đã theo director 185aa8b; chưa có hitbox chạy thật và chưa kiểm gameplay runtime | Không áp dụng |
 
 ## Turn hiện tại — Director 185aa8b
@@ -69,3 +69,19 @@ Rút câu hỏi tay nghề ở comment PR trước: không chờ director. Đã 
 Đã tự sinh A6: bỏ cảm giác mảnh đá nhưng vết rất mảnh, muội tối bị chìm trên nền đen. Tách alpha rồi mask theo hull, bốn góc alpha 0 và không tràn hull; sheet 64px cho thấy hai bậc khó phân biệt ở gameplay, còn vệt đi qua nhiều panel. Hai bản **CHƯA**, chưa xem alpha theo silhouette là bằng chứng khớp hình.
 
 Đo bbox pod phải `(414,143)-(474,333)` trong canvas, chuyển tâm `(444,238)` qua phép đặt boss `(240,190)`, scale 0,62 → khoảng `(356,179)`; đã dời lửa đến đó và tự chỉnh thân fade 0,55 s sau flash thay vì tắt ngay. Sheet cho thấy có cải thiện chuyển tiếp, nhưng ảnh vẫn cần kiểm theo thời gian và QA flash toàn màn 0,3 s; chưa mô phỏng dọn đạn, không khai hoàn thành. GIF mã hóa 81 frame, tổng 4,3 s, frame trắng gộp 300 ms.
+
+## Turn tiếp — dựng GIF toàn trận mới (study, chưa nộp)
+
+Đã tự dựng `build-battle-study.py` và `exports/battle-study/`: 31,5 s, 20 fps logic, 625 frame GIF sau gộp, thời lượng xác minh 31500 ms. Dùng layer A4 đế tĩnh/đầu quay; ứng viên overlay A6, reticle bám tàu rồi khóa; tạo asset đạn địch tông ấm bằng biến đổi màu, không tô vẽ hình mới bằng code. Sprite/clip vẫn là minh họa, không phải hệ thống runtime. Có flash trắng toàn màn 0,3 s: cảnh báo trước khi xem.
+
+### Đối chiếu tám điểm SPEC (kết quả test chỉ là mốc script, chưa xác nhận QA)
+1. **Sạc/tia:** 14,3–15,5 s, −25°→+25° 15,5–17,4 s; có beacon đỏ. Sheet GIF thấy tia cam tối, cần cải thiện độ đọc.
+2. **Khóa/tên lửa:** 10,5–11,3 s reticle lấy đúng vị trí tàu mỗi frame; khóa tọa độ tại 11,3 s, 4 cặp 0,18 s; chưa đo quỹ đạo/cửa né.
+3. **Tia PANIC hai chiều:** 22,8–24,7 và 24,7–26,6 s; fan đặt góc ±6°, chu kỳ 0,6/1,3 s; kiểm gameplay chưa có.
+4. **Vào trận/ép sân:** 0–1,5 s entry, 4–6 s tiến rồi lùi; đây là dàn cảnh, không đảm bảo engine.
+5. **HP và chết:** HP mock <15% từ 24 s mới overload; đoạn chết 27–31,3 s, 4 mảnh, 1 s khói cuối, flash 0,3 s. HP chỉ là mốc kịch bản, vết A6 còn yếu, không chứng minh HP/runtime.
+6. **Collider/damage:** không mô phỏng collider 0,15 unit, tia 0,3 unit, speed hay damage 330/150/300; vẫn CHƯA.
+7. **Màu/đèn/đoạn chết:** beacon được bật khi sạc, đạn/tia địch đổi tông ấm; tia sau palette tối, flash toàn màn cần kiểm accessibility và clearing đạn chưa mô phỏng.
+8. **Pivot/overlay, câu chuyện/né:** có GIF xoay độc lập, có ghép A4 và A6 trong study; overlay chưa khớp panel/đọc ở 64px, chưa kiểm đủ các góc lắp. HP không hiện nên 3 hồi chưa rõ khi xem không tiếng. Chưa xác định được từng khe né an toàn.
+
+Không khai toàn bộ ĐẠT. GIF cũ giữ nguyên làm tài liệu lịch sử, study mới cũng chưa phải gameplay.
