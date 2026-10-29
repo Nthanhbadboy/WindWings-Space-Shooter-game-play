@@ -18,7 +18,7 @@ def warm(img):
  r,g,b,a=img.split(); return Image.merge('RGBA',(b.point(lambda x:min(255,round(x*1.05))),g.point(lambda x:round(x*.48)),r.point(lambda x:round(x*.14)),a))
 for n in ('energy','laser_bullet','beam-strip'):
  F['enemy_'+n]=warm(F[n])
-O2=Image.open(E/'A6/damage-level2.png').convert('RGBA');O3=Image.open(E/'A6/damage-level3.png').convert('RGBA')
+HULL={k:Image.open(E/'hull-variants'/f'hull-{k}.png').convert('RGBA') for k in ('intact','medium','severe')}
 
 def put(dst,img,x,y,scale=1,angle=0,opacity=1):
  if opacity<=0:return
@@ -76,11 +76,11 @@ for i in range(round(FPS*DURATION)):
  t=i/FPS; bx,by=bxby(t); px,py=player_pos(t); im=background.copy();health=hp(t)
  dying=t>=27; death=t-27
  if t<29.75:
-  boss=Image.new('RGBA',(512,512))
-  for n in ('hull','pod_left','pod_right','core','cannon'):
+  hullstage='intact' if health>.30 else ('medium' if health>=.15 else 'severe')
+  boss=HULL[hullstage].copy()
+  for n in ('pod_left','pod_right','core','cannon'):
    if n=='pod_right' and death>=1.3:continue
    boss.alpha_composite(L[n])
-  if health<=.25 and health>0:boss.alpha_composite(O3 if health<.15 else O2)
   for side,x in [('left',144),('right',368)]:
    if side=='left' and death>=.65:continue
    base=T[side+'_base'];head=T[side+'_head']; boss.alpha_composite(base,(x-256,210-256))
@@ -156,5 +156,5 @@ times=[0,1.5,2.4,4,6,7.2,8.5,10.7,11.3,12,14.3,15.5,16.45,17.4,18.2,19.5,21.6,22
 board=Image.new('RGB',(W*6,H*5))
 for j,t in enumerate(times):board.paste(frames[min(len(frames)-1,round(t*FPS))],((j%6)*W,(j//6)*H))
 board.save(O/'battle-study-sheet.jpg',quality=90)
-meta={'status':'DRAFT_NOT_APPROVED_NOT_RUNTIME','fps':FPS,'frames':len(frames),'duration_ms':sum(delays),'events':{'entry':[0,1.5],'advance':[4,6],'phase70':[7.2,7.7],'missile_track':[10.5,11.3],'missile_launch':[11.3,11.48,11.66,11.84],'lock_position':lock,'beam_charge':[14.3,15.5],'beam_sweep':[15.5,17.4,-25,25],'panic':18.2,'panic_shots':[19.5,19.5+.6/1.3,19.5+1.2/1.3],'final_charge':[21.6,22.8],'final_sweeps':[[22.8,24.7,-25,25],[24.7,26.6,25,-25]],'hp_below_15':24,'hp_hit_seconds':HITS,'death':[27,31.3]},'limitations':['Timings are staged illustration, not game logic.','Frame quantization; events not always on frame boundary.','No hitbox/speed/damage/clear validation or proof of dodge.','Damage overlays are candidates, not production.','Full-screen white flash requires accessibility review.']}
+meta={'status':'DRAFT_NOT_APPROVED_NOT_RUNTIME','fps':FPS,'frames':len(frames),'duration_ms':sum(delays),'events':{'entry':[0,1.5],'advance':[4,6],'phase70':[7.2,7.7],'missile_track':[10.5,11.3],'missile_launch':[11.3,11.48,11.66,11.84],'lock_position':lock,'beam_charge':[14.3,15.5],'beam_sweep':[15.5,17.4,-25,25],'panic':18.2,'panic_shots':[19.5,19.5+.6/1.3,19.5+1.2/1.3],'final_charge':[21.6,22.8],'final_sweeps':[[22.8,24.7,-25,25],[24.7,26.6,25,-25]],'hp_below_15':24,'hp_hit_seconds':HITS,'death':[27,31.3]},'limitations':['Timings are staged illustration, not game logic.','Frame quantization; events not always on frame boundary.','No hitbox/speed/damage/clear validation or proof of dodge.','Whole-hull B1 variants are candidates, not production.','Full-screen white flash requires accessibility review.']}
 (O/'manifest.json').write_text(json.dumps(meta,indent=2)+'\n');print('frames',len(frames),'duration_ms',sum(delays))

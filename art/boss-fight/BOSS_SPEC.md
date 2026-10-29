@@ -1,6 +1,6 @@
 # Boss-37001 — BẢNG CHUẨN ĐẠN & PHA
 
-**STATUS: CHƯA XONG — chưa có pivot được chứng minh, chưa có test engine.** Chuẩn kịch bản/số do director quyết; art không tự thay chuẩn. Nguồn hiệu lực: `docs/design/03_BOSS_BOOK.md` §3.2 và §3.5, `04_COMBAT_FX_ART_ANIMATION.md` §4.1, `06_PRODUCTION_ROADMAP.md` §6.4.1 tại commit `185aa8b09cb30209a8a02871d27674ad048f1407` nhánh `arena/020ecffe-windwings-space-shooter-game-p`. Gốc nguyên bản: `docs/spec/COMBAT.md` §0/§3/§7, `ENEMY_BEHAVIOUR.md` §1.3, `Gun_Attack.csv` dòng 319/81/445, `Bullet_Linearly.csv` dòng 4/74/148. Hình mới không phải sprite gốc.
+**STATUS: ART CHƯA XONG; ENGINE CHUYỂN CODER QA.** Có test pivot 360° độc lập, chưa chốt hồ sơ art. Chuẩn kịch bản/số do director quyết; art không tự thay chuẩn. Nguồn hiệu lực: `docs/design/03_BOSS_BOOK.md` §3.2 và §3.5, `04_COMBAT_FX_ART_ANIMATION.md` §4.1, `06_PRODUCTION_ROADMAP.md` §6.4.1 tại commit `28716f4` (bao gồm §3.5 câu 7; các quyết định số ở `185aa8b09cb30209a8a02871d27674ad048f1407`) nhánh `arena/020ecffe-windwings-space-shooter-game-p`. Gốc nguyên bản: `docs/spec/COMBAT.md` §0/§3/§7, `ENEMY_BEHAVIOUR.md` §1.3, `Gun_Attack.csv` dòng 319/81/445, `Bullet_Linearly.csv` dòng 4/74/148. Hình mới không phải sprite gốc.
 
 ## Sáu quyết định có hiệu lực
 
@@ -10,6 +10,8 @@
 4. Pháo DOMINANT **330/viên [GỐC]**, đạn nhanh/tỏa ENRAGED và PANIC **150/viên [ĐẠO DIỄN]**, tên lửa **300/quả [GỐC]**; tia **120 mỗi 0,5 s [DESIGN Boss Book §3.2]**.
 5. Không cộng dồn nghỉ: trong một đòn nhịp `GunData` điều khiển; giữa các đòn khác dùng thời gian nghỉ của pha tính từ viên cuối. Nếu đòn kế tiếp dùng cùng súng, dùng `timeRounds` của súng, không cộng nghỉ sách.
 6. 80059 và 80027 là **tham chiếu thông số theo hành vi**; sprite mới lần lượt thuộc họ cầu/laser và tên lửa, **không gọi là hình/đạn gốc**.
+
+7. Hư hại và lắp linh kiện chấm tổng thể ở cỡ game và trong chuyển động; không chấm khớp từng pixel. Art tự chọn biến thể thân hoặc overlay. [ART] tự đánh giá; collider, khe né và muzzle trong runtime là [ENGINE] **CHUYỂN CODER QA**, không chặn kết luận art. Book §3.5(7), `28716f4`.
 
 ## A. Bảng đạn theo đòn
 
@@ -45,3 +47,17 @@ CS/TS/TR/TĐ/CM = `countShots/timeShot/timeReload/timeRounds/countMags`. Các đ
 8. Cần chứng minh 2 pivot bằng GIF quay 360° và overlay hư hại ghép đúng; xem không tiếng, đánh giá cỡ thật và nêu cách né từng đòn.
 
 Không khẳng định đoạn nào đã qua QA chỉ từ bảng này. Không render lại trong bước cập nhật SPEC.
+
+## D. Thiết kế bộ đạn mới — ứng viên B1, chưa hoàn tất
+
+Gói `masters/bullet-B1` vẽ mới, không dùng sprite gốc; `exports/bullet-B1` là bản thử, **chưa là production**. Các họ có vệt sáng vẫn nung một phần vào body, lớp glow pulse mới chỉ bổ sung chứ chưa tách sạch. Không đổi số trong bảng A; điểm sinh T dưới đây là ước lượng trên canvas 512, kiểm runtime giao coder.
+
+| Họ mới / đòn | Hình | Tham chiếu / damage | Tâm / điểm sinh dự kiến | Glow chồng |
+|---|---|---|---|---|
+| Cầu DOMINANT | cầu lớn cam đỏ / lõi vàng trắng | Gun319 / 16 / 330; bán kính 0,15 unit | tâm canvas; ụ trái/phải, muzzle thực **chuyển coder QA** | `heavy-orb/glow-{0,1,2}.png` |
+| Laser ENRAGED | mũi dài tím hồng | Gun319 / 16 / 150; 0,15 unit | tâm canvas; ụ trái/phải, muzzle runtime chờ coder | `laser/glow-{0,1,2}.png` |
+| Tỏa PANIC | sao nhỏ vàng | Gun319 / 16 / 150; 0,15 unit; nhịp ×1,3 và ±6° | tâm canvas; ụ trái/phải, muzzle runtime chờ coder | `panic/glow-{0,1,2}.png` |
+| Tên lửa | thân cơ khí mũi đỏ + khói rời | Gun81 / 4,8 / 300; 0,15 unit | tâm canvas; đuôi phía trên do mũi hướng xuống; pod trái/phải, runtime chờ coder | `missile/glow-{0,1,2}.png`; `missile-trail/body.png` riêng |
+| Tia | đầu nổ đỏ + thân dài cam | Book §3.2 / 120 mỗi 0,5s; collider rộng 0,3 unit | đầu tia pháo giữa; runtime chờ coder | `beam-head/glow-{0,1,2}.png`; thân còn thiếu glow/pulse và tile QA |
+
+Sheet tham khảo `projectile-real-size-study.png` dùng PLAYER 18 px / 1,4 unit trên canvas 240×350, các kích thước đạn là **đề xuất minh họa**, chưa hiệu chỉnh runtime. Không xem sheet này là xác nhận va chạm hay QA engine.
