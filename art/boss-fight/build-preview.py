@@ -55,20 +55,20 @@ def paste(im,obj,xy,scale=1,angle=0,alpha=1):
  im.alpha_composite(obj,(round(xy[0]-obj.width/2),round(xy[1]-obj.height/2)))
 def boss_at(t):return (240, -75+min(1,t/1.1)*260)
 frames=[]
-for i in range(144):
- t=i/12; im=bg.copy(); bx,by=boss_at(t); bs=.62; boss_alpha=max(0,min(1,(11.45-t)/.7)); px=240+130*math.sin(t*1.55); py=590+20*math.sin(t*2)
+for i in range(216):
+ t=i/12; im=bg.copy(); bx,by=boss_at(t); bs=.62; boss_alpha=max(0,min(1,(16.15-t)/.7)); px=240+130*math.sin(t*1.55); py=590+20*math.sin(t*2)
  # Warning rings precede each shot phase; VFX placed behind boss.
- if t<1.5 or 3.0<=t<4 or 5.9<=t<6.45 or 8<=t<8.35: paste(im,fx['charge'],(bx,by),.8,alpha=.55+.3*math.sin(t*13)**2)
+ if t<1.5 or 3.0<=t<4 or 5.9<=t<6.45 or 8<=t<8.35 or 10.3<=t<11.2: paste(im,fx['charge'],(bx,by),.8,alpha=.55+.3*math.sin(t*13)**2)
  for k in order:
   # rotating turrets pivot at target centers in the 512 canvas, not at image center
   if k in ('turret_left','turret_right') and t>1.5:
    cx,cy=pivots[k]; lay=layers[k]; box=(cx-90,cy-100,cx+90,cy+100); piece=lay.crop(box); tx=bx+(cx-256)*bs;ty=by+(cy-256)*bs;paste(im,piece,(tx,ty),bs,angle=math.sin(t*2+(0 if k.endswith('left') else 1))*18,alpha=boss_alpha)
   else: paste(im,layers[k],(bx,by),bs,alpha=boss_alpha*((.65+.35*abs(math.sin(t*8))) if k=='core' and t>8 else 1))
  # Telegraph is over the armor so it is actually visible before attacks.
- if t<1.5 or 3.0<=t<4 or 5.9<=t<6.45 or 8<=t<8.35:
+ if t<1.5 or 3.0<=t<4 or 5.9<=t<6.45 or 8<=t<8.35 or 10.3<=t<11.2:
   paste(im,fx['charge'],(bx,by+10),.95,alpha=.65+.25*math.sin(t*13)**2)
  # smoke overlay under low HP
- if 8<=t<11.45:
+ if 8<=t<16.15:
   paste(im,layers['damage'],(bx-42,by-52),.85,alpha=.95*boss_alpha)
   paste(im,layers['damage'],(bx+40,by-40),.72,alpha=.9*boss_alpha)
  # short energy and laser bolts, charge warning precedes burst
@@ -81,35 +81,53 @@ for i in range(144):
      x=bx+side*(70+age*30); y=by+40+age*300
      paste(im,fx['energy'] if j%2==0 else fx['laser_bullet'],(x,y),.42)
   if (t*3)%1<.24: paste(im,fx['muzzle'],(bx,by+65),.45)
+ # Thin preview line indicates where the sweeping beam will begin.
+ if 3.0<=t<4:
+  ang=-25; L=440; guide=beam.resize((5,L)); paste(im,guide,(bx+math.sin(math.radians(ang))*L/2,by+85+math.cos(math.radians(ang))*L/2),angle=ang,alpha=.45)
  # beam sweep: telegraph before firing, pivot at cannon muzzle
  if 4<=t<5.9:
   ang=-25+50*(t-4)/1.9; L=440; segment=beam.resize((20,L)); paste(im,segment,(bx+math.sin(math.radians(ang))*L/2,by+85+math.cos(math.radians(ang))*L/2),1,angle=ang);paste(im,fx['beam_origin'],(bx,by+85),.45)
- # pod launches with pre-ring
- if 6.45<=t<8.25:
+ # Missiles converge on the position shown in the lock-on warning; the player can dodge it.
+ lockx=240+130*math.sin(6.45*1.55); locky=590+20*math.sin(6.45*2)
+ if 6.45<=t<9.1:
   for j in range(4):
    age=t-6.45-j*.33
-   if 0<=age<1.7:
-    for side in (-1,1): paste(im,fx['missile'],(bx+side*(115+42*age),by+48+age*255),.72,angle=side*-10)
- # Lock-on telegraph before missile launch, tracks the player's position.
- if 5.9<=t<6.45: paste(im,fx['target_reticle'],(px,py),.33+.08*math.sin(t*10)**2,alpha=.85)
- # Player counter-fire and boss defeat / expanding shockwave ending.
- if 8.4<=t<10.7:
-  for j in range(8):
-   age=t-(8.4+j*.27)
-   if 0<=age<1.15:
-    startx=240+130*math.sin((8.4+j*.27)*1.55)
-    paste(im,fx['laser_bullet'],(startx,570-age*340),.34,alpha=.8)
- if 10.7<=t<11.8:
-  age=t-10.7
-  paste(im,fx['explosion'],(bx,by),.45+age*.8,alpha=max(0,1-age*.75))
-  paste(im,fx['shockwave'],(bx,by),.35+age*1.8,alpha=max(0,1-age*.8))
+   if 0<=age<1.45:
+    for side in (-1,1):
+     x0=bx+side*115; y0=by+48; u=age/1.45
+     x=x0+(lockx-x0)*u; y=y0+(locky-y0)*u
+     angle=math.degrees(math.atan2(-(lockx-x0),locky-y0))
+     paste(im,fx['missile'],(x,y),.72,angle=angle)
+ if 5.9<=t<6.7: paste(im,fx['target_reticle'],(lockx,locky),.33+.08*math.sin(t*10)**2,alpha=.8)
+ # Boss shockwave is preceded by a charge warning.
+ if 11.2<=t<12.8:
+  age=t-11.2; paste(im,fx['shockwave'],(bx,by),.35+age*2.2,alpha=max(0,1-age*.58))
+ # Counter-fire targets the core rather than missing and still destroying the boss.
+ shot_times=[1.7+j*.52 for j in range(13)]+[8.7+j*.42 for j in range(15)]
+ for fired in shot_times:
+  age=t-fired
+  if 0<=age<.8:
+   u=age/.8; startx=240+130*math.sin(fired*1.55); starty=590+20*math.sin(fired*2)-12
+   x=startx+(bx-startx)*u; y=starty+(by-30-starty)*u
+   angle=math.degrees(math.atan2(-(bx-startx),by-30-starty))
+   paste(im,fx['laser_bullet'],(x,y),.32,angle=angle,alpha=.9)
+  if .8<=age<.96: paste(im,fx['beam_origin'],(bx,by-30),.20,alpha=max(0,1-(age-.8)/.16))
+ if 15.45<=t<17.0:
+  age=t-15.45
+  paste(im,fx['explosion'],(bx,by),.45+age*.75,alpha=max(0,1-age*.62))
+  paste(im,fx['shockwave'],(bx,by),.35+age*1.6,alpha=max(0,1-age*.6))
  paste(im,player,(px,py))
- d=ImageDraw.Draw(im);d.text((14,10),'BOSS-37001  /  BATTLE PREVIEW',font=font,fill=(220,245,246));d.text((14,30),('WARNING' if t<1.5 else 'CANNONS' if t<3 else 'BEAM CHARGE' if t<4 else 'SWEEP' if t<5.9 else 'MISSILES' if t<8 else 'LOW HP' if t<10.7 else 'BOSS DOWN'),font=small,fill=(255,187,95));d.rectangle((14,47,220,52),fill=(35,47,58));d.rectangle((14,47,14+int(206*max(0,1-t/10.7)),52),fill=(226,138,55));frames.append(im.convert('RGB'))
-# GIF delay pattern 80/90/80 gives 144 delays = 12 s in centiseconds.
-frames[0].save(P/'boss-fight-preview.gif',save_all=True,append_images=frames[1:],duration=[80 if i%3!=1 else 90 for i in range(144)],loop=0,optimize=False,disposal=2)
-sheet=Image.new('RGB',(480*6,700*4),(0,0,0));
-for j in range(24): sheet.paste(frames[j*6],((j%6)*480,(j//6)*700))
-sheet.resize((1440,1400),Image.Resampling.LANCZOS).save(P/'boss-fight-frame-sheet.jpg',quality=90)
+ d=ImageDraw.Draw(im);d.text((14,10),'BOSS-37001  /  BATTLE PREVIEW',font=font,fill=(220,245,246))
+ phase=('WARNING' if t<1.5 else 'CANNONS' if t<3 else 'BEAM CHARGE' if t<4 else 'SWEEP' if t<5.9 else 'MISSILE LOCK' if t<6.45 else 'MISSILES' if t<8 else 'LOW HP' if t<10.3 else 'PULSE CHARGE' if t<11.2 else 'SHOCKWAVE' if t<12.8 else 'COUNTERATTACK' if t<15.45 else 'BOSS DOWN')
+ d.text((14,30),phase,font=small,fill=(255,187,95)); d.rectangle((14,47,220,52),fill=(35,47,58))
+ hits=sum(t>=fired+.8 for fired in shot_times); health=max(0,1-hits/len(shot_times))
+ if health>0: d.rectangle((14,47,14+int(206*health),52),fill=(226,138,55))
+ frames.append(im.convert('RGB'))
+# GIF delay pattern 80/90/80 gives 216 delays = 18 s in centiseconds.
+frames[0].save(P/'boss-fight-preview.gif',save_all=True,append_images=frames[1:],duration=[80 if i%3!=1 else 90 for i in range(216)],loop=0,optimize=False,disposal=2)
+sheet=Image.new('RGB',(480*6,700*6),(0,0,0));
+for j in range(36): sheet.paste(frames[j*6],((j%6)*480,(j//6)*700))
+sheet.resize((1440,2100),Image.Resampling.LANCZOS).save(P/'boss-fight-frame-sheet.jpg',quality=90)
 manifest={'status':'PROTOTYPE_REVIEW_NOT_RUNTIME_VERIFIED','source_masters':{k:{'path':str(M/v),'sha256':hashlib.sha256((M/v).read_bytes()).hexdigest()} for k,v in S.items()},'canvas':[512,512],'coordinate_system':'top-left, x right, y down; all pivot coordinates are in shared 512x512 boss canvas','layers':[{'name':k,'file':str(E/'boss-layers'/f'{k}.png'),'center':spec[k][1],'pivot':pivots.get(k),'order':n} for n,k in enumerate(order)],'damage_overlay':str(E/'boss-layers/damage.png'),'core_center':[256,207],'spawn_points':{'turret_left':[144,280],'turret_right':[368,280],'main_cannon_and_beam':[256,399],'pod_left':[68,333],'pod_right':[444,333]},'effects':{k:str(E/'effects'/f'{k}.png') for k in fx},'beam_strip':str(E/'effects/beam-strip.png'),'beam_end_rows_identical':bool(np.array_equal(np.asarray(beam)[0],np.asarray(beam)[-1])),'notes':['pivot and spawn coordinates estimated for prototype; must validate rotation and gameplay placement','left and right pods are separate generated images with similar but not identical details','alpha matte and luminous effects require artist review on light and dark backgrounds','hull has a few circular mechanical details but its central socket is closed','preview is composited, not a runtime capture']}
 (P/'manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+'\n')
 print('done',len(frames),'frames')

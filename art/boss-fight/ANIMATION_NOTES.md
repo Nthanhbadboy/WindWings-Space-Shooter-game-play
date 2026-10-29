@@ -1,15 +1,16 @@
 # Boss-37001 — animation prototype
 
-**Review prototype, not a runtime capture or gameplay implementation.** The source artworks were generated separately; `manifest.json` lists source SHA-256, paths, 512×512 registration, estimated pivots and spawns. Boss-layer PNGs share one canvas and are ordered hull → left pod → right pod → left turret → right turret → core → cannon. Damage overlay and effects are additional; the charge ring is drawn on top of the boss in telegraphs. The hull center is closed by generated armor. Left/right pods are independently generated and now visually similar; seams, rotation and fit still need art review. Pivot and muzzle coordinates are approximate and should be rechecked by the coder in the real engine.
+**Review prototype, not a runtime capture or gameplay implementation.** The generated sources and SHA-256 hashes are in `manifest.json`. The 512×512 layers are drawn hull → left pod → right pod → left turret → right turret → core → cannon; damage and effects are additional. Pivot and muzzle coordinates are estimates and need validation in-engine. Both pods are independently generated; attachment seams need review.
 
-## Preview timeline (144 frames / 12 seconds / 12 fps)
+## Timeline (216 frames / 18 seconds / 12 fps)
 
-- **0.00–1.50 s:** boss enters from above, charge-ring warning. Boss settles at 1.10 s.
-- **1.50–3.25 s:** twin side turrets oscillate ±18° and fire four alternating energy orbs and short laser bolts, every 0.48 s. Charge precedes this first attack.
-- **3.00–4.00 s:** visible ring warns of the main beam (the last short-burst projectile overlaps the start of this warning).
-- **4.00–5.90 s:** continuous beam sweeps from −25° to +25° around estimated cannon muzzle; origin effect overlays its base.
-- **5.90–6.45 s:** charge ring and amber lock-on reticle warn of missile launch.
-- **6.45–8.25 s:** both pods launch four missile pairs every 0.33 s, flying downward and outward.
-- **8.00–8.35 s:** low-health warning ring; 8.00–11.45 s damage/smoke overlay and blinking core. **8.35–10.30 s:** fast alternating short burst at 0.30 s intervals. **8.40–10.70 s:** PLAYER counter-fire. **10.70–12.00 s:** boss fades out through a plasma explosion and expanding shockwave. Player ship follows a programmed dodge path throughout; no collision or AI simulation. The player uses a 34 px canvas on a 480 px playfield (approximately 1.4 / 20).
+- **0.00–1.50 s:** boss enters with a charge-ring warning.
+- **1.50–3.25 s:** side turrets oscillate and fire energy/laser bursts. PLAYER starts counter-fire at 1.70 s; each player shot travels to the core and produces an impact.
+- **3.00–4.00 s:** boss charges its beam; a thin guide marks the sweep's starting direction.
+- **4.00–5.90 s:** beam sweeps from −25° to +25° around the cannon muzzle.
+- **5.90–6.45 s:** lock-on reticle marks the position the missiles will target, and charge ring warns of launch. **6.45–9.10 s:** four missile pairs travel toward that locked position; PLAYER continues moving.
+- **8.00–8.35 s:** low-health warning; smoke and blinking core. **8.35–10.30 s:** another fast cannon burst.
+- **10.30–11.20 s:** pulse warning. **11.20–12.80 s:** expanding boss shockwave.
+- **12.80–15.45 s:** PLAYER continues counterattacking; each impact reduces the displayed health bar. After the last hit, **15.45–17.00 s** shows the boss explosion and fading shockwave; the remainder allows the ending to read.
 
-`boss-fight-preview.gif` is a mockup using the final exported PNGs and the approved player export, not a recording of gameplay. GIF uses centisecond durations 80/90/80 ms, repeated, totaling 12.00 s; `boss-fight-frame-sheet.jpg` samples every sixth frame (24 frames). The visual construction uses `build-preview.py` with Pillow, NumPy and SciPy. UI bars and labels are explanatory only. Ring/shockwave/beam effects have transparency reconstructed from dark-background intensities and may need production VFX blending. The beam source was crossfaded at its vertical ends; exported strip has equal end rows, but runtime filtering and tiling have not been tested. Low-health smoke is composited twice for greater visibility; it still needs art review at gameplay scale. No claim of planner pass, in-engine hitbox correctness, or seamless turret rotation.
+`boss-fight-preview.gif` uses exported PNG layers, generated VFX and the approved PLAYER export. The 34 px player canvas on a 480 px field approximates the requested 1.4/20 proportion. Its path and projectiles are staged, not actual AI, collision or gameplay. GIF uses 80/90/80 ms delay pattern, totaling 18.00 s; the 36-frame sheet samples every sixth frame. `build-preview.py` uses Pillow, NumPy and SciPy. The smaller `boss-fight-github.gif` is for browser viewing only. Effects use reconstructed transparency and may need production blending; the beam's end rows match but engine filtering has not been tested. No planner pass, hitbox correctness or seamless rotation is asserted.
