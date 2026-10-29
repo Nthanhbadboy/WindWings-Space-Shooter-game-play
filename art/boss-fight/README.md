@@ -1,9 +1,9 @@
-# Boss fight — đang sinh ảnh, CHƯA HOÀN THÀNH
+# Boss-37001 fight — prototype for review
 
-Đã sinh 10 ảnh gốc, giữ tại `masters/`; `review/source-overview.jpg` là bảng kiểm ảnh nguồn, không phải asset ghép. Xem `manifest-incomplete.json` để biết SHA-256 và những món còn thiếu. Hết hạn mức 10 ảnh của lượt trước; chưa sinh các món 11–16, không cắt asset khác để bù.
+- `masters/`: separately generated raw images, including previous rejected candidates, `round2/` and `round3/`; `manifest.json` identifies the selected sources and SHA-256. Raw sources are not alpha exports.
+- `exports/boss-bare-hull.png`, `exports/boss-composite.png`, `exports/boss-layers/`: common 512×512 transparent boss layers and fixed composite.
+- `exports/effects/`: individual sprites; energy and missile 64×64, laser bullet 64×128, beam strip 64×256 with matched end rows.
+- `boss-fight-preview.gif`: 10 s / 12 fps mockup, composited from these exports and the approved player. `boss-fight-frame-sheet.jpg`: 20 samples.
+- `manifest.json` and `ANIMATION_NOTES.md`: layer order, tentative pivot/spawn coordinates and timing; `build-preview.py` reproduces this prototype.
 
-Tự kiểm ảnh nguồn: #01 còn hai pod gắn vào thân nên chưa phải thân trần; #03 ra hình cả tàu thay vì một ụ; #04 còn dính thân; #05 hướng ngang. Các món này cần sinh lại/điều chỉnh; không đánh dấu là sẵn sàng ghép. Các ảnh còn lại mới là nguồn chưa xử lý, chưa xác nhận lắp hợp hay halo. Chưa tạo export, pivot, GIF hoặc frame-sheet. Theo lệnh user: chỉ dựng clip sau khi sinh đủ và dừng chờ user nhắn tiếp.
-
-## Lượt 2
-
-Đã sinh 10 ảnh nữa: đủ ảnh nguồn cho #11–16 và 4 bản thử thay thế #01/#03/#04/#05, xem `masters/round2/` và `review/round2-overview.jpg`. **#13 vòng sạc bị cắt ở cạnh ảnh** nên chưa coi bộ ảnh là hoàn chỉnh; #04 pháo chính vẫn có vỏ lớn, #05 pod trái hộp ngang dù cửa hướng xuống, cần xem xét. Tia #11 chưa xác nhận khớp lặp. Chưa tách nền, ghép lớp hay dựng clip; dừng sau 10 ảnh theo quy định user.
+**STATUS: CHƯA XONG / prototype needs review.** This is not a commercial-ready or engine-tested asset pack. The two pods have very different designs; attachment seams and rotating turret pivots have not been validated. The bare hull has a dark central socket rather than a continuous armor plate, and its nose contains a fixed mechanical protrusion. VFX matting and halo need visual QA, especially at gameplay scale and on light backgrounds. The GIF is a mockup, not code-driven gameplay; no planner pass is asserted. Earlier rejected attempts are retained for provenance in `masters/`; see `review/source-overview.jpg` and `review/round2-overview.jpg`.
