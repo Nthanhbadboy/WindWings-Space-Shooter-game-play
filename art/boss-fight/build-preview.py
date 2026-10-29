@@ -3,7 +3,7 @@ import numpy as np, math, json, hashlib
 from scipy import ndimage
 from pathlib import Path
 P=Path('art/boss-fight'); M=P/'masters'; E=P/'exports'; (E/'boss-layers').mkdir(parents=True,exist_ok=True); (E/'effects').mkdir(exist_ok=True); (P/'review').mkdir(exist_ok=True)
-S={'hull':'round4/01-hull.png','turret_left':'02-left-turret.png','turret_right':'round2/03-right-turret-redo.png','cannon':'round3/04-cannon.png','pod_left':'round3/05-left-pod.png','pod_right':'round4/06-right-pod.png','core':'07-core.png','damage':'08-damage.png','energy':'09-energy.png','laser_bullet':'10-laser-bullet.png','beam':'round2/11-beam-strip.png','beam_origin':'round2/12-beam-origin.png','charge':'round3/13-charge-ring-redo.png','missile':'round2/14-missile.png','muzzle':'round2/15-muzzle.png','shockwave':'round2/16-shockwave.png','target_reticle':'round5/target-reticle.png','explosion':'round5/impact-explosion.png'}
+S={'hull':'round4/01-hull.png','turret_left':'02-left-turret.png','turret_right':'round2/03-right-turret-redo.png','cannon':'round3/04-cannon.png','pod_left':'round3/05-left-pod.png','pod_right':'round4/06-right-pod.png','core':'07-core.png','damage':'08-damage.png','energy':'09-energy.png','laser_bullet':'10-laser-bullet.png','beam':'round2/11-beam-strip.png','beam_origin':'round2/12-beam-origin.png','charge':'round3/13-charge-ring-redo.png','missile':'round2/14-missile.png','muzzle':'round2/15-muzzle.png','shockwave':'round2/16-shockwave.png','target_reticle':'round5/target-reticle.png','explosion':'round5/impact-explosion.png','beam_warning':'round7/beam-warning.png','missile_trail':'round7/missile-trail.png','armor_impact':'round7/armor-impact.png','core_overload':'round7/core-overload.png'}
 # Black-background extraction: flood-connect near-black pixels for solid modules;
 # energy VFX use luminance-derived opacity, unpremultiplied to avoid black halos.
 def extract(name,fx=False):
@@ -35,7 +35,7 @@ boss.save(E/'boss-composite.png');layers['hull'].save(E/'boss-bare-hull.png')
 def effect(name,canvas,wh):
  obj=fit(extract(name,True if name not in ('missile',) else False),wh); im=Image.new('RGBA',canvas); im.alpha_composite(obj,((canvas[0]-obj.width)//2,(canvas[1]-obj.height)//2));im.save(E/'effects'/f'{name}.png');return im
 fx={}
-for k,canvas,wh in [('energy',(64,64),(58,58)),('laser_bullet',(64,128),(54,118)),('beam_origin',(128,128),(116,116)),('charge',(256,256),(240,240)),('missile',(64,64),(56,58)),('muzzle',(128,128),(110,110)),('shockwave',(256,256),(240,240)),('target_reticle',(256,256),(240,240)),('explosion',(256,256),(240,240))]:fx[k]=effect(k,canvas,wh)
+for k,canvas,wh in [('energy',(64,64),(58,58)),('laser_bullet',(64,128),(54,118)),('beam_origin',(128,128),(116,116)),('charge',(256,256),(240,240)),('missile',(64,64),(56,58)),('muzzle',(128,128),(110,110)),('shockwave',(256,256),(240,240)),('target_reticle',(256,256),(240,240)),('explosion',(256,256),(240,240)),('missile_trail',(128,128),(110,116)),('armor_impact',(128,128),(118,118)),('core_overload',(128,128),(118,118))]:fx[k]=effect(k,canvas,wh)
 # beam derived from full height source, resize to strip; taper top-bottom mismatch by
 # crossfading the two ends to a shared average profile (repeat seam has identical pixels).
 im=Image.open(M/S['beam']).convert('RGB'); ar=np.asarray(im); luma=ar.max(axis=2); active=np.where(luma.max(axis=0)>12)[0]; im=im.crop((max(0,int(active[0])-10),0,min(im.width,int(active[-1])+11),im.height)).resize((64,256),Image.Resampling.LANCZOS)
@@ -43,6 +43,10 @@ a=np.array(im).astype(np.float32); edge=(a[0]+a[-1])/2
 for i in range(24):
  t=(24-i)/24; a[i]=a[i]*(1-t)+edge*t; a[-1-i]=a[-1-i]*(1-t)+edge*t
 lum=a.max(axis=2); al=np.clip((lum-5)/205,0,1); al[:,0]=0; al[:,-1]=0; rgb=np.clip(a/np.maximum(al[:,:,None],.001),0,255).astype('uint8');beam=Image.fromarray(np.dstack((rgb,(al*255).astype('uint8'))),'RGBA');beam.save(E/'effects/beam-strip.png'); assert np.array_equal(np.asarray(beam)[0],np.asarray(beam)[-1])
+# Amber beam warning is a separate generated sprite, not the damaging beam.
+warning=extract('beam_warning',True).resize((16,256),Image.Resampling.LANCZOS)
+a=np.asarray(warning).copy(); a[:,0,3]=0; a[:,-1,3]=0
+warning=Image.fromarray(a,'RGBA'); warning.save(E/'effects/beam_warning.png')
 # Preview is built solely from exported RGBA layers/effects and approved player export.
 W,H=480,700; bg=Image.open('art/launch-slice/source/bg-gameplay.png').convert('RGB');bg=bg.resize((W,round(bg.height*W/bg.width)),Image.Resampling.LANCZOS);bg=bg.crop((0,(bg.height-H)//2,W,(bg.height+H)//2)).convert('RGBA')
 player=Image.open('art/launch-real-size/exports/ships/PLAYER-10001.png').convert('RGBA').resize((34,34),Image.Resampling.LANCZOS)
@@ -71,6 +75,7 @@ for i in range(216):
  if 8<=t<16.15:
   paste(im,layers['damage'],(bx-42,by-52),.85,alpha=.95*boss_alpha)
   paste(im,layers['damage'],(bx+40,by-40),.72,alpha=.9*boss_alpha)
+  paste(im,fx['core_overload'],(bx,by-30),.50,alpha=(.35+.35*abs(math.sin(t*8)))*boss_alpha)
  # short energy and laser bolts, charge warning precedes burst
  if 1.5<=t<3.25 or 8.35<=t<10.3:
   cadence=.30 if t>=8 else .48
@@ -83,7 +88,7 @@ for i in range(216):
   if (t*3)%1<.24: paste(im,fx['muzzle'],(bx,by+65),.45)
  # Thin preview line indicates where the sweeping beam will begin.
  if 3.0<=t<4:
-  ang=-25; L=440; guide=beam.resize((5,L)); paste(im,guide,(bx+math.sin(math.radians(ang))*L/2,by+85+math.cos(math.radians(ang))*L/2),angle=ang,alpha=.45)
+  ang=-25; L=440; guide=warning.resize((8,L)); paste(im,guide,(bx+math.sin(math.radians(ang))*L/2,by+85+math.cos(math.radians(ang))*L/2),angle=ang,alpha=.45)
  # beam sweep: telegraph before firing, pivot at cannon muzzle
  if 4<=t<5.9:
   ang=-25+50*(t-4)/1.9; L=440; segment=beam.resize((20,L)); paste(im,segment,(bx+math.sin(math.radians(ang))*L/2,by+85+math.cos(math.radians(ang))*L/2),1,angle=ang);paste(im,fx['beam_origin'],(bx,by+85),.45)
@@ -97,6 +102,8 @@ for i in range(216):
      x0=bx+side*115; y0=by+48; u=age/1.45
      x=x0+(lockx-x0)*u; y=y0+(locky-y0)*u
      angle=math.degrees(math.atan2(-(lockx-x0),locky-y0))
+     dx=lockx-x0; dy=locky-y0; distance=math.hypot(dx,dy)
+     paste(im,fx['missile_trail'],(x-20*dx/distance,y-20*dy/distance),.40,angle=angle,alpha=.8)
      paste(im,fx['missile'],(x,y),.72,angle=angle)
  if 5.9<=t<6.7: paste(im,fx['target_reticle'],(lockx,locky),.33+.08*math.sin(t*10)**2,alpha=.8)
  # Boss shockwave is preceded by a charge warning.
@@ -111,7 +118,7 @@ for i in range(216):
    x=startx+(bx-startx)*u; y=starty+(by-30-starty)*u
    angle=math.degrees(math.atan2(-(bx-startx),by-30-starty))
    paste(im,fx['laser_bullet'],(x,y),.32,angle=angle,alpha=.9)
-  if .8<=age<.96: paste(im,fx['beam_origin'],(bx,by-30),.20,alpha=max(0,1-(age-.8)/.16))
+  if .8<=age<.99: paste(im,fx['armor_impact'],(bx,by-30),.38,alpha=max(0,1-(age-.8)/.19))
  if 15.45<=t<17.0:
   age=t-15.45
   paste(im,fx['explosion'],(bx,by),.45+age*.75,alpha=max(0,1-age*.62))
@@ -128,6 +135,6 @@ frames[0].save(P/'boss-fight-preview.gif',save_all=True,append_images=frames[1:]
 sheet=Image.new('RGB',(480*6,700*6),(0,0,0));
 for j in range(36): sheet.paste(frames[j*6],((j%6)*480,(j//6)*700))
 sheet.resize((1440,2100),Image.Resampling.LANCZOS).save(P/'boss-fight-frame-sheet.jpg',quality=90)
-manifest={'status':'PROTOTYPE_REVIEW_NOT_RUNTIME_VERIFIED','source_masters':{k:{'path':str(M/v),'sha256':hashlib.sha256((M/v).read_bytes()).hexdigest()} for k,v in S.items()},'canvas':[512,512],'coordinate_system':'top-left, x right, y down; all pivot coordinates are in shared 512x512 boss canvas','layers':[{'name':k,'file':str(E/'boss-layers'/f'{k}.png'),'center':spec[k][1],'pivot':pivots.get(k),'order':n} for n,k in enumerate(order)],'damage_overlay':str(E/'boss-layers/damage.png'),'core_center':[256,207],'spawn_points':{'turret_left':[144,280],'turret_right':[368,280],'main_cannon_and_beam':[256,399],'pod_left':[68,333],'pod_right':[444,333]},'effects':{k:str(E/'effects'/f'{k}.png') for k in fx},'beam_strip':str(E/'effects/beam-strip.png'),'beam_end_rows_identical':bool(np.array_equal(np.asarray(beam)[0],np.asarray(beam)[-1])),'notes':['pivot and spawn coordinates estimated for prototype; must validate rotation and gameplay placement','left and right pods are separate generated images with similar but not identical details','alpha matte and luminous effects require artist review on light and dark backgrounds','hull has a few circular mechanical details but its central socket is closed','preview is composited, not a runtime capture']}
+manifest={'status':'PROTOTYPE_REVIEW_NOT_RUNTIME_VERIFIED','source_masters':{k:{'path':str(M/v),'sha256':hashlib.sha256((M/v).read_bytes()).hexdigest()} for k,v in S.items()},'canvas':[512,512],'coordinate_system':'top-left, x right, y down; all pivot coordinates are in shared 512x512 boss canvas','layers':[{'name':k,'file':str(E/'boss-layers'/f'{k}.png'),'center':spec[k][1],'pivot':pivots.get(k),'order':n} for n,k in enumerate(order)],'damage_overlay':str(E/'boss-layers/damage.png'),'core_center':[256,207],'spawn_points':{'turret_left':[144,280],'turret_right':[368,280],'main_cannon_and_beam':[256,399],'pod_left':[68,333],'pod_right':[444,333]},'effects':{k:str(E/'effects'/f'{k}.png') for k in fx},'beam_warning':str(E/'effects/beam_warning.png'),'beam_strip':str(E/'effects/beam-strip.png'),'beam_end_rows_identical':bool(np.array_equal(np.asarray(beam)[0],np.asarray(beam)[-1])),'notes':['pivot and spawn coordinates estimated for prototype; must validate rotation and gameplay placement','left and right pods are separate generated images with similar but not identical details','alpha matte and luminous effects require artist review on light and dark backgrounds','hull has a few circular mechanical details but its central socket is closed','preview is composited, not a runtime capture']}
 (P/'manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+'\n')
 print('done',len(frames),'frames')

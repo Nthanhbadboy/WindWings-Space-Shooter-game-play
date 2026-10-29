@@ -21,3 +21,7 @@ Two new individually generated VFX sources add an amber player lock-on telegraph
 ## Round 6 combat choreography
 
 The 18-second GIF has an explicit beam guide, missile lock position, a warned shockwave, player shots that actually reach the core, health loss on those hits, and an ending after the last hit. The preview remains staged, not a runtime capture.
+
+## Round 7 battle VFX
+
+Four more individually generated VFX sources supply an amber beam warning, missile exhaust, impact sparks and an overloaded core. These are exported separately and composited into the 18-second staged GIF. The beam warning is non-damaging and precedes the teal sweep. Existing masters remain intact; the manifest records source hashes. Runtime collision, timing balance, alpha/blend QA and user approval remain outstanding.
