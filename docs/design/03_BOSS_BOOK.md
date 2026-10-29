@@ -23,6 +23,14 @@
 8. **Âm thanh:** nhạc riêng/nhịp, tiếng dấu ấn của vũ khí chính.
 9. **Thông số:** HP, ngưỡng pha, sát thương từng đòn — suy từ khung gốc
    (boss slice 225.000 HP; tàu 2.500 HP; damage tàu 4500/2680/8000).
+   **Bắt buộc kèm "Bảng chuẩn đạn & pha"**: mỗi đòn phải gán được vào
+   chuẩn gốc — mẫu bắn 5 tham số (`countShots/timeShot/timeReload/
+   timeRounds/countMags`), họ đạn, tốc độ, damage/viên, hitbox — tra tại
+   `docs/spec/COMBAT.md` §3+§7 và `reverse-engineering/scriptableobjects/
+   Gun_Attack.csv` + `Bullet_Linearly.csv` (bản đồ nguồn đầy đủ ở tập 04
+   §4.1). Mỗi dòng ghi nguồn [GỐC: file/mục] hoặc [ĐỀ XUẤT: lý do]; dòng
+   nào không tra được cũng không tự đặt thì hồ sơ chưa hoàn chỉnh.
+   Nhớ nguyên tắc gốc: boss mạnh ở **mật độ/mẫu đạn**, không ở damage/viên.
 
 ## 3.2 Boss mẫu — Boss-37001 "LÃO PHÁO ĐÀI"
 

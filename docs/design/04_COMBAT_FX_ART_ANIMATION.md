@@ -2,6 +2,32 @@
 
 ## 4.1 Hệ chiến đấu (từ 458 súng / 186 loại đạn của gốc)
 
+> **BẢN ĐỒ NGUỒN — đọc các mục này TRƯỚC khi viết bất kỳ thông số nào**
+> (mọi thông số chiến đấu đều tra ở đây trước; chỉ sáng tạo ở chỗ gốc
+> không có, và phải ghi [ĐỀ XUẤT] cạnh số tự đặt):
+> - `docs/spec/COMBAT.md` **§0** (bảng TL;DR: damage 40–1.200 median 400,
+>   tốc độ đạn 2,0–23,0, tầm bay), **§3** (mẫu bắn 5 tham số `GunData`:
+>   `countShots/timeShot/timeReload/timeRounds/countMags` — định nghĩa
+>   gốc từng trường), **§7** (bảng 186 loại đạn `Bullet_Linearly`).
+> - `reverse-engineering/scriptableobjects/Gun_Attack.csv` (458 dòng súng
+>   địch/boss: `bltDamage`, `bltSpeed`, 5 tham số burst) và
+>   `Bullet_Linearly.csv` (186 loại đạn: `border.w`, `pointRadius`,
+>   `throughShield`, `throughAll`, `fixedOnLinecast`), `Bullet_SineWave.csv`.
+> - `docs/spec/ENEMY_BEHAVIOUR.md` **§1.3** (hằng số va chạm `border.w=15`
+>   dùng chung 799/800 địch — bán kính va chạm chuẩn của cả game).
+> - `datas/sprites.csv` lọc theo `bullet`/`EBullet`/`Efx_BulletHit`:
+>   chỉ mục ảnh đạn gốc để học **phân loại và ngôn ngữ hình** (cấm dùng
+>   lại file ảnh gốc; vẽ mới theo họ).
+>
+> Chuẩn gốc rút ra (mức A, dùng làm khung cho mọi spec):
+> - Hitbox đạn chuẩn **15 unit** (184/186 loại); khác biệt giữa các đạn
+>   chủ yếu ở sprite và hành vi, không ở kích thước va chạm.
+> - Sức mạnh của boss/địch nằm ở **mật độ và mẫu đạn, không phải
+>   damage/viên** (đòn boss không mạnh hơn đạn thường theo viên).
+> - 31% đạn xuyên khiên → khiên không bao giờ là "chặn 100%".
+> - Súng của người chơi KHÔNG nằm trong `Gun_Attack.csv` (458/458 là
+>   Enemy); damage tàu lấy từ mảng đã decode (4500/2680/8000 trong Slice).
+
 Gốc: damage súng 40–1.200 (median 400), burst có 5 tham số, đạn có họ
 riêng [gốc — COMBAT.md]. Làm mới giữ cấu trúc, rút gọn cho dễ đọc:
 

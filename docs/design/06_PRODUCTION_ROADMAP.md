@@ -13,7 +13,11 @@ riêng của director/USER.
 ### Mốc A — Boss mẫu chuẩn (đang dở, hoàn thiện trước)
 - Art: hồ sơ Boss-37001 đầy đủ (Boss Book 3.2): linh kiện đã có →
   bổ sung hư hại bậc, mảnh vỡ, chuỗi nổ, GIF xoay chứng minh pivot,
-  BOSS_SPEC (đòn theo %HP + thông số + khe né).
+  BOSS_SPEC (đòn theo %HP + thông số + khe né) **kèm Bảng chuẩn đạn &
+  pha đã tra gốc** (nguồn: tập 04 §4.1 — `COMBAT.md` §3+§7,
+  `Gun_Attack.csv`, `Bullet_Linearly.csv`; mỗi thông số ghi [GỐC] hoặc
+  [ĐỀ XUẤT]). SPEC còn để thông số dạng tính từ ("nhỏ hơn glow") là
+  chưa đạt cổng, phải quay lại tra.
   **Kế hoạch lô theo năng lực 10 ảnh/turn (tập 04 §4.3):** Lô A1 (≤10):
   món bổ sung còn thiếu của bộ linh kiện (hư hại bậc 2–3, mảnh vỡ, chuỗi
   nổ...) — phần lớn linh kiện chính đã có sẵn nên lô này nhỏ; Lô A2:
