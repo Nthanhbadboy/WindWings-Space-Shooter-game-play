@@ -1,18 +1,18 @@
 # Boss-37001 — bảng chất lượng / đang dở
 
-Đối chiếu nguồn chính thức bằng `git show` commit `589a7de4a64f7891ef1f992f337b4b9cea92797b` từ nhánh `arena/020ecffe-windwings-space-shooter-game-p`: `03_BOSS_BOOK.md` §3.2, `04_COMBAT_FX_ART_ANIMATION.md` §4.3, `06_PRODUCTION_ROADMAP.md` Mốc A. Không sửa/cherry-pick tài liệu. Quy định mới của USER ưu tiên chất lượng; năng lực công cụ thực tế vẫn tối đa 10 ảnh mỗi turn, ảnh lỗi sinh lại turn sau. **ĐẠT chỉ khi xác thực toàn bộ tiêu chí liên quan; ứng viên chưa được coi là hoàn thành.** Số sinh lại dưới đây tính lần thử thay thế trong lịch sử bộ ảnh này, không tính hậu kỳ.
+Đối chiếu nguồn chính thức bằng `git show` commit `185aa8b09cb30209a8a02871d27674ad048f1407` từ nhánh `arena/020ecffe-windwings-space-shooter-game-p`: `03_BOSS_BOOK.md` §3.2/§3.5, `04_COMBAT_FX_ART_ANIMATION.md` §4.1, `06_PRODUCTION_ROADMAP.md` §6.4.1. Không sửa/cherry-pick tài liệu. Quy định mới của USER ưu tiên chất lượng; năng lực công cụ thực tế vẫn tối đa 10 ảnh mỗi turn, ảnh lỗi sinh lại turn sau. **ĐẠT chỉ khi xác thực toàn bộ tiêu chí liên quan; ứng viên chưa được coi là hoàn thành.** Số sinh lại dưới đây tính lần thử thay thế trong lịch sử bộ ảnh này, không tính hậu kỳ.
 
 | Món | ĐẠT / CHƯA | Lỗi/thiếu cụ thể đang thấy | Số lần sinh lại |
 |---|---|---|---:|
 | Thân trần | CHƯA | Master `round4/01-hull.png` đã đóng ổ giữa; chưa chứng minh tách alpha/halo và thân không pháo ma ở cỡ game; kiểm trên sáng/tối | 2 |
-| Ụ pháo trái | CHƯA | Layer có, pivot còn số ước lượng; chưa có GIF xoay 360° và chưa chứng minh đế đứng yên, halo | 0 |
-| Ụ pháo phải | CHƯA | Layer có, pivot còn ước lượng; chưa GIF xoay 360° và kiểm lắp | 1 |
+| Ụ pháo trái | CHƯA | Master `02-left-turret.png` gắn phần ụ và vòng đế trong cùng ảnh; xoay cả sprite sẽ xoay cả vòng, chưa có lớp đế tĩnh riêng; pivot còn ước lượng, chưa có GIF 360°/halo | 0 |
+| Ụ pháo phải | CHƯA | Master `round2/03-right-turret-redo.png` gồm ụ + vòng đế trong cùng ảnh, chưa tách đế tĩnh/đầu xoay; pivot ước lượng, chưa GIF 360°/kiểm lắp | 1 |
 | Pháo giữa | CHƯA | Có nguồn và layer; chưa kiểm sạch alpha, điểm gắn và quay; chưa có chứng minh pivot | 2 |
 | Pod trái | CHƯA | Nguồn và layer có; chưa duyệt mép/halo khi lắp | 2 |
 | Pod phải | CHƯA | Sinh lại theo pod trái; chưa kiểm pixel/alpha/halo và mép ghép | 1 |
 | Lõi teal | CHƯA | Có layer core, chưa chứng minh tâm và độ đọc ở kích thước game | 0 |
-| Overlay hư hại bậc 2 | CHƯA | A1 vẽ lại boss, sai. A2 `01-damage-level2.png` là họa tiết độc lập, **RGB nền đen**; nét nứt/ám khói rất tối hòa nền, chưa có alpha, chưa khớp 512² từng pixel | 1 |
-| Overlay hư hại bậc 3 | CHƯA | A1 vẽ lại boss, sai. A2 `02-damage-level3.png` là họa tiết lửa/khói rời **RGB nền đen**; chưa tách alpha, đặt/kiểm khớp thân 512² và halo | 1 |
+| Overlay hư hại bậc 2 | CHƯA | A1 vẽ lại boss, sai. A2 tối chìm nền; A3 #01 vệt chém dị dạng, #02 nứt + khói độc lập. Đã thử RGBA 512², không tràn hull theo alpha, nhưng chưa chứng minh vết khớp cấu trúc từng pixel/halo ở cỡ thật | 3 |
+| Overlay hư hại bậc 3 | CHƯA | A1 vẽ lại boss, sai. A2 là họa tiết rời. Đã thử RGBA 512² không tràn hull theo alpha; vết nứt vẫn như phủ lên bề mặt, chưa chứng minh khớp cấu trúc từng pixel/halo ở cỡ thật | 1 |
 | Mảnh giáp vỡ | CHƯA | `A1/03` có một mảnh; chưa tách alpha, kiểm cỡ thật và chuỗi 3–4 mảnh | 0 |
 | Nổ frame 1 — chớp | CHƯA | `A1/04` nguồn rời; chưa tách alpha, chưa chứng minh giữ tâm và timing | 0 |
 | Nổ frame 2 — lửa | CHƯA | `A1/05` nguồn rời; chưa kiểm chuyển tiếp liên tục từ frame 1 | 0 |
@@ -44,11 +44,12 @@
 | GIF toàn trận + frame sheet | CHƯA | Bản cũ trên GitHub chưa khớp Boss Book các dòng trên; chưa tự xem không tiếng và trả lời 3 câu user yêu cầu; chưa kiểm cỡ thực và né an toàn | Không áp dụng (render) |
 | BOSS_SPEC / gameplay | CHƯA | SPEC hiện đề xuất, không có hitbox chạy thật và chưa đối chiếu đầy đủ nhịp Boss Book 3.2 | Không áp dụng |
 
-## Turn hiện tại
+## Turn hiện tại — Director 185aa8b
 
-Đã sinh lại **hai ảnh nguồn** A2. Xem mắt: cả hai không vẽ cả con boss như A1; tuy nhiên nền thực tế là RGB chứ không phải alpha thật, đặc biệt vết tối ở #01 khó phân biệt nền đen. Chúng chỉ là ứng viên, **không đạt** cho đến khi tách và chứng minh ghép đúng vị trí/halo. Không cắt ảnh A1 để bù. SHA-256:
+Đã thay `BOSS_SPEC.md` theo 6 quyết định (damage 330/150/300, collider 0,15 unit và 0,3 unit tia; nhịp không cộng). Các con số hoạt cảnh trước đây vẫn CHƯA được sửa trong GIF.
 
-- `masters/A2/01-damage-level2.png`: `d603099b2630cfd5b20db76baae2ca1f5eed897fb98a0b53ba09435c91f6bd07`
-- `masters/A2/02-damage-level3.png`: `485f3952425b758a5b45851f74ac577596d46adfb59771969582e92fd4a84c24`
+A3 #01 là vệt chém/điện, không giống cháy giáp, lỗi. A3 #02 tạo các cụm nứt + khói, không vẽ cả boss; đã tạo ảnh RGBA 512² thử nghiệm từ #02 và A2 bậc 3, tạo composite nền sáng/tối. Cả hai có góc alpha bằng 0; so alpha với thân: 0 pixel alpha >0 nằm ngoài hull. Đây **không** chứng minh vết nứt khớp hình giáp từng pixel, không phải duyệt cuối hay xuất production. Vết nứt bậc 3 nhìn như lớp phủ nằm trên giáp; cần sửa/soi thêm ở cỡ thật.
 
-Turn này dừng ở **hai ứng viên overlay chưa tách alpha/đăng ký canvas**. Chưa đo pivot, chưa render GIF mới hoặc khẳng định tài liệu hoàn tất. Theo phân kỳ đã giao trước đó, phần hậu kỳ/kiểm xoay/ghép là turn riêng sau A2; ưu tiên kiểm overlay trước, nếu không đạt phải sinh lại ở turn sau.
+Dở tại: hai overlay là bản thử, chưa chốt độ khớp và halo; pivot hai ụ chưa đo hay chứng minh 360°, đoạn chết/GIF chưa render lại. Xem `exports/candidates/`; không dùng Vercel. Không tuyên bố hoàn thành.
+
+**Vướng hình cần xử lý tiếp:** cả hai ảnh ụ hiện có vòng đế vẽ liền với bộ phận quay. Xoay nguyên ảnh sẽ quay đế, không đáp ứng chứng minh đế đứng yên; cần sinh lại bộ đế và đầu quay riêng (hoặc kiểm cách tách đã được phép), không được khai pivot đã đạt chỉ vì số tâm nhìn đúng.
