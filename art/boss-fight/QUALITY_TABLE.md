@@ -1,33 +1,33 @@
-# Boss-37001 — bảng chất lượng hai tầng
+# Boss-37001 — HỒ SƠ CHỈNH CHU — CHỜ USER DUYỆT
 
-Chuẩn director `28716f4` Book §3.5(7): hình được chấm tổng thể ở cỡ hiển thị và trong chuyển động; không còn chấm khớp giáp từng pixel. Đã **dừng** kỹ thuật decal A1–A6. [ENGINE] chuyển coder QA, không tính làm art chưa xong. Tình trạng: **ART CHƯA XONG**.
+Chuẩn tổng thể director `28716f4` Book §3.5(7); không chấm khớp từng pixel. Đã ngừng decal A1–A6. [ART] là tự kiểm hình/GIF dàn cảnh; **không phải USER đã duyệt hoặc runtime đã QA**. [ENGINE] chuyển coder QA và không chặn ART.
 
-## [ART] Hư hại, lắp ghép, hoạt cảnh
+## [ART] Thân, lắp ghép, hoạt cảnh
 
-| Món | ĐẠT / CHƯA | Lỗi cụ thể / đã tự xử lý | Số lần sinh lại |
+| Món | ĐẠT / CHƯA | Kết quả tự kiểm / lỗi còn lưu ý | Số lần sinh lại |
 |---|---|---|---:|
-| Biến thể B2 — phân biệt 3 bậc cỡ game (câu 1) | ĐẠT | Đã sinh lại thân nguyên khối với vết ngoài giáp rộng hơn; sheet gameplay 240×350 thể hiện nguyên/vừa/nặng phân biệt được | 1 / 1 |
-| Biến thể — chuyển bậc (câu 2) | ĐẠT trong test art | Đổi nguyên thân tại va chạm, không crossfade; sheet trước/sau và GIF test không thấy ghosting/lỗ hay mất thân | 1 / 1 |
-| Biến thể — cùng một boss (câu 3) | ĐẠT | Ba bậc chung silhouette/thiết kế và cùng bộ pháo/pod trong sheet gameplay, không đòi khớp từng pixel | 1 / 1 |
-| Lắp ụ, pod / pivot | ĐẠT trong test art | Hai ụ có đế/đầu độc lập; test lắp nguyên vẹn và hư nặng xoay 360°, sheet 8 hướng không thấy lỗ ở cỡ game | trái 1 / phải 2 |
-| Bộ đạn | CHƯA | Xem bảng riêng bên dưới: cần đọc cỡ game, tách glow, pulse, tile và đuôi tên lửa | theo họ |
-| Death GIF | CHƯA | Study 4,3 s có 4 mảnh và khói 1 s; flash trắng toàn màn 0,3 s cần kiểm visual/accessibility, chưa chốt art | — |
-| GIF toàn trận + manifest | CHƯA | Đã gắn thân B2, đạn B2/B3, pulse và kết quả giả vào GIF study 32s; chưa duyệt toàn bộ liên tục không tiếng/chưa khóa clip | — |
-| SPEC/kịch bản | CHƯA | Đã cập nhật §3.5(7), họ đạn B2/B3 và anchor đề xuất; manifest đang là candidate, chưa chốt sản phẩm | — |
+| Thân B2 — phân biệt 3 bậc cỡ game (câu 1) | ĐẠT | Sheet 240×350 và timeline phân biệt nguyên/vừa/nặng; chưa kiểm runtime | 1 / 1 |
+| Chuyển bậc trong chuyển động (câu 2) | ĐẠT | Chuyển nguyên thân tại va chạm; test trước/sau không thấy ghost/lỗ hay mất thân | 1 / 1 |
+| Cùng một boss (câu 3) | ĐẠT | Ba bậc chung silhouette/thiết kế, dùng chung ụ và pod | 1 / 1 |
+| Lắp ụ/pod, pivot | ĐẠT | Hai ụ có đế tĩnh/đầu xoay, test 360° trên thân nguyên/hư nặng, sheet 8 hướng ở cỡ game | trái 1 / phải 2 |
+| FX chính sáng/tối | ĐẠT | Tự xem charge, reticle, overload, muzzle, arc, nổ ụ/pod, khói, nổ chính, shockwave và impact trên hai nền (`fx-review.png`) | theo nguồn trước |
+| Đoạn chết riêng | ĐẠT | 4,3 s, trắng 0,3 s, bốn mảnh, 1 s khói; **cảnh báo flash trắng toàn màn**, tùy chọn giảm flash chuyển coder | — |
+| GIF toàn trận + frame sheet | ĐẠT | 32 s, 635 frame mã hóa; 64 mốc 0,5 s và các span 0,5 s đã đối chiếu ba hồi; **không phải QA gameplay** | — |
+| SPEC, kịch bản, manifest | ĐẠT | §3.5 và 7 quyết định, họ đạn/điểm sinh art, kịch bản và manifest; vẫn chờ USER duyệt | — |
 
-## [ART] Bảng bộ đạn mới
+## [ART] Bộ đạn boss
 
-Số lần sinh lại là số lần sinh thay thế trong loạt bộ đạn mới, không tính master B1 đầu tiên. Toàn bộ `bullet-B1` là ứng viên, không phải export cuối.
+Số sinh lại tính từ master đầu tiên của từng họ trong bộ mới. Sheet không nhãn dùng PLAYER 18 px = 1,4 unit và các cỡ bay **của GIF minh họa**, không khẳng định cỡ runtime.
 
-| Họ | ĐẠT / CHƯA | Lỗi cụ thể | Số lần sinh lại |
+| Họ | ĐẠT / CHƯA | Tự kiểm art | Số lần sinh lại |
 |---|---|---|---:|
-| Cầu DOMINANT | CHƯA | B2 cam, tâm sáng; body/glow 3 trạng thái tách riêng, còn kiểm nhịp pulse ở cỡ hiển thị | 1 |
-| Laser ENRAGED | CHƯA | B2 tím hình thuôn đọc rõ hơn; body/glow 3 trạng thái, còn duyệt pulse/halo trong chuyển động | 1 |
-| Tỏa PANIC | CHƯA | B2 vàng hình thoi; còn duyệt nhịp và độ phân biệt khi bắn nhiều viên | 1 |
-| Tên lửa khóa | CHƯA | B3 hình kim khí sáng tâm, tô đỏ khác cầu; glow và khói riêng; đã thử gắn đuôi, còn kiểm xoay và pulse trong clip | 2 |
-| Đầu tia + thân tia | CHƯA | B1 tạo body/glow 3 trạng thái, nhân bản đối xứng cho hai đầu tile trùng pixel; còn xem chuyển động/pulse cỡ game | 0 |
-| Khói đuôi | CHƯA | Tự chỉnh chiết khói thành xám thay vì trắng gắt, gắn đuôi theo góc; còn kiểm khi nhiều quả bay | 0 |
-| Sheet cỡ thật | CHƯA | Sheet dùng PLAYER 18 px = 1,4 unit, 5 họ khác silhouette/màu; chỉ là tỷ lệ art demo chưa chốt, cần kiểm nhận biết trong 0,5s không nhãn | — |
+| Cầu DOMINANT | ĐẠT | Cầu cam lõi sáng; core/glow riêng, 3 mức pulse, canvas 64² | 1 |
+| Laser ENRAGED | ĐẠT | Thuôn tím, core/glow 3 mức, canvas 64×128; phân biệt cầu trong các span 0,5 s | 1 |
+| Tỏa PANIC | ĐẠT | Hình thoi vàng nhỏ, core/glow 3 mức, từng viên nhìn được trong span nhiều viên | 1 |
+| Tên lửa khóa | ĐẠT | Đỏ, tâm sáng, 64², khói rời phía đuôi và đổi hướng cùng thân; pulse 3 mức | 2 |
+| Đầu/thân tia | ĐẠT | Đầu tia và dải 64×128, glow 3 mức; hai đầu tile khớp ở lớp body/glow, có ảnh lặp | 0 |
+| Khói đuôi | ĐẠT | Layer riêng, chỉnh xám để đọc trên gameplay, gắn sau tên lửa trong các mẫu clip | 0 |
+| Sheet cỡ game | ĐẠT | Sheet không nhãn cạnh PLAYER, ảnh sáng/tối và các span 0,5 s; cỡ runtime chuyển coder | — |
 
 ## [ENGINE] CHUYỂN CODER QA — không chặn hoàn thành ART
 
@@ -36,12 +36,6 @@ Số lần sinh lại là số lần sinh thay thế trong loạt bộ đạn m�
 | Collider 0,15 unit đạn / tia rộng 0,3 unit; speed và damage | CHUYỂN CODER QA |
 | Khe né thật, quỹ đạo, lock, nhịp và các pha theo HP | CHUYỂN CODER QA |
 | Muzzle/điểm gắn và đuôi khói trong runtime | CHUYỂN CODER QA |
-| Tia tile/filter, dọn đạn bằng sóng xung kích | CHUYỂN CODER QA |
+| Lọc tile, dọn đạn bằng sóng xung kích, tùy chọn giảm flash | CHUYỂN CODER QA |
 
-## Ghi chú tiến độ
-
-Hư hại B2: `exports/hull-variants-B2/three-stages-gameplay.png`, `stage-transition.gif`, `assembly-360.gif`, manifest. B1 giữ làm lịch sử; alpha biên dùng thân gốc để chống nền sai. Ngưỡng clip minh họa ≤30% vừa, <15% nặng; không thay Book.
-
-Bộ đạn: `exports/bullet-B2/projectile-real-size-study.png` và bản không nhãn, `pulse-study.gif`, `beam-repeat.png`, `missile-tail-test.png`, manifest. Các họ năng lượng được tách phần corona theo alpha và tạo glow 3 mức; core vẫn có tâm phát sáng, không tuyên bố thuật toán tách mọi ánh sáng chính xác tuyệt đối. Sheet PLAYER 18 px / 1,4 unit, art widths đề xuất 16/10/10/18 px. Đây là cỡ của **study**, không phải xác nhận runtime.
-
-GIF study mới `exports/battle-study/battle-study.gif` 32 s, có 0,3 s flash trắng toàn màn, 4 mảnh, 1 s khói và màn kết quả giả; gắn B2/B3, vẫn CHƯA khóa cho đến khi duyệt chuyển động và bộ đạn. Chưa tuyên bố hồ sơ hoàn chỉnh.
+Chi tiết đánh giá, phạm vi và cảnh báo: `ART_REVIEW.md`. Tệp, nguồn và SHA: `FINAL_ART_MANIFEST.json` cùng manifest trong từng nhóm. GIF là minh họa, coder không được nhúng GIF hay dùng mốc giây làm logic trận.

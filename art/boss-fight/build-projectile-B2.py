@@ -23,7 +23,10 @@ def extract(path,size,solid=False):
   alpha=np.where(seen,0,255).astype('uint8');rgb=a.astype('uint8')
  else:
   scale=105 if path.name=='missile-trail.png' else 200
-  alpha=np.clip((v-5)/scale,0,1);rgb=np.clip(a/np.maximum(alpha[:,:,None],.001),0,255).astype('uint8');alpha=(alpha*255).astype('uint8')
+  alpha=np.clip((v-5)/scale,0,1);rgb=np.clip(a/np.maximum(alpha[:,:,None],.001),0,255).astype('uint8')
+  if path.name=='missile-trail.png':
+   smoke=(a.max(2)-a.min(2)<25)&(v>6);rgb[smoke]=[180,185,190];alpha[smoke]=np.clip((v[smoke]-5)/85,0,1)
+  alpha=(alpha*255).astype('uint8')
  layer=Image.fromarray(np.dstack((rgb,alpha)),'RGBA');layer=layer.crop(layer.getbbox());layer.thumbnail((size[0]-8,size[1]-8),Image.Resampling.LANCZOS);out=Image.new('RGBA',size);out.alpha_composite(layer,((size[0]-layer.width)//2,(size[1]-layer.height)//2));return out
 
 def export(name,art,source):
@@ -32,9 +35,10 @@ def export(name,art,source):
   # Separate outer low-alpha corona from core, with a smooth transition band.
   mask=np.clip((alpha-35)/115,0,1);core=aa.copy();core[:,:,3]=(alpha*mask).astype('uint8');gl=aa.copy();gl[:,:,3]=(alpha*(1-mask)).astype('uint8')
   body=Image.fromarray(core,'RGBA');halo=Image.fromarray(gl,'RGBA')
-  bloom=body.copy(); bloom.putalpha(body.getchannel('A').filter(ImageFilter.GaussianBlur(3)).point(lambda a:round(a*.8))); halo.alpha_composite(bloom)
+  colors={'heavy-orb':(255,135,25),'laser':(245,75,255),'panic':(255,215,45),'beam-head':(255,75,20),'beam-strip':(255,95,25)}
+  bloom=Image.new('RGBA',art.size,(*colors[name],0));bloom.putalpha(body.getchannel('A').filter(ImageFilter.GaussianBlur(3)).point(lambda a:round(a*.8)));halo.alpha_composite(bloom)
  elif name=='missile':
-  body=art; halo=art.copy();halo.putalpha(art.getchannel('A').filter(ImageFilter.GaussianBlur(3)).point(lambda x:round(x*.4)))
+  body=art; pix=np.asarray(art); light=((pix[:,:,:3].max(2)>195)&(pix[:,:,3]>0)).astype('uint8')*255; mask=Image.fromarray(light,'L').filter(ImageFilter.GaussianBlur(4));halo=Image.new('RGBA',art.size,(255,70,20,0));halo.putalpha(mask)
  else:body=art;halo=None
  body.save(d/'body.png')
  if halo:
@@ -45,7 +49,7 @@ def export(name,art,source):
   if halo:bg.alpha_composite(halo,(0,0))
   bg.alpha_composite(body,(0,0))
  panel.alpha_composite(dark,(art.width,0));panel.resize((art.width*8,art.height*4),Image.Resampling.NEAREST).convert('RGB').save(d/'light-dark.png')
- return {'source':str(source),'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'canvas':list(art.size),'glow_frames':3 if halo else 0,'status':'candidate'}
+ return {'source':str(source),'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'canvas':list(art.size),'glow_frames':3 if halo else 0,'status':'art-reviewed; pending user approval'}
 meta={}
 for name,(src,size) in sources.items():
  source=P/'masters'/src;art=extract(source,size,name=='missile');meta[name]=export(name,art,source)
@@ -63,4 +67,4 @@ for name,x,y,wh in placements:draw.text((x-15,y+23),{'heavy-orb':'HEAVY','laser'
 bg.save(O/'projectile-real-size-study.png')
 # Join missile and separate smoke behind the rear socket for a visual-only registration test.
 trail=Image.open(O/'missile-trail/body.png').convert('RGBA').resize((64,128),Image.Resampling.LANCZOS);miss=Image.open(O/'missile/body.png').convert('RGBA');preview=Image.new('RGBA',(128,192));preview.alpha_composite(trail,(32,0));preview.alpha_composite(miss,(32,116));preview.save(O/'missile-tail-test.png')
-(O/'manifest.json').write_text(json.dumps({'status':'CANDIDATE_NOT_RUNTIME','items':meta,'pixel_display_example':{'canvas':[240,350],'player_width_px':18,'player_width_unit':1.4,'projectile_art_dimensions':{x[0]:x[3] for x in placements}},'warnings':['Artwork sizes are a staging choice, not actual engine display calibration.','Core-corona split uses alpha luminance estimates and may not cleanly separate all emissive light.','Missile exhaust registration is only visual.','Beam repeating boundary identical; filtering and runtime need coder QA.']},indent=2)+'\n')
+(O/'manifest.json').write_text(json.dumps({'status':'ART_READY_FOR_USER_REVIEW_NOT_RUNTIME','items':meta,'pixel_display_example':{'canvas':[240,350],'player_width_px':18,'player_width_unit':1.4,'projectile_art_dimensions':{x[0]:x[3] for x in placements}},'warnings':['Artwork sizes are a staging choice, not actual engine display calibration.','Core-corona split uses alpha luminance estimates and may not cleanly separate all emissive light.','Missile exhaust registration is only visual.','Beam repeating boundary identical; filtering and runtime need coder QA.']},indent=2)+'\n')

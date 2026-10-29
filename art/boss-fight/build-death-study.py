@@ -7,7 +7,8 @@ from PIL import Image, ImageDraw
 from pathlib import Path
 import math, json
 P=Path('art/boss-fight'); E=P/'exports'; D=E/'death-study'; D.mkdir(parents=True,exist_ok=True)
-L={n:Image.open(E/'boss-layers'/f'{n}.png').convert('RGBA') for n in ('hull','pod_left','pod_right','core','cannon')}
+L={n:Image.open(E/'boss-layers'/f'{n}.png').convert('RGBA') for n in ('pod_left','pod_right','core','cannon')}
+L['hull']=Image.open(E/'hull-variants-B2/hull-severe.png').convert('RGBA')
 T={f'{s}_{p}':Image.open(E/'turret-pivot-tests'/f'{s}-{p}.png').convert('RGBA') for s in ('left','right') for p in ('base','head')}
 F={n:Image.open(E/'cinematic'/f'{n}.png').convert('RGBA') for n in ('turret_blast','pod_fire','arc','main_blast','debris','smoke')}
 F['shockwave']=Image.open(E/'effects/shockwave.png').convert('RGBA')
@@ -59,6 +60,6 @@ small[0].save(D/'death-study.gif',save_all=True,append_images=small[1:],duration
 board=Image.new('RGB',(480*4,700*2))
 for j,idx in enumerate([0,13,28,38,44,48,54,72]):board.paste(frames[idx],((j%4)*480,(j//4)*700))
 board.resize((1200,875),Image.Resampling.LANCZOS).save(D/'death-study-sheet.jpg',quality=90)
-meta={'status':'STUDY_NOT_RUNTIME_OR_FINAL_QA','fps':fps,'frames':len(frames),'duration_s':duration,'flash_frames':[38,39,40,41,42,43],'flash_duration_s':.3,'fragments':4,'smoke_only_s':1.0,'segments_s':{'turret':[0,.65],'pod':[.65,1.3],'arc':[1.3,1.9],'flash':[1.9,2.2],'explosion':[2.2,3.3],'smoke':[3.3,4.3]},'limitations':['Projectile clearing is not simulated.','Full-frame white flash needs accessibility review.','Sequence staging and layer alignment require visual review; not gameplay QA.']}
+meta={'status':'ART_READY_FOR_USER_REVIEW_NOT_RUNTIME','fps':fps,'frames':len(frames),'duration_s':duration,'flash_frames':[38,39,40,41,42,43],'flash_duration_s':.3,'fragments':4,'smoke_only_s':1.0,'segments_s':{'turret':[0,.65],'pod':[.65,1.3],'arc':[1.3,1.9],'flash':[1.9,2.2],'explosion':[2.2,3.3],'smoke':[3.3,4.3]},'limitations':['Projectile clearing is not simulated.','Full-frame white flash needs accessibility review.','Staging and layer alignment reviewed as art; not gameplay QA.']}
 (D/'manifest.json').write_text(json.dumps(meta,indent=2)+'\n')
 print(meta)
