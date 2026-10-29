@@ -11,8 +11,8 @@
 | Pod trái | CHƯA | Nguồn và layer có; chưa duyệt mép/halo khi lắp | 2 |
 | Pod phải | CHƯA | Sinh lại theo pod trái; chưa kiểm pixel/alpha/halo và mép ghép | 1 |
 | Lõi teal | CHƯA | Có layer core, chưa chứng minh tâm và độ đọc ở kích thước game | 0 |
-| Overlay hư hại bậc 2 | CHƯA | A1 vẽ lại boss, sai. A2 tối chìm nền; A3 #01 vệt chém dị dạng, #02 nứt + khói độc lập. Đã thử RGBA 512², không tràn hull theo alpha, nhưng chưa chứng minh vết khớp cấu trúc từng pixel/halo ở cỡ thật | 3 |
-| Overlay hư hại bậc 3 | CHƯA | A1 vẽ lại boss, sai. A2 là họa tiết rời. Đã thử RGBA 512² không tràn hull theo alpha; vết nứt vẫn như phủ lên bề mặt, chưa chứng minh khớp cấu trúc từng pixel/halo ở cỡ thật | 1 |
+| Overlay hư hại bậc 2 | CHƯA | A1 vẽ lại boss, sai. A2 tối chìm nền; A3 #01 vệt chém dị dạng, #02 nứt + khói độc lập. Đã thử RGBA 512², không tràn hull theo alpha, nhưng chưa chứng minh vết khớp cấu trúc từng pixel/halo ở cỡ thật; A5 giống mảnh đá gắn lên giáp, loại | 4 |
+| Overlay hư hại bậc 3 | CHƯA | A1 vẽ lại boss, sai. A2 là họa tiết rời. Đã thử RGBA 512² không tràn hull theo alpha; vết nứt vẫn như phủ lên bề mặt, chưa chứng minh khớp cấu trúc từng pixel/halo ở cỡ thật; A5 giả vật liệu/mảnh đá, loại | 2 |
 | Mảnh giáp vỡ | CHƯA | `A1/03` có một mảnh; chưa tách alpha, kiểm cỡ thật và chuỗi 3–4 mảnh | 0 |
 | Nổ frame 1 — chớp | CHƯA | `A1/04` nguồn rời; chưa tách alpha, chưa chứng minh giữ tâm và timing | 0 |
 | Nổ frame 2 — lửa | CHƯA | `A1/05` nguồn rời; chưa kiểm chuyển tiếp liên tục từ frame 1 | 0 |
@@ -40,7 +40,7 @@
 | Lõi trắng | CHƯA | Bản gốc bị cắt; bản redo chưa kiểm flash 0,3 s và accessibility | 1 |
 | Tia quét chính / cuối | CHƯA | Script hiện quét đầu 1,4 s, góc −24°→24°, sạc 1,1 s; Boss Book yêu cầu 1,2 s, −25°→25° trong 1,9 s. Tia cuối hiện chỉ một chiều, không phải hai chiều liên tiếp | Không áp dụng (choreography) |
 | Khóa + tên lửa | CHƯA | Script dùng 3 cặp và điểm mục tiêu lệch 100/105 px khỏi PLAYER; sách yêu cầu reticle bám 0,8 s rồi khóa/phóng 4 cặp | Không áp dụng (choreography) |
-| Cái chết | CHƯA | Đã có đoạn dàn cảnh nhưng chưa kiểm trực quan 3 giây riêng, sự liên tục/khung; số mảnh văng trong script 10 thay vì 3–4 | Không áp dụng (choreography) |
+| Cái chết | CHƯA | Đã tự dựng study 4,3 s / 4 mảnh, flash 0,3 s, khói 1 s; sheet cho thấy lửa pod lệch và thân biến mất đột ngột trước nổ; chưa kiểm dọn đạn hoặc chuyển cảnh; clip toàn trận cũ vẫn 10 mảnh | Không áp dụng (choreography) |
 | GIF toàn trận + frame sheet | CHƯA | Bản cũ trên GitHub chưa khớp Boss Book các dòng trên; chưa tự xem không tiếng và trả lời 3 câu user yêu cầu; chưa kiểm cỡ thực và né an toàn | Không áp dụng (render) |
 | BOSS_SPEC / gameplay | CHƯA | SPEC đã theo director 185aa8b; chưa có hitbox chạy thật và chưa kiểm gameplay runtime | Không áp dụng |
 
@@ -57,3 +57,9 @@ Dở tại: hai overlay là bản thử, chưa chốt độ khớp và halo; piv
 Rút câu hỏi tay nghề ở comment PR trước: không chờ director. Đã tự xử lý bằng cách sinh riêng bốn master A4: đế trái/phải và đầu trái/phải. Tâm hub được đo thủ công trên master gốc: đế trái (688,386), đầu trái (703,177); đế phải (704,385), đầu phải (704,237). Quy đổi crop/scale về pivot canvas (256,256), chi tiết trong `exports/turret-pivot-tests/pivot-measurements.json`. Hai GIF 72 frame, 5°/frame, compositing đế không biến đổi; alpha 4 góc của bốn layer bằng 0. Sheet 8 hướng cho thấy đế cố định và đầu quay quanh tâm.
 
 Đây là **test độc lập**, chưa tích hợp vào thân và chưa kiểm hết halo, muzzle hoặc hình khi chơi 64px; chưa ghi ĐẠT cho ụ pháo. Hai overlay, đoạn chết 3 giây và GIF toàn trận vẫn chưa xong. Không chờ câu trả lời về kỹ thuật.
+
+## Turn tiếp — overlay A5 và thử đoạn chết
+
+Đã tự sinh lại hai overlay A5 theo bố cục thân. Cả hai đều bị loại: họa tiết giống mảnh đá đắp lên giáp, không hòa vật liệu, không khớp mép panel; không đưa vào production. Tăng số sinh lại tương ứng.
+
+Đã tự dựng đoạn chết độc lập `exports/death-study/death-study.gif` từ asset hiện có và hai bộ ụ A4, 4,3 s, 20 fps logic; 4 mảnh, 0,3 s flash, 1 s khói cuối. Kiểm GIF mã hóa 81 frame, tổng delay 4300 ms; sáu frame trắng liên tiếp đã được gộp thành một frame 300 ms. Xem sheet thấy lửa pod nằm lệch về phía dưới, thân biến mất ngay khi bắt đầu nổ, chuyển tiếp chưa tự nhiên; chưa chứng minh dọn đạn hay QA an toàn flash. Vì vậy đoạn chết **CHƯA**. Chưa sửa/rerender GIF toàn trận; overlay vẫn ưu tiên tiếp.
