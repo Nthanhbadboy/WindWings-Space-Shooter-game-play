@@ -42,8 +42,12 @@ riêng [gốc — COMBAT.md]. Làm mới giữ cấu trúc, rút gọn cho dễ 
 - **Va chạm:** hitbox nhỏ hơn hình (tha thứ ~30%) để cảm giác "né sượt"
   xảy ra thường xuyên — đó là khoảnh khắc vui nhất của thể loại này.
 - **Sát thương:** mọi số ghi nguồn: khung tàu 2.500 HP, damage tàu
-  4500/2680/8000, boss 225.000 [gốc/slice]; đòn địch thường lấy 3–6%
-  HP tàu/viên, đòn boss lớn 10–20%/đợt trúng liên tục.
+  4500/2680/8000, boss 225.000 [gốc/slice]. Phân tầng theo quyết định
+  đạo diễn (Boss Book §3.5 câu 4): đạn địch thường và đạn bắn nhanh/tỏa
+  **3–6% HP tàu/viên**; đòn boss nặng có telegraph dài (≥0,9s, nhịp
+  thưa) được **10–15%/viên**; tia quét tính theo thời gian đứng trong
+  tia (120 HP/0,5s — Boss Book §3.2). Sức mạnh tổng đến từ mật độ đạn
+  và mẫu bắn, không từ việc phình damage từng viên rẻ tiền.
 
 ## 4.2 Cảm giác trận đánh (game feel) — bảng juice chuẩn
 

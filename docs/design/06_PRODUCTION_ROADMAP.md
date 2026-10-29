@@ -76,3 +76,17 @@ placeholder nêu tên, đường dẫn file/artifact + hash, và một câu
 - **Coder:** chịu trách nhiệm hệ thống chơi được + build Windows qua CI;
   không tự hình dung thẩm mỹ, thiếu asset thì báo thiếu đúng tên slot.
 - **USER:** duyệt đẹp/xấu và trải nghiệm; quyết định phạm vi.
+
+### 6.4.1 Phân vai chi tiết (chốt 29/10 — bắt buộc mọi session tuân thủ)
+
+| Việc | Director | Art | Coder | USER |
+|---|---|---|---|---|
+| Kịch bản trận đấu/pha, chuẩn đạn & số, tính công bằng | **QUYẾT** (viết vào Boss Book/SPEC; trả lời câu hỏi chặn bằng dữ liệu gốc) | Đề xuất kèm lý do, gắn nhãn [ĐỀ XUẤT], **không tự ý đổi chuẩn đã chốt** | Đề xuất khi vướng kỹ thuật, không tự đổi số cân bằng | Duyệt khi tranh chấp khó/dễ |
+| Hình ảnh: bố cục, linh kiện, màu, chi tiết, chọn ảnh sinh | Đặt **chuẩn đầu ra** (đọc được ở cỡ thật, tách lớp, pivot có bằng chứng) | **TỰ ĐẠO DIỄN HÌNH ẢNH + chỉnh chu**: sinh lại không giới hạn số ảnh cho tới khi đạt chuẩn; tự chấm bằng bảng chất lượng | Không can thiệp hình; thiếu/không khớp thì báo đúng tên slot/lỗi | **Duyệt đẹp/xấu cuối cùng** |
+| Animation trong engine | Chốt doctrine 3 tầng (tập 04) | Cung cấp linh kiện + kịch bản + bằng chứng xoay | Cài thành hệ thống theo tình huống (%HP/vị trí), cấm phang nguyên GIF/mốc giây | Duyệt bằng bản chạy thật |
+| Kiểm chứng | Đối chiếu độc lập file/số/CI/ảnh trước khi trình USER | Tự kiểm có bằng chứng đính kèm | Test + CI + bằng chứng runtime | Phán quyết cuối |
+
+Quy tắc leo thang: session gặp chỗ kịch bản chưa có/chưa rõ thì **hỏi
+bằng văn bản trên board, gắn câu hỏi vào đúng mục tài liệu** — director
+trả lời vào chính tài liệu đó (không trả lời miệng trôi qua). Session
+tự ý quyết thay phần của director = sản phẩm bị trả lại, dù đẹp.
