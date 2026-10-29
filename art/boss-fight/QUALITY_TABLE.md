@@ -1,12 +1,12 @@
 # Boss-37001 — bảng chất lượng / đang dở
 
-Đối chiếu nguồn chính thức bằng `git show` commit `185aa8b09cb30209a8a02871d27674ad048f1407` từ nhánh `arena/020ecffe-windwings-space-shooter-game-p`: `03_BOSS_BOOK.md` §3.2/§3.5, `04_COMBAT_FX_ART_ANIMATION.md` §4.1, `06_PRODUCTION_ROADMAP.md` §6.4.1. Không sửa/cherry-pick tài liệu. Quy định mới của USER ưu tiên chất lượng; năng lực công cụ thực tế vẫn tối đa 10 ảnh mỗi turn, ảnh lỗi sinh lại turn sau. **ĐẠT chỉ khi xác thực toàn bộ tiêu chí liên quan; ứng viên chưa được coi là hoàn thành.** Số sinh lại dưới đây tính lần thử thay thế trong lịch sử bộ ảnh này, không tính hậu kỳ.
+Đối chiếu nguồn chính thức bằng `git show` commit `185aa8b09cb30209a8a02871d27674ad048f1407` từ nhánh `arena/020ecffe-windwings-space-shooter-game-p`: `03_BOSS_BOOK.md` §3.2/§3.5, `04_COMBAT_FX_ART_ANIMATION.md` §4.1, `06_PRODUCTION_ROADMAP.md` §6.4.1. Không sửa/cherry-pick tài liệu. Theo §6.4.2, art tự quyết kỹ thuật hình ảnh và không hỏi director về các quyết định tay nghề; sinh lại khi cần. **ĐẠT chỉ khi xác thực toàn bộ tiêu chí liên quan; ứng viên chưa được coi là hoàn thành.** Số sinh lại dưới đây tính lần thử thay thế trong lịch sử bộ ảnh này, không tính hậu kỳ.
 
 | Món | ĐẠT / CHƯA | Lỗi/thiếu cụ thể đang thấy | Số lần sinh lại |
 |---|---|---|---:|
 | Thân trần | CHƯA | Master `round4/01-hull.png` đã đóng ổ giữa; chưa chứng minh tách alpha/halo và thân không pháo ma ở cỡ game; kiểm trên sáng/tối | 2 |
-| Ụ pháo trái | CHƯA | Master `02-left-turret.png` gắn phần ụ và vòng đế trong cùng ảnh; xoay cả sprite sẽ xoay cả vòng, chưa có lớp đế tĩnh riêng; pivot còn ước lượng, chưa có GIF 360°/halo | 0 |
-| Ụ pháo phải | CHƯA | Master `round2/03-right-turret-redo.png` gồm ụ + vòng đế trong cùng ảnh, chưa tách đế tĩnh/đầu xoay; pivot ước lượng, chưa GIF 360°/kiểm lắp | 1 |
+| Ụ pháo trái | CHƯA | Đã tự xử lý: sinh đế tĩnh + đầu quay độc lập A4; đo tâm hub và dựng GIF 72 frame/360°. Cần kiểm lắp thân 512, halo cỡ game và vị trí muzzle; chưa xuất production | 1 |
+| Ụ pháo phải | CHƯA | Đã tự xử lý: sinh đế tĩnh + đầu quay độc lập A4; đo tâm hub và dựng GIF 72 frame/360°. Cần kiểm lắp thân 512, halo cỡ game và vị trí muzzle; chưa xuất production | 2 |
 | Pháo giữa | CHƯA | Có nguồn và layer; chưa kiểm sạch alpha, điểm gắn và quay; chưa có chứng minh pivot | 2 |
 | Pod trái | CHƯA | Nguồn và layer có; chưa duyệt mép/halo khi lắp | 2 |
 | Pod phải | CHƯA | Sinh lại theo pod trái; chưa kiểm pixel/alpha/halo và mép ghép | 1 |
@@ -42,7 +42,7 @@
 | Khóa + tên lửa | CHƯA | Script dùng 3 cặp và điểm mục tiêu lệch 100/105 px khỏi PLAYER; sách yêu cầu reticle bám 0,8 s rồi khóa/phóng 4 cặp | Không áp dụng (choreography) |
 | Cái chết | CHƯA | Đã có đoạn dàn cảnh nhưng chưa kiểm trực quan 3 giây riêng, sự liên tục/khung; số mảnh văng trong script 10 thay vì 3–4 | Không áp dụng (choreography) |
 | GIF toàn trận + frame sheet | CHƯA | Bản cũ trên GitHub chưa khớp Boss Book các dòng trên; chưa tự xem không tiếng và trả lời 3 câu user yêu cầu; chưa kiểm cỡ thực và né an toàn | Không áp dụng (render) |
-| BOSS_SPEC / gameplay | CHƯA | SPEC hiện đề xuất, không có hitbox chạy thật và chưa đối chiếu đầy đủ nhịp Boss Book 3.2 | Không áp dụng |
+| BOSS_SPEC / gameplay | CHƯA | SPEC đã theo director 185aa8b; chưa có hitbox chạy thật và chưa kiểm gameplay runtime | Không áp dụng |
 
 ## Turn hiện tại — Director 185aa8b
 
@@ -52,4 +52,8 @@ A3 #01 là vệt chém/điện, không giống cháy giáp, lỗi. A3 #02 tạo 
 
 Dở tại: hai overlay là bản thử, chưa chốt độ khớp và halo; pivot hai ụ chưa đo hay chứng minh 360°, đoạn chết/GIF chưa render lại. Xem `exports/candidates/`; không dùng Vercel. Không tuyên bố hoàn thành.
 
-**Vướng hình cần xử lý tiếp:** cả hai ảnh ụ hiện có vòng đế vẽ liền với bộ phận quay. Xoay nguyên ảnh sẽ quay đế, không đáp ứng chứng minh đế đứng yên; cần sinh lại bộ đế và đầu quay riêng (hoặc kiểm cách tách đã được phép), không được khai pivot đã đạt chỉ vì số tâm nhìn đúng.
+## Tự quyết tay nghề — §6.4.2 (turn tiếp theo)
+
+Rút câu hỏi tay nghề ở comment PR trước: không chờ director. Đã tự xử lý bằng cách sinh riêng bốn master A4: đế trái/phải và đầu trái/phải. Tâm hub được đo thủ công trên master gốc: đế trái (688,386), đầu trái (703,177); đế phải (704,385), đầu phải (704,237). Quy đổi crop/scale về pivot canvas (256,256), chi tiết trong `exports/turret-pivot-tests/pivot-measurements.json`. Hai GIF 72 frame, 5°/frame, compositing đế không biến đổi; alpha 4 góc của bốn layer bằng 0. Sheet 8 hướng cho thấy đế cố định và đầu quay quanh tâm.
+
+Đây là **test độc lập**, chưa tích hợp vào thân và chưa kiểm hết halo, muzzle hoặc hình khi chơi 64px; chưa ghi ĐẠT cho ụ pháo. Hai overlay, đoạn chết 3 giây và GIF toàn trận vẫn chưa xong. Không chờ câu trả lời về kỹ thuật.
