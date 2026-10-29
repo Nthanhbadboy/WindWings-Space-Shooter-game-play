@@ -70,22 +70,88 @@
       "sha256": "96f28b98b57ddbff5805798ac3108507b9a0e3d05990a2845498b00348ab2e71",
       "license": "UNKNOWN",
       "status": "GENERATED_RAW_NOT_FINAL"
+    },
+    {
+      "file": "art/boss-fight/masters/round2/01-hull-redo.png",
+      "canvas": "1408x768",
+      "sha256": "17cccc036fee801eb4f7efcecd19c9f2a7730c2862b6708d8179ebfbd2e9cbe5",
+      "license": "UNKNOWN",
+      "status": "GENERATED_RAW_NOT_FINAL"
+    },
+    {
+      "file": "art/boss-fight/masters/round2/03-right-turret-redo.png",
+      "canvas": "1408x768",
+      "sha256": "8b24f7c8cde93553b9d5ef72d6330e5c6bd09b7beba0798eecc7d8fb5379bede",
+      "license": "UNKNOWN",
+      "status": "GENERATED_RAW_NOT_FINAL"
+    },
+    {
+      "file": "art/boss-fight/masters/round2/04-main-cannon-redo.png",
+      "canvas": "1408x768",
+      "sha256": "d9553048b2b51434032aa11741dbd0bf13123026e54822b34f9cd52dfcae9431",
+      "license": "UNKNOWN",
+      "status": "GENERATED_RAW_NOT_FINAL"
+    },
+    {
+      "file": "art/boss-fight/masters/round2/05-left-pod-redo.png",
+      "canvas": "1408x768",
+      "sha256": "7d2299ae048dd543c1c28fea90de39f828893c16e6e05efd211e4fb97ebf9838",
+      "license": "UNKNOWN",
+      "status": "GENERATED_RAW_NOT_FINAL"
+    },
+    {
+      "file": "art/boss-fight/masters/round2/11-beam-strip.png",
+      "canvas": "1408x768",
+      "sha256": "435a2afcb222c295b57f67980d3b85bb2565c54c7b2127f2250e12eaa77f7bae",
+      "license": "UNKNOWN",
+      "status": "GENERATED_RAW_NOT_FINAL"
+    },
+    {
+      "file": "art/boss-fight/masters/round2/12-beam-origin.png",
+      "canvas": "1408x768",
+      "sha256": "3f561902845ab970124a9c39f64720c2d2878b447cd0f6b28eef4b95a2692aeb",
+      "license": "UNKNOWN",
+      "status": "GENERATED_RAW_NOT_FINAL"
+    },
+    {
+      "file": "art/boss-fight/masters/round2/13-charge-ring.png",
+      "canvas": "1408x768",
+      "sha256": "27daac97cfb5a8f4dcd040600782abd75ab46bc5b0fd63d83714a2600d86f2c2",
+      "license": "UNKNOWN",
+      "status": "GENERATED_RAW_NOT_FINAL"
+    },
+    {
+      "file": "art/boss-fight/masters/round2/14-missile.png",
+      "canvas": "1408x768",
+      "sha256": "6a42c5713efce477a1841cf631ff540f4d7e6f0e7f74bf0fa61df39ebbaadb3a",
+      "license": "UNKNOWN",
+      "status": "GENERATED_RAW_NOT_FINAL"
+    },
+    {
+      "file": "art/boss-fight/masters/round2/15-muzzle.png",
+      "canvas": "768x1376",
+      "sha256": "fddb5b1850eb5ba42885bb649f697aed3175321893aa6f8bbf02aed90f052b3f",
+      "license": "UNKNOWN",
+      "status": "GENERATED_RAW_NOT_FINAL"
+    },
+    {
+      "file": "art/boss-fight/masters/round2/16-shockwave.png",
+      "canvas": "1408x768",
+      "sha256": "beaefdcb2f90eaa17dd3681609190da1a0ef9c7d0538f31e84ed5a84f1501cb2",
+      "license": "UNKNOWN",
+      "status": "GENERATED_RAW_NOT_FINAL"
     }
   ],
-  "missing_new_generations": [
-    "11-beam-strip",
-    "12-beam-origin",
-    "13-charge-ring",
-    "14-missile",
-    "15-muzzle",
-    "16-shockwave"
+  "coverage": "16 named categories have generated candidates; none are final exports",
+  "needs_redo": [
+    "13 charge ring: outer circle clipped by image frame"
   ],
-  "redo_needed": [
-    "01-hull: side pods still baked in; not bare",
-    "03-right-turret: generated ship rather than single turret",
-    "04-main-cannon: cannon attached to hull, not standalone",
-    "05-left-pod: points sideways rather than down"
+  "needs_review": [
+    "04 main cannon is very bulky and has armor attached",
+    "05 left pod remains a horizontal box although ports point down",
+    "11 beam upper/lower rows differ: continuity not verified"
   ],
+  "beam_edge_mean_abs_rgb": 1.5558712121212122,
   "not_yet_created": [
     "transparent exports",
     "pivot and muzzle positions",
@@ -94,5 +160,5 @@
     "16-frame sheet",
     "animation notes"
   ],
-  "note": "Ten images were generated in previous turn; generation tool refused 11 onwards. Raw masters only, no cut/reuse substitutions."
+  "note": "Two turns used 10 image generations each. Round2 files include 6 previously missing categories and 4 targeted replacements. No frame or GIF before all generated components are usable."
 }
