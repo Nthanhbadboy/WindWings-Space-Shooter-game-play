@@ -1,3 +1,5 @@
+> **TƯ LIỆU LỊCH SỬ:** bài tự kiểm này thuộc boss tối thiểu tại commit `fd4f65a`, không phải DREADNOUGHT §3.2A và không chứng minh bản nâng cấp đạt. Xem `QUALITY_TABLE.md` hiện hành.
+
 # Boss-37001 — tự kiểm ART, chờ USER duyệt
 
 Chuẩn: Boss Book §3.2/§3.5, director `28716f4` §3.5(7), §6.4.2 và bảng số trong `BOSS_SPEC.md`. Các nhận định dưới đây chỉ về **ảnh và GIF dàn cảnh**, không phải kiểm thử game. GIF có một flash trắng toàn màn 0,3 giây; **cảnh báo trước khi xem**.
