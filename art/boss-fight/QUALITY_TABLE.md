@@ -6,7 +6,7 @@ Chuẩn: Book §3.2A và §3.5, roadmap Mốc A tại director `5701bed`. Bản 
 
 | Món | ĐẠT/CHƯA | Lỗi/thiếu cụ thể | Số sinh lại |
 |---|---|---|---:|
-| Silhouette dreadnought / thân | CHƯA | Chưa có thân mới chứa 11 điểm; không dùng thân cũ dán nòng thay thế. Lần thử sinh master bị dịch vụ từ chối 403, không có ảnh | 0 thành công / 1 yêu cầu lỗi |
+| Silhouette dreadnought / thân | CHƯA | Chưa có thân mới chứa 11 điểm; không dùng thân cũ dán nòng thay thế. Lần thử sinh master bị dịch vụ từ chối 403, không có ảnh | 0 thành công / 2 yêu cầu lỗi |
 | 11 điểm hỏa lực | CHƯA | Chỉ có ứng viên 2 đế/đầu BigGun và Main cũ, chưa kiểm fit; thiếu 4 ụ phụ, 2 pod 8 ống, 2 pháo quạt, iris; xem bảng riêng | 0 thành công |
 | Pivot / GIF lắp trên thân | CHƯA | Chưa có bố trí mới, chưa đo 6 pivot và mọi muzzle, chưa có GIF xoay trên thân Dreadnought | — |
 | 3 biến thể hư hại + đế cháy | CHƯA | 3 thân cũ không có cấu tạo mới / các đế cháy; chưa có hư hại vừa 2–3 điểm và nặng nứt lõi–cánh/khói | 0 thành công |
@@ -34,7 +34,7 @@ Chuẩn: Book §3.2A và §3.5, roadmap Mốc A tại director `5701bed`. Bản 
 | 10 | quạt lõi trái | THIẾU | Chưa có pháo cố định hướng xuống-trái |
 | 11 | quạt lõi phải | THIẾU | Chưa có pháo cố định hướng xuống-phải |
 
-Ngoài 11 điểm còn thiếu vòng giáp lõi mở/đóng, 3 thân đúng cấu tạo và các lớp khói/lửa. Thử sinh 6 asset: **0 ảnh thành công**, cả 6 yêu cầu trả 403 từ dịch vụ tạo ảnh; không bỏ/giảm yêu cầu vì lỗi này.
+Ngoài 11 điểm còn thiếu vòng giáp lõi mở/đóng, 3 thân đúng cấu tạo và các lớp khói/lửa. Thử sinh 6 asset và thử lại thân thêm 1 lần: **0 ảnh thành công**, cả 7 yêu cầu trả 403 `PERMISSION_DENIED` từ dịch vụ tạo ảnh; thông báo nêu tài khoản dịch vụ bị đánh dấu hoạt động đáng ngờ/vi phạm điều khoản. Không có thông tin xác nhận là quota, và phản hồi HTTP 403 không phải bằng chứng lỗi mạng. Không bỏ/giảm yêu cầu vì lỗi này.
 
 ## [ENGINE] CHUYỂN CODER QA — không chặn ART
 
