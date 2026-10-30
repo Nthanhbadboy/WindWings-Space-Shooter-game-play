@@ -95,6 +95,19 @@ riêng [gốc — COMBAT.md]. Làm mới giữ cấu trúc, rút gọn cho dễ 
      SPEC/manifest, render GIF từ asset đã có, kiểm kê thiếu món).
      Cấm gọi 403 là "đủ quota", cấm báo "đã sinh" khi chưa có file
      thật, cấm dùng ảnh lỗi/ảnh cũ mạo danh ảnh mới.
+   - **SỰ CỐ 30/10/2026 — CHẶN CẤP TÀI KHOẢN (đã xác nhận):** session
+     art `215aa58f` thử 7 yêu cầu và session sinh ảnh mới `93c8b06c`
+     thử 1 yêu cầu đầu tiên — tất cả đều trả `403 PERMISSION_DENIED`
+     "account has been flagged for suspicious activity... check the
+     email associated with your account". Kết luận: cờ ở cấp tài
+     khoản dịch vụ, không phải quota, không phải do một session.
+     Từ lúc này: **mọi session đóng băng sinh ảnh** cho tới khi USER
+     thông báo tài khoản đã được gỡ (USER kiểm tra email liên kết tài
+     khoản và làm theo hướng dẫn kháng nghị/xác minh trong email đó —
+     session không tự gỡ được, không tạo session mới để lách). Trong
+     thời gian đóng băng, art làm phần không-cần-generate: kiểm tra
+     lắp linh kiện sẵn có lên bố cục mới, hoàn thiện SPEC/manifest,
+     bảng thiếu món.
 3. **Linh kiện trước, ảnh sau:** thân trần → bộ phận động → glow → hư
    hại → đạn/FX cùng hệ. Mọi pivot do art đo.
 4. **Hậu kỳ tối thiểu:** tách nền (kiểm halo ở nền sáng + tối), đặt
