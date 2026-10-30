@@ -108,6 +108,18 @@ riêng [gốc — COMBAT.md]. Làm mới giữ cấu trúc, rút gọn cho dễ 
      thời gian đóng băng, art làm phần không-cần-generate: kiểm tra
      lắp linh kiện sẵn có lên bố cục mới, hoàn thiện SPEC/manifest,
      bảng thiếu món.
+   - **Cập nhật sự cố 30/10 (tiếp):** USER đã kiểm tra và **không nhận
+     được thư nào**. Suy luận thực tế: tài khoản bị đánh dấu nhiều
+     khả năng là tài khoản dịch vụ phía nền tảng (công cụ sinh ảnh
+     chạy qua endpoint `google-genai/gemini-3.1-flash-image`), không
+     phải hộp thư cá nhân của USER — nên đường "kiểm tra email/kháng
+     nghị" có thể không tới được USER. Hệ quả: (1) tiếp tục đóng băng,
+     **không session nào được tự thử lại**; (2) lần thử kế tiếp chỉ
+     thực hiện khi USER ra lệnh đích danh, đúng **1 yêu cầu**, nếu vẫn
+     403 thì đóng băng tiếp; (3) đường gỡ chính thức còn lại là USER
+     liên hệ hỗ trợ của nền tảng kèm nguyên văn lỗi + mốc thời gian
+     lần đầu bị chặn, hoặc chờ cờ tự hết hạn (không có thời hạn công
+     bố để hứa hẹn).
 3. **Linh kiện trước, ảnh sau:** thân trần → bộ phận động → glow → hư
    hại → đạn/FX cùng hệ. Mọi pivot do art đo.
 4. **Hậu kỳ tối thiểu:** tách nền (kiểm halo ở nền sáng + tối), đặt
