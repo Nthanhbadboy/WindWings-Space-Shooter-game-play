@@ -82,6 +82,19 @@ riêng [gốc — COMBAT.md]. Làm mới giữ cấu trúc, rút gọn cho dễ 
      tính theo các con số này — không được hứa nhanh hơn.
    - Ảnh sinh lỗi/dị dạng vẫn tính vào quota của turn đó; báo lỗi ngay,
      ảnh thay thế thuộc lô của turn sau.
+   - **PHÂN BIỆT 2 LOẠI LỖI SINH ẢNH (không được lẫn):**
+     (a) *Hết quota turn* — thông báo `Image generation limit of 10
+     reached for this turn`: chỉ là giới hạn theo lượt; dừng sinh, báo
+     cáo lô, chờ turn sau sinh tiếp. (b) ***403 PERMISSION_DENIED*** —
+     dịch vụ báo tài khoản bị đánh dấu hoạt động đáng ngờ: đây là
+     **chặn ở cấp tài khoản, không phải quota**. Khi gặp 403 phải:
+     DỪNG NGAY mọi lần sinh và **cấm bấm thử lại liên tục** (retry dồn
+     có thể làm cờ nặng thêm); báo cáo nguyên văn mã lỗi + thời điểm
+     lên board và chờ USER xử lý tài khoản; trong lúc chờ chuyển sang
+     việc không cần generate (ghép linh kiện sẵn có, đo pivot, viết
+     SPEC/manifest, render GIF từ asset đã có, kiểm kê thiếu món).
+     Cấm gọi 403 là "đủ quota", cấm báo "đã sinh" khi chưa có file
+     thật, cấm dùng ảnh lỗi/ảnh cũ mạo danh ảnh mới.
 3. **Linh kiện trước, ảnh sau:** thân trần → bộ phận động → glow → hư
    hại → đạn/FX cùng hệ. Mọi pivot do art đo.
 4. **Hậu kỳ tối thiểu:** tách nền (kiểm halo ở nền sáng + tối), đặt
