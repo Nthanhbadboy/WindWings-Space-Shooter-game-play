@@ -11,6 +11,12 @@ riêng của director/USER.
 ## 6.2 Các mốc
 
 ### Mốc A — Boss mẫu chuẩn (đang dở, hoàn thiện trước)
+> **Cập nhật theo lệnh USER:** boss phải nâng lên bản **DREADNOUGHT**
+> theo Boss Book §3.2A (11 điểm hỏa lực, bộ phận phá được, 7 tiết mục
+> phối hợp đòn) — hồ sơ boss tối thiểu trước đây (2 ụ + 1 pháo) đã bị
+> USER chê đơn giản và không còn là đích. Phần linh kiện/đạn đã đạt ở
+> bản cũ được tái sử dụng nếu khớp cấu tạo mới; thiếu thì art sản xuất
+> thêm theo §6.4.2, không giới hạn số ảnh, chỉ báo cáo theo lô.
 - Art: hồ sơ Boss-37001 đầy đủ (Boss Book 3.2): linh kiện đã có →
   bổ sung hư hại bậc, mảnh vỡ, chuỗi nổ, GIF xoay chứng minh pivot,
   BOSS_SPEC (đòn theo %HP + thông số + khe né) **kèm Bảng chuẩn đạn &

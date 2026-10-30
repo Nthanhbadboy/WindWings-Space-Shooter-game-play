@@ -64,6 +64,119 @@
   dần; khóa tên lửa có "bíp" dồn dập. (Chưa có nhạc thì placeholder có
   ghi rõ, xem tập 05.)
 
+## 3.2A Bản nâng cấp bắt buộc — Boss-37001 DREADNOUGHT (thay cho bản tối thiểu ở §3.2)
+
+> USER phán bản boss hiện tại còn đơn giản. Kể từ mục này, Boss-37001
+> phải được thiết kế lại thành một **dreadnought nhiều lớp vũ khí**, có
+> cơ chế phối hợp đòn và phá hủy bộ phận. §3.2 giữ vai trò tính cách/nền
+> tảng; **mọi chi tiết cấu tạo và chiến đấu lấy theo §3.2A khi có khác
+> biệt**. Art không được tự giảm số súng/cơ chế cho dễ làm; khó ở đâu
+> thì báo đúng món đó.
+
+### A. Cấu tạo thân và sơ đồ hỏa lực (canvas 512×512, boss hướng xuống)
+
+Boss gồm **5 vòng hỏa lực chồng nhau**. Tọa độ dưới đây là *vùng thiết
+kế* trên canvas; art tự đo tọa độ pixel chính thức khi đặt linh kiện.
+
+| Vòng | Bộ phận | Vị trí thiết kế | Chuyển động | Vai trò chiến đấu |
+|---|---|---|---|---|
+| 1 — Pháo hạm chính | **2 BigGun xoay độc lập** (trái/phải) | Hai ổ lớn ở (x≈118, y≈252) và (x≈394, y≈252), đế đường kính 74–88px | Đầu quay ±65°, đế tĩnh | Đòn chủ lực: một ụ ngắm trực tiếp, ụ còn lại bắn chặn hướng di chuyển của người chơi |
+| 2 — Pháo giữa | **1 Main Cannon kiêm đầu phát tia** | Tâm (x≈256, y≈356), họng hướng xuống | Thân pháo cố định, đầu phát tia sáng khi sạc | Tia quét; khi không phát tia thì bắn phát đạn nặng đơn lẻ |
+| 3 — Pháo phụ | **4 ụ nhỏ**: 2 vai trên (x≈92/420, y≈142) + 2 hông dưới (x≈70/442, y≈330) | Mỗi ụ gồm đế nhỏ + đầu 1–2 nòng | Đầu quay ±45° (vai) / ±35° (hông) | Tạo làn đạn chéo, ép người chơi rời vị trí an toàn; không bao giờ cả 4 cùng bắn tối đa |
+| 4 — Vũ khí diện rộng | **2 pod tên lửa tổ ong** (8 ống/pod) | Hông ngoài (x≈42 và x≈470, y≈238), thân pod cố định | Chỉ nắp/đèn khóa chuyển trạng thái | Khóa vị trí 0,8s rồi phóng theo cặp; dùng để trừng việc đứng yên |
+| 5 — Phòng thủ gần & lõi | **2 pháo quạt sát lõi** (x≈188/324, y≈292) + **lõi năng lượng** (x≈256, y≈228, Ø≈62px) | Pháo quạt cố định hướng xuống-trái/xuống-phải; lõi nằm dưới vòng giáp mở | Lõi pulse; vòng giáp mở/đóng | Pháo quạt tạo quạt đạn ngắn khi người chơi áp sát; lõi là điểm yếu chỉ lộ rõ khi boss sạc tia, sau khi mất 2 BigGun, hoặc ở Hồi 3 |
+
+**Tổng số điểm hỏa lực: 11** (2 BigGun + 1 Main Cannon + 4 ụ phụ + 2
+pod tên lửa + 2 pháo quạt). Đây là mức tối thiểu của bản nâng cấp;
+không tính đèn/glow là súng.
+
+Cấu trúc lớp từ dưới lên: thân 3 bậc hư hại → đế tĩnh của mọi ụ → pod
+tên lửa → đầu quay BigGun/ụ phụ → vòng giáp lõi → lõi glow → pháo giữa
+→ lớp khói/lửa hư hại → FX. Mọi đầu quay phải có đế riêng; mọi họng
+súng phải có điểm sinh đạn ghi trong manifest.
+
+### B. Bộ phận phá được và hệ quả (đây là phần làm trận đấu hết đơn điệu)
+
+| Bộ phận | HP bộ phận (đề xuất cân bằng) | Khi bị phá | Hệ quả chiến thuật |
+|---|---:|---|---|
+| BigGun trái/phải (mỗi ụ) | 18.000 | Đầu pháo nổ, đế cháy còn lại trên thân; đòn tương ứng biến mất | Mất 1 ụ → ụ còn lại vào chế độ **Overdrive**: nhịp nhanh hơn 20% nhưng tỏa thêm ±3°; mất cả 2 → vòng giáp lõi mở lâu hơn sau mỗi đòn |
+| Ụ phụ (mỗi ụ) | 7.500 | Tắt ụ đó, để lại đế cháy | Mất 2 ụ phụ cùng phía → phía đó thành **điểm mù**, người chơi có hành lang an toàn tương đối nhưng boss tăng tần suất tên lửa để bù |
+| Pod tên lửa (mỗi pod) | 12.000 | Pod cháy, không phóng nữa | Mất 1 pod → tên lửa giảm còn 2 cặp/lượt; mất 2 → boss dùng Main Cannon nhiều hơn |
+| Pháo quạt (mỗi khẩu) | 6.000 | Tắt quạt phía đó | Áp sát phía đã phá an toàn hơn |
+| Lõi | Không có HP riêng trước khi lộ; khi lộ nhận **×1,5 damage** | Kích hoạt mốc quá tải ở 15% HP thân | Thưởng cho người chơi dám đánh vào lúc boss sạc/ép sân |
+
+Thân boss vẫn 225.000 HP [GỐC]; HP bộ phận là lớp điều tiết nhịp,
+không cộng vào HP thân hai lần: đạn trúng bộ phận trừ cả HP bộ phận và
+HP thân theo hệ số 1,0; đạn trúng thân thường chỉ trừ HP thân.
+
+### C. Mẫu đạn theo từng vòng hỏa lực
+
+Mọi dòng phải truy nguồn theo §3.5; số chưa có gốc ghi [ĐẠO DIỄN].
+
+| Vũ khí | Mẫu bắn chính thức | Đạn | Damage/viên | Cách đọc né |
+|---|---|---|---|---|
+| BigGun (mỗi ụ) | G319: 3 băng×1 viên, `timeReload=0,6`, `timeRounds=1,8` [GỐC] | Cầu năng lượng lớn | 330 | Telegraph họng sáng 0,9s; né khỏi đường ngắm |
+| BigGun Overdrive | Cùng mẫu, nhịp tổng ×0,8, tỏa ±3° [ĐẠO DIỄN] | Cầu năng lượng | 330 | Đạn nhanh nhịp hơn nhưng kém chính xác |
+| Ụ phụ vai | 3 viên/băng, giãn 0,12s; 2 băng; nghỉ 1,4s [ĐẠO DIỄN theo khung GunData] | Viên laser dài | 150 | Hai ụ bắn chéo tạo chữ X có khe giữa |
+| Ụ phụ hông | Quạt 5 viên góc −24°→+24°, 1 băng; nghỉ 1,8s [ĐẠO DIỄN] | Đạn tỏa vàng | 150 | Quạt có khe ở hai rìa và giữa các viên |
+| Main Cannon (không tia) | 1 phát đơn, sạc 1,0s, nghỉ 2,2s [ĐẠO DIỄN] | Cầu nặng lớn hơn BigGun 1,25× về hình | 330 | Sạc lâu, dễ né, trừng đứng yên giữa sân |
+| Tia quét | Sạc 1,2s có đường cảnh báo; quét −25°→+25°/1,9s [Boss Book §3.2] | Tia liên tục | 120/0,5s | Né qua đầu tia hoặc áp sát dưới họng |
+| Tên lửa mỗi pod | Khóa 0,8s; 2 cặp/pod/lượt (tổng 4 cặp khi còn 2 pod) [GỐC khung G81 + DESIGN] | Tên lửa có khói | 300/quả | Khóa vị trí đã đứng; di chuyển sau khóa thì trượt |
+| Pháo quạt lõi | Quạt 7 viên ngắn, chỉ kích hoạt khi người chơi vào nửa dưới giữa sân; nghỉ 2,6s [ĐẠO DIỄN] | Đạn tỏa nhỏ | 150 | Báo bằng 2 đèn đỏ sát lõi 0,6s |
+
+### D. Bộ máy chiến đấu — đòn phải phối hợp, không bắn rời rạc
+
+Boss chạy bằng **máy trạng thái theo tình huống**, chọn đòn theo vị trí
+người chơi, khoảng cách, bộ phận còn sống và %HP. Mỗi "tiết mục" dưới
+đây là một chuỗi có mở đầu–cao điểm–hở, không phải một phát bắn:
+
+1. **ÉP SÂN (Hồi 1):** Boss tiến xuống 2s; BigGun trái bắn ngắm trực
+   tiếp, BigGun phải bắn vào vị trí người chơi + dự đoán hướng di
+   chuyển 0,35s. Ụ vai chỉ bắn khi người chơi nấp ở 1/3 sân trên. Kết
+   thúc: boss lui, lõi hở 1,0s.
+2. **LƯỚI CHÉO (mở ở Hồi 1 muộn/Hồi 2):** Hai ụ vai bắn chữ X; hai ụ
+   hông bắn quạt chậm 0,25s sau đó, tạo làn đạn hai lớp nhưng chừa một
+   hành lang an toàn di chuyển theo đường chéo. Đây là đòn dạy người
+   chơi đọc nhiều nguồn đạn cùng lúc.
+3. **DỒN VÀO TIA (Hồi 2):** Ụ phụ hai bên bắn ép từ ngoài vào giữa
+   trong 1,2s → đường cảnh báo tia hiện ở phía sân còn trống → Main
+   Cannon quét tia về phía người chơi vừa bị dồn sang. Dừng tia xong
+   lõi hở 1,2s — phần thưởng cho người né đúng.
+4. **BÃO TÊN LỬA CÓ ĐIỀU KIỆN (Hồi 2):** Chỉ khi người chơi đứng yên
+   >0,8s hoặc di chuyển trong vùng nhỏ: reticle khóa; trong lúc tên lửa
+   bay, BigGun bắn thưa để buộc người chơi tiếp tục di chuyển.
+5. **PHÁ Ụ — ĐỔI TÍNH CÁCH (mọi hồi):** Mỗi lần mất một bộ phận lớn,
+   boss dừng 0,4s, điện chớp tại bộ phận đó, rồi đổi vòng đòn ngay
+   (không tiếp tục bắn như chưa có gì). Người chơi phải *thấy* chiến
+   thuật của mình làm boss yếu đi thật.
+6. **VÒNG XOÁY TUYỆT VỌNG (Hồi 3, <30%):** Thân cháy bậc 3; ụ còn sống
+   bắn nhanh ×1,3 nhưng tỏa loạn ±6°; cứ 2 vòng đạn thường thì có 1 lần
+   tia quét hai chiều; lõi tự mở lâu hơn nhưng boss cũng bắn quạt lõi
+   dày hơn. Dưới 15%: lõi quá tải — nếu người chơi phá thêm một bộ
+   phận trong cửa sổ này, boss bỏ qua một lượt tia tuyệt vọng (phần
+   thưởng kỹ năng).
+7. **CHẾT DÂY CHUYỀN (≥3,5s):** Bộ phận đã phá cháy lại trước → ụ còn
+   sống nổ → pod phát nổ → điện chạy dọc thân → lõi trắng 0,3s → nổ
+   chính → 3–4 mảnh lớn + sóng xung kích dọn đạn → khói tàn 1s. Thứ tự
+   có thể thay đổi theo bộ phận nào bị phá trước, nhưng không được rút
+   thành một quầng nổ.
+
+### E. Tiêu chuẩn sản xuất cho bản nâng cấp
+
+- Art được tự do thiết kế lại silhouette để chứa đủ 11 điểm hỏa lực;
+  không bắt giữ nguyên thân hiện tại nếu thân chật. Boss phải đọc như
+  một **pháo đài có hệ thống**, không phải thân cũ dán thêm nòng.
+- Mỗi đầu quay vẫn theo chuẩn: đế tĩnh + đầu riêng + pivot do art đo +
+  GIF xoay trên thân. Pháo cố định phải ghi rõ "cố định" trong manifest
+  để coder không tự xoay.
+- Hư hại theo 3 biến thể thân phải vẽ lại **cả các đế cháy** tương ứng
+  ở từng bậc: bậc vừa có 2–3 điểm cháy nhỏ; bậc nặng có cháy ở pod/ụ,
+  nứt giáp chạy từ lõi ra cánh và khói bám thân.
+- GIF toàn trận mới tối thiểu 40 giây, phải trình diễn đủ 7 tiết mục
+  ở mục D — thiếu tiết mục nào thì GIF đó chưa được gọi là bản nâng cấp.
+- Đạn bổ sung nếu phát sinh họ mới (đạn quạt lõi dùng họ tỏa nhỏ hiện
+  có là đủ; không sinh họ mới trừ khi đọc không phân biệt được).
+
 ## 3.3 Danh mục 39 boss — cách sáng tạo tiếp
 
 Không chép 39 boss gốc; sáng tạo theo **ma trận**: [tính cách] × [vũ khí
